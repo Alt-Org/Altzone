@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
-using Battle1.PhotonUnityNetworking.Code;
+/*using Battle1.PhotonUnityNetworking.Code;*/
 using Battle1.Scripts.Battle.Players;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;*/
 
 namespace Battle1.Scripts.Battle.Game
 {
@@ -19,12 +19,12 @@ namespace Battle1.Scripts.Battle.Game
 
         public void DiamondSpawner(Vector3 spawnPoint)
         {
-            SpawnDiamond(spawnPoint);
+          /*  SpawnDiamond(spawnPoint);*/
         }
 
         public void OnDiamondPickup(DiamondType diamondType, BattleTeamNumber teamNumber)
         {
-            if (!PhotonNetwork.IsMasterClient) return;
+           /* if (!PhotonNetwork.IsMasterClient) return;*/
 
             int newDiamondCount = 0;
             DiamondData diamondData = GetDiamondData(diamondType);
@@ -38,7 +38,7 @@ namespace Battle1.Scripts.Battle.Game
                     newDiamondCount = diamondData.TeamBetaCount + 1;
                     break;
             }
-            _photonView.RPC(nameof(UpdateDiamondCountRPC), RpcTarget.All, diamondType, teamNumber, newDiamondCount);
+           /* _photonView.RPC(nameof(UpdateDiamondCountRPC), RpcTarget.All, diamondType, teamNumber, newDiamondCount);*/
         }
 
         private class DiamondSpawnArgs
@@ -67,7 +67,7 @@ namespace Battle1.Scripts.Battle.Game
             }
         }
 
-        private PhotonView _photonView;
+     /*   private PhotonView _photonView;*/
         private bool _rotateDiamonds;
 
         private DiamondData[] _diamondDataArray;
@@ -75,9 +75,9 @@ namespace Battle1.Scripts.Battle.Game
 
         private void Start()
         {
-            _photonView = GetComponent<PhotonView>();
+          /*  _photonView = GetComponent<PhotonView>();*/
             GenerateDiamondSpawnList();
-            GenerateDiamondDataArray();
+          /*  GenerateDiamondDataArray();*/
 
             this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
         }
@@ -101,8 +101,8 @@ namespace Battle1.Scripts.Battle.Game
 
         private void GenerateDiamondSpawnList()
         {
-            if (PhotonNetwork.IsMasterClient)
-            {
+           /* if (PhotonNetwork.IsMasterClient)
+            {*/
                 _diamondSpawnList.Clear();
 
                 for (int i = 0; i < _diamondObjects.Length; i++)
@@ -123,20 +123,20 @@ namespace Battle1.Scripts.Battle.Game
                     floats[i * 2 + 1] = _diamondSpawnList[i].Velocity.y;
                 }
 
-                _photonView.RPC(nameof(SynchronizeDiamondSpawnListRPC), RpcTarget.Others, ints, floats);
-            }
+               /* _photonView.RPC(nameof(SynchronizeDiamondSpawnListRPC), RpcTarget.Others, ints, floats);*/
+            }/**/
         }
 
-        private void GenerateDiamondDataArray()
+   /*     private void GenerateDiamondDataArray()
         {
             _diamondDataArray = new DiamondData[_diamondObjects.Length];
             for (int i = 0; i < _diamondObjects.Length; i++)
             {
                 _diamondDataArray[i] = new DiamondData(i);
             }
-        }
+        }*/
 
-        [PunRPC]
+       /* [PunRPC]
         private void SynchronizeDiamondSpawnListRPC(int[] ints, float[] floats)
         {
             _diamondSpawnList.Clear();
@@ -152,9 +152,9 @@ namespace Battle1.Scripts.Battle.Game
                     )
                 ));
             }
-        }
+        }*/
 
-        [PunRPC]
+       /* [PunRPC]
         private void UpdateDiamondCountRPC(DiamondType diamondType, BattleTeamNumber teamNumber, int count)
         {
             DiamondData diamondData = GetDiamondData(diamondType);
@@ -169,9 +169,9 @@ namespace Battle1.Scripts.Battle.Game
                     break;
             }
             _battleUIController.UpdateDiamondCountText(teamNumber, diamondType, count);
-        }
+        }*/
 
-        private void SpawnDiamond(Vector3 spawnPoint)
+     /*   private void SpawnDiamond(Vector3 spawnPoint)
         {
             Vector3 spawnPos = new Vector3(spawnPoint.x, spawnPoint.y, Random.Range(-spawnPoint.z / 2, spawnPoint.z / 2));
             SyncedFixedUpdateClock syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
@@ -194,6 +194,5 @@ namespace Battle1.Scripts.Battle.Game
                 diamond.GetComponent<Diamond>().InitInstance(rb, _bottomBoundary, _topBoundary, isTopSide, diamondDisappearUpdateNumber, diamondSpawnArgs.DiamondType);
             }
             GenerateDiamondSpawnList();
-        }
+        }*/
     }
-}

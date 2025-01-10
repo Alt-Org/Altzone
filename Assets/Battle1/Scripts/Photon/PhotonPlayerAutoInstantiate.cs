@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;*/
 
 namespace Prg.Scripts.Common.Photon
 {
@@ -14,7 +14,7 @@ namespace Prg.Scripts.Common.Photon
 
         private IEnumerator Start()
         {
-            Debug.Log($"wait for room {PhotonNetwork.NetworkClientState}");
+           /* Debug.Log($"wait for room {PhotonNetwork.NetworkClientState}");
             if (!PhotonNetwork.InRoom && _isAutoCreateRoom)
             {
                 // Create a room for us
@@ -36,7 +36,8 @@ namespace Prg.Scripts.Common.Photon
             }
             // Instantiate Photon player.
             Debug.Log($"PhotonNetwork.Instantiate {_networkPrefab.name} {PhotonNetwork.NetworkClientState}", _networkPrefab);
-            PhotonNetwork.Instantiate(_networkPrefab.name, Vector3.zero, Quaternion.identity);
+            PhotonNetwork.Instantiate(_networkPrefab.name, Vector3.zero, Quaternion.identity);*/
+           yield return null;
         }
     }
 }

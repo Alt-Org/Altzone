@@ -2,7 +2,7 @@
 
 using Altzone.Scripts.GA;
 using UnityEngine;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;*/
 
 namespace Battle1.Scripts.Battle.Players
 {
@@ -74,7 +74,7 @@ namespace Battle1.Scripts.Battle.Players
             _currentShield.ShieldHitbox.SetActive(false);
             _timer = 5;
 
-            if (PhotonNetwork.IsMasterClient) GameAnalyticsManager.Instance.OnShieldHit(_battlePlayer.PlayerPosition.ToString());
+            /*if (PhotonNetwork.IsMasterClient) GameAnalyticsManager.Instance.OnShieldHit(_battlePlayer.PlayerPosition.ToString());*/
         }
 
         #endregion Public - Methods

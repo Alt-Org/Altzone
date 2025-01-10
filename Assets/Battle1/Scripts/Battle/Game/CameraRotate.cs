@@ -1,7 +1,7 @@
 using Photon.Realtime;
 using UnityEngine;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
-using Player = Battle1.PhotonRealtime.Code.Player;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using Player = Battle1.PhotonRealtime.Code.Player;*/
 
 namespace Battle1.Scripts.Battle.Game
 {
@@ -32,7 +32,7 @@ namespace Battle1.Scripts.Battle.Game
         //Private methods
         private void Start()
         {
-            if (!PhotonNetwork.InRoom) return;
+            /*if (!PhotonNetwork.InRoom) return;
 
             Player localPlayer = PhotonNetwork.LocalPlayer;
             int localPlayerPos = PhotonBattle.GetPlayerPos(localPlayer);
@@ -57,7 +57,7 @@ namespace Battle1.Scripts.Battle.Game
             if (_teamNumber == 2)
             {
                 RotateCamera();
-            }
+            }*/
         }
 
         private void RotateCamera()

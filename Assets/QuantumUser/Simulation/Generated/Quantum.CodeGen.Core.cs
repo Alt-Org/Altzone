@@ -465,7 +465,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct _globals_ {
-    public const Int32 SIZE = 896;
+    public const Int32 SIZE = 904;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public AssetRef<Map> Map;
@@ -481,16 +481,16 @@ namespace Quantum {
     public RNGSession RngSession;
     [FieldOffset(80)]
     public FrameMetaData FrameMetaData;
-    [FieldOffset(120)]
+    [FieldOffset(128)]
     public BitSet1024 Systems;
-    [FieldOffset(248)]
+    [FieldOffset(256)]
     public PhysicsSceneSettings PhysicsSettings;
-    [FieldOffset(544)]
-    public Int32 PlayerConnectedCount;
     [FieldOffset(552)]
+    public Int32 PlayerConnectedCount;
+    [FieldOffset(560)]
     [FramePrinter.FixedArrayAttribute(typeof(Input), 6)]
     private fixed Byte _input_[336];
-    [FieldOffset(888)]
+    [FieldOffset(896)]
     public BitSet6 PlayerLastConnectionState;
     public FixedArray<Input> input {
       get {
@@ -880,6 +880,8 @@ namespace Quantum {
       typeRegistry.Register(typeof(Hit3D), Hit3D.SIZE);
       typeRegistry.Register(typeof(Quantum.Input), Quantum.Input.SIZE);
       typeRegistry.Register(typeof(Quantum.InputButtons), 4);
+      typeRegistry.Register(typeof(IntVector2), IntVector2.SIZE);
+      typeRegistry.Register(typeof(IntVector3), IntVector3.SIZE);
       typeRegistry.Register(typeof(Joint), Joint.SIZE);
       typeRegistry.Register(typeof(Joint3D), Joint3D.SIZE);
       typeRegistry.Register(typeof(LayerMask), LayerMask.SIZE);

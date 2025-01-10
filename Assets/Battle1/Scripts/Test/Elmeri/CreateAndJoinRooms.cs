@@ -1,3 +1,4 @@
+#if false
 using Battle1.PhotonUnityNetworking.Code;
 using TMPro;
 using UnityEngine;
@@ -27,3 +28,4 @@ namespace Battle1.Scripts.Test.Elmeri
         }
     }
 }
+#endif

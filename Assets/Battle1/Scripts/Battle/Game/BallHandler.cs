@@ -1,10 +1,10 @@
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Config.ScriptableObjects;
-using Battle1.PhotonUnityNetworking.Code;
+/*using Battle1.PhotonUnityNetworking.Code;*/
 using Battle1.Scripts.Battle.Players;
 using Battle1.Scripts.Battle.Players.PlayerClasses;
 using UnityEngine;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;*/
 
 namespace Battle1.Scripts.Battle.Game
 {
@@ -23,7 +23,7 @@ namespace Battle1.Scripts.Battle.Game
         [SerializeField] private DiamondController _diamondSpawner;
         #endregion Serialized Fields
 
-        private PhotonView _photonView;
+        /*private PhotonView _photonView;*/
 
         #region Public
 
@@ -149,7 +149,8 @@ namespace Battle1.Scripts.Battle.Game
             _attackMultiplier = variables._playerAttackMultiplier;
             _angleLimit = variables._angleLimit;
 
-            if (PhotonBattle.GetTeamNumber(PhotonNetwork.LocalPlayer) == BattleTeamNumber.TeamBeta) transform.eulerAngles = new Vector3(0, 0, 180f);
+            //commented out because we Changed from PUN to Quantum
+    /*        if (PhotonBattle.GetTeamNumber(PhotonNetwork.LocalPlayer) == BattleTeamNumber.TeamBeta) transform.eulerAngles = new Vector3(0, 0, 180f);*/
 
             _arenaScaleFactor = _battlePlayArea.ArenaScaleFactor;
             transform.localScale = Vector3.one * _arenaScaleFactor;
