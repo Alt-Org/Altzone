@@ -143,7 +143,7 @@ public class CharInfo : MonoBehaviour
             case CharacterID.ObedientPreacher:
                 SetCharacterInfo();
                 break;
-            case CharacterID.ProjectorGrafitiartist:
+            case CharacterID.ProjectorGraffitiArtist:
                 SetCharacterInfo();
                 break;
             case CharacterID.ConfluentBesties:
