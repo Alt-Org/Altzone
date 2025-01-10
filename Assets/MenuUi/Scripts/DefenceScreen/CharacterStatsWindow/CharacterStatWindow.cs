@@ -518,6 +518,7 @@ public class CharacterStatWindow : MonoBehaviour
         if (_demoCharacterWindowCharacter != null)
         {
             CharacterName.text = _demoCharacterWindowCharacter.CharacterName;
+            CustomCharacterName.text = CharacterName.text;
 
             SpeedNumber.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
             ResistanceNumber.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
@@ -575,8 +576,6 @@ public class CharacterStatWindow : MonoBehaviour
         Debug.Log($"loaded {galleryCharacter.Name}");
 
         //For the right side window. CharSize not impelemented yet.
-        //These are not working for some reason.
-        CustomCharacterName.text = CharacterName.text;
         impactforceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
         resistanceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
         speedCurrentLevel.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
@@ -704,7 +703,11 @@ public class CharacterStatWindow : MonoBehaviour
     {
         statIncreasePriceText.text = $"{statIncreasePriceToShow}";
         Debug.Log($"Stat price {statIncreasePriceToShow}");
-        statEditPopUp.SetActive(true);
+
+        if (CustomCharacter.GetClassID(_characterId) != CharacterClassID.Obedient)
+        {
+            statEditPopUp.SetActive(true);
+        }
     }
     private void HidestatEditPopUp()
     {
