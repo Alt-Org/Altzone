@@ -704,7 +704,11 @@ public class CharacterStatWindow : MonoBehaviour
     {
         statIncreasePriceText.text = $"{statIncreasePriceToShow}";
         Debug.Log($"Stat price {statIncreasePriceToShow}");
-        statEditPopUp.SetActive(true);
+
+        if (CustomCharacter.GetClassID(_characterId) != CharacterClassID.Obedient)
+        {
+            statEditPopUp.SetActive(true);
+        }
     }
     private void HidestatEditPopUp()
     {
