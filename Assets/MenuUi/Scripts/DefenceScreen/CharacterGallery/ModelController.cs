@@ -20,7 +20,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private PlayerData _playerData;
 
-        private void OnEnable()
+        private void Start()
         {
             StartCoroutine(Load());
         }

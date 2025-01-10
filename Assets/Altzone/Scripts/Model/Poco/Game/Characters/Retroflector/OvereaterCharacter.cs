@@ -8,7 +8,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         public OvereaterCharacter() : base()
         {
-            _id = CharacterID.RetroflectorOvereater;
+            _id = CharacterID.RetroflectorOverEater;
             _defaultAttack = 6;
             _defaultDefence = 8;
             _defaultHp = 4;

@@ -222,10 +222,10 @@ GameObject:
   - component: {fileID: 2375454811441574046}
   - component: {fileID: 3454905361917033380}
   - component: {fileID: 3255219180434912955}
-  - component: {fileID: 8648124660029377602}
-  - component: {fileID: 6401046743213608866}
+  - component: {fileID: 4075004834335231843}
+  - component: {fileID: 1013947294129989242}
   m_Layer: 0
-  m_Name: dailytask Weekly
+  m_Name: DailyTaskCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -271,12 +271,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43986a7edbf379c44961668d25b3c250, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 0
   questTitle: {fileID: 5185561672090061705}
   questDebugID: {fileID: 1787216820999676752}
   questCoins: {fileID: 1574435518566141732}
   dailyTaskManager: {fileID: 0}
---- !u!114 &8648124660029377602
+--- !u!114 &4075004834335231843
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -332,7 +331,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &6401046743213608866
+--- !u!114 &1013947294129989242
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -404,7 +403,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.99215686, g: 0.6097823, b: 0.4666667, a: 1}
+  m_Color: {r: 0.9921569, g: 0.89019614, b: 0.46666667, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -569,7 +568,6 @@ GameObject:
   - component: {fileID: 7032967434072874054}
   - component: {fileID: 7319289837539380856}
   - component: {fileID: 5185561672090061705}
-  - component: {fileID: 5807943525996906012}
   m_Layer: 0
   m_Name: "ty\xF6teht\xE4v\xE4"
   m_TagString: Untagged
@@ -696,50 +694,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &5807943525996906012
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6140973975876699317}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Navigation:
-    m_Mode: 3
-    m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
-  m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
-    m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
-  m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
-  m_AnimationTriggers:
-    m_NormalTrigger: Normal
-    m_HighlightedTrigger: Highlighted
-    m_PressedTrigger: Pressed
-    m_SelectedTrigger: Selected
-    m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 5185561672090061705}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &6775057550041752130
 GameObject:
   m_ObjectHideFlags: 0

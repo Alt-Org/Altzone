@@ -15,10 +15,10 @@ namespace Altzone.Scripts.Model.Poco.Game
         ObedientPreacher = CharacterClassID.Obedient | 1,
 
         // Projectors class characters
-        ProjectorGrafitiartist = CharacterClassID.Projector | 1,
+        ProjectorGraffitiArtist = CharacterClassID.Projector | 1,
 
         // Retroflectors class characters
-        RetroflectorOvereater = CharacterClassID.Retroflector | 1,
+        RetroflectorOverEater = CharacterClassID.Retroflector | 1,
         RetroflectorAlcoholic = CharacterClassID.Retroflector | 2,
 
         // Confluents class characters
