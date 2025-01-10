@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
-    public class CharacterSlot : MonoBehaviour
+    public class CharacterSlot : MonoBehaviour, IGalleryCharacterData
     {
         [SerializeField] public DraggableCharacter _character;
 
