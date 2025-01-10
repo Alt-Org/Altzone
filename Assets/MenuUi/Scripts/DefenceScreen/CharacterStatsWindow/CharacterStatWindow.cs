@@ -481,7 +481,7 @@ public class CharacterStatWindow : MonoBehaviour
             case CharacterID.IntellectualizerResearcher:
                 SetCharacterInfo();
                 break;
-            case CharacterID.RetroflectorOvereater:
+            case CharacterID.RetroflectorOverEater:
                 SetCharacterInfo();
                 break;
             case CharacterID.TricksterComedian:
@@ -496,7 +496,7 @@ public class CharacterStatWindow : MonoBehaviour
             case CharacterID.ObedientPreacher:
                 SetCharacterInfo();
                 break;
-            case CharacterID.ProjectorGrafitiartist:
+            case CharacterID.ProjectorGraffitiArtist:
                 SetCharacterInfo();
                 break;
             case CharacterID.ConfluentBesties:
@@ -597,7 +597,7 @@ public class CharacterStatWindow : MonoBehaviour
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
-            case CharacterID.RetroflectorOvereater:
+            case CharacterID.RetroflectorOverEater:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
@@ -617,7 +617,7 @@ public class CharacterStatWindow : MonoBehaviour
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
-            case CharacterID.ProjectorGrafitiartist:
+            case CharacterID.ProjectorGraffitiArtist:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
@@ -743,4 +743,3 @@ public class CharacterStatWindow : MonoBehaviour
 
     }
 }
-
