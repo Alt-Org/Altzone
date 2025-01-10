@@ -128,7 +128,7 @@ public class CharInfo : MonoBehaviour
             case CharacterID.IntellectualizerResearcher:
                 SetCharacterInfo();
                 break;
-            case CharacterID.RetroflectorOvereater:
+            case CharacterID.RetroflectorOverEater:
                 SetCharacterInfo();
                 break;
             case CharacterID.TricksterComedian:

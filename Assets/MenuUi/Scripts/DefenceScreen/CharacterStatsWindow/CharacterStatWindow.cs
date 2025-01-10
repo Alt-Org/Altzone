@@ -481,7 +481,7 @@ public class CharacterStatWindow : MonoBehaviour
             case CharacterID.IntellectualizerResearcher:
                 SetCharacterInfo();
                 break;
-            case CharacterID.RetroflectorOvereater:
+            case CharacterID.RetroflectorOverEater:
                 SetCharacterInfo();
                 break;
             case CharacterID.TricksterComedian:
@@ -598,7 +598,7 @@ public class CharacterStatWindow : MonoBehaviour
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
-            case CharacterID.RetroflectorOvereater:
+            case CharacterID.RetroflectorOverEater:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;

@@ -107,7 +107,7 @@ namespace Altzone.Scripts.Model.Poco.Game
                     return "Preacher";
                 case CharacterID.ProjectorGraffitiArtist:
                     return "Grafitiartist";
-                case CharacterID.RetroflectorOvereater:
+                case CharacterID.RetroflectorOverEater:
                     return "Overeater";
                 case CharacterID.RetroflectorAlcoholic:
                     return "Alcoholic";

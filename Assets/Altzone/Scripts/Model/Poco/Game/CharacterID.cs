@@ -18,7 +18,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         ProjectorGraffitiArtist = CharacterClassID.Projector | 1,
 
         // Retroflectors class characters
-        RetroflectorOvereater = CharacterClassID.Retroflector | 1,
+        RetroflectorOverEater = CharacterClassID.Retroflector | 1,
         RetroflectorAlcoholic = CharacterClassID.Retroflector | 2,
 
         // Confluents class characters
