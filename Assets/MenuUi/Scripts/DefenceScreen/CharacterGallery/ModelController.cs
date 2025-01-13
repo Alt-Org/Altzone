@@ -51,6 +51,7 @@ namespace MenuUi.Scripts.CharacterGallery
             store.GetPlayerData(playerGuid, playerData =>
             {
                 _playerData = playerData;
+                _view.OnCurrentCharacterIdChanged -= HandleCurrentCharacterIdChanged;
                 _view.OnCurrentCharacterIdChanged += HandleCurrentCharacterIdChanged;
                 var currentCharacterId = playerData.SelectedCharacterIds;
                 var characters = playerData.CustomCharacters.ToList();
