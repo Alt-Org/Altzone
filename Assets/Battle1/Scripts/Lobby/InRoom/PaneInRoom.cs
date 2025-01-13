@@ -3,7 +3,7 @@ using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using UnityEngine.UI;
 using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;*/
 
 namespace Battle1.Scripts.Lobby.InRoom
 {
@@ -27,25 +27,25 @@ namespace Battle1.Scripts.Lobby.InRoom
         private void SetPlayerAsGuest()
         {
             Debug.Log($"setPlayerAsGuest {PhotonBattle.PlayerPositionGuest}");
-            this.Publish(new LobbyManagerOld.PlayerPosEvent(PhotonBattle.PlayerPositionGuest));
+           /* this.Publish(new LobbyManagerOld.PlayerPosEvent(PhotonBattle.PlayerPositionGuest));*/
         }
 
         private void SetPlayerAsSpectator()
         {
             Debug.Log($"setPlayerAsSpectator {PhotonBattle.PlayerPositionSpectator}");
-            this.Publish(new LobbyManagerOld.PlayerPosEvent(PhotonBattle.PlayerPositionSpectator));
+            /*this.Publish(new LobbyManagerOld.PlayerPosEvent(PhotonBattle.PlayerPositionSpectator));*/
         }
 
         private void StartPlaying()
         {
             Debug.Log($"startPlaying");
-            this.Publish(new LobbyManagerOld.StartPlayingEvent());
+           /* this.Publish(new LobbyManagerOld.StartPlayingEvent());*/
         }
 
         private void StartRaidTest()
         {
             Debug.Log($"startPlaying");
-            this.Publish(new LobbyManagerOld.StartRaidTestEvent());
+           /* this.Publish(new LobbyManagerOld.StartRaidTestEvent());*/
         }
 
         /// <summary>
@@ -53,8 +53,8 @@ namespace Battle1.Scripts.Lobby.InRoom
         /// </summary>
         private void Update()
         {
-            _battleID.text = PhotonNetwork.InRoom ? $"({PhotonNetwork.CurrentRoom.GetCustomProperty<string>("bid")})" : "<color=red>Not in room</color>";
-            title.text = PhotonNetwork.InRoom ? PhotonNetwork.CurrentRoom.Name : "<color=red>Not in room</color>";
+            /*_battleID.text = PhotonNetwork.InRoom ? $"({PhotonNetwork.CurrentRoom.GetCustomProperty<string>("bid")})" : "<color=red>Not in room</color>";
+            title.text = PhotonNetwork.InRoom ? PhotonNetwork.CurrentRoom.Name : "<color=red>Not in room</color>";*/
         }
     }
 }

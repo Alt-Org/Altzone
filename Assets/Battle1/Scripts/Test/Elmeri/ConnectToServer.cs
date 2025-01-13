@@ -1,3 +1,4 @@
+#if false
 using Battle1.PhotonUnityNetworking.Code;
 using UnityEngine.SceneManagement;
 using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
@@ -23,3 +24,4 @@ namespace Battle1.Scripts.Test.Elmeri
         }
     }
 }
+#endif

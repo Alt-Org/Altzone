@@ -71,17 +71,19 @@ namespace Battle1.Scripts.Battle.Players
 
         public void UpdatePeerCount()
         {
-            int roomPlayerCount = PhotonBattle.GetPlayerCountForRoom();
-            int realPlayerCount = PhotonBattle.CountRealPlayers();
+            /*   int roomPlayerCount = PhotonBattle.GetPlayerCountForRoom();
+               int realPlayerCount = PhotonBattle.CountRealPlayers();*/
+            int roomPlayerCount = 2;
+            int realPlayerCount = 2;
             _battleDebugLogger.LogInfo("Info (room player count: {0}, real player count: {1})", roomPlayerCount, realPlayerCount);
             if (realPlayerCount < roomPlayerCount) return;
             int readyPeers = 0;
             foreach (BattlePlayer player in _allPlayers)
             {
-                if (!player.IsBot && ((PlayerDriverPhoton)player.PlayerDriver).PeerCount == realPlayerCount)
+             /*   if (!player.IsBot && ((PlayerDriverPhoton)player.PlayerDriver).PeerCount == realPlayerCount)
                 {
                     readyPeers += 1;
-                }
+                }*/
             }
             _battleDebugLogger.LogInfo("Info (ready peers: {0})", readyPeers);
 

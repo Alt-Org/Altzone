@@ -3,8 +3,8 @@ using System.Runtime.CompilerServices;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Model.Poco.Game;
 using Photon.Realtime;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
-using Player = Battle1.PhotonRealtime.Code.Player;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using Player = Battle1.PhotonRealtime.Code.Player;*/
 using PhotonBattleRoom = Battle1.Scripts.Battle.Photon.PhotonBattleRoom;
 
 namespace Battle1.Scripts.Battle
@@ -52,7 +52,7 @@ namespace Battle1.Scripts.Battle
             public const byte PlayerClassTricksterPos4SetPhotonViewIdEventCode = PlayerClassTricksterSetPhotonViewIdEventCode + 3;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerPos(Player player) => s_photonBattleRoom.GetPlayerPos(player);
+        /*[MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerPos(Player player) => s_photonBattleRoom.GetPlayerPos(player);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsValidPlayerPos(int playerPos) => s_photonBattleRoom.IsValidPlayerPos(playerPos);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsPlayerPosAvailable(Player player) => s_photonBattleRoom.IsPlayerPosAvailable(player);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetFirstFreePlayerPos(Player player, int wantedPlayerPos = PhotonBattleRoom.PlayerPosition1) => s_photonBattleRoom.GetFirstFreePlayerPos(player, wantedPlayerPos);
@@ -62,16 +62,19 @@ namespace Battle1.Scripts.Battle
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerCountForRoom() => s_photonBattleRoom.GetPlayerCountForRoom();
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int CountRealPlayers() => s_photonBattleRoom.CountRealPlayers();
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static CharacterID GetPlayerCharacterId(Player player) => s_photonBattleRoom.GetPlayerCharacterID(player);
-
+*/
         public static string GetBattleID()
         {
-            return PhotonNetwork.CurrentRoom.GetCustomProperty<string>(BattleID, null);
+            /*return PhotonNetwork.CurrentRoom.GetCustomProperty<string>(BattleID, null);*/
+            return "PhotonNetwork.CurrentRoom.GetCustomProperty<string>(BattleID, null)";
         }
 
         public static BattleCharacter GetBattleCharacter(Player player)
         {
-            int[] characterIds = player.GetCustomProperty<int[]>(PhotonBattleRoom.PlayerCharacterIdsKey, null);
-            int[] characterStats = player.GetCustomProperty<int[]>(PhotonBattleRoom.PlayerStatsKey, null);
+            /*  int[] characterIds = player.GetCustomProperty<int[]>(PhotonBattleRoom.PlayerCharacterIdsKey, null);
+              int[] characterStats = player.GetCustomProperty<int[]>(PhotonBattleRoom.PlayerStatsKey, null);*/
+            int[] characterIds = { 0 };
+            int[] characterStats = { 0 };
 
             BattleCharacter battleCharacter = new(
                 (CharacterID)characterIds[0],
@@ -88,14 +91,14 @@ namespace Battle1.Scripts.Battle
 
         #region Debug and test utilities
 
-        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
+ /*       [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SetDebugPlayer(Player player, int wantedPlayerPos, int playerPrefabId) => s_photonBattleRoom.SetDebugPlayer(player, wantedPlayerPos, playerPrefabId);
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void SetDebugPlayerProps(Player player, int playerPos, int playerPrefabId) => s_photonBattleRoom.SetDebugPlayerProps(player, playerPos, playerPrefabId);
-
+*/
         #endregion Debug and test utilities
 
         private static readonly PhotonBattleRoom s_photonBattleRoom = new();

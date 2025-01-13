@@ -1,3 +1,4 @@
+#if false
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -142,7 +143,7 @@ namespace Prg.Scripts.Common.Photon
             _prevMessage = message;
         }
 
-        private static string HashtableToString(Hashtable props, IReadOnlyDictionary<string, string> keyMapping)
+       /* private static string HashtableToString(Hashtable props, IReadOnlyDictionary<string, string> keyMapping)
         {
             var builder = new StringBuilder("{");
             foreach (var prop in props)
@@ -160,7 +161,7 @@ namespace Prg.Scripts.Common.Photon
                 builder.Append('}');
             }
             return builder.ToString();
-        }
+        }*/
 
         #region IConnectionCallbacks
 
@@ -224,14 +225,14 @@ namespace Prg.Scripts.Common.Photon
             LogPhotonStatus();
         }
 
-        public void OnRoomListUpdate(List<RoomInfo> roomList)
+       /* public void OnRoomListUpdate(List<RoomInfo> roomList)
         {
             LogPhotonStatus($"#{roomList.Count}");
             foreach (var roomInfo in roomList)
             {
                 Debug.Log($"+ {roomInfo.GetDebugLabel()}");
             }
-        }
+        }*/
 
         public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics)
         {
@@ -255,20 +256,20 @@ namespace Prg.Scripts.Common.Photon
             }
         }
 
-        public void OnCreatedRoom()
+       /* public void OnCreatedRoom()
         {
             LogPhotonStatus(PhotonNetwork.CurrentRoom.GetDebugLabel());
-        }
+        }*/
 
         public void OnCreateRoomFailed(short returnCode, string message)
         {
             LogPhotonStatus($"{returnCode} {message}");
         }
 
-        public void OnJoinedRoom()
+      /*  public void OnJoinedRoom()
         {
             LogPhotonStatus($"{PhotonNetwork.CurrentRoom.GetDebugLabel()} IsMasterClient={PhotonNetwork.IsMasterClient}");
-        }
+        }*/
 
         public void OnJoinRoomFailed(short returnCode, string message)
         {
@@ -289,31 +290,31 @@ namespace Prg.Scripts.Common.Photon
 
         #region IInRoomCallbacks
 
-        public void OnPlayerEnteredRoom(Player newPlayer)
+        /*public void OnPlayerEnteredRoom(Player newPlayer)
         {
             LogPhotonStatus(newPlayer.GetDebugLabel());
-        }
+        }*/
 
-        public void OnPlayerLeftRoom(Player otherPlayer)
+       /* public void OnPlayerLeftRoom(Player otherPlayer)
         {
             LogPhotonStatus(otherPlayer.GetDebugLabel());
-        }
+        }*/
 
-        public void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
+       /* public void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
         {
             LogPhotonStatus(
                 $"{PhotonNetwork.CurrentRoom.GetDebugLabel()} changed {HashtableToString(propertiesThatChanged, PhotonRoomPropNames)}");
-        }
+        }*/
 
-        public void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+        /*public void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
             LogPhotonStatus($"{targetPlayer.GetDebugLabel()} changed {HashtableToString(changedProps, PhotonPlayerPropNames)}");
-        }
+        }*/
 
-        public void OnMasterClientSwitched(Player newMasterClient)
+       /* public void OnMasterClientSwitched(Player newMasterClient)
         {
             LogPhotonStatus(newMasterClient.GetDebugLabel());
-        }
+        }*/
 
         #endregion
 
@@ -337,3 +338,4 @@ namespace Prg.Scripts.Common.Photon
         #endregion
     }
 }
+#endif
