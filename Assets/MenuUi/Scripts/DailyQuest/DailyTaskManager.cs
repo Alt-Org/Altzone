@@ -5,6 +5,7 @@ using Altzone.Scripts;
 using UnityEngine;
 using static Altzone.Scripts.Model.Poco.Game.PlayerTasks;
 using UnityEngine.UI;
+using UnityEditor.Overlays;
 
 public class DailyTaskManager : MonoBehaviour
 {
@@ -92,7 +93,7 @@ public class DailyTaskManager : MonoBehaviour
         yield return new WaitUntil(() => tasks != null);
 
         //!Temporary until the PlayerTask is modified to have one Task list/array!
-        tasklist.AddRange(tasks.Daily);
+        tasklist = tasks.Daily;
         tasklist.AddRange(tasks.Week);
         tasklist.AddRange(tasks.Month);
         //-----------------------------------------------------------------------|
@@ -108,11 +109,13 @@ public class DailyTaskManager : MonoBehaviour
 
             Transform parentCategory = GetParentCategory(tasklist[i].Points);
             taskObject.transform.SetParent(parentCategory, false);
-            //taskObject.SetActive(tab == _selectedTab);
             taskObject.SetActive(true);
 
             Debug.Log("Created Quest: " +  tasklist[i].Id);
         }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_dailyCategory500.GetComponent<RectTransform>());
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_dailyCategory1000.GetComponent<RectTransform>());
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_dailyCategory1500.GetComponent<RectTransform>());
     }
 
     private Transform GetParentCategory(int points)
@@ -183,7 +186,7 @@ public class DailyTaskManager : MonoBehaviour
     public void SwitchTab(SelectedTab tab)
     {
         //Hide old tab
-        switch (tab)
+        switch (_selectedTab)
         {
             case SelectedTab.Tasks: _dailyTasksView.SetActive(false); break;
             case SelectedTab.OwnTask: _ownTaskView.SetActive(false); break;
