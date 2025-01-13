@@ -42,8 +42,8 @@ namespace MenuUi.Scripts.CharacterGallery
         private IEnumerator Load()
         {
             Debug.Log("Start");
-            yield return new WaitUntil(() => _view.IsReady);
             _view.Reset();
+            yield return new WaitUntil(() => _view.IsReady);
             var gameConfig = GameConfig.Get();
             var playerSettings = gameConfig.PlayerSettings;
             var playerGuid = playerSettings.PlayerGuid;

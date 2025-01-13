@@ -56,7 +56,6 @@ namespace MenuUi.Scripts.CharacterGallery
         private void Awake()
         {
             _CurSelectedCharacterSlots = HorizontalContentPanel.GetComponentsInChildren<CharacterSlot>();
-            LoadAndCachePrefabs();
         }
 
 
@@ -76,6 +75,8 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public void Reset()
         {
+            _isReady = false;
+
             foreach (var slot in _CurSelectedCharacterSlots)
             {
                 var topSlotCharacter = slot.transform.GetComponentInChildren<DraggableCharacter>();
@@ -97,6 +98,7 @@ namespace MenuUi.Scripts.CharacterGallery
             }
             _characterButtons.Clear();
             _characterSlots.Clear();
+            LoadAndCachePrefabs();
             CheckSelectedCharacterSlotTexts();
         }
 
