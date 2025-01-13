@@ -20,7 +20,18 @@ namespace MenuUi.Scripts.CharacterGallery
         private void Awake()
         {
             ServerManager.OnLogInStatusChanged += StartLoading;
+        }
 
+
+        // When starting from 01-Loader OnLogInStatusChanged doesn't get called, so checking here in start function if player is already logged in to start loading.
+        // This is done in start because ModelView wasn't loaded yet during the Awake function. 
+        private void Start() 
+        {
+            ServerManager manager = ServerManager.Instance;
+            if (manager.isLoggedIn)
+            {
+                StartLoading(manager.isLoggedIn);
+            }
         }
 
 
