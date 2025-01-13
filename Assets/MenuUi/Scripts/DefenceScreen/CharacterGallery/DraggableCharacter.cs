@@ -40,16 +40,6 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public CharacterID Id { get => _id; }
 
-        private GameObject _text1;
-        private GameObject _text2;
-        private GameObject _text3;
-
-        private void Awake()
-        {
-            _text1 = GameObject.FindGameObjectWithTag("TextSuoja1");
-            _text2 = GameObject.FindGameObjectWithTag("TextSuoja2");
-            _text3 = GameObject.FindGameObjectWithTag("TextSuoja3");
-        }
 
         private void Start()
         {
@@ -61,7 +51,6 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 initialSlot = transform.parent;
             }
-            CheckSelectedCharacterSlotText();
         }
 
         public void OnBeginDrag(PointerEventData eventData)
@@ -81,39 +70,12 @@ namespace MenuUi.Scripts.CharacterGallery
             GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
         }
 
+
         public void OnDrag(PointerEventData eventData)
         {
             transform.position = eventData.position;
         }
-        public void CheckSelectedCharacterSlotText()
-        {
-            if (_modelView._CurSelectedCharacterSlots[2].transform.childCount > 0)
-            {
-                _text3.SetActive(false);
-            }
-            else
-            {
-                _text3.SetActive(true);
-            }
 
-            if (_modelView._CurSelectedCharacterSlots[1].transform.childCount > 0)
-            {
-                _text2.SetActive(false);
-            }
-            else
-            {
-                _text2.SetActive(true);
-            }
-
-            if (_modelView._CurSelectedCharacterSlots[0].transform.childCount > 0)
-            {
-                _text1.SetActive(false);
-            }
-            else
-            {
-                _text1.SetActive(true);
-            }
-        }
 
         public void OnEndDrag(PointerEventData eventData)
         {
@@ -221,7 +183,6 @@ namespace MenuUi.Scripts.CharacterGallery
                 previousParent = transform.parent;
                 HandleParentChange(previousParent);
             }
-            CheckSelectedCharacterSlotText();
         }
 
 
