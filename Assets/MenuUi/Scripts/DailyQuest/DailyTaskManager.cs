@@ -18,8 +18,6 @@ public class DailyTaskManager : MonoBehaviour
     private const int _cardSlots = 100;
     private GameObject[] _dailyTaskCardSlots = new GameObject[_cardSlots];
 
-    [SerializeField] private GameObject _clanRewards;
-
     [Header("DailyTaskCard prefabs")]
     [SerializeField] private GameObject _dailyTaskCardPrefab;
 
@@ -28,10 +26,10 @@ public class DailyTaskManager : MonoBehaviour
     [SerializeField] private Transform _dailyCategory500;
     [SerializeField] private Transform _dailyCategory1000;
     [SerializeField] private Transform _dailyCategory1500;
-    [SerializeField] private Transform _activeQuestWindow;
 
     [Header("OwnTaskPage")]
     [SerializeField] private GameObject _ownTaskView;
+    [SerializeField] private Button _cancelTaskButton;
 
     [Header("ClanTaskPage")]
     [SerializeField] private GameObject _clanTaskView;
@@ -45,17 +43,18 @@ public class DailyTaskManager : MonoBehaviour
 
     private SelectedTab _selectedTab = SelectedTab.Tasks;
 
-    [Header("Tab Panels")]
-    [SerializeField] private GameObject[] _tabPanels; // Drag your panels here in the Inspector
-
     // Start of Code
     void Start()
     {
         TaskGenerator();
 
+        //Tab bar
         _dailyTasksTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.Tasks));
         _ownTaskTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.OwnTask));
         _clanTaskTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.ClanTask));
+
+        //OwnTask cancel button
+        _cancelTaskButton.onClick.AddListener(() => CancelActiveTask());
     }
 
     // First 3 functions are for task slot population and fetching them from server
@@ -141,15 +140,13 @@ public class DailyTaskManager : MonoBehaviour
                     case 1:
                         Debug.Log("Accept case happened " + popupId);
                         HideAvailableTasks();
-                        _clanRewards.SetActive(false);
-                        _activeQuestWindow.gameObject.SetActive(true);
+                        SwitchTab(SelectedTab.OwnTask);
                         //TODO: Add functionality to set the "Omatyö" page.
                         break;
                     case 2:
                         Debug.Log("Cancel case happened " + popupId);
                         ShowAvailableTasks();
-                        _clanRewards.SetActive(true);
-                        _activeQuestWindow.gameObject.SetActive(false);
+                        SwitchTab(SelectedTab.Tasks);
                         break;
                 }
             }
