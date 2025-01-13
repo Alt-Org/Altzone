@@ -12,7 +12,9 @@ namespace MenuUi.Scripts.SwipeNavigation
         [SerializeField]
         private SwipeUI _swipe;
 
-        public BaseScrollRect parentScrollRect;
+        private IBeginDragHandler parentBeginDragHandler;
+        private IDragHandler parentDragHandler;
+        private IEndDragHandler parentEndDragHandler;
 
         // Start is called before the first frame update
         void Start()
@@ -37,24 +39,26 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         private void CacheParentContainerComponents()
         {
-            if(parentScrollRect == null) parentScrollRect = GetComponentOnlyInParents<BaseScrollRect>();
+            parentBeginDragHandler = GetComponentOnlyInParents<IBeginDragHandler>();
+            parentDragHandler = GetComponentOnlyInParents<IDragHandler>();
+            parentEndDragHandler = GetComponentOnlyInParents<IEndDragHandler>();
         }
 
         public virtual void OnBeginDrag(PointerEventData eventData)
         {
             if (_swipe != null)
                 _swipe.DragWithBlock(eventData, _blockType);
-            parentScrollRect.OnBeginDrag(eventData);
+            parentBeginDragHandler.OnBeginDrag(eventData);
         }
 
         public virtual void OnDrag(PointerEventData eventData)
         {
-            parentScrollRect.OnDrag(eventData);
+            parentDragHandler.OnDrag(eventData);
         }
 
         public virtual void OnEndDrag(PointerEventData eventData)
         {
-            parentScrollRect.OnEndDrag(eventData);
+            parentEndDragHandler.OnEndDrag(eventData);
         }
     }
 }
