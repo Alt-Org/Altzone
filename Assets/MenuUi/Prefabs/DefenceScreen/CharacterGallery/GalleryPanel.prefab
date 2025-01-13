@@ -91,7 +91,6 @@ GameObject:
   - component: {fileID: 8548890098221207883}
   - component: {fileID: 7428943245344021282}
   - component: {fileID: 5166243680909419808}
-  - component: {fileID: 6792504709600775594}
   m_Layer: 5
   m_Name: Gallery
   m_TagString: Untagged
@@ -218,25 +217,6 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls: []
---- !u!114 &6792504709600775594
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4689490333519661579}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 307e6162b866c484d8f7440f3af3068c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _characterList:
-  - {fileID: 6712706073602126356, guid: 5dff9ac77871f574c916c5d00c8fe4bf, type: 3}
-  - {fileID: 6712706073602126356, guid: 8dc522cbdaed2a041aaa1cf230c4b2c9, type: 3}
-  - {fileID: 6712706073602126356, guid: b2b72b8652e824b4087bd217db606997, type: 3}
-  - {fileID: 6712706073602126356, guid: 190ce71ede1bb6b4d89a57d346ff77ca, type: 3}
-  - {fileID: 6712706073602126356, guid: 0f541a70f572a544bb816b1f055074b7, type: 3}
-  - {fileID: 6712706073602126356, guid: de41b8c757972174dbf2be3cb365a1d5, type: 3}
 --- !u!1 &6491821458906489138
 GameObject:
   m_ObjectHideFlags: 0
@@ -350,6 +330,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: DraggableCharacterGallery
       objectReference: {fileID: 0}
+    - target: {fileID: 1657837458230196602, guid: 7fe6fc90801a37d498444e0b9f3f734c,
+        type: 3}
+      propertyPath: _text1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1657837458230196602, guid: 7fe6fc90801a37d498444e0b9f3f734c,
+        type: 3}
+      propertyPath: _selectedCharacterSlotText1
+      value: 
+      objectReference: {fileID: 8073001226690957906}
+    - target: {fileID: 1657837458230196602, guid: 7fe6fc90801a37d498444e0b9f3f734c,
+        type: 3}
+      propertyPath: _selectedCharacterSlotText2
+      value: 
+      objectReference: {fileID: 3535899290428015124}
+    - target: {fileID: 1657837458230196602, guid: 7fe6fc90801a37d498444e0b9f3f734c,
+        type: 3}
+      propertyPath: _selectedCharacterSlotText3
+      value: 
+      objectReference: {fileID: 963310784500745849}
     - target: {fileID: 1657837458230196602, guid: 7fe6fc90801a37d498444e0b9f3f734c,
         type: 3}
       propertyPath: _colorBlock.m_ColorMultiplier
@@ -505,9 +505,27 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7fe6fc90801a37d498444e0b9f3f734c, type: 3}
+--- !u!1 &963310784500745849 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2388269479839593268, guid: 7fe6fc90801a37d498444e0b9f3f734c,
+    type: 3}
+  m_PrefabInstance: {fileID: 3205024158698616141}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &3438347029337907810 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 274154540934240047, guid: 7fe6fc90801a37d498444e0b9f3f734c,
+    type: 3}
+  m_PrefabInstance: {fileID: 3205024158698616141}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3535899290428015124 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2119086382482863961, guid: 7fe6fc90801a37d498444e0b9f3f734c,
+    type: 3}
+  m_PrefabInstance: {fileID: 3205024158698616141}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8073001226690957906 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6661817438561347359, guid: 7fe6fc90801a37d498444e0b9f3f734c,
     type: 3}
   m_PrefabInstance: {fileID: 3205024158698616141}
   m_PrefabAsset: {fileID: 0}
