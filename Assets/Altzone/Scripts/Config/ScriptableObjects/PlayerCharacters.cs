@@ -9,9 +9,9 @@ using Debug = UnityEngine.Debug;
 namespace Altzone.Scripts.Config.ScriptableObjects
 {
     /// <summary>
-    /// This list contains all playable characters in the game.
+    /// This (singleton) list (UNITY asset) contains all playable characters in the game (set in UNITY Editor).
     /// </summary>
-    [CreateAssetMenu(menuName = "ALT-Zone/PlayerCharacters", fileName = nameof(PlayerCharacters))]
+    //[CreateAssetMenu(menuName = "ALT-Zone/PlayerCharacters", fileName = nameof(PlayerCharacters))]
     public class PlayerCharacters : ScriptableObject
     {
         /// <summary>
@@ -24,6 +24,13 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         public static PlayerCharacters Get() => Resources.Load<PlayerCharacters>(nameof(PlayerCharacters));
 
         [SerializeField] private List<CharacterSpec> _characters;
+
+        /// <summary>
+        /// Gets <c>CharacterSpec</c> by its id.
+        /// </summary>
+        /// <param name="id">the character id</param>
+        /// <returns>the CharacterSpec or null if not found</returns>
+        public CharacterSpec GetCharacter(string id) => Characters.FirstOrDefault(x => x.Id == id);
 
         public IEnumerable<CharacterSpec> Characters =>
 #if UNITY_EDITOR
