@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
-using AltZone.Scripts.ReferenceSheets;
+using MenuUi.Scripts.ReferenceSheets;
 using UnityEngine;
 
 namespace MenuUi.Scripts.Storage

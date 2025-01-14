@@ -10,7 +10,7 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using UnityEngine.UI;
 using static ServerManager;
-using AltZone.Scripts.ReferenceSheets;
+using MenuUi.Scripts.ReferenceSheets;
 
 namespace MenuUi.Scripts.Storage
 {
