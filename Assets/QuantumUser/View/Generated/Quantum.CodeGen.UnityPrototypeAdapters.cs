@@ -49,6 +49,17 @@ namespace Quantum.Prototypes.Unity {
   using RuntimeInitializeOnLoadMethodAttribute = UnityEngine.RuntimeInitializeOnLoadMethodAttribute;
   #endif //;
   
+  [System.SerializableAttribute()]
+  public unsafe partial class SoulWallPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.SoulWallPrototype> {
+    public Quantum.QuantumEntityPrototype ChildEntity;
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.SoulWallPrototype prototype);
+    public override Quantum.Prototypes.SoulWallPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.SoulWallPrototype();
+      converter.Convert(this.ChildEntity, out result.ChildEntity);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
 }
 #pragma warning restore 0109
 #pragma warning restore 1591

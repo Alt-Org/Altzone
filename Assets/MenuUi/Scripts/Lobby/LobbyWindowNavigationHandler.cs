@@ -15,6 +15,9 @@ public class LobbyWindowNavigationHandler : MonoBehaviour
     [SerializeField]
     private WindowNavigation _lobbyRoomNavigation;
 
+    public delegate void LobbyWindowChangeRequest();
+    public static event LobbyWindowChangeRequest OnLobbyWindowChangeRequest;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,7 +37,8 @@ public class LobbyWindowNavigationHandler : MonoBehaviour
                 StartCoroutine(_mainMenuNavigation.Navigate());
                 break;
             case LobbyWindowTarget.LobbyRoom:
-                StartCoroutine(_lobbyRoomNavigation.Navigate());
+                OnLobbyWindowChangeRequest?.Invoke();
+                //StartCoroutine(_lobbyRoomNavigation.Navigate());
                 break;
             case LobbyWindowTarget.Battle:
                 StartCoroutine(_battleNavigation.Navigate());

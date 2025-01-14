@@ -65,6 +65,8 @@ namespace Altzone.Scripts.Lobby
         private SimulationConfig _simulationConfig;
         [SerializeField]
         private SystemsConfig _systemsConfig;
+
+        [SerializeField] private ProjectileGameConfig _projectileGameConfig;
         [SerializeField]
         private Map _map;
 
@@ -353,7 +355,8 @@ namespace Altzone.Scripts.Lobby
             {
                 Map = _map,
                 SimulationConfig = _simulationConfig,
-                SystemsConfig = _systemsConfig
+                SystemsConfig = _systemsConfig,
+                GameConfig = _projectileGameConfig
             };
 
             SessionRunner.Arguments sessionRunnerArguments = new()
@@ -545,7 +548,13 @@ namespace Altzone.Scripts.Lobby
         }
 
         public void OnConnected() { LobbyOnConnected?.Invoke(); }
-        public void OnConnectedToMaster() { LobbyOnConnectedToMaster?.Invoke(); }
+        public void OnConnectedToMaster() {
+            LobbyOnConnectedToMaster?.Invoke();
+            GameConfig gameConfig = GameConfig.Get();
+            PlayerSettings playerSettings = gameConfig.PlayerSettings;
+            string photonRegion = string.IsNullOrEmpty(playerSettings.PhotonRegion) ? null : playerSettings.PhotonRegion;
+            StartCoroutine(StartLobby(playerSettings.PlayerGuid, playerSettings.PhotonRegion));
+        }
         public void OnRegionListReceived(RegionHandler regionHandler) { LobbyOnRegionListReceived?.Invoke(); }
         public void OnCustomAuthenticationResponse(Dictionary<string, object> data) { LobbyOnCustomAuthenticationResponse?.Invoke(data); }
         public void OnCustomAuthenticationFailed(string debugMessage) { LobbyOnCustomAuthenticationFailed?.Invoke(debugMessage); }

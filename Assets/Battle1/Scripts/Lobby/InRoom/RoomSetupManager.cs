@@ -1,3 +1,4 @@
+#if false
 using System.Collections;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
@@ -388,3 +389,4 @@ namespace Battle1.Scripts.Lobby.InRoom
         }
     }
 }
+#endif

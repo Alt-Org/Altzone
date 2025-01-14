@@ -82,8 +82,8 @@ namespace Altzone.Scripts.Common.Photon
 
         void ILobbyCallbacks.OnJoinedLobby()
         {
-            _currentRoomList.Clear();
-            _debugRoomListCount = 0;
+            //_currentRoomList.Clear();
+            //_debugRoomListCount = 0;
             Debug.Log($"roomsUpdated: {_debugRoomListCount} CloudRegion={PhotonRealtimeClient.CloudRegion}");
             OnRoomsUpdated?.Invoke();
         }
@@ -98,6 +98,7 @@ namespace Altzone.Scripts.Common.Photon
 
         void ILobbyCallbacks.OnRoomListUpdate(List<RoomInfo> roomList)
         {
+            _currentRoomList.Clear();
             List<LobbyRoomInfo> lobbyRoomList = new();
             foreach (RoomInfo roomInfo in roomList)
             {
@@ -106,7 +107,7 @@ namespace Altzone.Scripts.Common.Photon
 
             UpdateRoomListing(lobbyRoomList);
             _debugRoomListCount = lobbyRoomList.Count;
-            Debug.Log($"roomsUpdated: {_debugRoomListCount}");
+            Debug.Log($"Lobby Update: roomsUpdated: {_debugRoomListCount}");
             OnRoomsUpdated?.Invoke();
         }
 

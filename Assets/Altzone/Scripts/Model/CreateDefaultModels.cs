@@ -47,9 +47,7 @@ namespace Altzone.Scripts.Model
                 }
                 clanData.Inventory.Furniture.Add(new ClanFurniture(FakeFurnitureId(gameFurniture.Id), gameFurniture.Id));
             }*/
-            ReadOnlyCollection<GameFurniture> baseFurniture = null;
-            Storefront.Get().GetAllGameFurnitureYield(result => baseFurniture = result);
-            clanData.Inventory.Furniture = CreateDefaultDebugFurniture(baseFurniture);
+            clanData.Inventory.Furniture = furniture != null ? CreateDefaultDebugFurniture(new ReadOnlyCollection<GameFurniture>(furniture)) : new();
             /*var chairs = clanData.Inventory.Furniture.Where(x => x.GameFurnitureName.Contains("Chair")).ToList();
             var tables = clanData.Inventory.Furniture.Where(x => x.GameFurnitureName.Contains("Table")).ToList();
             var misc = clanData.Inventory.Furniture.Where(x => x.GameFurnitureName.EndsWith("r")).ToList();
@@ -182,8 +180,8 @@ namespace Altzone.Scripts.Model
                 new(CharacterID.TricksterComedian,0, 0, 0, 0, 0),
                 new(CharacterID.TricksterConman,0, 0, 0, 0, 0),
                 new(CharacterID.ObedientPreacher,0, 0, 0, 0, 0),
-                new(CharacterID.ProjectorGrafitiartist,0, 0, 0, 0, 0),
-                new(CharacterID.RetroflectorOvereater,0, 0, 0, 0, 0),
+                new(CharacterID.ProjectorGraffitiArtist,0, 0, 0, 0, 0),
+                new(CharacterID.RetroflectorOverEater,0, 0, 0, 0, 0),
                 new(CharacterID.RetroflectorAlcoholic,0, 0, 0, 0, 0),
                 new(CharacterID.ConfluentBesties,0, 0, 0, 0, 0),
                 new(CharacterID.IntellectualizerResearcher,0, 0, 0, 0, 0)

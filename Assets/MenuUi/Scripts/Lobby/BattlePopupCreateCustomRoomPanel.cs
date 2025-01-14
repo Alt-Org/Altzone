@@ -7,21 +7,46 @@ public class BattlePopupCreateCustomRoomPanel : MonoBehaviour
     [SerializeField] private Button _createRoomButton;
 
     [Header("Panels")]
+    [SerializeField] private GameObject _topPanel;
+    [SerializeField] private GameObject _mainPanel;
     [SerializeField] private GameObject _custom2v2WaitingRoom;
 
     private void Start()
     {
-        _createRoomButton.onClick.AddListener(CreateCustomRoom);
+        //_createRoomButton.onClick.AddListener(CreateCustomRoom);
     }
 
-    private void CreateCustomRoom()
+    public void SwitchRoom()
     {
-        switch (_modeSelector.SelectedGameMode)
+        SwitchCustomRoom(CustomGameMode.TwoVersusTwo);
+    }
+
+    private void SwitchCustomRoom(CustomGameMode mode)
+    {
+        foreach(Transform t in transform)
+        {
+            if (ReferenceEquals(t.gameObject,_topPanel)) continue;
+            t.gameObject.SetActive(false);
+        }
+
+        switch (mode)
         {
             case CustomGameMode.TwoVersusTwo:
-                gameObject.SetActive(false);
                 _custom2v2WaitingRoom.SetActive(true);
                 break;
+            default:
+                _mainPanel.SetActive(true);
+                break;
         }
+    }
+
+    public void ReturnToMain()
+    {
+        foreach (Transform t in transform)
+        {
+            if (ReferenceEquals(t.gameObject, _topPanel)) continue;
+            t.gameObject.SetActive(false);
+        }
+        _mainPanel.SetActive(true);
     }
 }

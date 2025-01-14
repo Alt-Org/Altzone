@@ -60,7 +60,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
             for (var i = 0; i < rooms.Count; ++i)
             {
                 var room = rooms[i];
-                var buttonObject = _buttonParent.GetChild(i).gameObject;
+                var buttonObject = _buttonParent.GetChild(i).GetChild(0).gameObject;
                 buttonObject.SetActive(true);
                 //var button = buttonObject.GetComponent<Button>();
                 if(buttonObject != null)
@@ -99,7 +99,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 button = buttonObject.GetComponent<Button>();
 
                 //if(button == null) button = buttonObject.transform.Find("Button")?.GetComponent<Button>();
-                if (button == null) button = buttonObject.transform.Find("Panel")?.GetComponent<Button>();
+                if (button == null) button = buttonObject/*.transform.Find("Panel")?*/.GetComponent<Button>();
             }
             if (_oldDesign)
             {
@@ -134,7 +134,6 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 {
                     playerCountText = $"Pelaajia {room.PlayerCount}/4";
                     playerCountText = $"<color=blue>{playerCountText}</color>";
-                    Debug.LogWarning(button.gameObject.name);
                     //button.transform.Find("Button").GetComponentInChildren<TextMeshProUGUI>().text = $"Liity Huoneeseen";
                 }
                 else
@@ -143,14 +142,14 @@ namespace MenuUI.Scripts.Lobby.InLobby
                     playerCountText = $"<color=brown>{playerCountText}</color>";
                     //button.transform.Find("Button").GetComponentInChildren<TextMeshProUGUI>().text = $"Peli käynnissä";
                 }
-                /*
-                var roomNameText = buttonObject.transform.Find("InfoPanel").Find("Room name").GetComponent<TextMeshProUGUI>();
+                
+                var roomNameText = buttonObject.transform.Find("Room name").GetComponent<TextMeshProUGUI>();
                 Debug.Log($"update '{roomNameText.text}' -> '{roomText}' for {room.GetDebugLabel()}");
                 roomNameText.text = roomText;
-                var playerCountLabel = buttonObject.transform.Find("InfoPanel").Find("Player count").GetComponent<TextMeshProUGUI>();
+                var playerCountLabel = buttonObject.transform.Find("Player count").GetComponent<TextMeshProUGUI>();
                 Debug.Log($"update '{playerCountLabel.text}' -> '{playerCountText}' for {room.GetDebugLabel()}");
                 playerCountLabel.text = playerCountText;
-                */
+                
             }
 
             button.onClick.RemoveAllListeners();

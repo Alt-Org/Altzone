@@ -206,6 +206,8 @@ MonoBehaviour:
   _introVideo: {fileID: 501906753}
   _introSceneWindow: {fileID: 11400000, guid: c63e84b209f615742b1ac5aa16d448f7, type: 2}
   _introScene: 7
+  _furnitureReference: {fileID: 11400000, guid: f3234f639b53fbb43ac862d3033a3142,
+    type: 2}
 --- !u!4 &367799428
 Transform:
   m_ObjectHideFlags: 0
@@ -407,6 +409,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _window: {fileID: 11400000, guid: 22e131911901f0744aaadab6b027a0a9, type: 2}
   _findWindowForEditor: 0
+  _furnitureReference: {fileID: 0}
 --- !u!4 &475503777
 Transform:
   m_ObjectHideFlags: 0

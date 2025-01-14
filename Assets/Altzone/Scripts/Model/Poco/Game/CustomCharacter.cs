@@ -105,9 +105,9 @@ namespace Altzone.Scripts.Model.Poco.Game
                     return "Conman";
                 case CharacterID.ObedientPreacher:
                     return "Preacher";
-                case CharacterID.ProjectorGrafitiartist:
+                case CharacterID.ProjectorGraffitiArtist:
                     return "Grafitiartist";
-                case CharacterID.RetroflectorOvereater:
+                case CharacterID.RetroflectorOverEater:
                     return "Overeater";
                 case CharacterID.RetroflectorAlcoholic:
                     return "Alcoholic";
@@ -219,6 +219,5 @@ namespace Altzone.Scripts.Model.Poco.Game
             int characterId = (int)id & 0b0000_0000__1111_1111;
             return characterId;
         }
-
     }
 }

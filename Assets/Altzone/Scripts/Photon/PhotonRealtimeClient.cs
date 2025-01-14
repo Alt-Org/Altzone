@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Lobby.Wrappers;
 using Photon.Client;
+using LogLevel = Photon.Client.LogLevel;
 using Photon.Realtime;
 using Prg.Scripts.Common.Util;
 using Quantum;

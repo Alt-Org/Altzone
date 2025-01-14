@@ -14,6 +14,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         [SerializeField] private LobbyRoomListingView _view;
         [SerializeField] private TMP_InputField _roomName;
+        [SerializeField] private BattlePopupCreateCustomRoomPanel _roomSwitcher;
 
         private PhotonRoomList _photonRoomList;
 
@@ -34,6 +35,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
             }
             _photonRoomList.OnRoomsUpdated += UpdateStatus;
             LobbyManager.LobbyOnJoinedRoom += OnJoinedRoom;
+            LobbyWindowNavigationHandler.OnLobbyWindowChangeRequest += SwitchToRoom;
         }
 
         public void OnDisable()
@@ -41,6 +43,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
             PhotonRealtimeClient.RemoveCallbackTarget(this);
             _photonRoomList.OnRoomsUpdated -= UpdateStatus;
             LobbyManager.LobbyOnJoinedRoom -= OnJoinedRoom;
+            LobbyWindowNavigationHandler.OnLobbyWindowChangeRequest -= SwitchToRoom;
             _view.Reset();
         }
 
@@ -74,6 +77,11 @@ namespace MenuUI.Scripts.Lobby.InLobby
             //PhotonRealtimeClient.NickName = room.GetUniquePlayerNameForRoom(player, PhotonRealtimeClient.NickName, "");
             Debug.Log($"'{room.Name}' player name '{PhotonRealtimeClient.NickName}'");
             this.Publish(new LobbyManager.StartRoomEvent());
+        }
+
+        public void SwitchToRoom()
+        {
+            _roomSwitcher.SwitchRoom();
         }
 
         private void UpdateStatus()

@@ -4,61 +4,78 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts;
 using UnityEngine;
 using static Altzone.Scripts.Model.Poco.Game.PlayerTasks;
+using UnityEngine.UI;
+using UnityEditor.Overlays;
 
 public class DailyTaskManager : MonoBehaviour
 {
     //Variables
-    private const int _questSlots = 100;
-    private GameObject[] _dailyQuestSlots = new GameObject[_questSlots];
-    private GameObject[] _weeklyQuestSlots = new GameObject[_questSlots];
-    private GameObject[] _monthlyQuestSlots = new GameObject[_questSlots];
+    [Header("TabButtons")]
+    [SerializeField] private Button _dailyTasksTabButton;
+    [SerializeField] private Button _ownTaskTabButton;
+    [SerializeField] private Button _clanTaskTabButton;
 
-    public GameObject dailyTaskPrefab;
-    public GameObject weeklyTaskPrefab;
-    public GameObject monthlyTaskPrefab;
+    private const int _cardSlots = 100;
+    private GameObject[] _dailyTaskCardSlots = new GameObject[_cardSlots];
 
-    public Transform dailyCategory500;
-    public Transform dailyCategory1000;
-    public Transform dailyCategory1500;
-    public Transform ActiveQuestWindow;
-    public GameObject clanRewards;
+    [Header("DailyTaskCard prefabs")]
+    [SerializeField] private GameObject _dailyTaskCardPrefab;
 
-    public Popup popup;
+    [Header("DailyTasksPage")]
+    [SerializeField] private GameObject _dailyTasksView;
+    [SerializeField] private Transform _dailyCategory500;
+    [SerializeField] private Transform _dailyCategory1000;
+    [SerializeField] private Transform _dailyCategory1500;
+
+    [Header("OwnTaskPage")]
+    [SerializeField] private GameObject _ownTaskView;
+    [SerializeField] private Button _cancelTaskButton;
+
+    [Header("ClanTaskPage")]
+    [SerializeField] private GameObject _clanTaskView;
 
     public enum SelectedTab
     {
-        Daily,
-        Weekly,
-        Monthly
+        Tasks,
+        OwnTask,
+        ClanTask
     }
 
-    private SelectedTab _selectedTab = SelectedTab.Daily;
-    private SelectedTab? _activeTab = null;
-    private int _activeTaskIndex = -1;
-
-    [Header("Tab Panels")]
-    public GameObject[] tabPanels; // Drag your panels here in the Inspector
+    private SelectedTab _selectedTab = SelectedTab.Tasks;
 
     // Start of Code
-    // First 3 functions are for quest slot population and fetching them from server
     void Start()
     {
-        QuestGenerator();
+        TaskGenerator();
+
+        //Tab bar
+        _dailyTasksTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.Tasks));
+        _ownTaskTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.OwnTask));
+        _clanTaskTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.ClanTask));
+
+        //OwnTask cancel button
+        _cancelTaskButton.onClick.AddListener(() => CancelActiveTask());
     }
-    public void QuestGenerator()
+
+    // First 3 functions are for task slot population and fetching them from server
+    public void TaskGenerator()
     {
-        StartCoroutine(PopulateQuests(SelectedTab.Daily, _dailyQuestSlots, _questSlots, dailyTaskPrefab));
-        StartCoroutine(PopulateQuests(SelectedTab.Weekly, _weeklyQuestSlots, _questSlots, weeklyTaskPrefab));
-        StartCoroutine(PopulateQuests(SelectedTab.Monthly, _monthlyQuestSlots, _questSlots, monthlyTaskPrefab));
+        StartCoroutine(PopulateTasks(_dailyTaskCardSlots, _dailyTaskCardPrefab));
+        //StartCoroutine(PopulateQuests(_weeklyQuestSlots, _weeklyTaskPrefab));
+        //StartCoroutine(PopulateQuests(_monthlyQuestSlots, _monthlyTaskPrefab));
+
         Debug.Log("Task Slots populated!");
     }
-    private IEnumerator PopulateQuests(SelectedTab tab, GameObject[] questSlots, int questAmount, GameObject questPrefab)
+
+    private IEnumerator PopulateTasks(GameObject[] questSlots, GameObject questPrefab)
     {
         PlayerTasks tasks = null;
         Storefront.Get().GetPlayerTasks(content => tasks = content);
         List<PlayerTask> tasklist = null;
         Debug.Log(tasks);
+
         if (tasks == null)
+        {
             StartCoroutine(ServerManager.Instance.GetPlayerTasksFromServer(content =>
             {
                 if (content != null)
@@ -67,68 +84,50 @@ public class DailyTaskManager : MonoBehaviour
                 {
                     //offline testing random generator with id generator
                     Debug.LogError("Could not connect to server and receive quests");
+                    return;
                 }
             }));
-        yield return new WaitUntil(() => tasks != null);
-        switch (tab)
-        {
-            case SelectedTab.Daily:
-                tasklist = tasks.Daily;
-                break;
-            case SelectedTab.Weekly:
-                tasklist = tasks.Week;
-                break;
-            case SelectedTab.Monthly:
-                tasklist = tasks.Month;
-                break;
         }
+
+        yield return new WaitUntil(() => tasks != null);
+
+        //!Temporary until the PlayerTask is modified to have one Task list/array!
+        tasklist = tasks.Daily;
+        tasklist.AddRange(tasks.Week);
+        tasklist.AddRange(tasks.Month);
+        //-----------------------------------------------------------------------|
+
         for (int i = 0; i < tasklist.Count; i++)
         {
-
-
             GameObject taskObject = Instantiate(questPrefab, gameObject.transform);
             questSlots[i] = taskObject;
 
             DailyQuest quest = taskObject.GetComponent<DailyQuest>();
-            quest.GetQuestData(tasklist[i].Id, tasklist[i].Amount, tasklist[i].Coins, tasklist[i].Points, tasklist[i].Title, tasklist[i].Content);
-
-            Transform parentCategory = GetParentCategory(tab, tasklist[i].Points);
-            taskObject.transform.SetParent(parentCategory, false);
-
+            quest.GetQuestData(tasklist[i]);
             quest.dailyTaskManager = this;
 
-            taskObject.SetActive(tab == _selectedTab);
-            Debug.Log("Created Quest: " +  tasklist[i].Id);
+            Transform parentCategory = GetParentCategory(tasklist[i].Points);
+            taskObject.transform.SetParent(parentCategory, false);
+            taskObject.SetActive(true);
 
+            Debug.Log("Created Quest: " +  tasklist[i].Id);
         }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_dailyCategory500.GetComponent<RectTransform>());
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_dailyCategory1000.GetComponent<RectTransform>());
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_dailyCategory1500.GetComponent<RectTransform>());
     }
-    private Transform GetParentCategory(SelectedTab tab, int points)
+
+    private Transform GetParentCategory(int points)
     {
-        return tab switch
+        return points switch
         {
-            SelectedTab.Daily => points switch
-            {
-                <= 500 => dailyCategory500,
-                <= 1000 => dailyCategory1000,
-                _ => dailyCategory1500,
-            },
-            SelectedTab.Weekly => points switch
-            {
-                <= 500 => dailyCategory500,
-                <= 1000 => dailyCategory1000,
-                _ => dailyCategory1500,
-            },
-            SelectedTab.Monthly => points switch
-            {
-                <= 500 => dailyCategory500,
-                <= 1000 => dailyCategory1000,
-                _ => dailyCategory1500,
-            },
-            _ => null
+            <= 500 => _dailyCategory500,
+            <= 1000 => _dailyCategory1000,
+            _ => _dailyCategory1500,
         };
     }
 
-    // Function for popup calling
+    // Function for popup calling - TODO: Expand to handle and execute data sent from DailyQuest.cs about selected task.
     public IEnumerator ShowPopupAndHandleResponse(string Message, int popupId)
     {
         yield return Popup.RequestPopup(Message, result =>
@@ -140,15 +139,14 @@ public class DailyTaskManager : MonoBehaviour
                 {
                     case 1:
                         Debug.Log("Accept case happened " + popupId);
-                        HideCategories();
-                        clanRewards.SetActive(false);
-                        ActiveQuestWindow.gameObject.SetActive(true);
+                        HideAvailableTasks();
+                        SwitchTab(SelectedTab.OwnTask);
+                        //TODO: Add functionality to set the "Omatyö" page.
                         break;
                     case 2:
                         Debug.Log("Cancel case happened " + popupId);
-                        ShowCategories();
-                        clanRewards.SetActive(true);
-                        ActiveQuestWindow.gameObject.SetActive(false);
+                        ShowAvailableTasks();
+                        SwitchTab(SelectedTab.Tasks);
                         break;
                 }
             }
@@ -159,64 +157,50 @@ public class DailyTaskManager : MonoBehaviour
             }
         });
     }
-    // calling popup for canceling quest
-    public void CancelActiveQuest()
+
+    // calling popup for canceling task
+    public void CancelActiveTask()
     {
         StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", 2));
     }
-    // show/hide works for quest selection to hide and show quest selection
-    private void ShowCategories()
+
+    // show/hide works for task selection to hide and show task selection
+    private void ShowAvailableTasks()
     {
-        dailyCategory500.transform.parent.gameObject.SetActive(true);
-        dailyCategory1000.transform.parent.gameObject.SetActive(true);
-        dailyCategory1500.transform.parent.gameObject.SetActive(true);
-        Debug.Log("Categories shown.");
+        _dailyTasksView.SetActive(true);
+
+        Debug.Log("Available tasks shown.");
     }
-    private void HideCategories()
+
+    private void HideAvailableTasks()
     {
-        dailyCategory500.transform.parent.gameObject.SetActive(false);
-        dailyCategory1000.transform.parent.gameObject.SetActive(false);
-        dailyCategory1500.transform.parent.gameObject.SetActive(false);
-        Debug.Log("Categories' parents hidden.");
+        _dailyTasksView.SetActive(false);
+
+        Debug.Log("Available tasks hidden.");
     }
+
     // next functions are for tab switching system
     public void SwitchTab(SelectedTab tab)
     {
+        //Hide old tab
+        switch (_selectedTab)
+        {
+            case SelectedTab.Tasks: _dailyTasksView.SetActive(false); break;
+            case SelectedTab.OwnTask: _ownTaskView.SetActive(false); break;
+            default: _clanTaskView.SetActive(false); break;
+        }
+
         // Update the selected tab
         _selectedTab = tab;
 
-        // Toggle visibility for each category based on the selected tab
-        ToggleQuestVisibility(_dailyQuestSlots, _selectedTab == SelectedTab.Daily);
-        ToggleQuestVisibility(_weeklyQuestSlots, _selectedTab == SelectedTab.Weekly);
-        ToggleQuestVisibility(_monthlyQuestSlots, _selectedTab == SelectedTab.Monthly);
-
-        Debug.Log($"Switched to {_selectedTab} tasks.");
-    }
-
-    private void ToggleQuestVisibility(GameObject[] questSlots, bool isVisible)
-    {
-        foreach (GameObject quest in questSlots)
+        //Show new tab
+        switch (tab)
         {
-            if (quest != null)
-            {
-                quest.SetActive(isVisible);
-            }
+            case SelectedTab.Tasks: _dailyTasksView.SetActive(true); break;
+            case SelectedTab.OwnTask: _ownTaskView.SetActive(true); break;
+            default: _clanTaskView.SetActive(true); break;
         }
-    }
 
-    public void OnDailyTabSelected()
-    {
-        SwitchTab(SelectedTab.Daily);
+        Debug.Log($"Switched to {_selectedTab}.");
     }
-
-    public void OnWeeklyTabSelected()
-    {
-        SwitchTab(SelectedTab.Weekly);
-    }
-
-    public void OnMonthlyTabSelected()
-    {
-        SwitchTab(SelectedTab.Monthly);
-    }
-
 }
