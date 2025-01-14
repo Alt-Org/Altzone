@@ -19,7 +19,9 @@ public class DailyTaskManager : MonoBehaviour
     private GameObject[] _dailyTaskCardSlots = new GameObject[_cardSlots];
 
     [Header("DailyTaskCard prefabs")]
-    [SerializeField] private GameObject _dailyTaskCardPrefab;
+    [SerializeField] private GameObject _dailyTaskCard500Prefab;
+    [SerializeField] private GameObject _dailyTaskCard1000Prefab;
+    [SerializeField] private GameObject _dailyTaskCard1500Prefab;
 
     [Header("DailyTasksPage")]
     [SerializeField] private GameObject _dailyTasksView;
@@ -57,17 +59,15 @@ public class DailyTaskManager : MonoBehaviour
         _cancelTaskButton.onClick.AddListener(() => CancelActiveTask());
     }
 
-    // First 3 functions are for task slot population and fetching them from server
+    // First 4 functions are for task slot population and fetching them from server
     public void TaskGenerator()
     {
-        StartCoroutine(PopulateTasks(_dailyTaskCardSlots, _dailyTaskCardPrefab));
-        //StartCoroutine(PopulateQuests(_weeklyQuestSlots, _weeklyTaskPrefab));
-        //StartCoroutine(PopulateQuests(_monthlyQuestSlots, _monthlyTaskPrefab));
+        StartCoroutine(PopulateTasks(_dailyTaskCardSlots));
 
         Debug.Log("Task Slots populated!");
     }
 
-    private IEnumerator PopulateTasks(GameObject[] questSlots, GameObject questPrefab)
+    private IEnumerator PopulateTasks(GameObject[] taskSlots)
     {
         PlayerTasks tasks = null;
         Storefront.Get().GetPlayerTasks(content => tasks = content);
@@ -99,12 +99,12 @@ public class DailyTaskManager : MonoBehaviour
 
         for (int i = 0; i < tasklist.Count; i++)
         {
-            GameObject taskObject = Instantiate(questPrefab, gameObject.transform);
-            questSlots[i] = taskObject;
+            GameObject taskObject = Instantiate(GetPrefabCategory(tasklist[i].Points), gameObject.transform);
+            taskSlots[i] = taskObject;
 
-            DailyQuest quest = taskObject.GetComponent<DailyQuest>();
-            quest.GetQuestData(tasklist[i]);
-            quest.dailyTaskManager = this;
+            DailyQuest task = taskObject.GetComponent<DailyQuest>();
+            task.GetQuestData(tasklist[i]);
+            task.dailyTaskManager = this;
 
             Transform parentCategory = GetParentCategory(tasklist[i].Points);
             taskObject.transform.SetParent(parentCategory, false);
@@ -112,6 +112,8 @@ public class DailyTaskManager : MonoBehaviour
 
             Debug.Log("Created Quest: " +  tasklist[i].Id);
         }
+
+        //Needed to update the instantiated DT cards spacing in HorizontalLayoutGroups.
         LayoutRebuilder.ForceRebuildLayoutImmediate(_dailyCategory500.GetComponent<RectTransform>());
         LayoutRebuilder.ForceRebuildLayoutImmediate(_dailyCategory1000.GetComponent<RectTransform>());
         LayoutRebuilder.ForceRebuildLayoutImmediate(_dailyCategory1500.GetComponent<RectTransform>());
@@ -124,6 +126,16 @@ public class DailyTaskManager : MonoBehaviour
             <= 500 => _dailyCategory500,
             <= 1000 => _dailyCategory1000,
             _ => _dailyCategory1500,
+        };
+    }
+
+    private GameObject GetPrefabCategory(int points)
+    {
+        return points switch
+        {
+            <= 500 => _dailyTaskCard500Prefab,
+            <= 1000 => _dailyTaskCard1000Prefab,
+            _ => _dailyTaskCard1500Prefab,
         };
     }
 
