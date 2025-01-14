@@ -19,6 +19,7 @@ using Prg.Scripts.Common.PubSub;
 using System.Threading.Tasks;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby.Wrappers;
+using Altzone.Scripts.Model.Poco.Game;
 
 namespace Altzone.Scripts.Lobby
 {
@@ -457,11 +458,32 @@ namespace Altzone.Scripts.Lobby
             {
                 Debug.Log($"setPlayer {PlayerPositionKey}={playerPosition}");
                 player.SetCustomProperties(new PhotonHashtable { { PlayerPositionKey, playerPosition } });
+                _player.playerPos = playerPosition;
                 return;
             }
             int curValue = player.GetCustomProperty<int>(PlayerPositionKey);
             Debug.Log($"setPlayer {PlayerPositionKey}=({curValue}<-){playerPosition}");
             player.SafeSetCustomProperty(PlayerPositionKey, playerPosition, curValue);
+        }
+
+        public void SetPlayerQuantumData(List<CustomCharacter> characters, int pos)
+        {
+            List<BattleCharacterBase> list = new();
+            foreach(CustomCharacter character in characters)
+            {
+                list.Add(new(
+                    (int)character.Id,
+                    (int)character.CharacterClassID,
+                    //These casts are stupid and should be fixed ASAP. Probably by changing the BaseCharacter stat values from float to FP.
+                    (int)BaseCharacter.GetStatValue(StatType.Hp, character.Hp),
+                    (int)BaseCharacter.GetStatValue(StatType.Attack, character.Attack),
+                    (int)BaseCharacter.GetStatValue(StatType.Defence, character.Defence),
+                    (int)BaseCharacter.GetStatValue(StatType.Resistance, character.Resistance),
+                    (int)BaseCharacter.GetStatValue(StatType.Speed, character.Speed)
+                    ));
+            }
+            _player._characters = list;
+            _player.playerPos = pos;
         }
 
         public void OnDisconnected(DisconnectCause cause)
