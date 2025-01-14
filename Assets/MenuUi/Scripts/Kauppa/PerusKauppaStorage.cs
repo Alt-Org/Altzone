@@ -21,12 +21,6 @@ public class PerusKauppaStorage : ShopPanelStorage
     [SerializeField] private GameFurnitureVisualizer _epicPrefab;
     [SerializeField] private GameFurnitureVisualizer _antiquePrefab;
 
-    [Space(5f)]
-
-    [Header("Parameters for Furniture")]
-    [SerializeField] private GameObject _correspondingPopUp;
-
-
     private Dictionary<FurnitureRarity, Transform> _rarityToParent;
     private Dictionary<FurnitureRarity, GameFurnitureVisualizer> _rarityToPrefab;
 
@@ -73,7 +67,7 @@ public class PerusKauppaStorage : ShopPanelStorage
                 {
                     Debug.Log("Furniture of " + furniture1.Name + "" + furniture1.Value +  " is created");
                     var newItem = Instantiate(_prefab, _parent);
-                    newItem.Initialize(furniture1, _correspondingPopUp);
+                    newItem.Initialize(furniture1);
                     gameFurnituresOnScene.Add(newItem);
                 }
                 else

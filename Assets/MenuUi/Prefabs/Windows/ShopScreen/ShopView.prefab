@@ -12870,7 +12870,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2694381222461619068}
   - component: {fileID: 3012935412571221234}
-  - component: {fileID: 9159363559741220353}
   - component: {fileID: 7064145593155592347}
   m_Layer: 0
   m_Name: ConfirmationPopUp
@@ -12909,20 +12908,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7791361653659000238}
   m_CullTransparentMesh: 1
---- !u!114 &9159363559741220353
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7791361653659000238}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0aff088919c767443a407af13f5ec56b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _yesButton: {fileID: 694644071476962541}
-  _noButton: {fileID: 4631939822678243648}
 --- !u!114 &7064145593155592347
 MonoBehaviour:
   m_ObjectHideFlags: 0
