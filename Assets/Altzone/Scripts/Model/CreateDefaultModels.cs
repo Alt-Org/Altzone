@@ -180,8 +180,8 @@ namespace Altzone.Scripts.Model
                 new(CharacterID.TricksterComedian,0, 0, 0, 0, 0),
                 new(CharacterID.TricksterConman,0, 0, 0, 0, 0),
                 new(CharacterID.ObedientPreacher,0, 0, 0, 0, 0),
-                new(CharacterID.ProjectorGrafitiartist,0, 0, 0, 0, 0),
-                new(CharacterID.RetroflectorOvereater,0, 0, 0, 0, 0),
+                new(CharacterID.ProjectorGraffitiArtist,0, 0, 0, 0, 0),
+                new(CharacterID.RetroflectorOverEater,0, 0, 0, 0, 0),
                 new(CharacterID.RetroflectorAlcoholic,0, 0, 0, 0, 0),
                 new(CharacterID.ConfluentBesties,0, 0, 0, 0, 0),
                 new(CharacterID.IntellectualizerResearcher,0, 0, 0, 0, 0)

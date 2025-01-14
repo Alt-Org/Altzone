@@ -7,10 +7,6 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
-//TODO: muokkaa HandleCurrentCharacterIdChanged metodia ottamaan parametrinä sisään sen paikan id johon
-// hahmo juuri laitettiin ja sitten sen perusteella tarkistaa ja tallentaa tieto.
-// Myöskin pitäisi olla mahdollista poistaa valittu hahmo listasta
-// niin kauan kunhan ainakin yksi hahmo on vielä listassa.
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -20,16 +16,45 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private PlayerData _playerData;
 
-        private void OnEnable()
+
+        private void Awake()
         {
-            StartCoroutine(Load());
+            ServerManager.OnLogInStatusChanged += StartLoading;
         }
+
+
+        // When starting from 01-Loader OnLogInStatusChanged doesn't get called, so checking here in start function if player is already logged in to start loading.
+        // This is done in start because ModelView wasn't loaded yet during the Awake function. 
+        private void Start() 
+        {
+            ServerManager manager = ServerManager.Instance;
+            if (manager.isLoggedIn)
+            {
+                StartLoading(manager.isLoggedIn);
+            }
+        }
+
+
+        private void OnDestroy()
+        {
+            ServerManager.OnLogInStatusChanged -= StartLoading;
+        }
+
+
+        private void StartLoading(bool isLoggedIn)
+        {
+            if (isLoggedIn)
+            {
+                StartCoroutine(Load());
+            }
+        }
+
 
         private IEnumerator Load()
         {
             Debug.Log("Start");
-            yield return new WaitUntil(() => _view.IsReady);
             _view.Reset();
+            yield return new WaitUntil(() => _view.IsReady);
             var gameConfig = GameConfig.Get();
             var playerSettings = gameConfig.PlayerSettings;
             var playerGuid = playerSettings.PlayerGuid;
@@ -37,6 +62,7 @@ namespace MenuUi.Scripts.CharacterGallery
             store.GetPlayerData(playerGuid, playerData =>
             {
                 _playerData = playerData;
+                _view.OnCurrentCharacterIdChanged -= HandleCurrentCharacterIdChanged;
                 _view.OnCurrentCharacterIdChanged += HandleCurrentCharacterIdChanged;
                 var currentCharacterId = playerData.SelectedCharacterIds;
                 var characters = playerData.CustomCharacters.ToList();
@@ -45,6 +71,8 @@ namespace MenuUi.Scripts.CharacterGallery
                 _view.SetCharacters(characters, currentCharacterId);
             });
         }
+
+
         private void HandleCurrentCharacterIdChanged(CharacterID newCharacterId, int slot)
         {
             if (slot < 0 || slot >= 3) return;

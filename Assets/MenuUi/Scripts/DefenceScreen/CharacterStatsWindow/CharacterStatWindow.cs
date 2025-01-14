@@ -481,7 +481,7 @@ public class CharacterStatWindow : MonoBehaviour
             case CharacterID.IntellectualizerResearcher:
                 SetCharacterInfo();
                 break;
-            case CharacterID.RetroflectorOvereater:
+            case CharacterID.RetroflectorOverEater:
                 SetCharacterInfo();
                 break;
             case CharacterID.TricksterComedian:
@@ -496,7 +496,7 @@ public class CharacterStatWindow : MonoBehaviour
             case CharacterID.ObedientPreacher:
                 SetCharacterInfo();
                 break;
-            case CharacterID.ProjectorGrafitiartist:
+            case CharacterID.ProjectorGraffitiArtist:
                 SetCharacterInfo();
                 break;
             case CharacterID.ConfluentBesties:
@@ -518,6 +518,7 @@ public class CharacterStatWindow : MonoBehaviour
         if (_demoCharacterWindowCharacter != null)
         {
             CharacterName.text = _demoCharacterWindowCharacter.CharacterName;
+            CustomCharacterName.text = CharacterName.text;
 
             SpeedNumber.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
             ResistanceNumber.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
@@ -575,8 +576,6 @@ public class CharacterStatWindow : MonoBehaviour
         Debug.Log($"loaded {galleryCharacter.Name}");
 
         //For the right side window. CharSize not impelemented yet.
-        //These are not working for some reason.
-        CustomCharacterName.text = CharacterName.text;
         impactforceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
         resistanceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
         speedCurrentLevel.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
@@ -598,7 +597,7 @@ public class CharacterStatWindow : MonoBehaviour
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
-            case CharacterID.RetroflectorOvereater:
+            case CharacterID.RetroflectorOverEater:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
@@ -618,7 +617,7 @@ public class CharacterStatWindow : MonoBehaviour
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
-            case CharacterID.ProjectorGrafitiartist:
+            case CharacterID.ProjectorGraffitiArtist:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
@@ -704,7 +703,11 @@ public class CharacterStatWindow : MonoBehaviour
     {
         statIncreasePriceText.text = $"{statIncreasePriceToShow}";
         Debug.Log($"Stat price {statIncreasePriceToShow}");
-        statEditPopUp.SetActive(true);
+
+        if (CustomCharacter.GetClassID(_characterId) != CharacterClassID.Obedient)
+        {
+            statEditPopUp.SetActive(true);
+        }
     }
     private void HidestatEditPopUp()
     {
@@ -740,4 +743,3 @@ public class CharacterStatWindow : MonoBehaviour
 
     }
 }
-

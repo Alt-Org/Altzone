@@ -1,10 +1,10 @@
 using System;
-using Battle1.PhotonUnityNetworking.Code;
+/*using Battle1.PhotonUnityNetworking.Code;*/
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.Assertions;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
-using Player = Battle1.PhotonRealtime.Code.Player;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using Player = Battle1.PhotonRealtime.Code.Player;*/
 
 namespace Battle1.Scripts.Test.Photon
 {
@@ -17,7 +17,7 @@ namespace Battle1.Scripts.Test.Photon
         [SerializeField] private PhotonTestView _view;
 
         private int _startFrameCount;
-        private PhotonView _photonView;
+       /* private PhotonView _photonView;*/
 
         private void Awake()
         {
@@ -27,7 +27,7 @@ namespace Battle1.Scripts.Test.Photon
         private void OnEnable()
         {
             _startFrameCount = Time.frameCount;
-            Debug.Log($"{PhotonNetwork.NetworkClientState} startFrameCount {_startFrameCount}");
+            /*Debug.Log($"{PhotonNetwork.NetworkClientState} startFrameCount {_startFrameCount}");*/
             _view.ResetView();
         }
 
@@ -38,13 +38,13 @@ namespace Battle1.Scripts.Test.Photon
             _view.TestButton.onClick.AddListener(() => onTestButton());
         }
 
-        public void SetMasterClientPhotonView(PhotonView photonView)
+   /*     public void SetMasterClientPhotonView(PhotonView photonView)
         {
             Assert.IsTrue(photonView.Owner.IsMasterClient);
             _view.SetPhotonView(PhotonNetwork.LocalPlayer, photonView.Owner);
-        }
+        }*/
 
-        public void ShowRecvFrameSyncTest(int frameCount, int timestamp, int lastRoundTripTime, PhotonMessageInfo info, Player sendingPlayer)
+     /*   public void ShowRecvFrameSyncTest(int frameCount, int timestamp, int lastRoundTripTime, PhotonMessageInfo info, Player sendingPlayer)
         {
             _view.ShowRecvFrameSyncTest(
                 frameCount,
@@ -52,6 +52,15 @@ namespace Battle1.Scripts.Test.Photon
                 info.SentServerTimestamp,
                 Time.frameCount - _startFrameCount,
                 sendingPlayer);
+        }*/
+        public void ShowRecvFrameSyncTest(int frameCount, int timestamp, int lastRoundTripTime, int info)
+        {
+            _view.ShowRecvFrameSyncTest(
+                frameCount,
+                timestamp, lastRoundTripTime,
+                info,
+                Time.frameCount - _startFrameCount,
+                null);
         }
     }
 }

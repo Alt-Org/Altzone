@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿#if false
+using System.Collections;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
@@ -140,3 +141,4 @@ namespace Battle1.Scripts.Lobby.InLobby
         }
     }
 }
+#endif

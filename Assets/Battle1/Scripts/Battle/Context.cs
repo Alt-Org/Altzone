@@ -17,7 +17,7 @@ namespace Battle1.Scripts.Battle
     internal static class Context
     {
         internal static PlayerInputHandler GetPlayerInputHandler => Object.FindObjectOfType<PlayerInputHandler>();
-        internal static PhotonEventDispatcher GetPhotonEventDispatcher => Object.FindObjectOfType<PhotonEventDispatcher>();
+/*        internal static PhotonEventDispatcher GetPhotonEventDispatcher => Object.FindObjectOfType<PhotonEventDispatcher>();*/
         internal static Camera GetBattleCamera => Object.FindObjectOfType<GameCamera>().Camera;
         internal static GridManager GetGridManager => Object.FindObjectOfType<GridManager>();
         internal static PlayerManager GetPlayerManager => Object.FindObjectOfType<PlayerManager>();

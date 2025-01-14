@@ -73,19 +73,20 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
     internal class ScoreFlasherNet : IScoreFlash
     {
 #if PHOTON_UNITY_NETWORKING
-        private const int MsgScoreFlash = PhotonEventDispatcher.EventCodeBase + 6;
+        /*private const int MsgScoreFlash = PhotonEventDispatcher.EventCodeBase + 6;*/
+        private const int MsgScoreFlash = 0;
         private const int MsgBufferFixedLength = 4 + 4 + 1;
         private const int MaxStringMessageLength = 24;
 
-        private readonly PhotonEventDispatcher _photonEventDispatcher;
+        /*private readonly PhotonEventDispatcher _photonEventDispatcher;*/
 
         private byte[] _messageBuffer = Array.Empty<byte>();
 
         internal ScoreFlasherNet()
         {
             Debug.Log($"");
-            _photonEventDispatcher = PhotonEventDispatcher.Get();
-            _photonEventDispatcher.RegisterEventListener(MsgScoreFlash, data => { OnScoreFlash((byte[])data.CustomData); });
+           /* _photonEventDispatcher = PhotonEventDispatcher.Get();
+            _photonEventDispatcher.RegisterEventListener(MsgScoreFlash, data => { OnScoreFlash((byte[])data.CustomData); });*/
         }
 
         void IScoreFlash.Push(string message, float worldX, float worldY)
@@ -136,7 +137,7 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
             index += 1;
             Array.Copy(messageBytes, 0, _messageBuffer, index, messageBytes.Length);
 
-            _photonEventDispatcher.RaiseEvent(MsgScoreFlash, _messageBuffer);
+            /*_photonEventDispatcher.RaiseEvent(MsgScoreFlash, _messageBuffer);*/
         }
 
         #endregion

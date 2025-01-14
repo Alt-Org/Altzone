@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Battle1.PhotonRealtime.Code;
+/*using Battle1.PhotonRealtime.Code;*/
 #if PHOTON_UNITY_NETWORKING
 using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
@@ -9,7 +9,7 @@ using Prg.Scripts.Common.Photon;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;*/
 
 namespace Prg.Scripts.DevUtil
 {
@@ -51,7 +51,7 @@ namespace Prg.Scripts.DevUtil
             _visible = !_visible;
         }
 
-        private void OnGUI()
+  /*      private void OnGUI()
         {
             if (!_visible)
             {
@@ -64,9 +64,9 @@ namespace Prg.Scripts.DevUtil
                 _guiLabelStyle = new GUIStyle(GUI.skin.label) { fontSize = 24 };
             }
             _windowRect = GUILayout.Window(_windowId, _windowRect, DebugWindow, _windowTitle);
-        }
+        }*/
 
-        private void DebugWindow(int windowId)
+        /*private void DebugWindow(int windowId)
         {
             string title;
             var inRoom = PhotonNetwork.InRoom;
@@ -148,9 +148,9 @@ namespace Prg.Scripts.DevUtil
             }
             label += $"\r\nnick={PhotonNetwork.NickName}\r\n{FormatServerTimestamp(peer)}";
             GUILayout.Label(label, _guiLabelStyle);
-        }
+        }*/
 
-        private static string FormatServerTimestamp(LoadBalancingPeer peer)
+    /*    private static string FormatServerTimestamp(LoadBalancingPeer peer)
         {
             // Synchronized Timestamp (PhotonNetwork.ServerTimestamp)
             // https://doc.photonengine.com/pun/v2/getting-started/feature-overview#synchronized_timestamp
@@ -161,7 +161,7 @@ namespace Prg.Scripts.DevUtil
                 return "offline";
             }
             return $"timestamp {(uint)(peer.ServerTimeInMilliSeconds):# ### ### ##0}";
-        }
+        }*/
 
         #region Type names
 

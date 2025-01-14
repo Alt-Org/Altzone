@@ -1,12 +1,12 @@
 using System;
 using Altzone.Scripts.Config;
-using Battle1.PhotonUnityNetworking.Code;
+/*using Battle1.PhotonUnityNetworking.Code;*/
 using Battle1.Scripts.Battle.Game;
 using ExitGames.Client.Photon;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;*/
 using Random = UnityEngine.Random;
 
 namespace Battle1.Scripts.Battle.Players.PlayerClasses
@@ -26,8 +26,8 @@ namespace Battle1.Scripts.Battle.Players.PlayerClasses
             _battlePlayer = battlePlayer;
             _battleDebugLogger = new BattleDebugLogger(this);
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
-            _photonView = GetComponent<PhotonView>();
-            _photonEventDispatcher = Context.GetPhotonEventDispatcher;
+           /* _photonView = GetComponent<PhotonView>();*/
+            /*_photonEventDispatcher = Context.GetPhotonEventDispatcher;*/
             this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
         }
 
@@ -48,8 +48,8 @@ namespace Battle1.Scripts.Battle.Players.PlayerClasses
 
         // Variables
         private IReadOnlyBattlePlayer _battlePlayer;
-        private PhotonView _photonView;
-        private PhotonEventDispatcher _photonEventDispatcher;
+      /*  private PhotonView _photonView;
+        private PhotonEventDispatcher _photonEventDispatcher;*/
 
         // Debug
         private BattleDebugLogger _battleDebugLogger;
@@ -63,7 +63,7 @@ namespace Battle1.Scripts.Battle.Players.PlayerClasses
 
         private void ShieldRandomizer()
         {
-            if (PhotonNetwork.IsMasterClient)
+            /*if (PhotonNetwork.IsMasterClient)
             {
                 _battleDebugLogger.LogInfo("Shield is master client");
 
@@ -79,7 +79,7 @@ namespace Battle1.Scripts.Battle.Players.PlayerClasses
             else
             {
                 _battleDebugLogger.LogInfo("Shield is pleb client");
-            }
+            }*/
         }
 
         private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
@@ -90,7 +90,7 @@ namespace Battle1.Scripts.Battle.Players.PlayerClasses
 
             byte eventCode = (byte)(PhotonBattle.EventCodes.PlayerClassTricksterSetPhotonViewIdEventCode + playerPos);
 
-            _photonEventDispatcher.RegisterEventListener(eventCode, OnPhotonViewIdReceived);
+            /*_photonEventDispatcher.RegisterEventListener(eventCode, OnPhotonViewIdReceived);
 
             if (PhotonNetwork.IsMasterClient)
             {
@@ -100,10 +100,10 @@ namespace Battle1.Scripts.Battle.Players.PlayerClasses
 
                     _photonEventDispatcher.RaiseEvent(PhotonBattle.EventCodes.PlayerClassTricksterSetPhotonViewIdEventCode, _photonView.ViewID);
                 });
-            }
+            }*/
         }
 
-        private void OnPhotonViewIdReceived(EventData data)
+        /*private void OnPhotonViewIdReceived(EventData data)
         {
             _photonView.ViewID = (int) data.CustomData;
         }
@@ -120,6 +120,6 @@ namespace Battle1.Scripts.Battle.Players.PlayerClasses
                 _shieldManager.SetShield(_shieldChoice);
                 _battleDebugLogger.LogInfo("Shield is set to choice " + choiceIndex);
             });
-        }
+        }*/
     }
 }

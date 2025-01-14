@@ -1,3 +1,4 @@
+#if false
 using System;
 using System.Linq;
 using Battle1.PhotonUnityNetworking.Code;
@@ -113,3 +114,4 @@ namespace Battle1.Scripts.Lobby.InLobby
         }
     }
 }
+#endif
