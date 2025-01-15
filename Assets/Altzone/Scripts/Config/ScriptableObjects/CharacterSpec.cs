@@ -25,6 +25,11 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         public string Name;
 
         /// <summary>
+        /// Is this player character approved for production.
+        /// </summary>
+        public bool IsApproved;
+
+        /// <summary>
         /// Player character class.
         /// </summary>
         public CharacterClassID ClassType;
