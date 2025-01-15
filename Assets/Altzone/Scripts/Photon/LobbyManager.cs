@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby.Wrappers;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.AzDebug;
 
 namespace Altzone.Scripts.Lobby
 {
@@ -387,6 +388,11 @@ namespace Altzone.Scripts.Lobby
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Battle);
 
             yield return new WaitUntil(()=>SceneManager.GetActiveScene().name == _map.Scene);
+
+            DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.Battle);
+            string battleID = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(BattleID);
+            int playerPosition = PhotonRealtimeClient.LocalPlayer.GetCustomProperty<int>(PlayerPositionKey);
+            DebugLogFileHandler.FileOpen(battleID, playerPosition);
 
             Task<bool> task = StartRunner(sessionRunnerArguments);
 
