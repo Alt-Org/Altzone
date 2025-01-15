@@ -8,7 +8,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         public ComedianCharacter()
         {
-            _id = CharacterID.TricksterComedian;
+            _id = CharacterID.Joker;
             _defaultAttack = 8;
             _defaultDefence = 4;
             _defaultHp = 2;

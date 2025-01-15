@@ -478,31 +478,31 @@ public class CharacterStatWindow : MonoBehaviour
 
         switch (_characterId) //index
         {
-            case CharacterID.IntellectualizerResearcher:
+            case CharacterID.Booksmart:
                 SetCharacterInfo();
                 break;
-            case CharacterID.RetroflectorOverEater:
+            case CharacterID.Overeater:
                 SetCharacterInfo();
                 break;
-            case CharacterID.TricksterComedian:
+            case CharacterID.Joker:
                 SetCharacterInfo();
                 break;
-            case CharacterID.TricksterConman:
+            case CharacterID.Conman:
                 SetCharacterInfo();
                 break;
-            case CharacterID.DesensitizerBodybuilder:
+            case CharacterID.Bodybuilder:
                 SetCharacterInfo();
                 break;
-            case CharacterID.ObedientPreacher:
+            case CharacterID.Religious:
                 SetCharacterInfo();
                 break;
-            case CharacterID.ProjectorGraffitiArtist:
+            case CharacterID.Artist:
                 SetCharacterInfo();
                 break;
-            case CharacterID.ConfluentBesties:
+            case CharacterID.Soulsisters:
                 SetCharacterInfo();
                 break;
-            case CharacterID.RetroflectorAlcoholic:
+            case CharacterID.Alcoholic:
                 SetCharacterInfo();
                 break;
             default:
@@ -593,39 +593,39 @@ public class CharacterStatWindow : MonoBehaviour
         //This set the character description and special ability texts.
         switch (_characterId)
         {
-            case CharacterID.IntellectualizerResearcher:
+            case CharacterID.Booksmart:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
-            case CharacterID.RetroflectorOverEater:
+            case CharacterID.Overeater:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
-            case CharacterID.TricksterComedian:
+            case CharacterID.Joker:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
-            case CharacterID.TricksterConman:
+            case CharacterID.Conman:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
-            case CharacterID.DesensitizerBodybuilder:
+            case CharacterID.Bodybuilder:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
-            case CharacterID.ObedientPreacher:
+            case CharacterID.Religious:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
-            case CharacterID.ProjectorGraffitiArtist:
+            case CharacterID.Artist:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
-            case CharacterID.ConfluentBesties:
+            case CharacterID.Soulsisters:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
-            case CharacterID.RetroflectorAlcoholic:
+            case CharacterID.Alcoholic:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;

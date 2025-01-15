@@ -16,6 +16,8 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         /// </summary>
         [Header("Character Basic Data")] public string Id;
 
+        public CharacterID CharacterId;
+
         /// <summary>
         /// Character name.
         /// </summary>
@@ -45,6 +47,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         /// TODO: add relevant doc comment here!
         /// </summary>
         [Header("Battle Graphics")] public Sprite BattleSprite;
+        public Sprite Image;
 
         public override string ToString()
         {

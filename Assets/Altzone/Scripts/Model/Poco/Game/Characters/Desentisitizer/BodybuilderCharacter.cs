@@ -8,7 +8,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         public BodybuilderCharacter()
         {
-            _id = CharacterID.DesensitizerBodybuilder;
+            _id = CharacterID.Bodybuilder;
             _defaultAttack = 6;
             _defaultDefence = 12;
             _defaultHp = 1;

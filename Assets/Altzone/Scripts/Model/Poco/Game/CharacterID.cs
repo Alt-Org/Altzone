@@ -5,26 +5,35 @@ namespace Altzone.Scripts.Model.Poco.Game
         None = 0,
 
         // Desensitizers class characters
-        DesensitizerBodybuilder = CharacterClassID.Desensitizer | 1,
+        Racist = CharacterClassID.Desensitizer + 1,
+        Bodybuilder = CharacterClassID.Desensitizer + 2,
+        Jingoist = CharacterClassID.Desensitizer + 3,
 
         // Tricksters class characters
-        TricksterComedian = CharacterClassID.Trickster | 1,
-        TricksterConman = CharacterClassID.Trickster | 2,
+        Comedian = CharacterClassID.Trickster + 1,
+        Joker = CharacterClassID.Trickster + 2,
+        Conman = CharacterClassID.Trickster + 3,
+        Seducer = CharacterClassID.Trickster + 4, //Alternatively Womanizer
 
         // Obedientes class characters
-        ObedientPreacher = CharacterClassID.Obedient | 1,
+        Religious = CharacterClassID.Obedient + 1,
+        Yesman = CharacterClassID.Obedient + 2,
 
         // Projectors class characters
-        ProjectorGraffitiArtist = CharacterClassID.Projector | 1,
+        Artist = CharacterClassID.Projector + 1,
+        Arguer = CharacterClassID.Projector + 2,
 
         // Retroflectors class characters
-        RetroflectorOverEater = CharacterClassID.Retroflector | 1,
-        RetroflectorAlcoholic = CharacterClassID.Retroflector | 2,
+        Overeater = CharacterClassID.Retroflector + 1,
+        Alcoholic = CharacterClassID.Retroflector + 2,
 
         // Confluents class characters
-        ConfluentBesties = CharacterClassID.Confluent | 1,
+        Soulsisters = CharacterClassID.Confluent + 1,
+        Lovers = CharacterClassID.Confluent + 2,
+        SleepyHead = CharacterClassID.Confluent + 3,
 
         // Intellectualizers class characters
-        IntellectualizerResearcher = CharacterClassID.Intellectualizer | 1
+        Booksmart = CharacterClassID.Intellectualizer + 1,
+        Capitalist = CharacterClassID.Intellectualizer + 2
     }
 }
