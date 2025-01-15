@@ -486,12 +486,12 @@ namespace Altzone.Scripts.Lobby
                     (int)character.Id,
                     (int)character.CharacterClassID,
                     //These casts are stupid and should be fixed ASAP. Probably by changing the BaseCharacter stat values from float to FP.
-                    (int)BaseCharacter.GetStatValue(StatType.Hp, character.Hp),
-                    (int)BaseCharacter.GetStatValue(StatType.Attack, character.Attack),
-                    (int)BaseCharacter.GetStatValue(StatType.Defence, character.Defence),
-                    (int)BaseCharacter.GetStatValue(StatType.Resistance, character.Resistance),
-                    (int)BaseCharacter.GetStatValue(StatType.Speed, character.Speed)
-                    ));
+                    BaseCharacter.GetStatValueFP(StatType.Hp, character.Hp),
+                    BaseCharacter.GetStatValueFP(StatType.Attack, character.Attack),
+                    BaseCharacter.GetStatValueFP(StatType.Defence, character.Defence),
+                    BaseCharacter.GetStatValueFP(StatType.Resistance, character.Resistance),
+                    BaseCharacter.GetStatValueFP(StatType.Speed, character.Speed)
+                ));
             }
             _player._characters = list;
         }
