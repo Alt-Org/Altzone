@@ -347,6 +347,9 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator StartQuantum()
         {
+            string battleID = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(BattleID);
+            int playerPosition = PhotonRealtimeClient.LocalPlayer.GetCustomProperty<int>(PlayerPositionKey);
+
             if (QuantumRunner.Default != null)
             {
                 Debug.Log($"QuantumRunner is already running: {QuantumRunner.Default.Id}");
@@ -390,8 +393,6 @@ namespace Altzone.Scripts.Lobby
             yield return new WaitUntil(()=>SceneManager.GetActiveScene().name == _map.Scene);
 
             DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.Battle);
-            string battleID = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(BattleID);
-            int playerPosition = PhotonRealtimeClient.LocalPlayer.GetCustomProperty<int>(PlayerPositionKey);
             DebugLogFileHandler.FileOpen(battleID, playerPosition);
 
             Task<bool> task = StartRunner(sessionRunnerArguments);
@@ -415,10 +416,15 @@ namespace Altzone.Scripts.Lobby
             }*/
             yield return new WaitUntil(() => task.IsCompleted);
             if(task.Result)
-            _runner?.Game.AddPlayer(_player);
+            {
+                _player.playerPos = playerPosition;
+                _runner?.Game.AddPlayer(_player);
+            }
             else
+            {
                 //WindowManager.Get().GoBack();
                 OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
+            }
         }
 
         private async Task<bool> StartRunner(SessionRunner.Arguments sessionRunnerArguments)
@@ -464,7 +470,6 @@ namespace Altzone.Scripts.Lobby
             {
                 Debug.Log($"setPlayer {PlayerPositionKey}={playerPosition}");
                 player.SetCustomProperties(new PhotonHashtable { { PlayerPositionKey, playerPosition } });
-                _player.playerPos = playerPosition;
                 return;
             }
             int curValue = player.GetCustomProperty<int>(PlayerPositionKey);
@@ -472,7 +477,7 @@ namespace Altzone.Scripts.Lobby
             player.SafeSetCustomProperty(PlayerPositionKey, playerPosition, curValue);
         }
 
-        public void SetPlayerQuantumData(List<CustomCharacter> characters, int pos)
+        public void SetPlayerQuantumCharacters(List<CustomCharacter> characters)
         {
             List<BattleCharacterBase> list = new();
             foreach(CustomCharacter character in characters)
@@ -489,7 +494,6 @@ namespace Altzone.Scripts.Lobby
                     ));
             }
             _player._characters = list;
-            _player.playerPos = pos;
         }
 
         public void OnDisconnected(DisconnectCause cause)

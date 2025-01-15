@@ -154,7 +154,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
                     { PlayerStatsKey, characterStats },
                     { "Role", (int)currentRole }
                 }));
-                LobbyManager.Instance.SetPlayerQuantumData(selectedCharacters, playerPos);
+                LobbyManager.Instance.SetPlayerQuantumCharacters(selectedCharacters);
                 Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState} {enabled}");
                 UpdateStatus();
             });
