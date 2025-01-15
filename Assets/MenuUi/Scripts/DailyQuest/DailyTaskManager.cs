@@ -5,7 +5,6 @@ using Altzone.Scripts;
 using UnityEngine;
 using static Altzone.Scripts.Model.Poco.Game.PlayerTasks;
 using UnityEngine.UI;
-using UnityEditor.Overlays;
 
 public class DailyTaskManager : MonoBehaviour
 {
