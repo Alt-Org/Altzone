@@ -49,11 +49,10 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         public override string ToString()
         {
             return $"{Id}:{ClassType}:{Name}" +
-                   $"-{ResName(nameof(GalleryImage), GalleryImage)}" +
-                   $"-{ResName(nameof(BattleSprite), BattleSprite)}";
+                   $"-{ResName(GalleryImage)}" +
+                   $"-{ResName(BattleSprite)}";
 
-            string ResName(string instanceName, Object instance) =>
-                $"{(instance == null ? "null" : instance.name)}";
+            string ResName(Object instance) => $"{(instance == null ? "null" : instance.name)}";
         }
     }
 }
