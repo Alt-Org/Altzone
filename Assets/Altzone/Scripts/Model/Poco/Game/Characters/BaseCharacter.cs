@@ -1,7 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System.Runtime.CompilerServices;
+using Photon.Deterministic;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
