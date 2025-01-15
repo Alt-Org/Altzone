@@ -11,10 +11,21 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class CharacterSpec : ScriptableObject
     {
+        #region Metadata
+
         /// <summary>
         /// Character id, specified externally.
         /// </summary>
         [Header("Character Basic Data")] public string Id;
+
+        /// <summary>
+        /// Is this player character approved for production.
+        /// </summary>
+        public bool IsApproved;
+
+        #endregion
+
+        #region Content
 
         /// <summary>
         /// Character name.
@@ -23,11 +34,6 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         /// When game support localization this will be localization id for this player character.
         /// </remarks>
         public string Name;
-
-        /// <summary>
-        /// Is this player character approved for production.
-        /// </summary>
-        public bool IsApproved;
 
         /// <summary>
         /// Player character class.
@@ -45,6 +51,8 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         /// TODO: add relevant doc comment here!
         /// </summary>
         [Header("Battle Graphics")] public Sprite BattleSprite;
+
+        #endregion
 
         public override string ToString()
         {
