@@ -5,35 +5,35 @@ namespace Altzone.Scripts.Model.Poco.Game
         None = 0,
 
         // Desensitizers class characters
-        Racist = CharacterClassID.Desensitizer + 1,
-        Bodybuilder = CharacterClassID.Desensitizer + 2,
-        Jingoist = CharacterClassID.Desensitizer + 3,
+        Racist = CharacterClassID.Desensitizer + 1, //101
+        Bodybuilder = CharacterClassID.Desensitizer + 2, //102
+        Jingoist = CharacterClassID.Desensitizer + 3, //103
 
         // Tricksters class characters
-        Comedian = CharacterClassID.Trickster + 1,
-        Joker = CharacterClassID.Trickster + 2,
-        Conman = CharacterClassID.Trickster + 3,
-        Seducer = CharacterClassID.Trickster + 4, //Alternatively Womanizer
+        Comedian = CharacterClassID.Trickster + 1, //201
+        Joker = CharacterClassID.Trickster + 2, //202
+        Conman = CharacterClassID.Trickster + 3, //203
+        Seducer = CharacterClassID.Trickster + 4, //204, Alternatively could be named Womanizer
 
         // Obedientes class characters
-        Religious = CharacterClassID.Obedient + 1,
-        Yesman = CharacterClassID.Obedient + 2,
+        Religious = CharacterClassID.Obedient + 1, //301
+        Yesman = CharacterClassID.Obedient + 2, //302
 
         // Projectors class characters
-        Artist = CharacterClassID.Projector + 1,
-        Arguer = CharacterClassID.Projector + 2,
+        Artist = CharacterClassID.Projector + 1, //401
+        Arguer = CharacterClassID.Projector + 2, //402
 
         // Retroflectors class characters
-        Overeater = CharacterClassID.Retroflector + 1,
-        Alcoholic = CharacterClassID.Retroflector + 2,
+        Overeater = CharacterClassID.Retroflector + 1, //501
+        Alcoholic = CharacterClassID.Retroflector + 2, //502
 
         // Confluents class characters
-        Soulsisters = CharacterClassID.Confluent + 1,
-        Lovers = CharacterClassID.Confluent + 2,
-        SleepyHead = CharacterClassID.Confluent + 3,
+        Soulsisters = CharacterClassID.Confluent + 1, //601
+        Lovers = CharacterClassID.Confluent + 2, //602
+        SleepyHead = CharacterClassID.Confluent + 3, //603
 
         // Intellectualizers class characters
-        Booksmart = CharacterClassID.Intellectualizer + 1,
-        Capitalist = CharacterClassID.Intellectualizer + 2
+        Booksmart = CharacterClassID.Intellectualizer + 1, //701
+        Capitalist = CharacterClassID.Intellectualizer + 2 //702
     }
 }
