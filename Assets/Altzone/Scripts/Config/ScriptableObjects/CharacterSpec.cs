@@ -14,7 +14,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         /// <summary>
         /// Character id, specified externally.
         /// </summary>
-        public string Id;
+        [Header("Character Basic Data")] public string Id;
 
         /// <summary>
         /// Character name.
@@ -34,9 +34,26 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         /// </summary>
         public CharacterClassID ClassType;
 
+        /// <summary>
+        /// Gallery image for something.
+        /// TODO: add relevant doc comment here!
+        /// </summary>
+        [Header("Menu UI")] public Sprite GalleryImage;
+
+        /// <summary>
+        /// Battle sprite sheet for something.
+        /// TODO: add relevant doc comment here!
+        /// </summary>
+        [Header("Battle Graphics")] public Sprite BattleSprite;
+
         public override string ToString()
         {
-            return $"{Id}:{ClassType}:{Name}";
+            return $"{Id}:{ClassType}:{Name}" +
+                   $"-{ResName(nameof(GalleryImage), GalleryImage)}" +
+                   $"-{ResName(nameof(BattleSprite), BattleSprite)}";
+
+            string ResName(string instanceName, Object instance) =>
+                $"{(instance == null ? "null" : instance.name)}";
         }
     }
 }
