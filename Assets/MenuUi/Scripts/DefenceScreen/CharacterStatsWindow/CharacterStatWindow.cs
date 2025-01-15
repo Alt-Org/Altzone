@@ -10,7 +10,7 @@ using MenuUi.Scripts.CharacterGallery;
 using System;
 using Altzone.Scripts.Config;
 using System.Threading;
-
+using Altzone.Scripts.Config.ScriptableObjects;
 
 public class CharacterStatWindow : MonoBehaviour
 {
@@ -464,8 +464,9 @@ public class CharacterStatWindow : MonoBehaviour
         }
 
         //var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)index);
-        var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)_characterId);
-        if (galleryCharacter == null)
+        //var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)_characterId);
+        CharacterSpec info2 = PlayerCharacters.GetCharacter(((int)_characterId).ToString());
+        if (/*galleryCharacter == null ||*/ info2 == null)
         {
 
             Debug.LogError($"GalleryCharacterReference not found for index {_characterId}"); //index
@@ -563,17 +564,18 @@ public class CharacterStatWindow : MonoBehaviour
     private void SetCharacterInfo()
     {
         var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
-        var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)_characterId);
+        //var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)_characterId);
+        CharacterSpec info2 = PlayerCharacters.GetCharacter(((int)_characterId).ToString());
 
         //Should this be CustomCharacter?
-        _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
+        _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(info2.Name, false,
                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack,
                    customCharacter.Defence, customCharacter.Hp);
-        CharacterArtWorkToShow.sprite = galleryCharacter.Image;
-        CharacterArtWorkForInfoCanva.sprite = galleryCharacter.Image;
+        CharacterArtWorkToShow.sprite = info2.GalleryImage;
+        CharacterArtWorkForInfoCanva.sprite = info2.GalleryImage;
 
 
-        Debug.Log($"loaded {galleryCharacter.Name}");
+        Debug.Log($"loaded {info2.Name}");
 
         //For the right side window. CharSize not impelemented yet.
         impactforceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
