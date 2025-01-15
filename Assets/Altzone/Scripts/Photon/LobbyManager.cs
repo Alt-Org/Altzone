@@ -485,7 +485,6 @@ namespace Altzone.Scripts.Lobby
                 list.Add(new(
                     (int)character.Id,
                     (int)character.CharacterClassID,
-                    //These casts are stupid and should be fixed ASAP. Probably by changing the BaseCharacter stat values from float to FP.
                     BaseCharacter.GetStatValueFP(StatType.Hp, character.Hp),
                     BaseCharacter.GetStatValueFP(StatType.Attack, character.Attack),
                     BaseCharacter.GetStatValueFP(StatType.Defence, character.Defence),
