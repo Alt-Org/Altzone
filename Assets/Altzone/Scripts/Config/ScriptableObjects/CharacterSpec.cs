@@ -13,6 +13,8 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class CharacterSpec : ScriptableObject
     {
+        #region Metadata
+
         /// <summary>
         /// Character id, specified externally.
         /// </summary>
@@ -21,17 +23,21 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         public CharacterID CharacterId;
 
         /// <summary>
+        /// Is this player character approved for production.
+        /// </summary>
+        public bool IsApproved;
+
+        #endregion
+
+        #region Content
+
+        /// <summary>
         /// Character name.
         /// </summary>
         /// <remarks>
         /// When game support localization this will be localization id for this player character.
         /// </remarks>
         public string Name;
-
-        /// <summary>
-        /// Is this player character approved for production.
-        /// </summary>
-        public bool IsApproved;
 
         /// <summary>
         /// Player character class.
@@ -50,14 +56,15 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         /// </summary>
         [Header("Battle Graphics")] public Sprite BattleSprite;
 
+        #endregion
+
         public override string ToString()
         {
             return $"{Id}:{ClassType}:{Name}" +
-                   $"-{ResName(nameof(GalleryImage), GalleryImage)}" +
-                   $"-{ResName(nameof(BattleSprite), BattleSprite)}";
+                   $"-{ResName(GalleryImage)}" +
+                   $"-{ResName(BattleSprite)}";
 
-            string ResName(string instanceName, Object instance) =>
-                $"{(instance == null ? "null" : instance.name)}";
+            string ResName(Object instance) => $"{(instance == null ? "null" : instance.name)}";
         }
     }
 
