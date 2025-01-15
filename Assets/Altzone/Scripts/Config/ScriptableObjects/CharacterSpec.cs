@@ -1,5 +1,7 @@
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Model.Poco.Game;
+using UnityEditor;
 using UnityEngine;
 
 namespace Altzone.Scripts.Config.ScriptableObjects
@@ -16,7 +18,9 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         /// <summary>
         /// Character id, specified externally.
         /// </summary>
-        [Header("Character Basic Data")] public string Id;
+        [Header("Character Basic Data"),] public string Id;
+
+        public CharacterID CharacterId;
 
         /// <summary>
         /// Is this player character approved for production.
@@ -63,4 +67,65 @@ namespace Altzone.Scripts.Config.ScriptableObjects
             string ResName(Object instance) => $"{(instance == null ? "null" : instance.name)}";
         }
     }
+
+#if UNITY_EDITOR
+    [CustomEditor(typeof(CharacterSpec))]
+    public class CharacterSpecEditor : Editor
+    {
+        private CharacterID _prevID = CharacterID.None;
+        public override void OnInspectorGUI()
+        {
+            DrawDefaultInspector();
+
+            ReadOnlyCollection<CharacterSpec> characters= (ReadOnlyCollection<CharacterSpec>)PlayerCharacters.Characters;
+
+            CharacterSpec script = (CharacterSpec)target;
+
+            if(_prevID != script.CharacterId)
+            {
+                _prevID = script.CharacterId;
+                script.Id = ((int)script.CharacterId).ToString();
+            }
+
+            if (int.TryParse(script.Id, out int result) && System.Enum.IsDefined(typeof(CharacterID), result))
+            {
+                script.CharacterId = (CharacterID)int.Parse(script.Id);
+                _prevID = script.CharacterId;
+            }
+
+            /*if (PlayerCharacters.GetCharacter(((int)script.CharacterId).ToString()) == null)
+            {
+                script.Id = ((int)script.CharacterId).ToString();
+            }
+            else
+            {
+                script.CharacterId = 0;
+            }*/
+        }
+    }
+
+    public class ReadOnlyAttribute : PropertyAttribute
+    {
+
+    }
+
+    [CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
+    public class ReadOnlyDrawer : PropertyDrawer
+    {
+        public override float GetPropertyHeight(SerializedProperty property,
+                                                GUIContent label)
+        {
+            return EditorGUI.GetPropertyHeight(property, label, true);
+        }
+
+        public override void OnGUI(Rect position,
+                                   SerializedProperty property,
+                                   GUIContent label)
+        {
+            GUI.enabled = false;
+            EditorGUI.PropertyField(position, property, label, true);
+            GUI.enabled = true;
+        }
+    }
+#endif
 }

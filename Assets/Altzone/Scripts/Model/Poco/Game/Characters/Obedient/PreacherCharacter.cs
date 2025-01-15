@@ -8,7 +8,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         public PreacherCharacter() : base()
         {
-            _id = CharacterID.ObedientPreacher;
+            _id = CharacterID.Religious;
             _defaultAttack = 10;
             _defaultDefence = 10;
             _defaultHp = 10;

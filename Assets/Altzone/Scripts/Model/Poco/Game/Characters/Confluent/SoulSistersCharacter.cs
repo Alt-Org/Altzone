@@ -8,7 +8,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         public SoulSistersCharacter() : base()
         {
-            _id = CharacterID.ConfluentBesties;
+            _id = CharacterID.Soulsisters;
             _defaultAttack = 2;
             _defaultDefence = 11;
             _defaultHp = 2;
