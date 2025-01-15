@@ -16,7 +16,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         /// <summary>
         /// Character id, specified externally.
         /// </summary>
-        [Header("Character Basic Data"), ReadOnly] public string Id;
+        [Header("Character Basic Data"),] public string Id;
 
         public CharacterID CharacterId;
 
@@ -65,6 +65,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     [CustomEditor(typeof(CharacterSpec))]
     public class CharacterSpecEditor : Editor
     {
+        private CharacterID _prevID = CharacterID.None;
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
@@ -73,7 +74,17 @@ namespace Altzone.Scripts.Config.ScriptableObjects
 
             CharacterSpec script = (CharacterSpec)target;
 
-            script.Id = ((int)script.CharacterId).ToString();
+            if(_prevID != script.CharacterId)
+            {
+                _prevID = script.CharacterId;
+                script.Id = ((int)script.CharacterId).ToString();
+            }
+
+            if (int.TryParse(script.Id, out int result) && System.Enum.IsDefined(typeof(CharacterID), result))
+            {
+                script.CharacterId = (CharacterID)int.Parse(script.Id);
+                _prevID = script.CharacterId;
+            }
 
             /*if (PlayerCharacters.GetCharacter(((int)script.CharacterId).ToString()) == null)
             {
