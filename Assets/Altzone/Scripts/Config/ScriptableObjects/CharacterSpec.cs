@@ -1,5 +1,7 @@
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Model.Poco.Game;
+using UnityEditor;
 using UnityEngine;
 
 namespace Altzone.Scripts.Config.ScriptableObjects
@@ -14,7 +16,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         /// <summary>
         /// Character id, specified externally.
         /// </summary>
-        [Header("Character Basic Data")] public string Id;
+        [Header("Character Basic Data"), ReadOnly] public string Id;
 
         public CharacterID CharacterId;
 
@@ -58,4 +60,54 @@ namespace Altzone.Scripts.Config.ScriptableObjects
                 $"{(instance == null ? "null" : instance.name)}";
         }
     }
+
+#if UNITY_EDITOR
+    [CustomEditor(typeof(CharacterSpec))]
+    public class CharacterSpecEditor : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            DrawDefaultInspector();
+
+            ReadOnlyCollection<CharacterSpec> characters= (ReadOnlyCollection<CharacterSpec>)PlayerCharacters.Characters;
+
+            CharacterSpec script = (CharacterSpec)target;
+
+            script.Id = ((int)script.CharacterId).ToString();
+
+            /*if (PlayerCharacters.GetCharacter(((int)script.CharacterId).ToString()) == null)
+            {
+                script.Id = ((int)script.CharacterId).ToString();
+            }
+            else
+            {
+                script.CharacterId = 0;
+            }*/
+        }
+    }
+
+    public class ReadOnlyAttribute : PropertyAttribute
+    {
+
+    }
+
+    [CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
+    public class ReadOnlyDrawer : PropertyDrawer
+    {
+        public override float GetPropertyHeight(SerializedProperty property,
+                                                GUIContent label)
+        {
+            return EditorGUI.GetPropertyHeight(property, label, true);
+        }
+
+        public override void OnGUI(Rect position,
+                                   SerializedProperty property,
+                                   GUIContent label)
+        {
+            GUI.enabled = false;
+            EditorGUI.PropertyField(position, property, label, true);
+            GUI.enabled = true;
+        }
+    }
+#endif
 }
