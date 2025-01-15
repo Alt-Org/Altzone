@@ -62,10 +62,10 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         protected BaseCharacter()
         {
-            InitilizeValues();
+            InitializeValues();
         }
 
-        protected void InitilizeValues()
+        protected void InitializeValues()
         {
             _hp = _defaultHp;
             _attack = _defaultAttack;
