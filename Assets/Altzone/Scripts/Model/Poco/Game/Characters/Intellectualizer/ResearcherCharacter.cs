@@ -8,7 +8,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         public ResearcherCharacter() : base()
         {
-            _id = CharacterID.IntellectualizerResearcher;
+            _id = CharacterID.Booksmart;
             _defaultAttack = 10;
             _defaultDefence = 3;
             _defaultHp = 8;

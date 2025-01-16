@@ -5,16 +5,29 @@ using UnityEngine;
 namespace Altzone.Scripts.Config.ScriptableObjects
 {
     /// <summary>
-    /// Altzone game player character 'specification' instance and references to all in-game resources attached to it.
+    /// Altzone game player character 'specification' implementation and references to all in-game resources attached to it.<br />
+    /// <b>Note</b> that this class should not be edited spontaneously but only using relevant change management process!<br />
+    /// See <c>_readme.md</c> and/or related WIKI page for more instructions.
     /// </summary>
     [CreateAssetMenu(menuName = "ALT-Zone/CharacterSpec", fileName = nameof(CharacterSpec) + "_ID")]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class CharacterSpec : ScriptableObject
     {
+        #region Metadata
+
         /// <summary>
         /// Character id, specified externally.
         /// </summary>
-        public string Id;
+        [Header("Character Basic Data"),] public string Id;
+
+        /// <summary>
+        /// Is this player character approved for production.
+        /// </summary>
+        public bool IsApproved;
+
+        #endregion
+
+        #region General attributes
 
         /// <summary>
         /// Character name.
@@ -22,16 +35,63 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         /// <remarks>
         /// When game support localization this will be localization id for this player character.
         /// </remarks>
-        public string Name;
+        [Header("General Attributes")] public string Name;
 
         /// <summary>
         /// Player character class.
         /// </summary>
         public CharacterClassID ClassType;
 
+        #endregion
+
+        #region Special attributes
+
+        [Header("Special Attributes")] public float Hp;
+        public float Speed;
+        public float Resistance;
+        public float Attack;
+        public float Defence;
+
+        #endregion
+
+        #region General Asset References
+
+        /// <summary>
+        /// Gallery image for something.
+        /// TODO: add relevant doc comment here!
+        /// </summary>
+        [Header("General Asset References")] public Sprite GalleryImage;
+
+        #endregion
+
+        #region Battle Asset References
+
+        /// <summary>
+        /// Battle sprite sheet for something.
+        /// TODO: add relevant doc comment here!
+        /// </summary>
+        [Header("Battle Asset References")] public Sprite BattleSprite;
+
+        #endregion
+
+        /// <summary>
+        /// Gets player character validity state for the game.
+        /// </summary>
+        /// <remarks>
+        /// Missing fields or values makes player character invalid because
+        /// they can cause e.g. undefined behaviour or NRE at runtime.
+        /// </remarks>
+        public bool IsValid => ClassType != CharacterClassID.None
+                               && !string.IsNullOrWhiteSpace(Id)
+                               && !string.IsNullOrWhiteSpace(name);
+
         public override string ToString()
         {
-            return $"{Id}:{ClassType}:{Name}";
+            return $"{Id}:{ClassType}:{Name}" +
+                   $", {ResName(GalleryImage)}" +
+                   $", {ResName(BattleSprite)}";
+
+            string ResName(Object instance) => $"{(instance == null ? "null" : instance.name)}";
         }
     }
 }

@@ -6,6 +6,7 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts.Config.ScriptableObjects;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -67,7 +68,7 @@ namespace MenuUi.Scripts.CharacterGallery
             for (var prefabIndex = 0; prefabIndex < prefabs.Length; ++prefabIndex)
             {
                 var playerPrefab = GameConfig.Get().PlayerPrefabs.GetPlayerPrefab(prefabIndex);
-                Debug.Log($"prefabIndex {prefabIndex} playerPrefab {playerPrefab.name}");
+                //Debug.Log($"prefabIndex {prefabIndex} playerPrefab {playerPrefab.name}");
             }
             _isReady = true;
         }
@@ -176,11 +177,12 @@ namespace MenuUi.Scripts.CharacterGallery
 
             foreach (var character in allItems)
             {
-                GalleryCharacterInfo info = _referenceSheet.GetCharacterPrefabInfoFast((int)character.Id);
-                if (info == null) continue;
+                //GalleryCharacterInfo info = _referenceSheet.GetCharacterPrefabInfoFast((int)character.Id);
+                CharacterSpec info2 = PlayerCharacters.GetCharacter(((int)character.Id).ToString());
+                if (info2 == null || !info2.IsApproved) continue;
 
                 GameObject slot = Instantiate(_characterSlotprefab, GetContent());
-                slot.GetComponent<CharacterSlot>().SetInfo(info.Image, info.Name, character.Id, this);
+                slot.GetComponent<CharacterSlot>().SetInfo(info2.GalleryImage, info2.Name, character.Id, this);
 
                 Button button = slot.transform.Find("GalleryCharacter").GetComponent<Button>();
 

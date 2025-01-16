@@ -8,7 +8,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         public GraffitiartistCharacter() : base()
         {
-            _id = CharacterID.ProjectorGraffitiArtist;
+            _id = CharacterID.Artist;
             _defaultAttack = 7;
             _defaultDefence = 10;
             _defaultHp = 3;
