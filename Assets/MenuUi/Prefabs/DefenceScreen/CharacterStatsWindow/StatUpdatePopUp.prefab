@@ -253,7 +253,20 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3941690085160066050}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7601156625344641261}
+        m_TargetAssemblyTypeName: MenuUi.Scripts.DefenceScreen.CharacterStatsWindow.StatUpdatePopUp,
+          MainMenu
+        m_MethodName: PlusButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1224066711838039960
 GameObject:
   m_ObjectHideFlags: 0
@@ -517,6 +530,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10d7f624ee3d04d42b3cfc2ca28178b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _controller: {fileID: 0}
   _statsReference: {fileID: 11400000, guid: 9af377220edba26499314dc34cda7936, type: 2}
   _contents: {fileID: 7438520737699890682}
   _statIcon: {fileID: 4163926601784260505}
@@ -1054,7 +1068,20 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5658325416487574519}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7601156625344641261}
+        m_TargetAssemblyTypeName: MenuUi.Scripts.DefenceScreen.CharacterStatsWindow.StatUpdatePopUp,
+          MainMenu
+        m_MethodName: MinusButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7438520737699890682
 GameObject:
   m_ObjectHideFlags: 0

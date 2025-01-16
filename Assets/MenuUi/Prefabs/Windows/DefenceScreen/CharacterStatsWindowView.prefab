@@ -49,6 +49,7 @@ GameObject:
   - component: {fileID: 3420626740153607737}
   - component: {fileID: 8579350557537696612}
   - component: {fileID: 2850541588315073004}
+  - component: {fileID: 4473235994531621850}
   m_Layer: 5
   m_Name: CharacterStatsWindowView
   m_TagString: ScrollRectCanvas
@@ -153,6 +154,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interval: 2
   _swipe: {fileID: 6405207172733369044}
+--- !u!114 &4473235994531621850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4542716426750747876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48e675e69aca0364c86fef9678cb8ca5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6971188513189118166
 GameObject:
   m_ObjectHideFlags: 0
@@ -1424,6 +1437,11 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0.2045
       objectReference: {fileID: 0}
+    - target: {fileID: 7070093386433821279, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: _controller
+      value: 
+      objectReference: {fileID: 4473235994531621850}
     - target: {fileID: 7206720137583455684, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -1439,6 +1457,11 @@ PrefabInstance:
       propertyPath: m_fontSize
       value: 48
       objectReference: {fileID: 0}
+    - target: {fileID: 7439868138087953979, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: _controller
+      value: 
+      objectReference: {fileID: 4473235994531621850}
     - target: {fileID: 7600365579702504236, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: m_IsActive
@@ -1971,6 +1994,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 515903818372491144, guid: 6518d8aaf4a34de4897d176df7531b31,
+        type: 3}
+      propertyPath: _controller
+      value: 
+      objectReference: {fileID: 4473235994531621850}
     - target: {fileID: 531365995891066023, guid: 6518d8aaf4a34de4897d176df7531b31,
         type: 3}
       propertyPath: m_fontSize
@@ -2926,6 +2954,11 @@ PrefabInstance:
       propertyPath: m_fontSize
       value: 41.05
       objectReference: {fileID: 0}
+    - target: {fileID: 1919040716084055664, guid: a09f42f46bd25b146bd7e875c00584ce,
+        type: 3}
+      propertyPath: _controller
+      value: 
+      objectReference: {fileID: 4473235994531621850}
     - target: {fileID: 3356158360725850586, guid: a09f42f46bd25b146bd7e875c00584ce,
         type: 3}
       propertyPath: m_AnchorMax.x
