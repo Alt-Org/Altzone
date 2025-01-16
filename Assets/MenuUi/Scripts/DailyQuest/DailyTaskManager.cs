@@ -5,7 +5,6 @@ using Altzone.Scripts;
 using UnityEngine;
 using static Altzone.Scripts.Model.Poco.Game.PlayerTasks;
 using UnityEngine.UI;
-using UnityEditor.Overlays;
 
 public class DailyTaskManager : MonoBehaviour
 {
@@ -160,7 +159,7 @@ public class DailyTaskManager : MonoBehaviour
         };
     }
 
-    // Function for popup calling - TODO: Expand to handle and execute data sent from DailyQuest.cs about selected task.
+    // Function for popup calling
     public IEnumerator ShowPopupAndHandleResponse(string Message, int popupId, PopupData? data)
     {
         yield return Popup.RequestPopup(Message, result =>
@@ -175,8 +174,6 @@ public class DailyTaskManager : MonoBehaviour
                         //HideAvailableTasks();
                         if (data != null)
                             PopupDataHandler(data ?? new PopupData());
-                        //else
-                        //    SwitchTab(SelectedTab.OwnTask);
 
                         break;
                     case 2:
