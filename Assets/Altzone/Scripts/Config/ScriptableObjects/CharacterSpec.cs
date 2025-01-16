@@ -20,8 +20,6 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         /// </summary>
         [Header("Character Basic Data"),] public string Id;
 
-        public CharacterID CharacterId;
-
         /// <summary>
         /// Is this player character approved for production.
         /// </summary>
