@@ -29,7 +29,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
 
         #endregion
 
-        #region Content
+        #region General attributes
 
         /// <summary>
         /// Character name.
@@ -37,18 +37,36 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         /// <remarks>
         /// When game support localization this will be localization id for this player character.
         /// </remarks>
-        public string Name;
+        [Header("General Attributes")] public string Name;
 
         /// <summary>
         /// Player character class.
         /// </summary>
         public CharacterClassID ClassType;
 
+        #endregion
+
+        #region General graphical assets and prefabs
+
         /// <summary>
         /// Gallery image for something.
         /// TODO: add relevant doc comment here!
         /// </summary>
-        [Header("Menu UI")] public Sprite GalleryImage;
+        [Header("General Graphics")] public Sprite GalleryImage;
+
+        #endregion
+
+        #region Battle attributes
+
+        [Header("Battle Attributes")] public float Hp;
+        public float Speed;
+        public float Resistance;
+        public float Attack;
+        public float Defence;
+
+        #endregion
+
+        #region Battle graphical assets and prefabs
 
         /// <summary>
         /// Battle sprite sheet for something.
@@ -73,15 +91,17 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     public class CharacterSpecEditor : Editor
     {
         private CharacterID _prevID = CharacterID.None;
+
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
 
-            ReadOnlyCollection<CharacterSpec> characters= (ReadOnlyCollection<CharacterSpec>)PlayerCharacters.Characters;
+            ReadOnlyCollection<CharacterSpec> characters =
+                (ReadOnlyCollection<CharacterSpec>)PlayerCharacters.Characters;
 
             CharacterSpec script = (CharacterSpec)target;
 
-            if(_prevID != script.CharacterId)
+            if (_prevID != script.CharacterId)
             {
                 _prevID = script.CharacterId;
                 script.Id = ((int)script.CharacterId).ToString();
@@ -106,21 +126,20 @@ namespace Altzone.Scripts.Config.ScriptableObjects
 
     public class ReadOnlyAttribute : PropertyAttribute
     {
-
     }
 
     [CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
     public class ReadOnlyDrawer : PropertyDrawer
     {
         public override float GetPropertyHeight(SerializedProperty property,
-                                                GUIContent label)
+            GUIContent label)
         {
             return EditorGUI.GetPropertyHeight(property, label, true);
         }
 
         public override void OnGUI(Rect position,
-                                   SerializedProperty property,
-                                   GUIContent label)
+            SerializedProperty property,
+            GUIContent label)
         {
             GUI.enabled = false;
             EditorGUI.PropertyField(position, property, label, true);
