@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
