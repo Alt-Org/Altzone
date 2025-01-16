@@ -7,7 +7,9 @@ using UnityEngine;
 namespace Altzone.Scripts.Config.ScriptableObjects
 {
     /// <summary>
-    /// Altzone game player character 'specification' instance and references to all in-game resources attached to it.
+    /// Altzone game player character 'specification' implementation and references to all in-game resources attached to it.<br />
+    /// <b>Note</b> that this class should not be edited spontaneously but only using relevant change management process!<br />
+    /// See <c>_readme.md</c> and/or related WIKI page for more instructions.
     /// </summary>
     [CreateAssetMenu(menuName = "ALT-Zone/CharacterSpec", fileName = nameof(CharacterSpec) + "_ID")]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
