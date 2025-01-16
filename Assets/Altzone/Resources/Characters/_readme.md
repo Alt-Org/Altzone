@@ -44,27 +44,50 @@ itself.
 
 ## CharacterSpec content by category
 
-`CharacterSpec` content can be divided on 2 broad categories.
+`CharacterSpec` content can be divided on few categories.  
+Content here is text, numbers and UNITY specific asset references.
 
-## General
+`CharacterSpec` has following regions for each attribute type:
+- General Attributes
+- Special Attributes
+- General Asset References
+- Battle Asset References
 
-### General attributes
+### Text and numbers
 
-General attributes can be textual content for player character backstory or some flavour texts.  
+#### General attributes
+
+General 'plain' attributes can be textual content for player character backstory or some flavour texts.  
 Most probably only textual content is required here.
 
-### General graphical assets and prefabs
+#### Special Attributes
 
-Everything else but Battle graphic assets belongs here.
+These are attributes that have special meaning, rules and functionality both in UI and specifically in Battle gameplay.  
+They are not just plain text or numbers!
 
-## Battle
+For example:
+- Hp
+- Speed
+- Resistance
+- Attack
+- Defence
 
-### Battle attributes
+Display formatting and processing rules must be defined and implemented so that 
+they can be shared and used everywhere required.
 
-Battle attributes are those that are used in Battle game itself.  
-These are typically integer or floating point values.
+### Graphics, sounds, prefabs etc. UNITY specific assets
 
-### Battle graphical assets and prefabs
+UNITY assets and prefabs used to build the game (UX) and Battle game specifically.
+
+#### General UX
+
+General player character related UNITY assets and prefabs.  
+These can be shared with Battle if required.
+
+#### Battle specific
+
+Battle gameplay related UNITY assets and prefabs.  
+Most probably these are not shared outside this context.
 
 ## CharacterSpec change management and approval process
 

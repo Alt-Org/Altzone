@@ -44,19 +44,9 @@ namespace Altzone.Scripts.Config.ScriptableObjects
 
         #endregion
 
-        #region General graphical assets and prefabs
+        #region Special attributes
 
-        /// <summary>
-        /// Gallery image for something.
-        /// TODO: add relevant doc comment here!
-        /// </summary>
-        [Header("General Graphics")] public Sprite GalleryImage;
-
-        #endregion
-
-        #region Battle attributes
-
-        [Header("Battle Attributes")] public float Hp;
+        [Header("Special Attributes")] public float Hp;
         public float Speed;
         public float Resistance;
         public float Attack;
@@ -64,13 +54,23 @@ namespace Altzone.Scripts.Config.ScriptableObjects
 
         #endregion
 
-        #region Battle graphical assets and prefabs
+        #region General Asset References
+
+        /// <summary>
+        /// Gallery image for something.
+        /// TODO: add relevant doc comment here!
+        /// </summary>
+        [Header("General Asset References")] public Sprite GalleryImage;
+
+        #endregion
+
+        #region Battle Asset References
 
         /// <summary>
         /// Battle sprite sheet for something.
         /// TODO: add relevant doc comment here!
         /// </summary>
-        [Header("Battle Graphics")] public Sprite BattleSprite;
+        [Header("Battle Asset References")] public Sprite BattleSprite;
 
         #endregion
 
