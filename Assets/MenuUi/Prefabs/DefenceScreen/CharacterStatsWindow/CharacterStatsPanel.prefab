@@ -797,6 +797,7 @@ GameObject:
   - component: {fileID: 8810540771097133681}
   - component: {fileID: -4128320034629941447}
   - component: {fileID: 3807340201356962822}
+  - component: {fileID: 722215368881958137}
   m_Layer: 5
   m_Name: CharacterStatsPanel
   m_TagString: Untagged
@@ -875,6 +876,25 @@ MonoBehaviour:
   m_FlexibleWidth: 1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &722215368881958137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2483658678907994294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dda2e503f30e6e3479c55115bd096b88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _controller: {fileID: 0}
+  _characterImage: {fileID: 7974997585420314010}
+  _attackText: {fileID: 1045321615248787585}
+  _hpText: {fileID: 4641588302065698436}
+  _defenceText: {fileID: 3680906877321014546}
+  _charSizeText: {fileID: 3249400402430081967}
+  _speedText: {fileID: 1566053261450885690}
 --- !u!1 &2785751941153881750
 GameObject:
   m_ObjectHideFlags: 0
@@ -889,7 +909,7 @@ GameObject:
   - component: {fileID: 2381894395780513860}
   - component: {fileID: 585588228628911024}
   m_Layer: 0
-  m_Name: Resistance
+  m_Name: Defence
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1657,7 +1677,7 @@ GameObject:
   - component: {fileID: 71399192457540638}
   - component: {fileID: 3680906877321014546}
   m_Layer: 0
-  m_Name: ResistanceText
+  m_Name: DefenceText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
