@@ -5,7 +5,6 @@ using Altzone.Scripts;
 using UnityEngine;
 using static Altzone.Scripts.Model.Poco.Game.PlayerTasks;
 using UnityEngine.UI;
-using UnityEditor.Overlays;
 
 public class DailyTaskManager : MonoBehaviour
 {
@@ -15,11 +14,13 @@ public class DailyTaskManager : MonoBehaviour
     [SerializeField] private Button _ownTaskTabButton;
     [SerializeField] private Button _clanTaskTabButton;
 
-    private const int _cardSlots = 100;
-    private GameObject[] _dailyTaskCardSlots = new GameObject[_cardSlots];
+    private const int CardSlots = 100;
+    private GameObject[] _dailyTaskCardSlots = new GameObject[CardSlots];
 
     [Header("DailyTaskCard prefabs")]
-    [SerializeField] private GameObject _dailyTaskCardPrefab;
+    [SerializeField] private GameObject _dailyTaskCard500Prefab;
+    [SerializeField] private GameObject _dailyTaskCard1000Prefab;
+    [SerializeField] private GameObject _dailyTaskCard1500Prefab;
 
     [Header("DailyTasksPage")]
     [SerializeField] private GameObject _dailyTasksView;
@@ -30,6 +31,9 @@ public class DailyTaskManager : MonoBehaviour
     [Header("OwnTaskPage")]
     [SerializeField] private GameObject _ownTaskView;
     [SerializeField] private Button _cancelTaskButton;
+    [SerializeField] private DailyTaskOwnTask _ownTaskPageHandler;
+
+    private int? _ownTaskId;
 
     [Header("ClanTaskPage")]
     [SerializeField] private GameObject _clanTaskView;
@@ -57,17 +61,15 @@ public class DailyTaskManager : MonoBehaviour
         _cancelTaskButton.onClick.AddListener(() => CancelActiveTask());
     }
 
-    // First 3 functions are for task slot population and fetching them from server
+    // First 4 functions are for task slot population and fetching them from server
     public void TaskGenerator()
     {
-        StartCoroutine(PopulateTasks(_dailyTaskCardSlots, _dailyTaskCardPrefab));
-        //StartCoroutine(PopulateQuests(_weeklyQuestSlots, _weeklyTaskPrefab));
-        //StartCoroutine(PopulateQuests(_monthlyQuestSlots, _monthlyTaskPrefab));
+        StartCoroutine(PopulateTasks(_dailyTaskCardSlots));
 
         Debug.Log("Task Slots populated!");
     }
 
-    private IEnumerator PopulateTasks(GameObject[] questSlots, GameObject questPrefab)
+    private IEnumerator PopulateTasks(GameObject[] taskSlots)
     {
         PlayerTasks tasks = null;
         Storefront.Get().GetPlayerTasks(content => tasks = content);
@@ -99,12 +101,12 @@ public class DailyTaskManager : MonoBehaviour
 
         for (int i = 0; i < tasklist.Count; i++)
         {
-            GameObject taskObject = Instantiate(questPrefab, gameObject.transform);
-            questSlots[i] = taskObject;
+            GameObject taskObject = Instantiate(GetPrefabCategory(tasklist[i].Points), gameObject.transform);
+            taskSlots[i] = taskObject;
 
-            DailyQuest quest = taskObject.GetComponent<DailyQuest>();
-            quest.GetQuestData(tasklist[i]);
-            quest.dailyTaskManager = this;
+            DailyQuest task = taskObject.GetComponent<DailyQuest>();
+            task.GetQuestData(tasklist[i]);
+            task.dailyTaskManager = this;
 
             Transform parentCategory = GetParentCategory(tasklist[i].Points);
             taskObject.transform.SetParent(parentCategory, false);
@@ -112,6 +114,8 @@ public class DailyTaskManager : MonoBehaviour
 
             Debug.Log("Created Quest: " +  tasklist[i].Id);
         }
+
+        //Needed to update the instantiated DT cards spacing in HorizontalLayoutGroups.
         LayoutRebuilder.ForceRebuildLayoutImmediate(_dailyCategory500.GetComponent<RectTransform>());
         LayoutRebuilder.ForceRebuildLayoutImmediate(_dailyCategory1000.GetComponent<RectTransform>());
         LayoutRebuilder.ForceRebuildLayoutImmediate(_dailyCategory1500.GetComponent<RectTransform>());
@@ -127,8 +131,18 @@ public class DailyTaskManager : MonoBehaviour
         };
     }
 
-    // Function for popup calling - TODO: Expand to handle and execute data sent from DailyQuest.cs about selected task.
-    public IEnumerator ShowPopupAndHandleResponse(string Message, int popupId)
+    private GameObject GetPrefabCategory(int points)
+    {
+        return points switch
+        {
+            <= 500 => _dailyTaskCard500Prefab,
+            <= 1000 => _dailyTaskCard1000Prefab,
+            _ => _dailyTaskCard1500Prefab,
+        };
+    }
+
+    // Function for popup calling
+    public IEnumerator ShowPopupAndHandleResponse(string Message, int popupId, PopupData? data)
     {
         yield return Popup.RequestPopup(Message, result =>
         {
@@ -138,15 +152,15 @@ public class DailyTaskManager : MonoBehaviour
                 switch(popupId)
                 {
                     case 1:
-                        Debug.Log("Accept case happened " + popupId);
-                        HideAvailableTasks();
+                        if (data != null)
+                            PopupDataHandler(data.Value);
+
                         SwitchTab(SelectedTab.OwnTask);
-                        //TODO: Add functionality to set the "Omatyö" page.
+                        Debug.Log("Accept case happened " + popupId);
                         break;
                     case 2:
-                        Debug.Log("Cancel case happened " + popupId);
-                        ShowAvailableTasks();
                         SwitchTab(SelectedTab.Tasks);
+                        Debug.Log("Cancel case happened " + popupId);
                         break;
                 }
             }
@@ -158,25 +172,26 @@ public class DailyTaskManager : MonoBehaviour
         });
     }
 
+    private void PopupDataHandler(PopupData data)
+    {
+        switch (data.Type)
+        {
+            case PopupData.PopupDataType.OwnTask: HandleOwnTask(data.OwnPage.Value); break;
+            default: break;
+        }
+    }
+
+    private void HandleOwnTask(PopupData.OwnPageData data)
+    {
+        StartCoroutine(_ownTaskPageHandler.SetDailyTask(data.TaskDescription, data.TaskAmount, data.TaskPoints, data.TaskCoins));
+        _ownTaskId = data.TaskId;
+        //SwitchTab(SelectedTab.OwnTask);
+    }
+
     // calling popup for canceling task
     public void CancelActiveTask()
     {
-        StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", 2));
-    }
-
-    // show/hide works for task selection to hide and show task selection
-    private void ShowAvailableTasks()
-    {
-        _dailyTasksView.SetActive(true);
-
-        Debug.Log("Available tasks shown.");
-    }
-
-    private void HideAvailableTasks()
-    {
-        _dailyTasksView.SetActive(false);
-
-        Debug.Log("Available tasks hidden.");
+        StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", 2, null));
     }
 
     // next functions are for tab switching system

@@ -22,7 +22,9 @@ public class DailyQuest : MonoBehaviour
 
     public void QuestAccept()
     {
-        StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse("Haluatko Hyväksyä! quest id: " + _taskData.Id.ToString(),1));
+        PopupData data = new PopupData(_taskData, PopupData.GetType("own_task"));
+
+        StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse("Haluatko Hyväksyä! quest id: " + _taskData.Id.ToString(), 1, data));
     }
 
     public void PopulateData()
