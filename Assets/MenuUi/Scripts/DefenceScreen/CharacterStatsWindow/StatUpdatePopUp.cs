@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using TMPro;
 using UnityEngine;
@@ -9,6 +7,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
     public class StatUpdatePopUp : MonoBehaviour
     {
+        [SerializeField] private StatsWindowController _controller;
         [SerializeField] private StatsReference _statsReference;
         [SerializeField] private GameObject _contents;
         [SerializeField] private Image _statIcon;
@@ -16,8 +15,10 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private TMP_Text _statNumber;
         [SerializeField] private TMP_Text _diamondCost;
 
+        private StatType _statType;
 
-        private void Awake()
+
+        private void OnEnable()
         {
             ClosePopUp();
         }
@@ -30,6 +31,12 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         public void OpenPopUp(int statType)
         {
             StatInfo statInfo = null;
+
+            if (_controller.GetCurrentCharacterClass() == CharacterClassID.Obedient) // obedient characters can't be modified
+            {
+                ClosePopUp();
+                return;
+            }
 
             // Getting StatInfo from StatsReference sheet
             switch ((StatType)statType)
@@ -54,11 +61,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                     break;
             }
 
-            // Setting stat icon and stat name
+            // Setting up stat popup
             if (statInfo != null)
             {
+                _statType = (StatType)statType;
+                _diamondCost.text = _controller.GetDiamondCost(_statType).ToString();
+                _statNumber.text = _controller.GetStat(_statType).ToString();
+
                 _statIcon.sprite = statInfo.Image;
                 _statName.text = statInfo.Name;
+
                 _contents.SetActive(true);
             }
             else
@@ -74,6 +86,24 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         public void ClosePopUp()
         {
             _contents.SetActive(false);
+        }
+
+
+        /// <summary>
+        /// Method for when plus button is clicked in the popup
+        /// </summary>
+        public void PlusButtonClicked()
+        {
+            _controller.TryIncreaseStat(_statType);
+        }
+
+
+        /// <summary>
+        /// Method for when minus button is clicked in the popup
+        /// </summary>
+        public void MinusButtonClicked()
+        {
+            _controller.TryDecreaseStat(_statType);
         }
     }
 }
