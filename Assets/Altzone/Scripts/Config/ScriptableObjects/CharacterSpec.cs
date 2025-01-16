@@ -76,11 +76,22 @@ namespace Altzone.Scripts.Config.ScriptableObjects
 
         #endregion
 
+        /// <summary>
+        /// Gets player character validity state for the game.
+        /// </summary>
+        /// <remarks>
+        /// Missing fields or values makes player character invalid because
+        /// they can cause e.g. undefined behaviour or NRE at runtime.
+        /// </remarks>
+        public bool IsValid => ClassType != CharacterClassID.None
+                               && !string.IsNullOrWhiteSpace(Id)
+                               && !string.IsNullOrWhiteSpace(name);
+
         public override string ToString()
         {
             return $"{Id}:{ClassType}:{Name}" +
-                   $"-{ResName(GalleryImage)}" +
-                   $"-{ResName(BattleSprite)}";
+                   $", {ResName(GalleryImage)}" +
+                   $", {ResName(BattleSprite)}";
 
             string ResName(Object instance) => $"{(instance == null ? "null" : instance.name)}";
         }
