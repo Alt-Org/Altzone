@@ -44,10 +44,10 @@ public class ClanHeartColorChanger : MonoBehaviour
             }
         }
 
-        _selectedColor = _colorButtons[0].color;
+        _selectedColor = ColorConstants.GetColorConstant(_colorButtons[0].color);
         foreach (ColorButton colorButton in _colorButtons)
         {
-            Color color = colorButton.color;
+            Color color = ColorConstants.GetColorConstant(colorButton.color);
             colorButton.button.onClick.RemoveAllListeners();
             colorButton.button.onClick.AddListener(() => SetSelectedColor(color));
         }
