@@ -38,24 +38,6 @@ public class DailyTaskManager : MonoBehaviour
     [Header("ClanTaskPage")]
     [SerializeField] private GameObject _clanTaskView;
 
-    public struct PopupData
-    {
-        public enum PopupDataType
-        {
-            OwnTask,
-        }
-        public PopupDataType Type;
-        public struct OwnPageData
-        {
-            public int TaskId;
-            public string TaskDescription;
-            public int TaskAmount;
-            public int TaskPoints;
-            public int TaskCoins;
-        }
-        public OwnPageData? OwnPage;
-    }
-
     public enum SelectedTab
     {
         Tasks,
@@ -170,16 +152,15 @@ public class DailyTaskManager : MonoBehaviour
                 switch(popupId)
                 {
                     case 1:
-                        Debug.Log("Accept case happened " + popupId);
-                        //HideAvailableTasks();
                         if (data != null)
-                            PopupDataHandler(data ?? new PopupData());
+                            PopupDataHandler(data.Value);
 
+                        SwitchTab(SelectedTab.OwnTask);
+                        Debug.Log("Accept case happened " + popupId);
                         break;
                     case 2:
-                        Debug.Log("Cancel case happened " + popupId);
-                        //ShowAvailableTasks();
                         SwitchTab(SelectedTab.Tasks);
+                        Debug.Log("Cancel case happened " + popupId);
                         break;
                 }
             }
@@ -195,7 +176,7 @@ public class DailyTaskManager : MonoBehaviour
     {
         switch (data.Type)
         {
-            case PopupData.PopupDataType.OwnTask: HandleOwnTask(data.OwnPage ?? new PopupData.OwnPageData()); break;
+            case PopupData.PopupDataType.OwnTask: HandleOwnTask(data.OwnPage.Value); break;
             default: break;
         }
     }
@@ -204,7 +185,7 @@ public class DailyTaskManager : MonoBehaviour
     {
         StartCoroutine(_ownTaskPageHandler.SetDailyTask(data.TaskDescription, data.TaskAmount, data.TaskPoints, data.TaskCoins));
         _ownTaskId = data.TaskId;
-        SwitchTab(SelectedTab.OwnTask);
+        //SwitchTab(SelectedTab.OwnTask);
     }
 
     // calling popup for canceling task
@@ -212,21 +193,6 @@ public class DailyTaskManager : MonoBehaviour
     {
         StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", 2, null));
     }
-
-    //// show/hide works for task selection to hide and show task selection
-    //private void ShowAvailableTasks()
-    //{
-    //    _dailyTasksView.SetActive(true);
-
-    //    Debug.Log("Available tasks shown.");
-    //}
-
-    //private void HideAvailableTasks()
-    //{
-    //    _dailyTasksView.SetActive(false);
-
-    //    Debug.Log("Available tasks hidden.");
-    //}
 
     // next functions are for tab switching system
     public void SwitchTab(SelectedTab tab)

@@ -30,6 +30,7 @@ public class DailyTaskOwnTask : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _breakRemainder;
     [SerializeField] private TextMeshProUGUI _randomText;
 
+    #region SetTask
     public IEnumerator SetDailyTask(string taskDescription, int amount, int points, int coins)
     {
         _taskDescription.text = taskDescription;
@@ -70,8 +71,9 @@ public class DailyTaskOwnTask : MonoBehaviour
             _taskProgressMarkers.Add(marker);
         }
     }
+    #endregion
 
-    public IEnumerator SetProgress(float progress)
+    public IEnumerator SetTaskProgress(float progress)
     {
         _taskProgressFillImage.fillAmount = progress;
 

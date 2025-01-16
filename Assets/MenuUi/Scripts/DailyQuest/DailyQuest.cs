@@ -22,17 +22,7 @@ public class DailyQuest : MonoBehaviour
 
     public void QuestAccept()
     {
-        var data = new DailyTaskManager.PopupData();
-        data.Type = DailyTaskManager.PopupData.PopupDataType.OwnTask;
-
-        var temp = new DailyTaskManager.PopupData.OwnPageData();
-        temp.TaskId = _taskData.Id;
-        temp.TaskDescription = _taskData.Title;
-        temp.TaskAmount = _taskData.Amount;
-        temp.TaskPoints = _taskData.Points;
-        temp.TaskCoins = _taskData.Coins;
-
-        data.OwnPage = temp;
+        PopupData data = new PopupData(_taskData, PopupData.GetType("own_task"));
 
         StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse("Haluatko Hyväksyä! quest id: " + _taskData.Id.ToString(), 1, data));
     }
