@@ -6,7 +6,5 @@ namespace Quantum
     {
         public List<BattleCharacterBase> _characters;
         public int playerPos;
-
-
     }
 }
