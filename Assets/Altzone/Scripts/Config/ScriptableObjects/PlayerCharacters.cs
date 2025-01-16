@@ -13,7 +13,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     /// This (singleton) list (UNITY asset) contains all playable characters in the game (set in UNITY Editor).
     /// </summary>
     /// <remarks>
-    /// Note that
+    /// Note that only 'valid' player characters are returned.
     /// </remarks>
     //[CreateAssetMenu(menuName = "ALT-Zone/PlayerCharacters", fileName = nameof(PlayerCharacters))]
     public class PlayerCharacters : ScriptableObject
@@ -41,16 +41,23 @@ namespace Altzone.Scripts.Config.ScriptableObjects
                     _hasInstance = _instance != null;
                     if (_hasInstance)
                     {
-                        var isProduction = !Application.isEditor || _instance._forceProduction;
-                        _instance._liveCharacters = isProduction
+                        var isSelectApproved = !Application.isEditor || _instance._forceProduction;
+                        _instance._liveCharacters = isSelectApproved
                             ? _instance._characters
-                                .Where(x => x.IsApproved)
+                                .Where(SelectApproved)
                                 .ToList()
                                 .AsReadOnly()
-                            : _instance._characters.AsReadOnly();
+                            : _instance._characters
+                                .Where(SelectAll)
+                                .ToList()
+                                .AsReadOnly();
                     }
                 }
                 return _instance;
+
+                bool SelectApproved(CharacterSpec characterSpec) => characterSpec.IsValid && characterSpec.IsApproved;
+
+                bool SelectAll(CharacterSpec characterSpec) => characterSpec.IsValid;
             }
         }
 
@@ -88,7 +95,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         {
             var uniqueIds = new HashSet<string>();
             var uniqueNames = new HashSet<string>();
-            var builder = new StringBuilder();
+            var builder = new StringBuilder("available characters").AppendLine();
             foreach (var character in Characters
                          .OrderBy(x => x.Id)
                          .ThenBy(x => x.name))
@@ -111,11 +118,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
                 }
                 builder.AppendLine(character.ToString());
             }
-            if (uniqueIds.Count == 0)
-            {
-                Debug.LogError($"no characters found", _instance);
-            }
-            builder.AppendLine($"total {uniqueIds.Count}");
+            builder.AppendLine($"character count {uniqueIds.Count}");
             _instance._liveCharactersText = builder.ToString();
         }
 
