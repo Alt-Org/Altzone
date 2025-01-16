@@ -80,10 +80,10 @@ public class ClanCreateNew : MonoBehaviour
         _languageSelection.Initialize(Language.None);
         _closeLanguageSelect.onClick.AddListener(() => _flagImage.SetFlag(_languageSelection.SelectedLanguage));
 
-        SetHeartColor(_colorButtons[0].color);
+        SetHeartColor(ColorConstants.GetColorConstant(_colorButtons[0].color));
         foreach (ColorButton colorButton in _colorButtons)
         {
-            Color color = colorButton.color;
+            Color color = ColorConstants.GetColorConstant(colorButton.color);
             colorButton.button.onClick.AddListener(() => SetHeartColor(color));
         }
     }
