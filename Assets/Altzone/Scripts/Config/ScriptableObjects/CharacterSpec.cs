@@ -18,7 +18,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         /// <summary>
         /// Character id, specified externally.
         /// </summary>
-        [Header("Character Basic Data"),] public string Id;
+        [Header("Character Basic Data")] public string Id;
 
         /// <summary>
         /// Is this player character approved for production.
