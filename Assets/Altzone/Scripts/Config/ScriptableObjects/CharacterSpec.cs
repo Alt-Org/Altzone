@@ -20,8 +20,6 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         /// </summary>
         [Header("Character Basic Data"),] public string Id;
 
-        public CharacterID CharacterId;
-
         /// <summary>
         /// Is this player character approved for production.
         /// </summary>
@@ -46,19 +44,9 @@ namespace Altzone.Scripts.Config.ScriptableObjects
 
         #endregion
 
-        #region General graphical assets and prefabs
+        #region Special attributes
 
-        /// <summary>
-        /// Gallery image for something.
-        /// TODO: add relevant doc comment here!
-        /// </summary>
-        [Header("General Graphics")] public Sprite GalleryImage;
-
-        #endregion
-
-        #region Battle attributes
-
-        [Header("Battle Attributes")] public float Hp;
+        [Header("Special Attributes")] public float Hp;
         public float Speed;
         public float Resistance;
         public float Attack;
@@ -66,21 +54,42 @@ namespace Altzone.Scripts.Config.ScriptableObjects
 
         #endregion
 
-        #region Battle graphical assets and prefabs
+        #region General Asset References
+
+        /// <summary>
+        /// Gallery image for something.
+        /// TODO: add relevant doc comment here!
+        /// </summary>
+        [Header("General Asset References")] public Sprite GalleryImage;
+
+        #endregion
+
+        #region Battle Asset References
 
         /// <summary>
         /// Battle sprite sheet for something.
         /// TODO: add relevant doc comment here!
         /// </summary>
-        [Header("Battle Graphics")] public Sprite BattleSprite;
+        [Header("Battle Asset References")] public Sprite BattleSprite;
 
         #endregion
+
+        /// <summary>
+        /// Gets player character validity state for the game.
+        /// </summary>
+        /// <remarks>
+        /// Missing fields or values makes player character invalid because
+        /// they can cause e.g. undefined behaviour or NRE at runtime.
+        /// </remarks>
+        public bool IsValid => ClassType != CharacterClassID.None
+                               && !string.IsNullOrWhiteSpace(Id)
+                               && !string.IsNullOrWhiteSpace(name);
 
         public override string ToString()
         {
             return $"{Id}:{ClassType}:{Name}" +
-                   $"-{ResName(GalleryImage)}" +
-                   $"-{ResName(BattleSprite)}";
+                   $", {ResName(GalleryImage)}" +
+                   $", {ResName(BattleSprite)}";
 
             string ResName(Object instance) => $"{(instance == null ? "null" : instance.name)}";
         }
