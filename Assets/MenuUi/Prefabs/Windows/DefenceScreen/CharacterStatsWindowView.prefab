@@ -961,11 +961,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
-      propertyPath: defence
-      value: 
-      objectReference: {fileID: 5522719723835836050}
-    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
-        type: 3}
       propertyPath: HPNumber
       value: 
       objectReference: {fileID: 5152688970190664228}
@@ -984,11 +979,6 @@ PrefabInstance:
       propertyPath: AttackNumber
       value: 
       objectReference: {fileID: 678221507079748641}
-    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
-        type: 3}
-      propertyPath: DefenceNumber
-      value: 
-      objectReference: {fileID: 6904072391406267510}
     - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: statEditPopUp
@@ -1071,11 +1061,6 @@ PrefabInstance:
       objectReference: {fileID: 5260864428904060367}
     - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
-      propertyPath: statButtons.Array.data[2]
-      value: 
-      objectReference: {fileID: 5522719723835836050}
-    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
-        type: 3}
       propertyPath: CharacterArtWorkForInoCanva
       value: 
       objectReference: {fileID: 6709466706046791562}
@@ -1152,7 +1137,7 @@ PrefabInstance:
     - target: {fileID: 3605419351459008722, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: m_fontSize
-      value: 41.4
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 3660881016400602301, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
@@ -1252,7 +1237,7 @@ PrefabInstance:
     - target: {fileID: 5103277064250978553, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: m_fontSize
-      value: 56
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 5162245124650280763, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
@@ -1522,7 +1507,7 @@ PrefabInstance:
     - target: {fileID: 8818821537191566439, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: m_fontSize
-      value: 41.4
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 8819778384421457278, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
@@ -1677,18 +1662,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5522719723835836050 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5425879818593038898, guid: 4ab03391b3dcfa54496511f4e4eb6183,
-    type: 3}
-  m_PrefabInstance: {fileID: 569772038814020768}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5769746972348941810 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6339518976527905106, guid: 4ab03391b3dcfa54496511f4e4eb6183,
@@ -1707,18 +1680,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 569772038814020768}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &6904072391406267510 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6356846147762362582, guid: 4ab03391b3dcfa54496511f4e4eb6183,
-    type: 3}
-  m_PrefabInstance: {fileID: 569772038814020768}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &7585432496203288890 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7974997585420314010, guid: 4ab03391b3dcfa54496511f4e4eb6183,
