@@ -15,8 +15,8 @@ public class DailyTaskManager : MonoBehaviour
     [SerializeField] private Button _ownTaskTabButton;
     [SerializeField] private Button _clanTaskTabButton;
 
-    private const int _cardSlots = 100;
-    private GameObject[] _dailyTaskCardSlots = new GameObject[_cardSlots];
+    private const int CardSlots = 100;
+    private GameObject[] _dailyTaskCardSlots = new GameObject[CardSlots];
 
     [Header("DailyTaskCard prefabs")]
     [SerializeField] private GameObject _dailyTaskCard500Prefab;
@@ -32,9 +32,30 @@ public class DailyTaskManager : MonoBehaviour
     [Header("OwnTaskPage")]
     [SerializeField] private GameObject _ownTaskView;
     [SerializeField] private Button _cancelTaskButton;
+    [SerializeField] private DailyTaskOwnTask _ownTaskPageHandler;
+
+    private int? _ownTaskId;
 
     [Header("ClanTaskPage")]
     [SerializeField] private GameObject _clanTaskView;
+
+    public struct PopupData
+    {
+        public enum PopupDataType
+        {
+            OwnTask,
+        }
+        public PopupDataType Type;
+        public struct OwnPageData
+        {
+            public int TaskId;
+            public string TaskDescription;
+            public int TaskAmount;
+            public int TaskPoints;
+            public int TaskCoins;
+        }
+        public OwnPageData? OwnPage;
+    }
 
     public enum SelectedTab
     {
@@ -140,7 +161,7 @@ public class DailyTaskManager : MonoBehaviour
     }
 
     // Function for popup calling - TODO: Expand to handle and execute data sent from DailyQuest.cs about selected task.
-    public IEnumerator ShowPopupAndHandleResponse(string Message, int popupId)
+    public IEnumerator ShowPopupAndHandleResponse(string Message, int popupId, PopupData? data)
     {
         yield return Popup.RequestPopup(Message, result =>
         {
@@ -151,13 +172,16 @@ public class DailyTaskManager : MonoBehaviour
                 {
                     case 1:
                         Debug.Log("Accept case happened " + popupId);
-                        HideAvailableTasks();
-                        SwitchTab(SelectedTab.OwnTask);
-                        //TODO: Add functionality to set the "Omatyö" page.
+                        //HideAvailableTasks();
+                        if (data != null)
+                            PopupDataHandler(data ?? new PopupData());
+                        //else
+                        //    SwitchTab(SelectedTab.OwnTask);
+
                         break;
                     case 2:
                         Debug.Log("Cancel case happened " + popupId);
-                        ShowAvailableTasks();
+                        //ShowAvailableTasks();
                         SwitchTab(SelectedTab.Tasks);
                         break;
                 }
@@ -170,26 +194,42 @@ public class DailyTaskManager : MonoBehaviour
         });
     }
 
+    private void PopupDataHandler(PopupData data)
+    {
+        switch (data.Type)
+        {
+            case PopupData.PopupDataType.OwnTask: HandleOwnTask(data.OwnPage ?? new PopupData.OwnPageData()); break;
+            default: break;
+        }
+    }
+
+    private void HandleOwnTask(PopupData.OwnPageData data)
+    {
+        StartCoroutine(_ownTaskPageHandler.SetDailyTask(data.TaskDescription, data.TaskAmount, data.TaskPoints, data.TaskCoins));
+        _ownTaskId = data.TaskId;
+        SwitchTab(SelectedTab.OwnTask);
+    }
+
     // calling popup for canceling task
     public void CancelActiveTask()
     {
-        StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", 2));
+        StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", 2, null));
     }
 
-    // show/hide works for task selection to hide and show task selection
-    private void ShowAvailableTasks()
-    {
-        _dailyTasksView.SetActive(true);
+    //// show/hide works for task selection to hide and show task selection
+    //private void ShowAvailableTasks()
+    //{
+    //    _dailyTasksView.SetActive(true);
 
-        Debug.Log("Available tasks shown.");
-    }
+    //    Debug.Log("Available tasks shown.");
+    //}
 
-    private void HideAvailableTasks()
-    {
-        _dailyTasksView.SetActive(false);
+    //private void HideAvailableTasks()
+    //{
+    //    _dailyTasksView.SetActive(false);
 
-        Debug.Log("Available tasks hidden.");
-    }
+    //    Debug.Log("Available tasks hidden.");
+    //}
 
     // next functions are for tab switching system
     public void SwitchTab(SelectedTab tab)
