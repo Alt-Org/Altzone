@@ -14,7 +14,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             _defaultHp = 8;
             _defaultResistance = 8;
             _defaultSpeed = 6;
-            InitilizeValues();
+            InitializeValues();
         }
     }
 }

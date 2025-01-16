@@ -19,6 +19,8 @@ using Prg.Scripts.Common.PubSub;
 using System.Threading.Tasks;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby.Wrappers;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.AzDebug;
 
 namespace Altzone.Scripts.Lobby
 {
@@ -345,6 +347,9 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator StartQuantum()
         {
+            string battleID = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(BattleID);
+            int playerPosition = PhotonRealtimeClient.LocalPlayer.GetCustomProperty<int>(PlayerPositionKey);
+
             if (QuantumRunner.Default != null)
             {
                 Debug.Log($"QuantumRunner is already running: {QuantumRunner.Default.Id}");
@@ -387,6 +392,9 @@ namespace Altzone.Scripts.Lobby
 
             yield return new WaitUntil(()=>SceneManager.GetActiveScene().name == _map.Scene);
 
+            DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.Battle);
+            DebugLogFileHandler.FileOpen(battleID, playerPosition);
+
             Task<bool> task = StartRunner(sessionRunnerArguments);
 
             /*QuantumRunner runner = null;
@@ -408,10 +416,15 @@ namespace Altzone.Scripts.Lobby
             }*/
             yield return new WaitUntil(() => task.IsCompleted);
             if(task.Result)
-            _runner?.Game.AddPlayer(_player);
+            {
+                _player.playerPos = playerPosition;
+                _runner?.Game.AddPlayer(_player);
+            }
             else
+            {
                 //WindowManager.Get().GoBack();
                 OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
+            }
         }
 
         private async Task<bool> StartRunner(SessionRunner.Arguments sessionRunnerArguments)
@@ -462,6 +475,24 @@ namespace Altzone.Scripts.Lobby
             int curValue = player.GetCustomProperty<int>(PlayerPositionKey);
             Debug.Log($"setPlayer {PlayerPositionKey}=({curValue}<-){playerPosition}");
             player.SafeSetCustomProperty(PlayerPositionKey, playerPosition, curValue);
+        }
+
+        public void SetPlayerQuantumCharacters(List<CustomCharacter> characters)
+        {
+            List<BattleCharacterBase> list = new();
+            foreach(CustomCharacter character in characters)
+            {
+                list.Add(new(
+                    (int)character.Id,
+                    (int)character.CharacterClassID,
+                    BaseCharacter.GetStatValueFP(StatType.Hp, character.Hp),
+                    BaseCharacter.GetStatValueFP(StatType.Attack, character.Attack),
+                    BaseCharacter.GetStatValueFP(StatType.Defence, character.Defence),
+                    BaseCharacter.GetStatValueFP(StatType.Resistance, character.Resistance),
+                    BaseCharacter.GetStatValueFP(StatType.Speed, character.Speed)
+                ));
+            }
+            _player._characters = list;
         }
 
         public void OnDisconnected(DisconnectCause cause)
