@@ -20,6 +20,14 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             SetCharacterImage();
             SetStatButtonTexts();
+
+            _controller.OnStatUpdated += SetStatButtonTexts;
+        }
+
+
+        private void OnDisable()
+        {
+            _controller.OnStatUpdated -= SetStatButtonTexts;
         }
 
 
