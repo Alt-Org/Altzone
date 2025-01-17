@@ -13,7 +13,7 @@ public class OverlayPanelCheck : MonoBehaviour
 
     private void OnEnable()
     {
-        if (GameObject.FindWithTag("OverlayPanel").activeSelf)
+        if (GameObject.FindWithTag("OverlayPanel")?GameObject.FindWithTag("OverlayPanel").activeSelf: true) //If OverlayPanel cannot be found, return otherwise check if it is active, if not set the OverlayPanel tied to this active.
         {
             return;
         }
