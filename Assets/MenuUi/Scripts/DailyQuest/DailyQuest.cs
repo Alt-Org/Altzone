@@ -1,12 +1,15 @@
 using UnityEngine;
 using TMPro;
 using Altzone.Scripts.Model.Poco.Game;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class DailyQuest : MonoBehaviour
+public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 {
     //Variables
     private PlayerTasks.PlayerTask _taskData;
-
+    private bool _clickEnabled = true;
+    
     [Header("DailyQuest Texts")]
     [SerializeField] private TMP_Text questTitle;
     [SerializeField] private TMP_Text questDebugID;
@@ -22,6 +25,9 @@ public class DailyQuest : MonoBehaviour
 
     public void QuestAccept()
     {
+        if (!_clickEnabled)
+            return;
+
         PopupData data = new PopupData(_taskData, PopupData.GetType("own_task"));
 
         StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse("Haluatko Hyväksyä! quest id: " + _taskData.Id.ToString(), 1, data));
@@ -32,5 +38,15 @@ public class DailyQuest : MonoBehaviour
         questTitle.text = _taskData.Title;
         questDebugID.text = _taskData.Id.ToString();
         questCoins.text = _taskData.Coins.ToString();
+    }
+
+    public virtual void OnBeginDrag(PointerEventData eventData)
+    {
+        _clickEnabled = false;
+    }
+
+    public virtual void OnEndDrag(PointerEventData eventData)
+    {
+        _clickEnabled = true;
     }
 }
