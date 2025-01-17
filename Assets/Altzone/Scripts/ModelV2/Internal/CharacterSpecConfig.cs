@@ -10,12 +10,11 @@ using Debug = UnityEngine.Debug;
 namespace Altzone.Scripts.ModelV2.Internal
 {
     /// <summary>
-    /// This (singleton) list (UNITY asset) contains all player character prototype in the game (set in UNITY Editor).<br />
-    /// By default only 'approved' player character prototypes are returned.
+    /// This (singleton) list (UNITY asset) contains all player character prototypes in the game (set in UNITY Editor).<br />
+    /// By default only 'approved' player character prototypes are returned.<br />
+    /// Partially filled (invalid) player character prototypes are ignored always,
+    /// associated <c>CharacterSpec</c> knows whether it is valid or not to be included.
     /// </summary>
-    /// <remarks>
-    /// Note that only 'valid' player character prototype are returned.
-    /// </remarks>
     //[CreateAssetMenu(menuName = "ALT-Zone/CharacterSpecConfig", fileName = nameof(CharacterSpecConfig))]
     internal class CharacterSpecConfig : ScriptableObject
     {
