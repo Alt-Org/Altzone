@@ -1,4 +1,3 @@
-using MenuUi.Scripts.DefenceScreen.CharacterStatsWindow;
 using TMPro;
 using UnityEngine;
 
@@ -16,6 +15,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             SetCharacterName();
             SetDiamondsAmount();
             SetEraserAmount();
+
+            _controller.OnDiamondDecreased += SetDiamondsAmount;
+            _controller.OnEraserDecreased += SetEraserAmount;
+        }
+
+
+        private void OnDisable()
+        {
+            _controller.OnDiamondDecreased -= SetDiamondsAmount;
+            _controller.OnEraserDecreased -= SetEraserAmount;
         }
 
 
