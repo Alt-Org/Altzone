@@ -7,7 +7,7 @@ using Object = UnityEngine.Object;
 namespace Altzone.Scripts.ModelV2.Internal
 {
     /// <summary>
-    /// Numeric value attribute with coefficient for character progression logic.
+    /// Numeric attribute with level number and coefficient for character progression logic.
     /// </summary>
     [Serializable]
     [SuppressMessage("ReSharper", "InconsistentNaming")]

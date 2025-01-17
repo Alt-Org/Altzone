@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Altzone.Scripts.ModelV2
 {
     /// <summary>
-    /// General contract for player character prototype.
+    /// General contract for read-only player character prototype.
     /// </summary>
     public class PlayerCharacterPrototype
     {
