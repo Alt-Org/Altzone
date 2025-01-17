@@ -1,9 +1,22 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Altzone.Scripts.ModelV2.Internal
 {
+    /// <summary>
+    /// Numeric value attribute with coefficient for character progression logic.
+    /// </summary>
+    [Serializable]
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    internal class NumAttribute
+    {
+        public int Level;
+        public ValueStrength Coefficient;
+    }
+
     /// <summary>
     /// Altzone game player character 'specification' implementation and references to all in-game resources attached to it.<br />
     /// <b>Note</b> that this class should not be edited spontaneously but only using relevant change management process!<br />
@@ -46,11 +59,11 @@ namespace Altzone.Scripts.ModelV2.Internal
 
         #region Special attributes
 
-        [Header("Special Attributes")] public float Hp;
-        public float Speed;
-        public float Resistance;
-        public float Attack;
-        public float Defence;
+        [Header("Special Attributes")] public NumAttribute Hp;
+        public NumAttribute Speed;
+        public NumAttribute Resistance;
+        public NumAttribute Attack;
+        public NumAttribute Defence;
 
         #endregion
 
