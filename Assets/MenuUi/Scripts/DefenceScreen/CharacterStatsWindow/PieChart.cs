@@ -2,106 +2,59 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
     public class PieChartManager : MonoBehaviour
     {
-        // listataan palaset, montako niitä on.
         // list the slices, how many there are.
         [SerializeField] private List<Image> slices;
 
-        // Hakee Unity:n UI:n tekstikentän josta tietoa halutaan hakea.
-        // Retrieves the text field in Unity's UI from which information is to be retrieved.
-        [SerializeField] private TMP_Text impactForceText;
-        [SerializeField] private TMP_Text healthPointsText;
-        [SerializeField] private TMP_Text resistanceText;
-        [SerializeField] private TMP_Text characterSizeText;
-        [SerializeField] private TMP_Text speedText;
+        [SerializeField] private StatsWindowController _controller;
 
-        // Asetetaan väri, minkälaiseksi palanen tulee muuttua tietyn statin mukaan. Näitä voidaan muuttaa suoraan unityn sisällä.
         // Set the color, what kind of piece the piece should turn into according to a certain stat. These can be changed directly inside unity.
         [SerializeField] private Color impactForceColor = new Color(1f, 0.5f, 0f);
         [SerializeField] private Color healthPointsColor = Color.green;
-        [SerializeField] private Color resistanceColor = new Color(0.5f, 0f, 0.5f);
+        [SerializeField] private Color defenceColor = new Color(0.5f, 0f, 0.5f);
         [SerializeField] private Color characterSizeColor = Color.blue;
         [SerializeField] private Color speedColor = new Color(0f, 0.5f, 0f);
         [SerializeField] private Color defaultColor = Color.white;
 
-        // Väliaikainen muuttuja arvoille, jotta reaaliaikainen päivitys onnistuu.
-        // Temporary variable for values, so that the real-time update is successful.
-        private int lastImpactForce;
-        private int lastHealthPoints;
-        private int lastResistance;
-        private int lastCharacterSize;
-        private int lastSpeed;
-
         private void OnEnable()
         {
-            // Päivittää PieChart:n, kun paneeli/sivu avataan uudelleen.
             // Updates PieChart when panel/page is opened.
             Debug.Log("Pie Chart Manager: Paneeli avattu, päivitetään pie chart...");
             UpdateChart();
+            _controller.OnStatUpdated += UpdateChart;
         }
 
-        private void Update()
+        private void OnDisable()
         {
-            // Tarkistaa, ovatko arvot muuttuneet.
-            // Checks if values have changed.
-            int currentImpactForce = ParseText(impactForceText.text);
-            int currentHealthPoints = ParseText(healthPointsText.text);
-            int currentResistance = ParseText(resistanceText.text);
-            int currentCharacterSize = ParseText(characterSizeText.text);
-            int currentSpeed = ParseText(speedText.text);
-
-            // Tarkistaa alkuperäisen ja uuden arvon välillä, ovatko ne samat.
-            // Checks between the original and the new value to see if they are the same.
-            if (currentImpactForce != lastImpactForce ||
-                currentHealthPoints != lastHealthPoints ||
-                currentResistance != lastResistance ||
-                currentCharacterSize != lastCharacterSize ||
-                currentSpeed != lastSpeed)
-            {
-                // Päivittää viimeisimmät arvot.
-                // Updates latest values.
-                lastImpactForce = currentImpactForce;
-                lastHealthPoints = currentHealthPoints;
-                lastResistance = currentResistance;
-                lastCharacterSize = currentCharacterSize;
-                lastSpeed = currentSpeed;
-
-                UpdateChart();
-            }
+            _controller.OnStatUpdated -= UpdateChart;
         }
 
 
-
-        public void UpdateChart()
+        public void UpdateChart(StatType statType = StatType.None)
         {
             Debug.Log("Updating Pie Chart...");
 
-            // Haetaan arvot tekstikentistä (TMP_Text) ja muutetaan ne numero (int) luvuiksi.
-            // Retrieve values ​​from text fields (TMP_Text) and change them to numbers (int).
-            int impactForce = ParseText(impactForceText.text);
-            int healthPoints = ParseText(healthPointsText.text);
-            int resistance = ParseText(resistanceText.text);
-            int characterSize = ParseText(characterSizeText.text);
-            int speed = ParseText(speedText.text);
+            int impactForce = _controller.GetStat(StatType.Attack);
+            int healthPoints = _controller.GetStat(StatType.Hp);
+            int defence = _controller.GetStat(StatType.Defence);
+            int characterSize = _controller.GetStat(StatType.Resistance);
+            int speed = _controller.GetStat(StatType.Speed);
 
-            Debug.Log($"Impact Force: {impactForce}, Health Points: {healthPoints}, Resistance: {resistance}, Character Size: {characterSize}, Speed: {speed}");
-
-            // Järjestää statsit.
             // Arrange stats.
             var stats = new List<(int level, Color color)>
-        {
-            (impactForce, impactForceColor),
-            (healthPoints, healthPointsColor),
-            (resistance, resistanceColor),
-            (characterSize, characterSizeColor),
-            (speed, speedColor)
-        };
+            {
+                (speed, speedColor),
+                (healthPoints, healthPointsColor),
+                (impactForce, impactForceColor),
+                (defence, defenceColor),
+                (characterSize, characterSizeColor),
+            };
 
-            // Alustaa kaikki slicet.
             // Formats all slices.
             foreach (var slice in slices)
             {
@@ -109,7 +62,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 slice.color = defaultColor;
             }
 
-            // Täytetään palaset (slice) järjestyksessä PieChartiin.
             // Fill up slices in order to the PieChart.
             int currentSlice = 0;
 
@@ -130,13 +82,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             }
 
             Debug.Log("Pie Chart updated!");
-        }
-
-        // Parsettaa tekstin, onko se mahdollista muuttaa int luvuksi.
-        // Parsing text if they are possible to change from string -> int.
-        private int ParseText(string text)
-        {
-            return int.TryParse(text, out int result) ? result : 0;
         }
     }
 }
