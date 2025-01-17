@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 
-namespace Altzone.Scripts.Config.ScriptableObjects
+namespace Altzone.Scripts.PlayerCharacter
 {
     /// <summary>
     /// Altzone game player character 'specification' implementation and references to all in-game resources attached to it.<br />
@@ -11,7 +11,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     /// </summary>
     [CreateAssetMenu(menuName = "ALT-Zone/CharacterSpec", fileName = nameof(CharacterSpec) + "_ID")]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public class CharacterSpec : ScriptableObject
+    internal class CharacterSpec : ScriptableObject
     {
         #region Metadata
 

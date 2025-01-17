@@ -178,8 +178,8 @@ namespace MenuUi.Scripts.CharacterGallery
             foreach (var character in allItems)
             {
                 //GalleryCharacterInfo info = _referenceSheet.GetCharacterPrefabInfoFast((int)character.Id);
-                CharacterSpec info2 = PlayerCharacters.GetCharacter(((int)character.Id).ToString());
-                if (info2 == null || !info2.IsApproved) continue;
+                var info2 = PlayerCharacters.GetCharacter(((int)character.Id).ToString());
+                if (info2 == null) continue;
 
                 GameObject slot = Instantiate(_characterSlotprefab, GetContent());
                 slot.GetComponent<CharacterSlot>().SetInfo(info2.GalleryImage, info2.Name, character.Id, this);
@@ -308,5 +308,3 @@ namespace MenuUi.Scripts.CharacterGallery
         }
     }
 }
-
-

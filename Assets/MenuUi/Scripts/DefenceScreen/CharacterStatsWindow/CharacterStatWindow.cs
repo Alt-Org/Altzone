@@ -465,7 +465,7 @@ public class CharacterStatWindow : MonoBehaviour
 
         //var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)index);
         //var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)_characterId);
-        CharacterSpec info2 = PlayerCharacters.GetCharacter(((int)_characterId).ToString());
+        var info2 = PlayerCharacters.GetCharacter(((int)_characterId).ToString());
         if (/*galleryCharacter == null ||*/ info2 == null)
         {
 
@@ -565,7 +565,7 @@ public class CharacterStatWindow : MonoBehaviour
     {
         var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
         //var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)_characterId);
-        CharacterSpec info2 = PlayerCharacters.GetCharacter(((int)_characterId).ToString());
+        var info2 = PlayerCharacters.GetCharacter(((int)_characterId).ToString());
 
         //Should this be CustomCharacter?
         _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(info2.Name, false,
