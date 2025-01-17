@@ -1109,11 +1109,6 @@ PrefabInstance:
       objectReference: {fileID: 6631376059427024488}
     - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
-      propertyPath: UpgradeDiamondImage
-      value: 
-      objectReference: {fileID: 4812629501582314995}
-    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
-        type: 3}
       propertyPath: defenceCurrentLevel
       value: 
       objectReference: {fileID: 1264220150375165737}
@@ -1542,6 +1537,71 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7662341126525043444, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: _controller
+      value: 
+      objectReference: {fileID: 4473235994531621850}
+    - target: {fileID: 7662341126525043444, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: speedColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662341126525043444, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: speedColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662341126525043444, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: defenceColor.b
+      value: 0.9176471
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662341126525043444, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: defenceColor.g
+      value: 0.30980393
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662341126525043444, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: defenceColor.r
+      value: 0.46274513
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662341126525043444, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: impactForceColor.g
+      value: 0.4156863
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662341126525043444, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: healthPointsColor.b
+      value: 0.18039216
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662341126525043444, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: healthPointsColor.g
+      value: 0.8862746
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662341126525043444, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: healthPointsColor.r
+      value: 0.24705884
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662341126525043444, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: characterSizeColor.b
+      value: 0.22352943
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662341126525043444, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: characterSizeColor.g
+      value: 0.23137257
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662341126525043444, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: characterSizeColor.r
+      value: 0.8078432
+      objectReference: {fileID: 0}
     - target: {fileID: 7710749757936510986, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -1734,18 +1794,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &4812629501582314995 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4981502004415478099, guid: 4ab03391b3dcfa54496511f4e4eb6183,
-    type: 3}
-  m_PrefabInstance: {fileID: 569772038814020768}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &5152688970190664228 stripped
