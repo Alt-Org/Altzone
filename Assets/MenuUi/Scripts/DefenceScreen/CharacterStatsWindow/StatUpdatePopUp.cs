@@ -21,6 +21,13 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private void OnEnable()
         {
             ClosePopUp();
+            _controller.OnStatUpdated += UpdateStatNumber;
+        }
+
+
+        private void OnDisable()
+        {
+            _controller.OnStatUpdated -= UpdateStatNumber;
         }
 
 
@@ -104,6 +111,12 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         public void MinusButtonClicked()
         {
             _controller.TryDecreaseStat(_statType);
+        }
+
+
+        private void UpdateStatNumber(StatType statType)
+        {
+            _statNumber.text = _controller.GetStat(statType).ToString();
         }
     }
 }
