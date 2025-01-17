@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Altzone.Scripts.ModelV2.Internal;
 
 namespace Altzone.Scripts.ModelV2
 {
@@ -14,13 +15,12 @@ namespace Altzone.Scripts.ModelV2
         /// </summary>
         /// <param name="id">the character id</param>
         /// <returns>the PlayerCharacterPrototype or null if not found</returns>
-        public static PlayerCharacterPrototype GetCharacter(string id) =>
-            Internal.PlayerCharacterPrototype.Instance.GetCharacter(id);
+        public static PlayerCharacterPrototype GetCharacter(string id) => CharacterSpecConfig.Instance.GetCharacter(id);
 
         /// <summary>
         /// Lists current (configured) player character prototypes in the game.
         /// </summary>
-        public static IEnumerable<PlayerCharacterPrototype> Prototypes => Internal.PlayerCharacterPrototype.Instance.Prototypes;
+        public static IEnumerable<PlayerCharacterPrototype> Prototypes => CharacterSpecConfig.Instance.Prototypes;
 
         #endregion
     }

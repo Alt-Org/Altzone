@@ -16,8 +16,8 @@ namespace Altzone.Scripts.ModelV2.Internal
     /// <remarks>
     /// Note that only 'valid' player character prototype are returned.
     /// </remarks>
-    //[CreateAssetMenu(menuName = "ALT-Zone/PlayerCharacterPrototype", fileName = nameof(PlayerCharacterPrototype))]
-    internal class PlayerCharacterPrototype : ScriptableObject
+    //[CreateAssetMenu(menuName = "ALT-Zone/CharacterSpecConfig", fileName = nameof(CharacterSpecConfig))]
+    internal class CharacterSpecConfig : ScriptableObject
     {
         #region UNITY Singleton Pattern
 
@@ -30,16 +30,16 @@ namespace Altzone.Scripts.ModelV2.Internal
             VerifyCharacterPrototypes();
         }
 
-        private static PlayerCharacterPrototype _instance;
+        private static CharacterSpecConfig _instance;
         private static bool _hasInstance;
 
-        public static PlayerCharacterPrototype Instance
+        public static CharacterSpecConfig Instance
         {
             get
             {
                 if (!_hasInstance)
                 {
-                    _instance = Resources.Load<PlayerCharacterPrototype>(nameof(PlayerCharacterPrototype));
+                    _instance = Resources.Load<CharacterSpecConfig>(nameof(CharacterSpecConfig));
                     _hasInstance = _instance != null;
                     if (_hasInstance)
                     {
