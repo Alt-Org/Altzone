@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Quantum
 {
-    public class BattleCharacterBase
+    public struct BattleCharacterBase
     {
         private int _id;
         private int _characterClassID;

@@ -479,10 +479,12 @@ namespace Altzone.Scripts.Lobby
 
         public void SetPlayerQuantumCharacters(List<CustomCharacter> characters)
         {
-            List<BattleCharacterBase> list = new();
-            foreach(CustomCharacter character in characters)
-            {
-                list.Add(new(
+            BattleCharacterBase[] list = new BattleCharacterBase[RuntimePlayer.BattleCharacterArraySize];
+            for (int i = 0; i < list.Length; i++) {
+                if (i < characters.Count)
+                {
+                  CustomCharacter character = characters[i];
+                    list[i] = new BattleCharacterBase(
                     (int)character.Id,
                     (int)character.CharacterClassID,
                     BaseCharacter.GetStatValueFP(StatType.Hp, character.Hp),
@@ -490,7 +492,8 @@ namespace Altzone.Scripts.Lobby
                     BaseCharacter.GetStatValueFP(StatType.Defence, character.Defence),
                     BaseCharacter.GetStatValueFP(StatType.Resistance, character.Resistance),
                     BaseCharacter.GetStatValueFP(StatType.Speed, character.Speed)
-                ));
+                    );
+                }
             }
             _player._characters = list;
         }

@@ -4,7 +4,8 @@ namespace Quantum
 {
     public partial class RuntimePlayer
     {
-        public List<BattleCharacterBase> _characters;
+        public const int BattleCharacterArraySize = 3;
+        public BattleCharacterBase[] _characters = new BattleCharacterBase[BattleCharacterArraySize];
         public int playerPos;
     }
 }
