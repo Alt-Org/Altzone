@@ -3,12 +3,11 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using Altzone.Scripts.Config.ScriptableObjects;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-namespace Altzone.Scripts.PlayerCharacter
+namespace Altzone.Scripts.ModelV2.Internal
 {
     /// <summary>
     /// This (singleton) list (UNITY asset) contains all player character prototype in the game (set in UNITY Editor).<br />
@@ -17,8 +16,8 @@ namespace Altzone.Scripts.PlayerCharacter
     /// <remarks>
     /// Note that only 'valid' player character prototype are returned.
     /// </remarks>
-    //[CreateAssetMenu(menuName = "ALT-Zone/PlayerCharacterPrototypes", fileName = nameof(PlayerCharacterPrototypes))]
-    internal class PlayerCharacterPrototypes : ScriptableObject
+    //[CreateAssetMenu(menuName = "ALT-Zone/PlayerCharacterPrototype", fileName = nameof(PlayerCharacterPrototype))]
+    internal class PlayerCharacterPrototype : ScriptableObject
     {
         #region UNITY Singleton Pattern
 
@@ -31,28 +30,28 @@ namespace Altzone.Scripts.PlayerCharacter
             VerifyCharacterPrototypes();
         }
 
-        private static PlayerCharacterPrototypes _instance;
+        private static PlayerCharacterPrototype _instance;
         private static bool _hasInstance;
 
-        public static PlayerCharacterPrototypes Instance
+        public static PlayerCharacterPrototype Instance
         {
             get
             {
                 if (!_hasInstance)
                 {
-                    _instance = Resources.Load<PlayerCharacterPrototypes>(nameof(PlayerCharacterPrototypes));
+                    _instance = Resources.Load<PlayerCharacterPrototype>(nameof(PlayerCharacterPrototype));
                     _hasInstance = _instance != null;
                     if (_hasInstance)
                     {
                         _instance._runtimePrototypes = _instance._approvedOnly
                             ? _instance._characters
                                 .Where(SelectApproved)
-                                .Select(x => new PlayerCharacterPrototype(x))
+                                .Select(x => new ModelV2.PlayerCharacterPrototype(x))
                                 .ToList()
                                 .AsReadOnly()
                             : _instance._characters
                                 .Where(SelectAll)
-                                .Select(x => new PlayerCharacterPrototype(x))
+                                .Select(x => new ModelV2.PlayerCharacterPrototype(x))
                                 .ToList()
                                 .AsReadOnly();
                     }
@@ -74,14 +73,15 @@ namespace Altzone.Scripts.PlayerCharacter
         /// </summary>
         /// <param name="id">the character id</param>
         /// <returns>the PlayerCharacterPrototype or null if not found</returns>
-        public PlayerCharacterPrototype GetCharacter(string id) => _runtimePrototypes.FirstOrDefault(x => x.Id == id);
+        public ModelV2.PlayerCharacterPrototype GetCharacter(string id) =>
+            _runtimePrototypes.FirstOrDefault(x => x.Id == id);
 
         /// <summary>
         /// Gets current (configured) player character prototypes in the game.
         /// </summary>
-        public IEnumerable<PlayerCharacterPrototype> Prototypes => _runtimePrototypes;
+        public IEnumerable<ModelV2.PlayerCharacterPrototype> Prototypes => _runtimePrototypes;
 
-        private ReadOnlyCollection<PlayerCharacterPrototype> _runtimePrototypes;
+        private ReadOnlyCollection<ModelV2.PlayerCharacterPrototype> _runtimePrototypes;
 
         #endregion
 
@@ -122,15 +122,17 @@ namespace Altzone.Scripts.PlayerCharacter
             }
             // Get runtime list (sorted).
             var builder =
-                new StringBuilder(instance._approvedOnly ? "approved characters" : "all configured characters")
+                new StringBuilder(instance._approvedOnly
+                        ? $"approved characters {instance._runtimePrototypes.Count} (configured {instance._characters.Count})"
+                        : $"configured characters {instance._characters}")
                     .AppendLine();
             foreach (var character in instance._runtimePrototypes
                          .OrderBy(x => x.Id)
                          .ThenBy(x => x.Name))
             {
+                Debug.Log($"{character}", instance);
                 builder.AppendLine(character.ToString());
             }
-            builder.AppendLine($"character count {uniqueIds.Count}");
             _instance._liveCharactersText = builder.ToString();
         }
     }

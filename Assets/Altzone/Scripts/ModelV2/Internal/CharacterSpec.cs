@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 
-namespace Altzone.Scripts.PlayerCharacter
+namespace Altzone.Scripts.ModelV2.Internal
 {
     /// <summary>
     /// Altzone game player character 'specification' implementation and references to all in-game resources attached to it.<br />

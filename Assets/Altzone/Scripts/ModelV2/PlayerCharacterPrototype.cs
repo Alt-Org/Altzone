@@ -1,9 +1,12 @@
 using Altzone.Scripts.Model.Poco.Game;
-using Altzone.Scripts.PlayerCharacter;
+using Altzone.Scripts.ModelV2.Internal;
 using UnityEngine;
 
-namespace Altzone.Scripts.Config.ScriptableObjects
+namespace Altzone.Scripts.ModelV2
 {
+    /// <summary>
+    /// General contract for player character prototype.
+    /// </summary>
     public class PlayerCharacterPrototype
     {
         public string Id => _characterSpec.Id;

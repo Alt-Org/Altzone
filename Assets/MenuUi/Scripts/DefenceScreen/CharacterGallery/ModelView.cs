@@ -7,6 +7,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.Config.ScriptableObjects;
+using Altzone.Scripts.ModelV2;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -178,7 +179,7 @@ namespace MenuUi.Scripts.CharacterGallery
             foreach (var character in allItems)
             {
                 //GalleryCharacterInfo info = _referenceSheet.GetCharacterPrefabInfoFast((int)character.Id);
-                var info2 = PlayerCharacters.GetCharacter(((int)character.Id).ToString());
+                var info2 = PlayerCharacterPrototypes.GetCharacter(((int)character.Id).ToString());
                 if (info2 == null) continue;
 
                 GameObject slot = Instantiate(_characterSlotprefab, GetContent());

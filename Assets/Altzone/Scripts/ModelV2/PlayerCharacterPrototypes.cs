@@ -1,12 +1,11 @@
 using System.Collections.Generic;
-using Altzone.Scripts.PlayerCharacter;
 
-namespace Altzone.Scripts.Config.ScriptableObjects
+namespace Altzone.Scripts.ModelV2
 {
     /// <summary>
-    /// Common access point for <c>PlayerCharacterPrototype</c>s.
+    /// Common access point for player character prototypes.
     /// </summary>
-    public static class PlayerCharacters
+    public static class PlayerCharacterPrototypes
     {
         #region Public (static) API
 
@@ -16,12 +15,12 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         /// <param name="id">the character id</param>
         /// <returns>the PlayerCharacterPrototype or null if not found</returns>
         public static PlayerCharacterPrototype GetCharacter(string id) =>
-            PlayerCharacterPrototypes.Instance.GetCharacter(id);
+            Internal.PlayerCharacterPrototype.Instance.GetCharacter(id);
 
         /// <summary>
         /// Lists current (configured) player character prototypes in the game.
         /// </summary>
-        public static IEnumerable<PlayerCharacterPrototype> Prototypes => PlayerCharacterPrototypes.Instance.Prototypes;
+        public static IEnumerable<PlayerCharacterPrototype> Prototypes => Internal.PlayerCharacterPrototype.Instance.Prototypes;
 
         #endregion
     }
