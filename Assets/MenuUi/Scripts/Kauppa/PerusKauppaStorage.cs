@@ -4,14 +4,15 @@ using System.Collections.ObjectModel;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.UI;
 
 public class PerusKauppaStorage : ShopPanelStorage
 {
     [Header("Sorting")]
-    [SerializeField] private Transform _commonParent;
-    [SerializeField] private Transform _rareParent;
-    [SerializeField] private Transform _epicParent;
-    [SerializeField] private Transform _antiqueParent;
+    [SerializeField] private RectTransform _commonParent;
+    [SerializeField] private RectTransform _rareParent;
+    [SerializeField] private RectTransform _epicParent;
+    [SerializeField] private RectTransform _antiqueParent;
 
     [Space(5f)]
 
@@ -85,5 +86,11 @@ public class PerusKauppaStorage : ShopPanelStorage
         //Randomize
         // Sort based on rarity
         // Instantiate on the righfull position
+
+        //Force each layout group to rebild to avoid UI issues
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_commonParent);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_rareParent);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_antiqueParent);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_epicParent);
     }
 }
