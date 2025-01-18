@@ -8,6 +8,9 @@ using UnityEngine.UI;
 
 public class PerusKauppaStorage : ShopPanelStorage
 {
+    public RectTransform Content;
+
+
     [Header("Sorting")]
     [SerializeField] private RectTransform _commonParent;
     [SerializeField] private RectTransform _rareParent;
@@ -47,6 +50,14 @@ public class PerusKauppaStorage : ShopPanelStorage
         gameFurnitures = new();
         gameFurnituresOnScene = new();
     }
+    private void OnEnable()
+    {
+        //Force each layout group to rebild to avoid UI issues
+        //_commonParent.transform.parent.GetComponent<FlexibleHorizontalGrid>().CalculateLayoutInputHorizontal();
+        //_rareParent.transform.parent.GetComponent<FlexibleHorizontalGrid>().CalculateLayoutInputHorizontal();
+        //_antiqueParent.transform.parent.GetComponent<FlexibleHorizontalGrid>().CalculateLayoutInputHorizontal();
+        //_epicParent.transform.parent.GetComponent<FlexibleHorizontalGrid>().CalculateLayoutInputHorizontal();
+    }
     protected override void HandleGameFurnitureCreation(ReadOnlyCollection<GameFurniture> gameFurnitures)
     {
         foreach(GameFurniture furniture in gameFurnitures)
@@ -82,15 +93,20 @@ public class PerusKauppaStorage : ShopPanelStorage
             }
         }
 
+        //LayoutRebuilder.ForceRebuildLayoutImmediate(fitter.GetComponent<RectTransform>());
 
         //Randomize
         // Sort based on rarity
         // Instantiate on the righfull position
 
         //Force each layout group to rebild to avoid UI issues
-        LayoutRebuilder.ForceRebuildLayoutImmediate(_commonParent);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(_rareParent);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(_antiqueParent);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(_epicParent);
+        //LayoutRebuilder.ForceRebuildLayoutImmediate(_commonParent);
+        //LayoutRebuilder.ForceRebuildLayoutImmediate(_rareParent);
+        //LayoutRebuilder.ForceRebuildLayoutImmediate(_antiqueParent);
+        //LayoutRebuilder.ForceRebuildLayoutImmediate(_epicParent);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(Content);
+
+
+        //Canvas.ForceUpdateCanvases();
     }
 }
