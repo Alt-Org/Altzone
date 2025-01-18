@@ -9,7 +9,6 @@ using UnityEngine.UI;
 public class PerusKauppaStorage : ShopPanelStorage
 {
     [SerializeField] private RectTransform Content;
-    [SerializeField] private BaseScrollRect myScrollRect;
 
     [Space(5f)]
 
