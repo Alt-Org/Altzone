@@ -8,15 +8,15 @@ using UnityEngine.UI;
 
 public class PerusKauppaStorage : ShopPanelStorage
 {
-    [SerializeField] private RectTransform Content;
+    [SerializeField] private RectTransform _Content;
 
     [Space(5f)]
 
-    [Header("Sorting")]
-    [SerializeField] private RectTransform _commonParent;
-    [SerializeField] private RectTransform _rareParent;
-    [SerializeField] private RectTransform _epicParent;
-    [SerializeField] private RectTransform _antiqueParent;
+    [Header("Parents")]
+    [SerializeField] private RectTransform _commonGroup;
+    [SerializeField] private RectTransform _rareGroup;
+    [SerializeField] private RectTransform _epicGroup;
+    [SerializeField] private RectTransform _antiqueGroup;
 
     [Space(5f)]
 
@@ -35,10 +35,10 @@ public class PerusKauppaStorage : ShopPanelStorage
     private void Awake()
     {
         _rarityToParent = new Dictionary<FurnitureRarity, Transform>{
-            {FurnitureRarity.Common, _commonParent},
-            {FurnitureRarity.Rare, _rareParent},
-            {FurnitureRarity.Epic, _epicParent},
-            {FurnitureRarity.Antique, _antiqueParent}
+            {FurnitureRarity.Common, _commonGroup},
+            {FurnitureRarity.Rare, _rareGroup},
+            {FurnitureRarity.Epic, _epicGroup},
+            {FurnitureRarity.Antique, _antiqueGroup}
         };
 
         _rarityToPrefab = new Dictionary<FurnitureRarity, GameFurnitureVisualizer>
@@ -92,6 +92,6 @@ public class PerusKauppaStorage : ShopPanelStorage
         // Instantiate on the righfull position
 
         //Force each content to rebild to avoid UI issues
-        LayoutRebuilder.ForceRebuildLayoutImmediate(Content);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_Content);
     }
 }
