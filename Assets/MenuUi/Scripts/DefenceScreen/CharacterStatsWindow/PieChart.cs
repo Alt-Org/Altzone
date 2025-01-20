@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine.UIElements;
+using System.Collections;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
@@ -19,19 +20,14 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         PieChartVisuals _pieChart;
 
-        private void OnEnable()
+
+        private void Update() // updatechart has to be called every frame so that it follows swipe
         {
             UpdateChart();
-            _controller.OnStatUpdated += UpdateChart;
-        }
-
-        private void OnDisable()
-        {
-            _controller.OnStatUpdated -= UpdateChart;
         }
 
 
-        public void UpdateChart(StatType statType = StatType.None)
+        public void UpdateChart()
         {
             int impactForce = _controller.GetStat(StatType.Attack);
             int healthPoints = _controller.GetStat(StatType.Hp);
@@ -48,8 +44,9 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 (healthPoints, healthPointsColor),
                 (impactForce, impactForceColor),
             };
-            RectTransform rect = GetComponent<RectTransform>();
-            _pieChart = new PieChartVisuals(new Vector2(107, 275), 40, 50, stats);
+
+            // create visuals
+            _pieChart = new PieChartVisuals(transform.position, 500, 50, stats);
             GetComponent<UIDocument>().rootVisualElement.Clear();
             GetComponent<UIDocument>().rootVisualElement.Add(_pieChart);
         }

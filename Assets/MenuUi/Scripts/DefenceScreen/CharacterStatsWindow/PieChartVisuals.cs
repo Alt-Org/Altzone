@@ -47,9 +47,9 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             // creating painter and defining parameters
             var painter2D = ctx.painter2D;
-            painter2D.lineWidth = 0.5f;
+            painter2D.lineWidth = 2f;
             painter2D.strokeGradient = gradient;
-
+            
             // getting the angle for one segment
             float segmentAngle = 360.0f / (float)_totalSegmentAmount;
 
