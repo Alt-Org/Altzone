@@ -10,8 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 60eb1981be8f4c2998d71a48257bb704, type: 3}
-  m_Name: PlayerCharacters
+  m_Name: CharacterSpecConfig
   m_EditorClassIdentifier: 
+  _approvedOnly: 1
   _characters:
   - {fileID: 11400000, guid: 9f7b06028b0a61641bb94d8908ce8769, type: 2}
   - {fileID: 11400000, guid: 084208d273b1cb44e9a98bc92f2570e9, type: 2}
@@ -31,8 +32,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 04787520561b2de478e99ef180f5aa8f, type: 2}
   - {fileID: 11400000, guid: ce4260c09a4dcf041a3d96666ea0d88d, type: 2}
   - {fileID: 11400000, guid: 9e4f2c82209792540a04df0d0682d453, type: 2}
-  - {fileID: 11400000, guid: 7554d59cf5a8fe2469372ac8268a9f46, type: 2}
+  - {fileID: 11400000, guid: da571583613a1b14cad47d1340c32110, type: 2}
   - {fileID: 11400000, guid: 0de386ae31a1723429c6def10cf25e93, type: 2}
   - {fileID: 11400000, guid: fd1459292d6cac2428c4bc4eb4a3361f, type: 2}
   - {fileID: 11400000, guid: 9fc11965dcb0fdf4d8e5b798a37c7bb8, type: 2}
   - {fileID: 11400000, guid: 61aa1c199ea86004498f4aa144523849, type: 2}
+  _liveCharactersText: 

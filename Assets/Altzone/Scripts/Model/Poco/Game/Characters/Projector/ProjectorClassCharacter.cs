@@ -18,7 +18,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             _hpStrength = ValueStrength.SemiWeak;
             _defenceStrength = ValueStrength.Medium;
             _speedStrength = ValueStrength.Medium;
-            InitilizeValues();
+            InitializeValues();
         }
     }
 }

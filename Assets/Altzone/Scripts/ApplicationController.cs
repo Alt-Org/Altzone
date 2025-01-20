@@ -38,7 +38,6 @@ namespace Altzone.Scripts
                 .Append(" Screen ").Append(Screen.currentResolution)
                 .ToString();
             Debug.Log(startupMessage);
-            PlayerCharacters.Verify();
         }
 
         private void OnApplicationPause(bool pause)
