@@ -417,7 +417,7 @@ namespace Altzone.Scripts.Lobby
             yield return new WaitUntil(() => task.IsCompleted);
             if(task.Result)
             {
-                _player.playerPos = playerPosition;
+                _player.PlayerPosition = playerPosition;
                 _runner?.Game.AddPlayer(_player);
             }
             else
@@ -479,20 +479,25 @@ namespace Altzone.Scripts.Lobby
 
         public void SetPlayerQuantumCharacters(List<CustomCharacter> characters)
         {
-            for (int i = 0; i < _player._characters.Length; i++) {
-                if (i < characters.Count)
+            Assert.IsTrue(
+                characters.Count == RuntimePlayer.CharacterCount,
+                string.Format("Invalid number of Characters (not {0})", RuntimePlayer.CharacterCount)
+            );
+
+            CustomCharacter character;
+            for (int i = 0; i < RuntimePlayer.CharacterCount; i++) {
+                character = characters[i];
+                _player.Characters[i] = new BattleCharacterBase()
                 {
-                  CustomCharacter character = characters[i];
-                    _player._characters[i] = new BattleCharacterBase() {
-                    _id = (int)character.Id,
-                    _characterClassID = (int)character.CharacterClassID,
-                    _hp = BaseCharacter.GetStatValueFP(StatType.Hp, character.Hp),
-                    _attack = BaseCharacter.GetStatValueFP(StatType.Attack, character.Attack),
-                    _defence = BaseCharacter.GetStatValueFP(StatType.Defence, character.Defence),
-                    _resistance = BaseCharacter.GetStatValueFP(StatType.Resistance, character.Resistance),
-                    _speed = BaseCharacter.GetStatValueFP(StatType.Speed, character.Speed)
-                    };
-                }
+                    Id         = (int)character.Id,
+                    ClassID    = (int)character.CharacterClassID,
+
+                    Hp         = BaseCharacter.GetStatValueFP(StatType.Hp, character.Hp),
+                    Attack     = BaseCharacter.GetStatValueFP(StatType.Attack, character.Attack),
+                    Defence    = BaseCharacter.GetStatValueFP(StatType.Defence, character.Defence),
+                    Resistance = BaseCharacter.GetStatValueFP(StatType.Resistance, character.Resistance),
+                    Speed      = BaseCharacter.GetStatValueFP(StatType.Speed, character.Speed)
+                };
             }
         }
 

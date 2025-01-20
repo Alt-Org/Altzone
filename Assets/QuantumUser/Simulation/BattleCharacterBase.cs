@@ -6,13 +6,13 @@ namespace Quantum
     [Serializable]
     public struct BattleCharacterBase
     {
-        public int _id;
-        public int _characterClassID;
+        public int Id;
+        public int ClassID;
 
-        public FP _hp;
-        public FP _speed;
-        public FP _resistance;
-        public FP _attack;
-        public FP _defence;
+        public FP Hp;
+        public FP Speed;
+        public FP Resistance;
+        public FP Attack;
+        public FP Defence;
     }
 }
