@@ -2,13 +2,14 @@ using System;
 using System.Collections.ObjectModel;
 using Altzone.Scripts.Config.ScriptableObjects;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ModelV2;
+using Altzone.Scripts.ModelV2.Internal;
 using UnityEditor;
 using UnityEngine;
 
 namespace Altzone.Editor.CustomEditors
 {
-#if false
-    [CustomEditor(typeof(CharacterSpec))]
+    [CustomEditor(typeof(CharacterSpec)), CanEditMultipleObjects]
     public class CharacterSpecEditor : UnityEditor.Editor
     {
         private CharacterID _prevID = CharacterID.None;
@@ -17,8 +18,8 @@ namespace Altzone.Editor.CustomEditors
         {
             DrawDefaultInspector();
 
-            ReadOnlyCollection<CharacterSpec> characters =
-                (ReadOnlyCollection<CharacterSpec>)PlayerCharacters.Characters;
+            ReadOnlyCollection<PlayerCharacterPrototype> characters =
+                (ReadOnlyCollection<PlayerCharacterPrototype>) CharacterSpecConfig.Instance.Prototypes;
 
             CharacterSpec script = (CharacterSpec)target;
 
@@ -67,5 +68,4 @@ namespace Altzone.Editor.CustomEditors
             GUI.enabled = true;
         }
     }
-#endif
 }
