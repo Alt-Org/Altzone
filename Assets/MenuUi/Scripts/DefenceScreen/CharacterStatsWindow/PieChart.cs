@@ -46,7 +46,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             };
 
             // create visuals
-            _pieChart = new PieChartVisuals(transform.position, 500, 50, stats);
+            RectTransform rectTransform = GetComponent<RectTransform>();
+            _pieChart = new PieChartVisuals(rectTransform.position, rectTransform.rect.width / 2, 50, stats);
             GetComponent<UIDocument>().rootVisualElement.Clear();
             GetComponent<UIDocument>().rootVisualElement.Add(_pieChart);
         }
