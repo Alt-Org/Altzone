@@ -28,9 +28,8 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         if (!_clickEnabled)
             return;
 
-        PopupData data = new PopupData(_taskData, PopupData.GetType("own_task"));
-
-        StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse("Haluatko Hyväksyä! quest id: " + _taskData.Id.ToString(), 1, data));
+        PopupData data = new PopupData(_taskData);
+        StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse("Haluatko Hyväksyä! quest id: " + _taskData.Id, data));
     }
 
     public void PopulateData()

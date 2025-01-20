@@ -44,7 +44,6 @@ public class DailyTaskManager : MonoBehaviour
         OwnTask,
         ClanTask
     }
-
     private SelectedTab _selectedTab = SelectedTab.Tasks;
 
     // Start of Code
@@ -58,7 +57,9 @@ public class DailyTaskManager : MonoBehaviour
         _clanTaskTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.ClanTask));
 
         //OwnTask cancel button
-        _cancelTaskButton.onClick.AddListener(() => CancelActiveTask());
+        _cancelTaskButton.onClick.AddListener(() => StartCancelTask());
+
+        _ownTaskTabButton.interactable = false;
     }
 
     // First 4 functions are for task slot population and fetching them from server
@@ -147,31 +148,32 @@ public class DailyTaskManager : MonoBehaviour
     }
 
     // Function for popup calling
-    public IEnumerator ShowPopupAndHandleResponse(string Message, int popupId, PopupData? data)
+    public IEnumerator ShowPopupAndHandleResponse(string Message, PopupData? data)
     {
         yield return Popup.RequestPopup(Message, result =>
         {
-            if (result == true)
+            if (result == true && data != null)
             {
                 Debug.Log("Confirmed!");
-                switch(popupId)
+                switch(data.Value.Type)
                 {
-                    case 1:
-                        if (data != null)
-                            PopupDataHandler(data.Value);
-
+                    case PopupData.PopupDataType.OwnTask:
+                        PopupDataHandler(data.Value);
                         SwitchTab(SelectedTab.OwnTask);
-                        Debug.Log("Accept case happened " + popupId);
+                        _ownTaskTabButton.interactable = true;
+                        Debug.Log("Task accepted");
                         break;
-                    case 2:
+                    case PopupData.PopupDataType.CancelTask:
+                        CancelTask();
                         SwitchTab(SelectedTab.Tasks);
-                        Debug.Log("Cancel case happened " + popupId);
+                        _ownTaskTabButton.interactable = false;
+                        Debug.Log("Task canceled");
                         break;
                 }
             }
             else
             {
-                Debug.Log("Cancelled Popup!");
+                Debug.Log("Cancelled Popup.");
                 // Perform actions for cancellation
             }
         });
@@ -190,16 +192,21 @@ public class DailyTaskManager : MonoBehaviour
     {
         StartCoroutine(_ownTaskPageHandler.SetDailyTask(data.TaskDescription, data.TaskAmount, data.TaskPoints, data.TaskCoins));
         _ownTaskId = data.TaskId;
-        //SwitchTab(SelectedTab.OwnTask);
     }
 
-    // calling popup for canceling task
-    public void CancelActiveTask()
+    // Calling popup for canceling task.
+    public void StartCancelTask()
     {
-        StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", 2, null));
+        PopupData data = new(PopupData.GetType("cancel_task"));
+        StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", data));
     }
 
-    // next functions are for tab switching system
+    private void CancelTask()
+    {
+        StartCoroutine(_ownTaskPageHandler.ClearCurrentTask());
+        _ownTaskId = null;
+    }
+
     public void SwitchTab(SelectedTab tab)
     {
         //Hide old tab
@@ -210,7 +217,7 @@ public class DailyTaskManager : MonoBehaviour
             default: _clanTaskView.SetActive(false); break;
         }
 
-        // Update the selected tab
+        // Set new selected tab
         _selectedTab = tab;
 
         //Show new tab
