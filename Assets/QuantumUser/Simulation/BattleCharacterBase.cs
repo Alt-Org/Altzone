@@ -14,24 +14,5 @@ namespace Quantum
         public FP _resistance;
         public FP _attack;
         public FP _defence;
-
-       /* public int Id { get => _id; }
-        public int CharacterClassID { get => _characterClassID; }
-        public FP Hp { get => _hp; }
-        public FP Speed { get => _speed; }
-        public FP Resistance { get => _resistance; }
-        public FP Attack { get => _attack; }
-        public FP Defence { get => _defence; }*/
-
-        public BattleCharacterBase(int id, int classId, FP hp, FP attack, FP defence, FP resistance, FP speed)
-        {
-            _id = id;
-            _characterClassID = classId;
-            _hp = hp;
-            _attack = attack;
-            _defence = defence;
-            _resistance = resistance;
-            _speed = speed;
-        }
     }
 }

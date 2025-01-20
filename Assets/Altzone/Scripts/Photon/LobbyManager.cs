@@ -483,15 +483,15 @@ namespace Altzone.Scripts.Lobby
                 if (i < characters.Count)
                 {
                   CustomCharacter character = characters[i];
-                    _player._characters[i] = new BattleCharacterBase(
-                    (int)character.Id,
-                    (int)character.CharacterClassID,
-                    BaseCharacter.GetStatValueFP(StatType.Hp, character.Hp),
-                    BaseCharacter.GetStatValueFP(StatType.Attack, character.Attack),
-                    BaseCharacter.GetStatValueFP(StatType.Defence, character.Defence),
-                    BaseCharacter.GetStatValueFP(StatType.Resistance, character.Resistance),
-                    BaseCharacter.GetStatValueFP(StatType.Speed, character.Speed)
-                    );
+                    _player._characters[i] = new BattleCharacterBase() {
+                    _id = (int)character.Id,
+                    _characterClassID = (int)character.CharacterClassID,
+                    _hp = BaseCharacter.GetStatValueFP(StatType.Hp, character.Hp),
+                    _attack = BaseCharacter.GetStatValueFP(StatType.Attack, character.Attack),
+                    _defence = BaseCharacter.GetStatValueFP(StatType.Defence, character.Defence),
+                    _resistance = BaseCharacter.GetStatValueFP(StatType.Resistance, character.Resistance),
+                    _speed = BaseCharacter.GetStatValueFP(StatType.Speed, character.Speed)
+                    };
                 }
             }
         }
