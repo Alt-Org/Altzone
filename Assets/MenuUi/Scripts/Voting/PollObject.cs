@@ -10,8 +10,6 @@ using System.Runtime.CompilerServices;
 
 public class PollObject : MonoBehaviour
 {
-    private bool selected;
-
     private string pollId;
 
     [SerializeField] private UnityEngine.UI.Image Image;
@@ -80,19 +78,8 @@ public class PollObject : MonoBehaviour
         SetValues();
     }
 
-    public void SelectPollObject()
-    {
-        selected = true;
-        VotingActions.PollPopupReady += PassPollId;
-    }
-
     public void PassPollId()
     {
-        if (selected)
-        {
-            VotingActions.PassPollId?.Invoke(pollId);
-            selected = false;
-            VotingActions.PollPopupReady -= PassPollId;
-        }
+        VotingActions.PassPollId?.Invoke(pollId);
     }
 }
