@@ -4,6 +4,7 @@ using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.ModelV2;
 using UnityEngine;
 
 
@@ -73,7 +74,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>Current character's name as string.</returns>
         public string GetCurrentCharacterName()
         {
-            return _currentCharacter.CharacterName;
+            var info = PlayerCharacterPrototypes.GetCharacter(((int)_currentCharacter.CharacterBase.Id).ToString());
+            if (info == null)
+            {
+                return "";
+            }
+            else
+            {
+                return info.Name;
+            }
         }
 
 
@@ -83,7 +92,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>Current character's sprite.</returns>
         public Sprite GetCurrentCharacterSprite()
         {
-            return null;
+            var info = PlayerCharacterPrototypes.GetCharacter(((int)_currentCharacter.CharacterBase.Id).ToString());
+            if (info == null)
+            {
+                return null;
+            }
+            else
+            {
+                return info.GalleryImage;
+            }
         }
 
 
