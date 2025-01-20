@@ -11,7 +11,7 @@ namespace Altzone.Scripts.ModelV2.Internal
     /// </summary>
     [Serializable]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    internal class NumAttribute
+    public class NumAttribute
     {
         public int Level;
         public ValueStrength Coefficient;
@@ -24,7 +24,7 @@ namespace Altzone.Scripts.ModelV2.Internal
     /// </summary>
     [CreateAssetMenu(menuName = "ALT-Zone/CharacterSpec", fileName = nameof(CharacterSpec) + "_ID")]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    internal class CharacterSpec : ScriptableObject
+    public class CharacterSpec : ScriptableObject
     {
         #region Metadata
 
@@ -32,7 +32,10 @@ namespace Altzone.Scripts.ModelV2.Internal
         /// Character id, specified externally.
         /// </summary>
         [Header("Character Basic Data")] public string Id;
-
+        /// <summary>
+        /// Character id in Enum form, this allows the programmers to specify certain IDs in code that aren't changed.
+        /// </summary>
+        public CharacterID CharacterId;
         /// <summary>
         /// Is this player character approved for production.
         /// </summary>
