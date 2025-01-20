@@ -479,12 +479,11 @@ namespace Altzone.Scripts.Lobby
 
         public void SetPlayerQuantumCharacters(List<CustomCharacter> characters)
         {
-            BattleCharacterBase[] list = new BattleCharacterBase[RuntimePlayer.BattleCharacterArraySize];
-            for (int i = 0; i < list.Length; i++) {
+            for (int i = 0; i < _player._characters.Length; i++) {
                 if (i < characters.Count)
                 {
                   CustomCharacter character = characters[i];
-                    list[i] = new BattleCharacterBase(
+                    _player._characters[i] = new BattleCharacterBase(
                     (int)character.Id,
                     (int)character.CharacterClassID,
                     BaseCharacter.GetStatValueFP(StatType.Hp, character.Hp),
@@ -495,7 +494,6 @@ namespace Altzone.Scripts.Lobby
                     );
                 }
             }
-            _player._characters = list;
         }
 
         public void OnDisconnected(DisconnectCause cause)
