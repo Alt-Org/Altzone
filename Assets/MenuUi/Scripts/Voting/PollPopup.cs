@@ -58,14 +58,7 @@ public class PollPopup : MonoBehaviour
         {
             FurniturePollData furniturePollData = (FurniturePollData)pollData;
 
-            if (valueText != null) valueText.text = "Value: " + furniturePollData.Value.ToString();
-        }
-
-        if (pollData is EsinePollData)
-        {
-            EsinePollData furniturePollData = (EsinePollData)pollData;
-
-            if (valueText != null) valueText.text = "Value: " + furniturePollData.Value.ToString();
+            if (valueText != null) valueText.text = "Value: " + furniturePollData.Furniture.Value.ToString();
         }
 
         playerHeads.InstantiateHeads(pollId);
