@@ -125,6 +125,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
 
         /// <summary>
+        /// Get currently displayed character's special ability sprite.
+        /// </summary>
+        /// <returns>Current character's special ability icon as Sprite.</returns>
+        public Sprite GetCurrentCharacterSpecialAbilitySprite()
+        {
+            return null;
+        }
+
+
+        /// <summary>
         /// Get currently displayed character's story.
         /// </summary>
         /// <returns>Current character's story as string.</returns>
