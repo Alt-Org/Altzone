@@ -14,10 +14,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         // Set the color, what kind of piece the piece should turn into according to a certain stat. These can be changed directly inside unity.
         [SerializeField] private Color impactForceColor = new Color(1f, 0.5f, 0f);
+        [SerializeField] private Color impactForceAltColor = new Color(1f, 0.5f, 0f);
         [SerializeField] private Color healthPointsColor = Color.green;
+        [SerializeField] private Color healthPointsAltColor = Color.green;
         [SerializeField] private Color defenceColor = new Color(0.5f, 0f, 0.5f);
+        [SerializeField] private Color defenceAltColor = new Color(0.5f, 0f, 0.5f);
         [SerializeField] private Color characterSizeColor = Color.blue;
+        [SerializeField] private Color characterSizeAltColor = Color.blue;
         [SerializeField] private Color speedColor = new Color(0f, 0.5f, 0f);
+        [SerializeField] private Color speedAltColor = new Color(0f, 0.5f, 0f);
         [SerializeField] private Color defaultColor = Color.white;
 
         [SerializeField] private Sprite circleSprite;
@@ -50,15 +55,28 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             int characterSize = _controller.GetStat(StatType.Resistance);
             int speed = _controller.GetStat(StatType.Speed);
 
+            // Get base stats
+            int impactForceBase = _controller.GetBaseStat(StatType.Attack);
+            int healthPointsBase = _controller.GetBaseStat(StatType.Hp);
+            int defenceBase = _controller.GetBaseStat(StatType.Defence);
+            int characterSizeBase = _controller.GetBaseStat(StatType.Resistance);
+            int speedBase = _controller.GetBaseStat(StatType.Speed);
+
+            speedBase = speed; // remove this once getting base speed is fixed
 
             // Arrange stats
             var stats = new List<(int level, Color color)>
             {
-                (defence, defenceColor),
-                (characterSize, characterSizeColor),
-                (speed, speedColor),
-                (healthPoints, healthPointsColor),
-                (impactForce, impactForceColor),
+                (defenceBase, defenceColor),
+                (defence - defenceBase, defenceAltColor),
+                (characterSizeBase, characterSizeColor),
+                (characterSize - characterSizeBase, characterSizeAltColor),
+                (speedBase, speedColor),
+                (speed - speedBase, speedAltColor),
+                (healthPointsBase, healthPointsColor),
+                (healthPoints - healthPointsBase, healthPointsAltColor),
+                (impactForceBase, impactForceColor),
+                (impactForce - impactForceBase, impactForceAltColor)
             };
 
             // Create slices

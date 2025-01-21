@@ -52,10 +52,15 @@ MonoBehaviour:
   _controller: {fileID: 0}
   _sliceAmount: 50
   impactForceColor: {r: 1, g: 0.5, b: 0, a: 1}
-  healthPointsColor: {r: 0, g: 1, b: 0, a: 1}
-  defenceColor: {r: 0.5, g: 0, b: 0.5, a: 1}
-  characterSizeColor: {r: 0, g: 0, b: 1, a: 1}
-  speedColor: {r: 0, g: 0.5, b: 0, a: 1}
+  impactForceAltColor: {r: 1, g: 0.75802815, b: 0.514151, a: 1}
+  healthPointsColor: {r: 0.24705884, g: 0.8862746, b: 0.18039216, a: 1}
+  healthPointsAltColor: {r: 0.6084784, g: 0.8537736, b: 0.5839489, a: 1}
+  defenceColor: {r: 0.46274513, g: 0.30980393, b: 0.9176471, a: 1}
+  defenceAltColor: {r: 0.64224434, g: 0.5727127, b: 0.8490566, a: 1}
+  characterSizeColor: {r: 0.8078432, g: 0.23137257, b: 0.22352943, a: 1}
+  characterSizeAltColor: {r: 0.8396226, g: 0.55438805, b: 0.5505073, a: 1}
+  speedColor: {r: 0, g: 1, b: 1, a: 1}
+  speedAltColor: {r: 0.58686364, g: 0.7924528, b: 0.7924528, a: 1}
   defaultColor: {r: 1, g: 1, b: 1, a: 1}
   circleSprite: {fileID: 21300000, guid: 5c28812a47a7fc9499672d414ebac12a, type: 3}
 --- !u!222 &1769041602234373325
