@@ -39,6 +39,9 @@ public class DailyTaskManager : MonoBehaviour
     [Header("ClanTaskPage")]
     [SerializeField] private GameObject _clanTaskView;
 
+    //Local Testing
+    private int _ownTaksProgress = 0;
+
     public enum SelectedTab
     {
         Tasks,
@@ -197,9 +200,37 @@ public class DailyTaskManager : MonoBehaviour
     private void HandleOwnTask(PopupData.OwnPageData data)
     {
         //TODO: Add task accept code when server side has functionality.
+        CalculateOwnTaskProgressBar(data.TaskAmount);
         StartCoroutine(_ownTaskPageHandler.SetDailyTask(data.TaskDescription, data.TaskAmount, data.TaskPoints, data.TaskCoins));
         _ownTaskId = data.TaskId;
         Debug.Log("Task id: " + _ownTaskId + ", has been accepted.");
+    }
+
+    public void TESTAddTaskProgress()
+    {
+        _ownTaksProgress++;
+
+        foreach (GameObject obj in _dailyTaskCardSlots)
+        {
+            DailyQuest quest = obj.GetComponent<DailyQuest>();
+
+            if (quest.TaskData.Id == _ownTaskId)
+            {
+                CalculateOwnTaskProgressBar(quest.TaskData.Amount);
+                return;
+            }
+        }
+    }
+
+    private void CalculateOwnTaskProgressBar(int taskAmount)
+    {
+        float progress = (float)_ownTaksProgress / (float)taskAmount;
+        StartCoroutine(_ownTaskPageHandler.SetTaskProgress(progress));
+        Debug.Log("Task id: " + _ownTaskId + ", current progress: " + progress);
+        if (progress >= 1f)
+        {
+            Debug.Log("Task id:" + _ownTaskId + ", is done");
+        }
     }
 
     // Calling popup for canceling task.
@@ -212,6 +243,7 @@ public class DailyTaskManager : MonoBehaviour
     private void CancelTask()
     {
         //TODO: Add task cancellation code when server side has functionality.
+        _ownTaksProgress = 0;
         StartCoroutine(_ownTaskPageHandler.ClearCurrentTask());
         Debug.Log("Task id: " + _ownTaskId + ", has been canceled.");
         _ownTaskId = null;

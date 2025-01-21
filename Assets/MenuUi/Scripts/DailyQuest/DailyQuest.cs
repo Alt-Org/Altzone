@@ -8,6 +8,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 {
     //Variables
     private PlayerTasks.PlayerTask _taskData;
+    public PlayerTasks.PlayerTask TaskData {  get { return _taskData; } }
     private bool _clickEnabled = true;
     
     [Header("DailyQuest Texts")]
