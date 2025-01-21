@@ -17,7 +17,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private CustomCharacter _currentCharacter;
 
         // move these to CustomCharacter or where they should be later
-        const int STATMAXCOMBINED = 30;
+        const int STATMAXCOMBINED = 50;
         const int STATMAXLEVEL = 14;
         const int STATMINLEVEL = 1;
         const int STATMAXPLAYERINCREASE = 10;
@@ -285,7 +285,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             bool success = false;
 
-            if (statType != StatType.None && CheckCombinedLevelCap() && CheckStatLevelCap(statType))
+            if (statType != StatType.None && CheckCombinedLevelCap() && CheckStatLevelCap(statType) && CheckMaxPlayerIncreases())
             {
                 bool diamondsDecreased = TryDecreaseDiamonds(GetDiamondCost(statType));
 
@@ -332,7 +332,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             bool success = false;
 
-            if (GetStat(statType) > STATMINLEVEL)
+            if (GetStat(statType) > STATMINLEVEL && GetStat(statType) > GetBaseStat(statType))
             {
                 bool eraserDecreased = TryDecreaseEraser();
 
@@ -381,20 +381,36 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         }
 
 
-        // Checks if individual stat can be increased according to stat max level cap and max allowed player increases
+        // Checks if individual stat can be increased according to stat max level cap
         private bool CheckStatLevelCap(StatType statType)
         {
             bool allowedToIncrease = false;
 
             int statValue = GetStat(statType);
-            int baseStatValue = GetBaseStat(statType);
 
-            if (statValue < STATMAXLEVEL && statValue - baseStatValue < STATMAXPLAYERINCREASE)
+            if (statValue < STATMAXLEVEL)
             {
                 allowedToIncrease = true;
             }
 
             return allowedToIncrease;
+        }
+
+
+        // Check if player has increased stats for max allowed player increases
+        private bool CheckMaxPlayerIncreases()
+        {
+            int statsCombined = _currentCharacter.Speed + _currentCharacter.Resistance + _currentCharacter.Attack + _currentCharacter.Defence + _currentCharacter.Hp;
+            int baseStatsCombined = _currentCharacter.CharacterBase.DefaultResistance + _currentCharacter.CharacterBase.DefaultAttack + _currentCharacter.CharacterBase.DefaultDefence + _currentCharacter.CharacterBase.DefaultHp; // defaultspeed missing
+
+            if (statsCombined - baseStatsCombined >= STATMAXPLAYERINCREASE)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }
