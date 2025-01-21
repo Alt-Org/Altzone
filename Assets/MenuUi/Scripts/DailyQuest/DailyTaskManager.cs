@@ -34,6 +34,7 @@ public class DailyTaskManager : MonoBehaviour
     [SerializeField] private DailyTaskOwnTask _ownTaskPageHandler;
 
     private int? _ownTaskId;
+    public int? OwnTaskId { get { return _ownTaskId; } }
 
     [Header("ClanTaskPage")]
     [SerializeField] private GameObject _clanTaskView;
@@ -158,17 +159,22 @@ public class DailyTaskManager : MonoBehaviour
                 switch(data.Value.Type)
                 {
                     case PopupData.PopupDataType.OwnTask:
-                        PopupDataHandler(data.Value);
-                        SwitchTab(SelectedTab.OwnTask);
-                        _ownTaskTabButton.interactable = true;
-                        Debug.Log("Task accepted");
-                        break;
+                        {
+                            if (_ownTaskId != null)
+                                CancelTask();
+
+                            PopupDataHandler(data.Value);
+                            SwitchTab(SelectedTab.OwnTask);
+                            _ownTaskTabButton.interactable = true;
+                            break;
+                        }
                     case PopupData.PopupDataType.CancelTask:
-                        CancelTask();
-                        SwitchTab(SelectedTab.Tasks);
-                        _ownTaskTabButton.interactable = false;
-                        Debug.Log("Task canceled");
-                        break;
+                        {
+                            CancelTask();
+                            SwitchTab(SelectedTab.Tasks);
+                            _ownTaskTabButton.interactable = false;
+                            break;
+                        }
                 }
             }
             else
@@ -190,8 +196,10 @@ public class DailyTaskManager : MonoBehaviour
 
     private void HandleOwnTask(PopupData.OwnPageData data)
     {
+        //TODO: Add task accept code when server side has functionality.
         StartCoroutine(_ownTaskPageHandler.SetDailyTask(data.TaskDescription, data.TaskAmount, data.TaskPoints, data.TaskCoins));
         _ownTaskId = data.TaskId;
+        Debug.Log("Task id: " + _ownTaskId + ", has been accepted.");
     }
 
     // Calling popup for canceling task.
@@ -203,7 +211,9 @@ public class DailyTaskManager : MonoBehaviour
 
     private void CancelTask()
     {
+        //TODO: Add task cancellation code when server side has functionality.
         StartCoroutine(_ownTaskPageHandler.ClearCurrentTask());
+        Debug.Log("Task id: " + _ownTaskId + ", has been canceled.");
         _ownTaskId = null;
     }
 

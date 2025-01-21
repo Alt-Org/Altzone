@@ -28,8 +28,15 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         if (!_clickEnabled)
             return;
 
+        string message;
+
+        if (dailyTaskManager.OwnTaskId == null)
+            message = "Haluatko hyväksyä tehtävän? \nquest id: ";
+        else
+            message = "Sinulla on jo valittu tehtävä.\n Haluatko hyväksyä tehtävän? \nquest id: ";
+
         PopupData data = new PopupData(_taskData);
-        StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse("Haluatko Hyväksyä! quest id: " + _taskData.Id, data));
+        StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse(message + _taskData.Id, data));
     }
 
     public void PopulateData()
