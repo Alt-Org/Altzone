@@ -110,11 +110,12 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             sliceImage.fillClockwise = false;
             sliceImage.fillOrigin = (int)Image.Origin360.Top;
             sliceImage.preserveAspect = true;
+            sliceImage.raycastTarget = false;
             sliceImage.fillAmount = fillAmount;
 
             // Outline thickness
             Outline sliceOutline = slice.GetComponent<Outline>();
-            sliceOutline.effectDistance = new Vector2(1, -1);
+            sliceOutline.effectDistance = new Vector2(3, -3);
 
             // Reparent to this node
             slice.transform.SetParent(transform);
