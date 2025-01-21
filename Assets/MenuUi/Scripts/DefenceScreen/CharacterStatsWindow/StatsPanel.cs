@@ -9,16 +9,17 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     {
         [SerializeField] private StatsWindowController _controller;
         [SerializeField] private Image _characterImage;
+        [SerializeField] private TMP_Text _statIncreaseChancesText;
         [SerializeField] private TMP_Text _attackText;
         [SerializeField] private TMP_Text _hpText;
         [SerializeField] private TMP_Text _defenceText;
         [SerializeField] private TMP_Text _charSizeText;
         [SerializeField] private TMP_Text _speedText;
 
-
         private void OnEnable()
         {
             SetCharacterImage();
+            SetStatIncreaseChancesText();
             SetStatButtonTexts();
 
             _controller.OnStatUpdated += SetStatButtonTexts;
@@ -39,6 +40,12 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             {
                 _characterImage.sprite = sprite;
             }
+        }
+
+
+        private void SetStatIncreaseChancesText()
+        {
+            _statIncreaseChancesText.text = _controller.GetStatIncreaseChances().ToString();
         }
 
 
@@ -72,6 +79,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                         _speedText.text = _controller.GetStat(StatType.Speed).ToString();
                         break;
                 }
+
+                SetStatIncreaseChancesText();
             }
         }
     }

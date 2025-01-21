@@ -225,6 +225,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
 
         /// <summary>
+        /// Get the stat increase chances the player has left.
+        /// </summary>
+        /// <returns>Stat increase chances as int.</returns>
+        public int GetStatIncreaseChances()
+        {
+            return STATMAXPLAYERINCREASE - (GetStatsCombined() - GetBaseStatsCombined());
+        }
+
+
+        /// <summary>
         /// Get currently displayed character's stat value according to the stat type.
         /// </summary>
         /// <param name="statType">The stat type which to get.</param>
@@ -370,10 +380,24 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         }
 
 
-        // Checks if levels combined are less than level cap
+        // Get all character stats combined
+        private int GetStatsCombined()
+        {
+            return _currentCharacter.Speed + _currentCharacter.Resistance + _currentCharacter.Attack + _currentCharacter.Defence + _currentCharacter.Hp;
+        }
+
+
+        // Get all character base stats combined
+        private int GetBaseStatsCombined() // defaultspeed missing
+        {
+            return _currentCharacter.CharacterBase.DefaultResistance + _currentCharacter.CharacterBase.DefaultAttack + _currentCharacter.CharacterBase.DefaultDefence + _currentCharacter.CharacterBase.DefaultHp; 
+        }
+
+
+        // Checks if stat levels combined are less than level cap
         private bool CheckCombinedLevelCap()
         {
-            if ((_currentCharacter.Speed + _currentCharacter.Resistance + _currentCharacter.Attack + _currentCharacter.Defence + _currentCharacter.Hp) < STATMAXCOMBINED)
+            if (GetStatsCombined() < STATMAXCOMBINED)
             {
                 return true;
             }
@@ -400,16 +424,13 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         // Check if player has increased stats for max allowed player increases
         private bool CheckMaxPlayerIncreases()
         {
-            int statsCombined = _currentCharacter.Speed + _currentCharacter.Resistance + _currentCharacter.Attack + _currentCharacter.Defence + _currentCharacter.Hp;
-            int baseStatsCombined = _currentCharacter.CharacterBase.DefaultResistance + _currentCharacter.CharacterBase.DefaultAttack + _currentCharacter.CharacterBase.DefaultDefence + _currentCharacter.CharacterBase.DefaultHp; // defaultspeed missing
-
-            if (statsCombined - baseStatsCombined >= STATMAXPLAYERINCREASE)
+            if (GetStatsCombined() - GetBaseStatsCombined() < STATMAXPLAYERINCREASE)
             {
-                return false;
+                return true;
             }
             else
             {
-                return true;
+                return false;
             }
         }
     }
