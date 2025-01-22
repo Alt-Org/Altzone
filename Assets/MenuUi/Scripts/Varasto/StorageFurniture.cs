@@ -23,6 +23,7 @@ namespace MenuUi.Scripts.Storage
         private float _value;
         private string _material;
         private string _recycling;
+        private FurnitureRarity _rarity;
         private ClanFurniture _furniture; //Unsure if this is needed for Storage but I'll leave it in for now.
 
         public StorageFurniture(ClanFurniture clanFurniture, GameFurniture gameFurniture, FurnitureInfo info)
@@ -42,7 +43,7 @@ namespace MenuUi.Scripts.Storage
             _material = gameFurniture.Material;
             _recycling = gameFurniture.Recycling;
             _furniture = clanFurniture;
-
+            _rarity = gameFurniture.Rarity;
         }
 
         public string Name { get => _name;}
@@ -59,5 +60,6 @@ namespace MenuUi.Scripts.Storage
         public float Value { get => _value;}
         public string Material { get => _material;}
         public string Recycling { get => _recycling;}
+        public FurnitureRarity Rarity { get => _rarity;}
     }
 }

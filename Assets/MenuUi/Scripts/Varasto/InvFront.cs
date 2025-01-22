@@ -46,6 +46,7 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private GameObject _inSoulHome;
         [SerializeField] private TMP_Text _artist;
         [SerializeField] private TMP_Text _artisticDescription;
+        [SerializeField] private TMP_Text _rarity;
 
         [Header("Rarity Color")]
         [SerializeField] private Color commonColor = Color.gray;
@@ -350,6 +351,8 @@ namespace MenuUi.Scripts.Storage
 
             // Type Text
             _typeText.text = "";
+
+            _rarity.text = _furn.Rarity.ToString();
 
             _infoSlot.SetActive(true);
         }
