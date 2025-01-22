@@ -134,7 +134,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             // Outline thickness and color
             Outline sliceOutline = slice.GetComponent<Outline>();
-            sliceOutline.effectDistance = new Vector2(3, -3);
+            sliceOutline.effectDistance = new Vector2(2, -2);
             sliceOutline.effectColor = outlineColor;
 
             // Reparent to this node
