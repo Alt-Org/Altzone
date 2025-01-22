@@ -24,6 +24,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private Color speedColor = new Color(0f, 0.5f, 0f);
         [SerializeField] private Color speedAltColor = new Color(0f, 0.5f, 0f);
         [SerializeField] private Color defaultColor = Color.white;
+        [SerializeField] private Color outlineColor = Color.gray;
 
         [SerializeField] private Sprite circleSprite;
 
@@ -131,9 +132,10 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             sliceImage.raycastTarget = false;
             sliceImage.fillAmount = fillAmount;
 
-            // Outline thickness
+            // Outline thickness and color
             Outline sliceOutline = slice.GetComponent<Outline>();
             sliceOutline.effectDistance = new Vector2(3, -3);
+            sliceOutline.effectColor = outlineColor;
 
             // Reparent to this node
             slice.transform.SetParent(transform);
