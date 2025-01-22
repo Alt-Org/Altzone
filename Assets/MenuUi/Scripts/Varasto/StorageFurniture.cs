@@ -27,7 +27,7 @@ namespace MenuUi.Scripts.Storage
         private FurnitureInfo _info;
         private ClanFurniture _furniture; //Unsure if this is needed for Storage but I'll leave it in for now.
 
-        public StorageFurniture(ClanFurniture clanFurniture, GameFurniture gameFurniture, FurnitureInfo info)
+        public StorageFurniture(ClanFurniture clanFurniture, GameFurniture gameFurniture)
         {
             _id = clanFurniture.Id;
             _name = clanFurniture.GameFurnitureName;
