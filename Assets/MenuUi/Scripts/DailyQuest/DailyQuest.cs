@@ -8,6 +8,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 {
     //Variables
     private PlayerTasks.PlayerTask _taskData;
+    public PlayerTasks.PlayerTask TaskData {  get { return _taskData; } }
     private bool _clickEnabled = true;
     
     [Header("DailyQuest Texts")]
@@ -28,9 +29,15 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         if (!_clickEnabled)
             return;
 
-        PopupData data = new PopupData(_taskData, PopupData.GetType("own_task"));
+        string message;
 
-        StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse("Haluatko Hyväksyä! quest id: " + _taskData.Id.ToString(), 1, data));
+        if (dailyTaskManager.OwnTaskId == null)
+            message = "Haluatko hyväksyä tehtävän? \nquest id: ";
+        else
+            message = "Sinulla on jo valittu tehtävä.\n Haluatko hyväksyä tehtävän? \nquest id: ";
+
+        PopupData data = new PopupData(_taskData);
+        StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse(message + _taskData.Id, data));
     }
 
     public void PopulateData()

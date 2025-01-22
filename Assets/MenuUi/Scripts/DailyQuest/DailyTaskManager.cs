@@ -34,9 +34,13 @@ public class DailyTaskManager : MonoBehaviour
     [SerializeField] private DailyTaskOwnTask _ownTaskPageHandler;
 
     private int? _ownTaskId;
+    public int? OwnTaskId { get { return _ownTaskId; } }
 
     [Header("ClanTaskPage")]
     [SerializeField] private GameObject _clanTaskView;
+
+    //Local Testing
+    private int _ownTaksProgress = 0;
 
     public enum SelectedTab
     {
@@ -44,7 +48,6 @@ public class DailyTaskManager : MonoBehaviour
         OwnTask,
         ClanTask
     }
-
     private SelectedTab _selectedTab = SelectedTab.Tasks;
 
     // Start of Code
@@ -58,7 +61,9 @@ public class DailyTaskManager : MonoBehaviour
         _clanTaskTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.ClanTask));
 
         //OwnTask cancel button
-        _cancelTaskButton.onClick.AddListener(() => CancelActiveTask());
+        _cancelTaskButton.onClick.AddListener(() => StartCancelTask());
+
+        _ownTaskTabButton.interactable = false;
     }
 
     // First 4 functions are for task slot population and fetching them from server
@@ -147,31 +152,37 @@ public class DailyTaskManager : MonoBehaviour
     }
 
     // Function for popup calling
-    public IEnumerator ShowPopupAndHandleResponse(string Message, int popupId, PopupData? data)
+    public IEnumerator ShowPopupAndHandleResponse(string Message, PopupData? data)
     {
         yield return Popup.RequestPopup(Message, result =>
         {
-            if (result == true)
+            if (result == true && data != null)
             {
                 Debug.Log("Confirmed!");
-                switch(popupId)
+                switch(data.Value.Type)
                 {
-                    case 1:
-                        if (data != null)
-                            PopupDataHandler(data.Value);
+                    case PopupData.PopupDataType.OwnTask:
+                        {
+                            if (_ownTaskId != null)
+                                CancelTask();
 
-                        SwitchTab(SelectedTab.OwnTask);
-                        Debug.Log("Accept case happened " + popupId);
-                        break;
-                    case 2:
-                        SwitchTab(SelectedTab.Tasks);
-                        Debug.Log("Cancel case happened " + popupId);
-                        break;
+                            PopupDataHandler(data.Value);
+                            SwitchTab(SelectedTab.OwnTask);
+                            _ownTaskTabButton.interactable = true;
+                            break;
+                        }
+                    case PopupData.PopupDataType.CancelTask:
+                        {
+                            CancelTask();
+                            SwitchTab(SelectedTab.Tasks);
+                            _ownTaskTabButton.interactable = false;
+                            break;
+                        }
                 }
             }
             else
             {
-                Debug.Log("Cancelled Popup!");
+                Debug.Log("Cancelled Popup.");
                 // Perform actions for cancellation
             }
         });
@@ -188,18 +199,56 @@ public class DailyTaskManager : MonoBehaviour
 
     private void HandleOwnTask(PopupData.OwnPageData data)
     {
+        //TODO: Add task accept code when server side has functionality.
+        CalculateOwnTaskProgressBar(data.TaskAmount);
         StartCoroutine(_ownTaskPageHandler.SetDailyTask(data.TaskDescription, data.TaskAmount, data.TaskPoints, data.TaskCoins));
         _ownTaskId = data.TaskId;
-        //SwitchTab(SelectedTab.OwnTask);
+        Debug.Log("Task id: " + _ownTaskId + ", has been accepted.");
     }
 
-    // calling popup for canceling task
-    public void CancelActiveTask()
+    public void TESTAddTaskProgress()
     {
-        StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", 2, null));
+        _ownTaksProgress++;
+
+        foreach (GameObject obj in _dailyTaskCardSlots)
+        {
+            DailyQuest quest = obj.GetComponent<DailyQuest>();
+
+            if (quest.TaskData.Id == _ownTaskId)
+            {
+                CalculateOwnTaskProgressBar(quest.TaskData.Amount);
+                return;
+            }
+        }
     }
 
-    // next functions are for tab switching system
+    private void CalculateOwnTaskProgressBar(int taskAmount)
+    {
+        float progress = (float)_ownTaksProgress / (float)taskAmount;
+        StartCoroutine(_ownTaskPageHandler.SetTaskProgress(progress));
+        Debug.Log("Task id: " + _ownTaskId + ", current progress: " + progress);
+        if (progress >= 1f)
+        {
+            Debug.Log("Task id:" + _ownTaskId + ", is done");
+        }
+    }
+
+    // Calling popup for canceling task.
+    public void StartCancelTask()
+    {
+        PopupData data = new(PopupData.GetType("cancel_task"));
+        StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", data));
+    }
+
+    private void CancelTask()
+    {
+        //TODO: Add task cancellation code when server side has functionality.
+        _ownTaksProgress = 0;
+        StartCoroutine(_ownTaskPageHandler.ClearCurrentTask());
+        Debug.Log("Task id: " + _ownTaskId + ", has been canceled.");
+        _ownTaskId = null;
+    }
+
     public void SwitchTab(SelectedTab tab)
     {
         //Hide old tab
@@ -210,7 +259,7 @@ public class DailyTaskManager : MonoBehaviour
             default: _clanTaskView.SetActive(false); break;
         }
 
-        // Update the selected tab
+        // Set new selected tab
         _selectedTab = tab;
 
         //Show new tab
