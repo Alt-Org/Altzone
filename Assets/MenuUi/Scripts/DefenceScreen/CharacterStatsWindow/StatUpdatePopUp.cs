@@ -14,6 +14,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private TMP_Text _statName;
         [SerializeField] private TMP_Text _statNumber;
         [SerializeField] private TMP_Text _diamondCost;
+        [SerializeField] private Image _touchBlocker;
 
         private StatType _statType;
 
@@ -80,6 +81,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 _statIcon.sprite = statInfo.Image;
                 _statName.text = statInfo.Name;
 
+                _touchBlocker.enabled = true;
                 _contents.SetActive(true);
             }
             else
@@ -94,6 +96,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// </summary>
         public void ClosePopUp()
         {
+            _touchBlocker.enabled = false;
             _contents.SetActive(false);
         }
 
