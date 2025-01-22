@@ -60,7 +60,7 @@ namespace MenuUi.Scripts.Storage
         bool _startCompleted = false;
         bool _updatingInventory = false;
 
-        private int _maxSortingBy = 3;
+        private int _maxSortingBy = 4;
         private int _sortingBy = -1; // used as a carrier for info on how to sort
 
         private const string INVENTORY_EMPTY_TEXT = "Varasto tyhjä";
@@ -249,6 +249,9 @@ namespace MenuUi.Scripts.Storage
                     case 3:
                         toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.Material;
                         break;
+                    case 4:
+                        toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.Rarity.ToString();
+                        break;
                 }
                 // Shape
                 toSet.GetChild(4).GetComponent<Image>().sprite = GetIcon("");
@@ -301,6 +304,10 @@ namespace MenuUi.Scripts.Storage
                 case 3:
                     _sortText.text = "Jarjestetty\nMateriaali";
                     _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.Material.CompareTo(b.Material); });
+                    break;
+                case 4:
+                    _sortText.text = "Jarjestetty\nHarvinaisuus";
+                    _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.Rarity.CompareTo(b.Rarity); });
                     break;
             }
             SetSlots();
