@@ -13,30 +13,26 @@ public class KylläButtonÄänestyst : MonoBehaviour
     public GameObject panelToBeSetInActive;
     private GameFurniture furniture;
 
-    private void Awake()
+    private void Start()
     {
-        VotingActions.PassShopItem += setItem;
         panelToBeSetInActive.SetActive(false);
+        VotingActions.PassShopItem += setItem;
     }
 
     private void setItem(GameFurniture newFurniture)
     {
         furniture = newFurniture;
-        UnityEngine.Debug.Log(newFurniture.ToString());
+        //UnityEngine.Debug.Log(newFurniture.ToString());
     }
 
     public void YesButtonPressed()
     {
-        Invoke("SetInactiveAfterTime", 2f);
 
         if (furniture != null) PollManager.CreateFurniturePoll(FurniturePollType.Buying, furniture);
         VotingActions.ReloadPollList?.Invoke();
 
         FindObjectOfType<SwipeUI>(true).CurrentPage = 3;
-    }
 
-    public void SetInactiveAfterTime()
-    {
         panelToBeSetInActive.SetActive(false);
     }
 }

@@ -23,6 +23,8 @@ public class PollObject : MonoBehaviour
     [SerializeField] private TextMeshProUGUI NoVotesText;
     [SerializeField] private UnityEngine.UI.Image GreenFill;
 
+    [SerializeField] private AddPlayerHeads playerHeads;
+
     PollData pollData;
 
     private void Start()
@@ -30,20 +32,21 @@ public class PollObject : MonoBehaviour
         StartCoroutine(UpdateValues());
     }
 
+    private void OnEnable()
+    {
+        VotingActions.ReloadPollList += SetValues;
+    }
+
+    private void OnDisable()
+    {
+        VotingActions.ReloadPollList -= SetValues;
+    }
+
     private IEnumerator UpdateValues()
     {
         while (true)
         {
             Clock.fillAmount = 1 - (float)(pollData.EndTime - DateTimeOffset.UtcNow.ToUnixTimeSeconds()) / (pollData.EndTime - pollData.StartTime);
-
-            if (YesVotesText != null) YesVotesText.text = pollData.YesVotes.Count.ToString();
-            if (NoVotesText != null) NoVotesText.text = pollData.NoVotes.Count.ToString();
-
-            if (GreenFill != null)
-            {
-                if (pollData.YesVotes.Count == 0 && pollData.NoVotes.Count == 0) GreenFill.fillAmount = 0.5f;
-                else GreenFill.fillAmount = (float)pollData.YesVotes.Count / (pollData.NoVotes.Count + pollData.YesVotes.Count);
-            }
 
             int secondsLeft = (int)(pollData.EndTime - DateTimeOffset.UtcNow.ToUnixTimeSeconds());
             int minutesLeft = secondsLeft / 60;
@@ -69,6 +72,17 @@ public class PollObject : MonoBehaviour
 
             LowerText.text = furniturePollData.Furniture.Value.ToString();
         }
+
+        if (YesVotesText != null) YesVotesText.text = pollData.YesVotes.Count.ToString();
+        if (NoVotesText != null) NoVotesText.text = pollData.NoVotes.Count.ToString();
+
+        if (GreenFill != null)
+        {
+            if (pollData.YesVotes.Count == 0 && pollData.NoVotes.Count == 0) GreenFill.fillAmount = 0.5f;
+            else GreenFill.fillAmount = (float)pollData.YesVotes.Count / (pollData.NoVotes.Count + pollData.YesVotes.Count);
+        }
+
+        playerHeads.InstantiateHeads(pollId);
     }
 
     public void SetPollId(string newPollId)
