@@ -235,16 +235,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
 
         /// <summary>
-        /// Get the stat increase chances the player has left.
-        /// </summary>
-        /// <returns>Stat increase chances as int.</returns>
-        public int GetStatIncreaseChances()
-        {
-            return STATMAXPLAYERINCREASE - (GetStatsCombined() - GetBaseStatsCombined());
-        }
-
-
-        /// <summary>
         /// Get currently displayed character's stat value according to the stat type.
         /// </summary>
         /// <param name="statType">The stat type which to get.</param>
