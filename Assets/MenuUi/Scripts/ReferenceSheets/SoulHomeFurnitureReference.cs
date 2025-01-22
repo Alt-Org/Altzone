@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
-using MenuUi.Scripts.ReferenceSheets;
+using Altzone.Scripts.ReferenceSheets;
 using MenuUI.Scripts.SoulHome;
 using UnityEditor;
 using UnityEngine;

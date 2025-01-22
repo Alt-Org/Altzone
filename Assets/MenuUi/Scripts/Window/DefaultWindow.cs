@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Game;
-using MenuUi.Scripts.ReferenceSheets;
+using Altzone.Scripts.ReferenceSheets;
 using MenuUi.Scripts.Window.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.Assertions;
