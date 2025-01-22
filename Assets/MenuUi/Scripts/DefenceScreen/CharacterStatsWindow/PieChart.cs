@@ -24,9 +24,11 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private Color speedColor = new Color(0f, 0.5f, 0f);
         [SerializeField] private Color speedAltColor = new Color(0f, 0.5f, 0f);
         [SerializeField] private Color defaultColor = Color.white;
-        [SerializeField] private Color outlineColor = Color.gray;
+        [SerializeField] private Color defaultAltColor = Color.gray;
+        [SerializeField] private Color overlayColor = Color.gray;
 
         [SerializeField] private Sprite circleSprite;
+        [SerializeField] private Sprite circlePatternedSprite;
 
 
         private void OnEnable()
@@ -66,18 +68,13 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             speedBase = speed; // remove this once getting base speed is fixed
 
             // Arrange stats
-            var stats = new List<(int level, Color color)>
+            var stats = new List<(int upgradesLevel, int baseLevel, Color color, Color altColor)>
             {
-                (defenceBase, defenceColor),
-                (defence - defenceBase, defenceAltColor),
-                (characterSizeBase, characterSizeColor),
-                (characterSize - characterSizeBase, characterSizeAltColor),
-                (speedBase, speedColor),
-                (speed - speedBase, speedAltColor),
-                (healthPointsBase, healthPointsColor),
-                (healthPoints - healthPointsBase, healthPointsAltColor),
-                (impactForceBase, impactForceColor),
-                (impactForce - impactForceBase, impactForceAltColor)
+                (defence - defenceBase, defenceBase, defenceColor, defenceAltColor),
+                (characterSize - characterSizeBase, characterSizeBase, characterSizeColor, characterSizeAltColor),
+                (speed - speedBase, speedBase, speedColor, speedAltColor),
+                (healthPoints - healthPointsBase, healthPointsBase, healthPointsColor, healthPointsAltColor),
+                (impactForce - impactForceBase, impactForceBase, impactForceColor, impactForceAltColor),
             };
 
             // Create slices
@@ -89,9 +86,38 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             // Colored slices
             foreach (var stat in stats)
             {
-                for (int i = 0; i < stat.level; i++)
+                // base stats
+                for (int i = 0; i < stat.baseLevel; i++) 
                 {
-                    CreateSlice(currentSliceFill, stat.color);
+                    if (remainingSlices % 2 == 0)
+                    {
+                        CreateSlice(currentSliceFill, stat.color, true);
+                    }
+                    else
+                    {
+                        CreateSlice(currentSliceFill, stat.altColor, true);
+                    }
+
+                    currentSliceFill -= sliceFillAmount;
+
+                    remainingSlices--;
+                    if (remainingSlices == 0) // if runs out of slices return
+                    {
+                        return;
+                    }
+                }
+
+                // upgraded stats
+                for (int i = 0; i < stat.upgradesLevel; i++)
+                {
+                    if (remainingSlices % 2 == 0)
+                    {
+                        CreateSlice(currentSliceFill, stat.color, false);
+                    }
+                    else
+                    {
+                        CreateSlice(currentSliceFill, stat.altColor, false);
+                    }
 
                     currentSliceFill -= sliceFillAmount;
 
@@ -106,36 +132,58 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             // White slices
             for (int i = remainingSlices; i > 0; i--)
             {
-                CreateSlice(currentSliceFill, defaultColor);
+                if (i % 2 == 0)
+                {
+                    CreateSlice(currentSliceFill, defaultAltColor, true);
+                }
+                else
+                {
+                    CreateSlice(currentSliceFill, defaultColor, true);
+                }
 
                 currentSliceFill -= sliceFillAmount;
             }
         }
 
 
-        private void CreateSlice(float fillAmount, Color color)
+        private void CreateSlice(float fillAmount, Color color, bool isBaseSlice)
         {
             // Create gameobject and add components
             GameObject slice = new GameObject();
             slice.AddComponent<RectTransform>();
             slice.AddComponent<Image>();
-            slice.AddComponent<Outline>();
 
             // Modify image properties
             Image sliceImage = slice.GetComponent<Image>();
-            sliceImage.sprite = circleSprite;
+
+            if (!isBaseSlice)
+            {
+                sliceImage.sprite = circlePatternedSprite;
+            }
+            else
+            {
+                sliceImage.sprite = circleSprite;
+            }
+            //sliceImage.sprite = circleSprite;
+
+            //if (isBaseSlice)
+            //{
+            //    sliceImage.color = color * overlayColor;
+            //}
+            //else
+            //{
+            //    sliceImage.color = color;
+            //}
+
             sliceImage.color = color;
+
+
             sliceImage.type = Image.Type.Filled;
             sliceImage.fillClockwise = false;
             sliceImage.fillOrigin = (int)Image.Origin360.Top;
             sliceImage.preserveAspect = true;
             sliceImage.raycastTarget = false;
             sliceImage.fillAmount = fillAmount;
-
-            // Outline thickness and color
-            Outline sliceOutline = slice.GetComponent<Outline>();
-            sliceOutline.effectDistance = new Vector2(2, -2);
-            sliceOutline.effectColor = outlineColor;
 
             // Reparent to this node
             slice.transform.SetParent(transform);
