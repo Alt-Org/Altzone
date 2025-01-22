@@ -22,12 +22,14 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             ClosePopUp();
             _controller.OnStatUpdated += UpdateStatNumber;
+            _controller.OnStatUpdated += UpdateDiamondCost;
         }
 
 
         private void OnDisable()
         {
             _controller.OnStatUpdated -= UpdateStatNumber;
+            _controller.OnStatUpdated -= UpdateDiamondCost;
         }
 
 
@@ -117,6 +119,12 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private void UpdateStatNumber(StatType statType)
         {
             _statNumber.text = _controller.GetStat(statType).ToString();
+        }
+
+
+        private void UpdateDiamondCost(StatType statType)
+        {
+            _diamondCost.text = _controller.GetDiamondCost(statType).ToString();
         }
     }
 }
