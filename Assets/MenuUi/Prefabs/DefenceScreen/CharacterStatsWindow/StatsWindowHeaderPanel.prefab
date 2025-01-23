@@ -440,6 +440,7 @@ GameObject:
   - component: {fileID: 6214426910263092007}
   - component: {fileID: 108043552524298175}
   - component: {fileID: 5062392558501621185}
+  - component: {fileID: 4045233870850585857}
   m_Layer: 5
   m_Name: RenameButton
   m_TagString: Untagged
@@ -548,6 +549,23 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4045233870850585857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3949499009334959428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioSelection: 0
+  _audioType: 2
+  _audioName: 
+  _audioId: 0
+  _playType: 0
 --- !u!1 &4057352515527200502
 GameObject:
   m_ObjectHideFlags: 0
@@ -562,6 +580,7 @@ GameObject:
   - component: {fileID: 1434805030278395216}
   - component: {fileID: 4898481642956040119}
   - component: {fileID: 1130744395442363889}
+  - component: {fileID: 5726269134494931040}
   m_Layer: 5
   m_Name: BackButton
   m_TagString: Untagged
@@ -708,6 +727,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 965ac3e1f5427e34e8939712e5218195, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5726269134494931040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4057352515527200502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioSelection: 0
+  _audioType: 2
+  _audioName: 
+  _audioId: 0
+  _playType: 0
 --- !u!1 &4336829414760332231
 GameObject:
   m_ObjectHideFlags: 0
