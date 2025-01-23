@@ -16,6 +16,8 @@ namespace Quantum
         public override void OnInit(Frame f)
         {
             Log.Debug("[GameControlSystem] OnInit");
+            GameSession* gameSession = f.Unsafe.GetPointerSingleton<GameSession>();
+            gameSession->state = GameState.Countdown;
         }
 
         public override void Update(Frame f)
