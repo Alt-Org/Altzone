@@ -5,6 +5,9 @@ using Altzone.Scripts;
 using UnityEngine;
 using static Altzone.Scripts.Model.Poco.Game.PlayerTasks;
 using UnityEngine.UI;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Player;
 
 public class DailyTaskManager : MonoBehaviour
 {
@@ -38,6 +41,10 @@ public class DailyTaskManager : MonoBehaviour
 
     [Header("ClanTaskPage")]
     [SerializeField] private GameObject _clanTaskView;
+    [SerializeField] private GameObject _clanPlayerPrefab;
+    [SerializeField] private RectTransform _clanPlayersList;
+
+    private List<GameObject> _clanPlayers = new List<GameObject>();
 
     //Local Testing
     private int _ownTaksProgress = 0;
@@ -54,6 +61,7 @@ public class DailyTaskManager : MonoBehaviour
     void Start()
     {
         TaskGenerator();
+        StartCoroutine(PopulateClanPlayers());
 
         //Tab bar
         _dailyTasksTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.Tasks));
@@ -149,6 +157,87 @@ public class DailyTaskManager : MonoBehaviour
             <= 1000 => _dailyTaskCard1000Prefab,
             _ => _dailyTaskCard1500Prefab,
         };
+    }
+
+    private IEnumerator PopulateClanPlayers()
+    {
+        /*Commented code refering to getting PlayerData's from ClanData but
+         *there is missing or wrong format data. (Waiting for server side update)*/
+
+        #region
+
+        //ClanData clan = null;
+        //string clanId = null;
+        //Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => clanId = p.ClanId);
+
+        //if (clanId == null)
+        //{
+        //    StartCoroutine(ServerManager.Instance.GetPlayerFromServer(content =>
+        //    {
+        //        if (content != null)
+        //            clanId = content.clan_id;
+        //        else
+        //        {
+        //            Debug.LogError("Could not connect to server and receive PlayerData");
+        //            return;
+        //        }
+        //    }));
+        //}
+
+        //yield return new WaitUntil(() => clanId != null);
+
+        //Storefront.Get().GetClanData(clanId, content => clan = content);
+
+        //if (clan == null)
+        //{
+        //    StartCoroutine(ServerManager.Instance.GetClanFromServer(content =>
+        //    {
+        //        if (content != null)
+        //            clan = content;
+        //        else
+        //        {
+        //            //offline testing random generator with id generator
+        //            Debug.LogError("Could not connect to server and receive quests");
+        //            return;
+        //        }
+        //    }));
+        //}
+
+        //yield return new WaitUntil(() => clan != null);
+
+        //PlayerData clanPlayer = null;
+        //Storefront.Get().GetPlayerData(clan.Members[].PlayerDataId, cp => clanPlayer = cp);
+
+
+        //if (clan == null)
+        //{
+        //    StartCoroutine(ServerManager.Instance.GetPlayerLeaderboardFromServer(content =>
+        //    {
+        //        if (content != null)
+        //            clan = content;
+        //        else
+        //        {
+        //            //offline testing random generator with id generator
+        //            Debug.LogError("Could not connect to server and receive quests");
+        //            return;
+        //        }
+        //    }));
+        //}
+
+        //yield return new WaitUntil(() => clan != null);
+
+        #endregion
+
+        //Testing code
+        for (int i = 0; i < 30; i++)
+        {
+            GameObject player = Instantiate(_clanPlayerPrefab, _clanPlayersList);
+            player.GetComponent<DailyTaskClanPlayer>().Set(i, null, null);
+
+            _clanPlayers.Add(player);
+            Debug.Log("Created clan player: " + i);
+        }
+        yield return true;
     }
 
     // Function for popup calling
