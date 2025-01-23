@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class PerusKauppaStorage : ShopPanelStorage
 {
     [SerializeField] private RectTransform _Content;
+    private bool _isInitiallyRebuild = false;
 
     [Space(5f)]
 
@@ -92,6 +93,15 @@ public class PerusKauppaStorage : ShopPanelStorage
         // Instantiate on the righfull position
 
         //Force each content to rebild to avoid UI issues
+    }
+
+    private void LateUpdate()
+    {
+        if(_isInitiallyRebuild)
+            return;
+
+        _isInitiallyRebuild = false;
         LayoutRebuilder.ForceRebuildLayoutImmediate(_Content);
+        return;
     }
 }

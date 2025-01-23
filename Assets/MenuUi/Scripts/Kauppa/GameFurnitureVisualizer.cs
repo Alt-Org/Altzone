@@ -10,11 +10,15 @@ public class GameFurnitureVisualizer : MonoBehaviour
     [SerializeField] private TMP_Text _priceText;
     [SerializeField] private Button _button;
     private GameFurniture _gameFurniture;
+    private DrivenRectTransformTracker m_Tracker;
 
     public void Initialize(GameFurniture gameFurniture)
     {
         _gameFurniture = gameFurniture;
         _productText.text = _gameFurniture.Name;
         _priceText.text = _gameFurniture.Value.ToString();
+        //m_Tracker.Add(driver, this.GetComponent<RectTransform>(), DrivenTransformProperties.Anchors |
+        //                DrivenTransformProperties.AnchoredPosition |
+        //                DrivenTransformProperties.SizeDelta);
     }
 }
