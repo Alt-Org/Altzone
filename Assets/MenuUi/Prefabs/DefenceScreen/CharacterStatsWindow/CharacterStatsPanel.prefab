@@ -613,6 +613,7 @@ GameObject:
   - component: {fileID: 202092490454079354}
   - component: {fileID: 2429018018746832881}
   - component: {fileID: 8625266585896293997}
+  - component: {fileID: 521414092921747475}
   m_Layer: 0
   m_Name: CharSize
   m_TagString: Untagged
@@ -750,6 +751,23 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &521414092921747475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1719116857912922061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioSelection: 0
+  _audioType: 2
+  _audioName: 
+  _audioId: 0
+  _playType: 0
 --- !u!1 &1796409761153964863
 GameObject:
   m_ObjectHideFlags: 0
@@ -1345,6 +1363,7 @@ GameObject:
   - component: {fileID: 2594857978997667488}
   - component: {fileID: 2381894395780513860}
   - component: {fileID: 585588228628911024}
+  - component: {fileID: 2713634096959261354}
   m_Layer: 0
   m_Name: Defence
   m_TagString: Untagged
@@ -1482,6 +1501,23 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &2713634096959261354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2785751941153881750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioSelection: 0
+  _audioType: 2
+  _audioName: 
+  _audioId: 0
+  _playType: 0
 --- !u!1 &2793296471719710574
 GameObject:
   m_ObjectHideFlags: 0
@@ -2340,6 +2376,7 @@ GameObject:
   - component: {fileID: 629986872662971345}
   - component: {fileID: 2218716863354126172}
   - component: {fileID: 7930949834396199213}
+  - component: {fileID: 5568218232956067975}
   m_Layer: 0
   m_Name: Speed
   m_TagString: Untagged
@@ -2477,6 +2514,23 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &5568218232956067975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4463112553299149993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioSelection: 0
+  _audioType: 2
+  _audioName: 
+  _audioId: 0
+  _playType: 0
 --- !u!1 &4485333402997006259
 GameObject:
   m_ObjectHideFlags: 0
@@ -2648,6 +2702,7 @@ GameObject:
   - component: {fileID: 610006234852526620}
   - component: {fileID: 8081948760938962460}
   - component: {fileID: 4313037733908078795}
+  - component: {fileID: 2324897341868972257}
   m_Layer: 0
   m_Name: HP
   m_TagString: Untagged
@@ -2785,6 +2840,23 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &2324897341868972257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4961505143727515441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioSelection: 0
+  _audioType: 2
+  _audioName: 
+  _audioId: 0
+  _playType: 0
 --- !u!1 &5183282286467090911
 GameObject:
   m_ObjectHideFlags: 0
@@ -2935,6 +3007,7 @@ GameObject:
   - component: {fileID: 5827313468116485154}
   - component: {fileID: 3399594379078641332}
   - component: {fileID: 4656431017422712686}
+  - component: {fileID: 945816865794527940}
   m_Layer: 0
   m_Name: Impact
   m_TagString: Untagged
@@ -3072,6 +3145,23 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &945816865794527940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5191044632991118619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioSelection: 0
+  _audioType: 2
+  _audioName: 
+  _audioId: 0
+  _playType: 0
 --- !u!1 &5199964457290130856
 GameObject:
   m_ObjectHideFlags: 0
