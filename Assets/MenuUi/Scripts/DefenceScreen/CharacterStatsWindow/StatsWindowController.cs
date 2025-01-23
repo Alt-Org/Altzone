@@ -5,6 +5,7 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ModelV2;
+using MenuUI.Scripts;
 using UnityEngine;
 
 
@@ -188,6 +189,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             }
             else
             {
+                SignalBus.OnChangePopupInfoSignal("Ei tarpeeksi pyyhekumeja.");
                 return false;
             }
         }
@@ -218,6 +220,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             }
             else
             {
+                SignalBus.OnChangePopupInfoSignal("Ei tarpeeksi timantteja.");
                 return false;
             }
         }
@@ -290,9 +293,26 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// Check if stat can be increased. (all stats combined is less than the combined level cap, stat is less than individual stat level cap, and player has increased stats less times than the maximum allowed amount)
         /// </summary>
         /// <param name="statType">The stat type to check.</param>
+        /// <param name="showPopupMessages">Optionally show popup error messages why stat can't be increased.</param>
         /// <returns>True if stat can be increased false if stat can't be increased.</returns>
-        public bool CanIncreaseStat(StatType statType)
+        public bool CanIncreaseStat(StatType statType, bool showPopupMessages = false)
         {
+            if (showPopupMessages)
+            {
+                if (!CheckCombinedLevelCap())
+                {
+                    SignalBus.OnChangePopupInfoSignal($"Et voi p‰ivitt‰‰ taitoa, taitojen summa on enint‰‰n {STATMAXCOMBINED}.");
+                }
+                else if (!CheckStatLevelCap(statType))
+                {
+                    SignalBus.OnChangePopupInfoSignal($"Et voi p‰ivitt‰‰ taitoa, maksimitaso on {STATMAXLEVEL}.");
+                }
+                else if (!CheckMaxPlayerIncreases())
+                {
+                    SignalBus.OnChangePopupInfoSignal($"Et voi p‰ivitt‰‰ taitoja enemm‰n kuin {STATMAXPLAYERINCREASE} kertaa."); // when every characters' combined base stats are 40 remove this
+                }
+            }
+
             return statType != StatType.None && CheckCombinedLevelCap() && CheckStatLevelCap(statType) && CheckMaxPlayerIncreases();
         }
 
@@ -306,7 +326,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             bool success = false;
 
-            if (CanIncreaseStat(statType))
+            if (CanIncreaseStat(statType, true))
             {
                 bool diamondsDecreased = true; //TryDecreaseDiamonds(GetDiamondCost(statType));
 
@@ -348,9 +368,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// Check if stat can be decreased. (stat is more than minimum allowed level and stat is more than base level)
         /// </summary>
         /// <param name="statType">The stat which to check.</param>
+        /// <param name="showPopupMessages">Optionally show popup error messages why stat can't be decreased.</param>
         /// <returns>True if stat can be decreased false if stat can't be decreased.</returns>
-        public bool CanDecreaseStat(StatType statType)
+        public bool CanDecreaseStat(StatType statType, bool showPopupMessages = false)
         {
+            if (showPopupMessages && !(GetStat(statType) > GetBaseStat(statType)))
+            {
+                SignalBus.OnChangePopupInfoSignal($"Et voi v‰hent‰‰ pohjataitoa.");
+            }
+
             return GetStat(statType) > STATMINLEVEL && GetStat(statType) > GetBaseStat(statType);
         }
 
@@ -364,7 +390,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             bool success = false;
 
-            if (CanDecreaseStat(statType))
+            if (CanDecreaseStat(statType, true))
             {
                 bool eraserDecreased = true; // TryDecreaseEraser();
 

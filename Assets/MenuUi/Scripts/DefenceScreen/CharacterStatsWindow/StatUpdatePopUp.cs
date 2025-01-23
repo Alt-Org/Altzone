@@ -1,4 +1,5 @@
 using Altzone.Scripts.Model.Poco.Game;
+using MenuUI.Scripts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -47,6 +48,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (_controller.GetCurrentCharacterClass() == CharacterClassID.Obedient) // obedient characters can't be modified
             {
+                SignalBus.OnChangePopupInfoSignal("Tottelijoita ei voi muokata.");
                 ClosePopUp();
                 return;
             }
