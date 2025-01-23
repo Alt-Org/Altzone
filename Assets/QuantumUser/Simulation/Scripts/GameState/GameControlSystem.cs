@@ -35,29 +35,30 @@ namespace Quantum
             Debug.Log($"[GameControlSystem] Current State: {gameSession->state}, TimeUntilStart: {gameSession->TimeUntilStart}");
 #endif
 
-            // Countdown state handling
-            if (gameSession->state == GameState.Countdown)
+            switch (gameSession->state)
             {
-                gameSession->TimeUntilStart -= f.DeltaTime;
+                // Countdown state handling
+                case GameState.Countdown:
+                    gameSession->TimeUntilStart -= f.DeltaTime;
 
-                // Transition from Countdown to GetReadyToPlay
-                if (gameSession->TimeUntilStart < 1)
-                {
-                    gameSession->state = GameState.GetReadyToPlay;
-                    gameSession->TimeUntilStart = 1; // Set 1 second for the GetReadyToPlay state
-                }
-            }
+                    // Transition from Countdown to GetReadyToPlay
+                    if (gameSession->TimeUntilStart < 1)
+                    {
+                        gameSession->state = GameState.GetReadyToPlay;
+                        gameSession->TimeUntilStart = 1; // Set 1 second for the GetReadyToPlay state
+                    }
+                    break;
 
-            // GetReadyToPlay state handling
-            if (gameSession->state == GameState.GetReadyToPlay)
-            {
-                gameSession->TimeUntilStart -= f.DeltaTime;
+                // GetReadyToPlay state handling
+                case GameState.GetReadyToPlay:
+                    gameSession->TimeUntilStart -= f.DeltaTime;
 
-                // Transition from GetReadyToPlay to Playing
-                if (gameSession->TimeUntilStart <= 0)
-                {
-                    gameSession->state = GameState.Playing;
-                }
+                    // Transition from GetReadyToPlay to Playing
+                    if (gameSession->TimeUntilStart <= 0)
+                    {
+                        gameSession->state = GameState.Playing;
+                    }
+                    break;
             }
         }
     }
