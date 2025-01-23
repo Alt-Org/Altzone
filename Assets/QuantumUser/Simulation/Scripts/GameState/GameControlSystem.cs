@@ -23,7 +23,7 @@ namespace Quantum
             GameSession* gameSession = f.Unsafe.GetPointerSingleton<GameSession>();
 
 #if DEBUG_LOG_STATE
-            Debug.Log($"Current State: {gameSession->state}, TimeUntilStart: {gameSession->TimeUntilStart}");
+            Debug.Log($"[GameControlSystem] Current State: {gameSession->state}, TimeUntilStart: {gameSession->TimeUntilStart}");
 #endif
 
             // Countdown state handling
