@@ -297,7 +297,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (statType != StatType.None && CheckCombinedLevelCap() && CheckStatLevelCap(statType) && CheckMaxPlayerIncreases())
             {
-                bool diamondsDecreased = TryDecreaseDiamonds(GetDiamondCost(statType));
+                bool diamondsDecreased = true; //TryDecreaseDiamonds(GetDiamondCost(statType));
 
                 if (diamondsDecreased)
                 {
@@ -344,7 +344,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (GetStat(statType) > STATMINLEVEL && GetStat(statType) > GetBaseStat(statType))
             {
-                bool eraserDecreased = TryDecreaseEraser();
+                bool eraserDecreased = true; // TryDecreaseEraser();
 
                 if (eraserDecreased)
                 {

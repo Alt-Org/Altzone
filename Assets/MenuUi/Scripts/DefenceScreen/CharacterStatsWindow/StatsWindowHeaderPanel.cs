@@ -39,13 +39,13 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         private void SetDiamondsAmount()
         {
-            _diamondsAmount.text = _controller.GetDiamondAmount().ToString();
+            _diamondsAmount.text = "rajaton"; // _controller.GetDiamondAmount().ToString();
         }
 
 
         private void SetEraserAmount()
         {
-            _eraserAmount.text = _controller.GetEraserAmount().ToString();
+            _eraserAmount.text = "rajaton"; // _controller.GetEraserAmount().ToString();
         }
     }
 }
