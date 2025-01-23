@@ -200,7 +200,7 @@ namespace Altzone.Scripts.Lobby
             while (true)
             {
                 PhotonRealtimeClient.Client?.Service();
-                Debug.LogWarning(".");
+                //Debug.LogWarning(".");
                 yield return new WaitForSeconds(0.1f);
             }
         }
