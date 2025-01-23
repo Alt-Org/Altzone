@@ -22,6 +22,10 @@ namespace MenuUI.Scripts
         [SerializeField]
         private GameObject _popup;
         [SerializeField]
+        private Color _textColour;
+        [SerializeField]
+        private Color _backgroundColour;
+        [SerializeField]
         private float _popupWaitDelay = 3f;
 
         private IEnumerator _runningCoroutine = null;
@@ -63,15 +67,11 @@ namespace MenuUI.Scripts
             if (!transform.parent.gameObject.activeInHierarchy) return; //Check if the parent is active, if not this probably shouldn't activate.
             _popup.SetActive(true);
 
-            Color tempColour = _popup.GetComponent<Image>().color;
-            tempColour.a = 0.5f;
-            _popup.GetComponent<Image>().color = tempColour;
+            _popup.GetComponent<Image>().color = _backgroundColour;
 
             _popup.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = popupText;
 
-            Color tempTextColour = _popup.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color;
-            tempTextColour.a = 1f;
-            _popup.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = tempTextColour;
+            _popup.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = _textColour;
 
 
 
