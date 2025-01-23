@@ -271,8 +271,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             {
                 case StatType.None:
                     return -1;
-                case StatType.Speed: // there is no DefaultSpeed in BaseCharacter
-                    return -1;
+                case StatType.Speed:
+                    return _currentCharacter.CharacterBase.DefaultSpeed;
                 case StatType.Attack:
                     return _currentCharacter.CharacterBase.DefaultAttack;
                 case StatType.Hp:
@@ -388,9 +388,9 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
 
         // Get all character base stats combined
-        private int GetBaseStatsCombined() // defaultspeed missing
+        private int GetBaseStatsCombined()
         {
-            return _currentCharacter.CharacterBase.DefaultResistance + _currentCharacter.CharacterBase.DefaultAttack + _currentCharacter.CharacterBase.DefaultDefence + _currentCharacter.CharacterBase.DefaultHp; 
+            return _currentCharacter.CharacterBase.DefaultSpeed + _currentCharacter.CharacterBase.DefaultResistance + _currentCharacter.CharacterBase.DefaultAttack + _currentCharacter.CharacterBase.DefaultDefence + _currentCharacter.CharacterBase.DefaultHp; 
         }
 
 

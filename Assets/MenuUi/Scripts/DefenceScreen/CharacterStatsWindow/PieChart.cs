@@ -65,8 +65,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             int characterSizeBase = _controller.GetBaseStat(StatType.Resistance);
             int speedBase = _controller.GetBaseStat(StatType.Speed);
 
-            speedBase = speed; // remove this once getting base speed is fixed
-
             // Arrange stats
             var stats = new List<(int upgradesLevel, int baseLevel, Color color, Color altColor)>
             {
@@ -164,20 +162,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             {
                 sliceImage.sprite = circleSprite;
             }
-            //sliceImage.sprite = circleSprite;
-
-            //if (isBaseSlice)
-            //{
-            //    sliceImage.color = color * overlayColor;
-            //}
-            //else
-            //{
-            //    sliceImage.color = color;
-            //}
 
             sliceImage.color = color;
-
-
             sliceImage.type = Image.Type.Filled;
             sliceImage.fillClockwise = false;
             sliceImage.fillOrigin = (int)Image.Origin360.Top;
