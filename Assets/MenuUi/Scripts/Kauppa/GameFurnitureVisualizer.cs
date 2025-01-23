@@ -6,6 +6,7 @@ using MenuUI.Scripts;
 
 public class GameFurnitureVisualizer : MonoBehaviour
 {
+    [SerializeField] private Image _contentImage;
     [SerializeField] private TMP_Text _productText;
     [SerializeField] private TMP_Text _priceText;
     [SerializeField] private Button _button;
@@ -17,8 +18,6 @@ public class GameFurnitureVisualizer : MonoBehaviour
         _gameFurniture = gameFurniture;
         _productText.text = _gameFurniture.Name;
         _priceText.text = _gameFurniture.Value.ToString();
-        //m_Tracker.Add(driver, this.GetComponent<RectTransform>(), DrivenTransformProperties.Anchors |
-        //                DrivenTransformProperties.AnchoredPosition |
-        //                DrivenTransformProperties.SizeDelta);
+        _contentImage.sprite = _gameFurniture.FurnitureInfo.Image;
     }
 }
