@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4580862417906489619}
   - component: {fileID: 1476758151603140576}
   - component: {fileID: 6465337145916112772}
+  - component: {fileID: 6494014500134459926}
   m_Layer: 0
   m_Name: CloseButton
   m_TagString: Untagged
@@ -133,6 +134,23 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &6494014500134459926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 283826962718434805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioSelection: 0
+  _audioType: 2
+  _audioName: 
+  _audioId: 0
+  _playType: 0
 --- !u!1 &1179128881830841239
 GameObject:
   m_ObjectHideFlags: 0
@@ -145,6 +163,7 @@ GameObject:
   - component: {fileID: 983403094637604663}
   - component: {fileID: 3941690085160066050}
   - component: {fileID: 4350427720771641117}
+  - component: {fileID: 4982155769370530128}
   m_Layer: 0
   m_Name: PlusButton
   m_TagString: Untagged
@@ -267,6 +286,23 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &4982155769370530128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1179128881830841239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioSelection: 0
+  _audioType: 2
+  _audioName: 
+  _audioId: 0
+  _playType: 0
 --- !u!1 &1224066711838039960
 GameObject:
   m_ObjectHideFlags: 0
@@ -976,6 +1012,7 @@ GameObject:
   - component: {fileID: 7816479649599193280}
   - component: {fileID: 5658325416487574519}
   - component: {fileID: 1738579824229009127}
+  - component: {fileID: 8497681596302923884}
   m_Layer: 0
   m_Name: MinusButton
   m_TagString: Untagged
@@ -1098,6 +1135,23 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &8497681596302923884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6537476988418043056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioSelection: 0
+  _audioType: 2
+  _audioName: 
+  _audioId: 0
+  _playType: 0
 --- !u!1 &7438520737699890682
 GameObject:
   m_ObjectHideFlags: 0
