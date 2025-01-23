@@ -550,8 +550,8 @@ RectTransform:
   m_Children:
   - {fileID: 4349158123441571436}
   - {fileID: 2923693483994627279}
-  - {fileID: 6656924790234751957}
   - {fileID: 3261961728608674792}
+  - {fileID: 6656924790234751957}
   m_Father: {fileID: 133600758027847572}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2145,6 +2145,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -0.4999962
+      objectReference: {fileID: 0}
+    - target: {fileID: 5471786047283600981, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: _backgroundColour.a
+      value: 0.9019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 5471786047283600981, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: _backgroundColour.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5471786047283600981, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: _backgroundColour.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5471786047283600981, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: _backgroundColour.r
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5759620484407943366, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
