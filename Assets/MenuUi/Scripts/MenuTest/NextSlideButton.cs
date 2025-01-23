@@ -1,9 +1,10 @@
+using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class NextSlideButton : MonoBehaviour
 {
-    public ManagerCarousel carouselManager;
+    public SwipeUI swipeUI;
 
     private void Start()
     {
@@ -14,7 +15,8 @@ public class NextSlideButton : MonoBehaviour
 
     private void OnButtonClick()
     {
-        // Call the GoToNextSlide method in the ManagerCarousel script
-        carouselManager.GoToNextSlide();
+        // Call the GoToNextSlide method in the SwipeUI script
+
+        swipeUI.NextSlide();
     }
 }
