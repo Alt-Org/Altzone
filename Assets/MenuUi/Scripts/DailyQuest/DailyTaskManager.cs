@@ -5,7 +5,6 @@ using Altzone.Scripts;
 using UnityEngine;
 using static Altzone.Scripts.Model.Poco.Game.PlayerTasks;
 using UnityEngine.UI;
-using UnityEditor.Overlays;
 
 public class DailyTaskManager : MonoBehaviour
 {
@@ -15,11 +14,13 @@ public class DailyTaskManager : MonoBehaviour
     [SerializeField] private Button _ownTaskTabButton;
     [SerializeField] private Button _clanTaskTabButton;
 
-    private const int _cardSlots = 100;
-    private GameObject[] _dailyTaskCardSlots = new GameObject[_cardSlots];
+    private const int CardSlots = 100;
+    private GameObject[] _dailyTaskCardSlots = new GameObject[CardSlots];
 
     [Header("DailyTaskCard prefabs")]
-    [SerializeField] private GameObject _dailyTaskCardPrefab;
+    [SerializeField] private GameObject _dailyTaskCard500Prefab;
+    [SerializeField] private GameObject _dailyTaskCard1000Prefab;
+    [SerializeField] private GameObject _dailyTaskCard1500Prefab;
 
     [Header("DailyTasksPage")]
     [SerializeField] private GameObject _dailyTasksView;
@@ -30,9 +31,16 @@ public class DailyTaskManager : MonoBehaviour
     [Header("OwnTaskPage")]
     [SerializeField] private GameObject _ownTaskView;
     [SerializeField] private Button _cancelTaskButton;
+    [SerializeField] private DailyTaskOwnTask _ownTaskPageHandler;
+
+    private int? _ownTaskId;
+    public int? OwnTaskId { get { return _ownTaskId; } }
 
     [Header("ClanTaskPage")]
     [SerializeField] private GameObject _clanTaskView;
+
+    //Local Testing
+    private int _ownTaksProgress = 0;
 
     public enum SelectedTab
     {
@@ -40,7 +48,6 @@ public class DailyTaskManager : MonoBehaviour
         OwnTask,
         ClanTask
     }
-
     private SelectedTab _selectedTab = SelectedTab.Tasks;
 
     // Start of Code
@@ -54,20 +61,20 @@ public class DailyTaskManager : MonoBehaviour
         _clanTaskTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.ClanTask));
 
         //OwnTask cancel button
-        _cancelTaskButton.onClick.AddListener(() => CancelActiveTask());
+        _cancelTaskButton.onClick.AddListener(() => StartCancelTask());
+
+        _ownTaskTabButton.interactable = false;
     }
 
-    // First 3 functions are for task slot population and fetching them from server
+    // First 4 functions are for task slot population and fetching them from server
     public void TaskGenerator()
     {
-        StartCoroutine(PopulateTasks(_dailyTaskCardSlots, _dailyTaskCardPrefab));
-        //StartCoroutine(PopulateQuests(_weeklyQuestSlots, _weeklyTaskPrefab));
-        //StartCoroutine(PopulateQuests(_monthlyQuestSlots, _monthlyTaskPrefab));
+        StartCoroutine(PopulateTasks(_dailyTaskCardSlots));
 
         Debug.Log("Task Slots populated!");
     }
 
-    private IEnumerator PopulateTasks(GameObject[] questSlots, GameObject questPrefab)
+    private IEnumerator PopulateTasks(GameObject[] taskSlots)
     {
         PlayerTasks tasks = null;
         Storefront.Get().GetPlayerTasks(content => tasks = content);
@@ -99,12 +106,12 @@ public class DailyTaskManager : MonoBehaviour
 
         for (int i = 0; i < tasklist.Count; i++)
         {
-            GameObject taskObject = Instantiate(questPrefab, gameObject.transform);
-            questSlots[i] = taskObject;
+            GameObject taskObject = Instantiate(GetPrefabCategory(tasklist[i].Points), gameObject.transform);
+            taskSlots[i] = taskObject;
 
-            DailyQuest quest = taskObject.GetComponent<DailyQuest>();
-            quest.GetQuestData(tasklist[i]);
-            quest.dailyTaskManager = this;
+            DailyQuest task = taskObject.GetComponent<DailyQuest>();
+            task.GetQuestData(tasklist[i]);
+            task.dailyTaskManager = this;
 
             Transform parentCategory = GetParentCategory(tasklist[i].Points);
             taskObject.transform.SetParent(parentCategory, false);
@@ -112,9 +119,16 @@ public class DailyTaskManager : MonoBehaviour
 
             Debug.Log("Created Quest: " +  tasklist[i].Id);
         }
+
+        //Needed to update the instantiated DT cards spacing in HorizontalLayoutGroups.
         LayoutRebuilder.ForceRebuildLayoutImmediate(_dailyCategory500.GetComponent<RectTransform>());
         LayoutRebuilder.ForceRebuildLayoutImmediate(_dailyCategory1000.GetComponent<RectTransform>());
         LayoutRebuilder.ForceRebuildLayoutImmediate(_dailyCategory1500.GetComponent<RectTransform>());
+
+        //Sets DT cards to left side.
+        _dailyCategory500.GetComponent<RectTransform>().anchoredPosition = new Vector2( int.MaxValue ,0f );
+        _dailyCategory1000.GetComponent<RectTransform>().anchoredPosition = new Vector2( int.MaxValue ,0f );
+        _dailyCategory1500.GetComponent<RectTransform>().anchoredPosition = new Vector2( int.MaxValue ,0f );
     }
 
     private Transform GetParentCategory(int points)
@@ -127,59 +141,114 @@ public class DailyTaskManager : MonoBehaviour
         };
     }
 
-    // Function for popup calling - TODO: Expand to handle and execute data sent from DailyQuest.cs about selected task.
-    public IEnumerator ShowPopupAndHandleResponse(string Message, int popupId)
+    private GameObject GetPrefabCategory(int points)
+    {
+        return points switch
+        {
+            <= 500 => _dailyTaskCard500Prefab,
+            <= 1000 => _dailyTaskCard1000Prefab,
+            _ => _dailyTaskCard1500Prefab,
+        };
+    }
+
+    // Function for popup calling
+    public IEnumerator ShowPopupAndHandleResponse(string Message, PopupData? data)
     {
         yield return Popup.RequestPopup(Message, result =>
         {
-            if (result == true)
+            if (result == true && data != null)
             {
                 Debug.Log("Confirmed!");
-                switch(popupId)
+                switch(data.Value.Type)
                 {
-                    case 1:
-                        Debug.Log("Accept case happened " + popupId);
-                        HideAvailableTasks();
-                        SwitchTab(SelectedTab.OwnTask);
-                        //TODO: Add functionality to set the "Omatyö" page.
-                        break;
-                    case 2:
-                        Debug.Log("Cancel case happened " + popupId);
-                        ShowAvailableTasks();
-                        SwitchTab(SelectedTab.Tasks);
-                        break;
+                    case PopupData.PopupDataType.OwnTask:
+                        {
+                            if (_ownTaskId != null)
+                                CancelTask();
+
+                            PopupDataHandler(data.Value);
+                            SwitchTab(SelectedTab.OwnTask);
+                            _ownTaskTabButton.interactable = true;
+                            break;
+                        }
+                    case PopupData.PopupDataType.CancelTask:
+                        {
+                            CancelTask();
+                            SwitchTab(SelectedTab.Tasks);
+                            _ownTaskTabButton.interactable = false;
+                            break;
+                        }
                 }
             }
             else
             {
-                Debug.Log("Cancelled Popup!");
+                Debug.Log("Cancelled Popup.");
                 // Perform actions for cancellation
             }
         });
     }
 
-    // calling popup for canceling task
-    public void CancelActiveTask()
+    private void PopupDataHandler(PopupData data)
     {
-        StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", 2));
+        switch (data.Type)
+        {
+            case PopupData.PopupDataType.OwnTask: HandleOwnTask(data.OwnPage.Value); break;
+            default: break;
+        }
     }
 
-    // show/hide works for task selection to hide and show task selection
-    private void ShowAvailableTasks()
+    private void HandleOwnTask(PopupData.OwnPageData data)
     {
-        _dailyTasksView.SetActive(true);
-
-        Debug.Log("Available tasks shown.");
+        //TODO: Add task accept code when server side has functionality.
+        CalculateOwnTaskProgressBar(data.TaskAmount);
+        StartCoroutine(_ownTaskPageHandler.SetDailyTask(data.TaskDescription, data.TaskAmount, data.TaskPoints, data.TaskCoins));
+        _ownTaskId = data.TaskId;
+        Debug.Log("Task id: " + _ownTaskId + ", has been accepted.");
     }
 
-    private void HideAvailableTasks()
+    public void TESTAddTaskProgress()
     {
-        _dailyTasksView.SetActive(false);
+        _ownTaksProgress++;
 
-        Debug.Log("Available tasks hidden.");
+        foreach (GameObject obj in _dailyTaskCardSlots)
+        {
+            DailyQuest quest = obj.GetComponent<DailyQuest>();
+
+            if (quest.TaskData.Id == _ownTaskId)
+            {
+                CalculateOwnTaskProgressBar(quest.TaskData.Amount);
+                return;
+            }
+        }
     }
 
-    // next functions are for tab switching system
+    private void CalculateOwnTaskProgressBar(int taskAmount)
+    {
+        float progress = (float)_ownTaksProgress / (float)taskAmount;
+        StartCoroutine(_ownTaskPageHandler.SetTaskProgress(progress));
+        Debug.Log("Task id: " + _ownTaskId + ", current progress: " + progress);
+        if (progress >= 1f)
+        {
+            Debug.Log("Task id:" + _ownTaskId + ", is done");
+        }
+    }
+
+    // Calling popup for canceling task.
+    public void StartCancelTask()
+    {
+        PopupData data = new(PopupData.GetType("cancel_task"));
+        StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", data));
+    }
+
+    private void CancelTask()
+    {
+        //TODO: Add task cancellation code when server side has functionality.
+        _ownTaksProgress = 0;
+        StartCoroutine(_ownTaskPageHandler.ClearCurrentTask());
+        Debug.Log("Task id: " + _ownTaskId + ", has been canceled.");
+        _ownTaskId = null;
+    }
+
     public void SwitchTab(SelectedTab tab)
     {
         //Hide old tab
@@ -190,7 +259,7 @@ public class DailyTaskManager : MonoBehaviour
             default: _clanTaskView.SetActive(false); break;
         }
 
-        // Update the selected tab
+        // Set new selected tab
         _selectedTab = tab;
 
         //Show new tab

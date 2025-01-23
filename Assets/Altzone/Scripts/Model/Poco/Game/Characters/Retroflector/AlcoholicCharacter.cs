@@ -8,13 +8,13 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         public AlcoholicCharacter(): base()
         {
-            _id = CharacterID.RetroflectorAlcoholic;
+            _id = CharacterID.Alcoholic;
             _defaultAttack = 9;
             _defaultDefence = 8;
             _defaultHp = 1;
             _defaultResistance = 10;
             _defaultSpeed = 5;
-            InitilizeValues();
+            InitializeValues();
         }
     }
 }

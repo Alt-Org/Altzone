@@ -10,7 +10,8 @@ using MenuUi.Scripts.CharacterGallery;
 using System;
 using Altzone.Scripts.Config;
 using System.Threading;
-
+using Altzone.Scripts.Config.ScriptableObjects;
+using Altzone.Scripts.ModelV2;
 
 public class CharacterStatWindow : MonoBehaviour
 {
@@ -464,8 +465,9 @@ public class CharacterStatWindow : MonoBehaviour
         }
 
         //var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)index);
-        var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)_characterId);
-        if (galleryCharacter == null)
+        //var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)_characterId);
+        var info2 = PlayerCharacterPrototypes.GetCharacter(((int)_characterId).ToString());
+        if (/*galleryCharacter == null ||*/ info2 == null)
         {
 
             Debug.LogError($"GalleryCharacterReference not found for index {_characterId}"); //index
@@ -478,31 +480,31 @@ public class CharacterStatWindow : MonoBehaviour
 
         switch (_characterId) //index
         {
-            case CharacterID.IntellectualizerResearcher:
+            case CharacterID.Booksmart:
                 SetCharacterInfo();
                 break;
-            case CharacterID.RetroflectorOverEater:
+            case CharacterID.Overeater:
                 SetCharacterInfo();
                 break;
-            case CharacterID.TricksterComedian:
+            case CharacterID.Joker:
                 SetCharacterInfo();
                 break;
-            case CharacterID.TricksterConman:
+            case CharacterID.Conman:
                 SetCharacterInfo();
                 break;
-            case CharacterID.DesensitizerBodybuilder:
+            case CharacterID.Bodybuilder:
                 SetCharacterInfo();
                 break;
-            case CharacterID.ObedientPreacher:
+            case CharacterID.Religious:
                 SetCharacterInfo();
                 break;
-            case CharacterID.ProjectorGraffitiArtist:
+            case CharacterID.Artist:
                 SetCharacterInfo();
                 break;
-            case CharacterID.ConfluentBesties:
+            case CharacterID.Soulsisters:
                 SetCharacterInfo();
                 break;
-            case CharacterID.RetroflectorAlcoholic:
+            case CharacterID.Alcoholic:
                 SetCharacterInfo();
                 break;
             default:
@@ -563,17 +565,18 @@ public class CharacterStatWindow : MonoBehaviour
     private void SetCharacterInfo()
     {
         var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
-        var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)_characterId);
+        //var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)_characterId);
+        var info2 = PlayerCharacterPrototypes.GetCharacter(((int)_characterId).ToString());
 
         //Should this be CustomCharacter?
-        _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
+        _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(info2.Name, false,
                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack,
                    customCharacter.Defence, customCharacter.Hp);
-        CharacterArtWorkToShow.sprite = galleryCharacter.Image;
-        CharacterArtWorkForInfoCanva.sprite = galleryCharacter.Image;
+        CharacterArtWorkToShow.sprite = info2.GalleryImage;
+        CharacterArtWorkForInfoCanva.sprite = info2.GalleryImage;
 
 
-        Debug.Log($"loaded {galleryCharacter.Name}");
+        Debug.Log($"loaded {info2.Name}");
 
         //For the right side window. CharSize not impelemented yet.
         impactforceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
@@ -593,39 +596,39 @@ public class CharacterStatWindow : MonoBehaviour
         //This set the character description and special ability texts.
         switch (_characterId)
         {
-            case CharacterID.IntellectualizerResearcher:
+            case CharacterID.Booksmart:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
-            case CharacterID.RetroflectorOverEater:
+            case CharacterID.Overeater:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
-            case CharacterID.TricksterComedian:
+            case CharacterID.Joker:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
-            case CharacterID.TricksterConman:
+            case CharacterID.Conman:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
-            case CharacterID.DesensitizerBodybuilder:
+            case CharacterID.Bodybuilder:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
-            case CharacterID.ObedientPreacher:
+            case CharacterID.Religious:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
-            case CharacterID.ProjectorGraffitiArtist:
+            case CharacterID.Artist:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
-            case CharacterID.ConfluentBesties:
+            case CharacterID.Soulsisters:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;
-            case CharacterID.RetroflectorAlcoholic:
+            case CharacterID.Alcoholic:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
                 DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
                 break;

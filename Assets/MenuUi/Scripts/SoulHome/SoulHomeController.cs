@@ -63,7 +63,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public void OnEnable()
         {
-            if (_infoPopup != null && _infoPopup.gameObject.activeSelf == true) _infoPopup.gameObject.SetActive(false);
+            //if (_infoPopup != null && _infoPopup.gameObject.activeSelf == true) _infoPopup.gameObject.SetActive(false);
             GameObject[] root = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
             foreach (GameObject rootObject in root)
             {
@@ -241,7 +241,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public void ShowInfoPopup(string popupText)
         {
-            _infoPopup.ActivatePopUp(popupText);
+            SignalBus.OnChangePopupInfoSignal(popupText);
         }
 
     }
