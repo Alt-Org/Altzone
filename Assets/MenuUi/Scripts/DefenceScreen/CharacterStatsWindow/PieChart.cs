@@ -1,139 +1,188 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine.UI;
-using TMPro;
 
-public class PieChartManager : MonoBehaviour
+
+namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
-    // listataan palaset, montako niitä on.
-    // list the slices, how many there are.
-    [SerializeField] private List<Image> slices;
-
-    // Hakee Unity:n UI:n tekstikentän josta tietoa halutaan hakea.
-    // Retrieves the text field in Unity's UI from which information is to be retrieved.
-    [SerializeField] private TMP_Text impactForceText;
-    [SerializeField] private TMP_Text healthPointsText;
-    [SerializeField] private TMP_Text resistanceText;
-    [SerializeField] private TMP_Text characterSizeText;
-    [SerializeField] private TMP_Text speedText;
-
-    // Asetetaan väri, minkälaiseksi palanen tulee muuttua tietyn statin mukaan. Näitä voidaan muuttaa suoraan unityn sisällä.
-    // Set the color, what kind of piece the piece should turn into according to a certain stat. These can be changed directly inside unity.
-    [SerializeField] private Color impactForceColor = new Color(1f, 0.5f, 0f);
-    [SerializeField] private Color healthPointsColor = Color.green;
-    [SerializeField] private Color resistanceColor = new Color(0.5f, 0f, 0.5f);
-    [SerializeField] private Color characterSizeColor = Color.blue;
-    [SerializeField] private Color speedColor = new Color(0f, 0.5f, 0f);
-    [SerializeField] private Color defaultColor = Color.white;
-
-    // Väliaikainen muuttuja arvoille, jotta reaaliaikainen päivitys onnistuu.
-    // Temporary variable for values, so that the real-time update is successful.
-    private int lastImpactForce;
-    private int lastHealthPoints;
-    private int lastResistance;
-    private int lastCharacterSize;
-    private int lastSpeed;
-
-    private void OnEnable()
+    public class PieChartManager : MonoBehaviour
     {
-        // Päivittää PieChart:n, kun paneeli/sivu avataan uudelleen.
-        // Updates PieChart when panel/page is opened.
-        Debug.Log("Pie Chart Manager: Paneeli avattu, päivitetään pie chart...");
-        UpdateChart();
-    }
+        [SerializeField] private StatsWindowController _controller;
 
-    private void Update()
-    {
-        // Tarkistaa, ovatko arvot muuttuneet.
-        // Checks if values have changed.
-        int currentImpactForce = ParseText(impactForceText.text);
-        int currentHealthPoints = ParseText(healthPointsText.text);
-        int currentResistance = ParseText(resistanceText.text);
-        int currentCharacterSize = ParseText(characterSizeText.text);
-        int currentSpeed = ParseText(speedText.text);
+        [SerializeField] private int _sliceAmount;
 
-        // Tarkistaa alkuperäisen ja uuden arvon välillä, ovatko ne samat.
-        // Checks between the original and the new value to see if they are the same.
-        if (currentImpactForce != lastImpactForce ||
-            currentHealthPoints != lastHealthPoints ||
-            currentResistance != lastResistance ||
-            currentCharacterSize != lastCharacterSize ||
-            currentSpeed != lastSpeed)
+        // Set the color, what kind of piece the piece should turn into according to a certain stat. These can be changed directly inside unity.
+        [SerializeField] private Color impactForceColor = new Color(1f, 0.5f, 0f);
+        [SerializeField] private Color impactForceAltColor = new Color(1f, 0.5f, 0f);
+        [SerializeField] private Color healthPointsColor = Color.green;
+        [SerializeField] private Color healthPointsAltColor = Color.green;
+        [SerializeField] private Color defenceColor = new Color(0.5f, 0f, 0.5f);
+        [SerializeField] private Color defenceAltColor = new Color(0.5f, 0f, 0.5f);
+        [SerializeField] private Color characterSizeColor = Color.blue;
+        [SerializeField] private Color characterSizeAltColor = Color.blue;
+        [SerializeField] private Color speedColor = new Color(0f, 0.5f, 0f);
+        [SerializeField] private Color speedAltColor = new Color(0f, 0.5f, 0f);
+        [SerializeField] private Color defaultColor = Color.white;
+        [SerializeField] private Color defaultAltColor = Color.gray;
+        [SerializeField] private Color overlayColor = Color.gray;
+
+        [SerializeField] private Sprite circleSprite;
+        [SerializeField] private Sprite circlePatternedSprite;
+
+
+        private void OnEnable()
         {
-            // Päivittää viimeisimmät arvot.
-            // Updates latest values.
-            lastImpactForce = currentImpactForce;
-            lastHealthPoints = currentHealthPoints;
-            lastResistance = currentResistance;
-            lastCharacterSize = currentCharacterSize;
-            lastSpeed = currentSpeed;
-
             UpdateChart();
-        }
-    }
-
-
-
-    public void UpdateChart()
-    {
-        Debug.Log("Updating Pie Chart...");
-
-        // Haetaan arvot tekstikentistä (TMP_Text) ja muutetaan ne numero (int) luvuiksi.
-        // Retrieve values ​​from text fields (TMP_Text) and change them to numbers (int).
-        int impactForce = ParseText(impactForceText.text);
-        int healthPoints = ParseText(healthPointsText.text);
-        int resistance = ParseText(resistanceText.text);
-        int characterSize = ParseText(characterSizeText.text);
-        int speed = ParseText(speedText.text);
-
-        Debug.Log($"Impact Force: {impactForce}, Health Points: {healthPoints}, Resistance: {resistance}, Character Size: {characterSize}, Speed: {speed}");
-
-        // Järjestää statsit.
-        // Arrange stats.
-        var stats = new List<(int level, Color color)>
-        {
-            (impactForce, impactForceColor),
-            (healthPoints, healthPointsColor),
-            (resistance, resistanceColor),
-            (characterSize, characterSizeColor),
-            (speed, speedColor)
-        };
-
-        // Alustaa kaikki slicet.
-        // Formats all slices.
-        foreach (var slice in slices)
-        {
-            slice.fillAmount = 1f / slices.Count;
-            slice.color = defaultColor;
+            _controller.OnStatUpdated += UpdateChart;
         }
 
-        // Täytetään palaset (slice) järjestyksessä PieChartiin.
-        // Fill up slices in order to the PieChart.
-        int currentSlice = 0;
-
-        foreach (var stat in stats)
+        private void OnDisable()
         {
-            int level = stat.level;
-            Color color = stat.color;
+            _controller.OnStatUpdated -= UpdateChart;
+        }
 
-            for (int i = 0; i < level; i++)
+
+        public void UpdateChart(StatType statType = StatType.None)
+        {
+            // Destroy old pie slices
+            for (int i = 0; i < transform.childCount; i++)
             {
-                if (currentSlice < slices.Count)
+                Destroy(transform.GetChild(i).gameObject);
+            }
+
+            // Get stats
+            int impactForce = _controller.GetStat(StatType.Attack);
+            int healthPoints = _controller.GetStat(StatType.Hp);
+            int defence = _controller.GetStat(StatType.Defence);
+            int characterSize = _controller.GetStat(StatType.Resistance);
+            int speed = _controller.GetStat(StatType.Speed);
+
+            // Get base stats
+            int impactForceBase = _controller.GetBaseStat(StatType.Attack);
+            int healthPointsBase = _controller.GetBaseStat(StatType.Hp);
+            int defenceBase = _controller.GetBaseStat(StatType.Defence);
+            int characterSizeBase = _controller.GetBaseStat(StatType.Resistance);
+            int speedBase = _controller.GetBaseStat(StatType.Speed);
+
+            // Arrange stats
+            var stats = new List<(int upgradesLevel, int baseLevel, Color color, Color altColor)>
+            {
+                (defence - defenceBase, defenceBase, defenceColor, defenceAltColor),
+                (characterSize - characterSizeBase, characterSizeBase, characterSizeColor, characterSizeAltColor),
+                (speed - speedBase, speedBase, speedColor, speedAltColor),
+                (healthPoints - healthPointsBase, healthPointsBase, healthPointsColor, healthPointsAltColor),
+                (impactForce - impactForceBase, impactForceBase, impactForceColor, impactForceAltColor),
+            };
+
+            // Create slices
+            float sliceFillAmount = 1.0f / (float)_sliceAmount;
+            float currentSliceFill = 1.0f;
+
+            int remainingSlices = _sliceAmount;
+
+            // Colored slices
+            foreach (var stat in stats)
+            {
+                // base stats
+                for (int i = 0; i < stat.baseLevel; i++) 
                 {
-                    Debug.Log($"Setting Slice {currentSlice} to Color {color}");
-                    slices[currentSlice].color = color;
-                    currentSlice++;
+                    if (remainingSlices % 2 == 0)
+                    {
+                        CreateSlice(currentSliceFill, stat.color, true);
+                    }
+                    else
+                    {
+                        CreateSlice(currentSliceFill, stat.altColor, true);
+                    }
+
+                    currentSliceFill -= sliceFillAmount;
+
+                    remainingSlices--;
+                    if (remainingSlices == 0) // if runs out of slices return
+                    {
+                        return;
+                    }
                 }
+
+                // upgraded stats
+                for (int i = 0; i < stat.upgradesLevel; i++)
+                {
+                    if (remainingSlices % 2 == 0)
+                    {
+                        CreateSlice(currentSliceFill, stat.color, false);
+                    }
+                    else
+                    {
+                        CreateSlice(currentSliceFill, stat.altColor, false);
+                    }
+
+                    currentSliceFill -= sliceFillAmount;
+
+                    remainingSlices--;
+                    if (remainingSlices == 0) // if runs out of slices return
+                    {
+                        return;
+                    }
+                }
+            }
+
+            // White slices
+            for (int i = remainingSlices; i > 0; i--)
+            {
+                if (i % 2 == 0)
+                {
+                    CreateSlice(currentSliceFill, defaultAltColor, true);
+                }
+                else
+                {
+                    CreateSlice(currentSliceFill, defaultColor, true);
+                }
+
+                currentSliceFill -= sliceFillAmount;
             }
         }
 
-        Debug.Log("Pie Chart updated!");
-    }
 
-    // Parsettaa tekstin, onko se mahdollista muuttaa int luvuksi.
-    // Parsing text if they are possible to change from string -> int.
-    private int ParseText(string text)
-    {
-        return int.TryParse(text, out int result) ? result : 0;
+        private void CreateSlice(float fillAmount, Color color, bool isBaseSlice)
+        {
+            // Create gameobject and add components
+            GameObject slice = new GameObject();
+            slice.AddComponent<RectTransform>();
+            slice.AddComponent<Image>();
+
+            // Modify image properties
+            Image sliceImage = slice.GetComponent<Image>();
+
+            if (!isBaseSlice)
+            {
+                sliceImage.sprite = circlePatternedSprite;
+            }
+            else
+            {
+                sliceImage.sprite = circleSprite;
+            }
+
+            sliceImage.color = color;
+            sliceImage.type = Image.Type.Filled;
+            sliceImage.fillClockwise = false;
+            sliceImage.fillOrigin = (int)Image.Origin360.Top;
+            sliceImage.preserveAspect = true;
+            sliceImage.raycastTarget = false;
+            sliceImage.fillAmount = fillAmount;
+
+            // Reparent to this node
+            slice.transform.SetParent(transform);
+
+            // Set scale
+            slice.transform.localScale = Vector3.one;
+
+            // Set anchors
+            RectTransform sliceRect = slice.GetComponent<RectTransform>();
+            sliceRect.offsetMax = Vector2.zero;
+            sliceRect.offsetMin = Vector2.zero;
+            sliceRect.anchorMin = Vector3.zero;
+            sliceRect.anchorMax = Vector3.one;
+        }
     }
 }
