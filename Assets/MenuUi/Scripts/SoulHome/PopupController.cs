@@ -7,6 +7,16 @@ using UnityEngine.UI;
 
 namespace MenuUI.Scripts
 {
+    public static partial class SignalBus
+    {
+        public delegate void ChangePopupInfo(string message);
+        public static event ChangePopupInfo OnChangePopupInfo;
+        public static void OnChangePopupInfoSignal(string message)
+        {
+            OnChangePopupInfo?.Invoke(message);
+        }
+    }
+
     public class PopupController : MonoBehaviour
     {
         [SerializeField]
@@ -16,9 +26,20 @@ namespace MenuUI.Scripts
 
         private IEnumerator _runningCoroutine = null;
 
+        void OnEnable()
+        {
+            SignalBus.OnChangePopupInfo += ActivatePopUp;
+        }
+
+        private void Start()
+        {
+            _popup.SetActive(false);
+        }
+
         void OnDisable()
         {
             _popup.SetActive(false);
+            SignalBus.OnChangePopupInfo -= ActivatePopUp;
         }
 
         public void Initialize()
@@ -27,18 +48,19 @@ namespace MenuUI.Scripts
             {
                 if (!obj)
                 {
-                    _popup = gameObject;
+                    _popup = transform.GetChild(0).gameObject;
                 }
             }
             else
             {
-                if (_popup == null) _popup = gameObject;
+                if (_popup == null) _popup = transform.GetChild(0).gameObject;
             }
         }
 
         public void ActivatePopUp(string popupText)
         {
             Initialize();
+            if (!transform.parent.gameObject.activeInHierarchy) return; //Check if the parent is active, if not this probably shouldn't activate.
             _popup.SetActive(true);
 
             Color tempColour = _popup.GetComponent<Image>().color;
