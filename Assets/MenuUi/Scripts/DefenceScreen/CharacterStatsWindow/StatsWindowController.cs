@@ -287,6 +287,17 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
 
         /// <summary>
+        /// Check if stat can be increased. (all stats combined is less than the combined level cap, stat is less than individual stat level cap, and player has increased stats less times than the maximum allowed amount)
+        /// </summary>
+        /// <param name="statType">The stat type to check.</param>
+        /// <returns>True if stat can be increased false if stat can't be increased.</returns>
+        public bool CanIncreaseStat(StatType statType)
+        {
+            return statType != StatType.None && CheckCombinedLevelCap() && CheckStatLevelCap(statType) && CheckMaxPlayerIncreases();
+        }
+
+
+        /// <summary>
         /// Try to increase currently displayed character's stat according to the stat type.
         /// </summary>
         /// <param name="statType">The stat type which to increase.</param>
@@ -295,7 +306,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             bool success = false;
 
-            if (statType != StatType.None && CheckCombinedLevelCap() && CheckStatLevelCap(statType) && CheckMaxPlayerIncreases())
+            if (CanIncreaseStat(statType))
             {
                 bool diamondsDecreased = true; //TryDecreaseDiamonds(GetDiamondCost(statType));
 
@@ -334,6 +345,17 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
 
         /// <summary>
+        /// Check if stat can be decreased. (stat is more than minimum allowed level and stat is more than base level)
+        /// </summary>
+        /// <param name="statType">The stat which to check.</param>
+        /// <returns>True if stat can be decreased false if stat can't be decreased.</returns>
+        public bool CanDecreaseStat(StatType statType)
+        {
+            return GetStat(statType) > STATMINLEVEL && GetStat(statType) > GetBaseStat(statType);
+        }
+
+
+        /// <summary>
         /// Try to decrease currently displayed character's stat according to the stat type.
         /// </summary>
         /// <param name="statType">The stat type which to decrease.</param>
@@ -342,7 +364,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             bool success = false;
 
-            if (GetStat(statType) > STATMINLEVEL && GetStat(statType) > GetBaseStat(statType))
+            if (CanDecreaseStat(statType))
             {
                 bool eraserDecreased = true; // TryDecreaseEraser();
 

@@ -14,6 +14,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private TMP_Text _statName;
         [SerializeField] private TMP_Text _statNumber;
         [SerializeField] private TMP_Text _diamondCost;
+        [SerializeField] private TMP_Text _eraserCost;
         [SerializeField] private Image _touchBlocker;
 
         private StatType _statType;
@@ -24,6 +25,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             ClosePopUp();
             _controller.OnStatUpdated += UpdateStatNumber;
             _controller.OnStatUpdated += UpdateDiamondCost;
+            _controller.OnStatUpdated += UpdateEraserCost;
         }
 
 
@@ -31,6 +33,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             _controller.OnStatUpdated -= UpdateStatNumber;
             _controller.OnStatUpdated -= UpdateDiamondCost;
+            _controller.OnStatUpdated -= UpdateEraserCost;
         }
 
 
@@ -75,8 +78,9 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             if (statInfo != null)
             {
                 _statType = (StatType)statType;
-                _diamondCost.text = _controller.GetDiamondCost(_statType).ToString();
-                _statNumber.text = _controller.GetStat(_statType).ToString();
+                UpdateDiamondCost(_statType);
+                UpdateEraserCost(_statType);
+                UpdateStatNumber(_statType);
 
                 _statIcon.sprite = statInfo.Image;
                 _statName.text = statInfo.Name;
@@ -127,7 +131,27 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         private void UpdateDiamondCost(StatType statType)
         {
-            _diamondCost.text = _controller.GetDiamondCost(statType).ToString();
+            if (_controller.CanIncreaseStat(statType))
+            {
+                _diamondCost.text = _controller.GetDiamondCost(statType).ToString();
+            }
+            else
+            {
+                _diamondCost.text = "-";
+            }
+        }
+
+
+        private void UpdateEraserCost(StatType statType)
+        {
+            if (_controller.CanDecreaseStat(statType))
+            {
+                _eraserCost.text = "1";
+            }
+            else
+            {
+                _eraserCost.text = "-";
+            }
         }
     }
 }
