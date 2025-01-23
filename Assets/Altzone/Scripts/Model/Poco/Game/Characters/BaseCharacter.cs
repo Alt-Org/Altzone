@@ -51,6 +51,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public int Hp { get => _hp;}
         public int DefaultHp { get => _defaultHp; }
         public int Speed { get => _speed;}
+        public int DefaultSpeed { get => _defaultSpeed; }
         public int Resistance { get => _resistance;}
         public int DefaultResistance { get => _defaultResistance; }
         public int Attack { get => _attack;}
