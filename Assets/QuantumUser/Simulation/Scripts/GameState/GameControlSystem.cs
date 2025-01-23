@@ -11,11 +11,11 @@ namespace Quantum
      *  -ProjectileSpawnerSystem
      */
     [Preserve]
-    public unsafe class GameSessionStateSystem : SystemMainThread
+    public unsafe class GameControlSystem : SystemMainThread
     {
         public override void OnInit(Frame f)
         {
-            Log.Debug("Quantum GameSessionStateSystem OnInit");
+            Log.Debug("[GameControlSystem] OnInit");
         }
 
         public override void Update(Frame f)
