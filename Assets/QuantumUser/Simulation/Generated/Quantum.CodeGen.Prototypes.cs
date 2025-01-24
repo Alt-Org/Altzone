@@ -103,6 +103,7 @@ namespace Quantum.Prototypes {
     public PlayerRef Player;
     public FP Speed;
     public FPVector2 TargetPosition;
+    public FP Rotation;
     partial void MaterializeUser(Frame frame, ref Quantum.PlayerData result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.PlayerData component = default;
@@ -113,6 +114,7 @@ namespace Quantum.Prototypes {
         result.Player = this.Player;
         result.Speed = this.Speed;
         result.TargetPosition = this.TargetPosition;
+        result.Rotation = this.Rotation;
         MaterializeUser(frame, ref result, in context);
     }
   }

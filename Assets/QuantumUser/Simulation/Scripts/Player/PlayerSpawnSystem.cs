@@ -25,7 +25,7 @@ namespace Quantum
             RuntimePlayer data = f.GetPlayerData(player);
             EntityPrototype entityPrototypeAsset = f.FindAsset(data.PlayerAvatar);
             EntityRef playerEntity = f.Create(entityPrototypeAsset);
-            f.Add(playerEntity, new PlayerData{Player = player, Speed = 20, TargetPosition = spawnPos2D});
+            f.Add(playerEntity, new PlayerData{Player = player, Speed = 20, TargetPosition = spawnPos2D, Rotation = 0});
 
             //teleports player to spawnpoint's position
             Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
