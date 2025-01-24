@@ -18,10 +18,6 @@ namespace MenuUi.Scripts.CharacterGallery
 
         [SerializeField] private GameObject _characterSlotprefab;
 
-        [SerializeField] private GameObject _selectedCharacterSlotText1;
-        [SerializeField] private GameObject _selectedCharacterSlotText2;
-        [SerializeField] private GameObject _selectedCharacterSlotText3;
-
         [SerializeField] private Sprite[] _backgroundSprites;
 
         private bool _isReady;
@@ -106,7 +102,6 @@ namespace MenuUi.Scripts.CharacterGallery
             _characterButtons.Clear();
             _characterSlots.Clear();
             LoadAndCachePrefabs();
-            CheckSelectedCharacterSlotTexts();
         }
 
 
@@ -116,37 +111,6 @@ namespace MenuUi.Scripts.CharacterGallery
                 VerticalContentPanel.transform;
 
             return content;
-        }
-
-
-        public void CheckSelectedCharacterSlotTexts()
-        {
-            if (_CurSelectedCharacterSlots[2].transform.childCount > 0)
-            {
-                _selectedCharacterSlotText3.SetActive(false);
-            }
-            else
-            {
-                _selectedCharacterSlotText3.SetActive(true);
-            }
-
-            if (_CurSelectedCharacterSlots[1].transform.childCount > 0)
-            {
-                _selectedCharacterSlotText2.SetActive(false);
-            }
-            else
-            {
-                _selectedCharacterSlotText2.SetActive(true);
-            }
-
-            if (_CurSelectedCharacterSlots[0].transform.childCount > 0)
-            {
-                _selectedCharacterSlotText1.SetActive(false);
-            }
-            else
-            {
-                _selectedCharacterSlotText1.SetActive(true);
-            }
         }
 
 
@@ -236,8 +200,6 @@ namespace MenuUi.Scripts.CharacterGallery
                             }
                             i++;
                         }
-
-                        CheckSelectedCharacterSlotTexts();
                     };
 
                     // subscribing to removed from top slot event
@@ -264,8 +226,6 @@ namespace MenuUi.Scripts.CharacterGallery
                     }
                 }
             }
-
-            CheckSelectedCharacterSlotTexts();
         }
 
 
@@ -301,8 +261,6 @@ namespace MenuUi.Scripts.CharacterGallery
                     CurrentCharacterId = CharacterID.None;
                 }
             }
-
-            CheckSelectedCharacterSlotTexts();
         }
     }
 }
