@@ -31,8 +31,9 @@ namespace Quantum
             Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
             playerTransform->Teleport(f, spawnPos2D);
 
-            if(player==2 || player==3){
-                
+            //rotates BetaTeam players
+            if (player==2 || player==3){
+                playerTransform->Rotation = FP.Rad_180;
             }
         }
     }

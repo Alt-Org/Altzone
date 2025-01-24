@@ -37,36 +37,76 @@ namespace Quantum
 
             if (input->RotateMotion)
             {
-                FP maxAngle = FP._1;
+                FP maxAngleAlphaTeam = FP.Rad_45;
+                FP maxAngleBetaTeamClockWise = FP.Rad_180 - FP.Rad_45;
+                FP maxAngleBetaTeamCounterClockWise = FP.Rad_180 + FP.Rad_45;
 
                 //stops player before rotation
                 filter.PlayerData->TargetPosition = filter.Transform->Position;
 
-                //rotates to right
-                if (input->RotationDirection > 0 && filter.Transform->Rotation < maxAngle)
+                //rotation for AlphaTeam players
+                if (filter.PlayerData->Player == 0 || filter.PlayerData->Player == 1)
                 {
-                    filter.Transform->Rotation += rotationSpeed;
-                    Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", filter.Transform->Rotation);
+                    //rotates to right
+                    if (input->RotationDirection > 0 && filter.Transform->Rotation < maxAngleAlphaTeam)
+                    {
+                        filter.Transform->Rotation += rotationSpeed;
+                        Debug.LogFormat("[PlayerRotatingSystem] AlphaTeam player leaning right(rotation: {0}", filter.Transform->Rotation);
+                    }
+
+                    //rotates to left
+                    else if (input->RotationDirection < 0 && filter.Transform->Rotation > -maxAngleAlphaTeam)
+                    {
+                        filter.Transform->Rotation -= rotationSpeed;
+                        Debug.LogFormat("[PlayerRotatingSystem] AlphaTeam player leaning left(rotation: {0}", filter.Transform->Rotation);
+                    }
                 }
 
-                //rotates to left
-                else if (input->RotationDirection < 0 && filter.Transform->Rotation > -maxAngle)
+                //rotation for BetaTeam players
+                if (filter.PlayerData->Player == 2 || filter.PlayerData->Player == 3)
                 {
-                    filter.Transform->Rotation -= rotationSpeed;
-                    Debug.LogFormat("[PlayerRotatingSystem] Leaning left(rotation: {0}", filter.Transform->Rotation);
+                    //rotates to right
+                    if (input->RotationDirection > 0 && filter.Transform->Rotation < maxAngleBetaTeamCounterClockWise)
+                    {
+                        filter.Transform->Rotation += rotationSpeed;
+                        Debug.LogFormat("[PlayerRotatingSystem] BetaTeam player leaning right(rotation: {0}", filter.Transform->Rotation);
+                    }
+
+                    //rotates to left
+                    else if (input->RotationDirection < 0 && filter.Transform->Rotation > maxAngleBetaTeamClockWise)
+                    {
+                        filter.Transform->Rotation -= rotationSpeed;
+                        Debug.LogFormat("[PlayerRotatingSystem] BetaTeam player leaning left(rotation: {0}", filter.Transform->Rotation);
+                    }
                 }
 
             }
 
             //returns player to 0 rotation when RotateMotion-input ends
-            if (!input->RotateMotion && filter.Transform->Rotation != 0)
+            if (!input->RotateMotion)
             {
-                if (filter.Transform->Rotation > 0)
-                    filter.Transform->Rotation -= rotationSpeed;
+                //for AlphaTeam Players that are rotated
+                if ((filter.PlayerData->Player == 0 || filter.PlayerData->Player == 1) && filter.Transform->Rotation != 0)
+                {
+                    if (filter.Transform->Rotation > 0)
+                        filter.Transform->Rotation -= rotationSpeed;
 
-                else
-                    filter.Transform->Rotation += rotationSpeed;
+                    else
+                        filter.Transform->Rotation += rotationSpeed;
+                }
+
+                //for BetaTeam Players that are rotated
+                if ((filter.PlayerData->Player == 2 || filter.PlayerData->Player == 3) && filter.Transform->Rotation != FP.Rad_180)
+                {
+                    if (filter.Transform->Rotation > FP.Rad_180)
+                        filter.Transform->Rotation -= rotationSpeed;
+
+                    else
+                        filter.Transform->Rotation += rotationSpeed;
+                }
+
             }
+
 
             //moves player
             if (filter.Transform->Position != filter.PlayerData->TargetPosition)
