@@ -73,6 +73,7 @@ namespace Altzone.Scripts.ReferenceSheets
     public class FurnitureInfo
     {
         public Sprite Image;
+        public Sprite PosterImage;
         public string VisibleName;
         public string SetName;
         public string ArtistName;
@@ -82,6 +83,7 @@ namespace Altzone.Scripts.ReferenceSheets
         public FurnitureInfo(FurnitureInfoObject data, FurnitureSetInfo setData)
         {
             Image = data.Image;
+            PosterImage = data.PosterImage;
             VisibleName = data.VisibleName;
             SetName = setData.SetName;
             ArtistName = setData.ArtistName;
@@ -95,6 +97,7 @@ namespace Altzone.Scripts.ReferenceSheets
     {        
         public string Name;
         public Sprite Image;
+        public Sprite PosterImage;
         public string VisibleName;
         public string ArtisticDescription;
         public string DiagnoseNumber;
