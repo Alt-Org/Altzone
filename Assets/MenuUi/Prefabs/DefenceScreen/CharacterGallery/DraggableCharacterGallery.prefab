@@ -595,8 +595,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _character: {fileID: 0}
   _spriteImage: {fileID: 0}
+  _backgroundSpriteImage: {fileID: 0}
   _nameText: {fileID: 0}
-  characterTextCounter: 0
 --- !u!1 &2119086382482863961
 GameObject:
   m_ObjectHideFlags: 0
@@ -849,8 +849,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _character: {fileID: 0}
   _spriteImage: {fileID: 0}
+  _backgroundSpriteImage: {fileID: 0}
   _nameText: {fileID: 0}
-  characterTextCounter: 0
 --- !u!1 &2388269479839593268
 GameObject:
   m_ObjectHideFlags: 0
@@ -2221,8 +2221,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _character: {fileID: 0}
   _spriteImage: {fileID: 0}
+  _backgroundSpriteImage: {fileID: 0}
   _nameText: {fileID: 0}
-  characterTextCounter: 0
 --- !u!1 &7388681695668014661
 GameObject:
   m_ObjectHideFlags: 0
@@ -2365,18 +2365,17 @@ MonoBehaviour:
   HorizontalContentPanel: {fileID: 8458840792069638730}
   _characterSlotprefab: {fileID: 4297384447084397024, guid: 4aaf0fba9ac0bb64bbb8abb1ff0c485b,
     type: 3}
-  _referenceSheet: {fileID: 11400000, guid: f4525f3fc93f2b848a97c16f4bf77964, type: 2}
-  _isReady: 0
-  characterTextCounter: 0
-  _characterClassID: 
-  _colorBlock:
-    m_NormalColor: {r: 0, g: 0, b: 0, a: 0}
-    m_HighlightedColor: {r: 0, g: 0, b: 0, a: 0}
-    m_PressedColor: {r: 0, g: 0, b: 0, a: 0}
-    m_SelectedColor: {r: 0, g: 0, b: 0, a: 0}
-    m_DisabledColor: {r: 0, g: 0, b: 0, a: 0}
-    m_ColorMultiplier: 1
-    m_FadeDuration: 0
+  _selectedCharacterSlotText1: {fileID: 0}
+  _selectedCharacterSlotText2: {fileID: 0}
+  _selectedCharacterSlotText3: {fileID: 0}
+  _backgroundSprites:
+  - {fileID: 21300000, guid: e4fc5e05f8f0f0842b6f1a37a8b74e2e, type: 3}
+  - {fileID: 21300000, guid: 5d53cf1d609dcc742aaecb5de61e6c9d, type: 3}
+  - {fileID: 21300000, guid: 872b37f840d89504982780c46a4c1ea5, type: 3}
+  - {fileID: 21300000, guid: 50776d2c74951034d826e3080cf53828, type: 3}
+  - {fileID: 21300000, guid: 542fee383fb78a64b8fad82a31c1f8c8, type: 3}
+  - {fileID: 21300000, guid: 9df3e17dc0d669e4eb95a35a1616b9d7, type: 3}
+  - {fileID: 21300000, guid: f588dfdda7d94a745bcf226af89fdba5, type: 3}
 --- !u!114 &8564522138364767957
 MonoBehaviour:
   m_ObjectHideFlags: 0

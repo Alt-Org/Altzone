@@ -17,13 +17,14 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private Transform HorizontalContentPanel;
 
         [SerializeField] private GameObject _characterSlotprefab;
-        [SerializeField] private GalleryCharacterReference _referenceSheet;
 
         [SerializeField] private GameObject _selectedCharacterSlotText1;
         [SerializeField] private GameObject _selectedCharacterSlotText2;
         [SerializeField] private GameObject _selectedCharacterSlotText3;
 
-        [SerializeField] private bool _isReady;
+        [SerializeField] private Sprite[] _backgroundSprites;
+
+        private bool _isReady;
 
         // character buttons
         private List<Button> _characterButtons = new();
@@ -35,13 +36,17 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public delegate void CurrentCharacterIdChangedHandler(CharacterID newCharacterId, int slot);
         public event CurrentCharacterIdChangedHandler OnCurrentCharacterIdChanged;
-        public bool IsReady => _isReady;
-        public int characterTextCounter;
+
+        public bool IsReady
+        {
+            get
+            {
+                return _isReady;
+            }
+        }     
 
         private CharacterID _currentCharacterId;
         private int _slotToSet = 0;
-
-        public ColorBlock _colorBlock = new();
 
         public CharacterID CurrentCharacterId
         {
@@ -154,22 +159,40 @@ namespace MenuUi.Scripts.CharacterGallery
 
             foreach (var character in allItems)
             {
-                //GalleryCharacterInfo info = _referenceSheet.GetCharacterPrefabInfoFast((int)character.Id);
                 var info2 = PlayerCharacterPrototypes.GetCharacter(((int)character.Id).ToString());
                 if (info2 == null) continue;
 
                 GameObject slot = Instantiate(_characterSlotprefab, GetContent());
-                slot.GetComponent<CharacterSlot>().SetInfo(info2.GalleryImage, info2.Name, character.Id, this);
+
+                Sprite backgroundSprite = null;
+                switch (character.ClassID) // hard coded solution but works for now, need to be refactored later
+                {
+                    case CharacterClassID.Desensitizer:
+                        backgroundSprite = _backgroundSprites[0];
+                        break;
+                    case CharacterClassID.Trickster:
+                        backgroundSprite = _backgroundSprites[1];
+                        break;
+                    case CharacterClassID.Obedient:
+                        backgroundSprite = _backgroundSprites[2];
+                        break;
+                    case CharacterClassID.Projector:
+                        backgroundSprite = _backgroundSprites[3];
+                        break;
+                    case CharacterClassID.Retroflector:
+                        backgroundSprite = _backgroundSprites[4];
+                        break;
+                    case CharacterClassID.Confluent:
+                        backgroundSprite = _backgroundSprites[5];
+                        break;
+                    case CharacterClassID.Intellectualizer:
+                        backgroundSprite = _backgroundSprites[6];
+                        break;
+                }
+
+                slot.GetComponent<CharacterSlot>().SetInfo(info2.GalleryImage, backgroundSprite, info2.Name, character.Id, this);
 
                 Button button = slot.transform.Find("GalleryCharacter").GetComponent<Button>();
-
-                Outline outline = button.gameObject.GetComponent<Outline>();
-
-                outline.effectDistance = new Vector2(3, 3);
-                outline.effectColor = CharacterClass.GetCharacterClassColor(character.ClassID);
-                _colorBlock.normalColor = CharacterClass.GetCharacterClassColor(default);
-                button.colors = _colorBlock;
-
                 _characterButtons.Add(button);
                 _characterSlots.Add(slot.GetComponent<CharacterSlot>());
             }
@@ -192,8 +215,6 @@ namespace MenuUi.Scripts.CharacterGallery
 
                     else
                     {
-                        _colorBlock.normalColor = CharacterClass.GetCharacterClassColor(customCharacter.CharacterClassID);
-                        button.colors = _colorBlock;
                         button.GetComponent<DraggableCharacter>().enabled = true;
                     }
                     // Check if the character is currently selected
