@@ -97,7 +97,8 @@ namespace MenuUi.Scripts.SwipeNavigation
 
             if (_isInMainMenu)
             {
-                CurrentPage = SettingsCarrier.Instance.mainMenuWindowIndex;
+                //CurrentPage = SettingsCarrier.Instance.mainMenuWindowIndex;
+                CurrentPage = 2;
             }
             else
             {
@@ -111,7 +112,7 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         private void Start()
         {
-            if (buttons != null)
+            if (buttons != null && buttons.Length != 0)
             {
                 buttonImages = new Image[buttons.Length];
 
