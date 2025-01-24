@@ -1,17 +1,18 @@
 using System.Collections;
+using MenuUi.Scripts.SwipeNavigation;
 using MenuUi.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PreviousSlideButton : MonoBehaviour
 {
-    public ManagerCarousel carouselManager;
+    public SwipeUI swipeUI;
 
     private void Start()
     {
         // Attach a click event handler to the button
         Button button = GetComponent<Button>();
-        if(carouselManager != null)
+        if(swipeUI != null)
         button.onClick.AddListener(OnButtonClick);
         else
         {
@@ -25,8 +26,9 @@ public class PreviousSlideButton : MonoBehaviour
 
     private void OnButtonClick()
     {
-        // Call the GoToNextSlide method in the ManagerCarousel script
-        carouselManager.GoToPreviousSlide();
+        // Call the GoToNextSlide method in the SwipeUI script
+
+        swipeUI.PreviousSlide();
     }
 
     private static IEnumerator GoBack()
