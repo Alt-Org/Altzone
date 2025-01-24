@@ -37,6 +37,6 @@ public class AdEditor: MonoBehaviour
 
     public void CloseEditor()
     {
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 }
