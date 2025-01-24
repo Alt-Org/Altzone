@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.Assertions;
-using ClientState = Battle1.PhotonRealtime.Code.ClientState;
+/*using ClientState = Battle1.PhotonRealtime.Code.ClientState;
 using DisconnectCause = Battle1.PhotonRealtime.Code.DisconnectCause;
 using IConnectionCallbacks = Battle1.PhotonRealtime.Code.IConnectionCallbacks;
 using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 using Region = Battle1.PhotonRealtime.Code.Region;
-using RegionHandler = Battle1.PhotonRealtime.Code.RegionHandler;
+using RegionHandler = Battle1.PhotonRealtime.Code.RegionHandler;*/
 
 namespace Prg.Scripts.Common.Photon
 {
@@ -60,10 +60,10 @@ namespace Prg.Scripts.Common.Photon
         {
             Debug.Log($"{name}", gameObject);
             _connectionCallbacks = new MyConnectionCallbacks(this);
-            if (PhotonNetwork.NetworkingClient != null)
+        /*    if (PhotonNetwork.NetworkingClient != null)
             {
                 PhotonNetwork.AddCallbackTarget(_connectionCallbacks);
-            }
+            }*/
         }
 
         private void OnEnable()
@@ -72,7 +72,7 @@ namespace Prg.Scripts.Common.Photon
             if (_connectionCallbacks == null)
             {
                 _connectionCallbacks = new MyConnectionCallbacks(this);
-                PhotonNetwork.AddCallbackTarget(_connectionCallbacks);
+             /*   PhotonNetwork.AddCallbackTarget(_connectionCallbacks);*/
             }
         }
 
@@ -81,7 +81,7 @@ namespace Prg.Scripts.Common.Photon
             Debug.Log($"{name}");
             if (_connectionCallbacks != null)
             {
-                PhotonNetwork.RemoveCallbackTarget(_connectionCallbacks);
+                /*PhotonNetwork.RemoveCallbackTarget(_connectionCallbacks);*/
                 _connectionCallbacks = null;
             }
             StopAllCoroutines();
@@ -105,7 +105,7 @@ namespace Prg.Scripts.Common.Photon
                 yield break;
             }
             var pingRegionsDelay = new WaitForSeconds(pingRegionsInterval);
-            while (enabled && PhotonNetwork.NetworkClientState == ClientState.ConnectedToMasterServer)
+           /* while (enabled && PhotonNetwork.NetworkClientState == ClientState.ConnectedToMasterServer)
             {
                 // Start full ping operation without 'previousSummary' because we want all regions to be updated continuously.
                 var isPingDone = false;
@@ -137,7 +137,7 @@ namespace Prg.Scripts.Common.Photon
                     yield break;
                 }
                 yield return pingRegionsDelay;
-            }
+            }*/
         }
 
         private void UpdateRegionHandler(RegionHandler regionHandler)

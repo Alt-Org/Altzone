@@ -4,7 +4,9 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Attributes;
 using Altzone.Scripts.Model.Poco.Player;
 using Prg;
+using UnityEngine;
 using UnityEngine.Assertions;
+using Debug = Prg.Debug;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
@@ -97,23 +99,23 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             switch (id)
             {
-                case CharacterID.DesensitizerBodybuilder:
+                case CharacterID.Bodybuilder:
                     return "Bodybuilder";
-                case CharacterID.TricksterComedian:
+                case CharacterID.Joker:
                     return "Comedian";
-                case CharacterID.TricksterConman:
+                case CharacterID.Conman:
                     return "Conman";
-                case CharacterID.ObedientPreacher:
+                case CharacterID.Religious:
                     return "Preacher";
-                case CharacterID.ProjectorGrafitiartist:
+                case CharacterID.Artist:
                     return "Grafitiartist";
-                case CharacterID.RetroflectorOvereater:
+                case CharacterID.Overeater:
                     return "Overeater";
-                case CharacterID.RetroflectorAlcoholic:
+                case CharacterID.Alcoholic:
                     return "Alcoholic";
-                case CharacterID.ConfluentBesties:
+                case CharacterID.Soulsisters:
                     return "Besties";
-                case CharacterID.IntellectualizerResearcher:
+                case CharacterID.Booksmart:
                     return "Researcher";
                 default:
                     return "Error";
@@ -210,13 +212,13 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public static CharacterClassID GetClassID(CharacterID id)
         {
-            CharacterClassID ClassId = (CharacterClassID)((int)id & 0b1111_1111__0000_0000);
+            CharacterClassID ClassId = (CharacterClassID)((((int)id)/100)*100);
             return ClassId;
         }
 
         public static int GetInsideCharacterID(CharacterID id)
         {
-            int characterId = (int)id & 0b0000_0000__1111_1111;
+            int characterId = (int)id % 100;
             return characterId;
         }
     }

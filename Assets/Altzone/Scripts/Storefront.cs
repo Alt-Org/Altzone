@@ -109,6 +109,13 @@ namespace Altzone.Scripts
             _localModels.SavePlayerTasks(tasks, callback);
         }
 
+        public bool SetFurniture(List<GameFurniture> gameFurnitures)
+        {
+            bool finished = false;
+            _localModels.SetFurniture(gameFurnitures, callback => finished = callback);
+            return finished;
+        }
+
         /// <summary>
         /// Get all read-only <c>GameFurniture</c> entities.
         /// </summary>

@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
 using Altzone.Scripts.Config;
-using Battle1.PhotonUnityNetworking.Code;
+/*using Battle1.PhotonUnityNetworking.Code;*/
 using Battle1.Scripts.Battle.Players;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;*/
 #if DEVELOPMENT_BUILD
 using TMPro;
 #endif
@@ -247,7 +247,7 @@ namespace Battle1.Scripts.Battle.Game
         }
 
         // Components
-        private PhotonView _photonView;
+        /*private PhotonView _photonView;*/
 
         #region DEBUG
 #if DEVELOPMENT_BUILD
@@ -267,7 +267,7 @@ namespace Battle1.Scripts.Battle.Game
             UpdateQueue.init();
 
             // get components
-            _photonView = GetComponent<PhotonView>();
+            /*_photonView = GetComponent<PhotonView>();*/
 
             // subscribe to messages
             this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsReadyForGameplay);
@@ -281,11 +281,11 @@ namespace Battle1.Scripts.Battle.Game
                 StartClock();
                 return;
             }
-
+/*
             if (PhotonNetwork.IsMasterClient)
             {
                 _photonView.RPC(nameof(StartClockRpc), RpcTarget.All, PhotonNetwork.Time + GameConfig.Get().Variables._networkDelay);
-            }
+            }*/
         }
         #endregion Message Listeners
 
@@ -320,11 +320,11 @@ namespace Battle1.Scripts.Battle.Game
         }
 
         #region Photon RPC - Clock Startup
-        [PunRPC]
+       /* [PunRPC]
         private void StartClockRpc(double startTimeSec)
         {
             StartCoroutine(StartClockDelayed((float)Math.Max(startTimeSec - PhotonNetwork.Time, 0.0)));
-        }
+        }*/
         #endregion Photon RPC - Clock Startup
     }
 }

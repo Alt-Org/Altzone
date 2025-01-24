@@ -808,6 +808,9 @@ MonoBehaviour:
   menuVolume: 1
   musicVolume: 1
   soundVolume: 1
+  TextSizeSmall: 22
+  TextSizeMedium: 26
+  TextSizeLarge: 30
 --- !u!4 &1336648547
 Transform:
   m_ObjectHideFlags: 0
@@ -914,6 +917,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _window: {fileID: 11400000, guid: 4fd2d13144793604a80032bc175f1eaf, type: 2}
   _findWindowForEditor: 0
+  _furnitureReference: {fileID: 11400000, guid: f3234f639b53fbb43ac862d3033a3142,
+    type: 2}
 --- !u!4 &1556160750
 Transform:
   m_ObjectHideFlags: 0

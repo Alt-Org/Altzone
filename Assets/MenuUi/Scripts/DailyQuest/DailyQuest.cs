@@ -1,46 +1,59 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Altzone.Scripts.Model.Poco.Game;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class DailyQuest : MonoBehaviour
+public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 {
     //Variables
-    public int id;
-    private int _amount;
-    private int _coins;
-    private int _points;
-
-    private string _title;
-    private string _content;
-
+    private PlayerTasks.PlayerTask _taskData;
+    public PlayerTasks.PlayerTask TaskData {  get { return _taskData; } }
+    private bool _clickEnabled = true;
+    
     [Header("DailyQuest Texts")]
-    public TMP_Text questTitle;
-    public TMP_Text questDebugID;
-    public TMP_Text questCoins;
+    [SerializeField] private TMP_Text questTitle;
+    [SerializeField] private TMP_Text questDebugID;
+    [SerializeField] private TMP_Text questCoins;
 
-    public DailyTaskManager dailyTaskManager;
+    [HideInInspector] public DailyTaskManager dailyTaskManager;
 
-    public void GetQuestData(int ids, int amount, int coins, int points, string title, string content)
+    public void GetQuestData(PlayerTasks.PlayerTask taskData)
     {
-        id = ids;
-        _amount = amount;
-        _coins = coins;
-        _points = points;
-        _title = title;
-        _content = content;
+        _taskData = taskData;
         PopulateData();
     }
 
     public void QuestAccept()
     {
-        StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse("Haluatko Hyväksyä! quest id: " + id.ToString(),1));
+        if (!_clickEnabled)
+            return;
+
+        string message;
+
+        if (dailyTaskManager.OwnTaskId == null)
+            message = "Haluatko hyväksyä tehtävän? \nquest id: ";
+        else
+            message = "Sinulla on jo valittu tehtävä.\n Haluatko hyväksyä tehtävän? \nquest id: ";
+
+        PopupData data = new PopupData(_taskData);
+        StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse(message + _taskData.Id, data));
     }
 
     public void PopulateData()
     {
-        questTitle.text = _title;
-        questDebugID.text = id.ToString();
-        questCoins.text = _coins.ToString();
+        questTitle.text = _taskData.Title;
+        questDebugID.text = _taskData.Id.ToString();
+        questCoins.text = _taskData.Coins.ToString();
+    }
+
+    public virtual void OnBeginDrag(PointerEventData eventData)
+    {
+        _clickEnabled = false;
+    }
+
+    public virtual void OnEndDrag(PointerEventData eventData)
+    {
+        _clickEnabled = true;
     }
 }

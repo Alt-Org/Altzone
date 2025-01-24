@@ -4,61 +4,104 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts;
 using UnityEngine;
 using static Altzone.Scripts.Model.Poco.Game.PlayerTasks;
+using UnityEngine.UI;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Player;
 
 public class DailyTaskManager : MonoBehaviour
 {
     //Variables
-    private const int _questSlots = 100;
-    private GameObject[] _dailyQuestSlots = new GameObject[_questSlots];
-    private GameObject[] _weeklyQuestSlots = new GameObject[_questSlots];
-    private GameObject[] _monthlyQuestSlots = new GameObject[_questSlots];
+    [Header("TabButtons")]
+    [SerializeField] private Button _dailyTasksTabButton;
+    [SerializeField] private Button _ownTaskTabButton;
+    [SerializeField] private Button _clanTaskTabButton;
 
-    public GameObject dailyTaskPrefab;
-    public GameObject weeklyTaskPrefab;
-    public GameObject monthlyTaskPrefab;
+    private const int CardSlots = 100;
+    private GameObject[] _dailyTaskCardSlots = new GameObject[CardSlots];
 
-    public Transform dailyCategory500;
-    public Transform dailyCategory1000;
-    public Transform dailyCategory1500;
-    public Transform ActiveQuestWindow;
-    public GameObject clanRewards;
+    [Header("DailyTaskCard prefabs")]
+    [SerializeField] private GameObject _dailyTaskCard500Prefab;
+    [SerializeField] private GameObject _dailyTaskCard1000Prefab;
+    [SerializeField] private GameObject _dailyTaskCard1500Prefab;
 
-    public Popup popup;
+    [Header("DailyTasksPage")]
+    [SerializeField] private GameObject _dailyTasksView;
+    [SerializeField] private Transform _dailyCategory500;
+    [SerializeField] private Transform _dailyCategory1000;
+    [SerializeField] private Transform _dailyCategory1500;
+
+    [Header("OwnTaskPage")]
+    [SerializeField] private GameObject _ownTaskView;
+    [SerializeField] private Button _cancelTaskButton;
+    [SerializeField] private DailyTaskOwnTask _ownTaskPageHandler;
+
+    private int? _ownTaskId;
+    public int? OwnTaskId { get { return _ownTaskId; } }
+
+    [Header("ClanTaskPage")]
+    [SerializeField] private GameObject _clanTaskView;
+    [SerializeField] private GameObject _clanPlayerPrefab;
+    [SerializeField] private RectTransform _clanPlayersList;
+
+    private List<GameObject> _clanPlayers = new List<GameObject>();
+
+    [Header("ClanTaskProgressBar")]
+    [SerializeField] private Slider _clanProgressBarSlider;
+    [SerializeField] private RectTransform _clanProgressBarMarkersBase;
+    [SerializeField] private GameObject _clanProgressBarMarkerPrefab;
+
+    private List<GameObject> _clanProgressBarMarkers = new List<GameObject>();
+
+    //Local Testing
+    private int _ownTaksProgress = 0;
+    private int _clanProgressBarGoal = 10000;
+    private int _clanProgressBarCurrentPoints = 0;
 
     public enum SelectedTab
     {
-        Daily,
-        Weekly,
-        Monthly
+        Tasks,
+        OwnTask,
+        ClanTask
     }
-
-    private SelectedTab _selectedTab = SelectedTab.Daily;
-    private SelectedTab? _activeTab = null;
-    private int _activeTaskIndex = -1;
-
-    [Header("Tab Panels")]
-    public GameObject[] tabPanels; // Drag your panels here in the Inspector
+    private SelectedTab _selectedTab = SelectedTab.Tasks;
 
     // Start of Code
-    // First 3 functions are for quest slot population and fetching them from server
     void Start()
     {
-        QuestGenerator();
+        TaskGenerator();
+        StartCoroutine(PopulateClanPlayers());
+        StartCoroutine(SetClanProgressBar());
+        StartCoroutine(CreateClanProgressBar());
+
+        //Tab bar
+        _dailyTasksTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.Tasks));
+        _ownTaskTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.OwnTask));
+        _clanTaskTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.ClanTask));
+
+        //OwnTask cancel button
+        _cancelTaskButton.onClick.AddListener(() => StartCancelTask());
+
+        _ownTaskTabButton.interactable = false;
     }
-    public void QuestGenerator()
+
+    // First 4 functions are for task slot population and fetching them from server
+    public void TaskGenerator()
     {
-        StartCoroutine(PopulateQuests(SelectedTab.Daily, _dailyQuestSlots, _questSlots, dailyTaskPrefab));
-        StartCoroutine(PopulateQuests(SelectedTab.Weekly, _weeklyQuestSlots, _questSlots, weeklyTaskPrefab));
-        StartCoroutine(PopulateQuests(SelectedTab.Monthly, _monthlyQuestSlots, _questSlots, monthlyTaskPrefab));
+        StartCoroutine(PopulateTasks(_dailyTaskCardSlots));
+
         Debug.Log("Task Slots populated!");
     }
-    private IEnumerator PopulateQuests(SelectedTab tab, GameObject[] questSlots, int questAmount, GameObject questPrefab)
+
+    private IEnumerator PopulateTasks(GameObject[] taskSlots)
     {
         PlayerTasks tasks = null;
         Storefront.Get().GetPlayerTasks(content => tasks = content);
         List<PlayerTask> tasklist = null;
         Debug.Log(tasks);
+
         if (tasks == null)
+        {
             StartCoroutine(ServerManager.Instance.GetPlayerTasksFromServer(content =>
             {
                 if (content != null)
@@ -67,156 +110,400 @@ public class DailyTaskManager : MonoBehaviour
                 {
                     //offline testing random generator with id generator
                     Debug.LogError("Could not connect to server and receive quests");
+                    return;
                 }
             }));
-        yield return new WaitUntil(() => tasks != null);
-        switch (tab)
-        {
-            case SelectedTab.Daily:
-                tasklist = tasks.Daily;
-                break;
-            case SelectedTab.Weekly:
-                tasklist = tasks.Week;
-                break;
-            case SelectedTab.Monthly:
-                tasklist = tasks.Month;
-                break;
         }
+
+        yield return new WaitUntil(() => tasks != null);
+
+        //!Temporary until the PlayerTask is modified to have one Task list/array!
+        tasklist = tasks.Daily;
+        tasklist.AddRange(tasks.Week);
+        tasklist.AddRange(tasks.Month);
+        //-----------------------------------------------------------------------|
+
         for (int i = 0; i < tasklist.Count; i++)
         {
+            GameObject taskObject = Instantiate(GetPrefabCategory(tasklist[i].Points), gameObject.transform);
+            taskSlots[i] = taskObject;
 
+            DailyQuest task = taskObject.GetComponent<DailyQuest>();
+            task.GetQuestData(tasklist[i]);
+            task.dailyTaskManager = this;
 
-            GameObject taskObject = Instantiate(questPrefab, gameObject.transform);
-            questSlots[i] = taskObject;
-
-            DailyQuest quest = taskObject.GetComponent<DailyQuest>();
-            quest.GetQuestData(tasklist[i].Id, tasklist[i].Amount, tasklist[i].Coins, tasklist[i].Points, tasklist[i].Title, tasklist[i].Content);
-
-            Transform parentCategory = GetParentCategory(tab, tasklist[i].Points);
+            Transform parentCategory = GetParentCategory(tasklist[i].Points);
             taskObject.transform.SetParent(parentCategory, false);
+            taskObject.SetActive(true);
 
-            quest.dailyTaskManager = this;
-
-            taskObject.SetActive(tab == _selectedTab);
             Debug.Log("Created Quest: " +  tasklist[i].Id);
-
         }
+
+        //Needed to update the instantiated DT cards spacing in HorizontalLayoutGroups.
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_dailyCategory500.GetComponent<RectTransform>());
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_dailyCategory1000.GetComponent<RectTransform>());
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_dailyCategory1500.GetComponent<RectTransform>());
+
+        //Sets DT cards to left side.
+        _dailyCategory500.GetComponent<RectTransform>().anchoredPosition = new Vector2( int.MaxValue ,0f );
+        _dailyCategory1000.GetComponent<RectTransform>().anchoredPosition = new Vector2( int.MaxValue ,0f );
+        _dailyCategory1500.GetComponent<RectTransform>().anchoredPosition = new Vector2( int.MaxValue ,0f );
     }
-    private Transform GetParentCategory(SelectedTab tab, int points)
+
+    private Transform GetParentCategory(int points)
     {
-        return tab switch
+        return points switch
         {
-            SelectedTab.Daily => points switch
-            {
-                <= 500 => dailyCategory500,
-                <= 1000 => dailyCategory1000,
-                _ => dailyCategory1500,
-            },
-            SelectedTab.Weekly => points switch
-            {
-                <= 500 => dailyCategory500,
-                <= 1000 => dailyCategory1000,
-                _ => dailyCategory1500,
-            },
-            SelectedTab.Monthly => points switch
-            {
-                <= 500 => dailyCategory500,
-                <= 1000 => dailyCategory1000,
-                _ => dailyCategory1500,
-            },
-            _ => null
+            <= 500 => _dailyCategory500,
+            <= 1000 => _dailyCategory1000,
+            _ => _dailyCategory1500,
         };
     }
 
+    private GameObject GetPrefabCategory(int points)
+    {
+        return points switch
+        {
+            <= 500 => _dailyTaskCard500Prefab,
+            <= 1000 => _dailyTaskCard1000Prefab,
+            _ => _dailyTaskCard1500Prefab,
+        };
+    }
+
+    private IEnumerator PopulateClanPlayers()
+    {
+        /*Commented code refering to getting PlayerData's from ClanData but
+         *there is missing or wrong format data. (Waiting for server side update)*/
+
+        #region
+
+        //ClanData clan = null;
+        //string clanId = null;
+        //Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => clanId = p.ClanId);
+
+        //if (clanId == null)
+        //{
+        //    StartCoroutine(ServerManager.Instance.GetPlayerFromServer(content =>
+        //    {
+        //        if (content != null)
+        //            clanId = content.clan_id;
+        //        else
+        //        {
+        //            Debug.LogError("Could not connect to server and receive PlayerData");
+        //            return;
+        //        }
+        //    }));
+        //}
+
+        //yield return new WaitUntil(() => clanId != null);
+
+        //Storefront.Get().GetClanData(clanId, content => clan = content);
+
+        //if (clan == null)
+        //{
+        //    StartCoroutine(ServerManager.Instance.GetClanFromServer(content =>
+        //    {
+        //        if (content != null)
+        //            clan = content;
+        //        else
+        //        {
+        //            //offline testing random generator with id generator
+        //            Debug.LogError("Could not connect to server and receive quests");
+        //            return;
+        //        }
+        //    }));
+        //}
+
+        //yield return new WaitUntil(() => clan != null);
+
+        //PlayerData clanPlayer = null;
+        //Storefront.Get().GetPlayerData(clan.Members[].PlayerDataId, cp => clanPlayer = cp);
+
+
+        //if (clan == null)
+        //{
+        //    StartCoroutine(ServerManager.Instance.GetPlayerLeaderboardFromServer(content =>
+        //    {
+        //        if (content != null)
+        //            clan = content;
+        //        else
+        //        {
+        //            //offline testing random generator with id generator
+        //            Debug.LogError("Could not connect to server and receive quests");
+        //            return;
+        //        }
+        //    }));
+        //}
+
+        //yield return new WaitUntil(() => clan != null);
+
+        #endregion
+
+        //Testing code
+        for (int i = 0; i < 30; i++)
+        {
+            GameObject player = Instantiate(_clanPlayerPrefab, _clanPlayersList);
+            player.GetComponent<DailyTaskClanPlayer>().Set(i, null, null);
+
+            _clanPlayers.Add(player);
+            Debug.Log("Created clan player: " + i);
+        }
+
+        //Needed to update the instantiated DT cards spacing in HorizontalLayoutGroups.
+        //LayoutRebuilder.ForceRebuildLayoutImmediate(_clanPlayersList);
+
+        //Sets DT cards to left side.
+        _clanPlayersList.anchoredPosition = new Vector2(0f, -500f);
+
+        yield return true;
+    }
+
     // Function for popup calling
-    public IEnumerator ShowPopupAndHandleResponse(string Message, int popupId)
+    public IEnumerator ShowPopupAndHandleResponse(string Message, PopupData? data)
     {
         yield return Popup.RequestPopup(Message, result =>
         {
-            if (result == true)
+            if (result == true && data != null)
             {
                 Debug.Log("Confirmed!");
-                switch(popupId)
+                switch(data.Value.Type)
                 {
-                    case 1:
-                        Debug.Log("Accept case happened " + popupId);
-                        HideCategories();
-                        clanRewards.SetActive(false);
-                        ActiveQuestWindow.gameObject.SetActive(true);
-                        break;
-                    case 2:
-                        Debug.Log("Cancel case happened " + popupId);
-                        ShowCategories();
-                        clanRewards.SetActive(true);
-                        ActiveQuestWindow.gameObject.SetActive(false);
-                        break;
+                    case PopupData.PopupDataType.OwnTask:
+                        {
+                            if (_ownTaskId != null)
+                                CancelTask();
+
+                            PopupDataHandler(data.Value);
+                            SwitchTab(SelectedTab.OwnTask);
+                            _ownTaskTabButton.interactable = true;
+                            break;
+                        }
+                    case PopupData.PopupDataType.CancelTask:
+                        {
+                            CancelTask();
+                            SwitchTab(SelectedTab.Tasks);
+                            _ownTaskTabButton.interactable = false;
+                            break;
+                        }
                 }
             }
             else
             {
-                Debug.Log("Cancelled Popup!");
+                Debug.Log("Cancelled Popup.");
                 // Perform actions for cancellation
             }
         });
     }
-    // calling popup for canceling quest
-    public void CancelActiveQuest()
-    {
-        StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", 2));
-    }
-    // show/hide works for quest selection to hide and show quest selection
-    private void ShowCategories()
-    {
-        dailyCategory500.transform.parent.gameObject.SetActive(true);
-        dailyCategory1000.transform.parent.gameObject.SetActive(true);
-        dailyCategory1500.transform.parent.gameObject.SetActive(true);
-        Debug.Log("Categories shown.");
-    }
-    private void HideCategories()
-    {
-        dailyCategory500.transform.parent.gameObject.SetActive(false);
-        dailyCategory1000.transform.parent.gameObject.SetActive(false);
-        dailyCategory1500.transform.parent.gameObject.SetActive(false);
-        Debug.Log("Categories' parents hidden.");
-    }
-    // next functions are for tab switching system
-    public void SwitchTab(SelectedTab tab)
-    {
-        // Update the selected tab
-        _selectedTab = tab;
 
-        // Toggle visibility for each category based on the selected tab
-        ToggleQuestVisibility(_dailyQuestSlots, _selectedTab == SelectedTab.Daily);
-        ToggleQuestVisibility(_weeklyQuestSlots, _selectedTab == SelectedTab.Weekly);
-        ToggleQuestVisibility(_monthlyQuestSlots, _selectedTab == SelectedTab.Monthly);
-
-        Debug.Log($"Switched to {_selectedTab} tasks.");
-    }
-
-    private void ToggleQuestVisibility(GameObject[] questSlots, bool isVisible)
+    //Handle popup data.
+    private void PopupDataHandler(PopupData data)
     {
-        foreach (GameObject quest in questSlots)
+        switch (data.Type)
         {
-            if (quest != null)
+            case PopupData.PopupDataType.OwnTask: HandleOwnTask(data.OwnPage.Value); break;
+            default: break;
+        }
+    }
+
+    //Set OwnTask page.
+    private void HandleOwnTask(PopupData.OwnPageData data)
+    {
+        //TODO: Add task accept code when server side has functionality.
+        StartCoroutine(_ownTaskPageHandler.SetTaskProgress(0f));
+
+        StartCoroutine(_ownTaskPageHandler.SetDailyTask(data.TaskDescription, data.TaskAmount, data.TaskPoints, data.TaskCoins));
+        _ownTaskId = data.TaskId;
+        Debug.Log("Task id: " + _ownTaskId + ", has been accepted.");
+    }
+
+    public void TESTAddTaskProgress()
+    {
+        _ownTaksProgress++;
+
+        foreach (GameObject obj in _dailyTaskCardSlots)
+        {
+            DailyQuest quest = obj.GetComponent<DailyQuest>();
+
+            if (quest.TaskData.Id == _ownTaskId)
             {
-                quest.SetActive(isVisible);
+                UpdateOwnTaskProgress(quest);
+                return;
             }
         }
     }
 
-    public void OnDailyTabSelected()
+    private void UpdateOwnTaskProgress(DailyQuest quest)
     {
-        SwitchTab(SelectedTab.Daily);
+        float progress = CalculateProgressBar(quest.TaskData.Amount, _ownTaksProgress);
+        StartCoroutine(_ownTaskPageHandler.SetTaskProgress(progress));
+        Debug.Log("Task id: " + _ownTaskId + ", current progress: " + progress);
+        if (progress >= 1f)
+        {
+            Debug.Log("Task id:" + _ownTaskId + ", is done");
+        }
     }
 
-    public void OnWeeklyTabSelected()
+    private float CalculateProgressBar(int targetPoints, int currentPoints)
     {
-        SwitchTab(SelectedTab.Weekly);
+        return ((float)currentPoints / (float)targetPoints);
     }
 
-    public void OnMonthlyTabSelected()
+    // Calling popup for canceling task.
+    public void StartCancelTask()
     {
-        SwitchTab(SelectedTab.Monthly);
+        PopupData data = new(PopupData.GetType("cancel_task"));
+        StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", data));
     }
 
+    private void CancelTask()
+    {
+        //TODO: Add task cancellation code when server side has functionality.
+        _ownTaksProgress = 0;
+        StartCoroutine(_ownTaskPageHandler.ClearCurrentTask());
+        Debug.Log("Task id: " + _ownTaskId + ", has been canceled.");
+        _ownTaskId = null;
+    }
+
+    //Switch tab.
+    public void SwitchTab(SelectedTab tab)
+    {
+        //Hide old tab
+        switch (_selectedTab)
+        {
+            case SelectedTab.Tasks: _dailyTasksView.SetActive(false); break;
+            case SelectedTab.OwnTask: _ownTaskView.SetActive(false); break;
+            default: _clanTaskView.SetActive(false); break;
+        }
+
+        // Set new selected tab
+        _selectedTab = tab;
+
+        //Show new tab
+        switch (tab)
+        {
+            case SelectedTab.Tasks: _dailyTasksView.SetActive(true); break;
+            case SelectedTab.OwnTask: _ownTaskView.SetActive(true); break;
+            default: _clanTaskView.SetActive(true); break;
+        }
+
+        Debug.Log($"Switched to {_selectedTab}.");
+    }
+
+    //Clan progress bar functions.
+    private IEnumerator SetClanProgressBar()
+    {
+        //TODO: Get clan task data and fill the clan progress bar based on that data.
+        string clanId = null;
+        ClanData clan = null;
+        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => clanId = p.ClanId);
+
+        if (clanId == null)
+            StartCoroutine(ServerManager.Instance.GetPlayerFromServer(content =>
+            {
+                if (content != null)
+                    clanId = content.clan_id;
+                else
+                {
+                    Debug.LogError("Could not connect to server and receive player data");
+                    return;
+                }
+            }));
+
+        yield return new WaitUntil(() => clanId != null);
+
+        Storefront.Get().GetClanData(clanId, c => clan = c);
+
+        if (clan == null)
+            StartCoroutine(ServerManager.Instance.GetClanFromServer(content =>
+            {
+                if (content != null)
+                    clan = new(content);
+                else
+                {
+                    Debug.LogError("Could not connect to server and receive player data");
+                    return;
+                }
+            }));
+
+        yield return new WaitUntil(() => clan != null);
+
+        _clanProgressBarSlider.value = CalculateProgressBar(_clanProgressBarGoal, clan.Points);
+    }
+
+    private List<DailyTaskClanReward.ClanRewardData> TESTGenerateClanRewardsBar()
+    {
+        var clanRewardDatas = new List<DailyTaskClanReward.ClanRewardData>()
+        {
+            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 500),
+            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 1000),
+            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 5000),
+            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Chest, 10000)
+        };
+        return clanRewardDatas;
+    }
+
+    public void TESTAddClanRewardBarPoints(int value)
+    {
+        _clanProgressBarCurrentPoints += value;
+
+        StartCoroutine(CalculateClanRewardBarProgress());
+    }
+
+    private IEnumerator CalculateClanRewardBarProgress()
+    {
+        float sectionLenghts = (1f / (float)_clanProgressBarMarkers.Count);
+
+        for (int i = 0; i < _clanProgressBarMarkers.Count; i++)
+        {
+            int startPoints = (
+                (i) <= 0 ?
+                0 :
+                _clanProgressBarMarkers[i - 1].GetComponent<DailyTaskClanReward>().Data.Threshold
+                );
+
+            int endPoints = _clanProgressBarMarkers[i].GetComponent<DailyTaskClanReward>().Data.Threshold;
+
+            if ((_clanProgressBarCurrentPoints < endPoints) || (i >= _clanProgressBarMarkers.Count - 1))
+            {
+                float startPosition = sectionLenghts * i;
+                float endPosition = ((i + 1) >= _clanProgressBarMarkers.Count ? 1f : (sectionLenghts * (float)(i + 1)));
+
+                float chunkProgress = (float)(_clanProgressBarCurrentPoints - startPoints) / (float)(endPoints - startPoints);
+                Debug.Log("ClanRewardsProgressBar: chunk progress: " + chunkProgress + ", start points: " + startPoints + ", end points: " + endPoints);
+
+                //All but final reward.
+                for (int j = 0; j < i; j++)
+                {
+                    _clanProgressBarMarkers[j].GetComponent<DailyTaskClanReward>().UpdateState(true);
+
+                }
+
+                //Final reward
+                if ((i >= _clanProgressBarMarkers.Count - 1) && chunkProgress == 1)
+                {
+                    _clanProgressBarMarkers[_clanProgressBarMarkers.Count - 1].GetComponent<DailyTaskClanReward>().UpdateState(true);
+
+                }
+
+                _clanProgressBarSlider.value = Mathf.Lerp(startPosition, endPosition, chunkProgress);
+                break;
+            }
+        }
+
+        yield return true;
+    }
+
+    private IEnumerator CreateClanProgressBar()
+    {
+        //TODO: Replace with data from server.
+        var datas = TESTGenerateClanRewardsBar();
+
+        foreach (var data in datas)
+        {
+            GameObject rewardMarker = Instantiate(_clanProgressBarMarkerPrefab, _clanProgressBarMarkersBase);
+            rewardMarker.GetComponent<DailyTaskClanReward>().Set(data);
+            _clanProgressBarMarkers.Add(rewardMarker);
+        }
+        yield return true;
+    }
 }

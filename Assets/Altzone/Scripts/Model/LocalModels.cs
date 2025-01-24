@@ -36,7 +36,7 @@ namespace Altzone.Scripts.Model
         private static readonly Encoding Encoding = new UTF8Encoding(false, false);
 
         private readonly string _storagePath;
-        private readonly StorageData _storageData;
+        private StorageData _storageData;
 
         private static List<BaseCharacter> _characters;
 
@@ -155,7 +155,7 @@ namespace Altzone.Scripts.Model
             if (playerData != null)
             {
                 // This storage is by no means a complete object model we want to serve.
-                playerData.BuildCharacterLists(_GetAllBattleCharacters(), _storageData.CustomCharacters);
+                playerData.BuildCharacterLists(_storageData.CustomCharacters);
             }
             Debug.Log($"playerData {playerData}");
             callback(playerData);
@@ -342,7 +342,6 @@ namespace Altzone.Scripts.Model
             storageData.Characters = new CharacterStorage().CharacterList;
             //storageData.CharacterClasses.AddRange(CreateDefaultModels.CreateCharacterClasses());
             storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(storageData.Characters));
-            storageData.GameFurniture.AddRange(CreateDefaultModels.CreateGameFurniture());
 
             var playerGuid = new PlayerSettings().PlayerGuid;
             var clanGuid = playerGuid;
@@ -368,7 +367,7 @@ namespace Altzone.Scripts.Model
                 storageData.CustomCharacters = new();
                 storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(storageData.Characters));
                 storageData.GameFurniture = new();
-                storageData.GameFurniture.AddRange(CreateDefaultModels.CreateGameFurniture());
+                //storageData.GameFurniture.AddRange(CreateDefaultModels.CreateGameFurniture());
                 storageData.PlayerTasks = null;
             }
 
@@ -380,6 +379,12 @@ namespace Altzone.Scripts.Model
             var jsonText = JsonUtility.ToJson(storageData);
             File.WriteAllText(storagePath, jsonText, Encoding);
             WebGlFsSyncFs();
+        }
+
+        public void SetFurniture(List<GameFurniture> gameFurnitures, Action<bool> callback)
+        {
+            _storageData.GameFurniture = gameFurnitures;
+            callback?.Invoke(true);
         }
     }
 

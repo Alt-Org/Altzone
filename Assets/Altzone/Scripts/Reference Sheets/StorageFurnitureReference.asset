@@ -1,0 +1,719 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc6d0948ad256204ca4eb84e88818536, type: 3}
+  m_Name: StorageFurnitureReference
+  m_EditorClassIdentifier: 
+  _info:
+  - SetName: Taakka
+    ArtistName: "Simo Ryh\xE4nen"
+    list:
+    - Name: Sofa
+      Image: {fileID: -1978675626, guid: 7c2470a4a5672df4bb80e5250cf54825, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Sohva
+      ArtisticDescription: "Teemana on Taakka. Sen voi tulkita monella tapaa, mutta
+        huonekaluista on tarkoitus tulla painava vaikutelma. V\xE4rit mukailevat
+        Atlas-titaanin patsasta."
+      DiagnoseNumber: R45.0
+      BaseFurniture:
+        Name: 
+        Rarity: 0
+        Size: 18
+        RotatedSize: 24
+        Placement: 0
+        Weight: 30
+        Value: 150
+        Material: 
+        Recycling: 
+    - Name: ArmChair
+      Image: {fileID: -498378044, guid: 7767254924d389249bccb2b7a765a93a, type: 3}
+      PosterImage: {fileID: 21300000, guid: d1e77299ee9678447bc2741a44c09b7e, type: 3}
+      VisibleName: NojaTuoli
+      ArtisticDescription: "Teemana on Taakka. Sen voi tulkita monella tapaa, mutta
+        huonekaluista on tarkoitus tulla painava vaikutelma. V\xE4rit mukailevat
+        Atlas-titaanin patsasta."
+      DiagnoseNumber: R45.0
+      BaseFurniture:
+        Name: 
+        Rarity: 0
+        Size: 14
+        RotatedSize: 14
+        Placement: 0
+        Weight: 16
+        Value: 120
+        Material: 
+        Recycling: 
+    - Name: Mirror
+      Image: {fileID: -161112231, guid: ad3afe4e6fc144447a9680d150e6a742, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Peili
+      ArtisticDescription: "Teemana on Taakka. Sen voi tulkita monella tapaa, mutta
+        huonekaluista on tarkoitus tulla painava vaikutelma. V\xE4rit mukailevat
+        Atlas-titaanin patsasta."
+      DiagnoseNumber: R45.0
+      BaseFurniture:
+        Name: 
+        Rarity: 0
+        Size: 6
+        RotatedSize: 6
+        Placement: 0
+        Weight: 8
+        Value: 100
+        Material: 
+        Recycling: 
+    - Name: Floorlamp
+      Image: {fileID: 109053680, guid: d78e035099366ca4c8d375b0e53d2a42, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Lattialamppu
+      ArtisticDescription: "Teemana on Taakka. Sen voi tulkita monella tapaa, mutta
+        huonekaluista on tarkoitus tulla painava vaikutelma. V\xE4rit mukailevat
+        Atlas-titaanin patsasta."
+      DiagnoseNumber: 
+      BaseFurniture:
+        Name: 
+        Rarity: 0
+        Size: 6
+        RotatedSize: 6
+        Placement: 0
+        Weight: 2.8
+        Value: 240
+        Material: 
+        Recycling: 
+    - Name: CoffeeTable
+      Image: {fileID: -1372830714, guid: b920dbb0579dea643b33800a975ffc99, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: "KahviP\xF6yt\xE4"
+      ArtisticDescription: "Teemana on Taakka. Sen voi tulkita monella tapaa, mutta
+        huonekaluista on tarkoitus tulla painava vaikutelma. V\xE4rit mukailevat
+        Atlas-titaanin patsasta."
+      DiagnoseNumber: R45.0
+      BaseFurniture:
+        Name: 
+        Rarity: 0
+        Size: 7
+        RotatedSize: 13
+        Placement: 0
+        Weight: 26
+        Value: 80
+        Material: 
+        Recycling: 
+    - Name: SideTable
+      Image: {fileID: 399228340, guid: 09f23977174f0dd4896fcfe3edc5555b, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: "SivuP\xF6yt\xE4"
+      ArtisticDescription: "Teemana on Taakka. Sen voi tulkita monella tapaa, mutta
+        huonekaluista on tarkoitus tulla painava vaikutelma. V\xE4rit mukailevat
+        Atlas-titaanin patsasta."
+      DiagnoseNumber: R45.0
+      BaseFurniture:
+        Name: 
+        Rarity: 0
+        Size: 6
+        RotatedSize: 6
+        Placement: 0
+        Weight: 16
+        Value: 60
+        Material: 
+        Recycling: 
+    - Name: Closet
+      Image: {fileID: 2099301597, guid: 4b7d24540118a534993dcd36ff455c4e, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Kaappi
+      ArtisticDescription: "Teemana on Taakka. Sen voi tulkita monella tapaa, mutta
+        huonekaluista on tarkoitus tulla painava vaikutelma. V\xE4rit mukailevat
+        Atlas-titaanin patsasta."
+      DiagnoseNumber: R45.0
+      BaseFurniture:
+        Name: 
+        Rarity: 0
+        Size: 8
+        RotatedSize: 7
+        Placement: 0
+        Weight: 48
+        Value: 120
+        Material: 
+        Recycling: 
+  - SetName: Schrodinger
+    ArtistName: SMKT
+    list:
+    - Name: Sink
+      Image: {fileID: 21300000, guid: a521397346aa25e4cab9e4a0252a080c, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Lavuaari
+      ArtisticDescription: "- mit\xE4 kaikkea joutuu itsest\xE4\xE4n piilottamaan
+        nyt ja historiassa (esim. noitavainot, alkemistit, paranormaaliin uskominen)
+        ettei tule leimatuksi mielisairaaksi tms. - kenest\xE4k\xE4\xE4n ei voi tiet\xE4\xE4
+        mit\xE4 joku piilottelee. - miksi juuri wc-huonekalut (osalle turvapaikka
+        kodinkin sis\xE4ll\xE4, esim. oven saa lukkoon)"
+      DiagnoseNumber: F20
+      BaseFurniture:
+        Name: 
+        Rarity: 0
+        Size: 1
+        RotatedSize: 5
+        Placement: 1
+        Weight: 13
+        Value: 150
+        Material: 
+        Recycling: 
+    - Name: Toilet
+      Image: {fileID: 21300000, guid: 832ac9ead016f6744a986880d90f2239, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: "Vessanp\xF6ntt\xF6"
+      ArtisticDescription: "- mit\xE4 kaikkea joutuu itsest\xE4\xE4n piilottamaan
+        nyt ja historiassa (esim. noitavainot, alkemistit, paranormaaliin uskominen)
+        ettei tule leimatuksi mielisairaaksi tms. - kenest\xE4k\xE4\xE4n ei voi tiet\xE4\xE4
+        mit\xE4 joku piilottelee. - miksi juuri wc-huonekalut (osalle turvapaikka
+        kodinkin sis\xE4ll\xE4, esim. oven saa lukkoon)"
+      DiagnoseNumber: F20
+      BaseFurniture:
+        Name: 
+        Rarity: 0
+        Size: 1
+        RotatedSize: 5
+        Placement: 0
+        Weight: 31
+        Value: 150
+        Material: 
+        Recycling: 
+    - Name: Mirror
+      Image: {fileID: 21300000, guid: 1668e6a82af181649a95fd18184b69b4, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Peili
+      ArtisticDescription: "- mit\xE4 kaikkea joutuu itsest\xE4\xE4n piilottamaan
+        nyt ja historiassa (esim. noitavainot, alkemistit, paranormaaliin uskominen)
+        ettei tule leimatuksi mielisairaaksi tms. - kenest\xE4k\xE4\xE4n ei voi tiet\xE4\xE4
+        mit\xE4 joku piilottelee. - miksi juuri wc-huonekalut (osalle turvapaikka
+        kodinkin sis\xE4ll\xE4, esim. oven saa lukkoon)"
+      DiagnoseNumber: F20
+      BaseFurniture:
+        Name: 
+        Rarity: 1
+        Size: 13
+        RotatedSize: 13
+        Placement: 4
+        Weight: 7
+        Value: 150
+        Material: 
+        Recycling: 
+    - Name: Carpet
+      Image: {fileID: -1025061042, guid: 46339bd67ae6f014f85f9a28b83074cf, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Matto
+      ArtisticDescription: "- mit\xE4 kaikkea joutuu itsest\xE4\xE4n piilottamaan
+        nyt ja historiassa (esim. noitavainot, alkemistit, paranormaaliin uskominen)
+        ettei tule leimatuksi mielisairaaksi tms. - kenest\xE4k\xE4\xE4n ei voi tiet\xE4\xE4
+        mit\xE4 joku piilottelee. - miksi juuri wc-huonekalut (osalle turvapaikka
+        kodinkin sis\xE4ll\xE4, esim. oven saa lukkoon)"
+      DiagnoseNumber: F20
+      BaseFurniture:
+        Name: 
+        Rarity: 1
+        Size: 18
+        RotatedSize: 18
+        Placement: 2
+        Weight: 6
+        Value: 150
+        Material: 
+        Recycling: 
+  - SetName: Rakkaus
+    ArtistName: Ida Vesterinen
+    list:
+    - Name: Sofa
+      Image: {fileID: 2111035950, guid: 1a72e77a6efdfd24db919d01d7a8dfb2, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Sohva
+      ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
+      DiagnoseNumber: F41.8
+      BaseFurniture:
+        Name: 
+        Rarity: 0
+        Size: 11
+        RotatedSize: 24
+        Placement: 0
+        Weight: 27
+        Value: 130
+        Material: 
+        Recycling: 
+    - Name: ArmChair
+      Image: {fileID: -1518666426, guid: 718483698bde05f4a9177b3766ec752c, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Nojatuoli
+      ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
+      DiagnoseNumber: F41.8
+      BaseFurniture:
+        Name: 
+        Rarity: 0
+        Size: 7
+        RotatedSize: 14
+        Placement: 0
+        Weight: 13
+        Value: 100
+        Material: 
+        Recycling: 
+    - Name: Closet
+      Image: {fileID: -714799274, guid: a6f74e5435710c74da29a170bdf69a3b, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Kaappi
+      ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
+      DiagnoseNumber: F41.8
+      BaseFurniture:
+        Name: 
+        Rarity: 0
+        Size: 6
+        RotatedSize: 6
+        Placement: 0
+        Weight: 45
+        Value: 130
+        Material: 
+        Recycling: 
+    - Name: Carpet
+      Image: {fileID: -15601349, guid: baee2d721999a8f4990aea6c6b3536e4, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Matto
+      ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
+      DiagnoseNumber: F41.8
+      BaseFurniture:
+        Name: 
+        Rarity: 1
+        Size: 15
+        RotatedSize: 15
+        Placement: 2
+        Weight: 4
+        Value: 40
+        Material: 
+        Recycling: 
+    - Name: CoffeeTable
+      Image: {fileID: 21300000, guid: ea79889aaa2005d43ba89abe29dd04e0, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: "Kahvip\xF6yt\xE4"
+      ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
+      DiagnoseNumber: F41.8
+      BaseFurniture:
+        Name: 
+        Rarity: 1
+        Size: 22
+        RotatedSize: 22
+        Placement: 0
+        Weight: 20
+        Value: 60
+        Material: 
+        Recycling: 
+    - Name: DiningTable
+      Image: {fileID: -821679160, guid: 94e11a3a27dffa84587d44509f722e7b, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: "Ruokap\xF6yt\xE4"
+      ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
+      DiagnoseNumber: F41.8
+      BaseFurniture:
+        Name: 
+        Rarity: 2
+        Size: 16
+        RotatedSize: 20
+        Placement: 0
+        Weight: 30
+        Value: 100
+        Material: 
+        Recycling: 
+    - Name: Bed
+      Image: {fileID: 815919883, guid: dc6580df46820ee429b7e7b5fff9d53e, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: "S\xE4nky"
+      ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
+      DiagnoseNumber: F41.8
+      BaseFurniture:
+        Name: 
+        Rarity: 1
+        Size: 21
+        RotatedSize: 21
+        Placement: 0
+        Weight: 20
+        Value: 200
+        Material: 
+        Recycling: 
+    - Name: Mirror
+      Image: {fileID: -863245616, guid: b521e14e44bb106429a8bf1160035e01, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Peili
+      ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
+      DiagnoseNumber: F41.8
+      BaseFurniture:
+        Name: 
+        Rarity: 2
+        Size: 20
+        RotatedSize: 20
+        Placement: 4
+        Weight: 10
+        Value: 170
+        Material: 
+        Recycling: 
+  - SetName: Neuro
+    ArtistName: "Simo Ryh\xE4nen"
+    list:
+    - Name: Chair
+      Image: {fileID: -542428133, guid: e04086fbcd7d07f4fab56452eafc9b8b, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Tuoli
+      ArtisticDescription: "Tuoli kuvastaa harhakuvia tai fobiaa. Tuoli hieman muistuttaa
+        jonkinlaista \xF6t\xF6kk\xE4\xE4."
+      DiagnoseNumber: R44.1
+      BaseFurniture:
+        Name: 
+        Rarity: 0
+        Size: 14
+        RotatedSize: 14
+        Placement: 0
+        Weight: 10
+        Value: 170
+        Material: 
+        Recycling: 
+    - Name: Dresser
+      Image: {fileID: -989629432, guid: c13a038f10db45540a32ec27e8fd8eb0, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Lipasto
+      ArtisticDescription: "Lipasto n\xE4ytt\xE4\xE4 pelokkaalta tai ahdistuneelta
+        ja pitelee p\xE4\xE4t\xE4\xE4n, ihan kuin k\xE4det hakeutuisivat kipualueelle."
+      DiagnoseNumber: F41.1
+      BaseFurniture:
+        Name: 
+        Rarity: 0
+        Size: 8
+        RotatedSize: 19
+        Placement: 0
+        Weight: 24
+        Value: 100
+        Material: 
+        Recycling: 
+    - Name: Stool
+      Image: {fileID: 21300000, guid: 2211fd783ba19f949850336199db229d, type: 3}
+      PosterImage: {fileID: 21300000, guid: b47656ba61ae6a6499de74de2eb0526c, type: 3}
+      VisibleName: Penkki
+      ArtisticDescription: "Neuro-huonekalusetin teemana on mielenterveyden vaikutus
+        aivojen s\xE4hk\xF6iseen toimintaan. Jakkara kuvastaa teemaa yleisesti."
+      DiagnoseNumber: R41
+      BaseFurniture:
+        Name: 
+        Rarity: 1
+        Size: 6
+        RotatedSize: 6
+        Placement: 0
+        Weight: 4
+        Value: 40
+        Material: 
+        Recycling: 
+    - Name: Clock
+      Image: {fileID: -191785817, guid: 7eb890d72e3cf3f4da3fd6d0580bb91d, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Kello
+      ArtisticDescription: "Kello kuvastaa jakautunutta persoonallisuutta ja kaksisuuntaista
+        mielenh\xE4iri\xF6t\xE4."
+      DiagnoseNumber: F30
+      BaseFurniture:
+        Name: 
+        Rarity: 1
+        Size: 19
+        RotatedSize: 19
+        Placement: 4
+        Weight: 1
+        Value: 40
+        Material: 
+        Recycling: 
+  - SetName: Polarity
+    ArtistName: "Simo Ryh\xE4nen"
+    list:
+    - Name: Chair
+      Image: {fileID: -1910366402, guid: dec3d4f72adf8894bb90aa4167431d9e, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Tuoli
+      ArtisticDescription: "Polarity-huonekalut kuvastavat kaksisuuntaista mielialah\xE4iri\xF6t\xE4."
+      DiagnoseNumber: F31
+      BaseFurniture:
+        Name: 
+        Rarity: 2
+        Size: 14
+        RotatedSize: 14
+        Placement: 0
+        Weight: 5
+        Value: 100
+        Material: 
+        Recycling: 
+    - Name: Bookshelf
+      Image: {fileID: 294977418, guid: a92cdd07072e60447a205559f0008b4a, type: 3}
+      PosterImage: {fileID: 21300000, guid: 05bac8b45c7b40d468ab1f7ed732661e, type: 3}
+      VisibleName: Kirjahylly
+      ArtisticDescription: "Polarity-huonekalut kuvastavat kaksisuuntaista mielialah\xE4iri\xF6t\xE4."
+      DiagnoseNumber: F31
+      BaseFurniture:
+        Name: 
+        Rarity: 3
+        Size: 2
+        RotatedSize: 5
+        Placement: 0
+        Weight: 40
+        Value: 120
+        Material: 
+        Recycling: 
+  - SetName: Muistoja
+    ArtistName: "T\xE4hti"
+    list:
+    - Name: Commode
+      Image: {fileID: 903108585, guid: 9a35b534c9b0d1d438d97580b7dd3460, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Lipasto
+      ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
+        ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
+        hetki\xE4"
+      DiagnoseNumber: F44
+      BaseFurniture:
+        Name: 
+        Rarity: 2
+        Size: 7
+        RotatedSize: 13
+        Placement: 0
+        Weight: 17
+        Value: 100
+        Material: 
+        Recycling: 
+    - Name: Pictures
+      Image: {fileID: -653159985, guid: 143d30fa3c208b74097e2a07f1de135b, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Kuvat
+      ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
+        ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
+        hetki\xE4"
+      DiagnoseNumber: F44
+      BaseFurniture:
+        Name: 
+        Rarity: 2
+        Size: 15
+        RotatedSize: 15
+        Placement: 4
+        Weight: 2
+        Value: 60
+        Material: 
+        Recycling: 
+    - Name: Sofa
+      Image: {fileID: -276021852, guid: 2a4e7a07747a4e64ab3e048b6f2362a3, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Sohva
+      ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
+        ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
+        hetki\xE4"
+      DiagnoseNumber: F44
+      BaseFurniture:
+        Name: 
+        Rarity: 2
+        Size: 10
+        RotatedSize: 20
+        Placement: 0
+        Weight: 20
+        Value: 100
+        Material: 
+        Recycling: 
+    - Name: Armchair
+      Image: {fileID: 1667950117, guid: 8dff8e402cc540d4a8d6a6ecd0dbe66e, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Nojatuoli
+      ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
+        ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
+        hetki\xE4"
+      DiagnoseNumber: F44
+      BaseFurniture:
+        Name: 
+        Rarity: 2
+        Size: 9
+        RotatedSize: 14
+        Placement: 0
+        Weight: 5
+        Value: 60
+        Material: 
+        Recycling: 
+    - Name: Coffeetable
+      Image: {fileID: -1670388164, guid: 2d7f413229d595b49a0aa29529a9c790, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: "Kahvip\xF6yt\xE4"
+      ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
+        ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
+        hetki\xE4"
+      DiagnoseNumber: F44
+      BaseFurniture:
+        Name: 
+        Rarity: 3
+        Size: 8
+        RotatedSize: 8
+        Placement: 0
+        Weight: 20
+        Value: 60
+        Material: 
+        Recycling: 
+    - Name: Drawings
+      Image: {fileID: -645727606, guid: c59a44a4e514d7341bb8e32e38e39f16, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Piirustukset
+      ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
+        ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
+        hetki\xE4"
+      DiagnoseNumber: F44
+      BaseFurniture:
+        Name: 
+        Rarity: 3
+        Size: 7
+        RotatedSize: 7
+        Placement: 4
+        Weight: 1
+        Value: 60
+        Material: 
+        Recycling: 
+    - Name: Ficus
+      Image: {fileID: 143282350, guid: 823e03013bcaf664da5b956b2c9817e1, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Fiikus
+      ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
+        ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
+        hetki\xE4"
+      DiagnoseNumber: F44
+      BaseFurniture:
+        Name: 
+        Rarity: 3
+        Size: 8
+        RotatedSize: 8
+        Placement: 0
+        Weight: 3
+        Value: 120
+        Material: 
+        Recycling: 
+    - Name: Flowers
+      Image: {fileID: -539711076, guid: cec279d7fdd77e34d9ccc2086662ec7a, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Kukat
+      ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
+        ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
+        hetki\xE4"
+      DiagnoseNumber: F44
+      BaseFurniture:
+        Name: 
+        Rarity: 3
+        Size: 6
+        RotatedSize: 6
+        Placement: 0
+        Weight: 1
+        Value: 50
+        Material: 
+        Recycling: 
+    - Name: NewCarpet
+      Image: {fileID: 2146123883, guid: c7e943059c6673a4c90f8b308c2a870c, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Matto (Uusi)
+      ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
+        ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
+        hetki\xE4"
+      DiagnoseNumber: F44
+      BaseFurniture:
+        Name: 
+        Rarity: 3
+        Size: 23
+        RotatedSize: 23
+        Placement: 2
+        Weight: 7
+        Value: 150
+        Material: 
+        Recycling: 
+    - Name: OldCarpet
+      Image: {fileID: -1723923400, guid: 93d41fca7875d9947b1777eb9acb7d16, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Matto (Kulunut)
+      ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
+        ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
+        hetki\xE4"
+      DiagnoseNumber: F44
+      BaseFurniture:
+        Name: 
+        Rarity: 3
+        Size: 23
+        RotatedSize: 23
+        Placement: 2
+        Weight: 7
+        Value: 150
+        Material: 
+        Recycling: 
+    - Name: NewWindow
+      Image: {fileID: -1699903621, guid: 182e1f74b558be745a91b6375d757700, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Ikkuna (Uusi)
+      ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
+        ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
+        hetki\xE4"
+      DiagnoseNumber: F44
+      BaseFurniture:
+        Name: 
+        Rarity: 3
+        Size: 20
+        RotatedSize: 20
+        Placement: 4
+        Weight: 1
+        Value: 50
+        Material: 
+        Recycling: 
+    - Name: OldWindow
+      Image: {fileID: 751341215, guid: 9c11f8100be92dd4e8e3f7e6341b8ecb, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Ikkuna (Kulunut)
+      ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
+        ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
+        hetki\xE4"
+      DiagnoseNumber: F44
+      BaseFurniture:
+        Name: 
+        Rarity: 3
+        Size: 20
+        RotatedSize: 20
+        Placement: 4
+        Weight: 1
+        Value: 50
+        Material: 
+        Recycling: 
+    - Name: Painting
+      Image: {fileID: -648787027, guid: ba10ac9f2291fd040b2081b285ef8298, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Taulu
+      ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
+        ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
+        hetki\xE4"
+      DiagnoseNumber: F44
+      BaseFurniture:
+        Name: 
+        Rarity: 3
+        Size: 20
+        RotatedSize: 20
+        Placement: 4
+        Weight: 2
+        Value: 40
+        Material: 
+        Recycling: 
+    - Name: ToyFox
+      Image: {fileID: 1177845131, guid: 094f936181037244c8d1d29b484c90e0, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Lelukettu
+      ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
+        ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
+        hetki\xE4"
+      DiagnoseNumber: F44
+      BaseFurniture:
+        Name: 
+        Rarity: 3
+        Size: 6
+        RotatedSize: 6
+        Placement: 0
+        Weight: 1
+        Value: 70
+        Material: 
+        Recycling: 

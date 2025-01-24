@@ -4,7 +4,7 @@ using System.Diagnostics;
 using Photon.Realtime;
 using ExitGames.Client.Photon;
 using Altzone.Scripts.Model.Poco.Game;
-using Player = Battle1.PhotonRealtime.Code.Player;
+/*using Player = Battle1.PhotonRealtime.Code.Player;*/
 using Battle1.Scripts.Battle.Photon;
 
 namespace Battle1.Scripts.Lobby
@@ -68,7 +68,7 @@ namespace Battle1.Scripts.Lobby
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SetDebugPlayer(Player player, int wantedPlayerPos, int playerPrefabId) => s_photonBattleRoom.SetDebugPlayer(player, wantedPlayerPos, playerPrefabId);
+        public static void SetDebugPlayer(Player player, int wantedPlayerPos, int playerPrefabId) => s_photonBattleRoom.SetDebugPlayer(player, wantedPlayerPos, false, playerPrefabId);
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

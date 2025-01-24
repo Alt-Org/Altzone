@@ -6,7 +6,7 @@ namespace Prg.Scripts.Common.Photon
     {
         private void Update()
         {
-            if (PhotonWrapper.InRoom)
+       /*     if (PhotonWrapper.InRoom)
             {
                 PhotonLobby.LeaveRoom();
                 return;
@@ -24,7 +24,7 @@ namespace Prg.Scripts.Common.Photon
             if (PhotonWrapper.CanConnect)
             {
                 enabled = false;
-            }
+            }*/
         }
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 using MenuUI.Scripts.SoulHome;
 using Debug = Prg.Debug;
 using Altzone.Scripts.Model.Poco.Game;
-using MenuUi.Scripts.Storage;
+using Altzone.Scripts.ReferenceSheets;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -32,7 +32,7 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private GameObject _furnitureSlotPrefab;
         [SerializeField]
-        private StorageFurnitureReference _furnitureRefrence;
+        private SoulHomeFurnitureReference _furnitureRefrence;
         [SerializeField]
         private Transform _floorFurniturePoints;
         [SerializeField]

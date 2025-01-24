@@ -1,11 +1,11 @@
 using System.Linq;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.GA;
-using Battle1.PhotonUnityNetworking.Code;
+/*using Battle1.PhotonUnityNetworking.Code;*/
 using Battle1.Scripts.Battle.Players;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;*/
 
 namespace Battle1.Scripts.Battle.Game
 {
@@ -41,7 +41,7 @@ namespace Battle1.Scripts.Battle.Game
         private int _gameStartUpdateNumber;
 
         // Components
-        private PhotonView _photonView;
+       /* private PhotonView _photonView;*/
 
         // Other Control Objects
         private SyncedFixedUpdateClock _syncedFixedUpdateClock;
@@ -61,7 +61,7 @@ namespace Battle1.Scripts.Battle.Game
         private void Start()
         {
             // get components
-            _photonView = GetComponent<PhotonView>();
+           /* _photonView = GetComponent<PhotonView>();*/
 
             // get other control objects
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
@@ -128,10 +128,10 @@ namespace Battle1.Scripts.Battle.Game
         private void OnSoulWallSegmentRemoved(SoulWallSegmentRemoved data)
         {
             _battleDebugLogger.LogInfo("Brick removed");
-            if (PhotonNetwork.IsMasterClient)
+       /*     if (PhotonNetwork.IsMasterClient)
             {
                 _photonView.RPC(nameof(SlingReactivate), RpcTarget.All, _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(GameConfig.Get().Variables._networkDelay), data.Side);
-            }
+            }*/
         }
 
         #endregion Private Methods - Message Listeners
@@ -143,7 +143,7 @@ namespace Battle1.Scripts.Battle.Game
             if (!_syncedFixedUpdateClockStarted) return;
             if (!_slingControllerReady) return;
 
-            _photonView.RPC(nameof(TryToStartGameRpc), RpcTarget.All);
+           /* _photonView.RPC(nameof(TryToStartGameRpc), RpcTarget.All);*/
         }
         #endregion Private Methods - Game Startup
 
@@ -194,7 +194,7 @@ namespace Battle1.Scripts.Battle.Game
 
         #region Private Methods - Photon RPC - Game Startup
 
-        [PunRPC]
+      /*  [PunRPC]
         private void TryToStartGameRpc()
         {
             _clientsReady++;
@@ -208,9 +208,9 @@ namespace Battle1.Scripts.Battle.Game
                 _photonView.RPC(nameof(StartGameRpc), RpcTarget.All, _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(GameStartDelay), slingingTeam);
                 GameAnalyticsManager.Instance.BattleLaunch();
             }
-        }
+        }*/
 
-        [PunRPC]
+       /* [PunRPC]
         private void StartGameRpc(int gameStartUpdateNumber, BattleTeamNumber slingingTeam)
         {
             _syncedFixedUpdateClock.ExecuteOnUpdate(gameStartUpdateNumber, 0, () =>
@@ -218,8 +218,8 @@ namespace Battle1.Scripts.Battle.Game
                 _battleDebugLogger.LogInfo(DebugLogGameStartup + "STARTING GAME {0}", gameStartUpdateNumber);
                 _gameStartUpdateNumber = gameStartUpdateNumber;
 
-                /*int nextStageUpdate = _gameStartUpdateNumber + _syncedFixedUpdateClock.ToUpdates(_gameStageChangeTimesSec[_gameStage]);
-                _syncedFixedUpdateClock.ExecuteOnUpdate(nextStageUpdate, 0, ScheduleNextStageChange);*/
+                *//*int nextStageUpdate = _gameStartUpdateNumber + _syncedFixedUpdateClock.ToUpdates(_gameStageChangeTimesSec[_gameStage]);
+                _syncedFixedUpdateClock.ExecuteOnUpdate(nextStageUpdate, 0, ScheduleNextStageChange);*//*
                 ScheduleNextStageChange();
 
                 _battleDebugLogger.LogInfo(DebugLogGameStartup + "ENABLING PLAYER MOVEMENT");
@@ -231,11 +231,11 @@ namespace Battle1.Scripts.Battle.Game
                 this.Publish(new GameStarted());
             });
             _playerManager.AnalyticsReportPlayerCharacterSelection();
-        }
+        }*/
 
         #endregion Private Methods - Photon RPC - Game Startup
 
-        [PunRPC]
+       /* [PunRPC]
         private void SlingReactivate(int activationUpdateNumber, BattleTeamNumber slingingTeam)
         {
             _syncedFixedUpdateClock.ExecuteOnUpdate(activationUpdateNumber, 0, () =>
@@ -243,7 +243,7 @@ namespace Battle1.Scripts.Battle.Game
                 _battleDebugLogger.LogInfo("Starting sling sequence");
                 Sling(slingingTeam);
             });
-        }
+        }*/
 
         #endregion Private Methods - Photon RPC
 

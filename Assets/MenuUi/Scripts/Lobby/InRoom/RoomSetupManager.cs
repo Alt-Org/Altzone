@@ -5,6 +5,7 @@ using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Lobby.Wrappers;
+using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Lobby;
 using TMPro;
@@ -128,6 +129,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
             {
                 var battleCharacter = playerData.CurrentBattleCharacters;
                 Debug.Log($"{battleCharacter[0]}");
+                List<CustomCharacter> selectedCharacters = new();
                 int[] characterIds = new int[5];
                 int[] characterStats = new int[25];
                 for (int i = 0; i < 3; i++)
@@ -138,6 +140,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
                     characterStats[i * 5 + 2] = battleCharacter[i].Resistance;
                     characterStats[i * 5 + 3] = battleCharacter[i].Attack;
                     characterStats[i * 5 + 4] = battleCharacter[i].Defence;
+                    selectedCharacters.Add(battleCharacter[i]);
                 }
 
                 //var prefabIndex = PhotonBattle.GetPrefabIndex(battleCharacter[0], 0);
@@ -151,6 +154,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
                     { PlayerStatsKey, characterStats },
                     { "Role", (int)currentRole }
                 }));
+                LobbyManager.Instance.SetPlayerQuantumCharacters(selectedCharacters);
                 Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState} {enabled}");
                 UpdateStatus();
             });

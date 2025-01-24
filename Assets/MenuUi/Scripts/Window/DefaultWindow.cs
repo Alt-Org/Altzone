@@ -1,4 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
+using Altzone.Scripts;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ReferenceSheets;
 using MenuUi.Scripts.Window.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -17,6 +21,18 @@ namespace MenuUi.Scripts.Window
 
         [SerializeField, Tooltip(Tooltip1)] private WindowDef _window;
         [SerializeField, Tooltip(Tooltip2)] private bool _findWindowForEditor;
+        [SerializeField] private StorageFurnitureReference _furnitureReference;
+
+        private void Awake()
+        {
+            if (_furnitureReference != null)
+            { 
+                ReadOnlyCollection<GameFurniture> baseFurniture = null;
+                Storefront.Get().GetAllGameFurnitureYield(callback => baseFurniture = callback);
+                if (baseFurniture == null || baseFurniture.Count < 1)
+                    Storefront.Get().SetFurniture(_furnitureReference.GetGameFurniture());
+            }
+        }
 
         private void OnEnable()
         {

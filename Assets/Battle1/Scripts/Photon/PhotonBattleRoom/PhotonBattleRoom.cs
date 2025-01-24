@@ -7,9 +7,9 @@ using Debug = UnityEngine.Debug;
 using ExitGames.Client.Photon;
 using Photon.Realtime;
 using Altzone.Scripts.Model.Poco.Game;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 using Player = Battle1.PhotonRealtime.Code.Player;
-using Room = Battle1.PhotonRealtime.Code.Room;
+using Room = Battle1.PhotonRealtime.Code.Room;*/
 
 namespace Battle1.Scripts.Battle.Photon
 {
@@ -65,13 +65,15 @@ namespace Battle1.Scripts.Battle.Photon
 
         public bool IsRealPlayer(Player player)
         {
-            int playerPos = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+            /*int playerPos = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);*/
+            int playerPos = 0;
             return IsValidPlayerPos(playerPos);
         }
 
         public int GetPlayerPos(Player player)
         {
-            return player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+           /* return player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);*/
+            return 0;
         }
 
         public int GetTeamNumber(Player player)
@@ -87,13 +89,14 @@ namespace Battle1.Scripts.Battle.Photon
         {
             if (!IsRealPlayer(player)) return null;
             int teamNumber = GetTeamNumber(player);
-            return PhotonNetwork.PlayerListOthers.FirstOrDefault(x => GetTeamNumber(x) == teamNumber);
+            /*return PhotonNetwork.PlayerListOthers.FirstOrDefault(x => GetTeamNumber(x) == teamNumber);*/
+            return null;
         }
 
         public int GetFirstFreePlayerPos(Player player, int wantedPlayerPos = PlayerPosition1, bool isAllocateByTeams = false)
         {
             HashSet<int> usedPlayerPositions = new HashSet<int>();
-            foreach (Player otherPlayer in PhotonNetwork.PlayerList)
+          /*  foreach (Player otherPlayer in PhotonNetwork.PlayerList)
             {
                 if (otherPlayer.Equals(player))
                 {
@@ -104,7 +107,7 @@ namespace Battle1.Scripts.Battle.Photon
                 {
                     usedPlayerPositions.Add(otherPlayerPos);
                 }
-            }
+            }*/
             if (usedPlayerPositions.Contains(wantedPlayerPos))
             {
                 int[] playerPositions = isAllocateByTeams
@@ -128,7 +131,8 @@ namespace Battle1.Scripts.Battle.Photon
 
         public int CountRealPlayers()
         {
-            return PhotonNetwork.CurrentRoom.Players.Values.Sum(x => IsRealPlayer(x) ? 1 : 0);
+            /*return PhotonNetwork.CurrentRoom.Players.Values.Sum(x => IsRealPlayer(x) ? 1 : 0);*/
+            return 0;
         }
 
         public bool IsValidGameplayPos(int playerPos)
@@ -165,10 +169,10 @@ namespace Battle1.Scripts.Battle.Photon
 
         public string GetLocalPlayerName()
         {
-            if (PhotonNetwork.InRoom && !string.IsNullOrWhiteSpace(PhotonNetwork.NickName))
+            /*if (PhotonNetwork.InRoom && !string.IsNullOrWhiteSpace(PhotonNetwork.NickName))
             {
                 return PhotonNetwork.NickName;
-            }
+            }*/
             throw new UnityException("Can not get player name outside a room");
         }
 
@@ -225,7 +229,7 @@ namespace Battle1.Scripts.Battle.Photon
 
         public bool IsPlayerPosAvailable(Player player)
         {
-            if (!PhotonNetwork.InRoom)
+        /*    if (!PhotonNetwork.InRoom)
             {
                 return false;
             }
@@ -241,20 +245,22 @@ namespace Battle1.Scripts.Battle.Photon
                 {
                     return false;
                 }
-            }
+            }*/
             return true;
         }
 
         public int GetPlayerCountForRoom()
         {
-            if (!PhotonNetwork.InRoom) return 0;
+            /*if (!PhotonNetwork.InRoom) return 0;
             Room room = PhotonNetwork.CurrentRoom;
-            return room.GetCustomProperty(PlayerCountKey, 0);
+            return room.GetCustomProperty(PlayerCountKey, 0);*/
+            return 0;
         }
 
         public CharacterID GetPlayerCharacterID(Player player)
         {
-            return (CharacterID)player.GetCustomProperty(PlayerCharacterIdKey, -1);
+            /*return (CharacterID)player.GetCustomProperty(PlayerCharacterIdKey, -1);*/
+            return 0;
         }
 
         public int GetPrefabIndex(BattleCharacter battleCharacter, int defaultValue)
@@ -277,9 +283,9 @@ namespace Battle1.Scripts.Battle.Photon
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
-        public void SetDebugPlayer(Player player, int wantedPlayerPos, /*bool isAllocateByTeams,*/ int playerMainSkill)
+        public void SetDebugPlayer(Player player, int wantedPlayerPos, bool isAllocateByTeams, int playerMainSkill)
         {
-            wantedPlayerPos = GetFirstFreePlayerPos(player, wantedPlayerPos/*, isAllocateByTeams*/);
+            wantedPlayerPos = GetFirstFreePlayerPos(player, wantedPlayerPos, isAllocateByTeams);
             SetDebugPlayerProps(player, wantedPlayerPos, playerMainSkill);
         }
 
@@ -292,8 +298,10 @@ namespace Battle1.Scripts.Battle.Photon
                 // Should be fastest movement skill to have for testing.
                 playerMainSkill = (int)CharacterClassID.Trickster;
             }
-            var curPlayerPos = player.GetCustomProperty(PlayerPositionKey, -1);
-            var curPlayerMainSkill = player.GetCustomProperty(PlayerCharacterIdKey, -1);
+            /*var curPlayerPos = player.GetCustomProperty(PlayerPositionKey, -1);
+            var curPlayerMainSkill = player.GetCustomProperty(PlayerCharacterIdKey, -1);*/
+            var curPlayerPos = 0;
+            var curPlayerMainSkill = 0;
             if (curPlayerPos == playerPos && curPlayerMainSkill == playerMainSkill)
             {
                 // Prevent setting same values because it is hard for client to keep track of asynchronous changes over network.

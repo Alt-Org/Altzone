@@ -1,15 +1,16 @@
+#if false
 using System;
 using System.Collections;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
-using Battle1.PhotonUnityNetworking.Code;
+/*using Battle1.PhotonUnityNetworking.Code;*/
 using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 using RoomOptions = Battle1.PhotonRealtime.Code.RoomOptions;
-using TypedLobby = Battle1.PhotonRealtime.Code.TypedLobby;
+using TypedLobby = Battle1.PhotonRealtime.Code.TypedLobby;*/
 
 namespace Battle1.Scripts.Test
 {
@@ -88,3 +89,4 @@ namespace Battle1.Scripts.Test
         }
     }
 }
+#endif

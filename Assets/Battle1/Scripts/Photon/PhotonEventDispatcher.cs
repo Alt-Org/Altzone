@@ -1,3 +1,4 @@
+#if false
 using ExitGames.Client.Photon;
 using Photon.Realtime;
 using System;
@@ -132,3 +133,4 @@ namespace Prg.Scripts.Common.Photon
         }
     }
 }
+#endif

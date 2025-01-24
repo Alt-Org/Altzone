@@ -1,8 +1,8 @@
-using Battle1.PhotonUnityNetworking.Code;
+/*using Battle1.PhotonUnityNetworking.Code;*/
 using Battle1.Scripts.Battle.Game;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;*/
 
 namespace Battle1.Scripts.Battle.Players.PlayerClasses
 {
@@ -32,12 +32,12 @@ namespace Battle1.Scripts.Battle.Players.PlayerClasses
 
             _ballHandler.Stop();
 
-            if (PhotonNetwork.IsMasterClient)
+         /*   if (PhotonNetwork.IsMasterClient)
             {
                 int ballTeleportUpdateNumber = _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(teleportDuration);
 
                 _photonView.RPC(nameof(TeleportBallRpc), RpcTarget.All, ballTeleportUpdateNumber, speed);
-            }
+            }*/
 
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "OnBallShieldCollision called", _syncedFixedUpdateClock.UpdateCount));
         }
@@ -50,7 +50,7 @@ namespace Battle1.Scripts.Battle.Players.PlayerClasses
         private IReadOnlyBattlePlayer _battlePlayer;
         private SyncedFixedUpdateClock _syncedFixedUpdateClock;
         private BallHandler _ballHandler;
-        private PhotonView _photonView;
+       /* private PhotonView _photonView;*/
 
         // Debug
         private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS PROJECTION] ";
@@ -61,7 +61,7 @@ namespace Battle1.Scripts.Battle.Players.PlayerClasses
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
 
             _ballHandler = Context.GetBallHandler;
-            _photonView = GetComponent<PhotonView>();
+         /*   _photonView = GetComponent<PhotonView>();*/
             _fakeBallTransform.gameObject.SetActive(false);
 
             // Subscribe to TeamsAreReadyForGameplay event
@@ -106,7 +106,7 @@ namespace Battle1.Scripts.Battle.Players.PlayerClasses
 
         }
 
-        [PunRPC]
+        /*[PunRPC]*/
         private void TeleportBallRpc(int ballTeleportUpdateNumber, float ballSpeed)
         {
             _syncedFixedUpdateClock.ExecuteOnUpdate(ballTeleportUpdateNumber, -5, () => {

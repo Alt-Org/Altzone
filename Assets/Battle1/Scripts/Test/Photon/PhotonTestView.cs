@@ -5,8 +5,8 @@ using Prg.Scripts.Common.Photon;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
-using Player = Battle1.PhotonRealtime.Code.Player;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using Player = Battle1.PhotonRealtime.Code.Player;*/
 
 namespace Battle1.Scripts.Test.Photon
 {
@@ -67,9 +67,11 @@ namespace Battle1.Scripts.Test.Photon
 
         public void SetPhotonView(Player localPlayer, Player masterClient)
         {
-            _currentPlayers = PhotonNetwork.CurrentRoom.PlayerCount;
+            /*_currentPlayers = PhotonNetwork.CurrentRoom.PlayerCount;*/
+            _currentPlayers = 0;
             _currentRegion = PhotonLobby.GetRegion();
-            _playerLabel.text = $"{_currentPlayers} in {PhotonNetwork.CurrentRoom.Name} {_currentRegion}";
+            /*_playerLabel.text = $"{_currentPlayers} in {PhotonNetwork.CurrentRoom.Name} {_currentRegion}";*/
+            _playerLabel.text = $"{_currentPlayers} in room 0";
             _playerText.text = $"Player: <b>{localPlayer.GetDebugLabel(false)}</b>";
             _masterClientText.text = $"Master: {masterClient.GetDebugLabel(false)}";
             StartCoroutine(PingPoller());
@@ -79,7 +81,7 @@ namespace Battle1.Scripts.Test.Photon
                 // Fix Simulator etc.
                 refreshRate = 0;
             }
-            _gameInfoTextLines.text = "<b>Info</b>" +
+           /* _gameInfoTextLines.text = "<b>Info</b>" +
                                       $"\r\nDate {DateTime.Now:yyyy-dd-MM HH:mm}" +
                                       $"\r\nPhoton ver {PhotonLobby.GameVersion}" +
                                       $"\r\nPhoton send rate {PhotonNetwork.SendRate} Hz" +
@@ -89,14 +91,14 @@ namespace Battle1.Scripts.Test.Photon
             if (PhotonNetwork.SerializationRate != PhotonNetwork.SendRate)
             {
                 _gameInfoTextLines.text += $"\r\nSerialization rate {PhotonNetwork.SerializationRate} Hz";
-            }
+            }*/
         }
 
         private IEnumerator PingPoller()
         {
             var delay = new WaitForSeconds(2f);
             yield return delay;
-            var peer = PhotonNetwork.NetworkingClient.LoadBalancingPeer;
+           /* var peer = PhotonNetwork.NetworkingClient.LoadBalancingPeer;
             while (enabled && PhotonNetwork.InRoom)
             {
                 var currentPing = peer.RoundTripTime;
@@ -116,14 +118,15 @@ namespace Battle1.Scripts.Test.Photon
                     _playerLabel.text = $"{_currentPlayers} in {PhotonNetwork.CurrentRoom.Name} {_currentRegion}";
                 }
                 yield return delay;
-            }
+            }*/
         }
 
         public void ShowRecvFrameSyncTest(
             int rpcFrameCount, int rpcTimestamp, int rpcLastRoundTripTime,
             int msgTimestamp, int curFrameCount, Player sendingPlayer)
         {
-            var serverTimestamp = PhotonNetwork.ServerTimestamp;
+            /*var serverTimestamp = PhotonNetwork.ServerTimestamp;*/
+            var serverTimestamp = 0;
             var rpcDelta = (uint)serverTimestamp - (uint)rpcTimestamp;
             var delta1 = (uint)msgTimestamp - (uint)rpcTimestamp;
             var delta2 = (uint)serverTimestamp - (uint)msgTimestamp;

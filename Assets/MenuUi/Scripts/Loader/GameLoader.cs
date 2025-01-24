@@ -11,6 +11,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Video;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using Prg.Scripts.Common;
+using Altzone.Scripts.ReferenceSheets;
 
 namespace MenuUi.Scripts.Loader
 {
@@ -37,6 +38,7 @@ namespace MenuUi.Scripts.Loader
         [SerializeField] private WindowNavigation _introVideo;
         [SerializeField] private WindowDef _introSceneWindow;
         [SerializeField] private int _introScene;
+        [SerializeField] private StorageFurnitureReference _furnitureReference;
 
         private bool _videoPlaying = false;
         private bool _videoEnded = false;
@@ -88,6 +90,7 @@ namespace MenuUi.Scripts.Loader
         {
             yield return new WaitUntil(() => Storefront.Get() != null);
             Debug.Log("Datastore initialized");
+            yield return new WaitUntil(() => Storefront.Get().SetFurniture(_furnitureReference.GetGameFurniture()));
             OpenLogIn();
         }
 

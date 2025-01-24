@@ -47,7 +47,7 @@ namespace Altzone.Scripts.Model
                 }
                 clanData.Inventory.Furniture.Add(new ClanFurniture(FakeFurnitureId(gameFurniture.Id), gameFurniture.Id));
             }*/
-            clanData.Inventory.Furniture = CreateDefaultDebugFurniture(new ReadOnlyCollection<GameFurniture>(furniture));
+            clanData.Inventory.Furniture = furniture != null ? CreateDefaultDebugFurniture(new ReadOnlyCollection<GameFurniture>(furniture)) : new();
             /*var chairs = clanData.Inventory.Furniture.Where(x => x.GameFurnitureName.Contains("Chair")).ToList();
             var tables = clanData.Inventory.Furniture.Where(x => x.GameFurnitureName.Contains("Table")).ToList();
             var misc = clanData.Inventory.Furniture.Where(x => x.GameFurnitureName.EndsWith("r")).ToList();
@@ -176,15 +176,15 @@ namespace Altzone.Scripts.Model
         {
             return new List<CustomCharacter>
             {
-                new(CharacterID.DesensitizerBodybuilder, 0, 0, 0, 0, 0),
-                new(CharacterID.TricksterComedian,0, 0, 0, 0, 0),
-                new(CharacterID.TricksterConman,0, 0, 0, 0, 0),
-                new(CharacterID.ObedientPreacher,0, 0, 0, 0, 0),
-                new(CharacterID.ProjectorGrafitiartist,0, 0, 0, 0, 0),
-                new(CharacterID.RetroflectorOvereater,0, 0, 0, 0, 0),
-                new(CharacterID.RetroflectorAlcoholic,0, 0, 0, 0, 0),
-                new(CharacterID.ConfluentBesties,0, 0, 0, 0, 0),
-                new(CharacterID.IntellectualizerResearcher,0, 0, 0, 0, 0)
+                new(CharacterID.Bodybuilder, 0, 0, 0, 0, 0),
+                new(CharacterID.Joker,0, 0, 0, 0, 0),
+                new(CharacterID.Conman,0, 0, 0, 0, 0),
+                new(CharacterID.Religious,0, 0, 0, 0, 0),
+                new(CharacterID.Artist,0, 0, 0, 0, 0),
+                new(CharacterID.Overeater,0, 0, 0, 0, 0),
+                new(CharacterID.Alcoholic,0, 0, 0, 0, 0),
+                new(CharacterID.Soulsisters,0, 0, 0, 0, 0),
+                new(CharacterID.Booksmart,0, 0, 0, 0, 0)
             };
         }
 
