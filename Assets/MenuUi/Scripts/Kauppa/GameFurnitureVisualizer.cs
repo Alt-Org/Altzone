@@ -18,6 +18,6 @@ public class GameFurnitureVisualizer : MonoBehaviour
         _gameFurniture = gameFurniture;
         _productText.text = _gameFurniture.Name;
         _priceText.text = _gameFurniture.Value.ToString();
-        _contentImage.sprite = _gameFurniture.FurnitureInfo.Image;
+        _contentImage.sprite = _gameFurniture.FurnitureInfo.PosterImage? _gameFurniture.FurnitureInfo.PosterImage : _gameFurniture.FurnitureInfo.Image;
     }
 }
