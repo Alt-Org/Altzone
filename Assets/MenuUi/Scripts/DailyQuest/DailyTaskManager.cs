@@ -434,7 +434,7 @@ public class DailyTaskManager : MonoBehaviour
     {
         var clanRewardDatas = new List<DailyTaskClanReward.ClanRewardData>()
         {
-            new DailyTaskClanReward.ClanRewardData(true, DailyTaskClanReward.ClanRewardType.Box, 500),
+            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 500),
             new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 1000),
             new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 5000),
             new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Chest, 10000)
@@ -442,9 +442,9 @@ public class DailyTaskManager : MonoBehaviour
         return clanRewardDatas;
     }
 
-    public void TESTAddClanRewardBarPoints()
+    public void TESTAddClanRewardBarPoints(int value)
     {
-        _clanProgressBarCurrentPoints += 100;
+        _clanProgressBarCurrentPoints += value;
 
         StartCoroutine(CalculateClanRewardBarProgress());
     }
@@ -463,13 +463,27 @@ public class DailyTaskManager : MonoBehaviour
 
             int endPoints = _clanProgressBarMarkers[i].GetComponent<DailyTaskClanReward>().Data.Threshold;
 
-            if ((_clanProgressBarCurrentPoints <= endPoints) || (i + 1 >= _clanProgressBarMarkers.Count))
+            if ((_clanProgressBarCurrentPoints < endPoints) || (i >= _clanProgressBarMarkers.Count - 1))
             {
                 float startPosition = sectionLenghts * i;
                 float endPosition = ((i + 1) >= _clanProgressBarMarkers.Count ? 1f : (sectionLenghts * (float)(i + 1)));
 
                 float chunkProgress = (float)(_clanProgressBarCurrentPoints - startPoints) / (float)(endPoints - startPoints);
                 Debug.Log("ClanRewardsProgressBar: chunk progress: " + chunkProgress + ", start points: " + startPoints + ", end points: " + endPoints);
+
+                //All but final reward.
+                for (int j = 0; j < i; j++)
+                {
+                    _clanProgressBarMarkers[j].GetComponent<DailyTaskClanReward>().UpdateState(true);
+
+                }
+
+                //Final reward
+                if ((i >= _clanProgressBarMarkers.Count - 1) && chunkProgress == 1)
+                {
+                    _clanProgressBarMarkers[_clanProgressBarMarkers.Count - 1].GetComponent<DailyTaskClanReward>().UpdateState(true);
+
+                }
 
                 _clanProgressBarSlider.value = Mathf.Lerp(startPosition, endPosition, chunkProgress);
                 break;
