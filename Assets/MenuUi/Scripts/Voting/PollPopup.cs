@@ -20,9 +20,9 @@ public class PollPopup : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Image greenFillAmount;
     [SerializeField] private AddPlayerHeads playerHeads;
 
-    void Awake()
+
+    private void OnDisable()
     {
-        VotingActions.PassPollId += SetPollId;
         this.gameObject.SetActive(false);
     }
 

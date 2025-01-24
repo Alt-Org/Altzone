@@ -8,12 +8,14 @@ using Altzone.Scripts.Voting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEditorInternal.Profiling.Memory.Experimental;
+using System;
 
 public class VoteManager : MonoBehaviour
 {
     public GameObject Content;
     public GameObject PollObjectPrefab;
     public GameObject PollPopup;
+    public GameObject Blocker;
     private List<GameObject> Polls = new List<GameObject>();
 
 
@@ -21,11 +23,13 @@ public class VoteManager : MonoBehaviour
     {
         InstantiatePolls();
         VotingActions.ReloadPollList += InstantiatePolls;
+        VotingActions.PassPollId += SetPollPopupPollId;
     }
 
     private void OnDisable()
     {
         VotingActions.ReloadPollList -= InstantiatePolls;
+        VotingActions.PassPollId -= SetPollPopupPollId;
     }
 
     public void InstantiatePolls()
@@ -48,5 +52,10 @@ public class VoteManager : MonoBehaviour
 
             obj.gameObject.GetComponent<Button>().onClick.AddListener(delegate { PollPopup.SetActive(true); });
         }
+    }
+
+    public void SetPollPopupPollId(string pollId)
+    {
+        PollPopup.GetComponent<PollPopup>().SetPollId(pollId);
     }
 }
