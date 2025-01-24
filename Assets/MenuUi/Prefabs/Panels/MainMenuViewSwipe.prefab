@@ -148,6 +148,11 @@ PrefabInstance:
       propertyPath: m_ActiveFontFeatures.Array.data[0]
       value: 1801810542
       objectReference: {fileID: 0}
+    - target: {fileID: 1906913786822385804, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 31
+      objectReference: {fileID: 0}
     - target: {fileID: 1916123417605995128, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -675,6 +680,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8562513669237207619, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8790968792402542474, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -689,7 +699,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _popup
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 4537272335223336907}
     - target: {fileID: 9034263577671156043, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
       propertyPath: _naviTarget
@@ -4745,6 +4755,11 @@ PrefabInstance:
       propertyPath: m_LocalScale.x
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1288323977751298996, guid: 36168b4a92b6679449c8fc40f06c0cf9,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 40.9
+      objectReference: {fileID: 0}
     - target: {fileID: 1461201440876164513, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
       propertyPath: m_IsActive
@@ -5593,6 +5608,12 @@ RectTransform:
 --- !u!1 &2087342274209648403 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2522924569819659774, guid: 36168b4a92b6679449c8fc40f06c0cf9,
+    type: 3}
+  m_PrefabInstance: {fileID: 4608449306408039149}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4537272335223336907 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 72938425256844582, guid: 36168b4a92b6679449c8fc40f06c0cf9,
     type: 3}
   m_PrefabInstance: {fileID: 4608449306408039149}
   m_PrefabAsset: {fileID: 0}

@@ -4,15 +4,12 @@ using UnityEngine;
 public class ShopScrollViewResetter : MonoBehaviour
 {
     private BaseScrollRect myScrollRect;
-    private void Awake()
+    private void Start()
     {
         myScrollRect = GetComponent<BaseScrollRect>();
-        Debug.Log("Awake");
+        ResetScroll();
     }
-    public void OnEnable()
-    {
-        Debug.Log("OnEnable");
-        //Change the current vertical scroll position.
-        myScrollRect.VerticalNormalizedPosition = 1f;
-    }
+    public void OnEnable() => ResetScroll();
+
+    private void ResetScroll() => myScrollRect.VerticalNormalizedPosition = 1f;
 }
