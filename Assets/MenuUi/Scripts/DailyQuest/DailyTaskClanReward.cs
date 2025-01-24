@@ -1,7 +1,6 @@
 using System.Data;
 using TMPro;
 using UnityEngine;
-using static UnityEditor.LightingExplorerTableColumn;
 
 public class DailyTaskClanReward : MonoBehaviour
 {
