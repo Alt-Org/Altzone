@@ -283,7 +283,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfccedd1150870840b73374117c9230f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  carouselManager: {fileID: 2129402788684970563}
   swipeUI: {fileID: 2668620545167595819}
 --- !u!1 &151714616618951626
 GameObject:
@@ -849,7 +848,6 @@ GameObject:
   - component: {fileID: 995119016793535187}
   - component: {fileID: 1925150301345974726}
   - component: {fileID: 4446516789996940921}
-  - component: {fileID: 2129402788684970563}
   - component: {fileID: 8606814154171700078}
   - component: {fileID: 2409009792294670117}
   - component: {fileID: 3955099288577979974}
@@ -928,33 +926,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &2129402788684970563
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 582222012324655861}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5134312126c94a0488beb37e1edfc264, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _camera2D: {fileID: 0}
-  blackBackground: {fileID: 8904562920191504236}
-  posScrollValue: []
-  mySlide:
-  - {fileID: 3698905707650994913}
-  - {fileID: 961124377524671534}
-  - {fileID: 6082874941262313830}
-  - {fileID: 6539237399395132277}
-  - {fileID: 955975455265038568}
-  - {fileID: 5399774702980107112}
-  - {fileID: 2590368878538644554}
-  - {fileID: 255483737535241952}
-  startingSlide: 0
-  scrollRect: {fileID: 2917940816927905091}
-  scrollbar: {fileID: 2599348000117759391}
 --- !u!114 &8606814154171700078
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6656,7 +6627,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6db1c4f05e8f45d49861f8f933d2a920, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  carouselManager: {fileID: 2129402788684970563}
   swipeUI: {fileID: 2668620545167595819}
 --- !u!1 &8360380922496729204
 GameObject:
