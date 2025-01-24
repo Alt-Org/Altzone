@@ -4,7 +4,7 @@ using UnityEngine;
 namespace MenuUi.Scripts.DefenceScreen
 {
     //[CreateAssetMenu(menuName = "ALT-Zone/PiechartReference", fileName = "PiechartReference")]
-    public class PiechartColorReference : ScriptableObject
+    public class PiechartReference : ScriptableObject
     {
         [SerializeField] private Color _impactForceColor;
         [SerializeField] private Color _impactForceAlternativeColor;
