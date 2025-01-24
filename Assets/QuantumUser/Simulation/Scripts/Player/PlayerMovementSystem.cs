@@ -30,9 +30,20 @@ namespace Quantum
 
             if (input->MouseClick)
             {
-                filter.PlayerData->TargetPosition.X = input->MousePosition.X;
-                filter.PlayerData->TargetPosition.Y = input->MousePosition.Z;
-                Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", filter.PlayerData->TargetPosition);
+                //checks if player is allowed to move to that side of the arena
+                if (((filter.PlayerData->Player == 0 || filter.PlayerData->Player == 1) && input->MousePosition.Z < 0)
+                    || ((filter.PlayerData->Player == 2 || filter.PlayerData->Player == 3) && input->MousePosition.Z > 0))
+                {
+                    filter.PlayerData->TargetPosition.X = input->MousePosition.X;
+                    filter.PlayerData->TargetPosition.Y = input->MousePosition.Z;
+                    Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", filter.PlayerData->TargetPosition);
+                }
+                //if player is not allowed to move to that side of the arena, targetposition is for as far as a player can go
+                else
+                {
+                    filter.PlayerData->TargetPosition.X = input->MousePosition.X;
+                    filter.PlayerData->TargetPosition.Y = 0;
+                }
             }
 
             if (input->RotateMotion)
