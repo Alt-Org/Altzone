@@ -5,6 +5,7 @@ using MenuUi.Scripts.SwipeNavigation;
 using TMPro;
 using Altzone.Scripts.Model.Poco.Game;
 using System;
+using MenuUi.Scripts.DefenceScreen.CharacterGallery;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -13,6 +14,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private Image _spriteImage;
         [SerializeField] private Image _backgroundSpriteImage;
         [SerializeField] private TextMeshProUGUI _characterNameText;
+        [SerializeField] private PieChartPreview _piechartPreview;
 
         private CharacterID _id;
 
@@ -39,6 +41,12 @@ namespace MenuUi.Scripts.CharacterGallery
         public int characterTextCounter;
 
         public CharacterID Id { get => _id; }
+
+
+        private void OnEnable()
+        {
+            _piechartPreview.UpdateChart(Id);
+        }
 
 
         private void Start()
