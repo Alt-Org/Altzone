@@ -74,7 +74,7 @@ namespace MenuUi.Scripts.DefenceScreen
                 case StatType.Resistance:
                     return _characterSizeAlternativeColor;
                 case StatType.Speed:
-                    return _speedColor;
+                    return _speedAlternativeColor;
             }
             return _defaultAlternativeColor;
         }
