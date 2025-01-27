@@ -10,7 +10,6 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEditor;
 using System.Linq;
-using MenuUi.Scripts.ReferenceSheets;
 
 public static class PollManager
 {
