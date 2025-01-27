@@ -278,7 +278,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.49056602, g: 0.49056602, b: 0.49056602, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -309,7 +309,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _character: {fileID: 2672664813005901158}
   _spriteImage: {fileID: 4373653401983087985}
-  _backgroundSpriteImage: {fileID: 3146477122434043581}
+  _backgroundSpriteImage: {fileID: 2053534294522563814}
   _nameText: {fileID: 1401336240080573343}
 --- !u!114 &8170631812076819300
 MonoBehaviour:
@@ -498,6 +498,11 @@ PrefabInstance:
       objectReference: {fileID: 6762374876794546724}
     - target: {fileID: 1813859720648059125, guid: 00dd9bde2849f9c498dd00c084457690,
         type: 3}
+      propertyPath: _aspectRatioFitter
+      value: 
+      objectReference: {fileID: 4118898507377828520}
+    - target: {fileID: 1813859720648059125, guid: 00dd9bde2849f9c498dd00c084457690,
+        type: 3}
       propertyPath: _backGroundspriteImage
       value: 
       objectReference: {fileID: 3146477122434043581}
@@ -639,6 +644,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4118898507377828520 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 365475382052161339, guid: 00dd9bde2849f9c498dd00c084457690,
+    type: 3}
+  m_PrefabInstance: {fileID: 4340108514400331155}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!224 &5024676260890555381 stripped
