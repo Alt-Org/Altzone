@@ -91,7 +91,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterGallery
             };
 
             // Create slices
-            int maxCombinedStatLevel = 50;
+            int maxCombinedStatLevel = 50; // TODO: replace this with reference to a constant which is defined somewhere
             float oneLevelFillAmount = 1.0f / maxCombinedStatLevel;
             float currentSliceFill = 1.0f;
             
