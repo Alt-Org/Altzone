@@ -8,11 +8,16 @@ using UnityEngine.UI;
 
 public class PerusKauppaStorage : ShopPanelStorage
 {
-    [Header("Sorting")]
-    [SerializeField] private Transform _commonParent;
-    [SerializeField] private Transform _rareParent;
-    [SerializeField] private Transform _epicParent;
-    [SerializeField] private Transform _antiqueParent;
+    [SerializeField] private RectTransform _Content;
+    private bool _isInitiallyRebuild = false;
+
+    [Space(5f)]
+
+    [Header("Parents")]
+    [SerializeField] private RectTransform _commonGroup;
+    [SerializeField] private RectTransform _rareGroup;
+    [SerializeField] private RectTransform _epicGroup;
+    [SerializeField] private RectTransform _antiqueGroup;
 
     [Space(5f)]
 
@@ -36,10 +41,10 @@ public class PerusKauppaStorage : ShopPanelStorage
     private void Awake()
     {
         _rarityToParent = new Dictionary<FurnitureRarity, Transform>{
-            {FurnitureRarity.Common, _commonParent},
-            {FurnitureRarity.Rare, _rareParent},
-            {FurnitureRarity.Epic, _epicParent},
-            {FurnitureRarity.Antique, _antiqueParent}
+            {FurnitureRarity.Common, _commonGroup},
+            {FurnitureRarity.Rare, _rareGroup},
+            {FurnitureRarity.Epic, _epicGroup},
+            {FurnitureRarity.Antique, _antiqueGroup}
         };
 
         _rarityToPrefab = new Dictionary<FurnitureRarity, GameFurnitureVisualizer>
@@ -52,6 +57,7 @@ public class PerusKauppaStorage : ShopPanelStorage
         gameFurnitures = new();
         gameFurnituresOnScene = new();
     }
+
     protected override void HandleGameFurnitureCreation(ReadOnlyCollection<GameFurniture> gameFurnitures)
     {
         foreach(GameFurniture furniture in gameFurnitures)
@@ -61,10 +67,17 @@ public class PerusKauppaStorage : ShopPanelStorage
 
         foreach(GameFurniture furniture1 in gameFurnitures)
         {
-            if(_rarityToParent.TryGetValue(furniture1.Rarity, out Transform _parent))
+            if (furniture1 == null)
+            {
+                Debug.LogError("gameFurniture is null. Ensure it is assigned before calling Initialize.");
+                return;
+            }
+
+            if (_rarityToParent.TryGetValue(furniture1.Rarity, out Transform _parent))
             {
                 if (_rarityToPrefab.TryGetValue(furniture1.Rarity, out GameFurnitureVisualizer _prefab))
                 {
+                    Debug.Log("Furniture of " + furniture1.Name + "" + furniture1.Value +  " is created");
                     var newItem = Instantiate(_prefab, _parent);
                     newItem.Initialize(furniture1);
                     gameFurnituresOnScene.Add(newItem);
@@ -83,9 +96,20 @@ public class PerusKauppaStorage : ShopPanelStorage
             }
         }
 
-
         //Randomize
         // Sort based on rarity
         // Instantiate on the righfull position
+
+        //Force each content to rebild to avoid UI issues
+    }
+
+    private void LateUpdate()
+    {
+        if(_isInitiallyRebuild)
+            return;
+
+        _isInitiallyRebuild = false;
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_Content);
+        return;
     }
 }

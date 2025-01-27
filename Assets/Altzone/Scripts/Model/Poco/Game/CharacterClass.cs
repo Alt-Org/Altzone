@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Model.Poco.Attributes;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Game
@@ -70,5 +71,28 @@ namespace Altzone.Scripts.Model.Poco.Game
             }
         }
 
+
+        public static Color GetCharacterClassColor(CharacterClassID id)
+        {
+            switch (id)
+            {
+                case CharacterClassID.Desensitizer:
+                    return new Color(0.68f, 0.84f, 0.9f, 1);
+                case CharacterClassID.Trickster:
+                    return Color.green;
+                case CharacterClassID.Obedient:
+                    return new Color(1f, 0.64f, 0, 1);
+                case CharacterClassID.Projector:
+                    return Color.yellow;
+                case CharacterClassID.Retroflector:
+                    return Color.red;
+                case CharacterClassID.Confluent:
+                    return new Color(0.5f, 0, 0.5f, 1);
+                case CharacterClassID.Intellectualizer:
+                    return Color.blue;
+                default:
+                    return Color.gray;
+            }
+        }
     }
 }

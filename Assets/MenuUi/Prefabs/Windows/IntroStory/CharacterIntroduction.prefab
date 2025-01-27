@@ -283,7 +283,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfccedd1150870840b73374117c9230f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  carouselManager: {fileID: 2129402788684970563}
+  swipeUI: {fileID: 2668620545167595819}
 --- !u!1 &151714616618951626
 GameObject:
   m_ObjectHideFlags: 0
@@ -467,7 +467,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 173.45
+  m_fontSize: 173.3
   m_fontSizeBase: 150
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -848,7 +848,6 @@ GameObject:
   - component: {fileID: 995119016793535187}
   - component: {fileID: 1925150301345974726}
   - component: {fileID: 4446516789996940921}
-  - component: {fileID: 2129402788684970563}
   - component: {fileID: 8606814154171700078}
   - component: {fileID: 2409009792294670117}
   - component: {fileID: 3955099288577979974}
@@ -871,14 +870,14 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7385657427370746318}
   - {fileID: 5470786229644234482}
+  - {fileID: 7385657427370746318}
   - {fileID: 6913566337459823388}
   - {fileID: 3782697466127810179}
-  - {fileID: 4162628570514953629}
-  - {fileID: 4236558414233508668}
-  - {fileID: 1624108601238864058}
   - {fileID: 7530950694695915024}
+  - {fileID: 4162628570514953629}
+  - {fileID: 1624108601238864058}
+  - {fileID: 4236558414233508668}
   - {fileID: 4578322968018912741}
   m_Father: {fileID: 770451498432777814}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -927,33 +926,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &2129402788684970563
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 582222012324655861}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5134312126c94a0488beb37e1edfc264, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _camera2D: {fileID: 0}
-  blackBackground: {fileID: 8904562920191504236}
-  posScrollValue: []
-  mySlide:
-  - {fileID: 3698905707650994913}
-  - {fileID: 961124377524671534}
-  - {fileID: 6082874941262313830}
-  - {fileID: 6539237399395132277}
-  - {fileID: 955975455265038568}
-  - {fileID: 5399774702980107112}
-  - {fileID: 2590368878538644554}
-  - {fileID: 255483737535241952}
-  startingSlide: 0
-  scrollRect: {fileID: 2917940816927905091}
-  scrollbar: {fileID: 2599348000117759391}
 --- !u!114 &8606814154171700078
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -968,25 +940,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lockInButton: {fileID: 6127495472192573745}
   characterData:
-  - uniqueID: 257
+  - uniqueID: 101
     characterName: Rauta-Rami
     characterButton: {fileID: 5966858216387502543}
-  - uniqueID: 513
+  - uniqueID: 201
     characterName: Vitsi-Ville
     characterButton: {fileID: 4027326127626158879}
-  - uniqueID: 1025
+  - uniqueID: 401
     characterName: Graffiti-Gaya
     characterButton: {fileID: 9156970300191288127}
-  - uniqueID: 1537
+  - uniqueID: 601
     characterName: "Tiimityt\xF6t"
     characterButton: {fileID: 6100402524575278515}
-  - uniqueID: 1281
+  - uniqueID: 501
     characterName: Hannu Hodari
     characterButton: {fileID: 9177857256537597668}
-  - uniqueID: 769
+  - uniqueID: 301
     characterName: Sami Saarnaaja
     characterButton: {fileID: 1275320661936774098}
-  - uniqueID: 1793
+  - uniqueID: 701
     characterName: "Albert \xC4lyp\xE4\xE4"
     characterButton: {fileID: 2437091642900925076}
   popupWindow: {fileID: 997590189480381226}
@@ -1745,7 +1717,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 68.8
+  m_fontSize: 72
   m_fontSizeBase: 70
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2213,8 +2185,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 960, y: -2081.5}
-  m_SizeDelta: {x: 1920, y: 4163}
+  m_AnchoredPosition: {x: 960, y: -2028.1666}
+  m_SizeDelta: {x: 1920, y: 4056.3333}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &9099457171846876620
 MonoBehaviour:
@@ -2286,6 +2258,7 @@ GameObject:
   - component: {fileID: 1286428658193701106}
   - component: {fileID: 5943518703993224422}
   - component: {fileID: 2917940816927905091}
+  - component: {fileID: 2668620545167595819}
   m_Layer: 5
   m_Name: Scroll View
   m_TagString: Untagged
@@ -2385,6 +2358,39 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2668620545167595819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3470958639909770576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5017d80d2f08ad44fa43e576bbfa6cd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  horizontalDeadzone: 0.8
+  verticalDeadzone: 0.85
+  slides:
+  - {fileID: 3698905707650994913}
+  - {fileID: 961124377524671534}
+  - {fileID: 6082874941262313830}
+  - {fileID: 2590368878538644554}
+  - {fileID: 6539237399395132277}
+  - {fileID: 5399774702980107112}
+  - {fileID: 955975455265038568}
+  - {fileID: 255483737535241952}
+  scrollBar: {fileID: 2599348000117759391}
+  buttons: []
+  swipeTime: 0.1
+  currentPage: 1
+  _startTouch: {x: 0, y: 0}
+  _endTouch: {x: 0, y: 0}
+  _scrollTransform: {fileID: 995119016793535187}
+  isEnabled: 0
+  _isInMainMenu: 0
+  _willRotate: 1
 --- !u!1 &3698905707650994913
 GameObject:
   m_ObjectHideFlags: 0
@@ -2694,7 +2700,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 64.4
+  m_fontSize: 72
   m_fontSizeBase: 70
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4425,7 +4431,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 56.7
+  m_fontSize: 63.1
   m_fontSizeBase: 70
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5322,7 +5328,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 67.35
+  m_fontSize: 72
   m_fontSizeBase: 70
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5459,7 +5465,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 116.45
+  m_fontSize: 141.8
   m_fontSizeBase: 150
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6323,7 +6329,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 67.3
+  m_fontSize: 72
   m_fontSizeBase: 70
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6621,7 +6627,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6db1c4f05e8f45d49861f8f933d2a920, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  carouselManager: {fileID: 2129402788684970563}
+  swipeUI: {fileID: 2668620545167595819}
 --- !u!1 &8360380922496729204
 GameObject:
   m_ObjectHideFlags: 0
@@ -7001,7 +7007,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 54.95
+  m_fontSize: 60.2
   m_fontSizeBase: 70
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -7279,7 +7285,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 63.4
+  m_fontSize: 72
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
