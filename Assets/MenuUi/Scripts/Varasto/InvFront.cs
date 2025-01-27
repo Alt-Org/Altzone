@@ -62,6 +62,7 @@ namespace MenuUi.Scripts.Storage
 
         private int _maxSortingBy = 5;
         private int _sortingBy = -1; // used as a carrier for info on how to sort
+        private bool _descendingOrder = false;
 
         private const string INVENTORY_EMPTY_TEXT = "Varasto tyhjä";
 
@@ -283,6 +284,12 @@ namespace MenuUi.Scripts.Storage
             }
         }
 
+        public void SwitchSortOrder() {
+            _descendingOrder = !_descendingOrder;
+            _sortingBy--; // Decrement here because SortStored will increment it again
+            SortStored();
+        }
+
         public void SortStored() // A very much hardcoded system for sorting 
         {
             if (_sortingBy < _maxSortingBy) { _sortingBy++; }
@@ -292,27 +299,57 @@ namespace MenuUi.Scripts.Storage
             {
                 case 0:
                     _sortText.text = "Jarjestetty\nAakkoset";
-                    _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.VisibleName.CompareTo(b.VisibleName); });
+
+                    if (_descendingOrder)
+                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return b.VisibleName.CompareTo(a.VisibleName); });
+                    else
+                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.VisibleName.CompareTo(b.VisibleName); });
+
                     break;
                 case 1:
                     _sortText.text = "Jarjestetty\nArvo";
-                    _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.Value.CompareTo(b.Value); });
+
+                    if (_descendingOrder)
+                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return b.Value.CompareTo(a.Value); });
+                    else
+                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.Value.CompareTo(b.Value); });
+
                     break;
                 case 2:
                     _sortText.text = "Jarjestetty\nPaino";
-                    _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.Weight.CompareTo(b.Weight); });
+
+                    if (_descendingOrder)
+                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return b.Weight.CompareTo(a.Weight); });
+                    else
+                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.Weight.CompareTo(b.Weight); });
+
                     break;
                 case 3:
                     _sortText.text = "Jarjestetty\nMateriaali";
-                    _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.Material.CompareTo(b.Material); });
+
+                    if (_descendingOrder)
+                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return b.Material.CompareTo(a.Material); });
+                    else
+                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.Material.CompareTo(b.Material); });
+
                     break;
                 case 4:
                     _sortText.text = "Jarjestetty\nHarvinaisuus";
-                    _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.Rarity.CompareTo(b.Rarity); });
+
+                    if (_descendingOrder)
+                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return b.Rarity.CompareTo(a.Rarity); });
+                    else
+                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.Rarity.CompareTo(b.Rarity); });
+
                     break;
                 case 5:
                     _sortText.text = "Jarjestetty\nLinjasto";
-                    _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.SetName.CompareTo(b.SetName); });
+
+                    if (_descendingOrder)
+                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return b.SetName.CompareTo(a.SetName); });
+                    else
+                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.SetName.CompareTo(b.SetName); });
+
                     break;
             }
             SetSlots();
