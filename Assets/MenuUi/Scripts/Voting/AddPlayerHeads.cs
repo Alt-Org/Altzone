@@ -63,51 +63,52 @@ public class AddPlayerHeads : MonoBehaviour
         //Debug.Log("YesHeadsCombinedWidth: " + YesHeadsCombinedWidth);
         //Debug.Log("NoHeadsCombinedWidth: " + NoHeadsCombinedWidth);
 
-        if (YesHeadsCombinedWidth > MaskWidth) StartCoroutine(ScrollYesHeads());
-        if (NoHeadsCombinedWidth > MaskWidth) StartCoroutine(ScrollNoHeads());
+        if (YesHeadsCombinedWidth > MaskWidth || NoHeadsCombinedWidth > MaskWidth) StartCoroutine(ScrollHeads());
     }
 
-    private IEnumerator ScrollYesHeads()
+    private IEnumerator ScrollHeads()
     {
         while (true)
         {
             yield return new WaitForSeconds(2);
 
-            float currentPos = YesVotersMask.rect.width;
+            float currentYesPos = YesVotersMask.rect.width;
+            float currentNoPos = NoVotersMask.rect.width;
 
-            //Debug.Log("currentPos: " + currentPos);
-            //Debug.Log("YesHeadsCombinedWidth: " + YesHeadsCombinedWidth);
+            bool YesHeadsScrollDone = true;
+            bool NoHeadsScrollDone = true;
 
-            while (currentPos < YesHeadsCombinedWidth)
+            if (YesHeadsCombinedWidth > YesVotersMask.rect.width) YesHeadsScrollDone = false;
+            if (NoHeadsCombinedWidth > NoVotersMask.rect.width) NoHeadsScrollDone = false;
+
+            while (!YesHeadsScrollDone || !NoHeadsScrollDone)
             {
-                YesVotersContent.GetComponent<RectTransform>().anchoredPosition +=  Vector2.left * Time.deltaTime * 25;
-                currentPos -= Vector2.left.x * Time.deltaTime * 25;
+                if (currentYesPos < YesHeadsCombinedWidth)
+                {
+                    YesVotersContent.GetComponent<RectTransform>().anchoredPosition += Vector2.left * Time.deltaTime * 50;
+                    currentYesPos -= Vector2.left.x * Time.deltaTime * 50;
+                }
+                else if (!YesHeadsScrollDone)
+                {
+                    YesHeadsScrollDone = true;
+                }
+
+                if (currentNoPos < NoHeadsCombinedWidth)
+                {
+                    NoVotersContent.GetComponent<RectTransform>().anchoredPosition += Vector2.left * Time.deltaTime * 50;
+                    currentNoPos -= Vector2.left.x * Time.deltaTime * 50;
+                }
+                else if (!NoHeadsScrollDone)
+                {
+                    NoHeadsScrollDone = true;
+                }
+
                 yield return null;
             }
 
             yield return new WaitForSeconds(2);
 
             YesVotersContent.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-        }
-    }
-
-    private IEnumerator ScrollNoHeads()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(2);
-
-            float currentPos = YesVotersMask.rect.width;
-
-            while (currentPos < NoHeadsCombinedWidth)
-            {
-                NoVotersContent.GetComponent<RectTransform>().anchoredPosition += Vector2.left * Time.deltaTime * 25;
-                currentPos -= Vector2.left.x * Time.deltaTime * 25;
-                yield return null;
-            }
-
-            yield return new WaitForSeconds(2);
-
             NoVotersContent.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         }
     }
