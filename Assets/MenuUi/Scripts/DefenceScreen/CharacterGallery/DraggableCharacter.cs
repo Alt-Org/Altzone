@@ -5,6 +5,7 @@ using MenuUi.Scripts.SwipeNavigation;
 using TMPro;
 using Altzone.Scripts.Model.Poco.Game;
 using System;
+using MenuUi.Scripts.DefenceScreen.CharacterGallery;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -14,6 +15,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private Image _backgroundSpriteImage;
         [SerializeField] private TextMeshProUGUI _characterNameText;
         [SerializeField] private AspectRatioFitter _aspectRatioFitter;
+        [SerializeField] private PieChartPreview _piechartPreview;
 
         private CharacterID _id;
 
@@ -43,6 +45,12 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private Sprite _selectedBackgroundSprite;
         private Sprite _unselectedBackgroundSprite;
+
+
+        private void OnEnable()
+        {
+            _piechartPreview.UpdateChart(Id);
+        }
 
 
         private void Start()

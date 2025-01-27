@@ -4,11 +4,14 @@ using System.Linq;
 using Altzone.Scripts.Voting;
 using TMPro;
 using UnityEngine;
+using System;
 
 public class PollPopup : MonoBehaviour
 {
     private string pollId;
+    private PollData pollData;
 
+    [SerializeField] private TextMeshProUGUI headerText;
     [SerializeField] private UnityEngine.UI.Image image;
     [SerializeField] private TextMeshProUGUI yesVotesText;
     [SerializeField] private TextMeshProUGUI noVotesText;
@@ -17,28 +20,28 @@ public class PollPopup : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Image greenFillAmount;
     [SerializeField] private AddPlayerHeads playerHeads;
 
-    void OnEnable()
-    {
-        VotingActions.PassPollId += SetPollId;
-        VotingActions.PollPopupReady?.Invoke();
-    }
 
-    void OnDisable()
+    private void OnDisable()
     {
-        VotingActions.PassPollId -= SetPollId;
+        this.gameObject.SetActive(false);
     }
 
     public void SetPollId(string newPollId)
     {
         pollId = newPollId;
-        Debug.Log("PollId Set: " + pollId);
+        pollData = PollManager.GetPollData(pollId);
+        //Debug.Log("PollId Set: " + pollId);
 
         SetValues();
     }
 
     private void SetValues()
     {
-        PollData pollData = PollManager.GetPollData(pollId);
+        if (pollData is FurniturePollData)
+        {
+            FurniturePollData furniturePollData = (FurniturePollData)pollData;
+            if (headerText != null) headerText.text = Enum.GetName(typeof(FurniturePollType), furniturePollData.FurniturePollType);
+        }
 
         if (image != null) image.sprite = pollData.Sprite;
         if (yesVotesText != null) yesVotesText.text = pollData.YesVotes.Count.ToString();
@@ -58,22 +61,14 @@ public class PollPopup : MonoBehaviour
         {
             FurniturePollData furniturePollData = (FurniturePollData)pollData;
 
-            if (valueText != null) valueText.text = "Value: " + furniturePollData.Value.ToString();
+            if (valueText != null) valueText.text = "Value: " + furniturePollData.Furniture.Value.ToString();
         }
 
-        if (pollData is EsinePollData)
-        {
-            EsinePollData furniturePollData = (EsinePollData)pollData;
-
-            if (valueText != null) valueText.text = "Value: " + furniturePollData.Value.ToString();
-        }
-
-        playerHeads.InstantiateHeads(pollId);
+        //playerHeads.InstantiateHeads(pollId);
     }
 
     public void AddVote(bool answer)
     {
-        PollData pollData = PollManager.GetPollData(pollId);
         pollData.AddVote(answer);
         SetValues();
         VotingActions.ReloadPollList?.Invoke();

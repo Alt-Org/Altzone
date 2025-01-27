@@ -1,9 +1,9 @@
-using System.Diagnostics;
 using System.Security.AccessControl;
 using Altzone.Scripts.Voting;
 using MenuUi.Scripts.SwipeNavigation;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
+using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -11,34 +11,28 @@ using UnityEngine.UI;
 public class KylläButtonÄänestyst : MonoBehaviour
 {
     public GameObject panelToBeSetInActive;
-    public EsineDisplay esine;
+    private GameFurniture furniture;
 
-    private void OnEnable()
+    private void Start()
     {
-        VotingActions.PassKauppaItem += setItem;
+        panelToBeSetInActive.SetActive(false);
+        VotingActions.PassShopItem += setItem;
     }
 
-    private void OnDisable()
+    private void setItem(GameFurniture newFurniture)
     {
-        VotingActions.PassKauppaItem -= setItem;
-    }
-
-    private void setItem(EsineDisplay item)
-    {
-        esine = item;
+        furniture = newFurniture;
+        //UnityEngine.Debug.Log(newFurniture.ToString());
     }
 
     public void YesButtonPressed()
     {
-        Invoke("SetInactiveAfterTime", 2f);
 
-        PollManager.CreatePoll(PollType.Kauppa, 1, esine.items.esine, EsinePollType.Buying, esine.items.value);
+        if (furniture != null) PollManager.CreateFurniturePoll(FurniturePollType.Buying, furniture);
+        VotingActions.ReloadPollList?.Invoke();
 
         FindObjectOfType<SwipeUI>(true).CurrentPage = 3;
-    }
 
-    public void SetInactiveAfterTime()
-    {
         panelToBeSetInActive.SetActive(false);
     }
 }
