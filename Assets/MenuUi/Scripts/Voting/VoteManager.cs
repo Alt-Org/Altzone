@@ -7,7 +7,6 @@ using Altzone.Scripts;
 using Altzone.Scripts.Voting;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEditorInternal.Profiling.Memory.Experimental;
 using System;
 
 public class VoteManager : MonoBehaviour
