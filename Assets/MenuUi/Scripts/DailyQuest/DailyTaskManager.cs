@@ -368,6 +368,7 @@ public class DailyTaskManager : MonoBehaviour
     private IEnumerator GetSaveSetHandleOwnTask(PlayerTask playerTask)
     {
         PlayerData playerData = null;
+        PlayerData savePlayerData = null;
         StartCoroutine(GetPlayerData(data => playerData = data));
 
         yield return new WaitUntil(() => (System.Threading.SpinWait.SpinUntil(() => playerData != null, _timeoutMilliseconds)));
@@ -379,25 +380,25 @@ public class DailyTaskManager : MonoBehaviour
         }
 
         playerData.Task = playerTask;
-        StartCoroutine(SavePlayerData(playerData, data => playerData = data));
+        StartCoroutine(SavePlayerData(playerData, data => savePlayerData = data));
 
-        yield return new WaitUntil(() => (System.Threading.SpinWait.SpinUntil(() => playerData != null, _timeoutMilliseconds)));
+        yield return new WaitUntil(() => (System.Threading.SpinWait.SpinUntil(() => savePlayerData != null, _timeoutMilliseconds)));
 
-        if (playerData == null)
+        if (savePlayerData == null)
         {
             Debug.LogError($"Save player data timeout or null.");
             yield break; //TODO: Add error handling.
         }
 
-        StartCoroutine(SetHandleOwnTask(playerTask, playerData));
+        StartCoroutine(SetHandleOwnTask(playerTask, savePlayerData));
     }
 
     //Set OwnTask page.
     private IEnumerator SetHandleOwnTask(PlayerTask playerTask, PlayerData playerData)
     {
-        StartCoroutine(_ownTaskPageHandler.SetTaskProgress(playerData.TaskProgress));
-        StartCoroutine(_ownTaskPageHandler.SetDailyTask(playerTask.Content, playerTask.Amount, playerTask.Points, playerTask.Coins));
         _ownTaskId = playerTask.Id;
+        _ownTaskPageHandler.SetDailyTask(playerTask.Content, playerTask.Amount, playerTask.Points, playerTask.Coins);
+        _ownTaskPageHandler.SetTaskProgress(playerData.TaskProgress);
         Debug.Log("Task id: " + _ownTaskId + ", has been accepted.");
 
         yield return true;
@@ -433,6 +434,7 @@ public class DailyTaskManager : MonoBehaviour
         yield return new WaitUntil(() => callback != null);
     }
 
+    //TODO: Uncomment, remove testing code and fix bugs when server side ready!
     private IEnumerator SavePlayerData(PlayerData playerData , System.Action<PlayerData> callback)
     {
         //Cant' save to server because server manager doesn't have functionality!
@@ -487,7 +489,7 @@ public class DailyTaskManager : MonoBehaviour
     private void UpdateOwnTaskProgress(DailyQuest quest)
     {
         float progress = CalculateProgressBar(quest.TaskData.Amount, _playerData.TaskProgress);
-        StartCoroutine(_ownTaskPageHandler.SetTaskProgress(progress));
+        _ownTaskPageHandler.SetTaskProgress(progress);
         Debug.Log("Task id: " + _ownTaskId + ", current progress: " + progress);
         if (progress >= 1f)
         {
@@ -510,6 +512,7 @@ public class DailyTaskManager : MonoBehaviour
     private IEnumerator CancelTask()
     {
         PlayerData playerData = null;
+        PlayerData savePlayerData = null;
         StartCoroutine(GetPlayerData(data => playerData = data));
 
         yield return new WaitUntil(() => (System.Threading.SpinWait.SpinUntil(() => playerData != null, _timeoutMilliseconds)));
@@ -522,17 +525,16 @@ public class DailyTaskManager : MonoBehaviour
 
         playerData.Task = null;
         playerData.TaskProgress = 0;
-        StartCoroutine(SavePlayerData(playerData, data => playerData = data));
+        StartCoroutine(SavePlayerData(playerData, data => savePlayerData = data));
 
-        yield return new WaitUntil(() => (System.Threading.SpinWait.SpinUntil(() => playerData != null, _timeoutMilliseconds)));
+        yield return new WaitUntil(() => (System.Threading.SpinWait.SpinUntil(() => savePlayerData != null, _timeoutMilliseconds)));
 
-        if (playerData == null)
+        if (savePlayerData == null)
         {
-            Debug.LogError($"Get player data timeout or null.");
+            Debug.LogError($"Save player data timeout or null.");
             yield break; //TODO: Add error handling.
         }
 
-        playerData.TaskProgress = 0;
         StartCoroutine(_ownTaskPageHandler.ClearCurrentTask());
         Debug.Log("Task id: " + _ownTaskId + ", has been canceled.");
         _ownTaskId = null;
