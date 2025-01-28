@@ -86,7 +86,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
 
         /// <summary>
-        /// Set random characters to selected character slots. Reloads character gallery afterwards.
+        /// Set random characters to selected character slots which are empty. Reloads character gallery afterwards.
         /// </summary>
         public void SetRandomSelectedCharactersToEmptySlots()
         {
