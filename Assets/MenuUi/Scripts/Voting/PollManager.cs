@@ -25,7 +25,7 @@ public static class PollManager
 
         int durationInHours = 1;
         string id = GetFirstAvailableId();
-        Sprite sprite = null;
+        Sprite sprite = furniture.FurnitureInfo.Image;
         long endTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + durationInHours * 3600;
         long startTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
