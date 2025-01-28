@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
-using MenuUi.Scripts.CharacterGallery;
+using MenuUi.Scripts.Lobby;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
