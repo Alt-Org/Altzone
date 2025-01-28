@@ -83,5 +83,38 @@ namespace MenuUi.Scripts.CharacterGallery
                 store.SavePlayerData(_playerData, null);
             }
         }
+
+
+        /// <summary>
+        /// Set random characters to selected character slots. Reloads character gallery afterwards.
+        /// </summary>
+        public void SetRandomSelectedCharactersToEmptySlots()
+        {
+            var characters = _playerData.CustomCharacters.ToList();
+            characters.Sort((a, b) => a.Id.CompareTo(b.Id));
+
+            for (int i = 0; i < 3; i++)
+            {
+                if (_playerData.SelectedCharacterIds[i] == 0)
+                {
+                    bool suitableCharacterFound = false;
+                    CustomCharacter character = null;
+                    do
+                    {
+                        character = characters[UnityEngine.Random.Range(0, characters.Count)];
+                        if ((int)character.Id != _playerData.SelectedCharacterIds[0] && (int)character.Id != _playerData.SelectedCharacterIds[1] && (int)character.Id != _playerData.SelectedCharacterIds[2])
+                        {
+                            suitableCharacterFound = true;
+                        }
+
+                    } while (!suitableCharacterFound);
+
+                    _playerData.SelectedCharacterIds[i] = (int)character.Id;
+                }
+            }
+            var store = Storefront.Get();
+            store.SavePlayerData(_playerData, null);
+            StartCoroutine(Load());
+        }
     }
 }
