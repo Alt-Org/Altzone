@@ -19,7 +19,7 @@ namespace MenuUi.Scripts.CharacterGallery
         public void SetInfo(Sprite sprite, Sprite backgroundSprite, Sprite selectedBackgroundSprite, string name, CharacterID id, ModelView view)
         {
             _spriteImage.sprite = sprite;
-            _backgroundSpriteImage.sprite = backgroundSprite;
+            //_backgroundSpriteImage.sprite = backgroundSprite;
             _nameText.text = name;
             _id = id;
             _character.SetInfo(sprite, backgroundSprite, selectedBackgroundSprite, name, id, view);

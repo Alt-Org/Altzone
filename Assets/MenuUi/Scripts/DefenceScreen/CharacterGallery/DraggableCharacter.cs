@@ -47,10 +47,20 @@ namespace MenuUi.Scripts.CharacterGallery
         private Sprite _unselectedBackgroundSprite;
 
 
+        private void Awake()
+        {
+            _piechartPreview.gameObject.SetActive(false);
+        }
+
+
         private void OnEnable()
         {
-            _piechartPreview.UpdateChart(Id);
+            if (_piechartPreview.gameObject.activeInHierarchy)
+            {
+                _piechartPreview.UpdateChart(Id);
+            }
         }
+
 
 
         private void Start()
@@ -232,8 +242,12 @@ namespace MenuUi.Scripts.CharacterGallery
             _backgroundSpriteImage.sprite = _selectedBackgroundSprite;
             _aspectRatioFitter.aspectRatio = 1;
             _characterNameText.gameObject.SetActive(false);
+
             _spriteImage.rectTransform.anchorMax = new Vector2(0.9f, 0.9f);
             _spriteImage.rectTransform.anchorMin = new Vector2(0.1f, 0.1f);
+
+            _piechartPreview.gameObject.SetActive(true);
+            _piechartPreview.UpdateChart(Id);
         }
 
 
@@ -242,8 +256,11 @@ namespace MenuUi.Scripts.CharacterGallery
             _backgroundSpriteImage.sprite = _unselectedBackgroundSprite;
             _aspectRatioFitter.aspectRatio = 0.6f;
             _characterNameText.gameObject.SetActive(true);
+
             _spriteImage.rectTransform.anchorMax = new Vector2(0.9f, 0.75f);
             _spriteImage.rectTransform.anchorMin = new Vector2(0.1f, 0.1f);
+
+            _piechartPreview.gameObject.SetActive(false);
         }
     }
 }

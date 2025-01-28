@@ -6,6 +6,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.ModelV2;
+using TMPro;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -18,6 +19,10 @@ namespace MenuUi.Scripts.CharacterGallery
 
         [SerializeField] private Sprite[] _backgroundSprites;
         [SerializeField] private Sprite[] _selectedBackgroundSprites;
+
+        [SerializeField] private TextMeshProUGUI _selectedCharacterSlotText1;
+        [SerializeField] private TextMeshProUGUI _selectedCharacterSlotText2;
+        [SerializeField] private TextMeshProUGUI _selectedCharacterSlotText3;
 
         private bool _isReady;
 
@@ -101,6 +106,7 @@ namespace MenuUi.Scripts.CharacterGallery
             _characterButtons.Clear();
             _characterSlots.Clear();
             LoadAndCachePrefabs();
+            CheckSelectedCharacterSlotTexts();
         }
 
 
@@ -207,6 +213,7 @@ namespace MenuUi.Scripts.CharacterGallery
                             }
                             i++;
                         }
+                        CheckSelectedCharacterSlotTexts();
                     };
 
                     // subscribing to removed from top slot event
@@ -233,6 +240,37 @@ namespace MenuUi.Scripts.CharacterGallery
                         }
                     }
                 }
+            }
+
+            CheckSelectedCharacterSlotTexts();
+        }
+
+
+        public void CheckSelectedCharacterSlotTexts()
+        {
+            if (_CurSelectedCharacterSlots[2].transform.childCount > 0)
+            {
+                _selectedCharacterSlotText3.enabled = false;
+            }
+            else
+            {
+                _selectedCharacterSlotText3.enabled = true;
+            }
+            if (_CurSelectedCharacterSlots[1].transform.childCount > 0)
+            {
+                _selectedCharacterSlotText2.enabled = false;
+            }
+            else
+            {
+                _selectedCharacterSlotText2.enabled = true;
+            }
+            if (_CurSelectedCharacterSlots[0].transform.childCount > 0)
+            {
+                _selectedCharacterSlotText1.enabled = false;
+            }
+            else
+            {
+                _selectedCharacterSlotText1.enabled = true;
             }
         }
 
@@ -269,6 +307,8 @@ namespace MenuUi.Scripts.CharacterGallery
                     CurrentCharacterId = CharacterID.None;
                 }
             }
+
+            CheckSelectedCharacterSlotTexts();
         }
     }
 }
