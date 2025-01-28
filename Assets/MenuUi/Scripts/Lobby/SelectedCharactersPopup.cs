@@ -1,4 +1,3 @@
-using MenuUI.Scripts;
 using MenuUI.Scripts.Lobby.InLobby;
 using UnityEngine;
 
@@ -19,7 +18,6 @@ namespace MenuUi.Scripts.Lobby
     public class SelectedCharactersPopup : MonoBehaviour
     {
         [SerializeField] private GameObject _container;
-        [SerializeField] private InLobbyController _inLobbyController;
 
         public void OpenPopup()
         {
@@ -37,7 +35,6 @@ namespace MenuUi.Scripts.Lobby
         {
             SignalBus.OnRandomSelectedCharactersRequestedSignal();
             ClosePopup();
-            _inLobbyController.ToggleWindow();
         }
     }
 }
