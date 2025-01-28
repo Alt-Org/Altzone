@@ -9,10 +9,10 @@ public class PlayerMovementWithAnimationTest : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     [SerializeField]
     private float _moveSpeed;
-    [SerializeField]
+
     private Vector3 _targetPosition;
 
-    void Start()
+    private void Start()
     {
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -41,7 +41,5 @@ public class PlayerMovementWithAnimationTest : MonoBehaviour
         {
             _animator.SetBool("isRunning", false);
         }
-
-
     }
 }
