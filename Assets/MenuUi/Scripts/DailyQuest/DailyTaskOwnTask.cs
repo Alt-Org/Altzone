@@ -73,6 +73,17 @@ public class DailyTaskOwnTask : MonoBehaviour
     }
     #endregion
 
+    public IEnumerator ClearCurrentTask()
+    {
+        _taskDescription.text = "";
+        _taskPointsReward.text = "";
+        _taskCoinsReward.text = "";
+
+        SetProgressBar(0);
+
+        yield return (true);
+    }
+
     public IEnumerator SetTaskProgress(float progress)
     {
         _taskProgressFillImage.fillAmount = progress;

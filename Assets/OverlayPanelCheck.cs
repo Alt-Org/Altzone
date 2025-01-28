@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using MenuUi.Scripts.Window.ScriptableObjects;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class OverlayPanelCheck : MonoBehaviour
 {
     [SerializeField] private GameObject _overlayObject;
+    [SerializeField] private SceneDef _allowedScene;
 
     private void Awake()
     {
@@ -13,7 +16,7 @@ public class OverlayPanelCheck : MonoBehaviour
 
     private void OnEnable()
     {
-        if (GameObject.FindWithTag("OverlayPanel").activeSelf)
+        if (GameObject.FindWithTag("OverlayPanel")?true: SceneManager.GetActiveScene().name != _allowedScene.SceneName) //If OverlayPanel can be found, return, otherwise check if this panel is allowed to be set active.
         {
             return;
         }

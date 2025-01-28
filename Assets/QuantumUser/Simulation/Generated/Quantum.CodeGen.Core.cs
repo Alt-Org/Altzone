@@ -49,6 +49,19 @@ namespace Quantum {
   using RuntimeInitializeOnLoadMethodAttribute = UnityEngine.RuntimeInitializeOnLoadMethodAttribute;
   #endif //;
   
+  public enum BattlePlayerPosition : int {
+    Guest = 0,
+    Position1 = 1,
+    Position2 = 2,
+    Position3 = 3,
+    Position4 = 4,
+    Spectator = 10,
+  }
+  public enum BattleTeamNumber : int {
+    NoTeam = 0,
+    TeamAlpha = 1,
+    TeamBeta = 2,
+  }
   public enum GameState : int {
     PreGame,
     ReadyToStart,
@@ -573,26 +586,30 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerData : Quantum.IComponent {
-    public const Int32 SIZE = 32;
+    public const Int32 SIZE = 40;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public PlayerRef Player;
-    [FieldOffset(8)]
-    public FP Speed;
     [FieldOffset(16)]
+    public FP Speed;
+    [FieldOffset(24)]
     public FPVector2 TargetPosition;
+    [FieldOffset(8)]
+    public FP Rotation;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10271;
         hash = hash * 31 + Player.GetHashCode();
         hash = hash * 31 + Speed.GetHashCode();
         hash = hash * 31 + TargetPosition.GetHashCode();
+        hash = hash * 31 + Rotation.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (PlayerData*)ptr;
         PlayerRef.Serialize(&p->Player, serializer);
+        FP.Serialize(&p->Rotation, serializer);
         FP.Serialize(&p->Speed, serializer);
         FPVector2.Serialize(&p->TargetPosition, serializer);
     }
@@ -842,6 +859,8 @@ namespace Quantum {
     static partial void RegisterSimulationTypesGen(TypeRegistry typeRegistry) {
       typeRegistry.Register(typeof(AssetGuid), AssetGuid.SIZE);
       typeRegistry.Register(typeof(AssetRef), AssetRef.SIZE);
+      typeRegistry.Register(typeof(Quantum.BattlePlayerPosition), 4);
+      typeRegistry.Register(typeof(Quantum.BattleTeamNumber), 4);
       typeRegistry.Register(typeof(Quantum.BitSet1024), Quantum.BitSet1024.SIZE);
       typeRegistry.Register(typeof(Quantum.BitSet128), Quantum.BitSet128.SIZE);
       typeRegistry.Register(typeof(Quantum.BitSet2048), Quantum.BitSet2048.SIZE);
@@ -944,6 +963,8 @@ namespace Quantum {
     [Preserve()]
     public static void EnsureNotStrippedGen() {
       FramePrinter.EnsureNotStripped();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerPosition>();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleTeamNumber>();
       FramePrinter.EnsurePrimitiveNotStripped<CallbackFlags>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.GameState>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.InputButtons>();

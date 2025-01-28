@@ -155,7 +155,7 @@ namespace Altzone.Scripts.Model
             if (playerData != null)
             {
                 // This storage is by no means a complete object model we want to serve.
-                playerData.BuildCharacterLists(_GetAllBattleCharacters(), _storageData.CustomCharacters);
+                playerData.BuildCharacterLists(_storageData.CustomCharacters);
             }
             Debug.Log($"playerData {playerData}");
             callback(playerData);

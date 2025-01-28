@@ -2,21 +2,10 @@ using Altzone.Scripts.Model.Poco.Game;
 
 public struct PopupData
 {
-    public PopupData(PlayerTasks.PlayerTask task, PopupDataType type)
-    {
-        _ownPage = new OwnPageData();
-        _type = type;
-
-        switch (type)
-        {
-            case PopupDataType.OwnTask: SetOwnPageData(task); break;
-            default: SetOwnPageData(task); break;
-        }
-    }
-
     public enum PopupDataType
     {
         OwnTask,
+        CancelTask,
     }
     private PopupDataType _type;
     public PopupDataType Type { get { return _type; } }
@@ -26,11 +15,11 @@ public struct PopupData
         switch (type)
         {
             case "own_task": return PopupDataType.OwnTask;
+            case "cancel_task": return PopupDataType.CancelTask;
             default: return PopupDataType.OwnTask;
         }
     }
 
-    #region OwnPage
     public struct OwnPageData
     {
         private int _taskId;
@@ -57,15 +46,28 @@ public struct PopupData
     private OwnPageData? _ownPage;
     public OwnPageData? OwnPage { get { return _ownPage; } }
 
+    public PopupData(PopupDataType type)
+    {
+        _ownPage = null;
+        _type = type;
+    }
+
+    public PopupData(PlayerTasks.PlayerTask task)
+    {
+        _ownPage = new OwnPageData();
+        _type = PopupDataType.OwnTask;
+
+        SetOwnPageData(task);
+    }
+
     public void SetOwnPageData(PlayerTasks.PlayerTask task)
     {
         if (_ownPage == null)
             _ownPage = new OwnPageData();
 
-        OwnPageData temp = _ownPage.Value;
-        temp.Set(task);
-        _ownPage = temp;
+        OwnPageData tempData = _ownPage.Value;
+        tempData.Set(task);
+        _ownPage = tempData;
         _type = PopupDataType.OwnTask;
     }
-    #endregion
 }
