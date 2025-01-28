@@ -12,6 +12,7 @@ using Altzone.Scripts.Model.Poco.Player;
 public class DailyTaskManager : MonoBehaviour
 {
     //Variables
+    [SerializeField] private int _timeoutMilliseconds = 100;
     [Header("TabButtons")]
     [SerializeField] private Button _dailyTasksTabButton;
     [SerializeField] private Button _ownTaskTabButton;
@@ -54,9 +55,10 @@ public class DailyTaskManager : MonoBehaviour
     private List<GameObject> _clanProgressBarMarkers = new List<GameObject>();
 
     //Local Testing
-    private int _ownTaksProgress = 0;
+    //private int _ownTaskProgress = 0;
     private int _clanProgressBarGoal = 10000;
     private int _clanProgressBarCurrentPoints = 0;
+    private PlayerData _playerData;
 
     public enum SelectedTab
     {
@@ -70,6 +72,7 @@ public class DailyTaskManager : MonoBehaviour
     void Start()
     {
         TaskGenerator();
+        StartCoroutine(GetSetExistingTask());
         StartCoroutine(PopulateClanPlayers());
         StartCoroutine(SetClanProgressBar());
         StartCoroutine(CreateClanProgressBar());
@@ -83,6 +86,44 @@ public class DailyTaskManager : MonoBehaviour
         _cancelTaskButton.onClick.AddListener(() => StartCancelTask());
 
         _ownTaskTabButton.interactable = false;
+    }
+
+    private IEnumerator GetSetExistingTask()
+    {
+        //Get existing player task.
+        PlayerData playerData = null;
+        PlayerTask playerTask = null;
+        StartCoroutine(GetPlayerData(data => playerData = data));
+
+        yield return new WaitUntil(() => System.Threading.SpinWait.SpinUntil(() => playerData != null, _timeoutMilliseconds));
+
+        if (playerData == null)
+        {
+            Debug.Log("Could not fetch PlayerData.");
+            yield break;
+        }
+
+        yield return new WaitUntil(() => System.Threading.SpinWait.SpinUntil(() => _dailyTaskCardSlots[0] != null, _timeoutMilliseconds));
+
+        if (playerData.Task == null)
+        {
+            Debug.Log("No existing task available in PlayerData.");
+            yield break;
+        }
+
+        StartCoroutine(GetTask(playerData.Task.Id, data => playerTask = data));
+
+        yield return new WaitUntil(() => System.Threading.SpinWait.SpinUntil(() => playerTask != null, _timeoutMilliseconds));
+
+        if (playerTask == null)
+        {
+            Debug.Log($"Could not find task id: {playerData.Task.Id}");
+            yield break;
+        }
+
+        _ownTaskTabButton.interactable = true;
+        StartCoroutine(SetHandleOwnTask(playerTask, playerData));
+        SwitchTab(SelectedTab.OwnTask);
     }
 
     // First 4 functions are for task slot population and fetching them from server
@@ -168,6 +209,24 @@ public class DailyTaskManager : MonoBehaviour
             <= 1000 => _dailyTaskCard1000Prefab,
             _ => _dailyTaskCard1500Prefab,
         };
+    }
+
+    private IEnumerator GetTask(int id, System.Action<PlayerTask> callback)
+    {
+        foreach (GameObject taskObj in _dailyTaskCardSlots)
+        {
+            if (taskObj == null)
+                continue;
+
+            DailyQuest dailyQuest = taskObj.GetComponent<DailyQuest>();
+            if (dailyQuest.TaskData.Id == id)
+            {
+                callback(dailyQuest.TaskData);
+                yield return true;
+            }
+        }
+
+        yield return true;
     }
 
     private IEnumerator PopulateClanPlayers()
@@ -270,8 +329,8 @@ public class DailyTaskManager : MonoBehaviour
                 {
                     case PopupData.PopupDataType.OwnTask:
                         {
-                            if (_ownTaskId != null)
-                                CancelTask();
+                            if (_playerData != null && _playerData.Task != null)
+                                StartCoroutine(CancelTask());
 
                             PopupDataHandler(data.Value);
                             SwitchTab(SelectedTab.OwnTask);
@@ -280,7 +339,7 @@ public class DailyTaskManager : MonoBehaviour
                         }
                     case PopupData.PopupDataType.CancelTask:
                         {
-                            CancelTask();
+                            StartCoroutine(CancelTask());
                             SwitchTab(SelectedTab.Tasks);
                             _ownTaskTabButton.interactable = false;
                             break;
@@ -300,28 +359,119 @@ public class DailyTaskManager : MonoBehaviour
     {
         switch (data.Type)
         {
-            case PopupData.PopupDataType.OwnTask: HandleOwnTask(data.OwnPage.Value); break;
+            case PopupData.PopupDataType.OwnTask: StartCoroutine(GetSaveSetHandleOwnTask(data.OwnPage)); break;
             default: break;
         }
     }
 
-    //Set OwnTask page.
-    private void HandleOwnTask(PopupData.OwnPageData data)
+    //Save taskid & set OwnTask page.
+    private IEnumerator GetSaveSetHandleOwnTask(PlayerTask playerTask)
     {
-        //TODO: Add task accept code when server side has functionality.
-        StartCoroutine(_ownTaskPageHandler.SetTaskProgress(0f));
+        PlayerData playerData = null;
+        StartCoroutine(GetPlayerData(data => playerData = data));
 
-        StartCoroutine(_ownTaskPageHandler.SetDailyTask(data.TaskDescription, data.TaskAmount, data.TaskPoints, data.TaskCoins));
-        _ownTaskId = data.TaskId;
+        yield return new WaitUntil(() => (System.Threading.SpinWait.SpinUntil(() => playerData != null, _timeoutMilliseconds)));
+
+        if (playerData == null)
+        {
+            Debug.LogError($"Get player data timeout or null.");
+            yield break; //TODO: Add error handling.
+        }
+
+        playerData.Task = playerTask;
+        StartCoroutine(SavePlayerData(playerData, data => playerData = data));
+
+        yield return new WaitUntil(() => (System.Threading.SpinWait.SpinUntil(() => playerData != null, _timeoutMilliseconds)));
+
+        if (playerData == null)
+        {
+            Debug.LogError($"Save player data timeout or null.");
+            yield break; //TODO: Add error handling.
+        }
+
+        StartCoroutine(SetHandleOwnTask(playerTask, playerData));
+    }
+
+    //Set OwnTask page.
+    private IEnumerator SetHandleOwnTask(PlayerTask playerTask, PlayerData playerData)
+    {
+        StartCoroutine(_ownTaskPageHandler.SetTaskProgress(playerData.TaskProgress));
+        StartCoroutine(_ownTaskPageHandler.SetDailyTask(playerTask.Content, playerTask.Amount, playerTask.Points, playerTask.Coins));
+        _ownTaskId = playerTask.Id;
         Debug.Log("Task id: " + _ownTaskId + ", has been accepted.");
+
+        yield return true;
+    }
+
+    private IEnumerator GetPlayerData(System.Action<PlayerData> callback)
+    {
+        //Testing code------------//
+        if (_playerData != null)
+        {
+            callback(_playerData);
+            yield break;
+        }
+        //------------------------//
+
+        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, callback);
+
+        if (callback == null)
+        {
+            StartCoroutine(ServerManager.Instance.GetPlayerFromServer(content =>
+            {
+                if (content != null)
+                    callback(new(content));
+                else
+                {
+                    //offline testing random generator with id generator
+                    Debug.LogError("Could not connect to server and receive player");
+                    return;
+                }
+            }));
+        }
+
+        yield return new WaitUntil(() => callback != null);
+    }
+
+    private IEnumerator SavePlayerData(PlayerData playerData , System.Action<PlayerData> callback)
+    {
+        //Cant' save to server because server manager doesn't have functionality!
+        //Storefront.Get().SavePlayerData(playerData, callback);
+
+        //if (callback == null)
+        //{
+        //    StartCoroutine(ServerManager.Instance.UpdatePlayerToServer( playerData., content =>
+        //    {
+        //        if (content != null)
+        //            callback(new(content));
+        //        else
+        //        {
+        //            //offline testing random generator with id generator
+        //            Debug.LogError("Could not connect to server and save player");
+        //            return;
+        //        }
+        //    }));
+        //}
+
+        //yield return new WaitUntil(() => callback != null);
+
+        //Testing code
+        _playerData = playerData;
+        callback(_playerData);
+
+        yield return true;
     }
 
     public void TESTAddTaskProgress()
     {
-        _ownTaksProgress++;
+        //_ownTaskProgress++;
+        _playerData.TaskProgress++;
 
         foreach (GameObject obj in _dailyTaskCardSlots)
         {
+            if (obj == null)
+                continue;
+
             DailyQuest quest = obj.GetComponent<DailyQuest>();
 
             if (quest.TaskData.Id == _ownTaskId)
@@ -330,11 +480,13 @@ public class DailyTaskManager : MonoBehaviour
                 return;
             }
         }
+
+        Debug.LogError($"Could not find task with id: {_ownTaskId}");
     }
 
     private void UpdateOwnTaskProgress(DailyQuest quest)
     {
-        float progress = CalculateProgressBar(quest.TaskData.Amount, _ownTaksProgress);
+        float progress = CalculateProgressBar(quest.TaskData.Amount, _playerData.TaskProgress);
         StartCoroutine(_ownTaskPageHandler.SetTaskProgress(progress));
         Debug.Log("Task id: " + _ownTaskId + ", current progress: " + progress);
         if (progress >= 1f)
@@ -355,10 +507,32 @@ public class DailyTaskManager : MonoBehaviour
         StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", data));
     }
 
-    private void CancelTask()
+    private IEnumerator CancelTask()
     {
-        //TODO: Add task cancellation code when server side has functionality.
-        _ownTaksProgress = 0;
+        PlayerData playerData = null;
+        StartCoroutine(GetPlayerData(data => playerData = data));
+
+        yield return new WaitUntil(() => (System.Threading.SpinWait.SpinUntil(() => playerData != null, _timeoutMilliseconds)));
+
+        if (playerData == null)
+        {
+            Debug.LogError($"Get player data timeout or null.");
+            yield break; //TODO: Add error handling.
+        }
+
+        playerData.Task = null;
+        playerData.TaskProgress = 0;
+        StartCoroutine(SavePlayerData(playerData, data => playerData = data));
+
+        yield return new WaitUntil(() => (System.Threading.SpinWait.SpinUntil(() => playerData != null, _timeoutMilliseconds)));
+
+        if (playerData == null)
+        {
+            Debug.LogError($"Get player data timeout or null.");
+            yield break; //TODO: Add error handling.
+        }
+
+        playerData.TaskProgress = 0;
         StartCoroutine(_ownTaskPageHandler.ClearCurrentTask());
         Debug.Log("Task id: " + _ownTaskId + ", has been canceled.");
         _ownTaskId = null;

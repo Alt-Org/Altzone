@@ -50,7 +50,8 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public int BackpackCapacity;
 
-        public int dailyTaskId = 0;
+        public PlayerTasks.PlayerTask Task = null;
+        public int TaskProgress = 0;
 
         public int points = 0;
 
