@@ -29,7 +29,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1775543799907187927}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -141,6 +141,7 @@ MonoBehaviour:
   _spriteImage: {fileID: 2980416419759435658}
   _backgroundSpriteImage: {fileID: 1698316617930894126}
   _characterNameText: {fileID: 3511939312560207162}
+  _aspectRatioFitter: {fileID: 365475382052161339}
   _piechartPreview: {fileID: 599868788555485942}
   parentBeforeDrag: {fileID: 0}
   allowedSlot: {fileID: 0}
@@ -415,17 +416,17 @@ PrefabInstance:
     - target: {fileID: 8468770450800277434, guid: 313c5a9a9e02aff4886892a2a3e86516,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.97
+      value: 0.98
       objectReference: {fileID: 0}
     - target: {fileID: 8468770450800277434, guid: 313c5a9a9e02aff4886892a2a3e86516,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.3
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 8468770450800277434, guid: 313c5a9a9e02aff4886892a2a3e86516,
         type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.5
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 8468770450800277434, guid: 313c5a9a9e02aff4886892a2a3e86516,
         type: 3}
