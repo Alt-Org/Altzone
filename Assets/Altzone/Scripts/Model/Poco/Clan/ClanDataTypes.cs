@@ -70,6 +70,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         Finnish,
         Swedish,
         English,
+        Spanish,
         Russian,
         Ukrainian
     }
@@ -115,6 +116,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
                 Language.Finnish => "suomi",
                 Language.Swedish => "svenska",
                 Language.English => "English",
+                Language.Spanish => "espanol",
                 Language.Russian => "venäjä",
                 Language.Ukrainian => "ukraina",
                 _ => "",

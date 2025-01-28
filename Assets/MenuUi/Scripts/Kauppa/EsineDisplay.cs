@@ -19,6 +19,6 @@ public class EsineDisplay : MonoBehaviour
 
     public void PassItemToVoting()
     {
-        VotingActions.PassKauppaItem?.Invoke(this);
+        //VotingActions.PassKauppaItem?.Invoke(this);
     }
 }

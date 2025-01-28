@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Altzone.Scripts;
 using System.Collections.ObjectModel;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using UnityEngine.UI;
-using Altzone.Scripts.Config.ScriptableObjects;
 using Altzone.Scripts.ModelV2;
+using TMPro;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -17,13 +16,15 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private Transform HorizontalContentPanel;
 
         [SerializeField] private GameObject _characterSlotprefab;
-        [SerializeField] private GalleryCharacterReference _referenceSheet;
 
-        [SerializeField] private GameObject _selectedCharacterSlotText1;
-        [SerializeField] private GameObject _selectedCharacterSlotText2;
-        [SerializeField] private GameObject _selectedCharacterSlotText3;
+        [SerializeField] private Sprite[] _backgroundSprites;
+        [SerializeField] private Sprite[] _selectedBackgroundSprites;
 
-        [SerializeField] private bool _isReady;
+        [SerializeField] private TextMeshProUGUI _selectedCharacterSlotText1;
+        [SerializeField] private TextMeshProUGUI _selectedCharacterSlotText2;
+        [SerializeField] private TextMeshProUGUI _selectedCharacterSlotText3;
+
+        private bool _isReady;
 
         // character buttons
         private List<Button> _characterButtons = new();
@@ -35,13 +36,17 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public delegate void CurrentCharacterIdChangedHandler(CharacterID newCharacterId, int slot);
         public event CurrentCharacterIdChangedHandler OnCurrentCharacterIdChanged;
-        public bool IsReady => _isReady;
-        public int characterTextCounter;
+
+        public bool IsReady
+        {
+            get
+            {
+                return _isReady;
+            }
+        }     
 
         private CharacterID _currentCharacterId;
         private int _slotToSet = 0;
-
-        public ColorBlock _colorBlock = new();
 
         public CharacterID CurrentCharacterId
         {
@@ -105,67 +110,12 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
-        public Color GetCharacterClassColor(CharacterClassID id)
-        {
-            switch (id)
-            {
-                case CharacterClassID.Desensitizer:
-                    return new Color(0.68f, 0.84f, 0.9f, 1);
-                case CharacterClassID.Trickster:
-                    return Color.green;
-                case CharacterClassID.Obedient:
-                    return new Color(1f, 0.64f, 0, 1);
-                case CharacterClassID.Projector:
-                    return Color.yellow;
-                case CharacterClassID.Retroflector:
-                    return Color.red;
-                case CharacterClassID.Confluent:
-                    return new Color(0.5f, 0, 0.5f, 1);
-                case CharacterClassID.Intellectualizer:
-                    return Color.blue;
-                default:
-                    return Color.gray;
-            }
-        }
-
-
         public Transform GetContent()
         {
             Transform content = (VerticalContentPanel == null) ? transform.Find("Content") :
                 VerticalContentPanel.transform;
 
             return content;
-        }
-
-
-        public void CheckSelectedCharacterSlotTexts()
-        {
-            if (_CurSelectedCharacterSlots[2].transform.childCount > 0)
-            {
-                _selectedCharacterSlotText3.SetActive(false);
-            }
-            else
-            {
-                _selectedCharacterSlotText3.SetActive(true);
-            }
-
-            if (_CurSelectedCharacterSlots[1].transform.childCount > 0)
-            {
-                _selectedCharacterSlotText2.SetActive(false);
-            }
-            else
-            {
-                _selectedCharacterSlotText2.SetActive(true);
-            }
-
-            if (_CurSelectedCharacterSlots[0].transform.childCount > 0)
-            {
-                _selectedCharacterSlotText1.SetActive(false);
-            }
-            else
-            {
-                _selectedCharacterSlotText1.SetActive(true);
-            }
         }
 
 
@@ -178,22 +128,48 @@ namespace MenuUi.Scripts.CharacterGallery
 
             foreach (var character in allItems)
             {
-                //GalleryCharacterInfo info = _referenceSheet.GetCharacterPrefabInfoFast((int)character.Id);
                 var info2 = PlayerCharacterPrototypes.GetCharacter(((int)character.Id).ToString());
                 if (info2 == null) continue;
 
                 GameObject slot = Instantiate(_characterSlotprefab, GetContent());
-                slot.GetComponent<CharacterSlot>().SetInfo(info2.GalleryImage, info2.Name, character.Id, this);
+
+                Sprite backgroundSprite = null;
+                Sprite selectedBackgroundSprite = null;
+                switch (character.ClassID) // hard coded solution but works for now, need to be refactored later
+                {
+                    case CharacterClassID.Desensitizer:
+                        backgroundSprite = _backgroundSprites[0];
+                        selectedBackgroundSprite = _selectedBackgroundSprites[0];
+                        break;
+                    case CharacterClassID.Trickster:
+                        backgroundSprite = _backgroundSprites[1];
+                        selectedBackgroundSprite = _selectedBackgroundSprites[1];
+                        break;
+                    case CharacterClassID.Obedient:
+                        backgroundSprite = _backgroundSprites[2];
+                        selectedBackgroundSprite = _selectedBackgroundSprites[2];
+                        break;
+                    case CharacterClassID.Projector:
+                        backgroundSprite = _backgroundSprites[3];
+                        selectedBackgroundSprite = _selectedBackgroundSprites[3];
+                        break;
+                    case CharacterClassID.Retroflector:
+                        backgroundSprite = _backgroundSprites[4];
+                        selectedBackgroundSprite = _selectedBackgroundSprites[4];
+                        break;
+                    case CharacterClassID.Confluent:
+                        backgroundSprite = _backgroundSprites[5];
+                        selectedBackgroundSprite = _selectedBackgroundSprites[5];
+                        break;
+                    case CharacterClassID.Intellectualizer:
+                        backgroundSprite = _backgroundSprites[6];
+                        selectedBackgroundSprite = _selectedBackgroundSprites[6];
+                        break;
+                }
+
+                slot.GetComponent<CharacterSlot>().SetInfo(info2.GalleryImage, backgroundSprite, selectedBackgroundSprite, info2.Name, character.Id, this);
 
                 Button button = slot.transform.Find("GalleryCharacter").GetComponent<Button>();
-
-                Outline outline = button.gameObject.GetComponent<Outline>();
-
-                outline.effectDistance = new Vector2(3, 3);
-                outline.effectColor = GetCharacterClassColor(character.ClassID);
-                _colorBlock.normalColor = GetCharacterClassColor(default);
-                button.colors = _colorBlock;
-
                 _characterButtons.Add(button);
                 _characterSlots.Add(slot.GetComponent<CharacterSlot>());
             }
@@ -216,8 +192,6 @@ namespace MenuUi.Scripts.CharacterGallery
 
                     else
                     {
-                        _colorBlock.normalColor = GetCharacterClassColor(customCharacter.CharacterClassID);
-                        button.colors = _colorBlock;
                         button.GetComponent<DraggableCharacter>().enabled = true;
                     }
                     // Check if the character is currently selected
@@ -239,7 +213,6 @@ namespace MenuUi.Scripts.CharacterGallery
                             }
                             i++;
                         }
-
                         CheckSelectedCharacterSlotTexts();
                     };
 
@@ -261,6 +234,7 @@ namespace MenuUi.Scripts.CharacterGallery
                         if (_CurSelectedCharacterSlots.Length > 0)
                         {
                             button.transform.SetParent(_CurSelectedCharacterSlots[idx].transform, false);
+                            button.GetComponent<DraggableCharacter>().SetSelectedVisuals();
                             idx++;
                             break;
                         }
@@ -269,6 +243,35 @@ namespace MenuUi.Scripts.CharacterGallery
             }
 
             CheckSelectedCharacterSlotTexts();
+        }
+
+
+        public void CheckSelectedCharacterSlotTexts()
+        {
+            if (_CurSelectedCharacterSlots[2].transform.childCount > 0)
+            {
+                _selectedCharacterSlotText3.enabled = false;
+            }
+            else
+            {
+                _selectedCharacterSlotText3.enabled = true;
+            }
+            if (_CurSelectedCharacterSlots[1].transform.childCount > 0)
+            {
+                _selectedCharacterSlotText2.enabled = false;
+            }
+            else
+            {
+                _selectedCharacterSlotText2.enabled = true;
+            }
+            if (_CurSelectedCharacterSlots[0].transform.childCount > 0)
+            {
+                _selectedCharacterSlotText1.enabled = false;
+            }
+            else
+            {
+                _selectedCharacterSlotText1.enabled = true;
+            }
         }
 
 

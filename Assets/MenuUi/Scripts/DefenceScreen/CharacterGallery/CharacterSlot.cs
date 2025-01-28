@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace MenuUi.Scripts.CharacterGallery
@@ -14,16 +11,18 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private CharacterID _id;
         [SerializeField] private Image _spriteImage;
+        [SerializeField] private Image _backgroundSpriteImage;
         [SerializeField] private TextMeshProUGUI _nameText;
 
         public CharacterID Id { get => _id; }
 
-        public void SetInfo(Sprite sprite, string name, CharacterID id, ModelView view)
+        public void SetInfo(Sprite sprite, Sprite backgroundSprite, Sprite selectedBackgroundSprite, string name, CharacterID id, ModelView view)
         {
             _spriteImage.sprite = sprite;
+            //_backgroundSpriteImage.sprite = backgroundSprite;
             _nameText.text = name;
             _id = id;
-            _character.SetInfo(sprite, name, id, view);
+            _character.SetInfo(sprite, backgroundSprite, selectedBackgroundSprite, name, id, view);
         }
     }
 }

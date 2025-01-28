@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
+using MenuUi.Scripts.Lobby;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -12,6 +13,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
     public class InLobbyController : MonoBehaviour
     {
         [SerializeField] private InLobbyView _view;
+        [SerializeField] private SelectedCharactersPopup _selectedCharactersPopup;
 
         private string _currentRegion;
 
@@ -116,8 +118,39 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         public void ToggleWindow()
         {
-            if(transform.GetChild(0).gameObject.activeSelf) CloseWindow();
-            else transform.GetChild(0).gameObject.SetActive(true);
+            if (transform.GetChild(0).gameObject.activeSelf)
+            {
+                CloseWindow();
+            }
+            else
+            {
+                // Check if player has all 3 characters selected or no
+                PlayerData _playerData = null;
+
+                var gameConfig = GameConfig.Get();
+                var playerSettings = gameConfig.PlayerSettings;
+                var playerGuid = playerSettings.PlayerGuid;
+                var store = Storefront.Get();
+                store.GetPlayerData(playerGuid, playerData =>
+                {
+                    _playerData = playerData;
+                });
+
+                if (_playerData != null)
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        if (_playerData.SelectedCharacterIds[i] == 0) // if any of the selected characters is missing
+                        {
+                            _selectedCharactersPopup.OpenPopup();
+                            return;
+                        }
+                    }
+                }
+
+                // Open battle popup if all 3 are selected
+                transform.GetChild(0).gameObject.SetActive(true);
+            }
         }
 
         public void CloseWindow()
