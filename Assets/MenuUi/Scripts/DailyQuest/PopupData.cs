@@ -43,8 +43,11 @@ public struct PopupData
             _taskCoins = task.Coins;
         }
     }
-    private OwnPageData? _ownPage;
-    public OwnPageData? OwnPage { get { return _ownPage; } }
+    //private OwnPageData? _ownPage;
+    //public OwnPageData? OwnPage { get { return _ownPage; } }
+
+    private PlayerTasks.PlayerTask _ownPage;
+    public PlayerTasks.PlayerTask OwnPage { get { return _ownPage; } }
 
     public PopupData(PopupDataType type)
     {
@@ -54,20 +57,22 @@ public struct PopupData
 
     public PopupData(PlayerTasks.PlayerTask task)
     {
-        _ownPage = new OwnPageData();
+        //_ownPage = new OwnPageData();
+        _ownPage = task;
         _type = PopupDataType.OwnTask;
 
-        SetOwnPageData(task);
+        //SetOwnPageData(task);
     }
 
     public void SetOwnPageData(PlayerTasks.PlayerTask task)
     {
-        if (_ownPage == null)
-            _ownPage = new OwnPageData();
+        //if (_ownPage == null)
+        //_ownPage = new OwnPageData();
 
-        OwnPageData tempData = _ownPage.Value;
-        tempData.Set(task);
-        _ownPage = tempData;
+        //OwnPageData tempData = _ownPage.Value;
+        //tempData.Set(task);
+        //_ownPage = tempData;
+        _ownPage = task;
         _type = PopupDataType.OwnTask;
     }
 }
