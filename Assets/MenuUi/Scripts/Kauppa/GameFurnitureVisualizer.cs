@@ -19,5 +19,6 @@ public class GameFurnitureVisualizer : MonoBehaviour
         _productText.text = _gameFurniture.Name;
         _priceText.text = _gameFurniture.Value.ToString();
         _contentImage.sprite = _gameFurniture.FurnitureInfo.PosterImage? _gameFurniture.FurnitureInfo.PosterImage : _gameFurniture.FurnitureInfo.Image;
+        gameObject.GetComponent<GameFurniturePasser>().SetGameFurniture(gameFurniture);
     }
 }

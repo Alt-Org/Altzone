@@ -50,23 +50,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _controller: {fileID: 0}
+  _referenceSheet: {fileID: 11400000, guid: 5e66c5670c2acee42baa17d9e45255c7, type: 2}
   _sliceAmount: 50
-  impactForceColor: {r: 1, g: 0.5, b: 0, a: 1}
-  impactForceAltColor: {r: 1, g: 0.6674528, b: 0.33490568, a: 1}
-  healthPointsColor: {r: 0.24705884, g: 0.8862746, b: 0.18039216, a: 1}
-  healthPointsAltColor: {r: 0.52917796, g: 0.9339623, b: 0.48900855, a: 1}
-  defenceColor: {r: 0.46274513, g: 0.30980393, b: 0.9176471, a: 1}
-  defenceAltColor: {r: 0.54735243, g: 0.42085707, b: 0.9198113, a: 1}
-  characterSizeColor: {r: 0.8078432, g: 0.23137257, b: 0.22352943, a: 1}
-  characterSizeAltColor: {r: 0.9292453, g: 0.43198535, b: 0.42517358, a: 1}
-  speedColor: {r: 0, g: 1, b: 1, a: 1}
-  speedAltColor: {r: 0.6367924, g: 1, b: 1, a: 1}
-  defaultColor: {r: 1, g: 1, b: 1, a: 1}
-  defaultAltColor: {r: 0.9450981, g: 0.93725497, b: 0.93725497, a: 1}
-  overlayColor: {r: 0.69411767, g: 0.69411767, b: 0.69411767, a: 1}
-  circleSprite: {fileID: 21300000, guid: 5c28812a47a7fc9499672d414ebac12a, type: 3}
-  circlePatternedSprite: {fileID: 21300000, guid: 95d08ee453c1dc044baefc9fbaf15263,
-    type: 3}
 --- !u!222 &1769041602234373325
 CanvasRenderer:
   m_ObjectHideFlags: 0

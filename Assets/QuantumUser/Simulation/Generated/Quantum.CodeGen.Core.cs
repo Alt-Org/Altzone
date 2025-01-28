@@ -586,26 +586,30 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerData : Quantum.IComponent {
-    public const Int32 SIZE = 32;
+    public const Int32 SIZE = 40;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public PlayerRef Player;
-    [FieldOffset(8)]
-    public FP Speed;
     [FieldOffset(16)]
+    public FP Speed;
+    [FieldOffset(24)]
     public FPVector2 TargetPosition;
+    [FieldOffset(8)]
+    public FP Rotation;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10271;
         hash = hash * 31 + Player.GetHashCode();
         hash = hash * 31 + Speed.GetHashCode();
         hash = hash * 31 + TargetPosition.GetHashCode();
+        hash = hash * 31 + Rotation.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (PlayerData*)ptr;
         PlayerRef.Serialize(&p->Player, serializer);
+        FP.Serialize(&p->Rotation, serializer);
         FP.Serialize(&p->Speed, serializer);
         FPVector2.Serialize(&p->TargetPosition, serializer);
     }
