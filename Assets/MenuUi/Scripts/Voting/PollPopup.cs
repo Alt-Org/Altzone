@@ -10,21 +10,16 @@ public class PollPopup : MonoBehaviour
 {
     private string pollId;
     private PollData pollData;
+    private List<string> objectInfo = new List<string>();
 
     [SerializeField] private TextMeshProUGUI headerText;
     [SerializeField] private UnityEngine.UI.Image image;
     [SerializeField] private TextMeshProUGUI yesVotesText;
     [SerializeField] private TextMeshProUGUI noVotesText;
-    [SerializeField] private TextMeshProUGUI valueText;
+    [SerializeField] private TextMeshProUGUI infoText;
     [SerializeField] private TextMeshProUGUI votesLeftText;
     [SerializeField] private UnityEngine.UI.Image greenFillAmount;
     [SerializeField] private AddPlayerHeads playerHeads;
-
-
-    private void OnDisable()
-    {
-        this.gameObject.SetActive(false);
-    }
 
     public void SetPollId(string newPollId)
     {
@@ -41,6 +36,14 @@ public class PollPopup : MonoBehaviour
         {
             FurniturePollData furniturePollData = (FurniturePollData)pollData;
             if (headerText != null) headerText.text = Enum.GetName(typeof(FurniturePollType), furniturePollData.FurniturePollType);
+
+            objectInfo.Clear();
+
+            objectInfo.Add(furniturePollData.Furniture.FurnitureInfo.VisibleName.ToString());
+            objectInfo.Add("Value: " + furniturePollData.Furniture.Value.ToString());
+            objectInfo.Add("Set Name: " + furniturePollData.Furniture.FurnitureInfo.SetName.ToString());
+
+            infoText.text = string.Join("\n", objectInfo);
         }
 
         if (image != null) image.sprite = pollData.Sprite;
@@ -56,15 +59,6 @@ public class PollPopup : MonoBehaviour
             if (pollData.YesVotes.Count == 0 && pollData.NoVotes.Count == 0) greenFillAmount.fillAmount = 0.5f;
             else greenFillAmount.fillAmount = (float)pollData.YesVotes.Count / (pollData.NoVotes.Count + pollData.YesVotes.Count);
         }
-
-        if (pollData is FurniturePollData)
-        {
-            FurniturePollData furniturePollData = (FurniturePollData)pollData;
-
-            if (valueText != null) valueText.text = "Value: " + furniturePollData.Furniture.Value.ToString();
-        }
-
-        //playerHeads.InstantiateHeads(pollId);
     }
 
     public void AddVote(bool answer)
