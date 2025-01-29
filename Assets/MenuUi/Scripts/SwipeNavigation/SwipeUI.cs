@@ -78,7 +78,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             {
                 if (isSwipeMode) return;
                 currentPage = value;
-                SettingsCarrier.Instance.mainMenuWindowIndex = currentPage;
+                if (_isInMainMenu) SettingsCarrier.Instance.mainMenuWindowIndex = currentPage;
                 UpdateButtonContent();
                 StartCoroutine(OnSwipeOneStep(CurrentPage));
             }
