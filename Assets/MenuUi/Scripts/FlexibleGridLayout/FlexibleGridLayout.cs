@@ -23,11 +23,11 @@ public class FlexibleGridLayout : LayoutGroup
     [SerializeField, Tooltip("How the grid will fit its children.\n\nDynamic: Determine column amount based on game's aspect ratio and cell size.\nFixed Columns: Column amount stays the same.\nFixed Rows: Row amount stays the same.")]
     private FitType _gridFit = FitType.Dynamic;
 
-    [SerializeField, Min(0)]
-    private int _columnAmount;
+    [SerializeField, Min(1)]
+    private int _columnAmount = 1;
 
-    [SerializeField, Min(0)]
-    private int _rowAmount;
+    [SerializeField, Min(1)]
+    private int _rowAmount = 1;
 
     [SerializeField, Tooltip("How the grid's cell size is determined.\n\nManual: Give cell size values manually.\nAspect Ratio: Cell size is automatically calculated to fit this aspect ratio.\nBased On Child: Cell size is set automatically based on the first child object.")]
     private CellSizeType _gridCellSize = CellSizeType.Manual;
@@ -47,8 +47,6 @@ public class FlexibleGridLayout : LayoutGroup
     [SerializeField, Tooltip("The spacing between grid cells."), Min(0)]
     private Vector2 _cellSpacing;
 
-    
-
     private int _rows;
     private int _columns;
     private Vector2 _cellSize;
@@ -61,6 +59,10 @@ public class FlexibleGridLayout : LayoutGroup
     {
         base.CalculateLayoutInputHorizontal();
 
+        _cellSize = _preferredCellSize;
+        _columns = _columnAmount;
+        _rows = _rowAmount;
+
         if (_gridFit == FitType.Dynamic)
         {
             float squareRoot = Mathf.Sqrt(transform.childCount);
@@ -71,10 +73,6 @@ public class FlexibleGridLayout : LayoutGroup
         if (_gridFit == FitType.FixedColumns)
         {
             _rows = Mathf.CeilToInt(transform.childCount / (float)_columns);
-            if(_gridFit == FitType.FixedColumns)
-            {
-                _fitX = true;
-            }
         }
 
         if (_gridFit == FitType.FixedRows)
@@ -110,6 +108,7 @@ public class FlexibleGridLayout : LayoutGroup
             SetChildAlongAxis(item, 1, yPos, _cellSize.y);
 
         }
+        rectTransform.sizeDelta = new Vector2(0, rowCount * _cellSize.y);
     }
 
 
