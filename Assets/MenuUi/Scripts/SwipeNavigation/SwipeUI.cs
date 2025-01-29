@@ -76,9 +76,11 @@ namespace MenuUi.Scripts.SwipeNavigation
             get { return currentPage; }
             set
             {
+                if (isSwipeMode) return;
                 currentPage = value;
                 SettingsCarrier.Instance.mainMenuWindowIndex = currentPage;
                 UpdateButtonContent();
+                StartCoroutine(OnSwipeOneStep(CurrentPage));
             }
         }
 
@@ -190,16 +192,15 @@ namespace MenuUi.Scripts.SwipeNavigation
         {
             yield return new WaitForEndOfFrame();
 
-            CurrentPage = index;
             if (scrollBar)
             {
                 if (!IsEnabled)
                     IsEnabled = true;
 
-                if (!instant) StartCoroutine(OnSwipeOneStep(CurrentPage));
+                if (!instant) StartCoroutine(OnSwipeOneStep(index));
                 else scrollBar.value = scrollPageValues[index];
-
             }
+            currentPage = index;
         }
 
         private void UpdateInput()
@@ -290,8 +291,6 @@ namespace MenuUi.Scripts.SwipeNavigation
             {
                 NextSlide();
             }
-
-            StartCoroutine(OnSwipeOneStep(CurrentPage));
         }
 
         public void NextSlide()
@@ -361,6 +360,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             isSwipeMode = false;
             _startTouch = Vector2.zero;
             _endTouch = Vector2.zero;
+            IsEnabled = true;
         }
 
         /// <summary>
