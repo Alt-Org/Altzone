@@ -2,8 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.LowLevel;
+
+[System.Serializable]
+public class Reward
+{
+    public string Name;
+    public Sprite Sprite;
+}
 
 public class LevelUpController : MonoBehaviour
 {
@@ -11,23 +19,35 @@ public class LevelUpController : MonoBehaviour
     public GameObject LevelUpPanel;
 
     // The image element where the reward sprite will be displayed
+
+    // Character rewards
+    public Reward[] CharacterRewards;
+    public TMP_Text RewardCharacterNameText;
     public Image RewardCharacterImage;
+
+    // Furniture rewards
+    public Reward[] FurnitureRewards;
+    public TMP_Text RewardFurnitureNameText;
     public Image RewardFurnitureImage;
+
+    // Coin rewards
+    public Reward[] CoinRewards;
+    public TMP_Text RewardCoinNameText;
     public Image RewardCoinsImage;
+
+    // Diamond rewards
+    public Reward[] DiamondRewards;
+    public TMP_Text RewardDiamondNameText;
     public Image RewardDiamondsImage;
 
+    // 5 rewards
+    //Remember change the name
+    public Reward[] Reward5Rewards;
+    public TMP_Text Reward5RewardsNameText;
     public Image Reward5Image;
 
-    // An array of possible reward sprites
-    public Sprite[] CharacterSprites;
-    public Sprite[] FurnitureSprites;
-    public Sprite[] CoinsSprites;
-    public Sprite[] DiamondsSprites;
-
-    public Sprite[] Reward5Sprites;
-
     // Index to track the randomly selected reward
-    public int rewardIndex; 
+    private int rewardIndex; 
 
     // Start is called before the first frame update
     void Start()
@@ -42,49 +62,44 @@ public class LevelUpController : MonoBehaviour
         if (LevelUpPanel != null)
         {
             LevelUpPanel.SetActive(true);
-            
         }
 
-        CharacterReward();
-        FurnitureReward();
-        CoinsReward();
-        DiamondsReward();
+        AssignRandomCharacterReward();
+        AssignRandomFurnitureReward();
+        AssignRandomCoinsReward();
+        AssignRandomDiamondsReward();
+        AssignRandomReward5();
     }
 
-    private void CharacterReward()
+    private void AssignRandomCharacterReward()
     {
-        // Generate a random index to select a reward from the sprite array
-        rewardIndex = Random.Range(0, 3);
-
-        // Assign the randomly selected sprite to the reward image
-        RewardCharacterImage.sprite = CharacterSprites[rewardIndex];
+        rewardIndex = Random.Range(0, CharacterRewards.Length);
+        RewardCharacterImage.sprite = CharacterRewards[rewardIndex].Sprite;
+        RewardCharacterNameText.text = CharacterRewards[rewardIndex].Name;
     }
-
-    private void FurnitureReward()
+    private void AssignRandomFurnitureReward()
     {
-        // Generate a random index to select a reward from the sprite array
-        rewardIndex = Random.Range(0, 3);
-
-        // Assign the randomly selected sprite to the reward image
-        RewardFurnitureImage.sprite = FurnitureSprites[rewardIndex];
+        rewardIndex = Random.Range(0, FurnitureRewards.Length);
+        RewardFurnitureImage.sprite = FurnitureRewards[rewardIndex].Sprite;
+        RewardFurnitureNameText.text = FurnitureRewards[rewardIndex].Name;
     }
-
-    private void CoinsReward()
+    private void AssignRandomCoinsReward()
     {
-        // Generate a random index to select a reward from the sprite array
-        rewardIndex = Random.Range(0, 3);
-
-        // Assign the randomly selected sprite to the reward image
-        RewardCoinsImage.sprite = CoinsSprites[rewardIndex];
+        rewardIndex = Random.Range(0, CoinRewards.Length);
+        RewardCoinsImage.sprite = CoinRewards[rewardIndex].Sprite;
+        RewardCoinNameText.text= CoinRewards[rewardIndex].Name;
     }
-
-    private void DiamondsReward()
+    private void AssignRandomDiamondsReward()
     {
-        // Generate a random index to select a reward from the sprite array
-        rewardIndex = Random.Range(0, 2);
-
-        // Assign the randomly selected sprite to the reward image
-        RewardDiamondsImage.sprite = DiamondsSprites[rewardIndex];
+        rewardIndex = Random.Range(0, DiamondRewards.Length);
+        RewardDiamondsImage.sprite = DiamondRewards[rewardIndex].Sprite;
+        RewardDiamondNameText.text = DiamondRewards[rewardIndex].Name;
+    }
+    private void AssignRandomReward5()
+    {
+        rewardIndex = Random.Range(0, Reward5Rewards.Length);
+        Reward5Image.sprite = Reward5Rewards[rewardIndex].Sprite;
+        Reward5RewardsNameText.text = Reward5Rewards[rewardIndex].Name; 
     }
 }
 
