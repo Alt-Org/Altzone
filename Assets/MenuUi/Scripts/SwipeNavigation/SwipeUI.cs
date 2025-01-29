@@ -335,7 +335,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             float percent = 0;
 
             isSwipeMode = true;
-            if (scrollRect.enabled)
+            if (scrollRect ? scrollRect.enabled : false)
                 while (percent < 1)
                 {
                     current += Time.deltaTime;
