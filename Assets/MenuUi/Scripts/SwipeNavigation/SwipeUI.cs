@@ -61,7 +61,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             set
             {
                 isEnabled = value;
-                ToggleScrollRect(value);
+                if(scrollRect)ToggleScrollRect(value);
 
                 if (!IsEnabled)
                 {
