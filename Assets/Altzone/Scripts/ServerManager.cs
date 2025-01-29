@@ -729,6 +729,95 @@ public class ServerManager : MonoBehaviour
 
     #endregion
 
+    public IEnumerator GetCustomCharactersFromServer(Action<List<CustomCharacter>> callback)
+    {
+        if (Player != null)
+            Debug.LogWarning("Player already exists. Consider using ServerManager.Instance.Player if the most up to data data from server is not needed.");
+
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "player/" + PlayerPrefs.GetString("playerId", string.Empty), AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                List<ServerCharacter> serverCharacterList = ((JArray)result["data"]["CustomCharacter"]).ToObject<List<ServerCharacter>>();
+
+                List<CustomCharacter> characterList = new();
+
+                foreach (ServerCharacter character in serverCharacterList)
+                {
+                    characterList.Add(new(character));
+                }
+
+                if (callback != null)
+                    callback(characterList);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator UpdateCustomCharactersToServer(CustomCharacter character, Action<bool> callback)
+    {
+        if (character == null)
+        {
+            Debug.LogError("Cannot find Player.");
+            yield break;
+        }
+
+        ServerCharacter serverCharacter = new(character);
+
+        string body = JObject.FromObject(serverCharacter).ToString();
+
+        //Debug.Log(player);
+
+        yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "customCharacter/", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
+    public IEnumerator AddCustomCharactersToServer(CharacterID id, Action<bool> callback)
+    {
+        if (id.Equals(CharacterID.None))
+        {
+            Debug.LogError("Cannot find Player.");
+            yield break;
+        }
+
+        ServerCharacter serverCharacter = new(id);
+
+        string body = JObject.FromObject(serverCharacter).ToString();
+
+        //Debug.Log(player);
+
+        yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "customCharacter/", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
     #region Stock
     public IEnumerator GetStockFromServer(ServerClan clan, Action<ServerStock> callback)
     {
