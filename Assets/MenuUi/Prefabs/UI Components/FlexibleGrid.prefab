@@ -54,13 +54,15 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  fitType: 0
-  rows: 0
-  columns: 0
-  cellSize: {x: NaN, y: NaN}
-  spacing: {x: 0, y: 0}
-  fitX: 1
-  fitY: 1
+  _gridFit: 0
+  _columnAmount: 0
+  _rowAmount: 0
+  _gridCellSize: 0
+  _minCellSize: {x: 0, y: 0}
+  _maxCellSize: {x: 0, y: 0}
+  _preferredCellSize: {x: 0, y: 0}
+  _cellAspectRatio: 0
+  _cellSpacing: {x: 0, y: 0}
 --- !u!1 &6905408896271654746
 GameObject:
   m_ObjectHideFlags: 0

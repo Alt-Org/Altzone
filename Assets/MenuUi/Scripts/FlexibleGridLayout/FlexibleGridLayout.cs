@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,91 +6,208 @@ public class FlexibleGridLayout : LayoutGroup
 {
     public enum FitType
     {
-        UNIFORM,
-        WIDTH,
-        HEIGHT,
-        FIXEDROWS,
-        FIXEDCOLUMNS
+        Dynamic,
+        FixedColumns,
+        FixedRows,
+    }
+
+    public enum CellSizeType
+    {
+        Manual,
+        AspectRatio,
+        BasedOnChild
     }
 
     [Header("Flexible Grid")]
-    public FitType fitType = FitType.UNIFORM;
 
-    public int rows;
-    public int columns;
-    public Vector2 cellSize;
-    public Vector2 spacing;
+    [SerializeField, Tooltip("How the grid will fit its children.\n\nDynamic: Determine column amount based on game's aspect ratio and cell size.\nFixed Columns: Column amount stays the same.\nFixed Rows: Row amount stays the same.")]
+    private FitType _gridFit = FitType.Dynamic;
 
-    public bool fitX;
-    public bool fitY;
+    [SerializeField, Min(0)]
+    private int _columnAmount;
+
+    [SerializeField, Min(0)]
+    private int _rowAmount;
+
+    [SerializeField, Tooltip("How the grid's cell size is determined.\n\nManual: Give cell size values manually.\nAspect Ratio: Cell size is automatically calculated to fit this aspect ratio.\nBased On Child: Cell size is set automatically based on the first child object.")]
+    private CellSizeType _gridCellSize = CellSizeType.Manual;
+
+    [SerializeField, Min(0)]
+    private Vector2 _minCellSize;
+
+    [SerializeField, Min(0)]
+    private Vector2 _maxCellSize;
+
+    [SerializeField, Min(0)]
+    private Vector2 _preferredCellSize;
+
+    [SerializeField, Min(0)]
+    private float _cellAspectRatio;
+
+    [SerializeField, Tooltip("The spacing between grid cells."), Min(0)]
+    private Vector2 _cellSpacing;
+
+    
+
+    private int _rows;
+    private int _columns;
+    private Vector2 _cellSize;
+
+    private bool _fitX;
+    private bool _fitY;
+
 
     public override void CalculateLayoutInputHorizontal()
     {
         base.CalculateLayoutInputHorizontal();
 
-        if (fitType == FitType.WIDTH || fitType == FitType.HEIGHT || fitType == FitType.UNIFORM)
+        if (_gridFit == FitType.Dynamic)
         {
             float squareRoot = Mathf.Sqrt(transform.childCount);
-            rows = columns = Mathf.CeilToInt(squareRoot);
-            switch (fitType)
+            _rows = _columns = Mathf.CeilToInt(squareRoot);
+            
+        }
+
+        if (_gridFit == FitType.FixedColumns)
+        {
+            _rows = Mathf.CeilToInt(transform.childCount / (float)_columns);
+            if(_gridFit == FitType.FixedColumns)
             {
-                case FitType.WIDTH:
-                    fitX = true;
-                    fitY = false;
-                    break;
-                case FitType.HEIGHT:
-                    fitX = false;
-                    fitY = true;
-                    break;
-                case FitType.UNIFORM:
-                    fitX = fitY = true;
-                    break;
+                _fitX = true;
             }
         }
 
-        if (fitType == FitType.WIDTH || fitType == FitType.FIXEDCOLUMNS)
+        if (_gridFit == FitType.FixedRows)
         {
-            rows = Mathf.CeilToInt(transform.childCount / (float)columns);
-            if(fitType == FitType.FIXEDCOLUMNS)
-            {
-                fitX = true;
-            }
+            _columns = Mathf.CeilToInt(transform.childCount / (float)_rows);
         }
-        if (fitType == FitType.HEIGHT || fitType == FitType.FIXEDROWS)
-        {
-            columns = Mathf.CeilToInt(transform.childCount / (float)rows);
-        }
-
-
+        
         float parentWidth = rectTransform.rect.width;
         float parentHeight = rectTransform.rect.height;
 
-        float cellWidth = parentWidth / (float)columns - ((spacing.x / (float)columns) * (columns - 1))
-            - (padding.left / (float)columns) - (padding.right / (float)columns);
-        float cellHeight = parentHeight / (float)rows - ((spacing.y / (float)rows) * (rows - 1))
-            - (padding.top / (float)rows) - (padding.bottom / (float)rows); ;
+        float cellWidth = parentWidth / (float)_columns - ((_cellSpacing.x / (float)_columns) * (_columns - 1))
+            - (padding.left / (float)_columns) - (padding.right / (float)_columns);
+        float cellHeight = parentHeight / (float)_rows - ((_cellSpacing.y / (float)_rows) * (_rows - 1))
+            - (padding.top / (float)_rows) - (padding.bottom / (float)_rows); ;
 
-        cellSize.x = fitX ? cellWidth : cellSize.x;
-        cellSize.y = fitY ? cellHeight : cellSize.y;
+        _cellSize.x = _fitX ? cellWidth : _cellSize.x;
+        _cellSize.y = _fitY ? cellHeight : _cellSize.y;
 
         int columnCount = 0;
         int rowCount = 0;
 
         for (int i = 0; i < rectChildren.Count; i++)
         {
-            rowCount = i / columns;
-            columnCount = i % columns;
+            rowCount = i / _columns;
+            columnCount = i % _columns;
 
             var item = rectChildren[i];
 
-            var xPos = (cellSize.x * columnCount) + (spacing.x * columnCount) + padding.left;
-            var yPos = (cellSize.y * rowCount) + (spacing.y * rowCount) + padding.top;
+            var xPos = (_cellSize.x * columnCount) + (_cellSpacing.x * columnCount) + padding.left;
+            var yPos = (_cellSize.y * rowCount) + (_cellSpacing.y * rowCount) + padding.top;
 
-            SetChildAlongAxis(item, 0, xPos, cellSize.x);
-            SetChildAlongAxis(item, 1, yPos, cellSize.y);
+            SetChildAlongAxis(item, 0, xPos, _cellSize.x);
+            SetChildAlongAxis(item, 1, yPos, _cellSize.y);
 
         }
     }
+
+
+#if UNITY_EDITOR
+    [CustomEditor(typeof(FlexibleGridLayout))]
+    public class FlexibleGridLayoutEditor : Editor
+    {
+        // LayoutGroup properties
+        SerializedProperty _padding;
+        SerializedProperty _childAlignment;
+
+        // Grid fit properties
+        SerializedProperty _gridFitSelection;
+        SerializedProperty _gridFitColumns;
+        SerializedProperty _gridFitRows;
+
+        // Cell size properties
+        SerializedProperty _cellSizeSelection;
+        SerializedProperty _minCellSize;
+        SerializedProperty _maxCellSize;
+        SerializedProperty _preferredCellSize;
+        SerializedProperty _cellAspectRatio;
+
+        // Cell spacing property
+        SerializedProperty _cellSpacing;
+
+
+        void OnEnable()
+        {
+            // Getting LayoutGroup properties
+            _padding = serializedObject.FindProperty(nameof(m_Padding));
+            _childAlignment = serializedObject.FindProperty(nameof(m_ChildAlignment));
+
+            // Getting grid fit properties
+            _gridFitSelection = serializedObject.FindProperty(nameof(_gridFit));
+            _gridFitColumns = serializedObject.FindProperty(nameof(_columnAmount));
+            _gridFitRows = serializedObject.FindProperty(nameof(_rowAmount));
+
+            // Getting cell size properties
+            _cellSizeSelection = serializedObject.FindProperty(nameof(_gridCellSize));
+            _minCellSize = serializedObject.FindProperty(nameof(_minCellSize));
+            _maxCellSize = serializedObject.FindProperty(nameof(_maxCellSize));
+            _preferredCellSize = serializedObject.FindProperty(nameof(_preferredCellSize));
+            _cellAspectRatio = serializedObject.FindProperty(nameof(_cellAspectRatio));
+
+            // Getting cell spacing property
+            _cellSpacing = serializedObject.FindProperty(nameof(_cellSpacing));
+        }
+
+
+        public override void OnInspectorGUI()
+        {
+            serializedObject.Update();
+
+            // Place LayoutGroup property fields
+            EditorGUILayout.PropertyField(_padding);
+            EditorGUILayout.PropertyField(_childAlignment);
+
+            // Place grid fit property fields
+            EditorGUILayout.PropertyField(_gridFitSelection);
+
+            switch ((FitType)_gridFitSelection.enumValueIndex)
+            {
+                case FitType.FixedColumns:
+                    EditorGUILayout.PropertyField(_gridFitColumns);
+                    EditorGUILayout.Space();
+                    break;
+                case FitType.FixedRows:
+                    EditorGUILayout.PropertyField(_gridFitRows);
+                    EditorGUILayout.Space();
+                    break;
+            }
+
+            // Place cell size property fields
+            EditorGUILayout.PropertyField(_cellSizeSelection);
+
+            switch ((CellSizeType)_cellSizeSelection.enumValueIndex)
+            {
+                case CellSizeType.Manual:
+                    EditorGUILayout.PropertyField(_minCellSize);
+                    EditorGUILayout.PropertyField(_maxCellSize);
+                    EditorGUILayout.PropertyField(_preferredCellSize);
+                    EditorGUILayout.Space();
+                    break;
+                case CellSizeType.AspectRatio:
+                    EditorGUILayout.PropertyField(_cellAspectRatio);
+                    EditorGUILayout.Space();
+                    break;
+            }
+
+            // Place cell spacing property field
+            EditorGUILayout.PropertyField(_cellSpacing);
+
+            serializedObject.ApplyModifiedProperties();
+        }
+    }
+#endif
+
 
     public override void CalculateLayoutInputVertical()
     {
