@@ -18,6 +18,12 @@ public class FlexibleGridLayout : LayoutGroup
         BasedOnChild
     }
 
+    const int MinDynamicColumns = 2;
+    const int MaxDynamicColumns = 4;
+    const float ShortestAspectRatio = 4.0f / 3.0f;
+    const float TallestAspectRatio = 22.0f / 9.0f;
+
+
     [Header("Flexible Grid")]
 
     [SerializeField, Tooltip("How the grid will fit its children.\n\nDynamic: Determine column amount based on game's aspect ratio and cell size.\nFixed Columns: Column amount stays the same.\nFixed Rows: Row amount stays the same.")]
@@ -54,29 +60,35 @@ public class FlexibleGridLayout : LayoutGroup
     private bool _fitX;
     private bool _fitY;
 
-
     public override void CalculateLayoutInputHorizontal()
     {
         base.CalculateLayoutInputHorizontal();
 
         _cellSize = _preferredCellSize;
-        _columns = _columnAmount;
-        _rows = _rowAmount;
-
+        
         if (_gridFit == FitType.Dynamic)
         {
-            float squareRoot = Mathf.Sqrt(transform.childCount);
-            _rows = _columns = Mathf.CeilToInt(squareRoot);
-            
+            float screenAspectRatio = (float)Screen.currentResolution.height / Screen.currentResolution.width;
+            screenAspectRatio = Mathf.Clamp(screenAspectRatio, ShortestAspectRatio, TallestAspectRatio);
+
+            // the percentage at which point the current aspect ratio sits between shortest and tallest aspect ratios
+            float aspectratioPercentage = (screenAspectRatio - ShortestAspectRatio) / (TallestAspectRatio - ShortestAspectRatio);
+
+            // getting column amount between min and max amount of columns based on the percentage
+            _columns = Mathf.RoundToInt(MaxDynamicColumns + (MinDynamicColumns - MaxDynamicColumns) * aspectratioPercentage);
+
+            _rows = Mathf.CeilToInt(transform.childCount / (float)_columns);
         }
 
         if (_gridFit == FitType.FixedColumns)
         {
+            _columns = _columnAmount;
             _rows = Mathf.CeilToInt(transform.childCount / (float)_columns);
         }
 
         if (_gridFit == FitType.FixedRows)
         {
+            _rows = _rowAmount;
             _columns = Mathf.CeilToInt(transform.childCount / (float)_rows);
         }
         
