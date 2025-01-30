@@ -6,6 +6,7 @@ using TMPro;
 using Altzone.Scripts.Model.Poco.Game;
 using System;
 using MenuUi.Scripts.DefenceScreen.CharacterGallery;
+using Altzone.Scripts.ReferenceSheets;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -223,14 +224,14 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
-        public void SetInfo(Sprite sprite, string name, CharacterID id, ModelView view)
+        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, CharacterID id, ModelView view)
         {
             _spriteImage.sprite = sprite;
             _characterNameText.text = name;
             _id = id;
             _modelView = view;
-            _backgroundSpriteImage.color = CharacterClass.GetCharacterClassColor(CustomCharacter.GetClassID(id));
-            // _backgroundContentsSpriteImage.color = TODO: add setting rarity class once it's implemented
+            _backgroundSpriteImage.color = bgColor;
+            _backgroundContentsSpriteImage.color = bgAltColor;
         }
 
 

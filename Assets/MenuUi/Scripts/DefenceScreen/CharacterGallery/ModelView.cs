@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.ModelV2;
 using TMPro;
+using Altzone.Scripts.ReferenceSheets;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -24,6 +25,8 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private Image _selectedCharacterSlotDetails1;
         [SerializeField] private Image _selectedCharacterSlotDetails2;
         [SerializeField] private Image _selectedCharacterSlotDetails3;
+
+        [SerializeField] private ClassColorReference _classColorReference;
 
         private bool _isReady;
 
@@ -134,7 +137,10 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 GameObject slot = Instantiate(_characterSlotprefab, GetContent());
 
-                slot.GetComponent<CharacterSlot>().SetInfo(info2.GalleryImage, info2.Name, character.Id, this);
+                Color bgColor = _classColorReference.GetColor(CustomCharacter.GetClassID(character.Id));
+                Color bgAltColor = _classColorReference.GetAlternativeColor(CustomCharacter.GetClassID(character.Id));
+
+                slot.GetComponent<CharacterSlot>().SetInfo(info2.GalleryImage, bgColor, bgAltColor, info2.Name, character.Id, this);
 
                 Button button = slot.transform.Find("GalleryCharacter").GetComponent<Button>();
                 _characterButtons.Add(button);

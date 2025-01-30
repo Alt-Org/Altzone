@@ -16,12 +16,12 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public CharacterID Id { get => _id; }
 
-        public void SetInfo(Sprite sprite, string name, CharacterID id, ModelView view)
+        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, CharacterID id, ModelView view)
         {
             _spriteImage.sprite = sprite;
             _nameText.text = name;
             _id = id;
-            _character.SetInfo(sprite, name, id, view);
+            _character.SetInfo(sprite, bgColor, bgAltColor, name, id, view);
         }
     }
 }
