@@ -27,11 +27,6 @@ public class PerusKauppaStorage : ShopPanelStorage
     [SerializeField] private GameFurnitureVisualizer _epicPrefab;
     [SerializeField] private GameFurnitureVisualizer _antiquePrefab;
 
-    [Space(5f)]
-
-    [Header("Popup")]
-    [SerializeField] private GameObject confimationPopup;
-
     private Dictionary<FurnitureRarity, Transform> _rarityToParent;
     private Dictionary<FurnitureRarity, GameFurnitureVisualizer> _rarityToPrefab;
 
@@ -81,9 +76,6 @@ public class PerusKauppaStorage : ShopPanelStorage
                     var newItem = Instantiate(_prefab, _parent);
                     newItem.Initialize(furniture1);
                     gameFurnituresOnScene.Add(newItem);
-
-                    // Add listener to open popup
-                    newItem.gameObject.GetComponent<Button>().onClick.AddListener(delegate { confimationPopup.SetActive(true); });
                 }
                 else
                 {

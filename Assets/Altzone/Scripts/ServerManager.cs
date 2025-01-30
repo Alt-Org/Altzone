@@ -14,6 +14,8 @@ using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine.Assertions;
 using Altzone.Scripts.Model;
 using System.Collections.ObjectModel;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -577,7 +579,7 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator JoinClan(ServerClan clanToJoin, Action<ServerClan> callback)
     {
-        string body = @$"{{""clan_id"":""{clanToJoin._id}"",""player_id"":""{Player._id}""}}";
+        string body = JObject.FromObject(new{clan_id=clanToJoin._id,player_id=Player._id}).ToString();
 
         StartCoroutine(WebRequests.Post(DEVADDRESS + "clan/join", body, AccessToken, request =>
         {
@@ -656,10 +658,9 @@ public class ServerManager : MonoBehaviour
         yield break;
     }
 
-    public IEnumerator PostClanToServer(string name, string tag, bool isOpen, string[] labels, ClanAge age, Goals goal, string phrase, Language language, Action<ServerClan> callback)
+    public IEnumerator PostClanToServer(ServerClan clan, Action<ServerClan> callback)
     {
-        string body = @$"{{""name"":""{name}"",""tag"":""{tag}"",""isOpen"":{isOpen.ToString().ToLower()},""labels"": [{""}],
-                            ""ageRange"":""{age}"",""goal"":""{goal}"",""phrase"":""{phrase}"",""language"":""{language}""}}";
+        string body = JObject.FromObject(clan, JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })).ToString();
 
         yield return StartCoroutine(WebRequests.Post(DEVADDRESS + "clan", body, AccessToken, request =>
         {
@@ -703,8 +704,20 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator UpdateClanToServer(ClanData data, Action<bool> callback)
     {
-        string body = @$"{{""_id"":""{data.Id}"",""name"":""{data.Name}"",""tag"":""{data.Tag}"",""isOpen"":{Clan.isOpen.ToString().ToLower()},""labels"": [{""}],
-                            ""ageRange"":""{data.ClanAge}"",""goal"":""{data.Goals}"",""phrase"":""{data.Phrase}"",""language"":""{data.Language}""}}";
+        string body = JObject.FromObject(
+            new {
+                _id=data.Id,
+                name=data.Name,
+                tag=data.Tag,
+                isOpen=Clan.isOpen,
+                labels = data.Labels,
+                ageRange=data.ClanAge,
+                goal=data.Goals,
+                phrase=data.Phrase,
+                language=data.Language
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
+        ).ToString();
 
         yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "clan", body, AccessToken, request =>
         {
@@ -723,6 +736,99 @@ public class ServerManager : MonoBehaviour
                 {
                     callback(false);
                 }
+            }
+        }));
+    }
+
+    #endregion
+
+    #region BattleCharacter
+
+    public IEnumerator GetCustomCharactersFromServer(Action<List<CustomCharacter>> callback)
+    {
+        if (Player != null)
+            Debug.LogWarning("Player already exists. Consider using ServerManager.Instance.Player if the most up to data data from server is not needed.");
+
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "player/" + PlayerPrefs.GetString("playerId", string.Empty), AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                List<ServerCharacter> serverCharacterList = ((JArray)result["data"]["CustomCharacter"]).ToObject<List<ServerCharacter>>();
+
+                List<CustomCharacter> characterList = new();
+
+                foreach (ServerCharacter character in serverCharacterList)
+                {
+                    characterList.Add(new(character));
+                }
+
+                if (callback != null)
+                    callback(characterList);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator UpdateCustomCharactersToServer(CustomCharacter character, Action<bool> callback)
+    {
+        if (character == null)
+        {
+            Debug.LogError("Cannot find Player.");
+            yield break;
+        }
+
+        ServerCharacter serverCharacter = new(character);
+
+        string body = JObject.FromObject(serverCharacter).ToString();
+
+        //Debug.Log(player);
+
+        yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "customCharacter/", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
+    public IEnumerator AddCustomCharactersToServer(CharacterID id, Action<bool> callback)
+    {
+        if (id.Equals(CharacterID.None))
+        {
+            Debug.LogError("Cannot find Player.");
+            yield break;
+        }
+
+        ServerCharacter serverCharacter = new(id);
+
+        string body = JObject.FromObject(serverCharacter).ToString();
+
+        //Debug.Log(player);
+
+        yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "customCharacter/", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
             }
         }));
     }

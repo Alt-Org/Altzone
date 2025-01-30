@@ -13,13 +13,7 @@ public class KylläButtonÄänestyst : MonoBehaviour
     public GameObject panelToBeSetInActive;
     private GameFurniture furniture;
 
-    private void Start()
-    {
-        panelToBeSetInActive.SetActive(false);
-        VotingActions.PassShopItem += setItem;
-    }
-
-    private void setItem(GameFurniture newFurniture)
+    public void setItem(GameFurniture newFurniture)
     {
         furniture = newFurniture;
         //UnityEngine.Debug.Log(newFurniture.ToString());
@@ -27,7 +21,6 @@ public class KylläButtonÄänestyst : MonoBehaviour
 
     public void YesButtonPressed()
     {
-
         if (furniture != null) PollManager.CreateFurniturePoll(FurniturePollType.Buying, furniture);
         VotingActions.ReloadPollList?.Invoke();
 
