@@ -4,7 +4,6 @@ using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model.Poco.Game;
 using Prg.Scripts.EditorSupport.Attributes;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Config.ScriptableObjects
 {
@@ -17,22 +16,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     // [CreateAssetMenu(menuName = "ALT-Zone/GameSettings", fileName = "GameSettings")]
     internal class GameSettings : ScriptableObject
     {
-        private const string GameSettingsName = "GameSettings";
-
         [SerializeField, Header("Väri Esimerkki"), ColorHtmlProperty] private Color _ihanMalliksiVaan;
-
-        [Header("Game Variables")] public GameVariables _variables;
-
-        [Header("Player Prefabs")] public PlayerPrefabs _playerPrefabs;
-
-        [Header("Characters")] public Characters _characters;
-
-        internal static GameSettings Load()
-        {
-            var gameSettings = Resources.Load<GameSettings>(GameSettingsName);
-            Assert.IsNotNull(gameSettings, $"ASSET '{GameSettingsName}' NOT FOUND");
-            return gameSettings;
-        }
     }
 
     #region GameSettings "Parts"
