@@ -30,7 +30,7 @@ public class ClanCreateView : MonoBehaviour
         if (clanName == string.Empty || clanTag == string.Empty || _gameCoinsInputField.text == string.Empty)
             return;
 
-        StartCoroutine(ServerManager.Instance.PostClanToServer(clanName, clanTag, isOpen, null,ClanAge.None,Goals.None,null,Language.None, clan =>
+        /*StartCoroutine(ServerManager.Instance.PostClanToServer(clanName, clanTag, isOpen, null,ClanAge.None,Goals.None,null,Language.None, clan =>
         {
             if (clan == null)
             {
@@ -38,6 +38,6 @@ public class ClanCreateView : MonoBehaviour
             }
 
             _returnToMainClanViewButton.onClick.Invoke();
-        }));
+        }));*/
     }
 }

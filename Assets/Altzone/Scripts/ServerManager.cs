@@ -14,6 +14,8 @@ using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine.Assertions;
 using Altzone.Scripts.Model;
 using System.Collections.ObjectModel;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -656,10 +658,11 @@ public class ServerManager : MonoBehaviour
         yield break;
     }
 
-    public IEnumerator PostClanToServer(string name, string tag, bool isOpen, string[] labels, ClanAge age, Goals goal, string phrase, Language language, Action<ServerClan> callback)
+    public IEnumerator PostClanToServer(ServerClan clan, Action<ServerClan> callback)
     {
-        string body = @$"{{""name"":""{name}"",""tag"":""{tag}"",""isOpen"":{isOpen.ToString().ToLower()},""labels"": [{""}],
-                            ""ageRange"":""{age}"",""goal"":""{goal}"",""phrase"":""{phrase}"",""language"":""{language}""}}";
+        string body = JObject.FromObject(clan, JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })).ToString();
+
+        Debug.LogWarning(body);
 
         yield return StartCoroutine(WebRequests.Post(DEVADDRESS + "clan", body, AccessToken, request =>
         {
