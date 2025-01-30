@@ -13,6 +13,7 @@ namespace MenuUi.Scripts.CharacterGallery
     {
         [SerializeField] private Image _spriteImage;
         [SerializeField] private Image _backgroundSpriteImage;
+        [SerializeField] private Image _backgroundContentsSpriteImage;
         [SerializeField] private TextMeshProUGUI _characterNameText;
         [SerializeField] private AspectRatioFitter _aspectRatioFitter;
         [SerializeField] private PieChartPreview _piechartPreview;
@@ -241,6 +242,8 @@ namespace MenuUi.Scripts.CharacterGallery
 
             _piechartPreview.gameObject.SetActive(true);
             _piechartPreview.UpdateChart(Id);
+
+            _backgroundContentsSpriteImage.gameObject.SetActive(false);
         }
 
 
@@ -253,6 +256,8 @@ namespace MenuUi.Scripts.CharacterGallery
             _spriteImage.rectTransform.anchorMin = new Vector2(0.1f, 0.1f);
 
             _piechartPreview.gameObject.SetActive(false);
+
+            _backgroundContentsSpriteImage.gameObject.SetActive(true);
         }
     }
 }
