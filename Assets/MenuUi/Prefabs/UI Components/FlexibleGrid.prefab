@@ -592,12 +592,14 @@ MonoBehaviour:
     m_Bottom: 0
   m_ChildAlignment: 0
   _gridFit: 0
+  _minDynamicColumns: 2
+  _maxDynamicColumns: 4
   _columnAmount: 1
   _rowAmount: 1
   _gridCellSize: 0
   _minCellSize: {x: 0, y: 0}
   _maxCellSize: {x: 0, y: 0}
-  _preferredCellSize: {x: 100, y: 300}
+  _preferredCellSize: {x: 200, y: 200}
   _cellAspectRatio: 0
   _cellSpacing: {x: 0, y: 0}
 --- !u!1 &6056610009553525226

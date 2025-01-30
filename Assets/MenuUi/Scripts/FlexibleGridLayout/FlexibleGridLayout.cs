@@ -18,8 +18,7 @@ public class FlexibleGridLayout : LayoutGroup
         BasedOnChild
     }
 
-    const int MinDynamicColumns = 2;
-    const int MaxDynamicColumns = 4;
+    
     const float ShortestAspectRatio = 4.0f / 3.0f;
     const float TallestAspectRatio = 22.0f / 9.0f;
 
@@ -28,6 +27,12 @@ public class FlexibleGridLayout : LayoutGroup
 
     [SerializeField, Tooltip("How the grid will fit its children.\n\nDynamic: Determine column amount based on game's aspect ratio and cell size.\nFixed Columns: Column amount stays the same.\nFixed Rows: Row amount stays the same.")]
     private FitType _gridFit = FitType.Dynamic;
+
+    [SerializeField, Min(1)]
+    private int _minDynamicColumns = 2;
+
+    [SerializeField, Min(1)]
+    private int _maxDynamicColumns = 4;
 
     [SerializeField, Min(1)]
     private int _columnAmount = 1;
@@ -75,7 +80,7 @@ public class FlexibleGridLayout : LayoutGroup
             float aspectratioPercentage = (screenAspectRatio - ShortestAspectRatio) / (TallestAspectRatio - ShortestAspectRatio);
 
             // getting column amount between min and max amount of columns based on the percentage
-            _columns = Mathf.RoundToInt(MaxDynamicColumns + (MinDynamicColumns - MaxDynamicColumns) * aspectratioPercentage);
+            _columns = Mathf.RoundToInt(_maxDynamicColumns + (_minDynamicColumns - _maxDynamicColumns) * aspectratioPercentage);
 
             _rows = Mathf.CeilToInt(transform.childCount / (float)_columns);
         }
@@ -134,6 +139,8 @@ public class FlexibleGridLayout : LayoutGroup
 
         // Grid fit properties
         SerializedProperty _gridFitSelection;
+        SerializedProperty _gridFitMinColumns;
+        SerializedProperty _gridFitMaxColumns;
         SerializedProperty _gridFitColumns;
         SerializedProperty _gridFitRows;
 
@@ -156,6 +163,8 @@ public class FlexibleGridLayout : LayoutGroup
 
             // Getting grid fit properties
             _gridFitSelection = serializedObject.FindProperty(nameof(_gridFit));
+            _gridFitMinColumns = serializedObject.FindProperty(nameof(_minDynamicColumns));
+            _gridFitMaxColumns = serializedObject.FindProperty(nameof(_maxDynamicColumns));
             _gridFitColumns = serializedObject.FindProperty(nameof(_columnAmount));
             _gridFitRows = serializedObject.FindProperty(nameof(_rowAmount));
 
@@ -184,6 +193,11 @@ public class FlexibleGridLayout : LayoutGroup
 
             switch ((FitType)_gridFitSelection.enumValueIndex)
             {
+                case FitType.Dynamic:
+                    EditorGUILayout.PropertyField(_gridFitMinColumns);
+                    EditorGUILayout.PropertyField(_gridFitMaxColumns);
+                    EditorGUILayout.Space();
+                    break;
                 case FitType.FixedColumns:
                     EditorGUILayout.PropertyField(_gridFitColumns);
                     EditorGUILayout.Space();
