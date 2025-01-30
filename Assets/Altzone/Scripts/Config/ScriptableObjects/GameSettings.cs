@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model.Poco.Game;
+using Prg.Scripts.EditorSupport.Attributes;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -17,6 +18,8 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     internal class GameSettings : ScriptableObject
     {
         private const string GameSettingsName = "GameSettings";
+
+        [SerializeField, Header("Väri Esimerkki"), ColorHtmlProperty] private Color _ihanMalliksiVaan;
 
         [Header("Game Variables")] public GameVariables _variables;
 
