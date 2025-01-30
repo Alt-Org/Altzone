@@ -579,7 +579,7 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator JoinClan(ServerClan clanToJoin, Action<ServerClan> callback)
     {
-        string body = @$"{{""clan_id"":""{clanToJoin._id}"",""player_id"":""{Player._id}""}}";
+        string body = JObject.FromObject(new{clan_id=clanToJoin._id,player_id=Player._id}).ToString();
 
         StartCoroutine(WebRequests.Post(DEVADDRESS + "clan/join", body, AccessToken, request =>
         {
@@ -662,8 +662,6 @@ public class ServerManager : MonoBehaviour
     {
         string body = JObject.FromObject(clan, JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })).ToString();
 
-        Debug.LogWarning(body);
-
         yield return StartCoroutine(WebRequests.Post(DEVADDRESS + "clan", body, AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
@@ -706,8 +704,18 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator UpdateClanToServer(ClanData data, Action<bool> callback)
     {
-        string body = @$"{{""_id"":""{data.Id}"",""name"":""{data.Name}"",""tag"":""{data.Tag}"",""isOpen"":{Clan.isOpen.ToString().ToLower()},""labels"": [{""}],
-                            ""ageRange"":""{data.ClanAge}"",""goal"":""{data.Goals}"",""phrase"":""{data.Phrase}"",""language"":""{data.Language}""}}";
+        string body = JObject.FromObject(
+            new {
+                _id=data.Id,
+                name=data.Name,
+                tag=data.Tag,
+                isOpen=Clan.isOpen,
+                labels = data.Labels,
+                ageRange=data.ClanAge,
+                goal=data.Goals,
+                phrase=data.Phrase,
+                language=data.Language
+            }).ToString();
 
         yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "clan", body, AccessToken, request =>
         {
