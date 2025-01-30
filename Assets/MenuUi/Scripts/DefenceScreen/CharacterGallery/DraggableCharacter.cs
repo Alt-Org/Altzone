@@ -229,6 +229,8 @@ namespace MenuUi.Scripts.CharacterGallery
             _characterNameText.text = name;
             _id = id;
             _modelView = view;
+            _backgroundSpriteImage.color = CharacterClass.GetCharacterClassColor(CustomCharacter.GetClassID(id));
+            // _backgroundContentsSpriteImage.color = TODO: add setting rarity class once it's implemented
         }
 
 
