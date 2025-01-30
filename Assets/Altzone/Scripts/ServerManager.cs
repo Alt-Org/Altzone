@@ -729,6 +729,8 @@ public class ServerManager : MonoBehaviour
 
     #endregion
 
+    #region BattleCharacter
+
     public IEnumerator GetCustomCharactersFromServer(Action<List<CustomCharacter>> callback)
     {
         if (Player != null)
@@ -817,6 +819,8 @@ public class ServerManager : MonoBehaviour
             }
         }));
     }
+
+    #endregion
 
     #region Stock
     public IEnumerator GetStockFromServer(ServerClan clan, Action<ServerStock> callback)
