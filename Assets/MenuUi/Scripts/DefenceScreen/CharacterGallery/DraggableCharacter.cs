@@ -6,6 +6,7 @@ using TMPro;
 using Altzone.Scripts.Model.Poco.Game;
 using System;
 using MenuUi.Scripts.DefenceScreen.CharacterGallery;
+using Altzone.Scripts.ReferenceSheets;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -13,6 +14,7 @@ namespace MenuUi.Scripts.CharacterGallery
     {
         [SerializeField] private Image _spriteImage;
         [SerializeField] private Image _backgroundSpriteImage;
+        [SerializeField] private Image _backgroundContentsSpriteImage;
         [SerializeField] private TextMeshProUGUI _characterNameText;
         [SerializeField] private AspectRatioFitter _aspectRatioFitter;
         [SerializeField] private PieChartPreview _piechartPreview;
@@ -42,9 +44,6 @@ namespace MenuUi.Scripts.CharacterGallery
         public int characterTextCounter;
 
         public CharacterID Id { get => _id; }
-
-        private Sprite _selectedBackgroundSprite;
-        private Sprite _unselectedBackgroundSprite;
 
 
         private void Awake()
@@ -225,21 +224,19 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
-        public void SetInfo(Sprite sprite, Sprite backgroundSprite, Sprite selectedBackgroundSprite, string name, CharacterID id, ModelView view)
+        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, CharacterID id, ModelView view)
         {
             _spriteImage.sprite = sprite;
-            _backgroundSpriteImage.sprite = backgroundSprite;
-            _selectedBackgroundSprite = selectedBackgroundSprite;
-            _unselectedBackgroundSprite = backgroundSprite;
             _characterNameText.text = name;
             _id = id;
             _modelView = view;
+            _backgroundSpriteImage.color = bgColor;
+            _backgroundContentsSpriteImage.color = bgAltColor;
         }
 
 
         public void SetSelectedVisuals()
         {
-            _backgroundSpriteImage.sprite = _selectedBackgroundSprite;
             _aspectRatioFitter.aspectRatio = 1;
             _characterNameText.gameObject.SetActive(false);
 
@@ -248,12 +245,13 @@ namespace MenuUi.Scripts.CharacterGallery
 
             _piechartPreview.gameObject.SetActive(true);
             _piechartPreview.UpdateChart(Id);
+
+            _backgroundContentsSpriteImage.gameObject.SetActive(false);
         }
 
 
         public void SetUnselectedVisuals()
         {
-            _backgroundSpriteImage.sprite = _unselectedBackgroundSprite;
             _aspectRatioFitter.aspectRatio = 0.6f;
             _characterNameText.gameObject.SetActive(true);
 
@@ -261,6 +259,8 @@ namespace MenuUi.Scripts.CharacterGallery
             _spriteImage.rectTransform.anchorMin = new Vector2(0.1f, 0.1f);
 
             _piechartPreview.gameObject.SetActive(false);
+
+            _backgroundContentsSpriteImage.gameObject.SetActive(true);
         }
     }
 }
