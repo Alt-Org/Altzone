@@ -11,7 +11,6 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Settings;
-using AltZone.Scripts.ReferenceSheets;
 using Prg.Scripts.Common.Unity;
 using UnityEngine;
 #if UNITY_WEBGL
@@ -156,7 +155,7 @@ namespace Altzone.Scripts.Model
             if (playerData != null)
             {
                 // This storage is by no means a complete object model we want to serve.
-                playerData.BuildCharacterLists(_GetAllBattleCharacters(), _storageData.CustomCharacters);
+                playerData.BuildCharacterLists(_storageData.CustomCharacters);
             }
             Debug.Log($"playerData {playerData}");
             callback(playerData);

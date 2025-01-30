@@ -5,7 +5,7 @@ using Photon.Realtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using RoomInfo = Battle1.PhotonRealtime.Code.RoomInfo;
+/*using RoomInfo = Battle1.PhotonRealtime.Code.RoomInfo;*/
 
 namespace Battle1.Scripts.Lobby.InLobby
 {

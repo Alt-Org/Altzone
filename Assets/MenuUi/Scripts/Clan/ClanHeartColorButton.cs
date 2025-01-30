@@ -7,5 +7,5 @@ using UnityEngine.UI;
 public struct ColorButton
 {
     public Button button;
-    public Color color;
+    public ColorType color;
 }

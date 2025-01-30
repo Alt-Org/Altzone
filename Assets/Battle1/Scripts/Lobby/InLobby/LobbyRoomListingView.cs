@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
-using RoomInfo = Battle1.PhotonRealtime.Code.RoomInfo;
+/*using RoomInfo = Battle1.PhotonRealtime.Code.RoomInfo;*/
 
 namespace Battle1.Scripts.Lobby.InLobby
 {

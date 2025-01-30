@@ -1,3 +1,4 @@
+#if false
 using System;
 using System.Collections;
 using Battle1.PhotonUnityNetworking.Code;
@@ -143,3 +144,4 @@ namespace Battle1.Scripts.Battle.Players
         }
     }
 }
+#endif

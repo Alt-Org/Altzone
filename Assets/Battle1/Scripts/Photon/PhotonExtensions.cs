@@ -8,10 +8,10 @@ using ExitGames.Client.Photon;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.Assertions;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 using Player = Battle1.PhotonRealtime.Code.Player;
 using Room = Battle1.PhotonRealtime.Code.Room;
-using RoomInfo = Battle1.PhotonRealtime.Code.RoomInfo;
+using RoomInfo = Battle1.PhotonRealtime.Code.RoomInfo;*/
 
 /// <summary>
 /// Extension methods to Photon <c>Player</c> and <c>Room</c> (<c>RoomInfo</c>) objects.
@@ -37,7 +37,7 @@ public static class PhotonExtensions
 
     public static string GetUniquePlayerNameForRoom(this Room room, Player player, string playerName, string separator)
     {
-        if (!PhotonNetwork.InRoom)
+        /*if (!PhotonNetwork.InRoom)
         {
             throw new UnityException($"Invalid connection state: {PhotonNetwork.NetworkClientState}");
         }
@@ -54,7 +54,7 @@ public static class PhotonExtensions
                     playerName = $"{playerName}{separator}{PhotonNetwork.LocalPlayer.ActorNumber}";
                     break;
                 }
-        }
+        }*/
         return playerName;
     }
 
@@ -67,35 +67,35 @@ public static class PhotonExtensions
         return player.CustomProperties.ContainsKey(key);
     }
 
-    public static void SetCustomProperty(this Player player, string key, object value)
+  /*  public static void SetCustomProperty(this Player player, string key, object value)
     {
         Assert.IsNotNull(value);
         var props = new Hashtable { { key, value } };
         player.SetCustomProperties(props);
-    }
+    }*/
 
-    public static void SafeSetCustomProperty<T>(this Player player, string key, T newValue, T currentValue) where T : struct
+    /*public static void SafeSetCustomProperty<T>(this Player player, string key, T newValue, T currentValue) where T : struct
     {
         CheckIsTypeAcceptable(newValue);
         Assert.IsTrue(newValue.GetType() == currentValue.GetType(), "newValue.GetType() == currentValue.GetType()");
         DoSetCustomProperty(player, key, newValue, currentValue);
-    }
+    }*/
 
-    public static void SafeSetCustomProperty(this Player player, string key, string newValue, string currentValue)
+  /*  public static void SafeSetCustomProperty(this Player player, string key, string newValue, string currentValue)
     {
         Assert.IsFalse(string.IsNullOrWhiteSpace(newValue));
         Assert.IsFalse(string.IsNullOrWhiteSpace(currentValue));
         DoSetCustomProperty(player, key, newValue, currentValue);
-    }
+    }*/
 
-    public static void RemoveCustomProperty(this Player player, string key)
+/*    public static void RemoveCustomProperty(this Player player, string key)
     {
         if (player.CustomProperties.ContainsKey(key))
         {
             var props = new Hashtable { { key, null } };
             player.SetCustomProperties(props);
         }
-    }
+    }*/
 
     public static T GetCustomProperty<T>(this Player player, string key, T defaultValue = default)
     {
@@ -116,26 +116,26 @@ public static class PhotonExtensions
         return room.CustomProperties.ContainsKey(key);
     }
 
-    public static void SetCustomProperty(this Room room, string key, object value)
+/*    public static void SetCustomProperty(this Room room, string key, object value)
     {
         Assert.IsNotNull(value);
         var props = new Hashtable { { key, value } };
         room.SetCustomProperties(props);
-    }
+    }*/
 
-    public static void SafeSetCustomProperty<T>(this Room room, string key, T newValue, T currentValue) where T : struct
+    /*public static void SafeSetCustomProperty<T>(this Room room, string key, T newValue, T currentValue) where T : struct
     {
         CheckIsTypeAcceptable(newValue);
         Assert.IsTrue(newValue.GetType() == currentValue.GetType(), "newValue.GetType() == currentValue.GetType()");
         DoSetCustomProperty(room, key, newValue, currentValue);
-    }
+    }*/
 
-    public static void SafeSetCustomProperty(this Room room, string key, string newValue, string currentValue)
+    /*public static void SafeSetCustomProperty(this Room room, string key, string newValue, string currentValue)
     {
         Assert.IsFalse(string.IsNullOrWhiteSpace(newValue));
         Assert.IsFalse(string.IsNullOrWhiteSpace(currentValue));
         DoSetCustomProperty(room, key, newValue, currentValue);
-    }
+    }*/
 
     public static T GetCustomProperty<T>(this RoomInfo room, string key, T defaultValue = default)
     {
@@ -151,16 +151,16 @@ public static class PhotonExtensions
         return defaultValue;
     }
 
-    public static void RemoveCustomProperty(this Room room, string key)
+/*    public static void RemoveCustomProperty(this Room room, string key)
     {
         if (room.CustomProperties.ContainsKey(key))
         {
             var props = new Hashtable { { key, null } };
             room.SetCustomProperties(props);
         }
-    }
+    }*/
 
-    private static void DoSetCustomProperty(this Player player, string key, object newValue, object currentValue)
+   /* private static void DoSetCustomProperty(this Player player, string key, object newValue, object currentValue)
     {
         var props = new Hashtable { { key, newValue } };
         if (!player.CustomProperties.TryGetValue(key, out var propValue))
@@ -173,9 +173,9 @@ public static class PhotonExtensions
         Assert.IsTrue(currentValue.Equals(propValue), "currentValue.Equals(propValue)");
         var expectedProps = new Hashtable { { key, currentValue } };
         player.SetCustomProperties(props, expectedProps);
-    }
+    }*/
 
-    private static void DoSetCustomProperty(this Room room, string key, object newValue, object currentValue)
+ /*   private static void DoSetCustomProperty(this Room room, string key, object newValue, object currentValue)
     {
         var props = new Hashtable { { key, newValue } };
         if (!room.CustomProperties.TryGetValue(key, out var propValue))
@@ -188,7 +188,7 @@ public static class PhotonExtensions
         Assert.IsTrue(currentValue.Equals(propValue), "currentValue.Equals(propValue)");
         var expectedProps = new Hashtable { { key, currentValue } };
         room.SetCustomProperties(props, expectedProps);
-    }
+    }*/
 
     private static void CheckIsTypeAcceptable<T>(T value) where T : struct
     {
@@ -204,7 +204,7 @@ public static class PhotonExtensions
 
     #region Debugging
 
-    public static string GetDebugLabel(this Player player, bool verbose = true)
+    /*public static string GetDebugLabel(this Player player, bool verbose = true)
     {
         if (player == null)
         {
@@ -230,15 +230,15 @@ public static class PhotonExtensions
         }
         var playerName = verbose ? $"Player: {player.NickName}" : player.NickName;
         return $"{playerName} {status}";
-    }
+    }*/
 
-    public static string GetDebugLabel(this RoomInfo room) // Works for Room too!
+    /*public static string GetDebugLabel(this RoomInfo room) // Works for Room too!
     {
         // Replacement for room.ToString()
         return $"{room}{(room.RemovedFromList ? " removed." : string.Empty)} {room.CustomProperties.AsSorted()}";
-    }
+    }*/
 
-    private static string AsSorted(this Hashtable dictionary)
+    /*private static string AsSorted(this Hashtable dictionary)
     {
         if (dictionary == null || dictionary.Count == 0)
         {
@@ -259,7 +259,7 @@ public static class PhotonExtensions
         builder.Length -= 2;
         builder.Append('}');
         return builder.ToString();
-    }
+    }*/
 
     #endregion
 }

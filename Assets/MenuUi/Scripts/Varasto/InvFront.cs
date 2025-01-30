@@ -10,7 +10,7 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using UnityEngine.UI;
 using static ServerManager;
-using AltZone.Scripts.ReferenceSheets;
+using Altzone.Scripts.ReferenceSheets;
 
 namespace MenuUi.Scripts.Storage
 {
@@ -185,7 +185,7 @@ namespace MenuUi.Scripts.Storage
                 {
                     continue;
                 }
-                StorageFurniture storageFurniture = new(clanFurniture,furniture,_furnitureReference.GetFurnitureInfo(clanFurniture.GameFurnitureName));
+                StorageFurniture storageFurniture = new(clanFurniture,furniture);
                 _items.Add(storageFurniture);
             }
             Debug.Log($"found clan items {_items.Count}");
@@ -253,12 +253,10 @@ namespace MenuUi.Scripts.Storage
                 toSet.GetChild(4).GetComponent<Image>().sprite = GetIcon("");
 
                 // SetName
-                FurnitureSetInfo setInfo = GetFurnitureSetInfo(_furn.Name);
-                toSet.GetChild(5).GetComponent<TMP_Text>().text = setInfo.SetName;
+                toSet.GetChild(5).GetComponent<TMP_Text>().text = _furn.SetName;
 
                 // Id
-                FurnitureInfoObject furnitureInfoObject = _furnitureReference.GetFurnitureData(_furn.Name);
-                toSet.GetChild(6).GetComponent<TMP_Text>().text = furnitureInfoObject.DiagnoseNumber;
+                toSet.GetChild(6).GetComponent<TMP_Text>().text = _furn.Info.DiagnoseNumber;
                 // Name
                 toSet.GetChild(7).GetChild(0).GetComponent<TMP_Text>().text = "Sielunkodissa";
                 if (_furn.Position == new Vector2Int(-1, -1))
@@ -310,26 +308,18 @@ namespace MenuUi.Scripts.Storage
             Transform parentSlot = _infoSlot.transform;
             StorageFurniture _furn = _items[slotVal];
 
-            FurnitureInfoObject furnitureInfoObject = _furnitureReference.GetFurnitureData(_furn.Name);
-            if (furnitureInfoObject == null)
-            {
-                Debug.LogWarning("FurnitureInfoObject not found for: " + _furn.Name);
-                return;
-            }
-
             // Icon
             _icon.sprite = _furn.Sprite;
             ScaleSprite(_furn, _icon.rectTransform);
 
             // Name
-            FurnitureSetInfo setInfo = GetFurnitureSetInfo(_furn.Name);
-            _name.text = furnitureInfoObject.DiagnoseNumber + setInfo.SetName + ": " + _furn.VisibleName;
+            _name.text = _furn.Info.DiagnoseNumber + _furn.SetName + ": " + _furn.VisibleName;
             
             //Artists name
-            _artist.text = setInfo != null ? "Suunnittelu: " + setInfo.ArtistName : "Unknown Artist";
+            _artist.text = _furn.Info != null ? "Suunnittelu: " + _furn.Info.ArtistName : "Unknown Artist";
             
             //Artistic description
-            _artisticDescription.text = furnitureInfoObject.ArtisticDescription;
+            _artisticDescription.text = _furn.Info.ArtisticDescription;
 
             // Weight
             _weight.text = "Paino:" + _furn.Weight + " KG";
@@ -375,7 +365,7 @@ namespace MenuUi.Scripts.Storage
         private Sprite GetIcon(string name)
         {
             //Sprite returned = _icons.Find(x => x.name == name);
-            FurnitureInfo furnitureInfo = _furnitureReference.GetFurnitureInfo(name);
+            FurnitureInfo furnitureInfo = null/*_furnitureReference.GetFurnitureInfo(name)*/;
             Sprite returned = furnitureInfo?.Image;
             if (returned == null)
             {

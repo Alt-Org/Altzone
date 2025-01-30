@@ -7,9 +7,9 @@ using Prg.Scripts.Common.Photon;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 using Region = Battle1.PhotonRealtime.Code.Region;
-using RegionPinger = Battle1.PhotonRealtime.Code.RegionPinger;
+using RegionPinger = Battle1.PhotonRealtime.Code.RegionPinger;*/
 
 namespace Prg.Scripts.DevUtil
 {
@@ -72,9 +72,10 @@ namespace Prg.Scripts.DevUtil
             var curRegion = PhotonLobby.GetRegion();
             if (!string.IsNullOrEmpty(curRegion))
             {
-                curRegion = $"'{curRegion}' {PhotonNetwork.GetPing()} ms";
+                /*curRegion = $"'{curRegion}' {PhotonNetwork.GetPing()} ms";*/
             }
-            var title = $"Photon: {PhotonNetwork.NetworkClientState} {curRegion}";
+            /*var title = $"Photon: {PhotonNetwork.NetworkClientState} {curRegion}";*/
+            var title = $"Photon: IDK";
             if (GUILayout.Button(title, _guiButtonStyle))
             {
                 ToggleWindowState();
@@ -82,7 +83,7 @@ namespace Prg.Scripts.DevUtil
             }
             if (_enabledRegions == null)
             {
-                if (PhotonNetwork.NetworkingClient.RegionHandler?.EnabledRegions != null)
+               /* if (PhotonNetwork.NetworkingClient.RegionHandler?.EnabledRegions != null)
                 {
                     _enabledRegions = new List<Region>();
                     foreach (var enabledRegion in PhotonNetwork.NetworkingClient.RegionHandler.EnabledRegions)
@@ -95,7 +96,7 @@ namespace Prg.Scripts.DevUtil
                             .Start();
                     }
                     _regionCount = _enabledRegions.Count;
-                }
+                }*/
                 return;
             }
             try

@@ -19,6 +19,8 @@ using Prg.Scripts.Common.PubSub;
 using System.Threading.Tasks;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby.Wrappers;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.AzDebug;
 
 namespace Altzone.Scripts.Lobby
 {
@@ -198,7 +200,7 @@ namespace Altzone.Scripts.Lobby
             while (true)
             {
                 PhotonRealtimeClient.Client?.Service();
-                Debug.LogWarning(".");
+                //Debug.LogWarning(".");
                 yield return new WaitForSeconds(0.1f);
             }
         }
@@ -345,6 +347,9 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator StartQuantum()
         {
+            string battleID = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(BattleID);
+            int playerPosition = PhotonRealtimeClient.LocalPlayer.GetCustomProperty<int>(PlayerPositionKey);
+
             if (QuantumRunner.Default != null)
             {
                 Debug.Log($"QuantumRunner is already running: {QuantumRunner.Default.Id}");
@@ -387,6 +392,9 @@ namespace Altzone.Scripts.Lobby
 
             yield return new WaitUntil(()=>SceneManager.GetActiveScene().name == _map.Scene);
 
+            DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.Battle);
+            DebugLogFileHandler.FileOpen(battleID, playerPosition);
+
             Task<bool> task = StartRunner(sessionRunnerArguments);
 
             /*QuantumRunner runner = null;
@@ -408,10 +416,15 @@ namespace Altzone.Scripts.Lobby
             }*/
             yield return new WaitUntil(() => task.IsCompleted);
             if(task.Result)
-            _runner?.Game.AddPlayer(_player);
+            {
+                _player.PlayerPosition = playerPosition;
+                _runner?.Game.AddPlayer(_player);
+            }
             else
+            {
                 //WindowManager.Get().GoBack();
                 OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
+            }
         }
 
         private async Task<bool> StartRunner(SessionRunner.Arguments sessionRunnerArguments)
@@ -462,6 +475,30 @@ namespace Altzone.Scripts.Lobby
             int curValue = player.GetCustomProperty<int>(PlayerPositionKey);
             Debug.Log($"setPlayer {PlayerPositionKey}=({curValue}<-){playerPosition}");
             player.SafeSetCustomProperty(PlayerPositionKey, playerPosition, curValue);
+        }
+
+        public void SetPlayerQuantumCharacters(List<CustomCharacter> characters)
+        {
+            Assert.IsTrue(
+                characters.Count == RuntimePlayer.CharacterCount,
+                string.Format("Invalid number of Characters (not {0})", RuntimePlayer.CharacterCount)
+            );
+
+            CustomCharacter character;
+            for (int i = 0; i < RuntimePlayer.CharacterCount; i++) {
+                character = characters[i];
+                _player.Characters[i] = new BattleCharacterBase()
+                {
+                    Id         = (int)character.Id,
+                    ClassID    = (int)character.CharacterClassID,
+
+                    Hp         = BaseCharacter.GetStatValueFP(StatType.Hp, character.Hp),
+                    Attack     = BaseCharacter.GetStatValueFP(StatType.Attack, character.Attack),
+                    Defence    = BaseCharacter.GetStatValueFP(StatType.Defence, character.Defence),
+                    Resistance = BaseCharacter.GetStatValueFP(StatType.Resistance, character.Resistance),
+                    Speed      = BaseCharacter.GetStatValueFP(StatType.Speed, character.Speed)
+                };
+            }
         }
 
         public void OnDisconnected(DisconnectCause cause)

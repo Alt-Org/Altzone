@@ -34,7 +34,7 @@ namespace Battle1.Scripts.Lobby.InRoom
             {
                 throw new UnityException($"invalid positionIndex: {positionIndex}");
             }
-            this.Publish(new LobbyManagerOld.PlayerPosEvent(PositionMap[positionIndex]));
+            /*this.Publish(new LobbyManagerOld.PlayerPosEvent(PositionMap[positionIndex]));*/
         }
     }
 }

@@ -92,6 +92,11 @@ namespace MenuUi.Scripts.UIScaling
         /// <returns>Unsafe area height percentage in decimal format.</returns>
         public static float CalculateUnsafeAreaHeight()
         {
+            if (!AppPlatform.IsMobile && !AppPlatform.IsSimulator) // if running on non-mobile device which is not unity simulator
+            {
+                return 0;
+            }
+
             // for iphones there is unsafe area at bottom as well so the calculation in else branch gives too large of a gap at the top
             // and for some phones yMin was 0 so the first calculation wouldn't work, that's why there is an if statement
             if (Screen.safeArea.yMin != 0) 

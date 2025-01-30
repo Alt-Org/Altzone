@@ -15,7 +15,7 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
 #if PHOTON_UNITY_NETWORKING
         private void Awake()
         {
-            PhotonEventDispatcher.Get();
+            /*PhotonEventDispatcher.Get();*/
             if (_isLoadScoreFlashNet)
             {
                 ScoreFlashNet.RegisterEventListener();

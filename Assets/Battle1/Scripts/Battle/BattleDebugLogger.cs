@@ -9,7 +9,7 @@ using System.Text;
 using Battle1.Scripts.Battle.Game;
 using UnityEngine;
 using UnityEngine.Networking;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;*/
 
 namespace Battle1.Scripts.Battle
 {
@@ -23,7 +23,7 @@ namespace Battle1.Scripts.Battle
             s_battleDebugLogger = new(nameof(BattleDebugLogger));
 
             s_battleID = PhotonBattle.GetBattleID();
-            s_playerPosition = PhotonBattle.GetPlayerPos(PhotonNetwork.LocalPlayer);
+          /*  s_playerPosition = PhotonBattle.GetPlayerPos(PhotonNetwork.LocalPlayer);*/
 
             s_fileWriter = null;
             s_filePath = null;

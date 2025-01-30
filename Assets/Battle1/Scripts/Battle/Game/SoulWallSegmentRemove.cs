@@ -2,7 +2,7 @@ using Altzone.Scripts.GA;
 using Prg.Scripts.Common.AudioPlayer;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;*/
 
 namespace Battle1.Scripts.Battle.Game
 {
@@ -56,7 +56,7 @@ namespace Battle1.Scripts.Battle.Game
             _battleDebugLogger.LogInfo("spriteIndex: " + _spriteIndex);
             _audioPlayer.Play(_spriteIndex);
 
-            if (PhotonNetwork.IsMasterClient) GameAnalyticsManager.Instance.OnWallHit(_side.ToString());
+            /*if (PhotonNetwork.IsMasterClient) GameAnalyticsManager.Instance.OnWallHit(_side.ToString());*/
         }
         #endregion Public Methods
 

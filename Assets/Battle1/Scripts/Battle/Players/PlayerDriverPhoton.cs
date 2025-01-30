@@ -1,13 +1,14 @@
+
 using System;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
-using Battle1.PhotonUnityNetworking.Code;
+/*using Battle1.PhotonUnityNetworking.Code;*/
 using Battle1.Scripts.Battle.Game;
 using Photon.Realtime;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
-using Player = Battle1.PhotonRealtime.Code.Player;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using Player = Battle1.PhotonRealtime.Code.Player;*/
 
 namespace Battle1.Scripts.Battle.Players
 {
@@ -24,9 +25,12 @@ namespace Battle1.Scripts.Battle.Players
         // { Public Properties and Fields
 
         public string PlayerName;
-        public string NickName => _photonView.Owner.NickName;
-        public bool IsLocal => _photonView.Owner.IsLocal;
-        public int ActorNumber => _photonView.Owner.ActorNumber;
+        /*public string NickName => _photonView.Owner.NickName;*/
+       /* public bool IsLocal => _photonView.Owner.IsLocal;
+        public int ActorNumber => _photonView.Owner.ActorNumber;*/
+        public string NickName => "_photonView.Owner.NickName";
+        public bool IsLocal => true;
+        public int ActorNumber => 0;
 
         public bool MovementEnabled
         {
@@ -90,7 +94,7 @@ namespace Battle1.Scripts.Battle.Players
             double movementTimeS = Math.Max(distance / _playerMovementSpeed, _movementMinTimeS);
             int teleportUpdateNumber = _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(movementTimeS);
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Sending player movement network message", _syncedFixedUpdateClock.UpdateCount, _teamNumber, _playerPosition));
-            _photonView.RPC(nameof(MoveRpc), RpcTarget.All, targetGridPos.Row, targetGridPos.Col, teleportUpdateNumber);
+           /* _photonView.RPC(nameof(MoveRpc), RpcTarget.All, targetGridPos.Row, targetGridPos.Col, teleportUpdateNumber);*/
         }
 
         #endregion Public Methods
@@ -107,12 +111,12 @@ namespace Battle1.Scripts.Battle.Players
         private PlayerDriverState _state;
 
         private int _peerCount;
-        private static bool IsNetworkSynchronize => PhotonNetwork.IsMasterClient;
+       /* private static bool IsNetworkSynchronize => PhotonNetwork.IsMasterClient;*/
 
         private BattlePlayer _battlePlayer;
 
         // Components
-        private PhotonView _photonView;
+       /* private PhotonView _photonView;*/
 
         // Important Objects
         private PlayerManager _playerManager;
@@ -127,7 +131,7 @@ namespace Battle1.Scripts.Battle.Players
 
         private void Awake()
         {
-            _photonView = PhotonView.Get(this);
+           /* _photonView = PhotonView.Get(this);*/
 
             // get important objects
             _playerManager = Context.GetPlayerManager;
@@ -136,14 +140,14 @@ namespace Battle1.Scripts.Battle.Players
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
 
             // get player data
-            _playerPosition = PhotonBattle.GetPlayerPos(_photonView.Owner);
-            _teamNumber = PhotonBattle.GetTeamNumber(_playerPosition);
+           /* _playerPosition = PhotonBattle.GetPlayerPos(_photonView.Owner);*/
+          /*  _teamNumber = PhotonBattle.GetTeamNumber(_playerPosition);*/
 
             // create battle player
             {
-                BattleCharacter battleCharacter = PhotonBattle.GetBattleCharacter(_photonView.Owner);
+              /*  BattleCharacter battleCharacter = PhotonBattle.GetBattleCharacter(_photonView.Owner);*/
 
-                _battlePlayer = new BattlePlayer(_playerPosition, battleCharacter, false,  this);
+               /* _battlePlayer = new BattlePlayer(_playerPosition, battleCharacter, false,  this);*/
             }
 
 
@@ -152,7 +156,7 @@ namespace Battle1.Scripts.Battle.Players
             _movementMinTimeS = GameConfig.Get().Variables._networkDelay;
             _arenaScaleFactor = _battlePlayArea.ArenaScaleFactor;
 
-            InstantiatePlayerPrefab(_photonView.Owner);
+         /*   InstantiatePlayerPrefab(_photonView.Owner);*/
 
             _playerMovementSpeed = _battlePlayer.PlayerActor.MovementSpeed * playerMoveSpeedMultiplier;
 
@@ -162,14 +166,14 @@ namespace Battle1.Scripts.Battle.Players
 
         private void OnEnable()
         {
-            Player player = _photonView.Owner;
+           /* Player player = _photonView.Owner;*/
             _state ??= gameObject.AddComponent<PlayerDriverState>();
             _state.ResetState(_battlePlayer.PlayerActor, _playerPosition, _teamNumber);
             _state.MovementEnabled = false;
 
             _playerManager.RegisterPlayer(_battlePlayer, _teamNumber);
             _peerCount = 0;
-            this.ExecuteOnNextFrame(() => _photonView.RPC(nameof(SendPlayerPeerCountRpc), RpcTarget.All));
+           /* this.ExecuteOnNextFrame(() => _photonView.RPC(nameof(SendPlayerPeerCountRpc), RpcTarget.All));*/
         }
 
         #region Message Listeners
@@ -193,7 +197,7 @@ namespace Battle1.Scripts.Battle.Players
 
         #region Photon RPC
 
-        [PunRPC]
+        /*[PunRPC]
         private void SendPlayerPeerCountRpc()
         {
             _peerCount += 1;
@@ -221,7 +225,7 @@ namespace Battle1.Scripts.Battle.Players
             _state.IsWaitingToMove(true);
             _state.DebugLogState(_syncedFixedUpdateClock.UpdateCount);
             _state.Move(gridPos, teleportUpdateNumber);
-        }
+        }*/
 
         #endregion Photon RPC
     }

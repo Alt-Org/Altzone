@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using Battle1.PhotonUnityNetworking.Code;
+/*using Battle1.PhotonUnityNetworking.Code;*/
 using UnityEngine;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;*/
 
 namespace Battle1.Scripts.Test.Elmeri
 {
@@ -24,11 +24,11 @@ namespace Battle1.Scripts.Test.Elmeri
         public int SpawnY;
         public int PlayerLimit = 4;
         public bool StartBool;  //true
-        public PhotonView View;
+       /* public PhotonView View;*/
 
         void Start()
         {
-            View = transform.GetComponent<PhotonView>();
+           /* View = transform.GetComponent<PhotonView>();
             int i = 1;
             foreach (Transform t in SpawnPoints)
             { 
@@ -43,17 +43,17 @@ namespace Battle1.Scripts.Test.Elmeri
             if (PhotonNetwork.IsMasterClient)   
             {
                 StartCoroutine(SpawnDiamond());
-            }
+            }*/
         }
 
         public IEnumerator SpawnDiamond()
         {
             yield return new WaitForSeconds(Random.Range(MinSpawnTime, MaxSpawnTime));
             SpawnY = Random.Range(0, SpawnPointsArray.Count);
-            View.RPC("DiamondRPC",  RpcTarget.All, SpawnY);
+            /*View.RPC("DiamondRPC",  RpcTarget.All, SpawnY);*/
         }
 
-        [PunRPC]
+       /* [PunRPC]
         private void DiamondRPC(int SpawnY)
         {
             if (StartBool == true)
@@ -76,7 +76,7 @@ namespace Battle1.Scripts.Test.Elmeri
                 StartCoroutine(SpawnDiamond());
             }
         }
-
+*/
         void OnDrawGizmosSelected()
         {
             Gizmos.color = new Color(1, 0, 0, 0.5f);

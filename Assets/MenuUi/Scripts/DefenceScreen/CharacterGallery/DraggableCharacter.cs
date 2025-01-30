@@ -1,12 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-//using ExitGames.Client.Photon;
 using MenuUi.Scripts.SwipeNavigation;
 using TMPro;
 using Altzone.Scripts.Model.Poco.Game;
+using System;
+using MenuUi.Scripts.DefenceScreen.CharacterGallery;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -15,13 +14,15 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private Image _spriteImage;
         [SerializeField] private Image _backgroundSpriteImage;
         [SerializeField] private TextMeshProUGUI _characterNameText;
+        [SerializeField] private AspectRatioFitter _aspectRatioFitter;
+        [SerializeField] private PieChartPreview _piechartPreview;
 
         private CharacterID _id;
 
         private Button button;
         private ColorBlock originalColors;
 
-        [HideInInspector] public Transform parentAfterDrag;
+        [HideInInspector] public Transform parentBeforeDrag;
         private Transform previousParent;
 
         public Transform allowedSlot;
@@ -32,6 +33,8 @@ namespace MenuUi.Scripts.CharacterGallery
         public delegate void ParentChangedEventHandler(Transform newParent);
         public event ParentChangedEventHandler OnParentChanged;
 
+        public Action OnRemovedFromTopSlot;
+
         [SerializeField]
         private SwipeBlockType _blockType = SwipeBlockType.All;
         [SerializeField]
@@ -39,6 +42,26 @@ namespace MenuUi.Scripts.CharacterGallery
         public int characterTextCounter;
 
         public CharacterID Id { get => _id; }
+
+        private Sprite _selectedBackgroundSprite;
+        private Sprite _unselectedBackgroundSprite;
+
+
+        private void Awake()
+        {
+            _piechartPreview.gameObject.SetActive(false);
+        }
+
+
+        private void OnEnable()
+        {
+            if (_piechartPreview.gameObject.activeInHierarchy)
+            {
+                _piechartPreview.UpdateChart(Id);
+            }
+        }
+
+
 
         private void Start()
         {
@@ -50,12 +73,11 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 initialSlot = transform.parent;
             }
-            CheckSelectedCharacterSlotText();
         }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            parentAfterDrag = transform.parent;
+            parentBeforeDrag = transform.parent;
             previousParent = transform.parent.parent.parent;
             transform.SetParent(transform.parent.parent.parent.parent);
             transform.SetAsLastSibling();
@@ -70,74 +92,12 @@ namespace MenuUi.Scripts.CharacterGallery
             GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
         }
 
+
         public void OnDrag(PointerEventData eventData)
         {
             transform.position = eventData.position;
         }
-        public void CheckSelectedCharacterSlotText()
-        {
-            var text1 = GameObject.FindGameObjectWithTag("TextSuoja1");
-            var text2 = GameObject.FindGameObjectWithTag("TextSuoja2");
-            var text3 = GameObject.FindGameObjectWithTag("TextSuoja3");
 
-            /*characterTextCounter = (isAdditive) ? characterTextCounter + 1 : characterTextCounter - 1;
-            
-            if (characterTextCounter < 0)
-                characterTextCounter = 0;
-
-            if (characterTextCounter > 3)
-                characterTextCounter = 3;*/
-
-            if (_modelView._CurSelectedCharacterSlot[2].transform.childCount > 0)
-            {
-                text1.SetActive(false);
-                text2.SetActive(false);
-                text3.SetActive(false);
-            }
-            else if (_modelView._CurSelectedCharacterSlot[1].transform.childCount > 0)
-            {
-                text1.SetActive(false);
-                text2.SetActive(false);
-                text3.SetActive(true);
-            }
-            else if (_modelView._CurSelectedCharacterSlot[0].transform.childCount > 0)
-            {
-                text1.SetActive(false);
-                text2.SetActive(true);
-                text3.SetActive(true);
-            }
-            else
-            {
-                text1.SetActive(true);
-                text2.SetActive(true);
-                text3.SetActive(true);
-            }
-
-            /*if (characterTextCounter > 2)
-            {
-                text1.SetActive(false);
-                text2.SetActive(false);
-                text3.SetActive(false);
-            }
-            else if (characterTextCounter > 1)
-            {
-                text1.SetActive(false);
-                text2.SetActive(false);
-                text3.SetActive(true);
-            }
-            else if (characterTextCounter > 0)
-            {
-                text1.SetActive(false);
-                text2.SetActive(true);
-                text3.SetActive(true);
-            }
-            else
-            {
-                text1.SetActive(true);
-                text2.SetActive(true);
-                text3.SetActive(true);
-            }*/
-        }
 
         public void OnEndDrag(PointerEventData eventData)
         {
@@ -152,7 +112,6 @@ namespace MenuUi.Scripts.CharacterGallery
                     if (targetCharacter.transform.parent.CompareTag("Topslot"))
                     {
                         droppedSlot = targetCharacter.transform.parent;
-                        droppedSlot.GetComponent<CharacterSlot>()?.SetCharacterDown();
                     }
                 }
                 else
@@ -167,6 +126,11 @@ namespace MenuUi.Scripts.CharacterGallery
 
             if (droppedSlot == null || (droppedSlot != allowedSlot && droppedSlot.tag != "Topslot"))
             {
+                if (parentBeforeDrag.CompareTag("Topslot")) // if this character is in topslot 
+                {
+                    OnRemovedFromTopSlot?.Invoke();
+                }
+
                 transform.SetParent(initialSlot);
                 transform.position = initialSlot.position;
             }
@@ -176,17 +140,44 @@ namespace MenuUi.Scripts.CharacterGallery
                 if (droppedSlot.tag == "Topslot")
                 {
                     DraggableCharacter topSlotCharacter = droppedSlot.GetComponentInChildren<DraggableCharacter>();
-                    if (topSlotCharacter != null)
+                    if (topSlotCharacter != null) // if the droppedSlot has a character
                     {
-                        // Move topSlotCharacter to it's initialSlot
-                        Transform topSlotInitialSlot = topSlotCharacter.initialSlot;
-                        topSlotCharacter.transform.SetParent(topSlotInitialSlot);
-                        topSlotCharacter.transform.position = topSlotInitialSlot.position;
+                        if (parentBeforeDrag.CompareTag("Topslot")) // if this character was in topslot, swap characters
+                        {
+                            // set the other character to this character's slot
+                            topSlotCharacter.transform.SetParent(parentBeforeDrag);
+                            topSlotCharacter.transform.position = parentBeforeDrag.position;
+
+                            topSlotCharacter._backgroundSpriteImage.raycastTarget = true;
+                            topSlotCharacter.button.colors = topSlotCharacter.originalColors;
+
+                            topSlotCharacter.previousParent = topSlotCharacter.transform.parent;
+                            topSlotCharacter.HandleParentChange(topSlotCharacter.previousParent);
+
+                            // set this character to the other character's slot
+                            transform.SetParent(droppedSlot);
+                            transform.position = droppedSlot.position;
+
+                            _backgroundSpriteImage.raycastTarget = true;
+                            button.colors = originalColors;
+
+                            previousParent = transform.parent;
+                            HandleParentChange(previousParent);
+
+                            return;
+                        }
+                        else // return the dropped topslotcharacter to its initialSlot
+                        {
+                            Transform topSlotInitialSlot = topSlotCharacter.initialSlot;
+                            topSlotCharacter.transform.SetParent(topSlotInitialSlot);
+                            topSlotCharacter.transform.position = topSlotInitialSlot.position;
+                            topSlotCharacter.SetUnselectedVisuals();
+                        }
                     }
 
                     // Find the first empty topslot
                     Transform targetSlot = null;
-                    foreach (var slot in _modelView._CurSelectedCharacterSlot)
+                    foreach (var slot in _modelView._CurSelectedCharacterSlots)
                     {
                         if (slot.transform.childCount == 0)
                         {
@@ -214,30 +205,62 @@ namespace MenuUi.Scripts.CharacterGallery
                 previousParent = transform.parent;
                 HandleParentChange(previousParent);
             }
-            CheckSelectedCharacterSlotText();
         }
+
 
         private void HandleParentChange(Transform newParent)
         {
             // Go through each topslot
-            foreach (var slot in _modelView._CurSelectedCharacterSlot)
+            foreach (var slot in _modelView._CurSelectedCharacterSlots)
             {
                 // Check if newParent is one of the topslots
                 if (newParent == slot.transform)
                 {
+                    SetSelectedVisuals();
                     OnParentChanged?.Invoke(newParent);
+                    return;
                 }
             }
-
+            SetUnselectedVisuals();
         }
 
 
-        public void SetInfo(Sprite sprite, string name, CharacterID id, ModelView view)
+        public void SetInfo(Sprite sprite, Sprite backgroundSprite, Sprite selectedBackgroundSprite, string name, CharacterID id, ModelView view)
         {
             _spriteImage.sprite = sprite;
+            _backgroundSpriteImage.sprite = backgroundSprite;
+            _selectedBackgroundSprite = selectedBackgroundSprite;
+            _unselectedBackgroundSprite = backgroundSprite;
             _characterNameText.text = name;
             _id = id;
             _modelView = view;
+        }
+
+
+        public void SetSelectedVisuals()
+        {
+            _backgroundSpriteImage.sprite = _selectedBackgroundSprite;
+            _aspectRatioFitter.aspectRatio = 1;
+            _characterNameText.gameObject.SetActive(false);
+
+            _spriteImage.rectTransform.anchorMax = new Vector2(0.9f, 0.9f);
+            _spriteImage.rectTransform.anchorMin = new Vector2(0.1f, 0.1f);
+
+            _piechartPreview.gameObject.SetActive(true);
+            _piechartPreview.UpdateChart(Id);
+        }
+
+
+        public void SetUnselectedVisuals()
+        {
+            _backgroundSpriteImage.sprite = _unselectedBackgroundSprite;
+            _aspectRatioFitter.aspectRatio = 0.6f;
+            _characterNameText.gameObject.SetActive(true);
+
+            _spriteImage.rectTransform.anchorMax = new Vector2(0.9f, 0.75f);
+            _spriteImage.rectTransform.anchorMin = new Vector2(0.1f, 0.1f);
+
+            _piechartPreview.gameObject.SetActive(false);
         }
     }
 }

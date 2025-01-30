@@ -30,43 +30,56 @@ namespace Quantum
 
             if (input->MouseClick)
             {
-                filter.PlayerData->TargetPosition.X = input->MousePosition.X;
-                filter.PlayerData->TargetPosition.Y = input->MousePosition.Z;
-                Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", filter.PlayerData->TargetPosition);
+                //checks if player is allowed to move to that side of the arena
+                if (((filter.PlayerData->Player == 0 || filter.PlayerData->Player == 1) && input->MousePosition.Z < 0)
+                    || ((filter.PlayerData->Player == 2 || filter.PlayerData->Player == 3) && input->MousePosition.Z > 0))
+                {
+                    filter.PlayerData->TargetPosition.X = input->MousePosition.X;
+                    filter.PlayerData->TargetPosition.Y = input->MousePosition.Z;
+                    Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", filter.PlayerData->TargetPosition);
+                }
+
+                //if player is not allowed to move to that side of the arena, targetposition is for as far as a player can go
+                else
+                {
+                    filter.PlayerData->TargetPosition.X = input->MousePosition.X;
+                    filter.PlayerData->TargetPosition.Y = 0;
+                }
             }
 
             if (input->RotateMotion)
             {
-                FP maxAngle = FP._1;
+                FP maxAngle = FP.Rad_45;
 
                 //stops player before rotation
                 filter.PlayerData->TargetPosition = filter.Transform->Position;
 
                 //rotates to right
-                if (input->RotationDirection > 0 && filter.Transform->Rotation < maxAngle)
+                if (input->RotationDirection > 0 && filter.PlayerData->Rotation < maxAngle)
                 {
-                    filter.Transform->Rotation += rotationSpeed;
-                    Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", filter.Transform->Rotation);
+                    filter.PlayerData->Rotation += rotationSpeed;
+                    Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", filter.PlayerData->Rotation);
                 }
 
                 //rotates to left
-                else if (input->RotationDirection < 0 && filter.Transform->Rotation > -maxAngle)
+                else if (input->RotationDirection < 0 && filter.PlayerData->Rotation > -maxAngle)
                 {
-                    filter.Transform->Rotation -= rotationSpeed;
-                    Debug.LogFormat("[PlayerRotatingSystem] Leaning left(rotation: {0}", filter.Transform->Rotation);
+                    filter.PlayerData->Rotation -= rotationSpeed;
+                    Debug.LogFormat("[PlayerRotatingSystem] Leaning left(rotation: {0}", filter.PlayerData->Rotation);
                 }
-
             }
 
             //returns player to 0 rotation when RotateMotion-input ends
-            if (!input->RotateMotion && filter.Transform->Rotation != 0)
+            if (!input->RotateMotion && filter.PlayerData->Rotation != 0)
             {
-                if (filter.Transform->Rotation > 0)
-                    filter.Transform->Rotation -= rotationSpeed;
+                if (filter.PlayerData->Rotation > 0)
+                    filter.PlayerData->Rotation -= rotationSpeed;
 
                 else
-                    filter.Transform->Rotation += rotationSpeed;
+                    filter.PlayerData->Rotation += rotationSpeed;
             }
+
+            filter.Transform->Rotation = ((filter.PlayerData->Player == 0 || filter.PlayerData->Player == 1) ? 0 : FP.Rad_180) + filter.PlayerData->Rotation;
 
             //moves player
             if (filter.Transform->Position != filter.PlayerData->TargetPosition)

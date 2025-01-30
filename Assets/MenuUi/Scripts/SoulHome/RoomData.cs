@@ -5,7 +5,7 @@ using UnityEngine;
 using MenuUI.Scripts.SoulHome;
 using Debug = Prg.Debug;
 using Altzone.Scripts.Model.Poco.Game;
-using MenuUi.Scripts.Storage;
+using Altzone.Scripts.ReferenceSheets;
 
 namespace MenuUI.Scripts.SoulHome
 {

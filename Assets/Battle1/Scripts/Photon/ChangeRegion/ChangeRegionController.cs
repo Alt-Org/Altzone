@@ -4,7 +4,7 @@ using System.Linq;
 using Altzone.Scripts.Config;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;*/
 
 namespace MenuUi.Scripts.ChangeRegion
 {
@@ -83,7 +83,7 @@ namespace MenuUi.Scripts.ChangeRegion
             Debug.Log($"{name} disconnect first");
             for (; enabled;)
             {
-                if (PhotonNetwork.InLobby)
+                /*if (PhotonNetwork.InLobby)
                 {
                     PhotonLobby.LeaveLobby();
                 }
@@ -100,13 +100,13 @@ namespace MenuUi.Scripts.ChangeRegion
                 {
                     // Ready to connect for region list.
                     break;
-                }
+                }*/
                 yield return null;
             }
             Debug.Log($"{name} then connect");
             for (; enabled;)
             {
-                if (PhotonWrapper.CanConnect)
+               /* if (PhotonWrapper.CanConnect)
                 {
                     // Connect -> ConnectedToMasterServer
                     PhotonLobby.Connect(PhotonNetwork.NickName);
@@ -115,7 +115,7 @@ namespace MenuUi.Scripts.ChangeRegion
                 {
                     // Ready to start pinging game servers.
                     break;
-                }
+                }*/
                 yield return null;
             }
             // At this point we should have a region list (without Ping values)
