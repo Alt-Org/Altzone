@@ -53,7 +53,7 @@ public class FlexibleGridLayout : LayoutGroup
     private Vector2 _preferredCellSize;
 
     [SerializeField, Min(0)]
-    private float _cellAspectRatio;
+    private float _cellAspectRatio = 1;
 
     [SerializeField, Tooltip("The spacing between grid cells."), Min(0)]
     private Vector2 _cellSpacing;
@@ -68,8 +68,6 @@ public class FlexibleGridLayout : LayoutGroup
     public override void CalculateLayoutInputHorizontal()
     {
         base.CalculateLayoutInputHorizontal();
-
-        _cellSize = _preferredCellSize;
         
         if (_gridFit == FitType.Dynamic)
         {
@@ -96,17 +94,46 @@ public class FlexibleGridLayout : LayoutGroup
             _rows = _rowAmount;
             _columns = Mathf.CeilToInt(transform.childCount / (float)_rows);
         }
-        
-        float parentWidth = rectTransform.rect.width;
-        float parentHeight = rectTransform.rect.height;
 
-        float cellWidth = parentWidth / (float)_columns - ((_cellSpacing.x / (float)_columns) * (_columns - 1))
-            - (padding.left / (float)_columns) - (padding.right / (float)_columns);
-        float cellHeight = parentHeight / (float)_rows - ((_cellSpacing.y / (float)_rows) * (_rows - 1))
-            - (padding.top / (float)_rows) - (padding.bottom / (float)_rows); ;
 
-        _cellSize.x = _fitX ? cellWidth : _cellSize.x;
-        _cellSize.y = _fitY ? cellHeight : _cellSize.y;
+        float cellWidth = 0;
+        float cellHeight = 0;
+
+        switch (_gridCellSize)
+        {
+            case CellSizeType.Manual:
+                _cellSize = _preferredCellSize;
+                break;
+
+            case CellSizeType.AspectRatio:
+
+                if (_gridFit == FitType.Dynamic || _gridFit == FitType.FixedColumns)
+                {
+                    float parentWidth = rectTransform.rect.width;
+
+                    cellWidth = parentWidth / (float)_columns - ((_cellSpacing.x / (float)_columns) * (_columns - 1))
+                        - (padding.left / (float)_columns) - (padding.right / (float)_columns);
+
+                    cellHeight = cellWidth / _cellAspectRatio;
+                }
+                else if (_gridFit == FitType.FixedRows)
+                {
+                    float parentHeight = rectTransform.rect.height;
+
+                    cellHeight = parentHeight / (float)_rows - ((_cellSpacing.y / (float)_rows) * (_rows - 1))
+                        - (padding.top / (float)_rows) - (padding.bottom / (float)_rows);
+
+                    cellWidth = _cellAspectRatio * cellHeight;
+                }
+                break;
+
+            case CellSizeType.BasedOnChild:
+                break;
+        }
+
+        _cellSize.x = cellWidth;
+        _cellSize.y = cellHeight;
+
 
         int columnCount = 0;
         int rowCount = 0;
