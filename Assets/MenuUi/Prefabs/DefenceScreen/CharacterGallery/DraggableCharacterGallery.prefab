@@ -603,7 +603,7 @@ RectTransform:
   - {fileID: 6035648118377856402}
   m_Father: {fileID: 7321252993112423886}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.05, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0.8, y: 0.8}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
@@ -2364,22 +2364,8 @@ MonoBehaviour:
   HorizontalContentPanel: {fileID: 8458840792069638730}
   _characterSlotprefab: {fileID: 4297384447084397024, guid: 4aaf0fba9ac0bb64bbb8abb1ff0c485b,
     type: 3}
-  _backgroundSprites:
-  - {fileID: 21300000, guid: e4fc5e05f8f0f0842b6f1a37a8b74e2e, type: 3}
-  - {fileID: 21300000, guid: 5d53cf1d609dcc742aaecb5de61e6c9d, type: 3}
-  - {fileID: 21300000, guid: 872b37f840d89504982780c46a4c1ea5, type: 3}
-  - {fileID: 21300000, guid: 50776d2c74951034d826e3080cf53828, type: 3}
-  - {fileID: 21300000, guid: 542fee383fb78a64b8fad82a31c1f8c8, type: 3}
-  - {fileID: 21300000, guid: f588dfdda7d94a745bcf226af89fdba5, type: 3}
-  - {fileID: 21300000, guid: 9df3e17dc0d669e4eb95a35a1616b9d7, type: 3}
-  _selectedBackgroundSprites:
-  - {fileID: 21300000, guid: 2de27fd1a232ae946888f7fbef9c1851, type: 3}
-  - {fileID: 21300000, guid: 17116b55cd19642489acf2879ab4ca7a, type: 3}
-  - {fileID: 21300000, guid: c1f41346ac949f44589d913dec93bb99, type: 3}
-  - {fileID: 21300000, guid: 27ac61efc57b33a4a8f380927ba7cb28, type: 3}
-  - {fileID: 21300000, guid: 4ed3bf339af3aad4eb4117a5daf3f712, type: 3}
-  - {fileID: 21300000, guid: 6ff4a90e01ec6b6488281153ce5efcd8, type: 3}
-  - {fileID: 21300000, guid: cb1ba74ba2ebe8243a9d23024ab22cee, type: 3}
+  _backgroundSprites: []
+  _selectedBackgroundSprites: []
   _selectedCharacterSlotText1: {fileID: 7596711068456077473}
   _selectedCharacterSlotText2: {fileID: 4701824001799360936}
   _selectedCharacterSlotText3: {fileID: 2156979043524266241}

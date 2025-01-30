@@ -43,9 +43,6 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public CharacterID Id { get => _id; }
 
-        private Sprite _selectedBackgroundSprite;
-        private Sprite _unselectedBackgroundSprite;
-
 
         private void Awake()
         {
@@ -225,12 +222,9 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
-        public void SetInfo(Sprite sprite, Sprite backgroundSprite, Sprite selectedBackgroundSprite, string name, CharacterID id, ModelView view)
+        public void SetInfo(Sprite sprite, string name, CharacterID id, ModelView view)
         {
             _spriteImage.sprite = sprite;
-            _backgroundSpriteImage.sprite = backgroundSprite;
-            _selectedBackgroundSprite = selectedBackgroundSprite;
-            _unselectedBackgroundSprite = backgroundSprite;
             _characterNameText.text = name;
             _id = id;
             _modelView = view;
@@ -239,7 +233,6 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public void SetSelectedVisuals()
         {
-            _backgroundSpriteImage.sprite = _selectedBackgroundSprite;
             _aspectRatioFitter.aspectRatio = 1;
             _characterNameText.gameObject.SetActive(false);
 
@@ -253,7 +246,6 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public void SetUnselectedVisuals()
         {
-            _backgroundSpriteImage.sprite = _unselectedBackgroundSprite;
             _aspectRatioFitter.aspectRatio = 0.6f;
             _characterNameText.gameObject.SetActive(true);
 

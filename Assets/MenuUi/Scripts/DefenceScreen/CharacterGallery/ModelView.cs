@@ -17,9 +17,6 @@ namespace MenuUi.Scripts.CharacterGallery
 
         [SerializeField] private GameObject _characterSlotprefab;
 
-        [SerializeField] private Sprite[] _backgroundSprites;
-        [SerializeField] private Sprite[] _selectedBackgroundSprites;
-
         [SerializeField] private TextMeshProUGUI _selectedCharacterSlotText1;
         [SerializeField] private TextMeshProUGUI _selectedCharacterSlotText2;
         [SerializeField] private TextMeshProUGUI _selectedCharacterSlotText3;
@@ -133,41 +130,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 GameObject slot = Instantiate(_characterSlotprefab, GetContent());
 
-                Sprite backgroundSprite = null;
-                Sprite selectedBackgroundSprite = null;
-                switch (character.ClassID) // hard coded solution but works for now, need to be refactored later
-                {
-                    case CharacterClassID.Desensitizer:
-                        backgroundSprite = _backgroundSprites[0];
-                        selectedBackgroundSprite = _selectedBackgroundSprites[0];
-                        break;
-                    case CharacterClassID.Trickster:
-                        backgroundSprite = _backgroundSprites[1];
-                        selectedBackgroundSprite = _selectedBackgroundSprites[1];
-                        break;
-                    case CharacterClassID.Obedient:
-                        backgroundSprite = _backgroundSprites[2];
-                        selectedBackgroundSprite = _selectedBackgroundSprites[2];
-                        break;
-                    case CharacterClassID.Projector:
-                        backgroundSprite = _backgroundSprites[3];
-                        selectedBackgroundSprite = _selectedBackgroundSprites[3];
-                        break;
-                    case CharacterClassID.Retroflector:
-                        backgroundSprite = _backgroundSprites[4];
-                        selectedBackgroundSprite = _selectedBackgroundSprites[4];
-                        break;
-                    case CharacterClassID.Confluent:
-                        backgroundSprite = _backgroundSprites[5];
-                        selectedBackgroundSprite = _selectedBackgroundSprites[5];
-                        break;
-                    case CharacterClassID.Intellectualizer:
-                        backgroundSprite = _backgroundSprites[6];
-                        selectedBackgroundSprite = _selectedBackgroundSprites[6];
-                        break;
-                }
-
-                slot.GetComponent<CharacterSlot>().SetInfo(info2.GalleryImage, backgroundSprite, selectedBackgroundSprite, info2.Name, character.Id, this);
+                slot.GetComponent<CharacterSlot>().SetInfo(info2.GalleryImage, info2.Name, character.Id, this);
 
                 Button button = slot.transform.Find("GalleryCharacter").GetComponent<Button>();
                 _characterButtons.Add(button);
