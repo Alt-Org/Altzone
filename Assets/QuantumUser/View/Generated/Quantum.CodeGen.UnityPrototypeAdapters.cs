@@ -50,6 +50,19 @@ namespace Quantum.Prototypes.Unity {
   #endif //;
   
   [System.SerializableAttribute()]
+  public unsafe partial class ShieldDataPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.ShieldDataPrototype> {
+    public Quantum.QuantumEntityPrototype TeamMate;
+    public QBoolean TeamMateSet;
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.ShieldDataPrototype prototype);
+    public override Quantum.Prototypes.ShieldDataPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.ShieldDataPrototype();
+      converter.Convert(this.TeamMate, out result.TeamMate);
+      converter.Convert(this.TeamMateSet, out result.TeamMateSet);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
   public unsafe partial class SoulWallPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.SoulWallPrototype> {
     public Quantum.QuantumEntityPrototype ChildEntity;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.SoulWallPrototype prototype);

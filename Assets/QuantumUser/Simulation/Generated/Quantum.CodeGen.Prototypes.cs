@@ -151,6 +151,21 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.ShieldData))]
+  public unsafe class ShieldDataPrototype : ComponentPrototype<Quantum.ShieldData> {
+    public MapEntityId TeamMate;
+    public QBoolean TeamMateSet;
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.ShieldData component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.ShieldData result, in PrototypeMaterializationContext context = default) {
+        PrototypeValidator.FindMapEntity(this.TeamMate, in context, out result.TeamMate);
+        result.TeamMateSet = this.TeamMateSet;
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.SoulWall))]
   public unsafe class SoulWallPrototype : ComponentPrototype<Quantum.SoulWall> {
     public MapEntityId ChildEntity;
@@ -161,21 +176,6 @@ namespace Quantum.Prototypes {
     }
     public void Materialize(Frame frame, ref Quantum.SoulWall result, in PrototypeMaterializationContext context = default) {
         PrototypeValidator.FindMapEntity(this.ChildEntity, in context, out result.ChildEntity);
-    }
-  }
-  [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.SpawnIdentifier))]
-  public unsafe partial class SpawnIdentifierPrototype : ComponentPrototype<Quantum.SpawnIdentifier> {
-    [HideInInspector()]
-    public Int32 _empty_prototype_dummy_field_;
-    partial void MaterializeUser(Frame frame, ref Quantum.SpawnIdentifier result, in PrototypeMaterializationContext context);
-    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.SpawnIdentifier component = default;
-        Materialize((Frame)f, ref component, in context);
-        return f.Set(entity, component) == SetResult.ComponentAdded;
-    }
-    public void Materialize(Frame frame, ref Quantum.SpawnIdentifier result, in PrototypeMaterializationContext context = default) {
-        MaterializeUser(frame, ref result, in context);
     }
   }
 }
