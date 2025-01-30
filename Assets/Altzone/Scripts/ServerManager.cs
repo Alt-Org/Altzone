@@ -715,7 +715,9 @@ public class ServerManager : MonoBehaviour
                 goal=data.Goals,
                 phrase=data.Phrase,
                 language=data.Language
-            }).ToString();
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
+        ).ToString();
 
         yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "clan", body, AccessToken, request =>
         {
