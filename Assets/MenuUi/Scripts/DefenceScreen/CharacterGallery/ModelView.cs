@@ -21,6 +21,10 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private TextMeshProUGUI _selectedCharacterSlotText2;
         [SerializeField] private TextMeshProUGUI _selectedCharacterSlotText3;
 
+        [SerializeField] private Image _selectedCharacterSlotDetails1;
+        [SerializeField] private Image _selectedCharacterSlotDetails2;
+        [SerializeField] private Image _selectedCharacterSlotDetails3;
+
         private bool _isReady;
 
         // character buttons
@@ -214,26 +218,32 @@ namespace MenuUi.Scripts.CharacterGallery
             if (_CurSelectedCharacterSlots[2].transform.childCount > 0)
             {
                 _selectedCharacterSlotText3.enabled = false;
+                _selectedCharacterSlotDetails3.enabled = false;
             }
             else
             {
                 _selectedCharacterSlotText3.enabled = true;
+                _selectedCharacterSlotDetails3.enabled = true;
             }
             if (_CurSelectedCharacterSlots[1].transform.childCount > 0)
             {
                 _selectedCharacterSlotText2.enabled = false;
+                _selectedCharacterSlotDetails2.enabled = false;
             }
             else
             {
                 _selectedCharacterSlotText2.enabled = true;
+                _selectedCharacterSlotDetails2.enabled = true;
             }
             if (_CurSelectedCharacterSlots[0].transform.childCount > 0)
             {
                 _selectedCharacterSlotText1.enabled = false;
+                _selectedCharacterSlotDetails1.enabled = false;
             }
             else
             {
                 _selectedCharacterSlotText1.enabled = true;
+                _selectedCharacterSlotDetails1.enabled = true;
             }
         }
 
