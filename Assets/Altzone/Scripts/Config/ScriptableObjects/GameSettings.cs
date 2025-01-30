@@ -19,7 +19,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     {
         private const string GameSettingsName = "GameSettings";
 
-        [SerializeField, Header("Väri Esimerkki"), ColorHtmlProperty] private Color _ihanMalliksiVaan;
+        [SerializeField, Header("VÃ¤ri Esimerkki"), ColorHtmlProperty] private Color _ihanMalliksiVaan;
 
         [Header("Game Variables")] public GameVariables _variables;
 
