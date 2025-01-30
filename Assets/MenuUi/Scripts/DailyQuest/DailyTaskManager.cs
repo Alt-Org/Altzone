@@ -86,6 +86,13 @@ public class DailyTaskManager : MonoBehaviour
         _cancelTaskButton.onClick.AddListener(() => StartCancelTask());
 
         _ownTaskTabButton.interactable = false;
+
+        DailyTaskProgressManager.Instance.OnTaskDone += ClearCurrentTask;
+    }
+
+    private void OnDestroy()
+    {
+        DailyTaskProgressManager.Instance.OnTaskDone -= ClearCurrentTask;
     }
 
     private IEnumerator GetSetExistingTask()
@@ -390,12 +397,15 @@ public class DailyTaskManager : MonoBehaviour
             yield break; //TODO: Add error handling.
         }
 
+        _playerData = savePlayerData;
         StartCoroutine(SetHandleOwnTask(playerTask, savePlayerData));
     }
 
     //Set OwnTask page.
     private IEnumerator SetHandleOwnTask(PlayerTask playerTask, PlayerData playerData)
     {
+        DailyTaskProgressManager.Instance.TESTSetPlayerData(_playerData); //TODO: Test code. Remove when server ready.
+        DailyTaskProgressManager.Instance.UpdateCurrentTask(playerData);
         _ownTaskId = playerTask.Id;
         _ownTaskPageHandler.SetDailyTask(playerTask.Content, playerTask.Amount, playerTask.Points, playerTask.Coins);
         _ownTaskPageHandler.SetTaskProgress(playerData.TaskProgress);
@@ -458,8 +468,7 @@ public class DailyTaskManager : MonoBehaviour
         //yield return new WaitUntil(() => callback != null);
 
         //Testing code
-        _playerData = playerData;
-        callback(_playerData);
+        callback(playerData);
 
         yield return true;
     }
@@ -535,8 +544,30 @@ public class DailyTaskManager : MonoBehaviour
             yield break; //TODO: Add error handling.
         }
 
+        _playerData = savePlayerData;
+        DailyTaskProgressManager.Instance.TESTSetPlayerData(_playerData); //TODO: Remove when server ready.
+        DailyTaskProgressManager.Instance.UpdateCurrentTask(savePlayerData);
         StartCoroutine(_ownTaskPageHandler.ClearCurrentTask());
         Debug.Log("Task id: " + _ownTaskId + ", has been canceled.");
+        _ownTaskId = null;
+    }
+
+    public IEnumerator ClearCurrentTask()
+    {
+        PlayerData playerData = null;
+        GetPlayerData(data => playerData = data);
+
+        yield return new WaitUntil(() => (System.Threading.SpinWait.SpinUntil(() => playerData != null, _timeoutMilliseconds)));
+
+        if (playerData == null)
+        {
+            Debug.LogError($"Get player data timeout or null.");
+            yield break; //TODO: Add error handling.
+        }
+        
+        _playerData = playerData;
+        StartCoroutine(_ownTaskPageHandler.ClearCurrentTask());
+        Debug.Log("Task id: " + _ownTaskId + ", has been cleard.");
         _ownTaskId = null;
     }
 
