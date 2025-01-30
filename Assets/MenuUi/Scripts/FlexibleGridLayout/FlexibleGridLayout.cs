@@ -25,7 +25,7 @@ public class FlexibleGridLayout : LayoutGroup
 
     [Header("Flexible Grid")]
 
-    [SerializeField, Tooltip("How the grid will fit its children.\n\nDynamic: Determine column amount based on game's aspect ratio and cell size.\nFixed Columns: Column amount stays the same.\nFixed Rows: Row amount stays the same.")]
+    [SerializeField, Tooltip("How the grid will fit its children.\n\nDynamic: Determine column amount based on screen's aspect ratio.\nFixed Columns: Column amount stays the same.\nFixed Rows: Row amount stays the same.")]
     private FitType _gridFit = FitType.Dynamic;
 
     [SerializeField, Min(1)]
@@ -68,34 +68,35 @@ public class FlexibleGridLayout : LayoutGroup
     public override void CalculateLayoutInputHorizontal()
     {
         base.CalculateLayoutInputHorizontal();
-        
-        if (_gridFit == FitType.Dynamic)
+
+        // Calculating column and row amount
+        switch (_gridFit)
         {
-            float screenAspectRatio = (float)Screen.currentResolution.height / Screen.currentResolution.width;
-            screenAspectRatio = Mathf.Clamp(screenAspectRatio, ShortestAspectRatio, TallestAspectRatio);
+            case FitType.Dynamic:
+                float screenAspectRatio = (float)Screen.currentResolution.height / Screen.currentResolution.width;
+                screenAspectRatio = Mathf.Clamp(screenAspectRatio, ShortestAspectRatio, TallestAspectRatio);
 
-            // the percentage at which point the current aspect ratio sits between shortest and tallest aspect ratios
-            float aspectratioPercentage = (screenAspectRatio - ShortestAspectRatio) / (TallestAspectRatio - ShortestAspectRatio);
+                // the percentage at which point the current aspect ratio sits between shortest and tallest aspect ratios
+                float aspectratioPercentage = (screenAspectRatio - ShortestAspectRatio) / (TallestAspectRatio - ShortestAspectRatio);
 
-            // getting column amount between min and max amount of columns based on the percentage
-            _columns = Mathf.RoundToInt(_maxDynamicColumns + (_minDynamicColumns - _maxDynamicColumns) * aspectratioPercentage);
+                // getting column amount between min and max amount of columns based on the percentage
+                _columns = Mathf.RoundToInt(_maxDynamicColumns + (_minDynamicColumns - _maxDynamicColumns) * aspectratioPercentage);
 
-            _rows = Mathf.CeilToInt(transform.childCount / (float)_columns);
+                _rows = Mathf.CeilToInt(transform.childCount / (float)_columns);
+                break;
+
+            case FitType.FixedColumns:
+                _columns = _columnAmount;
+                _rows = Mathf.CeilToInt(transform.childCount / (float)_columns);
+                break;
+
+            case FitType.FixedRows:
+                _rows = _rowAmount;
+                _columns = Mathf.CeilToInt(transform.childCount / (float)_rows);
+                break;
         }
 
-        if (_gridFit == FitType.FixedColumns)
-        {
-            _columns = _columnAmount;
-            _rows = Mathf.CeilToInt(transform.childCount / (float)_columns);
-        }
-
-        if (_gridFit == FitType.FixedRows)
-        {
-            _rows = _rowAmount;
-            _columns = Mathf.CeilToInt(transform.childCount / (float)_rows);
-        }
-
-
+        // Scaling grid cells
         float cellWidth = 0;
         float cellHeight = 0;
 
@@ -134,14 +135,11 @@ public class FlexibleGridLayout : LayoutGroup
         _cellSize.x = cellWidth;
         _cellSize.y = cellHeight;
 
-
-        int columnCount = 0;
-        int rowCount = 0;
-
+        // Placing children
         for (int i = 0; i < rectChildren.Count; i++)
         {
-            rowCount = i / _columns;
-            columnCount = i % _columns;
+            int rowCount = i / _columns;
+            int columnCount = i % _columns;
 
             var item = rectChildren[i];
 
@@ -150,9 +148,23 @@ public class FlexibleGridLayout : LayoutGroup
 
             SetChildAlongAxis(item, 0, xPos, _cellSize.x);
             SetChildAlongAxis(item, 1, yPos, _cellSize.y);
-
         }
-        rectTransform.sizeDelta = new Vector2(0, rowCount * _cellSize.y);
+
+        // Scaling the rectTransform
+        if (_gridFit == FitType.Dynamic || _gridFit == FitType.FixedColumns)
+        {
+            rectTransform.anchorMax = Vector2.one;
+            rectTransform.anchorMin = new Vector2(0, 1);
+
+            rectTransform.sizeDelta = new Vector2(0, (_rows * _cellSize.y) + ((_rows - 1) * _cellSpacing.y));
+        }
+        else if (_gridFit == FitType.FixedRows)
+        {
+            rectTransform.anchorMax = new Vector2(0, 1);
+            rectTransform.anchorMin = Vector2.zero;
+
+            rectTransform.sizeDelta = new Vector2((_columns * _cellSize.x) + ((_columns - 1) * _cellSpacing.x), 0);
+        }
     }
 
 

@@ -571,7 +571,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 600}
+  m_SizeDelta: {x: 0, y: 1920}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &5884478403627622171
 MonoBehaviour:
@@ -596,11 +596,11 @@ MonoBehaviour:
   _maxDynamicColumns: 4
   _columnAmount: 1
   _rowAmount: 1
-  _gridCellSize: 0
+  _gridCellSize: 1
   _minCellSize: {x: 0, y: 0}
   _maxCellSize: {x: 0, y: 0}
   _preferredCellSize: {x: 200, y: 200}
-  _cellAspectRatio: 0
+  _cellAspectRatio: 1
   _cellSpacing: {x: 0, y: 0}
 --- !u!1 &6056610009553525226
 GameObject:
