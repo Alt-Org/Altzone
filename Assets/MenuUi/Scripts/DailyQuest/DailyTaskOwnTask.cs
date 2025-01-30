@@ -31,15 +31,13 @@ public class DailyTaskOwnTask : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _randomText;
 
     #region SetTask
-    public IEnumerator SetDailyTask(string taskDescription, int amount, int points, int coins)
+    public void SetDailyTask(string taskDescription, int amount, int points, int coins)
     {
         _taskDescription.text = taskDescription;
         _taskPointsReward.text = "" + points;
         _taskCoinsReward.text = "" + coins;
 
         SetProgressBar(amount);
-
-        yield return (true);
     }
 
     private void SetProgressBar(int amount)
@@ -84,11 +82,9 @@ public class DailyTaskOwnTask : MonoBehaviour
         yield return (true);
     }
 
-    public IEnumerator SetTaskProgress(float progress)
+    public void SetTaskProgress(float progress)
     {
         _taskProgressFillImage.fillAmount = progress;
-
-        yield return new WaitUntil(() => true);
     }
 
     public IEnumerator SetStipend(int points, int coins, int rank)

@@ -9,13 +9,17 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEditorInternal.Profiling.Memory.Experimental;
 using System;
+using TMPro;
 
 public class VoteManager : MonoBehaviour
 {
-    public GameObject Content;
-    public GameObject PollObjectPrefab;
-    public GameObject PollPopup;
-    public GameObject Blocker;
+    [SerializeField] private GameObject Content;
+    [SerializeField] private GameObject PollObjectPrefab;
+    [SerializeField] private GameObject PollPopup;
+    [SerializeField] private GameObject Blocker;
+    [SerializeField] private GameObject NoPollsText;
+
+
     private List<GameObject> Polls = new List<GameObject>();
 
 
@@ -52,6 +56,9 @@ public class VoteManager : MonoBehaviour
 
             obj.gameObject.GetComponent<Button>().onClick.AddListener(delegate { PollPopup.SetActive(true); });
         }
+
+        if (Polls.Count == 0) NoPollsText.SetActive(true);
+        else NoPollsText.SetActive(false);
     }
 
     public void SetPollPopupPollId(string pollId)
