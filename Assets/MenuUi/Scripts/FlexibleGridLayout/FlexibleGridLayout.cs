@@ -6,7 +6,8 @@ public class FlexibleGridLayout : LayoutGroup
 {
     public enum FitType
     {
-        Dynamic,
+        DynamicColumns,
+        DynamicRows,
         FixedColumns,
         FixedRows,
     }
@@ -26,13 +27,19 @@ public class FlexibleGridLayout : LayoutGroup
     [Header("Flexible Grid")]
 
     [SerializeField, Tooltip("How the grid will fit its children.\n\nDynamic: Determine column amount based on screen's aspect ratio.\nFixed Columns: Column amount stays the same.\nFixed Rows: Row amount stays the same.")]
-    private FitType _gridFit = FitType.Dynamic;
+    private FitType _gridFit = FitType.DynamicColumns;
 
     [SerializeField, Min(1)]
     private int _minDynamicColumns = 2;
 
     [SerializeField, Min(1)]
     private int _maxDynamicColumns = 4;
+
+    [SerializeField, Min(1)]
+    private int _minDynamicRows = 2;
+
+    [SerializeField, Min(1)]
+    private int _maxDynamicRows = 4;
 
     [SerializeField, Min(1)]
     private int _columnAmount = 1;
@@ -65,8 +72,6 @@ public class FlexibleGridLayout : LayoutGroup
     private int _columns;
     private Vector2 _cellSize;
 
-    private bool _fitX;
-    private bool _fitY;
 
     public override void CalculateLayoutInputHorizontal()
     {
@@ -75,17 +80,21 @@ public class FlexibleGridLayout : LayoutGroup
         // Calculating column and row amount
         switch (_gridFit)
         {
-            case FitType.Dynamic:
-                float screenAspectRatio = (float)Screen.currentResolution.height / Screen.currentResolution.width;
-                screenAspectRatio = Mathf.Clamp(screenAspectRatio, ShortestAspectRatio, TallestAspectRatio);
+            case FitType.DynamicColumns:
+                // Get the percentage at which point the current aspect ratio sits between shortest and tallest aspect ratios shortest = 1 tallest = 0
+                float aspectRatioPercentage = (GetAspectRatio() - ShortestAspectRatio) / (TallestAspectRatio - ShortestAspectRatio);
 
-                // the percentage at which point the current aspect ratio sits between shortest and tallest aspect ratios
-                float aspectratioPercentage = (screenAspectRatio - ShortestAspectRatio) / (TallestAspectRatio - ShortestAspectRatio);
-
-                // getting column amount between min and max amount of columns based on the percentage
-                _columns = Mathf.RoundToInt(_maxDynamicColumns + (_minDynamicColumns - _maxDynamicColumns) * aspectratioPercentage);
-
+                // Getting column amount between min and max amount of columns based on the aspect ratio
+                _columns = Mathf.RoundToInt(_maxDynamicColumns + (_minDynamicColumns - _maxDynamicColumns) * aspectRatioPercentage);
                 _rows = Mathf.CeilToInt(transform.childCount / (float)_columns);
+                break;
+
+            case FitType.DynamicRows:
+                // Get the aspect ratio percentage shortest = 0 tallest = 1
+                aspectRatioPercentage =  (GetAspectRatio() - TallestAspectRatio) / (ShortestAspectRatio - TallestAspectRatio);
+
+                _rows = Mathf.RoundToInt(_maxDynamicRows + (_minDynamicRows - _maxDynamicRows) * aspectRatioPercentage);
+                _columns = Mathf.CeilToInt(transform.childCount / (float)_rows);
                 break;
 
             case FitType.FixedColumns:
@@ -111,7 +120,7 @@ public class FlexibleGridLayout : LayoutGroup
 
             case CellSizeType.AspectRatio:
 
-                if (_gridFit == FitType.Dynamic || _gridFit == FitType.FixedColumns)
+                if (_gridFit == FitType.DynamicColumns || _gridFit == FitType.FixedColumns)
                 {
                     float parentWidth = rectTransform.rect.width;
 
@@ -120,7 +129,7 @@ public class FlexibleGridLayout : LayoutGroup
 
                     cellHeight = cellWidth / _cellAspectRatio;
                 }
-                else if (_gridFit == FitType.FixedRows)
+                else if (_gridFit == FitType.DynamicRows || _gridFit == FitType.FixedRows)
                 {
                     float parentHeight = rectTransform.rect.height;
 
@@ -163,20 +172,27 @@ public class FlexibleGridLayout : LayoutGroup
         }
 
         // Scaling the rectTransform
-        if (_gridFit == FitType.Dynamic || _gridFit == FitType.FixedColumns)
+        if (_gridFit == FitType.DynamicColumns || _gridFit == FitType.FixedColumns)
         {
             rectTransform.anchorMax = Vector2.one;
             rectTransform.anchorMin = new Vector2(0, 1);
 
             rectTransform.sizeDelta = new Vector2(0, (_rows * _cellSize.y) + ((_rows - 1) * _cellSpacing.y));
         }
-        else if (_gridFit == FitType.FixedRows)
+        else if (_gridFit == FitType.DynamicRows || _gridFit == FitType.FixedRows)
         {
             rectTransform.anchorMax = new Vector2(0, 1);
             rectTransform.anchorMin = Vector2.zero;
 
             rectTransform.sizeDelta = new Vector2((_columns * _cellSize.x) + ((_columns - 1) * _cellSpacing.x), 0);
         }
+    }
+
+
+    private float GetAspectRatio() // Get screen aspect ratio clamped between Shortest and Tallest aspect ratios
+    {
+        float screenAspectRatio = (float)Screen.currentResolution.height / Screen.currentResolution.width;
+        return Mathf.Clamp(screenAspectRatio, ShortestAspectRatio, TallestAspectRatio);
     }
 
 
@@ -192,6 +208,8 @@ public class FlexibleGridLayout : LayoutGroup
         SerializedProperty _gridFitSelection;
         SerializedProperty _gridFitMinColumns;
         SerializedProperty _gridFitMaxColumns;
+        SerializedProperty _gridFitMinRows;
+        SerializedProperty _gridFitMaxRows;
         SerializedProperty _gridFitColumns;
         SerializedProperty _gridFitRows;
 
@@ -217,6 +235,8 @@ public class FlexibleGridLayout : LayoutGroup
             _gridFitSelection = serializedObject.FindProperty(nameof(_gridFit));
             _gridFitMinColumns = serializedObject.FindProperty(nameof(_minDynamicColumns));
             _gridFitMaxColumns = serializedObject.FindProperty(nameof(_maxDynamicColumns));
+            _gridFitMinRows = serializedObject.FindProperty(nameof(_minDynamicRows));
+            _gridFitMaxRows = serializedObject.FindProperty(nameof(_maxDynamicRows));
             _gridFitColumns = serializedObject.FindProperty(nameof(_columnAmount));
             _gridFitRows = serializedObject.FindProperty(nameof(_rowAmount));
 
@@ -246,9 +266,14 @@ public class FlexibleGridLayout : LayoutGroup
 
             switch ((FitType)_gridFitSelection.enumValueIndex)
             {
-                case FitType.Dynamic:
+                case FitType.DynamicColumns:
                     EditorGUILayout.PropertyField(_gridFitMinColumns);
                     EditorGUILayout.PropertyField(_gridFitMaxColumns);
+                    EditorGUILayout.Space();
+                    break;
+                case FitType.DynamicRows:
+                    EditorGUILayout.PropertyField(_gridFitMinRows);
+                    EditorGUILayout.PropertyField(_gridFitMaxRows);
                     EditorGUILayout.Space();
                     break;
                 case FitType.FixedColumns:
