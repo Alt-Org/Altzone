@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Attributes;
@@ -28,7 +29,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         /// <summary>
         /// This can be used for example to load UNITY assets by name for UI at runtime.
         /// </summary>
-        //[Optional] public int UnityKey = -1;
+        [Optional] public string ServerID = "-1";
 
         [Mandatory] public string Name;
         public int Hp;
@@ -75,6 +76,43 @@ namespace Altzone.Scripts.Model.Poco.Game
             DefenceSegmentCount = 0;
         }
 
+        public CustomCharacter(ServerCharacter character)
+        {
+            CharacterID id = CharacterID.None;
+            if (Enum.IsDefined(typeof(CharacterID), int.Parse(character._id)))
+                id =(CharacterID)int.Parse(character._id);
+            Assert.AreNotEqual(CharacterID.None, id);
+
+            var store = Storefront.Get();
+
+            ReadOnlyCollection<BaseCharacter> allItems = null;
+            store.GetAllBaseCharacterYield(result => allItems = result);
+
+            foreach(var item in allItems)
+            {
+                if(item.Id.Equals(id)) _characterBase = item;
+            }
+
+            if(_characterBase == null)
+            {
+                Debug.LogError("Unable to find matching BaseCharacter. Check the id that is being fetched from the server.");
+                return;
+            }
+
+            Id = id;
+            Name = character.name;
+            Hp = int.Parse(character.hp);
+            HpSegmentCount = 0;
+            Speed = int.Parse(character.speed);
+            SpeedSegmentCount = 0;
+            Resistance = int.Parse(character.resistance);
+            ResistanceSegmentCount = 0;
+            Attack = int.Parse(character.attack);
+            AttackSegmentCount = 0;
+            Defence = int.Parse(character.defence);
+            DefenceSegmentCount = 0;
+        }
+
         internal static CustomCharacter CreateEmpty()
         {
             //Assert.AreEqual(customCharacter.CharacterClassId, characterClass.Id, "CharacterClassId mismatch");
@@ -95,7 +133,7 @@ namespace Altzone.Scripts.Model.Poco.Game
                    $", {nameof(Hp)}: {Hp}, {nameof(Speed)}: {Speed}, {nameof(Resistance)}: {Resistance}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";
         }
 
-        private static string GetCharacterName(CharacterID id)
+        public static string GetCharacterName(CharacterID id)
         {
             switch (id)
             {
