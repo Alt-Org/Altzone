@@ -83,7 +83,6 @@ public class DailyTaskProgressManager : MonoBehaviour
                     callback(new(content));
                 else
                 {
-                    //offline testing random generator with id generator
                     Debug.LogError("Could not connect to server and receive player");
                     return;
                 }
@@ -107,7 +106,6 @@ public class DailyTaskProgressManager : MonoBehaviour
         //            callback(new(content));
         //        else
         //        {
-        //            //offline testing random generator with id generator
         //            Debug.LogError("Could not connect to server and save player");
         //            return;
         //        }
@@ -229,7 +227,6 @@ public class DailyTaskProgressManager : MonoBehaviour
     private IEnumerator DistributeRewardsForClan(System.Action<bool> exitCallback)
     {
         ClanData clanData = null;
-        ClanData saveClanData = null;
         Storefront.Get().GetClanData(CurrentPlayerData.ClanId, data => clanData = data);
 
         if (clanData == null)
@@ -240,7 +237,6 @@ public class DailyTaskProgressManager : MonoBehaviour
                     clanData = new(content);
                 else
                 {
-                    //offline testing random generator with id generator
                     Debug.LogError("Could not connect to server and receive clan");
                     return;
                 }
@@ -251,34 +247,34 @@ public class DailyTaskProgressManager : MonoBehaviour
 
         if (clanData == null)
         {
-            Debug.LogError($"Get player data timeout or null.");
+            Debug.LogError($"Get clan data timeout or null.");
             yield break; //TODO: Add error handling.
         }
 
+        clanData.GameCoins += CurrentPlayerTask.Coins;
+        clanData.Points += CurrentPlayerTask.Points;
 
-
-        //Storefront.Get().SaveClanData(CurrentPlayerData.ClanId, data => clanData = data);
-
-        //if (clanData == null)
-        //{
-        //    StartCoroutine(ServerManager.Instance.SaveClanFromServerToDataStorage(content =>
-        //    {
-        //        if (content != null)
-        //            clanData = new(content);
-        //        else
-        //        {
-        //            //offline testing random generator with id generator
-        //            Debug.LogError("Could not connect to server and receive clan");
-        //            return;
-        //        }
-        //    }));
-        //}
-
-        //yield return new WaitUntil(() => clanData != null);
+        Storefront.Get().SaveClanData(clanData, data => clanData = data);
 
         if (clanData == null)
         {
-            Debug.LogError($"Get player data timeout or null.");
+            StartCoroutine(ServerManager.Instance.UpdateClanToServer(clanData, content =>
+            {
+                if (content)
+                    Debug.Log("Rewards distributed successfully to clan.");
+                else
+                {
+                    Debug.LogError("Failed to distribute rewards to clan.");
+                    return;
+                }
+            }));
+        }
+
+        yield return new WaitUntil(() => clanData != null);
+
+        if (clanData == null)
+        {
+            Debug.LogError($"Save clan data timeout or null.");
             yield break; //TODO: Add error handling.
         }
     }

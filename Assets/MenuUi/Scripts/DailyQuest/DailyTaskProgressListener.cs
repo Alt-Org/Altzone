@@ -7,11 +7,6 @@ public class DailyTaskProgressListener : MonoBehaviour
 {
     [SerializeField] private TaskType taskType = TaskType.Undefined;
 
-    private void Awake()
-    {
-        enabled = false;
-    }
-
     private void Start()
     {
         try
@@ -22,6 +17,8 @@ public class DailyTaskProgressListener : MonoBehaviour
         {
             Debug.LogError("DailyTaskProgressManager instance missing!");
         }
+
+        enabled = false;
     }
 
     private void OnDestroy()
@@ -36,10 +33,21 @@ public class DailyTaskProgressListener : MonoBehaviour
         }
     }
 
-    //Call this function from location where its corresponding task will be seen as valid progress.
+    /*
+     *Call this function from location where it's corresponding task will be seen as valid daily task progress.
+     *Normal use case: give a integer value of 1 or greater as a string.
+     *Special use case: give a character name or other unique identifier as a string (eg. Start 3 battles with different characters).
+     */
     public void UpdateProgress(string value)
     {
-        DailyTaskProgressManager.Instance.UpdateTaskProgress(taskType, value);
+        try
+        {
+            DailyTaskProgressManager.Instance.UpdateTaskProgress(taskType, value);
+        }
+        catch
+        {
+            Debug.LogError("DailyTaskProgressManager instance missing!");
+        }
     }
 
     public void SetState(TaskType currentTaskType)

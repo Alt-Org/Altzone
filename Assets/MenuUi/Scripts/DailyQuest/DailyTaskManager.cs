@@ -87,12 +87,26 @@ public class DailyTaskManager : MonoBehaviour
 
         _ownTaskTabButton.interactable = false;
 
-        DailyTaskProgressManager.Instance.OnTaskDone += ClearCurrentTask;
+        try
+        {
+            DailyTaskProgressManager.Instance.OnTaskDone += ClearCurrentTask;
+        }
+        catch
+        {
+            Debug.LogError("DailyTaskProgressManager instance missing!");
+        }
     }
 
     private void OnDestroy()
     {
-        DailyTaskProgressManager.Instance.OnTaskDone -= ClearCurrentTask;
+        try
+        {
+            DailyTaskProgressManager.Instance.OnTaskDone -= ClearCurrentTask;
+        }
+        catch
+        {
+            Debug.LogError("DailyTaskProgressManager instance missing!");
+        }
     }
 
     private IEnumerator GetSetExistingTask()
