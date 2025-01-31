@@ -3,103 +3,80 @@ using UnityEngine.UI;
 
 public class FlexibleHorizontalGrid : LayoutGroup
 {
-    /// Examples of grid:
-    /// 
-    ///  6 items            [] [] [] []
-    ///                     [] []
-
-    ///  12 items           [] [] [] []
-    ///                     [] [] [] []
-    ///                     [] [] [] [] 
-
 
     [Header("Flexible Horizontal Grid")]
-
-    private int rows;
     public int columns = 4;
-
-    public Vector2 cellSize;
-    public float cellAspectRatio; //times that width takes from the height (f.e. aspect ratio = 1.5 => Height = 100, Width = 100 * 1.5 = 150)
     public Vector2 spacing;
+    public float cellAspectRatio = 1f; // Aspect ratio (width/height) for the cells
 
+    private Vector2 cellSize;
+    private int rows;
     private int _previousRowCount = -2;
-    private bool _firstCalculation = true; //For some reason the first calculation shows incorrect values for rectTransform.rect's. This bool intended to fix this problem
+    private bool _firstCalculation = true;
+
+    private DrivenRectTransformTracker tracker; // Used for tracking RectTransform changes
+    [SerializeField] private RectTransform _content;
 
     public override void CalculateLayoutInputHorizontal()
     {
-        /// Plan: Calculate size of cells based on width only
-        /// If rows amount has been changed => chnage parent's size (rectTransform.sizeDelta). Then calculate the height based on the width and aspect ratio.
-        /// Calculate Positions and 
-
         base.CalculateLayoutInputHorizontal();
 
-        float parentWidth = rectTransform.rect.width;
-        float availableWidth = rectTransform.rect.width - padding.left - padding.right - (spacing.x * (columns - 1));  //((spacing.x / columns) * (columns - 1));
-        //Debug.Log("Available width: "+ availableWidth);
+        float parentWidth = _content.rect.width;    
+        Debug.LogWarning("ContentRect"  + _content.rect.width);
+        float availableWidth = parentWidth - padding.left - padding.right - (spacing.x * (columns - 1));
         float cellWidth = availableWidth / columns;
         float cellHeight = cellWidth / cellAspectRatio;
+
+        rows = CalculateRowsAmount();
+        if (rows != _previousRowCount)
+        {
+            _previousRowCount = rows;
+            float availableHeight = (cellHeight * rows) + padding.top + padding.bottom + (spacing.y * (rows - 1));
+            rectTransform.sizeDelta = new Vector2(parentWidth, availableHeight);
+            Debug.LogWarning($"New rectTransfrom of {name} is {new Vector2(parentWidth, availableHeight)} ");
+        }
+
         cellSize.x = cellWidth;
         cellSize.y = cellHeight;
 
-        //Debug.Log(cellHeight + "--- Cell Height");
-        //Debug.Log(cellSize.y + "--- cellSize y");
-
-        if (!_firstCalculation)
-        {
-            rows = CalculateRowsAmount();
-            if (rows != _previousRowCount)
-            {
-                _previousRowCount = rows;
-                float availableHeight = (cellSize.y * (float)rows) + (float)padding.top + (float)padding.bottom + (spacing.y * ((float)rows - 1));  //((spacing.y / rows) * (rows - 1));
-                //Debug.Log("Available Height: " + availableHeight);
-                rectTransform.sizeDelta = new Vector2(rectTransform.rect.width, availableHeight);
-            }
-        }
-        _firstCalculation = false;
-
-        int columnCount = 0;
-        int rowCount = 0;
-
         for (int i = 0; i < rectChildren.Count; i++)
         {
-            rowCount = i / columns;
-            columnCount = i % columns;
+            int row = i / columns;
+            int column = i % columns;
 
             var item = rectChildren[i];
-
-            var xPos = (cellSize.x * columnCount) + (spacing.x * columnCount) + padding.left;
-            var yPos = (cellSize.y * rowCount) + (spacing.y * rowCount) + padding.top;
+            float xPos = padding.left + (cellSize.x + spacing.x) * column;
+            float yPos = padding.top + (cellSize.y + spacing.y) * row;
 
             SetChildAlongAxis(item, 0, xPos, cellSize.x);
             SetChildAlongAxis(item, 1, yPos, cellSize.y);
         }
     }
+
+    public override void CalculateLayoutInputVertical()
+    {
+        // Not implemented as this layout is primarily horizontal-driven
+    }
+
+    public override void SetLayoutHorizontal()
+    {
+        // No additional logic required
+    }
+
+    public override void SetLayoutVertical()
+    {
+        // No additional logic required
+    }
+
     private int CalculateRowsAmount()
     {
         return Mathf.CeilToInt((float)rectChildren.Count / columns);
     }
 
-    private int CalculateCellWidth()
+    protected override void OnDisable()
     {
-        return 0;
-    }
-    private int CalculateColumnsAmount()
-    {
-        return 0;
-    }
-
-    public override void CalculateLayoutInputVertical()
-    {
-        //throw new System.NotImplementedException();
-    }
-
-    public override void SetLayoutHorizontal()
-    {
-        //throw new System.NotImplementedException();
-    }
-
-    public override void SetLayoutVertical()
-    {
-        //throw new System.NotImplementedException();
+        base.OnDisable();
+        tracker.Clear(); // Clear tracking when the component is disabled
     }
 }
+

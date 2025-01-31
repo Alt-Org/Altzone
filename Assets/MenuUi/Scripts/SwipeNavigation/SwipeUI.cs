@@ -30,9 +30,10 @@ namespace MenuUi.Scripts.SwipeNavigation
         [SerializeField, Tooltip("The area from the bottom of the screen from where swiping is disabled (between 0/1))")] private float verticalDeadzone;
 
         private ScrollRect scrollRect;
+        [SerializeField] private GameObject[] slides;
         [SerializeField] private Scrollbar scrollBar;
         [SerializeField] private Button[] buttons;
-        [SerializeField] private Button battleButton;
+        //[SerializeField] private Button battleButton;
         private Image[] buttonImages;
         [SerializeField] private float swipeTime = 0.2f;
         private float swipeDistance = 50.0f;
@@ -52,6 +53,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         private Rect swipeRect;
 
         [SerializeField] private bool _isInMainMenu;
+        [SerializeField] private bool _willRotate;
 
         public bool IsEnabled
         {
@@ -59,7 +61,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             set
             {
                 isEnabled = value;
-                ToggleScrollRect(value);
+                if(scrollRect)ToggleScrollRect(value);
 
                 if (!IsEnabled)
                 {
@@ -74,15 +76,17 @@ namespace MenuUi.Scripts.SwipeNavigation
             get { return currentPage; }
             set
             {
+                if (isSwipeMode) return;
                 currentPage = value;
-                SettingsCarrier.Instance.mainMenuWindowIndex = currentPage;
+                if (_isInMainMenu) SettingsCarrier.Instance.mainMenuWindowIndex = currentPage;
                 UpdateButtonContent();
+                StartCoroutine(OnSwipeOneStep(CurrentPage));
             }
         }
 
         private void Awake()
         {
-            scrollPageValues = new float[buttons.Length];
+            scrollPageValues = new float[slides.Length];
 
             valueDistance = 1f / (scrollPageValues.Length - 1f);
 
@@ -91,11 +95,12 @@ namespace MenuUi.Scripts.SwipeNavigation
                 scrollPageValues[i] = valueDistance * i;
             }
 
-            maxPage = buttons.Length;
+            maxPage = slides.Length - 1;
 
             if (_isInMainMenu)
             {
-                CurrentPage = SettingsCarrier.Instance.mainMenuWindowIndex;
+                //CurrentPage = SettingsCarrier.Instance.mainMenuWindowIndex;
+                CurrentPage = 2;
             }
             else
             {
@@ -109,14 +114,17 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         private void Start()
         {
-            buttonImages = new Image[buttons.Length];
-
-            for (int i = 0; i < buttons.Length; ++i)
+            if (buttons != null && buttons.Length != 0)
             {
-                Button button = buttons[i];
-                int index = i;
-                button.onClick.AddListener(() => StartCoroutine(SetScrollBarValue(index, false)));
-                buttonImages[i] = button.GetComponent<Image>();
+                buttonImages = new Image[buttons.Length];
+
+                for (int i = 0; i < buttons.Length; ++i)
+                {
+                    Button button = buttons[i];
+                    int index = i;
+                    button.onClick.AddListener(() => StartCoroutine(SetScrollBarValue(index, false)));
+                    buttonImages[i] = button.GetComponent<Image>();
+                }
             }
 
             IsEnabled = true;
@@ -150,7 +158,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         {
             if (_firstFrame)
             {
-                _scrollTransform.localPosition = new(-1 * (_scrollTransform.rect.width * scrollPageValues[CurrentPage]*(1 - 1f / scrollPageValues.Length)), _scrollTransform.localPosition.y, 0);
+                _scrollTransform.localPosition = new(-1 * (_scrollTransform.rect.width * scrollPageValues[CurrentPage] * (1 - 1f / scrollPageValues.Length)), _scrollTransform.localPosition.y, 0);
                 _firstFrame = false;
                 isSwipeMode = false;
             }
@@ -184,16 +192,15 @@ namespace MenuUi.Scripts.SwipeNavigation
         {
             yield return new WaitForEndOfFrame();
 
-            CurrentPage = index;
             if (scrollBar)
             {
                 if (!IsEnabled)
                     IsEnabled = true;
 
-                if(!instant)StartCoroutine(OnSwipeOneStep(CurrentPage));
+                if (!instant) StartCoroutine(OnSwipeOneStep(index));
                 else scrollBar.value = scrollPageValues[index];
-
             }
+            currentPage = index;
         }
 
         private void UpdateInput()
@@ -278,16 +285,42 @@ namespace MenuUi.Scripts.SwipeNavigation
 
             if (isLeft == true)
             {
-                if (CurrentPage == 0) return;
-                CurrentPage--;
+                PreviousSlide();
             }
             else
             {
-                if (CurrentPage == maxPage - 1) return;
+                NextSlide();
+            }
+        }
+
+        public void NextSlide()
+        {
+            if (CurrentPage == maxPage)
+            {
+                if (_willRotate)
+                {
+                    CurrentPage = 0; // Goes to the first slide when swiping right on the last slide
+                }
+            }
+            else
+            {
                 CurrentPage++;
             }
+        }
 
-            StartCoroutine(OnSwipeOneStep(CurrentPage));
+        public void PreviousSlide()
+        {
+            if (CurrentPage == 0)
+            {
+                if (_willRotate)
+                {
+                    CurrentPage = maxPage; // Goes to the last slide when swiping left on the first slide
+                }
+            }
+            else
+            {
+                CurrentPage--;
+            }
         }
 
         /// <summary>
@@ -302,31 +335,34 @@ namespace MenuUi.Scripts.SwipeNavigation
             float percent = 0;
 
             isSwipeMode = true;
-            if (scrollRect.enabled)
-                while (percent < 1)
-                {
-                    current += Time.deltaTime;
-                    percent = current / swipeTime;
+            if (scrollRect)
+            {
+                if (scrollRect.enabled)
+                    while (percent < 1)
+                    {
+                        current += Time.deltaTime;
+                        percent = current / swipeTime;
 
-                    scrollBar.value = Mathf.Lerp(start, scrollPageValues[index], percent);
+                        scrollBar.value = Mathf.Lerp(start, scrollPageValues[index], percent);
 
-                    yield return null;
-                }
-            else
-                while (percent < 1)
-                {
-                    current += Time.deltaTime;
-                    percent = current / swipeTime;
-                    scrollRect.enabled = true;
-                    scrollBar.value = Mathf.Lerp(start, scrollPageValues[index], percent);
-                    scrollRect.enabled = false;
+                        yield return null;
+                    }
+                else
+                    while (percent < 1)
+                    {
+                        current += Time.deltaTime;
+                        percent = current / swipeTime;
+                        scrollRect.enabled = true;
+                        scrollBar.value = Mathf.Lerp(start, scrollPageValues[index], percent);
+                        scrollRect.enabled = false;
 
-                    yield return null;
-                }
-
+                        yield return null;
+                    }
+            }
             isSwipeMode = false;
             _startTouch = Vector2.zero;
             _endTouch = Vector2.zero;
+            IsEnabled = true;
         }
 
         /// <summary>

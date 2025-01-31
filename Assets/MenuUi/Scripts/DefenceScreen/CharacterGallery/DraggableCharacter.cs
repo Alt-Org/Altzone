@@ -5,6 +5,8 @@ using MenuUi.Scripts.SwipeNavigation;
 using TMPro;
 using Altzone.Scripts.Model.Poco.Game;
 using System;
+using MenuUi.Scripts.DefenceScreen.CharacterGallery;
+using Altzone.Scripts.ReferenceSheets;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -12,7 +14,10 @@ namespace MenuUi.Scripts.CharacterGallery
     {
         [SerializeField] private Image _spriteImage;
         [SerializeField] private Image _backgroundSpriteImage;
+        [SerializeField] private Image _backgroundContentsSpriteImage;
         [SerializeField] private TextMeshProUGUI _characterNameText;
+        [SerializeField] private AspectRatioFitter _aspectRatioFitter;
+        [SerializeField] private PieChartPreview _piechartPreview;
 
         private CharacterID _id;
 
@@ -39,6 +44,22 @@ namespace MenuUi.Scripts.CharacterGallery
         public int characterTextCounter;
 
         public CharacterID Id { get => _id; }
+
+
+        private void Awake()
+        {
+            _piechartPreview.gameObject.SetActive(false);
+        }
+
+
+        private void OnEnable()
+        {
+            if (_piechartPreview.gameObject.activeInHierarchy)
+            {
+                _piechartPreview.UpdateChart(Id);
+            }
+        }
+
 
 
         private void Start()
@@ -149,7 +170,7 @@ namespace MenuUi.Scripts.CharacterGallery
                             Transform topSlotInitialSlot = topSlotCharacter.initialSlot;
                             topSlotCharacter.transform.SetParent(topSlotInitialSlot);
                             topSlotCharacter.transform.position = topSlotInitialSlot.position;
-
+                            topSlotCharacter.SetUnselectedVisuals();
                         }
                     }
 
@@ -194,19 +215,52 @@ namespace MenuUi.Scripts.CharacterGallery
                 // Check if newParent is one of the topslots
                 if (newParent == slot.transform)
                 {
+                    SetSelectedVisuals();
                     OnParentChanged?.Invoke(newParent);
-                    break;
+                    return;
                 }
             }
+            SetUnselectedVisuals();
         }
 
 
-        public void SetInfo(Sprite sprite, string name, CharacterID id, ModelView view)
+        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, CharacterID id, ModelView view)
         {
             _spriteImage.sprite = sprite;
             _characterNameText.text = name;
             _id = id;
             _modelView = view;
+            _backgroundSpriteImage.color = bgColor;
+            _backgroundContentsSpriteImage.color = bgAltColor;
+        }
+
+
+        public void SetSelectedVisuals()
+        {
+            _aspectRatioFitter.aspectRatio = 1;
+            _characterNameText.gameObject.SetActive(false);
+
+            _spriteImage.rectTransform.anchorMax = new Vector2(0.9f, 0.9f);
+            _spriteImage.rectTransform.anchorMin = new Vector2(0.1f, 0.1f);
+
+            _piechartPreview.gameObject.SetActive(true);
+            _piechartPreview.UpdateChart(Id);
+
+            _backgroundContentsSpriteImage.gameObject.SetActive(false);
+        }
+
+
+        public void SetUnselectedVisuals()
+        {
+            _aspectRatioFitter.aspectRatio = 0.6f;
+            _characterNameText.gameObject.SetActive(true);
+
+            _spriteImage.rectTransform.anchorMax = new Vector2(0.9f, 0.75f);
+            _spriteImage.rectTransform.anchorMin = new Vector2(0.1f, 0.1f);
+
+            _piechartPreview.gameObject.SetActive(false);
+
+            _backgroundContentsSpriteImage.gameObject.SetActive(true);
         }
     }
 }
