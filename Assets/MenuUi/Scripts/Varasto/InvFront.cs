@@ -310,45 +310,75 @@ namespace MenuUi.Scripts.Storage
                     _sortText.text = "Jarjestetty\nArvo";
 
                     if (_descendingOrder)
-                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return b.Value.CompareTo(a.Value); });
+                        _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                            int result = b.Value.CompareTo(a.Value);
+                            return result != 0 ? result : b.VisibleName.CompareTo(a.VisibleName);
+                        });
                     else
-                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.Value.CompareTo(b.Value); });
+                        _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                            int result = a.Value.CompareTo(b.Value);
+                            return result != 0 ? result : a.VisibleName.CompareTo(b.VisibleName);
+                        });
 
                     break;
                 case 2:
                     _sortText.text = "Jarjestetty\nPaino";
 
                     if (_descendingOrder)
-                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return b.Weight.CompareTo(a.Weight); });
+                        _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                            int result = b.Weight.CompareTo(a.Weight);
+                            return result != 0 ? result : b.VisibleName.CompareTo(a.VisibleName);
+                        });
                     else
-                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.Weight.CompareTo(b.Weight); });
+                        _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                            int result = a.Weight.CompareTo(b.Weight);
+                            return result != 0 ? result : a.VisibleName.CompareTo(b.VisibleName);
+                        });
 
                     break;
                 case 3:
                     _sortText.text = "Jarjestetty\nMateriaali";
 
                     if (_descendingOrder)
-                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return b.Material.CompareTo(a.Material); });
+                        _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                            int result = b.Material.CompareTo(a.Material);
+                            return result != 0 ? result : b.VisibleName.CompareTo(a.VisibleName);
+                        });
                     else
-                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.Material.CompareTo(b.Material); });
+                        _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                            int result = a.Material.CompareTo(b.Material);
+                            return result != 0 ? result : a.VisibleName.CompareTo(b.VisibleName);
+                        });
 
                     break;
                 case 4:
                     _sortText.text = "Jarjestetty\nHarvinaisuus";
 
                     if (_descendingOrder)
-                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return b.Rarity.CompareTo(a.Rarity); });
+                        _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                            int result = b.Rarity.CompareTo(a.Rarity);
+                            return result != 0 ? result : b.VisibleName.CompareTo(a.VisibleName);
+                        });
                     else
-                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.Rarity.CompareTo(b.Rarity); });
+                        _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                            int result = a.Rarity.CompareTo(b.Rarity);
+                            return result != 0 ? result : a.VisibleName.CompareTo(b.VisibleName);
+                        });
 
                     break;
                 case 5:
                     _sortText.text = "Jarjestetty\nLinjasto";
 
                     if (_descendingOrder)
-                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return b.SetName.CompareTo(a.SetName); });
+                        _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                            int result = b.SetName.CompareTo(a.SetName);
+                            return result != 0 ? result : b.VisibleName.CompareTo(a.VisibleName);
+                        });
                     else
-                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.SetName.CompareTo(b.SetName); });
+                        _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                            int result = a.SetName.CompareTo(b.SetName);
+                            return result != 0 ? result : a.VisibleName.CompareTo(b.VisibleName);
+                        });
 
                     break;
             }
