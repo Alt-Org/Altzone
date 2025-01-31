@@ -81,20 +81,26 @@ public class FlexibleGridLayout : LayoutGroup
         switch (_gridFit)
         {
             case FitType.DynamicColumns:
-                // Get the percentage at which point the current aspect ratio sits between shortest and tallest aspect ratios shortest = 1 tallest = 0
-                float aspectRatioPercentage = (GetAspectRatio() - ShortestAspectRatio) / (TallestAspectRatio - ShortestAspectRatio);
+                if (_gridCellSize != CellSizeType.Manual) // if cell size is given manually columns and rows are calculated based on those values
+                {
+                    // Get the percentage at which point the current aspect ratio sits between shortest and tallest aspect ratios shortest = 1 tallest = 0
+                    float aspectRatioPercentage = (GetAspectRatio() - ShortestAspectRatio) / (TallestAspectRatio - ShortestAspectRatio);
 
-                // Getting column amount between min and max amount of columns based on the aspect ratio
-                _columns = Mathf.RoundToInt(_maxDynamicColumns + (_minDynamicColumns - _maxDynamicColumns) * aspectRatioPercentage);
-                _rows = Mathf.CeilToInt(transform.childCount / (float)_columns);
+                    // Getting column amount between min and max amount of columns based on the aspect ratio percentage
+                    _columns = Mathf.RoundToInt(_maxDynamicColumns + (_minDynamicColumns - _maxDynamicColumns) * aspectRatioPercentage);
+                    _rows = Mathf.CeilToInt(transform.childCount / (float)_columns);
+                }
                 break;
 
             case FitType.DynamicRows:
-                // Get the aspect ratio percentage shortest = 0 tallest = 1
-                aspectRatioPercentage =  (GetAspectRatio() - TallestAspectRatio) / (ShortestAspectRatio - TallestAspectRatio);
+                if (_gridCellSize != CellSizeType.Manual)
+                {
+                    // Get the aspect ratio percentage shortest = 0 tallest = 1
+                    float aspectRatioPercentage = (GetAspectRatio() - TallestAspectRatio) / (ShortestAspectRatio - TallestAspectRatio);
 
-                _rows = Mathf.RoundToInt(_maxDynamicRows + (_minDynamicRows - _maxDynamicRows) * aspectRatioPercentage);
-                _columns = Mathf.CeilToInt(transform.childCount / (float)_rows);
+                    _rows = Mathf.RoundToInt(_maxDynamicRows + (_minDynamicRows - _maxDynamicRows) * aspectRatioPercentage);
+                    _columns = Mathf.CeilToInt(transform.childCount / (float)_rows);
+                }
                 break;
 
             case FitType.FixedColumns:
@@ -115,7 +121,61 @@ public class FlexibleGridLayout : LayoutGroup
         switch (_gridCellSize)
         {
             case CellSizeType.Manual:
-                _cellSize = _preferredCellSize;
+                if (_gridFit == FitType.DynamicColumns)
+                {
+                    // Calculating how many columns fit with preferred size and how many pixels are left over
+                    int preferredSizeFit = Mathf.FloorToInt((rectTransform.rect.width - padding.left - padding.right - _cellSpacing.x) / (_preferredCellSize.x + _cellSpacing.x));
+                    float leftoverPixels = rectTransform.rect.width - (_preferredCellSize.x * preferredSizeFit);
+
+                    float cellAspectRatio = _preferredCellSize.x / _preferredCellSize.y;
+
+                    // If there is space for more than half a cell we shrink cells and add one more column
+                    bool shrinkCells = false;
+                    if (_preferredCellSize.x / 2 < leftoverPixels - _cellSpacing.x && _gridFit != FitType.FixedColumns)
+                    {
+                        _columns = preferredSizeFit + 1;
+
+                        float shrunkCellWidth = rectTransform.rect.width / (float)_columns - ((_cellSpacing.x / (float)_columns) * (_columns - 1))
+                            - (padding.left / (float)_columns) - (padding.right / (float)_columns);
+
+                        if (shrunkCellWidth >= _minCellSize.x)
+                        {
+                            shrinkCells = true;
+
+                            cellWidth = shrunkCellWidth;
+                            cellHeight = cellWidth / cellAspectRatio;
+                        }
+                        else
+                        {
+                            _columns--;
+                        }
+                    }
+
+                    //Debug.Log($"preferred fit {preferredSizeFit} leftover {leftoverPixels} shrink cells {shrinkCells}");
+
+                    // If we don't shrink we grow cells if there are leftover pixels
+                    if (!shrinkCells)
+                    {
+                        _columns = preferredSizeFit;
+
+                        if (leftoverPixels > 0)
+                        {
+                            float grownCellWidth = rectTransform.rect.width / (float)_columns - ((_cellSpacing.x / (float)_columns) * (_columns - 1))
+                                - (padding.left / (float)_columns) - (padding.right / (float)_columns); ;
+                            Mathf.Clamp(grownCellWidth, 0, _maxCellSize.x);
+
+                            cellWidth = grownCellWidth;
+                            cellHeight = cellWidth / cellAspectRatio;
+                        }
+                        else
+                        {
+                            cellWidth = _preferredCellSize.x;
+                            cellHeight = _preferredCellSize.y;
+                        }
+                    }
+                    
+                    _rows = Mathf.CeilToInt(transform.childCount / (float)_columns);
+                }
                 break;
 
             case CellSizeType.AspectRatio:
@@ -164,22 +224,22 @@ public class FlexibleGridLayout : LayoutGroup
 
             var item = rectChildren[i];
 
-            var xPos = (_cellSize.x * columnCount) + (_cellSpacing.x * columnCount) + padding.left;
-            var yPos = (_cellSize.y * rowCount) + (_cellSpacing.y * rowCount) + padding.top;
+            float xPos = (_cellSize.x * columnCount) + (_cellSpacing.x * columnCount) + padding.left;
+            float yPos = (_cellSize.y * rowCount) + (_cellSpacing.y * rowCount) + padding.top;
 
             SetChildAlongAxis(item, 0, xPos, _cellSize.x);
             SetChildAlongAxis(item, 1, yPos, _cellSize.y);
         }
 
         // Scaling the rectTransform
-        if (_gridFit == FitType.DynamicColumns || _gridFit == FitType.FixedColumns)
+        if (_gridFit == FitType.DynamicColumns || _gridFit == FitType.FixedColumns) // Vertical
         {
             rectTransform.anchorMax = Vector2.one;
             rectTransform.anchorMin = new Vector2(0, 1);
 
             rectTransform.sizeDelta = new Vector2(0, (_rows * _cellSize.y) + ((_rows - 1) * _cellSpacing.y));
         }
-        else if (_gridFit == FitType.DynamicRows || _gridFit == FitType.FixedRows)
+        else if (_gridFit == FitType.DynamicRows || _gridFit == FitType.FixedRows) // Horizontal
         {
             rectTransform.anchorMax = new Vector2(0, 1);
             rectTransform.anchorMin = Vector2.zero;
@@ -267,14 +327,21 @@ public class FlexibleGridLayout : LayoutGroup
             switch ((FitType)_gridFitSelection.enumValueIndex)
             {
                 case FitType.DynamicColumns:
-                    EditorGUILayout.PropertyField(_gridFitMinColumns);
-                    EditorGUILayout.PropertyField(_gridFitMaxColumns);
-                    EditorGUILayout.Space();
+                    // Manual cell size changes how dynamic columns and rows are calculated so we hide these options
+                    if ((CellSizeType)_cellSizeSelection.enumValueIndex != CellSizeType.Manual)
+                    {
+                        EditorGUILayout.PropertyField(_gridFitMinColumns);
+                        EditorGUILayout.PropertyField(_gridFitMaxColumns);
+                        EditorGUILayout.Space();
+                    }
                     break;
                 case FitType.DynamicRows:
-                    EditorGUILayout.PropertyField(_gridFitMinRows);
-                    EditorGUILayout.PropertyField(_gridFitMaxRows);
-                    EditorGUILayout.Space();
+                    if ((CellSizeType)_cellSizeSelection.enumValueIndex != CellSizeType.Manual)
+                    {
+                        EditorGUILayout.PropertyField(_gridFitMinRows);
+                        EditorGUILayout.PropertyField(_gridFitMaxRows);
+                        EditorGUILayout.Space();
+                    }
                     break;
                 case FitType.FixedColumns:
                     EditorGUILayout.PropertyField(_gridFitColumns);
@@ -292,9 +359,17 @@ public class FlexibleGridLayout : LayoutGroup
             switch ((CellSizeType)_cellSizeSelection.enumValueIndex)
             {
                 case CellSizeType.Manual:
-                    EditorGUILayout.PropertyField(_minCellSize);
-                    EditorGUILayout.PropertyField(_maxCellSize);
-                    EditorGUILayout.PropertyField(_preferredCellSize);
+                    // In dynamic fit show all options, in fixed show only max size
+                    if ((FitType)_gridFitSelection.enumValueIndex == FitType.DynamicColumns || (FitType)_gridFitSelection.enumValueIndex == FitType.DynamicRows)
+                    {
+                        EditorGUILayout.PropertyField(_minCellSize);
+                        EditorGUILayout.PropertyField(_maxCellSize);
+                        EditorGUILayout.PropertyField(_preferredCellSize);
+                    }
+                    else
+                    {
+                        EditorGUILayout.PropertyField(_maxCellSize);
+                    }
                     EditorGUILayout.Space();
                     break;
                 case CellSizeType.AspectRatio:
