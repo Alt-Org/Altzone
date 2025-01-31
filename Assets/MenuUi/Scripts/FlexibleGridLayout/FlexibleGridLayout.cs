@@ -15,10 +15,10 @@ public class FlexibleGridLayout : LayoutGroup
     {
         Manual,
         AspectRatio,
-        BasedOnChild
+        BasedOnPrefab
     }
 
-    
+
     const float ShortestAspectRatio = 4.0f / 3.0f;
     const float TallestAspectRatio = 22.0f / 9.0f;
 
@@ -40,7 +40,7 @@ public class FlexibleGridLayout : LayoutGroup
     [SerializeField, Min(1)]
     private int _rowAmount = 1;
 
-    [SerializeField, Tooltip("How the grid's cell size is determined.\n\nManual: Give cell size values manually.\nAspect Ratio: Cell size is automatically calculated to fit this aspect ratio.\nBased On Child: Cell size is set automatically based on the first child object.")]
+    [SerializeField, Tooltip("How the grid's cell size is determined.\n\nManual: Give cell size values manually.\nAspect Ratio: Cell size is automatically calculated to fit this aspect ratio.\nBased On Prefab: Cell size is set automatically based on the prefab's RectTransform component.")]
     private CellSizeType _gridCellSize = CellSizeType.Manual;
 
     [SerializeField, Min(0)]
@@ -54,6 +54,9 @@ public class FlexibleGridLayout : LayoutGroup
 
     [SerializeField, Min(0)]
     private float _cellAspectRatio = 1;
+
+    [SerializeField]
+    private GameObject _prefab;
 
     [SerializeField, Tooltip("The spacing between grid cells."), Min(0)]
     private Vector2 _cellSpacing;
@@ -128,7 +131,16 @@ public class FlexibleGridLayout : LayoutGroup
                 }
                 break;
 
-            case CellSizeType.BasedOnChild:
+            case CellSizeType.BasedOnPrefab:
+                if (_prefab != null)
+                {
+                    RectTransform prefabRect = _prefab.GetComponent<RectTransform>();
+                    if (prefabRect != null)
+                    {
+                        cellWidth = prefabRect.rect.width;
+                        cellHeight = prefabRect.rect.height;
+                    }
+                }
                 break;
         }
 
@@ -189,6 +201,7 @@ public class FlexibleGridLayout : LayoutGroup
         SerializedProperty _maxCellSize;
         SerializedProperty _preferredCellSize;
         SerializedProperty _cellAspectRatio;
+        SerializedProperty _cellPrefab;
 
         // Cell spacing property
         SerializedProperty _cellSpacing;
@@ -213,6 +226,7 @@ public class FlexibleGridLayout : LayoutGroup
             _maxCellSize = serializedObject.FindProperty(nameof(_maxCellSize));
             _preferredCellSize = serializedObject.FindProperty(nameof(_preferredCellSize));
             _cellAspectRatio = serializedObject.FindProperty(nameof(_cellAspectRatio));
+            _cellPrefab = serializedObject.FindProperty(nameof(_prefab));
 
             // Getting cell spacing property
             _cellSpacing = serializedObject.FindProperty(nameof(_cellSpacing));
@@ -260,6 +274,10 @@ public class FlexibleGridLayout : LayoutGroup
                     break;
                 case CellSizeType.AspectRatio:
                     EditorGUILayout.PropertyField(_cellAspectRatio);
+                    EditorGUILayout.Space();
+                    break;
+                case CellSizeType.BasedOnPrefab:
+                    EditorGUILayout.PropertyField(_cellPrefab);
                     EditorGUILayout.Space();
                     break;
             }
