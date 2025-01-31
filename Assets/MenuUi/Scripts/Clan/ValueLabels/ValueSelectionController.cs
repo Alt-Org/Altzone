@@ -56,10 +56,12 @@ public class ValueSelectionController : MonoBehaviour
         {
             if (SelectedValues.Count >= 5)
             {
-                ClanValues removedValue = SelectedValues[0];
-                ValueLabelHandler handlerOfRemoved = _labelHandlers.Find(labelHandler => labelHandler.labelInfo.values == removedValue);
-                handlerOfRemoved.Unselect();
-                SelectedValues.RemoveAt(0);
+                //ClanValues removedValue = SelectedValues[0];
+                //ValueLabelHandler handlerOfRemoved = _labelHandlers.Find(labelHandler => labelHandler.labelInfo.values == removedValue);
+                //handlerOfRemoved.Unselect();
+                //SelectedValues.RemoveAt(0);
+
+                return;
             }
 
             SelectedValues.Add(toggledHandler.labelInfo.values);

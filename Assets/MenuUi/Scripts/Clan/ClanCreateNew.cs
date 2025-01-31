@@ -33,6 +33,7 @@ public class ClanCreateNew : MonoBehaviour
     [SerializeField] private GameObject _passwordWarningOutline;
     [SerializeField] private GameObject _goalWarningOutline;
     [SerializeField] private GameObject _languageWarningOutline;
+    [SerializeField] private GameObject _valuesWarningOutline;
     [SerializeField] private PopupController _warningPopup;
 
     [Header("Buttons")]
@@ -122,7 +123,7 @@ public class ClanCreateNew : MonoBehaviour
         List<HeartPieceData> clanHeartPieces = new();
         for (int i = 0; i < 50; i++) clanHeartPieces.Add(new HeartPieceData(i, _selectedHeartColor));
 
-        if (!CheckClanValuesValidity(clanName, isOpen, password, language, goal))
+        if (!CheckClanInputsValidity(clanName, isOpen, password, language, goal, values))
         {
             return;
         }
@@ -171,7 +172,7 @@ public class ClanCreateNew : MonoBehaviour
         }));
     }
 
-    private bool CheckClanValuesValidity(string clanName, bool isOpen, string password, Language language, Goals goal)
+    private bool CheckClanInputsValidity(string clanName, bool isOpen, string password, Language language, Goals goal, ClanValues[] values)
     {
         bool validInputs = true;
 
@@ -206,6 +207,17 @@ public class ClanCreateNew : MonoBehaviour
             validInputs = false;
         }
         else _goalWarningOutline.SetActive(false);
+
+        if (values.Length < 3)
+        {
+            _valuesWarningOutline.SetActive(true);
+            _warningPopup.ActivatePopUp("Klaanille tulee olla valittuna vähintää 3 arvoa");
+            validInputs = false;
+        }
+        else
+        {
+            _valuesWarningOutline.SetActive(false);
+        }
 
         return validInputs;
     }
