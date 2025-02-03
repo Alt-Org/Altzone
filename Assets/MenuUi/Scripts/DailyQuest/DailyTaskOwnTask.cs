@@ -71,15 +71,13 @@ public class DailyTaskOwnTask : MonoBehaviour
     }
     #endregion
 
-    public IEnumerator ClearCurrentTask()
+    public void ClearCurrentTask()
     {
         _taskDescription.text = "";
         _taskPointsReward.text = "";
         _taskCoinsReward.text = "";
 
         SetProgressBar(0);
-
-        yield return (true);
     }
 
     public void SetTaskProgress(float progress)
@@ -87,21 +85,16 @@ public class DailyTaskOwnTask : MonoBehaviour
         _taskProgressFillImage.fillAmount = progress;
     }
 
-    public IEnumerator SetStipend(int points, int coins, int rank)
+    public void SetStipend(int points, int coins, int rank)
     {
         _stipendTotalPointsForClan.text = "" + points;
         _stipendTotalCoinsForClan.text = "" + coins;
         _stipendClanRankValue.text = "" + rank;
-
-        return (null);
-        //yield return new WaitUntil(() => );
     }
 
-    public IEnumerator SetClockTime(int time)
+    public void SetClockTime(int time)
     {
 
 
-        return (null);
-        //yield return new WaitUntil(() => );
     }
 }
