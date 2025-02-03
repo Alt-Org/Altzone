@@ -473,6 +473,44 @@ MonoBehaviour:
       Id:
         Value: 1499697656464696716
     PlayerNickname: 
+    PlayerPosition: 0
+    Characters:
+    - Id: 0
+      ClassID: 0
+      Hp:
+        RawValue: 0
+      Speed:
+        RawValue: 0
+      Resistance:
+        RawValue: 0
+      Attack:
+        RawValue: 0
+      Defence:
+        RawValue: 0
+    - Id: 0
+      ClassID: 0
+      Hp:
+        RawValue: 0
+      Speed:
+        RawValue: 0
+      Resistance:
+        RawValue: 0
+      Attack:
+        RawValue: 0
+      Defence:
+        RawValue: 0
+    - Id: 0
+      ClassID: 0
+      Hp:
+        RawValue: 0
+      Speed:
+        RawValue: 0
+      Resistance:
+        RawValue: 0
+      Attack:
+        RawValue: 0
+      Defence:
+        RawValue: 0
   _simulationConfig: {fileID: 11400000, guid: 4f67e7d642209df49a61ad5e088c044b, type: 2}
   _systemsConfig: {fileID: 11400000, guid: d466cc91284ea4e42b883037ae944431, type: 2}
   _projectileGameConfig: {fileID: 11400000, guid: d544df82db1920945b3072cf0985fd13,
@@ -581,6 +619,51 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &937543892
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 937543894}
+  - component: {fileID: 937543893}
+  m_Layer: 0
+  m_Name: DTProgressManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &937543893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 937543892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: baceb84ab0de34a42a115e536b1cbaa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _timeoutSeconds: 10
+--- !u!4 &937543894
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 937543892}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 411.33154, y: 1257.439, z: 190.19336}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1058,3 +1141,4 @@ SceneRoots:
   - {fileID: 310516871}
   - {fileID: 1277116465}
   - {fileID: 667346631}
+  - {fileID: 937543894}

@@ -6,26 +6,26 @@ using UnityEngine;
 public class DailyTaskProgressListener : MonoBehaviour
 {
     [SerializeField] private TaskType taskType = TaskType.Undefined;
+    private bool _on = false;
 
     private void Start()
     {
         try
         {
-            DailyTaskProgressManager.Instance.OnTaskChange += SetState;
+            DailyTaskProgressManager.OnTaskChange += SetState;
+            _on = DailyTaskProgressManager.Instance.SameTask(taskType);
         }
         catch
         {
             Debug.LogError("DailyTaskProgressManager instance missing!");
         }
-
-        enabled = false;
     }
 
     private void OnDestroy()
     {
         try
         {
-            DailyTaskProgressManager.Instance.OnTaskChange -= SetState;
+            DailyTaskProgressManager.OnTaskChange -= SetState;
         }
         catch
         {
@@ -42,7 +42,8 @@ public class DailyTaskProgressListener : MonoBehaviour
     {
         try
         {
-            DailyTaskProgressManager.Instance.UpdateTaskProgress(taskType, value);
+            if (_on)
+                DailyTaskProgressManager.Instance.UpdateTaskProgress(taskType, value);
         }
         catch
         {
@@ -52,6 +53,6 @@ public class DailyTaskProgressListener : MonoBehaviour
 
     public void SetState(TaskType currentTaskType)
     {
-        enabled = (taskType == currentTaskType);
+        _on = (taskType == currentTaskType);
     }
 }

@@ -12,7 +12,7 @@ using Altzone.Scripts.Model.Poco.Player;
 public class DailyTaskManager : MonoBehaviour
 {
     //Variables
-    [SerializeField] private int _timeoutMilliseconds = 100;
+    [SerializeField] private float _timeoutSeconds = 10;
     [Header("TabButtons")]
     [SerializeField] private Button _dailyTasksTabButton;
     [SerializeField] private Button _ownTaskTabButton;
@@ -58,7 +58,7 @@ public class DailyTaskManager : MonoBehaviour
     //private int _ownTaskProgress = 0;
     private int _clanProgressBarGoal = 10000;
     private int _clanProgressBarCurrentPoints = 0;
-    private PlayerData _playerData;
+    private PlayerData _currentPlayerData;
 
     public enum SelectedTab
     {
@@ -89,7 +89,8 @@ public class DailyTaskManager : MonoBehaviour
 
         try
         {
-            DailyTaskProgressManager.Instance.OnTaskDone += ClearCurrentTask;
+            DailyTaskProgressManager.OnTaskDone += ClearCurrentTask;
+            DailyTaskProgressManager.OnTaskProgressed += UpdateOwnTaskProgress;
         }
         catch
         {
@@ -101,7 +102,8 @@ public class DailyTaskManager : MonoBehaviour
     {
         try
         {
-            DailyTaskProgressManager.Instance.OnTaskDone -= ClearCurrentTask;
+            DailyTaskProgressManager.OnTaskDone -= ClearCurrentTask;
+            DailyTaskProgressManager.OnTaskProgressed -= UpdateOwnTaskProgress;
         }
         catch
         {
@@ -114,17 +116,27 @@ public class DailyTaskManager : MonoBehaviour
         //Get existing player task.
         PlayerData playerData = null;
         PlayerTask playerTask = null;
-        StartCoroutine(GetPlayerData(data => playerData = data));
+        bool? timeout = null;
+        Coroutine playerCoroutine, timeoutCoroutine;
 
-        yield return new WaitUntil(() => System.Threading.SpinWait.SpinUntil(() => playerData != null, _timeoutMilliseconds));
+        //Get player data.
+        playerCoroutine = StartCoroutine(GetPlayerData(data => playerData = data));
+
+        timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+        yield return new WaitUntil(() => (playerData != null || timeout != null));
 
         if (playerData == null)
         {
-            Debug.Log("Could not fetch PlayerData.");
-            yield break;
+            StopCoroutine(playerCoroutine);
+            Debug.LogError($"Get player data timeout or null.");
+            yield break; //TODO: Add error handling.
         }
+        else
+            StopCoroutine(timeoutCoroutine);
 
-        yield return new WaitUntil(() => System.Threading.SpinWait.SpinUntil(() => _dailyTaskCardSlots[0] != null, _timeoutMilliseconds));
+        //Check when daily task cards loaded.
+        timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+        yield return new WaitUntil(() => (_dailyTaskCardSlots[0] != null || timeout != null));
 
         if (playerData.Task == null)
         {
@@ -132,9 +144,10 @@ public class DailyTaskManager : MonoBehaviour
             yield break;
         }
 
+        //Get task.
         StartCoroutine(GetTask(playerData.Task.Id, data => playerTask = data));
 
-        yield return new WaitUntil(() => System.Threading.SpinWait.SpinUntil(() => playerTask != null, _timeoutMilliseconds));
+        yield return new WaitUntil(() => playerTask != null);
 
         if (playerTask == null)
         {
@@ -275,7 +288,17 @@ public class DailyTaskManager : MonoBehaviour
         //    }));
         //}
 
-        //yield return new WaitUntil(() => clanId != null);
+        //timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+        //yield return new WaitUntil(() => (playerData != null || timeout != null));
+
+        //if (playerData == null)
+        //{
+        //    StopCoroutine(playerCoroutine);
+        //    Debug.LogError($"Get player data timeout or null.");
+        //    yield break; //TODO: Add error handling.
+        //}
+        //else
+        //    StopCoroutine(timeoutCoroutine);
 
         //Storefront.Get().GetClanData(clanId, content => clan = content);
 
@@ -294,7 +317,17 @@ public class DailyTaskManager : MonoBehaviour
         //    }));
         //}
 
-        //yield return new WaitUntil(() => clan != null);
+        //timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+        //yield return new WaitUntil(() => (playerData != null || timeout != null));
+
+        //if (playerData == null)
+        //{
+        //    StopCoroutine(playerCoroutine);
+        //    Debug.LogError($"Get player data timeout or null.");
+        //    yield break; //TODO: Add error handling.
+        //}
+        //else
+        //    StopCoroutine(timeoutCoroutine);
 
         //PlayerData clanPlayer = null;
         //Storefront.Get().GetPlayerData(clan.Members[].PlayerDataId, cp => clanPlayer = cp);
@@ -315,7 +348,17 @@ public class DailyTaskManager : MonoBehaviour
         //    }));
         //}
 
-        //yield return new WaitUntil(() => clan != null);
+        //timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+        //yield return new WaitUntil(() => (playerData != null || timeout != null));
+
+        //if (playerData == null)
+        //{
+        //    StopCoroutine(playerCoroutine);
+        //    Debug.LogError($"Get player data timeout or null.");
+        //    yield break; //TODO: Add error handling.
+        //}
+        //else
+        //    StopCoroutine(timeoutCoroutine);
 
         #endregion
 
@@ -350,7 +393,7 @@ public class DailyTaskManager : MonoBehaviour
                 {
                     case PopupData.PopupDataType.OwnTask:
                         {
-                            if (_playerData != null && _playerData.Task != null)
+                            if (_currentPlayerData != null && _currentPlayerData.Task != null)
                                 StartCoroutine(CancelTask());
 
                             PopupDataHandler(data.Value);
@@ -390,35 +433,50 @@ public class DailyTaskManager : MonoBehaviour
     {
         PlayerData playerData = null;
         PlayerData savePlayerData = null;
-        StartCoroutine(GetPlayerData(data => playerData = data));
+        bool? timeout = null;
+        Coroutine playerCoroutine, timeoutCoroutine;
 
-        yield return new WaitUntil(() => (System.Threading.SpinWait.SpinUntil(() => playerData != null, _timeoutMilliseconds)));
+        //Get player data.
+        playerCoroutine = StartCoroutine(GetPlayerData(data => playerData = data));
+
+        timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+        yield return new WaitUntil(() => (playerData != null || timeout != null));
 
         if (playerData == null)
         {
+            StopCoroutine(playerCoroutine);
             Debug.LogError($"Get player data timeout or null.");
             yield break; //TODO: Add error handling.
         }
+        else
+            StopCoroutine(timeoutCoroutine);
 
+        //Save player data.
         playerData.Task = playerTask;
-        StartCoroutine(SavePlayerData(playerData, data => savePlayerData = data));
+        timeout = null;
 
-        yield return new WaitUntil(() => (System.Threading.SpinWait.SpinUntil(() => savePlayerData != null, _timeoutMilliseconds)));
+        playerCoroutine = StartCoroutine(SavePlayerData(playerData, data => savePlayerData = data));
+
+        timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+        yield return new WaitUntil(() => (savePlayerData != null || timeout != null));
 
         if (savePlayerData == null)
         {
+            StopCoroutine(playerCoroutine);
             Debug.LogError($"Save player data timeout or null.");
             yield break; //TODO: Add error handling.
         }
+        else
+            StopCoroutine(timeoutCoroutine);
 
-        _playerData = savePlayerData;
+        _currentPlayerData = savePlayerData;
         StartCoroutine(SetHandleOwnTask(playerTask, savePlayerData));
     }
 
     //Set OwnTask page.
     private IEnumerator SetHandleOwnTask(PlayerTask playerTask, PlayerData playerData)
     {
-        DailyTaskProgressManager.Instance.TESTSetPlayerData(_playerData); //TODO: Test code. Remove when server ready.
+        DailyTaskProgressManager.Instance.TESTSetPlayerData(_currentPlayerData); //TODO: Test code. Remove when server ready.
         DailyTaskProgressManager.Instance.UpdateCurrentTask(playerData);
         _ownTaskId = playerTask.Id;
         _ownTaskPageHandler.SetDailyTask(playerTask.Content, playerTask.Amount, playerTask.Points, playerTask.Coins);
@@ -431,9 +489,9 @@ public class DailyTaskManager : MonoBehaviour
     private IEnumerator GetPlayerData(System.Action<PlayerData> callback)
     {
         //Testing code------------//
-        if (_playerData != null)
+        if (_currentPlayerData != null)
         {
-            callback(_playerData);
+            callback(_currentPlayerData);
             yield break;
         }
         //------------------------//
@@ -490,7 +548,7 @@ public class DailyTaskManager : MonoBehaviour
     public void TESTAddTaskProgress()
     {
         //_ownTaskProgress++;
-        _playerData.TaskProgress++;
+        _currentPlayerData.TaskProgress++;
 
         foreach (GameObject obj in _dailyTaskCardSlots)
         {
@@ -501,7 +559,7 @@ public class DailyTaskManager : MonoBehaviour
 
             if (quest.TaskData.Id == _ownTaskId)
             {
-                UpdateOwnTaskProgress(quest);
+                UpdateOwnTaskProgress();
                 return;
             }
         }
@@ -509,9 +567,12 @@ public class DailyTaskManager : MonoBehaviour
         Debug.LogError($"Could not find task with id: {_ownTaskId}");
     }
 
-    private void UpdateOwnTaskProgress(DailyQuest quest)
+    private void UpdateOwnTaskProgress()
     {
-        float progress = CalculateProgressBar(quest.TaskData.Amount, _playerData.TaskProgress);
+        //TODO: Replace with fetch from server when possible.
+        var playerData = DailyTaskProgressManager.Instance.CurrentPlayerData;
+
+        float progress = CalculateProgressBar(_currentPlayerData.Task.Amount, playerData.TaskProgress);
         _ownTaskPageHandler.SetTaskProgress(progress);
         Debug.Log("Task id: " + _ownTaskId + ", current progress: " + progress);
         if (progress >= 1f)
@@ -536,51 +597,57 @@ public class DailyTaskManager : MonoBehaviour
     {
         PlayerData playerData = null;
         PlayerData savePlayerData = null;
-        StartCoroutine(GetPlayerData(data => playerData = data));
+        bool? timeout = null;
+        Coroutine playerCoroutine, timeoutCoroutine;
 
-        yield return new WaitUntil(() => (System.Threading.SpinWait.SpinUntil(() => playerData != null, _timeoutMilliseconds)));
+        //Get player data.
+        playerCoroutine = StartCoroutine(GetPlayerData(data => playerData = data));
+
+        timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+        yield return new WaitUntil(() => (playerData != null || timeout != null));
 
         if (playerData == null)
         {
+            StopCoroutine(playerCoroutine);
             Debug.LogError($"Get player data timeout or null.");
             yield break; //TODO: Add error handling.
         }
+        else
+            StopCoroutine(timeoutCoroutine);
 
+        //Save player data.
         playerData.Task = null;
         playerData.TaskProgress = 0;
-        StartCoroutine(SavePlayerData(playerData, data => savePlayerData = data));
+        timeout = null;
 
-        yield return new WaitUntil(() => (System.Threading.SpinWait.SpinUntil(() => savePlayerData != null, _timeoutMilliseconds)));
+        playerCoroutine = StartCoroutine(SavePlayerData(playerData, data => savePlayerData = data));
 
-        if (savePlayerData == null)
+        timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+        yield return new WaitUntil(() => (playerData != null || timeout != null));
+
+        if (playerData == null)
         {
+            StopCoroutine(playerCoroutine);
             Debug.LogError($"Save player data timeout or null.");
             yield break; //TODO: Add error handling.
         }
+        else
+            StopCoroutine(timeoutCoroutine);
 
-        _playerData = savePlayerData;
-        DailyTaskProgressManager.Instance.TESTSetPlayerData(_playerData); //TODO: Remove when server ready.
+        _currentPlayerData = savePlayerData;
+        DailyTaskProgressManager.Instance.TESTSetPlayerData(_currentPlayerData); //TODO: Remove when server ready.
         DailyTaskProgressManager.Instance.UpdateCurrentTask(savePlayerData);
-        StartCoroutine(_ownTaskPageHandler.ClearCurrentTask());
+        _ownTaskPageHandler.ClearCurrentTask();
         Debug.Log("Task id: " + _ownTaskId + ", has been canceled.");
         _ownTaskId = null;
     }
 
-    public IEnumerator ClearCurrentTask()
+    public void ClearCurrentTask(PlayerData playerData)
     {
-        PlayerData playerData = null;
-        GetPlayerData(data => playerData = data);
-
-        yield return new WaitUntil(() => (System.Threading.SpinWait.SpinUntil(() => playerData != null, _timeoutMilliseconds)));
-
-        if (playerData == null)
-        {
-            Debug.LogError($"Get player data timeout or null.");
-            yield break; //TODO: Add error handling.
-        }
-        
-        _playerData = playerData;
-        StartCoroutine(_ownTaskPageHandler.ClearCurrentTask());
+        _currentPlayerData = playerData;
+        _ownTaskPageHandler.ClearCurrentTask();
+        _ownTaskTabButton.interactable = false;
+        SwitchTab(SelectedTab.Tasks);
         Debug.Log("Task id: " + _ownTaskId + ", has been cleard.");
         _ownTaskId = null;
     }
@@ -726,5 +793,11 @@ public class DailyTaskManager : MonoBehaviour
             _clanProgressBarMarkers.Add(rewardMarker);
         }
         yield return true;
+    }
+
+    private IEnumerator WaitUntilTimeout(float timeoutSeconds, System.Action<bool> callback)
+    {
+        yield return new WaitForSeconds(timeoutSeconds);
+        callback(true);
     }
 }
