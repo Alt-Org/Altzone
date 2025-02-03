@@ -131,7 +131,7 @@ public class FlexibleGridLayout : LayoutGroup
 
                     // If there is space for more than half a cell we shrink cells and add one more column
                     bool shrinkCells = false;
-                    if (_preferredCellSize.x / 2 < leftoverPixels - _cellSpacing.x && _gridFit != FitType.FixedColumns)
+                    if (_preferredCellSize.x / 2 < leftoverPixels - _cellSpacing.x)
                     {
                         _columns = preferredSizeFit + 1;
 
@@ -175,6 +175,61 @@ public class FlexibleGridLayout : LayoutGroup
                     }
                     
                     _rows = Mathf.CeilToInt(transform.childCount / (float)_columns);
+                }
+                else if (_gridFit == FitType.DynamicRows)
+                {
+                    // Calculating how many rows fit with preferred size and how many pixels are left over
+                    int preferredSizeFit = Mathf.FloorToInt((rectTransform.rect.height - padding.top - padding.bottom - _cellSpacing.y) / (_preferredCellSize.y + _cellSpacing.y));
+                    float leftoverPixels = rectTransform.rect.height - (_preferredCellSize.y * preferredSizeFit);
+
+                    float cellAspectRatio = _preferredCellSize.x / _preferredCellSize.y;
+
+                    // If there is space for more than half a cell we shrink cells and add one more row
+                    bool shrinkCells = false;
+                    if (_preferredCellSize.y / 2 < leftoverPixels - _cellSpacing.y)
+                    {
+                        _rows = preferredSizeFit + 1;
+
+                        float shrunkCellHeight = rectTransform.rect.height / (float)_rows - ((_cellSpacing.y / (float)_rows) * (_rows - 1))
+                                - (padding.top / (float)_rows) - (padding.bottom / (float)_rows);
+
+                        if (shrunkCellHeight >= _minCellSize.y)
+                        {
+                            shrinkCells = true;
+
+                            cellHeight = shrunkCellHeight;
+                            cellWidth = cellAspectRatio * cellHeight;
+                        }
+                        else
+                        {
+                            _rows--;
+                        }
+                    }
+
+                    // Debug.Log($"preferred fit {preferredSizeFit} leftover {leftoverPixels} shrink cells {shrinkCells}");
+
+                    // If we don't shrink we grow cells if there are leftover pixels
+                    if (!shrinkCells)
+                    {
+                        _rows = preferredSizeFit;
+
+                        if (leftoverPixels > 0)
+                        {
+                            float grownCellHeight = rectTransform.rect.height / (float)_rows - ((_cellSpacing.y / (float)_rows) * (_rows - 1))
+                                - (padding.top / (float)_rows) - (padding.bottom / (float)_rows);
+                            grownCellHeight = Mathf.Clamp(grownCellHeight, 0, _maxCellSize.y);
+
+                            cellHeight = grownCellHeight;
+                            cellWidth = cellAspectRatio * cellHeight;
+                        }
+                        else
+                        {
+                            cellWidth = _preferredCellSize.x;
+                            cellHeight = _preferredCellSize.y;
+                        }
+                    }
+
+                    _columns = Mathf.CeilToInt(transform.childCount / (float)_rows);
                 }
                 else if (_gridFit == FitType.FixedColumns)
                 {
