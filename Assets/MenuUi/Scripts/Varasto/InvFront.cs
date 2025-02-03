@@ -60,7 +60,7 @@ namespace MenuUi.Scripts.Storage
         bool _startCompleted = false;
         bool _updatingInventory = false;
 
-        private int _maxSortingBy = 5;
+        private int _maxSortingBy = 4;
         private int _sortingBy = -1; // used as a carrier for info on how to sort
         private bool _descendingOrder = false;
 
@@ -247,13 +247,13 @@ namespace MenuUi.Scripts.Storage
                     case 2:
                         toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
                         break;
+                    //case 3:
+                    //    toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.Material;
+                    //    break;
                     case 3:
-                        toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.Material;
-                        break;
-                    case 4:
                         toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.Rarity.ToString();
                         break;
-                    case 5:
+                    case 4:
                         toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.SetName;
                         break;
                 }
@@ -336,22 +336,22 @@ namespace MenuUi.Scripts.Storage
                         });
 
                     break;
+                //case 3:
+                //    _sortText.text = "Jarjestetty\nMateriaali";
+
+                //    if (_descendingOrder)
+                //        _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                //            int result = b.Material.CompareTo(a.Material);
+                //            return result != 0 ? result : b.VisibleName.CompareTo(a.VisibleName);
+                //        });
+                //    else
+                //        _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                //            int result = a.Material.CompareTo(b.Material);
+                //            return result != 0 ? result : a.VisibleName.CompareTo(b.VisibleName);
+                //        });
+
+                //    break;
                 case 3:
-                    _sortText.text = "Jarjestetty\nMateriaali";
-
-                    if (_descendingOrder)
-                        _items.Sort((StorageFurniture a, StorageFurniture b) => {
-                            int result = b.Material.CompareTo(a.Material);
-                            return result != 0 ? result : b.VisibleName.CompareTo(a.VisibleName);
-                        });
-                    else
-                        _items.Sort((StorageFurniture a, StorageFurniture b) => {
-                            int result = a.Material.CompareTo(b.Material);
-                            return result != 0 ? result : a.VisibleName.CompareTo(b.VisibleName);
-                        });
-
-                    break;
-                case 4:
                     _sortText.text = "Jarjestetty\nHarvinaisuus";
 
                     if (_descendingOrder)
@@ -366,7 +366,7 @@ namespace MenuUi.Scripts.Storage
                         });
 
                     break;
-                case 5:
+                case 4:
                     _sortText.text = "Jarjestetty\nLinjasto";
 
                     if (_descendingOrder)
