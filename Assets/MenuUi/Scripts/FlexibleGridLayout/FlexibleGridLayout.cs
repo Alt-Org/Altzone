@@ -189,6 +189,19 @@ public class FlexibleGridLayout : LayoutGroup
                     float cellAspectRatio = _maxCellSize.x / _maxCellSize.y;
                     cellHeight = cellWidth / cellAspectRatio;
                 }
+                else if (_gridFit == FitType.FixedRows)
+                {
+                    // Get tallest possible cell
+                    cellHeight = rectTransform.rect.height / (float)_rows - ((_cellSpacing.y / (float)_rows) * (_rows - 1))
+                                - (padding.top / (float)_rows) - (padding.bottom / (float)_rows);
+
+                    // Clamp it to the max cell size
+                    cellHeight = Mathf.Clamp(cellHeight, 0, _maxCellSize.y);
+
+                    // Calculate width for the cell
+                    float cellAspectRatio = _maxCellSize.x / _maxCellSize.y;
+                    cellWidth = cellAspectRatio * cellHeight;
+                }
                 break;
 
             case CellSizeType.AspectRatio:
@@ -232,8 +245,19 @@ public class FlexibleGridLayout : LayoutGroup
         // Placing children
         for (int i = 0; i < rectChildren.Count; i++)
         {
-            int rowCount = i / _columns;
-            int columnCount = i % _columns;
+            int rowCount;
+            int columnCount;
+            if (_gridFit == FitType.DynamicColumns || _gridFit == FitType.FixedColumns) // Vertical
+            {
+                rowCount = i / _columns;
+                columnCount = i % _columns;
+            }
+            else // Horizontal
+            {
+                rowCount = i % _rows;
+                columnCount = i / _rows;
+            }
+            
 
             var item = rectChildren[i];
 
