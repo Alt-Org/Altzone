@@ -19,12 +19,20 @@ public class FlexibleGridLayout : LayoutGroup
         BasedOnPrefab
     }
 
+    public enum StartCorner
+    {
+        UpperLeft,
+        UpperRight,
+        LowerLeft,
+        LowerRight,
+    }
+
 
     const float ShortestAspectRatio = 4.0f / 3.0f;
     const float TallestAspectRatio = 22.0f / 9.0f;
 
-
-    [Header("Flexible Grid")]
+    [SerializeField]
+    private StartCorner _startCorner;
 
     [SerializeField, Tooltip("How the grid will fit its children.\n\nDynamic: Determine column amount based on screen's aspect ratio.\nFixed Columns: Column amount stays the same.\nFixed Rows: Row amount stays the same.")]
     private FitType _gridFit = FitType.DynamicColumns;
@@ -373,6 +381,7 @@ public class FlexibleGridLayout : LayoutGroup
     {
         // LayoutGroup properties
         SerializedProperty _padding;
+        SerializedProperty _startCornerEnum;
         SerializedProperty _childAlignment;
 
         // Grid fit properties
@@ -400,6 +409,7 @@ public class FlexibleGridLayout : LayoutGroup
         {
             // Getting LayoutGroup properties
             _padding = serializedObject.FindProperty(nameof(m_Padding));
+            _startCornerEnum = serializedObject.FindProperty(nameof(_startCorner));
             _childAlignment = serializedObject.FindProperty(nameof(m_ChildAlignment));
 
             // Getting grid fit properties
@@ -428,41 +438,9 @@ public class FlexibleGridLayout : LayoutGroup
         {
             serializedObject.Update();
 
-            // Place LayoutGroup property fields
+            // Padding
             EditorGUILayout.PropertyField(_padding);
-            EditorGUILayout.PropertyField(_childAlignment);
-
-            // Place grid fit property fields
-            EditorGUILayout.PropertyField(_gridFitSelection);
-
-            switch ((FitType)_gridFitSelection.enumValueIndex)
-            {
-                case FitType.DynamicColumns:
-                    // Manual cell size changes how dynamic columns and rows are calculated so we hide these options
-                    if ((CellSizeType)_cellSizeSelection.enumValueIndex != CellSizeType.Manual)
-                    {
-                        EditorGUILayout.PropertyField(_gridFitMinColumns);
-                        EditorGUILayout.PropertyField(_gridFitMaxColumns);
-                        EditorGUILayout.Space();
-                    }
-                    break;
-                case FitType.DynamicRows:
-                    if ((CellSizeType)_cellSizeSelection.enumValueIndex != CellSizeType.Manual)
-                    {
-                        EditorGUILayout.PropertyField(_gridFitMinRows);
-                        EditorGUILayout.PropertyField(_gridFitMaxRows);
-                        EditorGUILayout.Space();
-                    }
-                    break;
-                case FitType.FixedColumns:
-                    EditorGUILayout.PropertyField(_gridFitColumns);
-                    EditorGUILayout.Space();
-                    break;
-                case FitType.FixedRows:
-                    EditorGUILayout.PropertyField(_gridFitRows);
-                    EditorGUILayout.Space();
-                    break;
-            }
+            EditorGUILayout.Space();
 
             // Place cell size property fields
             EditorGUILayout.PropertyField(_cellSizeSelection);
@@ -481,20 +459,52 @@ public class FlexibleGridLayout : LayoutGroup
                     {
                         EditorGUILayout.PropertyField(_maxCellSize);
                     }
-                    EditorGUILayout.Space();
                     break;
                 case CellSizeType.AspectRatio:
                     EditorGUILayout.PropertyField(_cellAspectRatio);
-                    EditorGUILayout.Space();
                     break;
                 case CellSizeType.BasedOnPrefab:
                     EditorGUILayout.PropertyField(_cellPrefab);
-                    EditorGUILayout.Space();
                     break;
             }
 
-            // Place cell spacing property field
+            EditorGUILayout.Space();
             EditorGUILayout.PropertyField(_cellSpacing);
+            EditorGUILayout.Space();
+
+            // Place grid fit property fields
+            EditorGUILayout.PropertyField(_gridFitSelection);
+
+            switch ((FitType)_gridFitSelection.enumValueIndex)
+            {
+                case FitType.DynamicColumns:
+                    // Manual cell size changes how dynamic columns and rows are calculated so we hide these options
+                    if ((CellSizeType)_cellSizeSelection.enumValueIndex != CellSizeType.Manual)
+                    {
+                        EditorGUILayout.PropertyField(_gridFitMinColumns);
+                        EditorGUILayout.PropertyField(_gridFitMaxColumns);
+                    }
+                    break;
+                case FitType.DynamicRows:
+                    if ((CellSizeType)_cellSizeSelection.enumValueIndex != CellSizeType.Manual)
+                    {
+                        EditorGUILayout.PropertyField(_gridFitMinRows);
+                        EditorGUILayout.PropertyField(_gridFitMaxRows);
+                    }
+                    break;
+                case FitType.FixedColumns:
+                    EditorGUILayout.PropertyField(_gridFitColumns);
+                    break;
+                case FitType.FixedRows:
+                    EditorGUILayout.PropertyField(_gridFitRows);
+                    break;
+            }
+
+            EditorGUILayout.Space();
+
+            // Place alignment property fields
+            EditorGUILayout.PropertyField(_startCornerEnum);
+            EditorGUILayout.PropertyField(_childAlignment);
 
             serializedObject.ApplyModifiedProperties();
         }
