@@ -161,8 +161,8 @@ public class FlexibleGridLayout : LayoutGroup
                         if (leftoverPixels > 0)
                         {
                             float grownCellWidth = rectTransform.rect.width / (float)_columns - ((_cellSpacing.x / (float)_columns) * (_columns - 1))
-                                - (padding.left / (float)_columns) - (padding.right / (float)_columns); ;
-                            Mathf.Clamp(grownCellWidth, 0, _maxCellSize.x);
+                                - (padding.left / (float)_columns) - (padding.right / (float)_columns);
+                            grownCellWidth = Mathf.Clamp(grownCellWidth, 0, _maxCellSize.x);
 
                             cellWidth = grownCellWidth;
                             cellHeight = cellWidth / cellAspectRatio;
@@ -175,6 +175,19 @@ public class FlexibleGridLayout : LayoutGroup
                     }
                     
                     _rows = Mathf.CeilToInt(transform.childCount / (float)_columns);
+                }
+                else if (_gridFit == FitType.FixedColumns)
+                {
+                    // Get widest possible cell
+                    cellWidth = rectTransform.rect.width / (float)_columns - ((_cellSpacing.x / (float)_columns) * (_columns - 1))
+                                - (padding.left / (float)_columns) - (padding.right / (float)_columns);
+
+                    // Clamp it to the max cell size
+                    cellWidth = Mathf.Clamp(cellWidth, 0, _maxCellSize.x);
+
+                    // Calculate height for the cell
+                    float cellAspectRatio = _maxCellSize.x / _maxCellSize.y;
+                    cellHeight = cellWidth / cellAspectRatio;
                 }
                 break;
 
