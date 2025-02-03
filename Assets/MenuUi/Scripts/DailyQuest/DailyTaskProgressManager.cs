@@ -12,7 +12,7 @@ public class DailyTaskProgressManager : MonoBehaviour
     public static DailyTaskProgressManager Instance { get; private set; }
 
     [HideInInspector] public PlayerTasks.PlayerTask CurrentPlayerTask { get; private set; }
-    [HideInInspector] public PlayerData CurrentPlayerData { get; private set; }
+    //[HideInInspector] public PlayerData CurrentPlayerData { get; private set; }
 
     [SerializeField] private float _timeoutSeconds = 10;
 
@@ -26,7 +26,7 @@ public class DailyTaskProgressManager : MonoBehaviour
     public delegate void TaskProgressed();
     public static event TaskProgressed OnTaskProgressed;
 
-    public delegate void TaskDone(PlayerData playerData);
+    public delegate void TaskDone(/*PlayerData playerData*/);
     public static event TaskDone OnTaskDone;
 
     #endregion
@@ -68,19 +68,19 @@ public class DailyTaskProgressManager : MonoBehaviour
         else
             StopCoroutine(timeoutCoroutine);
 
-        CurrentPlayerData = playerData;
+        //CurrentPlayerData = playerData;
         CurrentPlayerTask = playerData.Task;
     }
 
     private IEnumerator GetPlayerData(System.Action<PlayerData> callback)
     {
-        //Testing code------------//
-        if (CurrentPlayerData != null)
-        {
-            callback(CurrentPlayerData);
-            yield break;
-        }
-        //------------------------//
+        ////Testing code------------//
+        //if (CurrentPlayerData != null)
+        //{
+        //    callback(CurrentPlayerData);
+        //    yield break;
+        //}
+        ////------------------------//
 
         Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, callback);
 
@@ -148,36 +148,42 @@ public class DailyTaskProgressManager : MonoBehaviour
         }
     }
 
-    //For testing until server is functional. DailyTaskManager will give the current task.
-    public void TESTSetPlayerData(PlayerData playerData)
-    {
-        CurrentPlayerData = playerData;
-        CurrentPlayerTask = playerData.Task;
-    }
+    ////For testing until server is functional. DailyTaskManager will give the current task.
+    //public void TESTSetTaskData(PlayerTasks.PlayerTask task)
+    //{
+    //    //CurrentPlayerData = playerData;
+    //    CurrentPlayerTask = task;
+    //}
 
-    public void UpdateCurrentTask(PlayerData playerData)
+    public void UpdateCurrentTask(PlayerTasks.PlayerTask task)
     {
-        if(OnTaskChange == null)
+        //if(OnTaskChange == null)
+        //{
+        //    Debug.Log("OnTaskChange event is null!");
+        //    return;
+        //}
+
+        if (CurrentPlayerTask != task)
         {
-            //Debug.LogError("OnTaskChange event is null!");
-            return;
+            _previousTaskStrings.Clear();
         }
 
-        if (CurrentPlayerTask != playerData.Task)
-            _previousTaskStrings.Clear();
+        //CurrentPlayerData = playerData;
+        //CurrentPlayerData.Task = playerData.Task;
+        CurrentPlayerTask = task;
 
-        CurrentPlayerData = playerData;
-        CurrentPlayerData.Task = playerData.Task;
-        CurrentPlayerTask = playerData.Task;
-
-        if (CurrentPlayerTask != null)
-            OnTaskChange.Invoke(CurrentPlayerTask.Type);
-        else
-            OnTaskChange.Invoke(TaskType.Undefined);
+        if (OnTaskChange != null)
+        {
+            if (CurrentPlayerTask != null)
+                OnTaskChange.Invoke(CurrentPlayerTask.Type);
+            else
+                OnTaskChange.Invoke(TaskType.Undefined);
+        }
     }
 
     public bool SameTask(TaskType taskType)
     {
+        //Debug.LogError(taskType + "   " + CurrentPlayerTask);
         if (CurrentPlayerTask == null)
             return false;
 
@@ -227,19 +233,19 @@ public class DailyTaskProgressManager : MonoBehaviour
         else
             StopCoroutine(timeoutCoroutine);
 
-        playerData.TaskProgress += value;
+        CurrentPlayerTask.AddProgress(value);
 
         if (OnTaskProgressed != null)
             OnTaskProgressed.Invoke();
 
         //Is task done check.
-        if (playerData.TaskProgress >= playerData.Task.Amount)
+        if (CurrentPlayerTask.TaskProgress >= CurrentPlayerTask.Amount)
         {
             //Distribute rewards.
             bool? done = null;
             timeout = null;
 
-            var clanCoroutine = StartCoroutine(DistributeRewardsForClan(data => done = data));
+            var clanCoroutine = StartCoroutine(DistributeRewardsForClan(playerData.ClanId, data => done = data));
 
             timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
             yield return new WaitUntil(() => (done != null || timeout != null));
@@ -264,20 +270,21 @@ public class DailyTaskProgressManager : MonoBehaviour
             //Clean up.
             _previousTaskStrings.Clear();
             CurrentPlayerTask = null;
-            playerData.Task = null;
-            playerData.TaskProgress = 0;
-            OnTaskDone.Invoke(playerData); //Clear DailyTaskManager OwnTask page & get fresh PlayerData.
+            //playerData.Task = null;
+            //playerData.TaskProgress = 0;
+            OnTaskDone.Invoke(/*playerData*/); //Clear DailyTaskManager OwnTask page & get fresh PlayerData.
         }
 
         //Save player data
+        playerData.Task = CurrentPlayerTask;
         timeout = null;
 
         playerCoroutine = StartCoroutine(SavePlayerData(playerData, data => savePlayerData = data));
 
         timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
-        yield return new WaitUntil(() => (playerData != null || timeout != null));
+        yield return new WaitUntil(() => (savePlayerData != null || timeout != null));
 
-        if (playerData == null)
+        if (savePlayerData == null)
         {
             StopCoroutine(playerCoroutine);
             Debug.LogError($"Save player data timeout or null.");
@@ -286,17 +293,17 @@ public class DailyTaskProgressManager : MonoBehaviour
         else
             StopCoroutine(timeoutCoroutine);
 
-        CurrentPlayerData = savePlayerData;
+        //CurrentPlayerData = savePlayerData;
     }
 
-    private IEnumerator DistributeRewardsForClan(System.Action<bool> exitCallback)
+    private IEnumerator DistributeRewardsForClan(string clanId, System.Action<bool> exitCallback)
     {
         ClanData clanData = null;
         bool? timeout = null;
         Coroutine clanCoroutine = null, timeoutCoroutine;
 
         //Get clan data.
-        Storefront.Get().GetClanData(CurrentPlayerData.ClanId, data => clanData = data);
+        Storefront.Get().GetClanData(clanId, data => clanData = data);
 
         if (clanData == null)
         {

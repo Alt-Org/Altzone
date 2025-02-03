@@ -156,7 +156,7 @@ public class DailyTaskManager : MonoBehaviour
         }
 
         _ownTaskTabButton.interactable = true;
-        StartCoroutine(SetHandleOwnTask(playerTask, playerData));
+        StartCoroutine(SetHandleOwnTask(playerTask));
         SwitchTab(SelectedTab.OwnTask);
     }
 
@@ -470,17 +470,17 @@ public class DailyTaskManager : MonoBehaviour
             StopCoroutine(timeoutCoroutine);
 
         _currentPlayerData = savePlayerData;
-        StartCoroutine(SetHandleOwnTask(playerTask, savePlayerData));
+        StartCoroutine(SetHandleOwnTask(playerTask));
     }
 
     //Set OwnTask page.
-    private IEnumerator SetHandleOwnTask(PlayerTask playerTask, PlayerData playerData)
+    private IEnumerator SetHandleOwnTask(PlayerTask playerTask)
     {
-        DailyTaskProgressManager.Instance.TESTSetPlayerData(_currentPlayerData); //TODO: Test code. Remove when server ready.
-        DailyTaskProgressManager.Instance.UpdateCurrentTask(playerData);
+        //DailyTaskProgressManager.Instance.TESTSetTaskData(_currentPlayerData.Task); //TODO: Test code. Remove when server ready.
+        DailyTaskProgressManager.Instance.UpdateCurrentTask(playerTask);
         _ownTaskId = playerTask.Id;
         _ownTaskPageHandler.SetDailyTask(playerTask.Content, playerTask.Amount, playerTask.Points, playerTask.Coins);
-        _ownTaskPageHandler.SetTaskProgress(playerData.TaskProgress);
+        _ownTaskPageHandler.SetTaskProgress(playerTask.TaskProgress);
         Debug.Log("Task id: " + _ownTaskId + ", has been accepted.");
 
         yield return true;
@@ -548,7 +548,7 @@ public class DailyTaskManager : MonoBehaviour
     public void TESTAddTaskProgress()
     {
         //_ownTaskProgress++;
-        _currentPlayerData.TaskProgress++;
+        _currentPlayerData.Task.AddProgress(1);
 
         foreach (GameObject obj in _dailyTaskCardSlots)
         {
@@ -570,9 +570,9 @@ public class DailyTaskManager : MonoBehaviour
     private void UpdateOwnTaskProgress()
     {
         //TODO: Replace with fetch from server when possible.
-        var playerData = DailyTaskProgressManager.Instance.CurrentPlayerData;
-
-        float progress = CalculateProgressBar(_currentPlayerData.Task.Amount, playerData.TaskProgress);
+        var taskData = DailyTaskProgressManager.Instance.CurrentPlayerTask;
+        
+        float progress = CalculateProgressBar(_currentPlayerData.Task.Amount, taskData.TaskProgress);
         _ownTaskPageHandler.SetTaskProgress(progress);
         Debug.Log("Task id: " + _ownTaskId + ", current progress: " + progress);
         if (progress >= 1f)
@@ -616,8 +616,8 @@ public class DailyTaskManager : MonoBehaviour
             StopCoroutine(timeoutCoroutine);
 
         //Save player data.
+        playerData.Task.ClearProgress();
         playerData.Task = null;
-        playerData.TaskProgress = 0;
         timeout = null;
 
         playerCoroutine = StartCoroutine(SavePlayerData(playerData, data => savePlayerData = data));
@@ -635,16 +635,17 @@ public class DailyTaskManager : MonoBehaviour
             StopCoroutine(timeoutCoroutine);
 
         _currentPlayerData = savePlayerData;
-        DailyTaskProgressManager.Instance.TESTSetPlayerData(_currentPlayerData); //TODO: Remove when server ready.
-        DailyTaskProgressManager.Instance.UpdateCurrentTask(savePlayerData);
+        //DailyTaskProgressManager.Instance.TESTSetTaskData(savePlayerData.Task); //TODO: Remove when server ready.
+        DailyTaskProgressManager.Instance.UpdateCurrentTask(savePlayerData.Task);
         _ownTaskPageHandler.ClearCurrentTask();
         Debug.Log("Task id: " + _ownTaskId + ", has been canceled.");
         _ownTaskId = null;
     }
 
-    public void ClearCurrentTask(PlayerData playerData)
+    public void ClearCurrentTask(/*PlayerData playerData*/)
     {
-        _currentPlayerData = playerData;
+        _currentPlayerData.Task.ClearProgress();
+        //_currentPlayerData = playerData;
         _ownTaskPageHandler.ClearCurrentTask();
         _ownTaskTabButton.interactable = false;
         SwitchTab(SelectedTab.Tasks);
