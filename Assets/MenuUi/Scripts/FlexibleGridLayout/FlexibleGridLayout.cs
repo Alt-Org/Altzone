@@ -262,6 +262,22 @@ public class FlexibleGridLayout : LayoutGroup
         _cellSize.x = cellWidth;
         _cellSize.y = cellHeight;
 
+        // Scaling the rectTransform
+        if (_gridFit == FitType.DynamicColumns || _gridFit == FitType.FixedColumns) // Vertical
+        {
+            rectTransform.anchorMax = Vector2.one;
+            rectTransform.anchorMin = new Vector2(0, 1);
+
+            rectTransform.sizeDelta = new Vector2(0, (_rows * _cellSize.y) + ((_rows - 1) * _cellSpacing.y));
+        }
+        else if (_gridFit == FitType.DynamicRows || _gridFit == FitType.FixedRows) // Horizontal
+        {
+            rectTransform.anchorMax = new Vector2(0, 1);
+            rectTransform.anchorMin = Vector2.zero;
+
+            rectTransform.sizeDelta = new Vector2((_columns * _cellSize.x) + ((_columns - 1) * _cellSpacing.x), 0);
+        }
+
         // Placing children
         for (int i = 0; i < rectChildren.Count; i++)
         {
@@ -278,30 +294,36 @@ public class FlexibleGridLayout : LayoutGroup
                 columnCount = i / _rows;
             }
             
-
             var item = rectChildren[i];
 
-            float xPos = (_cellSize.x * columnCount) + (_cellSpacing.x * columnCount) + padding.left;
-            float yPos = (_cellSize.y * rowCount) + (_cellSpacing.y * rowCount) + padding.top;
+            float xPos = 0;
+            float yPos = 0;
+
+            switch (_startCorner)
+            {
+                case StartCorner.UpperLeft:
+                    xPos = (_cellSize.x * columnCount) + (_cellSpacing.x * columnCount) + padding.left;
+                    yPos = (_cellSize.y * rowCount) + (_cellSpacing.y * rowCount) + padding.top;
+                    break;
+
+                case StartCorner.UpperRight:
+                    xPos = (rectTransform.rect.width - _cellSize.x) - ((_cellSize.x * columnCount) + (_cellSpacing.x * columnCount) + padding.left);
+                    yPos = (_cellSize.y * rowCount) + (_cellSpacing.y * rowCount) + padding.top;
+                    break;
+
+                case StartCorner.LowerLeft:
+                    xPos = (_cellSize.x * columnCount) + (_cellSpacing.x * columnCount) + padding.left;
+                    yPos = (rectTransform.rect.height - _cellSize.y) - ((_cellSize.y * rowCount) + (_cellSpacing.y * rowCount) + padding.top);
+                    break;
+
+                case StartCorner.LowerRight:
+                    xPos = (rectTransform.rect.width - _cellSize.x) - ((_cellSize.x * columnCount) + (_cellSpacing.x * columnCount) + padding.left);
+                    yPos = (rectTransform.rect.height - _cellSize.y) - ((_cellSize.y * rowCount) + (_cellSpacing.y * rowCount) + padding.top);
+                    break;
+            }
 
             SetChildAlongAxis(item, 0, xPos, _cellSize.x);
             SetChildAlongAxis(item, 1, yPos, _cellSize.y);
-        }
-
-        // Scaling the rectTransform
-        if (_gridFit == FitType.DynamicColumns || _gridFit == FitType.FixedColumns) // Vertical
-        {
-            rectTransform.anchorMax = Vector2.one;
-            rectTransform.anchorMin = new Vector2(0, 1);
-
-            rectTransform.sizeDelta = new Vector2(0, (_rows * _cellSize.y) + ((_rows - 1) * _cellSpacing.y));
-        }
-        else if (_gridFit == FitType.DynamicRows || _gridFit == FitType.FixedRows) // Horizontal
-        {
-            rectTransform.anchorMax = new Vector2(0, 1);
-            rectTransform.anchorMin = Vector2.zero;
-
-            rectTransform.sizeDelta = new Vector2((_columns * _cellSize.x) + ((_columns - 1) * _cellSpacing.x), 0);
         }
     }
 
