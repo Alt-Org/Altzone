@@ -139,7 +139,7 @@ namespace MenuUi.Scripts.Storage
             }
 
             yield return StartCoroutine(Begin());
-            _totalValueText.text = $"Varaston arvo: {GetTotalInventoryValue()}";
+            _totalValueText.text = $"{GetTotalInventoryValue()}";
             _updatingInventory = false;
         }
 

@@ -18,7 +18,7 @@ public class ClanCreateNew : MonoBehaviour
     [SerializeField] private TMP_InputField _clanNameField;
     [SerializeField] private Toggle _openClanToggle;
     [SerializeField] private TMP_InputField _clanPasswordField;
-    [SerializeField] private TMP_Dropdown _clanGoalDropdown;
+    [SerializeField] private ClanGoalSelection _clanGoalSelection;
     [SerializeField] private ClanAgeSelection _ageSelection;
     [SerializeField] private ClanLanguageList _languageSelection;
     [SerializeField] private ValueSelectionController _valueSelection;
@@ -74,7 +74,8 @@ public class ClanCreateNew : MonoBehaviour
         _languageWarningOutline.SetActive(false);
 
         _ageSelection.Initialize(ClanAge.All);
-        SetGoalsDropDown();
+        _clanGoalSelection.Initialize(Goals.Fiilistely);
+        //SetGoalsDropDown();
 
         _flagImage.SetFlag(Language.None);
         _languageSelection.Initialize(Language.None);
@@ -94,15 +95,15 @@ public class ClanCreateNew : MonoBehaviour
         _heartColorSetter.SetHeartColor(_selectedHeartColor);
     }
 
-    private void SetGoalsDropDown()
-    {
-        _clanGoalDropdown.options.Clear();
-        foreach (Goals goal in Enum.GetValues(typeof(Goals)))
-        {
-            string text = ClanDataTypeConverter.GetGoalText(goal);
-            _clanGoalDropdown.options.Add(new TMP_Dropdown.OptionData(text));
-        }
-    }
+    //private void SetGoalsDropDown()
+    //{
+    //    _clanGoalSelection.options.Clear();
+    //    foreach (Goals goal in Enum.GetValues(typeof(Goals)))
+    //    {
+    //        string text = ClanDataTypeConverter.GetGoalText(goal);
+    //        _clanGoalSelection.options.Add(new TMP_Dropdown.OptionData(text));
+    //    }
+    //}
 
     public void PostClanToServer()
     {
@@ -111,7 +112,8 @@ public class ClanCreateNew : MonoBehaviour
         bool isOpen = !_openClanToggle.isOn;
         string password = _clanPasswordField.text;
         Language language = _languageSelection.SelectedLanguage;
-        Goals goal = (Goals)_clanGoalDropdown.value;
+        //Goals goal = (Goals)_clanGoalSelection.value;
+        Goals goal = _clanGoalSelection.GoalsRange;
         ClanAge age = _ageSelection.ClanAgeRange;
         ClanRoleRights[] clanRights = _defaultRights;
 
@@ -125,7 +127,19 @@ public class ClanCreateNew : MonoBehaviour
             return;
         }
 
-        StartCoroutine(ServerManager.Instance.PostClanToServer(clanName, clanName.Trim().Substring(0, 4), isOpen, null, age, goal, phrase, language, clan =>
+        ServerClan serverClan = new ServerClan
+        {
+            name = clanName,
+            tag = clanName.Trim().Substring(0, 3),
+            phrase = phrase,
+            isOpen = isOpen,
+            language = language,
+            goal = goal,
+            ageRange = age,
+            labels = new()
+        };
+
+        StartCoroutine(ServerManager.Instance.PostClanToServer(serverClan, clan =>
         {
             if (clan == null)
             {
