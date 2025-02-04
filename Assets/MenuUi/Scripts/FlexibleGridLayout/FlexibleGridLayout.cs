@@ -280,56 +280,31 @@ public class FlexibleGridLayout : LayoutGroup
         }
 
         // Placing children
-        Vector2 offset = CalculateOffset();
+        Vector2 offset = CalculateChildAlignmentOffset();
 
         for (int i = 0; i < rectChildren.Count; i++)
         {
-            // Calculating the row and column for child placement
-            int rowCount;
-            int columnCount;
+            // Calculating the row and column index for child placement
+            int rowIndex;
+            int columnIndex;
+
             if (_gridFit == FitType.DynamicColumns || _gridFit == FitType.FixedColumns) // Vertical
             {
-                rowCount = i / _columns;
-                columnCount = i % _columns;
+                rowIndex = i / _columns;
+                columnIndex = i % _columns;
             }
             else // Horizontal
             {
-                rowCount = i % _rows;
-                columnCount = i / _rows;
-            }
-
-            // Calculating child position
-            float xPos = 0;
-            float yPos = 0;
-
-            switch (_startCorner)
-            {
-                case StartCorner.UpperLeft:
-                    xPos = (_cellSize.x * columnCount) + (_cellSpacing.x * columnCount) + padding.left + offset.x;
-                    yPos = (_cellSize.y * rowCount) + (_cellSpacing.y * rowCount) + padding.top + offset.y;
-                    break;
-
-                case StartCorner.UpperRight:
-                    xPos = (CalculateContentWidth() - _cellSize.x) - ((_cellSize.x * columnCount) + (_cellSpacing.x * columnCount) + padding.left) + offset.x;
-                    yPos = (_cellSize.y * rowCount) + (_cellSpacing.y * rowCount) + padding.top + offset.y;
-                    break;
-
-                case StartCorner.LowerLeft:
-                    xPos = (_cellSize.x * columnCount) + (_cellSpacing.x * columnCount) + padding.left + offset.x;
-                    yPos = (CalculateContentHeight() - _cellSize.y) - ((_cellSize.y * rowCount) + (_cellSpacing.y * rowCount) + padding.top) + offset.y;
-                    break;
-
-                case StartCorner.LowerRight:
-                    xPos = (CalculateContentWidth() - _cellSize.x) - ((_cellSize.x * columnCount) + (_cellSpacing.x * columnCount) + padding.left) + offset.x;
-                    yPos = (CalculateContentHeight() - _cellSize.y) - ((_cellSize.y * rowCount) + (_cellSpacing.y * rowCount) + padding.top) + offset.y;
-                    break;
+                rowIndex = i % _rows;
+                columnIndex = i / _rows;
             }
 
             // Placing child
-            var item = rectChildren[i];
+            var child = rectChildren[i];
+            Vector2 childPos = CalculateChildPosition(rowIndex, columnIndex, offset);
 
-            SetChildAlongAxis(item, 0, xPos, _cellSize.x);
-            SetChildAlongAxis(item, 1, yPos, _cellSize.y);
+            SetChildAlongAxis(child, 0, childPos.x, _cellSize.x);
+            SetChildAlongAxis(child, 1, childPos.y, _cellSize.y);
         }
 
         // Resizing rect transform to fit child alignment offset
@@ -425,10 +400,11 @@ public class FlexibleGridLayout : LayoutGroup
     }
 
 
-    private Vector2 CalculateOffset() // Calculating childAlignment offset
+    private Vector2 CalculateChildAlignmentOffset()
     {
         RectTransform parentRect = transform.parent.GetComponent<RectTransform>();
         Vector2 offset = Vector2.zero;
+
         if (parentRect != null)
         {
             if (_gridFit == FitType.DynamicColumns || _gridFit == FitType.FixedColumns) // Vertical
@@ -461,6 +437,7 @@ public class FlexibleGridLayout : LayoutGroup
                     }
                 }
             }
+
             else if (_gridFit == FitType.DynamicRows || _gridFit == FitType.FixedRows) // Horizontal
             {
                 // X Offset
@@ -494,6 +471,37 @@ public class FlexibleGridLayout : LayoutGroup
         }
 
         return offset;
+    }
+
+
+    private Vector2 CalculateChildPosition(int rowIndex, int columnIndex, Vector2 offset)
+    {
+        Vector2 position = Vector2.zero;
+
+        switch (_startCorner)
+        {
+            case StartCorner.UpperLeft:
+                position.x = (_cellSize.x * columnIndex) + (_cellSpacing.x * columnIndex) + padding.left + offset.x;
+                position.y = (_cellSize.y * rowIndex) + (_cellSpacing.y * rowIndex) + padding.top + offset.y;
+                break;
+
+            case StartCorner.UpperRight:
+                position.x = (CalculateContentWidth() - _cellSize.x) - ((_cellSize.x * columnIndex) + (_cellSpacing.x * columnIndex) + padding.left) + offset.x;
+                position.y = (_cellSize.y * rowIndex) + (_cellSpacing.y * rowIndex) + padding.top + offset.y;
+                break;
+
+            case StartCorner.LowerLeft:
+                position.x = (_cellSize.x * columnIndex) + (_cellSpacing.x * columnIndex) + padding.left + offset.x;
+                position.y = (CalculateContentHeight() - _cellSize.y) - ((_cellSize.y * rowIndex) + (_cellSpacing.y * rowIndex) + padding.top) + offset.y;
+                break;
+
+            case StartCorner.LowerRight:
+                position.x = (CalculateContentWidth() - _cellSize.x) - ((_cellSize.x * columnIndex) + (_cellSpacing.x * columnIndex) + padding.left) + offset.x;
+                position.y = (CalculateContentHeight() - _cellSize.y) - ((_cellSize.y * rowIndex) + (_cellSpacing.y * rowIndex) + padding.top) + offset.y;
+                break;
+        }
+
+        return position;
     }
 
 
