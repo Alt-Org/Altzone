@@ -28,7 +28,6 @@ public class FlexibleGridLayout : LayoutGroup
         LowerRight,
     }
 
-
     const float ShortestAspectRatio = 4.0f / 3.0f;
     const float TallestAspectRatio = 22.0f / 9.0f;
 
@@ -90,7 +89,7 @@ public class FlexibleGridLayout : LayoutGroup
         switch (_gridFit)
         {
             case FitType.DynamicColumns:
-                if (_gridCellSize != CellSizeType.Manual) // if cell size is given manually columns and rows are calculated later based on cell size
+                if (_gridCellSize != CellSizeType.Manual) // if cell size is given manually columns and rows are set later in CalculateChildSize function
                 {
                     _columns = CalculateDynamicColumns(_minDynamicColumns, _maxDynamicColumns);
                     _rows = GetRowsBasedOnColumns(_columns);
@@ -116,152 +115,8 @@ public class FlexibleGridLayout : LayoutGroup
                 break;
         }
 
-        // Scaling grid cells
-        float cellWidth = 0;
-        float cellHeight = 0;
-
-        switch (_gridCellSize)
-        {
-            case CellSizeType.Manual:
-
-                if (_gridFit == FitType.DynamicColumns)
-                {
-                    // Calculating how many columns fit with preferred size and how many pixels are left over
-                    int preferredSizeColumns = CalculateColumnFit(_preferredCellSize.x);
-                    float leftoverPixels = rectTransform.rect.width - (_preferredCellSize.x * preferredSizeColumns);
-
-                    // If there is space for more than half a cell we shrink cells and add one more column
-                    bool shrinkCells = false;
-                    if (_preferredCellSize.x / 2 < leftoverPixels - _cellSpacing.x)
-                    {
-                        float shrunkCellWidth = CalculateMaxCellWidth(preferredSizeColumns + 1);
-
-                        if (shrunkCellWidth >= _minCellSize.x)
-                        {
-                            shrinkCells = true;
-                            _columns = preferredSizeColumns + 1;
-                            cellWidth = shrunkCellWidth;
-                            cellHeight = cellWidth / GetCellAspectRatio(_preferredCellSize);
-                        }
-                    }
-
-                    // If we don't shrink we grow cells if there are leftover pixels
-                    if (!shrinkCells)
-                    {
-                        _columns = preferredSizeColumns;
-
-                        if (leftoverPixels > 0)
-                        {
-                            float grownCellWidth = CalculateMaxCellWidth(_columns);
-                            grownCellWidth = Mathf.Clamp(grownCellWidth, 0, _maxCellSize.x);
-
-                            cellWidth = grownCellWidth;
-                            cellHeight = cellWidth / GetCellAspectRatio(_preferredCellSize);
-                        }
-                        else
-                        {
-                            cellWidth = _preferredCellSize.x;
-                            cellHeight = _preferredCellSize.y;
-                        }
-                    }
-
-                    _rows = GetRowsBasedOnColumns(_columns);
-                }
-
-                else if (_gridFit == FitType.DynamicRows)
-                {
-                    // Calculating how many rows fit with preferred size and how many pixels are left over
-                    int preferredSizeRows = CalculateRowFit(_preferredCellSize.y);
-                    float leftoverPixels = rectTransform.rect.height - (_preferredCellSize.y * preferredSizeRows);
-
-                    // If there is space for more than half a cell we shrink cells and add one more row
-                    bool shrinkCells = false;
-                    if (_preferredCellSize.y / 2 < leftoverPixels - _cellSpacing.y)
-                    {
-                        float shrunkCellHeight = CalculateMaxCellHeight(_rows + 1);
-
-                        if (shrunkCellHeight >= _minCellSize.y)
-                        {
-                            shrinkCells = true;
-                            _rows = preferredSizeRows + 1;
-                            cellHeight = shrunkCellHeight;
-                            cellWidth = GetCellAspectRatio(_preferredCellSize) * cellHeight;
-                        }
-                    }
-
-                    // If we don't shrink we grow cells if there are leftover pixels
-                    if (!shrinkCells)
-                    {
-                        _rows = preferredSizeRows;
-
-                        if (leftoverPixels > 0)
-                        {
-                            float grownCellHeight = CalculateMaxCellHeight(_rows);
-                            grownCellHeight = Mathf.Clamp(grownCellHeight, 0, _maxCellSize.y);
-
-                            cellHeight = grownCellHeight;
-                            cellWidth = GetCellAspectRatio(_preferredCellSize) * cellHeight;
-                        }
-                        else
-                        {
-                            cellWidth = _preferredCellSize.x;
-                            cellHeight = _preferredCellSize.y;
-                        }
-                    }
-
-                    _columns = GetColumnsBasedOnRows(_rows);
-                }
-
-                else if (_gridFit == FitType.FixedColumns)
-                {
-                    // Get widest possible cell and clamp it to max cell width
-                    cellWidth = CalculateMaxCellWidth(_columns);
-                    cellWidth = Mathf.Clamp(cellWidth, 0, _maxCellSize.x);
-
-                    // Calculate height for the cell
-                    cellHeight = cellWidth / GetCellAspectRatio(_maxCellSize);
-                }
-
-                else if (_gridFit == FitType.FixedRows)
-                {
-                    // Get tallest possible cell and clamp it to max cell height
-                    cellHeight = CalculateMaxCellHeight(_rows);
-                    cellHeight = Mathf.Clamp(cellHeight, 0, _maxCellSize.y);
-
-                    // Calculate width for the cell
-                    cellWidth = GetCellAspectRatio(_maxCellSize) * cellHeight;
-                }
-                break;
-
-            case CellSizeType.AspectRatio: // Calculating cell size from aspect ratio value
-
-                if (_gridFit == FitType.DynamicColumns || _gridFit == FitType.FixedColumns)
-                {
-                    cellWidth = CalculateMaxCellWidth(_columns);
-                    cellHeight = cellWidth / _cellAspectRatio;
-                }
-                else if (_gridFit == FitType.DynamicRows || _gridFit == FitType.FixedRows)
-                {
-                    cellHeight = CalculateMaxCellHeight(_rows);
-                    cellWidth = _cellAspectRatio * cellHeight;
-                }
-                break;
-
-            case CellSizeType.BasedOnPrefab: // Getting cell width and height from prefab
-                if (_prefab != null)
-                {
-                    RectTransform prefabRect = _prefab.GetComponent<RectTransform>();
-                    if (prefabRect != null)
-                    {
-                        cellWidth = prefabRect.rect.width;
-                        cellHeight = prefabRect.rect.height;
-                    }
-                }
-                break;
-        }
-
-        _cellSize.x = cellWidth;
-        _cellSize.y = cellHeight;
+        // Calculating cell size
+        _cellSize = CalculateCellSize();
 
         // Scaling the rectTransform
         if (_gridFit == FitType.DynamicColumns || _gridFit == FitType.FixedColumns) // Vertical
@@ -397,6 +252,154 @@ public class FlexibleGridLayout : LayoutGroup
     {
         float screenAspectRatio = (float)Screen.currentResolution.height / Screen.currentResolution.width;
         return Mathf.Clamp(screenAspectRatio, ShortestAspectRatio, TallestAspectRatio);
+    }
+
+
+    private Vector2 CalculateCellSize() // calculate child size (if set to manual and dynamiccolumns/rows also set column and row amount)
+    {
+        Vector2 cellSize = Vector2.zero;
+
+        switch (_gridCellSize)
+        {
+            case CellSizeType.Manual:
+
+                if (_gridFit == FitType.DynamicColumns)
+                {
+                    // Calculating how many columns fit with preferred size and how many pixels are left over
+                    int preferredSizeColumns = CalculateColumnFit(_preferredCellSize.x);
+                    float leftoverPixels = rectTransform.rect.width - (_preferredCellSize.x * preferredSizeColumns);
+
+                    // If there is space for more than half a cell we shrink cells and add one more column
+                    bool shrinkCells = false;
+                    if (_preferredCellSize.x / 2 < leftoverPixels - _cellSpacing.x)
+                    {
+                        float shrunkCellWidth = CalculateMaxCellWidth(preferredSizeColumns + 1);
+
+                        if (shrunkCellWidth >= _minCellSize.x)
+                        {
+                            shrinkCells = true;
+                            _columns = preferredSizeColumns + 1;
+                            cellSize.x = shrunkCellWidth;
+                            cellSize.y = cellSize.x / GetCellAspectRatio(_preferredCellSize);
+                        }
+                    }
+
+                    // If we don't shrink we grow cells if there are leftover pixels
+                    if (!shrinkCells)
+                    {
+                        _columns = preferredSizeColumns;
+
+                        if (leftoverPixels > 0)
+                        {
+                            float grownCellWidth = CalculateMaxCellWidth(_columns);
+                            grownCellWidth = Mathf.Clamp(grownCellWidth, 0, _maxCellSize.x);
+
+                            cellSize.x = grownCellWidth;
+                            cellSize.y = cellSize.x / GetCellAspectRatio(_preferredCellSize);
+                        }
+                        else
+                        {
+                            cellSize.x = _preferredCellSize.x;
+                            cellSize.y = _preferredCellSize.y;
+                        }
+                    }
+
+                    _rows = GetRowsBasedOnColumns(_columns);
+                }
+
+                else if (_gridFit == FitType.DynamicRows)
+                {
+                    // Calculating how many rows fit with preferred size and how many pixels are left over
+                    int preferredSizeRows = CalculateRowFit(_preferredCellSize.y);
+                    float leftoverPixels = rectTransform.rect.height - (_preferredCellSize.y * preferredSizeRows);
+
+                    // If there is space for more than half a cell we shrink cells and add one more row
+                    bool shrinkCells = false;
+                    if (_preferredCellSize.y / 2 < leftoverPixels - _cellSpacing.y)
+                    {
+                        float shrunkCellHeight = CalculateMaxCellHeight(_rows + 1);
+
+                        if (shrunkCellHeight >= _minCellSize.y)
+                        {
+                            shrinkCells = true;
+                            _rows = preferredSizeRows + 1;
+                            cellSize.y = shrunkCellHeight;
+                            cellSize.x = GetCellAspectRatio(_preferredCellSize) * cellSize.y;
+                        }
+                    }
+
+                    // If we don't shrink we grow cells if there are leftover pixels
+                    if (!shrinkCells)
+                    {
+                        _rows = preferredSizeRows;
+
+                        if (leftoverPixels > 0)
+                        {
+                            float grownCellHeight = CalculateMaxCellHeight(_rows);
+                            grownCellHeight = Mathf.Clamp(grownCellHeight, 0, _maxCellSize.y);
+
+                            cellSize.y = grownCellHeight;
+                            cellSize.x = GetCellAspectRatio(_preferredCellSize) * cellSize.y;
+                        }
+                        else
+                        {
+                            cellSize.x = _preferredCellSize.x;
+                            cellSize.y = _preferredCellSize.y;
+                        }
+                    }
+
+                    _columns = GetColumnsBasedOnRows(_rows);
+                }
+
+                else if (_gridFit == FitType.FixedColumns)
+                {
+                    // Get widest possible cell and clamp it to max cell width
+                    cellSize.x = CalculateMaxCellWidth(_columns);
+                    cellSize.x = Mathf.Clamp(cellSize.x, 0, _maxCellSize.x);
+
+                    // Calculate height for the cell
+                    cellSize.y = cellSize.x / GetCellAspectRatio(_maxCellSize);
+                }
+
+                else if (_gridFit == FitType.FixedRows)
+                {
+                    // Get tallest possible cell and clamp it to max cell height
+                    cellSize.y = CalculateMaxCellHeight(_rows);
+                    cellSize.y = Mathf.Clamp(cellSize.y, 0, _maxCellSize.y);
+
+                    // Calculate width for the cell
+                    cellSize.x = GetCellAspectRatio(_maxCellSize) * cellSize.y;
+                }
+                break;
+
+            case CellSizeType.AspectRatio: // Calculating cell size from aspect ratio value
+
+                if (_gridFit == FitType.DynamicColumns || _gridFit == FitType.FixedColumns)
+                {
+                    cellSize.x = CalculateMaxCellWidth(_columns);
+                    cellSize.y = cellSize.x / _cellAspectRatio;
+                }
+                else if (_gridFit == FitType.DynamicRows || _gridFit == FitType.FixedRows)
+                {
+                    cellSize.y = CalculateMaxCellHeight(_rows);
+                    cellSize.x = _cellAspectRatio * cellSize.y;
+                }
+                break;
+
+            case CellSizeType.BasedOnPrefab: // Getting cell width and height from prefab
+                if (_prefab != null)
+                {
+                    RectTransform prefabRect = _prefab.GetComponent<RectTransform>();
+                    if (prefabRect != null)
+                    {
+                        cellSize.x = prefabRect.rect.width;
+                        cellSize.y = prefabRect.rect.height;
+                    }
+                }
+                break;
+        }
+
+        return cellSize;
     }
 
 
