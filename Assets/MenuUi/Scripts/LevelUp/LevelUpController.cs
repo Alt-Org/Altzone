@@ -58,11 +58,11 @@ public class LevelUpController : MonoBehaviour
     // Method to activate the level-up popup and assign a random reward
     public void OpenPopup()
     {
-        // Ensure the level-up panel is active
-        if (LevelUpPanel != null)
-        {
-            LevelUpPanel.SetActive(true);
-        }
+        //Ensure the level - up panel is active
+        //if (LevelUpPanel != null)
+        //{
+        //    LevelUpPanel.SetActive(true);
+        //}
 
         AssignRandomCharacterReward();
         AssignRandomFurnitureReward();
