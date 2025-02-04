@@ -571,7 +571,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 1920}
+  m_SizeDelta: {x: 0, y: 1200}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &5884478403627622171
 MonoBehaviour:
@@ -592,14 +592,14 @@ MonoBehaviour:
     m_Bottom: 0
   m_ChildAlignment: 0
   _startCorner: 0
-  _gridFit: 0
+  _gridFit: 2
   _minDynamicColumns: 2
   _maxDynamicColumns: 4
   _minDynamicRows: 2
   _maxDynamicRows: 4
-  _columnAmount: 1
-  _rowAmount: 1
-  _gridCellSize: 1
+  _columnAmount: 3
+  _rowAmount: 3
+  _gridCellSize: 0
   _minCellSize: {x: 200, y: 200}
   _maxCellSize: {x: 300, y: 300}
   _preferredCellSize: {x: 250, y: 250}
