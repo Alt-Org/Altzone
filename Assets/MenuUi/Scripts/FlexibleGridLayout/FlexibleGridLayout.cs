@@ -280,9 +280,7 @@ public class FlexibleGridLayout : LayoutGroup
         }
 
         // Placing children
-        RectTransform parentRect = transform.parent.GetComponent<RectTransform>();
-        float offsetX = 0;
-        float offsetY = 0;
+        Vector2 offset = CalculateOffset();
 
         for (int i = 0; i < rectChildren.Count; i++)
         {
@@ -300,71 +298,6 @@ public class FlexibleGridLayout : LayoutGroup
                 columnCount = i / _rows;
             }
 
-            // Calculating ChildAlignment offset
-            if (parentRect != null)
-            {
-                if (_gridFit == FitType.DynamicColumns || _gridFit == FitType.FixedColumns) // Vertical
-                {
-                    // X Offset
-                    if (m_ChildAlignment == TextAnchor.UpperCenter || m_ChildAlignment == TextAnchor.MiddleCenter || m_ChildAlignment == TextAnchor.LowerCenter)
-                    {
-                        offsetX = (rectTransform.rect.width - CalculateContentWidth()) / 2;
-                    }
-
-                    if (m_ChildAlignment == TextAnchor.UpperRight || m_ChildAlignment == TextAnchor.MiddleRight || m_ChildAlignment == TextAnchor.LowerRight)
-                    {
-                        offsetX = rectTransform.rect.width - CalculateContentWidth();
-                    }
-
-                    // Y Offset
-                    if (m_ChildAlignment == TextAnchor.MiddleLeft || m_ChildAlignment == TextAnchor.MiddleCenter || m_ChildAlignment == TextAnchor.MiddleRight)
-                    {
-                        if (CalculateContentHeight() < parentRect.rect.height) // Only offset if content height is smaller than parent rect
-                        {
-                            offsetY = (parentRect.rect.height - CalculateContentHeight()) / 2;
-                        }
-                    }
-
-                    if (m_ChildAlignment == TextAnchor.LowerLeft || m_ChildAlignment == TextAnchor.LowerCenter || m_ChildAlignment == TextAnchor.LowerRight)
-                    {
-                        if (CalculateContentHeight() < parentRect.rect.height)
-                        {
-                            offsetY = parentRect.rect.height - CalculateContentHeight();
-                        }
-                    }
-                }
-                else if (_gridFit == FitType.DynamicRows || _gridFit == FitType.FixedRows) // Horizontal
-                {
-                    // X Offset
-                    if (m_ChildAlignment == TextAnchor.UpperCenter || m_ChildAlignment == TextAnchor.MiddleCenter || m_ChildAlignment == TextAnchor.LowerCenter)
-                    {
-                        if (CalculateContentWidth() < parentRect.rect.width) // Only offset if content width is smaller than parent rect
-                        {
-                            offsetX = (parentRect.rect.width - CalculateContentWidth()) / 2;
-                        }
-                    }
-
-                    if (m_ChildAlignment == TextAnchor.UpperRight || m_ChildAlignment == TextAnchor.MiddleRight || m_ChildAlignment == TextAnchor.LowerRight)
-                    {
-                        if (CalculateContentWidth() < parentRect.rect.width)
-                        {
-                            offsetX = parentRect.rect.width - CalculateContentWidth();
-                        }
-                    }
-
-                    // Y Offset
-                    if (m_ChildAlignment == TextAnchor.MiddleLeft || m_ChildAlignment == TextAnchor.MiddleCenter || m_ChildAlignment == TextAnchor.MiddleRight)
-                    {
-                        offsetY = (rectTransform.rect.height - CalculateContentHeight()) / 2;
-                    }
-
-                    if (m_ChildAlignment == TextAnchor.LowerLeft || m_ChildAlignment == TextAnchor.LowerCenter || m_ChildAlignment == TextAnchor.LowerRight)
-                    {
-                        offsetY = rectTransform.rect.height - CalculateContentHeight();
-                    }
-                }
-            }
-
             // Calculating child position
             float xPos = 0;
             float yPos = 0;
@@ -372,23 +305,23 @@ public class FlexibleGridLayout : LayoutGroup
             switch (_startCorner)
             {
                 case StartCorner.UpperLeft:
-                    xPos = (_cellSize.x * columnCount) + (_cellSpacing.x * columnCount) + padding.left + offsetX;
-                    yPos = (_cellSize.y * rowCount) + (_cellSpacing.y * rowCount) + padding.top + offsetY;
+                    xPos = (_cellSize.x * columnCount) + (_cellSpacing.x * columnCount) + padding.left + offset.x;
+                    yPos = (_cellSize.y * rowCount) + (_cellSpacing.y * rowCount) + padding.top + offset.y;
                     break;
 
                 case StartCorner.UpperRight:
-                    xPos = (CalculateContentWidth() - _cellSize.x) - ((_cellSize.x * columnCount) + (_cellSpacing.x * columnCount) + padding.left) + offsetX;
-                    yPos = (_cellSize.y * rowCount) + (_cellSpacing.y * rowCount) + padding.top + offsetY;
+                    xPos = (CalculateContentWidth() - _cellSize.x) - ((_cellSize.x * columnCount) + (_cellSpacing.x * columnCount) + padding.left) + offset.x;
+                    yPos = (_cellSize.y * rowCount) + (_cellSpacing.y * rowCount) + padding.top + offset.y;
                     break;
 
                 case StartCorner.LowerLeft:
-                    xPos = (_cellSize.x * columnCount) + (_cellSpacing.x * columnCount) + padding.left + offsetX;
-                    yPos = (CalculateContentHeight() - _cellSize.y) - ((_cellSize.y * rowCount) + (_cellSpacing.y * rowCount) + padding.top) + offsetY;
+                    xPos = (_cellSize.x * columnCount) + (_cellSpacing.x * columnCount) + padding.left + offset.x;
+                    yPos = (CalculateContentHeight() - _cellSize.y) - ((_cellSize.y * rowCount) + (_cellSpacing.y * rowCount) + padding.top) + offset.y;
                     break;
 
                 case StartCorner.LowerRight:
-                    xPos = (CalculateContentWidth() - _cellSize.x) - ((_cellSize.x * columnCount) + (_cellSpacing.x * columnCount) + padding.left) + offsetX;
-                    yPos = (CalculateContentHeight() - _cellSize.y) - ((_cellSize.y * rowCount) + (_cellSpacing.y * rowCount) + padding.top) + offsetY;
+                    xPos = (CalculateContentWidth() - _cellSize.x) - ((_cellSize.x * columnCount) + (_cellSpacing.x * columnCount) + padding.left) + offset.x;
+                    yPos = (CalculateContentHeight() - _cellSize.y) - ((_cellSize.y * rowCount) + (_cellSpacing.y * rowCount) + padding.top) + offset.y;
                     break;
             }
 
@@ -402,11 +335,11 @@ public class FlexibleGridLayout : LayoutGroup
         // Resizing rect transform to fit child alignment offset
         if (_gridFit == FitType.DynamicColumns || _gridFit == FitType.FixedColumns)
         {
-            rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, rectTransform.sizeDelta.y + offsetY);
+            rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, rectTransform.sizeDelta.y + offset.y);
         }
         else
         {
-            rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x + offsetX, rectTransform.sizeDelta.y);
+            rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x + offset.x, rectTransform.sizeDelta.y);
         }
     }
 
@@ -489,6 +422,78 @@ public class FlexibleGridLayout : LayoutGroup
     {
         float screenAspectRatio = (float)Screen.currentResolution.height / Screen.currentResolution.width;
         return Mathf.Clamp(screenAspectRatio, ShortestAspectRatio, TallestAspectRatio);
+    }
+
+
+    private Vector2 CalculateOffset() // Calculating childAlignment offset
+    {
+        RectTransform parentRect = transform.parent.GetComponent<RectTransform>();
+        Vector2 offset = Vector2.zero;
+        if (parentRect != null)
+        {
+            if (_gridFit == FitType.DynamicColumns || _gridFit == FitType.FixedColumns) // Vertical
+            {
+                // X Offset
+                if (m_ChildAlignment == TextAnchor.UpperCenter || m_ChildAlignment == TextAnchor.MiddleCenter || m_ChildAlignment == TextAnchor.LowerCenter)
+                {
+                    offset.x = (rectTransform.rect.width - CalculateContentWidth()) / 2;
+                }
+
+                if (m_ChildAlignment == TextAnchor.UpperRight || m_ChildAlignment == TextAnchor.MiddleRight || m_ChildAlignment == TextAnchor.LowerRight)
+                {
+                    offset.x = rectTransform.rect.width - CalculateContentWidth();
+                }
+
+                // Y Offset
+                if (m_ChildAlignment == TextAnchor.MiddleLeft || m_ChildAlignment == TextAnchor.MiddleCenter || m_ChildAlignment == TextAnchor.MiddleRight)
+                {
+                    if (CalculateContentHeight() < parentRect.rect.height) // Only offset if content height is smaller than parent rect
+                    {
+                        offset.y = (parentRect.rect.height - CalculateContentHeight()) / 2;
+                    }
+                }
+
+                if (m_ChildAlignment == TextAnchor.LowerLeft || m_ChildAlignment == TextAnchor.LowerCenter || m_ChildAlignment == TextAnchor.LowerRight)
+                {
+                    if (CalculateContentHeight() < parentRect.rect.height)
+                    {
+                        offset.y = parentRect.rect.height - CalculateContentHeight();
+                    }
+                }
+            }
+            else if (_gridFit == FitType.DynamicRows || _gridFit == FitType.FixedRows) // Horizontal
+            {
+                // X Offset
+                if (m_ChildAlignment == TextAnchor.UpperCenter || m_ChildAlignment == TextAnchor.MiddleCenter || m_ChildAlignment == TextAnchor.LowerCenter)
+                {
+                    if (CalculateContentWidth() < parentRect.rect.width) // Only offset if content width is smaller than parent rect
+                    {
+                        offset.x = (parentRect.rect.width - CalculateContentWidth()) / 2;
+                    }
+                }
+
+                if (m_ChildAlignment == TextAnchor.UpperRight || m_ChildAlignment == TextAnchor.MiddleRight || m_ChildAlignment == TextAnchor.LowerRight)
+                {
+                    if (CalculateContentWidth() < parentRect.rect.width)
+                    {
+                        offset.x = parentRect.rect.width - CalculateContentWidth();
+                    }
+                }
+
+                // Y Offset
+                if (m_ChildAlignment == TextAnchor.MiddleLeft || m_ChildAlignment == TextAnchor.MiddleCenter || m_ChildAlignment == TextAnchor.MiddleRight)
+                {
+                    offset.y = (rectTransform.rect.height - CalculateContentHeight()) / 2;
+                }
+
+                if (m_ChildAlignment == TextAnchor.LowerLeft || m_ChildAlignment == TextAnchor.LowerCenter || m_ChildAlignment == TextAnchor.LowerRight)
+                {
+                    offset.y = rectTransform.rect.height - CalculateContentHeight();
+                }
+            }
+        }
+
+        return offset;
     }
 
 
