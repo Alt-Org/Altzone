@@ -887,6 +887,7 @@ MonoBehaviour:
   _closeLanguageSelect: {fileID: 3719403107676370444}
   _createClanOK: {fileID: 5014486994110506936}
   _naviTarget: {fileID: 11400000, guid: af7bed882640abb4c883d988f7d81a34, type: 2}
+  _scrollbarValues: {fileID: 1499496441936510908}
 --- !u!1 &1522905625465808281
 GameObject:
   m_ObjectHideFlags: 0
@@ -4246,6 +4247,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 768c872e3eeb19b4ba23ab5861c2ce6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _valueSelectorObject: {fileID: 1522905625465808281}
+  _activateButton: {fileID: 6192158681132152622}
   _labelTogglePrefab: {fileID: 9142154561159488018, guid: 4b98591facea2684886cb562c2ba5460,
     type: 3}
   _labelImagePrefab: {fileID: 3140534817053600678, guid: 116db0f2cdec84749957449664b3fe38,
@@ -4292,7 +4295,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 5670095091268334515}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
