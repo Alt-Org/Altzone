@@ -68,7 +68,7 @@ namespace Altzone.Scripts.Lobby
         [SerializeField]
         private SystemsConfig _systemsConfig;
 
-        [SerializeField] private ProjectileGameConfig _projectileGameConfig;
+        [SerializeField] private ProjectileSpec _projectileSpec;
         [SerializeField]
         private Map _map;
 
@@ -361,7 +361,7 @@ namespace Altzone.Scripts.Lobby
                 Map = _map,
                 SimulationConfig = _simulationConfig,
                 SystemsConfig = _systemsConfig,
-                GameConfig = _projectileGameConfig
+                ProjectileSpec = _projectileSpec
             };
 
             SessionRunner.Arguments sessionRunnerArguments = new()
