@@ -116,7 +116,7 @@ public class FlexibleGridLayout : LayoutGroup
         }
 
         // Calculating cell size
-        _cellSize = CalculateCellSize();
+        CalculateCellSize();
 
         // Scaling the rectTransform to fit cells
         Vector2 offset = CalculateChildAlignmentOffset();
@@ -245,10 +245,8 @@ public class FlexibleGridLayout : LayoutGroup
     }
 
 
-    private Vector2 CalculateCellSize() // calculate child size (if set to manual and dynamiccolumns/rows also set column and row amount)
+    private void CalculateCellSize() // calculate child size (if set to manual and dynamiccolumns/rows also set column and row amount)
     {
-        Vector2 cellSize = Vector2.zero;
-
         switch (_gridCellSize)
         {
             case CellSizeType.Manual:
@@ -269,8 +267,8 @@ public class FlexibleGridLayout : LayoutGroup
                         {
                             shrinkCells = true;
                             _columns = preferredSizeColumns + 1;
-                            cellSize.x = shrunkCellWidth;
-                            cellSize.y = cellSize.x / GetCellAspectRatio(_preferredCellSize);
+                            _cellSize.x = shrunkCellWidth;
+                            _cellSize.y = _cellSize.x / GetCellAspectRatio(_preferredCellSize);
                         }
                     }
 
@@ -284,13 +282,13 @@ public class FlexibleGridLayout : LayoutGroup
                             float grownCellWidth = CalculateMaxCellWidth(_columns);
                             grownCellWidth = Mathf.Clamp(grownCellWidth, 0, _maxCellSize.x);
 
-                            cellSize.x = grownCellWidth;
-                            cellSize.y = cellSize.x / GetCellAspectRatio(_preferredCellSize);
+                            _cellSize.x = grownCellWidth;
+                            _cellSize.y = _cellSize.x / GetCellAspectRatio(_preferredCellSize);
                         }
                         else
                         {
-                            cellSize.x = _preferredCellSize.x;
-                            cellSize.y = _preferredCellSize.y;
+                            _cellSize.x = _preferredCellSize.x;
+                            _cellSize.y = _preferredCellSize.y;
                         }
                     }
 
@@ -313,8 +311,8 @@ public class FlexibleGridLayout : LayoutGroup
                         {
                             shrinkCells = true;
                             _rows = preferredSizeRows + 1;
-                            cellSize.y = shrunkCellHeight;
-                            cellSize.x = GetCellAspectRatio(_preferredCellSize) * cellSize.y;
+                            _cellSize.y = shrunkCellHeight;
+                            _cellSize.x = GetCellAspectRatio(_preferredCellSize) * _cellSize.y;
                         }
                     }
 
@@ -328,13 +326,13 @@ public class FlexibleGridLayout : LayoutGroup
                             float grownCellHeight = CalculateMaxCellHeight(_rows);
                             grownCellHeight = Mathf.Clamp(grownCellHeight, 0, _maxCellSize.y);
 
-                            cellSize.y = grownCellHeight;
-                            cellSize.x = GetCellAspectRatio(_preferredCellSize) * cellSize.y;
+                            _cellSize.y = grownCellHeight;
+                            _cellSize.x = GetCellAspectRatio(_preferredCellSize) * _cellSize.y;
                         }
                         else
                         {
-                            cellSize.x = _preferredCellSize.x;
-                            cellSize.y = _preferredCellSize.y;
+                            _cellSize.x = _preferredCellSize.x;
+                            _cellSize.y = _preferredCellSize.y;
                         }
                     }
 
@@ -344,21 +342,21 @@ public class FlexibleGridLayout : LayoutGroup
                 else if (_gridFit == FitType.FixedColumns)
                 {
                     // Get widest possible cell and clamp it to max cell width
-                    cellSize.x = CalculateMaxCellWidth(_columns);
-                    cellSize.x = Mathf.Clamp(cellSize.x, 0, _maxCellSize.x);
+                    _cellSize.x = CalculateMaxCellWidth(_columns);
+                    _cellSize.x = Mathf.Clamp(_cellSize.x, 0, _maxCellSize.x);
 
                     // Calculate height for the cell
-                    cellSize.y = cellSize.x / GetCellAspectRatio(_maxCellSize);
+                    _cellSize.y = _cellSize.x / GetCellAspectRatio(_maxCellSize);
                 }
 
                 else if (_gridFit == FitType.FixedRows)
                 {
                     // Get tallest possible cell and clamp it to max cell height
-                    cellSize.y = CalculateMaxCellHeight(_rows);
-                    cellSize.y = Mathf.Clamp(cellSize.y, 0, _maxCellSize.y);
+                    _cellSize.y = CalculateMaxCellHeight(_rows);
+                    _cellSize.y = Mathf.Clamp(_cellSize.y, 0, _maxCellSize.y);
 
                     // Calculate width for the cell
-                    cellSize.x = GetCellAspectRatio(_maxCellSize) * cellSize.y;
+                    _cellSize.x = GetCellAspectRatio(_maxCellSize) * _cellSize.y;
                 }
                 break;
 
@@ -366,13 +364,13 @@ public class FlexibleGridLayout : LayoutGroup
 
                 if (_gridFit == FitType.DynamicColumns || _gridFit == FitType.FixedColumns)
                 {
-                    cellSize.x = CalculateMaxCellWidth(_columns);
-                    cellSize.y = cellSize.x / _cellAspectRatio;
+                    _cellSize.x = CalculateMaxCellWidth(_columns);
+                    _cellSize.y = _cellSize.x / _cellAspectRatio;
                 }
                 else if (_gridFit == FitType.DynamicRows || _gridFit == FitType.FixedRows)
                 {
-                    cellSize.y = CalculateMaxCellHeight(_rows);
-                    cellSize.x = _cellAspectRatio * cellSize.y;
+                    _cellSize.y = CalculateMaxCellHeight(_rows);
+                    _cellSize.x = _cellAspectRatio * _cellSize.y;
                 }
                 break;
 
@@ -382,14 +380,12 @@ public class FlexibleGridLayout : LayoutGroup
                     RectTransform prefabRect = _prefab.GetComponent<RectTransform>();
                     if (prefabRect != null)
                     {
-                        cellSize.x = prefabRect.rect.width;
-                        cellSize.y = prefabRect.rect.height;
+                        _cellSize.x = prefabRect.rect.width;
+                        _cellSize.y = prefabRect.rect.height;
                     }
                 }
                 break;
         }
-
-        return cellSize;
     }
 
 
