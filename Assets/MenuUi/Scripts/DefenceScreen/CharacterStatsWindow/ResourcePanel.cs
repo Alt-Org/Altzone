@@ -3,16 +3,14 @@ using UnityEngine;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
-    public class StatsWindowHeaderPanel : MonoBehaviour
+    public class ResourcePanel : MonoBehaviour
     {
         [SerializeField] private StatsWindowController _controller;
-        [SerializeField] private TMP_Text _characterName;
         [SerializeField] private TMP_Text _diamondsAmount;
         [SerializeField] private TMP_Text _eraserAmount;
 
         private void OnEnable()
         {
-            SetCharacterName();
             SetDiamondsAmount();
             SetEraserAmount();
 
@@ -25,15 +23,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             _controller.OnDiamondDecreased -= SetDiamondsAmount;
             _controller.OnEraserDecreased -= SetEraserAmount;
-        }
-
-
-        private void SetCharacterName()
-        {
-            if (_controller != null)
-            {
-                _characterName.text = _controller.GetCurrentCharacterName();
-            }
         }
 
 
