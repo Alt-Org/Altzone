@@ -226,51 +226,51 @@ namespace MenuUi.Scripts.Storage
                 Transform toSet = _slotsList[i].transform;
 
                 // Icon
-                toSet.GetChild(0).GetComponent<Image>().sprite = _furn.Sprite;
-                ScaleSprite(_furn, toSet.GetChild(0).GetComponent<RectTransform>());
+                toSet.GetChild(1).GetComponent<Image>().sprite = _furn.Sprite;
+                ScaleSprite(_furn, toSet.GetChild(1).GetComponent<RectTransform>());
 
                 // Name
-                if(_sortingBy != 0) toSet.GetChild(1).GetComponent<TMP_Text>().text = _furn.VisibleName;
-                else toSet.GetChild(1).GetComponent<TMP_Text>().text = "";
+                if(_sortingBy != 0) toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.VisibleName;
+                else toSet.GetChild(2).GetComponent<TMP_Text>().text = "";
 
                 // Weight
                 switch (_sortingBy)
                 {
                     case 0:
-                        toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.VisibleName;
+                        toSet.GetChild(4).GetComponent<TMP_Text>().text = _furn.VisibleName;
                         break;
                     case 1:
-                        toSet.GetChild(3).GetComponent<TMP_Text>().text = "Arvo " + _furn.Value.ToString();
+                        toSet.GetChild(4).GetComponent<TMP_Text>().text = "Arvo " + _furn.Value.ToString();
                         break;
                     case 2:
-                        toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
+                        toSet.GetChild(4).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
                         break;
                     case 3:
-                        toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.Material;
+                        toSet.GetChild(4).GetComponent<TMP_Text>().text = _furn.Material;
                         break;
                 }
                 // Shape
-                toSet.GetChild(4).GetComponent<Image>().sprite = GetIcon("");
+                toSet.GetChild(5).GetComponent<Image>().sprite = GetIcon("");
 
                 // SetName
-                toSet.GetChild(5).GetComponent<TMP_Text>().text = _furn.SetName;
+                toSet.GetChild(6).GetComponent<TMP_Text>().text = _furn.SetName;
 
                 // Id
-                toSet.GetChild(6).GetComponent<TMP_Text>().text = _furn.Info.DiagnoseNumber;
+                toSet.GetChild(7).GetComponent<TMP_Text>().text = _furn.Info.DiagnoseNumber;
                 // Name
-                toSet.GetChild(7).GetChild(0).GetComponent<TMP_Text>().text = "Sielunkodissa";
+                toSet.GetChild(8).GetChild(0).GetComponent<TMP_Text>().text = "Sielunkodissa";
                 if (_furn.Position == new Vector2Int(-1, -1))
                 {
-                    toSet.GetChild(7).gameObject.SetActive(false);
+                    toSet.GetChild(8).gameObject.SetActive(false);
                 }
                 else
                 {
-                    toSet.GetChild(7).gameObject.SetActive(true);
+                    toSet.GetChild(8).gameObject.SetActive(true);
                 }
 
                 // Coin
-                if(_sortingBy == 1) toSet.GetChild(8).gameObject.SetActive(true);
-                else toSet.GetChild(8).gameObject.SetActive(false);
+                if(_sortingBy == 1) toSet.GetChild(9).gameObject.SetActive(true);
+                else toSet.GetChild(9).gameObject.SetActive(false);
 
                 i++;
             }
