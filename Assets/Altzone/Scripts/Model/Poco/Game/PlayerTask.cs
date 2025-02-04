@@ -52,6 +52,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             private TaskType _type;
             private int _coins;
             private int _points;
+            private int _taskProgress;
 
             public int Id { get => _id;}
             public int Amount { get => _amount;}
@@ -65,6 +66,7 @@ namespace Altzone.Scripts.Model.Poco.Game
                 }
             }
             public string Content { get => _content.Fi;}
+            public int TaskProgress { get => _taskProgress;}
 
             public PlayerTask(ServerPlayerTask task)
             {
@@ -130,6 +132,15 @@ namespace Altzone.Scripts.Model.Poco.Game
                 }
             }
 
+            public void AddProgress(int value)
+            {
+                _taskProgress += value;
+            }
+
+            public void ClearProgress()
+            {
+                _taskProgress = 0;
+            }
         }
     }
 
