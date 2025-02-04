@@ -1,5 +1,4 @@
 using UnityEditor;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -34,7 +33,11 @@ public class FlexibleGridLayout : LayoutGroup
     [SerializeField]
     private StartCorner _startCorner;
 
-    [SerializeField, Tooltip("How the grid will fit its children.\n\nDynamic: Determine column amount based on screen's aspect ratio.\nFixed Columns: Column amount stays the same.\nFixed Rows: Row amount stays the same.")]
+    [SerializeField, Tooltip("How the grid will fit its children." +
+        "\n\nDynamicColumns: Determine column amount based on screen's aspect ratio, or if cell size is Manual determine column amount based on cell size." +
+        "\nDynamicRows: Determine row amount based on screen's aspect ratio, or if cell size is Manual determine row amount based on cell size." +
+        "\nFixed Columns: Column amount stays the same." +
+        "\nFixed Rows: Row amount stays the same.")]
     private FitType _gridFit = FitType.DynamicColumns;
 
     [SerializeField, Min(1)]
@@ -55,7 +58,10 @@ public class FlexibleGridLayout : LayoutGroup
     [SerializeField, Min(1)]
     private int _rowAmount = 1;
 
-    [SerializeField, Tooltip("How the grid's cell size is determined.\n\nManual: Give cell size values manually.\nAspect Ratio: Cell size is automatically calculated to fit this aspect ratio.\nBased On Prefab: Cell size is set automatically based on the prefab's RectTransform component.")]
+    [SerializeField, Tooltip("How the grid's cell size is determined." +
+        "\n\nManual: Give cell size values manually." +
+        "\nAspect Ratio: Cell size is automatically calculated to fit this aspect ratio." +
+        "\nBased On Prefab: Cell size is set based on the prefab's RectTransform component.")]
     private CellSizeType _gridCellSize = CellSizeType.Manual;
 
     [SerializeField, Min(0)]
