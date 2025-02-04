@@ -45,7 +45,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 120
@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 256
+    maxTextureSize: 512
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -165,13 +165,13 @@ TextureImporter:
       name: CommonSquare_0
       rect:
         serializedVersion: 2
-        x: 4
-        y: 14
-        width: 504
-        height: 234
+        x: 10
+        y: 19
+        width: 498
+        height: 219
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 15, y: 20, z: 20, w: 14}
       outline: []
       physicsShape: []
       tessellationDetail: 0
