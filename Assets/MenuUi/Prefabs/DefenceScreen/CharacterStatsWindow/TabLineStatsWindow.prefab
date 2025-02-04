@@ -168,6 +168,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: TabLineStatsWindow
       objectReference: {fileID: 0}
+    - target: {fileID: 3083645397524688902, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.98
+      objectReference: {fileID: 0}
+    - target: {fileID: 3083645397524688902, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.78
+      objectReference: {fileID: 0}
     - target: {fileID: 4789815415191667178, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -283,10 +293,25 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 0.6117647
       objectReference: {fileID: 0}
+    - target: {fileID: 5481847502602699424, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.76
+      objectReference: {fileID: 0}
+    - target: {fileID: 5481847502602699424, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.56
+      objectReference: {fileID: 0}
     - target: {fileID: 6633164837591512556, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
       propertyPath: m_text
       value: Taidot
+      objectReference: {fileID: 0}
+    - target: {fileID: 6633164837591512556, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 6633164837591512556, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
@@ -331,7 +356,7 @@ PrefabInstance:
     - target: {fileID: 7374777170036250210, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
       propertyPath: m_fontSize
-      value: 40
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7374777170036250210, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
@@ -360,6 +385,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7880879522502433084, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
+      propertyPath: m_fontSize
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 7880879522502433084, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
       propertyPath: m_fontColor.b
       value: 0.9647059
       objectReference: {fileID: 0}
@@ -379,7 +409,8 @@ PrefabInstance:
       value: 4294375930
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 8769779974361688627, guid: e22bdd3e0c370fc4b80581ecb7a9da83, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3351350342849420258, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
