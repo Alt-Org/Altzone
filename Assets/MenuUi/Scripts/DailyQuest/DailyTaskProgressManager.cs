@@ -6,8 +6,9 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using Altzone.Scripts.Model.Poco.Clan;
+using System;
 
-public class DailyTaskProgressManager : MonoBehaviour
+public class DailyTaskProgressManager : AltMonoBehaviour
 {
     public static DailyTaskProgressManager Instance { get; private set; }
 
@@ -201,21 +202,16 @@ public class DailyTaskProgressManager : MonoBehaviour
             bool? done = null;
             timeout = null;
 
-            var clanCoroutine = StartCoroutine(DistributeRewardsForClan(playerData.ClanId, data => done = data));
+            StartCoroutine(CoroutineWithTimeout(DistributeRewardsForClan, playerData.ClanId, done, _timeoutSeconds, timeoutCallBack => timeout = timeoutCallBack, data => done = data));
 
-            var timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
             yield return new WaitUntil(() => (done != null || timeout != null));
 
             if (done == null)
             {
-                StopCoroutine(clanCoroutine);
                 Debug.LogError($"Distribute clan rewards timeout or null.");
                 yield break; //TODO: Add error handling.
             }
-            else
-                StopCoroutine(timeoutCoroutine);
-
-            if (done == false)
+            else if (done == false)
             {
                 Debug.LogError($"Distribute clan rewards failed.");
                 yield break; //TODO: Add error handling.
@@ -240,7 +236,7 @@ public class DailyTaskProgressManager : MonoBehaviour
         //    yield break;
     }
 
-    private IEnumerator DistributeRewardsForClan(string clanId, System.Action<bool> exitCallback)
+    private IEnumerator DistributeRewardsForClan(string clanId, System.Action<bool?> exitCallback)
     {
         ClanData clanData = null;
         bool? timeout = null;
@@ -317,45 +313,34 @@ public class DailyTaskProgressManager : MonoBehaviour
     {
         PlayerData receivedData = null;
         bool? timeout = null;
-        Coroutine playerCoroutine , timeoutCoroutine;
+        Coroutine playerCoroutine;
 
         switch (operationType.ToLower())
         {
             case "get":
                 {
                     //Get player data.
-                    playerCoroutine = StartCoroutine(GetPlayerData(data => receivedData = data));
+                    playerCoroutine = StartCoroutine(CoroutineWithTimeout(GetPlayerData, receivedData, _timeoutSeconds, timeoutCallBack => timeout = timeoutCallBack, data => receivedData = data));
                     break;
                 }
             case "save":
                 {
                     //Save player data.
-                    playerCoroutine = StartCoroutine(SavePlayerData(unsavedData, data => receivedData = data));
+                    playerCoroutine = StartCoroutine(CoroutineWithTimeout(SavePlayerData, unsavedData, receivedData, _timeoutSeconds, timeoutCallBack => timeout = timeoutCallBack, data => receivedData = data));
                     break;
                 }
             default: Debug.LogError($"Received: {operationType}, when expecting \"get\" or \"save\"."); yield break;
         }
-
-        timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
 
         yield return new WaitUntil(() => (receivedData != null || timeout != null));
 
         if (receivedData == null)
         {
             timeoutCallback(true);
-            StopCoroutine(playerCoroutine);
             Debug.LogError($"Player data operation: {operationType} timeout or null.");
             yield break; //TODO: Add error handling.
         }
-        else
-            StopCoroutine(timeoutCoroutine);
 
         dataCallback(receivedData);
-    }
-
-    private IEnumerator WaitUntilTimeout(float timeoutSeconds, System.Action<bool> callback)
-    {
-        yield return new WaitForSeconds(timeoutSeconds);
-        callback(true);
     }
 }
