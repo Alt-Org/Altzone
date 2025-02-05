@@ -71,7 +71,7 @@ MonoBehaviour:
     Asset:
       Id:
         Value: 0
-    Trigger: 0
+    Trigger: 1
 --- !u!114 &6242431875670917782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92,12 +92,12 @@ MonoBehaviour:
     PositionOffset:
       RawValue: 0
   PhysicsCollider:
+    IsEnabled: 0
     IsTrigger: 0
     Material:
       Id:
         Value: 0
     SourceCollider: {fileID: 0}
-    IsEnabled: 0
     Shape2D:
       ShapeType: 0
       PolygonCollider:
@@ -270,7 +270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    _empty_prototype_dummy_field_: 0
+    ChildEntity: {fileID: 0}
 --- !u!1 &8140103987824622984
 GameObject:
   m_ObjectHideFlags: 0
