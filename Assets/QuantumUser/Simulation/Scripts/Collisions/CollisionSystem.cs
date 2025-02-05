@@ -84,46 +84,45 @@ namespace Quantum
                     //f.Events.PlaySoundEvent(SoundEffect.SideWallHit);
                     f.Signals.OnTriggerProjectileHitPlayer(projectile, info.Entity, playerData, info.Other);
                 }
-            }
 
-            //if projectile hits goals
-            // Try to get the Goal component
-            if (f.Unsafe.TryGetPointer<Goal>(info.Other, out Goal* goal))
-            {
-                // Resolve the GoalConfig asset using the AssetRef
-                GoalConfig goalConfig = f.FindAsset<GoalConfig>(goal->goalConfig);
-
-                // Check if the sound has already been played
-                if (goal->hasTriggered)
+                // if projectile hits goals
+                else if (f.Unsafe.TryGetPointer<Goal>(info.Other, out Goal* goal))
                 {
-                    return; // Exit if the sound was already played
-                }
+                    // Resolve the GoalConfig asset using the AssetRef
+                    GoalConfig goalConfig = f.FindAsset<GoalConfig>(goal->goalConfig);
 
-                // Mark the sound as played
-                goal->hasTriggered = true;
-
-                if (goalConfig != null)
-                {
-                    f.Events.PlaySoundEvent(SoundEffect.GoalHit);
-
-                    if (goalConfig.goal == GoalType.TopGoal)
+                    // Check if the sound has already been played
+                    if (goal->hasTriggered)
                     {
-                        f.Signals.OnTriggerTopGoal();
-                    }
-                    else if (goalConfig.goal == GoalType.BottomGoal)
-                    {
-                        f.Signals.OnTriggerBottomGoal();
+                        return; // Exit if the sound was already played
                     }
 
+                    // Mark the sound as played
+                    goal->hasTriggered = true;
+
+                    if (goalConfig != null)
+                    {
+                        f.Events.PlaySoundEvent(SoundEffect.GoalHit);
+
+                        if (goalConfig.goal == GoalType.TopGoal)
+                        {
+                            f.Signals.OnTriggerTopGoal();
+                        }
+                        else if (goalConfig.goal == GoalType.BottomGoal)
+                        {
+                            f.Signals.OnTriggerBottomGoal();
+                        }
+
+                    }
+                    else
+                    {
+                        Debug.Log("GoalConfig asset not found");
+                    }
                 }
                 else
                 {
-                    Debug.Log("GoalConfig asset not found");
+                    Debug.Log("Goal component not found");
                 }
-            }
-            else
-            {
-                Debug.Log("Goal component not found");
             }
         }
     }
