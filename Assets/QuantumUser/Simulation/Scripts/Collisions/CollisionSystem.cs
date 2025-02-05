@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Photon.Deterministic;
 using UnityEngine;
 using UnityEngine.Scripting;
