@@ -240,7 +240,7 @@ namespace MenuUi.Scripts.Storage
                         toSet.GetChild(4).GetComponent<TMP_Text>().text = _furn.VisibleName;
                         break;
                     case 1:
-                        toSet.GetChild(4).GetComponent<TMP_Text>().text = "Arvo " + _furn.Value.ToString();
+                        toSet.GetChild(4).GetComponent<TMP_Text>().text = _furn.Value.ToString();
                         break;
                     case 2:
                         toSet.GetChild(4).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
