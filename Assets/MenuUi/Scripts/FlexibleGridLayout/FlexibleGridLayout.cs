@@ -82,6 +82,10 @@ public class FlexibleGridLayout : LayoutGroup
     [SerializeField, Tooltip("The spacing between grid cells."), Min(0)]
     private Vector2 _cellSpacing;
 
+    [SerializeField, Tooltip("Prevent cells from scaling larger than the boundaries of this grid's parent rect transform. Useful for non-scrollable grids." +
+        "\nNote: Overrides minimum and maximum cell size values if cell size is set to Manual.")]
+    bool _preventScalingOutOfParentBounds = false;
+
     private int _rows;
     private int _columns;
     private Vector2 _cellSize;
@@ -216,14 +220,32 @@ public class FlexibleGridLayout : LayoutGroup
     }
 
 
-    private float CalculateMaxCellWidth(int columns) // calculating maximum width for a cell based on column amount
+    private float CalculateMaxCellWidth(int columns, bool useParentRect = false) // calculating maximum width for a cell based on column amount
     {
+        if (useParentRect)
+        {
+            RectTransform parentRect = transform.parent.GetComponent<RectTransform>();
+            if (parentRect != null)
+            {
+                return parentRect.rect.width / (float)columns - ((_cellSpacing.x / (float)columns) * (columns - 1)) - (padding.left / (float)columns) - (padding.right / (float)columns);
+            }
+        }
+
         return rectTransform.rect.width / (float)columns - ((_cellSpacing.x / (float)columns) * (columns - 1)) - (padding.left / (float)columns) - (padding.right / (float)columns);
     }
 
 
-    private float CalculateMaxCellHeight(int rows) // calculating maximum height for a cell based on row amount
+    private float CalculateMaxCellHeight(int rows, bool useParentRect = false) // calculating maximum height for a cell based on row amount
     {
+        if (useParentRect)
+        {
+            RectTransform parentRect = transform.parent.GetComponent<RectTransform>();
+            if (parentRect != null)
+            {
+                return parentRect.rect.height / (float)rows - ((_cellSpacing.y / (float)rows) * (rows - 1)) - (padding.top / (float)rows) - (padding.bottom / (float)rows);
+            }
+        }
+
         return rectTransform.rect.height / (float)rows - ((_cellSpacing.y / (float)rows) * (rows - 1)) - (padding.top / (float)rows) - (padding.bottom / (float)rows);
     }
 
@@ -394,6 +416,29 @@ public class FlexibleGridLayout : LayoutGroup
                 }
                 break;
         }
+
+        // If prevent scaling out of parent bounds is checked scaling children inside parent boundaries
+        if (_preventScalingOutOfParentBounds)
+        {
+            float cellAspectRatio = GetCellAspectRatio(_cellSize);
+            Vector2 maxCellSizeToFitParent = new Vector2(CalculateMaxCellWidth(_columns, true), CalculateMaxCellHeight(_rows, true));
+
+            if (cellAspectRatio != GetCellAspectRatio(maxCellSizeToFitParent))
+            {
+                // Checking which axis was shrunk more
+                if (_cellSize.x - maxCellSizeToFitParent.x > _cellSize.y - maxCellSizeToFitParent.y)
+                {
+                    maxCellSizeToFitParent.y = maxCellSizeToFitParent.x / _cellAspectRatio;
+                }
+                else
+                {
+                    maxCellSizeToFitParent.x = _cellAspectRatio * maxCellSizeToFitParent.y;
+                }
+            }
+
+            _cellSize.x = Mathf.Clamp(_cellSize.x, 0, maxCellSizeToFitParent.x);
+            _cellSize.y = Mathf.Clamp(_cellSize.y, 0, maxCellSizeToFitParent.y);
+        }
     }
 
 
@@ -531,6 +576,7 @@ public class FlexibleGridLayout : LayoutGroup
         // Cell spacing property
         SerializedProperty _cellSpacing;
 
+        SerializedProperty _preventScalingOutOfBounds;
 
         void OnEnable()
         {
@@ -558,6 +604,8 @@ public class FlexibleGridLayout : LayoutGroup
 
             // Getting cell spacing property
             _cellSpacing = serializedObject.FindProperty(nameof(_cellSpacing));
+
+            _preventScalingOutOfBounds = serializedObject.FindProperty(nameof(_preventScalingOutOfParentBounds));
         }
 
 
@@ -632,6 +680,8 @@ public class FlexibleGridLayout : LayoutGroup
             // Place alignment property fields
             EditorGUILayout.PropertyField(_startCornerEnum);
             EditorGUILayout.PropertyField(_childAlignment);
+
+            EditorGUILayout.PropertyField(_preventScalingOutOfBounds);
 
             serializedObject.ApplyModifiedProperties();
         }
