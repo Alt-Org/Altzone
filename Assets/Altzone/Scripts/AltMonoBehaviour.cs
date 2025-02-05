@@ -11,13 +11,13 @@ public class AltMonoBehaviour : MonoBehaviour
         callback(true);
     }
 
-    private Dictionary<int, bool> _coroutinestore;
+    private Dictionary<int, bool> _coroutinestore = new();
 
     protected IEnumerator CoroutineWithTimeout<T1>(Func<Action<T1>, IEnumerator> method, T1 para1, float timeoutTime, Action<bool?> timeoutCallback, Action<T1> methodCallback)
     {
         int coroutineKey = GetOpenCoroutineKey();
 
-        Coroutine playerCoroutine = StartCoroutine(method(data => { para1 = data; if (para1 != null) _coroutinestore.Add(coroutineKey, true); }));
+        Coroutine playerCoroutine = StartCoroutine(method(data => { para1 = data; if (para1 != null) _coroutinestore[coroutineKey] = true; }));
 
         bool? timeout = null;
         StartCoroutine(CoroutineTimeout(playerCoroutine, coroutineKey, timeoutTime, data => timeout = data));
@@ -32,7 +32,7 @@ public class AltMonoBehaviour : MonoBehaviour
     {
         int coroutineKey = GetOpenCoroutineKey();
 
-        Coroutine playerCoroutine = StartCoroutine(method(para1, data => { para2 = data; if (para2 != null) _coroutinestore.Add(coroutineKey, true); }));
+        Coroutine playerCoroutine = StartCoroutine(method(para1, data => { para2 = data; if (para2 != null) _coroutinestore[coroutineKey] = true; }));
 
         bool? timeout = null;
         StartCoroutine(CoroutineTimeout(playerCoroutine, coroutineKey, timeoutTime, data => timeout = data));
