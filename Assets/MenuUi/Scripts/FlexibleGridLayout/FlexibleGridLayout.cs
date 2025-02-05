@@ -128,6 +128,13 @@ public class FlexibleGridLayout : LayoutGroup
         // Calculating cell size
         CalculateCellSize();
 
+        // If cell size is not valid return
+        if (_cellSize.x <= 0 || _cellSize.y <= 0)
+        {
+            rectTransform.sizeDelta = Vector2.zero;
+            return;
+        }
+
         // Scaling the rectTransform to fit cells
         Vector2 offset = CalculateChildAlignmentOffset();
         rectTransform.pivot = new Vector2(0, 1);
