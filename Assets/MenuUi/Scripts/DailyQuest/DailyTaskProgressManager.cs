@@ -62,27 +62,6 @@ public class DailyTaskProgressManager : AltMonoBehaviour
         CurrentPlayerTask = playerData.Task;
     }
 
-    private IEnumerator GetPlayerData(System.Action<PlayerData> callback)
-    {
-        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, callback);
-
-        if (callback == null)
-        {
-            StartCoroutine(ServerManager.Instance.GetPlayerFromServer(content =>
-            {
-                if (content != null)
-                    callback(new(content));
-                else
-                {
-                    Debug.LogError("Could not connect to server and receive player");
-                    return;
-                }
-            }));
-        }
-
-        yield return new WaitUntil(() => callback != null);
-    }
-
     //TODO: Uncomment, remove testing code and fix bugs when server side ready!
     private IEnumerator SavePlayerData(PlayerData playerData, System.Action<PlayerData> callback)
     {
