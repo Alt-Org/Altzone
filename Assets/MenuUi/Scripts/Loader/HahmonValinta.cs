@@ -9,6 +9,7 @@ using Altzone.Scripts;
 using System.Linq;
 using Altzone.Scripts.Model.Poco.Game;
 using MenuUi.Scripts.Window;
+using Newtonsoft.Json.Linq;
 
 [System.Serializable]
 public class CharacterData
@@ -97,18 +98,43 @@ public class HahmonValinta : MonoBehaviour
             {
                 _playerData.SelectedCharacterId = (int) id;
                 _playerData.SelectedCharacterIds[0] = (int) id;
-                var store = Storefront.Get();
-                store.SavePlayerData(_playerData, null);
+
+                string body = JObject.FromObject(
+                    new
+                    {
+                        _id = _playerData.Id,
+                        currentAvatarId = _playerData.SelectedCharacterId,
+                        battleCharacter_ids = _playerData.SelectedCharacterIds
+
+                    }/*,
+                    JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })*/
+                ).ToString();
+
+                StartCoroutine(ServerManager.Instance.UpdatePlayerToServer(body, callback =>
+                {
+                    if (callback != null)
+                    {
+                        Debug.Log("Profile info updated.");
+                        var store = Storefront.Get();
+                        store.SavePlayerData(_playerData, null);
+
+                        // Reset the selected character index and disable the lock-in button
+                        selectedCharacterIndex = -1;
+                        lockInButton.interactable = false;
+
+                        // Deactivate the pop-up window
+                        popupWindow.SetActive(false);
+
+                        StartCoroutine(_windowNavigation.Navigate());
+                        return;
+                    }
+                    else
+                    {
+                        Debug.Log("Profile info update failed.");
+                    }
+                }));
             }
-            // Reset the selected character index and disable the lock-in button
-            selectedCharacterIndex = -1;
-            lockInButton.interactable = false;
 
-            // Deactivate the pop-up window
-            popupWindow.SetActive(false);
-
-
-            StartCoroutine(_windowNavigation.Navigate());
         }
         else
         {
