@@ -9,7 +9,7 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
 
-public class DailyTaskManager : MonoBehaviour
+public class DailyTaskManager : AltMonoBehaviour
 {
     //Variables
     [SerializeField] private float _timeoutSeconds = 10;
@@ -563,7 +563,7 @@ public class DailyTaskManager : MonoBehaviour
     public void StartCancelTask()
     {
         PopupData data = new(PopupData.GetType("cancel_task"));
-        StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", data));
+        StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen TehtÃ¤vÃ¤n?", data));
     }
 
     private IEnumerator CancelTask()
@@ -752,45 +752,34 @@ public class DailyTaskManager : MonoBehaviour
     {
         PlayerData receivedData = null;
         bool? timeout = null;
-        Coroutine playerCoroutine, timeoutCoroutine;
+        Coroutine playerCoroutine;
 
         switch (operationType.ToLower())
         {
             case "get":
                 {
                     //Get player data.
-                    playerCoroutine = StartCoroutine(GetPlayerData(data => receivedData = data));
+                    playerCoroutine = StartCoroutine(CoroutineWithTimeout(GetPlayerData, receivedData, _timeoutSeconds, timeoutCallBack => timeout = timeoutCallBack, data => receivedData = data));
                     break;
                 }
             case "save":
                 {
                     //Save player data.
-                    playerCoroutine = StartCoroutine(SavePlayerData(unsavedData, data => receivedData = data));
+                    playerCoroutine = StartCoroutine(CoroutineWithTimeout(SavePlayerData, unsavedData, receivedData, _timeoutSeconds, timeoutCallBack => timeout = timeoutCallBack, data => receivedData = data));
                     break;
                 }
             default: Debug.LogError($"Received: {operationType}, when expecting \"get\" or \"save\"."); yield break;
         }
-
-        timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
 
         yield return new WaitUntil(() => (receivedData != null || timeout != null));
 
         if (receivedData == null)
         {
             timeoutCallback(true);
-            StopCoroutine(playerCoroutine);
             Debug.LogError($"Player data operation: {operationType} timeout or null.");
             yield break; //TODO: Add error handling.
         }
-        else
-            StopCoroutine(timeoutCoroutine);
 
         dataCallback(receivedData);
-    }
-
-    private IEnumerator WaitUntilTimeout(float timeoutSeconds, System.Action<bool> callback)
-    {
-        yield return new WaitForSeconds(timeoutSeconds);
-        callback(true);
     }
 }
