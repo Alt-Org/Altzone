@@ -57,9 +57,10 @@ namespace Quantum
         //Handles all triggers in the game
         public void OnTrigger2D(Frame f, TriggerInfo2D info)
         {
-            //if projectile hits player
+            // if projectile
             if (f.Unsafe.TryGetPointer<Projectile>(info.Entity, out Projectile* projectile))
             {
+                // if projectile hits soul wall
                 if (f.Unsafe.TryGetPointer<SoulWall>(info.Other, out SoulWall* soulWall))
                 {
                     // Projectile Hit SoulWall
@@ -69,6 +70,7 @@ namespace Quantum
                     projectile->CoolDown = FP._0_10;
                 }
 
+                // if projectile hits arena border
                 else if (f.Unsafe.TryGetPointer<ArenaBorder>(info.Other, out ArenaBorder* arenaBorder))
                 {
                     //projectile hit a side wall
@@ -77,6 +79,7 @@ namespace Quantum
                     f.Signals.OnTriggerProjectileHitArenaBorder(projectile, info.Entity, arenaBorder, info.Other);
                 }
 
+                // if projectile hits player
                 else if (f.Unsafe.TryGetPointer<PlayerData>(info.Other, out PlayerData* playerData))
                 {
                     //projectile hit a player
