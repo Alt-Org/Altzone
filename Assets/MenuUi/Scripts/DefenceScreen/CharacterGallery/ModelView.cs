@@ -13,18 +13,10 @@ namespace MenuUi.Scripts.CharacterGallery
 {
     public class ModelView : MonoBehaviour
     {
-        [SerializeField] private Transform VerticalContentPanel;
-        [SerializeField] private Transform HorizontalContentPanel;
+        [SerializeField] private Transform _characterGridContent;
+        [SerializeField] private Transform _selectedGridContent;
 
-        [SerializeField] private GameObject _characterSlotprefab;
-
-        [SerializeField] private TextMeshProUGUI _selectedCharacterSlotText1;
-        [SerializeField] private TextMeshProUGUI _selectedCharacterSlotText2;
-        [SerializeField] private TextMeshProUGUI _selectedCharacterSlotText3;
-
-        [SerializeField] private Image _selectedCharacterSlotDetails1;
-        [SerializeField] private Image _selectedCharacterSlotDetails2;
-        [SerializeField] private Image _selectedCharacterSlotDetails3;
+        [SerializeField] private GameObject _characterSlotPrefab;
 
         [SerializeField] private ClassColorReference _classColorReference;
 
@@ -66,7 +58,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void Awake()
         {
-            _CurSelectedCharacterSlots = HorizontalContentPanel.GetComponentsInChildren<CharacterSlot>();
+            _CurSelectedCharacterSlots = _selectedGridContent.GetComponentsInChildren<CharacterSlot>();
         }
 
 
@@ -84,26 +76,26 @@ namespace MenuUi.Scripts.CharacterGallery
             }
             foreach (var button in _characterButtons)
             {
-                if (!button.transform.IsChildOf(HorizontalContentPanel))
+                if (!button.transform.IsChildOf(_selectedGridContent))
                     Destroy(button.gameObject);
             }
             // remove all character slots
             foreach (var characterSlot in _characterSlots)
             {
-                if (!characterSlot.transform.IsChildOf(HorizontalContentPanel))
+                if (!characterSlot.transform.IsChildOf(_selectedGridContent))
                     Destroy(characterSlot.gameObject);
             }
             _characterButtons.Clear();
             _characterSlots.Clear();
-            CheckSelectedCharacterSlotTexts();
+            //CheckSelectedCharacterSlotTexts();
             _isReady = true;
         }
 
 
         public Transform GetContent()
         {
-            Transform content = (VerticalContentPanel == null) ? transform.Find("Content") :
-                VerticalContentPanel.transform;
+            Transform content = (_characterGridContent == null) ? transform.Find("Content") :
+                _characterGridContent.transform;
 
             return content;
         }
@@ -121,7 +113,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 var info2 = PlayerCharacterPrototypes.GetCharacter(((int)character.Id).ToString());
                 if (info2 == null) continue;
 
-                GameObject slot = Instantiate(_characterSlotprefab, GetContent());
+                GameObject slot = Instantiate(_characterSlotPrefab, GetContent());
 
                 Color bgColor = _classColorReference.GetColor(CustomCharacter.GetClassID(character.Id));
                 Color bgAltColor = _classColorReference.GetAlternativeColor(CustomCharacter.GetClassID(character.Id));
@@ -172,7 +164,7 @@ namespace MenuUi.Scripts.CharacterGallery
                             }
                             i++;
                         }
-                        CheckSelectedCharacterSlotTexts();
+                        //CheckSelectedCharacterSlotTexts();
                     };
 
                     // subscribing to removed from top slot event
@@ -201,43 +193,43 @@ namespace MenuUi.Scripts.CharacterGallery
                 }
             }
 
-            CheckSelectedCharacterSlotTexts();
+            //CheckSelectedCharacterSlotTexts();
         }
 
 
-        public void CheckSelectedCharacterSlotTexts()
-        {
-            if (_CurSelectedCharacterSlots[2].transform.childCount > 0)
-            {
-                _selectedCharacterSlotText3.enabled = false;
-                _selectedCharacterSlotDetails3.enabled = false;
-            }
-            else
-            {
-                _selectedCharacterSlotText3.enabled = true;
-                _selectedCharacterSlotDetails3.enabled = true;
-            }
-            if (_CurSelectedCharacterSlots[1].transform.childCount > 0)
-            {
-                _selectedCharacterSlotText2.enabled = false;
-                _selectedCharacterSlotDetails2.enabled = false;
-            }
-            else
-            {
-                _selectedCharacterSlotText2.enabled = true;
-                _selectedCharacterSlotDetails2.enabled = true;
-            }
-            if (_CurSelectedCharacterSlots[0].transform.childCount > 0)
-            {
-                _selectedCharacterSlotText1.enabled = false;
-                _selectedCharacterSlotDetails1.enabled = false;
-            }
-            else
-            {
-                _selectedCharacterSlotText1.enabled = true;
-                _selectedCharacterSlotDetails1.enabled = true;
-            }
-        }
+        //public void CheckSelectedCharacterSlotTexts()
+        //{
+        //    if (_CurSelectedCharacterSlots[2].transform.childCount > 0)
+        //    {
+        //        _selectedCharacterSlotText3.enabled = false;
+        //        _selectedCharacterSlotDetails3.enabled = false;
+        //    }
+        //    else
+        //    {
+        //        _selectedCharacterSlotText3.enabled = true;
+        //        _selectedCharacterSlotDetails3.enabled = true;
+        //    }
+        //    if (_CurSelectedCharacterSlots[1].transform.childCount > 0)
+        //    {
+        //        _selectedCharacterSlotText2.enabled = false;
+        //        _selectedCharacterSlotDetails2.enabled = false;
+        //    }
+        //    else
+        //    {
+        //        _selectedCharacterSlotText2.enabled = true;
+        //        _selectedCharacterSlotDetails2.enabled = true;
+        //    }
+        //    if (_CurSelectedCharacterSlots[0].transform.childCount > 0)
+        //    {
+        //        _selectedCharacterSlotText1.enabled = false;
+        //        _selectedCharacterSlotDetails1.enabled = false;
+        //    }
+        //    else
+        //    {
+        //        _selectedCharacterSlotText1.enabled = true;
+        //        _selectedCharacterSlotDetails1.enabled = true;
+        //    }
+        //}
 
 
         /// <summary>
@@ -273,7 +265,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 }
             }
 
-            CheckSelectedCharacterSlotTexts();
+            //CheckSelectedCharacterSlotTexts();
         }
     }
 }
