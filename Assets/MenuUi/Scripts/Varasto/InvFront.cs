@@ -200,16 +200,6 @@ namespace MenuUi.Scripts.Storage
                 GameObject newSlot = Instantiate(_invSlot, _content);
                 var capturedSlotVal = i;
 
-                // Default rarity to "common" since no rarity system is implemented yet
-                string rarity = "common";
-
-                // Set color based on rarity
-                var backgroundImage = newSlot.GetComponent<Image>();
-                if (backgroundImage != null)
-                {
-                    backgroundImage.color = GetColorByRarity(rarity);
-                }
-
                 newSlot.GetComponent<Button>().onClick.AddListener(() =>
                 {
                 // C# variable capture in the body of anonymous function!
@@ -226,6 +216,9 @@ namespace MenuUi.Scripts.Storage
             foreach (StorageFurniture _furn in _items)
             {
                 Transform toSet = _slotsList[i].transform;
+
+                // Set color based on rarity
+                toSet.GetComponent<Image>().color = GetColorByRarity(_furn.Rarity.ToString());
 
                 // Icon
                 toSet.GetChild(0).GetComponent<Image>().sprite = _furn.Sprite;
@@ -467,10 +460,10 @@ namespace MenuUi.Scripts.Storage
         {
             return rarity switch
             {
-                "common" => commonColor,
-                "rare" => rareColor,
-                "epic" => epicColor,
-                "antique" => antiqueColor,
+                "Common" => commonColor,
+                "Rare" => rareColor,
+                "Epic" => epicColor,
+                "Antique" => antiqueColor,
                 _ => commonColor, // Default to common color
             };
         }
