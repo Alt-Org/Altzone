@@ -126,20 +126,22 @@ public class FlexibleGridLayout : LayoutGroup
 
         // Scaling the rectTransform to fit cells
         Vector2 offset = CalculateChildAlignmentOffset();
+        rectTransform.pivot = new Vector2(0, 1);
 
         if (_gridFit == FitType.DynamicColumns || _gridFit == FitType.FixedColumns) // Vertical
         {
             rectTransform.anchorMax = Vector2.one;
             rectTransform.anchorMin = new Vector2(0, 1);
 
-            rectTransform.sizeDelta = new Vector2(0, (_rows * _cellSize.y) + ((_rows - 1) * _cellSpacing.y) + padding.top + padding.bottom + offset.y);
+            rectTransform.sizeDelta = new Vector2(0, (_rows * _cellSize.y) + (Mathf.Clamp(_rows - 1, 0, float.MaxValue) * _cellSpacing.y) + padding.top + padding.bottom + offset.y);
         }
         else if (_gridFit == FitType.DynamicRows || _gridFit == FitType.FixedRows) // Horizontal
         {
             rectTransform.anchorMax = new Vector2(0, 1);
             rectTransform.anchorMin = Vector2.zero;
+            rectTransform.pivot = new Vector2(0, 1);
 
-            rectTransform.sizeDelta = new Vector2((_columns * _cellSize.x) + ((_columns - 1) * _cellSpacing.x) + padding.left + padding.right + offset.x, 0);
+            rectTransform.sizeDelta = new Vector2((_columns * _cellSize.x) + (Mathf.Clamp(_columns - 1, 0, float.MaxValue) * _cellSpacing.x) + padding.left + padding.right + offset.x, 0);
         }
 
         // Placing children
