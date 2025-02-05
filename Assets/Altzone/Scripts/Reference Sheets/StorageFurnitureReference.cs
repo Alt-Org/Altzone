@@ -64,6 +64,7 @@ namespace Altzone.Scripts.ReferenceSheets
                     baseFurniture.Name = info2.Name + "_" + info.SetName;
                     FurnitureInfo furnitureInfo = new(info2, info);
                     furnitures.Add(new(i.ToString(), baseFurniture, furnitureInfo));
+                    i++;
                 }
             }
             return furnitures;
