@@ -13,14 +13,14 @@ using UnityEngine.Scripting;
 namespace Quantum
 {
     [Preserve]
-    public unsafe class CollisionsSystem : SystemSignalsOnly, ISignalOnCollisionEnter2D, ISignalOnTrigger2D
+    public unsafe class CollisionsSystem : SystemSignalsOnly, /*ISignalOnCollisionEnter2D,*/ ISignalOnTrigger2D
     {
+        /*
         public void OnCollisionEnter2D(Frame f, CollisionInfo2D info)
         {
             // Projectile is colliding with something
             if (f.Unsafe.TryGetPointer<Projectile>(info.Entity, out Projectile* projectile))
             {
-                /*
                 ProjectileConfig projectileConfig = f.FindAsset<ProjectileConfig>(projectile->ProjectileConfig);
 
                 // Check if the projectile is on cooldown
@@ -49,10 +49,10 @@ namespace Quantum
                     f.Events.PlaySoundEvent(SoundEffect.SideWallHit);
                     f.Signals.OnCollisionProjectileHitSomething(info, projectile);
                 }
-                */
 
             }
         }
+        */
 
         //Handles all triggers in the game
         public void OnTrigger2D(Frame f, TriggerInfo2D info)
