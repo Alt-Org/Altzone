@@ -636,37 +636,9 @@ public class DailyTaskManager : AltMonoBehaviour
     private IEnumerator SetClanProgressBar()
     {
         //TODO: Get clan task data and fill the clan progress bar based on that data.
-        string clanId = null;
+
         ClanData clan = null;
-        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => clanId = p.ClanId);
-
-        if (clanId == null)
-            StartCoroutine(ServerManager.Instance.GetPlayerFromServer(content =>
-            {
-                if (content != null)
-                    clanId = content.clan_id;
-                else
-                {
-                    Debug.LogError("Could not connect to server and receive player data");
-                    return;
-                }
-            }));
-
-        yield return new WaitUntil(() => clanId != null);
-
-        Storefront.Get().GetClanData(clanId, c => clan = c);
-
-        if (clan == null)
-            StartCoroutine(ServerManager.Instance.GetClanFromServer(content =>
-            {
-                if (content != null)
-                    clan = new(content);
-                else
-                {
-                    Debug.LogError("Could not connect to server and receive player data");
-                    return;
-                }
-            }));
+        StartCoroutine(GetClanData( p => clan = p));
 
         yield return new WaitUntil(() => clan != null);
 
