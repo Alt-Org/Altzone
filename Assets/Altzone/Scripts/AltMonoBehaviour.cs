@@ -1,6 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
 public class AltMonoBehaviour : MonoBehaviour
@@ -73,5 +77,54 @@ public class AltMonoBehaviour : MonoBehaviour
         else
             StopCoroutine(timeoutCoroutine);
         _coroutinestore.Remove(coroutineKey);
+    }
+
+
+    protected IEnumerator GetPlayerData(System.Action<PlayerData> callback)
+    {
+        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, callback);
+
+        if (callback == null)
+        {
+            StartCoroutine(ServerManager.Instance.GetPlayerFromServer(content =>
+            {
+                if (content != null)
+                    callback(new(content));
+                else
+                {
+                    Debug.LogError("Could not connect to server and receive player");
+                    return;
+                }
+            }));
+        }
+
+        yield return new WaitUntil(() => callback != null);
+    }
+
+    protected IEnumerator GetClanData(System.Action<ClanData> callback, string clanId = null)
+    {
+        if(clanId == null)
+        {
+            StartCoroutine(GetPlayerData(data => clanId = data.ClanId));
+            yield return new WaitUntil(() => clanId != null);
+        }
+
+        Storefront.Get().GetClanData(clanId, callback);
+
+        if (callback == null)
+        {
+            StartCoroutine(ServerManager.Instance.GetClanFromServer(content =>
+            {
+                if (content != null)
+                    callback(new(content));
+                else
+                {
+                    Debug.LogError("Could not connect to server and receive player");
+                    return;
+                }
+            }));
+        }
+
+        yield return new WaitUntil(() => callback != null);
     }
 }
