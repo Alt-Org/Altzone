@@ -8,7 +8,7 @@ using Altzone.Scripts.Model.Poco.Clan;
 
 namespace MenuUi.Scripts.TopPanel
 {
-    public class ClanCoins : MonoBehaviour
+    public class ClanCoins : AltMonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI _clanCoinsAmountText;
         private ClanData _clanData = null;
@@ -33,15 +33,14 @@ namespace MenuUi.Scripts.TopPanel
         /// </summary>
         private void SetCoinsAmountText()
         {
-            var store = Storefront.Get();
             PlayerData playerData = null;
 
-            store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
+            StartCoroutine(GetPlayerData(p => playerData = p));
 
             if (playerData != null && playerData.HasClanId)
             {
                 string clanId = playerData.ClanId;
-                store.GetClanData(clanId, p => _clanData = p);
+                StartCoroutine(GetClanData(p => _clanData = p, clanId));
                 if (_clanData != null)
                 {
                     _clanCoinsAmountText.text = _clanData.GameCoins.ToString();
