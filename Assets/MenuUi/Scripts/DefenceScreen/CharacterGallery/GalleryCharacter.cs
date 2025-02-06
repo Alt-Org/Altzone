@@ -20,6 +20,8 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private AspectRatioFitter _aspectRatioFitter;
         [SerializeField] private PieChartPreview _piechartPreview;
 
+        private CharacterSlot _originalSlot;
+
         private CharacterID _id;
         public CharacterID Id { get => _id; }
 
@@ -39,13 +41,14 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
-        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, CharacterID id)
+        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, CharacterID id, CharacterSlot originalSlot)
         {
             _spriteImage.sprite = sprite;
             _characterNameText.text = name;
             _id = id;
             _backgroundImage.color = bgColor;
             _contentsImage.color = bgAltColor;
+            _originalSlot = originalSlot;
         }
 
 
@@ -82,6 +85,16 @@ namespace MenuUi.Scripts.CharacterGallery
 
             _contentsImage.gameObject.SetActive(true);
             _contentsDetailsImage.gameObject.SetActive(true);
+        }
+
+
+        /// <summary>
+        /// Reparent this character to its original slot.
+        /// </summary>
+        public void ReturnToOriginalSlot()
+        {
+            transform.SetParent(_originalSlot.transform);
+            SetUnselectedVisuals();
         }
     }
 }

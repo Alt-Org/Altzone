@@ -22,7 +22,7 @@ namespace MenuUi.Scripts.CharacterGallery
             _nameText.text = name;
             _id = id;
             _backgroundSpriteImage.color = new Color(bgColor.r - 0.5f, bgColor.g - 0.5f, bgColor.b - 0.5f);
-            Character.SetInfo(sprite, bgColor, bgAltColor, name, id);
+            Character.SetInfo(sprite, bgColor, bgAltColor, name, id, this);
         }
     }
 }

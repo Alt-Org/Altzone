@@ -127,9 +127,10 @@ namespace MenuUi.Scripts.CharacterGallery
 
             foreach (CharacterSlot slot in _selectedCharacterSlots) // if slot has character add its character to list
             {
-                if (slot.transform.childCount > 0)
+                GalleryCharacter character = slot.transform.GetComponentInChildren<GalleryCharacter>();
+                if (character != null)
                 {
-                    characters.Add(slot.transform.GetComponentInChildren<GalleryCharacter>());
+                    characters.Add(character);
                 }
             }
 
