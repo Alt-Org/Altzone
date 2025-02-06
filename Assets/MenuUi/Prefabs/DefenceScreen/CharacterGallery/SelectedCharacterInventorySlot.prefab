@@ -149,6 +149,7 @@ GameObject:
   - component: {fileID: 8576650208252258149}
   - component: {fileID: 8170631812076819300}
   - component: {fileID: 8548469126411933453}
+  - component: {fileID: 2882276164179685324}
   m_Layer: 5
   m_Name: SelectedCharacterInventorySlot
   m_TagString: Untagged
@@ -257,6 +258,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _selectedImage: {fileID: 837059882623018432}
+  _animator: {fileID: 2882276164179685324}
+  IsSelected: 0
+  SlotIndex: 0
+--- !u!95 &2882276164179685324
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4297384447084397024}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ad5f0c87d528a1c4c98469f3b74fdd92, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6164511984087834122
 GameObject:
   m_ObjectHideFlags: 0

@@ -19,6 +19,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private TextMeshProUGUI _characterNameText;
         [SerializeField] private AspectRatioFitter _aspectRatioFitter;
         [SerializeField] private PieChartPreview _piechartPreview;
+        [SerializeField] private GameObject _removeButton;
 
         private CharacterSlot _originalSlot;
 
@@ -65,11 +66,6 @@ namespace MenuUi.Scripts.CharacterGallery
 
             _contentsImage.gameObject.SetActive(false);
             _contentsDetailsImage.gameObject.SetActive(false);
-
-            RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
-            rectTransform.sizeDelta = Vector2.zero;
-            rectTransform.localPosition = Vector3.zero;
-            rectTransform.localScale = Vector3.one;
         }
 
 
@@ -93,8 +89,20 @@ namespace MenuUi.Scripts.CharacterGallery
         /// </summary>
         public void ReturnToOriginalSlot()
         {
-            transform.SetParent(_originalSlot.transform);
+            transform.SetParent(_originalSlot.transform, false);
             SetUnselectedVisuals();
+            HideRemoveButton();
+        }
+
+
+        public void ShowRemoveButton()
+        {
+            _removeButton.gameObject.SetActive(true);
+        }
+
+        public void HideRemoveButton()
+        {
+            _removeButton.gameObject.SetActive(false);
         }
     }
 }

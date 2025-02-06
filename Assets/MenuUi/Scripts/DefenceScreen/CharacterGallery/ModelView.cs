@@ -5,6 +5,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ReferenceSheets;
+using System.Runtime.InteropServices;
 namespace MenuUi.Scripts.CharacterGallery
 {
     public class ModelView : MonoBehaviour
@@ -42,6 +43,7 @@ namespace MenuUi.Scripts.CharacterGallery
             for (int i = 0; i < _selectedCharacterSlots.Length; i++)
             {
                 _selectedCharacterSlots[i].OnSlotSelected += OnSlotSelected;
+                _selectedCharacterSlots[i].OnSelectedSlotDeselected += OnSelectedSlotDeselected;
                 _selectedCharacterSlots[i].SlotIndex = i;
             }
         }
@@ -107,7 +109,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 {
                     if (character.Id == (CharacterID)currentCharacterIds[i])
                     {
-                        charSlot.Character.transform.SetParent(_selectedCharacterSlots[i].transform);
+                        charSlot.Character.transform.SetParent(_selectedCharacterSlots[i].transform, false);
                         charSlot.Character.SetSelectedVisuals();
                     }
                 }
@@ -117,11 +119,35 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void OnSlotSelected(int slotIndex)
         {
-            if (_currentlySelectedSlot != -1 && _currentlySelectedSlot != slotIndex)
+            if (_currentlySelectedSlot != -1)
             {
                 _selectedCharacterSlots[_currentlySelectedSlot].DeSelectSlot();
             }
+
             _currentlySelectedSlot = slotIndex;
+
+            // Play animation for selectable slots
+            foreach (CharacterSlot charSlot in _characterSlots)
+            {
+                if (charSlot.GetComponentInChildren<GalleryCharacter>() != null)
+                {
+                    charSlot.PlaySelectableAnimation();
+                }
+            }
+
+            foreach (SelectedCharacterSlot selectedSlot in _selectedCharacterSlots)
+            {
+                if (selectedSlot.SlotIndex != _currentlySelectedSlot && selectedSlot.GetComponentInChildren<GalleryCharacter>() != null)
+                {
+                    selectedSlot.PlaySelectableAnimation();
+                }
+            }
+        }
+
+
+        private void OnSelectedSlotDeselected()
+        {
+            _currentlySelectedSlot = -1;
         }
 
 
