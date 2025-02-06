@@ -11,10 +11,11 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     public PlayerTasks.PlayerTask TaskData {  get { return _taskData; } }
     private bool _clickEnabled = true;
     
-    [Header("DailyQuest Texts")]
-    [SerializeField] private TMP_Text questTitle;
-    [SerializeField] private TMP_Text questDebugID;
-    [SerializeField] private TMP_Text questCoins;
+    [SerializeField] private TMP_Text _taskShort;
+    [SerializeField] private TMP_Text _taskDebugID;
+    [SerializeField] private TMP_Text _taskPoints;
+    [SerializeField] private TMP_Text _taskAmount;
+    [SerializeField] private GameObject _coinIndicator;
 
     [HideInInspector] public DailyTaskManager dailyTaskManager;
 
@@ -42,9 +43,25 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 
     public void PopulateData()
     {
-        questTitle.text = _taskData.Title;
-        questDebugID.text = _taskData.Id.ToString();
-        questCoins.text = _taskData.Coins.ToString();
+        _taskShort.text = GetShortDescription(_taskData.Type);
+        _taskDebugID.text = _taskData.Id.ToString();
+        _taskPoints.text = _taskData.Points.ToString();
+        _taskAmount.text = _taskData.Amount.ToString();
+        _coinIndicator.SetActive(_taskData.Coins >= 0);
+    }
+
+    private string GetShortDescription(TaskType taskType)
+    {
+        switch (taskType)
+        {
+            case TaskType.PlayBattle: return ("Taisteluja");
+            case TaskType.WinBattle: return ("Voittoja");
+            case TaskType.StartBattleDifferentCharacter: return ("Taistele Eri Hahmoilla");
+            case TaskType.WriteChatMessage: return ("Kirjoita viestejä");
+            case TaskType.Vote: return ("Äänestä");
+            case TaskType.Undefined: return ("");
+            default: Debug.LogError($"No short descrition available for: {taskType.ToString()}"); return ("Error");
+        }
     }
 
     public virtual void OnBeginDrag(PointerEventData eventData)

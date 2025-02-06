@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
 
@@ -7,10 +8,24 @@ public class Popup : MonoBehaviour
 {
     public static Popup Instance;
 
-    [Header("Popup Settings")]
-    public GameObject popupGameObject; // Assign the existing popup GameObject in the scene here
+    public enum PopupWindowType
+    {
+        Accept,
+        Cancel
+    }
 
-    private bool _result;
+    [Header("Popup Settings")]
+    [SerializeField] private GameObject popupGameObject; // Assign the existing popup GameObject in the scene here
+    [Space]
+    [SerializeField] private GameObject _taskAcceptPopup;
+    [SerializeField] private GameObject _taskCancelPopup;
+    [Space]
+    [SerializeField] private HashSet<TextMeshProUGUI> _messageTexts;
+    [Space]
+    [SerializeField] private HashSet<Button> _cancelButtons;
+    [SerializeField] private HashSet<Button> _acceptButtons;
+
+    private bool? _result;
 
     private void Awake()
     {
@@ -28,49 +43,36 @@ public class Popup : MonoBehaviour
         popupGameObject.SetActive(false);
     }
 
+    private void Start()
+    {
+        //Set buttons
+        foreach (var abutton in _acceptButtons)
+            abutton.onClick.AddListener(() => _result = true);
+
+        foreach (var cbutton in _cancelButtons)
+            cbutton.onClick.AddListener(() => _result = false);
+    }
+
     public IEnumerator ShowPopup(string message)
     {
         // Activate the popup
         popupGameObject.SetActive(true);
 
-        // Find the components in the popup
-        var messageText = popupGameObject.transform.Find("Message").GetComponent<TMP_Text>();
-        var confirmButton = popupGameObject.transform.Find("ConfirmButton").GetComponent<Button>();
-        var cancelButton = popupGameObject.transform.Find("CancelButton").GetComponent<Button>();
-
         // Set the message text
-        messageText.text = message;
-
-        bool? result = null;
-
-        // Remove existing listeners to avoid duplication
-        confirmButton.onClick.RemoveAllListeners();
-        cancelButton.onClick.RemoveAllListeners();
-
-        // Add listeners to the buttons
-        confirmButton.onClick.AddListener(() =>
-        {
-            result = true;
-            _result = true; // Set _result here
-        });
-        cancelButton.onClick.AddListener(() =>
-        {
-            result = false;
-            _result = false; // Set _result here
-        });
+        SetMessage(message);
 
         // Wait until one of the buttons is pressed
-        yield return new WaitUntil(() => result.HasValue);
+        yield return new WaitUntil(() => _result.HasValue);
 
         // Deactivate the popup
         popupGameObject.SetActive(false);
 
-        Debug.Log($"Popup result: {result}"); // Log the result for debugging
+        Debug.Log($"Popup result: {_result}"); // Log the result for debugging
     }
 
 
     // Helper method to call from other scripts
-    public static IEnumerator RequestPopup(string message, System.Action<bool> callback)
+    public static IEnumerator RequestPopup(string message, PopupWindowType type, System.Action<bool> callback)
     {
         if (Instance == null)
         {
@@ -78,9 +80,26 @@ public class Popup : MonoBehaviour
             yield break;
         }
 
+        Instance._result = null;
+        Instance.WindowSwitch(type);
+
         // Show the popup and get the result
         yield return Instance.StartCoroutine(Instance.ShowPopup(message));
-        callback(Instance._result); // Use the updated _result
+        callback(Instance._result.Value); // Use the updated _result
     }
 
+    private void WindowSwitch(PopupWindowType type)
+    {
+        _taskAcceptPopup.SetActive(type == PopupWindowType.Accept);
+        _taskCancelPopup.SetActive(type == PopupWindowType.Cancel);
+    }
+
+    private void SetMessage(string message)
+    {
+        foreach (var textItem in _messageTexts)
+        {
+            if(textItem.IsActive())
+                textItem.text = message;
+        }
+    }
 }
