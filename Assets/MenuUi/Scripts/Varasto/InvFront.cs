@@ -240,9 +240,6 @@ namespace MenuUi.Scripts.Storage
                     case 2:
                         toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
                         break;
-                    //case 3:
-                    //    toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.Material;
-                    //    break;
                     case 3:
                         toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.Rarity.ToString();
                         break;
@@ -293,85 +290,98 @@ namespace MenuUi.Scripts.Storage
                 case 0:
                     _sortText.text = "Jarjestetty\nAakkoset";
 
-                    if (_descendingOrder)
-                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return b.VisibleName.CompareTo(a.VisibleName); });
-                    else
-                        _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.VisibleName.CompareTo(b.VisibleName); });
+                    _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                        StorageFurniture first = _descendingOrder ? b : a;
+                        StorageFurniture second = _descendingOrder ? a : b;
+
+                        int primaryResult = first.Value.CompareTo(second.Value);
+                        if (primaryResult != 0) return primaryResult;
+
+                        int idResult = first.Id.CompareTo(second.Id);
+                        if (idResult != 0) return idResult;
+
+                        return 0;
+                    });
 
                     break;
                 case 1:
                     _sortText.text = "Jarjestetty\nArvo";
 
-                    if (_descendingOrder)
-                        _items.Sort((StorageFurniture a, StorageFurniture b) => {
-                            int result = b.Value.CompareTo(a.Value);
-                            return result != 0 ? result : b.VisibleName.CompareTo(a.VisibleName);
-                        });
-                    else
-                        _items.Sort((StorageFurniture a, StorageFurniture b) => {
-                            int result = a.Value.CompareTo(b.Value);
-                            return result != 0 ? result : a.VisibleName.CompareTo(b.VisibleName);
-                        });
+                    _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                        StorageFurniture first = _descendingOrder ? b : a;
+                        StorageFurniture second = _descendingOrder ? a : b;
+
+                        int primaryResult = first.Value.CompareTo(second.Value);
+                        if (primaryResult != 0) return primaryResult;
+
+                        int nameResult = first.VisibleName.CompareTo(second.VisibleName);
+                        if (nameResult != 0) return nameResult;
+
+                        int idResult = first.Id.CompareTo(second.Id);
+                        if (idResult != 0) return idResult;
+
+                        return 0;
+                    });
 
                     break;
                 case 2:
                     _sortText.text = "Jarjestetty\nPaino";
 
-                    if (_descendingOrder)
-                        _items.Sort((StorageFurniture a, StorageFurniture b) => {
-                            int result = b.Weight.CompareTo(a.Weight);
-                            return result != 0 ? result : b.VisibleName.CompareTo(a.VisibleName);
-                        });
-                    else
-                        _items.Sort((StorageFurniture a, StorageFurniture b) => {
-                            int result = a.Weight.CompareTo(b.Weight);
-                            return result != 0 ? result : a.VisibleName.CompareTo(b.VisibleName);
-                        });
+                    _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                        StorageFurniture first = _descendingOrder ? b : a;
+                        StorageFurniture second = _descendingOrder ? a : b;
+
+                        int primaryResult = first.Weight.CompareTo(second.Weight);
+                        if (primaryResult != 0) return primaryResult;
+
+                        int nameResult = first.VisibleName.CompareTo(second.VisibleName);
+                        if (nameResult != 0) return nameResult;
+
+                        int idResult = first.Id.CompareTo(second.Id);
+                        if (idResult != 0) return idResult;
+
+                        return 0;
+                    });
 
                     break;
-                //case 3:
-                //    _sortText.text = "Jarjestetty\nMateriaali";
-
-                //    if (_descendingOrder)
-                //        _items.Sort((StorageFurniture a, StorageFurniture b) => {
-                //            int result = b.Material.CompareTo(a.Material);
-                //            return result != 0 ? result : b.VisibleName.CompareTo(a.VisibleName);
-                //        });
-                //    else
-                //        _items.Sort((StorageFurniture a, StorageFurniture b) => {
-                //            int result = a.Material.CompareTo(b.Material);
-                //            return result != 0 ? result : a.VisibleName.CompareTo(b.VisibleName);
-                //        });
-
-                //    break;
                 case 3:
                     _sortText.text = "Jarjestetty\nHarvinaisuus";
 
-                    if (_descendingOrder)
-                        _items.Sort((StorageFurniture a, StorageFurniture b) => {
-                            int result = b.Rarity.CompareTo(a.Rarity);
-                            return result != 0 ? result : b.VisibleName.CompareTo(a.VisibleName);
-                        });
-                    else
-                        _items.Sort((StorageFurniture a, StorageFurniture b) => {
-                            int result = a.Rarity.CompareTo(b.Rarity);
-                            return result != 0 ? result : a.VisibleName.CompareTo(b.VisibleName);
-                        });
+                    _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                        StorageFurniture first = _descendingOrder ? b : a;
+                        StorageFurniture second = _descendingOrder ? a : b;
+
+                        int primaryResult = first.Rarity.CompareTo(second.Rarity);
+                        if (primaryResult != 0) return primaryResult;
+
+                        int nameResult = first.VisibleName.CompareTo(second.VisibleName);
+                        if (nameResult != 0) return nameResult;
+
+                        int idResult = first.Id.CompareTo(second.Id);
+                        if (idResult != 0) return idResult;
+
+                        return 0;
+                    });
 
                     break;
                 case 4:
                     _sortText.text = "Jarjestetty\nLinjasto";
 
-                    if (_descendingOrder)
-                        _items.Sort((StorageFurniture a, StorageFurniture b) => {
-                            int result = b.SetName.CompareTo(a.SetName);
-                            return result != 0 ? result : b.VisibleName.CompareTo(a.VisibleName);
-                        });
-                    else
-                        _items.Sort((StorageFurniture a, StorageFurniture b) => {
-                            int result = a.SetName.CompareTo(b.SetName);
-                            return result != 0 ? result : a.VisibleName.CompareTo(b.VisibleName);
-                        });
+                    _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                        StorageFurniture first = _descendingOrder ? b : a;
+                        StorageFurniture second = _descendingOrder ? a : b;
+
+                        int primaryResult = first.SetName.CompareTo(second.SetName);
+                        if (primaryResult != 0) return primaryResult;
+
+                        int nameResult = first.VisibleName.CompareTo(second.VisibleName);
+                        if (nameResult != 0) return nameResult;
+
+                        int idResult = first.Id.CompareTo(second.Id);
+                        if (idResult != 0) return idResult;
+
+                        return 0;
+                    });
 
                     break;
             }
