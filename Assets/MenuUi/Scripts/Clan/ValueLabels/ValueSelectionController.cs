@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using Altzone.Scripts.Model.Poco.Clan;
 using UnityEngine.UI;
+using System.Collections;
 
 public class ValueSelectionController : MonoBehaviour
 {
     [Header("Objects")]
     [SerializeField] private GameObject _valueSelectorObject;
     [SerializeField] private GameObject _activateButton;
+
+    [SerializeField] private ScrollRect _scrollRectComponent;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject _labelTogglePrefab;
@@ -21,13 +24,23 @@ public class ValueSelectionController : MonoBehaviour
     private List<ValueLabelHandler> _labelHandlers = new();
     public List<ClanValues> SelectedValues { get; private set; } = new();
 
-    void Start() => CreateLabels();
+    private void Start()
+    {
+        CreateLabels();
+        StartCoroutine(ResetScrollPosition());
+    }
 
     public void SetSelected(List<ClanValues> selected)
     {
         SelectedValues = new(selected);
         CreateLabels();
         UpdateSelectedDisplay();
+    }
+
+    private IEnumerator ResetScrollPosition()
+    {
+        yield return null;
+        _scrollRectComponent.verticalNormalizedPosition = 1f;
     }
 
     private void CreateLabels()
