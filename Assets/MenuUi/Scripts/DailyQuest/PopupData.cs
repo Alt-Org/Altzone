@@ -1,3 +1,4 @@
+using UnityEngine;
 using Altzone.Scripts.Model.Poco.Game;
 
 public struct PopupData
@@ -19,6 +20,9 @@ public struct PopupData
             default: return PopupDataType.OwnTask;
         }
     }
+
+    private Vector3? _location;
+    public Vector3? Location { get { return _location; } }
 
     public struct OwnPageData
     {
@@ -49,17 +53,19 @@ public struct PopupData
     private PlayerTasks.PlayerTask _ownPage;
     public PlayerTasks.PlayerTask OwnPage { get { return _ownPage; } }
 
-    public PopupData(PopupDataType type)
+    public PopupData(PopupDataType type, Vector3? location)
     {
         _ownPage = null;
         _type = type;
+        _location = location;
     }
 
-    public PopupData(PlayerTasks.PlayerTask task)
+    public PopupData(PlayerTasks.PlayerTask task, Vector3? location)
     {
         //_ownPage = new OwnPageData();
         _ownPage = task;
         _type = PopupDataType.OwnTask;
+        _location = location;
 
         //SetOwnPageData(task);
     }

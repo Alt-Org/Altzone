@@ -36,6 +36,8 @@ public class DailyTaskManager : AltMonoBehaviour
     [SerializeField] private GameObject _ownTaskView;
     [SerializeField] private Button _cancelTaskButton;
     [SerializeField] private DailyTaskOwnTask _ownTaskPageHandler;
+    [SerializeField] private RectTransform _tasksVerticalLayout;
+    [SerializeField] private Image _playerCharacterImage;
 
     private int? _ownTaskId;
     public int? OwnTaskId { get { return _ownTaskId; } }
@@ -214,6 +216,9 @@ public class DailyTaskManager : AltMonoBehaviour
         _dailyCategory500.GetComponent<RectTransform>().anchoredPosition = new Vector2( int.MaxValue ,0f );
         _dailyCategory1000.GetComponent<RectTransform>().anchoredPosition = new Vector2( int.MaxValue ,0f );
         _dailyCategory1500.GetComponent<RectTransform>().anchoredPosition = new Vector2( int.MaxValue ,0f );
+
+        //Sets DT card categorie list to the top.
+        _tasksVerticalLayout.anchoredPosition = new Vector2( 0f, -int.MaxValue );
     }
 
     private Transform GetParentCategory(int points)
@@ -375,7 +380,13 @@ public class DailyTaskManager : AltMonoBehaviour
     // Function for popup calling
     public IEnumerator ShowPopupAndHandleResponse(string Message, PopupData? data)
     {
-        yield return Popup.RequestPopup(Message, result =>
+        var windowType = (
+            data.Value.Type == PopupData.PopupDataType.OwnTask ?
+            Popup.PopupWindowType.Accept :
+            Popup.PopupWindowType.Cancel
+            );
+
+        yield return Popup.RequestPopup(Message, windowType, data.Value.Location, result =>
         {
             if (result == true && data != null)
             {
@@ -562,7 +573,7 @@ public class DailyTaskManager : AltMonoBehaviour
     // Calling popup for canceling task.
     public void StartCancelTask()
     {
-        PopupData data = new(PopupData.GetType("cancel_task"));
+        PopupData data = new(PopupData.GetType("cancel_task"), null);
         StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", data));
     }
 

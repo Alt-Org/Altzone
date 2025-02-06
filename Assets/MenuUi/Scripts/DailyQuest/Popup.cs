@@ -18,12 +18,13 @@ public class Popup : MonoBehaviour
     [SerializeField] private GameObject popupGameObject; // Assign the existing popup GameObject in the scene here
     [Space]
     [SerializeField] private GameObject _taskAcceptPopup;
+    [SerializeField] private RectTransform _taskAcceptMovable;
     [SerializeField] private GameObject _taskCancelPopup;
     [Space]
-    [SerializeField] private HashSet<TextMeshProUGUI> _messageTexts;
+    [SerializeField] private List<TextMeshProUGUI> _messageTexts;
     [Space]
-    [SerializeField] private HashSet<Button> _cancelButtons;
-    [SerializeField] private HashSet<Button> _acceptButtons;
+    [SerializeField] private List<Button> _cancelButtons;
+    [SerializeField] private List<Button> _acceptButtons;
 
     private bool? _result;
 
@@ -72,7 +73,7 @@ public class Popup : MonoBehaviour
 
 
     // Helper method to call from other scripts
-    public static IEnumerator RequestPopup(string message, PopupWindowType type, System.Action<bool> callback)
+    public static IEnumerator RequestPopup(string message, PopupWindowType type, Vector2? anchorLocation, System.Action<bool> callback)
     {
         if (Instance == null)
         {
@@ -82,6 +83,8 @@ public class Popup : MonoBehaviour
 
         Instance._result = null;
         Instance.WindowSwitch(type);
+        if (anchorLocation != null)
+            Instance.MoveAcceptWindow(anchorLocation.Value);
 
         // Show the popup and get the result
         yield return Instance.StartCoroutine(Instance.ShowPopup(message));
@@ -92,6 +95,19 @@ public class Popup : MonoBehaviour
     {
         _taskAcceptPopup.SetActive(type == PopupWindowType.Accept);
         _taskCancelPopup.SetActive(type == PopupWindowType.Cancel);
+    }
+
+    private void MoveAcceptWindow(Vector3 location)
+    {
+        Rect selfRect = GetComponent<RectTransform>().rect;
+        Vector3 centeredLocation = new
+            (
+                location.x - selfRect.width / 2,
+                location.y - selfRect.height / 2,
+                0f
+            );
+        
+        _taskAcceptMovable.localPosition = centeredLocation;
     }
 
     private void SetMessage(string message)
