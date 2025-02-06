@@ -147,7 +147,7 @@ public class ClanCreateNew : MonoBehaviour
 
         ServerClan serverClan = new ServerClan
         {
-            name = clanName,
+            name = clanName.Trim(),
             tag = clanName.Trim().Substring(0, 3),
             phrase = phrase,
             isOpen = isOpen,
@@ -204,6 +204,12 @@ public class ClanCreateNew : MonoBehaviour
         {
             _nameWarningOutline.SetActive(true);
             _warningPopup.ActivatePopUp("Klaanin nimen pitää olla vähintään 3 merkkiä pitkä.");
+            validInputs = false;
+        }
+        else if (clanName.Trim().Length > 30)
+        {
+            _nameWarningOutline.SetActive(true);
+            _warningPopup.ActivatePopUp("Klaanin nimi saa olla maksimissaan 30 merkkiä pitkä.");
             validInputs = false;
         }
         else _nameWarningOutline.SetActive(false);
