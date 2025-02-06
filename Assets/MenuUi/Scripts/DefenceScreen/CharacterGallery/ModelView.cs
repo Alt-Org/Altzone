@@ -1,14 +1,10 @@
 ﻿using System.Collections.Generic;
 using Altzone.Scripts;
 using System.Collections.ObjectModel;
-using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
-using UnityEngine.UI;
 using Altzone.Scripts.ModelV2;
-using TMPro;
 using Altzone.Scripts.ReferenceSheets;
-
 namespace MenuUi.Scripts.CharacterGallery
 {
     public class ModelView : MonoBehaviour
@@ -21,6 +17,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private ClassColorReference _classColorReference;
 
         private bool _isReady;
+        private int _currentlySelectedSlot = -1;
 
         // Array of character slots in selected grid
         private SelectedCharacterSlot[] _selectedCharacterSlots;
@@ -42,6 +39,20 @@ namespace MenuUi.Scripts.CharacterGallery
         private void Awake()
         {
             _selectedCharacterSlots = _selectedGridContent.GetComponentsInChildren<SelectedCharacterSlot>();
+            for (int i = 0; i < _selectedCharacterSlots.Length; i++)
+            {
+                _selectedCharacterSlots[i].OnSlotSelected += OnSlotSelected;
+                _selectedCharacterSlots[i].SlotIndex = i;
+            }
+        }
+
+
+        private void OnDestroy()
+        {
+            foreach (SelectedCharacterSlot slot in _selectedCharacterSlots)
+            {
+                slot.OnSlotSelected -= OnSlotSelected;
+            }
         }
 
 
@@ -101,6 +112,16 @@ namespace MenuUi.Scripts.CharacterGallery
                     }
                 }
             }
+        }
+
+
+        private void OnSlotSelected(int slotIndex)
+        {
+            if (_currentlySelectedSlot != -1 && _currentlySelectedSlot != slotIndex)
+            {
+                _selectedCharacterSlots[_currentlySelectedSlot].DeSelectSlot();
+            }
+            _currentlySelectedSlot = slotIndex;
         }
 
 
