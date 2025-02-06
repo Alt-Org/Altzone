@@ -119,9 +119,21 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void OnSlotSelected(int slotIndex)
         {
-            if (_currentlySelectedSlot != -1)
+            if (_currentlySelectedSlot != -1) // Trying to swap top slot character places if there is already a selected slot
             {
                 _selectedCharacterSlots[_currentlySelectedSlot].DeSelectSlot();
+                
+                GalleryCharacter char1 = _selectedCharacterSlots[_currentlySelectedSlot].GetComponentInChildren<GalleryCharacter>();
+                GalleryCharacter char2 = _selectedCharacterSlots[slotIndex].GetComponentInChildren<GalleryCharacter>();
+
+                if (char1 != null && char2 != null)
+                {
+                    _selectedCharacterSlots[slotIndex].DeSelectSlot();
+                    char1.transform.SetParent(_selectedCharacterSlots[slotIndex].transform, false);
+                    char2.transform.SetParent(_selectedCharacterSlots[_currentlySelectedSlot].transform, false);
+                    _currentlySelectedSlot = -1;
+                    return;
+                }
             }
 
             _currentlySelectedSlot = slotIndex;

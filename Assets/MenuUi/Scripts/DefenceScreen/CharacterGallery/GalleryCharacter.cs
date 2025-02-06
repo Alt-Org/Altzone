@@ -97,12 +97,12 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public void ShowRemoveButton()
         {
-            _removeButton.gameObject.SetActive(true);
+            _removeButton.SetActive(true);
         }
 
         public void HideRemoveButton()
         {
-            _removeButton.gameObject.SetActive(false);
+            _removeButton.SetActive(false);
         }
     }
 }
