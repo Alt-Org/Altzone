@@ -200,6 +200,12 @@ public class ClanCreateNew : MonoBehaviour
             _warningPopup.ActivatePopUp("Lisää klaanin nimi");
             validInputs = false;
         }
+        else if (clanName.Trim().Length < 3)
+        {
+            _nameWarningOutline.SetActive(true);
+            _warningPopup.ActivatePopUp("Klaanin nimen pitää olla vähintään 3 merkkiä pitkä.");
+            validInputs = false;
+        }
         else _nameWarningOutline.SetActive(false);
 
         if (!isOpen && password == string.Empty)
