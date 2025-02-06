@@ -70,20 +70,6 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
-        private void LoadAndCachePrefabs()
-        {
-            var gameConfig = GameConfig.Get();
-            var playerPrefabs = gameConfig.PlayerPrefabs;
-            var prefabs = playerPrefabs._playerPrefabs;
-            for (var prefabIndex = 0; prefabIndex < prefabs.Length; ++prefabIndex)
-            {
-                var playerPrefab = GameConfig.Get().PlayerPrefabs.GetPlayerPrefab(prefabIndex);
-                //Debug.Log($"prefabIndex {prefabIndex} playerPrefab {playerPrefab.name}");
-            }
-            _isReady = true;
-        }
-
-
         public void Reset()
         {
             _isReady = false;
@@ -109,8 +95,8 @@ namespace MenuUi.Scripts.CharacterGallery
             }
             _characterButtons.Clear();
             _characterSlots.Clear();
-            LoadAndCachePrefabs();
             CheckSelectedCharacterSlotTexts();
+            _isReady = true;
         }
 
 

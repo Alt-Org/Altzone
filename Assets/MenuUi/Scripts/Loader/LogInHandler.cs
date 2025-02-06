@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace MenuUi.Scripts.Loader
 {
-    public class LogInHandler : MonoBehaviour
+    public class LogInHandler : AltMonoBehaviour
     {
         [SerializeField]
         private SignInManager _signInManager;
@@ -121,7 +121,9 @@ namespace MenuUi.Scripts.Loader
         {
             //_loadInfoController.SetInfoText(LogInStatus.FetchPlayerData);
             PlayerData playerData = null;
-            Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, p => playerData = p);
+            StartCoroutine(GetPlayerData(p => playerData = p));
+
+            yield return new WaitUntil(() => playerData != null);
 
             if (ServerManager.Instance.Player.above13 == null)
             {

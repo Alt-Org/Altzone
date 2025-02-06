@@ -107,6 +107,7 @@ public class Chat : MonoBehaviour
             Debug.Log("Current Prefab: " + currentPrefab.name);
             DisplayMessage(inputField.text);
             inputField.text = "";
+            this.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
         else
         {
