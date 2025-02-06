@@ -33,6 +33,7 @@ public class ClanCreateNew : MonoBehaviour
     [SerializeField] private GameObject _passwordWarningOutline;
     [SerializeField] private GameObject _goalWarningOutline;
     [SerializeField] private GameObject _languageWarningOutline;
+    [SerializeField] private GameObject _valuesWarningOutline;
     [SerializeField] private PopupController _warningPopup;
 
     [Header("Buttons")]
@@ -72,6 +73,7 @@ public class ClanCreateNew : MonoBehaviour
         _goalWarningOutline.SetActive(false);
         _passwordWarningOutline.SetActive(false);
         _languageWarningOutline.SetActive(false);
+        _valuesWarningOutline.SetActive(false);
 
         _ageSelection.Initialize(ClanAge.All);
         _clanGoalSelection.Initialize(Goals.Fiilistely);
@@ -122,9 +124,25 @@ public class ClanCreateNew : MonoBehaviour
         List<HeartPieceData> clanHeartPieces = new();
         for (int i = 0; i < 50; i++) clanHeartPieces.Add(new HeartPieceData(i, _selectedHeartColor));
 
-        if (!CheckClanValuesValidity(clanName, isOpen, password, language, goal))
+        if (!CheckClanInputsValidity(clanName, isOpen, password, language, goal, values))
         {
             return;
+        }
+
+        List<string> serverValues = new ();
+
+        foreach(var value in values)
+        {
+            serverValues.Add(value.ToString().ToLower());
+        }
+
+        ClanLogo logo = new ClanLogo();
+        logo.logoType = ClanLogoType.Heart;
+        logo.pieceColors = new();
+
+        foreach(var piece in clanHeartPieces)
+        {
+            logo.pieceColors.Add(ColorUtility.ToHtmlStringRGB(piece.pieceColor));
         }
 
         ServerClan serverClan = new ServerClan
@@ -136,7 +154,8 @@ public class ClanCreateNew : MonoBehaviour
             language = language,
             goal = goal,
             ageRange = age,
-            labels = new()
+            labels = serverValues,
+            clanLogo = logo
         };
 
         StartCoroutine(ServerManager.Instance.PostClanToServer(serverClan, clan =>
@@ -171,7 +190,7 @@ public class ClanCreateNew : MonoBehaviour
         }));
     }
 
-    private bool CheckClanValuesValidity(string clanName, bool isOpen, string password, Language language, Goals goal)
+    private bool CheckClanInputsValidity(string clanName, bool isOpen, string password, Language language, Goals goal, ClanValues[] values)
     {
         bool validInputs = true;
 
@@ -206,6 +225,17 @@ public class ClanCreateNew : MonoBehaviour
             validInputs = false;
         }
         else _goalWarningOutline.SetActive(false);
+
+        if (values.Length < 3)
+        {
+            _valuesWarningOutline.SetActive(true);
+            _warningPopup.ActivatePopUp("Klaanille tulee olla valittuna vähintää 3 arvoa");
+            validInputs = false;
+        }
+        else
+        {
+            _valuesWarningOutline.SetActive(false);
+        }
 
         return validInputs;
     }
