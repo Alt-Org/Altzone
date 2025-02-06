@@ -129,6 +129,13 @@ public class ClanCreateNew : MonoBehaviour
             return;
         }
 
+        List<string> serverValues = new ();
+
+        foreach( var value in values)
+        {
+            serverValues.Add(value.ToString().ToLower());
+        }
+
         ServerClan serverClan = new ServerClan
         {
             name = clanName,
@@ -138,7 +145,7 @@ public class ClanCreateNew : MonoBehaviour
             language = language,
             goal = goal,
             ageRange = age,
-            labels = new()
+            labels = serverValues
         };
 
         StartCoroutine(ServerManager.Instance.PostClanToServer(serverClan, clan =>
