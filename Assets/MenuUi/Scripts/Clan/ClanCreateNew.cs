@@ -131,9 +131,18 @@ public class ClanCreateNew : MonoBehaviour
 
         List<string> serverValues = new ();
 
-        foreach( var value in values)
+        foreach(var value in values)
         {
             serverValues.Add(value.ToString().ToLower());
+        }
+
+        ClanLogo logo = new ClanLogo();
+        logo.logoType = ClanLogoType.Heart;
+        logo.pieceColors = new();
+
+        foreach(var piece in clanHeartPieces)
+        {
+            logo.pieceColors.Add(ColorUtility.ToHtmlStringRGB(piece.pieceColor));
         }
 
         ServerClan serverClan = new ServerClan
@@ -145,7 +154,8 @@ public class ClanCreateNew : MonoBehaviour
             language = language,
             goal = goal,
             ageRange = age,
-            labels = serverValues
+            labels = serverValues,
+            clanLogo = logo
         };
 
         StartCoroutine(ServerManager.Instance.PostClanToServer(serverClan, clan =>
