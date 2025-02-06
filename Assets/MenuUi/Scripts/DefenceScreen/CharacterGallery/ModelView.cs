@@ -23,7 +23,7 @@ namespace MenuUi.Scripts.CharacterGallery
         private bool _isReady;
 
         // Array of character slots in selected grid
-        private CharacterSlot[] _selectedCharacterSlots;
+        private SelectedCharacterSlot[] _selectedCharacterSlots;
         // List of character slots in character grid
         private List<CharacterSlot> _characterSlots = new();
 
@@ -41,7 +41,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void Awake()
         {
-            _selectedCharacterSlots = _selectedGridContent.GetComponentsInChildren<CharacterSlot>();
+            _selectedCharacterSlots = _selectedGridContent.GetComponentsInChildren<SelectedCharacterSlot>();
         }
 
 
@@ -50,7 +50,7 @@ namespace MenuUi.Scripts.CharacterGallery
             _isReady = false;
 
             // Remove selected characters
-            foreach (CharacterSlot slot in _selectedCharacterSlots)
+            foreach (SelectedCharacterSlot slot in _selectedCharacterSlots)
             {
                 GalleryCharacter topSlotCharacter = slot.transform.GetComponentInChildren<GalleryCharacter>();
                 if (topSlotCharacter != null)
@@ -117,7 +117,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             List<GalleryCharacter> characters = new List<GalleryCharacter>();
 
-            foreach (CharacterSlot slot in _selectedCharacterSlots) // if slot has character add its character to list
+            foreach (SelectedCharacterSlot slot in _selectedCharacterSlots) // if slot has character add its character to list
             {
                 GalleryCharacter character = slot.transform.GetComponentInChildren<GalleryCharacter>();
                 if (character != null)
