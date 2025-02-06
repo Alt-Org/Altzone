@@ -27,28 +27,14 @@ namespace MenuUi.Scripts.CharacterGallery
         // List of character slots in character grid
         private List<CharacterSlot> _characterSlots = new();
 
-        public delegate void CurrentCharacterIdChangedHandler(CharacterID newCharacterId, int slot);
-        public event CurrentCharacterIdChangedHandler OnCurrentCharacterIdChanged;
+        public delegate void CharacterSelectedHandler(CharacterID characterId, int slotIdx);
+        public event CharacterSelectedHandler OnCharacterSelected;
 
         public bool IsReady
         {
             get
             {
                 return _isReady;
-            }
-        }     
-
-        private CharacterID _currentCharacterId;
-        private int _slotToSet = 0;
-
-        public CharacterID CurrentCharacterId
-        {
-            get => _currentCharacterId;
-            private set
-            {
-                _currentCharacterId = value;
-                OnCurrentCharacterIdChanged?.Invoke(_currentCharacterId, _slotToSet);
-
             }
         }
 
@@ -118,6 +104,12 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
+        private void SelectCharacter(CharacterID id, int selectedSlotIdx)
+        {
+            OnCharacterSelected?.Invoke(id, selectedSlotIdx);
+        }
+
+
         /// <summary>
         /// Reorders selected characters to the left and saves it.
         /// </summary>
@@ -139,16 +131,15 @@ namespace MenuUi.Scripts.CharacterGallery
                 characters[i].transform.SetParent(_selectedCharacterSlots[i].transform);
             }
 
-            for (int i = 0; i < _selectedCharacterSlots.Length; i++) // save character ids to slots through assigning CurrentCharacterId
+            for (int i = 0; i < _selectedCharacterSlots.Length; i++) // save selected character ids
             {
-                _slotToSet = i;
                 if (i < characters.Count)
                 {
-                    CurrentCharacterId = characters[i].Id;
+                    SelectCharacter(characters[i].Id, i);
                 }
                 else
                 {
-                    CurrentCharacterId = CharacterID.None;
+                    SelectCharacter(CharacterID.None, i);
                 }
             }
         }
