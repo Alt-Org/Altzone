@@ -179,6 +179,12 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void CharacterReturnedToOriginalSlot()
         {
+            // if there is no character in the slot save slot as empty
+            if (_selectedCharacterSlots[_currentlySelectedSlot].GetComponentInChildren<GalleryCharacter>() == null)
+            {
+                SelectCharacter(CharacterID.None, _currentlySelectedSlot);
+            }
+
             _selectedCharacterSlots[_currentlySelectedSlot].DeSelectSlot();
             _currentlySelectedSlot = -1;
             SetCharacterSlotsSelectable(false);
@@ -189,39 +195,47 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             if (_currentlySelectedSlot != -1)
             {
-                GalleryCharacter currentlySelectedCharacter = _selectedCharacterSlots[_currentlySelectedSlot].GetComponentInChildren<GalleryCharacter>();
+                GalleryCharacter topSlotCharacter = _selectedCharacterSlots[_currentlySelectedSlot].GetComponentInChildren<GalleryCharacter>();
                 GalleryCharacter pressedCharacter = slotBase.GetComponentInChildren<GalleryCharacter>();
 
-                if (currentlySelectedCharacter != null && pressedCharacter != null)
+                if (topSlotCharacter != null && pressedCharacter != null)
                 {
                     SelectedCharacterSlot selectedCharacterSlot = slotBase as SelectedCharacterSlot;
 
-                    if (selectedCharacterSlot != null) // if selected character is in top slot swap character places
+                    if (selectedCharacterSlot != null) // if pressed character is in top slot swap character places
                     {
-                        currentlySelectedCharacter.HideRemoveButton();
-                        currentlySelectedCharacter.transform.SetParent(selectedCharacterSlot.transform, false);
-                        pressedCharacter.transform.SetParent(_selectedCharacterSlots[_currentlySelectedSlot].transform, false);
+                        topSlotCharacter.HideRemoveButton();
+                        PlaceCharacterToTopSlot(topSlotCharacter, selectedCharacterSlot.SlotIndex);
+                        PlaceCharacterToTopSlot(pressedCharacter, _currentlySelectedSlot);
                     }
-                    else // set selected/pressed character to top slot and return top slot character to original slot
+                    else // set pressed character to top slot and return top slot character to original slot
                     {
-                        pressedCharacter.transform.SetParent(_selectedCharacterSlots[_currentlySelectedSlot].transform, false);
-                        pressedCharacter.SetSelectedVisuals();
-                        currentlySelectedCharacter.ReturnToOriginalSlot();
+                        PlaceCharacterToTopSlot(pressedCharacter, _currentlySelectedSlot);
+
+                        topSlotCharacter.ReturnToOriginalSlot();
                         slotBase.SetSelectable(false);
                         return;
                     }
                 }
-                else if (pressedCharacter != null && currentlySelectedCharacter == null) // if top slot is empty set pressed/selected character to top slot
+                else if (pressedCharacter != null && topSlotCharacter == null) // if top slot is empty only set pressed character to top slot
                 {
-                    pressedCharacter.transform.SetParent(_selectedCharacterSlots[_currentlySelectedSlot].transform, false);
-                    pressedCharacter.SetSelectedVisuals();
+                    PlaceCharacterToTopSlot(pressedCharacter, _currentlySelectedSlot);
                     slotBase.SetSelectable(false);
+                    SelectCharacter(pressedCharacter.Id, _currentlySelectedSlot);
                 }
 
                 _selectedCharacterSlots[_currentlySelectedSlot].DeSelectSlot();
                 _currentlySelectedSlot = -1;
                 SetCharacterSlotsSelectable(false);
             }
+        }
+
+
+        private void PlaceCharacterToTopSlot(GalleryCharacter galleryCharacter, int slotIdx)
+        {
+            galleryCharacter.transform.SetParent(_selectedCharacterSlots[slotIdx].transform, false);
+            galleryCharacter.SetSelectedVisuals();
+            SelectCharacter(galleryCharacter.Id, slotIdx);
         }
 
 
