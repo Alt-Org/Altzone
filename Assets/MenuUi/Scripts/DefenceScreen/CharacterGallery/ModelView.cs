@@ -53,9 +53,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             if (_currentlySelectedSlot != -1)
             {
-                _selectedCharacterSlots[_currentlySelectedSlot].DeSelectSlot();
-                _currentlySelectedSlot = -1;
-                SetCharacterSlotsSelectable(false);
+                RemoveSelection();
             }
         }
 
@@ -179,9 +177,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 SelectCharacter(CharacterID.None, _currentlySelectedSlot);
             }
 
-            _selectedCharacterSlots[_currentlySelectedSlot].DeSelectSlot();
-            _currentlySelectedSlot = -1;
-            SetCharacterSlotsSelectable(false);
+            RemoveSelection();
         }
 
 
@@ -208,7 +204,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
                         topSlotCharacter.ReturnToOriginalSlot();
                         pressedSlot.SetSelectable(false);
-                        return;
+                        return; // return because ReturnToOriginalSlot() sends event back here to CharacterReturnedToOriginalSlot()
                     }
                 }
                 else if (pressedCharacter != null && topSlotCharacter == null) // if top slot is empty only set pressed character to top slot
@@ -223,9 +219,7 @@ namespace MenuUi.Scripts.CharacterGallery
                     SelectCharacter(CharacterID.None, _currentlySelectedSlot);
                 }
 
-                _selectedCharacterSlots[_currentlySelectedSlot].DeSelectSlot();
-                _currentlySelectedSlot = -1;
-                SetCharacterSlotsSelectable(false);
+                RemoveSelection();
             }
         }
 
@@ -235,6 +229,14 @@ namespace MenuUi.Scripts.CharacterGallery
             galleryCharacter.transform.SetParent(_selectedCharacterSlots[slotIdx].transform, false);
             galleryCharacter.SetSelectedVisuals();
             SelectCharacter(galleryCharacter.Id, slotIdx);
+        }
+
+
+        public void RemoveSelection()
+        {
+            _selectedCharacterSlots[_currentlySelectedSlot].DeSelectSlot();
+            _currentlySelectedSlot = -1;
+            SetCharacterSlotsSelectable(false);
         }
 
 
