@@ -1,11 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Lobby;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 namespace MenuUI.Scripts.Lobby.InLobby
@@ -142,7 +140,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
                     {
                         if (_playerData.SelectedCharacterIds[i] == 0) // if any of the selected characters is missing
                         {
-                            _selectedCharactersPopup.OpenPopup();
+                            StartCoroutine(ShowSelectedCharactersPopup());
                             return;
                         }
                     }
@@ -152,6 +150,19 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 transform.GetChild(0).gameObject.SetActive(true);
             }
         }
+
+
+        private IEnumerator ShowSelectedCharactersPopup()
+        {
+            yield return StartCoroutine(_selectedCharactersPopup.ShowPopup(showBattlePopup =>
+            {
+                if (showBattlePopup == true)
+                {
+                    transform.GetChild(0).gameObject.SetActive(true);
+                }
+            }));
+        }
+
 
         public void CloseWindow()
         {

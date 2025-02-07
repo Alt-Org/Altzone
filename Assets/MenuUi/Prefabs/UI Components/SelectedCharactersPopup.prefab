@@ -59,6 +59,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _container: {fileID: 1185370216093594371}
+  _closeButton: {fileID: 3471105928993395545}
+  _defenceGalleryButton: {fileID: 366552432713546248}
+  _selectRandomButton: {fileID: 3318220744159083818}
 --- !u!1 &1185370216093594371
 GameObject:
   m_ObjectHideFlags: 0
@@ -459,20 +462,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3969449952476807763}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 9049552420428702180}
-        m_TargetAssemblyTypeName: MenuUi.Scripts.DefenceScreen.SelectedCharactersPopup,
-          MainMenu
-        m_MethodName: SelectRandomCharacters
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &2871548432120870361
 GameObject:
   m_ObjectHideFlags: 0
@@ -866,20 +856,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3115491790634845869}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 9049552420428702180}
-        m_TargetAssemblyTypeName: MenuUi.Scripts.DefenceScreen.SelectedCharactersPopup,
-          MainMenu
-        m_MethodName: ClosePopup
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &7232882363274747708
 GameObject:
   m_ObjectHideFlags: 0
@@ -892,7 +869,6 @@ GameObject:
   - component: {fileID: 8159925135690306953}
   - component: {fileID: 6473117159126000189}
   - component: {fileID: 366552432713546248}
-  - component: {fileID: 2766547751005403645}
   m_Layer: 5
   m_Name: OpenDefenceGalleryButton
   m_TagString: Untagged
@@ -1001,44 +977,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6473117159126000189}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 9049552420428702180}
-        m_TargetAssemblyTypeName: MenuUi.Scripts.DefenceScreen.SelectedCharactersPopup,
-          MainMenu
-        m_MethodName: ClosePopup
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2766547751005403645}
-        m_TargetAssemblyTypeName: SetMainMenuWindowIndex, MainMenu
-        m_MethodName: SetMainMenuWindowIndexValue
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &2766547751005403645
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7232882363274747708}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 965ac3e1f5427e34e8939712e5218195, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+      m_Calls: []
 --- !u!1 &9212261435947454022
 GameObject:
   m_ObjectHideFlags: 0
