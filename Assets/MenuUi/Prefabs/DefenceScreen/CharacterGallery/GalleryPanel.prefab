@@ -733,8 +733,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 0
-    m_Right: 0
+    m_Left: 25
+    m_Right: 25
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
@@ -1156,13 +1156,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5884478403627622171, guid: 4849ccdf720a65e4d911a9d2bb627c7e,
         type: 3}
-      propertyPath: m_Padding.m_Top
-      value: 0
+      propertyPath: _cellAspectRatio
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 5884478403627622171, guid: 4849ccdf720a65e4d911a9d2bb627c7e,
         type: 3}
-      propertyPath: _cellAspectRatio
-      value: 0.6
+      propertyPath: m_Padding.m_Left
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5884478403627622171, guid: 4849ccdf720a65e4d911a9d2bb627c7e,
+        type: 3}
+      propertyPath: m_Padding.m_Right
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 5884478403627622171, guid: 4849ccdf720a65e4d911a9d2bb627c7e,
         type: 3}
