@@ -22,7 +22,7 @@ public class FlexibleHorizontalGrid : LayoutGroup
         base.CalculateLayoutInputHorizontal();
 
         float parentWidth = _content.rect.width;    
-        Debug.LogWarning("ContentRect"  + _content.rect.width);
+        //Debug.LogWarning("ContentRect"  + _content.rect.width);
         float availableWidth = parentWidth - padding.left - padding.right - (spacing.x * (columns - 1));
         float cellWidth = availableWidth / columns;
         float cellHeight = cellWidth / cellAspectRatio;
@@ -33,7 +33,7 @@ public class FlexibleHorizontalGrid : LayoutGroup
             _previousRowCount = rows;
             float availableHeight = (cellHeight * rows) + padding.top + padding.bottom + (spacing.y * (rows - 1));
             rectTransform.sizeDelta = new Vector2(parentWidth, availableHeight);
-            Debug.LogWarning($"New rectTransfrom of {name} is {new Vector2(parentWidth, availableHeight)} ");
+            //Debug.LogWarning($"New rectTransfrom of {name} is {new Vector2(parentWidth, availableHeight)} ");
         }
 
         cellSize.x = cellWidth;
