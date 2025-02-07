@@ -9,7 +9,7 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
 
-public class DailyTaskManager : MonoBehaviour
+public class DailyTaskManager : AltMonoBehaviour
 {
     //Variables
     [SerializeField] private float _timeoutSeconds = 10;
@@ -55,7 +55,6 @@ public class DailyTaskManager : MonoBehaviour
     private List<GameObject> _clanProgressBarMarkers = new List<GameObject>();
 
     //Local Testing
-    //private int _ownTaskProgress = 0;
     private int _clanProgressBarGoal = 10000;
     private int _clanProgressBarCurrentPoints = 0;
     private PlayerData _currentPlayerData;
@@ -117,22 +116,14 @@ public class DailyTaskManager : MonoBehaviour
         PlayerData playerData = null;
         PlayerTask playerTask = null;
         bool? timeout = null;
-        Coroutine playerCoroutine, timeoutCoroutine;
+        Coroutine timeoutCoroutine;
 
         //Get player data.
-        playerCoroutine = StartCoroutine(GetPlayerData(data => playerData = data));
-
-        timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+        StartCoroutine(PlayerDataTransferer("get", null, tdata => timeout = tdata, pdata => playerData = pdata));
         yield return new WaitUntil(() => (playerData != null || timeout != null));
 
         if (playerData == null)
-        {
-            StopCoroutine(playerCoroutine);
-            Debug.LogError($"Get player data timeout or null.");
             yield break; //TODO: Add error handling.
-        }
-        else
-            StopCoroutine(timeoutCoroutine);
 
         //Check when daily task cards loaded.
         timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
@@ -434,40 +425,23 @@ public class DailyTaskManager : MonoBehaviour
         PlayerData playerData = null;
         PlayerData savePlayerData = null;
         bool? timeout = null;
-        Coroutine playerCoroutine, timeoutCoroutine;
 
         //Get player data.
-        playerCoroutine = StartCoroutine(GetPlayerData(data => playerData = data));
-
-        timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+        StartCoroutine(PlayerDataTransferer("get", null, tdata => timeout = tdata, pdata => playerData = pdata));
         yield return new WaitUntil(() => (playerData != null || timeout != null));
 
         if (playerData == null)
-        {
-            StopCoroutine(playerCoroutine);
-            Debug.LogError($"Get player data timeout or null.");
             yield break; //TODO: Add error handling.
-        }
-        else
-            StopCoroutine(timeoutCoroutine);
 
         //Save player data.
         playerData.Task = playerTask;
         timeout = null;
 
-        playerCoroutine = StartCoroutine(SavePlayerData(playerData, data => savePlayerData = data));
-
-        timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+        StartCoroutine(PlayerDataTransferer("save", playerData, tdata => timeout = tdata, pdata => savePlayerData = pdata));
         yield return new WaitUntil(() => (savePlayerData != null || timeout != null));
 
         if (savePlayerData == null)
-        {
-            StopCoroutine(playerCoroutine);
-            Debug.LogError($"Save player data timeout or null.");
             yield break; //TODO: Add error handling.
-        }
-        else
-            StopCoroutine(timeoutCoroutine);
 
         _currentPlayerData = savePlayerData;
         StartCoroutine(SetHandleOwnTask(playerTask));
@@ -476,7 +450,6 @@ public class DailyTaskManager : MonoBehaviour
     //Set OwnTask page.
     private IEnumerator SetHandleOwnTask(PlayerTask playerTask)
     {
-        //DailyTaskProgressManager.Instance.TESTSetTaskData(_currentPlayerData.Task); //TODO: Test code. Remove when server ready.
         DailyTaskProgressManager.Instance.UpdateCurrentTask(playerTask);
         _ownTaskId = playerTask.Id;
         _ownTaskPageHandler.SetDailyTask(playerTask.Content, playerTask.Amount, playerTask.Points, playerTask.Coins);
@@ -590,7 +563,7 @@ public class DailyTaskManager : MonoBehaviour
     public void StartCancelTask()
     {
         PopupData data = new(PopupData.GetType("cancel_task"));
-        StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", data));
+        StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen TehtÃ¤vÃ¤n?", data));
     }
 
     private IEnumerator CancelTask()
@@ -598,54 +571,35 @@ public class DailyTaskManager : MonoBehaviour
         PlayerData playerData = null;
         PlayerData savePlayerData = null;
         bool? timeout = null;
-        Coroutine playerCoroutine, timeoutCoroutine;
 
         //Get player data.
-        playerCoroutine = StartCoroutine(GetPlayerData(data => playerData = data));
-
-        timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+        StartCoroutine(PlayerDataTransferer("get", null, tdata => timeout = tdata, pdata => playerData = pdata));
         yield return new WaitUntil(() => (playerData != null || timeout != null));
 
         if (playerData == null)
-        {
-            StopCoroutine(playerCoroutine);
-            Debug.LogError($"Get player data timeout or null.");
             yield break; //TODO: Add error handling.
-        }
-        else
-            StopCoroutine(timeoutCoroutine);
 
         //Save player data.
         playerData.Task.ClearProgress();
         playerData.Task = null;
         timeout = null;
 
-        playerCoroutine = StartCoroutine(SavePlayerData(playerData, data => savePlayerData = data));
+        StartCoroutine(PlayerDataTransferer("save", playerData, tdata => timeout = tdata, pdata => savePlayerData = pdata));
+        yield return new WaitUntil(() => (savePlayerData != null || timeout != null));
 
-        timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
-        yield return new WaitUntil(() => (playerData != null || timeout != null));
-
-        if (playerData == null)
-        {
-            StopCoroutine(playerCoroutine);
-            Debug.LogError($"Save player data timeout or null.");
+        if (savePlayerData == null)
             yield break; //TODO: Add error handling.
-        }
-        else
-            StopCoroutine(timeoutCoroutine);
 
         _currentPlayerData = savePlayerData;
-        //DailyTaskProgressManager.Instance.TESTSetTaskData(savePlayerData.Task); //TODO: Remove when server ready.
         DailyTaskProgressManager.Instance.UpdateCurrentTask(savePlayerData.Task);
         _ownTaskPageHandler.ClearCurrentTask();
         Debug.Log("Task id: " + _ownTaskId + ", has been canceled.");
         _ownTaskId = null;
     }
 
-    public void ClearCurrentTask(/*PlayerData playerData*/)
+    public void ClearCurrentTask()
     {
         _currentPlayerData.Task.ClearProgress();
-        //_currentPlayerData = playerData;
         _ownTaskPageHandler.ClearCurrentTask();
         _ownTaskTabButton.interactable = false;
         SwitchTab(SelectedTab.Tasks);
@@ -682,37 +636,9 @@ public class DailyTaskManager : MonoBehaviour
     private IEnumerator SetClanProgressBar()
     {
         //TODO: Get clan task data and fill the clan progress bar based on that data.
-        string clanId = null;
+
         ClanData clan = null;
-        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => clanId = p.ClanId);
-
-        if (clanId == null)
-            StartCoroutine(ServerManager.Instance.GetPlayerFromServer(content =>
-            {
-                if (content != null)
-                    clanId = content.clan_id;
-                else
-                {
-                    Debug.LogError("Could not connect to server and receive player data");
-                    return;
-                }
-            }));
-
-        yield return new WaitUntil(() => clanId != null);
-
-        Storefront.Get().GetClanData(clanId, c => clan = c);
-
-        if (clan == null)
-            StartCoroutine(ServerManager.Instance.GetClanFromServer(content =>
-            {
-                if (content != null)
-                    clan = new(content);
-                else
-                {
-                    Debug.LogError("Could not connect to server and receive player data");
-                    return;
-                }
-            }));
+        StartCoroutine(GetClanData( p => clan = p));
 
         yield return new WaitUntil(() => clan != null);
 
@@ -764,14 +690,12 @@ public class DailyTaskManager : MonoBehaviour
                 for (int j = 0; j < i; j++)
                 {
                     _clanProgressBarMarkers[j].GetComponent<DailyTaskClanReward>().UpdateState(true);
-
                 }
 
                 //Final reward
                 if ((i >= _clanProgressBarMarkers.Count - 1) && chunkProgress == 1)
                 {
                     _clanProgressBarMarkers[_clanProgressBarMarkers.Count - 1].GetComponent<DailyTaskClanReward>().UpdateState(true);
-
                 }
 
                 _clanProgressBarSlider.value = Mathf.Lerp(startPosition, endPosition, chunkProgress);
@@ -796,9 +720,38 @@ public class DailyTaskManager : MonoBehaviour
         yield return true;
     }
 
-    private IEnumerator WaitUntilTimeout(float timeoutSeconds, System.Action<bool> callback)
+    private IEnumerator PlayerDataTransferer(string operationType, PlayerData unsavedData, System.Action<bool> timeoutCallback, System.Action<PlayerData> dataCallback)
     {
-        yield return new WaitForSeconds(timeoutSeconds);
-        callback(true);
+        PlayerData receivedData = null;
+        bool? timeout = null;
+        Coroutine playerCoroutine;
+
+        switch (operationType.ToLower())
+        {
+            case "get":
+                {
+                    //Get player data.
+                    playerCoroutine = StartCoroutine(CoroutineWithTimeout(GetPlayerData, receivedData, _timeoutSeconds, timeoutCallBack => timeout = timeoutCallBack, data => receivedData = data));
+                    break;
+                }
+            case "save":
+                {
+                    //Save player data.
+                    playerCoroutine = StartCoroutine(CoroutineWithTimeout(SavePlayerData, unsavedData, receivedData, _timeoutSeconds, timeoutCallBack => timeout = timeoutCallBack, data => receivedData = data));
+                    break;
+                }
+            default: Debug.LogError($"Received: {operationType}, when expecting \"get\" or \"save\"."); yield break;
+        }
+
+        yield return new WaitUntil(() => (receivedData != null || timeout != null));
+
+        if (receivedData == null)
+        {
+            timeoutCallback(true);
+            Debug.LogError($"Player data operation: {operationType} timeout or null.");
+            yield break; //TODO: Add error handling.
+        }
+
+        dataCallback(receivedData);
     }
 }
