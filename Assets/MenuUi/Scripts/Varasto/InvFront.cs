@@ -61,7 +61,7 @@ namespace MenuUi.Scripts.Storage
         bool _updatingInventory = false;
 
         private int _maxSortingBy = 4;
-        private int _sortingBy = -1; // used as a carrier for info on how to sort
+        private int _sortingBy = 0; // used as a carrier for info on how to sort
         private bool _descendingOrder = false;
 
         private const string INVENTORY_EMPTY_TEXT = "Varasto tyhjä";
@@ -187,7 +187,7 @@ namespace MenuUi.Scripts.Storage
                 {
                     continue;
                 }
-                StorageFurniture storageFurniture = new(clanFurniture,furniture);
+                StorageFurniture storageFurniture = new(clanFurniture, furniture);
                 _items.Add(storageFurniture);
             }
             Debug.Log($"found clan items {_items.Count}");
@@ -202,8 +202,8 @@ namespace MenuUi.Scripts.Storage
 
                 newSlot.GetComponent<Button>().onClick.AddListener(() =>
                 {
-                // C# variable capture in the body of anonymous function!
-                OnShowInfo(capturedSlotVal);
+                    // C# variable capture in the body of anonymous function!
+                    OnShowInfo(capturedSlotVal);
                 });
                 _slotsList.Add(newSlot);
             }
@@ -225,7 +225,7 @@ namespace MenuUi.Scripts.Storage
                 ScaleSprite(_furn, toSet.GetChild(0).GetComponent<RectTransform>());
 
                 // Name
-                if(_sortingBy != 0) toSet.GetChild(1).GetComponent<TMP_Text>().text = _furn.VisibleName;
+                if (_sortingBy != 0) toSet.GetChild(1).GetComponent<TMP_Text>().text = _furn.VisibleName;
                 else toSet.GetChild(1).GetComponent<TMP_Text>().text = "";
 
                 // Weight
@@ -267,24 +267,28 @@ namespace MenuUi.Scripts.Storage
                 }
 
                 // Coin
-                if(_sortingBy == 1) toSet.GetChild(8).gameObject.SetActive(true);
+                if (_sortingBy == 1) toSet.GetChild(8).gameObject.SetActive(true);
                 else toSet.GetChild(8).gameObject.SetActive(false);
 
                 i++;
             }
         }
 
-        public void SwitchSortOrder() {
-            _descendingOrder = !_descendingOrder;
-            _sortingBy--; // Decrement here because SortStored will increment it again
-            SortStored();
-        }
-
-        public void SortStored() // A very much hardcoded system for sorting 
-        {
+        public void IncrementSort() {
             if (_sortingBy < _maxSortingBy) { _sortingBy++; }
             else { _sortingBy = 0; }
 
+            SortStored();
+        }
+
+        public void SwitchSortOrder() {
+            _descendingOrder = !_descendingOrder;
+
+            SortStored();
+        }
+
+        private void SortStored() // A very much hardcoded system for sorting 
+        {
             switch (_sortingBy)
             {
                 case 0:
