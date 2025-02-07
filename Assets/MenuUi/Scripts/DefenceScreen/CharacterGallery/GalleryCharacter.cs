@@ -26,6 +26,7 @@ namespace MenuUi.Scripts.CharacterGallery
         private CharacterID _id;
         public CharacterID Id { get => _id; }
 
+        public Action OnReturnedToOriginalSlot;
 
         private void Awake()
         {
@@ -92,6 +93,7 @@ namespace MenuUi.Scripts.CharacterGallery
             transform.SetParent(_originalSlot.transform, false);
             SetUnselectedVisuals();
             HideRemoveButton();
+            OnReturnedToOriginalSlot?.Invoke();
         }
 
 

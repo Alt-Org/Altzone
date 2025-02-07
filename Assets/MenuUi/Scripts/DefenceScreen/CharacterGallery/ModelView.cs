@@ -5,7 +5,6 @@ using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ReferenceSheets;
-using System.Runtime.InteropServices;
 namespace MenuUi.Scripts.CharacterGallery
 {
     public class ModelView : MonoBehaviour
@@ -44,6 +43,7 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 _selectedCharacterSlots[i].OnSlotSelected += OnSlotSelected;
                 _selectedCharacterSlots[i].OnSelectedSlotDeselected += OnSelectedSlotDeselected;
+                _selectedCharacterSlots[i].OnCharacterSelected += HandleCharacterSelected;
                 _selectedCharacterSlots[i].SlotIndex = i;
             }
         }
@@ -54,6 +54,14 @@ namespace MenuUi.Scripts.CharacterGallery
             foreach (SelectedCharacterSlot slot in _selectedCharacterSlots)
             {
                 slot.OnSlotSelected -= OnSlotSelected;
+                slot.OnSelectedSlotDeselected -= OnSelectedSlotDeselected;
+                slot.OnCharacterSelected -= HandleCharacterSelected;
+            }
+
+            foreach (CharacterSlot slot in _characterSlots)
+            {
+                slot.OnCharacterSelected -= HandleCharacterSelected;
+                slot.Character.OnReturnedToOriginalSlot -= CharacterReturnedToOriginalSlot;
             }
         }
 
@@ -104,6 +112,8 @@ namespace MenuUi.Scripts.CharacterGallery
                 charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, character.Id);
 
                 _characterSlots.Add(charSlot);
+                charSlot.OnCharacterSelected += HandleCharacterSelected;
+                charSlot.Character.OnReturnedToOriginalSlot += CharacterReturnedToOriginalSlot;
 
                 for (int i = 0; i < _selectedCharacterSlots.Length; i++)
                 {
@@ -117,33 +127,13 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
-        private void OnSlotSelected(int slotIndex)
+        private void SetCharacterSlotsSelectable(bool selectable)
         {
-            if (_currentlySelectedSlot != -1) // Trying to swap top slot character places if there is already a selected slot
-            {
-                _selectedCharacterSlots[_currentlySelectedSlot].DeSelectSlot();
-                
-                GalleryCharacter char1 = _selectedCharacterSlots[_currentlySelectedSlot].GetComponentInChildren<GalleryCharacter>();
-                GalleryCharacter char2 = _selectedCharacterSlots[slotIndex].GetComponentInChildren<GalleryCharacter>();
-
-                if (char1 != null && char2 != null)
-                {
-                    _selectedCharacterSlots[slotIndex].DeSelectSlot();
-                    char1.transform.SetParent(_selectedCharacterSlots[slotIndex].transform, false);
-                    char2.transform.SetParent(_selectedCharacterSlots[_currentlySelectedSlot].transform, false);
-                    _currentlySelectedSlot = -1;
-                    return;
-                }
-            }
-
-            _currentlySelectedSlot = slotIndex;
-
-            // Play animation for selectable slots
             foreach (CharacterSlot charSlot in _characterSlots)
             {
                 if (charSlot.GetComponentInChildren<GalleryCharacter>() != null)
                 {
-                    charSlot.PlaySelectableAnimation();
+                    charSlot.SetSelectable(selectable);
                 }
             }
 
@@ -151,15 +141,76 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 if (selectedSlot.SlotIndex != _currentlySelectedSlot && selectedSlot.GetComponentInChildren<GalleryCharacter>() != null)
                 {
-                    selectedSlot.PlaySelectableAnimation();
+                    selectedSlot.SetSelectable(selectable);
                 }
             }
+        }
+
+
+        private void OnSlotSelected(int slotIndex)
+        {
+            if (_currentlySelectedSlot != -1)
+            {
+                _selectedCharacterSlots[_currentlySelectedSlot].DeSelectSlot();
+            }
+
+            _currentlySelectedSlot = slotIndex;
+            SetCharacterSlotsSelectable(true);
         }
 
 
         private void OnSelectedSlotDeselected()
         {
             _currentlySelectedSlot = -1;
+            SetCharacterSlotsSelectable(false);
+        }
+
+
+        private void CharacterReturnedToOriginalSlot()
+        {
+            _selectedCharacterSlots[_currentlySelectedSlot].DeSelectSlot();
+            _currentlySelectedSlot = -1;
+            SetCharacterSlotsSelectable(false);
+        }
+
+
+        private void HandleCharacterSelected(SlotBase slotBase)
+        {
+            if (_currentlySelectedSlot != -1)
+            {
+                GalleryCharacter currentlySelectedCharacter = _selectedCharacterSlots[_currentlySelectedSlot].GetComponentInChildren<GalleryCharacter>();
+                GalleryCharacter pressedCharacter = slotBase.GetComponentInChildren<GalleryCharacter>();
+
+                if (currentlySelectedCharacter != null && pressedCharacter != null)
+                {
+                    SelectedCharacterSlot selectedCharacterSlot = slotBase as SelectedCharacterSlot;
+
+                    if (selectedCharacterSlot != null) // if selected character is in top slot swap character places
+                    {
+                        currentlySelectedCharacter.HideRemoveButton();
+                        currentlySelectedCharacter.transform.SetParent(selectedCharacterSlot.transform, false);
+                        pressedCharacter.transform.SetParent(_selectedCharacterSlots[_currentlySelectedSlot].transform, false);
+                    }
+                    else // set selected/pressed character to top slot and return top slot character to original slot
+                    {
+                        pressedCharacter.transform.SetParent(_selectedCharacterSlots[_currentlySelectedSlot].transform, false);
+                        pressedCharacter.SetSelectedVisuals();
+                        currentlySelectedCharacter.ReturnToOriginalSlot();
+                        slotBase.SetSelectable(false);
+                        return;
+                    }
+                }
+                else if (pressedCharacter != null && currentlySelectedCharacter == null) // if top slot is empty set pressed/selected character to top slot
+                {
+                    pressedCharacter.transform.SetParent(_selectedCharacterSlots[_currentlySelectedSlot].transform, false);
+                    pressedCharacter.SetSelectedVisuals();
+                    slotBase.SetSelectable(false);
+                }
+
+                _selectedCharacterSlots[_currentlySelectedSlot].DeSelectSlot();
+                _currentlySelectedSlot = -1;
+                SetCharacterSlotsSelectable(false);
+            }
         }
 
 
@@ -170,9 +221,9 @@ namespace MenuUi.Scripts.CharacterGallery
 
 
         /// <summary>
-        /// Reorders selected characters to the left and saves it.
+        /// Reorders selected characters to the left and save them.
         /// </summary>
-        public void ReorderSelectedCharacters()
+        public void ReorderAndSaveSelectedCharacters()
         {
             List<GalleryCharacter> characters = new List<GalleryCharacter>();
 

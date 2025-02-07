@@ -4,10 +4,9 @@ using UnityEngine.UI;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
-    public class SelectedCharacterSlot : MonoBehaviour
+    public class SelectedCharacterSlot : SlotBase
     {
         [SerializeField] private Image _selectedImage;
-        [SerializeField] private Animator _animator;
 
         [HideInInspector] public bool IsSelected = false;
         [HideInInspector] public int SlotIndex = 0;
@@ -51,11 +50,6 @@ namespace MenuUi.Scripts.CharacterGallery
                     galleryCharacter.HideRemoveButton();
                 }
             }
-        }
-
-        public void PlaySelectableAnimation()
-        {
-            _animator.Play("SelectableAnimation", -1, 0f);
         }
     }
 }
