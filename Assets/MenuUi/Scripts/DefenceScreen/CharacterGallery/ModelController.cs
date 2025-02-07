@@ -22,7 +22,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             ServerManager.OnLogInStatusChanged += StartLoading;
             SignalBus.OnRandomSelectedCharactersRequested += SetRandomSelectedCharactersToEmptySlots;
-            _view.OnCharacterSelected += HandleCharacterSelected;
+            _view.OnTopSlotCharacterSet += HandleCharacterSelected;
         }
 
 
@@ -42,7 +42,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             ServerManager.OnLogInStatusChanged -= StartLoading;
             SignalBus.OnRandomSelectedCharactersRequested -= SetRandomSelectedCharactersToEmptySlots;
-            _view.OnCharacterSelected -= HandleCharacterSelected;
+            _view.OnTopSlotCharacterSet -= HandleCharacterSelected;
         }
 
 

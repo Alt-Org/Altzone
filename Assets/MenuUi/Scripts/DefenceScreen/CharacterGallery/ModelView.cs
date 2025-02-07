@@ -24,8 +24,8 @@ namespace MenuUi.Scripts.CharacterGallery
         // List of character slots in character grid
         private List<CharacterSlot> _characterSlots = new();
 
-        public delegate void CharacterSelectedHandler(CharacterID characterId, int slotIdx);
-        public event CharacterSelectedHandler OnCharacterSelected;
+        public delegate void TopSlotCharacterSetHandler(CharacterID characterId, int slotIdx);
+        public event TopSlotCharacterSetHandler OnTopSlotCharacterSet;
 
         public bool IsReady
         {
@@ -174,7 +174,7 @@ namespace MenuUi.Scripts.CharacterGallery
             // if there is no character in the slot save slot as empty
             if (_selectedCharacterSlots[_currentlySelectedSlot].GetComponentInChildren<GalleryCharacter>() == null)
             {
-                SelectCharacter(CharacterID.None, _currentlySelectedSlot);
+                SetTopSlotCharacter(CharacterID.None, _currentlySelectedSlot);
             }
 
             RemoveSelection();
@@ -216,7 +216,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 {
                     PlaceCharacterToTopSlot(topSlotCharacter, selectedCharacterSlot.SlotIndex);
                     topSlotCharacter.HideRemoveButton();
-                    SelectCharacter(CharacterID.None, _currentlySelectedSlot);
+                    SetTopSlotCharacter(CharacterID.None, _currentlySelectedSlot);
                 }
 
                 RemoveSelection();
@@ -228,7 +228,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             galleryCharacter.transform.SetParent(_selectedCharacterSlots[slotIdx].transform, false);
             galleryCharacter.SetSelectedVisuals();
-            SelectCharacter(galleryCharacter.Id, slotIdx);
+            SetTopSlotCharacter(galleryCharacter.Id, slotIdx);
         }
 
 
@@ -240,9 +240,9 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
-        private void SelectCharacter(CharacterID id, int selectedSlotIdx)
+        private void SetTopSlotCharacter(CharacterID id, int selectedSlotIdx)
         {
-            OnCharacterSelected?.Invoke(id, selectedSlotIdx);
+            OnTopSlotCharacterSet?.Invoke(id, selectedSlotIdx);
         }
 
 
@@ -271,11 +271,11 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 if (i < characters.Count)
                 {
-                    SelectCharacter(characters[i].Id, i);
+                    SetTopSlotCharacter(characters[i].Id, i);
                 }
                 else
                 {
-                    SelectCharacter(CharacterID.None, i);
+                    SetTopSlotCharacter(CharacterID.None, i);
                 }
             }
         }
