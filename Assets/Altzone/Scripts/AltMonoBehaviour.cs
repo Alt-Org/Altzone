@@ -6,6 +6,7 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
+using System.Linq;
 
 public class AltMonoBehaviour : MonoBehaviour
 {
@@ -56,6 +57,8 @@ public class AltMonoBehaviour : MonoBehaviour
             else break;
         }
         _coroutinestore.Add(i, false);
+        var sortedDict = from entry in _coroutinestore orderby entry.Key ascending select entry;
+        _coroutinestore = sortedDict.ToDictionary(pair => pair.Key, pair => pair.Value);
         return i;
     }
 
@@ -68,10 +71,10 @@ public class AltMonoBehaviour : MonoBehaviour
 
         if (_coroutinestore[coroutineKey] == false)
         {
-            timeoutCallback(true);
-            StopCoroutine(mainCoroutine);
             _coroutinestore.Remove(coroutineKey);
+            StopCoroutine(mainCoroutine);
             Debug.LogError($"Player data operation: timeout or null.");
+            timeoutCallback(true);
             yield break; //TODO: Add error handling.
         }
         else
