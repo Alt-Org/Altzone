@@ -58,7 +58,7 @@ public class PerusKauppaStorage : ShopPanelStorage
         foreach(GameFurniture furniture in gameFurnitures)
             this.gameFurnitures.Add(furniture);
 
-        ListHelperr.Shuffle(this.gameFurnitures);
+        ListHelper.Shuffle(this.gameFurnitures);
 
         foreach(GameFurniture furniture1 in gameFurnitures)
         {
