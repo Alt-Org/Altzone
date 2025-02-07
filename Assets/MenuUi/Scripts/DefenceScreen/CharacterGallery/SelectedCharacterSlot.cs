@@ -8,7 +8,8 @@ namespace MenuUi.Scripts.CharacterGallery
     {
         [SerializeField] private Image _selectedImage;
 
-        [HideInInspector] public bool IsSelected = false;
+        private bool _isSelected = false;
+
         [HideInInspector] public int SlotIndex = 0;
 
         public delegate void SlotSelectedEventHandler(int slotIndex);
@@ -18,10 +19,10 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public void SelectSlot()
         {
-            if (!IsSelected)
+            if (!_isSelected)
             {
                 _selectedImage.enabled = true;
-                IsSelected = true;
+                _isSelected = true;
                 OnSlotSelected?.Invoke(SlotIndex);
 
                 GalleryCharacter galleryCharacter = GetComponentInChildren<GalleryCharacter>();
@@ -39,10 +40,10 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public void DeSelectSlot()
         {
-            if (IsSelected)
+            if (_isSelected)
             {
                 _selectedImage.enabled = false;
-                IsSelected = false;
+                _isSelected = false;
 
                 GalleryCharacter galleryCharacter = GetComponentInChildren<GalleryCharacter>();
                 if (galleryCharacter != null)

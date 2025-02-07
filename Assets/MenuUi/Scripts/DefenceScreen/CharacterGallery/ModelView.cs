@@ -49,6 +49,17 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
+        private void OnDisable()
+        {
+            if (_currentlySelectedSlot != -1)
+            {
+                _selectedCharacterSlots[_currentlySelectedSlot].DeSelectSlot();
+                _currentlySelectedSlot = -1;
+                SetCharacterSlotsSelectable(false);
+            }
+        }
+
+
         private void OnDestroy()
         {
             foreach (SelectedCharacterSlot slot in _selectedCharacterSlots)
