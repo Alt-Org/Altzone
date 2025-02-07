@@ -152,7 +152,9 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void OnSlotSelected(int slotIndex)
         {
-            if (_currentlySelectedSlot != -1)
+            // there is a bug here when sometimes selecting another top slot when slot is already is selected doesn't register correctly and doesn't go to HandleCharacterSelected()
+            // i don't know how to solve it
+            if (_currentlySelectedSlot != -1) 
             {
                 _selectedCharacterSlots[_currentlySelectedSlot].DeSelectSlot();
             }
