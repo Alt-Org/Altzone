@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace MenuUi.Scripts.CharacterGallery
@@ -18,7 +19,11 @@ namespace MenuUi.Scripts.CharacterGallery
         public void SetSelectable(bool selectable)
         {
             _selectButton.SetActive(selectable);
-            if (selectable) PlaySelectableAnimation();
+
+            if (GetComponentInChildren<GalleryCharacter>() != null && selectable) // play selectable animation if there is a gallery character child
+            {
+                PlaySelectableAnimation();
+            }
         }
 
 

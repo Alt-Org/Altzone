@@ -142,18 +142,12 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             foreach (CharacterSlot charSlot in _characterSlots)
             {
-                if (charSlot.GetComponentInChildren<GalleryCharacter>() != null)
-                {
-                    charSlot.SetSelectable(selectable);
-                }
+                charSlot.SetSelectable(selectable);
             }
 
             foreach (SelectedCharacterSlot selectedSlot in _selectedCharacterSlots)
             {
-                if (selectedSlot.SlotIndex != _currentlySelectedSlot && selectedSlot.GetComponentInChildren<GalleryCharacter>() != null)
-                {
-                    selectedSlot.SetSelectable(selectable);
-                }
+                selectedSlot.SetSelectable(selectable);
             }
         }
 
@@ -191,17 +185,17 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
-        private void HandleCharacterSelected(SlotBase slotBase)
+        private void HandleCharacterSelected(SlotBase pressedSlot)
         {
             if (_currentlySelectedSlot != -1)
             {
                 GalleryCharacter topSlotCharacter = _selectedCharacterSlots[_currentlySelectedSlot].GetComponentInChildren<GalleryCharacter>();
-                GalleryCharacter pressedCharacter = slotBase.GetComponentInChildren<GalleryCharacter>();
+                GalleryCharacter pressedCharacter = pressedSlot.GetComponentInChildren<GalleryCharacter>();
+
+                SelectedCharacterSlot selectedCharacterSlot = pressedSlot as SelectedCharacterSlot;
 
                 if (topSlotCharacter != null && pressedCharacter != null)
                 {
-                    SelectedCharacterSlot selectedCharacterSlot = slotBase as SelectedCharacterSlot;
-
                     if (selectedCharacterSlot != null) // if pressed character is in top slot swap character places
                     {
                         topSlotCharacter.HideRemoveButton();
@@ -213,15 +207,20 @@ namespace MenuUi.Scripts.CharacterGallery
                         PlaceCharacterToTopSlot(pressedCharacter, _currentlySelectedSlot);
 
                         topSlotCharacter.ReturnToOriginalSlot();
-                        slotBase.SetSelectable(false);
+                        pressedSlot.SetSelectable(false);
                         return;
                     }
                 }
                 else if (pressedCharacter != null && topSlotCharacter == null) // if top slot is empty only set pressed character to top slot
                 {
                     PlaceCharacterToTopSlot(pressedCharacter, _currentlySelectedSlot);
-                    slotBase.SetSelectable(false);
-                    SelectCharacter(pressedCharacter.Id, _currentlySelectedSlot);
+                    pressedSlot.SetSelectable(false);
+                }
+                else if (selectedCharacterSlot != null && pressedCharacter == null && topSlotCharacter != null) // if top slot character exists in the source slot, place it to pressed slot and make the source slot empty.
+                {
+                    PlaceCharacterToTopSlot(topSlotCharacter, selectedCharacterSlot.SlotIndex);
+                    topSlotCharacter.HideRemoveButton();
+                    SelectCharacter(CharacterID.None, _currentlySelectedSlot);
                 }
 
                 _selectedCharacterSlots[_currentlySelectedSlot].DeSelectSlot();
