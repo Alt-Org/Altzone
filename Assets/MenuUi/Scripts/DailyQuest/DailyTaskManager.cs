@@ -9,7 +9,7 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
 
-public class DailyTaskManager : MonoBehaviour
+public class DailyTaskManager : AltMonoBehaviour
 {
     //Variables
     [SerializeField] private float _timeoutSeconds = 10;
@@ -563,7 +563,7 @@ public class DailyTaskManager : MonoBehaviour
     public void StartCancelTask()
     {
         PopupData data = new(PopupData.GetType("cancel_task"));
-        StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", data));
+        StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen TehtÃ¤vÃ¤n?", data));
     }
 
     private IEnumerator CancelTask()
@@ -636,37 +636,9 @@ public class DailyTaskManager : MonoBehaviour
     private IEnumerator SetClanProgressBar()
     {
         //TODO: Get clan task data and fill the clan progress bar based on that data.
-        string clanId = null;
+
         ClanData clan = null;
-        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => clanId = p.ClanId);
-
-        if (clanId == null)
-            StartCoroutine(ServerManager.Instance.GetPlayerFromServer(content =>
-            {
-                if (content != null)
-                    clanId = content.clan_id;
-                else
-                {
-                    Debug.LogError("Could not connect to server and receive player data");
-                    return;
-                }
-            }));
-
-        yield return new WaitUntil(() => clanId != null);
-
-        Storefront.Get().GetClanData(clanId, c => clan = c);
-
-        if (clan == null)
-            StartCoroutine(ServerManager.Instance.GetClanFromServer(content =>
-            {
-                if (content != null)
-                    clan = new(content);
-                else
-                {
-                    Debug.LogError("Could not connect to server and receive player data");
-                    return;
-                }
-            }));
+        StartCoroutine(GetClanData( p => clan = p));
 
         yield return new WaitUntil(() => clan != null);
 
@@ -752,45 +724,34 @@ public class DailyTaskManager : MonoBehaviour
     {
         PlayerData receivedData = null;
         bool? timeout = null;
-        Coroutine playerCoroutine, timeoutCoroutine;
+        Coroutine playerCoroutine;
 
         switch (operationType.ToLower())
         {
             case "get":
                 {
                     //Get player data.
-                    playerCoroutine = StartCoroutine(GetPlayerData(data => receivedData = data));
+                    playerCoroutine = StartCoroutine(CoroutineWithTimeout(GetPlayerData, receivedData, _timeoutSeconds, timeoutCallBack => timeout = timeoutCallBack, data => receivedData = data));
                     break;
                 }
             case "save":
                 {
                     //Save player data.
-                    playerCoroutine = StartCoroutine(SavePlayerData(unsavedData, data => receivedData = data));
+                    playerCoroutine = StartCoroutine(CoroutineWithTimeout(SavePlayerData, unsavedData, receivedData, _timeoutSeconds, timeoutCallBack => timeout = timeoutCallBack, data => receivedData = data));
                     break;
                 }
             default: Debug.LogError($"Received: {operationType}, when expecting \"get\" or \"save\"."); yield break;
         }
-
-        timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
 
         yield return new WaitUntil(() => (receivedData != null || timeout != null));
 
         if (receivedData == null)
         {
             timeoutCallback(true);
-            StopCoroutine(playerCoroutine);
             Debug.LogError($"Player data operation: {operationType} timeout or null.");
             yield break; //TODO: Add error handling.
         }
-        else
-            StopCoroutine(timeoutCoroutine);
 
         dataCallback(receivedData);
-    }
-
-    private IEnumerator WaitUntilTimeout(float timeoutSeconds, System.Action<bool> callback)
-    {
-        yield return new WaitForSeconds(timeoutSeconds);
-        callback(true);
     }
 }

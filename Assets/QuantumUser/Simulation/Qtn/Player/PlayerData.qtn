@@ -4,4 +4,6 @@ component PlayerData
     FP Speed;
     FPVector2 TargetPosition;
     FP Rotation;
+    FPVector2 Normal;
+    FP CollisionMinOffset;
 }

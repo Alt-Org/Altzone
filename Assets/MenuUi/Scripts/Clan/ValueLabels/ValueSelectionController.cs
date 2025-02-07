@@ -2,9 +2,17 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Altzone.Scripts.Model.Poco.Clan;
+using UnityEngine.UI;
+using System.Collections;
 
 public class ValueSelectionController : MonoBehaviour
 {
+    [Header("Objects")]
+    [SerializeField] private GameObject _valueSelectorObject;
+    [SerializeField] private GameObject _activateButton;
+
+    [SerializeField] private ScrollRect _scrollRectComponent;
+
     [Header("Prefabs")]
     [SerializeField] private GameObject _labelTogglePrefab;
     [SerializeField] private GameObject _labelImagePrefab;
@@ -16,13 +24,23 @@ public class ValueSelectionController : MonoBehaviour
     private List<ValueLabelHandler> _labelHandlers = new();
     public List<ClanValues> SelectedValues { get; private set; } = new();
 
-    void Start() => CreateLabels();
+    private void Start()
+    {
+        CreateLabels();
+        StartCoroutine(ResetScrollPosition());
+    }
 
     public void SetSelected(List<ClanValues> selected)
     {
         SelectedValues = new(selected);
         CreateLabels();
         UpdateSelectedDisplay();
+    }
+
+    private IEnumerator ResetScrollPosition()
+    {
+        yield return null;
+        _scrollRectComponent.verticalNormalizedPosition = 1f;
     }
 
     private void CreateLabels()
@@ -35,7 +53,7 @@ public class ValueSelectionController : MonoBehaviour
         {
             GameObject labelPanel = Instantiate(_labelTogglePrefab, _valueListParent);
             ValueLabelHandler labelHandler = labelPanel.GetComponent<ValueLabelHandler>();
-            labelHandler.SetLabelInfo(value);
+            labelHandler.SetLabelInfo(value, true);
             _labelHandlers.Add(labelHandler);
 
             if (SelectedValues.Contains(value)) labelHandler.Select();
@@ -54,32 +72,46 @@ public class ValueSelectionController : MonoBehaviour
         }
         else
         {
-            if (SelectedValues.Count >= 5)
+            if (SelectedValues.Count < 5)
             {
-                ClanValues removedValue = SelectedValues[0];
-                ValueLabelHandler handlerOfRemoved = _labelHandlers.Find(labelHandler => labelHandler.labelInfo.values == removedValue);
-                handlerOfRemoved.Unselect();
-                SelectedValues.RemoveAt(0);
+                SelectedValues.Add(toggledHandler.labelInfo.values);
+                ValueLabelHandler handlerOfSelected = _labelHandlers.Find(handler => handler.labelInfo.values == toggledHandler.labelInfo.values);
+                handlerOfSelected.Select();
             }
-
-            SelectedValues.Add(toggledHandler.labelInfo.values);
-            ValueLabelHandler handlerOfSelected = _labelHandlers.Find(handler => handler.labelInfo.values == toggledHandler.labelInfo.values);
-            handlerOfSelected.Select();
         }
 
         UpdateSelectedDisplay();
+    }
+
+    public void RemoveSelectedValue(ValueLabelHandler removedHandler)
+    {
+        if (_valueSelectorObject.activeSelf)
+        {
+            ValueLabelHandler handlerOfRemoved = _labelHandlers.Find(handler => handler.labelInfo.values == removedHandler.labelInfo.values);
+            handlerOfRemoved.Unselect();
+            SelectedValues.Remove(removedHandler.labelInfo.values);
+
+            UpdateSelectedDisplay();
+        }
+        else
+        {
+            _activateButton.GetComponent<Button>().onClick.Invoke();
+        }
+
     }
 
     private void UpdateSelectedDisplay()
     {
         foreach (Transform child in _selectedValuesParent) Destroy(child.gameObject);
 
-        foreach (ClanValues selectedValue in SelectedValues)
+        foreach (ClanValues value in SelectedValues)
         {
-            Debug.Log(selectedValue);
-            GameObject label = Instantiate(_labelImagePrefab, _selectedValuesParent);
-            ValueImageHandle imageHandler = label.GetComponent<ValueImageHandle>();
-            imageHandler.SetLabelInfo(selectedValue);
+            GameObject selectedPanel = Instantiate(_labelTogglePrefab, _selectedValuesParent);
+            ValueLabelHandler labelHandlerSelected = selectedPanel.GetComponent<ValueLabelHandler>();
+            labelHandlerSelected.SetLabelInfo(value, false);
+            _labelHandlers.Add(labelHandlerSelected);
+
+            labelHandlerSelected._selectButton.onClick.AddListener(() => RemoveSelectedValue(labelHandlerSelected));
         }
     }
 }
