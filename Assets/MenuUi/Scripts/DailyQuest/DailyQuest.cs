@@ -12,8 +12,18 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     public PlayerTasks.PlayerTask TaskData {  get { return _taskData; } }
     private bool _clickEnabled = true;
 
+    public enum TaskWindowType
+    {
+        Available,
+        Reserved
+    }
+
     [Header("Universal")]
     [SerializeField] private GameObject _coinIndicator;
+
+    [Header("Windows")]
+    [SerializeField] private GameObject _availableWindow;
+    [SerializeField] private GameObject _reservedWindow;
 
     [Header("Available Window")]
     [SerializeField] private Image _AvailableImage;
@@ -29,20 +39,41 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 
     [Header("Reserved Window")]
     [SerializeField] private Image _reservedImage;
+    [SerializeField] private Image _playerImage;
     [SerializeField] private Image _progressImage;
     [SerializeField] private TMP_Text _progressText;
 
     [HideInInspector] public DailyTaskManager dailyTaskManager;
 
-    public void GetQuestData(PlayerTasks.PlayerTask taskData)
+    public void SetTaskData(PlayerTasks.PlayerTask taskData)
     {
         _taskData = taskData;
+        _taskData.OnTaskSelected += TaskSelected;
+        _taskData.OnTaskDeselected += TaskDeselected;
+        _taskData.OnTaskUpdated += UpdateProgressBar;
         PopulateData();
+        //if (available)
+        SwitchWindow(TaskWindowType.Available);
+        //else
+        //{
+        //SwitchWindow(TaskWindowType.Reserved);
+        //SetTaskProgress();
+        //}
+    }
+
+    private void OnDestroy()
+    {
+        if (_taskData != null)
+        {
+            _taskData.OnTaskSelected -= TaskSelected;
+            _taskData.OnTaskDeselected -= TaskDeselected;
+            _taskData.OnTaskUpdated -= UpdateProgressBar;
+        }
     }
 
     public void QuestAccept()
     {
-        if (!_clickEnabled)
+        if (!_clickEnabled || TaskData.PlayerId != "")
             return;
 
         string message;
@@ -108,5 +139,30 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     public virtual void OnEndDrag(PointerEventData eventData)
     {
         _clickEnabled = true;
+    }
+
+    private void SwitchWindow(TaskWindowType type)
+    {
+        _availableWindow.SetActive(type == TaskWindowType.Available);
+        _reservedWindow.SetActive(type == TaskWindowType.Reserved);
+    }
+
+    public void TaskSelected()
+    {
+        SwitchWindow(TaskWindowType.Reserved);
+        //_playerImage.sprite = INSERT PLAYER IMAGE HERE;
+        UpdateProgressBar();
+    }
+
+    public void UpdateProgressBar()
+    {
+        _progressText.text = $"{TaskData.TaskProgress}/{TaskData.Amount}";
+        _progressImage.fillAmount = (float)TaskData.TaskProgress / (float)TaskData.Amount;
+    }
+
+    public void TaskDeselected()
+    {
+        SwitchWindow(TaskWindowType.Available);
+        _taskData.ClearPlayerId();
     }
 }

@@ -53,6 +53,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             private int _coins;
             private int _points;
             private int _taskProgress;
+            private string _playerId = "";
 
             public int Id { get => _id;}
             public int Amount { get => _amount;}
@@ -67,6 +68,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             }
             public string Content { get => _content.Fi;}
             public int TaskProgress { get => _taskProgress;}
+            public string PlayerId { get => _playerId; }
 
             public PlayerTask(ServerPlayerTask task)
             {
@@ -132,6 +134,33 @@ namespace Altzone.Scripts.Model.Poco.Game
                 }
             }
 
+            #region Delegates, Events & Invoke Functions
+
+            public delegate void TaskSelected();
+            public event TaskSelected OnTaskSelected;
+            public void InvokeOnTaskSelected()
+            {
+                OnTaskSelected.Invoke();
+            }
+
+            public delegate void TaskDeselected();
+            public event TaskDeselected OnTaskDeselected;
+            public void InvokeOnTaskDeselected()
+            {
+                OnTaskDeselected.Invoke();
+            }
+
+            public delegate void TaskUpdated();
+            public event TaskUpdated OnTaskUpdated;
+            public void InvokeOnTaskUpdated()
+            {
+                OnTaskUpdated.Invoke();
+            }
+
+            #endregion
+
+            #region Add & clear from outside.
+
             public void AddProgress(int value)
             {
                 _taskProgress += value;
@@ -141,6 +170,18 @@ namespace Altzone.Scripts.Model.Poco.Game
             {
                 _taskProgress = 0;
             }
+
+            public void AddPlayerId(string id)
+            {
+                _playerId = id;
+            }
+
+            public void ClearPlayerId()
+            {
+                _playerId = "";
+            }
+
+            #endregion
         }
     }
 
