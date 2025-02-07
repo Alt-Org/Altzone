@@ -31,6 +31,7 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] GameObject _inClanButtons;
     [SerializeField] GameObject _notInClanButtons;
     [SerializeField] ClanValuePanel _valuePanel;
+    [SerializeField] ClanHeartColorSetter _clanHeart;
 
     [Header("Buttons")]
     [SerializeField] private Button _joinClanButton;
@@ -42,13 +43,17 @@ public class ClanMainView : MonoBehaviour
         ServerClan clan = DataCarrier.GetData<ServerClan>(DataCarrier.ClanListing);
         if (clan != null)
         {
-            SetClanProfile(new ClanData(clan));
+            ClanData data = new ClanData(clan);
+            _clanHeart.SetOwnClanHeart = false;
+            _clanHeart.SetOtherClanColors(data);
+            SetClanProfile(data);
 
             _joinClanButton.onClick.RemoveAllListeners();
             _joinClanButton.onClick.AddListener(() => { JoinClan(clan); });
         }
         else if (ServerManager.Instance.Clan != null)
         {
+            _clanHeart.SetOwnClanHeart = true;
             Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) => SetClanProfile(clanData));
         }
     }

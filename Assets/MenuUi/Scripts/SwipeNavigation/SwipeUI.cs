@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Prg.Scripts.Common;
 using UnityEngine;
@@ -55,6 +56,8 @@ namespace MenuUi.Scripts.SwipeNavigation
         [SerializeField] private bool _isInMainMenu;
         [SerializeField] private bool _willRotate;
 
+        public Action OnCurrentPageChanged;
+
         public bool IsEnabled
         {
             get { return isEnabled; }
@@ -81,6 +84,7 @@ namespace MenuUi.Scripts.SwipeNavigation
                 if (_isInMainMenu) SettingsCarrier.Instance.mainMenuWindowIndex = currentPage;
                 UpdateButtonContent();
                 StartCoroutine(OnSwipeOneStep(CurrentPage));
+                OnCurrentPageChanged?.Invoke();
             }
         }
 

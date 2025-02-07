@@ -82,6 +82,10 @@ public class FlexibleGridLayout : LayoutGroup
     [SerializeField, Tooltip("The spacing between grid cells."), Min(0)]
     private Vector2 _cellSpacing;
 
+    [SerializeField, Tooltip("Prevent cells from scaling larger than the boundaries of this grid's parent rect transform. Useful for non-scrollable grids." +
+        "\nNote: Overrides minimum and maximum cell size values if cell size is set to Manual.")]
+    bool _preventScalingOutOfParentBounds = false;
+
     private int _rows;
     private int _columns;
     private Vector2 _cellSize;
@@ -124,22 +128,31 @@ public class FlexibleGridLayout : LayoutGroup
         // Calculating cell size
         CalculateCellSize();
 
+        // If cell size is not valid return
+        if (_cellSize.x <= 0 || _cellSize.y <= 0)
+        {
+            rectTransform.sizeDelta = Vector2.zero;
+            return;
+        }
+
         // Scaling the rectTransform to fit cells
         Vector2 offset = CalculateChildAlignmentOffset();
+        rectTransform.pivot = new Vector2(0, 1);
 
         if (_gridFit == FitType.DynamicColumns || _gridFit == FitType.FixedColumns) // Vertical
         {
             rectTransform.anchorMax = Vector2.one;
             rectTransform.anchorMin = new Vector2(0, 1);
 
-            rectTransform.sizeDelta = new Vector2(0, (_rows * _cellSize.y) + ((_rows - 1) * _cellSpacing.y) + padding.top + padding.bottom + offset.y);
+            rectTransform.sizeDelta = new Vector2(0, (_rows * _cellSize.y) + (Mathf.Clamp(_rows - 1, 0, float.MaxValue) * _cellSpacing.y) + padding.top + padding.bottom + offset.y);
         }
         else if (_gridFit == FitType.DynamicRows || _gridFit == FitType.FixedRows) // Horizontal
         {
             rectTransform.anchorMax = new Vector2(0, 1);
             rectTransform.anchorMin = Vector2.zero;
+            rectTransform.pivot = new Vector2(0, 1);
 
-            rectTransform.sizeDelta = new Vector2((_columns * _cellSize.x) + ((_columns - 1) * _cellSpacing.x) + padding.left + padding.right + offset.x, 0);
+            rectTransform.sizeDelta = new Vector2((_columns * _cellSize.x) + (Mathf.Clamp(_columns - 1, 0, float.MaxValue) * _cellSpacing.x) + padding.left + padding.right + offset.x, 0);
         }
 
         // Placing children
@@ -214,14 +227,32 @@ public class FlexibleGridLayout : LayoutGroup
     }
 
 
-    private float CalculateMaxCellWidth(int columns) // calculating maximum width for a cell based on column amount
+    private float CalculateMaxCellWidth(int columns, bool useParentRect = false) // calculating maximum width for a cell based on column amount
     {
+        if (useParentRect)
+        {
+            RectTransform parentRect = transform.parent.GetComponent<RectTransform>();
+            if (parentRect != null)
+            {
+                return parentRect.rect.width / (float)columns - ((_cellSpacing.x / (float)columns) * (columns - 1)) - (padding.left / (float)columns) - (padding.right / (float)columns);
+            }
+        }
+
         return rectTransform.rect.width / (float)columns - ((_cellSpacing.x / (float)columns) * (columns - 1)) - (padding.left / (float)columns) - (padding.right / (float)columns);
     }
 
 
-    private float CalculateMaxCellHeight(int rows) // calculating maximum height for a cell based on row amount
+    private float CalculateMaxCellHeight(int rows, bool useParentRect = false) // calculating maximum height for a cell based on row amount
     {
+        if (useParentRect)
+        {
+            RectTransform parentRect = transform.parent.GetComponent<RectTransform>();
+            if (parentRect != null)
+            {
+                return parentRect.rect.height / (float)rows - ((_cellSpacing.y / (float)rows) * (rows - 1)) - (padding.top / (float)rows) - (padding.bottom / (float)rows);
+            }
+        }
+
         return rectTransform.rect.height / (float)rows - ((_cellSpacing.y / (float)rows) * (rows - 1)) - (padding.top / (float)rows) - (padding.bottom / (float)rows);
     }
 
@@ -392,6 +423,29 @@ public class FlexibleGridLayout : LayoutGroup
                 }
                 break;
         }
+
+        // If prevent scaling out of parent bounds is checked scaling children inside parent boundaries
+        if (_preventScalingOutOfParentBounds)
+        {
+            float cellAspectRatio = GetCellAspectRatio(_cellSize);
+            Vector2 maxCellSizeToFitParent = new Vector2(CalculateMaxCellWidth(_columns, true), CalculateMaxCellHeight(_rows, true));
+
+            if (cellAspectRatio != GetCellAspectRatio(maxCellSizeToFitParent))
+            {
+                // Checking which axis was shrunk more
+                if (_cellSize.x - maxCellSizeToFitParent.x > _cellSize.y - maxCellSizeToFitParent.y)
+                {
+                    maxCellSizeToFitParent.y = maxCellSizeToFitParent.x / _cellAspectRatio;
+                }
+                else
+                {
+                    maxCellSizeToFitParent.x = _cellAspectRatio * maxCellSizeToFitParent.y;
+                }
+            }
+
+            _cellSize.x = Mathf.Clamp(_cellSize.x, 0, maxCellSizeToFitParent.x);
+            _cellSize.y = Mathf.Clamp(_cellSize.y, 0, maxCellSizeToFitParent.y);
+        }
     }
 
 
@@ -529,6 +583,7 @@ public class FlexibleGridLayout : LayoutGroup
         // Cell spacing property
         SerializedProperty _cellSpacing;
 
+        SerializedProperty _preventScalingOutOfBounds;
 
         void OnEnable()
         {
@@ -556,6 +611,8 @@ public class FlexibleGridLayout : LayoutGroup
 
             // Getting cell spacing property
             _cellSpacing = serializedObject.FindProperty(nameof(_cellSpacing));
+
+            _preventScalingOutOfBounds = serializedObject.FindProperty(nameof(_preventScalingOutOfParentBounds));
         }
 
 
@@ -630,6 +687,8 @@ public class FlexibleGridLayout : LayoutGroup
             // Place alignment property fields
             EditorGUILayout.PropertyField(_startCornerEnum);
             EditorGUILayout.PropertyField(_childAlignment);
+
+            EditorGUILayout.PropertyField(_preventScalingOutOfBounds);
 
             serializedObject.ApplyModifiedProperties();
         }
