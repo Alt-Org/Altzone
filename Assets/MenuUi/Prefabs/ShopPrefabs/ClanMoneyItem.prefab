@@ -182,8 +182,8 @@ RectTransform:
   - {fileID: 7580286891881810213}
   m_Father: {fileID: 2750806902860682168}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.73333335}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.125, y: 0.73333335}
+  m_AnchorMax: {x: 0.86500007, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -235,7 +235,7 @@ GameObject:
   - component: {fileID: 4181450012694446325}
   - component: {fileID: 454459497185736601}
   - component: {fileID: 2695557426507740579}
-  - component: {fileID: 7413189608123322226}
+  - component: {fileID: 3609329574171665827}
   m_Layer: 5
   m_Name: ClanMoneyItem
   m_TagString: Untagged
@@ -346,20 +346,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 454459497185736601}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7413189608123322226}
-        m_TargetAssemblyTypeName: ClanMoneyBuyer, MainMenu
-        m_MethodName: BuyMoney
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 100
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &7413189608123322226
+      m_Calls: []
+--- !u!114 &3609329574171665827
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -368,9 +356,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6426029888198922437}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e03e9a05d46b2f4449d71a8a92e55801, type: 3}
+  m_Script: {fileID: 11500000, guid: f5bc0a18666cec44c9924c907aa14985, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _grantedAmountText: {fileID: 2341312258037106146}
+  _costText: {fileID: 4882868633814440079}
+  Button: {fileID: 2695557426507740579}
 --- !u!1 &6466779693966825795
 GameObject:
   m_ObjectHideFlags: 0
@@ -601,14 +592,14 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 61.2
+  m_fontSize: 45.25
   m_fontSizeBase: 43.8
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 2
+  m_HorizontalAlignment: 4
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
