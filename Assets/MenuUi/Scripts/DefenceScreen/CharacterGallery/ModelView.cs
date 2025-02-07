@@ -236,9 +236,12 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public void RemoveSelection()
         {
-            _selectedCharacterSlots[_currentlySelectedSlot].DeSelectSlot();
-            _currentlySelectedSlot = -1;
-            SetCharacterSlotsSelectable(false);
+            if (_currentlySelectedSlot != -1)
+            {
+                _selectedCharacterSlots[_currentlySelectedSlot].DeSelectSlot();
+                _currentlySelectedSlot = -1;
+                SetCharacterSlotsSelectable(false);
+            }
         }
 
 
