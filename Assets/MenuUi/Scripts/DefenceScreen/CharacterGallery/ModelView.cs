@@ -5,6 +5,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ReferenceSheets;
+using MenuUi.Scripts.SwipeNavigation;
 namespace MenuUi.Scripts.CharacterGallery
 {
     public class ModelView : MonoBehaviour
@@ -27,6 +28,8 @@ namespace MenuUi.Scripts.CharacterGallery
         public delegate void TopSlotCharacterSetHandler(CharacterID characterId, int slotIdx);
         public event TopSlotCharacterSetHandler OnTopSlotCharacterSet;
 
+        private SwipeUI _swipe;
+
         public bool IsReady
         {
             get
@@ -38,6 +41,9 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void Awake()
         {
+            _swipe = FindObjectOfType<SwipeUI>(true);
+            _swipe.OnCurrentPageChanged += RemoveSelection;
+
             _selectedCharacterSlots = _selectedGridContent.GetComponentsInChildren<SelectedCharacterSlot>();
             for (int i = 0; i < _selectedCharacterSlots.Length; i++)
             {
@@ -72,6 +78,8 @@ namespace MenuUi.Scripts.CharacterGallery
                 slot.OnCharacterSelected -= HandleCharacterSelected;
                 slot.Character.OnReturnedToOriginalSlot -= CharacterReturnedToOriginalSlot;
             }
+
+            _swipe.OnCurrentPageChanged -= RemoveSelection;
         }
 
 
@@ -88,11 +96,16 @@ namespace MenuUi.Scripts.CharacterGallery
                     Destroy(topSlotCharacter.gameObject);
                 }
             }
+
             // Remove all character slots
             foreach (CharacterSlot characterSlot in _characterSlots)
             {
                 if (!characterSlot.transform.IsChildOf(_selectedGridContent))
+                {
+                    characterSlot.OnCharacterSelected -= HandleCharacterSelected;
+                    characterSlot.Character.OnReturnedToOriginalSlot -= CharacterReturnedToOriginalSlot;
                     Destroy(characterSlot.gameObject);
+                }
             }
             _characterSlots.Clear();
             _isReady = true;
