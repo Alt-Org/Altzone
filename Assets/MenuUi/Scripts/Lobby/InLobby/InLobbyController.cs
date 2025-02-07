@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 
 namespace MenuUI.Scripts.Lobby.InLobby
 {
-    public class InLobbyController : MonoBehaviour
+    public class InLobbyController : AltMonoBehaviour
     {
         [SerializeField] private InLobbyView _view;
         [SerializeField] private SelectedCharactersPopup _selectedCharactersPopup;
@@ -122,32 +122,24 @@ namespace MenuUI.Scripts.Lobby.InLobby
             }
             else
             {
-                // Check if player has all 3 characters selected or no
-                PlayerData _playerData = null;
-
-                var gameConfig = GameConfig.Get();
-                var playerSettings = gameConfig.PlayerSettings;
-                var playerGuid = playerSettings.PlayerGuid;
-                var store = Storefront.Get();
-                store.GetPlayerData(playerGuid, playerData =>
+                StartCoroutine(GetPlayerData(playerData =>
                 {
-                    _playerData = playerData;
-                });
+                    // Check if player has all 3 characters selected or no
 
-                if (_playerData != null)
-                {
-                    for (int i = 0; i < 3; i++)
+                    if (playerData != null)
                     {
-                        if (_playerData.SelectedCharacterIds[i] == 0) // if any of the selected characters is missing
+                        for (int i = 0; i < 3; i++)
                         {
-                            StartCoroutine(ShowSelectedCharactersPopup());
-                            return;
+                            if (playerData.SelectedCharacterIds[i] == 0) // if any of the selected characters is missing
+                            {
+                                StartCoroutine(ShowSelectedCharactersPopup());
+                                return;
+                            }
                         }
                     }
-                }
-
-                // Open battle popup if all 3 are selected
-                transform.GetChild(0).gameObject.SetActive(true);
+                    // Open battle popup if all 3 are selected
+                    transform.GetChild(0).gameObject.SetActive(true);
+                }));
             }
         }
 
