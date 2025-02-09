@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts;
+using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Login;
 using MenuUi.Scripts.Window;
@@ -133,7 +135,7 @@ namespace MenuUi.Scripts.Loader
 
             yield return new WaitUntil(() => _ageVerificationHandler.Finished );
 
-            if ((playerData.SelectedCharacterId == 0) || (playerData.SelectedCharacterId == 1))
+            if ((playerData.SelectedCharacterId == 0) || !Enum.IsDefined(typeof(CharacterID), playerData.SelectedCharacterId))
                 StartCoroutine(_introStoryNavigation.Navigate());
             else
             {
