@@ -116,8 +116,8 @@ namespace Altzone.Scripts.Model.Poco.Player
             Assert.IsTrue(player.uniqueIdentifier.IsMandatory());
             Id = player._id;
             ClanId = player.clan_id ?? string.Empty;
-            SelectedCharacterId = 0;
-            SelectedCharacterIds = null;
+            SelectedCharacterId = (int)(player.currentAvatarId == null ? 0 : player.currentAvatarId);
+            SelectedCharacterIds = player?.battleCharacter_ids == null ? new int[3] : Array.ConvertAll(player.battleCharacter_ids, s => int.Parse(s));
             Name = player.name;
             BackpackCapacity = player.backpackCapacity;
             UniqueIdentifier = player.uniqueIdentifier;

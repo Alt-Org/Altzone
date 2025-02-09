@@ -247,8 +247,8 @@ public class ServerManager : MonoBehaviour
 
         storefront.GetPlayerData(player.uniqueIdentifier, p => playerData = p);
 
-        int currentCustomCharacterId = playerData == null ? 1 : playerData.SelectedCharacterId;
-        int[] currentBattleCharacterIds = playerData == null ? new int[5] : playerData.SelectedCharacterIds;
+        int currentCustomCharacterId = (int)(player?.currentAvatarId == null ? (playerData == null? 0:playerData.SelectedCharacterId) : player.currentAvatarId);
+        int[] currentBattleCharacterIds = player?.battleCharacter_ids == null ? (playerData == null ? new int[3] : playerData.SelectedCharacterIds) : Array.ConvertAll(player.battleCharacter_ids, s => int.Parse(s));
 
         PlayerData newPlayerData = null;
         newPlayerData = new PlayerData(player._id, player.clan_id, currentCustomCharacterId, currentBattleCharacterIds, player.name, player.backpackCapacity, player.uniqueIdentifier);
