@@ -155,7 +155,7 @@ namespace Altzone.Scripts.Model
             if (playerData != null)
             {
                 // This storage is by no means a complete object model we want to serve.
-                playerData.BuildCharacterLists(_storageData.CustomCharacters);
+                if(playerData.CustomCharacters == null)playerData.BuildCharacterLists(_storageData.CustomCharacters);
             }
             Debug.Log($"playerData {playerData}");
             callback(playerData);
@@ -294,6 +294,11 @@ namespace Altzone.Scripts.Model
         internal void GetAllBaseCharacters(Action<ReadOnlyCollection<BaseCharacter>> callback)
         {
             callback(new ReadOnlyCollection<BaseCharacter>(_storageData.Characters));
+        }
+
+        internal void GetAllDefaultCharacters(Action<ReadOnlyCollection<CustomCharacter>> callback)
+        {
+            callback(new ReadOnlyCollection<CustomCharacter>(_storageData.CustomCharacters));
         }
 
         internal void GetPlayerTasks(Action<PlayerTasks> callback)

@@ -142,6 +142,23 @@ public class ServerManager : MonoBehaviour
                     OnLogInFailed?.Invoke();
                     return;
                 }
+                List<CustomCharacter> characters = null;
+                bool gettingCharacter = true;
+                StartCoroutine(GetCustomCharactersFromServer(characterList =>
+                {
+                    if (characterList == null)
+                    {
+                        Debug.LogError("Failed to fetch task data.");
+                        gettingCharacter = false;
+                        characters = null;
+                    }
+                    else
+                    {
+                        gettingCharacter = false;
+                        characters = characterList;
+                    }
+                }));
+                new WaitUntil(() => gettingCharacter == false);
                 bool gettingTasks = true;
                 StartCoroutine(GetPlayerTasksFromServer(tasks =>
                 {
@@ -159,7 +176,7 @@ public class ServerManager : MonoBehaviour
                     }
                 }));
                 new WaitUntil(() => gettingTasks == false);
-                SetPlayerValues(player);
+                SetPlayerValues(player, characters);
 
                 if (OnLogInStatusChanged != null)
                     OnLogInStatusChanged(true);
@@ -233,7 +250,7 @@ public class ServerManager : MonoBehaviour
     /// Sets Player values from server and saves it to DataStorage.
     /// </summary>
     /// <param name="player">ServerPlayer from server containing the most up to date player data.</param>
-    public void SetPlayerValues(ServerPlayer player)
+    public void SetPlayerValues(ServerPlayer player, List<CustomCharacter> characters)
     {
         string clanId = player.clan_id;
 
@@ -246,6 +263,22 @@ public class ServerManager : MonoBehaviour
         PlayerData playerData = null;
 
         storefront.GetPlayerData(player.uniqueIdentifier, p => playerData = p);
+
+        if(characters == null)
+        {
+            ReadOnlyCollection<CustomCharacter> customCharacters = null;
+            storefront.GetAllDefaultCharacterYield(c => customCharacters = c);
+            List<CustomCharacter> character = new();
+            foreach (CustomCharacter characterItem in customCharacters)
+            {
+                character.Add(characterItem);
+            }
+            playerData.BuildCharacterLists(character);
+        }
+        else
+        {
+            playerData.BuildCharacterLists(characters);
+        }
 
         int currentCustomCharacterId = (int)(player?.currentAvatarId == null ? (playerData == null? 0:playerData.SelectedCharacterId) : player.currentAvatarId);
         int[] currentBattleCharacterIds = player?.battleCharacter_ids == null ? (playerData == null ? new int[3] : playerData.SelectedCharacterIds) : Array.ConvertAll(player.battleCharacter_ids, s => int.Parse(s));
