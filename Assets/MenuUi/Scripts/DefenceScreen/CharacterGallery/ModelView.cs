@@ -7,7 +7,8 @@ using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ReferenceSheets;
 using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine.UI;
-using System.Linq;
+using SignalBus = MenuUi.Scripts.Lobby.SignalBus;
+
 namespace MenuUi.Scripts.CharacterGallery
 {
     public class ModelView : MonoBehaviour
@@ -50,6 +51,8 @@ namespace MenuUi.Scripts.CharacterGallery
                 _selectedCharacterSlots[i].OnCharacterSelected += HandleCharacterSelected;
                 _selectedCharacterSlots[i].SlotIndex = i;
             }
+
+            SignalBus.OnDefenceGalleryEditModeRequested += ChangeEditToggleStatusToTrue;
         }
 
 
@@ -72,6 +75,7 @@ namespace MenuUi.Scripts.CharacterGallery
             }
 
             _swipe.OnCurrentPageChanged -= ChangeEditToggleStatusToFalse;
+            SignalBus.OnDefenceGalleryEditModeRequested -= ChangeEditToggleStatusToTrue;
         }
 
 
@@ -97,6 +101,12 @@ namespace MenuUi.Scripts.CharacterGallery
             }
             _characterSlots.Clear();
             _isReady = true;
+        }
+
+
+        public void ChangeEditToggleStatusToTrue()
+        {
+            _editModeToggle.isOn = true;
         }
 
 
