@@ -278,9 +278,11 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (!string.IsNullOrWhiteSpace(_newTypeName))
                 {
-                    _audioTypes.Add(_newTypeName.Trim());
-                    prop.InsertArrayElementAtIndex(i);
-                    prop.GetArrayElementAtIndex(i).stringValue = _newTypeName.Trim();
+                    if (!_audioTypes.Contains(_newTypeName.Trim())) { 
+                        _audioTypes.Add(_newTypeName.Trim());
+                        prop.InsertArrayElementAtIndex(i);
+                        prop.GetArrayElementAtIndex(i).stringValue = _newTypeName.Trim();
+                    }
                 }
                 _newTypeName = "";
             }
