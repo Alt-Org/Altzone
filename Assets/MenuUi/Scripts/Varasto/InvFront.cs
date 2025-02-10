@@ -241,7 +241,10 @@ namespace MenuUi.Scripts.Storage
                         toSet.GetChild(4).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
                         break;
                     case 3:
-                        toSet.GetChild(4).GetComponent<TMP_Text>().text = _furn.Material;
+                        toSet.GetChild(4).GetComponent<TMP_Text>().text = _furn.Rarity.ToString();
+                        break;
+                    case 4:
+                        toSet.GetChild(4).GetComponent<TMP_Text>().text = _furn.SetName;
                         break;
                 }
                 // Shape
