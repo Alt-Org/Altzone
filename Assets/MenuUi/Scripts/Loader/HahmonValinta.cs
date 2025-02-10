@@ -94,8 +94,10 @@ public class HahmonValinta : MonoBehaviour
             // Log the selected character's information
            // Debug.Log("Locked in character: " + characterData[selectedCharacterIndex].characterName);
 
-            if ((int) id != _playerData.SelectedCharacterId)
+            if ((int) id != ServerManager.Instance.Player.currentAvatarId)
             {
+                List<CharacterID> characters = SelectStartingCharacter(id);
+
                 _playerData.SelectedCharacterId = (int) id;
                 _playerData.SelectedCharacterIds[0] = (int) id;
 
@@ -117,6 +119,19 @@ public class HahmonValinta : MonoBehaviour
                         Debug.Log("Profile info updated.");
                         var store = Storefront.Get();
                         store.SavePlayerData(_playerData, null);
+                        foreach(var character in characters)
+                        StartCoroutine(ServerManager.Instance.AddCustomCharactersToServer(character, callback =>
+                        {
+                            if (callback == true)
+                            {
+                                Debug.Log("CustomCharacter added: "+ character);
+                            }
+                            else
+                            {
+                                Debug.Log("CustomCharacter adding failed.");
+                            }
+                        }));
+
 
                         // Reset the selected character index and disable the lock-in button
                         selectedCharacterIndex = -1;
@@ -141,5 +156,51 @@ public class HahmonValinta : MonoBehaviour
             // No character selected, log a message or handle the case as needed
             Debug.Log("No character selected.");
         }
+    }
+
+    public List<CharacterID> SelectStartingCharacter(CharacterID id)
+    {
+        var list = new List<CharacterID>();
+        switch (id)
+        {
+            case CharacterID.Bodybuilder:
+                list.Add(CharacterID.Bodybuilder);
+                list.Add(CharacterID.Joker);
+                list.Add(CharacterID.Religious);
+                break;
+            case CharacterID.Comedian:
+                list.Add(CharacterID.Comedian);
+                list.Add(CharacterID.Joker);
+                list.Add(CharacterID.Religious);
+                break;
+            case CharacterID.Religious:
+                list.Add(CharacterID.Bodybuilder);
+                list.Add(CharacterID.Joker);
+                list.Add(CharacterID.Religious);
+                break;
+            case CharacterID.Artist:
+                list.Add(CharacterID.Artist);
+                list.Add(CharacterID.Soulsisters);
+                list.Add(CharacterID.Religious);
+                break;
+            case CharacterID.Overeater:
+                list.Add(CharacterID.Overeater);
+                list.Add(CharacterID.Booksmart);
+                list.Add(CharacterID.Religious);
+                break;
+            case CharacterID.SleepyHead:
+                list.Add(CharacterID.SleepyHead);
+                list.Add(CharacterID.Artist);
+                list.Add(CharacterID.Religious);
+                break;
+            case CharacterID.Booksmart:
+                list.Add(CharacterID.Booksmart);
+                list.Add(CharacterID.Alcoholic);
+                list.Add(CharacterID.Religious);
+                break;
+            default:
+                break;
+        }
+        return list;
     }
 }
