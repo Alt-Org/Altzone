@@ -99,15 +99,14 @@ public class Popup : MonoBehaviour
 
     private void MoveAcceptWindow(Vector3 location)
     {
-        Rect selfRect = GetComponent<RectTransform>().rect;
         Vector3 centeredLocation = new
             (
-                location.x - selfRect.width / 2,
-                location.y - selfRect.height / 2,
+                location.x/* - Screen.width / 2*/,
+                location.y/* - Screen.height / 2*/,
                 0f
             );
         
-        _taskAcceptMovable.localPosition = centeredLocation;
+        _taskAcceptMovable.position = centeredLocation;
     }
 
     private void SetMessage(string message)

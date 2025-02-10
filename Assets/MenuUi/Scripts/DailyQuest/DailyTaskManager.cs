@@ -31,13 +31,12 @@ public class DailyTaskManager : AltMonoBehaviour
     [SerializeField] private Transform _dailyCategory500;
     [SerializeField] private Transform _dailyCategory1000;
     [SerializeField] private Transform _dailyCategory1500;
+    [SerializeField] private RectTransform _tasksVerticalLayout;
 
     [Header("OwnTaskPage")]
     [SerializeField] private GameObject _ownTaskView;
     [SerializeField] private Button _cancelTaskButton;
     [SerializeField] private DailyTaskOwnTask _ownTaskPageHandler;
-    [SerializeField] private RectTransform _tasksVerticalLayout;
-    [SerializeField] private Image _playerCharacterImage;
 
     private int? _ownTaskId;
     public int? OwnTaskId { get { return _ownTaskId; } }
@@ -176,9 +175,11 @@ public class DailyTaskManager : AltMonoBehaviour
                     tasks = content;
                 else
                 {
-                    //offline testing random generator with id generator
-                    Debug.LogError("Could not connect to server and receive quests");
-                    return;
+                    Debug.LogError("Could not connect to server and receive quests.");
+                    //Offline testing
+                    tasks = TESTGenerateTasks();
+                    Debug.LogWarning("Using locally generated tasks.");
+                    //return;
                 }
             }));
         }
@@ -219,6 +220,34 @@ public class DailyTaskManager : AltMonoBehaviour
 
         //Sets DT card category list to the top.
         _tasksVerticalLayout.anchoredPosition = new Vector2( 0f, -int.MaxValue );
+    }
+
+    private PlayerTasks TESTGenerateTasks()
+    {
+        ServerPlayerTasks serverTasks = new ServerPlayerTasks();
+
+        serverTasks.daily = new List<ServerPlayerTask>();
+        serverTasks.weekly = new List<ServerPlayerTask>();
+        serverTasks.monthly = new List<ServerPlayerTask>();
+        for (int i = 0; i < 15; i++)
+        {
+            ServerPlayerTask serverTask = new ServerPlayerTask();
+            serverTask.id = i;
+            serverTask.amount = (i + 1) * 5;
+            serverTask.title = new ServerPlayerTask.TaskTitle();
+            serverTask.title.fi = $"Lähetä {serverTask.amount} viestiä.";
+            serverTask.content = new ServerPlayerTask.TaskContent();
+            serverTask.content.fi = $"Lähetä {serverTask.amount} viestiä chatissa.";
+            serverTask.points = (i + 1) * 100;
+            serverTask.coins = (i + 1) * 100;
+            serverTask.type = "write_chat_message";
+
+            serverTasks.daily.Add(serverTask);
+        }
+
+        PlayerTasks tasks = new PlayerTasks(serverTasks);
+
+        return (tasks);
     }
 
     private Transform GetParentCategory(int points)

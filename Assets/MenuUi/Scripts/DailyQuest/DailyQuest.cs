@@ -36,6 +36,8 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     [SerializeField] private RectTransform _topRightCorner;
     [SerializeField] private RectTransform _bottomLeftCorner;
     [SerializeField] private RectTransform _bottomRightCorner;
+    [Space]
+    [SerializeField] private float _centerPullSignificance = 0.25f;
 
     [Header("Reserved Window")]
     [SerializeField] private Image _reservedImage;
@@ -82,7 +84,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
             message = _taskData.Title;
         //message = "Haluatko hyväksyä tehtävän? \nquest id: ";
         else
-            message = $"Sinulla on jo valittu tehtävä.\n Haluatko hyväksyä tehtävän?";
+            message = $"{_taskData.Title}\n Korvataanko nykyinen tehtävä?";
 
         PopupData data = new PopupData(_taskData, GetCornerLocation());
         StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse(message, data));
@@ -91,20 +93,24 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     private Vector3 GetCornerLocation()
     {
         var selfPosition = this.GetComponent<RectTransform>().position;
+        Vector2 screenCenter = new Vector2(Screen.width / 2, Screen.height / 2);
+        float xDistanceFromCenter = (screenCenter.x - this.GetComponent<RectTransform>().position.x);
+        float yDistanceFromCenter = (screenCenter.y - this.GetComponent<RectTransform>().position.y);
+        Vector3 centerDiff = new Vector3(xDistanceFromCenter, yDistanceFromCenter) * _centerPullSignificance;
 
         if (selfPosition.y > Screen.height / 2)
         {
             if (selfPosition.x > Screen.width / 2)
-                return (_bottomLeftCorner.position + new Vector3(0f, Screen.height * 0.01f));
+                return (_bottomLeftCorner.position + centerDiff);
             else
-                return (_bottomRightCorner.position + new Vector3(0f, Screen.height * 0.01f));
+                return (_bottomRightCorner.position + centerDiff);
         }
         else
         {
             if (selfPosition.x > Screen.width / 2)
-                return (_topLeftCorner.position + new Vector3(0f, Screen.height * 0.05f));
+                return (_topLeftCorner.position + centerDiff);
             else
-                return (_topRightCorner.position + new Vector3(0f, Screen.height * 0.05f));
+                return (_topRightCorner.position + centerDiff);
         }
     }
 
@@ -112,7 +118,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     {
         _taskShort.text = GetShortDescription(_taskData.Type);
         _taskDebugID.text = _taskData.Id.ToString();
-        _taskPoints.text = _taskData.Points.ToString();
+        _taskPoints.text = _taskData.Points.ToString() + " p";
         _taskAmount.text = _taskData.Amount.ToString();
         _coinIndicator.SetActive(_taskData.Coins >= 0);
     }
