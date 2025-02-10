@@ -6,12 +6,14 @@ using UnityEngine;
 using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ReferenceSheets;
 using MenuUi.Scripts.SwipeNavigation;
+using UnityEngine.UI;
 namespace MenuUi.Scripts.CharacterGallery
 {
     public class ModelView : MonoBehaviour
     {
         [SerializeField] private Transform _characterGridContent;
         [SerializeField] private Transform _selectedGridContent;
+        [SerializeField] private Toggle _editModeToggle;
 
         [SerializeField] private GameObject _characterSlotPrefab;
 
@@ -109,6 +111,12 @@ namespace MenuUi.Scripts.CharacterGallery
             }
             _characterSlots.Clear();
             _isReady = true;
+        }
+
+
+        public void ToggleEditMode()
+        {
+            SetCharacterSlotsSelectable(_editModeToggle.isOn);
         }
 
 
