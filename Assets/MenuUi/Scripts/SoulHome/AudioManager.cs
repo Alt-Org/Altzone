@@ -276,15 +276,19 @@ namespace MenuUI.Scripts.SoulHome
             _newTypeName = EditorGUILayout.TextField("Name", _newTypeName);
             if (GUILayout.Button("Add AudioType"))
             {
-                _audioTypes.Add(_newTypeName);
-                script._audioTypes.Add(_newTypeName);
-                prop.InsertArrayElementAtIndex(i);
+                if (!string.IsNullOrWhiteSpace(_newTypeName))
+                {
+                    _audioTypes.Add(_newTypeName.Trim());
+                    prop.InsertArrayElementAtIndex(i);
+                    prop.GetArrayElementAtIndex(i).stringValue = _newTypeName.Trim();
+                }
                 _newTypeName = "";
             }
             if (GUILayout.Button("Remove AudioType"))
             {
                 _audioTypes.Remove(_audioTypes[index]);
                 prop.DeleteArrayElementAtIndex(index);
+                if (index != 0) index--;
                 _newTypeName = "";
             }
 
