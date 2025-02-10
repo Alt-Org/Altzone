@@ -94,7 +94,7 @@ public class HahmonValinta : MonoBehaviour
             // Log the selected character's information
            // Debug.Log("Locked in character: " + characterData[selectedCharacterIndex].characterName);
 
-            if ((int) id != ServerManager.Instance.Player.currentAvatarId)
+            if (ServerManager.Instance.Player.currentAvatarId is not null or 0)
             {
                 List<CharacterID> characters = SelectStartingCharacter(id);
 
@@ -148,6 +148,10 @@ public class HahmonValinta : MonoBehaviour
                         Debug.Log("Profile info update failed.");
                     }
                 }));
+            }
+            else
+            {
+                StartCoroutine(_windowNavigation.Navigate());
             }
 
         }
