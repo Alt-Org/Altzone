@@ -40,7 +40,11 @@ public class ValueSelectionController : MonoBehaviour
     private IEnumerator ResetScrollPosition()
     {
         yield return null;
-        _scrollRectComponent.verticalNormalizedPosition = 1f;
+        if(_scrollRectComponent != null)
+        {
+            _scrollRectComponent.verticalNormalizedPosition = 1f;
+        }
+        
     }
 
     private void CreateLabels()
