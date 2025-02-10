@@ -10,6 +10,7 @@ using System.Linq;
 using Altzone.Scripts.Model.Poco.Game;
 using MenuUi.Scripts.Window;
 using Newtonsoft.Json.Linq;
+using System;
 
 [System.Serializable]
 public class CharacterData
@@ -25,7 +26,7 @@ public class CharacterData
     }
 }
 
-public class HahmonValinta : MonoBehaviour
+public class HahmonValinta : AltMonoBehaviour
 {
     [SerializeField] private Button lockInButton;
     [SerializeField] private CharacterData[] characterData;
@@ -74,7 +75,7 @@ public class HahmonValinta : MonoBehaviour
     {
         lockInButton.onClick.RemoveAllListeners();
         // 
-        lockInButton.onClick.AddListener(()=>LockInCharacter(data.uniqueID));
+        lockInButton.onClick.AddListener(()=>StartCoroutine(LockInCharacter(data.uniqueID)));
 
         // Activate the pop-up window
         popupWindow.SetActive(true);
@@ -86,7 +87,7 @@ public class HahmonValinta : MonoBehaviour
         Debug.Log("Selected character: " + data.characterName);
     }
 
-    public void LockInCharacter(CharacterID id)
+    public IEnumerator LockInCharacter(CharacterID id)
     {
         // Check if a character is selected
         if (id != CharacterID.None)
@@ -94,24 +95,76 @@ public class HahmonValinta : MonoBehaviour
             // Log the selected character's information
            // Debug.Log("Locked in character: " + characterData[selectedCharacterIndex].characterName);
 
-            if (ServerManager.Instance.Player.currentAvatarId is not null or 0)
+            if (/*ServerManager.Instance.Player.currentAvatarId is null or 0*/true)
             {
                 List<CharacterID> characters = SelectStartingCharacter(id);
 
                 _playerData.SelectedCharacterId = (int) id;
-                _playerData.SelectedCharacterIds[0] = (int) id;
+                _playerData.SelectedCharacterIds = new string[3] {"0","0","0"};
 
                 string body = JObject.FromObject(
+                    new
+                    {
+                        _id = _playerData.Id,
+                        currentAvatarId = _playerData.SelectedCharacterId
+
+                    }/*,
+                    JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })*/
+                ).ToString();
+
+                bool callFinished = false;
+                bool characterAdded = false;
+                int i = 0;
+
+                yield return StartCoroutine(ServerManager.Instance.UpdatePlayerToServer(body, callback =>
+                {
+                    if (callback != null)
+                    {
+                        Debug.Log("Profile info updated.");
+                        var store = Storefront.Get();
+                        store.SavePlayerData(_playerData, null);
+                    }
+                    else
+                    {
+                        Debug.Log("Profile info update failed.");
+                    }
+            }));
+                new WaitUntil(() => callFinished == true);
+                foreach (var character in characters)
+                {
+                    callFinished = false;
+                    StartCoroutine(ServerManager.Instance.AddCustomCharactersToServer(character, callback =>
+                    {
+                        if (callback != null)
+                        {
+                            Debug.Log("CustomCharacter added: " + character);
+                            _playerData.SelectedCharacterIds[i] = callback.characterId;
+                            characterAdded = true;
+                        }
+                        else
+                        {
+                            Debug.Log("CustomCharacter adding failed.");
+                        }
+                        callFinished = true;
+                    }));
+                    yield return new WaitUntil(() => callFinished == true);
+                    i++;
+                }
+                if (characterAdded)
+                {
+                    callFinished = false;
+                    StartCoroutine(ServerManager.Instance.UpdateCustomCharacters(c => callFinished = c));
+                }
+                new WaitUntil(() => callFinished == true);
+                body = JObject.FromObject(
                     new
                     {
                         _id = _playerData.Id,
                         currentAvatarId = _playerData.SelectedCharacterId,
                         battleCharacter_ids = _playerData.SelectedCharacterIds
 
-                    }/*,
-                    JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })*/
-                ).ToString();
-
+                    }).ToString();
+                callFinished = false;
                 StartCoroutine(ServerManager.Instance.UpdatePlayerToServer(body, callback =>
                 {
                     if (callback != null)
@@ -119,35 +172,24 @@ public class HahmonValinta : MonoBehaviour
                         Debug.Log("Profile info updated.");
                         var store = Storefront.Get();
                         store.SavePlayerData(_playerData, null);
-                        foreach(var character in characters)
-                        StartCoroutine(ServerManager.Instance.AddCustomCharactersToServer(character, callback =>
-                        {
-                            if (callback == true)
-                            {
-                                Debug.Log("CustomCharacter added: "+ character);
-                            }
-                            else
-                            {
-                                Debug.Log("CustomCharacter adding failed.");
-                            }
-                        }));
-
-
-                        // Reset the selected character index and disable the lock-in button
-                        selectedCharacterIndex = -1;
-                        lockInButton.interactable = false;
-
-                        // Deactivate the pop-up window
-                        popupWindow.SetActive(false);
-
-                        StartCoroutine(_windowNavigation.Navigate());
-                        return;
                     }
                     else
                     {
                         Debug.Log("Profile info update failed.");
                     }
+                    callFinished = true;
                 }));
+                new WaitUntil(() => callFinished == true);
+
+                // Reset the selected character index and disable the lock-in button
+                selectedCharacterIndex = -1;
+                lockInButton.interactable = false;
+
+                // Deactivate the pop-up window
+                popupWindow.SetActive(false);
+
+                StartCoroutine(_windowNavigation.Navigate());
+                yield break;
             }
             else
             {

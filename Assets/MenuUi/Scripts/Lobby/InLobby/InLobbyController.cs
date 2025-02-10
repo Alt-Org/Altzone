@@ -140,7 +140,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 {
                     for (int i = 0; i < 3; i++)
                     {
-                        if (_playerData.SelectedCharacterIds[i] == 0) // if any of the selected characters is missing
+                        if (string.IsNullOrEmpty(_playerData.SelectedCharacterIds[i]) || _playerData.SelectedCharacterIds[i] == "0") // if any of the selected characters is missing
                         {
                             _selectedCharactersPopup.OpenPopup();
                             return;
