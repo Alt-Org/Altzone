@@ -230,8 +230,8 @@ namespace MenuUI.Scripts.SoulHome
             }
             if (audioType == null)
             {
-                GameObject gameObject = Instantiate(new GameObject(), transform);
-                gameObject.name = string.IsNullOrWhiteSpace(type) == false ? gameObject.name = "Undefined": gameObject.name = type;
+                GameObject gameObject = Instantiate(new GameObject(), parentTransform);
+                gameObject.name = string.IsNullOrWhiteSpace(type) != false ? gameObject.name = "Undefined": gameObject.name = type;
                 parentTransform = gameObject.transform;
             }
             else
