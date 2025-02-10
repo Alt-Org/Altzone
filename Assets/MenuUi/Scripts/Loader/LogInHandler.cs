@@ -135,7 +135,7 @@ namespace MenuUi.Scripts.Loader
 
             yield return new WaitUntil(() => _ageVerificationHandler.Finished );
 
-            if ((playerData.SelectedCharacterId == 0) || !Enum.IsDefined(typeof(CharacterID), playerData.SelectedCharacterId))
+            if ((ServerManager.Instance.Player.currentAvatarId == null) || ((CharacterID)ServerManager.Instance.Player.currentAvatarId)== CharacterID.None || !Enum.IsDefined(typeof(CharacterID), ServerManager.Instance.Player.currentAvatarId))
                 StartCoroutine(_introStoryNavigation.Navigate());
             else
             {
