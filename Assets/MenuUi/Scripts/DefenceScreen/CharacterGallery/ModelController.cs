@@ -6,6 +6,7 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
+using SignalBus = MenuUi.Scripts.Lobby.SignalBus;
 
 
 namespace MenuUi.Scripts.CharacterGallery
@@ -20,6 +21,8 @@ namespace MenuUi.Scripts.CharacterGallery
         private void Awake()
         {
             ServerManager.OnLogInStatusChanged += StartLoading;
+            SignalBus.OnRandomSelectedCharactersRequested += SetRandomSelectedCharactersToEmptySlots;
+            _view.OnTopSlotCharacterSet += HandleCharacterSelected;
         }
 
 
@@ -38,6 +41,8 @@ namespace MenuUi.Scripts.CharacterGallery
         private void OnDestroy()
         {
             ServerManager.OnLogInStatusChanged -= StartLoading;
+            SignalBus.OnRandomSelectedCharactersRequested -= SetRandomSelectedCharactersToEmptySlots;
+            _view.OnTopSlotCharacterSet -= HandleCharacterSelected;
         }
 
 
@@ -62,8 +67,6 @@ namespace MenuUi.Scripts.CharacterGallery
             store.GetPlayerData(playerGuid, playerData =>
             {
                 _playerData = playerData;
-                _view.OnCurrentCharacterIdChanged -= HandleCurrentCharacterIdChanged;
-                _view.OnCurrentCharacterIdChanged += HandleCurrentCharacterIdChanged;
                 var currentCharacterId = playerData.SelectedCharacterIds;
                 var characters = playerData.CustomCharacters.ToList();
                 characters.Sort((a, b) => a.Id.CompareTo(b.Id));
@@ -73,7 +76,7 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
-        private void HandleCurrentCharacterIdChanged(CharacterID newCharacterId, int slot)
+        private void HandleCharacterSelected(CharacterID newCharacterId, int slot)
         {
             if (slot < 0 || slot >= 3) return;
             if (newCharacterId != (CharacterID)_playerData.SelectedCharacterIds[slot])
@@ -82,6 +85,39 @@ namespace MenuUi.Scripts.CharacterGallery
                 var store = Storefront.Get();
                 store.SavePlayerData(_playerData, null);
             }
+        }
+
+
+        /// <summary>
+        /// Set random characters to selected character slots which are empty. Reloads character gallery afterwards.
+        /// </summary>
+        public void SetRandomSelectedCharactersToEmptySlots()
+        {
+            var characters = _playerData.CustomCharacters.ToList();
+            characters.Sort((a, b) => a.Id.CompareTo(b.Id));
+
+            for (int i = 0; i < 3; i++)
+            {
+                if (_playerData.SelectedCharacterIds[i] == 0)
+                {
+                    bool suitableCharacterFound = false;
+                    CustomCharacter character = null;
+                    do
+                    {
+                        character = characters[UnityEngine.Random.Range(0, characters.Count)];
+                        if ((int)character.Id != _playerData.SelectedCharacterIds[0] && (int)character.Id != _playerData.SelectedCharacterIds[1] && (int)character.Id != _playerData.SelectedCharacterIds[2])
+                        {
+                            suitableCharacterFound = true;
+                        }
+
+                    } while (!suitableCharacterFound);
+
+                    _playerData.SelectedCharacterIds[i] = (int)character.Id;
+                }
+            }
+            var store = Storefront.Get();
+            store.SavePlayerData(_playerData, null);
+            StartCoroutine(Load());
         }
     }
 }

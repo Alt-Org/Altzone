@@ -13,11 +13,13 @@ public class GameFurnitureVisualizer : MonoBehaviour
     private GameFurniture _gameFurniture;
     private DrivenRectTransformTracker m_Tracker;
 
-    public void Initialize(GameFurniture gameFurniture)
+    public void Initialize(GameFurniture gameFurniture, GameObject confirmationPopUp)
     {
         _gameFurniture = gameFurniture;
         _productText.text = _gameFurniture.Name;
         _priceText.text = _gameFurniture.Value.ToString();
         _contentImage.sprite = _gameFurniture.FurnitureInfo.PosterImage? _gameFurniture.FurnitureInfo.PosterImage : _gameFurniture.FurnitureInfo.Image;
+        gameObject.GetComponent<GameFurniturePasser>().SetGameFurniture(gameFurniture);
+        _button.onClick.AddListener(() => confirmationPopUp.SetActive(true));
     }
 }

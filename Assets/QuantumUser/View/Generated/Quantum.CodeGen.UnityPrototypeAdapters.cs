@@ -65,10 +65,14 @@ namespace Quantum.Prototypes.Unity {
   [System.SerializableAttribute()]
   public unsafe partial class SoulWallPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.SoulWallPrototype> {
     public Quantum.QuantumEntityPrototype ChildEntity;
+    public FPVector2 Normal;
+    public FP CollisionMinOffset;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.SoulWallPrototype prototype);
     public override Quantum.Prototypes.SoulWallPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.SoulWallPrototype();
       converter.Convert(this.ChildEntity, out result.ChildEntity);
+      converter.Convert(this.Normal, out result.Normal);
+      converter.Convert(this.CollisionMinOffset, out result.CollisionMinOffset);
       ConvertUser(converter, ref result);
       return result;
     }

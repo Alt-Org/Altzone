@@ -212,8 +212,8 @@ MonoBehaviour:
     CallbackFlags:
       Value: 4095
   PhysicsBody:
-    IsEnabled: 1
-    Config2D: 116
+    IsEnabled: 0
+    Config2D: 244
     Config3D: 58
     RotationFreeze: 0
     Mass:
@@ -318,8 +318,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    ProjectileConfig:
-      Id:
-        Value: 399257586477290827
     IsLaunched:
       Value: 0
+    Speed:
+      RawValue: 0
+    Direction:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+    CoolDown:
+      RawValue: 0

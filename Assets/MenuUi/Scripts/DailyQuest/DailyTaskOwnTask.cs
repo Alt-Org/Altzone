@@ -31,15 +31,13 @@ public class DailyTaskOwnTask : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _randomText;
 
     #region SetTask
-    public IEnumerator SetDailyTask(string taskDescription, int amount, int points, int coins)
+    public void SetDailyTask(string taskDescription, int amount, int points, int coins)
     {
         _taskDescription.text = taskDescription;
         _taskPointsReward.text = "" + points;
         _taskCoinsReward.text = "" + coins;
 
         SetProgressBar(amount);
-
-        yield return (true);
     }
 
     private void SetProgressBar(int amount)
@@ -73,39 +71,30 @@ public class DailyTaskOwnTask : MonoBehaviour
     }
     #endregion
 
-    public IEnumerator ClearCurrentTask()
+    public void ClearCurrentTask()
     {
         _taskDescription.text = "";
         _taskPointsReward.text = "";
         _taskCoinsReward.text = "";
 
         SetProgressBar(0);
-
-        yield return (true);
     }
 
-    public IEnumerator SetTaskProgress(float progress)
+    public void SetTaskProgress(float progress)
     {
         _taskProgressFillImage.fillAmount = progress;
-
-        yield return new WaitUntil(() => true);
     }
 
-    public IEnumerator SetStipend(int points, int coins, int rank)
+    public void SetStipend(int points, int coins, int rank)
     {
         _stipendTotalPointsForClan.text = "" + points;
         _stipendTotalCoinsForClan.text = "" + coins;
         _stipendClanRankValue.text = "" + rank;
-
-        return (null);
-        //yield return new WaitUntil(() => );
     }
 
-    public IEnumerator SetClockTime(int time)
+    public void SetClockTime(int time)
     {
 
 
-        return (null);
-        //yield return new WaitUntil(() => );
     }
 }

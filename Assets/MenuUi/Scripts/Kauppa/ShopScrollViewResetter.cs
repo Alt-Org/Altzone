@@ -9,7 +9,13 @@ public class ShopScrollViewResetter : MonoBehaviour
         myScrollRect = GetComponent<BaseScrollRect>();
         ResetScroll();
     }
-    public void OnEnable() => ResetScroll();
+    public void OnEnable()
+    {
+        if(myScrollRect == null)
+            myScrollRect = GetComponent<BaseScrollRect>();
+
+        ResetScroll();
+    } 
 
     private void ResetScroll() => myScrollRect.VerticalNormalizedPosition = 1f;
 }
