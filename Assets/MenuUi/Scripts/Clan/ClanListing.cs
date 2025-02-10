@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Clan;
 using TMPro;
@@ -17,12 +18,16 @@ public class ClanListing : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _clanMembers;
     [SerializeField] private Image _lockImage;
     [SerializeField] private Transform _heartContainer;
+    [SerializeField] private Transform _labelsField;
+    [SerializeField] private GameObject _labelImagePrefab;
 
     private ServerClan _clan;
-    public ServerClan Clan { get => _clan; set { _clan = value; SetClanValues(); } }
+    public ServerClan Clan { get => _clan; set { _clan = value; SetClanInfo(); } }
 
-    private void SetClanValues()
+    private void SetClanInfo()
     {
+        ClanData clanData = new ClanData(_clan);
+
         _clanName.text = _clan.name;
         _clanMembers.text = "Jäsenet: " + _clan.playerCount;
         _lockImage.enabled = !_clan.isOpen;
@@ -32,6 +37,22 @@ public class ClanListing : MonoBehaviour
         List<HeartPieceData> heartPieces = new();
         for (int j = 0; j < 50; j++) heartPieces.Add(new HeartPieceData(j, Color.red));
         SetHeartColors(heartPieces);
+
+        foreach (Transform child in _labelsField) Destroy(child.gameObject);
+
+        int i = 0;
+        foreach (ClanValues value in clanData.Values)
+        {
+            if (i < 3)
+            {
+                GameObject label = Instantiate(_labelImagePrefab, _labelsField);
+                ValueImageHandle imageHandler = label.GetComponent<ValueImageHandle>();
+                imageHandler.SetLabelInfo(value);
+
+                i++;
+            }
+
+        }
     }
 
     internal void ToggleJoinButton(bool value)
