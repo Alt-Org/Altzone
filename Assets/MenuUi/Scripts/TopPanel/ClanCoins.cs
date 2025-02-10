@@ -4,6 +4,7 @@ using Altzone.Scripts;
 using TMPro;
 using UnityEngine;
 using Altzone.Scripts.Model.Poco.Clan;
+using System.Security.Claims;
 
 
 namespace MenuUi.Scripts.TopPanel
@@ -50,6 +51,24 @@ namespace MenuUi.Scripts.TopPanel
 
             _clanCoinsAmountText.text = "-";
             _clanData = null;
+        }
+
+        public void AddCoins(int addAmount)
+        {
+            PlayerData playerData = null;
+
+            StartCoroutine(GetPlayerData(p => playerData = p));
+            if (playerData != null && playerData.HasClanId)
+            {
+                string clanId = playerData.ClanId;
+                StartCoroutine(GetClanData(p => _clanData = p, clanId));
+                if (_clanData != null)
+                {
+                    _clanData.GameCoins += addAmount;
+                    _clanCoinsAmountText.text = _clanData.GameCoins.ToString();
+                    return;
+                }
+            }
         }
     }
 }

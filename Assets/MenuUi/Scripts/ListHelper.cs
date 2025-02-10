@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public static class ListHelperr 
+public static class ListHelper 
 {
     private readonly static System.Random s_random;
-    static ListHelperr()
+    static ListHelper()
     {
         s_random = new System.Random();
     }

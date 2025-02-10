@@ -133,7 +133,8 @@ public class ClanCreateNew : MonoBehaviour
 
         foreach(var value in values)
         {
-            serverValues.Add(value.ToString().ToLower());
+            string valueString = ClanDataTypeConverter.ClanValuesToString(value);
+            serverValues.Add(valueString);
         }
 
         ClanLogo logo = new ClanLogo();
