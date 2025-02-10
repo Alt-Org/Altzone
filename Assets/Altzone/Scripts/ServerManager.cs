@@ -148,7 +148,7 @@ public class ServerManager : MonoBehaviour
                 {
                     if (characterList == null)
                     {
-                        Debug.LogError("Failed to fetch task data.");
+                        Debug.LogError("Failed to fetch Custom Characters.");
                         gettingCharacter = false;
                         characters = null;
                     }
@@ -779,10 +779,10 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator GetCustomCharactersFromServer(Action<List<CustomCharacter>> callback)
     {
-        if (Player != null)
-            Debug.LogWarning("Player already exists. Consider using ServerManager.Instance.Player if the most up to data data from server is not needed.");
+        if (Player == null)
+            Debug.LogWarning("Cannot find ServerPlayer data. Fetch player data before trying to get CustomCharacters.");
 
-        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "player/" + PlayerPrefs.GetString("playerId", string.Empty), AccessToken, request =>
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "customCharacter/", AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
@@ -851,7 +851,7 @@ public class ServerManager : MonoBehaviour
 
         //Debug.Log(player);
 
-        yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "customCharacter/", body, AccessToken, request =>
+        yield return StartCoroutine(WebRequests.Post(DEVADDRESS + "customCharacter/", body, AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
