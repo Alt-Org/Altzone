@@ -93,14 +93,14 @@ public class HahmonValinta : AltMonoBehaviour
         if (id != CharacterID.None)
         {
             // Log the selected character's information
-           // Debug.Log("Locked in character: " + characterData[selectedCharacterIndex].characterName);
-
+            // Debug.Log("Locked in character: " + characterData[selectedCharacterIndex].characterName);
+            bool callFinished = false;
+            bool characterAdded = false;
+            int i = 0;
             if (/*ServerManager.Instance.Player.currentAvatarId is null or 0*/true)
             {
-                List<CharacterID> characters = SelectStartingCharacter(id);
-
-                _playerData.SelectedCharacterId = (int) id;
-                _playerData.SelectedCharacterIds = new string[3] {"0","0","0"};
+                _playerData.SelectedCharacterId = (int)id;
+                _playerData.SelectedCharacterIds = new string[3] { "0", "0", "0" };
 
                 string body = JObject.FromObject(
                     new
@@ -111,10 +111,6 @@ public class HahmonValinta : AltMonoBehaviour
                     }/*,
                     JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })*/
                 ).ToString();
-
-                bool callFinished = false;
-                bool characterAdded = false;
-                int i = 0;
 
                 yield return StartCoroutine(ServerManager.Instance.UpdatePlayerToServer(body, callback =>
                 {
@@ -128,8 +124,12 @@ public class HahmonValinta : AltMonoBehaviour
                     {
                         Debug.Log("Profile info update failed.");
                     }
-            }));
+                }));
                 new WaitUntil(() => callFinished == true);
+            }
+            if (_playerData.CustomCharacters.Count < 3)
+            {
+                List<CharacterID> characters = SelectStartingCharacter(id);
                 foreach (var character in characters)
                 {
                     callFinished = false;
@@ -156,7 +156,7 @@ public class HahmonValinta : AltMonoBehaviour
                     StartCoroutine(ServerManager.Instance.UpdateCustomCharacters(c => callFinished = c));
                 }
                 new WaitUntil(() => callFinished == true);
-                body = JObject.FromObject(
+                string body = JObject.FromObject(
                     new
                     {
                         _id = _playerData.Id,
