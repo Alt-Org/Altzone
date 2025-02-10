@@ -1,12 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
-using MenuUi.Scripts.SwipeNavigation;
 using TMPro;
 using Altzone.Scripts.Model.Poco.Game;
-using System;
 using MenuUi.Scripts.DefenceScreen.CharacterGallery;
-using Altzone.Scripts.ReferenceSheets;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -19,14 +15,12 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private TextMeshProUGUI _characterNameText;
         [SerializeField] private AspectRatioFitter _aspectRatioFitter;
         [SerializeField] private PieChartPreview _piechartPreview;
-        [SerializeField] private GameObject _removeButton;
 
         private CharacterSlot _originalSlot;
 
         private CharacterID _id;
         public CharacterID Id { get => _id; }
 
-        public Action OnReturnedToOriginalSlot;
 
         private void Awake()
         {
@@ -92,19 +86,18 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             transform.SetParent(_originalSlot.transform, false);
             SetUnselectedVisuals();
-            HideRemoveButton();
-            OnReturnedToOriginalSlot?.Invoke();
         }
 
 
-        public void ShowRemoveButton()
+        public void EnableNaviButton()
         {
-            _removeButton.SetActive(true);
+            _backgroundImage.raycastTarget = true;
         }
 
-        public void HideRemoveButton()
+
+        public void DisableNaviButton()
         {
-            _removeButton.SetActive(false);
+            _backgroundImage.raycastTarget = false;
         }
     }
 }
