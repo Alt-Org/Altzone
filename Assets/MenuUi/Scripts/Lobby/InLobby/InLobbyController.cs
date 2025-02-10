@@ -12,6 +12,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
     {
         [SerializeField] private InLobbyView _view;
         [SerializeField] private SelectedCharactersPopup _selectedCharactersPopup;
+        [SerializeField] private GameObject _popupContents;
 
         private string _currentRegion;
 
@@ -116,7 +117,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         public void ToggleWindow()
         {
-            if (transform.GetChild(0).gameObject.activeSelf)
+            if (_popupContents.gameObject.activeSelf)
             {
                 CloseWindow();
             }
@@ -138,7 +139,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
                         }
                     }
                     // Open battle popup if all 3 are selected
-                    transform.GetChild(0).gameObject.SetActive(true);
+                    OpenWindow();
                 }));
             }
         }
@@ -150,15 +151,21 @@ namespace MenuUI.Scripts.Lobby.InLobby
             {
                 if (showBattlePopup == true)
                 {
-                    transform.GetChild(0).gameObject.SetActive(true);
+                    OpenWindow();
                 }
             }));
         }
 
 
+        private void OpenWindow()
+        {
+            _popupContents.SetActive(true);
+        }
+
+
         public void CloseWindow()
         {
-            transform.GetChild(0).gameObject.SetActive(false);
+            _popupContents.SetActive(false);
         }
 
         private void CharacterButtonOnClick()
