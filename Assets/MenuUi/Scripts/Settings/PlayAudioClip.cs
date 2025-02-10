@@ -25,7 +25,7 @@ public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
     [SerializeField]
     private AudioSelection _audioSelection = AudioSelection.Type;
     [SerializeField]
-    AudioTypeName _audioType = AudioTypeName.None;
+    string _audioType = "";
     [SerializeField]
     string _audioName = "";
     [SerializeField]
@@ -77,7 +77,7 @@ public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
             return;
         }
         if (_audioSelection == AudioSelection.Type)
-            manager.PlaySfxAudio(_audioType);
+            manager.PlaySfxAudioWithType(_audioType);
         else if(_audioSelection == AudioSelection.Name)
             manager.PlaySfxAudio(_audioName);
         else if (_audioSelection == AudioSelection.ID)

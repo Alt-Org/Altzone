@@ -224,8 +224,8 @@ namespace MenuUI.Scripts.SoulHome
                 else _mainScreen.ResetChanges();
                 CloseConfirmPopup(PopupType.EditClose);
                 _soulHomeTower.ToggleEdit();
-                if(save) _audioManager.PlaySfxAudio(AudioTypeName.Save);
-                else _audioManager.PlaySfxAudio(AudioTypeName.Revert);
+                if(save) _audioManager.PlaySfxAudio("SaveChanges");
+                else _audioManager.PlaySfxAudio("RevertChanges");
             }
             else
             {

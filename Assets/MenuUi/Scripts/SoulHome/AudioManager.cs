@@ -60,9 +60,9 @@ namespace MenuUI.Scripts.SoulHome
             }
         }
 
-        public void PlaySfxAudio(AudioTypeName type)
+        public void PlaySfxAudioWithType(string type)
         {
-            if (type == AudioTypeName.None) return;
+            if (string.IsNullOrWhiteSpace(type)) return;
 
             foreach (AudioBlock block in _sfxList)
             {
@@ -89,9 +89,9 @@ namespace MenuUI.Scripts.SoulHome
             }
         }
 
-        public void PlayAmbientAudio(AudioTypeName type)
+        public void PlayAmbientAudioWithType(string type)
         {
-            if (type == AudioTypeName.None) return;
+            if (string.IsNullOrWhiteSpace(type)) return;
 
             foreach (AudioBlock block in _ambientList)
             {
@@ -163,7 +163,7 @@ namespace MenuUI.Scripts.SoulHome
             }
         }
 
-        public void AddAudio(string name, AudioSourceType sourcetype, AudioTypeName type)
+        public void AddAudio(string name, AudioSourceType sourcetype, string type)
         {
             Transform parentTransform = transform;
             switch (sourcetype)
@@ -219,6 +219,27 @@ namespace MenuUI.Scripts.SoulHome
                     }
                     break;
             }
+            Transform audioType;
+            if (string.IsNullOrWhiteSpace(type))
+            {
+                audioType = transform.Find("Undefined");
+            }
+            else
+            {
+                audioType = transform.Find(type);
+            }
+            if (audioType == null)
+            {
+                GameObject gameObject = Instantiate(new GameObject(), transform);
+                gameObject.name = string.IsNullOrWhiteSpace(type) == false ? gameObject.name = "Undefined": gameObject.name = type;
+                parentTransform = gameObject.transform;
+            }
+            else
+            {
+                parentTransform = audioType;
+            }
+
+
             GameObject gameObject2 = Instantiate(_audioSourcePrefab, parentTransform);
             if (!string.IsNullOrWhiteSpace(name))
                 gameObject2.name = name;
@@ -230,6 +251,33 @@ namespace MenuUI.Scripts.SoulHome
             else if(sourcetype is AudioSourceType.Ambient)
                 _ambientList.Add(audioBlock);
         }
+
+        public void CheckAudioTree()
+        {
+            foreach (Transform transform in transform)
+            {
+                List<Transform> childrenToBeMoved = new();
+                foreach (Transform transform2 in transform)
+                {
+                    if (transform2.GetComponent<AudioSource>() != null)
+                    {
+                        childrenToBeMoved.Add(transform2);
+                    }
+                }
+                Transform undefined = transform.Find("Undefined");
+                if (undefined == null)
+                {
+                    GameObject gameObject = Instantiate(new GameObject(), transform);
+                    gameObject.name = "Undefined";
+                    undefined = gameObject.transform;
+                }
+                foreach (Transform audio in childrenToBeMoved)
+                {
+                    audio.SetParent(undefined);
+                }
+            }
+        }
+
     }
 
     [Serializable]
@@ -237,7 +285,7 @@ namespace MenuUI.Scripts.SoulHome
     {
         public string name;
         public AudioSource audioSource;
-        public AudioTypeName type;
+        [ReadOnly]public string type;
 
         public AudioBlock(string name)
         {
@@ -255,6 +303,12 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField] List<string> _audioTypes = new();
         int index = 0;
         int index2 = 0;
+
+        private void OnEnable()
+        {
+            ((AudioManager)target).CheckAudioTree();
+        }
+
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
@@ -312,7 +366,7 @@ namespace MenuUI.Scripts.SoulHome
             }
             if (GUILayout.Button("Add AudioSource"))
             {
-                script.AddAudio(_newName, _audioSourceType, _sourceType);
+                script.AddAudio(_newName, _audioSourceType, _audioTypes[index2]);
                 _newName = "";
             }
             serializedObject.ApplyModifiedProperties();
