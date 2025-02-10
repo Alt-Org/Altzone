@@ -1,81 +1,44 @@
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using Altzone.Scripts;
-using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
-//using MenuUi.Scripts.CharacterGallery;
+using Altzone.Scripts.ModelV2;
+using Altzone.Scripts.ReferenceSheets;
+using MenuUi.Scripts.CharacterGallery;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class BattlePopupCharacterSlotController : MonoBehaviour
+public class BattlePopupCharacterSlotController : AltMonoBehaviour
 {
-    [SerializeField] private Transform _horizontalContentPanel;
-    //private CharacterSlot[] _curSelectedCharacterSlots;
-    [SerializeField] private GameObject _characterSlotprefab;
-    //[SerializeField] private GalleryCharacterReference _referenceSheet;
-
-
-    void Awake()
-    {
-        //_curSelectedCharacterSlots = _horizontalContentPanel.GetComponentsInChildren<CharacterSlot>();
-    }
+    [SerializeField] private GalleryCharacter[] _selectedCharacterSlots;
+    [SerializeField] private ClassColorReference _classColorReference;
 
     private void OnEnable()
     {
-        float size = GetComponent<RectTransform>().rect.height - 20;
-
-        /*for (int i = 0; i < _curSelectedCharacterSlots.Length; i++)
-        {
-            _curSelectedCharacterSlots[i].GetComponent<GridLayoutGroup>().cellSize = new(size, size);
-        }*/
-        ResetCharacters();
         SetCharacters();
     }
 
     private void SetCharacters()
     {
-        var gameConfig = GameConfig.Get();
-        var playerSettings = gameConfig.PlayerSettings;
-        var playerGuid = playerSettings.PlayerGuid;
-        var store = Storefront.Get();
-        store.GetPlayerData(playerGuid, playerData =>
+        StartCoroutine(GetPlayerData(playerData =>
         {
-            //_playerData = playerData;
-            //_view.OnCurrentCharacterIdChanged += HandleCurrentCharacterIdChanged;
-            var currentCharacterIds = playerData.SelectedCharacterIds;
-            var characters = playerData.SelectedCharacterIds;
-            // Set characters in the ModelView
-            //_view.SetCharacters(characters, currentCharacterId);
-
-            /*for (int i = 0; i < _curSelectedCharacterSlots.Length; i++)
+            var characters = playerData.CustomCharacters.ToList();
+            for (int i = 0; i < _selectedCharacterSlots.Length; i++)
             {
-                GalleryCharacterInfo info = _referenceSheet.GetCharacterPrefabInfoFast(characters[i]);
+                PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(playerData.SelectedCharacterIds[i].ToString());
+                CharacterID charID = (CharacterID)playerData.SelectedCharacterIds[i];
+                CharacterClassID charClassID = CustomCharacter.GetClassID(charID);
+                _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, _classColorReference.GetColor(charClassID), _classColorReference.GetAlternativeColor(charClassID), charInfo.Name, charID, null);
+            }
+        }));
 
-                if (info == null) continue;
-
-                GameObject slot = Instantiate(_characterSlotprefab, _curSelectedCharacterSlots[i].transform);
-
-                slot.GetComponent<CharacterSlot>().SetInfo(info.Image, info.Name, (CharacterID)characters[i], null);
-
-                slot.transform.Find("Button").gameObject.SetActive(false);
-
-                slot.GetComponent<Button>().enabled = false;
-
-            }*/
-
-        });
+        StartCoroutine(SetVisualsNextFrame());
     }
 
-    private void ResetCharacters()
+    private IEnumerator SetVisualsNextFrame() // coroutine for setting selectedvisuals for character because GalleryCharacter wasn't awake yet during SetCharacters() and piechart was not showing
     {
-        /*for (int i = 0; i < _curSelectedCharacterSlots.Length; i++)
+        yield return new WaitForEndOfFrame();
+        foreach (GalleryCharacter character in _selectedCharacterSlots)
         {
-            GameObject character = null;
-            if (_curSelectedCharacterSlots[i].transform.childCount > 0)
-            character = _curSelectedCharacterSlots[i].transform.GetChild(0).gameObject;
-            if(character != null) Destroy(character);
-        }*/
+            character.SetSelectedVisuals();
+        }
     }
-
 }
