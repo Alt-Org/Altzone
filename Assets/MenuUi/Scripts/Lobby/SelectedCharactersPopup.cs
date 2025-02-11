@@ -15,6 +15,13 @@ namespace MenuUi.Scripts.Lobby
         {
             OnRandomSelectedCharactersRequested?.Invoke();
         }
+
+        public delegate void DefenceGalleryEditModeRequested();
+        public static event DefenceGalleryEditModeRequested OnDefenceGalleryEditModeRequested;
+        public static void OnDefenceGalleryEditModeRequestedSignal()
+        {
+            OnDefenceGalleryEditModeRequested?.Invoke();
+        }
     }
 
 
@@ -44,7 +51,8 @@ namespace MenuUi.Scripts.Lobby
             _defenceGalleryButton.onClick.AddListener(() =>
             {
                 ClosePopup();
-                FindObjectOfType<SwipeUI>(true).CurrentPage = 1; // Changing swipe page to defence gallery
+                FindObjectOfType<SwipeUI>().CurrentPage = 1; // Changing swipe page to defence gallery
+                SignalBus.OnDefenceGalleryEditModeRequestedSignal();
                 openBattlePopupAfterwards = false;
             });
 
