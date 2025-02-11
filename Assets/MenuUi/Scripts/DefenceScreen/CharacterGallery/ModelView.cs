@@ -1,45 +1,36 @@
 ﻿using System.Collections.Generic;
 using Altzone.Scripts;
 using System.Collections.ObjectModel;
-using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
-using UnityEngine.UI;
 using Altzone.Scripts.ModelV2;
-using TMPro;
 using Altzone.Scripts.ReferenceSheets;
+using MenuUi.Scripts.SwipeNavigation;
+using UnityEngine.UI;
+using SignalBus = MenuUi.Scripts.Lobby.SignalBus;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
     public class ModelView : MonoBehaviour
     {
-        [SerializeField] private Transform VerticalContentPanel;
-        [SerializeField] private Transform HorizontalContentPanel;
+        [SerializeField] private Transform _characterGridContent;
+        [SerializeField] private Toggle _editModeToggle;
 
-        [SerializeField] private GameObject _characterSlotprefab;
-
-        [SerializeField] private TextMeshProUGUI _selectedCharacterSlotText1;
-        [SerializeField] private TextMeshProUGUI _selectedCharacterSlotText2;
-        [SerializeField] private TextMeshProUGUI _selectedCharacterSlotText3;
-
-        [SerializeField] private Image _selectedCharacterSlotDetails1;
-        [SerializeField] private Image _selectedCharacterSlotDetails2;
-        [SerializeField] private Image _selectedCharacterSlotDetails3;
+        [SerializeField] private GameObject _characterSlotPrefab;
 
         [SerializeField] private ClassColorReference _classColorReference;
 
         private bool _isReady;
 
-        // character buttons
-        private List<Button> _characterButtons = new();
-
-        // Array of character slots in horizontalpanel
-        public CharacterSlot[] _CurSelectedCharacterSlots { get; private set; }
-        // array of character slots in verticalpanel
+        // Array of character slots in selected grid
+        [SerializeField] private SelectedCharacterSlot[] _selectedCharacterSlots;
+        // List of character slots in character grid
         private List<CharacterSlot> _characterSlots = new();
 
-        public delegate void CurrentCharacterIdChangedHandler(CharacterID newCharacterId, int slot);
-        public event CurrentCharacterIdChangedHandler OnCurrentCharacterIdChanged;
+        public delegate void TopSlotCharacterSetHandler(CharacterID characterId, int slotIdx);
+        public event TopSlotCharacterSetHandler OnTopSlotCharacterSet;
+
+        private SwipeUI _swipe;
 
         public bool IsReady
         {
@@ -47,26 +38,44 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 return _isReady;
             }
-        }     
-
-        private CharacterID _currentCharacterId;
-        private int _slotToSet = 0;
-
-        public CharacterID CurrentCharacterId
-        {
-            get => _currentCharacterId;
-            private set
-            {
-                _currentCharacterId = value;
-                OnCurrentCharacterIdChanged?.Invoke(_currentCharacterId, _slotToSet);
-
-            }
         }
 
 
         private void Awake()
         {
-            _CurSelectedCharacterSlots = HorizontalContentPanel.GetComponentsInChildren<CharacterSlot>();
+            _swipe = FindObjectOfType<SwipeUI>(true);
+            _swipe.OnCurrentPageChanged += ChangeEditToggleStatusToFalse;
+
+            for (int i = 0; i < _selectedCharacterSlots.Length; i++)
+            {
+                _selectedCharacterSlots[i].OnCharacterSelected += HandleCharacterSelected;
+                _selectedCharacterSlots[i].SlotIndex = i;
+            }
+
+            SignalBus.OnDefenceGalleryEditModeRequested += ChangeEditToggleStatusToTrue;
+        }
+
+
+        private void OnDisable()
+        {
+            ChangeEditToggleStatusToFalse();
+        }
+
+
+        private void OnDestroy()
+        {
+            foreach (SelectedCharacterSlot slot in _selectedCharacterSlots)
+            {
+                slot.OnCharacterSelected -= HandleCharacterSelected;
+            }
+
+            foreach (CharacterSlot slot in _characterSlots)
+            {
+                slot.OnCharacterSelected -= HandleCharacterSelected;
+            }
+
+            _swipe.OnCurrentPageChanged -= ChangeEditToggleStatusToFalse;
+            SignalBus.OnDefenceGalleryEditModeRequested -= ChangeEditToggleStatusToTrue;
         }
 
 
@@ -74,206 +83,130 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             _isReady = false;
 
-            foreach (var slot in _CurSelectedCharacterSlots)
+            // Remove selected characters
+            foreach (SelectedCharacterSlot slot in _selectedCharacterSlots)
             {
-                var topSlotCharacter = slot.transform.GetComponentInChildren<DraggableCharacter>();
+                GalleryCharacter topSlotCharacter = slot.transform.GetComponentInChildren<GalleryCharacter>();
                 if (topSlotCharacter != null)
                 {
                     Destroy(topSlotCharacter.gameObject);
                 }
             }
-            foreach (var button in _characterButtons)
+
+            // Remove all character slots
+            foreach (CharacterSlot characterSlot in _characterSlots)
             {
-                if (!button.transform.IsChildOf(HorizontalContentPanel))
-                    Destroy(button.gameObject);
+                characterSlot.OnCharacterSelected -= HandleCharacterSelected;
+                Destroy(characterSlot.gameObject);
             }
-            // remove all character slots
-            foreach (var characterSlot in _characterSlots)
-            {
-                if (!characterSlot.transform.IsChildOf(HorizontalContentPanel))
-                    Destroy(characterSlot.gameObject);
-            }
-            _characterButtons.Clear();
             _characterSlots.Clear();
-            CheckSelectedCharacterSlotTexts();
             _isReady = true;
         }
 
 
-        public Transform GetContent()
+        public void ChangeEditToggleStatusToTrue()
         {
-            Transform content = (VerticalContentPanel == null) ? transform.Find("Content") :
-                VerticalContentPanel.transform;
+            _editModeToggle.isOn = true;
+        }
 
-            return content;
+
+        public void ChangeEditToggleStatusToFalse()
+        {
+            _editModeToggle.isOn = false;
+        }
+
+
+        public void ToggleEditMode()
+        {
+            SetCharacterSlotsSelectable(_editModeToggle.isOn);
         }
 
 
         public void SetCharacters(List<CustomCharacter> characters, int[] currentCharacterIds)
         {
-            var store = Storefront.Get();
+            DataStore store = Storefront.Get();
 
             ReadOnlyCollection<BaseCharacter> allItems = null;
             store.GetAllBaseCharacterYield(result => allItems = result);
 
-            foreach (var character in allItems)
+            foreach (BaseCharacter character in allItems)
             {
-                var info2 = PlayerCharacterPrototypes.GetCharacter(((int)character.Id).ToString());
-                if (info2 == null) continue;
+                PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(((int)character.Id).ToString());
+                if (info == null) continue;
 
-                GameObject slot = Instantiate(_characterSlotprefab, GetContent());
+                GameObject slot = Instantiate(_characterSlotPrefab, _characterGridContent);
 
-                Color bgColor = _classColorReference.GetColor(CustomCharacter.GetClassID(character.Id));
-                Color bgAltColor = _classColorReference.GetAlternativeColor(CustomCharacter.GetClassID(character.Id));
+                CharacterClassID classID = CustomCharacter.GetClassID(character.Id);
+                Color bgColor = _classColorReference.GetColor(classID);
+                Color bgAltColor = _classColorReference.GetAlternativeColor(classID);
 
-                slot.GetComponent<CharacterSlot>().SetInfo(info2.GalleryImage, bgColor, bgAltColor, info2.Name, character.Id, this);
+                CharacterSlot charSlot = slot.GetComponent<CharacterSlot>();
+                charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, character.Id);
 
-                Button button = slot.transform.Find("GalleryCharacter").GetComponent<Button>();
-                _characterButtons.Add(button);
-                _characterSlots.Add(slot.GetComponent<CharacterSlot>());
-            }
+                _characterSlots.Add(charSlot);
+                charSlot.OnCharacterSelected += HandleCharacterSelected;
 
-            for (int i = 0; i < _characterButtons.Count && i < _characterSlots.Count; i++)
-            {
-                Button button = _characterButtons[i];
-                CharacterSlot characterSlot = _characterSlots[i];
-
-                if (_CurSelectedCharacterSlots[0].Id == characterSlot.Id ||
-                    _CurSelectedCharacterSlots[1].Id == characterSlot.Id ||
-                    _CurSelectedCharacterSlots[2].Id == characterSlot.Id)
+                for (int i = 0; i < _selectedCharacterSlots.Length; i++)
                 {
-                    continue;
-                }
-
-                foreach (CustomCharacter customCharacter in characters)
-                {
-                    if (characterSlot.Id != customCharacter.Id) continue;
-
-                    else
+                    if (character.Id == (CharacterID)currentCharacterIds[i])
                     {
-                        button.GetComponent<DraggableCharacter>().enabled = true;
-                    }
-                    // Check if the character is currently selected
-                    // Subscribe to the event of parent change for the button 
-                    var parentChangeMonitor = button.GetComponent<DraggableCharacter>();
-                    parentChangeMonitor.OnParentChanged += newParent =>
-                    {
-                        int i = 0;
-                        // Go through each topslot
-                        foreach (var curSlot in _CurSelectedCharacterSlots)
-                        {
-                            // Check if newParent is one of the topslots
-                            if (newParent == curSlot.transform)
-                            {
-                                _slotToSet = i;
-                                // Set characterID, because it has been moved to the topslot
-                                CurrentCharacterId = customCharacter.Id;
-                                break;
-                            }
-                            i++;
-                        }
-                        CheckSelectedCharacterSlotTexts();
-                    };
-
-                    // subscribing to removed from top slot event
-                    button.GetComponent<DraggableCharacter>().OnRemovedFromTopSlot += ReorderSelectedCharacters;
-                }
-            }
-
-            int idx = 0;
-            foreach (CharacterID curCharacter in currentCharacterIds)
-            {
-                if (curCharacter == 0) continue;
-                foreach (Button button in _characterButtons)
-                {
-                    CharacterID id = button.GetComponent<DraggableCharacter>().Id;
-                    if (curCharacter == id && idx < _CurSelectedCharacterSlots.Length)
-                    {
-                        // Set the character in the horizontal character slot
-                        if (_CurSelectedCharacterSlots.Length > 0)
-                        {
-                            button.transform.SetParent(_CurSelectedCharacterSlots[idx].transform, false);
-                            button.GetComponent<DraggableCharacter>().SetSelectedVisuals();
-                            idx++;
-                            break;
-                        }
+                        charSlot.Character.transform.SetParent(_selectedCharacterSlots[i].transform, false);
+                        charSlot.Character.SetSelectedVisuals();
                     }
                 }
-            }
-
-            CheckSelectedCharacterSlotTexts();
-        }
-
-
-        public void CheckSelectedCharacterSlotTexts()
-        {
-            if (_CurSelectedCharacterSlots[2].transform.childCount > 0)
-            {
-                _selectedCharacterSlotText3.enabled = false;
-                _selectedCharacterSlotDetails3.enabled = false;
-            }
-            else
-            {
-                _selectedCharacterSlotText3.enabled = true;
-                _selectedCharacterSlotDetails3.enabled = true;
-            }
-            if (_CurSelectedCharacterSlots[1].transform.childCount > 0)
-            {
-                _selectedCharacterSlotText2.enabled = false;
-                _selectedCharacterSlotDetails2.enabled = false;
-            }
-            else
-            {
-                _selectedCharacterSlotText2.enabled = true;
-                _selectedCharacterSlotDetails2.enabled = true;
-            }
-            if (_CurSelectedCharacterSlots[0].transform.childCount > 0)
-            {
-                _selectedCharacterSlotText1.enabled = false;
-                _selectedCharacterSlotDetails1.enabled = false;
-            }
-            else
-            {
-                _selectedCharacterSlotText1.enabled = true;
-                _selectedCharacterSlotDetails1.enabled = true;
             }
         }
 
 
-        /// <summary>
-        /// Reorders selected characters to the left and saves it.
-        /// </summary>
-        public void ReorderSelectedCharacters()
+        private void SetCharacterSlotsSelectable(bool selectable)
         {
-            List<DraggableCharacter> characters = new List<DraggableCharacter>();
-
-            foreach (CharacterSlot slot in _CurSelectedCharacterSlots) // if slot has character add its character to list
+            foreach (CharacterSlot charSlot in _characterSlots)
             {
-                if (slot.transform.childCount > 0)
-                {
-                    characters.Add(slot.transform.GetComponentInChildren<DraggableCharacter>());
-                }
+                charSlot.SetSelectable(selectable);
             }
 
-            for (int i = 0; i < characters.Count; i++) // reparent the characters starting from the leftmost characterslot
+            foreach (SelectedCharacterSlot selectedSlot in _selectedCharacterSlots)
             {
-                characters[i].transform.SetParent(_CurSelectedCharacterSlots[i].transform);
+                selectedSlot.SetSelectable(selectable);
             }
+        }
 
-            for (int i = 0; i < _CurSelectedCharacterSlots.Length; i++) // save character ids to slots through assigning CurrentCharacterId
+
+        private void HandleCharacterSelected(SlotBase pressedSlot)
+        {
+            GalleryCharacter galleryCharacter = pressedSlot.GetComponentInChildren<GalleryCharacter>();
+
+            SelectedCharacterSlot selectedCharacterSlot = pressedSlot as SelectedCharacterSlot;
+            if (selectedCharacterSlot != null && galleryCharacter != null)
             {
-                _slotToSet = i;
-                if (i < characters.Count)
+                galleryCharacter.ReturnToOriginalSlot();
+                SetTopSlotCharacter(CharacterID.None, selectedCharacterSlot.SlotIndex);
+            }
+            else if (galleryCharacter != null)
+            {
+                PlaceCharacterToTopSlot(galleryCharacter);
+            }
+        }
+
+
+        private void PlaceCharacterToTopSlot(GalleryCharacter galleryCharacter)
+        {
+            for (int i = 0; i < _selectedCharacterSlots.Length; i++)
+            {
+                if (_selectedCharacterSlots[i].GetComponentInChildren<GalleryCharacter>() == null)
                 {
-                    CurrentCharacterId = characters[i].Id;
-                }
-                else
-                {
-                    CurrentCharacterId = CharacterID.None;
+                    galleryCharacter.transform.SetParent(_selectedCharacterSlots[i].transform, false);
+                    galleryCharacter.SetSelectedVisuals();
+                    SetTopSlotCharacter(galleryCharacter.Id, i);
+                    return;
                 }
             }
+        }
 
-            CheckSelectedCharacterSlotTexts();
+
+        private void SetTopSlotCharacter(CharacterID id, int selectedSlotIdx)
+        {
+            OnTopSlotCharacterSet?.Invoke(id, selectedSlotIdx);
         }
     }
 }

@@ -31,6 +31,7 @@ public class DailyTaskManager : AltMonoBehaviour
     [SerializeField] private Transform _dailyCategory500;
     [SerializeField] private Transform _dailyCategory1000;
     [SerializeField] private Transform _dailyCategory1500;
+    [SerializeField] private RectTransform _tasksVerticalLayout;
 
     [Header("OwnTaskPage")]
     [SerializeField] private GameObject _ownTaskView;
@@ -147,7 +148,7 @@ public class DailyTaskManager : AltMonoBehaviour
         }
 
         _ownTaskTabButton.interactable = true;
-        StartCoroutine(SetHandleOwnTask(playerTask));
+        SetHandleOwnTask(playerTask);
         SwitchTab(SelectedTab.OwnTask);
     }
 
@@ -174,9 +175,11 @@ public class DailyTaskManager : AltMonoBehaviour
                     tasks = content;
                 else
                 {
-                    //offline testing random generator with id generator
-                    Debug.LogError("Could not connect to server and receive quests");
-                    return;
+                    Debug.LogError("Could not connect to server and receive quests.");
+                    //Offline testing
+                    tasks = TESTGenerateTasks();
+                    Debug.LogWarning("Using locally generated tasks.");
+                    //return;
                 }
             }));
         }
@@ -195,7 +198,7 @@ public class DailyTaskManager : AltMonoBehaviour
             taskSlots[i] = taskObject;
 
             DailyQuest task = taskObject.GetComponent<DailyQuest>();
-            task.GetQuestData(tasklist[i]);
+            task.SetTaskData(tasklist[i]);
             task.dailyTaskManager = this;
 
             Transform parentCategory = GetParentCategory(tasklist[i].Points);
@@ -214,6 +217,37 @@ public class DailyTaskManager : AltMonoBehaviour
         _dailyCategory500.GetComponent<RectTransform>().anchoredPosition = new Vector2( int.MaxValue ,0f );
         _dailyCategory1000.GetComponent<RectTransform>().anchoredPosition = new Vector2( int.MaxValue ,0f );
         _dailyCategory1500.GetComponent<RectTransform>().anchoredPosition = new Vector2( int.MaxValue ,0f );
+
+        //Sets DT card category list to the top.
+        _tasksVerticalLayout.anchoredPosition = new Vector2( 0f, -int.MaxValue );
+    }
+
+    private PlayerTasks TESTGenerateTasks()
+    {
+        ServerPlayerTasks serverTasks = new ServerPlayerTasks();
+
+        serverTasks.daily = new List<ServerPlayerTask>();
+        serverTasks.weekly = new List<ServerPlayerTask>();
+        serverTasks.monthly = new List<ServerPlayerTask>();
+        for (int i = 0; i < 15; i++)
+        {
+            ServerPlayerTask serverTask = new ServerPlayerTask();
+            serverTask.id = i;
+            serverTask.amount = (i + 1) * 5;
+            serverTask.title = new ServerPlayerTask.TaskTitle();
+            serverTask.title.fi = $"Lähetä {serverTask.amount} viestiä.";
+            serverTask.content = new ServerPlayerTask.TaskContent();
+            serverTask.content.fi = $"Lähetä {serverTask.amount} viestiä chatissa.";
+            serverTask.points = (i + 1) * 100;
+            serverTask.coins = (i + 1) * 100;
+            serverTask.type = "write_chat_message";
+
+            serverTasks.daily.Add(serverTask);
+        }
+
+        PlayerTasks tasks = new PlayerTasks(serverTasks);
+
+        return (tasks);
     }
 
     private Transform GetParentCategory(int points)
@@ -375,7 +409,13 @@ public class DailyTaskManager : AltMonoBehaviour
     // Function for popup calling
     public IEnumerator ShowPopupAndHandleResponse(string Message, PopupData? data)
     {
-        yield return Popup.RequestPopup(Message, result =>
+        var windowType = (
+            data.Value.Type == PopupData.PopupDataType.OwnTask ?
+            Popup.PopupWindowType.Accept :
+            Popup.PopupWindowType.Cancel
+            );
+
+        yield return Popup.RequestPopup(Message, windowType, data.Value.Location, result =>
         {
             if (result == true && data != null)
             {
@@ -435,6 +475,7 @@ public class DailyTaskManager : AltMonoBehaviour
 
         //Save player data.
         playerData.Task = playerTask;
+        playerData.Task.AddPlayerId(playerData.Id);
         timeout = null;
 
         StartCoroutine(PlayerDataTransferer("save", playerData, tdata => timeout = tdata, pdata => savePlayerData = pdata));
@@ -444,19 +485,19 @@ public class DailyTaskManager : AltMonoBehaviour
             yield break; //TODO: Add error handling.
 
         _currentPlayerData = savePlayerData;
-        StartCoroutine(SetHandleOwnTask(playerTask));
+        playerTask.InvokeOnTaskSelected();
+        SetHandleOwnTask(playerTask);
     }
 
     //Set OwnTask page.
-    private IEnumerator SetHandleOwnTask(PlayerTask playerTask)
+    private void SetHandleOwnTask(PlayerTask playerTask)
     {
         DailyTaskProgressManager.Instance.UpdateCurrentTask(playerTask);
         _ownTaskId = playerTask.Id;
         _ownTaskPageHandler.SetDailyTask(playerTask.Content, playerTask.Amount, playerTask.Points, playerTask.Coins);
-        _ownTaskPageHandler.SetTaskProgress(playerTask.TaskProgress);
+        _ownTaskPageHandler.SetTaskProgress((float)playerTask.TaskProgress / (float)playerTask.Amount);
+        _ownTaskPageHandler.TESTSetTaskValue(playerTask.TaskProgress);
         Debug.Log("Task id: " + _ownTaskId + ", has been accepted.");
-
-        yield return true;
     }
 
     private IEnumerator GetPlayerData(System.Action<PlayerData> callback)
@@ -545,8 +586,10 @@ public class DailyTaskManager : AltMonoBehaviour
         //TODO: Replace with fetch from server when possible.
         var taskData = DailyTaskProgressManager.Instance.CurrentPlayerTask;
         
-        float progress = CalculateProgressBar(_currentPlayerData.Task.Amount, taskData.TaskProgress);
+        float progress = (float)taskData.TaskProgress / (float)taskData.Amount;
         _ownTaskPageHandler.SetTaskProgress(progress);
+        _ownTaskPageHandler.TESTSetTaskValue(taskData.TaskProgress);
+        taskData.InvokeOnTaskUpdated();
         Debug.Log("Task id: " + _ownTaskId + ", current progress: " + progress);
         if (progress >= 1f)
         {
@@ -554,15 +597,10 @@ public class DailyTaskManager : AltMonoBehaviour
         }
     }
 
-    private float CalculateProgressBar(int targetPoints, int currentPoints)
-    {
-        return ((float)currentPoints / (float)targetPoints);
-    }
-
     // Calling popup for canceling task.
     public void StartCancelTask()
     {
-        PopupData data = new(PopupData.GetType("cancel_task"));
+        PopupData data = new(PopupData.GetType("cancel_task"), null);
         StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", data));
     }
 
@@ -581,6 +619,8 @@ public class DailyTaskManager : AltMonoBehaviour
 
         //Save player data.
         playerData.Task.ClearProgress();
+        playerData.Task.ClearPlayerId();
+        playerData.Task.InvokeOnTaskDeselected();
         playerData.Task = null;
         timeout = null;
 
@@ -642,7 +682,7 @@ public class DailyTaskManager : AltMonoBehaviour
 
         yield return new WaitUntil(() => clan != null);
 
-        _clanProgressBarSlider.value = CalculateProgressBar(_clanProgressBarGoal, clan.Points);
+        _clanProgressBarSlider.value = (float)clan.Points / (float)_clanProgressBarGoal;
     }
 
     private List<DailyTaskClanReward.ClanRewardData> TESTGenerateClanRewardsBar()

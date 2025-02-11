@@ -22,6 +22,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             ServerManager.OnLogInStatusChanged += StartLoading;
             SignalBus.OnRandomSelectedCharactersRequested += SetRandomSelectedCharactersToEmptySlots;
+            _view.OnTopSlotCharacterSet += HandleCharacterSelected;
         }
 
 
@@ -41,6 +42,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             ServerManager.OnLogInStatusChanged -= StartLoading;
             SignalBus.OnRandomSelectedCharactersRequested -= SetRandomSelectedCharactersToEmptySlots;
+            _view.OnTopSlotCharacterSet -= HandleCharacterSelected;
         }
 
 
@@ -65,9 +67,6 @@ namespace MenuUi.Scripts.CharacterGallery
             store.GetPlayerData(playerGuid, playerData =>
             {
                 _playerData = playerData;
-                _view.OnCurrentCharacterIdChanged -= HandleCurrentCharacterIdChanged;
-                _view.OnCurrentCharacterIdChanged += HandleCurrentCharacterIdChanged;
-                Debug.LogWarning(_playerData.CustomCharacters.Count+" : "+ _playerData.CustomCharacters[0].ServerID);
                 var currentCharacterId = playerData.SelectedCharacterIds;
                 int[] characterId = new int[3];
                 for (int i = 0; i < currentCharacterId.Length; i++)
@@ -82,7 +81,7 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
-        private void HandleCurrentCharacterIdChanged(CharacterID newCharacterId, int slot)
+        private void HandleCharacterSelected(CharacterID newCharacterId, int slot)
         {
             if (slot < 0 || slot >= 3) return;
 
