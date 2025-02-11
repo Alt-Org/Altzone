@@ -5,7 +5,7 @@ using UnityEngine.Scripting;
 namespace Quantum
 {
     [Preserve]
-    public unsafe class ProjectileSpawnerSystem :SystemMainThreadFilter<ProjectileSpawnerSystem.Filter>
+    public unsafe class ProjectileSpawnerSystem : SystemMainThreadFilter<ProjectileSpawnerSystem.Filter>
     {
         public struct Filter
         {
@@ -34,7 +34,7 @@ namespace Quantum
         {
             GameSession* gameSession = f.Unsafe.GetPointerSingleton<GameSession>();
 
-            if(gameSession==null) return;
+            if (gameSession==null) return;
             if (gameSession->state != GameState.Playing) return;
 
             // Ensure the projectile is spawned only once
