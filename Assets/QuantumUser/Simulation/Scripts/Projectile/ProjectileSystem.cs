@@ -23,7 +23,6 @@ namespace Quantum.QuantumUser.Simulation.Projectile
 
             if (!projectile->IsLaunched)
             {
-                Debug.Log("Projectile Launched");
                 // retrieve the projectile speed from the spec
                 ProjectileSpec spec = f.FindAsset(f.RuntimeConfig.ProjectileSpec);
 
@@ -32,6 +31,8 @@ namespace Quantum.QuantumUser.Simulation.Projectile
 
                 // Set the IsLaunched field to true to ensure it's launched only once
                 projectile->IsLaunched = true;
+
+                Debug.Log("Projectile Launched");
             }
 
             //move the projectile
