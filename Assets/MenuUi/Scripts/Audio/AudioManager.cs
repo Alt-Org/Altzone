@@ -222,11 +222,11 @@ namespace MenuUi.Scripts.Audio
             Transform audioType;
             if (string.IsNullOrWhiteSpace(type))
             {
-                audioType = transform.Find("Undefined");
+                audioType = parentTransform.Find("Undefined");
             }
             else
             {
-                audioType = transform.Find(type);
+                audioType = parentTransform.Find(type);
             }
             if (audioType == null)
             {
