@@ -142,6 +142,21 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerShieldData))]
+  public unsafe class PlayerShieldDataPrototype : ComponentPrototype<Quantum.PlayerShieldData> {
+    public MapEntityId TeamMate;
+    public QBoolean TeamMateSet;
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.PlayerShieldData component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.PlayerShieldData result, in PrototypeMaterializationContext context = default) {
+        PrototypeValidator.FindMapEntity(this.TeamMate, in context, out result.TeamMate);
+        result.TeamMateSet = this.TeamMateSet;
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Projectile))]
   public unsafe partial class ProjectilePrototype : ComponentPrototype<Quantum.Projectile> {
     public QBoolean IsLaunched;
@@ -177,21 +192,6 @@ namespace Quantum.Prototypes {
     public void Materialize(Frame frame, ref Quantum.ProjectileSpawner result, in PrototypeMaterializationContext context = default) {
         result.HasSpawned = this.HasSpawned;
         MaterializeUser(frame, ref result, in context);
-    }
-  }
-  [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.ShieldData))]
-  public unsafe class ShieldDataPrototype : ComponentPrototype<Quantum.ShieldData> {
-    public MapEntityId TeamMate;
-    public QBoolean TeamMateSet;
-    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.ShieldData component = default;
-        Materialize((Frame)f, ref component, in context);
-        return f.Set(entity, component) == SetResult.ComponentAdded;
-    }
-    public void Materialize(Frame frame, ref Quantum.ShieldData result, in PrototypeMaterializationContext context = default) {
-        PrototypeValidator.FindMapEntity(this.TeamMate, in context, out result.TeamMate);
-        result.TeamMateSet = this.TeamMateSet;
     }
   }
   [System.SerializableAttribute()]

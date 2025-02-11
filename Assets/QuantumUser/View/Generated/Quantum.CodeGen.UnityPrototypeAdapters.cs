@@ -50,12 +50,12 @@ namespace Quantum.Prototypes.Unity {
   #endif //;
   
   [System.SerializableAttribute()]
-  public unsafe partial class ShieldDataPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.ShieldDataPrototype> {
+  public unsafe partial class PlayerShieldDataPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.PlayerShieldDataPrototype> {
     public Quantum.QuantumEntityPrototype TeamMate;
     public QBoolean TeamMateSet;
-    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.ShieldDataPrototype prototype);
-    public override Quantum.Prototypes.ShieldDataPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
-      var result = new Quantum.Prototypes.ShieldDataPrototype();
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.PlayerShieldDataPrototype prototype);
+    public override Quantum.Prototypes.PlayerShieldDataPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.PlayerShieldDataPrototype();
       converter.Convert(this.TeamMate, out result.TeamMate);
       converter.Convert(this.TeamMateSet, out result.TeamMateSet);
       ConvertUser(converter, ref result);

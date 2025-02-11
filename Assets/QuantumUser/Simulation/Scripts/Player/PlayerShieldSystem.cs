@@ -7,7 +7,7 @@ using UnityEngine.Scripting;
 namespace Quantum
 {
     [Preserve]
-    public unsafe class ShieldSystem : SystemMainThreadFilter<ShieldSystem.Filter>
+    public unsafe class PlayerShieldSystem : SystemMainThreadFilter<PlayerShieldSystem.Filter>
     {
         public struct Filter
         {
