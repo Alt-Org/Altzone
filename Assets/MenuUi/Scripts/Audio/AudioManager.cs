@@ -244,7 +244,7 @@ namespace MenuUi.Scripts.Audio
                 gameObject2.name = name;
             gameObject2.GetComponent<AudioBlockHandler>().SetAudioInfo(section, sourcetype, this);
             AudioBlock audioBlock = new(gameObject2.name);
-            audioBlock.type = section;
+            audioBlock.type = type;
             audioBlock.audioSource = gameObject2.GetComponent<AudioSource>();
             audioBlock.UpdateHash();
             if (sourcetype is AudioSourceType.Sfx)
