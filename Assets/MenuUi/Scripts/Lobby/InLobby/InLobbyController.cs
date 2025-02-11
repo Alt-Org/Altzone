@@ -10,6 +10,13 @@ namespace MenuUI.Scripts.Lobby.InLobby
 {
     public class InLobbyController : AltMonoBehaviour
     {
+        enum GameType
+        {
+            Custom = 0,
+            Random2v2 = 1,
+            Clan2v2 = 2,
+        }
+
         [SerializeField] private InLobbyView _view;
         [SerializeField] private SelectedCharactersPopup _selectedCharactersPopup;
         [SerializeField] private GameObject _popupContents;
