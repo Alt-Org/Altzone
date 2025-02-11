@@ -6,7 +6,7 @@ using UnityEditorInternal;
 #endif
 using UnityEngine;
 
-namespace MenuUI.Scripts.SoulHome
+namespace MenuUi.Scripts.Audio
 {
     public enum AudioSourceType
     {
@@ -142,7 +142,7 @@ namespace MenuUI.Scripts.SoulHome
             _musicList.StopMusic();
         }
 
-        [SerializeField]  public List<string> _audioTypes = new();
+        [SerializeField] public List<string> _audioTypes = new();
 
         List<string> AudioTypesInHierarcy
         {
@@ -153,7 +153,7 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     foreach (Transform transform2 in transform)
                     {
-                        if(transform2.GetComponent<AudioSource>() == null)
+                        if (transform2.GetComponent<AudioSource>() == null)
                         {
                             AudioTypes.Add(transform2.gameObject.name);
                         }
@@ -175,9 +175,9 @@ namespace MenuUI.Scripts.SoulHome
                         GameObject gameObject = Instantiate(new GameObject(), transform);
                         gameObject.name = "Music";
                     }
-                    if(musicTransform.GetComponent<AudioSource>() == null) gameObject.AddComponent<AudioSource>();
-                    if(musicTransform.GetComponent<MusicList>() == null) gameObject.AddComponent<MusicList>();
-                    if(musicTransform.GetComponent<SetVolume>() == null) gameObject.AddComponent<SetVolume>();
+                    if (musicTransform.GetComponent<AudioSource>() == null) gameObject.AddComponent<AudioSource>();
+                    if (musicTransform.GetComponent<MusicList>() == null) gameObject.AddComponent<MusicList>();
+                    if (musicTransform.GetComponent<SetVolume>() == null) gameObject.AddComponent<SetVolume>();
                     return;
                 case AudioSourceType.Sfx:
                     Transform sfxTransform = transform.Find("SoundFx");
@@ -231,7 +231,7 @@ namespace MenuUI.Scripts.SoulHome
             if (audioType == null)
             {
                 GameObject gameObject = Instantiate(new GameObject(), parentTransform);
-                gameObject.name = string.IsNullOrWhiteSpace(type) != false ? gameObject.name = "Undefined": gameObject.name = type;
+                gameObject.name = string.IsNullOrWhiteSpace(type) != false ? gameObject.name = "Undefined" : gameObject.name = type;
                 parentTransform = gameObject.transform;
             }
             else
@@ -243,12 +243,13 @@ namespace MenuUI.Scripts.SoulHome
             GameObject gameObject2 = Instantiate(_audioSourcePrefab, parentTransform);
             if (!string.IsNullOrWhiteSpace(name))
                 gameObject2.name = name;
+            gameObject2.GetComponent<AudioBlockHandler>().SetAudioInfo(type, sourcetype);
             AudioBlock audioBlock = new(gameObject2.name);
             audioBlock.type = type;
             audioBlock.audioSource = gameObject2.GetComponent<AudioSource>();
-            if(sourcetype is AudioSourceType.Sfx)
+            if (sourcetype is AudioSourceType.Sfx)
                 _sfxList.Add(audioBlock);
-            else if(sourcetype is AudioSourceType.Ambient)
+            else if (sourcetype is AudioSourceType.Ambient)
                 _ambientList.Add(audioBlock);
         }
 
@@ -278,6 +279,25 @@ namespace MenuUI.Scripts.SoulHome
             }
         }
 
+        public void RemoveAudioBlock(AudioSource blockHash, AudioSourceType sourceType)
+        {
+            Debug.LogWarning("Tset");
+            if (sourceType == AudioSourceType.Sfx)
+            {
+                foreach(AudioBlock block in _sfxList)
+                {
+                    if(block.audioSource.Equals(blockHash)) _sfxList.Remove(block);
+                }
+            }
+            if (sourceType == AudioSourceType.Ambient)
+            {
+                foreach (AudioBlock block in _ambientList)
+                {
+                    if (block.audioSource.Equals(blockHash)) _ambientList.Remove(block);
+                }
+            }
+        } 
+
     }
 
     [Serializable]
@@ -285,13 +305,14 @@ namespace MenuUI.Scripts.SoulHome
     {
         public string name;
         public AudioSource audioSource;
-        [ReadOnly]public string type;
+        public string type;
 
         public AudioBlock(string name)
         {
             this.name = name;
         }
     }
+
 #if UNITY_EDITOR
     [CustomEditor(typeof(AudioManager))]
     public class AudioManagerEditor : Editor

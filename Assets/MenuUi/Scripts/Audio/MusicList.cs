@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MenuUI.Scripts.SoulHome
+namespace MenuUi.Scripts.Audio
 {
     [System.Serializable]
     public class MusicObject

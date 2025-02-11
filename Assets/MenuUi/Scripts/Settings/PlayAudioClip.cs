@@ -1,9 +1,9 @@
-using MenuUI.Scripts.SoulHome;
+using MenuUi.Scripts.Audio;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using AudioTypeName = MenuUI.Scripts.SoulHome.AudioTypeName;
+using AudioTypeName = MenuUi.Scripts.Audio.AudioTypeName;
 
 enum AudioSelection
 {
