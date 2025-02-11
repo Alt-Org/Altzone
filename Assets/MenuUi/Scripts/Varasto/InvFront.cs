@@ -9,7 +9,6 @@ using System.Collections.ObjectModel;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using UnityEngine.UI;
-using static ServerManager;
 using Altzone.Scripts.ReferenceSheets;
 
 namespace MenuUi.Scripts.Storage
@@ -218,57 +217,57 @@ namespace MenuUi.Scripts.Storage
                 Transform toSet = _slotsList[i].transform;
 
                 // Set color based on rarity
-                toSet.GetComponent<Image>().color = GetColorByRarity(_furn.Rarity.ToString());
+                toSet.GetChild(1).GetComponent<Image>().color = GetColorByRarity(_furn.Rarity.ToString());
 
                 // Icon
-                toSet.GetChild(1).GetComponent<Image>().sprite = _furn.Sprite;
-                ScaleSprite(_furn, toSet.GetChild(1).GetComponent<RectTransform>());
+                toSet.GetChild(3).GetComponent<Image>().sprite = _furn.Sprite;
+                ScaleSprite(_furn, toSet.GetChild(3).GetComponent<RectTransform>());
 
                 // Name
-                if(_sortingBy != 0) toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.VisibleName;
-                else toSet.GetChild(2).GetComponent<TMP_Text>().text = "";
+                if(_sortingBy != 0) toSet.GetChild(4).GetComponent<TMP_Text>().text = _furn.VisibleName;
+                else toSet.GetChild(4).GetComponent<TMP_Text>().text = "";
 
                 // Weight
                 switch (_sortingBy)
                 {
                     case 0:
-                        toSet.GetChild(4).GetComponent<TMP_Text>().text = _furn.VisibleName;
+                        toSet.GetChild(6).GetComponent<TMP_Text>().text = _furn.VisibleName;
                         break;
                     case 1:
-                        toSet.GetChild(4).GetComponent<TMP_Text>().text = _furn.Value.ToString();
+                        toSet.GetChild(6).GetComponent<TMP_Text>().text = _furn.Value.ToString();
                         break;
                     case 2:
-                        toSet.GetChild(4).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
+                        toSet.GetChild(6).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
                         break;
                     case 3:
-                        toSet.GetChild(4).GetComponent<TMP_Text>().text = _furn.Rarity.ToString();
+                        toSet.GetChild(6).GetComponent<TMP_Text>().text = _furn.Rarity.ToString();
                         break;
                     case 4:
-                        toSet.GetChild(4).GetComponent<TMP_Text>().text = _furn.SetName;
+                        toSet.GetChild(6).GetComponent<TMP_Text>().text = _furn.SetName;
                         break;
                 }
                 // Shape
-                toSet.GetChild(5).GetComponent<Image>().sprite = GetIcon("");
+                toSet.GetChild(7).GetComponent<Image>().sprite = GetIcon("");
 
                 // SetName
-                toSet.GetChild(6).GetComponent<TMP_Text>().text = _furn.SetName;
+                toSet.GetChild(8).GetComponent<TMP_Text>().text = _furn.SetName;
 
                 // Id
-                toSet.GetChild(7).GetComponent<TMP_Text>().text = _furn.Info.DiagnoseNumber;
+                toSet.GetChild(9).GetComponent<TMP_Text>().text = _furn.Info.DiagnoseNumber;
                 // Name
-                toSet.GetChild(8).GetChild(0).GetComponent<TMP_Text>().text = "Sielunkodissa";
+                toSet.GetChild(10).GetChild(0).GetComponent<TMP_Text>().text = "Sielunkodissa";
                 if (_furn.Position == new Vector2Int(-1, -1))
                 {
-                    toSet.GetChild(8).gameObject.SetActive(false);
+                    toSet.GetChild(10).gameObject.SetActive(false);
                 }
                 else
                 {
-                    toSet.GetChild(8).gameObject.SetActive(true);
+                    toSet.GetChild(10).gameObject.SetActive(true);
                 }
 
                 // Coin
-                if(_sortingBy == 1) toSet.GetChild(9).gameObject.SetActive(true);
-                else toSet.GetChild(9).gameObject.SetActive(false);
+                if(_sortingBy == 1) toSet.GetChild(11).gameObject.SetActive(true);
+                else toSet.GetChild(11).gameObject.SetActive(false);
 
                 i++;
             }
