@@ -14,6 +14,7 @@ namespace Quantum
             public EntityRef Entity;
             public Transform2D* Transform;
             public PhysicsCollider2D* PhysicsCollider2D;
+            //public SpriteRenderer* SpriteRenderer;
             public PlayerData* PlayerData;
             public ShieldData* ShieldData;
         }
