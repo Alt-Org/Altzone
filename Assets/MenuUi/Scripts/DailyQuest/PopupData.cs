@@ -26,13 +26,13 @@ public struct PopupData
 
     public struct OwnPageData
     {
-        private int _taskId;
+        private string _taskId;
         private string _taskDescription;
         private int _taskAmount;
         private int _taskPoints;
         private int _taskCoins;
 
-        public int TaskId { get { return _taskId; } }
+        public string TaskId { get { return _taskId; } }
         public string TaskDescription { get { return _taskDescription; } }
         public int TaskAmount { get { return _taskAmount; } }
         public int TaskPoints { get { return _taskPoints; } }

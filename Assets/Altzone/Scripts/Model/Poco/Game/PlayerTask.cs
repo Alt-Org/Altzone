@@ -45,8 +45,8 @@ namespace Altzone.Scripts.Model.Poco.Game
     }
     public class PlayerTask
     {
-        private int _id;
-        private string _title;
+        private string _id;
+        private TaskTitle _title;
         //private TaskContent _content;
         private int _amount;
         private int _amountLeft;
@@ -57,7 +57,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         private string _playerId = "";
         private string _startedAt;
 
-        public int Id { get => _id;}
+        public string Id { get => _id;}
         public int Amount { get => _amount;}
         public TaskType Type { get => _type;}
         public int Coins { get => _coins;}
@@ -65,7 +65,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public string Title {
             get
             {
-                return _title;
+                return _title.Fi;
             }
         }
         //public string Content { get => _content.Fi;}
@@ -77,7 +77,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public PlayerTask(ServerPlayerTask task)
         {
             _id = task._id;
-            _title = task.title;
+            _title = new(task.title);
             //_content = new(task.content);
             _amount = task.amount;
             _amountLeft = task.amountLeft;
@@ -208,8 +208,8 @@ namespace Altzone.Scripts.Model.Poco.Game
 
     public class ServerPlayerTask
     {
-        public int _id;
-        public string title;
+        public string _id;
+        public TaskTitle title;
         //public TaskContent content;
         public int amount;
         public int amountLeft;

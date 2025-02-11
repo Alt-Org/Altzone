@@ -37,8 +37,8 @@ public class DailyTaskManager : AltMonoBehaviour
     [SerializeField] private Button _cancelTaskButton;
     [SerializeField] private DailyTaskOwnTask _ownTaskPageHandler;
 
-    private int? _ownTaskId;
-    public int? OwnTaskId { get { return _ownTaskId; } }
+    private string _ownTaskId;
+    public string OwnTaskId { get { return _ownTaskId; } }
 
     [Header("ClanTaskPage")]
     [SerializeField] private GameObject _clanTaskView;
@@ -231,11 +231,11 @@ public class DailyTaskManager : AltMonoBehaviour
         for (int i = 0; i < 15; i++)
         {
             ServerPlayerTask serverTask = new ServerPlayerTask();
-            serverTask._id = i;
+            serverTask._id = i.ToString();
             serverTask.amount = (i + 1) * 5;
             serverTask.amountLeft = serverTask.amount;
-            //serverTask.title = new ServerPlayerTask.TaskTitle();
-            serverTask.title = $"Lähetä {serverTask.amount} viestiä.";
+            serverTask.title = new ServerPlayerTask.TaskTitle();
+            serverTask.title.fi = $"Lähetä {serverTask.amount} viestiä.";
             //serverTask.content = new ServerPlayerTask.TaskContent();
             //serverTask.content.fi = $"Lähetä {serverTask.amount} viestiä chatissa.";
             serverTask.points = (i + 1) * 100;
@@ -273,7 +273,7 @@ public class DailyTaskManager : AltMonoBehaviour
         };
     }
 
-    private IEnumerator GetTask(int id, System.Action<PlayerTask> callback)
+    private IEnumerator GetTask(string id, System.Action<PlayerTask> callback)
     {
         foreach (GameObject taskObj in _dailyTaskCardSlots)
         {

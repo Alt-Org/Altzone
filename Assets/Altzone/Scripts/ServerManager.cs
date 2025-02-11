@@ -529,7 +529,7 @@ public class ServerManager : MonoBehaviour
             if (request.result == UnityWebRequest.Result.Success)
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
-                //Debug.LogWarning(result);
+                Debug.LogWarning(result);
                 List<ServerPlayerTask> serverTasks = ((JArray)result["data"]["DailyTask"]).ToObject<List<ServerPlayerTask>>();
                 //Clan = clan;
                 if(serverTasks.Count < 1) { callback(null); return; }
