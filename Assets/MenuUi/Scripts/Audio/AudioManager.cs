@@ -141,7 +141,7 @@ namespace MenuUi.Scripts.Audio
             _musicList.StopMusic();
         }
 
-        [SerializeField] public List<string> _audioTypes = new();
+        [SerializeField] public List<string> _audioSections = new();
 
         List<string> AudioTypesInHierarcy
         {
@@ -162,7 +162,7 @@ namespace MenuUi.Scripts.Audio
             }
         }
 
-        public void AddAudio(string name, AudioSourceType sourcetype, string type)
+        public void AddAudio(string name, AudioSourceType sourcetype, string section, string type)
         {
             Transform parentTransform = transform;
             switch (sourcetype)
@@ -219,18 +219,18 @@ namespace MenuUi.Scripts.Audio
                     break;
             }
             Transform audioType;
-            if (string.IsNullOrWhiteSpace(type))
+            if (string.IsNullOrWhiteSpace(section))
             {
                 audioType = parentTransform.Find("Undefined");
             }
             else
             {
-                audioType = parentTransform.Find(type);
+                audioType = parentTransform.Find(section);
             }
             if (audioType == null)
             {
                 GameObject gameObject = Instantiate(new GameObject(), parentTransform);
-                gameObject.name = string.IsNullOrWhiteSpace(type) != false ? gameObject.name = "Undefined" : gameObject.name = type;
+                gameObject.name = string.IsNullOrWhiteSpace(section) != false ? gameObject.name = "Undefined" : gameObject.name = section;
                 parentTransform = gameObject.transform;
             }
             else
@@ -242,9 +242,9 @@ namespace MenuUi.Scripts.Audio
             GameObject gameObject2 = Instantiate(_audioSourcePrefab, parentTransform);
             if (!string.IsNullOrWhiteSpace(name))
                 gameObject2.name = name;
-            gameObject2.GetComponent<AudioBlockHandler>().SetAudioInfo(type, sourcetype, this);
+            gameObject2.GetComponent<AudioBlockHandler>().SetAudioInfo(section, sourcetype, this);
             AudioBlock audioBlock = new(gameObject2.name);
-            audioBlock.type = type;
+            audioBlock.type = section;
             audioBlock.audioSource = gameObject2.GetComponent<AudioSource>();
             audioBlock.UpdateHash();
             if (sourcetype is AudioSourceType.Sfx)
@@ -376,8 +376,9 @@ namespace MenuUi.Scripts.Audio
         private AudioTypeName _sourceType = AudioTypeName.Music;
         private AudioSourceType _audioSourceType = AudioSourceType.Sfx;
         private string _newName = "";
+        private string _newSectionName = "";
         private string _newTypeName = "";
-        [SerializeField] List<string> _audioTypes = new();
+        [SerializeField] List<string> _audioSection = new();
         int index = 0;
         int index2 = 0;
 
@@ -392,40 +393,40 @@ namespace MenuUi.Scripts.Audio
             serializedObject.Update();
             DrawDefaultInspector();
 
-            var prop = serializedObject.FindProperty("_audioTypes");
-            _audioTypes.Clear();
+            var prop = serializedObject.FindProperty("_audioSections");
+            _audioSection.Clear();
             int i = 0;
             for (i = 0; i < prop.arraySize; i++)
             {
-                _audioTypes.Add(prop.GetArrayElementAtIndex(i).stringValue);
+                _audioSection.Add(prop.GetArrayElementAtIndex(i).stringValue);
             }
 
             AudioManager script = (AudioManager)target;
 
             EditorGUILayout.LabelField("");
-            EditorGUILayout.LabelField("AudioTypes", EditorStyles.boldLabel);
-            index= EditorGUILayout.Popup("AudioTypes", index, _audioTypes.ToArray());
-            _newTypeName = EditorGUILayout.TextField("Name", _newTypeName);
-            if (GUILayout.Button("Add AudioType"))
+            EditorGUILayout.LabelField("Audio Section", EditorStyles.boldLabel);
+            index= EditorGUILayout.Popup("Section", index, _audioSection.ToArray());
+            _newSectionName = EditorGUILayout.TextField("Name", _newSectionName);
+            if (GUILayout.Button("Add Audio Section"))
             {
-                if (!string.IsNullOrWhiteSpace(_newTypeName))
+                if (!string.IsNullOrWhiteSpace(_newSectionName))
                 {
-                    if (!_audioTypes.Contains(_newTypeName.Trim())) { 
-                        _audioTypes.Add(_newTypeName.Trim());
+                    if (!_audioSection.Contains(_newSectionName.Trim())) { 
+                        _audioSection.Add(_newSectionName.Trim());
                         prop.InsertArrayElementAtIndex(i);
-                        prop.GetArrayElementAtIndex(i).stringValue = _newTypeName.Trim();
+                        prop.GetArrayElementAtIndex(i).stringValue = _newSectionName.Trim();
                     }
                 }
-                _newTypeName = "";
+                _newSectionName = "";
             }
             if (GUILayout.Button("Remove AudioType"))
             {
-                string sectionName = _audioTypes[index];
-                _audioTypes.Remove(sectionName);
+                string sectionName = _audioSection[index];
+                _audioSection.Remove(sectionName);
                 prop.DeleteArrayElementAtIndex(index);
                 if (index != 0) index--;
                 script.RemoveSection(sectionName);
-                _newTypeName = "";
+                _newSectionName = "";
             }
 
             EditorGUILayout.LabelField("");
@@ -437,16 +438,18 @@ namespace MenuUi.Scripts.Audio
                     break;
                 case AudioSourceType.Sfx:
                     _newName = EditorGUILayout.TextField("Name", _newName);
-                    index2 = EditorGUILayout.Popup("AudioTypes", index2, _audioTypes.ToArray());
+                    index2 = EditorGUILayout.Popup("Audio Section", index2, _audioSection.ToArray());
+                    _newTypeName = EditorGUILayout.TextField("Type", _newTypeName);
                     break;
                 case AudioSourceType.Ambient:
                     _newName = EditorGUILayout.TextField("Name", _newName);
-                    index2 = EditorGUILayout.Popup("AudioTypes", index2, _audioTypes.ToArray());
+                    index2 = EditorGUILayout.Popup("Audio Section", index2, _audioSection.ToArray());
+                    _newTypeName = EditorGUILayout.TextField("Type", _newTypeName);
                     break;
             }
             if (GUILayout.Button("Add AudioSource"))
             {
-                script.AddAudio(_newName, _audioSourceType, _audioTypes[index2]);
+                script.AddAudio(_newName, _audioSourceType, _audioSection[index2], _newTypeName);
                 _newName = "";
             }
             serializedObject.ApplyModifiedProperties();
