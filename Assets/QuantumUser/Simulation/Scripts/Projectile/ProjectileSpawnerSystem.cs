@@ -49,7 +49,7 @@ namespace Quantum
             }
         }
 
-        public void SpawnProjectile(Frame f, AssetRef<EntityPrototype> childPrototype)
+        private void SpawnProjectile(Frame f, AssetRef<EntityPrototype> childPrototype)
         {
             // Retrieve the game configuration asset for custom projectile settings.
             ProjectileSpec config = f.FindAsset(f.RuntimeConfig.ProjectileSpec);
