@@ -53,11 +53,11 @@ namespace Quantum
             };
             //Debug.LogFormat("[ShieldSystem] Searching player with playerref: {}", teamMateIndex);
 
-            foreach (var (entityref, playerdata) in f.Unsafe.GetComponentBlockIterator<PlayerData>())
+            foreach (EntityComponentPointerPair<PlayerData> pair in f.Unsafe.GetComponentBlockIterator<PlayerData>())
             {
-                if (playerdata->Player == teamMateIndex)
+                if (pair.Component->Player == teamMateIndex)
                 {
-                    filter.ShieldData->TeamMate = entityref;
+                    filter.ShieldData->TeamMate = pair.Entity;
                     filter.ShieldData->TeamMateSet = true;
                     //Debug.LogFormat("[ShieldSystem]Teammate found. Teammates playerref: {0} Teammates Entityref: {1}", playerdata->Player, entityref);
                     return true;
