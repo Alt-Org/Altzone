@@ -193,6 +193,7 @@ public class HahmonValinta : AltMonoBehaviour
             }
             else
             {
+                Debug.LogWarning("Player already had starting characters set.");
                 StartCoroutine(_windowNavigation.Navigate());
             }
 
