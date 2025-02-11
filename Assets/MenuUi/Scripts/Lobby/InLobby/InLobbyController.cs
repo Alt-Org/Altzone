@@ -8,9 +8,19 @@ using UnityEngine.SceneManagement;
 
 namespace MenuUI.Scripts.Lobby.InLobby
 {
+    public static partial class SignalBus
+    {
+        public delegate void BattlePopupRequestedHandler();
+        public static event BattlePopupRequestedHandler OnBattlePopupRequested;
+        public static void OnBattlePopupRequestedSignal()
+        {
+            OnBattlePopupRequested?.Invoke();
+        }
+    }
+
     public class InLobbyController : AltMonoBehaviour
     {
-        enum GameType
+        public enum GameType
         {
             Custom = 0,
             Random2v2 = 1,
@@ -29,7 +39,15 @@ namespace MenuUI.Scripts.Lobby.InLobby
             //_view.RoomButtonOnClick = RoomButtonOnClick;
             //_view.RaidButtonOnClick = RaidButtonOnClick;
             //_view.QuickGameButtonOnClick = QuickGameButtonOnClick;
+            SignalBus.OnBattlePopupRequested += ToggleWindow;
         }
+
+
+        private void OnDestroy()
+        {
+            SignalBus.OnBattlePopupRequested -= ToggleWindow;
+        }
+
 
         public void OnEnable()
         {
