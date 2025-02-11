@@ -18,13 +18,13 @@ public class DailyTaskClanPlayer : MonoBehaviour
     private PlayerData _playerData;
     public PlayerData PlayerData {  get { return _playerData; } }
 
-    private PlayerTasks.PlayerTask _playerTask;
-    public PlayerTasks.PlayerTask PlayerTask { get { return _playerTask; } }
+    private PlayerTask _playerTask;
+    public PlayerTask PlayerTask { get { return _playerTask; } }
 
     private int _rank;
     public int Rank { get { return _rank; } }
 
-    public void Set(int rank, PlayerData player, PlayerTasks.PlayerTask task)
+    public void Set(int rank, PlayerData player, PlayerTask task)
     {
         _rank = rank;
         _playerData = player;

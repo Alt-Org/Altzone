@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts;
 using UnityEngine;
-using static Altzone.Scripts.Model.Poco.Game.PlayerTasks;
 using UnityEngine.UI;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Config;
@@ -163,8 +162,8 @@ public class DailyTaskManager : AltMonoBehaviour
     private IEnumerator PopulateTasks(GameObject[] taskSlots)
     {
         PlayerTasks tasks = null;
-        Storefront.Get().GetPlayerTasks(content => tasks = content);
         List<PlayerTask> tasklist = null;
+        Storefront.Get().GetPlayerTasks(content => tasklist = content);
         Debug.Log(tasks);
 
         if (tasks == null)
@@ -172,24 +171,24 @@ public class DailyTaskManager : AltMonoBehaviour
             StartCoroutine(ServerManager.Instance.GetPlayerTasksFromServer(content =>
             {
                 if (content != null)
-                    tasks = content;
+                    tasklist = content;
                 else
                 {
                     Debug.LogError("Could not connect to server and receive quests.");
                     //Offline testing
-                    tasks = TESTGenerateTasks();
+                    tasklist = TESTGenerateTasks();
                     Debug.LogWarning("Using locally generated tasks.");
                     //return;
                 }
             }));
         }
 
-        yield return new WaitUntil(() => tasks != null);
+        yield return new WaitUntil(() => tasklist != null);
 
         //!Temporary until the PlayerTask is modified to have one Task list/array!
-        tasklist = tasks.Daily;
-        tasklist.AddRange(tasks.Week);
-        tasklist.AddRange(tasks.Month);
+        //tasklist = tasks.Daily;
+        //tasklist.AddRange(tasks.Week);
+        //tasklist.AddRange(tasks.Month);
         //-----------------------------------------------------------------------|
 
         for (int i = 0; i < tasklist.Count; i++)
@@ -222,7 +221,7 @@ public class DailyTaskManager : AltMonoBehaviour
         _tasksVerticalLayout.anchoredPosition = new Vector2( 0f, -int.MaxValue );
     }
 
-    private PlayerTasks TESTGenerateTasks()
+    private List<PlayerTask> TESTGenerateTasks()
     {
         ServerPlayerTasks serverTasks = new ServerPlayerTasks();
 
@@ -232,12 +231,13 @@ public class DailyTaskManager : AltMonoBehaviour
         for (int i = 0; i < 15; i++)
         {
             ServerPlayerTask serverTask = new ServerPlayerTask();
-            serverTask.id = i;
+            serverTask._id = i;
             serverTask.amount = (i + 1) * 5;
-            serverTask.title = new ServerPlayerTask.TaskTitle();
-            serverTask.title.fi = $"Lähetä {serverTask.amount} viestiä.";
-            serverTask.content = new ServerPlayerTask.TaskContent();
-            serverTask.content.fi = $"Lähetä {serverTask.amount} viestiä chatissa.";
+            serverTask.amountLeft = serverTask.amount;
+            //serverTask.title = new ServerPlayerTask.TaskTitle();
+            serverTask.title = $"Lähetä {serverTask.amount} viestiä.";
+            //serverTask.content = new ServerPlayerTask.TaskContent();
+            //serverTask.content.fi = $"Lähetä {serverTask.amount} viestiä chatissa.";
             serverTask.points = (i + 1) * 100;
             serverTask.coins = (i + 1) * 100;
             serverTask.type = "write_chat_message";
@@ -246,8 +246,11 @@ public class DailyTaskManager : AltMonoBehaviour
         }
 
         PlayerTasks tasks = new PlayerTasks(serverTasks);
-
-        return (tasks);
+        List<PlayerTask> tasklist = null;
+        tasklist = tasks.Daily;
+        tasklist.AddRange(tasks.Week);
+        tasklist.AddRange(tasks.Month);
+        return (tasklist);
     }
 
     private Transform GetParentCategory(int points)
@@ -494,7 +497,7 @@ public class DailyTaskManager : AltMonoBehaviour
     {
         DailyTaskProgressManager.Instance.UpdateCurrentTask(playerTask);
         _ownTaskId = playerTask.Id;
-        _ownTaskPageHandler.SetDailyTask(playerTask.Content, playerTask.Amount, playerTask.Points, playerTask.Coins);
+        _ownTaskPageHandler.SetDailyTask(playerTask.Title, playerTask.Amount, playerTask.Points, playerTask.Coins);
         _ownTaskPageHandler.SetTaskProgress((float)playerTask.TaskProgress / (float)playerTask.Amount);
         _ownTaskPageHandler.TESTSetTaskValue(playerTask.TaskProgress);
         Debug.Log("Task id: " + _ownTaskId + ", has been accepted.");
