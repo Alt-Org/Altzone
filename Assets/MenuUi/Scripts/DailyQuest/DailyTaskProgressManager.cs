@@ -7,6 +7,8 @@ using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using Altzone.Scripts.Model.Poco.Clan;
 using System;
+using UnityEngine.UI;
+using TMPro;
 
 public class DailyTaskProgressManager : AltMonoBehaviour
 {
@@ -16,6 +18,20 @@ public class DailyTaskProgressManager : AltMonoBehaviour
 
     [SerializeField] private float _timeoutSeconds = 10;
 
+    [Header("Player Daily Task Popup")]
+    [SerializeField] private RectTransform _popupDailyTaskContainer;
+    [SerializeField] private RectTransform _popupDailyTaskVisibleLocation;
+    [SerializeField] private RectTransform _popupDailyTaskHiddenLocation;
+    [Space]
+    [SerializeField] private TMP_Text _popupDailyTaskShortDescription;
+    [SerializeField] private TMP_Text _popupDailyTaskValue;
+    [SerializeField] private Image _popupDailyTaskFillImage;
+    [Space]
+    [SerializeField] private float _popupContainerShowCooldown = 5f;
+    [SerializeField] private float _popupContainerMoveTime = 0.75f;
+    [SerializeField] private float _popupContainerStopTime = 2.5f;
+    [SerializeField] private AnimationCurve _popupContainerAnimationCurve;
+    private bool _popupCooldown = false;
     private List<string> _previousTaskStrings = new List<string>();
 
     #region Delegates & Events
@@ -60,6 +76,9 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             yield break; //TODO: Add error handling.
 
         CurrentPlayerTask = playerData.Task;
+
+        _popupDailyTaskContainer.position = _popupDailyTaskHiddenLocation.position;
+        _popupDailyTaskContainer.gameObject.SetActive(false);
     }
 
     //TODO: Uncomment, remove testing code and fix bugs when server side ready!
@@ -90,6 +109,8 @@ public class DailyTaskProgressManager : AltMonoBehaviour
         yield return true;
     }
 
+    #region Task Processing
+
     public void UpdateTaskProgress(TaskType taskType, string value)
     {
         if (taskType != CurrentPlayerTask.Type)
@@ -107,6 +128,8 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskType.WriteChatMessage: HandleSimpleTask(value); break;
             default: break;
         }
+
+        ShowPopup();
     }
 
     public void UpdateCurrentTask(PlayerTask task)
@@ -173,6 +196,8 @@ public class DailyTaskProgressManager : AltMonoBehaviour
 
         if (OnTaskProgressed != null)
             OnTaskProgressed.Invoke();
+
+        SetPopupDailyTask();
 
         //Is task done check.
         if (CurrentPlayerTask.TaskProgress >= CurrentPlayerTask.Amount)
@@ -322,4 +347,71 @@ public class DailyTaskProgressManager : AltMonoBehaviour
 
         dataCallback(receivedData);
     }
+
+    #endregion
+
+    #region Task Progress Popup
+
+    private void ShowPopup()
+    {
+        if (_popupCooldown)
+            return;
+
+        _popupCooldown = true;
+        StartCoroutine(MovePopupContainer());
+    }
+
+    private IEnumerator MovePopupContainer()
+    {
+        int phase = 1;
+
+        _popupDailyTaskContainer.gameObject.SetActive(true);
+
+        while (phase < 4)
+        {
+            float timer = 0, curve;
+
+            if (phase == 1 || phase == 3)
+                while (timer < _popupContainerMoveTime)
+                {
+                    if (phase == 1)
+                        curve = _popupContainerAnimationCurve.Evaluate(timer / _popupContainerMoveTime);
+                    else //phase == 3
+                        curve = _popupContainerAnimationCurve.Evaluate(1f - (timer / _popupContainerMoveTime));
+
+                    _popupDailyTaskContainer.position = Vector3.Lerp(_popupDailyTaskHiddenLocation.position, _popupDailyTaskVisibleLocation.position, curve);
+
+                    timer += Time.deltaTime;
+                    yield return null;
+                }
+            else if (phase == 2)
+                while (timer < _popupContainerStopTime)
+                {
+                    timer += Time.deltaTime;
+                    yield return null;
+                }
+
+            phase++;
+            yield return null;
+        }
+
+        _popupDailyTaskContainer.gameObject.SetActive(false);
+        StartCoroutine(PopupCooldownTimer());
+    }
+
+    private void SetPopupDailyTask()
+    {
+        _popupDailyTaskShortDescription.text = CurrentPlayerTask.Title;
+        _popupDailyTaskValue.text = $"{CurrentPlayerTask.TaskProgress}/{CurrentPlayerTask.Amount}";
+        _popupDailyTaskFillImage.fillAmount = ((float)CurrentPlayerTask.TaskProgress / (float)CurrentPlayerTask.Amount);
+    }
+
+    private IEnumerator PopupCooldownTimer()
+    {
+        yield return new WaitForSeconds(_popupContainerShowCooldown);
+
+        _popupCooldown = false;
+    }
+
+    #endregion
 }
