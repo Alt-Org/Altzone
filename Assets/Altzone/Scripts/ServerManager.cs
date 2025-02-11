@@ -457,7 +457,8 @@ public class ServerManager : MonoBehaviour
         storefront.GetPlayerData(Player.uniqueIdentifier, p => playerData = p);
 
         playerData.BuildCharacterLists(characters);
-        if(characters == null) callback(false);
+        storefront.SavePlayerData(playerData, null);
+        if (characters == null) callback(false);
         else callback(true);
     }
 

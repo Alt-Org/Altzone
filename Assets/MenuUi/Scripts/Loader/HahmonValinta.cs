@@ -138,7 +138,7 @@ public class HahmonValinta : AltMonoBehaviour
                         if (callback != null)
                         {
                             Debug.Log("CustomCharacter added: " + character);
-                            _playerData.SelectedCharacterIds[i] = callback.characterId;
+                            _playerData.SelectedCharacterIds[i] = callback._id;
                             characterAdded = true;
                         }
                         else
