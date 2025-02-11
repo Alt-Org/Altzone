@@ -18,16 +18,16 @@ namespace Quantum.QuantumUser.Simulation.Projectile
 
         public override void Update(Frame f, ref Filter filter)
         {
-            // Retrieve the projectile speed from the config
-            ProjectileSpec  config = f.FindAsset(f.RuntimeConfig.ProjectileSpec);
             Quantum.Projectile* projectile = filter.Projectile;
             Transform2D* transform = filter.Transform;
 
             if (!projectile->IsLaunched)
             {
                 Debug.Log("Projectile Launched");
+                // retrieve the projectile speed from the spec
+                ProjectileSpec spec = f.FindAsset(f.RuntimeConfig.ProjectileSpec);
 
-                projectile->Speed = config.ProjectileInitialSpeed;
+                projectile->Speed = spec.ProjectileInitialSpeed;
                 projectile->Direction = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
 
                 // Set the IsLaunched field to true to ensure it's launched only once
