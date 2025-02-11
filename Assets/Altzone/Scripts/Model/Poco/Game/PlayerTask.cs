@@ -55,6 +55,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         private int _points;
         private int _taskProgress;
         private string _playerId = "";
+        private string _startedAt;
 
         public int Id { get => _id;}
         public int Amount { get => _amount;}
@@ -71,6 +72,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public int TaskProgress { get => _taskProgress;}
         public string PlayerId { get => _playerId; }
         public int AmountLeft { get => _amountLeft; }
+        public string StartedAt { get => _startedAt; }
 
         public PlayerTask(ServerPlayerTask task)
         {
@@ -83,6 +85,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             _points = task.points;
             _type = GetTypeEnum(task.type);
             _playerId = string.IsNullOrWhiteSpace(task.player_id) ? "" : task.player_id;
+            _startedAt = task.startedAt;
     }
 
         public int Progress(int amount)
@@ -214,6 +217,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public int coins;
         public int points;
         public string player_id;
+        public string startedAt;
 
         public class TaskTitle
         {
