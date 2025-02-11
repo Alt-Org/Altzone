@@ -18,6 +18,7 @@ namespace Quantum.QuantumUser.Simulation.Projectile
 
         public override void Update(Frame f, ref Filter filter)
         {
+            // unpack filter
             Quantum.Projectile* projectile = filter.Projectile;
             Transform2D* transform = filter.Transform;
 
@@ -26,19 +27,20 @@ namespace Quantum.QuantumUser.Simulation.Projectile
                 // retrieve the projectile speed from the spec
                 ProjectileSpec spec = f.FindAsset(f.RuntimeConfig.ProjectileSpec);
 
+                // set the projectile speed and direction
                 projectile->Speed = spec.ProjectileInitialSpeed;
                 projectile->Direction = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
 
-                // Set the IsLaunched field to true to ensure it's launched only once
+                // set the IsLaunched field to true to ensure it's launched only once
                 projectile->IsLaunched = true;
 
                 Debug.Log("Projectile Launched");
             }
 
-            //move the projectile
+            // move the projectile
             transform->Position += projectile->Direction * (projectile->Speed * f.DeltaTime);
 
-            // Decrease projectiles cooldown based on frame time
+            // decrease projectiles cooldown based on frame time
             if (projectile->CoolDown > 0)
             {
                 projectile->CoolDown -= f.DeltaTime;
