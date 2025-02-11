@@ -14,6 +14,7 @@ namespace Quantum
             public EntityRef Entity;
             public Transform2D* Transform;
             public PhysicsCollider2D* PhysicsCollider2D;
+            //public SpriteRenderer* SpriteRenderer;
             public PlayerData* PlayerData;
             public ShieldData* ShieldData;
         }
@@ -26,10 +27,10 @@ namespace Quantum
             //gets teammates position
             FPVector2 teamMatePosition = f.Unsafe.GetPointer<Transform2D>(filter.ShieldData->TeamMate)->Position;
             FP DistanceToTeamMate = FPVector2.Distance(filter.Transform->Position, teamMatePosition);
-            Debug.LogFormat("[ShieldSystem] Distance between player 0 and 1: {}", DistanceToTeamMate);
+            Debug.Log("[ShieldSystem] Distance between player 0 and 1: " + DistanceToTeamMate);
 
             //enable or disable shield depending on the distance
-            if (DistanceToTeamMate >= 5)
+            if (DistanceToTeamMate >= FP._3)
             {
                 filter.PhysicsCollider2D->Enabled = true;
             }
@@ -50,6 +51,7 @@ namespace Quantum
                 3 => 2,
                 _ => -1,
             };
+            //Debug.LogFormat("[ShieldSystem] Searching player with playerref: {}", teamMateIndex);
 
             foreach (var (entityref, playerdata) in f.Unsafe.GetComponentBlockIterator<PlayerData>())
             {
@@ -57,11 +59,12 @@ namespace Quantum
                 {
                     filter.ShieldData->TeamMate = entityref;
                     filter.ShieldData->TeamMateSet = true;
+                    //Debug.LogFormat("[ShieldSystem]Teammate found. Teammates playerref: {0} Teammates Entityref: {1}", playerdata->Player, entityref);
                     return true;
                 }
             }
 
-            Debug.LogFormat("[ShieldSystem] Teammate for player 0{}", filter.PlayerData->Player);
+            //Debug.LogFormat("[ShieldSystem]Teammate not found for player: {}", filter.PlayerData->Player);
             return false;
         }
     }
