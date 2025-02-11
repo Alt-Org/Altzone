@@ -131,7 +131,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
                     {
                         for (int i = 0; i < 3; i++)
                         {
-                            if (playerData.SelectedCharacterIds[i] == 0) // if any of the selected characters is missing
+                            if (string.IsNullOrEmpty(playerData.SelectedCharacterIds[i]) || playerData.SelectedCharacterIds[i] == "0") // if any of the selected characters is missing
                             {
                                 StartCoroutine(ShowSelectedCharactersPopup());
                                 return;

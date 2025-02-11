@@ -79,8 +79,8 @@ namespace Altzone.Scripts.Model.Poco.Game
         public CustomCharacter(ServerCharacter character)
         {
             CharacterID id = CharacterID.None;
-            if (Enum.IsDefined(typeof(CharacterID), int.Parse(character._id)))
-                id =(CharacterID)int.Parse(character._id);
+            if (Enum.IsDefined(typeof(CharacterID), int.Parse(character.characterId)))
+                id =(CharacterID)int.Parse(character.characterId);
             Assert.AreNotEqual(CharacterID.None, id);
 
             var store = Storefront.Get();
@@ -100,16 +100,17 @@ namespace Altzone.Scripts.Model.Poco.Game
             }
 
             Id = id;
-            Name = character.name;
-            Hp = int.Parse(character.hp);
+            ServerID = character._id;
+            Name = string.IsNullOrEmpty(character.name) ? character.name : GetCharacterName(Id);
+            Hp = character.hp;
             HpSegmentCount = 0;
-            Speed = int.Parse(character.speed);
+            Speed = character.speed;
             SpeedSegmentCount = 0;
-            Resistance = int.Parse(character.resistance);
+            Resistance = character.resistance;
             ResistanceSegmentCount = 0;
-            Attack = int.Parse(character.attack);
+            Attack = character.attack;
             AttackSegmentCount = 0;
-            Defence = int.Parse(character.defence);
+            Defence = character.defence;
             DefenceSegmentCount = 0;
         }
 

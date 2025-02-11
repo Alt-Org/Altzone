@@ -134,52 +134,72 @@ public class ServerManager : MonoBehaviour
         }
         else
         {
+            bool gettingPlayer = true;
+            bool gettingCharacter = true;
+            bool gettingTasks = true;
+            List<CustomCharacter> characters = null;
             // Checks if we can get Player & player Clan from the server
             yield return StartCoroutine(GetPlayerFromServer(player =>
             {
                 if (player == null)
                 {
                     OnLogInFailed?.Invoke();
-                    return;
                 }
-                bool gettingTasks = true;
-                StartCoroutine(GetPlayerTasksFromServer(tasks =>
+                gettingPlayer = false;
+            }));
+            yield return new WaitUntil(() => gettingPlayer == false);
+            if (Player == null) yield break;
+            yield return StartCoroutine(GetCustomCharactersFromServer(characterList =>
+            {
+                if (characterList == null)
                 {
-                    if (tasks == null)
-                    {
-                        Debug.LogError("Failed to fetch task data.");
-                        gettingTasks = false;
-                    }
-                    else
-                    {
-                        Storefront.Get().SavePlayerTasks(tasks, tasks =>
-                        {
-                            gettingTasks = false;
-                        });
-                    }
-                }));
-                new WaitUntil(() => gettingTasks == false);
-                SetPlayerValues(player);
-
-                if (OnLogInStatusChanged != null)
-                    OnLogInStatusChanged(true);
-
-                if (Clan == null)
+                    Debug.LogError("Failed to fetch Custom Characters.");
+                    gettingCharacter = false;
+                    characters = null;
+                }
+                else
                 {
-                    StartCoroutine(GetClanFromServer(clan =>
-                    {
-                        if (OnClanFetchFinished != null)
-                            OnClanFetchFinished();
-                        if (clan == null)
-                        {
-                            return;
-                        }
-
-                        RaiseClanChangedEvent();
-                        RaiseClanInventoryChangedEvent();
-                    }));
+                    gettingCharacter = false;
+                    characters = characterList;
                 }
             }));
+            yield return new WaitUntil(() => gettingCharacter == false);
+            yield return StartCoroutine(GetPlayerTasksFromServer(tasks =>
+            {
+                if (tasks == null)
+                {
+                    Debug.LogError("Failed to fetch task data.");
+                    gettingTasks = false;
+                }
+                else
+                {
+                    Storefront.Get().SavePlayerTasks(tasks, tasks =>
+                    {
+                        gettingTasks = false;
+                    });
+                }
+            }));
+            yield return new WaitUntil(() => gettingTasks == false);
+            SetPlayerValues(Player, characters);
+
+            if (OnLogInStatusChanged != null)
+                OnLogInStatusChanged(true);
+
+            if (Clan == null)
+            {
+                StartCoroutine(GetClanFromServer(clan =>
+                {
+                    if (OnClanFetchFinished != null)
+                        OnClanFetchFinished();
+                    if (clan == null)
+                    {
+                        return;
+                    }
+
+                    RaiseClanChangedEvent();
+                    RaiseClanInventoryChangedEvent();
+                }));
+            }
         }
     }
 
@@ -233,7 +253,7 @@ public class ServerManager : MonoBehaviour
     /// Sets Player values from server and saves it to DataStorage.
     /// </summary>
     /// <param name="player">ServerPlayer from server containing the most up to date player data.</param>
-    public void SetPlayerValues(ServerPlayer player)
+    public void SetPlayerValues(ServerPlayer player, List<CustomCharacter> characters)
     {
         string clanId = player.clan_id;
 
@@ -246,13 +266,29 @@ public class ServerManager : MonoBehaviour
         PlayerData playerData = null;
 
         storefront.GetPlayerData(player.uniqueIdentifier, p => playerData = p);
+        Debug.LogWarning(characters.Count);
 
-        int currentCustomCharacterId = playerData == null ? 1 : playerData.SelectedCharacterId;
-        int[] currentBattleCharacterIds = playerData == null ? new int[5] : playerData.SelectedCharacterIds;
+        int currentCustomCharacterId = (int)(player?.currentAvatarId == null ? (playerData == null? 0:playerData.SelectedCharacterId) : player.currentAvatarId);
+        string[] currentBattleCharacterIds = (player?.battleCharacter_ids == null || player.battleCharacter_ids.Length < 3) ? ((playerData == null || playerData.SelectedCharacterIds.Length < 3) ? new string[3] {"0","0","0"} : playerData.SelectedCharacterIds) : player.battleCharacter_ids;
 
         PlayerData newPlayerData = null;
         newPlayerData = new PlayerData(player._id, player.clan_id, currentCustomCharacterId, currentBattleCharacterIds, player.name, player.backpackCapacity, player.uniqueIdentifier);
 
+        if (characters == null)
+        {
+            ReadOnlyCollection<CustomCharacter> customCharacters = null;
+            storefront.GetAllDefaultCharacterYield(c => customCharacters = c);
+            List<CustomCharacter> character = new();
+            foreach (CustomCharacter characterItem in customCharacters)
+            {
+                character.Add(characterItem);
+            }
+            newPlayerData.BuildCharacterLists(character);
+        }
+        else
+        {
+            newPlayerData.BuildCharacterLists(characters);
+        }
         PlayerPrefs.SetString("profileId", player.profile_id);
 
         Storefront.Get().SavePlayerData(newPlayerData, null);
@@ -392,6 +428,37 @@ public class ServerManager : MonoBehaviour
                     callback(null);
             }));
         }
+    }
+
+    public IEnumerator UpdateCustomCharacters(Action<bool> callback)
+    {
+        if (Player == null) { callback(false); yield break; }
+        List<CustomCharacter> characters = null;
+        bool gettingCharacter = true;
+        yield return StartCoroutine(GetCustomCharactersFromServer(characterList =>
+        {
+            if (characterList == null)
+            {
+                Debug.LogError("Failed to fetch Custom Characters.");
+                gettingCharacter = false;
+                characters = null;
+            }
+            else
+            {
+                gettingCharacter = false;
+                characters = characterList;
+            }
+        }));
+        new WaitUntil(() => gettingCharacter == false);
+
+        var storefront = Storefront.Get();
+        PlayerData playerData = null;
+
+        storefront.GetPlayerData(Player.uniqueIdentifier, p => playerData = p);
+
+        playerData.BuildCharacterLists(characters);
+        if(characters == null) callback(false);
+        else callback(true);
     }
 
     #region Server
@@ -776,10 +843,10 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator GetCustomCharactersFromServer(Action<List<CustomCharacter>> callback)
     {
-        if (Player != null)
-            Debug.LogWarning("Player already exists. Consider using ServerManager.Instance.Player if the most up to data data from server is not needed.");
+        if (Player == null)
+            Debug.LogWarning("Cannot find ServerPlayer data. Fetch player data before trying to get CustomCharacters.");
 
-        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "player/" + PlayerPrefs.GetString("playerId", string.Empty), AccessToken, request =>
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "customCharacter/", AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
@@ -834,7 +901,7 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
-    public IEnumerator AddCustomCharactersToServer(CharacterID id, Action<bool> callback)
+    public IEnumerator AddCustomCharactersToServer(CharacterID id, Action<ServerCharacter> callback)
     {
         if (id.Equals(CharacterID.None))
         {
@@ -846,19 +913,24 @@ public class ServerManager : MonoBehaviour
 
         string body = JObject.FromObject(serverCharacter).ToString();
 
-        //Debug.Log(player);
+        Debug.LogWarning(body);
 
-        yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "customCharacter/", body, AccessToken, request =>
+        yield return StartCoroutine(WebRequests.Post(DEVADDRESS + "customCharacter/", body, AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                ServerCharacter serverCharacter = result["data"]["CustomCharacter"].ToObject<ServerCharacter>();
+
+
                 if (callback != null)
-                    callback(true);
+                    callback(serverCharacter);
             }
             else
             {
                 if (callback != null)
-                    callback(false);
+                    callback(null);
             }
         }));
     }

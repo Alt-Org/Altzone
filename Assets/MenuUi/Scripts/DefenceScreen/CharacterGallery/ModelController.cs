@@ -68,10 +68,15 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 _playerData = playerData;
                 var currentCharacterId = playerData.SelectedCharacterIds;
+                int[] characterId = new int[3];
+                for (int i = 0; i < currentCharacterId.Length; i++)
+                {
+                    characterId[i] = _playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == currentCharacterId[i])== null ? 0 : (int)_playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == currentCharacterId[i]).Id;
+                }
                 var characters = playerData.CustomCharacters.ToList();
                 characters.Sort((a, b) => a.Id.CompareTo(b.Id));
                 // Set characters in the ModelView
-                _view.SetCharacters(characters, currentCharacterId);
+                _view.SetCharacters(characters, characterId);
             });
         }
 
@@ -79,9 +84,17 @@ namespace MenuUi.Scripts.CharacterGallery
         private void HandleCharacterSelected(CharacterID newCharacterId, int slot)
         {
             if (slot < 0 || slot >= 3) return;
-            if (newCharacterId != (CharacterID)_playerData.SelectedCharacterIds[slot])
+
+            string newServerId = _playerData.CustomCharacters.FirstOrDefault(x => x.Id == newCharacterId)?.ServerID;
+            if (newServerId == null)
             {
-                _playerData.SelectedCharacterIds[slot] = (int)newCharacterId;
+                _playerData.SelectedCharacterIds[slot] = "0";
+                return;
+            }
+
+            if (newServerId != _playerData.SelectedCharacterIds[slot])
+            {
+                _playerData.SelectedCharacterIds[slot] = newServerId;
                 var store = Storefront.Get();
                 store.SavePlayerData(_playerData, null);
             }
@@ -98,21 +111,21 @@ namespace MenuUi.Scripts.CharacterGallery
 
             for (int i = 0; i < 3; i++)
             {
-                if (_playerData.SelectedCharacterIds[i] == 0)
+                if (string.IsNullOrEmpty(_playerData.SelectedCharacterIds[i]) || _playerData.SelectedCharacterIds[i] == "0")
                 {
                     bool suitableCharacterFound = false;
                     CustomCharacter character = null;
                     do
                     {
                         character = characters[UnityEngine.Random.Range(0, characters.Count)];
-                        if ((int)character.Id != _playerData.SelectedCharacterIds[0] && (int)character.Id != _playerData.SelectedCharacterIds[1] && (int)character.Id != _playerData.SelectedCharacterIds[2])
+                        if (character.ServerID != _playerData.SelectedCharacterIds[0] && character.ServerID != _playerData.SelectedCharacterIds[1] && character.ServerID != _playerData.SelectedCharacterIds[2])
                         {
                             suitableCharacterFound = true;
                         }
 
                     } while (!suitableCharacterFound);
 
-                    _playerData.SelectedCharacterIds[i] = (int)character.Id;
+                    _playerData.SelectedCharacterIds[i] = character.ServerID;
                 }
             }
             var store = Storefront.Get();
