@@ -25,7 +25,6 @@ namespace MenuUi.Scripts.Audio
         Rotate,
         SetFurniture
     }
-
     public class AudioManager : MonoBehaviour
     {
         public static AudioManager Instance { get; private set; }
@@ -243,10 +242,11 @@ namespace MenuUi.Scripts.Audio
             GameObject gameObject2 = Instantiate(_audioSourcePrefab, parentTransform);
             if (!string.IsNullOrWhiteSpace(name))
                 gameObject2.name = name;
-            gameObject2.GetComponent<AudioBlockHandler>().SetAudioInfo(type, sourcetype);
+            gameObject2.GetComponent<AudioBlockHandler>().SetAudioInfo(type, sourcetype, this);
             AudioBlock audioBlock = new(gameObject2.name);
             audioBlock.type = type;
             audioBlock.audioSource = gameObject2.GetComponent<AudioSource>();
+            audioBlock.UpdateHash();
             if (sourcetype is AudioSourceType.Sfx)
                 _sfxList.Add(audioBlock);
             else if (sourcetype is AudioSourceType.Ambient)
@@ -264,6 +264,7 @@ namespace MenuUi.Scripts.Audio
                     {
                         childrenToBeMoved.Add(transform2);
                     }
+                    transform2.GetComponent<AudioBlockHandler>()?.RefreshBlock(this);
                 }
                 Transform undefined = transform.Find("Undefined");
                 if (undefined == null)
@@ -279,24 +280,40 @@ namespace MenuUi.Scripts.Audio
             }
         }
 
-        public void RemoveAudioBlock(AudioSource blockHash, AudioSourceType sourceType)
+        public void RemoveAudioBlock(int blockHash, AudioSourceType sourceType)
         {
             Debug.LogWarning("Tset");
             if (sourceType == AudioSourceType.Sfx)
             {
                 foreach(AudioBlock block in _sfxList)
                 {
-                    if(block.audioSource.Equals(blockHash)) _sfxList.Remove(block);
+                    if (block.SourceHash.Equals(blockHash))
+                    {
+                        _sfxList.Remove(block);
+                        return;
+                    }
                 }
             }
             if (sourceType == AudioSourceType.Ambient)
             {
                 foreach (AudioBlock block in _ambientList)
                 {
-                    if (block.audioSource.Equals(blockHash)) _ambientList.Remove(block);
+                    if (block.SourceHash.Equals(blockHash)) _ambientList.Remove(block);
                 }
             }
-        } 
+        }
+
+        public void RefreshLists()
+        {
+            foreach(AudioBlock block in _sfxList)
+            {
+                block.UpdateHash();
+            }
+            foreach (AudioBlock block in _ambientList)
+            {
+                block.UpdateHash();
+            }
+        }
 
     }
 
@@ -306,10 +323,18 @@ namespace MenuUi.Scripts.Audio
         public string name;
         public AudioSource audioSource;
         public string type;
+        private int sourceHash;
 
         public AudioBlock(string name)
         {
             this.name = name;
+        }
+
+        public int SourceHash { get => sourceHash;}
+
+        public void UpdateHash()
+        {
+            if(audioSource != null) sourceHash = audioSource.GetHashCode();
         }
     }
 
@@ -328,6 +353,7 @@ namespace MenuUi.Scripts.Audio
         private void OnEnable()
         {
             ((AudioManager)target).CheckAudioTree();
+
         }
 
         public override void OnInspectorGUI()
