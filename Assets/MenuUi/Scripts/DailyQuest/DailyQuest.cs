@@ -8,8 +8,8 @@ using UnityEditor.Experimental.GraphView;
 public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 {
     //Variables
-    private PlayerTasks.PlayerTask _taskData;
-    public PlayerTasks.PlayerTask TaskData {  get { return _taskData; } }
+    private PlayerTask _taskData;
+    public PlayerTask TaskData {  get { return _taskData; } }
     private bool _clickEnabled = true;
 
     public enum TaskWindowType
@@ -47,7 +47,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 
     [HideInInspector] public DailyTaskManager dailyTaskManager;
 
-    public void SetTaskData(PlayerTasks.PlayerTask taskData)
+    public void SetTaskData(PlayerTask taskData)
     {
         _taskData = taskData;
         _taskData.OnTaskSelected += TaskSelected;
@@ -82,9 +82,9 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 
         if (dailyTaskManager.OwnTaskId == null)
             message = _taskData.Title;
-        //message = "Haluatko hyväksyä tehtävän? \nquest id: ";
+        //message = "Haluatko hyvï¿½ksyï¿½ tehtï¿½vï¿½n? \nquest id: ";
         else
-            message = $"{_taskData.Title}\n Korvataanko nykyinen tehtävä?";
+            message = $"{_taskData.Title}\n Korvataanko nykyinen tehtï¿½vï¿½?";
 
         PopupData data = new PopupData(_taskData, GetCornerLocation());
         StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse(message, data));
@@ -130,8 +130,8 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
             case TaskType.PlayBattle: return ("Taisteluja");
             case TaskType.WinBattle: return ("Voittoja");
             case TaskType.StartBattleDifferentCharacter: return ("Taistele Eri Hahmoilla");
-            case TaskType.WriteChatMessage: return ("Kirjoita viestejä");
-            case TaskType.Vote: return ("Äänestä");
+            case TaskType.WriteChatMessage: return ("Kirjoita viestejï¿½");
+            case TaskType.Vote: return ("ï¿½ï¿½nestï¿½");
             case TaskType.Undefined: return ("");
             default: Debug.LogError($"No short descrition available for: {taskType.ToString()}"); return ("Error");
         }

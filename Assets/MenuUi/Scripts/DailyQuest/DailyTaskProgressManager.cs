@@ -12,7 +12,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
 {
     public static DailyTaskProgressManager Instance { get; private set; }
 
-    [HideInInspector] public PlayerTasks.PlayerTask CurrentPlayerTask { get; private set; }
+    [HideInInspector] public PlayerTask CurrentPlayerTask { get; private set; }
 
     [SerializeField] private float _timeoutSeconds = 10;
 
@@ -109,7 +109,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
         }
     }
 
-    public void UpdateCurrentTask(PlayerTasks.PlayerTask task)
+    public void UpdateCurrentTask(PlayerTask task)
     {
         if (CurrentPlayerTask != task)
         {

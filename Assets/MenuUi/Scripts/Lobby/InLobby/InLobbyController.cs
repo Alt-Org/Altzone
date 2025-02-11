@@ -160,6 +160,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
         private void OpenWindow()
         {
             _popupContents.SetActive(true);
+            _view.ShowMainPanel();
         }
 
 
