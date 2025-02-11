@@ -54,7 +54,6 @@ namespace Quantum.QuantumUser.Simulation.Projectile
             Transform2D* otherTransform = f.Unsafe.GetPointer<Transform2D>(otherEntity);
 
             FPVector2 offsetVector = projectileTransform->Position - otherTransform->Position;
-            FP tempAngle = FPVector2.RadiansSigned(FPVector2.Up, normal) * (360 / (FP.Pi * 2));
             FP collisionOffset = FPVector2.Rotate(offsetVector, -FPVector2.RadiansSigned(FPVector2.Up, normal)).Y;
 
             projectile->Direction = FPVector2.Reflect(projectile->Direction, normal);
