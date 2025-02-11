@@ -1,8 +1,7 @@
-using System;
-using Photon.Deterministic;
-using Quantum;
 using UnityEngine;
 using UnityEngine.Scripting;
+
+using Photon.Deterministic;
 
 namespace Quantum.QuantumUser.Simulation.Projectile
 {
