@@ -86,7 +86,11 @@ namespace MenuUi.Scripts.CharacterGallery
             if (slot < 0 || slot >= 3) return;
 
             string newServerId = _playerData.CustomCharacters.FirstOrDefault(x => x.Id == newCharacterId)?.ServerID;
-            if(newServerId == null) return;
+            if (newServerId == null)
+            {
+                _playerData.SelectedCharacterIds[slot] = "0";
+                return;
+            }
 
             if (newServerId != _playerData.SelectedCharacterIds[slot])
             {
