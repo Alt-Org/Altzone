@@ -127,12 +127,20 @@ public class ClanSettings : MonoBehaviour
             clanData.Goals = _goalDropdown.GetSelected();
             clanData.ClanAge = _ageSelection.ClanAgeRange;
 
+            ClanValues[] values = _valueSelection.SelectedValues.ToArray();
+            List<string> serverValues = new();
+            foreach (var value in values)
+            {
+                string valueString = ClanDataTypeConverter.ClanValuesToString(value);
+                serverValues.Add(valueString);
+            }
+            clanData.Labels = serverValues;
+
             // These are not saved at the moment
             bool isOpen = !_clanOpenToggle.isOn;
             string password = _clanPasswordField.text;
             clanData.ClanRights = _clanRightsPanel.ClanRights;
             clanData.ClanHeartPieces = _heartPieces;
-            clanData.Values = _selectedValues;
 
             StartCoroutine(ServerManager.Instance.UpdateClanToServer(clanData, success =>
             {
