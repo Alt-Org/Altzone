@@ -1,6 +1,7 @@
-using Photon.Deterministic;
 using UnityEngine;
 using UnityEngine.Scripting;
+
+using Photon.Deterministic;
 
 namespace Quantum
 {
