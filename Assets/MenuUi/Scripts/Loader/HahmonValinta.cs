@@ -217,7 +217,7 @@ public class HahmonValinta : AltMonoBehaviour
                 break;
             case CharacterID.Comedian:
                 list.Add(CharacterID.Comedian);
-                list.Add(CharacterID.Joker);
+                list.Add(CharacterID.Racist);
                 list.Add(CharacterID.Religious);
                 break;
             case CharacterID.Religious:
