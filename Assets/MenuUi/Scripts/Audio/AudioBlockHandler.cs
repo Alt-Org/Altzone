@@ -34,7 +34,7 @@ namespace MenuUi.Scripts.Audio
         public void RefreshBlock(AudioManager manager)
         {
             _sectionBlock = transform.parent.gameObject.name;
-            _sourceType = (AudioSourceType)Enum.Parse(typeof(AudioSourceType) ,transform.parent.parent.gameObject.name);
+            _sourceType = (AudioSourceType)Enum.Parse(typeof(AudioSourceType) ,transform.parent.parent.gameObject.name.Equals("SoundFx")? "Sfx": transform.parent.parent.gameObject.name);
             _audioSourceHash = GetComponent<AudioSource>().GetHashCode();
             _manager = manager;
         }

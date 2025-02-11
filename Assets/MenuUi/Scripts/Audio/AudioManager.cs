@@ -302,6 +302,37 @@ namespace MenuUi.Scripts.Audio
                 }
             }
         }
+        public void RemoveSection(string sectionName)
+        {
+            foreach (Transform transform in transform)
+            {
+                List<Transform> childrenToBeMoved = new();
+                Transform section = transform.Find(sectionName);
+                if (section != null)
+                {
+                    if (section.gameObject.name.Equals(sectionName))
+                    {
+                        foreach (Transform audio in section)
+                        {
+                            if(audio.GetComponent<AudioBlockHandler>() != null)childrenToBeMoved.Add(audio);
+                        }
+                    }
+
+                    Transform undefined = transform.Find("Undefined");
+                    if (undefined == null)
+                    {
+                        GameObject gameObject = Instantiate(new GameObject(), transform);
+                        gameObject.name = "Undefined";
+                        undefined = gameObject.transform;
+                    }
+                    foreach (Transform audio in childrenToBeMoved)
+                    {
+                        audio.SetParent(undefined);
+                    }
+                    if (section != null) DestroyImmediate(section.gameObject);
+                }
+            }
+        }
 
         public void RefreshLists()
         {
@@ -389,9 +420,11 @@ namespace MenuUi.Scripts.Audio
             }
             if (GUILayout.Button("Remove AudioType"))
             {
-                _audioTypes.Remove(_audioTypes[index]);
+                string sectionName = _audioTypes[index];
+                _audioTypes.Remove(sectionName);
                 prop.DeleteArrayElementAtIndex(index);
                 if (index != 0) index--;
+                script.RemoveSection(sectionName);
                 _newTypeName = "";
             }
 
