@@ -1,48 +1,62 @@
 using System.Collections;
 using System.Collections.Generic;
-using Altzone.Scripts.Config;
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using Altzone.Scripts.Model.Poco.Clan;
-using System;
 using UnityEngine.UI;
 using TMPro;
 
+/// <summary>
+/// Controlls and monitors players progress on a selected daily task.
+/// </summary>
 public class DailyTaskProgressManager : AltMonoBehaviour
 {
     public static DailyTaskProgressManager Instance { get; private set; }
 
     [HideInInspector] public PlayerTask CurrentPlayerTask { get; private set; }
 
+    [Tooltip("Maximum time until a get or save data operation is forced to quit.")]
     [SerializeField] private float _timeoutSeconds = 10;
 
-    [Header("Player Daily Task Popup")]
-    [SerializeField] private RectTransform _popupDailyTaskContainer;
-    [SerializeField] private RectTransform _popupDailyTaskVisibleLocation;
-    [SerializeField] private RectTransform _popupDailyTaskHiddenLocation;
+    [Header("Player Daily Task Progress Popup")]
+    [SerializeField] private RectTransform _progressPopupDailyTaskContainer;
+    [SerializeField] private RectTransform _progressPopupDailyTaskVisibleLocation;
+    [SerializeField] private RectTransform _progressPopupDailyTaskHiddenLocation;
     [Space]
-    [SerializeField] private TMP_Text _popupDailyTaskShortDescription;
-    [SerializeField] private TMP_Text _popupDailyTaskValue;
-    [SerializeField] private Image _popupDailyTaskFillImage;
+    [SerializeField] private TMP_Text _progressPopupDailyTaskShortDescription;
+    [SerializeField] private TMP_Text _progressPopupDailyTaskValue;
+    [SerializeField] private Image _progressPopupDailyTaskFillImage;
     [Space]
-    [SerializeField] private float _popupContainerShowCooldown = 5f;
-    [SerializeField] private float _popupContainerMoveTime = 0.75f;
-    [SerializeField] private float _popupContainerStopTime = 2.5f;
-    [SerializeField] private AnimationCurve _popupContainerAnimationCurve;
-    private bool _popupCooldown = false;
+    [SerializeField] private float _progressPopupContainerShowCooldown = 5f;
+    [Tooltip("The time it takes for the popup window to move between positions.")]
+    [SerializeField] private float _progressPopupContainerMoveTime = 0.75f;
+    [SerializeField] private float _progressPopupContainerStopTime = 2.5f;
+    [Tooltip("Used to animate how the popup window moves between positions.")]
+    [SerializeField] private AnimationCurve _progressPopupContainerAnimationCurve;
+
+    private bool _progressPopupCooldown = false;
     private List<string> _previousTaskStrings = new List<string>();
 
     #region Delegates & Events
 
     public delegate void TaskChange(TaskType taskType);
+    /// <summary>
+    /// Used to update existing <c>DailyTaskProgressListener</c>'s on/off states.
+    /// </summary>
     public static event TaskChange OnTaskChange;
 
     public delegate void TaskProgressed();
+    /// <summary>
+    /// Used to notify <c>DailyTaskManager</c> when task has progressed.
+    /// </summary>
     public static event TaskProgressed OnTaskProgressed;
 
     public delegate void TaskDone();
+    /// <summary>
+    /// Used to clear <c>DailyTaskManager</c> from a completed daily task.
+    /// </summary>
     public static event TaskDone OnTaskDone;
 
     #endregion
@@ -77,11 +91,11 @@ public class DailyTaskProgressManager : AltMonoBehaviour
 
         CurrentPlayerTask = playerData.Task;
 
-        _popupDailyTaskContainer.position = _popupDailyTaskHiddenLocation.position;
-        _popupDailyTaskContainer.gameObject.SetActive(false);
+        _progressPopupDailyTaskContainer.position = _progressPopupDailyTaskHiddenLocation.position;
+        _progressPopupDailyTaskContainer.gameObject.SetActive(false);
     }
 
-    //TODO: Uncomment, remove testing code and fix bugs when server side ready!
+    //TODO: Remove when available in AltMonoBehaviour.
     private IEnumerator SavePlayerData(PlayerData playerData, System.Action<PlayerData> callback)
     {
         //Cant' save to server because server manager doesn't have functionality!
@@ -129,10 +143,10 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             default: break;
         }
 
-        ShowPopup();
+        ShowProgressPopup();
     }
 
-    public void UpdateCurrentTask(PlayerTask task)
+    public void ChangeCurrentTask(PlayerTask task)
     {
         if (CurrentPlayerTask != task)
         {
@@ -226,7 +240,8 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             //Clean up.
             _previousTaskStrings.Clear();
             CurrentPlayerTask = null;
-            OnTaskDone.Invoke(); //Clear DailyTaskManager OwnTask page & get fresh PlayerData.
+            if (OnTaskDone != null)
+                OnTaskDone.Invoke(); //Clear DailyTaskManager OwnTask page & get fresh PlayerData.
         }
 
         //Save player data
@@ -240,12 +255,13 @@ public class DailyTaskProgressManager : AltMonoBehaviour
         //    yield break;
 
         if (CurrentPlayerTask != null)
-            SetPopupDailyTask();
+            SetProgressPopup();
         else
-            SetPopupDailyTaskDone(taskTitle);
+            SetProgressPopupDone(taskTitle);
 
     }
 
+    //TODO: WARNING! Clan data saving is disabled! Uncomment when saving is functional.
     private IEnumerator DistributeRewardsForClan(string clanId, System.Action<bool?> exitCallback)
     {
         ClanData clanData = null;
@@ -286,39 +302,47 @@ public class DailyTaskProgressManager : AltMonoBehaviour
         clanData.GameCoins += CurrentPlayerTask.Coins;
         clanData.Points += CurrentPlayerTask.Points;
 
-        timeout = null;
-        Storefront.Get().SaveClanData(clanData, data => clanData = data);
+        //TODO: Uncomment when it works again.
+        //timeout = null;
+        //Storefront.Get().SaveClanData(clanData, data => clanData = data);
 
-        if (clanData == null)
-        {
-            clanCoroutine = StartCoroutine(ServerManager.Instance.UpdateClanToServer(clanData, content =>
-            {
-                if (content)
-                    Debug.Log("Rewards distributed successfully to clan.");
-                else
-                {
-                    Debug.LogError("Failed to distribute rewards to clan.");
-                    return;
-                }
-            }));
-        }
+        //if (clanData == null)
+        //{
+        //    clanCoroutine = StartCoroutine(ServerManager.Instance.UpdateClanToServer(clanData, content =>
+        //    {
+        //        if (content)
+        //            Debug.Log("Rewards distributed successfully to clan.");
+        //        else
+        //        {
+        //            Debug.LogError("Failed to distribute rewards to clan.");
+        //            return;
+        //        }
+        //    }));
+        //}
 
-        timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
-        yield return new WaitUntil(() => (clanData != null || timeout != null));
+        //timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+        //yield return new WaitUntil(() => (clanData != null || timeout != null));
 
-        if (clanData == null)
-        {
-            StopCoroutine(clanCoroutine);
-            exitCallback(false);
-            Debug.LogError($"Save clan data timeout or null.");
-            yield break; //TODO: Add error handling.
-        }
-        else
-            StopCoroutine(timeoutCoroutine);
+        //if (clanData == null)
+        //{
+        //    StopCoroutine(clanCoroutine);
+        //    exitCallback(false);
+        //    Debug.LogError($"Save clan data timeout or null.");
+        //    yield break; //TODO: Add error handling.
+        //}
+        //else
+        //    StopCoroutine(timeoutCoroutine);
 
         exitCallback(true);
     }
 
+    /// <summary>
+    /// Used to get or save <c>PlayerData</c>.
+    /// </summary>
+    /// <param name="operationType">Use "<c>get</c>" or "<c>save</c>" to select an operation.</param>
+    /// <param name="unsavedData">Use <c>PlayerData</c> when saving and <c>null</c> when getting <c>PlayerData</c>.</param>
+    /// <param name="timeoutCallback">Returns a value if selected operation has timeouted.</param>
+    /// <param name="dataCallback">Returns always <c>PlayerData</c> unless timeouted.</param>
     private IEnumerator PlayerDataTransferer(string operationType, PlayerData unsavedData, System.Action<bool> timeoutCallback, System.Action<PlayerData> dataCallback)
     {
         PlayerData receivedData = null;
@@ -358,40 +382,45 @@ public class DailyTaskProgressManager : AltMonoBehaviour
 
     #region Task Progress Popup
 
-    private void ShowPopup()
+    private void ShowProgressPopup()
     {
-        if (_popupCooldown)
+        if (_progressPopupCooldown)
             return;
 
-        _popupCooldown = true;
-        StartCoroutine(MovePopupContainer());
+        _progressPopupCooldown = true;
+        StartCoroutine(MoveProgressPopupContainer());
     }
 
-    private IEnumerator MovePopupContainer()
+    /// <summary>
+    /// Moves the ProgressPopup window to screen from hidden position <br></br>
+    /// to visible, waits for a specifide time and then moves it self back <br></br>
+    /// to hidden position.
+    /// </summary>
+    private IEnumerator MoveProgressPopupContainer()
     {
         int phase = 1;
 
-        _popupDailyTaskContainer.gameObject.SetActive(true);
+        _progressPopupDailyTaskContainer.gameObject.SetActive(true);
 
         while (phase < 4)
         {
             float timer = 0, curve;
 
             if (phase == 1 || phase == 3)
-                while (timer < _popupContainerMoveTime)
+                while (timer < _progressPopupContainerMoveTime)
                 {
                     if (phase == 1)
-                        curve = _popupContainerAnimationCurve.Evaluate(timer / _popupContainerMoveTime);
+                        curve = _progressPopupContainerAnimationCurve.Evaluate(timer / _progressPopupContainerMoveTime);
                     else //phase == 3
-                        curve = _popupContainerAnimationCurve.Evaluate(1f - (timer / _popupContainerMoveTime));
+                        curve = _progressPopupContainerAnimationCurve.Evaluate(1f - (timer / _progressPopupContainerMoveTime));
 
-                    _popupDailyTaskContainer.position = Vector3.Lerp(_popupDailyTaskHiddenLocation.position, _popupDailyTaskVisibleLocation.position, curve);
+                    _progressPopupDailyTaskContainer.position = Vector3.Lerp(_progressPopupDailyTaskHiddenLocation.position, _progressPopupDailyTaskVisibleLocation.position, curve);
 
                     timer += Time.deltaTime;
                     yield return null;
                 }
             else if (phase == 2)
-                while (timer < _popupContainerStopTime)
+                while (timer < _progressPopupContainerStopTime)
                 {
                     timer += Time.deltaTime;
                     yield return null;
@@ -401,29 +430,29 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             yield return null;
         }
 
-        _popupDailyTaskContainer.gameObject.SetActive(false);
-        StartCoroutine(PopupCooldownTimer());
+        _progressPopupDailyTaskContainer.gameObject.SetActive(false);
+        StartCoroutine(ProgressPopupCooldownTimer());
     }
 
-    private void SetPopupDailyTask()
+    private void SetProgressPopup()
     {
-        _popupDailyTaskShortDescription.text = CurrentPlayerTask.Title;
-        _popupDailyTaskValue.text = $"{CurrentPlayerTask.TaskProgress}/{CurrentPlayerTask.Amount}";
-        _popupDailyTaskFillImage.fillAmount = ((float)CurrentPlayerTask.TaskProgress / (float)CurrentPlayerTask.Amount);
+        _progressPopupDailyTaskShortDescription.text = CurrentPlayerTask.Title;
+        _progressPopupDailyTaskValue.text = $"{CurrentPlayerTask.TaskProgress}/{CurrentPlayerTask.Amount}";
+        _progressPopupDailyTaskFillImage.fillAmount = ((float)CurrentPlayerTask.TaskProgress / (float)CurrentPlayerTask.Amount);
     }
 
-    private void SetPopupDailyTaskDone(string title)
+    private void SetProgressPopupDone(string title)
     {
-        _popupDailyTaskShortDescription.text = title;
-        _popupDailyTaskValue.text = "Valmis";
-        _popupDailyTaskFillImage.fillAmount = 1f;
+        _progressPopupDailyTaskShortDescription.text = title;
+        _progressPopupDailyTaskValue.text = "Valmis";
+        _progressPopupDailyTaskFillImage.fillAmount = 1f;
     }
 
-    private IEnumerator PopupCooldownTimer()
+    private IEnumerator ProgressPopupCooldownTimer()
     {
-        yield return new WaitForSeconds(_popupContainerShowCooldown);
+        yield return new WaitForSeconds(_progressPopupContainerShowCooldown);
 
-        _popupCooldown = false;
+        _progressPopupCooldown = false;
     }
 
     #endregion

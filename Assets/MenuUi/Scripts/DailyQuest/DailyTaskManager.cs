@@ -495,7 +495,7 @@ public class DailyTaskManager : AltMonoBehaviour
     //Set OwnTask page.
     private void SetHandleOwnTask(PlayerTask playerTask)
     {
-        DailyTaskProgressManager.Instance.UpdateCurrentTask(playerTask);
+        DailyTaskProgressManager.Instance.ChangeCurrentTask(playerTask);
         _ownTaskId = playerTask.Id;
         _ownTaskPageHandler.SetDailyTask(playerTask.Title, playerTask.Amount, playerTask.Points, playerTask.Coins);
         _ownTaskPageHandler.SetTaskProgress((float)playerTask.TaskProgress / (float)playerTask.Amount);
@@ -634,7 +634,7 @@ public class DailyTaskManager : AltMonoBehaviour
             yield break; //TODO: Add error handling.
 
         _currentPlayerData = savePlayerData;
-        DailyTaskProgressManager.Instance.UpdateCurrentTask(savePlayerData.Task);
+        DailyTaskProgressManager.Instance.ChangeCurrentTask(savePlayerData.Task);
         _ownTaskPageHandler.ClearCurrentTask();
         Debug.Log("Task id: " + _ownTaskId + ", has been canceled.");
         _ownTaskId = null;
