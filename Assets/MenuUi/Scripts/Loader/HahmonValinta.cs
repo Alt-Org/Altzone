@@ -68,7 +68,7 @@ public class HahmonValinta : AltMonoBehaviour
         {
             _playerData = playerData;
             //characters = playerData.BattleCharacters.ToList();
-        });
+        },false);
     }
 
     void CharacterSelected(CharacterData data)

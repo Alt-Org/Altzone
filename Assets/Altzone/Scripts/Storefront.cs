@@ -53,9 +53,9 @@ namespace Altzone.Scripts
         /// Note that <c>uniqueIdentifier</c> is not the same as ID but should be generated once for given device so that
         /// new player can be identified unambiguously when it is created for first time.
         /// </remarks>
-        public void GetPlayerData(string uniqueIdentifier, Action<PlayerData> callback)
+        public void GetPlayerData(string uniqueIdentifier, Action<PlayerData> callback, bool checkCharacters = true)
         {
-            _localModels.GetPlayerData(uniqueIdentifier, callback);
+            _localModels.GetPlayerData(uniqueIdentifier, callback, checkCharacters);
         }
 
         /// <summary>

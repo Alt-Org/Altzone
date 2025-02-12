@@ -83,9 +83,9 @@ public class AltMonoBehaviour : MonoBehaviour
     }
 
 
-    protected IEnumerator GetPlayerData(System.Action<PlayerData> callback)
+    protected IEnumerator GetPlayerData(System.Action<PlayerData> callback, bool checkCharacters=true)
     {
-        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, callback);
+        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, callback, checkCharacters);
 
         if (callback == null)
         {
