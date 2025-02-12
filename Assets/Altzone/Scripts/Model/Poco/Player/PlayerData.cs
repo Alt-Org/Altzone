@@ -42,7 +42,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         private List<CustomCharacter> _characterList;
 
         public int DiamondSpeed = 1000;
-        public int DiamondResistance = 1000;
+        public int DiamondCharacterSize = 1000;
         public int DiamondAttack = 1000;
         public int DiamondDefence = 1000;
         public int DiamondHP = 1000;

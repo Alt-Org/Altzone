@@ -254,8 +254,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                     return _currentCharacter.Attack;
                 case StatType.Hp:
                     return _currentCharacter.Hp;
-                case StatType.Resistance:
-                    return _currentCharacter.Resistance;
+                case StatType.CharacterSize:
+                    return _currentCharacter.CharacterSize;
                 case StatType.Defence:
                     return _currentCharacter.Defence;
             }
@@ -280,8 +280,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                     return _currentCharacter.CharacterBase.DefaultAttack;
                 case StatType.Hp:
                     return _currentCharacter.CharacterBase.DefaultHp;
-                case StatType.Resistance:
-                    return _currentCharacter.CharacterBase.DefaultResistance;
+                case StatType.CharacterSize:
+                    return _currentCharacter.CharacterBase.DefaultCharacterSize;
                 case StatType.Defence:
                     return _currentCharacter.CharacterBase.DefaultDefence;
             }
@@ -343,8 +343,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                         case StatType.Hp:
                             _currentCharacter.Hp++;
                             break;
-                        case StatType.Resistance:
-                            _currentCharacter.Resistance++;
+                        case StatType.CharacterSize:
+                            _currentCharacter.CharacterSize++;
                             break;
                         case StatType.Defence:
                             _currentCharacter.Defence++;
@@ -407,8 +407,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                         case StatType.Hp:
                             _currentCharacter.Hp--;
                             break;
-                        case StatType.Resistance:
-                            _currentCharacter.Resistance--;
+                        case StatType.CharacterSize:
+                            _currentCharacter.CharacterSize--;
                             break;
                         case StatType.Defence:
                             _currentCharacter.Defence--;
@@ -431,14 +431,14 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         // Get all character stats combined
         private int GetStatsCombined()
         {
-            return _currentCharacter.Speed + _currentCharacter.Resistance + _currentCharacter.Attack + _currentCharacter.Defence + _currentCharacter.Hp;
+            return _currentCharacter.Speed + _currentCharacter.CharacterSize + _currentCharacter.Attack + _currentCharacter.Defence + _currentCharacter.Hp;
         }
 
 
         // Get all character base stats combined
         private int GetBaseStatsCombined()
         {
-            return _currentCharacter.CharacterBase.DefaultSpeed + _currentCharacter.CharacterBase.DefaultResistance + _currentCharacter.CharacterBase.DefaultAttack + _currentCharacter.CharacterBase.DefaultDefence + _currentCharacter.CharacterBase.DefaultHp; 
+            return _currentCharacter.CharacterBase.DefaultSpeed + _currentCharacter.CharacterBase.DefaultCharacterSize + _currentCharacter.CharacterBase.DefaultAttack + _currentCharacter.CharacterBase.DefaultDefence + _currentCharacter.CharacterBase.DefaultHp; 
         }
 
 

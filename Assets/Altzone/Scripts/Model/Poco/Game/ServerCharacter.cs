@@ -12,7 +12,7 @@ public class ServerCharacter
     public string characterId { get; set; }
     public string name { get; set; }
     public int speed { get; set; }
-    public int resistance { get; set; }
+    public int size { get; set; }
     public int attack { get; set; }
     public int defence { get; set; }
     public int hp { get; set; }
@@ -26,7 +26,7 @@ public class ServerCharacter
         characterId = ((int)character.Id).ToString();
         name = character.Name;
         speed = character.Speed;
-        resistance = character.Resistance;
+        size = character.CharacterSize;
         attack = character.Attack;
         defence = character.Defence;
         hp = character.Hp;
@@ -47,7 +47,7 @@ public class ServerCharacter
 
         name = CustomCharacter.GetCharacterName(id);
         speed = character.Speed;
-        resistance = character.Resistance;
+        size = character.CharacterSize;
         attack = character.Attack;
         defence = character.Defence;
         hp = character.Hp;

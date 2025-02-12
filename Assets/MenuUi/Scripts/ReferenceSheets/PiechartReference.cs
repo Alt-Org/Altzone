@@ -45,7 +45,7 @@ namespace MenuUi.Scripts.DefenceScreen
                     return _defenceColor;
                 case StatType.Hp:
                     return _healthPointsColor;
-                case StatType.Resistance:
+                case StatType.CharacterSize:
                     return _characterSizeColor;
                 case StatType.Speed:
                     return _speedColor;
@@ -71,7 +71,7 @@ namespace MenuUi.Scripts.DefenceScreen
                     return _defenceAlternativeColor;
                 case StatType.Hp:
                     return _healthPointsAlternativeColor;
-                case StatType.Resistance:
+                case StatType.CharacterSize:
                     return _characterSizeAlternativeColor;
                 case StatType.Speed:
                     return _speedAlternativeColor;

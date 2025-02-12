@@ -36,8 +36,8 @@ namespace Altzone.Scripts.Model.Poco.Game
         public int HpSegmentCount;
         public int Speed;
         public int SpeedSegmentCount;
-        public int Resistance;
-        public int ResistanceSegmentCount;
+        public int CharacterSize;
+        public int CharaacterSizeSegmentCount;
         public int Attack;
         public int AttackSegmentCount;
         public int Defence;
@@ -53,7 +53,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             Hp = hp;
             HpSegmentCount = 0;
             Speed = speed;
-            Resistance = resistance;
+            CharacterSize = resistance;
             Attack = attack;
             Defence = defence;
         }
@@ -68,8 +68,8 @@ namespace Altzone.Scripts.Model.Poco.Game
             HpSegmentCount = 0;
             Speed = character.Speed;
             SpeedSegmentCount = 0;
-            Resistance = character.Resistance;
-            ResistanceSegmentCount = 0;
+            CharacterSize = character.CharacterSize;
+            CharaacterSizeSegmentCount = 0;
             Attack = character.Attack;
             AttackSegmentCount = 0;
             Defence = character.Defence;
@@ -106,8 +106,8 @@ namespace Altzone.Scripts.Model.Poco.Game
             HpSegmentCount = 0;
             Speed = character.speed;
             SpeedSegmentCount = 0;
-            Resistance = character.resistance;
-            ResistanceSegmentCount = 0;
+            CharacterSize = character.size;
+            CharaacterSizeSegmentCount = 0;
             Attack = character.attack;
             AttackSegmentCount = 0;
             Defence = character.defence;
@@ -131,7 +131,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             return $"{nameof(Id)}: {Id}" +
                    $", {nameof(Name)}: {Name}" +
                    $", {nameof(CharacterBase)}: {CharacterBase}" +
-                   $", {nameof(Hp)}: {Hp}, {nameof(Speed)}: {Speed}, {nameof(Resistance)}: {Resistance}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";
+                   $", {nameof(Hp)}: {Hp}, {nameof(Speed)}: {Speed}, {nameof(CharacterSize)}: {CharacterSize}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";
         }
 
         public static string GetCharacterName(CharacterID id)
@@ -186,7 +186,7 @@ namespace Altzone.Scripts.Model.Poco.Game
                     break;
                 case StatType.Defence:
                     break;
-                case StatType.Resistance:
+                case StatType.CharacterSize:
                     break;
                 case StatType.Hp:
                     break;
@@ -208,8 +208,8 @@ namespace Altzone.Scripts.Model.Poco.Game
                     return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, Attack + 1) * (BaseCharacter.GetSegmentAmount(_characterBase, statType, Attack + 1)- AttackSegmentCount);
                 case StatType.Defence:
                     return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, Defence + 1) * (BaseCharacter.GetSegmentAmount(_characterBase, statType, Defence + 1) - DefenceSegmentCount);
-                case StatType.Resistance:
-                    return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, Resistance + 1) * (BaseCharacter.GetSegmentAmount(_characterBase, statType, Resistance + 1) - ResistanceSegmentCount);
+                case StatType.CharacterSize:
+                    return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, CharacterSize + 1) * (BaseCharacter.GetSegmentAmount(_characterBase, statType, CharacterSize + 1) - CharaacterSizeSegmentCount);
                 case StatType.Hp:
                     return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, Hp + 1) * (BaseCharacter.GetSegmentAmount(_characterBase, statType, Hp + 1) - HpSegmentCount);
                 case StatType.Speed:
@@ -228,8 +228,8 @@ namespace Altzone.Scripts.Model.Poco.Game
                     return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, Attack+1);
                 case StatType.Defence:
                     return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, Defence+1);
-                case StatType.Resistance:
-                    return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, Resistance+1);
+                case StatType.CharacterSize:
+                    return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, CharacterSize+1);
                 case StatType.Hp:
                     return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, Hp+1);
                 case StatType.Speed:
