@@ -25,9 +25,18 @@ public class DailyTaskProgressManager : AltMonoBehaviour
     [SerializeField] private RectTransform _progressPopupDailyTaskVisibleLocation;
     [SerializeField] private RectTransform _progressPopupDailyTaskHiddenLocation;
     [Space]
+    [SerializeField] private GameObject _progressPopupProgressContainer;
+    [SerializeField] private GameObject _progressPopupRewardContainer;
+    [Space]
+    [SerializeField] private GameObject _progressPopupPointsRewardContainer;
+    [SerializeField] private GameObject _progressPopupCoinsRewardContainer;
+    [Space]
     [SerializeField] private TMP_Text _progressPopupDailyTaskShortDescription;
     [SerializeField] private TMP_Text _progressPopupDailyTaskValue;
     [SerializeField] private Image _progressPopupDailyTaskFillImage;
+    [Space]
+    [SerializeField] private TMP_Text _progressPopupPointsRewardValue;
+    [SerializeField] private TMP_Text _progressPopupCoinsRewardValue;
     [Space]
     [SerializeField] private float _progressPopupContainerShowCooldown = 5f;
     [Tooltip("The time it takes for the popup window to move between positions.")]
@@ -93,6 +102,8 @@ public class DailyTaskProgressManager : AltMonoBehaviour
 
         _progressPopupDailyTaskContainer.position = _progressPopupDailyTaskHiddenLocation.position;
         _progressPopupDailyTaskContainer.gameObject.SetActive(false);
+        _progressPopupProgressContainer.SetActive(true);
+        _progressPopupRewardContainer.SetActive(false);
     }
 
     //TODO: Remove when available in AltMonoBehaviour.
@@ -199,6 +210,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
         PlayerData savePlayerData = null;
         bool? timeout = null;
         string taskTitle = "";
+        int points = 0, coins = 0;
 
         //Get player data.
         StartCoroutine(PlayerDataTransferer("get", null, tdata => timeout = tdata, pdata => playerData = pdata));
@@ -236,6 +248,8 @@ public class DailyTaskProgressManager : AltMonoBehaviour
 
             playerData.points += playerData.Task.Points;
             taskTitle = CurrentPlayerTask.Title;
+            points = CurrentPlayerTask.Points;
+            coins = CurrentPlayerTask.Coins;
 
             //Clean up.
             _previousTaskStrings.Clear();
@@ -257,7 +271,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
         if (CurrentPlayerTask != null)
             SetProgressPopup();
         else
-            SetProgressPopupDone(taskTitle);
+            SetProgressPopupDone(taskTitle, points, coins);
 
     }
 
@@ -431,21 +445,28 @@ public class DailyTaskProgressManager : AltMonoBehaviour
         }
 
         _progressPopupDailyTaskContainer.gameObject.SetActive(false);
+        _progressPopupRewardContainer.SetActive(false);
         StartCoroutine(ProgressPopupCooldownTimer());
     }
 
     private void SetProgressPopup()
     {
+        _progressPopupProgressContainer.SetActive(true);
         _progressPopupDailyTaskShortDescription.text = CurrentPlayerTask.Title;
         _progressPopupDailyTaskValue.text = $"{CurrentPlayerTask.TaskProgress}/{CurrentPlayerTask.Amount}";
         _progressPopupDailyTaskFillImage.fillAmount = ((float)CurrentPlayerTask.TaskProgress / (float)CurrentPlayerTask.Amount);
     }
 
-    private void SetProgressPopupDone(string title)
+    private void SetProgressPopupDone(string title, int points, int coins)
     {
+        _progressPopupProgressContainer.SetActive(false);
+        _progressPopupRewardContainer.SetActive(true);
+        _progressPopupPointsRewardContainer.SetActive(points != 0);
+        _progressPopupCoinsRewardContainer.SetActive(coins != 0);
+
         _progressPopupDailyTaskShortDescription.text = title;
-        _progressPopupDailyTaskValue.text = "Valmis";
-        _progressPopupDailyTaskFillImage.fillAmount = 1f;
+        _progressPopupPointsRewardValue.text = "" + points + " p";
+        _progressPopupCoinsRewardValue.text = "" + coins;
     }
 
     private IEnumerator ProgressPopupCooldownTimer()
