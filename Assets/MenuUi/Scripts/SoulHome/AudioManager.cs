@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using UnityEditor;
+#if UNITY_EDITOR
+using UnityEditorInternal;
+#endif
 using UnityEngine;
 
 namespace MenuUI.Scripts.SoulHome
@@ -61,9 +64,9 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (type == AudioTypeName.None) return;
 
-            foreach(AudioBlock block in _sfxList)
+            foreach (AudioBlock block in _sfxList)
             {
-                if(block.type == type) block.audioSource.Play();
+                if (block.type == type) block.audioSource.Play();
             }
         }
 
@@ -80,9 +83,9 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (value < 1) return;
 
-            if (_sfxList.Count < value-1)
+            if (_sfxList.Count < value - 1)
             {
-                _sfxList[value-1].audioSource.Play();
+                _sfxList[value - 1].audioSource.Play();
             }
         }
 
@@ -139,6 +142,27 @@ namespace MenuUI.Scripts.SoulHome
             _musicList.StopMusic();
         }
 
+        [SerializeField]  public List<string> _audioTypes = new();
+
+        List<string> AudioTypesInHierarcy
+        {
+            get
+            {
+                List<string> AudioTypes = new();
+                foreach (Transform transform in transform)
+                {
+                    foreach (Transform transform2 in transform)
+                    {
+                        if(transform2.GetComponent<AudioSource>() == null)
+                        {
+                            AudioTypes.Add(transform2.gameObject.name);
+                        }
+                    }
+                }
+                return AudioTypes;
+            }
+        }
+
         public void AddAudio(string name, AudioSourceType sourcetype, AudioTypeName type)
         {
             Transform parentTransform = transform;
@@ -163,6 +187,10 @@ namespace MenuUI.Scripts.SoulHome
                         gameObject.name = "SoundFx";
                         parentTransform = gameObject.transform;
                     }
+                    else
+                    {
+                        parentTransform = sfxTransform;
+                    }
                     break;
                 case AudioSourceType.Ambient:
                     Transform ambient = transform.Find("Ambient");
@@ -172,6 +200,10 @@ namespace MenuUI.Scripts.SoulHome
                         gameObject.name = "Ambient";
                         parentTransform = gameObject.transform;
                     }
+                    else
+                    {
+                        parentTransform = ambient;
+                    }
                     break;
                 default:
                     Transform undefined = transform.Find("Undefined");
@@ -180,6 +212,10 @@ namespace MenuUI.Scripts.SoulHome
                         GameObject gameObject = Instantiate(new GameObject(), transform);
                         gameObject.name = "Undefined";
                         parentTransform = gameObject.transform;
+                    }
+                    else
+                    {
+                        parentTransform = undefined;
                     }
                     break;
             }
@@ -215,11 +251,43 @@ namespace MenuUI.Scripts.SoulHome
         private AudioTypeName _sourceType = AudioTypeName.Music;
         private AudioSourceType _audioSourceType = AudioSourceType.Sfx;
         private string _newName = "";
+        private string _newTypeName = "";
+        [SerializeField] List<string> _audioTypes = new();
+        int index = 0;
+        int index2 = 0;
         public override void OnInspectorGUI()
         {
+            serializedObject.Update();
             DrawDefaultInspector();
-            
+
+            var prop = serializedObject.FindProperty("_audioTypes");
+            _audioTypes.Clear();
+            int i = 0;
+            for (i = 0; i < prop.arraySize; i++)
+            {
+                _audioTypes.Add(prop.GetArrayElementAtIndex(i).stringValue);
+            }
+
             AudioManager script = (AudioManager)target;
+
+            EditorGUILayout.LabelField("");
+            EditorGUILayout.LabelField("AudioTypes", EditorStyles.boldLabel);
+            index= EditorGUILayout.Popup("AudioTypes", index, _audioTypes.ToArray());
+            _newTypeName = EditorGUILayout.TextField("Name", _newTypeName);
+            if (GUILayout.Button("Add AudioType"))
+            {
+                _audioTypes.Add(_newTypeName);
+                script._audioTypes.Add(_newTypeName);
+                prop.InsertArrayElementAtIndex(i);
+                _newTypeName = "";
+            }
+            if (GUILayout.Button("Remove AudioType"))
+            {
+                _audioTypes.Remove(_audioTypes[index]);
+                prop.DeleteArrayElementAtIndex(index);
+                _newTypeName = "";
+            }
+
             EditorGUILayout.LabelField("");
             EditorGUILayout.LabelField("New AudioSource", EditorStyles.boldLabel);
             _audioSourceType = (AudioSourceType)EditorGUILayout.EnumPopup("Audio Source Type", _audioSourceType);
@@ -229,11 +297,11 @@ namespace MenuUI.Scripts.SoulHome
                     break;
                 case AudioSourceType.Sfx:
                     _newName = EditorGUILayout.TextField("Name", _newName);
-                    _sourceType = (AudioTypeName)EditorGUILayout.EnumPopup("Audio Type Name", _sourceType);
+                    index2 = EditorGUILayout.Popup("AudioTypes", index2, _audioTypes.ToArray());
                     break;
                 case AudioSourceType.Ambient:
                     _newName = EditorGUILayout.TextField("Name", _newName);
-                    _sourceType = (AudioTypeName)EditorGUILayout.EnumPopup("Audio Type Name", _sourceType);
+                    index2 = EditorGUILayout.Popup("AudioTypes", index2, _audioTypes.ToArray());
                     break;
             }
             if (GUILayout.Button("Add AudioSource"))
@@ -241,6 +309,7 @@ namespace MenuUI.Scripts.SoulHome
                 script.AddAudio(_newName, _audioSourceType, _sourceType);
                 _newName = "";
             }
+            serializedObject.ApplyModifiedProperties();
         }
     }
 

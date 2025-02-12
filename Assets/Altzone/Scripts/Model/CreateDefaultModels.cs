@@ -23,8 +23,8 @@ namespace Altzone.Scripts.Model
 
         internal static PlayerData CreatePlayerData(string playerGuid, string clanId, int currentCustomCharacterId)
         {
-            int[] characters = new int[5];
-            characters[0] = currentCustomCharacterId;
+            string[] characters = new string[5];
+            characters[0] = currentCustomCharacterId.ToString();
             return new PlayerData(FakeMongoDbId(), clanId, currentCustomCharacterId, characters, "Player", 0, playerGuid);
         }
 

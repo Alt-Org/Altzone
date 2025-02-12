@@ -1,19 +1,18 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Lobby;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 namespace MenuUI.Scripts.Lobby.InLobby
 {
-    public class InLobbyController : MonoBehaviour
+    public class InLobbyController : AltMonoBehaviour
     {
         [SerializeField] private InLobbyView _view;
         [SerializeField] private SelectedCharactersPopup _selectedCharactersPopup;
+        [SerializeField] private GameObject _popupContents;
 
         private string _currentRegion;
 
@@ -118,44 +117,56 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         public void ToggleWindow()
         {
-            if (transform.GetChild(0).gameObject.activeSelf)
+            if (_popupContents.gameObject.activeSelf)
             {
                 CloseWindow();
             }
             else
             {
-                // Check if player has all 3 characters selected or no
-                PlayerData _playerData = null;
-
-                var gameConfig = GameConfig.Get();
-                var playerSettings = gameConfig.PlayerSettings;
-                var playerGuid = playerSettings.PlayerGuid;
-                var store = Storefront.Get();
-                store.GetPlayerData(playerGuid, playerData =>
+                StartCoroutine(GetPlayerData(playerData =>
                 {
-                    _playerData = playerData;
-                });
+                    // Check if player has all 3 characters selected or no
 
-                if (_playerData != null)
-                {
-                    for (int i = 0; i < 3; i++)
+                    if (playerData != null)
                     {
-                        if (_playerData.SelectedCharacterIds[i] == 0) // if any of the selected characters is missing
+                        for (int i = 0; i < 3; i++)
                         {
-                            _selectedCharactersPopup.OpenPopup();
-                            return;
+                            if (string.IsNullOrEmpty(playerData.SelectedCharacterIds[i]) || playerData.SelectedCharacterIds[i] == "0") // if any of the selected characters is missing
+                            {
+                                StartCoroutine(ShowSelectedCharactersPopup());
+                                return;
+                            }
                         }
                     }
-                }
-
-                // Open battle popup if all 3 are selected
-                transform.GetChild(0).gameObject.SetActive(true);
+                    // Open battle popup if all 3 are selected
+                    OpenWindow();
+                }));
             }
         }
 
+
+        private IEnumerator ShowSelectedCharactersPopup()
+        {
+            yield return StartCoroutine(_selectedCharactersPopup.ShowPopup(showBattlePopup =>
+            {
+                if (showBattlePopup == true)
+                {
+                    OpenWindow();
+                }
+            }));
+        }
+
+
+        private void OpenWindow()
+        {
+            _popupContents.SetActive(true);
+            _view.ShowMainPanel();
+        }
+
+
         public void CloseWindow()
         {
-            transform.GetChild(0).gameObject.SetActive(false);
+            _popupContents.SetActive(false);
         }
 
         private void CharacterButtonOnClick()

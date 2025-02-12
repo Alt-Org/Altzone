@@ -96,7 +96,7 @@ namespace Altzone.Scripts
         /// <summary>
         /// Gets <c>PlayerTasks</c> entity.
         /// </summary>
-        public void GetPlayerTasks( Action<PlayerTasks> callback)
+        public void GetPlayerTasks( Action<List<PlayerTask>> callback)
         {
             _localModels.GetPlayerTasks(callback);
         }
@@ -104,7 +104,7 @@ namespace Altzone.Scripts
         /// <summary>
         /// Saves <c>PlayerTasks</c> entity.
         /// </summary>
-        public void SavePlayerTasks(PlayerTasks tasks, Action<PlayerTasks> callback)
+        public void SavePlayerTasks(List<PlayerTask> tasks, Action<List<PlayerTask>> callback)
         {
             _localModels.SavePlayerTasks(tasks, callback);
         }
@@ -131,6 +131,11 @@ namespace Altzone.Scripts
         }
 
         public CustomYieldInstruction GetAllBaseCharacterYield(Action<ReadOnlyCollection<BaseCharacter>> callback)
+        {
+            return new MYCustomYieldInstruction(_localModels, callback);
+        }
+
+        public CustomYieldInstruction GetAllDefaultCharacterYield(Action<ReadOnlyCollection<CustomCharacter>> callback)
         {
             return new MYCustomYieldInstruction(_localModels, callback);
         }
@@ -188,6 +193,22 @@ namespace Altzone.Scripts
                 }
 
                 localModels.GetAllBaseCharacters(SafeCallbackWrapperCharacters);
+            }
+            public MYCustomYieldInstruction(LocalModels localModels, Action<ReadOnlyCollection<CustomCharacter>> callback)
+            {
+                void SafeCallbackWrapperDefaultCharacters(ReadOnlyCollection<CustomCharacter> result)
+                {
+                    try
+                    {
+                        callback(result);
+                    }
+                    finally
+                    {
+                        _keepWaiting = false;
+                    }
+                }
+
+                localModels.GetAllDefaultCharacters(SafeCallbackWrapperDefaultCharacters);
             }
         }
         public void GetDefaultFurniture(Action<List<ClanFurniture>> callback)

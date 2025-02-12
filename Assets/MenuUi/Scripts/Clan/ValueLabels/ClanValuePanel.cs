@@ -19,7 +19,7 @@ public class ClanValuePanel : MonoBehaviour
         {
             GameObject labelPanel = Instantiate(_valuePrefab, _grid.transform);
             ValueLabelHandler labelHandler = labelPanel.GetComponent<ValueLabelHandler>();
-            labelHandler.SetLabelInfo(value);
+            labelHandler.SetLabelInfo(value, true);
         }
     }
 }
