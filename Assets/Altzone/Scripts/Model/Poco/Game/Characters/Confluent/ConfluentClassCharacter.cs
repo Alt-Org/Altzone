@@ -14,7 +14,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         protected ConfluentClassCharacter()
         {
             _attackStrength = ValueStrength.VeryWeak;
-            _resistanceStrength = ValueStrength.Strong;
+            _characterSizeStrength = ValueStrength.Strong;
             _hpStrength = ValueStrength.SemiWeak;
             _defenceStrength = ValueStrength.Strong;
             _speedStrength = ValueStrength.Medium;

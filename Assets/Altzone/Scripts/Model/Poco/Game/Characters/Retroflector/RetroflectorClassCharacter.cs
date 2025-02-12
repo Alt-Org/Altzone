@@ -14,7 +14,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         protected RetroflectorClassCharacter()
         {
             _attackStrength = ValueStrength.SemiWeak;
-            _resistanceStrength = ValueStrength.VeryStrong;
+            _characterSizeStrength = ValueStrength.VeryStrong;
             _hpStrength = ValueStrength.SemiStrong;
             _defenceStrength = ValueStrength.Strong;
             _speedStrength = ValueStrength.Weak;

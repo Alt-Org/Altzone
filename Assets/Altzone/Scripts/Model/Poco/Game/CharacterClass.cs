@@ -16,7 +16,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         [Unique] public string Name;
         public int Hp;
         public int Speed;
-        public int Resistance;
+        public int CharacterSize;
         public int Attack;
         public int Defence;
 
@@ -32,7 +32,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             Name = GetClassName(id);
             Hp = hp;
             Speed = speed;
-            Resistance = resistance;
+            CharacterSize = resistance;
             Attack = attack;
             Defence = defence;
         }
@@ -45,7 +45,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public override string ToString()
         {
             return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}" +
-                   $", {nameof(Speed)}: {Speed}, {nameof(Resistance)}: {Resistance}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";
+                   $", {nameof(Speed)}: {Speed}, {nameof(CharacterSize)}: {CharacterSize}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";
         }
 
         public static string GetClassName(CharacterClassID id)

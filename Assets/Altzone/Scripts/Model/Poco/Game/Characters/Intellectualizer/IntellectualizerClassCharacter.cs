@@ -14,7 +14,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         protected IntellectualizerClassCharacter()
         {
             _attackStrength = ValueStrength.Medium;
-            _resistanceStrength = ValueStrength.Weak;
+            _characterSizeStrength = ValueStrength.Weak;
             _hpStrength = ValueStrength.Medium;
             _defenceStrength = ValueStrength.SemiWeak;
             _speedStrength = ValueStrength.SemiWeak;

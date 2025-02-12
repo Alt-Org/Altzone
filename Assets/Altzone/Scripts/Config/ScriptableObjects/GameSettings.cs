@@ -116,7 +116,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         public PlayerActorBase _battlePrefab;
         [Range(0, 10)] public int _hp;
         [Range(0, 10)] public int _speed;
-        [Range(0, 10)] public int _resistance;
+        [Range(0, 10)] public int _characterSize;
         [Range(0, 10)] public int _attack;
         [Range(0, 10)] public int _defence;
 
@@ -126,7 +126,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
             _character = character;
             _hp = hp;
             _speed=Speed;
-            _resistance = Resistance;
+            _characterSize = Resistance;
             _attack = Attack;
             _defence = Defence;
         }

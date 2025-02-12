@@ -48,7 +48,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 _attackText.text = _controller.GetStat(StatType.Attack).ToString();
                 _hpText.text = _controller.GetStat(StatType.Hp).ToString();
                 _defenceText.text = _controller.GetStat(StatType.Defence).ToString();
-                _charSizeText.text = _controller.GetStat(StatType.Resistance).ToString();
+                _charSizeText.text = _controller.GetStat(StatType.CharacterSize).ToString();
                 _speedText.text = _controller.GetStat(StatType.Speed).ToString();
             }
             else
@@ -64,8 +64,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                     case StatType.Defence:
                         _defenceText.text = _controller.GetStat(StatType.Defence).ToString();
                         break;
-                    case StatType.Resistance:
-                        _charSizeText.text = _controller.GetStat(StatType.Resistance).ToString();
+                    case StatType.CharacterSize:
+                        _charSizeText.text = _controller.GetStat(StatType.CharacterSize).ToString();
                         break;
                     case StatType.Speed:
                         _speedText.text = _controller.GetStat(StatType.Speed).ToString();
