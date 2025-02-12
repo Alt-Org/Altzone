@@ -47,12 +47,6 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private TMP_Text _artisticDescription;
         [SerializeField] private TMP_Text _rarity;
 
-        [Header("Rarity Color")]
-        [SerializeField] private Color commonColor = Color.gray;
-        [SerializeField] private Color rareColor = Color.blue;
-        [SerializeField] private Color epicColor = Color.magenta;
-        [SerializeField] private Color antiqueColor = Color.yellow;
-
         private List<StorageFurniture> _items;
         private List<GameObject> _slotsList = new();
 
@@ -216,58 +210,10 @@ namespace MenuUi.Scripts.Storage
             {
                 Transform toSet = _slotsList[i].transform;
 
-                // Set color based on rarity
-                toSet.GetChild(1).GetComponent<Image>().color = GetColorByRarity(_furn.Rarity.ToString());
+                InvSlotInfoHandler infoHandler = toSet.GetComponent<InvSlotInfoHandler>();
+                infoHandler.SetSlotInfo(_furn, _sortingBy);
 
-                // Icon
-                toSet.GetChild(3).GetComponent<Image>().sprite = _furn.Sprite;
                 ScaleSprite(_furn, toSet.GetChild(3).GetComponent<RectTransform>());
-
-                // Name
-                if(_sortingBy != 0) toSet.GetChild(4).GetComponent<TMP_Text>().text = _furn.VisibleName;
-                else toSet.GetChild(4).GetComponent<TMP_Text>().text = "";
-
-                // Weight
-                switch (_sortingBy)
-                {
-                    case 0:
-                        toSet.GetChild(6).GetComponent<TMP_Text>().text = _furn.VisibleName;
-                        break;
-                    case 1:
-                        toSet.GetChild(6).GetComponent<TMP_Text>().text = _furn.Value.ToString();
-                        break;
-                    case 2:
-                        toSet.GetChild(6).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
-                        break;
-                    case 3:
-                        toSet.GetChild(6).GetComponent<TMP_Text>().text = _furn.Rarity.ToString();
-                        break;
-                    case 4:
-                        toSet.GetChild(6).GetComponent<TMP_Text>().text = _furn.SetName;
-                        break;
-                }
-                // Shape
-                toSet.GetChild(7).GetComponent<Image>().sprite = GetIcon("");
-
-                // SetName
-                toSet.GetChild(8).GetComponent<TMP_Text>().text = _furn.SetName;
-
-                // Id
-                toSet.GetChild(9).GetComponent<TMP_Text>().text = _furn.Info.DiagnoseNumber;
-                // Name
-                toSet.GetChild(10).GetChild(0).GetComponent<TMP_Text>().text = "Sielunkodissa";
-                if (_furn.Position == new Vector2Int(-1, -1))
-                {
-                    toSet.GetChild(10).gameObject.SetActive(false);
-                }
-                else
-                {
-                    toSet.GetChild(10).gameObject.SetActive(true);
-                }
-
-                // Coin
-                if(_sortingBy == 1) toSet.GetChild(11).gameObject.SetActive(true);
-                else toSet.GetChild(11).gameObject.SetActive(false);
 
                 i++;
             }
@@ -467,18 +413,6 @@ namespace MenuUi.Scripts.Storage
         private float GetTotalInventoryValue()
         {
             return _items.Sum(item => item.Value);
-        }
-
-        private Color GetColorByRarity(string rarity)
-        {
-            return rarity switch
-            {
-                "Common" => commonColor,
-                "Rare" => rareColor,
-                "Epic" => epicColor,
-                "Antique" => antiqueColor,
-                _ => commonColor, // Default to common color
-            };
         }
 
         private FurnitureSetInfo GetFurnitureSetInfo(string furnitureName)
