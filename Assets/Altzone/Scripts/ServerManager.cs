@@ -266,7 +266,6 @@ public class ServerManager : MonoBehaviour
         PlayerData playerData = null;
 
         storefront.GetPlayerData(player.uniqueIdentifier, p => playerData = p);
-        Debug.LogWarning(characters.Count);
 
         int currentCustomCharacterId = (int)(player?.currentAvatarId == null ? (playerData == null? 0:playerData.SelectedCharacterId) : player.currentAvatarId);
         string[] currentBattleCharacterIds = (player?.battleCharacter_ids == null || player.battleCharacter_ids.Length < 3) ? ((playerData == null || playerData.SelectedCharacterIds.Length < 3) ? new string[3] {"0","0","0"} : playerData.SelectedCharacterIds) : player.battleCharacter_ids;
@@ -398,7 +397,7 @@ public class ServerManager : MonoBehaviour
 
         yield return StartCoroutine(GetClanPlayers(members =>
         {
-            clanData.Members = members;
+            if(members!= null) clanData.Members = members;
         }));
 
         // Saves clan data including its items.
@@ -425,7 +424,7 @@ public class ServerManager : MonoBehaviour
                     callback(members);
                 }
                 else
-                    callback(null);
+                    callback(new());
             }));
         }
     }
