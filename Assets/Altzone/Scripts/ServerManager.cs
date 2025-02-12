@@ -16,6 +16,7 @@ using Altzone.Scripts.Model;
 using System.Collections.ObjectModel;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Altzone.Scripts.Settings;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -109,8 +110,7 @@ public class ServerManager : MonoBehaviour
     /// </summary>
     public void RaiseClanChangedEvent()
     {
-        if (OnClanChanged != null)
-            OnClanChanged(Clan);
+        OnClanChanged?.Invoke(Clan);
     }
 
     /// <summary>
@@ -118,8 +118,7 @@ public class ServerManager : MonoBehaviour
     /// </summary>
     public void RaiseClanInventoryChangedEvent()
     {
-        if (OnClanInventoryChanged != null)
-            OnClanInventoryChanged();
+        OnClanInventoryChanged?.Invoke();
     }
 
     /// <summary>
@@ -182,15 +181,13 @@ public class ServerManager : MonoBehaviour
             yield return new WaitUntil(() => gettingTasks == false);
             SetPlayerValues(Player, characters);
 
-            if (OnLogInStatusChanged != null)
-                OnLogInStatusChanged(true);
+            OnLogInStatusChanged?.Invoke(true);
 
             if (Clan == null)
             {
                 StartCoroutine(GetClanFromServer(clan =>
                 {
-                    if (OnClanFetchFinished != null)
-                        OnClanFetchFinished();
+                    OnClanFetchFinished?.Invoke();
                     if (clan == null)
                     {
                         return;
@@ -210,18 +207,16 @@ public class ServerManager : MonoBehaviour
     {
         Reset();
 
-        var playerSettings = GameConfig.Get().PlayerSettings;
+        PlayerSettings playerSettings = GameConfig.Get().PlayerSettings;
 
         // 12345 is the DemoPlayer player in DataStorage
         // If in the future we force log in, this default player is not necessary.
         playerSettings.PlayerGuid = "12345";
         isLoggedIn = false;
 
-        if (OnLogInStatusChanged != null)
-            OnLogInStatusChanged(false);
+        OnLogInStatusChanged?.Invoke(false);
 
-        if (OnClanChanged != null)
-            OnClanChanged(null);
+        OnClanChanged?.Invoke(null);
     }
 
     /// <summary>
@@ -234,15 +229,15 @@ public class ServerManager : MonoBehaviour
     /// </remarks>
     public void SetProfileValues(JObject profileJSON)
     {
-        var accessToken = profileJSON["accessToken"];
+        JToken accessToken = profileJSON["accessToken"];
         Assert.IsNotNull(accessToken);
         AccessToken = (string)accessToken;
 
-        var tokenExpires = profileJSON["tokenExpires"];
+        JToken tokenExpires = profileJSON["tokenExpires"];
         Assert.IsNotNull(tokenExpires);
         AccessTokenExpiration = tokenExpires.Value<int>();
 
-        var player = profileJSON["Player"];
+        JToken player = profileJSON["Player"];
         Assert.IsNotNull(player);
         PlayerPrefs.SetString("playerId", (string)player["_id"] ?? string.Empty);
 
@@ -262,13 +257,13 @@ public class ServerManager : MonoBehaviour
             clanId = "12345";
 
         // Check if the customplayer index is in DataStorage
-        var storefront = Storefront.Get();
+        DataStore storefront = Storefront.Get();
         PlayerData playerData = null;
 
         storefront.GetPlayerData(player.uniqueIdentifier, p => playerData = p);
 
         int currentCustomCharacterId = (int)(player?.currentAvatarId == null ? (playerData == null? 0:playerData.SelectedCharacterId) : player.currentAvatarId);
-        string[] currentBattleCharacterIds = (player?.battleCharacter_ids == null || player.battleCharacter_ids.Length < 3) ? ((playerData == null || playerData.SelectedCharacterIds.Length < 3) ? new string[3] {"0","0","0"} : playerData.SelectedCharacterIds) : player.battleCharacter_ids;
+        string[] currentBattleCharacterIds = /*(player?.battleCharacter_ids == null || player.battleCharacter_ids.Length < 3)*/true ? ((playerData == null || playerData.SelectedCharacterIds.Length < 3) ? new string[3] { "0", "0", "0" } : playerData.SelectedCharacterIds) : player.battleCharacter_ids;
 
         PlayerData newPlayerData = null;
         newPlayerData = new PlayerData(player._id, player.clan_id, currentCustomCharacterId, currentBattleCharacterIds, player.name, player.backpackCapacity, player.uniqueIdentifier);
@@ -291,7 +286,7 @@ public class ServerManager : MonoBehaviour
         PlayerPrefs.SetString("profileId", player.profile_id);
 
         Storefront.Get().SavePlayerData(newPlayerData, null);
-        var playerSettings = GameConfig.Get().PlayerSettings;
+        PlayerSettings playerSettings = GameConfig.Get().PlayerSettings;
 
         playerSettings.PlayerGuid = player.uniqueIdentifier;
 
@@ -312,9 +307,9 @@ public class ServerManager : MonoBehaviour
         ClanData clanData = null;
 
         var gameConfig = GameConfig.Get();
-        var playerSettings = gameConfig.PlayerSettings;
-        var playerGuid = playerSettings.PlayerGuid;
-        var store = Storefront.Get();
+        PlayerSettings playerSettings = gameConfig.PlayerSettings;
+        string playerGuid = playerSettings.PlayerGuid;
+        DataStore store = Storefront.Get();
         //yield return null;
         // Checks that the player is found in DataStorage
         store.GetPlayerData(playerGuid, playerDataFromStorage =>
@@ -372,8 +367,8 @@ public class ServerManager : MonoBehaviour
         {
             if (items != null)
             {
-                ClanInventory inventory = new ClanInventory();
-                List<ClanFurniture> clanFurniture = new List<ClanFurniture>();
+                ClanInventory inventory = new();
+                List<ClanFurniture> clanFurniture = new();
                 if (!_skipServerFurniture)
                 {
                     foreach (ServerItem item in items)
@@ -450,7 +445,7 @@ public class ServerManager : MonoBehaviour
         }));
         new WaitUntil(() => gettingCharacter == false);
 
-        var storefront = Storefront.Get();
+        DataStore storefront = Storefront.Get();
         PlayerData playerData = null;
 
         storefront.GetPlayerData(Player.uniqueIdentifier, p => playerData = p);
@@ -651,10 +646,10 @@ public class ServerManager : MonoBehaviour
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                List<ClanMember> members = new List<ClanMember>();
+                List<ClanMember> members = new();
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 JArray middleresult = result["data"]["Clan"]["Player"] as JArray;
-                foreach (var value in middleresult)
+                foreach (JToken value in middleresult)
                 {
                     members.Add(new(value.ToObject<ServerPlayer>()));
                 }
@@ -727,7 +722,7 @@ public class ServerManager : MonoBehaviour
                 Stock = null;
 
                 PlayerData playerData = null;
-                var storefront = Storefront.Get();
+                DataStore storefront = Storefront.Get();
 
                 storefront.GetPlayerData(Player.uniqueIdentifier, data => playerData = data);
 
@@ -985,13 +980,13 @@ public class ServerManager : MonoBehaviour
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                List<ServerItem> requestItems = new List<ServerItem>();
+                List<ServerItem> requestItems = new();
                 JObject jObject = JObject.Parse(request.downloadHandler.text);
                 Debug.LogWarning(jObject);
                 JArray array = (JArray)jObject["data"]["Stock"]["Item"];
                 requestItems = array.ToObject<List<ServerItem>>();
 
-                foreach (var item in requestItems)
+                foreach (ServerItem item in requestItems)
                     serverItems.Add(item);
 
                 paginationData = jObject["paginationData"]?.ToObject<PaginationData>();
