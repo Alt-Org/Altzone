@@ -704,6 +704,15 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator UpdateClanToServer(ClanData data, Action<bool> callback)
     {
+        ClanLogo logo = new ClanLogo();
+        logo.logoType = ClanLogoType.Heart;
+        logo.pieceColors = new();
+
+        foreach (var piece in data.ClanHeartPieces)
+        {
+            logo.pieceColors.Add(ColorUtility.ToHtmlStringRGB(piece.pieceColor));
+        }
+
         string body = JObject.FromObject(
             new {
                 _id=data.Id,
@@ -714,7 +723,8 @@ public class ServerManager : MonoBehaviour
                 ageRange=data.ClanAge,
                 goal=data.Goals,
                 phrase=data.Phrase,
-                language=data.Language
+                language=data.Language,
+                clanLogo = logo
             },
             JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
         ).ToString();

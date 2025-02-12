@@ -136,12 +136,13 @@ public class ClanSettings : MonoBehaviour
             }
             clanData.Labels = serverValues;
 
+            clanData.ClanHeartPieces = _heartPieces;
+
             // These are not saved at the moment
             bool isOpen = !_clanOpenToggle.isOn;
             string password = _clanPasswordField.text;
             clanData.ClanRights = _clanRightsPanel.ClanRights;
-            clanData.ClanHeartPieces = _heartPieces;
-
+            
             StartCoroutine(ServerManager.Instance.UpdateClanToServer(clanData, success =>
             {
                 _saveButton.interactable = true;
