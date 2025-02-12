@@ -68,7 +68,7 @@ public class HahmonValinta : AltMonoBehaviour
         {
             _playerData = playerData;
             //characters = playerData.BattleCharacters.ToList();
-        },false);
+        });
     }
 
     void CharacterSelected(CharacterData data)
@@ -127,7 +127,26 @@ public class HahmonValinta : AltMonoBehaviour
                 }));
                 new WaitUntil(() => callFinished == true);
             }
-            if (_playerData.CustomCharacters.Count < 3)
+
+            List<CustomCharacter> serverCharacters = null;
+            bool gettingCharacter = true;
+            yield return StartCoroutine(ServerManager.Instance.GetCustomCharactersFromServer(characterList =>
+            {
+                if (characterList == null)
+                {
+                    Debug.LogError("Failed to fetch Custom Characters.");
+                    gettingCharacter = false;
+                    serverCharacters = new();
+                }
+                else
+                {
+                    gettingCharacter = false;
+                    serverCharacters = characterList;
+                }
+            }));
+            new WaitUntil(() => gettingCharacter == false);
+
+            if (serverCharacters.Count < 3)
             {
                 List<CharacterID> characters = SelectStartingCharacter(id);
                 foreach (var character in characters)

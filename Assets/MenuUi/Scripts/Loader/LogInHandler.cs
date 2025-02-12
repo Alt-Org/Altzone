@@ -123,7 +123,7 @@ namespace MenuUi.Scripts.Loader
         {
             //_loadInfoController.SetInfoText(LogInStatus.FetchPlayerData);
             PlayerData playerData = null;
-            StartCoroutine(GetPlayerData(p => playerData = p, false));
+            StartCoroutine(GetPlayerData(p => playerData = p));
 
             yield return new WaitUntil(() => playerData != null);
 
