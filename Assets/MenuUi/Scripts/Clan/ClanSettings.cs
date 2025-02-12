@@ -23,7 +23,7 @@ public class ClanSettings : MonoBehaviour
     [SerializeField] private GameObject _clanPassword;
     [SerializeField] private TMP_InputField _clanPasswordField;
     [SerializeField] private Toggle _clanOpenToggle;
-    [SerializeField] private ClanGoalDropdown _goalDropdown;
+    [SerializeField] private ClanGoalSelection _goalSelection;
     [SerializeField] private ClanAgeSelection _ageSelection;
 
     [Header("Language")]
@@ -76,7 +76,7 @@ public class ClanSettings : MonoBehaviour
             _clanOpenToggle.isOn = !clan.IsOpen;
             _clanPassword.SetActive(!clan.IsOpen);
 
-            _goalDropdown.Initialize(clan.Goals);
+            _goalSelection.Initialize(clan.Goals);
             _ageSelection.Initialize(clan.ClanAge);
 
             _clanRightsPanel.InitializeRightsToggles(clan.ClanRights);
@@ -124,7 +124,7 @@ public class ClanSettings : MonoBehaviour
         {
             clanData.Phrase = _clanPhraseField.text;
             clanData.Language = _languageList.SelectedLanguage;
-            clanData.Goals = _goalDropdown.GetSelected();
+            clanData.Goals = _goalSelection.GoalsRange;
             clanData.ClanAge = _ageSelection.ClanAgeRange;
 
             ClanValues[] values = _valueSelection.SelectedValues.ToArray();
@@ -165,7 +165,7 @@ public class ClanSettings : MonoBehaviour
             bool hasMadeEdits = _heartColorChanger.IsAnyPieceChanged()
                 || clanData.Phrase != _clanPhraseField.text
                 || clanData.Language != _languageList.SelectedLanguage
-                || clanData.Goals != _goalDropdown.GetSelected()
+                || clanData.Goals != _goalSelection.GoalsRange
                 || clanData.ClanAge != _ageSelection.ClanAgeRange
                 || !clanData.ClanRights.SequenceEqual(_clanRightsPanel.ClanRights);
 
