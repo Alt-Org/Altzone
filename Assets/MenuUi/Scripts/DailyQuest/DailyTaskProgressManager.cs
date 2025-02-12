@@ -184,6 +184,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
         PlayerData playerData = null;
         PlayerData savePlayerData = null;
         bool? timeout = null;
+        string taskTitle = "";
 
         //Get player data.
         StartCoroutine(PlayerDataTransferer("get", null, tdata => timeout = tdata, pdata => playerData = pdata));
@@ -196,8 +197,6 @@ public class DailyTaskProgressManager : AltMonoBehaviour
 
         if (OnTaskProgressed != null)
             OnTaskProgressed.Invoke();
-
-        SetPopupDailyTask();
 
         //Is task done check.
         if (CurrentPlayerTask.TaskProgress >= CurrentPlayerTask.Amount)
@@ -222,6 +221,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             }
 
             playerData.points += playerData.Task.Points;
+            taskTitle = CurrentPlayerTask.Title;
 
             //Clean up.
             _previousTaskStrings.Clear();
@@ -238,6 +238,12 @@ public class DailyTaskProgressManager : AltMonoBehaviour
 
         //if (savePlayerData == null)
         //    yield break;
+
+        if (CurrentPlayerTask != null)
+            SetPopupDailyTask();
+        else
+            SetPopupDailyTaskDone(taskTitle);
+
     }
 
     private IEnumerator DistributeRewardsForClan(string clanId, System.Action<bool?> exitCallback)
@@ -404,6 +410,13 @@ public class DailyTaskProgressManager : AltMonoBehaviour
         _popupDailyTaskShortDescription.text = CurrentPlayerTask.Title;
         _popupDailyTaskValue.text = $"{CurrentPlayerTask.TaskProgress}/{CurrentPlayerTask.Amount}";
         _popupDailyTaskFillImage.fillAmount = ((float)CurrentPlayerTask.TaskProgress / (float)CurrentPlayerTask.Amount);
+    }
+
+    private void SetPopupDailyTaskDone(string title)
+    {
+        _popupDailyTaskShortDescription.text = title;
+        _popupDailyTaskValue.text = "Valmis";
+        _popupDailyTaskFillImage.fillAmount = 1f;
     }
 
     private IEnumerator PopupCooldownTimer()
