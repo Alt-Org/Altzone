@@ -104,6 +104,7 @@ public class ClanSettings : MonoBehaviour
             clan.ClanHeartPieces ??= new();
             _heartPieces = clan.ClanHeartPieces;
             _heartColorChanger.InitializeClanHeart(_heartPieces);
+            _heartColorSetter.SetHeartColors(_heartPieces);
 
             _saveButton.onClick.AddListener(SaveClanSettings);
         });
