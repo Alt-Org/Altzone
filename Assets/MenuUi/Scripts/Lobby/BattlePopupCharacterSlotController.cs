@@ -23,8 +23,8 @@ public class BattlePopupCharacterSlotController : AltMonoBehaviour
             var characters = playerData.CustomCharacters.ToList();
             for (int i = 0; i < _selectedCharacterSlots.Length; i++)
             {
-                PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(playerData.SelectedCharacterIds[i].ToString());
-                CharacterID charID = playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i]) == null? CharacterID.None :playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i]).Id;
+                CharacterID charID = playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i]) == null ? CharacterID.None : playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i]).Id;
+                PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(((int)charID).ToString());
                 if (charID is CharacterID.None) continue;
                 CharacterClassID charClassID = CustomCharacter.GetClassID(charID);
                 _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, _classColorReference.GetColor(charClassID), _classColorReference.GetAlternativeColor(charClassID), charInfo.Name, charID, null);
