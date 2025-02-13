@@ -108,7 +108,9 @@ namespace MenuUi.Scripts.CharacterGallery
             var characters = _playerData.CustomCharacters.ToList();
             characters.Sort((a, b) => a.Id.CompareTo(b.Id));
 
-            for (int i = 0; i < 3; i++)
+            if (characters.Count < _playerData.SelectedCharacterIds.Length) return;
+
+            for (int i = 0; i < _playerData.SelectedCharacterIds.Length; i++)
             {
                 if (string.IsNullOrEmpty(_playerData.SelectedCharacterIds[i]) || _playerData.SelectedCharacterIds[i] == "0")
                 {
