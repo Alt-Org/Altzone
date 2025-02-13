@@ -1,24 +1,24 @@
+using MenuUi.Scripts.ReferenceSheets;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using GameType = MenuUI.Scripts.Lobby.InLobby.InLobbyController;
 
 namespace MenuUi.Scripts.Lobby.BattleButton
 {
-    [RequireComponent(typeof(Button))]
     public class GameTypeOption : MonoBehaviour
     {
-        [SerializeField] private GameType _gameType;
+        [SerializeField] public Button ButtonComponent;
         [SerializeField] private Image _gameTypeImage;
+        [SerializeField] private TMP_Text _gameTypeText;
 
-        [HideInInspector] public Button ButtonComponent;
+        private GameTypeInfo _gameTypeInfo;
 
-        public delegate void GameTypeOptionSelectedHandler(Sprite optionSprite, GameType gameType);
+        public delegate void GameTypeOptionSelectedHandler(GameTypeInfo gameTypeInfo);
         public GameTypeOptionSelectedHandler OnGameTypeOptionSelected;
 
 
         private void Awake()
         {
-            ButtonComponent = GetComponent<Button>();
             ButtonComponent.onClick.AddListener(OnButtonPressed);
         }
 
@@ -31,7 +31,18 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
         private void OnButtonPressed()
         {
-            OnGameTypeOptionSelected?.Invoke(_gameTypeImage.sprite, _gameType);
+            OnGameTypeOptionSelected?.Invoke(_gameTypeInfo);
+        }
+
+        /// <summary>
+        /// Set visual info for this game type option.
+        /// </summary>
+        /// <param name="info">GameTypeInfo object which has data for this game type option button.</param>
+        public void SetInfo(GameTypeInfo info)
+        {
+            _gameTypeImage.sprite = info.Icon;
+            _gameTypeText.text = info.Name;
+            _gameTypeInfo = info;
         }
     }
 }

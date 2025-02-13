@@ -14,20 +14,12 @@ namespace MenuUi.Scripts.ReferenceSheets
         [SerializeField] private List<GameTypeInfo> _info;
 
         /// <summary>
-        /// Get game type's info.
+        /// Get all game type infos.
         /// </summary>
-        /// <param name="gameType">The game type which's info to get.</param>
-        /// <returns>GameTypeInfo object.</returns>
-        public GameTypeInfo GetGameTypeInfo(GameType gameType)
+        /// <returns>List of GameTypeInfo objects.</returns>
+        public List<GameTypeInfo> GetGameTypeInfos()
         {
-            foreach (GameTypeInfo info in _info)
-            {
-                if (info.gameType == gameType)
-                {
-                    return info;
-                }
-            }
-            return null;
+            return _info;
         }
     }
 
