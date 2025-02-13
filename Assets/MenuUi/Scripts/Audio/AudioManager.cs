@@ -384,6 +384,7 @@ namespace MenuUi.Scripts.Audio
 
         private void OnEnable()
         {
+            if (Application.isPlaying) return;
             ((AudioManager)target).CheckAudioTree();
 
         }

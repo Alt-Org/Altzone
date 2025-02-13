@@ -15,6 +15,7 @@ namespace MenuUi.Scripts.Audio
 
         private void OnDestroy()
         {
+            if (Application.isPlaying) return;
             Debug.LogWarning("Tset" + _audioSourceHash + _sourceType);
             _manager.RemoveAudioBlock(_audioSourceHash, _sourceType);
         }
