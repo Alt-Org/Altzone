@@ -37,7 +37,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public int Speed;
         public int SpeedSegmentCount;
         public int CharacterSize;
-        public int CharaacterSizeSegmentCount;
+        public int CharacterSizeSegmentCount;
         public int Attack;
         public int AttackSegmentCount;
         public int Defence;
@@ -74,7 +74,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             Speed = character.Speed;
             SpeedSegmentCount = 0;
             CharacterSize = character.CharacterSize;
-            CharaacterSizeSegmentCount = 0;
+            CharacterSizeSegmentCount = 0;
             Attack = character.Attack;
             AttackSegmentCount = 0;
             Defence = character.Defence;
@@ -112,7 +112,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             Speed = character.speed;
             SpeedSegmentCount = 0;
             CharacterSize = character.size;
-            CharaacterSizeSegmentCount = 0;
+            CharacterSizeSegmentCount = 0;
             Attack = character.attack;
             AttackSegmentCount = 0;
             Defence = character.defence;
@@ -214,7 +214,7 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case StatType.Defence:
                     return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, Defence + 1) * (BaseCharacter.GetSegmentAmount(_characterBase, statType, Defence + 1) - DefenceSegmentCount);
                 case StatType.CharacterSize:
-                    return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, CharacterSize + 1) * (BaseCharacter.GetSegmentAmount(_characterBase, statType, CharacterSize + 1) - CharaacterSizeSegmentCount);
+                    return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, CharacterSize + 1) * (BaseCharacter.GetSegmentAmount(_characterBase, statType, CharacterSize + 1) - CharacterSizeSegmentCount);
                 case StatType.Hp:
                     return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, Hp + 1) * (BaseCharacter.GetSegmentAmount(_characterBase, statType, Hp + 1) - HpSegmentCount);
                 case StatType.Speed:
