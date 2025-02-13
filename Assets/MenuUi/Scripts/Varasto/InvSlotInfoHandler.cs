@@ -29,14 +29,13 @@ public class InvSlotInfoHandler : MonoBehaviour
         _icon.sprite = furn.Sprite;
 
         // Name
-        if (sortingBy != 0) _topText.text = furn.VisibleName;
-        else _topText.text = "";
+        _topText.text = furn.VisibleName;
 
         // Weight
         switch (sortingBy)
         {
             case 0:
-                _bottomText.text = furn.VisibleName;
+                _bottomText.text = furn.Value.ToString();
                 break;
             case 1:
                 _bottomText.text = furn.Value.ToString();
@@ -64,7 +63,7 @@ public class InvSlotInfoHandler : MonoBehaviour
         }
 
         // Coin
-        if (sortingBy == 1) _coin.SetActive(true);
+        if (sortingBy == 0 || sortingBy == 1) _coin.SetActive(true);
         else _coin.SetActive(false);
     }
 
