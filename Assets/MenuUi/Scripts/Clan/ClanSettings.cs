@@ -92,6 +92,7 @@ public class ClanSettings : MonoBehaviour
                 ClanValues.Tasapainoiset
             };
             _valuePanel.SetValues(clan.Values);
+            _valueSelection.SetSelected(clan.Values);
             _selectedValues = clan.Values;
             _openValueSelectionButton.onClick.AddListener(() => _valueSelection.SetSelected(_selectedValues));
             _setValuesButton.onClick.AddListener(() =>
