@@ -129,6 +129,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         {
             if (character == null) return;
 
+            bool characterInCharacterList = false;
             int i = 0;
             foreach (CustomCharacter item in _characterList)
             {
@@ -139,9 +140,11 @@ namespace Altzone.Scripts.Model.Poco.Player
                 }
 
                 _characterList[i] = character;
+                characterInCharacterList = true;
                 break;
             }
             Patch();
+            if (characterInCharacterList) ServerManager.Instance.StartUpdatingCustomCharacterToServer(character);
         }
 
 
