@@ -88,15 +88,15 @@ namespace MenuUi.Scripts.CharacterGallery
             if (newServerId == null)
             {
                 _playerData.SelectedCharacterIds[slot] = "0";
-                return;
             }
 
             if (newServerId != _playerData.SelectedCharacterIds[slot])
             {
                 _playerData.SelectedCharacterIds[slot] = newServerId;
-                var store = Storefront.Get();
-                store.SavePlayerData(_playerData, null);
             }
+
+            var store = Storefront.Get();
+            store.SavePlayerData(_playerData, null);
         }
 
 
