@@ -71,7 +71,7 @@ namespace MenuUI.Scripts.SoulHome
                 if (rootObject.name == "AudioManager")
                     rootObject.GetComponent<MainMenuAudioManager>()?.StopMusic();
             }
-            _musicName.text = AudioManager.Instance?.PlayMusic();
+            _musicName.text = AudioManager.Instance?.PlayMusic(MusicSection.SoulHome);
             EditModeTrayResize();
             if (GameAnalyticsManager.Instance != null) GameAnalyticsManager.Instance.OpenSoulHome();
         }

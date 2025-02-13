@@ -30,7 +30,7 @@ namespace MenuUi.Scripts.Audio
         public static AudioManager Instance { get; private set; }
 
         [SerializeField] private AudioSource _musicAudio;
-        private MusicList _musicList;
+        private MusicHandler _musicHandler;
         [SerializeField] private List<AudioBlock> _sfxList;
         [SerializeField] private List<AudioBlock> _ambientList;
 
@@ -55,7 +55,7 @@ namespace MenuUi.Scripts.Audio
         {
             if (_musicAudio != null)
             {
-                _musicList = _musicAudio.GetComponent<MusicList>();
+                _musicHandler = _musicAudio.GetComponent<MusicHandler>();
             }
         }
 
@@ -117,28 +117,28 @@ namespace MenuUi.Scripts.Audio
             }
         }
 
-        public string PlayMusic()
+        public string PlayMusic(MusicSection section, int musicindex = -1)
         {
-            if (_musicList == null) return null;
-            return _musicList.PlayMusic();
+            if (_musicHandler == null) return null;
+            return _musicHandler.PlayMusic(section, musicindex);
         }
 
         public string NextMusicTrack()
         {
-            if (_musicList == null) return null;
-            return _musicList.NextTrack();
+            if (_musicHandler == null) return null;
+            return _musicHandler.NextTrack();
         }
 
         public string PrevMusicTrack()
         {
-            if (_musicList == null) return null;
-            return _musicList.PrevTrack();
+            if (_musicHandler == null) return null;
+            return _musicHandler.PrevTrack();
         }
 
         public void StopMusic()
         {
-            if (_musicList == null) return;
-            _musicList.StopMusic();
+            if (_musicHandler == null) return;
+            _musicHandler.StopMusic();
         }
 
         [SerializeField] public List<string> _audioSections = new();

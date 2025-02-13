@@ -99,7 +99,7 @@ namespace MenuUI.Scripts.SoulHome
         private IEnumerator StartActions()
         {
             yield return new WaitUntil(() => _loadScript.LoadFinished);
-            AudioManager.Instance?.PlayMusic();
+            AudioManager.Instance?.PlayMusic(MusicSection.SoulHome);
             _camera = GetComponent<Camera>();
             SetCameraBounds();
 

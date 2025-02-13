@@ -4,6 +4,15 @@ using UnityEngine;
 
 namespace MenuUi.Scripts.Audio
 {
+    public enum MusicSection
+    {
+        None,
+        MainMenu,
+        Battle,
+        SoulHome,
+        All
+    }
+
     [System.Serializable]
     public class MusicObject
     {
@@ -20,8 +29,12 @@ namespace MenuUi.Scripts.Audio
     {
         [SerializeField]
         private List<MusicObject> _musicList = new();
+        [SerializeField]
+        private MusicSection _musicSection;
 
         public List<MusicObject> Music { get => _musicList;}
+
+        public MusicSection MusicSection { get => _musicSection; }
 
         private int _musicTrack = 0;
         [SerializeField]
@@ -33,15 +46,16 @@ namespace MenuUi.Scripts.Audio
             _musicTrack = _defaultMusicTrack;
         }
 
-        public string PlayMusic()
+        public MusicObject PlayMusic(int musicIndex = -1)
         {
-            if (_musicList.Count == 0) return null;
-            if (_musicList[_musicTrack].MusicClip != null)
+            if (_musicList.Count == 0 || _musicList.Count <= musicIndex) return null;
+            if (musicIndex >= 0) _musicTrack = musicIndex;
+            /*if (_musicList[_musicTrack].MusicClip != null)
             {
                 GetComponent<AudioSource>().clip =_musicList[_musicTrack].MusicClip;
                 GetComponent<AudioSource>().Play();
-            }
-            return GetTrackName();
+            }*/
+            return _musicList[_musicTrack];
         }
 
         public void StopMusic()
@@ -55,26 +69,23 @@ namespace MenuUi.Scripts.Audio
             return _musicList[_musicTrack].Name;
         }
 
-        public string NextTrack()
+        public MusicObject NextTrack()
         {
             if (_musicList.Count < 2) return null;
-            StopMusic();
             _musicTrack++;
             if (_musicTrack >= _musicList.Count) _musicTrack = 0;
 
-            PlayMusic();
-            return _musicList[_musicTrack].Name;
+            return _musicList[_musicTrack];
         }
 
-        public string PrevTrack()
+        public MusicObject PrevTrack()
         {
             if (_musicList.Count < 2) return null;
-            StopMusic();
+
             _musicTrack--;
             if (_musicTrack < 0) _musicTrack = _musicList.Count - 1;
 
-            PlayMusic();
-            return _musicList[_musicTrack].Name;
+            return _musicList[_musicTrack];
         }
 
     }
