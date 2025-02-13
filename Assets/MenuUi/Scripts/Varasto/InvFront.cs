@@ -16,13 +16,13 @@ namespace MenuUi.Scripts.Storage
     public class InvFront : MonoBehaviour
     {
         [Header("UI")]
-        [SerializeField] private TMP_Text _sortText;
         [SerializeField] private Transform _content;
         [SerializeField] private BaseScrollRect _scrollRect;
         [SerializeField] private GameObject _infoSlot;
         [SerializeField] private GameObject _loadingText;
         [SerializeField] private GameObject _topButtons;
         [SerializeField] private TMP_Text _totalValueText;
+        [SerializeField] private TMP_Text _sortingByText;
 
         [Header("Placeholders")] // These should not remain to the finalized game
         [SerializeField] private Sprite _furnImagePlaceholder;
@@ -237,7 +237,7 @@ namespace MenuUi.Scripts.Storage
             switch (_sortingBy)
             {
                 case 0:
-                    _sortText.text = "Jarjestetty\nAakkoset";
+                    _sortingByText.text = "Jarjestetty: Aakkoset";
 
                     _items.Sort((StorageFurniture a, StorageFurniture b) => {
                         StorageFurniture first = _descendingOrder ? b : a;
@@ -254,7 +254,7 @@ namespace MenuUi.Scripts.Storage
 
                     break;
                 case 1:
-                    _sortText.text = "Jarjestetty\nArvo";
+                    _sortingByText.text = "Jarjestetty: Arvo";
 
                     _items.Sort((StorageFurniture a, StorageFurniture b) => {
                         StorageFurniture first = _descendingOrder ? b : a;
@@ -274,7 +274,7 @@ namespace MenuUi.Scripts.Storage
 
                     break;
                 case 2:
-                    _sortText.text = "Jarjestetty\nPaino";
+                    _sortingByText.text = "Jarjestetty: Paino";
 
                     _items.Sort((StorageFurniture a, StorageFurniture b) => {
                         StorageFurniture first = _descendingOrder ? b : a;
@@ -294,7 +294,7 @@ namespace MenuUi.Scripts.Storage
 
                     break;
                 case 3:
-                    _sortText.text = "Jarjestetty\nHarvinaisuus";
+                    _sortingByText.text = "Jarjestetty: Harvinaisuus";
 
                     _items.Sort((StorageFurniture a, StorageFurniture b) => {
                         StorageFurniture first = _descendingOrder ? b : a;
@@ -314,7 +314,7 @@ namespace MenuUi.Scripts.Storage
 
                     break;
                 case 4:
-                    _sortText.text = "Jarjestetty\nLinjasto";
+                    _sortingByText.text = "Jarjestetty: Linjasto";
 
                     _items.Sort((StorageFurniture a, StorageFurniture b) => {
                         StorageFurniture first = _descendingOrder ? b : a;
