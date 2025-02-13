@@ -873,17 +873,6 @@ public class ServerManager : MonoBehaviour
     /// <param name="character">The CustomCharacter which to save to server.</param>
     public void StartUpdatingCustomCharacterToServer(CustomCharacter character)
     {
-        //DataStore store = Storefront.Get();
-
-        //ReadOnlyCollection<BaseCharacter> allItems = null;
-        //store.GetAllBaseCharacterYield(result => allItems = result);
-
-        //BaseCharacter baseCharacter = allItems.FirstOrDefault(c => c.Id == CharacterID.Artist);
-
-        //CustomCharacter gaya = new CustomCharacter(baseCharacter);
-
-        //gaya.ServerID = "67ac680ddcf5fa7ee819448d";
-
         StartCoroutine(UpdateCustomCharactersToServer(character, success =>
         {
             if (!success) Debug.LogError("Failed to save custom character to server!");
