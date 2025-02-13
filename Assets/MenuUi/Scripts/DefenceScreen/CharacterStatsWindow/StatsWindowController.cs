@@ -21,12 +21,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private CustomCharacter _customCharacter;
         private BaseCharacter _baseCharacter;
 
-        // TODO: move these to CustomCharacter or where they should be later
-        const int STATMAXCOMBINED = 50;
-        const int STATMAXLEVEL = 14;
-        const int STATMINLEVEL = 1;
-        const int STATMAXPLAYERINCREASE = 10;
-
         public event Action OnEraserDecreased;
         public event Action OnDiamondDecreased;
 
@@ -327,15 +321,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             {
                 if (!CheckCombinedLevelCap())
                 {
-                    SignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, taitojen summa on enintään {STATMAXCOMBINED}.");
+                    SignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, taitojen summa on enintään {CustomCharacter.STATMAXCOMBINED}.");
                 }
                 else if (!CheckStatLevelCap(statType))
                 {
-                    SignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, maksimitaso on {STATMAXLEVEL}.");
+                    SignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, maksimitaso on {CustomCharacter.STATMAXLEVEL}.");
                 }
                 else if (!CheckMaxPlayerIncreases())
                 {
-                    SignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoja enemmän kuin {STATMAXPLAYERINCREASE} kertaa."); // when every characters' combined base stats are 40 remove this
+                    SignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoja enemmän kuin {CustomCharacter.STATMAXPLAYERINCREASE} kertaa."); // when every characters' combined base stats are 40 remove this
                 }
             }
 
@@ -405,7 +399,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 SignalBus.OnChangePopupInfoSignal($"Et voi vähentää pohjataitoa.");
             }
 
-            return GetStat(statType) > STATMINLEVEL && GetStat(statType) > GetBaseStat(statType);
+            return GetStat(statType) > CustomCharacter.STATMINLEVEL && GetStat(statType) > GetBaseStat(statType);
         }
 
 
@@ -476,7 +470,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         // Checks if stat levels combined are less than level cap
         private bool CheckCombinedLevelCap()
         {
-            if (GetStatsCombined() < STATMAXCOMBINED)
+            if (GetStatsCombined() < CustomCharacter.STATMAXCOMBINED)
             {
                 return true;
             }
@@ -491,7 +485,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             int statValue = GetStat(statType);
 
-            if (statValue < STATMAXLEVEL)
+            if (statValue < CustomCharacter.STATMAXLEVEL)
             {
                 allowedToIncrease = true;
             }
@@ -503,7 +497,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         // Check if player has increased stats for max allowed player increases
         private bool CheckMaxPlayerIncreases()
         {
-            if (GetStatsCombined() - GetBaseStatsCombined() < STATMAXPLAYERINCREASE)
+            if (GetStatsCombined() - GetBaseStatsCombined() < CustomCharacter.STATMAXPLAYERINCREASE)
             {
                 return true;
             }
