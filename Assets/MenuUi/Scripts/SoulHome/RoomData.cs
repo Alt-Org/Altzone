@@ -146,6 +146,10 @@ namespace MenuUI.Scripts.SoulHome
             if (!topRoom)
             {
                 _ladder.gameObject.SetActive(true);
+                foreach(Transform ladderpiece in _ladder)
+                {
+                    ladderpiece.GetComponent<SpriteRenderer>().sortingOrder = 1000 * _roomInfo.id +20;
+                }
                 foreach(Transform rowTransform in _wallFurniturePoints)
                 {
                     rowTransform.GetChild(1).GetComponent<FurnitureSlot>().Ladder = true;
