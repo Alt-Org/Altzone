@@ -867,6 +867,29 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
+    /// <summary>
+    /// Starts a coroutine for updating custom character to server, since PlayerData where it's called isn't inherited from MonoBehaviour.
+    /// </summary>
+    /// <param name="character">The CustomCharacter which to save to server.</param>
+    public void StartUpdatingCustomCharacterToServer(CustomCharacter character)
+    {
+        //DataStore store = Storefront.Get();
+
+        //ReadOnlyCollection<BaseCharacter> allItems = null;
+        //store.GetAllBaseCharacterYield(result => allItems = result);
+
+        //BaseCharacter baseCharacter = allItems.FirstOrDefault(c => c.Id == CharacterID.Artist);
+
+        //CustomCharacter gaya = new CustomCharacter(baseCharacter);
+
+        //gaya.ServerID = "67ac680ddcf5fa7ee819448d";
+
+        StartCoroutine(UpdateCustomCharactersToServer(character, success =>
+        {
+            if (!success) Debug.LogError("Failed to save custom character to server!");
+        }));
+    }
+
     public IEnumerator UpdateCustomCharactersToServer(CustomCharacter character, Action<bool> callback)
     {
         if (character == null)
@@ -879,7 +902,7 @@ public class ServerManager : MonoBehaviour
 
         string body = JObject.FromObject(serverCharacter).ToString();
 
-        //Debug.Log(player);
+        Debug.LogWarning(body);
 
         yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "customCharacter/", body, AccessToken, request =>
         {
