@@ -10,8 +10,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     {
         [SerializeField] private StatsWindowController _controller;
         [SerializeField] private PiechartReference _referenceSheet;
-        [SerializeField] private int _sliceAmount;
 
+        private int _sliceAmount;
 
         private Color _impactForceColor;
         private Color _impactForceAltColor;
@@ -57,6 +57,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             _circleSprite = _referenceSheet.GetCircleSprite();
             _circlePatternedSprite = _referenceSheet.GetPatternedSprite();
+
+            _sliceAmount = CustomCharacter.STATMAXCOMBINED;
         }
 
 
