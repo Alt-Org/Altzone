@@ -3,10 +3,14 @@ using MenuUi.Scripts.ReferenceSheets;
 using UnityEngine;
 using UnityEngine.UI;
 using static MenuUI.Scripts.Lobby.InLobby.InLobbyController;
-using SignalBus = MenuUI.Scripts.Lobby.InLobby.SignalBus;
+using SignalBusPopup = MenuUI.Scripts.SignalBus;
+using SignalBusInLobby = MenuUI.Scripts.Lobby.InLobby.SignalBus;
 
 namespace MenuUi.Scripts.Lobby.BattleButton
 {
+    /// <summary>
+    /// Attached to BT_ALTZONE prefab. Has logic related to selecting game type for opening the battle popup.
+    /// </summary>
     [RequireComponent(typeof(Button))]
     public class BattleButton : MonoBehaviour
     {
@@ -23,12 +27,12 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
         private void Awake()
         {
-            _gameTypeSelection.SetActive(false);
-        }
+            _gameTypeSelection.SetActive(false); // Close selection menu so that it's not open when game opens
 
+            _button = GetComponent<Button>();
+            _button.onClick.AddListener(RequestBattlePopup);
 
-        private void Start()
-        {
+            // Instantiate game type option buttons to game type selection menu
             foreach (GameTypeInfo gameTypeInfo in _gameTypeReference.GetGameTypeInfos())
             {
                 GameTypeOption gameTypeOption = Instantiate(_gameTypeOptionPrefab).GetComponent<GameTypeOption>();
@@ -36,6 +40,11 @@ namespace MenuUi.Scripts.Lobby.BattleButton
                 gameTypeOption.transform.SetParent(_gameTypeSelection.transform);
                 gameTypeOption.transform.localScale = Vector3.one;
                 _gameTypeOptions.Add(gameTypeOption);
+
+                if (gameTypeInfo.gameType == GameType.Custom)
+                {
+                    UpdateGameType(gameTypeInfo);
+                }
             }
 
             for (int i = 0; i < _gameTypeOptions.Count; i++)
@@ -55,6 +64,14 @@ namespace MenuUi.Scripts.Lobby.BattleButton
                 gameTypeOption.ButtonComponent.onClick.RemoveListener(ToggleGameTypeSelection);
                 gameTypeOption.OnGameTypeOptionSelected -= UpdateGameType;
             }
+
+            _button.onClick.RemoveListener(RequestBattlePopup);
+        }
+
+
+        private void RequestBattlePopup()
+        {
+            SignalBusInLobby.OnBattlePopupRequestedSignal(_selectedGameType);
         }
 
 
@@ -69,6 +86,12 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
         private void UpdateGameType(GameTypeInfo gameTypeInfo)
         {
+            if (gameTypeInfo.gameType != GameType.Custom)
+            {
+                SignalBusPopup.OnChangePopupInfoSignal($"Pelimuotoa {gameTypeInfo.Name} ei voi vielä pelata.");
+                return;
+            }
+
             _gameTypeIcon.sprite = gameTypeInfo.Icon;
             _selectedGameType = gameTypeInfo.gameType;
         }

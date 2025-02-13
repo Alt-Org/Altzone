@@ -93,7 +93,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 31
+  m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1200,16 +1200,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2403012613033025559, guid: 29e964b118145aa4bb83338fcd8b573e,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 4088094375374757320}
-    - target: {fileID: 2403012613033025559, guid: 29e964b118145aa4bb83338fcd8b573e,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ToggleWindow
-      objectReference: {fileID: 0}
     - target: {fileID: 2421721389206867186, guid: 29e964b118145aa4bb83338fcd8b573e,
         type: 3}
       propertyPath: m_Pivot.x
@@ -1794,18 +1784,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8a5df1022cc5f0b448aa6bc431936253, type: 3}
---- !u!114 &4088094375374757320 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 821737462262444307, guid: 8a5df1022cc5f0b448aa6bc431936253,
-    type: 3}
-  m_PrefabInstance: {fileID: 3737057447990570203}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02a9ca57d31ebc743be6aabf4eb33005, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &6928229131628631178 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6051345049714194513, guid: 8a5df1022cc5f0b448aa6bc431936253,
@@ -3096,12 +3074,12 @@ PrefabInstance:
     - target: {fileID: 5725124495499325070, guid: b16e4563b99e8f74ab51a9c730510041,
         type: 3}
       propertyPath: m_fontSize
-      value: 30.8
+      value: 37.5
       objectReference: {fileID: 0}
     - target: {fileID: 6418099758862454539, guid: b16e4563b99e8f74ab51a9c730510041,
         type: 3}
       propertyPath: m_fontSize
-      value: 70.55
+      value: 80
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -5,16 +5,17 @@ using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Lobby;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static MenuUI.Scripts.Lobby.InLobby.InLobbyController;
 
 namespace MenuUI.Scripts.Lobby.InLobby
 {
     public static partial class SignalBus
     {
-        public delegate void BattlePopupRequestedHandler();
+        public delegate void BattlePopupRequestedHandler(GameType gameType);
         public static event BattlePopupRequestedHandler OnBattlePopupRequested;
-        public static void OnBattlePopupRequestedSignal()
+        public static void OnBattlePopupRequestedSignal(GameType gameType)
         {
-            OnBattlePopupRequested?.Invoke();
+            OnBattlePopupRequested?.Invoke(gameType);
         }
     }
 
@@ -39,13 +40,13 @@ namespace MenuUI.Scripts.Lobby.InLobby
             //_view.RoomButtonOnClick = RoomButtonOnClick;
             //_view.RaidButtonOnClick = RaidButtonOnClick;
             //_view.QuickGameButtonOnClick = QuickGameButtonOnClick;
-            SignalBus.OnBattlePopupRequested += ToggleWindow;
+            SignalBus.OnBattlePopupRequested += TryOpenWindow;
         }
 
 
         private void OnDestroy()
         {
-            SignalBus.OnBattlePopupRequested -= ToggleWindow;
+            SignalBus.OnBattlePopupRequested -= TryOpenWindow;
         }
 
 
@@ -140,17 +141,11 @@ namespace MenuUI.Scripts.Lobby.InLobby
             }
         }*/
 
-        public void ToggleWindow()
+        public void TryOpenWindow(GameType gameType)
         {
-            if (_popupContents.gameObject.activeSelf)
+            StartCoroutine(GetPlayerData(playerData =>
             {
-                CloseWindow();
-            }
-            else
-            {
-                StartCoroutine(GetPlayerData(playerData =>
-                {
-                    // Check if player has all 3 characters selected or no
+                // Check if player has all 3 characters selected or no
 
                     if (playerData != null)
                     {
