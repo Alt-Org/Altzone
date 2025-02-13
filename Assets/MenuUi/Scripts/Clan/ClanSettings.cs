@@ -129,15 +129,7 @@ public class ClanSettings : MonoBehaviour
             clanData.Goals = _goalSelection.GoalsRange;
             clanData.ClanAge = _ageSelection.ClanAgeRange;
 
-            ClanValues[] values = _valueSelection.SelectedValues.ToArray();
-            List<string> serverValues = new();
-            foreach (var value in values)
-            {
-                string valueString = ClanDataTypeConverter.ClanValuesToString(value);
-                serverValues.Add(valueString);
-            }
-            clanData.Labels = serverValues;
-
+            clanData.Values = _valueSelection.SelectedValues;
             clanData.ClanHeartPieces = _heartPieces;
 
             // These are not saved at the moment

@@ -707,10 +707,17 @@ public class ServerManager : MonoBehaviour
         ClanLogo logo = new ClanLogo();
         logo.logoType = ClanLogoType.Heart;
         logo.pieceColors = new();
+        List<string> serverValues = new();
 
         foreach (var piece in data.ClanHeartPieces)
         {
             logo.pieceColors.Add(ColorUtility.ToHtmlStringRGB(piece.pieceColor));
+        }
+
+        foreach (var value in data.Values)
+        {
+            string valueString = ClanDataTypeConverter.ClanValuesToString(value);
+            serverValues.Add(valueString);
         }
 
         string body = JObject.FromObject(
@@ -719,7 +726,7 @@ public class ServerManager : MonoBehaviour
                 name=data.Name,
                 tag=data.Tag,
                 isOpen=Clan.isOpen,
-                labels = data.Labels,
+                labels = serverValues,
                 ageRange=data.ClanAge,
                 goal=data.Goals,
                 phrase=data.Phrase,
