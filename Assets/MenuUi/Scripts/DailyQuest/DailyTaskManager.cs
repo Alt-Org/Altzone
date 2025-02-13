@@ -412,13 +412,17 @@ public class DailyTaskManager : AltMonoBehaviour
     // Function for popup calling
     public IEnumerator ShowPopupAndHandleResponse(string Message, PopupData? data)
     {
-        var windowType = (
-            data.Value.Type == PopupData.PopupDataType.OwnTask ?
-            Popup.PopupWindowType.Accept :
-            Popup.PopupWindowType.Cancel
-            );
+        Popup.PopupWindowType windowType;
 
-        yield return Popup.RequestPopup(Message, windowType, data.Value.Location, result =>
+        switch (data.Value.Type)
+        {
+            case PopupData.PopupDataType.OwnTask: windowType = Popup.PopupWindowType.Accept; break;
+            case PopupData.PopupDataType.CancelTask: windowType = Popup.PopupWindowType.Cancel; break;
+            case PopupData.PopupDataType.ClanMilestone: windowType = Popup.PopupWindowType.ClanMilestone; break;
+            default: windowType = Popup.PopupWindowType.Accept; break;
+        }
+
+        yield return Popup.RequestPopup(Message, data.Value.ClanRewardData, windowType, data.Value.Location, result =>
         {
             if (result == true && data != null)
             {
@@ -442,6 +446,7 @@ public class DailyTaskManager : AltMonoBehaviour
                             _ownTaskTabButton.interactable = false;
                             break;
                         }
+                    case PopupData.PopupDataType.ClanMilestone: break;
                 }
             }
             else
@@ -692,10 +697,10 @@ public class DailyTaskManager : AltMonoBehaviour
     {
         var clanRewardDatas = new List<DailyTaskClanReward.ClanRewardData>()
         {
-            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 500),
-            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 1000),
-            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 5000),
-            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Chest, 10000)
+            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 500, null, Random.Range(0,1000)),
+            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 1000, null, Random.Range(0,1000)),
+            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 5000, null, Random.Range(0,1000)),
+            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Chest, 10000, null, Random.Range(0,1000))
         };
         return clanRewardDatas;
     }
@@ -757,7 +762,7 @@ public class DailyTaskManager : AltMonoBehaviour
         foreach (var data in datas)
         {
             GameObject rewardMarker = Instantiate(_clanProgressBarMarkerPrefab, _clanProgressBarMarkersBase);
-            rewardMarker.GetComponent<DailyTaskClanReward>().Set(data);
+            rewardMarker.GetComponent<DailyTaskClanReward>().Set(data, this);
             _clanProgressBarMarkers.Add(rewardMarker);
         }
         yield return true;
