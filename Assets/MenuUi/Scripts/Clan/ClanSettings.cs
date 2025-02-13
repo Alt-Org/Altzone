@@ -161,7 +161,8 @@ public class ClanSettings : MonoBehaviour
                 || clanData.Language != _languageList.SelectedLanguage
                 || clanData.Goals != _goalSelection.GoalsRange
                 || clanData.ClanAge != _ageSelection.ClanAgeRange
-                || !clanData.ClanRights.SequenceEqual(_clanRightsPanel.ClanRights);
+                || !clanData.ClanRights.SequenceEqual(_clanRightsPanel.ClanRights)
+                || clanData.Values != _selectedValues;
 
             if (hasMadeEdits)
             {
