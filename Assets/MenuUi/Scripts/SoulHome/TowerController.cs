@@ -8,6 +8,7 @@ using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using Prg.Scripts.Common;
 using UnityEngine.InputSystem;
 using Altzone.Scripts.Model.Poco.Game;
+using MenuUi.Scripts.Audio;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -98,7 +99,7 @@ namespace MenuUI.Scripts.SoulHome
         private IEnumerator StartActions()
         {
             yield return new WaitUntil(() => _loadScript.LoadFinished);
-            AudioManager.Instance?.PlayMusic();
+            AudioManager.Instance?.PlayMusic(MusicSection.SoulHome);
             _camera = GetComponent<Camera>();
             SetCameraBounds();
 
