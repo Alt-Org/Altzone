@@ -18,7 +18,7 @@ public class ClanCreateNew : MonoBehaviour
     [SerializeField] private TMP_InputField _clanNameField;
     [SerializeField] private Toggle _openClanToggle;
     [SerializeField] private TMP_InputField _clanPasswordField;
-    [SerializeField] private TMP_Dropdown _clanGoalDropdown;
+    [SerializeField] private ClanGoalSelection _clanGoalSelection;
     [SerializeField] private ClanAgeSelection _ageSelection;
     [SerializeField] private ClanLanguageList _languageSelection;
     [SerializeField] private ValueSelectionController _valueSelection;
@@ -33,6 +33,7 @@ public class ClanCreateNew : MonoBehaviour
     [SerializeField] private GameObject _passwordWarningOutline;
     [SerializeField] private GameObject _goalWarningOutline;
     [SerializeField] private GameObject _languageWarningOutline;
+    [SerializeField] private GameObject _valuesWarningOutline;
     [SerializeField] private PopupController _warningPopup;
 
     [Header("Buttons")]
@@ -72,9 +73,11 @@ public class ClanCreateNew : MonoBehaviour
         _goalWarningOutline.SetActive(false);
         _passwordWarningOutline.SetActive(false);
         _languageWarningOutline.SetActive(false);
+        _valuesWarningOutline.SetActive(false);
 
         _ageSelection.Initialize(ClanAge.All);
-        SetGoalsDropDown();
+        _clanGoalSelection.Initialize(Goals.Fiilistely);
+        //SetGoalsDropDown();
 
         _flagImage.SetFlag(Language.None);
         _languageSelection.Initialize(Language.None);
@@ -94,15 +97,15 @@ public class ClanCreateNew : MonoBehaviour
         _heartColorSetter.SetHeartColor(_selectedHeartColor);
     }
 
-    private void SetGoalsDropDown()
-    {
-        _clanGoalDropdown.options.Clear();
-        foreach (Goals goal in Enum.GetValues(typeof(Goals)))
-        {
-            string text = ClanDataTypeConverter.GetGoalText(goal);
-            _clanGoalDropdown.options.Add(new TMP_Dropdown.OptionData(text));
-        }
-    }
+    //private void SetGoalsDropDown()
+    //{
+    //    _clanGoalSelection.options.Clear();
+    //    foreach (Goals goal in Enum.GetValues(typeof(Goals)))
+    //    {
+    //        string text = ClanDataTypeConverter.GetGoalText(goal);
+    //        _clanGoalSelection.options.Add(new TMP_Dropdown.OptionData(text));
+    //    }
+    //}
 
     public void PostClanToServer()
     {
@@ -111,7 +114,8 @@ public class ClanCreateNew : MonoBehaviour
         bool isOpen = !_openClanToggle.isOn;
         string password = _clanPasswordField.text;
         Language language = _languageSelection.SelectedLanguage;
-        Goals goal = (Goals)_clanGoalDropdown.value;
+        //Goals goal = (Goals)_clanGoalSelection.value;
+        Goals goal = _clanGoalSelection.GoalsRange;
         ClanAge age = _ageSelection.ClanAgeRange;
         ClanRoleRights[] clanRights = _defaultRights;
 
@@ -120,21 +124,39 @@ public class ClanCreateNew : MonoBehaviour
         List<HeartPieceData> clanHeartPieces = new();
         for (int i = 0; i < 50; i++) clanHeartPieces.Add(new HeartPieceData(i, _selectedHeartColor));
 
-        if (!CheckClanValuesValidity(clanName, isOpen, password, language, goal))
+        if (!CheckClanInputsValidity(clanName, isOpen, password, language, goal, values))
         {
             return;
         }
 
+        List<string> serverValues = new ();
+
+        foreach(var value in values)
+        {
+            string valueString = ClanDataTypeConverter.ClanValuesToString(value);
+            serverValues.Add(valueString);
+        }
+
+        ClanLogo logo = new ClanLogo();
+        logo.logoType = ClanLogoType.Heart;
+        logo.pieceColors = new();
+
+        foreach(var piece in clanHeartPieces)
+        {
+            logo.pieceColors.Add(ColorUtility.ToHtmlStringRGB(piece.pieceColor));
+        }
+
         ServerClan serverClan = new ServerClan
         {
-            name = clanName,
+            name = clanName.Trim(),
             tag = clanName.Trim().Substring(0, 3),
             phrase = phrase,
             isOpen = isOpen,
             language = language,
             goal = goal,
             ageRange = age,
-            labels = new()
+            labels = serverValues,
+            clanLogo = logo
         };
 
         StartCoroutine(ServerManager.Instance.PostClanToServer(serverClan, clan =>
@@ -169,7 +191,7 @@ public class ClanCreateNew : MonoBehaviour
         }));
     }
 
-    private bool CheckClanValuesValidity(string clanName, bool isOpen, string password, Language language, Goals goal)
+    private bool CheckClanInputsValidity(string clanName, bool isOpen, string password, Language language, Goals goal, ClanValues[] values)
     {
         bool validInputs = true;
 
@@ -177,6 +199,18 @@ public class ClanCreateNew : MonoBehaviour
         {
             _nameWarningOutline.SetActive(true);
             _warningPopup.ActivatePopUp("Lisää klaanin nimi");
+            validInputs = false;
+        }
+        else if (clanName.Trim().Length < 3)
+        {
+            _nameWarningOutline.SetActive(true);
+            _warningPopup.ActivatePopUp("Klaanin nimen pitää olla vähintään 3 merkkiä pitkä.");
+            validInputs = false;
+        }
+        else if (clanName.Trim().Length > 30)
+        {
+            _nameWarningOutline.SetActive(true);
+            _warningPopup.ActivatePopUp("Klaanin nimi saa olla maksimissaan 30 merkkiä pitkä.");
             validInputs = false;
         }
         else _nameWarningOutline.SetActive(false);
@@ -204,6 +238,17 @@ public class ClanCreateNew : MonoBehaviour
             validInputs = false;
         }
         else _goalWarningOutline.SetActive(false);
+
+        if (values.Length < 3)
+        {
+            _valuesWarningOutline.SetActive(true);
+            _warningPopup.ActivatePopUp("Klaanille tulee olla valittuna vähintää 3 arvoa");
+            validInputs = false;
+        }
+        else
+        {
+            _valuesWarningOutline.SetActive(false);
+        }
 
         return validInputs;
     }

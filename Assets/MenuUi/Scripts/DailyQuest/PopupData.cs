@@ -1,3 +1,4 @@
+using UnityEngine;
 using Altzone.Scripts.Model.Poco.Game;
 
 public struct PopupData
@@ -20,54 +21,64 @@ public struct PopupData
         }
     }
 
+    private Vector3? _location;
+    public Vector3? Location { get { return _location; } }
+
     public struct OwnPageData
     {
-        private int _taskId;
+        private string _taskId;
         private string _taskDescription;
         private int _taskAmount;
         private int _taskPoints;
         private int _taskCoins;
 
-        public int TaskId { get { return _taskId; } }
+        public string TaskId { get { return _taskId; } }
         public string TaskDescription { get { return _taskDescription; } }
         public int TaskAmount { get { return _taskAmount; } }
         public int TaskPoints { get { return _taskPoints; } }
         public int TaskCoins { get { return _taskCoins; } }
 
-        public void Set(PlayerTasks.PlayerTask task)
+        public void Set(PlayerTask task)
         {
             _taskId = task.Id;
-            _taskDescription = task.Content;
+            _taskDescription = task.Title;
             _taskAmount = task.Amount;
             _taskPoints = task.Points;
             _taskCoins = task.Coins;
         }
     }
-    private OwnPageData? _ownPage;
-    public OwnPageData? OwnPage { get { return _ownPage; } }
+    //private OwnPageData? _ownPage;
+    //public OwnPageData? OwnPage { get { return _ownPage; } }
 
-    public PopupData(PopupDataType type)
+    private PlayerTask _ownPage;
+    public PlayerTask OwnPage { get { return _ownPage; } }
+
+    public PopupData(PopupDataType type, Vector3? location)
     {
         _ownPage = null;
         _type = type;
+        _location = location;
     }
 
-    public PopupData(PlayerTasks.PlayerTask task)
+    public PopupData(PlayerTask task, Vector3? location)
     {
-        _ownPage = new OwnPageData();
+        //_ownPage = new OwnPageData();
+        _ownPage = task;
         _type = PopupDataType.OwnTask;
+        _location = location;
 
-        SetOwnPageData(task);
+        //SetOwnPageData(task);
     }
 
-    public void SetOwnPageData(PlayerTasks.PlayerTask task)
+    public void SetOwnPageData(PlayerTask task)
     {
-        if (_ownPage == null)
-            _ownPage = new OwnPageData();
+        //if (_ownPage == null)
+        //_ownPage = new OwnPageData();
 
-        OwnPageData tempData = _ownPage.Value;
-        tempData.Set(task);
-        _ownPage = tempData;
+        //OwnPageData tempData = _ownPage.Value;
+        //tempData.Set(task);
+        //_ownPage = tempData;
+        _ownPage = task;
         _type = PopupDataType.OwnTask;
     }
 }

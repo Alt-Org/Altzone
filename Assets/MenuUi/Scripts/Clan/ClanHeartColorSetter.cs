@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Clan;
+using MenuUi.Scripts.Window;
 using UnityEngine;
 
 public class ClanHeartColorSetter : MonoBehaviour
@@ -10,9 +11,11 @@ public class ClanHeartColorSetter : MonoBehaviour
     [SerializeField] private bool _setOwnClanHeart = true;
     private HeartPieceColorHandler[] _heartPieceHandlers = { };
 
+    public bool SetOwnClanHeart { set => _setOwnClanHeart = value; }
+
     private void OnEnable()
     {
-        if (!_setOwnClanHeart || ServerManager.Instance.Clan == null) return;
+        if (!_setOwnClanHeart ||ServerManager.Instance.Clan == null) return;
 
         Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
         {
@@ -25,6 +28,18 @@ public class ClanHeartColorSetter : MonoBehaviour
             }
             SetHeartColors(heartPieces);
         });
+    }
+
+    public void SetOtherClanColors(ClanData clanData)
+    {
+        clanData.ClanHeartPieces ??= new();
+        List<HeartPieceData> heartPieces = clanData.ClanHeartPieces;
+
+        if (heartPieces.Count == 0)
+        {
+            for (int j = 0; j < 50; j++) heartPieces.Add(new HeartPieceData(j, Color.white));
+        }
+        SetHeartColors(heartPieces);
     }
 
     public void SetHeartColors(List<HeartPieceData> heartPieces)

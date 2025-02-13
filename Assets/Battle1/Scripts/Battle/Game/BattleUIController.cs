@@ -44,7 +44,7 @@ namespace Battle1.Scripts.Battle.Game
             return diamondType switch
             {
                 DiamondType.DiamondSpeed      => teamDiamonds[0],
-                DiamondType.DiamondResistance => teamDiamonds[1],
+                DiamondType.DiamondCharacterSize => teamDiamonds[1],
                 DiamondType.DiamondAttack     => teamDiamonds[2],
                 DiamondType.DiamondHP         => teamDiamonds[3],
                 _ => null,

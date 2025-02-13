@@ -62,11 +62,11 @@ public class PollObject : MonoBehaviour
 
     private void SetValues()
     {
-        Image.sprite = pollData.Sprite;
-
         if (pollData is FurniturePollData)
-        {
+        { 
             FurniturePollData furniturePollData = (FurniturePollData)pollData;
+
+            Image.sprite = furniturePollData.Sprite;
 
             UpperText.text = Enum.GetName(typeof(FurniturePollType), furniturePollData.FurniturePollType);
 

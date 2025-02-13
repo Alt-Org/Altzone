@@ -14,7 +14,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public readonly string Name;
         public readonly float Hp;
         public readonly float Speed;
-        public readonly float Resistance;
+        public readonly float CharacterSize;
         public readonly float Attack;
         public readonly float Defence;
 
@@ -29,7 +29,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             Name = name;
             Hp = hp;
             Speed = speed;
-            Resistance = resistance;
+            CharacterSize = resistance;
             Attack = attack;
             Defence = defence;
         }
@@ -42,7 +42,7 @@ namespace Altzone.Scripts.Model.Poco.Game
                 customCharacter.Name,
                 customCharacter.Hp + characterClass.Hp,
                 customCharacter.Speed + characterClass.Speed,
-                customCharacter.Resistance + characterClass.Resistance,
+                customCharacter.CharacterSize + characterClass.CharacterSize,
                 customCharacter.Attack + characterClass.Attack,
                 customCharacter.Defence + characterClass.Defence);
         }
@@ -63,7 +63,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public override string ToString()
         {
             return $"CustomCharacter: {CharacterID} : {Name}" +
-                   $", Hp: {Hp}, Speed: {Speed}, Resistance: {Resistance}, Attack: {Attack}, Defence: {Defence}";
+                   $", Hp: {Hp}, Speed: {Speed}, Resistance: {CharacterSize}, Attack: {Attack}, Defence: {Defence}";
         }
     }
 }

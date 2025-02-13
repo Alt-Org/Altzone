@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Altzone.Scripts.Model.Poco.Attributes;
 using Altzone.Scripts.Voting;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Clan
@@ -64,10 +66,23 @@ namespace Altzone.Scripts.Model.Poco.Clan
             _gameCoins = clan.gameCoins;
             Points = clan.points;
             Labels = clan.labels;
+            foreach (var point in Labels)
+            {
+                Values.Add((ClanValues)Enum.Parse(typeof(ClanValues), string.Concat(point[0].ToString().ToUpper(), point.AsSpan(1).ToString()).Replace("ä", "a").Replace("ö","o")));
+            }
             ClanAge = clan.ageRange;
             Language = clan.language;
             Goals = clan.goal;
             ClanHeartPieces = new();
+            int i=0;
+            if(clan.clanLogo != null)
+            foreach(var piece in clan.clanLogo.pieceColors)
+            {
+                if (!ColorUtility.TryParseHtmlString("#" + piece, out Color colour)) colour = Color.white;
+                    ClanHeartPieces.Add(new(i, colour));
+
+                i++;
+            }
             IsOpen = clan.isOpen;
             if (clan.polls != null) Polls = clan.polls;
         }

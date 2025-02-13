@@ -8,7 +8,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         None,
         Attack,
         Defence,
-        Resistance,
+        CharacterSize,
         Hp,
         Speed
     }
@@ -34,9 +34,9 @@ namespace Altzone.Scripts.Model.Poco.Game
         protected int _speed;
         protected int _defaultSpeed;
         protected ValueStrength _speedStrength = ValueStrength.None;
-        protected int _resistance;
-        protected int _defaultResistance;
-        protected ValueStrength _resistanceStrength = ValueStrength.None;
+        protected int _characterSize;
+        protected int _defaultCharacterSize;
+        protected ValueStrength _characterSizeStrength = ValueStrength.None;
         protected int _attack;
         protected int _defaultAttack;
         protected ValueStrength _attackStrength = ValueStrength.None;
@@ -52,8 +52,8 @@ namespace Altzone.Scripts.Model.Poco.Game
         public int DefaultHp { get => _defaultHp; }
         public int Speed { get => _speed;}
         public int DefaultSpeed { get => _defaultSpeed; }
-        public int Resistance { get => _resistance;}
-        public int DefaultResistance { get => _defaultResistance; }
+        public int CharacterSize { get => _characterSize;}
+        public int DefaultCharacterSize { get => _defaultCharacterSize; }
         public int Attack { get => _attack;}
         public int DefaultAttack { get => _defaultAttack; }
         public int Defence { get => _defence;}
@@ -70,7 +70,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             _hp = _defaultHp;
             _attack = _defaultAttack;
             _defence = _defaultDefence;
-            _resistance = _defaultResistance;
+            _characterSize = _defaultCharacterSize;
             _speed = _defaultSpeed;
         }
 
@@ -86,7 +86,7 @@ namespace Altzone.Scripts.Model.Poco.Game
                 StatType.None       => (FP)(-1),
                 StatType.Attack     => GetAttackValue(level),
                 StatType.Defence    => GetDefenceValue(level),
-                StatType.Resistance => GetResistanceValue(level),
+                StatType.CharacterSize => GetCharacterSizeValue(level),
                 StatType.Hp         => GetHpValue(level),
                 StatType.Speed      => GetSpeedValue(level),
 
@@ -160,7 +160,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             };
         }
 
-        private static FP GetResistanceValue(int level)
+        private static FP GetCharacterSizeValue(int level)
         {
             return level switch
             {
@@ -269,8 +269,8 @@ namespace Altzone.Scripts.Model.Poco.Game
                     return GetSegmentAmount(nextLevel - character._defaultAttack) * GetStatSegmentPrice(character, type, nextLevel - character._defaultAttack);
                 case StatType.Defence:
                     return GetSegmentAmount(nextLevel - character._defaultDefence) * GetStatSegmentPrice(character, type, nextLevel - character._defaultDefence);
-                case StatType.Resistance:
-                    return GetSegmentAmount(nextLevel - character._defaultResistance) * GetStatSegmentPrice(character, type, nextLevel - character._defaultResistance);
+                case StatType.CharacterSize:
+                    return GetSegmentAmount(nextLevel - character._defaultCharacterSize) * GetStatSegmentPrice(character, type, nextLevel - character._defaultCharacterSize);
                 case StatType.Hp:
                     return GetSegmentAmount(nextLevel - character._defaultHp) * GetStatSegmentPrice(character, type, nextLevel - character._defaultHp);
                 case StatType.Speed:
@@ -288,8 +288,8 @@ namespace Altzone.Scripts.Model.Poco.Game
                     return GetStrengthMulti(character._attackStrength) * GetSegmentPrice(nextLevel - character._defaultAttack);
                 case StatType.Defence:
                     return GetStrengthMulti(character._defenceStrength) * GetSegmentPrice(nextLevel - character._defaultDefence);
-                case StatType.Resistance:
-                    return GetStrengthMulti(character._resistanceStrength) * GetSegmentPrice(nextLevel - character._defaultResistance);
+                case StatType.CharacterSize:
+                    return GetStrengthMulti(character._characterSizeStrength) * GetSegmentPrice(nextLevel - character._defaultCharacterSize);
                 case StatType.Hp:
                     return GetStrengthMulti(character._hpStrength) * GetSegmentPrice(nextLevel - character._defaultHp);
                 case StatType.Speed:
@@ -362,8 +362,8 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case StatType.Defence:
                     nextLevel = nextLevel - character._defaultDefence;
                     break;
-                case StatType.Resistance:
-                    nextLevel = nextLevel - character._defaultResistance;
+                case StatType.CharacterSize:
+                    nextLevel = nextLevel - character._defaultCharacterSize;
                     break;
                 case StatType.Hp:
                     nextLevel = nextLevel - character._defaultHp;

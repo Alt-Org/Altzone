@@ -81,7 +81,7 @@ namespace Battle1.Scripts.Battle
                 "placeholder",
                 BaseCharacter.GetStatValue(StatType.Hp, characterStats[0]),
                 BaseCharacter.GetStatValue(StatType.Speed, characterStats[1]),
-                BaseCharacter.GetStatValue(StatType.Resistance, characterStats[2]),
+                BaseCharacter.GetStatValue(StatType.CharacterSize, characterStats[2]),
                 BaseCharacter.GetStatValue(StatType.Attack, characterStats[3]),
                 BaseCharacter.GetStatValue(StatType.Defence, characterStats[4])
             );
