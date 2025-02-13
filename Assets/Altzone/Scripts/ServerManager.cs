@@ -704,26 +704,55 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator UpdateClanToServer(ClanData data, Action<bool> callback)
     {
+        ClanLogo logo = new ClanLogo();
+        logo.logoType = ClanLogoType.Heart;
+        logo.pieceColors = new();
+        List<string> serverValues = new();
+
+        foreach (var piece in data.ClanHeartPieces)
+        {
+            logo.pieceColors.Add(ColorUtility.ToHtmlStringRGB(piece.pieceColor));
+        }
+
+        foreach (var value in data.Values)
+        {
+            string valueString = ClanDataTypeConverter.ClanValuesToString(value);
+            serverValues.Add(valueString);
+        }
+
         string body = JObject.FromObject(
-            new {
-                _id=data.Id,
-                name=data.Name,
-                tag=data.Tag,
-                isOpen=Clan.isOpen,
-                labels = data.Labels,
-                ageRange=data.ClanAge,
-                goal=data.Goals,
-                phrase=data.Phrase,
-                language=data.Language
+            new
+            {
+                _id = data.Id,
+                name = data.Name,
+                tag = data.Tag,
+                isOpen = Clan.isOpen,
+                labels = serverValues,
+                ageRange = data.ClanAge,
+                goal = data.Goals,
+                phrase = data.Phrase,
+                language = data.Language,
+                clanLogo = logo
             },
             JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
         ).ToString();
+
+        yield return UpdateClanToServer(body, callback);
+        Storefront.Get().SaveClanData(data, null);
+    }
+
+    public IEnumerator UpdateClanToServer(string body, Action<bool> callback)
+    {
 
         yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "clan", body, AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                Storefront.Get().SaveClanData(data, null);
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                ServerClan clan = result["data"]["Clan"].ToObject<ServerClan>();
+                Clan = clan;
+
+                StartCoroutine(SaveClanFromServerToDataStorage(Clan));
 
                 if (callback != null)
                 {
