@@ -323,15 +323,15 @@ namespace MenuUI.Scripts.SoulHome
                         }
                         if (gridtoCheck is FurnitureGrid.RightWall)
                         {
-                            if ((_wallRightFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture != null
-                                && !_wallRightFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture.Equals(furniture))
-                                || _wallRightFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().Ladder) return false;
+                            if ((_wallRightFurniturePoints.GetChild(j).GetChild(i).GetComponent<FurnitureSlot>().TempFurniture != null
+                                && !_wallRightFurniturePoints.GetChild(j).GetChild(i).GetComponent<FurnitureSlot>().TempFurniture.Equals(furniture))
+                                || _wallRightFurniturePoints.GetChild(j).GetChild(i).GetComponent<FurnitureSlot>().Ladder) return false;
                         }
                         if (gridtoCheck is FurnitureGrid.LeftWall)
                         {
-                            if ((_wallLeftFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture != null
-                                && !_wallLeftFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture.Equals(furniture))
-                                || _wallLeftFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().Ladder) return false;
+                            if ((_wallLeftFurniturePoints.GetChild(j).GetChild(i).GetComponent<FurnitureSlot>().TempFurniture != null
+                                && !_wallLeftFurniturePoints.GetChild(j).GetChild(i).GetComponent<FurnitureSlot>().TempFurniture.Equals(furniture))
+                                || _wallLeftFurniturePoints.GetChild(j).GetChild(i).GetComponent<FurnitureSlot>().Ladder) return false;
                         }
                     }
                     else if (furniture.Place is FurniturePlacement.Ceiling)
@@ -523,9 +523,9 @@ namespace MenuUI.Scripts.SoulHome
                             if(grid is FurnitureGrid.BackWall)
                                 _wallBackFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture = furniture.GetComponent<FurnitureHandling>().Furniture;
                             else if (grid is FurnitureGrid.RightWall)
-                                _wallRightFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture = furniture.GetComponent<FurnitureHandling>().Furniture;
+                                _wallRightFurniturePoints.GetChild(j).GetChild(i).GetComponent<FurnitureSlot>().TempFurniture = furniture.GetComponent<FurnitureHandling>().Furniture;
                             else if (grid is FurnitureGrid.LeftWall)
-                                _wallLeftFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture = furniture.GetComponent<FurnitureHandling>().Furniture;
+                                _wallLeftFurniturePoints.GetChild(j).GetChild(i).GetComponent<FurnitureSlot>().TempFurniture = furniture.GetComponent<FurnitureHandling>().Furniture;
                         }
                     }
                 }
@@ -566,9 +566,9 @@ namespace MenuUI.Scripts.SoulHome
                                 if (grid is FurnitureGrid.BackWall)
                                     _wallBackFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture = null;
                                 if (grid is FurnitureGrid.RightWall)
-                                    _wallRightFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture = null;
+                                    _wallRightFurniturePoints.GetChild(j).GetChild(i).GetComponent<FurnitureSlot>().TempFurniture = null;
                                 if (grid is FurnitureGrid.LeftWall)
-                                    _wallLeftFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture = null;
+                                    _wallLeftFurniturePoints.GetChild(j).GetChild(i).GetComponent<FurnitureSlot>().TempFurniture = null;
                             }
                         }
                     }
@@ -582,9 +582,9 @@ namespace MenuUI.Scripts.SoulHome
                     if (grid is FurnitureGrid.BackWall)
                         furniture.GetComponent<FurnitureHandling>().TempSlot = _wallBackFurniturePoints.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>();
                     if (grid is FurnitureGrid.RightWall)
-                        furniture.GetComponent<FurnitureHandling>().TempSlot = _wallRightFurniturePoints.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>();
+                        furniture.GetComponent<FurnitureHandling>().TempSlot = _wallRightFurniturePoints.GetChild(column).GetChild(row).GetComponent<FurnitureSlot>();
                     if (grid is FurnitureGrid.LeftWall)
-                        furniture.GetComponent<FurnitureHandling>().TempSlot = _wallLeftFurniturePoints.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>();
+                        furniture.GetComponent<FurnitureHandling>().TempSlot = _wallLeftFurniturePoints.GetChild(column).GetChild(row).GetComponent<FurnitureSlot>();
                 }
             }
             if (furniture.GetComponent<FurnitureHandling>().Furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorByWall or FurniturePlacement.FloorNonblock)
@@ -603,15 +603,15 @@ namespace MenuUI.Scripts.SoulHome
                 }
                 else if (grid is FurnitureGrid.RightWall)
                 {
-                    furniture.transform.SetParent(_wallRightFurniturePoints.GetChild(row).GetChild(column));
+                    furniture.transform.SetParent(_wallRightFurniturePoints.GetChild(column).GetChild(row));
                     furniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
-                    furniture.GetComponent<FurnitureHandling>().SetScale(row, grid, _wallBackFurniturePoints.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>());
+                    furniture.GetComponent<FurnitureHandling>().SetScale(column, grid, _wallRightFurniturePoints.GetChild(column).GetChild(row).GetComponent<FurnitureSlot>());
                 }
                 else if (grid is FurnitureGrid.LeftWall)
                 {
-                    furniture.transform.SetParent(_wallLeftFurniturePoints.GetChild(row).GetChild(column));
+                    furniture.transform.SetParent(_wallLeftFurniturePoints.GetChild(column).GetChild(row));
                     furniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
-                    furniture.GetComponent<FurnitureHandling>().SetScale(row, grid, _wallBackFurniturePoints.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>());
+                    furniture.GetComponent<FurnitureHandling>().SetScale(column, grid, _wallLeftFurniturePoints.GetChild(column).GetChild(row).GetComponent<FurnitureSlot>());
                 }
             }
         }
@@ -720,9 +720,9 @@ namespace MenuUI.Scripts.SoulHome
                             if(slot.furnitureGrid is FurnitureGrid.BackWall)
                                 _wallBackFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().Furniture = null;
                             if (slot.furnitureGrid is FurnitureGrid.RightWall)
-                                _wallRightFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().Furniture = null;
+                                _wallRightFurniturePoints.GetChild(j).GetChild(i).GetComponent<FurnitureSlot>().Furniture = null;
                             if (slot.furnitureGrid is FurnitureGrid.LeftWall)
-                                _wallLeftFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().Furniture = null;
+                                _wallLeftFurniturePoints.GetChild(j).GetChild(i).GetComponent<FurnitureSlot>().Furniture = null;
                         }
                     }
                 }
@@ -772,13 +772,13 @@ namespace MenuUI.Scripts.SoulHome
                         }
                         if (grid is FurnitureGrid.RightWall)
                         {
-                            _wallRightFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().SetValidity(check);
-                            _currentSlotValidity.Add(_wallRightFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>());
+                            _wallRightFurniturePoints.GetChild(j).GetChild(i).GetComponent<FurnitureSlot>().SetValidity(check);
+                            _currentSlotValidity.Add(_wallRightFurniturePoints.GetChild(j).GetChild(i).GetComponent<FurnitureSlot>());
                         }
                         if (grid is FurnitureGrid.LeftWall)
                         {
-                            _wallLeftFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().SetValidity(check);
-                            _currentSlotValidity.Add(_wallLeftFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>());
+                            _wallLeftFurniturePoints.GetChild(j).GetChild(i).GetComponent<FurnitureSlot>().SetValidity(check);
+                            _currentSlotValidity.Add(_wallLeftFurniturePoints.GetChild(j).GetChild(i).GetComponent<FurnitureSlot>());
                         }
                     }
                     else if (furniture.Place is FurniturePlacement.Ceiling)
