@@ -27,6 +27,7 @@ namespace MenuUI.Scripts.SoulHome
         private int _slotRows = 3;
         [SerializeField]
         private int _slotColumns = 8;
+        private int _slotHeight = 6;
         [SerializeField]
         private float _slotMaxGrowthPercentage = 20;
         [SerializeField]
@@ -143,6 +144,7 @@ namespace MenuUI.Scripts.SoulHome
             float wallWidth = _backWallBounds.size.x;
             float wallHeight = _backWallBounds.size.y;
             int wallSlotRows = (int)Mathf.Floor(wallHeight / 2.5f);
+            _slotHeight = wallSlotRows;
             int wallSlotColumns = (int)Mathf.Floor(wallWidth / 2.5f);
             _wallBackFurniturePoints.transform.position = new(_backWallBounds.transform.position.x,
                                                                _backWallBounds.transform.position.y + _backWallBounds.size.y / 2);
@@ -175,7 +177,7 @@ namespace MenuUI.Scripts.SoulHome
             col = 0;
             wallWidth = _rightSideWallBounds.size.x;
             wallHeight = _rightSideWallBounds.size.y;
-            wallSlotRows = (int)Mathf.Floor(wallHeight / 2.5f);
+            wallSlotRows = _slotHeight;
             wallSlotColumns = _slotRows;
             _wallRightFurniturePoints.transform.position = new(_rightSideWallBounds.transform.position.x - _rightSideWallBounds.size.x / 2,
                                                                _rightSideWallBounds.transform.position.y + _rightSideWallBounds.size.y/2);
@@ -273,7 +275,11 @@ namespace MenuUI.Scripts.SoulHome
 
             if (furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorNonblock or FurniturePlacement.Wall)
             {
-                if (startRow < 0 || endColumn >= _slotColumns) return false;
+                if(gridtoCheck is FurnitureGrid.Floor or FurnitureGrid.BackWall or FurnitureGrid.Ceiling)
+                    if (startRow < 0 || endColumn >= _slotColumns) return false;
+                else if(gridtoCheck is FurnitureGrid.RightWall or FurnitureGrid.LeftWall)
+                    if (startRow < 0 || endColumn >= _slotRows) return false;
+                else return false;
             }
             else if (furniture.Place is FurniturePlacement.FloorByWall)
             {
@@ -746,17 +752,29 @@ namespace MenuUI.Scripts.SoulHome
 
             for (int i = startRow; i <= row; i++)
             {
-                if (i < 0 || i >= _slotRows)
-                {
-                    continue;
-                }
-
-                for (int j = column; j <= endColumn; j++)
-                {
-                    if (j < 0 || j >= _slotColumns)
+                if (grid is FurnitureGrid.Floor or FurnitureGrid.Ceiling)
+                    if (i < 0 || i >= _slotRows)
                     {
                         continue;
                     }
+                else if (grid is FurnitureGrid.BackWall or FurnitureGrid.RightWall or FurnitureGrid.LeftWall)
+                    if (i < 0 || i >= _slotHeight)
+                    {
+                        continue;
+                    }
+
+                for (int j = column; j <= endColumn; j++)
+                {
+                    if(grid is FurnitureGrid.Floor or FurnitureGrid.BackWall or FurnitureGrid.Ceiling)
+                        if (j < 0 || j >= _slotColumns)
+                        {
+                            continue;
+                        }
+                    else if (grid is FurnitureGrid.RightWall or FurnitureGrid.LeftWall)
+                        if (j < 0 || j >= _slotRows)
+                        {
+                            continue;
+                        }
 
                     if (furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorByWall or FurniturePlacement.FloorNonblock)
                     {
