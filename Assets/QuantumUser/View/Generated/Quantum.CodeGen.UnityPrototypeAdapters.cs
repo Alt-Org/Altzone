@@ -50,6 +50,21 @@ namespace Quantum.Prototypes.Unity {
   #endif //;
   
   [System.SerializableAttribute()]
+  public unsafe partial class PlayerManagerDataPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.PlayerManagerDataPrototype> {
+    [ArrayLengthAttribute(4)]
+    public Quantum.QuantumEntityPrototype[] SelectedCharacters = new Quantum.QuantumEntityPrototype[4];
+    [ArrayLengthAttribute(12)]
+    public Quantum.QuantumEntityPrototype[] AllCharacters = new Quantum.QuantumEntityPrototype[12];
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.PlayerManagerDataPrototype prototype);
+    public override Quantum.Prototypes.PlayerManagerDataPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.PlayerManagerDataPrototype();
+      converter.Convert(this.SelectedCharacters, out result.SelectedCharacters);
+      converter.Convert(this.AllCharacters, out result.AllCharacters);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
   public unsafe partial class SoulWallPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.SoulWallPrototype> {
     public Quantum.QuantumEntityPrototype ChildEntity;
     public FPVector2 Normal;
