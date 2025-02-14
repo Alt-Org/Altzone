@@ -148,21 +148,20 @@ namespace MenuUI.Scripts.Lobby.InLobby
             {
                 // Check if player has all 3 characters selected or no
 
-                    if (playerData != null)
+                if (playerData != null)
+                {
+                    for (int i = 0; i < 3; i++)
                     {
-                        for (int i = 0; i < 3; i++)
+                        if (string.IsNullOrEmpty(playerData.SelectedCharacterIds[i]) || playerData.SelectedCharacterIds[i] == "0") // if any of the selected characters is missing
                         {
-                            if (string.IsNullOrEmpty(playerData.SelectedCharacterIds[i]) || playerData.SelectedCharacterIds[i] == "0") // if any of the selected characters is missing
-                            {
-                                StartCoroutine(ShowSelectedCharactersPopup());
-                                return;
-                            }
+                            StartCoroutine(ShowSelectedCharactersPopup());
+                            return;
                         }
                     }
-                    // Open battle popup if all 3 are selected
-                    OpenWindow();
-                }));
-            }
+                }
+                // Open battle popup if all 3 are selected
+                OpenWindow();
+            }));
         }
 
 
