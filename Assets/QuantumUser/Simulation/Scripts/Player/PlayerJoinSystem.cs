@@ -6,7 +6,7 @@ using UnityEngine.Scripting;
 namespace Quantum
 {
     [Preserve]
-    public unsafe class PlayerSpawnSystem  : SystemSignalsOnly, ISignalOnPlayerAdded
+    public unsafe class PlayerJoinSystem  : SystemSignalsOnly, ISignalOnPlayerAdded
     {
         public void OnPlayerAdded(Frame f, PlayerRef player, bool firstTime)
         {
@@ -39,7 +39,7 @@ namespace Quantum
             RuntimePlayer data = f.GetPlayerData(player);
             EntityPrototype entityPrototypeAsset = f.FindAsset(data.PlayerAvatar);
             EntityRef playerEntity = f.Create(entityPrototypeAsset);
-            f.Add(playerEntity, new PlayerData{Player = player, Speed = 20, TargetPosition = spawnPos2D, Rotation = 0, Normal = normal, CollisionMinOffset = 1});
+            f.Add(playerEntity, new PlayerData{Player = player, TargetPosition = spawnPos2D, Rotation = 0, Normal = normal, CollisionMinOffset = 1});
 
             //set position and rotation
             Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
