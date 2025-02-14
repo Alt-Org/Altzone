@@ -28,7 +28,10 @@ namespace MenuUi.Scripts.TabLine
 
         private void OnDestroy()
         {
-            _swipe.OnCurrentPageChanged -= OnSwipeCurrentPageChanged;
+            if (_getActiveButtonFromSwipe)
+            {
+                _swipe.OnCurrentPageChanged -= OnSwipeCurrentPageChanged;
+            }
         }
 
 
