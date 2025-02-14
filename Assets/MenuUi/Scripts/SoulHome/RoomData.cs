@@ -108,6 +108,7 @@ namespace MenuUI.Scripts.SoulHome
             int col = 0;
             _roomSprite.sortingOrder = 1000 * _roomInfo.id;
             _wallPaper.sortingOrder = 1000 * _roomInfo.id + 1;
+            //Floor Slot generation
             GameObject furnitureRowObject = new GameObject();
             float prevBottom = 0;
             for(int i = 0; i < _slotRows; i++)
@@ -134,14 +135,16 @@ namespace MenuUI.Scripts.SoulHome
                 prevBottom -= _floorDepth / _slotRows + (_floorDepth / _slotRows) * (0.05f * (_slotRows / -2 + 0.5f + i));
                 row++;
             }
+            //Back Wall Slot generation
             row = 0;
             col = 0;
             prevBottom = 0;
-            float wallWidth = transform.Find("Room").Find("BackWall").GetComponent<BoxCollider2D>().size.x;
-            float wallHeight = transform.Find("Room").Find("BackWall").GetComponent<BoxCollider2D>().size.y;
+            float wallWidth = _backWallBounds.size.x;
+            float wallHeight = _backWallBounds.size.y;
             int wallSlotRows = (int)Mathf.Floor(wallHeight / 2.5f);
             int wallSlotColumns = (int)Mathf.Floor(wallWidth / 2.5f);
-
+            _wallBackFurniturePoints.transform.position = new(_backWallBounds.transform.position.x,
+                                                               _backWallBounds.transform.position.y + _backWallBounds.size.y / 2);
             for (int i = 0; i < wallSlotRows; i++)
             {
                 GameObject furnitureRow = Instantiate(furnitureRowObject, _wallBackFurniturePoints);
@@ -166,6 +169,7 @@ namespace MenuUI.Scripts.SoulHome
                 prevBottom -= wallHeight / wallSlotRows + (wallHeight / wallSlotRows) * (0.05f * (wallSlotRows / -2 + 0.5f + i));
                 row++;
             }
+            //Right Wall Slot generation
             row = 0;
             col = 0;
             wallWidth = _rightSideWallBounds.size.x;
@@ -195,6 +199,7 @@ namespace MenuUI.Scripts.SoulHome
                 }
                 col++;
             }
+            //Left Wall Slot generation
             row = 0;
             col = 0;
             wallWidth = _leftSideWallBounds.size.x;
@@ -227,7 +232,7 @@ namespace MenuUI.Scripts.SoulHome
 
 
             Destroy(furnitureRowObject);
-
+            //Check if ladder should be enabled
             if (!topRoom)
             {
                 _ladder.gameObject.SetActive(true);
