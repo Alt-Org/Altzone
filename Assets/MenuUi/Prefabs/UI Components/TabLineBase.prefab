@@ -85,6 +85,7 @@ GameObject:
   m_Component:
   - component: {fileID: 190456095295517285}
   - component: {fileID: 400857129563694600}
+  - component: {fileID: 595070455881823951}
   - component: {fileID: 3713396448592114125}
   m_Layer: 5
   m_Name: TabLineBase
@@ -124,6 +125,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2082420161837013928}
   m_CullTransparentMesh: 1
+--- !u!114 &595070455881823951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2082420161837013928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb907510ee6a3054589606cf24e7d2ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _getActiveButtonFromSwipe: 0
+  _tabLineButtons:
+  - _activeTabSprite: {fileID: 0}
+    _activeDetailSprite: {fileID: 0}
+    _inactiveTabSprite: {fileID: 0}
+    _inactiveDetailSprite: {fileID: 0}
+    ButtonComponent: {fileID: 4920232304727102816}
+    _tabImageComponent: {fileID: 6682411111857242805}
+    _detailImageComponent: {fileID: 8342995491120871134}
+  - _activeTabSprite: {fileID: 0}
+    _activeDetailSprite: {fileID: 0}
+    _inactiveTabSprite: {fileID: 0}
+    _inactiveDetailSprite: {fileID: 0}
+    ButtonComponent: {fileID: 472687744616341565}
+    _tabImageComponent: {fileID: 4972399519487402402}
+    _detailImageComponent: {fileID: 7155573576286643043}
+  - _activeTabSprite: {fileID: 0}
+    _activeDetailSprite: {fileID: 0}
+    _inactiveTabSprite: {fileID: 0}
+    _inactiveDetailSprite: {fileID: 0}
+    ButtonComponent: {fileID: 4789815415191667178}
+    _tabImageComponent: {fileID: 1404414662961198789}
+    _detailImageComponent: {fileID: 8593413527962958490}
 --- !u!114 &3713396448592114125
 MonoBehaviour:
   m_ObjectHideFlags: 0
