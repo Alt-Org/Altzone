@@ -407,7 +407,7 @@ namespace MenuUI.Scripts.SoulHome
             }
 
             bool check = CheckFurniturePosition(row, column, gridtoCheck, furniture.Furniture);
-            SetSlotValidity(row, column, furniture.Furniture, check);
+            SetSlotValidity(row, column, gridtoCheck, furniture.Furniture, check);
             return check;
         }
 
@@ -730,7 +730,7 @@ namespace MenuUI.Scripts.SoulHome
 
         }
 
-        private void SetSlotValidity(int row, int column, Furniture furniture, bool check)
+        private void SetSlotValidity(int row, int column, FurnitureGrid grid, Furniture furniture, bool check)
         {
             Vector2Int furnitureSize = furniture.GetFurnitureSize();
 
@@ -765,8 +765,21 @@ namespace MenuUI.Scripts.SoulHome
                     }
                     else if (furniture.Place is FurniturePlacement.Wall)
                     {
-                        _wallBackFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().SetValidity(check);
-                        _currentSlotValidity.Add(_wallBackFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>());
+                        if (grid is FurnitureGrid.BackWall)
+                        {
+                            _wallBackFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().SetValidity(check);
+                            _currentSlotValidity.Add(_wallBackFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>());
+                        }
+                        if (grid is FurnitureGrid.RightWall)
+                        {
+                            _wallRightFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().SetValidity(check);
+                            _currentSlotValidity.Add(_wallRightFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>());
+                        }
+                        if (grid is FurnitureGrid.LeftWall)
+                        {
+                            _wallLeftFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().SetValidity(check);
+                            _currentSlotValidity.Add(_wallLeftFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>());
+                        }
                     }
                     else if (furniture.Place is FurniturePlacement.Ceiling)
                     {
