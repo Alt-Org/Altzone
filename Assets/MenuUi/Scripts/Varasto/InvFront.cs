@@ -243,7 +243,7 @@ namespace MenuUi.Scripts.Storage
                         StorageFurniture first = _descendingOrder ? b : a;
                         StorageFurniture second = _descendingOrder ? a : b;
 
-                        int primaryResult = first.Value.CompareTo(second.Value);
+                        int primaryResult = first.VisibleName.CompareTo(second.VisibleName);
                         if (primaryResult != 0) return primaryResult;
 
                         int idResult = first.Id.CompareTo(second.Id);
