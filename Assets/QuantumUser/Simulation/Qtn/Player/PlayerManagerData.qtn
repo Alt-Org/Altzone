@@ -1,0 +1,5 @@
+singleton component PlayerManagerData
+{
+    array<EntityRef>[PLAYER_SLOT_COUNT] SelectedCharacters;
+    array<EntityRef>[PLAYER_CHARACTER_TOTAL_COUNT] AllCharacters;
+}
