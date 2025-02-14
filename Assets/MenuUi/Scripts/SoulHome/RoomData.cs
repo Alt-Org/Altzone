@@ -832,7 +832,12 @@ namespace MenuUI.Scripts.SoulHome
                         }
                         else if (furniture.Furniture.Place is FurniturePlacement.Wall)
                         {
-                            _wallBackFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().Furniture = furnitureObject;
+                            if(slot.furnitureGrid is FurnitureGrid.BackWall)
+                                _wallBackFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().Furniture = furnitureObject;
+                            else if (slot.furnitureGrid is FurnitureGrid.RightWall)
+                                _wallRightFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().Furniture = furnitureObject;
+                            else if (slot.furnitureGrid is FurnitureGrid.LeftWall)
+                                _wallLeftFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().Furniture = furnitureObject;
                         }
                     }
                 }
