@@ -17,10 +17,10 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private Image _backgroundImage;
         [SerializeField] private Image _contentsImage;
         [SerializeField] private Image _contentsDetailsImage;
-        [SerializeField] private Image _lockImage;
         [SerializeField] private TextMeshProUGUI _characterNameText;
         [SerializeField] private AspectRatioFitter _aspectRatioFitter;
         [SerializeField] private PieChartPreview _piechartPreview;
+        [SerializeField] private Material _grayScaleMaterial;
 
         private CharacterSlot _originalSlot;
 
@@ -80,7 +80,9 @@ namespace MenuUi.Scripts.CharacterGallery
             _contentsImage.gameObject.SetActive(false);
             _contentsDetailsImage.gameObject.SetActive(false);
 
-            _lockImage.gameObject.SetActive(false);
+            _spriteImage.material = null;
+            _contentsImage.material = null;
+            _backgroundImage.material = null;
         }
 
 
@@ -100,7 +102,9 @@ namespace MenuUi.Scripts.CharacterGallery
             _contentsImage.gameObject.SetActive(true);
             _contentsDetailsImage.gameObject.SetActive(true);
 
-            _lockImage.gameObject.SetActive(false);
+            _spriteImage.material = null;
+            _contentsImage.material = null;
+            _backgroundImage.material = null;
         }
 
 
@@ -110,7 +114,11 @@ namespace MenuUi.Scripts.CharacterGallery
         public void SetLockedVisuals()
         {
             SetUnselectedVisuals();
-            _lockImage.gameObject.SetActive(true);
+            _spriteImage.material = _grayScaleMaterial;
+            _contentsImage.material = _grayScaleMaterial;
+            _contentsImage.material.SetColor("_Color", _contentsImage.color);
+            _backgroundImage.material = _grayScaleMaterial;
+            _backgroundImage.material.SetColor("_Color", _backgroundImage.color);
         }
 
 
