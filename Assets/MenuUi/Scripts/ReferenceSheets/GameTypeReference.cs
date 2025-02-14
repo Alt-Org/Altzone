@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using static MenuUI.Scripts.Lobby.GameTypeEnum;
 using UnityEngine;
+using MenuUI.Scripts.Lobby;
 
 namespace MenuUi.Scripts.ReferenceSheets
 {

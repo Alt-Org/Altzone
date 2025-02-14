@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MenuUi.Scripts.Lobby.BattleButton
+namespace MenuUI.Scripts.Lobby.BattleButton
 {
     public class GameTypeOption : MonoBehaviour
     {

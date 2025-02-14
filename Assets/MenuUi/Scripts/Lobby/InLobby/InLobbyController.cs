@@ -5,7 +5,6 @@ using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Lobby;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static MenuUI.Scripts.Lobby.GameTypeEnum;
 
 namespace MenuUI.Scripts.Lobby.InLobby
 {

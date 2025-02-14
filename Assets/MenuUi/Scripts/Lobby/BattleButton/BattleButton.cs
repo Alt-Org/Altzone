@@ -2,12 +2,11 @@ using System.Collections.Generic;
 using MenuUi.Scripts.ReferenceSheets;
 using UnityEngine;
 using UnityEngine.UI;
-using static MenuUI.Scripts.Lobby.GameTypeEnum;
 using SignalBusPopup = MenuUI.Scripts.SignalBus;
 using SignalBusInLobby = MenuUI.Scripts.Lobby.InLobby.SignalBus;
 using MenuUi.Scripts.SwipeNavigation;
 
-namespace MenuUi.Scripts.Lobby.BattleButton
+namespace MenuUI.Scripts.Lobby.BattleButton
 {
     /// <summary>
     /// Attached to BT_ALTZONE prefab. Has logic related to selecting game type for opening the battle popup.
