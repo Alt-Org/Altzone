@@ -19,6 +19,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         [SerializeField] private GameObject _gameTypeSelection;
         [SerializeField] private GameObject _gameTypeOptionPrefab;
         [SerializeField] private GameTypeReference _gameTypeReference;
+        [SerializeField] private GameObject _touchBlocker;
 
         private GameType _selectedGameType;
 
@@ -83,7 +84,14 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
         private void RequestBattlePopup()
         {
-            SignalBusInLobby.OnBattlePopupRequestedSignal(_selectedGameType);
+            if (_gameTypeSelection.activeSelf)
+            {
+                CloseGameTypeSelection();
+            }
+            else
+            {
+                SignalBusInLobby.OnBattlePopupRequestedSignal(_selectedGameType);
+            }
         }
 
 
@@ -93,6 +101,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         public void ToggleGameTypeSelection()
         {
             _gameTypeSelection.SetActive(!_gameTypeSelection.activeSelf);
+            _touchBlocker.SetActive(_gameTypeSelection.activeSelf);
         }
 
 
@@ -102,6 +111,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         public void CloseGameTypeSelection()
         {
             _gameTypeSelection.SetActive(false);
+            _touchBlocker.SetActive(false);
         }
 
 
