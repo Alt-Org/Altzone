@@ -1571,7 +1571,7 @@ Transform:
   m_GameObject: {fileID: 2145170794}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.3, y: 0.44, z: 0.3}
+  m_LocalPosition: {x: 2.05, y: 0.44, z: -2.55}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1592,7 +1592,6 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _spriteRenderer: {fileID: 0}
   _moveSpeed: 9
-  _targetPosition: {x: 0, y: 0, z: 0}
 --- !u!65 &2145170799
 BoxCollider:
   m_ObjectHideFlags: 0
