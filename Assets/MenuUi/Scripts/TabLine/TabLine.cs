@@ -22,6 +22,11 @@ namespace MenuUi.Scripts.TabLine
             {
                 _swipe = FindObjectOfType<SwipeUI>();
                 _swipe.OnCurrentPageChanged += OnSwipeCurrentPageChanged;
+                ActivateTabButton(_swipe.CurrentPage);
+            }
+            else
+            {
+                ActivateTabButton(0);
             }
         }
 
