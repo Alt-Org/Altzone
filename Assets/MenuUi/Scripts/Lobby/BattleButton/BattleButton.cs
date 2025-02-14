@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using static MenuUI.Scripts.Lobby.InLobby.InLobbyController;
 using SignalBusPopup = MenuUI.Scripts.SignalBus;
 using SignalBusInLobby = MenuUI.Scripts.Lobby.InLobby.SignalBus;
+using MenuUi.Scripts.SwipeNavigation;
 
 namespace MenuUi.Scripts.Lobby.BattleButton
 {
@@ -23,10 +24,14 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
         private List<GameTypeOption> _gameTypeOptions = new();
         private Button _button;
+        private SwipeUI _swipe;
 
 
         private void Awake()
         {
+            _swipe = FindObjectOfType<SwipeUI>();
+            _swipe.OnCurrentPageChanged += CloseGameTypeSelection;
+
             _gameTypeSelection.SetActive(false); // Close selection menu so that it's not open when game opens
 
             _button = GetComponent<Button>();
@@ -66,6 +71,13 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             }
 
             _button.onClick.RemoveListener(RequestBattlePopup);
+            _swipe.OnCurrentPageChanged -= CloseGameTypeSelection;
+        }
+
+
+        private void OnDisable()
+        {
+            CloseGameTypeSelection();
         }
 
 
@@ -81,6 +93,15 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         public void ToggleGameTypeSelection()
         {
             _gameTypeSelection.SetActive(!_gameTypeSelection.activeSelf);
+        }
+
+
+        /// <summary>
+        /// Close game type selection vertical panel.
+        /// </summary>
+        public void CloseGameTypeSelection()
+        {
+            _gameTypeSelection.SetActive(false);
         }
 
 
