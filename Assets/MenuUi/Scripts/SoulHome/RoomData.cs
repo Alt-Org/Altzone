@@ -316,7 +316,7 @@ namespace MenuUI.Scripts.SoulHome
                     {
                         if ((_wallBackFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture != null
                             && !_wallBackFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture.Equals(furniture))
-                            || _floorFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().Ladder) return false;
+                            || _wallBackFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().Ladder) return false;
                     }
                     else if (furniture.Place is FurniturePlacement.Ceiling)
                     {
