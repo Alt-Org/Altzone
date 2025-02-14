@@ -21,6 +21,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private TextMeshProUGUI _characterNameText;
         [SerializeField] private AspectRatioFitter _aspectRatioFitter;
         [SerializeField] private PieChartPreview _piechartPreview;
+        [SerializeField] private Material _grayScaleMaterial;
 
         private CharacterSlot _originalSlot;
 
@@ -80,6 +81,10 @@ namespace MenuUi.Scripts.CharacterGallery
             _contentsImage.gameObject.SetActive(false);
             _contentsDetailsImage.gameObject.SetActive(false);
 
+            _spriteImage.material = null;
+            _contentsImage.material = null;
+            _backgroundImage.material = null;
+
             _lockImage.gameObject.SetActive(false);
         }
 
@@ -100,6 +105,10 @@ namespace MenuUi.Scripts.CharacterGallery
             _contentsImage.gameObject.SetActive(true);
             _contentsDetailsImage.gameObject.SetActive(true);
 
+            _spriteImage.material = null;
+            _contentsImage.material = null;
+            _backgroundImage.material = null;
+
             _lockImage.gameObject.SetActive(false);
         }
 
@@ -110,6 +119,11 @@ namespace MenuUi.Scripts.CharacterGallery
         public void SetLockedVisuals()
         {
             SetUnselectedVisuals();
+            _spriteImage.material = _grayScaleMaterial;
+            _contentsImage.material = _grayScaleMaterial;
+            _contentsImage.material.SetColor("_Color", _contentsImage.color);
+            _backgroundImage.material = _grayScaleMaterial;
+            _backgroundImage.material.SetColor("_Color", _backgroundImage.color);
             _lockImage.gameObject.SetActive(true);
         }
 
