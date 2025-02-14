@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using static MenuUI.Scripts.Lobby.InLobby.InLobbyController;
+using static MenuUI.Scripts.Lobby.GameTypeEnum;
 using UnityEngine;
 
 namespace MenuUi.Scripts.ReferenceSheets

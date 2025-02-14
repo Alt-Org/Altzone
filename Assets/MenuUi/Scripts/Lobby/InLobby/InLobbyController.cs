@@ -5,7 +5,7 @@ using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Lobby;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static MenuUI.Scripts.Lobby.InLobby.InLobbyController;
+using static MenuUI.Scripts.Lobby.GameTypeEnum;
 
 namespace MenuUI.Scripts.Lobby.InLobby
 {
@@ -21,13 +21,6 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
     public class InLobbyController : AltMonoBehaviour
     {
-        public enum GameType
-        {
-            Custom = 0,
-            Random2v2 = 1,
-            Clan2v2 = 2,
-        }
-
         [SerializeField] private InLobbyView _view;
         [SerializeField] private SelectedCharactersPopup _selectedCharactersPopup;
         [SerializeField] private GameObject _popupContents;
