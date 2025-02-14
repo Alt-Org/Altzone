@@ -17,7 +17,6 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private Image _backgroundImage;
         [SerializeField] private Image _contentsImage;
         [SerializeField] private Image _contentsDetailsImage;
-        [SerializeField] private Image _lockImage;
         [SerializeField] private TextMeshProUGUI _characterNameText;
         [SerializeField] private AspectRatioFitter _aspectRatioFitter;
         [SerializeField] private PieChartPreview _piechartPreview;
@@ -84,8 +83,6 @@ namespace MenuUi.Scripts.CharacterGallery
             _spriteImage.material = null;
             _contentsImage.material = null;
             _backgroundImage.material = null;
-
-            _lockImage.gameObject.SetActive(false);
         }
 
 
@@ -108,8 +105,6 @@ namespace MenuUi.Scripts.CharacterGallery
             _spriteImage.material = null;
             _contentsImage.material = null;
             _backgroundImage.material = null;
-
-            _lockImage.gameObject.SetActive(false);
         }
 
 
@@ -124,7 +119,6 @@ namespace MenuUi.Scripts.CharacterGallery
             _contentsImage.material.SetColor("_Color", _contentsImage.color);
             _backgroundImage.material = _grayScaleMaterial;
             _backgroundImage.material.SetColor("_Color", _backgroundImage.color);
-            _lockImage.gameObject.SetActive(true);
         }
 
 
