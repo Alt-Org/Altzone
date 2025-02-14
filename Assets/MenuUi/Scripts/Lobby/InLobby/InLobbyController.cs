@@ -31,6 +31,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
         [SerializeField] private InLobbyView _view;
         [SerializeField] private SelectedCharactersPopup _selectedCharactersPopup;
         [SerializeField] private GameObject _popupContents;
+        [SerializeField] private BattlePopupCreateCustomRoomPanel _roomSwitcher;
 
         private string _currentRegion;
 
@@ -180,7 +181,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
         private void OpenWindow()
         {
             _popupContents.SetActive(true);
-            _view.ShowMainPanel();
+            _roomSwitcher.ReturnToMain();
         }
 
 
