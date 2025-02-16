@@ -145,7 +145,7 @@ namespace MenuUI.Scripts.SoulHome
             float wallHeight = _backWallBounds.size.y;
             int wallSlotRows = (int)Mathf.Floor(wallHeight / 2.5f);
             _slotHeight = wallSlotRows;
-            int wallSlotColumns = (int)Mathf.Floor(wallWidth / 2.5f);
+            int wallSlotColumns = _slotColumns;
             _wallBackFurniturePoints.transform.position = new(_backWallBounds.transform.position.x,
                                                                _backWallBounds.transform.position.y + _backWallBounds.size.y / 2);
             for (int i = 0; i < wallSlotRows; i++)
