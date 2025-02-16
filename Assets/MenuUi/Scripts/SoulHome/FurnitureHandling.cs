@@ -245,10 +245,12 @@ namespace MenuUI.Scripts.SoulHome
             }
             else if (Furniture.Place is FurniturePlacement.Wall)
             {
+                transform.localScale = 2.5f*Vector3.one;
                 if(grid is FurnitureGrid.BackWall)
                     GetComponent<SpriteRenderer>().sortingOrder = 10 - (row+1) + 1000 * (slot.roomId < 0 ? 0 : slot.roomId);
                 if (grid is FurnitureGrid.RightWall or FurnitureGrid.LeftWall)
                     GetComponent<SpriteRenderer>().sortingOrder = 1 + (row + 2) * 10 + 1000 * (slot.roomId < 0 ? 0 : slot.roomId);
+                transform.localScale *= (1.0f + (slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));
             }
             //Debug.Log("Scale 2: " +(slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));
         }
