@@ -35,13 +35,12 @@ public class DailyTaskProgressPopup : MonoBehaviour
     [SerializeField] private AnimationCurve _progressPopupContainerAnimationCurve;
 
     private bool _progressPopupCooldown = false;
+    Coroutine _coroutineMovePopup = null;
+    Coroutine _coroutineCooldownPopup = null;
 
     private void Start()
     {
-        _progressPopupDailyTaskContainer.position = _progressPopupDailyTaskHiddenLocation.position;
-        _progressPopupDailyTaskContainer.gameObject.SetActive(false);
-        _progressPopupProgressContainer.SetActive(true);
-        _progressPopupRewardContainer.SetActive(false);
+        Reset();
     }
 
     private void OnEnable()
@@ -52,11 +51,27 @@ public class DailyTaskProgressPopup : MonoBehaviour
     private void OnDisable()
     {
         DailyTaskProgressManager.OnTaskProgressed -= ShowProgressPopup;
+        Reset();
     }
 
     private void OnDestroy()
     {
         DailyTaskProgressManager.OnTaskProgressed -= ShowProgressPopup;
+    }
+
+    private void Reset()
+    {
+        _progressPopupCooldown = false;
+        _progressPopupDailyTaskContainer.position = _progressPopupDailyTaskHiddenLocation.position;
+        _progressPopupDailyTaskContainer.gameObject.SetActive(false);
+        _progressPopupProgressContainer.SetActive(true);
+        _progressPopupRewardContainer.SetActive(false);
+
+        if (_coroutineMovePopup != null)
+            StopCoroutine(_coroutineMovePopup);
+
+        if (_coroutineCooldownPopup != null)
+            StopCoroutine(_coroutineCooldownPopup);
     }
 
     private void ShowProgressPopup()
@@ -66,7 +81,7 @@ public class DailyTaskProgressPopup : MonoBehaviour
         if (!_progressPopupCooldown)
         {
             _progressPopupCooldown = true;
-            StartCoroutine(MoveProgressPopupContainer());
+            _coroutineMovePopup = StartCoroutine(MoveProgressPopupContainer());
         }
 
         if (task.TaskProgress >= task.Amount)
@@ -116,7 +131,7 @@ public class DailyTaskProgressPopup : MonoBehaviour
 
         _progressPopupDailyTaskContainer.gameObject.SetActive(false);
         _progressPopupRewardContainer.SetActive(false);
-        StartCoroutine(ProgressPopupCooldownTimer());
+        _coroutineCooldownPopup = StartCoroutine(ProgressPopupCooldownTimer());
     }
 
     private void SetProgressPopup(PlayerTask task)

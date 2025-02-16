@@ -121,7 +121,7 @@ namespace MenuUI.Scripts.SoulHome
             }
             //transform.SetParent(points.GetChild(row).GetChild(column), false);
             FurnitureSlot slot = points.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>();
-            transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = 3 + slot.row * 2;
+            transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = 6 + (slot.row) * 100 + (slot.roomId) * 1000;
 
             Vector2 position = slot.transform.position;
 

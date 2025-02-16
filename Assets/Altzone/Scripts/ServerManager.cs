@@ -796,17 +796,34 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator UpdateClanToServer(ClanData data, Action<bool> callback)
     {
+        ClanLogo logo = new ClanLogo();
+        logo.logoType = ClanLogoType.Heart;
+        logo.pieceColors = new();
+        List<string> serverValues = new();
+
+        foreach (var piece in data.ClanHeartPieces)
+        {
+            logo.pieceColors.Add(ColorUtility.ToHtmlStringRGB(piece.pieceColor));
+        }
+
+        foreach (var value in data.Values)
+        {
+            string valueString = ClanDataTypeConverter.ClanValuesToString(value);
+            serverValues.Add(valueString);
+        }
+
         string body = JObject.FromObject(
             new {
                 _id=data.Id,
                 name=data.Name,
                 tag=data.Tag,
                 isOpen=Clan.isOpen,
-                labels = data.Labels,
+                labels = serverValues,
                 ageRange=data.ClanAge,
                 goal=data.Goals,
                 phrase=data.Phrase,
-                language=data.Language
+                language=data.Language,
+                clanLogo = logo
             },
             JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
         ).ToString();
@@ -867,6 +884,18 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
+    /// <summary>
+    /// Starts a coroutine for updating custom character to server, since PlayerData where it's called isn't inherited from MonoBehaviour.
+    /// </summary>
+    /// <param name="character">The CustomCharacter which to save to server.</param>
+    public void StartUpdatingCustomCharacterToServer(CustomCharacter character)
+    {
+        StartCoroutine(UpdateCustomCharactersToServer(character, success =>
+        {
+            if (!success) Debug.LogError("Failed to save custom character to server!");
+        }));
+    }
+
     public IEnumerator UpdateCustomCharactersToServer(CustomCharacter character, Action<bool> callback)
     {
         if (character == null)
@@ -879,7 +908,7 @@ public class ServerManager : MonoBehaviour
 
         string body = JObject.FromObject(serverCharacter).ToString();
 
-        //Debug.Log(player);
+        Debug.LogWarning(body);
 
         yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "customCharacter/", body, AccessToken, request =>
         {

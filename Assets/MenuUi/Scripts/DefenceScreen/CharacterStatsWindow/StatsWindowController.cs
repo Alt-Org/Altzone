@@ -1,7 +1,7 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Altzone.Scripts;
-using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ModelV2;
@@ -11,17 +11,15 @@ using UnityEngine;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
-    public class StatsWindowController : MonoBehaviour
+    /// <summary>
+    /// Holds methods which are used to access player data and custom character in stats window.
+    /// </summary>
+    public class StatsWindowController : AltMonoBehaviour
     {
         private PlayerData _playerData;
         private CharacterID _characterId;
-        private CustomCharacter _currentCharacter;
-
-        // move these to CustomCharacter or where they should be later
-        const int STATMAXCOMBINED = 50;
-        const int STATMAXLEVEL = 14;
-        const int STATMINLEVEL = 1;
-        const int STATMAXPLAYERINCREASE = 10;
+        private CustomCharacter _customCharacter;
+        private BaseCharacter _baseCharacter;
 
         public event Action OnEraserDecreased;
         public event Action OnDiamondDecreased;
@@ -32,7 +30,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         private void OnEnable()
         {
-            _characterId = (CharacterID)SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow;
+            _characterId = SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow;
             SetPlayerData();
             SetCurrentCharacter();
         }
@@ -40,22 +38,40 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         private void SetPlayerData() // Get player data from data store and set it to variable
         {
-            DataStore dataStore = Storefront.Get();
-            dataStore.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, playerData =>
+            StartCoroutine(GetPlayerData(playerData =>
             {
-                if (playerData == null)
-                {
-                    Debug.Log("GetPlayerData is null");
-                    return;
-                }
                 _playerData = playerData;
-            });
+            }));
         }
 
 
         private void SetCurrentCharacter() // Get current custom character from player data and set it to variable
         {
-            _currentCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
+            _customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
+
+            if (_customCharacter == null)
+            {
+                DataStore store = Storefront.Get();
+
+                ReadOnlyCollection<BaseCharacter> allItems = null;
+                store.GetAllBaseCharacterYield(result => allItems = result);
+
+                _baseCharacter = allItems.FirstOrDefault(c => c.Id == _characterId);
+            }
+            else
+            {
+                _baseCharacter = _customCharacter.CharacterBase;
+            }
+        }
+
+
+        /// <summary>
+        /// Check if current character is locked or no.
+        /// </summary>
+        /// <returns>True if current character is locked (player does not own it) and false if not (player owns this character).</returns>
+        public bool IsCurrentCharacterLocked()
+        {
+            return (_customCharacter == null);
         }
 
 
@@ -75,7 +91,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>Current character's name as string.</returns>
         public string GetCurrentCharacterName()
         {
-            var info = PlayerCharacterPrototypes.GetCharacter(((int)_currentCharacter.CharacterBase.Id).ToString());
+            var info = PlayerCharacterPrototypes.GetCharacter(((int)_characterId).ToString());
             if (info == null)
             {
                 return "";
@@ -93,7 +109,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>Current character's sprite.</returns>
         public Sprite GetCurrentCharacterSprite()
         {
-            var info = PlayerCharacterPrototypes.GetCharacter(((int)_currentCharacter.CharacterBase.Id).ToString());
+            var info = PlayerCharacterPrototypes.GetCharacter(((int)_characterId).ToString());
             if (info == null)
             {
                 return null;
@@ -233,7 +249,9 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>Stat diamond upgrade cost as int.</returns>
         public int GetDiamondCost(StatType statType)
         {
-            return _currentCharacter.GetPriceToNextLevel(statType);
+            if (_customCharacter == null) return 0;
+
+            return _customCharacter.GetPriceToNextLevel(statType);
         }
 
 
@@ -244,20 +262,22 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>Stat value as int.</returns>
         public int GetStat(StatType statType)
         {
+            if (_customCharacter == null) return GetBaseStat(statType);
+
             switch (statType)
             {
                 case StatType.None:
                     return -1;
                 case StatType.Speed:
-                    return _currentCharacter.Speed;
+                    return _customCharacter.Speed;
                 case StatType.Attack:
-                    return _currentCharacter.Attack;
+                    return _customCharacter.Attack;
                 case StatType.Hp:
-                    return _currentCharacter.Hp;
+                    return _customCharacter.Hp;
                 case StatType.CharacterSize:
-                    return _currentCharacter.CharacterSize;
+                    return _customCharacter.CharacterSize;
                 case StatType.Defence:
-                    return _currentCharacter.Defence;
+                    return _customCharacter.Defence;
             }
             return -1;
         }
@@ -275,15 +295,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 case StatType.None:
                     return -1;
                 case StatType.Speed:
-                    return _currentCharacter.CharacterBase.DefaultSpeed;
+                    return _baseCharacter.DefaultSpeed;
                 case StatType.Attack:
-                    return _currentCharacter.CharacterBase.DefaultAttack;
+                    return _baseCharacter.DefaultAttack;
                 case StatType.Hp:
-                    return _currentCharacter.CharacterBase.DefaultHp;
+                    return _baseCharacter.DefaultHp;
                 case StatType.CharacterSize:
-                    return _currentCharacter.CharacterBase.DefaultCharacterSize;
+                    return _baseCharacter.DefaultCharacterSize;
                 case StatType.Defence:
-                    return _currentCharacter.CharacterBase.DefaultDefence;
+                    return _baseCharacter.DefaultDefence;
             }
             return -1;
         }
@@ -301,15 +321,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             {
                 if (!CheckCombinedLevelCap())
                 {
-                    SignalBus.OnChangePopupInfoSignal($"Et voi p‰ivitt‰‰ taitoa, taitojen summa on enint‰‰n {STATMAXCOMBINED}.");
+                    SignalBus.OnChangePopupInfoSignal($"Et voi p‰ivitt‰‰ taitoa, taitojen summa on enint‰‰n {CustomCharacter.STATMAXCOMBINED}.");
                 }
                 else if (!CheckStatLevelCap(statType))
                 {
-                    SignalBus.OnChangePopupInfoSignal($"Et voi p‰ivitt‰‰ taitoa, maksimitaso on {STATMAXLEVEL}.");
+                    SignalBus.OnChangePopupInfoSignal($"Et voi p‰ivitt‰‰ taitoa, maksimitaso on {CustomCharacter.STATMAXLEVEL}.");
                 }
                 else if (!CheckMaxPlayerIncreases())
                 {
-                    SignalBus.OnChangePopupInfoSignal($"Et voi p‰ivitt‰‰ taitoja enemm‰n kuin {STATMAXPLAYERINCREASE} kertaa."); // when every characters' combined base stats are 40 remove this
+                    SignalBus.OnChangePopupInfoSignal($"Et voi p‰ivitt‰‰ taitoja enemm‰n kuin {CustomCharacter.STATMAXPLAYERINCREASE} kertaa."); // when every characters' combined base stats are 40 remove this
                 }
             }
 
@@ -324,6 +344,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>If increasing the stat was successful as bool.</returns>
         public bool TryIncreaseStat(StatType statType)
         {
+            if (_customCharacter == null) return false;
+
             bool success = false;
 
             if (CanIncreaseStat(statType, true))
@@ -335,19 +357,19 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                     switch (statType)
                     {
                         case StatType.Speed:
-                            _currentCharacter.Speed++;
+                            _customCharacter.Speed++;
                             break;
                         case StatType.Attack:
-                            _currentCharacter.Attack++;
+                            _customCharacter.Attack++;
                             break;
                         case StatType.Hp:
-                            _currentCharacter.Hp++;
+                            _customCharacter.Hp++;
                             break;
                         case StatType.CharacterSize:
-                            _currentCharacter.CharacterSize++;
+                            _customCharacter.CharacterSize++;
                             break;
                         case StatType.Defence:
-                            _currentCharacter.Defence++;
+                            _customCharacter.Defence++;
                             break;
                     }
                     success = true;
@@ -356,7 +378,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (success)
             {
-                _playerData.UpdateCustomCharacter(_currentCharacter);
+                _playerData.UpdateCustomCharacter(_customCharacter);
                 OnStatUpdated.Invoke(statType);
             }
 
@@ -377,7 +399,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 SignalBus.OnChangePopupInfoSignal($"Et voi v‰hent‰‰ pohjataitoa.");
             }
 
-            return GetStat(statType) > STATMINLEVEL && GetStat(statType) > GetBaseStat(statType);
+            return GetStat(statType) > CustomCharacter.STATMINLEVEL && GetStat(statType) > GetBaseStat(statType);
         }
 
 
@@ -388,6 +410,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>If decreasing the stat was successful as bool.</returns>
         public bool TryDecreaseStat(StatType statType)
         {
+            if (_customCharacter == null) return false;
+
             bool success = false;
 
             if (CanDecreaseStat(statType, true))
@@ -399,19 +423,19 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                     switch (statType)
                     {
                         case StatType.Speed:
-                            _currentCharacter.Speed--;
+                            _customCharacter.Speed--;
                             break;
                         case StatType.Attack:
-                            _currentCharacter.Attack--;
+                            _customCharacter.Attack--;
                             break;
                         case StatType.Hp:
-                            _currentCharacter.Hp--;
+                            _customCharacter.Hp--;
                             break;
                         case StatType.CharacterSize:
-                            _currentCharacter.CharacterSize--;
+                            _customCharacter.CharacterSize--;
                             break;
                         case StatType.Defence:
-                            _currentCharacter.Defence--;
+                            _customCharacter.Defence--;
                             break;
                     }
                     success = true;
@@ -420,7 +444,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (success)
             {
-                _playerData.UpdateCustomCharacter(_currentCharacter);
+                _playerData.UpdateCustomCharacter(_customCharacter);
                 OnStatUpdated.Invoke(statType);
             }
 
@@ -431,21 +455,22 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         // Get all character stats combined
         private int GetStatsCombined()
         {
-            return _currentCharacter.Speed + _currentCharacter.CharacterSize + _currentCharacter.Attack + _currentCharacter.Defence + _currentCharacter.Hp;
+            if (_customCharacter == null) return GetBaseStatsCombined();
+            return _customCharacter.Speed + _customCharacter.CharacterSize + _customCharacter.Attack + _customCharacter.Defence + _customCharacter.Hp;
         }
 
 
         // Get all character base stats combined
         private int GetBaseStatsCombined()
         {
-            return _currentCharacter.CharacterBase.DefaultSpeed + _currentCharacter.CharacterBase.DefaultCharacterSize + _currentCharacter.CharacterBase.DefaultAttack + _currentCharacter.CharacterBase.DefaultDefence + _currentCharacter.CharacterBase.DefaultHp; 
+            return _baseCharacter.DefaultSpeed + _baseCharacter.DefaultCharacterSize + _baseCharacter.DefaultAttack + _baseCharacter.DefaultDefence + _baseCharacter.DefaultHp; 
         }
 
 
         // Checks if stat levels combined are less than level cap
         private bool CheckCombinedLevelCap()
         {
-            if (GetStatsCombined() < STATMAXCOMBINED)
+            if (GetStatsCombined() < CustomCharacter.STATMAXCOMBINED)
             {
                 return true;
             }
@@ -460,7 +485,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             int statValue = GetStat(statType);
 
-            if (statValue < STATMAXLEVEL)
+            if (statValue < CustomCharacter.STATMAXLEVEL)
             {
                 allowedToIncrease = true;
             }
@@ -472,7 +497,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         // Check if player has increased stats for max allowed player increases
         private bool CheckMaxPlayerIncreases()
         {
-            if (GetStatsCombined() - GetBaseStatsCombined() < STATMAXPLAYERINCREASE)
+            if (GetStatsCombined() - GetBaseStatsCombined() < CustomCharacter.STATMAXPLAYERINCREASE)
             {
                 return true;
             }
