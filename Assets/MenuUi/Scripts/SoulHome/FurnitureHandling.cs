@@ -137,7 +137,7 @@ namespace MenuUI.Scripts.SoulHome
             else return false;
         }
 
-        public void ResetFurniturePosition()
+        public void ResetFurniturePosition(bool reverse = false)
         {
             Vector2 position = Vector2.zero;
             //transform.localPosition = Vector2.zero;
@@ -204,8 +204,11 @@ namespace MenuUI.Scripts.SoulHome
             }
             else
             {*/
+            if(!reverse)
                 position.x = (width / 2) - transform.parent.GetComponent<FurnitureSlot>().width / 2;
-                position.y = -1 * (transform.parent.GetComponent<FurnitureSlot>().height / 2);
+            else
+                position.x = ((width / 2) - transform.parent.GetComponent<FurnitureSlot>().width / 2)*-1;
+            position.y = -1 * (transform.parent.GetComponent<FurnitureSlot>().height / 2);
             //}
 
             transform.localPosition = position;

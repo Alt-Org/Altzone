@@ -640,7 +640,7 @@ namespace MenuUI.Scripts.SoulHome
                 else if (grid is FurnitureGrid.LeftWall)
                 {
                     furniture.transform.SetParent(_wallLeftFurniturePoints.GetChild(column).GetChild(row));
-                    furniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
+                    furniture.GetComponent<FurnitureHandling>().ResetFurniturePosition(true);
                     furniture.GetComponent<FurnitureHandling>().SetScale(column, grid, _wallLeftFurniturePoints.GetChild(column).GetChild(row).GetComponent<FurnitureSlot>());
                 }
             }
@@ -777,29 +777,36 @@ namespace MenuUI.Scripts.SoulHome
             for (int i = startRow; i <= row; i++)
             {
                 if (grid is FurnitureGrid.Floor or FurnitureGrid.Ceiling)
+                {
                     if (i < 0 || i >= _slotRows)
                     {
                         continue;
                     }
+                }
                 else if (grid is FurnitureGrid.BackWall or FurnitureGrid.RightWall or FurnitureGrid.LeftWall)
+                {
                     if (i < 0 || i >= _slotHeight)
                     {
                         continue;
                     }
+                }
 
                 for (int j = column; j <= endColumn; j++)
                 {
-                    if(grid is FurnitureGrid.Floor or FurnitureGrid.BackWall or FurnitureGrid.Ceiling)
+                    if (grid is FurnitureGrid.Floor or FurnitureGrid.BackWall or FurnitureGrid.Ceiling)
+                    {
                         if (j < 0 || j >= _slotColumns)
                         {
                             continue;
                         }
+                    }
                     else if (grid is FurnitureGrid.RightWall or FurnitureGrid.LeftWall)
+                    {
                         if (j < 0 || j >= _slotRows)
                         {
                             continue;
                         }
-
+                    }
                     if (furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorByWall or FurniturePlacement.FloorNonblock)
                     {
                         _floorFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().SetValidity(check);
