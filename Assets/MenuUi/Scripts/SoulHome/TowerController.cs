@@ -695,7 +695,7 @@ namespace MenuUI.Scripts.SoulHome
                 }
                 if (_selectedFurniture != null) {
                     _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(1f);
-                    _selectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition(_selectedFurniture.GetComponent<FurnitureHandling>().Slot.furnitureGrid is FurnitureGrid.LeftWall);
+                    _selectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition(_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.furnitureGrid is FurnitureGrid.LeftWall);
                     //SelectedFurniture = null;
                 }
                 //_mainScreen.DeselectTrayFurniture();
