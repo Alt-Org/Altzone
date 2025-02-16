@@ -7,6 +7,7 @@ using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.UI;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using Prg.Scripts.Common;
+using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -326,7 +327,7 @@ namespace MenuUI.Scripts.SoulHome
                     {
                         if (_soulHomeTower.SelectedFurniture.GetComponent<FurnitureHandling>().TempSlot != null)
                         {
-                            _soulHomeTower.SelectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
+                            _soulHomeTower.SelectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition(_soulHomeTower.SelectedFurniture.GetComponent<FurnitureHandling>().TempSlot.furnitureGrid is FurnitureGrid.LeftWall);
                             _soulHomeTower.SelectedFurniture.GetComponent<SpriteRenderer>().enabled = true;
                             _soulHomeTower.SelectedFurniture.GetComponent<BoxCollider2D>().enabled = true;
                             _soulHomeTower.UnfocusFurniture();

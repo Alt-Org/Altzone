@@ -695,7 +695,7 @@ namespace MenuUI.Scripts.SoulHome
                 }
                 if (_selectedFurniture != null) {
                     _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(1f);
-                    _selectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
+                    _selectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition(_selectedFurniture.GetComponent<FurnitureHandling>().Slot.furnitureGrid is FurnitureGrid.LeftWall);
                     //SelectedFurniture = null;
                 }
                 //_mainScreen.DeselectTrayFurniture();
@@ -774,7 +774,7 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     _rooms.transform.GetChild(_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.roomId).GetChild(0).GetComponent<RoomData>().ResetPosition(SelectedFurniture, true);
                     _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(1f);
-                    _selectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
+                    _selectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition(_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.furnitureGrid is FurnitureGrid.LeftWall);
                     SelectedFurniture = null;
                 }
             }
@@ -804,7 +804,7 @@ namespace MenuUI.Scripts.SoulHome
                 int roomId = furniture.GetComponent<FurnitureHandling>().Slot.roomId;
                 _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().SetFurnitureSlots(furniture.GetComponent<FurnitureHandling>());
                 _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().ResetPosition(furniture, false);
-                furniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
+                furniture.GetComponent<FurnitureHandling>().ResetFurniturePosition(_selectedFurniture.GetComponent<FurnitureHandling>().Slot.furnitureGrid is FurnitureGrid.LeftWall);
                 furniture.GetComponent<FurnitureHandling>().SetScale();
                 furniture.GetComponent<FurnitureHandling>().SetTransparency(1f);
                 furniture.GetComponent<FurnitureHandling>().TempSlot = furniture.GetComponent<FurnitureHandling>().Slot;
