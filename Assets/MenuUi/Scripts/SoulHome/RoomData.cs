@@ -919,9 +919,9 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (furnitureGrid is FurnitureGrid.BackWall)
                     furniture.transform.SetParent(_wallBackFurniturePoints.GetChild(prevRow).GetChild(prevColumn));
-                if (furnitureGrid is FurnitureGrid.RightWall)
+                else if (furnitureGrid is FurnitureGrid.RightWall)
                     furniture.transform.SetParent(_wallRightFurniturePoints.GetChild(prevRow).GetChild(prevColumn));
-                if (furnitureGrid is FurnitureGrid.LeftWall)
+                else if (furnitureGrid is FurnitureGrid.LeftWall)
                     furniture.transform.SetParent(_wallLeftFurniturePoints.GetChild(prevRow).GetChild(prevColumn));
             }
             furniture.GetComponent<FurnitureHandling>().SetScale();
