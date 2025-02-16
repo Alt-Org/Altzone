@@ -620,10 +620,27 @@ namespace MenuUI.Scripts.SoulHome
             bool isFurniturePlaceHolder = _selectedFurniture.GetComponent<FurnitureHandling>().IsPlaceHolder;
             if(hitPoint.Equals(Vector2.negativeInfinity)) hitPoint = _selectedFurniture.transform.position + new Vector3(0, 0.001f);
 
-            if(!isFurniturePlaceHolder)
-                checkPoint = hitPoint + new Vector2((_selectedFurniture.transform.localScale.x / 2) + ((_selectedFurniture.transform.localScale.x *size.x)/2)*-1, 0);
+            Ray ray = new(transform.position, (Vector3)hitPoint - transform.position);
+            RaycastHit2D[] hitCheckArray;
+            hitCheckArray = Physics2D.GetRayIntersectionAll(ray, 1000);
+            bool hitLeftWall = false;
+            float slotWidth = 2.5f;
+            foreach (RaycastHit2D hit2 in hitCheckArray)
+            {
+                if (hit2.collider.gameObject.CompareTag("FloorFurnitureSlot")) { slotWidth = hit2.collider.gameObject.GetComponent<BoxCollider2D>().size.x; break; }
+                else if (hit2.collider.gameObject.CompareTag("WallFurnitureSlot")) { slotWidth = hit2.collider.gameObject.GetComponent<BoxCollider2D>().size.x; break; }
+                else if (hit2.collider.gameObject.CompareTag("RightWallFurnitureSlot")) { slotWidth = hit2.collider.gameObject.GetComponent<BoxCollider2D>().size.x; break; }
+                else if (hit2.collider.gameObject.CompareTag("LeftWallFurnitureSlot")) { hitLeftWall = true; slotWidth = hit2.collider.gameObject.GetComponent<BoxCollider2D>().size.x; break; }
+            }
+
+
+            if (!isFurniturePlaceHolder)
+                if(!hitLeftWall)
+                    checkPoint = hitPoint + new Vector2((slotWidth / 2) + ((slotWidth * size.x)/2)*-1, 0);
+                else
+                    checkPoint = hitPoint + new Vector2((slotWidth / 2) * -1 + ((slotWidth * size.x) / 2), 0);
             else
-                checkPoint = hitPoint + new Vector2((_selectedFurniture.transform.localScale.x / 2) * -1 + _selectedFurniture.transform.localScale.x / (2 * size.x), 0);
+                checkPoint = hitPoint + new Vector2((slotWidth / 2) * -1 + slotWidth / (2 * size.x), 0);
 
             Ray ray2 = new(transform.position, (Vector3)checkPoint - transform.position);
             RaycastHit2D[] hitArray;
