@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Altzone.Scripts.Voting;
 
@@ -26,5 +27,18 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public int? furnitureCount { get; set; }
         public int? raidRoomCount { get; set; }
         public List<PollData> polls { get; set; }
+        public ClanLogo clanLogo { get; set; }
+    }
+
+    public enum ClanLogoType
+    {
+        None,
+        Heart
+    }
+    [Serializable]
+    public class ClanLogo
+    {
+        public ClanLogoType logoType { get; set; }
+        public List<string> pieceColors { get; set; }
     }
 }

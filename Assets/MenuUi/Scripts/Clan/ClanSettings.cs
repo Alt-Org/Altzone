@@ -23,7 +23,7 @@ public class ClanSettings : MonoBehaviour
     [SerializeField] private GameObject _clanPassword;
     [SerializeField] private TMP_InputField _clanPasswordField;
     [SerializeField] private Toggle _clanOpenToggle;
-    [SerializeField] private ClanGoalDropdown _goalDropdown;
+    [SerializeField] private ClanGoalSelection _goalSelection;
     [SerializeField] private ClanAgeSelection _ageSelection;
 
     [Header("Language")]
@@ -76,7 +76,7 @@ public class ClanSettings : MonoBehaviour
             _clanOpenToggle.isOn = !clan.IsOpen;
             _clanPassword.SetActive(!clan.IsOpen);
 
-            _goalDropdown.Initialize(clan.Goals);
+            _goalSelection.Initialize(clan.Goals);
             _ageSelection.Initialize(clan.ClanAge);
 
             _clanRightsPanel.InitializeRightsToggles(clan.ClanRights);
@@ -93,6 +93,7 @@ public class ClanSettings : MonoBehaviour
             };
             _valuePanel.SetValues(clan.Values);
             _valueSelection.SetSelected(clan.Values);
+            _selectedValues = clan.Values;
             _openValueSelectionButton.onClick.AddListener(() => _valueSelection.SetSelected(_selectedValues));
             _setValuesButton.onClick.AddListener(() =>
             {
@@ -104,6 +105,7 @@ public class ClanSettings : MonoBehaviour
             clan.ClanHeartPieces ??= new();
             _heartPieces = clan.ClanHeartPieces;
             _heartColorChanger.InitializeClanHeart(_heartPieces);
+            _heartColorSetter.SetHeartColors(_heartPieces);
 
             _saveButton.onClick.AddListener(SaveClanSettings);
         });
@@ -124,16 +126,17 @@ public class ClanSettings : MonoBehaviour
         {
             clanData.Phrase = _clanPhraseField.text;
             clanData.Language = _languageList.SelectedLanguage;
-            clanData.Goals = _goalDropdown.GetSelected();
+            clanData.Goals = _goalSelection.GoalsRange;
             clanData.ClanAge = _ageSelection.ClanAgeRange;
+
+            clanData.Values = _valueSelection.SelectedValues;
+            clanData.ClanHeartPieces = _heartPieces;
 
             // These are not saved at the moment
             bool isOpen = !_clanOpenToggle.isOn;
             string password = _clanPasswordField.text;
             clanData.ClanRights = _clanRightsPanel.ClanRights;
-            clanData.ClanHeartPieces = _heartPieces;
-            clanData.Values = _selectedValues;
-
+            
             StartCoroutine(ServerManager.Instance.UpdateClanToServer(clanData, success =>
             {
                 _saveButton.interactable = true;
@@ -156,9 +159,10 @@ public class ClanSettings : MonoBehaviour
             bool hasMadeEdits = _heartColorChanger.IsAnyPieceChanged()
                 || clanData.Phrase != _clanPhraseField.text
                 || clanData.Language != _languageList.SelectedLanguage
-                || clanData.Goals != _goalDropdown.GetSelected()
+                || clanData.Goals != _goalSelection.GoalsRange
                 || clanData.ClanAge != _ageSelection.ClanAgeRange
-                || !clanData.ClanRights.SequenceEqual(_clanRightsPanel.ClanRights);
+                || !clanData.ClanRights.SequenceEqual(_clanRightsPanel.ClanRights)
+                || clanData.Values != _selectedValues;
 
             if (hasMadeEdits)
             {

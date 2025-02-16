@@ -32,7 +32,6 @@ namespace MenuUI.Scripts.SoulHome
 
         public SoulhomeFurnitureInfoObject GetFurnitureData(string name)
         {
-            //Debug.LogWarning($"Full name: {name}");
             if (string.IsNullOrWhiteSpace(name))
             {
                 return null;
@@ -40,7 +39,6 @@ namespace MenuUI.Scripts.SoulHome
 
             string[] parts = name.Split("_");
 
-            //Debug.LogWarning($"Set name: {parts[1]}");
             if (parts.Length != 2) { return null; }
 
             foreach(SoulhomeFurnitureSetInfo info in _info)
@@ -66,17 +64,11 @@ namespace MenuUI.Scripts.SoulHome
             {
                 SoulhomeFurnitureSetInfo newSetInfo = new();
                 newSetInfo.SetName = setInfo.SetName;
-                newSetInfo.ArtistName = setInfo.ArtistName;
                 newSetInfo.list = new();
                 foreach (FurnitureInfoObject infoObject in setInfo.list)
                 {
                     SoulhomeFurnitureInfoObject newInfo = new();
                     newInfo.Name = infoObject.Name;
-                    newInfo.Image = infoObject.Image;
-                    newInfo.VisibleName = infoObject.VisibleName;
-                    newInfo.ArtisticDescription = infoObject.ArtisticDescription;
-                    newInfo.DiagnoseNumber = infoObject.DiagnoseNumber;
-                    newInfo.BaseFurniture = infoObject.BaseFurniture;
                     newSetInfo.list.Add(newInfo);
                 }
                 newSheet.Add(newSetInfo);
@@ -112,23 +104,18 @@ namespace MenuUI.Scripts.SoulHome
     public class SoulhomeFurnitureInfoObject
     {
         public string Name;
-        public Sprite Image;
-        public string VisibleName;
-        public string ArtisticDescription;
-        public string DiagnoseNumber;
         public FurnitureHandling FurnitureHandling;
         public TrayFurniture TrayFurniture;
-        public BaseFurniture BaseFurniture;
     }
 
     [Serializable]
     public class SoulhomeFurnitureSetInfo
     {
         public string SetName;
-        public string ArtistName;
 
         public List<SoulhomeFurnitureInfoObject> list;
     }
+
 #if UNITY_EDITOR
     [CustomEditor(typeof(SoulHomeFurnitureReference))]
     public class SoulHomeFurnitureReferenceEditor : Editor
