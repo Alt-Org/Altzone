@@ -275,10 +275,18 @@ namespace MenuUI.Scripts.SoulHome
 
             if (furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorNonblock or FurniturePlacement.Wall)
             {
-                if(gridtoCheck is FurnitureGrid.Floor or FurnitureGrid.BackWall or FurnitureGrid.Ceiling)
+                if (gridtoCheck is FurnitureGrid.Floor or FurnitureGrid.Ceiling)
+                {
                     if (startRow < 0 || endColumn >= _slotColumns) return false;
-                else if(gridtoCheck is FurnitureGrid.RightWall or FurnitureGrid.LeftWall)
+                }
+                else if (gridtoCheck is FurnitureGrid.BackWall)
+                {
+                    if (startRow < 0 || endColumn >= _slotColumns) return false;
+                }
+                else if (gridtoCheck is FurnitureGrid.RightWall or FurnitureGrid.LeftWall)
+                {
                     if (startRow < 0 || endColumn >= _slotRows) return false;
+                }
                 else return false;
             }
             else if (furniture.Place is FurniturePlacement.FloorByWall)
@@ -302,6 +310,8 @@ namespace MenuUI.Scripts.SoulHome
                     else return false;
                 }
             }
+
+
 
             for (int i = startRow; i <= row; i++)
             {
@@ -411,6 +421,20 @@ namespace MenuUI.Scripts.SoulHome
                     }
                 }
             }
+
+            if(gridtoCheck is FurnitureGrid.BackWall)
+            {
+                furniture.RotateFurniture(FurnitureHandling.Direction.Front);
+            }
+            else if (gridtoCheck is FurnitureGrid.RightWall)
+            {
+                furniture.RotateFurniture(FurnitureHandling.Direction.Right);
+            }
+            else if (gridtoCheck is FurnitureGrid.LeftWall)
+            {
+                furniture.RotateFurniture(FurnitureHandling.Direction.Left);
+            }
+
 
             bool check = CheckFurniturePosition(row, column, gridtoCheck, furniture.Furniture);
             SetSlotValidity(row, column, gridtoCheck, furniture.Furniture, check);
