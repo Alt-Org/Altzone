@@ -243,7 +243,7 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     ladderpiece.GetComponent<SpriteRenderer>().sortingOrder = 1000 * _roomInfo.id +20;
                 }
-                foreach(Transform rowTransform in _wallFurniturePoints)
+                foreach(Transform rowTransform in _wallBackFurniturePoints)
                 {
                     rowTransform.GetChild(1).GetComponent<FurnitureSlot>().Ladder = true;
                     rowTransform.GetChild(2).GetComponent<FurnitureSlot>().Ladder = true;
