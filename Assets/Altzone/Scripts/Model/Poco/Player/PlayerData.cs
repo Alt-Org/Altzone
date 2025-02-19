@@ -36,13 +36,13 @@ namespace Altzone.Scripts.Model.Poco.Player
         [PrimaryKey] public string Id;
         [ForeignKey(nameof(ClanData)), Optional] public string ClanId;
         [ForeignKey(nameof(CustomCharacter)), Optional] public int SelectedCharacterId;
-        [ForeignKey(nameof(CustomCharacter)), Optional] public int[] SelectedCharacterIds = new int[3];
+        [ForeignKey(nameof(CustomCharacter)), Optional] public string[] SelectedCharacterIds = new string[3];
         [Unique] public string Name;
 
         private List<CustomCharacter> _characterList;
 
         public int DiamondSpeed = 1000;
-        public int DiamondResistance = 1000;
+        public int DiamondCharacterSize = 1000;
         public int DiamondAttack = 1000;
         public int DiamondDefence = 1000;
         public int DiamondHP = 1000;
@@ -50,7 +50,7 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public int BackpackCapacity;
 
-        public PlayerTasks.PlayerTask Task = null;
+        public PlayerTask Task = null;
 
         public int points = 0;
 
@@ -76,8 +76,8 @@ namespace Altzone.Scripts.Model.Poco.Player
                 List<CustomCharacter> list = new();
                 foreach (var id in SelectedCharacterIds)
                 {
-                    if (id == 0) continue;
-                    list.Add(CustomCharacters.FirstOrDefault(x => x.Id == (CharacterID)id));
+                    if (string.IsNullOrEmpty(id)) continue;
+                    list.Add(CustomCharacters.FirstOrDefault(x => x.ServerID == id));
                 }
                 while(list.Count < 3)
                 {
@@ -89,7 +89,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         }
 
 
-        public PlayerData(string id, string clanId, int currentCustomCharacterId, int[]currentBattleCharacterIds, string name, int backpackCapacity, string uniqueIdentifier)
+        public PlayerData(string id, string clanId, int currentCustomCharacterId, string[]currentBattleCharacterIds, string name, int backpackCapacity, string uniqueIdentifier)
         {
             Assert.IsTrue(id.IsPrimaryKey());
             Assert.IsTrue(clanId.IsNullOEmptyOrNonWhiteSpace());
@@ -116,8 +116,8 @@ namespace Altzone.Scripts.Model.Poco.Player
             Assert.IsTrue(player.uniqueIdentifier.IsMandatory());
             Id = player._id;
             ClanId = player.clan_id ?? string.Empty;
-            SelectedCharacterId = 0;
-            SelectedCharacterIds = null;
+            SelectedCharacterId = (int)(player.currentAvatarId == null ? 0 : player.currentAvatarId);
+            SelectedCharacterIds = player?.battleCharacter_ids == null ? new string[3] {"0","0","0"} : player.battleCharacter_ids;
             Name = player.name;
             BackpackCapacity = player.backpackCapacity;
             UniqueIdentifier = player.uniqueIdentifier;
@@ -129,6 +129,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         {
             if (character == null) return;
 
+            bool characterInCharacterList = false;
             int i = 0;
             foreach (CustomCharacter item in _characterList)
             {
@@ -139,15 +140,18 @@ namespace Altzone.Scripts.Model.Poco.Player
                 }
 
                 _characterList[i] = character;
+                characterInCharacterList = true;
                 break;
             }
             Patch();
+            if (characterInCharacterList) ServerManager.Instance.StartUpdatingCustomCharacterToServer(character);
         }
 
 
-        internal void BuildCharacterLists(List<CustomCharacter> customCharacters)
+        public void BuildCharacterLists(List<CustomCharacter> customCharacters)
         {
             _characterList = customCharacters;
+            Debug.LogWarning(_characterList.Count + " : " + _characterList[0].ServerID);
             Patch();
         }
 

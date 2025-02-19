@@ -1,12 +1,16 @@
-using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
+    /// <summary>
+    /// Base class for CharacterInventorySlot and SelectedCharacterInventorySlot. Has methods related to setting slot selectable.
+    /// </summary>
     public class SlotBase : MonoBehaviour
     {
         [SerializeField] private Animator _animator;
         [SerializeField] private GameObject _selectButton;
+
+        [HideInInspector] public bool IsLocked = false;
 
         public delegate void CharacterSelectedHandler(SlotBase slot);
         public CharacterSelectedHandler OnCharacterSelected;
@@ -20,9 +24,16 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             _selectButton.SetActive(selectable);
 
-            if (GetComponentInChildren<GalleryCharacter>() != null && selectable) // play selectable animation if there is a gallery character child
+            GalleryCharacter galleryCharacter = GetComponentInChildren<GalleryCharacter>();
+
+            if (galleryCharacter != null && selectable)
             {
-                PlaySelectableAnimation();
+                if (!IsLocked) PlaySelectableAnimation(); // only play selectable animation if slot isn't locked
+                galleryCharacter.DisableNaviButton();
+            }
+            else if (galleryCharacter != null && !selectable)
+            {
+                galleryCharacter.EnableNaviButton();
             }
         }
 

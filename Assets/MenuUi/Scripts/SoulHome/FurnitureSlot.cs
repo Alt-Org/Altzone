@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 
 namespace MenuUI.Scripts.SoulHome
@@ -8,6 +9,7 @@ namespace MenuUI.Scripts.SoulHome
     {
         public int row;
         public int column;
+        public FurnitureGrid furnitureGrid;
         public int roomId;
         public float maxDepthScale;
         public float maxRow;
@@ -65,10 +67,11 @@ namespace MenuUI.Scripts.SoulHome
         public bool TempRotatedNonBlock { get => _tempRotatedNonBlock;}
         public bool Ladder { get => _ladder; set => _ladder = value; }
 
-        public void InitializeSlot(int row, int column, int id, float scale, float maxRow, float width, float height)
+        public void InitializeSlot(int row, int column, int id, FurnitureGrid furnitureGrid, float scale, float maxRow, float width, float height)
         {
             this.row = row;
             this.column = column;
+            this.furnitureGrid = furnitureGrid;
             roomId = id;
             maxDepthScale = scale;
             this.maxRow = maxRow;

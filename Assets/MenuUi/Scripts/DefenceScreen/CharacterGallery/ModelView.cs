@@ -6,22 +6,24 @@ using UnityEngine;
 using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ReferenceSheets;
 using MenuUi.Scripts.SwipeNavigation;
+using UnityEngine.UI;
+using SignalBus = MenuUi.Scripts.Lobby.SignalBus;
+
 namespace MenuUi.Scripts.CharacterGallery
 {
     public class ModelView : MonoBehaviour
     {
         [SerializeField] private Transform _characterGridContent;
-        [SerializeField] private Transform _selectedGridContent;
+        [SerializeField] private Toggle _editModeToggle;
 
         [SerializeField] private GameObject _characterSlotPrefab;
 
         [SerializeField] private ClassColorReference _classColorReference;
 
         private bool _isReady;
-        private int _currentlySelectedSlot = -1;
 
         // Array of character slots in selected grid
-        private SelectedCharacterSlot[] _selectedCharacterSlots;
+        [SerializeField] private SelectedCharacterSlot[] _selectedCharacterSlots;
         // List of character slots in character grid
         private List<CharacterSlot> _characterSlots = new();
 
@@ -42,25 +44,21 @@ namespace MenuUi.Scripts.CharacterGallery
         private void Awake()
         {
             _swipe = FindObjectOfType<SwipeUI>(true);
-            _swipe.OnCurrentPageChanged += RemoveSelection;
+            _swipe.OnCurrentPageChanged += ChangeEditToggleStatusToFalse;
 
-            _selectedCharacterSlots = _selectedGridContent.GetComponentsInChildren<SelectedCharacterSlot>();
             for (int i = 0; i < _selectedCharacterSlots.Length; i++)
             {
-                _selectedCharacterSlots[i].OnSlotSelected += OnSlotSelected;
-                _selectedCharacterSlots[i].OnSelectedSlotDeselected += OnSelectedSlotDeselected;
                 _selectedCharacterSlots[i].OnCharacterSelected += HandleCharacterSelected;
                 _selectedCharacterSlots[i].SlotIndex = i;
             }
+
+            SignalBus.OnDefenceGalleryEditModeRequested += ChangeEditToggleStatusToTrue;
         }
 
 
         private void OnDisable()
         {
-            if (_currentlySelectedSlot != -1)
-            {
-                RemoveSelection();
-            }
+            ChangeEditToggleStatusToFalse();
         }
 
 
@@ -68,18 +66,16 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             foreach (SelectedCharacterSlot slot in _selectedCharacterSlots)
             {
-                slot.OnSlotSelected -= OnSlotSelected;
-                slot.OnSelectedSlotDeselected -= OnSelectedSlotDeselected;
                 slot.OnCharacterSelected -= HandleCharacterSelected;
             }
 
             foreach (CharacterSlot slot in _characterSlots)
             {
                 slot.OnCharacterSelected -= HandleCharacterSelected;
-                slot.Character.OnReturnedToOriginalSlot -= CharacterReturnedToOriginalSlot;
             }
 
-            _swipe.OnCurrentPageChanged -= RemoveSelection;
+            _swipe.OnCurrentPageChanged -= ChangeEditToggleStatusToFalse;
+            SignalBus.OnDefenceGalleryEditModeRequested -= ChangeEditToggleStatusToTrue;
         }
 
 
@@ -100,50 +96,92 @@ namespace MenuUi.Scripts.CharacterGallery
             // Remove all character slots
             foreach (CharacterSlot characterSlot in _characterSlots)
             {
-                if (!characterSlot.transform.IsChildOf(_selectedGridContent))
-                {
-                    characterSlot.OnCharacterSelected -= HandleCharacterSelected;
-                    characterSlot.Character.OnReturnedToOriginalSlot -= CharacterReturnedToOriginalSlot;
-                    Destroy(characterSlot.gameObject);
-                }
+                characterSlot.OnCharacterSelected -= HandleCharacterSelected;
+                Destroy(characterSlot.gameObject);
             }
             _characterSlots.Clear();
             _isReady = true;
         }
 
 
-        public void SetCharacters(List<CustomCharacter> characters, int[] currentCharacterIds)
+        /// <summary>
+        /// Set edit toggle status to true.
+        /// </summary>
+        public void ChangeEditToggleStatusToTrue()
+        {
+            _editModeToggle.isOn = true;
+        }
+
+
+        /// <summary>
+        /// Set edit toggle status to false.
+        /// </summary>
+        public void ChangeEditToggleStatusToFalse()
+        {
+            _editModeToggle.isOn = false;
+        }
+
+
+        /// <summary>
+        /// Toggle edit mode based on the value of edit mode toggle.
+        /// </summary>
+        public void ToggleEditMode()
+        {
+            SetCharacterSlotsSelectable(_editModeToggle.isOn);
+        }
+
+
+        /// <summary>
+        /// Place the characters to character gallery.
+        /// </summary>
+        /// <param name="customCharacters">List of player's custom (owned) characters.</param>
+        /// <param name="selectedCharacterIds">Array of selected character ids which will be placed to the top slot.</param>
+        public void SetCharacters(List<CustomCharacter> customCharacters, int[] selectedCharacterIds)
         {
             DataStore store = Storefront.Get();
 
             ReadOnlyCollection<BaseCharacter> allItems = null;
             store.GetAllBaseCharacterYield(result => allItems = result);
 
-            foreach (BaseCharacter character in allItems)
+            foreach (BaseCharacter baseCharacter in allItems)
             {
-                PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(((int)character.Id).ToString());
+                PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(((int)baseCharacter.Id).ToString());
                 if (info == null) continue;
 
                 GameObject slot = Instantiate(_characterSlotPrefab, _characterGridContent);
 
-                CharacterClassID classID = CustomCharacter.GetClassID(character.Id);
+                CharacterClassID classID = CustomCharacter.GetClassID(baseCharacter.Id);
                 Color bgColor = _classColorReference.GetColor(classID);
                 Color bgAltColor = _classColorReference.GetAlternativeColor(classID);
 
                 CharacterSlot charSlot = slot.GetComponent<CharacterSlot>();
-                charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, character.Id);
+                charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, baseCharacter.Id);
 
                 _characterSlots.Add(charSlot);
                 charSlot.OnCharacterSelected += HandleCharacterSelected;
-                charSlot.Character.OnReturnedToOriginalSlot += CharacterReturnedToOriginalSlot;
 
                 for (int i = 0; i < _selectedCharacterSlots.Length; i++)
                 {
-                    if (character.Id == (CharacterID)currentCharacterIds[i])
+                    if (baseCharacter.Id == (CharacterID)selectedCharacterIds[i])
                     {
                         charSlot.Character.transform.SetParent(_selectedCharacterSlots[i].transform, false);
                         charSlot.Character.SetSelectedVisuals();
                     }
+                }
+
+                bool characterOwned = false;
+                foreach (CustomCharacter customCharacter in customCharacters)
+                {
+                    if (customCharacter.Id == baseCharacter.Id)
+                    {
+                        characterOwned = true;
+                    }
+                }
+
+                if (!characterOwned)
+                {
+                    charSlot.Character.SetLockedVisuals();
+                    charSlot.IsLocked = true;
                 }
             }
         }
@@ -163,97 +201,34 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
-        private void OnSlotSelected(int slotIndex)
-        {
-            // there is a bug here when sometimes selecting another top slot when slot is already is selected doesn't register correctly and doesn't go to HandleCharacterSelected()
-            // i don't know how to solve it
-            if (_currentlySelectedSlot != -1) 
-            {
-                _selectedCharacterSlots[_currentlySelectedSlot].DeSelectSlot();
-            }
-
-            _currentlySelectedSlot = slotIndex;
-            SetCharacterSlotsSelectable(true);
-        }
-
-
-        private void OnSelectedSlotDeselected()
-        {
-            _currentlySelectedSlot = -1;
-            SetCharacterSlotsSelectable(false);
-        }
-
-
-        private void CharacterReturnedToOriginalSlot()
-        {
-            // if there is no character in the slot save slot as empty
-            if (_selectedCharacterSlots[_currentlySelectedSlot].GetComponentInChildren<GalleryCharacter>() == null)
-            {
-                SetTopSlotCharacter(CharacterID.None, _currentlySelectedSlot);
-            }
-
-            RemoveSelection();
-        }
-
-
         private void HandleCharacterSelected(SlotBase pressedSlot)
         {
-            if (_currentlySelectedSlot != -1)
+            GalleryCharacter galleryCharacter = pressedSlot.GetComponentInChildren<GalleryCharacter>();
+
+            SelectedCharacterSlot selectedCharacterSlot = pressedSlot as SelectedCharacterSlot;
+            if (selectedCharacterSlot != null && galleryCharacter != null)
             {
-                GalleryCharacter topSlotCharacter = _selectedCharacterSlots[_currentlySelectedSlot].GetComponentInChildren<GalleryCharacter>();
-                GalleryCharacter pressedCharacter = pressedSlot.GetComponentInChildren<GalleryCharacter>();
-
-                SelectedCharacterSlot selectedCharacterSlot = pressedSlot as SelectedCharacterSlot;
-
-                if (topSlotCharacter != null && pressedCharacter != null)
-                {
-                    if (selectedCharacterSlot != null) // if pressed character is in top slot swap character places
-                    {
-                        topSlotCharacter.HideRemoveButton();
-                        PlaceCharacterToTopSlot(topSlotCharacter, selectedCharacterSlot.SlotIndex);
-                        PlaceCharacterToTopSlot(pressedCharacter, _currentlySelectedSlot);
-                    }
-                    else // set pressed character to top slot and return top slot character to original slot
-                    {
-                        PlaceCharacterToTopSlot(pressedCharacter, _currentlySelectedSlot);
-
-                        topSlotCharacter.ReturnToOriginalSlot();
-                        pressedSlot.SetSelectable(false);
-                        return; // return because ReturnToOriginalSlot() sends event back here to CharacterReturnedToOriginalSlot()
-                    }
-                }
-                else if (pressedCharacter != null && topSlotCharacter == null) // if top slot is empty only set pressed character to top slot
-                {
-                    PlaceCharacterToTopSlot(pressedCharacter, _currentlySelectedSlot);
-                    pressedSlot.SetSelectable(false);
-                }
-                else if (selectedCharacterSlot != null && pressedCharacter == null && topSlotCharacter != null) // if top slot character exists in the source slot, place it to pressed slot and make the source slot empty.
-                {
-                    PlaceCharacterToTopSlot(topSlotCharacter, selectedCharacterSlot.SlotIndex);
-                    topSlotCharacter.HideRemoveButton();
-                    SetTopSlotCharacter(CharacterID.None, _currentlySelectedSlot);
-                }
-
-                RemoveSelection();
+                galleryCharacter.ReturnToOriginalSlot();
+                SetTopSlotCharacter(CharacterID.None, selectedCharacterSlot.SlotIndex);
+            }
+            else if (galleryCharacter != null && !pressedSlot.IsLocked) // can only place owned characters to top slots
+            {
+                PlaceCharacterToTopSlot(galleryCharacter);
             }
         }
 
 
-        private void PlaceCharacterToTopSlot(GalleryCharacter galleryCharacter, int slotIdx)
+        private void PlaceCharacterToTopSlot(GalleryCharacter galleryCharacter)
         {
-            galleryCharacter.transform.SetParent(_selectedCharacterSlots[slotIdx].transform, false);
-            galleryCharacter.SetSelectedVisuals();
-            SetTopSlotCharacter(galleryCharacter.Id, slotIdx);
-        }
-
-
-        public void RemoveSelection()
-        {
-            if (_currentlySelectedSlot != -1)
+            for (int i = 0; i < _selectedCharacterSlots.Length; i++)
             {
-                _selectedCharacterSlots[_currentlySelectedSlot].DeSelectSlot();
-                _currentlySelectedSlot = -1;
-                SetCharacterSlotsSelectable(false);
+                if (_selectedCharacterSlots[i].GetComponentInChildren<GalleryCharacter>() == null)
+                {
+                    galleryCharacter.transform.SetParent(_selectedCharacterSlots[i].transform, false);
+                    galleryCharacter.SetSelectedVisuals();
+                    SetTopSlotCharacter(galleryCharacter.Id, i);
+                    return;
+                }
             }
         }
 
@@ -261,41 +236,6 @@ namespace MenuUi.Scripts.CharacterGallery
         private void SetTopSlotCharacter(CharacterID id, int selectedSlotIdx)
         {
             OnTopSlotCharacterSet?.Invoke(id, selectedSlotIdx);
-        }
-
-
-        /// <summary>
-        /// Reorders selected characters to the left and save them.
-        /// </summary>
-        public void ReorderAndSaveSelectedCharacters()
-        {
-            List<GalleryCharacter> characters = new List<GalleryCharacter>();
-
-            foreach (SelectedCharacterSlot slot in _selectedCharacterSlots) // if slot has character add its character to list
-            {
-                GalleryCharacter character = slot.transform.GetComponentInChildren<GalleryCharacter>();
-                if (character != null)
-                {
-                    characters.Add(character);
-                }
-            }
-
-            for (int i = 0; i < characters.Count; i++) // reparent the characters starting from the leftmost characterslot
-            {
-                characters[i].transform.SetParent(_selectedCharacterSlots[i].transform);
-            }
-
-            for (int i = 0; i < _selectedCharacterSlots.Length; i++) // save selected character ids
-            {
-                if (i < characters.Count)
-                {
-                    SetTopSlotCharacter(characters[i].Id, i);
-                }
-                else
-                {
-                    SetTopSlotCharacter(CharacterID.None, i);
-                }
-            }
         }
     }
 }

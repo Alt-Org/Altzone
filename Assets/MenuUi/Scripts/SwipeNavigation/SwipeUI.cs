@@ -374,7 +374,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         /// </summary>
         private void UpdateButtonContent()
         {
-            if (buttonImages == null || buttonImages.Length == 0) return;
+            if (buttonImages == null || buttonImages.Length == 0 || !_isInMainMenu) return;
 
             for (int i = 0; i < buttonImages.Length; i++)
             {

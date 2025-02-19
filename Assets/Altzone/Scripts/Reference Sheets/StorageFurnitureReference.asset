@@ -25,7 +25,7 @@ MonoBehaviour:
         Atlas-titaanin patsasta."
       DiagnoseNumber: R45.0
       BaseFurniture:
-        Name: 
+        Name: Sofa_Taakka
         Rarity: 0
         Size: 18
         RotatedSize: 24
@@ -43,7 +43,7 @@ MonoBehaviour:
         Atlas-titaanin patsasta."
       DiagnoseNumber: R45.0
       BaseFurniture:
-        Name: 
+        Name: ArmChair_Taakka
         Rarity: 0
         Size: 14
         RotatedSize: 14
@@ -61,7 +61,7 @@ MonoBehaviour:
         Atlas-titaanin patsasta."
       DiagnoseNumber: R45.0
       BaseFurniture:
-        Name: 
+        Name: Mirror_Taakka
         Rarity: 0
         Size: 6
         RotatedSize: 6
@@ -79,7 +79,7 @@ MonoBehaviour:
         Atlas-titaanin patsasta."
       DiagnoseNumber: 
       BaseFurniture:
-        Name: 
+        Name: Floorlamp_Taakka
         Rarity: 0
         Size: 6
         RotatedSize: 6
@@ -97,7 +97,7 @@ MonoBehaviour:
         Atlas-titaanin patsasta."
       DiagnoseNumber: R45.0
       BaseFurniture:
-        Name: 
+        Name: CoffeeTable_Taakka
         Rarity: 0
         Size: 7
         RotatedSize: 13
@@ -115,7 +115,7 @@ MonoBehaviour:
         Atlas-titaanin patsasta."
       DiagnoseNumber: R45.0
       BaseFurniture:
-        Name: 
+        Name: SideTable_Taakka
         Rarity: 0
         Size: 6
         RotatedSize: 6
@@ -133,7 +133,7 @@ MonoBehaviour:
         Atlas-titaanin patsasta."
       DiagnoseNumber: R45.0
       BaseFurniture:
-        Name: 
+        Name: Closet_Taakka
         Rarity: 0
         Size: 8
         RotatedSize: 7
@@ -156,7 +156,7 @@ MonoBehaviour:
         kodinkin sis\xE4ll\xE4, esim. oven saa lukkoon)"
       DiagnoseNumber: F20
       BaseFurniture:
-        Name: 
+        Name: Sink_Schrodinger
         Rarity: 0
         Size: 1
         RotatedSize: 5
@@ -176,7 +176,7 @@ MonoBehaviour:
         kodinkin sis\xE4ll\xE4, esim. oven saa lukkoon)"
       DiagnoseNumber: F20
       BaseFurniture:
-        Name: 
+        Name: Toilet_Schrodinger
         Rarity: 0
         Size: 1
         RotatedSize: 5
@@ -196,7 +196,7 @@ MonoBehaviour:
         kodinkin sis\xE4ll\xE4, esim. oven saa lukkoon)"
       DiagnoseNumber: F20
       BaseFurniture:
-        Name: 
+        Name: Mirror_Schrodinger
         Rarity: 1
         Size: 13
         RotatedSize: 13
@@ -216,13 +216,33 @@ MonoBehaviour:
         kodinkin sis\xE4ll\xE4, esim. oven saa lukkoon)"
       DiagnoseNumber: F20
       BaseFurniture:
-        Name: 
+        Name: Carpet_Schrodinger
         Rarity: 1
         Size: 18
         RotatedSize: 18
         Placement: 2
         Weight: 6
         Value: 150
+        Material: 
+        Recycling: 
+    - Name: Bathtub
+      Image: {fileID: 21300000, guid: e3b859c5b1a5e3744a94f2cc2cd31641, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Kylpyamme
+      ArtisticDescription: "- mit\xE4 kaikkea joutuu itsest\xE4\xE4n piilottamaan
+        nyt ja historiassa (esim. noitavainot, alkemistit, paranormaaliin uskominen)
+        ettei tule leimatuksi mielisairaaksi tms. - kenest\xE4k\xE4\xE4n ei voi tiet\xE4\xE4
+        mit\xE4 joku piilottelee. - miksi juuri wc-huonekalut (osalle turvapaikka
+        kodinkin sis\xE4ll\xE4, esim. oven saa lukkoon)"
+      DiagnoseNumber: F20
+      BaseFurniture:
+        Name: Bathtub_Schrodinger
+        Rarity: 2
+        Size: 8
+        RotatedSize: 19
+        Placement: 0
+        Weight: 50
+        Value: 1150
         Material: 
         Recycling: 
   - SetName: Rakkaus
@@ -235,7 +255,7 @@ MonoBehaviour:
       ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
       DiagnoseNumber: F41.8
       BaseFurniture:
-        Name: 
+        Name: Sofa_Rakkaus
         Rarity: 0
         Size: 11
         RotatedSize: 24
@@ -251,7 +271,7 @@ MonoBehaviour:
       ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
       DiagnoseNumber: F41.8
       BaseFurniture:
-        Name: 
+        Name: ArmChair_Rakkaus
         Rarity: 0
         Size: 7
         RotatedSize: 14
@@ -267,7 +287,7 @@ MonoBehaviour:
       ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
       DiagnoseNumber: F41.8
       BaseFurniture:
-        Name: 
+        Name: Closet_Rakkaus
         Rarity: 0
         Size: 6
         RotatedSize: 6
@@ -283,7 +303,7 @@ MonoBehaviour:
       ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
       DiagnoseNumber: F41.8
       BaseFurniture:
-        Name: 
+        Name: Carpet_Rakkaus
         Rarity: 1
         Size: 15
         RotatedSize: 15
@@ -299,7 +319,7 @@ MonoBehaviour:
       ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
       DiagnoseNumber: F41.8
       BaseFurniture:
-        Name: 
+        Name: CoffeeTable_Rakkaus
         Rarity: 1
         Size: 22
         RotatedSize: 22
@@ -315,7 +335,7 @@ MonoBehaviour:
       ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
       DiagnoseNumber: F41.8
       BaseFurniture:
-        Name: 
+        Name: DiningTable_Rakkaus
         Rarity: 2
         Size: 16
         RotatedSize: 20
@@ -331,7 +351,7 @@ MonoBehaviour:
       ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
       DiagnoseNumber: F41.8
       BaseFurniture:
-        Name: 
+        Name: Bed_Rakkaus
         Rarity: 1
         Size: 21
         RotatedSize: 21
@@ -347,7 +367,7 @@ MonoBehaviour:
       ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
       DiagnoseNumber: F41.8
       BaseFurniture:
-        Name: 
+        Name: Mirror_Rakkaus
         Rarity: 2
         Size: 20
         RotatedSize: 20
@@ -367,7 +387,7 @@ MonoBehaviour:
         jonkinlaista \xF6t\xF6kk\xE4\xE4."
       DiagnoseNumber: R44.1
       BaseFurniture:
-        Name: 
+        Name: Chair_Neuro
         Rarity: 0
         Size: 14
         RotatedSize: 14
@@ -384,7 +404,7 @@ MonoBehaviour:
         ja pitelee p\xE4\xE4t\xE4\xE4n, ihan kuin k\xE4det hakeutuisivat kipualueelle."
       DiagnoseNumber: F41.1
       BaseFurniture:
-        Name: 
+        Name: Dresser_Neuro
         Rarity: 0
         Size: 8
         RotatedSize: 19
@@ -401,7 +421,7 @@ MonoBehaviour:
         aivojen s\xE4hk\xF6iseen toimintaan. Jakkara kuvastaa teemaa yleisesti."
       DiagnoseNumber: R41
       BaseFurniture:
-        Name: 
+        Name: Stool_Neuro
         Rarity: 1
         Size: 6
         RotatedSize: 6
@@ -418,7 +438,7 @@ MonoBehaviour:
         mielenh\xE4iri\xF6t\xE4."
       DiagnoseNumber: F30
       BaseFurniture:
-        Name: 
+        Name: Clock_Neuro
         Rarity: 1
         Size: 19
         RotatedSize: 19
@@ -437,7 +457,7 @@ MonoBehaviour:
       ArtisticDescription: "Polarity-huonekalut kuvastavat kaksisuuntaista mielialah\xE4iri\xF6t\xE4."
       DiagnoseNumber: F31
       BaseFurniture:
-        Name: 
+        Name: Chair_Polarity
         Rarity: 2
         Size: 14
         RotatedSize: 14
@@ -453,13 +473,29 @@ MonoBehaviour:
       ArtisticDescription: "Polarity-huonekalut kuvastavat kaksisuuntaista mielialah\xE4iri\xF6t\xE4."
       DiagnoseNumber: F31
       BaseFurniture:
-        Name: 
+        Name: Bookshelf_Polarity
         Rarity: 3
         Size: 2
         RotatedSize: 5
         Placement: 0
         Weight: 40
         Value: 120
+        Material: 
+        Recycling: 
+    - Name: Table
+      Image: {fileID: -1827521093, guid: 1e251cd786a3aec478063211540f7507, type: 3}
+      PosterImage: {fileID: 21300000, guid: f81722a441607b54d9598b460d0615c6, type: 3}
+      VisibleName: "P\xF6yt\xE4"
+      ArtisticDescription: "Polarity-huonekalut kuvastavat kaksisuuntaista mielialah\xE4iri\xF6t\xE4."
+      DiagnoseNumber: F31
+      BaseFurniture:
+        Name: Bookshelf_Polarity
+        Rarity: 0
+        Size: 21
+        RotatedSize: 21
+        Placement: 0
+        Weight: 10
+        Value: 80
         Material: 
         Recycling: 
   - SetName: Muistoja
@@ -474,7 +510,7 @@ MonoBehaviour:
         hetki\xE4"
       DiagnoseNumber: F44
       BaseFurniture:
-        Name: 
+        Name: Commode_Muistoja
         Rarity: 2
         Size: 7
         RotatedSize: 13
@@ -492,7 +528,7 @@ MonoBehaviour:
         hetki\xE4"
       DiagnoseNumber: F44
       BaseFurniture:
-        Name: 
+        Name: Pictures_Muistoja
         Rarity: 2
         Size: 15
         RotatedSize: 15
@@ -510,7 +546,7 @@ MonoBehaviour:
         hetki\xE4"
       DiagnoseNumber: F44
       BaseFurniture:
-        Name: 
+        Name: Sofa_Muistoja
         Rarity: 2
         Size: 10
         RotatedSize: 20
@@ -528,7 +564,7 @@ MonoBehaviour:
         hetki\xE4"
       DiagnoseNumber: F44
       BaseFurniture:
-        Name: 
+        Name: Armchair_Muistoja
         Rarity: 2
         Size: 9
         RotatedSize: 14
@@ -546,7 +582,7 @@ MonoBehaviour:
         hetki\xE4"
       DiagnoseNumber: F44
       BaseFurniture:
-        Name: 
+        Name: Coffeetable_Muistoja
         Rarity: 3
         Size: 8
         RotatedSize: 8
@@ -564,7 +600,7 @@ MonoBehaviour:
         hetki\xE4"
       DiagnoseNumber: F44
       BaseFurniture:
-        Name: 
+        Name: Drawings_Muistoja
         Rarity: 3
         Size: 7
         RotatedSize: 7
@@ -582,7 +618,7 @@ MonoBehaviour:
         hetki\xE4"
       DiagnoseNumber: F44
       BaseFurniture:
-        Name: 
+        Name: Ficus_Muistoja
         Rarity: 3
         Size: 8
         RotatedSize: 8
@@ -600,7 +636,7 @@ MonoBehaviour:
         hetki\xE4"
       DiagnoseNumber: F44
       BaseFurniture:
-        Name: 
+        Name: Flowers_Muistoja
         Rarity: 3
         Size: 6
         RotatedSize: 6
@@ -618,7 +654,7 @@ MonoBehaviour:
         hetki\xE4"
       DiagnoseNumber: F44
       BaseFurniture:
-        Name: 
+        Name: NewCarpet_Muistoja
         Rarity: 3
         Size: 23
         RotatedSize: 23
@@ -636,7 +672,7 @@ MonoBehaviour:
         hetki\xE4"
       DiagnoseNumber: F44
       BaseFurniture:
-        Name: 
+        Name: OldCarpet_Muistoja
         Rarity: 3
         Size: 23
         RotatedSize: 23
@@ -654,7 +690,7 @@ MonoBehaviour:
         hetki\xE4"
       DiagnoseNumber: F44
       BaseFurniture:
-        Name: 
+        Name: NewWindow_Muistoja
         Rarity: 3
         Size: 20
         RotatedSize: 20
@@ -672,7 +708,7 @@ MonoBehaviour:
         hetki\xE4"
       DiagnoseNumber: F44
       BaseFurniture:
-        Name: 
+        Name: OldWindow_Muistoja
         Rarity: 3
         Size: 20
         RotatedSize: 20
@@ -690,7 +726,7 @@ MonoBehaviour:
         hetki\xE4"
       DiagnoseNumber: F44
       BaseFurniture:
-        Name: 
+        Name: Painting_Muistoja
         Rarity: 3
         Size: 20
         RotatedSize: 20
@@ -708,7 +744,7 @@ MonoBehaviour:
         hetki\xE4"
       DiagnoseNumber: F44
       BaseFurniture:
-        Name: 
+        Name: ToyFox_Muistoja
         Rarity: 3
         Size: 6
         RotatedSize: 6

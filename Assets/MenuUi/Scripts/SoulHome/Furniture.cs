@@ -30,6 +30,7 @@ namespace MenuUI.Scripts.SoulHome
         public string Name;
         public string Id = "-1";
         public Vector2Int Position = new(-1,-1);
+        public FurnitureGrid FurnitureGrid = FurnitureGrid.None;
         public int Room = -1;
         public bool IsRotated;
         public FurnitureSize Size;
@@ -58,6 +59,7 @@ namespace MenuUI.Scripts.SoulHome
             Id = clanFurniture.Id;
             Name = clanFurniture.GameFurnitureName;
             Position = clanFurniture.Position;
+            FurnitureGrid = clanFurniture.FurnitureGrid;
             Room = clanFurniture.Room;
             Size = gameFurniture.Size;
             RotatedSize = gameFurniture.RotatedSize;

@@ -8,10 +8,22 @@ using UnityEngine.SceneManagement;
 
 namespace MenuUI.Scripts.Lobby.InLobby
 {
+    public static partial class SignalBus
+    {
+        public delegate void BattlePopupRequestedHandler(GameType gameType);
+        public static event BattlePopupRequestedHandler OnBattlePopupRequested;
+        public static void OnBattlePopupRequestedSignal(GameType gameType)
+        {
+            OnBattlePopupRequested?.Invoke(gameType);
+        }
+    }
+
     public class InLobbyController : AltMonoBehaviour
     {
         [SerializeField] private InLobbyView _view;
         [SerializeField] private SelectedCharactersPopup _selectedCharactersPopup;
+        [SerializeField] private GameObject _popupContents;
+        [SerializeField] private BattlePopupCreateCustomRoomPanel _roomSwitcher;
 
         private string _currentRegion;
 
@@ -21,7 +33,15 @@ namespace MenuUI.Scripts.Lobby.InLobby
             //_view.RoomButtonOnClick = RoomButtonOnClick;
             //_view.RaidButtonOnClick = RaidButtonOnClick;
             //_view.QuickGameButtonOnClick = QuickGameButtonOnClick;
+            SignalBus.OnBattlePopupRequested += TryOpenWindow;
         }
+
+
+        private void OnDestroy()
+        {
+            SignalBus.OnBattlePopupRequested -= TryOpenWindow;
+        }
+
 
         public void OnEnable()
         {
@@ -114,33 +134,26 @@ namespace MenuUI.Scripts.Lobby.InLobby
             }
         }*/
 
-        public void ToggleWindow()
+        public void TryOpenWindow(GameType gameType)
         {
-            if (transform.GetChild(0).gameObject.activeSelf)
+            StartCoroutine(GetPlayerData(playerData =>
             {
-                CloseWindow();
-            }
-            else
-            {
-                StartCoroutine(GetPlayerData(playerData =>
-                {
-                    // Check if player has all 3 characters selected or no
+                // Check if player has all 3 characters selected or no
 
-                    if (playerData != null)
+                if (playerData != null)
+                {
+                    for (int i = 0; i < 3; i++)
                     {
-                        for (int i = 0; i < 3; i++)
+                        if (string.IsNullOrEmpty(playerData.SelectedCharacterIds[i]) || playerData.SelectedCharacterIds[i] == "0") // if any of the selected characters is missing
                         {
-                            if (playerData.SelectedCharacterIds[i] == 0) // if any of the selected characters is missing
-                            {
-                                StartCoroutine(ShowSelectedCharactersPopup());
-                                return;
-                            }
+                            StartCoroutine(ShowSelectedCharactersPopup());
+                            return;
                         }
                     }
-                    // Open battle popup if all 3 are selected
-                    transform.GetChild(0).gameObject.SetActive(true);
-                }));
-            }
+                }
+                // Open battle popup if all 3 are selected
+                OpenWindow();
+            }));
         }
 
 
@@ -150,15 +163,22 @@ namespace MenuUI.Scripts.Lobby.InLobby
             {
                 if (showBattlePopup == true)
                 {
-                    transform.GetChild(0).gameObject.SetActive(true);
+                    OpenWindow();
                 }
             }));
         }
 
 
+        private void OpenWindow()
+        {
+            _popupContents.SetActive(true);
+            _roomSwitcher.ReturnToMain();
+        }
+
+
         public void CloseWindow()
         {
-            transform.GetChild(0).gameObject.SetActive(false);
+            _popupContents.SetActive(false);
         }
 
         private void CharacterButtonOnClick()

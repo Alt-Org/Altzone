@@ -1,4 +1,6 @@
+using UnityEngine;
 using Altzone.Scripts.Model.Poco.Game;
+using static DailyTaskClanReward;
 
 public struct PopupData
 {
@@ -6,6 +8,7 @@ public struct PopupData
     {
         OwnTask,
         CancelTask,
+        ClanMilestone,
     }
     private PopupDataType _type;
     public PopupDataType Type { get { return _type; } }
@@ -16,62 +19,46 @@ public struct PopupData
         {
             case "own_task": return PopupDataType.OwnTask;
             case "cancel_task": return PopupDataType.CancelTask;
+            case "clan_milestone": return PopupDataType.ClanMilestone;
             default: return PopupDataType.OwnTask;
         }
     }
 
-    public struct OwnPageData
-    {
-        private int _taskId;
-        private string _taskDescription;
-        private int _taskAmount;
-        private int _taskPoints;
-        private int _taskCoins;
+    private Vector3? _location;
+    public Vector3? Location { get { return _location; } }
 
-        public int TaskId { get { return _taskId; } }
-        public string TaskDescription { get { return _taskDescription; } }
-        public int TaskAmount { get { return _taskAmount; } }
-        public int TaskPoints { get { return _taskPoints; } }
-        public int TaskCoins { get { return _taskCoins; } }
+    private PlayerTask _ownPage;
+    public PlayerTask OwnPage { get { return _ownPage; } }
 
-        public void Set(PlayerTasks.PlayerTask task)
-        {
-            _taskId = task.Id;
-            _taskDescription = task.Content;
-            _taskAmount = task.Amount;
-            _taskPoints = task.Points;
-            _taskCoins = task.Coins;
-        }
-    }
-    //private OwnPageData? _ownPage;
-    //public OwnPageData? OwnPage { get { return _ownPage; } }
+    private ClanRewardData? _clanRewardData;
+    public ClanRewardData? ClanRewardData { get { return _clanRewardData; } }
 
-    private PlayerTasks.PlayerTask _ownPage;
-    public PlayerTasks.PlayerTask OwnPage { get { return _ownPage; } }
-
-    public PopupData(PopupDataType type)
+    public PopupData(PopupDataType type, Vector3? location)
     {
         _ownPage = null;
+        _clanRewardData = null;
         _type = type;
+        _location = location;
     }
 
-    public PopupData(PlayerTasks.PlayerTask task)
+    public PopupData(PlayerTask task, Vector3? location)
     {
-        //_ownPage = new OwnPageData();
         _ownPage = task;
+        _clanRewardData = null;
         _type = PopupDataType.OwnTask;
-
-        //SetOwnPageData(task);
+        _location = location;
     }
 
-    public void SetOwnPageData(PlayerTasks.PlayerTask task)
+    public PopupData(ClanRewardData clanRewardData, Vector3 location)
     {
-        //if (_ownPage == null)
-        //_ownPage = new OwnPageData();
+        _ownPage = null;
+        _clanRewardData = clanRewardData;
+        _type = PopupDataType.ClanMilestone;
+        _location = location;
+    }
 
-        //OwnPageData tempData = _ownPage.Value;
-        //tempData.Set(task);
-        //_ownPage = tempData;
+    public void SetOwnPageData(PlayerTask task)
+    {
         _ownPage = task;
         _type = PopupDataType.OwnTask;
     }
