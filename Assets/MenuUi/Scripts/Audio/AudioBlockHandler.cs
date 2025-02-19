@@ -16,12 +16,13 @@ namespace MenuUi.Scripts.Audio
         private void OnDestroy()
         {
             if (Application.isPlaying) return;
+            if (_manager == null) return;
             Debug.LogWarning("Tset" + _audioSourceHash + _sourceType);
             _manager.RemoveAudioBlock(_audioSourceHash, _sourceType);
         }
         private void OnTransformParentChanged()
         {
-            RefreshBlock(_manager);
+            if (_manager != null) RefreshBlock(_manager);
         }
 
         public void SetAudioInfo(string section, AudioSourceType sourceType, AudioManager manager)
