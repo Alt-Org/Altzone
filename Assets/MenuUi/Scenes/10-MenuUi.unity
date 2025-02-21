@@ -130,6 +130,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1564994959477198187, guid: a048112e4ca923948b998cfc132b0d77,
+        type: 3}
+      propertyPath: _musicList.Array.data[0]._musicClip
+      value: 
+      objectReference: {fileID: 8300000, guid: cf4b672e481cda248a5f03e9615cbc0b, type: 3}
     - target: {fileID: 5048184117055766121, guid: a048112e4ca923948b998cfc132b0d77,
         type: 3}
       propertyPath: m_Name
@@ -481,7 +486,7 @@ MonoBehaviour:
         RawValue: 0
       Speed:
         RawValue: 0
-      Resistance:
+      CharacterSize:
         RawValue: 0
       Attack:
         RawValue: 0
@@ -493,7 +498,7 @@ MonoBehaviour:
         RawValue: 0
       Speed:
         RawValue: 0
-      Resistance:
+      CharacterSize:
         RawValue: 0
       Attack:
         RawValue: 0
@@ -505,7 +510,7 @@ MonoBehaviour:
         RawValue: 0
       Speed:
         RawValue: 0
-      Resistance:
+      CharacterSize:
         RawValue: 0
       Attack:
         RawValue: 0
