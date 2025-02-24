@@ -71,8 +71,8 @@ namespace MenuUi.Scripts.CharacterGallery
             _aspectRatioFitter.aspectRatio = 1;
             _characterNameText.gameObject.SetActive(false);
 
-            _spriteImage.rectTransform.anchorMax = new Vector2(0.9f, 0.9f);
-            _spriteImage.rectTransform.anchorMin = new Vector2(0.1f, 0.1f);
+            _spriteImage.rectTransform.anchorMax = new Vector2(1, 1);
+            _spriteImage.rectTransform.anchorMin = new Vector2(0, 0);
 
             _piechartPreview.gameObject.SetActive(true);
             _piechartPreview.UpdateChart(Id);
@@ -94,8 +94,8 @@ namespace MenuUi.Scripts.CharacterGallery
             _aspectRatioFitter.aspectRatio = 0.6f;
             _characterNameText.gameObject.SetActive(true);
 
-            _spriteImage.rectTransform.anchorMax = new Vector2(0.9f, 0.75f);
-            _spriteImage.rectTransform.anchorMin = new Vector2(0.1f, 0.1f);
+            _spriteImage.rectTransform.anchorMax = new Vector2(1f, 0.75f);
+            _spriteImage.rectTransform.anchorMin = new Vector2(0f, 0.1f);
 
             _piechartPreview.gameObject.SetActive(false);
 
