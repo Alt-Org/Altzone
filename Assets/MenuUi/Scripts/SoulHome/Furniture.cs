@@ -98,7 +98,7 @@ namespace MenuUI.Scripts.SoulHome
             return GetFurnitureSize(furnitureSize);
         }
 
-        private Vector2Int GetFurnitureSize(FurnitureSize furnitureSize)
+        public static Vector2Int GetFurnitureSize(FurnitureSize furnitureSize)
         {
             //Debug.Log(furnitureSize);
 
