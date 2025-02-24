@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts;
 using UnityEngine;
-using static Altzone.Scripts.Model.Poco.Game.PlayerTasks;
 using UnityEngine.UI;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Config;
@@ -38,8 +37,8 @@ public class DailyTaskManager : AltMonoBehaviour
     [SerializeField] private Button _cancelTaskButton;
     [SerializeField] private DailyTaskOwnTask _ownTaskPageHandler;
 
-    private int? _ownTaskId;
-    public int? OwnTaskId { get { return _ownTaskId; } }
+    private string _ownTaskId;
+    public string OwnTaskId { get { return _ownTaskId; } }
 
     [Header("ClanTaskPage")]
     [SerializeField] private GameObject _clanTaskView;
@@ -72,6 +71,7 @@ public class DailyTaskManager : AltMonoBehaviour
     void Start()
     {
         TaskGenerator();
+        StartCoroutine(PlayerDataTransferer("get", null, null, data => _currentPlayerData = data));
         StartCoroutine(GetSetExistingTask());
         StartCoroutine(PopulateClanPlayers());
         StartCoroutine(SetClanProgressBar());
@@ -163,8 +163,8 @@ public class DailyTaskManager : AltMonoBehaviour
     private IEnumerator PopulateTasks(GameObject[] taskSlots)
     {
         PlayerTasks tasks = null;
-        Storefront.Get().GetPlayerTasks(content => tasks = content);
         List<PlayerTask> tasklist = null;
+        Storefront.Get().GetPlayerTasks(content => tasklist = content);
         Debug.Log(tasks);
 
         if (tasks == null)
@@ -172,24 +172,24 @@ public class DailyTaskManager : AltMonoBehaviour
             StartCoroutine(ServerManager.Instance.GetPlayerTasksFromServer(content =>
             {
                 if (content != null)
-                    tasks = content;
+                    tasklist = content;
                 else
                 {
                     Debug.LogError("Could not connect to server and receive quests.");
                     //Offline testing
-                    tasks = TESTGenerateTasks();
+                    tasklist = TESTGenerateTasks();
                     Debug.LogWarning("Using locally generated tasks.");
                     //return;
                 }
             }));
         }
 
-        yield return new WaitUntil(() => tasks != null);
+        yield return new WaitUntil(() => tasklist != null);
 
         //!Temporary until the PlayerTask is modified to have one Task list/array!
-        tasklist = tasks.Daily;
-        tasklist.AddRange(tasks.Week);
-        tasklist.AddRange(tasks.Month);
+        //tasklist = tasks.Daily;
+        //tasklist.AddRange(tasks.Week);
+        //tasklist.AddRange(tasks.Month);
         //-----------------------------------------------------------------------|
 
         for (int i = 0; i < tasklist.Count; i++)
@@ -222,7 +222,7 @@ public class DailyTaskManager : AltMonoBehaviour
         _tasksVerticalLayout.anchoredPosition = new Vector2( 0f, -int.MaxValue );
     }
 
-    private PlayerTasks TESTGenerateTasks()
+    private List<PlayerTask> TESTGenerateTasks()
     {
         ServerPlayerTasks serverTasks = new ServerPlayerTasks();
 
@@ -232,12 +232,13 @@ public class DailyTaskManager : AltMonoBehaviour
         for (int i = 0; i < 15; i++)
         {
             ServerPlayerTask serverTask = new ServerPlayerTask();
-            serverTask.id = i;
+            serverTask._id = i.ToString();
             serverTask.amount = (i + 1) * 5;
+            serverTask.amountLeft = serverTask.amount;
             serverTask.title = new ServerPlayerTask.TaskTitle();
             serverTask.title.fi = $"Lähetä {serverTask.amount} viestiä.";
-            serverTask.content = new ServerPlayerTask.TaskContent();
-            serverTask.content.fi = $"Lähetä {serverTask.amount} viestiä chatissa.";
+            //serverTask.content = new ServerPlayerTask.TaskContent();
+            //serverTask.content.fi = $"Lähetä {serverTask.amount} viestiä chatissa.";
             serverTask.points = (i + 1) * 100;
             serverTask.coins = (i + 1) * 100;
             serverTask.type = "write_chat_message";
@@ -246,8 +247,11 @@ public class DailyTaskManager : AltMonoBehaviour
         }
 
         PlayerTasks tasks = new PlayerTasks(serverTasks);
-
-        return (tasks);
+        List<PlayerTask> tasklist = null;
+        tasklist = tasks.Daily;
+        tasklist.AddRange(tasks.Week);
+        tasklist.AddRange(tasks.Month);
+        return (tasklist);
     }
 
     private Transform GetParentCategory(int points)
@@ -270,7 +274,7 @@ public class DailyTaskManager : AltMonoBehaviour
         };
     }
 
-    private IEnumerator GetTask(int id, System.Action<PlayerTask> callback)
+    private IEnumerator GetTask(string id, System.Action<PlayerTask> callback)
     {
         foreach (GameObject taskObj in _dailyTaskCardSlots)
         {
@@ -290,118 +294,56 @@ public class DailyTaskManager : AltMonoBehaviour
 
     private IEnumerator PopulateClanPlayers()
     {
-        /*Commented code refering to getting PlayerData's from ClanData but
-         *there is missing or wrong format data. (Waiting for server side update)*/
+        bool? timeout = null;
+        StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+        yield return new WaitUntil(() => (_currentPlayerData != null || timeout != null));
 
-        #region
+        if (_currentPlayerData == null)
+        {
+            Debug.LogError("PlayerData is null!");
+            yield break;
+        }
 
-        //ClanData clan = null;
-        //string clanId = null;
-        //Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => clanId = p.ClanId);
+        timeout = null;
+        ClanData clanData = null;
 
-        //if (clanId == null)
-        //{
-        //    StartCoroutine(ServerManager.Instance.GetPlayerFromServer(content =>
-        //    {
-        //        if (content != null)
-        //            clanId = content.clan_id;
-        //        else
-        //        {
-        //            Debug.LogError("Could not connect to server and receive PlayerData");
-        //            return;
-        //        }
-        //    }));
-        //}
+        //Get clan data.
+        Storefront.Get().GetClanData(_currentPlayerData.ClanId, content => clanData = content);
 
-        //timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
-        //yield return new WaitUntil(() => (playerData != null || timeout != null));
+        if (clanData == null)
+        {
+            StartCoroutine(ServerManager.Instance.GetClanFromServer(serverClan =>
+            {
+                if (serverClan != null)
+                    clanData = new(serverClan);
+                else
+                {
+                    Debug.LogError("Could not connect to server and receive quests");
+                    return;
+                }
+            }));
+        }
 
-        //if (playerData == null)
-        //{
-        //    StopCoroutine(playerCoroutine);
-        //    Debug.LogError($"Get player data timeout or null.");
-        //    yield break; //TODO: Add error handling.
-        //}
-        //else
-        //    StopCoroutine(timeoutCoroutine);
+        StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+        yield return new WaitUntil(() => (clanData != null || timeout != null));
 
-        //Storefront.Get().GetClanData(clanId, content => clan = content);
+        if (clanData == null)
+            yield break;
 
-        //if (clan == null)
-        //{
-        //    StartCoroutine(ServerManager.Instance.GetClanFromServer(content =>
-        //    {
-        //        if (content != null)
-        //            clan = content;
-        //        else
-        //        {
-        //            //offline testing random generator with id generator
-        //            Debug.LogError("Could not connect to server and receive quests");
-        //            return;
-        //        }
-        //    }));
-        //}
-
-        //timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
-        //yield return new WaitUntil(() => (playerData != null || timeout != null));
-
-        //if (playerData == null)
-        //{
-        //    StopCoroutine(playerCoroutine);
-        //    Debug.LogError($"Get player data timeout or null.");
-        //    yield break; //TODO: Add error handling.
-        //}
-        //else
-        //    StopCoroutine(timeoutCoroutine);
-
-        //PlayerData clanPlayer = null;
-        //Storefront.Get().GetPlayerData(clan.Members[].PlayerDataId, cp => clanPlayer = cp);
-
-
-        //if (clan == null)
-        //{
-        //    StartCoroutine(ServerManager.Instance.GetPlayerLeaderboardFromServer(content =>
-        //    {
-        //        if (content != null)
-        //            clan = content;
-        //        else
-        //        {
-        //            //offline testing random generator with id generator
-        //            Debug.LogError("Could not connect to server and receive quests");
-        //            return;
-        //        }
-        //    }));
-        //}
-
-        //timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
-        //yield return new WaitUntil(() => (playerData != null || timeout != null));
-
-        //if (playerData == null)
-        //{
-        //    StopCoroutine(playerCoroutine);
-        //    Debug.LogError($"Get player data timeout or null.");
-        //    yield break; //TODO: Add error handling.
-        //}
-        //else
-        //    StopCoroutine(timeoutCoroutine);
-
-        #endregion
-
-        //Testing code
-        for (int i = 0; i < 30; i++)
+        for (int i = 0; i < clanData.Members.Count; i++)
         {
             GameObject player = Instantiate(_clanPlayerPrefab, _clanPlayersList);
-            player.GetComponent<DailyTaskClanPlayer>().Set(i, null, null);
+            player.GetComponent<DailyTaskClanPlayer>().Set(i, clanData.Members[i].Name, 0);
 
             _clanPlayers.Add(player);
-            Debug.Log("Created clan player: " + i);
+            Debug.Log("Created clan player: " + clanData.Members[i].Name);
         }
 
         //Needed to update the instantiated DT cards spacing in HorizontalLayoutGroups.
         //LayoutRebuilder.ForceRebuildLayoutImmediate(_clanPlayersList);
 
         //Sets DT cards to left side.
-        _clanPlayersList.anchoredPosition = new Vector2(0f, -500f);
+        _clanPlayersList.anchoredPosition = new Vector2(0f, -5000f);
 
         yield return true;
     }
@@ -409,13 +351,17 @@ public class DailyTaskManager : AltMonoBehaviour
     // Function for popup calling
     public IEnumerator ShowPopupAndHandleResponse(string Message, PopupData? data)
     {
-        var windowType = (
-            data.Value.Type == PopupData.PopupDataType.OwnTask ?
-            Popup.PopupWindowType.Accept :
-            Popup.PopupWindowType.Cancel
-            );
+        Popup.PopupWindowType windowType;
 
-        yield return Popup.RequestPopup(Message, windowType, data.Value.Location, result =>
+        switch (data.Value.Type)
+        {
+            case PopupData.PopupDataType.OwnTask: windowType = Popup.PopupWindowType.Accept; break;
+            case PopupData.PopupDataType.CancelTask: windowType = Popup.PopupWindowType.Cancel; break;
+            case PopupData.PopupDataType.ClanMilestone: windowType = Popup.PopupWindowType.ClanMilestone; break;
+            default: windowType = Popup.PopupWindowType.Accept; break;
+        }
+
+        yield return Popup.RequestPopup(Message, data.Value.ClanRewardData, windowType, data.Value.Location, result =>
         {
             if (result == true && data != null)
             {
@@ -439,6 +385,7 @@ public class DailyTaskManager : AltMonoBehaviour
                             _ownTaskTabButton.interactable = false;
                             break;
                         }
+                    case PopupData.PopupDataType.ClanMilestone: break;
                 }
             }
             else
@@ -492,9 +439,9 @@ public class DailyTaskManager : AltMonoBehaviour
     //Set OwnTask page.
     private void SetHandleOwnTask(PlayerTask playerTask)
     {
-        DailyTaskProgressManager.Instance.UpdateCurrentTask(playerTask);
+        DailyTaskProgressManager.Instance.ChangeCurrentTask(playerTask);
         _ownTaskId = playerTask.Id;
-        _ownTaskPageHandler.SetDailyTask(playerTask.Content, playerTask.Amount, playerTask.Points, playerTask.Coins);
+        _ownTaskPageHandler.SetDailyTask(playerTask.Title, playerTask.Amount, playerTask.Points, playerTask.Coins);
         _ownTaskPageHandler.SetTaskProgress((float)playerTask.TaskProgress / (float)playerTask.Amount);
         _ownTaskPageHandler.TESTSetTaskValue(playerTask.TaskProgress);
         Debug.Log("Task id: " + _ownTaskId + ", has been accepted.");
@@ -631,7 +578,7 @@ public class DailyTaskManager : AltMonoBehaviour
             yield break; //TODO: Add error handling.
 
         _currentPlayerData = savePlayerData;
-        DailyTaskProgressManager.Instance.UpdateCurrentTask(savePlayerData.Task);
+        DailyTaskProgressManager.Instance.ChangeCurrentTask(savePlayerData.Task);
         _ownTaskPageHandler.ClearCurrentTask();
         Debug.Log("Task id: " + _ownTaskId + ", has been canceled.");
         _ownTaskId = null;
@@ -689,10 +636,10 @@ public class DailyTaskManager : AltMonoBehaviour
     {
         var clanRewardDatas = new List<DailyTaskClanReward.ClanRewardData>()
         {
-            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 500),
-            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 1000),
-            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 5000),
-            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Chest, 10000)
+            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 500, null, Random.Range(0,1000)),
+            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 1000, null, Random.Range(0,1000)),
+            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 5000, null, Random.Range(0,1000)),
+            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Chest, 10000, null, Random.Range(0,1000))
         };
         return clanRewardDatas;
     }
@@ -754,7 +701,7 @@ public class DailyTaskManager : AltMonoBehaviour
         foreach (var data in datas)
         {
             GameObject rewardMarker = Instantiate(_clanProgressBarMarkerPrefab, _clanProgressBarMarkersBase);
-            rewardMarker.GetComponent<DailyTaskClanReward>().Set(data);
+            rewardMarker.GetComponent<DailyTaskClanReward>().Set(data, this);
             _clanProgressBarMarkers.Add(rewardMarker);
         }
         yield return true;

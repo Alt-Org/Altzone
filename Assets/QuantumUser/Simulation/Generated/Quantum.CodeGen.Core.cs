@@ -649,6 +649,28 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct PlayerShieldData : Quantum.IComponent {
+    public const Int32 SIZE = 16;
+    public const Int32 ALIGNMENT = 8;
+    [FieldOffset(8)]
+    public EntityRef TeamMate;
+    [FieldOffset(0)]
+    public QBoolean TeamMateSet;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 3541;
+        hash = hash * 31 + TeamMate.GetHashCode();
+        hash = hash * 31 + TeamMateSet.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (PlayerShieldData*)ptr;
+        QBoolean.Serialize(&p->TeamMateSet, serializer);
+        EntityRef.Serialize(&p->TeamMate, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Projectile : Quantum.IComponent {
     public const Int32 SIZE = 48;
     public const Int32 ALIGNMENT = 8;
@@ -724,22 +746,6 @@ namespace Quantum {
         EntityRef.Serialize(&p->ChildEntity, serializer);
         FP.Serialize(&p->CollisionMinOffset, serializer);
         FPVector2.Serialize(&p->Normal, serializer);
-    }
-  }
-  [StructLayout(LayoutKind.Explicit)]
-  public unsafe partial struct SpawnIdentifier : Quantum.IComponent {
-    public const Int32 SIZE = 4;
-    public const Int32 ALIGNMENT = 4;
-    [FieldOffset(0)]
-    private fixed Byte _alignment_padding_[4];
-    public override Int32 GetHashCode() {
-      unchecked { 
-        var hash = 11057;
-        return hash;
-      }
-    }
-    public static void Serialize(void* ptr, FrameSerializer serializer) {
-        var p = (SpawnIdentifier*)ptr;
     }
   }
   public unsafe partial interface ISignalOnCollisionProjectileHitSoulWall : ISignal {
@@ -836,14 +842,14 @@ namespace Quantum {
       BuildSignalsArrayOnComponentRemoved<PhysicsJoints3D>();
       BuildSignalsArrayOnComponentAdded<Quantum.PlayerData>();
       BuildSignalsArrayOnComponentRemoved<Quantum.PlayerData>();
+      BuildSignalsArrayOnComponentAdded<Quantum.PlayerShieldData>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.PlayerShieldData>();
       BuildSignalsArrayOnComponentAdded<Quantum.Projectile>();
       BuildSignalsArrayOnComponentRemoved<Quantum.Projectile>();
       BuildSignalsArrayOnComponentAdded<Quantum.ProjectileSpawner>();
       BuildSignalsArrayOnComponentRemoved<Quantum.ProjectileSpawner>();
       BuildSignalsArrayOnComponentAdded<Quantum.SoulWall>();
       BuildSignalsArrayOnComponentRemoved<Quantum.SoulWall>();
-      BuildSignalsArrayOnComponentAdded<Quantum.SpawnIdentifier>();
-      BuildSignalsArrayOnComponentRemoved<Quantum.SpawnIdentifier>();
       BuildSignalsArrayOnComponentAdded<Transform2D>();
       BuildSignalsArrayOnComponentRemoved<Transform2D>();
       BuildSignalsArrayOnComponentAdded<Transform2DVertical>();
@@ -1027,6 +1033,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(PhysicsSceneSettings), PhysicsSceneSettings.SIZE);
       typeRegistry.Register(typeof(Quantum.PlayerData), Quantum.PlayerData.SIZE);
       typeRegistry.Register(typeof(PlayerRef), PlayerRef.SIZE);
+      typeRegistry.Register(typeof(Quantum.PlayerShieldData), Quantum.PlayerShieldData.SIZE);
       typeRegistry.Register(typeof(Quantum.Projectile), Quantum.Projectile.SIZE);
       typeRegistry.Register(typeof(Quantum.ProjectileSpawner), Quantum.ProjectileSpawner.SIZE);
       typeRegistry.Register(typeof(Ptr), Ptr.SIZE);
@@ -1038,7 +1045,6 @@ namespace Quantum {
       typeRegistry.Register(typeof(Shape3D), Shape3D.SIZE);
       typeRegistry.Register(typeof(Quantum.SoulWall), Quantum.SoulWall.SIZE);
       typeRegistry.Register(typeof(Quantum.SoundEffect), 4);
-      typeRegistry.Register(typeof(Quantum.SpawnIdentifier), Quantum.SpawnIdentifier.SIZE);
       typeRegistry.Register(typeof(SpringJoint), SpringJoint.SIZE);
       typeRegistry.Register(typeof(SpringJoint3D), SpringJoint3D.SIZE);
       typeRegistry.Register(typeof(Transform2D), Transform2D.SIZE);
@@ -1054,10 +1060,10 @@ namespace Quantum {
         .Add<Quantum.GameSession>(Quantum.GameSession.Serialize, null, null, ComponentFlags.Singleton)
         .Add<Quantum.Goal>(Quantum.Goal.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.PlayerData>(Quantum.PlayerData.Serialize, null, null, ComponentFlags.None)
+        .Add<Quantum.PlayerShieldData>(Quantum.PlayerShieldData.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.Projectile>(Quantum.Projectile.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.ProjectileSpawner>(Quantum.ProjectileSpawner.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.SoulWall>(Quantum.SoulWall.Serialize, null, null, ComponentFlags.None)
-        .Add<Quantum.SpawnIdentifier>(Quantum.SpawnIdentifier.Serialize, null, null, ComponentFlags.None)
         .Finish();
     }
     [Preserve()]

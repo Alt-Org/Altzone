@@ -10,8 +10,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     {
         [SerializeField] private StatsWindowController _controller;
         [SerializeField] private PiechartReference _referenceSheet;
-        [SerializeField] private int _sliceAmount;
 
+        private int _sliceAmount;
 
         private Color _impactForceColor;
         private Color _impactForceAltColor;
@@ -46,8 +46,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             _defenceColor = _referenceSheet.GetColor(StatType.Defence);
             _defenceAltColor = _referenceSheet.GetAlternativeColor(StatType.Defence);
 
-            _characterSizeColor = _referenceSheet.GetColor(StatType.Resistance);
-            _characterSizeAltColor = _referenceSheet.GetAlternativeColor(StatType.Resistance);
+            _characterSizeColor = _referenceSheet.GetColor(StatType.CharacterSize);
+            _characterSizeAltColor = _referenceSheet.GetAlternativeColor(StatType.CharacterSize);
 
             _speedColor = _referenceSheet.GetColor(StatType.Speed);
             _speedAltColor = _referenceSheet.GetAlternativeColor(StatType.Speed);
@@ -57,6 +57,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             _circleSprite = _referenceSheet.GetCircleSprite();
             _circlePatternedSprite = _referenceSheet.GetPatternedSprite();
+
+            _sliceAmount = CustomCharacter.STATMAXCOMBINED;
         }
 
 
@@ -85,14 +87,14 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             int impactForce = _controller.GetStat(StatType.Attack);
             int healthPoints = _controller.GetStat(StatType.Hp);
             int defence = _controller.GetStat(StatType.Defence);
-            int characterSize = _controller.GetStat(StatType.Resistance);
+            int characterSize = _controller.GetStat(StatType.CharacterSize);
             int speed = _controller.GetStat(StatType.Speed);
 
             // Get base stats
             int impactForceBase = _controller.GetBaseStat(StatType.Attack);
             int healthPointsBase = _controller.GetBaseStat(StatType.Hp);
             int defenceBase = _controller.GetBaseStat(StatType.Defence);
-            int characterSizeBase = _controller.GetBaseStat(StatType.Resistance);
+            int characterSizeBase = _controller.GetBaseStat(StatType.CharacterSize);
             int speedBase = _controller.GetBaseStat(StatType.Speed);
 
             // Arrange stats

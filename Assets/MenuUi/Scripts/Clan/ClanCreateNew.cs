@@ -77,7 +77,6 @@ public class ClanCreateNew : MonoBehaviour
 
         _ageSelection.Initialize(ClanAge.All);
         _clanGoalSelection.Initialize(Goals.Fiilistely);
-        //SetGoalsDropDown();
 
         _flagImage.SetFlag(Language.None);
         _languageSelection.Initialize(Language.None);
@@ -97,16 +96,6 @@ public class ClanCreateNew : MonoBehaviour
         _heartColorSetter.SetHeartColor(_selectedHeartColor);
     }
 
-    //private void SetGoalsDropDown()
-    //{
-    //    _clanGoalSelection.options.Clear();
-    //    foreach (Goals goal in Enum.GetValues(typeof(Goals)))
-    //    {
-    //        string text = ClanDataTypeConverter.GetGoalText(goal);
-    //        _clanGoalSelection.options.Add(new TMP_Dropdown.OptionData(text));
-    //    }
-    //}
-
     public void PostClanToServer()
     {
         string clanName = _clanNameField.text;
@@ -114,12 +103,9 @@ public class ClanCreateNew : MonoBehaviour
         bool isOpen = !_openClanToggle.isOn;
         string password = _clanPasswordField.text;
         Language language = _languageSelection.SelectedLanguage;
-        //Goals goal = (Goals)_clanGoalSelection.value;
         Goals goal = _clanGoalSelection.GoalsRange;
         ClanAge age = _ageSelection.ClanAgeRange;
         ClanRoleRights[] clanRights = _defaultRights;
-
-        // Not yet saved
         ClanValues[] values = _valueSelection.SelectedValues.ToArray();
         List<HeartPieceData> clanHeartPieces = new();
         for (int i = 0; i < 50; i++) clanHeartPieces.Add(new HeartPieceData(i, _selectedHeartColor));

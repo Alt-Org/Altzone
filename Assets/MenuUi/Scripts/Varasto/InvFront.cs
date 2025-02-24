@@ -9,7 +9,6 @@ using System.Collections.ObjectModel;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using UnityEngine.UI;
-using static ServerManager;
 using Altzone.Scripts.ReferenceSheets;
 
 namespace MenuUi.Scripts.Storage
@@ -17,13 +16,13 @@ namespace MenuUi.Scripts.Storage
     public class InvFront : MonoBehaviour
     {
         [Header("UI")]
-        [SerializeField] private TMP_Text _sortText;
         [SerializeField] private Transform _content;
         [SerializeField] private BaseScrollRect _scrollRect;
         [SerializeField] private GameObject _infoSlot;
         [SerializeField] private GameObject _loadingText;
         [SerializeField] private GameObject _topButtons;
         [SerializeField] private TMP_Text _totalValueText;
+        [SerializeField] private TMP_Text _sortingByText;
 
         [Header("Placeholders")] // These should not remain to the finalized game
         [SerializeField] private Sprite _furnImagePlaceholder;
@@ -47,12 +46,6 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private TMP_Text _artist;
         [SerializeField] private TMP_Text _artisticDescription;
         [SerializeField] private TMP_Text _rarity;
-
-        [Header("Rarity Color")]
-        [SerializeField] private Color commonColor = Color.gray;
-        [SerializeField] private Color rareColor = Color.blue;
-        [SerializeField] private Color epicColor = Color.magenta;
-        [SerializeField] private Color antiqueColor = Color.yellow;
 
         private List<StorageFurniture> _items;
         private List<GameObject> _slotsList = new();
@@ -217,58 +210,10 @@ namespace MenuUi.Scripts.Storage
             {
                 Transform toSet = _slotsList[i].transform;
 
-                // Set color based on rarity
-                toSet.GetComponent<Image>().color = GetColorByRarity(_furn.Rarity.ToString());
+                InvSlotInfoHandler infoHandler = toSet.GetComponent<InvSlotInfoHandler>();
+                infoHandler.SetSlotInfo(_furn, _sortingBy);
 
-                // Icon
-                toSet.GetChild(0).GetComponent<Image>().sprite = _furn.Sprite;
-                ScaleSprite(_furn, toSet.GetChild(0).GetComponent<RectTransform>());
-
-                // Name
-                if (_sortingBy != 0) toSet.GetChild(1).GetComponent<TMP_Text>().text = _furn.VisibleName;
-                else toSet.GetChild(1).GetComponent<TMP_Text>().text = "";
-
-                // Weight
-                switch (_sortingBy)
-                {
-                    case 0:
-                        toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.VisibleName;
-                        break;
-                    case 1:
-                        toSet.GetChild(3).GetComponent<TMP_Text>().text = "Arvo " + _furn.Value.ToString();
-                        break;
-                    case 2:
-                        toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
-                        break;
-                    case 3:
-                        toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.Rarity.ToString();
-                        break;
-                    case 4:
-                        toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.SetName;
-                        break;
-                }
-                // Shape
-                toSet.GetChild(4).GetComponent<Image>().sprite = GetIcon("");
-
-                // SetName
-                toSet.GetChild(5).GetComponent<TMP_Text>().text = _furn.SetName;
-
-                // Id
-                toSet.GetChild(6).GetComponent<TMP_Text>().text = _furn.Info.DiagnoseNumber;
-                // Name
-                toSet.GetChild(7).GetChild(0).GetComponent<TMP_Text>().text = "Sielunkodissa";
-                if (_furn.Position == new Vector2Int(-1, -1))
-                {
-                    toSet.GetChild(7).gameObject.SetActive(false);
-                }
-                else
-                {
-                    toSet.GetChild(7).gameObject.SetActive(true);
-                }
-
-                // Coin
-                if (_sortingBy == 1) toSet.GetChild(8).gameObject.SetActive(true);
-                else toSet.GetChild(8).gameObject.SetActive(false);
+                ScaleSprite(_furn, toSet.GetChild(3).GetComponent<RectTransform>());
 
                 i++;
             }
@@ -292,13 +237,13 @@ namespace MenuUi.Scripts.Storage
             switch (_sortingBy)
             {
                 case 0:
-                    _sortText.text = "Jarjestetty\nAakkoset";
+                    _sortingByText.text = "Jarjestetty: Aakkoset";
 
                     _items.Sort((StorageFurniture a, StorageFurniture b) => {
                         StorageFurniture first = _descendingOrder ? b : a;
                         StorageFurniture second = _descendingOrder ? a : b;
 
-                        int primaryResult = first.Value.CompareTo(second.Value);
+                        int primaryResult = first.VisibleName.CompareTo(second.VisibleName);
                         if (primaryResult != 0) return primaryResult;
 
                         int idResult = first.Id.CompareTo(second.Id);
@@ -309,7 +254,7 @@ namespace MenuUi.Scripts.Storage
 
                     break;
                 case 1:
-                    _sortText.text = "Jarjestetty\nArvo";
+                    _sortingByText.text = "Jarjestetty: Arvo";
 
                     _items.Sort((StorageFurniture a, StorageFurniture b) => {
                         StorageFurniture first = _descendingOrder ? b : a;
@@ -329,7 +274,7 @@ namespace MenuUi.Scripts.Storage
 
                     break;
                 case 2:
-                    _sortText.text = "Jarjestetty\nPaino";
+                    _sortingByText.text = "Jarjestetty: Paino";
 
                     _items.Sort((StorageFurniture a, StorageFurniture b) => {
                         StorageFurniture first = _descendingOrder ? b : a;
@@ -349,7 +294,7 @@ namespace MenuUi.Scripts.Storage
 
                     break;
                 case 3:
-                    _sortText.text = "Jarjestetty\nHarvinaisuus";
+                    _sortingByText.text = "Jarjestetty: Harvinaisuus";
 
                     _items.Sort((StorageFurniture a, StorageFurniture b) => {
                         StorageFurniture first = _descendingOrder ? b : a;
@@ -369,7 +314,7 @@ namespace MenuUi.Scripts.Storage
 
                     break;
                 case 4:
-                    _sortText.text = "Jarjestetty\nLinjasto";
+                    _sortingByText.text = "Jarjestetty: Linjasto";
 
                     _items.Sort((StorageFurniture a, StorageFurniture b) => {
                         StorageFurniture first = _descendingOrder ? b : a;
@@ -468,18 +413,6 @@ namespace MenuUi.Scripts.Storage
         private float GetTotalInventoryValue()
         {
             return _items.Sum(item => item.Value);
-        }
-
-        private Color GetColorByRarity(string rarity)
-        {
-            return rarity switch
-            {
-                "Common" => commonColor,
-                "Rare" => rareColor,
-                "Epic" => epicColor,
-                "Antique" => antiqueColor,
-                _ => commonColor, // Default to common color
-            };
         }
 
         private FurnitureSetInfo GetFurnitureSetInfo(string furnitureName)

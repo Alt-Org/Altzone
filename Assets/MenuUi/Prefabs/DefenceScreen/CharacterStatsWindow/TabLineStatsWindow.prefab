@@ -634,6 +634,50 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 595070455881823951, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
+      propertyPath: _getActiveButtonFromSwipe
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 595070455881823951, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
+      propertyPath: _tabLineButtons.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 595070455881823951, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
+      propertyPath: _tabLineButtons.Array.data[0]._activeTabSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: f9502a761bdb9d443a2586af83639324,
+        type: 3}
+    - target: {fileID: 595070455881823951, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
+      propertyPath: _tabLineButtons.Array.data[1]._activeTabSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: c433a4178a90cc34c821393bcf41915e,
+        type: 3}
+    - target: {fileID: 595070455881823951, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
+      propertyPath: _tabLineButtons.Array.data[0]._inactiveTabSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 273e4f551a0f43d43832d9468d603dd4,
+        type: 3}
+    - target: {fileID: 595070455881823951, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
+      propertyPath: _tabLineButtons.Array.data[1]._inactiveTabSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 12715fe80ae8cdd44babb8b66bbca49e,
+        type: 3}
+    - target: {fileID: 595070455881823951, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
+      propertyPath: _tabLineButtons.Array.data[0]._detailImageComponent
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 595070455881823951, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
+      propertyPath: _tabLineButtons.Array.data[1]._detailImageComponent
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1404414662961198789, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
       propertyPath: m_Color.b
@@ -657,12 +701,22 @@ PrefabInstance:
     - target: {fileID: 3083645397524688902, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.98
+      value: 0.956
       objectReference: {fileID: 0}
     - target: {fileID: 3083645397524688902, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.78
+      value: 0.756
+      objectReference: {fileID: 0}
+    - target: {fileID: 3083645397524688902, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3083645397524688902, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4789815415191667178, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
@@ -751,43 +805,64 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4972399519487402402, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: f9502a761bdb9d443a2586af83639324,
+        type: 3}
+    - target: {fileID: 4972399519487402402, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4972399519487402402, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
       propertyPath: m_Color.b
-      value: 0.67058825
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4972399519487402402, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.227451
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4972399519487402402, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.627451
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5455678281516419644, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.79215693
+      value: 0.22352943
       objectReference: {fileID: 0}
     - target: {fileID: 5455678281516419644, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.32941177
+      value: 0.22352943
       objectReference: {fileID: 0}
     - target: {fileID: 5455678281516419644, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.6117647
+      value: 0.8078432
       objectReference: {fileID: 0}
     - target: {fileID: 5481847502602699424, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.76
+      value: 0.756
       objectReference: {fileID: 0}
     - target: {fileID: 5481847502602699424, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.56
+      value: 0.556
+      objectReference: {fileID: 0}
+    - target: {fileID: 5481847502602699424, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5481847502602699424, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6633164837591512556, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
@@ -821,17 +896,33 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6682411111857242805, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: c433a4178a90cc34c821393bcf41915e,
+        type: 3}
+    - target: {fileID: 6682411111857242805, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
       propertyPath: m_Color.b
-      value: 0.67058825
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6682411111857242805, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.33333334
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6682411111857242805, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
       propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7155573576286643043, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7155573576286643043, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
+      propertyPath: m_Color.a
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7374777170036250210, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
@@ -894,9 +985,23 @@ PrefabInstance:
       propertyPath: m_fontColor32.rgba
       value: 4294375930
       objectReference: {fileID: 0}
+    - target: {fileID: 8342995491120871134, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8342995491120871134, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 8769779974361688627, guid: e22bdd3e0c370fc4b80581ecb7a9da83, type: 3}
+    - {fileID: 5926450162771414224, guid: e22bdd3e0c370fc4b80581ecb7a9da83, type: 3}
+    - {fileID: 8814453850970363211, guid: e22bdd3e0c370fc4b80581ecb7a9da83, type: 3}
+    - {fileID: 5797458262843075130, guid: e22bdd3e0c370fc4b80581ecb7a9da83, type: 3}
+    - {fileID: 5647717842749581979, guid: e22bdd3e0c370fc4b80581ecb7a9da83, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 190456095295517285, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}

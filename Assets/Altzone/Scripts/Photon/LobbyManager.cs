@@ -495,7 +495,7 @@ namespace Altzone.Scripts.Lobby
                     Hp         = BaseCharacter.GetStatValueFP(StatType.Hp, character.Hp),
                     Attack     = BaseCharacter.GetStatValueFP(StatType.Attack, character.Attack),
                     Defence    = BaseCharacter.GetStatValueFP(StatType.Defence, character.Defence),
-                    Resistance = BaseCharacter.GetStatValueFP(StatType.Resistance, character.Resistance),
+                    CharacterSize = BaseCharacter.GetStatValueFP(StatType.CharacterSize, character.CharacterSize),
                     Speed      = BaseCharacter.GetStatValueFP(StatType.Speed, character.Speed)
                 };
             }

@@ -29,7 +29,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterGallery
             _impactForceColor = _referenceSheet.GetColor(StatType.Attack);
             _healthPointsColor = _referenceSheet.GetColor(StatType.Hp);
             _defenceColor = _referenceSheet.GetColor(StatType.Defence);
-            _characterSizeColor = _referenceSheet.GetColor(StatType.Resistance);
+            _characterSizeColor = _referenceSheet.GetColor(StatType.CharacterSize);
             _speedColor = _referenceSheet.GetColor(StatType.Speed);
             _defaultColor = _referenceSheet.GetColor(StatType.None);
             _circleSprite = _referenceSheet.GetCircleSprite();
@@ -77,7 +77,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterGallery
             int impactForce = customCharacter.Attack;
             int healthPoints = customCharacter.Hp;
             int defence = customCharacter.Defence;
-            int characterSize = customCharacter.Resistance;
+            int characterSize = customCharacter.CharacterSize;
             int speed = customCharacter.Speed;
 
             // Arrange stats
@@ -91,7 +91,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterGallery
             };
 
             // Create slices
-            int maxCombinedStatLevel = 50; // TODO: replace this with reference to a constant which is defined somewhere
+            int maxCombinedStatLevel = CustomCharacter.STATMAXCOMBINED;
             float oneLevelFillAmount = 1.0f / maxCombinedStatLevel;
             float currentSliceFill = 1.0f;
             
