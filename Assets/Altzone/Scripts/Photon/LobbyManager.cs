@@ -57,20 +57,19 @@ namespace Altzone.Scripts.Lobby
         [SerializeField] private bool _isCloseRoomOnGameStart;
         //[SerializeField] private SceneDef _raidScene;
 
-        [Header("Team Names"), SerializeField] private string _blueTeamName;
+        [Header("Team Names")]
+        [SerializeField] private string _blueTeamName;
         [SerializeField] private string _redTeamName;
 
-        [Header("Player"), SerializeField]
-        private RuntimePlayer _player;
+        [Header("Player")]
+        [SerializeField] private RuntimePlayer _player;
 
-        [Header("Configs"), SerializeField]
-        private SimulationConfig _simulationConfig;
-        [SerializeField]
-        private SystemsConfig _systemsConfig;
 
+        [Header("Configs")]
+        [SerializeField] private Map _map;
+        [SerializeField] private SimulationConfig _simulationConfig;
+        [SerializeField] private SystemsConfig _systemsConfig;
         [SerializeField] private ProjectileSpec _projectileSpec;
-        [SerializeField]
-        private Map _map;
 
         private QuantumRunner _runner = null;
 
