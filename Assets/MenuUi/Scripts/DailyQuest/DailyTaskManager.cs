@@ -509,23 +509,28 @@ public class DailyTaskManager : AltMonoBehaviour
     public void TESTAddTaskProgress()
     {
         //_ownTaskProgress++;
-        _currentPlayerData.Task.AddProgress(1);
+        //_currentPlayerData.Task.AddProgress(1);
 
-        foreach (GameObject obj in _dailyTaskCardSlots)
-        {
-            if (obj == null)
-                continue;
+        //foreach (GameObject obj in _dailyTaskCardSlots)
+        //{
+        //    if (obj == null)
+        //        continue;
 
-            DailyQuest quest = obj.GetComponent<DailyQuest>();
+        //    DailyQuest quest = obj.GetComponent<DailyQuest>();
 
-            if (quest.TaskData.Id == _ownTaskId)
-            {
-                UpdateOwnTaskProgress();
-                return;
-            }
-        }
+        //    if (quest.TaskData.Id == _ownTaskId)
+        //    {
+        //        UpdateOwnTaskProgress();
+        //        return;
+        //    }
+        //}
 
-        Debug.LogError($"Could not find task with id: {_ownTaskId}");
+        //Debug.LogError($"Could not find task with id: {_ownTaskId}");
+
+        if (_currentPlayerData.Task.Type == TaskType.StartBattleDifferentCharacter)
+            this.GetComponent<DailyTaskProgressListener>().UpdateProgress($"{System.DateTime.Now}");
+        else
+            this.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
     }
 
     private void UpdateOwnTaskProgress()

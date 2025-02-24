@@ -105,13 +105,13 @@ public class DailyTaskProgressManager : AltMonoBehaviour
 
     public void UpdateTaskProgress(TaskType taskType, string value)
     {
-        if (taskType != CurrentPlayerTask.Type)
+        if ((taskType != CurrentPlayerTask.Type) && (taskType != TaskType.Test))
         {
             Debug.LogError($"Current task type is: {CurrentPlayerTask.Type}, but type: {taskType}, was received.");
             return;
         }
 
-        switch (taskType)
+        switch (CurrentPlayerTask.Type)
         {
             case TaskType.PlayBattle: HandleSimpleTask(value); break;
             case TaskType.WinBattle: HandleSimpleTask(value); break;
@@ -144,6 +144,9 @@ public class DailyTaskProgressManager : AltMonoBehaviour
     {
         if (CurrentPlayerTask == null)
             return false;
+
+        if (taskType == TaskType.Test)
+            return (true);
 
         return (taskType == CurrentPlayerTask.Type);
     }
