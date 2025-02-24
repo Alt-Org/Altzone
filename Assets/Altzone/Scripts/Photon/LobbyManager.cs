@@ -357,23 +357,23 @@ namespace Altzone.Scripts.Lobby
 
             RuntimeConfig config = new()
             {
-                Map = _map,
+                Map              = _map,
                 SimulationConfig = _simulationConfig,
-                SystemsConfig = _systemsConfig,
-                ProjectileSpec = _projectileSpec
+                SystemsConfig    = _systemsConfig,
+                ProjectileSpec   = _projectileSpec
             };
 
             SessionRunner.Arguments sessionRunnerArguments = new()
             {
-                RunnerFactory = QuantumRunnerUnityFactory.DefaultFactory,
-                GameParameters = QuantumRunnerUnityFactory.CreateGameParameters,
-                ClientId = ServerManager.Instance.Player._id,
-                RuntimeConfig = config,
-                SessionConfig = QuantumDeterministicSessionConfigAsset.Global.Config,
-                GameMode = Photon.Deterministic.DeterministicGameMode.Multiplayer,
-                PlayerCount = PhotonRealtimeClient.CurrentRoom.MaxPlayers,
+                RunnerFactory             = QuantumRunnerUnityFactory.DefaultFactory,
+                GameParameters            = QuantumRunnerUnityFactory.CreateGameParameters,
+                ClientId                  = ServerManager.Instance.Player._id,
+                RuntimeConfig             = config,
+                SessionConfig             = QuantumDeterministicSessionConfigAsset.Global.Config,
+                GameMode                  = Photon.Deterministic.DeterministicGameMode.Multiplayer,
+                PlayerCount               = PhotonRealtimeClient.CurrentRoom.MaxPlayers,
                 StartGameTimeoutInSeconds = 10,
-                Communicator = new QuantumNetworkCommunicator(PhotonRealtimeClient.Client)
+                Communicator              = new QuantumNetworkCommunicator(PhotonRealtimeClient.Client)
             };
 
             /*Transform currentRoot = null;
@@ -488,14 +488,14 @@ namespace Altzone.Scripts.Lobby
                 character = characters[i];
                 _player.Characters[i] = new BattleCharacterBase()
                 {
-                    Id         = (int)character.Id,
-                    ClassID    = (int)character.CharacterClassID,
+                    Id            = (int)character.Id,
+                    ClassID       = (int)character.CharacterClassID,
 
-                    Hp         = BaseCharacter.GetStatValueFP(StatType.Hp, character.Hp),
-                    Attack     = BaseCharacter.GetStatValueFP(StatType.Attack, character.Attack),
-                    Defence    = BaseCharacter.GetStatValueFP(StatType.Defence, character.Defence),
+                    Hp            = BaseCharacter.GetStatValueFP(StatType.Hp,            character.Hp),
+                    Attack        = BaseCharacter.GetStatValueFP(StatType.Attack,        character.Attack),
+                    Defence       = BaseCharacter.GetStatValueFP(StatType.Defence,       character.Defence),
                     CharacterSize = BaseCharacter.GetStatValueFP(StatType.CharacterSize, character.CharacterSize),
-                    Speed      = BaseCharacter.GetStatValueFP(StatType.Speed, character.Speed)
+                    Speed         = BaseCharacter.GetStatValueFP(StatType.Speed,         character.Speed)
                 };
             }
         }
