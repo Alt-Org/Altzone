@@ -16,6 +16,15 @@ public class BattlePopupCharacterSlotController : AltMonoBehaviour
         SetCharacters();
     }
 
+
+    private void Start()
+    {
+        RectTransform rectTransform = GetComponent<RectTransform>();
+        rectTransform.offsetMin = new Vector2(rectTransform.offsetMin.x, 0);
+        rectTransform.offsetMax = new Vector2(rectTransform.offsetMax.x, 0);
+    }
+
+
     private void SetCharacters()
     {
         StartCoroutine(GetPlayerData(playerData =>

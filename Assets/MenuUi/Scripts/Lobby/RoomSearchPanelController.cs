@@ -33,11 +33,6 @@ namespace MenuUI.Scripts.Lobby.InLobby
             if(_roomsData != null) UpdatePanelContent();
         }
 
-        private void OnDisable()
-        {
-            gameObject.SetActive(false);
-        }
-
         public void SetOnJoinRoom(Action<string> onJoinRoom)
         {
             if(_onJoinRoom == null) _onJoinRoom = onJoinRoom;
