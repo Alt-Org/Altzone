@@ -73,7 +73,7 @@ namespace MenuUI.Scripts.SoulHome
                 }
             }
         }
-        public GameObject TrayFurnitureObject { get => _trayFurnitureObject;}
+        public GameObject TrayFurnitureObject { get => _trayFurnitureObject; set { if(!Application.isPlaying) _trayFurnitureObject = value; }}
         public string Name { get => _name;}
         public bool IsRotated { get => _isRotated;}
         public bool IsPlaceHolder { get => _isPlaceHolder;}

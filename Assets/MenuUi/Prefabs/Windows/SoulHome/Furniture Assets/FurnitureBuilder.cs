@@ -61,6 +61,11 @@ public class FurnitureBuilder : ScriptableObject
 
     public void BuildFurniture()
     {
+        if (Application.isPlaying)
+        {
+            Debug.LogError("Don't try to add furniture while the game is running.");
+            return;
+        }
         BaseFurniture baseFurniture = new BaseFurniture()
         {
             Name = _furnitureName+"_"+_setName,
@@ -104,8 +109,11 @@ public class FurnitureBuilder : ScriptableObject
         newTrayPrefab.GetComponent<TrayFurniture>().FurnitureObject = newFurniturePrefab;
 
         GameObject obj = PrefabUtility.SaveAsPrefabAsset(newFurniturePrefab, folderPath+"/"+ newFurniturePrefab.name +".prefab");
+        DestroyImmediate(newFurniturePrefab);
         GameObject obj2 = PrefabUtility.SaveAsPrefabAsset(newTrayPrefab, folderPath + "/" + newTrayPrefab.name + ".prefab");
+        DestroyImmediate(newTrayPrefab);
         obj2.GetComponent<TrayFurniture>().FurnitureObject = obj;
+        obj.GetComponent<FurnitureHandling>().TrayFurnitureObject = obj2;
     }
 
 
