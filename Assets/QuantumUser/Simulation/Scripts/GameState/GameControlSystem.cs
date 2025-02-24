@@ -13,15 +13,9 @@ namespace Quantum
     [Preserve]
     public unsafe class GameControlSystem : SystemMainThread
     {
-        /// <summary>
-        /// "Constant" BattleArenaSpec reference. (DO NOT SET AFTER INIT)
-        /// </summary>
-        public static BattleArenaSpec BattleArenaSpec { get; private set; }
-
         public override void OnInit(Frame f)
         {
             Log.Debug("[GameControlSystem] OnInit");
-            BattleArenaSpec = f.FindAsset<BattleArenaSpec>("QuantumUser/Resources/Specs/BattleArenaSpec");
 
             GameSession* gameSession = f.Unsafe.GetPointerSingleton<GameSession>();
             gameSession->state = GameState.Countdown;
