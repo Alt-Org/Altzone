@@ -6,6 +6,7 @@ using TMPro;
 using MenuUi.Scripts.Window;
 using UnityEngine.UI;
 using Altzone.Scripts.GA;
+using MenuUi.Scripts.Audio;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -70,7 +71,7 @@ namespace MenuUI.Scripts.SoulHome
                 if (rootObject.name == "AudioManager")
                     rootObject.GetComponent<MainMenuAudioManager>()?.StopMusic();
             }
-            _musicName.text = AudioManager.Instance?.PlayMusic();
+            _musicName.text = AudioManager.Instance?.PlayMusic(MusicSection.SoulHome);
             EditModeTrayResize();
             if (GameAnalyticsManager.Instance != null) GameAnalyticsManager.Instance.OpenSoulHome();
         }
@@ -224,8 +225,8 @@ namespace MenuUI.Scripts.SoulHome
                 else _mainScreen.ResetChanges();
                 CloseConfirmPopup(PopupType.EditClose);
                 _soulHomeTower.ToggleEdit();
-                if(save) _audioManager.PlaySfxAudio(AudioTypeName.Save);
-                else _audioManager.PlaySfxAudio(AudioTypeName.Revert);
+                if(save) _audioManager.PlaySfxAudio("SaveChanges");
+                else _audioManager.PlaySfxAudio("RevertChanges");
             }
             else
             {

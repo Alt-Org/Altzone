@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,6 +23,13 @@ public class GridAutoScale : MonoBehaviour
         if ((_gridContainer.rect.width == 0 && _gridLayout.constraint == GridLayoutGroup.Constraint.FixedColumnCount)
             || (_gridContainer.rect.height == 0 && _gridLayout.constraint == GridLayoutGroup.Constraint.FixedRowCount)) return;
         if (_aspectRatio <= 0) _aspectRatio = 0.000001f;
+
+        StartCoroutine(SetCellSizes());
+    }
+
+    private IEnumerator SetCellSizes()
+    {
+        yield return null;
 
         switch (_gridLayout.constraint)
         {

@@ -30,7 +30,7 @@ namespace Altzone.Scripts.ModelV2
 
         public readonly SpecialAttribute Hp;
         public readonly SpecialAttribute Speed;
-        public readonly SpecialAttribute Resistance;
+        public readonly SpecialAttribute CharacterSize;
         public readonly SpecialAttribute Attack;
         public readonly SpecialAttribute Defence;
 
@@ -45,10 +45,10 @@ namespace Altzone.Scripts.ModelV2
                 _characterSpec.Hp.Level, _characterSpec.Hp.Coefficient);
             Speed = new SpecialAttribute((int)BaseCharacter.GetStatValue(StatType.Speed, _characterSpec.Speed.Level),
                 _characterSpec.Speed.Level, _characterSpec.Speed.Coefficient);
-            Resistance =
+            CharacterSize =
                 new SpecialAttribute(
-                    (int)BaseCharacter.GetStatValue(StatType.Resistance, _characterSpec.Resistance.Level),
-                    _characterSpec.Resistance.Level, _characterSpec.Resistance.Coefficient);
+                    (int)BaseCharacter.GetStatValue(StatType.CharacterSize, _characterSpec.CharacterSize.Level),
+                    _characterSpec.CharacterSize.Level, _characterSpec.CharacterSize.Coefficient);
             Attack = new SpecialAttribute(
                 (int)BaseCharacter.GetStatValue(StatType.Attack, _characterSpec.Attack.Level),
                 _characterSpec.Attack.Level, _characterSpec.Attack.Coefficient);

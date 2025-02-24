@@ -1,4 +1,6 @@
+using System.Data.Common;
 using Photon.Deterministic;
+using Quantum.Prototypes;
 using UnityEngine.Scripting;
 
 namespace Quantum
@@ -6,41 +8,43 @@ namespace Quantum
     [Preserve]
     public unsafe class PlayerSpawnSystem  : SystemSignalsOnly, ISignalOnPlayerAdded
     {
-        private FPVector2 _spawnPos2D;
-
         public void OnPlayerAdded(Frame f, PlayerRef player, bool firstTime)
         {
+
+            FPVector2[] spawnPoints = new FPVector2[]
+            {
+                new(-2, -5),
+                new(2, -5),
+                new(2, 5),
+                new(-2, 5)
+            };
+
+            //gets spawnpoint for player depending on PlayerRef, will be replaced with playerpositions from lobby
+            FPVector2 spawnPos2D = spawnPoints[player];
+            FP rotation;
+            FPVector2 normal;
+
+            if (player==0 || player==1)
+            {
+                rotation = 0;
+                normal = new FPVector2(0,1);
+            }
+            else
+            {
+                rotation = 180;
+                normal = new FPVector2(0,-1);
+            }
+
             //creates player entity from prefab and gives it playerdata component
             RuntimePlayer data = f.GetPlayerData(player);
             EntityPrototype entityPrototypeAsset = f.FindAsset(data.PlayerAvatar);
             EntityRef playerEntity = f.Create(entityPrototypeAsset);
-            f.Add(playerEntity, new PlayerData{Player = player, Speed = 20, TargetPosition = default});
+            f.Add(playerEntity, new PlayerData{Player = player, Speed = 20, TargetPosition = spawnPos2D, Rotation = 0, Normal = normal, CollisionMinOffset = 1});
 
-            //gets the right spawnpoint for player, will be replaced with playerpositions from lobby
-            int spawnCount = f.ComponentCount<SpawnIdentifier>();
-            if (spawnCount != 0)
-            {
-                int playerID = player;
-                int i = 0;
-                foreach (var (spawn, spawnIdentifier) in f.Unsafe.GetComponentBlockIterator<SpawnIdentifier>())
-                {
-                    if (i == playerID)
-                    {
-                        Transform2D spawnTransform = f.Get<Transform2D>(spawn);
-                        _spawnPos2D = spawnTransform.Position;
-                        break;
-                    }
-
-                    i++;
-                }
-            }
-
-            //teleports player to spawnpoint's position
+            //set position and rotation
             Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
-            PlayerData* playerData = f.Unsafe.GetPointer<PlayerData>(playerEntity);
-
-            playerTransform->Teleport(f, _spawnPos2D);
-            playerData->TargetPosition = playerTransform->Position;
+            playerTransform->Teleport(f, spawnPos2D);
+            playerTransform->Rotation = rotation;
         }
     }
 }

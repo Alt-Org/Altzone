@@ -1,29 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
-    public class CharacterSlot : MonoBehaviour, IGalleryCharacterData
+    public class CharacterSlot : SlotBase, IGalleryCharacterData
     {
-        [SerializeField] public DraggableCharacter _character;
+        [SerializeField] public GalleryCharacter Character;
 
         private CharacterID _id;
         [SerializeField] private Image _spriteImage;
+        [SerializeField] private Image _backgroundSpriteImage;
         [SerializeField] private TextMeshProUGUI _nameText;
 
         public CharacterID Id { get => _id; }
 
-        public void SetInfo(Sprite sprite, string name, CharacterID id, ModelView view)
+        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, CharacterID id)
         {
             _spriteImage.sprite = sprite;
             _nameText.text = name;
             _id = id;
-            _character.SetInfo(sprite, name, id, view);
+            _backgroundSpriteImage.color = new Color(bgColor.r - 0.4f, bgColor.g - 0.4f, bgColor.b - 0.4f);
+            Character.SetInfo(sprite, bgColor, bgAltColor, name, id, this);
         }
     }
 }

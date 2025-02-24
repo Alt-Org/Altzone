@@ -2,6 +2,7 @@
 using System.Linq;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
+using MenuUi.Scripts.Audio;
 using MenuUi.Scripts.SwipeNavigation;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
@@ -36,6 +37,7 @@ namespace MenuUi.Scripts.MainMenu
         {
             _swipe = GetComponentInParent<SwipeUI>();
             StartCoroutine(CheckWindowSize());
+            AudioManager.Instance?.PlayMusic(MusicSection.MainMenu);
         }
 
         private void Start()
@@ -45,6 +47,7 @@ namespace MenuUi.Scripts.MainMenu
             _scrollRectCanvas = GameObject.FindGameObjectWithTag("ScrollRectCanvas").GetComponent<RectTransform>();
             SetMainMenuLayoutDimensions();
             SetAudioVolumeLevels();
+            AudioManager.Instance?.PlayMusic(MusicSection.MainMenu);
         }
 
         /// <summary>

@@ -319,6 +319,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 885785329}
     m_Modifications:
+    - target: {fileID: -7452644218131191761, guid: c9c4743b1afa5494baf1fd0e6ab6d01c,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: -65536
+      objectReference: {fileID: 0}
+    - target: {fileID: -7452644218131191761, guid: c9c4743b1afa5494baf1fd0e6ab6d01c,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 390418129468682368, guid: c9c4743b1afa5494baf1fd0e6ab6d01c,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -382,7 +392,7 @@ PrefabInstance:
     - target: {fileID: 4702421845191654680, guid: c9c4743b1afa5494baf1fd0e6ab6d01c,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4702421845191654680, guid: c9c4743b1afa5494baf1fd0e6ab6d01c,
         type: 3}
@@ -457,7 +467,8 @@ GameObject:
   - component: {fileID: 76015282}
   - component: {fileID: 76015281}
   - component: {fileID: 76015280}
-  - component: {fileID: 76015279}
+  - component: {fileID: 76015284}
+  - component: {fileID: 76015283}
   m_Layer: 0
   m_Name: ArenaBorderLeft
   m_TagString: Untagged
@@ -465,42 +476,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &76015279
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 76015278}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b488b62207097a04392bf63c707ab9c5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SourceCollider: {fileID: 0}
-  Size:
-    X:
-      RawValue: 65536
-    Y:
-      RawValue: 65536
-  PositionOffset:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: 0
-  RotationOffset:
-    RawValue: 0
-  Height:
-    RawValue: 0
-  Settings:
-    MutableMode: 0
-    PhysicsMaterial:
-      Id:
-        Value: 0
-    Asset:
-      Id:
-        Value: 0
-    Trigger: 0
 --- !u!23 &76015280
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -566,6 +541,180 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1596240043}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &76015283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 76015278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: beb1734e5eb7c406596f06707e0802e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    Normal:
+      X:
+        RawValue: 65536
+      Y:
+        RawValue: 0
+    CollisionMinOffset:
+      RawValue: 294912
+--- !u!114 &76015284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 76015278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 836dcb7e0f6259748b850a10912ce727, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TransformMode: 0
+  Transform2DVertical:
+    IsEnabled: 0
+    Height:
+      RawValue: 0
+    PositionOffset:
+      RawValue: 0
+  PhysicsCollider:
+    IsEnabled: 1
+    IsTrigger: 1
+    Material:
+      Id:
+        Value: 0
+    SourceCollider: {fileID: 0}
+    Shape2D:
+      ShapeType: 4
+      PolygonCollider:
+        Id:
+          Value: 0
+      CircleRadius:
+        RawValue: 0
+      CapsuleSize:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+      EdgeExtent:
+        RawValue: 0
+      BoxExtents:
+        X:
+          RawValue: 32768
+        Y:
+          RawValue: 32768
+      PositionOffset:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+      RotationOffset:
+        RawValue: 0
+      UserTag: 0
+      IsPersistent: 1
+      CompoundShapes: []
+    Shape3D:
+      ShapeType: 0
+      SphereRadius:
+        RawValue: 0
+      CapsuleRadius:
+        RawValue: 0
+      CapsuleHeight:
+        RawValue: 0
+      PositionOffset:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+        Z:
+          RawValue: 0
+      BoxExtents:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+        Z:
+          RawValue: 0
+      RotationOffset:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+        Z:
+          RawValue: 0
+      UserTag: 0
+      IsPersistent: 1
+      CompoundShapes: []
+    LayerSource: 0
+    Layer: 0
+    CallbackFlags:
+      Value: 0
+  PhysicsBody:
+    IsEnabled: 0
+    Config2D: 116
+    Config3D: 58
+    RotationFreeze: 0
+    Mass:
+      RawValue: 65536
+    Drag:
+      RawValue: 32768
+    AngularDrag:
+      RawValue: 32768
+    CenterOfMass2D:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+    CenterOfMass3D:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+      Z:
+        RawValue: 0
+    GravityScale:
+      _hasValue: 0
+      _value:
+        RawValue: 65536
+  NavMeshPathfinder:
+    IsEnabled: 0
+    NavMeshAgentConfig:
+      Id:
+        Value: 0
+    InitialTarget:
+      IsEnabled: 0
+      Target: {fileID: 0}
+      Position:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+        Z:
+          RawValue: 0
+      NavMesh:
+        Reference: {fileID: 0}
+        Asset:
+          Id:
+            Value: 0
+        Name: 
+  NavMeshSteeringAgent:
+    IsEnabled: 0
+    MaxSpeed:
+      IsEnabled: 0
+      Value:
+        RawValue: 0
+    Acceleration:
+      IsEnabled: 0
+      Value:
+        RawValue: 0
+  NavMeshAvoidanceAgent:
+    IsEnabled: 0
+  View:
+    Id:
+      Value: 0
 --- !u!1 &84852417
 GameObject:
   m_ObjectHideFlags: 0
@@ -730,207 +879,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &89441463
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 89441464}
-  - component: {fileID: 89441466}
-  - component: {fileID: 89441465}
-  m_Layer: 0
-  m_Name: Spawn3
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &89441464
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 89441463}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: 0, z: 5}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 985761550}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &89441465
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 89441463}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f89b43fcac67c9f4ab3896ce975cc4f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Prototype:
-    _empty_prototype_dummy_field_: 0
---- !u!114 &89441466
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 89441463}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 836dcb7e0f6259748b850a10912ce727, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TransformMode: 0
-  Transform2DVertical:
-    IsEnabled: 0
-    Height:
-      RawValue: 0
-    PositionOffset:
-      RawValue: 0
-  PhysicsCollider:
-    IsEnabled: 0
-    IsTrigger: 0
-    Material:
-      Id:
-        Value: 0
-    SourceCollider: {fileID: 0}
-    Shape2D:
-      ShapeType: 0
-      PolygonCollider:
-        Id:
-          Value: 0
-      CircleRadius:
-        RawValue: 0
-      CapsuleSize:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-      EdgeExtent:
-        RawValue: 0
-      BoxExtents:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-      PositionOffset:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-      RotationOffset:
-        RawValue: 0
-      UserTag: 0
-      IsPersistent: 1
-      CompoundShapes: []
-    Shape3D:
-      ShapeType: 0
-      SphereRadius:
-        RawValue: 0
-      CapsuleRadius:
-        RawValue: 0
-      CapsuleHeight:
-        RawValue: 0
-      PositionOffset:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-        Z:
-          RawValue: 0
-      BoxExtents:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-        Z:
-          RawValue: 0
-      RotationOffset:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-        Z:
-          RawValue: 0
-      UserTag: 0
-      IsPersistent: 1
-      CompoundShapes: []
-    LayerSource: 0
-    Layer: 0
-    CallbackFlags:
-      Value: 0
-  PhysicsBody:
-    IsEnabled: 0
-    Config2D: 116
-    Config3D: 58
-    RotationFreeze: 0
-    Mass:
-      RawValue: 65536
-    Drag:
-      RawValue: 32768
-    AngularDrag:
-      RawValue: 32768
-    CenterOfMass2D:
-      X:
-        RawValue: 0
-      Y:
-        RawValue: 0
-    CenterOfMass3D:
-      X:
-        RawValue: 0
-      Y:
-        RawValue: 0
-      Z:
-        RawValue: 0
-    GravityScale:
-      _hasValue: 0
-      _value:
-        RawValue: 65536
-  NavMeshPathfinder:
-    IsEnabled: 0
-    NavMeshAgentConfig:
-      Id:
-        Value: 0
-    InitialTarget:
-      IsEnabled: 0
-      Target: {fileID: 0}
-      Position:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-        Z:
-          RawValue: 0
-      NavMesh:
-        Reference: {fileID: 0}
-        Asset:
-          Id:
-            Value: 0
-        Name: 
-  NavMeshSteeringAgent:
-    IsEnabled: 0
-    MaxSpeed:
-      IsEnabled: 0
-      Value:
-        RawValue: 0
-    Acceleration:
-      IsEnabled: 0
-      Value:
-        RawValue: 0
-  NavMeshAvoidanceAgent:
-    IsEnabled: 0
-  View:
-    Id:
-      Value: 0
 --- !u!1 &110878589 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8847665615427807107, guid: 97e8f0ca20408d042a38f07b90b44946,
@@ -2707,6 +2655,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1970917890}
     m_Modifications:
+    - target: {fileID: -1755048642702871226, guid: ae81c9131ea22414c8960558ef8ebd4d,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: 65536
+      objectReference: {fileID: 0}
+    - target: {fileID: -1755048642702871226, guid: ae81c9131ea22414c8960558ef8ebd4d,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 1114276988920015402, guid: ae81c9131ea22414c8960558ef8ebd4d,
         type: 3}
       propertyPath: m_SortingLayer
@@ -2745,7 +2703,7 @@ PrefabInstance:
     - target: {fileID: 3076593041905861559, guid: ae81c9131ea22414c8960558ef8ebd4d,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3076593041905861559, guid: ae81c9131ea22414c8960558ef8ebd4d,
         type: 3}
@@ -2875,7 +2833,7 @@ PrefabInstance:
     - target: {fileID: 5224513931242682806, guid: 16024fa7dc8f7794f94b0b61f9e1fbae,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5224513931242682806, guid: 16024fa7dc8f7794f94b0b61f9e1fbae,
         type: 3}
@@ -2952,6 +2910,16 @@ PrefabInstance:
       propertyPath: m_SortingLayerID
       value: -1477692605
       objectReference: {fileID: 0}
+    - target: {fileID: 7110467562447495693, guid: 16024fa7dc8f7794f94b0b61f9e1fbae,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: 65536
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110467562447495693, guid: 16024fa7dc8f7794f94b0b61f9e1fbae,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 7285643024846630565, guid: 16024fa7dc8f7794f94b0b61f9e1fbae,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2992,6 +2960,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1255077263}
     m_Modifications:
+    - target: {fileID: -7829394026114196643, guid: cdcab58953d65db449d8d49cf2bac593,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: 65536
+      objectReference: {fileID: 0}
+    - target: {fileID: -7829394026114196643, guid: cdcab58953d65db449d8d49cf2bac593,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 3422387402679987077, guid: cdcab58953d65db449d8d49cf2bac593,
         type: 3}
       propertyPath: PhysicsCollider.Layer
@@ -3005,7 +2983,7 @@ PrefabInstance:
     - target: {fileID: 3422387402679987077, guid: cdcab58953d65db449d8d49cf2bac593,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3422387402679987077, guid: cdcab58953d65db449d8d49cf2bac593,
         type: 3}
@@ -3163,6 +3141,8 @@ MonoBehaviour:
     goalConfig:
       Id:
         Value: 337072248309995173
+    hasTriggered:
+      Value: 0
 --- !u!114 &196834851
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3552,9 +3532,9 @@ MonoBehaviour:
     SystemsConfig:
       Id:
         Value: 289946063136722323
-    GameConfig:
+    ProjectileSpec:
       Id:
-        Value: 307689559872502493
+        Value: 0
   UseRandomSeed: 0
   SessionConfig: {fileID: 0}
   LocalPlayers: []
@@ -3593,6 +3573,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1198122346}
     m_Modifications:
+    - target: {fileID: 486511653516300916, guid: 72afe9dcfff7a9141bcf79aa8969e7d0,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: 65536
+      objectReference: {fileID: 0}
+    - target: {fileID: 486511653516300916, guid: 72afe9dcfff7a9141bcf79aa8969e7d0,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 581408245350718325, guid: 72afe9dcfff7a9141bcf79aa8969e7d0,
         type: 3}
       propertyPath: m_Layer
@@ -3631,7 +3621,7 @@ PrefabInstance:
     - target: {fileID: 5176461487177443681, guid: 72afe9dcfff7a9141bcf79aa8969e7d0,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5176461487177443681, guid: 72afe9dcfff7a9141bcf79aa8969e7d0,
         type: 3}
@@ -3812,6 +3802,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1442642909}
     m_Modifications:
+    - target: {fileID: -4641312341297107491, guid: d434e0555dd186c48afe669cc43a3a07,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: -65536
+      objectReference: {fileID: 0}
+    - target: {fileID: -4641312341297107491, guid: d434e0555dd186c48afe669cc43a3a07,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 366348168604179144, guid: d434e0555dd186c48afe669cc43a3a07,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3885,7 +3885,7 @@ PrefabInstance:
     - target: {fileID: 5214441406807782070, guid: d434e0555dd186c48afe669cc43a3a07,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5214441406807782070, guid: d434e0555dd186c48afe669cc43a3a07,
         type: 3}
@@ -4004,6 +4004,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1736539176}
     m_Modifications:
+    - target: {fileID: 486511653516300916, guid: 72afe9dcfff7a9141bcf79aa8969e7d0,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: -65536
+      objectReference: {fileID: 0}
+    - target: {fileID: 486511653516300916, guid: 72afe9dcfff7a9141bcf79aa8969e7d0,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 581408245350718325, guid: 72afe9dcfff7a9141bcf79aa8969e7d0,
         type: 3}
       propertyPath: m_Layer
@@ -4042,7 +4052,7 @@ PrefabInstance:
     - target: {fileID: 5176461487177443681, guid: 72afe9dcfff7a9141bcf79aa8969e7d0,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5176461487177443681, guid: 72afe9dcfff7a9141bcf79aa8969e7d0,
         type: 3}
@@ -4131,207 +4141,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 431901111}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &438500695
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 438500696}
-  - component: {fileID: 438500698}
-  - component: {fileID: 438500697}
-  m_Layer: 0
-  m_Name: Spawn2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &438500696
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 438500695}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: 0, z: -5}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 985761550}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &438500697
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 438500695}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f89b43fcac67c9f4ab3896ce975cc4f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Prototype:
-    _empty_prototype_dummy_field_: 0
---- !u!114 &438500698
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 438500695}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 836dcb7e0f6259748b850a10912ce727, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TransformMode: 0
-  Transform2DVertical:
-    IsEnabled: 0
-    Height:
-      RawValue: 0
-    PositionOffset:
-      RawValue: 0
-  PhysicsCollider:
-    IsEnabled: 0
-    IsTrigger: 0
-    Material:
-      Id:
-        Value: 0
-    SourceCollider: {fileID: 0}
-    Shape2D:
-      ShapeType: 0
-      PolygonCollider:
-        Id:
-          Value: 0
-      CircleRadius:
-        RawValue: 0
-      CapsuleSize:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-      EdgeExtent:
-        RawValue: 0
-      BoxExtents:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-      PositionOffset:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-      RotationOffset:
-        RawValue: 0
-      UserTag: 0
-      IsPersistent: 1
-      CompoundShapes: []
-    Shape3D:
-      ShapeType: 0
-      SphereRadius:
-        RawValue: 0
-      CapsuleRadius:
-        RawValue: 0
-      CapsuleHeight:
-        RawValue: 0
-      PositionOffset:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-        Z:
-          RawValue: 0
-      BoxExtents:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-        Z:
-          RawValue: 0
-      RotationOffset:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-        Z:
-          RawValue: 0
-      UserTag: 0
-      IsPersistent: 1
-      CompoundShapes: []
-    LayerSource: 0
-    Layer: 0
-    CallbackFlags:
-      Value: 0
-  PhysicsBody:
-    IsEnabled: 0
-    Config2D: 116
-    Config3D: 58
-    RotationFreeze: 0
-    Mass:
-      RawValue: 65536
-    Drag:
-      RawValue: 32768
-    AngularDrag:
-      RawValue: 32768
-    CenterOfMass2D:
-      X:
-        RawValue: 0
-      Y:
-        RawValue: 0
-    CenterOfMass3D:
-      X:
-        RawValue: 0
-      Y:
-        RawValue: 0
-      Z:
-        RawValue: 0
-    GravityScale:
-      _hasValue: 0
-      _value:
-        RawValue: 65536
-  NavMeshPathfinder:
-    IsEnabled: 0
-    NavMeshAgentConfig:
-      Id:
-        Value: 0
-    InitialTarget:
-      IsEnabled: 0
-      Target: {fileID: 0}
-      Position:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-        Z:
-          RawValue: 0
-      NavMesh:
-        Reference: {fileID: 0}
-        Asset:
-          Id:
-            Value: 0
-        Name: 
-  NavMeshSteeringAgent:
-    IsEnabled: 0
-    MaxSpeed:
-      IsEnabled: 0
-      Value:
-        RawValue: 0
-    Acceleration:
-      IsEnabled: 0
-      Value:
-        RawValue: 0
-  NavMeshAvoidanceAgent:
-    IsEnabled: 0
-  View:
-    Id:
-      Value: 0
 --- !u!1001 &485962072
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4358,7 +4167,7 @@ PrefabInstance:
     - target: {fileID: 5224513931242682806, guid: 16024fa7dc8f7794f94b0b61f9e1fbae,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5224513931242682806, guid: 16024fa7dc8f7794f94b0b61f9e1fbae,
         type: 3}
@@ -4434,6 +4243,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SortingLayerID
       value: -1477692605
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110467562447495693, guid: 16024fa7dc8f7794f94b0b61f9e1fbae,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: -65536
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110467562447495693, guid: 16024fa7dc8f7794f94b0b61f9e1fbae,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
       objectReference: {fileID: 0}
     - target: {fileID: 7285643024846630565, guid: 16024fa7dc8f7794f94b0b61f9e1fbae,
         type: 3}
@@ -4632,6 +4451,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1970917890}
     m_Modifications:
+    - target: {fileID: -5175841333700907158, guid: 47b3e9a565aaa23448d2b1c219e8daa1,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: 65536
+      objectReference: {fileID: 0}
+    - target: {fileID: -5175841333700907158, guid: 47b3e9a565aaa23448d2b1c219e8daa1,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 399325345294794832, guid: 47b3e9a565aaa23448d2b1c219e8daa1,
         type: 3}
       propertyPath: PhysicsCollider.Layer
@@ -4645,7 +4474,7 @@ PrefabInstance:
     - target: {fileID: 399325345294794832, guid: 47b3e9a565aaa23448d2b1c219e8daa1,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 399325345294794832, guid: 47b3e9a565aaa23448d2b1c219e8daa1,
         type: 3}
@@ -4774,6 +4603,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 929145844}
     m_Modifications:
+    - target: {fileID: 2184101273149228939, guid: 0fd1abafe197ea14881ae54a88eaab2a,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: 65536
+      objectReference: {fileID: 0}
+    - target: {fileID: 2184101273149228939, guid: 0fd1abafe197ea14881ae54a88eaab2a,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 3144485959495331325, guid: 0fd1abafe197ea14881ae54a88eaab2a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4847,7 +4686,7 @@ PrefabInstance:
     - target: {fileID: 7093708536386662434, guid: 0fd1abafe197ea14881ae54a88eaab2a,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7093708536386662434, guid: 0fd1abafe197ea14881ae54a88eaab2a,
         type: 3}
@@ -4921,6 +4760,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1970917890}
     m_Modifications:
+    - target: {fileID: -5553060179054026749, guid: 633c239ec0a63af4683c2c59806ef400,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: 65536
+      objectReference: {fileID: 0}
+    - target: {fileID: -5553060179054026749, guid: 633c239ec0a63af4683c2c59806ef400,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 205087173196188706, guid: 633c239ec0a63af4683c2c59806ef400,
         type: 3}
       propertyPath: m_Layer
@@ -4964,7 +4813,7 @@ PrefabInstance:
     - target: {fileID: 5795081131238555731, guid: 633c239ec0a63af4683c2c59806ef400,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5795081131238555731, guid: 633c239ec0a63af4683c2c59806ef400,
         type: 3}
@@ -5054,7 +4903,8 @@ GameObject:
   - component: {fileID: 655040188}
   - component: {fileID: 655040187}
   - component: {fileID: 655040186}
-  - component: {fileID: 655040185}
+  - component: {fileID: 655040190}
+  - component: {fileID: 655040189}
   m_Layer: 0
   m_Name: ArenaBorderRight
   m_TagString: Untagged
@@ -5062,42 +4912,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &655040185
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 655040184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b488b62207097a04392bf63c707ab9c5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SourceCollider: {fileID: 0}
-  Size:
-    X:
-      RawValue: 65536
-    Y:
-      RawValue: 65536
-  PositionOffset:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: 0
-  RotationOffset:
-    RawValue: 0
-  Height:
-    RawValue: 0
-  Settings:
-    MutableMode: 0
-    PhysicsMaterial:
-      Id:
-        Value: 0
-    Asset:
-      Id:
-        Value: 0
-    Trigger: 0
 --- !u!23 &655040186
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5163,6 +4977,180 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1596240043}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &655040189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 655040184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: beb1734e5eb7c406596f06707e0802e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    Normal:
+      X:
+        RawValue: -65536
+      Y:
+        RawValue: 0
+    CollisionMinOffset:
+      RawValue: 294912
+--- !u!114 &655040190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 655040184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 836dcb7e0f6259748b850a10912ce727, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TransformMode: 0
+  Transform2DVertical:
+    IsEnabled: 0
+    Height:
+      RawValue: 0
+    PositionOffset:
+      RawValue: 0
+  PhysicsCollider:
+    IsEnabled: 1
+    IsTrigger: 1
+    Material:
+      Id:
+        Value: 0
+    SourceCollider: {fileID: 0}
+    Shape2D:
+      ShapeType: 4
+      PolygonCollider:
+        Id:
+          Value: 0
+      CircleRadius:
+        RawValue: 0
+      CapsuleSize:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+      EdgeExtent:
+        RawValue: 0
+      BoxExtents:
+        X:
+          RawValue: 32768
+        Y:
+          RawValue: 32768
+      PositionOffset:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+      RotationOffset:
+        RawValue: 0
+      UserTag: 0
+      IsPersistent: 1
+      CompoundShapes: []
+    Shape3D:
+      ShapeType: 0
+      SphereRadius:
+        RawValue: 0
+      CapsuleRadius:
+        RawValue: 0
+      CapsuleHeight:
+        RawValue: 0
+      PositionOffset:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+        Z:
+          RawValue: 0
+      BoxExtents:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+        Z:
+          RawValue: 0
+      RotationOffset:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+        Z:
+          RawValue: 0
+      UserTag: 0
+      IsPersistent: 1
+      CompoundShapes: []
+    LayerSource: 0
+    Layer: 0
+    CallbackFlags:
+      Value: 0
+  PhysicsBody:
+    IsEnabled: 0
+    Config2D: 116
+    Config3D: 58
+    RotationFreeze: 0
+    Mass:
+      RawValue: 65536
+    Drag:
+      RawValue: 32768
+    AngularDrag:
+      RawValue: 32768
+    CenterOfMass2D:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+    CenterOfMass3D:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+      Z:
+        RawValue: 0
+    GravityScale:
+      _hasValue: 0
+      _value:
+        RawValue: 65536
+  NavMeshPathfinder:
+    IsEnabled: 0
+    NavMeshAgentConfig:
+      Id:
+        Value: 0
+    InitialTarget:
+      IsEnabled: 0
+      Target: {fileID: 0}
+      Position:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+        Z:
+          RawValue: 0
+      NavMesh:
+        Reference: {fileID: 0}
+        Asset:
+          Id:
+            Value: 0
+        Name: 
+  NavMeshSteeringAgent:
+    IsEnabled: 0
+    MaxSpeed:
+      IsEnabled: 0
+      Value:
+        RawValue: 0
+    Acceleration:
+      IsEnabled: 0
+      Value:
+        RawValue: 0
+  NavMeshAvoidanceAgent:
+    IsEnabled: 0
+  View:
+    Id:
+      Value: 0
 --- !u!1001 &667835692
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5274,7 +5262,7 @@ PrefabInstance:
     - target: {fileID: 8348857657498258335, guid: c507e0dc3010ff14aa8f9eb5fba8accd,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8348857657498258335, guid: c507e0dc3010ff14aa8f9eb5fba8accd,
         type: 3}
@@ -5398,6 +5386,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prototype:
     ChildEntity: {fileID: 0}
+    Normal:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: -65536
+    CollisionMinOffset:
+      RawValue: 13107
 --- !u!114 &667835696 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8442107702554474110, guid: c507e0dc3010ff14aa8f9eb5fba8accd,
@@ -5462,6 +5457,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 24359553}
     m_Modifications:
+    - target: {fileID: -6879101374506218310, guid: aea316436cdb9244194ddf22110b88d2,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: -65536
+      objectReference: {fileID: 0}
+    - target: {fileID: -6879101374506218310, guid: aea316436cdb9244194ddf22110b88d2,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 314340699339402523, guid: aea316436cdb9244194ddf22110b88d2,
         type: 3}
       propertyPath: m_Name
@@ -5485,7 +5490,7 @@ PrefabInstance:
     - target: {fileID: 1097084305871282082, guid: aea316436cdb9244194ddf22110b88d2,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1097084305871282082, guid: aea316436cdb9244194ddf22110b88d2,
         type: 3}
@@ -5589,207 +5594,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 679743427}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &745398520
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 745398521}
-  - component: {fileID: 745398523}
-  - component: {fileID: 745398522}
-  m_Layer: 0
-  m_Name: Spawn1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &745398521
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 745398520}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2, y: 0, z: -5}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 985761550}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &745398522
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 745398520}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f89b43fcac67c9f4ab3896ce975cc4f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Prototype:
-    _empty_prototype_dummy_field_: 0
---- !u!114 &745398523
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 745398520}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 836dcb7e0f6259748b850a10912ce727, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TransformMode: 0
-  Transform2DVertical:
-    IsEnabled: 0
-    Height:
-      RawValue: 0
-    PositionOffset:
-      RawValue: 0
-  PhysicsCollider:
-    IsEnabled: 0
-    IsTrigger: 0
-    Material:
-      Id:
-        Value: 0
-    SourceCollider: {fileID: 0}
-    Shape2D:
-      ShapeType: 0
-      PolygonCollider:
-        Id:
-          Value: 0
-      CircleRadius:
-        RawValue: 0
-      CapsuleSize:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-      EdgeExtent:
-        RawValue: 0
-      BoxExtents:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-      PositionOffset:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-      RotationOffset:
-        RawValue: 0
-      UserTag: 0
-      IsPersistent: 1
-      CompoundShapes: []
-    Shape3D:
-      ShapeType: 0
-      SphereRadius:
-        RawValue: 0
-      CapsuleRadius:
-        RawValue: 0
-      CapsuleHeight:
-        RawValue: 0
-      PositionOffset:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-        Z:
-          RawValue: 0
-      BoxExtents:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-        Z:
-          RawValue: 0
-      RotationOffset:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-        Z:
-          RawValue: 0
-      UserTag: 0
-      IsPersistent: 1
-      CompoundShapes: []
-    LayerSource: 0
-    Layer: 0
-    CallbackFlags:
-      Value: 0
-  PhysicsBody:
-    IsEnabled: 0
-    Config2D: 116
-    Config3D: 58
-    RotationFreeze: 0
-    Mass:
-      RawValue: 65536
-    Drag:
-      RawValue: 32768
-    AngularDrag:
-      RawValue: 32768
-    CenterOfMass2D:
-      X:
-        RawValue: 0
-      Y:
-        RawValue: 0
-    CenterOfMass3D:
-      X:
-        RawValue: 0
-      Y:
-        RawValue: 0
-      Z:
-        RawValue: 0
-    GravityScale:
-      _hasValue: 0
-      _value:
-        RawValue: 65536
-  NavMeshPathfinder:
-    IsEnabled: 0
-    NavMeshAgentConfig:
-      Id:
-        Value: 0
-    InitialTarget:
-      IsEnabled: 0
-      Target: {fileID: 0}
-      Position:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-        Z:
-          RawValue: 0
-      NavMesh:
-        Reference: {fileID: 0}
-        Asset:
-          Id:
-            Value: 0
-        Name: 
-  NavMeshSteeringAgent:
-    IsEnabled: 0
-    MaxSpeed:
-      IsEnabled: 0
-      Value:
-        RawValue: 0
-    Acceleration:
-      IsEnabled: 0
-      Value:
-        RawValue: 0
-  NavMeshAvoidanceAgent:
-    IsEnabled: 0
-  View:
-    Id:
-      Value: 0
 --- !u!1001 &845626220
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5823,6 +5627,16 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 14
       objectReference: {fileID: 0}
+    - target: {fileID: 5158407303117532848, guid: d54f6bb868c6def48b3463c13d8cf4f2,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: -65536
+      objectReference: {fileID: 0}
+    - target: {fileID: 5158407303117532848, guid: d54f6bb868c6def48b3463c13d8cf4f2,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 6109563322839516440, guid: d54f6bb868c6def48b3463c13d8cf4f2,
         type: 3}
       propertyPath: PhysicsCollider.Layer
@@ -5836,7 +5650,7 @@ PrefabInstance:
     - target: {fileID: 6109563322839516440, guid: d54f6bb868c6def48b3463c13d8cf4f2,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6109563322839516440, guid: d54f6bb868c6def48b3463c13d8cf4f2,
         type: 3}
@@ -6035,6 +5849,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1442642909}
     m_Modifications:
+    - target: {fileID: -7829394026114196643, guid: cdcab58953d65db449d8d49cf2bac593,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: -65536
+      objectReference: {fileID: 0}
+    - target: {fileID: -7829394026114196643, guid: cdcab58953d65db449d8d49cf2bac593,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 3422387402679987077, guid: cdcab58953d65db449d8d49cf2bac593,
         type: 3}
       propertyPath: PhysicsCollider.Layer
@@ -6048,7 +5872,7 @@ PrefabInstance:
     - target: {fileID: 3422387402679987077, guid: cdcab58953d65db449d8d49cf2bac593,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3422387402679987077, guid: cdcab58953d65db449d8d49cf2bac593,
         type: 3}
@@ -6165,6 +5989,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 929145844}
     m_Modifications:
+    - target: {fileID: -6879101374506218310, guid: aea316436cdb9244194ddf22110b88d2,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: 65536
+      objectReference: {fileID: 0}
+    - target: {fileID: -6879101374506218310, guid: aea316436cdb9244194ddf22110b88d2,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 314340699339402523, guid: aea316436cdb9244194ddf22110b88d2,
         type: 3}
       propertyPath: m_Name
@@ -6188,7 +6022,7 @@ PrefabInstance:
     - target: {fileID: 1097084305871282082, guid: aea316436cdb9244194ddf22110b88d2,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1097084305871282082, guid: aea316436cdb9244194ddf22110b88d2,
         type: 3}
@@ -6489,6 +6323,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 885785329}
     m_Modifications:
+    - target: {fileID: -4919940635700938453, guid: baba1fea9e82c5945aedc1d4277b08da,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: -65536
+      objectReference: {fileID: 0}
+    - target: {fileID: -4919940635700938453, guid: baba1fea9e82c5945aedc1d4277b08da,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 1094146517547242290, guid: baba1fea9e82c5945aedc1d4277b08da,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -6572,7 +6416,7 @@ PrefabInstance:
     - target: {fileID: 6242431875670917782, guid: baba1fea9e82c5945aedc1d4277b08da,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6242431875670917782, guid: baba1fea9e82c5945aedc1d4277b08da,
         type: 3}
@@ -6837,57 +6681,52 @@ MonoBehaviour:
   Asset: {fileID: 11400000, guid: 1229d24fffb0b0d459dd9ee59b53aa87, type: 2}
   BakeAllMode: 112
   NavMeshSerializeType: 0
-  StaticCollider2DReferences:
-  - {fileID: 655040185}
-  - {fileID: 76015279}
+  StaticCollider2DReferences: []
   StaticCollider3DReferences: []
   MapEntityReferences:
   - {fileID: 848240680}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 2027021806}
   - {fileID: 1923799386}
   - {fileID: 1149308727}
-  - {fileID: 0}
   - {fileID: 583227857}
   - {fileID: 1798056880}
   - {fileID: 1779597789}
-  - {fileID: 1515686706}
-  - {fileID: 1423992352}
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 992088749}
+  - {fileID: 1515686706}
+  - {fileID: 1423992352}
+  - {fileID: 560089963}
   - {fileID: 0}
   - {fileID: 857969216}
-  - {fileID: 560089963}
   - {fileID: 1101428095}
-  - {fileID: 1564384421}
-  - {fileID: 0}
   - {fileID: 1379337107}
+  - {fileID: 1564384421}
   - {fileID: 2008188567}
+  - {fileID: 0}
   - {fileID: 518748820}
   - {fileID: 1354345454}
   - {fileID: 1394824190}
+  - {fileID: 1289946020}
   - {fileID: 0}
   - {fileID: 1724157026}
   - {fileID: 1662476172}
-  - {fileID: 1289946020}
-  - {fileID: 0}
-  - {fileID: 667835696}
   - {fileID: 1347246915}
   - {fileID: 1027829394}
-  - {fileID: 1234779275}
-  - {fileID: 1236161930}
+  - {fileID: 0}
+  - {fileID: 667835696}
   - {fileID: 2020399491}
   - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 1234779275}
+  - {fileID: 1236161930}
   - {fileID: 1899302721}
   - {fileID: 1765695244}
+  - {fileID: 0}
   - {fileID: 1125282827}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!4 &936181445
 Transform:
   m_ObjectHideFlags: 0
@@ -6901,196 +6740,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &985761548
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 985761550}
-  - component: {fileID: 985761549}
-  m_Layer: 0
-  m_Name: SpawnPoints
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &985761549
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 985761548}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 836dcb7e0f6259748b850a10912ce727, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TransformMode: 2
-  Transform2DVertical:
-    IsEnabled: 0
-    Height:
-      RawValue: 0
-    PositionOffset:
-      RawValue: 0
-  PhysicsCollider:
-    IsEnabled: 0
-    IsTrigger: 0
-    Material:
-      Id:
-        Value: 0
-    SourceCollider: {fileID: 0}
-    Shape2D:
-      ShapeType: 0
-      PolygonCollider:
-        Id:
-          Value: 0
-      CircleRadius:
-        RawValue: 0
-      CapsuleSize:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-      EdgeExtent:
-        RawValue: 0
-      BoxExtents:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-      PositionOffset:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-      RotationOffset:
-        RawValue: 0
-      UserTag: 0
-      IsPersistent: 1
-      CompoundShapes: []
-    Shape3D:
-      ShapeType: 0
-      SphereRadius:
-        RawValue: 0
-      CapsuleRadius:
-        RawValue: 0
-      CapsuleHeight:
-        RawValue: 0
-      PositionOffset:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-        Z:
-          RawValue: 0
-      BoxExtents:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-        Z:
-          RawValue: 0
-      RotationOffset:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-        Z:
-          RawValue: 0
-      UserTag: 0
-      IsPersistent: 1
-      CompoundShapes: []
-    LayerSource: 0
-    Layer: 0
-    CallbackFlags:
-      Value: 0
-  PhysicsBody:
-    IsEnabled: 0
-    Config2D: 116
-    Config3D: 58
-    RotationFreeze: 0
-    Mass:
-      RawValue: 65536
-    Drag:
-      RawValue: 32768
-    AngularDrag:
-      RawValue: 32768
-    CenterOfMass2D:
-      X:
-        RawValue: 0
-      Y:
-        RawValue: 0
-    CenterOfMass3D:
-      X:
-        RawValue: 0
-      Y:
-        RawValue: 0
-      Z:
-        RawValue: 0
-    GravityScale:
-      _hasValue: 0
-      _value:
-        RawValue: 65536
-  NavMeshPathfinder:
-    IsEnabled: 0
-    NavMeshAgentConfig:
-      Id:
-        Value: 0
-    InitialTarget:
-      IsEnabled: 0
-      Target: {fileID: 0}
-      Position:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-        Z:
-          RawValue: 0
-      NavMesh:
-        Reference: {fileID: 0}
-        Asset:
-          Id:
-            Value: 0
-        Name: 
-  NavMeshSteeringAgent:
-    IsEnabled: 0
-    MaxSpeed:
-      IsEnabled: 0
-      Value:
-        RawValue: 0
-    Acceleration:
-      IsEnabled: 0
-      Value:
-        RawValue: 0
-  NavMeshAvoidanceAgent:
-    IsEnabled: 0
-  View:
-    Id:
-      Value: 0
---- !u!4 &985761550
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 985761548}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 745398521}
-  - {fileID: 438500696}
-  - {fileID: 89441464}
-  - {fileID: 1286393558}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &992088745
@@ -7204,7 +6853,7 @@ PrefabInstance:
     - target: {fileID: 8348857657498258335, guid: c507e0dc3010ff14aa8f9eb5fba8accd,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8348857657498258335, guid: c507e0dc3010ff14aa8f9eb5fba8accd,
         type: 3}
@@ -7328,6 +6977,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prototype:
     ChildEntity: {fileID: 0}
+    Normal:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 65536
+    CollisionMinOffset:
+      RawValue: 13107
 --- !u!114 &992088749 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8442107702554474110, guid: c507e0dc3010ff14aa8f9eb5fba8accd,
@@ -7392,6 +7048,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1442642909}
     m_Modifications:
+    - target: {fileID: -6543055090847363060, guid: 9010e31a28b8d10499c0317b8ac3d2d2,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: -65536
+      objectReference: {fileID: 0}
+    - target: {fileID: -6543055090847363060, guid: 9010e31a28b8d10499c0317b8ac3d2d2,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 2496407482466833309, guid: 9010e31a28b8d10499c0317b8ac3d2d2,
         type: 3}
       propertyPath: m_Name
@@ -7485,7 +7151,7 @@ PrefabInstance:
     - target: {fileID: 9187305733782925858, guid: 9010e31a28b8d10499c0317b8ac3d2d2,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9187305733782925858, guid: 9010e31a28b8d10499c0317b8ac3d2d2,
         type: 3}
@@ -7534,6 +7200,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 277349728}
     m_Modifications:
+    - target: {fileID: -5553060179054026749, guid: 633c239ec0a63af4683c2c59806ef400,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: -65536
+      objectReference: {fileID: 0}
+    - target: {fileID: -5553060179054026749, guid: 633c239ec0a63af4683c2c59806ef400,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 205087173196188706, guid: 633c239ec0a63af4683c2c59806ef400,
         type: 3}
       propertyPath: m_Layer
@@ -7577,7 +7253,7 @@ PrefabInstance:
     - target: {fileID: 5795081131238555731, guid: 633c239ec0a63af4683c2c59806ef400,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5795081131238555731, guid: 633c239ec0a63af4683c2c59806ef400,
         type: 3}
@@ -7709,6 +7385,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 277349728}
     m_Modifications:
+    - target: {fileID: -1755048642702871226, guid: ae81c9131ea22414c8960558ef8ebd4d,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: -65536
+      objectReference: {fileID: 0}
+    - target: {fileID: -1755048642702871226, guid: ae81c9131ea22414c8960558ef8ebd4d,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 1114276988920015402, guid: ae81c9131ea22414c8960558ef8ebd4d,
         type: 3}
       propertyPath: m_SortingLayer
@@ -7747,7 +7433,7 @@ PrefabInstance:
     - target: {fileID: 3076593041905861559, guid: ae81c9131ea22414c8960558ef8ebd4d,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3076593041905861559, guid: ae81c9131ea22414c8960558ef8ebd4d,
         type: 3}
@@ -7917,6 +7603,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 24359553}
     m_Modifications:
+    - target: {fileID: -5995499174609041138, guid: ca1168d284b9f4f49babd938b73c5457,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: -65536
+      objectReference: {fileID: 0}
+    - target: {fileID: -5995499174609041138, guid: ca1168d284b9f4f49babd938b73c5457,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 733941283641775199, guid: ca1168d284b9f4f49babd938b73c5457,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -7945,7 +7641,7 @@ PrefabInstance:
     - target: {fileID: 2398958324390845553, guid: ca1168d284b9f4f49babd938b73c5457,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2398958324390845553, guid: ca1168d284b9f4f49babd938b73c5457,
         type: 3}
@@ -8059,6 +7755,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1770162692}
     m_Modifications:
+    - target: {fileID: -7452644218131191761, guid: c9c4743b1afa5494baf1fd0e6ab6d01c,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: 65536
+      objectReference: {fileID: 0}
+    - target: {fileID: -7452644218131191761, guid: c9c4743b1afa5494baf1fd0e6ab6d01c,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 390418129468682368, guid: c9c4743b1afa5494baf1fd0e6ab6d01c,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -8122,7 +7828,7 @@ PrefabInstance:
     - target: {fileID: 4702421845191654680, guid: c9c4743b1afa5494baf1fd0e6ab6d01c,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4702421845191654680, guid: c9c4743b1afa5494baf1fd0e6ab6d01c,
         type: 3}
@@ -8499,6 +8205,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 277349728}
     m_Modifications:
+    - target: {fileID: -5175841333700907158, guid: 47b3e9a565aaa23448d2b1c219e8daa1,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: -65536
+      objectReference: {fileID: 0}
+    - target: {fileID: -5175841333700907158, guid: 47b3e9a565aaa23448d2b1c219e8daa1,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 399325345294794832, guid: 47b3e9a565aaa23448d2b1c219e8daa1,
         type: 3}
       propertyPath: PhysicsCollider.Layer
@@ -8512,7 +8228,7 @@ PrefabInstance:
     - target: {fileID: 399325345294794832, guid: 47b3e9a565aaa23448d2b1c219e8daa1,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 399325345294794832, guid: 47b3e9a565aaa23448d2b1c219e8daa1,
         type: 3}
@@ -8667,207 +8383,6 @@ Transform:
   - {fileID: 165654630}
   m_Father: {fileID: 1906106125}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1286393557
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1286393558}
-  - component: {fileID: 1286393560}
-  - component: {fileID: 1286393559}
-  m_Layer: 0
-  m_Name: Spawn4
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1286393558
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1286393557}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2, y: 0, z: 5}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 985761550}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1286393559
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1286393557}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f89b43fcac67c9f4ab3896ce975cc4f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Prototype:
-    _empty_prototype_dummy_field_: 0
---- !u!114 &1286393560
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1286393557}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 836dcb7e0f6259748b850a10912ce727, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TransformMode: 0
-  Transform2DVertical:
-    IsEnabled: 0
-    Height:
-      RawValue: 0
-    PositionOffset:
-      RawValue: 0
-  PhysicsCollider:
-    IsEnabled: 0
-    IsTrigger: 0
-    Material:
-      Id:
-        Value: 0
-    SourceCollider: {fileID: 0}
-    Shape2D:
-      ShapeType: 0
-      PolygonCollider:
-        Id:
-          Value: 0
-      CircleRadius:
-        RawValue: 0
-      CapsuleSize:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-      EdgeExtent:
-        RawValue: 0
-      BoxExtents:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-      PositionOffset:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-      RotationOffset:
-        RawValue: 0
-      UserTag: 0
-      IsPersistent: 1
-      CompoundShapes: []
-    Shape3D:
-      ShapeType: 0
-      SphereRadius:
-        RawValue: 0
-      CapsuleRadius:
-        RawValue: 0
-      CapsuleHeight:
-        RawValue: 0
-      PositionOffset:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-        Z:
-          RawValue: 0
-      BoxExtents:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-        Z:
-          RawValue: 0
-      RotationOffset:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-        Z:
-          RawValue: 0
-      UserTag: 0
-      IsPersistent: 1
-      CompoundShapes: []
-    LayerSource: 0
-    Layer: 0
-    CallbackFlags:
-      Value: 0
-  PhysicsBody:
-    IsEnabled: 0
-    Config2D: 116
-    Config3D: 58
-    RotationFreeze: 0
-    Mass:
-      RawValue: 65536
-    Drag:
-      RawValue: 32768
-    AngularDrag:
-      RawValue: 32768
-    CenterOfMass2D:
-      X:
-        RawValue: 0
-      Y:
-        RawValue: 0
-    CenterOfMass3D:
-      X:
-        RawValue: 0
-      Y:
-        RawValue: 0
-      Z:
-        RawValue: 0
-    GravityScale:
-      _hasValue: 0
-      _value:
-        RawValue: 65536
-  NavMeshPathfinder:
-    IsEnabled: 0
-    NavMeshAgentConfig:
-      Id:
-        Value: 0
-    InitialTarget:
-      IsEnabled: 0
-      Target: {fileID: 0}
-      Position:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 0
-        Z:
-          RawValue: 0
-      NavMesh:
-        Reference: {fileID: 0}
-        Asset:
-          Id:
-            Value: 0
-        Name: 
-  NavMeshSteeringAgent:
-    IsEnabled: 0
-    MaxSpeed:
-      IsEnabled: 0
-      Value:
-        RawValue: 0
-    Acceleration:
-      IsEnabled: 0
-      Value:
-        RawValue: 0
-  NavMeshAvoidanceAgent:
-    IsEnabled: 0
-  View:
-    Id:
-      Value: 0
 --- !u!114 &1289946020 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6140174587978254768, guid: aea316436cdb9244194ddf22110b88d2,
@@ -8994,6 +8509,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1770162692}
     m_Modifications:
+    - target: {fileID: -4919940635700938453, guid: baba1fea9e82c5945aedc1d4277b08da,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: 65536
+      objectReference: {fileID: 0}
+    - target: {fileID: -4919940635700938453, guid: baba1fea9e82c5945aedc1d4277b08da,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 1094146517547242290, guid: baba1fea9e82c5945aedc1d4277b08da,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -9077,7 +8602,7 @@ PrefabInstance:
     - target: {fileID: 6242431875670917782, guid: baba1fea9e82c5945aedc1d4277b08da,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6242431875670917782, guid: baba1fea9e82c5945aedc1d4277b08da,
         type: 3}
@@ -9154,6 +8679,16 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 14
       objectReference: {fileID: 0}
+    - target: {fileID: 5158407303117532848, guid: d54f6bb868c6def48b3463c13d8cf4f2,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: 65536
+      objectReference: {fileID: 0}
+    - target: {fileID: 5158407303117532848, guid: d54f6bb868c6def48b3463c13d8cf4f2,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 6109563322839516440, guid: d54f6bb868c6def48b3463c13d8cf4f2,
         type: 3}
       propertyPath: PhysicsCollider.Layer
@@ -9167,7 +8702,7 @@ PrefabInstance:
     - target: {fileID: 6109563322839516440, guid: d54f6bb868c6def48b3463c13d8cf4f2,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6109563322839516440, guid: d54f6bb868c6def48b3463c13d8cf4f2,
         type: 3}
@@ -9358,7 +8893,9 @@ MonoBehaviour:
   Prototype:
     goalConfig:
       Id:
-        Value: 0
+        Value: 269125312843482111
+    hasTriggered:
+      Value: 0
 --- !u!114 &1663712105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9521,6 +9058,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 24359553}
     m_Modifications:
+    - target: {fileID: 2184101273149228939, guid: 0fd1abafe197ea14881ae54a88eaab2a,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: -65536
+      objectReference: {fileID: 0}
+    - target: {fileID: 2184101273149228939, guid: 0fd1abafe197ea14881ae54a88eaab2a,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 3144485959495331325, guid: 0fd1abafe197ea14881ae54a88eaab2a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -9594,7 +9141,7 @@ PrefabInstance:
     - target: {fileID: 7093708536386662434, guid: 0fd1abafe197ea14881ae54a88eaab2a,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7093708536386662434, guid: 0fd1abafe197ea14881ae54a88eaab2a,
         type: 3}
@@ -10070,6 +9617,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 929145844}
     m_Modifications:
+    - target: {fileID: -5995499174609041138, guid: ca1168d284b9f4f49babd938b73c5457,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: 65536
+      objectReference: {fileID: 0}
+    - target: {fileID: -5995499174609041138, guid: ca1168d284b9f4f49babd938b73c5457,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 733941283641775199, guid: ca1168d284b9f4f49babd938b73c5457,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -10098,7 +9655,7 @@ PrefabInstance:
     - target: {fileID: 2398958324390845553, guid: ca1168d284b9f4f49babd938b73c5457,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2398958324390845553, guid: ca1168d284b9f4f49babd938b73c5457,
         type: 3}
@@ -10260,6 +9817,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1255077263}
     m_Modifications:
+    - target: {fileID: -6543055090847363060, guid: 9010e31a28b8d10499c0317b8ac3d2d2,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: 65536
+      objectReference: {fileID: 0}
+    - target: {fileID: -6543055090847363060, guid: 9010e31a28b8d10499c0317b8ac3d2d2,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 2496407482466833309, guid: 9010e31a28b8d10499c0317b8ac3d2d2,
         type: 3}
       propertyPath: m_Name
@@ -10353,7 +9920,7 @@ PrefabInstance:
     - target: {fileID: 9187305733782925858, guid: 9010e31a28b8d10499c0317b8ac3d2d2,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9187305733782925858, guid: 9010e31a28b8d10499c0317b8ac3d2d2,
         type: 3}
@@ -10664,6 +10231,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1255077263}
     m_Modifications:
+    - target: {fileID: -4641312341297107491, guid: d434e0555dd186c48afe669cc43a3a07,
+        type: 3}
+      propertyPath: Prototype.Normal.Y.RawValue
+      value: 65536
+      objectReference: {fileID: 0}
+    - target: {fileID: -4641312341297107491, guid: d434e0555dd186c48afe669cc43a3a07,
+        type: 3}
+      propertyPath: Prototype.CollisionMinOffset.RawValue
+      value: 13107
+      objectReference: {fileID: 0}
     - target: {fileID: 366348168604179144, guid: d434e0555dd186c48afe669cc43a3a07,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -10737,7 +10314,7 @@ PrefabInstance:
     - target: {fileID: 5214441406807782070, guid: d434e0555dd186c48afe669cc43a3a07,
         type: 3}
       propertyPath: PhysicsCollider.IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5214441406807782070, guid: d434e0555dd186c48afe669cc43a3a07,
         type: 3}
@@ -11041,4 +10618,3 @@ SceneRoots:
   - {fileID: 88804847}
   - {fileID: 1117656564}
   - {fileID: 1088736786}
-  - {fileID: 985761550}

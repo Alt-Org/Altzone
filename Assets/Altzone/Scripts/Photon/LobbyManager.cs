@@ -68,7 +68,7 @@ namespace Altzone.Scripts.Lobby
         [SerializeField]
         private SystemsConfig _systemsConfig;
 
-        [SerializeField] private ProjectileGameConfig _projectileGameConfig;
+        [SerializeField] private ProjectileSpec _projectileSpec;
         [SerializeField]
         private Map _map;
 
@@ -200,7 +200,7 @@ namespace Altzone.Scripts.Lobby
             while (true)
             {
                 PhotonRealtimeClient.Client?.Service();
-                Debug.LogWarning(".");
+                //Debug.LogWarning(".");
                 yield return new WaitForSeconds(0.1f);
             }
         }
@@ -361,7 +361,7 @@ namespace Altzone.Scripts.Lobby
                 Map = _map,
                 SimulationConfig = _simulationConfig,
                 SystemsConfig = _systemsConfig,
-                GameConfig = _projectileGameConfig
+                ProjectileSpec = _projectileSpec
             };
 
             SessionRunner.Arguments sessionRunnerArguments = new()
@@ -495,7 +495,7 @@ namespace Altzone.Scripts.Lobby
                     Hp         = BaseCharacter.GetStatValueFP(StatType.Hp, character.Hp),
                     Attack     = BaseCharacter.GetStatValueFP(StatType.Attack, character.Attack),
                     Defence    = BaseCharacter.GetStatValueFP(StatType.Defence, character.Defence),
-                    Resistance = BaseCharacter.GetStatValueFP(StatType.Resistance, character.Resistance),
+                    CharacterSize = BaseCharacter.GetStatValueFP(StatType.CharacterSize, character.CharacterSize),
                     Speed      = BaseCharacter.GetStatValueFP(StatType.Speed, character.Speed)
                 };
             }

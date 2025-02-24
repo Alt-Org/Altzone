@@ -137,7 +137,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
                     characterIds[i] = (int)battleCharacter[i].Id;
                     characterStats[i * 5] = battleCharacter[i].Hp;
                     characterStats[i * 5 + 1] = battleCharacter[i].Speed;
-                    characterStats[i * 5 + 2] = battleCharacter[i].Resistance;
+                    characterStats[i * 5 + 2] = battleCharacter[i].CharacterSize;
                     characterStats[i * 5 + 3] = battleCharacter[i].Attack;
                     characterStats[i * 5 + 4] = battleCharacter[i].Defence;
                     selectedCharacters.Add(battleCharacter[i]);

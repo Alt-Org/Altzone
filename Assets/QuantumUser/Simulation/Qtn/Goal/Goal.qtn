@@ -1,4 +1,5 @@
 component Goal
 {
     AssetRef<GoalConfig> goalConfig;
+    bool hasTriggered;
 }

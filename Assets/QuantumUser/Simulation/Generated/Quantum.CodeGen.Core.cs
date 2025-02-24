@@ -545,6 +545,28 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct ArenaBorder : Quantum.IComponent {
+    public const Int32 SIZE = 24;
+    public const Int32 ALIGNMENT = 8;
+    [FieldOffset(8)]
+    public FPVector2 Normal;
+    [FieldOffset(0)]
+    public FP CollisionMinOffset;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 17551;
+        hash = hash * 31 + Normal.GetHashCode();
+        hash = hash * 31 + CollisionMinOffset.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (ArenaBorder*)ptr;
+        FP.Serialize(&p->CollisionMinOffset, serializer);
+        FPVector2.Serialize(&p->Normal, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct GameSession : Quantum.IComponentSingleton {
     public const Int32 SIZE = 16;
     public const Int32 ALIGNMENT = 8;
@@ -568,68 +590,118 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Goal : Quantum.IComponent {
-    public const Int32 SIZE = 8;
+    public const Int32 SIZE = 16;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(0)]
+    [FieldOffset(8)]
     public AssetRef<GoalConfig> goalConfig;
+    [FieldOffset(0)]
+    public QBoolean hasTriggered;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 16223;
         hash = hash * 31 + goalConfig.GetHashCode();
+        hash = hash * 31 + hasTriggered.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (Goal*)ptr;
+        QBoolean.Serialize(&p->hasTriggered, serializer);
         AssetRef.Serialize(&p->goalConfig, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerData : Quantum.IComponent {
-    public const Int32 SIZE = 32;
+    public const Int32 SIZE = 64;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public PlayerRef Player;
-    [FieldOffset(8)]
+    [FieldOffset(24)]
     public FP Speed;
-    [FieldOffset(16)]
+    [FieldOffset(48)]
     public FPVector2 TargetPosition;
+    [FieldOffset(16)]
+    public FP Rotation;
+    [FieldOffset(32)]
+    public FPVector2 Normal;
+    [FieldOffset(8)]
+    public FP CollisionMinOffset;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10271;
         hash = hash * 31 + Player.GetHashCode();
         hash = hash * 31 + Speed.GetHashCode();
         hash = hash * 31 + TargetPosition.GetHashCode();
+        hash = hash * 31 + Rotation.GetHashCode();
+        hash = hash * 31 + Normal.GetHashCode();
+        hash = hash * 31 + CollisionMinOffset.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (PlayerData*)ptr;
         PlayerRef.Serialize(&p->Player, serializer);
+        FP.Serialize(&p->CollisionMinOffset, serializer);
+        FP.Serialize(&p->Rotation, serializer);
         FP.Serialize(&p->Speed, serializer);
+        FPVector2.Serialize(&p->Normal, serializer);
         FPVector2.Serialize(&p->TargetPosition, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
-  public unsafe partial struct Projectile : Quantum.IComponent {
+  public unsafe partial struct PlayerShieldData : Quantum.IComponent {
     public const Int32 SIZE = 16;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(8)]
-    public AssetRef<ProjectileConfig> ProjectileConfig;
+    public EntityRef TeamMate;
+    [FieldOffset(0)]
+    public QBoolean TeamMateSet;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 3541;
+        hash = hash * 31 + TeamMate.GetHashCode();
+        hash = hash * 31 + TeamMateSet.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (PlayerShieldData*)ptr;
+        QBoolean.Serialize(&p->TeamMateSet, serializer);
+        EntityRef.Serialize(&p->TeamMate, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct Projectile : Quantum.IComponent {
+    public const Int32 SIZE = 48;
+    public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public QBoolean IsLaunched;
+    [FieldOffset(24)]
+    public FP Speed;
+    [FieldOffset(32)]
+    public FPVector2 Direction;
+    [FieldOffset(8)]
+    public FP CoolDown;
+    [FieldOffset(16)]
+    public FP Radius;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 16141;
-        hash = hash * 31 + ProjectileConfig.GetHashCode();
         hash = hash * 31 + IsLaunched.GetHashCode();
+        hash = hash * 31 + Speed.GetHashCode();
+        hash = hash * 31 + Direction.GetHashCode();
+        hash = hash * 31 + CoolDown.GetHashCode();
+        hash = hash * 31 + Radius.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (Projectile*)ptr;
         QBoolean.Serialize(&p->IsLaunched, serializer);
-        AssetRef.Serialize(&p->ProjectileConfig, serializer);
+        FP.Serialize(&p->CoolDown, serializer);
+        FP.Serialize(&p->Radius, serializer);
+        FP.Serialize(&p->Speed, serializer);
+        FPVector2.Serialize(&p->Direction, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -652,36 +724,28 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct SoulWall : Quantum.IComponent {
-    public const Int32 SIZE = 8;
+    public const Int32 SIZE = 32;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public EntityRef ChildEntity;
+    [FieldOffset(16)]
+    public FPVector2 Normal;
+    [FieldOffset(8)]
+    public FP CollisionMinOffset;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10253;
         hash = hash * 31 + ChildEntity.GetHashCode();
+        hash = hash * 31 + Normal.GetHashCode();
+        hash = hash * 31 + CollisionMinOffset.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (SoulWall*)ptr;
         EntityRef.Serialize(&p->ChildEntity, serializer);
-    }
-  }
-  [StructLayout(LayoutKind.Explicit)]
-  public unsafe partial struct SpawnIdentifier : Quantum.IComponent {
-    public const Int32 SIZE = 4;
-    public const Int32 ALIGNMENT = 4;
-    [FieldOffset(0)]
-    private fixed Byte _alignment_padding_[4];
-    public override Int32 GetHashCode() {
-      unchecked { 
-        var hash = 11057;
-        return hash;
-      }
-    }
-    public static void Serialize(void* ptr, FrameSerializer serializer) {
-        var p = (SpawnIdentifier*)ptr;
+        FP.Serialize(&p->CollisionMinOffset, serializer);
+        FPVector2.Serialize(&p->Normal, serializer);
     }
   }
   public unsafe partial interface ISignalOnCollisionProjectileHitSoulWall : ISignal {
@@ -699,6 +763,15 @@ namespace Quantum {
   public unsafe partial interface ISignalOnTriggerBottomGoal : ISignal {
     void OnTriggerBottomGoal(Frame f);
   }
+  public unsafe partial interface ISignalOnTriggerProjectileHitSoulWall : ISignal {
+    void OnTriggerProjectileHitSoulWall(Frame f, Projectile* projectile, EntityRef projectileEntity, SoulWall* soulWall, EntityRef soulWallEntity);
+  }
+  public unsafe partial interface ISignalOnTriggerProjectileHitArenaBorder : ISignal {
+    void OnTriggerProjectileHitArenaBorder(Frame f, Projectile* projectile, EntityRef projectileEntity, ArenaBorder* arenaBorder, EntityRef arenaBorderEntity);
+  }
+  public unsafe partial interface ISignalOnTriggerProjectileHitPlayer : ISignal {
+    void OnTriggerProjectileHitPlayer(Frame f, Projectile* projectile, EntityRef projectileEntity, PlayerData* playerData, EntityRef playerEntity);
+  }
   public static unsafe partial class Constants {
   }
   public unsafe partial class Frame {
@@ -707,6 +780,9 @@ namespace Quantum {
     private ISignalOnCollisionProjectileHitSomething[] _ISignalOnCollisionProjectileHitSomethingSystems;
     private ISignalOnTriggerTopGoal[] _ISignalOnTriggerTopGoalSystems;
     private ISignalOnTriggerBottomGoal[] _ISignalOnTriggerBottomGoalSystems;
+    private ISignalOnTriggerProjectileHitSoulWall[] _ISignalOnTriggerProjectileHitSoulWallSystems;
+    private ISignalOnTriggerProjectileHitArenaBorder[] _ISignalOnTriggerProjectileHitArenaBorderSystems;
+    private ISignalOnTriggerProjectileHitPlayer[] _ISignalOnTriggerProjectileHitPlayerSystems;
     partial void AllocGen() {
       _globals = (_globals_*)Context.Allocator.AllocAndClear(sizeof(_globals_));
     }
@@ -723,8 +799,13 @@ namespace Quantum {
       _ISignalOnCollisionProjectileHitSomethingSystems = BuildSignalsArray<ISignalOnCollisionProjectileHitSomething>();
       _ISignalOnTriggerTopGoalSystems = BuildSignalsArray<ISignalOnTriggerTopGoal>();
       _ISignalOnTriggerBottomGoalSystems = BuildSignalsArray<ISignalOnTriggerBottomGoal>();
+      _ISignalOnTriggerProjectileHitSoulWallSystems = BuildSignalsArray<ISignalOnTriggerProjectileHitSoulWall>();
+      _ISignalOnTriggerProjectileHitArenaBorderSystems = BuildSignalsArray<ISignalOnTriggerProjectileHitArenaBorder>();
+      _ISignalOnTriggerProjectileHitPlayerSystems = BuildSignalsArray<ISignalOnTriggerProjectileHitPlayer>();
       _ComponentSignalsOnAdded = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       _ComponentSignalsOnRemoved = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
+      BuildSignalsArrayOnComponentAdded<Quantum.ArenaBorder>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.ArenaBorder>();
       BuildSignalsArrayOnComponentAdded<CharacterController2D>();
       BuildSignalsArrayOnComponentRemoved<CharacterController2D>();
       BuildSignalsArrayOnComponentAdded<CharacterController3D>();
@@ -761,14 +842,14 @@ namespace Quantum {
       BuildSignalsArrayOnComponentRemoved<PhysicsJoints3D>();
       BuildSignalsArrayOnComponentAdded<Quantum.PlayerData>();
       BuildSignalsArrayOnComponentRemoved<Quantum.PlayerData>();
+      BuildSignalsArrayOnComponentAdded<Quantum.PlayerShieldData>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.PlayerShieldData>();
       BuildSignalsArrayOnComponentAdded<Quantum.Projectile>();
       BuildSignalsArrayOnComponentRemoved<Quantum.Projectile>();
       BuildSignalsArrayOnComponentAdded<Quantum.ProjectileSpawner>();
       BuildSignalsArrayOnComponentRemoved<Quantum.ProjectileSpawner>();
       BuildSignalsArrayOnComponentAdded<Quantum.SoulWall>();
       BuildSignalsArrayOnComponentRemoved<Quantum.SoulWall>();
-      BuildSignalsArrayOnComponentAdded<Quantum.SpawnIdentifier>();
-      BuildSignalsArrayOnComponentRemoved<Quantum.SpawnIdentifier>();
       BuildSignalsArrayOnComponentAdded<Transform2D>();
       BuildSignalsArrayOnComponentRemoved<Transform2D>();
       BuildSignalsArrayOnComponentAdded<Transform2DVertical>();
@@ -845,6 +926,33 @@ namespace Quantum {
           }
         }
       }
+      public void OnTriggerProjectileHitSoulWall(Projectile* projectile, EntityRef projectileEntity, SoulWall* soulWall, EntityRef soulWallEntity) {
+        var array = _f._ISignalOnTriggerProjectileHitSoulWallSystems;
+        for (Int32 i = 0; i < array.Length; ++i) {
+          var s = array[i];
+          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
+            s.OnTriggerProjectileHitSoulWall(_f, projectile, projectileEntity, soulWall, soulWallEntity);
+          }
+        }
+      }
+      public void OnTriggerProjectileHitArenaBorder(Projectile* projectile, EntityRef projectileEntity, ArenaBorder* arenaBorder, EntityRef arenaBorderEntity) {
+        var array = _f._ISignalOnTriggerProjectileHitArenaBorderSystems;
+        for (Int32 i = 0; i < array.Length; ++i) {
+          var s = array[i];
+          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
+            s.OnTriggerProjectileHitArenaBorder(_f, projectile, projectileEntity, arenaBorder, arenaBorderEntity);
+          }
+        }
+      }
+      public void OnTriggerProjectileHitPlayer(Projectile* projectile, EntityRef projectileEntity, PlayerData* playerData, EntityRef playerEntity) {
+        var array = _f._ISignalOnTriggerProjectileHitPlayerSystems;
+        for (Int32 i = 0; i < array.Length; ++i) {
+          var s = array[i];
+          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
+            s.OnTriggerProjectileHitPlayer(_f, projectile, projectileEntity, playerData, playerEntity);
+          }
+        }
+      }
     }
   }
   public unsafe partial class Statics {
@@ -853,6 +961,7 @@ namespace Quantum {
       SerializeInput = Quantum.Input.Serialize;
     }
     static partial void RegisterSimulationTypesGen(TypeRegistry typeRegistry) {
+      typeRegistry.Register(typeof(Quantum.ArenaBorder), Quantum.ArenaBorder.SIZE);
       typeRegistry.Register(typeof(AssetGuid), AssetGuid.SIZE);
       typeRegistry.Register(typeof(AssetRef), AssetRef.SIZE);
       typeRegistry.Register(typeof(Quantum.BattlePlayerPosition), 4);
@@ -924,6 +1033,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(PhysicsSceneSettings), PhysicsSceneSettings.SIZE);
       typeRegistry.Register(typeof(Quantum.PlayerData), Quantum.PlayerData.SIZE);
       typeRegistry.Register(typeof(PlayerRef), PlayerRef.SIZE);
+      typeRegistry.Register(typeof(Quantum.PlayerShieldData), Quantum.PlayerShieldData.SIZE);
       typeRegistry.Register(typeof(Quantum.Projectile), Quantum.Projectile.SIZE);
       typeRegistry.Register(typeof(Quantum.ProjectileSpawner), Quantum.ProjectileSpawner.SIZE);
       typeRegistry.Register(typeof(Ptr), Ptr.SIZE);
@@ -935,7 +1045,6 @@ namespace Quantum {
       typeRegistry.Register(typeof(Shape3D), Shape3D.SIZE);
       typeRegistry.Register(typeof(Quantum.SoulWall), Quantum.SoulWall.SIZE);
       typeRegistry.Register(typeof(Quantum.SoundEffect), 4);
-      typeRegistry.Register(typeof(Quantum.SpawnIdentifier), Quantum.SpawnIdentifier.SIZE);
       typeRegistry.Register(typeof(SpringJoint), SpringJoint.SIZE);
       typeRegistry.Register(typeof(SpringJoint3D), SpringJoint3D.SIZE);
       typeRegistry.Register(typeof(Transform2D), Transform2D.SIZE);
@@ -945,15 +1054,16 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum._globals_), Quantum._globals_.SIZE);
     }
     static partial void InitComponentTypeIdGen() {
-      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 7)
+      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 8)
         .AddBuiltInComponents()
+        .Add<Quantum.ArenaBorder>(Quantum.ArenaBorder.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.GameSession>(Quantum.GameSession.Serialize, null, null, ComponentFlags.Singleton)
         .Add<Quantum.Goal>(Quantum.Goal.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.PlayerData>(Quantum.PlayerData.Serialize, null, null, ComponentFlags.None)
+        .Add<Quantum.PlayerShieldData>(Quantum.PlayerShieldData.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.Projectile>(Quantum.Projectile.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.ProjectileSpawner>(Quantum.ProjectileSpawner.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.SoulWall>(Quantum.SoulWall.Serialize, null, null, ComponentFlags.None)
-        .Add<Quantum.SpawnIdentifier>(Quantum.SpawnIdentifier.Serialize, null, null, ComponentFlags.None)
         .Finish();
     }
     [Preserve()]
