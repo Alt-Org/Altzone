@@ -74,10 +74,14 @@ namespace MenuUI.Scripts.SoulHome
             }
         }
         public GameObject TrayFurnitureObject { get => _trayFurnitureObject; set { if(!Application.isPlaying) _trayFurnitureObject = value; }}
-        public string Name { get => _name;}
+        public string Name { get => _name; set { if (!Application.isPlaying) _name = value; } }
         public bool IsRotated { get => _isRotated;}
         public bool IsPlaceHolder { get => _isPlaceHolder;}
         public Direction TempSpriteDirection { get => _tempSpriteDirection;}
+        public Sprite FurnitureSpriteFront { get => _furnitureSpriteFront; set { if (!Application.isPlaying) _furnitureSpriteFront = value; } }
+        public Sprite FurnitureSpriteRight { get => _furnitureSpriteRight; set { if (!Application.isPlaying) _furnitureSpriteRight = value; } }
+        public Sprite FurnitureSpriteLeft { get => _furnitureSpriteLeft; set { if (!Application.isPlaying) _furnitureSpriteLeft = value; } }
+        public Sprite FurnitureSpriteBack { get => _furnitureSpriteBack; set { if (!Application.isPlaying) _furnitureSpriteBack = value; } }
 
         // Start is called before the first frame update
         void Start()

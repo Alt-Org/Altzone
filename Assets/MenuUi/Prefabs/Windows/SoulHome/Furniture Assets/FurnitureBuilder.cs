@@ -5,6 +5,7 @@ using Altzone.Scripts.ReferenceSheets;
 using MenuUI.Scripts.SoulHome;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 //[CreateAssetMenu(menuName = "ALT-Zone/FurnitureBuilder", fileName = "FurnitureBuilder")]
 public class FurnitureBuilder : ScriptableObject
@@ -112,8 +113,34 @@ public class FurnitureBuilder : ScriptableObject
         DestroyImmediate(newFurniturePrefab);
         GameObject obj2 = PrefabUtility.SaveAsPrefabAsset(newTrayPrefab, folderPath + "/" + newTrayPrefab.name + ".prefab");
         DestroyImmediate(newTrayPrefab);
+        obj.GetComponent<FurnitureHandling>().Name = _furnitureName + "_" + _setName;
         obj2.GetComponent<TrayFurniture>().FurnitureObject = obj;
         obj.GetComponent<FurnitureHandling>().TrayFurnitureObject = obj2;
+
+        if(_furnitureFrontSprite != null)
+        {
+            obj.GetComponent<Image>().sprite = _furnitureFrontSprite;
+            obj2.GetComponent<Image>().sprite = _furnitureFrontSprite;
+        }
+        else if (_furnitureRightSprite != null)
+        {
+            obj.GetComponent<Image>().sprite = _furnitureRightSprite;
+            obj2.GetComponent<Image>().sprite = _furnitureRightSprite;
+        }
+        else if (_furnitureLeftSprite != null)
+        {
+            obj.GetComponent<Image>().sprite = _furnitureLeftSprite;
+            obj2.GetComponent<Image>().sprite = _furnitureLeftSprite;
+        }
+        else if (_furnitureBackSprite != null)
+        {
+            obj.GetComponent<Image>().sprite = _furnitureBackSprite;
+            obj2.GetComponent<Image>().sprite = _furnitureBackSprite;
+        }
+        obj.GetComponent<FurnitureHandling>().FurnitureSpriteFront = _furnitureFrontSprite;
+        obj.GetComponent<FurnitureHandling>().FurnitureSpriteRight = _furnitureRightSprite;
+        obj.GetComponent<FurnitureHandling>().FurnitureSpriteLeft = _furnitureLeftSprite;
+        obj.GetComponent<FurnitureHandling>().FurnitureSpriteBack = _furnitureBackSprite;
     }
 
 
