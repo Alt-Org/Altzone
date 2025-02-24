@@ -64,11 +64,11 @@ namespace Altzone.Scripts.Lobby
         [Header("Player")]
         [SerializeField] private RuntimePlayer _player;
 
-
         [Header("Configs")]
         [SerializeField] private Map _map;
         [SerializeField] private SimulationConfig _simulationConfig;
         [SerializeField] private SystemsConfig _systemsConfig;
+        [SerializeField] private BattleArenaSpec _battleArenaSpec;
         [SerializeField] private ProjectileSpec _projectileSpec;
 
         private QuantumRunner _runner = null;
@@ -360,6 +360,7 @@ namespace Altzone.Scripts.Lobby
                 Map              = _map,
                 SimulationConfig = _simulationConfig,
                 SystemsConfig    = _systemsConfig,
+                BattleArenaSpec  = _battleArenaSpec,
                 ProjectileSpec   = _projectileSpec
             };
 
