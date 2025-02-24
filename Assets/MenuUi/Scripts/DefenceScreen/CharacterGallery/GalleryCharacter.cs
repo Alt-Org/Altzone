@@ -24,6 +24,8 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private CharacterSlot _originalSlot;
 
+        private static Material _grayscaleMaterialInstance;
+
         private CharacterID _id;
         public CharacterID Id { get => _id; }
 
@@ -31,6 +33,10 @@ namespace MenuUi.Scripts.CharacterGallery
         private void Awake()
         {
             _piechartPreview.gameObject.SetActive(false);
+            if (_grayscaleMaterialInstance == null )
+            {
+                _grayscaleMaterialInstance = Instantiate(_grayScaleMaterial);
+            }
         }
 
 
@@ -114,10 +120,10 @@ namespace MenuUi.Scripts.CharacterGallery
         public void SetLockedVisuals()
         {
             SetUnselectedVisuals();
-            _spriteImage.material = _grayScaleMaterial;
-            _contentsImage.material = _grayScaleMaterial;
+            _spriteImage.material = _grayscaleMaterialInstance;
+            _contentsImage.material = _grayscaleMaterialInstance;
             _contentsImage.material.SetColor("_Color", _contentsImage.color);
-            _backgroundImage.material = _grayScaleMaterial;
+            _backgroundImage.material = _grayscaleMaterialInstance;
             _backgroundImage.material.SetColor("_Color", _backgroundImage.color);
         }
 
