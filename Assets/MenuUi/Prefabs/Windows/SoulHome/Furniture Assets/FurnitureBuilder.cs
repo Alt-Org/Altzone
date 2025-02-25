@@ -94,7 +94,11 @@ public class FurnitureBuilder : ScriptableObject
         FurnitureSetInfo furnitureSetInfo = new FurnitureSetInfo()
         {
             SetName = _setName,
-            ArtistName = _creatorName
+            ArtistName = _creatorName,
+            list = new()
+            {
+                furnitureObject
+            }
         };
 
         string folderPath = AssetDatabase.GetAssetPath(Selection.activeInstanceID);
@@ -145,6 +149,28 @@ public class FurnitureBuilder : ScriptableObject
         var size = Furniture.GetFurnitureSize(_size);
         obj.GetComponent<BoxCollider2D>().size = new(size.y,size.x);
         obj.GetComponent<BoxCollider2D>().offset = new(0, size.x/2);
+
+        bool furnitureAdded = _furnitureReference.AddFurniture(furnitureSetInfo);
+        if (!furnitureAdded) return;
+        _soulHomeReference.UpdateSheet();
+
+        SoulhomeFurnitureInfoObject soulHomeFurnitureObject = new SoulhomeFurnitureInfoObject()
+        {
+            Name = _furnitureName,
+            FurnitureHandling = obj.GetComponent<FurnitureHandling>(),
+            TrayFurniture = obj2.GetComponent<TrayFurniture>()
+
+        };
+
+        SoulhomeFurnitureSetInfo soulHomeFurnitureSetInfo = new SoulhomeFurnitureSetInfo()
+        {
+            SetName = _setName,
+            list = new()
+            {
+                soulHomeFurnitureObject
+            }
+        };
+        _soulHomeReference.AddFurniture(soulHomeFurnitureSetInfo);
     }
 
 
