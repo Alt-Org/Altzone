@@ -40,6 +40,12 @@ public class DailyTaskProgressManager : AltMonoBehaviour
     /// </summary>
     public static event TaskDone OnTaskDone;
 
+    public delegate void ClanMilestoneProgressed();
+    /// <summary>
+    /// Used to show <c>DailyTaskProgressPopup</c> window when clan milestone reward has been reached.
+    /// </summary>
+    public static event ClanMilestoneProgressed OnClanMilestoneProgressed;
+
     #endregion
 
     private void Awake()
@@ -183,7 +189,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
         yield return new WaitUntil(() => (playerData != null || timeout != null));
 
         if (playerData == null)
-            yield break; //TODO: Add error handling.
+            yield break;
 
         CurrentPlayerTask.AddProgress(value);
 
@@ -350,4 +356,9 @@ public class DailyTaskProgressManager : AltMonoBehaviour
     }
 
     #endregion
+
+    public void InvokeOnClanMilestoneReached()
+    {
+        OnClanMilestoneProgressed.Invoke();
+    }
 }

@@ -58,6 +58,7 @@ public class DailyTaskManager : AltMonoBehaviour
     private int _clanProgressBarGoal = 10000;
     private int _clanProgressBarCurrentPoints = 0;
     private PlayerData _currentPlayerData;
+    private int _clanMilestoneLatestRewardIndex = -1;
 
     public enum SelectedTab
     {
@@ -535,7 +536,6 @@ public class DailyTaskManager : AltMonoBehaviour
 
     private void UpdateOwnTaskProgress()
     {
-        //TODO: Replace with fetch from server when possible.
         var taskData = DailyTaskProgressManager.Instance.CurrentPlayerTask;
         
         float progress = (float)taskData.TaskProgress / (float)taskData.Amount;
@@ -656,6 +656,7 @@ public class DailyTaskManager : AltMonoBehaviour
         StartCoroutine(CalculateClanRewardBarProgress());
     }
 
+    //TODO: Needs to be moved or overhauled when server is ready.
     private IEnumerator CalculateClanRewardBarProgress()
     {
         float sectionLenghts = (1f / (float)_clanProgressBarMarkers.Count);
@@ -681,13 +682,19 @@ public class DailyTaskManager : AltMonoBehaviour
                 //All but final reward.
                 for (int j = 0; j < i; j++)
                 {
+                    if (j <= _clanMilestoneLatestRewardIndex)
+                        continue;
+
+                    _clanMilestoneLatestRewardIndex = j;
                     _clanProgressBarMarkers[j].GetComponent<DailyTaskClanReward>().UpdateState(true);
+                    DailyTaskProgressManager.Instance.InvokeOnClanMilestoneReached(); //TODO: Remove when server ready.
                 }
 
                 //Final reward
                 if ((i >= _clanProgressBarMarkers.Count - 1) && chunkProgress == 1)
                 {
                     _clanProgressBarMarkers[_clanProgressBarMarkers.Count - 1].GetComponent<DailyTaskClanReward>().UpdateState(true);
+                    DailyTaskProgressManager.Instance.InvokeOnClanMilestoneReached(); //TODO: Remove when server ready.
                 }
 
                 _clanProgressBarSlider.value = Mathf.Lerp(startPosition, endPosition, chunkProgress);
