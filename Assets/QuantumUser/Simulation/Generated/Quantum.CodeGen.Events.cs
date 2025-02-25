@@ -52,7 +52,7 @@ namespace Quantum {
   public unsafe partial class Frame {
     public unsafe partial struct FrameEvents {
       static partial void GetEventTypeCountCodeGen(ref Int32 eventCount) {
-        eventCount = 3;
+        eventCount = 4;
       }
       static partial void GetParentEventIDCodeGen(Int32 eventID, ref Int32 parentEventID) {
         switch (eventID) {
@@ -61,10 +61,18 @@ namespace Quantum {
       }
       static partial void GetEventTypeCodeGen(Int32 eventID, ref System.Type result) {
         switch (eventID) {
+          case EventUpdateDebugStatsOverlay.ID: result = typeof(EventUpdateDebugStatsOverlay); return;
           case EventToggleShield.ID: result = typeof(EventToggleShield); return;
           case EventPlaySoundEvent.ID: result = typeof(EventPlaySoundEvent); return;
           default: break;
         }
+      }
+      public EventUpdateDebugStatsOverlay UpdateDebugStatsOverlay(BattleCharacterBase Character) {
+        if (_f.IsPredicted) return null;
+        var ev = _f.Context.AcquireEvent<EventUpdateDebugStatsOverlay>(EventUpdateDebugStatsOverlay.ID);
+        ev.Character = Character;
+        _f.AddEvent(ev);
+        return ev;
       }
       public EventToggleShield ToggleShield(EntityRef PlayerEntity, QBoolean ShieldBool) {
         if (_f.IsPredicted) return null;
@@ -82,14 +90,13 @@ namespace Quantum {
       }
     }
   }
-  public unsafe partial class EventToggleShield : EventBase {
+  public unsafe partial class EventUpdateDebugStatsOverlay : EventBase {
     public new const Int32 ID = 1;
-    public EntityRef PlayerEntity;
-    public QBoolean ShieldBool;
-    protected EventToggleShield(Int32 id, EventFlags flags) : 
+    public BattleCharacterBase Character;
+    protected EventUpdateDebugStatsOverlay(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventToggleShield() : 
+    public EventUpdateDebugStatsOverlay() : 
         base(1, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
     }
     public new QuantumGame Game {
@@ -103,20 +110,20 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 41;
-        hash = hash * 31 + PlayerEntity.GetHashCode();
-        hash = hash * 31 + ShieldBool.GetHashCode();
+        hash = hash * 31 + Character.GetHashCode();
         return hash;
       }
     }
   }
-  public unsafe partial class EventPlaySoundEvent : EventBase {
+  public unsafe partial class EventToggleShield : EventBase {
     public new const Int32 ID = 2;
-    public SoundEffect SoundEffect;
-    protected EventPlaySoundEvent(Int32 id, EventFlags flags) : 
+    public EntityRef PlayerEntity;
+    public QBoolean ShieldBool;
+    protected EventToggleShield(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventPlaySoundEvent() : 
-        base(2, EventFlags.Server|EventFlags.Client) {
+    public EventToggleShield() : 
+        base(2, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
     }
     public new QuantumGame Game {
       get {
@@ -129,6 +136,32 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 43;
+        hash = hash * 31 + PlayerEntity.GetHashCode();
+        hash = hash * 31 + ShieldBool.GetHashCode();
+        return hash;
+      }
+    }
+  }
+  public unsafe partial class EventPlaySoundEvent : EventBase {
+    public new const Int32 ID = 3;
+    public SoundEffect SoundEffect;
+    protected EventPlaySoundEvent(Int32 id, EventFlags flags) : 
+        base(id, flags) {
+    }
+    public EventPlaySoundEvent() : 
+        base(3, EventFlags.Server|EventFlags.Client) {
+    }
+    public new QuantumGame Game {
+      get {
+        return (QuantumGame)base.Game;
+      }
+      set {
+        base.Game = value;
+      }
+    }
+    public override Int32 GetHashCode() {
+      unchecked {
+        var hash = 47;
         hash = hash * 31 + SoundEffect.GetHashCode();
         return hash;
       }
