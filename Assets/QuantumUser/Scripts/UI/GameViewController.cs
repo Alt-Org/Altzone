@@ -4,15 +4,20 @@ using UnityEngine;
 
 namespace QuantumUser.Scripts
 {
-    public class GameViewController : MonoBehaviour
+    public class GameViewController : QuantumCallbacks
     {
         // References to UIviews
         [SerializeField] private GameUiController _gameUiController;
 
-        // Start is called before the first frame update
-        // Currently not used but can be used for initialization if needed
-        private void Start()
+        private void Awake()
         {
+            QuantumEvent.Subscribe<EventUpdateDebugStatsOverlay>(this, OnUpdateDebugStatsOverlay);
+        }
+
+        private void OnUpdateDebugStatsOverlay(EventUpdateDebugStatsOverlay e)
+        {
+            _gameUiController.DebugStatsOverlay.SetShow(true);
+            _gameUiController.DebugStatsOverlay.SetStats(e.Character);
         }
 
         // Handles UI updates based on the game's state and countdown
