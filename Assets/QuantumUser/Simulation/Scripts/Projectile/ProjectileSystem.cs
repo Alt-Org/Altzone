@@ -62,6 +62,10 @@ namespace Quantum.QuantumUser.Simulation.Projectile
             {
                 projectileTransform->Position += normal * (collisionMinOffset - collisionOffset + projectile->Radius);
             }
+
+            //change projectile's sprite
+            projectile->TestSpriteIndex = (projectile->TestSpriteIndex + 1) % 5;
+            f.Events.ChangeProjectileSprite(projectile->TestSpriteIndex);
         }
 
         public void OnTriggerProjectileHitSoulWall(Frame f, Quantum.Projectile* projectile, EntityRef projectileEntity, Quantum.SoulWall* soulWall, EntityRef soulWallEntity)

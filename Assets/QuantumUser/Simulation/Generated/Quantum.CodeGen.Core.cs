@@ -674,7 +674,7 @@ namespace Quantum {
   public unsafe partial struct Projectile : Quantum.IComponent {
     public const Int32 SIZE = 48;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(0)]
+    [FieldOffset(4)]
     public QBoolean IsLaunched;
     [FieldOffset(24)]
     public FP Speed;
@@ -684,6 +684,8 @@ namespace Quantum {
     public FP CoolDown;
     [FieldOffset(16)]
     public FP Radius;
+    [FieldOffset(0)]
+    public Int32 TestSpriteIndex;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 16141;
@@ -692,11 +694,13 @@ namespace Quantum {
         hash = hash * 31 + Direction.GetHashCode();
         hash = hash * 31 + CoolDown.GetHashCode();
         hash = hash * 31 + Radius.GetHashCode();
+        hash = hash * 31 + TestSpriteIndex.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (Projectile*)ptr;
+        serializer.Stream.Serialize(&p->TestSpriteIndex);
         QBoolean.Serialize(&p->IsLaunched, serializer);
         FP.Serialize(&p->CoolDown, serializer);
         FP.Serialize(&p->Radius, serializer);
