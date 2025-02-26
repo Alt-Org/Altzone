@@ -3706,12 +3706,57 @@ MonoBehaviour:
     SystemsConfig:
       Id:
         Value: 289946063136722323
+    BattleArenaSpec:
+      Id:
+        Value: 317773981887578547
     ProjectileSpec:
       Id:
-        Value: 0
+        Value: 356697573389229340
   UseRandomSeed: 0
   SessionConfig: {fileID: 0}
-  LocalPlayers: []
+  LocalPlayers:
+  - PlayerAvatar:
+      Id:
+        Value: 1499697656464696716
+    PlayerNickname: 
+    PlayerPosition: 0
+    Characters:
+    - Id: 0
+      ClassID: 0
+      Hp:
+        RawValue: 0
+      Speed:
+        RawValue: 0
+      CharacterSize:
+        RawValue: 0
+      Attack:
+        RawValue: 0
+      Defence:
+        RawValue: 0
+    - Id: 0
+      ClassID: 0
+      Hp:
+        RawValue: 0
+      Speed:
+        RawValue: 0
+      CharacterSize:
+        RawValue: 0
+      Attack:
+        RawValue: 0
+      Defence:
+        RawValue: 0
+    - Id: 0
+      ClassID: 0
+      Hp:
+        RawValue: 0
+      Speed:
+        RawValue: 0
+      CharacterSize:
+        RawValue: 0
+      Attack:
+        RawValue: 0
+      Defence:
+        RawValue: 0
   MaxPlayerCount: 0
   SimulationSpeedMultiplier: 1
   DisplaySaveAndReloadButton: 0
@@ -6167,21 +6212,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 660663061108912838, guid: 3f7b974d200700f40bac95c3ae5bbaa9,
-        type: 3}
-      propertyPath: Prototype.state.Value
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 660663061108912838, guid: 3f7b974d200700f40bac95c3ae5bbaa9,
-        type: 3}
-      propertyPath: Prototype.CountDownStarted.Value
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 660663061108912838, guid: 3f7b974d200700f40bac95c3ae5bbaa9,
-        type: 3}
-      propertyPath: Prototype.TimeUntilStart.RawValue
-      value: 262144
-      objectReference: {fileID: 0}
     - target: {fileID: 4593766363808855663, guid: 3f7b974d200700f40bac95c3ae5bbaa9,
         type: 3}
       propertyPath: m_LocalPosition.x
