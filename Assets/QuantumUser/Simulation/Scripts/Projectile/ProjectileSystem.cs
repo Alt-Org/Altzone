@@ -63,7 +63,7 @@ namespace Quantum.QuantumUser.Simulation.Projectile
                 projectileTransform->Position += normal * (collisionMinOffset - collisionOffset + projectile->Radius);
             }
 
-            //change projectile's sprite
+            // change projectile's sprite
             projectile->TestSpriteIndex = (projectile->TestSpriteIndex + 1) % 5;
             f.Events.ChangeProjectileSprite(projectile->TestSpriteIndex);
         }
