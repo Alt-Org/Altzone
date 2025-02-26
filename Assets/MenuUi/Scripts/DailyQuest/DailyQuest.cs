@@ -8,7 +8,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 {
     //Variables
     private PlayerTask _taskData;
-    public PlayerTask TaskData {  get { return _taskData; } }
+    public PlayerTask TaskData { get { return _taskData; } }
     private bool _clickEnabled = true;
 
     public enum TaskWindowType
@@ -36,6 +36,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     [SerializeField] private RectTransform _bottomLeftCorner;
     [SerializeField] private RectTransform _bottomRightCorner;
     [Space]
+    [Tooltip("Determines how close to the center of the screen the \"Popup\" window will be.")]
     [SerializeField] private float _centerPullSignificance = 0.25f;
 
     [Header("Reserved Window")]
@@ -45,22 +46,6 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     [SerializeField] private TMP_Text _progressText;
 
     [HideInInspector] public DailyTaskManager dailyTaskManager;
-
-    public void SetTaskData(PlayerTask taskData)
-    {
-        _taskData = taskData;
-        _taskData.OnTaskSelected += TaskSelected;
-        _taskData.OnTaskDeselected += TaskDeselected;
-        _taskData.OnTaskUpdated += UpdateProgressBar;
-        PopulateData();
-        //if (available)
-        SwitchWindow(TaskWindowType.Available);
-        //else
-        //{
-        //SwitchWindow(TaskWindowType.Reserved);
-        //SetTaskProgress();
-        //}
-    }
 
     private void OnDestroy()
     {
@@ -72,7 +57,31 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         }
     }
 
-    public void QuestAccept()
+    public virtual void OnBeginDrag(PointerEventData eventData)
+    {
+        _clickEnabled = false;
+    }
+
+    public virtual void OnEndDrag(PointerEventData eventData)
+    {
+        _clickEnabled = true;
+    }
+
+    public void SetTaskData(PlayerTask taskData)
+    {
+        _taskData = taskData;
+
+        /*Bind this class to PlayerTask for later interactions
+         *between DailyTaskManager and this class.*/
+        _taskData.OnTaskSelected += TaskSelected;
+        _taskData.OnTaskDeselected += TaskDeselected;
+        _taskData.OnTaskUpdated += UpdateProgressBar;
+
+        PopulateData();
+        SwitchWindow(TaskWindowType.Available);
+    }
+
+    public void QuestAccept() //TODO: Rename to: DailyTaskAccept.
     {
         if (!_clickEnabled || TaskData.PlayerId != "")
             return;
@@ -81,32 +90,34 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 
         if (dailyTaskManager.OwnTaskId == null)
             message = _taskData.Title;
-        //message = "Haluatko hyv�ksy� teht�v�n? \nquest id: ";
         else
             message = $"{_taskData.Title}\n Korvataanko nykyinen teht�v�?";
 
-        PopupData data = new PopupData(_taskData, GetCornerLocation());
+        PopupData data = new(_taskData, GetCornerLocation());
         StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse(message, data));
     }
 
+    /// <summary>
+    /// Returns the best location for the <c>Popup.cs</c> window depending <br/>
+    /// where this DailyQuest card is located on the screen.
+    /// </summary>
     private Vector3 GetCornerLocation()
     {
-        var selfPosition = this.GetComponent<RectTransform>().position;
         Vector2 screenCenter = new Vector2(Screen.width / 2, Screen.height / 2);
-        float xDistanceFromCenter = (screenCenter.x - this.GetComponent<RectTransform>().position.x);
-        float yDistanceFromCenter = (screenCenter.y - this.GetComponent<RectTransform>().position.y);
+        float xDistanceFromCenter = (screenCenter.x - transform.position.x);
+        float yDistanceFromCenter = (screenCenter.y - transform.position.y);
         Vector3 centerDiff = new Vector3(xDistanceFromCenter, yDistanceFromCenter) * _centerPullSignificance;
 
-        if (selfPosition.y > Screen.height / 2)
+        if (transform.position.y > Screen.height / 2)
         {
-            if (selfPosition.x > Screen.width / 2)
+            if (transform.position.x > Screen.width / 2)
                 return (_bottomLeftCorner.position + centerDiff);
             else
                 return (_bottomRightCorner.position + centerDiff);
         }
         else
         {
-            if (selfPosition.x > Screen.width / 2)
+            if (transform.position.x > Screen.width / 2)
                 return (_topLeftCorner.position + centerDiff);
             else
                 return (_topRightCorner.position + centerDiff);
@@ -134,16 +145,6 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
             case TaskType.Undefined: return ("");
             default: Debug.LogError($"No short descrition available for: {taskType.ToString()}"); return ("Error");
         }
-    }
-
-    public virtual void OnBeginDrag(PointerEventData eventData)
-    {
-        _clickEnabled = false;
-    }
-
-    public virtual void OnEndDrag(PointerEventData eventData)
-    {
-        _clickEnabled = true;
     }
 
     private void SwitchWindow(TaskWindowType type)

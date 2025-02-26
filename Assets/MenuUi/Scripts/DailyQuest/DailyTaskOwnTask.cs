@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -17,7 +16,7 @@ public class DailyTaskOwnTask : MonoBehaviour
     [SerializeField] private int _progressMarkersMaxAmount = 8;
     [Range(0f, 1f)]
     [SerializeField] private float _progressMarkerXScale = 0.05f;
-    [SerializeField] private TMP_Text _testTaskProgressValue;
+    [SerializeField] private TMP_Text _testTaskProgressValue; //TODO: Remove when testing done.
 
     private List<GameObject> _taskProgressMarkers = new List<GameObject>();
 
@@ -42,7 +41,8 @@ public class DailyTaskOwnTask : MonoBehaviour
         CreateProgressBarMarkers(_progressMarkersMaxAmount);
     }
 
-    #region SetTask
+    #region Task
+
     public void SetDailyTask(string taskDescription, int amount, int points, int coins)
     {
         _taskDescription.text = taskDescription;
@@ -59,6 +59,7 @@ public class DailyTaskOwnTask : MonoBehaviour
         if (amount > _taskProgressMarkers.Count)
             amount = _taskProgressMarkers.Count + 1;
 
+        //Activate needed amount or all progress bar markers and set their locations.
         for (int i = 0; (i < (amount - 1) && i < _taskProgressMarkers.Count); i++)
         {
             _taskProgressMarkers[i].SetActive(true);
@@ -83,7 +84,16 @@ public class DailyTaskOwnTask : MonoBehaviour
             _taskProgressMarkers.Add(marker);
         }
     }
-    #endregion
+
+    public void SetTaskProgress(float progress)
+    {
+        _taskProgressFillImage.fillAmount = progress;
+    }
+
+    public void TESTSetTaskValue(int progress) //TODO: Remove when testing done.
+    {
+        _testTaskProgressValue.text = "" + progress;
+    }
 
     public void ClearCurrentTask()
     {
@@ -94,15 +104,7 @@ public class DailyTaskOwnTask : MonoBehaviour
         SetProgressBar(0);
     }
 
-    public void SetTaskProgress(float progress)
-    {
-        _taskProgressFillImage.fillAmount = progress;
-    }
-
-    public void TESTSetTaskValue(int progress)
-    {
-        _testTaskProgressValue.text = "" + progress;
-    }
+    #endregion
 
     public void SetStipend(int points, int coins, int rank)
     {

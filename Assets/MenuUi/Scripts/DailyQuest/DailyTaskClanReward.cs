@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class DailyTaskClanReward : MonoBehaviour
 {
@@ -81,8 +80,7 @@ public class DailyTaskClanReward : MonoBehaviour
 
     public void OpenClanRewardPopup()
     {
-        Vector3 position = transform.position;
-        PopupData popupData = new PopupData(_data, position);
+        PopupData popupData = new(_data, transform.position);
         StartCoroutine(_dailyTaskManager.ShowPopupAndHandleResponse("", popupData));
     }
 }

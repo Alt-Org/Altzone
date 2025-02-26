@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
-using static DailyTaskClanReward;
 
 public class Popup : MonoBehaviour
 {
@@ -11,13 +10,14 @@ public class Popup : MonoBehaviour
 
     public enum PopupWindowType
     {
-        Accept,
-        Cancel,
-        ClanMilestone,
+        Accept,         //Accept task window
+        Cancel,         //Cancel task window
+        ClanMilestone,  //Clan milestone reward info window
     }
 
     [Header("Popup Settings")]
-    [SerializeField] private GameObject popupGameObject; // Assign the existing popup GameObject in the scene here
+    [Tooltip("Assign the existing popup GameObject in the scene here.")]
+    [SerializeField] private GameObject popupGameObject;
     [Space]
     [SerializeField] private GameObject _taskAcceptPopup;
     [SerializeField] private RectTransform _taskAcceptMovable;
@@ -38,6 +38,7 @@ public class Popup : MonoBehaviour
     [Header("Clan Milestone")]
     [SerializeField] private GameObject _clanMilestonePopup;
     [SerializeField] private RectTransform _clanMilestoneMovable;
+    [Space]
     [SerializeField] private GameObject _clanMilestoneTopPosition;
     [SerializeField] private Image _clanMilestoneRewardImage;
     [SerializeField] private TMP_Text _clanMilestoneRewardAmountText;
@@ -64,11 +65,11 @@ public class Popup : MonoBehaviour
     private void Start()
     {
         //Set buttons
-        foreach (var abutton in _acceptButtons)
-            abutton.onClick.AddListener(() => _result = true);
+        foreach (var acceptButton in _acceptButtons)
+            acceptButton.onClick.AddListener(() => _result = true);
 
-        foreach (var cbutton in _cancelButtons)
-            cbutton.onClick.AddListener(() => _result = false);
+        foreach (var cancelButton in _cancelButtons)
+            cancelButton.onClick.AddListener(() => _result = false);
     }
 
     public IEnumerator ShowPopup(string message)
@@ -95,7 +96,7 @@ public class Popup : MonoBehaviour
     }
 
     // Helper method to call from other scripts
-    public static IEnumerator RequestPopup(string message, ClanRewardData? clanRewardData, PopupWindowType type, Vector2? anchorLocation, System.Action<bool> callback)
+    public static IEnumerator RequestPopup(string message, DailyTaskClanReward.ClanRewardData? clanRewardData, PopupWindowType type, Vector2? anchorLocation, System.Action<bool> callback)
     {
         if (Instance == null)
         {
@@ -106,7 +107,7 @@ public class Popup : MonoBehaviour
         Instance._result = null;
         Instance.WindowSwitch(type);
         if (anchorLocation != null)
-            Instance.MoveAcceptWindow(anchorLocation.Value, type);
+            Instance.MoveMovableWindow(anchorLocation.Value, type);
 
         if (clanRewardData != null)
             Instance.SetClanMilestone(clanRewardData.Value.RewardImage, clanRewardData.Value.RewardAmount);
@@ -123,10 +124,13 @@ public class Popup : MonoBehaviour
         _clanMilestonePopup.SetActive(type == PopupWindowType.ClanMilestone);
     }
 
-    private void MoveAcceptWindow(Vector3 location, PopupWindowType type)
+    private void MoveMovableWindow(Vector3 location, PopupWindowType type)
     {
+        //Accept window.
         if (type == PopupWindowType.Accept)
             _taskAcceptMovable.position = location;
+
+        //Clan milestone info window.
         else if (type == PopupWindowType.ClanMilestone)
         {
             float halfHeight = _clanMilestoneMovable.position.y - _clanMilestoneTopPosition.transform.position.y;
