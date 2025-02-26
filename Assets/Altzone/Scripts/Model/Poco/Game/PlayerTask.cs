@@ -1,12 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
     public enum TaskType
     {
         Undefined,
+        Test,
         PlayBattle,
         WinBattle,
         WriteChatMessage,

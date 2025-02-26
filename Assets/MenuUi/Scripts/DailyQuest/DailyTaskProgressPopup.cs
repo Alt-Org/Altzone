@@ -9,11 +9,23 @@ using UnityEngine.UI;
 /// </summary>
 public class DailyTaskProgressPopup : MonoBehaviour
 {
-    [Header("Player Daily Task Progress Popup")]
-    [SerializeField] private RectTransform _progressPopupDailyTaskContainer;
+    [Header("General")]
+    [SerializeField] private GameObject _progressPopupDailyTaskContainer;
     [SerializeField] private RectTransform _progressPopupDailyTaskVisibleLocation;
     [SerializeField] private RectTransform _progressPopupDailyTaskHiddenLocation;
     [Space]
+    //[SerializeField] private GameObject _progressPopupContainer;
+    [SerializeField] private GameObject _progressPopupTaskContainer;
+    [SerializeField] private GameObject _progressPopupClanContainer;
+    [Space]
+    [SerializeField] private float _progressPopupContainerShowCooldown = 5f;
+    [Tooltip("The time it takes for the popup window to move between positions.")]
+    [SerializeField] private float _progressPopupContainerMoveTime = 0.75f;
+    [SerializeField] private float _progressPopupContainerStopTime = 2.5f;
+    [Tooltip("Used to animate how the popup window moves between positions.")]
+    [SerializeField] private AnimationCurve _progressPopupContainerAnimationCurve;
+
+    [Header("Task")]
     [SerializeField] private GameObject _progressPopupProgressContainer;
     [SerializeField] private GameObject _progressPopupRewardContainer;
     [Space]
@@ -26,17 +38,20 @@ public class DailyTaskProgressPopup : MonoBehaviour
     [Space]
     [SerializeField] private TMP_Text _progressPopupPointsRewardValue;
     [SerializeField] private TMP_Text _progressPopupCoinsRewardValue;
-    [Space]
-    [SerializeField] private float _progressPopupContainerShowCooldown = 5f;
-    [Tooltip("The time it takes for the popup window to move between positions.")]
-    [SerializeField] private float _progressPopupContainerMoveTime = 0.75f;
-    [SerializeField] private float _progressPopupContainerStopTime = 2.5f;
-    [Tooltip("Used to animate how the popup window moves between positions.")]
-    [SerializeField] private AnimationCurve _progressPopupContainerAnimationCurve;
+
+    [Header("Clan")]
+    [SerializeField] private Image _progressPopupClanMilestoneRewardImage;
+    [SerializeField] private TMP_Text _progressPopupClanMilestoneRewardValue;
 
     private bool _progressPopupCooldown = false;
     Coroutine _coroutineMovePopup = null;
     Coroutine _coroutineCooldownPopup = null;
+
+    public enum ContainerType
+    {
+        Task,
+        Clan,
+    }
 
     private void Start()
     {
@@ -45,27 +60,28 @@ public class DailyTaskProgressPopup : MonoBehaviour
 
     private void OnEnable()
     {
-        DailyTaskProgressManager.OnTaskProgressed += ShowProgressPopup;
+        DailyTaskProgressManager.OnTaskProgressed += ShowTaskProgressPopup;
+        DailyTaskProgressManager.OnClanMilestoneProgressed += ShowClanMilestonePopup;
     }
 
     private void OnDisable()
     {
-        DailyTaskProgressManager.OnTaskProgressed -= ShowProgressPopup;
+        DailyTaskProgressManager.OnTaskProgressed -= ShowTaskProgressPopup;
+        DailyTaskProgressManager.OnClanMilestoneProgressed -= ShowClanMilestonePopup;
         Reset();
     }
 
     private void OnDestroy()
     {
-        DailyTaskProgressManager.OnTaskProgressed -= ShowProgressPopup;
+        DailyTaskProgressManager.OnTaskProgressed -= ShowTaskProgressPopup;
+        DailyTaskProgressManager.OnClanMilestoneProgressed -= ShowClanMilestonePopup;
     }
 
     private void Reset()
     {
         _progressPopupCooldown = false;
-        _progressPopupDailyTaskContainer.position = _progressPopupDailyTaskHiddenLocation.position;
-        _progressPopupDailyTaskContainer.gameObject.SetActive(false);
-        _progressPopupProgressContainer.SetActive(true);
-        _progressPopupRewardContainer.SetActive(false);
+        _progressPopupDailyTaskContainer.transform.position = _progressPopupDailyTaskHiddenLocation.position;
+        _progressPopupDailyTaskContainer.SetActive(false);
 
         if (_coroutineMovePopup != null)
             StopCoroutine(_coroutineMovePopup);
@@ -74,20 +90,36 @@ public class DailyTaskProgressPopup : MonoBehaviour
             StopCoroutine(_coroutineCooldownPopup);
     }
 
-    private void ShowProgressPopup()
+    private void ShowTaskProgressPopup()
     {
-        var task = DailyTaskProgressManager.Instance.CurrentPlayerTask;
-
         if (!_progressPopupCooldown)
         {
             _progressPopupCooldown = true;
             _coroutineMovePopup = StartCoroutine(MoveProgressPopupContainer());
         }
 
+        var task = DailyTaskProgressManager.Instance.CurrentPlayerTask;
+
         if (task.TaskProgress >= task.Amount)
-            SetProgressPopupDone(task);
+            SetTaskProgressPopupDone(task);
         else
-            SetProgressPopup(task);
+            SetTaskProgressPopup(task);
+
+        SwitchPopupContainer(ContainerType.Task);
+    }
+
+    private void ShowClanMilestonePopup()
+    {
+        if (!_progressPopupCooldown)
+        {
+            _progressPopupCooldown = true;
+            _coroutineMovePopup = StartCoroutine(MoveProgressPopupContainer());
+        }
+
+        //_progressPopupClanMilestoneRewardImage.sprite = INSERT IMAGE HERE;
+        _progressPopupClanMilestoneRewardValue.text = $"{999}x";
+
+        SwitchPopupContainer(ContainerType.Clan);
     }
 
     /// <summary>
@@ -99,7 +131,7 @@ public class DailyTaskProgressPopup : MonoBehaviour
     {
         int phase = 1;
 
-        _progressPopupDailyTaskContainer.gameObject.SetActive(true);
+        _progressPopupDailyTaskContainer.SetActive(true);
 
         while (phase < 4)
         {
@@ -113,7 +145,7 @@ public class DailyTaskProgressPopup : MonoBehaviour
                     else //phase == 3
                         curve = _progressPopupContainerAnimationCurve.Evaluate(1f - (timer / _progressPopupContainerMoveTime));
 
-                    _progressPopupDailyTaskContainer.position = Vector3.Lerp(_progressPopupDailyTaskHiddenLocation.position, _progressPopupDailyTaskVisibleLocation.position, curve);
+                    _progressPopupDailyTaskContainer.transform.position = Vector3.Lerp(_progressPopupDailyTaskHiddenLocation.position, _progressPopupDailyTaskVisibleLocation.position, curve);
 
                     timer += Time.deltaTime;
                     yield return null;
@@ -129,23 +161,31 @@ public class DailyTaskProgressPopup : MonoBehaviour
             yield return null;
         }
 
-        _progressPopupDailyTaskContainer.gameObject.SetActive(false);
-        _progressPopupRewardContainer.SetActive(false);
+        _progressPopupDailyTaskContainer.SetActive(false);
         _coroutineCooldownPopup = StartCoroutine(ProgressPopupCooldownTimer());
     }
 
-    private void SetProgressPopup(PlayerTask task)
+    private void SwitchPopupContainer(ContainerType type)
+    {
+        _progressPopupTaskContainer.SetActive(type == ContainerType.Task);
+        _progressPopupClanContainer.SetActive(type == ContainerType.Clan);
+    }
+
+    private void SetTaskProgressPopup(PlayerTask task)
     {
         _progressPopupProgressContainer.SetActive(true);
+        _progressPopupRewardContainer.SetActive(false);
+
         _progressPopupDailyTaskShortDescription.text = task.Title;
         _progressPopupDailyTaskValue.text = $"{task.TaskProgress}/{task.Amount}";
         _progressPopupDailyTaskFillImage.fillAmount = ((float)task.TaskProgress / (float)task.Amount);
     }
 
-    private void SetProgressPopupDone(PlayerTask task)
+    private void SetTaskProgressPopupDone(PlayerTask task)
     {
         _progressPopupProgressContainer.SetActive(false);
         _progressPopupRewardContainer.SetActive(true);
+
         _progressPopupPointsRewardContainer.SetActive(task.Points != 0);
         _progressPopupCoinsRewardContainer.SetActive(task.Coins != 0);
 

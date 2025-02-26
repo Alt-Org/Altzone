@@ -24,6 +24,8 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private CharacterSlot _originalSlot;
 
+        private static Material _grayscaleMaterialInstance;
+
         private CharacterID _id;
         public CharacterID Id { get => _id; }
 
@@ -31,6 +33,10 @@ namespace MenuUi.Scripts.CharacterGallery
         private void Awake()
         {
             _piechartPreview.gameObject.SetActive(false);
+            if (_grayscaleMaterialInstance == null )
+            {
+                _grayscaleMaterialInstance = Instantiate(_grayScaleMaterial);
+            }
         }
 
 
@@ -71,8 +77,8 @@ namespace MenuUi.Scripts.CharacterGallery
             _aspectRatioFitter.aspectRatio = 1;
             _characterNameText.gameObject.SetActive(false);
 
-            _spriteImage.rectTransform.anchorMax = new Vector2(0.9f, 0.9f);
-            _spriteImage.rectTransform.anchorMin = new Vector2(0.1f, 0.1f);
+            _spriteImage.rectTransform.anchorMax = new Vector2(1, 1);
+            _spriteImage.rectTransform.anchorMin = new Vector2(0, 0);
 
             _piechartPreview.gameObject.SetActive(true);
             _piechartPreview.UpdateChart(Id);
@@ -94,8 +100,8 @@ namespace MenuUi.Scripts.CharacterGallery
             _aspectRatioFitter.aspectRatio = 0.6f;
             _characterNameText.gameObject.SetActive(true);
 
-            _spriteImage.rectTransform.anchorMax = new Vector2(0.9f, 0.75f);
-            _spriteImage.rectTransform.anchorMin = new Vector2(0.1f, 0.1f);
+            _spriteImage.rectTransform.anchorMax = new Vector2(1f, 0.75f);
+            _spriteImage.rectTransform.anchorMin = new Vector2(0f, 0.1f);
 
             _piechartPreview.gameObject.SetActive(false);
 
@@ -114,10 +120,10 @@ namespace MenuUi.Scripts.CharacterGallery
         public void SetLockedVisuals()
         {
             SetUnselectedVisuals();
-            _spriteImage.material = _grayScaleMaterial;
-            _contentsImage.material = _grayScaleMaterial;
+            _spriteImage.material = _grayscaleMaterialInstance;
+            _contentsImage.material = _grayscaleMaterialInstance;
             _contentsImage.material.SetColor("_Color", _contentsImage.color);
-            _backgroundImage.material = _grayScaleMaterial;
+            _backgroundImage.material = _grayscaleMaterialInstance;
             _backgroundImage.material.SetColor("_Color", _backgroundImage.color);
         }
 

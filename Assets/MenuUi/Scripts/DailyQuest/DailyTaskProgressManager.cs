@@ -40,6 +40,12 @@ public class DailyTaskProgressManager : AltMonoBehaviour
     /// </summary>
     public static event TaskDone OnTaskDone;
 
+    public delegate void ClanMilestoneProgressed();
+    /// <summary>
+    /// Used to show <c>DailyTaskProgressPopup</c> window when clan milestone reward has been reached.
+    /// </summary>
+    public static event ClanMilestoneProgressed OnClanMilestoneProgressed;
+
     #endregion
 
     private void Awake()
@@ -105,13 +111,13 @@ public class DailyTaskProgressManager : AltMonoBehaviour
 
     public void UpdateTaskProgress(TaskType taskType, string value)
     {
-        if (taskType != CurrentPlayerTask.Type)
+        if ((taskType != CurrentPlayerTask.Type) && (taskType != TaskType.Test))
         {
             Debug.LogError($"Current task type is: {CurrentPlayerTask.Type}, but type: {taskType}, was received.");
             return;
         }
 
-        switch (taskType)
+        switch (CurrentPlayerTask.Type)
         {
             case TaskType.PlayBattle: HandleSimpleTask(value); break;
             case TaskType.WinBattle: HandleSimpleTask(value); break;
@@ -144,6 +150,9 @@ public class DailyTaskProgressManager : AltMonoBehaviour
     {
         if (CurrentPlayerTask == null)
             return false;
+
+        if (taskType == TaskType.Test)
+            return (true);
 
         return (taskType == CurrentPlayerTask.Type);
     }
@@ -180,7 +189,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
         yield return new WaitUntil(() => (playerData != null || timeout != null));
 
         if (playerData == null)
-            yield break; //TODO: Add error handling.
+            yield break;
 
         CurrentPlayerTask.AddProgress(value);
 
@@ -347,4 +356,9 @@ public class DailyTaskProgressManager : AltMonoBehaviour
     }
 
     #endregion
+
+    public void InvokeOnClanMilestoneReached()
+    {
+        OnClanMilestoneProgressed.Invoke();
+    }
 }
