@@ -49,10 +49,13 @@ public class DailyTaskOwnTask : MonoBehaviour
         _taskPointsReward.text = "" + points;
         _taskCoinsReward.text = "" + coins;
 
-        SetProgressBar(amount);
+        SetProgressBarMarkers(amount);
     }
 
-    private void SetProgressBar(int amount)
+    /// <summary>
+    /// Set the amount of visible progress bar markers.
+    /// </summary>
+    private void SetProgressBarMarkers(int amount)
     {
         DeactivateAllProgressBarMarkers();
 
@@ -85,6 +88,9 @@ public class DailyTaskOwnTask : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Set the current tasks visual progress bar fill amount.
+    /// </summary>
     public void SetTaskProgress(float progress)
     {
         _taskProgressFillImage.fillAmount = progress;
@@ -101,7 +107,7 @@ public class DailyTaskOwnTask : MonoBehaviour
         _taskPointsReward.text = "";
         _taskCoinsReward.text = "";
 
-        SetProgressBar(0);
+        SetProgressBarMarkers(0);
     }
 
     #endregion

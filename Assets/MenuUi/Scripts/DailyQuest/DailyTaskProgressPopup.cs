@@ -5,7 +5,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Used to display current daily tasks progress as a small popup window.
+/// Used to display any daily task progress notification<br/>
+/// as a small popup window where the UiOverlay is used.
 /// </summary>
 public class DailyTaskProgressPopup : MonoBehaviour
 {
@@ -14,13 +15,14 @@ public class DailyTaskProgressPopup : MonoBehaviour
     [SerializeField] private RectTransform _progressPopupDailyTaskVisibleLocation;
     [SerializeField] private RectTransform _progressPopupDailyTaskHiddenLocation;
     [Space]
-    //[SerializeField] private GameObject _progressPopupContainer;
     [SerializeField] private GameObject _progressPopupTaskContainer;
     [SerializeField] private GameObject _progressPopupClanContainer;
     [Space]
+    [Tooltip("Minimum time for the popup conatiner to stay in hidden position.")]
     [SerializeField] private float _progressPopupContainerShowCooldown = 5f;
     [Tooltip("The time it takes for the popup window to move between positions.")]
     [SerializeField] private float _progressPopupContainerMoveTime = 0.75f;
+    [Tooltip("How long the popup conatiner stays in visible position.")]
     [SerializeField] private float _progressPopupContainerStopTime = 2.5f;
     [Tooltip("Used to animate how the popup window moves between positions.")]
     [SerializeField] private AnimationCurve _progressPopupContainerAnimationCurve;
@@ -44,8 +46,8 @@ public class DailyTaskProgressPopup : MonoBehaviour
     [SerializeField] private TMP_Text _progressPopupClanMilestoneRewardValue;
 
     private bool _progressPopupCooldown = false;
-    Coroutine _coroutineMovePopup = null;
-    Coroutine _coroutineCooldownPopup = null;
+    private Coroutine _coroutineMovePopup = null;
+    private Coroutine _coroutineCooldownPopup = null;
 
     public enum ContainerType
     {
@@ -123,8 +125,8 @@ public class DailyTaskProgressPopup : MonoBehaviour
     }
 
     /// <summary>
-    /// Moves the ProgressPopup window to screen from hidden position <br></br>
-    /// to visible, waits for a specifide time and then moves it self back <br></br>
+    /// Moves the ProgressPopup window to screen from hidden position <br/>
+    /// to visible, waits for a specifide time and then moves it self back <br/>
     /// to hidden position.
     /// </summary>
     private IEnumerator MoveProgressPopupContainer()

@@ -78,6 +78,9 @@ public class DailyTaskClanReward : MonoBehaviour
         _openedBaseReward.SetActive(open);
     }
 
+    /// <summary>
+    /// Used when user clicks this clan milestone reward.
+    /// </summary>
     public void OpenClanRewardPopup()
     {
         PopupData popupData = new(_data, transform.position);

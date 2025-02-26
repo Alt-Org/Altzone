@@ -36,16 +36,16 @@ public struct PopupData
     /// Used for showing task cancel window.
     /// </summary>
     /// <param name="type"></param>
-    public PopupData(PopupDataType type, Vector3? location) //TODO: Remove: Vector3? location.
+    public PopupData(PopupDataType type)
     {
         _ownPage = null;
         _clanRewardData = null;
         _type = type;
-        _location = location;
+        _location = null;
     }
 
     /// <summary>
-    /// Used for showing accept window for a task.
+    /// Used for showing task accept window.
     /// </summary>
     /// <param name="task"></param>
     /// <param name="location"></param>
@@ -58,7 +58,7 @@ public struct PopupData
     }
 
     /// <summary>
-    /// Used for showing clan milestone info.
+    /// Used for showing clan milestone info window.
     /// </summary>
     /// <param name="clanRewardData"></param>
     /// <param name="location"></param>
@@ -70,9 +70,9 @@ public struct PopupData
         _location = location;
     }
 
-    public void SetOwnPageData(PlayerTask task)
-    {
-        _ownPage = task;
-        _type = PopupDataType.OwnTask;
-    }
+    //public void SetOwnPageData(PlayerTask task)
+    //{
+    //    _ownPage = task;
+    //    _type = PopupDataType.OwnTask;
+    //}
 }

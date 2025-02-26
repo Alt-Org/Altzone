@@ -21,8 +21,10 @@ public class Popup : MonoBehaviour
     [Space]
     [SerializeField] private GameObject _taskAcceptPopup;
     [SerializeField] private RectTransform _taskAcceptMovable;
+    [Space]
     [SerializeField] private GameObject _taskCancelPopup;
     [Space]
+    [Tooltip("Set every TMP text element here that is supposed to show a message from code.")]
     [SerializeField] private List<TextMeshProUGUI> _messageTexts;
     [Space]
     [SerializeField] private List<Button> _cancelButtons;
@@ -72,7 +74,28 @@ public class Popup : MonoBehaviour
             cancelButton.onClick.AddListener(() => _result = false);
     }
 
-    public IEnumerator ShowPopup(string message)
+    public static IEnumerator RequestPopup(string message, DailyTaskClanReward.ClanRewardData? clanRewardData, PopupWindowType type, Vector2? anchorLocation, System.Action<bool> callback)
+    {
+        if (Instance == null)
+        {
+            Debug.LogError("Popup instance is not set.");
+            yield break;
+        }
+
+        Instance._result = null;
+        Instance.SwitchWindow(type);
+        if (anchorLocation != null)
+            Instance.MoveMovableWindow(anchorLocation.Value, type);
+
+        if (clanRewardData != null)
+            Instance.SetClanMilestone(clanRewardData.Value.RewardImage, clanRewardData.Value.RewardAmount);
+
+        // Show the popup and get the result
+        yield return Instance.StartCoroutine(Instance.ShowPopup(message));
+        callback(Instance._result.Value); // Use the updated _result
+    }
+
+    private IEnumerator ShowPopup(string message)
     {
         // Start fade in
         if (_fadeOutCoroutine != null)
@@ -95,29 +118,7 @@ public class Popup : MonoBehaviour
         Debug.Log($"Popup result: {_result}"); // Log the result for debugging
     }
 
-    // Helper method to call from other scripts
-    public static IEnumerator RequestPopup(string message, DailyTaskClanReward.ClanRewardData? clanRewardData, PopupWindowType type, Vector2? anchorLocation, System.Action<bool> callback)
-    {
-        if (Instance == null)
-        {
-            Debug.LogError("Popup instance is not set.");
-            yield break;
-        }
-
-        Instance._result = null;
-        Instance.WindowSwitch(type);
-        if (anchorLocation != null)
-            Instance.MoveMovableWindow(anchorLocation.Value, type);
-
-        if (clanRewardData != null)
-            Instance.SetClanMilestone(clanRewardData.Value.RewardImage, clanRewardData.Value.RewardAmount);
-
-        // Show the popup and get the result
-        yield return Instance.StartCoroutine(Instance.ShowPopup(message));
-        callback(Instance._result.Value); // Use the updated _result
-    }
-
-    private void WindowSwitch(PopupWindowType type)
+    private void SwitchWindow(PopupWindowType type)
     {
         _taskAcceptPopup.SetActive(type == PopupWindowType.Accept);
         _taskCancelPopup.SetActive(type == PopupWindowType.Cancel);
@@ -171,9 +172,8 @@ public class Popup : MonoBehaviour
         }
     }
 
-    private void SetClanMilestone(Sprite sprite, int rewardAmount)
+    private void SetClanMilestone(Sprite sprite, int rewardAmount) //TODO: Uncomment code when clan milestone images are available.
     {
-        //TODO: Uncomment when ready.
         //_clanMilestoneRewardImage.sprite = sprite;
         _clanMilestoneRewardAmountText.text = $"{rewardAmount}x";
     }

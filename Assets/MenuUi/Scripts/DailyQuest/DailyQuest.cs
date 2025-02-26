@@ -81,7 +81,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         SwitchWindow(TaskWindowType.Available);
     }
 
-    public void QuestAccept() //TODO: Rename to: DailyTaskAccept.
+    public void DailyTaskAccept()
     {
         if (!_clickEnabled || TaskData.PlayerId != "")
             return;
