@@ -93,6 +93,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 return string.Compare(strA, strB, StringComparison.Ordinal);
             });
             _searchPanel.RoomsData = rooms;
+            _searchPanel.SetOnJoinRoom(JoinRoom);
         }
     }
 }
