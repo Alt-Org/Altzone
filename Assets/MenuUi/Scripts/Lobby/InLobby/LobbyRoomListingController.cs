@@ -28,7 +28,6 @@ namespace MenuUI.Scripts.Lobby.InLobby
         {
             PhotonRealtimeClient.AddCallbackTarget(this);
             Debug.Log($"OnEnable {PhotonRealtimeClient.LobbyNetworkClientState}");
-            //_searchPanel.Reset();
             if (PhotonRealtimeClient.InLobby)
             {
                 UpdateStatus();
@@ -44,7 +43,6 @@ namespace MenuUI.Scripts.Lobby.InLobby
             _photonRoomList.OnRoomsUpdated -= UpdateStatus;
             LobbyManager.LobbyOnJoinedRoom -= OnJoinedRoom;
             LobbyWindowNavigationHandler.OnLobbyWindowChangeRequest -= SwitchToRoom;
-            //_searchPanel.Reset();
         }
 
         private void CreateRoomOnClick()
@@ -86,11 +84,6 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         private void UpdateStatus()
         {
-            if (!PhotonRealtimeClient.InLobby)
-            {
-                //_searchPanel.Reset();
-                return;
-            }
             var rooms = _photonRoomList.CurrentRooms.ToList();
             rooms.Sort((a, b) =>
             {
@@ -99,7 +92,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 var strB = $"{(b.IsOpen ? 0 : 1)}{b.Name}";
                 return string.Compare(strA, strB, StringComparison.Ordinal);
             });
-            //_searchPanel.UpdateStatus(rooms, JoinRoom);
+            _searchPanel.RoomsData = rooms;
         }
     }
 }
