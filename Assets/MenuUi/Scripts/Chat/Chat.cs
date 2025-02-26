@@ -30,6 +30,11 @@ public class Chat : MonoBehaviour
     public ScrollRect globalChatScrollRect;
     public ScrollRect clanChatScrollRect;
 
+    [Header("Minimize")]
+    public GameObject quickMessages;
+    public GameObject[] sendButtons;
+    public GameObject buttonOpenSendButtons;
+
     private ScrollRect currentScrollRect; // Tällä hetkellä aktiivinen Scroll Rect
 
     private GameObject currentPrefab; // Tällä hetkellä valittu message Prefab
@@ -108,6 +113,7 @@ public class Chat : MonoBehaviour
             DisplayMessage(inputField.text);
             inputField.text = "";
             this.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+            MinimizeOptions();
         }
         else
         {
@@ -306,14 +312,34 @@ public class Chat : MonoBehaviour
         Debug.Log("Kielivalinnan mukainen Chat aktivoitu");
     }
 
+
+    private int chosenButton;
     // Asettaa sinisen viestipohjan ja lähettää viestin
-    public void SetBluePrefab() { currentPrefab = messagePrefabBlue; SendChatMessage(); }
+    public void SetBluePrefab() { currentPrefab = messagePrefabBlue; chosenButton = 0; SendChatMessage(); }
     // Asettaa punaisen viestipohjan ja lähettää viestin
-    public void SetRedPrefab() { currentPrefab = messagePrefabRed; SendChatMessage(); }
+    public void SetRedPrefab() { currentPrefab = messagePrefabRed; chosenButton = 1; SendChatMessage(); }
     // Asettaa keltaisen viestipohjan ja lähettää viestin
-    public void SetYellowPrefab() { currentPrefab = messagePrefabYellow; SendChatMessage(); }
+    public void SetYellowPrefab() { currentPrefab = messagePrefabYellow; chosenButton = 2; SendChatMessage(); }
     // Asettaa oranssin viestipohjan ja lähettää viestin
-    public void SetOrangePrefab() { currentPrefab = messagePrefabOrange; SendChatMessage(); }
+    public void SetOrangePrefab() { currentPrefab = messagePrefabOrange; chosenButton = 3; SendChatMessage(); }
     // Asettaa vaaleanpunaisen viestipohjan ja lähettää viestin
-    public void SetPinkPrefab() { currentPrefab = messagePrefabPink; SendChatMessage(); }
+    public void SetPinkPrefab() { currentPrefab = messagePrefabPink; chosenButton = 4; SendChatMessage(); }
+
+    /// <summary>
+    /// Minimizes quick messages panel and send buttons. Last used send button is the one left visible.
+    /// </summary>
+    public void MinimizeOptions()
+    {
+        quickMessages.SetActive(false);
+
+        for (int i = 0; i < sendButtons.Length; i++)
+        {
+            if(i != chosenButton)
+            {
+                sendButtons[i].SetActive(false); 
+            } 
+        }
+
+        buttonOpenSendButtons.SetActive(true);
+    }
 }
