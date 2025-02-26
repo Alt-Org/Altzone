@@ -15,14 +15,14 @@ namespace MenuUI.Scripts.Lobby.BattleButton
     public class BattleButton : MonoBehaviour
     {
         [SerializeField] private Image _gameTypeIcon;
-        [SerializeField] private GameObject _gameTypeSelection;
+        [SerializeField] private GameObject _gameTypeSelectionMenu;
         [SerializeField] private GameObject _gameTypeOptionPrefab;
         [SerializeField] private GameTypeReference _gameTypeReference;
         [SerializeField] private GameObject _touchBlocker;
 
         private GameType _selectedGameType;
 
-        private List<GameTypeOption> _gameTypeOptions = new();
+        private List<GameTypeOption> _gameTypeOptionList = new();
         private Button _button;
         private SwipeUI _swipe;
 
@@ -32,7 +32,7 @@ namespace MenuUI.Scripts.Lobby.BattleButton
             _swipe = FindObjectOfType<SwipeUI>();
             _swipe.OnCurrentPageChanged += CloseGameTypeSelection;
 
-            _gameTypeSelection.SetActive(false); // Close selection menu so that it's not open when game opens
+            _gameTypeSelectionMenu.SetActive(false); // Close selection menu so that it's not open when game opens
 
             _button = GetComponent<Button>();
             _button.onClick.AddListener(RequestBattlePopup);
@@ -42,9 +42,9 @@ namespace MenuUI.Scripts.Lobby.BattleButton
             {
                 GameTypeOption gameTypeOption = Instantiate(_gameTypeOptionPrefab).GetComponent<GameTypeOption>();
                 gameTypeOption.SetInfo(gameTypeInfo);
-                gameTypeOption.transform.SetParent(_gameTypeSelection.transform);
+                gameTypeOption.transform.SetParent(_gameTypeSelectionMenu.transform);
                 gameTypeOption.transform.localScale = Vector3.one;
-                _gameTypeOptions.Add(gameTypeOption);
+                _gameTypeOptionList.Add(gameTypeOption);
 
                 if (gameTypeInfo.gameType == GameType.Custom)
                 {
@@ -52,9 +52,9 @@ namespace MenuUI.Scripts.Lobby.BattleButton
                 }
             }
 
-            for (int i = 0; i < _gameTypeOptions.Count; i++)
+            for (int i = 0; i < _gameTypeOptionList.Count; i++)
             {
-                GameTypeOption gameTypeOption = _gameTypeOptions[i];
+                GameTypeOption gameTypeOption = _gameTypeOptionList[i];
                 gameTypeOption.ButtonComponent.onClick.AddListener(ToggleGameTypeSelection);
                 gameTypeOption.OnGameTypeOptionSelected += UpdateGameType;
             }
@@ -63,9 +63,9 @@ namespace MenuUI.Scripts.Lobby.BattleButton
 
         private void OnDestroy()
         {
-            for (int i = 0; i < _gameTypeOptions.Count; i++)
+            for (int i = 0; i < _gameTypeOptionList.Count; i++)
             {
-                GameTypeOption gameTypeOption = _gameTypeOptions[i];
+                GameTypeOption gameTypeOption = _gameTypeOptionList[i];
                 gameTypeOption.ButtonComponent.onClick.RemoveListener(ToggleGameTypeSelection);
                 gameTypeOption.OnGameTypeOptionSelected -= UpdateGameType;
             }
@@ -83,7 +83,7 @@ namespace MenuUI.Scripts.Lobby.BattleButton
 
         private void RequestBattlePopup()
         {
-            if (_gameTypeSelection.activeSelf)
+            if (_gameTypeSelectionMenu.activeSelf)
             {
                 CloseGameTypeSelection();
             }
@@ -99,8 +99,8 @@ namespace MenuUI.Scripts.Lobby.BattleButton
         /// </summary>
         public void ToggleGameTypeSelection()
         {
-            _gameTypeSelection.SetActive(!_gameTypeSelection.activeSelf);
-            _touchBlocker.SetActive(_gameTypeSelection.activeSelf);
+            _gameTypeSelectionMenu.SetActive(!_gameTypeSelectionMenu.activeSelf);
+            _touchBlocker.SetActive(_gameTypeSelectionMenu.activeSelf);
         }
 
 
@@ -109,7 +109,7 @@ namespace MenuUI.Scripts.Lobby.BattleButton
         /// </summary>
         public void CloseGameTypeSelection()
         {
-            _gameTypeSelection.SetActive(false);
+            _gameTypeSelectionMenu.SetActive(false);
             _touchBlocker.SetActive(false);
         }
 
