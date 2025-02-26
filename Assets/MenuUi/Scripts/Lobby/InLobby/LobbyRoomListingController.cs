@@ -12,7 +12,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
     {
         private const string DefaultRoomNameName = "Battle ";
 
-        [SerializeField] private LobbyRoomListingView _view;
+        [SerializeField] private RoomSearchPanelController _searchPanel;
         [SerializeField] private TMP_InputField _roomName;
         [SerializeField] private BattlePopupCreateCustomRoomPanel _roomSwitcher;
 
@@ -21,14 +21,14 @@ namespace MenuUI.Scripts.Lobby.InLobby
         private void Awake()
         {
             _photonRoomList = gameObject.GetOrAddComponent<PhotonRoomList>();
-            _view.RoomButtonOnClick = CreateRoomOnClick;
+            //_searchPanel.RoomButtonOnClick = CreateRoomOnClick;
         }
 
         public void OnEnable()
         {
             PhotonRealtimeClient.AddCallbackTarget(this);
             Debug.Log($"OnEnable {PhotonRealtimeClient.LobbyNetworkClientState}");
-            _view.Reset();
+            //_searchPanel.Reset();
             if (PhotonRealtimeClient.InLobby)
             {
                 UpdateStatus();
@@ -44,7 +44,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
             _photonRoomList.OnRoomsUpdated -= UpdateStatus;
             LobbyManager.LobbyOnJoinedRoom -= OnJoinedRoom;
             LobbyWindowNavigationHandler.OnLobbyWindowChangeRequest -= SwitchToRoom;
-            _view.Reset();
+            //_searchPanel.Reset();
         }
 
         private void CreateRoomOnClick()
@@ -88,7 +88,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
         {
             if (!PhotonRealtimeClient.InLobby)
             {
-                _view.Reset();
+                //_searchPanel.Reset();
                 return;
             }
             var rooms = _photonRoomList.CurrentRooms.ToList();
@@ -99,7 +99,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 var strB = $"{(b.IsOpen ? 0 : 1)}{b.Name}";
                 return string.Compare(strA, strB, StringComparison.Ordinal);
             });
-            _view.UpdateStatus(rooms, JoinRoom);
+            //_searchPanel.UpdateStatus(rooms, JoinRoom);
         }
     }
 }
