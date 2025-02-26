@@ -14,8 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 102
   CharacterId: 102
+  IsApproved: 1
   Name: Bodari
-  IsApproved: 0
   ClassType: 100
-  GalleryImage: {fileID: 0}
+  Hp:
+    Level: 0
+    Coefficient: 0
+  Speed:
+    Level: 0
+    Coefficient: 0
+  Resistance:
+    Level: 0
+    Coefficient: 0
+  Attack:
+    Level: 0
+    Coefficient: 0
+  Defence:
+    Level: 0
+    Coefficient: 0
+  GalleryImage: {fileID: 21300000, guid: 8269c6e6e87cbed4486c70953683aad1, type: 3}
   BattleSprite: {fileID: 0}

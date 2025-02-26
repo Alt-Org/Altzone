@@ -18,11 +18,20 @@ public class ValueLabelHandler : MonoBehaviour
         CheckLabelSize();
     }
 
-    public void SetLabelInfo(ClanValues value)
+    public void SetLabelInfo(ClanValues value, bool showName)
     {
         labelInfo = _reference.GetLabelInfo(value);
-        _textLabel.text = labelInfo.Name;
         _labelImage.sprite = labelInfo.Image;
+
+        if (showName)
+        {
+            _textLabel.enabled = true;
+            _textLabel.text = labelInfo.Name;   
+        }
+        else
+        {
+            _textLabel.enabled = false;
+        } 
     }
 
     public void CheckLabelSize()

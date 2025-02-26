@@ -6,22 +6,33 @@ using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts;
 using Altzone.Scripts.Voting;
 using UnityEngine;
+using UnityEngine.UI;
+using System;
+using TMPro;
 
 public class VoteManager : MonoBehaviour
 {
-    public GameObject Content;
-    public GameObject PollObjectPrefab;
+    [SerializeField] private GameObject Content;
+    [SerializeField] private GameObject PollObjectPrefab;
+    [SerializeField] private GameObject PollPopup;
+    [SerializeField] private GameObject Blocker;
+    [SerializeField] private GameObject NoPollsText;
+
+
     private List<GameObject> Polls = new List<GameObject>();
+
 
     private void OnEnable()
     {
         InstantiatePolls();
         VotingActions.ReloadPollList += InstantiatePolls;
+        VotingActions.PassPollId += SetPollPopupPollId;
     }
 
     private void OnDisable()
     {
         VotingActions.ReloadPollList -= InstantiatePolls;
+        VotingActions.PassPollId -= SetPollPopupPollId;
     }
 
     public void InstantiatePolls()
@@ -41,6 +52,16 @@ public class VoteManager : MonoBehaviour
             GameObject obj = Instantiate(PollObjectPrefab, Content.transform);
             obj.GetComponent<PollObject>().SetPollId(pollData.Id);
             Polls.Add(obj);
+
+            obj.gameObject.GetComponent<Button>().onClick.AddListener(delegate { PollPopup.SetActive(true); });
         }
+
+        if (Polls.Count == 0) NoPollsText.SetActive(true);
+        else NoPollsText.SetActive(false);
+    }
+
+    public void SetPollPopupPollId(string pollId)
+    {
+        PollPopup.GetComponent<PollPopup>().SetPollId(pollId);
     }
 }

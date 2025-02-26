@@ -64,7 +64,7 @@ namespace Altzone.Scripts.ModelV2.Internal
 
         [Header("Special Attributes")] public NumAttribute Hp;
         public NumAttribute Speed;
-        public NumAttribute Resistance;
+        public NumAttribute CharacterSize;
         public NumAttribute Attack;
         public NumAttribute Defence;
 

@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
+    /// <summary>
+    /// Controls visual functionality of StatUpdatePopUp.
+    /// </summary>
     public class StatUpdatePopUp : MonoBehaviour
     {
         [SerializeField] private StatsWindowController _controller;
@@ -46,6 +49,13 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             StatInfo statInfo = null;
 
+            if (_controller.IsCurrentCharacterLocked())
+            {
+                SignalBus.OnChangePopupInfoSignal("Et voi muokata lukittua hahmoa.");
+                ClosePopUp();
+                return;
+            }
+
             if (_controller.GetCurrentCharacterClass() == CharacterClassID.Obedient) // obedient characters can't be modified
             {
                 SignalBus.OnChangePopupInfoSignal("Tottelijoita ei voi muokata.");
@@ -65,8 +75,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 case StatType.Defence:
                     statInfo = _statsReference.GetStatInfo(StatType.Defence);
                     break;
-                case StatType.Resistance:
-                    statInfo = _statsReference.GetStatInfo(StatType.Resistance);
+                case StatType.CharacterSize:
+                    statInfo = _statsReference.GetStatInfo(StatType.CharacterSize);
                     break;
                 case StatType.Hp:
                     statInfo = _statsReference.GetStatInfo(StatType.Hp);

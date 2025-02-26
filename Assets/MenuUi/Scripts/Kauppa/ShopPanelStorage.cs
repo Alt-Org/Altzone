@@ -4,6 +4,9 @@ using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 
+/// <summary>
+/// Abstract storage component for panels in shop
+/// </summary>
 public abstract class ShopPanelStorage : MonoBehaviour
 {
     // Get all stuff

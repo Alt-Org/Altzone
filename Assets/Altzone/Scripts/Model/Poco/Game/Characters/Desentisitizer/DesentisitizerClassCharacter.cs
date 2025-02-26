@@ -14,7 +14,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         protected DesentisitizerClassCharacter()
         {
             _attackStrength = ValueStrength.Strong;
-            _resistanceStrength = ValueStrength.Medium;
+            _characterSizeStrength = ValueStrength.Medium;
             _hpStrength = ValueStrength.VeryWeak;
             _defenceStrength = ValueStrength.VeryStrong;
             _speedStrength = ValueStrength.Weak;

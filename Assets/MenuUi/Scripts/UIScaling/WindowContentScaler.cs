@@ -13,6 +13,7 @@ namespace MenuUi.Scripts.UIScaling
         [SerializeField] private RectTransform _tablinePanelRectTransfrom;
         [SerializeField] private float _tablineHeight = 150f;
         [SerializeField] private RectTransform _contentPanelRectTransfrom;
+        [SerializeField, Min(0)] private float _sideMarginPercent = 4.4f;
 
         private bool _isHeaderActive = false;
         private bool _isTablineActive = false;
@@ -68,8 +69,8 @@ namespace MenuUi.Scripts.UIScaling
             float topMargin = 0f;
             if (_isHeaderActive) topMargin -= _headerHeight;
             if (_isTablineActive) topMargin -= _tablineHeight;
-            _contentPanelRectTransfrom.anchorMax = Vector2.one;
-            _contentPanelRectTransfrom.anchorMin = Vector2.zero;
+            _contentPanelRectTransfrom.anchorMax = new Vector2(1 - _sideMarginPercent / 100, 1);
+            _contentPanelRectTransfrom.anchorMin = new Vector2(_sideMarginPercent / 100, 0);
             _contentPanelRectTransfrom.offsetMax = new(0,topMargin);
         }
 

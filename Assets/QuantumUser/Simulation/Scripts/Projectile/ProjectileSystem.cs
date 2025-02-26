@@ -1,91 +1,86 @@
-using Photon.Deterministic;
-using Quantum;
 using UnityEngine;
 using UnityEngine.Scripting;
+
+using Photon.Deterministic;
 
 namespace Quantum.QuantumUser.Simulation.Projectile
 {
     [Preserve]
-    public unsafe class ProjectileSystem : SystemMainThreadFilter<ProjectileSystem.Filter>, ISignalOnCollisionProjectileHitSoulWall, ISignalOnCollisionProjectileHitSomething
+    public unsafe class ProjectileSystem : SystemMainThreadFilter<ProjectileSystem.Filter>, ISignalOnTriggerProjectileHitSoulWall, ISignalOnTriggerProjectileHitArenaBorder, ISignalOnTriggerProjectileHitPlayer
     {
         public struct Filter
         {
             public EntityRef Entity;
             public Transform2D* Transform;
-            public PhysicsBody2D* Body;
             public Quantum.Projectile* Projectile;
-        }
-
-        // Variable to store the projectile speed from config
-        private FP defaultProjectileSpeed;
-
-        private void ProjectileBounce(Frame f,CollisionInfo2D info )
-        {
-            Debug.Log("Projectile hit a wall");
-
-            // Reflect the direction based on the normal of the collision
-            var normal = info.ContactNormal;
-
-            // Get the entity reference of the projectile
-            var projectileEntity = info.Entity;
-
-            // Get a pointer to the PhysicsBody2D component of the projectile entity
-            var body = f.Unsafe.GetPointer<PhysicsBody2D>(projectileEntity);
-            if (body != null)
-            {
-                // Reflect the velocity vector based on the collision normal
-                var velocity = body->Velocity;
-                var reflectedDirection = velocity - 2 * FPVector2.Dot(velocity, normal) * normal;
-
-                // Normalize the reflected direction
-                var normalizedReflectedDirection = reflectedDirection.Normalized;
-
-                // Set the velocity back with the constant speed from the config
-                body->Velocity = normalizedReflectedDirection * defaultProjectileSpeed;
-            }
         }
 
         public override void Update(Frame f, ref Filter filter)
         {
-            // Retrieve the projectile speed from the config
-            var config = f.FindAsset(filter.Projectile->ProjectileConfig);
+            // unpack filter
+            Quantum.Projectile* projectile = filter.Projectile;
+            Transform2D* transform = filter.Transform;
 
-            if (!filter.Projectile->IsLaunched) // Access the IsLaunched property from the regenerated component
+            if (!projectile->IsLaunched)
             {
-                defaultProjectileSpeed = config.ProjectileSpeed;
+                // retrieve the projectile speed from the spec
+                ProjectileSpec spec = f.FindAsset(f.RuntimeConfig.ProjectileSpec);
+
+                // set the projectile speed and direction
+                projectile->Speed = spec.ProjectileInitialSpeed;
+                projectile->Direction = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
+
+                // set the IsLaunched field to true to ensure it's launched only once
+                projectile->IsLaunched = true;
 
                 Debug.Log("Projectile Launched");
-
-                // Apply initial velocity to the projectile body
-                filter.Body->Velocity = filter.Transform->Up * defaultProjectileSpeed;
-
-                // Set the IsLaunched field to true to ensure it's launched only once
-                filter.Projectile->IsLaunched = true;
             }
 
+            // move the projectile
+            transform->Position += projectile->Direction * (projectile->Speed * f.DeltaTime);
 
-            if (config.Cooldown > 0)
+            // decrease projectiles cooldown based on frame time
+            if (projectile->CoolDown > 0)
             {
-                config.Cooldown -= f.DeltaTime; // Decrease the cooldown based on frame time
+                projectile->CoolDown -= f.DeltaTime;
             }
         }
-        // Function to adjust the speed of the projectile
-        public void AdjustProjectileSpeed(FP newSpeed)
+
+        private void ProjectileBounce(Frame f, Quantum.Projectile* projectile, EntityRef projectileEntity, EntityRef otherEntity, FPVector2 normal, FP collisionMinOffset)
         {
-            defaultProjectileSpeed = newSpeed;
-            Debug.Log($"Projectile speed adjusted to: {newSpeed}");
+            Debug.Log("[ProjectileSystem] Projectile hit a wall");
+
+            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
+            Transform2D* otherTransform = f.Unsafe.GetPointer<Transform2D>(otherEntity);
+
+            FPVector2 offsetVector = projectileTransform->Position - otherTransform->Position;
+            FP collisionOffset = FPVector2.Rotate(offsetVector, -FPVector2.RadiansSigned(FPVector2.Up, normal)).Y;
+
+            projectile->Direction = FPVector2.Reflect(projectile->Direction, normal);
+
+            if (collisionOffset - projectile->Radius < collisionMinOffset)
+            {
+                projectileTransform->Position += normal * (collisionMinOffset - collisionOffset + projectile->Radius);
+            }
+
+            // change projectile's sprite
+            projectile->TestSpriteIndex = (projectile->TestSpriteIndex + 1) % 5;
+            f.Events.ChangeProjectileSprite(projectile->TestSpriteIndex);
         }
 
-        public void OnCollisionProjectileHitSoulWall(Frame f, CollisionInfo2D info, Quantum.Projectile* projectile, Quantum.SoulWall* soulWall)
+        public void OnTriggerProjectileHitSoulWall(Frame f, Quantum.Projectile* projectile, EntityRef projectileEntity, Quantum.SoulWall* soulWall, EntityRef soulWallEntity)
         {
-            ProjectileBounce(f, info);
+            ProjectileBounce(f, projectile, projectileEntity, soulWallEntity, soulWall->Normal, soulWall->CollisionMinOffset);
         }
 
-        public void OnCollisionProjectileHitSomething(Frame f, CollisionInfo2D info, Quantum.Projectile* projectile)
+        public void OnTriggerProjectileHitArenaBorder(Frame f, Quantum.Projectile* projectile, EntityRef projectileEntity, Quantum.ArenaBorder* arenaBorder, EntityRef arenaBorderEntity)
         {
-            ProjectileBounce(f, info);
+            ProjectileBounce(f, projectile,  projectileEntity, arenaBorderEntity, arenaBorder->Normal, arenaBorder->CollisionMinOffset);
         }
 
+        public void OnTriggerProjectileHitPlayer(Frame f, Quantum.Projectile* projectile, EntityRef projectileEntity, Quantum.PlayerData* playerData, EntityRef playerEntity)
+        {
+            ProjectileBounce(f, projectile,  projectileEntity, playerEntity, playerData->Normal, playerData->CollisionMinOffset);
+        }
     }
-
 }

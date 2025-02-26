@@ -2,4 +2,10 @@ signal OnTriggerTopGoal();
 
 signal OnTriggerBottomGoal();
 
+signal OnTriggerProjectileHitSoulWall(Projectile* projectile, EntityRef projectileEntity, SoulWall* soulWall, EntityRef soulWallEntity);
+
+signal OnTriggerProjectileHitArenaBorder(Projectile* projectile, EntityRef projectileEntity, ArenaBorder* arenaBorder, EntityRef arenaBorderEntity);
+
+signal OnTriggerProjectileHitPlayer(Projectile* projectile, EntityRef projectileEntity, PlayerData* playerData, EntityRef playerEntity);
+
 

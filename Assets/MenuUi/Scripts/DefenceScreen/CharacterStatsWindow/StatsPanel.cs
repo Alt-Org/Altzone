@@ -5,10 +5,14 @@ using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
+    /// <summary>
+    /// Controls visual functionality of CharacterStatsPanel.
+    /// </summary>
     public class StatsPanel : MonoBehaviour
     {
         [SerializeField] private StatsWindowController _controller;
         [SerializeField] private Image _characterImage;
+        [SerializeField] private Image _lockImage;
         [SerializeField] private TMP_Text _attackText;
         [SerializeField] private TMP_Text _hpText;
         [SerializeField] private TMP_Text _defenceText;
@@ -21,6 +25,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             SetStatButtonTexts();
 
             _controller.OnStatUpdated += SetStatButtonTexts;
+
+            if(_controller.IsCurrentCharacterLocked())
+            {
+                _lockImage.gameObject.SetActive(true);
+            }
+            else
+            {
+                _lockImage.gameObject.SetActive(false);
+            }
         }
 
 
@@ -48,7 +61,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 _attackText.text = _controller.GetStat(StatType.Attack).ToString();
                 _hpText.text = _controller.GetStat(StatType.Hp).ToString();
                 _defenceText.text = _controller.GetStat(StatType.Defence).ToString();
-                _charSizeText.text = _controller.GetStat(StatType.Resistance).ToString();
+                _charSizeText.text = _controller.GetStat(StatType.CharacterSize).ToString();
                 _speedText.text = _controller.GetStat(StatType.Speed).ToString();
             }
             else
@@ -64,8 +77,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                     case StatType.Defence:
                         _defenceText.text = _controller.GetStat(StatType.Defence).ToString();
                         break;
-                    case StatType.Resistance:
-                        _charSizeText.text = _controller.GetStat(StatType.Resistance).ToString();
+                    case StatType.CharacterSize:
+                        _charSizeText.text = _controller.GetStat(StatType.CharacterSize).ToString();
                         break;
                     case StatType.Speed:
                         _speedText.text = _controller.GetStat(StatType.Speed).ToString();

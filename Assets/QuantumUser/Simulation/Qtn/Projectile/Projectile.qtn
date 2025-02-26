@@ -1,5 +1,9 @@
 component Projectile
 {
-    AssetRef<ProjectileConfig> ProjectileConfig;
     bool IsLaunched;
+    FP Speed;
+    FPVector2 Direction;
+    FP CoolDown;
+    FP Radius;
+    int TestSpriteIndex;
 }

@@ -57,20 +57,19 @@ namespace Altzone.Scripts.Lobby
         [SerializeField] private bool _isCloseRoomOnGameStart;
         //[SerializeField] private SceneDef _raidScene;
 
-        [Header("Team Names"), SerializeField] private string _blueTeamName;
+        [Header("Team Names")]
+        [SerializeField] private string _blueTeamName;
         [SerializeField] private string _redTeamName;
 
-        [Header("Player"), SerializeField]
-        private RuntimePlayer _player;
+        [Header("Player")]
+        [SerializeField] private RuntimePlayer _player;
 
-        [Header("Configs"), SerializeField]
-        private SimulationConfig _simulationConfig;
-        [SerializeField]
-        private SystemsConfig _systemsConfig;
-
-        [SerializeField] private ProjectileGameConfig _projectileGameConfig;
-        [SerializeField]
-        private Map _map;
+        [Header("Configs")]
+        [SerializeField] private Map _map;
+        [SerializeField] private SimulationConfig _simulationConfig;
+        [SerializeField] private SystemsConfig _systemsConfig;
+        [SerializeField] private BattleArenaSpec _battleArenaSpec;
+        [SerializeField] private ProjectileSpec _projectileSpec;
 
         private QuantumRunner _runner = null;
 
@@ -200,7 +199,7 @@ namespace Altzone.Scripts.Lobby
             while (true)
             {
                 PhotonRealtimeClient.Client?.Service();
-                Debug.LogWarning(".");
+                //Debug.LogWarning(".");
                 yield return new WaitForSeconds(0.1f);
             }
         }
@@ -358,23 +357,24 @@ namespace Altzone.Scripts.Lobby
 
             RuntimeConfig config = new()
             {
-                Map = _map,
+                Map              = _map,
                 SimulationConfig = _simulationConfig,
-                SystemsConfig = _systemsConfig,
-                GameConfig = _projectileGameConfig
+                SystemsConfig    = _systemsConfig,
+                BattleArenaSpec  = _battleArenaSpec,
+                ProjectileSpec   = _projectileSpec
             };
 
             SessionRunner.Arguments sessionRunnerArguments = new()
             {
-                RunnerFactory = QuantumRunnerUnityFactory.DefaultFactory,
-                GameParameters = QuantumRunnerUnityFactory.CreateGameParameters,
-                ClientId = ServerManager.Instance.Player._id,
-                RuntimeConfig = config,
-                SessionConfig = QuantumDeterministicSessionConfigAsset.Global.Config,
-                GameMode = Photon.Deterministic.DeterministicGameMode.Multiplayer,
-                PlayerCount = PhotonRealtimeClient.CurrentRoom.MaxPlayers,
+                RunnerFactory             = QuantumRunnerUnityFactory.DefaultFactory,
+                GameParameters            = QuantumRunnerUnityFactory.CreateGameParameters,
+                ClientId                  = ServerManager.Instance.Player._id,
+                RuntimeConfig             = config,
+                SessionConfig             = QuantumDeterministicSessionConfigAsset.Global.Config,
+                GameMode                  = Photon.Deterministic.DeterministicGameMode.Multiplayer,
+                PlayerCount               = PhotonRealtimeClient.CurrentRoom.MaxPlayers,
                 StartGameTimeoutInSeconds = 10,
-                Communicator = new QuantumNetworkCommunicator(PhotonRealtimeClient.Client)
+                Communicator              = new QuantumNetworkCommunicator(PhotonRealtimeClient.Client)
             };
 
             /*Transform currentRoot = null;
@@ -489,14 +489,14 @@ namespace Altzone.Scripts.Lobby
                 character = characters[i];
                 _player.Characters[i] = new BattleCharacterBase()
                 {
-                    Id         = (int)character.Id,
-                    ClassID    = (int)character.CharacterClassID,
+                    Id            = (int)character.Id,
+                    ClassID       = (int)character.CharacterClassID,
 
-                    Hp         = BaseCharacter.GetStatValueFP(StatType.Hp, character.Hp),
-                    Attack     = BaseCharacter.GetStatValueFP(StatType.Attack, character.Attack),
-                    Defence    = BaseCharacter.GetStatValueFP(StatType.Defence, character.Defence),
-                    Resistance = BaseCharacter.GetStatValueFP(StatType.Resistance, character.Resistance),
-                    Speed      = BaseCharacter.GetStatValueFP(StatType.Speed, character.Speed)
+                    Hp            = BaseCharacter.GetStatValueFP(StatType.Hp,            character.Hp),
+                    Attack        = BaseCharacter.GetStatValueFP(StatType.Attack,        character.Attack),
+                    Defence       = BaseCharacter.GetStatValueFP(StatType.Defence,       character.Defence),
+                    CharacterSize = BaseCharacter.GetStatValueFP(StatType.CharacterSize, character.CharacterSize),
+                    Speed         = BaseCharacter.GetStatValueFP(StatType.Speed,         character.Speed)
                 };
             }
         }

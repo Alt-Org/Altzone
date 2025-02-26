@@ -9,26 +9,57 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     public class PieChartManager : MonoBehaviour
     {
         [SerializeField] private StatsWindowController _controller;
+        [SerializeField] private PiechartReference _referenceSheet;
 
-        [SerializeField] private int _sliceAmount;
+        private int _sliceAmount;
 
-        // Set the color, what kind of piece the piece should turn into according to a certain stat. These can be changed directly inside unity.
-        [SerializeField] private Color impactForceColor = new Color(1f, 0.5f, 0f);
-        [SerializeField] private Color impactForceAltColor = new Color(1f, 0.5f, 0f);
-        [SerializeField] private Color healthPointsColor = Color.green;
-        [SerializeField] private Color healthPointsAltColor = Color.green;
-        [SerializeField] private Color defenceColor = new Color(0.5f, 0f, 0.5f);
-        [SerializeField] private Color defenceAltColor = new Color(0.5f, 0f, 0.5f);
-        [SerializeField] private Color characterSizeColor = Color.blue;
-        [SerializeField] private Color characterSizeAltColor = Color.blue;
-        [SerializeField] private Color speedColor = new Color(0f, 0.5f, 0f);
-        [SerializeField] private Color speedAltColor = new Color(0f, 0.5f, 0f);
-        [SerializeField] private Color defaultColor = Color.white;
-        [SerializeField] private Color defaultAltColor = Color.gray;
-        [SerializeField] private Color overlayColor = Color.gray;
+        private Color _impactForceColor;
+        private Color _impactForceAltColor;
 
-        [SerializeField] private Sprite circleSprite;
-        [SerializeField] private Sprite circlePatternedSprite;
+        private Color _healthPointsColor;
+        private Color _healthPointsAltColor;
+
+        private Color _defenceColor;
+        private Color _defenceAltColor;
+
+        private Color _characterSizeColor;
+        private Color _characterSizeAltColor;
+
+        private Color _speedColor;
+        private Color _speedAltColor;
+
+        private Color _defaultColor;
+        private Color _defaultAltColor;
+
+        private Sprite _circleSprite;
+        private Sprite _circlePatternedSprite;
+
+
+        private void Awake() // caching colors and circle sprite from the reference sheet to avoid unneccessary function calls
+        {
+            _impactForceColor = _referenceSheet.GetColor(StatType.Attack);
+            _impactForceAltColor = _referenceSheet.GetAlternativeColor(StatType.Attack);
+
+            _healthPointsColor = _referenceSheet.GetColor(StatType.Hp);
+            _healthPointsAltColor = _referenceSheet.GetAlternativeColor(StatType.Hp);
+
+            _defenceColor = _referenceSheet.GetColor(StatType.Defence);
+            _defenceAltColor = _referenceSheet.GetAlternativeColor(StatType.Defence);
+
+            _characterSizeColor = _referenceSheet.GetColor(StatType.CharacterSize);
+            _characterSizeAltColor = _referenceSheet.GetAlternativeColor(StatType.CharacterSize);
+
+            _speedColor = _referenceSheet.GetColor(StatType.Speed);
+            _speedAltColor = _referenceSheet.GetAlternativeColor(StatType.Speed);
+
+            _defaultColor = _referenceSheet.GetColor(StatType.None);
+            _defaultAltColor = _referenceSheet.GetAlternativeColor(StatType.None);
+
+            _circleSprite = _referenceSheet.GetCircleSprite();
+            _circlePatternedSprite = _referenceSheet.GetPatternedSprite();
+
+            _sliceAmount = CustomCharacter.STATMAXCOMBINED;
+        }
 
 
         private void OnEnable()
@@ -36,6 +67,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             UpdateChart();
             _controller.OnStatUpdated += UpdateChart;
         }
+
 
         private void OnDisable()
         {
@@ -55,24 +87,24 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             int impactForce = _controller.GetStat(StatType.Attack);
             int healthPoints = _controller.GetStat(StatType.Hp);
             int defence = _controller.GetStat(StatType.Defence);
-            int characterSize = _controller.GetStat(StatType.Resistance);
+            int characterSize = _controller.GetStat(StatType.CharacterSize);
             int speed = _controller.GetStat(StatType.Speed);
 
             // Get base stats
             int impactForceBase = _controller.GetBaseStat(StatType.Attack);
             int healthPointsBase = _controller.GetBaseStat(StatType.Hp);
             int defenceBase = _controller.GetBaseStat(StatType.Defence);
-            int characterSizeBase = _controller.GetBaseStat(StatType.Resistance);
+            int characterSizeBase = _controller.GetBaseStat(StatType.CharacterSize);
             int speedBase = _controller.GetBaseStat(StatType.Speed);
 
             // Arrange stats
             var stats = new List<(int upgradesLevel, int baseLevel, Color color, Color altColor)>
             {
-                (defence - defenceBase, defenceBase, defenceColor, defenceAltColor),
-                (characterSize - characterSizeBase, characterSizeBase, characterSizeColor, characterSizeAltColor),
-                (speed - speedBase, speedBase, speedColor, speedAltColor),
-                (healthPoints - healthPointsBase, healthPointsBase, healthPointsColor, healthPointsAltColor),
-                (impactForce - impactForceBase, impactForceBase, impactForceColor, impactForceAltColor),
+                (defence - defenceBase, defenceBase, _defenceColor, _defenceAltColor),
+                (characterSize - characterSizeBase, characterSizeBase, _characterSizeColor, _characterSizeAltColor),
+                (speed - speedBase, speedBase, _speedColor, _speedAltColor),
+                (healthPoints - healthPointsBase, healthPointsBase, _healthPointsColor, _healthPointsAltColor),
+                (impactForce - impactForceBase, impactForceBase, _impactForceColor, _impactForceAltColor),
             };
 
             // Create slices
@@ -132,11 +164,11 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             {
                 if (i % 2 == 0)
                 {
-                    CreateSlice(currentSliceFill, defaultAltColor, true);
+                    CreateSlice(currentSliceFill, _defaultAltColor, true);
                 }
                 else
                 {
-                    CreateSlice(currentSliceFill, defaultColor, true);
+                    CreateSlice(currentSliceFill, _defaultColor, true);
                 }
 
                 currentSliceFill -= sliceFillAmount;
@@ -156,11 +188,11 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (!isBaseSlice)
             {
-                sliceImage.sprite = circlePatternedSprite;
+                sliceImage.sprite = _circlePatternedSprite;
             }
             else
             {
-                sliceImage.sprite = circleSprite;
+                sliceImage.sprite = _circleSprite;
             }
 
             sliceImage.color = color;

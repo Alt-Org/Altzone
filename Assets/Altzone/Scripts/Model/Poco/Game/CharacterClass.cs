@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Model.Poco.Attributes;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Game
@@ -15,7 +16,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         [Unique] public string Name;
         public int Hp;
         public int Speed;
-        public int Resistance;
+        public int CharacterSize;
         public int Attack;
         public int Defence;
 
@@ -31,7 +32,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             Name = GetClassName(id);
             Hp = hp;
             Speed = speed;
-            Resistance = resistance;
+            CharacterSize = resistance;
             Attack = attack;
             Defence = defence;
         }
@@ -44,7 +45,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public override string ToString()
         {
             return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}" +
-                   $", {nameof(Speed)}: {Speed}, {nameof(Resistance)}: {Resistance}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";
+                   $", {nameof(Speed)}: {Speed}, {nameof(CharacterSize)}: {CharacterSize}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";
         }
 
         public static string GetClassName(CharacterClassID id)
@@ -70,5 +71,40 @@ namespace Altzone.Scripts.Model.Poco.Game
             }
         }
 
+
+        public static Color GetCharacterClassColor(CharacterClassID id)
+        {
+            Color color;
+
+            switch (id)
+            {
+                case CharacterClassID.Desensitizer:
+                    ColorUtility.TryParseHtmlString("#23B1B1", out color);
+                    break;
+                case CharacterClassID.Trickster:
+                    ColorUtility.TryParseHtmlString("#278227", out color);
+                    break;
+                case CharacterClassID.Obedient:
+                    ColorUtility.TryParseHtmlString("#DF8617", out color);
+                    break;
+                case CharacterClassID.Projector:
+                    ColorUtility.TryParseHtmlString("#D5D51B", out color);
+                    break;
+                case CharacterClassID.Retroflector:
+                    ColorUtility.TryParseHtmlString("#B13232", out color);
+                    break;
+                case CharacterClassID.Confluent:
+                    ColorUtility.TryParseHtmlString("#891D89", out color);
+                    break;
+                case CharacterClassID.Intellectualizer:
+                    ColorUtility.TryParseHtmlString("#522295", out color);
+                    break;
+                default:
+                    color = Color.gray;
+                    break;
+            }
+
+            return color;
+        }
     }
 }
