@@ -2534,6 +2534,7 @@ GameObject:
   - component: {fileID: 6048438708361435988}
   - component: {fileID: 5566732889490912220}
   - component: {fileID: 351654732571348405}
+  - component: {fileID: 3932595847689776834}
   m_Layer: 0
   m_Name: DailyTaskView
   m_TagString: Untagged
@@ -2619,6 +2620,19 @@ MonoBehaviour:
   _clanProgressBarMarkersBase: {fileID: 306557317478488128}
   _clanProgressBarMarkerPrefab: {fileID: 5677350395177907778, guid: 4760c1c8034b72b4bb7d91549d94180f,
     type: 3}
+--- !u!114 &3932595847689776834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2233725341713237059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  taskType: 1
 --- !u!1 &2504510301687977268
 GameObject:
   m_ObjectHideFlags: 0

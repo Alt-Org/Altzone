@@ -51,6 +51,14 @@ public class DailyTaskProgressListener : MonoBehaviour
 
     public void SetState(TaskType currentTaskType)
     {
+        //-----TEST CODE-----
+        if (taskType == TaskType.Test)
+        {
+            _on = true;
+            return;
+        }
+        //-------------------
+
         _on = (taskType == currentTaskType);
     }
 }

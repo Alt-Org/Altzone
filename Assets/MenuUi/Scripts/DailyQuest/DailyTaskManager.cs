@@ -58,6 +58,7 @@ public class DailyTaskManager : AltMonoBehaviour
     private int _clanProgressBarGoal = 10000;
     private int _clanProgressBarCurrentPoints = 0;
     private PlayerData _currentPlayerData;
+    private int _clanMilestoneLatestRewardIndex = -1;
 
     public enum SelectedTab
     {
@@ -509,28 +510,32 @@ public class DailyTaskManager : AltMonoBehaviour
     public void TESTAddTaskProgress()
     {
         //_ownTaskProgress++;
-        _currentPlayerData.Task.AddProgress(1);
+        //_currentPlayerData.Task.AddProgress(1);
 
-        foreach (GameObject obj in _dailyTaskCardSlots)
-        {
-            if (obj == null)
-                continue;
+        //foreach (GameObject obj in _dailyTaskCardSlots)
+        //{
+        //    if (obj == null)
+        //        continue;
 
-            DailyQuest quest = obj.GetComponent<DailyQuest>();
+        //    DailyQuest quest = obj.GetComponent<DailyQuest>();
 
-            if (quest.TaskData.Id == _ownTaskId)
-            {
-                UpdateOwnTaskProgress();
-                return;
-            }
-        }
+        //    if (quest.TaskData.Id == _ownTaskId)
+        //    {
+        //        UpdateOwnTaskProgress();
+        //        return;
+        //    }
+        //}
 
-        Debug.LogError($"Could not find task with id: {_ownTaskId}");
+        //Debug.LogError($"Could not find task with id: {_ownTaskId}");
+
+        if (_currentPlayerData.Task.Type == TaskType.StartBattleDifferentCharacter)
+            this.GetComponent<DailyTaskProgressListener>().UpdateProgress($"{System.DateTime.Now}");
+        else
+            this.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
     }
 
     private void UpdateOwnTaskProgress()
     {
-        //TODO: Replace with fetch from server when possible.
         var taskData = DailyTaskProgressManager.Instance.CurrentPlayerTask;
         
         float progress = (float)taskData.TaskProgress / (float)taskData.Amount;
@@ -651,6 +656,7 @@ public class DailyTaskManager : AltMonoBehaviour
         StartCoroutine(CalculateClanRewardBarProgress());
     }
 
+    //TODO: Needs to be moved or overhauled when server is ready.
     private IEnumerator CalculateClanRewardBarProgress()
     {
         float sectionLenghts = (1f / (float)_clanProgressBarMarkers.Count);
@@ -676,13 +682,19 @@ public class DailyTaskManager : AltMonoBehaviour
                 //All but final reward.
                 for (int j = 0; j < i; j++)
                 {
+                    if (j <= _clanMilestoneLatestRewardIndex)
+                        continue;
+
+                    _clanMilestoneLatestRewardIndex = j;
                     _clanProgressBarMarkers[j].GetComponent<DailyTaskClanReward>().UpdateState(true);
+                    DailyTaskProgressManager.Instance.InvokeOnClanMilestoneReached(); //TODO: Remove when server ready.
                 }
 
                 //Final reward
                 if ((i >= _clanProgressBarMarkers.Count - 1) && chunkProgress == 1)
                 {
                     _clanProgressBarMarkers[_clanProgressBarMarkers.Count - 1].GetComponent<DailyTaskClanReward>().UpdateState(true);
+                    DailyTaskProgressManager.Instance.InvokeOnClanMilestoneReached(); //TODO: Remove when server ready.
                 }
 
                 _clanProgressBarSlider.value = Mathf.Lerp(startPosition, endPosition, chunkProgress);
