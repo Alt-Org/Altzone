@@ -5,6 +5,7 @@ using Altzone.Scripts.Lobby;
 using Prg.Scripts.Common.PubSub;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MenuUI.Scripts.Lobby.InLobby
 {
@@ -15,13 +16,15 @@ namespace MenuUI.Scripts.Lobby.InLobby
         [SerializeField] private RoomSearchPanelController _searchPanel;
         [SerializeField] private TMP_InputField _roomName;
         [SerializeField] private BattlePopupCreateCustomRoomPanel _roomSwitcher;
+        [SerializeField] private Button _createRoomButton;
 
         private PhotonRoomList _photonRoomList;
 
         private void Awake()
         {
             _photonRoomList = gameObject.GetOrAddComponent<PhotonRoomList>();
-            //_searchPanel.RoomButtonOnClick = CreateRoomOnClick;
+            _createRoomButton.onClick.RemoveAllListeners();
+            _createRoomButton.onClick.AddListener(CreateRoomOnClick);
         }
 
         public void OnEnable()

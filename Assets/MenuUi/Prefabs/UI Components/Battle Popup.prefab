@@ -1274,6 +1274,7 @@ MonoBehaviour:
   _searchPanel: {fileID: 1752140370002469978}
   _roomName: {fileID: 2373485009307528177}
   _roomSwitcher: {fileID: 4116104174498300769}
+  _createRoomButton: {fileID: 7658191974015100570}
 --- !u!1 &820887240261383258
 GameObject:
   m_ObjectHideFlags: 0
@@ -2818,7 +2819,7 @@ RectTransform:
   m_AnchorMin: {x: 0.85, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -0.0000009536743, y: -94.22601}
+  m_SizeDelta: {x: -0.0000009536743, y: -142.82013}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8576530089220829316
 CanvasRenderer:
@@ -5622,7 +5623,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 49.7
+  m_fontSize: 62.1
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5830,7 +5831,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -57.919952, y: 0}
+  m_SizeDelta: {x: -7.5999756, y: 0}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &6222947876632983049
 CanvasRenderer:
@@ -6195,7 +6196,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -29.945099}
+  m_SizeDelta: {x: 0, y: -61.988678}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &4280170413714996417
 CanvasRenderer:
@@ -7922,7 +7923,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0.15, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0.0000121593475, y: -94.22595}
+  m_SizeDelta: {x: 0.0000121593475, y: -142.82007}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7131637952194908805
 CanvasRenderer:
@@ -8723,7 +8724,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -57.919937, y: 0}
+  m_SizeDelta: {x: -7.599945, y: 0}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &8339110276726805585
 CanvasRenderer:
@@ -9045,7 +9046,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4203045070739033246}
   - component: {fileID: 4004739984531021681}
-  - component: {fileID: 3921980719791955469}
   m_Layer: 5
   m_Name: CreateRoom_Custom
   m_TagString: Untagged
@@ -9082,23 +9082,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8155137662771919238}
   m_CullTransparentMesh: 1
---- !u!114 &3921980719791955469
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8155137662771919238}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c90b2e56fc3d2b4a90b913fa62dfb2d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _modeSelector: {fileID: 4759443436897381142}
-  _createRoomButton: {fileID: 7658191974015100570}
-  _topPanel: {fileID: 0}
-  _mainPanel: {fileID: 0}
-  _custom2v2WaitingRoom: {fileID: 2899300052170057362}
 --- !u!1 &8314319828766117934
 GameObject:
   m_ObjectHideFlags: 0
