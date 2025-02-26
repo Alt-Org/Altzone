@@ -47,10 +47,7 @@ namespace QuantumUser.Scripts.UI.Views
 
         private void Update()
         {
-            if (_view.activeSelf && _referenceText.fontSize != _currentFontSize)
-            {
-                ResizeFontSizes();
-            }
+            if (_view.activeSelf && _referenceText.fontSize != _currentFontSize) ResizeFontSizes();
         }
 
         private void ResizeFontSizes()
