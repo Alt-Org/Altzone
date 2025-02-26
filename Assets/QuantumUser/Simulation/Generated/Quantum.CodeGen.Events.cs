@@ -52,7 +52,7 @@ namespace Quantum {
   public unsafe partial class Frame {
     public unsafe partial struct FrameEvents {
       static partial void GetEventTypeCountCodeGen(ref Int32 eventCount) {
-        eventCount = 3;
+        eventCount = 4;
       }
       static partial void GetParentEventIDCodeGen(Int32 eventID, ref Int32 parentEventID) {
         switch (eventID) {
@@ -63,6 +63,7 @@ namespace Quantum {
         switch (eventID) {
           case EventUpdateDebugStatsOverlay.ID: result = typeof(EventUpdateDebugStatsOverlay); return;
           case EventPlaySoundEvent.ID: result = typeof(EventPlaySoundEvent); return;
+          case EventChangeProjectileSprite.ID: result = typeof(EventChangeProjectileSprite); return;
           default: break;
         }
       }
@@ -76,6 +77,13 @@ namespace Quantum {
       public EventPlaySoundEvent PlaySoundEvent(SoundEffect SoundEffect) {
         var ev = _f.Context.AcquireEvent<EventPlaySoundEvent>(EventPlaySoundEvent.ID);
         ev.SoundEffect = SoundEffect;
+        _f.AddEvent(ev);
+        return ev;
+      }
+      public EventChangeProjectileSprite ChangeProjectileSprite(Int32 SpriteIndex) {
+        if (_f.IsPredicted) return null;
+        var ev = _f.Context.AcquireEvent<EventChangeProjectileSprite>(EventChangeProjectileSprite.ID);
+        ev.SpriteIndex = SpriteIndex;
         _f.AddEvent(ev);
         return ev;
       }
@@ -127,6 +135,31 @@ namespace Quantum {
       unchecked {
         var hash = 43;
         hash = hash * 31 + SoundEffect.GetHashCode();
+        return hash;
+      }
+    }
+  }
+  public unsafe partial class EventChangeProjectileSprite : EventBase {
+    public new const Int32 ID = 3;
+    public Int32 SpriteIndex;
+    protected EventChangeProjectileSprite(Int32 id, EventFlags flags) : 
+        base(id, flags) {
+    }
+    public EventChangeProjectileSprite() : 
+        base(3, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
+    }
+    public new QuantumGame Game {
+      get {
+        return (QuantumGame)base.Game;
+      }
+      set {
+        base.Game = value;
+      }
+    }
+    public override Int32 GetHashCode() {
+      unchecked {
+        var hash = 47;
+        hash = hash * 31 + SpriteIndex.GetHashCode();
         return hash;
       }
     }
