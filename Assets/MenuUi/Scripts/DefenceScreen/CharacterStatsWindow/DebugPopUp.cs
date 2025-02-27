@@ -71,6 +71,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         private void AddCharacter()
         {
+            _addCharacterButton.enabled = false;
+
             bool success = false;
             StartCoroutine(ServerManager.Instance.AddCustomCharactersToServer(_controller.CurrentCharacterID, result =>
             {
@@ -86,6 +88,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                         if (result)
                         {
                             SignalBus.OnReloadCharacterGalleryRequestedSignal();
+                            _controller.ReloadStatWindow();
                         }
                     }
                     ));
@@ -94,6 +97,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 {
                     PopupSignalBus.OnChangePopupInfoSignal("Tätä hahmoa ei ole vielä lisätty pelipalvelimelle.");
                 }
+
+                _addCharacterButton.enabled = true;
             }));
         }
     }

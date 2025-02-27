@@ -67,6 +67,22 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
 
         /// <summary>
+        /// Reload stat window data and trigger onenable function for children.
+        /// </summary>
+        public void ReloadStatWindow()
+        {
+            SetPlayerData();
+            SetCurrentCharacter();
+
+            for (int i = 0; i < transform.childCount; i++) // triggering onenable functions
+            {
+                transform.GetChild(i).gameObject.SetActive(false);
+                transform.GetChild(i).gameObject.SetActive(true);
+            }
+        }
+
+
+        /// <summary>
         /// Check if current character is locked or no.
         /// </summary>
         /// <returns>True if current character is locked (player does not own it) and false if not (player owns this character).</returns>
