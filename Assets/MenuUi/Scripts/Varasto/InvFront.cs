@@ -38,6 +38,7 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private Image _icon;
         [SerializeField] private TMP_Text _name;
         [SerializeField] private TMP_Text _weight;
+        [SerializeField] private TMP_Text _diagnoseNumber;
         [SerializeField] private TMP_Text _value;
         [SerializeField] private TMP_Text _material;
         [SerializeField] private Image _type;
@@ -347,7 +348,7 @@ namespace MenuUi.Scripts.Storage
             ScaleSprite(_furn, _icon.rectTransform);
 
             // Name
-            _name.text = _furn.Info.DiagnoseNumber + _furn.SetName + ": " + _furn.VisibleName;
+            _name.text = _furn.SetName + " " + _furn.VisibleName;
             
             //Artists name
             _artist.text = _furn.Info != null ? "Suunnittelu: " + _furn.Info.ArtistName : "Unknown Artist";
@@ -356,7 +357,10 @@ namespace MenuUi.Scripts.Storage
             _artisticDescription.text = _furn.Info.ArtisticDescription;
 
             // Weight
-            _weight.text = "Paino:" + _furn.Weight + " KG";
+            _weight.text = _furn.Weight + " KG";
+
+            // Diagnose number
+            _diagnoseNumber.text = _furn.Info.DiagnoseNumber;
 
             // Material text
             _material.text = $"{_furn.Material}";
