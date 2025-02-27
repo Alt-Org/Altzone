@@ -1,9 +1,20 @@
-using MenuUI.Scripts;
 using UnityEngine;
 using UnityEngine.UI;
+using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
+    public static partial class SignalBus
+    {
+        public delegate void ReloadCharacterGalleryRequested();
+        public static event ReloadCharacterGalleryRequested OnReloadCharacterGalleryRequested;
+        public static void OnReloadCharacterGalleryRequestedSignal()
+        {
+            OnReloadCharacterGalleryRequested?.Invoke();
+        }
+    }
+
+
     /// <summary>
     /// Controls character stats window debug popup functionality.
     /// </summary>
@@ -67,16 +78,23 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 {
                     success = true;
                 }
-            }));
 
-            if (success)
-            {
-                StartCoroutine(ServerManager.Instance.UpdateCustomCharacters(null));
-            }
-            else
-            {
-                SignalBus.OnChangePopupInfoSignal("Tätä hahmoa ei ole vielä lisätty pelipalvelimelle.");
-            }
+                if (success)
+                {
+                    StartCoroutine(ServerManager.Instance.UpdateCustomCharacters(result =>
+                    {
+                        if (result)
+                        {
+                            SignalBus.OnReloadCharacterGalleryRequestedSignal();
+                        }
+                    }
+                    ));
+                }
+                else
+                {
+                    PopupSignalBus.OnChangePopupInfoSignal("Tätä hahmoa ei ole vielä lisätty pelipalvelimelle.");
+                }
+            }));
         }
     }
 }
