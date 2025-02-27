@@ -21,6 +21,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private CustomCharacter _customCharacter;
         private BaseCharacter _baseCharacter;
 
+        public CharacterID CurrentCharacterID { get { return _characterId; } }
+
         public event Action OnEraserDecreased;
         public event Action OnDiamondDecreased;
 

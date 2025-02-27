@@ -121,8 +121,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MenuUi.Scripts.DefenceScreen.CharacterStatsWindow.StatUpdatePopUp,
+      - m_Target: {fileID: 5517463079737266911}
+        m_TargetAssemblyTypeName: MenuUi.Scripts.DefenceScreen.CharacterStatsWindow.DebugPopUp,
           MainMenu
         m_MethodName: ClosePopUp
         m_Mode: 1
@@ -161,6 +161,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2605456106497023340}
   - component: {fileID: 8125218442384768441}
+  - component: {fileID: 5517463079737266911}
   m_Layer: 0
   m_Name: DebugPopUp
   m_TagString: Untagged
@@ -181,7 +182,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3577694025404158325}
-  - {fileID: 2904930503880201713}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.31244445, y: 0.42400002}
@@ -203,6 +203,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AspectMode: 2
   m_AspectRatio: 1.5
+--- !u!114 &5517463079737266911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1944354240175345700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84bf1644f08f32f4aa2449428c7799fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _controller: {fileID: 0}
+  _contents: {fileID: 7438520737699890682}
+  _touchBlocker: {fileID: 0}
+  _addCharacterButton: {fileID: 2777960458888404558}
 --- !u!1 &3334186980091370202
 GameObject:
   m_ObjectHideFlags: 0
@@ -215,7 +231,7 @@ GameObject:
   - component: {fileID: 8751212346895207037}
   - component: {fileID: 5863564256246202648}
   m_Layer: 0
-  m_Name: Text (TMP)
+  m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -228,12 +244,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3334186980091370202}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2605456106497023340}
+  m_Father: {fileID: 3577694025404158325}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.15, y: 0.75}
   m_AnchorMax: {x: 0.8, y: 0.95}
@@ -508,6 +524,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 2904930503880201713}
   - {fileID: 4363157812050389611}
   - {fileID: 5835678000221072894}
   m_Father: {fileID: 2605456106497023340}
