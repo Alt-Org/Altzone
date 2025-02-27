@@ -11,6 +11,7 @@ public class DailyTaskManager : AltMonoBehaviour
 {
     [Tooltip("Maximum time until a get or save data operation is forced to quit.")]
     [SerializeField] private float _timeoutSeconds = 10;
+    [SerializeField] private TabButtonsVisualController _tabButtonsVisualController;
 
     private PlayerData _currentPlayerData;
 
@@ -72,6 +73,8 @@ public class DailyTaskManager : AltMonoBehaviour
     {
         //DailyTask page setup
         StartCoroutine(DataSetup());
+
+        _tabButtonsVisualController.UpdateButton(_dailyTasksTabButton);
 
         //Buttons
         _dailyTasksTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.Tasks));
@@ -378,6 +381,7 @@ public class DailyTaskManager : AltMonoBehaviour
 
     public void ClearCurrentTask()
     {
+        _tabButtonsVisualController.UpdateButton(_dailyTasksTabButton);
         _currentPlayerData.Task.ClearProgress();
         _ownTaskPageHandler.ClearCurrentTask();
         _ownTaskTabButton.interactable = false;
@@ -524,14 +528,16 @@ public class DailyTaskManager : AltMonoBehaviour
                             if (_currentPlayerData != null && _currentPlayerData.Task != null)
                                 StartCoroutine(CancelTask());
 
+                            _tabButtonsVisualController.UpdateButton(_ownTaskTabButton);
                             StartCoroutine(GetSaveSetHandleOwnTask(data.Value.OwnPage));
                             SwitchTab(SelectedTab.OwnTask);
-                            _ownTaskTabButton.interactable = true;
+                            //_ownTaskTabButton.interactable = true;
                             break;
                         }
                     case PopupData.PopupDataType.CancelTask:
                         {
                             StartCoroutine(CancelTask());
+                            _tabButtonsVisualController.UpdateButton(_dailyTasksTabButton);
                             SwitchTab(SelectedTab.Tasks);
                             _ownTaskTabButton.interactable = false;
                             break;
