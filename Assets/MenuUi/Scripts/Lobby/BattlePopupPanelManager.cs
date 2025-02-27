@@ -35,6 +35,11 @@ public class BattlePopupPanelManager : MonoBehaviour
 
     public void ReturnToMain()
     {
+        if (_custom2v2WaitingRoom.activeSelf)
+        {
+            return;
+        }
+
         foreach (Transform t in transform)
         {
             if (ReferenceEquals(t.gameObject, _topPanel)) continue;
