@@ -34,6 +34,7 @@ public class Chat : MonoBehaviour
     public GameObject quickMessages;
     public GameObject[] sendButtons;
     public GameObject buttonOpenSendButtons;
+    public GameObject optionsMinimizeButton;
 
     private ScrollRect currentScrollRect; // Tällä hetkellä aktiivinen Scroll Rect
 
@@ -341,5 +342,6 @@ public class Chat : MonoBehaviour
         }
 
         buttonOpenSendButtons.SetActive(true);
+        optionsMinimizeButton.SetActive(false);
     }
 }
