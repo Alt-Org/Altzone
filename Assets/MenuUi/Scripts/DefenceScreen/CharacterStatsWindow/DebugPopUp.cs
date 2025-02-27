@@ -1,3 +1,4 @@
+using MenuUI.Scripts;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,7 +7,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     /// <summary>
     /// Controls character stats window debug popup functionality.
     /// </summary>
-    public class DebugPopUp : MonoBehaviour
+    public class DebugPopUp : AltMonoBehaviour
     {
         [SerializeField] private StatsWindowController _controller;
         [SerializeField] private GameObject _contents;
@@ -33,12 +34,13 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             if (_controller.IsCurrentCharacterLocked())
             {
+                _addCharacterButton.gameObject.SetActive(true);
                 _addCharacterButton.onClick.RemoveAllListeners();
                 _addCharacterButton.onClick.AddListener(AddCharacter);
             }
             else
             {
-                _addCharacterButton.interactable = false;
+                _addCharacterButton.gameObject.SetActive(false);
             }
 
             _contents.SetActive(true);
@@ -69,9 +71,11 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (success)
             {
-                success = false;
-                StartCoroutine(ServerManager.Instance.UpdateCustomCharacters(result => success = result));
-                if (success) Debug.Log($"Successfully added character {_controller.CurrentCharacterID}");
+                StartCoroutine(ServerManager.Instance.UpdateCustomCharacters(null));
+            }
+            else
+            {
+                SignalBus.OnChangePopupInfoSignal("Tätä hahmoa ei ole vielä lisätty pelipalvelimelle.");
             }
         }
     }
