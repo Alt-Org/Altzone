@@ -15,7 +15,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         [SerializeField] private RoomSearchPanelController _searchPanel;
         [SerializeField] private TMP_InputField _roomName;
-        [SerializeField] private BattlePopupCreateCustomRoomPanel _roomSwitcher;
+        [SerializeField] private BattlePopupPanelManager _roomSwitcher;
         [SerializeField] private Button _createRoomButton;
 
         private PhotonRoomList _photonRoomList;

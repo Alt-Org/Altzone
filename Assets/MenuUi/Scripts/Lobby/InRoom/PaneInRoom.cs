@@ -16,7 +16,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
         [SerializeField] private TextMeshProUGUI _battleID;
         [SerializeField] private Button _startGameButton;
         [SerializeField] private Button _backButton;
-        [SerializeField] private BattlePopupCreateCustomRoomPanel _roomSwitcher;
+        [SerializeField] private BattlePopupPanelManager _roomSwitcher;
 
         private void Start()
         {

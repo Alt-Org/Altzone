@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BattlePopupCreateCustomRoomPanel : MonoBehaviour
+public class BattlePopupPanelManager : MonoBehaviour
 {
     [SerializeField] private CustomBattleGameModeSelector _modeSelector;
     [SerializeField] private Button _createRoomButton;
