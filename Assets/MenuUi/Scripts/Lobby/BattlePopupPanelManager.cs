@@ -3,18 +3,11 @@ using UnityEngine.UI;
 
 public class BattlePopupPanelManager : MonoBehaviour
 {
-    [SerializeField] private CustomBattleGameModeSelector _modeSelector;
-    [SerializeField] private Button _createRoomButton;
 
     [Header("Panels")]
     [SerializeField] private GameObject _topPanel;
     [SerializeField] private GameObject _mainPanel;
     [SerializeField] private GameObject _custom2v2WaitingRoom;
-
-    private void Start()
-    {
-        //_createRoomButton.onClick.AddListener(CreateCustomRoom);
-    }
 
     public void SwitchRoom()
     {
