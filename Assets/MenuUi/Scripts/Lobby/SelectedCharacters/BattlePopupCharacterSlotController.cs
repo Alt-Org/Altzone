@@ -9,7 +9,6 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
     public class BattlePopupCharacterSlotController : AltMonoBehaviour
     {
         [SerializeField] private BattlePopupSelectedCharacter[] _selectedCharacterSlots;
-        [SerializeField] private ClassColorReference _classColorReference;
 
         private void OnEnable()
         {
@@ -35,8 +34,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                     CharacterID charID = playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i]) == null ? CharacterID.None : playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i]).Id;
                     PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(((int)charID).ToString());
                     if (charID is CharacterID.None) continue;
-                    CharacterClassID charClassID = CustomCharacter.GetClassID(charID);
-                    _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, _classColorReference.GetColor(charClassID), charID, true);
+                    _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charID, true);
                 }
             }));
         }
