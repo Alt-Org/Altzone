@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
+using System.Collections;
 
 public class Chat : MonoBehaviour
 {
@@ -164,8 +165,7 @@ public class Chat : MonoBehaviour
             {
                 if (currentContent != null)
                 {
-                    Canvas.ForceUpdateCanvases();
-                    currentScrollRect.verticalNormalizedPosition = 0f;
+                    StartCoroutine(UpdateLayoutAndScroll());
                     shouldScroll = false;
                 }
                 else
@@ -178,6 +178,17 @@ public class Chat : MonoBehaviour
         {
             Debug.LogError("Prefab ei ole määritetty.");
         }
+    }
+
+    private IEnumerator UpdateLayoutAndScroll()
+    {
+        yield return null;
+
+        Canvas.ForceUpdateCanvases();
+
+        yield return null;
+
+        currentScrollRect.verticalNormalizedPosition = 0f;
     }
 
     // Lisää vuorovaikutuksen viestiin (klikkauksen)
