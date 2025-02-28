@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace MenuUi.Scripts.TabLine
 {
     /// <summary>
-    /// Is used to set active and inactive tab button visuals.
+    /// Is used to set active and inactive tab button visuals. Also has a method which can be called to change swipe current page.
     /// </summary>
     public class TabLine : MonoBehaviour
     {
@@ -65,6 +65,19 @@ namespace MenuUi.Scripts.TabLine
                 if (i == index) continue;
 
                 _tabLineButtons[i].SetInactiveVisuals();
+            }
+        }
+
+
+        /// <summary>
+        /// Changes the current page for swipe. Works if getting active button from swipe is toggled on.
+        /// </summary>
+        /// <param name="index">The index which to change the swipe current page to.</param>
+        public void SetSwipeCurrentPage(int index)
+        {
+            if (_swipe != null && _getActiveButtonFromSwipe)
+            {
+                _swipe.CurrentPage = index;
             }
         }
 

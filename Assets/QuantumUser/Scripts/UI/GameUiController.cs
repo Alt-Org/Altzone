@@ -9,9 +9,12 @@ namespace QuantumUser.Scripts.UI
      */
     public class GameUiController : MonoBehaviour
     {
-        //View Scripts
+        // View Scripts
         public GameUiAnnouncementHandler AnnouncementHandler;
         public GameUiGameOverHandler GameOverHandler;
+
+        // Debug view scripts
+        public GameUiDebugStatsOverlay DebugStatsOverlay;
     }
 }
 

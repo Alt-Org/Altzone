@@ -6,7 +6,8 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
-using SignalBus = MenuUi.Scripts.Lobby.SignalBus;
+using LobbySignalBus = MenuUi.Scripts.Lobby.SignalBus;
+using StatsWindowSignalBus = MenuUi.Scripts.DefenceScreen.CharacterStatsWindow.SignalBus;
 
 
 namespace MenuUi.Scripts.CharacterGallery
@@ -19,13 +20,14 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private ModelView _view; //modelview script
 
         private PlayerData _playerData;
-
+        private bool _reloadRequested = false;
 
         private void Awake()
         {
             ServerManager.OnLogInStatusChanged += StartLoading;
-            SignalBus.OnRandomSelectedCharactersRequested += SetRandomSelectedCharactersToEmptySlots;
+            LobbySignalBus.OnRandomSelectedCharactersRequested += SetRandomSelectedCharactersToEmptySlots;
             _view.OnTopSlotCharacterSet += HandleCharacterSelected;
+            StatsWindowSignalBus.OnReloadCharacterGalleryRequested += OnReloadRequested;
         }
 
 
@@ -41,11 +43,22 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
+        private void OnEnable()
+        {
+            if (_reloadRequested)
+            {
+                StartCoroutine(Load());
+                _reloadRequested = false;
+            }
+        }
+
+
         private void OnDestroy()
         {
             ServerManager.OnLogInStatusChanged -= StartLoading;
-            SignalBus.OnRandomSelectedCharactersRequested -= SetRandomSelectedCharactersToEmptySlots;
+            LobbySignalBus.OnRandomSelectedCharactersRequested -= SetRandomSelectedCharactersToEmptySlots;
             _view.OnTopSlotCharacterSet -= HandleCharacterSelected;
+            StatsWindowSignalBus.OnReloadCharacterGalleryRequested -= OnReloadRequested;
         }
 
 
@@ -55,6 +68,12 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 StartCoroutine(Load());
             }
+        }
+
+
+        private void OnReloadRequested()
+        {
+            _reloadRequested = true;
         }
 
 

@@ -11051,7 +11051,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  taskType: 3
+  taskType: 4
 --- !u!1 &7327241278970989443
 GameObject:
   m_ObjectHideFlags: 0
@@ -14993,10 +14993,15 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 0.00012207031
       objectReference: {fileID: 0}
-    - target: {fileID: 2235068869896540795, guid: e41290d0959bdfe47b62024b1a7a3c44,
+    - target: {fileID: 2222347816155900672, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_fontSize
-      value: 28
+      value: 41.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 3009761069300292556, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 70.25
       objectReference: {fileID: 0}
     - target: {fileID: 3182016296135748293, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
@@ -15076,6 +15081,11 @@ PrefabInstance:
     - target: {fileID: 6853548187239314907, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7040586857891543688, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7141936146467267303, guid: e41290d0959bdfe47b62024b1a7a3c44,

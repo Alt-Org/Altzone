@@ -66,6 +66,8 @@ namespace Quantum
             projectile->Radius = projectileCollider->Shape.Circle.Radius;
 
             projectileTransform->Position = new FPVector2(0,0);
+
+            projectile->TestSpriteIndex = 0;
         }
     }
 }

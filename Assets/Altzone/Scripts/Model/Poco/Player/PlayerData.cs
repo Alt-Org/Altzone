@@ -77,7 +77,9 @@ namespace Altzone.Scripts.Model.Poco.Player
                 foreach (var id in SelectedCharacterIds)
                 {
                     if (string.IsNullOrEmpty(id)) continue;
-                    list.Add(CustomCharacters.FirstOrDefault(x => x.ServerID == id));
+                    CustomCharacter character = CustomCharacters.FirstOrDefault(x => x.ServerID == id);
+                    if(character == null) continue;
+                    list.Add(character);
                 }
                 while(list.Count < 3)
                 {
