@@ -5,6 +5,15 @@ using UnityEngine.UI;
 
 public class DailyTaskOwnTask : MonoBehaviour
 {
+    public enum MoodType
+    {
+        NoWork,
+        Lazy,
+        Ok,
+        Headache,
+        Depressed
+    }
+
     [Header("Current task")]
     [SerializeField] private TextMeshProUGUI _taskDescription;
     [SerializeField] private TextMeshProUGUI _taskPointsReward;
@@ -30,15 +39,25 @@ public class DailyTaskOwnTask : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _stipendClanRankValue;
 
     [Header("Texts")]
-    [SerializeField] private TextMeshProUGUI _breakRemainder;
     [SerializeField] private TextMeshProUGUI _randomText;
 
     [Header("Player Character")]
     [SerializeField] private Image _playerCharacterImage;
+    [Space]
+    [SerializeField] private GameObject _breakReminder;
+    [Space]
+    [SerializeField] private GameObject _workMoodNoWork;
+    [SerializeField] private GameObject _workMoodLazy;
+    [SerializeField] private GameObject _workMoodOk;
+    [SerializeField] private GameObject _workMoodHeadache;
+    [SerializeField] private GameObject _workMoodDepressed;
+
+    private MoodType _moodType = MoodType.Ok;
 
     private void Start()
     {
         CreateProgressBarMarkers(_progressMarkersMaxAmount);
+        SetMood(MoodType.Ok);
     }
 
     #region Task
@@ -111,6 +130,37 @@ public class DailyTaskOwnTask : MonoBehaviour
     }
 
     #endregion
+
+    public void SetMood(MoodType type)
+    {
+        //Turn off old mood.
+        switch (_moodType)
+        {
+            case MoodType.NoWork: break;
+            case MoodType.Lazy: break;
+            case MoodType.Ok: break;
+            case MoodType.Headache: _workMoodHeadache.SetActive(false); break;
+            case MoodType.Depressed: _workMoodDepressed.SetActive(false); break;
+        }
+
+        _moodType = type;
+
+        //Turn on new mood.
+        switch (type)
+        {
+            case MoodType.NoWork: break;
+            case MoodType.Lazy: break;
+            case MoodType.Ok: break;
+            case MoodType.Headache: _workMoodHeadache.SetActive(true); break;
+            case MoodType.Depressed: _workMoodDepressed.SetActive(true); break;
+        }
+
+        //Take a break reminder.
+        if (_moodType == MoodType.Headache || _moodType == MoodType.Depressed)
+            _breakReminder.SetActive(true);
+        else
+            _breakReminder.SetActive(false);
+    }
 
     public void SetStipend(int points, int coins, int rank)
     {
