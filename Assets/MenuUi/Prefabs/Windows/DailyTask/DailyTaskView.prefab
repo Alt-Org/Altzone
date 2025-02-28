@@ -2281,6 +2281,22 @@ MonoBehaviour:
   _ownTaskView: {fileID: 5799945842721123172}
   _cancelTaskButton: {fileID: 1406526738197953872}
   _ownTaskPageHandler: {fileID: 4056874342780474977}
+  _moodThresholds:
+  - Name: NoWork
+    MoodType: 0
+    PointsThreshold: -200
+  - Name: Lazy
+    MoodType: 1
+    PointsThreshold: -100
+  - Name: Ok
+    MoodType: 2
+    PointsThreshold: 0
+  - Name: Headache
+    MoodType: 3
+    PointsThreshold: 250
+  - Name: Depressed
+    MoodType: 4
+    PointsThreshold: 500
   _clanTaskView: {fileID: 7425742295815137930}
   _clanPlayerPrefab: {fileID: 2087235962053905287, guid: ed1d9f0efcd900e42a185007d600c9b0,
     type: 3}
@@ -7235,9 +7251,14 @@ MonoBehaviour:
   _stipendTotalPointsForClan: {fileID: 4444723493912825861}
   _stipendTotalCoinsForClan: {fileID: 2891421440095438851}
   _stipendClanRankValue: {fileID: 9001726670511110865}
-  _breakRemainder: {fileID: 8795159887434373624}
   _randomText: {fileID: 4621362454795590900}
   _playerCharacterImage: {fileID: 0}
+  _breakReminder: {fileID: 5069500926227110255}
+  _workMoodNoWork: {fileID: 0}
+  _workMoodLazy: {fileID: 0}
+  _workMoodOk: {fileID: 0}
+  _workMoodHeadache: {fileID: 609760832175801183}
+  _workMoodDepressed: {fileID: 8983482332033240472}
 --- !u!1 &5868981169891921101
 GameObject:
   m_ObjectHideFlags: 0
@@ -11938,6 +11959,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: DailyTaskMoodAngry
       objectReference: {fileID: 0}
+    - target: {fileID: 220783682325168354, guid: eca4a9cbc097fcb4b8a3f484df994f9e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6246309869710514909, guid: eca4a9cbc097fcb4b8a3f484df994f9e,
         type: 3}
       propertyPath: m_Pivot.x
@@ -12043,6 +12069,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eca4a9cbc097fcb4b8a3f484df994f9e, type: 3}
+--- !u!1 &609760832175801183 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 220783682325168354, guid: eca4a9cbc097fcb4b8a3f484df994f9e,
+    type: 3}
+  m_PrefabInstance: {fileID: 821396388611408829}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &6758062538612824416 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6246309869710514909, guid: eca4a9cbc097fcb4b8a3f484df994f9e,
@@ -12670,6 +12702,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fe3d7fa5838abe4aa4e8ec9d3743e5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _anchoredPosition: {x: 0, y: 0}
   _pressedDownDistance: 20
   _disableSelected: 1
 --- !u!1001 &8195321388068204048
@@ -13037,6 +13070,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: DailyTaskMoodSad
       objectReference: {fileID: 0}
+    - target: {fileID: 391184650588485118, guid: a24669f5ed8cae5438c08b7721bedf0a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5823994827381157825, guid: a24669f5ed8cae5438c08b7721bedf0a,
         type: 3}
       propertyPath: m_Pivot.x
@@ -13145,6 +13183,12 @@ PrefabInstance:
 --- !u!224 &2960137881197975463 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5823994827381157825, guid: a24669f5ed8cae5438c08b7721bedf0a,
+    type: 3}
+  m_PrefabInstance: {fileID: 8774834825577085030}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8983482332033240472 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 391184650588485118, guid: a24669f5ed8cae5438c08b7721bedf0a,
     type: 3}
   m_PrefabInstance: {fileID: 8774834825577085030}
   m_PrefabAsset: {fileID: 0}

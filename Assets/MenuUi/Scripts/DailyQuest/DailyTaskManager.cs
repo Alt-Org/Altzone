@@ -38,6 +38,16 @@ public class DailyTaskManager : AltMonoBehaviour
     [SerializeField] private GameObject _ownTaskView;
     [SerializeField] private Button _cancelTaskButton;
     [SerializeField] private DailyTaskOwnTask _ownTaskPageHandler;
+    [Space]
+    [SerializeField] private List<MoodThreshold> _moodThresholds;
+
+    [System.Serializable]
+    public struct MoodThreshold
+    {
+        public string Name;
+        public DailyTaskOwnTask.MoodType MoodType;
+        public int PointsThreshold;
+    }
 
     private string _ownTaskId;
     public string OwnTaskId { get { return _ownTaskId; } }
@@ -382,12 +392,28 @@ public class DailyTaskManager : AltMonoBehaviour
     public void ClearCurrentTask()
     {
         _tabButtonsVisualController.UpdateButton(_dailyTasksTabButton);
+        UpdateAvatarMood();
         _currentPlayerData.Task.ClearProgress();
         _ownTaskPageHandler.ClearCurrentTask();
         _ownTaskTabButton.interactable = false;
         SwitchTab(SelectedTab.Tasks);
         Debug.Log("Task id: " + _ownTaskId + ", has been cleard.");
         _ownTaskId = null;
+    }
+
+    private void UpdateAvatarMood()
+    {
+        int playerPoints = _currentPlayerData.points;
+
+        for (int i = 0; i < _moodThresholds.Count; i++)
+        {
+            if ((_moodThresholds[i].PointsThreshold <= playerPoints) &&
+                (((i + 1) >= _moodThresholds.Count) || (_moodThresholds[i + 1].PointsThreshold > playerPoints)))
+            {
+                _ownTaskPageHandler.SetMood(_moodThresholds[i].MoodType);
+                break;
+            }
+        }
     }
 
     #endregion
