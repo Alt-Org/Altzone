@@ -31,6 +31,13 @@ namespace MenuUi.Scripts.Signals
         {
             OnReloadCharacterGalleryRequested?.Invoke();
         }
+
+        public delegate void SelectedDefenceCharacterChanged(CharacterID characterID, int slot);
+        public static event SelectedDefenceCharacterChanged OnSelectedDefenceCharacterChanged;
+        public static void OnSelectedDefenceCharacterChangedSignal(CharacterID characterID, int slot)
+        {
+            OnSelectedDefenceCharacterChanged?.Invoke(characterID, slot);
+        }
     }
 }
 
@@ -53,6 +60,7 @@ namespace MenuUi.Scripts.CharacterGallery
             SignalBus.OnRandomSelectedCharactersRequested += SetRandomSelectedCharactersToEmptySlots;
             _view.OnTopSlotCharacterSet += HandleCharacterSelected;
             SignalBus.OnReloadCharacterGalleryRequested += OnReloadRequested;
+            SignalBus.OnSelectedDefenceCharacterChanged += HandleCharacterSelected;
         }
 
 
@@ -84,6 +92,7 @@ namespace MenuUi.Scripts.CharacterGallery
             SignalBus.OnRandomSelectedCharactersRequested -= SetRandomSelectedCharactersToEmptySlots;
             _view.OnTopSlotCharacterSet -= HandleCharacterSelected;
             SignalBus.OnReloadCharacterGalleryRequested -= OnReloadRequested;
+            SignalBus.OnSelectedDefenceCharacterChanged -= HandleCharacterSelected;
         }
 
 
@@ -98,7 +107,14 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void OnReloadRequested()
         {
-            _reloadRequested = true;
+            if (gameObject.activeInHierarchy)
+            {
+                StartCoroutine(Load());
+            }
+            else
+            {
+                _reloadRequested = true;
+            }
         }
 
 

@@ -1,7 +1,6 @@
 using System.Linq;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ModelV2;
-using Altzone.Scripts.ReferenceSheets;
 using UnityEngine;
 
 namespace MenuUi.Scripts.Lobby.SelectedCharacters
@@ -21,6 +20,20 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             RectTransform rectTransform = GetComponent<RectTransform>();
             rectTransform.offsetMin = new Vector2(rectTransform.offsetMin.x, 0);
             rectTransform.offsetMax = new Vector2(rectTransform.offsetMax.x, 0);
+
+            foreach (BattlePopupSelectedCharacter character in _selectedCharacterSlots)
+            {
+                character.SelectedCharactersChanged += SetCharacters;
+            }
+        }
+
+
+        private void OnDestroy()
+        {
+            foreach (BattlePopupSelectedCharacter character in _selectedCharacterSlots)
+            {
+                character.SelectedCharactersChanged -= SetCharacters;
+            }
         }
 
 
@@ -32,9 +45,11 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                 for (int i = 0; i < _selectedCharacterSlots.Length; i++)
                 {
                     CharacterID charID = playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i]) == null ? CharacterID.None : playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i]).Id;
-                    PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(((int)charID).ToString());
+
                     if (charID is CharacterID.None) continue;
-                    _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charID, true);
+
+                    PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(((int)charID).ToString());
+                    _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charID, true, i);
                 }
             }));
         }

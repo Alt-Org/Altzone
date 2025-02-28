@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ReferenceSheets;
+using MenuUi.Scripts.Signals;
+using System;
 
 namespace MenuUi.Scripts.Lobby.SelectedCharacters
 {
@@ -20,10 +22,13 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         [SerializeField] private ClassColorReference _classColorReference;
 
         private CharacterID _characterId;
+        private int _slotIdx;
         private Button _button;
         private bool _isOwnCharacter;
 
-        public Button ButtonComponent { get {  return _button; } }
+        public Button ButtonComponent { get { return _button; } }
+
+        public Action SelectedCharactersChanged;
 
 
         private void Awake()
@@ -43,7 +48,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         }
 
 
-        public void SetInfo(Sprite galleryImage, CharacterID charID, bool isOwnCharacter)
+        public void SetInfo(Sprite galleryImage, CharacterID charID, bool isOwnCharacter, int slotIdx)
         {
             _spriteImage.sprite = galleryImage;
 
@@ -52,7 +57,14 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
 
             _characterId = charID;
             _piechartPreview.UpdateChart(_characterId);
+
+            _slotIdx = slotIdx;
+
             _isOwnCharacter = isOwnCharacter;
+            if (!isOwnCharacter)
+            {
+                _button.enabled = false;
+            }
         }
 
 
@@ -70,23 +82,16 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
 
                 foreach (CustomCharacter character in characters)
                 {
-                    bool isValid = true;
-
-                    for (int i = 0; i < playerData.SelectedCharacterIds.Length; i++)
-                    {
-                        if (character.ServerID == playerData.SelectedCharacterIds[i])
-                        {
-                            isValid = false;
-                            break;
-                        }
-                    }
-
-                    if (isValid)
+                    if (character.Id != _characterId)
                     {
                         CreateDropdownButton(character);
                     }
                 }
-                _selectionDropdown.SetActive(true);
+
+                if (_selectionDropdownContent.childCount > 0) // only opening dropdown if there are dropdown buttons
+                {
+                    _selectionDropdown.SetActive(true);
+                }
             }));
         }
 
@@ -98,9 +103,33 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                 _selectionDropdown.SetActive(false);
                 for (int i = 0; i < _selectionDropdownContent.childCount; i++)
                 {
-                    Destroy(_selectionDropdownContent.GetChild(i).gameObject);
+                    Transform dropdownButton = _selectionDropdownContent.GetChild(i);
+                    Button buttonComponent = dropdownButton.GetComponent<Button>();
+                    buttonComponent.onClick.RemoveAllListeners();
+
+                    Destroy(dropdownButton.gameObject);
                 }
             }
+        }
+
+
+        private void HandleNewCharacterSelected(CustomCharacter newCharacter)
+        {
+            StartCoroutine(GetPlayerData(playerData =>
+            {
+                // Checking if we have to swap characters. The dropdown menu holds all characters except the current slot's.
+                for (int i = 0; i < playerData.SelectedCharacterIds.Length; i++)
+                {
+                    if (playerData.SelectedCharacterIds[i] == newCharacter.ServerID)
+                    {
+                        SignalBus.OnSelectedDefenceCharacterChangedSignal(_characterId, i); // swapping this slot's character to the other character's slot
+                    }
+                }
+
+                SignalBus.OnSelectedDefenceCharacterChangedSignal(newCharacter.Id, _slotIdx); // setting new character to this slot
+                SignalBus.OnReloadCharacterGalleryRequestedSignal();
+                SelectedCharactersChanged.Invoke();
+            }));
         }
 
 
@@ -118,6 +147,11 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
 
             // Button component
             Button button = dropdownButton.AddComponent<Button>();
+            button.onClick.AddListener(() =>
+            {
+                CloseSelectionDropdown();
+                HandleNewCharacterSelected(character);
+            });
 
             // Details image
             GameObject details = new();
@@ -142,7 +176,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             spriteRect.anchorMin = Vector2.zero;
             spriteRect.anchorMax = Vector2.one;
 
-
+            // Adding dropdown button to dropdown contents
             dropdownButton.transform.SetParent(_selectionDropdownContent, false);
         }
     }
