@@ -10158,6 +10158,7 @@ GameObject:
   - component: {fileID: 2281877276972694988}
   - component: {fileID: 4116104174498300769}
   - component: {fileID: 2879910939036819160}
+  - component: {fileID: 6642592827505862376}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -10272,6 +10273,62 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _blockType: 0
   _swipe: {fileID: 0}
+--- !u!114 &6642592827505862376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212261435947454022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 2
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 8968931620428145611}
+          m_TargetAssemblyTypeName: MenuUi.Scripts.Lobby.SelectedCharacters.BattlePopupSelectedCharacter,
+            MainMenu
+          m_MethodName: CloseSelectionDropdown
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 7422406984600924251}
+          m_TargetAssemblyTypeName: MenuUi.Scripts.Lobby.SelectedCharacters.BattlePopupSelectedCharacter,
+            MainMenu
+          m_MethodName: CloseSelectionDropdown
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 5263139612891805633}
+          m_TargetAssemblyTypeName: MenuUi.Scripts.Lobby.SelectedCharacters.BattlePopupSelectedCharacter,
+            MainMenu
+          m_MethodName: CloseSelectionDropdown
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1001 &562002541886020386
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13578,12 +13635,48 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8e246b0a47c7e6b489fcb7b2eeb10763, type: 3}
+--- !u!114 &5263139612891805633 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 563227481481763360, guid: 8e246b0a47c7e6b489fcb7b2eeb10763,
+    type: 3}
+  m_PrefabInstance: {fileID: 5682014403156159969}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 868d4614511c00f4896436d940c61a67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7422406984600924251 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3016072738772262330, guid: 8e246b0a47c7e6b489fcb7b2eeb10763,
+    type: 3}
+  m_PrefabInstance: {fileID: 5682014403156159969}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 868d4614511c00f4896436d940c61a67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &8402482226732219697 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4197650550993359056, guid: 8e246b0a47c7e6b489fcb7b2eeb10763,
     type: 3}
   m_PrefabInstance: {fileID: 5682014403156159969}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8968931620428145611 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3648648199182601770, guid: 8e246b0a47c7e6b489fcb7b2eeb10763,
+    type: 3}
+  m_PrefabInstance: {fileID: 5682014403156159969}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 868d4614511c00f4896436d940c61a67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &6721666594526202818
 PrefabInstance:
   m_ObjectHideFlags: 0
