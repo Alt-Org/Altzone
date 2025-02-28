@@ -23,6 +23,9 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         private Button _button;
         private bool _isOwnCharacter;
 
+        public Button ButtonComponent { get {  return _button; } }
+
+
         private void Awake()
         {
             _button = GetComponent<Button>();
@@ -36,7 +39,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
 
         private void OnDestroy()
         {
-            _button.onClick.RemoveAllListeners();
+            _button.onClick.RemoveListener(ToggleSelectionDropdown);
         }
 
 
@@ -88,12 +91,15 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         }
 
 
-        private void CloseSelectionDropdown()
+        public void CloseSelectionDropdown()
         {
-            _selectionDropdown.SetActive(false);
-            for (int i = 0; i < _selectionDropdownContent.childCount; i++)
+            if (_selectionDropdown.activeSelf)
             {
-                Destroy(_selectionDropdownContent.GetChild(i).gameObject);
+                _selectionDropdown.SetActive(false);
+                for (int i = 0; i < _selectionDropdownContent.childCount; i++)
+                {
+                    Destroy(_selectionDropdownContent.GetChild(i).gameObject);
+                }
             }
         }
 
