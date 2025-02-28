@@ -36,7 +36,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                     PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(((int)charID).ToString());
                     if (charID is CharacterID.None) continue;
                     CharacterClassID charClassID = CustomCharacter.GetClassID(charID);
-                    _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, _classColorReference.GetColor(charClassID), charID);
+                    _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, _classColorReference.GetColor(charClassID), charID, true);
                 }
             }));
         }
