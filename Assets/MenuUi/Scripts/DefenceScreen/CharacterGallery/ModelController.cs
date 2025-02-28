@@ -1,17 +1,38 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Linq;
 using Altzone.Scripts;
-using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
-using LobbySignalBus = MenuUi.Scripts.Lobby.SignalBus;
-using StatsWindowSignalBus = MenuUi.Scripts.DefenceScreen.CharacterStatsWindow.SignalBus;
 
 
 namespace MenuUi.Scripts.CharacterGallery
 {
+    public static partial class SignalBus
+    {
+        public delegate void RandomSelectedCharactersRequested();
+        public static event RandomSelectedCharactersRequested OnRandomSelectedCharactersRequested;
+        public static void OnRandomSelectedCharactersRequestedSignal()
+        {
+            OnRandomSelectedCharactersRequested?.Invoke();
+        }
+
+        public delegate void DefenceGalleryEditModeRequested();
+        public static event DefenceGalleryEditModeRequested OnDefenceGalleryEditModeRequested;
+        public static void OnDefenceGalleryEditModeRequestedSignal()
+        {
+            OnDefenceGalleryEditModeRequested?.Invoke();
+        }
+
+        public delegate void ReloadCharacterGalleryRequested();
+        public static event ReloadCharacterGalleryRequested OnReloadCharacterGalleryRequested;
+        public static void OnReloadCharacterGalleryRequestedSignal()
+        {
+            OnReloadCharacterGalleryRequested?.Invoke();
+        }
+    }
+
+
     /// <summary>
     /// Controls the character gallery "model". Has methods for loading gallery characters and controlling the selected characters such as initiating the saving or selecting random characters.
     /// </summary>
@@ -25,9 +46,9 @@ namespace MenuUi.Scripts.CharacterGallery
         private void Awake()
         {
             ServerManager.OnLogInStatusChanged += StartLoading;
-            LobbySignalBus.OnRandomSelectedCharactersRequested += SetRandomSelectedCharactersToEmptySlots;
+            SignalBus.OnRandomSelectedCharactersRequested += SetRandomSelectedCharactersToEmptySlots;
             _view.OnTopSlotCharacterSet += HandleCharacterSelected;
-            StatsWindowSignalBus.OnReloadCharacterGalleryRequested += OnReloadRequested;
+            SignalBus.OnReloadCharacterGalleryRequested += OnReloadRequested;
         }
 
 
@@ -56,9 +77,9 @@ namespace MenuUi.Scripts.CharacterGallery
         private void OnDestroy()
         {
             ServerManager.OnLogInStatusChanged -= StartLoading;
-            LobbySignalBus.OnRandomSelectedCharactersRequested -= SetRandomSelectedCharactersToEmptySlots;
+            SignalBus.OnRandomSelectedCharactersRequested -= SetRandomSelectedCharactersToEmptySlots;
             _view.OnTopSlotCharacterSet -= HandleCharacterSelected;
-            StatsWindowSignalBus.OnReloadCharacterGalleryRequested -= OnReloadRequested;
+            SignalBus.OnReloadCharacterGalleryRequested -= OnReloadRequested;
         }
 
 

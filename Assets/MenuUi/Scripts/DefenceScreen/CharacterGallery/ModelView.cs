@@ -7,7 +7,6 @@ using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ReferenceSheets;
 using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine.UI;
-using SignalBus = MenuUi.Scripts.Lobby.SignalBus;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
