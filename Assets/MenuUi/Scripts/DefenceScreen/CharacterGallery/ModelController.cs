@@ -4,9 +4,10 @@ using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
+using MenuUi.Scripts.Signals;
 
 
-namespace MenuUi.Scripts.CharacterGallery
+namespace MenuUi.Scripts.Signals
 {
     public static partial class SignalBus
     {
@@ -31,8 +32,11 @@ namespace MenuUi.Scripts.CharacterGallery
             OnReloadCharacterGalleryRequested?.Invoke();
         }
     }
+}
 
 
+namespace MenuUi.Scripts.CharacterGallery
+{
     /// <summary>
     /// Controls the character gallery "model". Has methods for loading gallery characters and controlling the selected characters such as initiating the saving or selecting random characters.
     /// </summary>

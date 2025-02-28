@@ -3,7 +3,7 @@ using System.Collections;
 using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine;
 using UnityEngine.UI;
-using SignalBus = MenuUi.Scripts.CharacterGallery.SignalBus;
+using MenuUi.Scripts.Signals;
 
 namespace MenuUi.Scripts.Lobby
 {

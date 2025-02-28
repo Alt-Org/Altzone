@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
+using MenuUi.Scripts.Signals;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
-using CharacterGallerySignalBus = MenuUi.Scripts.CharacterGallery.SignalBus;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
@@ -77,7 +77,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                     {
                         if (result)
                         {
-                            CharacterGallerySignalBus.OnReloadCharacterGalleryRequestedSignal();
+                            SignalBus.OnReloadCharacterGalleryRequestedSignal();
                             _controller.ReloadStatWindow();
                         }
                     }
