@@ -13,12 +13,18 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
     [RequireComponent(typeof(Button))]
     public class BattlePopupSelectedCharacter : AltMonoBehaviour
     {
+        [Header("Character slot references")]
         [SerializeField] private Image _spriteImage;
         [SerializeField] private Image _backgroundImage;
         [SerializeField] private Image _backgroundDetailsImage;
         [SerializeField] private PieChartPreview _piechartPreview;
+
+        [Header("Dropdown references")]
         [SerializeField] private GameObject _selectionDropdown;
         [SerializeField] private Transform _selectionDropdownContent;
+        [SerializeField] private BaseScrollRect _dropdownScrollRect;
+
+        [Header("Reference sheet")]
         [SerializeField] private ClassColorReference _classColorReference;
 
         private CharacterID _characterId;
@@ -109,6 +115,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
 
                     Destroy(dropdownButton.gameObject);
                 }
+                _dropdownScrollRect.VerticalNormalizedPosition = 1;
             }
         }
 
