@@ -46,8 +46,11 @@ public class DailyTaskProgressPopup : MonoBehaviour
     [SerializeField] private TMP_Text _progressPopupClanMilestoneRewardValue;
 
     private bool _progressPopupCooldown = false;
+    private bool _taskPopupActive = false;
+    private bool _clanPopupActive = false;
     private Coroutine _coroutineMovePopup = null;
     private Coroutine _coroutineCooldownPopup = null;
+    private int _phase = 1;
 
     public enum ContainerType
     {
@@ -82,6 +85,9 @@ public class DailyTaskProgressPopup : MonoBehaviour
     private void Reset()
     {
         _progressPopupCooldown = false;
+        _taskPopupActive = false;
+        _clanPopupActive = false;
+        _phase = 1;
         _progressPopupDailyTaskContainer.transform.position = _progressPopupDailyTaskHiddenLocation.position;
         _progressPopupDailyTaskContainer.SetActive(false);
 
@@ -94,10 +100,14 @@ public class DailyTaskProgressPopup : MonoBehaviour
 
     private void ShowTaskProgressPopup()
     {
+        if (_clanPopupActive)
+            return;
+
         if (!_progressPopupCooldown)
         {
+            _taskPopupActive = true;
             _progressPopupCooldown = true;
-            _coroutineMovePopup = StartCoroutine(MoveProgressPopupContainer());
+            _coroutineMovePopup = StartCoroutine(MoveProgressPopupContainer(ContainerType.Task));
         }
 
         var task = DailyTaskProgressManager.Instance.CurrentPlayerTask;
@@ -110,12 +120,17 @@ public class DailyTaskProgressPopup : MonoBehaviour
         SwitchPopupContainer(ContainerType.Task);
     }
 
-    private void ShowClanMilestonePopup()
+    private IEnumerator ShowClanMilestonePopup()
     {
-        if (!_progressPopupCooldown)
+        if (!_progressPopupCooldown || !_clanPopupActive)
         {
             _progressPopupCooldown = true;
-            _coroutineMovePopup = StartCoroutine(MoveProgressPopupContainer());
+            _clanPopupActive = true;
+
+            while (_taskPopupActive)
+                yield return null;
+
+            _coroutineMovePopup = StartCoroutine(MoveProgressPopupContainer(ContainerType.Clan));
         }
 
         //_progressPopupClanMilestoneRewardImage.sprite = INSERT IMAGE HERE;
@@ -129,20 +144,21 @@ public class DailyTaskProgressPopup : MonoBehaviour
     /// to visible, waits for a specifide time and then moves it self back <br/>
     /// to hidden position.
     /// </summary>
-    private IEnumerator MoveProgressPopupContainer()
+    private IEnumerator MoveProgressPopupContainer(ContainerType type)
     {
-        int phase = 1;
+        _phase = 1;
 
         _progressPopupDailyTaskContainer.SetActive(true);
 
-        while (phase < 4)
+        while (_phase < 4)
         {
-            float timer = 0, curve;
+            float timer = 0f;
+            float curve = 0f;
 
-            if (phase == 1 || phase == 3)
+            if (_phase == 1 || _phase == 3)
                 while (timer < _progressPopupContainerMoveTime)
                 {
-                    if (phase == 1)
+                    if (_phase == 1)
                         curve = _progressPopupContainerAnimationCurve.Evaluate(timer / _progressPopupContainerMoveTime);
                     else //phase == 3
                         curve = _progressPopupContainerAnimationCurve.Evaluate(1f - (timer / _progressPopupContainerMoveTime));
@@ -152,19 +168,27 @@ public class DailyTaskProgressPopup : MonoBehaviour
                     timer += Time.deltaTime;
                     yield return null;
                 }
-            else if (phase == 2)
+            else if (_phase == 2)
                 while (timer < _progressPopupContainerStopTime)
                 {
+                    // If clan popup is waiting, proceed to pahse 3 to close the task popup.
+                    if (_taskPopupActive && _clanPopupActive)
+                        break;
+
                     timer += Time.deltaTime;
                     yield return null;
                 }
 
-            phase++;
+            _phase++;
             yield return null;
         }
 
         _progressPopupDailyTaskContainer.SetActive(false);
-        _coroutineCooldownPopup = StartCoroutine(ProgressPopupCooldownTimer());
+
+        if (_taskPopupActive != _clanPopupActive)
+            _coroutineCooldownPopup = StartCoroutine(ProgressPopupCooldownTimer(type));
+        else if (_taskPopupActive)
+            _taskPopupActive = false;
     }
 
     private void SwitchPopupContainer(ContainerType type)
@@ -196,9 +220,24 @@ public class DailyTaskProgressPopup : MonoBehaviour
         _progressPopupCoinsRewardValue.text = "" + task.Coins;
     }
 
-    private IEnumerator ProgressPopupCooldownTimer()
+    private IEnumerator ProgressPopupCooldownTimer(ContainerType type)
     {
-        yield return new WaitForSeconds(_progressPopupContainerShowCooldown);
+        float time = 0;
+
+        while (time < _progressPopupContainerShowCooldown)
+        {
+            if (type == ContainerType.Task && _clanPopupActive)
+                break;
+
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        switch (type)
+        {
+            case ContainerType.Task: _taskPopupActive = false; break;
+            case ContainerType.Clan: _clanPopupActive = false; break;
+        }
 
         _progressPopupCooldown = false;
     }
