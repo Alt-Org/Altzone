@@ -48,6 +48,12 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         }
 
 
+        private void OnDisable()
+        {
+            CloseSelectionDropdown();
+        }
+
+
         private void OnDestroy()
         {
             _button.onClick.RemoveListener(ToggleSelectionDropdown);
