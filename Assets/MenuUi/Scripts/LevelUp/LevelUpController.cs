@@ -20,22 +20,24 @@ public class LevelUpController : MonoBehaviour
 
     // The image element where the reward sprite will be displayed
 
-    // Character rewards
+
+    [Header("LevelUpPanel")]
+    [Header("Character rewards")]
     public Reward[] CharacterRewards;
     public TMP_Text RewardCharacterNameText;
     public Image RewardCharacterImage;
 
-    // Furniture rewards
+    [Header("Furniture rewards")]
     public Reward[] FurnitureRewards;
     public TMP_Text RewardFurnitureNameText;
     public Image RewardFurnitureImage;
 
-    // Coin rewards
+    [Header("Coin rewards")]
     public Reward[] CoinRewards;
     public TMP_Text RewardCoinNameText;
     public Image RewardCoinsImage;
 
-    // Diamond rewards
+    [Header("Diamond rewards")]
     public Reward[] DiamondRewards;
     public TMP_Text RewardDiamondNameText;
     public Image RewardDiamondsImage;
@@ -47,7 +49,19 @@ public class LevelUpController : MonoBehaviour
     public Image Reward5Image;
 
     // Index to track the randomly selected reward
-    private int rewardIndex; 
+    private int rewardIndex;
+
+    [Header("Confirmation window")]
+    public GameObject Confirmation_Window;
+    public Image ConfirmationImage;
+    public TMP_Text RewardText;
+    public TMP_Text ConfirmationTypeText;
+    public TMP_Text AmountText;
+
+    private int selectedAmount;
+    private string selectedType;
+    private bool selectedHasRarity;
+
 
     // Start is called before the first frame update
     void Start()
@@ -74,32 +88,99 @@ public class LevelUpController : MonoBehaviour
     private void AssignRandomCharacterReward()
     {
         rewardIndex = Random.Range(0, CharacterRewards.Length);
-        RewardCharacterImage.sprite = CharacterRewards[rewardIndex].Sprite;
-        RewardCharacterNameText.text = CharacterRewards[rewardIndex].Name;
+        Reward selectedReward = CharacterRewards[rewardIndex];
+
+        RewardCharacterImage.sprite = selectedReward.Sprite;
+        RewardCharacterNameText.text = selectedReward.Name;
+
+        ShowConfirmation(selectedReward, "Character", 0, true);
     }
     private void AssignRandomFurnitureReward()
     {
         rewardIndex = Random.Range(0, FurnitureRewards.Length);
-        RewardFurnitureImage.sprite = FurnitureRewards[rewardIndex].Sprite;
-        RewardFurnitureNameText.text = FurnitureRewards[rewardIndex].Name;
+        Reward selectedReward = FurnitureRewards[rewardIndex];
+
+        RewardFurnitureImage.sprite = selectedReward.Sprite;
+        RewardFurnitureNameText.text = selectedReward.Name;
     }
     private void AssignRandomCoinsReward()
     {
         rewardIndex = Random.Range(0, CoinRewards.Length);
-        RewardCoinsImage.sprite = CoinRewards[rewardIndex].Sprite;
-        RewardCoinNameText.text= CoinRewards[rewardIndex].Name;
+        Reward selectedReward = CoinRewards[rewardIndex];
+
+        int coinsAmount = Random.Range(100, 1000);
+
+        ShowConfirmation(selectedReward, "Coins", coinsAmount, false);
     }
     private void AssignRandomDiamondsReward()
     {
         rewardIndex = Random.Range(0, DiamondRewards.Length);
-        RewardDiamondsImage.sprite = DiamondRewards[rewardIndex].Sprite;
-        RewardDiamondNameText.text = DiamondRewards[rewardIndex].Name;
+        Reward selectedReward = DiamondRewards[rewardIndex];
+
+        int diamondAmount = Random.Range(100, 1000);
+
+        ShowConfirmation(selectedReward, "Coins", diamondAmount, false);
     }
     private void AssignRandomReward5()
     {
         rewardIndex = Random.Range(0, Reward5Rewards.Length);
-        Reward5Image.sprite = Reward5Rewards[rewardIndex].Sprite;
-        Reward5RewardsNameText.text = Reward5Rewards[rewardIndex].Name; 
+        Reward selectedReward = Reward5Rewards[rewardIndex];
+
+        Reward5Image.sprite = selectedReward.Sprite;
+        Reward5RewardsNameText.text = selectedReward.Name;
     }
+
+    public void ShowConfirmation(Reward selectedReward, string type, int amount = 0, bool showRarity =true)
+    {
+
+        if (selectedReward == null) return;
+
+        ConfirmationImage.sprite = selectedReward.Sprite;
+        RewardText.text = selectedReward.Name;
+
+        if (selectedHasRarity)
+        {
+            ConfirmationTypeText.text = "Rarity: " + selectedType;
+            ConfirmationTypeText.gameObject.SetActive(true);
+        }
+        else
+        {
+            ConfirmationTypeText.gameObject.SetActive(false);
+        }
+
+        if (amount > 0)
+        {
+            AmountText.text = "Amount: " + selectedAmount.ToString();
+            AmountText.gameObject.SetActive(true);
+        }
+        else
+        {
+            AmountText.gameObject.SetActive(false);
+        }
+
+        Confirmation_Window.SetActive(true);
+    }
+
+    public class RewardObject
+    {
+        protected string _name;
+
+        public string Name { get => _name; }
+
+        public string Image { get; }
+
+        public string Type { get; }
+
+        protected RewardObject(string name, string image)
+        {
+            _name = name;
+            Image = image;
+        }
+    }
+
+    //public class CharacterRewardObject : RewardObject
+    //{
+
+    //}
 }
 
