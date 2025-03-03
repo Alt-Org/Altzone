@@ -101,6 +101,18 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.GridPosition))]
+  public unsafe partial class GridPositionPrototype : StructPrototype {
+    public Int32 Row;
+    public Int32 Col;
+    partial void MaterializeUser(Frame frame, ref Quantum.GridPosition result, in PrototypeMaterializationContext context);
+    public void Materialize(Frame frame, ref Quantum.GridPosition result, in PrototypeMaterializationContext context = default) {
+        result.Row = this.Row;
+        result.Col = this.Col;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Input))]
   public unsafe partial class InputPrototype : StructPrototype {
     public Button MouseClick;

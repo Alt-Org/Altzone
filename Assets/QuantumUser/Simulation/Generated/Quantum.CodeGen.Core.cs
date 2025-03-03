@@ -430,6 +430,29 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  [Serializable()]
+  public unsafe partial struct GridPosition {
+    public const Int32 SIZE = 8;
+    public const Int32 ALIGNMENT = 4;
+    [FieldOffset(4)]
+    public Int32 Row;
+    [FieldOffset(0)]
+    public Int32 Col;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 3461;
+        hash = hash * 31 + Row.GetHashCode();
+        hash = hash * 31 + Col.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (GridPosition*)ptr;
+        serializer.Stream.Serialize(&p->Col);
+        serializer.Stream.Serialize(&p->Row);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Input {
     public const Int32 SIZE = 56;
     public const Int32 ALIGNMENT = 8;
@@ -978,6 +1001,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.GameSession), Quantum.GameSession.SIZE);
       typeRegistry.Register(typeof(Quantum.GameState), 4);
       typeRegistry.Register(typeof(Quantum.Goal), Quantum.Goal.SIZE);
+      typeRegistry.Register(typeof(Quantum.GridPosition), Quantum.GridPosition.SIZE);
       typeRegistry.Register(typeof(HingeJoint), HingeJoint.SIZE);
       typeRegistry.Register(typeof(HingeJoint3D), HingeJoint3D.SIZE);
       typeRegistry.Register(typeof(Hit), Hit.SIZE);
