@@ -8,23 +8,11 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
     public class BattlePopupCharacterSlotController : AltMonoBehaviour
     {
         [SerializeField] private BattlePopupSelectedCharacter[] _selectedCharacterSlots;
+        [SerializeField] private bool _isInRoom;
 
         private void OnEnable()
         {
-            SetCharacters();
-        }
-
-
-        private void Start()
-        {
-            RectTransform rectTransform = GetComponent<RectTransform>();
-            rectTransform.offsetMin = new Vector2(rectTransform.offsetMin.x, 0);
-            rectTransform.offsetMax = new Vector2(rectTransform.offsetMax.x, 0);
-
-            foreach (BattlePopupSelectedCharacter character in _selectedCharacterSlots)
-            {
-                character.SelectedCharactersChanged += SetCharacters;
-            }
+            if (!_isInRoom) SetCharacters();
         }
 
 
@@ -37,7 +25,10 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         }
 
 
-        private void SetCharacters()
+        /// <summary>
+        /// Set player characters. Gets info from player data.
+        /// </summary>
+        public void SetCharacters()
         {
             StartCoroutine(GetPlayerData(playerData =>
             {
@@ -51,7 +42,27 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                     PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(((int)charID).ToString());
                     _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charID, true, i);
                 }
+
+                foreach (BattlePopupSelectedCharacter character in _selectedCharacterSlots)
+                {
+                    character.SelectedCharactersChanged += SetCharacters;
+                }
             }));
+        }
+
+
+        /// <summary>
+        /// Set player characters based on given selected character ids. Stats are passed onwards to initialize piechart preview.
+        /// </summary>
+        /// <param name="selectedCharacterIds">The selected character ids to display.</param>
+        /// <param name="stats">The stats for all three characters in an int array. Order: Hp, Speed, CharacterSize, Attack, Defence.</param>
+        public void SetCharacters(int[] selectedCharacterIds, int[] stats)
+        {
+            for (int i = 0; i <= selectedCharacterIds.Length; i++)
+            {
+                PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(selectedCharacterIds[i].ToString());
+                _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charInfo.CharacterId, false, i, stats[(i * 5)..(i * 5 + 4)]);
+            }
         }
     }
 }

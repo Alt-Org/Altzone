@@ -60,7 +60,15 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         }
 
 
-        public void SetInfo(Sprite galleryImage, CharacterID charID, bool isOwnCharacter, int slotIdx)
+        /// <summary>
+        /// Set character info to the battle popup selected character slot.
+        /// </summary>
+        /// <param name="galleryImage">Character's gallery sprite.</param>
+        /// <param name="charID">Character id.</param>
+        /// <param name="isOwnCharacter">If the character is this player's own character or owned by someone else (a teammate or opposing player).</param>
+        /// <param name="slotIdx">The slot index for this selected character slot.</param>
+        /// <param name="stats">The stats for the character in an int array. Order: Hp, Speed, CharacterSize, Attack, Defence.</param>
+        public void SetInfo(Sprite galleryImage, CharacterID charID, bool isOwnCharacter, int slotIdx, int[] stats = null)
         {
             _spriteImage.sprite = galleryImage;
 
@@ -68,7 +76,6 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             _backgroundImage.color = _classColorReference.GetColor(charClassID);
 
             _characterId = charID;
-            _piechartPreview.UpdateChart(_characterId);
 
             _slotIdx = slotIdx;
 
@@ -76,6 +83,15 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             if (!isOwnCharacter)
             {
                 _button.enabled = false;
+            }
+
+            if (stats != null)
+            {
+                _piechartPreview.UpdateChart(stats[3], stats[0], stats[4], stats[2], stats[1]);
+            }
+            else
+            {
+                _piechartPreview.UpdateChart(_characterId);
             }
         }
 
