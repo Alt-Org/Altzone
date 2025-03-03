@@ -149,6 +149,7 @@ namespace Quantum.Prototypes {
     public FPVector2 Direction;
     public FP CoolDown;
     public FP Radius;
+    public Int32 TestSpriteIndex;
     partial void MaterializeUser(Frame frame, ref Quantum.Projectile result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.Projectile component = default;
@@ -161,6 +162,7 @@ namespace Quantum.Prototypes {
         result.Direction = this.Direction;
         result.CoolDown = this.CoolDown;
         result.Radius = this.Radius;
+        result.TestSpriteIndex = this.TestSpriteIndex;
         MaterializeUser(frame, ref result, in context);
     }
   }
@@ -194,21 +196,6 @@ namespace Quantum.Prototypes {
         PrototypeValidator.FindMapEntity(this.ChildEntity, in context, out result.ChildEntity);
         result.Normal = this.Normal;
         result.CollisionMinOffset = this.CollisionMinOffset;
-    }
-  }
-  [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.SpawnIdentifier))]
-  public unsafe partial class SpawnIdentifierPrototype : ComponentPrototype<Quantum.SpawnIdentifier> {
-    [HideInInspector()]
-    public Int32 _empty_prototype_dummy_field_;
-    partial void MaterializeUser(Frame frame, ref Quantum.SpawnIdentifier result, in PrototypeMaterializationContext context);
-    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.SpawnIdentifier component = default;
-        Materialize((Frame)f, ref component, in context);
-        return f.Set(entity, component) == SetResult.ComponentAdded;
-    }
-    public void Materialize(Frame frame, ref Quantum.SpawnIdentifier result, in PrototypeMaterializationContext context = default) {
-        MaterializeUser(frame, ref result, in context);
     }
   }
 }

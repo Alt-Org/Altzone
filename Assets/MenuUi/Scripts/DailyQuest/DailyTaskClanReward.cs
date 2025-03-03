@@ -1,9 +1,5 @@
-using System.Data;
 using TMPro;
 using UnityEngine;
-#if UNITY_EDITOR
-using static UnityEditor.LightingExplorerTableColumn;
-#endif
 
 public class DailyTaskClanReward : MonoBehaviour
 {
@@ -22,6 +18,8 @@ public class DailyTaskClanReward : MonoBehaviour
     [Header("Values")]
     [SerializeField] private TextMeshProUGUI _rewardThreshold;
 
+    private DailyTaskManager _dailyTaskManager;
+
     public enum ClanRewardType
     {
         Box,
@@ -34,23 +32,29 @@ public class DailyTaskClanReward : MonoBehaviour
         private bool _open;
         private ClanRewardType _type;
         private int _threshold;
+        private Sprite _rewardImage;
+        private int _rewardAmount;
 
         public bool Open { get { return _open; } }
         public ClanRewardType Type { get { return _type; } }
         public int Threshold { get { return _threshold; } }
+        public Sprite RewardImage { get { return _rewardImage; } }
+        public int RewardAmount { get { return _rewardAmount; } }
 
-        public ClanRewardData(bool open, ClanRewardType type, int threshold)
+        public ClanRewardData(bool open, ClanRewardType type, int threshold, Sprite rewardImage, int rewardAmount)
         {
             _open = open;
             _type = type;
             _threshold = threshold;
+            _rewardImage = rewardImage;
+            _rewardAmount = rewardAmount;
         }
     }
 
     private ClanRewardData _data;
     public ClanRewardData Data { get { return _data; } }
 
-    public void Set(ClanRewardData data)
+    public void Set(ClanRewardData data, DailyTaskManager dailyTaskManager)
     {
         _data = data;
 
@@ -64,11 +68,22 @@ public class DailyTaskClanReward : MonoBehaviour
         _openedChestReward.SetActive(data.Type == ClanRewardType.Chest);
 
         _rewardThreshold.text = "" + data.Threshold;
+
+        _dailyTaskManager = dailyTaskManager;
     }
 
     public void UpdateState(bool open)
     {
         _unopenedBaseReward.SetActive(!open);
         _openedBaseReward.SetActive(open);
+    }
+
+    /// <summary>
+    /// Used when user clicks this clan milestone reward.
+    /// </summary>
+    public void OpenClanRewardPopup()
+    {
+        PopupData popupData = new(_data, transform.position);
+        StartCoroutine(_dailyTaskManager.ShowPopupAndHandleResponse("", popupData));
     }
 }

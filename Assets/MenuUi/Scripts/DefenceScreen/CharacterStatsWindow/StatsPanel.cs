@@ -5,10 +5,14 @@ using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
+    /// <summary>
+    /// Controls visual functionality of CharacterStatsPanel.
+    /// </summary>
     public class StatsPanel : MonoBehaviour
     {
         [SerializeField] private StatsWindowController _controller;
         [SerializeField] private Image _characterImage;
+        [SerializeField] private Image _lockImage;
         [SerializeField] private TMP_Text _attackText;
         [SerializeField] private TMP_Text _hpText;
         [SerializeField] private TMP_Text _defenceText;
@@ -21,6 +25,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             SetStatButtonTexts();
 
             _controller.OnStatUpdated += SetStatButtonTexts;
+
+            if(_controller.IsCurrentCharacterLocked())
+            {
+                _lockImage.gameObject.SetActive(true);
+            }
+            else
+            {
+                _lockImage.gameObject.SetActive(false);
+            }
         }
 
 

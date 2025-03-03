@@ -45,6 +45,8 @@ namespace Quantum
             Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
             playerTransform->Teleport(f, spawnPos2D);
             playerTransform->Rotation = rotation;
+
+            f.Events.UpdateDebugStatsOverlay(data.Characters[0]);
         }
     }
 }

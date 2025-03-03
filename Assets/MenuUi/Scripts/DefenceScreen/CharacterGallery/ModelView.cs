@@ -104,55 +104,84 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
+        /// <summary>
+        /// Set edit toggle status to true.
+        /// </summary>
         public void ChangeEditToggleStatusToTrue()
         {
             _editModeToggle.isOn = true;
         }
 
 
+        /// <summary>
+        /// Set edit toggle status to false.
+        /// </summary>
         public void ChangeEditToggleStatusToFalse()
         {
             _editModeToggle.isOn = false;
         }
 
 
+        /// <summary>
+        /// Toggle edit mode based on the value of edit mode toggle.
+        /// </summary>
         public void ToggleEditMode()
         {
             SetCharacterSlotsSelectable(_editModeToggle.isOn);
         }
 
 
-        public void SetCharacters(List<CustomCharacter> characters, int[] currentCharacterIds)
+        /// <summary>
+        /// Place the characters to character gallery.
+        /// </summary>
+        /// <param name="customCharacters">List of player's custom (owned) characters.</param>
+        /// <param name="selectedCharacterIds">Array of selected character ids which will be placed to the top slot.</param>
+        public void SetCharacters(List<CustomCharacter> customCharacters, int[] selectedCharacterIds)
         {
             DataStore store = Storefront.Get();
 
             ReadOnlyCollection<BaseCharacter> allItems = null;
             store.GetAllBaseCharacterYield(result => allItems = result);
 
-            foreach (BaseCharacter character in allItems)
+            foreach (BaseCharacter baseCharacter in allItems)
             {
-                PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(((int)character.Id).ToString());
+                PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(((int)baseCharacter.Id).ToString());
                 if (info == null) continue;
 
                 GameObject slot = Instantiate(_characterSlotPrefab, _characterGridContent);
 
-                CharacterClassID classID = CustomCharacter.GetClassID(character.Id);
+                CharacterClassID classID = CustomCharacter.GetClassID(baseCharacter.Id);
                 Color bgColor = _classColorReference.GetColor(classID);
                 Color bgAltColor = _classColorReference.GetAlternativeColor(classID);
 
                 CharacterSlot charSlot = slot.GetComponent<CharacterSlot>();
-                charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, character.Id);
+                charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, baseCharacter.Id);
 
                 _characterSlots.Add(charSlot);
                 charSlot.OnCharacterSelected += HandleCharacterSelected;
 
                 for (int i = 0; i < _selectedCharacterSlots.Length; i++)
                 {
-                    if (character.Id == (CharacterID)currentCharacterIds[i])
+                    if (baseCharacter.Id == (CharacterID)selectedCharacterIds[i])
                     {
                         charSlot.Character.transform.SetParent(_selectedCharacterSlots[i].transform, false);
                         charSlot.Character.SetSelectedVisuals();
                     }
+                }
+
+                bool characterOwned = false;
+                foreach (CustomCharacter customCharacter in customCharacters)
+                {
+                    if (customCharacter.Id == baseCharacter.Id)
+                    {
+                        characterOwned = true;
+                    }
+                }
+
+                if (!characterOwned)
+                {
+                    charSlot.Character.SetLockedVisuals();
+                    charSlot.IsLocked = true;
                 }
             }
         }
@@ -182,7 +211,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 galleryCharacter.ReturnToOriginalSlot();
                 SetTopSlotCharacter(CharacterID.None, selectedCharacterSlot.SlotIndex);
             }
-            else if (galleryCharacter != null)
+            else if (galleryCharacter != null && !pressedSlot.IsLocked) // can only place owned characters to top slots
             {
                 PlaceCharacterToTopSlot(galleryCharacter);
             }

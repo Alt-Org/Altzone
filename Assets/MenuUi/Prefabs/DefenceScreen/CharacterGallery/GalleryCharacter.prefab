@@ -34,8 +34,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3327106956179182167}
   - {fileID: 2640895224935226749}
+  - {fileID: 3327106956179182167}
   - {fileID: 9111877443963403600}
   - {fileID: 3813463039263476049}
   - {fileID: 3363226798787773503}
@@ -118,7 +118,7 @@ MonoBehaviour:
   _characterNameText: {fileID: 3511939312560207162}
   _aspectRatioFitter: {fileID: 365475382052161339}
   _piechartPreview: {fileID: 599868788555485942}
-  _removeButton: {fileID: 0}
+  _grayScaleMaterial: {fileID: 2100000, guid: d3912b7fe8a70bb4bbbdba52df8f4542, type: 2}
 --- !u!114 &644753131678271565
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -571,8 +571,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 8755021714922067558}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.1, y: 0.1}
-  m_AnchorMax: {x: 0.9, y: 0.75}
+  m_AnchorMin: {x: 0, y: 0.1}
+  m_AnchorMax: {x: 1, y: 0.75}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

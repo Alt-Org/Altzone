@@ -77,7 +77,9 @@ namespace Altzone.Scripts.Model.Poco.Player
                 foreach (var id in SelectedCharacterIds)
                 {
                     if (string.IsNullOrEmpty(id)) continue;
-                    list.Add(CustomCharacters.FirstOrDefault(x => x.ServerID == id));
+                    CustomCharacter character = CustomCharacters.FirstOrDefault(x => x.ServerID == id);
+                    if(character == null) continue;
+                    list.Add(character);
                 }
                 while(list.Count < 3)
                 {
@@ -129,6 +131,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         {
             if (character == null) return;
 
+            bool characterInCharacterList = false;
             int i = 0;
             foreach (CustomCharacter item in _characterList)
             {
@@ -139,9 +142,11 @@ namespace Altzone.Scripts.Model.Poco.Player
                 }
 
                 _characterList[i] = character;
+                characterInCharacterList = true;
                 break;
             }
             Patch();
+            if (characterInCharacterList) ServerManager.Instance.StartUpdatingCustomCharacterToServer(character);
         }
 
 

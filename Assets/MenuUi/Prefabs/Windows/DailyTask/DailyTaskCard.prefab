@@ -402,6 +402,7 @@ MonoBehaviour:
   _topRightCorner: {fileID: 1642797197629742527}
   _bottomLeftCorner: {fileID: 4942204377184040183}
   _bottomRightCorner: {fileID: 5393003360408084105}
+  _centerPullSignificance: 0.25
   _reservedImage: {fileID: 7807976568361529614}
   _playerImage: {fileID: 0}
   _progressImage: {fileID: 1796332701008105257}
@@ -453,7 +454,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3255219180434912955}
         m_TargetAssemblyTypeName: DailyQuest, MainMenu
-        m_MethodName: QuestAccept
+        m_MethodName: DailyTaskAccept
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1064,7 +1065,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -29793476, guid: 631dbc17918e4044e8a98c662ed486bb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1d4fc0232dad0b7469f0c97a352bb3e7, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1

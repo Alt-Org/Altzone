@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48852799d96c419449eb5be4af9f1cc5, type: 3}
+  m_Name: GameTypeReference
+  m_EditorClassIdentifier: 
+  _info:
+  - Icon: {fileID: 21300000, guid: e894aef66af46744bb0b35b05d5614b0, type: 3}
+    Name: 2v2 vieraan kanssa
+    gameType: 1
+  - Icon: {fileID: 21300000, guid: 04d6d8e04665dd94d886588ead466a6a, type: 3}
+    Name: "2v2 klaani-j\xE4senen kanssa"
+    gameType: 2
+  - Icon: {fileID: 21300000, guid: 3f5f253fe82e2404bb2074d41793da96, type: 3}
+    Name: Mukautettu
+    gameType: 0

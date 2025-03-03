@@ -1,11 +1,14 @@
 using Altzone.Scripts.Model.Poco.Game;
-using MenuUI.Scripts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
+    /// <summary>
+    /// Controls visual functionality of StatUpdatePopUp.
+    /// </summary>
     public class StatUpdatePopUp : MonoBehaviour
     {
         [SerializeField] private StatsWindowController _controller;
@@ -46,9 +49,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             StatInfo statInfo = null;
 
+            if (_controller.IsCurrentCharacterLocked())
+            {
+                PopupSignalBus.OnChangePopupInfoSignal("Et voi muokata lukittua hahmoa.");
+                ClosePopUp();
+                return;
+            }
+
             if (_controller.GetCurrentCharacterClass() == CharacterClassID.Obedient) // obedient characters can't be modified
             {
-                SignalBus.OnChangePopupInfoSignal("Tottelijoita ei voi muokata.");
+                PopupSignalBus.OnChangePopupInfoSignal("Tottelijoita ei voi muokata.");
                 ClosePopUp();
                 return;
             }

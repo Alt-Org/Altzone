@@ -14,8 +14,6 @@ namespace MenuUI.Scripts.Lobby.InLobby
         [SerializeField] private Button _roomButton;
         [SerializeField] private Button _raidButton;
         [SerializeField] private Button _quickGameButton;
-        [SerializeField] private GameObject _mainPanel;
-        [SerializeField] private GameObject[] _otherPanels;
 
         public Action CharacterButtonOnClick
         {
@@ -69,16 +67,6 @@ namespace MenuUI.Scripts.Lobby.InLobby
             //_roomButton.interactable = true;
             //_raidButton.interactable = true;
             //_quickGameButton.interactable = true;
-        }
-
-        public void ShowMainPanel()
-        {
-            _mainPanel.SetActive(true);
-
-            foreach (var panel in _otherPanels)
-            {
-                panel.SetActive(false);
-            }
         }
     }
 }

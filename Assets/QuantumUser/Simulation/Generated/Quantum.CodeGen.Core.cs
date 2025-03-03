@@ -652,7 +652,7 @@ namespace Quantum {
   public unsafe partial struct Projectile : Quantum.IComponent {
     public const Int32 SIZE = 48;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(0)]
+    [FieldOffset(4)]
     public QBoolean IsLaunched;
     [FieldOffset(24)]
     public FP Speed;
@@ -662,6 +662,8 @@ namespace Quantum {
     public FP CoolDown;
     [FieldOffset(16)]
     public FP Radius;
+    [FieldOffset(0)]
+    public Int32 TestSpriteIndex;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 16141;
@@ -670,11 +672,13 @@ namespace Quantum {
         hash = hash * 31 + Direction.GetHashCode();
         hash = hash * 31 + CoolDown.GetHashCode();
         hash = hash * 31 + Radius.GetHashCode();
+        hash = hash * 31 + TestSpriteIndex.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (Projectile*)ptr;
+        serializer.Stream.Serialize(&p->TestSpriteIndex);
         QBoolean.Serialize(&p->IsLaunched, serializer);
         FP.Serialize(&p->CoolDown, serializer);
         FP.Serialize(&p->Radius, serializer);
@@ -724,22 +728,6 @@ namespace Quantum {
         EntityRef.Serialize(&p->ChildEntity, serializer);
         FP.Serialize(&p->CollisionMinOffset, serializer);
         FPVector2.Serialize(&p->Normal, serializer);
-    }
-  }
-  [StructLayout(LayoutKind.Explicit)]
-  public unsafe partial struct SpawnIdentifier : Quantum.IComponent {
-    public const Int32 SIZE = 4;
-    public const Int32 ALIGNMENT = 4;
-    [FieldOffset(0)]
-    private fixed Byte _alignment_padding_[4];
-    public override Int32 GetHashCode() {
-      unchecked { 
-        var hash = 11057;
-        return hash;
-      }
-    }
-    public static void Serialize(void* ptr, FrameSerializer serializer) {
-        var p = (SpawnIdentifier*)ptr;
     }
   }
   public unsafe partial interface ISignalOnCollisionProjectileHitSoulWall : ISignal {
@@ -842,8 +830,6 @@ namespace Quantum {
       BuildSignalsArrayOnComponentRemoved<Quantum.ProjectileSpawner>();
       BuildSignalsArrayOnComponentAdded<Quantum.SoulWall>();
       BuildSignalsArrayOnComponentRemoved<Quantum.SoulWall>();
-      BuildSignalsArrayOnComponentAdded<Quantum.SpawnIdentifier>();
-      BuildSignalsArrayOnComponentRemoved<Quantum.SpawnIdentifier>();
       BuildSignalsArrayOnComponentAdded<Transform2D>();
       BuildSignalsArrayOnComponentRemoved<Transform2D>();
       BuildSignalsArrayOnComponentAdded<Transform2DVertical>();
@@ -1038,7 +1024,6 @@ namespace Quantum {
       typeRegistry.Register(typeof(Shape3D), Shape3D.SIZE);
       typeRegistry.Register(typeof(Quantum.SoulWall), Quantum.SoulWall.SIZE);
       typeRegistry.Register(typeof(Quantum.SoundEffect), 4);
-      typeRegistry.Register(typeof(Quantum.SpawnIdentifier), Quantum.SpawnIdentifier.SIZE);
       typeRegistry.Register(typeof(SpringJoint), SpringJoint.SIZE);
       typeRegistry.Register(typeof(SpringJoint3D), SpringJoint3D.SIZE);
       typeRegistry.Register(typeof(Transform2D), Transform2D.SIZE);
@@ -1048,7 +1033,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum._globals_), Quantum._globals_.SIZE);
     }
     static partial void InitComponentTypeIdGen() {
-      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 8)
+      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 7)
         .AddBuiltInComponents()
         .Add<Quantum.ArenaBorder>(Quantum.ArenaBorder.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.GameSession>(Quantum.GameSession.Serialize, null, null, ComponentFlags.Singleton)
@@ -1057,7 +1042,6 @@ namespace Quantum {
         .Add<Quantum.Projectile>(Quantum.Projectile.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.ProjectileSpawner>(Quantum.ProjectileSpawner.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.SoulWall>(Quantum.SoulWall.Serialize, null, null, ComponentFlags.None)
-        .Add<Quantum.SpawnIdentifier>(Quantum.SpawnIdentifier.Serialize, null, null, ComponentFlags.None)
         .Finish();
     }
     [Preserve()]
