@@ -17,6 +17,8 @@ namespace Quantum
         {
             Log.Debug("[GameControlSystem] OnInit");
 
+            GridManager.Init(f.FindAsset(f.RuntimeConfig.BattleArenaSpec));
+
             GameSession* gameSession = f.Unsafe.GetPointerSingleton<GameSession>();
             gameSession->state = GameState.Countdown;
         }
