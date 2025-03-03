@@ -46,7 +46,8 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private GameObject _inSoulHome;
         [SerializeField] private TMP_Text _artist;
         [SerializeField] private TMP_Text _artisticDescription;
-        [SerializeField] private TMP_Text _rarity;
+        [SerializeField] private TMP_Text _rarityText;
+        [SerializeField] private Image _rarityImage;
 
         private List<StorageFurniture> _items;
         private List<GameObject> _slotsList = new();
@@ -379,7 +380,10 @@ namespace MenuUi.Scripts.Storage
             // Type Text
             _typeText.text = "";
 
-            _rarity.text = _furn.Rarity.ToString();
+            _rarityText.text = _furn.Rarity.ToString();
+
+            // Get rarity color from the selected furniture
+            _rarityImage.color = _slotsList[slotVal].transform.GetChild(1).GetComponent<Image>().color;
 
             _infoSlot.SetActive(true);
         }
