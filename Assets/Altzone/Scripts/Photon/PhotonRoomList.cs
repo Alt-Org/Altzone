@@ -62,14 +62,10 @@ namespace Altzone.Scripts.Common.Photon
             // We always remove and add entries to keep cached data up-to-date.
             foreach (var newRoomInfo in roomList)
             {
-                var curRoomInfoIndex = _currentRoomList.FindIndex(x => x.Equals(newRoomInfo)); // doesn't return the correct index even though the room is same that's why deleted rooms don't get deleted from list
+                var curRoomInfoIndex = _currentRoomList.FindIndex(x => x.Equals(newRoomInfo));
                 if (curRoomInfoIndex != -1)
                 {
                     _currentRoomList.RemoveAt(curRoomInfoIndex);
-                    //if (newRoomInfo.RemovedFromList)
-                    //{
-                    //    continue; // No need to add as this will be disappear soon!
-                    //}
                 }
                 _currentRoomList.Add(newRoomInfo);
             }
@@ -82,25 +78,20 @@ namespace Altzone.Scripts.Common.Photon
 
         void ILobbyCallbacks.OnJoinedLobby()
         {
-            //_currentRoomList.Clear();
-            //_debugRoomListCount = 0;
             Debug.Log($"roomsUpdated: {_debugRoomListCount} CloudRegion={PhotonRealtimeClient.CloudRegion}");
             OnRoomsUpdated?.Invoke();
         }
 
         void ILobbyCallbacks.OnLeftLobby()
         {
-            //_currentRoomList.Clear();
-            //_debugRoomListCount = 0;
             Debug.Log($"roomsUpdated: {_debugRoomListCount}");
             OnRoomsUpdated?.Invoke();
         }
 
-        void ILobbyCallbacks.OnRoomListUpdate(List<RoomInfo> roomList)
+        void ILobbyCallbacks.OnRoomListUpdate(List<RoomInfo> updatedRoomsList) // note: only updated rooms will be passed on to this function not every room
         {
-            //_currentRoomList.Clear();
             List<LobbyRoomInfo> lobbyRoomList = new();
-            foreach (RoomInfo roomInfo in roomList)
+            foreach (RoomInfo roomInfo in updatedRoomsList)
             {
                 lobbyRoomList.Add(new(roomInfo));
             }
