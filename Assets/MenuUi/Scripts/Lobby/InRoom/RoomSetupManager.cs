@@ -23,17 +23,15 @@ namespace MenuUI.Scripts.Lobby.InRoom
         private const string PlayerCharactersKey = PhotonLobbyRoom.PlayerPrefabIdsKey;
         private const string PlayerStatsKey = PhotonBattleRoom.PlayerStatsKey;
 
-        private const int PlayerPositionGuest = PhotonBattleRoom.PlayerPositionGuest;
         private const int PlayerPosition1 = PhotonBattleRoom.PlayerPosition1;
         private const int PlayerPosition2 = PhotonBattleRoom.PlayerPosition2;
         private const int PlayerPosition3 = PhotonBattleRoom.PlayerPosition3;
         private const int PlayerPosition4 = PhotonBattleRoom.PlayerPosition4;
-        private const int PlayerPositionSpectator = PhotonBattleRoom.PlayerPositionSpectator;
 
-        private const string TeamBlueNameKey = PhotonBattleRoom.TeamAlphaNameKey;
-        private const string TeamRedNameKey = PhotonBattleRoom.TeamBetaNameKey;
-        private const int TeamBlueValue = PhotonBattleRoom.TeamAlphaValue;
-        private const int TeamRedValue = PhotonBattleRoom.TeamBetaValue;
+        private const string TeamAlphaNameKey = PhotonBattleRoom.TeamAlphaNameKey;
+        private const string TeamBetaNameKey = PhotonBattleRoom.TeamBetaNameKey;
+        private const int TeamAlphaValue = PhotonBattleRoom.TeamAlphaValue;
+        private const int TeamBetaValue = PhotonBattleRoom.TeamBetaValue;
 
         [Header("Settings"), SerializeField] private TextMeshProUGUI _upperTeamText;
         [SerializeField] private TextMeshProUGUI _lowerTeamText;
@@ -41,10 +39,14 @@ namespace MenuUI.Scripts.Lobby.InRoom
         [SerializeField] private Button _buttonPlayerP2;
         [SerializeField] private Button _buttonPlayerP3;
         [SerializeField] private Button _buttonPlayerP4;
-        [SerializeField] private Button _buttonGuest;
-        [SerializeField] private Button _buttonSpectator;
         [SerializeField] private Button _buttonStartPlay;
         [SerializeField] private Button _buttonRaidTest;
+
+        [Header("Player names")]
+        [SerializeField] private TMP_Text _nameP1;
+        [SerializeField] private TMP_Text _nameP2;
+        [SerializeField] private TMP_Text _nameP3;
+        [SerializeField] private TMP_Text _nameP4;
 
         [Header("Selected characters")]
         [SerializeField] private BattlePopupCharacterSlotController _selectedCharactersP1;
@@ -61,16 +63,12 @@ namespace MenuUI.Scripts.Lobby.InRoom
         private bool _interactablePlayerP2;
         private bool _interactablePlayerP3;
         private bool _interactablePlayerP4;
-        private bool _interactableGuest;
-        private bool _interactableSpectator;
         private bool _interactableStartPlay;
 
         private string _captionPlayerP1;
         private string _captionPlayerP2;
         private string _captionPlayerP3;
         private string _captionPlayerP4;
-        private string _captionGuest;
-        private string _captionSpectator;
 
         PlayerRole currentRole = PlayerRole.Player;
 
@@ -83,12 +81,6 @@ namespace MenuUI.Scripts.Lobby.InRoom
         private void OnEnable()
         {
             Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState}");
-            _buttonPlayerP1.interactable = false;
-            _buttonPlayerP2.interactable = false;
-            _buttonPlayerP3.interactable = false;
-            _buttonPlayerP4.interactable = false;
-            //_buttonGuest.interactable = false;
-            //_buttonSpectator.interactable = false;
             _buttonStartPlay.interactable = false;
             //_buttonRaidTest.interactable = false;
 
@@ -168,7 +160,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
             ResetState();
             // We need local player to check against other players
             LobbyPlayer localPlayer = PhotonRealtimeClient.LocalLobbyPlayer;
-            _localPlayerPosition = localPlayer.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+            _localPlayerPosition = localPlayer.GetCustomProperty(PlayerPositionKey, 0);
             //currentRole = PlayerRole.Player;
             _isLocalPlayerPositionUnique = true;
 
@@ -183,27 +175,20 @@ namespace MenuUI.Scripts.Lobby.InRoom
             }
             CheckLocalPlayer(localPlayer);
 
-            SetButton(_buttonPlayerP1, _interactablePlayerP1, _captionPlayerP1); // todo: tee uusiksi slottien valinta photon eventeill‰. master clientin tila validi. l‰het‰ viesti master clientille -> master client vaihtaa paikan. coroutine, ett‰ vaihtuiko paikka. jos master client disconnectaa l‰hetet‰‰n uudestaan.
-            SetButton(_buttonPlayerP2, _interactablePlayerP2, _captionPlayerP2);
-            SetButton(_buttonPlayerP3, _interactablePlayerP3, _captionPlayerP3);
-            SetButton(_buttonPlayerP4, _interactablePlayerP4, _captionPlayerP4);
-            SetButton(_buttonGuest, _interactableGuest, _captionGuest);
-            SetButton(_buttonSpectator, _interactableSpectator, _captionSpectator);
-            SetButton(_buttonStartPlay, _interactableStartPlay, null);
-            SetButton(_buttonRaidTest, _interactableStartPlay, null);
+            SetButtonActive(_buttonPlayerP1, _interactablePlayerP1);
+            SetButtonActive(_buttonPlayerP2, _interactablePlayerP2);
+            SetButtonActive(_buttonPlayerP3, _interactablePlayerP3);
+            SetButtonActive(_buttonPlayerP4, _interactablePlayerP4);
 
-            if (_localPlayerPosition >= 0 && _localPlayerPosition <= 3 &&
-                _masterClientPosition >= 0 && _masterClientPosition <= 3)
-            {
-                _upperTeamText.gameObject.SetActive(true);
-                _lowerTeamText.gameObject.SetActive(true);
-                SetTeamText();
-            }
-            else
-            {
-                _upperTeamText.gameObject.SetActive(false);
-                _lowerTeamText.gameObject.SetActive(false);
-            }
+            _nameP1.text = _captionPlayerP1;
+            _nameP2.text = _captionPlayerP2;
+            _nameP3.text = _captionPlayerP3;
+            _nameP4.text = _captionPlayerP4;
+
+            // todo: tee uusiksi slottien valinta photon eventeill‰. master clientin tila validi. l‰het‰ viesti master clientille -> master client vaihtaa paikan. coroutine, ett‰ vaihtuiko paikka. jos master client disconnectaa l‰hetet‰‰n uudestaan.
+
+            _buttonStartPlay.interactable = _interactableStartPlay;
+            SetTeamText();
         }
 
         private void UpdatePhotonNickname()
@@ -220,32 +205,32 @@ namespace MenuUI.Scripts.Lobby.InRoom
             int masterTeam = GetTeam(_masterClientPosition);
             if (masterTeam == 0)
             {
-                _upperTeamText.text = "Punainen joukkue";//$"Joukkue {room.GetCustomProperty<string>(TeamRedNameKey)}";
-                _lowerTeamText.text = "Sininen joukkue";//$"Joukkue {room.GetCustomProperty<string>(TeamBlueNameKey)}";
+                _upperTeamText.text = "Beta joukkue";//$"Joukkue {room.GetCustomProperty<string>(TeamRedNameKey)}";
+                _lowerTeamText.text = "Alpha joukkue";//$"Joukkue {room.GetCustomProperty<string>(TeamBlueNameKey)}";
             }
             else
             {
-                _upperTeamText.text = "Sininen joukkue";//{room.GetCustomProperty<string>(TeamBlueNameKey)}";
-                _lowerTeamText.text = "Punainen joukkue";//$"Joukkue {room.GetCustomProperty<string>(TeamRedNameKey)}";
+                _upperTeamText.text = "Alpha joukkue";//{room.GetCustomProperty<string>(TeamBlueNameKey)}";
+                _lowerTeamText.text = "Beta joukkue";//$"Joukkue {room.GetCustomProperty<string>(TeamRedNameKey)}";
             }
         }
 
         private static int GetTeam(int playerPos)
         {
-            if (playerPos == PlayerPosition1 || playerPos == PlayerPosition3)
+            if (playerPos == PlayerPosition1 || playerPos == PlayerPosition2)
             {
-                return TeamBlueValue;
+                return TeamAlphaValue;
             }
-            if (playerPos == PlayerPosition4 || playerPos == PlayerPosition2)
+            if (playerPos == PlayerPosition3 || playerPos == PlayerPosition4)
             {
-                return TeamRedValue;
+                return TeamBetaValue;
             }
             return -1;
         }
 
         private void CheckMasterClient()
         {
-            var curValue = PhotonRealtimeClient.LobbyCurrentRoom.GetPlayer(PhotonRealtimeClient.LobbyCurrentRoom.MasterClientId).GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+            var curValue = PhotonRealtimeClient.LobbyCurrentRoom.GetPlayer(PhotonRealtimeClient.LobbyCurrentRoom.MasterClientId).GetCustomProperty(PlayerPositionKey, 0);
             _masterClientPosition = curValue;
         }
 
@@ -256,7 +241,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
             {
                 return;
             }
-            var curValue = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+            var curValue = player.GetCustomProperty(PlayerPositionKey, 0);
             if (_isLocalPlayerPositionUnique && curValue >= PlayerPosition1 && curValue <= PlayerPosition4)
             {
                 if (curValue == _localPlayerPosition)
@@ -297,64 +282,30 @@ namespace MenuUI.Scripts.Lobby.InRoom
         private void CheckLocalPlayer(LobbyPlayer player)
         {
             Debug.Log($"checkLocalPlayer {player.GetDebugLabel()} pos={_localPlayerPosition} ok={_isLocalPlayerPositionUnique}");
-            var curValue = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+            var curValue = player.GetCustomProperty(PlayerPositionKey, 0);
             // Master client can *only* start the game when in room as player!
             _interactableStartPlay = player.IsMasterClient && curValue >= PlayerPosition1 && curValue <= PlayerPosition4;
             switch (curValue)
             {
                 case PlayerPosition1:
+                    _interactablePlayerP1 = false;
                     _captionPlayerP1 = $"<color=blue>{player.NickName}</color>";
                     _selectedCharactersP1.SetCharacters();
                     break;
                 case PlayerPosition2:
+                    _interactablePlayerP2 = false;
                     _captionPlayerP2 = $"<color=blue>{player.NickName}</color>";
                     _selectedCharactersP2.SetCharacters();
                     break;
                 case PlayerPosition3:
+                    _interactablePlayerP3 = false;
                     _captionPlayerP3 = $"<color=blue>{player.NickName}</color>";
                     _selectedCharactersP3.SetCharacters();
                     break;
                 case PlayerPosition4:
+                    _interactablePlayerP4 = false;
                     _captionPlayerP4 = $"<color=blue>{player.NickName}</color>";
                     _selectedCharactersP4.SetCharacters();
-                    break;
-                case PlayerPositionGuest:
-                    _interactableGuest = false;
-                    _captionGuest = $"<color=blue>{player.NickName}</color>";
-                    break;
-                case PlayerPositionSpectator:
-                    _interactableSpectator = false;
-                    _captionSpectator = $"<color=blue>{player.NickName}</color>";
-                    break;
-            }
-        }
-
-        private void ButtonState(int _buttonStateNumber, string _buttonCaption)
-        {
-            _buttonStateNumber++;
-            switch (_buttonStateNumber)
-            {
-                case 0:
-                    _buttonCaption = $"Vapaa";
-                    Debug.Log(_buttonCaption);
-                    break;
-
-                case 1:
-                    _buttonCaption = $"Pelaajan nimi";
-                    Debug.Log(_buttonCaption);
-                    break;
-
-                case 2:
-                    _buttonCaption = $"Bottipelaaja";
-                    Debug.Log(_buttonCaption);
-                    break;
-
-                case 3:
-                    _buttonCaption = $"Suljettu";
-                    Debug.Log(_buttonCaption);
-                    break;
-                case 4:
-                    _buttonStateNumber = 0;
                     break;
             }
         }
@@ -365,28 +316,18 @@ namespace MenuUI.Scripts.Lobby.InRoom
             _interactablePlayerP2 = true;
             _interactablePlayerP3 = true;
             _interactablePlayerP4 = true;
-            _interactableGuest = true;
-            // Spectator does not work with current NetworkSync and RoomLoader2,
-            // it is from earlier versions with different implementation how room was initialized.
-            _interactableSpectator = false; //true;
             _interactableStartPlay = false;
 
-            _captionPlayerP1 = $"Vapaa";
-            _captionPlayerP2 = $"Vapaa";
-            _captionPlayerP3 = $"Vapaa";
-            _captionPlayerP4 = $"Vapaa";
-            _captionGuest = "Vieras";
-            _captionSpectator = "Spectator";
+            _captionPlayerP1 = "Pelaaja 1";
+            _captionPlayerP2 = "Pelaaja 2";
+            _captionPlayerP3 = "Pelaaja 3";
+            _captionPlayerP4 = "Pelaaja 4";
         }
 
-        private static void SetButton(Selectable selectable, bool interactable, string caption)
+        private static void SetButtonActive(Selectable selectable, bool active)
         {
             if (selectable == null) return;
-            selectable.interactable = interactable;
-            if (!string.IsNullOrEmpty(caption))
-            {
-                selectable.GetComponentInChildren<TextMeshProUGUI>().text = caption;
-            }
+            selectable.gameObject.SetActive(active);
         }
 
         void OnPlayerEnteredRoom(LobbyPlayer newPlayer)
