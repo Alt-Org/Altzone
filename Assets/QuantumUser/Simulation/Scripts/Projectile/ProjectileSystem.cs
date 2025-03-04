@@ -62,7 +62,10 @@ namespace Quantum.QuantumUser.Simulation.Projectile
             {
                 projectileTransform->Position += normal * (collisionMinOffset - collisionOffset + projectile->Radius);
             }
+        }
 
+        private void ChangeSprite(Frame f, Quantum.Projectile* projectile)
+        {
             // change projectile's sprite
             projectile->TestSpriteIndex = (projectile->TestSpriteIndex + 1) % 5;
             f.Events.ChangeProjectileSprite(projectile->TestSpriteIndex);
@@ -81,6 +84,7 @@ namespace Quantum.QuantumUser.Simulation.Projectile
         public void OnTriggerProjectileHitPlayer(Frame f, Quantum.Projectile* projectile, EntityRef projectileEntity, Quantum.PlayerData* playerData, EntityRef playerEntity)
         {
             ProjectileBounce(f, projectile,  projectileEntity, playerEntity, playerData->Normal, playerData->CollisionMinOffset);
+            ChangeSprite(f,projectile);
         }
     }
 }
