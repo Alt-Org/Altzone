@@ -60,6 +60,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         public void SetInfo(Sprite galleryImage, CharacterID charID, bool isOwnCharacter, int slotIdx, int[] stats = null)
         {
             _spriteImage.sprite = galleryImage;
+            _spriteImage.enabled = true;
 
             CharacterClassID charClassID = CustomCharacter.GetClassID(charID);
             _backgroundImage.color = _classColorReference.GetColor(charClassID);
@@ -85,6 +86,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                 _button.onClick.AddListener(ToggleSelectionDropdown);
             }
 
+            _piechartPreview.gameObject.SetActive(true);
             if (stats != null)
             {
                 _piechartPreview.UpdateChart(stats[3], stats[0], stats[4], stats[2], stats[1]);
@@ -93,6 +95,15 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             {
                 _piechartPreview.UpdateChart(_characterId);
             }
+        }
+
+
+        public void SetEmpty()
+        {
+            _spriteImage.enabled = false;
+            _backgroundImage.color = Color.white;
+            if (_button != null) _button.enabled = false;
+            _piechartPreview.gameObject.SetActive(false);
         }
 
 

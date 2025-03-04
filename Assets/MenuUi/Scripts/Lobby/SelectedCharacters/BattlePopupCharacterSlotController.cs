@@ -60,7 +60,11 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         {
             for (int i = 0; i < selectedCharacterIds.Length; i++)
             {
-                if (selectedCharacterIds[i] == 0) return;
+                if (selectedCharacterIds[i] == 0)
+                {
+                    _selectedCharacterSlots[i].SetEmpty();
+                }
+
                 PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(selectedCharacterIds[i].ToString());
                 _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charInfo.CharacterId, false, i, stats[(i * 5)..(i * 5 + 5)]);
             }
