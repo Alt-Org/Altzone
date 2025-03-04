@@ -12018,6 +12018,51 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 503723467}
     m_Modifications:
+    - target: {fileID: 1204819092726217984, guid: 97e8f0ca20408d042a38f07b90b44946,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2316311087145380372, guid: 97e8f0ca20408d042a38f07b90b44946,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3157326517368184569, guid: 97e8f0ca20408d042a38f07b90b44946,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3157326517368184569, guid: 97e8f0ca20408d042a38f07b90b44946,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3157326517368184569, guid: 97e8f0ca20408d042a38f07b90b44946,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2118663609}
+    - target: {fileID: 3157326517368184569, guid: 97e8f0ca20408d042a38f07b90b44946,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3157326517368184569, guid: 97e8f0ca20408d042a38f07b90b44946,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnButtonClickExitGame
+      objectReference: {fileID: 0}
+    - target: {fileID: 3157326517368184569, guid: 97e8f0ca20408d042a38f07b90b44946,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: QuantumUser.Scripts.UI.Views.GameUiGameOverHandler, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3157326517368184569, guid: 97e8f0ca20408d042a38f07b90b44946,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 3300782618133613160, guid: 97e8f0ca20408d042a38f07b90b44946,
         type: 3}
       propertyPath: m_Pivot.x
@@ -12116,6 +12161,16 @@ PrefabInstance:
     - target: {fileID: 3300782618133613160, guid: 97e8f0ca20408d042a38f07b90b44946,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3468472391057072888, guid: 97e8f0ca20408d042a38f07b90b44946,
+        type: 3}
+      propertyPath: m_BlockingObjects
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3468472391057072888, guid: 97e8f0ca20408d042a38f07b90b44946,
+        type: 3}
+      propertyPath: m_BlockingMask.m_Bits
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5694789676479713026, guid: 97e8f0ca20408d042a38f07b90b44946,
