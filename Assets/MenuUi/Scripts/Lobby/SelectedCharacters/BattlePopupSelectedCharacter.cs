@@ -37,17 +37,6 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         public Action SelectedCharactersChanged;
 
 
-        private void Awake()
-        {
-            _button = GetComponent<Button>();
-
-            if (_isOwnCharacter)
-            {
-                _button.onClick.AddListener(ToggleSelectionDropdown);
-            }
-        }
-
-
         private void OnDisable()
         {
             CloseSelectionDropdown();
@@ -56,7 +45,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
 
         private void OnDestroy()
         {
-            _button.onClick.RemoveListener(ToggleSelectionDropdown);
+            if (_button != null) _button.onClick.RemoveListener(ToggleSelectionDropdown);
         }
 
 
@@ -79,10 +68,21 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
 
             _slotIdx = slotIdx;
 
+            if (_button == null)
+            {
+                _button = GetComponent<Button>();
+            }
+            
             _isOwnCharacter = isOwnCharacter;
             if (!isOwnCharacter)
             {
                 _button.enabled = false;
+            }
+            else
+            {
+                _button.enabled = true;
+                _button.onClick.RemoveListener(ToggleSelectionDropdown);
+                _button.onClick.AddListener(ToggleSelectionDropdown);
             }
 
             if (stats != null)

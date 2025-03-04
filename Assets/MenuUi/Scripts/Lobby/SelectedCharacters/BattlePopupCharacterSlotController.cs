@@ -58,10 +58,11 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         /// <param name="stats">The stats for all three characters in an int array. Order: Hp, Speed, CharacterSize, Attack, Defence.</param>
         public void SetCharacters(int[] selectedCharacterIds, int[] stats)
         {
-            for (int i = 0; i <= selectedCharacterIds.Length; i++)
+            for (int i = 0; i < selectedCharacterIds.Length; i++)
             {
+                if (selectedCharacterIds[i] == 0) return;
                 PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(selectedCharacterIds[i].ToString());
-                _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charInfo.CharacterId, false, i, stats[(i * 5)..(i * 5 + 4)]);
+                _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charInfo.CharacterId, false, i, stats[(i * 5)..(i * 5 + 5)]);
             }
         }
     }
