@@ -19,7 +19,7 @@ namespace QuantumUser.Scripts
 
         private void OnGridSet(EventGridSet e)
         {
-            _gridViewController.SetGrid(e.rows, e.columns);
+            _gridViewController.SetGrid(e.Rows, e.Columns, e.MiddleAreaHeight);
         }
 
         private void OnUpdateDebugStatsOverlay(EventUpdateDebugStatsOverlay e)

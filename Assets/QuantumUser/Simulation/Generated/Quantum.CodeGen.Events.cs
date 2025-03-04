@@ -75,11 +75,12 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventGridSet GridSet(Int32 rows, Int32 columns) {
+      public EventGridSet GridSet(Int32 Rows, Int32 Columns, Int32 MiddleAreaHeight) {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventGridSet>(EventGridSet.ID);
-        ev.rows = rows;
-        ev.columns = columns;
+        ev.Rows = Rows;
+        ev.Columns = Columns;
+        ev.MiddleAreaHeight = MiddleAreaHeight;
         _f.AddEvent(ev);
         return ev;
       }
@@ -125,8 +126,9 @@ namespace Quantum {
   }
   public unsafe partial class EventGridSet : EventBase {
     public new const Int32 ID = 2;
-    public Int32 rows;
-    public Int32 columns;
+    public Int32 Rows;
+    public Int32 Columns;
+    public Int32 MiddleAreaHeight;
     protected EventGridSet(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
@@ -144,8 +146,9 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 43;
-        hash = hash * 31 + rows.GetHashCode();
-        hash = hash * 31 + columns.GetHashCode();
+        hash = hash * 31 + Rows.GetHashCode();
+        hash = hash * 31 + Columns.GetHashCode();
+        hash = hash * 31 + MiddleAreaHeight.GetHashCode();
         return hash;
       }
     }

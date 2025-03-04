@@ -8,10 +8,14 @@ namespace Quantum
         [SerializeField] private Color _colorA;
         [SerializeField] private Color _colorB;
 
-        public void SetGrid(int rows, int columns)
+        public void SetGrid(int rows, int columns, int middleAreaHeight)
         {
             // get scale
             float scale = (float)GridManager.GridScaleFactor;
+
+            // set middleArea start and end
+            int middleAreaStart = (rows - middleAreaHeight) / 2;
+            int middleAreaEnd = middleAreaStart + middleAreaHeight - 1;
 
             // gridCell variables
             GameObject gridCell;
@@ -26,6 +30,9 @@ namespace Quantum
 
             for (int row = 0; row < rows; row++)
             {
+                // skip middleArea
+                if (row >= middleAreaStart && row <= middleAreaEnd) row = middleAreaEnd + 1;
+
                 for (int col = 0; col < columns; col++)
                 {
                     // set position
