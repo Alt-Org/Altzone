@@ -446,6 +446,12 @@ namespace Altzone.Scripts.Lobby
             return true;
         }
 
+        public static void ExitQuantum()
+        {
+            QuantumRunner.ShutdownAll();
+            SceneManager.LoadScene("10-MenuUi");
+        }
+
         private static IEnumerator StartTheRaidTestRoom()
         {
             //Debug.Log($"RAID TEST {raidScene}");
