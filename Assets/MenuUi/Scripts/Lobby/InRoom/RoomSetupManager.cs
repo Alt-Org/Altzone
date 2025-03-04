@@ -7,7 +7,7 @@ using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Lobby.Wrappers;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
-using MenuUi.Scripts.Lobby;
+using MenuUi.Scripts.Lobby.SelectedCharacters;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,10 +17,9 @@ namespace MenuUI.Scripts.Lobby.InRoom
     /// <summary>
     /// Prepares players in a room for the game play.
     /// </summary>
-    public class RoomSetupManager : MonoBehaviour
+    public class RoomSetupManager : AltMonoBehaviour
     {
         private const string PlayerPositionKey = PhotonBattleRoom.PlayerPositionKey;
-        private const string PlayerMainSkillKey = PhotonLobbyRoom.PlayerPrefabIdKey;
         private const string PlayerCharactersKey = PhotonLobbyRoom.PlayerPrefabIdsKey;
         private const string PlayerStatsKey = PhotonBattleRoom.PlayerStatsKey;
 
@@ -46,6 +45,12 @@ namespace MenuUI.Scripts.Lobby.InRoom
         [SerializeField] private Button _buttonSpectator;
         [SerializeField] private Button _buttonStartPlay;
         [SerializeField] private Button _buttonRaidTest;
+
+        [Header("Selected characters")]
+        [SerializeField] private BattlePopupCharacterSlotController _selectedCharactersP1;
+        [SerializeField] private BattlePopupCharacterSlotController _selectedCharactersP2;
+        [SerializeField] private BattlePopupCharacterSlotController _selectedCharactersP3;
+        [SerializeField] private BattlePopupCharacterSlotController _selectedCharactersP4;
 
         [Header("Live Data"), SerializeField] private int _localPlayerPosition;
         [SerializeField] private bool _isLocalPlayerPositionUnique;
@@ -121,17 +126,14 @@ namespace MenuUI.Scripts.Lobby.InRoom
             // Reset player custom properties for new game
             player.CustomProperties.Clear();
             var playerPos = PhotonLobbyRoom.GetFirstFreePlayerPos(player);
-            var gameConfig = GameConfig.Get();
-            var playerSettings = gameConfig.PlayerSettings;
-            var playerGuid = playerSettings.PlayerGuid;
-            var store = Storefront.Get();
-            store.GetPlayerData(playerGuid, playerData =>
+
+            StartCoroutine(GetPlayerData(playerData =>
             {
                 var battleCharacter = playerData.CurrentBattleCharacters;
                 Debug.Log($"{battleCharacter[0]}");
                 List<CustomCharacter> selectedCharacters = new();
-                int[] characterIds = new int[5];
-                int[] characterStats = new int[25];
+                int[] characterIds = new int[3];
+                int[] characterStats = new int[15];
                 for (int i = 0; i < 3; i++)
                 {
                     characterIds[i] = (int)battleCharacter[i].Id;
@@ -143,13 +145,10 @@ namespace MenuUI.Scripts.Lobby.InRoom
                     selectedCharacters.Add(battleCharacter[i]);
                 }
 
-                //var prefabIndex = PhotonBattle.GetPrefabIndex(battleCharacter[0], 0);
-                var prefabIndex = (int)battleCharacter[0].Id;
                 Debug.Log($"playerPos {playerPos} prefabIndex {characterIds}");
                 player.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object>
                 {
                     { PlayerPositionKey, playerPos },
-                    { PlayerMainSkillKey, prefabIndex },
                     { PlayerCharactersKey, characterIds },
                     { PlayerStatsKey, characterStats },
                     { "Role", (int)currentRole }
@@ -157,7 +156,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
                 LobbyManager.Instance.SetPlayerQuantumCharacters(selectedCharacters);
                 Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState} {enabled}");
                 UpdateStatus();
-            });
+            }));
         }
 
         private void UpdateStatus()
@@ -184,7 +183,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
             }
             CheckLocalPlayer(localPlayer);
 
-            SetButton(_buttonPlayerP1, _interactablePlayerP1, _captionPlayerP1);
+            SetButton(_buttonPlayerP1, _interactablePlayerP1, _captionPlayerP1); // todo: tee uusiksi slottien valinta photon eventeill‰. master clientin tila validi. l‰het‰ viesti master clientille -> master client vaihtaa paikan. coroutine, ett‰ vaihtuiko paikka. jos master client disconnectaa l‰hetet‰‰n uudestaan.
             SetButton(_buttonPlayerP2, _interactablePlayerP2, _captionPlayerP2);
             SetButton(_buttonPlayerP3, _interactablePlayerP3, _captionPlayerP3);
             SetButton(_buttonPlayerP4, _interactablePlayerP4, _captionPlayerP4);
@@ -221,13 +220,13 @@ namespace MenuUI.Scripts.Lobby.InRoom
             int masterTeam = GetTeam(_masterClientPosition);
             if (masterTeam == 0)
             {
-                _upperTeamText.text = $"Team {room.GetCustomProperty<string>(TeamRedNameKey)}";
-                _lowerTeamText.text = $"Team {room.GetCustomProperty<string>(TeamBlueNameKey)}";
+                _upperTeamText.text = "Punainen joukkue";//$"Joukkue {room.GetCustomProperty<string>(TeamRedNameKey)}";
+                _lowerTeamText.text = "Sininen joukkue";//$"Joukkue {room.GetCustomProperty<string>(TeamBlueNameKey)}";
             }
             else
             {
-                _upperTeamText.text = $"Team {room.GetCustomProperty<string>(TeamBlueNameKey)}";
-                _lowerTeamText.text = $"Team {room.GetCustomProperty<string>(TeamRedNameKey)}";
+                _upperTeamText.text = "Sininen joukkue";//{room.GetCustomProperty<string>(TeamBlueNameKey)}";
+                _lowerTeamText.text = "Punainen joukkue";//$"Joukkue {room.GetCustomProperty<string>(TeamRedNameKey)}";
             }
         }
 
@@ -253,7 +252,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
         private void CheckOtherPlayer(LobbyPlayer player)
         {
             Debug.Log($"checkOtherPlayer {player.GetDebugLabel()}");
-            if (!player.HasCustomProperty(PlayerPositionKey))
+            if (!player.HasCustomProperty(PlayerPositionKey) || !player.HasCustomProperty(PlayerCharactersKey) || !player.HasCustomProperty(PlayerStatsKey))
             {
                 return;
             }
@@ -266,23 +265,31 @@ namespace MenuUI.Scripts.Lobby.InRoom
                     _isLocalPlayerPositionUnique = false; // Conflict with player positions!
                 }
             }
+
+            int[] characters = player.GetCustomProperty(PlayerCharactersKey, new int[3]);
+            int[] stats = player.GetCustomProperty(PlayerStatsKey, new int[15]);
+
             switch (curValue)
             {
                 case PlayerPosition1:
                     _interactablePlayerP1 = false;
                     _captionPlayerP1 = player.NickName;
+                    _selectedCharactersP1.SetCharacters(characters, stats);
                     break;
                 case PlayerPosition2:
                     _interactablePlayerP2 = false;
                     _captionPlayerP2 = player.NickName;
+                    _selectedCharactersP2.SetCharacters(characters, stats);
                     break;
                 case PlayerPosition3:
                     _interactablePlayerP3 = false;
                     _captionPlayerP3 = player.NickName;
+                    _selectedCharactersP3.SetCharacters(characters, stats);
                     break;
                 case PlayerPosition4:
                     _interactablePlayerP4 = false;
                     _captionPlayerP4 = player.NickName;
+                    _selectedCharactersP4.SetCharacters(characters, stats);
                     break;
             }
         }
@@ -297,15 +304,19 @@ namespace MenuUI.Scripts.Lobby.InRoom
             {
                 case PlayerPosition1:
                     _captionPlayerP1 = $"<color=blue>{player.NickName}</color>";
+                    _selectedCharactersP1.SetCharacters();
                     break;
                 case PlayerPosition2:
                     _captionPlayerP2 = $"<color=blue>{player.NickName}</color>";
+                    _selectedCharactersP2.SetCharacters();
                     break;
                 case PlayerPosition3:
                     _captionPlayerP3 = $"<color=blue>{player.NickName}</color>";
+                    _selectedCharactersP3.SetCharacters();
                     break;
                 case PlayerPosition4:
                     _captionPlayerP4 = $"<color=blue>{player.NickName}</color>";
+                    _selectedCharactersP4.SetCharacters();
                     break;
                 case PlayerPositionGuest:
                     _interactableGuest = false;
@@ -324,22 +335,22 @@ namespace MenuUI.Scripts.Lobby.InRoom
             switch (_buttonStateNumber)
             {
                 case 0:
-                    _buttonCaption = $"Free";
+                    _buttonCaption = $"Vapaa";
                     Debug.Log(_buttonCaption);
                     break;
 
                 case 1:
-                    _buttonCaption = $"Player Name";
+                    _buttonCaption = $"Pelaajan nimi";
                     Debug.Log(_buttonCaption);
                     break;
 
                 case 2:
-                    _buttonCaption = $"Bot";
+                    _buttonCaption = $"Bottipelaaja";
                     Debug.Log(_buttonCaption);
                     break;
 
                 case 3:
-                    _buttonCaption = $"Closed";
+                    _buttonCaption = $"Suljettu";
                     Debug.Log(_buttonCaption);
                     break;
                 case 4:
@@ -360,11 +371,11 @@ namespace MenuUI.Scripts.Lobby.InRoom
             _interactableSpectator = false; //true;
             _interactableStartPlay = false;
 
-            _captionPlayerP1 = $"Free";
-            _captionPlayerP2 = $"Free";
-            _captionPlayerP3 = $"Free";
-            _captionPlayerP4 = $"Free";
-            _captionGuest = "Guest";
+            _captionPlayerP1 = $"Vapaa";
+            _captionPlayerP2 = $"Vapaa";
+            _captionPlayerP3 = $"Vapaa";
+            _captionPlayerP4 = $"Vapaa";
+            _captionGuest = "Vieras";
             _captionSpectator = "Spectator";
         }
 
