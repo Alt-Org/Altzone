@@ -15,10 +15,13 @@ namespace Prg.Scripts.Common.Unity
 
         private void Start()
         {
-            if(_toggle != null && _sliderSwitch != null)
+            if(_toggle != null)
             {
-                if(_toggle.isOn) _sliderSwitch.value = _sliderSwitch.maxValue;
-                else _sliderSwitch.value = _sliderSwitch.minValue;
+                if(_sliderSwitch != null)
+                {
+                    if (_toggle.isOn) _sliderSwitch.value = _sliderSwitch.maxValue;
+                    else _sliderSwitch.value = _sliderSwitch.minValue;
+                }
 
                 _toggle.onValueChanged.AddListener(ChangeState);
             }
@@ -28,18 +31,25 @@ namespace Prg.Scripts.Common.Unity
             _toggle.onValueChanged.RemoveAllListeners();
         }
 
-        public void ChangeState(bool value)
+        private void ChangeState(bool value)
         {
-            if(value) _sliderSwitch.value = _sliderSwitch.maxValue;
-            else _sliderSwitch.value = _sliderSwitch.minValue;
+            if (_sliderSwitch != null)
+            {
+                if (value) _sliderSwitch.value = _sliderSwitch.maxValue;
+                else _sliderSwitch.value = _sliderSwitch.minValue;
+            }
 
             OnToggleStateChanged?.Invoke(value);
         }
 
         public void SetState(bool value)
         {
-            if (value == _toggle.isOn) return;
-            _toggle.isOn = value;
+            if (_toggle != null)
+            {
+                if (value == _toggle.isOn) return;
+                _toggle.isOn = value;
+            }
+            else Debug.LogError($"Toggle {gameObject.name} is not set. Cannot modify set toggleState");
         }
     }
 }
