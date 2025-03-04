@@ -4,6 +4,13 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Config
 {
+    public enum VersionType
+    {
+        None,
+        Standard,
+        Education
+    }
+
     public class GameConfig
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -15,7 +22,17 @@ namespace Altzone.Scripts.Config
 
         private static GameConfig _instance;
 
+        private VersionType _gameVersionType = VersionType.None;
+
         public static GameConfig Get() => _instance ??= new GameConfig();
+
+        public VersionType GameVersionType { get => _gameVersionType;
+            set
+            {
+                //if(_gameVersionType == VersionType.None)
+                _gameVersionType = value;
+            }
+        }
 
         public GameVariables Variables => throw new UnityException("GameVariables is obsolete");
 
