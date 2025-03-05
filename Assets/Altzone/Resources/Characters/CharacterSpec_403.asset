@@ -14,9 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 403
   CharacterId: 0
-  Name: "Peilinn\xE4ytt\xE4j\xE4"
   IsApproved: 0
+  Name: "Peilinn\xE4ytt\xE4j\xE4"
   ClassType: 400
-  GalleryImage: {fileID: 0}
+  Hp:
+    Level: 0
+    Coefficient: 0
+  Speed:
+    Level: 0
+    Coefficient: 0
+  CharacterSize:
+    Level: 0
+    Coefficient: 0
+  Attack:
+    Level: 0
+    Coefficient: 0
+  Defence:
+    Level: 0
+    Coefficient: 0
+  GalleryImage: {fileID: 21300000, guid: 2ca1e227698614648a591da5ac1ec55c, type: 3}
   BattleSprite: {fileID: 0}
-  Image: {fileID: 0}

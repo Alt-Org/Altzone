@@ -11,6 +11,7 @@ public class DailyTaskManager : AltMonoBehaviour
 {
     [Tooltip("Maximum time until a get or save data operation is forced to quit.")]
     [SerializeField] private float _timeoutSeconds = 10;
+    [SerializeField] private TabButtonsVisualController _tabButtonsVisualController;
 
     private PlayerData _currentPlayerData;
 
@@ -37,6 +38,16 @@ public class DailyTaskManager : AltMonoBehaviour
     [SerializeField] private GameObject _ownTaskView;
     [SerializeField] private Button _cancelTaskButton;
     [SerializeField] private DailyTaskOwnTask _ownTaskPageHandler;
+    [Space]
+    [SerializeField] private List<MoodThreshold> _moodThresholds;
+
+    [System.Serializable]
+    public struct MoodThreshold
+    {
+        public string Name;
+        public DailyTaskOwnTask.MoodType MoodType;
+        public int PointsThreshold;
+    }
 
     private string _ownTaskId;
     public string OwnTaskId { get { return _ownTaskId; } }
@@ -72,6 +83,8 @@ public class DailyTaskManager : AltMonoBehaviour
     {
         //DailyTask page setup
         StartCoroutine(DataSetup());
+
+        _tabButtonsVisualController.UpdateButton(_dailyTasksTabButton);
 
         //Buttons
         _dailyTasksTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.Tasks));
@@ -378,12 +391,29 @@ public class DailyTaskManager : AltMonoBehaviour
 
     public void ClearCurrentTask()
     {
+        _tabButtonsVisualController.UpdateButton(_dailyTasksTabButton);
+        UpdateAvatarMood();
         _currentPlayerData.Task.ClearProgress();
         _ownTaskPageHandler.ClearCurrentTask();
         _ownTaskTabButton.interactable = false;
         SwitchTab(SelectedTab.Tasks);
         Debug.Log("Task id: " + _ownTaskId + ", has been cleard.");
         _ownTaskId = null;
+    }
+
+    private void UpdateAvatarMood()
+    {
+        int playerPoints = _currentPlayerData.points;
+
+        for (int i = 0; i < _moodThresholds.Count; i++)
+        {
+            if ((_moodThresholds[i].PointsThreshold <= playerPoints) &&
+                (((i + 1) >= _moodThresholds.Count) || (_moodThresholds[i + 1].PointsThreshold > playerPoints)))
+            {
+                _ownTaskPageHandler.SetMood(_moodThresholds[i].MoodType);
+                break;
+            }
+        }
     }
 
     #endregion
@@ -524,14 +554,16 @@ public class DailyTaskManager : AltMonoBehaviour
                             if (_currentPlayerData != null && _currentPlayerData.Task != null)
                                 StartCoroutine(CancelTask());
 
+                            _tabButtonsVisualController.UpdateButton(_ownTaskTabButton);
                             StartCoroutine(GetSaveSetHandleOwnTask(data.Value.OwnPage));
                             SwitchTab(SelectedTab.OwnTask);
-                            _ownTaskTabButton.interactable = true;
+                            //_ownTaskTabButton.interactable = true;
                             break;
                         }
                     case PopupData.PopupDataType.CancelTask:
                         {
                             StartCoroutine(CancelTask());
+                            _tabButtonsVisualController.UpdateButton(_dailyTasksTabButton);
                             SwitchTab(SelectedTab.Tasks);
                             _ownTaskTabButton.interactable = false;
                             break;

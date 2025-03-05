@@ -40,7 +40,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
     /// </summary>
     public static event TaskDone OnTaskDone;
 
-    public delegate void ClanMilestoneProgressed();
+    public delegate IEnumerator ClanMilestoneProgressed();
     /// <summary>
     /// Used to show <c>DailyTaskProgressPopup</c> window when clan milestone reward has been reached.
     /// </summary>
@@ -365,6 +365,6 @@ public class DailyTaskProgressManager : AltMonoBehaviour
 
     public void InvokeOnClanMilestoneReached()
     {
-        OnClanMilestoneProgressed.Invoke();
+        StartCoroutine(OnClanMilestoneProgressed.Invoke());
     }
 }
