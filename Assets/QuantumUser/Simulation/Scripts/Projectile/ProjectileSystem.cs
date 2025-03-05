@@ -64,16 +64,15 @@ namespace Quantum.QuantumUser.Simulation.Projectile
             }
         }
 
-        private void ChangeSprite(Frame f, Quantum.Projectile* projectile)
-        {
-            // change projectile's sprite
-            projectile->TestSpriteIndex = (projectile->TestSpriteIndex + 1) % 5;
-            f.Events.ChangeProjectileSprite(projectile->TestSpriteIndex);
-        }
-
         public void OnTriggerProjectileHitSoulWall(Frame f, Quantum.Projectile* projectile, EntityRef projectileEntity, Quantum.SoulWall* soulWall, EntityRef soulWallEntity)
         {
             ProjectileBounce(f, projectile, projectileEntity, soulWallEntity, soulWall->Normal, soulWall->CollisionMinOffset);
+
+            if (projectile->TestSpriteIndex < soulWall->Layer)
+            {
+                projectile->TestSpriteIndex = soulWall->Layer;
+                f.Events.ChangeProjectileSprite(projectile->TestSpriteIndex);
+            }
         }
 
         public void OnTriggerProjectileHitArenaBorder(Frame f, Quantum.Projectile* projectile, EntityRef projectileEntity, Quantum.ArenaBorder* arenaBorder, EntityRef arenaBorderEntity)
@@ -84,7 +83,6 @@ namespace Quantum.QuantumUser.Simulation.Projectile
         public void OnTriggerProjectileHitPlayer(Frame f, Quantum.Projectile* projectile, EntityRef projectileEntity, Quantum.PlayerData* playerData, EntityRef playerEntity)
         {
             ProjectileBounce(f, projectile,  projectileEntity, playerEntity, playerData->Normal, playerData->CollisionMinOffset);
-            ChangeSprite(f,projectile);
         }
     }
 }
