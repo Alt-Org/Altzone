@@ -55,6 +55,19 @@ public class PerusKauppaStorage : ShopPanelStorage
         gameFurnitures = new();
         gameFurnituresOnScene = new();
     }
+    private void SetupLayoutGroup(RectTransform parentGroup)
+    {
+        GridLayoutGroup layoutGroup = parentGroup.GetComponent<GridLayoutGroup>();
+        if (layoutGroup == null)
+        {
+            layoutGroup = parentGroup.gameObject.AddComponent<GridLayoutGroup>();
+        } 
+
+        layoutGroup.childAlignment = TextAnchor.MiddleCenter;
+        layoutGroup.spacing = new Vector2 (10f, 10f);
+        layoutGroup.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        layoutGroup.constraintCount = 3;
+    }
 
     protected override void HandleGameFurnitureCreation(ReadOnlyCollection<GameFurniture> gameFurnitures)
     {
@@ -107,4 +120,6 @@ public class PerusKauppaStorage : ShopPanelStorage
         LayoutRebuilder.ForceRebuildLayoutImmediate(_Content);
         return;
     }
+
+    
 }
