@@ -244,8 +244,7 @@ namespace Altzone.Scripts.Lobby
 
         private void OnPlayerPosEvent(PlayerPosEvent data)
         {
-            Debug.Log($"onEvent {data}");
-            SetPlayer(PhotonRealtimeClient.LocalPlayer, data.PlayerPosition);
+            PhotonRealtimeClient.Client.OpRaiseEvent(PhotonRealtimeClient.PhotonEvent.PlayerPositionChangeRequested, data.PlayerPosition, new RaiseEventArgs { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
         }
 
         private void OnStartRoomEvent(StartRoomEvent data)
@@ -579,6 +578,11 @@ namespace Altzone.Scripts.Lobby
             {
                 case PhotonRealtimeClient.PhotonEvent.StartGame:
                     StartCoroutine(StartQuantum());
+                    break;
+                case PhotonRealtimeClient.PhotonEvent.PlayerPositionChangeRequested:
+                    int position = (int)photonEvent.CustomData;
+                    Player player = PhotonRealtimeClient.CurrentRoom.GetPlayer(photonEvent.Sender);
+                    if (player != null) SetPlayer(player, position);
                     break;
             }
             LobbyOnEvent?.Invoke();

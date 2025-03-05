@@ -172,6 +172,7 @@ public static class PhotonRealtimeClient
         public const byte OwnershipTransfer = 210;
         public const byte VacantViewIds = 211;
         public const byte OwnershipUpdate = 212;
+        public const byte PlayerPositionChangeRequested = 213;
     }
 
     public static Player LocalPlayer

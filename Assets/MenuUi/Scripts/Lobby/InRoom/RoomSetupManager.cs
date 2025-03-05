@@ -257,8 +257,6 @@ namespace MenuUI.Scripts.Lobby.InRoom
             _nameP3.text = _captionPlayerP3;
             _nameP4.text = _captionPlayerP4;
 
-            // todo: tee uusiksi slottien valinta photon eventeill‰. master clientin tila validi. l‰het‰ viesti master clientille -> master client vaihtaa paikan. coroutine, ett‰ vaihtuiko paikka. jos master client disconnectaa l‰hetet‰‰n uudestaan.
-
             _buttonStartPlay.interactable = _interactableStartPlay;
             SetTeamText();
         }
