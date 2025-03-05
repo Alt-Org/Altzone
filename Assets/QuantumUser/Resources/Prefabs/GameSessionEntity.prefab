@@ -54,12 +54,12 @@ MonoBehaviour:
     PositionOffset:
       RawValue: 0
   PhysicsCollider:
+    IsEnabled: 0
     IsTrigger: 0
     Material:
       Id:
         Value: 0
     SourceCollider: {fileID: 0}
-    IsEnabled: 0
     Shape2D:
       ShapeType: 0
       PolygonCollider:
@@ -233,6 +233,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prototype:
     state:
-      Value: 1
+      Value: 0
     TimeUntilStart:
-      RawValue: 131072
+      RawValue: 262144

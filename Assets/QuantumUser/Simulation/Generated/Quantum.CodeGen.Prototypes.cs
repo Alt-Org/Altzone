@@ -142,21 +142,6 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerShieldData))]
-  public unsafe class PlayerShieldDataPrototype : ComponentPrototype<Quantum.PlayerShieldData> {
-    public MapEntityId TeamMate;
-    public QBoolean TeamMateSet;
-    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.PlayerShieldData component = default;
-        Materialize((Frame)f, ref component, in context);
-        return f.Set(entity, component) == SetResult.ComponentAdded;
-    }
-    public void Materialize(Frame frame, ref Quantum.PlayerShieldData result, in PrototypeMaterializationContext context = default) {
-        PrototypeValidator.FindMapEntity(this.TeamMate, in context, out result.TeamMate);
-        result.TeamMateSet = this.TeamMateSet;
-    }
-  }
-  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Projectile))]
   public unsafe partial class ProjectilePrototype : ComponentPrototype<Quantum.Projectile> {
     public QBoolean IsLaunched;
@@ -164,6 +149,7 @@ namespace Quantum.Prototypes {
     public FPVector2 Direction;
     public FP CoolDown;
     public FP Radius;
+    public Int32 TestSpriteIndex;
     partial void MaterializeUser(Frame frame, ref Quantum.Projectile result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.Projectile component = default;
@@ -176,6 +162,7 @@ namespace Quantum.Prototypes {
         result.Direction = this.Direction;
         result.CoolDown = this.CoolDown;
         result.Radius = this.Radius;
+        result.TestSpriteIndex = this.TestSpriteIndex;
         MaterializeUser(frame, ref result, in context);
     }
   }

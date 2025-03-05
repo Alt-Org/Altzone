@@ -4,6 +4,8 @@ using UnityEngine.Networking;
 using Newtonsoft.Json.Linq;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Prg.Scripts.Common.Unity;
+using Altzone.Scripts.Config;
 
 namespace MenuUi.Scripts.Login
 {
@@ -47,11 +49,16 @@ namespace MenuUi.Scripts.Login
         [SerializeField] private Button backButton2;
         [SerializeField] private Button ageAuthButton;
 
+        [Header("Version Toggle")]
+        [SerializeField] private ToggleSwitchHandler _versionToggle;
+        [SerializeField] private TextMeshProUGUI _versionText;
 
         [Header("Navigation Buttons")]
         [SerializeField] private Button returnToLogIn;
         [SerializeField] private Button returnToMainMenuButton;
         [SerializeField] private Button returnToSignInScreenButton;
+
+        private VersionType _versionType = VersionType.None;
 
         private const string REGISTERING_SUCCESS = "Rekisteröinti onnistui!";
         private const string ERROR_DEFAULT = "Jotain meni pieleen!";
@@ -85,6 +92,15 @@ namespace MenuUi.Scripts.Login
                 backButton.onClick.RemoveAllListeners();
                 backButton.onClick.AddListener(ReturnToLogIn);
             }
+            if(GameConfig.Get().GameVersionType is VersionType.Standard or VersionType.None)
+            {
+                SetVersionState(false);
+            }
+            else if(GameConfig.Get().GameVersionType is VersionType.Education)
+            {
+                SetVersionState(true);
+            }
+            _versionToggle.OnToggleStateChanged += SetVersionState;
         }
 
         public void Reset()
@@ -98,6 +114,11 @@ namespace MenuUi.Scripts.Login
             registerUsernameInputField.text = "";
             registerPasswordInputField.text = "";
             registerPassword2InputField.text = "";
+        }
+
+        private void OnDisable()
+        {
+            _versionToggle.OnToggleStateChanged -= SetVersionState;
         }
 
         /// <summary>
@@ -159,6 +180,7 @@ namespace MenuUi.Scripts.Login
                     Debug.Log(request.downloadHandler.text);
                     if(ServerManager.Instance.isLoggedIn) ServerManager.Instance.LogOut();
                     ServerManager.Instance.SetProfileValues(result);
+                    GameConfig.Get().GameVersionType = _versionType;
                     returnToMainMenuButton.onClick.Invoke();
                 }
 
@@ -281,6 +303,21 @@ namespace MenuUi.Scripts.Login
         private void ReturnToLogIn()
         {
             returnToLogIn.onClick?.Invoke();
+        }
+        private void SetVersionState(bool value)
+        {
+            if (value)
+            {
+                _versionType = VersionType.Education;
+                _versionText.text = "Opetusversio";
+                _versionToggle.SetState(value);
+            }
+            else
+            {
+                _versionType = VersionType.Standard;
+                _versionText.text = "Perusversio";
+                _versionToggle.SetState(value);
+            }
         }
     }
 }

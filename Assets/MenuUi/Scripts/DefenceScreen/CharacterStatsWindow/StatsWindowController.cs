@@ -5,9 +5,8 @@ using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ModelV2;
-using MenuUI.Scripts;
 using UnityEngine;
-
+using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
@@ -20,6 +19,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private CharacterID _characterId;
         private CustomCharacter _customCharacter;
         private BaseCharacter _baseCharacter;
+
+        public CharacterID CurrentCharacterID { get { return _characterId; } }
 
         public event Action OnEraserDecreased;
         public event Action OnDiamondDecreased;
@@ -61,6 +62,22 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             else
             {
                 _baseCharacter = _customCharacter.CharacterBase;
+            }
+        }
+
+
+        /// <summary>
+        /// Reload stat window data and trigger onenable function for children.
+        /// </summary>
+        public void ReloadStatWindow()
+        {
+            SetPlayerData();
+            SetCurrentCharacter();
+
+            for (int i = 0; i < transform.childCount; i++) // triggering onenable functions
+            {
+                transform.GetChild(i).gameObject.SetActive(false);
+                transform.GetChild(i).gameObject.SetActive(true);
             }
         }
 
@@ -205,7 +222,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             }
             else
             {
-                SignalBus.OnChangePopupInfoSignal("Ei tarpeeksi pyyhekumeja.");
+                PopupSignalBus.OnChangePopupInfoSignal("Ei tarpeeksi pyyhekumeja.");
                 return false;
             }
         }
@@ -236,7 +253,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             }
             else
             {
-                SignalBus.OnChangePopupInfoSignal("Ei tarpeeksi timantteja.");
+                PopupSignalBus.OnChangePopupInfoSignal("Ei tarpeeksi timantteja.");
                 return false;
             }
         }
@@ -321,15 +338,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             {
                 if (!CheckCombinedLevelCap())
                 {
-                    SignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, taitojen summa on enintään {CustomCharacter.STATMAXCOMBINED}.");
+                    PopupSignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, taitojen summa on enintään {CustomCharacter.STATMAXCOMBINED}.");
                 }
                 else if (!CheckStatLevelCap(statType))
                 {
-                    SignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, maksimitaso on {CustomCharacter.STATMAXLEVEL}.");
+                    PopupSignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, maksimitaso on {CustomCharacter.STATMAXLEVEL}.");
                 }
                 else if (!CheckMaxPlayerIncreases())
                 {
-                    SignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoja enemmän kuin {CustomCharacter.STATMAXPLAYERINCREASE} kertaa."); // when every characters' combined base stats are 40 remove this
+                    PopupSignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoja enemmän kuin {CustomCharacter.STATMAXPLAYERINCREASE} kertaa."); // when every characters' combined base stats are 40 remove this
                 }
             }
 
@@ -396,7 +413,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             if (showPopupMessages && !(GetStat(statType) > GetBaseStat(statType)))
             {
-                SignalBus.OnChangePopupInfoSignal($"Et voi vähentää pohjataitoa.");
+                PopupSignalBus.OnChangePopupInfoSignal($"Et voi vähentää pohjataitoa.");
             }
 
             return GetStat(statType) > CustomCharacter.STATMINLEVEL && GetStat(statType) > GetBaseStat(statType);
