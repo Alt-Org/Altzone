@@ -1768,7 +1768,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8944099634186064353}
   - component: {fileID: 5227175995781872566}
-  - component: {fileID: 2682408130751760177}
   m_Layer: 0
   m_Name: EditorMenu
   m_TagString: Untagged
@@ -1809,32 +1808,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3069741852416127881}
   m_CullTransparentMesh: 1
---- !u!114 &2682408130751760177
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3069741852416127881}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73978bc6ca34bdf4e838acacac9147ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _characterLoader: {fileID: 3572067151878312193}
-  _modeList:
-  - {fileID: 1583219091284170855}
-  - {fileID: 1665418200380759846}
-  - {fileID: 3990782255532189438}
-  _switchModeButtons:
-  - {fileID: 6399676103353379342}
-  - {fileID: 1960484600104632230}
-  - {fileID: 1219249222629886835}
-  _saveButton: {fileID: 1891825094661328202}
-  _defaultMode: 0
-  _visualDataScriptableObject: {fileID: 11400000, guid: 5924f2967fcfeb0469785ea0b5f3d2b2,
-    type: 2}
-  _avatarVisualsParent: {fileID: 5099103689188165273}
 --- !u!1 &3631476720980781489
 GameObject:
   m_ObjectHideFlags: 0
@@ -3196,6 +3169,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4231379166148945069}
+  - component: {fileID: 2999011772624794886}
   m_Layer: 0
   m_Name: AvatarEditor
   m_TagString: Untagged
@@ -3219,6 +3193,32 @@ Transform:
   - {fileID: 2303743429245796772}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2999011772624794886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7298176311922543583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73978bc6ca34bdf4e838acacac9147ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _characterLoader: {fileID: 3572067151878312193}
+  _modeList:
+  - {fileID: 1583219091284170855}
+  - {fileID: 1665418200380759846}
+  - {fileID: 3990782255532189438}
+  _switchModeButtons:
+  - {fileID: 6399676103353379342}
+  - {fileID: 1960484600104632230}
+  - {fileID: 1219249222629886835}
+  _saveButton: {fileID: 1891825094661328202}
+  _defaultMode: 0
+  _visualDataScriptableObject: {fileID: 11400000, guid: 5924f2967fcfeb0469785ea0b5f3d2b2,
+    type: 2}
+  _avatarVisualsParent: {fileID: 5099103689188165273}
 --- !u!1 &7323484196095293164
 GameObject:
   m_ObjectHideFlags: 0
