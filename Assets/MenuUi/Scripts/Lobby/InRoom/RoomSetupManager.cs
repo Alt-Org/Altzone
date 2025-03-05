@@ -79,6 +79,11 @@ namespace MenuUI.Scripts.Lobby.InRoom
             Spectator
         }
 
+        private void Awake()
+        {
+            _selectedCharactersEditable.SelectedCharactersChanged += UpdateCharactersAndStatsKey;
+        }
+
         private void OnEnable()
         {
             Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState}");
@@ -106,6 +111,11 @@ namespace MenuUI.Scripts.Lobby.InRoom
             PhotonRealtimeClient.RemoveCallbackTarget(this);
         }
 
+        private void OnDestroy()
+        {
+            _selectedCharactersEditable.SelectedCharactersChanged -= UpdateCharactersAndStatsKey;
+        }
+
         private IEnumerator OnEnableInRoom()
         {
             yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
@@ -122,23 +132,11 @@ namespace MenuUI.Scripts.Lobby.InRoom
 
             StartCoroutine(GetPlayerData(playerData =>
             {
-                var battleCharacter = playerData.CurrentBattleCharacters;
-                Debug.Log($"{battleCharacter[0]}");
-                List<CustomCharacter> selectedCharacters = new();
-                int[] characterIds = new int[3];
-                int[] characterStats = new int[15];
-                for (int i = 0; i < 3; i++)
-                {
-                    characterIds[i] = (int)battleCharacter[i].Id;
-                    characterStats[i * 5] = battleCharacter[i].Hp;
-                    characterStats[i * 5 + 1] = battleCharacter[i].Speed;
-                    characterStats[i * 5 + 2] = battleCharacter[i].CharacterSize;
-                    characterStats[i * 5 + 3] = battleCharacter[i].Attack;
-                    characterStats[i * 5 + 4] = battleCharacter[i].Defence;
-                    selectedCharacters.Add(battleCharacter[i]);
-                }
+                // Getting character id and stat int arrays
+                int[] characterIds = GetSelectedCharacterIds(playerData);
+                int[] characterStats = GetCharactersStatsArray(playerData);
 
-                Debug.Log($"playerPos {playerPos} prefabIndex {characterIds}");
+                // Creating custom properties
                 player.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object>
                 {
                     { PlayerPositionKey, playerPos },
@@ -146,10 +144,83 @@ namespace MenuUI.Scripts.Lobby.InRoom
                     { PlayerStatsKey, characterStats },
                     { "Role", (int)currentRole }
                 }));
+
+                // Setting custom characters for quantum
+                List<CustomCharacter> selectedCharacters = GetSelectedCustomCharacters(playerData);
                 LobbyManager.Instance.SetPlayerQuantumCharacters(selectedCharacters);
+
                 Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState} {enabled}");
+
                 UpdateStatus();
             }));
+        }
+
+        private void UpdateCharactersAndStatsKey()
+        {
+            StartCoroutine(GetPlayerData(playerData =>
+            {
+                // Getting character id and stat int arrays
+                int[] characterIds = GetSelectedCharacterIds(playerData);
+                int[] characterStats = GetCharactersStatsArray(playerData);
+
+                // Updating player properties
+                LobbyPlayer player = PhotonRealtimeClient.LocalLobbyPlayer;
+                player.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object>
+                {
+                    { PlayerCharactersKey, characterIds },
+                    { PlayerStatsKey, characterStats },
+                }));
+
+                // Setting custom characters for quantum
+                List<CustomCharacter> selectedCharacters = GetSelectedCustomCharacters(playerData);
+                LobbyManager.Instance.SetPlayerQuantumCharacters(selectedCharacters);
+            }));
+        }
+
+        private List<CustomCharacter> GetSelectedCustomCharacters(PlayerData playerData)
+        {
+            var battleCharacter = playerData.CurrentBattleCharacters;
+            List<CustomCharacter> selectedCharacters = new();
+
+            for (int i = 0; i < playerData.CurrentBattleCharacters.Count; i++)
+            {
+                selectedCharacters.Add(battleCharacter[i]);
+            }
+
+            return selectedCharacters;
+        }
+
+        private int[] GetSelectedCharacterIds(PlayerData playerData)
+        {
+            var battleCharacter = playerData.CurrentBattleCharacters;
+            int[] characterIds = new int[playerData.CurrentBattleCharacters.Count];
+
+            for (int i = 0; i < playerData.CurrentBattleCharacters.Count; i++)
+            {
+                characterIds[i] = (int)battleCharacter[i].Id;
+            }
+
+            return characterIds;
+        }
+
+        // The int array has all current selected characters' stats one after another.
+        // Example: [ C1 Hp, C1 Speed, C1 CharacterSize, C1 Attack, C1 Defence, C2 Hp, C2 Speed, C2 CharacterSize, C2 Attack, C2 Defence, C3 Hp, C3 Speed, C3 CharacterSize, C3 Attack, C3 Defence]
+        // (Here C means Character so C1 is Character 1)
+        private int[] GetCharactersStatsArray(PlayerData playerData)
+        {
+            var battleCharacter = playerData.CurrentBattleCharacters;
+            int[] characterStats = new int[playerData.CurrentBattleCharacters.Count * 5];
+
+            for (int i = 0; i < playerData.CurrentBattleCharacters.Count; i++)
+            {
+                characterStats[i * 5] = battleCharacter[i].Hp;
+                characterStats[i * 5 + 1] = battleCharacter[i].Speed;
+                characterStats[i * 5 + 2] = battleCharacter[i].CharacterSize;
+                characterStats[i * 5 + 3] = battleCharacter[i].Attack;
+                characterStats[i * 5 + 4] = battleCharacter[i].Defence;
+            }
+
+            return characterStats;
         }
 
         private void UpdateStatus()

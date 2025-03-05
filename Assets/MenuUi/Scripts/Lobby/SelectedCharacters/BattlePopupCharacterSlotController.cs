@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ModelV2;
@@ -10,6 +11,8 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         [SerializeField] private BattlePopupSelectedCharacter[] _selectedCharacterSlots;
         [SerializeField] private bool _isInRoom;
 
+        public Action SelectedCharactersChanged;
+
         private void OnEnable()
         {
             if (!_isInRoom) SetCharacters();
@@ -20,8 +23,15 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         {
             foreach (BattlePopupSelectedCharacter character in _selectedCharacterSlots)
             {
-                character.SelectedCharactersChanged -= SetCharacters;
+                character.SelectedCharactersChanged -= OnSelectedCharactersChanged;
             }
+        }
+
+
+        private void OnSelectedCharactersChanged()
+        {
+            SelectedCharactersChanged?.Invoke(); // invoking (own) event onwards to update the slots in lobby waiting room
+            SetCharacters();
         }
 
 
@@ -45,7 +55,8 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
 
                 foreach (BattlePopupSelectedCharacter character in _selectedCharacterSlots)
                 {
-                    character.SelectedCharactersChanged += SetCharacters;
+                    character.SelectedCharactersChanged -= OnSelectedCharactersChanged; // Ensuring there is no duplicate events since this method can be called multiple times when the characters change
+                    character.SelectedCharactersChanged += OnSelectedCharactersChanged;
                 }
             }));
         }
