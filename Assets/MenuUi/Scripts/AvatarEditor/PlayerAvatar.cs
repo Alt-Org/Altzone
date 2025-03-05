@@ -8,18 +8,18 @@ namespace MenuUi.Scripts.AvatarEditor
     {
         private string _characterName;
         private List<FeatureID> _features;
-        private List<FeatureColor> _colors;
+        private List<string> _colors;
         private Vector2 _scale;
 
         public PlayerAvatar(List<FeatureID> featureIds)
         {
             _characterName = "";
             _features = featureIds;
-            _colors = new List<FeatureColor>();
+            _colors = new List<string>();
             _scale = Vector2.one;
         }
 
-        public PlayerAvatar(string name, List<FeatureID> features, List<FeatureColor> colors, Vector2 scale)
+        public PlayerAvatar(string name, List<FeatureID> features, List<string> colors, Vector2 scale)
         {
             _characterName = name;
             _features = features;
@@ -31,7 +31,7 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             _characterName = data.Name;
             _features = ToFeaturesListEnum(data.Features);
-            _colors = ToFeatureColorListEnum(data.Colors);
+            _colors = data.Colors;
             _scale = data.Scale;
         }
 
@@ -55,26 +55,6 @@ namespace MenuUi.Scripts.AvatarEditor
             return (tempList);
         }
 
-        private List<FeatureColor> ToFeatureColorListEnum(List<int> indexes)
-        {
-            List<FeatureColor> tempList = new List<FeatureColor>();
-
-            foreach (var index in indexes)
-                tempList.Add((FeatureColor)index);
-
-            return (tempList);
-        }
-
-        public List<int> ToFeatureColorListInt(List<FeatureColor> featureColors)
-        {
-            List<int> tempList = new List<int>();
-
-            foreach (var featureColor in featureColors)
-                tempList.Add((int)featureColor);
-
-            return (tempList);
-        }
-
         public string Name
         {
             get => _characterName;
@@ -84,7 +64,7 @@ namespace MenuUi.Scripts.AvatarEditor
             get => _features;
             set => _features = value;
         }
-        public List<FeatureColor> Colors{
+        public List<string> Colors{
             get => _colors;
             set => _colors = value;
         }

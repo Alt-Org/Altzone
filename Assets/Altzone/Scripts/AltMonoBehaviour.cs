@@ -178,6 +178,14 @@ public class AltMonoBehaviour : MonoBehaviour
         yield return new WaitUntil(() => callback != null);
     }
 
+    /// <summary>
+    /// Used to get and save player data to/from server.
+    /// </summary>
+    /// <param name="operationType">"get" or "save"</param>
+    /// <param name="unsavedData">If saving: insert unsaved data.<br/> If getting: insert <c>null</c>.</param>
+    /// <param name="timeoutTime">Time until coroutine force stops if no responce is received.</param>
+    /// <param name="timeoutCallback">Returns value if timeout with server.</param>
+    /// <param name="dataCallback">Returns <c>PlayerData</c>.</param>
     protected IEnumerator PlayerDataTransferer(string operationType, PlayerData unsavedData, float timeoutTime, System.Action<bool> timeoutCallback, System.Action<PlayerData> dataCallback)
     {
         PlayerData receivedData = null;
