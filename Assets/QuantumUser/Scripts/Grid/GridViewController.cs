@@ -8,14 +8,10 @@ namespace Quantum
         [SerializeField] private Color _colorA;
         [SerializeField] private Color _colorB;
 
-        public void SetGrid(int rows, int columns, int middleAreaHeight)
+        public void SetGrid()
         {
             // get scale
             float scale = (float)GridManager.GridScaleFactor;
-
-            // set middleArea start and end
-            int middleAreaStart = (rows - middleAreaHeight) / 2;
-            int middleAreaEnd = middleAreaStart + middleAreaHeight - 1;
 
             // gridCell variables
             GameObject gridCell;
@@ -28,12 +24,12 @@ namespace Quantum
             gridCellRotation = _gridCellTemplate.transform.localRotation;
             gridCellScale = new Vector3(scale, scale, scale);
 
-            for (int row = 0; row < rows; row++)
+            for (int row = 0; row < GridManager.Rows; row++)
             {
                 // skip middleArea
-                if (row >= middleAreaStart && row <= middleAreaEnd) row = middleAreaEnd + 1;
+                if (row > GridManager.TeamAlphaFieldEnd && row < GridManager.TeamBetaFieldStart) row = GridManager.TeamBetaFieldStart;
 
-                for (int col = 0; col < columns; col++)
+                for (int col = 0; col < GridManager.Columns; col++)
                 {
                     // set position
                     gridCellPosition = new Vector3(
