@@ -263,6 +263,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void InstantiateRightSideButtons()
         {
+            //Debug.LogError(_currentCategoryFeatureDataPlaceholder.Count);
             for (int i = 4; i < 8; i++)
             {
                 //int j = i;
@@ -498,7 +499,7 @@ namespace MenuUi.Scripts.AvatarEditor
         public void SetLoadedFeatures(List<FeatureID> features)
         {
             for (int i = 0; i < features.Count; i++){
-                _currentCategoryFeatureDataPlaceholder = GetSpritesByCategory((FeatureSlot)i);
+                List<FeatureData> currentCategoryFeatureDataPlaceholder = GetSpritesByCategory((FeatureSlot)i);
                 //Debug.Log("Getting sprite at index: " + (int)features[i] + ", Sprite list count is: " + _currentCategorySpritesPlaceholder.Count);
                 // Debug.Log("The feature in slot " + ((FeatureSlot)i).ToString() + " is " + features[i].ToString() );
 
@@ -513,7 +514,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 }
                 else
                 {
-                    FeatureData featureData = _currentCategoryFeatureDataPlaceholder.Find(x => x.id == features[i]);
+                    FeatureData featureData = currentCategoryFeatureDataPlaceholder.Find(x => x.id == features[i]);
                     SetFeature(featureData, i);
                 }
             }
