@@ -122,7 +122,7 @@ namespace MenuUi.Scripts.AvatarEditor
             for (int i = 0; i < colors.Count; i++)
             {
                 SelectFeature((FeatureSlot)i);
-                Debug.LogError(colors[i]);
+                //Debug.LogError(colors[i]);
                 if(features[i] == FeatureID.None)
                 {
                     SetTransparentColor();
