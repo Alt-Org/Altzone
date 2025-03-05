@@ -6,11 +6,30 @@ namespace Quantum
 {
     public static class GridManager
     {
+        // fields are meant to be constant and should not be changed after init
+
+        public static int Rows { get; private set; }
+        public static int Columns { get; private set; }
+
+        public static int TeamAlphaFieldStart { get; private set; }
+        public static int TeamAlphaFieldEnd { get; private set; }
+        public static int TeamBetaFieldStart { get; private set; }
+        public static int TeamBetaFieldEnd { get; private set; }
+
         public static FP GridScaleFactor { get; private set; }
 
         public static void Init(BattleArenaSpec battleArenaSpec)
         {
+            Rows = battleArenaSpec.GridHeight;
+            Columns = battleArenaSpec.GridWidth;
+
+            TeamAlphaFieldStart = 0;
+            TeamAlphaFieldEnd = (battleArenaSpec.GridHeight - battleArenaSpec.MiddleAreaHeight) / 2 - 1;
+            TeamBetaFieldStart = TeamAlphaFieldEnd + battleArenaSpec.MiddleAreaHeight + 1;
+            TeamBetaFieldEnd = battleArenaSpec.GridWidth;
+
             GridScaleFactor = battleArenaSpec.WorldHeight / battleArenaSpec.GridHeight;
+
             s_gridOffset = new FPVector2(
                 battleArenaSpec.GridWidth * GridScaleFactor * FP._0_50,
                 battleArenaSpec.WorldHeight * FP._0_50
