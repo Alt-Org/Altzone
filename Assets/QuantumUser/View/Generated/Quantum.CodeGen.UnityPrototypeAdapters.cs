@@ -54,12 +54,14 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.QuantumEntityPrototype ChildEntity;
     public FPVector2 Normal;
     public FP CollisionMinOffset;
+    public Int32 Layer;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.SoulWallPrototype prototype);
     public override Quantum.Prototypes.SoulWallPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.SoulWallPrototype();
       converter.Convert(this.ChildEntity, out result.ChildEntity);
       converter.Convert(this.Normal, out result.Normal);
       converter.Convert(this.CollisionMinOffset, out result.CollisionMinOffset);
+      converter.Convert(this.Layer, out result.Layer);
       ConvertUser(converter, ref result);
       return result;
     }
