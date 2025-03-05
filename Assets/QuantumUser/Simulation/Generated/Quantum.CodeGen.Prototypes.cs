@@ -142,6 +142,27 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerManagerData))]
+  public unsafe class PlayerManagerDataPrototype : ComponentPrototype<Quantum.PlayerManagerData> {
+    [ArrayLengthAttribute(4)]
+    public MapEntityId[] SelectedCharacters = new MapEntityId[4];
+    [ArrayLengthAttribute(12)]
+    public MapEntityId[] AllCharacters = new MapEntityId[12];
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.PlayerManagerData component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.PlayerManagerData result, in PrototypeMaterializationContext context = default) {
+        for (int i = 0, count = PrototypeValidator.CheckLength(SelectedCharacters, 4, in context); i < count; ++i) {
+          PrototypeValidator.FindMapEntity(this.SelectedCharacters[i], in context, out *result.SelectedCharacters.GetPointer(i));
+        }
+        for (int i = 0, count = PrototypeValidator.CheckLength(AllCharacters, 12, in context); i < count; ++i) {
+          PrototypeValidator.FindMapEntity(this.AllCharacters[i], in context, out *result.AllCharacters.GetPointer(i));
+        }
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Projectile))]
   public unsafe partial class ProjectilePrototype : ComponentPrototype<Quantum.Projectile> {
     public QBoolean IsLaunched;
