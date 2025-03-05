@@ -53,6 +53,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
         [SerializeField] private BattlePopupCharacterSlotController _selectedCharactersP2;
         [SerializeField] private BattlePopupCharacterSlotController _selectedCharactersP3;
         [SerializeField] private BattlePopupCharacterSlotController _selectedCharactersP4;
+        [SerializeField] private BattlePopupCharacterSlotController _selectedCharactersEditable;
 
         [Header("Live Data"), SerializeField] private int _localPlayerPosition;
         [SerializeField] private bool _isLocalPlayerPositionUnique;
@@ -285,27 +286,31 @@ namespace MenuUI.Scripts.Lobby.InRoom
             var curValue = player.GetCustomProperty(PlayerPositionKey, 0);
             // Master client can *only* start the game when in room as player!
             _interactableStartPlay = player.IsMasterClient && curValue >= PlayerPosition1 && curValue <= PlayerPosition4;
+
+            int[] characters = player.GetCustomProperty(PlayerCharactersKey, new int[3]);
+            int[] stats = player.GetCustomProperty(PlayerStatsKey, new int[15]);
+
             switch (curValue)
             {
                 case PlayerPosition1:
                     _interactablePlayerP1 = false;
                     _captionPlayerP1 = $"<color=blue>{player.NickName}</color>";
-                    _selectedCharactersP1.SetCharacters();
+                    _selectedCharactersP1.SetCharacters(characters, stats);
                     break;
                 case PlayerPosition2:
                     _interactablePlayerP2 = false;
                     _captionPlayerP2 = $"<color=blue>{player.NickName}</color>";
-                    _selectedCharactersP2.SetCharacters();
+                    _selectedCharactersP2.SetCharacters(characters, stats);
                     break;
                 case PlayerPosition3:
                     _interactablePlayerP3 = false;
                     _captionPlayerP3 = $"<color=blue>{player.NickName}</color>";
-                    _selectedCharactersP3.SetCharacters();
+                    _selectedCharactersP3.SetCharacters(characters, stats);
                     break;
                 case PlayerPosition4:
                     _interactablePlayerP4 = false;
                     _captionPlayerP4 = $"<color=blue>{player.NickName}</color>";
-                    _selectedCharactersP4.SetCharacters();
+                    _selectedCharactersP4.SetCharacters(characters, stats);
                     break;
             }
         }

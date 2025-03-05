@@ -3893,8 +3893,6 @@ MonoBehaviour:
   _buttonPlayerP2: {fileID: 1830425297749066807}
   _buttonPlayerP3: {fileID: 6942399835953398676}
   _buttonPlayerP4: {fileID: 5706244243901746648}
-  _buttonGuest: {fileID: 0}
-  _buttonSpectator: {fileID: 0}
   _buttonStartPlay: {fileID: 2958878656600820561}
   _buttonRaidTest: {fileID: 0}
   _nameP1: {fileID: 1108306412254523655}
@@ -3905,6 +3903,7 @@ MonoBehaviour:
   _selectedCharactersP2: {fileID: 6379934016463270374}
   _selectedCharactersP3: {fileID: 6535277110894626863}
   _selectedCharactersP4: {fileID: 7947160753516133194}
+  _selectedCharactersEditable: {fileID: 8720671288207870194}
   _localPlayerPosition: 0
   _isLocalPlayerPositionUnique: 0
   _masterClientPosition: 0
@@ -12756,7 +12755,7 @@ PrefabInstance:
     - target: {fileID: 6082567443366930256, guid: 8e246b0a47c7e6b489fcb7b2eeb10763,
         type: 3}
       propertyPath: _isInRoom
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6691270648693797485, guid: 8e246b0a47c7e6b489fcb7b2eeb10763,
         type: 3}
@@ -12914,6 +12913,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 3273996574596394914}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8720671288207870194 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6082567443366930256, guid: 8e246b0a47c7e6b489fcb7b2eeb10763,
+    type: 3}
+  m_PrefabInstance: {fileID: 3273996574596394914}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7d9f61c2e76b6849bcbb3bf836adff0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4188455704605809690
 PrefabInstance:
   m_ObjectHideFlags: 0
