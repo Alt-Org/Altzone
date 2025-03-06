@@ -5,6 +5,7 @@ using System.Linq;
 using Photon.Realtime;
 using UnityEngine;
 using Altzone.Scripts.Lobby.Wrappers;
+using Altzone.Scripts.Lobby;
 //using ClientState = Battle1.PhotonRealtime.Code.ClientState;
 //using ILobbyCallbacks = Battle1.PhotonRealtime.Code.ILobbyCallbacks;
 //using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
@@ -47,6 +48,11 @@ namespace Altzone.Scripts.Common.Photon
             throw new UnityException($"Invalid connection state: {PhotonRealtimeClient.NetworkClientState}");
         }
 
+        private void Awake()
+        {
+            LobbyManager.LobbyOnLeftRoom += OnLeftRoom;
+        }
+
         private void OnEnable()
         {
             PhotonRealtimeClient.Client.AddCallbackTarget(this);
@@ -55,6 +61,11 @@ namespace Altzone.Scripts.Common.Photon
         private void OnDisable()
         {
             PhotonRealtimeClient.Client.RemoveCallbackTarget(this);
+        }
+
+        private void OnDestroy()
+        {
+            LobbyManager.LobbyOnLeftRoom -= OnLeftRoom;
         }
 
         private void UpdateRoomListing(List<LobbyRoomInfo> roomList)
@@ -74,6 +85,11 @@ namespace Altzone.Scripts.Common.Photon
                 // Remove removed rooms from cache
                 _currentRoomList = _currentRoomList.Where(x => !x.RemovedFromList).ToList();
             }
+        }
+
+        private void OnLeftRoom() // clearing room list when leaving room so that the bookkeeping works correctly. when going to lobby again all of the current rooms will be passed to OnRoomListUpdate
+        {
+            _currentRoomList.Clear();
         }
 
         void ILobbyCallbacks.OnJoinedLobby()
