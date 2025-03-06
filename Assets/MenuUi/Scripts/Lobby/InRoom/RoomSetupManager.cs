@@ -128,7 +128,16 @@ namespace MenuUI.Scripts.Lobby.InRoom
 
             // Reset player custom properties for new game
             player.CustomProperties.Clear();
+
+            // Getting player pos and reserving it inside room
             var playerPos = PhotonLobbyRoom.GetFirstFreePlayerPos(player);
+            room.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object,object>
+            {
+                { PlayerPosition1, playerPos == PlayerPosition1 },
+                { PlayerPosition2, playerPos == PlayerPosition2 },
+                { PlayerPosition3, playerPos == PlayerPosition3 },
+                { PlayerPosition4, playerPos == PlayerPosition4 },
+            }));
 
             StartCoroutine(GetPlayerData(playerData =>
             {
