@@ -30,6 +30,10 @@ namespace Altzone.Scripts.Battle.Photon
         public const string TeamWinKey = "tw";
         public const string TeamBlueScoreKey = "t1";
         public const string TeamRedScoreKey = "t2";
+        public const string PlayerPositionKey1 = "1";
+        public const string PlayerPositionKey2 = "2";
+        public const string PlayerPositionKey3 = "3";
+        public const string PlayerPositionKey4 = "4";
 
         //  Red team number 2
         //  - Player numbers 3 and 4
@@ -94,18 +98,23 @@ namespace Altzone.Scripts.Battle.Photon
         public int GetFirstFreePlayerPos(Player player, int wantedPlayerPos = PlayerPosition1, bool isAllocateByTeams = false)
         {
             HashSet<int> usedPlayerPositions = new HashSet<int>();
-            foreach (Player otherPlayer in PhotonRealtimeClient.PlayerList)
+            if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PlayerPositionKey1) != "")
             {
-                if (otherPlayer.Equals(player))
-                {
-                    continue;
-                }
-                int otherPlayerPos = GetPlayerPos(otherPlayer);
-                if (IsValidPlayerPos(otherPlayerPos))
-                {
-                    usedPlayerPositions.Add(otherPlayerPos);
-                }
+                usedPlayerPositions.Add(PlayerPosition1);
             }
+            if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PlayerPositionKey2) != "")
+            {
+                usedPlayerPositions.Add(PlayerPosition2);
+            }
+            if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PlayerPositionKey3) != "")
+            {
+                usedPlayerPositions.Add(PlayerPosition3);
+            }
+            if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PlayerPositionKey4) != "")
+            {
+                usedPlayerPositions.Add(PlayerPosition4);
+            }
+
             if (usedPlayerPositions.Contains(wantedPlayerPos))
             {
                 int[] playerPositions = isAllocateByTeams

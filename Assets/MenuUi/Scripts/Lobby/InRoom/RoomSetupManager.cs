@@ -28,6 +28,11 @@ namespace MenuUI.Scripts.Lobby.InRoom
         private const int PlayerPosition3 = PhotonBattleRoom.PlayerPosition3;
         private const int PlayerPosition4 = PhotonBattleRoom.PlayerPosition4;
 
+        private const string PlayerPositionKey1 = PhotonBattleRoom.PlayerPositionKey1;
+        private const string PlayerPositionKey2 = PhotonBattleRoom.PlayerPositionKey2;
+        private const string PlayerPositionKey3 = PhotonBattleRoom.PlayerPositionKey3;
+        private const string PlayerPositionKey4 = PhotonBattleRoom.PlayerPositionKey4;
+
         private const string TeamAlphaNameKey = PhotonBattleRoom.TeamAlphaNameKey;
         private const string TeamBetaNameKey = PhotonBattleRoom.TeamBetaNameKey;
         private const int TeamAlphaValue = PhotonBattleRoom.TeamAlphaValue;
@@ -136,21 +141,25 @@ namespace MenuUI.Scripts.Lobby.InRoom
             {
                 // Reserving player position inside the room
                 LobbyPhotonHashtable propertyToSet = new();
-                LobbyPhotonHashtable expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPosition1, "" } });
+                LobbyPhotonHashtable expectedValue = new();
 
                 switch (playerPos)
                 {
                     case PlayerPosition1:
-                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPosition1, playerData.Id } });
+                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey1, playerData.Id } });
+                        expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey1, "" } });
                         break;
                     case PlayerPosition2:
-                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPosition2, playerData.Id } });
+                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey2, playerData.Id } });
+                        expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey2, "" } });
                         break;
                     case PlayerPosition3:
-                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPosition3, playerData.Id } });
+                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey3, playerData.Id } });
+                        expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey3, "" } });
                         break;
                     case PlayerPosition4:
-                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPosition4, playerData.Id } });
+                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey4, playerData.Id } });
+                        expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey4, "" } });
                         break;
                 }
                 room.SetCustomProperties(propertyToSet, expectedValue);

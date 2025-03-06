@@ -575,10 +575,10 @@ namespace Altzone.Scripts.Lobby
             // Initializing room player positions
             PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object>
             {
-                { PhotonBattleRoom.PlayerPosition1, "" },
-                { PhotonBattleRoom.PlayerPosition2, "" },
-                { PhotonBattleRoom.PlayerPosition3, "" },
-                { PhotonBattleRoom.PlayerPosition4, "" }
+                { PhotonBattleRoom.PlayerPositionKey1, "" },
+                { PhotonBattleRoom.PlayerPositionKey2, "" },
+                { PhotonBattleRoom.PlayerPositionKey3, "" },
+                { PhotonBattleRoom.PlayerPositionKey4, "" }
             }));
 
             LobbyOnCreatedRoom?.Invoke();
