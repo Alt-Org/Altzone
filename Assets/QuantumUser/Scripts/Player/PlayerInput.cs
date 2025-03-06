@@ -25,7 +25,7 @@ namespace Quantum
             {
                 MouseClick = mouseClick,
                 MousePosition = mouseClick ? Camera.main.ScreenToWorldPoint(ClickStateHandler.GetClickPosition()).ToFPVector3() : FPVector3.Zero,
-                RotateMotion = twoFingers,
+                //RotateMotion = twoFingers,
                 RotationDirection = twoFingers ? FP.FromFloat_UNSAFE(ClickStateHandler.GetRotationDirection()) : 0,
             };
 

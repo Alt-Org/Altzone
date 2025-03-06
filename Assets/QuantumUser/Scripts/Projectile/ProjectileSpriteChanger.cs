@@ -4,7 +4,7 @@ namespace Quantum
 {
     public class ProjectileSpriteChanger : QuantumCallbacks
     {
-        [Tooltip("Sprite 0: Aggression\nSprite 1: Joy\nSprite 2: Love\nSprite 3: Playful\nSprite 4: Sadness")]
+        [Tooltip("Sprite 0: Sadness\nSprite 1: Joy\nSprite 2: Playful\nSprite 3: Aggression\nSprite 4: Love")]
         [SerializeField] private Sprite[] _sprites;
 
         private SpriteRenderer _spriteRenderer;
