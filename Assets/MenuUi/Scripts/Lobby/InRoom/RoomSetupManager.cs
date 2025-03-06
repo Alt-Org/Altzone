@@ -132,25 +132,29 @@ namespace MenuUI.Scripts.Lobby.InRoom
             // Getting first free player pos
             var playerPos = PhotonLobbyRoom.GetFirstFreePlayerPos(player);
 
-            // Reserving player position inside the room
-            switch (playerPos)
-            {
-                case PlayerPosition1:
-                    room.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPosition1, true } }));
-                    break;
-                case PlayerPosition2:
-                    room.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPosition2, true } }));
-                    break;
-                case PlayerPosition3:
-                    room.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPosition3, true } }));
-                    break;
-                case PlayerPosition4:
-                    room.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPosition4, true } }));
-                    break;
-            }
-
             StartCoroutine(GetPlayerData(playerData =>
             {
+                // Reserving player position inside the room
+                LobbyPhotonHashtable propertyToSet = new();
+                LobbyPhotonHashtable expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPosition1, "" } });
+
+                switch (playerPos)
+                {
+                    case PlayerPosition1:
+                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPosition1, playerData.Id } });
+                        break;
+                    case PlayerPosition2:
+                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPosition2, playerData.Id } });
+                        break;
+                    case PlayerPosition3:
+                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPosition3, playerData.Id } });
+                        break;
+                    case PlayerPosition4:
+                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPosition4, playerData.Id } });
+                        break;
+                }
+                room.SetCustomProperties(propertyToSet, expectedValue);
+
                 // Getting character id and stat int arrays
                 int[] characterIds = GetSelectedCharacterIds(playerData);
                 int[] characterStats = GetCharactersStatsArray(playerData);
