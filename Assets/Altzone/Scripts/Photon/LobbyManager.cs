@@ -484,6 +484,15 @@ namespace Altzone.Scripts.Lobby
 
         private void SetPlayer(Player player, int playerPosition)
         {
+            // Checking if any of the players in the room are already in the position and if so return.
+            foreach (var currentRoomPlayer in PhotonRealtimeClient.CurrentRoom.Players)
+            {
+                if (currentRoomPlayer.Value.GetCustomProperty(PlayerPositionKey, -1) == playerPosition)
+                {
+                    return;
+                }
+            }
+
             Assert.IsTrue(PhotonLobbyRoom.IsValidGameplayPosOrGuest(playerPosition));
             if (!player.HasCustomProperty(PlayerPositionKey))
             {
