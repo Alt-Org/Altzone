@@ -5,7 +5,6 @@ using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Runtime.CompilerServices;
 using System.Collections;
 
 namespace MenuUi.Scripts.AvatarEditor
