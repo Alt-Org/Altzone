@@ -35,7 +35,6 @@ public class Chat : MonoBehaviour
     public GameObject quickMessages;
     public GameObject[] sendButtons;
     public GameObject buttonOpenSendButtons;
-    public GameObject optionsMinimizeButton;
 
     private ScrollRect currentScrollRect; // Tällä hetkellä aktiivinen Scroll Rect
 
@@ -325,7 +324,7 @@ public class Chat : MonoBehaviour
     }
 
 
-    private int chosenButton;
+    private int chosenButton = 2;
     // Asettaa sinisen viestipohjan ja lähettää viestin
     public void SetBluePrefab() { currentPrefab = messagePrefabBlue; chosenButton = 0; SendChatMessage(); }
     // Asettaa punaisen viestipohjan ja lähettää viestin
@@ -349,10 +348,13 @@ public class Chat : MonoBehaviour
             if(i != chosenButton)
             {
                 sendButtons[i].SetActive(false); 
-            } 
+            }
+            else
+            {
+                sendButtons[chosenButton].SetActive(true);
+            }
         }
 
         buttonOpenSendButtons.SetActive(true);
-        optionsMinimizeButton.SetActive(false);
     }
 }
