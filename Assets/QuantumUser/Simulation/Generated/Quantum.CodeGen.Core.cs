@@ -71,6 +71,11 @@ namespace Quantum {
     GameOver,
     PostGame,
   }
+  public enum PlayerPlayState : int {
+    NotInGame,
+    OutOfPlay,
+    InPlay,
+  }
   public enum SoundEffect : int {
     SoulWallHit,
     GoalHit,
@@ -635,27 +640,57 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerData : Quantum.IComponent {
-    public const Int32 SIZE = 64;
+    public const Int32 SIZE = 128;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(0)]
-    public PlayerRef Player;
-    [FieldOffset(24)]
-    public FP Speed;
-    [FieldOffset(48)]
-    public FPVector2 TargetPosition;
     [FieldOffset(16)]
-    public FP Rotation;
-    [FieldOffset(32)]
-    public FPVector2 Normal;
+    public PlayerRef Player;
+    [FieldOffset(0)]
+    public BattlePlayerSlot Slot;
+    [FieldOffset(4)]
+    public BattleTeamNumber TeamNumber;
+    [FieldOffset(12)]
+    public Int32 CharacterId;
     [FieldOffset(8)]
+    public Int32 CharacterClass;
+    [FieldOffset(80)]
+    public FP StatHp;
+    [FieldOffset(88)]
+    public FP StatSpeed;
+    [FieldOffset(64)]
+    public FP StatCharacterSize;
+    [FieldOffset(56)]
+    public FP StatAttack;
+    [FieldOffset(72)]
+    public FP StatDefence;
+    [FieldOffset(48)]
+    public FP Speed;
+    [FieldOffset(112)]
+    public FPVector2 TargetPosition;
+    [FieldOffset(24)]
+    public FP BaseRotation;
+    [FieldOffset(40)]
+    public FP MovementRotation;
+    [FieldOffset(96)]
+    public FPVector2 Normal;
+    [FieldOffset(32)]
     public FP CollisionMinOffset;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10271;
         hash = hash * 31 + Player.GetHashCode();
+        hash = hash * 31 + (Int32)Slot;
+        hash = hash * 31 + (Int32)TeamNumber;
+        hash = hash * 31 + CharacterId.GetHashCode();
+        hash = hash * 31 + CharacterClass.GetHashCode();
+        hash = hash * 31 + StatHp.GetHashCode();
+        hash = hash * 31 + StatSpeed.GetHashCode();
+        hash = hash * 31 + StatCharacterSize.GetHashCode();
+        hash = hash * 31 + StatAttack.GetHashCode();
+        hash = hash * 31 + StatDefence.GetHashCode();
         hash = hash * 31 + Speed.GetHashCode();
         hash = hash * 31 + TargetPosition.GetHashCode();
-        hash = hash * 31 + Rotation.GetHashCode();
+        hash = hash * 31 + BaseRotation.GetHashCode();
+        hash = hash * 31 + MovementRotation.GetHashCode();
         hash = hash * 31 + Normal.GetHashCode();
         hash = hash * 31 + CollisionMinOffset.GetHashCode();
         return hash;
@@ -663,24 +698,52 @@ namespace Quantum {
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (PlayerData*)ptr;
+        serializer.Stream.Serialize((Int32*)&p->Slot);
+        serializer.Stream.Serialize((Int32*)&p->TeamNumber);
+        serializer.Stream.Serialize(&p->CharacterClass);
+        serializer.Stream.Serialize(&p->CharacterId);
         PlayerRef.Serialize(&p->Player, serializer);
+        FP.Serialize(&p->BaseRotation, serializer);
         FP.Serialize(&p->CollisionMinOffset, serializer);
-        FP.Serialize(&p->Rotation, serializer);
+        FP.Serialize(&p->MovementRotation, serializer);
         FP.Serialize(&p->Speed, serializer);
+        FP.Serialize(&p->StatAttack, serializer);
+        FP.Serialize(&p->StatCharacterSize, serializer);
+        FP.Serialize(&p->StatDefence, serializer);
+        FP.Serialize(&p->StatHp, serializer);
+        FP.Serialize(&p->StatSpeed, serializer);
         FPVector2.Serialize(&p->Normal, serializer);
         FPVector2.Serialize(&p->TargetPosition, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerManagerData : Quantum.IComponentSingleton {
-    public const Int32 SIZE = 128;
+    public const Int32 SIZE = 176;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(96)]
+    [FieldOffset(16)]
+    [FramePrinter.FixedArrayAttribute(typeof(PlayerPlayState), 4)]
+    private fixed Byte _PlayStates_[16];
+    [FieldOffset(32)]
+    [FramePrinter.FixedArrayAttribute(typeof(PlayerRef), 4)]
+    private fixed Byte _PlayerRefs_[16];
+    [FieldOffset(144)]
     [FramePrinter.FixedArrayAttribute(typeof(EntityRef), 4)]
     private fixed Byte _SelectedCharacters_[32];
-    [FieldOffset(0)]
+    [FieldOffset(48)]
     [FramePrinter.FixedArrayAttribute(typeof(EntityRef), 12)]
     private fixed Byte _AllCharacters_[96];
+    [FieldOffset(0)]
+    public fixed Int32 SelectedCharacterNumbers[4];
+    public FixedArray<PlayerPlayState> PlayStates {
+      get {
+        fixed (byte* p = _PlayStates_) { return new FixedArray<PlayerPlayState>(p, 4, 4); }
+      }
+    }
+    public FixedArray<PlayerRef> PlayerRefs {
+      get {
+        fixed (byte* p = _PlayerRefs_) { return new FixedArray<PlayerRef>(p, 4, 4); }
+      }
+    }
     public FixedArray<EntityRef> SelectedCharacters {
       get {
         fixed (byte* p = _SelectedCharacters_) { return new FixedArray<EntityRef>(p, 8, 4); }
@@ -694,13 +757,19 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 19913;
+        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(PlayStates);
+        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(PlayerRefs);
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(SelectedCharacters);
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(AllCharacters);
+        fixed (Int32* p = SelectedCharacterNumbers) hash = hash * 31 + HashCodeUtils.GetArrayHashCode(p, 4);
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (PlayerManagerData*)ptr;
+        serializer.Stream.SerializeBuffer(&p->SelectedCharacterNumbers[0], 4);
+        FixedArray.Serialize(p->PlayStates, serializer, Statics.SerializePlayerPlayState);
+        FixedArray.Serialize(p->PlayerRefs, serializer, Statics.SerializePlayerRef);
         FixedArray.Serialize(p->AllCharacters, serializer, Statics.SerializeEntityRef);
         FixedArray.Serialize(p->SelectedCharacters, serializer, Statics.SerializeEntityRef);
     }
@@ -1003,9 +1072,13 @@ namespace Quantum {
   }
   public unsafe partial class Statics {
     public static FrameSerializer.Delegate SerializeEntityRef;
+    public static FrameSerializer.Delegate SerializePlayerPlayState;
+    public static FrameSerializer.Delegate SerializePlayerRef;
     public static FrameSerializer.Delegate SerializeInput;
     static partial void InitStaticDelegatesGen() {
       SerializeEntityRef = EntityRef.Serialize;
+      SerializePlayerPlayState = (v, s) => {{ s.Stream.Serialize((Int32*)v); }};
+      SerializePlayerRef = PlayerRef.Serialize;
       SerializeInput = Quantum.Input.Serialize;
     }
     static partial void RegisterSimulationTypesGen(TypeRegistry typeRegistry) {
@@ -1082,6 +1155,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(PhysicsSceneSettings), PhysicsSceneSettings.SIZE);
       typeRegistry.Register(typeof(Quantum.PlayerData), Quantum.PlayerData.SIZE);
       typeRegistry.Register(typeof(Quantum.PlayerManagerData), Quantum.PlayerManagerData.SIZE);
+      typeRegistry.Register(typeof(Quantum.PlayerPlayState), 4);
       typeRegistry.Register(typeof(PlayerRef), PlayerRef.SIZE);
       typeRegistry.Register(typeof(Quantum.Projectile), Quantum.Projectile.SIZE);
       typeRegistry.Register(typeof(Quantum.ProjectileSpawner), Quantum.ProjectileSpawner.SIZE);
@@ -1123,6 +1197,7 @@ namespace Quantum {
       FramePrinter.EnsurePrimitiveNotStripped<CallbackFlags>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.GameState>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.InputButtons>();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.PlayerPlayState>();
       FramePrinter.EnsurePrimitiveNotStripped<QueryOptions>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.SoundEffect>();
     }
