@@ -41,7 +41,8 @@ namespace MenuUI.Scripts.Lobby.BattleButton
             foreach (GameTypeInfo gameTypeInfo in _gameTypeReference.GetGameTypeInfos())
             {
                 GameTypeOption gameTypeOption = Instantiate(_gameTypeOptionPrefab).GetComponent<GameTypeOption>();
-                gameTypeOption.SetInfo(gameTypeInfo);
+                bool selected = gameTypeInfo.gameType == _selectedGameType;
+                gameTypeOption.SetInfo(gameTypeInfo, selected);
                 gameTypeOption.transform.SetParent(_gameTypeSelectionMenu.transform);
                 gameTypeOption.transform.localScale = Vector3.one;
                 _gameTypeOptionList.Add(gameTypeOption);
@@ -124,6 +125,13 @@ namespace MenuUI.Scripts.Lobby.BattleButton
 
             _gameTypeIcon.sprite = gameTypeInfo.Icon;
             _selectedGameType = gameTypeInfo.gameType;
+
+            // Setting selected visuals for option buttons
+            foreach (GameTypeOption gameTypeOption in _gameTypeOptionList) 
+            {
+                bool selected = gameTypeOption.Info.gameType == _selectedGameType;
+                gameTypeOption.SetSelected(selected);
+            }
         }
     }
 }
