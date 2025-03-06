@@ -430,6 +430,29 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  [Serializable()]
+  public unsafe partial struct GridPosition {
+    public const Int32 SIZE = 8;
+    public const Int32 ALIGNMENT = 4;
+    [FieldOffset(4)]
+    public Int32 Row;
+    [FieldOffset(0)]
+    public Int32 Col;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 3461;
+        hash = hash * 31 + Row.GetHashCode();
+        hash = hash * 31 + Col.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (GridPosition*)ptr;
+        serializer.Stream.Serialize(&p->Col);
+        serializer.Stream.Serialize(&p->Row);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Input {
     public const Int32 SIZE = 56;
     public const Int32 ALIGNMENT = 8;
@@ -740,25 +763,29 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct SoulWall : Quantum.IComponent {
-    public const Int32 SIZE = 32;
+    public const Int32 SIZE = 40;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(0)]
-    public EntityRef ChildEntity;
-    [FieldOffset(16)]
-    public FPVector2 Normal;
     [FieldOffset(8)]
+    public EntityRef ChildEntity;
+    [FieldOffset(24)]
+    public FPVector2 Normal;
+    [FieldOffset(16)]
     public FP CollisionMinOffset;
+    [FieldOffset(0)]
+    public Int32 Layer;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10253;
         hash = hash * 31 + ChildEntity.GetHashCode();
         hash = hash * 31 + Normal.GetHashCode();
         hash = hash * 31 + CollisionMinOffset.GetHashCode();
+        hash = hash * 31 + Layer.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (SoulWall*)ptr;
+        serializer.Stream.Serialize(&p->Layer);
         EntityRef.Serialize(&p->ChildEntity, serializer);
         FP.Serialize(&p->CollisionMinOffset, serializer);
         FPVector2.Serialize(&p->Normal, serializer);
@@ -1019,6 +1046,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.GameSession), Quantum.GameSession.SIZE);
       typeRegistry.Register(typeof(Quantum.GameState), 4);
       typeRegistry.Register(typeof(Quantum.Goal), Quantum.Goal.SIZE);
+      typeRegistry.Register(typeof(Quantum.GridPosition), Quantum.GridPosition.SIZE);
       typeRegistry.Register(typeof(HingeJoint), HingeJoint.SIZE);
       typeRegistry.Register(typeof(HingeJoint3D), HingeJoint3D.SIZE);
       typeRegistry.Register(typeof(Hit), Hit.SIZE);

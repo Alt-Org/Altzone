@@ -6,12 +6,20 @@ namespace QuantumUser.Scripts
 {
     public class GameViewController : QuantumCallbacks
     {
+
+        [SerializeField] private GridViewController _gridViewController;
         // References to UIviews
         [SerializeField] private GameUiController _gameUiController;
 
         private void Awake()
         {
+            if (_gridViewController != null) /*temp check*/ QuantumEvent.Subscribe<EventGridSet>(this, OnGridSet);
             QuantumEvent.Subscribe<EventUpdateDebugStatsOverlay>(this, OnUpdateDebugStatsOverlay);
+        }
+
+        private void OnGridSet(EventGridSet e)
+        {
+            _gridViewController.SetGrid();
         }
 
         private void OnUpdateDebugStatsOverlay(EventUpdateDebugStatsOverlay e)

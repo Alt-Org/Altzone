@@ -11,6 +11,6 @@ namespace Quantum
         public int GridHeight;
         public int MiddleAreaHeight;
         public int SoulWallHeight;
-        //public GridPosition[] PlayerSpawnPositions;
+        public GridPosition[] PlayerSpawnPositions;
     }
 }

@@ -3,6 +3,8 @@ using UnityEngine;
 
 using Prg.Scripts.Common;
 
+using QuantumUser.Scripts;
+
 namespace Quantum
 {
     public class PlayerInput : MonoBehaviour
@@ -24,8 +26,8 @@ namespace Quantum
             Input i = new()
             {
                 MouseClick = mouseClick,
-                MousePosition = mouseClick ? Camera.main.ScreenToWorldPoint(ClickStateHandler.GetClickPosition()).ToFPVector3() : FPVector3.Zero,
-                RotateMotion = twoFingers,
+                MousePosition = mouseClick ? BattleCamera.Camera.ScreenToWorldPoint(ClickStateHandler.GetClickPosition()).ToFPVector3() : FPVector3.Zero,
+                //RotateMotion = twoFingers,
                 RotationDirection = twoFingers ? FP.FromFloat_UNSAFE(ClickStateHandler.GetRotationDirection()) : 0,
             };
 

@@ -101,6 +101,18 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.GridPosition))]
+  public unsafe partial class GridPositionPrototype : StructPrototype {
+    public Int32 Row;
+    public Int32 Col;
+    partial void MaterializeUser(Frame frame, ref Quantum.GridPosition result, in PrototypeMaterializationContext context);
+    public void Materialize(Frame frame, ref Quantum.GridPosition result, in PrototypeMaterializationContext context = default) {
+        result.Row = this.Row;
+        result.Col = this.Col;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Input))]
   public unsafe partial class InputPrototype : StructPrototype {
     public Button MouseClick;
@@ -208,6 +220,7 @@ namespace Quantum.Prototypes {
     public MapEntityId ChildEntity;
     public FPVector2 Normal;
     public FP CollisionMinOffset;
+    public Int32 Layer;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.SoulWall component = default;
         Materialize((Frame)f, ref component, in context);
@@ -217,6 +230,7 @@ namespace Quantum.Prototypes {
         PrototypeValidator.FindMapEntity(this.ChildEntity, in context, out result.ChildEntity);
         result.Normal = this.Normal;
         result.CollisionMinOffset = this.CollisionMinOffset;
+        result.Layer = this.Layer;
     }
   }
 }
