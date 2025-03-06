@@ -129,15 +129,25 @@ namespace MenuUI.Scripts.Lobby.InRoom
             // Reset player custom properties for new game
             player.CustomProperties.Clear();
 
-            // Getting player pos and reserving it inside room
+            // Getting first free player pos
             var playerPos = PhotonLobbyRoom.GetFirstFreePlayerPos(player);
-            room.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object,object>
+
+            // Reserving player position inside the room
+            switch (playerPos)
             {
-                { PlayerPosition1, playerPos == PlayerPosition1 },
-                { PlayerPosition2, playerPos == PlayerPosition2 },
-                { PlayerPosition3, playerPos == PlayerPosition3 },
-                { PlayerPosition4, playerPos == PlayerPosition4 },
-            }));
+                case PlayerPosition1:
+                    room.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPosition1, true } }));
+                    break;
+                case PlayerPosition2:
+                    room.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPosition2, true } }));
+                    break;
+                case PlayerPosition3:
+                    room.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPosition3, true } }));
+                    break;
+                case PlayerPosition4:
+                    room.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPosition4, true } }));
+                    break;
+            }
 
             StartCoroutine(GetPlayerData(playerData =>
             {
