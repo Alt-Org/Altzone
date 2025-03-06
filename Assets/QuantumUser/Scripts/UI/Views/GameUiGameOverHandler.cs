@@ -1,3 +1,4 @@
+using Altzone.Scripts.Lobby;
 using UnityEngine;
 
 namespace QuantumUser.Scripts.UI.Views
@@ -14,7 +15,7 @@ namespace QuantumUser.Scripts.UI.Views
 
         public void OnButtonClickExitGame()
         {
-
+            LobbyManager.ExitQuantum();
         }
 
         //only for testing
