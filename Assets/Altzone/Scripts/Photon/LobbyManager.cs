@@ -449,6 +449,7 @@ namespace Altzone.Scripts.Lobby
         public static void ExitQuantum()
         {
             QuantumRunner.ShutdownAll();
+            DebugLogFileHandler.ContextExit();
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
         }
 
