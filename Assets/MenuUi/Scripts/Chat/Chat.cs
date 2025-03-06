@@ -213,6 +213,10 @@ public class Chat : MonoBehaviour
         selectedMessage = message;
         HighlightMessage(selectedMessage);
 
+        Vector3 deletePosition = deleteButtons.transform.position;
+        deletePosition.y = selectedMessage.transform.position.y; 
+        deleteButtons.transform.position = deletePosition;
+
         deleteButtons.SetActive(true);// Näytä poistopainikkeet, jos viesti on valittuna
     }
 
