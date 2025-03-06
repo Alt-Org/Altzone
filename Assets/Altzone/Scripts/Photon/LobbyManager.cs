@@ -449,7 +449,7 @@ namespace Altzone.Scripts.Lobby
         public static void ExitQuantum()
         {
             QuantumRunner.ShutdownAll();
-            SceneManager.LoadScene("10-MenuUi");
+            OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
         }
 
         private static IEnumerator StartTheRaidTestRoom()
