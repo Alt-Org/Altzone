@@ -30,10 +30,10 @@ namespace Altzone.Scripts.Battle.Photon
         public const string TeamWinKey = "tw";
         public const string TeamBlueScoreKey = "t1";
         public const string TeamRedScoreKey = "t2";
-        public const string PlayerPositionKey1 = "1";
-        public const string PlayerPositionKey2 = "2";
-        public const string PlayerPositionKey3 = "3";
-        public const string PlayerPositionKey4 = "4";
+        public static string PlayerPositionKey1 { get => PlayerPosition1.ToString(); }
+        public static string PlayerPositionKey2 { get => PlayerPosition2.ToString(); }
+        public static string PlayerPositionKey3 { get => PlayerPosition3.ToString(); }
+        public static string PlayerPositionKey4 { get => PlayerPosition4.ToString(); }
 
         //  Red team number 2
         //  - Player numbers 3 and 4

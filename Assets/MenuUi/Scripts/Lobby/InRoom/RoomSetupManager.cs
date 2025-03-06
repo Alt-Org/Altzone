@@ -28,10 +28,10 @@ namespace MenuUI.Scripts.Lobby.InRoom
         private const int PlayerPosition3 = PhotonBattleRoom.PlayerPosition3;
         private const int PlayerPosition4 = PhotonBattleRoom.PlayerPosition4;
 
-        private const string PlayerPositionKey1 = PhotonBattleRoom.PlayerPositionKey1;
-        private const string PlayerPositionKey2 = PhotonBattleRoom.PlayerPositionKey2;
-        private const string PlayerPositionKey3 = PhotonBattleRoom.PlayerPositionKey3;
-        private const string PlayerPositionKey4 = PhotonBattleRoom.PlayerPositionKey4;
+        private string PlayerPositionKey1 = PhotonBattleRoom.PlayerPositionKey1;
+        private string PlayerPositionKey2 = PhotonBattleRoom.PlayerPositionKey2;
+        private string PlayerPositionKey3 = PhotonBattleRoom.PlayerPositionKey3;
+        private string PlayerPositionKey4 = PhotonBattleRoom.PlayerPositionKey4;
 
         private const string TeamAlphaNameKey = PhotonBattleRoom.TeamAlphaNameKey;
         private const string TeamBetaNameKey = PhotonBattleRoom.TeamBetaNameKey;
