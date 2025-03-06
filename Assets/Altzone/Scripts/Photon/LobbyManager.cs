@@ -72,6 +72,7 @@ namespace Altzone.Scripts.Lobby
         [SerializeField] private ProjectileSpec _projectileSpec;
 
         private QuantumRunner _runner = null;
+        private IEnumerator _requestPositionChangeHolder = null;
 
         public static LobbyManager Instance { get; private set; }
 
@@ -244,7 +245,26 @@ namespace Altzone.Scripts.Lobby
 
         private void OnPlayerPosEvent(PlayerPosEvent data)
         {
-            PhotonRealtimeClient.Client.OpRaiseEvent(PhotonRealtimeClient.PhotonEvent.PlayerPositionChangeRequested, data.PlayerPosition, new RaiseEventArgs { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
+            if (_requestPositionChangeHolder == null)
+            {
+                _requestPositionChangeHolder = RequestPositionChange(data.PlayerPosition);
+                StartCoroutine(_requestPositionChangeHolder);
+            }
+        }
+
+        private IEnumerator RequestPositionChange(int position)
+        {
+            int oldPosition = PhotonRealtimeClient.LocalPlayer.GetCustomProperty(PlayerPositionKey, -1);
+
+            do
+            {
+                PhotonRealtimeClient.Client.OpRaiseEvent(PhotonRealtimeClient.PhotonEvent.PlayerPositionChangeRequested, position, new RaiseEventArgs { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
+
+                yield return new WaitForSeconds(0.5f); // giving position time to update, loop will send request again if position didn't update within this time.
+
+            } while (PhotonRealtimeClient.LocalPlayer.GetCustomProperty(PlayerPositionKey, -1) == oldPosition);
+
+            _requestPositionChangeHolder = null;
         }
 
         private void OnStartRoomEvent(StartRoomEvent data)
