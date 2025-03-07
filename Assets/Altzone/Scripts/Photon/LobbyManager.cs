@@ -557,6 +557,12 @@ namespace Altzone.Scripts.Lobby
 
         public void OnDisconnected(DisconnectCause cause)
         {
+            if (_requestPositionChangeHolder != null)
+            {
+                StopCoroutine( _requestPositionChangeHolder );
+                _requestPositionChangeHolder = null;
+            }
+
             Debug.Log($"OnDisconnected {cause}");
             if (cause != DisconnectCause.DisconnectByClientLogic && cause != DisconnectCause.DisconnectByServerLogic)
             {
@@ -583,6 +589,12 @@ namespace Altzone.Scripts.Lobby
 
         public void OnLeftRoom() // IMatchmakingCallbacks
         {
+            if (_requestPositionChangeHolder != null)
+            {
+                StopCoroutine(_requestPositionChangeHolder);
+                _requestPositionChangeHolder = null;
+            }
+
             Debug.Log($"OnLeftRoom {PhotonRealtimeClient.LocalPlayer.GetDebugLabel()}");
             StartCoroutine(Service());
             LobbyOnLeftRoom?.Invoke();
