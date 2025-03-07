@@ -22,6 +22,8 @@ public class BattleStoryController : MonoBehaviour
     [SerializeField]
     private Transform _path1Position1;
     [SerializeField]
+    private AnimationCurve _path1Curve;
+    [SerializeField]
     private Transform _path2LeftPosition1;
     [SerializeField]
     private Transform _path2LeftPosition2;
@@ -31,8 +33,6 @@ public class BattleStoryController : MonoBehaviour
     private Transform _path2RightPosition2;
     [SerializeField]
     private Transform _path3Position1;
-    [SerializeField]
-    private AnimationCurve _path3Curve;
 
     [SerializeField]
     private Animator _characterAnimator1;
@@ -43,6 +43,7 @@ public class BattleStoryController : MonoBehaviour
     void Start()
     {
         _exitButton.onClick.AddListener(ExitStory);
+        StartCoroutine(PlayAnimation());
     }
 
 
@@ -80,7 +81,7 @@ public class BattleStoryController : MonoBehaviour
             int ballAnimation2 = Random.Range(0, 3);
             randomBallOrder2.Add(ballAnimation2);
         }
-
+        yield return new WaitForSeconds(1f);
         for (int i = 0; i > randomClipOrder1.Count; i++)
         {
             _characterAnimator1.Play(clips1[randomClipOrder1[i]].name);
@@ -92,25 +93,228 @@ public class BattleStoryController : MonoBehaviour
                     StartCoroutine(BallAnimationLeft1(ball, done => ballDone = done));
                     break;
                 case 1:
+                    StartCoroutine(BallAnimationLeft2(ball, done => ballDone = done));
                     break;
                 case 2:
+                    StartCoroutine(BallAnimationLeft3(ball, done => ballDone = done));
                     break;
                 default:
+                    ballDone = true;
                     break;
             }
             yield return new WaitUntil(() => ballDone is true);
+            Destroy(ball);
+            yield return new WaitForSeconds(0.5f);
             _characterAnimator2.Play(clips2[randomClipOrder2[i]].name);
+            GameObject ball2 = Instantiate(_emotionBall, _endStartPositionLeft);
+            ballDone = false;
+            switch (randomBallOrder1[i])
+            {
+                case 0:
+                    StartCoroutine(BallAnimationRight1(ball2, done => ballDone = done));
+                    break;
+                case 1:
+                    StartCoroutine(BallAnimationRight2(ball2, done => ballDone = done));
+                    break;
+                case 2:
+                    StartCoroutine(BallAnimationRight3(ball2, done => ballDone = done));
+                    break;
+                default:
+                    ballDone = true;
+                    break;
+            }
+            yield return new WaitUntil(() => ballDone is true);
+            Destroy(ball2);
+            yield return new WaitForSeconds(0.5f);
         }
     }
 
-    private void BallAnimationRight1(GameObject ball)
+    private IEnumerator BallAnimationRight1(GameObject ball, Action<bool> callback)
     {
-
+        float speed = 50f;
+        float distance = Mathf.Abs(Vector2.Distance(_endStartPositionRight.position, _path1Position1.position));
+        float duration = distance / speed;
+        float currentTime = 0;
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _path1Position1.position)) < Mathf.Epsilon)
+        {
+            yield return null;
+            currentTime += Time.deltaTime;
+            Vector2 pos = Vector2.Lerp(_endStartPositionRight.position, _path1Position1.position, currentTime / duration);
+            float yPos = (_endStartPositionRight.position.y + (_path1Position1.position.y - _endStartPositionRight.position.y)) * _path1Curve.Evaluate(currentTime / duration);
+            ball.transform.position = new(pos.x, yPos);
+        }
+        distance = Mathf.Abs(Vector2.Distance(_endStartPositionLeft.position, _path1Position1.position));
+        duration = distance / speed;
+        currentTime = 0;
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _endStartPositionLeft.position)) < Mathf.Epsilon)
+        {
+            yield return null;
+            currentTime += Time.deltaTime;
+            Vector2 pos = Vector2.Lerp(_path1Position1.position, _endStartPositionLeft.position, currentTime / duration);
+            float yPos = (_endStartPositionLeft.position.y + (_path1Position1.position.y - _endStartPositionLeft.position.y)) * _path1Curve.Evaluate(1 - currentTime / duration);
+            ball.transform.position = new(pos.x, yPos);
+        }
+        callback(true);
     }
 
     private IEnumerator BallAnimationLeft1(GameObject ball, Action<bool> callback)
     {
-        yield return null;
+        float speed = 50f;
+        float distance = Mathf.Abs(Vector2.Distance(_endStartPositionLeft.position, _path1Position1.position));
+        float duration = distance / speed;
+        float currentTime = 0;
+        while(Mathf.Abs(Vector2.Distance(ball.transform.position, _path1Position1.position))< Mathf.Epsilon)
+        {
+            yield return null;
+            currentTime += Time.deltaTime;
+            Vector2 pos = Vector2.Lerp(_endStartPositionLeft.position, _path1Position1.position, currentTime / duration);
+            float yPos = (_endStartPositionLeft.position.y + (_path1Position1.position.y - _endStartPositionLeft.position.y)) * _path1Curve.Evaluate(currentTime / duration);
+            ball.transform.position = new(pos.x,yPos);
+        }
+        distance = Mathf.Abs(Vector2.Distance(_endStartPositionRight.position, _path1Position1.position));
+        duration = distance / speed;
+        currentTime = 0;
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _endStartPositionRight.position)) < Mathf.Epsilon)
+        {
+            yield return null;
+            currentTime += Time.deltaTime;
+            Vector2 pos = Vector2.Lerp(_path1Position1.position, _endStartPositionRight.position, currentTime / duration);
+            float yPos = (_endStartPositionRight.position.y + (_path1Position1.position.y - _endStartPositionRight.position.y)) * _path1Curve.Evaluate(1 - currentTime / duration);
+            ball.transform.position = new(pos.x, yPos);
+        }
+        callback(true);
+    }
+
+    private IEnumerator BallAnimationLeft2(GameObject ball, Action<bool> callback)
+    {
+        float speed = 50f;
+        float distance = Mathf.Abs(Vector2.Distance(_endStartPositionLeft.position, _path2LeftPosition1.position));
+        float duration = distance / speed;
+        float currentTime = 0;
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _path2LeftPosition1.position)) < Mathf.Epsilon)
+        {
+            yield return null;
+            currentTime += Time.deltaTime;
+            Vector2 pos = Vector2.Lerp(_endStartPositionLeft.position, _path2LeftPosition1.position, currentTime / duration);
+            ball.transform.position = pos;
+        }
+
+        speed = 20f;
+        distance = Mathf.Abs(Vector2.Distance(_path2LeftPosition1.position, _path2LeftPosition2.position));
+        duration = distance / speed;
+        currentTime = 0;
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _path2LeftPosition2.position)) < Mathf.Epsilon)
+        {
+            yield return null;
+            currentTime += Time.deltaTime;
+            Vector2 pos = Vector2.Lerp(_path2LeftPosition1.position, _path2LeftPosition2.position, currentTime / duration);
+            ball.transform.position = pos;
+        }
+
+        speed = 100f;
+        distance = Mathf.Abs(Vector2.Distance(_endStartPositionRight.position, _path2LeftPosition2.position));
+        duration = distance / speed;
+        currentTime = 0;
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _endStartPositionRight.position)) < Mathf.Epsilon)
+        {
+            yield return null;
+            currentTime += Time.deltaTime;
+            Vector2 pos = Vector2.Lerp(_path2LeftPosition2.position, _endStartPositionRight.position, currentTime / duration);
+            ball.transform.position = pos;
+        }
+        callback(true);
+    }
+
+    private IEnumerator BallAnimationRight2(GameObject ball, Action<bool> callback)
+    {
+        float speed = 50f;
+        float distance = Mathf.Abs(Vector2.Distance(_endStartPositionRight.position, _path2RightPosition1.position));
+        float duration = distance / speed;
+        float currentTime = 0;
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _path2RightPosition1.position)) < Mathf.Epsilon)
+        {
+            yield return null;
+            currentTime += Time.deltaTime;
+            Vector2 pos = Vector2.Lerp(_endStartPositionRight.position, _path2RightPosition1.position, currentTime / duration);
+            ball.transform.position = pos;
+        }
+
+        speed = 20f;
+        distance = Mathf.Abs(Vector2.Distance(_path2RightPosition1.position, _path2RightPosition2.position));
+        duration = distance / speed;
+        currentTime = 0;
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _path2RightPosition2.position)) < Mathf.Epsilon)
+        {
+            yield return null;
+            currentTime += Time.deltaTime;
+            Vector2 pos = Vector2.Lerp(_path2RightPosition1.position, _path2RightPosition2.position, currentTime / duration);
+            ball.transform.position = pos;
+        }
+
+        speed = 100f;
+        distance = Mathf.Abs(Vector2.Distance(_endStartPositionLeft.position, _path2RightPosition2.position));
+        duration = distance / speed;
+        currentTime = 0;
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _endStartPositionLeft.position)) < Mathf.Epsilon)
+        {
+            yield return null;
+            currentTime += Time.deltaTime;
+            Vector2 pos = Vector2.Lerp(_path2RightPosition2.position, _endStartPositionLeft.position, currentTime / duration);
+            ball.transform.position = pos;
+        }
+        callback(true);
+    }
+
+    private IEnumerator BallAnimationLeft3(GameObject ball, Action<bool> callback)
+    {
+        float speed = 50f;
+        float distance = Mathf.Abs(Vector2.Distance(_endStartPositionLeft.position, _path3Position1.position));
+        float duration = distance / speed;
+        float currentTime = 0;
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _path3Position1.position)) < Mathf.Epsilon)
+        {
+            yield return null;
+            currentTime += Time.deltaTime;
+            Vector2 pos = Vector2.Lerp(_endStartPositionLeft.position, _path3Position1.position, currentTime / duration);
+            ball.transform.position = pos;
+        }
+        distance = Mathf.Abs(Vector2.Distance(_endStartPositionRight.position, _path3Position1.position));
+        duration = distance / speed;
+        currentTime = 0;
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _endStartPositionRight.position)) < Mathf.Epsilon)
+        {
+            yield return null;
+            currentTime += Time.deltaTime;
+            Vector2 pos = Vector2.Lerp(_path3Position1.position, _endStartPositionRight.position, currentTime / duration);
+            ball.transform.position = pos;
+        }
+        callback(true);
+    }
+
+    private IEnumerator BallAnimationRight3(GameObject ball, Action<bool> callback)
+    {
+        float speed = 50f;
+        float distance = Mathf.Abs(Vector2.Distance(_endStartPositionRight.position, _path3Position1.position));
+        float duration = distance / speed;
+        float currentTime = 0;
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _path3Position1.position)) < Mathf.Epsilon)
+        {
+            yield return null;
+            currentTime += Time.deltaTime;
+            Vector2 pos = Vector2.Lerp(_endStartPositionRight.position, _path3Position1.position, currentTime / duration);
+            ball.transform.position = pos;
+        }
+        distance = Mathf.Abs(Vector2.Distance(_endStartPositionLeft.position, _path3Position1.position));
+        duration = distance / speed;
+        currentTime = 0;
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _endStartPositionLeft.position)) < Mathf.Epsilon)
+        {
+            yield return null;
+            currentTime += Time.deltaTime;
+            Vector2 pos = Vector2.Lerp(_path3Position1.position, _endStartPositionLeft.position, currentTime / duration);
+            ball.transform.position = pos;
+        }
+        callback(true);
     }
 
     private void ExitStory()

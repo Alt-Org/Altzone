@@ -165,12 +165,7 @@ MonoBehaviour:
   _endStartPositionLeft: {fileID: 2927413413296410193}
   _endStartPositionRight: {fileID: 2655058495426733673}
   _path1Position1: {fileID: 6028674511330968947}
-  _path2LeftPosition1: {fileID: 5504495303958240589}
-  _path2LeftPosition2: {fileID: 1696796885213383311}
-  _path2RightPosition1: {fileID: 3743659160747056746}
-  _path2RightPosition2: {fileID: 1012245159259237654}
-  _path3Position1: {fileID: 8054212177414827906}
-  _path3Curve:
+  _path1Curve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
@@ -194,6 +189,11 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _path2LeftPosition1: {fileID: 5504495303958240589}
+  _path2LeftPosition2: {fileID: 1696796885213383311}
+  _path2RightPosition1: {fileID: 3743659160747056746}
+  _path2RightPosition2: {fileID: 1012245159259237654}
+  _path3Position1: {fileID: 8054212177414827906}
   _characterAnimator1: {fileID: 1715033929214055479}
   _characterAnimator2: {fileID: 8889435277165240542}
 --- !u!1 &1661229975782825684
@@ -1113,7 +1113,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 984.95996, y: 696.577}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &8089190774053697782
 GameObject:
