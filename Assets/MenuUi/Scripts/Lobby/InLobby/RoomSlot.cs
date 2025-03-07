@@ -1,3 +1,4 @@
+using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby.Wrappers;
 using TMPro;
 using UnityEngine;
@@ -28,13 +29,15 @@ namespace MenuUI.Scripts.Lobby.InLobby
             _roomName.text = roomInfo.Name;
             _roomPlayerCount.text = $"{roomInfo.PlayerCount}/4";
 
-            if (roomInfo.IsOpen)
+            bool hasPassword = roomInfo.CustomProperties.ContainsKey(PhotonBattleRoom.PasswordKey);
+
+            if (hasPassword)
             {
-                _openStatusLockImage.sprite = _unlockedSprite;
+                _openStatusLockImage.sprite = _lockedSprite;
             }
             else
             {
-                _openStatusLockImage.sprite = _lockedSprite;
+                _openStatusLockImage.sprite = _unlockedSprite;
             }
         }
     }
