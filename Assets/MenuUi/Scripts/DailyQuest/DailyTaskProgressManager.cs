@@ -22,7 +22,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
 
     #region Delegates & Events
 
-    public delegate void TaskChange(TaskType taskType);
+    public delegate void TaskChange(TaskNormalType taskType);
     /// <summary>
     /// Used to update existing <c>DailyTaskProgressListener</c>'s on/off states.
     /// </summary>
@@ -70,7 +70,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
     {
         PlayerData playerData = null;
         bool? timeout = null;
-        StartCoroutine(PlayerDataTransferer("get", null, tdata => timeout = tdata, pdata => playerData = pdata));
+        StartCoroutine(PlayerDataTransferer("get", null, _timeoutSeconds, tdata => timeout = tdata, pdata => playerData = pdata));
         yield return new WaitUntil(() => (playerData != null || timeout != null));
 
         if (playerData == null)
@@ -79,39 +79,12 @@ public class DailyTaskProgressManager : AltMonoBehaviour
         CurrentPlayerTask = playerData.Task;
     }
 
-    private IEnumerator SavePlayerData(PlayerData playerData, System.Action<PlayerData> callback) //TODO: Remove when available in AltMonoBehaviour.
-    {
-        //Cant' save to server because server manager doesn't have functionality!
-        //Storefront.Get().SavePlayerData(playerData, callback);
-
-        //if (callback == null)
-        //{
-        //    StartCoroutine(ServerManager.Instance.UpdatePlayerToServer( playerData., content =>
-        //    {
-        //        if (content != null)
-        //            callback(new(content));
-        //        else
-        //        {
-        //            Debug.LogError("Could not connect to server and save player");
-        //            return;
-        //        }
-        //    }));
-        //}
-
-        //yield return new WaitUntil(() => callback != null);
-
-        //Testing code
-        callback(playerData);
-
-        yield return true;
-    }
-
     #region Task Processing
 
     // This is called from DailyTaskProgressListener.cs.
-    public void UpdateTaskProgress(TaskType taskType, string value)
+    public void UpdateTaskProgress(TaskNormalType taskType, string value)
     {
-        if ((taskType != CurrentPlayerTask.Type) && (taskType != TaskType.Test))
+        if ((taskType != CurrentPlayerTask.Type) && (taskType != TaskNormalType.Test))
         {
             Debug.LogError($"Current task type is: {CurrentPlayerTask.Type}, but type: {taskType}, was received.");
             return;
@@ -119,11 +92,11 @@ public class DailyTaskProgressManager : AltMonoBehaviour
 
         switch (CurrentPlayerTask.Type)
         {
-            case TaskType.PlayBattle: HandleSimpleTask(value); break;
-            case TaskType.WinBattle: HandleSimpleTask(value); break;
-            case TaskType.StartBattleDifferentCharacter: HandleNoRepetitionTask(value); break;
-            case TaskType.Vote: HandleSimpleTask(value); break;
-            case TaskType.WriteChatMessage: HandleSimpleTask(value); break;
+            case TaskNormalType.PlayBattle: HandleSimpleTask(value); break;
+            case TaskNormalType.WinBattle: HandleSimpleTask(value); break;
+            case TaskNormalType.StartBattleDifferentCharacter: HandleNoRepetitionTask(value); break;
+            case TaskNormalType.Vote: HandleSimpleTask(value); break;
+            case TaskNormalType.WriteChatMessage: HandleSimpleTask(value); break;
             default: break;
         }
     }
@@ -146,16 +119,16 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             if (CurrentPlayerTask != null)
                 OnTaskChange.Invoke(CurrentPlayerTask.Type);
             else
-                OnTaskChange.Invoke(TaskType.Undefined);
+                OnTaskChange.Invoke(TaskNormalType.Undefined);
         }
     }
 
-    public bool SameTask(TaskType taskType)
+    public bool SameTask(TaskNormalType taskType)
     {
         if (CurrentPlayerTask == null)
             return false;
 
-        if (taskType == TaskType.Test)
+        if (taskType == TaskNormalType.Test)
             return (true);
 
         return (taskType == CurrentPlayerTask.Type);
@@ -195,7 +168,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
         bool? timeout = null;
 
         //Get player data.
-        StartCoroutine(PlayerDataTransferer("get", null, tdata => timeout = tdata, pdata => playerData = pdata));
+        StartCoroutine(PlayerDataTransferer("get", null, _timeoutSeconds, tdata => timeout = tdata, pdata => playerData = pdata));
         yield return new WaitUntil(() => (playerData != null || timeout != null));
 
         if (playerData == null)
@@ -241,7 +214,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
         playerData.Task = CurrentPlayerTask;
         timeout = null;
 
-        StartCoroutine(PlayerDataTransferer("save", playerData, tdata => timeout = tdata, pdata => savePlayerData = pdata));
+        StartCoroutine(PlayerDataTransferer("save", playerData, _timeoutSeconds, tdata => timeout = tdata, pdata => savePlayerData = pdata));
     }
 
     //TODO: WARNING! Clan data saving is disabled! Uncomment when saving is functional.
@@ -321,47 +294,6 @@ public class DailyTaskProgressManager : AltMonoBehaviour
 
     #endregion
 
-    /// <summary>
-    /// Used to get and save player data to/from server.
-    /// </summary>
-    /// <param name="operationType">"get" or "save"</param>
-    /// <param name="unsavedData">If saving: insert unsaved data.<br/> If getting: insert <c>null</c>.</param>
-    /// <param name="timeoutCallback">Returns value if timeout with server.</param>
-    /// <param name="dataCallback">Returns <c>PlayerData</c>.</param>
-    private IEnumerator PlayerDataTransferer(string operationType, PlayerData unsavedData, System.Action<bool> timeoutCallback, System.Action<PlayerData> dataCallback)
-    {
-        PlayerData receivedData = null;
-        bool? timeout = null;
-        Coroutine playerCoroutine;
-
-        switch (operationType.ToLower())
-        {
-            case "get":
-                {
-                    //Get player data.
-                    playerCoroutine = StartCoroutine(CoroutineWithTimeout(GetPlayerData, receivedData, _timeoutSeconds, timeoutCallBack => timeout = timeoutCallBack, data => receivedData = data));
-                    break;
-                }
-            case "save":
-                {
-                    //Save player data.
-                    playerCoroutine = StartCoroutine(CoroutineWithTimeout(SavePlayerData, unsavedData, receivedData, _timeoutSeconds, timeoutCallBack => timeout = timeoutCallBack, data => receivedData = data));
-                    break;
-                }
-            default: Debug.LogError($"Received: {operationType}, when expecting \"get\" or \"save\"."); yield break;
-        }
-
-        yield return new WaitUntil(() => (receivedData != null || timeout != null));
-
-        if (receivedData == null)
-        {
-            timeoutCallback(true);
-            Debug.LogError($"Player data operation: {operationType} timeout or null.");
-            yield break; //TODO: Add error handling.
-        }
-
-        dataCallback(receivedData);
-    }
 
     public void InvokeOnClanMilestoneReached()
     {

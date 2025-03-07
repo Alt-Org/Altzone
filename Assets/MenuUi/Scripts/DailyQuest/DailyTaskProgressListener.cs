@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class DailyTaskProgressListener : MonoBehaviour
 {
-    [SerializeField] private TaskType taskType = TaskType.Undefined;
+    [SerializeField] private TaskNormalType taskType = TaskNormalType.Undefined;
     private bool _on = false;
 
     private void Start()
@@ -51,10 +51,10 @@ public class DailyTaskProgressListener : MonoBehaviour
         }
     }
 
-    public void SetState(TaskType currentTaskType)
+    public void SetState(TaskNormalType currentTaskType)
     {
         //-----TEST CODE-----
-        if (taskType == TaskType.Test)
+        if (taskType == TaskNormalType.Test)
         {
             _on = true;
             return;
