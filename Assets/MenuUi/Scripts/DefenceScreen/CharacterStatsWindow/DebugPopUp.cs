@@ -1,20 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
+using MenuUi.Scripts.Signals;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
-    public static partial class SignalBus
-    {
-        public delegate void ReloadCharacterGalleryRequested();
-        public static event ReloadCharacterGalleryRequested OnReloadCharacterGalleryRequested;
-        public static void OnReloadCharacterGalleryRequestedSignal()
-        {
-            OnReloadCharacterGalleryRequested?.Invoke();
-        }
-    }
-
-
     /// <summary>
     /// Controls character stats window debug popup functionality.
     /// </summary>

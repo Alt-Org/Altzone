@@ -1,4 +1,5 @@
-﻿using Altzone.Scripts.Lobby;
+﻿using System.Collections;
+using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Lobby.Wrappers;
 using Prg.Scripts.Common.PubSub;
 using TMPro;
@@ -16,7 +17,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
         [SerializeField] private TextMeshProUGUI _battleID;
         [SerializeField] private Button _startGameButton;
         [SerializeField] private Button _backButton;
-        [SerializeField] private BattlePopupCreateCustomRoomPanel _roomSwitcher;
+        [SerializeField] private BattlePopupPanelManager _roomSwitcher;
 
         private void Start()
         {
@@ -25,6 +26,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
             _startGameButton.onClick.AddListener(StartPlaying);
             _backButton.onClick.AddListener(GoBack);
             //buttons[3].onClick.AddListener(StartRaidTest);
+            StartCoroutine(SetRoomTitle());
         }
 
         private void SetPlayerAsGuest()
@@ -58,13 +60,14 @@ namespace MenuUI.Scripts.Lobby.InRoom
             this.Publish(new LobbyManager.StartRaidTestEvent());
         }
 
-        /// <summary>
-        /// Stupid way to poll network state changes on every frame!
-        /// </summary>
-        private void Update()
+        private IEnumerator SetRoomTitle()
         {
-            //_battleID.text = PhotonRealtimeClient.InRoom ? $"({PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>("bid")})" : "<color=red>Not in room</color>";
-            _title.text = PhotonRealtimeClient.InRoom ? PhotonRealtimeClient.LobbyCurrentRoom.Name : "<color=red>Not in room</color>";
+            do
+            {
+                _title.text = PhotonRealtimeClient.InRoom ? PhotonRealtimeClient.LobbyCurrentRoom.Name : "<color=red>Not in room</color>";
+            } while (!PhotonRealtimeClient.InRoom);
+
+            yield return null;
         }
     }
 }

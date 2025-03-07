@@ -30,6 +30,12 @@ namespace Altzone.Scripts.Battle.Photon
         public const string TeamWinKey = "tw";
         public const string TeamBlueScoreKey = "t1";
         public const string TeamRedScoreKey = "t2";
+        public const string PlayerIDKey = "pid";
+        public const string PasswordKey = "pw";
+        public static string PlayerPositionKey1 { get => PlayerPosition1.ToString(); }
+        public static string PlayerPositionKey2 { get => PlayerPosition2.ToString(); }
+        public static string PlayerPositionKey3 { get => PlayerPosition3.ToString(); }
+        public static string PlayerPositionKey4 { get => PlayerPosition4.ToString(); }
 
         //  Red team number 2
         //  - Player numbers 3 and 4
@@ -94,18 +100,23 @@ namespace Altzone.Scripts.Battle.Photon
         public int GetFirstFreePlayerPos(Player player, int wantedPlayerPos = PlayerPosition1, bool isAllocateByTeams = false)
         {
             HashSet<int> usedPlayerPositions = new HashSet<int>();
-            foreach (Player otherPlayer in PhotonRealtimeClient.PlayerList)
+            if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PlayerPositionKey1) != "")
             {
-                if (otherPlayer.Equals(player))
-                {
-                    continue;
-                }
-                int otherPlayerPos = GetPlayerPos(otherPlayer);
-                if (IsValidPlayerPos(otherPlayerPos))
-                {
-                    usedPlayerPositions.Add(otherPlayerPos);
-                }
+                usedPlayerPositions.Add(PlayerPosition1);
             }
+            if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PlayerPositionKey2) != "")
+            {
+                usedPlayerPositions.Add(PlayerPosition2);
+            }
+            if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PlayerPositionKey3) != "")
+            {
+                usedPlayerPositions.Add(PlayerPosition3);
+            }
+            if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PlayerPositionKey4) != "")
+            {
+                usedPlayerPositions.Add(PlayerPosition4);
+            }
+
             if (usedPlayerPositions.Contains(wantedPlayerPos))
             {
                 int[] playerPositions = isAllocateByTeams
