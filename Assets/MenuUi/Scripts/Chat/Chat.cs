@@ -42,7 +42,7 @@ public class Chat : MonoBehaviour
 
     private bool shouldScroll = false;
 
-    private GameObject selectedMessage; // Viesti, joka on tällä hetkellä valittuna
+    [HideInInspector] public GameObject selectedMessage; // Viesti, joka on tällä hetkellä valittuna
 
     [Header("Commands")]
     public string delete = "/deleteMessage";
@@ -231,14 +231,18 @@ public class Chat : MonoBehaviour
     }
 
     // Poistaa valinnan viestistä
-    private void DeselectMessage(GameObject message)
+    public void DeselectMessage(GameObject message)
     {
-        if (message.GetComponent<Image>() != null)
+        if (selectedMessage != null)
         {
-            message.GetComponent<Image>().color = Color.white;
+            if (message.GetComponent<Image>() != null)
+            {
+                message.GetComponent<Image>().color = Color.white;
+            }
+
+            deleteButtons.SetActive(false);
         }
 
-        deleteButtons.SetActive(false);
     }
 
     // Poistaa valitun viestin

@@ -204,9 +204,20 @@ public class ChatController : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        // Checks for clicks outside of the quick message and send button panels. Closes them if so.
         if (!((PointerEventData)eventData).pointerCurrentRaycast.gameObject.Equals(chatScript.quickMessages) && !((PointerEventData)eventData).pointerCurrentRaycast.gameObject.Equals(chatScript.sendButtons))
         {
             chatScript.MinimizeOptions();
         }
+
+        if(chatScript.selectedMessage != null)
+        {
+            // Checks for clicks outside of the selected message. Deselects the selected message if so.
+            if (!((PointerEventData)eventData).pointerCurrentRaycast.gameObject.Equals(chatScript.selectedMessage))
+            {
+                 chatScript.DeselectMessage(chatScript.selectedMessage);
+            }
+        }
+        
     }
 }
