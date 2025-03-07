@@ -27,7 +27,7 @@ namespace Quantum
 
             BattlePlayerSlot playerSlot = (BattlePlayerSlot)data.PlayerSlot;
             BattleTeamNumber teamNumber = PlayerHandle.GetTeamNumber(playerSlot);
-            PlayerHandle playerHandle = new PlayerHandle(playerManagerData, playerSlot);
+            PlayerHandle playerHandle = new(playerManagerData, playerSlot);
 
             // TODO: Fetch EntityPrototype for each character based on the BattleCharacterBase Id
             EntityPrototype entityPrototypeAsset = f.FindAsset(data.PlayerAvatar);
