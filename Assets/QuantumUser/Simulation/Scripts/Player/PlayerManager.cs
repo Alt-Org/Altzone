@@ -151,6 +151,20 @@ namespace Quantum
 
         public static BattleTeamNumber GetPlayerTeamNumber(BattlePlayerSlot slot) => PlayerHandle.GetTeamNumber(slot);
 
+        public static EntityRef GetPlayerEntity(Frame f, BattlePlayerSlot slot)
+        {
+            PlayerManagerData* playerManagerData = GetPlayerManagerData(f);
+            int playerIndex = PlayerHandle.GetPlayerIndex(slot);
+            return PlayerHandle.GetSelectedCharacter(playerManagerData, playerIndex);
+        }
+
+        public static EntityRef GetTeammateEntity(Frame f, BattlePlayerSlot slot)
+        {
+            PlayerManagerData* playerManagerData = GetPlayerManagerData(f);
+            int teammatePlayerIndex = PlayerHandle.GetTeammatePlayerIndex(slot);
+            return PlayerHandle.GetSelectedCharacter(playerManagerData, teammatePlayerIndex);
+        }
+
         public static bool IsValidCharacterNumber(int characterNumber) => PlayerHandle.IsValidCharacterNumber(characterNumber);
 
         [Obsolete("PlayerIndex index should not be used outside of PlayerManager")]
@@ -194,6 +208,19 @@ namespace Quantum
                 };
             }
 
+            public static int GetTeammatePlayerIndex(BattlePlayerSlot slot)
+            {
+                return slot switch
+                {
+                    BattlePlayerSlot.Slot1 => 1,
+                    BattlePlayerSlot.Slot2 => 0,
+                    BattlePlayerSlot.Slot3 => 3,
+                    BattlePlayerSlot.Slot4 => 2,
+
+                    _ => -1
+                };
+            }
+
             public static void SetAllPlayStates(PlayerManagerData* playerManagerData, PlayerPlayState playerPlayState)
             {
                 for (int i = 0; i < Constants.PLAYER_SLOT_COUNT; i++)
@@ -203,6 +230,8 @@ namespace Quantum
             }
 
             public static bool IsValidCharacterNumber(int characterNumber) => characterNumber >= 0 && characterNumber < Constants.PLAYER_CHARACTER_COUNT;
+
+            public static EntityRef GetSelectedCharacter(PlayerManagerData* playerManagerData, int playerIndex) => playerManagerData->SelectedCharacters[playerIndex];
 
             //} Public Static Methods
 
@@ -221,7 +250,7 @@ namespace Quantum
                 set => _playerManagerData->PlayerRefs[Index] = value;
             }
 
-            public EntityRef SelectedCharacter => _playerManagerData->SelectedCharacters[Index];
+            public EntityRef SelectedCharacter => GetSelectedCharacter(_playerManagerData, Index);
             public int SelectedCharacterNumber => _playerManagerData->SelectedCharacterNumbers[Index];
 
             //} Public Properties
