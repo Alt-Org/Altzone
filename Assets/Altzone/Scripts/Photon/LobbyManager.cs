@@ -577,6 +577,12 @@ namespace Altzone.Scripts.Lobby
         public void OnPlayerLeftRoom(Player otherPlayer)
         {
             Debug.Log($"OnPlayerLeftRoom {otherPlayer.GetDebugLabel()}");
+
+            // clearing the player position in the room
+            int playerPosition = otherPlayer.GetCustomProperty<int>(PlayerPositionKey);
+            string playerID = otherPlayer.GetCustomProperty<string>(PhotonBattleRoom.PlayerIDKey);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object> { { playerPosition.ToString(), "" } }), new LobbyPhotonHashtable(new Dictionary<object, object> { { playerPosition.ToString(), playerID } }));
+
             LobbyOnPlayerLeftRoom?.Invoke(new(otherPlayer));
         }
 
