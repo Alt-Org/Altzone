@@ -22,7 +22,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
 
     #region Delegates & Events
 
-    public delegate void TaskChange(TaskType taskType);
+    public delegate void TaskChange(TaskNormalType taskType);
     /// <summary>
     /// Used to update existing <c>DailyTaskProgressListener</c>'s on/off states.
     /// </summary>
@@ -109,9 +109,9 @@ public class DailyTaskProgressManager : AltMonoBehaviour
     #region Task Processing
 
     // This is called from DailyTaskProgressListener.cs.
-    public void UpdateTaskProgress(TaskType taskType, string value)
+    public void UpdateTaskProgress(TaskNormalType taskType, string value)
     {
-        if ((taskType != CurrentPlayerTask.Type) && (taskType != TaskType.Test))
+        if ((taskType != CurrentPlayerTask.Type) && (taskType != TaskNormalType.Test))
         {
             Debug.LogError($"Current task type is: {CurrentPlayerTask.Type}, but type: {taskType}, was received.");
             return;
@@ -119,11 +119,11 @@ public class DailyTaskProgressManager : AltMonoBehaviour
 
         switch (CurrentPlayerTask.Type)
         {
-            case TaskType.PlayBattle: HandleSimpleTask(value); break;
-            case TaskType.WinBattle: HandleSimpleTask(value); break;
-            case TaskType.StartBattleDifferentCharacter: HandleNoRepetitionTask(value); break;
-            case TaskType.Vote: HandleSimpleTask(value); break;
-            case TaskType.WriteChatMessage: HandleSimpleTask(value); break;
+            case TaskNormalType.PlayBattle: HandleSimpleTask(value); break;
+            case TaskNormalType.WinBattle: HandleSimpleTask(value); break;
+            case TaskNormalType.StartBattleDifferentCharacter: HandleNoRepetitionTask(value); break;
+            case TaskNormalType.Vote: HandleSimpleTask(value); break;
+            case TaskNormalType.WriteChatMessage: HandleSimpleTask(value); break;
             default: break;
         }
     }
@@ -146,16 +146,16 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             if (CurrentPlayerTask != null)
                 OnTaskChange.Invoke(CurrentPlayerTask.Type);
             else
-                OnTaskChange.Invoke(TaskType.Undefined);
+                OnTaskChange.Invoke(TaskNormalType.Undefined);
         }
     }
 
-    public bool SameTask(TaskType taskType)
+    public bool SameTask(TaskNormalType taskType)
     {
         if (CurrentPlayerTask == null)
             return false;
 
-        if (taskType == TaskType.Test)
+        if (taskType == TaskNormalType.Test)
             return (true);
 
         return (taskType == CurrentPlayerTask.Type);
