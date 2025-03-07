@@ -1,112 +1,17 @@
-using Photon.Deterministic;
+using System;
 using UnityEngine;
+using Photon.Deterministic;
 
 namespace Quantum
 {
     public static unsafe class PlayerManager
     {
-        private struct PlayerHandle
-        {
-            public int Index { get; private set; }
+        #region Public
 
-            public PlayerPlayState PlayState
-            {
-                get => _playerManagerData->PlayStates[Index];
-                set => _playerManagerData->PlayStates[Index] = value;
-            }
-
-            public PlayerRef PlayerRef {
-                get => _playerManagerData->PlayerRefs[Index];
-                set => _playerManagerData->PlayerRefs[Index] = value;
-            }
-
-            public EntityRef SelectedCharacter => _playerManagerData->SelectedCharacters[Index];
-            public int SelectedCharacterNumber => _playerManagerData->SelectedCharacterNumbers[Index];
-
-            public PlayerHandle(PlayerManagerData* playerManagerData, BattlePlayerSlot slot)
-            {
-                Index = GetPlayerIndex(slot);
-                _playerManagerData = playerManagerData;
-            }
-
-            public static int GetPlayerIndex(BattlePlayerSlot playerSlot)
-            {
-                return playerSlot switch
-                {
-                    BattlePlayerSlot.Slot1 => 0,
-                    BattlePlayerSlot.Slot2 => 1,
-                    BattlePlayerSlot.Slot3 => 2,
-                    BattlePlayerSlot.Slot4 => 3,
-
-                    _ => -1
-                };
-            }
-
-            public void SetSelectedCharacter(int characterNumber)
-            {
-                _playerManagerData->SelectedCharacterNumbers[Index] = characterNumber;
-                _playerManagerData->SelectedCharacters[Index] = _playerManagerData->AllCharacters[GetCharacterIndex(characterNumber)];
-            }
-            public void UnsetSelectedCharacter()
-            {
-                _playerManagerData->SelectedCharacterNumbers[Index] = -1;
-                _playerManagerData->SelectedCharacters[Index] = EntityRef.None;
-            }
-
-            public static void SetAllPlayStates(PlayerManagerData* playerManagerData, PlayerPlayState playerPlayState)
-            {
-                for (int i = 0; i < Constants.PLAYER_SLOT_COUNT; i++)
-                {
-                    playerManagerData->PlayStates[i] = playerPlayState;
-                }
-            }
-
-            private int GetCharacterOffset() => Index * Constants.PLAYER_CHARACTER_COUNT;
-            private int GetCharacterIndex(int characterNumber) => GetCharacterOffset() + characterNumber;
-            public EntityRef GetCharacter(int characterNumber) => _playerManagerData->AllCharacters[GetCharacterIndex(characterNumber)];
-
-
-            public void SetCharacters(EntityRef[] entityRefArray)
-            {
-                int characterOffset = GetCharacterOffset();
-                for (int i = 0; i < Constants.PLAYER_CHARACTER_COUNT; i++)
-                {
-                    _playerManagerData->AllCharacters[characterOffset + i] = entityRefArray[i];
-                }
-            }
-
-            public FPVector2 GetOutOfPlayPosition(int characterNumber, BattleTeamNumber teamNumber)
-            {
-                int row = 0, column = 0;
-
-                switch (teamNumber)
-                {
-                    case BattleTeamNumber.TeamAlpha:
-                        row = 0 - 10 * (characterNumber + 1);
-                        column = 10 * Index;
-                        break;
-                    case BattleTeamNumber.TeamBeta:
-                        row = GridManager.Rows - 1 + 10 * (characterNumber + 1);
-                        column = GridManager.Columns - 1 - 10 * (Index - 2);
-                        break;
-
-                }
-
-                return new FPVector2
-                (
-                    GridManager.GridColToWorldXPosition(column),
-                    GridManager.GridRowToWorldYPosition(row)
-                );
-
-            }
-
-            private PlayerManagerData* _playerManagerData;
-           
-        }
+        #region Public - Static Methods
 
         public static void Init(Frame f)
         {
-
             Debug.Log("[PlayerManager] Init");
 
             PlayerManagerData* playerManagerData = GetPlayerManagerData(f);
@@ -114,22 +19,19 @@ namespace Quantum
             PlayerHandle.SetAllPlayStates(playerManagerData, PlayerPlayState.NotInGame);
         }
 
-
         public static void InitPlayer(Frame f, PlayerRef player)
         {
             PlayerManagerData* playerManagerData = GetPlayerManagerData(f);
-          
+
             RuntimePlayer data = f.GetPlayerData(player);
 
             BattlePlayerSlot playerSlot = (BattlePlayerSlot)data.PlayerSlot;
-            BattleTeamNumber teamNumber = GetPlayerTeamNumber(playerSlot);
+            BattleTeamNumber teamNumber = PlayerHandle.GetTeamNumber(playerSlot);
             PlayerHandle playerHandle = new PlayerHandle(playerManagerData, playerSlot);
-            
 
             // TODO: Fetch EntityPrototype for each character based on the BattleCharacterBase Id
             EntityPrototype entityPrototypeAsset = f.FindAsset(data.PlayerAvatar);
             EntityRef[] playerEntityArray = new EntityRef[Constants.PLAYER_CHARACTER_COUNT];
-
 
             FPVector2 spawnPosition;
             Transform2D* playerTransform;
@@ -149,7 +51,6 @@ namespace Quantum
 
             for (int i = 0; i < playerEntityArray.Length; i++)
             {
-               /* spawnPosition = GetOutOfPlayPosition(playerSlot, i, teamNumber);*/
                 spawnPosition = playerHandle.GetOutOfPlayPosition(i, teamNumber);
 
                 playerEntityArray[i] = f.Create(entityPrototypeAsset);
@@ -175,41 +76,227 @@ namespace Quantum
                     CollisionMinOffset = 1
                 });
 
-
                 playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntityArray[i]);
                 playerTransform->Teleport(f, spawnPosition, rotation);
             }
+
             playerHandle.PlayState = PlayerPlayState.OutOfPlay;
             playerHandle.PlayerRef = player;
             playerHandle.SetCharacters(playerEntityArray);
-
         }
 
-        public static FPVector2 GetOutOfPlayPosition(BattlePlayerSlot playerSlot, int characterNumber, BattleTeamNumber playerTeamNumber)
-        {
-            int row = 0, column = 0;
-            
-            switch(playerTeamNumber)
-            {
-                case BattleTeamNumber.TeamAlpha:
-                    row = 0 - 10 * (characterNumber + 1);
-                    column = 10 * GetPlayerIndex(playerSlot);
-                    break;
-                case BattleTeamNumber.TeamBeta:
-                    row = GridManager.Rows + 10 * (characterNumber + 1);
-                    column = GridManager.Columns - 10 * GetPlayerIndex(playerSlot);
-                    break;
+        #region Public - Static Methods - Spawn/Despawn
 
+        public static void SpawnPlayer(Frame f, BattlePlayerSlot slot, int characterNumber, FPVector2 worldPosition)
+        {
+            PlayerHandle playerHandle = new(GetPlayerManagerData(f), slot);
+            if (playerHandle.PlayState == PlayerPlayState.NotInGame)
+            {
+                Debug.Log("[PlayerManager] Can not spawn player that is not in game");
+                return;
             }
 
-            return new FPVector2
-            (
-                GridManager.GridColToWorldXPosition(column),
-                GridManager.GridRowToWorldYPosition(row)
-            );
-
+            SpawnPlayer(f, playerHandle, characterNumber, worldPosition);
         }
-        
+
+        public static void SpawnPlayer(Frame f, BattlePlayerSlot slot, int characterNumber)
+        {
+            PlayerHandle playerHandle = new(GetPlayerManagerData(f), slot);
+
+            if (playerHandle.PlayState == PlayerPlayState.NotInGame)
+            {
+                Debug.Log("[PlayerManager] Can not spawn player that is not in game");
+                return;
+            }
+
+            if (playerHandle.PlayState == PlayerPlayState.OutOfPlay)
+            {
+                Debug.Log("[PlayerManager] Can not swap player that is out of play");
+                return;
+            }
+
+            EntityRef selectedCharacter = playerHandle.SelectedCharacter;
+            Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(selectedCharacter);
+
+            SpawnPlayer(f, playerHandle, characterNumber, playerTransform->Position);
+        }
+
+        public static void DespawnPlayer(Frame f, BattlePlayerSlot slot)
+        {
+            PlayerHandle playerHandle = new(GetPlayerManagerData(f), slot);
+
+            if (playerHandle.PlayState != PlayerPlayState.InPlay)
+            {
+                Debug.Log("[PlayerManager] Can not despawn player that is not in play");
+                return;
+            }
+
+            DespawnPlayer(f, playerHandle);
+        }
+
+        #endregion Public - Static Methods - Spawn/Despawn
+
+        #region Public - Static Methods - Utility
+
+        public static BattleTeamNumber GetPlayerTeamNumber(BattlePlayerSlot slot) => PlayerHandle.GetTeamNumber(slot);
+
+        [Obsolete("PlayerIndex index should not be used outside of PlayerManager")]
+        public static int GetPlayerIndex(BattlePlayerSlot slot) => PlayerHandle.GetPlayerIndex(slot);
+
+        #endregion Public - Static Methods - Utility
+
+        #endregion Public - Static Methods
+
+        #endregion Public
+
+        #region Private
+
+        private struct PlayerHandle
+        {
+            //{ Public Static Methods
+
+            public static BattleTeamNumber GetTeamNumber(BattlePlayerSlot slot)
+            {
+                return slot switch
+                {
+                    BattlePlayerSlot.Slot1 => BattleTeamNumber.TeamAlpha,
+                    BattlePlayerSlot.Slot2 => BattleTeamNumber.TeamAlpha,
+                    BattlePlayerSlot.Slot3 => BattleTeamNumber.TeamBeta,
+                    BattlePlayerSlot.Slot4 => BattleTeamNumber.TeamBeta,
+
+                    _ => BattleTeamNumber.NoTeam
+                };
+            }
+
+            public static int GetPlayerIndex(BattlePlayerSlot slot)
+            {
+                return slot switch
+                {
+                    BattlePlayerSlot.Slot1 => 0,
+                    BattlePlayerSlot.Slot2 => 1,
+                    BattlePlayerSlot.Slot3 => 2,
+                    BattlePlayerSlot.Slot4 => 3,
+
+                    _ => -1
+                };
+            }
+
+            public static void SetAllPlayStates(PlayerManagerData* playerManagerData, PlayerPlayState playerPlayState)
+            {
+                for (int i = 0; i < Constants.PLAYER_SLOT_COUNT; i++)
+                {
+                    playerManagerData->PlayStates[i] = playerPlayState;
+                }
+            }
+
+            //} Public Static Methods
+
+            //{ Public Properties
+
+            public int Index { get; private set; }
+
+            public PlayerPlayState PlayState
+            {
+                get => _playerManagerData->PlayStates[Index];
+                set => _playerManagerData->PlayStates[Index] = value;
+            }
+
+            public PlayerRef PlayerRef {
+                get => _playerManagerData->PlayerRefs[Index];
+                set => _playerManagerData->PlayerRefs[Index] = value;
+            }
+
+            public EntityRef SelectedCharacter => _playerManagerData->SelectedCharacters[Index];
+            public int SelectedCharacterNumber => _playerManagerData->SelectedCharacterNumbers[Index];
+
+            //} Public Properties
+
+            public PlayerHandle(PlayerManagerData* playerManagerData, BattlePlayerSlot slot)
+            {
+                Index = GetPlayerIndex(slot);
+                _playerManagerData = playerManagerData;
+            }
+
+            //{ Public Methods
+
+            public EntityRef GetCharacter(int characterNumber) => _playerManagerData->AllCharacters[GetCharacterIndex(characterNumber)];
+
+            public void SetCharacters(EntityRef[] entityRefArray)
+            {
+                int characterOffset = GetCharacterOffset();
+                for (int i = 0; i < Constants.PLAYER_CHARACTER_COUNT; i++)
+                {
+                    _playerManagerData->AllCharacters[characterOffset + i] = entityRefArray[i];
+                }
+            }
+
+            public void SetSelectedCharacter(int characterNumber)
+            {
+                _playerManagerData->SelectedCharacterNumbers[Index] = characterNumber;
+                _playerManagerData->SelectedCharacters[Index] = _playerManagerData->AllCharacters[GetCharacterIndex(characterNumber)];
+            }
+
+            public void UnsetSelectedCharacter()
+            {
+                _playerManagerData->SelectedCharacterNumbers[Index] = -1;
+                _playerManagerData->SelectedCharacters[Index] = EntityRef.None;
+            }
+
+            public FPVector2 GetOutOfPlayPosition(int characterNumber, BattleTeamNumber teamNumber)
+            {
+                int row = 0, column = 0;
+
+                switch (teamNumber)
+                {
+                    case BattleTeamNumber.TeamAlpha:
+                        row = 0 - 10 * (characterNumber + 1);
+                        column = 10 * Index;
+                        break;
+                    case BattleTeamNumber.TeamBeta:
+                        row = GridManager.Rows - 1 + 10 * (characterNumber + 1);
+                        column = GridManager.Columns - 1 - 10 * (Index - 2);
+                        break;
+
+                }
+
+                return new FPVector2
+                (
+                    GridManager.GridColToWorldXPosition(column),
+                    GridManager.GridRowToWorldYPosition(row)
+                );
+            }
+
+            //} Public Methods
+
+            //{ Private Fields
+            private PlayerManagerData* _playerManagerData;
+            //} Private Fields
+
+            //{ Private Methods
+
+            private int GetCharacterOffset() => Index * Constants.PLAYER_CHARACTER_COUNT;
+            private int GetCharacterIndex(int characterNumber) => GetCharacterOffset() + characterNumber;
+
+            //} Private Methods
+        }
+
+        #region Private - Static Methods
+
+        private static PlayerManagerData* GetPlayerManagerData(Frame f)
+        {
+            PlayerManagerData* playerManagerData;
+            bool isFound = f.Unsafe.TryGetPointerSingleton(out playerManagerData);
+            if (isFound)
+            {
+                return playerManagerData;
+            }
+            else
+            {
+                Debug.LogFormat("[PlayerManager] Couldn't find PlayerManagerData singleton");
+                return null;
+            }
+        }
+
         private static void SpawnPlayer(Frame f, PlayerHandle playerHandle, int characterNumber, FPVector2 worldPosition)
         {
             if (playerHandle.PlayState == PlayerPlayState.InPlay)
@@ -229,49 +316,6 @@ namespace Quantum
 
             playerHandle.PlayState = PlayerPlayState.InPlay;
         }
-        public static void SpawnPlayer(Frame f, BattlePlayerSlot slot, int characterNumber, FPVector2 worldPosition)
-        {
-            PlayerHandle playerHandle = new(GetPlayerManagerData(f), slot);
-            if (playerHandle.PlayState == PlayerPlayState.NotInGame)
-            {
-                Debug.Log("[PlayerManager] Can not spawn player that is not in game");
-                return;
-            }
-
-            SpawnPlayer(f, playerHandle, characterNumber, worldPosition);
-        }
-        public static void SpawnPlayer(Frame f, BattlePlayerSlot slot, int characterNumber)
-        {
-            PlayerHandle playerHandle = new(GetPlayerManagerData(f), slot);
-            if (playerHandle.PlayState == PlayerPlayState.NotInGame)
-            {
-                Debug.Log("[PlayerManager] Can not spawn player that is not in game");
-                return;
-            }
-
-            if (playerHandle.PlayState == PlayerPlayState.OutOfPlay)
-            {
-                Debug.Log("[PlayerManager] Can not swap player that is out of play");
-                return;
-            }
-
-            EntityRef selectedCharacter = playerHandle.SelectedCharacter;
-            Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(selectedCharacter);
-
-            SpawnPlayer(f, playerHandle, characterNumber, playerTransform->Position);
-        }
-
-
-        public static void DespawnPlayer(Frame f, BattlePlayerSlot slot)
-        {   
-            PlayerHandle playerHandle = new(GetPlayerManagerData(f), slot);
-            if (playerHandle.PlayState != PlayerPlayState.InPlay)
-            {
-                Debug.Log("[PlayerManager] Can not despawn player that is not in play");
-                return;
-            }
-            DespawnPlayer(f, playerHandle);
-        }
 
         private static void DespawnPlayer(Frame f, PlayerHandle playerHandle)
         {
@@ -285,87 +329,9 @@ namespace Quantum
 
             playerHandle.PlayState = PlayerPlayState.OutOfPlay;
         }
-        public static BattleTeamNumber GetPlayerTeamNumber(BattlePlayerSlot playerSlot)
-        {
-            return playerSlot switch
-            {
-                BattlePlayerSlot.Slot1 => BattleTeamNumber.TeamAlpha,
-                BattlePlayerSlot.Slot2 => BattleTeamNumber.TeamAlpha,
-                BattlePlayerSlot.Slot3 => BattleTeamNumber.TeamBeta,
-                BattlePlayerSlot.Slot4 => BattleTeamNumber.TeamBeta,
 
-                _ => BattleTeamNumber.NoTeam
-            };
-        }
+        #endregion Private - Static Methods
 
-        public static EntityRef GetPlayerEntity(Frame f, BattlePlayerSlot slot)
-        {
-            return default;
-        }
-
-        public static EntityRef GetTeammateEnity(Frame f, BattlePlayerSlot slot)
-        {
-            return default;
-        }
-
-        public static void SwitchCharacter()
-        {
-
-        }
-        public static bool IsValidCharacterIndex(int index) {
-            return true;
-        }
-
-        public static int GetPlayerIndex(BattlePlayerSlot playerSlot)
-        {
-            return playerSlot switch
-            {
-                BattlePlayerSlot.Slot1 => 0,
-                BattlePlayerSlot.Slot2 => 1,
-                BattlePlayerSlot.Slot3 => 2,
-                BattlePlayerSlot.Slot4 => 3,
-
-                _ => -1
-            };
-        }
-
-        private static int GetCharacterOffset(BattlePlayerSlot playerSlot)
-        {
-            return GetPlayerIndex(playerSlot) * Constants.PLAYER_CHARACTER_COUNT;
-        }
-
-        private static int GetCharacterIndex(BattlePlayerSlot playerSlot, int characterNumber) {
-          return GetCharacterOffset(playerSlot) + characterNumber;
-        }
-
-        private static EntityRef GetCharacter(PlayerManagerData* playerManagerData ,BattlePlayerSlot playerSlot, int characterNumber)
-        {
-            return playerManagerData->AllCharacters[GetCharacterIndex(playerSlot, characterNumber)];
-        }
-
-        private static PlayerManagerData* GetPlayerManagerData(Frame f)
-        {
-            PlayerManagerData* playerManagerData;
-            bool isFound = f.Unsafe.TryGetPointerSingleton(out playerManagerData);
-            if (isFound)
-            {
-                return playerManagerData;
-            }
-            else
-            {
-                Debug.LogFormat("[PlayerManager] Couldn't find PlayerManagerData singleton");
-                return null;
-            }
-        }
-
-        private static int GetSelectedCharacterNumber(PlayerManagerData* playerManagerData, BattlePlayerSlot playerSlot)
-        {
-            return playerManagerData->SelectedCharacterNumbers[GetPlayerIndex(playerSlot)];
-        }
-
-        public static int GetSelectedCharacterNumber(Frame f, BattlePlayerSlot playerSlot)
-        {
-            return GetSelectedCharacterNumber(GetPlayerManagerData(f), playerSlot);
-        }
+        #endregion Private
     }
 }
