@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Altzone.Scripts.Common.Photon;
 using Altzone.Scripts.Lobby;
+using MenuUi.Scripts.Lobby.CreateRoom;
 using Prg.Scripts.Common.PubSub;
 using TMPro;
 using UnityEngine;
@@ -14,17 +15,16 @@ namespace MenuUI.Scripts.Lobby.InLobby
         private const string DefaultRoomNameName = "Battle ";
 
         [SerializeField] private RoomSearchPanelController _searchPanel;
-        [SerializeField] private TMP_InputField _roomName;
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
-        [SerializeField] private Button _createRoomButton;
+        [SerializeField] private CreateRoomCustom _createRoomCustom;
 
         private PhotonRoomList _photonRoomList;
 
         private void Awake()
         {
             _photonRoomList = gameObject.GetOrAddComponent<PhotonRoomList>();
-            _createRoomButton.onClick.RemoveAllListeners();
-            _createRoomButton.onClick.AddListener(CreateRoomOnClick);
+            _createRoomCustom.CreateRoomButton.onClick.RemoveAllListeners();
+            _createRoomCustom.CreateRoomButton.onClick.AddListener(CreateCustomRoomOnClick);
         }
 
         public void OnEnable()
@@ -48,12 +48,18 @@ namespace MenuUI.Scripts.Lobby.InLobby
             LobbyWindowNavigationHandler.OnLobbyWindowChangeRequest -= SwitchToRoom;
         }
 
-        private void CreateRoomOnClick()
+        private void CreateCustomRoomOnClick()
         {
-            var roomName = string.IsNullOrWhiteSpace(_roomName.text) ? $"{DefaultRoomNameName}{DateTime.Now.Second:00}" : _roomName.text;
-            
-            Debug.Log($"{roomName}");
-            PhotonRealtimeClient.CreateLobbyRoom(roomName);
+            var roomName = string.IsNullOrWhiteSpace(_createRoomCustom.RoomName) ? $"{DefaultRoomNameName}{DateTime.Now.Second:00}" : _createRoomCustom.RoomName;
+
+            if (_createRoomCustom.IsPrivate && _createRoomCustom.RoomPassword != null && _createRoomCustom.RoomPassword != "")
+            {
+                PhotonRealtimeClient.CreateLobbyRoom(roomName, _createRoomCustom.RoomPassword);
+            }
+            else
+            {
+                PhotonRealtimeClient.CreateLobbyRoom(roomName);
+            }
         }
 
 

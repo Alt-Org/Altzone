@@ -614,7 +614,7 @@ public static class PhotonRealtimeClient
         Client.RemoveCallbackTarget(target);
     }
 
-    public static bool CreateLobbyRoom(string roomName, string[] expectedUsers = null, string password = "")
+    public static bool CreateLobbyRoom(string roomName, string password = "", string[] expectedUsers = null)
     {
         PhotonHashtable customRoomProperties = new PhotonHashtable
         {

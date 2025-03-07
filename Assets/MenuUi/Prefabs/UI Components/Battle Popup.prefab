@@ -1272,9 +1272,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _searchPanel: {fileID: 1752140370002469978}
-  _roomName: {fileID: 2373485009307528177}
   _roomSwitcher: {fileID: 4116104174498300769}
-  _createRoomButton: {fileID: 7658191974015100570}
+  _createRoomCustom: {fileID: 2108616739130861843}
 --- !u!1 &820887240261383258
 GameObject:
   m_ObjectHideFlags: 0
@@ -9275,6 +9274,7 @@ MonoBehaviour:
   _privateToggle: {fileID: 9143423465877751286}
   _showToFriends: {fileID: 5954693972753066000}
   _showToClan: {fileID: 3847164539522631739}
+  _createRoom: {fileID: 7658191974015100570}
 --- !u!1 &8314319828766117934
 GameObject:
   m_ObjectHideFlags: 0
