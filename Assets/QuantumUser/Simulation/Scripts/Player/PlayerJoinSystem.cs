@@ -12,9 +12,9 @@ namespace Quantum
             FPVector2[] spawnPoints = new FPVector2[]
             {
                 new(-2, -5),
-                new(2, -5),
-                new(2, 5),
-                new(-2, 5)
+                new( 2, -5),
+                new( 2,  5),
+                new(-2,  5)
             };
 
             RuntimePlayer data = f.GetPlayerData(player);
