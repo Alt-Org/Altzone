@@ -616,15 +616,6 @@ namespace Altzone.Scripts.Lobby
             Debug.Log($"Created room {PhotonRealtimeClient.Client.CurrentRoom.Name}");
             StartCoroutine(Service());
 
-            // Initializing room player positions
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object>
-            {
-                { PhotonBattleRoom.PlayerPositionKey1, "" },
-                { PhotonBattleRoom.PlayerPositionKey2, "" },
-                { PhotonBattleRoom.PlayerPositionKey3, "" },
-                { PhotonBattleRoom.PlayerPositionKey4, "" }
-            }));
-
             LobbyOnCreatedRoom?.Invoke();
         }
         public void OnJoinedLobby() { StartCoroutine(Service()); LobbyOnJoinedLobby?.Invoke(); }

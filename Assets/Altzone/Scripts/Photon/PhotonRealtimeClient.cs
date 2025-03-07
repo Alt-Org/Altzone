@@ -11,6 +11,7 @@ using Quantum;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Altzone.Scripts.Lobby.Wrappers.LobbyWrapper;
+using Altzone.Scripts.Battle.Photon;
 
 public static class PhotonRealtimeClient
 {
@@ -613,8 +614,17 @@ public static class PhotonRealtimeClient
         Client.RemoveCallbackTarget(target);
     }
 
-    public static bool CreateLobbyRoom(string roomName, string[] expectedUsers = null)
+    public static bool CreateLobbyRoom(string roomName, string[] expectedUsers = null, string password = "")
     {
+        PhotonHashtable customRoomProperties = new PhotonHashtable
+        {
+            { PhotonBattleRoom.PlayerPositionKey1, "" },
+            { PhotonBattleRoom.PlayerPositionKey2, "" },
+            { PhotonBattleRoom.PlayerPositionKey3, "" },
+            { PhotonBattleRoom.PlayerPositionKey4, "" },
+            { PhotonBattleRoom.PasswordKey, password }
+        };
+
         var roomOptions = new RoomOptions()
         {
             IsVisible = true, // Pit�� muokata varmaankin //
@@ -622,7 +632,8 @@ public static class PhotonRealtimeClient
             MaxPlayers = 4,
             Plugins = new string[] { "QuantumPlugin" },
             PlayerTtl = ServerSettings.PlayerTtlInSeconds * 1000,
-            EmptyRoomTtl = ServerSettings.EmptyRoomTtlInSeconds * 1000
+            EmptyRoomTtl = ServerSettings.EmptyRoomTtlInSeconds * 1000,
+            CustomRoomProperties = customRoomProperties
         };
         return CreateRoom(roomName, roomOptions, null, expectedUsers);
     }
