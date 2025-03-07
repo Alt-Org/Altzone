@@ -622,8 +622,12 @@ public static class PhotonRealtimeClient
             { PhotonBattleRoom.PlayerPositionKey2, "" },
             { PhotonBattleRoom.PlayerPositionKey3, "" },
             { PhotonBattleRoom.PlayerPositionKey4, "" },
-            { PhotonBattleRoom.PasswordKey, password }
         };
+
+        if (password != "" && password != null)
+        {
+            customRoomProperties.Add(PhotonBattleRoom.PasswordKey, password);
+        }
 
         var roomOptions = new RoomOptions()
         {
@@ -635,6 +639,12 @@ public static class PhotonRealtimeClient
             EmptyRoomTtl = ServerSettings.EmptyRoomTtlInSeconds * 1000,
             CustomRoomProperties = customRoomProperties
         };
+
+        if (password != "" && password != null)
+        {
+            roomOptions.CustomRoomPropertiesForLobby = new string[1] { PhotonBattleRoom.PasswordKey };
+        }
+
         return CreateRoom(roomName, roomOptions, null, expectedUsers);
     }
 
