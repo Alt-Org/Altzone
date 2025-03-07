@@ -486,8 +486,8 @@ RectTransform:
   - {fileID: 7575852947494159402}
   m_Father: {fileID: 6670085549273967225}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.7, y: 0.7}
-  m_AnchorMax: {x: 1, y: 0.775}
+  m_AnchorMin: {x: 0.7, y: 0.71}
+  m_AnchorMax: {x: 1, y: 0.76}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -512,15 +512,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.92549026, b: 0.54509807, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1602589373, guid: 9c933f2fb927809419b0a87cbe5f4042, type: 3}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 47f3804936cb29747bf9619ef5303fec, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -1017,7 +1017,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 229.6936}
+  m_SizeDelta: {x: 0, y: 444}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2293594495682650439
 MonoBehaviour:
@@ -1719,7 +1719,7 @@ PrefabInstance:
     - target: {fileID: 5884478403627622171, guid: 4849ccdf720a65e4d911a9d2bb627c7e,
         type: 3}
       propertyPath: _maxDynamicColumns
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5884478403627622171, guid: 4849ccdf720a65e4d911a9d2bb627c7e,
         type: 3}

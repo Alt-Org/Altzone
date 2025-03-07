@@ -37,9 +37,10 @@ Shader "UI/Grayscale"
             #pragma multi_compile_local _ UNITY_UI_CLIP_RECT
             #pragma multi_compile_local _ UNITY_UI_ALPHACLIP
 
-
+            float4 color;
 
             #include "UnityCG.cginc"
+            #include "UnityUI.cginc"
 
             struct appdata {
                 float4 vertex : POSITION;
@@ -51,16 +52,19 @@ Shader "UI/Grayscale"
                 float2 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;
                 float4 color : COLOR;
+                float4 worldPosition : TEXCOORD2;
             };
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
+            float4 _ClipRect;
 
             v2f vert(appdata v) {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 o.color = v.color;
+                o.worldPosition = v.vertex;
                 return o;
             }
 
@@ -70,7 +74,7 @@ Shader "UI/Grayscale"
                 float grey = dot(col.rgb, float3(0.299, 0.587, 0.114));
 
                 #ifdef UNITY_UI_CLIP_RECT
-                color.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
+                color.a *= UnityGet2DClipping(i.worldPosition.xy, _ClipRect);
                 #endif
 
                 #ifdef UNITY_UI_ALPHACLIP

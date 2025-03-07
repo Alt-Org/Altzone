@@ -1,8 +1,7 @@
-using System;
-using Photon.Deterministic;
-using Quantum;
 using UnityEngine;
 using UnityEngine.Scripting;
+
+using Photon.Deterministic;
 
 namespace Quantum.QuantumUser.Simulation.Projectile
 {
@@ -18,26 +17,29 @@ namespace Quantum.QuantumUser.Simulation.Projectile
 
         public override void Update(Frame f, ref Filter filter)
         {
-            // Retrieve the projectile speed from the config
-            ProjectileSpec  config = f.FindAsset(f.RuntimeConfig.ProjectileSpec);
+            // unpack filter
             Quantum.Projectile* projectile = filter.Projectile;
             Transform2D* transform = filter.Transform;
 
             if (!projectile->IsLaunched)
             {
-                Debug.Log("Projectile Launched");
+                // retrieve the projectile speed from the spec
+                ProjectileSpec spec = f.FindAsset(f.RuntimeConfig.ProjectileSpec);
 
-                projectile->Speed = config.ProjectileInitialSpeed;
+                // set the projectile speed and direction
+                projectile->Speed = spec.ProjectileInitialSpeed;
                 projectile->Direction = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
 
-                // Set the IsLaunched field to true to ensure it's launched only once
+                // set the IsLaunched field to true to ensure it's launched only once
                 projectile->IsLaunched = true;
+
+                Debug.Log("Projectile Launched");
             }
 
-            //move the projectile
+            // move the projectile
             transform->Position += projectile->Direction * (projectile->Speed * f.DeltaTime);
 
-            // Decrease projectiles cooldown based on frame time
+            // decrease projectiles cooldown based on frame time
             if (projectile->CoolDown > 0)
             {
                 projectile->CoolDown -= f.DeltaTime;
@@ -52,7 +54,6 @@ namespace Quantum.QuantumUser.Simulation.Projectile
             Transform2D* otherTransform = f.Unsafe.GetPointer<Transform2D>(otherEntity);
 
             FPVector2 offsetVector = projectileTransform->Position - otherTransform->Position;
-            FP tempAngle = FPVector2.RadiansSigned(FPVector2.Up, normal) * (360 / (FP.Pi * 2));
             FP collisionOffset = FPVector2.Rotate(offsetVector, -FPVector2.RadiansSigned(FPVector2.Up, normal)).Y;
 
             projectile->Direction = FPVector2.Reflect(projectile->Direction, normal);
@@ -66,6 +67,12 @@ namespace Quantum.QuantumUser.Simulation.Projectile
         public void OnTriggerProjectileHitSoulWall(Frame f, Quantum.Projectile* projectile, EntityRef projectileEntity, Quantum.SoulWall* soulWall, EntityRef soulWallEntity)
         {
             ProjectileBounce(f, projectile, projectileEntity, soulWallEntity, soulWall->Normal, soulWall->CollisionMinOffset);
+
+            if (projectile->TestSpriteIndex < soulWall->Layer)
+            {
+                projectile->TestSpriteIndex = soulWall->Layer;
+                f.Events.ChangeProjectileSprite(projectile->TestSpriteIndex);
+            }
         }
 
         public void OnTriggerProjectileHitArenaBorder(Frame f, Quantum.Projectile* projectile, EntityRef projectileEntity, Quantum.ArenaBorder* arenaBorder, EntityRef arenaBorderEntity)

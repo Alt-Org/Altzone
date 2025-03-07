@@ -50,29 +50,18 @@ namespace Quantum.Prototypes.Unity {
   #endif //;
   
   [System.SerializableAttribute()]
-  public unsafe partial class PlayerShieldDataPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.PlayerShieldDataPrototype> {
-    public Quantum.QuantumEntityPrototype TeamMate;
-    public QBoolean TeamMateSet;
-    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.PlayerShieldDataPrototype prototype);
-    public override Quantum.Prototypes.PlayerShieldDataPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
-      var result = new Quantum.Prototypes.PlayerShieldDataPrototype();
-      converter.Convert(this.TeamMate, out result.TeamMate);
-      converter.Convert(this.TeamMateSet, out result.TeamMateSet);
-      ConvertUser(converter, ref result);
-      return result;
-    }
-  }
-  [System.SerializableAttribute()]
   public unsafe partial class SoulWallPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.SoulWallPrototype> {
     public Quantum.QuantumEntityPrototype ChildEntity;
     public FPVector2 Normal;
     public FP CollisionMinOffset;
+    public Int32 Layer;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.SoulWallPrototype prototype);
     public override Quantum.Prototypes.SoulWallPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.SoulWallPrototype();
       converter.Convert(this.ChildEntity, out result.ChildEntity);
       converter.Convert(this.Normal, out result.Normal);
       converter.Convert(this.CollisionMinOffset, out result.CollisionMinOffset);
+      converter.Convert(this.Layer, out result.Layer);
       ConvertUser(converter, ref result);
       return result;
     }

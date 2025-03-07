@@ -79,7 +79,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             get { return currentPage; }
             set
             {
-                if (isSwipeMode) return;
+                if (isSwipeMode && gameObject.activeInHierarchy) return;
                 currentPage = value;
                 if (_isInMainMenu) SettingsCarrier.Instance.mainMenuWindowIndex = currentPage;
                 UpdateButtonContent();
@@ -87,6 +87,8 @@ namespace MenuUi.Scripts.SwipeNavigation
                 OnCurrentPageChanged?.Invoke();
             }
         }
+
+        public bool IsInMainMenu { get => _isInMainMenu;}
 
         private void Awake()
         {

@@ -171,10 +171,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gameTypeIcon: {fileID: 4195016133995181226}
-  _gameTypeSelection: {fileID: 1035428136390477515}
+  _gameTypeSelectionMenu: {fileID: 1035428136390477515}
   _gameTypeOptionPrefab: {fileID: 6162357150708090788, guid: 063b8b648f06e444a86f257dbd778d45,
     type: 3}
   _gameTypeReference: {fileID: 11400000, guid: 6f5cd4216c26c21458bb1b8fe924a1a6, type: 2}
+  _touchBlocker: {fileID: 0}
 --- !u!1 &1035428136390477515
 GameObject:
   m_ObjectHideFlags: 0

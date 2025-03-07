@@ -8,7 +8,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 {
     //Variables
     private PlayerTask _taskData;
-    public PlayerTask TaskData {  get { return _taskData; } }
+    public PlayerTask TaskData { get { return _taskData; } }
     private bool _clickEnabled = true;
 
     public enum TaskWindowType
@@ -19,13 +19,13 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 
     [Header("Universal")]
     [SerializeField] private GameObject _coinIndicator;
+    [SerializeField] private Image _TaskImage;
 
     [Header("Windows")]
     [SerializeField] private GameObject _availableWindow;
     [SerializeField] private GameObject _reservedWindow;
 
     [Header("Available Window")]
-    [SerializeField] private Image _AvailableImage;
     [SerializeField] private TMP_Text _taskShort;
     [SerializeField] private TMP_Text _taskDebugID;
     [SerializeField] private TMP_Text _taskPoints;
@@ -36,30 +36,19 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     [SerializeField] private RectTransform _bottomLeftCorner;
     [SerializeField] private RectTransform _bottomRightCorner;
     [Space]
+    [Tooltip("Determines how close to the center of the screen the \"Popup\" window will be.")]
     [SerializeField] private float _centerPullSignificance = 0.25f;
 
     [Header("Reserved Window")]
-    [SerializeField] private Image _reservedImage;
     [SerializeField] private Image _playerImage;
     [SerializeField] private Image _progressImage;
     [SerializeField] private TMP_Text _progressText;
 
     [HideInInspector] public DailyTaskManager dailyTaskManager;
 
-    public void SetTaskData(PlayerTask taskData)
+    private void OnEnable()
     {
-        _taskData = taskData;
-        _taskData.OnTaskSelected += TaskSelected;
-        _taskData.OnTaskDeselected += TaskDeselected;
-        _taskData.OnTaskUpdated += UpdateProgressBar;
-        PopulateData();
-        //if (available)
-        SwitchWindow(TaskWindowType.Available);
-        //else
-        //{
-        //SwitchWindow(TaskWindowType.Reserved);
-        //SetTaskProgress();
-        //}
+        _playerImage.gameObject.SetActive(false);
     }
 
     private void OnDestroy()
@@ -69,70 +58,6 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
             _taskData.OnTaskSelected -= TaskSelected;
             _taskData.OnTaskDeselected -= TaskDeselected;
             _taskData.OnTaskUpdated -= UpdateProgressBar;
-        }
-    }
-
-    public void QuestAccept()
-    {
-        if (!_clickEnabled || TaskData.PlayerId != "")
-            return;
-
-        string message;
-
-        if (dailyTaskManager.OwnTaskId == null)
-            message = _taskData.Title;
-        //message = "Haluatko hyv�ksy� teht�v�n? \nquest id: ";
-        else
-            message = $"{_taskData.Title}\n Korvataanko nykyinen teht�v�?";
-
-        PopupData data = new PopupData(_taskData, GetCornerLocation());
-        StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse(message, data));
-    }
-
-    private Vector3 GetCornerLocation()
-    {
-        var selfPosition = this.GetComponent<RectTransform>().position;
-        Vector2 screenCenter = new Vector2(Screen.width / 2, Screen.height / 2);
-        float xDistanceFromCenter = (screenCenter.x - this.GetComponent<RectTransform>().position.x);
-        float yDistanceFromCenter = (screenCenter.y - this.GetComponent<RectTransform>().position.y);
-        Vector3 centerDiff = new Vector3(xDistanceFromCenter, yDistanceFromCenter) * _centerPullSignificance;
-
-        if (selfPosition.y > Screen.height / 2)
-        {
-            if (selfPosition.x > Screen.width / 2)
-                return (_bottomLeftCorner.position + centerDiff);
-            else
-                return (_bottomRightCorner.position + centerDiff);
-        }
-        else
-        {
-            if (selfPosition.x > Screen.width / 2)
-                return (_topLeftCorner.position + centerDiff);
-            else
-                return (_topRightCorner.position + centerDiff);
-        }
-    }
-
-    public void PopulateData()
-    {
-        _taskShort.text = GetShortDescription(_taskData.Type);
-        _taskDebugID.text = _taskData.Id.ToString();
-        _taskPoints.text = _taskData.Points.ToString() + " p";
-        _taskAmount.text = _taskData.Amount.ToString();
-        _coinIndicator.SetActive(_taskData.Coins >= 0);
-    }
-
-    private string GetShortDescription(TaskType taskType)
-    {
-        switch (taskType)
-        {
-            case TaskType.PlayBattle: return ("Taisteluja");
-            case TaskType.WinBattle: return ("Voittoja");
-            case TaskType.StartBattleDifferentCharacter: return ("Taistele Eri Hahmoilla");
-            case TaskType.WriteChatMessage: return ("Kirjoita viestej�");
-            case TaskType.Vote: return ("��nest�");
-            case TaskType.Undefined: return ("");
-            default: Debug.LogError($"No short descrition available for: {taskType.ToString()}"); return ("Error");
         }
     }
 
@@ -146,6 +71,89 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         _clickEnabled = true;
     }
 
+    public void SetTaskData(PlayerTask taskData)
+    {
+        _taskData = taskData;
+
+        /*Bind this class to PlayerTask for later interactions
+         *between DailyTaskManager and this class.*/
+        _taskData.OnTaskSelected += TaskSelected;
+        _taskData.OnTaskDeselected += TaskDeselected;
+        _taskData.OnTaskUpdated += UpdateProgressBar;
+
+        PopulateData();
+        SwitchWindow(TaskWindowType.Available);
+    }
+
+    public void DailyTaskInfo()
+    {
+        if (!_clickEnabled || _taskData.PlayerId != "")
+            return;
+
+        PopupData data = new(_taskData, GetCornerLocation());
+        StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse(_taskData.Title, data));
+    }
+
+    public void DailyTaskAccept()
+    {
+        if (!_clickEnabled || _taskData.PlayerId != "")
+            return;
+
+        StartCoroutine(dailyTaskManager.AcceptTask(_taskData));
+    }
+
+    /// <summary>
+    /// Returns the best location for the <c>Popup.cs</c> window depending <br/>
+    /// where this DailyQuest card is located on the screen.
+    /// </summary>
+    private Vector3 GetCornerLocation()
+    {
+        Vector2 screenCenter = new Vector2(Screen.width / 2, Screen.height / 2);
+        float xDistanceFromCenter = (screenCenter.x - transform.position.x);
+        float yDistanceFromCenter = (screenCenter.y - transform.position.y);
+        Vector3 centerDiff = new Vector3(xDistanceFromCenter, yDistanceFromCenter) * _centerPullSignificance;
+
+        if (transform.position.y > Screen.height / 2)
+        {
+            if (transform.position.x > Screen.width / 2)
+                return (_bottomLeftCorner.position + centerDiff);
+            else
+                return (_bottomRightCorner.position + centerDiff);
+        }
+        else
+        {
+            if (transform.position.x > Screen.width / 2)
+                return (_topLeftCorner.position + centerDiff);
+            else
+                return (_topRightCorner.position + centerDiff);
+        }
+    }
+
+    public void PopulateData()
+    {
+        _taskShort.text = GetShortDescription(_taskData.Type);
+        _taskDebugID.text = _taskData.Id.ToString();
+        _taskPoints.text = _taskData.Points.ToString() + " pistettä";
+        _taskAmount.text = _taskData.Amount.ToString();
+        _coinIndicator.SetActive(_taskData.Coins >= 0);
+
+        //_TaskImage.sprite = INSERT IMAGE HERE
+    }
+
+    private string GetShortDescription(TaskNormalType taskType)
+    {
+        switch (taskType)
+        {
+            case TaskNormalType.PlayBattle: return ("Taisteluja");
+            case TaskNormalType.WinBattle: return ("Voittoja");
+            case TaskNormalType.StartBattleDifferentCharacter: return ("Taistele Eri Hahmoilla");
+            case TaskNormalType.WriteChatMessage: return ("Kirjoita viestej�");
+            case TaskNormalType.Vote: return ("��nest�");
+            case TaskNormalType.Undefined: return ("");
+            default: Debug.LogError($"No short descrition available for: {taskType.ToString()}"); return ("Error");
+        }
+    }
+
     private void SwitchWindow(TaskWindowType type)
     {
         _availableWindow.SetActive(type == TaskWindowType.Available);
@@ -155,6 +163,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     public void TaskSelected()
     {
         SwitchWindow(TaskWindowType.Reserved);
+        _playerImage.gameObject.SetActive(true);
         //_playerImage.sprite = INSERT PLAYER IMAGE HERE;
         UpdateProgressBar();
     }
@@ -168,6 +177,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     public void TaskDeselected()
     {
         SwitchWindow(TaskWindowType.Available);
+        _playerImage.gameObject.SetActive(false);
         _taskData.ClearPlayerId();
     }
 }

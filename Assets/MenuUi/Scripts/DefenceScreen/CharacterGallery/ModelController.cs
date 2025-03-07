@@ -1,12 +1,45 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Linq;
 using Altzone.Scripts;
-using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
-using SignalBus = MenuUi.Scripts.Lobby.SignalBus;
+using MenuUi.Scripts.Signals;
+
+
+namespace MenuUi.Scripts.Signals
+{
+    public static partial class SignalBus
+    {
+        public delegate void RandomSelectedCharactersRequested();
+        public static event RandomSelectedCharactersRequested OnRandomSelectedCharactersRequested;
+        public static void OnRandomSelectedCharactersRequestedSignal()
+        {
+            OnRandomSelectedCharactersRequested?.Invoke();
+        }
+
+        public delegate void DefenceGalleryEditModeRequested();
+        public static event DefenceGalleryEditModeRequested OnDefenceGalleryEditModeRequested;
+        public static void OnDefenceGalleryEditModeRequestedSignal()
+        {
+            OnDefenceGalleryEditModeRequested?.Invoke();
+        }
+
+        public delegate void ReloadCharacterGalleryRequested();
+        public static event ReloadCharacterGalleryRequested OnReloadCharacterGalleryRequested;
+        public static void OnReloadCharacterGalleryRequestedSignal()
+        {
+            OnReloadCharacterGalleryRequested?.Invoke();
+        }
+
+        public delegate void SelectedDefenceCharacterChanged(CharacterID characterID, int slot);
+        public static event SelectedDefenceCharacterChanged OnSelectedDefenceCharacterChanged;
+        public static void OnSelectedDefenceCharacterChangedSignal(CharacterID characterID, int slot)
+        {
+            OnSelectedDefenceCharacterChanged?.Invoke(characterID, slot);
+        }
+    }
+}
 
 
 namespace MenuUi.Scripts.CharacterGallery
@@ -19,13 +52,15 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private ModelView _view; //modelview script
 
         private PlayerData _playerData;
-
+        private bool _reloadRequested = false;
 
         private void Awake()
         {
             ServerManager.OnLogInStatusChanged += StartLoading;
             SignalBus.OnRandomSelectedCharactersRequested += SetRandomSelectedCharactersToEmptySlots;
             _view.OnTopSlotCharacterSet += HandleCharacterSelected;
+            SignalBus.OnReloadCharacterGalleryRequested += OnReloadRequested;
+            SignalBus.OnSelectedDefenceCharacterChanged += HandleCharacterSelected;
         }
 
 
@@ -41,11 +76,23 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
+        private void OnEnable()
+        {
+            if (_reloadRequested)
+            {
+                StartCoroutine(Load());
+                _reloadRequested = false;
+            }
+        }
+
+
         private void OnDestroy()
         {
             ServerManager.OnLogInStatusChanged -= StartLoading;
             SignalBus.OnRandomSelectedCharactersRequested -= SetRandomSelectedCharactersToEmptySlots;
             _view.OnTopSlotCharacterSet -= HandleCharacterSelected;
+            SignalBus.OnReloadCharacterGalleryRequested -= OnReloadRequested;
+            SignalBus.OnSelectedDefenceCharacterChanged -= HandleCharacterSelected;
         }
 
 
@@ -54,6 +101,19 @@ namespace MenuUi.Scripts.CharacterGallery
             if (isLoggedIn)
             {
                 StartCoroutine(Load());
+            }
+        }
+
+
+        private void OnReloadRequested()
+        {
+            if (gameObject.activeInHierarchy)
+            {
+                StartCoroutine(Load());
+            }
+            else
+            {
+                _reloadRequested = true;
             }
         }
 

@@ -95,8 +95,6 @@ GameObject:
   - component: {fileID: 8780164584391443545}
   - component: {fileID: 6916500511774267667}
   - component: {fileID: 5746144157330607816}
-  - component: {fileID: 8802405222058294415}
-  - component: {fileID: 4731324137061595003}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -306,37 +304,6 @@ MonoBehaviour:
   OnEntityDestroyed:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &8802405222058294415
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5521468026819928245}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a943ec43336686f6a18957bdcae698d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Prototype:
-    TeamMate: {fileID: 0}
-    TeamMateSet:
-      Value: 0
---- !u!114 &4731324137061595003
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5521468026819928245}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34aa37819a596296a8f51a461904ad48, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _sprites:
-  - {fileID: -1888186336, guid: 63fa6c591c80c4573aae394beb8a4936, type: 3}
-  - {fileID: 113932954, guid: 63fa6c591c80c4573aae394beb8a4936, type: 3}
 --- !u!1 &5555457871378360869
 GameObject:
   m_ObjectHideFlags: 0
