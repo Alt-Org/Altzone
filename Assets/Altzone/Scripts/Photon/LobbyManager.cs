@@ -497,7 +497,7 @@ namespace Altzone.Scripts.Lobby
                 _player.Characters[i] = new BattleCharacterBase()
                 {
                     Id            = (int)character.Id,
-                    Class       = (int)character.CharacterClassID,
+                    Class         = (int)character.CharacterClassID,
 
                     Hp            = BaseCharacter.GetStatValueFP(StatType.Hp,            character.Hp),
                     Attack        = BaseCharacter.GetStatValueFP(StatType.Attack,        character.Attack),
