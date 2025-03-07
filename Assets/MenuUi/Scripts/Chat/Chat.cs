@@ -224,9 +224,9 @@ public class Chat : MonoBehaviour
     // Korostaa valitun viestin
     private void HighlightMessage(GameObject message)
     {
-        if (message.GetComponent<Image>() != null)
+        if (message.GetComponentInChildren<Image>() != null)
         {
-            message.GetComponent<Image>().color = Color.gray;
+            message.GetComponentInChildren<Image>().color = Color.gray;
         }
     }
 
@@ -235,9 +235,9 @@ public class Chat : MonoBehaviour
     {
         if (selectedMessage != null)
         {
-            if (message.GetComponent<Image>() != null)
+            if (message.GetComponentInChildren<Image>() != null)
             {
-                message.GetComponent<Image>().color = Color.white;
+                message.GetComponentInChildren<Image>().color = Color.white;
             }
 
             deleteButtons.SetActive(false);
