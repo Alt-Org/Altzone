@@ -8,6 +8,7 @@ namespace Quantum
     {
         public void OnPlayerAdded(Frame f, PlayerRef player, bool firstTime)
         {
+            // TODO: BattleArenaSpec PlayerSpawnPositions should be used instead
             FPVector2[] spawnPoints = new FPVector2[]
             {
                 new(-2, -5),
