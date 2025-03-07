@@ -5,9 +5,8 @@ using Altzone.Scripts.Common.Photon;
 using Altzone.Scripts.Lobby;
 using MenuUi.Scripts.Lobby.CreateRoom;
 using Prg.Scripts.Common.PubSub;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUI.Scripts.Lobby.InLobby
 {
@@ -82,6 +81,10 @@ namespace MenuUI.Scripts.Lobby.InLobby
                             if (password.Trim() == passwordInput.Trim())
                             {
                                 PhotonRealtimeClient.JoinRoom(roomInfo.Name);
+                            }
+                            else
+                            {
+                                PopupSignalBus.OnChangePopupInfoSignal("Salasana on v‰‰rin.");
                             }
                             _passwordPopup.ClosePopup();
                         }));
