@@ -26,9 +26,12 @@ namespace Altzone.Scripts.Lobby
 {
     public enum LobbyWindowTarget
     {
+        None,
         MainMenu,
         LobbyRoom,
+        BattleLoad,
         Battle,
+        BattleStory,
         Raid
     }
 
@@ -78,7 +81,7 @@ namespace Altzone.Scripts.Lobby
 
         #region Delegates & Events
 
-        public delegate void LobbyWindowChangeRequest(LobbyWindowTarget target);
+        public delegate void LobbyWindowChangeRequest(LobbyWindowTarget target, LobbyWindowTarget lobbyWindow = LobbyWindowTarget.None);
         public static event LobbyWindowChangeRequest OnLobbyWindowChangeRequest;
 
         public delegate void LobbyConnected();
@@ -354,7 +357,7 @@ namespace Altzone.Scripts.Lobby
                     yield return null;
                 }
             }
-            if (!PhotonRealtimeClient.Client.OpRaiseEvent(PhotonRealtimeClient.PhotonEvent.StartGame,null, new RaiseEventArgs{Receivers = ReceiverGroup.All}, SendOptions.SendReliable))
+            if (!PhotonRealtimeClient.Client.OpRaiseEvent(PhotonRealtimeClient.PhotonEvent.StartGame, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), new RaiseEventArgs{Receivers = ReceiverGroup.All}, SendOptions.SendReliable))
             {
                 Debug.LogError("Unable to start game.");
                 yield break;
@@ -363,7 +366,7 @@ namespace Altzone.Scripts.Lobby
             //WindowManager.Get().ShowWindow(gameWindow);
         }
 
-        private IEnumerator StartQuantum()
+        private IEnumerator StartQuantum(long sendTime)
         {
             string battleID = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(BattleID);
             int playerPosition = PhotonRealtimeClient.LocalPlayer.GetCustomProperty<int>(PlayerPositionKey);
@@ -407,6 +410,12 @@ namespace Altzone.Scripts.Lobby
             }*/
 
             //WindowManager.Get().ShowWindow(_gameWindow);
+            OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleLoad);
+
+            long startTime = (sendTime+5000) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
+            yield return new WaitForSeconds(startTime/1000f);
+
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Battle);
 
             yield return new WaitUntil(()=>SceneManager.GetActiveScene().name == _map.Scene);
@@ -469,7 +478,12 @@ namespace Altzone.Scripts.Lobby
         {
             QuantumRunner.ShutdownAll();
             DebugLogFileHandler.ContextExit();
-            OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
+            OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleStory);
+        }
+
+        public static void ExitBattleStory()
+        {
+            OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu, LobbyWindowTarget.BattleStory);
         }
 
         private static IEnumerator StartTheRaidTestRoom()
@@ -658,7 +672,7 @@ namespace Altzone.Scripts.Lobby
             switch (photonEvent.Code)
             {
                 case PhotonRealtimeClient.PhotonEvent.StartGame:
-                    StartCoroutine(StartQuantum());
+                    StartCoroutine(StartQuantum((long)photonEvent.CustomData));
                     break;
                 case PhotonRealtimeClient.PhotonEvent.PlayerPositionChangeRequested:
                     int position = (int)photonEvent.CustomData;
