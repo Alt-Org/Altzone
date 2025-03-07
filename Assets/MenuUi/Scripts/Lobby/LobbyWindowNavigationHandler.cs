@@ -92,6 +92,6 @@ public class LobbyWindowNavigationHandler : MonoBehaviour
                 return true;
         }
 
-        return !currentWindow.WindowName.Equals(checkWindow.WindowName);
+        return currentWindow.WindowName.Equals(checkWindow.WindowName);
     }
 }

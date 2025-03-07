@@ -19,7 +19,7 @@ public class BattleStoryController : MonoBehaviour
     [SerializeField]
     private Transform _endStartPositionRight;
 
-    [SerializeField]
+    [Header("Paths"), SerializeField]
     private Transform _path1Position1;
     [SerializeField]
     private AnimationCurve _path1Curve;
@@ -34,7 +34,18 @@ public class BattleStoryController : MonoBehaviour
     [SerializeField]
     private Transform _path3Position1;
 
+    [Header("Ball Emotion Sprites"),SerializeField]
+    private Sprite _ballAngrySprite;
     [SerializeField]
+    private Sprite _ballJoySprite;
+    [SerializeField]
+    private Sprite _ballLoveSprite;
+    [SerializeField]
+    private Sprite _ballPlaySprite;
+    [SerializeField]
+    private Sprite _ballSorrowSprite;
+
+    [Header("Character Animators"),SerializeField]
     private Animator _characterAnimator1;
     [SerializeField]
     private Animator _characterAnimator2;
@@ -84,9 +95,30 @@ public class BattleStoryController : MonoBehaviour
         yield return new WaitForSeconds(1f);
         for (int i = 0; i < randomClipOrder1.Count; i++)
         {
-            Debug.LogWarning($"Character 1: {randomClipOrder1[i]}, Ball 1: {randomBallOrder1[i]}");
+            Debug.LogWarning($"Character 1: {randomClipOrder1[i]}:{clips1[randomClipOrder1[i]].name}, Ball 1: {randomBallOrder1[i]}");
             _characterAnimator1.Play(clips1[randomClipOrder1[i]].name);
             GameObject ball = Instantiate(_emotionBall, _endStartPositionLeft);
+            switch (randomClipOrder1[i])
+            {
+                case 0:
+                    ball.GetComponent<Image>().sprite = _ballJoySprite;
+                    break;
+                case 1:
+                    ball.GetComponent<Image>().sprite = _ballPlaySprite;
+                    break;
+                case 2:
+                    ball.GetComponent<Image>().sprite = _ballLoveSprite;
+                    break;
+                case 3:
+                    ball.GetComponent<Image>().sprite = _ballSorrowSprite;
+                    break;
+                case 4:
+                    ball.GetComponent<Image>().sprite = _ballAngrySprite;
+                    break;
+                default:
+                    break;
+            }
+            ball.GetComponent<RectTransform>().rotation = Quaternion.Euler(new(0, 180, 0));
             bool ballDone = false;
             switch (randomBallOrder1[i])
             {
@@ -107,9 +139,29 @@ public class BattleStoryController : MonoBehaviour
             Destroy(ball);
 
             yield return new WaitForSeconds(0.5f);
-            Debug.LogWarning($"Character 2: {randomClipOrder2[i]}, Ball 2: {randomBallOrder2[i]}");
+            Debug.LogWarning($"Character 2: {randomClipOrder2[i]}:{clips2[randomClipOrder2[i]].name}, Ball 2: {randomBallOrder2[i]}");
             _characterAnimator2.Play(clips2[randomClipOrder2[i]].name);
             GameObject ball2 = Instantiate(_emotionBall, _endStartPositionLeft);
+            switch (randomClipOrder2[i])
+            {
+                case 0:
+                    ball2.GetComponent<Image>().sprite = _ballJoySprite;
+                    break;
+                case 1:
+                    ball2.GetComponent<Image>().sprite = _ballAngrySprite;
+                    break;
+                case 2:
+                    ball2.GetComponent<Image>().sprite = _ballLoveSprite;
+                    break;
+                case 3:
+                    ball2.GetComponent<Image>().sprite = _ballPlaySprite;
+                    break;
+                case 5:
+                    ball2.GetComponent<Image>().sprite = _ballSorrowSprite;
+                    break;
+                default:
+                    break;
+            }
             ballDone = false;
             switch (randomBallOrder2[i])
             {
