@@ -53,7 +53,7 @@ public class BattleStoryController : MonoBehaviour
         int clips1Count = clips1.Length;
         List<int> randomClipOrder1 = new();
         List<int> randomBallOrder1 = new();
-        var clips2 = _characterAnimator1.runtimeAnimatorController.animationClips;
+        var clips2 = _characterAnimator2.runtimeAnimatorController.animationClips;
         int clips2Count = clips2.Length;
         List<int> randomClipOrder2 = new();
         List<int> randomBallOrder2 = new();
@@ -61,7 +61,7 @@ public class BattleStoryController : MonoBehaviour
         int selectedvalue1 = -1;
         int prevSelectedValue2 = -1;
         int selectedvalue2 = -1;
-        for (int i= 0; i>5; i++)
+        for (int i= 0; i<5; i++)
         {
             do
             {
@@ -82,8 +82,9 @@ public class BattleStoryController : MonoBehaviour
             randomBallOrder2.Add(ballAnimation2);
         }
         yield return new WaitForSeconds(1f);
-        for (int i = 0; i > randomClipOrder1.Count; i++)
+        for (int i = 0; i < randomClipOrder1.Count; i++)
         {
+            Debug.LogWarning($"Character 1: {randomClipOrder1[i]}, Ball 1: {randomBallOrder1[i]}");
             _characterAnimator1.Play(clips1[randomClipOrder1[i]].name);
             GameObject ball = Instantiate(_emotionBall, _endStartPositionLeft);
             bool ballDone = false;
@@ -104,11 +105,13 @@ public class BattleStoryController : MonoBehaviour
             }
             yield return new WaitUntil(() => ballDone is true);
             Destroy(ball);
+
             yield return new WaitForSeconds(0.5f);
+            Debug.LogWarning($"Character 2: {randomClipOrder2[i]}, Ball 2: {randomBallOrder2[i]}");
             _characterAnimator2.Play(clips2[randomClipOrder2[i]].name);
             GameObject ball2 = Instantiate(_emotionBall, _endStartPositionLeft);
             ballDone = false;
-            switch (randomBallOrder1[i])
+            switch (randomBallOrder2[i])
             {
                 case 0:
                     StartCoroutine(BallAnimationRight1(ball2, done => ballDone = done));
@@ -131,27 +134,27 @@ public class BattleStoryController : MonoBehaviour
 
     private IEnumerator BallAnimationRight1(GameObject ball, Action<bool> callback)
     {
-        float speed = 50f;
+        float speed = 150f;
         float distance = Mathf.Abs(Vector2.Distance(_endStartPositionRight.position, _path1Position1.position));
         float duration = distance / speed;
         float currentTime = 0;
-        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _path1Position1.position)) < Mathf.Epsilon)
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _path1Position1.position)) > Mathf.Epsilon)
         {
             yield return null;
             currentTime += Time.deltaTime;
             Vector2 pos = Vector2.Lerp(_endStartPositionRight.position, _path1Position1.position, currentTime / duration);
-            float yPos = (_endStartPositionRight.position.y + (_path1Position1.position.y - _endStartPositionRight.position.y)) * _path1Curve.Evaluate(currentTime / duration);
+            float yPos = _endStartPositionRight.position.y + (_path1Position1.position.y - _endStartPositionRight.position.y) * _path1Curve.Evaluate(currentTime / duration);
             ball.transform.position = new(pos.x, yPos);
         }
         distance = Mathf.Abs(Vector2.Distance(_endStartPositionLeft.position, _path1Position1.position));
         duration = distance / speed;
         currentTime = 0;
-        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _endStartPositionLeft.position)) < Mathf.Epsilon)
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _endStartPositionLeft.position)) > Mathf.Epsilon)
         {
             yield return null;
             currentTime += Time.deltaTime;
             Vector2 pos = Vector2.Lerp(_path1Position1.position, _endStartPositionLeft.position, currentTime / duration);
-            float yPos = (_endStartPositionLeft.position.y + (_path1Position1.position.y - _endStartPositionLeft.position.y)) * _path1Curve.Evaluate(1 - currentTime / duration);
+            float yPos = _endStartPositionLeft.position.y + (_path1Position1.position.y - _endStartPositionLeft.position.y) * _path1Curve.Evaluate(1 - currentTime / duration);
             ball.transform.position = new(pos.x, yPos);
         }
         callback(true);
@@ -159,27 +162,27 @@ public class BattleStoryController : MonoBehaviour
 
     private IEnumerator BallAnimationLeft1(GameObject ball, Action<bool> callback)
     {
-        float speed = 50f;
+        float speed = 150f;
         float distance = Mathf.Abs(Vector2.Distance(_endStartPositionLeft.position, _path1Position1.position));
         float duration = distance / speed;
         float currentTime = 0;
-        while(Mathf.Abs(Vector2.Distance(ball.transform.position, _path1Position1.position))< Mathf.Epsilon)
+        while(Mathf.Abs(Vector2.Distance(ball.transform.position, _path1Position1.position)) > Mathf.Epsilon)
         {
             yield return null;
             currentTime += Time.deltaTime;
             Vector2 pos = Vector2.Lerp(_endStartPositionLeft.position, _path1Position1.position, currentTime / duration);
-            float yPos = (_endStartPositionLeft.position.y + (_path1Position1.position.y - _endStartPositionLeft.position.y)) * _path1Curve.Evaluate(currentTime / duration);
+            float yPos = _endStartPositionLeft.position.y + (_path1Position1.position.y - _endStartPositionLeft.position.y) * _path1Curve.Evaluate(currentTime / duration);
             ball.transform.position = new(pos.x,yPos);
         }
         distance = Mathf.Abs(Vector2.Distance(_endStartPositionRight.position, _path1Position1.position));
         duration = distance / speed;
         currentTime = 0;
-        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _endStartPositionRight.position)) < Mathf.Epsilon)
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _endStartPositionRight.position)) > Mathf.Epsilon)
         {
             yield return null;
             currentTime += Time.deltaTime;
             Vector2 pos = Vector2.Lerp(_path1Position1.position, _endStartPositionRight.position, currentTime / duration);
-            float yPos = (_endStartPositionRight.position.y + (_path1Position1.position.y - _endStartPositionRight.position.y)) * _path1Curve.Evaluate(1 - currentTime / duration);
+            float yPos = _endStartPositionRight.position.y + (_path1Position1.position.y - _endStartPositionRight.position.y) * _path1Curve.Evaluate(1 - currentTime / duration);
             ball.transform.position = new(pos.x, yPos);
         }
         callback(true);
@@ -187,11 +190,11 @@ public class BattleStoryController : MonoBehaviour
 
     private IEnumerator BallAnimationLeft2(GameObject ball, Action<bool> callback)
     {
-        float speed = 50f;
+        float speed = 150f;
         float distance = Mathf.Abs(Vector2.Distance(_endStartPositionLeft.position, _path2LeftPosition1.position));
         float duration = distance / speed;
         float currentTime = 0;
-        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _path2LeftPosition1.position)) < Mathf.Epsilon)
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _path2LeftPosition1.position)) > Mathf.Epsilon)
         {
             yield return null;
             currentTime += Time.deltaTime;
@@ -199,11 +202,11 @@ public class BattleStoryController : MonoBehaviour
             ball.transform.position = pos;
         }
 
-        speed = 20f;
+        speed = 60f;
         distance = Mathf.Abs(Vector2.Distance(_path2LeftPosition1.position, _path2LeftPosition2.position));
         duration = distance / speed;
         currentTime = 0;
-        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _path2LeftPosition2.position)) < Mathf.Epsilon)
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _path2LeftPosition2.position)) > Mathf.Epsilon)
         {
             yield return null;
             currentTime += Time.deltaTime;
@@ -211,11 +214,11 @@ public class BattleStoryController : MonoBehaviour
             ball.transform.position = pos;
         }
 
-        speed = 100f;
+        speed = 300f;
         distance = Mathf.Abs(Vector2.Distance(_endStartPositionRight.position, _path2LeftPosition2.position));
         duration = distance / speed;
         currentTime = 0;
-        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _endStartPositionRight.position)) < Mathf.Epsilon)
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _endStartPositionRight.position)) > Mathf.Epsilon)
         {
             yield return null;
             currentTime += Time.deltaTime;
@@ -227,11 +230,11 @@ public class BattleStoryController : MonoBehaviour
 
     private IEnumerator BallAnimationRight2(GameObject ball, Action<bool> callback)
     {
-        float speed = 50f;
+        float speed = 150f;
         float distance = Mathf.Abs(Vector2.Distance(_endStartPositionRight.position, _path2RightPosition1.position));
         float duration = distance / speed;
         float currentTime = 0;
-        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _path2RightPosition1.position)) < Mathf.Epsilon)
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _path2RightPosition1.position)) > Mathf.Epsilon)
         {
             yield return null;
             currentTime += Time.deltaTime;
@@ -239,11 +242,11 @@ public class BattleStoryController : MonoBehaviour
             ball.transform.position = pos;
         }
 
-        speed = 20f;
+        speed = 60f;
         distance = Mathf.Abs(Vector2.Distance(_path2RightPosition1.position, _path2RightPosition2.position));
         duration = distance / speed;
         currentTime = 0;
-        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _path2RightPosition2.position)) < Mathf.Epsilon)
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _path2RightPosition2.position)) > Mathf.Epsilon)
         {
             yield return null;
             currentTime += Time.deltaTime;
@@ -251,11 +254,11 @@ public class BattleStoryController : MonoBehaviour
             ball.transform.position = pos;
         }
 
-        speed = 100f;
+        speed = 300f;
         distance = Mathf.Abs(Vector2.Distance(_endStartPositionLeft.position, _path2RightPosition2.position));
         duration = distance / speed;
         currentTime = 0;
-        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _endStartPositionLeft.position)) < Mathf.Epsilon)
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _endStartPositionLeft.position)) > Mathf.Epsilon)
         {
             yield return null;
             currentTime += Time.deltaTime;
@@ -267,11 +270,11 @@ public class BattleStoryController : MonoBehaviour
 
     private IEnumerator BallAnimationLeft3(GameObject ball, Action<bool> callback)
     {
-        float speed = 50f;
+        float speed = 150f;
         float distance = Mathf.Abs(Vector2.Distance(_endStartPositionLeft.position, _path3Position1.position));
         float duration = distance / speed;
         float currentTime = 0;
-        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _path3Position1.position)) < Mathf.Epsilon)
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _path3Position1.position)) > Mathf.Epsilon)
         {
             yield return null;
             currentTime += Time.deltaTime;
@@ -281,7 +284,7 @@ public class BattleStoryController : MonoBehaviour
         distance = Mathf.Abs(Vector2.Distance(_endStartPositionRight.position, _path3Position1.position));
         duration = distance / speed;
         currentTime = 0;
-        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _endStartPositionRight.position)) < Mathf.Epsilon)
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _endStartPositionRight.position)) > Mathf.Epsilon)
         {
             yield return null;
             currentTime += Time.deltaTime;
@@ -293,11 +296,11 @@ public class BattleStoryController : MonoBehaviour
 
     private IEnumerator BallAnimationRight3(GameObject ball, Action<bool> callback)
     {
-        float speed = 50f;
+        float speed = 150f;
         float distance = Mathf.Abs(Vector2.Distance(_endStartPositionRight.position, _path3Position1.position));
         float duration = distance / speed;
         float currentTime = 0;
-        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _path3Position1.position)) < Mathf.Epsilon)
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _path3Position1.position)) > Mathf.Epsilon)
         {
             yield return null;
             currentTime += Time.deltaTime;
@@ -307,7 +310,7 @@ public class BattleStoryController : MonoBehaviour
         distance = Mathf.Abs(Vector2.Distance(_endStartPositionLeft.position, _path3Position1.position));
         duration = distance / speed;
         currentTime = 0;
-        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _endStartPositionLeft.position)) < Mathf.Epsilon)
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _endStartPositionLeft.position)) > Mathf.Epsilon)
         {
             yield return null;
             currentTime += Time.deltaTime;
