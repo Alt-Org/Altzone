@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Common.Photon;
 using Altzone.Scripts.Lobby;
 using MenuUi.Scripts.Lobby.CreateRoom;
@@ -17,6 +18,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
         [SerializeField] private RoomSearchPanelController _searchPanel;
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
         [SerializeField] private CreateRoomCustom _createRoomCustom;
+        [SerializeField] private PasswordPopup _passwordPopup;
 
         private PhotonRoomList _photonRoomList;
 
@@ -71,6 +73,21 @@ namespace MenuUI.Scripts.Lobby.InLobby
             {
                 if (roomInfo.Name.Equals(roomName, StringComparison.Ordinal) && !roomInfo.RemovedFromList && roomInfo.IsOpen)
                 {
+                    // Asking for password if there is one
+                    if (roomInfo.CustomProperties.ContainsKey(PhotonBattleRoom.PasswordKey))
+                    {
+                        string password = (string)roomInfo.CustomProperties[PhotonBattleRoom.PasswordKey];
+                        StartCoroutine(_passwordPopup.AskForPassword(passwordInput =>
+                        {
+                            if (password.Trim() == passwordInput.Trim())
+                            {
+                                PhotonRealtimeClient.JoinRoom(roomInfo.Name);
+                            }
+                            _passwordPopup.ClosePopup();
+                        }));
+                        return;
+                    }
+
                     PhotonRealtimeClient.JoinRoom(roomInfo.Name);
                     break;
                 }
