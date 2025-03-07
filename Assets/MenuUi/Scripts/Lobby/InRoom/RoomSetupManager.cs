@@ -22,6 +22,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
         private const string PlayerPositionKey = PhotonBattleRoom.PlayerPositionKey;
         private const string PlayerCharactersKey = PhotonLobbyRoom.PlayerPrefabIdsKey;
         private const string PlayerStatsKey = PhotonBattleRoom.PlayerStatsKey;
+        private const string PlayerIDKey = PhotonBattleRoom.PlayerIDKey;
 
         private const int PlayerPosition1 = PhotonBattleRoom.PlayerPosition1;
         private const int PlayerPosition2 = PhotonBattleRoom.PlayerPosition2;
@@ -174,7 +175,8 @@ namespace MenuUI.Scripts.Lobby.InRoom
                     { PlayerPositionKey, playerPos },
                     { PlayerCharactersKey, characterIds },
                     { PlayerStatsKey, characterStats },
-                    { "Role", (int)currentRole }
+                    { "Role", (int)currentRole },
+                    { PlayerIDKey, playerData.Id }
                 }));
 
                 // Setting custom characters for quantum

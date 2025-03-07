@@ -484,25 +484,51 @@ namespace Altzone.Scripts.Lobby
 
         private void SetPlayer(Player player, int playerPosition)
         {
-            // Checking if any of the players in the room are already in the position and if so return.
-            foreach (var currentRoomPlayer in PhotonRealtimeClient.CurrentRoom.Players)
+            // Checking if any of the players in the room are already in the position (value is anything else than empty string) and if so return.
+            string positionKey;
+            switch (playerPosition)
             {
-                if (currentRoomPlayer.Value.GetCustomProperty(PlayerPositionKey, -1) == playerPosition)
-                {
-                    return;
-                }
+                case PhotonBattleRoom.PlayerPosition1:
+                    positionKey = PhotonBattleRoom.PlayerPositionKey1;
+                    break;
+                case PhotonBattleRoom.PlayerPosition2:
+                    positionKey = PhotonBattleRoom.PlayerPositionKey2;
+                    break;
+                case PhotonBattleRoom.PlayerPosition3:
+                    positionKey = PhotonBattleRoom.PlayerPositionKey3;
+                    break;
+                case PhotonBattleRoom.PlayerPosition4:
+                    positionKey = PhotonBattleRoom.PlayerPositionKey4;
+                    break;
+                default:
+                    positionKey = PhotonBattleRoom.PlayerPositionKey1;
+                    break;
+            }
+
+            string positionValue = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(positionKey);
+            if (positionValue != "")
+            {
+                return;
             }
 
             Assert.IsTrue(PhotonLobbyRoom.IsValidGameplayPosOrGuest(playerPosition));
+
             if (!player.HasCustomProperty(PlayerPositionKey))
             {
                 Debug.Log($"setPlayer {PlayerPositionKey}={playerPosition}");
                 player.SetCustomProperties(new PhotonHashtable { { PlayerPositionKey, playerPosition } });
                 return;
             }
+
             int curValue = player.GetCustomProperty<int>(PlayerPositionKey);
             Debug.Log($"setPlayer {PlayerPositionKey}=({curValue}<-){playerPosition}");
             player.SafeSetCustomProperty(PlayerPositionKey, playerPosition, curValue);
+
+            // Setting old position empty and new position as taken
+            // (note: if the position key values and keys are not same number (other is int and other is string) some day in the future, the curValue.ToString() has to be replaced)
+            string playerID = player.GetCustomProperty<string>(PhotonBattleRoom.PlayerIDKey);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object> { { curValue.ToString(), "" } }), new LobbyPhotonHashtable(new Dictionary<object, object> { { curValue.ToString(), playerID } }));
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object> { { positionKey, playerID } }), new LobbyPhotonHashtable(new Dictionary<object, object> { { positionKey, "" } }));
         }
 
         public void SetPlayerQuantumCharacters(List<CustomCharacter> characters)
