@@ -1,4 +1,6 @@
 using System;
+using System.Runtime.CompilerServices;
+
 using UnityEngine;
 using Photon.Deterministic;
 
@@ -149,8 +151,10 @@ namespace Quantum
 
         #region Public - Static Methods - Utility
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BattleTeamNumber GetPlayerTeamNumber(BattlePlayerSlot slot) => PlayerHandle.GetTeamNumber(slot);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static PlayerPlayState GetPlayerPlayState(Frame f, BattlePlayerSlot slot)
         {
             PlayerManagerData* playerManagerData = GetPlayerManagerData(f);
@@ -158,6 +162,7 @@ namespace Quantum
             return PlayerHandle.GetPlayState(playerManagerData, playerIndex);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static EntityRef GetPlayerEntity(Frame f, BattlePlayerSlot slot)
         {
             PlayerManagerData* playerManagerData = GetPlayerManagerData(f);
@@ -165,6 +170,7 @@ namespace Quantum
             return PlayerHandle.GetSelectedCharacter(playerManagerData, playerIndex);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static EntityRef GetTeammateEntity(Frame f, BattlePlayerSlot slot)
         {
             PlayerManagerData* playerManagerData = GetPlayerManagerData(f);
@@ -172,6 +178,7 @@ namespace Quantum
             return PlayerHandle.GetSelectedCharacter(playerManagerData, teammatePlayerIndex);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsValidCharacterNumber(int characterNumber) => PlayerHandle.IsValidCharacterNumber(characterNumber);
 
         [Obsolete("PlayerIndex index should not be used outside of PlayerManager")]
@@ -189,6 +196,7 @@ namespace Quantum
         {
             //{ Public Static Methods
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static BattleTeamNumber GetTeamNumber(BattlePlayerSlot slot)
             {
                 return slot switch
@@ -202,6 +210,7 @@ namespace Quantum
                 };
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static int GetPlayerIndex(BattlePlayerSlot slot)
             {
                 return slot switch
@@ -215,6 +224,7 @@ namespace Quantum
                 };
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static int GetTeammatePlayerIndex(BattlePlayerSlot slot)
             {
                 return slot switch
@@ -228,8 +238,10 @@ namespace Quantum
                 };
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static PlayerPlayState GetPlayState(PlayerManagerData* playerManagerData, int playerIndex) => playerManagerData->PlayStates[playerIndex];
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static void SetAllPlayStates(PlayerManagerData* playerManagerData, PlayerPlayState playerPlayState)
             {
                 for (int i = 0; i < Constants.PLAYER_SLOT_COUNT; i++)
@@ -238,8 +250,10 @@ namespace Quantum
                 }
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static bool IsValidCharacterNumber(int characterNumber) => characterNumber >= 0 && characterNumber < Constants.PLAYER_CHARACTER_COUNT;
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static EntityRef GetSelectedCharacter(PlayerManagerData* playerManagerData, int playerIndex) => playerManagerData->SelectedCharacters[playerIndex];
 
             //} Public Static Methods
@@ -250,17 +264,21 @@ namespace Quantum
 
             public PlayerPlayState PlayState
             {
-                get => GetPlayState(_playerManagerData, Index);
-                set => _playerManagerData->PlayStates[Index] = value;
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => GetPlayState(_playerManagerData, Index);
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->PlayStates[Index] = value;
             }
 
-            public PlayerRef PlayerRef {
-                get => _playerManagerData->PlayerRefs[Index];
-                set => _playerManagerData->PlayerRefs[Index] = value;
+            public PlayerRef PlayerRef
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->PlayerRefs[Index];
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->PlayerRefs[Index] = value;
             }
 
-            public EntityRef SelectedCharacter => GetSelectedCharacter(_playerManagerData, Index);
-            public int SelectedCharacterNumber => _playerManagerData->SelectedCharacterNumbers[Index];
+            public EntityRef SelectedCharacter
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => GetSelectedCharacter(_playerManagerData, Index); }
+
+            public int SelectedCharacterNumber
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->SelectedCharacterNumbers[Index]; }
 
             //} Public Properties
 
@@ -272,6 +290,7 @@ namespace Quantum
 
             //{ Public Methods
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public EntityRef GetCharacter(int characterNumber) => _playerManagerData->AllCharacters[GetCharacterIndex(characterNumber)];
 
             public void SetCharacters(EntityRef[] entityRefArray)
@@ -283,12 +302,14 @@ namespace Quantum
                 }
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void SetSelectedCharacter(int characterNumber)
             {
                 _playerManagerData->SelectedCharacterNumbers[Index] = characterNumber;
                 _playerManagerData->SelectedCharacters[Index] = _playerManagerData->AllCharacters[GetCharacterIndex(characterNumber)];
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void UnsetSelectedCharacter()
             {
                 _playerManagerData->SelectedCharacterNumbers[Index] = -1;
@@ -327,8 +348,8 @@ namespace Quantum
 
             //{ Private Methods
 
-            private int GetCharacterOffset() => Index * Constants.PLAYER_CHARACTER_COUNT;
-            private int GetCharacterIndex(int characterNumber) => GetCharacterOffset() + characterNumber;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] private int GetCharacterOffset() => Index * Constants.PLAYER_CHARACTER_COUNT;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] private int GetCharacterIndex(int characterNumber) => GetCharacterOffset() + characterNumber;
 
             //} Private Methods
         }
