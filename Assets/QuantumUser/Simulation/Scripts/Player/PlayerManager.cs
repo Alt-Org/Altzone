@@ -90,10 +90,16 @@ namespace Quantum
         public static void SpawnPlayer(Frame f, BattlePlayerSlot slot, int characterNumber, FPVector2 worldPosition)
         {
             PlayerHandle playerHandle = new(GetPlayerManagerData(f), slot);
+
             if (playerHandle.PlayState == PlayerPlayState.NotInGame)
             {
                 Debug.Log("[PlayerManager] Can not spawn player that is not in game");
                 return;
+            }
+
+            if (!PlayerHandle.IsValidCharacterNumber(characterNumber))
+            {
+                Debug.LogFormat("[PlayerManager] Invalid characterNumber {0}", characterNumber);
             }
 
             SpawnPlayer(f, playerHandle, characterNumber, worldPosition);
@@ -113,6 +119,11 @@ namespace Quantum
             {
                 Debug.Log("[PlayerManager] Can not swap player that is out of play");
                 return;
+            }
+
+            if (!PlayerHandle.IsValidCharacterNumber(characterNumber))
+            {
+                Debug.LogFormat("[PlayerManager] Invalid characterNumber {0}", characterNumber);
             }
 
             EntityRef selectedCharacter = playerHandle.SelectedCharacter;
@@ -139,6 +150,8 @@ namespace Quantum
         #region Public - Static Methods - Utility
 
         public static BattleTeamNumber GetPlayerTeamNumber(BattlePlayerSlot slot) => PlayerHandle.GetTeamNumber(slot);
+
+        public static bool IsValidCharacterNumber(int characterNumber) => PlayerHandle.IsValidCharacterNumber(characterNumber);
 
         [Obsolete("PlayerIndex index should not be used outside of PlayerManager")]
         public static int GetPlayerIndex(BattlePlayerSlot slot) => PlayerHandle.GetPlayerIndex(slot);
@@ -188,6 +201,8 @@ namespace Quantum
                     playerManagerData->PlayStates[i] = playerPlayState;
                 }
             }
+
+            public static bool IsValidCharacterNumber(int characterNumber) => characterNumber >= 0 && characterNumber < Constants.PLAYER_CHARACTER_COUNT;
 
             //} Public Static Methods
 
