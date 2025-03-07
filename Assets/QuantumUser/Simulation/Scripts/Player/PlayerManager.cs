@@ -151,6 +151,13 @@ namespace Quantum
 
         public static BattleTeamNumber GetPlayerTeamNumber(BattlePlayerSlot slot) => PlayerHandle.GetTeamNumber(slot);
 
+        public static PlayerPlayState GetPlayerPlayState(Frame f, BattlePlayerSlot slot)
+        {
+            PlayerManagerData* playerManagerData = GetPlayerManagerData(f);
+            int playerIndex = PlayerHandle.GetPlayerIndex(slot);
+            return PlayerHandle.GetPlayState(playerManagerData, playerIndex);
+        }
+
         public static EntityRef GetPlayerEntity(Frame f, BattlePlayerSlot slot)
         {
             PlayerManagerData* playerManagerData = GetPlayerManagerData(f);
@@ -221,6 +228,8 @@ namespace Quantum
                 };
             }
 
+            public static PlayerPlayState GetPlayState(PlayerManagerData* playerManagerData, int playerIndex) => playerManagerData->PlayStates[playerIndex];
+
             public static void SetAllPlayStates(PlayerManagerData* playerManagerData, PlayerPlayState playerPlayState)
             {
                 for (int i = 0; i < Constants.PLAYER_SLOT_COUNT; i++)
@@ -241,7 +250,7 @@ namespace Quantum
 
             public PlayerPlayState PlayState
             {
-                get => _playerManagerData->PlayStates[Index];
+                get => GetPlayState(_playerManagerData, Index);
                 set => _playerManagerData->PlayStates[Index] = value;
             }
 
