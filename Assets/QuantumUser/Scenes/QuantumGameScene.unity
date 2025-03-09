@@ -3753,10 +3753,10 @@ MonoBehaviour:
       Id:
         Value: 1499697656464696716
     PlayerNickname: 
-    PlayerPosition: 0
+    PlayerSlot: 1
     Characters:
     - Id: 0
-      ClassID: 0
+      Class: 0
       Hp:
         RawValue: 0
       Speed:
@@ -3768,7 +3768,7 @@ MonoBehaviour:
       Defence:
         RawValue: 0
     - Id: 0
-      ClassID: 0
+      Class: 0
       Hp:
         RawValue: 0
       Speed:
@@ -3780,7 +3780,7 @@ MonoBehaviour:
       Defence:
         RawValue: 0
     - Id: 0
-      ClassID: 0
+      Class: 0
       Hp:
         RawValue: 0
       Speed:
@@ -6351,7 +6351,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5403119264126220646, guid: 3f7b974d200700f40bac95c3ae5bbaa9,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1909105402}
   m_SourcePrefab: {fileID: 100100000, guid: 3f7b974d200700f40bac95c3ae5bbaa9, type: 3}
 --- !u!114 &848240680 stripped
 MonoBehaviour:
@@ -6359,7 +6363,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 848240679}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1909105398}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0008c51fe3af00b4da5d44f02d9b3dff, type: 3}
@@ -11492,6 +11496,54 @@ Transform:
   - {fileID: 1770162692}
   m_Father: {fileID: 1088736786}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1909105398 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5403119264126220646, guid: 3f7b974d200700f40bac95c3ae5bbaa9,
+    type: 3}
+  m_PrefabInstance: {fileID: 848240679}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1909105402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1909105398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84aa05e62e63ef245afa86dc860c6f5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    PlayStates:
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    PlayerRefs:
+    - _index: 0
+    - _index: 0
+    - _index: 0
+    - _index: 0
+    SelectedCharacters:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    AllCharacters:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    SelectedCharacterNumbers: 00000000000000000000000000000000
 --- !u!1001 &1923799383
 PrefabInstance:
   m_ObjectHideFlags: 0
