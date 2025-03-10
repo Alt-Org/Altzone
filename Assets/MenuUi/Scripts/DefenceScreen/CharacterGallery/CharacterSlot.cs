@@ -22,8 +22,8 @@ namespace MenuUi.Scripts.CharacterGallery
             _spriteImage.sprite = sprite;
             _nameText.text = name;
             _id = id;
-            _backgroundSpriteImage.color = new Color(bgColor.r - 0.4f, bgColor.g - 0.4f, bgColor.b - 0.4f);
-            _contentsSpriteImage.color = new Color(bgAltColor.r - 0.4f, bgAltColor.g - 0.4f, bgAltColor.b - 0.4f);
+            _backgroundSpriteImage.color = bgColor;
+            //_contentsSpriteImage.color = new Color(bgAltColor.r - 0.4f, bgAltColor.g - 0.4f, bgAltColor.b - 0.4f);
             Character.SetInfo(sprite, bgColor, bgAltColor, name, id, this);
         }
     }

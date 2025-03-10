@@ -84,6 +84,9 @@ namespace Altzone.Scripts.Lobby
         public delegate void LobbyWindowChangeRequest(LobbyWindowTarget target, LobbyWindowTarget lobbyWindow = LobbyWindowTarget.None);
         public static event LobbyWindowChangeRequest OnLobbyWindowChangeRequest;
 
+        public delegate void StartTimeSet(long startTime);
+        public static event StartTimeSet OnStartTimeSet;
+
         public delegate void LobbyConnected();
         public static event LobbyConnected LobbyOnConnected;
 
@@ -414,6 +417,18 @@ namespace Altzone.Scripts.Lobby
 
             long startTime = (sendTime+5000) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
+            yield return new WaitForEndOfFrame();
+
+            do
+            {
+                if(OnStartTimeSet != null)
+                {
+                    OnStartTimeSet?.Invoke(startTime);
+                    break;
+                }
+                yield return null;
+            } while (startTime + 5000 < DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+
             yield return new WaitForSeconds(startTime/1000f);
 
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Battle);
@@ -445,7 +460,7 @@ namespace Altzone.Scripts.Lobby
             yield return new WaitUntil(() => task.IsCompleted);
             if(task.Result)
             {
-                _player.PlayerPosition = playerPosition;
+                _player.PlayerSlot = playerPosition;
                 _runner?.Game.AddPlayer(_player);
             }
             else
@@ -565,7 +580,7 @@ namespace Altzone.Scripts.Lobby
                 _player.Characters[i] = new BattleCharacterBase()
                 {
                     Id            = (int)character.Id,
-                    ClassID       = (int)character.CharacterClassID,
+                    Class         = (int)character.CharacterClassID,
 
                     Hp            = BaseCharacter.GetStatValueFP(StatType.Hp,            character.Hp),
                     Attack        = BaseCharacter.GetStatValueFP(StatType.Attack,        character.Attack),
