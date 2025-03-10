@@ -427,9 +427,10 @@ namespace Altzone.Scripts.Lobby
                     break;
                 }
                 yield return null;
-            } while (startTime + 5000 < DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
-
-            yield return new WaitForSeconds(startTime/1000f);
+            } while (startTime > DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+            startTime = (sendTime + 5000) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            if(startTime > 0)
+            yield return new WaitForSeconds(startTime / 1000f);
 
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Battle);
 
