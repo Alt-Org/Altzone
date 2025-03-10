@@ -84,6 +84,9 @@ namespace Altzone.Scripts.Lobby
         public delegate void LobbyWindowChangeRequest(LobbyWindowTarget target, LobbyWindowTarget lobbyWindow = LobbyWindowTarget.None);
         public static event LobbyWindowChangeRequest OnLobbyWindowChangeRequest;
 
+        public delegate void StartTimeSet(long startTime);
+        public static event StartTimeSet OnStartTimeSet;
+
         public delegate void LobbyConnected();
         public static event LobbyConnected LobbyOnConnected;
 
@@ -413,6 +416,18 @@ namespace Altzone.Scripts.Lobby
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleLoad);
 
             long startTime = (sendTime+5000) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
+            yield return new WaitForEndOfFrame();
+
+            do
+            {
+                if(OnStartTimeSet != null)
+                {
+                    OnStartTimeSet?.Invoke(startTime);
+                    break;
+                }
+                yield return null;
+            } while (startTime + 5000 < DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
 
             yield return new WaitForSeconds(startTime/1000f);
 
