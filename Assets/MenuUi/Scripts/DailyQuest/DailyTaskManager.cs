@@ -265,7 +265,7 @@ public class DailyTaskManager : AltMonoBehaviour
 
             Debug.Log("Created Task: " + tasklist[i].Id);
         }
-        //Debug.LogError(gameVersion);
+
         if (gameVersion == VersionType.Education)
         {
             //Needed to update the instantiated DT cards spacing in HorizontalLayoutGroups.
@@ -319,7 +319,7 @@ public class DailyTaskManager : AltMonoBehaviour
             serverTask.title.fi = $"Lähetä {serverTask.amount} viestiä.";
             serverTask.points = (i + 1) * 100;
             serverTask.coins = (i + 1) * 100;
-            serverTask.normalTaskType = "write_chat_message";
+            serverTask.type = "write_chat_message";
 
             serverTasks.daily.Add(serverTask);
         }
@@ -395,8 +395,8 @@ public class DailyTaskManager : AltMonoBehaviour
         serverTask.title.fi = title;
         serverTask.points = (id + 1) * 5;
         serverTask.coins = (id + 1) * 10;
-        serverTask.normalTaskType = "";
-        serverTask.educationCategory = educationCategory;
+        serverTask.type = "";
+        serverTask.educationCategoryType = educationCategory;
         serverTask.educationCategoryTaskType = educationTaskType;
 
         return (serverTask);
