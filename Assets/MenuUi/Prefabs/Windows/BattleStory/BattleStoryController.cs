@@ -95,7 +95,7 @@ public class BattleStoryController : MonoBehaviour
         yield return new WaitForSeconds(1f);
         for (int i = 0; i < randomClipOrder1.Count; i++)
         {
-            Debug.LogWarning($"Character 1: {randomClipOrder1[i]}:{clips1[randomClipOrder1[i]].name}, Ball 1: {randomBallOrder1[i]}");
+            //Debug.LogWarning($"Character 1: {randomClipOrder1[i]}:{clips1[randomClipOrder1[i]].name}, Ball 1: {randomBallOrder1[i]}");
             _characterAnimator1.Play(clips1[randomClipOrder1[i]].name);
             GameObject ball = Instantiate(_emotionBall, _endStartPositionLeft);
             switch (randomClipOrder1[i])
@@ -139,7 +139,7 @@ public class BattleStoryController : MonoBehaviour
             Destroy(ball);
 
             yield return new WaitForSeconds(0.5f);
-            Debug.LogWarning($"Character 2: {randomClipOrder2[i]}:{clips2[randomClipOrder2[i]].name}, Ball 2: {randomBallOrder2[i]}");
+            //Debug.LogWarning($"Character 2: {randomClipOrder2[i]}:{clips2[randomClipOrder2[i]].name}, Ball 2: {randomBallOrder2[i]}");
             _characterAnimator2.Play(clips2[randomClipOrder2[i]].name);
             GameObject ball2 = Instantiate(_emotionBall, _endStartPositionLeft);
             switch (randomClipOrder2[i])
