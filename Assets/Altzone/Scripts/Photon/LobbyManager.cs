@@ -415,7 +415,8 @@ namespace Altzone.Scripts.Lobby
             //WindowManager.Get().ShowWindow(_gameWindow);
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleLoad);
 
-            long startTime = (sendTime+5000) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            long timeToStart = (sendTime+5000) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            long startTime = sendTime + timeToStart;
 
             yield return new WaitForEndOfFrame();
 
@@ -423,14 +424,14 @@ namespace Altzone.Scripts.Lobby
             {
                 if(OnStartTimeSet != null)
                 {
-                    OnStartTimeSet?.Invoke(startTime);
+                    OnStartTimeSet?.Invoke(timeToStart);
                     break;
                 }
                 yield return null;
             } while (startTime > DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
-            startTime = (sendTime + 5000) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            if(startTime > 0)
-            yield return new WaitForSeconds(startTime / 1000f);
+            timeToStart = (sendTime + 5000) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            if(timeToStart > 0)
+            yield return new WaitForSeconds(timeToStart / 1000f);
 
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Battle);
 
