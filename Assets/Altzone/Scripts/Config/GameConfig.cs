@@ -46,7 +46,7 @@ namespace Altzone.Scripts.Config
         private GameConfig()
         {
             PlayerSettings = new PlayerSettings();
-            _gameVersionType = (VersionType)PlayerPrefs.GetInt("Version", 1);
+            _gameVersionType = (VersionType)PlayerPrefs.GetInt("Version", 2);
         }
     }
 }
