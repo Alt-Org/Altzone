@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using TMPro;
 using Altzone.Scripts.Model.Poco.Game;
 using MenuUi.Scripts.DefenceScreen.CharacterGallery;
+using MenuUi.Scripts.Signals;
+using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -21,6 +23,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private AspectRatioFitter _aspectRatioFitter;
         [SerializeField] private PieChartPreview _piechartPreview;
         [SerializeField] private Material _grayScaleMaterial;
+        [SerializeField] private Button _addCharacterButton;
 
         private CharacterSlot _originalSlot;
 
@@ -37,6 +40,11 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 _grayscaleMaterialInstance = Instantiate(_grayScaleMaterial);
             }
+
+            if (_addCharacterButton != null )
+            {
+                _addCharacterButton.onClick.AddListener( OnAddCharacterButtonClicked );
+            }
         }
 
 
@@ -46,6 +54,46 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 _piechartPreview.UpdateChart(Id);
             }
+        }
+
+
+        private void OnDestroy()
+        {
+            if (_addCharacterButton != null)
+            {
+                _addCharacterButton.onClick.RemoveAllListeners();
+            }
+        }
+
+
+        private void OnAddCharacterButtonClicked()
+        {
+            _addCharacterButton.enabled = false;
+            bool success = false;
+            StartCoroutine(ServerManager.Instance.AddCustomCharactersToServer(_id, result =>
+            {
+                if (result != null)
+                {
+                    success = true;
+                }
+
+                if (success)
+                {
+                    StartCoroutine(ServerManager.Instance.UpdateCustomCharacters(result =>
+                    {
+                        if (result)
+                        {
+                            SignalBus.OnReloadCharacterGalleryRequestedSignal();
+                        }
+                    }
+                    ));
+                }
+                else
+                {
+                    PopupSignalBus.OnChangePopupInfoSignal("Tätä hahmoa ei ole vielä lisätty pelipalvelimelle.");
+                }
+
+            }));
         }
 
 
@@ -89,6 +137,8 @@ namespace MenuUi.Scripts.CharacterGallery
             _spriteImage.material = null;
             _contentsImage.material = null;
             _backgroundImage.material = null;
+
+            if (_addCharacterButton.gameObject.activeSelf) _addCharacterButton.gameObject.SetActive(false);
         }
 
 
@@ -111,6 +161,8 @@ namespace MenuUi.Scripts.CharacterGallery
             _spriteImage.material = null;
             _contentsImage.material = null;
             _backgroundImage.material = null;
+
+            if (_addCharacterButton.gameObject.activeSelf) _addCharacterButton.gameObject.SetActive(false);
         }
 
 
@@ -125,6 +177,7 @@ namespace MenuUi.Scripts.CharacterGallery
             _contentsImage.material.SetColor("_Color", _contentsImage.color);
             _backgroundImage.material = _grayscaleMaterialInstance;
             _backgroundImage.material.SetColor("_Color", _backgroundImage.color);
+            _addCharacterButton.gameObject.SetActive(true);
         }
 
 

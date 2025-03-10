@@ -90,6 +90,8 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         public bool IsInMainMenu { get => _isInMainMenu;}
 
+        public float ScrollbarValue { get => scrollBar.value; }
+
         private void Awake()
         {
             scrollPageValues = new float[slides.Length];
