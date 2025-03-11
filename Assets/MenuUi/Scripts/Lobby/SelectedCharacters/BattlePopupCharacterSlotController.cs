@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace MenuUi.Scripts.Lobby.SelectedCharacters
 {
+    /// <summary>
+    /// Added to the SelectedCharacters prefab in Battle Popup. Handles forwarding the selected characters info to the 3 BattlePopupSelectedCharacter scripts which are connected to the slots.
+    /// </summary>
     public class BattlePopupCharacterSlotController : AltMonoBehaviour
     {
         [SerializeField] private BattlePopupSelectedCharacter[] _selectedCharacterSlots;
