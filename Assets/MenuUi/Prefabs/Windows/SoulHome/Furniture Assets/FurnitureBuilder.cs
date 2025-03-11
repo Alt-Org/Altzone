@@ -123,22 +123,22 @@ public class FurnitureBuilder : ScriptableObject
 
         if(_furnitureFrontSprite != null)
         {
-            obj.GetComponent<Image>().sprite = _furnitureFrontSprite;
+            obj.GetComponent<SpriteRenderer>().sprite = _furnitureFrontSprite;
             obj2.GetComponent<Image>().sprite = _furnitureFrontSprite;
         }
         else if (_furnitureRightSprite != null)
         {
-            obj.GetComponent<Image>().sprite = _furnitureRightSprite;
+            obj.GetComponent<SpriteRenderer>().sprite = _furnitureRightSprite;
             obj2.GetComponent<Image>().sprite = _furnitureRightSprite;
         }
         else if (_furnitureLeftSprite != null)
         {
-            obj.GetComponent<Image>().sprite = _furnitureLeftSprite;
+            obj.GetComponent<SpriteRenderer>().sprite = _furnitureLeftSprite;
             obj2.GetComponent<Image>().sprite = _furnitureLeftSprite;
         }
         else if (_furnitureBackSprite != null)
         {
-            obj.GetComponent<Image>().sprite = _furnitureBackSprite;
+            obj.GetComponent<SpriteRenderer>().sprite = _furnitureBackSprite;
             obj2.GetComponent<Image>().sprite = _furnitureBackSprite;
         }
         obj.GetComponent<FurnitureHandling>().FurnitureSpriteFront = _furnitureFrontSprite;
