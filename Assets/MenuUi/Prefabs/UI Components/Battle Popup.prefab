@@ -1236,7 +1236,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02a9ca57d31ebc743be6aabf4eb33005, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _view: {fileID: 6192111530651833301}
+  _topInfoPanel: {fileID: 6192111530651833301}
   _selectedCharactersPopup: {fileID: 700695083114331659}
   _popupContents: {fileID: 1185370216093594371}
   _roomSwitcher: {fileID: 4116104174498300769}
@@ -1255,10 +1255,6 @@ MonoBehaviour:
   _titleText: {fileID: 7303207124712728599}
   _lobbyText: {fileID: 8749595951482349245}
   _playerCountText: {fileID: 3172594965143105937}
-  _characterButton: {fileID: 0}
-  _roomButton: {fileID: 0}
-  _raidButton: {fileID: 0}
-  _quickGameButton: {fileID: 0}
 --- !u!114 &5751165795261868254
 MonoBehaviour:
   m_ObjectHideFlags: 0
