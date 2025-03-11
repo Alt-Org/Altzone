@@ -9,9 +9,9 @@ using UnityEngine.UI;
 namespace MenuUi.Scripts.Lobby.InRoom
 {
     /// <summary>
-    /// Middle pane in lobby while in room to manage current player "state".
+    /// Sets the room's title inside a room. Handles calling going back and starting matchmaking from room when pressing buttons in the UI.
     /// </summary>
-    public class PaneInRoom : MonoBehaviour
+    public class InRoomController : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI _title;
         [SerializeField] private TextMeshProUGUI _battleID;
