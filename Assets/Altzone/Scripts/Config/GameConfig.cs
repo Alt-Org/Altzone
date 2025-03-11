@@ -22,7 +22,7 @@ namespace Altzone.Scripts.Config
 
         private static GameConfig _instance;
 
-        private VersionType _gameVersionType = VersionType.None;
+        private VersionType _gameVersionType = VersionType.Education;
 
         public static GameConfig Get() => _instance ??= new GameConfig();
 
@@ -46,7 +46,7 @@ namespace Altzone.Scripts.Config
         private GameConfig()
         {
             PlayerSettings = new PlayerSettings();
-            _gameVersionType = (VersionType)PlayerPrefs.GetInt("Version", 2);
+            //_gameVersionType = (VersionType)PlayerPrefs.GetInt("Version", 2); Temporarily disabled to force Education mode.
         }
     }
 }
