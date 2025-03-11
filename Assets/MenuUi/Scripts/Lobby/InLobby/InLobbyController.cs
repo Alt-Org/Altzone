@@ -5,8 +5,9 @@ using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Lobby;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using MenuUi.Scripts.Signals;
 
-namespace MenuUI.Scripts.Lobby.InLobby
+namespace MenuUi.Scripts.Signals
 {
     public static partial class SignalBus
     {
@@ -17,7 +18,10 @@ namespace MenuUI.Scripts.Lobby.InLobby
             OnBattlePopupRequested?.Invoke(gameType);
         }
     }
+}
 
+namespace MenuUi.Scripts.Lobby.InLobby
+{
     public class InLobbyController : AltMonoBehaviour
     {
         [SerializeField] private InLobbyView _view;

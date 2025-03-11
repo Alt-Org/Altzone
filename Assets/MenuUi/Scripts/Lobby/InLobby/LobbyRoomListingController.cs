@@ -8,7 +8,7 @@ using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
-namespace MenuUI.Scripts.Lobby.InLobby
+namespace MenuUi.Scripts.Lobby.InLobby
 {
     public class LobbyRoomListingController : MonoBehaviour
     {

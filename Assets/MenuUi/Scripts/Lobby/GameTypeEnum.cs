@@ -1,4 +1,4 @@
-namespace MenuUI.Scripts.Lobby
+namespace MenuUi.Scripts.Lobby
 {
     public enum GameType
     {

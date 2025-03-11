@@ -1,10 +1,9 @@
-﻿using System.Linq;
-using Altzone.Scripts.Lobby;
+﻿using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Lobby.Wrappers;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MenuUI.Scripts.Lobby.InRoom
+namespace MenuUi.Scripts.Lobby.InRoom
 {
     /// <summary>
     /// Lowest pane in lobby while in room to show current players list that have joined this room.

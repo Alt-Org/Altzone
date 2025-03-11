@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MenuUI.Scripts.Lobby.InRoom
+namespace MenuUi.Scripts.Lobby.InRoom
 {
     /// <summary>
     /// Middle pane in lobby while in room to manage current player "state".

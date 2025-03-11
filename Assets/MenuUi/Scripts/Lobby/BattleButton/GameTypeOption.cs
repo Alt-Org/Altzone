@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MenuUI.Scripts.Lobby.BattleButton
+namespace MenuUi.Scripts.Lobby.BattleButton
 {
     /// <summary>
     /// Used for GameTypeOption -prefabs which are instantiated in BattleButton.cs script. GameTypeOptions are shown in the popup menu which opens from BT_ALTZONE where you can select game type.

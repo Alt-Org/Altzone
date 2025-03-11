@@ -1,11 +1,10 @@
 ﻿using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby;
-using MenuUi.Scripts.Lobby;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MenuUI.Scripts.Lobby.InRoom
+namespace MenuUi.Scripts.Lobby.InRoom
 {
     /// <summary>
     /// Top most pane in lobby while in room to manage player position in the game.
