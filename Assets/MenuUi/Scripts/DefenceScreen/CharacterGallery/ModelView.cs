@@ -184,6 +184,12 @@ namespace MenuUi.Scripts.CharacterGallery
                     charSlot.IsLocked = true;
                 }
             }
+
+            // ensures character slots are selectable if edit toggle is on, it can happen if adding unowned character from the + button while edit mode is on
+            if (_editModeToggle.isOn) 
+            {
+                SetCharacterSlotsSelectable(true);
+            }
         }
 
 
