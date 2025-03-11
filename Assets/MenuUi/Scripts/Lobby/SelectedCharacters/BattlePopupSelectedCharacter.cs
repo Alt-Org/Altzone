@@ -10,6 +10,10 @@ using System;
 
 namespace MenuUi.Scripts.Lobby.SelectedCharacters
 {
+    /// <summary>
+    /// Added to the individual selected character slots in Battle Popup SelectedCharacters prefab.
+    /// Handles setting the visuals for the slot, and has functionality for the dropdown from which you can select a new defence character.
+    /// </summary>
     [RequireComponent(typeof(Button))]
     public class BattlePopupSelectedCharacter : AltMonoBehaviour
     {
