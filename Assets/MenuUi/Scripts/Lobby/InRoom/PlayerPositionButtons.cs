@@ -7,9 +7,9 @@ using UnityEngine.UI;
 namespace MenuUi.Scripts.Lobby.InRoom
 {
     /// <summary>
-    /// Top most pane in lobby while in room to manage player position in the game.
+    /// Handles publishing PlayerPosEvent when one of the position buttons is pressed.
     /// </summary>
-    public class PaneInGame : MonoBehaviour
+    public class PlayerPositionButtons : MonoBehaviour
     {
         [SerializeField] private Button[] buttons;
 
