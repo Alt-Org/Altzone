@@ -108,9 +108,9 @@ RectTransform:
   - {fileID: 1346424237806301728}
   - {fileID: 5415034576622081522}
   - {fileID: 2457134173098979987}
-  - {fileID: 3303686783322677054}
   - {fileID: 7193994860159692269}
   - {fileID: 4052692205213254511}
+  - {fileID: 3303686783322677054}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -391,7 +391,7 @@ GameObject:
   - component: {fileID: 647749206175148579}
   - component: {fileID: 6379804667634275405}
   m_Layer: 0
-  m_Name: ChooseEffect
+  m_Name: ChooseBorder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1401,7 +1401,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: bf644c9cc82222e49a311adcd1f7d059, type: 3}
+  m_Sprite: {fileID: 21300000, guid: eb1d524cc116a184d9379f98b03a942d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1423,7 +1423,7 @@ GameObject:
   - component: {fileID: 1925897001463952938}
   - component: {fileID: 1080863626957085985}
   m_Layer: 0
-  m_Name: ChooseItem
+  m_Name: ChooseIEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1726,7 +1726,7 @@ GameObject:
   - component: {fileID: 1632340957864014213}
   - component: {fileID: 2096241834775016751}
   m_Layer: 0
-  m_Name: ChooseBorder
+  m_Name: ChooseItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
