@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 namespace MenuUI.Scripts.Lobby.BattleButton
 {
+    /// <summary>
+    /// Used for GameTypeOption -prefabs which are instantiated in BattleButton.cs script. GameTypeOptions are shown in the popup menu which opens from BT_ALTZONE where you can select game type.
+    /// </summary>
     public class GameTypeOption : MonoBehaviour
     {
         [SerializeField] public Button ButtonComponent;
