@@ -152,7 +152,7 @@ namespace Altzone.Scripts.Battle.Photon
         {
             string positionKey = GetPositionKey(position);
             string positionValue = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(positionKey);
-            if (positionValue != "")
+            if (!string.IsNullOrWhiteSpace(positionValue))
             {
                 return false;
             }
