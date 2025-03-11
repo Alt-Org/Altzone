@@ -19,6 +19,11 @@ public class Chat : MonoBehaviour
     [Header("Delete Ui")]
     public GameObject deleteButtons;
 
+    [Header("Add reactions UI")]
+    public GameObject addReactionsPanel;
+    public GameObject commonReactions;
+    public GameObject allReactions;
+
     [Header("Prefab")]
     public GameObject messagePrefabBlue;
     public GameObject messagePrefabRed;
@@ -214,10 +219,15 @@ public class Chat : MonoBehaviour
         HighlightMessage(selectedMessage);
 
         Vector3 deletePosition = deleteButtons.transform.position;
-        deletePosition.y = selectedMessage.transform.position.y; 
+        deletePosition.y = selectedMessage.transform.position.y;
         deleteButtons.transform.position = deletePosition;
 
+        Vector3 reactionPosition = addReactionsPanel.transform.position;
+        reactionPosition.y = selectedMessage.transform.position.y - 70;
+        addReactionsPanel.transform.position = reactionPosition;
+
         deleteButtons.SetActive(true);// Näytä poistopainikkeet, jos viesti on valittuna
+        addReactionsPanel.SetActive(true);
     }
 
 
@@ -241,6 +251,10 @@ public class Chat : MonoBehaviour
             }
 
             deleteButtons.SetActive(false);
+
+            commonReactions.SetActive(true);
+            allReactions.SetActive(false);
+            addReactionsPanel.SetActive(false);
         }
 
     }
