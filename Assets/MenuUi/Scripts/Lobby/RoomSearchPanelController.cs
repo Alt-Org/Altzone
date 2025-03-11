@@ -7,6 +7,9 @@ using UnityEngine.UI;
 
 namespace MenuUi.Scripts.Lobby.InLobby
 {
+    /// <summary>
+    /// Handles spawning the room list buttons to the search panel in Battle Popup.
+    /// </summary>
     public class RoomSearchPanelController : MonoBehaviour
     {
         [SerializeField] private GameObject _slotPrefab;
