@@ -22,6 +22,9 @@ namespace MenuUi.Scripts.Signals
 
 namespace MenuUi.Scripts.Lobby.InLobby
 {
+    /// <summary>
+    /// Handles opening and closing the battle popup and connects player to the photon lobby.
+    /// </summary>
     public class InLobbyController : AltMonoBehaviour
     {
         [SerializeField] private InLobbyView _view;
