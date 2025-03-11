@@ -156,12 +156,12 @@ namespace MenuUI.Scripts.SoulHome
                 //if(_tempSlot != null)width = _tempSlot.width;
                 /*else*/ width = transform.parent.GetComponent<FurnitureSlot>().width;
             }
-            else if (furnitureSize is FurnitureSize.OneXTwo or FurnitureSize.TwoXTwo or FurnitureSize.ThreeXTwo or FurnitureSize.FourXTwo)
+            else if (furnitureSize is FurnitureSize.OneXTwo or FurnitureSize.TwoXTwo or FurnitureSize.ThreeXTwo or FurnitureSize.FourXTwo or FurnitureSize.FiveXTwo)
             {
                 //if (_tempSlot != null) width = _tempSlot.width * 2;
                 /*else*/ width = transform.parent.GetComponent<FurnitureSlot>().width * 2;
             }
-            else if (furnitureSize is FurnitureSize.OneXThree or FurnitureSize.TwoXThree or FurnitureSize.ThreeXThree or FurnitureSize.FourXThree or FurnitureSize.SevenXThree)
+            else if (furnitureSize is FurnitureSize.OneXThree or FurnitureSize.TwoXThree or FurnitureSize.ThreeXThree or FurnitureSize.FourXThree or FurnitureSize.FiveXThree or FurnitureSize.SevenXThree)
             {
                 //if (_tempSlot != null) width = _tempSlot.width * 3;
                 /*else*/

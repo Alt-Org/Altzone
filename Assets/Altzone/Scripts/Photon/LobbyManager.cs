@@ -421,6 +421,9 @@ namespace Altzone.Scripts.Lobby
                 yield return null;
             } while (startTime > DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
             timeToStart = (sendTime + 5000) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
+            if (timeToStart > 5000) timeToStart = 5000;
+
             if(timeToStart > 0)
             yield return new WaitForSeconds(timeToStart / 1000f);
 
