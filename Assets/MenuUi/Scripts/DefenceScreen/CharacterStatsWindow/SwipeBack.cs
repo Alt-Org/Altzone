@@ -27,7 +27,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         private void HandleSwipe(SwipeDirection direction, Vector2 swipeStartPoint, Vector2 swipeEndPoint)
         {
-            if (_swipeUi.CurrentPage == 0 && direction == SwipeDirection.Right && _swipeUi.ScrollbarValue == 0)
+            if (_swipeUi.CurrentPage == 0 && direction == SwipeDirection.Right && _swipeUi.ScrollbarValue < 0.01f)
             {
                 WindowManager.Get().GoBack();
             }
