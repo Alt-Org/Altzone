@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
@@ -179,7 +180,7 @@ public class FurnitureBuilder : ScriptableObject
 
 
 }
-
+#endif
 #region Editor Code
 #if UNITY_EDITOR
 [CustomEditor(typeof(FurnitureBuilder))]
