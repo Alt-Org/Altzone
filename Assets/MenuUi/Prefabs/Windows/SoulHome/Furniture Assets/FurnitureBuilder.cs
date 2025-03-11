@@ -36,11 +36,14 @@ public class FurnitureBuilder : ScriptableObject
     [SerializeField, Header("Furniture Sprites")]
     private Sprite _furnitureFrontSprite;
     [SerializeField]
-    private Sprite _furnitureLeftSprite;
-    [SerializeField]
     private Sprite _furnitureRightSprite;
     [SerializeField]
+    private Sprite _furnitureLeftSprite;
+    [SerializeField]
     private Sprite _furnitureBackSprite;
+
+    [SerializeField]
+    private Sprite _furniturePoster;
 
 
     [SerializeField, Header("Furniture base data")]
@@ -85,6 +88,7 @@ public class FurnitureBuilder : ScriptableObject
         {
             Name = _furnitureName,
             Image = _furnitureFrontSprite,
+            PosterImage = _furniturePoster,
             VisibleName = _visibleName,
             ArtisticDescription = _description,
             DiagnoseNumber = _diagnoseNumber,
