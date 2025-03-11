@@ -1,16 +1,15 @@
 ﻿using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby;
-using MenuUi.Scripts.Lobby;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MenuUI.Scripts.Lobby.InRoom
+namespace MenuUi.Scripts.Lobby.InRoom
 {
     /// <summary>
-    /// Top most pane in lobby while in room to manage player position in the game.
+    /// Handles publishing PlayerPosEvent when one of the position buttons is pressed.
     /// </summary>
-    public class PaneInGame : MonoBehaviour
+    public class PlayerPositionButtons : MonoBehaviour
     {
         [SerializeField] private Button[] buttons;
 

@@ -3,10 +3,10 @@ using MenuUi.Scripts.ReferenceSheets;
 using UnityEngine;
 using UnityEngine.UI;
 using SignalBusPopup = MenuUI.Scripts.SignalBus;
-using SignalBusInLobby = MenuUI.Scripts.Lobby.InLobby.SignalBus;
+using MenuUi.Scripts.Signals;
 using MenuUi.Scripts.SwipeNavigation;
 
-namespace MenuUI.Scripts.Lobby.BattleButton
+namespace MenuUi.Scripts.Lobby.BattleButton
 {
     /// <summary>
     /// Attached to BT_ALTZONE prefab. Has logic related to selecting game type for opening the battle popup.
@@ -90,7 +90,7 @@ namespace MenuUI.Scripts.Lobby.BattleButton
             }
             else
             {
-                SignalBusInLobby.OnBattlePopupRequestedSignal(_selectedGameType);
+                SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
             }
         }
 

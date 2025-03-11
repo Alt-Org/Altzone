@@ -1,11 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace MenuUi.Scripts.Lobby.CreateRoom
 {
+    /// <summary>
+    /// This script helps with accessing player inputed room info when creating a custom game.
+    /// </summary>
     public class CreateRoomCustom : MonoBehaviour
     {
         [SerializeField] TMP_InputField _roomName;
@@ -21,6 +22,13 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
         public bool ShowToFriends {  get { return _showToFriends.isOn; } }
         public bool ShowToClan { get {  return _showToClan.isOn; } }
         public Button CreateRoomButton { get { return _createRoom; } }
+
+        private void OnEnable()
+        {
+            _roomName.text = "";
+            _roomPassword.text = "";
+            _privateToggle.isOn = false;
+        }
     }
 }
 
