@@ -3,28 +3,10 @@ using System.Collections;
 using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine;
 using UnityEngine.UI;
-
+using MenuUi.Scripts.Signals;
 
 namespace MenuUi.Scripts.Lobby
 {
-    public static partial class SignalBus
-    {
-        public delegate void RandomSelectedCharactersRequested();
-        public static event RandomSelectedCharactersRequested OnRandomSelectedCharactersRequested;
-        public static void OnRandomSelectedCharactersRequestedSignal()
-        {
-            OnRandomSelectedCharactersRequested?.Invoke();
-        }
-
-        public delegate void DefenceGalleryEditModeRequested();
-        public static event DefenceGalleryEditModeRequested OnDefenceGalleryEditModeRequested;
-        public static void OnDefenceGalleryEditModeRequestedSignal()
-        {
-            OnDefenceGalleryEditModeRequested?.Invoke();
-        }
-    }
-
-
     public class SelectedCharactersPopup : MonoBehaviour
     {
         [SerializeField] private GameObject _container;

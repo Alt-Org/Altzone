@@ -16,7 +16,7 @@ namespace Altzone.Scripts.ModelV2.Internal
     /// associated <c>CharacterSpec</c> knows whether it is valid or not to be included.
     /// </summary>
     //[CreateAssetMenu(menuName = "ALT-Zone/CharacterSpecConfig", fileName = nameof(CharacterSpecConfig))]
-    internal class CharacterSpecConfig : ScriptableObject
+    public class CharacterSpecConfig : ScriptableObject
     {
         #region UNITY Singleton Pattern
 

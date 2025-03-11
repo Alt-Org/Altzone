@@ -1,10 +1,12 @@
 using System;
 using System.Linq;
+using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Common.Photon;
 using Altzone.Scripts.Lobby;
+using MenuUi.Scripts.Lobby.CreateRoom;
 using Prg.Scripts.Common.PubSub;
-using TMPro;
 using UnityEngine;
+using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUI.Scripts.Lobby.InLobby
 {
@@ -12,23 +14,24 @@ namespace MenuUI.Scripts.Lobby.InLobby
     {
         private const string DefaultRoomNameName = "Battle ";
 
-        [SerializeField] private LobbyRoomListingView _view;
-        [SerializeField] private TMP_InputField _roomName;
-        [SerializeField] private BattlePopupCreateCustomRoomPanel _roomSwitcher;
+        [SerializeField] private RoomSearchPanelController _searchPanel;
+        [SerializeField] private BattlePopupPanelManager _roomSwitcher;
+        [SerializeField] private CreateRoomCustom _createRoomCustom;
+        [SerializeField] private PasswordPopup _passwordPopup;
 
         private PhotonRoomList _photonRoomList;
 
         private void Awake()
         {
             _photonRoomList = gameObject.GetOrAddComponent<PhotonRoomList>();
-            _view.RoomButtonOnClick = CreateRoomOnClick;
+            _createRoomCustom.CreateRoomButton.onClick.RemoveAllListeners();
+            _createRoomCustom.CreateRoomButton.onClick.AddListener(CreateCustomRoomOnClick);
         }
 
         public void OnEnable()
         {
             PhotonRealtimeClient.AddCallbackTarget(this);
             Debug.Log($"OnEnable {PhotonRealtimeClient.LobbyNetworkClientState}");
-            _view.Reset();
             if (PhotonRealtimeClient.InLobby)
             {
                 UpdateStatus();
@@ -44,15 +47,20 @@ namespace MenuUI.Scripts.Lobby.InLobby
             _photonRoomList.OnRoomsUpdated -= UpdateStatus;
             LobbyManager.LobbyOnJoinedRoom -= OnJoinedRoom;
             LobbyWindowNavigationHandler.OnLobbyWindowChangeRequest -= SwitchToRoom;
-            _view.Reset();
         }
 
-        private void CreateRoomOnClick()
+        private void CreateCustomRoomOnClick()
         {
-            var roomName = string.IsNullOrWhiteSpace(_roomName.text) ? $"{DefaultRoomNameName}{DateTime.Now.Second:00}" : _roomName.text;
-            
-            Debug.Log($"{roomName}");
-            PhotonRealtimeClient.CreateLobbyRoom(roomName);
+            var roomName = string.IsNullOrWhiteSpace(_createRoomCustom.RoomName) ? $"{DefaultRoomNameName}{DateTime.Now.Second:00}" : _createRoomCustom.RoomName;
+
+            if (_createRoomCustom.IsPrivate && _createRoomCustom.RoomPassword != null && _createRoomCustom.RoomPassword != "")
+            {
+                PhotonRealtimeClient.CreateLobbyRoom(roomName, _createRoomCustom.RoomPassword);
+            }
+            else
+            {
+                PhotonRealtimeClient.CreateLobbyRoom(roomName);
+            }
         }
 
 
@@ -64,6 +72,25 @@ namespace MenuUI.Scripts.Lobby.InLobby
             {
                 if (roomInfo.Name.Equals(roomName, StringComparison.Ordinal) && !roomInfo.RemovedFromList && roomInfo.IsOpen)
                 {
+                    // Asking for password if there is one
+                    if (roomInfo.CustomProperties.ContainsKey(PhotonBattleRoom.PasswordKey))
+                    {
+                        string password = (string)roomInfo.CustomProperties[PhotonBattleRoom.PasswordKey];
+                        StartCoroutine(_passwordPopup.AskForPassword(passwordInput =>
+                        {
+                            if (password.Trim() == passwordInput.Trim())
+                            {
+                                PhotonRealtimeClient.JoinRoom(roomInfo.Name);
+                            }
+                            else
+                            {
+                                PopupSignalBus.OnChangePopupInfoSignal("Salasana on väärin.");
+                            }
+                            _passwordPopup.ClosePopup();
+                        }));
+                        return;
+                    }
+
                     PhotonRealtimeClient.JoinRoom(roomInfo.Name);
                     break;
                 }
@@ -86,11 +113,6 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         private void UpdateStatus()
         {
-            if (!PhotonRealtimeClient.InLobby)
-            {
-                _view.Reset();
-                return;
-            }
             var rooms = _photonRoomList.CurrentRooms.ToList();
             rooms.Sort((a, b) =>
             {
@@ -99,7 +121,8 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 var strB = $"{(b.IsOpen ? 0 : 1)}{b.Name}";
                 return string.Compare(strA, strB, StringComparison.Ordinal);
             });
-            _view.UpdateStatus(rooms, JoinRoom);
+            _searchPanel.RoomsData = rooms;
+            _searchPanel.SetOnJoinRoom(JoinRoom);
         }
     }
 }

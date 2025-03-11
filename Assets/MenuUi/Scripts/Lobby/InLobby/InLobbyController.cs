@@ -23,7 +23,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
         [SerializeField] private InLobbyView _view;
         [SerializeField] private SelectedCharactersPopup _selectedCharactersPopup;
         [SerializeField] private GameObject _popupContents;
-        [SerializeField] private BattlePopupCreateCustomRoomPanel _roomSwitcher;
+        [SerializeField] private BattlePopupPanelManager _roomSwitcher;
 
         private string _currentRegion;
 

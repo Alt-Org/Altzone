@@ -50,14 +50,25 @@ namespace Quantum.Prototypes.Unity {
   #endif //;
   
   [System.SerializableAttribute()]
-  public unsafe partial class PlayerShieldDataPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.PlayerShieldDataPrototype> {
-    public Quantum.QuantumEntityPrototype TeamMate;
-    public QBoolean TeamMateSet;
-    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.PlayerShieldDataPrototype prototype);
-    public override Quantum.Prototypes.PlayerShieldDataPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
-      var result = new Quantum.Prototypes.PlayerShieldDataPrototype();
-      converter.Convert(this.TeamMate, out result.TeamMate);
-      converter.Convert(this.TeamMateSet, out result.TeamMateSet);
+  public unsafe partial class PlayerManagerDataPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.PlayerManagerDataPrototype> {
+    [ArrayLengthAttribute(4)]
+    public Quantum.QEnum32<PlayerPlayState>[] PlayStates = new Quantum.QEnum32<PlayerPlayState>[4];
+    [ArrayLengthAttribute(4)]
+    public PlayerRef[] PlayerRefs = new PlayerRef[4];
+    [ArrayLengthAttribute(4)]
+    public Quantum.QuantumEntityPrototype[] SelectedCharacters = new Quantum.QuantumEntityPrototype[4];
+    [ArrayLengthAttribute(12)]
+    public Quantum.QuantumEntityPrototype[] AllCharacters = new Quantum.QuantumEntityPrototype[12];
+    [ArrayLengthAttribute(4)]
+    public Int32[] SelectedCharacterNumbers = new Int32[4];
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.PlayerManagerDataPrototype prototype);
+    public override Quantum.Prototypes.PlayerManagerDataPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.PlayerManagerDataPrototype();
+      converter.Convert(this.PlayStates, out result.PlayStates);
+      converter.Convert(this.PlayerRefs, out result.PlayerRefs);
+      converter.Convert(this.SelectedCharacters, out result.SelectedCharacters);
+      converter.Convert(this.AllCharacters, out result.AllCharacters);
+      converter.Convert(this.SelectedCharacterNumbers, out result.SelectedCharacterNumbers);
       ConvertUser(converter, ref result);
       return result;
     }
@@ -67,12 +78,14 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.QuantumEntityPrototype ChildEntity;
     public FPVector2 Normal;
     public FP CollisionMinOffset;
+    public Int32 Layer;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.SoulWallPrototype prototype);
     public override Quantum.Prototypes.SoulWallPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.SoulWallPrototype();
       converter.Convert(this.ChildEntity, out result.ChildEntity);
       converter.Convert(this.Normal, out result.Normal);
       converter.Convert(this.CollisionMinOffset, out result.CollisionMinOffset);
+      converter.Convert(this.Layer, out result.Layer);
       ConvertUser(converter, ref result);
       return result;
     }

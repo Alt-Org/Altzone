@@ -5,7 +5,6 @@ using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Runtime.CompilerServices;
 using System.Collections;
 
 namespace MenuUi.Scripts.AvatarEditor
@@ -47,24 +46,34 @@ namespace MenuUi.Scripts.AvatarEditor
 
             if (classObject == null)
             {
-                return null;
+                classObject = _avatarClassInfoList[0];
+                _characterClassID = classObject.id;
+                Debug.LogError($"Could not select AvatarClassInfo! Current character class id is: {characterClass}. Using first AvatarClassInfo: {_avatarClassInfoList[0].id}.");
+                //return null;
             }
 
             AvatarInfo character = null;
             foreach (AvatarInfo CharacterInfo in classObject.list)
             {
+                    //Debug.LogError(CharacterInfo.id + " | " + (CharacterID)prefabId);
                 if (CharacterInfo.id == (CharacterID)prefabId)
                 {
                     character = CharacterInfo;
                     break;
                 }
             }
+
+            if (character == null)
+            {
+                character = classObject.list[0];
+                Debug.LogError($"Could not select AvatarInfo! Current AvatarInfo id is: {(CharacterID)prefabId}. Using first AvatarInfo: {classObject.list[0].id}");
+            }
+
             return character;
         }
 
         private IEnumerator UpdateCharacterImage(int prefabId, Action onComplete)
         {
-            
             AvatarInfo character = GetCharacterPrefabInfo_bkp(prefabId);
             GameObject avatarImage = null;
             if (character != null)

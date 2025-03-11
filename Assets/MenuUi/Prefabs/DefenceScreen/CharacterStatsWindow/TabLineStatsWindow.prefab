@@ -608,7 +608,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 7706507709593440854}
+      objectReference: {fileID: 3083646567254022719}
     - target: {fileID: 472687744616341565, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -617,12 +617,12 @@ PrefabInstance:
     - target: {fileID: 472687744616341565, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetMainMenuWindowIndexValue
+      value: SetSwipeCurrentPage
       objectReference: {fileID: 0}
     - target: {fileID: 472687744616341565, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: SetMainMenuWindowIndex, MainMenu
+      value: MenuUi.Scripts.TabLine.TabLine, MainMenu
       objectReference: {fileID: 0}
     - target: {fileID: 472687744616341565, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
@@ -735,11 +735,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4789815415191667178, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 7706507709593440854}
-    - target: {fileID: 4789815415191667178, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
-        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
@@ -782,7 +777,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 7706507709593440854}
+      objectReference: {fileID: 3083646567254022719}
     - target: {fileID: 4920232304727102816, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -791,12 +786,12 @@ PrefabInstance:
     - target: {fileID: 4920232304727102816, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetMainMenuWindowIndexValue
+      value: SetSwipeCurrentPage
       objectReference: {fileID: 0}
     - target: {fileID: 4920232304727102816, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: SetMainMenuWindowIndex, MainMenu
+      value: MenuUi.Scripts.TabLine.TabLine, MainMenu
       objectReference: {fileID: 0}
     - target: {fileID: 4920232304727102816, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
@@ -807,7 +802,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: f9502a761bdb9d443a2586af83639324,
+      objectReference: {fileID: 21300000, guid: c433a4178a90cc34c821393bcf41915e,
         type: 3}
     - target: {fileID: 4972399519487402402, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
@@ -898,7 +893,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: c433a4178a90cc34c821393bcf41915e,
+      objectReference: {fileID: 21300000, guid: f9502a761bdb9d443a2586af83639324,
         type: 3}
     - target: {fileID: 6682411111857242805, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
         type: 3}
@@ -1020,35 +1015,25 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 6134773536329201916}
-    - targetCorrespondingSourceObject: {fileID: 3351350342849420258, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7706507709593440854}
   m_SourcePrefab: {fileID: 100100000, guid: e22bdd3e0c370fc4b80581ecb7a9da83, type: 3}
---- !u!1 &867838184711616274 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3351350342849420258, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
-    type: 3}
-  m_PrefabInstance: {fileID: 2488605319336111344}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &7706507709593440854
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 867838184711616274}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 965ac3e1f5427e34e8939712e5218195, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &2318772806600924821 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 190456095295517285, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
     type: 3}
   m_PrefabInstance: {fileID: 2488605319336111344}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3083646567254022719 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 595070455881823951, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
+    type: 3}
+  m_PrefabInstance: {fileID: 2488605319336111344}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4498941275479029592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb907510ee6a3054589606cf24e7d2ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4498941275479029592 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2082420161837013928, guid: e22bdd3e0c370fc4b80581ecb7a9da83,
