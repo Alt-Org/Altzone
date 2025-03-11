@@ -49,6 +49,7 @@ public class ClanHeartColorSetter : MonoBehaviour
         int i = 0;
         foreach (HeartPieceColorHandler colorhandler in _heartPieceHandlers)
         {
+            if (heartPieces.Count <= i) return;
             colorhandler.Initialize(heartPieces[i].pieceNumber, heartPieces[i].pieceColor);
             i++;
         }

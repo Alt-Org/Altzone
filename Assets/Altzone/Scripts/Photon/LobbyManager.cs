@@ -207,7 +207,7 @@ namespace Altzone.Scripts.Lobby
             {
                 PhotonRealtimeClient.Client?.Service();
                 //Debug.LogWarning(".");
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.05f);
             }
         }
 
@@ -402,20 +402,12 @@ namespace Altzone.Scripts.Lobby
                 Communicator              = new QuantumNetworkCommunicator(PhotonRealtimeClient.Client)
             };
 
-            /*Transform currentRoot = null;
-            GameObject[] roots = SceneManager.GetActiveScene().GetRootGameObjects();
-            foreach (GameObject root in roots)
-            {
-                if(root.name == "DefaultWindow")
-                {
-                    currentRoot = root.transform;
-                }
-            }*/
-
-            //WindowManager.Get().ShowWindow(_gameWindow);
+            //Start Battle Countdown
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleLoad);
 
-            long startTime = (sendTime+5000) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            if(sendTime == 0) sendTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            long timeToStart = (sendTime+5000) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            long startTime = sendTime + timeToStart;
 
             yield return new WaitForEndOfFrame();
 
@@ -423,14 +415,19 @@ namespace Altzone.Scripts.Lobby
             {
                 if(OnStartTimeSet != null)
                 {
-                    OnStartTimeSet?.Invoke(startTime);
+                    OnStartTimeSet?.Invoke(timeToStart);
                     break;
                 }
                 yield return null;
-            } while (startTime + 5000 < DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+            } while (startTime > DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+            timeToStart = (sendTime + 5000) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-            yield return new WaitForSeconds(startTime/1000f);
+            if (timeToStart > 5000) timeToStart = 5000;
 
+            if(timeToStart > 0)
+            yield return new WaitForSeconds(timeToStart / 1000f);
+
+            //Move to Battle and start Runner
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Battle);
 
             yield return new WaitUntil(()=>SceneManager.GetActiveScene().name == _map.Scene);
@@ -440,23 +437,6 @@ namespace Altzone.Scripts.Lobby
 
             Task<bool> task = StartRunner(sessionRunnerArguments);
 
-            /*QuantumRunner runner = null;
-            try
-            {
-                runner = (QuantumRunner)await SessionRunner.StartAsync(sessionRunnerArguments);
-            }catch (Exception ex)
-            {
-                pluginDisconnectListener.Dispose();
-                Debug.LogException(ex);
-            }
-            foreach (Transform window in currentRoot)
-            {
-                Debug.Log(window.name);
-                if (window.gameObject.activeSelf == true)
-                {
-                    window.gameObject.SetActive(false);
-                }
-            }*/
             yield return new WaitUntil(() => task.IsCompleted);
             if(task.Result)
             {
@@ -465,7 +445,6 @@ namespace Altzone.Scripts.Lobby
             }
             else
             {
-                //WindowManager.Get().GoBack();
                 OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
             }
         }

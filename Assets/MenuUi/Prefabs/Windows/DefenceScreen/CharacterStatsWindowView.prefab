@@ -703,6 +703,8 @@ GameObject:
   - component: {fileID: 3918795687960719334}
   - component: {fileID: 7550082918384091370}
   - component: {fileID: 6405207172733369044}
+  - component: {fileID: 5158419458400868755}
+  - component: {fileID: 2160977431121218550}
   m_Layer: 5
   m_Name: SwipeUI
   m_TagString: Untagged
@@ -792,6 +794,32 @@ MonoBehaviour:
   isEnabled: 0
   _isInMainMenu: 0
   _willRotate: 0
+--- !u!114 &5158419458400868755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8446825354444719657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abcb222a881e3234f98051491acc0259, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _swipeThreshold: 500
+--- !u!114 &2160977431121218550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8446825354444719657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b44774a969c719b46b53b8f0fcf475f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _swipeUi: {fileID: 6405207172733369044}
 --- !u!1 &8461862895016730330
 GameObject:
   m_ObjectHideFlags: 0
