@@ -3,15 +3,28 @@ using UnityEngine;
 
 public class DailyTaskProgressListener : MonoBehaviour
 {
-    [SerializeField] private TaskNormalType taskType = TaskNormalType.Undefined;
+    [Header("Normal task")]
+    [SerializeField] private TaskNormalType _normalTaskType = TaskNormalType.Undefined;
+
+    [Header("Education task main category")]
+    [SerializeField] private EducationCategoryType _educationCategoryType = EducationCategoryType.None;
+
+    [Header("Education task sub categories\n (Only one of these will be used!)")]
+    [SerializeField] private TaskEducationActionType _educationCategoryActionType = TaskEducationActionType.BlowUpYourCharacter;
+    [SerializeField] private TaskEducationSocialType _educationCategorySocialType = TaskEducationSocialType.AddNewFriend;
+    [SerializeField] private TaskEducationStoryType _educationCategoryStoryType = TaskEducationStoryType.ClickCharacterDescription;
+    [SerializeField] private TaskEducationCultureType _educationCategoryCultureType = TaskEducationCultureType.ClickKnownArtIdeaPerson;
+    [SerializeField] private TaskEducationEthicalType _educationCategoryEthicalType = TaskEducationEthicalType.ClickBuyable;
+
     private bool _on = false;
+    [HideInInspector] public bool On { get => _on; }
 
     private void Start()
     {
         try
         {
             DailyTaskProgressManager.OnTaskChange += SetState;
-            _on = DailyTaskProgressManager.Instance.SameTask(taskType);
+            _on = DailyTaskProgressManager.Instance.SameTask(_normalTaskType);
         }
         catch
         {
@@ -42,8 +55,46 @@ public class DailyTaskProgressListener : MonoBehaviour
     {
         try
         {
-            if (_on)
-                DailyTaskProgressManager.Instance.UpdateTaskProgress(taskType, value);
+            if (!_on)
+                return;
+
+            if (_normalTaskType != TaskNormalType.Undefined)
+            {
+                DailyTaskProgressManager.Instance.UpdateTaskProgress(_normalTaskType, value);
+                return;
+            }
+
+            switch (_educationCategoryType)
+            {
+                case EducationCategoryType.Action:
+                    {
+                        DailyTaskProgressManager.Instance.UpdateTaskProgress(_educationCategoryActionType, value);
+                        break;
+                    }
+                case EducationCategoryType.Social:
+                    {
+                        DailyTaskProgressManager.Instance.UpdateTaskProgress(_educationCategorySocialType, value);
+                        break;
+                    }
+                case EducationCategoryType.Story:
+                    {
+                        DailyTaskProgressManager.Instance.UpdateTaskProgress(_educationCategoryStoryType, value);
+                        break;
+                    }
+                case EducationCategoryType.Culture:
+                    {
+                        DailyTaskProgressManager.Instance.UpdateTaskProgress(_educationCategoryCultureType, value);
+                        break;
+                    }
+                case EducationCategoryType.Ethical:
+                    {
+                        DailyTaskProgressManager.Instance.UpdateTaskProgress(_educationCategoryEthicalType, value);
+                        break;
+                    }
+                default: break;
+            }
+
+            return;
         }
         catch
         {
@@ -51,16 +102,39 @@ public class DailyTaskProgressListener : MonoBehaviour
         }
     }
 
-    public void SetState(TaskNormalType currentTaskType)
+    public void SetState(PlayerTask task)
     {
         //-----TEST CODE-----
-        if (taskType == TaskNormalType.Test)
+        if (_normalTaskType == TaskNormalType.Test)
         {
             _on = true;
             return;
         }
         //-------------------
 
-        _on = (taskType == currentTaskType);
+        if (task == null)
+        {
+            _on = false;
+            return;
+        }
+
+        if (_normalTaskType != TaskNormalType.Undefined)
+        {
+            _on = (_normalTaskType == task.Type);
+            return;
+        }
+
+        if (_educationCategoryType != EducationCategoryType.None)
+        {
+            switch (task.EducationCategory)
+            {
+                case EducationCategoryType.Action: _on = (_educationCategoryActionType == task.EducationActionType); break;
+                case EducationCategoryType.Social: _on = (_educationCategorySocialType == task.EducationSocialType); break;
+                case EducationCategoryType.Story: _on = (_educationCategoryStoryType == task.EducationStoryType); break;
+                case EducationCategoryType.Culture: _on = (_educationCategoryCultureType == task.EducationCultureType); break;
+                case EducationCategoryType.Ethical: _on = (_educationCategoryEthicalType == task.EducationEthicalType); break;
+                default: _on = false; break;
+            }
+        }
     }
 }
