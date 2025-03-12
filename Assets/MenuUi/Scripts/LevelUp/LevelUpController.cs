@@ -1,27 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem.LowLevel;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class Reward
 {
     public string Name;
     public Sprite Sprite;
+
+    public Reward(string name, Sprite sprite)
+    {
+        Name = name;
+        Sprite = sprite;
+    }
 }
 
 public class LevelUpController : MonoBehaviour
 {
+    [Header("LevelUpPanel")]
     // The panel that appears when the player levels up
     public GameObject LevelUpPanel;
-
-    // The image element where the reward sprite will be displayed
-
-
-    [Header("LevelUpPanel")]
     [Header("Character rewards")]
     public Reward[] CharacterRewards;
     public TMP_Text RewardCharacterNameText;
@@ -42,31 +41,78 @@ public class LevelUpController : MonoBehaviour
     public TMP_Text RewardDiamondNameText;
     public Image RewardDiamondsImage;
 
-    // 5 rewards
-    //Remember change the name
-    public Reward[] Reward5Rewards;
-    public TMP_Text Reward5RewardsNameText;
-    public Image Reward5Image;
+    [Header("Other rewards")]
+    public Reward[] OtherRewardRewards;
+    public TMP_Text RewardOtherRewardsNameText;
+    public Image RewardOthersImage;
 
     // Index to track the randomly selected reward
     private int rewardIndex;
 
     [Header("Confirmation window")]
     public GameObject Confirmation_Window;
-    public Image ConfirmationImage;
+    public Image RewardImage;
     public TMP_Text RewardText;
-    public TMP_Text ConfirmationTypeText;
-    public TMP_Text AmountText;
+    public TMP_Text RewardTypeText;
+    public TMP_Text RewardAmountText;
 
-    private int selectedAmount;
-    private string selectedType;
-    private bool selectedHasRarity;
+    [Header("Reward buttons")]
+    public Button CharacterRewardButton;
+    public Button FurnitureRewardButton;
+    public Button DiamondsRewardButton;
+    public Button CoinsRewardButton;
+    public Button OtherRewardButton;
+
+    public Transform rewardsContainer;
+    public GameObject rewardPrefab;
+
+    // List of rewards for each button
+    private List<Reward> characterRewards = new List<Reward>
+    { 
+        new Reward("Ahmatti", Resources.Load<Sprite>("Images/Reward1")),
+        new Reward("Tutkija", Resources.Load<Sprite>("Images/Reward2")),
+        new Reward("Tapauskovainen", Resources.Load<Sprite>("Images/Reward3"))
+    };
+
+    private List<Reward> furnitureRewards = new List<Reward>
+    {
+        new Reward("Sohva", Resources.Load<Sprite>("Images/Reward4")),
+        new Reward("Kasvi", Resources.Load<Sprite>("Images/Reward5")),
+        new Reward("Pöytä", Resources.Load<Sprite>("Images/Reward6"))
+    };
+
+    private List<Reward> diamondRewards = new List<Reward>
+    {
+        new Reward("10 diamonds", Resources.Load<Sprite>("Images/Reward7")),
+        new Reward("100 diamonds", Resources.Load<Sprite>("Images/Reward8")),
+        new Reward("1000 diamonds", Resources.Load<Sprite>("Images/Reward9"))
+    };
+
+    private List<Reward> coinRewards = new List<Reward>
+    {
+        new Reward("10 coins", Resources.Load<Sprite>("Images/Reward10")),
+        new Reward("100 coins", Resources.Load<Sprite>("Images/Reward11")),
+        new Reward("1000 coins", Resources.Load<Sprite>("Images/Reward12"))
+    };
+
+    private List<Reward> otherRewards = new List<Reward>
+    {
+        new Reward("1 ticket", Resources.Load<Sprite>("Images/Reward13")),
+        new Reward("5 tickets", Resources.Load<Sprite>("Images/Reward14")),
+        new Reward("10 tickets", Resources.Load<Sprite>("Images/Reward15"))
+    };
 
 
     // Start is called before the first frame update
     void Start()
     {
-        //OpenPopup();
+        Confirmation_Window.SetActive(false);
+
+        CharacterRewardButton.onClick.AddListener(() => ShowPopup(characterRewards));
+        FurnitureRewardButton.onClick.AddListener(() => ShowPopup(furnitureRewards));
+        DiamondsRewardButton.onClick.AddListener(() => ShowPopup(diamondRewards));
+        CoinsRewardButton.onClick.AddListener(() => ShowPopup(coinRewards));
+        OtherRewardButton.onClick.AddListener(() => ShowPopup(otherRewards));
     }
 
     // Method to activate the level-up popup and assign a random reward
@@ -78,11 +124,28 @@ public class LevelUpController : MonoBehaviour
             LevelUpPanel.SetActive(true);
         }
 
-        AssignRandomCharacterReward();
-        AssignRandomFurnitureReward();
-        AssignRandomCoinsReward();
-        AssignRandomDiamondsReward();
-        AssignRandomReward5();
+        //AssignRandomCharacterReward();
+        //AssignRandomFurnitureReward();
+        //AssignRandomCoinsReward();
+        //AssignRandomDiamondsReward();
+        //AssignRandomReward5();
+    }
+
+    void ShowPopup(List<Reward> rewardOptions)
+    {
+        foreach (Transform child in rewardsContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
+        foreach (var reward in rewardOptions)
+        {
+            GameObject rewardEntry = Instantiate(rewardPrefab, rewardsContainer);
+            rewardEntry.transform.GetChild(0).GetComponent<Text>().text = reward.Name;
+            rewardEntry.transform.GetChild(1).GetComponent<Image>().sprite = reward.Sprite;
+        }
+
+        Confirmation_Window.SetActive(true);
     }
 
     private void AssignRandomCharacterReward()
@@ -92,8 +155,6 @@ public class LevelUpController : MonoBehaviour
 
         RewardCharacterImage.sprite = selectedReward.Sprite;
         RewardCharacterNameText.text = selectedReward.Name;
-
-        ShowConfirmation(selectedReward, "Character", 0, true);
     }
     private void AssignRandomFurnitureReward()
     {
@@ -109,8 +170,7 @@ public class LevelUpController : MonoBehaviour
         Reward selectedReward = CoinRewards[rewardIndex];
 
         int coinsAmount = Random.Range(100, 1000);
-
-        ShowConfirmation(selectedReward, "Coins", coinsAmount, false);
+        
     }
     private void AssignRandomDiamondsReward()
     {
@@ -118,69 +178,14 @@ public class LevelUpController : MonoBehaviour
         Reward selectedReward = DiamondRewards[rewardIndex];
 
         int diamondAmount = Random.Range(100, 1000);
-
-        ShowConfirmation(selectedReward, "Coins", diamondAmount, false);
     }
     private void AssignRandomReward5()
     {
-        rewardIndex = Random.Range(0, Reward5Rewards.Length);
-        Reward selectedReward = Reward5Rewards[rewardIndex];
+        rewardIndex = Random.Range(0, OtherRewardRewards.Length);
+        Reward selectedReward = OtherRewardRewards[rewardIndex];
 
-        Reward5Image.sprite = selectedReward.Sprite;
-        Reward5RewardsNameText.text = selectedReward.Name;
+        RewardOthersImage.sprite = selectedReward.Sprite;
+        RewardOtherRewardsNameText.text = selectedReward.Name;
     }
-
-    public void ShowConfirmation(Reward selectedReward, string type, int amount = 0, bool showRarity =true)
-    {
-
-        if (selectedReward == null) return;
-
-        ConfirmationImage.sprite = selectedReward.Sprite;
-        RewardText.text = selectedReward.Name;
-
-        if (selectedHasRarity)
-        {
-            ConfirmationTypeText.text = "Rarity: " + selectedType;
-            ConfirmationTypeText.gameObject.SetActive(true);
-        }
-        else
-        {
-            ConfirmationTypeText.gameObject.SetActive(false);
-        }
-
-        if (amount > 0)
-        {
-            AmountText.text = "Amount: " + selectedAmount.ToString();
-            AmountText.gameObject.SetActive(true);
-        }
-        else
-        {
-            AmountText.gameObject.SetActive(false);
-        }
-
-        Confirmation_Window.SetActive(true);
-    }
-
-    public class RewardObject
-    {
-        protected string _name;
-
-        public string Name { get => _name; }
-
-        public string Image { get; }
-
-        public string Type { get; }
-
-        protected RewardObject(string name, string image)
-        {
-            _name = name;
-            Image = image;
-        }
-    }
-
-    //public class CharacterRewardObject : RewardObject
-    //{
-
-    //}
 }
 
