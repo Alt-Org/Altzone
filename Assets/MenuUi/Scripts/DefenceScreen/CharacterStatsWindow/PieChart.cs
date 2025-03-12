@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine.UI;
+using TMPro;
 
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
@@ -10,6 +11,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     {
         [SerializeField] private StatsWindowController _controller;
         [SerializeField] private PiechartReference _referenceSheet;
+        [SerializeField] private TMP_Text _piechartText;
 
         private int _sliceAmount;
 
@@ -96,6 +98,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             int defenceBase = _controller.GetBaseStat(StatType.Defence);
             int characterSizeBase = _controller.GetBaseStat(StatType.CharacterSize);
             int speedBase = _controller.GetBaseStat(StatType.Speed);
+
+            _piechartText.text = $"{impactForce+healthPoints+defence+characterSize+speed}/{_sliceAmount}";
 
             // Arrange stats
             var stats = new List<(int upgradesLevel, int baseLevel, Color color, Color altColor)>
