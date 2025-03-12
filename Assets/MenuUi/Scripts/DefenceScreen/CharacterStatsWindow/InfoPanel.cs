@@ -48,7 +48,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             _specialAbility.text = _controller.GetCurrentCharacterSpecialAbilityDescription();
 
             Sprite sprite = _controller.GetCurrentCharacterSpecialAbilitySprite();
-            if (sprite != null)
+            if (sprite != null && _specialAbilityImage != null)
             {
                 _specialAbilityImage.sprite = sprite;
             }
