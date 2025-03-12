@@ -20,7 +20,6 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         [Header("Character slot references")]
         [SerializeField] private Image _spriteImage;
         [SerializeField] private Image _backgroundImage;
-        [SerializeField] private Image _backgroundDetailsImage;
         [SerializeField] private PieChartPreview _piechartPreview;
 
         [Header("Dropdown references")]
@@ -196,17 +195,6 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                 CloseSelectionDropdown();
                 HandleNewCharacterSelected(character);
             });
-
-            // Details image
-            GameObject details = new();
-            Image detailsImage = details.AddComponent<Image>();
-            detailsImage.sprite = _backgroundDetailsImage.sprite;
-            details.transform.SetParent(dropdownButton.transform, false);
-
-            RectTransform detailsRect = details.GetComponent<RectTransform>();
-            detailsRect.sizeDelta = Vector2.zero;
-            detailsRect.anchorMin = Vector2.zero;
-            detailsRect.anchorMax = Vector2.one;
 
             // Sprite image
             GameObject gallerySprite = new();
