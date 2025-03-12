@@ -100,11 +100,11 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             // Arrange stats
             var stats = new List<(int upgradesLevel, int baseLevel, Color color, Color altColor)>
             {
-                (defence - defenceBase, defenceBase, _defenceColor, _defenceAltColor),
+                (impactForce - impactForceBase, impactForceBase, _impactForceColor, _impactForceAltColor),
+                (healthPoints - healthPointsBase, healthPointsBase, _healthPointsColor, _healthPointsAltColor),
                 (characterSize - characterSizeBase, characterSizeBase, _characterSizeColor, _characterSizeAltColor),
                 (speed - speedBase, speedBase, _speedColor, _speedAltColor),
-                (healthPoints - healthPointsBase, healthPointsBase, _healthPointsColor, _healthPointsAltColor),
-                (impactForce - impactForceBase, impactForceBase, _impactForceColor, _impactForceAltColor),
+                (defence - defenceBase, defenceBase, _defenceColor, _defenceAltColor),
             };
 
             // Create slices
