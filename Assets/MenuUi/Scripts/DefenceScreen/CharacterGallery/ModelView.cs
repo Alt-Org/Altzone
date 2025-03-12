@@ -7,7 +7,7 @@ using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ReferenceSheets;
 using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine.UI;
-using SignalBus = MenuUi.Scripts.Lobby.SignalBus;
+using MenuUi.Scripts.Signals;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -183,6 +183,12 @@ namespace MenuUi.Scripts.CharacterGallery
                     charSlot.Character.SetLockedVisuals();
                     charSlot.IsLocked = true;
                 }
+            }
+
+            // ensures character slots are selectable if edit toggle is on, it can happen if adding unowned character from the + button while edit mode is on
+            if (_editModeToggle.isOn) 
+            {
+                SetCharacterSlotsSelectable(true);
             }
         }
 

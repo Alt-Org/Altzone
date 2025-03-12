@@ -35,7 +35,6 @@ public class Chat : MonoBehaviour
     public GameObject quickMessages;
     public GameObject[] sendButtons;
     public GameObject buttonOpenSendButtons;
-    public GameObject optionsMinimizeButton;
 
     private ScrollRect currentScrollRect; // Tällä hetkellä aktiivinen Scroll Rect
 
@@ -43,7 +42,7 @@ public class Chat : MonoBehaviour
 
     private bool shouldScroll = false;
 
-    private GameObject selectedMessage; // Viesti, joka on tällä hetkellä valittuna
+    [HideInInspector] public GameObject selectedMessage; // Viesti, joka on tällä hetkellä valittuna
 
     [Header("Commands")]
     public string delete = "/deleteMessage";
@@ -214,6 +213,10 @@ public class Chat : MonoBehaviour
         selectedMessage = message;
         HighlightMessage(selectedMessage);
 
+        Vector3 deletePosition = deleteButtons.transform.position;
+        deletePosition.y = selectedMessage.transform.position.y; 
+        deleteButtons.transform.position = deletePosition;
+
         deleteButtons.SetActive(true);// Näytä poistopainikkeet, jos viesti on valittuna
     }
 
@@ -221,21 +224,25 @@ public class Chat : MonoBehaviour
     // Korostaa valitun viestin
     private void HighlightMessage(GameObject message)
     {
-        if (message.GetComponent<Image>() != null)
+        if (message.GetComponentInChildren<Image>() != null)
         {
-            message.GetComponent<Image>().color = Color.gray;
+            message.GetComponentInChildren<Image>().color = Color.gray;
         }
     }
 
     // Poistaa valinnan viestistä
-    private void DeselectMessage(GameObject message)
+    public void DeselectMessage(GameObject message)
     {
-        if (message.GetComponent<Image>() != null)
+        if (selectedMessage != null)
         {
-            message.GetComponent<Image>().color = Color.white;
+            if (message.GetComponentInChildren<Image>() != null)
+            {
+                message.GetComponentInChildren<Image>().color = Color.white;
+            }
+
+            deleteButtons.SetActive(false);
         }
 
-        deleteButtons.SetActive(false);
     }
 
     // Poistaa valitun viestin
@@ -325,7 +332,7 @@ public class Chat : MonoBehaviour
     }
 
 
-    private int chosenButton;
+    private int chosenButton = 2;
     // Asettaa sinisen viestipohjan ja lähettää viestin
     public void SetBluePrefab() { currentPrefab = messagePrefabBlue; chosenButton = 0; SendChatMessage(); }
     // Asettaa punaisen viestipohjan ja lähettää viestin
@@ -349,10 +356,13 @@ public class Chat : MonoBehaviour
             if(i != chosenButton)
             {
                 sendButtons[i].SetActive(false); 
-            } 
+            }
+            else
+            {
+                sendButtons[chosenButton].SetActive(true);
+            }
         }
 
         buttonOpenSendButtons.SetActive(true);
-        optionsMinimizeButton.SetActive(false);
     }
 }

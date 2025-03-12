@@ -1,13 +1,15 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Lobby.Wrappers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MenuUI.Scripts.Lobby.InLobby
+namespace MenuUi.Scripts.Lobby.InLobby
 {
+    /// <summary>
+    /// Handles spawning the room list buttons to the search panel in Battle Popup.
+    /// </summary>
     public class RoomSearchPanelController : MonoBehaviour
     {
         [SerializeField] private GameObject _slotPrefab;
@@ -33,11 +35,6 @@ namespace MenuUI.Scripts.Lobby.InLobby
             if(_roomsData != null) UpdatePanelContent();
         }
 
-        private void OnDisable()
-        {
-            gameObject.SetActive(false);
-        }
-
         public void SetOnJoinRoom(Action<string> onJoinRoom)
         {
             if(_onJoinRoom == null) _onJoinRoom = onJoinRoom;
@@ -56,41 +53,17 @@ namespace MenuUI.Scripts.Lobby.InLobby
             foreach(LobbyRoomInfo roomInfo in _roomsData)
             {
                 GameObject button = Instantiate(_slotPrefab, _content);
-
-                UpdateButton(button, roomInfo, _onJoinRoom);
+                RoomSlot roomSlot = button.GetComponent<RoomSlot>();
+                if (roomSlot != null)
+                {
+                    UpdateButton(roomSlot, roomInfo, _onJoinRoom);
+                }
             }
         }
 
-        private void UpdateButton(GameObject slot, LobbyRoomInfo room, Action<string> onJoinRoom)
+        private void UpdateButton(RoomSlot slot, LobbyRoomInfo room, Action<string> onJoinRoom)
         {
-            GameObject buttonObject = slot.transform.GetChild(0).gameObject;
-            Button button;
-            button = buttonObject.GetComponent<Button>();
-
-            var roomText = $"{room.Name}";
-            string playerCountText;
-            if (roomText.Length > 21)
-            {
-                roomText = roomText.Substring(0, 20) + "…";
-            }
-            if (room.IsOpen)
-            {
-                playerCountText = $"Pelaajia {room.PlayerCount}/4";
-                playerCountText = $"<color=blue>{playerCountText}</color>";
-                button.transform.Find("Button").GetComponentInChildren<TextMeshProUGUI>().text = $"Liity Huoneeseen";
-            }
-            else
-            {
-                playerCountText = $"Pelaajia {room.PlayerCount}/4";
-                playerCountText = $"<color=brown>{playerCountText}</color>";
-                button.transform.Find("Button").GetComponentInChildren<TextMeshProUGUI>().text = $"Peli käynnissä";
-            }
-            var roomNameText = buttonObject.transform.Find("InfoPanel").Find("Room name").GetComponent<TextMeshProUGUI>();
-            Debug.Log($"update '{roomNameText.text}' -> '{roomText}' for {room}");
-            roomNameText.text = roomText;
-            var playerCountLabel = buttonObject.transform.Find("InfoPanel").Find("Player count").GetComponent<TextMeshProUGUI>();
-            Debug.Log($"update '{playerCountLabel.text}' -> '{playerCountText}' for {room}");
-            playerCountLabel.text = playerCountText;
+            Button button = slot.transform.GetComponentInChildren<Button>();
 
             button.onClick.RemoveAllListeners();
             button.interactable = room.IsOpen;
@@ -98,6 +71,8 @@ namespace MenuUI.Scripts.Lobby.InLobby
             {
                 button.onClick.AddListener(() => onJoinRoom(room.Name));
             }
+
+            slot.SetInfo(room);
         }
 
         private static void ResetPanel(Transform parent)
