@@ -49,6 +49,12 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private TMP_Text _rarityText;
         [SerializeField] private Image _rarityImage;
 
+        [Header("Filtering buttons")]
+        [SerializeField] private Toggle[] _rarityToggles;
+        [SerializeField] private Toggle[] _setToggles;
+        [SerializeField] private Toggle _inSoulHomeToggle;
+        [SerializeField] private Toggle _onSaleToggle;
+
         private List<StorageFurniture> _items;
         private List<GameObject> _slotsList = new();
 
