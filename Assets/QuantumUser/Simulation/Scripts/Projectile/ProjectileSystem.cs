@@ -72,6 +72,7 @@ namespace Quantum.QuantumUser.Simulation.Projectile
             {
                 projectile->TestSpriteIndex = soulWall->Layer;
                 f.Events.ChangeProjectileSprite(projectile->TestSpriteIndex);
+                f.Events.ChangeScreenEffectColor(projectile->TestSpriteIndex);
             }
         }
 

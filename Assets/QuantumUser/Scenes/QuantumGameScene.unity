@@ -11203,6 +11203,7 @@ GameObject:
   m_Component:
   - component: {fileID: 862519970}
   - component: {fileID: 862519969}
+  - component: {fileID: 862519971}
   m_Layer: 0
   m_Name: ScreenEffect
   m_TagString: Untagged
@@ -11252,7 +11253,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 5f07f3b16505aa818b2e4cb7a3ad533e, type: 3}
-  m_Color: {r: 0.09411765, g: 0.36862746, b: 0.7411765, a: 1}
+  m_Color: {r: 0.09, g: 0.4, b: 0.7, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -11277,6 +11278,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1777258119}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &862519971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 862519968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07fbb6078e5c10c7599fc0c5bd49f485, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &862919381
 GameObject:
   m_ObjectHideFlags: 0

@@ -52,7 +52,7 @@ namespace Quantum {
   public unsafe partial class Frame {
     public unsafe partial struct FrameEvents {
       static partial void GetEventTypeCountCodeGen(ref Int32 eventCount) {
-        eventCount = 5;
+        eventCount = 6;
       }
       static partial void GetParentEventIDCodeGen(Int32 eventID, ref Int32 parentEventID) {
         switch (eventID) {
@@ -65,6 +65,7 @@ namespace Quantum {
           case EventGridSet.ID: result = typeof(EventGridSet); return;
           case EventPlaySoundEvent.ID: result = typeof(EventPlaySoundEvent); return;
           case EventChangeProjectileSprite.ID: result = typeof(EventChangeProjectileSprite); return;
+          case EventChangeScreenEffectColor.ID: result = typeof(EventChangeScreenEffectColor); return;
           default: break;
         }
       }
@@ -91,6 +92,13 @@ namespace Quantum {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventChangeProjectileSprite>(EventChangeProjectileSprite.ID);
         ev.SpriteIndex = SpriteIndex;
+        _f.AddEvent(ev);
+        return ev;
+      }
+      public EventChangeScreenEffectColor ChangeScreenEffectColor(Int32 ColorIndex) {
+        if (_f.IsPredicted) return null;
+        var ev = _f.Context.AcquireEvent<EventChangeScreenEffectColor>(EventChangeScreenEffectColor.ID);
+        ev.ColorIndex = ColorIndex;
         _f.AddEvent(ev);
         return ev;
       }
@@ -190,6 +198,31 @@ namespace Quantum {
       unchecked {
         var hash = 53;
         hash = hash * 31 + SpriteIndex.GetHashCode();
+        return hash;
+      }
+    }
+  }
+  public unsafe partial class EventChangeScreenEffectColor : EventBase {
+    public new const Int32 ID = 5;
+    public Int32 ColorIndex;
+    protected EventChangeScreenEffectColor(Int32 id, EventFlags flags) : 
+        base(id, flags) {
+    }
+    public EventChangeScreenEffectColor() : 
+        base(5, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
+    }
+    public new QuantumGame Game {
+      get {
+        return (QuantumGame)base.Game;
+      }
+      set {
+        base.Game = value;
+      }
+    }
+    public override Int32 GetHashCode() {
+      unchecked {
+        var hash = 59;
+        hash = hash * 31 + ColorIndex.GetHashCode();
         return hash;
       }
     }
