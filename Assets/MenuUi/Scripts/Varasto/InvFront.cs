@@ -52,8 +52,8 @@ namespace MenuUi.Scripts.Storage
         [Header("Filtering buttons")]
         [SerializeField] private Toggle[] _rarityToggles;
         [SerializeField] private Toggle[] _setToggles;
-        [SerializeField] private Toggle _inSoulHomeToggle;
-        [SerializeField] private Toggle _onSaleToggle;
+        //[SerializeField] private Toggle _inSoulHomeToggle;
+        //[SerializeField] private Toggle _onSaleToggle;
 
         private List<StorageFurniture> _items;
         private List<GameObject> _slotsList = new();
@@ -146,6 +146,51 @@ namespace MenuUi.Scripts.Storage
             _updatingInventory = false;
         }
 
+        private bool CheckFilters(StorageFurniture furn)
+        {
+            bool setCheck = false;
+            switch (furn.SetName)
+            {
+                case "Taakka":
+                    if (_setToggles[0].isOn) setCheck = true;
+                    break;
+                case "Schrodinger":
+                    if (_setToggles[1].isOn) setCheck = true;
+                    break;
+                case "Rakkaus":
+                    if (_setToggles[2].isOn) setCheck = true;
+                    break;
+                case "Neuro":
+                    if (_setToggles[3].isOn) setCheck = true;
+                    break;
+                case "Polarity":
+                    if (_setToggles[4].isOn) setCheck = true;
+                    break;
+                case "Muistoja":
+                    if (_setToggles[5].isOn) setCheck = true;
+                    break;
+            }
+
+            bool rarityCheck = false;
+            switch (furn.Rarity)
+            {
+                case FurnitureRarity.Common:
+                    if (_rarityToggles[0].isOn) rarityCheck = true;
+                    break;
+                case FurnitureRarity.Rare:
+                    if (_rarityToggles[1].isOn) rarityCheck = true;
+                    break;
+                case FurnitureRarity.Epic:
+                    if (_rarityToggles[2].isOn) rarityCheck = true;
+                    break;
+                case FurnitureRarity.Antique:
+                    if (_rarityToggles[3].isOn) rarityCheck = true;
+                    break;
+            }
+
+            return setCheck && rarityCheck;
+        }
+
         private IEnumerator GetFurnitureFromClanInventory(string playerGuid)
         {
             var store = Storefront.Get();
@@ -189,6 +234,13 @@ namespace MenuUi.Scripts.Storage
                     continue;
                 }
                 StorageFurniture storageFurniture = new(clanFurniture, furniture);
+
+                // Skip if no filters match this furniture
+                if (CheckFilters(storageFurniture) == false)
+                {
+                    continue;
+                }
+
                 _items.Add(storageFurniture);
             }
             Debug.Log($"found clan items {_items.Count}");
