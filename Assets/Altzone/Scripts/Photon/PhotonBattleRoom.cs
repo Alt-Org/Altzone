@@ -102,22 +102,22 @@ namespace Altzone.Scripts.Battle.Photon
             // Checking which of the room's player positions are free
             HashSet<int> usedPlayerPositions = new HashSet<int>();
 
-            if (CheckIfPositionIsFree(PlayerPosition1))
+            if (CheckIfPositionIsFree(PlayerPosition1) == false)
             {
                 usedPlayerPositions.Add(PlayerPosition1);
             }
 
-            if (CheckIfPositionIsFree(PlayerPosition2))
+            if (CheckIfPositionIsFree(PlayerPosition2) == false)
             {
                 usedPlayerPositions.Add(PlayerPosition2);
             }
 
-            if (CheckIfPositionIsFree(PlayerPosition3))
+            if (CheckIfPositionIsFree(PlayerPosition3) == false)
             {
                 usedPlayerPositions.Add(PlayerPosition3);
             }
 
-            if (CheckIfPositionIsFree(PlayerPosition4))
+            if (CheckIfPositionIsFree(PlayerPosition4) == false)
             {
                 usedPlayerPositions.Add(PlayerPosition4);
             }
