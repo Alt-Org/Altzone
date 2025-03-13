@@ -34,7 +34,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private void OnEnable()
         {
             // The first time CharacterStatsWindowView is opened initializing the chart doesn't work in OnEnable but has to be done in Start.
-            if (_firstTimeInitializing == false) 
+            if (_firstTimeInitializing == false)
             {
                 InitializeChart();
             }
@@ -64,6 +64,9 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 _piechartPreview.UpdateChart(_controller.CurrentCharacterID);
                 _button.enabled = true;
             }
+
+            // always setting loadout button to the first one for now, but when loadouts can get implemented it needs to be fetched from saved data.
+            _loadoutImage.sprite = _loadoutSprites[0];
         }
 
         private void UpdateChart(StatType statType)
