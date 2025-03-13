@@ -50,7 +50,11 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                 {
                     CharacterID charID = playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i]) == null ? CharacterID.None : playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i]).Id;
 
-                    if (charID is CharacterID.None) continue;
+                    if (charID is CharacterID.None)
+                    {
+                        _selectedCharacterSlots[i].SetEmpty(true,i);
+                        continue;
+                    }
 
                     PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(((int)charID).ToString());
                     _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charID, true, i);
@@ -76,7 +80,8 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             {
                 if (selectedCharacterIds[i] == 0)
                 {
-                    _selectedCharacterSlots[i].SetEmpty();
+                    _selectedCharacterSlots[i].SetEmpty(false,i);
+                    continue;
                 }
 
                 PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(selectedCharacterIds[i].ToString());
