@@ -41,7 +41,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         /// <summary>
         /// Set player characters. Gets info from player data.
         /// </summary>
-        public void SetCharacters()
+        public void SetCharacters(bool editable = true)
         {
             StartCoroutine(GetPlayerData(playerData =>
             {
@@ -52,13 +52,15 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
 
                     if (charID is CharacterID.None)
                     {
-                        _selectedCharacterSlots[i].SetEmpty(true,i);
+                        _selectedCharacterSlots[i].SetEmpty(editable,i);
                         continue;
                     }
 
                     PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(((int)charID).ToString());
                     _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charID, true, i);
                 }
+
+                if (!editable) return;
 
                 foreach (BattlePopupSelectedCharacter character in _selectedCharacterSlots)
                 {
