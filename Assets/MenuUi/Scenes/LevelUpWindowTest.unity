@@ -275,7 +275,7 @@ PrefabInstance:
         type: 3}
       propertyPath: rewardPrefab
       value: 
-      objectReference: {fileID: 1656903761}
+      objectReference: {fileID: 971585959}
     - target: {fileID: 307629221282214512, guid: 69cb442d791670542a045bed1738fd58,
         type: 3}
       propertyPath: RewardTypeText
@@ -290,7 +290,7 @@ PrefabInstance:
         type: 3}
       propertyPath: rewardsContainer
       value: 
-      objectReference: {fileID: 1693470761}
+      objectReference: {fileID: 971585960}
     - target: {fileID: 307629221282214512, guid: 69cb442d791670542a045bed1738fd58,
         type: 3}
       propertyPath: CoinsRewardButton
@@ -1035,6 +1035,12 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 971585954}
   m_PrefabAsset: {fileID: 0}
+--- !u!224 &971585960 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2137926925883285315, guid: 69cb442d791670542a045bed1738fd58,
+    type: 3}
+  m_PrefabInstance: {fileID: 971585954}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1061982640 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1939032237142897333, guid: 69cb442d791670542a045bed1738fd58,
@@ -1248,12 +1254,6 @@ MonoBehaviour:
 --- !u!1 &1656903761 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 440748484043335683, guid: 69cb442d791670542a045bed1738fd58,
-    type: 3}
-  m_PrefabInstance: {fileID: 971585954}
-  m_PrefabAsset: {fileID: 0}
---- !u!224 &1693470761 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5936327697909398449, guid: 69cb442d791670542a045bed1738fd58,
     type: 3}
   m_PrefabInstance: {fileID: 971585954}
   m_PrefabAsset: {fileID: 0}

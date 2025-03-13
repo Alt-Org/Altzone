@@ -1120,14 +1120,21 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: 25a90b5c5a58baa48802c3136bd0479c, type: 3}
   RewardDiamondNameText: {fileID: 7112929055635298995}
   RewardDiamondsImage: {fileID: 694465978200693031}
-  Reward5Rewards:
-  - Name: "ylim\xE4\xE4r\xE4inen \xE4\xE4ni"
-    Sprite: {fileID: -168538537, guid: 474e1585c1bd92843927eb782559414e, type: 3}
-  Reward5RewardsNameText: {fileID: 4492675720208613360}
-  Reward5Image: {fileID: 6532658245963307042}
-  Confirmation_Window: {fileID: 0}
-  ConfirmationImage: {fileID: 0}
+  OtherRewardRewards: []
+  RewardOtherRewardsNameText: {fileID: 0}
+  RewardOthersImage: {fileID: 0}
+  Confirmation_Window: {fileID: 7747975546024924892}
+  RewardImage: {fileID: 0}
   RewardText: {fileID: 0}
+  RewardTypeText: {fileID: 0}
+  RewardAmountText: {fileID: 0}
+  CharacterRewardButton: {fileID: 1980242058876063765}
+  FurnitureRewardButton: {fileID: 0}
+  DiamondsRewardButton: {fileID: 0}
+  CoinsRewardButton: {fileID: 0}
+  OtherRewardButton: {fileID: 0}
+  rewardsContainer: {fileID: 0}
+  rewardPrefab: {fileID: 0}
 --- !u!1 &5057126574863696005
 GameObject:
   m_ObjectHideFlags: 0
@@ -2463,7 +2470,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3204429395332051675
 RectTransform:
   m_ObjectHideFlags: 0

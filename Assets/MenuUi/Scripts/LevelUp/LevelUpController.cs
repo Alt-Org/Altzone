@@ -2,20 +2,42 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using Altzone.Scripts;
+using Altzone.Scripts.ModelV2;
+using System.Collections.ObjectModel;
+using System;
 
 [System.Serializable]
 public class Reward
 {
     public string Name;
     public Sprite Sprite;
-
-    public Reward(string name, Sprite sprite)
-    {
-        Name = name;
-        Sprite = sprite;
-    }
 }
 
+public class BaseCharacter
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+}
+public class PlayerCharacter
+{
+    public string Name { get; set; }
+    public string Image { get; set; }
+}
+public class StorageFurnitureReference : MonoBehaviour
+{
+    public List<FurnitureSet> Info;
+}
+public class FurnitureSet
+{
+    public string Name;
+    public List<FurnitureItem> FurnitureItems;
+}
+public class FurnitureItem
+{
+    public string Name;
+    public int Id;
+}
 public class LevelUpController : MonoBehaviour
 {
     [Header("LevelUpPanel")]
@@ -56,63 +78,71 @@ public class LevelUpController : MonoBehaviour
     public TMP_Text RewardTypeText;
     public TMP_Text RewardAmountText;
 
-    [Header("Reward buttons")]
-    public Button CharacterRewardButton;
-    public Button FurnitureRewardButton;
-    public Button DiamondsRewardButton;
-    public Button CoinsRewardButton;
-    public Button OtherRewardButton;
-
-    public Transform rewardsContainer;
-    public GameObject rewardPrefab;
-
-    // List of rewards for each button
-    private List<Reward> characterRewards = new List<Reward>
-    { 
-        new Reward("Ahmatti", Resources.Load<Sprite>("Images/Reward1")),
-        new Reward("Tutkija", Resources.Load<Sprite>("Images/Reward2")),
-        new Reward("Tapauskovainen", Resources.Load<Sprite>("Images/Reward3"))
-    };
-
-    private List<Reward> furnitureRewards = new List<Reward>
-    {
-        new Reward("Sohva", Resources.Load<Sprite>("Images/Reward4")),
-        new Reward("Kasvi", Resources.Load<Sprite>("Images/Reward5")),
-        new Reward("Pöytä", Resources.Load<Sprite>("Images/Reward6"))
-    };
-
-    private List<Reward> diamondRewards = new List<Reward>
-    {
-        new Reward("10 diamonds", Resources.Load<Sprite>("Images/Reward7")),
-        new Reward("100 diamonds", Resources.Load<Sprite>("Images/Reward8")),
-        new Reward("1000 diamonds", Resources.Load<Sprite>("Images/Reward9"))
-    };
-
-    private List<Reward> coinRewards = new List<Reward>
-    {
-        new Reward("10 coins", Resources.Load<Sprite>("Images/Reward10")),
-        new Reward("100 coins", Resources.Load<Sprite>("Images/Reward11")),
-        new Reward("1000 coins", Resources.Load<Sprite>("Images/Reward12"))
-    };
-
-    private List<Reward> otherRewards = new List<Reward>
-    {
-        new Reward("1 ticket", Resources.Load<Sprite>("Images/Reward13")),
-        new Reward("5 tickets", Resources.Load<Sprite>("Images/Reward14")),
-        new Reward("10 tickets", Resources.Load<Sprite>("Images/Reward15"))
-    };
-
+    [SerializeField] private StorageFurnitureReference _storageFurnitureReference;
 
     // Start is called before the first frame update
     void Start()
     {
-        Confirmation_Window.SetActive(false);
+        Action<ReadOnlyCollection<BaseCharacter>> charactersFetchedCallback = OnCharactersFetched;
+        Storefront.Get().GetAllBaseCharacterYield(charactersFetchedCallback);
+    }
 
-        CharacterRewardButton.onClick.AddListener(() => ShowPopup(characterRewards));
-        FurnitureRewardButton.onClick.AddListener(() => ShowPopup(furnitureRewards));
-        DiamondsRewardButton.onClick.AddListener(() => ShowPopup(diamondRewards));
-        CoinsRewardButton.onClick.AddListener(() => ShowPopup(coinRewards));
-        OtherRewardButton.onClick.AddListener(() => ShowPopup(otherRewards));
+    private void OnCharactersFetched(ReadOnlyCollection<BaseCharacter> characters)
+    {
+        if (characters == null || characters.Count == 0)
+        {
+            Debug.LogError("No characters available!");
+            return;
+        }
+
+        BaseCharacter character = characters[0];
+        Debug.Log($"Found character: {character.Name}, ID: {character.Id}");
+
+        string characterId = character.Id.ToString();
+
+        PlayerCharacter playerCharacter = PlayerCharacterPrototypes.GetCharacter(characterId);
+        OnCharacterDetailsFetched(playerCharacter);
+    }
+
+    private void OnCharacterDetailsFetched(PlayerCharacter character)
+    {
+        if (character != null)
+        {
+            Debug.Log($"Character name: {character.Name}");
+            Debug.Log($"Character image: {character.Image}");
+        }
+        else
+        {
+            Debug.LogError("Failed to fetch character details!");
+        }
+
+        FetchFurniture();
+    }
+
+    private void FetchFurniture()
+    {
+        if (_storageFurnitureReference == null)
+        {
+            Debug.LogError("Furniture not set");
+            return;
+        }
+
+        var furnitureInfo = _storageFurnitureReference.Info;
+        if (furnitureInfo == null || furnitureInfo.Count == 0)
+        {
+            Debug.LogError("No furniture available!");
+            return;
+        }
+
+        foreach (var furnitureSet in furnitureInfo)
+        {
+            Debug.Log($"Funriture Set: {furnitureSet.Name}");
+
+            foreach (var furniture in furnitureSet.FurnitureItems)
+            {
+                Debug.Log($"Furniture: {furniture.Name}, ID: {furniture.Id}");
+            }
+        }
     }
 
     // Method to activate the level-up popup and assign a random reward
@@ -130,24 +160,6 @@ public class LevelUpController : MonoBehaviour
         //AssignRandomDiamondsReward();
         //AssignRandomReward5();
     }
-
-    void ShowPopup(List<Reward> rewardOptions)
-    {
-        foreach (Transform child in rewardsContainer)
-        {
-            Destroy(child.gameObject);
-        }
-
-        foreach (var reward in rewardOptions)
-        {
-            GameObject rewardEntry = Instantiate(rewardPrefab, rewardsContainer);
-            rewardEntry.transform.GetChild(0).GetComponent<Text>().text = reward.Name;
-            rewardEntry.transform.GetChild(1).GetComponent<Image>().sprite = reward.Sprite;
-        }
-
-        Confirmation_Window.SetActive(true);
-    }
-
     private void AssignRandomCharacterReward()
     {
         rewardIndex = Random.Range(0, CharacterRewards.Length);
