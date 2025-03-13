@@ -22,7 +22,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
 
     #region Delegates & Events
 
-    public delegate void TaskChange(TaskNormalType taskType);
+    public delegate void TaskChange(PlayerTask task);
     /// <summary>
     /// Used to update existing <c>DailyTaskProgressListener</c>'s on/off states.
     /// </summary>
@@ -81,7 +81,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
 
     #region Task Processing
 
-    // This is called from DailyTaskProgressListener.cs.
+    // This is called from DailyTaskProgressListener.cs to update normal task.
     public void UpdateTaskProgress(TaskNormalType taskType, string value)
     {
         if ((taskType != CurrentPlayerTask.Type) && (taskType != TaskNormalType.Test))
@@ -101,6 +101,106 @@ public class DailyTaskProgressManager : AltMonoBehaviour
         }
     }
 
+    // This is called from DailyTaskProgressListener.cs to update education action task.
+    public void UpdateTaskProgress(TaskEducationActionType taskType, string value)
+    {
+        if ((taskType != CurrentPlayerTask.EducationActionType) && (value != "test"))
+        {
+            Debug.LogError($"Current task type is: {CurrentPlayerTask.EducationActionType}, but type: {taskType}, was received.");
+            return;
+        }
+
+        switch (CurrentPlayerTask.EducationActionType)
+        {
+            case TaskEducationActionType.BlowUpYourCharacter: HandleSimpleTask(value); break;
+            case TaskEducationActionType.EditCharacterStats: HandleSimpleTask(value); break;
+            case TaskEducationActionType.PlayBattle: HandleSimpleTask(value); break;
+            case TaskEducationActionType.SwitchSoulhomeMusic: HandleSimpleTask(value); break;
+            case TaskEducationActionType.WinBattle: HandleSimpleTask(value); break;
+            default: break;
+        }
+    }
+
+    // This is called from DailyTaskProgressListener.cs to update education social task.
+    public void UpdateTaskProgress(TaskEducationSocialType taskType, string value)
+    {
+        if ((taskType != CurrentPlayerTask.EducationSocialType) && (value != "test"))
+        {
+            Debug.LogError($"Current task type is: {CurrentPlayerTask.EducationSocialType}, but type: {taskType}, was received.");
+            return;
+        }
+
+        switch (CurrentPlayerTask.EducationSocialType)
+        {
+            case TaskEducationSocialType.AddNewFriend: HandleSimpleTask(value); break;
+            case TaskEducationSocialType.CreateNewVote: HandleSimpleTask(value); break;
+            case TaskEducationSocialType.EditCharacterAvatar: HandleSimpleTask(value); break;
+            case TaskEducationSocialType.EmoteDuringBattle: HandleSimpleTask(value); break;
+            case TaskEducationSocialType.WriteChatMessageClan: HandleSimpleTask(value); break;
+            default: break;
+        }
+    }
+
+    // This is called from DailyTaskProgressListener.cs to update education story task.
+    public void UpdateTaskProgress(TaskEducationStoryType taskType, string value)
+    {
+        if ((taskType != CurrentPlayerTask.EducationStoryType) && (value != "test"))
+        {
+            Debug.LogError($"Current task type is: {CurrentPlayerTask.EducationStoryType}, but type: {taskType}, was received.");
+            return;
+        }
+
+        switch (CurrentPlayerTask.EducationStoryType)
+        {
+            case TaskEducationStoryType.ClickCharacterDescription: HandleSimpleTask(value); break;
+            case TaskEducationStoryType.ContinueClanStory: HandleSimpleTask(value); break;
+            case TaskEducationStoryType.FindSybolicalFurniture: HandleSimpleTask(value); break;
+            case TaskEducationStoryType.FindSymbolicalGraphics: HandleSimpleTask(value); break;
+            case TaskEducationStoryType.RecognizeSoundClue: HandleSimpleTask(value); break;
+            default: break;
+        }
+    }
+
+    // This is called from DailyTaskProgressListener.cs to update education culture task.
+    public void UpdateTaskProgress(TaskEducationCultureType taskType, string value)
+    {
+        if ((taskType != CurrentPlayerTask.EducationCultureType) && (value != "test"))
+        {
+            Debug.LogError($"Current task type is: {CurrentPlayerTask.EducationCultureType}, but type: {taskType}, was received.");
+            return;
+        }
+
+        switch (CurrentPlayerTask.EducationCultureType)
+        {
+            case TaskEducationCultureType.ClickKnownArtIdeaPerson: HandleSimpleTask(value); break;
+            case TaskEducationCultureType.ClickKnownCharacter: HandleSimpleTask(value); break;
+            case TaskEducationCultureType.GamesGenreTypes: HandleSimpleTask(value); break;
+            case TaskEducationCultureType.SetProfilePlayerType: HandleSimpleTask(value); break;
+            case TaskEducationCultureType.SimiliarToAGame: HandleSimpleTask(value); break;
+            default: break;
+        }
+    }
+
+    // This is called from DailyTaskProgressListener.cs to update education ethical task.
+    public void UpdateTaskProgress(TaskEducationEthicalType taskType, string value)
+    {
+        if ((taskType != CurrentPlayerTask.EducationEthicalType) && (value != "test"))
+        {
+            Debug.LogError($"Current task type is: {CurrentPlayerTask.EducationEthicalType}, but type: {taskType}, was received.");
+            return;
+        }
+
+        switch (CurrentPlayerTask.EducationEthicalType)
+        {
+            case TaskEducationEthicalType.ClickBuyable: HandleSimpleTask(value); break;
+            case TaskEducationEthicalType.ClickEthical: HandleSimpleTask(value); break;
+            case TaskEducationEthicalType.ClickQuestionable: HandleSimpleTask(value); break;
+            case TaskEducationEthicalType.UseOnlyNegativeEmotes: HandleSimpleTask(value); break;
+            case TaskEducationEthicalType.UseOnlyPositiveEmotes: HandleSimpleTask(value); break;
+            default: break;
+        }
+    }
+
     /// <summary>
     /// This will call all <c>DailyTaskProgressListener</c>s<br/>
     /// to update their <c>_on</c> state depending on the task type.
@@ -115,12 +215,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
         CurrentPlayerTask = task;
 
         if (OnTaskChange != null)
-        {
-            if (CurrentPlayerTask != null)
-                OnTaskChange.Invoke(CurrentPlayerTask.Type);
-            else
-                OnTaskChange.Invoke(TaskNormalType.Undefined);
-        }
+                OnTaskChange.Invoke(task);
     }
 
     public bool SameTask(TaskNormalType taskType)
@@ -141,7 +236,10 @@ public class DailyTaskProgressManager : AltMonoBehaviour
     {
         try
         {
-            StartCoroutine(AddPlayerTaskProgress(int.Parse(value)));
+            if (value == "test")
+                StartCoroutine(AddPlayerTaskProgress(1));
+            else
+                StartCoroutine(AddPlayerTaskProgress(int.Parse(value)));
         }
         catch
         {
@@ -208,6 +306,8 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             CurrentPlayerTask = null;
             if (OnTaskDone != null)
                 OnTaskDone.Invoke(); //Clear DailyTaskManagers OwnTask page.
+
+            OnTaskChange.Invoke(null);
         }
 
         //Save player data
@@ -293,7 +393,6 @@ public class DailyTaskProgressManager : AltMonoBehaviour
     }
 
     #endregion
-
 
     public void InvokeOnClanMilestoneReached()
     {
