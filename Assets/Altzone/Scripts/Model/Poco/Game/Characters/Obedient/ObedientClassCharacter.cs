@@ -14,11 +14,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         protected ObedientClassCharacter()
         {
             _attackStrength = ValueStrength.None;
-            _resistanceStrength = ValueStrength.None;
+            _characterSizeStrength = ValueStrength.None;
             _hpStrength = ValueStrength.None;
             _defenceStrength = ValueStrength.None;
             _speedStrength = ValueStrength.None;
-            InitilizeValues();
+            InitializeValues();
         }
     }
 }

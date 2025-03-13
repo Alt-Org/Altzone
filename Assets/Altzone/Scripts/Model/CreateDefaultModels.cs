@@ -23,8 +23,8 @@ namespace Altzone.Scripts.Model
 
         internal static PlayerData CreatePlayerData(string playerGuid, string clanId, int currentCustomCharacterId)
         {
-            int[] characters = new int[5];
-            characters[0] = currentCustomCharacterId;
+            string[] characters = new string[5];
+            characters[0] = currentCustomCharacterId.ToString();
             return new PlayerData(FakeMongoDbId(), clanId, currentCustomCharacterId, characters, "Player", 0, playerGuid);
         }
 
@@ -142,8 +142,8 @@ namespace Altzone.Scripts.Model
                     else break;
                 }
 
-                clanFurniture.Add(new ClanFurniture((10000 + 300 + 3 + i).ToString(), "Floorlamp_Taakka", furniture1X, furniture1Y, i, false));
-                clanFurniture.Add(new ClanFurniture((10000 + 100 + 3 + i).ToString(), "Sofa_Taakka", furniture2X, furniture2Y, i, false));
+                clanFurniture.Add(new ClanFurniture((10000 + 300 + 3 + i).ToString(), "Floorlamp_Taakka", furniture1X, furniture1Y, FurnitureGrid.Floor, i, false));
+                clanFurniture.Add(new ClanFurniture((10000 + 100 + 3 + i).ToString(), "Sofa_Taakka", furniture2X, furniture2Y, FurnitureGrid.Floor, i, false));
 
             }
             return clanFurniture;
@@ -176,15 +176,15 @@ namespace Altzone.Scripts.Model
         {
             return new List<CustomCharacter>
             {
-                new(CharacterID.DesensitizerBodybuilder, 0, 0, 0, 0, 0),
-                new(CharacterID.TricksterComedian,0, 0, 0, 0, 0),
-                new(CharacterID.TricksterConman,0, 0, 0, 0, 0),
-                new(CharacterID.ObedientPreacher,0, 0, 0, 0, 0),
-                new(CharacterID.ProjectorGraffitiArtist,0, 0, 0, 0, 0),
-                new(CharacterID.RetroflectorOverEater,0, 0, 0, 0, 0),
-                new(CharacterID.RetroflectorAlcoholic,0, 0, 0, 0, 0),
-                new(CharacterID.ConfluentBesties,0, 0, 0, 0, 0),
-                new(CharacterID.IntellectualizerResearcher,0, 0, 0, 0, 0)
+                new(CharacterID.Bodybuilder, 0, 0, 0, 0, 0),
+                new(CharacterID.Joker,0, 0, 0, 0, 0),
+                new(CharacterID.Conman,0, 0, 0, 0, 0),
+                new(CharacterID.Religious,0, 0, 0, 0, 0),
+                new(CharacterID.Artist,0, 0, 0, 0, 0),
+                new(CharacterID.Overeater,0, 0, 0, 0, 0),
+                new(CharacterID.Alcoholic,0, 0, 0, 0, 0),
+                new(CharacterID.Soulsisters,0, 0, 0, 0, 0),
+                new(CharacterID.Booksmart,0, 0, 0, 0, 0)
             };
         }
 

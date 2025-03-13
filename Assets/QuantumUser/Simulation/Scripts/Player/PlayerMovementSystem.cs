@@ -16,13 +16,13 @@ namespace Quantum
 
         public override void Update(Frame f, ref Filter filter)
         {
-            Input* input = default;
-            if (f.Unsafe.TryGetPointer(filter.Entity, out PlayerData* playerData))
-            {
-                input = f.GetPlayerInput(playerData->Player);
-            }
+            if (filter.PlayerData->Player == PlayerRef.None) return;
+            Input* input = f.GetPlayerInput(filter.PlayerData->Player);
+
             UpdatePlayerMovement(f, ref filter, input);
         }
+
+
 
         private void UpdatePlayerMovement(Frame f, ref Filter filter, Input* input)
         {
@@ -30,43 +30,56 @@ namespace Quantum
 
             if (input->MouseClick)
             {
-                filter.PlayerData->TargetPosition.X = input->MousePosition.X;
-                filter.PlayerData->TargetPosition.Y = input->MousePosition.Z;
-                Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", filter.PlayerData->TargetPosition);
+                //checks if player is allowed to move to that side of the arena
+                if (((filter.PlayerData->TeamNumber == BattleTeamNumber.TeamAlpha) && input->MousePosition.Z < 0)
+                    || ((filter.PlayerData->TeamNumber == BattleTeamNumber.TeamBeta) && input->MousePosition.Z > 0))
+                {
+                    filter.PlayerData->TargetPosition.X = input->MousePosition.X;
+                    filter.PlayerData->TargetPosition.Y = input->MousePosition.Z;
+                    Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", filter.PlayerData->TargetPosition);
+                }
+
+                //if player is not allowed to move to that side of the arena, targetposition is for as far as a player can go
+                else
+                {
+                    filter.PlayerData->TargetPosition.X = input->MousePosition.X;
+                    filter.PlayerData->TargetPosition.Y = 0;
+                }
             }
 
             if (input->RotateMotion)
             {
-                FP maxAngle = FP._1;
+                FP maxAngle = FP.Rad_45;
 
                 //stops player before rotation
                 filter.PlayerData->TargetPosition = filter.Transform->Position;
 
                 //rotates to right
-                if (input->RotationDirection > 0 && filter.Transform->Rotation < maxAngle)
+                if (input->RotationDirection > 0 && filter.PlayerData->MovementRotation < maxAngle)
                 {
-                    filter.Transform->Rotation += rotationSpeed;
-                    Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", filter.Transform->Rotation);
+                    filter.PlayerData->MovementRotation += rotationSpeed;
+                    Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", filter.PlayerData->MovementRotation);
                 }
 
                 //rotates to left
-                else if (input->RotationDirection < 0 && filter.Transform->Rotation > -maxAngle)
+                else if (input->RotationDirection < 0 && filter.PlayerData->MovementRotation > -maxAngle)
                 {
-                    filter.Transform->Rotation -= rotationSpeed;
-                    Debug.LogFormat("[PlayerRotatingSystem] Leaning left(rotation: {0}", filter.Transform->Rotation);
+                    filter.PlayerData->MovementRotation -= rotationSpeed;
+                    Debug.LogFormat("[PlayerRotatingSystem] Leaning left(rotation: {0}", filter.PlayerData->MovementRotation);
                 }
-
             }
 
             //returns player to 0 rotation when RotateMotion-input ends
-            if (!input->RotateMotion && filter.Transform->Rotation != 0)
+            if (!input->RotateMotion && filter.PlayerData->MovementRotation != 0)
             {
-                if (filter.Transform->Rotation > 0)
-                    filter.Transform->Rotation -= rotationSpeed;
+                if (filter.PlayerData->MovementRotation > 0)
+                    filter.PlayerData->MovementRotation -= rotationSpeed;
 
                 else
-                    filter.Transform->Rotation += rotationSpeed;
+                    filter.PlayerData->MovementRotation += rotationSpeed;
             }
+
+            filter.Transform->Rotation = filter.PlayerData->BaseRotation + filter.PlayerData->MovementRotation;
 
             //moves player
             if (filter.Transform->Position != filter.PlayerData->TargetPosition)

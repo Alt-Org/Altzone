@@ -19,34 +19,13 @@ public static class PollManager
     private static PlayerData player = null;
     private static ClanData clan = null;
 
-    public static void CreatePoll(PollType pollType, int durationInHours, Sprite sprite, EsinePollType esinePollType, float value)
+    public static void CreateFurniturePoll(FurniturePollType furniturePollType, GameFurniture furniture)
     {
         LoadClanData();
 
+        int durationInHours = 1;
         string id = GetFirstAvailableId();
-        string name = "joku";
-        long endTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + durationInHours * 60;
-        long startTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-
-        List<string> clanMembers = new List<string>();
-        //if (clan != null ) clanMembers = clan.Members.Select(member => member.Id).ToList();
-        if (player != null) clanMembers.Add(player.Id);
-
-        PollData pollData = new EsinePollData(pollType, id, name, startTime, endTime, sprite, clanMembers, esinePollType, value);
-
-        pollDataList.Add(pollData);
-
-        //PrintPollList();
-        SaveClanData();
-        VotingActions.ReloadPollList?.Invoke();
-    }
-
-    public static void CreatePoll(PollType pollType, int durationInHours, Sprite sprite, FurniturePollType furniturePollType, GameFurniture furniture, double weight, float value)
-    {
-        LoadClanData();
-
-        string id = GetFirstAvailableId();
-        string name = "joku";
+        Sprite sprite = furniture.FurnitureInfo.Image;
         long endTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + durationInHours * 3600;
         long startTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
@@ -54,7 +33,7 @@ public static class PollManager
         //if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
         if (player != null) clanMembers.Add(player.Id);
 
-        PollData pollData = new FurniturePollData(pollType, id, name, startTime, endTime, sprite, clanMembers, furniturePollType, furniture, weight, value);    
+        PollData pollData = new FurniturePollData(id, startTime, endTime, sprite, clanMembers, furniturePollType, furniture);    
         pollDataList.Add(pollData);
 
         //PrintPollList();
@@ -70,16 +49,12 @@ public static class PollManager
             DateTime dateTimeEnd = DateTimeOffset.FromUnixTimeSeconds(pollData.EndTime).DateTime;
 
             // Basic information common to all PollDatas
-            string output = $"Poll Data {i + 1}: ID={pollData.Id}, Name={pollData.Name}, Time={dateTimeEnd}, Type={pollData.PollType}";
+            string output = $"Poll Data {i + 1}: ID={pollData.Id}, Time={dateTimeEnd}";
 
             // Check the type of pollData and append specific information
             if (pollData is FurniturePollData furniturePoll)
             {
-                output += $", FurniturePollType={furniturePoll.FurniturePollType}, Weight={furniturePoll.Weight}, Value={furniturePoll.Value}";
-            }
-            else if (pollData is EsinePollData esinePoll)
-            {
-                output += $", EsinePollType={esinePoll.EsinePollType}, Value={esinePoll.Value}";
+                output += $", FurniturePollType={furniturePoll.FurniturePollType}, Weight={furniturePoll.Furniture.Weight}, Value={furniturePoll.Furniture.Value}";
             }
 
             Debug.Log(output);

@@ -39,97 +39,12 @@ MonoBehaviour:
   GridNodeSize: 4
   NavMeshLinks: []
   Regions: []
-  StaticColliders2D:
-  - Rotation:
-      RawValue: 0
-    Position:
-      X:
-        RawValue: 589824
-      Y:
-        RawValue: 0
-    Height:
-      RawValue: 0
-    VerticalOffset:
-      RawValue: 0
-    PhysicsMaterial:
-      Id:
-        Value: 0
-    Layer: 0
-    ShapeType: 4
-    CircleRadius:
-      RawValue: 0
-    BoxExtents:
-      X:
-        RawValue: 294912
-      Y:
-        RawValue: 1048576
-    CapsuleSize:
-      X:
-        RawValue: 0
-      Y:
-        RawValue: 0
-    EdgeExtent:
-      RawValue: 0
-    PolygonCollider:
-      Vertices: []
-      Normals: []
-    StaticData:
-      Name: ArenaBorderRight
-      Tag: Untagged
-      Layer: 0
-      Asset:
-        Id:
-          Value: 0
-      IsTrigger: 0
-      ColliderIndex: 0
-      MutableMode: 0
-  - Rotation:
-      RawValue: 0
-    Position:
-      X:
-        RawValue: -589824
-      Y:
-        RawValue: 0
-    Height:
-      RawValue: 0
-    VerticalOffset:
-      RawValue: 0
-    PhysicsMaterial:
-      Id:
-        Value: 0
-    Layer: 0
-    ShapeType: 4
-    CircleRadius:
-      RawValue: 0
-    BoxExtents:
-      X:
-        RawValue: 294912
-      Y:
-        RawValue: 1048576
-    CapsuleSize:
-      X:
-        RawValue: 0
-      Y:
-        RawValue: 0
-    EdgeExtent:
-      RawValue: 0
-    PolygonCollider:
-      Vertices: []
-      Normals: []
-    StaticData:
-      Name: ArenaBorderLeft
-      Tag: Untagged
-      Layer: 0
-      Asset:
-        Id:
-          Value: 0
-      IsTrigger: 0
-      ColliderIndex: 1
-      MutableMode: 0
+  StaticColliders2D: []
   StaticColliders3D: []
   MapEntities:
   - Components:
     - rid: 5490577773346947072
+    - rid: 5490577773346947073
   - Components:
     - rid: 216534950936051712
     - rid: 216534950936051713
@@ -140,6 +55,16 @@ MonoBehaviour:
     - rid: 459196772049223681
     - rid: 459196772049223682
     - rid: 459196772049223683
+  - Components:
+    - rid: 4747002504288403456
+    - rid: 4747002504288403457
+    - rid: 4747002504288403458
+    - rid: 4747002504288403459
+  - Components:
+    - rid: 6448816403360251904
+    - rid: 6448816403360251905
+    - rid: 6448816403360251906
+    - rid: 6448816403360251907
   - Components:
     - rid: 6245619219958857728
     - rid: 6245619219958857729
@@ -156,8 +81,6 @@ MonoBehaviour:
     - rid: 7014017993386491906
     - rid: 7014017993386491907
   - Components:
-    - rid: 4099470505776513024
-  - Components:
     - rid: 8994635247039545344
     - rid: 8994635247039545345
     - rid: 8994635247039545346
@@ -173,6 +96,15 @@ MonoBehaviour:
     - rid: 3169004087781883906
     - rid: 3169004087781883907
   - Components:
+    - rid: 4099470505776513024
+  - Components:
+    - rid: 9037456159027494912
+  - Components:
+    - rid: 2088931844912316416
+    - rid: 2088931844912316417
+    - rid: 2088931844912316418
+    - rid: 2088931844912316419
+  - Components:
     - rid: 5760237647213625344
     - rid: 5760237647213625345
     - rid: 5760237647213625346
@@ -183,12 +115,10 @@ MonoBehaviour:
     - rid: 2332923402932715522
     - rid: 2332923402932715523
   - Components:
-    - rid: 9037456159027494912
-  - Components:
-    - rid: 2088931844912316416
-    - rid: 2088931844912316417
-    - rid: 2088931844912316418
-    - rid: 2088931844912316419
+    - rid: 7365317322875076608
+    - rid: 7365317322875076609
+    - rid: 7365317322875076610
+    - rid: 7365317322875076611
   - Components:
     - rid: 5970047250594791424
   - Components:
@@ -197,32 +127,27 @@ MonoBehaviour:
     - rid: 7740059535200485378
     - rid: 7740059535200485379
   - Components:
-    - rid: 7365317322875076608
-    - rid: 7365317322875076609
-    - rid: 7365317322875076610
-    - rid: 7365317322875076611
-  - Components:
     - rid: 6973906860017451008
     - rid: 6973906860017451009
     - rid: 6973906860017451010
     - rid: 6973906860017451011
-  - Components:
-    - rid: 8922606233861488640
-    - rid: 8922606233861488641
-    - rid: 8922606233861488642
-    - rid: 8922606233861488643
-  - Components:
-    - rid: 8278934809653280768
   - Components:
     - rid: 4544874563732766720
     - rid: 4544874563732766721
     - rid: 4544874563732766722
     - rid: 4544874563732766723
   - Components:
+    - rid: 8922606233861488640
+    - rid: 8922606233861488641
+    - rid: 8922606233861488642
+    - rid: 8922606233861488643
+  - Components:
     - rid: 5631773627054555136
     - rid: 5631773627054555137
     - rid: 5631773627054555138
     - rid: 5631773627054555139
+  - Components:
+    - rid: 8278934809653280768
   - Components:
     - rid: 913064374447374336
     - rid: 913064374447374337
@@ -239,6 +164,11 @@ MonoBehaviour:
     - rid: 7686413772323291138
     - rid: 7686413772323291139
   - Components:
+    - rid: 3884753049708658688
+    - rid: 3884753049708658689
+    - rid: 3884753049708658690
+    - rid: 3884753049708658691
+  - Components:
     - rid: 8757510066120163328
   - Components:
     - rid: 4551614391769890816
@@ -251,18 +181,6 @@ MonoBehaviour:
     - rid: 545437469085007874
     - rid: 545437469085007875
   - Components:
-    - rid: 3884753049708658688
-    - rid: 3884753049708658689
-    - rid: 3884753049708658690
-    - rid: 3884753049708658691
-  - Components:
-    - rid: 8841821637792759808
-  - Components:
-    - rid: 1328971346486493184
-    - rid: 1328971346486493185
-    - rid: 1328971346486493186
-    - rid: 1328971346486493187
-  - Components:
     - rid: 6284586831170240512
     - rid: 6284586831170240513
     - rid: 6284586831170240514
@@ -272,6 +190,20 @@ MonoBehaviour:
     - rid: 6616239857112973313
     - rid: 6616239857112973314
     - rid: 6616239857112973315
+  - Components:
+    - rid: 8841821637792759808
+  - Components:
+    - rid: 1328971346486493184
+    - rid: 1328971346486493185
+    - rid: 1328971346486493186
+    - rid: 1328971346486493187
+  - Components:
+    - rid: 4995703341477527552
+    - rid: 4995703341477527553
+    - rid: 4995703341477527554
+    - rid: 4995703341477527555
+  - Components:
+    - rid: 6011794197420441600
   - Components:
     - rid: 7894322547733299200
     - rid: 7894322547733299201
@@ -283,15 +215,6 @@ MonoBehaviour:
     - rid: 8847948775860207618
     - rid: 8847948775860207619
   - Components:
-    - rid: 4995703341477527552
-    - rid: 4995703341477527553
-    - rid: 4995703341477527554
-    - rid: 4995703341477527555
-  - Components:
-    - rid: 6011794197420441600
-  - Components:
-    - rid: 8295526534605701120
-  - Components:
     - rid: 6547773311001034752
     - rid: 6547773311001034753
     - rid: 6547773311001034754
@@ -302,23 +225,12 @@ MonoBehaviour:
     - rid: 2540559231023579138
     - rid: 2540559231023579139
   - Components:
+    - rid: 8295526534605701120
+  - Components:
     - rid: 6392158612130627584
     - rid: 6392158612130627585
     - rid: 6392158612130627586
     - rid: 6392158612130627587
-  - Components:
-    - rid: 9100725431786536960
-    - rid: 9100725431786536961
-  - Components: []
-  - Components:
-    - rid: 4440574540682100736
-    - rid: 4440574540682100737
-  - Components:
-    - rid: 7896802186972102656
-    - rid: 7896802186972102657
-  - Components:
-    - rid: 6659529850396606464
-    - rid: 6659529850396606465
   SerializedTriangleDataUncompressedSize: 8
   references:
     version: 2
@@ -366,7 +278,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -380,6 +292,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: 65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 2
     - rid: 216534950936051712
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -438,6 +358,8 @@ MonoBehaviour:
         goalConfig:
           Id:
             Value: 337072248309995173
+        hasTriggered:
+          Value: 0
     - rid: 459196772049223680
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -495,7 +417,9 @@ MonoBehaviour:
       data:
         goalConfig:
           Id:
-            Value: 0
+            Value: 269125312843482111
+        hasTriggered:
+          Value: 0
     - rid: 545437469085007872
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -539,7 +463,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -553,6 +477,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: -65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 2
     - rid: 913064374447374336
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -596,7 +528,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -610,6 +542,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: -65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 1
     - rid: 1328971346486493184
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -653,7 +593,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -667,6 +607,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: -65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 1
     - rid: 2088931844912316416
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -710,7 +658,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -724,6 +672,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: 65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 3
     - rid: 2332923402932715520
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -767,7 +723,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -781,6 +737,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: 65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 1
     - rid: 2540559231023579136
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -824,7 +788,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -838,6 +802,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: -65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 2
     - rid: 3169004087781883904
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -881,7 +853,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -895,6 +867,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: 65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 1
     - rid: 3884753049708658688
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -938,7 +918,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -952,6 +932,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: -65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 3
     - rid: 4099470505776513024
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1005,7 +993,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -1019,20 +1007,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
-    - rid: 4440574540682100736
-      type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
-      data:
-        Position:
+        Normal:
           X:
-            RawValue: -131072
+            RawValue: 0
           Y:
-            RawValue: -327680
-        Rotation:
-          RawValue: 0
-    - rid: 4440574540682100737
-      type: {class: SpawnIdentifierPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
-      data:
-        _empty_prototype_dummy_field_: 0
+            RawValue: -65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 2
     - rid: 4544874563732766720
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1076,7 +1058,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -1090,6 +1072,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: 65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 3
     - rid: 4551614391769890816
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1133,7 +1123,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -1147,6 +1137,76 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: -65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 1
+    - rid: 4747002504288403456
+      type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
+      data:
+        Position:
+          X:
+            RawValue: 589824
+          Y:
+            RawValue: 0
+        Rotation:
+          RawValue: 0
+    - rid: 4747002504288403457
+      type: {class: PhysicsCollider2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
+      data:
+        ShapeConfig:
+          ShapeType: 4
+          PolygonCollider:
+            Id:
+              Value: 0
+          CircleRadius:
+            RawValue: 0
+          CapsuleSize:
+            X:
+              RawValue: 0
+            Y:
+              RawValue: 0
+          EdgeExtent:
+            RawValue: 0
+          BoxExtents:
+            X:
+              RawValue: 294912
+            Y:
+              RawValue: 1048576
+          PositionOffset:
+            X:
+              RawValue: 0
+            Y:
+              RawValue: 0
+          RotationOffset:
+            RawValue: 0
+          UserTag: 0
+          IsPersistent: 1
+          CompoundShapes: []
+        Layer: 0
+        IsTrigger: 1
+        PhysicsMaterial:
+          Id:
+            Value: 0
+    - rid: 4747002504288403458
+      type: {class: PhysicsCallbacks2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
+      data:
+        CallbackFlags:
+          Value: 0
+    - rid: 4747002504288403459
+      type: {class: ArenaBorderPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      data:
+        Normal:
+          X:
+            RawValue: -65536
+          Y:
+            RawValue: 0
+        CollisionMinOffset:
+          RawValue: 294912
     - rid: 4995703341477527552
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1190,7 +1250,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -1204,13 +1264,53 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: -65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 3
     - rid: 5490577773346947072
       type: {class: GameSessionPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         state:
-          Value: 2
+          Value: 0
         TimeUntilStart:
           RawValue: 262144
+    - rid: 5490577773346947073
+      type: {class: PlayerManagerDataPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      data:
+        PlayStates:
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        PlayerRefs:
+        - _index: 0
+        - _index: 0
+        - _index: 0
+        - _index: 0
+        SelectedCharacters:
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        AllCharacters:
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        SelectedCharacterNumbers: 00000000000000000000000000000000
     - rid: 5631773627054555136
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1254,7 +1354,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -1268,6 +1368,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: 65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 1
     - rid: 5760237647213625344
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1311,7 +1419,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -1325,6 +1433,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: 65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 2
     - rid: 5970047250594791424
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1388,7 +1504,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -1402,6 +1518,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: 65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 3
     - rid: 6284586831170240512
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1445,7 +1569,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -1459,6 +1583,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: -65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 2
     - rid: 6392158612130627584
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1502,7 +1634,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -1516,6 +1648,76 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: -65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 3
+    - rid: 6448816403360251904
+      type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
+      data:
+        Position:
+          X:
+            RawValue: -589824
+          Y:
+            RawValue: 0
+        Rotation:
+          RawValue: 0
+    - rid: 6448816403360251905
+      type: {class: PhysicsCollider2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
+      data:
+        ShapeConfig:
+          ShapeType: 4
+          PolygonCollider:
+            Id:
+              Value: 0
+          CircleRadius:
+            RawValue: 0
+          CapsuleSize:
+            X:
+              RawValue: 0
+            Y:
+              RawValue: 0
+          EdgeExtent:
+            RawValue: 0
+          BoxExtents:
+            X:
+              RawValue: 294912
+            Y:
+              RawValue: 1048576
+          PositionOffset:
+            X:
+              RawValue: 0
+            Y:
+              RawValue: 0
+          RotationOffset:
+            RawValue: 0
+          UserTag: 0
+          IsPersistent: 1
+          CompoundShapes: []
+        Layer: 0
+        IsTrigger: 1
+        PhysicsMaterial:
+          Id:
+            Value: 0
+    - rid: 6448816403360251906
+      type: {class: PhysicsCallbacks2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
+      data:
+        CallbackFlags:
+          Value: 0
+    - rid: 6448816403360251907
+      type: {class: ArenaBorderPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      data:
+        Normal:
+          X:
+            RawValue: 65536
+          Y:
+            RawValue: 0
+        CollisionMinOffset:
+          RawValue: 294912
     - rid: 6547773311001034752
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1559,7 +1761,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -1573,6 +1775,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: -65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 1
     - rid: 6616239857112973312
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1616,7 +1826,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -1630,20 +1840,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
-    - rid: 6659529850396606464
-      type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
-      data:
-        Position:
+        Normal:
           X:
-            RawValue: -131072
+            RawValue: 0
           Y:
-            RawValue: 327680
-        Rotation:
-          RawValue: 0
-    - rid: 6659529850396606465
-      type: {class: SpawnIdentifierPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
-      data:
-        _empty_prototype_dummy_field_: 0
+            RawValue: -65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 3
     - rid: 6973906860017451008
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1687,7 +1891,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -1701,6 +1905,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: 65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 1
     - rid: 7014017993386491904
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1744,7 +1956,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -1758,6 +1970,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: 65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 1
     - rid: 7365317322875076608
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1801,7 +2021,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -1815,6 +2035,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: 65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 2
     - rid: 7686413772323291136
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1858,7 +2086,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -1872,6 +2100,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: -65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 3
     - rid: 7740059535200485376
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1915,7 +2151,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -1929,6 +2165,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: 65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 3
     - rid: 7740474888602779648
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1972,7 +2216,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -1986,6 +2230,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: 65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 2
     - rid: 7894322547733299200
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -2029,7 +2281,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -2043,20 +2295,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
-    - rid: 7896802186972102656
-      type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
-      data:
-        Position:
+        Normal:
           X:
-            RawValue: 131072
+            RawValue: 0
           Y:
-            RawValue: -327680
-        Rotation:
-          RawValue: 0
-    - rid: 7896802186972102657
-      type: {class: SpawnIdentifierPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
-      data:
-        _empty_prototype_dummy_field_: 0
+            RawValue: -65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 1
     - rid: 8278934809653280768
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -2140,7 +2386,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -2154,6 +2400,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: -65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 2
     - rid: 8922606233861488640
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -2197,7 +2451,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -2211,6 +2465,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: 65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 2
     - rid: 8994635247039545344
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -2254,7 +2516,7 @@ MonoBehaviour:
           IsPersistent: 1
           CompoundShapes: []
         Layer: 14
-        IsTrigger: 0
+        IsTrigger: 1
         PhysicsMaterial:
           Id:
             Value: 0
@@ -2268,6 +2530,14 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+        Normal:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: 65536
+        CollisionMinOffset:
+          RawValue: 13107
+        Layer: 3
     - rid: 9037456159027494912
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -2278,17 +2548,3 @@ MonoBehaviour:
             RawValue: -482344
         Rotation:
           RawValue: 0
-    - rid: 9100725431786536960
-      type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
-      data:
-        Position:
-          X:
-            RawValue: 131072
-          Y:
-            RawValue: 327680
-        Rotation:
-          RawValue: 0
-    - rid: 9100725431786536961
-      type: {class: SpawnIdentifierPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
-      data:
-        _empty_prototype_dummy_field_: 0

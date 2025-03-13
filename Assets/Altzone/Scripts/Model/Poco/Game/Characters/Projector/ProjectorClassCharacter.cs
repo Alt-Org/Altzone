@@ -14,11 +14,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         protected ProjectorClassCharacter()
         {
             _attackStrength = ValueStrength.SemiStrong;
-            _resistanceStrength = ValueStrength.Weak;
+            _characterSizeStrength = ValueStrength.Weak;
             _hpStrength = ValueStrength.SemiWeak;
             _defenceStrength = ValueStrength.Medium;
             _speedStrength = ValueStrength.Medium;
-            InitilizeValues();
+            InitializeValues();
         }
     }
 }

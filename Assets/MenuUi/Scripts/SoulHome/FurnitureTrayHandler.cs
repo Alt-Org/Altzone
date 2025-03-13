@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using MenuUi.Scripts.ReferenceSheets;
+using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,7 +12,7 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private GameObject _traySlotObject;
         [SerializeField]
-        private StorageFurnitureReference _furnitureRefrence;
+        private SoulHomeFurnitureReference _furnitureRefrence;
         [SerializeField]
         private GameObject _trayContent;
         private List<GameObject> _changedTrayItemList = new();
@@ -95,13 +95,13 @@ namespace MenuUI.Scripts.SoulHome
         public void AddFurnitureToTray(Furniture furniture)
         {
             if (furniture == null) return;
-            Debug.LogWarning("Check");
+            //Debug.LogWarning("Check");
             if (_trayContent == null) _trayContent = transform.Find("Scroll View").GetChild(0).GetChild(0).gameObject;
 
             //furniture.ResetPosition();
 
-            Debug.LogWarning("Name: " + furniture.Name);
-            Debug.LogWarning("Name: " + furniture.Position);
+            //Debug.LogWarning("Name: " + furniture.Name);
+            //Debug.LogWarning("Name: " + furniture.Position);
             foreach (Transform furnitureSlot in _trayContent.transform)
             {
                 FurnitureListObject list = furnitureSlot.GetComponent<FurnitureTraySlotHandler>().FurnitureList;
@@ -113,8 +113,8 @@ namespace MenuUI.Scripts.SoulHome
                     }
 
                     int count = furnitureSlot.GetComponent<FurnitureTraySlotHandler>().UpdateFurnitureCount();
-                    Debug.LogWarning("Total Count: " + furnitureSlot.GetComponent<FurnitureTraySlotHandler>().FurnitureList.Count);
-                    Debug.LogWarning("Count: " + count);
+                    //Debug.LogWarning("Total Count: " + furnitureSlot.GetComponent<FurnitureTraySlotHandler>().FurnitureList.Count);
+                    //Debug.LogWarning("Count: " + count);
                     GameObject furnitureObject = CheckChangeList(furniture);
                     if (furnitureObject != null)
                     {

@@ -7,6 +7,7 @@ using Altzone.Scripts.Model.Poco.Attributes;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Voting;
+using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -36,14 +37,13 @@ namespace Altzone.Scripts.Model.Poco.Player
         [PrimaryKey] public string Id;
         [ForeignKey(nameof(ClanData)), Optional] public string ClanId;
         [ForeignKey(nameof(CustomCharacter)), Optional] public int SelectedCharacterId;
-        [ForeignKey(nameof(CustomCharacter)), Optional] public int[] SelectedCharacterIds = new int[3];
+        [ForeignKey(nameof(CustomCharacter)), Optional] public string[] SelectedCharacterIds = new string[3];
         [Unique] public string Name;
 
         private List<CustomCharacter> _characterList;
-        private List<BattleCharacter> _battleCharacters;
 
         public int DiamondSpeed = 1000;
-        public int DiamondResistance = 1000;
+        public int DiamondCharacterSize = 1000;
         public int DiamondAttack = 1000;
         public int DiamondDefence = 1000;
         public int DiamondHP = 1000;
@@ -51,7 +51,8 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public int BackpackCapacity;
 
-        public int dailyTaskId = 0;
+        public PlayerTask Task = null;
+        public AvatarData AvatarData;
 
         public int points = 0;
 
@@ -70,9 +71,6 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public List<CustomCharacter> CustomCharacters { get; private set; }
 
-        public BattleCharacter BattleCharacter => BattleCharacters.FirstOrDefault(x => x.CharacterID == (CharacterID)SelectedCharacterIds[0]);
-        public ReadOnlyCollection<BattleCharacter> BattleCharacters { get; private set; }
-
         public ReadOnlyCollection<CustomCharacter> CurrentBattleCharacters
         {
             get
@@ -80,8 +78,10 @@ namespace Altzone.Scripts.Model.Poco.Player
                 List<CustomCharacter> list = new();
                 foreach (var id in SelectedCharacterIds)
                 {
-                    if (id == 0) continue;
-                    list.Add(CustomCharacters.FirstOrDefault(x => x.Id == (CharacterID)id));
+                    if (string.IsNullOrEmpty(id)) continue;
+                    CustomCharacter character = CustomCharacters.FirstOrDefault(x => x.ServerID == id);
+                    if(character == null) continue;
+                    list.Add(character);
                 }
                 while(list.Count < 3)
                 {
@@ -93,8 +93,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         }
 
 
-
-        public PlayerData(string id, string clanId, int currentCustomCharacterId, int[]currentBattleCharacterIds, string name, int backpackCapacity, string uniqueIdentifier)
+        public PlayerData(string id, string clanId, int currentCustomCharacterId, string[]currentBattleCharacterIds, string name, int backpackCapacity, string uniqueIdentifier)
         {
             Assert.IsTrue(id.IsPrimaryKey());
             Assert.IsTrue(clanId.IsNullOEmptyOrNonWhiteSpace());
@@ -121,8 +120,8 @@ namespace Altzone.Scripts.Model.Poco.Player
             Assert.IsTrue(player.uniqueIdentifier.IsMandatory());
             Id = player._id;
             ClanId = player.clan_id ?? string.Empty;
-            SelectedCharacterId = 0;
-            SelectedCharacterIds = null;
+            SelectedCharacterId = (int)(player.currentAvatarId == null ? 0 : player.currentAvatarId);
+            SelectedCharacterIds = player?.battleCharacter_ids == null ? new string[3] {"0","0","0"} : player.battleCharacter_ids;
             Name = player.name;
             BackpackCapacity = player.backpackCapacity;
             UniqueIdentifier = player.uniqueIdentifier;
@@ -133,22 +132,8 @@ namespace Altzone.Scripts.Model.Poco.Player
         public void UpdateCustomCharacter(CustomCharacter character)
         {
             if (character == null) return;
-            if (character.Speed != 0)
-            {
-                Debug.LogWarning($"Speed has been modified. Setting to 0.");
-                character.Speed = 0;
-            }
-            int statCheck = 0;
-            statCheck += character.Hp;
-            statCheck += character.Attack;
-            statCheck += character.Defence;
-            statCheck += character.Resistance;
-            if(statCheck >= 100)
-            {
-                Debug.LogError($"Invalid total stat increases: {statCheck}, too high.");
-                return;
-            }
 
+            bool characterInCharacterList = false;
             int i = 0;
             foreach (CustomCharacter item in _characterList)
             {
@@ -159,62 +144,27 @@ namespace Altzone.Scripts.Model.Poco.Player
                 }
 
                 _characterList[i] = character;
+                characterInCharacterList = true;
                 break;
             }
-            Patch(); // This possible gets fired too often.
+            Patch();
+            if (characterInCharacterList) ServerManager.Instance.StartUpdatingCustomCharacterToServer(character);
         }
 
-        internal void BuildCharacterLists(List<BattleCharacter> battleCharacters, List<CustomCharacter> customCharacters)
+
+        public void BuildCharacterLists(List<CustomCharacter> customCharacters)
         {
-            _battleCharacters = battleCharacters;
             _characterList = customCharacters;
-            Patch(_battleCharacters, _characterList);
+            Debug.LogWarning(_characterList.Count + " : " + _characterList[0].ServerID);
+            Patch();
         }
+
 
         internal void Patch()
         {
-            Patch(GetAllBattleCharacters(), _characterList);
+            CustomCharacters = new ReadOnlyCollection<CustomCharacter>(_characterList).ToList();
         }
 
-        internal void Patch(List<BattleCharacter> battleCharacters, List<CustomCharacter> customCharacters)
-        {
-            BattleCharacters = new ReadOnlyCollection<BattleCharacter>(battleCharacters);
-            CustomCharacters = new ReadOnlyCollection<CustomCharacter>(customCharacters).ToList();
-        }
-
-        private List<BattleCharacter> GetAllBattleCharacters()
-        {
-            var battleCharacters = new List<BattleCharacter>();
-            foreach (var customCharacter in _characterList)
-            {
-                battleCharacters.Add(GetBattleCharacter(customCharacter.Id));
-            }
-            return battleCharacters;
-        }
-
-        private BattleCharacter GetBattleCharacter(CharacterID customCharacterId)
-        {
-            var customCharacter = _characterList.FirstOrDefault(x => x.Id == customCharacterId);
-            if (customCharacter == null)
-            {
-                throw new UnityException($"CustomCharacter not found for {customCharacterId}");
-            }
-            ReadOnlyCollection<CharacterClass> characterClasses = null;
-            Storefront.Get().GetAllCharacterClassesYield(result => characterClasses = result);
-            if(characterClasses == null)
-            {
-                Debug.LogError($"Unable to fetch characterClasses.");
-                return null;
-            }
-            var characterClass =
-                characterClasses.FirstOrDefault(x => x.Id == customCharacter.CharacterClassID);
-            if (characterClass == null)
-            {
-                Debug.LogError($"Unable to find characterClass.");
-                return null;
-            }
-            return BattleCharacter.Create(customCharacter, characterClass);
-        }
 
         public override string ToString()
         {

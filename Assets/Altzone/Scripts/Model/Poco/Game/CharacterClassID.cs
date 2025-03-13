@@ -11,12 +11,12 @@ namespace Altzone.Scripts.Model.Poco.Game
     public enum CharacterClassID
     {
         None = 0,
-        Desensitizer = 1 << 8,
-        Trickster = 2 << 8,
-        Obedient = 3 << 8,
-        Projector = 4 << 8,
-        Retroflector = 5 << 8,
-        Confluent = 6 << 8,
-        Intellectualizer = 7 << 8
+        Desensitizer = 100,
+        Trickster = 200,
+        Obedient = 300,
+        Projector = 400,
+        Retroflector = 500,
+        Confluent = 600,
+        Intellectualizer = 700
     }
 }

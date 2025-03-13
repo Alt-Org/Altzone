@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Model.Poco.Attributes;
+using Altzone.Scripts.ReferenceSheets;
 using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Game
@@ -29,6 +30,8 @@ namespace Altzone.Scripts.Model.Poco.Game
         FourXTwo,
         FourXThree,
         FourXFour,
+        FiveXTwo,
+        FiveXThree,
         FiveXFive,
         FiveXEight,
         SevenXThree
@@ -71,6 +74,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public FurniturePlacement Placement;
         public double Weight;
         public float Value;
+        public FurnitureInfo FurnitureInfo;
         [Mandatory] public string Material;
         [Mandatory] public string Recycling;
 
@@ -106,7 +110,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             Filename = filename ?? string.Empty;
         }
 
-        public GameFurniture(string id, BaseFurniture baseFurniture, string unityKey = "", string filename = "")
+        public GameFurniture(string id, BaseFurniture baseFurniture, FurnitureInfo furnitureInfo, string unityKey = "", string filename = "")
         {
             Assert.IsTrue(id.IsPrimaryKey());
             Assert.IsTrue(baseFurniture.Name.IsMandatory());
@@ -127,6 +131,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             Value = baseFurniture.Value;
             Material = baseFurniture.Material;
             Recycling = baseFurniture.Recycling;
+            FurnitureInfo = furnitureInfo;
             UnityKey = unityKey ?? string.Empty;
             Filename = filename ?? string.Empty;
         }

@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts;
+using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Login;
 using MenuUi.Scripts.Window;
@@ -9,7 +11,7 @@ using UnityEngine.UI;
 
 namespace MenuUi.Scripts.Loader
 {
-    public class LogInHandler : MonoBehaviour
+    public class LogInHandler : AltMonoBehaviour
     {
         [SerializeField]
         private SignInManager _signInManager;
@@ -105,8 +107,15 @@ namespace MenuUi.Scripts.Loader
 
         private void LogInReady()
         {
-            _loadInfoController.LoadReady();
-            _changeAccountHandler.gameObject.SetActive(true);
+            if (AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
+            {
+                _loadInfoController.LoadReady();
+                _changeAccountHandler.gameObject.SetActive(true);
+            }
+            else
+            {
+                MoveToMain();
+            }
         }
 
         private void MoveToMain()
@@ -121,7 +130,9 @@ namespace MenuUi.Scripts.Loader
         {
             //_loadInfoController.SetInfoText(LogInStatus.FetchPlayerData);
             PlayerData playerData = null;
-            Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, p => playerData = p);
+            StartCoroutine(GetPlayerData(p => playerData = p));
+
+            yield return new WaitUntil(() => playerData != null);
 
             if (ServerManager.Instance.Player.above13 == null)
             {
@@ -131,7 +142,7 @@ namespace MenuUi.Scripts.Loader
 
             yield return new WaitUntil(() => _ageVerificationHandler.Finished );
 
-            if ((playerData.SelectedCharacterId == 0) || (playerData.SelectedCharacterId == 1))
+            if ((ServerManager.Instance.Player.currentAvatarId == null) || ((CharacterID)ServerManager.Instance.Player.currentAvatarId)== CharacterID.None || !Enum.IsDefined(typeof(CharacterID), ServerManager.Instance.Player.currentAvatarId))
                 StartCoroutine(_introStoryNavigation.Navigate());
             else
             {

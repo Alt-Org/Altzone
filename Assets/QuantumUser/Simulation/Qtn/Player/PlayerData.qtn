@@ -1,6 +1,21 @@
 component PlayerData
 {
     PlayerRef Player;
+    BattlePlayerSlot Slot;
+    BattleTeamNumber TeamNumber;
+    int CharacterId;
+    int CharacterClass;
+
+    FP StatHp;
+    FP StatSpeed;
+    FP StatCharacterSize;
+    FP StatAttack;
+    FP StatDefence;
+
     FP Speed;
     FPVector2 TargetPosition;
+    FP BaseRotation;
+    FP MovementRotation;
+    FPVector2 Normal;
+    FP CollisionMinOffset;
 }

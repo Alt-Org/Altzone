@@ -70,6 +70,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         Finnish,
         Swedish,
         English,
+        Spanish,
         Russian,
         Ukrainian
     }
@@ -115,6 +116,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
                 Language.Finnish => "suomi",
                 Language.Swedish => "svenska",
                 Language.English => "English",
+                Language.Spanish => "espanol",
                 Language.Russian => "venäjä",
                 Language.Ukrainian => "ukraina",
                 _ => "",
@@ -143,6 +145,51 @@ namespace Altzone.Scripts.Model.Poco.Clan
                 ClanActivity.Active => "Aktiivinen",
                 ClanActivity.OccasionallyActive => "Satunnainen",
                 ClanActivity.RarelyActive => "Harvoin paikalla",
+                _ => "",
+            };
+        }
+
+        public static string ClanValuesToString(ClanValues value)
+        {
+            return value switch
+            {
+                ClanValues.Elainrakkaat => "eläinrakkaat",
+                ClanValues.Maahanmuuttomyonteiset => "maahanmuuttomyönteiset",
+                ClanValues.Lgbtq => "lgbtq+",
+                ClanValues.Raittiit => "raittiit",
+                ClanValues.Kohteliaat => "kohteliaat",
+                ClanValues.Kiusaamisenvastaiset => "kiusaamisenvastaiset",
+                ClanValues.Urheilevat => "urheilevat",
+                ClanValues.Syvalliset => "syvälliset",
+                ClanValues.Oikeudenmukaiset => "oikeudenmukaiset",
+                ClanValues.Kaikkienkaverit => "kaikkien kaverit",
+                ClanValues.Itsenaiset => "itsenäiset",
+                ClanValues.Retkeilijat => "retkeilijät",
+                ClanValues.Suomenruotsalaiset => "suomenruotsalaiset",
+                ClanValues.Huumorintajuiset => "huumorintajuiset",
+                ClanValues.Rikkaat => "rikkaat",
+                ClanValues.Ikiteinit => "ikiteinit",
+                ClanValues.Juoruilevat => "juoruilevat",
+                ClanValues.Rakastavat => "rakastavat",
+                ClanValues.Oleilijat => "oleilijat",
+                ClanValues.Nortit => "nörtit",
+                ClanValues.Musadiggarit => "musadiggarit",
+                ClanValues.Tunteelliset => "tunteelliset",
+                ClanValues.Gamerit => "gamerit",
+                ClanValues.Animefanit => "animefanit",
+                ClanValues.Sinkut => "sinkut",
+                ClanValues.Monikulttuuriset => "monikulttuuriset",
+                ClanValues.Kauniit => "kauniit",
+                ClanValues.Jarjestelmalliset => "järjestelmälliset",
+                ClanValues.Epajarjestelmalliset => "epäjärjestelmälliset",
+                ClanValues.Tasaarvoiset => "tasa-arvoiset",
+                ClanValues.Somepersoonat => "somepersoonat",
+                ClanValues.Kadentaitajat => "kädentaitajat",
+                ClanValues.Muusikot => "muusikot",
+                ClanValues.Taiteilijat => "taiteilijat",
+                ClanValues.Spammaajat => "spämmääjät",
+                ClanValues.Kasvissyojat => "kasvissyöjät",
+                ClanValues.Tasapainoiset => "tasapainoiset",
                 _ => "",
             };
         }

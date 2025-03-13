@@ -1,9 +1,9 @@
-using MenuUI.Scripts.SoulHome;
+using MenuUi.Scripts.Audio;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using AudioTypeName = MenuUI.Scripts.SoulHome.AudioTypeName;
+using AudioTypeName = MenuUi.Scripts.Audio.AudioTypeName;
 
 enum AudioSelection
 {
@@ -25,7 +25,7 @@ public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
     [SerializeField]
     private AudioSelection _audioSelection = AudioSelection.Type;
     [SerializeField]
-    AudioTypeName _audioType = AudioTypeName.None;
+    string _audioType = "";
     [SerializeField]
     string _audioName = "";
     [SerializeField]
@@ -77,7 +77,7 @@ public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
             return;
         }
         if (_audioSelection == AudioSelection.Type)
-            manager.PlaySfxAudio(_audioType);
+            manager.PlaySfxAudioWithType(_audioType);
         else if(_audioSelection == AudioSelection.Name)
             manager.PlaySfxAudio(_audioName);
         else if (_audioSelection == AudioSelection.ID)
