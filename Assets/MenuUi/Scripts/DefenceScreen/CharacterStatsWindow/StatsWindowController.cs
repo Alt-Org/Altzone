@@ -111,7 +111,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>Current character class color as Color.</returns>
         public Color GetCurrentCharacterClassColor()
         {
-            return _classColorReference.GetColor(GetCurrentCharacterClass());
+            CharacterClassID classID = GetCurrentCharacterClass();
+            if (classID == CharacterClassID.Intellectualizer || classID == CharacterClassID.Confluent)
+            {
+                return _classColorReference.GetAlternativeColor(classID);
+            }
+            else
+            {
+                return _classColorReference.GetColor(classID);
+            }
         }
 
 
