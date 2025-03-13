@@ -63,7 +63,7 @@ namespace Altzone.Scripts.Lobby.Wrappers
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerPrefabId(LobbyPlayer player) => (int)s_photonBattleRoom.GetPlayerCharacterID(player.GetPlayer(player.ActorNumber));
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsValidGameplayPosOrGuest(int playerPos) => s_photonBattleRoom.IsValidGameplayPosOrGuest(playerPos);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPrefabIndex(BattleCharacter battleCharacter, int defaultValue) => s_photonBattleRoom.GetPrefabIndex(battleCharacter, defaultValue);
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsValidAllSelectedCharacters() => s_photonBattleRoom.IsValidAllSelectedCharacters();
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsValidAllSelectedCharacters() => PhotonBattleRoom.IsValidAllSelectedCharacters();
 
         #region Debug and test utilities
 

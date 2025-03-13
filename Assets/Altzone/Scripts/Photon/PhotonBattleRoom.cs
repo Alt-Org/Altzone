@@ -195,7 +195,7 @@ namespace Altzone.Scripts.Battle.Photon
         /// Check if everyone in the room has all 3 selected characters selected.
         /// </summary>
         /// <returns></returns>
-        public bool IsValidAllSelectedCharacters()
+        public static bool IsValidAllSelectedCharacters()
         {
             LobbyRoom room = PhotonRealtimeClient.LobbyCurrentRoom;
 
