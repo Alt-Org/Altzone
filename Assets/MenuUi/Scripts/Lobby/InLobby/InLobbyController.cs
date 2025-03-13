@@ -28,7 +28,6 @@ namespace MenuUi.Scripts.Lobby.InLobby
     public class InLobbyController : AltMonoBehaviour
     {
         [SerializeField] private TopInfoPanelController _topInfoPanel;
-        [SerializeField] private SelectedCharactersPopup _selectedCharactersPopup;
         [SerializeField] private GameObject _popupContents;
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
 
@@ -36,13 +35,13 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private void Awake()
         {
-            SignalBus.OnBattlePopupRequested += TryOpenWindow;
+            SignalBus.OnBattlePopupRequested += OpenWindow;
         }
 
 
         private void OnDestroy()
         {
-            SignalBus.OnBattlePopupRequested -= TryOpenWindow;
+            SignalBus.OnBattlePopupRequested -= OpenWindow;
         }
 
 
@@ -135,42 +134,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
             }
         }*/
 
-        public void TryOpenWindow(GameType gameType)
-        {
-            StartCoroutine(GetPlayerData(playerData =>
-            {
-                // Check if player has all 3 characters selected or no
 
-                if (playerData != null)
-                {
-                    for (int i = 0; i < 3; i++)
-                    {
-                        if (string.IsNullOrEmpty(playerData.SelectedCharacterIds[i]) || playerData.SelectedCharacterIds[i] == "0") // if any of the selected characters is missing
-                        {
-                            StartCoroutine(ShowSelectedCharactersPopup());
-                            return;
-                        }
-                    }
-                }
-                // Open battle popup if all 3 are selected
-                OpenWindow();
-            }));
-        }
-
-
-        private IEnumerator ShowSelectedCharactersPopup()
-        {
-            yield return StartCoroutine(_selectedCharactersPopup.ShowPopup(showBattlePopup =>
-            {
-                if (showBattlePopup == true)
-                {
-                    OpenWindow();
-                }
-            }));
-        }
-
-
-        private void OpenWindow()
+        private void OpenWindow(GameType gameType)
         {
             _popupContents.SetActive(true);
             _roomSwitcher.ReturnToMain();
