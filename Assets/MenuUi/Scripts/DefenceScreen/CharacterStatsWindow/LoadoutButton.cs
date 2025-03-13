@@ -1,6 +1,7 @@
 using MenuUi.Scripts.DefenceScreen.CharacterGallery;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
@@ -16,11 +17,13 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private Sprite[] _loadoutSprites;
         private Button _button;
         private int _currentLoadoutIndex = 0;
+        private bool _firstTimeInitializing = true;
 
         private void Awake()
         {
             _button = GetComponent<Button>();
             _button.onClick.AddListener(ChangeLoadout);
+            _controller.OnStatUpdated += UpdateChart;
         }
 
         private void OnDestroy()
@@ -28,7 +31,42 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             _button.onClick.RemoveAllListeners();
         }
 
+        private void OnEnable()
+        {
+            // The first time CharacterStatsWindowView is opened initializing the chart doesn't work in OnEnable but has to be done in Start.
+            if (_firstTimeInitializing == false) 
+            {
+                InitializeChart();
+            }
+        }
+
         private void Start()
+        {
+            InitializeChart();
+            _firstTimeInitializing = false;
+        }
+
+        private void InitializeChart()
+        {
+            if (_controller.IsCurrentCharacterLocked()) // If current character is locked setting the base stats to the preview and disabling button.
+            {
+                int impactForce = _controller.GetBaseStat(StatType.Attack);
+                int hp = _controller.GetBaseStat(StatType.Hp);
+                int defence = _controller.GetBaseStat(StatType.Defence);
+                int characterSize = _controller.GetBaseStat(StatType.CharacterSize);
+                int speed = _controller.GetBaseStat(StatType.Speed);
+
+                _piechartPreview.UpdateChart(impactForce, hp, defence, characterSize, speed);
+                _button.enabled = false;
+            }
+            else
+            {
+                _piechartPreview.UpdateChart(_controller.CurrentCharacterID);
+                _button.enabled = true;
+            }
+        }
+
+        private void UpdateChart(StatType statType)
         {
             _piechartPreview.UpdateChart(_controller.CurrentCharacterID);
         }
