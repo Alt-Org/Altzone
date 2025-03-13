@@ -1,4 +1,3 @@
-using Altzone.Scripts.ReferenceSheets;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +9,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     [RequireComponent(typeof(Image))]
     public class ClassColorSetter : MonoBehaviour
     {
-        [SerializeField] private ClassColorReference _referenceSheet;
         private Image _image;
         private StatsWindowController _controller;
 
@@ -24,7 +22,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             if (_controller != null)
             {
-                _image.color = _referenceSheet.GetColor(_controller.GetCurrentCharacterClass());
+                _image.color = _controller.GetCurrentCharacterClassColor();
             }
         }
     }

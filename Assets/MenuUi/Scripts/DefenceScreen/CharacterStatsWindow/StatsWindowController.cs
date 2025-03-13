@@ -5,6 +5,7 @@ using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ModelV2;
+using Altzone.Scripts.ReferenceSheets;
 using UnityEngine;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
@@ -15,11 +16,13 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     /// </summary>
     public class StatsWindowController : AltMonoBehaviour
     {
+        [SerializeField] private ClassColorReference _classColorReference;
+
         private PlayerData _playerData;
         private CharacterID _characterId;
         private CustomCharacter _customCharacter;
         private BaseCharacter _baseCharacter;
-
+        
         public CharacterID CurrentCharacterID { get { return _characterId; } }
 
         public event Action OnEraserDecreased;
@@ -99,6 +102,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         public CharacterClassID GetCurrentCharacterClass()
         {
             return CustomCharacter.GetClassID(_characterId);
+        }
+
+
+        /// <summary>
+        /// Get current character class color from character class color reference sheet.
+        /// </summary>
+        /// <returns>Current character class color as Color.</returns>
+        public Color GetCurrentCharacterClassColor()
+        {
+            return _classColorReference.GetColor(GetCurrentCharacterClass());
         }
 
 
