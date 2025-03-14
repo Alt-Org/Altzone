@@ -19,6 +19,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private Button _addDiamondsButton;
         [SerializeField] private Button _addErasersButton;
 
+        private void Awake()
+        {
+            _unlimitedDiamondsToggle.isOn = _controller.UnlimitedDiamonds;
+            _unlimitedErasersToggle.isOn = _controller.UnlimitedErasers;
+
+            _unlimitedDiamondsToggle.onValueChanged.AddListener(value => _controller.UnlimitedDiamonds = value);
+            _unlimitedErasersToggle.onValueChanged.AddListener(value => _controller.UnlimitedErasers = value);
+        }
+
         private void OnEnable()
         {
             ClosePopUp();
@@ -28,6 +37,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private void OnDestroy()
         {
             _addCharacterButton.onClick.RemoveAllListeners();
+            _unlimitedDiamondsToggle.onValueChanged.RemoveAllListeners();
+            _unlimitedDiamondsToggle.onValueChanged.RemoveAllListeners();
         }
 
 

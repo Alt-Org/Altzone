@@ -22,14 +22,50 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private CharacterID _characterId;
         private CustomCharacter _customCharacter;
         private BaseCharacter _baseCharacter;
-        
-        public CharacterID CurrentCharacterID { get { return _characterId; } }
+        private bool _unlimitedDiamonds;
+        private bool _unlimitedErasers;
 
-        public event Action OnEraserDecreased;
-        public event Action OnDiamondDecreased;
+        public CharacterID CurrentCharacterID { get { return _characterId; } }
+        [HideInInspector] public bool UnlimitedDiamonds {
+            get
+            {
+                return _unlimitedDiamonds;
+            }
+            set
+            {
+                _unlimitedDiamonds = value;
+                PlayerPrefs.SetInt("UnlimitedDiamonds", value ? 1 : 0);
+                OnDiamondAmountChanged?.Invoke();
+            }
+        }
+
+        [HideInInspector] public bool UnlimitedErasers
+        {
+            get
+            {
+                return _unlimitedErasers;
+            }
+            set
+            {
+                _unlimitedErasers = value;
+                PlayerPrefs.SetInt("UnlimitedErasers", value ? 1 : 0);
+                OnEraserAmountChanged?.Invoke();
+            }
+        }
+
+        public event Action OnEraserAmountChanged;
+        public event Action OnDiamondAmountChanged;
 
         public delegate void StatUpdatedHandler(StatType statType);
         public event StatUpdatedHandler OnStatUpdated;
+
+
+        private void Awake()
+        {
+            // Getting unlimited diamonds and erasers value from playerPrefs
+            _unlimitedDiamonds = PlayerPrefs.GetInt("UnlimitedDiamonds", 0) == 1;
+            _unlimitedErasers = PlayerPrefs.GetInt("UnlimitedErasers", 0) == 1;
+        }
 
 
         private void OnEnable()
@@ -231,7 +267,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             if (_playerData.Eraser > 0)
             {
                 _playerData.Eraser--;
-                OnEraserDecreased.Invoke();
+                OnEraserAmountChanged.Invoke();
                 return true;
             }
             else
@@ -262,7 +298,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             if (_playerData.DiamondSpeed >= amount) // using DiamondSpeed as a placeholder
             {
                 _playerData.DiamondSpeed -= amount;
-                OnDiamondDecreased.Invoke();
+                OnDiamondAmountChanged.Invoke();
                 return true;
             }
             else
@@ -381,7 +417,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (CanIncreaseStat(statType, true))
             {
-                bool diamondsDecreased = true; //TryDecreaseDiamonds(GetDiamondCost(statType));
+                bool diamondsDecreased = UnlimitedDiamonds || TryDecreaseDiamonds(GetDiamondCost(statType));
 
                 if (diamondsDecreased)
                 {
@@ -447,7 +483,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (CanDecreaseStat(statType, true))
             {
-                bool eraserDecreased = true; // TryDecreaseEraser();
+                bool eraserDecreased = UnlimitedErasers || TryDecreaseEraser();
 
                 if (eraserDecreased)
                 {
