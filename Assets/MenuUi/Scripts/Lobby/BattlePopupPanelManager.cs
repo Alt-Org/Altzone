@@ -1,9 +1,10 @@
 using UnityEngine;
-using UnityEngine.UI;
 
+/// <summary>
+/// Handles switching Battle Popup panels to a battle room and back to the main panel.
+/// </summary>
 public class BattlePopupPanelManager : MonoBehaviour
 {
-
     [Header("Panels")]
     [SerializeField] private GameObject _topPanel;
     [SerializeField] private GameObject _mainPanel;

@@ -155,12 +155,12 @@ namespace Altzone.Scripts.Model.Poco.Game
             _amountLeft = task.amountLeft;
             _coins = task.coins;
             _points = task.points;
-            _normalTaskType = GetTaskTypeEnum(task.normalTaskType);
+            _normalTaskType = GetTaskTypeEnum(task.type);
             _playerId = string.IsNullOrWhiteSpace(task.player_id) ? "" : task.player_id;
             _startedAt = task.startedAt;
-            _educationCategory = GetEducationTypeEnum(task.educationCategory);
+            _educationCategory = GetEducationTypeEnum(task.educationCategoryType);
 
-            switch (task.educationCategory)
+            switch (task.educationCategoryType)
             {
                 case "action": _educationActionType = GetEducationActionTypeEnum(task.educationCategoryTaskType); break;
                 case "social": _educationSocialType = GetEducationSocialTypeEnum(task.educationCategoryTaskType); break;
@@ -491,12 +491,12 @@ namespace Altzone.Scripts.Model.Poco.Game
         //public TaskContent content;
         public int amount;
         public int amountLeft;
-        public string normalTaskType;
+        public string type;
         public int coins;
         public int points;
         public string player_id;
         public string startedAt;
-        public string educationCategory;
+        public string educationCategoryType;
         public string educationCategoryTaskType;
 
         public class TaskTitle

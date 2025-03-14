@@ -5,8 +5,9 @@ using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Lobby;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using MenuUi.Scripts.Signals;
 
-namespace MenuUI.Scripts.Lobby.InLobby
+namespace MenuUi.Scripts.Signals
 {
     public static partial class SignalBus
     {
@@ -17,10 +18,16 @@ namespace MenuUI.Scripts.Lobby.InLobby
             OnBattlePopupRequested?.Invoke(gameType);
         }
     }
+}
 
+namespace MenuUi.Scripts.Lobby.InLobby
+{
+    /// <summary>
+    /// Handles opening and closing the battle popup and connects player to the photon lobby.
+    /// </summary>
     public class InLobbyController : AltMonoBehaviour
     {
-        [SerializeField] private InLobbyView _view;
+        [SerializeField] private TopInfoPanelController _topInfoPanel;
         [SerializeField] private SelectedCharactersPopup _selectedCharactersPopup;
         [SerializeField] private GameObject _popupContents;
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
@@ -29,10 +36,6 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         private void Awake()
         {
-            //_view.CharacterButtonOnClick = CharacterButtonOnClick;
-            //_view.RoomButtonOnClick = RoomButtonOnClick;
-            //_view.RaidButtonOnClick = RaidButtonOnClick;
-            //_view.QuickGameButtonOnClick = QuickGameButtonOnClick;
             SignalBus.OnBattlePopupRequested += TryOpenWindow;
         }
 
@@ -57,9 +60,9 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 // We need to disconnect from current region because it is not the same as in player settings.
                 PhotonLobby.Disconnect();
             }*/
-            _view.Reset();
+            _topInfoPanel.Reset();
             UpdateTitle();
-            _view.LobbyText = string.Empty;
+            _topInfoPanel.LobbyText = string.Empty;
             StartCoroutine(StartLobby(playerSettings.PlayerGuid, playerSettings.PhotonRegion));
         }
 
@@ -72,7 +75,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
         {
             // Save region for later use because getting it is not cheap (b ut not very expensive either). 
             _currentRegion = PhotonRealtimeClient.CloudRegion != null ? PhotonRealtimeClient.CloudRegion : "";
-            _view.TitleText = $"{Application.productName} {PhotonRealtimeClient.GameVersion}";
+            _topInfoPanel.TitleText = $"{Application.productName} {PhotonRealtimeClient.GameVersion}";
         }
 
         private IEnumerator StartLobby(string playerGuid, string photonRegion)
@@ -107,21 +110,19 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 yield return delay;
             }
             UpdateTitle();
-            _view.EnableButtons();
         }
 
         private void Update()
         {
             if (!PhotonRealtimeClient.InLobby && !PhotonRealtimeClient.InRoom)
             {
-                _view.LobbyText = "Wait";
+                _topInfoPanel.LobbyText = "Wait";
                 return;
             }
             UpdateTitle();
-            _view.EnableButtons();
             var playerCount = PhotonRealtimeClient.CountOfPlayers;
-            _view.LobbyText = $"Alue: {_currentRegion} : {PhotonRealtimeClient.GetPing()} ms";
-            _view.PlayerCountText = $"Pelaajia online: {playerCount}";
+            _topInfoPanel.LobbyText = $"Alue: {_currentRegion} : {PhotonRealtimeClient.GetPing()} ms";
+            _topInfoPanel.PlayerCountText = $"Pelaajia online: {playerCount}";
         }
 
         /*public void OnDisconnected(DisconnectCause cause)
