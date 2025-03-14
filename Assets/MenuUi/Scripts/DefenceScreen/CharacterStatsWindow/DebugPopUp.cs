@@ -14,7 +14,10 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private GameObject _contents;
         [SerializeField] private Image _touchBlocker;
         [SerializeField] private Button _addCharacterButton;
-
+        [SerializeField] private Toggle _unlimitedDiamondsToggle;
+        [SerializeField] private Toggle _unlimitedErasersToggle;
+        [SerializeField] private Button _addDiamondsButton;
+        [SerializeField] private Button _addErasersButton;
 
         private void OnEnable()
         {

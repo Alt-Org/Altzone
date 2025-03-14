@@ -202,7 +202,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: + 1000
+  m_text: + 10 000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
   m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
@@ -553,6 +553,10 @@ MonoBehaviour:
   _contents: {fileID: 7438520737699890682}
   _touchBlocker: {fileID: 0}
   _addCharacterButton: {fileID: 2777960458888404558}
+  _unlimitedDiamondsToggle: {fileID: 498058778385845730}
+  _unlimitedErasersToggle: {fileID: 8740082722379111648}
+  _addDiamondsButton: {fileID: 7505581216486939421}
+  _addErasersButton: {fileID: 4159335772173893371}
 --- !u!1 &2428650684084288046
 GameObject:
   m_ObjectHideFlags: 0
@@ -1160,7 +1164,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '+ 50
+  m_text: '+ 100
 
 '
   m_isRightToLeft: 0
