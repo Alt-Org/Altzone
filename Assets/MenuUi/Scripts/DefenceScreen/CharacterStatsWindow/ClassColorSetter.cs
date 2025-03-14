@@ -22,7 +22,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             if (_controller != null)
             {
-                _image.color = _controller.GetCurrentCharacterClassColor();
+                _image.color = _controller.GetCurrentCharacterClassAlternativeColor();
             }
         }
     }

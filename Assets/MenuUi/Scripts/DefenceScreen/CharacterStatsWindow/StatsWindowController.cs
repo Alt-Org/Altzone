@@ -106,20 +106,13 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
 
         /// <summary>
-        /// Get current character class color from character class color reference sheet.
+        /// Get current character class alternative color from character class color reference sheet.
         /// </summary>
-        /// <returns>Current character class color as Color.</returns>
-        public Color GetCurrentCharacterClassColor()
+        /// <returns>Current character class alternative color as Color.</returns>
+        public Color GetCurrentCharacterClassAlternativeColor()
         {
             CharacterClassID classID = GetCurrentCharacterClass();
-            if (classID == CharacterClassID.Intellectualizer || classID == CharacterClassID.Confluent)
-            {
-                return _classColorReference.GetAlternativeColor(classID);
-            }
-            else
-            {
-                return _classColorReference.GetColor(classID);
-            }
+            return _classColorReference.GetAlternativeColor(classID);
         }
 
 
