@@ -207,7 +207,7 @@ namespace MenuUi.Scripts.CharacterGallery
             }
 
             // ensures character slots are selectable if edit toggle is on, it can happen if adding unowned character from the + button while edit mode is on
-            if (_editModeToggle.isOn) 
+            if (_editModeToggle.isOn)
             {
                 SetCharacterSlotsSelectable(true);
             }
@@ -270,7 +270,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             int[] enumValues = (int[])Enum.GetValues(typeof(FilterType));
 
-            for (int i = 0; i < enumValues.Length;i++)
+            for (int i = 0; i < enumValues.Length; i++)
             {
                 if ((int)_currentFilter == enumValues[i])
                 {
@@ -292,37 +292,74 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             switch (filter)
             {
-                case FilterType.All:
+                case FilterType.All: // Showing all characters
                     foreach (CharacterSlot characterSlot in _characterSlots)
                     {
-                        if (!characterSlot.gameObject.activeSelf)
-                        {
-                            characterSlot.gameObject.SetActive(true);
-                        }
+                        if (!characterSlot.gameObject.activeSelf) characterSlot.gameObject.SetActive(true);
                     }
                     break;
-                case FilterType.Unlocked:
+
+                case FilterType.Unlocked: // Only showing unlocked characters
+                    foreach (CharacterSlot characterSlot in _characterSlots)
+                    {
+                        characterSlot.gameObject.SetActive(!characterSlot.IsLocked);
+                    }
                     break;
-                case FilterType.Locked:
+
+                case FilterType.Locked: // Only showing locked characters
+                    foreach (CharacterSlot characterSlot in _characterSlots)
+                    {
+                        characterSlot.gameObject.SetActive(characterSlot.IsLocked);
+                    }
                     break;
-                case FilterType.Desensitizer:
+
+                case FilterType.Desensitizer: // Only showing desensitizers
+                    FilterForClassID(CharacterClassID.Desensitizer);
                     break;
-                case FilterType.Trickster:
+
+                case FilterType.Trickster: // Only showing tricksters
+                    FilterForClassID(CharacterClassID.Trickster);
                     break;
-                case FilterType.Obedient:
+
+                case FilterType.Obedient: // Only showing obedients
+                    FilterForClassID(CharacterClassID.Obedient);
                     break;
-                case FilterType.Projector:
+
+                case FilterType.Projector: // Only showing projectors
+                    FilterForClassID(CharacterClassID.Projector);
                     break;
-                case FilterType.Retroflector:
+
+                case FilterType.Retroflector: // Only showing retroflectors
+                    FilterForClassID(CharacterClassID.Retroflector);
                     break;
-                case FilterType.Confluent:
+
+                case FilterType.Confluent: // Only showing confluents
+                    FilterForClassID(CharacterClassID.Confluent);
                     break;
-                case FilterType.Intellectualizer:
+
+                case FilterType.Intellectualizer: // Only showing intellectualizers
+                    FilterForClassID(CharacterClassID.Intellectualizer);
                     break;
             }
 
             SetFilterText(filter);
             _currentFilter = filter;
+        }
+
+
+        private void FilterForClassID(CharacterClassID classID)
+        {
+            foreach (CharacterSlot characterSlot in _characterSlots)
+            {
+                if (CustomCharacter.GetClassID(characterSlot.Character.Id) == classID)
+                {
+                    if (!characterSlot.gameObject.activeSelf) characterSlot.gameObject.SetActive(true);
+                }
+                else
+                {
+                    if (characterSlot.gameObject.activeSelf) characterSlot.gameObject.SetActive(false);
+                }
+            }
         }
 
 
