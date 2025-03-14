@@ -257,6 +257,11 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             return _playerData.Eraser;
         }
 
+        public void InvokeOnEraserAmountChanged()
+        {
+            OnEraserAmountChanged.Invoke();
+        }
+
 
         /// <summary>
         /// Try to decrease player's eraser amount by 1.
@@ -285,6 +290,12 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         public int GetDiamondAmount()
         {
             return _playerData.DiamondSpeed; // using DiamondSpeed as a placeholder
+        }
+
+
+        public void InvokeOnDiamondAmountChanged()
+        {
+            OnDiamondAmountChanged.Invoke();
         }
 
 
