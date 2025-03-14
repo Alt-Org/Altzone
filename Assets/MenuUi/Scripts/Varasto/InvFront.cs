@@ -52,7 +52,7 @@ namespace MenuUi.Scripts.Storage
         [Header("Filtering buttons")]
         [SerializeField] private Toggle[] _rarityToggles;
         [SerializeField] private Toggle[] _setToggles;
-        //[SerializeField] private Toggle _inSoulHomeToggle;
+        [SerializeField] private Toggle _inSoulHomeToggle;
         //[SerializeField] private Toggle _onSaleToggle;
 
         private List<StorageFurniture> _items;
@@ -188,7 +188,15 @@ namespace MenuUi.Scripts.Storage
                     break;
             }
 
-            return setCheck && rarityCheck;
+            // Soul home check
+            if (furn.Position != new Vector2Int(-1, -1) && !_inSoulHomeToggle.isOn)
+            {
+                return false;
+            }
+            else
+            {
+                return setCheck && rarityCheck;
+            }
         }
 
         private IEnumerator GetFurnitureFromClanInventory(string playerGuid)
