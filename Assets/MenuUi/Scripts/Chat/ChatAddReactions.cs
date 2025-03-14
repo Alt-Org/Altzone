@@ -66,10 +66,12 @@ public class ChatAddReactions : MonoBehaviour
             Sprite reactionSprite = reactionImage.sprite;
             int counter = 1;
 
-            GameObject reactionPanel = Instantiate(_addedReactionPrefab, reactionsField.transform);
-            ChatReactionHandler chatReactionHandler = reactionPanel.GetComponentInChildren<ChatReactionHandler>();
+            GameObject newReaction = Instantiate(_addedReactionPrefab, reactionsField.transform);
+            ChatReactionHandler chatReactionHandler = newReaction.GetComponentInChildren<ChatReactionHandler>();
             chatReactionHandler.SetReactionInfo(reactionSprite, counter);
             _reactionHandlers.Add(chatReactionHandler);
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
 
             _chatScript.DeselectMessage(selectedMessage);
         }
