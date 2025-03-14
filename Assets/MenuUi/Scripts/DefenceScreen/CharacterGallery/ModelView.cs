@@ -9,11 +9,26 @@ using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine.UI;
 using MenuUi.Scripts.Signals;
 using TMPro;
+using System;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
     public class ModelView : MonoBehaviour
     {
+        enum FilterType
+        {
+            All = 0,
+            Unlocked = 1,
+            Locked = 2,
+            Desensitizer = 100,
+            Trickster = 200,
+            Obedient = 300,
+            Projector = 400,
+            Retroflector = 500,
+            Confluent = 600,
+            Intellectualizer = 700,
+        }
+
         [SerializeField] private Transform _characterGridContent;
         [SerializeField] private Toggle _editModeToggle;
         [SerializeField] private Button _filterButton;
@@ -24,6 +39,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private ClassColorReference _classColorReference;
 
         private bool _isReady;
+        private FilterType _currentFilter = FilterType.All;
 
         // Array of character slots in selected grid
         [SerializeField] private SelectedCharacterSlot[] _selectedCharacterSlots;
@@ -56,6 +72,8 @@ namespace MenuUi.Scripts.CharacterGallery
             }
 
             SignalBus.OnDefenceGalleryEditModeRequested += ChangeEditToggleStatusToTrue;
+            _filterButton.onClick.AddListener(RotateFilters);
+            SetFilterText(_currentFilter);
         }
 
 
@@ -245,6 +263,104 @@ namespace MenuUi.Scripts.CharacterGallery
         private void SetTopSlotCharacter(CharacterID id, int selectedSlotIdx)
         {
             OnTopSlotCharacterSet?.Invoke(id, selectedSlotIdx);
+        }
+
+
+        private void RotateFilters()
+        {
+            int[] enumValues = (int[])Enum.GetValues(typeof(FilterType));
+
+            for (int i = 0; i < enumValues.Length;i++)
+            {
+                if ((int)_currentFilter == enumValues[i])
+                {
+                    if (i + 1 < enumValues.Length)
+                    {
+                        SetFilter((FilterType)enumValues[i + 1]);
+                    }
+                    else
+                    {
+                        SetFilter((FilterType)enumValues[0]);
+                    }
+                    break;
+                }
+            }
+        }
+
+
+        private void SetFilter(FilterType filter)
+        {
+            switch (filter)
+            {
+                case FilterType.All:
+                    foreach (CharacterSlot characterSlot in _characterSlots)
+                    {
+                        if (!characterSlot.gameObject.activeSelf)
+                        {
+                            characterSlot.gameObject.SetActive(true);
+                        }
+                    }
+                    break;
+                case FilterType.Unlocked:
+                    break;
+                case FilterType.Locked:
+                    break;
+                case FilterType.Desensitizer:
+                    break;
+                case FilterType.Trickster:
+                    break;
+                case FilterType.Obedient:
+                    break;
+                case FilterType.Projector:
+                    break;
+                case FilterType.Retroflector:
+                    break;
+                case FilterType.Confluent:
+                    break;
+                case FilterType.Intellectualizer:
+                    break;
+            }
+
+            SetFilterText(filter);
+            _currentFilter = filter;
+        }
+
+
+        private void SetFilterText(FilterType filter)
+        {
+            switch (filter)
+            {
+                case FilterType.All:
+                    _filterText.text = "Kaikki";
+                    break;
+                case FilterType.Unlocked:
+                    _filterText.text = "Tietoiset";
+                    break;
+                case FilterType.Locked:
+                    _filterText.text = "Tiedostamattomat";
+                    break;
+                case FilterType.Desensitizer:
+                    _filterText.text = "Tunnottomat";
+                    break;
+                case FilterType.Trickster:
+                    _filterText.text = "Hämääjät";
+                    break;
+                case FilterType.Obedient:
+                    _filterText.text = "Tottelijat";
+                    break;
+                case FilterType.Projector:
+                    _filterText.text = "Peilaajat";
+                    break;
+                case FilterType.Retroflector:
+                    _filterText.text = "Torjujat";
+                    break;
+                case FilterType.Confluent:
+                    _filterText.text = "Sulautujat";
+                    break;
+                case FilterType.Intellectualizer:
+                    _filterText.text = "Älyllistäjät";
+                    break;
+            }
         }
     }
 }
