@@ -17,7 +17,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private Sprite[] _loadoutSprites;
         private Button _button;
         private int _currentLoadoutIndex = 0;
-        private bool _firstTimeInitializing = true;
 
         private void Awake()
         {
@@ -33,8 +32,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         private void OnEnable()
         {
-            // The first time CharacterStatsWindowView is opened initializing the chart doesn't work in OnEnable but has to be done in Start.
-            if (_firstTimeInitializing == false)
+            if (_controller != null)
             {
                 InitializeChart();
             }
@@ -43,7 +41,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private void Start()
         {
             InitializeChart();
-            _firstTimeInitializing = false;
         }
 
         private void InitializeChart()
