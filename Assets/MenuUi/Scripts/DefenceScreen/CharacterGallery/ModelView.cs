@@ -8,6 +8,7 @@ using Altzone.Scripts.ReferenceSheets;
 using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine.UI;
 using MenuUi.Scripts.Signals;
+using TMPro;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -15,6 +16,8 @@ namespace MenuUi.Scripts.CharacterGallery
     {
         [SerializeField] private Transform _characterGridContent;
         [SerializeField] private Toggle _editModeToggle;
+        [SerializeField] private Button _filterButton;
+        [SerializeField] private TMP_Text _filterText;
 
         [SerializeField] private GameObject _characterSlotPrefab;
 
