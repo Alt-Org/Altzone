@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Lobby.Wrappers;
+using MenuUI.Scripts;
 using Prg.Scripts.Common.PubSub;
 using TMPro;
 using UnityEngine;
@@ -44,7 +45,14 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private void StartPlaying()
         {
             Debug.Log($"startPlaying");
-            this.Publish(new LobbyManager.StartPlayingEvent());
+            if (PhotonLobbyRoom.IsValidAllSelectedCharacters())
+            {
+                this.Publish(new LobbyManager.StartPlayingEvent());
+            }
+            else
+            {
+                SignalBus.OnChangePopupInfoSignal("Peliä ei voi aloittaa, kaikkien pelaajien pitää valita 3 puolustushahmoa.");
+            }
         }
         private void GoBack()
         {

@@ -326,6 +326,10 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator StartTheGameplay(bool isCloseRoom, string blueTeamName, string redTeamName)
         {
+            if (!PhotonBattleRoom.IsValidAllSelectedCharacters())
+            {
+                throw new UnityException("can't start game, everyone needs to have 3 defence characters selected");
+            }
             //Debug.Log($"startTheGameplay {gameWindow}");
             if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient)
             {
