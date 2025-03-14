@@ -159,51 +159,43 @@ namespace MenuUi.Scripts.CharacterGallery
         /// <param name="selectedCharacterIds">Array of selected character ids which will be placed to the top slot.</param>
         public void SetCharacters(List<CustomCharacter> customCharacters, int[] selectedCharacterIds)
         {
-            DataStore store = Storefront.Get();
-
-            ReadOnlyCollection<BaseCharacter> allItems = null;
-            store.GetAllBaseCharacterYield(result => allItems = result);
-
-            foreach (BaseCharacter baseCharacter in allItems)
+            // Placing unlocked characters
+            foreach (CustomCharacter character in customCharacters)
             {
-                PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(((int)baseCharacter.Id).ToString());
-                if (info == null) continue;
-
-                GameObject slot = Instantiate(_characterSlotPrefab, _characterGridContent);
-
-                CharacterClassID classID = CustomCharacter.GetClassID(baseCharacter.Id);
-                Color bgColor = _classColorReference.GetColor(classID);
-                Color bgAltColor = _classColorReference.GetAlternativeColor(classID);
-
-                CharacterSlot charSlot = slot.GetComponent<CharacterSlot>();
-                charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, baseCharacter.Id);
-
-                _characterSlots.Add(charSlot);
-                charSlot.OnCharacterSelected += HandleCharacterSelected;
+                var charSlot = InstantiateCharacterSlot(character.Id, false);
 
                 for (int i = 0; i < _selectedCharacterSlots.Length; i++)
                 {
-                    if (baseCharacter.Id == (CharacterID)selectedCharacterIds[i])
+                    if (charSlot == null) break;
+
+                    if (character.Id == (CharacterID)selectedCharacterIds[i]) // Check if character is selected
                     {
                         charSlot.Character.transform.SetParent(_selectedCharacterSlots[i].transform, false);
                         charSlot.Character.SetSelectedVisuals();
                     }
                 }
+            }
 
-                bool characterOwned = false;
-                foreach (CustomCharacter customCharacter in customCharacters)
+            // Placing locked characters
+            DataStore store = Storefront.Get();
+            ReadOnlyCollection<BaseCharacter> allItems = null;
+            store.GetAllBaseCharacterYield(result => allItems = result);
+
+            foreach (BaseCharacter baseCharacter in allItems)
+            {
+                // Checking if player has already unlocked the character and if so, skipping the character
+                bool characterUnlocked = false;
+                foreach (CharacterSlot slot in _characterSlots)
                 {
-                    if (customCharacter.Id == baseCharacter.Id)
+                    if (slot.Character.Id == baseCharacter.Id)
                     {
-                        characterOwned = true;
+                        characterUnlocked = true;
+                        break;
                     }
                 }
+                if (characterUnlocked) continue;
 
-                if (!characterOwned)
-                {
-                    charSlot.Character.SetLockedVisuals();
-                    charSlot.IsLocked = true;
-                }
+                InstantiateCharacterSlot(baseCharacter.Id, true);
             }
 
             // ensures character slots are selectable if edit toggle is on, it can happen if adding unowned character from the + button while edit mode is on
@@ -211,6 +203,33 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 SetCharacterSlotsSelectable(true);
             }
+        }
+
+
+        private CharacterSlot InstantiateCharacterSlot(CharacterID charID, bool isLocked)
+        {
+            PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(((int)charID).ToString());
+            if (info == null) return null;
+
+            GameObject slot = Instantiate(_characterSlotPrefab, _characterGridContent);
+
+            CharacterClassID classID = CustomCharacter.GetClassID(charID);
+            Color bgColor = _classColorReference.GetColor(classID);
+            Color bgAltColor = _classColorReference.GetAlternativeColor(classID);
+
+            CharacterSlot charSlot = slot.GetComponent<CharacterSlot>();
+            charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, charID);
+
+            _characterSlots.Add(charSlot);
+            charSlot.OnCharacterSelected += HandleCharacterSelected;
+
+            if (isLocked)
+            {
+                charSlot.Character.SetLockedVisuals();
+                charSlot.IsLocked = true;
+            }
+
+            return charSlot;
         }
 
 
