@@ -33,6 +33,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private Toggle _editModeToggle;
         [SerializeField] private Button _filterButton;
         [SerializeField] private TMP_Text _filterText;
+        [SerializeField] private BaseScrollRect _scrollRect;
 
         [SerializeField] private GameObject _characterSlotPrefab;
 
@@ -304,6 +305,8 @@ namespace MenuUi.Scripts.CharacterGallery
                     break;
                 }
             }
+
+            _scrollRect.VerticalNormalizedPosition = 1; // setting scroll to the top so that it's not possibly scrolled too far
         }
 
 
