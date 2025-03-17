@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Altzone.Scripts.Lobby;
 using UnityEngine;
 using UnityEngine.UI;
@@ -34,16 +35,8 @@ public class BattleStoryController : MonoBehaviour
     [SerializeField]
     private Transform _path3Position1;
 
-    [Header("Ball Emotion Sprites"),SerializeField]
-    private Sprite _ballAngrySprite;
-    [SerializeField]
-    private Sprite _ballJoySprite;
-    [SerializeField]
-    private Sprite _ballLoveSprite;
-    [SerializeField]
-    private Sprite _ballPlaySprite;
-    [SerializeField]
-    private Sprite _ballSorrowSprite;
+    [Header("Ball Emotion Sprites"), SerializeField]
+    private List<EmotionObject> _emotionList;
 
     [Header("Character Animators"),SerializeField]
     private Animator _characterAnimator1;
@@ -60,13 +53,14 @@ public class BattleStoryController : MonoBehaviour
 
     public IEnumerator PlayAnimation()
     {
+        List<EmotionObject> validatedList = ValidateEmotions();
+
+        int clipsCount = validatedList.Count;
         var clips1 = _characterAnimator1.runtimeAnimatorController.animationClips;
-        int clips1Count = clips1.Length;
-        List<int> randomClipOrder1 = new();
+        List<Emotion> randomClipOrder1 = new();
         List<int> randomBallOrder1 = new();
         var clips2 = _characterAnimator2.runtimeAnimatorController.animationClips;
-        int clips2Count = clips2.Length;
-        List<int> randomClipOrder2 = new();
+        List<Emotion> randomClipOrder2 = new();
         List<int> randomBallOrder2 = new();
         int prevSelectedValue1 = -1;
         int selectedvalue1 = -1;
@@ -76,18 +70,18 @@ public class BattleStoryController : MonoBehaviour
         {
             do
             {
-                selectedvalue1 = Random.Range(0, clips1Count);
+                selectedvalue1 = Random.Range(0, clipsCount);
             } while(selectedvalue1.Equals(prevSelectedValue1));
-            randomClipOrder1.Add(selectedvalue1);
+            randomClipOrder1.Add(validatedList[selectedvalue1].Emotion);
             prevSelectedValue1 = selectedvalue1;
             int ballAnimation1 = Random.Range(0, 3);
             randomBallOrder1.Add(ballAnimation1);
 
             do
             {
-                selectedvalue2 = Random.Range(0, clips2Count);
+                selectedvalue2 = Random.Range(0, clipsCount);
             } while (selectedvalue2.Equals(prevSelectedValue2));
-            randomClipOrder2.Add(selectedvalue2);
+            randomClipOrder2.Add(validatedList[selectedvalue2].Emotion);
             prevSelectedValue2 = selectedvalue2;
             int ballAnimation2 = Random.Range(0, 3);
             randomBallOrder2.Add(ballAnimation2);
@@ -95,29 +89,12 @@ public class BattleStoryController : MonoBehaviour
         yield return new WaitForSeconds(1f);
         for (int i = 0; i < randomClipOrder1.Count; i++)
         {
-            Debug.LogWarning($"Character 1: {randomClipOrder1[i]}:{clips1[randomClipOrder1[i]].name}, Ball 1: {randomBallOrder1[i]}");
-            _characterAnimator1.Play(clips1[randomClipOrder1[i]].name);
+            Debug.LogWarning($"Character 1: {randomClipOrder1[i]}:{validatedList.First(x => x.Emotion == randomClipOrder1[i]).Character1Animation.name}, Ball 1: {randomBallOrder1[i]}");
+            _characterAnimator1.Play(validatedList.First(x => x.Emotion == randomClipOrder1[i]).Character1Animation.name);
             GameObject ball = Instantiate(_emotionBall, _endStartPositionLeft);
-            switch (randomClipOrder1[i])
-            {
-                case 0:
-                    ball.GetComponent<Image>().sprite = _ballJoySprite;
-                    break;
-                case 1:
-                    ball.GetComponent<Image>().sprite = _ballPlaySprite;
-                    break;
-                case 2:
-                    ball.GetComponent<Image>().sprite = _ballLoveSprite;
-                    break;
-                case 3:
-                    ball.GetComponent<Image>().sprite = _ballSorrowSprite;
-                    break;
-                case 4:
-                    ball.GetComponent<Image>().sprite = _ballAngrySprite;
-                    break;
-                default:
-                    break;
-            }
+
+            ball.GetComponent<Image>().sprite = validatedList.First(x => x.Emotion == randomClipOrder1[i]).BallSprite;
+            
             ball.GetComponent<RectTransform>().rotation = Quaternion.Euler(new(0, 180, 0));
             bool ballDone = false;
             switch (randomBallOrder1[i])
@@ -139,29 +116,12 @@ public class BattleStoryController : MonoBehaviour
             Destroy(ball);
 
             yield return new WaitForSeconds(0.5f);
-            Debug.LogWarning($"Character 2: {randomClipOrder2[i]}:{clips2[randomClipOrder2[i]].name}, Ball 2: {randomBallOrder2[i]}");
-            _characterAnimator2.Play(clips2[randomClipOrder2[i]].name);
-            GameObject ball2 = Instantiate(_emotionBall, _endStartPositionLeft);
-            switch (randomClipOrder2[i])
-            {
-                case 0:
-                    ball2.GetComponent<Image>().sprite = _ballJoySprite;
-                    break;
-                case 1:
-                    ball2.GetComponent<Image>().sprite = _ballAngrySprite;
-                    break;
-                case 2:
-                    ball2.GetComponent<Image>().sprite = _ballLoveSprite;
-                    break;
-                case 3:
-                    ball2.GetComponent<Image>().sprite = _ballPlaySprite;
-                    break;
-                case 5:
-                    ball2.GetComponent<Image>().sprite = _ballSorrowSprite;
-                    break;
-                default:
-                    break;
-            }
+            Debug.LogWarning($"Character 2: {randomClipOrder2[i]}:{validatedList.First(x => x.Emotion == randomClipOrder2[i]).Character2Animation.name}, Ball 2: {randomBallOrder2[i]}");
+            _characterAnimator2.Play(validatedList.First(x => x.Emotion == randomClipOrder2[i]).Character2Animation.name);
+            GameObject ball2 = Instantiate(_emotionBall, _endStartPositionRight);
+
+            ball.GetComponent<Image>().sprite = validatedList.First(x => x.Emotion == randomClipOrder2[i]).BallSprite;
+
             ballDone = false;
             switch (randomBallOrder2[i])
             {
@@ -182,6 +142,35 @@ public class BattleStoryController : MonoBehaviour
             Destroy(ball2);
             yield return new WaitForSeconds(0.5f);
         }
+    }
+
+    private EmotionObject GetEmotionData(Emotion emotion)
+    {
+        if (emotion == Emotion.Blank) return null;
+
+        foreach (EmotionObject emotionObj in _emotionList)
+        {
+            if(emotionObj.Emotion == emotion) return emotionObj;
+        }
+        return null;
+    }
+
+    private List<EmotionObject> ValidateEmotions()
+    {
+        List<EmotionObject> validatedList = new ();
+        foreach(EmotionObject emotionObj in _emotionList)
+        {
+            if (emotionObj.Emotion is Emotion.Blank) continue;
+
+            if (validatedList.Any(validatedEmotion => emotionObj.Emotion.Equals(validatedEmotion.Emotion)))
+            {
+                Debug.LogWarning("Multiple Emotions Objects with same Emotion value detected. Ignoring the latter.");
+                continue;
+            }
+
+            validatedList.Add(emotionObj);
+        }
+        return validatedList;
     }
 
     private IEnumerator BallAnimationRight1(GameObject ball, Action<bool> callback)
@@ -377,4 +366,32 @@ public class BattleStoryController : MonoBehaviour
         LobbyManager.ExitBattleStory();
     }
 
+}
+
+public enum Emotion
+{
+    Blank,
+    Anger,
+    Joy,
+    Love,
+    Playful,
+    Sorrow
+}
+
+[Serializable]
+public class EmotionObject
+{
+    [SerializeField]
+    private Emotion _emotion;
+    [SerializeField]
+    private Sprite _ballSprite;
+    [SerializeField]
+    private AnimationClip _character1Animation;
+    [SerializeField]
+    private AnimationClip _character2Animation;
+
+    public Emotion Emotion { get => _emotion;}
+    public Sprite BallSprite { get => _ballSprite;}
+    public AnimationClip Character1Animation { get => _character1Animation;}
+    public AnimationClip Character2Animation { get => _character2Animation;}
 }
