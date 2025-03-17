@@ -50,6 +50,51 @@ namespace Quantum.Prototypes.Unity {
   #endif //;
   
   [System.SerializableAttribute()]
+  public unsafe partial class PlayerDataPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.PlayerDataPrototype> {
+    public PlayerRef Player;
+    public Quantum.QEnum32<BattlePlayerSlot> Slot;
+    public Quantum.QEnum32<BattleTeamNumber> TeamNumber;
+    public Int32 CharacterId;
+    public Int32 CharacterClass;
+    public FP StatHp;
+    public FP StatSpeed;
+    public FP StatCharacterSize;
+    public FP StatAttack;
+    public FP StatDefence;
+    public FP Speed;
+    public FPVector2 TargetPosition;
+    public FP BaseRotation;
+    public FP MovementRotation;
+    public FPVector2 Normal;
+    public FP CollisionMinOffset;
+    [FreeOnComponentRemoved()]
+    [DynamicCollectionAttribute()]
+    public Quantum.QuantumEntityPrototype[] ShieldHitboxArray = {};
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.PlayerDataPrototype prototype);
+    public override Quantum.Prototypes.PlayerDataPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.PlayerDataPrototype();
+      converter.Convert(this.Player, out result.Player);
+      converter.Convert(this.Slot, out result.Slot);
+      converter.Convert(this.TeamNumber, out result.TeamNumber);
+      converter.Convert(this.CharacterId, out result.CharacterId);
+      converter.Convert(this.CharacterClass, out result.CharacterClass);
+      converter.Convert(this.StatHp, out result.StatHp);
+      converter.Convert(this.StatSpeed, out result.StatSpeed);
+      converter.Convert(this.StatCharacterSize, out result.StatCharacterSize);
+      converter.Convert(this.StatAttack, out result.StatAttack);
+      converter.Convert(this.StatDefence, out result.StatDefence);
+      converter.Convert(this.Speed, out result.Speed);
+      converter.Convert(this.TargetPosition, out result.TargetPosition);
+      converter.Convert(this.BaseRotation, out result.BaseRotation);
+      converter.Convert(this.MovementRotation, out result.MovementRotation);
+      converter.Convert(this.Normal, out result.Normal);
+      converter.Convert(this.CollisionMinOffset, out result.CollisionMinOffset);
+      converter.Convert(this.ShieldHitboxArray, out result.ShieldHitboxArray);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
   public unsafe partial class PlayerHitBoxPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.PlayerHitBoxPrototype> {
     public Quantum.QuantumEntityPrototype Player;
     public Quantum.QEnum32<PlayerHitboxType> HitBoxType;

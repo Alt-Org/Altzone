@@ -132,7 +132,7 @@ namespace Quantum.Prototypes {
   }
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerData))]
-  public unsafe partial class PlayerDataPrototype : ComponentPrototype<Quantum.PlayerData> {
+  public unsafe class PlayerDataPrototype : ComponentPrototype<Quantum.PlayerData> {
     public PlayerRef Player;
     public Quantum.QEnum32<BattlePlayerSlot> Slot;
     public Quantum.QEnum32<BattleTeamNumber> TeamNumber;
@@ -149,7 +149,9 @@ namespace Quantum.Prototypes {
     public FP MovementRotation;
     public FPVector2 Normal;
     public FP CollisionMinOffset;
-    partial void MaterializeUser(Frame frame, ref Quantum.PlayerData result, in PrototypeMaterializationContext context);
+    [FreeOnComponentRemoved()]
+    [DynamicCollectionAttribute()]
+    public MapEntityId[] ShieldHitboxArray = {};
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.PlayerData component = default;
         Materialize((Frame)f, ref component, in context);
@@ -172,7 +174,16 @@ namespace Quantum.Prototypes {
         result.MovementRotation = this.MovementRotation;
         result.Normal = this.Normal;
         result.CollisionMinOffset = this.CollisionMinOffset;
-        MaterializeUser(frame, ref result, in context);
+        if (this.ShieldHitboxArray.Length == 0) {
+          result.ShieldHitboxArray = default;
+        } else {
+          var list = frame.AllocateList(out result.ShieldHitboxArray, this.ShieldHitboxArray.Length);
+          for (int i = 0; i < this.ShieldHitboxArray.Length; ++i) {
+            EntityRef tmp = default;
+            PrototypeValidator.FindMapEntity(this.ShieldHitboxArray[i], in context, out tmp);
+            list.Add(tmp);
+          }
+        }
     }
   }
   [System.SerializableAttribute()]

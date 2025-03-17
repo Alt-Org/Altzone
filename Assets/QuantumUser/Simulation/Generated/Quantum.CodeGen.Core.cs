@@ -692,6 +692,9 @@ namespace Quantum {
     public FPVector2 Normal;
     [FieldOffset(32)]
     public FP CollisionMinOffset;
+    [FieldOffset(20)]
+    [FreeOnComponentRemoved()]
+    public QListPtr<EntityRef> ShieldHitboxArray;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10271;
@@ -711,8 +714,16 @@ namespace Quantum {
         hash = hash * 31 + MovementRotation.GetHashCode();
         hash = hash * 31 + Normal.GetHashCode();
         hash = hash * 31 + CollisionMinOffset.GetHashCode();
+        hash = hash * 31 + ShieldHitboxArray.GetHashCode();
         return hash;
       }
+    }
+    public void ClearPointers(FrameBase f, EntityRef entity) {
+      if (ShieldHitboxArray != default) f.FreeList(ref ShieldHitboxArray);
+    }
+    public static void OnRemoved(FrameBase frame, EntityRef entity, void* ptr) {
+      var p = (Quantum.PlayerData*)ptr;
+      p->ClearPointers((Frame)frame, entity);
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (PlayerData*)ptr;
@@ -721,6 +732,7 @@ namespace Quantum {
         serializer.Stream.Serialize(&p->CharacterClass);
         serializer.Stream.Serialize(&p->CharacterId);
         PlayerRef.Serialize(&p->Player, serializer);
+        QList.Serialize(&p->ShieldHitboxArray, serializer, Statics.SerializeEntityRef);
         FP.Serialize(&p->BaseRotation, serializer);
         FP.Serialize(&p->CollisionMinOffset, serializer);
         FP.Serialize(&p->MovementRotation, serializer);
@@ -934,7 +946,7 @@ namespace Quantum {
     void OnTriggerProjectileHitArenaBorder(Frame f, Projectile* projectile, EntityRef projectileEntity, ArenaBorder* arenaBorder, EntityRef arenaBorderEntity);
   }
   public unsafe partial interface ISignalOnTriggerProjectileHitPlayer : ISignal {
-    void OnTriggerProjectileHitPlayer(Frame f, Projectile* projectile, EntityRef projectileEntity, PlayerData* playerData, EntityRef playerEntity);
+    void OnTriggerProjectileHitPlayer(Frame f, Projectile* projectile, EntityRef projectileEntity, PlayerHitBox* playerHitBox, EntityRef playerEntity);
   }
   public static unsafe partial class Constants {
     public const Int32 PLAYER_SLOT_COUNT = 4;
@@ -1114,12 +1126,12 @@ namespace Quantum {
           }
         }
       }
-      public void OnTriggerProjectileHitPlayer(Projectile* projectile, EntityRef projectileEntity, PlayerData* playerData, EntityRef playerEntity) {
+      public void OnTriggerProjectileHitPlayer(Projectile* projectile, EntityRef projectileEntity, PlayerHitBox* playerHitBox, EntityRef playerEntity) {
         var array = _f._ISignalOnTriggerProjectileHitPlayerSystems;
         for (Int32 i = 0; i < array.Length; ++i) {
           var s = array[i];
           if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
-            s.OnTriggerProjectileHitPlayer(_f, projectile, projectileEntity, playerData, playerEntity);
+            s.OnTriggerProjectileHitPlayer(_f, projectile, projectileEntity, playerHitBox, playerEntity);
           }
         }
       }
@@ -1240,7 +1252,7 @@ namespace Quantum {
         .Add<Quantum.ArenaBorder>(Quantum.ArenaBorder.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.GameSession>(Quantum.GameSession.Serialize, null, null, ComponentFlags.Singleton)
         .Add<Quantum.Goal>(Quantum.Goal.Serialize, null, null, ComponentFlags.None)
-        .Add<Quantum.PlayerData>(Quantum.PlayerData.Serialize, null, null, ComponentFlags.None)
+        .Add<Quantum.PlayerData>(Quantum.PlayerData.Serialize, null, Quantum.PlayerData.OnRemoved, ComponentFlags.None)
         .Add<Quantum.PlayerHitBox>(Quantum.PlayerHitBox.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.PlayerManagerData>(Quantum.PlayerManagerData.Serialize, null, null, ComponentFlags.Singleton)
         .Add<Quantum.Projectile>(Quantum.Projectile.Serialize, null, null, ComponentFlags.None)

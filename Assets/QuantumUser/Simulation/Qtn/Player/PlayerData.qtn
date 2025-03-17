@@ -18,4 +18,7 @@ component PlayerData
     FP MovementRotation;
     FPVector2 Normal;
     FP CollisionMinOffset;
+
+    [FreeOnComponentRemoved]
+    list<EntityRef> ShieldHitboxArray;
 }
