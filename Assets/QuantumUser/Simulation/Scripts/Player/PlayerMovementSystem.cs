@@ -30,21 +30,15 @@ namespace Quantum
 
             if (input->MouseClick)
             {
+                filter.PlayerData->TargetPosition = GridManager.GridPositionToWorldPosition(input->MovementPosition);
                 //checks if player is allowed to move to that side of the arena
-                if (((filter.PlayerData->TeamNumber == BattleTeamNumber.TeamAlpha) && input->MousePosition.Z < 0)
-                    || ((filter.PlayerData->TeamNumber == BattleTeamNumber.TeamBeta) && input->MousePosition.Z > 0))
+                if (((filter.PlayerData->TeamNumber == BattleTeamNumber.TeamAlpha) && filter.PlayerData->TargetPosition.Y > 0)
+                    || ((filter.PlayerData->TeamNumber == BattleTeamNumber.TeamBeta) && filter.PlayerData->TargetPosition.X < 0)) 
                 {
-                    filter.PlayerData->TargetPosition.X = input->MousePosition.X;
-                    filter.PlayerData->TargetPosition.Y = input->MousePosition.Z;
-                    Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", filter.PlayerData->TargetPosition);
-                }
-
-                //if player is not allowed to move to that side of the arena, targetposition is for as far as a player can go
-                else
-                {
-                    filter.PlayerData->TargetPosition.X = input->MousePosition.X;
                     filter.PlayerData->TargetPosition.Y = 0;
                 }
+                    Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", filter.PlayerData->TargetPosition);
+            }
             }
 
             if (input->RotateMotion)
