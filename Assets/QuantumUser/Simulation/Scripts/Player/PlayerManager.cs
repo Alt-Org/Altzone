@@ -10,8 +10,6 @@ namespace Quantum
     {
         #region Public
 
-        private static FPVector2[] s_spawnPoints = new FPVector2[Constants.PLAYER_SLOT_COUNT];
-
         #region Public - Static Methods
 
         public static void Init(Frame f)
@@ -91,7 +89,7 @@ namespace Quantum
 
                 playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntityArray[i]);
                 playerTransform->Teleport(f, spawnPosition, rotation);
-                
+
             }
 
             playerHandle.PlayState = PlayerPlayState.OutOfPlay;
@@ -176,6 +174,8 @@ namespace Quantum
         #endregion Public
 
         #region Private
+
+        private static readonly FPVector2[] s_spawnPoints = new FPVector2[Constants.PLAYER_SLOT_COUNT];
 
         private struct PlayerHandle
         {
