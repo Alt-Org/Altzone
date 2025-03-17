@@ -140,7 +140,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         {
             StartCoroutine(GetPlayerData(playerData =>
             {
-                var characters = playerData.CustomCharacters.ToList();
+                var characters = playerData.CustomCharacters.GroupBy(x => x.Id).Select(x => x.First()).ToList(); // ensuring no duplicate characters are shown
 
                 foreach (CustomCharacter character in characters)
                 {
