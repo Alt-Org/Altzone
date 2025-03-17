@@ -33,12 +33,11 @@ namespace Quantum
                 filter.PlayerData->TargetPosition = GridManager.GridPositionToWorldPosition(input->MovementPosition);
                 //checks if player is allowed to move to that side of the arena
                 if (((filter.PlayerData->TeamNumber == BattleTeamNumber.TeamAlpha) && filter.PlayerData->TargetPosition.Y > 0)
-                    || ((filter.PlayerData->TeamNumber == BattleTeamNumber.TeamBeta) && filter.PlayerData->TargetPosition.X < 0)) 
+                    || ((filter.PlayerData->TeamNumber == BattleTeamNumber.TeamBeta) && filter.PlayerData->TargetPosition.X < 0))
                 {
                     filter.PlayerData->TargetPosition.Y = 0;
                 }
                     Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", filter.PlayerData->TargetPosition);
-            }
             }
 
             if (input->RotateMotion)
