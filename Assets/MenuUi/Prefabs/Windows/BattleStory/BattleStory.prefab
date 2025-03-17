@@ -194,11 +194,37 @@ MonoBehaviour:
   _path2RightPosition1: {fileID: 1012245159259237654}
   _path2RightPosition2: {fileID: 3743659160747056746}
   _path3Position1: {fileID: 8054212177414827906}
-  _ballAngrySprite: {fileID: 21300000, guid: f2b83a7b2c6a52841b77a42cc7d37037, type: 3}
-  _ballJoySprite: {fileID: 21300000, guid: 5f807db67ddeb034f8bc566b1c40d0f2, type: 3}
-  _ballLoveSprite: {fileID: 21300000, guid: 12b57e5949bfa3d41a2876eb7b3eb60a, type: 3}
-  _ballPlaySprite: {fileID: 21300000, guid: d9e284f3780d8be4fb672179ec2b4da8, type: 3}
-  _ballSorrowSprite: {fileID: 21300000, guid: 2f6386a31b226474582e55ec1938f506, type: 3}
+  _emotionList:
+  - _emotion: 1
+    _ballSprite: {fileID: 21300000, guid: f2b83a7b2c6a52841b77a42cc7d37037, type: 3}
+    _character1Animation: {fileID: 7400000, guid: 2770164b925054c44abeaa869f2e893c,
+      type: 2}
+    _character2Animation: {fileID: 7400000, guid: 06bcd233289075046b22055db18422aa,
+      type: 2}
+  - _emotion: 2
+    _ballSprite: {fileID: 21300000, guid: 5f807db67ddeb034f8bc566b1c40d0f2, type: 3}
+    _character1Animation: {fileID: 7400000, guid: 4b59724b29b426643a6846a1d2fe1769,
+      type: 2}
+    _character2Animation: {fileID: 7400000, guid: 8844086edc0ccf749a6b4c2c01d39388,
+      type: 2}
+  - _emotion: 3
+    _ballSprite: {fileID: 21300000, guid: 12b57e5949bfa3d41a2876eb7b3eb60a, type: 3}
+    _character1Animation: {fileID: 7400000, guid: d58bd598b9067e94e990be42b9ad88f7,
+      type: 2}
+    _character2Animation: {fileID: 7400000, guid: baf916e0ed123894aa4b479ba8ba5fda,
+      type: 2}
+  - _emotion: 4
+    _ballSprite: {fileID: 21300000, guid: d9e284f3780d8be4fb672179ec2b4da8, type: 3}
+    _character1Animation: {fileID: 7400000, guid: 17f18b784bce839498c451dfb8f898b6,
+      type: 2}
+    _character2Animation: {fileID: 7400000, guid: f00c2a62421b6a54ead82192b8da6ca2,
+      type: 2}
+  - _emotion: 5
+    _ballSprite: {fileID: 21300000, guid: 2f6386a31b226474582e55ec1938f506, type: 3}
+    _character1Animation: {fileID: 7400000, guid: 0a25189a567fe8e4a9b16cb2c775e5c1,
+      type: 2}
+    _character2Animation: {fileID: 7400000, guid: 8ce59aee649edde46bee8fd2412272a9,
+      type: 2}
   _characterAnimator1: {fileID: 1715033929214055479}
   _characterAnimator2: {fileID: 8889435277165240542}
 --- !u!1 &1661229975782825684

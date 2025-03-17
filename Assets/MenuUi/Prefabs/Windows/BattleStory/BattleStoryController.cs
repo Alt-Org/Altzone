@@ -56,10 +56,10 @@ public class BattleStoryController : MonoBehaviour
         List<EmotionObject> validatedList = ValidateEmotions();
 
         int clipsCount = validatedList.Count;
-        var clips1 = _characterAnimator1.runtimeAnimatorController.animationClips;
+        if (clipsCount <= 0) yield break;
         List<Emotion> randomClipOrder1 = new();
         List<int> randomBallOrder1 = new();
-        var clips2 = _characterAnimator2.runtimeAnimatorController.animationClips;
+
         List<Emotion> randomClipOrder2 = new();
         List<int> randomBallOrder2 = new();
         int prevSelectedValue1 = -1;
@@ -89,7 +89,7 @@ public class BattleStoryController : MonoBehaviour
         yield return new WaitForSeconds(1f);
         for (int i = 0; i < randomClipOrder1.Count; i++)
         {
-            Debug.LogWarning($"Character 1: {randomClipOrder1[i]}:{validatedList.First(x => x.Emotion == randomClipOrder1[i]).Character1Animation.name}, Ball 1: {randomBallOrder1[i]}");
+            //Debug.LogWarning($"Character 1: {randomClipOrder1[i]}:{validatedList.First(x => x.Emotion == randomClipOrder1[i]).Character1Animation.name}, Ball 1: {randomBallOrder1[i]}");
             _characterAnimator1.Play(validatedList.First(x => x.Emotion == randomClipOrder1[i]).Character1Animation.name);
             GameObject ball = Instantiate(_emotionBall, _endStartPositionLeft);
 
@@ -116,11 +116,11 @@ public class BattleStoryController : MonoBehaviour
             Destroy(ball);
 
             yield return new WaitForSeconds(0.5f);
-            Debug.LogWarning($"Character 2: {randomClipOrder2[i]}:{validatedList.First(x => x.Emotion == randomClipOrder2[i]).Character2Animation.name}, Ball 2: {randomBallOrder2[i]}");
+            //Debug.LogWarning($"Character 2: {randomClipOrder2[i]}:{validatedList.First(x => x.Emotion == randomClipOrder2[i]).Character2Animation.name}, Ball 2: {randomBallOrder2[i]}");
             _characterAnimator2.Play(validatedList.First(x => x.Emotion == randomClipOrder2[i]).Character2Animation.name);
             GameObject ball2 = Instantiate(_emotionBall, _endStartPositionRight);
 
-            ball.GetComponent<Image>().sprite = validatedList.First(x => x.Emotion == randomClipOrder2[i]).BallSprite;
+            ball2.GetComponent<Image>().sprite = validatedList.First(x => x.Emotion == randomClipOrder2[i]).BallSprite;
 
             ballDone = false;
             switch (randomBallOrder2[i])
