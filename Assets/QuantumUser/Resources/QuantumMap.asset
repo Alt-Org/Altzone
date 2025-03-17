@@ -44,6 +44,7 @@ MonoBehaviour:
   MapEntities:
   - Components:
     - rid: 5490577773346947072
+    - rid: 5490577773346947073
   - Components:
     - rid: 216534950936051712
     - rid: 216534950936051713
@@ -483,7 +484,7 @@ MonoBehaviour:
             RawValue: -65536
         CollisionMinOffset:
           RawValue: 13107
-        Layer: 0
+        Layer: 2
     - rid: 913064374447374336
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -548,7 +549,7 @@ MonoBehaviour:
             RawValue: -65536
         CollisionMinOffset:
           RawValue: 13107
-        Layer: 0
+        Layer: 1
     - rid: 1328971346486493184
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -613,7 +614,7 @@ MonoBehaviour:
             RawValue: -65536
         CollisionMinOffset:
           RawValue: 13107
-        Layer: 0
+        Layer: 1
     - rid: 2088931844912316416
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -808,7 +809,7 @@ MonoBehaviour:
             RawValue: -65536
         CollisionMinOffset:
           RawValue: 13107
-        Layer: 0
+        Layer: 2
     - rid: 3169004087781883904
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -938,7 +939,7 @@ MonoBehaviour:
             RawValue: -65536
         CollisionMinOffset:
           RawValue: 13107
-        Layer: 0
+        Layer: 3
     - rid: 4099470505776513024
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1013,7 +1014,7 @@ MonoBehaviour:
             RawValue: -65536
         CollisionMinOffset:
           RawValue: 13107
-        Layer: 0
+        Layer: 2
     - rid: 4544874563732766720
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1143,7 +1144,7 @@ MonoBehaviour:
             RawValue: -65536
         CollisionMinOffset:
           RawValue: 13107
-        Layer: 0
+        Layer: 1
     - rid: 4747002504288403456
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1270,7 +1271,7 @@ MonoBehaviour:
             RawValue: -65536
         CollisionMinOffset:
           RawValue: 13107
-        Layer: 0
+        Layer: 3
     - rid: 5490577773346947072
       type: {class: GameSessionPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
@@ -1278,6 +1279,38 @@ MonoBehaviour:
           Value: 0
         TimeUntilStart:
           RawValue: 262144
+    - rid: 5490577773346947073
+      type: {class: PlayerManagerDataPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      data:
+        PlayStates:
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        PlayerRefs:
+        - _index: 0
+        - _index: 0
+        - _index: 0
+        - _index: 0
+        SelectedCharacters:
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        AllCharacters:
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        SelectedCharacterNumbers: 00000000000000000000000000000000
     - rid: 5631773627054555136
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1557,7 +1590,7 @@ MonoBehaviour:
             RawValue: -65536
         CollisionMinOffset:
           RawValue: 13107
-        Layer: 0
+        Layer: 2
     - rid: 6392158612130627584
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1622,7 +1655,7 @@ MonoBehaviour:
             RawValue: -65536
         CollisionMinOffset:
           RawValue: 13107
-        Layer: 0
+        Layer: 3
     - rid: 6448816403360251904
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1749,7 +1782,7 @@ MonoBehaviour:
             RawValue: -65536
         CollisionMinOffset:
           RawValue: 13107
-        Layer: 0
+        Layer: 1
     - rid: 6616239857112973312
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1814,7 +1847,7 @@ MonoBehaviour:
             RawValue: -65536
         CollisionMinOffset:
           RawValue: 13107
-        Layer: 0
+        Layer: 3
     - rid: 6973906860017451008
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -2074,7 +2107,7 @@ MonoBehaviour:
             RawValue: -65536
         CollisionMinOffset:
           RawValue: 13107
-        Layer: 0
+        Layer: 3
     - rid: 7740059535200485376
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -2269,7 +2302,7 @@ MonoBehaviour:
             RawValue: -65536
         CollisionMinOffset:
           RawValue: 13107
-        Layer: 0
+        Layer: 1
     - rid: 8278934809653280768
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -2374,7 +2407,7 @@ MonoBehaviour:
             RawValue: -65536
         CollisionMinOffset:
           RawValue: 13107
-        Layer: 0
+        Layer: 2
     - rid: 8922606233861488640
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:

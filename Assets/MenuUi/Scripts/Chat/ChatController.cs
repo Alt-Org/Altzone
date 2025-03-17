@@ -2,11 +2,12 @@ using UnityEngine;
 using System;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// ChatController handles sending new chat messages and displaying received chat messages on the Global, Country and Clan chat windows.
 /// /// </summary>
-public class ChatController : MonoBehaviour
+public class ChatController : MonoBehaviour, IPointerClickHandler
 {
     private ChatWindow _activeChatWindow;
 
@@ -38,6 +39,9 @@ public class ChatController : MonoBehaviour
     [Header("Error Handling")]
     [SerializeField] internal GameObject _errorPanel;
     [SerializeField] internal GameObject _errorPrefab;
+
+    [Header("Chat Reference")]
+    [SerializeField] private Chat chatScript;
 
     public ChatWindow ActiveChatWindow { get => _activeChatWindow; set => _activeChatWindow = value; }
 
@@ -197,4 +201,23 @@ public class ChatController : MonoBehaviour
     }
 
     private void ForceRebuild(RectTransform chatWindowRect) { LayoutRebuilder.ForceRebuildLayoutImmediate(chatWindowRect); }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        // Checks for clicks outside of the quick message and send button panels. Closes them if so.
+        if (!((PointerEventData)eventData).pointerCurrentRaycast.gameObject.Equals(chatScript.quickMessages) && !((PointerEventData)eventData).pointerCurrentRaycast.gameObject.Equals(chatScript.sendButtons))
+        {
+            chatScript.MinimizeOptions();
+        }
+
+        if(chatScript.selectedMessage != null)
+        {
+            // Checks for clicks outside of the selected message. Deselects the selected message if so.
+            if (!((PointerEventData)eventData).pointerCurrentRaycast.gameObject.Equals(chatScript.selectedMessage))
+            {
+                 chatScript.DeselectMessage(chatScript.selectedMessage);
+            }
+        }
+        
+    }
 }

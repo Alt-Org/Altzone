@@ -107,8 +107,15 @@ namespace MenuUi.Scripts.Loader
 
         private void LogInReady()
         {
-            _loadInfoController.LoadReady();
-            _changeAccountHandler.gameObject.SetActive(true);
+            if (AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
+            {
+                _loadInfoController.LoadReady();
+                _changeAccountHandler.gameObject.SetActive(true);
+            }
+            else
+            {
+                MoveToMain();
+            }
         }
 
         private void MoveToMain()
