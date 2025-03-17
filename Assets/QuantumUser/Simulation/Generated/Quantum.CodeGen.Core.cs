@@ -95,7 +95,6 @@ namespace Quantum {
   public enum InputButtons : int {
     MouseClick = 1 << 0,
     RotateMotion = 1 << 1,
-    MouseRightClick = 1 << 2,
   }
   public static unsafe partial class FlagsExtensions {
     public static Boolean IsFlagSet(this InputButtons self, InputButtons flag) {
@@ -469,20 +468,16 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Input {
-    public const Int32 SIZE = 56;
+    public const Int32 SIZE = 40;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(52)]
-    private fixed Byte _alignment_padding_[4];
     [FieldOffset(16)]
     public Button MouseClick;
     [FieldOffset(8)]
     public GridPosition MovementPosition;
-    [FieldOffset(40)]
+    [FieldOffset(28)]
     public Button RotateMotion;
     [FieldOffset(0)]
     public FP RotationDirection;
-    [FieldOffset(28)]
-    public Button MouseRightClick;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 19249;
@@ -490,7 +485,6 @@ namespace Quantum {
         hash = hash * 31 + MovementPosition.GetHashCode();
         hash = hash * 31 + RotateMotion.GetHashCode();
         hash = hash * 31 + RotationDirection.GetHashCode();
-        hash = hash * 31 + MouseRightClick.GetHashCode();
         return hash;
       }
     }
@@ -501,7 +495,6 @@ namespace Quantum {
       switch (button) {
         case InputButtons.MouseClick: return MouseClick.IsDown;
         case InputButtons.RotateMotion: return RotateMotion.IsDown;
-        case InputButtons.MouseRightClick: return MouseRightClick.IsDown;
         default: return false;
       }
     }
@@ -509,7 +502,6 @@ namespace Quantum {
       switch (button) {
         case InputButtons.MouseClick: return MouseClick.WasPressed;
         case InputButtons.RotateMotion: return RotateMotion.WasPressed;
-        case InputButtons.MouseRightClick: return MouseRightClick.WasPressed;
         default: return false;
       }
     }
@@ -518,13 +510,12 @@ namespace Quantum {
         FP.Serialize(&p->RotationDirection, serializer);
         Quantum.GridPosition.Serialize(&p->MovementPosition, serializer);
         Button.Serialize(&p->MouseClick, serializer);
-        Button.Serialize(&p->MouseRightClick, serializer);
         Button.Serialize(&p->RotateMotion, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct _globals_ {
-    public const Int32 SIZE = 904;
+    public const Int32 SIZE = 808;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public AssetRef<Map> Map;
@@ -548,12 +539,12 @@ namespace Quantum {
     public Int32 PlayerConnectedCount;
     [FieldOffset(560)]
     [FramePrinter.FixedArrayAttribute(typeof(Input), 6)]
-    private fixed Byte _input_[336];
-    [FieldOffset(896)]
+    private fixed Byte _input_[240];
+    [FieldOffset(800)]
     public BitSet6 PlayerLastConnectionState;
     public FixedArray<Input> input {
       get {
-        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 56, 6); }
+        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 40, 6); }
       }
     }
     public override Int32 GetHashCode() {
@@ -946,7 +937,7 @@ namespace Quantum {
     void OnTriggerProjectileHitArenaBorder(Frame f, Projectile* projectile, EntityRef projectileEntity, ArenaBorder* arenaBorder, EntityRef arenaBorderEntity);
   }
   public unsafe partial interface ISignalOnTriggerProjectileHitPlayer : ISignal {
-    void OnTriggerProjectileHitPlayer(Frame f, Projectile* projectile, EntityRef projectileEntity, PlayerHitBox* playerHitBox, EntityRef playerEntity);
+    void OnTriggerProjectileHitPlayer(Frame f, Projectile* projectile, EntityRef projectileEntity, PlayerData* playerData, EntityRef playerEntity);
   }
   public static unsafe partial class Constants {
     public const Int32 PLAYER_SLOT_COUNT = 4;
@@ -1047,7 +1038,6 @@ namespace Quantum {
       i->MovementPosition = input.MovementPosition;
       i->RotateMotion = i->RotateMotion.Update(this.Number, input.RotateMotion);
       i->RotationDirection = input.RotationDirection;
-      i->MouseRightClick = i->MouseRightClick.Update(this.Number, input.MouseRightClick);
     }
     public Input* GetPlayerInput(PlayerRef player) {
       if ((int)player >= (int)_globals->input.Length) { throw new System.ArgumentOutOfRangeException("player"); }
@@ -1126,12 +1116,12 @@ namespace Quantum {
           }
         }
       }
-      public void OnTriggerProjectileHitPlayer(Projectile* projectile, EntityRef projectileEntity, PlayerHitBox* playerHitBox, EntityRef playerEntity) {
+      public void OnTriggerProjectileHitPlayer(Projectile* projectile, EntityRef projectileEntity, PlayerData* playerData, EntityRef playerEntity) {
         var array = _f._ISignalOnTriggerProjectileHitPlayerSystems;
         for (Int32 i = 0; i < array.Length; ++i) {
           var s = array[i];
           if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
-            s.OnTriggerProjectileHitPlayer(_f, projectile, projectileEntity, playerHitBox, playerEntity);
+            s.OnTriggerProjectileHitPlayer(_f, projectile, projectileEntity, playerData, playerEntity);
           }
         }
       }
