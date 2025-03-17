@@ -20,10 +20,12 @@ public class ChatAddReactions : MonoBehaviour
     [SerializeField] private GameObject[] _reactions;
 
     private List<ChatReactionHandler> _reactionHandlers = new();
+    private List<int> _commonReactions = new();
 
     void Start()
     {
         CreateReactionInteractions();
+        PickCommonReactions();
     }
 
     /// <summary>
@@ -44,12 +46,36 @@ public class ChatAddReactions : MonoBehaviour
     }
 
     /// <summary>
-    /// Pick common reactions for the common reaction panels that opens when first selecting a message.
+    /// Picks common reactions for the common reaction panel that opens when first selecting a message.
     /// (Since no data about reactions is currently available, common reactions are picked at random.)
     /// </summary>
     private void PickCommonReactions()
     {
+        int randomReaction;
 
+        for (int i = 0; i < 3; i++)
+        {
+            do
+            {
+                randomReaction = Random.Range(0, _reactions.Length);
+            }
+            while (_commonReactions.Contains(randomReaction));
+
+            _commonReactions.Add(randomReaction);
+        }
+
+        foreach (int reactionIndex in _commonReactions)
+        {
+            GameObject commonReaction = Instantiate(_reactions[reactionIndex], _commonReactionsPanel.transform);
+            commonReaction.transform.SetAsFirstSibling();
+
+            if (!commonReaction.TryGetComponent(out Button button))
+            {
+                button = commonReaction.AddComponent<Button>();
+            }
+
+            button.onClick.AddListener(() => AddReaction(commonReaction));
+        }
     }
 
     /// <summary>
