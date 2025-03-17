@@ -10,18 +10,26 @@ namespace Quantum
     {
         #region Public
 
+        private static FPVector2[] s_spawnPoints = new FPVector2[Constants.PLAYER_SLOT_COUNT];
+
         #region Public - Static Methods
 
         public static void Init(Frame f)
         {
             Debug.Log("[PlayerManager] Init");
 
+            BattleArenaSpec battleArenaSpec = f.FindAsset(f.RuntimeConfig.BattleArenaSpec);
+            for (int i = 0; i < s_spawnPoints.Length; i++)
+            {
+                s_spawnPoints[i] = GridManager.GridPositionToWorldPosition(battleArenaSpec.PlayerSpawnPositions[i]);
+            }
+
             PlayerManagerData* playerManagerData = GetPlayerManagerData(f);
 
             PlayerHandle.SetAllPlayStates(playerManagerData, PlayerPlayState.NotInGame);
         }
 
-        public static void InitPlayer(Frame f, PlayerRef player)
+        public static BattlePlayerSlot InitPlayer(Frame f, PlayerRef player)
         {
             PlayerManagerData* playerManagerData = GetPlayerManagerData(f);
 
@@ -43,19 +51,20 @@ namespace Quantum
             if (teamNumber == BattleTeamNumber.TeamAlpha)
             {
                 rotation = FP._0;
-                normal = new FPVector2(0, 1);
+                normal = new FPVector2(0, 1); // normaalit pois täältä. Eli jää vaan rotaatio.
             }
             else
             {
                 rotation = FP.Rad_180;
                 normal = new FPVector2(0, -1);
             }
-
             for (int i = 0; i < playerEntityArray.Length; i++)
             {
+
                 spawnPosition = playerHandle.GetOutOfPlayPosition(i, teamNumber);
 
                 playerEntityArray[i] = f.Create(entityPrototypeAsset);
+
                 f.Add(playerEntityArray[i], new PlayerData
                 {
                     Player = PlayerRef.None,
@@ -78,34 +87,21 @@ namespace Quantum
                     CollisionMinOffset = 1
                 });
 
+                f.Events.PlayerViewInit(playerEntityArray[i], GridManager.GridScaleFactor);
+
                 playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntityArray[i]);
                 playerTransform->Teleport(f, spawnPosition, rotation);
+                
             }
 
             playerHandle.PlayState = PlayerPlayState.OutOfPlay;
             playerHandle.PlayerRef = player;
             playerHandle.SetCharacters(playerEntityArray);
+
+            return playerSlot;
         }
 
         #region Public - Static Methods - Spawn/Despawn
-
-        public static void SpawnPlayer(Frame f, BattlePlayerSlot slot, int characterNumber, FPVector2 worldPosition)
-        {
-            PlayerHandle playerHandle = new(GetPlayerManagerData(f), slot);
-
-            if (playerHandle.PlayState == PlayerPlayState.NotInGame)
-            {
-                Debug.Log("[PlayerManager] Can not spawn player that is not in game");
-                return;
-            }
-
-            if (!PlayerHandle.IsValidCharacterNumber(characterNumber))
-            {
-                Debug.LogFormat("[PlayerManager] Invalid characterNumber {0}", characterNumber);
-            }
-
-            SpawnPlayer(f, playerHandle, characterNumber, worldPosition);
-        }
 
         public static void SpawnPlayer(Frame f, BattlePlayerSlot slot, int characterNumber)
         {
@@ -113,25 +109,17 @@ namespace Quantum
 
             if (playerHandle.PlayState == PlayerPlayState.NotInGame)
             {
-                Debug.Log("[PlayerManager] Can not spawn player that is not in game");
-                return;
-            }
-
-            if (playerHandle.PlayState == PlayerPlayState.OutOfPlay)
-            {
-                Debug.Log("[PlayerManager] Can not swap player that is out of play");
+                Debug.LogError("[PlayerManager] Can not spawn player that is not in game");
                 return;
             }
 
             if (!PlayerHandle.IsValidCharacterNumber(characterNumber))
             {
-                Debug.LogFormat("[PlayerManager] Invalid characterNumber {0}", characterNumber);
+                Debug.LogErrorFormat("[PlayerManager] Invalid characterNumber = {0}", characterNumber);
+                return;
             }
 
-            EntityRef selectedCharacter = playerHandle.SelectedCharacter;
-            Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(selectedCharacter);
-
-            SpawnPlayer(f, playerHandle, characterNumber, playerTransform->Position);
+            SpawnPlayer(f, playerHandle, characterNumber);
         }
 
         public static void DespawnPlayer(Frame f, BattlePlayerSlot slot)
@@ -140,7 +128,7 @@ namespace Quantum
 
             if (playerHandle.PlayState != PlayerPlayState.InPlay)
             {
-                Debug.Log("[PlayerManager] Can not despawn player that is not in play");
+                Debug.LogError("[PlayerManager] Can not despawn player that is not in play");
                 return;
             }
 
@@ -180,9 +168,6 @@ namespace Quantum
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsValidCharacterNumber(int characterNumber) => PlayerHandle.IsValidCharacterNumber(characterNumber);
-
-        [Obsolete("PlayerIndex index should not be used outside of PlayerManager")]
-        public static int GetPlayerIndex(BattlePlayerSlot slot) => PlayerHandle.GetPlayerIndex(slot);
 
         #endregion Public - Static Methods - Utility
 
@@ -280,6 +265,9 @@ namespace Quantum
             public int SelectedCharacterNumber
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->SelectedCharacterNumbers[Index]; }
 
+            public FPVector2 SpawnPosition
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => s_spawnPoints[Index]; }
+
             //} Public Properties
 
             public PlayerHandle(PlayerManagerData* playerManagerData, BattlePlayerSlot slot)
@@ -371,11 +359,18 @@ namespace Quantum
             }
         }
 
-        private static void SpawnPlayer(Frame f, PlayerHandle playerHandle, int characterNumber, FPVector2 worldPosition)
+        private static void SpawnPlayer(Frame f, PlayerHandle playerHandle, int characterNumber)
         {
+            FPVector2 worldPosition;
+
             if (playerHandle.PlayState == PlayerPlayState.InPlay)
             {
+                worldPosition = f.Unsafe.GetPointer<Transform2D>(playerHandle.SelectedCharacter)->Position;
                 DespawnPlayer(f, playerHandle);
+            }
+            else
+            {
+                worldPosition = playerHandle.SpawnPosition;
             }
 
             EntityRef character = playerHandle.GetCharacter(characterNumber);
@@ -383,6 +378,7 @@ namespace Quantum
             Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(character);
 
             playerData->Player = playerHandle.PlayerRef;
+
             playerTransform->Teleport(f, worldPosition, playerData->BaseRotation);
             playerData->TargetPosition = worldPosition;
 
