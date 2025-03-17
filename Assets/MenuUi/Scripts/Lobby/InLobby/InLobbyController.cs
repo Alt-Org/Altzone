@@ -138,7 +138,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private void OpenWindow(GameType gameType)
         {
             _popupContents.SetActive(true);
-            _roomSwitcher.ReturnToMain();
+            _roomSwitcher.OpenPanel(gameType);
         }
 
 
