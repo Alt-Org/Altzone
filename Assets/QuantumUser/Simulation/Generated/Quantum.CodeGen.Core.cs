@@ -86,6 +86,7 @@ namespace Quantum {
   public enum InputButtons : int {
     MouseClick = 1 << 0,
     RotateMotion = 1 << 1,
+    MouseRightClick = 1 << 2,
   }
   public static unsafe partial class FlagsExtensions {
     public static Boolean IsFlagSet(this InputButtons self, InputButtons flag) {
@@ -461,21 +462,26 @@ namespace Quantum {
   public unsafe partial struct Input {
     public const Int32 SIZE = 56;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(8)]
+    [FieldOffset(52)]
+    private fixed Byte _alignment_padding_[4];
+    [FieldOffset(16)]
     public Button MouseClick;
-    [FieldOffset(32)]
-    public FPVector3 MousePosition;
-    [FieldOffset(20)]
+    [FieldOffset(8)]
+    public GridPosition MovementPosition;
+    [FieldOffset(40)]
     public Button RotateMotion;
     [FieldOffset(0)]
     public FP RotationDirection;
+    [FieldOffset(28)]
+    public Button MouseRightClick;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 19249;
         hash = hash * 31 + MouseClick.GetHashCode();
-        hash = hash * 31 + MousePosition.GetHashCode();
+        hash = hash * 31 + MovementPosition.GetHashCode();
         hash = hash * 31 + RotateMotion.GetHashCode();
         hash = hash * 31 + RotationDirection.GetHashCode();
+        hash = hash * 31 + MouseRightClick.GetHashCode();
         return hash;
       }
     }
@@ -486,6 +492,7 @@ namespace Quantum {
       switch (button) {
         case InputButtons.MouseClick: return MouseClick.IsDown;
         case InputButtons.RotateMotion: return RotateMotion.IsDown;
+        case InputButtons.MouseRightClick: return MouseRightClick.IsDown;
         default: return false;
       }
     }
@@ -493,15 +500,17 @@ namespace Quantum {
       switch (button) {
         case InputButtons.MouseClick: return MouseClick.WasPressed;
         case InputButtons.RotateMotion: return RotateMotion.WasPressed;
+        case InputButtons.MouseRightClick: return MouseRightClick.WasPressed;
         default: return false;
       }
     }
     static partial void SerializeCodeGen(void* ptr, FrameSerializer serializer) {
         var p = (Input*)ptr;
         FP.Serialize(&p->RotationDirection, serializer);
+        Quantum.GridPosition.Serialize(&p->MovementPosition, serializer);
         Button.Serialize(&p->MouseClick, serializer);
+        Button.Serialize(&p->MouseRightClick, serializer);
         Button.Serialize(&p->RotateMotion, serializer);
-        FPVector3.Serialize(&p->MousePosition, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -978,9 +987,10 @@ namespace Quantum {
       if ((int)player >= (int)_globals->input.Length) { throw new System.ArgumentOutOfRangeException("player"); }
       var i = _globals->input.GetPointer(player);
       i->MouseClick = i->MouseClick.Update(this.Number, input.MouseClick);
-      i->MousePosition = input.MousePosition;
+      i->MovementPosition = input.MovementPosition;
       i->RotateMotion = i->RotateMotion.Update(this.Number, input.RotateMotion);
       i->RotationDirection = input.RotationDirection;
+      i->MouseRightClick = i->MouseRightClick.Update(this.Number, input.MouseRightClick);
     }
     public Input* GetPlayerInput(PlayerRef player) {
       if ((int)player >= (int)_globals->input.Length) { throw new System.ArgumentOutOfRangeException("player"); }
