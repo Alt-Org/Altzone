@@ -29,7 +29,6 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private GameObject _avatarVisualsParent;
         private FeatureSlot _currentlySelectedCategory;
         
-        //private Vector2 _selectedScale;
         private PlayerAvatar _playerAvatar;
         private FeaturePicker _featurePicker;
         private ColorPicker _colorPicker;
@@ -74,7 +73,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _currentMode = mode;
             
             if(_currentMode == AvatarEditorMode.FeaturePicker){
-                _featurePicker.RestoreDefaultColorToFeature(RestoreDefaultColorToFeature);
+                //_featurePicker.RestoreDefaultColorToFeature(RestoreDefaultColorToFeature);
                 _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
                 
             }
@@ -92,6 +91,7 @@ namespace MenuUi.Scripts.AvatarEditor
         }
 
         #endregion
+
         #region Loading Data
 
         private IEnumerator LoadAvatarData()
@@ -112,16 +112,16 @@ namespace MenuUi.Scripts.AvatarEditor
             if (_currentPlayerData.AvatarData == null)
             {
                 Debug.Log("AvatarData is null. Using default data.");
-                _playerAvatar = new(new List<FeatureID>() { 0,0,0,0,0,0,0,0,0 } );
+                _playerAvatar = new(new List<string>() { "","","","","","","" } );
             }
             else
                 _playerAvatar = new(_currentPlayerData.AvatarData);
 
             _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
-            _featurePicker.SetLoadedFeatures(_playerAvatar.Features);
+            _featurePicker.SetLoadedFeatures(_playerAvatar.FeatureIds);
 
             _colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
-            _colorPicker.SetLoadedColors(_playerAvatar.Colors, _playerAvatar.Features);
+            _colorPicker.SetLoadedColors(_playerAvatar.Colors, _playerAvatar.FeatureIds);
 
             _avatarScaler.SetLoadedScale(_playerAvatar.Scale);
         }
@@ -144,7 +144,7 @@ namespace MenuUi.Scripts.AvatarEditor
             PlayerData savePlayerData = _currentPlayerData;
 
             savePlayerData.AvatarData = new(_playerAvatar.Name,
-                _playerAvatar.ToFeaturesListInt(_featurePicker.GetCurrentlySelectedFeatures()),
+                _featurePicker.GetCurrentlySelectedFeatures(),
                 _colorPicker.GetCurrentColors(),
                 _avatarScaler.GetCurrentScale());
 

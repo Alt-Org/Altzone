@@ -13,25 +13,20 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private List<Color> _colors;
         [SerializeField] private List<Transform> _colorButtonPositions;
         [SerializeField] private Transform _characterImageParent;
+
         private Image _colorChangeTarget;
         private CharacterClassID _characterClassID;
-        private List<string> _currentColors = new(){
-            "#ffffff",
-            "#ffffff",
-            "#ffffff",
-            "#ffffff",
-            "#ffffff",
-            "#ffffff",
-            "#ffffff",
-            "#ffffff",
+
+        private List<string> _currentColor = new()
+        {
             "#ffffff",
         };
         private FeatureSlot _currentlySelectedCategory;
 
         public void OnEnable()
         {
-            // _colorChangeTarget = _characterImageParent.GetChild(0).GetChild(2).GetComponent<Image>();
             InstantiateColorButtons();
+            _colorChangeTarget = _characterImageParent.GetChild(0).GetChild(0).GetComponent<Image>();
         }
 
         public void OnDisable()
@@ -42,14 +37,15 @@ namespace MenuUi.Scripts.AvatarEditor
         public void SelectFeature(FeatureSlot feature)
         {
             _currentlySelectedCategory = feature;
-            _colorChangeTarget = _characterImageParent.GetChild(0).GetChild((int)feature).GetComponent<Image>();
+            //_colorChangeTarget = _characterImageParent.GetChild(0).GetChild((int)feature).GetComponent<Image>();
         }
 
         private void InstantiateColorButtons()
         {
-            for (int i = 0; i < _colors.Count; i++){
+            for (int i = 0; i < _colors.Count; i++)
+            {
                 int j = i;
-                if(i == 0)
+                if (i == 0)
                 {
                     Button button = Instantiate(_defaultColorButtonPrefab, _colorButtonPositions[i]).GetComponent<Button>();
                     button.onClick.AddListener(delegate{SetColor(_colors[j]);});
@@ -65,25 +61,30 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void DestroyColorButtons()
         {
-            foreach(Transform pos in _colorButtonPositions){
-                    if(pos.childCount > 0){
-                        foreach(Transform child in pos){
-                            Destroy(child.gameObject);
-                        }
+            foreach(Transform pos in _colorButtonPositions)
+            {
+                if(pos.childCount > 0)
+                {
+                    foreach(Transform child in pos)
+                    {
+                        Destroy(child.gameObject);
                     }
                 }
+            }
         }
 
         private void SetColor(Color color)
         {
-            if ((int)_currentlySelectedCategory != 0)
-                return;
+            //if ((int)_currentlySelectedCategory != 0)
+            //    return;
 
-            _currentColors[(int)_currentlySelectedCategory] = "#" + ColorUtility.ToHtmlStringRGB(color);
+            _currentColor[0] = "#" + ColorUtility.ToHtmlStringRGB(color);
+            _colorChangeTarget = _characterImageParent.GetChild(0).GetChild(0).GetComponent<Image>();
 
-            if(_colorChangeTarget != null)
+            if (_colorChangeTarget != null)
             {
                 _colorChangeTarget.color = color;
+
                 if(_characterClassID == CharacterClassID.Confluent)
                 {
                     _colorChangeTarget.transform.GetChild(0).GetComponent<Image>().color = color;
@@ -96,10 +97,13 @@ namespace MenuUi.Scripts.AvatarEditor
 
         }
 
-        private void SetTransparentColor(){
-            if(_colorChangeTarget != null){
+        private void SetTransparentColor()
+        {
+            if(_colorChangeTarget != null)
+            {
                 _colorChangeTarget.color = new Color(255,255,255,0);
-                if(_characterClassID == CharacterClassID.Confluent){
+                if(_characterClassID == CharacterClassID.Confluent)
+                {
                     _colorChangeTarget.transform.GetChild(0).GetComponent<Image>().color = new Color(255,255,255,0);
                 }
             }
@@ -112,35 +116,39 @@ namespace MenuUi.Scripts.AvatarEditor
 
         public List<string> GetCurrentColors()
         {
-            string[] colors = new string[_currentColors.Count];
-            _currentColors.CopyTo(colors);
-            return colors.ToList();
+            string[] colors = new string[_currentColor.Count];
+            _currentColor.CopyTo(colors);
+            return (colors.ToList());
         }
 
-        public void SetLoadedColors(List<string> colors, List<FeatureID> features)
+        public void SetLoadedColors(List<string> colors, List<string> features)
         {
-            for (int i = 0; i < colors.Count; i++)
-            {
-                SelectFeature((FeatureSlot)i);
-                //Debug.LogError(colors[i]);
-                if(features[i] == FeatureID.None)
-                {
-                    SetTransparentColor();
-                }
-                else if (features[i] == FeatureID.Default)
-                {
-                    Debug.Log("feature was default when coloring!");
-                }
-                else
-                {
-                    if(ColorUtility.TryParseHtmlString(colors[i], out Color color))
-                        SetColor(color);
-                }
-            }
+            if (colors.Count != 0 && ColorUtility.TryParseHtmlString(colors[0], out Color color))
+                SetColor(color);
+            //for (int i = 0; i < _currentColor.Count; i++)
+            //{
+            //    SelectFeature((FeatureSlot)i);
+
+            //    if (features[i] == "")
+            //    {
+            //        Debug.LogError($"{i} sdasd");
+            //        SetTransparentColor();
+            //    }
+            //    //else if (features[i] == FeatureID.Default)
+            //    //{
+            //    //    Debug.Log("feature was default when coloring!");
+            //    //}
+            //    else if (i < _currentColor.Count)
+            //    {
+            //        if (ColorUtility.TryParseHtmlString(colors[i], out Color color))
+            //            SetColor(color);
+            //    }
+            //}
         }
+
         public void RestoreDefaultColor(FeatureSlot slot)
         {
-            _currentColors[(int)slot] = "#ffffff";
+            _currentColor[0] = "#ffffff";
         }
 
         // internal void SetCurrentCategoryAndColors(FeatureSlot category, List<FeatureColor> colors) {
