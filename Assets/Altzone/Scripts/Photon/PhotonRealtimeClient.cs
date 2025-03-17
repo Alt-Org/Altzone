@@ -614,7 +614,7 @@ public static class PhotonRealtimeClient
         Client.RemoveCallbackTarget(target);
     }
 
-    public static bool CreateLobbyRoom(string roomName, string password = "", string[] expectedUsers = null)
+    public static bool CreateLobbyRoom(string roomName, int maxPlayers, int gameType, string password = "", string[] expectedUsers = null)
     {
         PhotonHashtable customRoomProperties = new PhotonHashtable
         {
@@ -622,6 +622,7 @@ public static class PhotonRealtimeClient
             { PhotonBattleRoom.PlayerPositionKey2, "" },
             { PhotonBattleRoom.PlayerPositionKey3, "" },
             { PhotonBattleRoom.PlayerPositionKey4, "" },
+            { PhotonBattleRoom.GameTypeKey, gameType } // saving game type as int but using the enum in menu ui, maybe the enum needs to moved under Altzone?
         };
 
         if (password != "" && password != null)
@@ -633,7 +634,7 @@ public static class PhotonRealtimeClient
         {
             IsVisible = true, // Pit�� muokata varmaankin //
             IsOpen = true,
-            MaxPlayers = 4,
+            MaxPlayers = maxPlayers,
             Plugins = new string[] { "QuantumPlugin" },
             PlayerTtl = ServerSettings.PlayerTtlInSeconds * 1000,
             EmptyRoomTtl = ServerSettings.EmptyRoomTtlInSeconds * 1000,

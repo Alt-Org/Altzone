@@ -15,7 +15,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
     /// </summary>
     public class LobbyRoomListingController : MonoBehaviour
     {
-        private const string DefaultRoomNameName = "Battle ";
+        private const string DefaultRoomNameCustom = "Custom ";
+        private const string DefaultRoomNameClan2v2 = "Clan 2v2 ";
 
         [SerializeField] private RoomSearchPanelController _searchPanel;
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
@@ -54,18 +55,23 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private void CreateCustomRoomOnClick()
         {
-            var roomName = string.IsNullOrWhiteSpace(_createRoomCustom.RoomName) ? $"{DefaultRoomNameName}{DateTime.Now.Second:00}" : _createRoomCustom.RoomName;
+            var roomName = string.IsNullOrWhiteSpace(_createRoomCustom.RoomName) ? $"{DefaultRoomNameCustom}{DateTime.Now.Second:00}" : _createRoomCustom.RoomName;
 
             if (_createRoomCustom.IsPrivate && _createRoomCustom.RoomPassword != null && _createRoomCustom.RoomPassword != "")
             {
-                PhotonRealtimeClient.CreateLobbyRoom(roomName, _createRoomCustom.RoomPassword);
+                PhotonRealtimeClient.CreateLobbyRoom(roomName, 4, (int)GameType.Custom, _createRoomCustom.RoomPassword);
             }
             else
             {
-                PhotonRealtimeClient.CreateLobbyRoom(roomName);
+                PhotonRealtimeClient.CreateLobbyRoom(roomName, 4, (int)GameType.Custom);
             }
         }
 
+        private void CreateClan2v2Room()
+        {
+            var roomName = $"{DefaultRoomNameClan2v2}{DateTime.Now.Second:00}";
+            PhotonRealtimeClient.CreateLobbyRoom(roomName, 2, (int)GameType.Clan2v2);
+        }
 
         private void JoinRoom(string roomName)
         {
