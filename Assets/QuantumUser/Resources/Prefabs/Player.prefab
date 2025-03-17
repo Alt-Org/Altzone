@@ -261,6 +261,7 @@ GameObject:
   - component: {fileID: 8780164584391443545}
   - component: {fileID: 6916500511774267667}
   - component: {fileID: 5746144157330607816}
+  - component: {fileID: 7491333773588239839}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -470,6 +471,55 @@ MonoBehaviour:
   OnEntityDestroyed:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7491333773588239839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5521468026819928245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96f66b35af4460083bcc7e2d9d52dfe5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    Player:
+      _index: 0
+    Slot:
+      Value: 10
+    TeamNumber:
+      Value: 0
+    CharacterId: 0
+    CharacterClass: 0
+    StatHp:
+      RawValue: 0
+    StatSpeed:
+      RawValue: 0
+    StatCharacterSize:
+      RawValue: 0
+    StatAttack:
+      RawValue: 0
+    StatDefence:
+      RawValue: 0
+    Speed:
+      RawValue: 0
+    TargetPosition:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+    BaseRotation:
+      RawValue: 0
+    MovementRotation:
+      RawValue: 0
+    Normal:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+    CollisionMinOffset:
+      RawValue: 0
 --- !u!1 &5555457871378360869
 GameObject:
   m_ObjectHideFlags: 0

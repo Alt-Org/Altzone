@@ -42,7 +42,6 @@ namespace Quantum
             EntityRef[] playerEntityArray = new EntityRef[Constants.PLAYER_CHARACTER_COUNT];
 
             FPVector2 spawnPosition;
-            Transform2D* playerTransform;
             FP rotation;
             FPVector2 normal;
 
@@ -56,6 +55,10 @@ namespace Quantum
                 rotation = FP.Rad_180;
                 normal = new FPVector2(0, -1);
             }
+
+            PlayerData* playerData;
+            Transform2D* playerTransform;
+
             for (int i = 0; i < playerEntityArray.Length; i++)
             {
 
@@ -63,27 +66,26 @@ namespace Quantum
 
                 playerEntityArray[i] = f.Create(entityPrototypeAsset);
 
-                f.Add(playerEntityArray[i], new PlayerData
-                {
-                    Player = PlayerRef.None,
-                    Slot = playerSlot,
-                    TeamNumber = teamNumber,
-                    CharacterId = data.Characters[i].Id,
-                    CharacterClass = data.Characters[i].Class,
+                playerData = f.Unsafe.GetPointer<PlayerData>(playerEntityArray[i]);
 
-                    StatHp = data.Characters[i].Hp,
-                    StatSpeed = data.Characters[i].Speed,
-                    StatCharacterSize = data.Characters[i].CharacterSize,
-                    StatAttack = data.Characters[i].Attack,
-                    StatDefence = data.Characters[i].Defence,
+                playerData->Player = PlayerRef.None;
+                playerData->Slot = playerSlot;
+                playerData->TeamNumber = teamNumber;
+                playerData->CharacterId = data.Characters[i].Id;
+                playerData->CharacterClass = data.Characters[i].Class;
 
-                    Speed = 20,
-                    TargetPosition = spawnPosition,
-                    MovementRotation = 0,
-                    BaseRotation = rotation,
-                    Normal = normal,
-                    CollisionMinOffset = 1
-                });
+                playerData->StatHp = data.Characters[i].Hp;
+                playerData->StatSpeed = data.Characters[i].Speed;
+                playerData->StatCharacterSize = data.Characters[i].CharacterSize;
+                playerData->StatAttack = data.Characters[i].Attack;
+                playerData->StatDefence = data.Characters[i].Defence;
+
+                playerData->Speed = 20;
+                playerData->TargetPosition = spawnPosition;
+                playerData->MovementRotation = 0;
+                playerData->BaseRotation = rotation;
+                playerData->Normal = normal;
+                playerData->CollisionMinOffset = 1;
 
                 f.Events.PlayerViewInit(playerEntityArray[i], GridManager.GridScaleFactor);
 
