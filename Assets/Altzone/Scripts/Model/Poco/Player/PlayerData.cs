@@ -56,6 +56,7 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public PlayStyles playStyles;
 
+        public List<string> moodList = new List<string> { "", "", "", "", "", "", "" };
 
         public List<PlayerVoteData> playerVotes = new List<PlayerVoteData>();
 

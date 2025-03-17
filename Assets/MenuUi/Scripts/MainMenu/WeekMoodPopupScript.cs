@@ -1,11 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Window;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class NewBehaviourScript : MonoBehaviour
+public class WeekMoodPopupScript : AltMonoBehaviour
 {
     [SerializeField] private GameObject _popupPrefab;
     enum Mood
@@ -18,7 +19,12 @@ public class NewBehaviourScript : MonoBehaviour
         Angry
     }
 
-    List<string> moodList = new List<string> { "", "", "", "", "", "", "" };
+    List<string> moodList = new List<string> { "Blank", "Love", "Playful", "Joy", "Sad", "Angry", "Blank" };
+
+    string date = DateTime.Today.ToString("dd/mm/yyyy");
+
+    public delegate void PlayerDataCallback(PlayerData playerData);
+    public PlayerData playerData;
 
     // Start is called before the first frame update
     void Start()
@@ -29,6 +35,11 @@ public class NewBehaviourScript : MonoBehaviour
     public void ClosePopup()
     {
         _popupPrefab.SetActive(false);
+    }
+
+    void MoodToPlayerData(PlayerData mood)
+    {
+
     }
 
     public void SaveMoodData()
@@ -62,7 +73,8 @@ public class NewBehaviourScript : MonoBehaviour
                 moodList[0] = objectName;
                 break;
         }
-        Debug.Log(objectName);
+        playerData.moodList = moodList;
+        Debug.Log(playerData.moodList[0]);
     }
     
     // Update is called once per frame
