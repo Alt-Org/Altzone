@@ -50,6 +50,25 @@ namespace Quantum.Prototypes.Unity {
   #endif //;
   
   [System.SerializableAttribute()]
+  public unsafe partial class PlayerHitBoxPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.PlayerHitBoxPrototype> {
+    public Quantum.QuantumEntityPrototype Player;
+    public Quantum.QEnum32<PlayerHitboxType> HitBoxType;
+    public Quantum.QEnum32<PlayerCollisionType> CollisionType;
+    public FPVector2 Normal;
+    public FP CollisionMinOffset;
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.PlayerHitBoxPrototype prototype);
+    public override Quantum.Prototypes.PlayerHitBoxPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.PlayerHitBoxPrototype();
+      converter.Convert(this.Player, out result.Player);
+      converter.Convert(this.HitBoxType, out result.HitBoxType);
+      converter.Convert(this.CollisionType, out result.CollisionType);
+      converter.Convert(this.Normal, out result.Normal);
+      converter.Convert(this.CollisionMinOffset, out result.CollisionMinOffset);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
   public unsafe partial class PlayerManagerDataPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.PlayerManagerDataPrototype> {
     [ArrayLengthAttribute(4)]
     public Quantum.QEnum32<PlayerPlayState>[] PlayStates = new Quantum.QEnum32<PlayerPlayState>[4];

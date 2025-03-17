@@ -71,6 +71,15 @@ namespace Quantum {
     GameOver,
     PostGame,
   }
+  public enum PlayerCollisionType : int {
+    None = 0,
+    Reflect = 1,
+    Override = 2,
+  }
+  public enum PlayerHitboxType : int {
+    Shield = 0,
+    Character = 1,
+  }
   public enum PlayerPlayState : int {
     NotInGame,
     OutOfPlay,
@@ -726,6 +735,40 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct PlayerHitBox : Quantum.IComponent {
+    public const Int32 SIZE = 40;
+    public const Int32 ALIGNMENT = 8;
+    [FieldOffset(8)]
+    public EntityRef Player;
+    [FieldOffset(4)]
+    public PlayerHitboxType HitBoxType;
+    [FieldOffset(0)]
+    public PlayerCollisionType CollisionType;
+    [FieldOffset(24)]
+    public FPVector2 Normal;
+    [FieldOffset(16)]
+    public FP CollisionMinOffset;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 20749;
+        hash = hash * 31 + Player.GetHashCode();
+        hash = hash * 31 + (Int32)HitBoxType;
+        hash = hash * 31 + (Int32)CollisionType;
+        hash = hash * 31 + Normal.GetHashCode();
+        hash = hash * 31 + CollisionMinOffset.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (PlayerHitBox*)ptr;
+        serializer.Stream.Serialize((Int32*)&p->CollisionType);
+        serializer.Stream.Serialize((Int32*)&p->HitBoxType);
+        EntityRef.Serialize(&p->Player, serializer);
+        FP.Serialize(&p->CollisionMinOffset, serializer);
+        FPVector2.Serialize(&p->Normal, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerManagerData : Quantum.IComponentSingleton {
     public const Int32 SIZE = 176;
     public const Int32 ALIGNMENT = 8;
@@ -966,6 +1009,8 @@ namespace Quantum {
       BuildSignalsArrayOnComponentRemoved<PhysicsJoints3D>();
       BuildSignalsArrayOnComponentAdded<Quantum.PlayerData>();
       BuildSignalsArrayOnComponentRemoved<Quantum.PlayerData>();
+      BuildSignalsArrayOnComponentAdded<Quantum.PlayerHitBox>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.PlayerHitBox>();
       BuildSignalsArrayOnComponentAdded<Quantum.PlayerManagerData>();
       BuildSignalsArrayOnComponentRemoved<Quantum.PlayerManagerData>();
       BuildSignalsArrayOnComponentAdded<Quantum.Projectile>();
@@ -1163,7 +1208,10 @@ namespace Quantum {
       typeRegistry.Register(typeof(PhysicsJoints3D), PhysicsJoints3D.SIZE);
       typeRegistry.Register(typeof(PhysicsQueryRef), PhysicsQueryRef.SIZE);
       typeRegistry.Register(typeof(PhysicsSceneSettings), PhysicsSceneSettings.SIZE);
+      typeRegistry.Register(typeof(Quantum.PlayerCollisionType), 4);
       typeRegistry.Register(typeof(Quantum.PlayerData), Quantum.PlayerData.SIZE);
+      typeRegistry.Register(typeof(Quantum.PlayerHitBox), Quantum.PlayerHitBox.SIZE);
+      typeRegistry.Register(typeof(Quantum.PlayerHitboxType), 4);
       typeRegistry.Register(typeof(Quantum.PlayerManagerData), Quantum.PlayerManagerData.SIZE);
       typeRegistry.Register(typeof(Quantum.PlayerPlayState), 4);
       typeRegistry.Register(typeof(PlayerRef), PlayerRef.SIZE);
@@ -1187,12 +1235,13 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum._globals_), Quantum._globals_.SIZE);
     }
     static partial void InitComponentTypeIdGen() {
-      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 8)
+      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 9)
         .AddBuiltInComponents()
         .Add<Quantum.ArenaBorder>(Quantum.ArenaBorder.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.GameSession>(Quantum.GameSession.Serialize, null, null, ComponentFlags.Singleton)
         .Add<Quantum.Goal>(Quantum.Goal.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.PlayerData>(Quantum.PlayerData.Serialize, null, null, ComponentFlags.None)
+        .Add<Quantum.PlayerHitBox>(Quantum.PlayerHitBox.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.PlayerManagerData>(Quantum.PlayerManagerData.Serialize, null, null, ComponentFlags.Singleton)
         .Add<Quantum.Projectile>(Quantum.Projectile.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.ProjectileSpawner>(Quantum.ProjectileSpawner.Serialize, null, null, ComponentFlags.None)
@@ -1207,6 +1256,8 @@ namespace Quantum {
       FramePrinter.EnsurePrimitiveNotStripped<CallbackFlags>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.GameState>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.InputButtons>();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.PlayerCollisionType>();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.PlayerHitboxType>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.PlayerPlayState>();
       FramePrinter.EnsurePrimitiveNotStripped<QueryOptions>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.SoundEffect>();

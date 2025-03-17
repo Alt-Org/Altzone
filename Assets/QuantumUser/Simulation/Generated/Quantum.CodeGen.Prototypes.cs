@@ -176,6 +176,27 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerHitBox))]
+  public unsafe class PlayerHitBoxPrototype : ComponentPrototype<Quantum.PlayerHitBox> {
+    public MapEntityId Player;
+    public Quantum.QEnum32<PlayerHitboxType> HitBoxType;
+    public Quantum.QEnum32<PlayerCollisionType> CollisionType;
+    public FPVector2 Normal;
+    public FP CollisionMinOffset;
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.PlayerHitBox component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.PlayerHitBox result, in PrototypeMaterializationContext context = default) {
+        PrototypeValidator.FindMapEntity(this.Player, in context, out result.Player);
+        result.HitBoxType = this.HitBoxType;
+        result.CollisionType = this.CollisionType;
+        result.Normal = this.Normal;
+        result.CollisionMinOffset = this.CollisionMinOffset;
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerManagerData))]
   public unsafe class PlayerManagerDataPrototype : ComponentPrototype<Quantum.PlayerManagerData> {
     [ArrayLengthAttribute(4)]

@@ -1,20 +1,20 @@
-enum PlayerHitBoxType
+enum PlayerHitboxType
 {
-	Shield = 0;
-	Character = 1;
+	Shield = 0,
+	Character = 1
 }
 
 enum PlayerCollisionType 
 {
-	None = 0;
-	Reflect = 1;
-	Override = 2;
+	None = 0,
+	Reflect = 1,
+	Override = 2
 }
 
 component PlayerHitBox
 {
 	EntityRef Player;
-	PlayerHitboxType;
+	PlayerHitboxType HitBoxType;
 	PlayerCollisionType CollisionType;
 	FPVector2 Normal;
 	FP CollisionMinOffset;
