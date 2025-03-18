@@ -49,9 +49,9 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private TMP_Text _rarityText;
         [SerializeField] private Image _rarityImage;
 
-        [Header("Filtering buttons")]
+        [Header("Filtering")]
         [SerializeField] private Toggle[] _rarityToggles;
-        [SerializeField] private Toggle[] _setToggles;
+        [SerializeField] private SetFilterHandler _setFilterHandler;
         [SerializeField] private Toggle _inSoulHomeToggle;
         //[SerializeField] private Toggle _onSaleToggle;
 
@@ -66,6 +66,16 @@ namespace MenuUi.Scripts.Storage
         private bool _descendingOrder = false;
 
         private const string INVENTORY_EMPTY_TEXT = "Varasto tyhjä";
+
+        private void Start()
+        {
+            // Make the filter buttons update the inventory
+            _setFilterHandler.CreateSetFilterButtons();
+            foreach (Toggle toggle in _setFilterHandler.toggleList)
+            {
+                toggle.onValueChanged.AddListener(delegate { UpdateInventory(); });
+            }
+        }
 
         private void OnEnable()
         {
@@ -149,26 +159,9 @@ namespace MenuUi.Scripts.Storage
         private bool CheckFilters(StorageFurniture furn)
         {
             bool setCheck = false;
-            switch (furn.SetName)
+            for (int i = 0; i < _setFilterHandler.toggleList.Count; i++)
             {
-                case "Taakka":
-                    if (_setToggles[0].isOn) setCheck = true;
-                    break;
-                case "Schrodinger":
-                    if (_setToggles[1].isOn) setCheck = true;
-                    break;
-                case "Rakkaus":
-                    if (_setToggles[2].isOn) setCheck = true;
-                    break;
-                case "Neuro":
-                    if (_setToggles[3].isOn) setCheck = true;
-                    break;
-                case "Polarity":
-                    if (_setToggles[4].isOn) setCheck = true;
-                    break;
-                case "Muistoja":
-                    if (_setToggles[5].isOn) setCheck = true;
-                    break;
+                if (_furnitureReference.Info[i].SetName == furn.SetName && _setFilterHandler.toggleList[i].isOn) setCheck = true;
             }
 
             bool rarityCheck = false;
