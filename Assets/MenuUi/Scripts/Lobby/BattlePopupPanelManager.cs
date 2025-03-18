@@ -30,11 +30,7 @@ public class BattlePopupPanelManager : MonoBehaviour
 
     private void SwitchCustomRoom(CustomGameMode mode)
     {
-        foreach(Transform t in transform)
-        {
-            if (ReferenceEquals(t.gameObject,_topPanel)) continue;
-            t.gameObject.SetActive(false);
-        }
+        ClosePanels();
 
         switch (mode)
         {
@@ -58,7 +54,7 @@ public class BattlePopupPanelManager : MonoBehaviour
 
     public void ReturnToMain()
     {
-        if (_custom2v2WaitingRoom.activeSelf || _clan2v2WaitingRoom.activeSelf)
+        if (PhotonRealtimeClient.InRoom)
         {
             return;
         }

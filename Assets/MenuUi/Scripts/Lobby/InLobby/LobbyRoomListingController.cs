@@ -76,11 +76,15 @@ namespace MenuUi.Scripts.Lobby.InLobby
         /// <returns></returns>
         public IEnumerator StartCreatingClan2v2Room(Action callback)
         {
+            bool roomCreated = false;
             do
             {
-                if (PhotonRealtimeClient.InLobby) CreateClan2v2Room();
-
-            } while (!PhotonRealtimeClient.InLobby);
+                if (PhotonRealtimeClient.InLobby)
+                {
+                    CreateClan2v2Room();
+                    roomCreated = true;
+                }
+            } while (!roomCreated);
 
             callback();
 
