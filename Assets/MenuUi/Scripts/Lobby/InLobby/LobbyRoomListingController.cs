@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Linq;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Common.Photon;
@@ -24,6 +25,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
         [SerializeField] private PasswordPopup _passwordPopup;
 
         private PhotonRoomList _photonRoomList;
+
+        [HideInInspector] public GameType SelectedGameType;
 
         private void Awake()
         {
@@ -65,6 +68,23 @@ namespace MenuUi.Scripts.Lobby.InLobby
             {
                 PhotonRealtimeClient.CreateLobbyRoom(roomName, 4, (int)GameType.Custom);
             }
+        }
+
+        /// <summary>
+        /// Coroutine to create Clan2v2 room after client is connected to lobby.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator StartCreatingClan2v2Room(Action callback)
+        {
+            do
+            {
+                if (PhotonRealtimeClient.InLobby) CreateClan2v2Room();
+
+            } while (!PhotonRealtimeClient.InLobby);
+
+            callback();
+
+            yield break;
         }
 
         private void CreateClan2v2Room()
@@ -117,7 +137,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         public void SwitchToRoom()
         {
-            _roomSwitcher.SwitchRoom();
+            _roomSwitcher.SwitchRoom(SelectedGameType);
         }
 
         private void UpdateStatus()
