@@ -2,7 +2,7 @@
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
-using MenuUi.Scripts.Lobby;
+using Altzone.Scripts.Lobby;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using MenuUi.Scripts.Signals;

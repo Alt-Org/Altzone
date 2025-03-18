@@ -1,4 +1,4 @@
-using MenuUi.Scripts.Lobby;
+using Altzone.Scripts.Lobby;
 using UnityEngine;
 
 /// <summary>

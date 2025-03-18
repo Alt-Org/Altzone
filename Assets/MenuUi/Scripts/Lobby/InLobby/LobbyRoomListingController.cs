@@ -62,11 +62,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
             if (_createRoomCustom.IsPrivate && _createRoomCustom.RoomPassword != null && _createRoomCustom.RoomPassword != "")
             {
-                PhotonRealtimeClient.CreateLobbyRoom(roomName, 4, (int)GameType.Custom, _createRoomCustom.RoomPassword);
+                PhotonRealtimeClient.CreateLobbyRoom(roomName, GameType.Custom, _createRoomCustom.RoomPassword);
             }
             else
             {
-                PhotonRealtimeClient.CreateLobbyRoom(roomName, 4, (int)GameType.Custom);
+                PhotonRealtimeClient.CreateLobbyRoom(roomName, GameType.Custom);
             }
         }
 
@@ -91,10 +91,10 @@ namespace MenuUi.Scripts.Lobby.InLobby
             yield break;
         }
 
-        private void CreateClan2v2Room()
+        private void CreateClan2v2Room()  // soulhome value for matchmaking
         {
             var roomName = $"{DefaultRoomNameClan2v2}{DateTime.Now.Second:00}";
-            PhotonRealtimeClient.CreateLobbyRoom(roomName, 2, (int)GameType.Clan2v2);
+            PhotonRealtimeClient.CreateLobbyRoom(roomName, GameType.Clan2v2);
         }
 
         private void JoinRoom(string roomName)

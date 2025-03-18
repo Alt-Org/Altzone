@@ -1,7 +1,7 @@
-namespace MenuUi.Scripts.Lobby
+namespace Altzone.Scripts.Lobby 
 {
     /// <summary>
-    /// Used for determining which kind of battle popup to open from the battle button in the main menu.
+    /// Used for determining battle popup game type.
     /// </summary>
     public enum GameType
     {
