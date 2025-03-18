@@ -157,12 +157,12 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void InstantiateRightSideButtons()
         {
-            for (int i = 4; i < _partsPageCount; i++)
+            for (int i = 4; i < 8; i++)
             {
-                int categoryFeatureIndex = i + (_partsPageCount * _currentPageNumber);
+                int categoryFeatureIndex = i + (8 * _currentPageNumber);
 
                 if ((categoryFeatureIndex < _currentCategoryFeatureDataPlaceholder.Count) || 
-                (categoryFeatureIndex == _currentCategoryFeatureDataPlaceholder.Count && (_currentPageNumber != 0 || i != _partsPageCount)))
+                (categoryFeatureIndex == _currentCategoryFeatureDataPlaceholder.Count && (_currentPageNumber != 0 || i != 8)))
                 {
                     Button featureButton = Instantiate(_featureButtonPrefab, _featureButtonPositions[i]).GetComponent<Button>();
 
@@ -181,7 +181,7 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             for (int i = 0; i < 4; i++)
             {
-                int categoryFeatureIndex = i + (_partsPageCount * _currentPageNumber);
+                int categoryFeatureIndex = i + (8 * _currentPageNumber);
 
                 if (i == 0 && _currentPageNumber == 0)
                 {
@@ -190,7 +190,7 @@ namespace MenuUi.Scripts.AvatarEditor
                     (delegate { SetFeatureToNone((int)_currentlySelectedCategory); });
                 }
                 else if ((categoryFeatureIndex < _currentCategoryFeatureDataPlaceholder.Count) || 
-                (categoryFeatureIndex == _currentCategoryFeatureDataPlaceholder.Count && ((_currentPageNumber != 0) || (i != _partsPageCount))))
+                (categoryFeatureIndex == _currentCategoryFeatureDataPlaceholder.Count && ((_currentPageNumber != 0) || (i != 8))))
                 {
                     Button featureButton = Instantiate(_featureButtonPrefab, _featureButtonPositions[i]).GetComponent<Button>();
 
@@ -227,7 +227,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void DestroyRightSideButtons()
         {
-            for(int i = 4; i < _partsPageCount; i++)
+            for(int i = 4; i < 8; i++)
             {
                 if(_featureButtonPositions[i].childCount > 0)
                 {

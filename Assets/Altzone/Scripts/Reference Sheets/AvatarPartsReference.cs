@@ -28,7 +28,7 @@ namespace Altzone.Scripts.ReferenceSheets
             }
             catch
             {
-                Debug.LogError($"Could not find avatar part with ID: {Id}");
+                Debug.Log($"Error: Could not find avatar part with ID: {Id}");
                 return (null);
             }
         }
