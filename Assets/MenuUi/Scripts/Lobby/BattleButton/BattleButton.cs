@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using SignalBusPopup = MenuUI.Scripts.SignalBus;
 using MenuUi.Scripts.Signals;
 using MenuUi.Scripts.SwipeNavigation;
+using Altzone.Scripts.Lobby;
 
 namespace MenuUi.Scripts.Lobby.BattleButton
 {

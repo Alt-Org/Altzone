@@ -12,6 +12,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Altzone.Scripts.Lobby.Wrappers.LobbyWrapper;
 using Altzone.Scripts.Battle.Photon;
+using Altzone.Scripts.Lobby;
 
 public static class PhotonRealtimeClient
 {
@@ -614,16 +615,34 @@ public static class PhotonRealtimeClient
         Client.RemoveCallbackTarget(target);
     }
 
-    public static bool CreateLobbyRoom(string roomName, int maxPlayers, int gameType, string password = "", string[] expectedUsers = null)
+    public static bool CreateLobbyRoom(string roomName, GameType gameType, string password = "", string[] expectedUsers = null)
     {
         PhotonHashtable customRoomProperties = new PhotonHashtable
         {
+            { PhotonBattleRoom.GameTypeKey, gameType },
             { PhotonBattleRoom.PlayerPositionKey1, "" },
             { PhotonBattleRoom.PlayerPositionKey2, "" },
-            { PhotonBattleRoom.PlayerPositionKey3, "" },
-            { PhotonBattleRoom.PlayerPositionKey4, "" },
-            { PhotonBattleRoom.GameTypeKey, gameType } // saving game type as int but using the enum in menu ui, maybe the enum needs to moved under Altzone?
         };
+
+        int maxPlayers;
+
+        switch (gameType)
+        {
+            default:
+            case GameType.Random2v2:
+            case GameType.Custom:
+                maxPlayers = 4;
+                break;
+            case GameType.Clan2v2:
+                maxPlayers = 2;
+                break;
+        }
+
+        if (maxPlayers == 4)
+        {
+            customRoomProperties.Add(PhotonBattleRoom.PlayerPositionKey3, "");
+            customRoomProperties.Add(PhotonBattleRoom.PlayerPositionKey4, "");
+        }
 
         if (password != "" && password != null)
         {
