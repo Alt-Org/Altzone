@@ -30,8 +30,10 @@ namespace MenuUi.Scripts.Lobby.InLobby
         [SerializeField] private TopInfoPanelController _topInfoPanel;
         [SerializeField] private GameObject _popupContents;
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
+        [SerializeField] private LobbyRoomListingController _roomListingController;
 
         private string _currentRegion;
+        private Coroutine _creatingRoomCoroutineHolder = null;
 
         private void Awake()
         {
@@ -138,7 +140,24 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private void OpenWindow(GameType gameType)
         {
             _popupContents.SetActive(true);
-            _roomSwitcher.OpenPanel(gameType);
+            _roomListingController.SelectedGameType = gameType;
+
+            switch (gameType)
+            {
+                case GameType.Custom:
+                    _roomSwitcher.ReturnToMain();
+                    break;
+                case GameType.Clan2v2:
+                    // Starting coroutine to create clan 2v2 room if player is not in a room and a room is currently being created
+                    if (!PhotonRealtimeClient.InRoom && _creatingRoomCoroutineHolder == null)
+                    {
+                        _creatingRoomCoroutineHolder = StartCoroutine(_roomListingController.StartCreatingClan2v2Room(() =>
+                        {
+                            _creatingRoomCoroutineHolder = null;
+                        }));
+                    }
+                    break;
+            }
         }
 
 
