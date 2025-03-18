@@ -107,31 +107,29 @@ namespace Altzone.Scripts.Battle.Photon
             // Checking which of the room's player positions are free
             HashSet<int> usedPlayerPositions = new HashSet<int>();
 
-            if (CheckIfPositionIsFree(PlayerPosition1) == false)
-            {
-                usedPlayerPositions.Add(PlayerPosition1);
-            }
+            if (CheckIfPositionIsFree(PlayerPosition1) == false) usedPlayerPositions.Add(PlayerPosition1);
+            if (CheckIfPositionIsFree(PlayerPosition2) == false) usedPlayerPositions.Add(PlayerPosition2);
 
-            if (CheckIfPositionIsFree(PlayerPosition2) == false)
+            if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 4)
             {
-                usedPlayerPositions.Add(PlayerPosition2);
-            }
-
-            if (CheckIfPositionIsFree(PlayerPosition3) == false)
-            {
-                usedPlayerPositions.Add(PlayerPosition3);
-            }
-
-            if (CheckIfPositionIsFree(PlayerPosition4) == false)
-            {
-                usedPlayerPositions.Add(PlayerPosition4);
+                if (CheckIfPositionIsFree(PlayerPosition3) == false) usedPlayerPositions.Add(PlayerPosition3);
+                if (CheckIfPositionIsFree(PlayerPosition4) == false) usedPlayerPositions.Add(PlayerPosition4);
             }
 
             if (usedPlayerPositions.Contains(wantedPlayerPos))
             {
-                int[] playerPositions = isAllocateByTeams
+                int[] playerPositions;
+                if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2)
+                {
+                    playerPositions = new[] { PlayerPosition2, PlayerPosition1 };
+                }
+                else
+                {
+                    playerPositions = isAllocateByTeams
                     ? new[] { PlayerPosition2, PlayerPosition3, PlayerPosition4, PlayerPosition1 }
                     : new[] { PlayerPosition3, PlayerPosition2, PlayerPosition4, PlayerPosition1 };
+                }
+                    
                 foreach (int playerPos in playerPositions)
                 {
                     if (!usedPlayerPositions.Contains(playerPos))
@@ -141,6 +139,7 @@ namespace Altzone.Scripts.Battle.Photon
                     }
                 }
             }
+
             if (!IsValidPlayerPos(wantedPlayerPos))
             {
                 wantedPlayerPos = PlayerPositionSpectator;
@@ -239,7 +238,14 @@ namespace Altzone.Scripts.Battle.Photon
 
         public bool IsValidPlayerPos(int playerPos)
         {
-            return playerPos is >= PlayerPosition1 and <= PlayerPosition4;
+            if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2)
+            {
+                return playerPos is >= PlayerPosition1 and <= PlayerPosition2;
+            }
+            else
+            {
+                return playerPos is >= PlayerPosition1 and <= PlayerPosition4;
+            }
         }
 
         public static int GetTeamMemberPlayerPos(int playerPos)
@@ -270,9 +276,18 @@ namespace Altzone.Scripts.Battle.Photon
 
         public int GetPlayerIndex(int playerPos)
         {
-            Assert.IsTrue(playerPos >= PlayerPosition1 && playerPos <= PlayerPosition4,
+            if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2)
+            {
+                Assert.IsTrue(playerPos >= PlayerPosition1 && playerPos <= PlayerPosition2,
                 "playerPos >= PlayerPosition1 && playerPos <= PlayerPosition4");
-            return playerPos - 1;
+                return playerPos - 1;
+            }
+            else
+            {
+                Assert.IsTrue(playerPos >= PlayerPosition1 && playerPos <= PlayerPosition4,
+                "playerPos >= PlayerPosition1 && playerPos <= PlayerPosition4");
+                return playerPos - 1;
+            }
         }
 
         public int GetTeamNumber(int playerPos)
