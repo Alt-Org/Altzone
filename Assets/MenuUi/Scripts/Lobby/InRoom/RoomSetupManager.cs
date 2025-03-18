@@ -118,20 +118,31 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
 
-            UpdatePhotonNickname();
             var room = PhotonRealtimeClient.LobbyCurrentRoom;
             var player = PhotonRealtimeClient.LocalLobbyPlayer;
-            //PhotonRealtimeClient.NickName = room.GetUniquePlayerNameForRoom(player, PhotonRealtimeClient.NickName, "");
-            Debug.Log($"OnEnable InRoom '{room.Name}' as '{PhotonRealtimeClient.NickName}'");
-
-            // Reset player custom properties for new game
-            player.CustomProperties.Clear();
-
-            // Getting first free player pos
-            var playerPos = PhotonLobbyRoom.GetFirstFreePlayerPos(player);
-
             StartCoroutine(GetPlayerData(playerData =>
             {
+                // Checking if player is already in the room and if so only update status and return (can happen if battle popup is minimized while in room)
+                string positionValue1 = room.GetCustomProperty(PlayerPositionKey1, "");
+                string positionValue2 = room.GetCustomProperty(PlayerPositionKey2, "");
+                string positionValue3 = room.GetCustomProperty(PlayerPositionKey3, "");
+                string positionValue4 = room.GetCustomProperty(PlayerPositionKey4, "");
+
+                if (playerData.Id == positionValue1 || playerData.Id == positionValue2 || playerData.Id == positionValue3 || playerData.Id == positionValue3)
+                {
+                    UpdateStatus();
+                    return;
+                }
+
+                // Setting photon nickname from playerdata name
+                PhotonRealtimeClient.NickName = playerData.Name;
+
+                // Reset player custom properties for new game
+                player.CustomProperties.Clear();
+
+                // Getting first free player pos
+                var playerPos = PhotonLobbyRoom.GetFirstFreePlayerPos(player);
+
                 // Reserving player position inside the room
                 LobbyPhotonHashtable propertyToSet = new();
                 LobbyPhotonHashtable expectedValue = new();
@@ -285,14 +296,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
             _buttonStartPlay.interactable = _interactableStartPlay;
             SetTeamText();
-        }
-
-        private void UpdatePhotonNickname()
-        {
-            var store = Storefront.Get();
-            PlayerData playerData = null;
-            store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
-            PhotonRealtimeClient.NickName = playerData.Name;
         }
 
         private void SetTeamText()
