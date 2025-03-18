@@ -71,6 +71,13 @@ namespace Quantum {
     GameOver,
     PostGame,
   }
+  public enum MoodState : int {
+    Sadness = 0,
+    Joy = 1,
+    Playful = 2,
+    Aggression = 3,
+    Love = 4,
+  }
   public enum SoundEffect : int {
     SoulWallHit,
     GoalHit,
@@ -686,7 +693,7 @@ namespace Quantum {
     [FieldOffset(16)]
     public FP Radius;
     [FieldOffset(0)]
-    public Int32 TestSpriteIndex;
+    public MoodState Mood;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 16141;
@@ -695,13 +702,13 @@ namespace Quantum {
         hash = hash * 31 + Direction.GetHashCode();
         hash = hash * 31 + CoolDown.GetHashCode();
         hash = hash * 31 + Radius.GetHashCode();
-        hash = hash * 31 + TestSpriteIndex.GetHashCode();
+        hash = hash * 31 + (Int32)Mood;
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (Projectile*)ptr;
-        serializer.Stream.Serialize(&p->TestSpriteIndex);
+        serializer.Stream.Serialize((Int32*)&p->Mood);
         QBoolean.Serialize(&p->IsLaunched, serializer);
         FP.Serialize(&p->CoolDown, serializer);
         FP.Serialize(&p->Radius, serializer);
@@ -1019,6 +1026,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(LayerMask), LayerMask.SIZE);
       typeRegistry.Register(typeof(MapEntityId), MapEntityId.SIZE);
       typeRegistry.Register(typeof(MapEntityLink), MapEntityLink.SIZE);
+      typeRegistry.Register(typeof(Quantum.MoodState), 4);
       typeRegistry.Register(typeof(NavMeshAvoidanceAgent), NavMeshAvoidanceAgent.SIZE);
       typeRegistry.Register(typeof(NavMeshAvoidanceObstacle), NavMeshAvoidanceObstacle.SIZE);
       typeRegistry.Register(typeof(NavMeshPathfinder), NavMeshPathfinder.SIZE);
@@ -1080,6 +1088,7 @@ namespace Quantum {
       FramePrinter.EnsurePrimitiveNotStripped<CallbackFlags>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.GameState>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.InputButtons>();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.MoodState>();
       FramePrinter.EnsurePrimitiveNotStripped<QueryOptions>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.SoundEffect>();
     }

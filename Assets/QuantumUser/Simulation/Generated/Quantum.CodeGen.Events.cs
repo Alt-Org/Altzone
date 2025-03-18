@@ -52,7 +52,7 @@ namespace Quantum {
   public unsafe partial class Frame {
     public unsafe partial struct FrameEvents {
       static partial void GetEventTypeCountCodeGen(ref Int32 eventCount) {
-        eventCount = 6;
+        eventCount = 5;
       }
       static partial void GetParentEventIDCodeGen(Int32 eventID, ref Int32 parentEventID) {
         switch (eventID) {
@@ -64,8 +64,7 @@ namespace Quantum {
           case EventUpdateDebugStatsOverlay.ID: result = typeof(EventUpdateDebugStatsOverlay); return;
           case EventGridSet.ID: result = typeof(EventGridSet); return;
           case EventPlaySoundEvent.ID: result = typeof(EventPlaySoundEvent); return;
-          case EventChangeProjectileSprite.ID: result = typeof(EventChangeProjectileSprite); return;
-          case EventChangeScreenEffectColor.ID: result = typeof(EventChangeScreenEffectColor); return;
+          case EventChangeMoodState.ID: result = typeof(EventChangeMoodState); return;
           default: break;
         }
       }
@@ -88,17 +87,10 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventChangeProjectileSprite ChangeProjectileSprite(Int32 SpriteIndex) {
+      public EventChangeMoodState ChangeMoodState(MoodState Mood) {
         if (_f.IsPredicted) return null;
-        var ev = _f.Context.AcquireEvent<EventChangeProjectileSprite>(EventChangeProjectileSprite.ID);
-        ev.SpriteIndex = SpriteIndex;
-        _f.AddEvent(ev);
-        return ev;
-      }
-      public EventChangeScreenEffectColor ChangeScreenEffectColor(Int32 ColorIndex) {
-        if (_f.IsPredicted) return null;
-        var ev = _f.Context.AcquireEvent<EventChangeScreenEffectColor>(EventChangeScreenEffectColor.ID);
-        ev.ColorIndex = ColorIndex;
+        var ev = _f.Context.AcquireEvent<EventChangeMoodState>(EventChangeMoodState.ID);
+        ev.Mood = Mood;
         _f.AddEvent(ev);
         return ev;
       }
@@ -177,13 +169,13 @@ namespace Quantum {
       }
     }
   }
-  public unsafe partial class EventChangeProjectileSprite : EventBase {
+  public unsafe partial class EventChangeMoodState : EventBase {
     public new const Int32 ID = 4;
-    public Int32 SpriteIndex;
-    protected EventChangeProjectileSprite(Int32 id, EventFlags flags) : 
+    public MoodState Mood;
+    protected EventChangeMoodState(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventChangeProjectileSprite() : 
+    public EventChangeMoodState() : 
         base(4, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
     }
     public new QuantumGame Game {
@@ -197,32 +189,7 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 53;
-        hash = hash * 31 + SpriteIndex.GetHashCode();
-        return hash;
-      }
-    }
-  }
-  public unsafe partial class EventChangeScreenEffectColor : EventBase {
-    public new const Int32 ID = 5;
-    public Int32 ColorIndex;
-    protected EventChangeScreenEffectColor(Int32 id, EventFlags flags) : 
-        base(id, flags) {
-    }
-    public EventChangeScreenEffectColor() : 
-        base(5, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
-    }
-    public new QuantumGame Game {
-      get {
-        return (QuantumGame)base.Game;
-      }
-      set {
-        base.Game = value;
-      }
-    }
-    public override Int32 GetHashCode() {
-      unchecked {
-        var hash = 59;
-        hash = hash * 31 + ColorIndex.GetHashCode();
+        hash = hash * 31 + Mood.GetHashCode();
         return hash;
       }
     }

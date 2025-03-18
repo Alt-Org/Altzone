@@ -161,7 +161,7 @@ namespace Quantum.Prototypes {
     public FPVector2 Direction;
     public FP CoolDown;
     public FP Radius;
-    public Int32 TestSpriteIndex;
+    public Quantum.QEnum32<MoodState> Mood;
     partial void MaterializeUser(Frame frame, ref Quantum.Projectile result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.Projectile component = default;
@@ -174,7 +174,7 @@ namespace Quantum.Prototypes {
         result.Direction = this.Direction;
         result.CoolDown = this.CoolDown;
         result.Radius = this.Radius;
-        result.TestSpriteIndex = this.TestSpriteIndex;
+        result.Mood = this.Mood;
         MaterializeUser(frame, ref result, in context);
     }
   }

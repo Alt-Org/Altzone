@@ -19,12 +19,12 @@ namespace Quantum
         {
             _spriteRenderer = GetComponent<SpriteRenderer>();
 
-            QuantumEvent.Subscribe<EventChangeScreenEffectColor>(this, OnChangeScreenEffectColor);
+            QuantumEvent.Subscribe<EventChangeMoodState>(this, OnChangeMoodState);
         }
 
-        private void OnChangeScreenEffectColor(EventChangeScreenEffectColor e)
+        private void OnChangeMoodState(EventChangeMoodState e)
         {
-            _spriteRenderer.color = _colors[e.ColorIndex];
+            _spriteRenderer.color = _colors[(int)e.Mood];
         }
     }
 }

@@ -1,9 +1,4 @@
-synced event ChangeProjectileSprite
+synced event ChangeMoodState
 {
-    int SpriteIndex;
-}
-
-synced event ChangeScreenEffectColor
-{
-    int ColorIndex;
+    MoodState Mood;
 }

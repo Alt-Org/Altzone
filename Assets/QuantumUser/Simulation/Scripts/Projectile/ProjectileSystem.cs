@@ -68,11 +68,10 @@ namespace Quantum.QuantumUser.Simulation.Projectile
         {
             ProjectileBounce(f, projectile, projectileEntity, soulWallEntity, soulWall->Normal, soulWall->CollisionMinOffset);
 
-            if (projectile->TestSpriteIndex < soulWall->Layer)
+            if ((int)projectile->Mood < soulWall->Layer)
             {
-                projectile->TestSpriteIndex = soulWall->Layer;
-                f.Events.ChangeProjectileSprite(projectile->TestSpriteIndex);
-                f.Events.ChangeScreenEffectColor(projectile->TestSpriteIndex);
+                projectile->Mood = (MoodState)soulWall->Layer;
+                f.Events.ChangeMoodState(projectile->Mood);
             }
         }
 
