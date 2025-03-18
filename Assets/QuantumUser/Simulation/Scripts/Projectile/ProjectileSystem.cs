@@ -68,11 +68,16 @@ namespace Quantum.QuantumUser.Simulation.Projectile
         {
             ProjectileBounce(f, projectile, projectileEntity, soulWallEntity, soulWall->Normal, soulWall->CollisionMinOffset);
 
-            if ((int)projectile->Emotion < soulWall->Layer)
+            int randomEmotion;
+
+            do
             {
-                projectile->Emotion = (EmotionState)soulWall->Layer;
-                f.Events.ChangeEmotionState(projectile->Emotion);
+                randomEmotion = Random.Range(0,4);
             }
+            while(randomEmotion == (int)projectile->Emotion);
+
+            projectile->Emotion = (EmotionState)randomEmotion;
+            f.Events.ChangeEmotionState(projectile->Emotion);
         }
 
         public void OnTriggerProjectileHitArenaBorder(Frame f, Quantum.Projectile* projectile, EntityRef projectileEntity, Quantum.ArenaBorder* arenaBorder, EntityRef arenaBorderEntity)
