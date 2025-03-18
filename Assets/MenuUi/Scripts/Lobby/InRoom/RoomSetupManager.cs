@@ -85,13 +85,9 @@ namespace MenuUi.Scripts.Lobby.InRoom
             Spectator
         }
 
-        private void Awake()
-        {
-            _selectedCharactersEditable.SelectedCharactersChanged += UpdateCharactersAndStatsKey;
-        }
-
         private void OnEnable()
         {
+            _selectedCharactersEditable.SelectedCharactersChanged += UpdateCharactersAndStatsKey;
             Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState}");
             _buttonStartPlay.interactable = false;
             //_buttonRaidTest.interactable = false;
@@ -108,6 +104,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private void OnDisable()
         {
+            _selectedCharactersEditable.SelectedCharactersChanged += UpdateCharactersAndStatsKey;
             Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState}");
             LobbyManager.LobbyOnPlayerEnteredRoom -= OnPlayerEnteredRoom;
             LobbyManager.LobbyOnPlayerLeftRoom -= OnPlayerLeftRoom;
@@ -115,11 +112,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
             LobbyManager.LobbyOnPlayerPropertiesUpdate -= OnPlayerPropertiesUpdate;
             LobbyManager.LobbyOnMasterClientSwitched -= OnMasterClientSwitched;
             PhotonRealtimeClient.RemoveCallbackTarget(this);
-        }
-
-        private void OnDestroy()
-        {
-            _selectedCharactersEditable.SelectedCharactersChanged -= UpdateCharactersAndStatsKey;
         }
 
         private IEnumerator OnEnableInRoom()
