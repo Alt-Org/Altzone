@@ -13,19 +13,33 @@ public class AdEditor : MonoBehaviour
     [SerializeField] private TMP_Text _titleText;
     [SerializeField] private Image _borderImage;
 
+    [SerializeField] private Color orangeColor;
+    [SerializeField] private Color yellowColor;
+    [SerializeField] private Color lightGreenColor;
+    [SerializeField] private Color lightBlueColor;
     [SerializeField] private Color blueColor;
     [SerializeField] private Color purpleColor;
-    [SerializeField] private Color greenColor;
-    [SerializeField] private Color orangeColor;
-    [SerializeField] private Color whiteColor;
+    [SerializeField] private Color darkPinkColor;
+    [SerializeField] private Color redColor;
 
-    public List<Sprite> borderChoices;
-    public List<Sprite> itemChoices;
-    private int borderCounter;
-    private int itemCounter;
-    private int currentBorder = 0;
-    private int currentItem = 0;
 
+    public void ChangeOrangeColor()
+    {
+        _backgroundImage.color = orangeColor;
+    }
+    public void ChangeYellowColor()
+    {
+        _backgroundImage.color = yellowColor;
+    }
+    public void ChangeLightGreenColor()
+    {
+        _backgroundImage.color = lightGreenColor;
+    }
+
+    public void ChangeLightBlueColor()
+    {
+        _backgroundImage.color = lightBlueColor;
+    }
     public void ChangeBlueColor()
     {
         _backgroundImage.color = blueColor;
@@ -34,50 +48,14 @@ public class AdEditor : MonoBehaviour
     {
         _backgroundImage.color = purpleColor;
     }
-    public void ChangeGreenColor()
+    public void ChangeDarkPinkColor()
     {
-        _backgroundImage.color = greenColor;
+        _backgroundImage.color = darkPinkColor;
     }
-
-    public void ChangetOrangeColor()
+    public void ChangeRedColor()
     {
-        _backgroundImage.color = orangeColor;
+        _backgroundImage.color = redColor;
     }
-    public void ChangetWhiteColor()
-    {
-        _backgroundImage.color = whiteColor;
-    }
-    public void NextItem()
-    {
-        itemCounter++;
-        if (itemCounter == 1)
-        {
-
-            currentItem++;
-            itemCounter = 0;
-            if (currentItem >= itemChoices.Count)
-            {
-                currentBorder = 0;
-            }
-            _itemImage.sprite = itemChoices[currentItem];
-        }
-    }
-    public void NextBorder()
-    {
-        borderCounter++;
-        if (borderCounter == 1)
-        {
-
-            currentBorder++;
-            borderCounter = 0;
-            if (currentBorder >= borderChoices.Count)
-            {
-                currentBorder = 0;
-            }
-            _borderImage.sprite = borderChoices[currentBorder];
-        }
-    }
-
 
     public void CloseEditor()
     {
