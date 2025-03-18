@@ -90,26 +90,27 @@ public class ChatAddReactions : MonoBehaviour
 
             Image reactionImage = reaction.GetComponentInChildren<Image>();
             Sprite reactionSprite = reactionImage.sprite;
-            int counter = 1;
             int messageID = selectedMessage.GetInstanceID();
 
-            // Checks if chosen reaction is already addded to the selected message. If so, deletes it.
+            // Checks if chosen reaction is already added to the selected message. If so, deletes it.
             foreach (ChatReactionHandler addedReaction in _reactionHandlers)
             {
                 if (addedReaction._messageID == messageID && addedReaction._reactionImage.sprite == reactionSprite)
                 {
-                    RemoveReaction(addedReaction, reactionsField);
+                    RemoveReaction(addedReaction);
                     _chatScript.DeselectMessage(selectedMessage);
 
                     return;
                 }
             }
 
-            // Creates a reaction with the needed info and adds it to the selected message
+            // Creates a reaction with the needed info and adds it to the selected message.
             GameObject newReaction = Instantiate(_addedReactionPrefab, reactionsField.transform);
             ChatReactionHandler chatReactionHandler = newReaction.GetComponentInChildren<ChatReactionHandler>();
-            chatReactionHandler.SetReactionInfo(reactionSprite, counter, messageID);
+            chatReactionHandler.SetReactionInfo(reactionSprite, messageID);
             _reactionHandlers.Add(chatReactionHandler);
+
+            chatReactionHandler._button.onClick.AddListener(() => ToggleReaction(chatReactionHandler));
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
 
@@ -117,10 +118,30 @@ public class ChatAddReactions : MonoBehaviour
         }
     }
 
-    private void RemoveReaction(ChatReactionHandler reaction, HorizontalLayoutGroup reactionsField)
+    /// <summary>
+    /// Toggles the added reactions as selected and unselected.
+    /// </summary>
+    /// <param name="reactionHandler"></param>
+    private void ToggleReaction(ChatReactionHandler reactionHandler)
+    {
+        if (reactionHandler._selected)
+        {
+            reactionHandler.Deselect();
+
+            if (reactionHandler._count <= 0)
+            {
+                RemoveReaction(reactionHandler);
+            }
+        }
+        else
+        {
+            reactionHandler.Select();
+        }
+    }
+
+    private void RemoveReaction(ChatReactionHandler reaction)
     {
         _reactionHandlers.Remove(reaction);
         Destroy(reaction.gameObject);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
     }
 }
