@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Altzone.Scripts;
 using Altzone.Scripts.Battle.Photon;
-using Altzone.Scripts.Config;
 using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Lobby.Wrappers;
 using Altzone.Scripts.Model.Poco.Game;
@@ -186,8 +184,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 List<CustomCharacter> selectedCharacters = GetSelectedCustomCharacters(playerData);
                 LobbyManager.Instance.SetPlayerQuantumCharacters(selectedCharacters);
 
-                Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState} {enabled}");
-
                 UpdateStatus();
             }));
         }
@@ -267,11 +263,12 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 return;
             }
             ResetState();
+
+            int roomMaxPlayers = PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers;
+
             // We need local player to check against other players
             LobbyPlayer localPlayer = PhotonRealtimeClient.LocalLobbyPlayer;
             _localPlayerPosition = localPlayer.GetCustomProperty(PlayerPositionKey, 0);
-            //currentRole = PlayerRole.Player;
-            _isLocalPlayerPositionUnique = true;
 
             CheckMasterClient();
             // Check other players first is they have reserved some player positions etc. from the room already.
@@ -284,18 +281,34 @@ namespace MenuUi.Scripts.Lobby.InRoom
             }
             CheckLocalPlayer(localPlayer);
 
+            // Setting player position buttons active status
             SetButtonActive(_buttonPlayerP1, _interactablePlayerP1);
             SetButtonActive(_buttonPlayerP2, _interactablePlayerP2);
-            SetButtonActive(_buttonPlayerP3, _interactablePlayerP3);
-            SetButtonActive(_buttonPlayerP4, _interactablePlayerP4);
 
+            if (roomMaxPlayers == 4)
+            {
+                SetButtonActive(_buttonPlayerP3, _interactablePlayerP3);
+                SetButtonActive(_buttonPlayerP4, _interactablePlayerP4);
+            }
+
+            // Setting player name texts
             _nameP1.text = _captionPlayerP1;
             _nameP2.text = _captionPlayerP2;
-            _nameP3.text = _captionPlayerP3;
-            _nameP4.text = _captionPlayerP4;
+            
+            if (roomMaxPlayers == 4)
+            {
+                _nameP3.text = _captionPlayerP3;
+                _nameP4.text = _captionPlayerP4;
+            }
 
+            // Setting start game button interactable status
             _buttonStartPlay.interactable = _interactableStartPlay;
-            SetTeamText();
+
+            // Setting team text in a custom game mode
+            if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<GameType>(PhotonBattleRoom.GameTypeKey) == GameType.Custom)
+            {
+                SetTeamText();
+            }
         }
 
         private void SetTeamText()
@@ -335,25 +348,16 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private void CheckOtherPlayer(LobbyPlayer player)
         {
-            Debug.Log($"checkOtherPlayer {player.GetDebugLabel()}");
             if (!player.HasCustomProperty(PlayerPositionKey) || !player.HasCustomProperty(PlayerCharactersKey) || !player.HasCustomProperty(PlayerStatsKey))
             {
                 return;
             }
-            var curValue = player.GetCustomProperty(PlayerPositionKey, 0);
-            if (_isLocalPlayerPositionUnique && curValue >= PlayerPosition1 && curValue <= PlayerPosition4)
-            {
-                if (curValue == _localPlayerPosition)
-                {
-                    Debug.Log("detected conflict");
-                    _isLocalPlayerPositionUnique = false; // Conflict with player positions!
-                }
-            }
 
+            var playerPosition = player.GetCustomProperty(PlayerPositionKey, 0);
             int[] characters = player.GetCustomProperty(PlayerCharactersKey, new int[3]);
             int[] stats = player.GetCustomProperty(PlayerStatsKey, new int[15]);
 
-            switch (curValue)
+            switch (playerPosition)
             {
                 case PlayerPosition1:
                     _interactablePlayerP1 = false;
@@ -380,12 +384,12 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private void CheckLocalPlayer(LobbyPlayer player)
         {
-            Debug.Log($"checkLocalPlayer {player.GetDebugLabel()} pos={_localPlayerPosition} ok={_isLocalPlayerPositionUnique}");
-            var curValue = player.GetCustomProperty(PlayerPositionKey, 0);
-            // Master client can *only* start the game when in room as player!
-            _interactableStartPlay = player.IsMasterClient && curValue >= PlayerPosition1 && curValue <= PlayerPosition4;
+            var playerPosition = player.GetCustomProperty(PlayerPositionKey, 0);
 
-            switch (curValue)
+            // Master client can *only* start the game when in room as player!
+            _interactableStartPlay = player.IsMasterClient && playerPosition >= PlayerPosition1 && playerPosition <= PlayerPosition4;
+
+            switch (playerPosition)
             {
                 case PlayerPosition1:
                     _interactablePlayerP1 = false;
