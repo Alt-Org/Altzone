@@ -62,6 +62,13 @@ namespace Quantum {
     TeamAlpha = 1,
     TeamBeta = 2,
   }
+  public enum EmotionState : int {
+    Sadness = 0,
+    Joy = 1,
+    Playful = 2,
+    Aggression = 3,
+    Love = 4,
+  }
   public enum GameState : int {
     PreGame,
     ReadyToStart,
@@ -70,13 +77,6 @@ namespace Quantum {
     Playing,
     GameOver,
     PostGame,
-  }
-  public enum MoodState : int {
-    Sadness = 0,
-    Joy = 1,
-    Playful = 2,
-    Aggression = 3,
-    Love = 4,
   }
   public enum SoundEffect : int {
     SoulWallHit,
@@ -693,7 +693,7 @@ namespace Quantum {
     [FieldOffset(16)]
     public FP Radius;
     [FieldOffset(0)]
-    public MoodState Mood;
+    public EmotionState Emotion;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 16141;
@@ -702,13 +702,13 @@ namespace Quantum {
         hash = hash * 31 + Direction.GetHashCode();
         hash = hash * 31 + CoolDown.GetHashCode();
         hash = hash * 31 + Radius.GetHashCode();
-        hash = hash * 31 + (Int32)Mood;
+        hash = hash * 31 + (Int32)Emotion;
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (Projectile*)ptr;
-        serializer.Stream.Serialize((Int32*)&p->Mood);
+        serializer.Stream.Serialize((Int32*)&p->Emotion);
         QBoolean.Serialize(&p->IsLaunched, serializer);
         FP.Serialize(&p->CoolDown, serializer);
         FP.Serialize(&p->Radius, serializer);
@@ -996,6 +996,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(ComponentTypeRef), ComponentTypeRef.SIZE);
       typeRegistry.Register(typeof(DistanceJoint), DistanceJoint.SIZE);
       typeRegistry.Register(typeof(DistanceJoint3D), DistanceJoint3D.SIZE);
+      typeRegistry.Register(typeof(Quantum.EmotionState), 4);
       typeRegistry.Register(typeof(EntityPrototypeRef), EntityPrototypeRef.SIZE);
       typeRegistry.Register(typeof(EntityRef), EntityRef.SIZE);
       typeRegistry.Register(typeof(FP), FP.SIZE);
@@ -1026,7 +1027,6 @@ namespace Quantum {
       typeRegistry.Register(typeof(LayerMask), LayerMask.SIZE);
       typeRegistry.Register(typeof(MapEntityId), MapEntityId.SIZE);
       typeRegistry.Register(typeof(MapEntityLink), MapEntityLink.SIZE);
-      typeRegistry.Register(typeof(Quantum.MoodState), 4);
       typeRegistry.Register(typeof(NavMeshAvoidanceAgent), NavMeshAvoidanceAgent.SIZE);
       typeRegistry.Register(typeof(NavMeshAvoidanceObstacle), NavMeshAvoidanceObstacle.SIZE);
       typeRegistry.Register(typeof(NavMeshPathfinder), NavMeshPathfinder.SIZE);
@@ -1086,9 +1086,9 @@ namespace Quantum {
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerPosition>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleTeamNumber>();
       FramePrinter.EnsurePrimitiveNotStripped<CallbackFlags>();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.EmotionState>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.GameState>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.InputButtons>();
-      FramePrinter.EnsurePrimitiveNotStripped<Quantum.MoodState>();
       FramePrinter.EnsurePrimitiveNotStripped<QueryOptions>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.SoundEffect>();
     }

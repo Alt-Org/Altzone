@@ -13,12 +13,12 @@ namespace Quantum
         {
             _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
-            QuantumEvent.Subscribe<EventChangeMoodState>(this, OnChangeMoodState);
+            QuantumEvent.Subscribe<EventChangeEmotionState>(this, OnChangeEmotionState);
         }
 
-        private void OnChangeMoodState(EventChangeMoodState e)
+        private void OnChangeEmotionState(EventChangeEmotionState e)
         {
-            _spriteRenderer.sprite = _sprites[(int)e.Mood];
+            _spriteRenderer.sprite = _sprites[(int)e.Emotion];
         }
     }
 }

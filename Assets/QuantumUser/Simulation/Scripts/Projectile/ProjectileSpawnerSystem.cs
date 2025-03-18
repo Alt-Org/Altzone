@@ -67,7 +67,7 @@ namespace Quantum
 
             projectileTransform->Position = new FPVector2(0,0);
 
-            projectile->Mood = 0;
+            projectile->Emotion = 0;
         }
     }
 }

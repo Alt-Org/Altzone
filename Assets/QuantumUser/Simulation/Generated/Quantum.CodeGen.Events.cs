@@ -64,7 +64,7 @@ namespace Quantum {
           case EventUpdateDebugStatsOverlay.ID: result = typeof(EventUpdateDebugStatsOverlay); return;
           case EventGridSet.ID: result = typeof(EventGridSet); return;
           case EventPlaySoundEvent.ID: result = typeof(EventPlaySoundEvent); return;
-          case EventChangeMoodState.ID: result = typeof(EventChangeMoodState); return;
+          case EventChangeEmotionState.ID: result = typeof(EventChangeEmotionState); return;
           default: break;
         }
       }
@@ -87,10 +87,10 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventChangeMoodState ChangeMoodState(MoodState Mood) {
+      public EventChangeEmotionState ChangeEmotionState(EmotionState Emotion) {
         if (_f.IsPredicted) return null;
-        var ev = _f.Context.AcquireEvent<EventChangeMoodState>(EventChangeMoodState.ID);
-        ev.Mood = Mood;
+        var ev = _f.Context.AcquireEvent<EventChangeEmotionState>(EventChangeEmotionState.ID);
+        ev.Emotion = Emotion;
         _f.AddEvent(ev);
         return ev;
       }
@@ -169,13 +169,13 @@ namespace Quantum {
       }
     }
   }
-  public unsafe partial class EventChangeMoodState : EventBase {
+  public unsafe partial class EventChangeEmotionState : EventBase {
     public new const Int32 ID = 4;
-    public MoodState Mood;
-    protected EventChangeMoodState(Int32 id, EventFlags flags) : 
+    public EmotionState Emotion;
+    protected EventChangeEmotionState(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventChangeMoodState() : 
+    public EventChangeEmotionState() : 
         base(4, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
     }
     public new QuantumGame Game {
@@ -189,7 +189,7 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 53;
-        hash = hash * 31 + Mood.GetHashCode();
+        hash = hash * 31 + Emotion.GetHashCode();
         return hash;
       }
     }
