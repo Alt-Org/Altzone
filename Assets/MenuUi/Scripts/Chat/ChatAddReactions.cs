@@ -81,7 +81,7 @@ public class ChatAddReactions : MonoBehaviour
     /// <summary>
     /// Adds the chosen reaction to the selected message.
     /// </summary>
-    public void AddReaction(GameObject reaction)
+    private void AddReaction(GameObject reaction)
     {
         if (_chatScript != null)
         {
@@ -91,15 +91,36 @@ public class ChatAddReactions : MonoBehaviour
             Image reactionImage = reaction.GetComponentInChildren<Image>();
             Sprite reactionSprite = reactionImage.sprite;
             int counter = 1;
+            int messageID = selectedMessage.GetInstanceID();
 
+            // Checks if chosen reaction is already addded to the selected message. If so, deletes it.
+            foreach (ChatReactionHandler addedReaction in _reactionHandlers)
+            {
+                if (addedReaction._messageID == messageID && addedReaction._reactionImage.sprite == reactionSprite)
+                {
+                    RemoveReaction(addedReaction, reactionsField);
+                    _chatScript.DeselectMessage(selectedMessage);
+
+                    return;
+                }
+            }
+
+            // Creates a reaction with the needed info and adds it to the selected message
             GameObject newReaction = Instantiate(_addedReactionPrefab, reactionsField.transform);
             ChatReactionHandler chatReactionHandler = newReaction.GetComponentInChildren<ChatReactionHandler>();
-            chatReactionHandler.SetReactionInfo(reactionSprite, counter);
+            chatReactionHandler.SetReactionInfo(reactionSprite, counter, messageID);
             _reactionHandlers.Add(chatReactionHandler);
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
 
             _chatScript.DeselectMessage(selectedMessage);
         }
+    }
+
+    private void RemoveReaction(ChatReactionHandler reaction, HorizontalLayoutGroup reactionsField)
+    {
+        _reactionHandlers.Remove(reaction);
+        Destroy(reaction.gameObject);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
     }
 }
