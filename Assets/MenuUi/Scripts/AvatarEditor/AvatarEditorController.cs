@@ -99,7 +99,6 @@ namespace MenuUi.Scripts.AvatarEditor
             bool? timeout = null;
             PlayerData playerData = null;
 
-            // _nameInput.text = _playerAvatar.Name;
             StartCoroutine(PlayerDataTransferer("get", null, _timeoutSeconds, data => timeout = data, data => playerData = data));
 
             yield return new WaitUntil(() => ((timeout != null) || (playerData != null)));
@@ -111,8 +110,12 @@ namespace MenuUi.Scripts.AvatarEditor
 
             if (_currentPlayerData.AvatarData == null)
             {
+                
                 Debug.Log("AvatarData is null. Using default data.");
-                _playerAvatar = new(new List<string>() { "","","","","","","" } );
+                _playerAvatar = new(_featurePicker.GetCharacterDefaultFeature
+                    (
+                    $"{(_currentPlayerData.SelectedCharacterId.ToString())[0]}-{_currentPlayerData.SelectedCharacterId}")
+                    );
             }
             else
                 _playerAvatar = new(_currentPlayerData.AvatarData);

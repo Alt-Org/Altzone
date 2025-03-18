@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +15,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private TMP_Text _categoryText;
 
         [SerializeField] private AvatarPartsReference _avatarPartsReference;
+        [SerializeField] private AvatarDefaultReference _avatarDefaultReference;
 
         [Header("Feature Buttons")]
         [SerializeField] private GameObject _featureButtonPrefab;
@@ -26,7 +26,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private List<Transform> _featureButtonPositions;
         [SerializeField] private Animator _animator;
         private FeatureSlot _currentlySelectedCategory;
-        [SerializeField] private List<string> _selectedFeatures = new()
+        private List<string> _selectedFeatures = new()
         {
             "",
             "",
@@ -43,7 +43,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private Transform _characterImage;
 
         private CharacterClassID _characterClassID;
-        private Action _restoreDefaultColor;
+        private System.Action _restoreDefaultColor;
         private RectTransform _swipeArea;
 
         private readonly string _hairCategoryId = "10";
@@ -286,10 +286,10 @@ namespace MenuUi.Scripts.AvatarEditor
         private void LoadNextCategory()
         {
             _currentlySelectedCategory++ ;
-            if( (int)_currentlySelectedCategory >= Enum.GetNames(typeof(FeatureSlot)).Length )
-            {
-                _currentlySelectedCategory = 0 ;
-            }
+
+            if((int)_currentlySelectedCategory >= System.Enum.GetNames(typeof(FeatureSlot)).Length)
+                _currentlySelectedCategory = 0;
+
             SwitchFeatureCategory();
         }
 
@@ -298,7 +298,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _currentlySelectedCategory--;
             if( (int)_currentlySelectedCategory < 0)
             {
-                _currentlySelectedCategory = (FeatureSlot)(Enum.GetNames(typeof(FeatureSlot)).Length - 1);
+                _currentlySelectedCategory = (FeatureSlot)(System.Enum.GetNames(typeof(FeatureSlot)).Length - 1);
             }
             SwitchFeatureCategory();
         }
@@ -362,7 +362,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _characterClassID = id;
         }
 
-        public void RestoreDefaultColorToFeature(Action restore)
+        public void RestoreDefaultColorToFeature(System.Action restore)
         {
             _restoreDefaultColor = restore;
         }
@@ -395,19 +395,9 @@ namespace MenuUi.Scripts.AvatarEditor
             }
         }
 
-        //public string ResolveCharacterDefaultFeature(int slotIndex)
-        //{
-        //    return _characterClassID switch
-        //    {
-        //        CharacterClassID.Confluent => __ConfluenceGirlsOneDefaults[slotIndex],
-        //        CharacterClassID.Intellectualizer => _researcherDefaults[slotIndex],
-        //        CharacterClassID.Desensitizer => _bodybuilderDefaults[slotIndex],
-        //        CharacterClassID.Trickster => _comedianDefaults[slotIndex],
-        //        CharacterClassID.Projector => __grafitiArtistDefaults[slotIndex],
-        //        CharacterClassID.Retroflector => _overeaterDefaults[slotIndex],
-        //        CharacterClassID.Obedient => _preacherDefaults[slotIndex],
-        //        _ => FeatureID.None,
-        //    };
-        //}
+        public List<string> GetCharacterDefaultFeature(string characterId)
+        {
+            return (_avatarDefaultReference.GetStringList(characterId));
+        }
     }
 }

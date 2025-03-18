@@ -1,0 +1,186 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c23ecbc9bb122c43a29f9ed987fc6c0, type: 3}
+  m_Name: AvatarDefaults
+  m_EditorClassIdentifier: 
+  _info:
+  - Name: Desentisizer
+    Id: 1
+    Characters:
+    - Name: Racist
+      Id: 101
+      Variations: []
+    - Name: Meatwall
+      Id: 102
+      Variations:
+      - Name: 
+        HairId: 10-1-0101
+        EyesId: 21-1-0101
+        NoseId: 22-1-0101
+        MouthId: 23-1-0101
+        BodyId: 31-1-0101
+        HandsId: 32-1-0101
+        FeetId: 
+    - Name: Veteran
+      Id: 03
+      Variations: []
+    - Name: Bully
+      Id: 04
+      Variations: []
+    - Name: Guard
+      Id: 05
+      Variations: []
+  - Name: Trickster
+    Id: 2
+    Characters:
+    - Name: Jokester
+      Id: 202
+      Variations:
+      - Name: Default
+        HairId: 
+        EyesId: 
+        NoseId: 22-2-0101
+        MouthId: 23-2-0101
+        BodyId: 
+        HandsId: 
+        FeetId: 
+    - Name: Prankster
+      Id: 201
+      Variations: []
+    - Name: Conman
+      Id: 203
+      Variations: []
+    - Name: Seducer
+      Id: 204
+      Variations: []
+  - Name: Obedient
+    Id: 3
+    Characters:
+    - Name: Believer
+      Id: 301
+      Variations:
+      - Name: Default
+        HairId: 10-3-0101
+        EyesId: 21-3-0101
+        NoseId: 22-3-0101
+        MouthId: 23-3-0101
+        BodyId: 31-3-0101
+        HandsId: 
+        FeetId: 33-3-0101
+    - Name: People Pleaser
+      Id: 302
+      Variations: []
+  - Name: Projector
+    Id: 4
+    Characters:
+    - Name: Provocateur
+      Id: 401
+      Variations:
+      - Name: Default
+        HairId: 10-4-0101
+        EyesId: 21-4-0101
+        NoseId: 22-4-0101
+        MouthId: 23-4-0101
+        BodyId: 31-4-0101
+        HandsId: 
+        FeetId: 33-4-0101
+    - Name: Scapegoater
+      Id: 02
+      Variations: []
+    - Name: Mirror
+      Id: 03
+      Variations: []
+    - Name: Delusional
+      Id: 04
+      Variations: []
+  - Name: Retroflector
+    Id: 5
+    Characters:
+    - Name: Overeater
+      Id: 501
+      Variations:
+      - Name: Default
+        HairId: 10-5-0101
+        EyesId: 21-5-0101
+        NoseId: 22-5-0101
+        MouthId: 23-5-0101
+        BodyId: 
+        HandsId: 
+        FeetId: 
+    - Name: Alcoholist
+      Id: 502
+      Variations: []
+    - Name: Anorexic
+      Id: 03
+      Variations: []
+    - Name: Addict
+      Id: 04
+      Variations: []
+    - Name: Martyr
+      Id: 05
+      Variations: []
+  - Name: Confluent
+    Id: 6
+    Characters:
+    - Name: Soulsisters
+      Id: 601
+      Variations:
+      - Name: Default-1
+        HairId: 10-6-0101
+        EyesId: 21-6-0101
+        NoseId: 22-6-0101
+        MouthId: 23-6-0101
+        BodyId: 
+        HandsId: 
+        FeetId: 
+      - Name: Default-2
+        HairId: 10-6-0102
+        EyesId: 21-6-0102
+        NoseId: 22-6-0101
+        MouthId: 23-6-0101
+        BodyId: 
+        HandsId: 
+        FeetId: 
+    - Name: Lovers
+      Id: 602
+      Variations: []
+    - Name: Sleepy Sleeper
+      Id: 603
+      Variations:
+      - Name: Default
+        HairId: 10-6-0201
+        EyesId: 21-6-0201
+        NoseId: 22-6-0201
+        MouthId: 23-6-0201
+        BodyId: 31-6-0101
+        HandsId: 32-6-0101
+        FeetId: 
+  - Name: Intellectualizer
+    Id: 7
+    Characters:
+    - Name: Booksmart
+      Id: 701
+      Variations:
+      - Name: Default
+        HairId: 10-7-0101
+        EyesId: 21-7-0101
+        NoseId: 
+        MouthId: 23-7-0101
+        BodyId: 
+        HandsId: 
+        FeetId: 
+    - Name: Capitalist
+      Id: 702
+      Variations: []
+    - Name: OCD
+      Id: 03
+      Variations: []

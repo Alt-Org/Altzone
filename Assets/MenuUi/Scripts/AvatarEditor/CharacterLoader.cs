@@ -55,7 +55,6 @@ namespace MenuUi.Scripts.AvatarEditor
             AvatarInfo character = null;
             foreach (AvatarInfo CharacterInfo in classObject.list)
             {
-                    //Debug.LogError(CharacterInfo.id + " | " + (CharacterID)prefabId);
                 if (CharacterInfo.id == (CharacterID)prefabId)
                 {
                     character = CharacterInfo;
@@ -66,7 +65,7 @@ namespace MenuUi.Scripts.AvatarEditor
             if (character == null)
             {
                 character = classObject.list[0];
-                Debug.LogError($"Could not select AvatarInfo! Current AvatarInfo id is: {(CharacterID)prefabId}. Using first AvatarInfo: {classObject.list[0].id}");
+                Debug.LogError($"Could not select AvatarInfo! Current CharacterId is: {(CharacterID)prefabId}. Using first AvatarInfo: {classObject.list[0].id}");
             }
 
             return character;

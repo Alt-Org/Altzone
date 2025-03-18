@@ -1180,6 +1180,8 @@ MonoBehaviour:
   _categoryText: {fileID: 6749892600688888018}
   _avatarPartsReference: {fileID: 11400000, guid: 671ccbc5ba5e0df42acde4b71995e434,
     type: 2}
+  _avatarDefaultReference: {fileID: 11400000, guid: f0ae9649bfeccae44b56bd5283132b71,
+    type: 2}
   _featureButtonPrefab: {fileID: 7536046636313906788, guid: 8f55646c2142ce847a1c13022c5e3b20,
     type: 3}
   _defaultFeatureButtonPrefab: {fileID: 2495285751562906155, guid: 3230374487accd24daf04a4da7d99d91,
@@ -1201,6 +1203,14 @@ MonoBehaviour:
   - {fileID: 872962537359403051}
   - {fileID: 8554520893083663870}
   _animator: {fileID: 7494783457682047064}
+  _selectedFeatures:
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
 --- !u!114 &6741419406297277345
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2400,7 +2410,7 @@ MonoBehaviour:
     id: 100
     list:
     - Name: Bodybuilder
-      id: 257
+      id: 102
       DivanImage: {r: 0.5622641, g: 0.06259162, b: 0.06259162, a: 1}
   - Name: Trickster
     id: 200
