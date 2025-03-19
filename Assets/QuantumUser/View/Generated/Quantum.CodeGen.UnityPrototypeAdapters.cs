@@ -61,7 +61,6 @@ namespace Quantum.Prototypes.Unity {
     public FP StatCharacterSize;
     public FP StatAttack;
     public FP StatDefence;
-    public FP Speed;
     public FPVector2 TargetPosition;
     public FP BaseRotation;
     public FP MovementRotation;
@@ -87,7 +86,6 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.StatCharacterSize, out result.StatCharacterSize);
       converter.Convert(this.StatAttack, out result.StatAttack);
       converter.Convert(this.StatDefence, out result.StatDefence);
-      converter.Convert(this.Speed, out result.Speed);
       converter.Convert(this.TargetPosition, out result.TargetPosition);
       converter.Convert(this.BaseRotation, out result.BaseRotation);
       converter.Convert(this.MovementRotation, out result.MovementRotation);

@@ -121,7 +121,6 @@ namespace Quantum
                         StatAttack          = data.Characters[i].Attack,
                         StatDefence         = data.Characters[i].Defence,
 
-                        Speed               = 20,
                         TargetPosition      = playerSpawnPosition,
                         MovementRotation    = 0,
                         BaseRotation        = playerBaseRotation,

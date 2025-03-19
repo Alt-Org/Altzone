@@ -141,7 +141,6 @@ namespace Quantum.Prototypes {
     public FP StatCharacterSize;
     public FP StatAttack;
     public FP StatDefence;
-    public FP Speed;
     public FPVector2 TargetPosition;
     public FP BaseRotation;
     public FP MovementRotation;
@@ -170,7 +169,6 @@ namespace Quantum.Prototypes {
         result.StatCharacterSize = this.StatCharacterSize;
         result.StatAttack = this.StatAttack;
         result.StatDefence = this.StatDefence;
-        result.Speed = this.Speed;
         result.TargetPosition = this.TargetPosition;
         result.BaseRotation = this.BaseRotation;
         result.MovementRotation = this.MovementRotation;
