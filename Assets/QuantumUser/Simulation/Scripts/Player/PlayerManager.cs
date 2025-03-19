@@ -122,12 +122,12 @@ namespace Quantum
                         StatDefence         = data.Characters[i].Defence,
 
                         TargetPosition      = playerSpawnPosition,
-                        MovementRotation    = 0,
-                        BaseRotation        = playerBaseRotation,
+                        RotationOffset    = 0,
+                        RotationBase        = playerBaseRotation,
 
-                        PlayerHitboxList    = playerHitboxList,
-                        ShieldHitboxList    = playerShieldHitboxList,
-                        CharacterHitboxList = playerCharacterHitboxList
+                        HitboxListAll    = playerHitboxList,
+                        HitboxListShield    = playerShieldHitboxList,
+                        HitboxListCharacter = playerCharacterHitboxList
                     };
 
 #if DEBUG_PLAYER_STAT_OVERRIDE
@@ -516,7 +516,7 @@ namespace Quantum
 
             PlayerMovementSystem.Teleport(f, playerData, playerTransform,
                 worldPosition,
-                playerData->BaseRotation
+                playerData->RotationBase
             );
 
             playerData->TargetPosition = worldPosition;
@@ -537,7 +537,7 @@ namespace Quantum
 
             PlayerMovementSystem.Teleport(f, playerData, playerTransform,
                 worldPosition,
-                playerData->BaseRotation
+                playerData->RotationBase
             );
 
             playerData->TargetPosition = worldPosition;

@@ -62,17 +62,17 @@ namespace Quantum.Prototypes.Unity {
     public FP StatAttack;
     public FP StatDefence;
     public FPVector2 TargetPosition;
-    public FP BaseRotation;
-    public FP MovementRotation;
+    public FP RotationBase;
+    public FP RotationOffset;
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.Unity.PlayerHitBoxLinkPrototype[] PlayerHitboxList = {};
+    public Quantum.Prototypes.Unity.PlayerHitBoxLinkPrototype[] HitboxListAll = {};
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.Unity.PlayerHitBoxLinkPrototype[] ShieldHitboxList = {};
+    public Quantum.Prototypes.Unity.PlayerHitBoxLinkPrototype[] HitboxListShield = {};
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.Unity.PlayerHitBoxLinkPrototype[] CharacterHitboxList = {};
+    public Quantum.Prototypes.Unity.PlayerHitBoxLinkPrototype[] HitboxListCharacter = {};
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.PlayerDataPrototype prototype);
     public override Quantum.Prototypes.PlayerDataPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.PlayerDataPrototype();
@@ -87,11 +87,11 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.StatAttack, out result.StatAttack);
       converter.Convert(this.StatDefence, out result.StatDefence);
       converter.Convert(this.TargetPosition, out result.TargetPosition);
-      converter.Convert(this.BaseRotation, out result.BaseRotation);
-      converter.Convert(this.MovementRotation, out result.MovementRotation);
-      converter.Convert(this.PlayerHitboxList, out result.PlayerHitboxList);
-      converter.Convert(this.ShieldHitboxList, out result.ShieldHitboxList);
-      converter.Convert(this.CharacterHitboxList, out result.CharacterHitboxList);
+      converter.Convert(this.RotationBase, out result.RotationBase);
+      converter.Convert(this.RotationOffset, out result.RotationOffset);
+      converter.Convert(this.HitboxListAll, out result.HitboxListAll);
+      converter.Convert(this.HitboxListShield, out result.HitboxListShield);
+      converter.Convert(this.HitboxListCharacter, out result.HitboxListCharacter);
       ConvertUser(converter, ref result);
       return result;
     }

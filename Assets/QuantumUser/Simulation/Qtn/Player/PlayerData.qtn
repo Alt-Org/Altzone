@@ -21,12 +21,12 @@ component PlayerData
     FP StatDefence;
 
     FPVector2 TargetPosition;
-    FP BaseRotation;
-    FP MovementRotation;
+    FP RotationBase;
+    FP RotationOffset;
 
-    [FreeOnComponentRemoved] list<PlayerHitBoxLink> PlayerHitboxList;
-    [FreeOnComponentRemoved] list<PlayerHitBoxLink> ShieldHitboxList;
-    [FreeOnComponentRemoved] list<PlayerHitBoxLink> CharacterHitboxList;
+    [FreeOnComponentRemoved] list<PlayerHitBoxLink> HitboxListAll;
+    [FreeOnComponentRemoved] list<PlayerHitBoxLink> HitboxListShield;
+    [FreeOnComponentRemoved] list<PlayerHitBoxLink> HitboxListCharacter;
 }
 
 //} PlayerData

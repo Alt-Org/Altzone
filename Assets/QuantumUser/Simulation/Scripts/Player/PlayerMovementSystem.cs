@@ -67,7 +67,7 @@ namespace Quantum
             FP rotation = transform->Rotation;
 
             Transform2D* hitBoxTransform;
-            foreach (PlayerHitBoxLink hitBoxLink in f.ResolveList(playerData->PlayerHitboxList))
+            foreach (PlayerHitBoxLink hitBoxLink in f.ResolveList(playerData->HitboxListAll))
             {
                 hitBoxTransform = f.Unsafe.GetPointer<Transform2D>(hitBoxLink.Entity);
 
@@ -82,7 +82,7 @@ namespace Quantum
             FP rotation = transform->Rotation;
 
             Transform2D* hitBoxTransform;
-            foreach (PlayerHitBoxLink hitBoxLink in f.ResolveList(playerData->PlayerHitboxList))
+            foreach (PlayerHitBoxLink hitBoxLink in f.ResolveList(playerData->HitboxListAll))
             {
                 hitBoxTransform = f.Unsafe.GetPointer<Transform2D>(hitBoxLink.Entity);
 
@@ -124,34 +124,34 @@ namespace Quantum
                     playerData->TargetPosition = transform->Position;
 
                     //rotates to right
-                    if (input->RotationDirection > 0 && playerData->MovementRotation < maxAngle)
+                    if (input->RotationDirection > 0 && playerData->RotationOffset < maxAngle)
                     {
-                        playerData->MovementRotation += rotationSpeed;
-                        Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", playerData->MovementRotation);
+                        playerData->RotationOffset += rotationSpeed;
+                        Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", playerData->RotationOffset);
                     }
 
                     //rotates to left
-                    else if (input->RotationDirection < 0 && playerData->MovementRotation > -maxAngle)
+                    else if (input->RotationDirection < 0 && playerData->RotationOffset > -maxAngle)
                     {
-                        playerData->MovementRotation -= rotationSpeed;
-                        Debug.LogFormat("[PlayerRotatingSystem] Leaning left(rotation: {0}", playerData->MovementRotation);
+                        playerData->RotationOffset -= rotationSpeed;
+                        Debug.LogFormat("[PlayerRotatingSystem] Leaning left(rotation: {0}", playerData->RotationOffset);
                     }
                 }
 
                 // returns player to 0 rotation when RotateMotion-input ends
-                if (!input->RotateMotion && playerData->MovementRotation != 0)
+                if (!input->RotateMotion && playerData->RotationOffset != 0)
                 {
-                    if (playerData->MovementRotation > 0)
-                        playerData->MovementRotation -= rotationSpeed;
+                    if (playerData->RotationOffset > 0)
+                        playerData->RotationOffset -= rotationSpeed;
 
                     else
-                        playerData->MovementRotation += rotationSpeed;
+                        playerData->RotationOffset += rotationSpeed;
                 }
             }
 
             // update position and rotation
             {
-                RotateNoHitBoxUpdate(f, transform, playerData->BaseRotation + playerData->MovementRotation);
+                RotateNoHitBoxUpdate(f, transform, playerData->RotationBase + playerData->RotationOffset);
 
                 if (transform->Position != playerData->TargetPosition)
                     MoveTowardsNoHitBoxUpdate(f, transform, playerData->TargetPosition, playerData->StatSpeed * f.DeltaTime);

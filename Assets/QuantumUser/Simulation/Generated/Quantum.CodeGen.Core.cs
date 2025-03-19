@@ -723,18 +723,18 @@ namespace Quantum {
     [FieldOffset(88)]
     public FPVector2 TargetPosition;
     [FieldOffset(32)]
-    public FP BaseRotation;
+    public FP RotationBase;
     [FieldOffset(40)]
-    public FP MovementRotation;
-    [FieldOffset(24)]
-    [FreeOnComponentRemoved()]
-    public QListPtr<PlayerHitBoxLink> PlayerHitboxList;
-    [FieldOffset(28)]
-    [FreeOnComponentRemoved()]
-    public QListPtr<PlayerHitBoxLink> ShieldHitboxList;
+    public FP RotationOffset;
     [FieldOffset(20)]
     [FreeOnComponentRemoved()]
-    public QListPtr<PlayerHitBoxLink> CharacterHitboxList;
+    public QListPtr<PlayerHitBoxLink> HitboxListAll;
+    [FieldOffset(28)]
+    [FreeOnComponentRemoved()]
+    public QListPtr<PlayerHitBoxLink> HitboxListShield;
+    [FieldOffset(24)]
+    [FreeOnComponentRemoved()]
+    public QListPtr<PlayerHitBoxLink> HitboxListCharacter;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10271;
@@ -749,18 +749,18 @@ namespace Quantum {
         hash = hash * 31 + StatAttack.GetHashCode();
         hash = hash * 31 + StatDefence.GetHashCode();
         hash = hash * 31 + TargetPosition.GetHashCode();
-        hash = hash * 31 + BaseRotation.GetHashCode();
-        hash = hash * 31 + MovementRotation.GetHashCode();
-        hash = hash * 31 + PlayerHitboxList.GetHashCode();
-        hash = hash * 31 + ShieldHitboxList.GetHashCode();
-        hash = hash * 31 + CharacterHitboxList.GetHashCode();
+        hash = hash * 31 + RotationBase.GetHashCode();
+        hash = hash * 31 + RotationOffset.GetHashCode();
+        hash = hash * 31 + HitboxListAll.GetHashCode();
+        hash = hash * 31 + HitboxListShield.GetHashCode();
+        hash = hash * 31 + HitboxListCharacter.GetHashCode();
         return hash;
       }
     }
     public void ClearPointers(FrameBase f, EntityRef entity) {
-      if (PlayerHitboxList != default) f.FreeList(ref PlayerHitboxList);
-      if (ShieldHitboxList != default) f.FreeList(ref ShieldHitboxList);
-      if (CharacterHitboxList != default) f.FreeList(ref CharacterHitboxList);
+      if (HitboxListAll != default) f.FreeList(ref HitboxListAll);
+      if (HitboxListShield != default) f.FreeList(ref HitboxListShield);
+      if (HitboxListCharacter != default) f.FreeList(ref HitboxListCharacter);
     }
     public static void OnRemoved(FrameBase frame, EntityRef entity, void* ptr) {
       var p = (Quantum.PlayerData*)ptr;
@@ -773,11 +773,11 @@ namespace Quantum {
         serializer.Stream.Serialize(&p->CharacterClass);
         serializer.Stream.Serialize(&p->CharacterId);
         PlayerRef.Serialize(&p->PlayerRef, serializer);
-        QList.Serialize(&p->CharacterHitboxList, serializer, Statics.SerializePlayerHitBoxLink);
-        QList.Serialize(&p->PlayerHitboxList, serializer, Statics.SerializePlayerHitBoxLink);
-        QList.Serialize(&p->ShieldHitboxList, serializer, Statics.SerializePlayerHitBoxLink);
-        FP.Serialize(&p->BaseRotation, serializer);
-        FP.Serialize(&p->MovementRotation, serializer);
+        QList.Serialize(&p->HitboxListAll, serializer, Statics.SerializePlayerHitBoxLink);
+        QList.Serialize(&p->HitboxListCharacter, serializer, Statics.SerializePlayerHitBoxLink);
+        QList.Serialize(&p->HitboxListShield, serializer, Statics.SerializePlayerHitBoxLink);
+        FP.Serialize(&p->RotationBase, serializer);
+        FP.Serialize(&p->RotationOffset, serializer);
         FP.Serialize(&p->StatAttack, serializer);
         FP.Serialize(&p->StatCharacterSize, serializer);
         FP.Serialize(&p->StatDefence, serializer);
