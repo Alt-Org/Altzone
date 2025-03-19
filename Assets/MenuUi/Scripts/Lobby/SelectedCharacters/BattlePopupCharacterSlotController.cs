@@ -57,7 +57,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                     }
 
                     PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(((int)charID).ToString());
-                    _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charID, true, i);
+                    _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charID, editable, i);
                 }
 
                 if (!editable) return;
