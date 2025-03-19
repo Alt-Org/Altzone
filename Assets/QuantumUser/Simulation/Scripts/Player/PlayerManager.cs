@@ -55,7 +55,6 @@ namespace Quantum
                 QList<PlayerHitBoxLink> playerHitboxTargetList;
                 FPVector2 playerSpawnPosition;
                 FP playerBaseRotation;
-                FPVector2 normal;
                 // player - hitBox temp variables
                 PlayerHitboxType playerHitboxType;
                 FPVector2 playerHitBoxPosition;
@@ -66,16 +65,7 @@ namespace Quantum
 
                 playerHitBoxExtents = GridManager.GridScaleFactor * FP._0_50;
 
-                if (teamNumber == BattleTeamNumber.TeamAlpha)
-                {
-                    playerBaseRotation = FP._0;
-                    normal = new FPVector2(0, 1); // normaalit pois t‰‰lt‰. Eli j‰‰ vaan rotaatio.
-                }
-                else
-                {
-                    playerBaseRotation = FP.Rad_180;
-                    normal = new FPVector2(0, -1);
-                }
+                playerBaseRotation = teamNumber == BattleTeamNumber.TeamAlpha ? FP._0 : FP.Rad_180;
 
                 //} set player common temp variables
 
