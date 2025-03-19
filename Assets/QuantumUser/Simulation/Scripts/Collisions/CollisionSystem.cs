@@ -77,13 +77,13 @@ namespace Quantum
                     f.Signals.OnTriggerProjectileHitArenaBorder(projectile, info.Entity, arenaBorder, info.Other);
                 }
 
-                // if projectile hits player
-                else if (f.Unsafe.TryGetPointer<PlayerData>(info.Other, out PlayerData* playerData))
+                // if projectile hits playerHitBox
+                else if (f.Unsafe.TryGetPointer<PlayerHitBox>(info.Other, out PlayerHitBox* playerHitBox))
                 {
-                    //projectile hit a player
-                    Debug.Log("[CollisionSystem] Player hit");
+                    //projectile hit a player's shield
+                    Debug.Log("[CollisionSystem] Player's shield hit");
                     //f.Events.PlaySoundEvent(SoundEffect.SideWallHit);
-                    f.Signals.OnTriggerProjectileHitPlayer(projectile, info.Entity, playerData, info.Other);
+                    f.Signals.OnTriggerProjectileHitPlayerHitbox(projectile, info.Entity, playerHitBox, info.Other);
                 }
 
                 // if projectile hits goals

@@ -6,6 +6,5 @@ signal OnTriggerProjectileHitSoulWall(Projectile* projectile, EntityRef projecti
 
 signal OnTriggerProjectileHitArenaBorder(Projectile* projectile, EntityRef projectileEntity, ArenaBorder* arenaBorder, EntityRef arenaBorderEntity);
 
-signal OnTriggerProjectileHitPlayer(Projectile* projectile, EntityRef projectileEntity, PlayerData* playerData, EntityRef playerEntity);
-
+signal OnTriggerProjectileHitPlayerHitbox(Projectile* projectile, EntityRef projectileEntity, PlayerHitBox* playerHitBox, EntityRef playerEntity);
 

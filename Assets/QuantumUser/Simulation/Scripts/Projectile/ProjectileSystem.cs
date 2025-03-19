@@ -6,7 +6,7 @@ using Photon.Deterministic;
 namespace Quantum.QuantumUser.Simulation.Projectile
 {
     [Preserve]
-    public unsafe class ProjectileSystem : SystemMainThreadFilter<ProjectileSystem.Filter>, ISignalOnTriggerProjectileHitSoulWall, ISignalOnTriggerProjectileHitArenaBorder, ISignalOnTriggerProjectileHitPlayer
+    public unsafe class ProjectileSystem : SystemMainThreadFilter<ProjectileSystem.Filter>, ISignalOnTriggerProjectileHitSoulWall, ISignalOnTriggerProjectileHitArenaBorder, ISignalOnTriggerProjectileHitPlayerHitbox
     {
         public struct Filter
         {
@@ -80,9 +80,9 @@ namespace Quantum.QuantumUser.Simulation.Projectile
             ProjectileBounce(f, projectile,  projectileEntity, arenaBorderEntity, arenaBorder->Normal, arenaBorder->CollisionMinOffset);
         }
 
-        public void OnTriggerProjectileHitPlayer(Frame f, Quantum.Projectile* projectile, EntityRef projectileEntity, Quantum.PlayerData* playerData, EntityRef playerEntity)
+        public void OnTriggerProjectileHitPlayerHitbox(Frame f, Quantum.Projectile* projectile, EntityRef projectileEntity, PlayerHitBox* playerHitBox, EntityRef playerEntity)
         {
-            ProjectileBounce(f, projectile,  projectileEntity, playerEntity, playerData->Normal, playerData->CollisionMinOffset);
+            ProjectileBounce(f, projectile,  projectileEntity, playerEntity, playerHitBox->Normal, playerHitBox->CollisionMinOffset);
         }
     }
 }
