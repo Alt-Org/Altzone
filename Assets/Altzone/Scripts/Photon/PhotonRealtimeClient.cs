@@ -13,6 +13,7 @@ using UnityEngine.SceneManagement;
 using static Altzone.Scripts.Lobby.Wrappers.LobbyWrapper;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby;
+using Altzone.Scripts.Model.Poco.Attributes;
 
 public static class PhotonRealtimeClient
 {
@@ -615,14 +616,14 @@ public static class PhotonRealtimeClient
         Client.RemoveCallbackTarget(target);
     }
 
-    public static bool CreateLobbyRoom(string roomName, GameType gameType, string password = "", string[] expectedUsers = null)
+    private static RoomOptions GetRoomOptions(string roomName, GameType gameType, string password = "", string clanName = "")
     {
         PhotonHashtable customRoomProperties = new PhotonHashtable
         {
             { PhotonBattleRoom.GameTypeKey, gameType },
-            { PhotonBattleRoom.PlayerPositionKey1, "" },
-            { PhotonBattleRoom.PlayerPositionKey2, "" },
         };
+
+        List<string> propertiesShowingToLobby = new() { PhotonBattleRoom.GameTypeKey };
 
         int maxPlayers;
         bool roomVisible;
@@ -644,15 +645,16 @@ public static class PhotonRealtimeClient
                 break;
         }
 
-        if (maxPlayers == 4)
-        {
-            customRoomProperties.Add(PhotonBattleRoom.PlayerPositionKey3, "");
-            customRoomProperties.Add(PhotonBattleRoom.PlayerPositionKey4, "");
-        }
-
-        if (password != "" && password != null)
+        if (!password.IsNullOEmptyOrNonWhiteSpace())
         {
             customRoomProperties.Add(PhotonBattleRoom.PasswordKey, password);
+            propertiesShowingToLobby.Add(PhotonBattleRoom.PasswordKey);
+        }
+
+        if (!clanName.IsNullOEmptyOrNonWhiteSpace())
+        {
+            customRoomProperties.Add(PhotonBattleRoom.ClanNameKey, clanName);
+            propertiesShowingToLobby.Add(PhotonBattleRoom.ClanNameKey);
         }
 
         var roomOptions = new RoomOptions()
@@ -663,13 +665,26 @@ public static class PhotonRealtimeClient
             Plugins = new string[] { "QuantumPlugin" },
             PlayerTtl = ServerSettings.PlayerTtlInSeconds * 1000,
             EmptyRoomTtl = ServerSettings.EmptyRoomTtlInSeconds * 1000,
-            CustomRoomProperties = customRoomProperties
+            CustomRoomProperties = customRoomProperties,
+            CustomRoomPropertiesForLobby = propertiesShowingToLobby.ToArray(),
         };
 
-        if (password != "" && password != null)
-        {
-            roomOptions.CustomRoomPropertiesForLobby = new string[1] { PhotonBattleRoom.PasswordKey };
-        }
+        return roomOptions;
+    }
+
+    private static EnterRoomArgs GetEnterRoomArgs(string roomName, RoomOptions roomOptions, string[] expectedUsers = null)
+    {
+        EnterRoomArgs opParams = new EnterRoomArgs();
+        opParams.RoomName = roomName;
+        opParams.RoomOptions = roomOptions;
+        opParams.Lobby = Client.InLobby ? Client.CurrentLobby : null;
+        opParams.ExpectedUsers = expectedUsers;
+        return opParams;
+    }
+
+    public static bool CreateLobbyRoom(string roomName, GameType gameType, string password = "", string[] expectedUsers = null)
+    {
+        RoomOptions roomOptions = GetRoomOptions(roomName, gameType, password);
 
         return CreateRoom(roomName, roomOptions, null, expectedUsers);
     }
@@ -692,15 +707,28 @@ public static class PhotonRealtimeClient
             return false;
         }
 
-        typedLobby ??= ((Client.InLobby) ? Client.CurrentLobby : null);  // use given lobby, or active lobby (if any active) or none
-
-        EnterRoomArgs opParams = new EnterRoomArgs();
-        opParams.RoomName = roomName;
-        opParams.RoomOptions = roomOptions;
-        opParams.Lobby = typedLobby;
-        opParams.ExpectedUsers = expectedUsers;
+        EnterRoomArgs opParams = GetEnterRoomArgs(roomName, roomOptions, expectedUsers);
 
         return Client.OpCreateRoom(opParams);
+    }
+
+    public static bool JoinRandomOrCreateLobbyRoom(string roomName, GameType gameType, string clanName, string[] expectedUsers = null)
+    {
+        if (Client.Server != ServerConnection.MasterServer || !Client.IsConnectedAndReady)
+        {
+            Debug.LogError("CreateRoom failed. Client is on " + Client.Server + " (must be Master Server for matchmaking)" + (Client.IsConnectedAndReady ? " and ready" : "but not ready for operations (State: " + Client.State + ")") + ". Wait for callback: OnJoinedLobby or OnConnectedToMaster.");
+            return false;
+        }
+        RoomOptions roomOptions = GetRoomOptions(roomName, gameType, "", clanName);
+        EnterRoomArgs enterRoomArgs = GetEnterRoomArgs(roomName, roomOptions, expectedUsers);
+
+        JoinRandomRoomArgs joinRandomRoomArgs = new JoinRandomRoomArgs();
+        joinRandomRoomArgs.ExpectedCustomRoomProperties = roomOptions.CustomRoomProperties;
+        joinRandomRoomArgs.ExpectedMaxPlayers = roomOptions.MaxPlayers;
+        joinRandomRoomArgs.Lobby = enterRoomArgs.Lobby;
+        joinRandomRoomArgs.ExpectedUsers = expectedUsers;
+        
+        return Client.OpJoinRandomOrCreateRoom(joinRandomRoomArgs, enterRoomArgs);
     }
 
     public static bool JoinRoom(string roomName, string[] expectedUsers = null)
