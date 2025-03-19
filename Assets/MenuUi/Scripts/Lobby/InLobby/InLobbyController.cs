@@ -142,6 +142,9 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private void OpenWindow(GameType gameType)
         {
             _popupContents.SetActive(true);
+
+            if (PhotonRealtimeClient.InRoom) return; // if in room will not change SelectedGameType or do any other further logic, only showing minimized popup
+
             SelectedGameType = gameType;
 
             switch (gameType)
