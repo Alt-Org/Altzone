@@ -10,11 +10,19 @@ namespace QuantumUser.Scripts
         [SerializeField] private GridViewController _gridViewController;
         // References to UIviews
         [SerializeField] private GameUiController _gameUiController;
+        [SerializeField] private ScreenEffectViewController _screenEffectViewController;
 
         private void Awake()
         {
             if (_gridViewController != null) /*temp check*/ QuantumEvent.Subscribe<EventGridSet>(this, OnGridSet);
+            QuantumEvent.Subscribe<EventChangeEmotionState>(this, OnChangeEmotionState);
             QuantumEvent.Subscribe<EventUpdateDebugStatsOverlay>(this, OnUpdateDebugStatsOverlay);
+        }
+
+        private void OnChangeEmotionState(EventChangeEmotionState e)
+        {
+            if (!_screenEffectViewController.IsActive) _screenEffectViewController.SetActive(true);
+            _screenEffectViewController.ChangeColor((int)e.Emotion);
         }
 
         private void OnGridSet(EventGridSet e)
