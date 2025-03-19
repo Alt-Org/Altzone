@@ -625,16 +625,22 @@ public static class PhotonRealtimeClient
         };
 
         int maxPlayers;
+        bool roomVisible;
 
         switch (gameType)
         {
             default:
-            case GameType.Random2v2:
             case GameType.Custom:
                 maxPlayers = 4;
+                roomVisible = true;
+                break;
+            case GameType.Random2v2:
+                maxPlayers = 4;
+                roomVisible = false;
                 break;
             case GameType.Clan2v2:
                 maxPlayers = 2;
+                roomVisible = false;
                 break;
         }
 
@@ -651,7 +657,7 @@ public static class PhotonRealtimeClient
 
         var roomOptions = new RoomOptions()
         {
-            IsVisible = true, // Pit�� muokata varmaankin //
+            IsVisible = roomVisible,
             IsOpen = true,
             MaxPlayers = maxPlayers,
             Plugins = new string[] { "QuantumPlugin" },
