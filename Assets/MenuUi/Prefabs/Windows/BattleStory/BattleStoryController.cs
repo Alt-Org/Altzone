@@ -90,10 +90,10 @@ public class BattleStoryController : MonoBehaviour
         for (int i = 0; i < randomClipOrder1.Count; i++)
         {
             //Debug.LogWarning($"Character 1: {randomClipOrder1[i]}:{validatedList.First(x => x.Emotion == randomClipOrder1[i]).Character1Animation.name}, Ball 1: {randomBallOrder1[i]}");
-            _characterAnimator1.Play(validatedList.First(x => x.Emotion == randomClipOrder1[i]).Character1Animation.name);
+            _characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
             GameObject ball = Instantiate(_emotionBall, _endStartPositionLeft);
 
-            ball.GetComponent<Image>().sprite = validatedList.First(x => x.Emotion == randomClipOrder1[i]).BallSprite;
+            ball.GetComponent<Image>().sprite = GetEmotionData(randomClipOrder1[i]).BallSprite;
             
             ball.GetComponent<RectTransform>().rotation = Quaternion.Euler(new(0, 180, 0));
             bool ballDone = false;
@@ -117,10 +117,10 @@ public class BattleStoryController : MonoBehaviour
 
             yield return new WaitForSeconds(0.5f);
             //Debug.LogWarning($"Character 2: {randomClipOrder2[i]}:{validatedList.First(x => x.Emotion == randomClipOrder2[i]).Character2Animation.name}, Ball 2: {randomBallOrder2[i]}");
-            _characterAnimator2.Play(validatedList.First(x => x.Emotion == randomClipOrder2[i]).Character2Animation.name);
+            _characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
             GameObject ball2 = Instantiate(_emotionBall, _endStartPositionRight);
 
-            ball2.GetComponent<Image>().sprite = validatedList.First(x => x.Emotion == randomClipOrder2[i]).BallSprite;
+            ball2.GetComponent<Image>().sprite = GetEmotionData(randomClipOrder2[i]).BallSprite;
 
             ballDone = false;
             switch (randomBallOrder2[i])
@@ -175,7 +175,8 @@ public class BattleStoryController : MonoBehaviour
 
     private IEnumerator BallAnimationRight1(GameObject ball, Action<bool> callback)
     {
-        float speed = 150f;
+        float baseSpeed = GetScaledSpeed();
+        float speed = baseSpeed;
         float distance = Mathf.Abs(Vector2.Distance(_endStartPositionRight.position, _path1Position1.position));
         float duration = distance / speed;
         float currentTime = 0;
@@ -203,7 +204,8 @@ public class BattleStoryController : MonoBehaviour
 
     private IEnumerator BallAnimationLeft1(GameObject ball, Action<bool> callback)
     {
-        float speed = 150f;
+        float baseSpeed = GetScaledSpeed();
+        float speed = baseSpeed;
         float distance = Mathf.Abs(Vector2.Distance(_endStartPositionLeft.position, _path1Position1.position));
         float duration = distance / speed;
         float currentTime = 0;
@@ -231,7 +233,8 @@ public class BattleStoryController : MonoBehaviour
 
     private IEnumerator BallAnimationLeft2(GameObject ball, Action<bool> callback)
     {
-        float speed = 150f;
+        float baseSpeed = GetScaledSpeed();
+        float speed = baseSpeed;
         float distance = Mathf.Abs(Vector2.Distance(_endStartPositionLeft.position, _path2LeftPosition1.position));
         float duration = distance / speed;
         float currentTime = 0;
@@ -243,7 +246,7 @@ public class BattleStoryController : MonoBehaviour
             ball.transform.position = pos;
         }
 
-        speed = 60f;
+        speed = baseSpeed / 8;
         distance = Mathf.Abs(Vector2.Distance(_path2LeftPosition1.position, _path2LeftPosition2.position));
         duration = distance / speed;
         currentTime = 0;
@@ -255,7 +258,7 @@ public class BattleStoryController : MonoBehaviour
             ball.transform.position = pos;
         }
 
-        speed = 300f;
+        speed = baseSpeed * 2;
         distance = Mathf.Abs(Vector2.Distance(_endStartPositionRight.position, _path2LeftPosition2.position));
         duration = distance / speed;
         currentTime = 0;
@@ -271,7 +274,8 @@ public class BattleStoryController : MonoBehaviour
 
     private IEnumerator BallAnimationRight2(GameObject ball, Action<bool> callback)
     {
-        float speed = 150f;
+        float baseSpeed = GetScaledSpeed();
+        float speed = baseSpeed;
         float distance = Mathf.Abs(Vector2.Distance(_endStartPositionRight.position, _path2RightPosition1.position));
         float duration = distance / speed;
         float currentTime = 0;
@@ -283,7 +287,7 @@ public class BattleStoryController : MonoBehaviour
             ball.transform.position = pos;
         }
 
-        speed = 60f;
+        speed = baseSpeed/8;
         distance = Mathf.Abs(Vector2.Distance(_path2RightPosition1.position, _path2RightPosition2.position));
         duration = distance / speed;
         currentTime = 0;
@@ -295,7 +299,7 @@ public class BattleStoryController : MonoBehaviour
             ball.transform.position = pos;
         }
 
-        speed = 300f;
+        speed = baseSpeed*2;
         distance = Mathf.Abs(Vector2.Distance(_endStartPositionLeft.position, _path2RightPosition2.position));
         duration = distance / speed;
         currentTime = 0;
@@ -311,7 +315,8 @@ public class BattleStoryController : MonoBehaviour
 
     private IEnumerator BallAnimationLeft3(GameObject ball, Action<bool> callback)
     {
-        float speed = 150f;
+        float baseSpeed = GetScaledSpeed();
+        float speed = baseSpeed;
         float distance = Mathf.Abs(Vector2.Distance(_endStartPositionLeft.position, _path3Position1.position));
         float duration = distance / speed;
         float currentTime = 0;
@@ -337,7 +342,8 @@ public class BattleStoryController : MonoBehaviour
 
     private IEnumerator BallAnimationRight3(GameObject ball, Action<bool> callback)
     {
-        float speed = 150f;
+        float baseSpeed = GetScaledSpeed();
+        float speed = baseSpeed;
         float distance = Mathf.Abs(Vector2.Distance(_endStartPositionRight.position, _path3Position1.position));
         float duration = distance / speed;
         float currentTime = 0;
@@ -364,6 +370,11 @@ public class BattleStoryController : MonoBehaviour
     private void ExitStory()
     {
         LobbyManager.ExitBattleStory();
+    }
+
+    private float GetScaledSpeed()
+    {
+        return Mathf.Abs(Vector2.Distance(_endStartPositionRight.position, _endStartPositionLeft.position));
     }
 
 }
