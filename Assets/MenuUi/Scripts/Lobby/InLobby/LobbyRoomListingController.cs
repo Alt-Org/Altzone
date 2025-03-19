@@ -27,8 +27,6 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private PhotonRoomList _photonRoomList;
 
-        [HideInInspector] public GameType SelectedGameType;
-
         private void Awake()
         {
             _photonRoomList = gameObject.GetOrAddComponent<PhotonRoomList>();
@@ -150,7 +148,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         public void SwitchToRoom()
         {
-            _roomSwitcher.SwitchRoom(SelectedGameType);
+            _roomSwitcher.SwitchRoom(InLobbyController.SelectedGameType);
         }
 
         private void UpdateStatus()

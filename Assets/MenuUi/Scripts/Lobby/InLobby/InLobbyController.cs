@@ -35,6 +35,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private string _currentRegion;
         private Coroutine _creatingRoomCoroutineHolder = null;
 
+        public static GameType SelectedGameType { get; private set; }
+
         private void Awake()
         {
             SignalBus.OnBattlePopupRequested += OpenWindow;
@@ -140,7 +142,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private void OpenWindow(GameType gameType)
         {
             _popupContents.SetActive(true);
-            _roomListingController.SelectedGameType = gameType;
+            SelectedGameType = gameType;
 
             switch (gameType)
             {
@@ -148,6 +150,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     _roomSwitcher.ReturnToMain();
                     break;
                 case GameType.Clan2v2:
+                    _roomSwitcher.ClosePanels();
                     // Starting coroutine to create clan 2v2 room if player is not in a room and a room is currently being created
                     if (!PhotonRealtimeClient.InRoom && _creatingRoomCoroutineHolder == null)
                     {

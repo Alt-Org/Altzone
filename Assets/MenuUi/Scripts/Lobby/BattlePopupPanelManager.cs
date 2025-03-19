@@ -43,7 +43,7 @@ public class BattlePopupPanelManager : MonoBehaviour
         }
     }
 
-    private void ClosePanels()
+    public void ClosePanels()
     {
         foreach (Transform t in transform)
         {
