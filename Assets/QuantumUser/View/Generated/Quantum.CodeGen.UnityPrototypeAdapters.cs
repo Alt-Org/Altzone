@@ -65,8 +65,6 @@ namespace Quantum.Prototypes.Unity {
     public FPVector2 TargetPosition;
     public FP BaseRotation;
     public FP MovementRotation;
-    public FPVector2 Normal;
-    public FP CollisionMinOffset;
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.Unity.PlayerHitBoxLinkPrototype[] PlayerHitboxList = {};
@@ -93,8 +91,6 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.TargetPosition, out result.TargetPosition);
       converter.Convert(this.BaseRotation, out result.BaseRotation);
       converter.Convert(this.MovementRotation, out result.MovementRotation);
-      converter.Convert(this.Normal, out result.Normal);
-      converter.Convert(this.CollisionMinOffset, out result.CollisionMinOffset);
       converter.Convert(this.PlayerHitboxList, out result.PlayerHitboxList);
       converter.Convert(this.ShieldHitboxList, out result.ShieldHitboxList);
       converter.Convert(this.CharacterHitboxList, out result.CharacterHitboxList);

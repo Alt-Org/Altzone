@@ -133,8 +133,6 @@ namespace Quantum
                         TargetPosition      = playerSpawnPosition,
                         MovementRotation    = 0,
                         BaseRotation        = playerBaseRotation,
-                        Normal              = normal,
-                        CollisionMinOffset  = 1,
 
                         PlayerHitboxList    = playerHitboxList,
                         ShieldHitboxList    = playerShieldHitboxList,

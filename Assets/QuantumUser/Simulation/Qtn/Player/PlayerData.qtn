@@ -24,8 +24,6 @@ component PlayerData
     FPVector2 TargetPosition;
     FP BaseRotation;
     FP MovementRotation;
-    FPVector2 Normal;
-    FP CollisionMinOffset;
 
     [FreeOnComponentRemoved] list<PlayerHitBoxLink> PlayerHitboxList;
     [FreeOnComponentRemoved] list<PlayerHitBoxLink> ShieldHitboxList;

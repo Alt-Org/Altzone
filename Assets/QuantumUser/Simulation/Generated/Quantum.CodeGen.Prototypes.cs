@@ -145,8 +145,6 @@ namespace Quantum.Prototypes {
     public FPVector2 TargetPosition;
     public FP BaseRotation;
     public FP MovementRotation;
-    public FPVector2 Normal;
-    public FP CollisionMinOffset;
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.PlayerHitBoxLinkPrototype[] PlayerHitboxList = {};
@@ -176,8 +174,6 @@ namespace Quantum.Prototypes {
         result.TargetPosition = this.TargetPosition;
         result.BaseRotation = this.BaseRotation;
         result.MovementRotation = this.MovementRotation;
-        result.Normal = this.Normal;
-        result.CollisionMinOffset = this.CollisionMinOffset;
         if (this.PlayerHitboxList.Length == 0) {
           result.PlayerHitboxList = default;
         } else {

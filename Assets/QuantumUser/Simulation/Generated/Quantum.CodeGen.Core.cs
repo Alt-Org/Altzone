@@ -698,7 +698,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerData : Quantum.IComponent {
-    public const Int32 SIZE = 136;
+    public const Int32 SIZE = 112;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(16)]
     public PlayerRef PlayerRef;
@@ -710,28 +710,24 @@ namespace Quantum {
     public Int32 CharacterId;
     [FieldOffset(8)]
     public Int32 CharacterClass;
-    [FieldOffset(88)]
-    public FP StatHp;
-    [FieldOffset(96)]
-    public FP StatSpeed;
-    [FieldOffset(72)]
-    public FP StatCharacterSize;
-    [FieldOffset(64)]
-    public FP StatAttack;
     [FieldOffset(80)]
-    public FP StatDefence;
+    public FP StatHp;
+    [FieldOffset(88)]
+    public FP StatSpeed;
+    [FieldOffset(64)]
+    public FP StatCharacterSize;
     [FieldOffset(56)]
+    public FP StatAttack;
+    [FieldOffset(72)]
+    public FP StatDefence;
+    [FieldOffset(48)]
     public FP Speed;
-    [FieldOffset(120)]
+    [FieldOffset(96)]
     public FPVector2 TargetPosition;
     [FieldOffset(32)]
     public FP BaseRotation;
-    [FieldOffset(48)]
-    public FP MovementRotation;
-    [FieldOffset(104)]
-    public FPVector2 Normal;
     [FieldOffset(40)]
-    public FP CollisionMinOffset;
+    public FP MovementRotation;
     [FieldOffset(24)]
     [FreeOnComponentRemoved()]
     public QListPtr<PlayerHitBoxLink> PlayerHitboxList;
@@ -758,8 +754,6 @@ namespace Quantum {
         hash = hash * 31 + TargetPosition.GetHashCode();
         hash = hash * 31 + BaseRotation.GetHashCode();
         hash = hash * 31 + MovementRotation.GetHashCode();
-        hash = hash * 31 + Normal.GetHashCode();
-        hash = hash * 31 + CollisionMinOffset.GetHashCode();
         hash = hash * 31 + PlayerHitboxList.GetHashCode();
         hash = hash * 31 + ShieldHitboxList.GetHashCode();
         hash = hash * 31 + CharacterHitboxList.GetHashCode();
@@ -786,7 +780,6 @@ namespace Quantum {
         QList.Serialize(&p->PlayerHitboxList, serializer, Statics.SerializePlayerHitBoxLink);
         QList.Serialize(&p->ShieldHitboxList, serializer, Statics.SerializePlayerHitBoxLink);
         FP.Serialize(&p->BaseRotation, serializer);
-        FP.Serialize(&p->CollisionMinOffset, serializer);
         FP.Serialize(&p->MovementRotation, serializer);
         FP.Serialize(&p->Speed, serializer);
         FP.Serialize(&p->StatAttack, serializer);
@@ -794,7 +787,6 @@ namespace Quantum {
         FP.Serialize(&p->StatDefence, serializer);
         FP.Serialize(&p->StatHp, serializer);
         FP.Serialize(&p->StatSpeed, serializer);
-        FPVector2.Serialize(&p->Normal, serializer);
         FPVector2.Serialize(&p->TargetPosition, serializer);
     }
   }
