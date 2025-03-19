@@ -1041,9 +1041,6 @@ namespace Quantum {
   public unsafe partial interface ISignalOnTriggerProjectileHitPlayerHitbox : ISignal {
     void OnTriggerProjectileHitPlayerHitbox(Frame f, Projectile* projectile, EntityRef projectileEntity, PlayerHitBox* playerHitBox, EntityRef playerEntity);
   }
-  public unsafe partial interface ISignalOnTriggerProjectileHitPlayer : ISignal {
-    void OnTriggerProjectileHitPlayer(Frame f, Projectile* projectile, EntityRef projectileEntity, PlayerData* playerData, EntityRef playerEntity);
-  }
   public static unsafe partial class Constants {
     public const Int32 PLAYER_SLOT_COUNT = 4;
     public const Int32 PLAYER_CHARACTER_COUNT = 3;
@@ -1058,7 +1055,6 @@ namespace Quantum {
     private ISignalOnTriggerProjectileHitSoulWall[] _ISignalOnTriggerProjectileHitSoulWallSystems;
     private ISignalOnTriggerProjectileHitArenaBorder[] _ISignalOnTriggerProjectileHitArenaBorderSystems;
     private ISignalOnTriggerProjectileHitPlayerHitbox[] _ISignalOnTriggerProjectileHitPlayerHitboxSystems;
-    private ISignalOnTriggerProjectileHitPlayer[] _ISignalOnTriggerProjectileHitPlayerSystems;
     partial void AllocGen() {
       _globals = (_globals_*)Context.Allocator.AllocAndClear(sizeof(_globals_));
     }
@@ -1078,7 +1074,6 @@ namespace Quantum {
       _ISignalOnTriggerProjectileHitSoulWallSystems = BuildSignalsArray<ISignalOnTriggerProjectileHitSoulWall>();
       _ISignalOnTriggerProjectileHitArenaBorderSystems = BuildSignalsArray<ISignalOnTriggerProjectileHitArenaBorder>();
       _ISignalOnTriggerProjectileHitPlayerHitboxSystems = BuildSignalsArray<ISignalOnTriggerProjectileHitPlayerHitbox>();
-      _ISignalOnTriggerProjectileHitPlayerSystems = BuildSignalsArray<ISignalOnTriggerProjectileHitPlayer>();
       _ComponentSignalsOnAdded = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       _ComponentSignalsOnRemoved = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       BuildSignalsArrayOnComponentAdded<Quantum.ArenaBorder>();
@@ -1232,15 +1227,6 @@ namespace Quantum {
           var s = array[i];
           if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
             s.OnTriggerProjectileHitPlayerHitbox(_f, projectile, projectileEntity, playerHitBox, playerEntity);
-          }
-        }
-      }
-      public void OnTriggerProjectileHitPlayer(Projectile* projectile, EntityRef projectileEntity, PlayerData* playerData, EntityRef playerEntity) {
-        var array = _f._ISignalOnTriggerProjectileHitPlayerSystems;
-        for (Int32 i = 0; i < array.Length; ++i) {
-          var s = array[i];
-          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
-            s.OnTriggerProjectileHitPlayer(_f, projectile, projectileEntity, playerData, playerEntity);
           }
         }
       }
