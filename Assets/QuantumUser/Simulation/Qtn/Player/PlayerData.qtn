@@ -1,6 +1,14 @@
+//{ PlayerData
+
+struct PlayerHitBoxLink
+{
+    EntityRef Entity;
+    FPVector2 Position;
+}
+
 component PlayerData
 {
-    PlayerRef Player;
+    PlayerRef PlayerRef;
     BattlePlayerSlot Slot;
     BattleTeamNumber TeamNumber;
     int CharacterId;
@@ -19,6 +27,27 @@ component PlayerData
     FPVector2 Normal;
     FP CollisionMinOffset;
 
-    [FreeOnComponentRemoved]
-    list<EntityRef> ShieldHitboxArray;
+    [FreeOnComponentRemoved] list<PlayerHitBoxLink> PlayerHitboxList;
+    [FreeOnComponentRemoved] list<PlayerHitBoxLink> ShieldHitboxList;
+    [FreeOnComponentRemoved] list<PlayerHitBoxLink> CharacterHitboxList;
 }
+
+//} PlayerData
+
+//{ PlayerDataTemplate
+
+[Serializable]
+struct PlayerHitBoxTemplate
+{
+    IntVector2 Position;
+    PlayerCollisionType CollisionType;
+    FP NormalAngle;
+}
+
+component PlayerDataTemplate
+{
+    [FreeOnComponentRemoved] list<PlayerHitBoxTemplate> ShieldHitboxList;
+    [FreeOnComponentRemoved] list<PlayerHitBoxTemplate> CharacterHitboxList;
+}
+
+//} PlayerDataTemplate
