@@ -27,7 +27,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             _startGameButton.onClick.AddListener(StartPlaying);
             _backButton.onClick.AddListener(GoBack);
             //buttons[3].onClick.AddListener(StartRaidTest);
-            StartCoroutine(SetRoomTitle());
+            if (_title != null) StartCoroutine(SetRoomTitle());
         }
 
         private void SetPlayerAsGuest()
