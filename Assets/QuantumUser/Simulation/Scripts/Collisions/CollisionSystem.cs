@@ -63,9 +63,7 @@ namespace Quantum
                 {
                     // Projectile Hit SoulWall
                     Debug.Log("[CollisionSystem] SoulWall hit");
-                    if (projectile->CoolDown <= 0) f.Events.PlaySoundEvent(SoundEffect.WallBroken);
                     f.Signals.OnTriggerProjectileHitSoulWall(projectile, info.Entity, soulWall, info.Other);
-                    projectile->CoolDown = FP._0_10;
                 }
 
                 // if projectile hits arena border

@@ -10,7 +10,11 @@ namespace Quantum.QuantumUser.Simulation.SoulWall
         {
             Debug.Log("Soul wall hit");
             // Destroy the SoulWall entity
-            if(projectile->CoolDown <= 0) f.Destroy(soulWallEntity);
+            if (projectile->CoolDown <= 0)
+            {
+                f.Events.PlaySoundEvent(SoundEffect.WallBroken);
+                f.Destroy(soulWallEntity);
+            }
         }
     }
 }

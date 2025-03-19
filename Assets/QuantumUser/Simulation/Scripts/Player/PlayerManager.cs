@@ -173,7 +173,7 @@ namespace Quantum
                                 PlayerEntity       = playerEntity,
                                 HitBoxType         = playerHitboxType,
                                 CollisionType      = shieldHitboxTemplate.CollisionType,
-                                Normal             = FPVector2.Rotate(FPVector2.Down, playerBaseRotation + shieldHitboxTemplate.NormalAngle * FP.Deg2Rad),
+                                Normal             = FPVector2.Rotate(FPVector2.Down, playerBaseRotation - shieldHitboxTemplate.NormalAngle * FP.Deg2Rad),
                                 CollisionMinOffset = playerHitBoxExtents
                             };
 

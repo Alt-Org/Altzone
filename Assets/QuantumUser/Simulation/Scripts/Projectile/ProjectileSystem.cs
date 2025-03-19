@@ -50,6 +50,8 @@ namespace Quantum.QuantumUser.Simulation.Projectile
         {
             Debug.Log("[ProjectileSystem] Projectile hit a wall");
 
+            if (projectile->CoolDown > 0) return;
+
             Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
             Transform2D* otherTransform = f.Unsafe.GetPointer<Transform2D>(otherEntity);
 
@@ -62,6 +64,8 @@ namespace Quantum.QuantumUser.Simulation.Projectile
             {
                 projectileTransform->Position += normal * (collisionMinOffset - collisionOffset + projectile->Radius);
             }
+
+            projectile->CoolDown = FP._0_10;
         }
 
         public void OnTriggerProjectileHitSoulWall(Frame f, Quantum.Projectile* projectile, EntityRef projectileEntity, Quantum.SoulWall* soulWall, EntityRef soulWallEntity)
