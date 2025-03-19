@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 
 using UnityEngine;
 using Photon.Deterministic;
+using Quantum.Collections;
 
 namespace Quantum
 {
@@ -27,11 +28,11 @@ namespace Quantum
             PlayerHandle.SetAllPlayStates(playerManagerData, PlayerPlayState.NotInGame);
         }
 
-        public static BattlePlayerSlot InitPlayer(Frame f, PlayerRef player)
+        public static BattlePlayerSlot InitPlayer(Frame f, PlayerRef playerRef)
         {
             PlayerManagerData* playerManagerData = GetPlayerManagerData(f);
 
-            RuntimePlayer data = f.GetPlayerData(player);
+            RuntimePlayer data = f.GetPlayerData(playerRef);
 
             BattlePlayerSlot playerSlot = (BattlePlayerSlot)data.PlayerSlot;
             BattleTeamNumber teamNumber = PlayerHandle.GetTeamNumber(playerSlot);
@@ -39,63 +40,198 @@ namespace Quantum
 
             // TODO: Fetch EntityPrototype for each character based on the BattleCharacterBase Id
             EntityPrototype entityPrototypeAsset = f.FindAsset(data.PlayerAvatar);
+
             EntityRef[] playerEntityArray = new EntityRef[Constants.PLAYER_CHARACTER_COUNT];
 
-            FPVector2 spawnPosition;
-            FP rotation;
-            FPVector2 normal;
-
-            if (teamNumber == BattleTeamNumber.TeamAlpha)
+            // create playerEntity for each characters
             {
-                rotation = FP._0;
-                normal = new FPVector2(0, 1); // normaalit pois t‰‰lt‰. Eli j‰‰ vaan rotaatio.
+                //{ player temp variables
+                PlayerDataTemplate* playerDataTemplate;
+                QList<PlayerHitBoxTemplate> playerShieldHitboxTemplateList;
+                QList<PlayerHitBoxTemplate> playerCharacterHitboxTemplateList;
+                QList<PlayerHitBoxTemplate> playerHitboxSourceTemplateList;
+                int playerShieldHitboxTemplateListCount;
+                int playerCharacterHitboxTemplateListCount;
+                QList<PlayerHitBoxLink> playerHitboxTargetList;
+                FPVector2 playerSpawnPosition;
+                FP playerBaseRotation;
+                FPVector2 normal;
+                // player - hitBox temp variables
+                PlayerHitboxType playerHitboxType;
+                FPVector2 playerHitBoxPosition;
+                FP playerHitBoxExtents;
+                //} player temp variables
+
+                //{ set player common temp variables (used for all characters)
+
+                playerHitBoxExtents = GridManager.GridScaleFactor * FP._0_50;
+
+                if (teamNumber == BattleTeamNumber.TeamAlpha)
+                {
+                    playerBaseRotation = FP._0;
+                    normal = new FPVector2(0, 1); // normaalit pois t‰‰lt‰. Eli j‰‰ vaan rotaatio.
+                }
+                else
+                {
+                    playerBaseRotation = FP.Rad_180;
+                    normal = new FPVector2(0, -1);
+                }
+
+                //} set player common temp variables
+
+                //{ player variables
+                EntityRef playerEntity;
+                PlayerData playerData;
+                Transform2D* playerTransform;
+                // player - hitBox variables
+                QList<PlayerHitBoxLink> playerHitboxList;
+                QList<PlayerHitBoxLink> playerShieldHitboxList;
+                QList<PlayerHitBoxLink> playerCharacterHitboxList;
+                PlayerHitBoxLink playerHitBoxLink;
+                EntityRef playerHitBoxEntity;
+                PlayerHitBox playerHitBox;
+                PhysicsCollider2D playerHitBoxCollider;
+                //} player variables
+
+                for (int i = 0; i < playerEntityArray.Length; i++)
+                {
+                    // set spawnPosition
+                    playerSpawnPosition = playerHandle.GetOutOfPlayPosition(i, teamNumber);
+
+                    // create entity
+                    playerEntity = f.Create(entityPrototypeAsset);
+
+                    // get template data
+                    playerDataTemplate                     = f.Unsafe.GetPointer<PlayerDataTemplate>(playerEntity);
+                    playerShieldHitboxTemplateListCount    = f.TryResolveList(playerDataTemplate->ShieldHitboxList,    out playerShieldHitboxTemplateList)    ? playerShieldHitboxTemplateList.Count    : 0;
+                    playerCharacterHitboxTemplateListCount = f.TryResolveList(playerDataTemplate->CharacterHitboxList, out playerCharacterHitboxTemplateList) ? playerCharacterHitboxTemplateList.Count : 0;
+
+                    //{ allocate playerHitboxLists
+
+                    if (playerShieldHitboxTemplateListCount + playerCharacterHitboxTemplateListCount > 0) playerHitboxList          = f.AllocateList<PlayerHitBoxLink>(playerShieldHitboxTemplateListCount + playerCharacterHitboxTemplateListCount);
+                    if (playerShieldHitboxTemplateListCount                                          > 0) playerShieldHitboxList    = f.AllocateList<PlayerHitBoxLink>(playerShieldHitboxTemplateListCount                                         );
+                    if (                                      playerCharacterHitboxTemplateListCount > 0) playerCharacterHitboxList = f.AllocateList<PlayerHitBoxLink>(                                      playerCharacterHitboxTemplateListCount);
+
+                    //} allocate playerHitboxLists
+
+                    // initialize playerData
+                    playerData = new PlayerData
+                    {
+                        PlayerRef           = PlayerRef.None,
+                        Slot                = playerSlot,
+                        TeamNumber          = teamNumber,
+                        CharacterId         = data.Characters[i].Id,
+                        CharacterClass      = data.Characters[i].Class,
+
+                        StatHp              = data.Characters[i].Hp,
+                        StatSpeed           = data.Characters[i].Speed,
+                        StatCharacterSize   = data.Characters[i].CharacterSize,
+                        StatAttack          = data.Characters[i].Attack,
+                        StatDefence         = data.Characters[i].Defence,
+
+                        Speed               = 20,
+                        TargetPosition      = playerSpawnPosition,
+                        MovementRotation    = 0,
+                        BaseRotation        = playerBaseRotation,
+                        Normal              = normal,
+                        CollisionMinOffset  = 1,
+
+                        PlayerHitboxList    = playerHitboxList,
+                        ShieldHitboxList    = playerShieldHitboxList,
+                        CharacterHitboxList = playerCharacterHitboxList
+                    };
+
+                    // create hitBoxes
+                    for (int i2 = 0; i2 < 2; i2++)
+                    {
+                        switch (i2)
+                        {
+                            case 0:
+                                if (playerShieldHitboxTemplateListCount <= 0) continue;
+                                playerHitboxType = PlayerHitboxType.Shield;
+                                playerHitboxSourceTemplateList = playerShieldHitboxTemplateList;
+                                playerHitboxTargetList = playerShieldHitboxList;
+                                break;
+
+                            case 1:
+                                if (playerCharacterHitboxTemplateListCount <= 0) continue;
+                                playerHitboxType = PlayerHitboxType.Character;
+                                playerHitboxSourceTemplateList = playerCharacterHitboxTemplateList;
+                                playerHitboxTargetList = playerCharacterHitboxList;
+                                break;
+
+                            default:
+                                playerHitboxType = (PlayerHitboxType)(-1);
+                                break;
+                        }
+
+                        foreach (PlayerHitBoxTemplate shieldHitboxTemplate in playerHitboxSourceTemplateList)
+                        {
+                            // initialize hitBox component
+                            playerHitBox = new PlayerHitBox
+                            {
+                                PlayerEntity       = playerEntity,
+                                HitBoxType         = playerHitboxType,
+                                CollisionType      = shieldHitboxTemplate.CollisionType,
+                                Normal             = FPVector2.Rotate(FPVector2.Down, playerBaseRotation + shieldHitboxTemplate.NormalAngle * FP.Deg2Rad),
+                                CollisionMinOffset = playerHitBoxExtents
+                            };
+
+                            // initialize hitBox position
+                            playerHitBoxPosition = new FPVector2(
+                                (FP)shieldHitboxTemplate.Position.X * GridManager.GridScaleFactor,
+                                (FP)shieldHitboxTemplate.Position.Y * GridManager.GridScaleFactor
+                            );
+
+                            // initialize hitBox collider
+                            playerHitBoxCollider = PhysicsCollider2D.Create(f,
+                                shape: Shape2D.CreateBox(new FPVector2(playerHitBoxExtents)),
+                                isTrigger: true
+                            );
+
+                            // create hitBox entity
+                            playerHitBoxEntity = f.Create();
+                            f.Add(playerHitBoxEntity, playerHitBox);
+                            f.Add<Transform2D>(playerHitBoxEntity);
+                            f.Add(playerHitBoxEntity, playerHitBoxCollider);
+
+                            // create hitBox link
+                            playerHitBoxLink = new PlayerHitBoxLink
+                            {
+                                Entity = playerHitBoxEntity,
+                                Position = playerHitBoxPosition
+                            };
+
+                            // save hitBox link
+                            playerHitboxTargetList.Add(playerHitBoxLink);
+                            playerHitboxList.Add(playerHitBoxLink);
+                        }
+                    }
+
+                    //{ initialize entity
+
+                    f.Remove<PlayerDataTemplate>(playerEntity);
+                    f.Add(playerEntity, playerData, out PlayerData* playerDataPtr);
+
+                    playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
+                    PlayerMovementSystem.Teleport(f, playerDataPtr, playerTransform,
+                        playerSpawnPosition,
+                        playerBaseRotation
+                    );
+
+                    //} initialize entity
+
+                    // initialize view
+                    f.Events.PlayerViewInit(playerEntity, GridManager.GridScaleFactor);
+
+                    // save entity
+                    playerEntityArray[i] = playerEntity;
+                }
             }
-            else
-            {
-                rotation = FP.Rad_180;
-                normal = new FPVector2(0, -1);
-            }
 
-            PlayerData* playerData;
-            Transform2D* playerTransform;
-
-            for (int i = 0; i < playerEntityArray.Length; i++)
-            {
-
-                spawnPosition = playerHandle.GetOutOfPlayPosition(i, teamNumber);
-
-                playerEntityArray[i] = f.Create(entityPrototypeAsset);
-
-                playerData = f.Unsafe.GetPointer<PlayerData>(playerEntityArray[i]);
-
-                playerData->Player = PlayerRef.None;
-                playerData->Slot = playerSlot;
-                playerData->TeamNumber = teamNumber;
-                playerData->CharacterId = data.Characters[i].Id;
-                playerData->CharacterClass = data.Characters[i].Class;
-
-                playerData->StatHp = data.Characters[i].Hp;
-                playerData->StatSpeed = data.Characters[i].Speed;
-                playerData->StatCharacterSize = data.Characters[i].CharacterSize;
-                playerData->StatAttack = data.Characters[i].Attack;
-                playerData->StatDefence = data.Characters[i].Defence;
-
-                playerData->Speed = 20;
-                playerData->TargetPosition = spawnPosition;
-                playerData->MovementRotation = 0;
-                playerData->BaseRotation = rotation;
-                playerData->Normal = normal;
-                playerData->CollisionMinOffset = 1;
-
-                f.Events.PlayerViewInit(playerEntityArray[i], GridManager.GridScaleFactor);
-
-                playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntityArray[i]);
-                playerTransform->Teleport(f, spawnPosition, rotation);
-
-            }
-
+            // set playerManagerData for player
             playerHandle.PlayState = PlayerPlayState.OutOfPlay;
-            playerHandle.PlayerRef = player;
+            playerHandle.PlayerRef = playerRef;
             playerHandle.SetCharacters(playerEntityArray);
 
             return playerSlot;
@@ -363,6 +499,10 @@ namespace Quantum
 
         private static void SpawnPlayer(Frame f, PlayerHandle playerHandle, int characterNumber)
         {
+            EntityRef character = playerHandle.GetCharacter(characterNumber);
+            PlayerData* playerData = f.Unsafe.GetPointer<PlayerData>(character);
+            Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(character);
+
             FPVector2 worldPosition;
 
             if (playerHandle.PlayState == PlayerPlayState.InPlay)
@@ -375,17 +515,16 @@ namespace Quantum
                 worldPosition = playerHandle.SpawnPosition;
             }
 
-            EntityRef character = playerHandle.GetCharacter(characterNumber);
-            PlayerData* playerData = f.Unsafe.GetPointer<PlayerData>(character);
-            Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(character);
+            playerData->PlayerRef = playerHandle.PlayerRef;
 
-            playerData->Player = playerHandle.PlayerRef;
+            PlayerMovementSystem.Teleport(f, playerData, playerTransform,
+                worldPosition,
+                playerData->BaseRotation
+            );
 
-            playerTransform->Teleport(f, worldPosition, playerData->BaseRotation);
             playerData->TargetPosition = worldPosition;
 
             playerHandle.SetSelectedCharacter(characterNumber);
-
             playerHandle.PlayState = PlayerPlayState.InPlay;
         }
 
@@ -394,11 +533,19 @@ namespace Quantum
             EntityRef selectedCharacter = playerHandle.SelectedCharacter;
             PlayerData* playerData = f.Unsafe.GetPointer<PlayerData>(selectedCharacter);
             Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(selectedCharacter);
-            playerData->Player = PlayerRef.None;
-            playerTransform->Teleport(f, playerHandle.GetOutOfPlayPosition(playerHandle.SelectedCharacterNumber, playerData->TeamNumber), playerData->BaseRotation);
+
+            FPVector2 worldPosition = playerHandle.GetOutOfPlayPosition(playerHandle.SelectedCharacterNumber, playerData->TeamNumber);
+
+            playerData->PlayerRef = PlayerRef.None;
+
+            PlayerMovementSystem.Teleport(f, playerData, playerTransform,
+                worldPosition,
+                playerData->BaseRotation
+            );
+
+            playerData->TargetPosition = worldPosition;
 
             playerHandle.UnsetSelectedCharacter();
-
             playerHandle.PlayState = PlayerPlayState.OutOfPlay;
         }
 
