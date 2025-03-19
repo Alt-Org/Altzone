@@ -154,7 +154,7 @@ namespace Quantum
                 RotateNoHitBoxUpdate(f, transform, playerData->BaseRotation + playerData->MovementRotation);
 
                 if (transform->Position != playerData->TargetPosition)
-                    MoveTowardsNoHitBoxUpdate(f, transform, playerData->TargetPosition, playerData->Speed * f.DeltaTime);
+                    MoveTowardsNoHitBoxUpdate(f, transform, playerData->TargetPosition, playerData->StatSpeed * f.DeltaTime);
 
                 MoveHitBox(f, playerData, transform);
             }
