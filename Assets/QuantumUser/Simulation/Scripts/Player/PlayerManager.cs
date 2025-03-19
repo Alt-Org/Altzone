@@ -41,7 +41,7 @@ namespace Quantum
             // TODO: Fetch EntityPrototype for each character based on the BattleCharacterBase Id
             EntityPrototype entityPrototypeAsset = f.FindAsset(data.PlayerAvatar);
 
-            EntityRef[] playerEntityArray = new EntityRef[Constants.PLAYER_CHARACTER_COUNT];
+            EntityRef[] playerCharacterEntityArray = new EntityRef[Constants.PLAYER_CHARACTER_COUNT];
 
             // create playerEntity for each characters
             {
@@ -93,7 +93,7 @@ namespace Quantum
                 PhysicsCollider2D playerHitBoxCollider;
                 //} player variables
 
-                for (int i = 0; i < playerEntityArray.Length; i++)
+                for (int i = 0; i < playerCharacterEntityArray.Length; i++)
                 {
                     // set spawnPosition
                     playerSpawnPosition = playerHandle.GetOutOfPlayPosition(i, teamNumber);
@@ -225,14 +225,14 @@ namespace Quantum
                     f.Events.PlayerViewInit(playerEntity, GridManager.GridScaleFactor);
 
                     // save entity
-                    playerEntityArray[i] = playerEntity;
+                    playerCharacterEntityArray[i] = playerEntity;
                 }
             }
 
             // set playerManagerData for player
             playerHandle.PlayState = PlayerPlayState.OutOfPlay;
             playerHandle.PlayerRef = playerRef;
-            playerHandle.SetCharacters(playerEntityArray);
+            playerHandle.SetCharacters(playerCharacterEntityArray);
 
             return playerSlot;
         }
