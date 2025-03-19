@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Lobby.Wrappers;
@@ -13,7 +12,7 @@ using UnityEngine.SceneManagement;
 using static Altzone.Scripts.Lobby.Wrappers.LobbyWrapper;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby;
-using Altzone.Scripts.Model.Poco.Attributes;
+using WebSocketSharp;
 
 public static class PhotonRealtimeClient
 {
@@ -621,37 +620,40 @@ public static class PhotonRealtimeClient
         PhotonHashtable customRoomProperties = new PhotonHashtable
         {
             { PhotonBattleRoom.GameTypeKey, gameType },
+            { PhotonBattleRoom.PlayerPositionKey1, "" },
+            { PhotonBattleRoom.PlayerPositionKey2, "" },
         };
 
         List<string> propertiesShowingToLobby = new() { PhotonBattleRoom.GameTypeKey };
 
         int maxPlayers;
-        bool roomVisible;
 
         switch (gameType)
         {
             default:
             case GameType.Custom:
                 maxPlayers = 4;
-                roomVisible = true;
                 break;
             case GameType.Random2v2:
                 maxPlayers = 4;
-                roomVisible = false;
                 break;
             case GameType.Clan2v2:
                 maxPlayers = 2;
-                roomVisible = false;
                 break;
         }
+        if (maxPlayers == 4)
+        {
+            customRoomProperties.Add(PhotonBattleRoom.PlayerPositionKey3, "");
+            customRoomProperties.Add(PhotonBattleRoom.PlayerPositionKey4, "");
+        }
 
-        if (!password.IsNullOEmptyOrNonWhiteSpace())
+        if (!password.IsNullOrEmpty())
         {
             customRoomProperties.Add(PhotonBattleRoom.PasswordKey, password);
             propertiesShowingToLobby.Add(PhotonBattleRoom.PasswordKey);
         }
 
-        if (!clanName.IsNullOEmptyOrNonWhiteSpace())
+        if (!clanName.IsNullOrEmpty())
         {
             customRoomProperties.Add(PhotonBattleRoom.ClanNameKey, clanName);
             propertiesShowingToLobby.Add(PhotonBattleRoom.ClanNameKey);
@@ -659,7 +661,7 @@ public static class PhotonRealtimeClient
 
         var roomOptions = new RoomOptions()
         {
-            IsVisible = roomVisible,
+            IsVisible = true,
             IsOpen = true,
             MaxPlayers = maxPlayers,
             Plugins = new string[] { "QuantumPlugin" },
@@ -712,7 +714,7 @@ public static class PhotonRealtimeClient
         return Client.OpCreateRoom(opParams);
     }
 
-    public static bool JoinRandomOrCreateLobbyRoom(string roomName, GameType gameType, string clanName, string[] expectedUsers = null)
+    public static bool JoinRandomOrCreateLobbyRoom(string roomName, GameType gameType, string clanName = "", string[] expectedUsers = null)
     {
         if (Client.Server != ServerConnection.MasterServer || !Client.IsConnectedAndReady)
         {
@@ -723,7 +725,7 @@ public static class PhotonRealtimeClient
         EnterRoomArgs enterRoomArgs = GetEnterRoomArgs(roomName, roomOptions, expectedUsers);
 
         JoinRandomRoomArgs joinRandomRoomArgs = new JoinRandomRoomArgs();
-        joinRandomRoomArgs.ExpectedCustomRoomProperties = roomOptions.CustomRoomProperties;
+        joinRandomRoomArgs.ExpectedCustomRoomProperties = new PhotonHashtable{ { PhotonBattleRoom.GameTypeKey, gameType }, { PhotonBattleRoom.ClanNameKey, clanName } };
         joinRandomRoomArgs.ExpectedMaxPlayers = roomOptions.MaxPlayers;
         joinRandomRoomArgs.Lobby = enterRoomArgs.Lobby;
         joinRandomRoomArgs.ExpectedUsers = expectedUsers;
