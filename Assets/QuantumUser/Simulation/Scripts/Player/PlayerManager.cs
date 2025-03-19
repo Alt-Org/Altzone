@@ -95,8 +95,8 @@ namespace Quantum
 
                     // get template data
                     playerDataTemplate                     = f.Unsafe.GetPointer<PlayerDataTemplate>(playerEntity);
-                    playerShieldHitboxTemplateListCount    = f.TryResolveList(playerDataTemplate->ShieldHitboxList,    out playerShieldHitboxTemplateList)    ? playerShieldHitboxTemplateList.Count    : 0;
-                    playerCharacterHitboxTemplateListCount = f.TryResolveList(playerDataTemplate->CharacterHitboxList, out playerCharacterHitboxTemplateList) ? playerCharacterHitboxTemplateList.Count : 0;
+                    playerShieldHitboxTemplateListCount    = f.TryResolveList(playerDataTemplate->HitboxListShield,    out playerShieldHitboxTemplateList)    ? playerShieldHitboxTemplateList.Count    : 0;
+                    playerCharacterHitboxTemplateListCount = f.TryResolveList(playerDataTemplate->HitboxListCharacter, out playerCharacterHitboxTemplateList) ? playerCharacterHitboxTemplateList.Count : 0;
 
                     //{ allocate playerHitboxLists
 

@@ -209,10 +209,10 @@ namespace Quantum.Prototypes {
   public unsafe partial class PlayerDataTemplatePrototype : ComponentPrototype<Quantum.PlayerDataTemplate> {
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.PlayerHitBoxTemplatePrototype[] ShieldHitboxList = {};
+    public Quantum.Prototypes.PlayerHitBoxTemplatePrototype[] HitboxListShield = {};
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.PlayerHitBoxTemplatePrototype[] CharacterHitboxList = {};
+    public Quantum.Prototypes.PlayerHitBoxTemplatePrototype[] HitboxListCharacter = {};
     partial void MaterializeUser(Frame frame, ref Quantum.PlayerDataTemplate result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.PlayerDataTemplate component = default;
@@ -220,23 +220,23 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.PlayerDataTemplate result, in PrototypeMaterializationContext context = default) {
-        if (this.ShieldHitboxList.Length == 0) {
-          result.ShieldHitboxList = default;
+        if (this.HitboxListShield.Length == 0) {
+          result.HitboxListShield = default;
         } else {
-          var list = frame.AllocateList(out result.ShieldHitboxList, this.ShieldHitboxList.Length);
-          for (int i = 0; i < this.ShieldHitboxList.Length; ++i) {
+          var list = frame.AllocateList(out result.HitboxListShield, this.HitboxListShield.Length);
+          for (int i = 0; i < this.HitboxListShield.Length; ++i) {
             Quantum.PlayerHitBoxTemplate tmp = default;
-            this.ShieldHitboxList[i].Materialize(frame, ref tmp, in context);
+            this.HitboxListShield[i].Materialize(frame, ref tmp, in context);
             list.Add(tmp);
           }
         }
-        if (this.CharacterHitboxList.Length == 0) {
-          result.CharacterHitboxList = default;
+        if (this.HitboxListCharacter.Length == 0) {
+          result.HitboxListCharacter = default;
         } else {
-          var list = frame.AllocateList(out result.CharacterHitboxList, this.CharacterHitboxList.Length);
-          for (int i = 0; i < this.CharacterHitboxList.Length; ++i) {
+          var list = frame.AllocateList(out result.HitboxListCharacter, this.HitboxListCharacter.Length);
+          for (int i = 0; i < this.HitboxListCharacter.Length; ++i) {
             Quantum.PlayerHitBoxTemplate tmp = default;
-            this.CharacterHitboxList[i].Materialize(frame, ref tmp, in context);
+            this.HitboxListCharacter[i].Materialize(frame, ref tmp, in context);
             list.Add(tmp);
           }
         }

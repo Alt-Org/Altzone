@@ -43,8 +43,8 @@ struct PlayerHitBoxTemplate
 
 component PlayerDataTemplate
 {
-    [FreeOnComponentRemoved] list<PlayerHitBoxTemplate> ShieldHitboxList;
-    [FreeOnComponentRemoved] list<PlayerHitBoxTemplate> CharacterHitboxList;
+    [FreeOnComponentRemoved] list<PlayerHitBoxTemplate> HitboxListShield;
+    [FreeOnComponentRemoved] list<PlayerHitBoxTemplate> HitboxListCharacter;
 }
 
 //} PlayerDataTemplate

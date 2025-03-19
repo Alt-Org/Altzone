@@ -792,21 +792,21 @@ namespace Quantum {
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(4)]
     [FreeOnComponentRemoved()]
-    public QListPtr<PlayerHitBoxTemplate> ShieldHitboxList;
+    public QListPtr<PlayerHitBoxTemplate> HitboxListShield;
     [FieldOffset(0)]
     [FreeOnComponentRemoved()]
-    public QListPtr<PlayerHitBoxTemplate> CharacterHitboxList;
+    public QListPtr<PlayerHitBoxTemplate> HitboxListCharacter;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 181;
-        hash = hash * 31 + ShieldHitboxList.GetHashCode();
-        hash = hash * 31 + CharacterHitboxList.GetHashCode();
+        hash = hash * 31 + HitboxListShield.GetHashCode();
+        hash = hash * 31 + HitboxListCharacter.GetHashCode();
         return hash;
       }
     }
     public void ClearPointers(FrameBase f, EntityRef entity) {
-      if (ShieldHitboxList != default) f.FreeList(ref ShieldHitboxList);
-      if (CharacterHitboxList != default) f.FreeList(ref CharacterHitboxList);
+      if (HitboxListShield != default) f.FreeList(ref HitboxListShield);
+      if (HitboxListCharacter != default) f.FreeList(ref HitboxListCharacter);
     }
     public static void OnRemoved(FrameBase frame, EntityRef entity, void* ptr) {
       var p = (Quantum.PlayerDataTemplate*)ptr;
@@ -814,8 +814,8 @@ namespace Quantum {
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (PlayerDataTemplate*)ptr;
-        QList.Serialize(&p->CharacterHitboxList, serializer, Statics.SerializePlayerHitBoxTemplate);
-        QList.Serialize(&p->ShieldHitboxList, serializer, Statics.SerializePlayerHitBoxTemplate);
+        QList.Serialize(&p->HitboxListCharacter, serializer, Statics.SerializePlayerHitBoxTemplate);
+        QList.Serialize(&p->HitboxListShield, serializer, Statics.SerializePlayerHitBoxTemplate);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
