@@ -23,6 +23,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
         [SerializeField] private CreateRoomCustom _createRoomCustom;
         [SerializeField] private PasswordPopup _passwordPopup;
+        [SerializeField] private GameObject _creatingRoomText;
 
         private PhotonRoomList _photonRoomList;
 
@@ -76,6 +77,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
         /// <returns></returns>
         public IEnumerator StartCreatingClan2v2Room(Action callback)
         {
+            _creatingRoomText.SetActive(true);
             bool roomCreated = false;
             do
             {
@@ -138,6 +140,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         public void OnJoinedRoom()
         {
+            if (_creatingRoomText.activeSelf) _creatingRoomText.SetActive(false);
             var room = PhotonRealtimeClient.LobbyCurrentRoom; // hakee pelaajan tiedot // 
             var player = PhotonRealtimeClient.LocalLobbyPlayer;
             //PhotonRealtimeClient.NickName = room.GetUniquePlayerNameForRoom(player, PhotonRealtimeClient.NickName, "");
