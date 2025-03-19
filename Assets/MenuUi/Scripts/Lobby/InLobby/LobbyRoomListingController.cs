@@ -14,7 +14,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
     /// <summary>
     /// Handles calling the photon methods for creating a new room or joining a room, and forwarding the photon room list to RoomSearchPanelController.
     /// </summary>
-    public class LobbyRoomListingController : MonoBehaviour
+    public class LobbyRoomListingController : AltMonoBehaviour
     {
         private const string DefaultRoomNameCustom = "Custom ";
         private const string DefaultRoomNameClan2v2 = "Clan 2v2 ";
@@ -94,7 +94,13 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private void CreateClan2v2Room()  // soulhome value for matchmaking
         {
             var roomName = $"{DefaultRoomNameClan2v2}{DateTime.Now.Second:00}";
-            PhotonRealtimeClient.CreateLobbyRoom(roomName, GameType.Clan2v2);
+            StartCoroutine(GetClanData( clanData =>
+            {
+                if (clanData != null)
+                {
+                    PhotonRealtimeClient.JoinRandomOrCreateLobbyRoom(roomName, GameType.Clan2v2, clanData.Name);
+                }
+            }));
         }
 
         private void JoinRoom(string roomName)
