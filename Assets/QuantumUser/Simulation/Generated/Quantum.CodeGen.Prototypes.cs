@@ -131,7 +131,7 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerData))]
   public unsafe class PlayerDataPrototype : ComponentPrototype<Quantum.PlayerData> {
-    public PlayerRef Player;
+    public PlayerRef PlayerRef;
     public Quantum.QEnum32<BattlePlayerSlot> Slot;
     public Quantum.QEnum32<BattleTeamNumber> TeamNumber;
     public Int32 CharacterId;
@@ -149,14 +149,20 @@ namespace Quantum.Prototypes {
     public FP CollisionMinOffset;
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
-    public MapEntityId[] ShieldHitboxArray = {};
+    public Quantum.Prototypes.PlayerHitBoxLinkPrototype[] PlayerHitboxList = {};
+    [FreeOnComponentRemoved()]
+    [DynamicCollectionAttribute()]
+    public Quantum.Prototypes.PlayerHitBoxLinkPrototype[] ShieldHitboxList = {};
+    [FreeOnComponentRemoved()]
+    [DynamicCollectionAttribute()]
+    public Quantum.Prototypes.PlayerHitBoxLinkPrototype[] CharacterHitboxList = {};
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.PlayerData component = default;
         Materialize((Frame)f, ref component, in context);
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.PlayerData result, in PrototypeMaterializationContext context = default) {
-        result.Player = this.Player;
+        result.PlayerRef = this.PlayerRef;
         result.Slot = this.Slot;
         result.TeamNumber = this.TeamNumber;
         result.CharacterId = this.CharacterId;
@@ -172,22 +178,81 @@ namespace Quantum.Prototypes {
         result.MovementRotation = this.MovementRotation;
         result.Normal = this.Normal;
         result.CollisionMinOffset = this.CollisionMinOffset;
-        if (this.ShieldHitboxArray.Length == 0) {
-          result.ShieldHitboxArray = default;
+        if (this.PlayerHitboxList.Length == 0) {
+          result.PlayerHitboxList = default;
         } else {
-          var list = frame.AllocateList(out result.ShieldHitboxArray, this.ShieldHitboxArray.Length);
-          for (int i = 0; i < this.ShieldHitboxArray.Length; ++i) {
-            EntityRef tmp = default;
-            PrototypeValidator.FindMapEntity(this.ShieldHitboxArray[i], in context, out tmp);
+          var list = frame.AllocateList(out result.PlayerHitboxList, this.PlayerHitboxList.Length);
+          for (int i = 0; i < this.PlayerHitboxList.Length; ++i) {
+            Quantum.PlayerHitBoxLink tmp = default;
+            this.PlayerHitboxList[i].Materialize(frame, ref tmp, in context);
+            list.Add(tmp);
+          }
+        }
+        if (this.ShieldHitboxList.Length == 0) {
+          result.ShieldHitboxList = default;
+        } else {
+          var list = frame.AllocateList(out result.ShieldHitboxList, this.ShieldHitboxList.Length);
+          for (int i = 0; i < this.ShieldHitboxList.Length; ++i) {
+            Quantum.PlayerHitBoxLink tmp = default;
+            this.ShieldHitboxList[i].Materialize(frame, ref tmp, in context);
+            list.Add(tmp);
+          }
+        }
+        if (this.CharacterHitboxList.Length == 0) {
+          result.CharacterHitboxList = default;
+        } else {
+          var list = frame.AllocateList(out result.CharacterHitboxList, this.CharacterHitboxList.Length);
+          for (int i = 0; i < this.CharacterHitboxList.Length; ++i) {
+            Quantum.PlayerHitBoxLink tmp = default;
+            this.CharacterHitboxList[i].Materialize(frame, ref tmp, in context);
             list.Add(tmp);
           }
         }
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerDataTemplate))]
+  public unsafe partial class PlayerDataTemplatePrototype : ComponentPrototype<Quantum.PlayerDataTemplate> {
+    [FreeOnComponentRemoved()]
+    [DynamicCollectionAttribute()]
+    public Quantum.Prototypes.PlayerHitBoxTemplatePrototype[] ShieldHitboxList = {};
+    [FreeOnComponentRemoved()]
+    [DynamicCollectionAttribute()]
+    public Quantum.Prototypes.PlayerHitBoxTemplatePrototype[] CharacterHitboxList = {};
+    partial void MaterializeUser(Frame frame, ref Quantum.PlayerDataTemplate result, in PrototypeMaterializationContext context);
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.PlayerDataTemplate component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.PlayerDataTemplate result, in PrototypeMaterializationContext context = default) {
+        if (this.ShieldHitboxList.Length == 0) {
+          result.ShieldHitboxList = default;
+        } else {
+          var list = frame.AllocateList(out result.ShieldHitboxList, this.ShieldHitboxList.Length);
+          for (int i = 0; i < this.ShieldHitboxList.Length; ++i) {
+            Quantum.PlayerHitBoxTemplate tmp = default;
+            this.ShieldHitboxList[i].Materialize(frame, ref tmp, in context);
+            list.Add(tmp);
+          }
+        }
+        if (this.CharacterHitboxList.Length == 0) {
+          result.CharacterHitboxList = default;
+        } else {
+          var list = frame.AllocateList(out result.CharacterHitboxList, this.CharacterHitboxList.Length);
+          for (int i = 0; i < this.CharacterHitboxList.Length; ++i) {
+            Quantum.PlayerHitBoxTemplate tmp = default;
+            this.CharacterHitboxList[i].Materialize(frame, ref tmp, in context);
+            list.Add(tmp);
+          }
+        }
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerHitBox))]
   public unsafe class PlayerHitBoxPrototype : ComponentPrototype<Quantum.PlayerHitBox> {
-    public MapEntityId Player;
+    public MapEntityId PlayerEntity;
     public Quantum.QEnum32<PlayerHitboxType> HitBoxType;
     public Quantum.QEnum32<PlayerCollisionType> CollisionType;
     public FPVector2 Normal;
@@ -198,11 +263,35 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.PlayerHitBox result, in PrototypeMaterializationContext context = default) {
-        PrototypeValidator.FindMapEntity(this.Player, in context, out result.Player);
+        PrototypeValidator.FindMapEntity(this.PlayerEntity, in context, out result.PlayerEntity);
         result.HitBoxType = this.HitBoxType;
         result.CollisionType = this.CollisionType;
         result.Normal = this.Normal;
         result.CollisionMinOffset = this.CollisionMinOffset;
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerHitBoxLink))]
+  public unsafe class PlayerHitBoxLinkPrototype : StructPrototype {
+    public MapEntityId Entity;
+    public FPVector2 Position;
+    public void Materialize(Frame frame, ref Quantum.PlayerHitBoxLink result, in PrototypeMaterializationContext context = default) {
+        PrototypeValidator.FindMapEntity(this.Entity, in context, out result.Entity);
+        result.Position = this.Position;
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerHitBoxTemplate))]
+  public unsafe partial class PlayerHitBoxTemplatePrototype : StructPrototype {
+    public IntVector2 Position;
+    public Quantum.QEnum32<PlayerCollisionType> CollisionType;
+    public FP NormalAngle;
+    partial void MaterializeUser(Frame frame, ref Quantum.PlayerHitBoxTemplate result, in PrototypeMaterializationContext context);
+    public void Materialize(Frame frame, ref Quantum.PlayerHitBoxTemplate result, in PrototypeMaterializationContext context = default) {
+        result.Position = this.Position;
+        result.CollisionType = this.CollisionType;
+        result.NormalAngle = this.NormalAngle;
+        MaterializeUser(frame, ref result, in context);
     }
   }
   [System.SerializableAttribute()]
