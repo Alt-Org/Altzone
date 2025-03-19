@@ -30,6 +30,8 @@ namespace Quantum.QuantumUser.Simulation.Projectile
                 projectile->Speed = spec.ProjectileInitialSpeed;
                 projectile->Direction = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
 
+                PickRandomEmotionState(f, projectile);
+
                 // set the IsLaunched field to true to ensure it's launched only once
                 projectile->IsLaunched = true;
 
@@ -68,16 +70,7 @@ namespace Quantum.QuantumUser.Simulation.Projectile
         {
             ProjectileBounce(f, projectile, projectileEntity, soulWallEntity, soulWall->Normal, soulWall->CollisionMinOffset);
 
-            int randomEmotion;
-
-            do
-            {
-                randomEmotion = Random.Range(0,4);
-            }
-            while(randomEmotion == (int)projectile->Emotion);
-
-            projectile->Emotion = (EmotionState)randomEmotion;
-            f.Events.ChangeEmotionState(projectile->Emotion);
+            PickRandomEmotionState(f, projectile);
         }
 
         public void OnTriggerProjectileHitArenaBorder(Frame f, Quantum.Projectile* projectile, EntityRef projectileEntity, Quantum.ArenaBorder* arenaBorder, EntityRef arenaBorderEntity)
@@ -88,6 +81,12 @@ namespace Quantum.QuantumUser.Simulation.Projectile
         public void OnTriggerProjectileHitPlayer(Frame f, Quantum.Projectile* projectile, EntityRef projectileEntity, Quantum.PlayerData* playerData, EntityRef playerEntity)
         {
             ProjectileBounce(f, projectile,  projectileEntity, playerEntity, playerData->Normal, playerData->CollisionMinOffset);
+        }
+
+        public void PickRandomEmotionState(Frame f, Quantum.Projectile* projectile)
+        {
+            projectile->Emotion = (EmotionState)(((int)projectile->Emotion + Random.Range(1,4)) % 4);
+            f.Events.ChangeEmotionState(projectile->Emotion);
         }
     }
 }
