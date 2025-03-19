@@ -1,3 +1,5 @@
+#define DEBUG_PLAYER_STAT_OVERRIDE
+
 using System;
 using System.Runtime.CompilerServices;
 
@@ -128,6 +130,14 @@ namespace Quantum
                         ShieldHitboxList    = playerShieldHitboxList,
                         CharacterHitboxList = playerCharacterHitboxList
                     };
+
+#if DEBUG_PLAYER_STAT_OVERRIDE
+                    playerData.StatHp            = FP.FromString( "1.0");
+                    playerData.StatSpeed         = FP.FromString("20.0");
+                    playerData.StatCharacterSize = FP.FromString( "1.0");
+                    playerData.StatAttack        = FP.FromString( "1.0");
+                    playerData.StatDefence       = FP.FromString( "1.0");
+#endif
 
                     // create hitBoxes
                     for (int i2 = 0; i2 < 2; i2++)
