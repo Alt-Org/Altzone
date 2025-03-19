@@ -305,7 +305,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             _buttonStartPlay.interactable = _interactableStartPlay;
 
             // Setting team text in a custom game mode
-            if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<GameType>(PhotonBattleRoom.GameTypeKey) == GameType.Custom)
+            if ((GameType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey) == GameType.Custom)
             {
                 SetTeamText();
             }
