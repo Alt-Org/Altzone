@@ -33,33 +33,17 @@ namespace Altzone.Scripts.ReferenceSheets
             }
         }
 
-        public AvatarPartCategoryInfo GetPackedAvatarPartsByCategory(string Id)
+        /// <param name="Id">Insert the two digit character class id.</param>
+        public List<AvatarPartInfo> GetAvatarPartsByCategory(string Id)
         {
-            string[] ids = Id.Split("-");
-
-            var data = _info.Find(category => category.Id == ids[0]);
+            AvatarPartCategoryInfo data = _info.Find(category => category.Id == Id);
 
             if (data == null)
                 Debug.LogError($"Could not find avatar parts category with ID: {Id}");
 
-            return (data);
-        }
-
-        public List<AvatarPartInfo> GetUnpackedAvatarPartsByCategory(string Id)
-        {
-            string[] ids = Id.Split("-");
-
-            var dataPacked = _info.Find(category => category.Id == ids[0]);
-
-            if (dataPacked == null)
-            {
-                Debug.LogError($"Could not find avatar parts category with ID: {Id}");
-                return (null);
-            }
-
             List<AvatarPartInfo> avatarParts = new List<AvatarPartInfo>();
 
-            foreach (AvatarClassCategoryInfo acci in dataPacked.AvatarCategories)
+            foreach (AvatarClassCategoryInfo acci in data.AvatarCategories)
                 foreach (AvatarPartInfo part in acci.Parts)
                     avatarParts.Add(part);
 

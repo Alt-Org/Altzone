@@ -53,8 +53,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
         if (playerData.AvatarData == null)
         {
             Debug.Log("AvatarData is null. Using default data.");
-            playerAvatar = new(_avatarDefaultReference.GetStringList(
-                $"{(playerData.SelectedCharacterId.ToString())[0]}-{playerData.SelectedCharacterId}"));
+            playerAvatar = new(_avatarDefaultReference.GetByCharacterId(playerData.SelectedCharacterId)[0]);
 
             playerAvatar.Colors.Add("#ffffff");
         }

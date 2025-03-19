@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Altzone.Scripts.ReferenceSheets;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
@@ -11,10 +12,17 @@ namespace MenuUi.Scripts.AvatarEditor
         private List<string> _colors;
         private Vector2 _scale;
 
-        public PlayerAvatar(List<string> featureIds)
+        public PlayerAvatar(AvatarDefaultReference.AvatarDefaultPartInfo featureIds)
         {
+            _features.Add(featureIds.HairId);
+            _features.Add(featureIds.EyesId);
+            _features.Add(featureIds.NoseId);
+            _features.Add(featureIds.MouthId);
+            _features.Add(featureIds.BodyId);
+            _features.Add(featureIds.HandsId);
+            _features.Add(featureIds.FeetId);
+
             _characterName = "";
-            _features = featureIds;
             _colors = new List<string>();
             _scale = Vector2.one;
         }

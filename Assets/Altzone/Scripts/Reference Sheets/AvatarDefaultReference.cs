@@ -8,15 +8,23 @@ namespace Altzone.Scripts.ReferenceSheets
     {
         [SerializeField] private List<AvatarDefaultClassCategoryInfo> _info;
 
-        public AvatarDefaultPartInfo Get(string Id)
+        /// <summary>
+        /// Get character parts by string Id.
+        /// </summary>
+        /// <param name="Id">
+        /// First 2 char numbers are the character class id<br/>
+        /// and last 3 chars are the character id.<br/>
+        /// <br/>
+        /// (e.g. "011")
+        /// </param>
+        public List<AvatarDefaultPartInfo> Get(string Id)
         {
             try
             {
-                string[] ids = Id.Split("-");
-                var data = _info.Find(characterClass => characterClass.Id == ids[0]).
-                    Characters.Find(character => character.Id == ids[2].Substring(0,2)).Variations;
+                var data = _info.Find(characterClass => characterClass.Id == Id.Substring(0, 2)).
+                    Characters.Find(character => character.Id == Id.Substring(2,3)).Variations;
 
-                return (data[0]);
+                return (data);
             }
             catch
             {
@@ -25,31 +33,16 @@ namespace Altzone.Scripts.ReferenceSheets
             }
         }
 
-        public List<string> GetStringList(string Id)
+        /// <summary>
+        /// Get character parts by int Id.
+        /// </summary>
+        /// <param name="Id">
+        /// First number is the character class<br/>
+        /// and last number is the character.
+        /// </param>
+        public List<AvatarDefaultPartInfo> GetByCharacterId(int Id)
         {
-            try
-            {
-                List<string> list = new List<string>();
-
-                string[] ids = Id.Split("-");
-                var data = _info.Find(characterClass => characterClass.Id == ids[0]).
-                    Characters.Find(character => character.Id == ids[1].Substring(0, 3)).Variations;
-
-                list.Add(data[0].HairId);
-                list.Add(data[0].EyesId);
-                list.Add(data[0].NoseId);
-                list.Add(data[0].MouthId);
-                list.Add(data[0].BodyId);
-                list.Add(data[0].HandsId);
-                list.Add(data[0].FeetId);
-
-                return (list);
-            }
-            catch
-            {
-                Debug.LogError($"Could not find avatar part with ID: {Id}");
-                return (null);
-            }
+            return (Get("0" + Id.ToString()[0] + Id.ToString()));
         }
 
         [System.Serializable]

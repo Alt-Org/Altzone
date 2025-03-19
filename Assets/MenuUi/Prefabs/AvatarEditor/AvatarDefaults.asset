@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _info:
   - Name: Desentisizer
-    Id: 1
+    Id: 01
     Characters:
     - Name: Racist
       Id: 101
@@ -22,25 +22,25 @@ MonoBehaviour:
     - Name: Meatwall
       Id: 102
       Variations:
-      - Name: 
-        HairId: 10-1-0101
-        EyesId: 21-1-0101
-        NoseId: 22-1-0101
-        MouthId: 23-1-0101
-        BodyId: 31-1-0101
-        HandsId: 32-1-0101
+      - Name: Default
+        HairId: 1010101
+        EyesId: 2110101
+        NoseId: 2210101
+        MouthId: 2310101
+        BodyId: 3110101
+        HandsId: 3210101
         FeetId: 
     - Name: Veteran
-      Id: 03
+      Id: 103
       Variations: []
     - Name: Bully
-      Id: 04
+      Id: 104
       Variations: []
     - Name: Guard
       Id: 05
       Variations: []
   - Name: Trickster
-    Id: 2
+    Id: 02
     Characters:
     - Name: Jokester
       Id: 202
@@ -48,8 +48,8 @@ MonoBehaviour:
       - Name: Default
         HairId: 
         EyesId: 
-        NoseId: 22-2-0101
-        MouthId: 23-2-0101
+        NoseId: 2220101
+        MouthId: 2320101
         BodyId: 
         HandsId: 
         FeetId: 
@@ -63,56 +63,56 @@ MonoBehaviour:
       Id: 204
       Variations: []
   - Name: Obedient
-    Id: 3
+    Id: 03
     Characters:
     - Name: Believer
       Id: 301
       Variations:
       - Name: Default
-        HairId: 10-3-0101
-        EyesId: 21-3-0101
-        NoseId: 22-3-0101
-        MouthId: 23-3-0101
-        BodyId: 31-3-0101
+        HairId: 1030101
+        EyesId: 2130101
+        NoseId: 2230101
+        MouthId: 2330101
+        BodyId: 3130101
         HandsId: 
-        FeetId: 33-3-0101
+        FeetId: 3330101
     - Name: People Pleaser
       Id: 302
       Variations: []
   - Name: Projector
-    Id: 4
+    Id: 04
     Characters:
     - Name: Provocateur
       Id: 401
       Variations:
       - Name: Default
-        HairId: 10-4-0101
-        EyesId: 21-4-0101
-        NoseId: 22-4-0101
-        MouthId: 23-4-0101
-        BodyId: 31-4-0101
+        HairId: 1040101
+        EyesId: 2140101
+        NoseId: 2240101
+        MouthId: 2340101
+        BodyId: 3140101
         HandsId: 
-        FeetId: 33-4-0101
+        FeetId: 3340101
     - Name: Scapegoater
-      Id: 02
+      Id: 402
       Variations: []
     - Name: Mirror
-      Id: 03
+      Id: 403
       Variations: []
     - Name: Delusional
-      Id: 04
+      Id: 404
       Variations: []
   - Name: Retroflector
-    Id: 5
+    Id: 05
     Characters:
     - Name: Overeater
       Id: 501
       Variations:
       - Name: Default
-        HairId: 10-5-0101
-        EyesId: 21-5-0101
-        NoseId: 22-5-0101
-        MouthId: 23-5-0101
+        HairId: 1050101
+        EyesId: 2150101
+        NoseId: 2250101
+        MouthId: 2350101
         BodyId: 
         HandsId: 
         FeetId: 
@@ -120,33 +120,33 @@ MonoBehaviour:
       Id: 502
       Variations: []
     - Name: Anorexic
-      Id: 03
+      Id: 503
       Variations: []
     - Name: Addict
-      Id: 04
+      Id: 504
       Variations: []
     - Name: Martyr
-      Id: 05
+      Id: 505
       Variations: []
   - Name: Confluent
-    Id: 6
+    Id: 06
     Characters:
     - Name: Soulsisters
       Id: 601
       Variations:
       - Name: Default-1
-        HairId: 10-6-0101
-        EyesId: 21-6-0101
-        NoseId: 22-6-0101
-        MouthId: 23-6-0101
+        HairId: 1060101
+        EyesId: 2160101
+        NoseId: 2260101
+        MouthId: 2360101
         BodyId: 
         HandsId: 
         FeetId: 
       - Name: Default-2
-        HairId: 10-6-0102
-        EyesId: 21-6-0102
-        NoseId: 22-6-0101
-        MouthId: 23-6-0101
+        HairId: 1060102
+        EyesId: 2160102
+        NoseId: 2260101
+        MouthId: 2360101
         BodyId: 
         HandsId: 
         FeetId: 
@@ -157,24 +157,24 @@ MonoBehaviour:
       Id: 603
       Variations:
       - Name: Default
-        HairId: 10-6-0201
-        EyesId: 21-6-0201
-        NoseId: 22-6-0201
-        MouthId: 23-6-0201
-        BodyId: 31-6-0101
-        HandsId: 32-6-0101
+        HairId: 1060201
+        EyesId: 2160201
+        NoseId: 2260201
+        MouthId: 2360201
+        BodyId: 3160101
+        HandsId: 3260101
         FeetId: 
   - Name: Intellectualizer
-    Id: 7
+    Id: 07
     Characters:
     - Name: Booksmart
       Id: 701
       Variations:
       - Name: Default
-        HairId: 10-7-0101
-        EyesId: 21-7-0101
+        HairId: 1070101
+        EyesId: 2170101
         NoseId: 
-        MouthId: 23-7-0101
+        MouthId: 2370101
         BodyId: 
         HandsId: 
         FeetId: 
@@ -182,5 +182,5 @@ MonoBehaviour:
       Id: 702
       Variations: []
     - Name: OCD
-      Id: 03
+      Id: 703
       Variations: []

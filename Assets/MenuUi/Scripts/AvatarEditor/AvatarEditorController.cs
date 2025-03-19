@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.ReferenceSheets;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,8 @@ namespace MenuUi.Scripts.AvatarEditor
         private PlayerData _currentPlayerData;
 
         [SerializeField] private float _timeoutSeconds = 10f;
+
+        [SerializeField] private AvatarDefaultReference _avatarDefaultReference;
 
         private enum AvatarEditorMode
         {
@@ -110,12 +113,8 @@ namespace MenuUi.Scripts.AvatarEditor
 
             if (_currentPlayerData.AvatarData == null)
             {
-                
                 Debug.Log("AvatarData is null. Using default data.");
-                _playerAvatar = new(_featurePicker.GetCharacterDefaultFeature
-                    (
-                    $"{(_currentPlayerData.SelectedCharacterId.ToString())[0]}-{_currentPlayerData.SelectedCharacterId}")
-                    );
+                _playerAvatar = new(_avatarDefaultReference.GetByCharacterId(_currentPlayerData.SelectedCharacterId)[0]);
             }
             else
                 _playerAvatar = new(_currentPlayerData.AvatarData);

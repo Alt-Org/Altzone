@@ -336,13 +336,13 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             return slot switch
             {
-                FeatureSlot.Hair => _avatarPartsReference.GetUnpackedAvatarPartsByCategory(_hairCategoryId),
-                FeatureSlot.Eyes => _avatarPartsReference.GetUnpackedAvatarPartsByCategory(_eyesCategoryId),
-                FeatureSlot.Nose => _avatarPartsReference.GetUnpackedAvatarPartsByCategory(_noseCategoryId),
-                FeatureSlot.Mouth => _avatarPartsReference.GetUnpackedAvatarPartsByCategory(_mouthCategoryId),
-                FeatureSlot.Body => _avatarPartsReference.GetUnpackedAvatarPartsByCategory(_bodyCategoryId),
-                FeatureSlot.Hands => _avatarPartsReference.GetUnpackedAvatarPartsByCategory(_handsCategoryId),
-                FeatureSlot.Feet => _avatarPartsReference.GetUnpackedAvatarPartsByCategory(_feetCategoryId),
+                FeatureSlot.Hair => _avatarPartsReference.GetAvatarPartsByCategory(_hairCategoryId),
+                FeatureSlot.Eyes => _avatarPartsReference.GetAvatarPartsByCategory(_eyesCategoryId),
+                FeatureSlot.Nose => _avatarPartsReference.GetAvatarPartsByCategory(_noseCategoryId),
+                FeatureSlot.Mouth => _avatarPartsReference.GetAvatarPartsByCategory(_mouthCategoryId),
+                FeatureSlot.Body => _avatarPartsReference.GetAvatarPartsByCategory(_bodyCategoryId),
+                FeatureSlot.Hands => _avatarPartsReference.GetAvatarPartsByCategory(_handsCategoryId),
+                FeatureSlot.Feet => _avatarPartsReference.GetAvatarPartsByCategory(_feetCategoryId),
                 _ => null,
             };
         }
@@ -371,7 +371,7 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             for (int i = 0; i < features.Count; i++){
                 List<AvatarPartsReference.AvatarPartInfo> currentCategoryFeatureDataPlaceholder = GetSpritesByCategory((FeatureSlot)i);
-                string[] ids = features[i].Split("-");
+
                 //if(features[i] == FeatureID.Default)
                 //{
                 //    features[i] = ResolveCharacterDefaultFeature(i);
@@ -386,18 +386,16 @@ namespace MenuUi.Scripts.AvatarEditor
                 if (currentCategoryFeatureDataPlaceholder == null)
                     return;
 
-                AvatarPartsReference.AvatarPartInfo partData =
-                    currentCategoryFeatureDataPlaceholder.Find(part => part.Id == features[i]);
+                if (features[i] != null && features[i] != "")
+                {
+                    AvatarPartsReference.AvatarPartInfo partData =
+                        currentCategoryFeatureDataPlaceholder.Find(part => part.Id == features[i]);
 
-                if (partData != null)
-                    SetFeature(partData, i);
+                    if (partData != null)
+                        SetFeature(partData, i);
+                }
                 //}
             }
-        }
-
-        public List<string> GetCharacterDefaultFeature(string characterId)
-        {
-            return (_avatarDefaultReference.GetStringList(characterId));
         }
     }
 }
