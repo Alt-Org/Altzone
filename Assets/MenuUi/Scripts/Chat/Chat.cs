@@ -222,12 +222,29 @@ public class Chat : MonoBehaviour
         deletePosition.y = selectedMessage.transform.position.y;
         deleteButtons.transform.position = deletePosition;
 
-        Vector3 reactionPosition = addReactionsPanel.transform.position;
-        reactionPosition.y = selectedMessage.transform.position.y - 70;
-        addReactionsPanel.transform.position = reactionPosition;
+        SetReactionPanelPosition();
 
         deleteButtons.SetActive(true);// Näytä poistopainikkeet, jos viesti on valittuna
         addReactionsPanel.SetActive(true);
+    }
+
+    /// <summary>
+    /// Sets the reaction panel at the bottom of the selected message's reaction field
+    /// </summary>
+    private void SetReactionPanelPosition()
+    {
+        Vector3 reactionPosition = addReactionsPanel.transform.position;
+        HorizontalLayoutGroup reactionField = selectedMessage.GetComponentInChildren<HorizontalLayoutGroup>();
+        RectTransform reactionFieldTransform = reactionField.GetComponent<RectTransform>();
+
+        float fieldBottomY = reactionField.transform.position.y - (reactionFieldTransform.rect.height * reactionFieldTransform.pivot.y);
+        float newPanelY = fieldBottomY - 40;
+        reactionPosition.y = newPanelY;
+
+        float newPanelX = reactionFieldTransform.pivot.x + 330;
+        reactionPosition.x = newPanelX;
+
+        addReactionsPanel.transform.position = reactionPosition;
     }
 
 
