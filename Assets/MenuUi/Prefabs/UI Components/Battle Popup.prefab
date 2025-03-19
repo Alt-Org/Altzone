@@ -1408,7 +1408,6 @@ MonoBehaviour:
   _createRoomCustom: {fileID: 2108616739130861843}
   _passwordPopup: {fileID: 2803323736018011014}
   _creatingRoomText: {fileID: 8493655741309318595}
-  SelectedGameType: 0
 --- !u!1 &820887240261383258
 GameObject:
   m_ObjectHideFlags: 0
@@ -1786,7 +1785,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28df4a369556c5a4c8aa26aba8f3bcdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _title: {fileID: 8150043942820078987}
+  _title: {fileID: 0}
   _battleID: {fileID: 0}
   _startGameButton: {fileID: 8378903416269138574}
   _backButton: {fileID: 4936626344422002131}
@@ -2192,9 +2191,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Huoneen nimi
-
-'
+  m_text: "2v2 klaanij\xE4senen kanssa\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
   m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
