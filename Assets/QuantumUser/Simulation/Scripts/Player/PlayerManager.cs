@@ -165,22 +165,22 @@ namespace Quantum
                                 break;
                         }
 
-                        foreach (PlayerHitBoxTemplate shieldHitboxTemplate in playerHitboxSourceTemplateList)
+                        foreach (PlayerHitBoxTemplate playerHitboxTemplate in playerHitboxSourceTemplateList)
                         {
                             // initialize hitBox component
                             playerHitBox = new PlayerHitBox
                             {
                                 PlayerEntity       = playerEntity,
                                 HitBoxType         = playerHitboxType,
-                                CollisionType      = shieldHitboxTemplate.CollisionType,
-                                Normal             = FPVector2.Rotate(FPVector2.Down, playerBaseRotation - shieldHitboxTemplate.NormalAngle * FP.Deg2Rad),
+                                CollisionType      = playerHitboxTemplate.CollisionType,
+                                Normal             = FPVector2.Rotate(FPVector2.Down, playerBaseRotation - playerHitboxTemplate.NormalAngle * FP.Deg2Rad),
                                 CollisionMinOffset = playerHitBoxExtents
                             };
 
                             // initialize hitBox position
                             playerHitBoxPosition = new FPVector2(
-                                (FP)shieldHitboxTemplate.Position.X * GridManager.GridScaleFactor,
-                                (FP)shieldHitboxTemplate.Position.Y * GridManager.GridScaleFactor
+                                (FP)playerHitboxTemplate.Position.X * GridManager.GridScaleFactor,
+                                (FP)playerHitboxTemplate.Position.Y * GridManager.GridScaleFactor
                             );
 
                             // initialize hitBox collider
