@@ -4,6 +4,7 @@ using TMPro;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using System.Collections;
+using MenuUi.Scripts.TabLine;
 
 public class Chat : MonoBehaviour
 {
@@ -41,6 +42,9 @@ public class Chat : MonoBehaviour
     public GameObject[] sendButtons;
     public GameObject buttonOpenSendButtons;
 
+    [Header("TablineScript reference")]
+    public TabLine tablineScript;
+
     private ScrollRect currentScrollRect; // Tällä hetkellä aktiivinen Scroll Rect
 
     private GameObject currentPrefab; // Tällä hetkellä valittu message Prefab
@@ -68,6 +72,7 @@ public class Chat : MonoBehaviour
         messagesByChat[clanChat] = new List<GameObject>();
 
         LanguageChatActive();
+        tablineScript.ActivateTabButton(1);
     }
 
     private void Update()
