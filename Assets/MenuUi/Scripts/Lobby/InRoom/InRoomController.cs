@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Lobby.Wrappers;
+using MenuUi.Scripts.Lobby.InLobby;
 using MenuUI.Scripts;
 using Prg.Scripts.Common.PubSub;
 using TMPro;
@@ -44,14 +45,28 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private void StartPlaying()
         {
-            Debug.Log($"startPlaying");
-            if (PhotonLobbyRoom.IsValidAllSelectedCharacters())
+            if (!PhotonLobbyRoom.IsValidAllSelectedCharacters())
             {
-                this.Publish(new LobbyManager.StartPlayingEvent());
+                SignalBus.OnChangePopupInfoSignal("Kaikkien pelaajien pitää ensin valita 3 puolustushahmoa.");
+                return;
             }
-            else
+
+            switch (InLobbyController.SelectedGameType)
             {
-                SignalBus.OnChangePopupInfoSignal("Peliä ei voi aloittaa, kaikkien pelaajien pitää valita 3 puolustushahmoa.");
+                case GameType.Custom:
+                    this.Publish(new LobbyManager.StartPlayingEvent());
+                    break;
+
+                case GameType.Clan2v2:
+                    if (PhotonLobbyRoom.CountRealPlayers() == PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers)
+                    {
+                        this.Publish(new LobbyManager.StartMatchmakingEvent());
+                    }
+                    else
+                    {
+                        SignalBus.OnChangePopupInfoSignal($"Huoneessa pitää olla {PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers} pelaajaa.");
+                    }
+                    break;
             }
         }
         private void GoBack()
