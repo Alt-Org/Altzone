@@ -69,7 +69,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     {
                         _searchingText.gameObject.SetActive(true);
                         _startGameButton.gameObject.SetActive(false);
-                        this.Publish(new LobbyManager.StartMatchmakingEvent());
+                        this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedGameType));
                     }
                     else
                     {
