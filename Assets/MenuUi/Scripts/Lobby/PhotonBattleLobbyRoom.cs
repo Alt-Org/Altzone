@@ -24,7 +24,6 @@ namespace MenuUi.Scripts.Lobby
         public const string TeamWinKey = PhotonBattleRoom.TeamWinKey;
         public const string TeamBlueScoreKey = PhotonBattleRoom.TeamBlueScoreKey;
         public const string TeamRedScoreKey = PhotonBattleRoom.TeamRedScoreKey;
-        public const string PlayerIDKey = PhotonBattleRoom.PlayerIDKey;
         public const string PasswordKey = PhotonBattleRoom.PasswordKey;
         public const string GameTypeKey = PhotonBattleRoom.GameTypeKey;
         public const string MatchmakingKey = PhotonBattleRoom.MatchmakingKey;

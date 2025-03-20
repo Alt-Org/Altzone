@@ -30,7 +30,6 @@ namespace Altzone.Scripts.Battle.Photon
         public const string TeamWinKey = "tw";
         public const string TeamBlueScoreKey = "t1";
         public const string TeamRedScoreKey = "t2";
-        public const string PlayerIDKey = "pid";
         public const string PasswordKey = "pw";
         public const string GameTypeKey = "gt";
         public const string MatchmakingKey = "mm";
