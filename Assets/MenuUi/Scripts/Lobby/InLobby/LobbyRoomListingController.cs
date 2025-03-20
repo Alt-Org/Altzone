@@ -17,7 +17,6 @@ namespace MenuUi.Scripts.Lobby.InLobby
     public class LobbyRoomListingController : AltMonoBehaviour
     {
         private const string DefaultRoomNameCustom = "Custom ";
-        private const string DefaultRoomNameClan2v2 = "Clan 2v2 ";
 
         [SerializeField] private RoomSearchPanelController _searchPanel;
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
@@ -93,12 +92,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private void CreateClan2v2Room()  // soulhome value for matchmaking
         {
-            var roomName = $"{DefaultRoomNameClan2v2}{DateTime.Now.Second:00}";
             StartCoroutine(GetClanData( clanData =>
             {
                 if (clanData != null)
                 {
-                    PhotonRealtimeClient.JoinRandomOrCreateLobbyRoom(roomName, GameType.Clan2v2, clanData.Name);
+                    PhotonRealtimeClient.JoinRandomOrCreateLobbyRoom("", GameType.Clan2v2, clanData.Name);
                 }
             }));
         }
