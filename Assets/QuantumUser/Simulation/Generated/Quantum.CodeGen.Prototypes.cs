@@ -330,9 +330,10 @@ namespace Quantum.Prototypes {
     public QBoolean IsLaunched;
     public FP Speed;
     public FPVector2 Direction;
-    public FP CoolDown;
     public FP Radius;
     public Int32 TestSpriteIndex;
+    [ArrayLengthAttribute(2)]
+    public Quantum.QEnum8<ProjectileCollisionFlags>[] CollisionFlags = new Quantum.QEnum8<ProjectileCollisionFlags>[2];
     partial void MaterializeUser(Frame frame, ref Quantum.Projectile result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.Projectile component = default;
@@ -343,9 +344,11 @@ namespace Quantum.Prototypes {
         result.IsLaunched = this.IsLaunched;
         result.Speed = this.Speed;
         result.Direction = this.Direction;
-        result.CoolDown = this.CoolDown;
         result.Radius = this.Radius;
         result.TestSpriteIndex = this.TestSpriteIndex;
+        for (int i = 0, count = PrototypeValidator.CheckLength(CollisionFlags, 2, in context); i < count; ++i) {
+          *result.CollisionFlags.GetPointer(i) = this.CollisionFlags[i];
+        }
         MaterializeUser(frame, ref result, in context);
     }
   }

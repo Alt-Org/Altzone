@@ -96,6 +96,12 @@ namespace Quantum {
     MouseClick = 1 << 0,
     RotateMotion = 1 << 1,
   }
+  [System.FlagsAttribute()]
+  public enum ProjectileCollisionFlags : byte {
+    Projectile = 1 << 0,
+    SoulWall = 1 << 1,
+    Player = 1 << 2,
+  }
   public static unsafe partial class FlagsExtensions {
     public static Boolean IsFlagSet(this InputButtons self, InputButtons flag) {
       return (self & flag) == flag;
@@ -104,6 +110,15 @@ namespace Quantum {
       return self | flag;
     }
     public static InputButtons ClearFlag(this InputButtons self, InputButtons flag) {
+      return self & ~flag;
+    }
+    public static Boolean IsFlagSet(this ProjectileCollisionFlags self, ProjectileCollisionFlags flag) {
+      return (self & flag) == flag;
+    }
+    public static ProjectileCollisionFlags SetFlag(this ProjectileCollisionFlags self, ProjectileCollisionFlags flag) {
+      return self | flag;
+    }
+    public static ProjectileCollisionFlags ClearFlag(this ProjectileCollisionFlags self, ProjectileCollisionFlags flag) {
       return self & ~flag;
     }
   }
@@ -914,35 +929,41 @@ namespace Quantum {
   public unsafe partial struct Projectile : Quantum.IComponent {
     public const Int32 SIZE = 48;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(4)]
+    [FieldOffset(8)]
     public QBoolean IsLaunched;
     [FieldOffset(24)]
     public FP Speed;
     [FieldOffset(32)]
     public FPVector2 Direction;
-    [FieldOffset(8)]
-    public FP CoolDown;
     [FieldOffset(16)]
     public FP Radius;
-    [FieldOffset(0)]
+    [FieldOffset(4)]
     public Int32 TestSpriteIndex;
+    [FieldOffset(0)]
+    [FramePrinter.FixedArrayAttribute(typeof(ProjectileCollisionFlags), 2)]
+    private fixed Byte _CollisionFlags_[2];
+    public FixedArray<ProjectileCollisionFlags> CollisionFlags {
+      get {
+        fixed (byte* p = _CollisionFlags_) { return new FixedArray<ProjectileCollisionFlags>(p, 1, 2); }
+      }
+    }
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 16141;
         hash = hash * 31 + IsLaunched.GetHashCode();
         hash = hash * 31 + Speed.GetHashCode();
         hash = hash * 31 + Direction.GetHashCode();
-        hash = hash * 31 + CoolDown.GetHashCode();
         hash = hash * 31 + Radius.GetHashCode();
         hash = hash * 31 + TestSpriteIndex.GetHashCode();
+        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(CollisionFlags);
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (Projectile*)ptr;
+        FixedArray.Serialize(p->CollisionFlags, serializer, Statics.SerializeProjectileCollisionFlags);
         serializer.Stream.Serialize(&p->TestSpriteIndex);
         QBoolean.Serialize(&p->IsLaunched, serializer);
-        FP.Serialize(&p->CoolDown, serializer);
         FP.Serialize(&p->Radius, serializer);
         FP.Serialize(&p->Speed, serializer);
         FPVector2.Serialize(&p->Direction, serializer);
@@ -1216,6 +1237,7 @@ namespace Quantum {
     public static FrameSerializer.Delegate SerializeEntityRef;
     public static FrameSerializer.Delegate SerializePlayerPlayState;
     public static FrameSerializer.Delegate SerializePlayerRef;
+    public static FrameSerializer.Delegate SerializeProjectileCollisionFlags;
     public static FrameSerializer.Delegate SerializeInput;
     static partial void InitStaticDelegatesGen() {
       SerializePlayerHitBoxLink = Quantum.PlayerHitBoxLink.Serialize;
@@ -1223,6 +1245,7 @@ namespace Quantum {
       SerializeEntityRef = EntityRef.Serialize;
       SerializePlayerPlayState = (v, s) => {{ s.Stream.Serialize((Int32*)v); }};
       SerializePlayerRef = PlayerRef.Serialize;
+      SerializeProjectileCollisionFlags = (v, s) => {{ s.Stream.Serialize((Byte*)v); }};
       SerializeInput = Quantum.Input.Serialize;
     }
     static partial void RegisterSimulationTypesGen(TypeRegistry typeRegistry) {
@@ -1308,6 +1331,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.PlayerPlayState), 4);
       typeRegistry.Register(typeof(PlayerRef), PlayerRef.SIZE);
       typeRegistry.Register(typeof(Quantum.Projectile), Quantum.Projectile.SIZE);
+      typeRegistry.Register(typeof(Quantum.ProjectileCollisionFlags), 1);
       typeRegistry.Register(typeof(Quantum.ProjectileSpawner), Quantum.ProjectileSpawner.SIZE);
       typeRegistry.Register(typeof(Ptr), Ptr.SIZE);
       typeRegistry.Register(typeof(QBoolean), QBoolean.SIZE);
@@ -1352,6 +1376,7 @@ namespace Quantum {
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.PlayerCollisionType>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.PlayerHitboxType>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.PlayerPlayState>();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.ProjectileCollisionFlags>();
       FramePrinter.EnsurePrimitiveNotStripped<QueryOptions>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.SoundEffect>();
     }

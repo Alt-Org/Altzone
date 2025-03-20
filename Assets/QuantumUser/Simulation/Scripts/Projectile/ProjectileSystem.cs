@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 using UnityEngine;
 using UnityEngine.Scripting;
 
@@ -15,6 +17,16 @@ namespace Quantum.QuantumUser.Simulation.Projectile
             public Quantum.Projectile* Projectile;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsCollisionFlagSet(Frame f, Quantum.Projectile* projectile, ProjectileCollisionFlags flag) => projectile->CollisionFlags[f.Number % 2].IsFlagSet(flag);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SetCollisionFlag(Frame f, Quantum.Projectile* projectile, ProjectileCollisionFlags flag)
+        {
+            ProjectileCollisionFlags flags = projectile->CollisionFlags[f.Number % 2];
+            projectile->CollisionFlags[f.Number % 2] = flags.SetFlag(flag);
+        }
+
         public override void Update(Frame f, ref Filter filter)
         {
             // unpack filter
@@ -30,6 +42,9 @@ namespace Quantum.QuantumUser.Simulation.Projectile
                 projectile->Speed = spec.ProjectileInitialSpeed;
                 projectile->Direction = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
 
+                // reset CollisionFlags for this frame
+                projectile->CollisionFlags[(f.Number) % 2] = 0;
+
                 // set the IsLaunched field to true to ensure it's launched only once
                 projectile->IsLaunched = true;
 
@@ -39,18 +54,15 @@ namespace Quantum.QuantumUser.Simulation.Projectile
             // move the projectile
             transform->Position += projectile->Direction * (projectile->Speed * f.DeltaTime);
 
-            // decrease projectiles cooldown based on frame time
-            if (projectile->CoolDown > 0)
-            {
-                projectile->CoolDown -= f.DeltaTime;
-            }
+            // reset CollisionFlags for next frame
+            projectile->CollisionFlags[(f.Number + 1) % 2 ] = 0;
         }
 
         private void ProjectileBounce(Frame f, Quantum.Projectile* projectile, EntityRef projectileEntity, EntityRef otherEntity, FPVector2 normal, FP collisionMinOffset)
         {
             Debug.Log("[ProjectileSystem] Projectile hit a wall");
 
-            if (projectile->CoolDown > 0) return;
+            if (IsCollisionFlagSet(f, projectile, ProjectileCollisionFlags.Projectile)) return;
 
             Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
             Transform2D* otherTransform = f.Unsafe.GetPointer<Transform2D>(otherEntity);
@@ -65,7 +77,7 @@ namespace Quantum.QuantumUser.Simulation.Projectile
                 projectileTransform->Position += normal * (collisionMinOffset - collisionOffset + projectile->Radius);
             }
 
-            projectile->CoolDown = FP._0_10;
+            SetCollisionFlag(f, projectile, ProjectileCollisionFlags.Projectile);
         }
 
         public void OnTriggerProjectileHitSoulWall(Frame f, Quantum.Projectile* projectile, EntityRef projectileEntity, Quantum.SoulWall* soulWall, EntityRef soulWallEntity)
