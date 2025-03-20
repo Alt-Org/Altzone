@@ -293,6 +293,10 @@ public class Chat : MonoBehaviour
 
             //Poistopainikkeiden piilottaminen viestin poistamisen jälkeen
             deleteButtons.SetActive(false);
+
+            commonReactions.SetActive(true);
+            allReactions.SetActive(false);
+            addReactionsPanel.SetActive(false);
         }
         else
         {
