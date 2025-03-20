@@ -47,6 +47,8 @@ public class BattleStoryController : MonoBehaviour
 
         int clipsCount = validatedList.Count;
         if (clipsCount <= 0) yield break;
+        if (_routesLeft.Count <= 0) yield break;
+        if (_routesRight.Count <= 0) yield break;
         List<Emotion> randomClipOrder1 = new();
         List<int> randomBallOrder1 = new();
 
@@ -64,7 +66,7 @@ public class BattleStoryController : MonoBehaviour
             } while(selectedvalue1.Equals(prevSelectedValue1));
             randomClipOrder1.Add(validatedList[selectedvalue1].Emotion);
             prevSelectedValue1 = selectedvalue1;
-            int ballAnimation1 = Random.Range(0, 3);
+            int ballAnimation1 = Random.Range(0, _routesLeft.Count);
             randomBallOrder1.Add(ballAnimation1);
 
             do
@@ -73,7 +75,7 @@ public class BattleStoryController : MonoBehaviour
             } while (selectedvalue2.Equals(prevSelectedValue2));
             randomClipOrder2.Add(validatedList[selectedvalue2].Emotion);
             prevSelectedValue2 = selectedvalue2;
-            int ballAnimation2 = Random.Range(0, 3);
+            int ballAnimation2 = Random.Range(0, _routesRight.Count);
             randomBallOrder2.Add(ballAnimation2);
         }
         yield return new WaitForSeconds(1f);
