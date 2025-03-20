@@ -104,13 +104,13 @@ public class BattleStoryController : MonoBehaviour
             switch (randomBallOrder1[i])
             {
                 case 0:
-                    StartCoroutine(BallAnimationLeft1(ball, done => ballDone = done));
+                    StartCoroutine(_routesLeft[randomBallOrder1[i]].TraverseRoute(ball, done => ballDone = done));
                     break;
                 case 1:
-                    StartCoroutine(BallAnimationLeft2(ball, done => ballDone = done));
+                    StartCoroutine(_routesLeft[randomBallOrder1[i]].TraverseRoute(ball, done => ballDone = done));
                     break;
                 case 2:
-                    StartCoroutine(BallAnimationLeft3(ball, done => ballDone = done));
+                    StartCoroutine(_routesLeft[randomBallOrder1[i]].TraverseRoute(ball, done => ballDone = done));
                     break;
                 default:
                     ballDone = true;
@@ -130,13 +130,13 @@ public class BattleStoryController : MonoBehaviour
             switch (randomBallOrder2[i])
             {
                 case 0:
-                    StartCoroutine(BallAnimationRight1(ball2, done => ballDone = done));
+                    StartCoroutine(_routesRight[randomBallOrder2[i]].TraverseRoute(ball2, done => ballDone = done));
                     break;
                 case 1:
-                    StartCoroutine(BallAnimationRight2(ball2, done => ballDone = done));
+                    StartCoroutine(_routesRight[randomBallOrder2[i]].TraverseRoute(ball2, done => ballDone = done));
                     break;
                 case 2:
-                    StartCoroutine(BallAnimationRight3(ball2, done => ballDone = done));
+                    StartCoroutine(_routesRight[randomBallOrder2[i]].TraverseRoute(ball2, done => ballDone = done));
                     break;
                 default:
                     ballDone = true;
@@ -423,10 +423,65 @@ public class Route
     [SerializeField]
     private Transform _endPoint;
 
+    private float _baseSpeed = 400f;
+
     public List<RouteSection> RoutesSection { get => _routesSection;}
     public Transform StartPoint { get => _startPoint; }
     public Transform EndPoint { get => _endPoint;}
     public float DefaultSpeed { get => _defaultSpeed;}
+
+    public IEnumerator TraverseRoute(GameObject ball, Action<bool> callback)
+    {
+        float baseSpeed = GetScaledSpeed();
+        float speed = baseSpeed;
+        float distance;
+        float duration;
+        float currentTime;
+
+        Vector2 startPosition = _startPoint.position;
+
+        foreach (RouteSection route in _routesSection)
+        {
+            speed = baseSpeed*route.Speed;
+            Vector2 nextPoint = route.PathSectionEndPoint.position;
+            distance = Mathf.Abs(Vector2.Distance(startPosition, nextPoint));
+            duration = distance / speed;
+            currentTime = 0;
+            while (Mathf.Abs(Vector2.Distance(ball.transform.position, nextPoint)) > Mathf.Epsilon && currentTime / duration < 1)
+            {
+                yield return null;
+                currentTime += Time.deltaTime;
+                Vector2 pos = Vector2.Lerp(startPosition, nextPoint, currentTime / duration);
+                float yPos = startPosition.y + (nextPoint.y - startPosition.y) * route.PathSectionCurve.Evaluate(Mathf.Clamp(currentTime / duration,0,1));
+                ball.transform.position = new(pos.x, yPos);
+            }
+            startPosition = nextPoint;
+        }
+        Debug.LogWarning("...");
+        if (Mathf.Abs(Vector2.Distance(_endPoint.position, startPosition)) <= Mathf.Epsilon)
+        {
+            callback(true);
+            yield break;
+        }
+        Debug.LogWarning("..");
+        speed = baseSpeed * _defaultSpeed;
+        distance = Mathf.Abs(Vector2.Distance(startPosition, _endPoint.position));
+        duration = distance / speed;
+        currentTime = 0;
+        while (Mathf.Abs(Vector2.Distance(ball.transform.position, _endPoint.position)) > Mathf.Epsilon && currentTime / duration < 1)
+        {
+            yield return null;
+            currentTime += Time.deltaTime;
+            Vector2 pos = Vector2.Lerp(startPosition, _endPoint.position, currentTime / duration);
+            ball.transform.position = pos;
+        }
+        callback(true);
+    }
+
+    private float GetScaledSpeed()
+    {
+        return Mathf.Abs(Vector2.Distance(_endPoint.position, _startPoint.position))/10;
+    }
 }
 
 [Serializable]
