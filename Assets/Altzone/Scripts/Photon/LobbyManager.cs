@@ -180,6 +180,7 @@ namespace Altzone.Scripts.Lobby
             this.Subscribe<StartRoomEvent>(OnStartRoomEvent);
             this.Subscribe<StartPlayingEvent>(OnStartPlayingEvent);
             this.Subscribe<StartRaidTestEvent>(OnStartRaidTestEvent);
+            this.Subscribe<StartMatchmakingEvent>(OnStartMatchmakingEvent);
             StartCoroutine(Service());
         }
 
@@ -322,6 +323,11 @@ namespace Altzone.Scripts.Lobby
         {
             Debug.Log($"onEvent {data}");
             StartCoroutine(StartTheRaidTestRoom());
+        }
+
+        private void OnStartMatchmakingEvent(StartMatchmakingEvent data)
+        {
+            Debug.Log($"onEvent {data}");
         }
 
         private IEnumerator StartTheGameplay(bool isCloseRoom, string blueTeamName, string redTeamName)
@@ -736,6 +742,10 @@ namespace Altzone.Scripts.Lobby
         }
 
         public class StartRaidTestEvent
+        {
+        }
+
+        public class StartMatchmakingEvent
         {
         }
     }
