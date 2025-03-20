@@ -29,6 +29,11 @@ public class BattleStartHandler : MonoBehaviour
     {
         StartCoroutine(TimerStart(startTime));
     }
+    void OnDestroy()
+    {
+        LobbyManager.OnStartTimeSet -= StartTimer;
+    }
+
     private IEnumerator TimerStart(long startTime)
     {
         float timeleft = startTime/1000f;
