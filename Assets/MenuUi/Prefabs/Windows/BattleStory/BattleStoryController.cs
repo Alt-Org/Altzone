@@ -24,20 +24,6 @@ public class BattleStoryController : MonoBehaviour
     private List<Route> _routesLeft;
     [SerializeField]
     private List<Route> _routesRight;
-    [SerializeField]
-    private Transform _path1Position1;
-    [SerializeField]
-    private AnimationCurve _path1Curve;
-    [SerializeField]
-    private Transform _path2LeftPosition1;
-    [SerializeField]
-    private Transform _path2LeftPosition2;
-    [SerializeField]
-    private Transform _path2RightPosition1;
-    [SerializeField]
-    private Transform _path2RightPosition2;
-    [SerializeField]
-    private Transform _path3Position1;
 
     [Header("Ball Emotion Sprites"), SerializeField]
     private List<EmotionObject> _emotionList;
