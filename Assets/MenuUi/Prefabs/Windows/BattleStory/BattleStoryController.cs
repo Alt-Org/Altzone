@@ -236,13 +236,11 @@ public class Route
             }
             startPosition = nextPoint;
         }
-        Debug.LogWarning("...");
         if (Mathf.Abs(Vector2.Distance(_endPoint.position, startPosition)) <= Mathf.Epsilon)
         {
             callback(true);
             yield break;
         }
-        Debug.LogWarning("..");
         speed = baseSpeed * _defaultSpeed;
         distance = Mathf.Abs(Vector2.Distance(startPosition, _endPoint.position));
         duration = distance / speed;
