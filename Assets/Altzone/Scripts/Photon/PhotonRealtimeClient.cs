@@ -667,6 +667,7 @@ public static class PhotonRealtimeClient
             Plugins = new string[] { "QuantumPlugin" },
             PlayerTtl = ServerSettings.PlayerTtlInSeconds * 1000,
             EmptyRoomTtl = ServerSettings.EmptyRoomTtlInSeconds * 1000,
+            PublishUserId = true,
             CustomRoomProperties = customRoomProperties,
             CustomRoomPropertiesForLobby = propertiesShowingToLobby.ToArray(),
         };

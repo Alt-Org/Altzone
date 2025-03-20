@@ -545,10 +545,9 @@ namespace Altzone.Scripts.Lobby
 
             // Initializing hash tables for setting the previous position empty
             string previousPositionKey = PhotonBattleRoom.GetPositionKey(curValue);
-            string playerID = player.GetCustomProperty<string>(PhotonBattleRoom.PlayerIDKey);
 
             var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, "" } });
-            var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, playerID } }); // Expected to have the player's id in the previous position
+            var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, player.UserId } }); // Expected to have the player's id in the previous position
 
             // Setting previous position empty
             PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue);
@@ -556,7 +555,7 @@ namespace Altzone.Scripts.Lobby
             // Initializing hash tables for setting the new position as taken
             string newPositionKey = PhotonBattleRoom.GetPositionKey(playerPosition);
 
-            var newPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, playerID } });
+            var newPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, player.UserId } });
             expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, "" } }); // Expecting the new position to be empty
 
             // Setting new position as taken
@@ -614,10 +613,9 @@ namespace Altzone.Scripts.Lobby
             // Clearing the player position in the room
             int playerPosition = otherPlayer.GetCustomProperty<int>(PlayerPositionKey);
             string positionKey = PhotonBattleRoom.GetPositionKey(playerPosition);
-            string playerID = otherPlayer.GetCustomProperty<string>(PhotonBattleRoom.PlayerIDKey);
 
             var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { positionKey, "" } });
-            var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { positionKey, playerID } });
+            var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { positionKey, otherPlayer.UserId } });
 
             PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue);
 

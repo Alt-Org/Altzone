@@ -20,7 +20,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private const string PlayerPositionKey = PhotonBattleRoom.PlayerPositionKey;
         private const string PlayerCharactersKey = PhotonLobbyRoom.PlayerPrefabIdsKey;
         private const string PlayerStatsKey = PhotonBattleRoom.PlayerStatsKey;
-        private const string PlayerIDKey = PhotonBattleRoom.PlayerIDKey;
 
         private const int PlayerPosition1 = PhotonBattleRoom.PlayerPosition1;
         private const int PlayerPosition2 = PhotonBattleRoom.PlayerPosition2;
@@ -118,20 +117,21 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
             var room = PhotonRealtimeClient.LobbyCurrentRoom;
             var player = PhotonRealtimeClient.LocalLobbyPlayer;
+
+            // Checking if player is already in the room and if so only update status and return (can happen if battle popup is minimized while in room)
+            string positionValue1 = room.GetCustomProperty(PlayerPositionKey1, "");
+            string positionValue2 = room.GetCustomProperty(PlayerPositionKey2, "");
+            string positionValue3 = room.GetCustomProperty(PlayerPositionKey3, "");
+            string positionValue4 = room.GetCustomProperty(PlayerPositionKey4, "");
+
+            if (player.UserId == positionValue1 || player.UserId == positionValue2 || player.UserId == positionValue3 || player.UserId == positionValue3)
+            {
+                UpdateStatus();
+                yield break;
+            }
+
             StartCoroutine(GetPlayerData(playerData =>
             {
-                // Checking if player is already in the room and if so only update status and return (can happen if battle popup is minimized while in room)
-                string positionValue1 = room.GetCustomProperty(PlayerPositionKey1, "");
-                string positionValue2 = room.GetCustomProperty(PlayerPositionKey2, "");
-                string positionValue3 = room.GetCustomProperty(PlayerPositionKey3, "");
-                string positionValue4 = room.GetCustomProperty(PlayerPositionKey4, "");
-
-                if (playerData.Id == positionValue1 || playerData.Id == positionValue2 || playerData.Id == positionValue3 || playerData.Id == positionValue3)
-                {
-                    UpdateStatus();
-                    return;
-                }
-
                 // Setting photon nickname from playerdata name
                 PhotonRealtimeClient.NickName = playerData.Name;
 
@@ -148,19 +148,19 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 switch (playerPos)
                 {
                     case PlayerPosition1:
-                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey1, playerData.Id } });
+                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey1, player.UserId } });
                         expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey1, "" } });
                         break;
                     case PlayerPosition2:
-                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey2, playerData.Id } });
+                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey2, player.UserId } });
                         expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey2, "" } });
                         break;
                     case PlayerPosition3:
-                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey3, playerData.Id } });
+                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey3, player.UserId } });
                         expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey3, "" } });
                         break;
                     case PlayerPosition4:
-                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey4, playerData.Id } });
+                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey4, player.UserId } });
                         expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey4, "" } });
                         break;
                 }
@@ -177,7 +177,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     { PlayerCharactersKey, characterIds },
                     { PlayerStatsKey, characterStats },
                     { "Role", (int)currentRole },
-                    { PlayerIDKey, playerData.Id }
                 }));
 
                 // Setting custom characters for quantum
