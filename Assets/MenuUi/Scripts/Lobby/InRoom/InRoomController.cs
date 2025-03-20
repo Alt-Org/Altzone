@@ -20,6 +20,13 @@ namespace MenuUi.Scripts.Lobby.InRoom
         [SerializeField] private Button _startGameButton;
         [SerializeField] private Button _backButton;
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
+        [SerializeField] private TMP_Text _searchingText;
+
+        private void OnEnable()
+        {
+            if (_searchingText != null && _searchingText.gameObject.activeSelf) _searchingText.gameObject.SetActive(false);
+            if (!_startGameButton.gameObject.activeSelf) _startGameButton.gameObject.SetActive(true);
+        }
 
         private void Start()
         {
@@ -60,6 +67,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 case GameType.Clan2v2:
                     if (PhotonLobbyRoom.CountRealPlayers() == PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers)
                     {
+                        _searchingText.gameObject.SetActive(true);
+                        _startGameButton.gameObject.SetActive(false);
                         this.Publish(new LobbyManager.StartMatchmakingEvent());
                     }
                     else
