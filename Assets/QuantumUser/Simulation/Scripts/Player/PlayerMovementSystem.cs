@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Scripting;
 
 using Photon.Deterministic;
+using Quantum.Collections;
 
 namespace Quantum
 {
@@ -63,11 +64,13 @@ namespace Quantum
 
         private static void MoveHitBox(Frame f, PlayerData* playerData, Transform2D* transform)
         {
+            if (!f.TryResolveList(playerData->HitboxListAll, out QList<PlayerHitBoxLink> hitboxListAll)) return;
+
             FPVector2 position = transform->Position;
             FP rotation = transform->Rotation;
 
             Transform2D* hitBoxTransform;
-            foreach (PlayerHitBoxLink hitBoxLink in f.ResolveList(playerData->HitboxListAll))
+            foreach (PlayerHitBoxLink hitBoxLink in hitboxListAll)
             {
                 hitBoxTransform = f.Unsafe.GetPointer<Transform2D>(hitBoxLink.Entity);
 
@@ -78,11 +81,13 @@ namespace Quantum
 
         private static void TeleportHitBox(Frame f, PlayerData* playerData, Transform2D* transform)
         {
+            if (!f.TryResolveList(playerData->HitboxListAll, out QList<PlayerHitBoxLink> hitboxListAll)) return;
+
             FPVector2 position = transform->Position;
             FP rotation = transform->Rotation;
 
             Transform2D* hitBoxTransform;
-            foreach (PlayerHitBoxLink hitBoxLink in f.ResolveList(playerData->HitboxListAll))
+            foreach (PlayerHitBoxLink hitBoxLink in hitboxListAll)
             {
                 hitBoxTransform = f.Unsafe.GetPointer<Transform2D>(hitBoxLink.Entity);
 
