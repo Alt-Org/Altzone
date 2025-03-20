@@ -101,21 +101,16 @@ public class BattleStoryController : MonoBehaviour
             
             ball.GetComponent<RectTransform>().rotation = Quaternion.Euler(new(0, 180, 0));
             bool ballDone = false;
-            switch (randomBallOrder1[i])
+
+            if (_routesLeft.Count <= randomBallOrder1[i] || 0 > randomBallOrder1[i])
             {
-                case 0:
-                    StartCoroutine(_routesLeft[randomBallOrder1[i]].TraverseRoute(ball, done => ballDone = done));
-                    break;
-                case 1:
-                    StartCoroutine(_routesLeft[randomBallOrder1[i]].TraverseRoute(ball, done => ballDone = done));
-                    break;
-                case 2:
-                    StartCoroutine(_routesLeft[randomBallOrder1[i]].TraverseRoute(ball, done => ballDone = done));
-                    break;
-                default:
-                    ballDone = true;
-                    break;
+                ballDone = true;
             }
+            else
+            {
+                StartCoroutine(_routesLeft[randomBallOrder1[i]].TraverseRoute(ball, done => ballDone = done));
+            }
+
             yield return new WaitUntil(() => ballDone is true);
             Destroy(ball);
 
@@ -127,21 +122,16 @@ public class BattleStoryController : MonoBehaviour
             ball2.GetComponent<Image>().sprite = GetEmotionData(randomClipOrder2[i]).BallSprite;
 
             ballDone = false;
-            switch (randomBallOrder2[i])
+
+            if (_routesRight.Count <= randomBallOrder2[i] || 0 > randomBallOrder2[i])
             {
-                case 0:
-                    StartCoroutine(_routesRight[randomBallOrder2[i]].TraverseRoute(ball2, done => ballDone = done));
-                    break;
-                case 1:
-                    StartCoroutine(_routesRight[randomBallOrder2[i]].TraverseRoute(ball2, done => ballDone = done));
-                    break;
-                case 2:
-                    StartCoroutine(_routesRight[randomBallOrder2[i]].TraverseRoute(ball2, done => ballDone = done));
-                    break;
-                default:
-                    ballDone = true;
-                    break;
+                ballDone = true;
             }
+            else
+            {
+                StartCoroutine(_routesRight[randomBallOrder2[i]].TraverseRoute(ball2, done => ballDone = done));
+            }
+
             yield return new WaitUntil(() => ballDone is true);
             Destroy(ball2);
             yield return new WaitForSeconds(0.5f);
