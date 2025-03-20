@@ -21,6 +21,10 @@ public class BattleStoryController : MonoBehaviour
     private Transform _endStartPositionRight;
 
     [Header("Paths"), SerializeField]
+    private List<Route> _routesLeft;
+    [SerializeField]
+    private List<Route> _routesRight;
+    [SerializeField]
     private Transform _path1Position1;
     [SerializeField]
     private AnimationCurve _path1Curve;
@@ -405,4 +409,37 @@ public class EmotionObject
     public Sprite BallSprite { get => _ballSprite;}
     public AnimationClip Character1Animation { get => _character1Animation;}
     public AnimationClip Character2Animation { get => _character2Animation;}
+}
+
+[Serializable]
+public class Route
+{
+    [SerializeField]
+    private Transform _startPoint;
+    [SerializeField]
+    private float _defaultSpeed = 10f;
+    [SerializeField]
+    private List<RouteSection> _routesSection;
+    [SerializeField]
+    private Transform _endPoint;
+
+    public List<RouteSection> RoutesSection { get => _routesSection;}
+    public Transform StartPoint { get => _startPoint; }
+    public Transform EndPoint { get => _endPoint;}
+    public float DefaultSpeed { get => _defaultSpeed;}
+}
+
+[Serializable]
+public class RouteSection
+{
+    [SerializeField]
+    private Transform _pathSectionEndPoint;
+    [SerializeField]
+    private AnimationCurve _pathSectionCurve;
+    [SerializeField]
+    private float _speed;
+
+    public Transform PathSectionEndPoint { get => _pathSectionEndPoint; }
+    public AnimationCurve PathSectionCurve { get => _pathSectionCurve; }
+    public float Speed { get => _speed; }
 }
