@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ReferenceSheets;
 using MenuUI.Scripts.SoulHome;
@@ -97,6 +98,41 @@ namespace MenuUI.Scripts.SoulHome
                 }
             }
             _info = newSheet;
+        }
+
+        public bool AddFurniture(SoulhomeFurnitureSetInfo setInfo)
+        {
+            if (Application.isPlaying)
+            {
+                Debug.LogError("Don't try to add furniture while the game is running.");
+                return false;
+            }
+
+            SoulhomeFurnitureSetInfo localSet = _info.FirstOrDefault(x => x.SetName == setInfo.SetName);
+            if (localSet == null)
+            {
+                Debug.LogError("Furniture not found in SoulHomeReference");
+                return false;
+            }
+            else
+            {
+                bool added = false;
+                foreach (SoulhomeFurnitureInfoObject furnitureInfo in setInfo.list)
+                {
+                    SoulhomeFurnitureInfoObject localFurniture = localSet.list.FirstOrDefault(x => x.Name == furnitureInfo.Name);
+                    if (localFurniture == null)
+                    {
+                        Debug.LogError("Furniture not found in SoulHomeReference");
+                    }
+                    else
+                    {
+                        localFurniture.FurnitureHandling = furnitureInfo.FurnitureHandling;
+                        localFurniture.TrayFurniture = furnitureInfo.TrayFurniture;
+                        added = true;
+                    }
+                }
+                return added;
+            }
         }
     }
 
