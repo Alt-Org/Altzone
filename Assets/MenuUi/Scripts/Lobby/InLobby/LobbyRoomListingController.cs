@@ -151,6 +151,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private void UpdateStatus()
         {
+            LobbyManager.Instance.CurrentRooms = _photonRoomList.CurrentRooms;
             var rooms = _photonRoomList.CurrentRooms.ToList();
             rooms.Sort((a, b) =>
             {

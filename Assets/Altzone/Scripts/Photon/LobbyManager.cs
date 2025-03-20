@@ -21,6 +21,7 @@ using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby.Wrappers;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.AzDebug;
+using System.Collections.ObjectModel;
 
 namespace Altzone.Scripts.Lobby
 {
@@ -77,6 +78,7 @@ namespace Altzone.Scripts.Lobby
         private QuantumRunner _runner = null;
         private Coroutine _requestPositionChangeHolder = null;
 
+        [HideInInspector] public ReadOnlyCollection<LobbyRoomInfo> CurrentRooms = null; // Set from LobbyRoomListingController.cs through Instance variable maybe this could be refactored?
         public static LobbyManager Instance { get; private set; }
 
         #region Delegates & Events
@@ -328,6 +330,50 @@ namespace Altzone.Scripts.Lobby
         private void OnStartMatchmakingEvent(StartMatchmakingEvent data)
         {
             Debug.Log($"onEvent {data}");
+
+            if (!PhotonRealtimeClient.InRoom) return;
+
+            // Saving other player's userids to enter the new game room together with master client
+            List<string> expectedUsers = new();
+            foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
+            {
+                if (player.Value.UserId != PhotonRealtimeClient.LocalPlayer.UserId) expectedUsers.Add(player.Value.UserId);
+            }
+
+            // Starting matchmaking coroutine
+            StartCoroutine(StartMatchmaking(data.SelectedGameType, expectedUsers.ToArray()));
+        }
+
+        private IEnumerator StartMatchmaking(GameType gameType, string[] expectedUsers)
+        {
+            // Nulling room list and leaving room so that client can get room list
+            CurrentRooms = null;
+            PhotonRealtimeClient.LeaveRoom();
+
+            // Waiting until in lobby and that current room list has rooms
+            yield return new WaitUntil(() => PhotonRealtimeClient.InLobby && CurrentRooms != null); 
+
+            // Searching for suitable room if there is not one creating new one
+            foreach (LobbyRoomInfo room in CurrentRooms)
+            {
+                switch (gameType)
+                {
+                    case GameType.Clan2v2:
+
+                        break;
+                }
+            }
+
+            // Checking if room is full and if not waiting until room is full
+            if (PhotonRealtimeClient.CurrentRoom.PlayerCount < PhotonRealtimeClient.CurrentRoom.MaxPlayers)
+            {
+                yield return new WaitUntil(() => PhotonRealtimeClient.CurrentRoom.PlayerCount == PhotonRealtimeClient.CurrentRoom.MaxPlayers);
+            }
+
+            if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+            {
+                StartCoroutine(StartTheGameplay(_isCloseRoomOnGameStart, _blueTeamName, _redTeamName));
+            }
         }
 
         private IEnumerator StartTheGameplay(bool isCloseRoom, string blueTeamName, string redTeamName)
@@ -745,6 +791,17 @@ namespace Altzone.Scripts.Lobby
 
         public class StartMatchmakingEvent
         {
+            public readonly GameType SelectedGameType;
+
+            public StartMatchmakingEvent(GameType gameType)
+            {
+                SelectedGameType = gameType;
+            }
+
+            public override string ToString()
+            {
+                return $"{nameof(SelectedGameType)}: {SelectedGameType}";
+            }
         }
     }
 }
