@@ -350,8 +350,12 @@ namespace Altzone.Scripts.Lobby
                 if (player.Value.UserId != PhotonRealtimeClient.LocalPlayer.UserId) expectedUsers.Add(player.Value.UserId);
             }
 
-            // Saving custom properties from the room to the variable
+            // Saving custom properties from the room to the variables
             string clanName = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.ClanNameKey, "");
+            string positionValue1 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, "");
+            string positionValue2 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, "");
+            string positionValue3 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, "");
+            string positionValue4 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, "");
 
             // Sending other players in the room the room change request
             PhotonRealtimeClient.Client.OpRaiseEvent(
@@ -416,12 +420,20 @@ namespace Altzone.Scripts.Lobby
                 {
                     case GameType.Clan2v2:
                         PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.ClanOpponentNameKey, clanName);
+
+                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, positionValue1);
+                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, positionValue2);
                         break;
                 }
             }
             else if (!roomFound)
             {
                 PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.IsMatchmakingKey, true);
+
+                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, positionValue1);
+                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, positionValue2);
+                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, positionValue3);
+                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, positionValue4);
             }
 
             // Checking if room is full and if not waiting until room is full
