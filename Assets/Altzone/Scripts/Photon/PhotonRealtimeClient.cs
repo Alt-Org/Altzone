@@ -625,7 +625,7 @@ public static class PhotonRealtimeClient
             { PhotonBattleRoom.PlayerPositionKey2, "" },
         };
 
-        List<string> propertiesShowingToLobby = new() { PhotonBattleRoom.GameTypeKey };
+        List<string> propertiesShowingToLobby = new() { PhotonBattleRoom.GameTypeKey, PhotonBattleRoom.IsMatchmakingKey };
 
         int maxPlayers;
 
