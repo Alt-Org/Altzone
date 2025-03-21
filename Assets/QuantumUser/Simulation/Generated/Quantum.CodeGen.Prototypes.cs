@@ -146,13 +146,13 @@ namespace Quantum.Prototypes {
     public FP RotationOffset;
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.PlayerHitBoxLinkPrototype[] HitboxListAll = {};
+    public Quantum.Prototypes.PlayerHitboxLinkPrototype[] HitboxListAll = {};
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.PlayerHitBoxLinkPrototype[] HitboxListShield = {};
+    public Quantum.Prototypes.PlayerHitboxLinkPrototype[] HitboxListShield = {};
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.PlayerHitBoxLinkPrototype[] HitboxListCharacter = {};
+    public Quantum.Prototypes.PlayerHitboxLinkPrototype[] HitboxListCharacter = {};
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.PlayerData component = default;
         Materialize((Frame)f, ref component, in context);
@@ -177,7 +177,7 @@ namespace Quantum.Prototypes {
         } else {
           var list = frame.AllocateList(out result.HitboxListAll, this.HitboxListAll.Length);
           for (int i = 0; i < this.HitboxListAll.Length; ++i) {
-            Quantum.PlayerHitBoxLink tmp = default;
+            Quantum.PlayerHitboxLink tmp = default;
             this.HitboxListAll[i].Materialize(frame, ref tmp, in context);
             list.Add(tmp);
           }
@@ -187,7 +187,7 @@ namespace Quantum.Prototypes {
         } else {
           var list = frame.AllocateList(out result.HitboxListShield, this.HitboxListShield.Length);
           for (int i = 0; i < this.HitboxListShield.Length; ++i) {
-            Quantum.PlayerHitBoxLink tmp = default;
+            Quantum.PlayerHitboxLink tmp = default;
             this.HitboxListShield[i].Materialize(frame, ref tmp, in context);
             list.Add(tmp);
           }
@@ -197,7 +197,7 @@ namespace Quantum.Prototypes {
         } else {
           var list = frame.AllocateList(out result.HitboxListCharacter, this.HitboxListCharacter.Length);
           for (int i = 0; i < this.HitboxListCharacter.Length; ++i) {
-            Quantum.PlayerHitBoxLink tmp = default;
+            Quantum.PlayerHitboxLink tmp = default;
             this.HitboxListCharacter[i].Materialize(frame, ref tmp, in context);
             list.Add(tmp);
           }
@@ -209,10 +209,10 @@ namespace Quantum.Prototypes {
   public unsafe partial class PlayerDataTemplatePrototype : ComponentPrototype<Quantum.PlayerDataTemplate> {
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.PlayerHitBoxTemplatePrototype[] HitboxListShield = {};
+    public Quantum.Prototypes.PlayerHitboxTemplatePrototype[] HitboxListShield = {};
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.PlayerHitBoxTemplatePrototype[] HitboxListCharacter = {};
+    public Quantum.Prototypes.PlayerHitboxTemplatePrototype[] HitboxListCharacter = {};
     partial void MaterializeUser(Frame frame, ref Quantum.PlayerDataTemplate result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.PlayerDataTemplate component = default;
@@ -225,7 +225,7 @@ namespace Quantum.Prototypes {
         } else {
           var list = frame.AllocateList(out result.HitboxListShield, this.HitboxListShield.Length);
           for (int i = 0; i < this.HitboxListShield.Length; ++i) {
-            Quantum.PlayerHitBoxTemplate tmp = default;
+            Quantum.PlayerHitboxTemplate tmp = default;
             this.HitboxListShield[i].Materialize(frame, ref tmp, in context);
             list.Add(tmp);
           }
@@ -235,7 +235,7 @@ namespace Quantum.Prototypes {
         } else {
           var list = frame.AllocateList(out result.HitboxListCharacter, this.HitboxListCharacter.Length);
           for (int i = 0; i < this.HitboxListCharacter.Length; ++i) {
-            Quantum.PlayerHitBoxTemplate tmp = default;
+            Quantum.PlayerHitboxTemplate tmp = default;
             this.HitboxListCharacter[i].Materialize(frame, ref tmp, in context);
             list.Add(tmp);
           }
@@ -244,44 +244,44 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerHitBox))]
-  public unsafe class PlayerHitBoxPrototype : ComponentPrototype<Quantum.PlayerHitBox> {
+  [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerHitbox))]
+  public unsafe class PlayerHitboxPrototype : ComponentPrototype<Quantum.PlayerHitbox> {
     public MapEntityId PlayerEntity;
-    public Quantum.QEnum32<PlayerHitboxType> HitBoxType;
+    public Quantum.QEnum32<PlayerHitboxType> HitboxType;
     public Quantum.QEnum32<PlayerCollisionType> CollisionType;
     public FPVector2 Normal;
     public FP CollisionMinOffset;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.PlayerHitBox component = default;
+        Quantum.PlayerHitbox component = default;
         Materialize((Frame)f, ref component, in context);
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
-    public void Materialize(Frame frame, ref Quantum.PlayerHitBox result, in PrototypeMaterializationContext context = default) {
+    public void Materialize(Frame frame, ref Quantum.PlayerHitbox result, in PrototypeMaterializationContext context = default) {
         PrototypeValidator.FindMapEntity(this.PlayerEntity, in context, out result.PlayerEntity);
-        result.HitBoxType = this.HitBoxType;
+        result.HitboxType = this.HitboxType;
         result.CollisionType = this.CollisionType;
         result.Normal = this.Normal;
         result.CollisionMinOffset = this.CollisionMinOffset;
     }
   }
   [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerHitBoxLink))]
-  public unsafe class PlayerHitBoxLinkPrototype : StructPrototype {
+  [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerHitboxLink))]
+  public unsafe class PlayerHitboxLinkPrototype : StructPrototype {
     public MapEntityId Entity;
     public FPVector2 Position;
-    public void Materialize(Frame frame, ref Quantum.PlayerHitBoxLink result, in PrototypeMaterializationContext context = default) {
+    public void Materialize(Frame frame, ref Quantum.PlayerHitboxLink result, in PrototypeMaterializationContext context = default) {
         PrototypeValidator.FindMapEntity(this.Entity, in context, out result.Entity);
         result.Position = this.Position;
     }
   }
   [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerHitBoxTemplate))]
-  public unsafe partial class PlayerHitBoxTemplatePrototype : StructPrototype {
+  [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerHitboxTemplate))]
+  public unsafe partial class PlayerHitboxTemplatePrototype : StructPrototype {
     public IntVector2 Position;
     public Quantum.QEnum32<PlayerCollisionType> CollisionType;
     public FP NormalAngle;
-    partial void MaterializeUser(Frame frame, ref Quantum.PlayerHitBoxTemplate result, in PrototypeMaterializationContext context);
-    public void Materialize(Frame frame, ref Quantum.PlayerHitBoxTemplate result, in PrototypeMaterializationContext context = default) {
+    partial void MaterializeUser(Frame frame, ref Quantum.PlayerHitboxTemplate result, in PrototypeMaterializationContext context);
+    public void Materialize(Frame frame, ref Quantum.PlayerHitboxTemplate result, in PrototypeMaterializationContext context = default) {
         result.Position = this.Position;
         result.CollisionType = this.CollisionType;
         result.NormalAngle = this.NormalAngle;

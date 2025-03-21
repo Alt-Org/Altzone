@@ -529,7 +529,7 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
-  public unsafe partial struct PlayerHitBoxLink {
+  public unsafe partial struct PlayerHitboxLink {
     public const Int32 SIZE = 24;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
@@ -538,21 +538,21 @@ namespace Quantum {
     public FPVector2 Position;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 20173;
+        var hash = 5387;
         hash = hash * 31 + Entity.GetHashCode();
         hash = hash * 31 + Position.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
-        var p = (PlayerHitBoxLink*)ptr;
+        var p = (PlayerHitboxLink*)ptr;
         EntityRef.Serialize(&p->Entity, serializer);
         FPVector2.Serialize(&p->Position, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
   [Serializable()]
-  public unsafe partial struct PlayerHitBoxTemplate {
+  public unsafe partial struct PlayerHitboxTemplate {
     public const Int32 SIZE = 24;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(16)]
@@ -563,7 +563,7 @@ namespace Quantum {
     public FP NormalAngle;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 131;
+        var hash = 919;
         hash = hash * 31 + Position.GetHashCode();
         hash = hash * 31 + (Int32)CollisionType;
         hash = hash * 31 + NormalAngle.GetHashCode();
@@ -571,7 +571,7 @@ namespace Quantum {
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
-        var p = (PlayerHitBoxTemplate*)ptr;
+        var p = (PlayerHitboxTemplate*)ptr;
         serializer.Stream.Serialize((Int32*)&p->CollisionType);
         FP.Serialize(&p->NormalAngle, serializer);
         IntVector2.Serialize(&p->Position, serializer);
@@ -743,13 +743,13 @@ namespace Quantum {
     public FP RotationOffset;
     [FieldOffset(20)]
     [FreeOnComponentRemoved()]
-    public QListPtr<PlayerHitBoxLink> HitboxListAll;
+    public QListPtr<PlayerHitboxLink> HitboxListAll;
     [FieldOffset(28)]
     [FreeOnComponentRemoved()]
-    public QListPtr<PlayerHitBoxLink> HitboxListShield;
+    public QListPtr<PlayerHitboxLink> HitboxListShield;
     [FieldOffset(24)]
     [FreeOnComponentRemoved()]
-    public QListPtr<PlayerHitBoxLink> HitboxListCharacter;
+    public QListPtr<PlayerHitboxLink> HitboxListCharacter;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10271;
@@ -788,9 +788,9 @@ namespace Quantum {
         serializer.Stream.Serialize(&p->CharacterClass);
         serializer.Stream.Serialize(&p->CharacterId);
         PlayerRef.Serialize(&p->PlayerRef, serializer);
-        QList.Serialize(&p->HitboxListAll, serializer, Statics.SerializePlayerHitBoxLink);
-        QList.Serialize(&p->HitboxListCharacter, serializer, Statics.SerializePlayerHitBoxLink);
-        QList.Serialize(&p->HitboxListShield, serializer, Statics.SerializePlayerHitBoxLink);
+        QList.Serialize(&p->HitboxListAll, serializer, Statics.SerializePlayerHitboxLink);
+        QList.Serialize(&p->HitboxListCharacter, serializer, Statics.SerializePlayerHitboxLink);
+        QList.Serialize(&p->HitboxListShield, serializer, Statics.SerializePlayerHitboxLink);
         FP.Serialize(&p->RotationBase, serializer);
         FP.Serialize(&p->RotationOffset, serializer);
         FP.Serialize(&p->StatAttack, serializer);
@@ -807,10 +807,10 @@ namespace Quantum {
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(4)]
     [FreeOnComponentRemoved()]
-    public QListPtr<PlayerHitBoxTemplate> HitboxListShield;
+    public QListPtr<PlayerHitboxTemplate> HitboxListShield;
     [FieldOffset(0)]
     [FreeOnComponentRemoved()]
-    public QListPtr<PlayerHitBoxTemplate> HitboxListCharacter;
+    public QListPtr<PlayerHitboxTemplate> HitboxListCharacter;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 181;
@@ -829,18 +829,18 @@ namespace Quantum {
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (PlayerDataTemplate*)ptr;
-        QList.Serialize(&p->HitboxListCharacter, serializer, Statics.SerializePlayerHitBoxTemplate);
-        QList.Serialize(&p->HitboxListShield, serializer, Statics.SerializePlayerHitBoxTemplate);
+        QList.Serialize(&p->HitboxListCharacter, serializer, Statics.SerializePlayerHitboxTemplate);
+        QList.Serialize(&p->HitboxListShield, serializer, Statics.SerializePlayerHitboxTemplate);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
-  public unsafe partial struct PlayerHitBox : Quantum.IComponent {
+  public unsafe partial struct PlayerHitbox : Quantum.IComponent {
     public const Int32 SIZE = 40;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(8)]
     public EntityRef PlayerEntity;
     [FieldOffset(4)]
-    public PlayerHitboxType HitBoxType;
+    public PlayerHitboxType HitboxType;
     [FieldOffset(0)]
     public PlayerCollisionType CollisionType;
     [FieldOffset(24)]
@@ -849,9 +849,9 @@ namespace Quantum {
     public FP CollisionMinOffset;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 20749;
+        var hash = 16417;
         hash = hash * 31 + PlayerEntity.GetHashCode();
-        hash = hash * 31 + (Int32)HitBoxType;
+        hash = hash * 31 + (Int32)HitboxType;
         hash = hash * 31 + (Int32)CollisionType;
         hash = hash * 31 + Normal.GetHashCode();
         hash = hash * 31 + CollisionMinOffset.GetHashCode();
@@ -859,9 +859,9 @@ namespace Quantum {
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
-        var p = (PlayerHitBox*)ptr;
+        var p = (PlayerHitbox*)ptr;
         serializer.Stream.Serialize((Int32*)&p->CollisionType);
-        serializer.Stream.Serialize((Int32*)&p->HitBoxType);
+        serializer.Stream.Serialize((Int32*)&p->HitboxType);
         EntityRef.Serialize(&p->PlayerEntity, serializer);
         FP.Serialize(&p->CollisionMinOffset, serializer);
         FPVector2.Serialize(&p->Normal, serializer);
@@ -1039,7 +1039,7 @@ namespace Quantum {
     void OnTriggerProjectileHitArenaBorder(Frame f, Projectile* projectile, EntityRef projectileEntity, ArenaBorder* arenaBorder, EntityRef arenaBorderEntity);
   }
   public unsafe partial interface ISignalOnTriggerProjectileHitPlayerHitbox : ISignal {
-    void OnTriggerProjectileHitPlayerHitbox(Frame f, Projectile* projectile, EntityRef projectileEntity, PlayerHitBox* playerHitBox, EntityRef playerEntity);
+    void OnTriggerProjectileHitPlayerHitbox(Frame f, Projectile* projectile, EntityRef projectileEntity, PlayerHitbox* playerHitbox, EntityRef playerEntity);
   }
   public static unsafe partial class Constants {
     public const Int32 PLAYER_SLOT_COUNT = 4;
@@ -1116,8 +1116,8 @@ namespace Quantum {
       BuildSignalsArrayOnComponentRemoved<Quantum.PlayerData>();
       BuildSignalsArrayOnComponentAdded<Quantum.PlayerDataTemplate>();
       BuildSignalsArrayOnComponentRemoved<Quantum.PlayerDataTemplate>();
-      BuildSignalsArrayOnComponentAdded<Quantum.PlayerHitBox>();
-      BuildSignalsArrayOnComponentRemoved<Quantum.PlayerHitBox>();
+      BuildSignalsArrayOnComponentAdded<Quantum.PlayerHitbox>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.PlayerHitbox>();
       BuildSignalsArrayOnComponentAdded<Quantum.PlayerManagerData>();
       BuildSignalsArrayOnComponentRemoved<Quantum.PlayerManagerData>();
       BuildSignalsArrayOnComponentAdded<Quantum.Projectile>();
@@ -1220,28 +1220,28 @@ namespace Quantum {
           }
         }
       }
-      public void OnTriggerProjectileHitPlayerHitbox(Projectile* projectile, EntityRef projectileEntity, PlayerHitBox* playerHitBox, EntityRef playerEntity) {
+      public void OnTriggerProjectileHitPlayerHitbox(Projectile* projectile, EntityRef projectileEntity, PlayerHitbox* playerHitbox, EntityRef playerEntity) {
         var array = _f._ISignalOnTriggerProjectileHitPlayerHitboxSystems;
         for (Int32 i = 0; i < array.Length; ++i) {
           var s = array[i];
           if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
-            s.OnTriggerProjectileHitPlayerHitbox(_f, projectile, projectileEntity, playerHitBox, playerEntity);
+            s.OnTriggerProjectileHitPlayerHitbox(_f, projectile, projectileEntity, playerHitbox, playerEntity);
           }
         }
       }
     }
   }
   public unsafe partial class Statics {
-    public static FrameSerializer.Delegate SerializePlayerHitBoxLink;
-    public static FrameSerializer.Delegate SerializePlayerHitBoxTemplate;
+    public static FrameSerializer.Delegate SerializePlayerHitboxLink;
+    public static FrameSerializer.Delegate SerializePlayerHitboxTemplate;
     public static FrameSerializer.Delegate SerializeEntityRef;
     public static FrameSerializer.Delegate SerializePlayerPlayState;
     public static FrameSerializer.Delegate SerializePlayerRef;
     public static FrameSerializer.Delegate SerializeProjectileCollisionFlags;
     public static FrameSerializer.Delegate SerializeInput;
     static partial void InitStaticDelegatesGen() {
-      SerializePlayerHitBoxLink = Quantum.PlayerHitBoxLink.Serialize;
-      SerializePlayerHitBoxTemplate = Quantum.PlayerHitBoxTemplate.Serialize;
+      SerializePlayerHitboxLink = Quantum.PlayerHitboxLink.Serialize;
+      SerializePlayerHitboxTemplate = Quantum.PlayerHitboxTemplate.Serialize;
       SerializeEntityRef = EntityRef.Serialize;
       SerializePlayerPlayState = (v, s) => {{ s.Stream.Serialize((Int32*)v); }};
       SerializePlayerRef = PlayerRef.Serialize;
@@ -1323,9 +1323,9 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.PlayerCollisionType), 4);
       typeRegistry.Register(typeof(Quantum.PlayerData), Quantum.PlayerData.SIZE);
       typeRegistry.Register(typeof(Quantum.PlayerDataTemplate), Quantum.PlayerDataTemplate.SIZE);
-      typeRegistry.Register(typeof(Quantum.PlayerHitBox), Quantum.PlayerHitBox.SIZE);
-      typeRegistry.Register(typeof(Quantum.PlayerHitBoxLink), Quantum.PlayerHitBoxLink.SIZE);
-      typeRegistry.Register(typeof(Quantum.PlayerHitBoxTemplate), Quantum.PlayerHitBoxTemplate.SIZE);
+      typeRegistry.Register(typeof(Quantum.PlayerHitbox), Quantum.PlayerHitbox.SIZE);
+      typeRegistry.Register(typeof(Quantum.PlayerHitboxLink), Quantum.PlayerHitboxLink.SIZE);
+      typeRegistry.Register(typeof(Quantum.PlayerHitboxTemplate), Quantum.PlayerHitboxTemplate.SIZE);
       typeRegistry.Register(typeof(Quantum.PlayerHitboxType), 4);
       typeRegistry.Register(typeof(Quantum.PlayerManagerData), Quantum.PlayerManagerData.SIZE);
       typeRegistry.Register(typeof(Quantum.PlayerPlayState), 4);
@@ -1358,7 +1358,7 @@ namespace Quantum {
         .Add<Quantum.Goal>(Quantum.Goal.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.PlayerData>(Quantum.PlayerData.Serialize, null, Quantum.PlayerData.OnRemoved, ComponentFlags.None)
         .Add<Quantum.PlayerDataTemplate>(Quantum.PlayerDataTemplate.Serialize, null, Quantum.PlayerDataTemplate.OnRemoved, ComponentFlags.None)
-        .Add<Quantum.PlayerHitBox>(Quantum.PlayerHitBox.Serialize, null, null, ComponentFlags.None)
+        .Add<Quantum.PlayerHitbox>(Quantum.PlayerHitbox.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.PlayerManagerData>(Quantum.PlayerManagerData.Serialize, null, null, ComponentFlags.Singleton)
         .Add<Quantum.Projectile>(Quantum.Projectile.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.ProjectileSpawner>(Quantum.ProjectileSpawner.Serialize, null, null, ComponentFlags.None)

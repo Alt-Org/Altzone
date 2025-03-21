@@ -49,40 +49,40 @@ namespace Quantum
             {
                 //{ player temp variables
                 PlayerDataTemplate* playerDataTemplate;
-                QList<PlayerHitBoxTemplate> playerShieldHitboxTemplateList;
-                QList<PlayerHitBoxTemplate> playerCharacterHitboxTemplateList;
-                QList<PlayerHitBoxTemplate> playerHitboxSourceTemplateList;
-                int playerShieldHitboxTemplateListCount;
-                int playerCharacterHitboxTemplateListCount;
-                QList<PlayerHitBoxLink> playerHitboxTargetList;
-                FPVector2 playerSpawnPosition;
-                FP playerBaseRotation;
+                FPVector2           playerSpawnPosition;
+                FP                  playerRotationBase;
                 // player - hitBox temp variables
-                PlayerHitboxType playerHitboxType;
-                FPVector2 playerHitBoxPosition;
-                FP playerHitBoxExtents;
+                QList<PlayerHitboxTemplate> playerHitboxListShieldTemplate;
+                QList<PlayerHitboxTemplate> playerHitboxListCharacterTemplate;
+                QList<PlayerHitboxTemplate> playerHitboxListSourceTemplate;
+                int                         playerHitboxListShieldTemplateCount;
+                int                         playerHitboxListCharacterTemplateCount;
+                QList<PlayerHitboxLink>     playerHitboxListTarget;
+                PlayerHitboxType            playerHitboxType;
+                FPVector2                   playerHitboxPosition;
+                FP                          playerHitboxExtents;
                 //} player temp variables
 
                 //{ set player common temp variables (used for all characters)
 
-                playerHitBoxExtents = GridManager.GridScaleFactor * FP._0_50;
+                playerHitboxExtents = GridManager.GridScaleFactor * FP._0_50;
 
-                playerBaseRotation = teamNumber == BattleTeamNumber.TeamAlpha ? FP._0 : FP.Rad_180;
+                playerRotationBase = teamNumber == BattleTeamNumber.TeamAlpha ? FP._0 : FP.Rad_180;
 
                 //} set player common temp variables
 
                 //{ player variables
-                EntityRef playerEntity;
-                PlayerData playerData;
+                EntityRef    playerEntity;
+                PlayerData   playerData;
                 Transform2D* playerTransform;
                 // player - hitBox variables
-                QList<PlayerHitBoxLink> playerHitboxList;
-                QList<PlayerHitBoxLink> playerShieldHitboxList;
-                QList<PlayerHitBoxLink> playerCharacterHitboxList;
-                PlayerHitBoxLink playerHitBoxLink;
-                EntityRef playerHitBoxEntity;
-                PlayerHitBox playerHitBox;
-                PhysicsCollider2D playerHitBoxCollider;
+                QList<PlayerHitboxLink> playerHitboxListAll;
+                QList<PlayerHitboxLink> playerHitboxListShield;
+                QList<PlayerHitboxLink> playerHitboxListCharacter;
+                PlayerHitboxLink        playerHitboxLink;
+                EntityRef               playerHitboxEntity;
+                PlayerHitbox            playerHitbox;
+                PhysicsCollider2D       playerHitboxCollider;
                 //} player variables
 
                 for (int i = 0; i < playerCharacterEntityArray.Length; i++)
@@ -95,14 +95,14 @@ namespace Quantum
 
                     // get template data
                     playerDataTemplate                     = f.Unsafe.GetPointer<PlayerDataTemplate>(playerEntity);
-                    playerShieldHitboxTemplateListCount    = f.TryResolveList(playerDataTemplate->HitboxListShield,    out playerShieldHitboxTemplateList)    ? playerShieldHitboxTemplateList.Count    : 0;
-                    playerCharacterHitboxTemplateListCount = f.TryResolveList(playerDataTemplate->HitboxListCharacter, out playerCharacterHitboxTemplateList) ? playerCharacterHitboxTemplateList.Count : 0;
+                    playerHitboxListShieldTemplateCount    = f.TryResolveList(playerDataTemplate->HitboxListShield,    out playerHitboxListShieldTemplate   ) ? playerHitboxListShieldTemplate    .Count : 0;
+                    playerHitboxListCharacterTemplateCount = f.TryResolveList(playerDataTemplate->HitboxListCharacter, out playerHitboxListCharacterTemplate) ? playerHitboxListCharacterTemplate .Count : 0;
 
                     //{ allocate playerHitboxLists
 
-                    if (playerShieldHitboxTemplateListCount + playerCharacterHitboxTemplateListCount > 0) playerHitboxList          = f.AllocateList<PlayerHitBoxLink>(playerShieldHitboxTemplateListCount + playerCharacterHitboxTemplateListCount);
-                    if (playerShieldHitboxTemplateListCount                                          > 0) playerShieldHitboxList    = f.AllocateList<PlayerHitBoxLink>(playerShieldHitboxTemplateListCount                                         );
-                    if (                                      playerCharacterHitboxTemplateListCount > 0) playerCharacterHitboxList = f.AllocateList<PlayerHitBoxLink>(                                      playerCharacterHitboxTemplateListCount);
+                    if (playerHitboxListShieldTemplateCount + playerHitboxListCharacterTemplateCount > 0) playerHitboxListAll       = f.AllocateList<PlayerHitboxLink>(playerHitboxListShieldTemplateCount + playerHitboxListCharacterTemplateCount);
+                    if (playerHitboxListShieldTemplateCount                                          > 0) playerHitboxListShield    = f.AllocateList<PlayerHitboxLink>(playerHitboxListShieldTemplateCount                                         );
+                    if (                                      playerHitboxListCharacterTemplateCount > 0) playerHitboxListCharacter = f.AllocateList<PlayerHitboxLink>(                                      playerHitboxListCharacterTemplateCount);
 
                     //} allocate playerHitboxLists
 
@@ -122,12 +122,12 @@ namespace Quantum
                         StatDefence         = data.Characters[i].Defence,
 
                         TargetPosition      = playerSpawnPosition,
-                        RotationOffset    = 0,
-                        RotationBase        = playerBaseRotation,
+                        RotationBase        = playerRotationBase,
+                        RotationOffset      = FP._0,
 
-                        HitboxListAll    = playerHitboxList,
-                        HitboxListShield    = playerShieldHitboxList,
-                        HitboxListCharacter = playerCharacterHitboxList
+                        HitboxListAll       = playerHitboxListAll,
+                        HitboxListShield    = playerHitboxListShield,
+                        HitboxListCharacter = playerHitboxListCharacter
                     };
 
 #if DEBUG_PLAYER_STAT_OVERRIDE
@@ -144,17 +144,17 @@ namespace Quantum
                         switch (i2)
                         {
                             case 0:
-                                if (playerShieldHitboxTemplateListCount <= 0) continue;
+                                if (playerHitboxListShieldTemplateCount <= 0) continue;
                                 playerHitboxType = PlayerHitboxType.Shield;
-                                playerHitboxSourceTemplateList = playerShieldHitboxTemplateList;
-                                playerHitboxTargetList = playerShieldHitboxList;
+                                playerHitboxListSourceTemplate = playerHitboxListShieldTemplate;
+                                playerHitboxListTarget = playerHitboxListShield;
                                 break;
 
                             case 1:
-                                if (playerCharacterHitboxTemplateListCount <= 0) continue;
+                                if (playerHitboxListCharacterTemplateCount <= 0) continue;
                                 playerHitboxType = PlayerHitboxType.Character;
-                                playerHitboxSourceTemplateList = playerCharacterHitboxTemplateList;
-                                playerHitboxTargetList = playerCharacterHitboxList;
+                                playerHitboxListSourceTemplate = playerHitboxListCharacterTemplate;
+                                playerHitboxListTarget = playerHitboxListCharacter;
                                 break;
 
                             default:
@@ -162,46 +162,46 @@ namespace Quantum
                                 break;
                         }
 
-                        foreach (PlayerHitBoxTemplate playerHitboxTemplate in playerHitboxSourceTemplateList)
+                        foreach (PlayerHitboxTemplate playerHitboxTemplate in playerHitboxListSourceTemplate)
                         {
                             // initialize hitBox component
-                            playerHitBox = new PlayerHitBox
+                            playerHitbox = new PlayerHitbox
                             {
                                 PlayerEntity       = playerEntity,
-                                HitBoxType         = playerHitboxType,
+                                HitboxType         = playerHitboxType,
                                 CollisionType      = playerHitboxTemplate.CollisionType,
-                                Normal             = FPVector2.Rotate(FPVector2.Down, playerBaseRotation - playerHitboxTemplate.NormalAngle * FP.Deg2Rad),
-                                CollisionMinOffset = playerHitBoxExtents
+                                Normal             = FPVector2.Rotate(FPVector2.Down, playerRotationBase - playerHitboxTemplate.NormalAngle * FP.Deg2Rad),
+                                CollisionMinOffset = playerHitboxExtents
                             };
 
                             // initialize hitBox position
-                            playerHitBoxPosition = new FPVector2(
+                            playerHitboxPosition = new FPVector2(
                                 (FP)playerHitboxTemplate.Position.X * GridManager.GridScaleFactor,
                                 (FP)playerHitboxTemplate.Position.Y * GridManager.GridScaleFactor
                             );
 
                             // initialize hitBox collider
-                            playerHitBoxCollider = PhysicsCollider2D.Create(f,
-                                shape: Shape2D.CreateBox(new FPVector2(playerHitBoxExtents)),
+                            playerHitboxCollider = PhysicsCollider2D.Create(f,
+                                shape: Shape2D.CreateBox(new FPVector2(playerHitboxExtents)),
                                 isTrigger: true
                             );
 
                             // create hitBox entity
-                            playerHitBoxEntity = f.Create();
-                            f.Add(playerHitBoxEntity, playerHitBox);
-                            f.Add<Transform2D>(playerHitBoxEntity);
-                            f.Add(playerHitBoxEntity, playerHitBoxCollider);
+                            playerHitboxEntity = f.Create();
+                            f.Add(playerHitboxEntity, playerHitbox);
+                            f.Add<Transform2D>(playerHitboxEntity);
+                            f.Add(playerHitboxEntity, playerHitboxCollider);
 
                             // create hitBox link
-                            playerHitBoxLink = new PlayerHitBoxLink
+                            playerHitboxLink = new PlayerHitboxLink
                             {
-                                Entity = playerHitBoxEntity,
-                                Position = playerHitBoxPosition
+                                Entity = playerHitboxEntity,
+                                Position = playerHitboxPosition
                             };
 
                             // save hitBox link
-                            playerHitboxTargetList.Add(playerHitBoxLink);
-                            playerHitboxList.Add(playerHitBoxLink);
+                            playerHitboxListTarget.Add(playerHitboxLink);
+                            playerHitboxListAll.Add(playerHitboxLink);
                         }
                     }
 
@@ -213,7 +213,7 @@ namespace Quantum
                     playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
                     PlayerMovementSystem.Teleport(f, playerDataPtr, playerTransform,
                         playerSpawnPosition,
-                        playerBaseRotation
+                        playerRotationBase
                     );
 
                     //} initialize entity

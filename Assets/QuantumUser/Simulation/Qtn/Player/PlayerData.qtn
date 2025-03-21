@@ -1,6 +1,6 @@
 //{ PlayerData
 
-struct PlayerHitBoxLink
+struct PlayerHitboxLink
 {
     EntityRef Entity;
     FPVector2 Position;
@@ -24,9 +24,9 @@ component PlayerData
     FP RotationBase;
     FP RotationOffset;
 
-    [FreeOnComponentRemoved] list<PlayerHitBoxLink> HitboxListAll;
-    [FreeOnComponentRemoved] list<PlayerHitBoxLink> HitboxListShield;
-    [FreeOnComponentRemoved] list<PlayerHitBoxLink> HitboxListCharacter;
+    [FreeOnComponentRemoved] list<PlayerHitboxLink> HitboxListAll;
+    [FreeOnComponentRemoved] list<PlayerHitboxLink> HitboxListShield;
+    [FreeOnComponentRemoved] list<PlayerHitboxLink> HitboxListCharacter;
 }
 
 //} PlayerData
@@ -34,7 +34,7 @@ component PlayerData
 //{ PlayerDataTemplate
 
 [Serializable]
-struct PlayerHitBoxTemplate
+struct PlayerHitboxTemplate
 {
     IntVector2 Position;
     PlayerCollisionType CollisionType;
@@ -43,8 +43,8 @@ struct PlayerHitBoxTemplate
 
 component PlayerDataTemplate
 {
-    [FreeOnComponentRemoved] list<PlayerHitBoxTemplate> HitboxListShield;
-    [FreeOnComponentRemoved] list<PlayerHitBoxTemplate> HitboxListCharacter;
+    [FreeOnComponentRemoved] list<PlayerHitboxTemplate> HitboxListShield;
+    [FreeOnComponentRemoved] list<PlayerHitboxTemplate> HitboxListCharacter;
 }
 
 //} PlayerDataTemplate

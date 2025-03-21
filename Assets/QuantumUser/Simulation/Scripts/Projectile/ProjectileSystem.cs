@@ -96,9 +96,9 @@ namespace Quantum.QuantumUser.Simulation.Projectile
             ProjectileBounce(f, projectile,  projectileEntity, arenaBorderEntity, arenaBorder->Normal, arenaBorder->CollisionMinOffset);
         }
 
-        public void OnTriggerProjectileHitPlayerHitbox(Frame f, Quantum.Projectile* projectile, EntityRef projectileEntity, PlayerHitBox* playerHitBox, EntityRef playerEntity)
+        public void OnTriggerProjectileHitPlayerHitbox(Frame f, Quantum.Projectile* projectile, EntityRef projectileEntity, PlayerHitbox* playerHitbox, EntityRef playerEntity)
         {
-            ProjectileBounce(f, projectile,  projectileEntity, playerEntity, playerHitBox->Normal, playerHitBox->CollisionMinOffset);
+            ProjectileBounce(f, projectile,  projectileEntity, playerEntity, playerHitbox->Normal, playerHitbox->CollisionMinOffset);
         }
     }
 }

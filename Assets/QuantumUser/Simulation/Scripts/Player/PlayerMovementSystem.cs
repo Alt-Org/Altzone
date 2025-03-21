@@ -28,71 +28,71 @@ namespace Quantum
 
         public static void MoveTowards(Frame f, PlayerData* playerData, Transform2D* transform, FPVector2 position, FP maxDelta)
         {
-            MoveTowardsNoHitBoxUpdate(f, transform, position, maxDelta);
-            MoveHitBox(f, playerData, transform);
+            MoveTowardsNoHitboxUpdate(f, transform, position, maxDelta);
+            MoveHitbox(f, playerData, transform);
         }
 
         public static void Rotate(Frame f, PlayerData* playerData, Transform2D* transform, FP radians)
         {
-            RotateNoHitBoxUpdate(f, transform, radians);
-            MoveHitBox(f, playerData, transform);
+            RotateNoHitboxUpdate(f, transform, radians);
+            MoveHitbox(f, playerData, transform);
         }
 
         public static void Teleport(Frame f, PlayerData* playerData, Transform2D* transform, FPVector2 position, FP rotation)
         {
-            TeleportNoHitBoxUpdate(f, transform, position, rotation);
-            TeleportHitBox(f, playerData, transform);
+            TeleportNoHitboxUpdate(f, transform, position, rotation);
+            TeleportHitbox(f, playerData, transform);
         }
 
-        private static void MoveTowardsNoHitBoxUpdate(Frame f, Transform2D* transform, FPVector2 position, FP maxDelta)
+        private static void MoveTowardsNoHitboxUpdate(Frame f, Transform2D* transform, FPVector2 position, FP maxDelta)
         {
             transform->Position = FPVector2.MoveTowards(transform->Position, position, maxDelta);
         }
 
-        private static void RotateNoHitBoxUpdate(Frame f, Transform2D* transform, FP radians)
+        private static void RotateNoHitboxUpdate(Frame f, Transform2D* transform, FP radians)
         {
             transform->Rotation = radians;
         }
 
-        private static void TeleportNoHitBoxUpdate(Frame f, Transform2D* transform, FPVector2 position, FP rotation)
+        private static void TeleportNoHitboxUpdate(Frame f, Transform2D* transform, FPVector2 position, FP rotation)
         {
             transform->Teleport(f, position, rotation);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static FPVector2 CalculateHitBoxPosition(FPVector2 position, FP rotation, FPVector2 offset) => position + FPVector2.Rotate(offset, rotation);
+        private static FPVector2 CalculateHitboxPosition(FPVector2 position, FP rotation, FPVector2 offset) => position + FPVector2.Rotate(offset, rotation);
 
-        private static void MoveHitBox(Frame f, PlayerData* playerData, Transform2D* transform)
+        private static void MoveHitbox(Frame f, PlayerData* playerData, Transform2D* transform)
         {
-            if (!f.TryResolveList(playerData->HitboxListAll, out QList<PlayerHitBoxLink> hitboxListAll)) return;
+            if (!f.TryResolveList(playerData->HitboxListAll, out QList<PlayerHitboxLink> hitboxListAll)) return;
 
             FPVector2 position = transform->Position;
             FP rotation = transform->Rotation;
 
             Transform2D* hitBoxTransform;
-            foreach (PlayerHitBoxLink hitBoxLink in hitboxListAll)
+            foreach (PlayerHitboxLink hitBoxLink in hitboxListAll)
             {
                 hitBoxTransform = f.Unsafe.GetPointer<Transform2D>(hitBoxLink.Entity);
 
-                hitBoxTransform->Position = CalculateHitBoxPosition(position, rotation, hitBoxLink.Position);
+                hitBoxTransform->Position = CalculateHitboxPosition(position, rotation, hitBoxLink.Position);
                 hitBoxTransform->Rotation = rotation;
             }
         }
 
-        private static void TeleportHitBox(Frame f, PlayerData* playerData, Transform2D* transform)
+        private static void TeleportHitbox(Frame f, PlayerData* playerData, Transform2D* transform)
         {
-            if (!f.TryResolveList(playerData->HitboxListAll, out QList<PlayerHitBoxLink> hitboxListAll)) return;
+            if (!f.TryResolveList(playerData->HitboxListAll, out QList<PlayerHitboxLink> hitboxListAll)) return;
 
             FPVector2 position = transform->Position;
             FP rotation = transform->Rotation;
 
             Transform2D* hitBoxTransform;
-            foreach (PlayerHitBoxLink hitBoxLink in hitboxListAll)
+            foreach (PlayerHitboxLink hitBoxLink in hitboxListAll)
             {
                 hitBoxTransform = f.Unsafe.GetPointer<Transform2D>(hitBoxLink.Entity);
 
                 hitBoxTransform->Teleport(f,
-                    CalculateHitBoxPosition(position, rotation, hitBoxLink.Position),
+                    CalculateHitboxPosition(position, rotation, hitBoxLink.Position),
                     rotation
                 );
             }
@@ -156,12 +156,12 @@ namespace Quantum
 
             // update position and rotation
             {
-                RotateNoHitBoxUpdate(f, transform, playerData->RotationBase + playerData->RotationOffset);
+                RotateNoHitboxUpdate(f, transform, playerData->RotationBase + playerData->RotationOffset);
 
                 if (transform->Position != playerData->TargetPosition)
-                    MoveTowardsNoHitBoxUpdate(f, transform, playerData->TargetPosition, playerData->StatSpeed * f.DeltaTime);
+                    MoveTowardsNoHitboxUpdate(f, transform, playerData->TargetPosition, playerData->StatSpeed * f.DeltaTime);
 
-                MoveHitBox(f, playerData, transform);
+                MoveHitbox(f, playerData, transform);
             }
         }
     }

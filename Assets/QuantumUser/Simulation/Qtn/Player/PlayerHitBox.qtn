@@ -11,10 +11,10 @@ enum PlayerCollisionType
     Override = 2
 }
 
-component PlayerHitBox
+component PlayerHitbox
 {
     EntityRef PlayerEntity;
-    PlayerHitboxType HitBoxType;
+    PlayerHitboxType HitboxType;
     PlayerCollisionType CollisionType;
     FPVector2 Normal;
     FP CollisionMinOffset;
