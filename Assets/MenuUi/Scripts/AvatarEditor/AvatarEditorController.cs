@@ -12,6 +12,8 @@ namespace MenuUi.Scripts.AvatarEditor
 
         [SerializeField] private float _timeoutSeconds = 10f;
 
+        [SerializeField] private AvatarDefaultReference _avatarDefaultReference;
+
         private enum AvatarEditorMode
         {
             FeaturePicker,
@@ -27,9 +29,9 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private AvatarEditorMode _defaultMode = AvatarEditorMode.FeaturePicker;
         [SerializeField] private AvatarVisualDataScriptableObject _visualDataScriptableObject;
         [SerializeField] private GameObject _avatarVisualsParent;
+        [SerializeField] private GameObject _featureButtonsBase;
         private FeatureSlot _currentlySelectedCategory;
         
-        //private Vector2 _selectedScale;
         private PlayerAvatar _playerAvatar;
         private FeaturePicker _featurePicker;
         private ColorPicker _colorPicker;
@@ -52,11 +54,12 @@ namespace MenuUi.Scripts.AvatarEditor
 
         void OnEnable()
         {
-            _characterLoader.RefreshPlayerCurrentCharacter(CharacterLoaded);
-            foreach(GameObject mode in _modeList){
-                mode.SetActive(false);
-            }
+            _characterLoader.RefreshPlayerCurrentCharacter();
+            _modeList[1].SetActive(false);
+            _modeList[1].SetActive(false);
+            _modeList[2].SetActive(false);
             _currentMode = _defaultMode;
+            CharacterLoaded();
         }
 
         private void CharacterLoaded()
@@ -72,15 +75,19 @@ namespace MenuUi.Scripts.AvatarEditor
             SetSaveableData();
             _modeList[(int)_currentMode].SetActive(false);
             _currentMode = mode;
-            
-            if(_currentMode == AvatarEditorMode.FeaturePicker){
-                _featurePicker.RestoreDefaultColorToFeature(RestoreDefaultColorToFeature);
+
+            if (mode == AvatarEditorMode.AvatarScaler)
+                _featureButtonsBase.SetActive(false);
+            else
+                _featureButtonsBase.SetActive(true);
+
+            if (_currentMode == AvatarEditorMode.FeaturePicker)
                 _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
-                
-            }
-            if (_currentMode == AvatarEditorMode.ColorPicker){
+
+            if (_currentMode == AvatarEditorMode.ColorPicker)
+            {
                 _colorPicker.SelectFeature(_currentlySelectedCategory);
-                _colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
+                //_colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
             }
             
             _modeList[(int)_currentMode].SetActive(true);
@@ -92,6 +99,7 @@ namespace MenuUi.Scripts.AvatarEditor
         }
 
         #endregion
+
         #region Loading Data
 
         private IEnumerator LoadAvatarData()
@@ -99,7 +107,6 @@ namespace MenuUi.Scripts.AvatarEditor
             bool? timeout = null;
             PlayerData playerData = null;
 
-            // _nameInput.text = _playerAvatar.Name;
             StartCoroutine(PlayerDataTransferer("get", null, _timeoutSeconds, data => timeout = data, data => playerData = data));
 
             yield return new WaitUntil(() => ((timeout != null) || (playerData != null)));
@@ -112,16 +119,16 @@ namespace MenuUi.Scripts.AvatarEditor
             if (_currentPlayerData.AvatarData == null)
             {
                 Debug.Log("AvatarData is null. Using default data.");
-                _playerAvatar = new(new List<FeatureID>() { 0,0,0,0,0,0,0,0,0 } );
+                _playerAvatar = new(_avatarDefaultReference.GetByCharacterId(_currentPlayerData.SelectedCharacterId)[0]);
             }
             else
                 _playerAvatar = new(_currentPlayerData.AvatarData);
 
             _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
-            _featurePicker.SetLoadedFeatures(_playerAvatar.Features);
+            _featurePicker.SetLoadedFeatures(_playerAvatar.FeatureIds);
 
-            _colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
-            _colorPicker.SetLoadedColors(_playerAvatar.Colors, _playerAvatar.Features);
+            //_colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
+            _colorPicker.SetLoadedColors(_playerAvatar.Colors, _playerAvatar.FeatureIds);
 
             _avatarScaler.SetLoadedScale(_playerAvatar.Scale);
         }
@@ -144,7 +151,7 @@ namespace MenuUi.Scripts.AvatarEditor
             PlayerData savePlayerData = _currentPlayerData;
 
             savePlayerData.AvatarData = new(_playerAvatar.Name,
-                _playerAvatar.ToFeaturesListInt(_featurePicker.GetCurrentlySelectedFeatures()),
+                _featurePicker.GetCurrentlySelectedFeatures(),
                 _colorPicker.GetCurrentColors(),
                 _avatarScaler.GetCurrentScale());
 
