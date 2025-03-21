@@ -1,18 +1,34 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace MenuUi.Scripts.Storage
 {
+    public class ValueSliderUpHandler : MonoBehaviour, IPointerUpHandler
+    {
+        public UnityEvent upEvent;
+
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            upEvent.Invoke();
+        }
+    }
+
     public class ValueSlider : MonoBehaviour
     {
         [SerializeField] private TMP_InputField _inputField;
         [SerializeField] private Slider _slider;
+        [SerializeField] private UnityEvent _sliderUpEvent;
+        [SerializeField] private TMP_InputField.SubmitEvent _inputFieldSubmitEvent;
 
-        public void Start()
+        private void Start()
         {
             _inputField.onEndEdit.AddListener(delegate { UpdateSliderValue(); });
+            _inputField.onSubmit = _inputFieldSubmitEvent;
             _slider.onValueChanged.AddListener(delegate { UpdateInputFieldValue(); });
+            _slider.gameObject.AddComponent<ValueSliderUpHandler>().upEvent = _sliderUpEvent;
         }
 
         private void UpdateSliderValue()
