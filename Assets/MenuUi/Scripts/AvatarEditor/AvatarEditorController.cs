@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Player;
-using Altzone.Scripts.ReferenceSheets;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,6 +29,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private AvatarEditorMode _defaultMode = AvatarEditorMode.FeaturePicker;
         [SerializeField] private AvatarVisualDataScriptableObject _visualDataScriptableObject;
         [SerializeField] private GameObject _avatarVisualsParent;
+        [SerializeField] private GameObject _featureButtonsBase;
         private FeatureSlot _currentlySelectedCategory;
         
         private PlayerAvatar _playerAvatar;
@@ -54,11 +54,12 @@ namespace MenuUi.Scripts.AvatarEditor
 
         void OnEnable()
         {
-            _characterLoader.RefreshPlayerCurrentCharacter(CharacterLoaded);
-            foreach(GameObject mode in _modeList){
-                mode.SetActive(false);
-            }
+            _characterLoader.RefreshPlayerCurrentCharacter();
+            _modeList[1].SetActive(false);
+            _modeList[1].SetActive(false);
+            _modeList[2].SetActive(false);
             _currentMode = _defaultMode;
+            CharacterLoaded();
         }
 
         private void CharacterLoaded()
@@ -74,15 +75,19 @@ namespace MenuUi.Scripts.AvatarEditor
             SetSaveableData();
             _modeList[(int)_currentMode].SetActive(false);
             _currentMode = mode;
-            
-            if(_currentMode == AvatarEditorMode.FeaturePicker){
-                //_featurePicker.RestoreDefaultColorToFeature(RestoreDefaultColorToFeature);
+
+            if (mode == AvatarEditorMode.AvatarScaler)
+                _featureButtonsBase.SetActive(false);
+            else
+                _featureButtonsBase.SetActive(true);
+
+            if (_currentMode == AvatarEditorMode.FeaturePicker)
                 _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
-                
-            }
-            if (_currentMode == AvatarEditorMode.ColorPicker){
+
+            if (_currentMode == AvatarEditorMode.ColorPicker)
+            {
                 _colorPicker.SelectFeature(_currentlySelectedCategory);
-                _colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
+                //_colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
             }
             
             _modeList[(int)_currentMode].SetActive(true);
@@ -122,7 +127,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
             _featurePicker.SetLoadedFeatures(_playerAvatar.FeatureIds);
 
-            _colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
+            //_colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
             _colorPicker.SetLoadedColors(_playerAvatar.Colors, _playerAvatar.FeatureIds);
 
             _avatarScaler.SetLoadedScale(_playerAvatar.Scale);

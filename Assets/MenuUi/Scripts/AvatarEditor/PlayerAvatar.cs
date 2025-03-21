@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Altzone.Scripts.ReferenceSheets;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
@@ -14,6 +13,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         public PlayerAvatar(AvatarDefaultReference.AvatarDefaultPartInfo featureIds)
         {
+            _features = new List<string>();
             _features.Add(featureIds.HairId);
             _features.Add(featureIds.EyesId);
             _features.Add(featureIds.NoseId);

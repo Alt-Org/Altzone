@@ -4,12 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.Model.Poco.Game;
 using TMPro;
-using Altzone.Scripts.ReferenceSheets;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
     public class FeaturePicker : MonoBehaviour
     {
+        [SerializeField] private AvatarEditorCharacterHandle _avatarEditorCharacterHandle;
+        [SerializeField] private AvatarEditorFeatureButtonsHandler _featureButtonsHandler;
+        [Space]
         [SerializeField] private Transform _characterImageParent;
         [SerializeField] private Transform _featureButtonsParent;
         [SerializeField] private TMP_Text _categoryText;
@@ -18,12 +20,9 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private AvatarDefaultReference _avatarDefaultReference;
 
         [Header("Feature Buttons")]
-        [SerializeField] private GameObject _featureButtonPrefab;
-        [SerializeField] private GameObject _defaultFeatureButtonPrefab;
         [SerializeField] private FeatureSlot _defaultCategory;
         [SerializeField] private List<Button> _categoryButtons;
         [SerializeField] private List<Button> _pageButtons;
-        [SerializeField] private List<Transform> _featureButtonPositions;
         [SerializeField] private Animator _animator;
         private FeatureSlot _currentlySelectedCategory;
         private List<string> _selectedFeatures = new()
@@ -54,8 +53,6 @@ namespace MenuUi.Scripts.AvatarEditor
         private readonly string _handsCategoryId = "32";
         private readonly string _feetCategoryId = "33";
 
-        private int _partsPageCount = 0;
-
         public void Start()
         {
             _swipeArea = GetComponent<RectTransform>();
@@ -63,13 +60,10 @@ namespace MenuUi.Scripts.AvatarEditor
             _categoryButtons[1].GetComponent<Button>().onClick.AddListener(LoadPreviousCategory);
             _pageButtons[0].GetComponent<Button>().onClick.AddListener(LoadNextPage);
             _pageButtons[1].GetComponent<Button>().onClick.AddListener(LoadPreviousPage);
-
-            _partsPageCount = _avatarPartsReference.GetCategoryCount();
         }
 
         public void OnEnable()
         {
-            _partsPageCount = _avatarPartsReference.GetCategoryCount();
             _currentlySelectedCategory = _defaultCategory;
             SwitchFeatureCategory();
             SwipeHandler.OnSwipe += OnFeaturePickerSwipe;
@@ -77,7 +71,6 @@ namespace MenuUi.Scripts.AvatarEditor
 
         public void OnDisable()
         {
-            DestroyFeatureButtons();
             SwipeHandler.OnSwipe -= OnFeaturePickerSwipe;
         }
 
@@ -116,15 +109,15 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private IEnumerator PlayNextPageAnimation()
         {
-            DestroyRightSideButtons();
-            InstantiateRightSideButtons();
+            SetFeatureButtons();
+            _featureButtonsHandler.ShowRightSide();
+            _featureButtonsHandler.HideLeftSide();
             _animator.Play("PageFlip");
 
             yield return new WaitWhile(()=> !_animator.GetCurrentAnimatorStateInfo(0).IsName("AnimationEnded"));
 
             _animator.SetTrigger("ResetToIdle");
-            DestroyLeftSideButtons();
-            InstantiateLeftSideButtons();
+            _featureButtonsHandler.ShowLeftSide();
         }
 
         private void LoadPreviousPage()
@@ -138,105 +131,45 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private IEnumerator PlayPreviousPageAnimation()
         {
-            DestroyLeftSideButtons();
-            InstantiateLeftSideButtons();
+            SetFeatureButtons();
+            _featureButtonsHandler.ShowLeftSide();
+            _featureButtonsHandler.HideRightSide();
             _animator.Play("BackPageFlip");
 
             yield return new WaitWhile(()=> !_animator.GetCurrentAnimatorStateInfo(0).IsName("AnimationEnded"));
 
             _animator.SetTrigger("ResetToIdle");
-            DestroyRightSideButtons();
-            InstantiateRightSideButtons();
+            _featureButtonsHandler.ShowRightSide();
         }
 
-        private void InstantiateFeatureButtons()
+        private void SetFeatureButtons()
         {
-            InstantiateRightSideButtons();
-            InstantiateLeftSideButtons();
-        }
-
-        private void InstantiateRightSideButtons()
-        {
-            for (int i = 4; i < 8; i++)
+            for (int i = 0; i < 8;  i++)
             {
-                int categoryFeatureIndex = i + (8 * _currentPageNumber);
-
-                if ((categoryFeatureIndex < _currentCategoryFeatureDataPlaceholder.Count) || 
-                (categoryFeatureIndex == _currentCategoryFeatureDataPlaceholder.Count && (_currentPageNumber != 0 || i != 8)))
-                {
-                    Button featureButton = Instantiate(_featureButtonPrefab, _featureButtonPositions[i]).GetComponent<Button>();
-
-                    if(_currentCategoryFeatureDataPlaceholder[categoryFeatureIndex - 1].IconImage != null)
-                        featureButton.gameObject.GetComponent<Image>().sprite = _currentCategoryFeatureDataPlaceholder[categoryFeatureIndex - 1].IconImage;
-                    else
-                        featureButton.gameObject.GetComponent<Image>().sprite = _currentCategoryFeatureDataPlaceholder[categoryFeatureIndex - 1].AvatarImage;
-
-                    featureButton.gameObject.GetComponent<Button>().onClick.AddListener
-                    (delegate { FeatureButtonClicked(_currentCategoryFeatureDataPlaceholder[categoryFeatureIndex - 1], (int)_currentlySelectedCategory); });
-                }
-            }
-        }
-
-        private void InstantiateLeftSideButtons()
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                int categoryFeatureIndex = i + (8 * _currentPageNumber);
-
                 if (i == 0 && _currentPageNumber == 0)
                 {
-                    Button featureButton = Instantiate(_defaultFeatureButtonPrefab, _featureButtonPositions[i]).GetComponent<Button>();
-                    featureButton.gameObject.GetComponent<Button>().onClick.AddListener
-                    (delegate { SetFeatureToNone((int)_currentlySelectedCategory); });
+                    _featureButtonsHandler.SetOnClick(SetFeatureToNone, (int)_currentlySelectedCategory, i);
+                    continue;
                 }
-                else if ((categoryFeatureIndex < _currentCategoryFeatureDataPlaceholder.Count) || 
-                (categoryFeatureIndex == _currentCategoryFeatureDataPlaceholder.Count && ((_currentPageNumber != 0) || (i != 8))))
+
+                int categoryFeatureIndex = i + (8 * _currentPageNumber);
+
+                if (categoryFeatureIndex <= _currentCategoryFeatureDataPlaceholder.Count)
                 {
-                    Button featureButton = Instantiate(_featureButtonPrefab, _featureButtonPositions[i]).GetComponent<Button>();
-
-                    if (_currentCategoryFeatureDataPlaceholder[categoryFeatureIndex - 1].IconImage != null)
-                        featureButton.gameObject.GetComponent<Image>().sprite = _currentCategoryFeatureDataPlaceholder[categoryFeatureIndex - 1].IconImage;
-                    else
-                        featureButton.gameObject.GetComponent<Image>().sprite = _currentCategoryFeatureDataPlaceholder[categoryFeatureIndex - 1].AvatarImage;
-
-                    featureButton.gameObject.GetComponent<Button>().onClick.AddListener
-                    (delegate { FeatureButtonClicked(_currentCategoryFeatureDataPlaceholder[categoryFeatureIndex - 1], (int)_currentlySelectedCategory); });
+                    _featureButtonsHandler.SetOnClick(FeatureButtonClicked, _currentCategoryFeatureDataPlaceholder[categoryFeatureIndex - 1], (int)_currentlySelectedCategory, i);
+                    continue;
                 }
+
+                _featureButtonsHandler.SetOff(i);
             }
         }
 
-        private void DestroyFeatureButtons()
+        private void SetFeatureToNone(int slot)
         {
-            DestroyLeftSideButtons();
-            DestroyRightSideButtons();
-        }
+            _avatarEditorCharacterHandle.SetMainCharacterImage((FeatureSlot)slot, null);
 
-        private void DestroyLeftSideButtons()
-        {
-            for(int i = 0; i < 4; i++)
-            {
-                if(_featureButtonPositions[i].childCount > 0)
-                {
-                    foreach(Transform child in _featureButtonPositions[i])
-                    {
-                        Destroy(child.gameObject);
-                    }
-                }
-            }
-        }
-
-        private void DestroyRightSideButtons()
-        {
-            for(int i = 4; i < 8; i++)
-            {
-                if(_featureButtonPositions[i].childCount > 0)
-                {
-                    foreach(Transform child in _featureButtonPositions[i])
-                    {
-                        Destroy(child.gameObject);
-                    }
-                }
-            }
+            if (_characterClassID == CharacterClassID.Confluent)
+                _avatarEditorCharacterHandle.SetSecondaryCharacterImage((FeatureSlot)slot, null);
         }
 
         private void FeatureButtonClicked(AvatarPartsReference.AvatarPartInfo featureToChange, int slot)
@@ -248,39 +181,12 @@ namespace MenuUi.Scripts.AvatarEditor
         private void SetFeature(AvatarPartsReference.AvatarPartInfo featureToChange, int slot)
         {
             _selectedFeatures[slot] = featureToChange.Id;
-            _characterImage = _characterImageParent.GetChild(0);
+            _avatarEditorCharacterHandle.SetMainCharacterImage((FeatureSlot)slot, featureToChange.AvatarImage);
 
-            if (featureToChange.AvatarImage == null)
-                _characterImage.GetChild(slot + 1).gameObject.SetActive(false);
+            if (_characterClassID == CharacterClassID.Confluent)
+                _avatarEditorCharacterHandle.SetSecondaryCharacterImage((FeatureSlot)slot, featureToChange.AvatarImage);
             else
-            {
-                _characterImage.GetChild(slot + 1).gameObject.SetActive(true);
-                _characterImage.GetChild(slot+ 1).GetComponent<Image>().sprite = featureToChange.AvatarImage;
-                _characterImage.GetChild(slot + 1).GetComponent<Image>().color = new Color(255, 255, 255,255);
-            }
-
-            if(_characterClassID == CharacterClassID.Confluent){
-                if (featureToChange.AvatarImage == null)
-                    _characterImage.GetChild(slot + 1).GetChild(0).gameObject.SetActive(false);
-                else
-                {
-                    _characterImage.GetChild(slot + 1).GetChild(0).gameObject.SetActive(true);
-                    _characterImage.GetChild(slot + 1).GetChild(0).GetComponent<Image>().sprite = featureToChange.AvatarImage;
-                    _characterImage.GetChild(slot + 1).GetChild(0).GetComponent<Image>().color = new Color(255, 255, 255, 255);
-                }
-            }
-        }
-
-        private void SetFeatureToNone(int slot)
-        {
-            //_selectedFeatures[slot] = FeatureID.None;
-            _characterImage = _characterImageParent.GetChild(0);
-            _characterImage.GetChild(slot + 1).GetComponent<Image>().color = new Color(255, 255, 255,0);
-            _characterImage.GetChild(slot + 1).GetComponent<Image>().sprite = null;
-            if(_characterClassID == CharacterClassID.Confluent){
-                _characterImage.GetChild(slot + 1).GetChild(0).GetComponent<Image>().color = new Color(255, 255, 255,0);
-                _characterImage.GetChild(slot + 1).GetChild(0).GetComponent<Image>().sprite = null;
-            }
+                _avatarEditorCharacterHandle.SetSecondaryCharacterHidden();
         }
 
         private void LoadNextCategory()
@@ -296,10 +202,10 @@ namespace MenuUi.Scripts.AvatarEditor
         private void LoadPreviousCategory()
         {
             _currentlySelectedCategory--;
-            if( (int)_currentlySelectedCategory < 0)
-            {
+
+            if((int)_currentlySelectedCategory < 0)
                 _currentlySelectedCategory = (FeatureSlot)(System.Enum.GetNames(typeof(FeatureSlot)).Length - 1);
-            }
+
             SwitchFeatureCategory();
         }
 
@@ -308,9 +214,9 @@ namespace MenuUi.Scripts.AvatarEditor
             //placeholder until available features can be read from player inventory
             _currentCategoryFeatureDataPlaceholder = GetSpritesByCategory(_currentlySelectedCategory);
             _currentPageNumber = 0;
-            _pageCount = (_currentCategoryFeatureDataPlaceholder.Count + 1) / _partsPageCount;
+            _pageCount = (_currentCategoryFeatureDataPlaceholder.Count + 1) / 8;
 
-            if ((_currentCategoryFeatureDataPlaceholder.Count + 1) % _partsPageCount != 0)
+            if (((_currentCategoryFeatureDataPlaceholder.Count + 1) % 8) != 0)
                 _pageCount++;
 
             StartCoroutine(PlayNextPageAnimation());
@@ -369,20 +275,10 @@ namespace MenuUi.Scripts.AvatarEditor
     
         public void SetLoadedFeatures(List<string> features)
         {
-            for (int i = 0; i < features.Count; i++){
+            for (int i = 0; i < features.Count; i++)
+            {
                 List<AvatarPartsReference.AvatarPartInfo> currentCategoryFeatureDataPlaceholder = GetSpritesByCategory((FeatureSlot)i);
 
-                //if(features[i] == FeatureID.Default)
-                //{
-                //    features[i] = ResolveCharacterDefaultFeature(i);
-                //}
-
-                //if (features[i] == FeatureID.None)
-                //{
-                //    SetFeatureToNone(i);
-                //}
-                //else
-                //{
                 if (currentCategoryFeatureDataPlaceholder == null)
                     return;
 
@@ -394,7 +290,6 @@ namespace MenuUi.Scripts.AvatarEditor
                     if (partData != null)
                         SetFeature(partData, i);
                 }
-                //}
             }
         }
     }

@@ -8,14 +8,15 @@ namespace MenuUi.Scripts.AvatarEditor
 {
     public class ColorPicker : MonoBehaviour
     {
+        [SerializeField] private AvatarEditorCharacterHandle _avatarEditorCharacterHandle;
+        [SerializeField] private AvatarEditorFeatureButtonsHandler _featureButtonsHandler;
+        [Space]
         [SerializeField] private GameObject _colorButtonPrefab;
         [SerializeField] private GameObject _defaultColorButtonPrefab;
         [SerializeField] private List<Color> _colors;
         [SerializeField] private List<Transform> _colorButtonPositions;
         [SerializeField] private Transform _characterImageParent;
-
-        private Image _colorChangeTarget;
-        private CharacterClassID _characterClassID;
+        [SerializeField] private Sprite _colorImage;
 
         private List<string> _currentColor = new()
         {
@@ -25,13 +26,14 @@ namespace MenuUi.Scripts.AvatarEditor
 
         public void OnEnable()
         {
-            InstantiateColorButtons();
-            _colorChangeTarget = _characterImageParent.GetChild(0).GetChild(0).GetComponent<Image>();
+            SetColorButtons();
         }
 
         public void OnDisable()
         {
-            DestroyColorButtons();
+            for (int i = 0; i < 8; i++)
+                if (i < _colors.Count)
+                    _featureButtonsHandler.SetOnClick(SetColor, null, Color.white, i);
         }
 
         public void SelectFeature(FeatureSlot feature)
@@ -40,78 +42,24 @@ namespace MenuUi.Scripts.AvatarEditor
             //_colorChangeTarget = _characterImageParent.GetChild(0).GetChild((int)feature).GetComponent<Image>();
         }
 
-        private void InstantiateColorButtons()
+        private void SetColorButtons()
         {
-            for (int i = 0; i < _colors.Count; i++)
+            for (int i = 0; i < 8; i++)
             {
-                int j = i;
-                if (i == 0)
+                if (i < _colors.Count)
                 {
-                    Button button = Instantiate(_defaultColorButtonPrefab, _colorButtonPositions[i]).GetComponent<Button>();
-                    button.onClick.AddListener(delegate{SetColor(_colors[j]);});
+                    _featureButtonsHandler.SetOnClick(SetColor, _colorImage, _colors[i], i);
+                    continue;
                 }
-                else
-                {
-                    Button button = Instantiate(_colorButtonPrefab, _colorButtonPositions[i]).GetComponent<Button>();
-                    button.GetComponent<Image>().color = _colors[i];
-                    button.onClick.AddListener(delegate{SetColor(_colors[j]);});
-                }
-            }
-        }
 
-        private void DestroyColorButtons()
-        {
-            foreach(Transform pos in _colorButtonPositions)
-            {
-                if(pos.childCount > 0)
-                {
-                    foreach(Transform child in pos)
-                    {
-                        Destroy(child.gameObject);
-                    }
-                }
+                _featureButtonsHandler.SetOff(i);
             }
         }
 
         private void SetColor(Color color)
         {
-            //if ((int)_currentlySelectedCategory != 0)
-            //    return;
-
             _currentColor[0] = "#" + ColorUtility.ToHtmlStringRGB(color);
-            _colorChangeTarget = _characterImageParent.GetChild(0).GetChild(0).GetComponent<Image>();
-
-            if (_colorChangeTarget != null)
-            {
-                _colorChangeTarget.color = color;
-
-                if(_characterClassID == CharacterClassID.Confluent)
-                {
-                    _colorChangeTarget.transform.GetChild(0).GetComponent<Image>().color = color;
-                }
-            }
-        }
-
-        private void SetDefaultColor()
-        {
-
-        }
-
-        private void SetTransparentColor()
-        {
-            if(_colorChangeTarget != null)
-            {
-                _colorChangeTarget.color = new Color(255,255,255,0);
-                if(_characterClassID == CharacterClassID.Confluent)
-                {
-                    _colorChangeTarget.transform.GetChild(0).GetComponent<Image>().color = new Color(255,255,255,0);
-                }
-            }
-        }
-
-        public void SetCharacterClassID(CharacterClassID id)
-        {
-            _characterClassID = id;
+            _avatarEditorCharacterHandle.SetHeadColor(color);
         }
 
         public List<string> GetCurrentColors()
