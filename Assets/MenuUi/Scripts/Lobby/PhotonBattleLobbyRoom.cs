@@ -26,7 +26,7 @@ namespace MenuUi.Scripts.Lobby
         public const string TeamRedScoreKey = PhotonBattleRoom.TeamRedScoreKey;
         public const string PasswordKey = PhotonBattleRoom.PasswordKey;
         public const string GameTypeKey = PhotonBattleRoom.GameTypeKey;
-        public const string MatchmakingKey = PhotonBattleRoom.MatchmakingKey;
+        public const string MatchmakingKey = PhotonBattleRoom.IsMatchmakingKey;
         public const string SoulhomeRank = PhotonBattleRoom.SoulhomeRank;
         public const string SoulhomeRankVariance = PhotonBattleRoom.SoulhomeRankVariance;
         public const string ClanNameKey = PhotonBattleRoom.ClanNameKey;

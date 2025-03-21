@@ -333,6 +333,12 @@ namespace Altzone.Scripts.Lobby
 
             if (!PhotonRealtimeClient.InRoom) return;
 
+            // Starting matchmaking coroutine
+            StartCoroutine(StartMatchmaking(data.SelectedGameType));
+        }
+
+        private IEnumerator StartMatchmaking(GameType gameType)
+        {
             // Saving other player's userids to enter the new game room together with master client
             List<string> expectedUsers = new();
             foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
@@ -340,28 +346,70 @@ namespace Altzone.Scripts.Lobby
                 if (player.Value.UserId != PhotonRealtimeClient.LocalPlayer.UserId) expectedUsers.Add(player.Value.UserId);
             }
 
-            // Starting matchmaking coroutine
-            StartCoroutine(StartMatchmaking(data.SelectedGameType, expectedUsers.ToArray()));
-        }
+            // Saving custom properties from the room to the variable
+            string clanName = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.ClanNameKey, "");
 
-        private IEnumerator StartMatchmaking(GameType gameType, string[] expectedUsers)
-        {
             // Nulling room list and leaving room so that client can get room list
             CurrentRooms = null;
             PhotonRealtimeClient.LeaveRoom();
 
             // Waiting until in lobby and that current room list has rooms
-            yield return new WaitUntil(() => PhotonRealtimeClient.InLobby && CurrentRooms != null); 
+            yield return new WaitUntil(() => PhotonRealtimeClient.InLobby && CurrentRooms != null);
 
-            // Searching for suitable room if there is not one creating new one
+            // Searching for suitable room
+            bool roomFound = false;
             foreach (LobbyRoomInfo room in CurrentRooms)
             {
+                // Checking if room has game type and matchmaking key in the first place
+                if (!room.CustomProperties.ContainsKey(PhotonBattleRoom.GameTypeKey) && !room.CustomProperties.ContainsKey(PhotonBattleRoom.IsMatchmakingKey))
+                {
+                    continue;
+                }
+
+                // Checking if room is part of matchmaking and if the game type matches
+                if ((bool)room.CustomProperties[PhotonBattleRoom.IsMatchmakingKey] == false || (GameType)room.CustomProperties[PhotonBattleRoom.GameTypeKey] != gameType)
+                {
+                    continue;
+                }
+
+                // Matchmaking logic
                 switch (gameType)
                 {
                     case GameType.Clan2v2:
-
+                        if ((string)room.CustomProperties[PhotonBattleRoom.ClanNameKey] != clanName)
+                        {
+                            PhotonRealtimeClient.JoinRoom(room.Name, expectedUsers.ToArray());
+                            roomFound = true;
+                            break;
+                        }
                         break;
                 }
+                
+            }
+
+            // If suitable room not found creating new room
+            if (!roomFound)
+            {
+                PhotonRealtimeClient.CreateLobbyRoom("", gameType, "", clanName, expectedUsers.ToArray(), true);
+            }
+
+            // Waiting until client is in room
+            yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
+
+            // Setting room properties
+            if (roomFound)
+            {
+                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.IsMatchmakingKey, false);
+                switch (gameType)
+                {
+                    case GameType.Clan2v2:
+                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.ClanOpponentNameKey, clanName);
+                        break;
+                }
+            }
+            else if (!roomFound)
+            {
+                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.IsMatchmakingKey, true);
             }
 
             // Checking if room is full and if not waiting until room is full
@@ -370,6 +418,7 @@ namespace Altzone.Scripts.Lobby
                 yield return new WaitUntil(() => PhotonRealtimeClient.CurrentRoom.PlayerCount == PhotonRealtimeClient.CurrentRoom.MaxPlayers);
             }
 
+            // Starting game if master client
             if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
             {
                 StartCoroutine(StartTheGameplay(_isCloseRoomOnGameStart, _blueTeamName, _redTeamName));
