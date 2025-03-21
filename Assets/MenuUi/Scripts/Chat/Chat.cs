@@ -209,7 +209,8 @@ public class Chat : MonoBehaviour
             button = message.AddComponent<Button>();
         }
 
-        button.onClick.AddListener(() => SelectMessage(message)); 
+        button.onClick.AddListener(() => SelectMessage(message));
+        button.onClick.AddListener(() => MinimizeOptions());
     }
 
     // Valitsee viestin
@@ -278,7 +279,6 @@ public class Chat : MonoBehaviour
             allReactions.SetActive(false);
             addReactionsPanel.SetActive(false);
         }
-
     }
 
     // Poistaa valitun viestin
@@ -404,5 +404,22 @@ public class Chat : MonoBehaviour
         }
 
         buttonOpenSendButtons.SetActive(true);
+    }
+
+    /// <summary>
+    /// Added to buttons to deselect messages and close the sending options
+    /// </summary>
+    /// <param name="onlyMessages"></param>
+    public void CloseOnButtonClick(bool onlyMessages)
+    {
+        if (onlyMessages)
+        {
+            DeselectMessage(selectedMessage);
+        }
+        else
+        {
+            DeselectMessage(selectedMessage);
+            MinimizeOptions();
+        }
     }
 }

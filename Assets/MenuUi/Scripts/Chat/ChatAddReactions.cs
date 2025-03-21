@@ -109,6 +109,7 @@ public class ChatAddReactions : MonoBehaviour
             _reactionHandlers.Add(chatReactionHandler);
 
             chatReactionHandler._button.onClick.AddListener(() => ToggleReaction(chatReactionHandler));
+            chatReactionHandler._button.onClick.AddListener(() => _chatScript.MinimizeOptions());
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
 
