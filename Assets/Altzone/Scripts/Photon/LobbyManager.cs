@@ -77,6 +77,7 @@ namespace Altzone.Scripts.Lobby
 
         private QuantumRunner _runner = null;
         private Coroutine _requestPositionChangeHolder = null;
+        private List<FriendInfo> _friendList;
 
         [HideInInspector] public ReadOnlyCollection<LobbyRoomInfo> CurrentRooms = null; // Set from LobbyRoomListingController.cs through Instance variable maybe this could be refactored?
         public static LobbyManager Instance { get; private set; }
@@ -448,9 +449,18 @@ namespace Altzone.Scripts.Lobby
             bool newRoomJoined = false;
             do
             {
+                _friendList = null;
                 PhotonRealtimeClient.Client.OpFindFriends(new string[1] { leaderUserId });
-                
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitUntil(() => _friendList != null );
+
+                foreach (FriendInfo friend in _friendList)
+                {
+                    if (friend.UserId == leaderUserId && friend.IsInRoom && friend.Room != oldRoomName)
+                    {
+                        PhotonRealtimeClient.JoinRoom(friend.Room);
+                        newRoomJoined = true;
+                    }
+                }
             } while (!newRoomJoined);
         }
 
@@ -734,14 +744,19 @@ namespace Altzone.Scripts.Lobby
         {
             Debug.Log($"OnPlayerLeftRoom {otherPlayer.GetDebugLabel()}");
 
-            // Clearing the player position in the room
-            int playerPosition = otherPlayer.GetCustomProperty<int>(PlayerPositionKey);
-            string positionKey = PhotonBattleRoom.GetPositionKey(playerPosition);
+            if (PhotonRealtimeClient.Client.State == ClientState.Leaving) return;
 
-            var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { positionKey, "" } });
-            var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { positionKey, otherPlayer.UserId } });
+            // Clearing the player position in the room if player is master client
+            if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+            {
+                int playerPosition = otherPlayer.GetCustomProperty<int>(PlayerPositionKey);
+                string positionKey = PhotonBattleRoom.GetPositionKey(playerPosition);
 
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue);
+                var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { positionKey, "" } });
+                var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { positionKey, otherPlayer.UserId } });
+
+                PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue);
+            }
 
             LobbyOnPlayerLeftRoom?.Invoke(new(otherPlayer));
         }
@@ -792,7 +807,10 @@ namespace Altzone.Scripts.Lobby
         }
         public void OnLeftLobby() { LobbyOnLeftLobby?.Invoke(); }
         public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics) { LobbyOnLobbyStatisticsUpdate?.Invoke(); }
-        public void OnFriendListUpdate(List<FriendInfo> friendList) { LobbyOnFriendListUpdate?.Invoke(); }
+        public void OnFriendListUpdate(List<FriendInfo> friendList) {
+            _friendList = friendList;
+            LobbyOnFriendListUpdate?.Invoke();
+        }
         public void OnCreateRoomFailed(short returnCode, string message)
         {
             Debug.LogError($"CreateRoomFailed {returnCode} {message}");
