@@ -97,11 +97,11 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterGallery
             // Arrange stats
             var stats = new List<(int level, Color color)>
             {
-                (defence, _defenceColor),
+                (impactForce, _impactForceColor),
+                (healthPoints, _healthPointsColor),
                 (characterSize, _characterSizeColor),
                 (speed, _speedColor),
-                (healthPoints, _healthPointsColor),
-                (impactForce, _impactForceColor),
+                (defence, _defenceColor),
             };
 
             // Create slices

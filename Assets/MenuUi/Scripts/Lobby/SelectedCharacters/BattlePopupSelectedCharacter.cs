@@ -20,7 +20,6 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         [Header("Character slot references")]
         [SerializeField] private Image _spriteImage;
         [SerializeField] private Image _backgroundImage;
-        [SerializeField] private Image _backgroundDetailsImage;
         [SerializeField] private PieChartPreview _piechartPreview;
 
         [Header("Dropdown references")]
@@ -34,7 +33,6 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         private CharacterID _characterId;
         private int _slotIdx;
         private Button _button;
-        private bool _isOwnCharacter;
 
         public Button ButtonComponent { get { return _button; } }
 
@@ -58,10 +56,10 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         /// </summary>
         /// <param name="galleryImage">Character's gallery sprite.</param>
         /// <param name="charID">Character id.</param>
-        /// <param name="isOwnCharacter">If the character is this player's own character or owned by someone else (a teammate or opposing player).</param>
+        /// <param name="isEditable">If the character is editable for the local player.</param>
         /// <param name="slotIdx">The slot index for this selected character slot.</param>
         /// <param name="stats">The stats for the character in an int array. Order: Hp, Speed, CharacterSize, Attack, Defence.</param>
-        public void SetInfo(Sprite galleryImage, CharacterID charID, bool isOwnCharacter, int slotIdx, int[] stats = null)
+        public void SetInfo(Sprite galleryImage, CharacterID charID, bool isEditable, int slotIdx, int[] stats = null)
         {
             _spriteImage.sprite = galleryImage;
             _spriteImage.enabled = true;
@@ -78,8 +76,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                 _button = GetComponent<Button>();
             }
             
-            _isOwnCharacter = isOwnCharacter;
-            if (!isOwnCharacter)
+            if (!isEditable)
             {
                 _button.enabled = false;
             }
@@ -102,12 +99,34 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         }
 
 
-        public void SetEmpty()
+        /// <summary>
+        /// Set character slot showing as empty.
+        /// </summary>
+        /// <param name="isEditable">If slot is editable for the local player or not.</param>
+        /// <param name="slotIdx">Slot's index.</param>
+        public void SetEmpty(bool isEditable, int slotIdx)
         {
             _spriteImage.enabled = false;
             _backgroundImage.color = Color.white;
-            if (_button != null) _button.enabled = false;
             _piechartPreview.gameObject.SetActive(false);
+            _characterId =CharacterID.None;
+            _slotIdx = slotIdx;
+
+            if (_button == null)
+            {
+                _button = GetComponent<Button>();
+            }
+
+            if (isEditable)
+            {
+                _button.enabled = true;
+                _button.onClick.RemoveListener(ToggleSelectionDropdown);
+                _button.onClick.AddListener(ToggleSelectionDropdown);
+            }
+            else
+            {
+                _button.enabled = false;
+            }
         }
 
 
@@ -121,7 +140,8 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         {
             StartCoroutine(GetPlayerData(playerData =>
             {
-                var characters = playerData.CustomCharacters.ToList();
+                var characters = playerData.CustomCharacters.GroupBy(x => x.Id).Select(x => x.First()).ToList(); // ensuring no duplicate characters are shown
+                characters.Sort((a, b) => a.Id.CompareTo(b.Id));
 
                 foreach (CustomCharacter character in characters)
                 {
@@ -196,17 +216,6 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                 CloseSelectionDropdown();
                 HandleNewCharacterSelected(character);
             });
-
-            // Details image
-            GameObject details = new();
-            Image detailsImage = details.AddComponent<Image>();
-            detailsImage.sprite = _backgroundDetailsImage.sprite;
-            details.transform.SetParent(dropdownButton.transform, false);
-
-            RectTransform detailsRect = details.GetComponent<RectTransform>();
-            detailsRect.sizeDelta = Vector2.zero;
-            detailsRect.anchorMin = Vector2.zero;
-            detailsRect.anchorMax = Vector2.one;
 
             // Sprite image
             GameObject gallerySprite = new();

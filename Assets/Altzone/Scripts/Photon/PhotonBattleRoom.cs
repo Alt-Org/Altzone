@@ -4,10 +4,10 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Debug = UnityEngine.Debug;
-using ExitGames.Client.Photon;
 using Photon.Realtime;
 using Altzone.Scripts.Model.Poco.Game;
 using Photon.Client;
+using Altzone.Scripts.Lobby.Wrappers;
 //using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 //using Player = Battle1.PhotonRealtime.Code.Player;
 //using Room = Battle1.PhotonRealtime.Code.Room;
@@ -102,22 +102,22 @@ namespace Altzone.Scripts.Battle.Photon
             // Checking which of the room's player positions are free
             HashSet<int> usedPlayerPositions = new HashSet<int>();
 
-            if (CheckIfPositionIsFree(PlayerPosition1))
+            if (CheckIfPositionIsFree(PlayerPosition1) == false)
             {
                 usedPlayerPositions.Add(PlayerPosition1);
             }
 
-            if (CheckIfPositionIsFree(PlayerPosition2))
+            if (CheckIfPositionIsFree(PlayerPosition2) == false)
             {
                 usedPlayerPositions.Add(PlayerPosition2);
             }
 
-            if (CheckIfPositionIsFree(PlayerPosition3))
+            if (CheckIfPositionIsFree(PlayerPosition3) == false)
             {
                 usedPlayerPositions.Add(PlayerPosition3);
             }
 
-            if (CheckIfPositionIsFree(PlayerPosition4))
+            if (CheckIfPositionIsFree(PlayerPosition4) == false)
             {
                 usedPlayerPositions.Add(PlayerPosition4);
             }
@@ -189,6 +189,32 @@ namespace Altzone.Scripts.Battle.Photon
             }
 
             return positionKey;
+        }
+
+        /// <summary>
+        /// Check if everyone in the room has all 3 selected characters selected.
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsValidAllSelectedCharacters()
+        {
+            LobbyRoom room = PhotonRealtimeClient.LobbyCurrentRoom;
+
+            foreach (var player in room.Players)
+            {
+                int[] playerCharacterIds = player.Value.GetCustomProperty<int[]>(PlayerCharacterIdsKey);
+                if (playerCharacterIds == null || playerCharacterIds.Length < 3)
+                {
+                    return false;
+                }
+                else
+                {
+                    foreach (int id in playerCharacterIds)
+                    {
+                        if (id == 0) return false;
+                    }
+                }
+            }
+            return true;
         }
 
         public int CountRealPlayers()
