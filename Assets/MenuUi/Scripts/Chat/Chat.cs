@@ -12,7 +12,7 @@ public class Chat : MonoBehaviour
     public GameObject languageChat; 
     public GameObject globalChat;
     public GameObject clanChat;
-    private GameObject currentContent; // Tällä hetkellä aktiivinen chatin content
+    public GameObject currentContent; // Tällä hetkellä aktiivinen chatin content
 
     [Header("InputField")]
     public TMP_InputField inputField;
@@ -421,5 +421,23 @@ public class Chat : MonoBehaviour
             DeselectMessage(selectedMessage);
             MinimizeOptions();
         }
+    }
+
+    public void UpdateContentLayout(HorizontalLayoutGroup reactionsField)
+    {
+        StartCoroutine(UpdateLayout(reactionsField));
+    }
+
+    private IEnumerator UpdateLayout(HorizontalLayoutGroup reactionsField)
+    {
+        yield return null;
+
+        if(reactionsField != null)
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
+        }
+        
+        VerticalLayoutGroup currentLayout = currentContent.GetComponentInChildren<VerticalLayoutGroup>();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(currentLayout.GetComponent<RectTransform>());
     }
 }

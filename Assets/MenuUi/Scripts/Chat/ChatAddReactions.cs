@@ -114,6 +114,7 @@ public class ChatAddReactions : MonoBehaviour
             LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
 
             _chatScript.DeselectMessage(selectedMessage);
+            _chatScript.UpdateContentLayout(reactionsField);
         }
     }
 
@@ -140,7 +141,12 @@ public class ChatAddReactions : MonoBehaviour
 
     private void RemoveReaction(ChatReactionHandler reaction)
     {
+        HorizontalLayoutGroup reactionsField = reaction.GetComponentInParent<HorizontalLayoutGroup>();
+        
         _reactionHandlers.Remove(reaction);
         Destroy(reaction.gameObject);
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
+        _chatScript.UpdateContentLayout(reactionsField);
     }
 }
