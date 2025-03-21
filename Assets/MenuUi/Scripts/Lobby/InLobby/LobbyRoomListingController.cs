@@ -8,8 +8,11 @@ using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
-namespace MenuUI.Scripts.Lobby.InLobby
+namespace MenuUi.Scripts.Lobby.InLobby
 {
+    /// <summary>
+    /// Handles calling the photon methods for creating a new room or joining a room, and forwarding the photon room list to RoomSearchPanelController.
+    /// </summary>
     public class LobbyRoomListingController : MonoBehaviour
     {
         private const string DefaultRoomNameName = "Battle ";

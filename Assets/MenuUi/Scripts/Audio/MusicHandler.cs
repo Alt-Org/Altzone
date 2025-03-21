@@ -18,7 +18,11 @@ namespace MenuUi.Scripts.Audio
             if (musicObject == null) return null;
             else
             {
-                if(musicObject.MusicClip.Equals(GetComponent<AudioSource>().clip)) return musicObject.Name;
+                if (musicObject.MusicClip.Equals(GetComponent<AudioSource>().clip))
+                {
+                    if (!GetComponent<AudioSource>().isPlaying) GetComponent<AudioSource>().Play();
+                    return musicObject.Name;
+                }
                 StopMusic();
                 GetComponent<AudioSource>().clip = musicObject.MusicClip;
                 GetComponent<AudioSource>().Play();

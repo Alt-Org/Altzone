@@ -1,10 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using Altzone.Scripts.Lobby;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
 using UnityEngine;
 
+/// <summary>
+/// Handles navigating windows between main menu, different battle windows and lobby room.
+/// </summary>
 public class LobbyWindowNavigationHandler : MonoBehaviour
 {
     [SerializeField]

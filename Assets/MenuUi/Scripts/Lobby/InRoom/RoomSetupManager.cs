@@ -12,7 +12,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MenuUI.Scripts.Lobby.InRoom
+namespace MenuUi.Scripts.Lobby.InRoom
 {
     /// <summary>
     /// Prepares players in a room for the game play.
@@ -390,30 +390,27 @@ namespace MenuUI.Scripts.Lobby.InRoom
             // Master client can *only* start the game when in room as player!
             _interactableStartPlay = player.IsMasterClient && curValue >= PlayerPosition1 && curValue <= PlayerPosition4;
 
-            int[] characters = player.GetCustomProperty(PlayerCharactersKey, new int[3]);
-            int[] stats = player.GetCustomProperty(PlayerStatsKey, new int[15]);
-
             switch (curValue)
             {
                 case PlayerPosition1:
                     _interactablePlayerP1 = false;
                     _captionPlayerP1 = $"<color=blue>{player.NickName}</color>";
-                    _selectedCharactersP1.SetCharacters(characters, stats);
+                    _selectedCharactersP1.SetCharacters(false);
                     break;
                 case PlayerPosition2:
                     _interactablePlayerP2 = false;
                     _captionPlayerP2 = $"<color=blue>{player.NickName}</color>";
-                    _selectedCharactersP2.SetCharacters(characters, stats);
+                    _selectedCharactersP2.SetCharacters(false);
                     break;
                 case PlayerPosition3:
                     _interactablePlayerP3 = false;
                     _captionPlayerP3 = $"<color=blue>{player.NickName}</color>";
-                    _selectedCharactersP3.SetCharacters(characters, stats);
+                    _selectedCharactersP3.SetCharacters(false);
                     break;
                 case PlayerPosition4:
                     _interactablePlayerP4 = false;
                     _captionPlayerP4 = $"<color=blue>{player.NickName}</color>";
-                    _selectedCharactersP4.SetCharacters(characters, stats);
+                    _selectedCharactersP4.SetCharacters(false);
                     break;
             }
         }

@@ -4,10 +4,10 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Debug = UnityEngine.Debug;
-using ExitGames.Client.Photon;
 using Photon.Realtime;
 using Altzone.Scripts.Model.Poco.Game;
 using Photon.Client;
+using Altzone.Scripts.Lobby.Wrappers;
 //using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 //using Player = Battle1.PhotonRealtime.Code.Player;
 //using Room = Battle1.PhotonRealtime.Code.Room;
@@ -99,20 +99,25 @@ namespace Altzone.Scripts.Battle.Photon
 
         public int GetFirstFreePlayerPos(Player player, int wantedPlayerPos = PlayerPosition1, bool isAllocateByTeams = false)
         {
+            // Checking which of the room's player positions are free
             HashSet<int> usedPlayerPositions = new HashSet<int>();
-            if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PlayerPositionKey1) != "")
+
+            if (CheckIfPositionIsFree(PlayerPosition1) == false)
             {
                 usedPlayerPositions.Add(PlayerPosition1);
             }
-            if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PlayerPositionKey2) != "")
+
+            if (CheckIfPositionIsFree(PlayerPosition2) == false)
             {
                 usedPlayerPositions.Add(PlayerPosition2);
             }
-            if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PlayerPositionKey3) != "")
+
+            if (CheckIfPositionIsFree(PlayerPosition3) == false)
             {
                 usedPlayerPositions.Add(PlayerPosition3);
             }
-            if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PlayerPositionKey4) != "")
+
+            if (CheckIfPositionIsFree(PlayerPosition4) == false)
             {
                 usedPlayerPositions.Add(PlayerPosition4);
             }
@@ -136,6 +141,80 @@ namespace Altzone.Scripts.Battle.Photon
                 wantedPlayerPos = PlayerPositionSpectator;
             }
             return wantedPlayerPos;
+        }
+
+        /// <summary>
+        /// Check if the player position is free in LobbyCurrentRoom. If position value is not one of the existing positions checks if PlayerPosition1 is free.
+        /// </summary>
+        /// <param name="position">Player position value as integer.</param>
+        /// <returns>True if the position is free, false if it's not.</returns>
+        public static bool CheckIfPositionIsFree(int position)
+        {
+            string positionKey = GetPositionKey(position);
+            string positionValue = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(positionKey);
+            if (!string.IsNullOrWhiteSpace(positionValue))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Get the corresponding position key to a position value.
+        /// </summary>
+        /// <param name="position">Player position value as integer.</param>
+        /// <returns>Player position key as string. If the position integer is not one of the existing positions returns PositionKey1.</returns>
+        public static string GetPositionKey(int position)
+        {
+            string positionKey;
+
+            switch (position)
+            {
+                case PlayerPosition1:
+                    positionKey = PlayerPositionKey1;
+                    break;
+                case PlayerPosition2:
+                    positionKey = PlayerPositionKey2;
+                    break;
+                case PlayerPosition3:
+                    positionKey = PlayerPositionKey3;
+                    break;
+                case PlayerPosition4:
+                    positionKey = PlayerPositionKey4;
+                    break;
+                default:
+                    positionKey = PlayerPositionKey1;
+                    break;
+            }
+
+            return positionKey;
+        }
+
+        /// <summary>
+        /// Check if everyone in the room has all 3 selected characters selected.
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsValidAllSelectedCharacters()
+        {
+            LobbyRoom room = PhotonRealtimeClient.LobbyCurrentRoom;
+
+            foreach (var player in room.Players)
+            {
+                int[] playerCharacterIds = player.Value.GetCustomProperty<int[]>(PlayerCharacterIdsKey);
+                if (playerCharacterIds == null || playerCharacterIds.Length < 3)
+                {
+                    return false;
+                }
+                else
+                {
+                    foreach (int id in playerCharacterIds)
+                    {
+                        if (id == 0) return false;
+                    }
+                }
+            }
+            return true;
         }
 
         public int CountRealPlayers()

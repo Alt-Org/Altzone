@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MenuUI.Scripts.Lobby.InLobby
+namespace MenuUi.Scripts.Lobby.InLobby
 {
     /// <summary>
     /// Sets the visual elements for RoomSlot button which is instansiated to SearchPanel in Battle popup.
