@@ -339,6 +339,9 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator StartMatchmaking(GameType gameType)
         {
+            // Closing the room so that no others can join
+            PhotonRealtimeClient.CurrentRoom.IsOpen = false;
+
             // Saving other player's userids to enter the new game room together with master client
             List<string> expectedUsers = new();
             foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
@@ -349,13 +352,21 @@ namespace Altzone.Scripts.Lobby
             // Saving custom properties from the room to the variable
             string clanName = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.ClanNameKey, "");
 
+            // Sending other players in the room the room change request
+            PhotonRealtimeClient.Client.OpRaiseEvent(
+                    PhotonRealtimeClient.PhotonEvent.RoomChangeRequested,
+                    PhotonRealtimeClient.LocalPlayer.UserId,
+                    new RaiseEventArgs { Receivers = ReceiverGroup.Others },
+                    SendOptions.SendReliable
+                );
+
             // Nulling room list and leaving room so that client can get room list
             CurrentRooms = null;
             PhotonRealtimeClient.LeaveRoom();
 
             // Waiting until in lobby and that current room list has rooms
             yield return new WaitUntil(() => PhotonRealtimeClient.InLobby && CurrentRooms != null);
-
+            
             // Searching for suitable room
             bool roomFound = false;
             foreach (LobbyRoomInfo room in CurrentRooms)
@@ -376,7 +387,7 @@ namespace Altzone.Scripts.Lobby
                 switch (gameType)
                 {
                     case GameType.Clan2v2:
-                        if ((string)room.CustomProperties[PhotonBattleRoom.ClanNameKey] != clanName)
+                        if ((string)room.CustomProperties[PhotonBattleRoom.ClanNameKey] != clanName && room.MaxPlayers - room.PlayerCount >= expectedUsers.Count + 1)
                         {
                             PhotonRealtimeClient.JoinRoom(room.Name, expectedUsers.ToArray());
                             roomFound = true;
@@ -423,6 +434,24 @@ namespace Altzone.Scripts.Lobby
             {
                 StartCoroutine(StartTheGameplay(_isCloseRoomOnGameStart, _blueTeamName, _redTeamName));
             }
+        }
+
+        private IEnumerator FollowLeaderToNewRoom(string leaderUserId)
+        {
+            string oldRoomName = PhotonRealtimeClient.CurrentRoom.Name;
+
+            // Leaving room and waiting until in lobby
+            PhotonRealtimeClient.LeaveRoom();
+            yield return new WaitUntil(() => PhotonRealtimeClient.InLobby);
+
+            // Trying to see which room the leader joined
+            bool newRoomJoined = false;
+            do
+            {
+                PhotonRealtimeClient.Client.OpFindFriends(new string[1] { leaderUserId });
+                
+                yield return new WaitForSeconds(0.1f);
+            } while (!newRoomJoined);
         }
 
         private IEnumerator StartTheGameplay(bool isCloseRoom, string blueTeamName, string redTeamName)
@@ -789,6 +818,10 @@ namespace Altzone.Scripts.Lobby
                     int position = (int)photonEvent.CustomData;
                     Player player = PhotonRealtimeClient.CurrentRoom.GetPlayer(photonEvent.Sender);
                     if (player != null) SetPlayer(player, position);
+                    break;
+                case PhotonRealtimeClient.PhotonEvent.RoomChangeRequested:
+                    string leaderUserId = (string)photonEvent.CustomData;
+                    StartCoroutine(FollowLeaderToNewRoom(leaderUserId));
                     break;
             }
             LobbyOnEvent?.Invoke();
