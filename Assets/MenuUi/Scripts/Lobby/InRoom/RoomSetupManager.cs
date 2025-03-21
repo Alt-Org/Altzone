@@ -263,7 +263,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             }
             ResetState();
 
-            int roomMaxPlayers = PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers;
+            GameType roomGameType = (GameType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
 
             // We need local player to check against other players
             LobbyPlayer localPlayer = PhotonRealtimeClient.LocalLobbyPlayer;
@@ -283,31 +283,20 @@ namespace MenuUi.Scripts.Lobby.InRoom
             // Setting player position buttons active status
             SetButtonActive(_buttonPlayerP1, _interactablePlayerP1);
             SetButtonActive(_buttonPlayerP2, _interactablePlayerP2);
-
-            if (roomMaxPlayers == 4)
-            {
-                SetButtonActive(_buttonPlayerP3, _interactablePlayerP3);
-                SetButtonActive(_buttonPlayerP4, _interactablePlayerP4);
-            }
+            SetButtonActive(_buttonPlayerP3, _interactablePlayerP3);
+            SetButtonActive(_buttonPlayerP4, _interactablePlayerP4);
 
             // Setting player name texts
-            _nameP1.text = _captionPlayerP1;
-            _nameP2.text = _captionPlayerP2;
-            
-            if (roomMaxPlayers == 4)
-            {
-                _nameP3.text = _captionPlayerP3;
-                _nameP4.text = _captionPlayerP4;
-            }
+            if (_nameP1 != null) _nameP1.text = _captionPlayerP1;
+            if (_nameP2 != null) _nameP2.text = _captionPlayerP2;
+            if (_nameP3 != null) _nameP3.text = _captionPlayerP3;
+            if (_nameP4 != null) _nameP4.text = _captionPlayerP4;
 
             // Setting start game button interactable status
             _buttonStartPlay.interactable = _interactableStartPlay;
 
-            // Setting team text in a custom game mode
-            if ((GameType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey) == GameType.Custom)
-            {
-                SetTeamText();
-            }
+            // Setting team text
+            SetTeamText();
         }
 
         private void SetTeamText()
@@ -316,13 +305,13 @@ namespace MenuUi.Scripts.Lobby.InRoom
             int masterTeam = GetTeam(_masterClientPosition);
             if (masterTeam == 0)
             {
-                _upperTeamText.text = "Beta joukkue";//$"Joukkue {room.GetCustomProperty<string>(TeamRedNameKey)}";
-                _lowerTeamText.text = "Alpha joukkue";//$"Joukkue {room.GetCustomProperty<string>(TeamBlueNameKey)}";
+                if (_upperTeamText != null) _upperTeamText.text = room.GetCustomProperty<string>(TeamBetaNameKey);
+                if (_lowerTeamText != null) _lowerTeamText.text = room.GetCustomProperty<string>(TeamAlphaNameKey);
             }
             else
             {
-                _upperTeamText.text = "Alpha joukkue";//{room.GetCustomProperty<string>(TeamBlueNameKey)}";
-                _lowerTeamText.text = "Beta joukkue";//$"Joukkue {room.GetCustomProperty<string>(TeamRedNameKey)}";
+                if (_upperTeamText != null) _upperTeamText.text = room.GetCustomProperty<string>(TeamAlphaNameKey);
+                if (_lowerTeamText != null) _lowerTeamText.text = room.GetCustomProperty<string>(TeamBetaNameKey);
             }
         }
 
@@ -360,23 +349,23 @@ namespace MenuUi.Scripts.Lobby.InRoom
             {
                 case PlayerPosition1:
                     _interactablePlayerP1 = false;
-                    _captionPlayerP1 = player.NickName;
-                    _selectedCharactersP1.SetCharacters(characters, stats);
+                    if (_captionPlayerP1 != null) _captionPlayerP1 = player.NickName;
+                    if (_selectedCharactersP1 != null) _selectedCharactersP1.SetCharacters(characters, stats);
                     break;
                 case PlayerPosition2:
                     _interactablePlayerP2 = false;
-                    _captionPlayerP2 = player.NickName;
-                    _selectedCharactersP2.SetCharacters(characters, stats);
+                    if (_captionPlayerP2 != null) _captionPlayerP2 = player.NickName;
+                    if (_selectedCharactersP2 != null) _selectedCharactersP2.SetCharacters(characters, stats);
                     break;
                 case PlayerPosition3:
                     _interactablePlayerP3 = false;
-                    _captionPlayerP3 = player.NickName;
-                    _selectedCharactersP3.SetCharacters(characters, stats);
+                    if (_captionPlayerP3 != null) _captionPlayerP3 = player.NickName;
+                    if (_selectedCharactersP3 != null) _selectedCharactersP3.SetCharacters(characters, stats);
                     break;
                 case PlayerPosition4:
                     _interactablePlayerP4 = false;
-                    _captionPlayerP4 = player.NickName;
-                    _selectedCharactersP4.SetCharacters(characters, stats);
+                    if (_captionPlayerP4 != null) _captionPlayerP4 = player.NickName;
+                    if (_selectedCharactersP4 != null) _selectedCharactersP4.SetCharacters(characters, stats);
                     break;
             }
         }
@@ -392,23 +381,23 @@ namespace MenuUi.Scripts.Lobby.InRoom
             {
                 case PlayerPosition1:
                     _interactablePlayerP1 = false;
-                    _captionPlayerP1 = $"<color=blue>{player.NickName}</color>";
-                    _selectedCharactersP1.SetCharacters(false);
+                    if (_captionPlayerP1 != null) _captionPlayerP1 = $"<color=blue>{player.NickName}</color>";
+                    if (_selectedCharactersP1 != null) _selectedCharactersP1.SetCharacters(false);
                     break;
                 case PlayerPosition2:
                     _interactablePlayerP2 = false;
-                    _captionPlayerP2 = $"<color=blue>{player.NickName}</color>";
-                    _selectedCharactersP2.SetCharacters(false);
+                    if (_captionPlayerP2 != null) _captionPlayerP2 = $"<color=blue>{player.NickName}</color>";
+                    if (_selectedCharactersP2 != null) _selectedCharactersP2.SetCharacters(false);
                     break;
                 case PlayerPosition3:
                     _interactablePlayerP3 = false;
-                    _captionPlayerP3 = $"<color=blue>{player.NickName}</color>";
-                    _selectedCharactersP3.SetCharacters(false);
+                    if (_captionPlayerP3 != null) _captionPlayerP3 = $"<color=blue>{player.NickName}</color>";
+                    if (_selectedCharactersP4 != null) _selectedCharactersP3.SetCharacters(false);
                     break;
                 case PlayerPosition4:
                     _interactablePlayerP4 = false;
-                    _captionPlayerP4 = $"<color=blue>{player.NickName}</color>";
-                    _selectedCharactersP4.SetCharacters(false);
+                    if (_captionPlayerP4 != null) _captionPlayerP4 = $"<color=blue>{player.NickName}</color>";
+                    if (_selectedCharactersP4 != null) _selectedCharactersP4.SetCharacters(false);
                     break;
             }
         }
