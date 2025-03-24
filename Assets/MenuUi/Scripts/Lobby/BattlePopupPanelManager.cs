@@ -11,6 +11,7 @@ public class BattlePopupPanelManager : MonoBehaviour
     [SerializeField] private GameObject _mainPanel;
     [SerializeField] private GameObject _custom2v2WaitingRoom;
     [SerializeField] private GameObject _clanAndRandom2v2WaitingRoom;
+    [SerializeField] private GameObject _matchmakingPanel;
 
     public void SwitchRoom(GameType gameType)
     {
