@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Quantum
 {
-    public class ProjectileSpriteChanger : QuantumCallbacks
+    public class ProjectileViewController : QuantumCallbacks
     {
         [Tooltip("Sprite 0: Sadness\nSprite 1: Joy\nSprite 2: Playful\nSprite 3: Aggression\nSprite 4: Love")]
         [SerializeField] private Sprite[] _sprites;
@@ -13,12 +13,12 @@ namespace Quantum
         {
             _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
-            QuantumEvent.Subscribe<EventChangeProjectileSprite>(this, OnChangeProjectileSprite);
+            QuantumEvent.Subscribe<EventChangeEmotionState>(this, OnChangeEmotionState);
         }
 
-        private void OnChangeProjectileSprite(EventChangeProjectileSprite e)
+        private void OnChangeEmotionState(EventChangeEmotionState e)
         {
-            _spriteRenderer.sprite = _sprites[e.SpriteIndex];
+            _spriteRenderer.sprite = _sprites[(int)e.Emotion];
         }
     }
 }

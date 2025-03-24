@@ -11,7 +11,7 @@ component Projectile
     FP Speed;
     FPVector2 Direction;
     FP Radius;
-    int TestSpriteIndex;
+    EmotionState Emotion;
 
     array<ProjectileCollisionFlags>[2] CollisionFlags;
 }
