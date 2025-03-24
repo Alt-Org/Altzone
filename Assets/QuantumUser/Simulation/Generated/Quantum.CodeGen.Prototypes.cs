@@ -331,7 +331,7 @@ namespace Quantum.Prototypes {
     public FP Speed;
     public FPVector2 Direction;
     public FP Radius;
-    public Int32 TestSpriteIndex;
+    public Quantum.QEnum32<EmotionState> Emotion;
     [ArrayLengthAttribute(2)]
     public Quantum.QEnum8<ProjectileCollisionFlags>[] CollisionFlags = new Quantum.QEnum8<ProjectileCollisionFlags>[2];
     partial void MaterializeUser(Frame frame, ref Quantum.Projectile result, in PrototypeMaterializationContext context);
@@ -345,7 +345,7 @@ namespace Quantum.Prototypes {
         result.Speed = this.Speed;
         result.Direction = this.Direction;
         result.Radius = this.Radius;
-        result.TestSpriteIndex = this.TestSpriteIndex;
+        result.Emotion = this.Emotion;
         for (int i = 0, count = PrototypeValidator.CheckLength(CollisionFlags, 2, in context); i < count; ++i) {
           *result.CollisionFlags.GetPointer(i) = this.CollisionFlags[i];
         }
@@ -373,7 +373,6 @@ namespace Quantum.Prototypes {
     public MapEntityId ChildEntity;
     public FPVector2 Normal;
     public FP CollisionMinOffset;
-    public Int32 Layer;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.SoulWall component = default;
         Materialize((Frame)f, ref component, in context);
@@ -383,7 +382,6 @@ namespace Quantum.Prototypes {
         PrototypeValidator.FindMapEntity(this.ChildEntity, in context, out result.ChildEntity);
         result.Normal = this.Normal;
         result.CollisionMinOffset = this.CollisionMinOffset;
-        result.Layer = this.Layer;
     }
   }
 }

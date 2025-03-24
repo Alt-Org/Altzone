@@ -62,6 +62,13 @@ namespace Quantum {
     TeamAlpha = 1,
     TeamBeta = 2,
   }
+  public enum EmotionState : int {
+    Sadness = 0,
+    Joy = 1,
+    Playful = 2,
+    Aggression = 3,
+    Love = 4,
+  }
   public enum GameState : int {
     PreGame,
     ReadyToStart,
@@ -938,7 +945,7 @@ namespace Quantum {
     [FieldOffset(16)]
     public FP Radius;
     [FieldOffset(4)]
-    public Int32 TestSpriteIndex;
+    public EmotionState Emotion;
     [FieldOffset(0)]
     [FramePrinter.FixedArrayAttribute(typeof(ProjectileCollisionFlags), 2)]
     private fixed Byte _CollisionFlags_[2];
@@ -954,7 +961,7 @@ namespace Quantum {
         hash = hash * 31 + Speed.GetHashCode();
         hash = hash * 31 + Direction.GetHashCode();
         hash = hash * 31 + Radius.GetHashCode();
-        hash = hash * 31 + TestSpriteIndex.GetHashCode();
+        hash = hash * 31 + (Int32)Emotion;
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(CollisionFlags);
         return hash;
       }
@@ -962,7 +969,7 @@ namespace Quantum {
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (Projectile*)ptr;
         FixedArray.Serialize(p->CollisionFlags, serializer, Statics.SerializeProjectileCollisionFlags);
-        serializer.Stream.Serialize(&p->TestSpriteIndex);
+        serializer.Stream.Serialize((Int32*)&p->Emotion);
         QBoolean.Serialize(&p->IsLaunched, serializer);
         FP.Serialize(&p->Radius, serializer);
         FP.Serialize(&p->Speed, serializer);
@@ -989,29 +996,25 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct SoulWall : Quantum.IComponent {
-    public const Int32 SIZE = 40;
+    public const Int32 SIZE = 32;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(8)]
-    public EntityRef ChildEntity;
-    [FieldOffset(24)]
-    public FPVector2 Normal;
-    [FieldOffset(16)]
-    public FP CollisionMinOffset;
     [FieldOffset(0)]
-    public Int32 Layer;
+    public EntityRef ChildEntity;
+    [FieldOffset(16)]
+    public FPVector2 Normal;
+    [FieldOffset(8)]
+    public FP CollisionMinOffset;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10253;
         hash = hash * 31 + ChildEntity.GetHashCode();
         hash = hash * 31 + Normal.GetHashCode();
         hash = hash * 31 + CollisionMinOffset.GetHashCode();
-        hash = hash * 31 + Layer.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (SoulWall*)ptr;
-        serializer.Stream.Serialize(&p->Layer);
         EntityRef.Serialize(&p->ChildEntity, serializer);
         FP.Serialize(&p->CollisionMinOffset, serializer);
         FPVector2.Serialize(&p->Normal, serializer);
@@ -1270,6 +1273,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(ComponentTypeRef), ComponentTypeRef.SIZE);
       typeRegistry.Register(typeof(DistanceJoint), DistanceJoint.SIZE);
       typeRegistry.Register(typeof(DistanceJoint3D), DistanceJoint3D.SIZE);
+      typeRegistry.Register(typeof(Quantum.EmotionState), 4);
       typeRegistry.Register(typeof(EntityPrototypeRef), EntityPrototypeRef.SIZE);
       typeRegistry.Register(typeof(EntityRef), EntityRef.SIZE);
       typeRegistry.Register(typeof(FP), FP.SIZE);
@@ -1371,6 +1375,7 @@ namespace Quantum {
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerSlot>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleTeamNumber>();
       FramePrinter.EnsurePrimitiveNotStripped<CallbackFlags>();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.EmotionState>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.GameState>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.InputButtons>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.PlayerCollisionType>();

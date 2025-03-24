@@ -65,7 +65,7 @@ namespace Quantum {
           case EventGridSet.ID: result = typeof(EventGridSet); return;
           case EventPlayerViewInit.ID: result = typeof(EventPlayerViewInit); return;
           case EventPlaySoundEvent.ID: result = typeof(EventPlaySoundEvent); return;
-          case EventChangeProjectileSprite.ID: result = typeof(EventChangeProjectileSprite); return;
+          case EventChangeEmotionState.ID: result = typeof(EventChangeEmotionState); return;
           default: break;
         }
       }
@@ -96,10 +96,10 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventChangeProjectileSprite ChangeProjectileSprite(Int32 SpriteIndex) {
+      public EventChangeEmotionState ChangeEmotionState(EmotionState Emotion) {
         if (_f.IsPredicted) return null;
-        var ev = _f.Context.AcquireEvent<EventChangeProjectileSprite>(EventChangeProjectileSprite.ID);
-        ev.SpriteIndex = SpriteIndex;
+        var ev = _f.Context.AcquireEvent<EventChangeEmotionState>(EventChangeEmotionState.ID);
+        ev.Emotion = Emotion;
         _f.AddEvent(ev);
         return ev;
       }
@@ -205,13 +205,13 @@ namespace Quantum {
       }
     }
   }
-  public unsafe partial class EventChangeProjectileSprite : EventBase {
+  public unsafe partial class EventChangeEmotionState : EventBase {
     public new const Int32 ID = 5;
-    public Int32 SpriteIndex;
-    protected EventChangeProjectileSprite(Int32 id, EventFlags flags) : 
+    public EmotionState Emotion;
+    protected EventChangeEmotionState(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventChangeProjectileSprite() : 
+    public EventChangeEmotionState() : 
         base(5, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
     }
     public new QuantumGame Game {
@@ -225,7 +225,7 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 59;
-        hash = hash * 31 + SpriteIndex.GetHashCode();
+        hash = hash * 31 + Emotion.GetHashCode();
         return hash;
       }
     }
