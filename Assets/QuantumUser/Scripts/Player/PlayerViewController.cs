@@ -11,6 +11,7 @@ namespace Quantum
         {
             QuantumEvent.Subscribe<EventPlayerViewInit>(this, OnViewInit);
         }
+
         private void OnViewInit(EventPlayerViewInit e)
         {
             EntityRef entityRef = _playerEntityGameObject.GetComponent<QuantumEntityView>().EntityRef;
