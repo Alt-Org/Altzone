@@ -399,6 +399,13 @@ namespace Altzone.Scripts.Lobby
                             break;
                         }
                         break;
+                    case GameType.Random2v2:
+                        if (room.MaxPlayers - room.PlayerCount >= expectedUsers.Count + 1)
+                        {
+                            PhotonRealtimeClient.JoinRoom(room.Name, expectedUsers.ToArray());
+                            roomFound = true;
+                        }
+                        break;
                 }
                 
             }
@@ -406,13 +413,21 @@ namespace Altzone.Scripts.Lobby
             // If suitable room not found creating new room
             if (!roomFound)
             {
-                PhotonRealtimeClient.CreateLobbyRoom("", gameType, "", clanName, expectedUsers.ToArray(), true);
+                switch (gameType)
+                {
+                    case GameType.Clan2v2:
+                        PhotonRealtimeClient.CreateLobbyRoom("", gameType, "", clanName, expectedUsers.ToArray(), true);
+                        break;
+                    case GameType.Random2v2:
+                        PhotonRealtimeClient.CreateLobbyRoom("", gameType, "", "", expectedUsers.ToArray(), true);
+                        break;
+                }
             }
 
             // Waiting until client is in room
             yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
 
-            // Setting room properties
+            // If room was found setting room properties
             if (roomFound)
             {
                 PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.IsMatchmakingKey, false);
@@ -423,6 +438,9 @@ namespace Altzone.Scripts.Lobby
 
                         PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, positionValue1);
                         PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, positionValue2);
+                        break;
+                    case GameType.Random2v2:
+                        // todo: set player positions to room here
                         break;
                 }
             }

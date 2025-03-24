@@ -84,6 +84,9 @@ namespace MenuUi.Scripts.Lobby.InRoom
                         SignalBus.OnChangePopupInfoSignal($"Huoneessa pitää olla {PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers} pelaajaa.");
                     }
                     break;
+                case GameType.Random2v2:
+                    this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedGameType));
+                    break;
             }
         }
         private void GoBack()
