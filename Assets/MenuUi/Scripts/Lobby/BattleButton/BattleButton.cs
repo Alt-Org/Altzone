@@ -118,12 +118,6 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
         private void UpdateGameType(GameTypeInfo gameTypeInfo)
         {
-            if (gameTypeInfo.gameType == GameType.Random2v2)
-            {
-                SignalBusPopup.OnChangePopupInfoSignal($"Pelimuotoa {gameTypeInfo.Name} ei voi vielä pelata.");
-                return;
-            }
-
             _gameTypeIcon.sprite = gameTypeInfo.Icon;
             _selectedGameType = gameTypeInfo.gameType;
 
