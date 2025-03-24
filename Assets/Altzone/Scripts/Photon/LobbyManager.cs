@@ -436,10 +436,38 @@ namespace Altzone.Scripts.Lobby
                 PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, positionValue4);
             }
 
+            if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient) yield break; // stopping coroutine if not a master client
+
             // Checking if room is full and if not waiting until room is full
             if (PhotonRealtimeClient.CurrentRoom.PlayerCount < PhotonRealtimeClient.CurrentRoom.MaxPlayers)
             {
                 yield return new WaitUntil(() => PhotonRealtimeClient.CurrentRoom.PlayerCount == PhotonRealtimeClient.CurrentRoom.MaxPlayers);
+            }
+
+            // Updating player positions from room to player properties
+            foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
+            {
+                positionValue1 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey1);
+                positionValue2 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey2);
+                positionValue3 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey3);
+                positionValue4 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey4);
+
+                if (player.Value.UserId == positionValue1)
+                {
+                    player.Value.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, PhotonBattleRoom.PlayerPosition1);
+                }
+                else if (player.Value.UserId == positionValue2)
+                {
+                    player.Value.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, PhotonBattleRoom.PlayerPosition2);
+                }
+                else if (player.Value.UserId == positionValue3)
+                {
+                    player.Value.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, PhotonBattleRoom.PlayerPosition3);
+                }
+                else if (player.Value.UserId == positionValue4)
+                {
+                    player.Value.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, PhotonBattleRoom.PlayerPosition4);
+                }
             }
 
             // Starting game if master client
