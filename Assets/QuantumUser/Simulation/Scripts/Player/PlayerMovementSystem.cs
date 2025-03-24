@@ -112,7 +112,7 @@ namespace Quantum
                 playerData->TargetPosition = GridManager.GridPositionToWorldPosition(input->MovementPosition);
                 //checks if player is allowed to move to that side of the arena
                 if (((playerData->TeamNumber == BattleTeamNumber.TeamAlpha) && playerData->TargetPosition.Y > 0)
-                    || ((playerData->TeamNumber == BattleTeamNumber.TeamBeta) && playerData->TargetPosition.X < 0))
+                    || ((playerData->TeamNumber == BattleTeamNumber.TeamBeta) && playerData->TargetPosition.Y < 0))
                 {
                     playerData->TargetPosition.Y = 0;
                 }
