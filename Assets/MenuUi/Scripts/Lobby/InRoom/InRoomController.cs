@@ -20,13 +20,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
         [SerializeField] private Button _startGameButton;
         [SerializeField] private Button _backButton;
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
-        [SerializeField] private TMP_Text _searchingText;
-
-        private void OnEnable()
-        {
-            if (_searchingText != null && _searchingText.gameObject.activeSelf) _searchingText.gameObject.SetActive(false);
-            if (!_startGameButton.gameObject.activeSelf) _startGameButton.gameObject.SetActive(true);
-        }
+        [SerializeField] private TMP_Text _noticeText;
+        [SerializeField] private TMP_Text _sendInviteToFriendText;
 
         private void Start()
         {
@@ -35,7 +30,22 @@ namespace MenuUi.Scripts.Lobby.InRoom
             _startGameButton.onClick.AddListener(StartPlaying);
             _backButton.onClick.AddListener(GoBack);
             //buttons[3].onClick.AddListener(StartRaidTest);
-            if (_title != null) StartCoroutine(SetRoomTitle());
+            switch (InLobbyController.SelectedGameType)
+            {
+                case GameType.Custom:
+                    if (_title != null) StartCoroutine(SetRoomTitle());
+                    break;
+                case GameType.Random2v2:
+                    if (_title != null) _title.text = "2v2 satunnaisten kanssa";
+                    if (_noticeText != null) _noticeText.text = "Tätä pelimuotoa voi mennä pelaamaan yksin tai kaverin kanssa (työn alla). Huom. Jos menet pelaamaan yksin, paikan valinnalla ei ole merkitystä.";
+                    if (_sendInviteToFriendText != null) _sendInviteToFriendText.text = "Lähetä kutsu kaverille";
+                    break;
+                case GameType.Clan2v2:
+                    if (_title != null) _title.text = "2v2 klaanijäsenen kanssa";
+                    if (_noticeText != null) _noticeText.text = "Kutsun lähettäminen ei vielä toimi. Saman klaanin jäsen voi liittyä tähän huoneeseen menemällä peliin 2v2 klaanijäsenen kanssa.";
+                    if (_sendInviteToFriendText != null) _sendInviteToFriendText.text = "Lähetä kutsu yhdelle klaanin jäsenelle";
+                    break;
+            }
         }
 
         private void SetPlayerAsGuest()
@@ -67,8 +77,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 case GameType.Clan2v2:
                     if (PhotonLobbyRoom.CountRealPlayers() == PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers)
                     {
-                        _searchingText.gameObject.SetActive(true);
-                        _startGameButton.gameObject.SetActive(false);
                         this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedGameType));
                     }
                     else
