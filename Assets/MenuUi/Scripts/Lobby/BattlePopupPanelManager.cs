@@ -10,7 +10,7 @@ public class BattlePopupPanelManager : MonoBehaviour
     [SerializeField] private GameObject _topPanel;
     [SerializeField] private GameObject _mainPanel;
     [SerializeField] private GameObject _custom2v2WaitingRoom;
-    [SerializeField] private GameObject _clan2v2WaitingRoom;
+    [SerializeField] private GameObject _clanAndRandom2v2WaitingRoom;
 
     public void SwitchRoom(GameType gameType)
     {
@@ -21,9 +21,10 @@ public class BattlePopupPanelManager : MonoBehaviour
                 break;
             case GameType.Clan2v2:
                 ClosePanels();
-                _clan2v2WaitingRoom.SetActive(true);
+                _clanAndRandom2v2WaitingRoom.SetActive(true);
                 break;
             case GameType.Random2v2:
+                _clanAndRandom2v2WaitingRoom.SetActive(true);
                 break;
         }
     }

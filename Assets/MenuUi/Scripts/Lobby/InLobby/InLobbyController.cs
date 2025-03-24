@@ -163,6 +163,17 @@ namespace MenuUi.Scripts.Lobby.InLobby
                         }));
                     }
                     break;
+                case GameType.Random2v2:
+                    _roomSwitcher.ClosePanels();
+                    // Starting coroutine to create clan 2v2 room if player is not in a room and a room is currently being created
+                    if (!PhotonRealtimeClient.InRoom && _creatingRoomCoroutineHolder == null)
+                    {
+                        _creatingRoomCoroutineHolder = StartCoroutine(_roomListingController.StartCreatingRandom2v2Room(() =>
+                        {
+                            _creatingRoomCoroutineHolder = null;
+                        }));
+                    }
+                    break;
             }
         }
 

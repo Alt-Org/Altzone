@@ -101,6 +101,39 @@ namespace MenuUi.Scripts.Lobby.InLobby
             }));
         }
 
+        /// <summary>
+        /// Coroutine to create Random2v2 room after client is connected to lobby.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator StartCreatingRandom2v2Room(Action callback)
+        {
+            _creatingRoomText.SetActive(true);
+            bool roomCreated = false;
+            do
+            {
+                if (PhotonRealtimeClient.InLobby)
+                {
+                    CreateRandom2v2Room();
+                    roomCreated = true;
+                }
+            } while (!roomCreated);
+
+            callback();
+
+            yield break;
+        }
+
+        private void CreateRandom2v2Room()  // soulhome value for matchmaking
+        {
+            StartCoroutine(GetClanData(clanData =>
+            {
+                if (clanData != null)
+                {
+                    PhotonRealtimeClient.CreateLobbyRoom("", GameType.Random2v2);
+                }
+            }));
+        }
+
         private void JoinRoom(string roomName)
         {
             Debug.Log($"{roomName}");

@@ -1694,7 +1694,7 @@ GameObject:
   - component: {fileID: 1029870582348880443}
   - component: {fileID: 2348637392482191973}
   m_Layer: 5
-  m_Name: InRoom_Clan2v2AndRandom
+  m_Name: InRoom_ClanAndRandom2v2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11470,7 +11470,7 @@ MonoBehaviour:
   _topPanel: {fileID: 2167809155821651453}
   _mainPanel: {fileID: 2305444447518657805}
   _custom2v2WaitingRoom: {fileID: 2899300052170057362}
-  _clan2v2WaitingRoom: {fileID: 924863700751620412}
+  _clanAndRandom2v2WaitingRoom: {fileID: 924863700751620412}
 --- !u!114 &2879910939036819160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13240,7 +13240,7 @@ PrefabInstance:
     - target: {fileID: 4028375515925020952, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: m_text
-      value: Etsi vastustaja
+      value: Etsi peli
       objectReference: {fileID: 0}
     - target: {fileID: 4028375515925020952, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
