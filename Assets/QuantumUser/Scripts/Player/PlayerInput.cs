@@ -23,10 +23,29 @@ namespace Quantum
             bool mouseClick = !twoFingers && mouseDown && !_mouseDownPrevious;
             _mouseDownPrevious = mouseDown;
 
+
+            GridPosition movementPosition;
+            if (mouseClick)
+            {
+                Vector3 unityPosition = BattleCamera.Camera.ScreenToWorldPoint(ClickStateHandler.GetClickPosition());
+                movementPosition = new GridPosition()
+                {
+                    Row = GridManager.WorldYPositionToGridRow(FP.FromFloat_UNSAFE(unityPosition.z)),
+                    Col = GridManager.WorldXPositionToGridCol(FP.FromFloat_UNSAFE(unityPosition.x))
+                };
+            }
+            else
+            {
+                movementPosition = new GridPosition()
+                {
+                    Row = -1,
+                    Col = -1
+                };
+            }
             Input i = new()
             {
                 MouseClick = mouseClick,
-                MousePosition = mouseClick ? BattleCamera.Camera.ScreenToWorldPoint(ClickStateHandler.GetClickPosition()).ToFPVector3() : FPVector3.Zero,
+                MovementPosition = movementPosition,
                 //RotateMotion = twoFingers,
                 RotationDirection = twoFingers ? FP.FromFloat_UNSAFE(ClickStateHandler.GetRotationDirection()) : 0,
             };

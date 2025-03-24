@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 63fa6c591c80c4573aae394beb8a4936
+guid: c9b52cea3d6119042b3df926c172acd8
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -34,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 120
+  spritePixelsToUnits: 37
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -69,10 +69,10 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 256
+    maxTextureSize: 512
     resizeAlgorithm: 1
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -166,9 +166,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 511
-        width: 512
-        height: 511
+        y: 256
+        width: 256
+        height: 256
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -176,8 +176,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 496b0cff128ab5a589dd003ff3803336
-      internalID: 113932954
+      spriteID: ac0f3cbf716ea5f44b312aa19bec3c35
+      internalID: 49914648
       vertices: []
       indices: 
       edges: []
@@ -186,10 +186,10 @@ TextureImporter:
       name: BattlePlayerTest_1
       rect:
         serializedVersion: 2
-        x: 512
-        y: 511
-        width: 512
-        height: 511
+        x: 256
+        y: 256
+        width: 256
+        height: 256
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -197,8 +197,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bd66db99d6fc02e1cab3f3be444a6b01
-      internalID: -2095487254
+      spriteID: 4b1f8088f107a4c4689c987bf90fb290
+      internalID: 1418019002
       vertices: []
       indices: 
       edges: []
@@ -209,8 +209,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 512
-        height: 511
+        width: 256
+        height: 256
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -218,8 +218,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7339f4264b36c0a7287def86d9acfcdc
-      internalID: -1888186336
+      spriteID: e03ac369ceab9cb4a846706949cbf49d
+      internalID: -1776459092
       vertices: []
       indices: 
       edges: []
@@ -228,10 +228,10 @@ TextureImporter:
       name: BattlePlayerTest_3
       rect:
         serializedVersion: 2
-        x: 512
+        x: 256
         y: 0
-        width: 512
-        height: 511
+        width: 256
+        height: 256
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -239,8 +239,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 83e2703df26ef0acbac75d45ecfcdf7e
-      internalID: 2111463150
+      spriteID: 9a2175d0fb5218c458acb1d0f71f902e
+      internalID: -1309321468
       vertices: []
       indices: 
       edges: []
@@ -256,10 +256,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      BattlePlayerTest_0: 113932954
-      BattlePlayerTest_1: -2095487254
-      BattlePlayerTest_2: -1888186336
-      BattlePlayerTest_3: 2111463150
+      BattlePlayerTest_0: 49914648
+      BattlePlayerTest_1: 1418019002
+      BattlePlayerTest_2: -1776459092
+      BattlePlayerTest_3: -1309321468
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

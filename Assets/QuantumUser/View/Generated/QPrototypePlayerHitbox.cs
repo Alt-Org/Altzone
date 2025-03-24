@@ -14,18 +14,18 @@ namespace Quantum {
   using UnityEngine;
   
   [UnityEngine.DisallowMultipleComponent()]
-  public unsafe partial class QPrototypePlayerData : QuantumUnityComponentPrototype<Quantum.Prototypes.PlayerDataPrototype>, IQuantumUnityPrototypeWrapperForComponent<Quantum.PlayerData> {
-    partial void CreatePrototypeUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.PlayerDataPrototype prototype);
+  public unsafe partial class QPrototypePlayerHitbox : QuantumUnityComponentPrototype<Quantum.Prototypes.PlayerHitboxPrototype>, IQuantumUnityPrototypeWrapperForComponent<Quantum.PlayerHitbox> {
+    partial void CreatePrototypeUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.PlayerHitboxPrototype prototype);
     [DrawInline()]
     [ReadOnly(InEditMode = false)]
-    public Quantum.Prototypes.Unity.PlayerDataPrototype Prototype;
+    public Quantum.Prototypes.Unity.PlayerHitboxPrototype Prototype;
     public override System.Type ComponentType {
       get {
-        return typeof(Quantum.PlayerData);
+        return typeof(Quantum.PlayerHitbox);
       }
     }
     public override ComponentPrototype CreatePrototype(Quantum.QuantumEntityPrototypeConverter converter) {
-      Quantum.Prototypes.PlayerDataPrototype result;
+      Quantum.Prototypes.PlayerHitboxPrototype result;
       converter.Convert(Prototype, out result);
       CreatePrototypeUser(converter, ref result);
       return result;
