@@ -103,8 +103,29 @@ public class AltMonoBehaviour : MonoBehaviour
 
         yield return new WaitUntil(() => callback != null);
     }
+    protected IEnumerator SavePlayerData(PlayerData playerData, System.Action<PlayerData> callback)
+    {
 
-    protected IEnumerator GetClanData(System.Action<ClanData> callback, string clanId = null)
+        Storefront.Get().SavePlayerData(playerData, callback);
+
+        /*if (callback == null)
+        {
+            StartCoroutine(ServerManager.Instance.GetClanFromServer(content =>
+            {
+                if (content != null)
+                    callback(new(content));
+                else
+                {
+                    Debug.LogError("Could not connect to server and receive player");
+                    return;
+                }
+            }));
+        }*/
+
+        yield return new WaitUntil(() => callback != null);
+    }
+
+    protected IEnumerator GetClanData(string clanId, System.Action<ClanData> callback)
     {
         if(clanId == null)
         {
@@ -129,5 +150,74 @@ public class AltMonoBehaviour : MonoBehaviour
         }
 
         yield return new WaitUntil(() => callback != null);
+    }
+    protected IEnumerator GetClanData(System.Action<ClanData> callback, string clanId = null)
+    {
+        yield return StartCoroutine(GetClanData(clanId, callback));
+    }
+
+    protected IEnumerator SaveClanData(System.Action<ClanData> callback, ClanData clanData)
+    {
+
+        Storefront.Get().SaveClanData(clanData, callback);
+
+        /*if (callback == null)
+        {
+            StartCoroutine(ServerManager.Instance.GetClanFromServer(content =>
+            {
+                if (content != null)
+                    callback(new(content));
+                else
+                {
+                    Debug.LogError("Could not connect to server and receive player");
+                    return;
+                }
+            }));
+        }*/
+
+        yield return new WaitUntil(() => callback != null);
+    }
+
+    /// <summary>
+    /// Used to get and save player data to/from server.
+    /// </summary>
+    /// <param name="operationType">"get" or "save"</param>
+    /// <param name="unsavedData">If saving: insert unsaved data.<br/> If getting: insert <c>null</c>.</param>
+    /// <param name="timeoutTime">Time until coroutine force stops if no responce is received.</param>
+    /// <param name="timeoutCallback">Returns value if timeout with server.</param>
+    /// <param name="dataCallback">Returns <c>PlayerData</c>.</param>
+    protected IEnumerator PlayerDataTransferer(string operationType, PlayerData unsavedData, float timeoutTime, System.Action<bool> timeoutCallback, System.Action<PlayerData> dataCallback)
+    {
+        PlayerData receivedData = null;
+        bool? timeout = null;
+        Coroutine playerCoroutine;
+
+        switch (operationType.ToLower())
+        {
+            case "get":
+                {
+                    //Get player data.
+                    playerCoroutine = StartCoroutine(CoroutineWithTimeout(GetPlayerData, receivedData, timeoutTime, timeoutCallBack => timeout = timeoutCallBack, data => receivedData = data));
+                    break;
+                }
+            case "save":
+                {
+                    //Save player data.
+                    playerCoroutine = StartCoroutine(CoroutineWithTimeout(SavePlayerData, unsavedData, receivedData, timeoutTime, timeoutCallback: timeoutCallBack => timeout = timeoutCallBack, data => receivedData = data));
+                    break;
+                }
+            default: Debug.LogError($"Received: {operationType}, when expecting \"get\" or \"save\"."); yield break;
+        }
+
+        yield return new WaitUntil(() => (receivedData != null || timeout != null));
+
+        if (receivedData == null)
+        {
+            timeoutCallback(true);
+            Debug.LogError($"Player data operation: \"{operationType}\" timeout or null.");
+            yield break;
+        }
+
+        dataCallback(receivedData);
     }
 }

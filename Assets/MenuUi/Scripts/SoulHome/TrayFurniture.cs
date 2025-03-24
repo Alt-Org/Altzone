@@ -15,7 +15,7 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private  int debugValue = 0;
 
-        public GameObject FurnitureObject { get => _furnitureObject; set => _furnitureObject = value; }
+        public GameObject FurnitureObject { get => _furnitureObject; set {if (!Application.isPlaying) _furnitureObject = value; } }
         public Furniture Furniture { get => _furniture; set => _furniture = value; }
         public FurnitureListObject FurnitureList { get => _furnitureList; set => _furnitureList = value; }
 
