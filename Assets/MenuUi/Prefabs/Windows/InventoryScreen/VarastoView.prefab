@@ -8482,22 +8482,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _inputField: {fileID: 1218480993616883670}
-  _slider: {fileID: 7265058401769312270}
-  _sliderUpEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2310489176983780902}
-        m_TargetAssemblyTypeName: MenuUi.Scripts.Storage.InvFront, MainMenu
-        m_MethodName: UpdateInventory
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   _inputFieldSubmitEvent:
     m_PersistentCalls:
       m_Calls:
@@ -8513,6 +8497,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _slider: {fileID: 7265058401769312270}
+  _invFront: {fileID: 2310489176983780902}
 --- !u!1 &6782588583475335140
 GameObject:
   m_ObjectHideFlags: 0
@@ -10303,22 +10289,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _inputField: {fileID: 7066966137898217869}
-  _slider: {fileID: 6572669897562756401}
-  _sliderUpEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2310489176983780902}
-        m_TargetAssemblyTypeName: MenuUi.Scripts.Storage.InvFront, MainMenu
-        m_MethodName: UpdateInventory
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   _inputFieldSubmitEvent:
     m_PersistentCalls:
       m_Calls:
@@ -10334,6 +10304,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _slider: {fileID: 6572669897562756401}
+  _invFront: {fileID: 2310489176983780902}
 --- !u!1 &8707263486355530803
 GameObject:
   m_ObjectHideFlags: 0
