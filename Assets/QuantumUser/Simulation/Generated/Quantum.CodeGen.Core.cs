@@ -996,25 +996,29 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct SoulWall : Quantum.IComponent {
-    public const Int32 SIZE = 32;
+    public const Int32 SIZE = 40;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(0)]
-    public EntityRef ChildEntity;
-    [FieldOffset(16)]
-    public FPVector2 Normal;
     [FieldOffset(8)]
+    public EntityRef ChildEntity;
+    [FieldOffset(24)]
+    public FPVector2 Normal;
+    [FieldOffset(16)]
     public FP CollisionMinOffset;
+    [FieldOffset(0)]
+    public EmotionState Emotion;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10253;
         hash = hash * 31 + ChildEntity.GetHashCode();
         hash = hash * 31 + Normal.GetHashCode();
         hash = hash * 31 + CollisionMinOffset.GetHashCode();
+        hash = hash * 31 + (Int32)Emotion;
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (SoulWall*)ptr;
+        serializer.Stream.Serialize((Int32*)&p->Emotion);
         EntityRef.Serialize(&p->ChildEntity, serializer);
         FP.Serialize(&p->CollisionMinOffset, serializer);
         FPVector2.Serialize(&p->Normal, serializer);
