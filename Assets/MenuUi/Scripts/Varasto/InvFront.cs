@@ -182,9 +182,9 @@ namespace MenuUi.Scripts.Storage
                     break;
             }
 
-            bool valueCheck =
-                furn.Value <= _maxValueSlider.GetSliderValue() && furn.Value >= _minValueSlider.GetSliderValue()
-                || _maxValueSlider.GetSliderValue() == 0 && furn.Value >= _minValueSlider.GetSliderValue();
+            float maxValue = _maxValueSlider.GetSliderValue();
+            float minValue = _minValueSlider.GetSliderValue();
+            bool valueCheck = (furn.Value <= maxValue && furn.Value >= minValue) || (maxValue == 0 && furn.Value >= minValue);
 
             // Soul home check
             if (furn.Position != new Vector2Int(-1, -1) && !_inSoulHomeToggle.isOn)
