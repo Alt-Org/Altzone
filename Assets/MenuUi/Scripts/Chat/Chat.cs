@@ -240,14 +240,17 @@ public class Chat : MonoBehaviour
     private void SetReactionPanelPosition()
     {
         Vector3 reactionPosition = addReactionsPanel.transform.position;
+        RectTransform reactionPanelTransfrom = commonReactions.GetComponent<RectTransform>();
+
         HorizontalLayoutGroup reactionField = selectedMessage.GetComponentInChildren<HorizontalLayoutGroup>();
         RectTransform reactionFieldTransform = reactionField.GetComponent<RectTransform>();
 
         float fieldBottomY = reactionField.transform.position.y - (reactionFieldTransform.rect.height * reactionFieldTransform.pivot.y);
-        float newPanelY = fieldBottomY - 40;
+        float newPanelY = fieldBottomY - (reactionPanelTransfrom.rect.height * reactionPanelTransfrom.pivot.y);
         reactionPosition.y = newPanelY;
 
-        float newPanelX = reactionFieldTransform.pivot.x + 330;
+        float fieldEdgeX = reactionField.transform.position.x - (reactionFieldTransform.rect.width * reactionFieldTransform.pivot.x);
+        float newPanelX = fieldEdgeX + (reactionPanelTransfrom.rect.width * reactionPanelTransfrom.pivot.x);
         reactionPosition.x = newPanelX;
 
         addReactionsPanel.transform.position = reactionPosition;
