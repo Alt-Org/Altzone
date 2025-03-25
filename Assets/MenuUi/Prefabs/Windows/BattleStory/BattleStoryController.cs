@@ -28,6 +28,7 @@ public class BattleStoryController : MonoBehaviour
 
     [Header("Ball Emotion Sprites"), SerializeField]
     private List<EmotionObject> _emotionList;
+    private List<EmotionObject> _validatedList;
 
     [Header("Character Animators"),SerializeField]
     private Animator _characterAnimator1;
@@ -44,9 +45,9 @@ public class BattleStoryController : MonoBehaviour
 
     public IEnumerator PlayAnimation()
     {
-        List<EmotionObject> validatedList = ValidateEmotions();
+        _validatedList = ValidateEmotions();
 
-        int clipsCount = validatedList.Count;
+        int clipsCount = _validatedList.Count;
         if (clipsCount <= 0) yield break;
         if (_routesLeft.Count <= 0) yield break;
         if (_routesRight.Count <= 0) yield break;
@@ -65,7 +66,7 @@ public class BattleStoryController : MonoBehaviour
             {
                 selectedvalue1 = Random.Range(0, clipsCount);
             } while(selectedvalue1.Equals(prevSelectedValue1));
-            randomClipOrder1.Add(validatedList[selectedvalue1].Emotion);
+            randomClipOrder1.Add(_validatedList[selectedvalue1].Emotion);
             prevSelectedValue1 = selectedvalue1;
             int ballAnimation1 = Random.Range(0, _routesLeft.Count);
             randomBallOrder1.Add(ballAnimation1);
@@ -74,7 +75,7 @@ public class BattleStoryController : MonoBehaviour
             {
                 selectedvalue2 = Random.Range(0, clipsCount);
             } while (selectedvalue2.Equals(prevSelectedValue2));
-            randomClipOrder2.Add(validatedList[selectedvalue2].Emotion);
+            randomClipOrder2.Add(_validatedList[selectedvalue2].Emotion);
             prevSelectedValue2 = selectedvalue2;
             int ballAnimation2 = Random.Range(0, _routesRight.Count);
             randomBallOrder2.Add(ballAnimation2);
@@ -131,7 +132,7 @@ public class BattleStoryController : MonoBehaviour
     {
         if (emotion == Emotion.Blank) return null;
 
-        foreach (EmotionObject emotionObj in _emotionList)
+        foreach (EmotionObject emotionObj in _validatedList)
         {
             if(emotionObj.Emotion == emotion) return emotionObj;
         }
