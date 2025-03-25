@@ -4,15 +4,36 @@ using UnityEngine;
 
 namespace QuantumUser.Scripts
 {
-    public class GameViewController : MonoBehaviour
+    public class GameViewController : QuantumCallbacks
     {
+
+        [SerializeField] private GridViewController _gridViewController;
         // References to UIviews
         [SerializeField] private GameUiController _gameUiController;
+        [SerializeField] private ScreenEffectViewController _screenEffectViewController;
 
-        // Start is called before the first frame update
-        // Currently not used but can be used for initialization if needed
-        private void Start()
+        private void Awake()
         {
+            if (_gridViewController != null) /*temp check*/ QuantumEvent.Subscribe<EventGridSet>(this, OnGridSet);
+            QuantumEvent.Subscribe<EventChangeEmotionState>(this, OnChangeEmotionState);
+            QuantumEvent.Subscribe<EventUpdateDebugStatsOverlay>(this, OnUpdateDebugStatsOverlay);
+        }
+
+        private void OnChangeEmotionState(EventChangeEmotionState e)
+        {
+            if (!_screenEffectViewController.IsActive) _screenEffectViewController.SetActive(true);
+            _screenEffectViewController.ChangeColor((int)e.Emotion);
+        }
+
+        private void OnGridSet(EventGridSet e)
+        {
+            _gridViewController.SetGrid();
+        }
+
+        private void OnUpdateDebugStatsOverlay(EventUpdateDebugStatsOverlay e)
+        {
+            _gameUiController.DebugStatsOverlay.SetShow(true);
+            _gameUiController.DebugStatsOverlay.SetStats(e.Character);
         }
 
         // Handles UI updates based on the game's state and countdown

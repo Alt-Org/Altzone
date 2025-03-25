@@ -5,6 +5,7 @@ using System.Linq;
 using Photon.Realtime;
 using UnityEngine;
 using Altzone.Scripts.Lobby.Wrappers;
+using Altzone.Scripts.Lobby;
 //using ClientState = Battle1.PhotonRealtime.Code.ClientState;
 //using ILobbyCallbacks = Battle1.PhotonRealtime.Code.ILobbyCallbacks;
 //using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
@@ -47,6 +48,11 @@ namespace Altzone.Scripts.Common.Photon
             throw new UnityException($"Invalid connection state: {PhotonRealtimeClient.NetworkClientState}");
         }
 
+        private void Awake()
+        {
+            LobbyManager.LobbyOnLeftRoom += OnLeftRoom;
+        }
+
         private void OnEnable()
         {
             PhotonRealtimeClient.Client.AddCallbackTarget(this);
@@ -55,6 +61,11 @@ namespace Altzone.Scripts.Common.Photon
         private void OnDisable()
         {
             PhotonRealtimeClient.Client.RemoveCallbackTarget(this);
+        }
+
+        private void OnDestroy()
+        {
+            LobbyManager.LobbyOnLeftRoom -= OnLeftRoom;
         }
 
         private void UpdateRoomListing(List<LobbyRoomInfo> roomList)
@@ -66,10 +77,6 @@ namespace Altzone.Scripts.Common.Photon
                 if (curRoomInfoIndex != -1)
                 {
                     _currentRoomList.RemoveAt(curRoomInfoIndex);
-                    if (newRoomInfo.RemovedFromList)
-                    {
-                        continue; // No need to add as this will be disappear soon!
-                    }
                 }
                 _currentRoomList.Add(newRoomInfo);
             }
@@ -80,27 +87,27 @@ namespace Altzone.Scripts.Common.Photon
             }
         }
 
+        private void OnLeftRoom() // clearing room list when leaving room so that the bookkeeping works correctly. when going to lobby again all of the current rooms will be passed to OnRoomListUpdate
+        {
+            _currentRoomList.Clear();
+        }
+
         void ILobbyCallbacks.OnJoinedLobby()
         {
-            //_currentRoomList.Clear();
-            //_debugRoomListCount = 0;
             Debug.Log($"roomsUpdated: {_debugRoomListCount} CloudRegion={PhotonRealtimeClient.CloudRegion}");
             OnRoomsUpdated?.Invoke();
         }
 
         void ILobbyCallbacks.OnLeftLobby()
         {
-            _currentRoomList.Clear();
-            _debugRoomListCount = 0;
             Debug.Log($"roomsUpdated: {_debugRoomListCount}");
             OnRoomsUpdated?.Invoke();
         }
 
-        void ILobbyCallbacks.OnRoomListUpdate(List<RoomInfo> roomList)
+        void ILobbyCallbacks.OnRoomListUpdate(List<RoomInfo> updatedRoomsList) // note: only updated rooms will be passed on to this function not every room
         {
-            _currentRoomList.Clear();
             List<LobbyRoomInfo> lobbyRoomList = new();
-            foreach (RoomInfo roomInfo in roomList)
+            foreach (RoomInfo roomInfo in updatedRoomsList)
             {
                 lobbyRoomList.Add(new(roomInfo));
             }

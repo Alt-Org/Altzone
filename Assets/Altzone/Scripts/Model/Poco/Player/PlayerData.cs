@@ -7,6 +7,7 @@ using Altzone.Scripts.Model.Poco.Attributes;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Voting;
+using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -51,6 +52,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         public int BackpackCapacity;
 
         public PlayerTask Task = null;
+        public AvatarData AvatarData;
 
         public int points = 0;
 
@@ -77,7 +79,9 @@ namespace Altzone.Scripts.Model.Poco.Player
                 foreach (var id in SelectedCharacterIds)
                 {
                     if (string.IsNullOrEmpty(id)) continue;
-                    list.Add(CustomCharacters.FirstOrDefault(x => x.ServerID == id));
+                    CustomCharacter character = CustomCharacters.FirstOrDefault(x => x.ServerID == id);
+                    if(character == null) continue;
+                    list.Add(character);
                 }
                 while(list.Count < 3)
                 {

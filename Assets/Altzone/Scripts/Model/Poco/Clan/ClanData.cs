@@ -20,7 +20,6 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public int Points;
         public bool IsOpen;
 
-        public List<string> Labels = new();
         public List<ClanValues> Values = new();
         public List<HeartPieceData> ClanHeartPieces = new();
         public ClanRoleRights[] ClanRights = new ClanRoleRights[3];
@@ -65,10 +64,9 @@ namespace Altzone.Scripts.Model.Poco.Clan
             Phrase = clan.phrase ?? string.Empty;
             _gameCoins = clan.gameCoins;
             Points = clan.points;
-            Labels = clan.labels;
-            foreach (var point in Labels)
+            foreach (string point in clan.labels)
             {
-                Values.Add((ClanValues)Enum.Parse(typeof(ClanValues), string.Concat(point[0].ToString().ToUpper(), point.AsSpan(1).ToString()).Replace("ä", "a").Replace("ö","o")));
+                Values.Add((ClanValues)Enum.Parse(typeof(ClanValues), string.Concat(point[0].ToString().ToUpper(), point.AsSpan(1).ToString()).Replace("ä", "a").Replace("ö","o").Replace("+", "").Replace(" ", "")));
             }
             ClanAge = clan.ageRange;
             Language = clan.language;

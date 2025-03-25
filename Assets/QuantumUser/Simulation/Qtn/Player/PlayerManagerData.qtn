@@ -1,0 +1,15 @@
+enum PlayerPlayState
+{
+   NotInGame,
+   OutOfPlay,
+   InPlay
+}
+
+singleton component PlayerManagerData
+{
+    array<PlayerPlayState>[PLAYER_SLOT_COUNT] PlayStates;
+    array<PlayerRef>[PLAYER_SLOT_COUNT] PlayerRefs;
+    array<EntityRef>[PLAYER_SLOT_COUNT] SelectedCharacters;
+    array<EntityRef>[PLAYER_CHARACTER_TOTAL_COUNT] AllCharacters;
+    array<int>[PLAYER_SLOT_COUNT] SelectedCharacterNumbers;
+}

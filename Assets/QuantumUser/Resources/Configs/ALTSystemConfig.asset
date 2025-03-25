@@ -60,7 +60,7 @@ MonoBehaviour:
     StartDisabled: 0
     Children: []
   - SystemType:
-      AssemblyQualifiedName: Quantum.GameSessionStateSystem, Quantum.Simulation
+      AssemblyQualifiedName: Quantum.GameControlSystem, Quantum.Simulation
     SystemName: 
     StartDisabled: 0
     Children: []
@@ -70,7 +70,7 @@ MonoBehaviour:
     StartDisabled: 0
     Children: []
   - SystemType:
-      AssemblyQualifiedName: Quantum.PlayerSpawnSystem, Quantum.Simulation
+      AssemblyQualifiedName: Quantum.PlayerJoinSystem, Quantum.Simulation
     SystemName: 
     StartDisabled: 0
     Children: []
@@ -98,11 +98,6 @@ MonoBehaviour:
     Children: []
   - SystemType:
       AssemblyQualifiedName: Quantum.CollisionsSystem, Quantum.Simulation
-    SystemName: 
-    StartDisabled: 0
-    Children: []
-  - SystemType:
-      AssemblyQualifiedName: Quantum.PlayerShieldSystem, Quantum.Simulation
     SystemName: 
     StartDisabled: 0
     Children: []

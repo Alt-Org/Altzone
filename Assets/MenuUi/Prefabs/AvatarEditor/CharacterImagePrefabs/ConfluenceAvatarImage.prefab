@@ -255,7 +255,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2255496736925421301}
+  m_Father: {fileID: 7600720689978911339}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -283,7 +283,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -956,6 +956,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 5979321243465989676, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3646764102186878819}
     - targetCorrespondingSourceObject: {fileID: 5000711177925813401, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
         type: 3}
       insertIndex: -1
@@ -964,10 +968,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1174763533982545482}
-    - targetCorrespondingSourceObject: {fileID: 2651737937429207730, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3646764102186878819}
     - targetCorrespondingSourceObject: {fileID: 7771424816721930819, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
         type: 3}
       insertIndex: -1
@@ -1004,12 +1004,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 4287989588004901959}
   m_PrefabAsset: {fileID: 0}
---- !u!224 &2255496736925421301 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 2651737937429207730, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
-    type: 3}
-  m_PrefabInstance: {fileID: 4287989588004901959}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &4371076671462168910 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 515891805508914441, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
@@ -1031,6 +1025,12 @@ RectTransform:
 --- !u!224 &5789476817908186628 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7771424816721930819, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
+    type: 3}
+  m_PrefabInstance: {fileID: 4287989588004901959}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &7600720689978911339 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5979321243465989676, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
     type: 3}
   m_PrefabInstance: {fileID: 4287989588004901959}
   m_PrefabAsset: {fileID: 0}

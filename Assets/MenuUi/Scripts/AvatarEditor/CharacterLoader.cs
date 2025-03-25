@@ -5,8 +5,6 @@ using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Runtime.CompilerServices;
-using System.Collections;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
@@ -22,11 +20,11 @@ namespace MenuUi.Scripts.AvatarEditor
         private CharacterClassID _characterClassID;
         private CharacterClassID _previousID = CharacterClassID.None;
 
-        public void RefreshPlayerCurrentCharacter(Action onComplete)
+        public void RefreshPlayerCurrentCharacter()
         {
             Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, p => _playerData = p);
             int selectedCharacterId = _playerData.SelectedCharacterId;
-            StartCoroutine(UpdateCharacterImage(selectedCharacterId, onComplete));
+            UpdateDivanImage(selectedCharacterId);
         }
 
         private AvatarInfo GetCharacterPrefabInfo_bkp(int prefabId)
@@ -47,7 +45,9 @@ namespace MenuUi.Scripts.AvatarEditor
 
             if (classObject == null)
             {
-                return null;
+                classObject = _avatarClassInfoList[0];
+                _characterClassID = classObject.id;
+                Debug.LogError($"Could not select AvatarClassInfo! Current character class id is: {characterClass}. Using first AvatarClassInfo: {_avatarClassInfoList[0].id}.");
             }
 
             AvatarInfo character = null;
@@ -59,37 +59,25 @@ namespace MenuUi.Scripts.AvatarEditor
                     break;
                 }
             }
+
+            if (character == null)
+            {
+                character = classObject.list[0];
+                Debug.LogError($"Could not select AvatarInfo! Current CharacterId is: {(CharacterID)prefabId}. Using first AvatarInfo: {classObject.list[0].id}");
+            }
+
             return character;
         }
 
-        private IEnumerator UpdateCharacterImage(int prefabId, Action onComplete)
+        private void UpdateDivanImage(int prefabId)
         {
-            
             AvatarInfo character = GetCharacterPrefabInfo_bkp(prefabId);
-            GameObject avatarImage = null;
+
             if (character != null)
-            {
-                foreach(Transform child in _characterImageParent){
-                    Destroy(child.gameObject);
-                }
-                if(_characterClassID == CharacterClassID.Confluent){
-                    avatarImage = Instantiate(_confluenceAvatarImagePrefab, _characterImageParent);
-                }
-                else{
-                    avatarImage = Instantiate(_defaultAvatarImagePrefab, _characterImageParent);
-                }
-                
                 _divanImage.color = character.DivanImage;
-            }
+
             if(_previousID == CharacterClassID.None)
-            {
                 ResetAvatarDataToDefaults();
-            }
-
-
-            //This is to prevent a race condition in AvatarEditorController and FeaturePicker
-            yield return new WaitWhile(() => avatarImage == null);
-            onComplete?.Invoke();
         }
 
         public CharacterClassID GetCharacterClassID()
@@ -117,7 +105,6 @@ namespace MenuUi.Scripts.AvatarEditor
         public CharacterID id;
         public Color DivanImage;
     }
-
 
     [Serializable]
     public class AvatarClassInfo

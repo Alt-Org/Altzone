@@ -1,8 +1,17 @@
+flags ProjectileCollisionFlags : Byte
+{
+    Projectile,
+    SoulWall,
+    Player
+}
+
 component Projectile
 {
     bool IsLaunched;
     FP Speed;
     FPVector2 Direction;
-    FP CoolDown;
     FP Radius;
+    EmotionState Emotion;
+
+    array<ProjectileCollisionFlags>[2] CollisionFlags;
 }

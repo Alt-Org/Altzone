@@ -106,7 +106,7 @@ namespace Altzone.Scripts.Lobby.Wrappers
         /// </summary>
         public override bool Equals(object other)
         {
-            RoomInfo otherRoomInfo = other as RoomInfo;
+            LobbyRoomInfo otherRoomInfo = other as LobbyRoomInfo;
             return (otherRoomInfo != null && this.Name.Equals(otherRoomInfo.Name));
         }
 

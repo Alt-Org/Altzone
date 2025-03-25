@@ -44,6 +44,7 @@ MonoBehaviour:
   MapEntities:
   - Components:
     - rid: 5490577773346947072
+    - rid: 5490577773346947073
   - Components:
     - rid: 216534950936051712
     - rid: 216534950936051713
@@ -305,7 +306,7 @@ MonoBehaviour:
           X:
             RawValue: 0
           Y:
-            RawValue: 785121
+            RawValue: 818544
         Rotation:
           RawValue: 0
     - rid: 216534950936051713
@@ -329,7 +330,7 @@ MonoBehaviour:
             X:
               RawValue: 294912
             Y:
-              RawValue: 262144
+              RawValue: 229376
           PositionOffset:
             X:
               RawValue: 0
@@ -365,7 +366,7 @@ MonoBehaviour:
           X:
             RawValue: 0
           Y:
-            RawValue: -785121
+            RawValue: -818544
         Rotation:
           RawValue: 0
     - rid: 459196772049223681
@@ -389,7 +390,7 @@ MonoBehaviour:
             X:
               RawValue: 294912
             Y:
-              RawValue: 262144
+              RawValue: 229376
           PositionOffset:
             X:
               RawValue: 0
@@ -1262,9 +1263,41 @@ MonoBehaviour:
       type: {class: GameSessionPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         state:
-          Value: 2
+          Value: 0
         TimeUntilStart:
           RawValue: 262144
+    - rid: 5490577773346947073
+      type: {class: PlayerManagerDataPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      data:
+        PlayStates:
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        PlayerRefs:
+        - _index: 0
+        - _index: 0
+        - _index: 0
+        - _index: 0
+        SelectedCharacters:
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        AllCharacters:
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        - SceneIndexPlusOne: 0
+        SelectedCharacterNumbers: 00000000000000000000000000000000
     - rid: 5631773627054555136
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:

@@ -30,6 +30,7 @@ namespace MenuUI.Scripts.SoulHome
         public string Name;
         public string Id = "-1";
         public Vector2Int Position = new(-1,-1);
+        public FurnitureGrid FurnitureGrid = FurnitureGrid.None;
         public int Room = -1;
         public bool IsRotated;
         public FurnitureSize Size;
@@ -58,6 +59,7 @@ namespace MenuUI.Scripts.SoulHome
             Id = clanFurniture.Id;
             Name = clanFurniture.GameFurnitureName;
             Position = clanFurniture.Position;
+            FurnitureGrid = clanFurniture.FurnitureGrid;
             Room = clanFurniture.Room;
             Size = gameFurniture.Size;
             RotatedSize = gameFurniture.RotatedSize;
@@ -96,7 +98,7 @@ namespace MenuUI.Scripts.SoulHome
             return GetFurnitureSize(furnitureSize);
         }
 
-        private Vector2Int GetFurnitureSize(FurnitureSize furnitureSize)
+        public static Vector2Int GetFurnitureSize(FurnitureSize furnitureSize)
         {
             //Debug.Log(furnitureSize);
 
@@ -146,6 +148,10 @@ namespace MenuUI.Scripts.SoulHome
                     return new Vector2Int(3, 4);
                 case FurnitureSize.FourXFour:
                     return new Vector2Int(4, 4);
+                case FurnitureSize.FiveXTwo:
+                    return new Vector2Int(2, 5);
+                case FurnitureSize.FiveXThree:
+                    return new Vector2Int(3, 5);
                 case FurnitureSize.FiveXFive:
                     return new Vector2Int(5, 5);
                 case FurnitureSize.FiveXEight:

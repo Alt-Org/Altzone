@@ -35,7 +35,7 @@ namespace MenuUi.Scripts.Audio
         [SerializeField] private List<AudioBlock> _ambientList;
 
         [SerializeField] private GameObject _audioSourcePrefab;
-
+        [SerializeField] public List<string> _audioSections = new();
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -141,8 +141,7 @@ namespace MenuUi.Scripts.Audio
             _musicHandler.StopMusic();
         }
 
-        [SerializeField] public List<string> _audioSections = new();
-
+        #region Internal Editor Methods
         List<string> AudioTypesInHierarcy
         {
             get
@@ -255,6 +254,7 @@ namespace MenuUi.Scripts.Audio
 
         public void CheckAudioTree()
         {
+            if (!transform.gameObject.CompareTag("AudioManager")) return; // This makes sure that this only activates inside the AudioManager prefab.
             foreach (Transform transform in transform)
             {
                 List<Transform> childrenToBeMoved = new();
@@ -368,7 +368,9 @@ namespace MenuUi.Scripts.Audio
             if(audioSource != null) sourceHash = audioSource.GetHashCode();
         }
     }
+    #endregion
 
+    #region Editor Code
 #if UNITY_EDITOR
     [CustomEditor(typeof(AudioManager))]
     public class AudioManagerEditor : Editor
@@ -481,4 +483,5 @@ namespace MenuUi.Scripts.Audio
         }
     }
 #endif
+    #endregion
 }
