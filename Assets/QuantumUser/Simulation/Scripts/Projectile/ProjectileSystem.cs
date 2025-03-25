@@ -101,7 +101,7 @@ namespace Quantum.QuantumUser.Simulation.Projectile
 
         public void PickRandomEmotionState(Frame f, Quantum.Projectile* projectile)
         {
-            projectile->Emotion = (EmotionState)(((int)projectile->Emotion + Random.Range(1,4)) % 4);
+            projectile->Emotion = (EmotionState)(((int)projectile->Emotion + f.RNG->Next(1, 4)) % 4);
             f.Events.ChangeEmotionState(projectile->Emotion);
         }
     }
