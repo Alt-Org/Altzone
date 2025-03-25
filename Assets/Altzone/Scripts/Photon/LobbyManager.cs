@@ -159,6 +159,9 @@ namespace Altzone.Scripts.Lobby
         public delegate void LobbyCustomAuthenticationFailed(string debugMessage);
         public static event LobbyCustomAuthenticationFailed LobbyOnCustomAuthenticationFailed;
 
+        public delegate void MatchmakingRoomEntered();
+        public static event MatchmakingRoomEntered OnMatchmakingRoomEntered;
+
         #endregion
 
 
@@ -184,6 +187,7 @@ namespace Altzone.Scripts.Lobby
             this.Subscribe<StartPlayingEvent>(OnStartPlayingEvent);
             this.Subscribe<StartRaidTestEvent>(OnStartRaidTestEvent);
             this.Subscribe<StartMatchmakingEvent>(OnStartMatchmakingEvent);
+            this.Subscribe<StopMatchmakingEvent>(OnStopMatchmakingEvent);
             StartCoroutine(Service());
         }
 
@@ -336,6 +340,11 @@ namespace Altzone.Scripts.Lobby
 
             // Starting matchmaking coroutine
             StartCoroutine(StartMatchmaking(data.SelectedGameType));
+        }
+
+        private void OnStopMatchmakingEvent(StartMatchmakingEvent data)
+        {
+            Debug.Log($"onEvent {data}");
         }
 
         private IEnumerator StartMatchmaking(GameType gameType)
@@ -997,6 +1006,10 @@ namespace Altzone.Scripts.Lobby
             {
                 return $"{nameof(SelectedGameType)}: {SelectedGameType}";
             }
+        }
+
+        public class StopMatchmakingEvent
+        {
         }
     }
 }
