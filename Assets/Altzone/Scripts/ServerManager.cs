@@ -546,6 +546,28 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
+    public IEnumerator GetPlayerTaskFromServer(string taskId, Action<PlayerTask> callback)
+    {
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "dailyTasks/"+taskId, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                //Debug.LogWarning(result);
+                ServerPlayerTask serverTask = result["data"]["DailyTask"].ToObject<ServerPlayerTask>();
+                //Clan = clan;
+
+                if (callback != null)
+                    callback(new(serverTask));
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
     public IEnumerator ReservePlayerTaskFromServer(string taskId, Action<PlayerTask> callback)
     {
         yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "dailyTasks/reserve/"+taskId, taskId, AccessToken, request =>
@@ -564,6 +586,26 @@ public class ServerManager : MonoBehaviour
             {
                 if (callback != null)
                     callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator UnreservePlayerTaskFromServer(Action<bool> callback)
+    {
+        yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "dailyTasks/unreserve/", null, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                //Debug.LogWarning(result);
+
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
             }
         }));
     }
