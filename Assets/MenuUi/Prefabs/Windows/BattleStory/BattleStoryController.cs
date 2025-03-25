@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Altzone.Scripts.Common;
 using Altzone.Scripts.Lobby;
 using UnityEngine;
 using UnityEngine.UI;
@@ -160,16 +161,6 @@ public class BattleStoryController : MonoBehaviour
         LobbyManager.ExitBattleStory();
     }
 
-}
-
-public enum Emotion
-{
-    Blank,
-    Anger,
-    Joy,
-    Love,
-    Playful,
-    Sorrow
 }
 
 [Serializable]
