@@ -176,6 +176,7 @@ public static class PhotonRealtimeClient
         public const byte OwnershipUpdate = 212;
         public const byte PlayerPositionChangeRequested = 213;
         public const byte RoomChangeRequested = 214;
+        public const byte LeaveMatchmakingRequested = 215;
     }
 
     public static Player LocalPlayer

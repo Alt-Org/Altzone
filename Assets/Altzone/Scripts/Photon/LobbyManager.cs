@@ -79,6 +79,7 @@ namespace Altzone.Scripts.Lobby
         private Coroutine _requestPositionChangeHolder = null;
         private Coroutine _matchmakingHolder = null;
         private Coroutine _followLeaderHolder = null;
+        private string _matchmakingLeaderId = string.Empty;
         private List<FriendInfo> _friendList;
 
         [HideInInspector] public ReadOnlyCollection<LobbyRoomInfo> CurrentRooms = null; // Set from LobbyRoomListingController.cs through Instance variable maybe this could be refactored?
@@ -161,7 +162,7 @@ namespace Altzone.Scripts.Lobby
         public delegate void LobbyCustomAuthenticationFailed(string debugMessage);
         public static event LobbyCustomAuthenticationFailed LobbyOnCustomAuthenticationFailed;
 
-        public delegate void MatchmakingRoomEntered();
+        public delegate void MatchmakingRoomEntered(bool isLeader);
         public static event MatchmakingRoomEntered OnMatchmakingRoomEntered;
 
         public delegate void MatchmakingRoomLeft(GameType gameType);
@@ -353,6 +354,16 @@ namespace Altzone.Scripts.Lobby
         private void OnStopMatchmakingEvent(StopMatchmakingEvent data)
         {
             Debug.Log($"onEvent {data}");
+
+            // Sending others event to leave matchmaking
+            PhotonRealtimeClient.Client.OpRaiseEvent(
+                    PhotonRealtimeClient.PhotonEvent.LeaveMatchmakingRequested,
+                    null,
+                    new RaiseEventArgs { Receivers = ReceiverGroup.Others },
+                    SendOptions.SendReliable
+                );
+
+            StartCoroutine(LeaveMatchmaking());
         }
 
         private IEnumerator StartMatchmaking(GameType gameType)
@@ -495,7 +506,7 @@ namespace Altzone.Scripts.Lobby
                         break;
                 }
             }
-            else if (!roomFound)
+            else if (!roomFound) // Initializing new created room properties
             {
                 // Setting the new created room available for matchmaking
                 PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.IsMatchmakingKey, true);
@@ -554,6 +565,7 @@ namespace Altzone.Scripts.Lobby
         private IEnumerator FollowLeaderToNewRoom(string leaderUserId)
         {
             string oldRoomName = PhotonRealtimeClient.CurrentRoom.Name;
+            _matchmakingLeaderId = leaderUserId;
 
             // Leaving room and waiting until in lobby
             PhotonRealtimeClient.LeaveRoom();
@@ -576,6 +588,23 @@ namespace Altzone.Scripts.Lobby
                     }
                 }
             } while (!newRoomJoined);
+        }
+
+        private IEnumerator LeaveMatchmaking()
+        {
+            GameType matchmakingRoomGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+
+            if (_matchmakingHolder != null)
+            {
+                StopCoroutine(_matchmakingHolder);
+                _matchmakingHolder = null;
+            }
+
+            PhotonRealtimeClient.LeaveRoom();
+
+            yield return new WaitUntil(() => PhotonRealtimeClient.InLobby);
+
+            OnMatchmakingRoomLeft?.Invoke(matchmakingRoomGameType);
         }
 
         private IEnumerator StartTheGameplay(bool isCloseRoom, string blueTeamName, string redTeamName)
@@ -879,18 +908,19 @@ namespace Altzone.Scripts.Lobby
         {
             // Enable: PhotonNetwork.CloseConnection needs to to work across all clients - to kick off invalid players!
             PhotonRealtimeClient.EnableCloseConnection = true;
+
             if (_matchmakingHolder == null && _followLeaderHolder == null)
             {
                 LobbyOnJoinedRoom?.Invoke();
             }
-            else
+            else if (_matchmakingHolder != null)
             {
-                OnMatchmakingRoomEntered?.Invoke();
-
-                if (_followLeaderHolder != null )
-                {
-                    _followLeaderHolder = null;
-                }
+                OnMatchmakingRoomEntered?.Invoke(true);
+            }
+            else if (_followLeaderHolder != null)
+            {
+                OnMatchmakingRoomEntered?.Invoke(false);
+                _followLeaderHolder = null;
             }
         }
 
@@ -924,7 +954,7 @@ namespace Altzone.Scripts.Lobby
             }
             else
             {
-                OnMatchmakingRoomEntered?.Invoke();
+                OnMatchmakingRoomEntered?.Invoke(true);
             }
         }
         public void OnJoinedLobby() { StartCoroutine(Service()); LobbyOnJoinedLobby?.Invoke(); }
@@ -970,6 +1000,7 @@ namespace Altzone.Scripts.Lobby
                     Player player = PhotonRealtimeClient.CurrentRoom.GetPlayer(photonEvent.Sender);
                     if (player != null) SetPlayer(player, position);
                     break;
+
                 case PhotonRealtimeClient.PhotonEvent.RoomChangeRequested:
                     string leaderUserId = (string)photonEvent.CustomData;
 
@@ -977,7 +1008,19 @@ namespace Altzone.Scripts.Lobby
                     {
                         _followLeaderHolder = StartCoroutine(FollowLeaderToNewRoom(leaderUserId));
                     }
+                    break;
 
+                case PhotonRealtimeClient.PhotonEvent.LeaveMatchmakingRequested:
+                    string senderUserId = PhotonRealtimeClient.CurrentRoom.GetPlayer(photonEvent.Sender).UserId;
+
+                    // Only leaving if own group's leader suggested leaving
+                    if (senderUserId == _matchmakingLeaderId)
+                    {
+                        if (_followLeaderHolder == null)
+                        {
+                            _followLeaderHolder = StartCoroutine(FollowLeaderToNewRoom(_matchmakingLeaderId));
+                        }
+                    }
                     break;
             }
             LobbyOnEvent?.Invoke();
