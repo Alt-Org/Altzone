@@ -77,6 +77,8 @@ namespace Altzone.Scripts.Lobby
 
         private QuantumRunner _runner = null;
         private Coroutine _requestPositionChangeHolder = null;
+        private Coroutine _matchmakingHolder = null;
+        private Coroutine _followLeaderHolder = null;
         private List<FriendInfo> _friendList;
 
         [HideInInspector] public ReadOnlyCollection<LobbyRoomInfo> CurrentRooms = null; // Set from LobbyRoomListingController.cs through Instance variable maybe this could be refactored?
@@ -161,6 +163,9 @@ namespace Altzone.Scripts.Lobby
 
         public delegate void MatchmakingRoomEntered();
         public static event MatchmakingRoomEntered OnMatchmakingRoomEntered;
+
+        public delegate void MatchmakingRoomLeft(GameType gameType);
+        public static event MatchmakingRoomLeft OnMatchmakingRoomLeft;
 
         #endregion
 
@@ -339,10 +344,13 @@ namespace Altzone.Scripts.Lobby
             if (!PhotonRealtimeClient.InRoom) return;
 
             // Starting matchmaking coroutine
-            StartCoroutine(StartMatchmaking(data.SelectedGameType));
+            if (_matchmakingHolder == null)
+            {
+                _matchmakingHolder = StartCoroutine(StartMatchmaking(data.SelectedGameType));
+            }
         }
 
-        private void OnStopMatchmakingEvent(StartMatchmakingEvent data)
+        private void OnStopMatchmakingEvent(StopMatchmakingEvent data)
         {
             Debug.Log($"onEvent {data}");
         }
@@ -539,6 +547,8 @@ namespace Altzone.Scripts.Lobby
             {
                 StartCoroutine(StartTheGameplay(_isCloseRoomOnGameStart, _blueTeamName, _redTeamName));
             }
+
+            _matchmakingHolder = null;
         }
 
         private IEnumerator FollowLeaderToNewRoom(string leaderUserId)
@@ -869,7 +879,19 @@ namespace Altzone.Scripts.Lobby
         {
             // Enable: PhotonNetwork.CloseConnection needs to to work across all clients - to kick off invalid players!
             PhotonRealtimeClient.EnableCloseConnection = true;
-            LobbyOnJoinedRoom?.Invoke();
+            if (_matchmakingHolder == null && _followLeaderHolder == null)
+            {
+                LobbyOnJoinedRoom?.Invoke();
+            }
+            else
+            {
+                OnMatchmakingRoomEntered?.Invoke();
+
+                if (_followLeaderHolder != null )
+                {
+                    _followLeaderHolder = null;
+                }
+            }
         }
 
         public void OnLeftRoom() // IMatchmakingCallbacks
@@ -896,7 +918,14 @@ namespace Altzone.Scripts.Lobby
             Debug.Log($"Created room {PhotonRealtimeClient.Client.CurrentRoom.Name}");
             StartCoroutine(Service());
 
-            LobbyOnCreatedRoom?.Invoke();
+            if (_matchmakingHolder == null)
+            {
+                LobbyOnCreatedRoom?.Invoke();
+            }
+            else
+            {
+                OnMatchmakingRoomEntered?.Invoke();
+            }
         }
         public void OnJoinedLobby() { StartCoroutine(Service()); LobbyOnJoinedLobby?.Invoke(); }
 
@@ -943,7 +972,12 @@ namespace Altzone.Scripts.Lobby
                     break;
                 case PhotonRealtimeClient.PhotonEvent.RoomChangeRequested:
                     string leaderUserId = (string)photonEvent.CustomData;
-                    StartCoroutine(FollowLeaderToNewRoom(leaderUserId));
+
+                    if (_followLeaderHolder == null)
+                    {
+                        _followLeaderHolder = StartCoroutine(FollowLeaderToNewRoom(leaderUserId));
+                    }
+
                     break;
             }
             LobbyOnEvent?.Invoke();
@@ -1010,6 +1044,17 @@ namespace Altzone.Scripts.Lobby
 
         public class StopMatchmakingEvent
         {
+            public readonly GameType SelectedGameType;
+
+            public StopMatchmakingEvent(GameType gameType)
+            {
+                SelectedGameType = gameType;
+            }
+
+            public override string ToString()
+            {
+                return $"{nameof(SelectedGameType)}: {SelectedGameType}";
+            }
         }
     }
 }

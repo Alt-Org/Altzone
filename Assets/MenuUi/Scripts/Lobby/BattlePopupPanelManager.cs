@@ -13,15 +13,28 @@ public class BattlePopupPanelManager : MonoBehaviour
     [SerializeField] private GameObject _clanAndRandom2v2WaitingRoom;
     [SerializeField] private GameObject _matchmakingPanel;
 
+    private void OnEnable()
+    {
+        LobbyManager.OnMatchmakingRoomEntered += SwitchToMatchmakingPanel;
+        LobbyManager.OnMatchmakingRoomLeft += ReturnToRoom;
+    }
+
+    private void OnDisable()
+    {
+        LobbyManager.OnMatchmakingRoomEntered -= SwitchToMatchmakingPanel;
+        LobbyManager.OnMatchmakingRoomLeft -= ReturnToRoom;
+    }
+
     public void SwitchRoom(GameType gameType)
     {
+        ClosePanels();
+
         switch (gameType)
         {
             case GameType.Custom:
                 SwitchCustomRoom(CustomGameMode.TwoVersusTwo);
                 break;
             case GameType.Clan2v2:
-                ClosePanels();
                 _clanAndRandom2v2WaitingRoom.SetActive(true);
                 break;
             case GameType.Random2v2:
@@ -32,8 +45,6 @@ public class BattlePopupPanelManager : MonoBehaviour
 
     private void SwitchCustomRoom(CustomGameMode mode)
     {
-        ClosePanels();
-
         switch (mode)
         {
             case CustomGameMode.TwoVersusTwo:
@@ -43,6 +54,17 @@ public class BattlePopupPanelManager : MonoBehaviour
                 _mainPanel.SetActive(true);
                 break;
         }
+    }
+
+    private void SwitchToMatchmakingPanel()
+    {
+        ClosePanels();
+        _matchmakingPanel.SetActive(true);
+    }
+
+    private void ReturnToRoom(GameType gameType)
+    {
+        SwitchRoom(gameType);
     }
 
     public void ClosePanels()
