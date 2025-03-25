@@ -139,7 +139,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 player.CustomProperties.Clear();
 
                 // Getting first free player pos
-                var playerPos = PhotonLobbyRoom.GetFirstFreePlayerPos(player);
+                var playerPos = PhotonLobbyRoom.GetFirstFreePlayerPos();
 
                 // Reserving player position inside the room
                 LobbyPhotonHashtable propertyToSet = new();

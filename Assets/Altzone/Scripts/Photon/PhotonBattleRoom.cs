@@ -103,7 +103,7 @@ namespace Altzone.Scripts.Battle.Photon
             return PhotonRealtimeClient.PlayerListOthers.FirstOrDefault(x => GetTeamNumber(x) == teamNumber);
         }
 
-        public int GetFirstFreePlayerPos(Player player, int wantedPlayerPos = PlayerPosition1, bool isAllocateByTeams = false)
+        public int GetFirstFreePlayerPos(int wantedPlayerPos = PlayerPosition1, bool isAllocateByTeams = false)
         {
             // Checking which of the room's player positions are free
             HashSet<int> usedPlayerPositions = new HashSet<int>();
