@@ -7,7 +7,8 @@ public class ChatAddReactions : MonoBehaviour
     [Header("Containers")]
     [SerializeField] private Transform _commonReactionsPanel;
     [SerializeField] private Transform _allReactionsPanel;
-
+    [SerializeField] private GameObject _usersWhoAdded;
+     
     [Header("Prefabs")]
     [SerializeField] private GameObject _addedReactionPrefab;
 
@@ -109,6 +110,7 @@ public class ChatAddReactions : MonoBehaviour
             _reactionHandlers.Add(chatReactionHandler);
 
             chatReactionHandler._button.onClick.AddListener(() => ToggleReaction(chatReactionHandler));
+            chatReactionHandler._longClickButton.onLongClick.AddListener(() => ShowUsers(chatReactionHandler));
             chatReactionHandler._button.onClick.AddListener(() => _chatScript.MinimizeOptions());
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
@@ -137,6 +139,12 @@ public class ChatAddReactions : MonoBehaviour
         {
             reactionHandler.Select();
         }
+    }
+
+    
+    public void ShowUsers(ChatReactionHandler reactionHandler)
+    {
+        _chatScript.OpenUsersWhoAddedReactionPanel();
     }
 
     private void RemoveReaction(ChatReactionHandler reaction)

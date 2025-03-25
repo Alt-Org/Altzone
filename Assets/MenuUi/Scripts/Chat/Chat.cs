@@ -24,6 +24,7 @@ public class Chat : MonoBehaviour
     public GameObject addReactionsPanel;
     public GameObject commonReactions;
     public GameObject allReactions;
+    public GameObject usersWhoAdded;
 
     [Header("Prefab")]
     public GameObject messagePrefabBlue;
@@ -281,6 +282,7 @@ public class Chat : MonoBehaviour
             commonReactions.SetActive(true);
             allReactions.SetActive(false);
             addReactionsPanel.SetActive(false);
+            usersWhoAdded.SetActive(false);
         }
     }
 
@@ -300,6 +302,7 @@ public class Chat : MonoBehaviour
             commonReactions.SetActive(true);
             allReactions.SetActive(false);
             addReactionsPanel.SetActive(false);
+            usersWhoAdded.SetActive(false);
         }
         else
         {
@@ -442,5 +445,14 @@ public class Chat : MonoBehaviour
         
         VerticalLayoutGroup currentLayout = currentContent.GetComponentInChildren<VerticalLayoutGroup>();
         LayoutRebuilder.ForceRebuildLayoutImmediate(currentLayout.GetComponent<RectTransform>());
+    }
+
+    public void OpenUsersWhoAddedReactionPanel()
+    {
+        addReactionsPanel.SetActive(true);
+        commonReactions.SetActive(false);
+        allReactions.SetActive(false);
+        usersWhoAdded.SetActive(true);
+        SetReactionPanelPosition();
     }
 }

@@ -11220,11 +11220,13 @@ MonoBehaviour:
   languageChat: {fileID: 6086783591708459899}
   globalChat: {fileID: 7703225872503541342}
   clanChat: {fileID: 1206508976571793912}
+  currentContent: {fileID: 0}
   inputField: {fileID: 189633976828316623}
   deleteButtons: {fileID: 7972993240215453466}
   addReactionsPanel: {fileID: 6132093213275908080}
   commonReactions: {fileID: 1908627713028673014}
   allReactions: {fileID: 8188821779799061194}
+  usersWhoAdded: {fileID: 7502893936901402389}
   messagePrefabBlue: {fileID: 4250206361280662525, guid: a9452349421b15f4e859be225428f09d,
     type: 3}
   messagePrefabRed: {fileID: 4250206361280662525, guid: 6a98a15d1249bf44dab95e2c43a5690f,
@@ -15993,6 +15995,12 @@ GameObject:
 --- !u!1 &6132093213275908080 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2300524914144210914, guid: 76aa8b7d736fa8e44955cce276908e74,
+    type: 3}
+  m_PrefabInstance: {fileID: 5401092972796479506}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7502893936901402389 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2516152344154220295, guid: 76aa8b7d736fa8e44955cce276908e74,
     type: 3}
   m_PrefabInstance: {fileID: 5401092972796479506}
   m_PrefabAsset: {fileID: 0}

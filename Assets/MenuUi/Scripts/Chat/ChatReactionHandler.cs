@@ -8,10 +8,13 @@ public class ChatReactionHandler : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _counter;
     public Image _reactionImage;
     public Button _button;
+    public LongClickButton _longClickButton;
 
     public int _messageID;
     public int _count = 0;
     public bool _selected;
+
+    // A list for players who have added the reaction
 
     public void SetReactionInfo(Sprite image, int messageID)
     {
@@ -47,5 +50,10 @@ public class ChatReactionHandler : MonoBehaviour
         reactionBackground.color = deselectedColor;
 
         _selected = false;
+    }
+
+    public void LongClick()
+    {
+                                                                                                                                                   
     }
 }
