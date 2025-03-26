@@ -25,12 +25,6 @@ public class WeekMood : AltMonoBehaviour
         Test();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private void Test()
     {
         /*_weekMoods[0].GetComponent<Image>().sprite = _moodImages[0];

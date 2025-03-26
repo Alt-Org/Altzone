@@ -462,6 +462,8 @@ GameObject:
   - component: {fileID: 7994126422843250104}
   - component: {fileID: 7460917725386864883}
   - component: {fileID: 4439104273396201415}
+  - component: {fileID: 272069028244772262}
+  - component: {fileID: 7187367825514266088}
   m_Layer: 5
   m_Name: WeekMoods
   m_TagString: Untagged
@@ -559,6 +561,64 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &272069028244772262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9073806489120027414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 0
+--- !u!114 &7187367825514266088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9073806489120027414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 490f525461a55c4469f161b98c30dd53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _moodImages:
+  - {fileID: -295352095, guid: e2272e6bde18d124280e2e79869ce4cf, type: 3}
+  - {fileID: 21300000, guid: 1f86dd00cd4636342a04a6f6ba1b990a, type: 3}
+  - {fileID: 21300000, guid: 96f5e2572d2d8fc4bbbc6b8bc655afee, type: 3}
+  - {fileID: 21300000, guid: f28d68859cc20634394867033e704894, type: 3}
+  - {fileID: 21300000, guid: 97d495bb5e2207e47b120d397738ae7f, type: 3}
+  - {fileID: 21300000, guid: 92e5938343a26954ea59ab52cfb79ebd, type: 3}
+  _weekMoods:
+  - {fileID: 6984720937091983837}
+  - {fileID: 9182374813075279212}
+  - {fileID: 1473203625828387422}
+  - {fileID: 5688955287391167762}
+  - {fileID: 4520663997574426959}
+  - {fileID: 1589157885654726318}
+  - {fileID: 8219971979439626865}
+  playerData:
+    Id: 
+    ClanId: 
+    SelectedCharacterId: 0
+    SelectedCharacterIds: []
+    Name: 
+    DiamondSpeed: 0
+    DiamondCharacterSize: 0
+    DiamondAttack: 0
+    DiamondDefence: 0
+    DiamondHP: 0
+    Eraser: 0
+    BackpackCapacity: 0
+    points: 0
+    playStyles: 0
+    moodList: []
+    UniqueIdentifier: 
 --- !u!1 &9182374813075279212
 GameObject:
   m_ObjectHideFlags: 0

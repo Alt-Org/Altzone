@@ -3,13 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Window;
+using Quantum;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class WeekMoodPopupScript : AltMonoBehaviour
 {
     [SerializeField] private GameObject _popupPrefab;
-    enum Mood
+    [SerializeField] private UnityEngine.UI.Button _loveButton;
+    [SerializeField] private UnityEngine.UI.Button _playfulButton;
+    [SerializeField] private UnityEngine.UI.Button _joyButton;
+    [SerializeField] private UnityEngine.UI.Button _sadButton;
+    [SerializeField] private UnityEngine.UI.Button _angryButton;
+    public enum Mood
     {
         Blank,
         Love,
@@ -30,7 +38,21 @@ public class WeekMoodPopupScript : AltMonoBehaviour
     void Start()
     {
         _popupPrefab.SetActive(true);
+
+        _loveButton.onClick.AddListener(() => SaveMoodData(Mood.Love));
+        _playfulButton.onClick.AddListener(() => SaveMoodData(Mood.Playful));
+        _joyButton.onClick.AddListener(() => SaveMoodData(Mood.Joy));
+        _sadButton.onClick.AddListener(() => SaveMoodData(Mood.Sad));
+        _angryButton.onClick.AddListener(() => SaveMoodData(Mood.Angry));
+
+        _loveButton.onClick.AddListener(() => ClosePopup());
+        _playfulButton.onClick.AddListener(() => ClosePopup());
+        _joyButton.onClick.AddListener(() => ClosePopup());
+        _sadButton.onClick.AddListener(() => ClosePopup());
+        _angryButton.onClick.AddListener(() => ClosePopup());
     }
+
+    
 
     public void ClosePopup()
     {
@@ -42,11 +64,9 @@ public class WeekMoodPopupScript : AltMonoBehaviour
 
     }
 
-    public void SaveMoodData()
+    public void SaveMoodData(Mood mood)
     {
-        GameObject clickedObject = EventSystem.current.currentSelectedGameObject;
-
-        string objectName = clickedObject.name;
+        /*
 
         moodList[6] = moodList[5];
         moodList[5] = moodList[4];
@@ -55,31 +75,30 @@ public class WeekMoodPopupScript : AltMonoBehaviour
         moodList[2] = moodList[1];
         moodList[1] = moodList[0];
 
-        switch (objectName)
+        switch (mood)
         {
-            case "Love":
-                moodList[0] = objectName;
+            case Mood.Love:
+                moodList[0] = Mood.Love;
                 break;
-            case "Playful":
-                moodList[0] = objectName;
+            case Mood.Playful:
+                moodList[0] = Mood.Playful;
                 break;
-            case "Joy":
-                moodList[0] = objectName;
+            case Mood.Joy:
+                moodList[0] = Mood.Joy;
                 break;
-            case "Sad":
-                moodList[0] = objectName;
+            case Mood.Sad:
+                moodList[0] = Mood.Sad;
                 break;
-            case "Angry":
-                moodList[0] = objectName;
+            case Mood.Angry:
+                moodList[0] = Mood.Angry;
                 break;
-        }
-        playerData.moodList = moodList;
-        Debug.Log(playerData.moodList[0]);
-    }
-    
-    // Update is called once per frame
-    void Update()
-    {
+        }*/
         
+        
+
+        Debug.Log("Mood saved: " + mood);
+
+        //PlayerData.playerDataMoodList = moodList;
+        //Debug.Log(playerData.playerDataMoodList[0]);
     }
 }
