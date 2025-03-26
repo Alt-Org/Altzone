@@ -638,8 +638,6 @@ public static class PhotonRealtimeClient
                 maxPlayers = 4;
                 break;
             case GameType.Random2v2:
-                maxPlayers = 4;
-                break;
             case GameType.Clan2v2:
                 if (isMatchmaking)
                 {

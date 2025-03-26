@@ -448,10 +448,10 @@ namespace Altzone.Scripts.Lobby
                 switch (gameType)
                 {
                     case GameType.Clan2v2:
-                        PhotonRealtimeClient.CreateLobbyRoom("", gameType, "", clanName, _teammates);
+                        PhotonRealtimeClient.CreateLobbyRoom("", gameType, "", clanName, _teammates, true);
                         break;
                     case GameType.Random2v2:
-                        PhotonRealtimeClient.CreateLobbyRoom("", gameType, "", "", _teammates);
+                        PhotonRealtimeClient.CreateLobbyRoom("", gameType, "", "", _teammates, true);
                         break;
                 }
             }
@@ -512,9 +512,6 @@ namespace Altzone.Scripts.Lobby
             }
             else if (!roomFound) // Initializing new created room properties
             {
-                // Setting the new created room available for matchmaking
-                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.IsMatchmakingKey, true);
-
                 // Setting player positions from the old room
                 PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, positionValue1);
                 PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, positionValue2);
