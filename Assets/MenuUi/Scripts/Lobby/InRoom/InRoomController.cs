@@ -36,12 +36,12 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     if (_title != null) StartCoroutine(SetRoomTitle());
                     break;
                 case GameType.Random2v2:
-                    if (_title != null) _title.text = "2v2 satunnaisten kanssa";
+                    if (_title != null) _title.text = "Keräily 2v2";
                     if (_noticeText != null) _noticeText.text = "Tätä pelimuotoa voi mennä pelaamaan yksin tai kaverin kanssa (työn alla). Huom. Jos menet pelaamaan yksin, paikan valinnalla ei ole merkitystä.";
                     if (_sendInviteToFriendText != null) _sendInviteToFriendText.text = "Lähetä kutsu kaverille";
                     break;
                 case GameType.Clan2v2:
-                    if (_title != null) _title.text = "2v2 klaanijäsenen kanssa";
+                    if (_title != null) _title.text = "Klaani 2v2";
                     if (_noticeText != null) _noticeText.text = "Kutsun lähettäminen ei vielä toimi. Saman klaanin jäsen voi liittyä tähän huoneeseen menemällä peliin 2v2 klaanijäsenen kanssa.";
                     if (_sendInviteToFriendText != null) _sendInviteToFriendText.text = "Lähetä kutsu yhdelle klaanin jäsenelle";
                     break;
