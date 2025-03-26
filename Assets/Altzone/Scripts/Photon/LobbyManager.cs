@@ -358,8 +358,8 @@ namespace Altzone.Scripts.Lobby
 
             // Sending others event to leave matchmaking
             PhotonRealtimeClient.Client.OpRaiseEvent(
-                    PhotonRealtimeClient.PhotonEvent.LeaveMatchmakingRequested,
-                    null,
+                    PhotonRealtimeClient.PhotonEvent.RoomChangeRequested,
+                    PhotonRealtimeClient.LocalLobbyPlayer.UserId,
                     new RaiseEventArgs { Receivers = ReceiverGroup.Others },
                     SendOptions.SendReliable
                 );
@@ -372,11 +372,19 @@ namespace Altzone.Scripts.Lobby
             // Closing the room so that no others can join
             PhotonRealtimeClient.CurrentRoom.IsOpen = false;
 
+            // Setting local player as leader
+            PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.IsLeaderKey, true);
+
             // Saving other player's userids to enter the new game room together with master client
             List<string> expectedUsers = new();
             foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
             {
-                if (player.Value.UserId != PhotonRealtimeClient.LocalPlayer.UserId) expectedUsers.Add(player.Value.UserId);
+                if (player.Value.UserId != PhotonRealtimeClient.LocalPlayer.UserId)
+                {
+                    expectedUsers.Add(player.Value.UserId);
+                    // Setting other players as not leader
+                    player.Value.SetCustomProperty(PhotonBattleRoom.IsLeaderKey, false);
+                }
             }
             _teammates = expectedUsers.ToArray();
 
@@ -589,6 +597,8 @@ namespace Altzone.Scripts.Lobby
                     }
                 }
             } while (!newRoomJoined);
+
+            _followLeaderHolder = null;
         }
 
         private IEnumerator LeaveMatchmaking()
@@ -605,7 +615,7 @@ namespace Altzone.Scripts.Lobby
 
             yield return new WaitUntil(() => PhotonRealtimeClient.InLobby);
 
-            PhotonRealtimeClient.CreateLobbyRoom("", matchmakingRoomGameType, "", _ownClanName, _teammates);
+            PhotonRealtimeClient.CreateLobbyRoom("", matchmakingRoomGameType, "", _ownClanName, _teammates); // todo: maybe clan name should be saved to custom property?
         }
 
         private IEnumerator StartTheGameplay(bool isCloseRoom, string blueTeamName, string redTeamName)
@@ -910,18 +920,17 @@ namespace Altzone.Scripts.Lobby
             // Enable: PhotonNetwork.CloseConnection needs to to work across all clients - to kick off invalid players!
             PhotonRealtimeClient.EnableCloseConnection = true;
 
-            if (_matchmakingHolder == null && _followLeaderHolder == null)
+            // Getting info if room is matchmaking room or not
+            bool isMatchmaking = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.IsMatchmakingKey, false);
+
+            if (isMatchmaking)
+            {
+                bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer.GetCustomProperty(PhotonBattleRoom.IsLeaderKey, false);
+                OnMatchmakingRoomEntered?.Invoke(isLeader);
+            }
+            else
             {
                 LobbyOnJoinedRoom?.Invoke();
-            }
-            else if (_matchmakingHolder != null)
-            {
-                OnMatchmakingRoomEntered?.Invoke(true);
-            }
-            else if (_followLeaderHolder != null)
-            {
-                OnMatchmakingRoomEntered?.Invoke(false);
-                _followLeaderHolder = null;
             }
         }
 
@@ -1008,19 +1017,6 @@ namespace Altzone.Scripts.Lobby
                     if (_followLeaderHolder == null)
                     {
                         _followLeaderHolder = StartCoroutine(FollowLeaderToNewRoom(leaderUserId));
-                    }
-                    break;
-
-                case PhotonRealtimeClient.PhotonEvent.LeaveMatchmakingRequested:
-                    string senderUserId = PhotonRealtimeClient.CurrentRoom.GetPlayer(photonEvent.Sender).UserId;
-
-                    // Only leaving if own group's leader suggested leaving
-                    if (senderUserId == _matchmakingLeaderId)
-                    {
-                        if (_followLeaderHolder == null)
-                        {
-                            _followLeaderHolder = StartCoroutine(FollowLeaderToNewRoom(_matchmakingLeaderId));
-                        }
                     }
                     break;
             }

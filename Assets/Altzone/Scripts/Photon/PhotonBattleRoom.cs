@@ -37,6 +37,7 @@ namespace Altzone.Scripts.Battle.Photon
         public const string SoulhomeRankVariance = "rv";
         public const string ClanNameKey = "c";
         public const string ClanOpponentNameKey = "c2";
+        public const string IsLeaderKey = "l";
 
         public static string PlayerPositionKey1 { get => PlayerPosition1.ToString(); }
         public static string PlayerPositionKey2 { get => PlayerPosition2.ToString(); }
