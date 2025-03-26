@@ -138,7 +138,7 @@ public class ServerManager : MonoBehaviour
             bool gettingTasks = true;
             List<CustomCharacter> characters = null;
             // Checks if we can get Player & player Clan from the server
-            yield return StartCoroutine(GetPlayerFromServer(player =>
+            yield return StartCoroutine(GetOwnPlayerFromServer(player =>
             {
                 if (player == null)
                 {
@@ -459,7 +459,7 @@ public class ServerManager : MonoBehaviour
     #region Server
 
     #region Player
-    public IEnumerator GetPlayerFromServer(Action<ServerPlayer> callback)
+    public IEnumerator GetOwnPlayerFromServer(Action<ServerPlayer> callback)
     {
         if (Player != null)
             Debug.LogWarning("Player already exists. Consider using ServerManager.Instance.Player if the most up to data data from server is not needed.");
@@ -472,6 +472,30 @@ public class ServerManager : MonoBehaviour
                 Debug.LogWarning(result);
                 ServerPlayer player = result["data"]["Player"].ToObject<ServerPlayer>();
                 Player = player;
+
+                if (callback != null)
+                    callback(player);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator GetPlayerFromServer(string playerId, Action<ServerPlayer> callback)
+    {
+        if (Player != null)
+            Debug.LogWarning("Player already exists. Consider using ServerManager.Instance.Player if the most up to data data from server is not needed.");
+
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "player/" + playerId, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                //Debug.LogWarning(result);
+                ServerPlayer player = result["data"]["Player"].ToObject<ServerPlayer>();
 
                 if (callback != null)
                     callback(player);
