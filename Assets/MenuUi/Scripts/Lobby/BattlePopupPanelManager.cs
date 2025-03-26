@@ -17,13 +17,11 @@ public class BattlePopupPanelManager : MonoBehaviour
     private void OnEnable()
     {
         LobbyManager.OnMatchmakingRoomEntered += SwitchToMatchmakingPanel;
-        LobbyManager.OnMatchmakingRoomLeft += ReturnToRoom;
     }
 
     private void OnDisable()
     {
         LobbyManager.OnMatchmakingRoomEntered -= SwitchToMatchmakingPanel;
-        LobbyManager.OnMatchmakingRoomLeft -= ReturnToRoom;
     }
 
     public void SwitchRoom(GameType gameType)
@@ -62,11 +60,6 @@ public class BattlePopupPanelManager : MonoBehaviour
         ClosePanels();
         _matchmakingPanel.SetCancelButton(isLeader);
         _matchmakingPanel.gameObject.SetActive(true);
-    }
-
-    private void ReturnToRoom(GameType gameType)
-    {
-        SwitchRoom(gameType);
     }
 
     public void ClosePanels()

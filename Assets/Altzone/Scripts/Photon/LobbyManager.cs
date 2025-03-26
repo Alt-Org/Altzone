@@ -79,7 +79,11 @@ namespace Altzone.Scripts.Lobby
         private Coroutine _requestPositionChangeHolder = null;
         private Coroutine _matchmakingHolder = null;
         private Coroutine _followLeaderHolder = null;
+
         private string _matchmakingLeaderId = string.Empty;
+        private string[] _teammates = null;
+        private string _ownClanName = string.Empty;
+
         private List<FriendInfo> _friendList;
 
         [HideInInspector] public ReadOnlyCollection<LobbyRoomInfo> CurrentRooms = null; // Set from LobbyRoomListingController.cs through Instance variable maybe this could be refactored?
@@ -164,9 +168,6 @@ namespace Altzone.Scripts.Lobby
 
         public delegate void MatchmakingRoomEntered(bool isLeader);
         public static event MatchmakingRoomEntered OnMatchmakingRoomEntered;
-
-        public delegate void MatchmakingRoomLeft(GameType gameType);
-        public static event MatchmakingRoomLeft OnMatchmakingRoomLeft;
 
         #endregion
 
@@ -377,9 +378,12 @@ namespace Altzone.Scripts.Lobby
             {
                 if (player.Value.UserId != PhotonRealtimeClient.LocalPlayer.UserId) expectedUsers.Add(player.Value.UserId);
             }
+            _teammates = expectedUsers.ToArray();
 
             // Saving custom properties from the room to the variables
             string clanName = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.ClanNameKey, "");
+            _ownClanName = clanName;
+
             string positionValue1 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, "");
             string positionValue2 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, "");
             string positionValue3 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, "");
@@ -420,17 +424,17 @@ namespace Altzone.Scripts.Lobby
                 switch (gameType)
                 {
                     case GameType.Clan2v2:
-                        if ((string)room.CustomProperties[PhotonBattleRoom.ClanNameKey] != clanName && room.MaxPlayers - room.PlayerCount >= expectedUsers.Count + 1)
+                        if ((string)room.CustomProperties[PhotonBattleRoom.ClanNameKey] != clanName && room.MaxPlayers - room.PlayerCount >= _teammates.Length + 1)
                         {
-                            PhotonRealtimeClient.JoinRoom(room.Name, expectedUsers.ToArray());
+                            PhotonRealtimeClient.JoinRoom(room.Name, _teammates);
                             roomFound = true;
                             break;
                         }
                         break;
                     case GameType.Random2v2:
-                        if (room.MaxPlayers - room.PlayerCount >= expectedUsers.Count + 1)
+                        if (room.MaxPlayers - room.PlayerCount >= _teammates.Length + 1)
                         {
-                            PhotonRealtimeClient.JoinRoom(room.Name, expectedUsers.ToArray());
+                            PhotonRealtimeClient.JoinRoom(room.Name, _teammates);
                             roomFound = true;
                         }
                         break;
@@ -444,10 +448,10 @@ namespace Altzone.Scripts.Lobby
                 switch (gameType)
                 {
                     case GameType.Clan2v2:
-                        PhotonRealtimeClient.CreateLobbyRoom("", gameType, "", clanName, expectedUsers.ToArray(), true);
+                        PhotonRealtimeClient.CreateLobbyRoom("", gameType, "", clanName, _teammates);
                         break;
                     case GameType.Random2v2:
-                        PhotonRealtimeClient.CreateLobbyRoom("", gameType, "", "", expectedUsers.ToArray(), true);
+                        PhotonRealtimeClient.CreateLobbyRoom("", gameType, "", "", _teammates);
                         break;
                 }
             }
@@ -471,7 +475,7 @@ namespace Altzone.Scripts.Lobby
                         break;
 
                     case GameType.Random2v2:
-                        if (expectedUsers.Count == 0) // If queuing solo
+                        if (_teammates.Length == 0) // If queuing solo
                         {
                             // Getting first free position from the room and setting own user id to that position in room
                             int freePosition = PhotonLobbyRoom.GetFirstFreePlayerPos();
@@ -604,7 +608,7 @@ namespace Altzone.Scripts.Lobby
 
             yield return new WaitUntil(() => PhotonRealtimeClient.InLobby);
 
-            OnMatchmakingRoomLeft?.Invoke(matchmakingRoomGameType);
+            PhotonRealtimeClient.CreateLobbyRoom("", matchmakingRoomGameType, "", _ownClanName, _teammates);
         }
 
         private IEnumerator StartTheGameplay(bool isCloseRoom, string blueTeamName, string redTeamName)
