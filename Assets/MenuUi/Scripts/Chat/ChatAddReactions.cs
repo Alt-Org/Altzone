@@ -8,7 +8,7 @@ public class ChatAddReactions : MonoBehaviour
     [SerializeField] private Transform _commonReactionsPanel;
     [SerializeField] private Transform _allReactionsPanel;
     [SerializeField] private GameObject _usersWhoAdded;
-     
+
     [Header("Prefabs")]
     [SerializeField] private GameObject _addedReactionPrefab;
 
@@ -20,6 +20,8 @@ public class ChatAddReactions : MonoBehaviour
 
     private List<ChatReactionHandler> _reactionHandlers = new();
     private List<int> _commonReactions = new();
+
+    private bool _longClick = false;
 
     void Start()
     {
@@ -126,31 +128,43 @@ public class ChatAddReactions : MonoBehaviour
     /// <param name="reactionHandler"></param>
     private void ToggleReaction(ChatReactionHandler reactionHandler)
     {
-        if (reactionHandler._selected)
+        if (!_longClick)
         {
-            reactionHandler.Deselect();
+            _chatScript.DeselectMessage(_chatScript.selectedMessage);
 
-            if (reactionHandler._count <= 0)
+            if (reactionHandler._selected)
             {
-                RemoveReaction(reactionHandler);
+                reactionHandler.Deselect();
+
+                if (reactionHandler._count <= 0)
+                {
+                    RemoveReaction(reactionHandler);
+                }
             }
-        }
-        else
-        {
-            reactionHandler.Select();
+            else
+            {
+                reactionHandler.Select();
+            }
         }
     }
 
-    
-    public void ShowUsers(ChatReactionHandler reactionHandler)
+    private void ShowUsers(ChatReactionHandler reactionHandler)
     {
+        _longClick = true;
         _chatScript.OpenUsersWhoAddedReactionPanel();
+
+        Invoke("ResetLongClick", 2);
+    }
+
+    private void ResetLongClick()
+    {
+        _longClick = false;
     }
 
     private void RemoveReaction(ChatReactionHandler reaction)
     {
         HorizontalLayoutGroup reactionsField = reaction.GetComponentInParent<HorizontalLayoutGroup>();
-        
+
         _reactionHandlers.Remove(reaction);
         Destroy(reaction.gameObject);
 
