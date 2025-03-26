@@ -1,4 +1,5 @@
 using Altzone.Scripts.Lobby;
+using MenuUi.Scripts.Lobby;
 using UnityEngine;
 
 /// <summary>
@@ -11,7 +12,7 @@ public class BattlePopupPanelManager : MonoBehaviour
     [SerializeField] private GameObject _mainPanel;
     [SerializeField] private GameObject _custom2v2WaitingRoom;
     [SerializeField] private GameObject _clanAndRandom2v2WaitingRoom;
-    [SerializeField] private GameObject _matchmakingPanel;
+    [SerializeField] private MatchmakingPanel _matchmakingPanel;
 
     private void OnEnable()
     {
@@ -56,10 +57,11 @@ public class BattlePopupPanelManager : MonoBehaviour
         }
     }
 
-    private void SwitchToMatchmakingPanel()
+    private void SwitchToMatchmakingPanel(bool isLeader)
     {
         ClosePanels();
-        _matchmakingPanel.SetActive(true);
+        _matchmakingPanel.SetCancelButton(isLeader);
+        _matchmakingPanel.gameObject.SetActive(true);
     }
 
     private void ReturnToRoom(GameType gameType)
