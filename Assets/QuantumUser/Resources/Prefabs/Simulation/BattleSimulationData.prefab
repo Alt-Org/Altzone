@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4593766363808855663}
   - component: {fileID: 5798555723279569877}
-  - component: {fileID: 7867620309201494200}
   - component: {fileID: 660663061108912838}
+  - component: {fileID: 5387198546616411795}
   m_Layer: 0
-  m_Name: GameSessionEntity
+  m_Name: BattleSimulationData
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -188,37 +188,6 @@ MonoBehaviour:
   View:
     Id:
       Value: 0
---- !u!114 &7867620309201494200
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5403119264126220646}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0008c51fe3af00b4da5d44f02d9b3dff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  BindBehaviour: 0
-  ManualDisposal: 0
-  ViewFlags: 0
-  InterpolationMode: 0
-  ErrorCorrectionRateMin: 3.3
-  ErrorCorrectionRateMax: 10
-  ErrorPositionBlendStart: 0.25
-  ErrorPositionBlendEnd: 1
-  ErrorRotationBlendStart: 0.1
-  ErrorRotationBlendEnd: 0.5
-  ErrorPositionMinCorrection: 0.025
-  ErrorPositionTeleportDistance: 2
-  ErrorRotationTeleportDistance: 0.5
-  OnEntityInstantiated:
-    m_PersistentCalls:
-      m_Calls: []
-  OnEntityDestroyed:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &660663061108912838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,3 +205,45 @@ MonoBehaviour:
       Value: 0
     TimeUntilStart:
       RawValue: 262144
+--- !u!114 &5387198546616411795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5403119264126220646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84aa05e62e63ef245afa86dc860c6f5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    PlayStates:
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    PlayerRefs:
+    - _index: 0
+    - _index: 0
+    - _index: 0
+    - _index: 0
+    SelectedCharacters:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    AllCharacters:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    SelectedCharacterNumbers: 00000000000000000000000000000000
