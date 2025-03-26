@@ -7,14 +7,15 @@ namespace Quantum
     {
         [Tooltip("Sprite 0: Sadness\nSprite 1: Joy\nSprite 2: Playful\nSprite 3: Aggression\nSprite 4: Love")]
         [SerializeField] private Sprite[] _sprites;
-        [SerializeField] private TrailRenderer _trailRenderer;
         [SerializeField] private Gradient[] _colorGradients;
 
         private SpriteRenderer _spriteRenderer;
+        private TrailRenderer _trailRenderer;
 
         private void Awake()
         {
-            _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            _spriteRenderer = GetComponent<SpriteRenderer>();
+            _trailRenderer = GetComponent<TrailRenderer>();
 
             QuantumEvent.Subscribe<EventChangeEmotionState>(this, OnChangeEmotionState);
         }
