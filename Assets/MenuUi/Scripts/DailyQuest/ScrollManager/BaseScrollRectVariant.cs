@@ -1,9 +1,16 @@
 using System;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+/// <summary>
+///!------------NOTE------------!<br/>
+///This script only works with<br/>
+/// <c>ScrollLocalManager.cs</c> script!<br/>
+///!------------------------------!<br/><br/>
+/// Used to get free 2 dimensional movement.<br/>
+/// BASED ON: <c>BaseScrollRect.cs</c> script.
+/// </summary>
 public class BaseScrollRectVariant : UIBehaviour, ICanvasElement, ILayoutElement, ILayoutGroup
 {
     [SerializeField] private bool _horizontallyScrollable = true;
@@ -45,6 +52,30 @@ public class BaseScrollRectVariant : UIBehaviour, ICanvasElement, ILayoutElement
     private Bounds _contentBounds;
     private Bounds _previousViewBounds;
     private Bounds _previousContentBounds;
+
+    private bool HScrollingNeeded
+    {
+        get
+        {
+            if (Application.isPlaying)
+                return _contentBounds.size.x > _viewBounds.size.x + 0.01f;
+
+            return true;
+        }
+    }
+
+    private bool VScrollingNeeded
+    {
+        get
+        {
+            if (Application.isPlaying)
+                return _contentBounds.size.y > _viewBounds.size.y + 0.01f;
+
+            return true;
+        }
+    }
+
+    private readonly Vector3[] _corners = new Vector3[4];
 
     protected BaseScrollRectVariant()
     {
@@ -117,6 +148,20 @@ public class BaseScrollRectVariant : UIBehaviour, ICanvasElement, ILayoutElement
         //    ViewRect.sizeDelta = new Vector2(-(_vSliderWidth/* + verticalScrollbarSpacing*/), ViewRect.sizeDelta.y);
         //}
     }
+
+    public virtual void CalculateLayoutInputHorizontal() { }
+
+    public virtual void CalculateLayoutInputVertical() { }
+
+    public virtual float minWidth { get { return -1; } }
+    public virtual float preferredWidth { get { return -1; } }
+    public virtual float flexibleWidth { get; private set; }
+
+    public virtual float minHeight { get { return -1; } }
+    public virtual float preferredHeight { get { return -1; } }
+    public virtual float flexibleHeight { get { return -1; } }
+
+    public virtual int layoutPriority { get { return -1; } }
 
     #endregion
 
@@ -213,6 +258,7 @@ public class BaseScrollRectVariant : UIBehaviour, ICanvasElement, ILayoutElement
             _previousPosition = Vector2.zero;
         else
             _previousPosition = _content.anchoredPosition;
+
         _previousViewBounds = _viewBounds;
         _previousContentBounds = _contentBounds;
     }
@@ -224,6 +270,7 @@ public class BaseScrollRectVariant : UIBehaviour, ICanvasElement, ILayoutElement
             UpdateBounds();
             if (_contentBounds.size.x <= _viewBounds.size.x)
                 return (_viewBounds.min.x > _contentBounds.min.x) ? 1 : 0;
+
             return (_viewBounds.min.x - _contentBounds.min.x) / (_contentBounds.size.x - _viewBounds.size.x);
         }
         set
@@ -231,6 +278,7 @@ public class BaseScrollRectVariant : UIBehaviour, ICanvasElement, ILayoutElement
             SetNormalizedPosition(value, 0);
         }
     }
+
     public float VerticalNormalizedPosition
     {
         get
@@ -238,7 +286,7 @@ public class BaseScrollRectVariant : UIBehaviour, ICanvasElement, ILayoutElement
             UpdateBounds();
             if (_contentBounds.size.y <= _viewBounds.size.y)
                 return (_viewBounds.min.y > _contentBounds.min.y) ? 1 : 0;
-            ;
+
             return (_viewBounds.min.y - _contentBounds.min.y) / (_contentBounds.size.y - _viewBounds.size.y);
         }
         set
@@ -272,6 +320,7 @@ public class BaseScrollRectVariant : UIBehaviour, ICanvasElement, ILayoutElement
         float newLocalPosition = _content.localPosition[axis] + contentBoundsMinPosition - _contentBounds.min[axis];
 
         Vector3 localPosition = _content.localPosition;
+
         if (Mathf.Abs(localPosition[axis] - newLocalPosition) > 0.01f)
         {
             localPosition[axis] = newLocalPosition;
@@ -280,41 +329,8 @@ public class BaseScrollRectVariant : UIBehaviour, ICanvasElement, ILayoutElement
         }
     }
 
-    private bool HScrollingNeeded
-    {
-        get
-        {
-            if (Application.isPlaying)
-                return _contentBounds.size.x > _viewBounds.size.x + 0.01f;
-            return true;
-        }
-    }
-    private bool VScrollingNeeded
-    {
-        get
-        {
-            if (Application.isPlaying)
-                return _contentBounds.size.y > _viewBounds.size.y + 0.01f;
-            return true;
-        }
-    }
-
-    public virtual void CalculateLayoutInputHorizontal() { }
-    public virtual void CalculateLayoutInputVertical() { }
-
-    public virtual float minWidth { get { return -1; } }
-    public virtual float preferredWidth { get { return -1; } }
-    public virtual float flexibleWidth { get; private set; }
-
-    public virtual float minHeight { get { return -1; } }
-    public virtual float preferredHeight { get { return -1; } }
-    public virtual float flexibleHeight { get { return -1; } }
-
-    public virtual int layoutPriority { get { return -1; } }
-
     public virtual void SetLayoutVertical()
     {
-        //UpdateScrollbarLayout();
         _viewBounds = new Bounds(ViewRect.rect.center, ViewRect.rect.size);
         _contentBounds = GetBounds();
     }
@@ -337,6 +353,7 @@ public class BaseScrollRectVariant : UIBehaviour, ICanvasElement, ILayoutElement
         Vector3 contentSize = _contentBounds.size;
         Vector3 contentPos = _contentBounds.center;
         Vector3 excess = _viewBounds.size - contentSize;
+
         if (excess.x > 0)
         {
             contentPos.x -= excess.x * (_content.pivot.x - 0.5f);
@@ -352,8 +369,6 @@ public class BaseScrollRectVariant : UIBehaviour, ICanvasElement, ILayoutElement
         _contentBounds.center = contentPos;
     }
 
-    private readonly Vector3[] m_Corners = new Vector3[4];
-
     private Bounds GetBounds()
     {
         if (_content == null)
@@ -363,16 +378,16 @@ public class BaseScrollRectVariant : UIBehaviour, ICanvasElement, ILayoutElement
         var vMax = new Vector3(float.MinValue, float.MinValue, float.MinValue);
         var toLocal = ViewRect.worldToLocalMatrix;
 
-        _content.GetWorldCorners(m_Corners);
+        _content.GetWorldCorners(_corners);
 
         for (int j = 0; j < 4; j++)
         {
-            Vector3 v = toLocal.MultiplyPoint3x4(m_Corners[j]);
+            Vector3 v = toLocal.MultiplyPoint3x4(_corners[j]);
             vMin = Vector3.Min(v, vMin);
             vMax = Vector3.Max(v, vMax);
         }
 
-        var bounds = new Bounds(vMin, Vector3.zero);
+        Bounds bounds = new Bounds(vMin, Vector3.zero);
         bounds.Encapsulate(vMax);
         return bounds;
     }
@@ -434,6 +449,7 @@ public class BaseScrollRectVariant : UIBehaviour, ICanvasElement, ILayoutElement
 
         Vector2 position = _content.anchoredPosition;
         position += delta * scrollSensitivity;
+
         if (scrollingMovementType == ScrollLocalManager.MovementType.Clamped)
             position += CalculateOffset(position - _content.anchoredPosition, scrollingMovementType);
 

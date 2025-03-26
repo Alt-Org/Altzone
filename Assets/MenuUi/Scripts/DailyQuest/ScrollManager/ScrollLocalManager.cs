@@ -1,12 +1,19 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
 
-public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IScrollHandler, ICanvasElement
+/// <summary>
+///!------------NOTE------------!<br/>
+///This script controlls<br/>
+/// <c>BaseScrollRectVariant.cs</c><br/>
+/// scripts!<br/>
+///!------------------------------!<br/><br/>
+/// Used to get free 2 dimensional movement.<br/>
+/// BASED ON: <c>BaseScrollRect.cs</c> script.
+/// </summary>
+public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IScrollHandler
 {
     public enum MovementType
     {
@@ -29,18 +36,10 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
     private List<Vector2> _contentStartPosition = new List<Vector2>();
     private List<Vector2> _velocities;
 
-    private bool _routeToParent;
     private List<bool> _DraggingByTouch = new List<bool>();
     private bool _dragging;
 
-    private IInitializePotentialDragHandler _parentInitializePotentialDragHandler;
-    private IBeginDragHandler _parentBeginDragHandler;
-    private IDragHandler _parentDragHandler;
-    private IEndDragHandler _parentEndDragHandler;
-    private IScrollHandler _parentScrollHandler;
-
     private List<int> _activeScrollIndexes = new List<int>();
-    [SerializeField] private RectTransform _pointerRect;
 
     protected override void Awake()
     {
@@ -55,17 +54,8 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
         }
     }
 
-    protected override void OnEnable()
-    {
-        base.OnEnable();
-        CanvasUpdateRegistry.RegisterCanvasElementForLayoutRebuild(this);
-        CacheParentContainerComponents();
-    }
-
     protected override void OnDisable()
     {
-        CanvasUpdateRegistry.UnRegisterCanvasElementForRebuild(this);
-
         for (int i = 0; i < _velocities.Count; i++)
             _velocities[i] = Vector2.zero;
 
@@ -75,7 +65,6 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
     protected override void OnTransformParentChanged()
     {
         base.OnTransformParentChanged();
-        CacheParentContainerComponents();
     }
 
     protected virtual void LateUpdate()
@@ -116,14 +105,11 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
                     else if (_inertia)
                     {
                         vector2[axis] *= Mathf.Pow(_decelerationRate, deltaTime);
-                        _velocities[i] = vector2;
 
-                        if (Mathf.Abs(_velocities[i][axis]) < 1)
-                        {
+                        if (Mathf.Abs(vector2[axis]) < 1)
                             vector2[axis] = 0;
-                            _velocities[i] = vector2;
-                        }
 
+                        _velocities[i] = vector2;
                         position[axis] += _velocities[i][axis] * deltaTime;
                     }
                     // If we have neither elaticity or friction, there shouldn't be any velocity.
@@ -137,10 +123,7 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
                 if (_velocities[i] != Vector2.zero)
                 {
                     if (_scrollingMovementType == MovementType.Clamped)
-                    {
-                        offset = _baseScrollRectVariants[i].CalculateOffset(position - _baseScrollRectVariants[i].Content.anchoredPosition, _scrollingMovementType);
-                        position += offset;
-                    }
+                        position += _baseScrollRectVariants[i].CalculateOffset(position - _baseScrollRectVariants[i].Content.anchoredPosition, _scrollingMovementType);
 
                     _baseScrollRectVariants[i].SetContentAnchoredPosition(position);
                 }
@@ -173,9 +156,7 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
         List<int> indexes = new List<int>();
 
         Vector2 pointerResult = Vector2.zero;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(this.transform as RectTransform, eventData.position, Camera.current, out pointerResult);
-        
-        _pointerRect.anchoredPosition = pointerResult; //TEST
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(this.transform as RectTransform, eventData.position, eventData.pressEventCamera, out pointerResult);
 
         for (int i = 0; i < _baseScrollRectVariants.Count; i++)
         {
@@ -199,10 +180,6 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
 
         for (int i = 0; i < _velocities.Count; i++)
             _velocities[i] = Vector2.zero;
-
-        //// Always route initialize potential drag event to parent
-        //if (_parentInitializePotentialDragHandler != null)
-        //    _parentInitializePotentialDragHandler.OnInitializePotentialDrag(eventData);
     }
 
     public virtual void OnBeginDrag(PointerEventData eventData)
@@ -227,28 +204,18 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
 
     public virtual void OnEndDrag(PointerEventData eventData)
     {
-        if (_routeToParent && _parentEndDragHandler != null)
-            _parentEndDragHandler.OnEndDrag(eventData);
-        else
-        {
-            if (eventData.button != PointerEventData.InputButton.Left)
-                return;
+        if (eventData.button != PointerEventData.InputButton.Left)
+            return;
 
-            _dragging = false;
-        }
-
+        _dragging = false;
         _activeScrollIndexes.Clear();
-        _routeToParent = false;
     }
 
     public virtual void OnDrag(PointerEventData eventData)
     {
         foreach (var index in _activeScrollIndexes)
         {
-            if (eventData.button != PointerEventData.InputButton.Left)
-                return;
-
-            if (!IsActive())
+            if ((eventData.button != PointerEventData.InputButton.Left) || !IsActive())
                 return;
 
             Vector2 localCursor;
@@ -257,8 +224,7 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
                 return;
 
             _baseScrollRectVariants[index].UpdateBounds();
-
-            var pointerDelta = localCursor - _pointerStartLocalCursor;
+            Vector2 pointerDelta = localCursor - _pointerStartLocalCursor;
             Vector2 position = _contentStartPosition[index] + pointerDelta;
 
             // Offset to get content into place in the view.
@@ -292,40 +258,8 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
 
     #endregion
 
-    private void CacheParentContainerComponents()
-    {
-        _parentInitializePotentialDragHandler = GetComponentOnlyInParents<IInitializePotentialDragHandler>();
-        _parentBeginDragHandler = GetComponentOnlyInParents<IBeginDragHandler>();
-        _parentDragHandler = GetComponentOnlyInParents<IDragHandler>();
-        _parentEndDragHandler = GetComponentOnlyInParents<IEndDragHandler>();
-        _parentScrollHandler = GetComponentOnlyInParents<IScrollHandler>();
-    }
-
-    private T GetComponentOnlyInParents<T>()
-    {
-        if (transform.parent != null)
-            return transform.parent.GetComponentInParent<T>();
-
-        return default(T);
-    }
-
     private static float RubberDelta(float overStretching, float viewSize)
     {
         return (1 - (1 / ((Mathf.Abs(overStretching) * 0.55f / viewSize) + 1))) * viewSize * Mathf.Sign(overStretching);
-    }
-
-    public virtual void Rebuild(CanvasUpdate executing)
-    {
-
-    }
-
-    public virtual void LayoutComplete()
-    {
-
-    }
-
-    public virtual void GraphicUpdateComplete()
-    {
-
     }
 }
