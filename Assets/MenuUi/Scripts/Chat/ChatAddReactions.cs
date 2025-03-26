@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using Altzone.Scripts;
-using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.UI;
 
