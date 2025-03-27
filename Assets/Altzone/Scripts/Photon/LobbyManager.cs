@@ -23,6 +23,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.AzDebug;
 using System.Collections.ObjectModel;
 using WebSocketSharp;
+using Altzone.Scripts.Common;
 
 namespace Altzone.Scripts.Lobby
 {
@@ -688,11 +689,24 @@ namespace Altzone.Scripts.Lobby
                 //room.CustomProperties.Add(PlayerCountKey, realPlayerCount);
                 room.SetCustomProperties(new PhotonHashtable
                 {
-                    { BattleID, PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>("bid")},
+                    { BattleID, PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.BattleID)},
                     { TeamAlphaNameKey, blueTeamName },
                     { TeamBetaNameKey, redTeamName },
                     { PlayerCountKey, realPlayerCount }
                 });
+
+                // Getting starting emotion from current room custom properties
+                Emotion startingEmotion = (Emotion)PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.StartingEmotionKey, (int)Emotion.Blank);
+
+                // If starting emotion is blank getting a random starting emotion
+                if (startingEmotion == Emotion.Blank) 
+                {
+                    startingEmotion = (Emotion)UnityEngine.Random.Range(0, 4);
+                }
+
+                // Setting starting emotion to projectile spec TODO: remove cast when battle uses Emotion enum also
+                _projectileSpec.ProjectileInitialEmotion = (EmotionState)startingEmotion;
+
                 yield return null;
                 if (isCloseRoom)
                 {
