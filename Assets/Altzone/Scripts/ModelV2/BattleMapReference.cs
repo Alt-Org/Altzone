@@ -13,12 +13,12 @@ namespace Altzone.Scripts.ModelV2
         [SerializeField, Header("All BattleMaps")]
         private List<BattleMap> _maps;
 
-        private List<BattleMap> _validatedMaps = null;
+        private IReadOnlyList<BattleMap> _validatedMaps = null;
 
         /// <summary>
         /// Get the list of validated BattleMaps.
         /// </summary>
-        public List<BattleMap> Maps
+        public IReadOnlyList<BattleMap> Maps
         {
             get
             {
@@ -26,14 +26,15 @@ namespace Altzone.Scripts.ModelV2
                 return _validatedMaps;
             }
         }
+
         /// <summary>
         /// Validate that the data object has valid info within it. BattleMaps with missing Id or QuantumMap or duplicated data aren't validated.
         /// </summary>
         public void ValidateMaps()
         {
-            var uniqueIds = new HashSet<string>();
-            var uniqueNames = new HashSet<string>();
-            var uniqueMap = new HashSet<Map>();
+            HashSet<string> uniqueIds = new();
+            HashSet<string> uniqueNames = new();
+            HashSet<Map> uniqueMap = new();
 
             if (_validatedMaps != null) return;
             List<BattleMap> maps = new();
