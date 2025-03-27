@@ -1,3 +1,5 @@
+using System;
+using Altzone.Scripts.Common;
 using Quantum;
 using UnityEngine;
 
@@ -13,6 +15,8 @@ namespace Altzone.Scripts.ModelV2
         private string _mapName;
         [SerializeField]
         private Map _map = null;
+        [SerializeField]
+        private MapEmotionalSituation[] _emotionalSituations;
 
         public string MapId { get => _mapId; }
         public string MapName
@@ -25,6 +29,8 @@ namespace Altzone.Scripts.ModelV2
         }
         public Map Map { get => _map; }
 
+        public MapEmotionalSituation[] EmotionalSituations { get => _emotionalSituations; }
+
 
         /// <summary>
         /// Check if the BattleMap has necessary valuesa set, with MapId and Map being mandatory.
@@ -36,5 +42,15 @@ namespace Altzone.Scripts.ModelV2
             if (_map == null) return false;
             return true;
         }
+    }
+
+    /// <summary>
+    /// Serializable class to hold one of the map's emotional situation's emotion and name.
+    /// </summary>
+    [Serializable]
+    public class MapEmotionalSituation
+    {
+        [SerializeField] public Emotion SituationEmotion;
+        [SerializeField] public string SituationName;
     }
 }
