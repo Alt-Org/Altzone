@@ -554,6 +554,8 @@ namespace Altzone.Scripts.Lobby
             if (PhotonRealtimeClient.CurrentRoom.PlayerCount < PhotonRealtimeClient.CurrentRoom.MaxPlayers)
             {
                 yield return new WaitUntil(() => PhotonRealtimeClient.CurrentRoom.PlayerCount == PhotonRealtimeClient.CurrentRoom.MaxPlayers);
+
+                yield return new WaitForSeconds(2); // TODO: change this, temporary fix for last player not setting their position fast enough before game starts
             }
 
             // Updating player positions from room to player properties
