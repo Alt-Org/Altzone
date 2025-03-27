@@ -22,7 +22,7 @@ namespace Altzone.Scripts.ModelV2
         {
             get
             {
-                if (_validatedMaps == null) ValidateMaps();
+                if (_validatedMaps.Count == 0) ValidateMaps();
                 return _validatedMaps;
             }
         }
@@ -35,7 +35,7 @@ namespace Altzone.Scripts.ModelV2
             var uniqueNames = new HashSet<string>();
             var uniqueMap = new HashSet<Map>();
 
-            if (_validatedMaps != null) return;
+            if (_validatedMaps.Count != 0) return;
             List<BattleMap> maps = new();
             foreach (var map in _maps)
             {
