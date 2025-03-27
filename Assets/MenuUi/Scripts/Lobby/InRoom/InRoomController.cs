@@ -68,6 +68,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 return;
             }
 
+            _startGameButton.interactable = false;
+
             switch (InLobbyController.SelectedGameType)
             {
                 case GameType.Custom:
