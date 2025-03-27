@@ -442,7 +442,7 @@ namespace Altzone.Scripts.Lobby
                 // Matchmaking logic
                 switch (gameType)
                 {
-                    case GameType.Clan2v2:
+                    case GameType.Clan2v2: // TODO: Add soulhome rank matchmaking and a coroutine which increases the rank variance periodically
                         if ((string)room.CustomProperties[PhotonBattleRoom.ClanNameKey] != clanName && room.MaxPlayers - room.PlayerCount >= _teammates.Length + 1)
                         {
                             PhotonRealtimeClient.JoinRoom(room.Name, _teammates);
