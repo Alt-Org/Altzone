@@ -24,6 +24,7 @@ using Altzone.Scripts.AzDebug;
 using System.Collections.ObjectModel;
 using WebSocketSharp;
 using Altzone.Scripts.Common;
+using Altzone.Scripts.ModelV2;
 
 namespace Altzone.Scripts.Lobby
 {
@@ -76,6 +77,9 @@ namespace Altzone.Scripts.Lobby
         [SerializeField] private SystemsConfig _systemsConfig;
         [SerializeField] private BattleArenaSpec _battleArenaSpec;
         [SerializeField] private ProjectileSpec _projectileSpec;
+
+        [Header("Battle Map reference")]
+        [SerializeField] private BattleMapReference _battleMapReference;
 
         private QuantumRunner _runner = null;
         private Coroutine _requestPositionChangeHolder = null;
@@ -706,6 +710,20 @@ namespace Altzone.Scripts.Lobby
 
                 // Setting starting emotion to projectile spec TODO: remove cast when battle uses Emotion enum also
                 _projectileSpec.ProjectileInitialEmotion = (EmotionState)startingEmotion;
+
+                // Getting map id from room custom properties
+                string mapId = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.MapKey, string.Empty);
+
+                // If there is no map id getting a random map
+                if (mapId == string.Empty)
+                {
+                    int mapIndex = UnityEngine.Random.Range(0, _battleMapReference.Maps.Count);
+                    mapId = _battleMapReference.Maps[mapIndex].MapId;
+                }
+
+                // Setting map to variable
+                Map map = _battleMapReference.GetBattleMap(mapId).Map;
+                if (map != null) _map = map;
 
                 yield return null;
                 if (isCloseRoom)
