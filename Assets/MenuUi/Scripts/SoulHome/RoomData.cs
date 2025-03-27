@@ -6,6 +6,7 @@ using MenuUI.Scripts.SoulHome;
 using Debug = Prg.Debug;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ReferenceSheets;
+using UnityEngine.Rendering;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -36,6 +37,8 @@ namespace MenuUI.Scripts.SoulHome
         private GameObject _furnitureSlotPrefab;
         [SerializeField]
         private SoulHomeFurnitureReference _furnitureRefrence;
+        [SerializeField]
+        private SortingGroup _sortingGroup;
 
         [Header("Furniture Slot Points")]
         [SerializeField]
@@ -108,8 +111,9 @@ namespace MenuUI.Scripts.SoulHome
         {
             int row = 0;
             int col = 0;
-            _roomSprite.sortingOrder = 1000 * _roomInfo.id;
-            _wallPaper.sortingOrder = 1000 * _roomInfo.id + 1;
+            _sortingGroup.sortingOrder = _roomInfo.id;
+            _roomSprite.sortingOrder = 0;
+            _wallPaper.sortingOrder = 1;
             //Floor Slot generation
             GameObject furnitureRowObject = new GameObject();
             float prevBottom = 0;
@@ -239,17 +243,17 @@ namespace MenuUI.Scripts.SoulHome
             if (!topRoom)
             {
                 _ladder.gameObject.SetActive(true);
-                foreach(Transform ladderpiece in _ladder)
-                {
-                    ladderpiece.GetComponent<SpriteRenderer>().sortingOrder = 1000 * _roomInfo.id +20;
-                }
+                _ladder.GetComponent<SortingGroup>().sortingOrder = 20;
+                
                 foreach(Transform rowTransform in _wallBackFurniturePoints)
                 {
                     rowTransform.GetChild(1).GetComponent<FurnitureSlot>().Ladder = true;
                     rowTransform.GetChild(2).GetComponent<FurnitureSlot>().Ladder = true;
                 }
                 _floorFurniturePoints.GetChild(0).GetChild(1).GetComponent<FurnitureSlot>().Ladder = true;
+                _floorFurniturePoints.GetChild(0).GetChild(2).GetComponent<FurnitureSlot>().Ladder = true;
                 _floorFurniturePoints.GetChild(1).GetChild(1).GetComponent<FurnitureSlot>().Ladder = true;
+                _floorFurniturePoints.GetChild(1).GetChild(2).GetComponent<FurnitureSlot>().Ladder = true;
             }
 
             if (_roomInfo.Furnitures.Count > 0) InitialSetFurniture();

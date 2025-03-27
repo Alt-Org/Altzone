@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -15,6 +16,8 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField] private float _minIdleTimer = 2f;
         [SerializeField] private float _maxIdleTimer = 4f;
         [SerializeField] private float _speed = 5;
+        [SerializeField]
+        private SortingGroup _sortingGroup;
 
         private AvatarStatus _status;
         private bool _idleTimerStarted = false;
@@ -121,7 +124,7 @@ namespace MenuUI.Scripts.SoulHome
             }
             //transform.SetParent(points.GetChild(row).GetChild(column), false);
             FurnitureSlot slot = points.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>();
-            transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = 6 + (slot.row) * 100 + (slot.roomId) * 1000;
+            _sortingGroup.sortingOrder = 6 + (slot.row) * 100;
 
             Vector2 position = slot.transform.position;
 
@@ -571,7 +574,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (hit2.collider.gameObject.GetComponent<FurnitureSlot>() != null)
                 {
-                    transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = 6 + (hit2.collider.gameObject.GetComponent<FurnitureSlot>().row) * 100 + (hit2.collider.gameObject.GetComponent<FurnitureSlot>().roomId) * 1000;
+                    _sortingGroup.sortingOrder = 6 + (hit2.collider.gameObject.GetComponent<FurnitureSlot>().row) * 100;
                     return;
                 }
             }
@@ -583,7 +586,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (hit.collider.gameObject.GetComponent<FurnitureSlot>() != null)
                 {
-                    transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = 6 + (hit.collider.gameObject.GetComponent<FurnitureSlot>().row+1) * 100 + (hit.collider.gameObject.GetComponent<FurnitureSlot>().roomId) * 1000;
+                    _sortingGroup.sortingOrder = 6 + (hit.collider.gameObject.GetComponent<FurnitureSlot>().row+1) * 100;
                 }
             }
         }
