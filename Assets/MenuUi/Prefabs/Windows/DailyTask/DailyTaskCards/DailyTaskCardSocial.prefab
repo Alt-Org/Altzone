@@ -11,17 +11,17 @@ PrefabInstance:
     - target: {fileID: 369968477903636731, guid: 82f0cb5b208d9a1408ca8d5b6c3352af,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.99215686
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 369968477903636731, guid: 82f0cb5b208d9a1408ca8d5b6c3352af,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.46666667
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 369968477903636731, guid: 82f0cb5b208d9a1408ca8d5b6c3352af,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.80784315
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2375454811441574046, guid: 82f0cb5b208d9a1408ca8d5b6c3352af,
         type: 3}
@@ -56,7 +56,7 @@ PrefabInstance:
     - target: {fileID: 2375454811441574046, guid: 82f0cb5b208d9a1408ca8d5b6c3352af,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 250
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2375454811441574046, guid: 82f0cb5b208d9a1408ca8d5b6c3352af,
         type: 3}
@@ -126,7 +126,17 @@ PrefabInstance:
     - target: {fileID: 2735320841348897930, guid: 82f0cb5b208d9a1408ca8d5b6c3352af,
         type: 3}
       propertyPath: m_Name
-      value: DailyTaskCardCMonthly
+      value: DailyTaskCardSocial
+      objectReference: {fileID: 0}
+    - target: {fileID: 4135282641852045073, guid: 82f0cb5b208d9a1408ca8d5b6c3352af,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4135282641852045073, guid: 82f0cb5b208d9a1408ca8d5b6c3352af,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

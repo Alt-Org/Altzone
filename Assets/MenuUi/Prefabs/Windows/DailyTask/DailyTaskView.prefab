@@ -281,6 +281,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _horizontallyScrollable: 1
   _verticallyScrollable: 0
+  _scrollingMovementType: 1
+  _elasticity: 0.1
+  _inertia: 1
+  _decelerationRate: 0.135
+  _scrollSensitivity: 1
   _forwardUnusedEventsToContainer: 0
   _content: {fileID: 585234633225609698}
   _viewportRectTransform: {fileID: 0}
@@ -1639,11 +1644,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f670d88077a22dd4c948d5fb56419be5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _scrollingMovementType: 1
-  _elasticity: 0.1
-  _inertia: 1
-  _decelerationRate: 0.135
-  _scrollSensitivity: 1
   _onValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1652,6 +1652,9 @@ MonoBehaviour:
   - {fileID: 592082903595366559}
   - {fileID: 8362002514372798331}
   - {fileID: 2818793562698480880}
+  _forwardUnusedEventsToContainer: 0
+  _horizontallyScrollable: 1
+  _verticallyScrollable: 1
 --- !u!114 &2283698827844972325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1666,6 +1669,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _horizontallyScrollable: 0
   _verticallyScrollable: 1
+  _scrollingMovementType: 1
+  _elasticity: 0.1
+  _inertia: 1
+  _decelerationRate: 0.135
+  _scrollSensitivity: 1
   _forwardUnusedEventsToContainer: 0
   _content: {fileID: 204915757530237513}
   _viewportRectTransform: {fileID: 0}
@@ -1832,6 +1840,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _horizontallyScrollable: 1
   _verticallyScrollable: 0
+  _scrollingMovementType: 1
+  _elasticity: 0.1
+  _inertia: 1
+  _decelerationRate: 0.135
+  _scrollSensitivity: 1
   _forwardUnusedEventsToContainer: 0
   _content: {fileID: 5733757184925806204}
   _viewportRectTransform: {fileID: 0}
@@ -1961,6 +1974,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _horizontallyScrollable: 1
   _verticallyScrollable: 0
+  _scrollingMovementType: 1
+  _elasticity: 0.1
+  _inertia: 1
+  _decelerationRate: 0.135
+  _scrollSensitivity: 1
   _forwardUnusedEventsToContainer: 0
   _content: {fileID: 6988747616983499914}
   _viewportRectTransform: {fileID: 0}
@@ -2706,6 +2724,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _horizontallyScrollable: 1
   _verticallyScrollable: 0
+  _scrollingMovementType: 1
+  _elasticity: 0.1
+  _inertia: 1
+  _decelerationRate: 0.135
+  _scrollSensitivity: 1
   _forwardUnusedEventsToContainer: 0
   _content: {fileID: 4324313042401822961}
   _viewportRectTransform: {fileID: 0}
@@ -3237,15 +3260,15 @@ MonoBehaviour:
   _dailyTasksTabButton: {fileID: 1308836185230056403}
   _ownTaskTabButton: {fileID: 5831761685214408334}
   _clanTaskTabButton: {fileID: 1448207562910011225}
-  _dailyTaskCardEducationSocialPrefab: {fileID: 2735320841348897930, guid: 82f0cb5b208d9a1408ca8d5b6c3352af,
+  _dailyTaskCardEducationSocialPrefab: {fileID: 7932866067477010791, guid: 539e0c9514818ec43a5eb60d0d849719,
     type: 3}
-  _dailyTaskCardEducationStoryPrefab: {fileID: 2735320841348897930, guid: 82f0cb5b208d9a1408ca8d5b6c3352af,
+  _dailyTaskCardEducationStoryPrefab: {fileID: 7932866067477010791, guid: 2a5a193573712eb419e624ef85691791,
     type: 3}
-  _dailyTaskCardEducationCulturePrefab: {fileID: 2735320841348897930, guid: 82f0cb5b208d9a1408ca8d5b6c3352af,
+  _dailyTaskCardEducationCulturePrefab: {fileID: 7932866067477010791, guid: 15ce70a9a7271ca42ab40f422c7c0cf5,
     type: 3}
-  _dailyTaskCardEducationEthicalPrefab: {fileID: 2735320841348897930, guid: 82f0cb5b208d9a1408ca8d5b6c3352af,
+  _dailyTaskCardEducationEthicalPrefab: {fileID: 7932866067477010791, guid: 3980af2bfd016e64ca2a371f8f23894d,
     type: 3}
-  _dailyTaskCardEducationActionPrefab: {fileID: 2735320841348897930, guid: 82f0cb5b208d9a1408ca8d5b6c3352af,
+  _dailyTaskCardEducationActionPrefab: {fileID: 7932866067477010791, guid: bd556fdc31530f746a54b939a60e3966,
     type: 3}
   _dailyTaskCardNormalRow1Prefab: {fileID: 7932866067477010791, guid: 2eacd8749cdce464b9edb960da48354c,
     type: 3}
@@ -3415,11 +3438,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f670d88077a22dd4c948d5fb56419be5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _scrollingMovementType: 1
-  _elasticity: 0.1
-  _inertia: 1
-  _decelerationRate: 0.135
-  _scrollSensitivity: 1
   _onValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -3430,6 +3448,9 @@ MonoBehaviour:
   - {fileID: 1676215880547242299}
   - {fileID: 5169313787312314130}
   - {fileID: 3594862294226377680}
+  _forwardUnusedEventsToContainer: 0
+  _horizontallyScrollable: 1
+  _verticallyScrollable: 1
 --- !u!114 &2498562992784799055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3444,6 +3465,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _horizontallyScrollable: 0
   _verticallyScrollable: 1
+  _scrollingMovementType: 1
+  _elasticity: 0.1
+  _inertia: 1
+  _decelerationRate: 0.135
+  _scrollSensitivity: 1
   _forwardUnusedEventsToContainer: 0
   _content: {fileID: 8004748456575682087}
   _viewportRectTransform: {fileID: 0}
@@ -3697,6 +3723,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _horizontallyScrollable: 1
   _verticallyScrollable: 0
+  _scrollingMovementType: 1
+  _elasticity: 0.1
+  _inertia: 1
+  _decelerationRate: 0.135
+  _scrollSensitivity: 1
   _forwardUnusedEventsToContainer: 0
   _content: {fileID: 54677489327594252}
   _viewportRectTransform: {fileID: 0}
@@ -3751,6 +3782,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _horizontallyScrollable: 1
   _verticallyScrollable: 0
+  _scrollingMovementType: 1
+  _elasticity: 0.1
+  _inertia: 1
+  _decelerationRate: 0.135
+  _scrollSensitivity: 1
   _forwardUnusedEventsToContainer: 0
   _content: {fileID: 8398324584552189941}
   _viewportRectTransform: {fileID: 0}
@@ -4712,6 +4748,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _horizontallyScrollable: 1
   _verticallyScrollable: 0
+  _scrollingMovementType: 1
+  _elasticity: 0.1
+  _inertia: 1
+  _decelerationRate: 0.135
+  _scrollSensitivity: 1
   _forwardUnusedEventsToContainer: 0
   _content: {fileID: 7447090575030613325}
   _viewportRectTransform: {fileID: 0}
@@ -5316,6 +5357,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _horizontallyScrollable: 1
   _verticallyScrollable: 0
+  _scrollingMovementType: 1
+  _elasticity: 0.1
+  _inertia: 1
+  _decelerationRate: 0.135
+  _scrollSensitivity: 1
   _forwardUnusedEventsToContainer: 0
   _content: {fileID: 4330883580656892252}
   _viewportRectTransform: {fileID: 0}
