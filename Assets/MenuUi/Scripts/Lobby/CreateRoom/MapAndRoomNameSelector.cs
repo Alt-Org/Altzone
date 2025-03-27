@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace MenuUi.Scripts.Lobby.CreateRoom
 {
     /// <summary>
-    /// Used for selecting the game map and room name when creating a custom game from the Battle Popup.
+    /// Used for selecting the game map and room name when creating a custom game from the Battle Popup. Room name is the selected emotional situation's name.
     /// </summary>
     public class MapAndRoomNameSelector : MonoBehaviour
     {
@@ -23,28 +23,106 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
         [Header("Reference sheet")]
         [SerializeField] private BattleMapReference _battleMapReference;
 
+        private int _selectedMapIndex = 0;
+        private int _selectedNameIndex = 0;
+
         public BattleMap SelectedBattleMap { get; private set; }
         public MapEmotionalSituation SelectedEmotionalSituation { get; private set; }
 
         private void Awake()
         {
-            //_nextButton.onClick.AddListener(OnNextOptionClicked);
-            //_previousButton.onClick.AddListener(OnPreviousOptionClicked);
-            //_currentGameModeText.text = SelectedGameMode.GetString();
+            SelectedBattleMap = _battleMapReference.Maps[_selectedMapIndex];
+            SelectedEmotionalSituation = SelectedBattleMap.EmotionalSituations[_selectedNameIndex];
+
+            _nextMapButton.onClick.AddListener(OnNextMapClicked);
+            _previousMapButton.onClick.AddListener(OnPreviousMapClicked);
+            _currentMapText.text = SelectedBattleMap.MapName;
+
+            _nextNameButton.onClick.AddListener(OnNextNameClicked);
+            _previousNameButton.onClick.AddListener(OnPreviousNameClicked);
+            _currentNameText.text = SelectedEmotionalSituation.SituationName;
         }
 
-        private void OnNextOptionClicked()
+        private void OnNextMapClicked()
         {
-            //bool isLast = SelectedGameMode == Enum.GetValues(typeof(CustomGameMode)).Cast<CustomGameMode>().Last();
-            //SelectedGameMode = isLast ? 0 : SelectedGameMode + 1;
-            //_currentGameModeText.text = SelectedGameMode.GetString();
+            int oldIndex = _selectedMapIndex; 
+
+            // Checking if there is a next map index or if we should get the first map
+            if (_selectedMapIndex + 1  < _battleMapReference.Maps.Count)
+            {
+                _selectedMapIndex++;
+            }
+            else
+            {
+                _selectedMapIndex = 0;
+            }
+
+            SelectMap(oldIndex);
         }
 
-        private void OnPreviousOptionClicked()
+        private void OnPreviousMapClicked()
         {
-            //bool isFirst = (int)SelectedGameMode <= 0;
-            //SelectedGameMode = isFirst ? Enum.GetValues(typeof(CustomGameMode)).Cast<CustomGameMode>().Last() : SelectedGameMode - 1;
-            //_currentGameModeText.text = SelectedGameMode.GetString();
+            int oldIndex = _selectedMapIndex;
+
+            if (_selectedMapIndex - 1 >= 0)
+            {
+                _selectedMapIndex--;
+            }
+            else
+            {
+                _selectedMapIndex = _battleMapReference.Maps.Count - 1;
+            }
+
+            SelectMap(oldIndex);
+        }
+
+        private void SelectMap(int oldIndex)
+        {
+            // Selecting the new map
+            SelectedBattleMap = _battleMapReference.Maps[_selectedMapIndex];
+            _currentMapText.text = SelectedBattleMap.MapName;
+
+            if (oldIndex != _selectedMapIndex) // TODO: once there is more maps than 1 we can remove this if statement and the oldIndex int
+            {
+                // Resetting the emotional situation
+                _selectedNameIndex = 0;
+                SelectedEmotionalSituation = SelectedBattleMap.EmotionalSituations[_selectedNameIndex];
+                _currentNameText.text = SelectedEmotionalSituation.SituationName;
+            }
+        }
+
+        private void OnNextNameClicked()
+        {
+            if (_selectedNameIndex + 1 < SelectedBattleMap.EmotionalSituations.Length)
+            {
+                _selectedNameIndex++;
+            }
+            else
+            {
+                _selectedNameIndex = 0;
+            }
+
+            SelectName();
+        }
+
+        private void OnPreviousNameClicked()
+        {
+            if (_selectedNameIndex - 1 >= 0)
+            {
+                _selectedNameIndex--;
+            }
+            else
+            {
+                _selectedNameIndex = SelectedBattleMap.EmotionalSituations.Length - 1;
+            }
+
+            SelectName();
+        }
+
+        private void SelectName()
+        {
+            SelectedEmotionalSituation = SelectedBattleMap.EmotionalSituations[_selectedNameIndex];
+            _currentNameText.text = SelectedEmotionalSituation.SituationName;
         }
     }
 }
