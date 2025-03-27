@@ -15,9 +15,19 @@ namespace MenuUi.Scripts.Lobby
         [SerializeField] private TMP_Text _matchmakingText;
         [SerializeField] private Button _cancelButton;
 
+        private void OnEnable()
+        {
+            LobbyManager.OnRoomLeaderChanged += SetCancelButton;
+        }
+
         private void OnDisable()
         {
             _cancelButton.onClick.RemoveAllListeners();
+        }
+
+        private void OnDestroy()
+        {
+            LobbyManager.OnRoomLeaderChanged -= SetCancelButton;
         }
 
         /// <summary>

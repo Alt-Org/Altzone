@@ -169,6 +169,9 @@ namespace Altzone.Scripts.Lobby
         public delegate void MatchmakingRoomEntered(bool isLeader);
         public static event MatchmakingRoomEntered OnMatchmakingRoomEntered;
 
+        public delegate void RoomLeaderChanged(bool isLeader);
+        public static event RoomLeaderChanged OnRoomLeaderChanged;
+
         #endregion
 
 
@@ -536,6 +539,13 @@ namespace Altzone.Scripts.Lobby
             // Stopping coroutine if not a master client
             if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient) yield break;
 
+            _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
+        }
+
+        private IEnumerator WaitForMatchmakingPlayers()
+        {
+            if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient) yield break;
+
             // Checking if room is full and if not waiting until room is full
             if (PhotonRealtimeClient.CurrentRoom.PlayerCount < PhotonRealtimeClient.CurrentRoom.MaxPlayers)
             {
@@ -545,10 +555,10 @@ namespace Altzone.Scripts.Lobby
             // Updating player positions from room to player properties
             foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
             {
-                positionValue1 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey1);
-                positionValue2 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey2);
-                positionValue3 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey3);
-                positionValue4 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey4);
+                string positionValue1 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey1);
+                string positionValue2 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey2);
+                string positionValue3 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey3);
+                string positionValue4 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey4);
 
                 if (player.Value.UserId == positionValue1)
                 {
@@ -568,13 +578,8 @@ namespace Altzone.Scripts.Lobby
                 }
             }
 
-            // Starting game if master client
-            if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
-            {
-                StartCoroutine(StartTheGameplay(_isCloseRoomOnGameStart, _blueTeamName, _redTeamName));
-            }
-
-            _matchmakingHolder = null;
+            // Starting game
+            StartCoroutine(StartTheGameplay(_isCloseRoomOnGameStart, _blueTeamName, _redTeamName));
         }
 
         private IEnumerator FollowLeaderToNewRoom(string leaderUserId)
@@ -882,14 +887,33 @@ namespace Altzone.Scripts.Lobby
             }
         }
 
-        public void OnDisconnected(DisconnectCause cause)
+        private void StopHolderCoroutines()
         {
-            // If position change coroutine is running stopping it
             if (_requestPositionChangeHolder != null)
             {
-                StopCoroutine( _requestPositionChangeHolder );
+                StopCoroutine(_requestPositionChangeHolder);
                 _requestPositionChangeHolder = null;
             }
+
+            if (_matchmakingHolder != null)
+            {
+                StopCoroutine(_matchmakingHolder);
+                _matchmakingHolder = null;
+                _teammates = null;
+            }
+
+            if (_followLeaderHolder != null)
+            {
+                StopCoroutine(_followLeaderHolder);
+                _followLeaderHolder = null;
+                _matchmakingLeaderId = string.Empty;
+            }
+        }
+
+        public void OnDisconnected(DisconnectCause cause)
+        {
+            // Stopping any coroutines which are stored in holder variables
+            StopHolderCoroutines();
 
             Debug.Log($"OnDisconnected {cause}");
             if (cause != DisconnectCause.DisconnectByClientLogic && cause != DisconnectCause.DisconnectByServerLogic)
@@ -911,13 +935,25 @@ namespace Altzone.Scripts.Lobby
             // Clearing the player position in the room if player is master client
             if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
             {
-                int playerPosition = otherPlayer.GetCustomProperty<int>(PlayerPositionKey);
-                string positionKey = PhotonBattleRoom.GetPositionKey(playerPosition);
+                int otherPlayerPosition = otherPlayer.GetCustomProperty<int>(PlayerPositionKey);
+                string positionKey = PhotonBattleRoom.GetPositionKey(otherPlayerPosition);
 
                 var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { positionKey, "" } });
                 var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { positionKey, otherPlayer.UserId } });
 
                 PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue);
+            }
+
+            // Changing leader status if the other player was this player's leader
+            bool isMatchmakingRoom = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.IsMatchmakingKey, false);
+            if (isMatchmakingRoom)
+            {
+                if (_matchmakingLeaderId == otherPlayer.UserId)
+                {
+                    PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.IsLeaderKey, true);
+                    _matchmakingLeaderId = string.Empty;
+                    OnRoomLeaderChanged?.Invoke(true);
+                }
             }
 
             LobbyOnPlayerLeftRoom?.Invoke(new(otherPlayer));
@@ -1046,7 +1082,15 @@ namespace Altzone.Scripts.Lobby
         public void OnPlayerEnteredRoom(Player newPlayer) { LobbyOnPlayerEnteredRoom?.Invoke(new(newPlayer)); }
         public void OnRoomPropertiesUpdate(PhotonHashtable propertiesThatChanged) { LobbyOnRoomPropertiesUpdate?.Invoke(new(propertiesThatChanged)); }
         public void OnPlayerPropertiesUpdate(Player targetPlayer, PhotonHashtable changedProps) { LobbyOnPlayerPropertiesUpdate?.Invoke(new(targetPlayer),new(changedProps)); }
-        public void OnMasterClientSwitched(Player newMasterClient) { LobbyOnMasterClientSwitched?.Invoke(new(newMasterClient)); }
+        public void OnMasterClientSwitched(Player newMasterClient) {
+            LobbyOnMasterClientSwitched?.Invoke(new(newMasterClient));
+
+            bool isMatchmakingRoom = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.IsMatchmakingKey, false);
+            if (isMatchmakingRoom && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient)
+            {
+                _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
+            }
+        }
 
         public class PlayerPosEvent
         {
