@@ -56,7 +56,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private void CreateCustomRoomOnClick()
         {
-            var roomName = string.IsNullOrWhiteSpace(_createRoomCustom.RoomName) ? $"{DefaultRoomNameCustom}{DateTime.Now.Second:00}" : _createRoomCustom.RoomName;
+            int randomNumber = UnityEngine.Random.Range(0, 100) + DateTime.Now.Millisecond;
+            var roomName = string.IsNullOrWhiteSpace(_createRoomCustom.RoomName) ? $"{DefaultRoomNameCustom} {randomNumber}" : $"{_createRoomCustom.RoomName} {randomNumber}";
 
             if (_createRoomCustom.IsPrivate && _createRoomCustom.RoomPassword != null && _createRoomCustom.RoomPassword != "")
             {
@@ -64,7 +65,6 @@ namespace MenuUi.Scripts.Lobby.InLobby
             }
             else
             {
-                
                 PhotonRealtimeClient.CreateCustomLobbyRoom(roomName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion);
             }
         }
