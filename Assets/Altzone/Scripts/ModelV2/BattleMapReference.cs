@@ -13,7 +13,7 @@ namespace Altzone.Scripts.ModelV2
         [SerializeField, Header("All BattleMaps")]
         private List<BattleMap> _maps;
 
-        private List<BattleMap> _validatedMaps = new();
+        private List<BattleMap> _validatedMaps = null;
 
         /// <summary>
         /// Get the list of validated BattleMaps.
@@ -22,7 +22,7 @@ namespace Altzone.Scripts.ModelV2
         {
             get
             {
-                if (_validatedMaps.Count == 0) ValidateMaps();
+                if (_validatedMaps == null) ValidateMaps();
                 return _validatedMaps;
             }
         }
@@ -35,7 +35,7 @@ namespace Altzone.Scripts.ModelV2
             var uniqueNames = new HashSet<string>();
             var uniqueMap = new HashSet<Map>();
 
-            if (_validatedMaps.Count != 0) return;
+            if (_validatedMaps != null) return;
             List<BattleMap> maps = new();
             foreach (var map in _maps)
             {
