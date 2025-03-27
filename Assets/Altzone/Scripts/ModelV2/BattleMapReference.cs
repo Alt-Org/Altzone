@@ -13,7 +13,7 @@ namespace Altzone.Scripts.ModelV2
         [SerializeField, Header("All BattleMaps")]
         private List<BattleMap> _maps;
 
-        private List<BattleMap> _validatedMaps = null;
+        private List<BattleMap> _validatedMaps = new();
 
         /// <summary>
         /// Get the list of validated BattleMaps.
