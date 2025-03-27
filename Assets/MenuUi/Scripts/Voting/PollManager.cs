@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Voting;
@@ -8,8 +7,8 @@ using UnityEngine;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
-using UnityEditor;
 using System.Linq;
+using MenuUi.Scripts.Storage;
 
 public static class PollManager
 {
@@ -34,6 +33,28 @@ public static class PollManager
         if (player != null) clanMembers.Add(player.Id);
 
         PollData pollData = new FurniturePollData(id, startTime, endTime, sprite, clanMembers, furniturePollType, furniture);    
+        pollDataList.Add(pollData);
+
+        //PrintPollList();
+        SaveClanData();
+    }
+
+    public static void CreateFurniturePoll(FurniturePollType furniturePollType, StorageFurniture furniture)
+    {
+        LoadClanData();
+
+        int durationInHours = 1;
+        string id = GetFirstAvailableId();
+        Sprite sprite = furniture.Info.Image;
+        long endTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + durationInHours * 3600;
+        long startTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+        List<string> clanMembers = new List<string>();
+        //if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
+        if (player != null) clanMembers.Add(player.Id);
+
+        GameFurniture gameFurniture = new(furniture.Id, furniture.VisibleName, furniture.Rarity, furniture.Size, furniture.RotatedSize, furniture.Placement, furniture.Weight, furniture.Value);
+        PollData pollData = new FurniturePollData(id, startTime, endTime, sprite, clanMembers, furniturePollType, gameFurniture);
         pollDataList.Add(pollData);
 
         //PrintPollList();

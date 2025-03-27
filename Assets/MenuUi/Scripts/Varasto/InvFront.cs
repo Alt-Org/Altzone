@@ -48,6 +48,7 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private TMP_Text _artisticDescription;
         [SerializeField] private TMP_Text _rarityText;
         [SerializeField] private Image _rarityImage;
+        [SerializeField] private FurnitureSellHandler _sellHandler;
 
         [Header("Filtering")]
         [SerializeField] private Toggle[] _rarityToggles;
@@ -462,6 +463,8 @@ namespace MenuUi.Scripts.Storage
             _rarityImage.color = _slotsList[slotVal].transform.GetChild(1).GetComponent<Image>().color;
 
             _infoSlot.SetActive(true);
+
+            _sellHandler.Furniture = _furn;
         }
 
         private void ScaleSprite(StorageFurniture furn, RectTransform rTransform)
