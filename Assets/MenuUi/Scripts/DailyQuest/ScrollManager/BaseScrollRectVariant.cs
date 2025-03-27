@@ -13,8 +13,24 @@ using UnityEngine.UI;
 /// </summary>
 public class BaseScrollRectVariant : UIBehaviour, ICanvasElement, ILayoutElement, ILayoutGroup
 {
+    public enum MovementType
+    {
+        Unrestricted, // Unrestricted movement -- can scroll forever
+        Elastic, // Restricted but flexible -- can go past the edges, but springs back in place
+        Clamped, // Restricted movement where it's not possible to go past the edges
+    }
+
+    #region Variables
+
     [SerializeField] private bool _horizontallyScrollable = true;
     [SerializeField] private bool _verticallyScrollable = true;
+    [Space]
+    [SerializeField] private MovementType _scrollingMovementType = MovementType.Elastic;
+    [SerializeField] private float _elasticity = 0.1f; // Only used for MovementType.Elastic
+    [SerializeField] private bool _inertia = true;
+    [SerializeField] private float _decelerationRate = 0.135f; // Only used when inertia is enabled
+    [SerializeField] private float _scrollSensitivity = 1.0f;
+    [Space]
     [SerializeField] private bool _forwardUnusedEventsToContainer;
     [SerializeField] private RectTransform _content;
     [SerializeField] private RectTransform _viewportRectTransform;
@@ -53,7 +69,7 @@ public class BaseScrollRectVariant : UIBehaviour, ICanvasElement, ILayoutElement
     private Bounds _previousViewBounds;
     private Bounds _previousContentBounds;
 
-    private bool HScrollingNeeded
+    public bool HScrollingNeeded
     {
         get
         {
@@ -64,7 +80,7 @@ public class BaseScrollRectVariant : UIBehaviour, ICanvasElement, ILayoutElement
         }
     }
 
-    private bool VScrollingNeeded
+    public bool VScrollingNeeded
     {
         get
         {
@@ -82,12 +98,54 @@ public class BaseScrollRectVariant : UIBehaviour, ICanvasElement, ILayoutElement
         flexibleWidth = -1;
     }
 
+    public MovementType ScrollingMovementType { get { return _scrollingMovementType; } }
+    public float Elasticity { get { return _elasticity; } }
+    public bool Inertia {  get { return _inertia; } }
+    public float DecelerationRate { get { return _decelerationRate; } }
+    public float ScrollSensitivity { get { return _scrollSensitivity; } }
+
     public Vector2 PreviousPosition { get { return _previousPosition; } }
     public Bounds ViewBounds { get { return _viewBounds; } }
     public Bounds ContentBounds { get { return _contentBounds; } }
     public Bounds PreviousViewBounds { get { return _previousViewBounds; } }
     public Bounds PreviousContentBounds { get { return _previousContentBounds; } }
     public RectTransform Content { get { return _content; } }
+
+    public float HorizontalNormalizedPosition
+    {
+        get
+        {
+            UpdateBounds();
+
+            if (_contentBounds.size.x <= _viewBounds.size.x)
+                return (_viewBounds.min.x > _contentBounds.min.x) ? 1 : 0;
+
+            return (_viewBounds.min.x - _contentBounds.min.x) / (_contentBounds.size.x - _viewBounds.size.x);
+        }
+        set
+        {
+            SetNormalizedPosition(value, 0);
+        }
+    }
+
+    public float VerticalNormalizedPosition
+    {
+        get
+        {
+            UpdateBounds();
+
+            if (_contentBounds.size.y <= _viewBounds.size.y)
+                return (_viewBounds.min.y > _contentBounds.min.y) ? 1 : 0;
+
+            return (_viewBounds.min.y - _contentBounds.min.y) / (_contentBounds.size.y - _viewBounds.size.y);
+        }
+        set
+        {
+            SetNormalizedPosition(value, 1);
+        }
+    }
+
+    #endregion
 
     #region Useless but mandatory.
 
@@ -223,34 +281,34 @@ public class BaseScrollRectVariant : UIBehaviour, ICanvasElement, ILayoutElement
         }
     }
 
-    public bool EvaluateRouteToParent(Vector2 delta, bool isXInverted, bool isYInverted)
-    {
-        if (!_forwardUnusedEventsToContainer)
-            return (false);
+    //public bool EvaluateRouteToParent(Vector2 delta, bool isXInverted, bool isYInverted)
+    //{
+    //    if (!_forwardUnusedEventsToContainer)
+    //        return (false);
 
-        if (Math.Abs(delta.x) > Math.Abs(delta.y))
-        {
-            if (_horizontallyScrollable)
-                if (!HScrollingNeeded ||
-                    (HorizontalNormalizedPosition == 0 && ((delta.x > 0 && isXInverted) || (delta.x < 0 && !isXInverted))) ||
-                    (HorizontalNormalizedPosition == 1 && ((delta.x < 0 && isXInverted) || (delta.x > 0 && !isXInverted))))
-                    return (true);//routeToParent = true;
-            else
-                return (true);
-        }
-        else if (Math.Abs(delta.x) < Math.Abs(delta.y))
-        {
-            if (_verticallyScrollable)
-                if (!VScrollingNeeded ||
-                    (VerticalNormalizedPosition == 0 && ((delta.y > 0 && isYInverted) || (delta.y < 0 && !isYInverted))) ||
-                    (VerticalNormalizedPosition == 1 && ((delta.y < 0 && isYInverted) || (delta.y > 0 && !isYInverted))))
-                    return (true);
-            else
-                return (true);
-        }
+    //    if (Math.Abs(delta.x) > Math.Abs(delta.y))
+    //    {
+    //        if (_horizontallyScrollable)
+    //            if (!HScrollingNeeded ||
+    //                (HorizontalNormalizedPosition == 0 && ((delta.x > 0 && isXInverted) || (delta.x < 0 && !isXInverted))) ||
+    //                (HorizontalNormalizedPosition == 1 && ((delta.x < 0 && isXInverted) || (delta.x > 0 && !isXInverted))))
+    //                return (true);//routeToParent = true;
+    //        else
+    //            return (true);
+    //    }
+    //    else if (Math.Abs(delta.x) < Math.Abs(delta.y))
+    //    {
+    //        if (_verticallyScrollable)
+    //            if (!VScrollingNeeded ||
+    //                (VerticalNormalizedPosition == 0 && ((delta.y > 0 && isYInverted) || (delta.y < 0 && !isYInverted))) ||
+    //                (VerticalNormalizedPosition == 1 && ((delta.y < 0 && isYInverted) || (delta.y > 0 && !isYInverted))))
+    //                return (true);
+    //        else
+    //            return (true);
+    //    }
 
-        return (false);
-    }
+    //    return (false);
+    //}
 
     public void UpdatePrevData()
     {
@@ -261,38 +319,6 @@ public class BaseScrollRectVariant : UIBehaviour, ICanvasElement, ILayoutElement
 
         _previousViewBounds = _viewBounds;
         _previousContentBounds = _contentBounds;
-    }
-
-    public float HorizontalNormalizedPosition
-    {
-        get
-        {
-            UpdateBounds();
-            if (_contentBounds.size.x <= _viewBounds.size.x)
-                return (_viewBounds.min.x > _contentBounds.min.x) ? 1 : 0;
-
-            return (_viewBounds.min.x - _contentBounds.min.x) / (_contentBounds.size.x - _viewBounds.size.x);
-        }
-        set
-        {
-            SetNormalizedPosition(value, 0);
-        }
-    }
-
-    public float VerticalNormalizedPosition
-    {
-        get
-        {
-            UpdateBounds();
-            if (_contentBounds.size.y <= _viewBounds.size.y)
-                return (_viewBounds.min.y > _contentBounds.min.y) ? 1 : 0;
-
-            return (_viewBounds.min.y - _contentBounds.min.y) / (_contentBounds.size.y - _viewBounds.size.y);
-        }
-        set
-        {
-            SetNormalizedPosition(value, 1);
-        }
     }
 
     public Vector2 NormalizedPosition
@@ -392,11 +418,11 @@ public class BaseScrollRectVariant : UIBehaviour, ICanvasElement, ILayoutElement
         return bounds;
     }
 
-    public Vector2 CalculateOffset(Vector2 delta, ScrollLocalManager.MovementType scrollingMovementType)
+    public Vector2 CalculateOffset(Vector2 delta)
     {
         Vector2 offset = Vector2.zero;
 
-        if (scrollingMovementType == ScrollLocalManager.MovementType.Unrestricted)
+        if (_scrollingMovementType == MovementType.Unrestricted)
             return offset;
 
         Vector2 min = _contentBounds.min;
@@ -425,7 +451,7 @@ public class BaseScrollRectVariant : UIBehaviour, ICanvasElement, ILayoutElement
         return offset;
     }
 
-    public void Scroll(Vector2 delta, float scrollSensitivity, ScrollLocalManager.MovementType scrollingMovementType)
+    public void Scroll(Vector2 delta)
     {
         EnsureLayoutHasRebuilt();
         UpdateBounds();
@@ -448,10 +474,10 @@ public class BaseScrollRectVariant : UIBehaviour, ICanvasElement, ILayoutElement
         }
 
         Vector2 position = _content.anchoredPosition;
-        position += delta * scrollSensitivity;
+        position += delta * _scrollSensitivity;
 
-        if (scrollingMovementType == ScrollLocalManager.MovementType.Clamped)
-            position += CalculateOffset(position - _content.anchoredPosition, scrollingMovementType);
+        if (_scrollingMovementType == MovementType.Clamped)
+            position += CalculateOffset(position - _content.anchoredPosition);
 
         SetContentAnchoredPosition(position);
         UpdateBounds();

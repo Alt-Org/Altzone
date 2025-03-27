@@ -15,20 +15,9 @@ using UnityEngine.Events;
 /// </summary>
 public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IScrollHandler
 {
-    public enum MovementType
-    {
-        Unrestricted, // Unrestricted movement -- can scroll forever
-        Elastic, // Restricted but flexible -- can go past the edges, but springs back in place
-        Clamped, // Restricted movement where it's not possible to go past the edges
-    }
-
+    #region Variables
     [Serializable] public class ScrollRectEvent : UnityEvent<Vector2> { }
 
-    [SerializeField] private MovementType _scrollingMovementType = MovementType.Elastic;
-    [SerializeField] private float _elasticity = 0.1f; // Only used for MovementType.Elastic
-    [SerializeField] private bool _inertia = true;
-    [SerializeField] private float _decelerationRate = 0.135f; // Only used when inertia is enabled
-    [SerializeField] private float _scrollSensitivity = 1.0f;
     [SerializeField] private ScrollRectEvent _onValueChanged = new ScrollRectEvent();
     [SerializeField] private List<BaseScrollRectVariant> _baseScrollRectVariants = new List<BaseScrollRectVariant>();
 
@@ -41,17 +30,59 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
 
     private List<int> _activeScrollIndexes = new List<int>();
 
+    private IInitializePotentialDragHandler parentInitializePotentialDragHandler;
+    private IBeginDragHandler parentBeginDragHandler;
+    private IDragHandler parentDragHandler;
+    private IEndDragHandler parentEndDragHandler;
+    private IScrollHandler parentScrollHandler;
+
+    private List<bool> _routeToParent;
+
+    [SerializeField]
+    private bool _forwardUnusedEventsToContainer;
+    public bool ForwardUnusedEventsToContainer
+    {
+        get { return _forwardUnusedEventsToContainer; }
+        set { _forwardUnusedEventsToContainer = value; }
+    }
+
+    [SerializeField]
+    private bool _horizontallyScrollable = true;
+    public bool HorizontallyScrollable
+    {
+        get { return _horizontallyScrollable; }
+        set { _horizontallyScrollable = value; }
+    }
+
+    [SerializeField]
+    private bool _verticallyScrollable = true;
+    public bool VerticallyScrollable
+    {
+        get { return _verticallyScrollable; }
+        set { _verticallyScrollable = value; }
+    }
+
+    #endregion
+
     protected override void Awake()
     {
         base.Awake();
         _velocities = new List<Vector2>();
+        _routeToParent = new List<bool>();
         
         foreach (var baseScroll in _baseScrollRectVariants)
         {
             _velocities.Add(Vector2.zero);
             _contentStartPosition.Add(Vector2.zero);
             _DraggingByTouch.Add(false);
+            _routeToParent.Add(false);
         }
+    }
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        CacheParentContainerComponents();
     }
 
     protected override void OnDisable()
@@ -65,6 +96,7 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
     protected override void OnTransformParentChanged()
     {
         base.OnTransformParentChanged();
+        CacheParentContainerComponents();
     }
 
     protected virtual void LateUpdate()
@@ -78,7 +110,7 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
             _baseScrollRectVariants[i].UpdateBounds();
 
             float deltaTime = Time.unscaledDeltaTime;
-            Vector2 offset = _baseScrollRectVariants[i].CalculateOffset(Vector2.zero, _scrollingMovementType);
+            Vector2 offset = _baseScrollRectVariants[i].CalculateOffset(Vector2.zero);
 
             if (!_dragging && (offset != Vector2.zero || _velocities[i] != Vector2.zero))
             {
@@ -87,14 +119,14 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
                 {
                     Vector2 vector2 = _velocities[i];
                     // Apply spring physics if movement is elastic and content has an offset from the view.
-                    if (_scrollingMovementType == MovementType.Elastic && offset[axis] != 0)
+                    if (_baseScrollRectVariants[i].ScrollingMovementType == BaseScrollRectVariant.MovementType.Elastic && offset[axis] != 0)
                     {
                         float speed = _velocities[i][axis];
                         position[axis] = Mathf.SmoothDamp(
                             _baseScrollRectVariants[i].Content.anchoredPosition[axis],
                             _baseScrollRectVariants[i].Content.anchoredPosition[axis] + offset[axis],
                             ref speed,
-                            _elasticity,
+                            _baseScrollRectVariants[i].Elasticity,
                             Mathf.Infinity,
                             deltaTime);
 
@@ -102,9 +134,9 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
                         _velocities[i] = vector2;
                     }
                     // Else move content according to velocity with deceleration applied.
-                    else if (_inertia)
+                    else if (_baseScrollRectVariants[i].Inertia)
                     {
-                        vector2[axis] *= Mathf.Pow(_decelerationRate, deltaTime);
+                        vector2[axis] *= Mathf.Pow(_baseScrollRectVariants[i].DecelerationRate, deltaTime);
 
                         if (Mathf.Abs(vector2[axis]) < 1)
                             vector2[axis] = 0;
@@ -122,14 +154,14 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
 
                 if (_velocities[i] != Vector2.zero)
                 {
-                    if (_scrollingMovementType == MovementType.Clamped)
-                        position += _baseScrollRectVariants[i].CalculateOffset(position - _baseScrollRectVariants[i].Content.anchoredPosition, _scrollingMovementType);
+                    if (_baseScrollRectVariants[i].ScrollingMovementType == BaseScrollRectVariant.MovementType.Clamped)
+                        position += _baseScrollRectVariants[i].CalculateOffset(position - _baseScrollRectVariants[i].Content.anchoredPosition);
 
                     _baseScrollRectVariants[i].SetContentAnchoredPosition(position);
                 }
             }
 
-            if (_dragging && _inertia)
+            if (_dragging && _baseScrollRectVariants[i].Inertia)
             {
                 Vector3 newVelocity = (_baseScrollRectVariants[i].Content.anchoredPosition - _baseScrollRectVariants[i].PreviousPosition) / deltaTime;
                 _velocities[i] = _DraggingByTouch[i] ? newVelocity : Vector3.Lerp(_velocities[i], newVelocity, deltaTime * 10);
@@ -142,6 +174,56 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
                 _onValueChanged.Invoke(_baseScrollRectVariants[i].NormalizedPosition);
                 _baseScrollRectVariants[i].UpdatePrevData();
             }
+        }
+    }
+
+    private T GetComponentOnlyInParents<T>()
+    {
+        if (transform.parent != null)
+            return transform.parent.GetComponentInParent<T>();
+
+        return default(T);
+    }
+
+    private void CacheParentContainerComponents()
+    {
+        parentInitializePotentialDragHandler = GetComponentOnlyInParents<IInitializePotentialDragHandler>();
+        parentBeginDragHandler = GetComponentOnlyInParents<IBeginDragHandler>();
+        parentDragHandler = GetComponentOnlyInParents<IDragHandler>();
+        parentEndDragHandler = GetComponentOnlyInParents<IEndDragHandler>();
+        parentScrollHandler = GetComponentOnlyInParents<IScrollHandler>();
+    }
+
+    private void EvaluateRouteToParent(Vector2 delta, bool isXInverted, bool isYInverted, int index)
+    {
+        _routeToParent[index] = false;
+
+        if (!_forwardUnusedEventsToContainer)
+            return;
+        Debug.LogError("asdasda");
+        if (Math.Abs(delta.x) > Math.Abs(delta.y))
+        {
+            if (_horizontallyScrollable)
+            {
+                if ((!_baseScrollRectVariants[index].HScrollingNeeded) ||
+                    (_baseScrollRectVariants[index].HorizontalNormalizedPosition == 0 && ((delta.x > 0 && isXInverted) || (delta.x < 0 && !isXInverted))) ||
+                    (_baseScrollRectVariants[index].HorizontalNormalizedPosition == 1 && ((delta.x < 0 && isXInverted) || (delta.x > 0 && !isXInverted))))
+                    _routeToParent[index] = true;
+            }
+            else
+                _routeToParent[index] = true;
+        }
+        else if (Math.Abs(delta.x) < Math.Abs(delta.y))
+        {
+            if (_verticallyScrollable)
+            {
+                if ((!_baseScrollRectVariants[index].VScrollingNeeded) ||
+                    (_baseScrollRectVariants[index].VerticalNormalizedPosition == 0 && ((delta.y > 0 && isYInverted) || (delta.y < 0 && !isYInverted))) ||
+                    (_baseScrollRectVariants[index].VerticalNormalizedPosition == 1 && ((delta.y < 0 && isYInverted) || (delta.y > 0 && !isYInverted))))
+                    _routeToParent[index] = true;
+            }
+            else
+                _routeToParent[index] = true;
         }
     }
 
@@ -188,7 +270,13 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
 
         foreach (int index in _activeScrollIndexes)
         {
-            _baseScrollRectVariants[index].EvaluateRouteToParent(eventData.delta, true, true);
+            EvaluateRouteToParent(eventData.delta, true, true, index);
+
+            if (_routeToParent[index] && parentBeginDragHandler != null)
+            {
+                parentBeginDragHandler.OnBeginDrag(eventData);
+                continue;
+            }
 
             if (!IsActive() || (eventData.button != PointerEventData.InputButton.Left))
                 return;
@@ -204,10 +292,25 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
 
     public virtual void OnEndDrag(PointerEventData eventData)
     {
-        if (eventData.button != PointerEventData.InputButton.Left)
-            return;
 
-        _dragging = false;
+        foreach (int index in _activeScrollIndexes)
+        {
+            if (_routeToParent[index] && parentEndDragHandler != null)
+            {
+                parentBeginDragHandler.OnBeginDrag(eventData);
+                return;
+            }
+            else
+            {
+                if (eventData.button != PointerEventData.InputButton.Left)
+                    return;
+
+                _dragging = false;
+            }
+
+            _routeToParent[index] = false;
+        }
+
         _activeScrollIndexes.Clear();
     }
 
@@ -215,6 +318,12 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
     {
         foreach (var index in _activeScrollIndexes)
         {
+            if (_routeToParent[index] && parentDragHandler != null)
+            {
+                parentBeginDragHandler.OnBeginDrag(eventData);
+                continue;
+            }
+
             if ((eventData.button != PointerEventData.InputButton.Left) || !IsActive())
                 return;
 
@@ -228,10 +337,10 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
             Vector2 position = _contentStartPosition[index] + pointerDelta;
 
             // Offset to get content into place in the view.
-            Vector2 offset = _baseScrollRectVariants[index].CalculateOffset(position - _baseScrollRectVariants[index].Content.anchoredPosition, _scrollingMovementType);
+            Vector2 offset = _baseScrollRectVariants[index].CalculateOffset(position - _baseScrollRectVariants[index].Content.anchoredPosition);
             position += offset;
 
-            if (_scrollingMovementType == MovementType.Elastic)
+            if (_baseScrollRectVariants[index].ScrollingMovementType == BaseScrollRectVariant.MovementType.Elastic)
             {
                 if (offset.x != 0)
                     position.x = position.x - RubberDelta(offset.x, _baseScrollRectVariants[index].ViewBounds.size.x);
@@ -247,12 +356,18 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
     {
         foreach (var index in _activeScrollIndexes)
         {
-            _baseScrollRectVariants[index].EvaluateRouteToParent(eventData.scrollDelta, false, false);
+            EvaluateRouteToParent(eventData.delta, false, false, index);
+
+            if (_routeToParent[index] && parentScrollHandler != null)
+            {
+                parentBeginDragHandler.OnBeginDrag(eventData);
+                return;
+            }
 
             if (!IsActive())
                 return;
 
-            _baseScrollRectVariants[index].Scroll(eventData.scrollDelta, _scrollSensitivity, _scrollingMovementType);
+            _baseScrollRectVariants[index].Scroll(eventData.scrollDelta);
         }
     }
 
