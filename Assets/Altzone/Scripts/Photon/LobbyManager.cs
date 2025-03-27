@@ -379,9 +379,6 @@ namespace Altzone.Scripts.Lobby
             // Closing the room so that no others can join
             PhotonRealtimeClient.CurrentRoom.IsOpen = false;
 
-            // Setting local player as leader
-            PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.IsLeaderKey, true);
-
             // Saving custom properties from the room to the variables
             string clanName = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.ClanNameKey, "");
             int soulhomeRank = PhotonRealtimeClient.LocalLobbyPlayer.GetCustomProperty(PhotonBattleRoom.SoulhomeRank, 0);
@@ -398,8 +395,6 @@ namespace Altzone.Scripts.Lobby
                 if (player.Value.UserId != PhotonRealtimeClient.LocalPlayer.UserId)
                 {
                     expectedUsers.Add(player.Value.UserId);
-                    // Setting other players as not leader
-                    player.Value.SetCustomProperty(PhotonBattleRoom.IsLeaderKey, false);
                 }
 
                 // Saving clan name and soulhome rank to player's custom properties in case the matchmaking leader leaves
@@ -411,7 +406,7 @@ namespace Altzone.Scripts.Lobby
             }
             _teammates = expectedUsers.ToArray();
 
-            // Sending other players in the room the room change request
+            // Sending other players in the room the room change request, setting own leader id key as own userid to indicate being the leader
             PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, PhotonRealtimeClient.LocalPlayer.UserId);
 
             PhotonRealtimeClient.Client.OpRaiseEvent(
@@ -991,7 +986,6 @@ namespace Altzone.Scripts.Lobby
                 string matchmakingLeaderId = PhotonRealtimeClient.LocalPlayer.GetCustomProperty(PhotonBattleRoom.LeaderIdKey, string.Empty);
                 if (matchmakingLeaderId == otherPlayer.UserId)
                 {
-                    PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.IsLeaderKey, true);
                     PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, PhotonRealtimeClient.LocalPlayer.UserId);
                     OnRoomLeaderChanged?.Invoke(true);
                 }
@@ -1010,7 +1004,7 @@ namespace Altzone.Scripts.Lobby
 
             if (isMatchmaking)
             {
-                bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer.GetCustomProperty(PhotonBattleRoom.IsLeaderKey, false);
+                bool isLeader = PhotonRealtimeClient.LocalPlayer.UserId == PhotonRealtimeClient.LocalPlayer.GetCustomProperty<string>(PhotonBattleRoom.LeaderIdKey);
                 OnMatchmakingRoomEntered?.Invoke(isLeader);
             }
             else
