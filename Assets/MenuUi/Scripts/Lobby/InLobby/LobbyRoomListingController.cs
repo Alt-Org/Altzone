@@ -60,11 +60,12 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
             if (_createRoomCustom.IsPrivate && _createRoomCustom.RoomPassword != null && _createRoomCustom.RoomPassword != "")
             {
-                PhotonRealtimeClient.CreateLobbyRoom(roomName, GameType.Custom, _createRoomCustom.RoomPassword);
+                PhotonRealtimeClient.CreateCustomLobbyRoom(roomName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, _createRoomCustom.RoomPassword);
             }
             else
             {
-                PhotonRealtimeClient.CreateLobbyRoom(roomName, GameType.Custom);
+                
+                PhotonRealtimeClient.CreateCustomLobbyRoom(roomName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion);
             }
         }
 
@@ -96,7 +97,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             {
                 if (clanData != null)
                 {
-                    PhotonRealtimeClient.JoinRandomOrCreateLobbyRoom("", GameType.Clan2v2, clanData.Name);
+                    PhotonRealtimeClient.JoinRandomOrCreateLobbyRoom("", GameType.Clan2v2, clanData.Name, UnityEngine.Random.Range(0,5001));
                 }
             }));
         }
@@ -129,7 +130,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             {
                 if (clanData != null)
                 {
-                    PhotonRealtimeClient.CreateLobbyRoom("", GameType.Random2v2);
+                    PhotonRealtimeClient.CreateRandom2v2LobbyRoom();
                 }
             }));
         }

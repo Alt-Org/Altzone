@@ -19,7 +19,34 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
         [SerializeField] private CustomBattleGameModeSelector _customBattleGameModeSelector;
 
         public string RoomName { get { return _mapAndRoomNameSelector.SelectedEmotionalSituation.SituationName; } }
-        public Emotion SelectedEmotion { get { return _mapAndRoomNameSelector.SelectedEmotionalSituation.SituationEmotion; } }
+        public Emotion SelectedEmotion
+        {
+            get
+            {
+                if (_mapAndRoomNameSelector.SelectedEmotionalSituation != null)
+                {
+                    return _mapAndRoomNameSelector.SelectedEmotionalSituation.SituationEmotion;
+                }
+                else
+                {
+                    return Emotion.Blank;
+                }
+            }
+        }
+        public string SelectedMapId
+        {
+            get
+            {
+                if (_mapAndRoomNameSelector.SelectedBattleMap != null)
+                {
+                    return _mapAndRoomNameSelector.SelectedBattleMap.MapId;
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+        }
         public string RoomPassword { get { return _roomPassword.text; } }
         public bool IsPrivate { get { return _privateToggle.isOn; } }
         public bool ShowToFriends {  get { return _showToFriends.isOn; } }

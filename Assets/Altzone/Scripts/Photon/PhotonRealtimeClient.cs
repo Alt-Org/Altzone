@@ -13,6 +13,7 @@ using static Altzone.Scripts.Lobby.Wrappers.LobbyWrapper;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby;
 using WebSocketSharp;
+using Altzone.Scripts.Common;
 
 public static class PhotonRealtimeClient
 {
@@ -616,12 +617,14 @@ public static class PhotonRealtimeClient
         Client.RemoveCallbackTarget(target);
     }
 
-    private static RoomOptions GetRoomOptions(string roomName, GameType gameType, string password = "", string clanName = "", bool isMatchmaking = false)
+    private static RoomOptions GetRoomOptions(GameType gameType, bool isMatchmaking = false, string mapId = "", Emotion startingEmotion = Emotion.Blank, string password = "", string clanName = "", int soulhomeRank = -1)
     {
         PhotonHashtable customRoomProperties = new PhotonHashtable
         {
             { PhotonBattleRoom.GameTypeKey, gameType },
             { PhotonBattleRoom.IsMatchmakingKey, isMatchmaking },
+            { PhotonBattleRoom.MapKey, mapId },
+            { PhotonBattleRoom.StartingEmotionKey, startingEmotion },
             { PhotonBattleRoom.PlayerPositionKey1, "" },
             { PhotonBattleRoom.PlayerPositionKey2, "" },
         };
@@ -666,6 +669,14 @@ public static class PhotonRealtimeClient
             propertiesShowingToLobby.Add(PhotonBattleRoom.ClanNameKey);
         }
 
+        if (soulhomeRank != -1)
+        {
+            customRoomProperties.Add(PhotonBattleRoom.SoulhomeRank, soulhomeRank);
+            customRoomProperties.Add(PhotonBattleRoom.SoulhomeRankVariance, 0);
+            propertiesShowingToLobby.Add(PhotonBattleRoom.SoulhomeRank);
+            propertiesShowingToLobby.Add(PhotonBattleRoom.SoulhomeRankVariance);
+        }
+
         var roomOptions = new RoomOptions()
         {
             IsVisible = true,
@@ -692,9 +703,23 @@ public static class PhotonRealtimeClient
         return opParams;
     }
 
-    public static bool CreateLobbyRoom(string roomName, GameType gameType, string password = "", string clanName = "", string[] expectedUsers = null, bool isMatchmaking = false)
+    public static bool CreateRandom2v2LobbyRoom(string[] expectedUsers = null, bool isMatchmaking = false)
     {
-        RoomOptions roomOptions = GetRoomOptions(roomName, gameType, password, clanName, isMatchmaking);
+        RoomOptions roomOptions = GetRoomOptions(GameType.Random2v2, isMatchmaking);
+
+        return CreateRoom("", roomOptions, null, expectedUsers);
+    }
+
+    public static bool CreateClan2v2LobbyRoom(string clanName, int soulhomeRank, string[] expectedUsers = null, bool isMatchmaking = false)
+    {
+        RoomOptions roomOptions = GetRoomOptions(GameType.Clan2v2, isMatchmaking, "", Emotion.Blank, "", clanName, soulhomeRank);
+
+        return CreateRoom("", roomOptions, null, expectedUsers);
+    }
+
+    public static bool CreateCustomLobbyRoom(string roomName, string mapId, Emotion startingEmotion, string password = "", string[] expectedUsers = null)
+    {
+        RoomOptions roomOptions = GetRoomOptions(GameType.Custom, false, mapId, startingEmotion, password);
 
         return CreateRoom(roomName, roomOptions, null, expectedUsers);
     }
@@ -722,14 +747,14 @@ public static class PhotonRealtimeClient
         return Client.OpCreateRoom(opParams);
     }
 
-    public static bool JoinRandomOrCreateLobbyRoom(string roomName, GameType gameType, string clanName = "", string[] expectedUsers = null, bool isMatchmaking = false)
+    public static bool JoinRandomOrCreateLobbyRoom(string roomName, GameType gameType, string clanName = "", int soulhomeRank = -1, string[] expectedUsers = null, bool isMatchmaking = false)
     {
         if (Client.Server != ServerConnection.MasterServer || !Client.IsConnectedAndReady)
         {
             Debug.LogError("CreateRoom failed. Client is on " + Client.Server + " (must be Master Server for matchmaking)" + (Client.IsConnectedAndReady ? " and ready" : "but not ready for operations (State: " + Client.State + ")") + ". Wait for callback: OnJoinedLobby or OnConnectedToMaster.");
             return false;
         }
-        RoomOptions roomOptions = GetRoomOptions(roomName, gameType, "", clanName, isMatchmaking);
+        RoomOptions roomOptions = GetRoomOptions(gameType, isMatchmaking, "", Emotion.Blank, "", clanName, soulhomeRank);
         EnterRoomArgs enterRoomArgs = GetEnterRoomArgs(roomName, roomOptions, expectedUsers);
 
         JoinRandomRoomArgs joinRandomRoomArgs = new JoinRandomRoomArgs();
