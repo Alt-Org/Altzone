@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8344968339860513469}
   - component: {fileID: 1572721459727303304}
   - component: {fileID: 3828829633926915963}
+  - component: {fileID: 3334611294913242570}
   m_Layer: 0
   m_Name: SoulWallSegment
   m_TagString: Untagged
@@ -55,7 +56,7 @@ MonoBehaviour:
       RawValue: 0
   PhysicsCollider:
     IsEnabled: 1
-    IsTrigger: 0
+    IsTrigger: 1
     Material:
       Id:
         Value: 0
@@ -219,6 +220,29 @@ MonoBehaviour:
   OnEntityDestroyed:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3334611294913242570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781388111915340693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 257b7ac255d5e214fa414d4a6c24614c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    ChildEntity: {fileID: 0}
+    Normal:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+    CollisionMinOffset:
+      RawValue: 32768
+    Emotion:
+      Value: 0
 --- !u!1 &3422808289550549609
 GameObject:
   m_ObjectHideFlags: 0
@@ -313,6 +337,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 905254898394169221}
+  - component: {fileID: 4474594605804255226}
   m_Layer: 0
   m_Name: ViewModel
   m_TagString: Untagged
@@ -336,3 +361,16 @@ Transform:
   - {fileID: 4346275695437095010}
   m_Father: {fileID: 8344968339860513469}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4474594605804255226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7347430855321798970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e1f918de9501926e99fa79d2378e633, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soulWallEntityGameObject: {fileID: 1781388111915340693}
