@@ -86,7 +86,6 @@ namespace Altzone.Scripts.Lobby
         private Coroutine _matchmakingHolder = null;
         private Coroutine _followLeaderHolder = null;
 
-        private string _matchmakingLeaderId = string.Empty;
         private string[] _teammates = null;
 
         private List<FriendInfo> _friendList;
@@ -367,7 +366,7 @@ namespace Altzone.Scripts.Lobby
             // Sending others event to leave matchmaking
             PhotonRealtimeClient.Client.OpRaiseEvent(
                     PhotonRealtimeClient.PhotonEvent.RoomChangeRequested,
-                    PhotonRealtimeClient.LocalLobbyPlayer.UserId,
+                    PhotonRealtimeClient.LocalPlayer.UserId,
                     new RaiseEventArgs { Receivers = ReceiverGroup.Others },
                     SendOptions.SendReliable
                 );
@@ -412,8 +411,9 @@ namespace Altzone.Scripts.Lobby
             }
             _teammates = expectedUsers.ToArray();
 
-
             // Sending other players in the room the room change request
+            PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, PhotonRealtimeClient.LocalPlayer.UserId);
+
             PhotonRealtimeClient.Client.OpRaiseEvent(
                     PhotonRealtimeClient.PhotonEvent.RoomChangeRequested,
                     PhotonRealtimeClient.LocalPlayer.UserId,
@@ -486,7 +486,6 @@ namespace Altzone.Scripts.Lobby
             // If room was found setting room properties
             if (roomFound)
             {
-                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.IsMatchmakingKey, false);
                 switch (gameType)
                 {
                     case GameType.Clan2v2:
@@ -592,7 +591,6 @@ namespace Altzone.Scripts.Lobby
         private IEnumerator FollowLeaderToNewRoom(string leaderUserId)
         {
             string oldRoomName = PhotonRealtimeClient.CurrentRoom.Name;
-            _matchmakingLeaderId = leaderUserId;
 
             // Leaving room and waiting until in lobby
             PhotonRealtimeClient.LeaveRoom();
@@ -949,7 +947,6 @@ namespace Altzone.Scripts.Lobby
             {
                 StopCoroutine(_followLeaderHolder);
                 _followLeaderHolder = null;
-                _matchmakingLeaderId = string.Empty;
             }
         }
 
@@ -991,10 +988,11 @@ namespace Altzone.Scripts.Lobby
             bool isMatchmakingRoom = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.IsMatchmakingKey, false);
             if (isMatchmakingRoom)
             {
-                if (_matchmakingLeaderId == otherPlayer.UserId)
+                string matchmakingLeaderId = PhotonRealtimeClient.LocalPlayer.GetCustomProperty(PhotonBattleRoom.LeaderIdKey, string.Empty);
+                if (matchmakingLeaderId == otherPlayer.UserId)
                 {
                     PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.IsLeaderKey, true);
-                    _matchmakingLeaderId = string.Empty;
+                    PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, PhotonRealtimeClient.LocalPlayer.UserId);
                     OnRoomLeaderChanged?.Invoke(true);
                 }
             }
@@ -1100,8 +1098,22 @@ namespace Altzone.Scripts.Lobby
 
                 case PhotonRealtimeClient.PhotonEvent.RoomChangeRequested:
                     string leaderUserId = (string)photonEvent.CustomData;
+                    string matchmakingLeaderId = string.Empty;
 
-                    if (_followLeaderHolder == null)
+                    // If room is not a matchmaking room the person sending the event is the leader.
+                    bool isMatchmakingRoom = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.IsMatchmakingKey, false);
+                    if (!isMatchmakingRoom)
+                    {
+                        PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, leaderUserId);
+                        matchmakingLeaderId = leaderUserId;
+                    }
+
+                    if (matchmakingLeaderId == string.Empty)
+                    {
+                        matchmakingLeaderId = PhotonRealtimeClient.LocalPlayer.GetCustomProperty(PhotonBattleRoom.LeaderIdKey, string.Empty);
+                    }
+
+                    if (_followLeaderHolder == null && leaderUserId == matchmakingLeaderId)
                     {
                         _followLeaderHolder = StartCoroutine(FollowLeaderToNewRoom(leaderUserId));
                     }
