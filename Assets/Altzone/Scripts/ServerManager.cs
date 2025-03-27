@@ -546,6 +546,28 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
+    public IEnumerator GetPlayerTaskFromServer(string taskId, Action<PlayerTask> callback)
+    {
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "dailyTasks/"+taskId, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                //Debug.LogWarning(result);
+                ServerPlayerTask serverTask = result["data"]["DailyTask"].ToObject<ServerPlayerTask>();
+                //Clan = clan;
+
+                if (callback != null)
+                    callback(new(serverTask));
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
     public IEnumerator ReservePlayerTaskFromServer(string taskId, Action<PlayerTask> callback)
     {
         yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "dailyTasks/reserve/"+taskId, taskId, AccessToken, request =>
@@ -564,6 +586,26 @@ public class ServerManager : MonoBehaviour
             {
                 if (callback != null)
                     callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator UnreservePlayerTaskFromServer(Action<bool> callback)
+    {
+        yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "dailyTasks/unreserve/", null, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                //Debug.LogWarning(result);
+
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
             }
         }));
     }
@@ -813,26 +855,38 @@ public class ServerManager : MonoBehaviour
         }
 
         string body = JObject.FromObject(
-            new {
-                _id=data.Id,
-                name=data.Name,
-                tag=data.Tag,
-                isOpen=Clan.isOpen,
+            new
+            {
+                _id = data.Id,
+                name = data.Name,
+                tag = data.Tag,
+                isOpen = Clan.isOpen,
                 labels = serverValues,
-                ageRange=data.ClanAge,
-                goal=data.Goals,
-                phrase=data.Phrase,
-                language=data.Language,
+                ageRange = data.ClanAge,
+                goal = data.Goals,
+                phrase = data.Phrase,
+                language = data.Language,
                 clanLogo = logo
             },
             JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
         ).ToString();
 
+        yield return UpdateClanToServer(body, callback);
+        Storefront.Get().SaveClanData(data, null);
+    }
+
+    public IEnumerator UpdateClanToServer(string body, Action<bool> callback)
+    {
+
         yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "clan", body, AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                Storefront.Get().SaveClanData(data, null);
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                ServerClan clan = result["data"]["Clan"].ToObject<ServerClan>();
+                Clan = clan;
+
+                StartCoroutine(SaveClanFromServerToDataStorage(Clan));
 
                 if (callback != null)
                 {

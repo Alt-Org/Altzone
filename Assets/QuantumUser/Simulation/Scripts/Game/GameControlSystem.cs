@@ -19,8 +19,8 @@ namespace Quantum
 
             BattleArenaSpec battleArenaSpec = f.FindAsset(f.RuntimeConfig.BattleArenaSpec);
 
-            PlayerManager.Init(f);
             GridManager.Init(battleArenaSpec);
+            PlayerManager.Init(f);
 
             f.Events.GridSet();
 

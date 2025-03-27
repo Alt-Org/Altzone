@@ -1,0 +1,25 @@
+var struct_quantum_1_1_player_manager_1_1_player_handle =
+[
+    [ "PlayerHandle", "struct_quantum_1_1_player_manager_1_1_player_handle.html#a913fad37aa22eec32efe1a66a8f24a15", null ],
+    [ "GetCharacter", "struct_quantum_1_1_player_manager_1_1_player_handle.html#a444aa72564ad3efec94d9b4084df69b5", null ],
+    [ "GetCharacterIndex", "struct_quantum_1_1_player_manager_1_1_player_handle.html#a6c2629ea4c61be907a7d977263eb8a5c", null ],
+    [ "GetCharacterOffset", "struct_quantum_1_1_player_manager_1_1_player_handle.html#a423b31408312ec4dad644172b8d30b07", null ],
+    [ "GetOutOfPlayPosition", "struct_quantum_1_1_player_manager_1_1_player_handle.html#a3f52ff3f2821c56d5be036b457c6b217", null ],
+    [ "GetPlayerIndex", "struct_quantum_1_1_player_manager_1_1_player_handle.html#ae07fee6c8ec96cdabac2851617f607a9", null ],
+    [ "GetPlayState", "struct_quantum_1_1_player_manager_1_1_player_handle.html#a588ed8b2804f8045265359eea9e6ad45", null ],
+    [ "GetSelectedCharacter", "struct_quantum_1_1_player_manager_1_1_player_handle.html#adc6d1cd2fb791143a8614867523faec3", null ],
+    [ "GetTeammatePlayerIndex", "struct_quantum_1_1_player_manager_1_1_player_handle.html#ae6ea935e405fd2e55528230d4749ebd6", null ],
+    [ "GetTeamNumber", "struct_quantum_1_1_player_manager_1_1_player_handle.html#aa20d8145d36828947aa6533c9c5ffcd6", null ],
+    [ "IsValidCharacterNumber", "struct_quantum_1_1_player_manager_1_1_player_handle.html#ae6288069d8f9e06a42498fab328d99bf", null ],
+    [ "SetAllPlayStates", "struct_quantum_1_1_player_manager_1_1_player_handle.html#a612a32a0a1ba0f44b4b6c7e3a5387af8", null ],
+    [ "SetCharacters", "struct_quantum_1_1_player_manager_1_1_player_handle.html#af721752dd5ce2dc305fc9f23219e676d", null ],
+    [ "SetSelectedCharacter", "struct_quantum_1_1_player_manager_1_1_player_handle.html#ac9fdc0b317f2e41f6b12c721539b8ce0", null ],
+    [ "UnsetSelectedCharacter", "struct_quantum_1_1_player_manager_1_1_player_handle.html#af62d92291e561feee6361258e790ae59", null ],
+    [ "_playerManagerData", "struct_quantum_1_1_player_manager_1_1_player_handle.html#a3d1a3b80ab133ac414adfe519c1b0be6", null ],
+    [ "Index", "struct_quantum_1_1_player_manager_1_1_player_handle.html#a278ef7c94e3263e52c5d7ea88edae9af", null ],
+    [ "PlayerRef", "struct_quantum_1_1_player_manager_1_1_player_handle.html#a993d87388399c3a640669c4172b1e31f", null ],
+    [ "PlayState", "struct_quantum_1_1_player_manager_1_1_player_handle.html#adb9531f7e03a20ed1208d4f9406bcab3", null ],
+    [ "SelectedCharacter", "struct_quantum_1_1_player_manager_1_1_player_handle.html#a9161919008a3171fd7da0218ccaade9a", null ],
+    [ "SelectedCharacterNumber", "struct_quantum_1_1_player_manager_1_1_player_handle.html#a329b0682ffee1da163122b15cfc6c653", null ],
+    [ "SpawnPosition", "struct_quantum_1_1_player_manager_1_1_player_handle.html#a9c4d06e6efef0ddc2e85cc18c14917bf", null ]
+];

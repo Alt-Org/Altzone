@@ -52,7 +52,7 @@ namespace Quantum {
   public unsafe partial class Frame {
     public unsafe partial struct FrameEvents {
       static partial void GetEventTypeCountCodeGen(ref Int32 eventCount) {
-        eventCount = 5;
+        eventCount = 6;
       }
       static partial void GetParentEventIDCodeGen(Int32 eventID, ref Int32 parentEventID) {
         switch (eventID) {
@@ -63,8 +63,9 @@ namespace Quantum {
         switch (eventID) {
           case EventUpdateDebugStatsOverlay.ID: result = typeof(EventUpdateDebugStatsOverlay); return;
           case EventGridSet.ID: result = typeof(EventGridSet); return;
+          case EventPlayerViewInit.ID: result = typeof(EventPlayerViewInit); return;
           case EventPlaySoundEvent.ID: result = typeof(EventPlaySoundEvent); return;
-          case EventChangeProjectileSprite.ID: result = typeof(EventChangeProjectileSprite); return;
+          case EventChangeEmotionState.ID: result = typeof(EventChangeEmotionState); return;
           default: break;
         }
       }
@@ -81,16 +82,24 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
+      public EventPlayerViewInit PlayerViewInit(EntityRef Entity, FP ModelScale) {
+        if (_f.IsPredicted) return null;
+        var ev = _f.Context.AcquireEvent<EventPlayerViewInit>(EventPlayerViewInit.ID);
+        ev.Entity = Entity;
+        ev.ModelScale = ModelScale;
+        _f.AddEvent(ev);
+        return ev;
+      }
       public EventPlaySoundEvent PlaySoundEvent(SoundEffect SoundEffect) {
         var ev = _f.Context.AcquireEvent<EventPlaySoundEvent>(EventPlaySoundEvent.ID);
         ev.SoundEffect = SoundEffect;
         _f.AddEvent(ev);
         return ev;
       }
-      public EventChangeProjectileSprite ChangeProjectileSprite(Int32 SpriteIndex) {
+      public EventChangeEmotionState ChangeEmotionState(EmotionState Emotion) {
         if (_f.IsPredicted) return null;
-        var ev = _f.Context.AcquireEvent<EventChangeProjectileSprite>(EventChangeProjectileSprite.ID);
-        ev.SpriteIndex = SpriteIndex;
+        var ev = _f.Context.AcquireEvent<EventChangeEmotionState>(EventChangeEmotionState.ID);
+        ev.Emotion = Emotion;
         _f.AddEvent(ev);
         return ev;
       }
@@ -144,14 +153,15 @@ namespace Quantum {
       }
     }
   }
-  public unsafe partial class EventPlaySoundEvent : EventBase {
+  public unsafe partial class EventPlayerViewInit : EventBase {
     public new const Int32 ID = 3;
-    public SoundEffect SoundEffect;
-    protected EventPlaySoundEvent(Int32 id, EventFlags flags) : 
+    public EntityRef Entity;
+    public FP ModelScale;
+    protected EventPlayerViewInit(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventPlaySoundEvent() : 
-        base(3, EventFlags.Server|EventFlags.Client) {
+    public EventPlayerViewInit() : 
+        base(3, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
     }
     public new QuantumGame Game {
       get {
@@ -164,19 +174,20 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 47;
-        hash = hash * 31 + SoundEffect.GetHashCode();
+        hash = hash * 31 + Entity.GetHashCode();
+        hash = hash * 31 + ModelScale.GetHashCode();
         return hash;
       }
     }
   }
-  public unsafe partial class EventChangeProjectileSprite : EventBase {
+  public unsafe partial class EventPlaySoundEvent : EventBase {
     public new const Int32 ID = 4;
-    public Int32 SpriteIndex;
-    protected EventChangeProjectileSprite(Int32 id, EventFlags flags) : 
+    public SoundEffect SoundEffect;
+    protected EventPlaySoundEvent(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventChangeProjectileSprite() : 
-        base(4, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
+    public EventPlaySoundEvent() : 
+        base(4, EventFlags.Server|EventFlags.Client) {
     }
     public new QuantumGame Game {
       get {
@@ -189,7 +200,32 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 53;
-        hash = hash * 31 + SpriteIndex.GetHashCode();
+        hash = hash * 31 + SoundEffect.GetHashCode();
+        return hash;
+      }
+    }
+  }
+  public unsafe partial class EventChangeEmotionState : EventBase {
+    public new const Int32 ID = 5;
+    public EmotionState Emotion;
+    protected EventChangeEmotionState(Int32 id, EventFlags flags) : 
+        base(id, flags) {
+    }
+    public EventChangeEmotionState() : 
+        base(5, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
+    }
+    public new QuantumGame Game {
+      get {
+        return (QuantumGame)base.Game;
+      }
+      set {
+        base.Game = value;
+      }
+    }
+    public override Int32 GetHashCode() {
+      unchecked {
+        var hash = 59;
+        hash = hash * 31 + Emotion.GetHashCode();
         return hash;
       }
     }
