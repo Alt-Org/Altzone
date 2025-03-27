@@ -12,5 +12,6 @@ namespace Quantum
         public FP ProjectileInitialSpeed;
         [Tooltip("Amount of projectile spawned in ")]
         public int InitialProjectilesCount;
+        public EmotionState ProjectileInitialEmotion;
     }
 }
