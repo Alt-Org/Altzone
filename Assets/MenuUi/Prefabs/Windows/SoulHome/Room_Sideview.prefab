@@ -263,6 +263,7 @@ GameObject:
   - component: {fileID: 4562328694243148845}
   - component: {fileID: 8549751734253555421}
   - component: {fileID: 1151114288225320533}
+  - component: {fileID: 2815566084244273308}
   m_Layer: 0
   m_Name: Room_Sideview
   m_TagString: Room
@@ -355,6 +356,7 @@ MonoBehaviour:
   _furnitureSlotPrefab: {fileID: 1746976041712915479, guid: 52a494fde11e9d646aaf497a4da6fc89,
     type: 3}
   _furnitureRefrence: {fileID: 11400000, guid: 4d7ae157e7f642342b3e1c145294f7b1, type: 2}
+  _sortingGroup: {fileID: 2815566084244273308}
   _floorFurniturePoints: {fileID: 4146979813429394303}
   _wallBackFurniturePoints: {fileID: 1613303984333546302}
   _wallRightFurniturePoints: {fileID: 2531699967774540014}
@@ -369,6 +371,18 @@ MonoBehaviour:
   _roomSprite: {fileID: 741905825291681724}
   _wallPaper: {fileID: 2046850533190105813}
   _ladder: {fileID: 6746644890501038093}
+--- !u!210 &2815566084244273308
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1338959919280691323}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
 --- !u!1 &2096308330586816313
 GameObject:
   m_ObjectHideFlags: 0
