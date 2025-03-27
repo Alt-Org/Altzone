@@ -1,6 +1,10 @@
-using Photon.Deterministic;
+using System.Runtime.CompilerServices;
+
 using UnityEngine;
 using UnityEngine.Scripting;
+
+using Photon.Deterministic;
+using Quantum.Collections;
 
 namespace Quantum
 {
@@ -16,75 +20,149 @@ namespace Quantum
 
         public override void Update(Frame f, ref Filter filter)
         {
-            Input* input = default;
-            if (f.Unsafe.TryGetPointer(filter.Entity, out PlayerData* playerData))
-            {
-                input = f.GetPlayerInput(playerData->Player);
-            }
+            if (filter.PlayerData->PlayerRef == PlayerRef.None) return;
+            Input* input = f.GetPlayerInput(filter.PlayerData->PlayerRef);
+
             UpdatePlayerMovement(f, ref filter, input);
+        }
+
+        public static void MoveTowards(Frame f, PlayerData* playerData, Transform2D* transform, FPVector2 position, FP maxDelta)
+        {
+            MoveTowardsNoHitboxUpdate(f, transform, position, maxDelta);
+            MoveHitbox(f, playerData, transform);
+        }
+
+        public static void Rotate(Frame f, PlayerData* playerData, Transform2D* transform, FP radians)
+        {
+            RotateNoHitboxUpdate(f, transform, radians);
+            MoveHitbox(f, playerData, transform);
+        }
+
+        public static void Teleport(Frame f, PlayerData* playerData, Transform2D* transform, FPVector2 position, FP rotation)
+        {
+            TeleportNoHitboxUpdate(f, transform, position, rotation);
+            TeleportHitbox(f, playerData, transform);
+        }
+
+        private static void MoveTowardsNoHitboxUpdate(Frame f, Transform2D* transform, FPVector2 position, FP maxDelta)
+        {
+            transform->Position = FPVector2.MoveTowards(transform->Position, position, maxDelta);
+        }
+
+        private static void RotateNoHitboxUpdate(Frame f, Transform2D* transform, FP radians)
+        {
+            transform->Rotation = radians;
+        }
+
+        private static void TeleportNoHitboxUpdate(Frame f, Transform2D* transform, FPVector2 position, FP rotation)
+        {
+            transform->Teleport(f, position, rotation);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static FPVector2 CalculateHitboxPosition(FPVector2 position, FP rotation, FPVector2 offset) => position + FPVector2.Rotate(offset, rotation);
+
+        private static void MoveHitbox(Frame f, PlayerData* playerData, Transform2D* transform)
+        {
+            if (!f.TryResolveList(playerData->HitboxListAll, out QList<PlayerHitboxLink> hitboxListAll)) return;
+
+            FPVector2 position = transform->Position;
+            FP rotation = transform->Rotation;
+
+            Transform2D* hitBoxTransform;
+            foreach (PlayerHitboxLink hitBoxLink in hitboxListAll)
+            {
+                hitBoxTransform = f.Unsafe.GetPointer<Transform2D>(hitBoxLink.Entity);
+
+                hitBoxTransform->Position = CalculateHitboxPosition(position, rotation, hitBoxLink.Position);
+                hitBoxTransform->Rotation = rotation;
+            }
+        }
+
+        private static void TeleportHitbox(Frame f, PlayerData* playerData, Transform2D* transform)
+        {
+            if (!f.TryResolveList(playerData->HitboxListAll, out QList<PlayerHitboxLink> hitboxListAll)) return;
+
+            FPVector2 position = transform->Position;
+            FP rotation = transform->Rotation;
+
+            Transform2D* hitBoxTransform;
+            foreach (PlayerHitboxLink hitBoxLink in hitboxListAll)
+            {
+                hitBoxTransform = f.Unsafe.GetPointer<Transform2D>(hitBoxLink.Entity);
+
+                hitBoxTransform->Teleport(f,
+                    CalculateHitboxPosition(position, rotation, hitBoxLink.Position),
+                    rotation
+                );
+            }
         }
 
         private void UpdatePlayerMovement(Frame f, ref Filter filter, Input* input)
         {
             FP rotationSpeed = FP._0_20;
 
+            // unpack filter
+            PlayerData* playerData = filter.PlayerData;
+            Transform2D* transform = filter.Transform;
+
+            // handle movement
             if (input->MouseClick)
             {
+                playerData->TargetPosition = GridManager.GridPositionToWorldPosition(input->MovementPosition);
                 //checks if player is allowed to move to that side of the arena
-                if (((filter.PlayerData->Player == 0 || filter.PlayerData->Player == 1) && input->MousePosition.Z < 0)
-                    || ((filter.PlayerData->Player == 2 || filter.PlayerData->Player == 3) && input->MousePosition.Z > 0))
+                if (((playerData->TeamNumber == BattleTeamNumber.TeamAlpha) && playerData->TargetPosition.Y > 0)
+                    || ((playerData->TeamNumber == BattleTeamNumber.TeamBeta) && playerData->TargetPosition.Y < 0))
                 {
-                    filter.PlayerData->TargetPosition.X = input->MousePosition.X;
-                    filter.PlayerData->TargetPosition.Y = input->MousePosition.Z;
-                    Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", filter.PlayerData->TargetPosition);
+                    playerData->TargetPosition.Y = 0;
                 }
-
-                //if player is not allowed to move to that side of the arena, targetposition is for as far as a player can go
-                else
-                {
-                    filter.PlayerData->TargetPosition.X = input->MousePosition.X;
-                    filter.PlayerData->TargetPosition.Y = 0;
-                }
+                Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", playerData->TargetPosition);
             }
 
-            if (input->RotateMotion)
+            // handle rotation
             {
-                FP maxAngle = FP.Rad_45;
-
-                //stops player before rotation
-                filter.PlayerData->TargetPosition = filter.Transform->Position;
-
-                //rotates to right
-                if (input->RotationDirection > 0 && filter.PlayerData->Rotation < maxAngle)
+                if (input->RotateMotion)
                 {
-                    filter.PlayerData->Rotation += rotationSpeed;
-                    Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", filter.PlayerData->Rotation);
+                    FP maxAngle = FP.Rad_45;
+
+                    //stops player before rotation
+                    playerData->TargetPosition = transform->Position;
+
+                    //rotates to right
+                    if (input->RotationDirection > 0 && playerData->RotationOffset < maxAngle)
+                    {
+                        playerData->RotationOffset += rotationSpeed;
+                        Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", playerData->RotationOffset);
+                    }
+
+                    //rotates to left
+                    else if (input->RotationDirection < 0 && playerData->RotationOffset > -maxAngle)
+                    {
+                        playerData->RotationOffset -= rotationSpeed;
+                        Debug.LogFormat("[PlayerRotatingSystem] Leaning left(rotation: {0}", playerData->RotationOffset);
+                    }
                 }
 
-                //rotates to left
-                else if (input->RotationDirection < 0 && filter.PlayerData->Rotation > -maxAngle)
+                // returns player to 0 rotation when RotateMotion-input ends
+                if (!input->RotateMotion && playerData->RotationOffset != 0)
                 {
-                    filter.PlayerData->Rotation -= rotationSpeed;
-                    Debug.LogFormat("[PlayerRotatingSystem] Leaning left(rotation: {0}", filter.PlayerData->Rotation);
+                    if (playerData->RotationOffset > 0)
+                        playerData->RotationOffset -= rotationSpeed;
+
+                    else
+                        playerData->RotationOffset += rotationSpeed;
                 }
             }
 
-            //returns player to 0 rotation when RotateMotion-input ends
-            if (!input->RotateMotion && filter.PlayerData->Rotation != 0)
+            // update position and rotation
             {
-                if (filter.PlayerData->Rotation > 0)
-                    filter.PlayerData->Rotation -= rotationSpeed;
+                RotateNoHitboxUpdate(f, transform, playerData->RotationBase + playerData->RotationOffset);
 
-                else
-                    filter.PlayerData->Rotation += rotationSpeed;
+                if (transform->Position != playerData->TargetPosition)
+                    MoveTowardsNoHitboxUpdate(f, transform, playerData->TargetPosition, playerData->StatSpeed * f.DeltaTime);
+
+                MoveHitbox(f, playerData, transform);
             }
-
-            filter.Transform->Rotation = ((filter.PlayerData->Player == 0 || filter.PlayerData->Player == 1) ? 0 : FP.Rad_180) + filter.PlayerData->Rotation;
-
-            //moves player
-            if (filter.Transform->Position != filter.PlayerData->TargetPosition)
-                filter.Transform->Position = FPVector2.MoveTowards(filter.Transform->Position, filter.PlayerData->TargetPosition, filter.PlayerData->Speed * f.DeltaTime);
-
         }
     }
 }

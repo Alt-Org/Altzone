@@ -63,9 +63,7 @@ namespace Quantum
                 {
                     // Projectile Hit SoulWall
                     Debug.Log("[CollisionSystem] SoulWall hit");
-                    if (projectile->CoolDown <= 0) f.Events.PlaySoundEvent(SoundEffect.WallBroken);
                     f.Signals.OnTriggerProjectileHitSoulWall(projectile, info.Entity, soulWall, info.Other);
-                    projectile->CoolDown = FP._0_10;
                 }
 
                 // if projectile hits arena border
@@ -77,13 +75,13 @@ namespace Quantum
                     f.Signals.OnTriggerProjectileHitArenaBorder(projectile, info.Entity, arenaBorder, info.Other);
                 }
 
-                // if projectile hits player
-                else if (f.Unsafe.TryGetPointer<PlayerData>(info.Other, out PlayerData* playerData))
+                // if projectile hits playerHitbox
+                else if (f.Unsafe.TryGetPointer<PlayerHitbox>(info.Other, out PlayerHitbox* playerHitbox))
                 {
-                    //projectile hit a player
-                    Debug.Log("[CollisionSystem] Player hit");
+                    //projectile hit a player's shield
+                    Debug.Log("[CollisionSystem] Player's shield hit");
                     //f.Events.PlaySoundEvent(SoundEffect.SideWallHit);
-                    f.Signals.OnTriggerProjectileHitPlayer(projectile, info.Entity, playerData, info.Other);
+                    f.Signals.OnTriggerProjectileHitPlayerHitbox(projectile, info.Entity, playerHitbox, info.Other);
                 }
 
                 // if projectile hits goals

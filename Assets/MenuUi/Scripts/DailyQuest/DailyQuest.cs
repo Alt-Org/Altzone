@@ -19,13 +19,13 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 
     [Header("Universal")]
     [SerializeField] private GameObject _coinIndicator;
+    [SerializeField] private Image _TaskImage;
 
     [Header("Windows")]
     [SerializeField] private GameObject _availableWindow;
     [SerializeField] private GameObject _reservedWindow;
 
     [Header("Available Window")]
-    [SerializeField] private Image _AvailableImage;
     [SerializeField] private TMP_Text _taskShort;
     [SerializeField] private TMP_Text _taskDebugID;
     [SerializeField] private TMP_Text _taskPoints;
@@ -40,12 +40,16 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     [SerializeField] private float _centerPullSignificance = 0.25f;
 
     [Header("Reserved Window")]
-    [SerializeField] private Image _reservedImage;
     [SerializeField] private Image _playerImage;
     [SerializeField] private Image _progressImage;
     [SerializeField] private TMP_Text _progressText;
 
     [HideInInspector] public DailyTaskManager dailyTaskManager;
+
+    private void OnEnable()
+    {
+        _playerImage.gameObject.SetActive(false);
+    }
 
     private void OnDestroy()
     {
@@ -81,20 +85,21 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         SwitchWindow(TaskWindowType.Available);
     }
 
-    public void DailyTaskAccept()
+    public void DailyTaskInfo()
     {
-        if (!_clickEnabled || TaskData.PlayerId != "")
+        if (!_clickEnabled || _taskData.PlayerId != "")
             return;
 
-        string message;
-
-        if (dailyTaskManager.OwnTaskId == null)
-            message = _taskData.Title;
-        else
-            message = $"{_taskData.Title}\n Korvataanko nykyinen teht�v�?";
-
         PopupData data = new(_taskData, GetCornerLocation());
-        StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse(message, data));
+        StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse(_taskData.Title, data));
+    }
+
+    public void DailyTaskAccept()
+    {
+        if (!_clickEnabled || _taskData.PlayerId != "")
+            return;
+
+        StartCoroutine(dailyTaskManager.AcceptTask(_taskData));
     }
 
     /// <summary>
@@ -128,21 +133,23 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     {
         _taskShort.text = GetShortDescription(_taskData.Type);
         _taskDebugID.text = _taskData.Id.ToString();
-        _taskPoints.text = _taskData.Points.ToString() + " p";
+        _taskPoints.text = _taskData.Points.ToString() + " pistettä";
         _taskAmount.text = _taskData.Amount.ToString();
         _coinIndicator.SetActive(_taskData.Coins >= 0);
+
+        //_TaskImage.sprite = INSERT IMAGE HERE
     }
 
-    private string GetShortDescription(TaskType taskType)
+    private string GetShortDescription(TaskNormalType taskType)
     {
         switch (taskType)
         {
-            case TaskType.PlayBattle: return ("Taisteluja");
-            case TaskType.WinBattle: return ("Voittoja");
-            case TaskType.StartBattleDifferentCharacter: return ("Taistele Eri Hahmoilla");
-            case TaskType.WriteChatMessage: return ("Kirjoita viestej�");
-            case TaskType.Vote: return ("��nest�");
-            case TaskType.Undefined: return ("");
+            case TaskNormalType.PlayBattle: return ("Taisteluja");
+            case TaskNormalType.WinBattle: return ("Voittoja");
+            case TaskNormalType.StartBattleDifferentCharacter: return ("Taistele Eri Hahmoilla");
+            case TaskNormalType.WriteChatMessage: return ("Kirjoita viestej�");
+            case TaskNormalType.Vote: return ("��nest�");
+            case TaskNormalType.Undefined: return ("");
             default: Debug.LogError($"No short descrition available for: {taskType.ToString()}"); return ("Error");
         }
     }
@@ -156,6 +163,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     public void TaskSelected()
     {
         SwitchWindow(TaskWindowType.Reserved);
+        _playerImage.gameObject.SetActive(true);
         //_playerImage.sprite = INSERT PLAYER IMAGE HERE;
         UpdateProgressBar();
     }
@@ -169,6 +177,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     public void TaskDeselected()
     {
         SwitchWindow(TaskWindowType.Available);
+        _playerImage.gameObject.SetActive(false);
         _taskData.ClearPlayerId();
     }
 }

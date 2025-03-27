@@ -4,6 +4,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Used for selecting the game mode when creating a custom game from the Battle Popup.
+/// </summary>
 public class CustomBattleGameModeSelector : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _currentGameModeText;

@@ -18,6 +18,11 @@ namespace MenuUi.Scripts.TabLine
 
         private void Awake()
         {
+            foreach (TabLineButton button in _tabLineButtons)
+            {
+                button.SetImageRectTransform();
+            }
+
             if (_getActiveButtonFromSwipe)
             {
                 _swipe = FindObjectOfType<SwipeUI>();
@@ -85,42 +90,47 @@ namespace MenuUi.Scripts.TabLine
         [Serializable]
         private class TabLineButton
         {
-            [Header("Sprite assets (detail sprites are optional)")]
-            [SerializeField] private Sprite _activeTabSprite;
-            [SerializeField] private Sprite _activeDetailSprite;
-            [SerializeField] private Sprite _inactiveTabSprite;
-            [SerializeField] private Sprite _inactiveDetailSprite;
-
             [Header("References to components")]
-            [SerializeField] public Button ButtonComponent;
             [SerializeField] private Image _tabImageComponent;
             [SerializeField] private Image _detailImageComponent;
+
+            private RectTransform _imageRectTransform;
+            private RectTransform _detailImageRectTransform;
+
+            private const float OffsetAmount = -20.0f;
+
+            private Vector2 _offset = new Vector2(0, OffsetAmount);
+
+            public void SetImageRectTransform()
+            {
+                _imageRectTransform = _tabImageComponent.gameObject.GetComponent<RectTransform>();
+                if (_detailImageComponent != null ) _detailImageRectTransform = _tabImageComponent.gameObject.GetComponent<RectTransform>();
+            }
 
 
             public void SetActiveVisuals()
             {
-                if (_tabImageComponent != null && _activeTabSprite != null)
-                {
-                    _tabImageComponent.sprite = _activeTabSprite;
-                }
+                _imageRectTransform.offsetMin = Vector2.zero;
+                _imageRectTransform.offsetMax = Vector2.zero;
 
-                if (_detailImageComponent != null && _activeDetailSprite != null)
+                if (_detailImageComponent != null )
                 {
-                    _detailImageComponent.sprite = _activeDetailSprite;
+                    _detailImageRectTransform.offsetMin = Vector2.zero;
+                    _detailImageRectTransform.offsetMax = Vector2.zero;
                 }
             }
 
 
             public void SetInactiveVisuals()
             {
-                if (_tabImageComponent != null && _inactiveTabSprite != null)
-                {
-                    _tabImageComponent.sprite = _inactiveTabSprite;
-                }
+                
+                _imageRectTransform.offsetMin = _offset;
+                _imageRectTransform.offsetMax = _offset;
 
-                if (_detailImageComponent != null && _inactiveDetailSprite != null)
+                if (_detailImageComponent != null)
                 {
-                    _detailImageComponent.sprite = _inactiveDetailSprite;
+                    _detailImageRectTransform.offsetMin = _offset;
+                    _detailImageRectTransform.offsetMax = _offset;
                 }
             }
         }

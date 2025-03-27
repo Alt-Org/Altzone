@@ -1,13 +1,45 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Linq;
 using Altzone.Scripts;
-using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
-using LobbySignalBus = MenuUi.Scripts.Lobby.SignalBus;
-using StatsWindowSignalBus = MenuUi.Scripts.DefenceScreen.CharacterStatsWindow.SignalBus;
+using MenuUi.Scripts.Signals;
+
+
+namespace MenuUi.Scripts.Signals
+{
+    public static partial class SignalBus
+    {
+        public delegate void RandomSelectedCharactersRequested();
+        public static event RandomSelectedCharactersRequested OnRandomSelectedCharactersRequested;
+        public static void OnRandomSelectedCharactersRequestedSignal()
+        {
+            OnRandomSelectedCharactersRequested?.Invoke();
+        }
+
+        public delegate void DefenceGalleryEditModeRequested();
+        public static event DefenceGalleryEditModeRequested OnDefenceGalleryEditModeRequested;
+        public static void OnDefenceGalleryEditModeRequestedSignal()
+        {
+            OnDefenceGalleryEditModeRequested?.Invoke();
+        }
+
+        public delegate void ReloadCharacterGalleryRequested();
+        public static event ReloadCharacterGalleryRequested OnReloadCharacterGalleryRequested;
+        public static void OnReloadCharacterGalleryRequestedSignal()
+        {
+            OnReloadCharacterGalleryRequested?.Invoke();
+        }
+
+        public delegate void SelectedDefenceCharacterChanged(CharacterID characterID, int slot);
+        public static event SelectedDefenceCharacterChanged OnSelectedDefenceCharacterChanged;
+        public static void OnSelectedDefenceCharacterChangedSignal(CharacterID characterID, int slot)
+        {
+            OnSelectedDefenceCharacterChanged?.Invoke(characterID, slot);
+        }
+    }
+}
 
 
 namespace MenuUi.Scripts.CharacterGallery
@@ -25,9 +57,10 @@ namespace MenuUi.Scripts.CharacterGallery
         private void Awake()
         {
             ServerManager.OnLogInStatusChanged += StartLoading;
-            LobbySignalBus.OnRandomSelectedCharactersRequested += SetRandomSelectedCharactersToEmptySlots;
+            SignalBus.OnRandomSelectedCharactersRequested += SetRandomSelectedCharactersToEmptySlots;
             _view.OnTopSlotCharacterSet += HandleCharacterSelected;
-            StatsWindowSignalBus.OnReloadCharacterGalleryRequested += OnReloadRequested;
+            SignalBus.OnReloadCharacterGalleryRequested += OnReloadRequested;
+            SignalBus.OnSelectedDefenceCharacterChanged += HandleCharacterSelected;
         }
 
 
@@ -56,9 +89,10 @@ namespace MenuUi.Scripts.CharacterGallery
         private void OnDestroy()
         {
             ServerManager.OnLogInStatusChanged -= StartLoading;
-            LobbySignalBus.OnRandomSelectedCharactersRequested -= SetRandomSelectedCharactersToEmptySlots;
+            SignalBus.OnRandomSelectedCharactersRequested -= SetRandomSelectedCharactersToEmptySlots;
             _view.OnTopSlotCharacterSet -= HandleCharacterSelected;
-            StatsWindowSignalBus.OnReloadCharacterGalleryRequested -= OnReloadRequested;
+            SignalBus.OnReloadCharacterGalleryRequested -= OnReloadRequested;
+            SignalBus.OnSelectedDefenceCharacterChanged -= HandleCharacterSelected;
         }
 
 
@@ -73,7 +107,14 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void OnReloadRequested()
         {
-            _reloadRequested = true;
+            if (gameObject.activeInHierarchy)
+            {
+                StartCoroutine(Load());
+            }
+            else
+            {
+                _reloadRequested = true;
+            }
         }
 
 
@@ -91,7 +132,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 {
                     characterIds[i] = _playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == selectedCharacterIds[i]) == null ? 0 : (int)_playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == selectedCharacterIds[i]).Id;
                 }
-                var characters = playerData.CustomCharacters.ToList();
+                var characters = playerData.CustomCharacters.GroupBy(x => x.Id).Select(x => x.First()).ToList(); // ensuring no duplicate characters if account is bugged
                 characters.Sort((a, b) => a.Id.CompareTo(b.Id));
                 // Set characters in the ModelView
                 _view.SetCharacters(characters, characterIds);

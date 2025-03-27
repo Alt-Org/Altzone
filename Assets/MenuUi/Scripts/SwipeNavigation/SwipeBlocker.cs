@@ -47,7 +47,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         public virtual void OnBeginDrag(PointerEventData eventData)
         {
             if (_swipe != null)
-                _swipe.DragWithBlock(eventData, _blockType);
+                _swipe.OnBeginDrag(eventData, _blockType);
             parentBeginDragHandler.OnBeginDrag(eventData);
         }
 
