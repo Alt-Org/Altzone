@@ -22,6 +22,7 @@ using Altzone.Scripts.Lobby.Wrappers;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.AzDebug;
 using System.Collections.ObjectModel;
+using WebSocketSharp;
 
 namespace Altzone.Scripts.Lobby
 {
@@ -82,7 +83,6 @@ namespace Altzone.Scripts.Lobby
 
         private string _matchmakingLeaderId = string.Empty;
         private string[] _teammates = null;
-        private string _ownClanName = string.Empty;
 
         private List<FriendInfo> _friendList;
 
@@ -375,6 +375,14 @@ namespace Altzone.Scripts.Lobby
             // Setting local player as leader
             PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.IsLeaderKey, true);
 
+            // Saving custom properties from the room to the variables
+            string clanName = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.ClanNameKey, "");
+
+            string positionValue1 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, "");
+            string positionValue2 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, "");
+            string positionValue3 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, "");
+            string positionValue4 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, "");
+
             // Saving other player's userids to enter the new game room together with master client
             List<string> expectedUsers = new();
             foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
@@ -385,17 +393,15 @@ namespace Altzone.Scripts.Lobby
                     // Setting other players as not leader
                     player.Value.SetCustomProperty(PhotonBattleRoom.IsLeaderKey, false);
                 }
+
+                // Saving clan name to player's custom properties in case the matchmaking leader leaves
+                if (!clanName.IsNullOrEmpty())
+                {
+                    player.Value.SetCustomProperty(PhotonBattleRoom.ClanNameKey, clanName);
+                }
             }
             _teammates = expectedUsers.ToArray();
 
-            // Saving custom properties from the room to the variables
-            string clanName = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.ClanNameKey, "");
-            _ownClanName = clanName;
-
-            string positionValue1 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, "");
-            string positionValue2 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, "");
-            string positionValue3 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, "");
-            string positionValue4 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, "");
 
             // Sending other players in the room the room change request
             PhotonRealtimeClient.Client.OpRaiseEvent(
@@ -615,7 +621,9 @@ namespace Altzone.Scripts.Lobby
 
             yield return new WaitUntil(() => PhotonRealtimeClient.InLobby);
 
-            PhotonRealtimeClient.CreateLobbyRoom("", matchmakingRoomGameType, "", _ownClanName, _teammates); // todo: maybe clan name should be saved to custom property?
+            // Creating back the non-matchmaking room which the teammates can join
+            string clanName = PhotonRealtimeClient.LocalLobbyPlayer.GetCustomProperty(PhotonBattleRoom.ClanNameKey, "");
+            PhotonRealtimeClient.CreateLobbyRoom("", matchmakingRoomGameType, "", clanName, _teammates);
         }
 
         private IEnumerator StartTheGameplay(bool isCloseRoom, string blueTeamName, string redTeamName)
