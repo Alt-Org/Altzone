@@ -23,13 +23,17 @@ namespace MenuUi.Scripts.Lobby.InRoom
         [SerializeField] private TMP_Text _noticeText;
         [SerializeField] private TMP_Text _sendInviteToFriendText;
 
-        private void Start()
+        private void Awake()
         {
             //buttons[0].onClick.AddListener(SetPlayerAsGuest);
             //buttons[1].onClick.AddListener(SetPlayerAsSpectator);
             _startGameButton.onClick.AddListener(StartPlaying);
             _backButton.onClick.AddListener(GoBack);
             //buttons[3].onClick.AddListener(StartRaidTest);
+        }
+
+        private void OnEnable()
+        {
             switch (InLobbyController.SelectedGameType)
             {
                 case GameType.Custom:
@@ -46,6 +50,12 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     if (_sendInviteToFriendText != null) _sendInviteToFriendText.text = "Lähetä kutsu yhdelle klaanin jäsenelle";
                     break;
             }
+        }
+
+        private void OnDestroy()
+        {
+            _startGameButton.onClick.RemoveAllListeners();
+            _backButton.onClick.RemoveAllListeners();
         }
 
         private void SetPlayerAsGuest()
