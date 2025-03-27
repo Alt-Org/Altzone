@@ -81,7 +81,10 @@ namespace Altzone.Scripts.Lobby
         [Header("Battle Map reference")]
         [SerializeField] private BattleMapReference _battleMapReference;
 
+        private Emotion _projectileInitialEmotion = Emotion.Sorrow;
+
         private QuantumRunner _runner = null;
+
         private Coroutine _requestPositionChangeHolder = null;
         private Coroutine _matchmakingHolder = null;
         private Coroutine _followLeaderHolder = null;
@@ -701,8 +704,8 @@ namespace Altzone.Scripts.Lobby
                     startingEmotion = (Emotion)UnityEngine.Random.Range(0, 4);
                 }
 
-                // Setting starting emotion to projectile spec TODO: remove cast when battle uses Emotion enum also
-                _projectileSpec.ProjectileInitialEmotion = (EmotionState)startingEmotion;
+                // Saving projectile initial emotion to a variable in case the room closes TODO: remove cast when battle uses Emotion enum also
+                _projectileInitialEmotion = startingEmotion;
 
                 // Getting map id from room custom properties
                 string mapId = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.MapKey, string.Empty);
@@ -751,7 +754,8 @@ namespace Altzone.Scripts.Lobby
                 SimulationConfig = _simulationConfig,
                 SystemsConfig    = _systemsConfig,
                 BattleArenaSpec  = _battleArenaSpec,
-                ProjectileSpec   = _projectileSpec
+                ProjectileSpec   = _projectileSpec,
+                InitialProjectileEmotion = (EmotionState)_projectileInitialEmotion,
             };
 
             SessionRunner.Arguments sessionRunnerArguments = new()
