@@ -243,17 +243,17 @@ namespace MenuUI.Scripts.SoulHome
             if (!topRoom)
             {
                 _ladder.gameObject.SetActive(true);
-                foreach(Transform ladderpiece in _ladder)
-                {
-                    ladderpiece.GetComponent<SpriteRenderer>().sortingOrder = 20;
-                }
+                _ladder.GetComponent<SortingGroup>().sortingOrder = 20;
+                
                 foreach(Transform rowTransform in _wallBackFurniturePoints)
                 {
                     rowTransform.GetChild(1).GetComponent<FurnitureSlot>().Ladder = true;
                     rowTransform.GetChild(2).GetComponent<FurnitureSlot>().Ladder = true;
                 }
                 _floorFurniturePoints.GetChild(0).GetChild(1).GetComponent<FurnitureSlot>().Ladder = true;
+                _floorFurniturePoints.GetChild(0).GetChild(2).GetComponent<FurnitureSlot>().Ladder = true;
                 _floorFurniturePoints.GetChild(1).GetChild(1).GetComponent<FurnitureSlot>().Ladder = true;
+                _floorFurniturePoints.GetChild(1).GetChild(2).GetComponent<FurnitureSlot>().Ladder = true;
             }
 
             if (_roomInfo.Furnitures.Count > 0) InitialSetFurniture();
