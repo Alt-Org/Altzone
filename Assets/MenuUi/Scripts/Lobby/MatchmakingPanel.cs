@@ -28,9 +28,14 @@ namespace MenuUi.Scripts.Lobby
         {
             if (isLeader)
             {
+                _cancelButton.interactable = true;
                 _cancelButton.gameObject.SetActive(true);
                 _cancelButton.onClick.RemoveAllListeners();
-                _cancelButton.onClick.AddListener(() => this.Publish(new LobbyManager.StopMatchmakingEvent(InLobbyController.SelectedGameType)));
+                _cancelButton.onClick.AddListener(() =>
+                {
+                    _cancelButton.interactable = false;
+                    this.Publish(new LobbyManager.StopMatchmakingEvent(InLobbyController.SelectedGameType));
+                });
             }
             else
             {
