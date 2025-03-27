@@ -6,6 +6,9 @@ using Altzone.Scripts;
 using Altzone.Scripts.ModelV2;
 using System.Collections.ObjectModel;
 using System;
+using Altzone.Scripts.Model.Poco.Game;
+using Random = UnityEngine.Random;
+using Altzone.Scripts.ReferenceSheets;
 
 [System.Serializable]
 public class Reward
@@ -14,30 +17,6 @@ public class Reward
     public Sprite Sprite;
 }
 
-public class BaseCharacter
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-}
-public class PlayerCharacter
-{
-    public string Name { get; set; }
-    public string Image { get; set; }
-}
-public class StorageFurnitureReference : MonoBehaviour
-{
-    public List<FurnitureSet> Info;
-}
-public class FurnitureSet
-{
-    public string Name;
-    public List<FurnitureItem> FurnitureItems;
-}
-public class FurnitureItem
-{
-    public string Name;
-    public int Id;
-}
 public class LevelUpController : MonoBehaviour
 {
     [Header("LevelUpPanel")]
@@ -96,20 +75,20 @@ public class LevelUpController : MonoBehaviour
         }
 
         BaseCharacter character = characters[0];
-        Debug.Log($"Found character: {character.Name}, ID: {character.Id}");
+        Debug.Log($"Found character: {character.Id}, ID: {(int)character.Id}");
 
         string characterId = character.Id.ToString();
 
-        PlayerCharacter playerCharacter = PlayerCharacterPrototypes.GetCharacter(characterId);
+        PlayerCharacterPrototype playerCharacter = PlayerCharacterPrototypes.GetCharacter(characterId);
         OnCharacterDetailsFetched(playerCharacter);
     }
 
-    private void OnCharacterDetailsFetched(PlayerCharacter character)
+    private void OnCharacterDetailsFetched(PlayerCharacterPrototype character)
     {
         if (character != null)
         {
             Debug.Log($"Character name: {character.Name}");
-            Debug.Log($"Character image: {character.Image}");
+            Debug.Log($"Character image: {character.GalleryImage}");
         }
         else
         {
@@ -136,11 +115,11 @@ public class LevelUpController : MonoBehaviour
 
         foreach (var furnitureSet in furnitureInfo)
         {
-            Debug.Log($"Funriture Set: {furnitureSet.Name}");
+            Debug.Log($"Funriture Set: {furnitureSet.SetName}");
 
-            foreach (var furniture in furnitureSet.FurnitureItems)
+            foreach (var furniture in furnitureSet.list)
             {
-                Debug.Log($"Furniture: {furniture.Name}, ID: {furniture.Id}");
+                Debug.Log($"Furniture: {furniture.VisibleName}, ID: {furniture.Name}");
             }
         }
     }
