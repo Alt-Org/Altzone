@@ -1,9 +1,7 @@
 //#define DEBUG_LOG_STATE
-
-using Photon.Deterministic;
-using Quantum.QuantumUser.Simulation.SoulWall;
-using UnityEngine;
 using UnityEngine.Scripting;
+
+using Quantum.QuantumUser.Simulation.SoulWall;
 
 namespace Quantum
 {
