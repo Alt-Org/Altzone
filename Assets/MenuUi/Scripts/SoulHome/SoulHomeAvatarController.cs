@@ -228,7 +228,8 @@ namespace MenuUI.Scripts.SoulHome
             Vector2 direction = GetDirection(position,_travelPoints[0]);
             if(direction.x < 0) transform.rotation = Quaternion.Euler(new(0, 180, 0));
             else transform.rotation = Quaternion.Euler(Vector3.zero);
-            position += direction.normalized * _speed * Time.deltaTime;
+            if (Vector2.Distance(position, position + direction.normalized * _speed * Time.deltaTime) > Vector2.Distance(position, _travelPoints[0])) position = _travelPoints[0];
+            else position += direction.normalized * _speed * Time.deltaTime;
             transform.position = position;
             if(GetDirection(position, _travelPoints[0]).magnitude < 0.01f) _travelPoints.RemoveAt(0);
             if(_travelPoints.Count == 0) _status = AvatarStatus.Idle;
