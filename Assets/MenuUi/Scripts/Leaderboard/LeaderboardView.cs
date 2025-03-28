@@ -22,6 +22,10 @@ public class LeaderboardView : MonoBehaviour
     [SerializeField] private GameObject _activityPanel;
     [SerializeField] private Transform _activityContent;
 
+    [Header("Different view icons")]
+    [SerializeField] private GameObject[] _activityViewIcons;
+    [SerializeField] private GameObject[] _winsViewIcons;
+
     [Header("Prefabs")]
     [SerializeField] private GameObject _playerWinsItemPrefab;
     [SerializeField] private GameObject _playerActivityItemPrefab;
@@ -112,6 +116,8 @@ public class LeaderboardView : MonoBehaviour
                             item.Initialize(rank, ranking.Clan.Name, ranking.WonBattles);
                             rank++;
                         }
+
+                        LoadWinsView();
                     }
                     else
                     {
@@ -124,6 +130,8 @@ public class LeaderboardView : MonoBehaviour
                             item.Initialize(rank, ranking.Clan.Name, ranking.Points);
                             rank++;
                         };
+
+                        LoadActivityView();
                     }
                 }));
                 break;
@@ -136,6 +144,8 @@ public class LeaderboardView : MonoBehaviour
                         LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
                         item.Initialize(i, ((char)(64 + i)).ToString(), 16);
                     }
+
+                    LoadWinsView();
                 }
                 else
                 {
@@ -144,6 +154,8 @@ public class LeaderboardView : MonoBehaviour
                         LeaderboardActivityItem item = Instantiate(_playerActivityItemPrefab, parent: _activityContent).GetComponent<LeaderboardActivityItem>();
                         item.Initialize(i, ((char)(64 + i)).ToString(), 100);
                     };
+
+                    LoadActivityView();
                 }
                 break;
             case Leaderboard.Friends:
@@ -154,6 +166,32 @@ public class LeaderboardView : MonoBehaviour
                     item.Initialize(i, ((char)(64 + i)).ToString(), 16);
                 }
                 break;
+        }
+    }
+
+    private void LoadActivityView()
+    {
+        foreach (GameObject icon in _winsViewIcons)
+        {
+            icon.SetActive(false);
+        }
+
+        foreach (GameObject icon in _activityViewIcons)
+        {
+            icon.SetActive(true);
+        }
+    }
+
+    private void LoadWinsView()
+    {
+        foreach (GameObject icon in _activityViewIcons)
+        {
+            icon.SetActive(false);
+        }
+
+        foreach (GameObject icon in _winsViewIcons)
+        {
+            icon.SetActive(true);
         }
     }
 }
