@@ -384,6 +384,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5979321243465989676}
+  - component: {fileID: 3956092624877533775}
+  - component: {fileID: 6224537532541717207}
   m_Layer: 0
   m_Name: CharacterImagePrefabTemplate
   m_TagString: Untagged
@@ -419,6 +421,49 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 512, y: 512}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3956092624877533775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3671576818270862963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b03af1034d48e25478be16aa6f3de812, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mainHead: {fileID: 1230033600411691165}
+  _mainHair: {fileID: 439945686787707395}
+  _mainEyes: {fileID: 6273501569908149836}
+  _mainNose: {fileID: 5285182117476907026}
+  _mainMouth: {fileID: 6688872458738983829}
+  _mainBody: {fileID: 7581661894801124856}
+  _mainHands: {fileID: 4426871691343945250}
+  _mainFeet: {fileID: 7138201761903138113}
+  _secondaryBase: {fileID: 0}
+  _secondaryHead: {fileID: 0}
+  _secondaryHair: {fileID: 0}
+  _secondaryEyes: {fileID: 0}
+  _secondaryNose: {fileID: 0}
+  _secondaryMouth: {fileID: 0}
+  _secondaryBody: {fileID: 0}
+  _secondaryHands: {fileID: 0}
+  _secondaryFeet: {fileID: 0}
+--- !u!114 &6224537532541717207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3671576818270862963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 536f36292a85464488de36d484319b4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _avatarVisuals: {fileID: 11400000, guid: 5924f2967fcfeb0469785ea0b5f3d2b2, type: 2}
+  _characterHandle: {fileID: 3956092624877533775}
 --- !u!1 &3915003743926064155
 GameObject:
   m_ObjectHideFlags: 0
@@ -436,7 +481,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &297917957078250622
 RectTransform:
   m_ObjectHideFlags: 0
