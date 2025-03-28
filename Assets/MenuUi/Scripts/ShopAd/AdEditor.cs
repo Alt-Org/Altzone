@@ -1,11 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.IO.IsolatedStorage;
 using Altzone.Scripts.Model.Poco.Clan;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.WSA;
 
 public class AdEditor : AltMonoBehaviour
 {
