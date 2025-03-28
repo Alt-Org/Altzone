@@ -1,3 +1,11 @@
+[Serializable]
+struct SoulWallTemplate
+{
+    GridPosition Position;
+    int Width;
+    int ColorIndex;
+}
+
 component SoulWall
 {
     EntityRef ChildEntity;
