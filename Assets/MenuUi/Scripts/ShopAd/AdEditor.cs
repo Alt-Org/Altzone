@@ -1,31 +1,86 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO.IsolatedStorage;
+using Altzone.Scripts.Model.Poco.Clan;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.WSA;
 
-public class AdEditor : MonoBehaviour
+public class AdEditor : AltMonoBehaviour
 {
+    [SerializeField] private TextMeshProUGUI clanNameText;
+
     [SerializeField] private Image _backgroundImage;
     [SerializeField] private Image _effectImage;
     [SerializeField] private Image _itemImage;
-    [SerializeField] private TMP_Text _titleText;
     [SerializeField] private Image _borderImage;
 
+    [SerializeField] private Color orangeColor;
+    [SerializeField] private Color yellowColor;
+    [SerializeField] private Color lightGreenColor;
+    [SerializeField] private Color lightBlueColor;
     [SerializeField] private Color blueColor;
     [SerializeField] private Color purpleColor;
-    [SerializeField] private Color greenColor;
-    [SerializeField] private Color orangeColor;
-    [SerializeField] private Color whiteColor;
+    [SerializeField] private Color darkPinkColor;
+    [SerializeField] private Color redColor;
 
-    public List<Sprite> borderChoices;
-    public List<Sprite> itemChoices;
-    private int borderCounter;
-    private int itemCounter;
-    private int currentBorder = 0;
-    private int currentItem = 0;
+    [SerializeField] private Image border1;
+    [SerializeField] private Image border2;
+    [SerializeField] private Image border3;
+    [SerializeField] private Image border4;
+    [SerializeField] private Image border5;
+    [SerializeField] private Image border6;
+    [SerializeField] private Image border7;
+    [SerializeField] private Image border8;
+    [SerializeField] private Image border9;
+    [SerializeField] private Image border10;
+    [SerializeField] private Image border11;
 
+    
+
+    
+    ClanData clanData = null;
+
+
+    void Start()    
+    {
+        StartCoroutine(GetClanData(p=> clanData = p));
+    }
+    private void Update()
+    {
+        if (clanData != null)
+        {
+            clanNameText.text=(clanData.Name);
+        }
+        else
+        {
+            clanNameText.text = "Et ole klaanissa";
+        }
+    }
+    void BringToFront(Transform folder)
+    {
+        folder.SetAsLastSibling();
+    }
+
+
+    public void ChangeOrangeColor()
+    {
+        _backgroundImage.color = orangeColor;
+    }
+    public void ChangeYellowColor()
+    {
+        _backgroundImage.color = yellowColor;
+    }
+    public void ChangeLightGreenColor()
+    {
+        _backgroundImage.color = lightGreenColor;
+    }
+
+    public void ChangeLightBlueColor()
+    {
+        _backgroundImage.color = lightBlueColor;
+    }
     public void ChangeBlueColor()
     {
         _backgroundImage.color = blueColor;
@@ -34,50 +89,59 @@ public class AdEditor : MonoBehaviour
     {
         _backgroundImage.color = purpleColor;
     }
-    public void ChangeGreenColor()
+    public void ChangeDarkPinkColor()
     {
-        _backgroundImage.color = greenColor;
+        _backgroundImage.color = darkPinkColor;
+    }
+    public void ChangeRedColor()
+    {
+        _backgroundImage.color = redColor;
     }
 
-    public void ChangetOrangeColor()
+    public void ChangeBorder1()
     {
-        _backgroundImage.color = orangeColor;
+        _borderImage.sprite = border1.sprite;
     }
-    public void ChangetWhiteColor()
+    public void ChangeBorder2()
     {
-        _backgroundImage.color = whiteColor;
+        _borderImage.sprite = border2.sprite;
     }
-    public void NextItem()
+    public void ChangeBorder3()
     {
-        itemCounter++;
-        if (itemCounter == 1)
-        {
-
-            currentItem++;
-            itemCounter = 0;
-            if (currentItem >= itemChoices.Count)
-            {
-                currentBorder = 0;
-            }
-            _itemImage.sprite = itemChoices[currentItem];
-        }
+        _borderImage.sprite = border3.sprite;
     }
-    public void NextBorder()
+    public void ChangeBorder4()
     {
-        borderCounter++;
-        if (borderCounter == 1)
-        {
-
-            currentBorder++;
-            borderCounter = 0;
-            if (currentBorder >= borderChoices.Count)
-            {
-                currentBorder = 0;
-            }
-            _borderImage.sprite = borderChoices[currentBorder];
-        }
+        _borderImage.sprite = border4.sprite;
     }
-
+    public void ChangeBorder5()
+    {
+        _borderImage.sprite = border5.sprite;
+    }
+    public void ChangeBorder6()
+    {
+        _borderImage.sprite = border6.sprite;
+    }
+    public void ChangeBorder7()
+    {
+        _borderImage.sprite = border7.sprite;
+    }
+    public void ChangeBorder8()
+    {
+        _borderImage.sprite = border8.sprite;
+    }
+    public void ChangeBorder9()
+    {
+        _borderImage.sprite = border9.sprite;
+    }
+    public void ChangeBorder10()
+    {
+        _borderImage.sprite = border10.sprite;
+    }
+    public void ChangeBorder11()
+    {
+        _borderImage.sprite = border11.sprite;
+    }
 
     public void CloseEditor()
     {
