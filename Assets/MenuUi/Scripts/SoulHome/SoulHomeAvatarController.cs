@@ -18,6 +18,14 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField] private float _speed = 5;
         [SerializeField]
         private SortingGroup _sortingGroup;
+        [SerializeField]
+        private Animator _animator;
+        [SerializeField]
+        private AnimationClip _idleAnimation;
+        [SerializeField]
+        private AnimationClip _walkAnimation;
+        [SerializeField]
+        private AnimationClip _waveAnimation;
 
         private AvatarStatus _status;
         private bool _idleTimerStarted = false;
@@ -50,7 +58,7 @@ namespace MenuUI.Scripts.SoulHome
             else if(_status == AvatarStatus.Wander)
             {
                 //Debug.Log("Character Wander");
-
+                if(!_animator.GetCurrentAnimatorStateInfo(0).IsName(_walkAnimation.name)) _animator.Play(_walkAnimation.name);
                 MoveAvatar();
                 //transform.SetParent(_points.GetChild(_newPosition.y).GetChild(_newPosition.x), false);
 
@@ -71,6 +79,7 @@ namespace MenuUI.Scripts.SoulHome
                 if (firstFrame) firstFrame = false;
                 else
                 {
+                    _animator.Play(_idleAnimation.name);
                     idleTimer += Time.deltaTime;
                     checkTimer += Time.deltaTime;
                 }
@@ -217,6 +226,8 @@ namespace MenuUI.Scripts.SoulHome
         {
             Vector2 position = transform.position;
             Vector2 direction = GetDirection(position,_travelPoints[0]);
+            if(direction.x < 0) transform.rotation = Quaternion.Euler(new(0, 180, 0));
+            else transform.rotation = Quaternion.Euler(Vector3.zero);
             position += direction.normalized * _speed * Time.deltaTime;
             transform.position = position;
             if(GetDirection(position, _travelPoints[0]).magnitude < 0.01f) _travelPoints.RemoveAt(0);

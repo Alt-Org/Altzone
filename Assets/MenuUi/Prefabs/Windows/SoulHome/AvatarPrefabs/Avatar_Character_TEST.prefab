@@ -51,6 +51,10 @@ MonoBehaviour:
   _maxIdleTimer: 4
   _speed: 5
   _sortingGroup: {fileID: 3103256626528081065}
+  _animator: {fileID: 8358346615661812982}
+  _idleAnimation: {fileID: 7400000, guid: c5b92164fe86b5c49b0cb417909a01f8, type: 2}
+  _walkAnimation: {fileID: 7400000, guid: 9f5b1759b3ca015409274507916016db, type: 2}
+  _waveAnimation: {fileID: 7400000, guid: 6998066c94fd6b6408c6a1ac231e8400, type: 2}
 --- !u!210 &3103256626528081065
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -189,17 +193,17 @@ PrefabInstance:
     - target: {fileID: -7552582706839291426, guid: 6b7f8f6787aebdc4da339e49694e1f45,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 6b7f8f6787aebdc4da339e49694e1f45,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 6b7f8f6787aebdc4da339e49694e1f45,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 6b7f8f6787aebdc4da339e49694e1f45,
         type: 3}
