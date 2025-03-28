@@ -553,13 +553,28 @@ namespace Altzone.Scripts.Lobby
         {
             if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient) yield break;
 
-            // Checking if room is full and if not waiting until room is full
-            if (PhotonRealtimeClient.CurrentRoom.PlayerCount < PhotonRealtimeClient.CurrentRoom.MaxPlayers)
+            // Checking every 0,5s if we can start gameplay
+            bool canStartGameplay = false;
+            do
             {
-                yield return new WaitUntil(() => PhotonRealtimeClient.CurrentRoom.PlayerCount == PhotonRealtimeClient.CurrentRoom.MaxPlayers);
+                yield return new WaitForSeconds(0.5f);
 
-                yield return new WaitForSeconds(2); // TODO: change this, temporary fix for last player not setting their position fast enough before game starts
-            }
+                // Checking if room is full
+                if (PhotonRealtimeClient.CurrentRoom.PlayerCount != PhotonRealtimeClient.CurrentRoom.MaxPlayers) continue;
+
+                // Checking that all of the positions in the room are set
+                bool isSetPosition1 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition1);
+                bool isSetPosition2 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition2);
+                bool isSetPosition3 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition3);
+                bool isSetPosition4 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition4);
+
+                if (isSetPosition1 && isSetPosition2 && isSetPosition3 && isSetPosition4)
+                {
+                    canStartGameplay = true;
+                }
+
+            } while (!canStartGameplay);
+
 
             // Updating player positions from room to player properties
             foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
