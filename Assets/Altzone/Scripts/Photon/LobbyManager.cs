@@ -430,17 +430,14 @@ namespace Altzone.Scripts.Lobby
             bool roomFound = false;
             foreach (LobbyRoomInfo room in CurrentRooms)
             {
-                // Checking if room has game type and matchmaking key in the first place
-                if (!room.CustomProperties.ContainsKey(PhotonBattleRoom.GameTypeKey) && !room.CustomProperties.ContainsKey(PhotonBattleRoom.IsMatchmakingKey))
-                {
-                    continue;
-                }
+                // Checking that the room is a matchmaking room
+                if (!PhotonRealtimeClient.InMatchmakingRoom) continue;
 
-                // Checking if room is part of matchmaking and if the game type matches
-                if ((bool)room.CustomProperties[PhotonBattleRoom.IsMatchmakingKey] == false || (GameType)room.CustomProperties[PhotonBattleRoom.GameTypeKey] != gameType)
-                {
-                    continue;
-                }
+                // Checking if the room has a game type key in the first place
+                if (!room.CustomProperties.ContainsKey(PhotonBattleRoom.GameTypeKey)) continue;
+
+                // Checking that the game type matches
+                if ((GameType)room.CustomProperties[PhotonBattleRoom.GameTypeKey] != gameType) continue;
 
                 // Matchmaking logic
                 switch (gameType)
@@ -986,8 +983,7 @@ namespace Altzone.Scripts.Lobby
             }
 
             // Changing leader status if the other player was this player's leader
-            bool isMatchmakingRoom = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.IsMatchmakingKey, false);
-            if (isMatchmakingRoom)
+            if (PhotonRealtimeClient.InMatchmakingRoom)
             {
                 string matchmakingLeaderId = PhotonRealtimeClient.LocalPlayer.GetCustomProperty(PhotonBattleRoom.LeaderIdKey, string.Empty);
                 if (matchmakingLeaderId == otherPlayer.UserId)
@@ -1006,9 +1002,7 @@ namespace Altzone.Scripts.Lobby
             PhotonRealtimeClient.EnableCloseConnection = true;
 
             // Getting info if room is matchmaking room or not
-            bool isMatchmaking = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.IsMatchmakingKey, false);
-
-            if (isMatchmaking)
+            if (PhotonRealtimeClient.InMatchmakingRoom)
             {
                 bool isLeader = PhotonRealtimeClient.LocalPlayer.UserId == PhotonRealtimeClient.LocalPlayer.GetCustomProperty<string>(PhotonBattleRoom.LeaderIdKey);
                 OnMatchmakingRoomEntered?.Invoke(isLeader);
@@ -1101,8 +1095,7 @@ namespace Altzone.Scripts.Lobby
                     string matchmakingLeaderId = string.Empty;
 
                     // If room is not a matchmaking room the person sending the event is the leader.
-                    bool isMatchmakingRoom = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.IsMatchmakingKey, false);
-                    if (!isMatchmakingRoom)
+                    if (!PhotonRealtimeClient.InMatchmakingRoom)
                     {
                         PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, leaderUserId);
                         matchmakingLeaderId = leaderUserId;
@@ -1140,8 +1133,7 @@ namespace Altzone.Scripts.Lobby
         public void OnMasterClientSwitched(Player newMasterClient) {
             LobbyOnMasterClientSwitched?.Invoke(new(newMasterClient));
 
-            bool isMatchmakingRoom = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.IsMatchmakingKey, false);
-            if (isMatchmakingRoom && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient)
+            if (PhotonRealtimeClient.InMatchmakingRoom && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient)
             {
                 _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
             }

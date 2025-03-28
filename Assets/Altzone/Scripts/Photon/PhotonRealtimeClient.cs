@@ -273,6 +273,15 @@ public static class PhotonRealtimeClient
     }
 
 
+    public static bool InMatchmakingRoom
+    {
+        get
+        {
+            return Client.InRoom ? CurrentRoom.GetCustomProperty(PhotonBattleRoom.IsMatchmakingKey, false) : Client.InRoom;
+        }
+    }
+
+
     public static ClientState NetworkClientState
     {
         get
