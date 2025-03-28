@@ -88,8 +88,7 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
             {
                 // Resetting the emotional situation
                 _selectedNameIndex = 0;
-                SelectedEmotionalSituation = SelectedBattleMap.EmotionalSituations[_selectedNameIndex];
-                _currentNameText.text = SelectedEmotionalSituation.SituationName;
+                SelectName();
             }
         }
 
