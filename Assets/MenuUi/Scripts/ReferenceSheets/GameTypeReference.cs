@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using MenuUi.Scripts.Lobby;
+using Altzone.Scripts.Lobby;
 
 namespace MenuUi.Scripts.ReferenceSheets
 {
