@@ -387,7 +387,7 @@ namespace Altzone.Scripts.Lobby
 
             // Saving custom properties from the room to the variables
             string clanName = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.ClanNameKey, "");
-            int soulhomeRank = PhotonRealtimeClient.LocalLobbyPlayer.GetCustomProperty(PhotonBattleRoom.SoulhomeRank, 0);
+            int soulhomeRank = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.SoulhomeRank, 0);
 
             string positionValue1 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, "");
             string positionValue2 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, "");
@@ -576,7 +576,7 @@ namespace Altzone.Scripts.Lobby
             } while (!canStartGameplay);
 
 
-            // Updating player positions from room to player properties
+            // Updating player positions from room to player properties, and waiting that they have been synced
             foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
             {
                 string positionValue1 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey1);
@@ -587,18 +587,22 @@ namespace Altzone.Scripts.Lobby
                 if (player.Value.UserId == positionValue1)
                 {
                     player.Value.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, PhotonBattleRoom.PlayerPosition1);
+                    yield return new WaitUntil(() => player.Value.GetCustomProperty<int>(PhotonBattleRoom.PlayerPositionKey) == PhotonBattleRoom.PlayerPosition1);
                 }
                 else if (player.Value.UserId == positionValue2)
                 {
                     player.Value.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, PhotonBattleRoom.PlayerPosition2);
+                    yield return new WaitUntil(() => player.Value.GetCustomProperty<int>(PhotonBattleRoom.PlayerPositionKey) == PhotonBattleRoom.PlayerPosition2);
                 }
                 else if (player.Value.UserId == positionValue3)
                 {
                     player.Value.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, PhotonBattleRoom.PlayerPosition3);
+                    yield return new WaitUntil(() => player.Value.GetCustomProperty<int>(PhotonBattleRoom.PlayerPositionKey) == PhotonBattleRoom.PlayerPosition3);
                 }
                 else if (player.Value.UserId == positionValue4)
                 {
                     player.Value.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, PhotonBattleRoom.PlayerPosition4);
+                    yield return new WaitUntil(() => player.Value.GetCustomProperty<int>(PhotonBattleRoom.PlayerPositionKey) == PhotonBattleRoom.PlayerPosition4);
                 }
             }
 
