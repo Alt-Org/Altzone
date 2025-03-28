@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Altzone.Scripts;
 using Altzone.Scripts.Battle.Photon;
-using Altzone.Scripts.Config;
 using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Lobby.Wrappers;
 using Altzone.Scripts.Model.Poco.Game;
@@ -12,7 +10,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MenuUI.Scripts.Lobby.InRoom
+namespace MenuUi.Scripts.Lobby.InRoom
 {
     /// <summary>
     /// Prepares players in a room for the game play.
@@ -22,7 +20,6 @@ namespace MenuUI.Scripts.Lobby.InRoom
         private const string PlayerPositionKey = PhotonBattleRoom.PlayerPositionKey;
         private const string PlayerCharactersKey = PhotonLobbyRoom.PlayerPrefabIdsKey;
         private const string PlayerStatsKey = PhotonBattleRoom.PlayerStatsKey;
-        private const string PlayerIDKey = PhotonBattleRoom.PlayerIDKey;
 
         private const int PlayerPosition1 = PhotonBattleRoom.PlayerPosition1;
         private const int PlayerPosition2 = PhotonBattleRoom.PlayerPosition2;
@@ -85,13 +82,9 @@ namespace MenuUI.Scripts.Lobby.InRoom
             Spectator
         }
 
-        private void Awake()
-        {
-            _selectedCharactersEditable.SelectedCharactersChanged += UpdateCharactersAndStatsKey;
-        }
-
         private void OnEnable()
         {
+            _selectedCharactersEditable.SelectedCharactersChanged += UpdateCharactersAndStatsKey;
             Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState}");
             _buttonStartPlay.interactable = false;
             //_buttonRaidTest.interactable = false;
@@ -108,6 +101,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
 
         private void OnDisable()
         {
+            _selectedCharactersEditable.SelectedCharactersChanged += UpdateCharactersAndStatsKey;
             Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState}");
             LobbyManager.LobbyOnPlayerEnteredRoom -= OnPlayerEnteredRoom;
             LobbyManager.LobbyOnPlayerLeftRoom -= OnPlayerLeftRoom;
@@ -117,29 +111,36 @@ namespace MenuUI.Scripts.Lobby.InRoom
             PhotonRealtimeClient.RemoveCallbackTarget(this);
         }
 
-        private void OnDestroy()
-        {
-            _selectedCharactersEditable.SelectedCharactersChanged -= UpdateCharactersAndStatsKey;
-        }
-
         private IEnumerator OnEnableInRoom()
         {
             yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
 
-            UpdatePhotonNickname();
             var room = PhotonRealtimeClient.LobbyCurrentRoom;
             var player = PhotonRealtimeClient.LocalLobbyPlayer;
-            //PhotonRealtimeClient.NickName = room.GetUniquePlayerNameForRoom(player, PhotonRealtimeClient.NickName, "");
-            Debug.Log($"OnEnable InRoom '{room.Name}' as '{PhotonRealtimeClient.NickName}'");
 
-            // Reset player custom properties for new game
-            player.CustomProperties.Clear();
+            // Checking if player is already in the room and if so only update status and return (can happen if battle popup is minimized while in room)
+            string positionValue1 = room.GetCustomProperty(PlayerPositionKey1, "");
+            string positionValue2 = room.GetCustomProperty(PlayerPositionKey2, "");
+            string positionValue3 = room.GetCustomProperty(PlayerPositionKey3, "");
+            string positionValue4 = room.GetCustomProperty(PlayerPositionKey4, "");
 
-            // Getting first free player pos
-            var playerPos = PhotonLobbyRoom.GetFirstFreePlayerPos(player);
+            if (player.UserId == positionValue1 || player.UserId == positionValue2 || player.UserId == positionValue3 || player.UserId == positionValue3)
+            {
+                UpdateStatus();
+                yield break;
+            }
 
             StartCoroutine(GetPlayerData(playerData =>
             {
+                // Setting photon nickname from playerdata name
+                PhotonRealtimeClient.NickName = playerData.Name;
+
+                // Reset player custom properties for new game
+                player.CustomProperties.Clear();
+
+                // Getting first free player pos
+                var playerPos = PhotonLobbyRoom.GetFirstFreePlayerPos();
+
                 // Reserving player position inside the room
                 LobbyPhotonHashtable propertyToSet = new();
                 LobbyPhotonHashtable expectedValue = new();
@@ -147,19 +148,19 @@ namespace MenuUI.Scripts.Lobby.InRoom
                 switch (playerPos)
                 {
                     case PlayerPosition1:
-                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey1, playerData.Id } });
+                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey1, player.UserId } });
                         expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey1, "" } });
                         break;
                     case PlayerPosition2:
-                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey2, playerData.Id } });
+                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey2, player.UserId } });
                         expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey2, "" } });
                         break;
                     case PlayerPosition3:
-                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey3, playerData.Id } });
+                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey3, player.UserId } });
                         expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey3, "" } });
                         break;
                     case PlayerPosition4:
-                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey4, playerData.Id } });
+                        propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey4, player.UserId } });
                         expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { PlayerPositionKey4, "" } });
                         break;
                 }
@@ -176,14 +177,11 @@ namespace MenuUI.Scripts.Lobby.InRoom
                     { PlayerCharactersKey, characterIds },
                     { PlayerStatsKey, characterStats },
                     { "Role", (int)currentRole },
-                    { PlayerIDKey, playerData.Id }
                 }));
 
                 // Setting custom characters for quantum
                 List<CustomCharacter> selectedCharacters = GetSelectedCustomCharacters(playerData);
                 LobbyManager.Instance.SetPlayerQuantumCharacters(selectedCharacters);
-
-                Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState} {enabled}");
 
                 UpdateStatus();
             }));
@@ -264,11 +262,12 @@ namespace MenuUI.Scripts.Lobby.InRoom
                 return;
             }
             ResetState();
+
+            GameType roomGameType = (GameType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+
             // We need local player to check against other players
             LobbyPlayer localPlayer = PhotonRealtimeClient.LocalLobbyPlayer;
             _localPlayerPosition = localPlayer.GetCustomProperty(PlayerPositionKey, 0);
-            //currentRole = PlayerRole.Player;
-            _isLocalPlayerPositionUnique = true;
 
             CheckMasterClient();
             // Check other players first is they have reserved some player positions etc. from the room already.
@@ -281,26 +280,23 @@ namespace MenuUI.Scripts.Lobby.InRoom
             }
             CheckLocalPlayer(localPlayer);
 
+            // Setting player position buttons active status
             SetButtonActive(_buttonPlayerP1, _interactablePlayerP1);
             SetButtonActive(_buttonPlayerP2, _interactablePlayerP2);
             SetButtonActive(_buttonPlayerP3, _interactablePlayerP3);
             SetButtonActive(_buttonPlayerP4, _interactablePlayerP4);
 
-            _nameP1.text = _captionPlayerP1;
-            _nameP2.text = _captionPlayerP2;
-            _nameP3.text = _captionPlayerP3;
-            _nameP4.text = _captionPlayerP4;
+            // Setting player name texts
+            if (_nameP1 != null) _nameP1.text = _captionPlayerP1;
+            if (_nameP2 != null) _nameP2.text = _captionPlayerP2;
+            if (_nameP3 != null) _nameP3.text = _captionPlayerP3;
+            if (_nameP4 != null) _nameP4.text = _captionPlayerP4;
 
+            // Setting start game button interactable status
             _buttonStartPlay.interactable = _interactableStartPlay;
-            SetTeamText();
-        }
 
-        private void UpdatePhotonNickname()
-        {
-            var store = Storefront.Get();
-            PlayerData playerData = null;
-            store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
-            PhotonRealtimeClient.NickName = playerData.Name;
+            // Setting team text
+            SetTeamText();
         }
 
         private void SetTeamText()
@@ -309,13 +305,13 @@ namespace MenuUI.Scripts.Lobby.InRoom
             int masterTeam = GetTeam(_masterClientPosition);
             if (masterTeam == 0)
             {
-                _upperTeamText.text = "Beta joukkue";//$"Joukkue {room.GetCustomProperty<string>(TeamRedNameKey)}";
-                _lowerTeamText.text = "Alpha joukkue";//$"Joukkue {room.GetCustomProperty<string>(TeamBlueNameKey)}";
+                if (_upperTeamText != null) _upperTeamText.text = room.GetCustomProperty<string>(TeamBetaNameKey);
+                if (_lowerTeamText != null) _lowerTeamText.text = room.GetCustomProperty<string>(TeamAlphaNameKey);
             }
             else
             {
-                _upperTeamText.text = "Alpha joukkue";//{room.GetCustomProperty<string>(TeamBlueNameKey)}";
-                _lowerTeamText.text = "Beta joukkue";//$"Joukkue {room.GetCustomProperty<string>(TeamRedNameKey)}";
+                if (_upperTeamText != null) _upperTeamText.text = room.GetCustomProperty<string>(TeamAlphaNameKey);
+                if (_lowerTeamText != null) _lowerTeamText.text = room.GetCustomProperty<string>(TeamBetaNameKey);
             }
         }
 
@@ -340,80 +336,68 @@ namespace MenuUI.Scripts.Lobby.InRoom
 
         private void CheckOtherPlayer(LobbyPlayer player)
         {
-            Debug.Log($"checkOtherPlayer {player.GetDebugLabel()}");
             if (!player.HasCustomProperty(PlayerPositionKey) || !player.HasCustomProperty(PlayerCharactersKey) || !player.HasCustomProperty(PlayerStatsKey))
             {
                 return;
             }
-            var curValue = player.GetCustomProperty(PlayerPositionKey, 0);
-            if (_isLocalPlayerPositionUnique && curValue >= PlayerPosition1 && curValue <= PlayerPosition4)
-            {
-                if (curValue == _localPlayerPosition)
-                {
-                    Debug.Log("detected conflict");
-                    _isLocalPlayerPositionUnique = false; // Conflict with player positions!
-                }
-            }
 
+            var playerPosition = player.GetCustomProperty(PlayerPositionKey, 0);
             int[] characters = player.GetCustomProperty(PlayerCharactersKey, new int[3]);
             int[] stats = player.GetCustomProperty(PlayerStatsKey, new int[15]);
 
-            switch (curValue)
+            switch (playerPosition)
             {
                 case PlayerPosition1:
                     _interactablePlayerP1 = false;
-                    _captionPlayerP1 = player.NickName;
-                    _selectedCharactersP1.SetCharacters(characters, stats);
+                    if (_captionPlayerP1 != null) _captionPlayerP1 = player.NickName;
+                    if (_selectedCharactersP1 != null) _selectedCharactersP1.SetCharacters(characters, stats);
                     break;
                 case PlayerPosition2:
                     _interactablePlayerP2 = false;
-                    _captionPlayerP2 = player.NickName;
-                    _selectedCharactersP2.SetCharacters(characters, stats);
+                    if (_captionPlayerP2 != null) _captionPlayerP2 = player.NickName;
+                    if (_selectedCharactersP2 != null) _selectedCharactersP2.SetCharacters(characters, stats);
                     break;
                 case PlayerPosition3:
                     _interactablePlayerP3 = false;
-                    _captionPlayerP3 = player.NickName;
-                    _selectedCharactersP3.SetCharacters(characters, stats);
+                    if (_captionPlayerP3 != null) _captionPlayerP3 = player.NickName;
+                    if (_selectedCharactersP3 != null) _selectedCharactersP3.SetCharacters(characters, stats);
                     break;
                 case PlayerPosition4:
                     _interactablePlayerP4 = false;
-                    _captionPlayerP4 = player.NickName;
-                    _selectedCharactersP4.SetCharacters(characters, stats);
+                    if (_captionPlayerP4 != null) _captionPlayerP4 = player.NickName;
+                    if (_selectedCharactersP4 != null) _selectedCharactersP4.SetCharacters(characters, stats);
                     break;
             }
         }
 
         private void CheckLocalPlayer(LobbyPlayer player)
         {
-            Debug.Log($"checkLocalPlayer {player.GetDebugLabel()} pos={_localPlayerPosition} ok={_isLocalPlayerPositionUnique}");
-            var curValue = player.GetCustomProperty(PlayerPositionKey, 0);
+            var playerPosition = player.GetCustomProperty(PlayerPositionKey, 0);
+
             // Master client can *only* start the game when in room as player!
-            _interactableStartPlay = player.IsMasterClient && curValue >= PlayerPosition1 && curValue <= PlayerPosition4;
+            _interactableStartPlay = player.IsMasterClient && playerPosition >= PlayerPosition1 && playerPosition <= PlayerPosition4;
 
-            int[] characters = player.GetCustomProperty(PlayerCharactersKey, new int[3]);
-            int[] stats = player.GetCustomProperty(PlayerStatsKey, new int[15]);
-
-            switch (curValue)
+            switch (playerPosition)
             {
                 case PlayerPosition1:
                     _interactablePlayerP1 = false;
-                    _captionPlayerP1 = $"<color=blue>{player.NickName}</color>";
-                    _selectedCharactersP1.SetCharacters(characters, stats);
+                    if (_captionPlayerP1 != null) _captionPlayerP1 = $"<color=blue>{player.NickName}</color>";
+                    if (_selectedCharactersP1 != null) _selectedCharactersP1.SetCharacters(false);
                     break;
                 case PlayerPosition2:
                     _interactablePlayerP2 = false;
-                    _captionPlayerP2 = $"<color=blue>{player.NickName}</color>";
-                    _selectedCharactersP2.SetCharacters(characters, stats);
+                    if (_captionPlayerP2 != null) _captionPlayerP2 = $"<color=blue>{player.NickName}</color>";
+                    if (_selectedCharactersP2 != null) _selectedCharactersP2.SetCharacters(false);
                     break;
                 case PlayerPosition3:
                     _interactablePlayerP3 = false;
-                    _captionPlayerP3 = $"<color=blue>{player.NickName}</color>";
-                    _selectedCharactersP3.SetCharacters(characters, stats);
+                    if (_captionPlayerP3 != null) _captionPlayerP3 = $"<color=blue>{player.NickName}</color>";
+                    if (_selectedCharactersP4 != null) _selectedCharactersP3.SetCharacters(false);
                     break;
                 case PlayerPosition4:
                     _interactablePlayerP4 = false;
-                    _captionPlayerP4 = $"<color=blue>{player.NickName}</color>";
-                    _selectedCharactersP4.SetCharacters(characters, stats);
+                    if (_captionPlayerP4 != null) _captionPlayerP4 = $"<color=blue>{player.NickName}</color>";
+                    if (_selectedCharactersP4 != null) _selectedCharactersP4.SetCharacters(false);
                     break;
             }
         }

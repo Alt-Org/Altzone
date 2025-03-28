@@ -3,6 +3,7 @@ using TMPro;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Altzone.Scripts.ReferenceSheets;
 
 public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 {
@@ -16,6 +17,8 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         Available,
         Reserved
     }
+
+    [SerializeField] private DailyTaskCardImageReference _cardImageReference;
 
     [Header("Universal")]
     [SerializeField] private GameObject _coinIndicator;
@@ -137,7 +140,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         _taskAmount.text = _taskData.Amount.ToString();
         _coinIndicator.SetActive(_taskData.Coins >= 0);
 
-        //_TaskImage.sprite = INSERT IMAGE HERE
+        _TaskImage.sprite = _cardImageReference.GetTaskImage(_taskData);
     }
 
     private string GetShortDescription(TaskNormalType taskType)

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Assets.Altzone.Scripts.Model.Poco.Player;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace MenuUi.Scripts.AvatarEditor
@@ -7,52 +8,41 @@ namespace MenuUi.Scripts.AvatarEditor
     public class PlayerAvatar
     {
         private string _characterName;
-        private List<FeatureID> _features;
+        private List<string> _features;
         private List<string> _colors;
         private Vector2 _scale;
 
-        public PlayerAvatar(List<FeatureID> featureIds)
+        public PlayerAvatar(AvatarDefaultReference.AvatarDefaultPartInfo featureIds)
         {
+            _features = new List<string>();
+            _features.Add(featureIds.HairId);
+            _features.Add(featureIds.EyesId);
+            _features.Add(featureIds.NoseId);
+            _features.Add(featureIds.MouthId);
+            _features.Add(featureIds.BodyId);
+            _features.Add(featureIds.HandsId);
+            _features.Add(featureIds.FeetId);
+
             _characterName = "";
-            _features = featureIds;
             _colors = new List<string>();
             _scale = Vector2.one;
         }
 
-        public PlayerAvatar(string name, List<FeatureID> features, List<string> colors, Vector2 scale)
+        public PlayerAvatar(string name, List<string> featuresIds, List<string> colors, Vector2 scale)
         {
             _characterName = name;
-            _features = features;
+            _features = featuresIds;
             _colors = colors;
             _scale = scale;
         }
 
         public PlayerAvatar(AvatarData data)
         {
-            _characterName = data.Name;
-            _features = ToFeaturesListEnum(data.Features);
-            _colors = data.Colors;
-            _scale = data.Scale;
-        }
-
-        private List<FeatureID> ToFeaturesListEnum(List<int> indexes)
-        {
-            List<FeatureID> tempList = new List<FeatureID>();
-
-            foreach (var index in indexes)
-                tempList.Add((FeatureID)index);
-
-            return (tempList);
-        }
-
-        public List<int> ToFeaturesListInt(List<FeatureID> featureIds)
-        {
-            List<int> tempList = new List<int>();
-
-            foreach (var featureId in featureIds)
-                tempList.Add((int)featureId);
-
-            return (tempList);
+            Debug.LogWarning(JObject.FromObject(data).ToString());
+            _characterName = (string)data.Name.Clone();
+            _features = new(data.FeatureIds);
+            _colors = new(data.Colors);
+            _scale = new(data.ScaleX, data.ScaleY);
         }
 
         public string Name
@@ -60,7 +50,7 @@ namespace MenuUi.Scripts.AvatarEditor
             get => _characterName;
             set => _characterName = value;
         }
-        public List<FeatureID> Features{
+        public List<string> FeatureIds{
             get => _features;
             set => _features = value;
         }

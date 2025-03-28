@@ -2,11 +2,12 @@
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
-using MenuUi.Scripts.Lobby;
+using Altzone.Scripts.Lobby;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using MenuUi.Scripts.Signals;
 
-namespace MenuUI.Scripts.Lobby.InLobby
+namespace MenuUi.Scripts.Signals
 {
     public static partial class SignalBus
     {
@@ -17,29 +18,34 @@ namespace MenuUI.Scripts.Lobby.InLobby
             OnBattlePopupRequested?.Invoke(gameType);
         }
     }
+}
 
+namespace MenuUi.Scripts.Lobby.InLobby
+{
+    /// <summary>
+    /// Handles opening and closing the battle popup and connects player to the photon lobby.
+    /// </summary>
     public class InLobbyController : AltMonoBehaviour
     {
-        [SerializeField] private InLobbyView _view;
-        [SerializeField] private SelectedCharactersPopup _selectedCharactersPopup;
+        [SerializeField] private TopInfoPanelController _topInfoPanel;
         [SerializeField] private GameObject _popupContents;
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
+        [SerializeField] private LobbyRoomListingController _roomListingController;
 
         private string _currentRegion;
+        private Coroutine _creatingRoomCoroutineHolder = null;
+
+        public static GameType SelectedGameType { get; private set; }
 
         private void Awake()
         {
-            //_view.CharacterButtonOnClick = CharacterButtonOnClick;
-            //_view.RoomButtonOnClick = RoomButtonOnClick;
-            //_view.RaidButtonOnClick = RaidButtonOnClick;
-            //_view.QuickGameButtonOnClick = QuickGameButtonOnClick;
-            SignalBus.OnBattlePopupRequested += TryOpenWindow;
+            SignalBus.OnBattlePopupRequested += OpenWindow;
         }
 
 
         private void OnDestroy()
         {
-            SignalBus.OnBattlePopupRequested -= TryOpenWindow;
+            SignalBus.OnBattlePopupRequested -= OpenWindow;
         }
 
 
@@ -57,9 +63,9 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 // We need to disconnect from current region because it is not the same as in player settings.
                 PhotonLobby.Disconnect();
             }*/
-            _view.Reset();
+            _topInfoPanel.Reset();
             UpdateTitle();
-            _view.LobbyText = string.Empty;
+            _topInfoPanel.LobbyText = string.Empty;
             StartCoroutine(StartLobby(playerSettings.PlayerGuid, playerSettings.PhotonRegion));
         }
 
@@ -72,7 +78,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
         {
             // Save region for later use because getting it is not cheap (b ut not very expensive either). 
             _currentRegion = PhotonRealtimeClient.CloudRegion != null ? PhotonRealtimeClient.CloudRegion : "";
-            _view.TitleText = $"{Application.productName} {PhotonRealtimeClient.GameVersion}";
+            _topInfoPanel.TitleText = $"{Application.productName} {PhotonRealtimeClient.GameVersion}";
         }
 
         private IEnumerator StartLobby(string playerGuid, string photonRegion)
@@ -107,21 +113,19 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 yield return delay;
             }
             UpdateTitle();
-            _view.EnableButtons();
         }
 
         private void Update()
         {
             if (!PhotonRealtimeClient.InLobby && !PhotonRealtimeClient.InRoom)
             {
-                _view.LobbyText = "Wait";
+                _topInfoPanel.LobbyText = "Wait";
                 return;
             }
             UpdateTitle();
-            _view.EnableButtons();
             var playerCount = PhotonRealtimeClient.CountOfPlayers;
-            _view.LobbyText = $"Alue: {_currentRegion} : {PhotonRealtimeClient.GetPing()} ms";
-            _view.PlayerCountText = $"Pelaajia online: {playerCount}";
+            _topInfoPanel.LobbyText = $"Alue: {_currentRegion} : {PhotonRealtimeClient.GetPing()} ms";
+            _topInfoPanel.PlayerCountText = $"Pelaajia online: {playerCount}";
         }
 
         /*public void OnDisconnected(DisconnectCause cause)
@@ -134,45 +138,68 @@ namespace MenuUI.Scripts.Lobby.InLobby
             }
         }*/
 
-        public void TryOpenWindow(GameType gameType)
-        {
-            StartCoroutine(GetPlayerData(playerData =>
-            {
-                // Check if player has all 3 characters selected or no
 
-                if (playerData != null)
-                {
-                    for (int i = 0; i < 3; i++)
-                    {
-                        if (string.IsNullOrEmpty(playerData.SelectedCharacterIds[i]) || playerData.SelectedCharacterIds[i] == "0") // if any of the selected characters is missing
-                        {
-                            StartCoroutine(ShowSelectedCharactersPopup());
-                            return;
-                        }
-                    }
-                }
-                // Open battle popup if all 3 are selected
-                OpenWindow();
-            }));
-        }
-
-
-        private IEnumerator ShowSelectedCharactersPopup()
-        {
-            yield return StartCoroutine(_selectedCharactersPopup.ShowPopup(showBattlePopup =>
-            {
-                if (showBattlePopup == true)
-                {
-                    OpenWindow();
-                }
-            }));
-        }
-
-
-        private void OpenWindow()
+        private void OpenWindow(GameType gameType)
         {
             _popupContents.SetActive(true);
-            _roomSwitcher.ReturnToMain();
+
+            // Checking if we are in room or matchmaking room depending on the game mode which would prevent changing the selected game type
+            switch (gameType)
+            {
+                case GameType.Custom:
+                    if (PhotonRealtimeClient.InRoom) return;
+                    break;
+                case GameType.Clan2v2:
+                case GameType.Random2v2:
+                    if (PhotonRealtimeClient.InMatchmakingRoom) // If we are in matchmaking we don't want to do anything
+                    {
+                        return;
+                    }
+                    else if (PhotonRealtimeClient.InRoom) // If we are in a normal room
+                    {
+                        // Checking if the game type changed, if it didn't we don't want to do anything but if it did we leave the room
+                        if (gameType == SelectedGameType)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            PhotonRealtimeClient.LeaveRoom();
+                        }
+                    }
+                    break;
+            }
+            
+            SelectedGameType = gameType;
+
+            switch (gameType)
+            {
+                case GameType.Custom:
+                    _roomSwitcher.ReturnToMain();
+                    break;
+                case GameType.Clan2v2:
+                    _roomSwitcher.ClosePanels();
+                    // Starting coroutine to create clan 2v2 room if player is not in a room and a room is currently being created
+                    if (_creatingRoomCoroutineHolder == null)
+                    {
+                        _creatingRoomCoroutineHolder = StartCoroutine(_roomListingController.StartCreatingClan2v2Room(() =>
+                        {
+                            _creatingRoomCoroutineHolder = null;
+                        }));
+                    }
+                    break;
+                case GameType.Random2v2:
+                    _roomSwitcher.ClosePanels();
+                    // Starting coroutine to create clan 2v2 room if player is not in a room and a room is currently being created
+                    if (_creatingRoomCoroutineHolder == null)
+                    {
+                        _creatingRoomCoroutineHolder = StartCoroutine(_roomListingController.StartCreatingRandom2v2Room(() =>
+                        {
+                            _creatingRoomCoroutineHolder = null;
+                        }));
+                    }
+                    break;
+            }
         }
 
 

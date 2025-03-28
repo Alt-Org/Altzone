@@ -362,6 +362,11 @@ namespace MenuUI.Scripts.SoulHome
                         continue;
                     }
 
+                    if (hit2.collider.gameObject.CompareTag("SoulHomeAvatar"))
+                    {
+                        StartCoroutine(hit2.collider.gameObject.GetComponent<SoulHomeAvatarController>().WaveAnimation());
+                    }
+
                     if (hit2.collider.gameObject.CompareTag("Furniture"))
                     {
                         //Debug.Log("Furniture");
@@ -617,7 +622,6 @@ namespace MenuUI.Scripts.SoulHome
         {
             Vector2 checkPoint;
             Vector2Int size = _selectedFurniture.GetComponent<FurnitureHandling>().GetFurnitureSize();
-            bool isFurniturePlaceHolder = _selectedFurniture.GetComponent<FurnitureHandling>().IsPlaceHolder;
             if(hitPoint.Equals(Vector2.negativeInfinity)) hitPoint = _selectedFurniture.transform.position + new Vector3(0, 0.001f);
 
             Ray ray = new(transform.position, (Vector3)hitPoint - transform.position);
@@ -634,13 +638,11 @@ namespace MenuUI.Scripts.SoulHome
             }
 
 
-            if (!isFurniturePlaceHolder)
-                if(!hitLeftWall)
-                    checkPoint = hitPoint + new Vector2((slotWidth / 2) + ((slotWidth * size.x)/2)*-1, 0);
-                else
-                    checkPoint = hitPoint + new Vector2((slotWidth / 2) * -1 + ((slotWidth * size.x) / 2), 0);
+
+            if(!hitLeftWall)
+                checkPoint = hitPoint + new Vector2((slotWidth / 2) + ((slotWidth * size.x)/2)*-1, 0);
             else
-                checkPoint = hitPoint + new Vector2((slotWidth / 2) * -1 + slotWidth / (2 * size.x), 0);
+                checkPoint = hitPoint + new Vector2((slotWidth / 2) * -1 + ((slotWidth * size.x) / 2), 0);
 
             Ray ray2 = new(transform.position, (Vector3)checkPoint - transform.position);
             RaycastHit2D[] hitArray;

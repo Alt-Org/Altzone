@@ -1,12 +1,17 @@
 using System;
 using System.Collections.Generic;
+using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Lobby.Wrappers;
+using Photon.Client.StructWrapping;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MenuUI.Scripts.Lobby.InLobby
+namespace MenuUi.Scripts.Lobby.InLobby
 {
+    /// <summary>
+    /// Handles spawning the room list buttons to the search panel in Battle Popup.
+    /// </summary>
     public class RoomSearchPanelController : MonoBehaviour
     {
         [SerializeField] private GameObject _slotPrefab;
@@ -44,16 +49,20 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
             ResetPanel(_content);
 
-            if(_roomsData.Count == 0) _noRoomText.gameObject.SetActive(true);
-            else _noRoomText.gameObject.SetActive(false);
+            if (!_noRoomText.gameObject.activeSelf) _noRoomText.gameObject.SetActive(true);
 
             foreach(LobbyRoomInfo roomInfo in _roomsData)
             {
-                GameObject button = Instantiate(_slotPrefab, _content);
-                RoomSlot roomSlot = button.GetComponent<RoomSlot>();
-                if (roomSlot != null)
+                bool gameTypePropertyExist = roomInfo.CustomProperties.TryGetValue(PhotonBattleLobbyRoom.GameTypeKey, out int gameType);
+                if (gameTypePropertyExist && gameType == (int)GameType.Custom)
                 {
-                    UpdateButton(roomSlot, roomInfo, _onJoinRoom);
+                    GameObject button = Instantiate(_slotPrefab, _content);
+                    RoomSlot roomSlot = button.GetComponent<RoomSlot>();
+                    if (roomSlot != null)
+                    {
+                        UpdateButton(roomSlot, roomInfo, _onJoinRoom);
+                    }
+                    if (_noRoomText.gameObject.activeSelf) _noRoomText.gameObject.SetActive(false);
                 }
             }
         }

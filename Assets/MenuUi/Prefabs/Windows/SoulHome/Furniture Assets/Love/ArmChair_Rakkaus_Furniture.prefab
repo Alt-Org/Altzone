@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8424176910884188875}
   - component: {fileID: -4477838665465569415}
   - component: {fileID: -724820267442525664}
+  - component: {fileID: 8769262306873462653}
   m_Layer: 0
   m_Name: ArmChair_Rakkaus_Furniture
   m_TagString: Furniture
@@ -152,7 +153,19 @@ MonoBehaviour:
   _furnitureSpriteBack: {fileID: 0}
   _defaultSpriteDirection: 0
   _spriteCanBeFlipped: 1
+  _sortingGroup: {fileID: 8769262306873462653}
   _trayFurnitureObject: {fileID: 6752174233831251881, guid: 1db324aa182baae4f9e89595cba18f53,
     type: 3}
   cullCheckAmount: 0.1
-  _isPlaceHolder: 0
+--- !u!210 &8769262306873462653
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7560384329901659850}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortAtRoot: 0

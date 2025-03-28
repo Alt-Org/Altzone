@@ -1,21 +1,26 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Altzone.Scripts.Model.Poco.Player
 {
+    [Serializable]
     public class AvatarData
     {
-        public AvatarData(string name, List<int> features, List<string> colors, Vector2 scale)
+        public AvatarData(string name, List<string> featureIds, List<string> colors, Vector2 scale)
         {
-            Name = name;
-            Features = features;
-            Colors = colors;
-            Scale = scale;
+            Name = (string)name.Clone();
+            FeatureIds = new(featureIds);
+            Colors = new(colors);
+            ScaleX = scale.x;
+            ScaleY = scale.y;
         }
 
         public string Name;
-        public List<int> Features;
+        public List<string> FeatureIds;
         public List<string> Colors;
-        public Vector2 Scale;
+        //public Vector2 Scale = new(ScaleX, ScaleY);
+        public float ScaleX;
+        public float ScaleY;
     }
 }

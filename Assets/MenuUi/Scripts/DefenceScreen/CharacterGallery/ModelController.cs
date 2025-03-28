@@ -5,7 +5,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using MenuUi.Scripts.Signals;
-
+using Newtonsoft.Json.Linq;
 
 namespace MenuUi.Scripts.Signals
 {
@@ -132,7 +132,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 {
                     characterIds[i] = _playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == selectedCharacterIds[i]) == null ? 0 : (int)_playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == selectedCharacterIds[i]).Id;
                 }
-                var characters = playerData.CustomCharacters.ToList();
+                var characters = playerData.CustomCharacters.GroupBy(x => x.Id).Select(x => x.First()).ToList(); // ensuring no duplicate characters if account is bugged
                 characters.Sort((a, b) => a.Id.CompareTo(b.Id));
                 // Set characters in the ModelView
                 _view.SetCharacters(characters, characterIds);
@@ -155,8 +155,27 @@ namespace MenuUi.Scripts.CharacterGallery
                 _playerData.SelectedCharacterIds[slot] = newServerId;
             }
 
-            var store = Storefront.Get();
-            store.SavePlayerData(_playerData, null);
+            string body = JObject.FromObject(
+            new
+            {
+                _id = _playerData.Id,
+                battleCharacter_ids = _playerData.SelectedCharacterIds
+
+            }).ToString();
+
+            StartCoroutine(ServerManager.Instance.UpdatePlayerToServer(body, callback =>
+            {
+                if (callback != null)
+                {
+                    Debug.Log("Profile info updated.");
+                    var store = Storefront.Get();
+                    store.SavePlayerData(_playerData, null);
+                }
+                else
+                {
+                    Debug.Log("Profile info update failed.");
+                }
+            }));
         }
 
 
