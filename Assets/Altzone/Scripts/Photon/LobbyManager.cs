@@ -433,14 +433,17 @@ namespace Altzone.Scripts.Lobby
             bool roomFound = false;
             foreach (LobbyRoomInfo room in CurrentRooms)
             {
-                // Checking that the room is a matchmaking room
-                if (!PhotonRealtimeClient.InMatchmakingRoom) continue;
+                // Checking if the room has a game type and matchmaking key in the first place
+                if (!room.CustomProperties.ContainsKey(PhotonBattleRoom.GameTypeKey) || !room.CustomProperties.ContainsKey(PhotonBattleRoom.IsMatchmakingKey))
+                {
+                    continue;
+                }
 
-                // Checking if the room has a game type key in the first place
-                if (!room.CustomProperties.ContainsKey(PhotonBattleRoom.GameTypeKey)) continue;
-
-                // Checking that the game type matches
-                if ((GameType)room.CustomProperties[PhotonBattleRoom.GameTypeKey] != gameType) continue;
+                // Checking that the game type matches and that the room is a matchmaking room
+                if ((GameType)room.CustomProperties[PhotonBattleRoom.GameTypeKey] != gameType || (bool)room.CustomProperties[PhotonBattleRoom.IsMatchmakingKey] == false)
+                {
+                    continue;
+                }
 
                 // Matchmaking logic
                 switch (gameType)
