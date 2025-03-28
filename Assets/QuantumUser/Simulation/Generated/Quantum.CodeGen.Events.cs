@@ -104,13 +104,13 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventSoulWallViewInit SoulWallViewInit(EntityRef Entity, FP ModelScale, Int32 ColorIndex, Int32 IndicatorColorIndex) {
+      public EventSoulWallViewInit SoulWallViewInit(EntityRef Entity, FP ModelScale, Int32 ColorIndex, Int32 EmotionIndicatorColorIndex) {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventSoulWallViewInit>(EventSoulWallViewInit.ID);
         ev.Entity = Entity;
         ev.ModelScale = ModelScale;
         ev.ColorIndex = ColorIndex;
-        ev.IndicatorColorIndex = IndicatorColorIndex;
+        ev.EmotionIndicatorColorIndex = EmotionIndicatorColorIndex;
         _f.AddEvent(ev);
         return ev;
       }
@@ -246,7 +246,7 @@ namespace Quantum {
     public EntityRef Entity;
     public FP ModelScale;
     public Int32 ColorIndex;
-    public Int32 IndicatorColorIndex;
+    public Int32 EmotionIndicatorColorIndex;
     protected EventSoulWallViewInit(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
@@ -267,7 +267,7 @@ namespace Quantum {
         hash = hash * 31 + Entity.GetHashCode();
         hash = hash * 31 + ModelScale.GetHashCode();
         hash = hash * 31 + ColorIndex.GetHashCode();
-        hash = hash * 31 + IndicatorColorIndex.GetHashCode();
+        hash = hash * 31 + EmotionIndicatorColorIndex.GetHashCode();
         return hash;
       }
     }

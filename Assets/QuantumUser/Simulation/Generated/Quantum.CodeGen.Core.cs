@@ -72,7 +72,6 @@ namespace Quantum {
   public enum GameState : int {
     InitializeGame,
     CreateMap,
-    PreGame,
     ReadyToStart,
     Countdown,
     GetReadyToPlay,
