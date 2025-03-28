@@ -1031,6 +1031,7 @@ namespace Altzone.Scripts.Lobby
 
                     if (ownClan == otherPlayerClan)
                     {
+                        _teammates = null;
                         StartCoroutine(LeaveMatchmaking());
                         OnClanMemberDisconnected?.Invoke();
                     }
