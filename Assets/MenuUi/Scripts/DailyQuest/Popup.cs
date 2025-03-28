@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
+using Altzone.Scripts.ReferenceSheets;
+using Altzone.Scripts.Model.Poco.Game;
 
 public class Popup : MonoBehaviour
 {
@@ -15,12 +17,15 @@ public class Popup : MonoBehaviour
         ClanMilestone,  //Clan milestone reward info window
     }
 
+    [SerializeField] private DailyTaskCardImageReference _cardImageReference;
+
     [Header("Popup Settings")]
     [Tooltip("Assign the existing popup GameObject in the scene here.")]
     [SerializeField] private GameObject popupGameObject;
     [Space]
     [SerializeField] private GameObject _taskAcceptPopup;
     [SerializeField] private RectTransform _taskAcceptMovable;
+    [SerializeField] private Image _taskAcceptImage;
     [Space]
     [SerializeField] private GameObject _taskCancelPopup;
     [Space]
@@ -102,6 +107,9 @@ public class Popup : MonoBehaviour
 
             if (data.Value.ClanRewardData != null)
                 Instance.SetClanMilestone(data.Value.ClanRewardData.Value.RewardImage, data.Value.ClanRewardData.Value.RewardAmount);
+
+            if (data.Value.OwnPage != null)
+                Instance.SetTaskAcceptImage(data.Value.OwnPage);
         }
 
         // Show the popup and get the result
@@ -130,6 +138,28 @@ public class Popup : MonoBehaviour
         _fadeOutCoroutine = StartCoroutine(FadeOut());
 
         Debug.Log($"Popup result: {_result}"); // Log the result for debugging
+    }
+
+    private void SetTaskAcceptImage(PlayerTask data)
+    {
+        if (data.Type != TaskNormalType.Undefined)
+            _taskAcceptImage.sprite = _cardImageReference.GetNormalTaskImage(data.Type);
+        else
+        {
+            int subType = 0;
+
+            switch (data.EducationCategory)
+            {
+                case EducationCategoryType.Social: subType = (int)data.EducationSocialType; break;
+                case EducationCategoryType.Story: subType = (int)data.EducationStoryType; break;
+                case EducationCategoryType.Culture: subType = (int)data.EducationCultureType; break;
+                case EducationCategoryType.Ethical: subType = (int)data.EducationEthicalType; break;
+                case EducationCategoryType.Action: subType = (int)data.EducationActionType; break;
+                default: break;
+            }
+
+            _taskAcceptImage.sprite = _cardImageReference.GetEducationTaskImage(data.EducationCategory, subType);
+        }
     }
 
     private void SwitchWindow(PopupWindowType type)

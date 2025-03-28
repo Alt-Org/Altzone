@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,10 +16,13 @@ public class DailyTaskOwnTask : MonoBehaviour
         Depressed
     }
 
+    [SerializeField] private DailyTaskCardImageReference _cardImageReference;
+
     [Header("Current task")]
     [SerializeField] private TextMeshProUGUI _taskDescription;
     [SerializeField] private TextMeshProUGUI _taskPointsReward;
     [SerializeField] private TextMeshProUGUI _taskCoinsReward;
+    [SerializeField] private Image _taskTypeImage;
     [Space]
     [SerializeField] private Image _taskProgressFillImage;
     [SerializeField] private RectTransform _taskProgressLayoutGroup;
@@ -62,13 +67,32 @@ public class DailyTaskOwnTask : MonoBehaviour
 
     #region Task
 
-    public void SetDailyTask(string taskDescription, int amount, int points, int coins)
+    public void SetDailyTask(PlayerTask data)
     {
-        _taskDescription.text = taskDescription;
-        _taskPointsReward.text = "" + points;
-        _taskCoinsReward.text = "" + coins;
+        _taskDescription.text = data.Title;
+        _taskPointsReward.text = "" + data.Points;
+        _taskCoinsReward.text = "" + data.Coins;
 
-        SetProgressBarMarkers(amount);
+        if (data.Type != TaskNormalType.Undefined)
+            _taskTypeImage.sprite = _cardImageReference.GetNormalTaskImage(data.Type);
+        else
+        {
+            int subType = 0;
+
+            switch (data.EducationCategory)
+            {
+                case EducationCategoryType.Social: subType = (int)data.EducationSocialType; break;
+                case EducationCategoryType.Story: subType = (int)data.EducationStoryType; break;
+                case EducationCategoryType.Culture: subType = (int)data.EducationCultureType; break;
+                case EducationCategoryType.Ethical: subType = (int)data.EducationEthicalType; break;
+                case EducationCategoryType.Action: subType = (int)data.EducationActionType; break;
+                default: break;
+            }
+
+            _taskTypeImage.sprite = _cardImageReference.GetEducationTaskImage(data.EducationCategory, subType);
+        }
+
+        SetProgressBarMarkers(data.Amount);
     }
 
     /// <summary>
