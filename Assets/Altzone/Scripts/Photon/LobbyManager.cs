@@ -679,6 +679,8 @@ namespace Altzone.Scripts.Lobby
                 _matchmakingHolder = null;
             }
 
+            yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
+
             PhotonRealtimeClient.LeaveRoom();
 
             yield return new WaitUntil(() => PhotonRealtimeClient.InLobby);
