@@ -12,5 +12,7 @@ namespace Quantum
         public int MiddleAreaHeight;
         public int SoulWallHeight;
         public GridPosition[] PlayerSpawnPositions;
+        public SoulWallTemplate[] SoulWallTeamAlphaTemplates;
+        public SoulWallTemplate[] SoulWallTeamBetaTemplates;
     }
 }

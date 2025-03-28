@@ -77,6 +77,7 @@ namespace Altzone.Scripts.Lobby
         [SerializeField] private SystemsConfig _systemsConfig;
         [SerializeField] private BattleArenaSpec _battleArenaSpec;
         [SerializeField] private ProjectileSpec _projectileSpec;
+        [SerializeField] private SoulWallSpec _soulWallSpec;
 
         [Header("Battle Map reference")]
         [SerializeField] private BattleMapReference _battleMapReference;
@@ -815,6 +816,7 @@ namespace Altzone.Scripts.Lobby
                 SystemsConfig    = _systemsConfig,
                 BattleArenaSpec  = _battleArenaSpec,
                 ProjectileSpec   = _projectileSpec,
+                SoulWallSpec     = _soulWallSpec,
                 InitialProjectileEmotion = (EmotionState)_projectileInitialEmotion,
             };
 
