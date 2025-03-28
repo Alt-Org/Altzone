@@ -22,8 +22,12 @@ namespace MenuUi.Scripts.Lobby
 
         private void OnDisable()
         {
-            _cancelButton.onClick.RemoveAllListeners();
             LobbyManager.OnRoomLeaderChanged -= SetCancelButton;
+        }
+
+        private void OnDestroy()
+        {
+            _cancelButton.onClick.RemoveAllListeners();
         }
 
         /// <summary>
