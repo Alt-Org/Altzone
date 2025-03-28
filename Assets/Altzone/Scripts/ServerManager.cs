@@ -262,11 +262,16 @@ public class ServerManager : MonoBehaviour
 
         storefront.GetPlayerData(player.uniqueIdentifier, p => playerData = p);
 
-        int currentCustomCharacterId = (int)(player?.currentAvatarId == null ? (playerData == null? 0:playerData.SelectedCharacterId) : player.currentAvatarId);
+        int currentCustomCharacterId = (int)(player?.currentAvatarId == null ? (playerData == null ? 0 : playerData.SelectedCharacterId) : player.currentAvatarId);
         string[] currentBattleCharacterIds = /*(player?.battleCharacter_ids == null || player.battleCharacter_ids.Length < 3)*/true ? ((playerData == null || playerData.SelectedCharacterIds.Length < 3) ? new string[3] { "0", "0", "0" } : playerData.SelectedCharacterIds) : player.battleCharacter_ids;
 
-        PlayerData newPlayerData = null;
-        newPlayerData = new PlayerData(player._id, player.clan_id, currentCustomCharacterId, currentBattleCharacterIds, player.name, player.backpackCapacity, player.uniqueIdentifier);
+        if (playerData == null) { 
+            playerData = new PlayerData(player._id, player.clan_id, currentCustomCharacterId, currentBattleCharacterIds, player.name, player.backpackCapacity, player.uniqueIdentifier);
+        }
+        else
+        {
+            playerData.UpdatePlayerData(player);
+        }
 
         if (characters == null)
         {
@@ -277,15 +282,15 @@ public class ServerManager : MonoBehaviour
             {
                 character.Add(characterItem);
             }
-            newPlayerData.BuildCharacterLists(character);
+            playerData.BuildCharacterLists(character);
         }
         else
         {
-            newPlayerData.BuildCharacterLists(characters);
+            playerData.BuildCharacterLists(characters);
         }
         PlayerPrefs.SetString("profileId", player.profile_id);
 
-        Storefront.Get().SavePlayerData(newPlayerData, null);
+        Storefront.Get().SavePlayerData(playerData, null);
         PlayerSettings playerSettings = GameConfig.Get().PlayerSettings;
 
         playerSettings.PlayerGuid = player.uniqueIdentifier;

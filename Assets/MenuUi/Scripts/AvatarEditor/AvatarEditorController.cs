@@ -93,11 +93,6 @@ namespace MenuUi.Scripts.AvatarEditor
             _modeList[(int)_currentMode].SetActive(true);
         }
 
-        private void RestoreDefaultColorToFeature()
-        {
-            _colorPicker.RestoreDefaultColor(_featurePicker.GetCurrentlySelectedCategory());
-        }
-
         #endregion
 
         #region Loading Data
@@ -140,8 +135,6 @@ namespace MenuUi.Scripts.AvatarEditor
         private void SetSaveableData()
         {
             _currentlySelectedCategory = _featurePicker.GetCurrentlySelectedCategory();
-            //_playerAvatar.
-            //_selectedScale = _avatarScaler.GetCurrentScale();
         }
 
         private IEnumerator SaveAvatarData()
@@ -155,7 +148,9 @@ namespace MenuUi.Scripts.AvatarEditor
                 _colorPicker.GetCurrentColors(),
                 _avatarScaler.GetCurrentScale());
 
-            StartCoroutine(PlayerDataTransferer("save", savePlayerData, _timeoutSeconds, data => timeout = data, data => playerData = data));
+            //StartCoroutine(PlayerDataTransferer("save", savePlayerData, _timeoutSeconds, data => timeout = data, data => playerData = data));
+
+            StartCoroutine(SavePlayerData(savePlayerData, p => playerData = p));
 
             yield return new WaitUntil(() => ((timeout != null) || (playerData != null)));
 
@@ -163,6 +158,11 @@ namespace MenuUi.Scripts.AvatarEditor
                 yield break;
 
             _currentPlayerData = playerData;
+
+            _visualDataScriptableObject.sprites = _featurePicker.GetCurrentlySelectedFeaturesAsSprites();
+            _visualDataScriptableObject.colors = _colorPicker.GetCurrentColorsAsColors();
+
+            AvatarDesignLoader.Instance.InvokeOnAvatarDesignUpdate();
         }
 
         #endregion

@@ -7,6 +7,7 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 public class AltMonoBehaviour : MonoBehaviour
 {
@@ -106,21 +107,37 @@ public class AltMonoBehaviour : MonoBehaviour
     protected IEnumerator SavePlayerData(PlayerData playerData, System.Action<PlayerData> callback)
     {
 
-        Storefront.Get().SavePlayerData(playerData, callback);
-
-        /*if (callback == null)
-        {
-            StartCoroutine(ServerManager.Instance.GetClanFromServer(content =>
+        //Storefront.Get().SavePlayerData(playerData, callback);
+        string body = JObject.FromObject(
+            new
             {
-                if (content != null)
-                    callback(new(content));
-                else
-                {
-                    Debug.LogError("Could not connect to server and receive player");
-                    return;
-                }
-            }));
-        }*/
+                _id = playerData.Id,
+                name = playerData.Name,
+                clan_Id = playerData.ClanId,
+                currentAvatarId = playerData.SelectedCharacterId,
+                battleCharacter_ids = playerData.SelectedCharacterIds,
+                
+                
+            }
+        ).ToString();
+
+        StartCoroutine(ServerManager.Instance.UpdatePlayerToServer(body, callback2 =>
+        {
+
+            if (callback2 != null)
+            {
+                Debug.Log("Profile info updated.");
+                var store = Storefront.Get();
+                store.SavePlayerData(playerData, null);
+            }
+            else
+            {
+                Debug.Log("Profile info update failed.");
+            }
+            if(callback2 != null)
+            callback(new(callback2));
+            else callback(playerData);
+        }));
 
         yield return new WaitUntil(() => callback != null);
     }
