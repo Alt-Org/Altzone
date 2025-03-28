@@ -33,6 +33,7 @@ public class AdEditor : MonoBehaviour
     [SerializeField] private Image border8;
     [SerializeField] private Image border9;
     [SerializeField] private Image border10;
+    [SerializeField] private Image border11;
 
     public Transform ChooseEffect;
     public Transform ChooseBorder;
@@ -125,7 +126,10 @@ public class AdEditor : MonoBehaviour
     {
         _borderImage.sprite = border10.sprite;
     }
-    
+    public void ChangeBorder11()
+    {
+        _borderImage.sprite = border11.sprite;
+    }
 
     public void CloseEditor()
     {
