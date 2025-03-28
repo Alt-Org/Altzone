@@ -119,10 +119,9 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             do
             {
+                yield return new WaitForEndOfFrame();
                 _title.text = PhotonRealtimeClient.InRoom ? PhotonRealtimeClient.LobbyCurrentRoom.Name : "<color=red>Not in room</color>";
             } while (!PhotonRealtimeClient.InRoom);
-
-            yield return null;
         }
     }
 }
