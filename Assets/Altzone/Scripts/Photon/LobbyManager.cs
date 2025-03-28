@@ -22,7 +22,6 @@ using Altzone.Scripts.Lobby.Wrappers;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.AzDebug;
 using System.Collections.ObjectModel;
-using WebSocketSharp;
 using Altzone.Scripts.Common;
 using Altzone.Scripts.ModelV2;
 
@@ -405,7 +404,7 @@ namespace Altzone.Scripts.Lobby
                 }
 
                 // Saving clan name and soulhome rank to player's custom properties in case the matchmaking leader leaves
-                if (!clanName.IsNullOrEmpty())
+                if (!string.IsNullOrEmpty(clanName))
                 {
                     player.Value.SetCustomProperty(PhotonBattleRoom.ClanNameKey, clanName);
                     player.Value.SetCustomProperty(PhotonBattleRoom.SoulhomeRank, soulhomeRank);
