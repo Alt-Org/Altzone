@@ -93,7 +93,7 @@ namespace Quantum.QuantumUser.Simulation.SoulWall
                 soulWallTransform->Teleport(f, soulWallPosition, FP._0);
 
                 // initialize view
-                f.Events.SoulWallViewInit(soulWallEntity, soulWallScale, soulWallTemplate.ColorIndex, soulWallEmotionIndex);
+                f.Events.SoulWallViewInit(soulWallEntity, soulWallScale, soulWallEmotionIndex, soulWallTemplate.ColorIndex);
             }
         }
     }
