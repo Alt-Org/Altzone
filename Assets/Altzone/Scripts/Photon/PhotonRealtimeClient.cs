@@ -12,7 +12,6 @@ using UnityEngine.SceneManagement;
 using static Altzone.Scripts.Lobby.Wrappers.LobbyWrapper;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby;
-using WebSocketSharp;
 using Altzone.Scripts.Common;
 
 public static class PhotonRealtimeClient
@@ -666,13 +665,13 @@ public static class PhotonRealtimeClient
             customRoomProperties.Add(PhotonBattleRoom.PlayerPositionKey4, "");
         }
 
-        if (!password.IsNullOrEmpty())
+        if (!string.IsNullOrEmpty(password))
         {
             customRoomProperties.Add(PhotonBattleRoom.PasswordKey, password);
             propertiesShowingToLobby.Add(PhotonBattleRoom.PasswordKey);
         }
 
-        if (!clanName.IsNullOrEmpty())
+        if (!string.IsNullOrEmpty(clanName))
         {
             customRoomProperties.Add(PhotonBattleRoom.ClanNameKey, clanName);
             propertiesShowingToLobby.Add(PhotonBattleRoom.ClanNameKey);
