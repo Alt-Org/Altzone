@@ -23,7 +23,6 @@ namespace Quantum
             bool mouseClick = !twoFingers && mouseDown && !_mouseDownPrevious;
             _mouseDownPrevious = mouseDown;
 
-
             GridPosition movementPosition;
             if (mouseClick)
             {
@@ -42,6 +41,7 @@ namespace Quantum
                     Col = -1
                 };
             }
+
             Input i = new()
             {
                 MouseClick = mouseClick,

@@ -24,6 +24,12 @@ namespace MenuUi.Scripts.Lobby
         public const string TeamWinKey = PhotonBattleRoom.TeamWinKey;
         public const string TeamBlueScoreKey = PhotonBattleRoom.TeamBlueScoreKey;
         public const string TeamRedScoreKey = PhotonBattleRoom.TeamRedScoreKey;
+        public const string PasswordKey = PhotonBattleRoom.PasswordKey;
+        public const string GameTypeKey = PhotonBattleRoom.GameTypeKey;
+        public const string MatchmakingKey = PhotonBattleRoom.IsMatchmakingKey;
+        public const string SoulhomeRank = PhotonBattleRoom.SoulhomeRank;
+        public const string SoulhomeRankVariance = PhotonBattleRoom.SoulhomeRankVariance;
+        public const string ClanNameKey = PhotonBattleRoom.ClanNameKey;
 
         // Team positions in world coordinates (game arena when camera isn't rotated)
         //  Beta team number 2
@@ -53,7 +59,7 @@ namespace MenuUi.Scripts.Lobby
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerPos(LobbyPlayer player) => PhotonLobbyRoom.GetPlayerPos(player);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsValidPlayerPos(int playerPos) => PhotonLobbyRoom.IsValidPlayerPos(playerPos);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsPlayerPosAvailable(LobbyPlayer player) => PhotonLobbyRoom.IsPlayerPosAvailable(player);
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetFirstFreePlayerPos(LobbyPlayer player, int wantedPlayerPos = PhotonLobbyRoom.PlayerPosition1) => PhotonLobbyRoom.GetFirstFreePlayerPos(player, wantedPlayerPos);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetFirstFreePlayerPos(int wantedPlayerPos = PhotonLobbyRoom.PlayerPosition1) => PhotonLobbyRoom.GetFirstFreePlayerPos(wantedPlayerPos);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetTeamNumber(int playerPos) => PhotonLobbyRoom.GetTeamNumber(playerPos);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsRealPlayer(LobbyPlayer player) => PhotonLobbyRoom.IsRealPlayer(player);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerCountForRoom() => PhotonLobbyRoom.GetPlayerCountForRoom();

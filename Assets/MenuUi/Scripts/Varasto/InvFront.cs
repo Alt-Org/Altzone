@@ -49,6 +49,14 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private TMP_Text _rarityText;
         [SerializeField] private Image _rarityImage;
 
+        [Header("Filtering")]
+        [SerializeField] private Toggle[] _rarityToggles;
+        [SerializeField] private SetFilterHandler _setFilterHandler;
+        [SerializeField] private Toggle _inSoulHomeToggle;
+        //[SerializeField] private Toggle _onSaleToggle;
+        [SerializeField] private ValueSlider _maxValueSlider;
+        [SerializeField] private ValueSlider _minValueSlider;
+
         private List<StorageFurniture> _items;
         private List<GameObject> _slotsList = new();
 
@@ -60,6 +68,16 @@ namespace MenuUi.Scripts.Storage
         private bool _descendingOrder = false;
 
         private const string INVENTORY_EMPTY_TEXT = "Varasto tyhjä";
+
+        private void Start()
+        {
+            // Make the filter buttons update the inventory
+            _setFilterHandler.CreateSetFilterButtons();
+            foreach (Toggle toggle in _setFilterHandler.toggleList)
+            {
+                toggle.onValueChanged.AddListener(delegate { UpdateInventory(); });
+            }
+        }
 
         private void OnEnable()
         {
@@ -136,8 +154,47 @@ namespace MenuUi.Scripts.Storage
             }
 
             yield return StartCoroutine(Begin());
-            _totalValueText.text = $"{GetTotalInventoryValue()}";
             _updatingInventory = false;
+        }
+
+        private bool CheckFilters(StorageFurniture furn)
+        {
+            bool setCheck = false;
+            for (int i = 0; i < _setFilterHandler.toggleList.Count; i++)
+            {
+                if (_furnitureReference.Info[i].SetName == furn.SetName && _setFilterHandler.toggleList[i].isOn) setCheck = true;
+            }
+
+            bool rarityCheck = false;
+            switch (furn.Rarity)
+            {
+                case FurnitureRarity.Common:
+                    if (_rarityToggles[0].isOn) rarityCheck = true;
+                    break;
+                case FurnitureRarity.Rare:
+                    if (_rarityToggles[1].isOn) rarityCheck = true;
+                    break;
+                case FurnitureRarity.Epic:
+                    if (_rarityToggles[2].isOn) rarityCheck = true;
+                    break;
+                case FurnitureRarity.Antique:
+                    if (_rarityToggles[3].isOn) rarityCheck = true;
+                    break;
+            }
+
+            float maxValue = _maxValueSlider.GetSliderValue();
+            float minValue = _minValueSlider.GetSliderValue();
+            bool valueCheck = (furn.Value <= maxValue && furn.Value >= minValue) || (maxValue == 0 && furn.Value >= minValue);
+
+            // Soul home check
+            if (furn.Position != new Vector2Int(-1, -1) && !_inSoulHomeToggle.isOn)
+            {
+                return false;
+            }
+            else
+            {
+                return setCheck && rarityCheck && valueCheck;
+            }
         }
 
         private IEnumerator GetFurnitureFromClanInventory(string playerGuid)
@@ -173,6 +230,9 @@ namespace MenuUi.Scripts.Storage
             ReadOnlyCollection<GameFurniture> allItems = null;
             yield return store.GetAllGameFurnitureYield(result => allItems = result);
             Debug.Log($"all items {allItems.Count}");
+
+            float totalValue = 0;
+
             foreach (var clanFurniture in clanFurnitureList)
             {
                 //Debug.LogWarning(clanFurniture.GameFurnitureName);
@@ -183,8 +243,24 @@ namespace MenuUi.Scripts.Storage
                     continue;
                 }
                 StorageFurniture storageFurniture = new(clanFurniture, furniture);
+
+                // Take total value before filtering so it always stays the same
+                totalValue += storageFurniture.Value;
+
+                // Skip if no filters match this furniture
+                if (CheckFilters(storageFurniture) == false)
+                {
+                    continue;
+                }
+
                 _items.Add(storageFurniture);
             }
+            
+            _totalValueText.text = $"{totalValue}";
+
+            _minValueSlider.SetSliderMaxValue(allItems.Max(item => item.Value));
+            _maxValueSlider.SetSliderMaxValue(allItems.Max(item => item.Value));
+
             Debug.Log($"found clan items {_items.Count}");
         }
 
@@ -416,11 +492,6 @@ namespace MenuUi.Scripts.Storage
                 return _furnImagePlaceholder;
             }
             return returned;
-        }
-
-        private float GetTotalInventoryValue()
-        {
-            return _items.Sum(item => item.Value);
         }
 
         private FurnitureSetInfo GetFurnitureSetInfo(string furnitureName)

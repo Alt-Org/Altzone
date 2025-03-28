@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Altzone.Scripts.Common;
 using Altzone.Scripts.Lobby;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,9 +17,9 @@ public class BattleStoryController : MonoBehaviour
     private GameObject _emotionBall;
 
     [SerializeField]
-    private Transform _endStartPositionLeft;
+    private Transform _startPositionLeft;
     [SerializeField]
-    private Transform _endStartPositionRight;
+    private Transform _startPositionRight;
 
     [Header("Paths"), SerializeField]
     private List<Route> _routesLeft;
@@ -27,6 +28,7 @@ public class BattleStoryController : MonoBehaviour
 
     [Header("Ball Emotion Sprites"), SerializeField]
     private List<EmotionObject> _emotionList;
+    private List<EmotionObject> _validatedList;
 
     [Header("Character Animators"),SerializeField]
     private Animator _characterAnimator1;
@@ -43,9 +45,9 @@ public class BattleStoryController : MonoBehaviour
 
     public IEnumerator PlayAnimation()
     {
-        List<EmotionObject> validatedList = ValidateEmotions();
+        _validatedList = ValidateEmotions();
 
-        int clipsCount = validatedList.Count;
+        int clipsCount = _validatedList.Count;
         if (clipsCount <= 0) yield break;
         if (_routesLeft.Count <= 0) yield break;
         if (_routesRight.Count <= 0) yield break;
@@ -64,7 +66,7 @@ public class BattleStoryController : MonoBehaviour
             {
                 selectedvalue1 = Random.Range(0, clipsCount);
             } while(selectedvalue1.Equals(prevSelectedValue1));
-            randomClipOrder1.Add(validatedList[selectedvalue1].Emotion);
+            randomClipOrder1.Add(_validatedList[selectedvalue1].Emotion);
             prevSelectedValue1 = selectedvalue1;
             int ballAnimation1 = Random.Range(0, _routesLeft.Count);
             randomBallOrder1.Add(ballAnimation1);
@@ -73,7 +75,7 @@ public class BattleStoryController : MonoBehaviour
             {
                 selectedvalue2 = Random.Range(0, clipsCount);
             } while (selectedvalue2.Equals(prevSelectedValue2));
-            randomClipOrder2.Add(validatedList[selectedvalue2].Emotion);
+            randomClipOrder2.Add(_validatedList[selectedvalue2].Emotion);
             prevSelectedValue2 = selectedvalue2;
             int ballAnimation2 = Random.Range(0, _routesRight.Count);
             randomBallOrder2.Add(ballAnimation2);
@@ -82,8 +84,8 @@ public class BattleStoryController : MonoBehaviour
         for (int i = 0; i < randomClipOrder1.Count; i++)
         {
             //Debug.LogWarning($"Character 1: {randomClipOrder1[i]}:{validatedList.First(x => x.Emotion == randomClipOrder1[i]).Character1Animation.name}, Ball 1: {randomBallOrder1[i]}");
-            _characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
-            GameObject ball = Instantiate(_emotionBall, _endStartPositionLeft);
+            //_characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
+            GameObject ball = Instantiate(_emotionBall, _startPositionLeft);
 
             ball.GetComponent<Image>().sprite = GetEmotionData(randomClipOrder1[i]).BallSprite;
             
@@ -101,11 +103,11 @@ public class BattleStoryController : MonoBehaviour
 
             yield return new WaitUntil(() => ballDone is true);
             Destroy(ball);
-
+            _characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
             yield return new WaitForSeconds(0.5f);
             //Debug.LogWarning($"Character 2: {randomClipOrder2[i]}:{validatedList.First(x => x.Emotion == randomClipOrder2[i]).Character2Animation.name}, Ball 2: {randomBallOrder2[i]}");
-            _characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
-            GameObject ball2 = Instantiate(_emotionBall, _endStartPositionRight);
+            //_characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
+            GameObject ball2 = Instantiate(_emotionBall, _startPositionRight);
 
             ball2.GetComponent<Image>().sprite = GetEmotionData(randomClipOrder2[i]).BallSprite;
 
@@ -122,6 +124,7 @@ public class BattleStoryController : MonoBehaviour
 
             yield return new WaitUntil(() => ballDone is true);
             Destroy(ball2);
+            _characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
             yield return new WaitForSeconds(0.5f);
         }
     }
@@ -130,7 +133,7 @@ public class BattleStoryController : MonoBehaviour
     {
         if (emotion == Emotion.Blank) return null;
 
-        foreach (EmotionObject emotionObj in _emotionList)
+        foreach (EmotionObject emotionObj in _validatedList)
         {
             if(emotionObj.Emotion == emotion) return emotionObj;
         }
@@ -160,16 +163,6 @@ public class BattleStoryController : MonoBehaviour
         LobbyManager.ExitBattleStory();
     }
 
-}
-
-public enum Emotion
-{
-    Blank,
-    Anger,
-    Joy,
-    Love,
-    Playful,
-    Sorrow
 }
 
 [Serializable]
@@ -211,6 +204,9 @@ public class Route
 
     public IEnumerator TraverseRoute(GameObject ball, Action<bool> callback)
     {
+        float defaultBallSize = ball.GetComponent<RectTransform>().rect.width;
+        float ballsize = defaultBallSize * 1.2f;
+        ball.GetComponent<RectTransform>().sizeDelta = new(ballsize,ballsize);
         float baseSpeed = GetScaledSpeed();
         float speed = baseSpeed;
         float distance;
@@ -218,6 +214,7 @@ public class Route
         float currentTime;
 
         Vector2 startPosition = _startPoint.position;
+        float depth = Mathf.Abs(_endPoint.position.y - _startPoint.position.y);
 
         foreach (RouteSection route in _routesSection)
         {
@@ -233,6 +230,9 @@ public class Route
                 Vector2 pos = Vector2.Lerp(startPosition, nextPoint, currentTime / duration);
                 float yPos = startPosition.y + (nextPoint.y - startPosition.y) * route.PathSectionCurve.Evaluate(Mathf.Clamp(currentTime / duration,0,1));
                 ball.transform.position = new(pos.x, yPos);
+                float depthDistance = Mathf.Abs(yPos - _startPoint.position.y)/depth;
+                ballsize = defaultBallSize * Mathf.Lerp(1.2f, 0.8f, depthDistance);
+                ball.GetComponent<RectTransform>().sizeDelta = new(ballsize, ballsize);
             }
             startPosition = nextPoint;
         }

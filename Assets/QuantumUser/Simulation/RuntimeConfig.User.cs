@@ -6,5 +6,6 @@
         public AssetRef<SoulWallSpec> SoulWallSpec;
         public AssetRef<ProjectileSpec> ProjectileSpec;
 
+        public EmotionState InitialProjectileEmotion;
     }
 }
