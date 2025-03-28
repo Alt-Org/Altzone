@@ -362,6 +362,11 @@ namespace MenuUI.Scripts.SoulHome
                         continue;
                     }
 
+                    if (hit2.collider.gameObject.CompareTag("SoulHomeAvatar"))
+                    {
+                        StartCoroutine(hit2.collider.gameObject.GetComponent<SoulHomeAvatarController>().WaveAnimation());
+                    }
+
                     if (hit2.collider.gameObject.CompareTag("Furniture"))
                     {
                         //Debug.Log("Furniture");

@@ -27,6 +27,8 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private AnimationClip _waveAnimation;
 
+        private bool _performingAnimation = false;
+
         private AvatarStatus _status;
         private bool _idleTimerStarted = false;
         private Vector2Int _newPosition;
@@ -57,8 +59,9 @@ namespace MenuUI.Scripts.SoulHome
             }
             else if(_status == AvatarStatus.Wander)
             {
+                if (_performingAnimation) return;
                 //Debug.Log("Character Wander");
-                if(!_animator.GetCurrentAnimatorStateInfo(0).IsName(_walkAnimation.name)) _animator.Play(_walkAnimation.name);
+                if (!_animator.GetCurrentAnimatorStateInfo(0).IsName(_walkAnimation.name)) _animator.Play(_walkAnimation.name);
                 MoveAvatar();
                 //transform.SetParent(_points.GetChild(_newPosition.y).GetChild(_newPosition.x), false);
 
@@ -74,14 +77,15 @@ namespace MenuUI.Scripts.SoulHome
             float idleTimer = 0;
             bool firstFrame = true;
             float checkTimer = 0;
+            if (!_animator.GetCurrentAnimatorStateInfo(0).IsName(_idleAnimation.name)) _animator.Play(_idleAnimation.name);
             while (true)
             {
                 if (firstFrame) firstFrame = false;
                 else
                 {
-                    _animator.Play(_idleAnimation.name);
-                    idleTimer += Time.deltaTime;
-                    checkTimer += Time.deltaTime;
+                        yield return new WaitUntil(() => !_performingAnimation);
+                        idleTimer += Time.deltaTime;
+                        checkTimer += Time.deltaTime;
                 }
 
 
@@ -600,6 +604,17 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     _sortingGroup.sortingOrder = 6 + (hit.collider.gameObject.GetComponent<FurnitureSlot>().row+1) * 100;
                 }
+            }
+        }
+
+        public IEnumerator WaveAnimation()
+        {
+            if (!_performingAnimation)
+            {
+                _animator.Play(_waveAnimation.name);
+                _performingAnimation = true;
+                yield return new WaitUntil(() => !_animator.GetCurrentAnimatorStateInfo(0).IsName(_waveAnimation.name) && !_animator.IsInTransition(0));
+                _performingAnimation = false;
             }
         }
     }
