@@ -148,7 +148,9 @@ namespace MenuUi.Scripts.AvatarEditor
                 _colorPicker.GetCurrentColors(),
                 _avatarScaler.GetCurrentScale());
 
-            StartCoroutine(PlayerDataTransferer("save", savePlayerData, _timeoutSeconds, data => timeout = data, data => playerData = data));
+            //StartCoroutine(PlayerDataTransferer("save", savePlayerData, _timeoutSeconds, data => timeout = data, data => playerData = data));
+
+            StartCoroutine(SavePlayerData(savePlayerData, p => playerData = p));
 
             yield return new WaitUntil(() => ((timeout != null) || (playerData != null)));
 
