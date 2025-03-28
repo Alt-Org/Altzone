@@ -47,6 +47,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _minIdleTimer: 2
   _maxIdleTimer: 4
+  _speed: 5
+  _sortingGroup: {fileID: 6573638779142567988}
 --- !u!1 &6980420913885596743
 GameObject:
   m_ObjectHideFlags: 0
@@ -57,6 +59,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7472632583894931733}
   - component: {fileID: 6281235731576142280}
+  - component: {fileID: 6573638779142567988}
   m_Layer: 0
   m_Name: Sprite
   m_TagString: Untagged
@@ -131,3 +134,15 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!210 &6573638779142567988
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6980420913885596743}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortAtRoot: 0

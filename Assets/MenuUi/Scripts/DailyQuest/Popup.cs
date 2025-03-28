@@ -29,6 +29,8 @@ public class Popup : MonoBehaviour
     [Space]
     [SerializeField] private List<Button> _cancelButtons;
     [SerializeField] private List<Button> _acceptButtons;
+    [Space]
+    [SerializeField] private TMP_Text _acceptConfirmButtonText;
 
     [Header("FadeIn/Out")]
     [SerializeField] private CanvasGroup _popupCanvasGroup;
@@ -74,7 +76,7 @@ public class Popup : MonoBehaviour
             cancelButton.onClick.AddListener(() => _result = false);
     }
 
-    public static IEnumerator RequestPopup(string message, DailyTaskClanReward.ClanRewardData? clanRewardData, PopupWindowType type, Vector2? anchorLocation, System.Action<bool> callback)
+    public static IEnumerator RequestPopup(string message, PopupData? data, string currentTaskId, PopupWindowType type, System.Action<bool> callback)
     {
         if (Instance == null)
         {
@@ -84,11 +86,23 @@ public class Popup : MonoBehaviour
 
         Instance._result = null;
         Instance.SwitchWindow(type);
-        if (anchorLocation != null)
-            Instance.MoveMovableWindow(anchorLocation.Value, type);
 
-        if (clanRewardData != null)
-            Instance.SetClanMilestone(clanRewardData.Value.RewardImage, clanRewardData.Value.RewardAmount);
+        if (data != null)
+        {
+            if (data.Value.Type == PopupData.PopupDataType.OwnTask)
+            {
+                if (currentTaskId == null)
+                    Instance._acceptConfirmButtonText.text = "Valitse";
+                else
+                    Instance._acceptConfirmButtonText.text = "Vaihda Tehtävä";
+            }
+
+            if (data.Value.Location != null)
+                Instance.MoveMovableWindow(data.Value.Location.Value, type);
+
+            if (data.Value.ClanRewardData != null)
+                Instance.SetClanMilestone(data.Value.ClanRewardData.Value.RewardImage, data.Value.ClanRewardData.Value.RewardAmount);
+        }
 
         // Show the popup and get the result
         yield return Instance.StartCoroutine(Instance.ShowPopup(message));

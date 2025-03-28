@@ -4,6 +4,7 @@ using TMPro;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using System.Collections;
+using MenuUi.Scripts.TabLine;
 
 public class Chat : MonoBehaviour
 {
@@ -11,13 +12,19 @@ public class Chat : MonoBehaviour
     public GameObject languageChat; 
     public GameObject globalChat;
     public GameObject clanChat;
-    private GameObject currentContent; // Tällä hetkellä aktiivinen chatin content
+    public GameObject currentContent; // Tällä hetkellä aktiivinen chatin content
 
     [Header("InputField")]
     public TMP_InputField inputField;
 
     [Header("Delete Ui")]
     public GameObject deleteButtons;
+
+    [Header("Add reactions UI")]
+    public GameObject addReactionsPanel;
+    public GameObject commonReactions;
+    public GameObject allReactions;
+    public GameObject usersWhoAdded;
 
     [Header("Prefab")]
     public GameObject messagePrefabBlue;
@@ -35,7 +42,9 @@ public class Chat : MonoBehaviour
     public GameObject quickMessages;
     public GameObject[] sendButtons;
     public GameObject buttonOpenSendButtons;
-    public GameObject optionsMinimizeButton;
+
+    [Header("TablineScript reference")]
+    public TabLine tablineScript;
 
     private ScrollRect currentScrollRect; // Tällä hetkellä aktiivinen Scroll Rect
 
@@ -43,7 +52,7 @@ public class Chat : MonoBehaviour
 
     private bool shouldScroll = false;
 
-    private GameObject selectedMessage; // Viesti, joka on tällä hetkellä valittuna
+    [HideInInspector] public GameObject selectedMessage; // Viesti, joka on tällä hetkellä valittuna
 
     [Header("Commands")]
     public string delete = "/deleteMessage";
@@ -64,6 +73,7 @@ public class Chat : MonoBehaviour
         messagesByChat[clanChat] = new List<GameObject>();
 
         LanguageChatActive();
+        tablineScript.ActivateTabButton(1);
     }
 
     private void Update()
@@ -200,7 +210,8 @@ public class Chat : MonoBehaviour
             button = message.AddComponent<Button>();
         }
 
-        button.onClick.AddListener(() => SelectMessage(message)); 
+        button.onClick.AddListener(() => SelectMessage(message));
+        button.onClick.AddListener(() => MinimizeOptions());
     }
 
     // Valitsee viestin
@@ -214,28 +225,65 @@ public class Chat : MonoBehaviour
         selectedMessage = message;
         HighlightMessage(selectedMessage);
 
+        Vector3 deletePosition = deleteButtons.transform.position;
+        deletePosition.y = selectedMessage.transform.position.y;
+        deleteButtons.transform.position = deletePosition;
+
+        SetReactionPanelPosition();
+
         deleteButtons.SetActive(true);// Näytä poistopainikkeet, jos viesti on valittuna
+        addReactionsPanel.SetActive(true);
+    }
+
+    /// <summary>
+    /// Sets the reaction panel at the bottom of the selected message's reaction field
+    /// </summary>
+    private void SetReactionPanelPosition()
+    {
+        Vector3 reactionPosition = addReactionsPanel.transform.position;
+        RectTransform reactionPanelTransfrom = commonReactions.GetComponent<RectTransform>();
+
+        HorizontalLayoutGroup reactionField = selectedMessage.GetComponentInChildren<HorizontalLayoutGroup>();
+        RectTransform reactionFieldTransform = reactionField.GetComponent<RectTransform>();
+
+        float fieldBottomY = reactionField.transform.position.y - (reactionFieldTransform.rect.height * reactionFieldTransform.pivot.y);
+        float newPanelY = fieldBottomY - (reactionPanelTransfrom.rect.height * reactionPanelTransfrom.pivot.y);
+        reactionPosition.y = newPanelY;
+
+        float fieldEdgeX = reactionField.transform.position.x - (reactionFieldTransform.rect.width * reactionFieldTransform.pivot.x);
+        float newPanelX = fieldEdgeX + (reactionPanelTransfrom.rect.width * reactionPanelTransfrom.pivot.x);
+        reactionPosition.x = newPanelX;
+
+        addReactionsPanel.transform.position = reactionPosition;
     }
 
 
     // Korostaa valitun viestin
     private void HighlightMessage(GameObject message)
     {
-        if (message.GetComponent<Image>() != null)
+        if (message.GetComponentInChildren<Image>() != null)
         {
-            message.GetComponent<Image>().color = Color.gray;
+            message.GetComponentInChildren<Image>().color = Color.gray;
         }
     }
 
     // Poistaa valinnan viestistä
-    private void DeselectMessage(GameObject message)
+    public void DeselectMessage(GameObject message)
     {
-        if (message.GetComponent<Image>() != null)
+        if (selectedMessage != null)
         {
-            message.GetComponent<Image>().color = Color.white;
-        }
+            if (message.GetComponentInChildren<Image>() != null)
+            {
+                message.GetComponentInChildren<Image>().color = Color.white;
+            }
 
-        deleteButtons.SetActive(false);
+            deleteButtons.SetActive(false);
+
+            commonReactions.SetActive(true);
+            allReactions.SetActive(false);
+            addReactionsPanel.SetActive(false);
+            usersWhoAdded.SetActive(false);
+        }
     }
 
     // Poistaa valitun viestin
@@ -250,6 +298,11 @@ public class Chat : MonoBehaviour
 
             //Poistopainikkeiden piilottaminen viestin poistamisen jälkeen
             deleteButtons.SetActive(false);
+
+            commonReactions.SetActive(true);
+            allReactions.SetActive(false);
+            addReactionsPanel.SetActive(false);
+            usersWhoAdded.SetActive(false);
         }
         else
         {
@@ -325,7 +378,7 @@ public class Chat : MonoBehaviour
     }
 
 
-    private int chosenButton;
+    private int chosenButton = 2;
     // Asettaa sinisen viestipohjan ja lähettää viestin
     public void SetBluePrefab() { currentPrefab = messagePrefabBlue; chosenButton = 0; SendChatMessage(); }
     // Asettaa punaisen viestipohjan ja lähettää viestin
@@ -349,10 +402,57 @@ public class Chat : MonoBehaviour
             if(i != chosenButton)
             {
                 sendButtons[i].SetActive(false); 
-            } 
+            }
+            else
+            {
+                sendButtons[chosenButton].SetActive(true);
+            }
         }
 
         buttonOpenSendButtons.SetActive(true);
-        optionsMinimizeButton.SetActive(false);
+    }
+
+    /// <summary>
+    /// Added to buttons to deselect messages and close the sending options
+    /// </summary>
+    /// <param name="onlyMessages"></param>
+    public void CloseOnButtonClick(bool onlyMessages)
+    {
+        if (onlyMessages)
+        {
+            DeselectMessage(selectedMessage);
+        }
+        else
+        {
+            DeselectMessage(selectedMessage);
+            MinimizeOptions();
+        }
+    }
+
+    public void UpdateContentLayout(HorizontalLayoutGroup reactionsField)
+    {
+        StartCoroutine(UpdateLayout(reactionsField));
+    }
+
+    private IEnumerator UpdateLayout(HorizontalLayoutGroup reactionsField)
+    {
+        yield return null;
+
+        if(reactionsField != null)
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
+        }
+        
+        VerticalLayoutGroup currentLayout = currentContent.GetComponentInChildren<VerticalLayoutGroup>();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(currentLayout.GetComponent<RectTransform>());
+    }
+
+    public void OpenUsersWhoAddedReactionPanel()
+    {
+        addReactionsPanel.SetActive(true);
+        commonReactions.SetActive(false);
+        allReactions.SetActive(false);
+        usersWhoAdded.SetActive(true);
+        SetReactionPanelPosition();
     }
 }

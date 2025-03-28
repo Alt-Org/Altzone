@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine.UI;
+using TMPro;
 
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
@@ -10,6 +11,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     {
         [SerializeField] private StatsWindowController _controller;
         [SerializeField] private PiechartReference _referenceSheet;
+        [SerializeField] private TMP_Text _piechartText;
 
         private int _sliceAmount;
 
@@ -97,14 +99,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             int characterSizeBase = _controller.GetBaseStat(StatType.CharacterSize);
             int speedBase = _controller.GetBaseStat(StatType.Speed);
 
+            _piechartText.text = $"{impactForce+healthPoints+defence+characterSize+speed}/{_sliceAmount}";
+
             // Arrange stats
             var stats = new List<(int upgradesLevel, int baseLevel, Color color, Color altColor)>
             {
-                (defence - defenceBase, defenceBase, _defenceColor, _defenceAltColor),
+                (impactForce - impactForceBase, impactForceBase, _impactForceColor, _impactForceAltColor),
+                (healthPoints - healthPointsBase, healthPointsBase, _healthPointsColor, _healthPointsAltColor),
                 (characterSize - characterSizeBase, characterSizeBase, _characterSizeColor, _characterSizeAltColor),
                 (speed - speedBase, speedBase, _speedColor, _speedAltColor),
-                (healthPoints - healthPointsBase, healthPointsBase, _healthPointsColor, _healthPointsAltColor),
-                (impactForce - impactForceBase, impactForceBase, _impactForceColor, _impactForceAltColor),
+                (defence - defenceBase, defenceBase, _defenceColor, _defenceAltColor),
             };
 
             // Create slices

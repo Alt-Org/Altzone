@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.Scripting;
 
+using Quantum.QuantumUser.Simulation.Projectile;
+
 namespace Quantum.QuantumUser.Simulation.SoulWall
 {
     [Preserve]
@@ -9,8 +11,14 @@ namespace Quantum.QuantumUser.Simulation.SoulWall
         public void OnTriggerProjectileHitSoulWall(Frame f, Quantum.Projectile* projectile, EntityRef projectileEntity, Quantum.SoulWall* soulWall, EntityRef soulWallEntity)
         {
             Debug.Log("Soul wall hit");
+
+            if (ProjectileSystem.IsCollisionFlagSet(f, projectile, ProjectileCollisionFlags.SoulWall)) return;
+
             // Destroy the SoulWall entity
-            if(projectile->CoolDown <= 0) f.Destroy(soulWallEntity);
+            f.Events.PlaySoundEvent(SoundEffect.WallBroken);
+            f.Destroy(soulWallEntity);
+
+            ProjectileSystem.SetCollisionFlag(f, projectile, ProjectileCollisionFlags.SoulWall);
         }
     }
 }
