@@ -69,6 +69,7 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.GameSession))]
   public unsafe partial class GameSessionPrototype : ComponentPrototype<Quantum.GameSession> {
+    public QBoolean GameInitialized;
     public Quantum.QEnum32<GameState> state;
     public FP TimeUntilStart;
     partial void MaterializeUser(Frame frame, ref Quantum.GameSession result, in PrototypeMaterializationContext context);
@@ -78,6 +79,7 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.GameSession result, in PrototypeMaterializationContext context = default) {
+        result.GameInitialized = this.GameInitialized;
         result.state = this.state;
         result.TimeUntilStart = this.TimeUntilStart;
         MaterializeUser(frame, ref result, in context);
@@ -384,6 +386,20 @@ namespace Quantum.Prototypes {
         result.Normal = this.Normal;
         result.CollisionMinOffset = this.CollisionMinOffset;
         result.Emotion = this.Emotion;
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.SoulWallTemplate))]
+  public unsafe partial class SoulWallTemplatePrototype : StructPrototype {
+    public Quantum.Prototypes.GridPositionPrototype Position;
+    public Int32 Width;
+    public Int32 ColorIndex;
+    partial void MaterializeUser(Frame frame, ref Quantum.SoulWallTemplate result, in PrototypeMaterializationContext context);
+    public void Materialize(Frame frame, ref Quantum.SoulWallTemplate result, in PrototypeMaterializationContext context = default) {
+        this.Position.Materialize(frame, ref result.Position, in context);
+        result.Width = this.Width;
+        result.ColorIndex = this.ColorIndex;
+        MaterializeUser(frame, ref result, in context);
     }
   }
 }

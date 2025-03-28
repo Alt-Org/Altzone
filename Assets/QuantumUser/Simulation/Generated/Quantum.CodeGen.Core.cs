@@ -70,6 +70,8 @@ namespace Quantum {
     Love = 4,
   }
   public enum GameState : int {
+    InitializeGame,
+    CreateMap,
     PreGame,
     ReadyToStart,
     Countdown,
@@ -585,6 +587,33 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  [Serializable()]
+  public unsafe partial struct SoulWallTemplate {
+    public const Int32 SIZE = 16;
+    public const Int32 ALIGNMENT = 4;
+    [FieldOffset(8)]
+    public GridPosition Position;
+    [FieldOffset(4)]
+    public Int32 Width;
+    [FieldOffset(0)]
+    public Int32 ColorIndex;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 17047;
+        hash = hash * 31 + Position.GetHashCode();
+        hash = hash * 31 + Width.GetHashCode();
+        hash = hash * 31 + ColorIndex.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (SoulWallTemplate*)ptr;
+        serializer.Stream.Serialize(&p->ColorIndex);
+        serializer.Stream.Serialize(&p->Width);
+        Quantum.GridPosition.Serialize(&p->Position, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct _globals_ {
     public const Int32 SIZE = 808;
     public const Int32 ALIGNMENT = 8;
@@ -678,6 +707,8 @@ namespace Quantum {
   public unsafe partial struct GameSession : Quantum.IComponentSingleton {
     public const Int32 SIZE = 16;
     public const Int32 ALIGNMENT = 8;
+    [FieldOffset(4)]
+    public QBoolean GameInitialized;
     [FieldOffset(0)]
     public GameState state;
     [FieldOffset(8)]
@@ -685,6 +716,7 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10163;
+        hash = hash * 31 + GameInitialized.GetHashCode();
         hash = hash * 31 + (Int32)state;
         hash = hash * 31 + TimeUntilStart.GetHashCode();
         return hash;
@@ -693,6 +725,7 @@ namespace Quantum {
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (GameSession*)ptr;
         serializer.Stream.Serialize((Int32*)&p->state);
+        QBoolean.Serialize(&p->GameInitialized, serializer);
         FP.Serialize(&p->TimeUntilStart, serializer);
     }
   }
@@ -1349,6 +1382,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Shape2D), Shape2D.SIZE);
       typeRegistry.Register(typeof(Shape3D), Shape3D.SIZE);
       typeRegistry.Register(typeof(Quantum.SoulWall), Quantum.SoulWall.SIZE);
+      typeRegistry.Register(typeof(Quantum.SoulWallTemplate), Quantum.SoulWallTemplate.SIZE);
       typeRegistry.Register(typeof(Quantum.SoundEffect), 4);
       typeRegistry.Register(typeof(SpringJoint), SpringJoint.SIZE);
       typeRegistry.Register(typeof(SpringJoint3D), SpringJoint3D.SIZE);
