@@ -143,8 +143,33 @@ namespace MenuUi.Scripts.Lobby.InLobby
         {
             _popupContents.SetActive(true);
 
-            if (PhotonRealtimeClient.InRoom) return; // if in room will not change SelectedGameType or do any other further logic, only showing minimized popup
-
+            // Checking if we are in room or matchmaking room depending on the game mode which would prevent changing the selected game type
+            switch (gameType)
+            {
+                case GameType.Custom:
+                    if (PhotonRealtimeClient.InRoom) return;
+                    break;
+                case GameType.Clan2v2:
+                case GameType.Random2v2:
+                    if (PhotonRealtimeClient.InMatchmakingRoom) // If we are in matchmaking we don't want to do anything
+                    {
+                        return;
+                    }
+                    else if (PhotonRealtimeClient.InRoom) // If we are in a normal room
+                    {
+                        // Checking if the game type changed, if it didn't we don't want to do anything but if it did we leave the room
+                        if (gameType == SelectedGameType)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            PhotonRealtimeClient.LeaveRoom();
+                        }
+                    }
+                    break;
+            }
+            
             SelectedGameType = gameType;
 
             switch (gameType)
@@ -155,7 +180,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 case GameType.Clan2v2:
                     _roomSwitcher.ClosePanels();
                     // Starting coroutine to create clan 2v2 room if player is not in a room and a room is currently being created
-                    if (!PhotonRealtimeClient.InRoom && _creatingRoomCoroutineHolder == null)
+                    if (_creatingRoomCoroutineHolder == null)
                     {
                         _creatingRoomCoroutineHolder = StartCoroutine(_roomListingController.StartCreatingClan2v2Room(() =>
                         {
@@ -166,7 +191,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 case GameType.Random2v2:
                     _roomSwitcher.ClosePanels();
                     // Starting coroutine to create clan 2v2 room if player is not in a room and a room is currently being created
-                    if (!PhotonRealtimeClient.InRoom && _creatingRoomCoroutineHolder == null)
+                    if (_creatingRoomCoroutineHolder == null)
                     {
                         _creatingRoomCoroutineHolder = StartCoroutine(_roomListingController.StartCreatingRandom2v2Room(() =>
                         {
