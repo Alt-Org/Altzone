@@ -33,153 +33,405 @@ MonoBehaviour:
     Col: 17
   - Row: 36
     Col: 6
-  AlphaSoulWallPositions:
-  - Row: 44
-    Col: 1
-  - Row: 44
-    Col: 3
-  - Row: 44
-    Col: 5
-  - Row: 44
-    Col: 7
-  - Row: 44
-    Col: 9
-  - Row: 44
-    Col: 11
-  - Row: 44
-    Col: 13
-  - Row: 44
-    Col: 15
-  - Row: 44
-    Col: 17
-  - Row: 44
-    Col: 19
-  - Row: 44
-    Col: 21
-  - Row: 44
-    Col: 23
-  - Row: 43
-    Col: 0
-  - Row: 43
-    Col: 2
-  - Row: 43
-    Col: 4
-  - Row: 43
-    Col: 6
-  - Row: 43
-    Col: 8
-  - Row: 43
-    Col: 10
-  - Row: 43
-    Col: 12
-  - Row: 43
-    Col: 14
-  - Row: 43
-    Col: 16
-  - Row: 43
-    Col: 18
-  - Row: 43
-    Col: 20
-  - Row: 43
-    Col: 22
-  - Row: 43
-    Col: 24
-  - Row: 42
-    Col: 1
-  - Row: 42
-    Col: 3
-  - Row: 42
-    Col: 5
-  - Row: 42
-    Col: 7
-  - Row: 42
-    Col: 9
-  - Row: 42
-    Col: 11
-  - Row: 42
-    Col: 13
-  - Row: 42
-    Col: 15
-  - Row: 42
-    Col: 17
-  - Row: 42
-    Col: 19
-  - Row: 42
-    Col: 21
-  - Row: 42
-    Col: 23
-  BetaSoulWallPositions:
-  - Row: 1
-    Col: 1
-  - Row: 1
-    Col: 3
-  - Row: 1
-    Col: 5
-  - Row: 1
-    Col: 7
-  - Row: 1
-    Col: 9
-  - Row: 1
-    Col: 11
-  - Row: 1
-    Col: 13
-  - Row: 1
-    Col: 15
-  - Row: 1
-    Col: 17
-  - Row: 1
-    Col: 19
-  - Row: 1
-    Col: 21
-  - Row: 1
-    Col: 23
-  - Row: 2
-    Col: 0
-  - Row: 2
-    Col: 2
-  - Row: 2
-    Col: 4
-  - Row: 2
-    Col: 6
-  - Row: 2
-    Col: 8
-  - Row: 2
-    Col: 10
-  - Row: 2
-    Col: 12
-  - Row: 2
-    Col: 14
-  - Row: 2
-    Col: 16
-  - Row: 2
-    Col: 18
-  - Row: 2
-    Col: 20
-  - Row: 2
-    Col: 22
-  - Row: 2
-    Col: 24
-  - Row: 3
-    Col: 1
-  - Row: 3
-    Col: 3
-  - Row: 3
-    Col: 5
-  - Row: 3
-    Col: 7
-  - Row: 3
-    Col: 9
-  - Row: 3
-    Col: 11
-  - Row: 3
-    Col: 13
-  - Row: 3
-    Col: 15
-  - Row: 3
-    Col: 17
-  - Row: 3
-    Col: 19
-  - Row: 3
-    Col: 21
-  - Row: 3
-    Col: 23
+  SoulWallTeamAlphaTemplates:
+  - Position:
+      Row: 0
+      Col: -1
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 0
+      Col: 1
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 0
+      Col: 3
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 0
+      Col: 5
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 0
+      Col: 7
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 0
+      Col: 9
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 0
+      Col: 11
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 0
+      Col: 13
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 0
+      Col: 15
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 0
+      Col: 17
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 0
+      Col: 19
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 0
+      Col: 21
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 0
+      Col: 23
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 1
+      Col: -1
+    Width: 1
+    ColorIndex: 1
+  - Position:
+      Row: 1
+      Col: 0
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 1
+      Col: 2
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 1
+      Col: 4
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 1
+      Col: 6
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 1
+      Col: 8
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 1
+      Col: 10
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 1
+      Col: 12
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 1
+      Col: 14
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 1
+      Col: 16
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 1
+      Col: 18
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 1
+      Col: 20
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 1
+      Col: 22
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 1
+      Col: 24
+    Width: 1
+    ColorIndex: 2
+  - Position:
+      Row: 2
+      Col: -1
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 2
+      Col: 1
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 2
+      Col: 3
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 2
+      Col: 5
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 2
+      Col: 7
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 2
+      Col: 9
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 2
+      Col: 11
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 2
+      Col: 13
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 2
+      Col: 15
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 2
+      Col: 17
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 2
+      Col: 19
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 2
+      Col: 21
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 2
+      Col: 23
+    Width: 2
+    ColorIndex: 2
+  SoulWallTeamBetaTemplates:
+  - Position:
+      Row: 43
+      Col: 23
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 43
+      Col: 21
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 43
+      Col: 19
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 43
+      Col: 17
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 43
+      Col: 15
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 43
+      Col: 13
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 43
+      Col: 11
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 43
+      Col: 9
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 43
+      Col: 7
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 43
+      Col: 5
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 43
+      Col: 3
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 43
+      Col: 1
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 43
+      Col: -1
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 42
+      Col: 24
+    Width: 1
+    ColorIndex: 1
+  - Position:
+      Row: 42
+      Col: 22
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 42
+      Col: 20
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 42
+      Col: 18
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 42
+      Col: 16
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 42
+      Col: 14
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 42
+      Col: 12
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 42
+      Col: 10
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 42
+      Col: 8
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 42
+      Col: 6
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 42
+      Col: 4
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 42
+      Col: 2
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 42
+      Col: 0
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 42
+      Col: -1
+    Width: 1
+    ColorIndex: 2
+  - Position:
+      Row: 41
+      Col: 23
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 41
+      Col: 21
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 41
+      Col: 19
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 41
+      Col: 17
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 41
+      Col: 15
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 41
+      Col: 13
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 41
+      Col: 11
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 41
+      Col: 9
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 41
+      Col: 7
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 41
+      Col: 5
+    Width: 2
+    ColorIndex: 2
+  - Position:
+      Row: 41
+      Col: 3
+    Width: 2
+    ColorIndex: 0
+  - Position:
+      Row: 41
+      Col: 1
+    Width: 2
+    ColorIndex: 1
+  - Position:
+      Row: 41
+      Col: -1
+    Width: 2
+    ColorIndex: 2
