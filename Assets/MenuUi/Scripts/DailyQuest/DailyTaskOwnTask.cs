@@ -72,25 +72,7 @@ public class DailyTaskOwnTask : MonoBehaviour
         _taskDescription.text = data.Title;
         _taskPointsReward.text = "" + data.Points;
         _taskCoinsReward.text = "" + data.Coins;
-
-        if (data.Type != TaskNormalType.Undefined)
-            _taskTypeImage.sprite = _cardImageReference.GetNormalTaskImage(data.Type);
-        else
-        {
-            int subType = 0;
-
-            switch (data.EducationCategory)
-            {
-                case EducationCategoryType.Social: subType = (int)data.EducationSocialType; break;
-                case EducationCategoryType.Story: subType = (int)data.EducationStoryType; break;
-                case EducationCategoryType.Culture: subType = (int)data.EducationCultureType; break;
-                case EducationCategoryType.Ethical: subType = (int)data.EducationEthicalType; break;
-                case EducationCategoryType.Action: subType = (int)data.EducationActionType; break;
-                default: break;
-            }
-
-            _taskTypeImage.sprite = _cardImageReference.GetEducationTaskImage(data.EducationCategory, subType);
-        }
+        _taskTypeImage.sprite = _cardImageReference.GetTaskImage(data);
 
         SetProgressBarMarkers(data.Amount);
     }

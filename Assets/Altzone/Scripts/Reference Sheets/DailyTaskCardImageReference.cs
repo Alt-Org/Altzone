@@ -38,7 +38,29 @@ namespace Altzone.Scripts.ReferenceSheets
             public Sprite Image;
         }
 
-        public Sprite GetNormalTaskImage(TaskNormalType type)
+        public Sprite GetTaskImage(PlayerTask data)
+        {
+            if (data.Type != TaskNormalType.Undefined)
+                return(GetNormalTaskImage(data.Type));
+            else
+            {
+                int subType = 0;
+
+                switch (data.EducationCategory)
+                {
+                    case EducationCategoryType.Social: subType = (int)data.EducationSocialType; break;
+                    case EducationCategoryType.Story: subType = (int)data.EducationStoryType; break;
+                    case EducationCategoryType.Culture: subType = (int)data.EducationCultureType; break;
+                    case EducationCategoryType.Ethical: subType = (int)data.EducationEthicalType; break;
+                    case EducationCategoryType.Action: subType = (int)data.EducationActionType; break;
+                    default: break;
+                }
+
+                 return(GetEducationTaskImage(data.EducationCategory, subType));
+            }
+        }
+
+        private Sprite GetNormalTaskImage(TaskNormalType type)
         {
             foreach (NormalTaskCardImage data in _normalTaskCardImages)
                 if (data.Type == type)
@@ -47,7 +69,7 @@ namespace Altzone.Scripts.ReferenceSheets
             return (null);
         }
 
-        public Sprite GetEducationTaskImage(EducationCategoryType baseType, int subType)
+        private Sprite GetEducationTaskImage(EducationCategoryType baseType, int subType)
         {
             foreach (EducationTaskCardImageBaseCategory baseData in _educationTaskCardImages)
                 if (baseData.BaseType == baseType)

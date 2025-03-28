@@ -140,24 +140,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         _taskAmount.text = _taskData.Amount.ToString();
         _coinIndicator.SetActive(_taskData.Coins >= 0);
 
-        if (TaskData.Type != TaskNormalType.Undefined)
-            _TaskImage.sprite = _cardImageReference.GetNormalTaskImage(TaskData.Type);
-        else
-        {
-            int subType = 0;
-
-            switch (TaskData.EducationCategory)
-            {
-                case EducationCategoryType.Social: subType = (int)TaskData.EducationSocialType; break;
-                case EducationCategoryType.Story: subType = (int)TaskData.EducationStoryType; break;
-                case EducationCategoryType.Culture: subType = (int)TaskData.EducationCultureType; break;
-                case EducationCategoryType.Ethical: subType = (int)TaskData.EducationEthicalType; break;
-                case EducationCategoryType.Action: subType = (int)TaskData.EducationActionType; break;
-                default: break;
-            }
-
-            _TaskImage.sprite = _cardImageReference.GetEducationTaskImage(TaskData.EducationCategory, subType);
-        }
+        _TaskImage.sprite = _cardImageReference.GetTaskImage(_taskData);
     }
 
     private string GetShortDescription(TaskNormalType taskType)

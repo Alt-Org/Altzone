@@ -142,24 +142,7 @@ public class Popup : MonoBehaviour
 
     private void SetTaskAcceptImage(PlayerTask data)
     {
-        if (data.Type != TaskNormalType.Undefined)
-            _taskAcceptImage.sprite = _cardImageReference.GetNormalTaskImage(data.Type);
-        else
-        {
-            int subType = 0;
-
-            switch (data.EducationCategory)
-            {
-                case EducationCategoryType.Social: subType = (int)data.EducationSocialType; break;
-                case EducationCategoryType.Story: subType = (int)data.EducationStoryType; break;
-                case EducationCategoryType.Culture: subType = (int)data.EducationCultureType; break;
-                case EducationCategoryType.Ethical: subType = (int)data.EducationEthicalType; break;
-                case EducationCategoryType.Action: subType = (int)data.EducationActionType; break;
-                default: break;
-            }
-
-            _taskAcceptImage.sprite = _cardImageReference.GetEducationTaskImage(data.EducationCategory, subType);
-        }
+        _taskAcceptImage.sprite = _cardImageReference.GetTaskImage(data);
     }
 
     private void SwitchWindow(PopupWindowType type)
