@@ -79,7 +79,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             bool roomCreated = false;
             do
             {
-                yield return new WaitForEndOfFrame();
+                yield return null;
                 if (PhotonRealtimeClient.InLobby)
                 {
                     CreateClan2v2Room();
@@ -111,7 +111,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             bool roomCreated = false;
             do
             {
-                yield return new WaitForEndOfFrame();
+                yield return null;
                 if (PhotonRealtimeClient.InLobby)
                 {
                     CreateRandom2v2Room();
