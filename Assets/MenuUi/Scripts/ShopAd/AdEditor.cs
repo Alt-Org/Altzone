@@ -1,17 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO.IsolatedStorage;
+using Altzone.Scripts.Model.Poco.Clan;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.WSA;
 
-public class AdEditor : MonoBehaviour
+public class AdEditor : AltMonoBehaviour
 {
+    [SerializeField] private TextMeshProUGUI clanNameText;
+
     [SerializeField] private Image _backgroundImage;
     [SerializeField] private Image _effectImage;
     [SerializeField] private Image _itemImage;
-    [SerializeField] private TMP_Text _titleText;
     [SerializeField] private Image _borderImage;
 
     [SerializeField] private Color orangeColor;
@@ -35,17 +37,27 @@ public class AdEditor : MonoBehaviour
     [SerializeField] private Image border10;
     [SerializeField] private Image border11;
 
-    public Transform ChooseEffect;
-    public Transform ChooseBorder;
-    public Button buttonEffect;
-    public Button buttonBorder;
+    
+
+    
+    ClanData clanData = null;
+
 
     void Start()    
     {
-        buttonEffect.onClick.AddListener(() => BringToFront(ChooseEffect));
-        buttonBorder.onClick.AddListener(() => BringToFront(ChooseBorder));
+        StartCoroutine(GetClanData(p=> clanData = p));
     }
-
+    private void Update()
+    {
+        if (clanData != null)
+        {
+            clanNameText.text=(clanData.Name);
+        }
+        else
+        {
+            clanNameText.text = "Et ole klaanissa";
+        }
+    }
     void BringToFront(Transform folder)
     {
         folder.SetAsLastSibling();
