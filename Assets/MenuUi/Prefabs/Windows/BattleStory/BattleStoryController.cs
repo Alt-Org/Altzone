@@ -17,9 +17,9 @@ public class BattleStoryController : MonoBehaviour
     private GameObject _emotionBall;
 
     [SerializeField]
-    private Transform _endStartPositionLeft;
+    private Transform _startPositionLeft;
     [SerializeField]
-    private Transform _endStartPositionRight;
+    private Transform _startPositionRight;
 
     [Header("Paths"), SerializeField]
     private List<Route> _routesLeft;
@@ -85,7 +85,7 @@ public class BattleStoryController : MonoBehaviour
         {
             //Debug.LogWarning($"Character 1: {randomClipOrder1[i]}:{validatedList.First(x => x.Emotion == randomClipOrder1[i]).Character1Animation.name}, Ball 1: {randomBallOrder1[i]}");
             _characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
-            GameObject ball = Instantiate(_emotionBall, _endStartPositionLeft);
+            GameObject ball = Instantiate(_emotionBall, _startPositionLeft);
 
             ball.GetComponent<Image>().sprite = GetEmotionData(randomClipOrder1[i]).BallSprite;
             
@@ -107,7 +107,7 @@ public class BattleStoryController : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
             //Debug.LogWarning($"Character 2: {randomClipOrder2[i]}:{validatedList.First(x => x.Emotion == randomClipOrder2[i]).Character2Animation.name}, Ball 2: {randomBallOrder2[i]}");
             _characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
-            GameObject ball2 = Instantiate(_emotionBall, _endStartPositionRight);
+            GameObject ball2 = Instantiate(_emotionBall, _startPositionRight);
 
             ball2.GetComponent<Image>().sprite = GetEmotionData(randomClipOrder2[i]).BallSprite;
 
