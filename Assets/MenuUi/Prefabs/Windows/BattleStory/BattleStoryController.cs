@@ -17,9 +17,9 @@ public class BattleStoryController : MonoBehaviour
     private GameObject _emotionBall;
 
     [SerializeField]
-    private Transform _endStartPositionLeft;
+    private Transform _startPositionLeft;
     [SerializeField]
-    private Transform _endStartPositionRight;
+    private Transform _startPositionRight;
 
     [Header("Paths"), SerializeField]
     private List<Route> _routesLeft;
@@ -84,8 +84,8 @@ public class BattleStoryController : MonoBehaviour
         for (int i = 0; i < randomClipOrder1.Count; i++)
         {
             //Debug.LogWarning($"Character 1: {randomClipOrder1[i]}:{validatedList.First(x => x.Emotion == randomClipOrder1[i]).Character1Animation.name}, Ball 1: {randomBallOrder1[i]}");
-            _characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
-            GameObject ball = Instantiate(_emotionBall, _endStartPositionLeft);
+            //_characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
+            GameObject ball = Instantiate(_emotionBall, _startPositionLeft);
 
             ball.GetComponent<Image>().sprite = GetEmotionData(randomClipOrder1[i]).BallSprite;
             
@@ -103,11 +103,11 @@ public class BattleStoryController : MonoBehaviour
 
             yield return new WaitUntil(() => ballDone is true);
             Destroy(ball);
-
+            _characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
             yield return new WaitForSeconds(0.5f);
             //Debug.LogWarning($"Character 2: {randomClipOrder2[i]}:{validatedList.First(x => x.Emotion == randomClipOrder2[i]).Character2Animation.name}, Ball 2: {randomBallOrder2[i]}");
-            _characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
-            GameObject ball2 = Instantiate(_emotionBall, _endStartPositionRight);
+            //_characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
+            GameObject ball2 = Instantiate(_emotionBall, _startPositionRight);
 
             ball2.GetComponent<Image>().sprite = GetEmotionData(randomClipOrder2[i]).BallSprite;
 
@@ -124,6 +124,7 @@ public class BattleStoryController : MonoBehaviour
 
             yield return new WaitUntil(() => ballDone is true);
             Destroy(ball2);
+            _characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
             yield return new WaitForSeconds(0.5f);
         }
     }
@@ -203,6 +204,9 @@ public class Route
 
     public IEnumerator TraverseRoute(GameObject ball, Action<bool> callback)
     {
+        float defaultBallSize = ball.GetComponent<RectTransform>().rect.width;
+        float ballsize = defaultBallSize * 1.2f;
+        ball.GetComponent<RectTransform>().sizeDelta = new(ballsize,ballsize);
         float baseSpeed = GetScaledSpeed();
         float speed = baseSpeed;
         float distance;
@@ -210,6 +214,7 @@ public class Route
         float currentTime;
 
         Vector2 startPosition = _startPoint.position;
+        float depth = Mathf.Abs(_endPoint.position.y - _startPoint.position.y);
 
         foreach (RouteSection route in _routesSection)
         {
@@ -225,6 +230,9 @@ public class Route
                 Vector2 pos = Vector2.Lerp(startPosition, nextPoint, currentTime / duration);
                 float yPos = startPosition.y + (nextPoint.y - startPosition.y) * route.PathSectionCurve.Evaluate(Mathf.Clamp(currentTime / duration,0,1));
                 ball.transform.position = new(pos.x, yPos);
+                float depthDistance = Mathf.Abs(yPos - _startPoint.position.y)/depth;
+                ballsize = defaultBallSize * Mathf.Lerp(1.2f, 0.8f, depthDistance);
+                ball.GetComponent<RectTransform>().sizeDelta = new(ballsize, ballsize);
             }
             startPosition = nextPoint;
         }
