@@ -84,7 +84,7 @@ public class BattleStoryController : MonoBehaviour
         for (int i = 0; i < randomClipOrder1.Count; i++)
         {
             //Debug.LogWarning($"Character 1: {randomClipOrder1[i]}:{validatedList.First(x => x.Emotion == randomClipOrder1[i]).Character1Animation.name}, Ball 1: {randomBallOrder1[i]}");
-            _characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
+            //_characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
             GameObject ball = Instantiate(_emotionBall, _startPositionLeft);
 
             ball.GetComponent<Image>().sprite = GetEmotionData(randomClipOrder1[i]).BallSprite;
@@ -103,10 +103,10 @@ public class BattleStoryController : MonoBehaviour
 
             yield return new WaitUntil(() => ballDone is true);
             Destroy(ball);
-
+            _characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
             yield return new WaitForSeconds(0.5f);
             //Debug.LogWarning($"Character 2: {randomClipOrder2[i]}:{validatedList.First(x => x.Emotion == randomClipOrder2[i]).Character2Animation.name}, Ball 2: {randomBallOrder2[i]}");
-            _characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
+            //_characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
             GameObject ball2 = Instantiate(_emotionBall, _startPositionRight);
 
             ball2.GetComponent<Image>().sprite = GetEmotionData(randomClipOrder2[i]).BallSprite;
@@ -124,6 +124,7 @@ public class BattleStoryController : MonoBehaviour
 
             yield return new WaitUntil(() => ballDone is true);
             Destroy(ball2);
+            _characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
             yield return new WaitForSeconds(0.5f);
         }
     }
