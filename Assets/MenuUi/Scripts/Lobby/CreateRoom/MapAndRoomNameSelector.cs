@@ -26,6 +26,8 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
         private int _selectedMapIndex = 0;
         private int _selectedNameIndex = 0;
 
+        private int _oldIndex;
+
         public BattleMap SelectedBattleMap { get; private set; }
         public MapEmotionalSituation SelectedEmotionalSituation { get; private set; }
 
@@ -45,7 +47,7 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
 
         private void OnNextMapClicked()
         {
-            int oldIndex = _selectedMapIndex; 
+            _oldIndex = _selectedMapIndex; 
 
             // Checking if there is a next map index or if we should get the first map
             if (_selectedMapIndex + 1  < _battleMapReference.Maps.Count)
@@ -57,12 +59,12 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
                 _selectedMapIndex = 0;
             }
 
-            SelectMap(oldIndex);
+            SelectMap();
         }
 
         private void OnPreviousMapClicked()
         {
-            int oldIndex = _selectedMapIndex;
+            _oldIndex = _selectedMapIndex;
 
             if (_selectedMapIndex - 1 >= 0)
             {
@@ -73,16 +75,16 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
                 _selectedMapIndex = _battleMapReference.Maps.Count - 1;
             }
 
-            SelectMap(oldIndex);
+            SelectMap();
         }
 
-        private void SelectMap(int oldIndex)
+        private void SelectMap()
         {
             // Selecting the new map
             SelectedBattleMap = _battleMapReference.Maps[_selectedMapIndex];
             _currentMapText.text = SelectedBattleMap.MapName;
 
-            if (oldIndex != _selectedMapIndex) // TODO: once there is more maps than 1 we can remove this if statement and the oldIndex int
+            if (_oldIndex != _selectedMapIndex) // TODO: once there is more maps than 1 we can remove this if statement and the oldIndex int
             {
                 // Resetting the emotional situation
                 _selectedNameIndex = 0;
