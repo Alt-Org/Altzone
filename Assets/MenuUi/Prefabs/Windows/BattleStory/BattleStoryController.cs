@@ -204,6 +204,9 @@ public class Route
 
     public IEnumerator TraverseRoute(GameObject ball, Action<bool> callback)
     {
+        float defaultBallSize = ball.GetComponent<RectTransform>().rect.width;
+        float ballsize = defaultBallSize * 1.2f;
+        ball.GetComponent<RectTransform>().sizeDelta = new(ballsize,ballsize);
         float baseSpeed = GetScaledSpeed();
         float speed = baseSpeed;
         float distance;
@@ -211,6 +214,7 @@ public class Route
         float currentTime;
 
         Vector2 startPosition = _startPoint.position;
+        float depth = Mathf.Abs(_endPoint.position.y - _startPoint.position.y);
 
         foreach (RouteSection route in _routesSection)
         {
@@ -226,6 +230,9 @@ public class Route
                 Vector2 pos = Vector2.Lerp(startPosition, nextPoint, currentTime / duration);
                 float yPos = startPosition.y + (nextPoint.y - startPosition.y) * route.PathSectionCurve.Evaluate(Mathf.Clamp(currentTime / duration,0,1));
                 ball.transform.position = new(pos.x, yPos);
+                float depthDistance = Mathf.Abs(yPos - _startPoint.position.y)/depth;
+                ballsize = defaultBallSize * Mathf.Lerp(1.2f, 0.8f, depthDistance);
+                ball.GetComponent<RectTransform>().sizeDelta = new(ballsize, ballsize);
             }
             startPosition = nextPoint;
         }
