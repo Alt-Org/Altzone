@@ -53,7 +53,9 @@ public static class PollManager
         //if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
         if (player != null) clanMembers.Add(player.Id);
 
-        GameFurniture gameFurniture = new(furniture.Id, furniture.VisibleName, furniture.Rarity, furniture.Size, furniture.RotatedSize, furniture.Placement, furniture.Weight, furniture.Value);
+        GameFurniture gameFurniture = null;
+        store.GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.FurnitureInfo == furniture.Info));
+
         PollData pollData = new FurniturePollData(id, startTime, endTime, sprite, clanMembers, furniturePollType, gameFurniture);
         pollDataList.Add(pollData);
 
