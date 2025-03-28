@@ -179,6 +179,9 @@ namespace Altzone.Scripts.Lobby
         public delegate void RoomLeaderChanged(bool isLeader);
         public static event RoomLeaderChanged OnRoomLeaderChanged;
 
+        public delegate void ClanMemberDisconnected();
+        public static event ClanMemberDisconnected OnClanMemberDisconnected;
+
         #endregion
 
 
@@ -579,6 +582,40 @@ namespace Altzone.Scripts.Lobby
                 {
                     player.Value.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, PhotonBattleRoom.PlayerPosition4);
                 }
+            }
+
+            // Checking that the clan names are in order
+            GameType roomGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+            if (roomGameType == GameType.Clan2v2)
+            {
+                string primaryClan = string.Empty;
+                string opponentClan = string.Empty;
+
+                foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
+                {
+                    int playerPos = player.Value.GetCustomProperty<int>(PhotonBattleRoom.PlayerPositionKey);
+
+                    if (playerPos == PhotonBattleRoom.PlayerPosition1)
+                    {
+                        primaryClan = player.Value.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty);
+                    }
+                    else if (playerPos == PhotonBattleRoom.PlayerPosition3)
+                    {
+                        opponentClan = player.Value.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty);
+                    }
+                }
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey) != primaryClan)
+                {
+                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.ClanNameKey, primaryClan);
+                }
+
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.ClanOpponentNameKey) != opponentClan)
+                {
+                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.ClanOpponentNameKey, opponentClan);
+                }
+
+                _blueTeamName = primaryClan;
+                _redTeamName = opponentClan;
             }
 
             // Starting game
@@ -982,12 +1019,29 @@ namespace Altzone.Scripts.Lobby
                 PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue);
             }
 
-            // Changing leader status if the other player was this player's leader
-            if (PhotonRealtimeClient.InMatchmakingRoom)
+            if (PhotonRealtimeClient.InMatchmakingRoom && _followLeaderHolder == null)
             {
+                // If the game type is clan 2v2 and the player who left was a teammate we leave the room,
+                // since you can't play the game mode without 2 person team from the same clan
+                GameType roomGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                if (roomGameType == GameType.Clan2v2)
+                {
+                    string ownClan = PhotonRealtimeClient.LocalPlayer.GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey);
+                    string otherPlayerClan = otherPlayer.GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey);
+
+                    if (ownClan == otherPlayerClan)
+                    {
+                        StartCoroutine(LeaveMatchmaking());
+                        OnClanMemberDisconnected?.Invoke();
+                    }
+                    return;
+                }
+
+                // Checking if the other player who left was local player's leader
                 string matchmakingLeaderId = PhotonRealtimeClient.LocalPlayer.GetCustomProperty(PhotonBattleRoom.LeaderIdKey, string.Empty);
                 if (matchmakingLeaderId == otherPlayer.UserId)
                 {
+                    // Changing leader status if the other player was this player's leader
                     PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, PhotonRealtimeClient.LocalPlayer.UserId);
                     OnRoomLeaderChanged?.Invoke(true);
                 }

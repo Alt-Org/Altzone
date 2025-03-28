@@ -31,6 +31,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             _photonRoomList = gameObject.GetOrAddComponent<PhotonRoomList>();
             _createRoomCustom.CreateRoomButton.onClick.RemoveAllListeners();
             _createRoomCustom.CreateRoomButton.onClick.AddListener(CreateCustomRoomOnClick);
+            LobbyManager.OnClanMemberDisconnected += HandleClanMemberDisconnected;
         }
 
         public void OnEnable()
@@ -52,6 +53,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
             _photonRoomList.OnRoomsUpdated -= UpdateStatus;
             LobbyManager.LobbyOnJoinedRoom -= OnJoinedRoom;
             LobbyWindowNavigationHandler.OnLobbyWindowChangeRequest -= SwitchToRoom;
+        }
+
+        private void OnDestroy()
+        {
+            LobbyManager.OnClanMemberDisconnected -= HandleClanMemberDisconnected;
         }
 
         private void CreateCustomRoomOnClick()
@@ -194,6 +200,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
             });
             _searchPanel.RoomsData = rooms;
             _searchPanel.SetOnJoinRoom(JoinRoom);
+        }
+
+        private void HandleClanMemberDisconnected()
+        {
+            PopupSignalBus.OnChangePopupInfoSignal("Pelin etsiminen lopetetaan. Klaanin jäsen sulki pelin.");
         }
     }
 }
