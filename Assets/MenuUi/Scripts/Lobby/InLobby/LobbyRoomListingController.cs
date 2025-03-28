@@ -79,6 +79,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             bool roomCreated = false;
             do
             {
+                yield return new WaitForEndOfFrame();
                 if (PhotonRealtimeClient.InLobby)
                 {
                     CreateClan2v2Room();
@@ -87,8 +88,6 @@ namespace MenuUi.Scripts.Lobby.InLobby
             } while (!roomCreated);
 
             callback();
-
-            yield break;
         }
 
         private void CreateClan2v2Room()  // soulhome value for matchmaking
@@ -112,6 +111,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             bool roomCreated = false;
             do
             {
+                yield return new WaitForEndOfFrame();
                 if (PhotonRealtimeClient.InLobby)
                 {
                     CreateRandom2v2Room();
@@ -120,8 +120,6 @@ namespace MenuUi.Scripts.Lobby.InLobby
             } while (!roomCreated);
 
             callback();
-
-            yield break;
         }
 
         private void CreateRandom2v2Room()  // soulhome value for matchmaking
