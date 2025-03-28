@@ -4,6 +4,7 @@ using System.IO.IsolatedStorage;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.WSA;
 
 public class AdEditor : MonoBehaviour
 {
@@ -21,6 +22,33 @@ public class AdEditor : MonoBehaviour
     [SerializeField] private Color purpleColor;
     [SerializeField] private Color darkPinkColor;
     [SerializeField] private Color redColor;
+
+    [SerializeField] private Image border1;
+    [SerializeField] private Image border2;
+    [SerializeField] private Image border3;
+    [SerializeField] private Image border4;
+    [SerializeField] private Image border5;
+    [SerializeField] private Image border6;
+    [SerializeField] private Image border7;
+    [SerializeField] private Image border8;
+    [SerializeField] private Image border9;
+    [SerializeField] private Image border10;
+
+    public Transform ChooseEffect;
+    public Transform ChooseBorder;
+    public Button buttonEffect;
+    public Button buttonBorder;
+
+    void Start()    
+    {
+        buttonEffect.onClick.AddListener(() => BringToFront(ChooseEffect));
+        buttonBorder.onClick.AddListener(() => BringToFront(ChooseBorder));
+    }
+
+    void BringToFront(Transform folder)
+    {
+        folder.SetAsLastSibling();
+    }
 
 
     public void ChangeOrangeColor()
@@ -56,6 +84,48 @@ public class AdEditor : MonoBehaviour
     {
         _backgroundImage.color = redColor;
     }
+
+    public void ChangeBorder1()
+    {
+        _borderImage.sprite = border1.sprite;
+    }
+    public void ChangeBorder2()
+    {
+        _borderImage.sprite = border2.sprite;
+    }
+    public void ChangeBorder3()
+    {
+        _borderImage.sprite = border3.sprite;
+    }
+    public void ChangeBorder4()
+    {
+        _borderImage.sprite = border4.sprite;
+    }
+    public void ChangeBorder5()
+    {
+        _borderImage.sprite = border5.sprite;
+    }
+    public void ChangeBorder6()
+    {
+        _borderImage.sprite = border6.sprite;
+    }
+    public void ChangeBorder7()
+    {
+        _borderImage.sprite = border7.sprite;
+    }
+    public void ChangeBorder8()
+    {
+        _borderImage.sprite = border8.sprite;
+    }
+    public void ChangeBorder9()
+    {
+        _borderImage.sprite = border9.sprite;
+    }
+    public void ChangeBorder10()
+    {
+        _borderImage.sprite = border10.sprite;
+    }
+    
 
     public void CloseEditor()
     {
