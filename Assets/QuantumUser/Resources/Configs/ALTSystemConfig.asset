@@ -60,44 +60,45 @@ MonoBehaviour:
     StartDisabled: 0
     Children: []
   - SystemType:
-      AssemblyQualifiedName: Quantum.GameControlSystem, Quantum.Simulation
+      AssemblyQualifiedName: Battle.QSimulation.Game.BattleGameControlQSystem, Quantum.Simulation
     SystemName: 
     StartDisabled: 0
     Children: []
   - SystemType:
-      AssemblyQualifiedName: Quantum.PlayerMovementSystem, Quantum.Simulation
+      AssemblyQualifiedName: Battle.QSimulation.Game.BattleCollisionQSystem, Quantum.Simulation
     SystemName: 
     StartDisabled: 0
     Children: []
   - SystemType:
-      AssemblyQualifiedName: Quantum.PlayerJoinSystem, Quantum.Simulation
+      AssemblyQualifiedName: Battle.QSimulation.Player.BattlePlayerJoinQSystem, Quantum.Simulation
     SystemName: 
     StartDisabled: 0
     Children: []
   - SystemType:
-      AssemblyQualifiedName: Quantum.QuantumUser.Simulation.Projectile.ProjectileSystem,
+      AssemblyQualifiedName: Battle.QSimulation.Player.BattlePlayerMovementQSystem,
         Quantum.Simulation
     SystemName: 
     StartDisabled: 0
     Children: []
   - SystemType:
-      AssemblyQualifiedName: Quantum.QuantumUser.Simulation.Goal.GoalSystem, Quantum.Simulation
-    SystemName: 
-    StartDisabled: 0
-    Children: []
-  - SystemType:
-      AssemblyQualifiedName: Quantum.QuantumUser.Simulation.SoulWall.SoulWallSystem,
+      AssemblyQualifiedName: Battle.QSimulation.Projectile.BattleProjectileSpawnerQSystem,
         Quantum.Simulation
     SystemName: 
     StartDisabled: 0
     Children: []
   - SystemType:
-      AssemblyQualifiedName: Quantum.ProjectileSpawnerSystem, Quantum.Simulation
+      AssemblyQualifiedName: Battle.QSimulation.Projectile.BattleProjectileQSystem,
+        Quantum.Simulation
     SystemName: 
     StartDisabled: 0
     Children: []
   - SystemType:
-      AssemblyQualifiedName: Quantum.CollisionsSystem, Quantum.Simulation
+      AssemblyQualifiedName: Battle.QSimulation.SoulWall.BattleSoulWallQSystem, Quantum.Simulation
+    SystemName: 
+    StartDisabled: 0
+    Children: []
+  - SystemType:
+      AssemblyQualifiedName: Battle.QSimulation.Goal.BattleGoalQSystem, Quantum.Simulation
     SystemName: 
     StartDisabled: 0
     Children: []

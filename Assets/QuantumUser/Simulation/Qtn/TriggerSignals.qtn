@@ -2,9 +2,8 @@ signal OnTriggerTopGoal();
 
 signal OnTriggerBottomGoal();
 
-signal OnTriggerProjectileHitSoulWall(Projectile* projectile, EntityRef projectileEntity, SoulWall* soulWall, EntityRef soulWallEntity);
+signal OnTriggerProjectileHitSoulWall(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity);
 
-signal OnTriggerProjectileHitArenaBorder(Projectile* projectile, EntityRef projectileEntity, ArenaBorder* arenaBorder, EntityRef arenaBorderEntity);
+signal OnTriggerProjectileHitArenaBorder(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity);
 
-signal OnTriggerProjectileHitPlayerHitbox(Projectile* projectile, EntityRef projectileEntity, PlayerHitbox* playerHitbox, EntityRef playerEntity);
-
+signal OnTriggerProjectileHitPlayerHitbox(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity);

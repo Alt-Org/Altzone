@@ -1,0 +1,7 @@
+using Battle.QSimulation.Goal;
+
+component BattleGoalQComponent
+{
+    AssetRef<GoalConfig> goalConfig;
+    bool hasTriggered;
+}

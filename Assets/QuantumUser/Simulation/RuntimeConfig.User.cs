@@ -1,8 +1,11 @@
-﻿namespace Quantum
+﻿using Battle.QSimulation.Game;
+using Battle.QSimulation.Projectile;
+
+namespace Quantum
 {
     public partial class RuntimeConfig
     {
-        public AssetRef<BattleArenaSpec> BattleArenaSpec;
-        public AssetRef<ProjectileSpec> ProjectileSpec;
+        public AssetRef<BattleArenaQSpec> BattleArenaSpec;
+        public AssetRef<BatteProjectileQSpec> ProjectileSpec;
     }
 }

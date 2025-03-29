@@ -149,7 +149,6 @@ MonoBehaviour:
     - rid: 8250910755784753152
     - rid: 8250910755784753153
     - rid: 8250910755784753154
-    - rid: 8250910755784753155
   - Components:
     - rid: 4244733833099870208
     - rid: 4244733833099870209
@@ -288,7 +287,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 107697954214641667
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -352,7 +351,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 236161974373711875
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -436,7 +435,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 721543547118944259
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -500,7 +499,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 760511158330327043
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -564,7 +563,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 868082939290714115
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -628,7 +627,8 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 924740730520338435
-      type: {class: ArenaBorderPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleArenaBorderQComponentPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
       data:
         Normal:
           X:
@@ -690,7 +690,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 1023697638161121283
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -754,7 +754,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 1092164184273059843
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -818,7 +818,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 1449831187177537539
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -882,7 +882,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 1489942320546578435
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -946,7 +946,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 1841241650035163139
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -1010,7 +1010,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 2162338099483377667
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -1074,7 +1074,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 2215983862360571907
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -1138,7 +1138,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 2216399215762866179
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -1202,7 +1202,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 2370246874893385731
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -1306,7 +1306,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 3323873103020294147
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -1370,7 +1370,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 3398530561021575171
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -1434,7 +1434,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 3470559574199631875
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -1508,7 +1508,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 3780666271784239107
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -1572,7 +1572,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 3915831314950914051
-      type: {class: GoalPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleGoalQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         goalConfig:
           Id:
@@ -1632,7 +1632,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 4158493136064086019
-      type: {class: GoalPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleGoalQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         goalConfig:
           Id:
@@ -1692,7 +1692,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 4244733833099870211
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -1756,7 +1756,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 4612360738462236675
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -1820,7 +1820,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 5028267710501355523
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -1884,7 +1884,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 5788228208927178755
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -1948,7 +1948,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 6032219766947577859
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -2012,7 +2012,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 6239855595038441475
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -2076,7 +2076,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 6868300451796746243
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -2140,7 +2140,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 7584049413723521027
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -2214,7 +2214,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 8104930351459074051
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -2278,7 +2278,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 8244170927747629059
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -2341,18 +2341,6 @@ MonoBehaviour:
       data:
         CallbackFlags:
           Value: 0
-    - rid: 8250910755784753155
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
-      data:
-        ChildEntity:
-          SceneIndexPlusOne: 0
-        Normal:
-          X:
-            RawValue: 0
-          Y:
-            RawValue: -65536
-        CollisionMinOffset:
-          RawValue: 13107
     - rid: 8446298868303265792
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -2406,7 +2394,8 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 8446298868303265795
-      type: {class: ArenaBorderPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleArenaBorderQComponentPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
       data:
         Normal:
           X:
@@ -2468,7 +2457,7 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 8694999705492389891
-      type: {class: SoulWallPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleSoulWallQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
@@ -2480,14 +2469,16 @@ MonoBehaviour:
         CollisionMinOffset:
           RawValue: 13107
     - rid: 9189874137361809408
-      type: {class: GameSessionPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleGameSessionQSingletonPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
       data:
-        state:
+        State:
           Value: 0
         TimeUntilStart:
           RawValue: 262144
     - rid: 9189874137361809409
-      type: {class: PlayerManagerDataPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattlePlayerManagerDataQSingletonPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
       data:
         PlayStates:
         - Value: 0

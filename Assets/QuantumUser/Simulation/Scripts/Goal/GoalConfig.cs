@@ -1,13 +1,14 @@
-using Photon.Deterministic;
 using UnityEngine;
+using Quantum;
 
-namespace Quantum
+namespace Battle.QSimulation.Goal
 {
     public enum GoalType
     {
         TopGoal = 0,
         BottomGoal = 1
     }
+
     public class GoalConfig : AssetObject
     {
         [Header("Goal Tags")]

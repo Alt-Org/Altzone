@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace QuantumUser.Scripts
+namespace Battle.View.Game
 {
     public class BattleCamera : MonoBehaviour
     {

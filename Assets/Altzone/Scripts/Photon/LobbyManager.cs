@@ -13,7 +13,7 @@ using Quantum;
 
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Settings;
-using PlayerData = Altzone.Scripts.Model.Poco.Player.PlayerData;
+using Altzone.Scripts.Model.Poco.Player;
 using Prg.Scripts.Common.PubSub;
 
 using System.Threading.Tasks;
@@ -21,6 +21,9 @@ using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby.Wrappers;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.AzDebug;
+
+using Battle.QSimulation.Game;
+using Battle.QSimulation.Projectile;
 
 namespace Altzone.Scripts.Lobby
 {
@@ -71,8 +74,8 @@ namespace Altzone.Scripts.Lobby
         [SerializeField] private Map _map;
         [SerializeField] private SimulationConfig _simulationConfig;
         [SerializeField] private SystemsConfig _systemsConfig;
-        [SerializeField] private BattleArenaSpec _battleArenaSpec;
-        [SerializeField] private ProjectileSpec _projectileSpec;
+        [SerializeField] private BattleArenaQSpec _battleArenaSpec;
+        [SerializeField] private BatteProjectileQSpec _projectileSpec;
 
         private QuantumRunner _runner = null;
         private Coroutine _requestPositionChangeHolder = null;
