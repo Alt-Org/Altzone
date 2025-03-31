@@ -135,7 +135,10 @@ public class AltMonoBehaviour : MonoBehaviour
                 Debug.Log("Profile info update failed.");
             }
             if(callback2 != null)
-            callback(new(callback2));
+            {
+                playerData.UpdatePlayerData(callback2);
+                callback(playerData);
+            }
             else callback(playerData);
         }));
 
