@@ -13,9 +13,10 @@ public class LeaderboardView : MonoBehaviour
     [SerializeField] private Button _globalLeaderboardButton;
     [SerializeField] private Button _clanLeaderboardButton;
     [SerializeField] private Button _friendsLeaderboardButton;
-    [SerializeField] private GameObject _leaderboardTypeButtons;
-    [SerializeField] private Button _winsButton;
-    [SerializeField] private Button _activityButton;
+    //[SerializeField] private GameObject _leaderboardTypeButtons;
+    //[SerializeField] private Button _winsButton;
+    //[SerializeField] private Button _activityButton;
+    [SerializeField] private Button _leaderboardTypeButton;
     [SerializeField] private Image _tablineRibbon;
     [SerializeField] private TabLine _tablineScript;
 
@@ -52,21 +53,23 @@ public class LeaderboardView : MonoBehaviour
         _globalLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Global));
         _clanLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Clan));
         _friendsLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Friends));
-        _winsButton.onClick.AddListener(() =>
-        {
-            SetLeaderboardType(LeaderboardType.Wins);
-            UpdateTitle();
-            LoadLeaderboard();
-        });
-        _activityButton.onClick.AddListener(() =>
-        {
-            SetLeaderboardType(LeaderboardType.Activity);
-            UpdateTitle();
-            LoadLeaderboard();
-        });
+        //_winsButton.onClick.AddListener(() =>
+        //{
+        //    SetLeaderboardType(LeaderboardType.Wins);
+        //    UpdateTitle();
+        //    LoadLeaderboard();
+        //});
+        //_activityButton.onClick.AddListener(() =>
+        //{
+        //    SetLeaderboardType(LeaderboardType.Activity);
+        //    UpdateTitle();
+        //    LoadLeaderboard();
+        //});
+        _leaderboardTypeButton.onClick.AddListener(() => ToggleLeaderboardType()); 
 
         SetLeaderboardType(LeaderboardType.Activity);
         OpenLeaderboard(Leaderboard.Clan);
+        LoadActivityView();
         _tablineScript.ActivateTabButton(1);
     }
 
@@ -74,7 +77,7 @@ public class LeaderboardView : MonoBehaviour
     {
         _currentLeaderboard = leaderboard;
 
-        _leaderboardTypeButtons.SetActive(leaderboard != Leaderboard.Friends);
+        //_leaderboardTypeButtons.SetActive(leaderboard != Leaderboard.Friends);
         if (leaderboard == Leaderboard.Friends) SetLeaderboardType(LeaderboardType.Wins);
 
         UpdateTitle();
@@ -121,7 +124,7 @@ public class LeaderboardView : MonoBehaviour
                             rank++;
                         }
 
-                        LoadWinsView();
+                        //LoadWinsView();
                     }
                     else
                     {
@@ -135,7 +138,7 @@ public class LeaderboardView : MonoBehaviour
                             rank++;
                         };
 
-                        LoadActivityView();
+                        //LoadActivityView();
                     }
                 }));
                 break;
@@ -149,7 +152,7 @@ public class LeaderboardView : MonoBehaviour
                         item.Initialize(i, ((char)(64 + i)).ToString(), 16);
                     }
 
-                    LoadWinsView();
+                    //LoadWinsView();
                 }
                 else
                 {
@@ -159,7 +162,7 @@ public class LeaderboardView : MonoBehaviour
                         item.Initialize(i, ((char)(64 + i)).ToString(), 100);
                     };
 
-                    LoadActivityView();
+                    //LoadActivityView();
                 }
                 break;
             case Leaderboard.Friends:
@@ -173,9 +176,24 @@ public class LeaderboardView : MonoBehaviour
         }
     }
 
+    private void ToggleLeaderboardType()
+    {
+        if (_currentLeaderboardType == LeaderboardType.Activity)
+        {
+            LoadWinsView();
+        }
+        else
+        {
+            LoadActivityView();
+        }
+    }
+
     private void LoadActivityView()
     {
-        // Acitivate/deactivate necessary icons
+        SetLeaderboardType(LeaderboardType.Activity);
+        LoadLeaderboard();
+
+        // Activate/deactivate necessary icons
         foreach (GameObject icon in _winsViewIcons)
         {
             icon.SetActive(false);
@@ -196,7 +214,10 @@ public class LeaderboardView : MonoBehaviour
 
     private void LoadWinsView()
     {
-        // Acitivate/deactivate necessary icons
+        SetLeaderboardType(LeaderboardType.Wins);
+        LoadLeaderboard();
+
+        // Activate/deactivate necessary icons
         foreach (GameObject icon in _activityViewIcons)
         {
             icon.SetActive(false);
