@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Assets.Altzone.Scripts.Model.Poco.Player;
-using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace MenuUi.Scripts.AvatarEditor
@@ -24,7 +23,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _features.Add(featureIds.FeetId);
 
             _characterName = "";
-            _colors = new List<string>();
+            _colors = new List<string>() { "#ffffff" };
             _scale = Vector2.one;
         }
 
@@ -38,7 +37,8 @@ namespace MenuUi.Scripts.AvatarEditor
 
         public PlayerAvatar(AvatarData data)
         {
-            Debug.LogWarning(JObject.FromObject(data).ToString());
+            //Debug.LogError(data == null);
+            //Debug.LogError(data.Name == null);
             _characterName = (string)data.Name.Clone();
             _features = new(data.FeatureIds);
             _colors = new(data.Colors);

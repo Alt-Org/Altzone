@@ -25,7 +25,11 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private CharacterLoader _characterLoader;
         [SerializeField] private List<GameObject> _modeList;
         [SerializeField] private List<Button> _switchModeButtons;
+        [Space]
         [SerializeField] private Button _saveButton;
+        [SerializeField] private Button _defaultButton;
+        [SerializeField] private Button _revertButton;
+        [Space]
         [SerializeField] private AvatarEditorMode _defaultMode = AvatarEditorMode.FeaturePicker;
         [SerializeField] private AvatarVisualDataScriptableObject _visualDataScriptableObject;
         [SerializeField] private GameObject _avatarVisualsParent;
@@ -47,6 +51,8 @@ namespace MenuUi.Scripts.AvatarEditor
         void Start()
         {
             _saveButton.onClick.AddListener(() => StartCoroutine(SaveAvatarData()));
+            _defaultButton.onClick.AddListener(() => SetDefaultAvatar());
+            _revertButton.onClick.AddListener(() => RevertAvatarChanges());
             _switchModeButtons[0].onClick.AddListener(delegate{GoIntoMode(AvatarEditorMode.FeaturePicker);});
             _switchModeButtons[1].onClick.AddListener(delegate{GoIntoMode(AvatarEditorMode.ColorPicker);});
             _switchModeButtons[2].onClick.AddListener(delegate{GoIntoMode(AvatarEditorMode.AvatarScaler);});
@@ -111,9 +117,32 @@ namespace MenuUi.Scripts.AvatarEditor
 
             _currentPlayerData = playerData;
 
+            SetAllAvatarFeatures();
+        }
+
+        private void SetDefaultAvatar()
+        {
+            _playerAvatar = new(_avatarDefaultReference.GetByCharacterId(_currentPlayerData.SelectedCharacterId)[0]);
+
+            _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
+            _featurePicker.SetLoadedFeatures(_playerAvatar.FeatureIds);
+
+            //_colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
+            _colorPicker.SetLoadedColors(_playerAvatar.Colors, _playerAvatar.FeatureIds);
+
+            _avatarScaler.SetLoadedScale(_playerAvatar.Scale);
+        }
+
+        private void RevertAvatarChanges()
+        {
+            SetAllAvatarFeatures();
+        }
+
+        private void SetAllAvatarFeatures()
+        {
             if (_currentPlayerData.AvatarData == null || !_currentPlayerData.AvatarData.Validate())
             {
-                Debug.Log("AvatarData is null. Using default data.");
+                Debug.LogError("AvatarData is null! Using default data.");
                 _playerAvatar = new(_avatarDefaultReference.GetByCharacterId(_currentPlayerData.SelectedCharacterId)[0]);
             }
             else
