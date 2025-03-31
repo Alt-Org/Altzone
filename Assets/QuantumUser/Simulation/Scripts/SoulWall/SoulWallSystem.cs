@@ -53,7 +53,7 @@ namespace Quantum.QuantumUser.Simulation.SoulWall
             FPVector2 soulWallColliderExtents;
 
             // set all soulwall common temp variables (used for all soulwalls on this side)
-            soulWallScale  = GridManager.GridScaleFactor;
+            soulWallScale  = GridManager.GridScaleFactor * 2;
             soulWallNormal = new FPVector2(0, teamNumber == BattleTeamNumber.TeamAlpha ? FP._1 : FP.Minus_1);
 
             // soulwall variables
@@ -66,7 +66,7 @@ namespace Quantum.QuantumUser.Simulation.SoulWall
             foreach (SoulWallTemplate soulWallTemplate in soulWallTemplates)
             {
                 // create entity
-                soulWallEntity    = f.Create(soulWallPrototypes[soulWallTemplate.Width-1]);
+                soulWallEntity    = f.Create(soulWallPrototypes[(soulWallTemplate.Width /2) -1]);
 
                 // get components
                 soulWall          = f.Unsafe.GetPointer<Quantum.SoulWall>(soulWallEntity);
@@ -86,7 +86,7 @@ namespace Quantum.QuantumUser.Simulation.SoulWall
                 // initialize collider
                 soulWallCollider->Shape = Shape2D.CreateBox(
                     soulWallColliderExtents * soulWallScale,
-                    new FPVector2((soulWallColliderExtents.X - FP._0_50) * soulWallScale, 0
+                    new FPVector2((soulWallColliderExtents.X - FP._0_75) * soulWallScale, (soulWallColliderExtents.Y - FP._0_75) * soulWallScale
                 ));
 
                 // teleport entity
