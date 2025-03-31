@@ -813,12 +813,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _titleText: {fileID: 5443226567735075249}
-  _globalLeaderboardButton: {fileID: 7790305272117591337}
-  _clanLeaderboardButton: {fileID: 3376510699504879732}
-  _friendsLeaderboardButton: {fileID: 2948516485117697278}
+  _globalLeaderboardButton: {fileID: 2948516485117697278}
+  _clanLeaderboardButton: {fileID: 7790305272117591337}
+  _friendsLeaderboardButton: {fileID: 3376510699504879732}
   _leaderboardTypeButtons: {fileID: 6904632870839045742}
   _winsButton: {fileID: 7471687974247006806}
   _activityButton: {fileID: 1338392920362400099}
+  _tablineRibbon: {fileID: 2388488749055727400}
+  _tablineScript: {fileID: 7120743843305630683}
   _winsPanel: {fileID: 5792825386443392324}
   _winsContent: {fileID: 8959575531257436229}
   _activityPanel: {fileID: 7810633882494317420}
@@ -13768,17 +13770,17 @@ PrefabInstance:
     - target: {fileID: 5307693372017883855, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_Colors.m_DisabledColor.b
-      value: 0
+      value: 0.21960786
       objectReference: {fileID: 0}
     - target: {fileID: 5307693372017883855, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_Colors.m_DisabledColor.g
-      value: 0.6313726
+      value: 0.21960786
       objectReference: {fileID: 0}
     - target: {fileID: 5307693372017883855, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_Colors.m_DisabledColor.r
-      value: 1
+      value: 0.21960786
       objectReference: {fileID: 0}
     - target: {fileID: 5307693372017883855, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -13798,17 +13800,17 @@ PrefabInstance:
     - target: {fileID: 5307693372017883855, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_Colors.m_HighlightedColor.b
-      value: 0
+      value: 0.3254902
       objectReference: {fileID: 0}
     - target: {fileID: 5307693372017883855, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_Colors.m_HighlightedColor.g
-      value: 0.6313726
+      value: 0.23529413
       objectReference: {fileID: 0}
     - target: {fileID: 5307693372017883855, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_Colors.m_HighlightedColor.r
-      value: 1
+      value: 0.854902
       objectReference: {fileID: 0}
     - target: {fileID: 5307693372017883855, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -13958,7 +13960,7 @@ PrefabInstance:
     - target: {fileID: 5903416952943794755, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_text
-      value: Klaani
+      value: Kaverit
       objectReference: {fileID: 0}
     - target: {fileID: 6398403803529559136, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -13983,7 +13985,7 @@ PrefabInstance:
     - target: {fileID: 6971035789137507987, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_text
-      value: 'Kaverit
+      value: 'Global
 
 '
       objectReference: {fileID: 0}
@@ -14160,7 +14162,7 @@ PrefabInstance:
     - target: {fileID: 7762203500705020365, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_text
-      value: Globaali
+      value: Klaani
       objectReference: {fileID: 0}
     - target: {fileID: 7762203500705020365, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -14175,17 +14177,17 @@ PrefabInstance:
     - target: {fileID: 8213419814490648445, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_Name
-      value: TabClan
+      value: TabFriends
       objectReference: {fileID: 0}
     - target: {fileID: 8356775703520088113, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_Name
-      value: TabGlobal
+      value: TabClan
       objectReference: {fileID: 0}
     - target: {fileID: 8382358179720365468, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_Name
-      value: TabFriends
+      value: TabGlobal
       objectReference: {fileID: 0}
     - target: {fileID: 8620236399698832103, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -14251,6 +14253,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 7454426703320412859}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2388488749055727400 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5068498240385754515, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 7454426703320412859}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2948516485117697278 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5735419373750562373, guid: 57890b7dbec8a984abb7d8148eefe9f6,

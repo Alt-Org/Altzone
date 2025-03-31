@@ -1,5 +1,6 @@
 
 using System;
+using MenuUi.Scripts.TabLine;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,13 +9,15 @@ public class LeaderboardView : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI _titleText;
 
-    [Header("Tab Buttons")]
+    [Header("Tabline")]
     [SerializeField] private Button _globalLeaderboardButton;
     [SerializeField] private Button _clanLeaderboardButton;
     [SerializeField] private Button _friendsLeaderboardButton;
     [SerializeField] private GameObject _leaderboardTypeButtons;
     [SerializeField] private Button _winsButton;
     [SerializeField] private Button _activityButton;
+    [SerializeField] private Image _tablineRibbon;
+    [SerializeField] private TabLine _tablineScript;
 
     [Header("Leaderboard panels")]
     [SerializeField] private GameObject _winsPanel;
@@ -64,6 +67,7 @@ public class LeaderboardView : MonoBehaviour
 
         SetLeaderboardType(LeaderboardType.Activity);
         OpenLeaderboard(Leaderboard.Clan);
+        _tablineScript.ActivateTabButton(1);
     }
 
     private void OpenLeaderboard(Leaderboard leaderboard)
@@ -171,6 +175,7 @@ public class LeaderboardView : MonoBehaviour
 
     private void LoadActivityView()
     {
+        // Acitivate/deactivate necessary icons
         foreach (GameObject icon in _winsViewIcons)
         {
             icon.SetActive(false);
@@ -180,10 +185,18 @@ public class LeaderboardView : MonoBehaviour
         {
             icon.SetActive(true);
         }
+
+        //Tabline colors
+        Color activityRed = new Color(0.8549f, 0.2352f, 0.3254f);
+        ChangeTablineButtonColors(_friendsLeaderboardButton, activityRed);
+        ChangeTablineButtonColors(_clanLeaderboardButton, activityRed);
+        ChangeTablineButtonColors(_globalLeaderboardButton, activityRed);
+        _tablineRibbon.color = activityRed;
     }
 
     private void LoadWinsView()
     {
+        // Acitivate/deactivate necessary icons
         foreach (GameObject icon in _activityViewIcons)
         {
             icon.SetActive(false);
@@ -193,5 +206,21 @@ public class LeaderboardView : MonoBehaviour
         {
             icon.SetActive(true);
         }
+
+        //Tabline colors
+        Color winsYellow = new Color(1f, 0.6313f, 0f);
+        ChangeTablineButtonColors(_friendsLeaderboardButton, winsYellow);
+        ChangeTablineButtonColors(_clanLeaderboardButton, winsYellow);
+        ChangeTablineButtonColors(_globalLeaderboardButton, winsYellow);
+        _tablineRibbon.color = winsYellow;
+    }
+
+    private void ChangeTablineButtonColors(Button button, Color color)
+    {
+        var colors = button.colors;
+        colors.normalColor = color;
+        colors.pressedColor = color;
+        colors.selectedColor = color;
+        button.colors = colors;
     }
 }
