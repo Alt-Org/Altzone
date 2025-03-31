@@ -98,6 +98,8 @@ namespace MenuUi.Scripts.TabLine
             [SerializeField] private Image _tabImageComponent;
             [SerializeField] private Image _detailImageComponent;
 
+            const float InactiveAlpha = 0.5f;
+
             public void SetActiveVisuals()
             {
                 if (_tabImageComponent != null)
@@ -116,12 +118,12 @@ namespace MenuUi.Scripts.TabLine
             {
                 if (_tabImageComponent != null)
                 {
-                    _tabImageComponent.color = new Color(_tabImageComponent.color.r, _tabImageComponent.color.g, _tabImageComponent.color.b, 0.5f);
+                    _tabImageComponent.color = new Color(_tabImageComponent.color.r, _tabImageComponent.color.g, _tabImageComponent.color.b, InactiveAlpha);
                 }
 
                 if (_detailImageComponent != null)
                 {
-                    _detailImageComponent.color = new Color(_tabImageComponent.color.r, _tabImageComponent.color.g, _tabImageComponent.color.b, 0.5f);
+                    _detailImageComponent.color = new Color(_tabImageComponent.color.r, _tabImageComponent.color.g, _tabImageComponent.color.b, InactiveAlpha);
                 }
             }
         }
