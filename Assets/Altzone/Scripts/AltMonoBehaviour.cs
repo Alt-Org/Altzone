@@ -68,7 +68,7 @@ public class AltMonoBehaviour : MonoBehaviour
         bool? timeout = null;
         Coroutine timeoutCoroutine = StartCoroutine(WaitUntilTimeout(timeoutTime, data => timeout = data));
 
-        yield return new WaitUntil(() => (_coroutinestore[coroutineKey] != true || timeout != null));
+        yield return new WaitUntil(() => (_coroutinestore[coroutineKey] == true || timeout != null));
 
         if (_coroutinestore[coroutineKey] == false)
         {
@@ -106,6 +106,7 @@ public class AltMonoBehaviour : MonoBehaviour
     }
     protected IEnumerator SavePlayerData(PlayerData playerData, System.Action<PlayerData> callback)
     {
+        if(playerData == null) Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, callback);
 
         //Storefront.Get().SavePlayerData(playerData, callback);
         string body = JObject.FromObject(

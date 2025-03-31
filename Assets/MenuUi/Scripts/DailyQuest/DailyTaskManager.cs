@@ -7,12 +7,13 @@ using UnityEngine.UI;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Config;
+using MenuUi.Scripts.TabLine;
 
 public class DailyTaskManager : AltMonoBehaviour
 {
     [Tooltip("Maximum time until a get or save data operation is forced to quit.")]
     [SerializeField] private float _timeoutSeconds = 10;
-    [SerializeField] private TabButtonsVisualController _tabButtonsVisualController;
+    [SerializeField] private TabLine _tabline;
 
     private PlayerData _currentPlayerData;
 
@@ -110,8 +111,6 @@ public class DailyTaskManager : AltMonoBehaviour
     {
         //DailyTask page setup
         StartCoroutine(DataSetup());
-
-        _tabButtonsVisualController.UpdateButton(_dailyTasksTabButton);
 
         //Buttons
         _dailyTasksTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.Tasks));
@@ -573,7 +572,6 @@ public class DailyTaskManager : AltMonoBehaviour
 
     public void ClearCurrentTask()
     {
-        _tabButtonsVisualController.UpdateButton(_dailyTasksTabButton);
         UpdateAvatarMood();
         _currentPlayerData.Task.ClearProgress();
         _ownTaskPageHandler.ClearCurrentTask();
@@ -607,8 +605,8 @@ public class DailyTaskManager : AltMonoBehaviour
             yield return new WaitUntil(() => done != null);
         }
 
-        _tabButtonsVisualController.UpdateButton(_ownTaskTabButton);
         StartCoroutine(GetSaveSetHandleOwnTask(playerTask));
+        _ownTaskTabButton.interactable = true;
         SwitchTab(SelectedTab.OwnTask);
     }
 
@@ -758,7 +756,6 @@ public class DailyTaskManager : AltMonoBehaviour
                             yield return new WaitUntil(() => done != null);
                         }
 
-                        _tabButtonsVisualController.UpdateButton(_ownTaskTabButton);
                         StartCoroutine(GetSaveSetHandleOwnTask(data.Value.OwnPage));
                         SwitchTab(SelectedTab.OwnTask);
                         break;
@@ -766,7 +763,6 @@ public class DailyTaskManager : AltMonoBehaviour
                 case PopupData.PopupDataType.CancelTask:
                     {
                         StartCoroutine(CancelTask(data => done = data));
-                        _tabButtonsVisualController.UpdateButton(_dailyTasksTabButton);
                         SwitchTab(SelectedTab.Tasks);
                         _ownTaskTabButton.interactable = false;
                         break;
@@ -847,6 +843,7 @@ public class DailyTaskManager : AltMonoBehaviour
             case SelectedTab.OwnTask: _ownTaskView.SetActive(true); break;
             default: _clanTaskView.SetActive(true); break;
         }
+        _tabline.ActivateTabButton((int)_selectedTab);
 
         Debug.Log($"Switched to {_selectedTab}.");
     }
