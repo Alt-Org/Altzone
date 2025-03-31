@@ -111,7 +111,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
             _currentPlayerData = playerData;
 
-            if (_currentPlayerData.AvatarData == null)
+            if (_currentPlayerData.AvatarData == null || !_currentPlayerData.AvatarData.Validate())
             {
                 Debug.Log("AvatarData is null. Using default data.");
                 _playerAvatar = new(_avatarDefaultReference.GetByCharacterId(_currentPlayerData.SelectedCharacterId)[0]);
