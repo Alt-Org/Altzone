@@ -52,7 +52,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
         List<Color> colors = new List<Color>();
         PlayerAvatar playerAvatar = null;
 
-        if (playerData.AvatarData == null)
+        if (playerData.AvatarData == null || !playerData.AvatarData.Validate())
         {
             Debug.Log("AvatarData is null. Using default data.");
             playerAvatar = new(_avatarDefaultReference.GetByCharacterId(playerData.SelectedCharacterId)[0]);
