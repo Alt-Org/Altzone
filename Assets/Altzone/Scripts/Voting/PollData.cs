@@ -1,11 +1,8 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
-using Newtonsoft.Json.Linq;
-using Photon.Realtime;
 using UnityEngine;
 
 namespace Altzone.Scripts.Voting
@@ -48,11 +45,11 @@ namespace Altzone.Scripts.Voting
         public List<PollVoteData> YesVotes;
         public List<PollVoteData> NoVotes;
 
-        public PollData(string id,long startTime, long endTime, Sprite sprite, List<string> clanMembers)
+        public PollData(string id, Sprite sprite, List<string> clanMembers, long endTime)
         {
             Id = id;
-            StartTime = startTime;
-            EndTime = endTime;
+            StartTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            EndTime = StartTime + endTime * 60;
             Sprite = sprite;
             NotVoted = new List<string>();
             YesVotes = new List<PollVoteData>();
@@ -95,9 +92,9 @@ namespace Altzone.Scripts.Voting
     {
         public FurniturePollType FurniturePollType;
         public GameFurniture Furniture;
-
-        public FurniturePollData(string id, long startTime, long endTime, Sprite sprite, List<string> clanMembers, FurniturePollType furniturePollType, GameFurniture furniture)
-        : base(id, startTime, endTime, sprite, clanMembers)
+        
+        public FurniturePollData(string id, List<string> clanMembers, FurniturePollType furniturePollType, GameFurniture furniture, long endTime = 15)
+        : base(id, furniture.FurnitureInfo.Image, clanMembers, endTime)
         {
             FurniturePollType = furniturePollType;
             Furniture = furniture;
@@ -110,8 +107,8 @@ namespace Altzone.Scripts.Voting
         public string RoleId;
         public string PlayerId;
 
-        public RolePollData(string id, long startTime, long endTime, Sprite sprite, List<string> clanMembers, RolePollType rolePollType, string roleId, string playerId)
-        : base(id, startTime, endTime, sprite, clanMembers)
+        public RolePollData(string id, Sprite sprite, List<string> clanMembers, RolePollType rolePollType, string roleId, string playerId, long endTime = 15)
+        : base(id, sprite, clanMembers, endTime)
         {
             RolePollType = rolePollType;
             RoleId = roleId;
@@ -124,8 +121,8 @@ namespace Altzone.Scripts.Voting
         public MemberPollType MemberPollType;
         public string PlayerId;
 
-        public MemberPollData(string id, long startTime, long endTime, Sprite sprite, List<string> clanMembers, MemberPollType memberPollType, string playerId)
-        : base(id, startTime, endTime, sprite, clanMembers)
+        public MemberPollData(string id, Sprite sprite, List<string> clanMembers, MemberPollType memberPollType, string playerId, long endTime = 15)
+        : base(id, sprite, clanMembers, endTime)
         {
             MemberPollType = memberPollType;
             PlayerId = playerId;

@@ -15,7 +15,7 @@ namespace MenuUi.Scripts.Storage
             _suggestSaleButton.onClick.AddListener(CreatePoll);
         }
 
-        public void CreatePoll()
+        private void CreatePoll()
         {
             if (Furniture != null) PollManager.CreateFurniturePoll(FurniturePollType.Selling, Furniture);
             VotingActions.ReloadPollList?.Invoke();

@@ -22,17 +22,13 @@ public static class PollManager
     {
         LoadClanData();
 
-        int durationInHours = 1;
         string id = GetFirstAvailableId();
-        Sprite sprite = furniture.FurnitureInfo.Image;
-        long endTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + durationInHours * 3600;
-        long startTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
         List<string> clanMembers = new List<string>();
         //if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
         if (player != null) clanMembers.Add(player.Id);
 
-        PollData pollData = new FurniturePollData(id, startTime, endTime, sprite, clanMembers, furniturePollType, furniture);    
+        PollData pollData = new FurniturePollData(id, clanMembers, furniturePollType, furniture);
         pollDataList.Add(pollData);
 
         //PrintPollList();
@@ -43,11 +39,7 @@ public static class PollManager
     {
         LoadClanData();
 
-        int durationInHours = 1;
         string id = GetFirstAvailableId();
-        Sprite sprite = furniture.Info.Image;
-        long endTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + durationInHours * 3600;
-        long startTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
         List<string> clanMembers = new List<string>();
         //if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
@@ -56,7 +48,7 @@ public static class PollManager
         GameFurniture gameFurniture = null;
         store.GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.FurnitureInfo == furniture.Info));
 
-        PollData pollData = new FurniturePollData(id, startTime, endTime, sprite, clanMembers, furniturePollType, gameFurniture);
+        PollData pollData = new FurniturePollData(id, clanMembers, furniturePollType, gameFurniture);
         pollDataList.Add(pollData);
 
         //PrintPollList();
