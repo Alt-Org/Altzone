@@ -13,9 +13,6 @@ public class LeaderboardView : MonoBehaviour
     [SerializeField] private Button _globalLeaderboardButton;
     [SerializeField] private Button _clanLeaderboardButton;
     [SerializeField] private Button _friendsLeaderboardButton;
-    //[SerializeField] private GameObject _leaderboardTypeButtons;
-    //[SerializeField] private Button _winsButton;
-    //[SerializeField] private Button _activityButton;
     [SerializeField] private Button _leaderboardTypeButton;
     [SerializeField] private Image _tablineRibbon;
     [SerializeField] private TabLine _tablineScript;
@@ -53,18 +50,6 @@ public class LeaderboardView : MonoBehaviour
         _globalLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Global));
         _clanLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Clan));
         _friendsLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Friends));
-        //_winsButton.onClick.AddListener(() =>
-        //{
-        //    SetLeaderboardType(LeaderboardType.Wins);
-        //    UpdateTitle();
-        //    LoadLeaderboard();
-        //});
-        //_activityButton.onClick.AddListener(() =>
-        //{
-        //    SetLeaderboardType(LeaderboardType.Activity);
-        //    UpdateTitle();
-        //    LoadLeaderboard();
-        //});
         _leaderboardTypeButton.onClick.AddListener(() => ToggleLeaderboardType()); 
 
         SetLeaderboardType(LeaderboardType.Activity);
@@ -76,9 +61,6 @@ public class LeaderboardView : MonoBehaviour
     private void OpenLeaderboard(Leaderboard leaderboard)
     {
         _currentLeaderboard = leaderboard;
-
-        //_leaderboardTypeButtons.SetActive(leaderboard != Leaderboard.Friends);
-        if (leaderboard == Leaderboard.Friends) SetLeaderboardType(LeaderboardType.Wins);
 
         UpdateTitle();
         LoadLeaderboard();
@@ -123,8 +105,6 @@ public class LeaderboardView : MonoBehaviour
                             item.Initialize(rank, ranking.Clan.Name, ranking.WonBattles);
                             rank++;
                         }
-
-                        //LoadWinsView();
                     }
                     else
                     {
@@ -137,8 +117,6 @@ public class LeaderboardView : MonoBehaviour
                             item.Initialize(rank, ranking.Clan.Name, ranking.Points);
                             rank++;
                         };
-
-                        //LoadActivityView();
                     }
                 }));
                 break;
@@ -151,8 +129,6 @@ public class LeaderboardView : MonoBehaviour
                         LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
                         item.Initialize(i, ((char)(64 + i)).ToString(), 16);
                     }
-
-                    //LoadWinsView();
                 }
                 else
                 {
@@ -161,8 +137,6 @@ public class LeaderboardView : MonoBehaviour
                         LeaderboardActivityItem item = Instantiate(_playerActivityItemPrefab, parent: _activityContent).GetComponent<LeaderboardActivityItem>();
                         item.Initialize(i, ((char)(64 + i)).ToString(), 100);
                     };
-
-                    //LoadActivityView();
                 }
                 break;
             case Leaderboard.Friends:
