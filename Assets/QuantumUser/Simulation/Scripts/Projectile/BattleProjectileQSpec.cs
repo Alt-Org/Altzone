@@ -5,7 +5,7 @@ using Photon.Deterministic;
 
 namespace Battle.QSimulation.Projectile
 {
-    public class BatteProjectileQSpec: AssetObject
+    public class BattleProjectileQSpec: AssetObject
     {
         [Header("Projectile configuration")]
         [Tooltip("Prototype reference to spawn projectile")]

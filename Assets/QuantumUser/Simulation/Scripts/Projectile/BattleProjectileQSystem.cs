@@ -37,13 +37,15 @@ namespace Battle.QSimulation.Projectile
             if (!projectile->IsLaunched)
             {
                 // retrieve the projectile speed from the spec
-                BatteProjectileQSpec spec = f.FindAsset(f.RuntimeConfig.ProjectileSpec);
+                BattleProjectileQSpec spec = f.FindAsset(f.RuntimeConfig.BattleProjectileSpec);
 
                 // set the projectile speed and direction
                 projectile->Speed = spec.ProjectileInitialSpeed;
                 projectile->Direction = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
 
-                PickRandomEmotionState(f, projectile);
+                // pick random EmotionState for projectile
+                projectile->Emotion = (BattleEmotionState)f.RNG->NextInclusive((int)BattleEmotionState.Sadness,(int)BattleEmotionState.Aggression);
+                f.Events.BattleChangeEmotionState(projectile->Emotion);
 
                 // reset CollisionFlags for this frame
                 projectile->CollisionFlags[(f.Number) % 2] = 0;
@@ -87,7 +89,9 @@ namespace Battle.QSimulation.Projectile
         {
             ProjectileBounce(f, projectile, projectileEntity, soulWallEntity, soulWall->Normal, soulWall->CollisionMinOffset);
 
-            PickRandomEmotionState(f, projectile);
+            // change projectile's emotion to soulwall's emotion
+            projectile->Emotion = soulWall->Emotion;
+            f.Events.BattleChangeEmotionState(projectile->Emotion);
         }
 
         public void OnTriggerProjectileHitArenaBorder(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity)
@@ -98,12 +102,6 @@ namespace Battle.QSimulation.Projectile
         public void OnTriggerProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity)
         {
             ProjectileBounce(f, projectile,  projectileEntity, playerEntity, playerHitbox->Normal, playerHitbox->CollisionMinOffset);
-        }
-
-        public void PickRandomEmotionState(Frame f, BattleProjectileQComponent* projectile)
-        {
-            projectile->Emotion = (BattleEmotionState)(((int)projectile->Emotion + f.RNG->Next(1, 4)) % 4);
-            f.Events.BattleChangeEmotionState(projectile->Emotion);
         }
     }
 }

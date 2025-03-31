@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Assets.Altzone.Scripts.Model.Poco.Player;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace MenuUi.Scripts.AvatarEditor
@@ -37,10 +38,11 @@ namespace MenuUi.Scripts.AvatarEditor
 
         public PlayerAvatar(AvatarData data)
         {
+            Debug.LogWarning(JObject.FromObject(data).ToString());
             _characterName = (string)data.Name.Clone();
             _features = new(data.FeatureIds);
             _colors = new(data.Colors);
-            _scale = new(data.Scale.x, data.Scale.y);
+            _scale = new(data.ScaleX, data.ScaleY);
         }
 
         public string Name

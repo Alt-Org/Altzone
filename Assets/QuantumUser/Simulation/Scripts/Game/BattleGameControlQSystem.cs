@@ -4,6 +4,7 @@ using UnityEngine.Scripting;
 using Quantum;
 
 using Battle.QSimulation.Player;
+using Battle.QSimulation.SoulWall;
 
 namespace Battle.QSimulation.Game
 {
@@ -26,7 +27,7 @@ namespace Battle.QSimulation.Game
             f.Events.GridSet();
 
             BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
-            gameSession->State = BattleGameState.Countdown;
+            gameSession->GameInitialized = true;
         }
 
         public override void Update(Frame f)
@@ -39,6 +40,15 @@ namespace Battle.QSimulation.Game
 
             switch (gameSession->State)
             {
+                case BattleGameState.InitializeGame:
+                    if (gameSession->GameInitialized) gameSession->State = BattleGameState.CreateMap;
+                    break;
+
+                case BattleGameState.CreateMap:
+                    CreateMap(f);
+                    gameSession->State = BattleGameState.Countdown;
+                    break;
+
                 // Countdown state handling
                 case BattleGameState.Countdown:
                     gameSession->TimeUntilStart -= f.DeltaTime;
@@ -62,6 +72,14 @@ namespace Battle.QSimulation.Game
                     }
                     break;
             }
+        }
+
+        private static void CreateMap(Frame f)
+        {
+            BattleArenaQSpec battleArenaSpec = f.FindAsset(f.RuntimeConfig.BattleArenaSpec);
+            BattleSoulWallQSpec soulWallSpec = f.FindAsset(f.RuntimeConfig.BattleSoulWallSpec);
+
+            BattleSoulWallQSystem.CreateSoulWalls(f, battleArenaSpec, soulWallSpec);
         }
     }
 }

@@ -53,7 +53,7 @@ namespace Quantum {
   public unsafe partial class Frame {
     public unsafe partial struct FrameEvents {
       static partial void GetEventTypeCountCodeGen(ref Int32 eventCount) {
-        eventCount = 6;
+        eventCount = 7;
       }
       static partial void GetParentEventIDCodeGen(Int32 eventID, ref Int32 parentEventID) {
         switch (eventID) {
@@ -67,6 +67,7 @@ namespace Quantum {
           case EventGridSet.ID: result = typeof(EventGridSet); return;
           case EventPlayerViewInit.ID: result = typeof(EventPlayerViewInit); return;
           case EventPlaySoundEvent.ID: result = typeof(EventPlaySoundEvent); return;
+          case EventSoulWallViewInit.ID: result = typeof(EventSoulWallViewInit); return;
           default: break;
         }
       }
@@ -101,6 +102,16 @@ namespace Quantum {
       public EventPlaySoundEvent PlaySoundEvent(SoundEffect SoundEffect) {
         var ev = _f.Context.AcquireEvent<EventPlaySoundEvent>(EventPlaySoundEvent.ID);
         ev.SoundEffect = SoundEffect;
+        _f.AddEvent(ev);
+        return ev;
+      }
+      public EventSoulWallViewInit SoulWallViewInit(EntityRef Entity, FP ModelScale, Int32 EmotionIndicatorColorIndex, Int32 DebugColorIndex) {
+        if (_f.IsPredicted) return null;
+        var ev = _f.Context.AcquireEvent<EventSoulWallViewInit>(EventSoulWallViewInit.ID);
+        ev.Entity = Entity;
+        ev.ModelScale = ModelScale;
+        ev.EmotionIndicatorColorIndex = EmotionIndicatorColorIndex;
+        ev.DebugColorIndex = DebugColorIndex;
         _f.AddEvent(ev);
         return ev;
       }
@@ -227,6 +238,37 @@ namespace Quantum {
       unchecked {
         var hash = 59;
         hash = hash * 31 + SoundEffect.GetHashCode();
+        return hash;
+      }
+    }
+  }
+  public unsafe partial class EventSoulWallViewInit : EventBase {
+    public new const Int32 ID = 6;
+    public EntityRef Entity;
+    public FP ModelScale;
+    public Int32 EmotionIndicatorColorIndex;
+    public Int32 DebugColorIndex;
+    protected EventSoulWallViewInit(Int32 id, EventFlags flags) : 
+        base(id, flags) {
+    }
+    public EventSoulWallViewInit() : 
+        base(6, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
+    }
+    public new QuantumGame Game {
+      get {
+        return (QuantumGame)base.Game;
+      }
+      set {
+        base.Game = value;
+      }
+    }
+    public override Int32 GetHashCode() {
+      unchecked {
+        var hash = 61;
+        hash = hash * 31 + Entity.GetHashCode();
+        hash = hash * 31 + ModelScale.GetHashCode();
+        hash = hash * 31 + EmotionIndicatorColorIndex.GetHashCode();
+        hash = hash * 31 + DebugColorIndex.GetHashCode();
         return hash;
       }
     }

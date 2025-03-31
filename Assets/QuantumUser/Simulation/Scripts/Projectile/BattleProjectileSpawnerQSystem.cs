@@ -43,7 +43,7 @@ namespace Battle.QSimulation.Projectile
             if (!filter.Spawner->HasSpawned)
             {
                 Debug.Log("Projectile should spawn");
-                BatteProjectileQSpec  config = f.FindAsset(f.RuntimeConfig.ProjectileSpec);
+                BattleProjectileQSpec  config = f.FindAsset(f.RuntimeConfig.BattleProjectileSpec);
                 SpawnProjectile(f, config.ProjectilePrototype);
 
                 // mark projectile as spawned
@@ -54,7 +54,7 @@ namespace Battle.QSimulation.Projectile
         private void SpawnProjectile(Frame f, AssetRef<EntityPrototype> childPrototype)
         {
             // retrieve the game configuration asset for custom projectile settings.
-            BatteProjectileQSpec config = f.FindAsset(f.RuntimeConfig.ProjectileSpec);
+            BattleProjectileQSpec config = f.FindAsset(f.RuntimeConfig.BattleProjectileSpec);
 
             // create a new entity based on the provided prototype.
             EntityRef projectileEntity = f.Create(childPrototype);

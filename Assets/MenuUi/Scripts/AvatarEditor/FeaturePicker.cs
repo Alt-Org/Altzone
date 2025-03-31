@@ -263,6 +263,35 @@ namespace MenuUi.Scripts.AvatarEditor
             return _selectedFeatures;
         }
 
+        public List<Sprite> GetCurrentlySelectedFeaturesAsSprites()
+        {
+            List<Sprite> sprites = new List<Sprite>();
+
+            for (int i = 0; i < _selectedFeatures.Count; i++)
+            {
+                List<AvatarPartsReference.AvatarPartInfo> currentCategoryFeatureDataPlaceholder = GetSpritesByCategory((FeatureSlot)i);
+
+                if (currentCategoryFeatureDataPlaceholder == null)
+                    return (null);
+
+                if (_selectedFeatures[i] != null && _selectedFeatures[i] != "")
+                {
+                    AvatarPartsReference.AvatarPartInfo partData =
+                        currentCategoryFeatureDataPlaceholder.Find(part => part.Id == _selectedFeatures[i]);
+
+                    if (partData != null)
+                    {
+                        sprites.Add(partData.AvatarImage);
+                        continue;
+                    }
+                }
+
+                sprites.Add(null);
+            }
+
+            return (sprites);
+        }
+
         public void SetCharacterClassID(CharacterClassID id)
         {
             _characterClassID = id;

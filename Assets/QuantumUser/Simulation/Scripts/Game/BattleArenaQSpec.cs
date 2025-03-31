@@ -12,5 +12,7 @@ namespace Battle.QSimulation.Game
         public int MiddleAreaHeight;
         public int SoulWallHeight;
         public BattleGridPosition[] PlayerSpawnPositions;
+        public BattleSoulWallTemplate[] SoulWallTeamAlphaTemplates;
+        public BattleSoulWallTemplate[] SoulWallTeamBetaTemplates;
     }
 }

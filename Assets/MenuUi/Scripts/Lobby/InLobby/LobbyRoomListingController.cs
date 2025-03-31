@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Linq;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Common.Photon;
@@ -13,14 +14,15 @@ namespace MenuUi.Scripts.Lobby.InLobby
     /// <summary>
     /// Handles calling the photon methods for creating a new room or joining a room, and forwarding the photon room list to RoomSearchPanelController.
     /// </summary>
-    public class LobbyRoomListingController : MonoBehaviour
+    public class LobbyRoomListingController : AltMonoBehaviour
     {
-        private const string DefaultRoomNameName = "Battle ";
+        private const string DefaultRoomNameCustom = "Custom ";
 
         [SerializeField] private RoomSearchPanelController _searchPanel;
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
         [SerializeField] private CreateRoomCustom _createRoomCustom;
         [SerializeField] private PasswordPopup _passwordPopup;
+        [SerializeField] private GameObject _creatingRoomText;
 
         private PhotonRoomList _photonRoomList;
 
@@ -29,6 +31,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             _photonRoomList = gameObject.GetOrAddComponent<PhotonRoomList>();
             _createRoomCustom.CreateRoomButton.onClick.RemoveAllListeners();
             _createRoomCustom.CreateRoomButton.onClick.AddListener(CreateCustomRoomOnClick);
+            LobbyManager.OnClanMemberDisconnected += HandleClanMemberDisconnected;
         }
 
         public void OnEnable()
@@ -52,20 +55,89 @@ namespace MenuUi.Scripts.Lobby.InLobby
             LobbyWindowNavigationHandler.OnLobbyWindowChangeRequest -= SwitchToRoom;
         }
 
+        private void OnDestroy()
+        {
+            LobbyManager.OnClanMemberDisconnected -= HandleClanMemberDisconnected;
+        }
+
         private void CreateCustomRoomOnClick()
         {
-            var roomName = string.IsNullOrWhiteSpace(_createRoomCustom.RoomName) ? $"{DefaultRoomNameName}{DateTime.Now.Second:00}" : _createRoomCustom.RoomName;
+            int randomNumber = UnityEngine.Random.Range(0, 100) + DateTime.Now.Millisecond;
+            var roomName = string.IsNullOrWhiteSpace(_createRoomCustom.RoomName) ? $"{DefaultRoomNameCustom} {randomNumber}" : $"{_createRoomCustom.RoomName} {randomNumber}";
 
             if (_createRoomCustom.IsPrivate && _createRoomCustom.RoomPassword != null && _createRoomCustom.RoomPassword != "")
             {
-                PhotonRealtimeClient.CreateLobbyRoom(roomName, _createRoomCustom.RoomPassword);
+                PhotonRealtimeClient.CreateCustomLobbyRoom(roomName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, _createRoomCustom.RoomPassword);
             }
             else
             {
-                PhotonRealtimeClient.CreateLobbyRoom(roomName);
+                PhotonRealtimeClient.CreateCustomLobbyRoom(roomName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion);
             }
         }
 
+        /// <summary>
+        /// Coroutine to create Clan2v2 room after client is connected to lobby.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator StartCreatingClan2v2Room(Action callback)
+        {
+            _creatingRoomText.SetActive(true);
+            bool roomCreated = false;
+            do
+            {
+                yield return null;
+                if (PhotonRealtimeClient.InLobby)
+                {
+                    CreateClan2v2Room();
+                    roomCreated = true;
+                }
+            } while (!roomCreated);
+
+            callback();
+        }
+
+        private void CreateClan2v2Room()  // soulhome value for matchmaking
+        {
+            StartCoroutine(GetClanData( clanData =>
+            {
+                if (clanData != null)
+                {
+                    PhotonRealtimeClient.JoinRandomOrCreateLobbyRoom("", GameType.Clan2v2, clanData.Name, UnityEngine.Random.Range(0,5001));
+                }
+            }));
+        }
+
+        /// <summary>
+        /// Coroutine to create Random2v2 room after client is connected to lobby.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator StartCreatingRandom2v2Room(Action callback)
+        {
+            _creatingRoomText.SetActive(true);
+            bool roomCreated = false;
+            do
+            {
+                yield return null;
+                if (PhotonRealtimeClient.InLobby)
+                {
+                    CreateRandom2v2Room();
+                    roomCreated = true;
+                }
+            } while (!roomCreated);
+
+            callback();
+        }
+
+        private void CreateRandom2v2Room()  // soulhome value for matchmaking
+        {
+            StartCoroutine(GetClanData(clanData =>
+            {
+                if (clanData != null)
+                {
+                    PhotonRealtimeClient.CreateRandom2v2LobbyRoom();
+                }
+            }));
+        }
 
         private void JoinRoom(string roomName)
         {
@@ -102,6 +174,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         public void OnJoinedRoom()
         {
+            if (_creatingRoomText.activeSelf) _creatingRoomText.SetActive(false);
             var room = PhotonRealtimeClient.LobbyCurrentRoom; // hakee pelaajan tiedot // 
             var player = PhotonRealtimeClient.LocalLobbyPlayer;
             //PhotonRealtimeClient.NickName = room.GetUniquePlayerNameForRoom(player, PhotonRealtimeClient.NickName, "");
@@ -111,11 +184,12 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         public void SwitchToRoom()
         {
-            _roomSwitcher.SwitchRoom();
+            _roomSwitcher.SwitchRoom(InLobbyController.SelectedGameType);
         }
 
         private void UpdateStatus()
         {
+            LobbyManager.Instance.CurrentRooms = _photonRoomList.CurrentRooms;
             var rooms = _photonRoomList.CurrentRooms.ToList();
             rooms.Sort((a, b) =>
             {
@@ -126,6 +200,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
             });
             _searchPanel.RoomsData = rooms;
             _searchPanel.SetOnJoinRoom(JoinRoom);
+        }
+
+        private void HandleClanMemberDisconnected()
+        {
+            PopupSignalBus.OnChangePopupInfoSignal("Pelin etsiminen lopetetaan. Klaanin jäsen sulki pelin.");
         }
     }
 }

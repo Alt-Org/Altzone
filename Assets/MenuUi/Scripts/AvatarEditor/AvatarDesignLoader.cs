@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Player;
-using Altzone.Scripts.ReferenceSheets;
 using MenuUi.Scripts.AvatarEditor;
 using UnityEngine;
 
@@ -15,6 +14,9 @@ public class AvatarDesignLoader : AltMonoBehaviour
     [SerializeField] private AvatarDefaultReference _avatarDefaultReference;
     [Space]
     [SerializeField] private AvatarVisualDataScriptableObject _avatarVisualDataScriptableObject;
+
+    public delegate void AvatarDesignUpdate();
+    public static event AvatarDesignUpdate OnAvatarDesignUpdate;
 
     private void Awake()
     {
@@ -75,5 +77,12 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
         _avatarVisualDataScriptableObject.sprites = sprites;
         _avatarVisualDataScriptableObject.colors = colors;
+
+        InvokeOnAvatarDesignUpdate();
+    }
+
+    public void InvokeOnAvatarDesignUpdate()
+    {
+        OnAvatarDesignUpdate?.Invoke();
     }
 }

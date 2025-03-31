@@ -821,7 +821,7 @@ public class DailyTaskManager : AltMonoBehaviour
     {
         DailyTaskProgressManager.Instance.ChangeCurrentTask(playerTask);
         _ownTaskId = playerTask.Id;
-        _ownTaskPageHandler.SetDailyTask(playerTask.Title, playerTask.Amount, playerTask.Points, playerTask.Coins);
+        _ownTaskPageHandler.SetDailyTask(playerTask);
         _ownTaskPageHandler.SetTaskProgress((float)playerTask.TaskProgress / (float)playerTask.Amount);
         _ownTaskPageHandler.TESTSetTaskValue(playerTask.TaskProgress);
         Debug.Log("Task id: " + _ownTaskId + ", has been accepted.");

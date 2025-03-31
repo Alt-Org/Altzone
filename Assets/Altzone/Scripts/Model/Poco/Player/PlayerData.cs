@@ -121,7 +121,26 @@ namespace Altzone.Scripts.Model.Poco.Player
             Id = player._id;
             ClanId = player.clan_id ?? string.Empty;
             SelectedCharacterId = (int)(player.currentAvatarId == null ? 0 : player.currentAvatarId);
-            SelectedCharacterIds = player?.battleCharacter_ids == null ? new string[3] {"0","0","0"} : player.battleCharacter_ids;
+            SelectedCharacterIds = (player?.battleCharacter_ids == null || player.battleCharacter_ids.Length < 3) ? new string[3] {"0","0","0"} : player.battleCharacter_ids;
+            Name = player.name;
+            BackpackCapacity = player.backpackCapacity;
+            UniqueIdentifier = player.uniqueIdentifier;
+            points = player.points;
+            stats = player.gameStatistics;
+        }
+
+        public void UpdatePlayerData(ServerPlayer player)
+        {
+            Assert.IsTrue(player._id.IsPrimaryKey());
+            Assert.IsTrue(player.clan_id.IsNullOEmptyOrNonWhiteSpace());
+            //Assert.IsTrue(player.currentCustomCharacterId >= 0);
+            Assert.IsTrue(player.name.IsMandatory());
+            Assert.IsTrue(player.backpackCapacity >= 0);
+            Assert.IsTrue(player.uniqueIdentifier.IsMandatory());
+            Id = player._id;
+            ClanId = player.clan_id ?? string.Empty;
+            SelectedCharacterId = (int)(player.currentAvatarId == null ? 0 : player.currentAvatarId);
+            SelectedCharacterIds = player?.battleCharacter_ids == null || player.battleCharacter_ids.Length < 3 ? new string[3] { "0", "0", "0" } : player.battleCharacter_ids;
             Name = player.name;
             BackpackCapacity = player.backpackCapacity;
             UniqueIdentifier = player.uniqueIdentifier;

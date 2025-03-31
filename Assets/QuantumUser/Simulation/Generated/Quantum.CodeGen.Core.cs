@@ -58,7 +58,8 @@ namespace Quantum {
     Love = 4,
   }
   public enum BattleGameState : int {
-    PreGame,
+    InitializeGame,
+    CreateMap,
     ReadyToStart,
     Countdown,
     GetReadyToPlay,
@@ -539,6 +540,33 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  [Serializable()]
+  public unsafe partial struct BattleSoulWallTemplate {
+    public const Int32 SIZE = 16;
+    public const Int32 ALIGNMENT = 4;
+    [FieldOffset(8)]
+    public BattleGridPosition Position;
+    [FieldOffset(4)]
+    public Int32 Width;
+    [FieldOffset(0)]
+    public Int32 ColorIndex;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 19919;
+        hash = hash * 31 + Position.GetHashCode();
+        hash = hash * 31 + Width.GetHashCode();
+        hash = hash * 31 + ColorIndex.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (BattleSoulWallTemplate*)ptr;
+        serializer.Stream.Serialize(&p->ColorIndex);
+        serializer.Stream.Serialize(&p->Width);
+        Quantum.BattleGridPosition.Serialize(&p->Position, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Input {
     public const Int32 SIZE = 40;
     public const Int32 ALIGNMENT = 8;
@@ -679,6 +707,8 @@ namespace Quantum {
   public unsafe partial struct BattleGameSessionQSingleton : Quantum.IComponentSingleton {
     public const Int32 SIZE = 16;
     public const Int32 ALIGNMENT = 8;
+    [FieldOffset(4)]
+    public QBoolean GameInitialized;
     [FieldOffset(0)]
     public BattleGameState State;
     [FieldOffset(8)]
@@ -686,6 +716,7 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 1487;
+        hash = hash * 31 + GameInitialized.GetHashCode();
         hash = hash * 31 + (Int32)State;
         hash = hash * 31 + TimeUntilStart.GetHashCode();
         return hash;
@@ -694,6 +725,7 @@ namespace Quantum {
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (BattleGameSessionQSingleton*)ptr;
         serializer.Stream.Serialize((Int32*)&p->State);
+        QBoolean.Serialize(&p->GameInitialized, serializer);
         FP.Serialize(&p->TimeUntilStart, serializer);
     }
   }
@@ -997,18 +1029,21 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattleSoulWallQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 32;
+    public const Int32 SIZE = 40;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(0)]
-    public EntityRef ChildEntity;
-    [FieldOffset(16)]
-    public FPVector2 Normal;
     [FieldOffset(8)]
+    public EntityRef ChildEntity;
+    [FieldOffset(0)]
+    public BattleEmotionState Emotion;
+    [FieldOffset(24)]
+    public FPVector2 Normal;
+    [FieldOffset(16)]
     public FP CollisionMinOffset;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 9463;
         hash = hash * 31 + ChildEntity.GetHashCode();
+        hash = hash * 31 + (Int32)Emotion;
         hash = hash * 31 + Normal.GetHashCode();
         hash = hash * 31 + CollisionMinOffset.GetHashCode();
         return hash;
@@ -1016,6 +1051,7 @@ namespace Quantum {
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (BattleSoulWallQComponent*)ptr;
+        serializer.Stream.Serialize((Int32*)&p->Emotion);
         EntityRef.Serialize(&p->ChildEntity, serializer);
         FP.Serialize(&p->CollisionMinOffset, serializer);
         FPVector2.Serialize(&p->Normal, serializer);
@@ -1233,6 +1269,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.BattleProjectileQComponent), Quantum.BattleProjectileQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleProjectileSpawnerQComponent), Quantum.BattleProjectileSpawnerQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleSoulWallQComponent), Quantum.BattleSoulWallQComponent.SIZE);
+      typeRegistry.Register(typeof(Quantum.BattleSoulWallTemplate), Quantum.BattleSoulWallTemplate.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleTeamNumber), 4);
       typeRegistry.Register(typeof(Quantum.BitSet1024), Quantum.BitSet1024.SIZE);
       typeRegistry.Register(typeof(Quantum.BitSet128), Quantum.BitSet128.SIZE);

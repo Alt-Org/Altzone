@@ -70,6 +70,7 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattleGameSessionQSingleton))]
   public unsafe partial class BattleGameSessionQSingletonPrototype : ComponentPrototype<Quantum.BattleGameSessionQSingleton> {
+    public QBoolean GameInitialized;
     public Quantum.QEnum32<BattleGameState> State;
     public FP TimeUntilStart;
     partial void MaterializeUser(Frame frame, ref Quantum.BattleGameSessionQSingleton result, in PrototypeMaterializationContext context);
@@ -79,6 +80,7 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.BattleGameSessionQSingleton result, in PrototypeMaterializationContext context = default) {
+        result.GameInitialized = this.GameInitialized;
         result.State = this.State;
         result.TimeUntilStart = this.TimeUntilStart;
         MaterializeUser(frame, ref result, in context);
@@ -356,6 +358,7 @@ namespace Quantum.Prototypes {
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattleSoulWallQComponent))]
   public unsafe class BattleSoulWallQComponentPrototype : ComponentPrototype<Quantum.BattleSoulWallQComponent> {
     public MapEntityId ChildEntity;
+    public Quantum.QEnum32<BattleEmotionState> Emotion;
     public FPVector2 Normal;
     public FP CollisionMinOffset;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
@@ -365,8 +368,23 @@ namespace Quantum.Prototypes {
     }
     public void Materialize(Frame frame, ref Quantum.BattleSoulWallQComponent result, in PrototypeMaterializationContext context = default) {
         PrototypeValidator.FindMapEntity(this.ChildEntity, in context, out result.ChildEntity);
+        result.Emotion = this.Emotion;
         result.Normal = this.Normal;
         result.CollisionMinOffset = this.CollisionMinOffset;
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleSoulWallTemplate))]
+  public unsafe partial class BattleSoulWallTemplatePrototype : StructPrototype {
+    public Quantum.Prototypes.BattleGridPositionPrototype Position;
+    public Int32 Width;
+    public Int32 ColorIndex;
+    partial void MaterializeUser(Frame frame, ref Quantum.BattleSoulWallTemplate result, in PrototypeMaterializationContext context);
+    public void Materialize(Frame frame, ref Quantum.BattleSoulWallTemplate result, in PrototypeMaterializationContext context = default) {
+        this.Position.Materialize(frame, ref result.Position, in context);
+        result.Width = this.Width;
+        result.ColorIndex = this.ColorIndex;
+        MaterializeUser(frame, ref result, in context);
     }
   }
   [System.SerializableAttribute()]
