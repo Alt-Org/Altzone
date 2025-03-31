@@ -90,7 +90,7 @@ public class AltMonoBehaviour : MonoBehaviour
 
         if (callback == null)
         {
-            StartCoroutine(ServerManager.Instance.GetPlayerFromServer(content =>
+            StartCoroutine(ServerManager.Instance.GetOwnPlayerFromServer(content =>
             {
                 if (content != null)
                     callback(new(content));
