@@ -7,11 +7,13 @@ using UnityEngine.UI;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Config;
+using MenuUi.Scripts.TabLine;
 
 public class DailyTaskManager : AltMonoBehaviour
 {
     [Tooltip("Maximum time until a get or save data operation is forced to quit.")]
     [SerializeField] private float _timeoutSeconds = 10;
+    [SerializeField] private TabLine _tabline;
 
     private PlayerData _currentPlayerData;
 
@@ -604,6 +606,7 @@ public class DailyTaskManager : AltMonoBehaviour
         }
 
         StartCoroutine(GetSaveSetHandleOwnTask(playerTask));
+        _ownTaskTabButton.interactable = true;
         SwitchTab(SelectedTab.OwnTask);
     }
 
@@ -840,6 +843,7 @@ public class DailyTaskManager : AltMonoBehaviour
             case SelectedTab.OwnTask: _ownTaskView.SetActive(true); break;
             default: _clanTaskView.SetActive(true); break;
         }
+        _tabline.ActivateTabButton((int)_selectedTab);
 
         Debug.Log($"Switched to {_selectedTab}.");
     }
