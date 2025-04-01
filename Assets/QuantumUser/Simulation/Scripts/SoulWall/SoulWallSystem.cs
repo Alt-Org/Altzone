@@ -66,7 +66,7 @@ namespace Quantum.QuantumUser.Simulation.SoulWall
             foreach (SoulWallTemplate soulWallTemplate in soulWallTemplates)
             {
                 // create entity
-                soulWallEntity    = f.Create(soulWallPrototypes[(soulWallTemplate.Width /2) -1]);
+                soulWallEntity    = f.Create(soulWallPrototypes[soulWallTemplate.WidthIndex-1]);
 
                 // get components
                 soulWall          = f.Unsafe.GetPointer<Quantum.SoulWall>(soulWallEntity);
