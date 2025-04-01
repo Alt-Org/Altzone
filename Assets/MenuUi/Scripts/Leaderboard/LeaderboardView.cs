@@ -16,12 +16,17 @@ public class LeaderboardView : MonoBehaviour
     [SerializeField] private Button _leaderboardTypeButton;
     [SerializeField] private Image _tablineRibbon;
     [SerializeField] private TabLine _tablineScript;
+    [SerializeField] private GameObject _leaderboardCategoryButtons;
+    [SerializeField] private Button _clansButton;
+    [SerializeField] private Button _playersButton;
 
     [Header("Leaderboard panels")]
     [SerializeField] private GameObject _winsPanel;
     [SerializeField] private Transform _winsContent;
     [SerializeField] private GameObject _activityPanel;
     [SerializeField] private Transform _activityContent;
+    [SerializeField] private GameObject _clanPointsPanel;
+    [SerializeField] private Transform _clanPointsContent;
 
     [Header("Different view icons")]
     [SerializeField] private GameObject[] _activityViewIcons;
@@ -30,6 +35,7 @@ public class LeaderboardView : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private GameObject _playerWinsItemPrefab;
     [SerializeField] private GameObject _playerActivityItemPrefab;
+    [SerializeField] private GameObject _clanPointsItemPrefab;
 
     private enum Leaderboard
     {
@@ -40,17 +46,28 @@ public class LeaderboardView : MonoBehaviour
     private enum LeaderboardType
     {
         Wins,
-        Activity
+        Activity,
+        ClanPoints
+    }
+    private enum LeaderboardCategory
+    {
+        Clans,
+        Players
     }
     private Leaderboard _currentLeaderboard = Leaderboard.Global;
     private LeaderboardType _currentLeaderboardType = LeaderboardType.Wins;
+    private LeaderboardCategory _currentLeaderboardCategory = LeaderboardCategory.Players;
 
     private void Start()
     {
         _globalLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Global));
         _clanLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Clan));
         _friendsLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Friends));
-        _leaderboardTypeButton.onClick.AddListener(() => ToggleLeaderboardType()); 
+
+        _leaderboardTypeButton.onClick.AddListener(() => ToggleLeaderboardType());
+
+        _clansButton.onClick.AddListener(() => ListClans());
+        _playersButton.onClick.AddListener(() => ListPlayers());
 
         SetLeaderboardType(LeaderboardType.Activity);
         OpenLeaderboard(Leaderboard.Clan);
@@ -62,6 +79,8 @@ public class LeaderboardView : MonoBehaviour
     {
         _currentLeaderboard = leaderboard;
 
+        SetLeaderboardType(LeaderboardType.Activity);
+        _currentLeaderboardCategory = LeaderboardCategory.Players;
         UpdateTitle();
         LoadLeaderboard();
     }
@@ -71,6 +90,7 @@ public class LeaderboardView : MonoBehaviour
         _currentLeaderboardType = leaderboardType;
         _winsPanel.SetActive(_currentLeaderboardType == LeaderboardType.Wins);
         _activityPanel.SetActive(_currentLeaderboardType == LeaderboardType.Activity);
+        _clanPointsPanel.SetActive(_currentLeaderboardType == LeaderboardType.ClanPoints);
     }
 
     private void UpdateTitle()
@@ -88,37 +108,60 @@ public class LeaderboardView : MonoBehaviour
     {
         foreach (Transform child in _winsContent) Destroy(child.gameObject);
         foreach (Transform child in _activityContent) Destroy(child.gameObject);
+        foreach (Transform child in _clanPointsContent) Destroy(child.gameObject);
+
+        _leaderboardTypeButton.interactable = (_currentLeaderboardType != LeaderboardType.ClanPoints);
+        _leaderboardCategoryButtons.SetActive(_currentLeaderboard == Leaderboard.Global);
 
         switch (_currentLeaderboard)
         {
             case Leaderboard.Global:
-                StartCoroutine(ServerManager.Instance.GetPlayerLeaderboardFromServer((playerLeaderboard) =>
+                if (_currentLeaderboardCategory == LeaderboardCategory.Players)
                 {
-                    if (_currentLeaderboardType == LeaderboardType.Wins)
+                    StartCoroutine(ServerManager.Instance.GetPlayerLeaderboardFromServer((playerLeaderboard) =>
                     {
-                        playerLeaderboard.Sort((a, b) => a.WonBattles.CompareTo(b.WonBattles));
-
-                        int rank = 1;
-                        foreach (PlayerLeaderboard ranking in playerLeaderboard)
+                        if (_currentLeaderboardType == LeaderboardType.Wins)
                         {
-                            LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-                            item.Initialize(rank, ranking.Clan.Name, ranking.WonBattles);
-                            rank++;
+                            playerLeaderboard.Sort((a, b) => a.WonBattles.CompareTo(b.WonBattles));
+
+                            int rank = 1;
+                            foreach (PlayerLeaderboard ranking in playerLeaderboard)
+                            {
+                                LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
+                                item.Initialize(rank, ranking.Clan.Name, ranking.WonBattles);
+                                rank++;
+                            }
                         }
-                    }
-                    else
+                        else
+                        {
+                            playerLeaderboard.Sort((a, b) => a.Points.CompareTo(b.Points));
+
+                            int rank = 1;
+                            foreach (PlayerLeaderboard ranking in playerLeaderboard)
+                            {
+                                LeaderboardActivityItem item = Instantiate(_playerActivityItemPrefab, parent: _activityContent).GetComponent<LeaderboardActivityItem>();
+                                item.Initialize(rank, ranking.Clan.Name, ranking.Points);
+                                rank++;
+                            };
+                        }
+                    }));
+                }
+                else
+                {
+                    StartCoroutine(ServerManager.Instance.GetClanLeaderboardFromServer((clanLeaderboard) =>
                     {
-                        playerLeaderboard.Sort((a, b) => a.Points.CompareTo(b.Points));
+                        clanLeaderboard.Sort((a, b) => a.Points.CompareTo(b.Points));
 
                         int rank = 1;
-                        foreach (PlayerLeaderboard ranking in playerLeaderboard)
+                        foreach (ClanLeaderboard ranking in clanLeaderboard)
                         {
-                            LeaderboardActivityItem item = Instantiate(_playerActivityItemPrefab, parent: _activityContent).GetComponent<LeaderboardActivityItem>();
+                            LeaderboardClanPointsItem item = Instantiate(_clanPointsItemPrefab, parent: _clanPointsContent).GetComponent<LeaderboardClanPointsItem>();
                             item.Initialize(rank, ranking.Clan.Name, ranking.Points);
                             rank++;
-                        };
-                    }
-                }));
+                        }
+
+                    }));
+                }
                 break;
             case Leaderboard.Clan:
                 // For Testing
@@ -217,5 +260,19 @@ public class LeaderboardView : MonoBehaviour
         colors.pressedColor = color;
         colors.selectedColor = color;
         button.colors = colors;
+    }
+
+    private void ListClans()
+    {
+        _currentLeaderboardCategory = LeaderboardCategory.Clans;
+        SetLeaderboardType(LeaderboardType.ClanPoints);
+        LoadLeaderboard();
+    }
+
+    private void ListPlayers()
+    {
+        _currentLeaderboardCategory = LeaderboardCategory.Players;
+        SetLeaderboardType(LeaderboardType.Activity);
+        LoadLeaderboard();
     }
 }
