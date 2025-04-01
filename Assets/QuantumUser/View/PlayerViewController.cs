@@ -22,31 +22,37 @@ public unsafe class PlayerViewController : QuantumEntityViewComponent
         PlayerData* playerData = PredictedFrame.Unsafe.GetPointer<PlayerData>(EntityRef);
         if (playerData->PlayerRef == PlayerRef.None) return;
 
-        UpdateAnimator(playerData);
+        Vector3 targetPosition = playerData->TargetPosition.ToUnityVector3();
 
+        UpdateModelPositionAdjustment(&targetPosition);
+        UpdateAnimator(&targetPosition);
     }
 
-    private void UpdateAnimator(PlayerData* playerData)
+    private void UpdateModelPositionAdjustment(Vector3* targetPosition)
+    {
+        const float adjustmentDistance = 0.25f;
+        Vector3 distanceToTargetPosition = *targetPosition - transform.position;
+        if(distanceToTargetPosition.sqrMagnitude < adjustmentDistance * adjustmentDistance)
+        {
+            transform.position = *targetPosition;
+        }
+    }
+
+    private void UpdateAnimator(Vector3* targetPosition)
     {
         int animationState = 0;
         bool flipX = false;
         
-        if (transform.position.ToFPVector2() != playerData->TargetPosition)
+        if (transform.position != *targetPosition)
         {
-            FPVector2 movement = playerData->TargetPosition - transform.position.ToFPVector2();
-            if((movement.X < -FP._0_25 || movement.X > FP._0_25) || (movement.Y < -FP._0_25 || movement.Y > FP._0_25))
+            Vector3 movement = *targetPosition - transform.position;
+            if(Mathf.Abs(movement.x) >= Mathf.Abs(movement.z))
             {
-                if(FPMath.Abs(movement.X) >= FPMath.Abs(movement.Y))
-                {
-                    flipX = movement.X < 0;
-                    animationState = 1;
-                } else
-                {
-                    animationState = 2;
-                }
+                flipX = movement.x < 0;
+                animationState = 1;
             } else
             {
-                animationState = 0;
+                animationState = 2;
             }
         }
 
