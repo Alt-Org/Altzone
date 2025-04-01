@@ -71,7 +71,7 @@ namespace QuantumUser.Scripts
 
                         // Clear the countdown text when the countdown is negative
                         _gameUiController.AnnouncementHandler.ClearAnnouncerTextField();
-
+                        _gameUiController.TimerHandler.StartTimer();
 
                         break;
                     case GameState.GetReadyToPlay:
@@ -80,6 +80,7 @@ namespace QuantumUser.Scripts
                         break;
 
                     case GameState.GameOver:
+                        _gameUiController.TimerHandler.StopTimer();
                         // If the game is over, display "Game Over!" and show the Game Over UI
                         _gameUiController.GameOverHandler.SetShow(true);
                         break;
