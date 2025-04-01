@@ -593,14 +593,14 @@ namespace Quantum {
     [FieldOffset(8)]
     public GridPosition Position;
     [FieldOffset(4)]
-    public Int32 Width;
+    public Int32 WidthType;
     [FieldOffset(0)]
     public Int32 ColorIndex;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 17047;
         hash = hash * 31 + Position.GetHashCode();
-        hash = hash * 31 + Width.GetHashCode();
+        hash = hash * 31 + WidthType.GetHashCode();
         hash = hash * 31 + ColorIndex.GetHashCode();
         return hash;
       }
@@ -608,7 +608,7 @@ namespace Quantum {
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (SoulWallTemplate*)ptr;
         serializer.Stream.Serialize(&p->ColorIndex);
-        serializer.Stream.Serialize(&p->Width);
+        serializer.Stream.Serialize(&p->WidthType);
         Quantum.GridPosition.Serialize(&p->Position, serializer);
     }
   }

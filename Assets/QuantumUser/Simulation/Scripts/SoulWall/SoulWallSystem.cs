@@ -66,7 +66,7 @@ namespace Quantum.QuantumUser.Simulation.SoulWall
             foreach (SoulWallTemplate soulWallTemplate in soulWallTemplates)
             {
                 // create entity
-                soulWallEntity    = f.Create(soulWallPrototypes[soulWallTemplate.Width-1]);
+                soulWallEntity    = f.Create(soulWallPrototypes[soulWallTemplate.WidthType-1]);
 
                 // get components
                 soulWall          = f.Unsafe.GetPointer<Quantum.SoulWall>(soulWallEntity);
@@ -86,8 +86,11 @@ namespace Quantum.QuantumUser.Simulation.SoulWall
                 // initialize collider
                 soulWallCollider->Shape = Shape2D.CreateBox(
                     soulWallColliderExtents * soulWallScale,
-                    new FPVector2((soulWallColliderExtents.X - FP._0_50) * soulWallScale, 0
-                ));
+                    new FPVector2(
+                        ( soulWallColliderExtents.X - FP._0_50) * soulWallScale,
+                        (-soulWallColliderExtents.Y + FP._0_50) * soulWallScale
+                    )
+                );
 
                 // teleport entity
                 soulWallTransform->Teleport(f, soulWallPosition, FP._0);
