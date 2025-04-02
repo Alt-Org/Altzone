@@ -30,6 +30,12 @@ namespace QuantumUser.Scripts
             {
                 _gameUiController.DiamondsHandler.SetDiamondsText(0);
             }
+
+            if (_gameUiController.GiveUpButtonHandler != null)
+            {
+                _gameUiController.GiveUpButtonHandler.GiveUpButton.onClick.AddListener(OnGiveUpButtonPressed);
+                _gameUiController.GiveUpButtonHandler.SetShow(true);
+            }
         }
 
         private void OnChangeEmotionState(EventChangeEmotionState e)
@@ -42,6 +48,11 @@ namespace QuantumUser.Scripts
         {
             _gameUiController.DebugStatsOverlay.SetShow(true);
             _gameUiController.DebugStatsOverlay.SetStats(e.Character);
+        }
+
+        private void OnGiveUpButtonPressed()
+        {
+            Debug.Log("Give up button pressed!");
         }
 
         // Handles UI updates based on the game's state and countdown
@@ -85,6 +96,7 @@ namespace QuantumUser.Scripts
                         break;
 
                     case GameState.GameOver:
+                        _gameUiController.GiveUpButtonHandler.SetShow(false);
                         _gameUiController.TimerHandler.StopTimer();
                         // If the game is over, display "Game Over!" and show the Game Over UI
                         _gameUiController.GameOverHandler.SetShow(true);
