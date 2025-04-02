@@ -187,10 +187,9 @@ MonoBehaviour:
     - rid: 3915831314950914051
       type: {class: BattleGoalQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
-        goalConfig:
-          Id:
-            Value: 337072248309995173
-        hasTriggered:
+        TeamNumber:
+          Value: 2
+        HasTriggered:
           Value: 0
     - rid: 4158493136064086016
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
@@ -247,10 +246,9 @@ MonoBehaviour:
     - rid: 4158493136064086019
       type: {class: BattleGoalQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
-        goalConfig:
-          Id:
-            Value: 269125312843482111
-        hasTriggered:
+        TeamNumber:
+          Value: 1
+        HasTriggered:
           Value: 0
     - rid: 8446298868303265792
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}

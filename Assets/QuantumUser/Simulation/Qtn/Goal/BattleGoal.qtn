@@ -2,6 +2,6 @@ using Battle.QSimulation.Goal;
 
 component BattleGoalQComponent
 {
-    AssetRef<GoalConfig> goalConfig;
-    bool hasTriggered;
+    BattleTeamNumber TeamNumber;
+    bool HasTriggered;
 }

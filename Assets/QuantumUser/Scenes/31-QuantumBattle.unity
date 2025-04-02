@@ -2328,7 +2328,7 @@ GameObject:
   - component: {fileID: 196834851}
   - component: {fileID: 196834852}
   m_Layer: 0
-  m_Name: ArenaBorderTop(Goal)
+  m_Name: ArenaBorderTop(GoalTeamBeta)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2516,10 +2516,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    goalConfig:
-      Id:
-        Value: 337072248309995173
-    hasTriggered:
+    TeamNumber:
+      Value: 2
+    HasTriggered:
       Value: 0
 --- !u!1 &321734676
 GameObject:
@@ -3442,7 +3441,7 @@ GameObject:
   - component: {fileID: 1663712105}
   - component: {fileID: 1663712106}
   m_Layer: 0
-  m_Name: ArenaBorderBottom(Goal)
+  m_Name: ArenaBorderBottom(GoalTeamAlpha)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3630,10 +3629,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    goalConfig:
-      Id:
-        Value: 269125312843482111
-    hasTriggered:
+    TeamNumber:
+      Value: 1
+    HasTriggered:
       Value: 0
 --- !u!1 &1957537064
 GameObject:

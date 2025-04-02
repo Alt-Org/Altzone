@@ -89,8 +89,8 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattleGoalQComponent))]
   public unsafe partial class BattleGoalQComponentPrototype : ComponentPrototype<Quantum.BattleGoalQComponent> {
-    public AssetRef<GoalConfig> goalConfig;
-    public QBoolean hasTriggered;
+    public Quantum.QEnum32<BattleTeamNumber> TeamNumber;
+    public QBoolean HasTriggered;
     partial void MaterializeUser(Frame frame, ref Quantum.BattleGoalQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattleGoalQComponent component = default;
@@ -98,8 +98,8 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.BattleGoalQComponent result, in PrototypeMaterializationContext context = default) {
-        result.goalConfig = this.goalConfig;
-        result.hasTriggered = this.hasTriggered;
+        result.TeamNumber = this.TeamNumber;
+        result.HasTriggered = this.HasTriggered;
         MaterializeUser(frame, ref result, in context);
     }
   }

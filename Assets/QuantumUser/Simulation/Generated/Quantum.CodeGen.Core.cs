@@ -731,24 +731,24 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattleGoalQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 16;
-    public const Int32 ALIGNMENT = 8;
-    [FieldOffset(8)]
-    public AssetRef<GoalConfig> goalConfig;
+    public const Int32 SIZE = 8;
+    public const Int32 ALIGNMENT = 4;
     [FieldOffset(0)]
-    public QBoolean hasTriggered;
+    public BattleTeamNumber TeamNumber;
+    [FieldOffset(4)]
+    public QBoolean HasTriggered;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 4663;
-        hash = hash * 31 + goalConfig.GetHashCode();
-        hash = hash * 31 + hasTriggered.GetHashCode();
+        hash = hash * 31 + (Int32)TeamNumber;
+        hash = hash * 31 + HasTriggered.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (BattleGoalQComponent*)ptr;
-        QBoolean.Serialize(&p->hasTriggered, serializer);
-        AssetRef.Serialize(&p->goalConfig, serializer);
+        serializer.Stream.Serialize((Int32*)&p->TeamNumber);
+        QBoolean.Serialize(&p->HasTriggered, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -1057,12 +1057,6 @@ namespace Quantum {
         FPVector2.Serialize(&p->Normal, serializer);
     }
   }
-  public unsafe partial interface ISignalOnTriggerTopGoal : ISignal {
-    void OnTriggerTopGoal(Frame f);
-  }
-  public unsafe partial interface ISignalOnTriggerBottomGoal : ISignal {
-    void OnTriggerBottomGoal(Frame f);
-  }
   public unsafe partial interface ISignalBattleOnProjectileHitSoulWall : ISignal {
     void BattleOnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity);
   }
@@ -1072,17 +1066,19 @@ namespace Quantum {
   public unsafe partial interface ISignalBattleOnProjectileHitPlayerHitbox : ISignal {
     void BattleOnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity);
   }
+  public unsafe partial interface ISignalBattleOnProjectileHitGoal : ISignal {
+    void BattleOnProjectileHitGoal(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleGoalQComponent* goal, EntityRef goalEntity);
+  }
   public static unsafe partial class Constants {
     public const Int32 BATTLE_PLAYER_SLOT_COUNT = 4;
     public const Int32 BATTLE_PLAYER_CHARACTER_COUNT = 3;
     public const Int32 BATTLE_PLAYER_CHARACTER_TOTAL_COUNT = 12;
   }
   public unsafe partial class Frame {
-    private ISignalOnTriggerTopGoal[] _ISignalOnTriggerTopGoalSystems;
-    private ISignalOnTriggerBottomGoal[] _ISignalOnTriggerBottomGoalSystems;
     private ISignalBattleOnProjectileHitSoulWall[] _ISignalBattleOnProjectileHitSoulWallSystems;
     private ISignalBattleOnProjectileHitArenaBorder[] _ISignalBattleOnProjectileHitArenaBorderSystems;
     private ISignalBattleOnProjectileHitPlayerHitbox[] _ISignalBattleOnProjectileHitPlayerHitboxSystems;
+    private ISignalBattleOnProjectileHitGoal[] _ISignalBattleOnProjectileHitGoalSystems;
     partial void AllocGen() {
       _globals = (_globals_*)Context.Allocator.AllocAndClear(sizeof(_globals_));
     }
@@ -1094,11 +1090,10 @@ namespace Quantum {
     }
     partial void InitGen() {
       Initialize(this, this.SimulationConfig.Entities, 256);
-      _ISignalOnTriggerTopGoalSystems = BuildSignalsArray<ISignalOnTriggerTopGoal>();
-      _ISignalOnTriggerBottomGoalSystems = BuildSignalsArray<ISignalOnTriggerBottomGoal>();
       _ISignalBattleOnProjectileHitSoulWallSystems = BuildSignalsArray<ISignalBattleOnProjectileHitSoulWall>();
       _ISignalBattleOnProjectileHitArenaBorderSystems = BuildSignalsArray<ISignalBattleOnProjectileHitArenaBorder>();
       _ISignalBattleOnProjectileHitPlayerHitboxSystems = BuildSignalsArray<ISignalBattleOnProjectileHitPlayerHitbox>();
+      _ISignalBattleOnProjectileHitGoalSystems = BuildSignalsArray<ISignalBattleOnProjectileHitGoal>();
       _ComponentSignalsOnAdded = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       _ComponentSignalsOnRemoved = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       BuildSignalsArrayOnComponentAdded<Quantum.BattleArenaBorderQComponent>();
@@ -1182,24 +1177,6 @@ namespace Quantum {
       Physics3D.Init(_globals->PhysicsState3D.MapStaticCollidersState.TrackedMap);
     }
     public unsafe partial struct FrameSignals {
-      public void OnTriggerTopGoal() {
-        var array = _f._ISignalOnTriggerTopGoalSystems;
-        for (Int32 i = 0; i < array.Length; ++i) {
-          var s = array[i];
-          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
-            s.OnTriggerTopGoal(_f);
-          }
-        }
-      }
-      public void OnTriggerBottomGoal() {
-        var array = _f._ISignalOnTriggerBottomGoalSystems;
-        for (Int32 i = 0; i < array.Length; ++i) {
-          var s = array[i];
-          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
-            s.OnTriggerBottomGoal(_f);
-          }
-        }
-      }
       public void BattleOnProjectileHitSoulWall(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity) {
         var array = _f._ISignalBattleOnProjectileHitSoulWallSystems;
         for (Int32 i = 0; i < array.Length; ++i) {
@@ -1224,6 +1201,15 @@ namespace Quantum {
           var s = array[i];
           if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
             s.BattleOnProjectileHitPlayerHitbox(_f, projectile, projectileEntity, playerHitbox, playerEntity);
+          }
+        }
+      }
+      public void BattleOnProjectileHitGoal(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleGoalQComponent* goal, EntityRef goalEntity) {
+        var array = _f._ISignalBattleOnProjectileHitGoalSystems;
+        for (Int32 i = 0; i < array.Length; ++i) {
+          var s = array[i];
+          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
+            s.BattleOnProjectileHitGoal(_f, projectile, projectileEntity, goal, goalEntity);
           }
         }
       }
