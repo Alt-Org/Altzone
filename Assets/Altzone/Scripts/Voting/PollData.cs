@@ -51,7 +51,7 @@ namespace Altzone.Scripts.Voting
             StartTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             EndTime = StartTime + endTime * 60;
             Sprite = sprite;
-            NotVoted = new List<string>();
+            NotVoted = clanMembers;
             YesVotes = new List<PollVoteData>();
             NoVotes = new List<PollVoteData>();
         }
@@ -67,7 +67,7 @@ namespace Altzone.Scripts.Voting
             if (player != null) playerId = player.Id;
             if (player != null) playerName = player.Name;
 
-            if (NotVoted.Contains(playerId) || true) //temporarily true for testing
+            if (NotVoted.Contains(playerId))
             {
                 if (answer)
                 {

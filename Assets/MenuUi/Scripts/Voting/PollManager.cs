@@ -25,8 +25,7 @@ public static class PollManager
         string id = GetFirstAvailableId();
 
         List<string> clanMembers = new List<string>();
-        //if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
-        if (player != null) clanMembers.Add(player.Id);
+        if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
 
         PollData pollData = new FurniturePollData(id, clanMembers, furniturePollType, furniture);
         pollDataList.Add(pollData);
@@ -42,8 +41,7 @@ public static class PollManager
         string id = GetFirstAvailableId();
 
         List<string> clanMembers = new List<string>();
-        //if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
-        if (player != null) clanMembers.Add(player.Id);
+        if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
 
         GameFurniture gameFurniture = null;
         store.GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.FurnitureInfo == furniture.Info));
