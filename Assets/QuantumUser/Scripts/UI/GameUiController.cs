@@ -13,6 +13,7 @@ namespace QuantumUser.Scripts.UI
         public GameUiAnnouncementHandler AnnouncementHandler;
         public GameUiGameOverHandler GameOverHandler;
         public GameUiTimerHandler TimerHandler;
+        public GameUiDiamondsHandler DiamondsHandler;
 
         // Debug view scripts
         public GameUiDebugStatsOverlay DebugStatsOverlay;

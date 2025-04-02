@@ -1,4 +1,5 @@
 using System.Collections;
+using Altzone.Scripts.BattleUi;
 using TMPro;
 using UnityEngine;
 
@@ -12,6 +13,8 @@ namespace QuantumUser.Scripts.UI.Views
         [SerializeField] private TMP_Text _timerText;
         bool _recordTime = false;
         float _matchTimeSeconds = 0;
+
+        public BattleUiElement MovableUiElement;
 
         private void Update()
         {

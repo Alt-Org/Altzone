@@ -25,6 +25,11 @@ namespace QuantumUser.Scripts
             {
                 _gridViewController.SetGrid();
             }
+
+            if (_gameUiController.DiamondsHandler != null)
+            {
+                _gameUiController.DiamondsHandler.SetDiamondsText(0);
+            }
         }
 
         private void OnChangeEmotionState(EventChangeEmotionState e)
