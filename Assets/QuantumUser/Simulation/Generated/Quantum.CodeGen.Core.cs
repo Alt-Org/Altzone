@@ -1073,9 +1073,9 @@ namespace Quantum {
     void BattleOnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity);
   }
   public static unsafe partial class Constants {
-    public const Int32 PLAYER_SLOT_COUNT = 4;
-    public const Int32 PLAYER_CHARACTER_COUNT = 3;
-    public const Int32 PLAYER_CHARACTER_TOTAL_COUNT = 12;
+    public const Int32 BATTLE_PLAYER_SLOT_COUNT = 4;
+    public const Int32 BATTLE_PLAYER_CHARACTER_COUNT = 3;
+    public const Int32 BATTLE_PLAYER_CHARACTER_TOTAL_COUNT = 12;
   }
   public unsafe partial class Frame {
     private ISignalOnTriggerTopGoal[] _ISignalOnTriggerTopGoalSystems;

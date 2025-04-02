@@ -45,7 +45,7 @@ namespace Battle.QSimulation.Player
             // TODO: Fetch EntityPrototype for each character based on the BattleCharacterBase Id
             EntityPrototype entityPrototypeAsset = f.FindAsset(data.PlayerAvatar);
 
-            EntityRef[] playerCharacterEntityArray = new EntityRef[Constants.PLAYER_CHARACTER_COUNT];
+            EntityRef[] playerCharacterEntityArray = new EntityRef[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
 
             // create playerEntity for each characters
             {
@@ -312,7 +312,7 @@ namespace Battle.QSimulation.Player
 
         #region Private
 
-        private static readonly FPVector2[] s_spawnPoints = new FPVector2[Constants.PLAYER_SLOT_COUNT];
+        private static readonly FPVector2[] s_spawnPoints = new FPVector2[Constants.BATTLE_PLAYER_SLOT_COUNT];
 
         private struct PlayerHandle
         {
@@ -366,14 +366,14 @@ namespace Battle.QSimulation.Player
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static void SetAllPlayStates(BattlePlayerManagerDataQSingleton* playerManagerData, BattlePlayerPlayState playerPlayState)
             {
-                for (int i = 0; i < Constants.PLAYER_SLOT_COUNT; i++)
+                for (int i = 0; i < Constants.BATTLE_PLAYER_SLOT_COUNT; i++)
                 {
                     playerManagerData->PlayStates[i] = playerPlayState;
                 }
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public static bool IsValidCharacterNumber(int characterNumber) => characterNumber >= 0 && characterNumber < Constants.PLAYER_CHARACTER_COUNT;
+            public static bool IsValidCharacterNumber(int characterNumber) => characterNumber >= 0 && characterNumber < Constants.BATTLE_PLAYER_CHARACTER_COUNT;
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static EntityRef GetSelectedCharacter(BattlePlayerManagerDataQSingleton* playerManagerData, int playerIndex) => playerManagerData->SelectedCharacters[playerIndex];
@@ -421,7 +421,7 @@ namespace Battle.QSimulation.Player
             public void SetCharacters(EntityRef[] entityRefArray)
             {
                 int characterOffset = GetCharacterOffset();
-                for (int i = 0; i < Constants.PLAYER_CHARACTER_COUNT; i++)
+                for (int i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_COUNT; i++)
                 {
                     _playerManagerData->AllCharacters[characterOffset + i] = entityRefArray[i];
                 }
@@ -473,7 +473,7 @@ namespace Battle.QSimulation.Player
 
             //{ Private Methods
 
-            [MethodImpl(MethodImplOptions.AggressiveInlining)] private int GetCharacterOffset() => Index * Constants.PLAYER_CHARACTER_COUNT;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] private int GetCharacterOffset() => Index * Constants.BATTLE_PLAYER_CHARACTER_COUNT;
             [MethodImpl(MethodImplOptions.AggressiveInlining)] private int GetCharacterIndex(int characterNumber) => GetCharacterOffset() + characterNumber;
 
             //} Private Methods
