@@ -49,6 +49,8 @@ namespace MenuUI.Scripts.SoulHome
         private Transform _wallRightFurniturePoints;
         [SerializeField]
         private Transform _wallLeftFurniturePoints;
+        [SerializeField]
+        private Transform _ceilingFurniturePoints;
 
         [Header("Furniture Slot Bounds")]
         [SerializeField]
@@ -65,6 +67,10 @@ namespace MenuUI.Scripts.SoulHome
         private BoxCollider2D _leftSideWallBounds;
         [SerializeField]
         private BoxCollider2D _leftSideWallMaxBounds;
+        [SerializeField]
+        private BoxCollider2D _ceilingBounds;
+        [SerializeField]
+        private BoxCollider2D _ceilingMaxBounds;
 
         [Header("Room Sprites")]
         [SerializeField]
@@ -235,6 +241,37 @@ namespace MenuUI.Scripts.SoulHome
                     row++;
                 }
                 col++;
+            }
+            //Ceiling Slot generation
+            float ceilingWidth = _ceilingBounds.size.x;
+            float ceilingHeight = _ceilingBounds.size.y;
+            int ceilingSlotRows = _slotRows;
+            int ceilingSlotColumns = _slotColumns;
+
+            prevBottom = 0;
+            for (int i = 0; i < _slotRows; i++)
+            {
+                GameObject furnitureRow = Instantiate(furnitureRowObject, _ceilingFurniturePoints);
+                if (_floorAnchorPosition is RectPosition.Center)
+                    furnitureRow.transform.localPosition = new Vector3(0, (ceilingHeight / 2) + -1 * (ceilingHeight / _slotRows * (0.5f + i)), 0);
+                else if (_floorAnchorPosition is RectPosition.Top)
+                    furnitureRow.transform.localPosition = new Vector3(0, prevBottom + -1 * ((ceilingHeight / _slotRows + (ceilingHeight / _slotRows) * (0.05f * (_slotRows / -2 + 0.5f + i))) / 2), 0);
+                furnitureRow.name = (1 + i).ToString();
+                col = 0;
+                for (int j = 0; j < _slotColumns; j++)
+                {
+                    GameObject furnitureSlot = Instantiate(_furnitureSlotPrefab, furnitureRow.transform);
+                    furnitureSlot.transform.localPosition = new Vector3((-1 * (ceilingWidth * (1 + (_slotMaxGrowthPercentage * (((float)i) / (((float)_slotRows) - 1)) / 100))) / 2) + _floorWidth * (1 + (_slotMaxGrowthPercentage * (((float)i) / (((float)_slotRows) - 1)) / 100)) / _slotColumns * (0.5f + j), 0, 0);
+                    float slotDepth = ceilingHeight / _slotRows + (ceilingHeight / _slotRows) * (0.05f * (_slotRows / -2 + 0.5f + i));
+                    float slotWidth = (ceilingWidth / _slotColumns) * (1 + _slotMaxGrowthPercentage * (((float)i) / (((float)_slotRows) - 1)) / 100);
+                    furnitureSlot.GetComponent<BoxCollider2D>().size = new Vector2(slotWidth, slotDepth);
+                    furnitureSlot.name = (1 + j).ToString();
+                    furnitureSlot.GetComponent<FurnitureSlot>().InitializeSlot(row, col, _roomInfo.Id, FurnitureGrid.Floor, _slotMaxGrowthPercentage, _slotRows, slotWidth, slotDepth);
+                    furnitureSlot.tag = "FloorFurnitureSlot";
+                    col++;
+                }
+                prevBottom -= ceilingHeight / _slotRows + (ceilingHeight / _slotRows) * (0.05f * (_slotRows / -2 + 0.5f + i));
+                row++;
             }
 
 
