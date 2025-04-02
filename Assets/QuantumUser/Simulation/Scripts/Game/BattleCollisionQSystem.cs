@@ -27,7 +27,7 @@ namespace Battle.QSimulation.Game
                 {
                     // Projectile Hit SoulWall
                     Debug.Log("[CollisionSystem] SoulWall hit");
-                    f.Signals.OnTriggerProjectileHitSoulWall(projectile, info.Entity, soulWall, info.Other);
+                    f.Signals.BattleOnProjectileHitSoulWall(projectile, info.Entity, soulWall, info.Other);
                 }
 
                 // if projectile hits arena border
@@ -36,7 +36,7 @@ namespace Battle.QSimulation.Game
                     //projectile hit a side wall
                     Debug.Log("[CollisionSystem] Sidewall hit");
                     //f.Events.PlaySoundEvent(SoundEffect.SideWallHit);
-                    f.Signals.OnTriggerProjectileHitArenaBorder(projectile, info.Entity, arenaBorder, info.Other);
+                    f.Signals.BattleOnProjectileHitArenaBorder(projectile, info.Entity, arenaBorder, info.Other);
                 }
 
                 // if projectile hits playerHitbox
@@ -45,7 +45,7 @@ namespace Battle.QSimulation.Game
                     //projectile hit a player's shield
                     Debug.Log("[CollisionSystem] Player's shield hit");
                     //f.Events.PlaySoundEvent(SoundEffect.SideWallHit);
-                    f.Signals.OnTriggerProjectileHitPlayerHitbox(projectile, info.Entity, playerHitbox, info.Other);
+                    f.Signals.BattleOnProjectileHitPlayerHitbox(projectile, info.Entity, playerHitbox, info.Other);
                 }
 
                 // if projectile hits goals

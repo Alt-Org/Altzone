@@ -1,0 +1,23 @@
+synced event BattlePlayerViewInit
+{
+    EntityRef Entity;
+    FP ModelScale;
+}
+
+synced event BattleSoulWallViewInit
+{
+    EntityRef Entity;
+    FP ModelScale;
+    int EmotionIndicatorColorIndex;
+    int DebugColorIndex;
+}
+
+synced event BattleChangeEmotionState
+{
+    BattleEmotionState Emotion;
+}
+
+synced event BattleDebugUpdateStatsOverlay
+{
+    BattleCharacterBase Character;
+}

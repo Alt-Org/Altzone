@@ -9,10 +9,10 @@ namespace Battle.View.Player
 
         private void Awake()
         {
-            QuantumEvent.Subscribe<EventPlayerViewInit>(this, OnViewInit);
+            QuantumEvent.Subscribe<EventBattlePlayerViewInit>(this, OnViewInit);
         }
 
-        private void OnViewInit(EventPlayerViewInit e)
+        private void OnViewInit(EventBattlePlayerViewInit e)
         {
             EntityRef entityRef = _playerEntityGameObject.GetComponent<QuantumEntityView>().EntityRef;
             if (entityRef != e.Entity) return;

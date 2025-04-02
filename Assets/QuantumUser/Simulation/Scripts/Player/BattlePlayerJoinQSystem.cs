@@ -13,7 +13,7 @@ namespace Battle.QSimulation.Player
             BattlePlayerSlot playerSlot = BattlePlayerManager.InitPlayer(f, player);
             BattlePlayerManager.SpawnPlayer(f, playerSlot, 0);
 
-            f.Events.UpdateDebugStatsOverlay(data.Characters[0]);
+            f.Events.BattleDebugUpdateStatsOverlay(data.Characters[0]);
         }
     }
 }

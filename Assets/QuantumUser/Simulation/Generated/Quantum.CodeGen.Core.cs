@@ -1063,14 +1063,14 @@ namespace Quantum {
   public unsafe partial interface ISignalOnTriggerBottomGoal : ISignal {
     void OnTriggerBottomGoal(Frame f);
   }
-  public unsafe partial interface ISignalOnTriggerProjectileHitSoulWall : ISignal {
-    void OnTriggerProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity);
+  public unsafe partial interface ISignalBattleOnProjectileHitSoulWall : ISignal {
+    void BattleOnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity);
   }
-  public unsafe partial interface ISignalOnTriggerProjectileHitArenaBorder : ISignal {
-    void OnTriggerProjectileHitArenaBorder(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity);
+  public unsafe partial interface ISignalBattleOnProjectileHitArenaBorder : ISignal {
+    void BattleOnProjectileHitArenaBorder(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity);
   }
-  public unsafe partial interface ISignalOnTriggerProjectileHitPlayerHitbox : ISignal {
-    void OnTriggerProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity);
+  public unsafe partial interface ISignalBattleOnProjectileHitPlayerHitbox : ISignal {
+    void BattleOnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity);
   }
   public static unsafe partial class Constants {
     public const Int32 PLAYER_SLOT_COUNT = 4;
@@ -1080,9 +1080,9 @@ namespace Quantum {
   public unsafe partial class Frame {
     private ISignalOnTriggerTopGoal[] _ISignalOnTriggerTopGoalSystems;
     private ISignalOnTriggerBottomGoal[] _ISignalOnTriggerBottomGoalSystems;
-    private ISignalOnTriggerProjectileHitSoulWall[] _ISignalOnTriggerProjectileHitSoulWallSystems;
-    private ISignalOnTriggerProjectileHitArenaBorder[] _ISignalOnTriggerProjectileHitArenaBorderSystems;
-    private ISignalOnTriggerProjectileHitPlayerHitbox[] _ISignalOnTriggerProjectileHitPlayerHitboxSystems;
+    private ISignalBattleOnProjectileHitSoulWall[] _ISignalBattleOnProjectileHitSoulWallSystems;
+    private ISignalBattleOnProjectileHitArenaBorder[] _ISignalBattleOnProjectileHitArenaBorderSystems;
+    private ISignalBattleOnProjectileHitPlayerHitbox[] _ISignalBattleOnProjectileHitPlayerHitboxSystems;
     partial void AllocGen() {
       _globals = (_globals_*)Context.Allocator.AllocAndClear(sizeof(_globals_));
     }
@@ -1096,9 +1096,9 @@ namespace Quantum {
       Initialize(this, this.SimulationConfig.Entities, 256);
       _ISignalOnTriggerTopGoalSystems = BuildSignalsArray<ISignalOnTriggerTopGoal>();
       _ISignalOnTriggerBottomGoalSystems = BuildSignalsArray<ISignalOnTriggerBottomGoal>();
-      _ISignalOnTriggerProjectileHitSoulWallSystems = BuildSignalsArray<ISignalOnTriggerProjectileHitSoulWall>();
-      _ISignalOnTriggerProjectileHitArenaBorderSystems = BuildSignalsArray<ISignalOnTriggerProjectileHitArenaBorder>();
-      _ISignalOnTriggerProjectileHitPlayerHitboxSystems = BuildSignalsArray<ISignalOnTriggerProjectileHitPlayerHitbox>();
+      _ISignalBattleOnProjectileHitSoulWallSystems = BuildSignalsArray<ISignalBattleOnProjectileHitSoulWall>();
+      _ISignalBattleOnProjectileHitArenaBorderSystems = BuildSignalsArray<ISignalBattleOnProjectileHitArenaBorder>();
+      _ISignalBattleOnProjectileHitPlayerHitboxSystems = BuildSignalsArray<ISignalBattleOnProjectileHitPlayerHitbox>();
       _ComponentSignalsOnAdded = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       _ComponentSignalsOnRemoved = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       BuildSignalsArrayOnComponentAdded<Quantum.BattleArenaBorderQComponent>();
@@ -1200,30 +1200,30 @@ namespace Quantum {
           }
         }
       }
-      public void OnTriggerProjectileHitSoulWall(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity) {
-        var array = _f._ISignalOnTriggerProjectileHitSoulWallSystems;
+      public void BattleOnProjectileHitSoulWall(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity) {
+        var array = _f._ISignalBattleOnProjectileHitSoulWallSystems;
         for (Int32 i = 0; i < array.Length; ++i) {
           var s = array[i];
           if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
-            s.OnTriggerProjectileHitSoulWall(_f, projectile, projectileEntity, soulWall, soulWallEntity);
+            s.BattleOnProjectileHitSoulWall(_f, projectile, projectileEntity, soulWall, soulWallEntity);
           }
         }
       }
-      public void OnTriggerProjectileHitArenaBorder(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity) {
-        var array = _f._ISignalOnTriggerProjectileHitArenaBorderSystems;
+      public void BattleOnProjectileHitArenaBorder(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity) {
+        var array = _f._ISignalBattleOnProjectileHitArenaBorderSystems;
         for (Int32 i = 0; i < array.Length; ++i) {
           var s = array[i];
           if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
-            s.OnTriggerProjectileHitArenaBorder(_f, projectile, projectileEntity, arenaBorder, arenaBorderEntity);
+            s.BattleOnProjectileHitArenaBorder(_f, projectile, projectileEntity, arenaBorder, arenaBorderEntity);
           }
         }
       }
-      public void OnTriggerProjectileHitPlayerHitbox(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity) {
-        var array = _f._ISignalOnTriggerProjectileHitPlayerHitboxSystems;
+      public void BattleOnProjectileHitPlayerHitbox(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity) {
+        var array = _f._ISignalBattleOnProjectileHitPlayerHitboxSystems;
         for (Int32 i = 0; i < array.Length; ++i) {
           var s = array[i];
           if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
-            s.OnTriggerProjectileHitPlayerHitbox(_f, projectile, projectileEntity, playerHitbox, playerEntity);
+            s.BattleOnProjectileHitPlayerHitbox(_f, projectile, projectileEntity, playerHitbox, playerEntity);
           }
         }
       }

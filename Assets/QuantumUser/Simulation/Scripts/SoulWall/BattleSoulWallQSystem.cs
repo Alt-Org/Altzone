@@ -10,7 +10,7 @@ using Photon.Deterministic;
 namespace Battle.QSimulation.SoulWall
 {
     [Preserve]
-    public unsafe class BattleSoulWallQSystem : SystemSignalsOnly, ISignalOnTriggerProjectileHitSoulWall
+    public unsafe class BattleSoulWallQSystem : SystemSignalsOnly, ISignalBattleOnProjectileHitSoulWall
     {
         /// <summary>
         /// Creates soulwalls based on BattleArena and SoulWall Specs during map creation phase.<br/>
@@ -26,7 +26,7 @@ namespace Battle.QSimulation.SoulWall
             CreateSoulWalls(f, BattleTeamNumber.TeamBeta,  battleArenaSpec.SoulWallTeamBetaTemplates,  soulWallSpec.SoulWallPrototypes);
         }
 
-        public void OnTriggerProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)
+        public void BattleOnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)
         {
             Debug.Log("Soul wall hit");
 
@@ -96,7 +96,7 @@ namespace Battle.QSimulation.SoulWall
                 soulWallTransform->Teleport(f, soulWallPosition, FP._0);
 
                 // initialize view
-                f.Events.SoulWallViewInit(soulWallEntity, soulWallScale, soulWallEmotionIndex, soulWallTemplate.ColorIndex);
+                f.Events.BattleSoulWallViewInit(soulWallEntity, soulWallScale, soulWallEmotionIndex, soulWallTemplate.ColorIndex);
             }
         }
     }

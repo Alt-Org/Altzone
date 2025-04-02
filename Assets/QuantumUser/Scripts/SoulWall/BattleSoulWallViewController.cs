@@ -13,7 +13,7 @@ namespace Battle.View.SoulWall
         [SerializeField] private bool _useDebugSprites;
         [SerializeField] private Color[] _debugColors;
 
-        public void OnViewInit() => QuantumEvent.Subscribe(this, (EventSoulWallViewInit e)=>
+        public void OnViewInit() => QuantumEvent.Subscribe(this, (EventBattleSoulWallViewInit e)=>
         {
             EntityRef entityRef = _soulWallEntityGameObject.GetComponent<QuantumEntityView>().EntityRef;
             if (entityRef != e.Entity) return;

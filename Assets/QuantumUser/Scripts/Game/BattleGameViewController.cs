@@ -16,7 +16,7 @@ namespace Battle.View.Game
         {
             if (_gridViewController != null) /*temp check*/ QuantumEvent.Subscribe<EventGridSet>(this, OnGridSet);
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, OnChangeEmotionState);
-            QuantumEvent.Subscribe<EventUpdateDebugStatsOverlay>(this, OnUpdateDebugStatsOverlay);
+            QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, DebugOnUpdateStatsOverlay);
         }
 
         private void OnChangeEmotionState(EventBattleChangeEmotionState e)
@@ -30,7 +30,7 @@ namespace Battle.View.Game
             _gridViewController.SetGrid();
         }
 
-        private void OnUpdateDebugStatsOverlay(EventUpdateDebugStatsOverlay e)
+        private void DebugOnUpdateStatsOverlay(EventBattleDebugUpdateStatsOverlay e)
         {
             _uiController.DebugStatsOverlayHandler.SetShow(true);
             _uiController.DebugStatsOverlayHandler.SetStats(e.Character);
