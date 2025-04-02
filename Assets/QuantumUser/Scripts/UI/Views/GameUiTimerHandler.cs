@@ -1,5 +1,7 @@
 using System.Collections;
 using Altzone.Scripts.BattleUi;
+using Photon.Deterministic;
+using Quantum;
 using TMPro;
 using UnityEngine;
 
@@ -11,26 +13,36 @@ namespace QuantumUser.Scripts.UI.Views
     public class GameUiTimerHandler : MonoBehaviour
     {
         [SerializeField] private TMP_Text _timerText;
-        bool _recordTime = false;
-        float _matchTimeSeconds = 0;
+        private bool _recordTime = false;
 
         public BattleUiElement MovableUiElement;
 
-        private void Update()
-        {
-            if (_recordTime)
-            {
-                _matchTimeSeconds += Time.deltaTime;
-            }
-        }
-
         private IEnumerator UpdateText()
         {
+            bool timerStartFrameFound = false;
+            Frame startFrame = null;
+            do
+            {
+                timerStartFrameFound = Utils.TryGetQuantumFrame(out startFrame);
+            } while (!timerStartFrameFound);
+
+            FrameTimer timer = FrameTimer.FromSeconds(startFrame, 1);
+            int timeSeconds = 0;
             while (_recordTime)
             {
-                int minutes = Mathf.FloorToInt(_matchTimeSeconds / 60);
-                _timerText.text = $"{minutes}:{Mathf.Floor(_matchTimeSeconds):00}";
-                yield return new WaitForSeconds(1);
+                int minutes = Mathf.FloorToInt(timeSeconds / 60.0f);
+                _timerText.text = $"{minutes}:{timeSeconds - minutes * 60}";
+
+                if (Utils.TryGetQuantumFrame(out Frame currentFrame))
+                {
+                    yield return new WaitUntil(() => timer.IsExpired(currentFrame));
+                    timer.Restart(currentFrame);
+                    timeSeconds += 1;
+                }
+                else
+                {
+                    yield return null;
+                }
             }
         }
 
