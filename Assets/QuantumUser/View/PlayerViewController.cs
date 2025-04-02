@@ -1,9 +1,8 @@
 using UnityEngine;
 using Quantum;
-using Photon.Deterministic;
+
 public unsafe class PlayerViewController : QuantumEntityViewComponent
 {
-
     [SerializeField] private Animator _animator;
     [SerializeField] private GameObject _heart;
     [SerializeField] private SpriteRenderer _spriteRenderer;
