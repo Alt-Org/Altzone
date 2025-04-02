@@ -23,9 +23,10 @@ public unsafe class PlayerViewController : QuantumEntityViewComponent
         if (playerData->PlayerRef == PlayerRef.None) return;
 
         Vector3 targetPosition = playerData->TargetPosition.ToUnityVector3();
+        BattleTeamNumber battleTeamNumber = playerData->TeamNumber;
 
         UpdateModelPositionAdjustment(&targetPosition);
-        UpdateAnimator(&targetPosition);
+        UpdateAnimator(&targetPosition, &battleTeamNumber);
     }
 
     private void UpdateModelPositionAdjustment(Vector3* targetPosition)
@@ -38,17 +39,17 @@ public unsafe class PlayerViewController : QuantumEntityViewComponent
         }
     }
 
-    private void UpdateAnimator(Vector3* targetPosition)
+    private void UpdateAnimator(Vector3* targetPosition, BattleTeamNumber* battleTeamNumber)
     {
         int animationState = 0;
-        bool flipX = false;
+        bool flipX = *battleTeamNumber == BattleTeamNumber.TeamBeta;
         
         if (transform.position != *targetPosition)
         {
             Vector3 movement = *targetPosition - transform.position;
             if(Mathf.Abs(movement.x) >= Mathf.Abs(movement.z))
             {
-                flipX = movement.x < 0;
+                flipX = flipX ? (movement.x > 0) : (movement.x < 0);
                 animationState = 1;
             } else
             {
