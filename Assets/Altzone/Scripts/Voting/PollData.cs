@@ -62,28 +62,28 @@ namespace Altzone.Scripts.Voting
             PlayerData player = null;
             store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
 
-            string playerId = null;
-            string playerName = null;
-            if (player != null) playerId = player.Id;
-            if (player != null) playerName = player.Name;
-
-            if (NotVoted.Contains(playerId))
+            if (player != null)
             {
-                if (answer)
+                if (NotVoted.Contains(player.Id))
                 {
-                    PollVoteData newPollVote = new PollVoteData(playerId, playerName, answer);
-                    YesVotes.Add(newPollVote);
-                }
-                else
-                {
-                    PollVoteData newPollVote = new PollVoteData(playerId, playerName, answer);
-                    NoVotes.Add(newPollVote);
+                    if (answer)
+                    {
+                        PollVoteData newPollVote = new PollVoteData(player.Id, player.Name, answer);
+                        YesVotes.Add(newPollVote);
+                    }
+                    else
+                    {
+                        PollVoteData newPollVote = new PollVoteData(player.Id, player.Name, answer);
+                        NoVotes.Add(newPollVote);
+                    }
+
+                    PlayerVoteData newPlayerVote = new PlayerVoteData(Id, answer);
+                    player.playerVotes.Add(newPlayerVote);
+                    store.SavePlayerData(player, data => player = data);
+
+                    NotVoted.Remove(player.Id);
                 }
             }
-
-            //PlayerVoteData newPlayerVote = new PlayerVoteData(Id, answer);
-            //player.playerVotes.Add(newPlayerVote);
-            //store.SavePlayerData(player, data => player = data);
         }
     }
 
