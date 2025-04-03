@@ -87,7 +87,7 @@ namespace QuantumUser.Scripts
 
                         // Clear the countdown text when the countdown is negative
                         _gameUiController.AnnouncementHandler.ClearAnnouncerTextField();
-                        _gameUiController.TimerHandler.StartTimer();
+                        _gameUiController.TimerHandler.StartTimer(frame);
 
                         break;
                     case GameState.GetReadyToPlay:

@@ -14,6 +14,9 @@ namespace QuantumUser.Scripts.UI.Views
     {
         [SerializeField] private TMP_Text _timerText;
         private bool _recordTime = false;
+        private FrameTimer _timer;
+        private int _hours;
+        private int _oldSeconds;
 
         public BattleUiElement MovableUiElement;
 
@@ -22,55 +25,49 @@ namespace QuantumUser.Scripts.UI.Views
             StopTimer();
         }
 
-        private IEnumerator UpdateText()
+        private void Update()
         {
-            bool timerStartFrameFound;
-            Frame startFrame;
-            do
-            {
-                timerStartFrameFound = Utils.TryGetQuantumFrame(out startFrame);
-            } while (!timerStartFrameFound);
+            if (!_recordTime) return;
+            if (!Utils.TryGetQuantumFrame(out Frame f)) return;
 
-            int hours = 0;
-            int oldSeconds = 0;
-            FrameTimer timer = FrameTimer.FromSeconds(startFrame, 3600);
-            while (_recordTime)
+            if (_timer.IsExpired(f))
             {
-                if (Utils.TryGetQuantumFrame(out Frame currentFrame))
+                _oldSeconds = -1;
+                _timer.Restart(f);
+                _hours++;
+            }
+
+            FP? secondsSinceStart = _timer.TimeInSecondsSinceStart(f);
+
+            if (secondsSinceStart != null)
+            {
+                int minutes = FPMath.FloorToInt(secondsSinceStart.Value / 60);
+                int seconds = FPMath.FloorToInt(secondsSinceStart.Value - minutes * 60);
+
+                if (seconds > _oldSeconds)
                 {
-                    FP? secondsSinceStart = timer.TimeInSecondsSinceStart(currentFrame);
-
-                    if (secondsSinceStart != null)
-                    {
-                        int minutes = FPMath.FloorToInt(secondsSinceStart.Value / 60);
-                        int seconds = FPMath.FloorToInt(secondsSinceStart.Value - minutes * 60);
-
-                        if (seconds > oldSeconds)
-                        {
-                            _timerText.text = hours == 0 ? $"{minutes}:{seconds:00}" : $"{hours}:{minutes:00}:{seconds:00}";
-                            oldSeconds = seconds;
-                        }
-                    }
-                    else
-                    {
-                        timer.Restart(currentFrame);
-                        hours++;
-                    }
+                    _timerText.text = _hours == 0 ? $"{minutes}:{seconds:00}" : $"{_hours}:{minutes:00}:{seconds:00}";
+                    _oldSeconds = seconds;
                 }
-                yield return null;
             }
         }
 
-        public void StartTimer()
+        public void StartTimer(Frame f)
         {
+            if(_recordTime) return;
+
+            _hours = 0;
+            _oldSeconds = -1;
+
+            _timer = FrameTimer.FromSeconds(f, 3600);
             _recordTime = true;
-            StartCoroutine(UpdateText());
             _timerText.gameObject.SetActive(true);
         }
 
         public void StopTimer()
         {
             _recordTime = false;
+            _timerText.gameObject.SetActive(false);
         }
     }
 }
