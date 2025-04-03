@@ -253,24 +253,24 @@ namespace MenuUI.Scripts.SoulHome
             {
                 GameObject furnitureRow = Instantiate(furnitureRowObject, _ceilingFurniturePoints);
                 if (_floorAnchorPosition is RectPosition.Center)
-                    furnitureRow.transform.localPosition = new Vector3(0, (ceilingHeight / 2) + -1 * (ceilingHeight / _slotRows * (0.5f + i)), 0);
+                    furnitureRow.transform.localPosition = new Vector3(0, (ceilingHeight / 2) + -1 * (ceilingHeight / ceilingSlotRows * (0.5f + i)), 0);
                 else if (_floorAnchorPosition is RectPosition.Top)
-                    furnitureRow.transform.localPosition = new Vector3(0, prevBottom + -1 * ((ceilingHeight / _slotRows + (ceilingHeight / _slotRows) * (0.05f * (_slotRows / -2 + 0.5f + i))) / 2), 0);
+                    furnitureRow.transform.localPosition = new Vector3(0, prevBottom + -1 * ((ceilingHeight / ceilingSlotRows + (ceilingHeight / ceilingSlotRows) * (0.05f * (ceilingSlotRows / -2 + 0.5f + i))) / 2), 0);
                 furnitureRow.name = (1 + i).ToString();
                 col = 0;
-                for (int j = 0; j < _slotColumns; j++)
+                for (int j = 0; j < ceilingSlotColumns; j++)
                 {
                     GameObject furnitureSlot = Instantiate(_furnitureSlotPrefab, furnitureRow.transform);
-                    furnitureSlot.transform.localPosition = new Vector3((-1 * (ceilingWidth * (1 + (_slotMaxGrowthPercentage * (((float)i) / (((float)_slotRows) - 1)) / 100))) / 2) + _floorWidth * (1 + (_slotMaxGrowthPercentage * (((float)i) / (((float)_slotRows) - 1)) / 100)) / _slotColumns * (0.5f + j), 0, 0);
-                    float slotDepth = ceilingHeight / _slotRows + (ceilingHeight / _slotRows) * (0.05f * (_slotRows / -2 + 0.5f + i));
-                    float slotWidth = (ceilingWidth / _slotColumns) * (1 + _slotMaxGrowthPercentage * (((float)i) / (((float)_slotRows) - 1)) / 100);
+                    furnitureSlot.transform.localPosition = new Vector3((-1 * (ceilingWidth * (1 + (_slotMaxGrowthPercentage * (((float)i) / (((float)ceilingSlotRows) - 1)) / 100))) / 2) + _floorWidth * (1 + (_slotMaxGrowthPercentage * (((float)i) / (((float)ceilingSlotRows) - 1)) / 100)) / ceilingSlotColumns * (0.5f + j), 0, 0);
+                    float slotDepth = ceilingHeight / ceilingSlotRows + (ceilingHeight / ceilingSlotRows) * (0.05f * (ceilingSlotRows / -2 + 0.5f + i));
+                    float slotWidth = (ceilingWidth / ceilingSlotColumns) * (1 + _slotMaxGrowthPercentage * (((float)i) / (((float)ceilingSlotRows) - 1)) / 100);
                     furnitureSlot.GetComponent<BoxCollider2D>().size = new Vector2(slotWidth, slotDepth);
                     furnitureSlot.name = (1 + j).ToString();
-                    furnitureSlot.GetComponent<FurnitureSlot>().InitializeSlot(row, col, _roomInfo.Id, FurnitureGrid.Floor, _slotMaxGrowthPercentage, _slotRows, slotWidth, slotDepth);
-                    furnitureSlot.tag = "FloorFurnitureSlot";
+                    furnitureSlot.GetComponent<FurnitureSlot>().InitializeSlot(row, col, _roomInfo.Id, FurnitureGrid.Floor, _slotMaxGrowthPercentage, ceilingSlotRows, slotWidth, slotDepth);
+                    furnitureSlot.tag = "CeilingFurnitureSlot";
                     col++;
                 }
-                prevBottom -= ceilingHeight / _slotRows + (ceilingHeight / _slotRows) * (0.05f * (_slotRows / -2 + 0.5f + i));
+                prevBottom -= ceilingHeight / ceilingSlotRows + (ceilingHeight / ceilingSlotRows) * (0.05f * (ceilingSlotRows / -2 + 0.5f + i));
                 row++;
             }
 
