@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using MenuUi.Scripts.TabLine;
 using MenuUi.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,6 +13,8 @@ public class ProfileMenuTabs : MonoBehaviour
         public Button Button;
         public GameObject Window;
     }
+    [Header("TablineScript reference")]
+    public TabLine _tablineScript;
 
     [SerializeField] List<ButtonWindowBind> _buttons = new List<ButtonWindowBind>();
 
@@ -29,5 +32,6 @@ public class ProfileMenuTabs : MonoBehaviour
     {
         for (int i = 0; i < _buttons.Count; i++)
             _buttons[i].Window.SetActive(i == activeIndex);
+        _tablineScript.ActivateTabButton(activeIndex);
     }
 }
