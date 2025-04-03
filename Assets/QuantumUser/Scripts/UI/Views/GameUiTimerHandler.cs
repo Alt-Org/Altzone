@@ -17,32 +17,47 @@ namespace QuantumUser.Scripts.UI.Views
 
         public BattleUiElement MovableUiElement;
 
+        private void OnDisable()
+        {
+            StopTimer();
+        }
+
         private IEnumerator UpdateText()
         {
-            bool timerStartFrameFound = false;
-            Frame startFrame = null;
+            bool timerStartFrameFound;
+            Frame startFrame;
             do
             {
                 timerStartFrameFound = Utils.TryGetQuantumFrame(out startFrame);
             } while (!timerStartFrameFound);
 
-            FrameTimer timer = FrameTimer.FromSeconds(startFrame, 1);
-            int timeSeconds = 0;
+            int hours = 0;
+            int oldSeconds = 0;
+            FrameTimer timer = FrameTimer.FromSeconds(startFrame, 3600);
             while (_recordTime)
             {
-                int minutes = Mathf.FloorToInt(timeSeconds / 60.0f);
-                _timerText.text = $"{minutes}:{timeSeconds - minutes * 60}";
-
                 if (Utils.TryGetQuantumFrame(out Frame currentFrame))
                 {
-                    yield return new WaitUntil(() => timer.IsExpired(currentFrame));
-                    timer.Restart(currentFrame);
-                    timeSeconds += 1;
+                    FP? secondsSinceStart = timer.TimeInSecondsSinceStart(currentFrame);
+
+                    if (secondsSinceStart != null)
+                    {
+                        int minutes = FPMath.FloorToInt(secondsSinceStart.Value / 60);
+                        int seconds = FPMath.FloorToInt(secondsSinceStart.Value - minutes * 60);
+
+                        if (seconds > oldSeconds)
+                        {
+                            _timerText.text = hours == 0 ? $"{minutes}:{seconds:00}" : $"{hours}:{minutes:00}:{seconds:00}";
+                            oldSeconds = seconds;
+                        }
+                    }
+                    else
+                    {
+                        timer.Restart(currentFrame);
+                        hours++;
+                    }
                 }
-                else
-                {
-                    yield return null;
-                }
+                yield return null;
             }
         }
 
