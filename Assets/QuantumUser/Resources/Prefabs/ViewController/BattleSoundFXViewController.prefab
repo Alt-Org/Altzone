@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7691488460640292807}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -45,7 +45,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _audioSource: {fileID: 0}
-  _soulWallHitClip: {fileID: 8300000, guid: a49df0fafb838bb4bb12d1db861d2180, type: 3}
-  _goalHitClip: {fileID: 8300000, guid: 95bda2344d4425241b2cbebfe061b59e, type: 3}
-  _sideWallHitClip: {fileID: 8300000, guid: b0ae6de9d4aa295418e449cb48da532d, type: 3}
-  _wallBroken: {fileID: 8300000, guid: a3b5573c1b83344a2a235f402729ab83, type: 3}
+  _goalHit:
+    Clip: {fileID: 0}
+    VolumeScale: 1
+  _sideWallHit:
+    Clip: {fileID: 0}
+    VolumeScale: 1
+  _wallBroken:
+    Clip: {fileID: 8300000, guid: 3c7bb8f93a5ef644a8b6e29cb1eba772, type: 3}
+    VolumeScale: 0.75
