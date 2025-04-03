@@ -33,7 +33,7 @@ namespace Battle.QSimulation.SoulWall
             if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.SoulWall)) return;
 
             // Destroy the SoulWall entity
-            f.Events.PlaySoundEvent(SoundEffect.WallBroken);
+            f.Events.BattlePlaySoundFX(BattleSoundFX.WallBroken);
             f.Destroy(soulWallEntity);
 
             BattleProjectileQSystem.SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.SoulWall);

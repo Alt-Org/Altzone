@@ -65,9 +65,9 @@ namespace Quantum {
           case EventBattlePlayerViewInit.ID: result = typeof(EventBattlePlayerViewInit); return;
           case EventBattleSoulWallViewInit.ID: result = typeof(EventBattleSoulWallViewInit); return;
           case EventBattleChangeEmotionState.ID: result = typeof(EventBattleChangeEmotionState); return;
+          case EventBattlePlaySoundFX.ID: result = typeof(EventBattlePlaySoundFX); return;
           case EventBattleDebugUpdateStatsOverlay.ID: result = typeof(EventBattleDebugUpdateStatsOverlay); return;
           case EventGridSet.ID: result = typeof(EventGridSet); return;
-          case EventPlaySoundEvent.ID: result = typeof(EventPlaySoundEvent); return;
           default: break;
         }
       }
@@ -96,6 +96,12 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
+      public EventBattlePlaySoundFX BattlePlaySoundFX(BattleSoundFX Effect) {
+        var ev = _f.Context.AcquireEvent<EventBattlePlaySoundFX>(EventBattlePlaySoundFX.ID);
+        ev.Effect = Effect;
+        _f.AddEvent(ev);
+        return ev;
+      }
       public EventBattleDebugUpdateStatsOverlay BattleDebugUpdateStatsOverlay(BattleCharacterBase Character) {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventBattleDebugUpdateStatsOverlay>(EventBattleDebugUpdateStatsOverlay.ID);
@@ -106,12 +112,6 @@ namespace Quantum {
       public EventGridSet GridSet() {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventGridSet>(EventGridSet.ID);
-        _f.AddEvent(ev);
-        return ev;
-      }
-      public EventPlaySoundEvent PlaySoundEvent(SoundEffect SoundEffect) {
-        var ev = _f.Context.AcquireEvent<EventPlaySoundEvent>(EventPlaySoundEvent.ID);
-        ev.SoundEffect = SoundEffect;
         _f.AddEvent(ev);
         return ev;
       }
@@ -200,14 +200,14 @@ namespace Quantum {
       }
     }
   }
-  public unsafe partial class EventBattleDebugUpdateStatsOverlay : EventBase {
+  public unsafe partial class EventBattlePlaySoundFX : EventBase {
     public new const Int32 ID = 4;
-    public BattleCharacterBase Character;
-    protected EventBattleDebugUpdateStatsOverlay(Int32 id, EventFlags flags) : 
+    public BattleSoundFX Effect;
+    protected EventBattlePlaySoundFX(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventBattleDebugUpdateStatsOverlay() : 
-        base(4, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
+    public EventBattlePlaySoundFX() : 
+        base(4, EventFlags.Server|EventFlags.Client) {
     }
     public new QuantumGame Game {
       get {
@@ -220,17 +220,18 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 53;
-        hash = hash * 31 + Character.GetHashCode();
+        hash = hash * 31 + Effect.GetHashCode();
         return hash;
       }
     }
   }
-  public unsafe partial class EventGridSet : EventBase {
+  public unsafe partial class EventBattleDebugUpdateStatsOverlay : EventBase {
     public new const Int32 ID = 5;
-    protected EventGridSet(Int32 id, EventFlags flags) : 
+    public BattleCharacterBase Character;
+    protected EventBattleDebugUpdateStatsOverlay(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventGridSet() : 
+    public EventBattleDebugUpdateStatsOverlay() : 
         base(5, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
     }
     public new QuantumGame Game {
@@ -244,18 +245,18 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 59;
+        hash = hash * 31 + Character.GetHashCode();
         return hash;
       }
     }
   }
-  public unsafe partial class EventPlaySoundEvent : EventBase {
+  public unsafe partial class EventGridSet : EventBase {
     public new const Int32 ID = 6;
-    public SoundEffect SoundEffect;
-    protected EventPlaySoundEvent(Int32 id, EventFlags flags) : 
+    protected EventGridSet(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventPlaySoundEvent() : 
-        base(6, EventFlags.Server|EventFlags.Client) {
+    public EventGridSet() : 
+        base(6, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
     }
     public new QuantumGame Game {
       get {
@@ -268,7 +269,6 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 61;
-        hash = hash * 31 + SoundEffect.GetHashCode();
         return hash;
       }
     }

@@ -17,6 +17,11 @@ synced event BattleChangeEmotionState
     BattleEmotionState Emotion;
 }
 
+event BattlePlaySoundFX
+{
+    BattleSoundFX Effect;
+}
+
 synced event BattleDebugUpdateStatsOverlay
 {
     BattleCharacterBase Character;

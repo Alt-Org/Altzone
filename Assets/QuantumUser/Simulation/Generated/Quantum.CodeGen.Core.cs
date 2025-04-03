@@ -89,16 +89,16 @@ namespace Quantum {
     Slot4 = 4,
     Spectator = 10,
   }
-  public enum BattleTeamNumber : int {
-    NoTeam = 0,
-    TeamAlpha = 1,
-    TeamBeta = 2,
-  }
-  public enum SoundEffect : int {
+  public enum BattleSoundFX : int {
     SoulWallHit,
     GoalHit,
     SideWallHit,
     WallBroken,
+  }
+  public enum BattleTeamNumber : int {
+    NoTeam = 0,
+    TeamAlpha = 1,
+    TeamBeta = 2,
   }
   [System.FlagsAttribute()]
   public enum BattleProjectileCollisionFlags : byte {
@@ -1256,6 +1256,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.BattleProjectileSpawnerQComponent), Quantum.BattleProjectileSpawnerQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleSoulWallQComponent), Quantum.BattleSoulWallQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleSoulWallTemplate), Quantum.BattleSoulWallTemplate.SIZE);
+      typeRegistry.Register(typeof(Quantum.BattleSoundFX), 4);
       typeRegistry.Register(typeof(Quantum.BattleTeamNumber), 4);
       typeRegistry.Register(typeof(Quantum.BitSet1024), Quantum.BitSet1024.SIZE);
       typeRegistry.Register(typeof(Quantum.BitSet128), Quantum.BitSet128.SIZE);
@@ -1327,7 +1328,6 @@ namespace Quantum {
       typeRegistry.Register(typeof(RNGSession), RNGSession.SIZE);
       typeRegistry.Register(typeof(Shape2D), Shape2D.SIZE);
       typeRegistry.Register(typeof(Shape3D), Shape3D.SIZE);
-      typeRegistry.Register(typeof(Quantum.SoundEffect), 4);
       typeRegistry.Register(typeof(SpringJoint), SpringJoint.SIZE);
       typeRegistry.Register(typeof(SpringJoint3D), SpringJoint3D.SIZE);
       typeRegistry.Register(typeof(Transform2D), Transform2D.SIZE);
@@ -1361,11 +1361,11 @@ namespace Quantum {
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerPlayState>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerSlot>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleProjectileCollisionFlags>();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleSoundFX>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleTeamNumber>();
       FramePrinter.EnsurePrimitiveNotStripped<CallbackFlags>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.InputButtons>();
       FramePrinter.EnsurePrimitiveNotStripped<QueryOptions>();
-      FramePrinter.EnsurePrimitiveNotStripped<Quantum.SoundEffect>();
     }
   }
 }

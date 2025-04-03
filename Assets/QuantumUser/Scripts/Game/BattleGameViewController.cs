@@ -3,6 +3,7 @@ using Quantum;
 
 using Battle.View.UI;
 using Battle.View.Effect;
+using Battle.View.Audio;
 
 namespace Battle.View.Game
 {
@@ -11,11 +12,13 @@ namespace Battle.View.Game
         [SerializeField] private BattleGridViewController _gridViewController;
         [SerializeField] private BattleUiController _uiController;
         [SerializeField] private BattleScreenEffectViewController _screenEffectViewController;
+        [SerializeField] private BattleSoundFXViewController _soundFXViewController;
 
         private void Awake()
         {
             if (_gridViewController != null) /*temp check*/ QuantumEvent.Subscribe<EventGridSet>(this, OnGridSet);
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, OnChangeEmotionState);
+            QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, PlaySoundFX);
             QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, DebugOnUpdateStatsOverlay);
         }
 
@@ -28,6 +31,11 @@ namespace Battle.View.Game
         private void OnGridSet(EventGridSet e)
         {
             _gridViewController.SetGrid();
+        }
+
+        private void PlaySoundFX(EventBattlePlaySoundFX e)
+        {
+            _soundFXViewController.PlaySound(e.Effect);
         }
 
         private void DebugOnUpdateStatsOverlay(EventBattleDebugUpdateStatsOverlay e)
