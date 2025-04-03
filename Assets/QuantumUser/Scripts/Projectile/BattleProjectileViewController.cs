@@ -3,7 +3,7 @@ using Quantum;
 
 namespace Battle.View.Projectile
 {
-    public class BattleProjectileViewController : QuantumCallbacks
+    public class BattleProjectileViewController : QuantumEntityViewComponent
     {
         [Tooltip("Sprite 0: Sadness\nSprite 1: Joy\nSprite 2: Playful\nSprite 3: Aggression\nSprite 4: Love")]
         [SerializeField] private Sprite[] _sprites;
@@ -12,7 +12,7 @@ namespace Battle.View.Projectile
         private SpriteRenderer _spriteRenderer;
         private TrailRenderer _trailRenderer;
 
-        private void Awake()
+        public override void OnActivate(Frame _)
         {
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _trailRenderer = GetComponent<TrailRenderer>();

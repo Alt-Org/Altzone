@@ -3,9 +3,8 @@ using Quantum;
 
 namespace Battle.View.SoulWall
 {
-    public class BattleSoulWallViewController : QuantumCallbacks
+    public class BattleSoulWallViewController : QuantumEntityViewComponent
     {
-        [SerializeField] private GameObject _soulWallEntityGameObject;
         [SerializeField] private SpriteRenderer _spriteRenderer;
         [SerializeField] private SpriteRenderer _emotionIndicatorSpriteRenderer;
         [SerializeField] private SpriteRenderer _debugSpriteRenderer;
@@ -13,10 +12,9 @@ namespace Battle.View.SoulWall
         [SerializeField] private bool _useDebugSprites;
         [SerializeField] private Color[] _debugColors;
 
-        public void OnViewInit() => QuantumEvent.Subscribe(this, (EventBattleSoulWallViewInit e)=>
+        public override void OnActivate(Frame _) => QuantumEvent.Subscribe(this, (EventBattleSoulWallViewInit e) =>
         {
-            EntityRef entityRef = _soulWallEntityGameObject.GetComponent<QuantumEntityView>().EntityRef;
-            if (entityRef != e.Entity) return;
+            if (EntityRef != e.Entity) return;
 
             // scale gameobject
             float scale = (float)e.ModelScale;
