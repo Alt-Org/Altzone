@@ -1,4 +1,5 @@
 using Altzone.Scripts.BattleUi;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,9 @@ namespace QuantumUser.Scripts.UI.Views
     /// </summary>
     public class GameUiPlayerInfoHandler : MonoBehaviour
     {
+        [Header("Player name")]
+        [SerializeField] private TMP_Text _playerName;
+
         [Header("Character slot 1")]
         [SerializeField] private Button _characterSelectButton1;
         [SerializeField] private Image _damageFill1;
