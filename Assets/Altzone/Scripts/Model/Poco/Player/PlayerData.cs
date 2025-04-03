@@ -30,6 +30,16 @@ namespace Altzone.Scripts.Model.Poco.Player
         Huono_Haviaja
     };
 
+    public enum Mood
+    {
+        Blank,
+        Love,
+        Playful,
+        Joy,
+        Sad,
+        Angry
+    }
+
     [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class PlayerData
     {
@@ -56,7 +66,7 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public PlayStyles playStyles;
 
-        public List<string> playerDataMoodList = new List<string> { "test", "", "", "", "", "", "" };
+        public List<Enum> playerDataMoodList = new List<Enum> { Mood.Blank, Mood.Love, Mood.Playful, Mood.Joy, Mood.Sad, Mood.Angry, Mood.Blank };
 
         public List<PlayerVoteData> playerVotes = new List<PlayerVoteData>();
 

@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Window;
 using Quantum;
@@ -11,12 +13,17 @@ using UnityEngine.UIElements;
 
 public class WeekMoodPopupScript : AltMonoBehaviour
 {
+    // The popup that has all the mood options.
     [SerializeField] private GameObject _popupPrefab;
+
+    // The mood buttons that are in the popup.
     [SerializeField] private UnityEngine.UI.Button _loveButton;
     [SerializeField] private UnityEngine.UI.Button _playfulButton;
     [SerializeField] private UnityEngine.UI.Button _joyButton;
     [SerializeField] private UnityEngine.UI.Button _sadButton;
     [SerializeField] private UnityEngine.UI.Button _angryButton;
+
+    // Moods
     public enum Mood
     {
         Blank,
@@ -27,18 +34,23 @@ public class WeekMoodPopupScript : AltMonoBehaviour
         Angry
     }
 
-    List<string> moodList = new List<string> { "Blank", "Love", "Playful", "Joy", "Sad", "Angry", "Blank" };
+    // Creates the variable that is used to get the list of the moods.
+    private PlayerData _playerData;
 
-    string date = DateTime.Today.ToString("dd/mm/yyyy");
-
-    public delegate void PlayerDataCallback(PlayerData playerData);
-    public PlayerData playerData;
+    // Variable which callbacks.
+    private readonly Action<PlayerData> _callback;
 
     // Start is called before the first frame update
     void Start()
     {
+        // Opens the popup.
         _popupPrefab.SetActive(true);
 
+        // Gets the needed playerdata
+        StartCoroutine(GetPlayerData(data => _playerData = data));
+
+        // Listeners that listen what button has been pressed and does the method given.
+        // The buttons have their own mood so its easier to add the mood to the list.
         _loveButton.onClick.AddListener(() => SaveMoodData(Mood.Love));
         _playfulButton.onClick.AddListener(() => SaveMoodData(Mood.Playful));
         _joyButton.onClick.AddListener(() => SaveMoodData(Mood.Joy));
@@ -50,55 +62,31 @@ public class WeekMoodPopupScript : AltMonoBehaviour
         _joyButton.onClick.AddListener(() => ClosePopup());
         _sadButton.onClick.AddListener(() => ClosePopup());
         _angryButton.onClick.AddListener(() => ClosePopup());
+
+        // Saves the playerdata that has been changed.
+        Storefront.Get().SavePlayerData(_playerData, _callback);
     }
 
-    
 
+    // Closes the popup.
     public void ClosePopup()
     {
         _popupPrefab.SetActive(false);
     }
 
-    void MoodToPlayerData(PlayerData mood)
-    {
-
-    }
-
+    // Saves the mood that the player has chosen.
     public void SaveMoodData(Mood mood)
     {
-        /*
+        // Removes the last item in the list of moods
+        _playerData.playerDataMoodList.RemoveAt(6);
 
-        moodList[6] = moodList[5];
-        moodList[5] = moodList[4];
-        moodList[4] = moodList[3];
-        moodList[3] = moodList[2];
-        moodList[2] = moodList[1];
-        moodList[1] = moodList[0];
+        // Reverses the list so the newest mood can get in to first place. last-newest
+        _playerData.playerDataMoodList.Reverse();
 
-        switch (mood)
-        {
-            case Mood.Love:
-                moodList[0] = Mood.Love;
-                break;
-            case Mood.Playful:
-                moodList[0] = Mood.Playful;
-                break;
-            case Mood.Joy:
-                moodList[0] = Mood.Joy;
-                break;
-            case Mood.Sad:
-                moodList[0] = Mood.Sad;
-                break;
-            case Mood.Angry:
-                moodList[0] = Mood.Angry;
-                break;
-        }*/
+        // Adds the newest mood to the list.
+        _playerData.playerDataMoodList.Add(mood);
         
-        
-
-        Debug.Log("Mood saved: " + mood);
-
-        //PlayerData.playerDataMoodList = moodList;
-        //Debug.Log(playerData.playerDataMoodList[0]);
+        // Reverses the list back the way we want it. newest-last
+        _playerData.playerDataMoodList.Reverse();
     }
 }
