@@ -1,3 +1,4 @@
+using Altzone.Scripts.Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,23 +10,52 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
     /// </summary>
     public class CreateRoomCustom : MonoBehaviour
     {
-        [SerializeField] TMP_InputField _roomName;
-        [SerializeField] TMP_InputField _roomPassword;
-        [SerializeField] Toggle _privateToggle;
-        [SerializeField] Toggle _showToFriends;
-        [SerializeField] Toggle _showToClan;
-        [SerializeField] Button _createRoom;
+        [SerializeField] private TMP_InputField _roomPassword;
+        [SerializeField] private Toggle _privateToggle;
+        [SerializeField] private Toggle _showToFriends;
+        [SerializeField] private Toggle _showToClan;
+        [SerializeField] private Button _createRoom;
+        [SerializeField] private MapAndRoomNameSelector _mapAndRoomNameSelector;
+        [SerializeField] private CustomBattleGameModeSelector _customBattleGameModeSelector;
 
-        public string RoomName { get { return _roomName.text; } }
+        public string RoomName { get { return _mapAndRoomNameSelector.SelectedEmotionalSituation.SituationName; } }
+        public Emotion SelectedEmotion
+        {
+            get
+            {
+                if (_mapAndRoomNameSelector.SelectedEmotionalSituation != null)
+                {
+                    return _mapAndRoomNameSelector.SelectedEmotionalSituation.SituationEmotion;
+                }
+                else
+                {
+                    return Emotion.Blank;
+                }
+            }
+        }
+        public string SelectedMapId
+        {
+            get
+            {
+                if (_mapAndRoomNameSelector.SelectedBattleMap != null)
+                {
+                    return _mapAndRoomNameSelector.SelectedBattleMap.MapId;
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+        }
         public string RoomPassword { get { return _roomPassword.text; } }
         public bool IsPrivate { get { return _privateToggle.isOn; } }
         public bool ShowToFriends {  get { return _showToFriends.isOn; } }
         public bool ShowToClan { get {  return _showToClan.isOn; } }
         public Button CreateRoomButton { get { return _createRoom; } }
+        public CustomGameMode SelectedCustomGameMode { get { return _customBattleGameModeSelector.SelectedGameMode; } }
 
         private void OnEnable()
         {
-            _roomName.text = "";
             _roomPassword.text = "";
             _privateToggle.isOn = false;
         }

@@ -4,6 +4,7 @@ namespace Quantum
 {
     public class GridViewController : MonoBehaviour
     {
+        [SerializeField] private Transform _gridParent;
         [SerializeField] private GameObject _gridCellTemplate;
         [SerializeField] private Color _colorA;
         [SerializeField] private Color _colorB;
@@ -42,7 +43,7 @@ namespace Quantum
                     gridCellColor = (row + col) % 2 == 0 ? _colorA : _colorB;
 
                     // instantiate gridCell
-                    gridCell = Instantiate(_gridCellTemplate, gridCellPosition, gridCellRotation);
+                    gridCell = Instantiate(_gridCellTemplate, gridCellPosition, gridCellRotation, _gridParent);
                     gridCell.transform.localScale = gridCellScale;
                     gridCell.GetComponent<SpriteRenderer>().color = gridCellColor;
                     gridCell.SetActive(true);

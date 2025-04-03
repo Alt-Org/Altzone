@@ -4,6 +4,7 @@ namespace Quantum
 {
     public class ScreenEffectViewController : MonoBehaviour
     {
+        [SerializeField] private GameObject _overlay;
         [SerializeField] private GameObject[] _particleSources;
         [SerializeField] private Color[] _colors;
 
@@ -12,7 +13,7 @@ namespace Quantum
         public void SetActive(bool active)
         {
             foreach (GameObject particleSource in _particleSources) particleSource.SetActive(active);
-            _spriteRenderer.enabled = active;
+            _overlay.SetActive(active);
             IsActive = active;
         }
 
@@ -25,7 +26,7 @@ namespace Quantum
 
         private void Awake()
         {
-            _spriteRenderer = GetComponent<SpriteRenderer>();
+            _spriteRenderer = _overlay.GetComponent<SpriteRenderer>();
         }
     }
 }

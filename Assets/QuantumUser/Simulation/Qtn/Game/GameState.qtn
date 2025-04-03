@@ -1,6 +1,7 @@
 enum GameState
 {
-  PreGame,
+  InitializeGame,
+  CreateMap,
   ReadyToStart,
   Countdown,
   GetReadyToPlay,
