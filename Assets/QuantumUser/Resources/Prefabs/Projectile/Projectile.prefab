@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.4, y: 1.4, z: 1.4}
+  m_LocalScale: {x: 0.36, y: 0.36, z: 0.36}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 8977537303989139427}
@@ -302,7 +302,7 @@ TrailRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.69677544
+        value: 0.36072287
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -310,22 +310,22 @@ TrailRenderer:
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
-        time: 0.7900295
-        value: 0.3138029
-        inSlope: -0.83988976
-        outSlope: -0.83988976
+        time: 0.598196
+        value: 0.22403544
+        inSlope: -0.42268738
+        outSlope: -0.42268738
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.75506765
+        outWeight: 0.3482303
       - serializedVersion: 3
         time: 1
         value: 0
-        inSlope: -1.4112902
-        outSlope: -1.4112902
+        inSlope: -1.0281374
+        outSlope: -1.0281374
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.4354354
+        inWeight: 0.39814633
         outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
@@ -439,7 +439,7 @@ MonoBehaviour:
         Id:
           Value: 0
       CircleRadius:
-        RawValue: 26214
+        RawValue: 11796
       CapsuleSize:
         X:
           RawValue: 0

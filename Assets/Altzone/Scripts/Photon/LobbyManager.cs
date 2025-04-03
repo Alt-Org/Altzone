@@ -789,7 +789,7 @@ namespace Altzone.Scripts.Lobby
                 yield return null;
                 if (isCloseRoom)
                 {
-                    PhotonRealtimeClient.CloseRoom(true);
+                    PhotonRealtimeClient.CloseRoom(false);
                     yield return null;
                 }
             }

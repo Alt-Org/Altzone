@@ -554,6 +554,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1957537065}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &113196676 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5685116848877297894, guid: 4c9026e52048f4c4a9a4b484571e84ed,
+    type: 3}
+  m_PrefabInstance: {fileID: 1735170625}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6dd1380afc79a6409c69e363b2e93aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &120694984
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3633,6 +3645,89 @@ MonoBehaviour:
       Value: 1
     HasTriggered:
       Value: 0
+--- !u!1001 &1735170625
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 986755674777429635, guid: 4c9026e52048f4c4a9a4b484571e84ed,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 986755674777429635, guid: 4c9026e52048f4c4a9a4b484571e84ed,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 986755674777429635, guid: 4c9026e52048f4c4a9a4b484571e84ed,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 986755674777429635, guid: 4c9026e52048f4c4a9a4b484571e84ed,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 986755674777429635, guid: 4c9026e52048f4c4a9a4b484571e84ed,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 986755674777429635, guid: 4c9026e52048f4c4a9a4b484571e84ed,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 986755674777429635, guid: 4c9026e52048f4c4a9a4b484571e84ed,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 986755674777429635, guid: 4c9026e52048f4c4a9a4b484571e84ed,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 986755674777429635, guid: 4c9026e52048f4c4a9a4b484571e84ed,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 986755674777429635, guid: 4c9026e52048f4c4a9a4b484571e84ed,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5685116848877297894, guid: 4c9026e52048f4c4a9a4b484571e84ed,
+        type: 3}
+      propertyPath: _colorA.a
+      value: 0.078431375
+      objectReference: {fileID: 0}
+    - target: {fileID: 5685116848877297894, guid: 4c9026e52048f4c4a9a4b484571e84ed,
+        type: 3}
+      propertyPath: _colorB.a
+      value: 0.078431375
+      objectReference: {fileID: 0}
+    - target: {fileID: 5685116848877297894, guid: 4c9026e52048f4c4a9a4b484571e84ed,
+        type: 3}
+      propertyPath: _gridParent
+      value: 
+      objectReference: {fileID: 20218209}
+    - target: {fileID: 7492090454604236184, guid: 4c9026e52048f4c4a9a4b484571e84ed,
+        type: 3}
+      propertyPath: m_Name
+      value: BattleGridViewController
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4c9026e52048f4c4a9a4b484571e84ed, type: 3}
 --- !u!1 &1957537064
 GameObject:
   m_ObjectHideFlags: 0
@@ -3961,6 +4056,11 @@ PrefabInstance:
       objectReference: {fileID: 2118663608}
     - target: {fileID: 8816702143117302233, guid: 7e0904d2b2ca0f145ad03f5086282bbb,
         type: 3}
+      propertyPath: _gridViewController
+      value: 
+      objectReference: {fileID: 113196676}
+    - target: {fileID: 8816702143117302233, guid: 7e0904d2b2ca0f145ad03f5086282bbb,
+        type: 3}
       propertyPath: _screenEffectViewController
       value: 
       objectReference: {fileID: 1538956172}
@@ -4091,6 +4191,7 @@ SceneRoots:
   - {fileID: 848240679}
   - {fileID: 4759642362552276933}
   - {fileID: 2433098026093766787}
+  - {fileID: 1735170625}
   - {fileID: 1957537065}
   - {fileID: 2118663603}
   - {fileID: 1117656564}

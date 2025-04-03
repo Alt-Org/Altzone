@@ -2,7 +2,7 @@
 struct BattleSoulWallTemplate
 {
     BattleGridPosition Position;
-    int Width;
+    int WidthType;
     int ColorIndex;
 }
 

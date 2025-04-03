@@ -377,12 +377,12 @@ namespace Quantum.Prototypes {
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattleSoulWallTemplate))]
   public unsafe partial class BattleSoulWallTemplatePrototype : StructPrototype {
     public Quantum.Prototypes.BattleGridPositionPrototype Position;
-    public Int32 Width;
+    public Int32 WidthType;
     public Int32 ColorIndex;
     partial void MaterializeUser(Frame frame, ref Quantum.BattleSoulWallTemplate result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.BattleSoulWallTemplate result, in PrototypeMaterializationContext context = default) {
         this.Position.Materialize(frame, ref result.Position, in context);
-        result.Width = this.Width;
+        result.WidthType = this.WidthType;
         result.ColorIndex = this.ColorIndex;
         MaterializeUser(frame, ref result, in context);
     }

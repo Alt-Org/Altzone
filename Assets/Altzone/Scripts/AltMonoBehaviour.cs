@@ -68,7 +68,7 @@ public class AltMonoBehaviour : MonoBehaviour
         bool? timeout = null;
         Coroutine timeoutCoroutine = StartCoroutine(WaitUntilTimeout(timeoutTime, data => timeout = data));
 
-        yield return new WaitUntil(() => (_coroutinestore[coroutineKey] != true || timeout != null));
+        yield return new WaitUntil(() => (_coroutinestore[coroutineKey] == true || timeout != null));
 
         if (_coroutinestore[coroutineKey] == false)
         {
@@ -90,7 +90,7 @@ public class AltMonoBehaviour : MonoBehaviour
 
         if (callback == null)
         {
-            StartCoroutine(ServerManager.Instance.GetPlayerFromServer(content =>
+            StartCoroutine(ServerManager.Instance.GetOwnPlayerFromServer(content =>
             {
                 if (content != null)
                     callback(new(content));
@@ -106,6 +106,7 @@ public class AltMonoBehaviour : MonoBehaviour
     }
     protected IEnumerator SavePlayerData(PlayerData playerData, System.Action<PlayerData> callback)
     {
+        if(playerData == null) Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, callback);
 
         //Storefront.Get().SavePlayerData(playerData, callback);
         string body = JObject.FromObject(
@@ -135,7 +136,10 @@ public class AltMonoBehaviour : MonoBehaviour
                 Debug.Log("Profile info update failed.");
             }
             if(callback2 != null)
-            callback(new(callback2));
+            {
+                playerData.UpdatePlayerData(callback2);
+                callback(playerData);
+            }
             else callback(playerData);
         }));
 

@@ -127,6 +127,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             UniqueIdentifier = player.uniqueIdentifier;
             points = player.points;
             stats = player.gameStatistics;
+            Task = player.DailyTask != null ? new(player.DailyTask): null;
         }
 
         public void UpdatePlayerData(ServerPlayer player)
@@ -146,6 +147,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             UniqueIdentifier = player.uniqueIdentifier;
             points = player.points;
             stats = player.gameStatistics;
+            Task = player.DailyTask != null ? new(player.DailyTask) : null;
         }
 
         public void UpdateCustomCharacter(CustomCharacter character)
