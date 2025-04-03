@@ -110,8 +110,8 @@ public class Chat : AltMonoBehaviour
             foreach (string message in messageList)
             {
                 GameObject messageObject = Instantiate(_quickMessagePrefab, _chatResponseContent.transform);
-                messageObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = message;
-                messageObject.GetComponent<Button>().onClick.AddListener(() => SendQuickMessage(messageObject.GetComponent<Button>()));
+                Button button= messageObject.GetComponent<QuickResponceHandler>().SetData(message);
+                button.onClick.AddListener(() => SendQuickMessage(messageObject.GetComponent<Button>()));
             }
         }));
 
