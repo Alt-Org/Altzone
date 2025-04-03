@@ -1,5 +1,6 @@
 
 using System;
+using Altzone.Scripts.Model.Poco.Clan;
 using MenuUi.Scripts.TabLine;
 using TMPro;
 using UnityEngine;
@@ -25,8 +26,6 @@ public class LeaderboardView : MonoBehaviour
     [SerializeField] private Transform _winsContent;
     [SerializeField] private GameObject _activityPanel;
     [SerializeField] private Transform _activityContent;
-    [SerializeField] private GameObject _clanPointsPanel;
-    [SerializeField] private Transform _clanPointsContent;
 
     [Header("Different view icons")]
     [SerializeField] private GameObject[] _activityViewIcons;
@@ -47,7 +46,6 @@ public class LeaderboardView : MonoBehaviour
     {
         Wins,
         Activity,
-        ClanPoints
     }
     private enum LeaderboardCategory
     {
@@ -79,10 +77,9 @@ public class LeaderboardView : MonoBehaviour
     {
         _currentLeaderboard = leaderboard;
 
-        SetLeaderboardType(LeaderboardType.Activity);
         _currentLeaderboardCategory = LeaderboardCategory.Players;
         UpdateTitle();
-        LoadLeaderboard();
+        LoadActivityView();
     }
 
     private void SetLeaderboardType(LeaderboardType leaderboardType)
@@ -90,7 +87,6 @@ public class LeaderboardView : MonoBehaviour
         _currentLeaderboardType = leaderboardType;
         _winsPanel.SetActive(_currentLeaderboardType == LeaderboardType.Wins);
         _activityPanel.SetActive(_currentLeaderboardType == LeaderboardType.Activity);
-        _clanPointsPanel.SetActive(_currentLeaderboardType == LeaderboardType.ClanPoints);
     }
 
     private void UpdateTitle()
@@ -108,9 +104,8 @@ public class LeaderboardView : MonoBehaviour
     {
         foreach (Transform child in _winsContent) Destroy(child.gameObject);
         foreach (Transform child in _activityContent) Destroy(child.gameObject);
-        foreach (Transform child in _clanPointsContent) Destroy(child.gameObject);
 
-        _leaderboardTypeButton.interactable = (_currentLeaderboardType != LeaderboardType.ClanPoints);
+        _leaderboardTypeButton.interactable = (_currentLeaderboardCategory != LeaderboardCategory.Clans);
         _leaderboardCategoryButtons.SetActive(_currentLeaderboard == Leaderboard.Global);
 
         switch (_currentLeaderboard)
@@ -141,6 +136,7 @@ public class LeaderboardView : MonoBehaviour
                             {
                                 LeaderboardActivityItem item = Instantiate(_playerActivityItemPrefab, parent: _activityContent).GetComponent<LeaderboardActivityItem>();
                                 item.Initialize(rank, ranking.Clan.Name, ranking.Points);
+
                                 rank++;
                             };
                         }
@@ -155,8 +151,14 @@ public class LeaderboardView : MonoBehaviour
                         int rank = 1;
                         foreach (ClanLeaderboard ranking in clanLeaderboard)
                         {
-                            LeaderboardClanPointsItem item = Instantiate(_clanPointsItemPrefab, parent: _clanPointsContent).GetComponent<LeaderboardClanPointsItem>();
+                            LeaderboardClanPointsItem item = Instantiate(_clanPointsItemPrefab, parent: _activityContent).GetComponent<LeaderboardClanPointsItem>();
                             item.Initialize(rank, ranking.Clan.Name, ranking.Points);
+
+                            // Clan heart colors
+                            ClanData clanData = ranking.Clan;
+                            ClanHeartColorSetter clanheart = item.GetComponentInChildren<ClanHeartColorSetter>();
+                            clanheart.SetOtherClanColors(clanData);
+
                             rank++;
                         }
 
@@ -265,14 +267,12 @@ public class LeaderboardView : MonoBehaviour
     private void ListClans()
     {
         _currentLeaderboardCategory = LeaderboardCategory.Clans;
-        SetLeaderboardType(LeaderboardType.ClanPoints);
-        LoadLeaderboard();
+        LoadActivityView();
     }
 
     private void ListPlayers()
     {
         _currentLeaderboardCategory = LeaderboardCategory.Players;
-        SetLeaderboardType(LeaderboardType.Activity);
-        LoadLeaderboard();
+        LoadActivityView();
     }
 }
