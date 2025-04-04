@@ -77,11 +77,11 @@ namespace Altzone.Scripts.Voting
                         NoVotes.Add(newPollVote);
                     }
 
-                    PlayerVoteData newPlayerVote = new PlayerVoteData(Id, answer);
-                    player.playerVotes.Add(newPlayerVote);
-                    store.SavePlayerData(player, data => player = data);
-
                     NotVoted.Remove(player.Id);
+
+                    //PlayerVoteData newPlayerVote = new PlayerVoteData(Id, answer);
+                    //player.playerVotes.Add(newPlayerVote);
+                    //store.SavePlayerData(player, data => player = data);
                 }
             }
         }

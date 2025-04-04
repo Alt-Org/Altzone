@@ -17,8 +17,17 @@ namespace MenuUi.Scripts.Storage
 
         private void CreatePoll()
         {
-            if (Furniture != null) PollManager.CreateFurniturePoll(FurniturePollType.Selling, Furniture);
-            VotingActions.ReloadPollList?.Invoke();
+            if (Furniture != null)
+            {
+                if (Furniture.ClanFurniture.InVoting) return;
+                if (Furniture.ClanFurniture.VotedToSell) return;
+
+                PollManager.CreateFurniturePoll(FurniturePollType.Selling, Furniture);
+
+                Furniture.ClanFurniture.InVoting = true;
+
+                VotingActions.ReloadPollList?.Invoke();
+            }
         }
     }
 }

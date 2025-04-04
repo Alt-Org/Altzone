@@ -44,7 +44,7 @@ public static class PollManager
         if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
 
         GameFurniture gameFurniture = null;
-        store.GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.FurnitureInfo == furniture.Info));
+        store.GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == furniture.Name));
 
         PollData pollData = new FurniturePollData(id, clanMembers, furniturePollType, gameFurniture);
         pollDataList.Add(pollData);
