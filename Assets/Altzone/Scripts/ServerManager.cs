@@ -625,7 +625,7 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator UnreservePlayerTaskFromServer(Action<bool> callback)
     {
-        yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "dailyTasks/unreserve/", null, AccessToken, request =>
+        yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "dailyTasks/unreserve/", "", AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
