@@ -629,7 +629,7 @@ public class ServerManager : MonoBehaviour
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                JObject result = JObject.Parse(request.downloadHandler.text);
+                //JObject result = JObject.Parse(request.downloadHandler.text);
                 //Debug.LogWarning(result);
 
                 if (callback != null)
