@@ -8,6 +8,10 @@ using Quantum.Collections;
 
 namespace Quantum
 {
+    /// <summary>
+    /// PlayerMovement <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System</a>.<br/>
+    /// Handles player input, movement and rotations.<br/>
+    /// </summary>
     [Preserve]
     public unsafe class PlayerMovementSystem : SystemMainThreadFilter<PlayerMovementSystem.Filter>
     {
@@ -18,6 +22,15 @@ namespace Quantum
             public PlayerData* PlayerData;
         }
 
+        /// <summary>
+        /// <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum system update method</a>.<br/>
+        /// Handles player input, movement and rotations.<br/>
+        /// (this method should only be called by Quantum)
+        /// </summary>
+        /// Skips players that have PlayerRef = none.<br/>
+        /// Gets player's Quantum Input and calls <see cref="UpdatePlayerMovement(Frame, ref Filter, Input*)">UpdatePlayerMovement</see> method.
+        /// <param name="f">Current Quantum Frame</param>
+        /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter</a>.</param>
         public override void Update(Frame f, ref Filter filter)
         {
             if (filter.PlayerData->PlayerRef == PlayerRef.None) return;
@@ -98,6 +111,18 @@ namespace Quantum
             }
         }
 
+        /// <summary>
+        /// Private helper method for the public <see cref="Update(Frame, ref Filter)">Update</see> method.<br/>
+        /// Handles player's movement and rotation.
+        /// </summary>
+        /// Checks Quantum Input for player's actions.<br/>
+        /// When movement action is taken: Checks and updates player's TargetPosition based on input.<br/>
+        /// When rotation action is taken: updates player's RotationOffset based on input.<br/>
+        /// When rotation action is not taken: updates player's RotationOffset back to zero.<br/>
+        /// Always: updates player's position and rotation based on the current TargetPosition and RotationOffset.<br/>
+        /// <param name="f">Current Quantum Frame</param>
+        /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter</a>.</param>
+        /// <param name="input">Player's Quantum Input</param>
         private void UpdatePlayerMovement(Frame f, ref Filter filter, Input* input)
         {
             // constant
