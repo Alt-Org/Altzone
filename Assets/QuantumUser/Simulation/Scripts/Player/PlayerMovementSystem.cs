@@ -100,6 +100,7 @@ namespace Quantum
 
         private void UpdatePlayerMovement(Frame f, ref Filter filter, Input* input)
         {
+            // constant
             FP rotationSpeed = FP._0_20;
 
             // unpack filter
@@ -109,13 +110,35 @@ namespace Quantum
             // handle movement
             if (input->MouseClick)
             {
-                playerData->TargetPosition = GridManager.GridPositionToWorldPosition(input->MovementPosition);
-                //checks if player is allowed to move to that side of the arena
-                if (((playerData->TeamNumber == BattleTeamNumber.TeamAlpha) && playerData->TargetPosition.Y > 0)
-                    || ((playerData->TeamNumber == BattleTeamNumber.TeamBeta) && playerData->TargetPosition.Y < 0))
+                // get players TargetPosition
+                GridPosition targetGridPosition = input->MovementPosition;
+
+                // clamp the TargetPosition inside sidebounds
+                targetGridPosition.Col = Mathf.Clamp(targetGridPosition.Col, 0, GridManager.Columns-1);
+
+                // clamp the TargetPosition inside teams playfield for alphateam
+                if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha)
                 {
-                    playerData->TargetPosition.Y = 0;
+                    targetGridPosition.Row = Mathf.Clamp(
+                        targetGridPosition.Row,
+                        GridManager.TeamAlphaFieldStart + playerData->GridExtendBottom,
+                        GridManager.TeamAlphaFieldEnd   - playerData->GridExtendTop
+                    );
                 }
+
+                // clamp the TargetPosition inside teams playfield for betateam
+                else
+                {
+                    targetGridPosition.Row = Mathf.Clamp(
+                        targetGridPosition.Row,
+                        GridManager.TeamBetaFieldStart + playerData->GridExtendBottom,
+                        GridManager.TeamBetaFieldEnd   - playerData->GridExtendTop
+                    );
+                }
+
+                // get players TargetPositions as WorldPosition
+                playerData->TargetPosition = GridManager.GridPositionToWorldPosition(targetGridPosition);
+
                 Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", playerData->TargetPosition);
             }
 
