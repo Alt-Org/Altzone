@@ -8,8 +8,6 @@ using UnityEngine.UI;
 
 public class LeaderboardView : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI _titleText;
-
     [Header("Tabline")]
     [SerializeField] private Button _globalLeaderboardButton;
     [SerializeField] private Button _clanLeaderboardButton;
@@ -79,7 +77,6 @@ public class LeaderboardView : MonoBehaviour
         _currentLeaderboard = leaderboard;
 
         _currentLeaderboardCategory = LeaderboardCategory.Players;
-        UpdateTitle();
         LoadActivityView();
     }
 
@@ -88,17 +85,6 @@ public class LeaderboardView : MonoBehaviour
         _currentLeaderboardType = leaderboardType;
         _winsPanel.SetActive(_currentLeaderboardType == LeaderboardType.Wins);
         _activityPanel.SetActive(_currentLeaderboardType == LeaderboardType.Activity);
-    }
-
-    private void UpdateTitle()
-    {
-        _titleText.text = _currentLeaderboard switch
-        {
-            Leaderboard.Global => "Globaali tulostaulukko",
-            Leaderboard.Clan => "Klaanin tulostaulukko",
-            Leaderboard.Friends => "Kavereitten tulostaulukko",
-            _ => ""
-        };
     }
 
     private void LoadLeaderboard()
