@@ -14,11 +14,21 @@ namespace QuantumUser.Scripts.UI.Views
         [SerializeField] private Image _damageFill;
         [SerializeField] private Image _shieldFill;
 
-        [HideInInspector] public Button ButtonComponent;
+        private Button _button;
+        public Button ButtonComponent {
+            get
+            {
+                if (_button == null)
+                {
+                    _button = GetComponent<Button>();
+                }
+                return _button;
+            }
+        }
 
-        private void OnEnable()
+        private void OnDisable()
         {
-            ButtonComponent = GetComponent<Button>();
+            ButtonComponent.onClick.RemoveAllListeners();
         }
 
         public void SetCharacterIcon(int characterId)
