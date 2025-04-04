@@ -1,6 +1,7 @@
 using Quantum;
 using QuantumUser.Scripts.UI;
 using UnityEngine;
+using Altzone.Scripts.BattleUi;
 
 namespace QuantumUser.Scripts
 {
@@ -39,11 +40,15 @@ namespace QuantumUser.Scripts
 
             if (_gameUiController.PlayerInfoHandler != null)
             {
+                // hardcoded test data
+                _gameUiController.PlayerInfoHandler.MovableUiElement.SetData(new BattleUiElementData(new Vector2(0.02f,0.4f), new Vector2(0.15f,0.6f), BattleUiElementOrientation.Vertical));
                 _gameUiController.PlayerInfoHandler.SetInfo("minä", new int[] { 101,201,301 });
             }
 
             if (_gameUiController.TeammateInfoHandler != null)
             {
+                // hardcoded test data
+                _gameUiController.TeammateInfoHandler.MovableUiElement.SetData(new BattleUiElementData(new Vector2(0.85f, 0.4f), new Vector2(0.98f, 0.6f), BattleUiElementOrientation.Vertical));
                 _gameUiController.TeammateInfoHandler.SetInfo("tiimiläinen", new int[] { 401, 501, 601 });
             }
         }

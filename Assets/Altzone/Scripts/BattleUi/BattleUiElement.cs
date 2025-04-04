@@ -72,7 +72,7 @@ namespace Altzone.Scripts.BattleUi
 
         private void Awake()
         {
-            _rectTransform = GetComponent<RectTransform>();
+            if (_rectTransform == null) _rectTransform = GetComponent<RectTransform>();
         }
 
         private void FlipOrientation()
@@ -140,6 +140,8 @@ namespace Altzone.Scripts.BattleUi
         /// <param name="data">The data which to set to this Ui element.</param>
         public void SetData(BattleUiElementData data)
         {
+            if (_rectTransform == null) _rectTransform = GetComponent<RectTransform>();
+
             _rectTransform.anchorMin = data.AnchorMin;
             _rectTransform.anchorMax = data.AnchorMax;
 
