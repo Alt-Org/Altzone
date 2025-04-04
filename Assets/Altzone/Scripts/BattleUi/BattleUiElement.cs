@@ -17,7 +17,9 @@ namespace Altzone.Scripts.BattleUi
     public class BattleUiElement : MonoBehaviour
     {
         [SerializeField] private GameObject _horizontalConfiguration;
+        [SerializeField] private float _horizontalAspectRatio;
         [SerializeField] private GameObject _verticalConfiguration;
+        [SerializeField] private float _verticalAspectRatio;
 
         private RectTransform _rectTransform;
 
