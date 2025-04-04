@@ -20,6 +20,9 @@ component PlayerData
     FP StatAttack;
     FP StatDefence;
 
+    int GridExtendTop;
+    int GridExtendBottom;
+
     FPVector2 TargetPosition;
     FP RotationBase;
     FP RotationOffset;
@@ -43,6 +46,9 @@ struct PlayerHitboxTemplate
 
 component PlayerDataTemplate
 {
+    int GridExtendTop;
+    int GridExtendBottom;
+
     [FreeOnComponentRemoved] list<PlayerHitboxTemplate> HitboxListShield;
     [FreeOnComponentRemoved] list<PlayerHitboxTemplate> HitboxListCharacter;
 }

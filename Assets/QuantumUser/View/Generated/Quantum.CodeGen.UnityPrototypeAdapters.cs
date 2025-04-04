@@ -61,6 +61,8 @@ namespace Quantum.Prototypes.Unity {
     public FP StatCharacterSize;
     public FP StatAttack;
     public FP StatDefence;
+    public Int32 GridExtendTop;
+    public Int32 GridExtendBottom;
     public FPVector2 TargetPosition;
     public FP RotationBase;
     public FP RotationOffset;
@@ -86,6 +88,8 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.StatCharacterSize, out result.StatCharacterSize);
       converter.Convert(this.StatAttack, out result.StatAttack);
       converter.Convert(this.StatDefence, out result.StatDefence);
+      converter.Convert(this.GridExtendTop, out result.GridExtendTop);
+      converter.Convert(this.GridExtendBottom, out result.GridExtendBottom);
       converter.Convert(this.TargetPosition, out result.TargetPosition);
       converter.Convert(this.RotationBase, out result.RotationBase);
       converter.Convert(this.RotationOffset, out result.RotationOffset);
