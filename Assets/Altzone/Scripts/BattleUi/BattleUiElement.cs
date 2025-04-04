@@ -48,9 +48,8 @@ namespace Altzone.Scripts.BattleUi
                 _orientation = value;
 
                 // Showing either horizontal or vertical configuration
-                bool isHorizontal = value == BattleUiElementOrientation.Horizontal || value == BattleUiElementOrientation.HorizontalFlipped ? true : false;
-                if (_horizontalConfiguration != null) _horizontalConfiguration.SetActive(isHorizontal);
-                if (_verticalConfiguration != null) _verticalConfiguration.SetActive(!isHorizontal);
+                if (_horizontalConfiguration != null) _horizontalConfiguration.SetActive(IsHorizontal);
+                if (_verticalConfiguration != null) _verticalConfiguration.SetActive(!IsHorizontal);
 
                 // Flipping orientation if new orientation is flipped
                 switch (value)
@@ -60,6 +59,14 @@ namespace Altzone.Scripts.BattleUi
                         FlipOrientation();
                         break;
                 }
+            }
+        }
+
+        public bool IsHorizontal
+        {
+            get
+            {
+                return _orientation == BattleUiElementOrientation.Horizontal || _orientation == BattleUiElementOrientation.HorizontalFlipped;
             }
         }
 
