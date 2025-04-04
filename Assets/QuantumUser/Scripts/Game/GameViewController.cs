@@ -1,6 +1,9 @@
 using Quantum;
 using QuantumUser.Scripts.UI;
 using UnityEngine;
+using Altzone.Scripts.BattleUi;
+
+using Button = UnityEngine.UI.Button;
 
 namespace QuantumUser.Scripts
 {
@@ -14,9 +17,55 @@ namespace QuantumUser.Scripts
 
         private void Awake()
         {
-            if (_gridViewController != null) /*temp check*/ QuantumEvent.Subscribe<EventGridSet>(this, OnGridSet);
+            QuantumEvent.Subscribe<EventViewInit>(this, OnViewInit);
             QuantumEvent.Subscribe<EventChangeEmotionState>(this, OnChangeEmotionState);
             QuantumEvent.Subscribe<EventUpdateDebugStatsOverlay>(this, OnUpdateDebugStatsOverlay);
+        }
+
+        private void OnViewInit(EventViewInit e)
+        {
+            if (_gridViewController != null)
+            {
+                _gridViewController.SetGrid();
+            }
+
+            if (_gameUiController.DiamondsHandler != null)
+            {
+                _gameUiController.DiamondsHandler.SetDiamondsText(0);
+            }
+
+            // Commented out code to hide the ui elements which shouldn't be shown at this point, but the code will be used later
+
+            /*
+            if (_gameUiController.GiveUpButtonHandler != null)
+            {
+                _gameUiController.GiveUpButtonHandler.GiveUpButton.onClick.AddListener(OnGiveUpButtonPressed);
+                _gameUiController.GiveUpButtonHandler.SetShow(true);
+            }
+
+            if (_gameUiController.PlayerInfoHandler != null)
+            {
+                // hardcoded test data
+                //_gameUiController.PlayerInfoHandler.MovableUiElement.SetData(new BattleUiElementData(new Vector2(0.02f,0.4f), new Vector2(0.15f,0.6f), BattleUiElementOrientation.Vertical));
+                _gameUiController.PlayerInfoHandler.SetInfo("Minä", new int[] { 101, 201, 301 }, true);
+
+                // Adding listener to player buttons
+                Button[] buttons = _gameUiController.PlayerInfoHandler.GetCharacterButtons();
+
+                for (int i = 0; i < buttons.Length; i++)
+                {
+                    int buttonIdx = i; // using only i didn't work it always printed 3 so assigning it to a variable
+                    buttons[i].onClick.AddListener(() => OnCharacterButtonPressed(buttonIdx));
+                }
+            }
+
+            if (_gameUiController.TeammateInfoHandler != null)
+            {
+                // hardcoded test data
+                //_gameUiController.TeammateInfoHandler.MovableUiElement.SetData(new BattleUiElementData(new Vector2(0.85f, 0.4f), new Vector2(0.98f, 0.6f), BattleUiElementOrientation.Vertical));
+                _gameUiController.TeammateInfoHandler.SetInfo("Tiimikaveri", new int[] { 401, 501, 601 }, false);
+            }
+            */
         }
 
         private void OnChangeEmotionState(EventChangeEmotionState e)
@@ -25,15 +74,20 @@ namespace QuantumUser.Scripts
             _screenEffectViewController.ChangeColor((int)e.Emotion);
         }
 
-        private void OnGridSet(EventGridSet e)
-        {
-            _gridViewController.SetGrid();
-        }
-
         private void OnUpdateDebugStatsOverlay(EventUpdateDebugStatsOverlay e)
         {
             _gameUiController.DebugStatsOverlay.SetShow(true);
             _gameUiController.DebugStatsOverlay.SetStats(e.Character);
+        }
+
+        private void OnGiveUpButtonPressed()
+        {
+            Debug.Log("Give up button pressed!");
+        }
+
+        private void OnCharacterButtonPressed(int buttonIdx)
+        {
+            Debug.Log($"Character button {buttonIdx} pressed!");
         }
 
         // Handles UI updates based on the game's state and countdown
@@ -68,7 +122,7 @@ namespace QuantumUser.Scripts
 
                         // Clear the countdown text when the countdown is negative
                         _gameUiController.AnnouncementHandler.ClearAnnouncerTextField();
-
+                        _gameUiController.TimerHandler.StartTimer(frame);
 
                         break;
                     case GameState.GetReadyToPlay:
@@ -77,6 +131,8 @@ namespace QuantumUser.Scripts
                         break;
 
                     case GameState.GameOver:
+                        _gameUiController.GiveUpButtonHandler.SetShow(false);
+                        _gameUiController.TimerHandler.StopTimer();
                         // If the game is over, display "Game Over!" and show the Game Over UI
                         _gameUiController.GameOverHandler.SetShow(true);
                         break;

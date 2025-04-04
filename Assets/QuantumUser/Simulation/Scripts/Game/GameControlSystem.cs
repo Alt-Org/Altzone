@@ -21,7 +21,7 @@ namespace Quantum
             GridManager.Init(battleArenaSpec);
             PlayerManager.Init(f);
 
-            f.Events.GridSet();
+            f.Events.ViewInit();
 
             GameSession* gameSession = f.Unsafe.GetPointerSingleton<GameSession>();
             gameSession->GameInitialized = true;
