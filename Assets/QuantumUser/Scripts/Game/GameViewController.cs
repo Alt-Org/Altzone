@@ -36,6 +36,16 @@ namespace QuantumUser.Scripts
                 _gameUiController.GiveUpButtonHandler.GiveUpButton.onClick.AddListener(OnGiveUpButtonPressed);
                 _gameUiController.GiveUpButtonHandler.SetShow(true);
             }
+
+            if (_gameUiController.PlayerInfoHandler != null)
+            {
+                _gameUiController.PlayerInfoHandler.SetInfo("minä", new int[] { 101,201,301 });
+            }
+
+            if (_gameUiController.TeammateInfoHandler != null)
+            {
+                _gameUiController.TeammateInfoHandler.SetInfo("tiimiläinen", new int[] { 401, 501, 601 });
+            }
         }
 
         private void OnChangeEmotionState(EventChangeEmotionState e)
