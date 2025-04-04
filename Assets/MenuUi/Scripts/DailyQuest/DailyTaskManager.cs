@@ -11,6 +11,8 @@ using MenuUi.Scripts.TabLine;
 
 public class DailyTaskManager : AltMonoBehaviour
 {
+    #region Variables
+
     [Tooltip("Maximum time until a get or save data operation is forced to quit.")]
     [SerializeField] private float _timeoutSeconds = 10;
     [SerializeField] private TabLine _tabline;
@@ -106,6 +108,8 @@ public class DailyTaskManager : AltMonoBehaviour
         ClanTask
     }
     private SelectedTab _selectedTab = SelectedTab.Tasks;
+
+    #endregion
 
     void Start()
     {
@@ -534,17 +538,28 @@ public class DailyTaskManager : AltMonoBehaviour
     {
         PlayerData playerData = null;
         PlayerData savePlayerData = null;
+        bool? unreserveResult = null;
         bool? timeout = null;
+        Coroutine coroutineTimeout;
 
         //Get player data.
         StartCoroutine(PlayerDataTransferer("get", null, _timeoutSeconds, tdata => timeout = tdata, pdata => playerData = pdata));
         yield return new WaitUntil(() => (playerData != null || timeout != null));
 
-        if (playerData == null)
+        if (playerData == null || playerData.Task == null)
         {
-            done(true);
+            done(false);
             yield break;
         }
+
+        StartCoroutine(ServerManager.Instance.UnreservePlayerTaskFromServer(data => unreserveResult = data));
+        coroutineTimeout = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+        yield return new WaitUntil(() => (unreserveResult != null || timeout != null));
+
+        if (unreserveResult == null)
+            Debug.LogError($"Failed to unreserve task id: {playerData.Task.Id}");
+
+        StopCoroutine(coroutineTimeout);
 
         //Save player data.
         playerData.Task.ClearProgress();
@@ -558,7 +573,7 @@ public class DailyTaskManager : AltMonoBehaviour
 
         if (savePlayerData == null)
         {
-            done(true);
+            done(false);
             yield break;
         }
 
@@ -596,18 +611,22 @@ public class DailyTaskManager : AltMonoBehaviour
         }
     }
 
-    public IEnumerator AcceptTask(PlayerTask playerTask)
+    public IEnumerator AcceptTask(PlayerTask playerTask, System.Action<bool> callback)
     {
+        bool? done = null;
+
         if (_currentPlayerData != null && _currentPlayerData.Task != null)
         {
-            bool? done = null;
             StartCoroutine(CancelTask(data => done = data));
             yield return new WaitUntil(() => done != null);
+            done = null;
         }
 
-        StartCoroutine(GetSaveSetHandleOwnTask(playerTask));
-        _ownTaskTabButton.interactable = true;
-        SwitchTab(SelectedTab.OwnTask);
+        StartCoroutine(GetSaveSetHandleOwnTask(playerTask, data => done = data));
+        yield return new WaitUntil(() => done != null);
+
+        if (callback != null)
+            callback(done.Value);
     }
 
     #endregion
@@ -754,17 +773,31 @@ public class DailyTaskManager : AltMonoBehaviour
                         {
                             StartCoroutine(CancelTask(data => done = data));
                             yield return new WaitUntil(() => done != null);
+                            done = null;
                         }
 
-                        StartCoroutine(GetSaveSetHandleOwnTask(data.Value.OwnPage));
+                        StartCoroutine(GetSaveSetHandleOwnTask(data.Value.OwnPage, data => done = data));
+                        yield return new WaitUntil(() => (_currentPlayerData.Task != null || done != null));
+
+                        if (_currentPlayerData.Task == null)
+                            break;
+
                         SwitchTab(SelectedTab.OwnTask);
                         break;
                     }
                 case PopupData.PopupDataType.CancelTask:
                     {
                         StartCoroutine(CancelTask(data => done = data));
+                        yield return new WaitUntil(() => done != null);
+
+                        if (!done.Value)
+                        {
+                            Debug.LogError("No task to be cancelled.");
+                            break;
+                        }
+
                         SwitchTab(SelectedTab.Tasks);
-                        _ownTaskTabButton.interactable = false;
+                        //_ownTaskTabButton.interactable = false;
                         break;
                     }
                 case PopupData.PopupDataType.ClanMilestone: break;
@@ -781,33 +814,55 @@ public class DailyTaskManager : AltMonoBehaviour
     /// Save given <c>PlayerTask</c> to <c>PlayerData</c> and update owntask page.
     /// </summary>
     /// <param name="playerTask"><c>PlayerData</c> to be set and saved to server as current task.</param>
-    private IEnumerator GetSaveSetHandleOwnTask(PlayerTask playerTask)
+    private IEnumerator GetSaveSetHandleOwnTask(PlayerTask playerTask, System.Action<bool> callback)
     {
         PlayerData playerData = null;
-        PlayerData savePlayerData = null;
+        //PlayerData savePlayerData = null;
+        PlayerTask reserveResult = null;
         bool? timeout = null;
+        Coroutine coroutineTimeout;
 
         //Get player data.
         StartCoroutine(PlayerDataTransferer("get", null, _timeoutSeconds, tdata => timeout = tdata, pdata => playerData = pdata));
         yield return new WaitUntil(() => (playerData != null || timeout != null));
 
         if (playerData == null)
+        {
+            callback(false);
             yield break;
+        }
+
+        StartCoroutine(ServerManager.Instance.ReservePlayerTaskFromServer(playerTask.Id, data => reserveResult = data));
+        coroutineTimeout = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+        yield return new WaitUntil(() => (reserveResult != null || timeout != null));
+
+        if (reserveResult == null)
+        {
+            Debug.LogError($"Failed to reserve task id: {playerTask.Id}");
+            callback(false);
+            yield break;
+        }
+
+        StopCoroutine(coroutineTimeout);
 
         //Save player data.
-        playerData.Task = playerTask;
-        playerData.Task.AddPlayerId(playerData.Id);
-        timeout = null;
+        playerData.Task = reserveResult;
+        //playerData.Task.AddPlayerId(playerData.Id);
+        //timeout = null;
 
-        StartCoroutine(PlayerDataTransferer("save", playerData, _timeoutSeconds, tdata => timeout = tdata, pdata => savePlayerData = pdata));
-        yield return new WaitUntil(() => (savePlayerData != null || timeout != null));
+        //StartCoroutine(PlayerDataTransferer("save", playerData, _timeoutSeconds, tdata => timeout = tdata, pdata => savePlayerData = pdata));
+        //yield return new WaitUntil(() => (savePlayerData != null || timeout != null));
 
-        if (savePlayerData == null)
-            yield break;
+        //if (savePlayerData == null)
+        //{
+        //    callback(false);
+        //    yield break;
+        //}
 
-        _currentPlayerData = savePlayerData;
+        _currentPlayerData = playerData;
         playerTask.InvokeOnTaskSelected();
         SetHandleOwnTask(playerTask);
+        callback(true);
     }
 
     /// <summary>

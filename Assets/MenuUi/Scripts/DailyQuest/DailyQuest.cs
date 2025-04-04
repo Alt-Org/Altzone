@@ -102,7 +102,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         if (!_clickEnabled || _taskData.PlayerId != "")
             return;
 
-        StartCoroutine(dailyTaskManager.AcceptTask(_taskData));
+        StartCoroutine(dailyTaskManager.AcceptTask(_taskData, null));
     }
 
     /// <summary>
