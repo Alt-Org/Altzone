@@ -609,7 +609,7 @@ public class ServerManager : MonoBehaviour
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 Debug.LogWarning(result);
-                ServerPlayerTask task = result["data"].ToObject<ServerPlayerTask>();
+                ServerPlayerTask task = result["data"]["Object"].ToObject<ServerPlayerTask>();
                 //Clan = clan;
 
                 if (callback != null)
@@ -629,9 +629,6 @@ public class ServerManager : MonoBehaviour
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                //JObject result = JObject.Parse(request.downloadHandler.text);
-                //Debug.LogWarning(result);
-
                 if (callback != null)
                     callback(true);
             }
