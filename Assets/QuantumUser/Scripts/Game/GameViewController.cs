@@ -3,6 +3,8 @@ using QuantumUser.Scripts.UI;
 using UnityEngine;
 using Altzone.Scripts.BattleUi;
 
+using Button = UnityEngine.UI.Button;
+
 namespace QuantumUser.Scripts
 {
     public class GameViewController : QuantumCallbacks
@@ -32,6 +34,9 @@ namespace QuantumUser.Scripts
                 _gameUiController.DiamondsHandler.SetDiamondsText(0);
             }
 
+            // Commented out code to hide the ui elements which shouldn't be shown at this point, but the code will be used later
+
+            /*
             if (_gameUiController.GiveUpButtonHandler != null)
             {
                 _gameUiController.GiveUpButtonHandler.GiveUpButton.onClick.AddListener(OnGiveUpButtonPressed);
@@ -41,16 +46,26 @@ namespace QuantumUser.Scripts
             if (_gameUiController.PlayerInfoHandler != null)
             {
                 // hardcoded test data
-                _gameUiController.PlayerInfoHandler.MovableUiElement.SetData(new BattleUiElementData(new Vector2(0.02f,0.4f), new Vector2(0.15f,0.6f), BattleUiElementOrientation.Vertical));
-                _gameUiController.PlayerInfoHandler.SetInfo("minä", new int[] { 101,201,301 });
+                //_gameUiController.PlayerInfoHandler.MovableUiElement.SetData(new BattleUiElementData(new Vector2(0.02f,0.4f), new Vector2(0.15f,0.6f), BattleUiElementOrientation.Vertical));
+                _gameUiController.PlayerInfoHandler.SetInfo("Minä", new int[] { 101, 201, 301 }, true);
+
+                // Adding listener to player buttons
+                Button[] buttons = _gameUiController.PlayerInfoHandler.GetCharacterButtons();
+
+                for (int i = 0; i < buttons.Length; i++)
+                {
+                    int buttonIdx = i; // using only i didn't work it always printed 3 so assigning it to a variable
+                    buttons[i].onClick.AddListener(() => OnCharacterButtonPressed(buttonIdx));
+                }
             }
 
             if (_gameUiController.TeammateInfoHandler != null)
             {
                 // hardcoded test data
-                _gameUiController.TeammateInfoHandler.MovableUiElement.SetData(new BattleUiElementData(new Vector2(0.85f, 0.4f), new Vector2(0.98f, 0.6f), BattleUiElementOrientation.Vertical));
-                _gameUiController.TeammateInfoHandler.SetInfo("tiimiläinen", new int[] { 401, 501, 601 });
+                //_gameUiController.TeammateInfoHandler.MovableUiElement.SetData(new BattleUiElementData(new Vector2(0.85f, 0.4f), new Vector2(0.98f, 0.6f), BattleUiElementOrientation.Vertical));
+                _gameUiController.TeammateInfoHandler.SetInfo("Tiimikaveri", new int[] { 401, 501, 601 }, false);
             }
+            */
         }
 
         private void OnChangeEmotionState(EventChangeEmotionState e)
@@ -68,6 +83,11 @@ namespace QuantumUser.Scripts
         private void OnGiveUpButtonPressed()
         {
             Debug.Log("Give up button pressed!");
+        }
+
+        private void OnCharacterButtonPressed(int buttonIdx)
+        {
+            Debug.Log($"Character button {buttonIdx} pressed!");
         }
 
         // Handles UI updates based on the game's state and countdown
