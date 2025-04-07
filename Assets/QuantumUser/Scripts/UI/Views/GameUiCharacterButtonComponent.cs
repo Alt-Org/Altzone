@@ -8,7 +8,7 @@ namespace QuantumUser.Scripts.UI.Views
     /// Handles Battle Ui character button visuals and component references.
     /// </summary>
     [RequireComponent(typeof(Button))]
-    public class GameUiCharacterButtonHandler : MonoBehaviour
+    public class GameUiCharacterButtonComponent : MonoBehaviour
     {
         [SerializeField] private Image _characterImage;
         [SerializeField] private Image _damageFill;
