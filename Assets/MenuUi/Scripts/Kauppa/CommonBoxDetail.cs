@@ -5,21 +5,28 @@ using UnityEngine.UI;
 
 public class CommonBoxDetail : MonoBehaviour
 {
-    [SerializeField] Image Image;
+    
     public Canvas canvas;
     public Sprite productImage;
     public string productName = "T_ItemName";
     public string price = "Price";
 
-    void Start()
-    {
+    public Text titleText;
+    public Image itemImage;
+    public Image priceImage;
+    public string T_ItemName;
+    public Sprite Content;
+    public float T_Price;
+    
+
+    void Start() {
         if (canvas == null)
         {
             GameObject canvasObject = new GameObject("Canvas");
             canvas = canvasObject.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         }
-
+        UpdateUI();
         CreateCommonBoxDetail();
     }
 
@@ -38,7 +45,7 @@ public class CommonBoxDetail : MonoBehaviour
         productNameObject.transform.SetParent(panel.transform);
 
         Text productNameText = productNameObject.AddComponent<Text>();
-        productNameText.text = "T_ItemName";
+        productNameText.text = T_ItemName;
         productNameText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
         productNameText.fontSize = 20;
         productNameText.alignment = TextAnchor.MiddleCenter;
@@ -51,7 +58,7 @@ public class CommonBoxDetail : MonoBehaviour
         productImageObject.transform.SetParent(panel.transform);
 
         Image productImageComp = productImageObject.AddComponent<Image>();
-        //productImageComp.sprite = productImage;
+        productImageObject.transform.SetParent(panel.transform);
 
         RectTransform imageRectTransform = productImageObject.GetComponent<RectTransform>();
         imageRectTransform.sizeDelta = new Vector2(150, 150);
@@ -61,7 +68,8 @@ public class CommonBoxDetail : MonoBehaviour
         productPriceObject.transform.SetParent(panel.transform);
 
         Text productPriceText = productPriceObject.AddComponent<Text>();
-        productPriceText.text = "Price";
+        productPriceText.text = price;
+        productPriceText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
         productPriceText.fontSize = 20;
         productPriceText.alignment = TextAnchor.MiddleCenter;
 
@@ -69,4 +77,14 @@ public class CommonBoxDetail : MonoBehaviour
         priceRectTransform.sizeDelta = new Vector2(380, 50);
         priceRectTransform.anchoredPosition = new Vector2(0, -150);
     }
+       
+    void UpdateUI()
+    {
+        
+        titleText.text = T_ItemName;
+        itemImage.sprite = Content;
+        string myString = T_Price.ToString();
+        priceImage.GetComponentInChildren<Text>().text = myString;
+    }
+
 }

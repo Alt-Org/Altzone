@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Item : MonoBehaviour
+public class ShopToVote : MonoBehaviour
 {
     public string itemName;
     public int itemPrice;

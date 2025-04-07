@@ -1,17 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CommonBoxBase : MonoBehaviour
 {
+    //static Color color = new RarityColor();
     [SerializeField] BoxCollider2D platformCollider;
     //[SerializeField] BoxLighning boxLighning;
+    
 
     //public BoxLighning BoxLighning { get => boxLighning; set => boxLighning = value; }
 
     // Start is called before the first frame update
     void Start()
     {
+       
         GameObject boxBaze = new GameObject("CommonBoxBaze");
 
         BoxCollider BoxCollider = boxBaze.AddComponent<BoxCollider>();
