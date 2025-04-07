@@ -10,14 +10,25 @@ public class LeaderboardView : MonoBehaviour
 {
     [Header("Tabline")]
     [SerializeField] private Button _globalLeaderboardButton;
+    [SerializeField] private Image _globalLeaderboardImage;
     [SerializeField] private Button _clanLeaderboardButton;
+    [SerializeField] private Image _clanLeaderboardImage;
     [SerializeField] private Button _friendsLeaderboardButton;
+    [SerializeField] private Image _friendsLeaderboardImage;
     [SerializeField] private Button _leaderboardTypeButton;
     [SerializeField] private Image _tablineRibbon;
     [SerializeField] private TabLine _tablineScript;
     [SerializeField] private GameObject _leaderboardCategoryButtons;
     [SerializeField] private Button _clansButton;
     [SerializeField] private Button _playersButton;
+
+    [Header("Tab sprites")]
+    [SerializeField] private Sprite _globalWinsSprite;
+    [SerializeField] private Sprite _globalActivitySprite;
+    [SerializeField] private Sprite _clanWinsSprite;
+    [SerializeField] private Sprite _clanActivitySprite;
+    [SerializeField] private Sprite _friendsWinsSprite;
+    [SerializeField] private Sprite _friendsActivitySprite;
 
     [Header("Leaderboard panels")]
     [SerializeField] private LeaderboardPodium _podium;
@@ -301,12 +312,14 @@ public class LeaderboardView : MonoBehaviour
             icon.SetActive(true);
         }
 
-        //Tabline colors
+        // Tabline colors
         Color activityRed = new Color(0.8549f, 0.2352f, 0.3254f);
-        ChangeTablineButtonColors(_friendsLeaderboardButton, activityRed);
-        ChangeTablineButtonColors(_clanLeaderboardButton, activityRed);
-        ChangeTablineButtonColors(_globalLeaderboardButton, activityRed);
         _tablineRibbon.color = activityRed;
+
+        // Tab sprites
+        _globalLeaderboardImage.sprite = _globalActivitySprite;
+        _clanLeaderboardImage.sprite = _clanActivitySprite;
+        _friendsLeaderboardImage.sprite = _friendsActivitySprite;
     }
 
     private void LoadWinsView()
@@ -325,21 +338,14 @@ public class LeaderboardView : MonoBehaviour
             icon.SetActive(true);
         }
 
-        //Tabline colors
+        // Tabline colors
         Color winsYellow = new Color(1f, 0.6313f, 0f);
-        ChangeTablineButtonColors(_friendsLeaderboardButton, winsYellow);
-        ChangeTablineButtonColors(_clanLeaderboardButton, winsYellow);
-        ChangeTablineButtonColors(_globalLeaderboardButton, winsYellow);
         _tablineRibbon.color = winsYellow;
-    }
 
-    private void ChangeTablineButtonColors(Button button, Color color)
-    {
-        var colors = button.colors;
-        colors.normalColor = color;
-        colors.pressedColor = color;
-        colors.selectedColor = color;
-        button.colors = colors;
+        // Tab sprites
+        _globalLeaderboardImage.sprite = _globalWinsSprite;
+        _clanLeaderboardImage.sprite = _clanWinsSprite;
+        _friendsLeaderboardImage.sprite = _friendsWinsSprite;
     }
 
     private void ListClans()
