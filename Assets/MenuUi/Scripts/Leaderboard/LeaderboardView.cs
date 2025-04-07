@@ -216,44 +216,44 @@ public class LeaderboardView : MonoBehaviour
                 // For Testing
                 if (_currentLeaderboardType == LeaderboardType.Wins)
                 {
-                    for (int i = 1; i < 5; i++)
+                    for (int i = 1; i < 20; i++)
                     {
                         switch (i)
                         {
                             case 1:
-                                _podium.InitializeFirstPlace("Eka", 16, null);
+                                _podium.InitializeFirstPlace("Eka", 0, null);
                                 break;
                             case 2:
-                                _podium.InitializeSecondPlace("Toka", 16, null);
+                                _podium.InitializeSecondPlace("Toka", 0, null);
                                 break;
                             case 3:
-                                _podium.InitializeThirdPlace("Kolmas", 16, null);
+                                _podium.InitializeThirdPlace("Kolmas", 0, null);
                                 break;
                             default:
                                 LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-                                item.Initialize(i, ((char)(64 + i)).ToString(), 16);
+                                item.Initialize(i, "", 16);
                                 break;
                         }
                     }
                 }
                 else
                 {
-                    for (int i = 1; i < 5; i++)
+                    for (int i = 1; i < 20; i++)
                     {
                         switch (i)
                         {
                             case 1:
-                                _podium.InitializeFirstPlace("Eka", 100, null);
+                                _podium.InitializeFirstPlace("Eka", 0, null);
                                 break;
                             case 2:
-                                _podium.InitializeSecondPlace("Toka", 100, null);
+                                _podium.InitializeSecondPlace("Toka", 0, null);
                                 break;
                             case 3:
-                                _podium.InitializeThirdPlace("Kolmas", 100, null);
+                                _podium.InitializeThirdPlace("Kolmas", 0, null);
                                 break;
                             default:
                                 LeaderboardActivityItem item = Instantiate(_playerActivityItemPrefab, parent: _activityContent).GetComponent<LeaderboardActivityItem>();
-                                item.Initialize(i, ((char)(64 + i)).ToString(), 100);
+                                item.Initialize(i, "", 0);
                                 break;
                         }
                     };
@@ -261,25 +261,51 @@ public class LeaderboardView : MonoBehaviour
                 break;
             case Leaderboard.Friends:
                 // For Testing
-                for (int i = 1; i < 5; i++)
+                if (_currentLeaderboardType == LeaderboardType.Wins)
                 {
-                    switch (i)
+                    for (int i = 1; i < 20; i++)
                     {
-                        case 1:
-                            _podium.InitializeFirstPlace("Eka", 16, null);
-                            break;
-                        case 2:
-                            _podium.InitializeSecondPlace("Toka", 16, null);
-                            break;
-                        case 3:
-                            _podium.InitializeThirdPlace("Kolmas", 16, null);
-                            break;
-                        default:
-                            LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-                            item.Initialize(i, ((char)(64 + i)).ToString(), 16);
-                            break;
-                    }  
+                        switch (i)
+                        {
+                            case 1:
+                                _podium.InitializeFirstPlace("Eka", 0, null);
+                                break;
+                            case 2:
+                                _podium.InitializeSecondPlace("Toka", 0, null);
+                                break;
+                            case 3:
+                                _podium.InitializeThirdPlace("Kolmas", 0, null);
+                                break;
+                            default:
+                                LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
+                                item.Initialize(i, "", 0);
+                                break;
+                        }
+                    }
                 }
+                else
+                {
+                    for (int i = 1; i < 20; i++)
+                    {
+                        switch (i)
+                        {
+                            case 1:
+                                _podium.InitializeFirstPlace("Eka", 0, null);
+                                break;
+                            case 2:
+                                _podium.InitializeSecondPlace("Toka", 0, null);
+                                break;
+                            case 3:
+                                _podium.InitializeThirdPlace("Kolmas", 0, null);
+                                break;
+                            default:
+                                LeaderboardActivityItem item = Instantiate(_playerActivityItemPrefab, parent: _activityContent).GetComponent<LeaderboardActivityItem>();
+                                item.Initialize(i, "", 0);
+                                break;
+                        }
+                    }
+                }
+                
                 break;
         }
     }
