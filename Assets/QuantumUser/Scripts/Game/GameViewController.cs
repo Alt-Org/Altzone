@@ -45,25 +45,6 @@ namespace QuantumUser.Scripts
 
             if (_gameUiController.PlayerInfoHandler != null)
             {
-                // hardcoded test data
-                //_gameUiController.PlayerInfoHandler.MovableUiElement.SetData(new BattleUiElementData(new Vector2(0.02f,0.4f), new Vector2(0.15f,0.6f), BattleUiElementOrientation.Vertical));
-                _gameUiController.PlayerInfoHandler.SetInfo("Minä", new int[] { 101, 201, 301 }, true);
-
-                // Adding listener to player buttons
-                Button[] buttons = _gameUiController.PlayerInfoHandler.GetCharacterButtons();
-
-                for (int i = 0; i < buttons.Length; i++)
-                {
-                    int buttonIdx = i; // using only i didn't work it always printed 3 so assigning it to a variable
-                    buttons[i].onClick.AddListener(() => OnCharacterButtonPressed(buttonIdx));
-                }
-            }
-
-            if (_gameUiController.TeammateInfoHandler != null)
-            {
-                // hardcoded test data
-                //_gameUiController.TeammateInfoHandler.MovableUiElement.SetData(new BattleUiElementData(new Vector2(0.85f, 0.4f), new Vector2(0.98f, 0.6f), BattleUiElementOrientation.Vertical));
-                _gameUiController.TeammateInfoHandler.SetInfo("Tiimikaveri", new int[] { 401, 501, 601 }, false);
             }
             */
         }
