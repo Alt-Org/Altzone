@@ -1,40 +1,34 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace MenuUi.Scripts.AvatarEditor{
     public class AvatarFaceLoader : MonoBehaviour
     {
-        public AvatarVisualDataScriptableObject avatarVisuals;
-        private List<Image> _faceImages;
+        [SerializeField] private AvatarVisualDataScriptableObject _avatarVisuals;
+        [SerializeField] private AvatarEditorCharacterHandle _characterHandle;
 
-        void Awake()
-        {
-            _faceImages = GetComponentsInChildren<Image>().ToList();
-            // foreach(Image image in GetComponentsInChildren<Image>())
-            // {
-            //     _faceImages.Add(image);
-            // }
-        }
-        void OnEnable()
+        private void OnEnable()
         {
             UpdateVisuals();
+            AvatarDesignLoader.OnAvatarDesignUpdate += UpdateVisuals;
+        }
+
+        private void OnDisable()
+        {
+            AvatarDesignLoader.OnAvatarDesignUpdate -= UpdateVisuals;
         }
 
         private void UpdateVisuals()
         {
-            // added null checks to avoid errors while testing
-            if (avatarVisuals.sprites != null) return;
-            if (avatarVisuals.colors != null) return;
+            if (_avatarVisuals.colors != null && _avatarVisuals.colors.Count != 0)
+                _characterHandle.SetHeadColor(_avatarVisuals.colors[0]);
 
-            for (int i = 0; i < _faceImages.Count; i++)
-            {
-                _faceImages[i].sprite = avatarVisuals.sprites[i];
-                _faceImages[i].color = avatarVisuals.colors[i];
-            }
+            if (_avatarVisuals.sprites == null || _avatarVisuals.sprites.Count == 0)
+                return;
+
+            _characterHandle.SetMainCharacterImage(FeatureSlot.Hair, _avatarVisuals.sprites[0]);
+            _characterHandle.SetMainCharacterImage(FeatureSlot.Eyes, _avatarVisuals.sprites[1]);
+            _characterHandle.SetMainCharacterImage(FeatureSlot.Nose, _avatarVisuals.sprites[2]);
+            _characterHandle.SetMainCharacterImage(FeatureSlot.Mouth, _avatarVisuals.sprites[3]);
         }
     }
 }

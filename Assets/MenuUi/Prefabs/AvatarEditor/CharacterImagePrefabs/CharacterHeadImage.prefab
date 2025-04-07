@@ -13,6 +13,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterHeadImage
       objectReference: {fileID: 0}
+    - target: {fileID: 3956092624877533775, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
+        type: 3}
+      propertyPath: _mainBody
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3956092624877533775, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
+        type: 3}
+      propertyPath: _mainFeet
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3956092624877533775, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
+        type: 3}
+      propertyPath: _mainHands
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5979321243465989676, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
         type: 3}
       propertyPath: m_Pivot.x
@@ -113,6 +128,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6224537532541717207, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 2783699594159395389, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb, type: 3}
@@ -125,6 +145,18 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 2907023324437588145}
   m_SourcePrefab: {fileID: 100100000, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb, type: 3}
+--- !u!114 &6404960599272824262 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3956092624877533775, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
+    type: 3}
+  m_PrefabInstance: {fileID: 7927497471529953161}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6696904714036861434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b03af1034d48e25478be16aa6f3de812, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6696904714036861434 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3671576818270862963, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
@@ -143,4 +175,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39ec419aaf903c747b6c6e5ac7dd4bbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  avatarVisuals: {fileID: 11400000, guid: 5924f2967fcfeb0469785ea0b5f3d2b2, type: 2}
+  _avatarVisuals: {fileID: 11400000, guid: 5924f2967fcfeb0469785ea0b5f3d2b2, type: 2}
+  _characterHandle: {fileID: 6404960599272824262}

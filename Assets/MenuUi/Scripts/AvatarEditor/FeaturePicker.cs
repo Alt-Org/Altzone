@@ -24,6 +24,9 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private List<Button> _categoryButtons;
         [SerializeField] private List<Button> _pageButtons;
         [SerializeField] private Animator _animator;
+
+        [SerializeField] private Image _pageTurnImage;
+
         private FeatureSlot _currentlySelectedCategory;
         private List<string> _selectedFeatures = new()
         {
@@ -53,6 +56,9 @@ namespace MenuUi.Scripts.AvatarEditor
         private readonly string _handsCategoryId = "32";
         private readonly string _feetCategoryId = "33";
 
+        private Coroutine _pageForwardCoroutine;
+        private Coroutine _pageBackwardCoroutine;
+
         public void Start()
         {
             _swipeArea = GetComponent<RectTransform>();
@@ -72,6 +78,14 @@ namespace MenuUi.Scripts.AvatarEditor
         public void OnDisable()
         {
             SwipeHandler.OnSwipe -= OnFeaturePickerSwipe;
+
+            if (_pageForwardCoroutine != null)
+                StopCoroutine(_pageForwardCoroutine);
+
+            if (_pageBackwardCoroutine != null)
+                StopCoroutine(_pageBackwardCoroutine);
+
+            _pageTurnImage.enabled = false;
         }
 
         private void OnFeaturePickerSwipe(SwipeDirection direction, Vector2 swipeStartPoint, Vector2 swipeEndPoint)
@@ -103,7 +117,7 @@ namespace MenuUi.Scripts.AvatarEditor
             if (_currentPageNumber < _pageCount - 1 && _animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
             {
                 _currentPageNumber++;
-                StartCoroutine(PlayNextPageAnimation());      
+                _pageForwardCoroutine = StartCoroutine(PlayNextPageAnimation());      
             }
         }
 
@@ -125,7 +139,7 @@ namespace MenuUi.Scripts.AvatarEditor
             if (_currentPageNumber > 0 && _animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
             {
                 _currentPageNumber--;
-                StartCoroutine(PlayPreviousPageAnimation());
+                _pageBackwardCoroutine = StartCoroutine(PlayPreviousPageAnimation());
             }
         }
 
@@ -219,7 +233,7 @@ namespace MenuUi.Scripts.AvatarEditor
             if (((_currentCategoryFeatureDataPlaceholder.Count + 1) % 8) != 0)
                 _pageCount++;
 
-            StartCoroutine(PlayNextPageAnimation());
+            _pageForwardCoroutine = StartCoroutine(PlayNextPageAnimation());
             SetCategoryNameText(_currentlySelectedCategory);
         }
 
@@ -261,6 +275,35 @@ namespace MenuUi.Scripts.AvatarEditor
         public List<string> GetCurrentlySelectedFeatures()
         {
             return _selectedFeatures;
+        }
+
+        public List<Sprite> GetCurrentlySelectedFeaturesAsSprites()
+        {
+            List<Sprite> sprites = new List<Sprite>();
+
+            for (int i = 0; i < _selectedFeatures.Count; i++)
+            {
+                List<AvatarPartsReference.AvatarPartInfo> currentCategoryFeatureDataPlaceholder = GetSpritesByCategory((FeatureSlot)i);
+
+                if (currentCategoryFeatureDataPlaceholder == null)
+                    return (null);
+
+                if (_selectedFeatures[i] != null && _selectedFeatures[i] != "")
+                {
+                    AvatarPartsReference.AvatarPartInfo partData =
+                        currentCategoryFeatureDataPlaceholder.Find(part => part.Id == _selectedFeatures[i]);
+
+                    if (partData != null)
+                    {
+                        sprites.Add(partData.AvatarImage);
+                        continue;
+                    }
+                }
+
+                sprites.Add(null);
+            }
+
+            return (sprites);
         }
 
         public void SetCharacterClassID(CharacterClassID id)

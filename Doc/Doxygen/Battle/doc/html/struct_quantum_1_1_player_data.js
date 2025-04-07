@@ -1,0 +1,25 @@
+var struct_quantum_1_1_player_data =
+[
+    [ "ClearPointers", "struct_quantum_1_1_player_data.html#ad7dbafa213be45b8251377c936ca2b9a", null ],
+    [ "GetHashCode", "struct_quantum_1_1_player_data.html#ac6f63099702e66f7c8078602b539752f", null ],
+    [ "OnRemoved", "struct_quantum_1_1_player_data.html#a99cb45843788c0f22eaa4afd241e27dc", null ],
+    [ "Serialize", "struct_quantum_1_1_player_data.html#adbc7e47d2de4b57cf8497f08f023db26", null ],
+    [ "ALIGNMENT", "struct_quantum_1_1_player_data.html#a7652a59ce82af469ff2c9af1ef053a86", null ],
+    [ "CharacterClass", "struct_quantum_1_1_player_data.html#aef6d00260271105ace1ac16f34220e8b", null ],
+    [ "CharacterId", "struct_quantum_1_1_player_data.html#a924729ed63dcfde914c9d216d27eb871", null ],
+    [ "HitboxListAll", "struct_quantum_1_1_player_data.html#ac77a0cedf00d2c523de4886ad49aede3", null ],
+    [ "HitboxListCharacter", "struct_quantum_1_1_player_data.html#abfd00e2e04744784d3d8c91c84ec7ef9", null ],
+    [ "HitboxListShield", "struct_quantum_1_1_player_data.html#af1a75186fa10a5ec18194b9d33e45c13", null ],
+    [ "PlayerRef", "struct_quantum_1_1_player_data.html#aa9fcfaf58b1094c886079deda1bbb190", null ],
+    [ "RotationBase", "struct_quantum_1_1_player_data.html#a96d7b676176f6b09659ca1263a3ccf35", null ],
+    [ "RotationOffset", "struct_quantum_1_1_player_data.html#aa6b85b9973ae5f48d42201f7fd4cc287", null ],
+    [ "SIZE", "struct_quantum_1_1_player_data.html#a9666595363b1c45294044e972623fedb", null ],
+    [ "Slot", "struct_quantum_1_1_player_data.html#ae7312279ee402e944502daa4124b2a17", null ],
+    [ "StatAttack", "struct_quantum_1_1_player_data.html#ad24258e98768d82858ef4e81bc92d246", null ],
+    [ "StatCharacterSize", "struct_quantum_1_1_player_data.html#af0599099112bb1ac3a78e6a796117056", null ],
+    [ "StatDefence", "struct_quantum_1_1_player_data.html#a56bc57451aca200b0045a6182d308b6f", null ],
+    [ "StatHp", "struct_quantum_1_1_player_data.html#aeb89f9a6b0f870c5f187c32d56d56159", null ],
+    [ "StatSpeed", "struct_quantum_1_1_player_data.html#a6830cfe4e0b8a0275c4c5dc646b4f373", null ],
+    [ "TargetPosition", "struct_quantum_1_1_player_data.html#a54f0384606d63df3e8d592bb64c6b6b9", null ],
+    [ "TeamNumber", "struct_quantum_1_1_player_data.html#a2075697375a0a4193a0202829902eca9", null ]
+];

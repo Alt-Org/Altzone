@@ -2,7 +2,7 @@
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
-using MenuUi.Scripts.Lobby;
+using Altzone.Scripts.Lobby;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using MenuUi.Scripts.Signals;
@@ -30,8 +30,12 @@ namespace MenuUi.Scripts.Lobby.InLobby
         [SerializeField] private TopInfoPanelController _topInfoPanel;
         [SerializeField] private GameObject _popupContents;
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
+        [SerializeField] private LobbyRoomListingController _roomListingController;
 
         private string _currentRegion;
+        private Coroutine _creatingRoomCoroutineHolder = null;
+
+        public static GameType SelectedGameType { get; private set; }
 
         private void Awake()
         {
@@ -138,7 +142,64 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private void OpenWindow(GameType gameType)
         {
             _popupContents.SetActive(true);
-            _roomSwitcher.ReturnToMain();
+
+            // Checking if we are in room or matchmaking room depending on the game mode which would prevent changing the selected game type
+            switch (gameType)
+            {
+                case GameType.Custom:
+                    if (PhotonRealtimeClient.InRoom) return;
+                    break;
+                case GameType.Clan2v2:
+                case GameType.Random2v2:
+                    if (PhotonRealtimeClient.InMatchmakingRoom) // If we are in matchmaking we don't want to do anything
+                    {
+                        return;
+                    }
+                    else if (PhotonRealtimeClient.InRoom) // If we are in a normal room
+                    {
+                        // Checking if the game type changed, if it didn't we don't want to do anything but if it did we leave the room
+                        if (gameType == SelectedGameType)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            PhotonRealtimeClient.LeaveRoom();
+                        }
+                    }
+                    break;
+            }
+            
+            SelectedGameType = gameType;
+
+            switch (gameType)
+            {
+                case GameType.Custom:
+                    _roomSwitcher.ReturnToMain();
+                    break;
+                case GameType.Clan2v2:
+                    _roomSwitcher.ClosePanels();
+                    // Starting coroutine to create clan 2v2 room if player is not in a room and a room is currently being created
+                    if (_creatingRoomCoroutineHolder == null)
+                    {
+                        _creatingRoomCoroutineHolder = StartCoroutine(_roomListingController.StartCreatingClan2v2Room(() =>
+                        {
+                            _creatingRoomCoroutineHolder = null;
+                        }));
+                    }
+                    break;
+                case GameType.Random2v2:
+                    _roomSwitcher.ClosePanels();
+                    // Starting coroutine to create clan 2v2 room if player is not in a room and a room is currently being created
+                    if (_creatingRoomCoroutineHolder == null)
+                    {
+                        _creatingRoomCoroutineHolder = StartCoroutine(_roomListingController.StartCreatingRandom2v2Room(() =>
+                        {
+                            _creatingRoomCoroutineHolder = null;
+                        }));
+                    }
+                    break;
+            }
         }
 
 
