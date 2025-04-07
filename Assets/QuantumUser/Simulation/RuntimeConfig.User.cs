@@ -4,7 +4,7 @@ using Battle.QSimulation.Projectile;
 
 namespace Quantum
 {
-    public partial class RuntimeConfig
+    public partial class RuntimeConfig : AssetObject
     {
         // Battle Spec
         public AssetRef<BattleArenaQSpec>      BattleArenaSpec;
@@ -13,5 +13,10 @@ namespace Quantum
 
         // Battle Parameters
         public BattleEmotionState BattleInitialProjectileEmotion;
+
+        public void BattleSetParameters(BattleEmotionState InitialProjectileEmotion)
+        {
+            BattleInitialProjectileEmotion = InitialProjectileEmotion;
+        }
     }
 }
