@@ -14,6 +14,8 @@ public class InvSlotInfoHandler : MonoBehaviour
     [SerializeField] private TMP_Text _inSoulHomeText;
     [SerializeField] private GameObject _markedForSellingPanel;
     [SerializeField] private TMP_Text _markedForSellingText;
+    [SerializeField] private GameObject _inVotingPanel;
+    [SerializeField] private TMP_Text _inVotingText;
     [SerializeField] private GameObject _coin;
 
     [Header("Rarity Color")]
@@ -67,6 +69,10 @@ public class InvSlotInfoHandler : MonoBehaviour
         // Marked for selling
         _markedForSellingText.text = "Myynnissä";
         _markedForSellingPanel.SetActive(furn.ClanFurniture.VotedToSell);
+
+        // In voting
+        _inVotingText.text = "Äänestyksessä";
+        _inVotingPanel.SetActive(furn.ClanFurniture.InVoting);
 
         // Coin
         if (sortingBy == 0 || sortingBy == 1) _coin.SetActive(true);
