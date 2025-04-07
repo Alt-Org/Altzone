@@ -752,9 +752,9 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerData : Quantum.IComponent {
-    public const Int32 SIZE = 104;
+    public const Int32 SIZE = 112;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(16)]
+    [FieldOffset(24)]
     public PlayerRef PlayerRef;
     [FieldOffset(0)]
     public BattlePlayerSlot Slot;
@@ -764,29 +764,33 @@ namespace Quantum {
     public Int32 CharacterId;
     [FieldOffset(8)]
     public Int32 CharacterClass;
-    [FieldOffset(72)]
-    public FP StatHp;
     [FieldOffset(80)]
-    public FP StatSpeed;
-    [FieldOffset(56)]
-    public FP StatCharacterSize;
-    [FieldOffset(48)]
-    public FP StatAttack;
-    [FieldOffset(64)]
-    public FP StatDefence;
+    public FP StatHp;
     [FieldOffset(88)]
-    public FPVector2 TargetPosition;
-    [FieldOffset(32)]
-    public FP RotationBase;
-    [FieldOffset(40)]
-    public FP RotationOffset;
+    public FP StatSpeed;
+    [FieldOffset(64)]
+    public FP StatCharacterSize;
+    [FieldOffset(56)]
+    public FP StatAttack;
+    [FieldOffset(72)]
+    public FP StatDefence;
     [FieldOffset(20)]
-    [FreeOnComponentRemoved()]
-    public QListPtr<PlayerHitboxLink> HitboxListAll;
+    public Int32 GridExtendTop;
+    [FieldOffset(16)]
+    public Int32 GridExtendBottom;
+    [FieldOffset(96)]
+    public FPVector2 TargetPosition;
+    [FieldOffset(40)]
+    public FP RotationBase;
+    [FieldOffset(48)]
+    public FP RotationOffset;
     [FieldOffset(28)]
     [FreeOnComponentRemoved()]
+    public QListPtr<PlayerHitboxLink> HitboxListAll;
+    [FieldOffset(36)]
+    [FreeOnComponentRemoved()]
     public QListPtr<PlayerHitboxLink> HitboxListShield;
-    [FieldOffset(24)]
+    [FieldOffset(32)]
     [FreeOnComponentRemoved()]
     public QListPtr<PlayerHitboxLink> HitboxListCharacter;
     public override Int32 GetHashCode() {
@@ -802,6 +806,8 @@ namespace Quantum {
         hash = hash * 31 + StatCharacterSize.GetHashCode();
         hash = hash * 31 + StatAttack.GetHashCode();
         hash = hash * 31 + StatDefence.GetHashCode();
+        hash = hash * 31 + GridExtendTop.GetHashCode();
+        hash = hash * 31 + GridExtendBottom.GetHashCode();
         hash = hash * 31 + TargetPosition.GetHashCode();
         hash = hash * 31 + RotationBase.GetHashCode();
         hash = hash * 31 + RotationOffset.GetHashCode();
@@ -826,6 +832,8 @@ namespace Quantum {
         serializer.Stream.Serialize((Int32*)&p->TeamNumber);
         serializer.Stream.Serialize(&p->CharacterClass);
         serializer.Stream.Serialize(&p->CharacterId);
+        serializer.Stream.Serialize(&p->GridExtendBottom);
+        serializer.Stream.Serialize(&p->GridExtendTop);
         PlayerRef.Serialize(&p->PlayerRef, serializer);
         QList.Serialize(&p->HitboxListAll, serializer, Statics.SerializePlayerHitboxLink);
         QList.Serialize(&p->HitboxListCharacter, serializer, Statics.SerializePlayerHitboxLink);
@@ -842,17 +850,23 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerDataTemplate : Quantum.IComponent {
-    public const Int32 SIZE = 8;
+    public const Int32 SIZE = 16;
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(4)]
+    public Int32 GridExtendTop;
+    [FieldOffset(0)]
+    public Int32 GridExtendBottom;
+    [FieldOffset(12)]
     [FreeOnComponentRemoved()]
     public QListPtr<PlayerHitboxTemplate> HitboxListShield;
-    [FieldOffset(0)]
+    [FieldOffset(8)]
     [FreeOnComponentRemoved()]
     public QListPtr<PlayerHitboxTemplate> HitboxListCharacter;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 181;
+        hash = hash * 31 + GridExtendTop.GetHashCode();
+        hash = hash * 31 + GridExtendBottom.GetHashCode();
         hash = hash * 31 + HitboxListShield.GetHashCode();
         hash = hash * 31 + HitboxListCharacter.GetHashCode();
         return hash;
@@ -868,6 +882,8 @@ namespace Quantum {
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (PlayerDataTemplate*)ptr;
+        serializer.Stream.Serialize(&p->GridExtendBottom);
+        serializer.Stream.Serialize(&p->GridExtendTop);
         QList.Serialize(&p->HitboxListCharacter, serializer, Statics.SerializePlayerHitboxTemplate);
         QList.Serialize(&p->HitboxListShield, serializer, Statics.SerializePlayerHitboxTemplate);
     }
