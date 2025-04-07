@@ -1,6 +1,7 @@
 using Altzone.Scripts.Common;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Altzone.Scripts.Common
 {
@@ -12,11 +13,13 @@ namespace Altzone.Scripts.Common
         Epic,
         Antique
     }
+
 }
 namespace Altzone.Scripts.ReferenceSheets
 {
     [CreateAssetMenu(menuName = "ALT-Zone/RarityColourReference", fileName = "RarityColourReference")]
     public class RarityColourReference : ScriptableObject
+        public class RarityColourReference : ScriptableObject
     {
         [Header("Rarity Color")]
         [SerializeField] private Color _commonColor;
@@ -52,5 +55,15 @@ namespace Altzone.Scripts.ReferenceSheets
                 _ => GetColor(Rarity.None),
             };
         }
+
+        /*void Start{
+             GameObject RarityColor = new GameObject("CommonBoxColor");
+            RarityColor rarityColorScript = RarityColor.AddComponent<RarityColor>();
+            rarityColorScript = rarityColor;
+            rarityColor.transform.localScale = new Vector3(3, 1, 3);
+
+        }*/
+
+
     }
 }
