@@ -1,4 +1,4 @@
-using Altzone.Scripts.BattleUi;
+using Altzone.Scripts.BattleUiShared;
 using TMPro;
 using UnityEngine;
 
@@ -11,7 +11,7 @@ namespace QuantumUser.Scripts.UI.Views
     {
         [SerializeField] private TMP_Text _diamondText;
 
-        public BattleUiElement MovableUiElement;
+        public BattleUiMovableElement MovableUiElement;
 
         public void SetDiamondsText(int diamondAmount)
         {

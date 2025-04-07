@@ -1,21 +1,21 @@
 using UnityEngine;
 
-namespace Altzone.Scripts.BattleUi
+namespace Altzone.Scripts.BattleUiShared
 {
-    public enum BattleUiElementOrientation
-    {
-        Horizontal = 0,
-        HorizontalFlipped = 1,
-        Vertical = 2,
-        VerticalFlipped = 3,
-    }
-
     /// <summary>
     /// Handles setting and getting the Battle Ui element position and orientation.
     /// </summary>
     [RequireComponent(typeof(RectTransform))]
-    public class BattleUiElement : MonoBehaviour
+    public class BattleUiMovableElement : MonoBehaviour
     {
+        public enum OrientationType
+        {
+            Horizontal = 0,
+            HorizontalFlipped = 1,
+            Vertical = 2,
+            VerticalFlipped = 3,
+        }
+
         [SerializeField] private GameObject _horizontalConfiguration;
         [SerializeField] private float _horizontalAspectRatio;
         [SerializeField] private GameObject _verticalConfiguration;
@@ -23,8 +23,8 @@ namespace Altzone.Scripts.BattleUi
 
         private RectTransform _rectTransform;
 
-        private BattleUiElementOrientation _orientation;
-        public BattleUiElementOrientation Orientation
+        private OrientationType _orientation;
+        public OrientationType Orientation
         {
             get
             {
@@ -38,8 +38,8 @@ namespace Altzone.Scripts.BattleUi
                 // If we had flipped orientation resetting the flip, Horizontal and Vertical are the default configurations
                 switch (_orientation)
                 {
-                    case BattleUiElementOrientation.HorizontalFlipped:
-                    case BattleUiElementOrientation.VerticalFlipped:
+                    case OrientationType.HorizontalFlipped:
+                    case OrientationType.VerticalFlipped:
                         FlipOrientation();
                         break;
                 }
@@ -54,8 +54,8 @@ namespace Altzone.Scripts.BattleUi
                 // Flipping orientation if new orientation is flipped
                 switch (value)
                 {
-                    case BattleUiElementOrientation.HorizontalFlipped:
-                    case BattleUiElementOrientation.VerticalFlipped:
+                    case OrientationType.HorizontalFlipped:
+                    case OrientationType.VerticalFlipped:
                         FlipOrientation();
                         break;
                 }
@@ -66,7 +66,7 @@ namespace Altzone.Scripts.BattleUi
         {
             get
             {
-                return _orientation == BattleUiElementOrientation.Horizontal || _orientation == BattleUiElementOrientation.HorizontalFlipped;
+                return _orientation == OrientationType.Horizontal || _orientation == OrientationType.HorizontalFlipped;
             }
         }
 
@@ -77,7 +77,7 @@ namespace Altzone.Scripts.BattleUi
 
         private void FlipOrientation()
         {
-            if (_orientation == BattleUiElementOrientation.Horizontal || _orientation == BattleUiElementOrientation.HorizontalFlipped)
+            if (_orientation == OrientationType.Horizontal || _orientation == OrientationType.HorizontalFlipped)
             {
                 if (_horizontalConfiguration == null) return;
 
@@ -102,7 +102,7 @@ namespace Altzone.Scripts.BattleUi
                     }
                 }
             }
-            else if (_orientation == BattleUiElementOrientation.Vertical || _orientation == BattleUiElementOrientation.VerticalFlipped)
+            else if (_orientation == OrientationType.Vertical || _orientation == OrientationType.VerticalFlipped)
             {
                 if (_verticalConfiguration == null) return;
 
@@ -138,7 +138,7 @@ namespace Altzone.Scripts.BattleUi
         /// Set BattleUiElementData to this Ui element.
         /// </summary>
         /// <param name="data">The data which to set to this Ui element.</param>
-        public void SetData(BattleUiElementData data)
+        public void SetData(BattleUiMovableElementData data)
         {
             if (_rectTransform == null) _rectTransform = GetComponent<RectTransform>();
 
@@ -155,11 +155,11 @@ namespace Altzone.Scripts.BattleUi
         /// Get the data from this Ui element.
         /// </summary>
         /// <returns>Returns BattleUiElementData serializable object. Null if couldn't get valid data.</returns>
-        public BattleUiElementData GetData()
+        public BattleUiMovableElementData GetData()
         {
             if (_rectTransform != null)
             {
-                return new BattleUiElementData(_rectTransform.anchorMin, _rectTransform.anchorMax, _orientation);
+                return new BattleUiMovableElementData(_rectTransform.anchorMin, _rectTransform.anchorMax, _orientation);
             }
             else
             {

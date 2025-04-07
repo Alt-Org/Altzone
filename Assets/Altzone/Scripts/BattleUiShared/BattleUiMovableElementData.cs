@@ -1,18 +1,20 @@
 using System;
 using UnityEngine;
 
-namespace Altzone.Scripts.BattleUi
+using OrientationType = Altzone.Scripts.BattleUiShared.BattleUiMovableElement.OrientationType;
+
+namespace Altzone.Scripts.BattleUiShared
 {
     /// <summary>
     /// Serializable class for holding Battle Ui Element data sunch as anchors and orientation.
     /// </summary>
     [Serializable]
-    public class BattleUiElementData
+    public class BattleUiMovableElementData
     {
         public Vector2 AnchorMin;
         public Vector2 AnchorMax;
-        public BattleUiElementOrientation Orientation;
-        public BattleUiElementData(Vector2 anchorMin, Vector2 anchorMax, BattleUiElementOrientation orientation)
+        public OrientationType Orientation;
+        public BattleUiMovableElementData(Vector2 anchorMin, Vector2 anchorMax, OrientationType orientation)
         {
             AnchorMin = anchorMin;
             AnchorMax = anchorMax;

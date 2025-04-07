@@ -1,4 +1,4 @@
-using Altzone.Scripts.BattleUi;
+using Altzone.Scripts.BattleUiShared;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,7 +19,7 @@ namespace QuantumUser.Scripts.UI.Views
         [SerializeField] private GameUiCharacterButtonHandler[] _characterButtonsVertical;
 
         [Header("Movable UI")]
-        public BattleUiElement MovableUiElement;
+        public BattleUiMovableElement MovableUiElement;
 
         private void OnDisable()
         {

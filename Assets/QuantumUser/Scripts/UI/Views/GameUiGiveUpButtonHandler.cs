@@ -1,4 +1,4 @@
-using Altzone.Scripts.BattleUi;
+using Altzone.Scripts.BattleUiShared;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +10,7 @@ namespace QuantumUser.Scripts.UI.Views
     public class GameUiGiveUpButtonHandler : MonoBehaviour
     {
         public Button GiveUpButton;
-        public BattleUiElement MovableUiElement;
+        public BattleUiMovableElement MovableUiElement;
 
         private void OnDestroy()
         {

@@ -1,7 +1,7 @@
 using Quantum;
 using QuantumUser.Scripts.UI;
 using UnityEngine;
-using Altzone.Scripts.BattleUi;
+using Altzone.Scripts.BattleUiShared;
 
 using Button = UnityEngine.UI.Button;
 

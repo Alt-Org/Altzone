@@ -1,5 +1,5 @@
 using System.Collections;
-using Altzone.Scripts.BattleUi;
+using Altzone.Scripts.BattleUiShared;
 using Photon.Deterministic;
 using Quantum;
 using TMPro;
@@ -18,7 +18,7 @@ namespace QuantumUser.Scripts.UI.Views
         private int _hours;
         private int _oldSeconds;
 
-        public BattleUiElement MovableUiElement;
+        public BattleUiMovableElement MovableUiElement;
 
         private void OnDisable()
         {
