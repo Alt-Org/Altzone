@@ -23,7 +23,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _features.Add(featureIds.FeetId);
 
             _characterName = "";
-            _colors = new List<string>();
+            _colors = new List<string>() { "#ffffff" };
             _scale = Vector2.one;
         }
 
@@ -37,10 +37,12 @@ namespace MenuUi.Scripts.AvatarEditor
 
         public PlayerAvatar(AvatarData data)
         {
+            //Debug.LogError(data == null);
+            //Debug.LogError(data.Name == null);
             _characterName = (string)data.Name.Clone();
             _features = new(data.FeatureIds);
             _colors = new(data.Colors);
-            _scale = new(data.Scale.x, data.Scale.y);
+            _scale = new(data.ScaleX, data.ScaleY);
         }
 
         public string Name

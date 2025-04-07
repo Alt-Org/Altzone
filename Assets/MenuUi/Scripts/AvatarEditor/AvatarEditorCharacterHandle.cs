@@ -71,8 +71,11 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
 
     public void SetHeadColor(Color color)
     {
-        _mainHead.color = color;
-        _secondaryHead.color = color;
+        if (_mainHead != null)
+            _mainHead.color = color;
+
+        if (_secondaryHead != null)
+            _secondaryHead.color = color;
     }
 
     public void SetSecondaryCharacterHidden()

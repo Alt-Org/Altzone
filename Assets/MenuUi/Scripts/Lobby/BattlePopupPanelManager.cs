@@ -1,3 +1,6 @@
+using Altzone.Scripts.Lobby;
+using MenuUi.Scripts.Lobby;
+using MenuUi.Scripts.Lobby.CreateRoom;
 using UnityEngine;
 
 /// <summary>
@@ -9,20 +12,39 @@ public class BattlePopupPanelManager : MonoBehaviour
     [SerializeField] private GameObject _topPanel;
     [SerializeField] private GameObject _mainPanel;
     [SerializeField] private GameObject _custom2v2WaitingRoom;
+    [SerializeField] private GameObject _clanAndRandom2v2WaitingRoom;
+    [SerializeField] private MatchmakingPanel _matchmakingPanel;
 
-    public void SwitchRoom()
+    private void OnEnable()
     {
-        SwitchCustomRoom(CustomGameMode.TwoVersusTwo);
+        LobbyManager.OnMatchmakingRoomEntered += SwitchToMatchmakingPanel;
+    }
+
+    private void OnDisable()
+    {
+        LobbyManager.OnMatchmakingRoomEntered -= SwitchToMatchmakingPanel;
+    }
+
+    public void SwitchRoom(GameType gameType)
+    {
+        ClosePanels();
+
+        switch (gameType)
+        {
+            case GameType.Custom:
+                SwitchCustomRoom(CustomGameMode.TwoVersusTwo);
+                break;
+            case GameType.Clan2v2:
+                _clanAndRandom2v2WaitingRoom.SetActive(true);
+                break;
+            case GameType.Random2v2:
+                _clanAndRandom2v2WaitingRoom.SetActive(true);
+                break;
+        }
     }
 
     private void SwitchCustomRoom(CustomGameMode mode)
     {
-        foreach(Transform t in transform)
-        {
-            if (ReferenceEquals(t.gameObject,_topPanel)) continue;
-            t.gameObject.SetActive(false);
-        }
-
         switch (mode)
         {
             case CustomGameMode.TwoVersusTwo:
@@ -34,18 +56,30 @@ public class BattlePopupPanelManager : MonoBehaviour
         }
     }
 
-    public void ReturnToMain()
+    private void SwitchToMatchmakingPanel(bool isLeader)
     {
-        if (_custom2v2WaitingRoom.activeSelf)
-        {
-            return;
-        }
+        ClosePanels();
+        _matchmakingPanel.SetCancelButton(isLeader);
+        _matchmakingPanel.gameObject.SetActive(true);
+    }
 
+    public void ClosePanels()
+    {
         foreach (Transform t in transform)
         {
             if (ReferenceEquals(t.gameObject, _topPanel)) continue;
             t.gameObject.SetActive(false);
         }
+    }
+
+    public void ReturnToMain()
+    {
+        if (PhotonRealtimeClient.InRoom)
+        {
+            return;
+        }
+
+        ClosePanels();
         _mainPanel.SetActive(true);
     }
 }

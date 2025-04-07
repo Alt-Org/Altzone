@@ -8,11 +8,10 @@ public class AvatarPartsReference : ScriptableObject
 
     public AvatarPartInfo GetAvatarPartById(string Id)
     {
-        string[] ids = Id.Split("-");
         try
         {
-            var data = _info.Find(category => category.Id == ids[0]).
-                AvatarCategories.Find(character => character.Id == ids[1]).
+            var data = _info.Find(category => category.Id == Id.Substring(0,2)).
+                AvatarCategories.Find(character => character.Id == Id.Substring(2, 1)).
                 Parts.Find(part => part.Id == Id);
 
             return (data);

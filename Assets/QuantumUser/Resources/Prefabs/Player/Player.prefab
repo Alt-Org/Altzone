@@ -178,7 +178,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6308334381340849222}
-  - component: {fileID: 4447954209797049734}
+  - component: {fileID: 486391669144605290}
   m_Layer: 0
   m_Name: PlayerViewModel
   m_TagString: Untagged
@@ -201,11 +201,11 @@ Transform:
   m_Children:
   - {fileID: 8339165992777611108}
   - {fileID: 2732905750668515878}
-  - {fileID: 5199162715398479620}
   - {fileID: 3668622481950759452}
+  - {fileID: 5199162715398479620}
   m_Father: {fileID: 8780164584391443545}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4447954209797049734
+--- !u!114 &486391669144605290
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -217,7 +217,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f548549d9af4282429e9068c69bb31e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerEntityGameObject: {fileID: 5521468026819928245}
+  _animator: {fileID: 8026871828631189025}
+  _heart: {fileID: 3969168272333082471}
+  _spriteRenderer: {fileID: 7425350154965914569}
 --- !u!1 &5521468026819928245
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,6 +453,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
+    GridExtendTop: 4
+    GridExtendBottom: 1
     HitboxListShield:
     - Position:
         X: 0
@@ -475,14 +479,14 @@ MonoBehaviour:
         RawValue: 14745600
     - Position:
         X: -2
-        Y: 4
+        Y: 3
       CollisionType:
         Value: 1
       NormalAngle:
         RawValue: 8847360
     - Position:
         X: 2
-        Y: 4
+        Y: 3
       CollisionType:
         Value: 1
       NormalAngle:
@@ -498,6 +502,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8339165992777611108}
   - component: {fileID: 7425350154965914569}
+  - component: {fileID: 8026871828631189025}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -572,6 +577,27 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &8026871828631189025
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5555457871378360869}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 97fc4a9ce319f294db553eda88c2dafa, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &7059606528096109852
 GameObject:
   m_ObjectHideFlags: 0
