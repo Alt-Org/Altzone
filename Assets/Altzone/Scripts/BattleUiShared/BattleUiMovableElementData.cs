@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-using OrientationType = Altzone.Scripts.BattleUiShared.BattleUiMovableElement.OrientationType;
+using OrientationType = Altzone.Scripts.BattleUiShared.BattleUiMultiOrientationElement.OrientationType;
 
 namespace Altzone.Scripts.BattleUiShared
 {
@@ -14,7 +14,7 @@ namespace Altzone.Scripts.BattleUiShared
         public Vector2 AnchorMin;
         public Vector2 AnchorMax;
         public OrientationType Orientation;
-        public BattleUiMovableElementData(Vector2 anchorMin, Vector2 anchorMax, OrientationType orientation)
+        public BattleUiMovableElementData(Vector2 anchorMin, Vector2 anchorMax, OrientationType orientation = OrientationType.None)
         {
             AnchorMin = anchorMin;
             AnchorMax = anchorMax;
