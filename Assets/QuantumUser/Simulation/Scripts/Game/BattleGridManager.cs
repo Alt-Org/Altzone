@@ -24,10 +24,10 @@ namespace Battle.QSimulation.Game
             Rows = battleArenaSpec.GridHeight;
             Columns = battleArenaSpec.GridWidth;
 
-            TeamAlphaFieldStart = 0;
+            TeamAlphaFieldStart = battleArenaSpec.SoulWallHeight;
             TeamAlphaFieldEnd = (battleArenaSpec.GridHeight - battleArenaSpec.MiddleAreaHeight) / 2 - 1;
             TeamBetaFieldStart = TeamAlphaFieldEnd + battleArenaSpec.MiddleAreaHeight + 1;
-            TeamBetaFieldEnd = battleArenaSpec.GridWidth;
+            TeamBetaFieldEnd = battleArenaSpec.GridHeight - 1 - battleArenaSpec.SoulWallHeight;
 
             GridScaleFactor = battleArenaSpec.WorldHeight / battleArenaSpec.GridHeight;
 

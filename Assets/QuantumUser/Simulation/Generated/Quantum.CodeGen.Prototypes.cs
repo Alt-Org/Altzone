@@ -128,6 +128,8 @@ namespace Quantum.Prototypes {
     public FP StatCharacterSize;
     public FP StatAttack;
     public FP StatDefence;
+    public Int32 GridExtendTop;
+    public Int32 GridExtendBottom;
     public FPVector2 TargetPosition;
     public FP RotationBase;
     public FP RotationOffset;
@@ -156,6 +158,8 @@ namespace Quantum.Prototypes {
         result.StatCharacterSize = this.StatCharacterSize;
         result.StatAttack = this.StatAttack;
         result.StatDefence = this.StatDefence;
+        result.GridExtendTop = this.GridExtendTop;
+        result.GridExtendBottom = this.GridExtendBottom;
         result.TargetPosition = this.TargetPosition;
         result.RotationBase = this.RotationBase;
         result.RotationOffset = this.RotationOffset;
@@ -194,6 +198,8 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerDataTemplateQComponent))]
   public unsafe partial class BattlePlayerDataTemplateQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerDataTemplateQComponent> {
+    public Int32 GridExtendTop;
+    public Int32 GridExtendBottom;
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.BattlePlayerHitboxTemplatePrototype[] HitboxListShield = {};
@@ -207,6 +213,8 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.BattlePlayerDataTemplateQComponent result, in PrototypeMaterializationContext context = default) {
+        result.GridExtendTop = this.GridExtendTop;
+        result.GridExtendBottom = this.GridExtendBottom;
         if (this.HitboxListShield.Length == 0) {
           result.HitboxListShield = default;
         } else {

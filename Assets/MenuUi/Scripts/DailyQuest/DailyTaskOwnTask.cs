@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ReferenceSheets;
@@ -67,12 +68,14 @@ public class DailyTaskOwnTask : MonoBehaviour
 
     #region Task
 
-    public void SetDailyTask(PlayerTask data)
+    public IEnumerator SetDailyTask(PlayerTask data)
     {
         _taskDescription.text = data.Title;
         _taskPointsReward.text = "" + data.Points;
         _taskCoinsReward.text = "" + data.Coins;
         _taskTypeImage.sprite = _cardImageReference.GetTaskImage(data);
+
+        yield return new WaitUntil(() => (_taskProgressMarkers.Count != 0));
 
         SetProgressBarMarkers(data.Amount);
     }

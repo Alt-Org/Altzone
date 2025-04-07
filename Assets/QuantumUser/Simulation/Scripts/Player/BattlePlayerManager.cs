@@ -53,6 +53,9 @@ namespace Battle.QSimulation.Player
                 BattlePlayerDataTemplateQComponent* playerDataTemplate;
                 FPVector2                           playerSpawnPosition;
                 FP                                  playerRotationBase;
+                int                                 playerGridExtendTop;
+                int                                 playerGridExtendBottom;
+                bool                                playerFlipped;
                 // player - hitBox temp variables
                 QList<BattlePlayerHitboxTemplate> playerHitboxListShieldTemplate;
                 QList<BattlePlayerHitboxTemplate> playerHitboxListCharacterTemplate;
@@ -69,7 +72,16 @@ namespace Battle.QSimulation.Player
 
                 playerHitboxExtents = BattleGridManager.GridScaleFactor * FP._0_50;
 
-                playerRotationBase = teamNumber == BattleTeamNumber.TeamAlpha ? FP._0 : FP.Rad_180;
+                if (teamNumber == BattleTeamNumber.TeamAlpha)
+                {
+                    playerRotationBase = FP._0;
+                    playerFlipped = false;
+                }
+                else
+                {
+                    playerRotationBase = FP.Rad_180;
+                    playerFlipped = true;
+                }
 
                 //} set player common temp variables
 
@@ -89,8 +101,6 @@ namespace Battle.QSimulation.Player
 
                 for (int i = 0; i < playerCharacterEntityArray.Length; i++)
                 {
-                    // set spawnPosition
-                    playerSpawnPosition = playerHandle.GetOutOfPlayPosition(i, teamNumber);
 
                     // create entity
                     playerEntity = f.Create(entityPrototypeAsset);
@@ -100,13 +110,27 @@ namespace Battle.QSimulation.Player
                     playerHitboxListShieldTemplateCount    = f.TryResolveList(playerDataTemplate->HitboxListShield,    out playerHitboxListShieldTemplate   ) ? playerHitboxListShieldTemplate    .Count : 0;
                     playerHitboxListCharacterTemplateCount = f.TryResolveList(playerDataTemplate->HitboxListCharacter, out playerHitboxListCharacterTemplate) ? playerHitboxListCharacterTemplate .Count : 0;
 
-                    //{ allocate playerHitboxLists
+                    //{ set temp variables
 
+                    playerSpawnPosition = playerHandle.GetOutOfPlayPosition(i, teamNumber);
+
+                    if (!playerFlipped)
+                    {
+                        playerGridExtendTop    = playerDataTemplate->GridExtendTop;
+                        playerGridExtendBottom = playerDataTemplate->GridExtendBottom;
+                    }
+                    else
+                    {
+                        playerGridExtendTop    = playerDataTemplate->GridExtendBottom;
+                        playerGridExtendBottom = playerDataTemplate->GridExtendTop;
+                    }
+
+                    //} set temp variables
+
+                    // allocate playerHitboxLists
                     if (playerHitboxListShieldTemplateCount + playerHitboxListCharacterTemplateCount > 0) playerHitboxListAll       = f.AllocateList<BattlePlayerHitboxLink>(playerHitboxListShieldTemplateCount + playerHitboxListCharacterTemplateCount);
                     if (playerHitboxListShieldTemplateCount                                          > 0) playerHitboxListShield    = f.AllocateList<BattlePlayerHitboxLink>(playerHitboxListShieldTemplateCount                                         );
                     if (                                      playerHitboxListCharacterTemplateCount > 0) playerHitboxListCharacter = f.AllocateList<BattlePlayerHitboxLink>(                                      playerHitboxListCharacterTemplateCount);
-
-                    //} allocate playerHitboxLists
 
                     // initialize playerData
                     playerData = new BattlePlayerDataQComponent
@@ -122,6 +146,9 @@ namespace Battle.QSimulation.Player
                         StatCharacterSize   = data.Characters[i].CharacterSize,
                         StatAttack          = data.Characters[i].Attack,
                         StatDefence         = data.Characters[i].Defence,
+
+                        GridExtendTop       = playerGridExtendTop,
+                        GridExtendBottom    = playerGridExtendBottom,
 
                         TargetPosition      = playerSpawnPosition,
                         RotationBase        = playerRotationBase,

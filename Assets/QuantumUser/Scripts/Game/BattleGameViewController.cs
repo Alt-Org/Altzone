@@ -16,21 +16,24 @@ namespace Battle.View.Game
 
         private void Awake()
         {
-            if (_gridViewController != null) /*temp check*/ QuantumEvent.Subscribe<EventGridSet>(this, OnGridSet);
+            QuantumEvent.Subscribe<EventViewInit>(this, OnViewInit);
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, OnChangeEmotionState);
             QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, PlaySoundFX);
             QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, DebugOnUpdateStatsOverlay);
+        }
+
+        private void OnViewInit(EventViewInit e)
+        {
+            if (_gridViewController != null)
+            {
+                _gridViewController.SetGrid();
+            }
         }
 
         private void OnChangeEmotionState(EventBattleChangeEmotionState e)
         {
             if (!_screenEffectViewController.IsActive) _screenEffectViewController.SetActive(true);
             _screenEffectViewController.ChangeColor((int)e.Emotion);
-        }
-
-        private void OnGridSet(EventGridSet e)
-        {
-            _gridViewController.SetGrid();
         }
 
         private void PlaySoundFX(EventBattlePlaySoundFX e)

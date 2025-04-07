@@ -24,7 +24,7 @@ namespace Battle.QSimulation.Game
             BattleGridManager.Init(battleArenaSpec);
             BattlePlayerManager.Init(f);
 
-            f.Events.GridSet();
+            f.Events.ViewInit();
 
             BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
             gameSession->GameInitialized = true;

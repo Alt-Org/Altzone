@@ -12,6 +12,10 @@ using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Player
 {
+    /// <summary>
+    /// PlayerMovement <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System</a>.<br/>
+    /// Handles player input, movement and rotations.<br/>
+    /// </summary>
     [Preserve]
     public unsafe class BattlePlayerMovementQSystem : SystemMainThreadFilter<BattlePlayerMovementQSystem.Filter>
     {
@@ -22,6 +26,15 @@ namespace Battle.QSimulation.Player
             public BattlePlayerDataQComponent* PlayerData;
         }
 
+        /// <summary>
+        /// <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum system update method</a>.<br/>
+        /// Handles player input, movement and rotations.<br/>
+        /// (this method should only be called by Quantum)
+        /// </summary>
+        /// Skips players that have PlayerRef = none.<br/>
+        /// Gets player's Quantum Input and calls <see cref="UpdatePlayerMovement(Frame, ref Filter, Input*)">UpdatePlayerMovement</see> method.
+        /// <param name="f">Current Quantum Frame</param>
+        /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter</a>.</param>
         public override void Update(Frame f, ref Filter filter)
         {
             if (filter.PlayerData->PlayerRef == PlayerRef.None) return;
@@ -102,8 +115,21 @@ namespace Battle.QSimulation.Player
             }
         }
 
+        /// <summary>
+        /// Private helper method for the public <see cref="Update(Frame, ref Filter)">Update</see> method.<br/>
+        /// Handles player's movement and rotation.
+        /// </summary>
+        /// Checks Quantum Input for player's actions.<br/>
+        /// When movement action is taken: Checks and updates player's TargetPosition based on input.<br/>
+        /// When rotation action is taken: updates player's RotationOffset based on input.<br/>
+        /// When rotation action is not taken: updates player's RotationOffset back to zero.<br/>
+        /// Always: updates player's position and rotation based on the current TargetPosition and RotationOffset.<br/>
+        /// <param name="f">Current Quantum Frame</param>
+        /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter</a>.</param>
+        /// <param name="input">Player's Quantum Input</param>
         private void UpdatePlayerMovement(Frame f, ref Filter filter, Input* input)
         {
+            // constant
             FP rotationSpeed = FP._0_20;
 
             // unpack filter
@@ -113,13 +139,35 @@ namespace Battle.QSimulation.Player
             // handle movement
             if (input->MouseClick)
             {
-                playerData->TargetPosition = BattleGridManager.GridPositionToWorldPosition(input->MovementPosition);
-                //checks if player is allowed to move to that side of the arena
-                if (((playerData->TeamNumber == BattleTeamNumber.TeamAlpha) && playerData->TargetPosition.Y > 0)
-                    || ((playerData->TeamNumber == BattleTeamNumber.TeamBeta) && playerData->TargetPosition.Y < 0))
+                // get players TargetPosition
+                BattleGridPosition targetGridPosition = input->MovementPosition;
+
+                // clamp the TargetPosition inside sidebounds
+                targetGridPosition.Col = Mathf.Clamp(targetGridPosition.Col, 0, BattleGridManager.Columns-1);
+
+                // clamp the TargetPosition inside teams playfield for alphateam
+                if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha)
                 {
-                    playerData->TargetPosition.Y = 0;
+                    targetGridPosition.Row = Mathf.Clamp(
+                        targetGridPosition.Row,
+                        BattleGridManager.TeamAlphaFieldStart + playerData->GridExtendBottom,
+                        BattleGridManager.TeamAlphaFieldEnd   - playerData->GridExtendTop
+                    );
                 }
+
+                // clamp the TargetPosition inside teams playfield for betateam
+                else
+                {
+                    targetGridPosition.Row = Mathf.Clamp(
+                        targetGridPosition.Row,
+                        BattleGridManager.TeamBetaFieldStart + playerData->GridExtendBottom,
+                        BattleGridManager.TeamBetaFieldEnd   - playerData->GridExtendTop
+                    );
+                }
+
+                // get players TargetPositions as WorldPosition
+                playerData->TargetPosition = BattleGridManager.GridPositionToWorldPosition(targetGridPosition);
+
                 Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", playerData->TargetPosition);
             }
 

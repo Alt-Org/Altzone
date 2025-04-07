@@ -20,6 +20,9 @@ component BattlePlayerDataQComponent
     FP StatAttack;
     FP StatDefence;
 
+    int GridExtendTop;
+    int GridExtendBottom;
+
     FPVector2 TargetPosition;
     FP RotationBase;
     FP RotationOffset;
@@ -43,6 +46,9 @@ struct BattlePlayerHitboxTemplate
 
 component BattlePlayerDataTemplateQComponent
 {
+    int GridExtendTop;
+    int GridExtendBottom;
+
     [FreeOnComponentRemoved] list<BattlePlayerHitboxTemplate> HitboxListShield;
     [FreeOnComponentRemoved] list<BattlePlayerHitboxTemplate> HitboxListCharacter;
 }
