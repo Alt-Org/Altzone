@@ -19,10 +19,10 @@ namespace Battle.QSimulation.Game
         {
             Log.Debug("[GameControlSystem] OnInit");
 
-            BattleArenaQSpec battleArenaSpec = f.FindAsset(f.RuntimeConfig.BattleArenaSpec);
+            BattleArenaQSpec battleArenaSpec = BattleQConfig.GetArenaSpec(f);
 
             BattleGridManager.Init(battleArenaSpec);
-            BattlePlayerManager.Init(f);
+            BattlePlayerManager.Init(f, battleArenaSpec);
 
             f.Events.ViewInit();
 
@@ -76,8 +76,8 @@ namespace Battle.QSimulation.Game
 
         private static void CreateMap(Frame f)
         {
-            BattleArenaQSpec battleArenaSpec = f.FindAsset(f.RuntimeConfig.BattleArenaSpec);
-            BattleSoulWallQSpec soulWallSpec = f.FindAsset(f.RuntimeConfig.BattleSoulWallSpec);
+            BattleArenaQSpec battleArenaSpec = BattleQConfig.GetArenaSpec(f);
+            BattleSoulWallQSpec soulWallSpec = BattleQConfig.GetSoulWallSpec(f);
 
             BattleSoulWallQSystem.CreateSoulWalls(f, battleArenaSpec, soulWallSpec);
         }

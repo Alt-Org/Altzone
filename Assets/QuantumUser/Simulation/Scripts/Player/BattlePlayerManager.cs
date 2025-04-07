@@ -17,11 +17,10 @@ namespace Battle.QSimulation.Player
 
         #region Public - Static Methods
 
-        public static void Init(Frame f)
+        public static void Init(Frame f, BattleArenaQSpec battleArenaSpec)
         {
             Debug.Log("[PlayerManager] Init");
 
-            BattleArenaQSpec battleArenaSpec = f.FindAsset(f.RuntimeConfig.BattleArenaSpec);
             for (int i = 0; i < s_spawnPoints.Length; i++)
             {
                 s_spawnPoints[i] = BattleGridManager.GridPositionToWorldPosition(battleArenaSpec.PlayerSpawnPositions[i]);

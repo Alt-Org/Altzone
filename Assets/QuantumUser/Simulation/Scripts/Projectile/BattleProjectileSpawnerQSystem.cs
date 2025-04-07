@@ -3,6 +3,7 @@ using UnityEngine.Scripting;
 
 using Photon.Deterministic;
 using Quantum;
+using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Projectile
 {
@@ -43,8 +44,8 @@ namespace Battle.QSimulation.Projectile
             if (!filter.Spawner->HasSpawned)
             {
                 Debug.Log("Projectile should spawn");
-                BattleProjectileQSpec  config = f.FindAsset(f.RuntimeConfig.BattleProjectileSpec);
-                SpawnProjectile(f, config.ProjectilePrototype);
+                BattleProjectileQSpec  spec = BattleQConfig.GetProjectileSpec(f);
+                SpawnProjectile(f, spec.ProjectilePrototype);
 
                 // mark projectile as spawned
                 filter.Spawner->HasSpawned = true;
@@ -53,9 +54,6 @@ namespace Battle.QSimulation.Projectile
 
         private void SpawnProjectile(Frame f, AssetRef<EntityPrototype> childPrototype)
         {
-            // retrieve the game configuration asset for custom projectile settings.
-            BattleProjectileQSpec config = f.FindAsset(f.RuntimeConfig.BattleProjectileSpec);
-
             // create a new entity based on the provided prototype.
             EntityRef projectileEntity = f.Create(childPrototype);
 

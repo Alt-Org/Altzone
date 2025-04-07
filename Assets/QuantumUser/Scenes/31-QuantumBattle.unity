@@ -2548,7 +2548,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &321734677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2578,16 +2578,11 @@ MonoBehaviour:
     SystemsConfig:
       Id:
         Value: 289946063136722323
-    BattleArenaSpec:
+    BattleConfig:
       Id:
-        Value: 317773981887578547
-    BattleSoulWallSpec:
-      Id:
-        Value: 452592589216878726
-    BattleProjectileSpec:
-      Id:
-        Value: 356697573389229340
-    BattleInitialProjectileEmotion: 0
+        Value: 422639178081310304
+    BattleParameters:
+      InitialProjectileEmotion: 0
   UseRandomSeed: 0
   SessionConfig: {fileID: 0}
   LocalPlayers:

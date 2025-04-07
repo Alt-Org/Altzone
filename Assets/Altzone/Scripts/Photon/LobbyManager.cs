@@ -26,8 +26,6 @@ using Altzone.Scripts.Common;
 using Altzone.Scripts.ModelV2;
 
 using Battle.QSimulation.Game;
-using Battle.QSimulation.SoulWall;
-using Battle.QSimulation.Projectile;
 
 namespace Altzone.Scripts.Lobby
 {
@@ -71,17 +69,17 @@ namespace Altzone.Scripts.Lobby
         [SerializeField] private string _blueTeamName;
         [SerializeField] private string _redTeamName;
 
-        [Header("Player")]
+        [Header("Battle Quantum Player")]
         [SerializeField] private RuntimePlayer _player;
 
-        [Header("Configs")]
-        [SerializeField] private Map _map;
-        [SerializeField] private SimulationConfig _simulationQConfig;
-        [SerializeField] private SystemsConfig _systemsQConfig;
-        // Battle Quantum Spec
-        [SerializeField] private BattleArenaQSpec      _battleArenaQSpec;
-        [SerializeField] private BattleSoulWallQSpec   _battleSoulWallQSpec;
-        [SerializeField] private BattleProjectileQSpec _battleProjectileQSpec;
+        [Header("Battle Quantum Configs")]
+        // Quantum Configs
+        [SerializeField] private Map _quantumBattleMap;
+        [SerializeField] private SimulationConfig _quantumBattleSimulationConfig;
+        [SerializeField] private SystemsConfig _quantumBattleSystemsConfig;
+
+        [Header("Battle Quantum Custom Configs")]
+        [SerializeField] private BattleQConfig _battleQConfig;
 
         [Header("Battle Map reference")]
         [SerializeField] private BattleMapReference _battleMapReference;
@@ -784,7 +782,7 @@ namespace Altzone.Scripts.Lobby
 
                 // Setting map to variable
                 Map map = _battleMapReference.GetBattleMap(mapId).Map;
-                if (map != null) _map = map;
+                if (map != null) _quantumBattleMap = map;
 
                 yield return null;
                 if (isCloseRoom)
@@ -816,17 +814,16 @@ namespace Altzone.Scripts.Lobby
             RuntimeConfig config = new()
             {
                 // quantum
-                Map                            = _map,
-                SimulationConfig               = _simulationQConfig,
-                SystemsConfig                  = _systemsQConfig,
+                Map              = _quantumBattleMap,
+                SimulationConfig = _quantumBattleSimulationConfig,
+                SystemsConfig    = _quantumBattleSystemsConfig,
 
-                // battle spec
-                BattleArenaSpec                = _battleArenaQSpec,
-                BattleSoulWallSpec             = _battleSoulWallQSpec,
-                BattleProjectileSpec           = _battleProjectileQSpec,
-
-                // battle parameters
-                BattleInitialProjectileEmotion = (BattleEmotionState)_projectileInitialEmotion,
+                // battle
+                BattleConfig     = _battleQConfig,
+                BattleParameters = new()
+                {
+                    ProjectileInitialEmotion = (BattleEmotionState)_projectileInitialEmotion
+                }
             };
 
             SessionRunner.Arguments sessionRunnerArguments = new()
@@ -870,7 +867,7 @@ namespace Altzone.Scripts.Lobby
             //Move to Battle and start Runner
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Battle);
 
-            yield return new WaitUntil(()=>SceneManager.GetActiveScene().name == _map.Scene);
+            yield return new WaitUntil(()=>SceneManager.GetActiveScene().name == _quantumBattleMap.Scene);
 
             DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.Battle);
             DebugLogFileHandler.FileOpen(battleID, playerPosition);

@@ -5,6 +5,7 @@ using UnityEngine.Scripting;
 
 using Quantum;
 using Photon.Deterministic;
+using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Projectile
 {
@@ -37,7 +38,7 @@ namespace Battle.QSimulation.Projectile
             if (!projectile->IsLaunched)
             {
                 // retrieve the projectile speed from the spec
-                BattleProjectileQSpec spec = f.FindAsset(f.RuntimeConfig.BattleProjectileSpec);
+                BattleProjectileQSpec spec = BattleQConfig.GetProjectileSpec(f);
 
                 // set the projectile speed and direction
                 projectile->Speed = spec.ProjectileInitialSpeed;
