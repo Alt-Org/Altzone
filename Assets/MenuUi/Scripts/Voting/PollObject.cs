@@ -52,9 +52,9 @@ public class PollObject : MonoBehaviour
             int minutesLeft = secondsLeft / 60;
             int hoursLeft = minutesLeft / 60;
 
-            if (secondsLeft < 60) TimeLeftText.text = (secondsLeft.ToString() + "s left");
-            else if (minutesLeft < 60) TimeLeftText.text = (minutesLeft.ToString() + "m left");
-            else TimeLeftText.text = (hoursLeft.ToString() + "h left");
+            if (secondsLeft < 60) TimeLeftText.text = (secondsLeft.ToString() + "s");
+            else if (minutesLeft < 60) TimeLeftText.text = (minutesLeft.ToString() + "m");
+            else TimeLeftText.text = (hoursLeft.ToString() + "h");
 
             yield return new WaitForSeconds(1);
         }
