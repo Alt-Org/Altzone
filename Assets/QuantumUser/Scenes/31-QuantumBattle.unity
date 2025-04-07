@@ -2548,7 +2548,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &321734677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2567,7 +2567,27 @@ MonoBehaviour:
     SnapshotsPerSecond: 1
     LengthSeconds:
       RawValue: 196608
-  RuntimeConfig: {fileID: 11400000, guid: e0e00069babee7e40b54e36648a26816, type: 2}
+  RuntimeConfig:
+    Seed: 1
+    Map:
+      Id:
+        Value: 531274105777181898
+    SimulationConfig:
+      Id:
+        Value: 370478186942758293
+    SystemsConfig:
+      Id:
+        Value: 289946063136722323
+    BattleArenaSpec:
+      Id:
+        Value: 317773981887578547
+    BattleSoulWallSpec:
+      Id:
+        Value: 452592589216878726
+    BattleProjectileSpec:
+      Id:
+        Value: 356697573389229340
+    BattleInitialProjectileEmotion: 0
   UseRandomSeed: 0
   SessionConfig: {fileID: 0}
   LocalPlayers:

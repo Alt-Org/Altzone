@@ -2175,9 +2175,9 @@ namespace Quantum {
   /// <para>Developers can add custom data to quantum_code/quantum.state/RuntimeConfig.User.cs (don't forget to fill out the serialization methods).</para>
   /// <para>Like the <see cref="DeterministicSessionConfig"/> this config is distributed to every other client after the first player connected and joined the Quantum plugin.</para>
   [Serializable]
-  public partial class RuntimeConfig : AssetObject, IRuntimeConfig {
-    /// <summary>
-    /// Seed to initialize the randomization session under <see cref="Frame.RNG"/>.
+  public partial class RuntimeConfig : IRuntimeConfig {
+    /// <summary> 
+    /// Seed to initialize the randomization session under <see cref="Frame.RNG"/>. 
     /// </summary>
     public Int32 Seed;
     /// <summary> 

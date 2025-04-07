@@ -83,8 +83,6 @@ namespace Altzone.Scripts.Lobby
         [SerializeField] private BattleSoulWallQSpec   _battleSoulWallQSpec;
         [SerializeField] private BattleProjectileQSpec _battleProjectileQSpec;
 
-        [SerializeField] private RuntimeConfig _quantumBattleRuntimeConfig;
-
         [Header("Battle Map reference")]
         [SerializeField] private BattleMapReference _battleMapReference;
 
@@ -815,7 +813,6 @@ namespace Altzone.Scripts.Lobby
                 yield break;
             }
 
-            /*
             RuntimeConfig config = new()
             {
                 // quantum
@@ -831,18 +828,13 @@ namespace Altzone.Scripts.Lobby
                 // battle parameters
                 BattleInitialProjectileEmotion = (BattleEmotionState)_projectileInitialEmotion,
             };
-            */
-
-            _quantumBattleRuntimeConfig.BattleSetParameters(
-                (BattleEmotionState)_projectileInitialEmotion
-            );
 
             SessionRunner.Arguments sessionRunnerArguments = new()
             {
                 RunnerFactory             = QuantumRunnerUnityFactory.DefaultFactory,
                 GameParameters            = QuantumRunnerUnityFactory.CreateGameParameters,
                 ClientId                  = ServerManager.Instance.Player._id,
-                RuntimeConfig             = _quantumBattleRuntimeConfig,
+                RuntimeConfig             = config,
                 SessionConfig             = QuantumDeterministicSessionConfigAsset.Global.Config,
                 GameMode                  = Photon.Deterministic.DeterministicGameMode.Multiplayer,
                 PlayerCount               = PhotonRealtimeClient.CurrentRoom.MaxPlayers,
