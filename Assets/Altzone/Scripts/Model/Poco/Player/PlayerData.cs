@@ -66,7 +66,7 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public PlayStyles playStyles;
 
-        public List<Enum> playerDataMoodList = new List<Enum> { Mood.Blank, Mood.Love, Mood.Playful, Mood.Joy, Mood.Sad, Mood.Angry, Mood.Blank };
+        public List<Enum> playerDataEmotionList = new List<Enum> { Mood.Blank, Mood.Love, Mood.Playful, Mood.Joy, Mood.Sad, Mood.Angry, Mood.Blank };
 
         public List<PlayerVoteData> playerVotes = new List<PlayerVoteData>();
 

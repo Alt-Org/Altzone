@@ -11,7 +11,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
-public class WeekMoodPopupScript : AltMonoBehaviour
+public class EmotionSelectorPopupScript : AltMonoBehaviour
 {
     // The popup that has all the mood options.
     [SerializeField] private GameObject _popupPrefab;
@@ -37,7 +37,7 @@ public class WeekMoodPopupScript : AltMonoBehaviour
     // Creates the variable that is used to get the list of the moods.
     private PlayerData _playerData;
 
-    // Variable which callbacks.
+    // Used to log the data that is saved.
     private readonly Action<PlayerData> _callback;
 
     // Start is called before the first frame update
@@ -67,7 +67,6 @@ public class WeekMoodPopupScript : AltMonoBehaviour
         Storefront.Get().SavePlayerData(_playerData, _callback);
     }
 
-
     // Closes the popup.
     public void ClosePopup()
     {
@@ -78,15 +77,15 @@ public class WeekMoodPopupScript : AltMonoBehaviour
     public void SaveMoodData(Mood mood)
     {
         // Removes the last item in the list of moods
-        _playerData.playerDataMoodList.RemoveAt(6);
+        _playerData.playerDataEmotionList.RemoveAt(6);
 
         // Reverses the list so the newest mood can get in to first place. last-newest
-        _playerData.playerDataMoodList.Reverse();
+        _playerData.playerDataEmotionList.Reverse();
 
         // Adds the newest mood to the list.
-        _playerData.playerDataMoodList.Add(mood);
+        _playerData.playerDataEmotionList.Add(mood);
         
         // Reverses the list back the way we want it. newest-last
-        _playerData.playerDataMoodList.Reverse();
+        _playerData.playerDataEmotionList.Reverse();
     }
 }
