@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Clan;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LeaderboardPodium : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class LeaderboardPodium : MonoBehaviour
     [SerializeField] private GameObject _firstClanHeart;
     [SerializeField] private GameObject _firstClanHeartPlayer;
     [SerializeField] private GameObject _firstAvatarHead;
+    [field: SerializeField] public Button FirstOpenClanProfileButton { get; private set; }
 
     [Header("Second place")]
     [SerializeField] private TextMeshProUGUI _secondName;
@@ -19,6 +21,7 @@ public class LeaderboardPodium : MonoBehaviour
     [SerializeField] private GameObject _secondClanHeart;
     [SerializeField] private GameObject _secondClanHeartPlayer;
     [SerializeField] private GameObject _secondAvatarHead;
+    [field: SerializeField] public Button SecondOpenClanProfileButton { get; private set; }
 
     [Header("Third place")]
     [SerializeField] private TextMeshProUGUI _thirdName;
@@ -26,6 +29,7 @@ public class LeaderboardPodium : MonoBehaviour
     [SerializeField] private GameObject _thirdClanHeart;
     [SerializeField] private GameObject _thirdClanHeartPlayer;
     [SerializeField] private GameObject _thirdAvatarHead;
+    [field: SerializeField] public Button ThirdOpenClanProfileButton { get; private set; }
 
     private bool _isClanView = false;
 
@@ -73,14 +77,17 @@ public class LeaderboardPodium : MonoBehaviour
     {
         _isClanView = false;
 
+        FirstOpenClanProfileButton.interactable = false;
         _firstClanHeart.SetActive(false);
         _firstAvatarHead.SetActive(true);
         _firstClanHeartPlayer.SetActive(true);
 
+        SecondOpenClanProfileButton.interactable = false;
         _secondClanHeart.SetActive(false);
         _secondAvatarHead.SetActive(true);
         _secondClanHeartPlayer.SetActive(true);
 
+        ThirdOpenClanProfileButton.interactable = false;
         _thirdClanHeart.SetActive(false);
         _thirdAvatarHead.SetActive(true);
         _thirdClanHeartPlayer.SetActive(true);
@@ -93,13 +100,16 @@ public class LeaderboardPodium : MonoBehaviour
         _firstAvatarHead.SetActive(false);
         _firstClanHeartPlayer.SetActive(false);
         _firstClanHeart.SetActive(true);
+        FirstOpenClanProfileButton.interactable = true;
 
         _secondAvatarHead.SetActive(false);
         _secondClanHeartPlayer.SetActive(false);
         _secondClanHeart.SetActive(true);
+        SecondOpenClanProfileButton.interactable = true;
 
         _thirdAvatarHead.SetActive(false);
         _thirdClanHeartPlayer.SetActive(false);
         _thirdClanHeart.SetActive(true);
+        ThirdOpenClanProfileButton.interactable = true;
     }
 }

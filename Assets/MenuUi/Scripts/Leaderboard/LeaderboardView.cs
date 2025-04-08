@@ -2,6 +2,7 @@
 using System;
 using Altzone.Scripts.Model.Poco.Clan;
 using MenuUi.Scripts.TabLine;
+using MenuUi.Scripts.Window;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -185,17 +186,30 @@ public class LeaderboardView : MonoBehaviour
                         foreach (ClanLeaderboard ranking in clanLeaderboard)
                         {
                             ClanData clanData = ranking.Clan;
+                            ServerClan serverClan = ranking.ServerClan;
 
                             switch (rank)
                             {
                                 case 1:
                                     _podium.InitializeFirstPlace(ranking.Clan.Name, ranking.Points, clanData);
+                                    _podium.FirstOpenClanProfileButton.onClick.AddListener(() =>
+                                    {
+                                        DataCarrier.AddData(DataCarrier.ClanListing, serverClan);
+                                    });
                                     break;
                                 case 2:
                                     _podium.InitializeSecondPlace(ranking.Clan.Name, ranking.Points, clanData);
+                                    _podium.SecondOpenClanProfileButton.onClick.AddListener(() =>
+                                    {
+                                        DataCarrier.AddData(DataCarrier.ClanListing, serverClan);
+                                    });
                                     break;
                                 case 3:
                                     _podium.InitializeThirdPlace(ranking.Clan.Name, ranking.Points, clanData);
+                                    _podium.ThirdOpenClanProfileButton.onClick.AddListener(() =>
+                                    {
+                                        DataCarrier.AddData(DataCarrier.ClanListing, serverClan);
+                                    });
                                     break;
                                 default:
                                     LeaderboardClanPointsItem item = Instantiate(_clanPointsItemPrefab, parent: _activityContent).GetComponent<LeaderboardClanPointsItem>();
@@ -204,6 +218,14 @@ public class LeaderboardView : MonoBehaviour
                                     // Clan heart colors
                                     ClanHeartColorSetter clanheart = item.GetComponentInChildren<ClanHeartColorSetter>();
                                     clanheart.SetOtherClanColors(clanData);
+
+                                    // View clan button
+                                    item.OpenProfileButton.onClick.RemoveAllListeners();
+                                    item.OpenProfileButton.onClick.AddListener(() =>
+                                    {
+                                        DataCarrier.AddData(DataCarrier.ClanListing, serverClan);
+                                    });
+
                                     break;
                             }
 
