@@ -122,7 +122,8 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 924740730520338435
-      type: {class: ArenaBorderPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleArenaBorderQComponentPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
       data:
         Normal:
           X:
@@ -138,7 +139,7 @@ MonoBehaviour:
           X:
             RawValue: 0
           Y:
-            RawValue: 819200
+            RawValue: 851968
         Rotation:
           RawValue: 0
     - rid: 3915831314950914049
@@ -162,7 +163,7 @@ MonoBehaviour:
             X:
               RawValue: 294912
             Y:
-              RawValue: 229376
+              RawValue: 196608
           PositionOffset:
             X:
               RawValue: 0
@@ -184,12 +185,11 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 3915831314950914051
-      type: {class: GoalPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleGoalQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
-        goalConfig:
-          Id:
-            Value: 337072248309995173
-        hasTriggered:
+        TeamNumber:
+          Value: 2
+        HasTriggered:
           Value: 0
     - rid: 4158493136064086016
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
@@ -198,7 +198,7 @@ MonoBehaviour:
           X:
             RawValue: 0
           Y:
-            RawValue: -819200
+            RawValue: -851968
         Rotation:
           RawValue: 0
     - rid: 4158493136064086017
@@ -222,7 +222,7 @@ MonoBehaviour:
             X:
               RawValue: 294912
             Y:
-              RawValue: 229376
+              RawValue: 196608
           PositionOffset:
             X:
               RawValue: 0
@@ -244,12 +244,11 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 4158493136064086019
-      type: {class: GoalPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleGoalQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
-        goalConfig:
-          Id:
-            Value: 269125312843482111
-        hasTriggered:
+        TeamNumber:
+          Value: 1
+        HasTriggered:
           Value: 0
     - rid: 8446298868303265792
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
@@ -304,7 +303,8 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 8446298868303265795
-      type: {class: ArenaBorderPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleArenaBorderQComponentPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
       data:
         Normal:
           X:
@@ -314,16 +314,18 @@ MonoBehaviour:
         CollisionMinOffset:
           RawValue: 294912
     - rid: 9189874137361809408
-      type: {class: GameSessionPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattleGameSessionQSingletonPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
       data:
         GameInitialized:
           Value: 0
-        state:
+        State:
           Value: 0
         TimeUntilStart:
           RawValue: 262144
     - rid: 9189874137361809409
-      type: {class: PlayerManagerDataPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: BattlePlayerManagerDataQSingletonPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
       data:
         PlayStates:
         - Value: 0

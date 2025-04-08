@@ -603,13 +603,13 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator ReservePlayerTaskFromServer(string taskId, Action<PlayerTask> callback)
     {
-        yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "dailyTasks/reserve/"+taskId, taskId, AccessToken, request =>
+        yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "dailyTasks/reserve/"+taskId, "", AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
-                //Debug.LogWarning(result);
-                ServerPlayerTask task = result["data"]["DailyTask"].ToObject<ServerPlayerTask>();
+                Debug.LogWarning(result);
+                ServerPlayerTask task = result["data"]["Object"].ToObject<ServerPlayerTask>();
                 //Clan = clan;
 
                 if (callback != null)
@@ -625,13 +625,10 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator UnreservePlayerTaskFromServer(Action<bool> callback)
     {
-        yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "dailyTasks/unreserve/", null, AccessToken, request =>
+        yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "dailyTasks/unreserve/", "", AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                JObject result = JObject.Parse(request.downloadHandler.text);
-                //Debug.LogWarning(result);
-
                 if (callback != null)
                     callback(true);
             }

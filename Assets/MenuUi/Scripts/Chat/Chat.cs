@@ -5,8 +5,11 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using System.Collections;
 using MenuUi.Scripts.TabLine;
+using Altzone.Scripts.ReferenceSheets;
+using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.Model.Poco.Game;
 
-public class Chat : MonoBehaviour
+public class Chat : AltMonoBehaviour
 {
     [Header("Chat")] 
     public GameObject languageChat; 
@@ -26,12 +29,17 @@ public class Chat : MonoBehaviour
     public GameObject allReactions;
     public GameObject usersWhoAdded;
 
+    [Header("Chat Reactions")]
+    [SerializeField] private ChatResponseList _chatResponseList;
+    [SerializeField] private GameObject _chatResponseContent;
+
     [Header("Prefab")]
     public GameObject messagePrefabBlue;
     public GameObject messagePrefabRed;
     public GameObject messagePrefabYellow;
     public GameObject messagePrefabOrange;
     public GameObject messagePrefabPink;
+    [SerializeField] private GameObject _quickMessagePrefab;
 
     [Header("Scroll Rects")]
     public ScrollRect languageChatScrollRect;
@@ -74,6 +82,7 @@ public class Chat : MonoBehaviour
 
         LanguageChatActive();
         tablineScript.ActivateTabButton(1);
+        AddResponses();
     }
 
     private void Update()
@@ -91,6 +100,21 @@ public class Chat : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void AddResponses()
+    {
+        StartCoroutine(GetPlayerData(data =>
+        {
+            List<string> messageList = _chatResponseList.GetResponses((CharacterClassID)((data.SelectedCharacterId/100)*100));
+            foreach (string message in messageList)
+            {
+                GameObject messageObject = Instantiate(_quickMessagePrefab, _chatResponseContent.transform);
+                Button button= messageObject.GetComponent<QuickResponceHandler>().SetData(message);
+                button.onClick.AddListener(() => SendQuickMessage(messageObject.GetComponent<Button>()));
+            }
+        }));
+
     }
 
     public void SendChatMessage()

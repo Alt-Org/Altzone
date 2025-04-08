@@ -1,0 +1,15 @@
+[Serializable]
+struct BattleSoulWallTemplate
+{
+    BattleGridPosition Position;
+    int WidthType;
+    int ColorIndex;
+}
+
+component BattleSoulWallQComponent
+{
+    EntityRef ChildEntity;
+    BattleEmotionState Emotion;
+    FPVector2 Normal;
+    FP CollisionMinOffset;
+}
