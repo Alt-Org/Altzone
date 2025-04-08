@@ -11,26 +11,12 @@ namespace Battle.View.UI
     [RequireComponent(typeof(Button))]
     public class BattleUiCharacterButtonComponent : MonoBehaviour
     {
+        [SerializeField] private Button _button;
         [SerializeField] private Image _characterImage;
         [SerializeField] private Image _damageFill;
         [SerializeField] private Image _shieldFill;
 
-        private Button _button;
-        public Button ButtonComponent {
-            get
-            {
-                if (_button == null)
-                {
-                    _button = GetComponent<Button>();
-                }
-                return _button;
-            }
-        }
-
-        private void OnDisable()
-        {
-            ButtonComponent.onClick.RemoveAllListeners();
-        }
+        public Button ButtonComponent => _button;
 
         public void SetCharacterIcon(int characterId)
         {
@@ -39,6 +25,11 @@ namespace Battle.View.UI
             if (info == null) return;
 
             _characterImage.sprite = info.GalleryImage;
+        }
+
+        private void OnDisable()
+        {
+            ButtonComponent.onClick.RemoveAllListeners();
         }
     }
 }
