@@ -606,8 +606,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6682025077758413645}
-  - component: {fileID: 1554362590128268219}
   - component: {fileID: 2926530640854380273}
+  - component: {fileID: 1554362590128268219}
   m_Layer: 5
   m_Name: BattleUiPlayerInfo
   m_TagString: Untagged
@@ -636,14 +636,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &1554362590128268219
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1616917245377245213}
-  m_CullTransparentMesh: 1
 --- !u!114 &2926530640854380273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -656,11 +648,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15e7558b8b8cf724e885d2aa103f7553, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _aspectRatio: 0
   _horizontalConfiguration: {fileID: 5848932082496495538}
   _horizontalAspectRatio: 1.3
   _verticalConfiguration: {fileID: 7764124849608936206}
   _verticalAspectRatio: 0.3
+--- !u!222 &1554362590128268219
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1616917245377245213}
+  m_CullTransparentMesh: 1
 --- !u!1 &1876052793734946783
 GameObject:
   m_ObjectHideFlags: 0
