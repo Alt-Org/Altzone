@@ -423,6 +423,7 @@ GameObject:
   - component: {fileID: 9141382081616983759}
   - component: {fileID: 6663672098119100784}
   - component: {fileID: 1027269411744576477}
+  - component: {fileID: 7232340858935558901}
   m_Layer: 5
   m_Name: CharacterInventorySlot
   m_TagString: Untagged
@@ -605,6 +606,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e1f4a98897509e4a9efdca7eb40b686, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7232340858935558901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4297384447084397024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48e675e69aca0364c86fef9678cb8ca5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _classColorReference: {fileID: 0}
+  popupWindow: {fileID: 6060676926633255918, guid: 771ffde3a51390e40bd2bdd5f0cdd8ec,
+    type: 3}
 --- !u!1 &6257021046990187013
 GameObject:
   m_ObjectHideFlags: 0

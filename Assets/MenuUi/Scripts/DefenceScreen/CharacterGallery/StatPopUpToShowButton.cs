@@ -36,6 +36,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
             SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow = CharacterStatWindowToShowValue;
 
+            _controller.OpenPopup();
         }
     }
 }
