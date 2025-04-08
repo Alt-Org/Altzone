@@ -26,6 +26,7 @@ public class ProfileMenuTabs : MonoBehaviour
             int j = i;
             _buttons[i].Button.onClick.AddListener(() => SetVisible(j));
         }
+        SetVisible(1);
     }
 
     void SetVisible(int activeIndex)
