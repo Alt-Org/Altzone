@@ -47,4 +47,3 @@ namespace Altzone.Scripts.BattleUiShared
         }
     }
 }
-

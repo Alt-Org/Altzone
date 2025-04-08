@@ -162,4 +162,3 @@ namespace Altzone.Scripts.BattleUiShared
         }
     }
 }
-
