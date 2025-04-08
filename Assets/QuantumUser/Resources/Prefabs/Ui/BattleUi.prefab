@@ -394,20 +394,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4993733548614440259}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5670911697434258433}
-        m_TargetAssemblyTypeName: QuantumUser.Scripts.UI.Views.GameUiGameOverHandler,
-          Assembly-CSharp
-        m_MethodName: OnButtonClickExitGame
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
 --- !u!1 &1204819092726217984
 GameObject:
   m_ObjectHideFlags: 0
@@ -1683,6 +1670,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78c55f742a01c5f4a9b48671f97cbf88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GameViewController: {fileID: 0}
   AnnouncementHandler: {fileID: 33815931225985110}
   GameOverHandler: {fileID: 5670911697434258433}
   TimerHandler: {fileID: 3836806865872567798}
@@ -1716,7 +1704,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89eaccad8729ac64ca9fdbf2270dd439, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _controller: {fileID: 7342130735435193128}
   _view: {fileID: 4023919569057406335}
+  _button: {fileID: 3157326517368184569}
 --- !u!114 &3836806865872567798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1757,7 +1747,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a08b856d64126b84f875e05fe31baadd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _viewController: {fileID: 0}
+  _uiController: {fileID: 7342130735435193128}
   _giveUpButton: {fileID: 4019765446178418606}
   MovableUiElement: {fileID: 3529114520933404325}
 --- !u!114 &5184129031791342902
@@ -1772,7 +1762,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91320154924253e4e91ce7748cae34cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _viewController: {fileID: 0}
+  _uiController: {fileID: 7342130735435193128}
   LocalPlayerMultiOrientationElement: {fileID: 2045898764021700641}
   TeammateMultiOrientationElement: {fileID: 8028339510603279716}
 --- !u!114 &6849754882286958481

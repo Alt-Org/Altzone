@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-using Battle.View.Game;
 using Altzone.Scripts.BattleUiShared;
 
 namespace Battle.View.UI
@@ -11,7 +10,7 @@ namespace Battle.View.UI
     /// </summary>
     public class BattleUiGiveUpButtonHandler : MonoBehaviour
     {
-        [SerializeField] private BattleGameViewController _viewController;
+        [SerializeField] private BattleUiController _uiController;
         [SerializeField] private Button _giveUpButton;
         
         public BattleUiMovableElement MovableUiElement;
@@ -23,7 +22,7 @@ namespace Battle.View.UI
 
         private void Awake()
         {
-            _giveUpButton.onClick.AddListener(_viewController.OnLocalPlayerGiveUp);
+            _giveUpButton.onClick.AddListener(_uiController.GameViewController.OnLocalPlayerGiveUp);
         }
 
         private void OnDestroy()

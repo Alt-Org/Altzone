@@ -1,7 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI;
 
-using Battle.View.Game;
 using Altzone.Scripts.BattleUiShared;
 
 namespace Battle.View.UI
@@ -17,7 +15,7 @@ namespace Battle.View.UI
             LocalPlayerTeammate,
         }
 
-        [SerializeField] private BattleGameViewController _viewController;
+        [SerializeField] private BattleUiController _uiController;
 
         public BattleUiMultiOrientationElement LocalPlayerMultiOrientationElement;
         public BattleUiMultiOrientationElement TeammateMultiOrientationElement;
@@ -58,7 +56,8 @@ namespace Battle.View.UI
 
                 // Adding listener to button press
                 int characterNumber = i;
-                characterButton.ButtonComponent.onClick.AddListener(() => _viewController.OnCharacterSelected(characterNumber));
+                characterButton.ButtonComponent.onClick.RemoveAllListeners();
+                characterButton.ButtonComponent.onClick.AddListener(() => _uiController.GameViewController.OnCharacterSelected(characterNumber));
             }
         }
 

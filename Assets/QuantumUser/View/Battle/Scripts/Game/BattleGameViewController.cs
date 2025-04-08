@@ -3,11 +3,12 @@ using Button = UnityEngine.UI.Button;
 
 using Quantum;
 
+using Altzone.Scripts.Lobby;
+
 using Battle.View.UI;
 using Battle.View.Effect;
 using Battle.View.Audio;
 using PlayerType = Battle.View.UI.BattleUiPlayerInfoHandler.PlayerType;
-
 
 namespace Battle.View.Game
 {
@@ -26,6 +27,11 @@ namespace Battle.View.Game
         public void OnCharacterSelected(int characterNumber)
         {
             Debug.Log($"Character number {characterNumber} selected!");
+        }
+
+        public void OnExitGamePressed()
+        {
+            LobbyManager.ExitQuantum();
         }
 
         private void Awake()
@@ -51,7 +57,7 @@ namespace Battle.View.Game
 
             // Commented out code to hide the ui elements which shouldn't be shown at this point, but the code will be used later
 
-            /*
+            
             if (_uiController.GiveUpButtonHandler != null)
             {
                 _uiController.GiveUpButtonHandler.SetShow(true);
@@ -62,7 +68,7 @@ namespace Battle.View.Game
                 _uiController.PlayerInfoHandler.SetInfo(PlayerType.LocalPlayer, "Minä", new int[3] { 101, 201, 301 });
                 _uiController.PlayerInfoHandler.SetInfo(PlayerType.LocalPlayerTeammate, "Tiimiläinen", new int[3] { 401, 501, 601 });
             }
-            */
+            
         }
 
         private void OnChangeEmotionState(EventBattleChangeEmotionState e)

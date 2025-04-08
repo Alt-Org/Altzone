@@ -3848,6 +3848,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BattleUi
       objectReference: {fileID: 0}
+    - target: {fileID: 7342130735435193128, guid: 97e8f0ca20408d042a38f07b90b44946,
+        type: 3}
+      propertyPath: GameViewController
+      value: 
+      objectReference: {fileID: 4759642362552276934}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4031,6 +4036,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7e0904d2b2ca0f145ad03f5086282bbb, type: 3}
+--- !u!114 &4759642362552276934 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8816702143117302233, guid: 7e0904d2b2ca0f145ad03f5086282bbb,
+    type: 3}
+  m_PrefabInstance: {fileID: 4759642362552276933}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfb4c9f35e07d2546801ffb7e0e673ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5589480802127671713
 PrefabInstance:
   m_ObjectHideFlags: 0

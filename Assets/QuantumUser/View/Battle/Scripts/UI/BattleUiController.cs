@@ -1,5 +1,7 @@
 using UnityEngine;
 
+using Battle.View.Game;
+
 namespace Battle.View.UI
 {
     /**
@@ -8,6 +10,9 @@ namespace Battle.View.UI
      */
     public class BattleUiController : MonoBehaviour
     {
+        // View controller script back reference
+        public BattleGameViewController GameViewController;
+
         // UI Handler Scripts
         public BattleUiAnnouncementHandler AnnouncementHandler;
         public BattleUiGameOverHandler GameOverHandler;

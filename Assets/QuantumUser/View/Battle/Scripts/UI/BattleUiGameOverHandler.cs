@@ -1,28 +1,27 @@
 using UnityEngine;
-
-using Altzone.Scripts.Lobby;
+using UnityEngine.UI;
 
 namespace Battle.View.UI
 {
     public class BattleUiGameOverHandler : MonoBehaviour
     {
-        //UICountDownView
+        [SerializeField] private BattleUiController _controller;
         [SerializeField] private GameObject _view;
+        [SerializeField] private Button _button;
 
         public void SetShow(bool show)
         {
             _view.SetActive(show);
         }
 
-        public void OnButtonClickExitGame()
+        private void Awake()
         {
-            LobbyManager.ExitQuantum();
+            _button.onClick.AddListener(_controller.GameViewController.OnExitGamePressed);
         }
 
-        //only for testing
-        public void OnButtonClickRestartGame()
+        private void OnDestroy()
         {
-
+            _button.onClick.RemoveAllListeners();
         }
     }
 }
