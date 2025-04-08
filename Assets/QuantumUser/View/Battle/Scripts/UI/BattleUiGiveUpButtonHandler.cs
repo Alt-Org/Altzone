@@ -14,6 +14,7 @@ namespace Battle.View.UI
         [SerializeField] private Button _giveUpButton;
         
         public BattleUiMovableElement MovableUiElement;
+        public bool IsVisible => MovableUiElement.gameObject.activeSelf;
 
         public void SetShow(bool show)
         {

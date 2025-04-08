@@ -31,6 +31,8 @@ namespace Battle.View.UI
             }
         }
 
+        public bool IsVisible => _view.activeSelf;
+
         public void SetShow(bool show)
         {
             _view.SetActive(show);

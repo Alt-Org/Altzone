@@ -9,6 +9,8 @@ namespace Battle.View.UI
         [SerializeField] private GameObject _view;
         [SerializeField] private Button _button;
 
+        public bool IsVisible => _view.activeSelf;
+
         public void SetShow(bool show)
         {
             _view.SetActive(show);
@@ -25,4 +27,3 @@ namespace Battle.View.UI
         }
     }
 }
-

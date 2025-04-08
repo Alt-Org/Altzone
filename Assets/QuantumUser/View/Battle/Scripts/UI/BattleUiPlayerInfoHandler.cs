@@ -19,20 +19,25 @@ namespace Battle.View.UI
 
         public BattleUiMultiOrientationElement LocalPlayerMultiOrientationElement;
         public BattleUiMultiOrientationElement TeammateMultiOrientationElement;
+        public bool IsVisible => LocalPlayerMultiOrientationElement.gameObject.activeSelf;
+
+        public void SetShow(bool show)
+        {
+            LocalPlayerMultiOrientationElement.gameObject.SetActive(show);
+            TeammateMultiOrientationElement.gameObject.SetActive(show);
+        }
 
         public void SetInfo(PlayerType playerType, string playerName, int[] characterIds)
         {
             BattleUiPlayerInfoComponent playerInfoComponent;
 
-            // Activating multi orientation gameObject and getting player info component
+            // Getting player info component from multi orientation element
             if (playerType == PlayerType.LocalPlayer)
             {
-                LocalPlayerMultiOrientationElement.gameObject.SetActive(true);
                 playerInfoComponent = LocalPlayerMultiOrientationElement.GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>();
             }
             else
             {
-                TeammateMultiOrientationElement.gameObject.SetActive(true);
                 playerInfoComponent = TeammateMultiOrientationElement.GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>();
             }
 
@@ -52,7 +57,7 @@ namespace Battle.View.UI
                 // Setting if button is enabled
                 characterButton.ButtonComponent.enabled = playerType == PlayerType.LocalPlayer;
 
-                if (playerType == PlayerType.LocalPlayerTeammate) return;
+                if (playerType == PlayerType.LocalPlayerTeammate) continue;
 
                 // Adding listener to button press
                 int characterNumber = i;
@@ -60,12 +65,5 @@ namespace Battle.View.UI
                 characterButton.ButtonComponent.onClick.AddListener(() => _uiController.GameViewController.OnCharacterSelected(characterNumber));
             }
         }
-
-        private void OnDisable()
-        {
-            LocalPlayerMultiOrientationElement.gameObject.SetActive(false);
-            TeammateMultiOrientationElement.gameObject.SetActive(false);
-        }
     }
 }
-

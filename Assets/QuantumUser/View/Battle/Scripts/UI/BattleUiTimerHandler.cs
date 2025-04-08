@@ -17,6 +17,12 @@ namespace Battle.View.UI
         [SerializeField] private TMP_Text _timerText;
 
         public BattleUiMovableElement MovableUiElement;
+        public bool IsVisible => MovableUiElement.gameObject.activeSelf;
+
+        public void SetShow(bool show)
+        {
+            MovableUiElement.gameObject.SetActive(show);
+        }
 
         public void StartTimer(Frame f)
         {
@@ -27,13 +33,11 @@ namespace Battle.View.UI
 
             _timer = FrameTimer.FromSeconds(f, 3600);
             _recordTime = true;
-            _timerText.gameObject.SetActive(true);
         }
 
         public void StopTimer()
         {
             _recordTime = false;
-            _timerText.gameObject.SetActive(false);
         }
 
         private bool _recordTime = false;
@@ -62,7 +66,7 @@ namespace Battle.View.UI
 
                 if (seconds > _oldSeconds)
                 {
-                    _timerText.text = _hours == 0 ? $"{minutes}:{seconds:00}" : $"{_hours}:{minutes:00}:{seconds:00}";
+                    if (IsVisible) _timerText.text = _hours == 0 ? $"{minutes}:{seconds:00}" : $"{_hours}:{minutes:00}:{seconds:00}";
                     _oldSeconds = seconds;
                 }
             }

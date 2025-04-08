@@ -13,12 +13,16 @@ namespace Battle.View.UI
         [SerializeField] private TMP_Text _diamondText;
 
         public BattleUiMovableElement MovableUiElement;
+        public bool IsVisible => MovableUiElement.gameObject.activeSelf;
+
+        public void SetShow(bool show)
+        {
+            MovableUiElement.gameObject.SetActive(show);
+        }
 
         public void SetDiamondsText(int diamondAmount)
         {
-            if (!MovableUiElement.gameObject.activeSelf) MovableUiElement.gameObject.SetActive(true);
             _diamondText.text = diamondAmount.ToString();
         }
     }
 }
-

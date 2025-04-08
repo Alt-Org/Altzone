@@ -1,5 +1,4 @@
 using UnityEngine;
-using Button = UnityEngine.UI.Button;
 
 using Quantum;
 
@@ -49,26 +48,28 @@ namespace Battle.View.Game
                 _gridViewController.SetGrid();
             }
 
-
             if (_uiController.DiamondsHandler != null)
             {
+                _uiController.DiamondsHandler.SetShow(true);
                 _uiController.DiamondsHandler.SetDiamondsText(0);
             }
 
             // Commented out code to hide the ui elements which shouldn't be shown at this point, but the code will be used later
 
-            
+            /*
             if (_uiController.GiveUpButtonHandler != null)
             {
+                _uiController.GiveUpButtonHandler.SetShow(true);
                 _uiController.GiveUpButtonHandler.SetShow(true);
             }
 
             if (_uiController.PlayerInfoHandler != null)
             {
+                _uiController.PlayerInfoHandler.SetShow(true);
                 _uiController.PlayerInfoHandler.SetInfo(PlayerType.LocalPlayer, "Minä", new int[3] { 101, 201, 301 });
                 _uiController.PlayerInfoHandler.SetInfo(PlayerType.LocalPlayerTeammate, "Tiimiläinen", new int[3] { 401, 501, 601 });
             }
-            
+            */
         }
 
         private void OnChangeEmotionState(EventBattleChangeEmotionState e)
@@ -113,12 +114,17 @@ namespace Battle.View.Game
                 {
                     case BattleGameState.Countdown:
                         // If the game is in the countdown state, display the countdown timer
+                        _uiController.AnnouncementHandler.SetShow(true);
                         _uiController.AnnouncementHandler.SetCountDownNumber(countDown);
                         break;
 
                     case BattleGameState.Playing:
                         // Clear the countdown text when the countdown is negative
                         _uiController.AnnouncementHandler.ClearAnnouncerTextField();
+                        _uiController.AnnouncementHandler.SetShow(true);
+
+                        // Starting game timer
+                        _uiController.TimerHandler.SetShow(true);
                         _uiController.TimerHandler.StartTimer(frame);
                         break;
 
@@ -128,10 +134,15 @@ namespace Battle.View.Game
                         break;
 
                     case BattleGameState.GameOver:
+                        _uiController.TimerHandler.StopTimer();
+                        _uiController.TimerHandler.SetShow(false);
+
+                        _uiController.DiamondsHandler.SetShow(false);
+                        _uiController.GiveUpButtonHandler.SetShow(false);
+                        _uiController.PlayerInfoHandler.SetShow(false);
+
                         // If the game is over, display "Game Over!" and show the Game Over UI
                         _uiController.GameOverHandler.SetShow(true);
-                        _uiController.GiveUpButtonHandler.SetShow(false);
-                        _uiController.TimerHandler.StopTimer();
                         break;
                 }
             }
