@@ -1,7 +1,6 @@
-using Altzone.Scripts.BattleUiShared;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts.BattleUiShared;
 
 namespace QuantumUser.Scripts.UI.Views
 {
@@ -16,69 +15,52 @@ namespace QuantumUser.Scripts.UI.Views
             LocalPlayerTeammate,
         }
 
-        [Header("Horizontal configuration")]
-        [SerializeField] private TMP_Text _playerNameHorizontal;
-        [SerializeField] private GameUiCharacterButtonComponent[] _characterButtonsHorizontal;
-
-        [Header("Vertical configuration")]
-        [SerializeField] private TMP_Text _playerNameVertical;
-        [SerializeField] private GameUiCharacterButtonComponent[] _characterButtonsVertical;
-
-        [Header("Movable UI")]
-        public BattleUiMovableElement MovableUiElement;
+        public BattleUiMultiOrientationElement LocalPlayerMultiOrientationElement;
+        public BattleUiMultiOrientationElement TeammateMultiOrientationElement;
 
         private void OnDisable()
         {
-            MovableUiElement.gameObject.SetActive(false);
+            LocalPlayerMultiOrientationElement.gameObject.SetActive(false);
+            TeammateMultiOrientationElement.gameObject.SetActive(false);
         }
 
         public void SetInfo(PlayerType playerType, string playerName, int[] characterIds)
         {
-            // Setting player name
-            if (true)
+            GameUiPlayerInfoComponent playerInfoComponent;
+
+            if (playerType == PlayerType.LocalPlayer)
             {
-                _playerNameHorizontal.text = playerName;
+                LocalPlayerMultiOrientationElement.gameObject.SetActive(true);
+                playerInfoComponent = LocalPlayerMultiOrientationElement.GetActiveGameObject().GetComponent<GameUiPlayerInfoComponent>();
             }
             else
             {
-                _playerNameVertical.text = playerName;
+                TeammateMultiOrientationElement.gameObject.SetActive(true);
+                playerInfoComponent = TeammateMultiOrientationElement.GetActiveGameObject().GetComponent<GameUiPlayerInfoComponent>();
             }
+
+            if (playerInfoComponent == null) return;
+
+            // Setting player name
+            playerInfoComponent.PlayerName.text = playerName;
 
             // Setting character icons
             for (int i = 0; i < characterIds.Length; i++)
             {
-                if (true)
-                {
-                    _characterButtonsHorizontal[i].SetCharacterIcon(characterIds[i]);
-                    _characterButtonsHorizontal[i].ButtonComponent.enabled = playerType == PlayerType.LocalPlayer;
-                }
-                else
-                {
-                    _characterButtonsVertical[i].SetCharacterIcon(characterIds[i]);
-                    _characterButtonsVertical[i].ButtonComponent.enabled = playerType == PlayerType.LocalPlayer;
-                }
+                playerInfoComponent.CharacterButtons[i].SetCharacterIcon(characterIds[i]);
             }
-
-            // Making ui element visible
-            MovableUiElement.gameObject.SetActive(true);
         }
 
-        public Button[] GetCharacterButtons()
+        public Button[] GetLocalPlayerCharacterButtons()
         {
+            GameUiPlayerInfoComponent playerInfoComponent = LocalPlayerMultiOrientationElement.GetActiveGameObject().GetComponent<GameUiPlayerInfoComponent>();
+
+            if (playerInfoComponent == null) return null;
+
             Button[] buttons = new Button[3];
-            if (true)
+            for (int i = 0; i < playerInfoComponent.CharacterButtons.Length; i++)
             {
-                for (int i = 0; i < _characterButtonsHorizontal.Length; i++)
-                {
-                    buttons[i] = _characterButtonsHorizontal[i].ButtonComponent;
-                }
-            }
-            else
-            {
-                for (int i = 0; i < _characterButtonsHorizontal.Length; i++)
-                {
-                    buttons[i] = _characterButtonsVertical[i].ButtonComponent;
-                }
+                buttons[i] = playerInfoComponent.CharacterButtons[i].ButtonComponent;
             }
 
             return buttons;
