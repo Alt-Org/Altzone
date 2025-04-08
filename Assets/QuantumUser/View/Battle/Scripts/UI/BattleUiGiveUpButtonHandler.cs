@@ -13,14 +13,14 @@ namespace Battle.View.UI
         public Button GiveUpButton;
         public BattleUiMovableElement MovableUiElement;
 
-        private void OnDestroy()
-        {
-            GiveUpButton.onClick.RemoveAllListeners();
-        }
-
         public void SetShow(bool show)
         {
             MovableUiElement.gameObject.SetActive(show);
+        }
+
+        private void OnDestroy()
+        {
+            GiveUpButton.onClick.RemoveAllListeners();
         }
     }
 }

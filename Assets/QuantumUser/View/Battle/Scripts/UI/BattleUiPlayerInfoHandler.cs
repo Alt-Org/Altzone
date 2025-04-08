@@ -19,12 +19,6 @@ namespace Battle.View.UI
         public BattleUiMultiOrientationElement LocalPlayerMultiOrientationElement;
         public BattleUiMultiOrientationElement TeammateMultiOrientationElement;
 
-        private void OnDisable()
-        {
-            LocalPlayerMultiOrientationElement.gameObject.SetActive(false);
-            TeammateMultiOrientationElement.gameObject.SetActive(false);
-        }
-
         public void SetInfo(PlayerType playerType, string playerName, int[] characterIds)
         {
             BattleUiPlayerInfoComponent playerInfoComponent;
@@ -66,6 +60,12 @@ namespace Battle.View.UI
             }
 
             return buttons;
+        }
+
+        private void OnDisable()
+        {
+            LocalPlayerMultiOrientationElement.gameObject.SetActive(false);
+            TeammateMultiOrientationElement.gameObject.SetActive(false);
         }
     }
 }

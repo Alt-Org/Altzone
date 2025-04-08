@@ -8,13 +8,6 @@ namespace Altzone.Scripts.BattleUiShared
     [RequireComponent(typeof(RectTransform))]
     public class BattleUiMovableElement : MonoBehaviour
     {
-        protected RectTransform _rectTransform;
-
-        protected void Awake()
-        {
-            if (_rectTransform == null) _rectTransform = GetComponent<RectTransform>();
-        }
-
         /// <summary>
         /// Set BattleUiMovableElementData to this Ui element.
         /// </summary>
@@ -44,6 +37,13 @@ namespace Altzone.Scripts.BattleUiShared
             {
                 return null;
             }
+        }
+
+        protected RectTransform _rectTransform;
+
+        protected void Awake()
+        {
+            if (_rectTransform == null) _rectTransform = GetComponent<RectTransform>();
         }
     }
 }

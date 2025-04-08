@@ -22,7 +22,6 @@ namespace Altzone.Scripts.BattleUiShared
         [SerializeField] private GameObject _verticalConfiguration;
         [SerializeField] private float _verticalAspectRatio;
 
-        private OrientationType _orientation;
         public OrientationType Orientation => _orientation;
 
         public bool IsHorizontal
@@ -32,6 +31,50 @@ namespace Altzone.Scripts.BattleUiShared
                 return _orientation == OrientationType.Horizontal || _orientation == OrientationType.HorizontalFlipped;
             }
         }
+
+        /// <summary>
+        /// Get the currently active gameobject.
+        /// </summary>
+        /// <returns>GameObject which is either the horizontal or vertical configuration.</returns>
+        public GameObject GetActiveGameObject()
+        {
+            if (IsHorizontal)
+            {
+                return _horizontalConfiguration;
+            }
+            else
+            {
+                return _verticalConfiguration;
+            }
+        }
+
+        /// <summary>
+        /// Set BattleUiMovableElementData to this Ui multi orientation element.
+        /// </summary>
+        /// <param name="data">The data which to set to this Ui element.</param>
+        public override void SetData(BattleUiMovableElementData data)
+        {
+            base.SetData(data);
+            SetOrientation(data.Orientation);
+        }
+
+        /// <summary>
+        /// Get the data from this Ui multi orientation element.
+        /// </summary>
+        /// <returns>Returns BattleUiMovableElementData serializable object. Null if couldn't get valid data.</returns>
+        public override BattleUiMovableElementData GetData()
+        {
+            if (_rectTransform != null)
+            {
+                return new BattleUiMovableElementData(_rectTransform.anchorMin, _rectTransform.anchorMax, _orientation);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private OrientationType _orientation;
 
         private void SetOrientation(OrientationType newOrientation)
         {
@@ -116,48 +159,6 @@ namespace Altzone.Scripts.BattleUiShared
         private float GetFlippedAnchor(float anchorValue)
         {
             return -anchorValue + 1;
-        }
-
-        /// <summary>
-        /// Get the currently active gameobject.
-        /// </summary>
-        /// <returns>GameObject which is either the horizontal or vertical configuration.</returns>
-        public GameObject GetActiveGameObject()
-        {
-            if (IsHorizontal)
-            {
-                return _horizontalConfiguration;
-            }
-            else
-            {
-                return _verticalConfiguration;
-            }
-        }
-
-        /// <summary>
-        /// Set BattleUiMovableElementData to this Ui multi orientation element.
-        /// </summary>
-        /// <param name="data">The data which to set to this Ui element.</param>
-        public override void SetData(BattleUiMovableElementData data)
-        {
-            base.SetData(data);
-            SetOrientation(data.Orientation);
-        }
-
-        /// <summary>
-        /// Get the data from this Ui multi orientation element.
-        /// </summary>
-        /// <returns>Returns BattleUiMovableElementData serializable object. Null if couldn't get valid data.</returns>
-        public override BattleUiMovableElementData GetData()
-        {
-            if (_rectTransform != null)
-            {
-                return new BattleUiMovableElementData(_rectTransform.anchorMin, _rectTransform.anchorMax, _orientation);
-            }
-            else
-            {
-                return null;
-            }
         }
     }
 }

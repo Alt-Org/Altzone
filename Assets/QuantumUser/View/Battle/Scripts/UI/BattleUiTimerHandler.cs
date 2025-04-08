@@ -15,17 +15,31 @@ namespace Battle.View.UI
     public class BattleUiTimerHandler : MonoBehaviour
     {
         [SerializeField] private TMP_Text _timerText;
+
+        public BattleUiMovableElement MovableUiElement;
+
+        public void StartTimer(Frame f)
+        {
+            if (_recordTime) return;
+
+            _hours = 0;
+            _oldSeconds = -1;
+
+            _timer = FrameTimer.FromSeconds(f, 3600);
+            _recordTime = true;
+            _timerText.gameObject.SetActive(true);
+        }
+
+        public void StopTimer()
+        {
+            _recordTime = false;
+            _timerText.gameObject.SetActive(false);
+        }
+
         private bool _recordTime = false;
         private FrameTimer _timer;
         private int _hours;
         private int _oldSeconds;
-
-        public BattleUiMovableElement MovableUiElement;
-
-        private void OnDisable()
-        {
-            StopTimer();
-        }
 
         private void Update()
         {
@@ -52,24 +66,6 @@ namespace Battle.View.UI
                     _oldSeconds = seconds;
                 }
             }
-        }
-
-        public void StartTimer(Frame f)
-        {
-            if(_recordTime) return;
-
-            _hours = 0;
-            _oldSeconds = -1;
-
-            _timer = FrameTimer.FromSeconds(f, 3600);
-            _recordTime = true;
-            _timerText.gameObject.SetActive(true);
-        }
-
-        public void StopTimer()
-        {
-            _recordTime = false;
-            _timerText.gameObject.SetActive(false);
         }
     }
 }
