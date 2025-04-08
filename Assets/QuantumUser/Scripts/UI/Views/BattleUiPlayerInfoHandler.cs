@@ -7,7 +7,7 @@ namespace QuantumUser.Scripts.UI.Views
     /// <summary>
     /// Handles Battle Ui player info functionality.
     /// </summary>
-    public class GameUiPlayerInfoHandler : MonoBehaviour
+    public class BattleUiPlayerInfoHandler : MonoBehaviour
     {
         public enum PlayerType
         {
@@ -26,17 +26,17 @@ namespace QuantumUser.Scripts.UI.Views
 
         public void SetInfo(PlayerType playerType, string playerName, int[] characterIds)
         {
-            GameUiPlayerInfoComponent playerInfoComponent;
+            BattleUiPlayerInfoComponent playerInfoComponent;
 
             if (playerType == PlayerType.LocalPlayer)
             {
                 LocalPlayerMultiOrientationElement.gameObject.SetActive(true);
-                playerInfoComponent = LocalPlayerMultiOrientationElement.GetActiveGameObject().GetComponent<GameUiPlayerInfoComponent>();
+                playerInfoComponent = LocalPlayerMultiOrientationElement.GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>();
             }
             else
             {
                 TeammateMultiOrientationElement.gameObject.SetActive(true);
-                playerInfoComponent = TeammateMultiOrientationElement.GetActiveGameObject().GetComponent<GameUiPlayerInfoComponent>();
+                playerInfoComponent = TeammateMultiOrientationElement.GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>();
             }
 
             if (playerInfoComponent == null) return;
@@ -53,7 +53,7 @@ namespace QuantumUser.Scripts.UI.Views
 
         public Button[] GetLocalPlayerCharacterButtons()
         {
-            GameUiPlayerInfoComponent playerInfoComponent = LocalPlayerMultiOrientationElement.GetActiveGameObject().GetComponent<GameUiPlayerInfoComponent>();
+            BattleUiPlayerInfoComponent playerInfoComponent = LocalPlayerMultiOrientationElement.GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>();
 
             if (playerInfoComponent == null) return null;
 

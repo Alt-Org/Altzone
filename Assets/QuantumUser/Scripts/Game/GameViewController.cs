@@ -4,7 +4,7 @@ using UnityEngine;
 using Altzone.Scripts.BattleUiShared;
 
 using Button = UnityEngine.UI.Button;
-using PlayerType = QuantumUser.Scripts.UI.Views.GameUiPlayerInfoHandler.PlayerType;
+using PlayerType = QuantumUser.Scripts.UI.Views.BattleUiPlayerInfoHandler.PlayerType;
 
 namespace QuantumUser.Scripts
 {

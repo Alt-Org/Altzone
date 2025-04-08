@@ -10,7 +10,7 @@ namespace QuantumUser.Scripts.UI.Views
     /// <summary>
     /// Handles setting timer text since match started.
     /// </summary>
-    public class GameUiTimerHandler : MonoBehaviour
+    public class BattleUiTimerHandler : MonoBehaviour
     {
         [SerializeField] private TMP_Text _timerText;
         private bool _recordTime = false;

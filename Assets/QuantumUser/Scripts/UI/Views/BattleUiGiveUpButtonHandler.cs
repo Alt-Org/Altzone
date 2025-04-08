@@ -7,7 +7,7 @@ namespace QuantumUser.Scripts.UI.Views
     /// <summary>
     /// Handles Battle Ui give up button functionality.
     /// </summary>
-    public class GameUiGiveUpButtonHandler : MonoBehaviour
+    public class BattleUiGiveUpButtonHandler : MonoBehaviour
     {
         public Button GiveUpButton;
         public BattleUiMovableElement MovableUiElement;

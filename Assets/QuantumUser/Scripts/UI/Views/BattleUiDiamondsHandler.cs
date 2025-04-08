@@ -7,7 +7,7 @@ namespace QuantumUser.Scripts.UI.Views
     /// <summary>
     /// Handles setting collected diamond amount text.
     /// </summary>
-    public class GameUiDiamondsHandler : MonoBehaviour
+    public class BattleUiDiamondsHandler : MonoBehaviour
     {
         [SerializeField] private TMP_Text _diamondText;
 
