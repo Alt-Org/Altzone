@@ -9,9 +9,11 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
     public class PieChartManager : MonoBehaviour
     {
-        [SerializeField] private StatsWindowController _controller;
+        
         [SerializeField] private PiechartReference _referenceSheet;
         [SerializeField] private TMP_Text _piechartText;
+
+        private StatsWindowController _controller;
 
         private int _sliceAmount;
 
@@ -66,6 +68,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         private void OnEnable()
         {
+            if (_controller == null) _controller = FindObjectOfType<StatsWindowController>();
             UpdateChart();
             _controller.OnStatUpdated += UpdateChart;
         }

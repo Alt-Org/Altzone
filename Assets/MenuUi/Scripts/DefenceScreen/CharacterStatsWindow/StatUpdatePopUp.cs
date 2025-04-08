@@ -11,7 +11,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     /// </summary>
     public class StatUpdatePopUp : MonoBehaviour
     {
-        [SerializeField] private StatsWindowController _controller;
         [SerializeField] private StatsReference _statsReference;
         [SerializeField] private GameObject _contents;
         [SerializeField] private Image _statIcon;
@@ -21,11 +20,13 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private TMP_Text _eraserCost;
         [SerializeField] private Image _touchBlocker;
 
+        private StatsWindowController _controller;
         private StatType _statType;
 
 
         private void OnEnable()
         {
+            if (_controller == null) _controller = FindObjectOfType<StatsWindowController>();
             ClosePopUp();
             _controller.OnStatUpdated += UpdateStatNumber;
             _controller.OnStatUpdated += UpdateDiamondCost;

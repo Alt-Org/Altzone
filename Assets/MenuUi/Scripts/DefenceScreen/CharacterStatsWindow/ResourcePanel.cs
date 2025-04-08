@@ -5,12 +5,13 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
     public class ResourcePanel : MonoBehaviour
     {
-        [SerializeField] private StatsWindowController _controller;
         [SerializeField] private TMP_Text _diamondsAmount;
         [SerializeField] private TMP_Text _eraserAmount;
 
+        private StatsWindowController _controller;
         private void OnEnable()
         {
+            if (_controller == null) _controller = FindObjectOfType<StatsWindowController>();
             SetDiamondsAmount();
             SetEraserAmount();
 
