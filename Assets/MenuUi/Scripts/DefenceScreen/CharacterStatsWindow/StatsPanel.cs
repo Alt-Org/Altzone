@@ -10,7 +10,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     /// </summary>
     public class StatsPanel : MonoBehaviour
     {
-        [SerializeField] private StatsWindowController _controller;
         [SerializeField] private Image _characterImage;
         [SerializeField] private Image _lockImage;
         [SerializeField] private TMP_Text _attackText;
@@ -19,8 +18,14 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private TMP_Text _charSizeText;
         [SerializeField] private TMP_Text _speedText;
 
+        [SerializeField] private GameObject _statPage;
+        [SerializeField] private GameObject _infoPage;
+        private StatsWindowController _controller;
+
         private void OnEnable()
         {
+            if (_controller == null) _controller = FindObjectOfType<StatsWindowController>();
+
             SetCharacterImage();
             SetStatButtonTexts();
 
@@ -85,6 +90,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                         break;
                 }
             }
+        }
+        public void SwitchPage()
+        {
+            if (_statPage != null) _statPage.SetActive(false);
+            if (_infoPage != null) _infoPage.SetActive(true);
+        }
+        public void ClosePopup()
+        {
+            gameObject.SetActive(false);
         }
     }
 }

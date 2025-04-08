@@ -10,7 +10,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     /// </summary>
     public class DebugPopUp : AltMonoBehaviour
     {
-        [SerializeField] private StatsWindowController _controller;
+        
         [SerializeField] private GameObject _contents;
         [SerializeField] private Image _touchBlocker;
         [SerializeField] private Button _addCharacterButton;
@@ -18,6 +18,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private Toggle _unlimitedErasersToggle;
         [SerializeField] private Button _addDiamondsButton;
         [SerializeField] private Button _addErasersButton;
+
+        private StatsWindowController _controller;
 
         private const int DiamondsToAdd = 10000;
         private const int ErasersToAdd = 100;
@@ -47,6 +49,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         private void OnEnable()
         {
+            if (_controller == null) _controller = FindObjectOfType<StatsWindowController>();
             ClosePopUp();
         }
 
