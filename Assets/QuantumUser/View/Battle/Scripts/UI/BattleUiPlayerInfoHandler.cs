@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+using Battle.View.Game;
 using Altzone.Scripts.BattleUiShared;
 
 namespace Battle.View.UI
@@ -16,6 +17,8 @@ namespace Battle.View.UI
             LocalPlayerTeammate,
         }
 
+        [SerializeField] private BattleGameViewController _viewController;
+
         public BattleUiMultiOrientationElement LocalPlayerMultiOrientationElement;
         public BattleUiMultiOrientationElement TeammateMultiOrientationElement;
 
@@ -23,6 +26,7 @@ namespace Battle.View.UI
         {
             BattleUiPlayerInfoComponent playerInfoComponent;
 
+            // Activating multi orientation gameObject and getting player info component
             if (playerType == PlayerType.LocalPlayer)
             {
                 LocalPlayerMultiOrientationElement.gameObject.SetActive(true);
@@ -39,27 +43,23 @@ namespace Battle.View.UI
             // Setting player name
             playerInfoComponent.PlayerName.text = playerName;
 
-            // Setting character icons
+            // Initializing character buttons
             for (int i = 0; i < characterIds.Length; i++)
             {
-                playerInfoComponent.CharacterButtons[i].SetCharacterIcon(characterIds[i]);
-                playerInfoComponent.CharacterButtons[i].ButtonComponent.enabled = playerType == PlayerType.LocalPlayer;
+                BattleUiCharacterButtonComponent characterButton = playerInfoComponent.CharacterButtons[i];
+
+                // Setting character icon
+                characterButton.SetCharacterIcon(characterIds[i]);
+
+                // Setting if button is enabled
+                characterButton.ButtonComponent.enabled = playerType == PlayerType.LocalPlayer;
+
+                if (playerType == PlayerType.LocalPlayerTeammate) return;
+
+                // Adding listener to button press
+                int characterNumber = i;
+                characterButton.ButtonComponent.onClick.AddListener(() => _viewController.OnCharacterSelected(characterNumber));
             }
-        }
-
-        public Button[] GetLocalPlayerCharacterButtons()
-        {
-            BattleUiPlayerInfoComponent playerInfoComponent = LocalPlayerMultiOrientationElement.GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>();
-
-            if (playerInfoComponent == null) return null;
-
-            Button[] buttons = new Button[3];
-            for (int i = 0; i < playerInfoComponent.CharacterButtons.Length; i++)
-            {
-                buttons[i] = playerInfoComponent.CharacterButtons[i].ButtonComponent;
-            }
-
-            return buttons;
         }
 
         private void OnDisable()

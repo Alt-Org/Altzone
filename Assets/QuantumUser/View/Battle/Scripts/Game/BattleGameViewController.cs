@@ -18,6 +18,16 @@ namespace Battle.View.Game
         [SerializeField] private BattleScreenEffectViewController _screenEffectViewController;
         [SerializeField] private BattleSoundFXViewController _soundFXViewController;
 
+        public void OnLocalPlayerGiveUp()
+        {
+            Debug.Log("Give up button pressed!");
+        }
+
+        public void OnCharacterSelected(int characterNumber)
+        {
+            Debug.Log($"Character number {characterNumber} selected!");
+        }
+
         private void Awake()
         {
             QuantumEvent.Subscribe<EventViewInit>(this, OnViewInit);
@@ -44,21 +54,12 @@ namespace Battle.View.Game
             /*
             if (_uiController.GiveUpButtonHandler != null)
             {
-                _uiController.GiveUpButtonHandler.GiveUpButton.onClick.AddListener(OnGiveUpButtonPressed);
                 _uiController.GiveUpButtonHandler.SetShow(true);
             }
 
             if (_uiController.PlayerInfoHandler != null)
             {
                 _uiController.PlayerInfoHandler.SetInfo(PlayerType.LocalPlayer, "Minä", new int[3] { 101, 201, 301 });
-
-                Button[] characterButtons = _uiController.PlayerInfoHandler.GetLocalPlayerCharacterButtons();
-                for (int i = 0; i < characterButtons.Length; i++)
-                {
-                    int buttonIdx = i;
-                    characterButtons[i].onClick.AddListener(()=> OnCharacterButtonPressed(buttonIdx));
-                }
-
                 _uiController.PlayerInfoHandler.SetInfo(PlayerType.LocalPlayerTeammate, "Tiimiläinen", new int[3] { 401, 501, 601 });
             }
             */
@@ -79,16 +80,6 @@ namespace Battle.View.Game
         {
             _uiController.DebugStatsOverlayHandler.SetShow(true);
             _uiController.DebugStatsOverlayHandler.SetStats(e.Character);
-        }
-
-        private void OnGiveUpButtonPressed()
-        {
-            Debug.Log("Give up button pressed!");
-        }
-
-        private void OnCharacterButtonPressed(int buttonIdx)
-        {
-            Debug.Log($"Character button {buttonIdx} pressed!");
         }
 
         // Handles UI updates based on the game's state and countdown

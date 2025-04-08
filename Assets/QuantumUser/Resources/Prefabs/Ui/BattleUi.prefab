@@ -1757,7 +1757,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a08b856d64126b84f875e05fe31baadd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GiveUpButton: {fileID: 4019765446178418606}
+  _viewController: {fileID: 0}
+  _giveUpButton: {fileID: 4019765446178418606}
   MovableUiElement: {fileID: 3529114520933404325}
 --- !u!114 &5184129031791342902
 MonoBehaviour:
@@ -1771,6 +1772,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91320154924253e4e91ce7748cae34cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _viewController: {fileID: 0}
   LocalPlayerMultiOrientationElement: {fileID: 2045898764021700641}
   TeammateMultiOrientationElement: {fileID: 8028339510603279716}
 --- !u!114 &6849754882286958481
