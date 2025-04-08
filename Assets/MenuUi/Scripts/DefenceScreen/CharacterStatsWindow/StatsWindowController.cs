@@ -17,6 +17,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     public class StatsWindowController : AltMonoBehaviour
     {
         [SerializeField] private ClassColorReference _classColorReference;
+        
 
         private PlayerData _playerData;
         private CharacterID _characterId;
@@ -73,6 +74,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             _characterId = SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow;
             SetPlayerData();
             SetCurrentCharacter();
+        }
+
+        public void OpenPopup()
+        {
+            gameObject.SetActive(true);
+        }
+
+        public void ClosePopup()
+        {
+            gameObject.SetActive(false);
         }
 
 
@@ -584,5 +595,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 return false;
             }
         }
+
     }
 }
