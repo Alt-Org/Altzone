@@ -15,7 +15,8 @@ namespace MenuUi.Scripts.SwipeNavigation
     {
         All,
         Vertical,
-        Horizontal
+        Horizontal,
+        None
     }
 
     /// <summary>
@@ -89,6 +90,8 @@ namespace MenuUi.Scripts.SwipeNavigation
         }
 
         public bool IsInMainMenu { get => _isInMainMenu;}
+
+        public float ScrollbarValue { get => scrollBar.value; }
 
         private void Awake()
         {
@@ -247,7 +250,17 @@ namespace MenuUi.Scripts.SwipeNavigation
                 {
                     _swipeAllowed = true;
                 }
-
+                if (_swipeAllowed && IsEnabled)
+                {
+                    float totalSlideWidth = 0;
+                    foreach (var slide in slides)
+                    {
+                        totalSlideWidth += slide.GetComponent<RectTransform>().rect.width;
+                    }
+                    float currentSwipeDistance = _startTouch.x - currentTouch.x;
+                    float currentScrollvalue = Mathf.Clamp(_startScrollvalue + currentSwipeDistance/totalSlideWidth,0,1);
+                    scrollBar.value = currentScrollvalue;
+                }
 
                 if (Mathf.Abs(_startTouch.y - currentTouch.y) > swipeDistance && !_swipeAllowed)
                 {
@@ -427,7 +440,7 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         }
 
-        public void DragWithBlock(PointerEventData eventData, SwipeBlockType blockType)
+        public void OnBeginDrag(PointerEventData eventData, SwipeBlockType blockType = SwipeBlockType.None)
         {
             PointerEventData pointerData = eventData as PointerEventData;
             if (blockType == SwipeBlockType.All)

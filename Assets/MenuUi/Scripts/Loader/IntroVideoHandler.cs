@@ -1,8 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using MenuUi.Scripts.Window;
+using MenuUi.Scripts.Window.ScriptableObjects;
 using Prg.Scripts.Common;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
+using UnityEngine.SceneManagement;
 using UnityEngine.Video;
 
 namespace MenuUi.Scripts.Loader
@@ -11,6 +14,10 @@ namespace MenuUi.Scripts.Loader
     {
         [SerializeField]
         private VideoPlayer _player;
+        [SerializeField]
+        private SceneDef _loaderscene;
+        [SerializeField]
+        private SceneDef _menuscene;
 
         private bool _videoPlaying = false;
 
@@ -28,7 +35,10 @@ namespace MenuUi.Scripts.Loader
             if (_videoPlaying)
             {
                 if (ClickStateHandler.GetClickState() is ClickState.End)
+                {
+                    Debug.Log($"Skip video");
                     EndIntroVideo();
+                }
 
             }
         }
@@ -60,22 +70,16 @@ namespace MenuUi.Scripts.Loader
             {
                 _player.Stop();
                 _videoPlaying = false;
-                Debug.Log($"Skip video");
-                gameObject.SetActive(false);
-                SignalBus.OnVideoEndSignal();
-            }
-        }
-
-        void CheckOver(VideoPlayer vp)
-        {
-            if (_videoPlaying)
-            {
-                _player.Stop();
-                _videoPlaying = false;
                 Debug.Log($"End video");
                 gameObject.SetActive(false);
                 SignalBus.OnVideoEndSignal();
             }
+            if (SceneManager.GetActiveScene().name == _menuscene.SceneName) WindowManager.Get().GoBack();
+        }
+
+        void CheckOver(VideoPlayer vp)
+        {
+            EndIntroVideo();
         }
 
     }

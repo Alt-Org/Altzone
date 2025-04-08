@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace MenuUi.Scripts.TabLine
 {
     /// <summary>
-    /// Is used to set active and inactive tab button visuals.
+    /// Is used to set active and inactive tab button visuals. Also has a method which can be called to change swipe current page.
     /// </summary>
     public class TabLine : MonoBehaviour
     {
@@ -14,6 +14,15 @@ namespace MenuUi.Scripts.TabLine
         [SerializeField] private TabLineButton[] _tabLineButtons;
 
         private SwipeUI _swipe;
+
+
+        private void OnEnable()
+        {
+            if (_swipe != null && _getActiveButtonFromSwipe)
+            {
+                ActivateTabButton(_swipe.CurrentPage);
+            }
+        }
 
 
         private void Awake()
@@ -53,7 +62,7 @@ namespace MenuUi.Scripts.TabLine
         public void ActivateTabButton(int index)
         {
             // Check if enough tab button entries in array.
-            if (_tabLineButtons.Length - 1 < index)
+            if (index >= _tabLineButtons.Length || index < 0)
             {
                 return;
             }
@@ -69,45 +78,52 @@ namespace MenuUi.Scripts.TabLine
         }
 
 
+        /// <summary>
+        /// Changes the current page for swipe. Works if getting active button from swipe is toggled on.
+        /// </summary>
+        /// <param name="index">The index which to change the swipe current page to.</param>
+        public void SetSwipeCurrentPage(int index)
+        {
+            if (_swipe != null && _getActiveButtonFromSwipe)
+            {
+                _swipe.CurrentPage = index;
+            }
+        }
+
+
         [Serializable]
         private class TabLineButton
         {
-            [Header("Sprite assets (detail sprites are optional)")]
-            [SerializeField] private Sprite _activeTabSprite;
-            [SerializeField] private Sprite _activeDetailSprite;
-            [SerializeField] private Sprite _inactiveTabSprite;
-            [SerializeField] private Sprite _inactiveDetailSprite;
-
             [Header("References to components")]
-            [SerializeField] public Button ButtonComponent;
             [SerializeField] private Image _tabImageComponent;
             [SerializeField] private Image _detailImageComponent;
 
+            const float InactiveAlpha = 0.5f;
 
             public void SetActiveVisuals()
             {
-                if (_tabImageComponent != null && _activeTabSprite != null)
+                if (_tabImageComponent != null)
                 {
-                    _tabImageComponent.sprite = _activeTabSprite;
+                    _tabImageComponent.color = new Color(_tabImageComponent.color.r, _tabImageComponent.color.g, _tabImageComponent.color.b, 1);
                 }
 
-                if (_detailImageComponent != null && _activeDetailSprite != null)
+                if (_detailImageComponent != null)
                 {
-                    _detailImageComponent.sprite = _activeDetailSprite;
+                    _detailImageComponent.color = new Color(_tabImageComponent.color.r, _tabImageComponent.color.g, _tabImageComponent.color.b, 1);
                 }
             }
 
 
             public void SetInactiveVisuals()
             {
-                if (_tabImageComponent != null && _inactiveTabSprite != null)
+                if (_tabImageComponent != null)
                 {
-                    _tabImageComponent.sprite = _inactiveTabSprite;
+                    _tabImageComponent.color = new Color(_tabImageComponent.color.r, _tabImageComponent.color.g, _tabImageComponent.color.b, InactiveAlpha);
                 }
 
-                if (_detailImageComponent != null && _inactiveDetailSprite != null)
+                if (_detailImageComponent != null)
                 {
-                    _detailImageComponent.sprite = _inactiveDetailSprite;
+                    _detailImageComponent.color = new Color(_tabImageComponent.color.r, _tabImageComponent.color.g, _tabImageComponent.color.b, InactiveAlpha);
                 }
             }
         }

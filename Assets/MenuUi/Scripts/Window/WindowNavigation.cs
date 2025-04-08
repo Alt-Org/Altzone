@@ -12,6 +12,8 @@ namespace MenuUi.Scripts.Window
         [Header("Settings"), SerializeField] protected WindowDef _naviTarget;
         [Tooltip(Tooltip), SerializeField] protected bool _isCurrentPopOutWindow;
 
+        public WindowDef NaviTarget { get => _naviTarget;}
+
         public IEnumerator Navigate()
         {
             Debug.Log($"naviTarget {_naviTarget} isCurrentPopOutWindow {_isCurrentPopOutWindow}", _naviTarget);

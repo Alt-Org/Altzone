@@ -424,7 +424,7 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public static CharacterClassID GetClassID(CharacterID id)
         {
-            CharacterClassID ClassId = (CharacterClassID)((int)id & 0b1111_1111__0000_0000);
+            CharacterClassID ClassId = (CharacterClassID)((((int)id) / 100) * 100);
             return ClassId;
         }
     }

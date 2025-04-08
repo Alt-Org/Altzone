@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class DailyTaskClanReward : MonoBehaviour
 {
@@ -79,10 +78,12 @@ public class DailyTaskClanReward : MonoBehaviour
         _openedBaseReward.SetActive(open);
     }
 
+    /// <summary>
+    /// Used when user clicks this clan milestone reward.
+    /// </summary>
     public void OpenClanRewardPopup()
     {
-        Vector3 position = transform.position;
-        PopupData popupData = new PopupData(_data, position);
+        PopupData popupData = new(_data, transform.position);
         StartCoroutine(_dailyTaskManager.ShowPopupAndHandleResponse("", popupData));
     }
 }

@@ -1,0 +1,24 @@
+var searchData=
+[
+  ['physicssettings_0',['PhysicsSettings',['../struct_quantum_1_1__globals__.html#a116545c7614c67b6ae940c424c468a70',1,'Quantum::_globals_']]],
+  ['physicsstate2d_1',['PhysicsState2D',['../struct_quantum_1_1__globals__.html#a6b092d92667c832e1d40bee0124b59a3',1,'Quantum::_globals_']]],
+  ['physicsstate3d_2',['PhysicsState3D',['../struct_quantum_1_1__globals__.html#ac63fa0482f996a439fb984d1390968ef',1,'Quantum::_globals_']]],
+  ['player_5fcharacter_5fcount_3',['PLAYER_CHARACTER_COUNT',['../class_quantum_1_1_constants.html#a71ac35304875654bb94f1a470d3b4bbd',1,'Quantum::Constants']]],
+  ['player_5fcharacter_5ftotal_5fcount_4',['PLAYER_CHARACTER_TOTAL_COUNT',['../class_quantum_1_1_constants.html#ac3f233ffe7d9157401c6a17a87ef54ad',1,'Quantum::Constants']]],
+  ['player_5fslot_5fcount_5',['PLAYER_SLOT_COUNT',['../class_quantum_1_1_constants.html#a31e234b17fd3befc327918cef3b670be',1,'Quantum::Constants']]],
+  ['playerconnectedcount_6',['PlayerConnectedCount',['../struct_quantum_1_1__globals__.html#aa13e1d942ddf0f6ee95c6d2645eb0b11',1,'Quantum::_globals_']]],
+  ['playerdata_7',['PlayerData',['../struct_quantum_1_1_player_movement_system_1_1_filter.html#aa63e8b254bc24f4ecf61fc32537ec8dc',1,'Quantum::PlayerMovementSystem::Filter']]],
+  ['playerentity_8',['PlayerEntity',['../struct_quantum_1_1_player_hitbox.html#a217f7e67a12a1308db80dc6b0563774c',1,'Quantum.PlayerHitbox.PlayerEntity'],['../class_quantum_1_1_prototypes_1_1_player_hitbox_prototype.html#a22cd2d9ceeddbd5427e569c5703e452e',1,'Quantum.Prototypes.PlayerHitboxPrototype.PlayerEntity']]],
+  ['playerlastconnectionstate_9',['PlayerLastConnectionState',['../struct_quantum_1_1__globals__.html#affeaf012a28df811aaa0730acacdf531',1,'Quantum::_globals_']]],
+  ['playerref_10',['PlayerRef',['../struct_quantum_1_1_player_data.html#aa9fcfaf58b1094c886079deda1bbb190',1,'Quantum.PlayerData.PlayerRef'],['../class_quantum_1_1_prototypes_1_1_player_data_prototype.html#a0488e020492cece9c17a215c2fcd2df5',1,'Quantum.Prototypes.PlayerDataPrototype.PlayerRef']]],
+  ['playerrefs_11',['PlayerRefs',['../class_quantum_1_1_prototypes_1_1_player_manager_data_prototype.html#a107085e4ffb137fd98fb193360b9505e',1,'Quantum::Prototypes::PlayerManagerDataPrototype']]],
+  ['playerslot_12',['PlayerSlot',['../class_quantum_1_1_runtime_player.html#a94396cb2fe662c407a6d0c1fddbfc9a8',1,'Quantum::RuntimePlayer']]],
+  ['playerslotcount_13',['PlayerSlotCount',['../class_quantum_1_1_runtime_player.html#a514a6eee23819dac4491a132c1d83643',1,'Quantum::RuntimePlayer']]],
+  ['playerspawnpositions_14',['PlayerSpawnPositions',['../class_quantum_1_1_battle_arena_spec.html#a693d7cae21e45af06356033ea9b941a0',1,'Quantum::BattleArenaSpec']]],
+  ['playstates_15',['PlayStates',['../class_quantum_1_1_prototypes_1_1_player_manager_data_prototype.html#a7921a66823af8a5972bff79032079c24',1,'Quantum::Prototypes::PlayerManagerDataPrototype']]],
+  ['position_16',['Position',['../struct_quantum_1_1_player_hitbox_link.html#a796eead72fdf1a7e5dc71d1444511de2',1,'Quantum.PlayerHitboxLink.Position'],['../struct_quantum_1_1_player_hitbox_template.html#af7e3c370f31f373f85b9dc4d58ea473c',1,'Quantum.PlayerHitboxTemplate.Position'],['../class_quantum_1_1_prototypes_1_1_player_hitbox_link_prototype.html#a3ebd78fee364b27b9fd759ff625a3561',1,'Quantum.Prototypes.PlayerHitboxLinkPrototype.Position'],['../class_quantum_1_1_prototypes_1_1_player_hitbox_template_prototype.html#a96437791f9372f7ffe042f88fd96ce01',1,'Quantum.Prototypes.PlayerHitboxTemplatePrototype.Position']]],
+  ['projectile_17',['Projectile',['../struct_quantum_1_1_quantum_user_1_1_simulation_1_1_projectile_1_1_projectile_system_1_1_filter.html#af930948ac8e8150df46736b9fd70f691',1,'Quantum::QuantumUser::Simulation::Projectile::ProjectileSystem::Filter']]],
+  ['projectileinitialspeed_18',['ProjectileInitialSpeed',['../class_quantum_1_1_projectile_spec.html#a32a498be3732f46ea18a03020a9f7bbf',1,'Quantum::ProjectileSpec']]],
+  ['projectileprototype_19',['ProjectilePrototype',['../class_quantum_1_1_projectile_spec.html#ad2a450ed9689ac62b399b42c5ab1f5c5',1,'Quantum::ProjectileSpec']]],
+  ['projectilespec_20',['ProjectileSpec',['../class_quantum_1_1_runtime_config.html#a65781e19b0fb7c9f16d1011f542949ae',1,'Quantum::RuntimeConfig']]]
+];
