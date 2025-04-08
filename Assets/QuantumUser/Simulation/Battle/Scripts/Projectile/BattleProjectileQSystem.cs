@@ -64,31 +64,9 @@ namespace Battle.QSimulation.Projectile
             projectile->CollisionFlags[(f.Number + 1) % 2 ] = 0;
         }
 
-        private void ProjectileBounce(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, EntityRef otherEntity, FPVector2 normal, FP collisionMinOffset)
-        {
-            Debug.Log("[ProjectileSystem] Projectile hit a wall");
-
-            if (IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Projectile)) return;
-
-            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
-            Transform2D* otherTransform = f.Unsafe.GetPointer<Transform2D>(otherEntity);
-
-            FPVector2 offsetVector = projectileTransform->Position - otherTransform->Position;
-            FP collisionOffset = FPVector2.Rotate(offsetVector, -FPVector2.RadiansSigned(FPVector2.Up, normal)).Y;
-
-            projectile->Direction = FPVector2.Reflect(projectile->Direction, normal);
-
-            if (collisionOffset - projectile->Radius < collisionMinOffset)
-            {
-                projectileTransform->Position += normal * (collisionMinOffset - collisionOffset + projectile->Radius);
-            }
-
-            SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Projectile);
-        }
-
         public void BattleOnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)
         {
-            ProjectileBounce(f, projectile, projectileEntity, soulWallEntity, soulWall->Normal, soulWall->CollisionMinOffset);
+            ProjectileDirectionReflect(f, projectile, projectileEntity, soulWallEntity, soulWall->Normal, soulWall->CollisionMinOffset);
 
             // change projectile's emotion to soulwall's emotion
             projectile->Emotion = soulWall->Emotion;
@@ -97,12 +75,48 @@ namespace Battle.QSimulation.Projectile
 
         public void BattleOnProjectileHitArenaBorder(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity)
         {
-            ProjectileBounce(f, projectile,  projectileEntity, arenaBorderEntity, arenaBorder->Normal, arenaBorder->CollisionMinOffset);
+            ProjectileDirectionReflect(f, projectile,  projectileEntity, arenaBorderEntity, arenaBorder->Normal, arenaBorder->CollisionMinOffset);
         }
 
         public void BattleOnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity)
         {
-            ProjectileBounce(f, projectile,  projectileEntity, playerEntity, playerHitbox->Normal, playerHitbox->CollisionMinOffset);
+            // pick a method depending on hitbox collision type
+            if (playerHitbox->CollisionType == BattlePlayerCollisionType.Reflect)
+                ProjectileDirectionReflect(f, projectile,  projectileEntity, playerEntity, playerHitbox->Normal, playerHitbox->CollisionMinOffset);
+            else if (playerHitbox->CollisionType == BattlePlayerCollisionType.Override)
+                ProjectileDirectionOverrider(f, projectile,  projectileEntity, playerEntity, playerHitbox->Normal, playerHitbox->CollisionMinOffset);
+        }
+
+        private void ProjectileDirectionReflect(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, EntityRef otherEntity, FPVector2 normal, FP collisionMinOffset)
+        {
+            if (IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Projectile)) return;
+
+            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
+            Transform2D* otherTransform = f.Unsafe.GetPointer<Transform2D>(otherEntity);
+
+            // calculate how far off from other entity's position is the projectile supposed to hit it's surface
+            FPVector2 offsetVector = projectileTransform->Position - otherTransform->Position;
+            FP collisionOffset = FPVector2.Rotate(offsetVector, -FPVector2.RadiansSigned(FPVector2.Up, normal)).Y;
+
+            // set new projectile direction
+            projectile->Direction = FPVector2.Reflect(projectile->Direction, normal);
+
+            // if projectile accidentally went inside another entity, lift it out
+            if (collisionOffset - projectile->Radius < collisionMinOffset)
+            {
+                projectileTransform->Position += normal * (collisionMinOffset - collisionOffset + projectile->Radius);
+            }
+
+            SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Projectile);
+        }
+
+        private void ProjectileDirectionOverrider(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, EntityRef otherEntity, FPVector2 normal, FP collisionMinOffset)
+        {
+            // use reflect method to do offset checks
+            ProjectileDirectionReflect(f, projectile,  projectileEntity, otherEntity, normal, collisionMinOffset);
+
+            // override projectile direction
+            projectile->Direction = normal;
         }
     }
 }
