@@ -9,6 +9,7 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using System.Linq;
 using MenuUi.Scripts.Storage;
+using System.Collections.ObjectModel;
 
 public static class PollManager
 {
@@ -127,5 +128,27 @@ public static class PollManager
                 store.SaveClanData(clan, data => clan = data);
             }
         }
+    }
+
+    public static void EndPoll(string pollId)
+    {
+        PollData pollData = GetPollData(pollId);
+
+        bool yesVotesWon = (pollData.YesVotes.Count >= Mathf.CeilToInt(clan.Members.Count / 3.0f)) && pollData.YesVotes.Count > pollData.NoVotes.Count;
+
+        if (pollData is FurniturePollData furniturePollData)
+        {
+            FurniturePollType pollType = furniturePollData.FurniturePollType;
+
+            if (pollType == FurniturePollType.Selling)
+            {
+                ClanFurniture clanFurniture = clan.Inventory.Furniture.First(furn => furn.GameFurnitureName == furniturePollData.Furniture.Name);
+                clanFurniture.VotedToSell = yesVotesWon;
+                clanFurniture.InVoting = false;
+            }
+            // TODO: Buying
+        }
+
+        pollData.IsOver = true;
     }
 }

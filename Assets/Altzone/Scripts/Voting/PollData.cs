@@ -39,6 +39,7 @@ namespace Altzone.Scripts.Voting
         public string Id;
         public long StartTime;
         public long EndTime;
+        public bool IsOver;
         public Sprite Sprite;
 
         public List<string> NotVoted;
@@ -50,6 +51,7 @@ namespace Altzone.Scripts.Voting
             Id = id;
             StartTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             EndTime = StartTime + endTime * 60;
+            IsOver = false;
             Sprite = sprite;
             NotVoted = clanMembers;
             YesVotes = new List<PollVoteData>();

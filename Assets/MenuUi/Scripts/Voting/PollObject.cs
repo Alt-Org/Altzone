@@ -1,12 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Altzone.Scripts.Voting;
 using UnityEngine.UIElements;
 using TMPro;
 using UnityEngine.UI;
 using System;
-using System.Runtime.CompilerServices;
 
 public class PollObject : MonoBehaviour
 {
@@ -56,6 +54,12 @@ public class PollObject : MonoBehaviour
             else if (minutesLeft < 60) TimeLeftText.text = (minutesLeft.ToString() + "m");
             else TimeLeftText.text = (hoursLeft.ToString() + "h");
 
+            if (secondsLeft <= 0)
+            {
+                PollManager.EndPoll(pollId);
+                break;
+            }
+
             yield return new WaitForSeconds(1);
         }
     }
@@ -63,7 +67,7 @@ public class PollObject : MonoBehaviour
     private void SetValues()
     {
         if (pollData is FurniturePollData)
-        { 
+        {
             FurniturePollData furniturePollData = (FurniturePollData)pollData;
 
             Image.sprite = furniturePollData.Sprite;
