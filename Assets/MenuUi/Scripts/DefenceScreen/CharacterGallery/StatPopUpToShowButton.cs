@@ -15,7 +15,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void OnEnable()
         {
-            if (_controller == null) _controller = FindObjectOfType<StatsWindowController>();
+            if (_controller == null) _controller = FindObjectOfType<StatsWindowController>(true);
             if (_button == null)
             {
                 _button = GetComponent<Button>();
