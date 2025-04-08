@@ -64,18 +64,12 @@ namespace Altzone.Scripts.Voting
 
             if (player != null)
             {
+                PollVoteData newPollVote = new(player.Id, player.Name, answer);
+
                 if (NotVoted.Contains(player.Id))
                 {
-                    if (answer)
-                    {
-                        PollVoteData newPollVote = new PollVoteData(player.Id, player.Name, answer);
-                        YesVotes.Add(newPollVote);
-                    }
-                    else
-                    {
-                        PollVoteData newPollVote = new PollVoteData(player.Id, player.Name, answer);
-                        NoVotes.Add(newPollVote);
-                    }
+                    if (answer) YesVotes.Add(newPollVote);
+                    else NoVotes.Add(newPollVote);
 
                     NotVoted.Remove(player.Id);
 
