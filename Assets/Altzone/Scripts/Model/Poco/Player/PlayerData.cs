@@ -159,6 +159,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             points = player.points;
             stats = player.gameStatistics;
             Task = player.DailyTask != null ? new(player.DailyTask) : null;
+            if (playerDataEmotionList == null) playerDataEmotionList = new List<Enum> { Mood.Blank, Mood.Love, Mood.Playful, Mood.Joy, Mood.Sad, Mood.Angry, Mood.Blank };
         }
 
         public void UpdateCustomCharacter(CustomCharacter character)
