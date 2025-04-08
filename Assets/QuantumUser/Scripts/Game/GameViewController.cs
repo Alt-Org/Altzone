@@ -4,12 +4,12 @@ using UnityEngine;
 using Altzone.Scripts.BattleUiShared;
 
 using Button = UnityEngine.UI.Button;
+using PlayerType = QuantumUser.Scripts.UI.Views.GameUiPlayerInfoHandler.PlayerType;
 
 namespace QuantumUser.Scripts
 {
     public class GameViewController : QuantumCallbacks
     {
-
         [SerializeField] private GridViewController _gridViewController;
         // References to UIviews
         [SerializeField] private GameUiController _gameUiController;
@@ -45,6 +45,16 @@ namespace QuantumUser.Scripts
 
             if (_gameUiController.PlayerInfoHandler != null)
             {
+                _gameUiController.PlayerInfoHandler.SetInfo(PlayerType.LocalPlayer, "Minä", new int[3] { 101, 201, 301 });
+
+                Button[] characterButtons = _gameUiController.PlayerInfoHandler.GetLocalPlayerCharacterButtons();
+                for (int i = 0; i < characterButtons.Length; i++)
+                {
+                    int buttonIdx = i;
+                    characterButtons[i].onClick.AddListener(()=> OnCharacterButtonPressed(buttonIdx));
+                }
+
+                _gameUiController.PlayerInfoHandler.SetInfo(PlayerType.LocalPlayerTeammate, "Tiimiläinen", new int[3] { 401, 501, 601 });
             }
             */
         }
