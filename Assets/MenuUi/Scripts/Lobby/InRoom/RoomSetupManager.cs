@@ -118,7 +118,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             var room = PhotonRealtimeClient.LobbyCurrentRoom;
             var player = PhotonRealtimeClient.LocalLobbyPlayer;
 
-            // Checking if player is already in the room and if so only update status and return (can happen if battle popup is minimized while in room)
+            // Checking if player is already in the room (can happen if battle popup is minimized while in room)
             string positionValue1 = room.GetCustomProperty(PlayerPositionKey1, "");
             string positionValue2 = room.GetCustomProperty(PlayerPositionKey2, "");
             string positionValue3 = room.GetCustomProperty(PlayerPositionKey3, "");
@@ -126,6 +126,17 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
             if (player.UserId == positionValue1 || player.UserId == positionValue2 || player.UserId == positionValue3 || player.UserId == positionValue3)
             {
+                // Checking if we have to update defence characters
+                StartCoroutine(GetPlayerData(playerData => {
+
+                    if (player.GetCustomProperty<int[]>(PlayerCharactersKey) != GetSelectedCharacterIds(playerData))
+                    {
+                        UpdateCharactersAndStatsKey();
+                    }
+
+                }));
+
+                // Updating room status and stopping coroutine
                 UpdateStatus();
                 yield break;
             }

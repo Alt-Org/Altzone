@@ -1,3 +1,4 @@
+using Altzone.Scripts.Model.Poco.Game;
 /// <summary>
 /// Player object received from the server
 /// </summary>
@@ -18,6 +19,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         public bool? parentalAuth { get; set; }
         public int points { get; set; }
         public ServerGameStatistics gameStatistics { get; set; }
+        public ServerPlayerTask DailyTask { get; set; } 
     }
 
     public class ServerGameStatistics
