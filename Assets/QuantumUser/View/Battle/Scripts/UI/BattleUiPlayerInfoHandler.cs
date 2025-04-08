@@ -49,6 +49,7 @@ namespace Battle.View.UI
             for (int i = 0; i < characterIds.Length; i++)
             {
                 playerInfoComponent.CharacterButtons[i].SetCharacterIcon(characterIds[i]);
+                playerInfoComponent.CharacterButtons[i].ButtonComponent.enabled = playerType == PlayerType.LocalPlayer;
             }
         }
 
