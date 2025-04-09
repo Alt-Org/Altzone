@@ -18,6 +18,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     {
         [SerializeField] private ClassColorReference _classColorReference;
         [SerializeField] private StatsReference _statsReference;
+        [SerializeField] private GameObject _swipeBlocker;
 
         private PlayerData _playerData;
         private CharacterID _characterId;
@@ -25,6 +26,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private BaseCharacter _baseCharacter;
         private bool _unlimitedDiamonds;
         private bool _unlimitedErasers;
+
 
         public CharacterID CurrentCharacterID { get { return _characterId; } }
         [HideInInspector] public bool UnlimitedDiamonds {
@@ -79,11 +81,13 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         public void OpenPopup()
         {
             gameObject.SetActive(true);
+            _swipeBlocker.SetActive(true) ;
         }
 
         public void ClosePopup()
         {
             gameObject.SetActive(false);
+            _swipeBlocker.SetActive(false);
         }
 
 
