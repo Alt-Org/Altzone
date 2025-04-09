@@ -17,7 +17,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     public class StatsWindowController : AltMonoBehaviour
     {
         [SerializeField] private ClassColorReference _classColorReference;
-        
+        [SerializeField] private StatsReference _statsReference;
 
         private PlayerData _playerData;
         private CharacterID _characterId;
@@ -161,6 +161,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             CharacterClassID classID = GetCurrentCharacterClass();
             return _classColorReference.GetAlternativeColor(classID);
         }
+
         /// <summary>
         /// Get current character class color from character class color reference sheet.
         /// </summary>
@@ -170,7 +171,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             CharacterClassID classID = GetCurrentCharacterClass();
             return _classColorReference.GetColor(classID);
         }
+        /// <summary>
+        /// Get StatInfo from Reference sheet
+        /// </summary>
+        /// <param name="statType">The StatInfo which to get</param>
+        /// <returns>Returns StatInfo object</returns>
+        public StatInfo GetStatInfo(StatType statType)
+        {
+            return _statsReference.GetStatInfo(statType);
 
+        }
 
 
         /// <summary>

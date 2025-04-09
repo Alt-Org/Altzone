@@ -11,139 +11,66 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     /// </summary>
     public class StatBox : MonoBehaviour
     {
-        [SerializeField] private StatsReference _statsReference;
-        [SerializeField] private GameObject _contents;
+        [SerializeField] private StatType _statType;
         [SerializeField] private Image _statIcon;
+        [SerializeField] private Image _statBackground;
         [SerializeField] private TMP_Text _statName;
-        [SerializeField] private TMP_Text _statNumber;
+        [SerializeField] private TMP_Text _statLevel;
+        [SerializeField] private TMP_Text _statValue;
         [SerializeField] private TMP_Text _diamondCost;
         [SerializeField] private TMP_Text _eraserCost;
-        [SerializeField] private Image _touchBlocker;
+        [SerializeField] private Button _eraserButton;
+        [SerializeField] private Button _diamondButton;
+
 
         private StatsWindowController _controller;
-        private StatType _statType;
-
+                
 
         private void OnEnable()
         {
             if (_controller == null) _controller = FindObjectOfType<StatsWindowController>();
-            ClosePopUp();
-            _controller.OnStatUpdated += UpdateStatNumber;
+            _controller.OnStatUpdated += UpdateStatLevel;
             _controller.OnStatUpdated += UpdateDiamondCost;
             _controller.OnStatUpdated += UpdateEraserCost;
+            _controller.OnStatUpdated += UpdateStatValue;
+
         }
 
+        private void Awake()
+        {
+            StatInfo info = _controller.GetStatInfo(_statType);
+            _statIcon.sprite = info.Image;
+            _statBackground.color = info.StatBoxColor;
+            _statName.text = info.Name;
+            UpdateStatLevel(_statType);
+            UpdateStatValue(_statType);
+            UpdateDiamondCost(_statType);
+            UpdateEraserCost(_statType);
+        }
 
         private void OnDisable()
         {
-            _controller.OnStatUpdated -= UpdateStatNumber;
+            _controller.OnStatUpdated -= UpdateStatLevel;
             _controller.OnStatUpdated -= UpdateDiamondCost;
             _controller.OnStatUpdated -= UpdateEraserCost;
+            _controller.OnStatUpdated -= UpdateStatValue;
         }
 
-
-        /// <summary>
-        /// Open StatUpdatePopUp
-        /// </summary>
-        /// <param name="statType">Stat type int which is compared to StatType enum. (is there a better way to do this?)</param>
-        public void OpenPopUp(int statType)
+        private void UpdateStatLevel(StatType statType)
         {
-            StatInfo statInfo = null;
-
-            if (_controller.IsCurrentCharacterLocked())
-            {
-                PopupSignalBus.OnChangePopupInfoSignal("Et voi muokata lukittua hahmoa.");
-                ClosePopUp();
-                return;
-            }
-
-            if (_controller.GetCurrentCharacterClass() == CharacterClassID.Obedient) // obedient characters can't be modified
-            {
-                PopupSignalBus.OnChangePopupInfoSignal("Tottelijoita ei voi muokata.");
-                ClosePopUp();
-                return;
-            }
-
-            // Getting StatInfo from StatsReference sheet
-            switch ((StatType)statType)
-            {
-                case StatType.None:
-                    ClosePopUp();
-                    break;
-                case StatType.Attack:
-                    statInfo = _statsReference.GetStatInfo(StatType.Attack);
-                    break;
-                case StatType.Defence:
-                    statInfo = _statsReference.GetStatInfo(StatType.Defence);
-                    break;
-                case StatType.CharacterSize:
-                    statInfo = _statsReference.GetStatInfo(StatType.CharacterSize);
-                    break;
-                case StatType.Hp:
-                    statInfo = _statsReference.GetStatInfo(StatType.Hp);
-                    break;
-                case StatType.Speed:
-                    statInfo = _statsReference.GetStatInfo(StatType.Speed);
-                    break;
-            }
-
-            // Setting up stat popup
-            if (statInfo != null)
-            {
-                _statType = (StatType)statType;
-                UpdateDiamondCost(_statType);
-                UpdateEraserCost(_statType);
-                UpdateStatNumber(_statType);
-
-                _statIcon.sprite = statInfo.Image;
-                _statName.text = statInfo.Name;
-
-                _touchBlocker.enabled = true;
-                _contents.SetActive(true);
-            }
-            else
-            {
-                ClosePopUp();
-            }
+            if (statType != _statType) return;
+            _statLevel.text = _controller.GetStat(statType).ToString();
         }
 
-
-        /// <summary>
-        /// Close StatUpdatePopUp
-        /// </summary>
-        public void ClosePopUp()
+        private void UpdateStatValue(StatType statType)
         {
-            _touchBlocker.enabled = false;
-            _contents.SetActive(false);
+            if (statType != _statType) return;
+            _statValue.text = _controller.GetStat(statType).ToString();
         }
-
-
-        /// <summary>
-        /// Method for when plus button is clicked in the popup
-        /// </summary>
-        public void PlusButtonClicked()
-        {
-            _controller.TryIncreaseStat(_statType);
-        }
-
-
-        /// <summary>
-        /// Method for when minus button is clicked in the popup
-        /// </summary>
-        public void MinusButtonClicked()
-        {
-            _controller.TryDecreaseStat(_statType);
-        }
-
-
-        private void UpdateStatNumber(StatType statType)
-        {
-            _statNumber.text = _controller.GetStat(statType).ToString();
-        }
-
 
         private void UpdateDiamondCost(StatType statType)
         {
+            if (statType != _statType) return;
             if (_controller.CanIncreaseStat(statType))
             {
                 _diamondCost.text = _controller.GetDiamondCost(statType).ToString();
@@ -157,6 +84,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         private void UpdateEraserCost(StatType statType)
         {
+            if (statType != _statType) return;
             if (_controller.CanDecreaseStat(statType))
             {
                 _eraserCost.text = "1";
