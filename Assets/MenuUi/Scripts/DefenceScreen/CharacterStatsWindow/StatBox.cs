@@ -22,9 +22,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private Button _eraserButton;
         [SerializeField] private Button _diamondButton;
 
-
         private StatsWindowController _controller;
-                
+        StatInfo _statInfo;
 
         private void OnEnable()
         {
@@ -34,14 +33,10 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             _controller.OnStatUpdated += UpdateEraserCost;
             _controller.OnStatUpdated += UpdateStatValue;
 
-        }
-
-        private void Awake()
-        {
-            StatInfo info = _controller.GetStatInfo(_statType);
-            _statIcon.sprite = info.Image;
-            _statBackground.color = info.StatBoxColor;
-            _statName.text = info.Name;
+            if (_statInfo == null) _statInfo = _controller.GetStatInfo(_statType);
+            _statIcon.sprite = _statInfo.Image;
+            _statBackground.color = _statInfo.StatBoxColor;
+            _statName.text = _statInfo.Name;
             UpdateStatLevel(_statType);
             UpdateStatValue(_statType);
             UpdateDiamondCost(_statType);
