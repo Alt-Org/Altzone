@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Clan;
+using MenuUi.Scripts.Window;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,23 +34,23 @@ public class LeaderboardPodium : MonoBehaviour
 
     private bool _isClanView = false;
 
-    public void InitilializePodium(int rank, string name, int points, ClanData clanData)
+    public void InitilializePodium(int rank, string name, int points, ClanData clanData, ServerClan serverClan)
     {
         switch(rank)
         {
             case 1:
-                InitializeFirstPlace(name, points, clanData);
+                InitializeFirstPlace(name, points, clanData, serverClan);
                 break;
             case 2:
-                InitializeSecondPlace(name, points, clanData);
+                InitializeSecondPlace(name, points, clanData, serverClan);
                 break;
             case 3:
-                InitializeThirdPlace(name, points, clanData);
+                InitializeThirdPlace(name, points, clanData, serverClan);
                 break;
         }
     }
 
-    public void InitializeFirstPlace(string firstName, int firstPoints, ClanData clanData)
+    private void InitializeFirstPlace(string firstName, int firstPoints, ClanData clanData, ServerClan serverClan)
     {
         _firstName.text = firstName;
         _firstPoints.text = firstPoints.ToString();
@@ -59,11 +60,17 @@ public class LeaderboardPodium : MonoBehaviour
             // Clan heart colors
             ClanHeartColorSetter clanheart = _firstClanHeart.GetComponentInChildren<ClanHeartColorSetter>();
             clanheart.SetOtherClanColors(clanData);
+
+            // Open Clan Profile
+            FirstOpenClanProfileButton.onClick.AddListener(() =>
+            {
+                DataCarrier.AddData(DataCarrier.ClanListing, serverClan);
+            });
         }
             
     }
 
-    public void InitializeSecondPlace(string secondName, int secondPoints, ClanData clanData)
+    private void InitializeSecondPlace(string secondName, int secondPoints, ClanData clanData, ServerClan serverClan)
     {
         _secondName.text = secondName;
         _secondPoints.text = secondPoints.ToString();
@@ -73,10 +80,16 @@ public class LeaderboardPodium : MonoBehaviour
             //Clan heart colors
             ClanHeartColorSetter clanheart = _secondClanHeart.GetComponentInChildren<ClanHeartColorSetter>();
             clanheart.SetOtherClanColors(clanData);
+
+            // Open Clan Profile
+            SecondOpenClanProfileButton.onClick.AddListener(() =>
+            {
+                DataCarrier.AddData(DataCarrier.ClanListing, serverClan);
+            });
         }
     }
 
-    public void InitializeThirdPlace(string thirdName, int thirdPoints, ClanData clanData)
+    private void InitializeThirdPlace(string thirdName, int thirdPoints, ClanData clanData, ServerClan serverClan)
     {
         _thirdName.text = thirdName;
         _thirdPoints.text = thirdPoints.ToString();
@@ -86,6 +99,12 @@ public class LeaderboardPodium : MonoBehaviour
             //Clan heart colors
             ClanHeartColorSetter clanheart = _thirdClanHeart.GetComponentInChildren<ClanHeartColorSetter>();
             clanheart.SetOtherClanColors(clanData);
+
+            // Open Clan Profile
+            ThirdOpenClanProfileButton.onClick.AddListener(() =>
+            {
+                DataCarrier.AddData(DataCarrier.ClanListing, serverClan);
+            });
         }
     }
 

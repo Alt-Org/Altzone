@@ -123,21 +123,14 @@ public class LeaderboardView : MonoBehaviour
                             int rank = 1;
                             foreach (PlayerLeaderboard ranking in playerLeaderboard)
                             {
-                                switch (rank)
+                                if (rank < 4)
                                 {
-                                    case 1:
-                                        _podium.InitializeFirstPlace(ranking.Clan.Name, ranking.WonBattles, null);
-                                        break;
-                                    case 2:
-                                        _podium.InitializeSecondPlace(ranking.Clan.Name, ranking.WonBattles, null);
-                                        break;
-                                    case 3:
-                                        _podium.InitializeThirdPlace(ranking.Clan.Name, ranking.WonBattles, null);
-                                        break;
-                                    default:
-                                        LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-                                        item.Initialize(rank, ranking.Clan.Name, ranking.WonBattles);
-                                        break;
+                                    _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, null, null);
+                                }
+                                else
+                                {
+                                    LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
+                                    item.Initialize(rank, ranking.Clan.Name, ranking.Points);
                                 }
 
                                 rank++;
@@ -150,21 +143,14 @@ public class LeaderboardView : MonoBehaviour
                             int rank = 1;
                             foreach (PlayerLeaderboard ranking in playerLeaderboard)
                             {
-                                switch (rank)
+                                if (rank < 4)
                                 {
-                                    case 1:
-                                        _podium.InitializeFirstPlace(ranking.Clan.Name, ranking.Points, null);
-                                        break;
-                                    case 2:
-                                        _podium.InitializeSecondPlace(ranking.Clan.Name, ranking.Points, null);
-                                        break;
-                                    case 3:
-                                        _podium.InitializeThirdPlace(ranking.Clan.Name, ranking.Points, null);
-                                        break;
-                                    default:
-                                        LeaderboardActivityItem item = Instantiate(_playerActivityItemPrefab, parent: _activityContent).GetComponent<LeaderboardActivityItem>();
-                                        item.Initialize(rank, ranking.Clan.Name, ranking.Points);
-                                        break;
+                                    _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, null, null);
+                                }
+                                else
+                                {
+                                    LeaderboardActivityItem item = Instantiate(_playerActivityItemPrefab, parent: _activityContent).GetComponent<LeaderboardActivityItem>();
+                                    item.Initialize(rank, ranking.Clan.Name, ranking.Points);
                                 }
 
                                 rank++;
@@ -188,45 +174,25 @@ public class LeaderboardView : MonoBehaviour
                             ClanData clanData = ranking.Clan;
                             ServerClan serverClan = ranking.ServerClan;
 
-                            switch (rank)
+                            if (rank < 4)
                             {
-                                case 1:
-                                    _podium.InitializeFirstPlace(ranking.Clan.Name, ranking.Points, clanData);
-                                    _podium.FirstOpenClanProfileButton.onClick.AddListener(() =>
-                                    {
-                                        DataCarrier.AddData(DataCarrier.ClanListing, serverClan);
-                                    });
-                                    break;
-                                case 2:
-                                    _podium.InitializeSecondPlace(ranking.Clan.Name, ranking.Points, clanData);
-                                    _podium.SecondOpenClanProfileButton.onClick.AddListener(() =>
-                                    {
-                                        DataCarrier.AddData(DataCarrier.ClanListing, serverClan);
-                                    });
-                                    break;
-                                case 3:
-                                    _podium.InitializeThirdPlace(ranking.Clan.Name, ranking.Points, clanData);
-                                    _podium.ThirdOpenClanProfileButton.onClick.AddListener(() =>
-                                    {
-                                        DataCarrier.AddData(DataCarrier.ClanListing, serverClan);
-                                    });
-                                    break;
-                                default:
-                                    LeaderboardClanPointsItem item = Instantiate(_clanPointsItemPrefab, parent: _activityContent).GetComponent<LeaderboardClanPointsItem>();
-                                    item.Initialize(rank, ranking.Clan.Name, ranking.Points);
+                                _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, clanData, serverClan);
+                            }
+                            else
+                            {
+                                LeaderboardClanPointsItem item = Instantiate(_clanPointsItemPrefab, parent: _activityContent).GetComponent<LeaderboardClanPointsItem>();
+                                item.Initialize(rank, ranking.Clan.Name, ranking.Points);
 
-                                    // Clan heart colors
-                                    ClanHeartColorSetter clanheart = item.GetComponentInChildren<ClanHeartColorSetter>();
-                                    clanheart.SetOtherClanColors(clanData);
+                                // Clan heart colors
+                                ClanHeartColorSetter clanheart = item.GetComponentInChildren<ClanHeartColorSetter>();
+                                clanheart.SetOtherClanColors(clanData);
 
-                                    // View clan button
-                                    item.OpenProfileButton.onClick.RemoveAllListeners();
-                                    item.OpenProfileButton.onClick.AddListener(() =>
-                                    {
-                                        DataCarrier.AddData(DataCarrier.ClanListing, serverClan);
-                                    });
-
-                                    break;
+                                // View clan button
+                                item.OpenProfileButton.onClick.RemoveAllListeners();
+                                item.OpenProfileButton.onClick.AddListener(() =>
+                                {
+                                    DataCarrier.AddData(DataCarrier.ClanListing, serverClan);
+                                });
                             }
 
                             rank++;
@@ -238,12 +204,6 @@ public class LeaderboardView : MonoBehaviour
 
                 Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
                 {
-                    for (int i = 0; i < clanData.Members.Count; i++)
-                    {
-                        ClanMember player = clanData.Members[i];
-
-                    }
-
                     if (_currentLeaderboardType == LeaderboardType.Wins)
                     {
                         clanData.Members.Sort((a, b) => a.LeaderBoardWins.CompareTo(b.LeaderBoardWins));
@@ -253,7 +213,7 @@ public class LeaderboardView : MonoBehaviour
                         {
                             if (rank < 4)
                             {
-                                _podium.InitilializePodium(rank, player.Name, player.LeaderBoardWins, null);
+                                _podium.InitilializePodium(rank, player.Name, player.LeaderBoardWins, null, null);
                             }
                             else
                             {
@@ -273,7 +233,7 @@ public class LeaderboardView : MonoBehaviour
                             {
                                 if (rank < 4)
                                 {
-                                    _podium.InitilializePodium(rank, "", 0, null);
+                                    _podium.InitilializePodium(rank, "", 0, null, null);
                                 }
                                 else
                                 {
@@ -294,7 +254,7 @@ public class LeaderboardView : MonoBehaviour
                         {
                             if (rank < 4)
                             {
-                                _podium.InitilializePodium(rank, player.Name, player.LeaderBoardCoins, null);
+                                _podium.InitilializePodium(rank, player.Name, player.LeaderBoardCoins, null, null);
                             }
                             else
                             {
@@ -314,7 +274,7 @@ public class LeaderboardView : MonoBehaviour
                             {
                                 if (rank < 4)
                                 {
-                                    _podium.InitilializePodium(rank, "", 0, null);
+                                    _podium.InitilializePodium(rank, "", 0, null, null);
                                 }
                                 else
                                 {
@@ -334,21 +294,14 @@ public class LeaderboardView : MonoBehaviour
                 {
                     for (int i = 1; i < 20; i++)
                     {
-                        switch (i)
+                        if (i < 4)
                         {
-                            case 1:
-                                _podium.InitializeFirstPlace("Eka", 0, null);
-                                break;
-                            case 2:
-                                _podium.InitializeSecondPlace("Toka", 0, null);
-                                break;
-                            case 3:
-                                _podium.InitializeThirdPlace("Kolmas", 0, null);
-                                break;
-                            default:
-                                LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-                                item.Initialize(i, "", 0);
-                                break;
+                            _podium.InitilializePodium(i, "", 0, null, null);
+                        }
+                        else
+                        {
+                            LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
+                            item.Initialize(i, "", 0);
                         }
                     }
                 }
@@ -356,21 +309,14 @@ public class LeaderboardView : MonoBehaviour
                 {
                     for (int i = 1; i < 20; i++)
                     {
-                        switch (i)
+                        if (i < 4)
                         {
-                            case 1:
-                                _podium.InitializeFirstPlace("Eka", 0, null);
-                                break;
-                            case 2:
-                                _podium.InitializeSecondPlace("Toka", 0, null);
-                                break;
-                            case 3:
-                                _podium.InitializeThirdPlace("Kolmas", 0, null);
-                                break;
-                            default:
-                                LeaderboardActivityItem item = Instantiate(_playerActivityItemPrefab, parent: _activityContent).GetComponent<LeaderboardActivityItem>();
-                                item.Initialize(i, "", 0);
-                                break;
+                            _podium.InitilializePodium(i, "", 0, null, null);
+                        }
+                        else
+                        {
+                            LeaderboardActivityItem item = Instantiate(_playerActivityItemPrefab, parent: _activityContent).GetComponent<LeaderboardActivityItem>();
+                            item.Initialize(i, "", 0);
                         }
                     }
                 }
