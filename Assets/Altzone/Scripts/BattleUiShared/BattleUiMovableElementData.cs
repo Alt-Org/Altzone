@@ -14,6 +14,7 @@ namespace Altzone.Scripts.BattleUiShared
         public Vector2 AnchorMin;
         public Vector2 AnchorMax;
         public OrientationType Orientation;
+
         public BattleUiMovableElementData(Vector2 anchorMin, Vector2 anchorMax, OrientationType orientation = OrientationType.None)
         {
             AnchorMin = anchorMin;

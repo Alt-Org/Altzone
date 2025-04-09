@@ -9,13 +9,13 @@ namespace Battle.View.UI
     /// </summary>
     public class BattleUiPlayerInfoHandler : MonoBehaviour
     {
+        [SerializeField] private BattleUiController _uiController;
+
         public enum PlayerType
         {
             LocalPlayer,
             LocalPlayerTeammate,
         }
-
-        [SerializeField] private BattleUiController _uiController;
 
         public BattleUiMultiOrientationElement LocalPlayerMultiOrientationElement;
         public BattleUiMultiOrientationElement TeammateMultiOrientationElement;

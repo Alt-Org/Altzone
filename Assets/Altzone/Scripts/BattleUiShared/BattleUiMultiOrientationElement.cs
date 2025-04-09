@@ -8,6 +8,11 @@ namespace Altzone.Scripts.BattleUiShared
     [RequireComponent(typeof(RectTransform))]
     public class BattleUiMultiOrientationElement : BattleUiMovableElement
     {
+        [SerializeField] private GameObject _horizontalConfiguration;
+        [SerializeField] private float _horizontalAspectRatio;
+        [SerializeField] private GameObject _verticalConfiguration;
+        [SerializeField] private float _verticalAspectRatio;
+
         public enum OrientationType
         {
             None = -1,
@@ -16,11 +21,6 @@ namespace Altzone.Scripts.BattleUiShared
             Vertical = 2,
             VerticalFlipped = 3,
         }
-
-        [SerializeField] private GameObject _horizontalConfiguration;
-        [SerializeField] private float _horizontalAspectRatio;
-        [SerializeField] private GameObject _verticalConfiguration;
-        [SerializeField] private float _verticalAspectRatio;
 
         public OrientationType Orientation => _orientation;
 
