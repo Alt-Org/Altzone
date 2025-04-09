@@ -76,16 +76,21 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
     // Saves the mood that the player has chosen.
     public void SaveMoodData(Mood mood)
     {
+        List<Enum> data = _playerData.playerDataEmotionList;
         // Removes the last item in the list of moods
-        _playerData.playerDataEmotionList.RemoveAt(6);
+        data.RemoveAt(6);
 
         // Reverses the list so the newest mood can get in to first place. last-newest
-        _playerData.playerDataEmotionList.Reverse();
+        data.Reverse();
 
         // Adds the newest mood to the list.
-        _playerData.playerDataEmotionList.Add(mood);
-        
+        data.Add(mood);
+
         // Reverses the list back the way we want it. newest-last
-        _playerData.playerDataEmotionList.Reverse();
+        data.Reverse();
+
+        _playerData.playerDataEmotionList = data;
+
+        StartCoroutine(SavePlayerData(_playerData, _callback));
     }
 }

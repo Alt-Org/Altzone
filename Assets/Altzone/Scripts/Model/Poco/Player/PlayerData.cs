@@ -68,7 +68,7 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public PlayStyles playStyles;
 
-        public List<Enum> playerDataEmotionList = new List<Enum> { Mood.Blank, Mood.Love, Mood.Playful, Mood.Joy, Mood.Sad, Mood.Angry, Mood.Blank };
+        public List<string> _playerDataEmotionList = new List<string> { Mood.Blank.ToString(), Mood.Love.ToString(), Mood.Playful.ToString(), Mood.Joy.ToString(), Mood.Sad.ToString(), Mood.Angry.ToString(), Mood.Blank.ToString() };
 
         public List<PlayerVoteData> playerVotes = new List<PlayerVoteData>();
 
@@ -103,6 +103,27 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         }
 
+        public List<Enum> playerDataEmotionList
+        {
+            get
+            {
+                List<Enum> list = new();
+                foreach(string emotion in _playerDataEmotionList)
+                {
+                    list.Add((Mood)Enum.Parse(typeof(Mood), emotion));
+                }
+                return list;
+            }
+            set
+            {
+                List<string> list = new();
+                foreach (Mood emotion in value)
+                {
+                    list.Add(emotion.ToString());
+                }
+                _playerDataEmotionList = list;
+            }
+        }
 
         public PlayerData(string id, string clanId, int currentCustomCharacterId, string[]currentBattleCharacterIds, string name, int backpackCapacity, string uniqueIdentifier)
         {
@@ -159,7 +180,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             points = player.points;
             stats = player.gameStatistics;
             Task = player.DailyTask != null ? new(player.DailyTask) : null;
-            if (playerDataEmotionList == null) playerDataEmotionList = new List<Enum> { Mood.Blank, Mood.Love, Mood.Playful, Mood.Joy, Mood.Sad, Mood.Angry, Mood.Blank };
+            if (_playerDataEmotionList == null || _playerDataEmotionList.Count == 0) playerDataEmotionList = new List<Enum> { Mood.Blank, Mood.Love, Mood.Playful, Mood.Joy, Mood.Sad, Mood.Angry, Mood.Blank };
         }
 
         public void UpdateCustomCharacter(CustomCharacter character)
