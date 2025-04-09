@@ -33,6 +33,22 @@ public class LeaderboardPodium : MonoBehaviour
 
     private bool _isClanView = false;
 
+    public void InitilializePodium(int rank, string name, int points, ClanData clanData)
+    {
+        switch(rank)
+        {
+            case 1:
+                InitializeFirstPlace(name, points, clanData);
+                break;
+            case 2:
+                InitializeSecondPlace(name, points, clanData);
+                break;
+            case 3:
+                InitializeThirdPlace(name, points, clanData);
+                break;
+        }
+    }
+
     public void InitializeFirstPlace(string firstName, int firstPoints, ClanData clanData)
     {
         _firstName.text = firstName;
