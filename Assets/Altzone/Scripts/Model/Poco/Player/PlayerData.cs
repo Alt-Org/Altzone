@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Altzone.Scripts.Common;
 using Altzone.Scripts.Model.Poco.Attributes;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
@@ -31,16 +32,6 @@ namespace Altzone.Scripts.Model.Poco.Player
         Huono_Haviaja
     };
 
-    public enum Mood
-    {
-        Blank,
-        Love,
-        Playful,
-        Joy,
-        Sad,
-        Angry
-    }
-
     [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class PlayerData
     {
@@ -68,7 +59,7 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public PlayStyles playStyles;
 
-        public List<string> _playerDataEmotionList = new List<string> { Mood.Blank.ToString(), Mood.Love.ToString(), Mood.Playful.ToString(), Mood.Joy.ToString(), Mood.Sad.ToString(), Mood.Angry.ToString(), Mood.Blank.ToString() };
+        public List<string> _playerDataEmotionList = new List<string> { Emotion.Blank.ToString(), Emotion.Love.ToString(), Emotion.Playful.ToString(), Emotion.Joy.ToString(), Emotion.Sorrow.ToString(), Emotion.Angry.ToString(), Emotion.Blank.ToString() };
 
         public List<PlayerVoteData> playerVotes = new List<PlayerVoteData>();
 
@@ -110,14 +101,14 @@ namespace Altzone.Scripts.Model.Poco.Player
                 List<Enum> list = new();
                 foreach(string emotion in _playerDataEmotionList)
                 {
-                    list.Add((Mood)Enum.Parse(typeof(Mood), emotion));
+                    list.Add((Emotion)Enum.Parse(typeof(Emotion), emotion));
                 }
                 return list;
             }
             set
             {
                 List<string> list = new();
-                foreach (Mood emotion in value)
+                foreach (Emotion emotion in value)
                 {
                     list.Add(emotion.ToString());
                 }
@@ -180,7 +171,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             points = player.points;
             stats = player.gameStatistics;
             Task = player.DailyTask != null ? new(player.DailyTask) : null;
-            if (_playerDataEmotionList == null || _playerDataEmotionList.Count == 0) playerDataEmotionList = new List<Enum> { Mood.Blank, Mood.Love, Mood.Playful, Mood.Joy, Mood.Sad, Mood.Angry, Mood.Blank };
+            if (_playerDataEmotionList == null || _playerDataEmotionList.Count == 0) playerDataEmotionList = new List<Enum> { Emotion.Blank, Emotion.Love, Emotion.Playful, Emotion.Joy, Emotion.Sorrow, Emotion.Angry, Emotion.Blank };
         }
 
         public void UpdateCustomCharacter(CustomCharacter character)

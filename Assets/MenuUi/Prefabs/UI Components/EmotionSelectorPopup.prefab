@@ -239,31 +239,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5829881321813289685}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5735031826766031560}
-        m_TargetAssemblyTypeName: WeekMoodPopupScript, MainMenu
-        m_MethodName: SaveMoodData
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 5735031826766031560}
-        m_TargetAssemblyTypeName: NewBehaviourScript, MainMenu
-        m_MethodName: ClosePopup
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &1236118366973092355
 GameObject:
   m_ObjectHideFlags: 0
@@ -450,31 +426,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2589142749902116520}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5735031826766031560}
-        m_TargetAssemblyTypeName: WeekMoodPopupScript, MainMenu
-        m_MethodName: SaveMoodData
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 5735031826766031560}
-        m_TargetAssemblyTypeName: NewBehaviourScript, MainMenu
-        m_MethodName: ClosePopup
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &3631758071999814053
 GameObject:
   m_ObjectHideFlags: 0
@@ -735,31 +687,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3733294898659838679}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5735031826766031560}
-        m_TargetAssemblyTypeName: WeekMoodPopupScript, MainMenu
-        m_MethodName: SaveMoodData
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 5735031826766031560}
-        m_TargetAssemblyTypeName: NewBehaviourScript, MainMenu
-        m_MethodName: ClosePopup
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &7282741205478622523
 GameObject:
   m_ObjectHideFlags: 0
@@ -960,31 +888,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 915737594636093754}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5735031826766031560}
-        m_TargetAssemblyTypeName: WeekMoodPopupScript, MainMenu
-        m_MethodName: SaveMoodData
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 5735031826766031560}
-        m_TargetAssemblyTypeName: NewBehaviourScript, MainMenu
-        m_MethodName: ClosePopup
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &8999861169402846467
 GameObject:
   m_ObjectHideFlags: 0
@@ -995,6 +899,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1858920855850366664}
   - component: {fileID: 5735031826766031560}
+  - component: {fileID: 4289831983691175605}
   m_Layer: 5
   m_Name: EmotionSelectorPopup
   m_TagString: Untagged
@@ -1017,9 +922,9 @@ RectTransform:
   - {fileID: 9220987309758743119}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000015258789, y: 0}
+  m_AnchorMin: {x: 0.123, y: 0.069000006}
+  m_AnchorMax: {x: 0.87626785, y: 0.9315385}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5735031826766031560
@@ -1040,6 +945,20 @@ MonoBehaviour:
   _joyButton: {fileID: 5381454442039140704}
   _sadButton: {fileID: 3322209068480257070}
   _angryButton: {fileID: 2492373373333106078}
+--- !u!114 &4289831983691175605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8999861169402846467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cabc7ab297e9ab44a96e83ec36e516df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _blockType: 0
+  _swipe: {fileID: 0}
 --- !u!1001 &944334470843416200
 PrefabInstance:
   m_ObjectHideFlags: 0
