@@ -10,6 +10,8 @@ namespace Battle.View.UI
     public class BattleUiPlayerInfoHandler : MonoBehaviour
     {
         [SerializeField] private BattleUiController _uiController;
+        [SerializeField] private BattleUiMultiOrientationElement _localPlayerMultiOrientationElement;
+        [SerializeField] private BattleUiMultiOrientationElement _localTeammateMultiOrientationElement;
 
         public enum PlayerType
         {
@@ -17,22 +19,22 @@ namespace Battle.View.UI
             LocalTeammate,
         }
 
-        public BattleUiMultiOrientationElement LocalPlayerMultiOrientationElement;
-        public BattleUiMultiOrientationElement LocalTeammateMultiOrientationElement;
-        public bool IsVisible => LocalPlayerMultiOrientationElement.gameObject.activeSelf;
+        public bool IsVisible => _localPlayerMultiOrientationElement.gameObject.activeSelf;
+        public BattleUiMultiOrientationElement LocalPlayerMultiOrientationElement   => _localPlayerMultiOrientationElement;
+        public BattleUiMultiOrientationElement LocalTeammateMultiOrientationElement => _localTeammateMultiOrientationElement;
 
         public void SetShow(bool show)
         {
-            LocalPlayerMultiOrientationElement.gameObject.SetActive(show);
-            LocalTeammateMultiOrientationElement.gameObject.SetActive(show);
+            _localPlayerMultiOrientationElement.gameObject.SetActive(show);
+            _localTeammateMultiOrientationElement.gameObject.SetActive(show);
         }
 
         public void SetInfo(PlayerType playerType, string playerName, int[] characterIds)
         {
             // Getting player info component from multi orientation element
             BattleUiPlayerInfoComponent playerInfoComponent = playerType == PlayerType.LocalPlayer
-                ? LocalPlayerMultiOrientationElement   .GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>()
-                : LocalTeammateMultiOrientationElement .GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>();
+                ? _localPlayerMultiOrientationElement   .GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>()
+                : _localTeammateMultiOrientationElement .GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>();
 
             if (playerInfoComponent == null) return;
 

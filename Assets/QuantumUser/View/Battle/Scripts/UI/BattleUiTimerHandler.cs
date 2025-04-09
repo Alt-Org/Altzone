@@ -14,10 +14,11 @@ namespace Battle.View.UI
     /// </summary>
     public class BattleUiTimerHandler : MonoBehaviour
     {
+        [SerializeField] private BattleUiMovableElement _movableUiElement;
         [SerializeField] private TMP_Text _timerText;
 
-        public BattleUiMovableElement MovableUiElement;
         public bool IsVisible => MovableUiElement.gameObject.activeSelf;
+        public BattleUiMovableElement MovableUiElement => _movableUiElement;
 
         public void SetShow(bool show)
         {

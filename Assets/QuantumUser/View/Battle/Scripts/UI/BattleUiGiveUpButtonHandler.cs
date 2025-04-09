@@ -11,10 +11,11 @@ namespace Battle.View.UI
     public class BattleUiGiveUpButtonHandler : MonoBehaviour
     {
         [SerializeField] private BattleUiController _uiController;
+        [SerializeField] private BattleUiMovableElement _movableUiElement;
         [SerializeField] private Button _giveUpButton;
 
-        public BattleUiMovableElement MovableUiElement;
         public bool IsVisible => MovableUiElement.gameObject.activeSelf;
+        public BattleUiMovableElement MovableUiElement => _movableUiElement;
 
         public void SetShow(bool show)
         {

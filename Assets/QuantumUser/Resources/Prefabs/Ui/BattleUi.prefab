@@ -1719,8 +1719,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27dea7b6c68138b43883cc9fc9e65e33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _movableUiElement: {fileID: 1978862334547193627}
   _timerText: {fileID: 3687208410948539658}
-  MovableUiElement: {fileID: 1978862334547193627}
 --- !u!114 &8040870781326742416
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1733,8 +1733,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2467d52c681bf904893886e68a84566f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _movableUiElement: {fileID: 4990723417757714453}
   _diamondText: {fileID: 5225382533936545765}
-  MovableUiElement: {fileID: 4990723417757714453}
 --- !u!114 &8811858646912648501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1748,8 +1748,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _uiController: {fileID: 7342130735435193128}
+  _movableUiElement: {fileID: 3529114520933404325}
   _giveUpButton: {fileID: 4019765446178418606}
-  MovableUiElement: {fileID: 3529114520933404325}
 --- !u!114 &5184129031791342902
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1763,8 +1763,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _uiController: {fileID: 7342130735435193128}
-  LocalPlayerMultiOrientationElement: {fileID: 2045898764021700641}
-  TeammateMultiOrientationElement: {fileID: 8028339510603279716}
+  _localPlayerMultiOrientationElement: {fileID: 2045898764021700641}
+  _localTeammateMultiOrientationElement: {fileID: 8028339510603279716}
 --- !u!114 &6849754882286958481
 MonoBehaviour:
   m_ObjectHideFlags: 0

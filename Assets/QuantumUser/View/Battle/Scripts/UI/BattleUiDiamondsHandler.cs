@@ -10,10 +10,11 @@ namespace Battle.View.UI
     /// </summary>
     public class BattleUiDiamondsHandler : MonoBehaviour
     {
+        [SerializeField] private BattleUiMovableElement _movableUiElement;
         [SerializeField] private TMP_Text _diamondText;
 
-        public BattleUiMovableElement MovableUiElement;
         public bool IsVisible => MovableUiElement.gameObject.activeSelf;
+        public BattleUiMovableElement MovableUiElement => _movableUiElement;
 
         public void SetShow(bool show)
         {
