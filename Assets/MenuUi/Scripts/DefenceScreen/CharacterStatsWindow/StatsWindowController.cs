@@ -128,11 +128,9 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             SetPlayerData();
             SetCurrentCharacter();
 
-            for (int i = 0; i < transform.childCount; i++) // triggering onenable functions
-            {
-                transform.GetChild(i).gameObject.SetActive(false);
-                transform.GetChild(i).gameObject.SetActive(true);
-            }
+            // Triggering onenable functions
+            ClosePopup();
+            OpenPopup();
         }
 
 
