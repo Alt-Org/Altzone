@@ -12,7 +12,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     public class InfoPanel : MonoBehaviour
     {
         [SerializeField] private Image _characterImage;
-        [SerializeField] private Image _specialAbilityImage;
         [SerializeField] private TMP_Text _characterDescription;
         [SerializeField] private TMP_Text _specialAbility;
         [SerializeField] private TMP_Text _wins;
@@ -28,7 +27,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             if (_controller == null) _controller = FindObjectOfType<StatsWindowController>();
             SetCharacterImage();
             SetCharacterDescription();
-            SetSpecialAbility();
             SetWinsAndLosses();
         }
 
@@ -47,18 +45,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private void SetCharacterDescription()
         {
             _characterDescription.text = _controller.GetCurrentCharacterDescription();
-        }
-
-
-        private void SetSpecialAbility()
-        {
-            _specialAbility.text = _controller.GetCurrentCharacterSpecialAbilityDescription();
-
-            Sprite sprite = _controller.GetCurrentCharacterSpecialAbilitySprite();
-            if (sprite != null && _specialAbilityImage != null)
-            {
-                _specialAbilityImage.sprite = sprite;
-            }
         }
 
 
