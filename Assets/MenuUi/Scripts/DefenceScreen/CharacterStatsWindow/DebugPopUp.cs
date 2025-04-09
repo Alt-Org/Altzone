@@ -114,6 +114,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                         {
                             SignalBus.OnReloadCharacterGalleryRequestedSignal();
                             _controller.ReloadStatWindow();
+                            ClosePopUp();
                         }
                     }
                     ));
