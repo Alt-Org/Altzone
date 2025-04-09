@@ -31,6 +31,7 @@ namespace Battle.QSimulation.Player
         /// Handles player input, movement and rotations.<br/>
         /// (this method should only be called by Quantum)
         /// </summary>
+        /// 
         /// Skips players that have PlayerRef = none.<br/>
         /// Gets player's Quantum Input and calls <see cref="UpdatePlayerMovement(Frame, ref Filter, Input*)">UpdatePlayerMovement</see> method.
         /// <param name="f">Current Quantum Frame</param>
@@ -43,18 +44,41 @@ namespace Battle.QSimulation.Player
             UpdatePlayerMovement(f, ref filter, input);
         }
 
+        /// <summary>
+        /// Moves the player towards the specified position while updating the hitbox.
+        /// </summary>
+        /// <param name="f">Current Quantum frame.</param>
+        /// <param name="playerData">Pointer to the player's data component.</param>
+        /// <param name="transform">Pointer to the player's transform component.</param>
+        /// <param name="position">Target world position to move towards.</param>
+        /// <param name="maxDelta">Maximum movement delta per frame.</param>
         public static void MoveTowards(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform, FPVector2 position, FP maxDelta)
         {
             MoveTowardsNoHitboxUpdate(f, transform, position, maxDelta);
             MoveHitbox(f, playerData, transform);
         }
 
+        /// <summary>
+        /// Rotates the player to the specified angle while updating the hitbox.
+        /// </summary>
+        /// <param name="f">Current Quantum frame.</param>
+        /// <param name="playerData">Pointer to the player's data component.</param>
+        /// <param name="transform">Pointer to the player's transform component.</param>
+        /// <param name="radians">Target rotation angle in radians.</param>
         public static void Rotate(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform, FP radians)
         {
             RotateNoHitboxUpdate(f, transform, radians);
             MoveHitbox(f, playerData, transform);
         }
 
+        /// <summary>
+        /// Instantly moves and rotates the player to the specified position and rotation, and teleports the hitbox.
+        /// </summary>
+        /// <param name="f">Current Quantum frame.</param>
+        /// <param name="playerData">Pointer to the player's data component.</param>
+        /// <param name="transform">Pointer to the player's transform component.</param>
+        /// <param name="position">New world position.</param>
+        /// <param name="rotation">New rotation in radians.</param>
         public static void Teleport(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform, FPVector2 position, FP rotation)
         {
             TeleportNoHitboxUpdate(f, transform, position, rotation);

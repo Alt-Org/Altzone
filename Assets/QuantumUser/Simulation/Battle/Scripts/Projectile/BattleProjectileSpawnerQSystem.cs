@@ -16,7 +16,12 @@ namespace Battle.QSimulation.Projectile
             public BattleProjectileSpawnerQComponent* Spawner;
         }
 
-        // adding the SpawnerSystem.qtn component to ProjectileSpawnerSystem to ensure that the filter works
+        /// <summary>
+        /// Called once when the Quantum simulation starts.<br/>
+        /// Initializes the projectile spawner component on a new entity.<br/>
+        /// adding the SpawnerSystem.qtn component to ProjectileSpawnerSystem to ensure that the filter works
+        /// </summary>
+        /// <param name="f">Current simulation frame.</param>
         public override void OnInit(Frame f)
         {
             // create a new entity
@@ -33,6 +38,13 @@ namespace Battle.QSimulation.Projectile
             Debug.Log($"Entity created with ProjectileSpawner component: {entity}");
         }
 
+        /// <summary>
+        /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum system update method</a> gets called every frame.</span><br/>
+        /// Spawns a projectile if not already spawned and game is in 'Playing' state.<br/>
+        /// @warning This method should only be called by Quantum.
+        /// </summary>
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="filter">Filter containing entity and its projectile spawner component.</param>
         public override void Update(Frame f, ref Filter filter)
         {
             BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
@@ -52,6 +64,11 @@ namespace Battle.QSimulation.Projectile
             }
         }
 
+        /// <summary>
+        /// Creates a projectile entity using the specified prototype and initializes its components.
+        /// </summary>
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="childPrototype">Reference to the projectile prototype asset.</param>
         private void SpawnProjectile(Frame f, AssetRef<EntityPrototype> childPrototype)
         {
             // create a new entity based on the provided prototype.

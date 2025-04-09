@@ -5,6 +5,9 @@ using Photon.Deterministic;
 
 namespace Battle.QSimulation.Projectile
 {
+    /// <summary>
+    /// Spec for projectile, defines how the projectile works.
+    /// </summary>
     public class BattleProjectileQSpec: AssetObject
     {
         [Header("Projectile configuration")]

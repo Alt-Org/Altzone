@@ -9,6 +9,10 @@ using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Projectile
 {
+    /// <summary>
+    /// Projectile
+    /// Handles Projectile logic.
+    /// </summary>
     [Preserve]
     public unsafe class BattleProjectileQSystem : SystemMainThreadFilter<BattleProjectileQSystem.Filter>, ISignalBattleOnProjectileHitSoulWall, ISignalBattleOnProjectileHitArenaBorder, ISignalBattleOnProjectileHitPlayerHitbox
     {
@@ -19,9 +23,22 @@ namespace Battle.QSimulation.Projectile
             public BattleProjectileQComponent* Projectile;
         }
 
+        /// <summary>
+        /// Checks if a specific collision flag is currently set for the projectile.
+        /// </summary>
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectile">Pointer to the projectile component.</param>
+        /// <param name="flag">Collision flag to check.</param>
+        /// <returns>True if the flag is set; otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsCollisionFlagSet(Frame f, BattleProjectileQComponent* projectile, BattleProjectileCollisionFlags flag) => projectile->CollisionFlags[f.Number % 2].IsFlagSet(flag);
 
+        /// <summary>
+        /// Sets a specific collision flag for the current frame.
+        /// </summary>
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectile">Pointer to the projectile component.</param>
+        /// <param name="flag">Collision flag to set.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SetCollisionFlag(Frame f, BattleProjectileQComponent* projectile, BattleProjectileCollisionFlags flag)
         {
@@ -29,6 +46,11 @@ namespace Battle.QSimulation.Projectile
             projectile->CollisionFlags[f.Number % 2] = flags.SetFlag(flag);
         }
 
+        /// <summary>
+        /// Launches the projectile and sets properties based on the Projectile spec.
+        /// </summary>
+        /// <param name="f"></param>
+        /// <param name="filter"></param>
         public override void Update(Frame f, ref Filter filter)
         {
             // unpack filter
@@ -64,6 +86,15 @@ namespace Battle.QSimulation.Projectile
             projectile->CollisionFlags[(f.Number + 1) % 2 ] = 0;
         }
 
+        /// <summary>
+        /// Reflects the projectile's direction upon hitting a surface, correcting position if needed.
+        /// </summary>
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectile">Pointer to the projectile component.</param>
+        /// <param name="projectileEntity">Entity of the projectile.</param>
+        /// <param name="otherEntity">Entity the projectile collided with.</param>
+        /// <param name="normal">Normal vector of the collision surface.</param>
+        /// <param name="collisionMinOffset">Minimum offset to resolve collision penetration.</param>
         private void ProjectileBounce(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, EntityRef otherEntity, FPVector2 normal, FP collisionMinOffset)
         {
             Debug.Log("[ProjectileSystem] Projectile hit a wall");
@@ -86,6 +117,15 @@ namespace Battle.QSimulation.Projectile
             SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Projectile);
         }
 
+        /// <summary>
+        /// Handles behavior when the projectile hits a soul wall.
+        /// Updates projectile emotion and applies bounce logic.
+        /// </summary>
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectile">Pointer to the projectile component.</param>
+        /// <param name="projectileEntity">Entity of the projectile.</param>
+        /// <param name="soulWall">Pointer to the SoulWall component.</param>
+        /// <param name="soulWallEntity">Entity of the SoulWall.</param>
         public void BattleOnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)
         {
             ProjectileBounce(f, projectile, projectileEntity, soulWallEntity, soulWall->Normal, soulWall->CollisionMinOffset);
@@ -95,11 +135,29 @@ namespace Battle.QSimulation.Projectile
             f.Events.BattleChangeEmotionState(projectile->Emotion);
         }
 
+        /// <summary>
+        /// Handles behavior when the projectile hits the arena border.
+        /// Applies bounce logic based on border surface normal.
+        /// </summary>
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectile">Pointer to the projectile component.</param>
+        /// <param name="projectileEntity">Entity of the projectile.</param>
+        /// <param name="arenaBorder">Pointer to the ArenaBorder component.</param>
+        /// <param name="arenaBorderEntity">Entity of the ArenaBorder.</param>
         public void BattleOnProjectileHitArenaBorder(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity)
         {
             ProjectileBounce(f, projectile,  projectileEntity, arenaBorderEntity, arenaBorder->Normal, arenaBorder->CollisionMinOffset);
         }
 
+        /// <summary>
+        /// Handles behavior when the projectile hits a player hitbox.
+        /// Applies bounce logic based on surface normal of the hitbox.
+        /// </summary>
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectile">Pointer to the projectile component.</param>
+        /// <param name="projectileEntity">Entity of the projectile.</param>
+        /// <param name="playerHitbox">Pointer to the PlayerHitbox component.</param>
+        /// <param name="playerEntity">Entity of the player hitbox.</param>
         public void BattleOnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity)
         {
             ProjectileBounce(f, projectile,  projectileEntity, playerEntity, playerHitbox->Normal, playerHitbox->CollisionMinOffset);

@@ -11,6 +11,9 @@ using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Player
 {
+    /// <summary>
+    /// Provides static methods to initialize, spawn, despawn, and query player-related data.
+    /// </summary>
     public static unsafe class BattlePlayerManager
     {
         #region Public
@@ -31,6 +34,10 @@ namespace Battle.QSimulation.Player
             PlayerHandle.SetAllPlayStates(playerManagerData, BattlePlayerPlayState.NotInGame);
         }
 
+        /// </summary>
+        /// <param name="f">Quantum Frame</param>
+        /// <param name="playerRef">Reference to the player</param>
+        /// <returns>Initialized BattlePlayerSlot</returns>
         public static BattlePlayerSlot InitPlayer(Frame f, PlayerRef playerRef)
         {
             BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
@@ -264,6 +271,9 @@ namespace Battle.QSimulation.Player
 
         #region Public - Static Methods - Spawn/Despawn
 
+        /// <summary>
+        /// Spawns a player entity into the game.
+        /// </summary>
         public static void SpawnPlayer(Frame f, BattlePlayerSlot slot, int characterNumber)
         {
             PlayerHandle playerHandle = new(GetPlayerManagerData(f), slot);
@@ -283,6 +293,10 @@ namespace Battle.QSimulation.Player
             SpawnPlayer(f, playerHandle, characterNumber);
         }
 
+
+        /// <summary>
+        /// Despawns a player entity from the game.
+        /// </summary>
         public static void DespawnPlayer(Frame f, BattlePlayerSlot slot)
         {
             PlayerHandle playerHandle = new(GetPlayerManagerData(f), slot);
@@ -300,9 +314,15 @@ namespace Battle.QSimulation.Player
 
         #region Public - Static Methods - Utility
 
+        /// <summary>
+        /// Retrieves team number based on slot.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BattleTeamNumber GetPlayerTeamNumber(BattlePlayerSlot slot) => PlayerHandle.GetTeamNumber(slot);
 
+        /// <summary>
+        /// Retrieves player play state from frame.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BattlePlayerPlayState GetPlayerPlayState(Frame f, BattlePlayerSlot slot)
         {
@@ -311,6 +331,9 @@ namespace Battle.QSimulation.Player
             return PlayerHandle.GetPlayState(playerManagerData, playerIndex);
         }
 
+        /// <summary>
+        /// Retrieves currently selected character entity.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static EntityRef GetPlayerEntity(Frame f, BattlePlayerSlot slot)
         {
@@ -319,6 +342,9 @@ namespace Battle.QSimulation.Player
             return PlayerHandle.GetSelectedCharacter(playerManagerData, playerIndex);
         }
 
+        /// <summary>
+        /// Retrieves teammate character entity.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static EntityRef GetTeammateEntity(Frame f, BattlePlayerSlot slot)
         {
@@ -327,6 +353,9 @@ namespace Battle.QSimulation.Player
             return PlayerHandle.GetSelectedCharacter(playerManagerData, teammatePlayerIndex);
         }
 
+        /// <summary>
+        /// Retrieves teammate character entity.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsValidCharacterNumber(int characterNumber) => PlayerHandle.IsValidCharacterNumber(characterNumber);
 
@@ -340,6 +369,9 @@ namespace Battle.QSimulation.Player
 
         private static readonly FPVector2[] s_spawnPoints = new FPVector2[Constants.BATTLE_PLAYER_SLOT_COUNT];
 
+        /// <summary>
+        /// Helper struct for player operations and state management.
+        /// </summary>
         private struct PlayerHandle
         {
             //{ Public Static Methods
