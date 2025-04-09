@@ -28,5 +28,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         public StatType StatType;
         public string Name;
         public Sprite Image;
+        public Color StatBoxColor;
     }
 }
