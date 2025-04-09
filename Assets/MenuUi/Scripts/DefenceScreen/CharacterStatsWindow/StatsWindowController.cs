@@ -161,6 +161,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             CharacterClassID classID = GetCurrentCharacterClass();
             return _classColorReference.GetAlternativeColor(classID);
         }
+        /// <summary>
+        /// Get current character class color from character class color reference sheet.
+        /// </summary>
+        /// <returns>Current character class color as Color.</returns>
+        public Color GetCurrentCharacterClassColor()
+        {
+            CharacterClassID classID = GetCurrentCharacterClass();
+            return _classColorReference.GetColor(classID);
+        }
+
 
 
         /// <summary>
