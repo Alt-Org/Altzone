@@ -9,11 +9,11 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using System.Linq;
 using MenuUi.Scripts.Storage;
-using System.Collections.ObjectModel;
 
 public static class PollManager
 {
     private static List<PollData> pollDataList = new List<PollData>();
+    private static List<PollData> pastPollDataList = new List<PollData>();
 
     private static DataStore store = Storefront.Get();
     private static PlayerData player = null;
@@ -93,7 +93,7 @@ public static class PollManager
 
     public static PollData GetPollData(string id)
     {
-        return pollDataList.First(x => x.Id == id);
+        return pollDataList.FirstOrDefault(x => x.Id == id);
     }
 
     public static void LoadClanData()
@@ -132,7 +132,10 @@ public static class PollManager
 
     public static void EndPoll(string pollId)
     {
+        LoadClanData();
+        
         PollData pollData = GetPollData(pollId);
+        if (pollData == null) return;
 
         bool yesVotesWon = (pollData.YesVotes.Count >= Mathf.CeilToInt(clan.Members.Count / 3.0f)) && pollData.YesVotes.Count > pollData.NoVotes.Count;
 
@@ -148,7 +151,12 @@ public static class PollManager
             }
             // TODO: Buying
         }
+        
+        pollDataList.Remove(pollData);
+        pastPollDataList.Add(pollData);
 
-        pollData.IsOver = true;
+        SaveClanData();
+
+        VotingActions.ReloadPollList?.Invoke();
     }
 }
