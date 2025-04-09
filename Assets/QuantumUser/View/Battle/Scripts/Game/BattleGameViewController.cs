@@ -67,7 +67,7 @@ namespace Battle.View.Game
             {
                 _uiController.PlayerInfoHandler.SetShow(true);
                 _uiController.PlayerInfoHandler.SetInfo(PlayerType.LocalPlayer, "Min�", new int[3] { 101, 201, 301 });
-                _uiController.PlayerInfoHandler.SetInfo(PlayerType.LocalPlayerTeammate, "Tiimil�inen", new int[3] { 401, 501, 601 });
+                _uiController.PlayerInfoHandler.SetInfo(PlayerType.LocalTeammate, "Tiimil�inen", new int[3] { 401, 501, 601 });
             }
             */
         }

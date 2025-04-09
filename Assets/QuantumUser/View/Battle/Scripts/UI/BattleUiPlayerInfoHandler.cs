@@ -14,17 +14,17 @@ namespace Battle.View.UI
         public enum PlayerType
         {
             LocalPlayer,
-            LocalPlayerTeammate,
+            LocalTeammate,
         }
 
         public BattleUiMultiOrientationElement LocalPlayerMultiOrientationElement;
-        public BattleUiMultiOrientationElement TeammateMultiOrientationElement;
+        public BattleUiMultiOrientationElement LocalTeammateMultiOrientationElement;
         public bool IsVisible => LocalPlayerMultiOrientationElement.gameObject.activeSelf;
 
         public void SetShow(bool show)
         {
             LocalPlayerMultiOrientationElement.gameObject.SetActive(show);
-            TeammateMultiOrientationElement.gameObject.SetActive(show);
+            LocalTeammateMultiOrientationElement.gameObject.SetActive(show);
         }
 
         public void SetInfo(PlayerType playerType, string playerName, int[] characterIds)
@@ -38,7 +38,7 @@ namespace Battle.View.UI
             }
             else
             {
-                playerInfoComponent = TeammateMultiOrientationElement.GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>();
+                playerInfoComponent = LocalTeammateMultiOrientationElement.GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>();
             }
 
             if (playerInfoComponent == null) return;
@@ -57,7 +57,7 @@ namespace Battle.View.UI
                 // Setting if button is enabled
                 characterButton.ButtonComponent.enabled = playerType == PlayerType.LocalPlayer;
 
-                if (playerType == PlayerType.LocalPlayerTeammate) continue;
+                if (playerType == PlayerType.LocalTeammate) continue;
 
                 // Adding listener to button press
                 int characterNumber = i;
