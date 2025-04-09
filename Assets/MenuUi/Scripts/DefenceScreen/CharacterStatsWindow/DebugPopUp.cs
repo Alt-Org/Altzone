@@ -24,35 +24,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private const int DiamondsToAdd = 10000;
         private const int ErasersToAdd = 100;
 
-        private void Awake()
-        {
-            _unlimitedDiamondsToggle.isOn = _controller.UnlimitedDiamonds;
-            _unlimitedErasersToggle.isOn = _controller.UnlimitedErasers;
-            _addDiamondsButton.interactable = !_controller.UnlimitedDiamonds;
-            _addErasersButton.interactable = !_controller.UnlimitedErasers;
-
-            _unlimitedDiamondsToggle.onValueChanged.AddListener(value =>
-            {
-                _controller.UnlimitedDiamonds = value;
-                _addDiamondsButton.interactable = !value;
-            });
-
-            _unlimitedErasersToggle.onValueChanged.AddListener(value =>
-            {
-                _controller.UnlimitedErasers = value;
-                _addErasersButton.interactable = !value;
-            });
-
-            _addDiamondsButton.onClick.AddListener(AddDiamonds);
-            _addErasersButton.onClick.AddListener(AddErasers);
-        }
-
-        private void OnEnable()
-        {
-            if (_controller == null) _controller = FindObjectOfType<StatsWindowController>();
-            ClosePopUp();
-        }
-
 
         private void OnDestroy()
         {
@@ -69,6 +40,33 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// </summary>
         public void OpenPopUp()
         {
+            // If _controller is null initializing
+            if (_controller == null)
+            {
+                _controller = FindObjectOfType<StatsWindowController>();
+
+                _unlimitedDiamondsToggle.isOn = _controller.UnlimitedDiamonds;
+                _unlimitedErasersToggle.isOn = _controller.UnlimitedErasers;
+                _addDiamondsButton.interactable = !_controller.UnlimitedDiamonds;
+                _addErasersButton.interactable = !_controller.UnlimitedErasers;
+
+                _unlimitedDiamondsToggle.onValueChanged.AddListener(value =>
+                {
+                    _controller.UnlimitedDiamonds = value;
+                    _addDiamondsButton.interactable = !value;
+                });
+
+                _unlimitedErasersToggle.onValueChanged.AddListener(value =>
+                {
+                    _controller.UnlimitedErasers = value;
+                    _addErasersButton.interactable = !value;
+                });
+
+                _addDiamondsButton.onClick.AddListener(AddDiamonds);
+                _addErasersButton.onClick.AddListener(AddErasers);
+            }
+
+            // Adding listener to add character button
             if (_controller.IsCurrentCharacterLocked())
             {
                 _addCharacterButton.interactable = true;
@@ -80,6 +78,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 _addCharacterButton.interactable = false;
             }
 
+            // Setting popup active
             _contents.SetActive(true);
             _touchBlocker.enabled = true;
         }
