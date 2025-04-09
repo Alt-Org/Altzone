@@ -365,10 +365,10 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
 
         /// <summary>
-        /// Get currently displayed character's stat value according to the stat type.
+        /// Get currently displayed character's stat level according to the stat type.
         /// </summary>
         /// <param name="statType">The stat type which to get.</param>
-        /// <returns>Stat value as int.</returns>
+        /// <returns>Stat level as int.</returns>
         public int GetStat(StatType statType)
         {
             if (_customCharacter == null) return GetBaseStat(statType);
@@ -396,7 +396,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// Get currently displayed character's base stat without upgrades according to the stat type.
         /// </summary>
         /// <param name="statType">The stat type which to get.</param>
-        /// <returns>Base stat value as int.</returns>
+        /// <returns>Base stat level as int.</returns>
         public int GetBaseStat(StatType statType)
         {
             switch (statType)
@@ -415,6 +415,17 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                     return _baseCharacter.DefaultDefence;
             }
             return -1;
+        }
+
+
+        /// <summary>
+        /// Get currently displayed character's stat value according to the stat type.
+        /// </summary>
+        /// <param name="statType">The stat type which value to get.</param>
+        /// <returns>Stat value as int.</returns>
+        public int GetStatValue(StatType statType)
+        {
+            return (int)BaseCharacter.GetStatValueFP(statType, GetStat(statType));
         }
 
 

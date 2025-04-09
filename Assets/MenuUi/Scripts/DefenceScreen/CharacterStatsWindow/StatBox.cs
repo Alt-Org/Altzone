@@ -73,7 +73,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private void UpdateStatValue(StatType statType)
         {
             if (statType != _statType) return;
-            _statValue.text = _controller.GetStat(statType).ToString();
+            _statValue.text = _controller.GetStatValue(statType).ToString();
         }
 
         private void UpdateDiamondCost(StatType statType)
