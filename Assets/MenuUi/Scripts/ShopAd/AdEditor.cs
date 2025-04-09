@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Clan;
 using TMPro;
 using UnityEngine;
@@ -23,39 +24,50 @@ public class AdEditor : AltMonoBehaviour
     [SerializeField] private Color darkPinkColor;
     [SerializeField] private Color redColor;
 
-    [SerializeField] private Image border1;
-    [SerializeField] private Image border2;
-    [SerializeField] private Image border3;
-    [SerializeField] private Image border4;
-    [SerializeField] private Image border5;
-    [SerializeField] private Image border6;
-    [SerializeField] private Image border7;
-    [SerializeField] private Image border8;
-    [SerializeField] private Image border9;
-    [SerializeField] private Image border10;
-    [SerializeField] private Image border11;
-
-    
-
-    
-    ClanData clanData = null;
+    [SerializeField] private AdDecorationReference _borderReference;
+    [SerializeField] private Transform _borderSelectionContent;
+    [SerializeField] private GameObject _borderFramePrefab;
+    private List<Image> _borderFrameList; 
 
 
     void Start()    
     {
-        StartCoroutine(GetClanData(p=> clanData = p));
+        StartCoroutine(GetClanData(data=>
+        {
+            if (data != null)
+            {
+                clanNameText.text = (data.Name);
+            }
+            else
+            {
+                clanNameText.text = "Et ole klaanissa";
+            }
+        }));
+
+        List<AdBorderFrameObject> list = _borderReference.Info;
+
+        foreach (AdBorderFrameObject frame in list)
+        {
+            GameObject frameObject = Instantiate(_borderFramePrefab, _borderSelectionContent);
+            frameObject.GetComponent<Image>().sprite = frame.Image;
+            float objectHeight= _borderSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
+            frameObject.GetComponent<RectTransform>().sizeDelta = new(objectHeight * 0.625f, objectHeight);
+            frameObject.GetComponent<Button>().onClick.AddListener(() => ChangeBorder(frame));
+        }
+
+        StartCoroutine(SetFrameSelectionSize());
     }
-    private void Update()
+
+    private IEnumerator SetFrameSelectionSize()
     {
-        if (clanData != null)
+        yield return null;
+        foreach (Transform frame in _borderSelectionContent)
         {
-            clanNameText.text=(clanData.Name);
-        }
-        else
-        {
-            clanNameText.text = "Et ole klaanissa";
+            float objectHeight = _borderSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
+            frame.GetComponent<RectTransform>().sizeDelta = new(objectHeight * 0.625f, objectHeight);
         }
     }
+
     void BringToFront(Transform folder)
     {
         folder.SetAsLastSibling();
@@ -96,49 +108,9 @@ public class AdEditor : AltMonoBehaviour
         _backgroundImage.color = redColor;
     }
 
-    public void ChangeBorder1()
+    public void ChangeBorder(AdBorderFrameObject frame)
     {
-        _borderImage.sprite = border1.sprite;
-    }
-    public void ChangeBorder2()
-    {
-        _borderImage.sprite = border2.sprite;
-    }
-    public void ChangeBorder3()
-    {
-        _borderImage.sprite = border3.sprite;
-    }
-    public void ChangeBorder4()
-    {
-        _borderImage.sprite = border4.sprite;
-    }
-    public void ChangeBorder5()
-    {
-        _borderImage.sprite = border5.sprite;
-    }
-    public void ChangeBorder6()
-    {
-        _borderImage.sprite = border6.sprite;
-    }
-    public void ChangeBorder7()
-    {
-        _borderImage.sprite = border7.sprite;
-    }
-    public void ChangeBorder8()
-    {
-        _borderImage.sprite = border8.sprite;
-    }
-    public void ChangeBorder9()
-    {
-        _borderImage.sprite = border9.sprite;
-    }
-    public void ChangeBorder10()
-    {
-        _borderImage.sprite = border10.sprite;
-    }
-    public void ChangeBorder11()
-    {
-        _borderImage.sprite = border11.sprite;
+        _borderImage.sprite = frame.Image;
     }
 
     public void CloseEditor()
