@@ -43,12 +43,25 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             UpdateEraserCost(_statType);
         }
 
+        private void Awake()
+        {
+            _diamondButton.onClick.AddListener(IncreaseStat);
+            _eraserButton.onClick.AddListener(DecreaseStat);
+        }
+
         private void OnDisable()
         {
             _controller.OnStatUpdated -= UpdateStatLevel;
             _controller.OnStatUpdated -= UpdateDiamondCost;
             _controller.OnStatUpdated -= UpdateEraserCost;
             _controller.OnStatUpdated -= UpdateStatValue;
+
+        }
+
+        private void OnDestroy()
+        {
+            _diamondButton.onClick.RemoveAllListeners();
+            _eraserButton.onClick.RemoveAllListeners();
         }
 
         private void UpdateStatLevel(StatType statType)
@@ -88,6 +101,33 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             {
                 _eraserCost.text = "-";
             }
+        }
+
+        private bool CanUpdateCharacter()
+        {
+            if (_controller.IsCurrentCharacterLocked())
+            {
+                PopupSignalBus.OnChangePopupInfoSignal("Et voi muokata lukittua hahmoa.");
+                return false;
+            }
+
+            if (_controller.GetCurrentCharacterClass() == CharacterClassID.Obedient) // obedient characters can't be modified
+            {
+                PopupSignalBus.OnChangePopupInfoSignal("Tottelijoita ei voi muokata.");
+                return false;
+            }
+            return true;
+        }
+        private void IncreaseStat ()
+        {
+            if (!CanUpdateCharacter()) return;
+            _controller.TryIncreaseStat(_statType);
+        }
+
+        private void DecreaseStat ()
+        {
+            if (!CanUpdateCharacter()) return;
+            _controller.TryDecreaseStat(_statType);
         }
     }
 }
