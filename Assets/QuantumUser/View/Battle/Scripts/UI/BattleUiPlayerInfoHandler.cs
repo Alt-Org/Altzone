@@ -32,9 +32,11 @@ namespace Battle.View.UI
         public void SetInfo(PlayerType playerType, string playerName, int[] characterIds)
         {
             // Getting player info component from multi orientation element
-            BattleUiPlayerInfoComponent playerInfoComponent = playerType == PlayerType.LocalPlayer
-                ? _localPlayerMultiOrientationElement   .GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>()
-                : _localTeammateMultiOrientationElement .GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>();
+            BattleUiPlayerInfoComponent playerInfoComponent =
+                (playerType == PlayerType.LocalPlayer
+                    ? _localPlayerMultiOrientationElement
+                    : _localTeammateMultiOrientationElement
+                ).GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>();
 
             if (playerInfoComponent == null) return;
 
