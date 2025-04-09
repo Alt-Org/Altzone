@@ -12,7 +12,7 @@ namespace Battle.View.UI
     {
         [SerializeField] private BattleUiController _uiController;
         [SerializeField] private Button _giveUpButton;
-        
+
         public BattleUiMovableElement MovableUiElement;
         public bool IsVisible => MovableUiElement.gameObject.activeSelf;
 
@@ -23,7 +23,7 @@ namespace Battle.View.UI
 
         private void Awake()
         {
-            _giveUpButton.onClick.AddListener(_uiController.GameViewController.OnLocalPlayerGiveUp);
+            _giveUpButton.onClick.AddListener(_uiController.GameViewController.UiInputOnLocalPlayerGiveUp);
         }
 
         private void OnDestroy()

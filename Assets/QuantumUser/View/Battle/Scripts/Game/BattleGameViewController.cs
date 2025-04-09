@@ -18,30 +18,30 @@ namespace Battle.View.Game
         [SerializeField] private BattleScreenEffectViewController _screenEffectViewController;
         [SerializeField] private BattleSoundFXViewController _soundFXViewController;
 
-        public void OnLocalPlayerGiveUp()
+        public void UiInputOnLocalPlayerGiveUp()
         {
             Debug.Log("Give up button pressed!");
         }
 
-        public void OnCharacterSelected(int characterNumber)
+        public void UiInputOnCharacterSelected(int characterNumber)
         {
             Debug.Log($"Character number {characterNumber} selected!");
         }
 
-        public void OnExitGamePressed()
+        public void UiInputOnExitGamePressed()
         {
             LobbyManager.ExitQuantum();
         }
 
         private void Awake()
         {
-            QuantumEvent.Subscribe<EventViewInit>(this, OnViewInit);
-            QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, OnChangeEmotionState);
-            QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, PlaySoundFX);
-            QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, DebugOnUpdateStatsOverlay);
+            QuantumEvent.Subscribe<EventViewInit>(this, QEventOnViewInit);
+            QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, QEventOnChangeEmotionState);
+            QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, QEventPlaySoundFX);
+            QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, QEventDebugOnUpdateStatsOverlay);
         }
 
-        private void OnViewInit(EventViewInit e)
+        private void QEventOnViewInit(EventViewInit e)
         {
             if (_gridViewController != null)
             {
@@ -66,24 +66,24 @@ namespace Battle.View.Game
             if (_uiController.PlayerInfoHandler != null)
             {
                 _uiController.PlayerInfoHandler.SetShow(true);
-                _uiController.PlayerInfoHandler.SetInfo(PlayerType.LocalPlayer, "Minä", new int[3] { 101, 201, 301 });
-                _uiController.PlayerInfoHandler.SetInfo(PlayerType.LocalPlayerTeammate, "Tiimiläinen", new int[3] { 401, 501, 601 });
+                _uiController.PlayerInfoHandler.SetInfo(PlayerType.LocalPlayer, "Minï¿½", new int[3] { 101, 201, 301 });
+                _uiController.PlayerInfoHandler.SetInfo(PlayerType.LocalPlayerTeammate, "Tiimilï¿½inen", new int[3] { 401, 501, 601 });
             }
             */
         }
 
-        private void OnChangeEmotionState(EventBattleChangeEmotionState e)
+        private void QEventOnChangeEmotionState(EventBattleChangeEmotionState e)
         {
             if (!_screenEffectViewController.IsActive) _screenEffectViewController.SetActive(true);
             _screenEffectViewController.ChangeColor((int)e.Emotion);
         }
 
-        private void PlaySoundFX(EventBattlePlaySoundFX e)
+        private void QEventPlaySoundFX(EventBattlePlaySoundFX e)
         {
             _soundFXViewController.PlaySound(e.Effect);
         }
 
-        private void DebugOnUpdateStatsOverlay(EventBattleDebugUpdateStatsOverlay e)
+        private void QEventDebugOnUpdateStatsOverlay(EventBattleDebugUpdateStatsOverlay e)
         {
             _uiController.DebugStatsOverlayHandler.SetShow(true);
             _uiController.DebugStatsOverlayHandler.SetStats(e.Character);

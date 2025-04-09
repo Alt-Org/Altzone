@@ -18,7 +18,7 @@ namespace Battle.View.UI
 
         private void Awake()
         {
-            _button.onClick.AddListener(_controller.GameViewController.OnExitGamePressed);
+            _button.onClick.AddListener(_controller.GameViewController.UiInputOnExitGamePressed);
         }
 
         private void OnDestroy()
