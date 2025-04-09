@@ -15,6 +15,12 @@ namespace Battle.QSimulation.Game
     [Preserve]
     public unsafe class BattleGameControlQSystem : SystemMainThread
     {
+        /// <summary>
+        /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System OnInit method</a> gets called when the system is initialized.</span><br/>
+        /// Initializes all the necessary Battle values. 
+        /// @warning This method should only be called by Quantum.
+        /// </summary>
+        /// <param name="f"></param>
         public override void OnInit(Frame f)
         {
             Log.Debug("[GameControlSystem] OnInit");
@@ -30,6 +36,12 @@ namespace Battle.QSimulation.Game
             gameSession->GameInitialized = true;
         }
 
+        /// <summary>
+        /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method</a> gets called every frame.</span><br/>
+        /// Handles the Game session state.
+        /// @warning This method should only be called by Quantum.
+        /// </summary>
+        /// <param name="f"></param>
         public override void Update(Frame f)
         {
             BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();

@@ -6,6 +6,11 @@ Battle.QSimulation
 
 ## Directories {#page-simulation-directories}
 
+- Altzone/Assets/QuantumUser/Simulation/  Simulation code
+  - Battle/Scripts/  Simulation %Battle C# Scripts
+  - Battle/QTN/  Simulation %Battle QTN files
+  - Generated/ Generated Simulation scripts
+
 ## Systems {#page-simulation-systems}
 
 [Quantum Systems](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) are c# classes that handle game logic.  
