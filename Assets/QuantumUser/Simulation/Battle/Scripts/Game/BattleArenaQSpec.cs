@@ -1,8 +1,8 @@
 /// @file BattleArenaQSpec.cs
 /// <summary>
 /// Defines arena specifications and layout used during battle simulations.
-/// 
 /// </summary>
+/// 
 /// Stores physical dimensions, grid configuration, and spawn templates for use in the Quantum simulation.
 
 using Quantum;
