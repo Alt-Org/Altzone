@@ -84,11 +84,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Setting info to the editing component
             if (movableElement != null && multiOrientationElement == null)
             {
-                editingComponent.SetInfo(movableElement);
+                editingComponent.SetInfo(movableElement, _uiElementsHolder);
             }
             else if (multiOrientationElement != null)
             {
-                editingComponent.SetInfo(multiOrientationElement);
+                editingComponent.SetInfo(multiOrientationElement, _uiElementsHolder);
             }
             else
             {
