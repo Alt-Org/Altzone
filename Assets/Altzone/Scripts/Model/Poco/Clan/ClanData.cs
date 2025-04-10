@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Altzone.Scripts.Model.Poco.Attributes;
+using Altzone.Scripts.Store;
 using Altzone.Scripts.Voting;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -27,6 +28,8 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public ClanInventory Inventory = new();
 
         public List<PollData> Polls = new();
+
+        public AdStoreObject AdData = new(null,null);
 
         public List<ClanMember> Members = new();
         public List<RaidRoom> Rooms = new();

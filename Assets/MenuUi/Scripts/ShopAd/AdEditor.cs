@@ -5,6 +5,7 @@ using Altzone.Scripts.Model.Poco.Clan;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts.Store;
 
 public class AdEditor : AltMonoBehaviour
 {
@@ -27,7 +28,9 @@ public class AdEditor : AltMonoBehaviour
     [SerializeField] private AdDecorationReference _borderReference;
     [SerializeField] private Transform _borderSelectionContent;
     [SerializeField] private GameObject _borderFramePrefab;
-    private List<Image> _borderFrameList; 
+    private List<Image> _borderFrameList;
+
+    private AdStoreObject _adData;
 
 
     void Start()    
@@ -37,12 +40,18 @@ public class AdEditor : AltMonoBehaviour
             if (data != null)
             {
                 clanNameText.text = (data.Name);
+                if(data.AdData != null) _adData = data.AdData;
+                else _adData = new(null, null);
             }
             else
             {
+                _adData = new(null, null);
                 clanNameText.text = "Et ole klaanissa";
             }
+            _borderImage.sprite = AdDecorationReference.Instance.GetBorderFrameSprite(_adData.BorderFrame);
+            if(ColorUtility.TryParseHtmlString(_adData.BackgroundColour, out Color colour)) _backgroundImage.color = colour;
         }));
+
 
         List<AdBorderFrameObject> list = _borderReference.Info;
 
@@ -60,12 +69,21 @@ public class AdEditor : AltMonoBehaviour
 
     private IEnumerator SetFrameSelectionSize()
     {
-        yield return null;
+        yield return new WaitForEndOfFrame();
         foreach (Transform frame in _borderSelectionContent)
         {
             float objectHeight = _borderSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
             frame.GetComponent<RectTransform>().sizeDelta = new(objectHeight * 0.625f, objectHeight);
         }
+    }
+
+    private void SaveAdData()
+    {
+        StartCoroutine(GetClanData(data =>
+        {
+            data.AdData = _adData;
+            StartCoroutine(SaveClanData(clanData => data = clanData, data));
+        }));
     }
 
     void BringToFront(Transform folder)
@@ -77,40 +95,58 @@ public class AdEditor : AltMonoBehaviour
     public void ChangeOrangeColor()
     {
         _backgroundImage.color = orangeColor;
+        _adData.BackgroundColour = ColorUtility.ToHtmlStringRGBA(orangeColor);
+        SaveAdData();
     }
     public void ChangeYellowColor()
     {
         _backgroundImage.color = yellowColor;
+        _adData.BackgroundColour = ColorUtility.ToHtmlStringRGBA(yellowColor);
+        SaveAdData();
     }
     public void ChangeLightGreenColor()
     {
         _backgroundImage.color = lightGreenColor;
+        _adData.BackgroundColour = ColorUtility.ToHtmlStringRGBA(lightGreenColor);
+        SaveAdData();
     }
 
     public void ChangeLightBlueColor()
     {
         _backgroundImage.color = lightBlueColor;
+        _adData.BackgroundColour = ColorUtility.ToHtmlStringRGBA(lightBlueColor);
+        SaveAdData();
     }
     public void ChangeBlueColor()
     {
         _backgroundImage.color = blueColor;
+        _adData.BackgroundColour = ColorUtility.ToHtmlStringRGBA(blueColor);
+        SaveAdData();
     }
     public void ChangePurpleColor()
     {
         _backgroundImage.color = purpleColor;
+        _adData.BackgroundColour = ColorUtility.ToHtmlStringRGBA(purpleColor);
+        SaveAdData();
     }
     public void ChangeDarkPinkColor()
     {
         _backgroundImage.color = darkPinkColor;
+        _adData.BackgroundColour = ColorUtility.ToHtmlStringRGBA(darkPinkColor);
+        SaveAdData();
     }
     public void ChangeRedColor()
     {
         _backgroundImage.color = redColor;
+        _adData.BackgroundColour = ColorUtility.ToHtmlStringRGBA(redColor);
+        SaveAdData();
     }
 
     public void ChangeBorder(AdBorderFrameObject frame)
     {
         _borderImage.sprite = frame.Image;
+        _adData.BorderFrame = frame.Name;
+        SaveAdData();
     }
 
     public void CloseEditor()
