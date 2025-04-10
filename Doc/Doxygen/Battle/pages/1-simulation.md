@@ -6,14 +6,12 @@ Battle.QSimulation
 
 ## Directories {#page-simulation-directories}
 
-|                             |             |                 |                              |
+|  Path                                                     ||| Description                  |
 | :-------------------------- | :---------- | :-------------- | :--------------------------- |
 | Altzone/Assets/QuantumUser/ | Simulation/ |                 | Simulation code              |
 | Altzone/Assets/QuantumUser/ | Simulation/ | Battle/Scripts/ | Simulation %Battle C# Script |
 | Altzone/Assets/QuantumUser/ | Simulation/ | Battle/QTN/     | Simulation %Battle QTN files |
 | Altzone/Assets/QuantumUser/ | Simulation/ | Generated/      | Generated Simulation scripts |
-
-```
 
 ## Systems {#page-simulation-systems}
 
