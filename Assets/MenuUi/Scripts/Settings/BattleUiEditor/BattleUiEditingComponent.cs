@@ -24,6 +24,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _uiElementHolder = uiElementHolder.GetComponent<RectTransform>();
 
             SetControlButtonSize(_scaleHandleButton, 0.05f);
+
+            _movableElementData = movableElement.GetData();
         }
 
         public void SetInfo(BattleUiMultiOrientationElement multiOrientationElement, Transform uiElementHolder)
@@ -38,6 +40,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             SetControlButtonSize(_scaleHandleButton, 0.05f);
             SetControlButtonSize(_flipButton, 0.1f);
             SetControlButtonSize(_changeOrientationButton, 0.1f);
+
+            _movableElementData = multiOrientationElement.GetData();
         }
 
         public void OnBeginDrag(PointerEventData eventData)
@@ -66,7 +70,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     _movableElement.transform.position = eventData.position;
                     break;
                 case ActionType.Scale:
-                    //eventData.delta
+                    // Scaling while keeping aspect ratio
+                    float sizeIncreaseX = eventData.delta.x * 2;
+                    float sizeIncreaseY = sizeIncreaseX / (_movableElement.RectTransformComponent.rect.width / _movableElement.RectTransformComponent.rect.height);
+                    _movableElement.RectTransformComponent.sizeDelta += new Vector2 (sizeIncreaseX, sizeIncreaseY);
                     break;
             }
         }
@@ -86,6 +93,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private RectTransform _uiElementHolder;
         private BattleUiMovableElement _movableElement;
         private BattleUiMultiOrientationElement _multiOrientationElement;
+        private BattleUiMovableElementData _movableElementData;
         private ActionType _currentAction;
 
         private void CalculateAndSetAnchors()
@@ -93,12 +101,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             float holderWidth = _uiElementHolder.rect.width;
             float holderHeight = _uiElementHolder.rect.height;
 
-            RectTransform _movableElementRect = _movableElement.GetComponent<RectTransform>();
-            float xPos = _movableElementRect.localPosition.x;
-            float yPos = _movableElementRect.localPosition.y;
+            float xPos = _movableElement.RectTransformComponent.localPosition.x;
+            float yPos = _movableElement.RectTransformComponent.localPosition.y;
 
-            float ownWidth = _movableElementRect.rect.width;
-            float ownHeight = _movableElementRect.rect.height;
+            float ownWidth = _movableElement.RectTransformComponent.rect.width;
+            float ownHeight = _movableElement.RectTransformComponent.rect.height;
 
             float anchorXMin = (xPos - ownWidth / 2.0f) / holderWidth + 0.5f;
             float anchorXMax = (xPos + ownWidth / 2.0f) / holderWidth + 0.5f;
@@ -106,17 +113,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             float anchorYMin = (yPos - ownHeight / 2.0f) / holderHeight + 0.5f;
             float anchorYMax = (yPos + ownHeight / 2.0f) / holderHeight + 0.5f;
 
-            Vector2 anchorMin = new(anchorXMin, anchorYMin);
-            Vector2 anchorMax = new(anchorXMax, anchorYMax);
+            _movableElementData.AnchorMin = new(anchorXMin, anchorYMin);
+            _movableElementData.AnchorMax = new(anchorXMax, anchorYMax);
 
-            _movableElementRect.anchorMin = anchorMin;
-            _movableElementRect.anchorMax = anchorMax;
-
-            _movableElementRect.offsetMin = Vector2.zero;
-            _movableElementRect.offsetMax = Vector2.zero;
+            _movableElement.SetData(_movableElementData);
         }
 
-        // Is used to calculate appropiate size for the control buttons, since if they were anchored they would grow with the element when it's scaled
+        // Method used to calculate appropiate size for the control buttons, since if they were anchored they would grow with the element when it's scaled
         private void SetControlButtonSize(Button button, float sizeRatio)
         {
             float buttonWidth = _uiElementHolder.rect.width * sizeRatio;
