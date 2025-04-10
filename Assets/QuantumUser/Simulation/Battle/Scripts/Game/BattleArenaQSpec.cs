@@ -20,19 +20,19 @@ namespace Battle.QSimulation.Game
         public FP WorldWidth;
         /// <value>Height of the playable arena in world units.</value>
         public FP WorldHeight;
-        /// <value>Number of columns in the logical grid.</value>
+        /// <value>Number of columns in grid units.</value>
         public int GridWidth;
-        /// <value>Number of rows in the logical grid.</value>
+        /// <value>Number of rows in grid units.</value>
         public int GridHeight;
-        /// <value>Vertical space reserved in the center area.</value>
+        /// <value>Vertical space reserved in the center area in grid units.</value>
         public int MiddleAreaHeight;
-        /// <value>Height of the center area in grid.</value>
+        /// <value>Height of the center area in grid units.</value>
         public int SoulWallHeight;
-        /// <value>Array of spawn grid positions for each player.</value>
+        /// <value>Array of spawn <see cref="Quantum.BattleGridPosition">grid positions</see> for each player.</value>
         public BattleGridPosition[] PlayerSpawnPositions;
-        /// <value>Templates defining SoulWall segments for Team Alpha.</value>
+        /// <value><see cref="Quantum.BattleSoulWallTemplate">Templates defining SoulWall segments</see> for Team Alpha.</value>
         public BattleSoulWallTemplate[] SoulWallTeamAlphaTemplates;
-        /// <value>Templates defining SoulWall segments for Team Beta.</value>
+        /// <value><see cref="Quantum.BattleSoulWallTemplate">Templates defining SoulWall segments</see> for Team Beta.</value>
         public BattleSoulWallTemplate[] SoulWallTeamBetaTemplates;
     }
 }
