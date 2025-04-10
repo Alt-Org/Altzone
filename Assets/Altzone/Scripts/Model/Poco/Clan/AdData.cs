@@ -6,10 +6,11 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Store
 {
+    [Serializable]
     public class AdStoreObject
     {
-        private string _borderFrame;
-        private string _backgroundColour;
+        public string _borderFrame;
+        public string _backgroundColour;
 
         public string BorderFrame
         {
