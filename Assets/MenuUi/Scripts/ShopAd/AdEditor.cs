@@ -95,50 +95,50 @@ public class AdEditor : AltMonoBehaviour
     public void ChangeOrangeColor()
     {
         _backgroundImage.color = orangeColor;
-        _adData.BackgroundColour = ColorUtility.ToHtmlStringRGBA(orangeColor);
+        _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(orangeColor);
         SaveAdData();
     }
     public void ChangeYellowColor()
     {
         _backgroundImage.color = yellowColor;
-        _adData.BackgroundColour = ColorUtility.ToHtmlStringRGBA(yellowColor);
+        _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(yellowColor);
         SaveAdData();
     }
     public void ChangeLightGreenColor()
     {
         _backgroundImage.color = lightGreenColor;
-        _adData.BackgroundColour = ColorUtility.ToHtmlStringRGBA(lightGreenColor);
+        _adData.BackgroundColour = "#"+ColorUtility.ToHtmlStringRGBA(lightGreenColor);
         SaveAdData();
     }
 
     public void ChangeLightBlueColor()
     {
         _backgroundImage.color = lightBlueColor;
-        _adData.BackgroundColour = ColorUtility.ToHtmlStringRGBA(lightBlueColor);
+        _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(lightBlueColor);
         SaveAdData();
     }
     public void ChangeBlueColor()
     {
         _backgroundImage.color = blueColor;
-        _adData.BackgroundColour = ColorUtility.ToHtmlStringRGBA(blueColor);
+        _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(blueColor);
         SaveAdData();
     }
     public void ChangePurpleColor()
     {
         _backgroundImage.color = purpleColor;
-        _adData.BackgroundColour = ColorUtility.ToHtmlStringRGBA(purpleColor);
+        _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(purpleColor);
         SaveAdData();
     }
     public void ChangeDarkPinkColor()
     {
         _backgroundImage.color = darkPinkColor;
-        _adData.BackgroundColour = ColorUtility.ToHtmlStringRGBA(darkPinkColor);
+        _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(darkPinkColor);
         SaveAdData();
     }
     public void ChangeRedColor()
     {
         _backgroundImage.color = redColor;
-        _adData.BackgroundColour = ColorUtility.ToHtmlStringRGBA(redColor);
+        _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(redColor);
         SaveAdData();
     }
 
