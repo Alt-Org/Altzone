@@ -77,7 +77,10 @@ public class LeaderboardView : MonoBehaviour
 
         _clansButton.onClick.AddListener(() => ListClans());
         _playersButton.onClick.AddListener(() => ListPlayers());
+    }
 
+    private void OnEnable()
+    {
         SetLeaderboardType(LeaderboardType.Activity);
         OpenLeaderboard(Leaderboard.Clan);
         LoadActivityView();
