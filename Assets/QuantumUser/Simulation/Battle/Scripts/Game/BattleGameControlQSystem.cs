@@ -1,3 +1,9 @@
+/// <summary>
+/// @file BattleGameControlQSystem.cs
+/// @brief Controls the overall game state flow in Quantum simulation.
+/// 
+/// This system initializes the battle grid and player manager, and controls game state transitions from initialization to active gameplay.
+/// </summary>
 //#define DEBUG_LOG_STATE
 
 using UnityEngine.Scripting;
@@ -17,10 +23,10 @@ namespace Battle.QSimulation.Game
     {
         /// <summary>
         /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System OnInit method</a> gets called when the system is initialized.</span><br/>
-        /// Initializes all the necessary Battle values. 
+        /// Initializes the arena, player system, and sets the game session as initialized.
         /// @warning This method should only be called by Quantum.
         /// </summary>
-        /// <param name="f"></param>
+        /// <param name="f">Current simulation frame.</param>
         public override void OnInit(Frame f)
         {
             Log.Debug("[GameControlSystem] OnInit");
@@ -38,10 +44,10 @@ namespace Battle.QSimulation.Game
 
         /// <summary>
         /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method</a> gets called every frame.</span><br/>
-        /// Handles the Game session state.
+        /// Controls state transitions of the game session per frame. Manages countdowns and progression to 'Playing'.
         /// @warning This method should only be called by Quantum.
         /// </summary>
-        /// <param name="f"></param>
+        /// <param name="f">Current simulation frame.</param>
         public override void Update(Frame f)
         {
             BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
@@ -86,6 +92,10 @@ namespace Battle.QSimulation.Game
             }
         }
 
+        /// <summary>
+        /// Sets up the soul wall map layout during the 'CreateMap' game state.
+        /// </summary>
+        /// <param name="f">Current simulation frame.</param>
         private static void CreateMap(Frame f)
         {
             BattleArenaQSpec battleArenaSpec = BattleQConfig.GetArenaSpec(f);

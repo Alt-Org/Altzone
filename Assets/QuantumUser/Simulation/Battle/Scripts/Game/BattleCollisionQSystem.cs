@@ -8,7 +8,12 @@ namespace Battle.QSimulation.Game
     [Preserve]
     public unsafe class BattleCollisionQSystem : SystemSignalsOnly, ISignalOnTrigger2D
     {
-        // Handles all triggers in the game
+        /// <summary>
+        /// Handles all 2D trigger collisions in the game.
+        /// Routes projectile collisions to the correct signal handler based on the type of object hit.
+        /// </summary>
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="info">Trigger collision information.</param>
         public void OnTrigger2D(Frame f, TriggerInfo2D info)
         {
             // if projectile
