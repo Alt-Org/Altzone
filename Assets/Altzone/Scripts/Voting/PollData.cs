@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
@@ -60,10 +61,15 @@ namespace Altzone.Scripts.Voting
         {
             DataStore store = Storefront.Get();
             PlayerData player = null;
+            
             store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
 
             if (player != null)
             {
+                PollVoteData previousPollVote = null;
+                if (answer) previousPollVote = NoVotes.FirstOrDefault(vote => vote.PlayerId == player.Id);
+                else previousPollVote = YesVotes.FirstOrDefault(vote => vote.PlayerId == player.Id);
+
                 PollVoteData newPollVote = new(player.Id, player.Name, answer);
 
                 if (NotVoted.Contains(player.Id))
@@ -72,12 +78,25 @@ namespace Altzone.Scripts.Voting
                     else NoVotes.Add(newPollVote);
 
                     NotVoted.Remove(player.Id);
-
-                    //PlayerVoteData newPlayerVote = new PlayerVoteData(Id, answer);
-                    //player.playerVotes.Add(newPlayerVote);
-                    //store.SavePlayerData(player, data => player = data);
+                }
+                else if (previousPollVote != null) // Has already voted on this poll
+                {
+                    if (previousPollVote.Answer == true && answer == false)
+                    {
+                        YesVotes.Remove(previousPollVote);
+                        NoVotes.Add(newPollVote);
+                    }
+                    else if (previousPollVote.Answer == false && answer == true)
+                    {
+                        NoVotes.Remove(previousPollVote);
+                        YesVotes.Add(newPollVote);
+                    }
                 }
             }
+
+            //PlayerVoteData newPlayerVote = new PlayerVoteData(Id, answer);
+            //player.playerVotes.Add(newPlayerVote);
+            //store.SavePlayerData(player, data => player = data);
         }
     }
 
