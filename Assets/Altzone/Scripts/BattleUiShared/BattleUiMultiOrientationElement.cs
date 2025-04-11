@@ -116,46 +116,40 @@ namespace Altzone.Scripts.BattleUiShared
                 if (_horizontalConfiguration == null) return;
 
                 // Repositioning every horizontal configuration child anchor
-                for (int i = 0; i < _horizontalConfiguration.transform.childCount; i++)
-                {
-                    Transform child = _horizontalConfiguration.transform.GetChild(i);
-                    RectTransform childRectTransform = child.GetComponent<RectTransform>();
-                    if (childRectTransform != null)
-                    {
-                        FlipHorizontally(childRectTransform);
-                    }
-                }
+                FlipChildrenHorizontally(_horizontalConfiguration.transform);
             }
             else if (_orientation == OrientationType.Vertical || _orientation == OrientationType.VerticalFlipped)
             {
                 if (_verticalConfiguration == null) return;
 
                 // Repositioning every vertical configuration child anchor
-                for (int i = 0; i < _verticalConfiguration.transform.childCount; i++)
-                {
-                    Transform child = _verticalConfiguration.transform.GetChild(i);
-                    RectTransform childRectTransform = child.GetComponent<RectTransform>();
-                    if (childRectTransform != null)
-                    {
-                        FlipHorizontally(childRectTransform);
-                    }
-                }
+                FlipChildrenHorizontally(_verticalConfiguration.transform);
             }
         }
 
-        private void FlipHorizontally(RectTransform childRectTransform)
+        private void FlipChildrenHorizontally(Transform parent)
         {
-            // Calculating flipped x anchors
-            float flippedXMin = GetFlippedAnchor(childRectTransform.anchorMax.x); // we have to get the value from anchorMax so that it works
-            float flippedXMax = GetFlippedAnchor(childRectTransform.anchorMin.x); // same here we have to get it from anchorMin
+            for (int i = 0; i < parent.childCount; i++)
+            {
+                RectTransform childRectTransform = parent.GetChild(i).GetComponent<RectTransform>();
 
-            // Setting new x anchors
-            childRectTransform.anchorMin = new Vector2(flippedXMin, childRectTransform.anchorMin.y);
-            childRectTransform.anchorMax = new Vector2(flippedXMax, childRectTransform.anchorMax.y);
+                if (childRectTransform == null) return;
 
-            // Resetting offset values in case they changed
-            childRectTransform.offsetMin = Vector2.zero;
-            childRectTransform.offsetMax = Vector2.zero;
+                // Calculating flipped x anchors
+                float flippedXMin = GetFlippedAnchor(childRectTransform.anchorMax.x); // we have to get the value from anchorMax so that it works
+                float flippedXMax = GetFlippedAnchor(childRectTransform.anchorMin.x); // same here we have to get it from anchorMin
+
+                // Setting new x anchors
+                childRectTransform.anchorMin = new Vector2(flippedXMin, childRectTransform.anchorMin.y);
+                childRectTransform.anchorMax = new Vector2(flippedXMax, childRectTransform.anchorMax.y);
+
+                // Resetting offset values in case they changed
+                childRectTransform.offsetMin = Vector2.zero;
+                childRectTransform.offsetMax = Vector2.zero;
+
+                // Flipping the child's children
+                FlipChildrenHorizontally(childRectTransform);
+            }
         }
 
         private float GetFlippedAnchor(float anchorValue)
