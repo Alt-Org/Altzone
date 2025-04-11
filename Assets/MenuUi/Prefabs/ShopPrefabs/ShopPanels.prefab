@@ -19647,7 +19647,7 @@ GameObject:
   m_Component:
   - component: {fileID: 208226813597904748}
   - component: {fileID: 5829438602333542728}
-  - component: {fileID: 6541069264510686022}
+  - component: {fileID: 4315336279540053017}
   m_Layer: 5
   m_Name: 1_Group
   m_TagString: Untagged
@@ -19664,7 +19664,7 @@ RectTransform:
   m_GameObject: {fileID: 5464630229109842442}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 482920038194143699}
@@ -19684,10 +19684,10 @@ RectTransform:
   m_Father: {fileID: 397767655526543425}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: -657.70715}
   m_SizeDelta: {x: 0, y: 1315.4143}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 1}
 --- !u!222 &5829438602333542728
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -19696,7 +19696,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5464630229109842442}
   m_CullTransparentMesh: 1
---- !u!114 &6541069264510686022
+--- !u!114 &4315336279540053017
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -19705,19 +19705,31 @@ MonoBehaviour:
   m_GameObject: {fileID: 5464630229109842442}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4fd0af14f4b8ee0479b730a5789aacf5, type: 3}
+  m_Script: {fileID: 11500000, guid: 89724a78097b7c54e8309e0280f755c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 20
-    m_Right: 20
-    m_Top: 20
-    m_Bottom: 20
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
   m_ChildAlignment: 0
-  columns: 4
-  spacing: {x: 20, y: 30}
-  cellAspectRatio: 0.7
-  _content: {fileID: 397767655526543425}
+  _startCorner: 0
+  _gridFit: 0
+  _minDynamicColumns: 3
+  _maxDynamicColumns: 4
+  _minDynamicRows: 2
+  _maxDynamicRows: 4
+  _columnAmount: 1
+  _rowAmount: 1
+  _gridCellSize: 1
+  _minCellSize: {x: 0, y: 0}
+  _maxCellSize: {x: 0, y: 0}
+  _preferredCellSize: {x: 0, y: 0}
+  _cellAspectRatio: 0.7
+  _prefab: {fileID: 0}
+  _cellSpacing: {x: 20, y: 20}
+  _preventScalingOutOfParentBounds: 0
 --- !u!1 &5488914752948675862
 GameObject:
   m_ObjectHideFlags: 0
@@ -30297,7 +30309,7 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0.15997314}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &3193593867451040344
 CanvasRenderer:
   m_ObjectHideFlags: 0

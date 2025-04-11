@@ -86,6 +86,7 @@ GameObject:
   - component: {fileID: 8819592819060621207}
   - component: {fileID: 8514476773547453137}
   - component: {fileID: 8676586398119258680}
+  - component: {fileID: 5952171951542951201}
   m_Layer: 5
   m_Name: AdPoster
   m_TagString: Untagged
@@ -157,6 +158,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5952171951542951201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4595799555126223176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b035f751e58e7714c952fd5719b6b905, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _adBackground: {fileID: 5763904001501701698}
+  _adFrameBorder: {fileID: 2912115046961118792}
+  _adItemImage: {fileID: 5865290603193644658}
+  _adClanName: {fileID: 2317289914205736640}
 --- !u!1 &5885336052944656717
 GameObject:
   m_ObjectHideFlags: 0
