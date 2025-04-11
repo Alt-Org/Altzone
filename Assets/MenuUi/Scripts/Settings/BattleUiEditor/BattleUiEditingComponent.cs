@@ -26,7 +26,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             SetControlButtonSize(_scaleHandleButton, 0.05f);
 
-            _movableElementData = movableElement.GetData();
+            _data = movableElement.GetData();
+            _movableElementAspectRatio = movableElement.RectTransformComponent.rect.width / movableElement.RectTransformComponent.rect.height;
         }
 
         public void SetInfo(BattleUiMultiOrientationElement multiOrientationElement, Transform uiElementHolder)
@@ -45,7 +46,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _flipButton.onClick.AddListener(FlipOrientation);
             _changeOrientationButton.onClick.AddListener(ChangeOrientation);
 
-            _movableElementData = multiOrientationElement.GetData();
+            _data = multiOrientationElement.GetData();
         }
 
         public void OnBeginDrag(PointerEventData eventData)
@@ -75,7 +76,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             switch (_currentAction)
             {
                 case ActionType.Move:
-                    Debug.Log(_moveOffset);
                     _movableElement.transform.position = eventData.position + _moveOffset;
                     break;
                 case ActionType.Scale:
@@ -103,9 +103,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private RectTransform _uiElementHolder;
         private BattleUiMovableElement _movableElement;
         private BattleUiMultiOrientationElement _multiOrientationElement;
-        private BattleUiMovableElementData _movableElementData;
+        private BattleUiMovableElementData _data;
         private ActionType _currentAction;
         private Vector2 _moveOffset;
+        private float _movableElementAspectRatio;
 
         private void OnDestroy()
         {
@@ -115,6 +116,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void CalculateAndSetAnchors()
         {
+            // Saving values used in calculations to easier to read variables
             float holderWidth = _uiElementHolder.rect.width;
             float holderHeight = _uiElementHolder.rect.height;
 
@@ -124,16 +126,52 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             float ownWidth = _movableElement.RectTransformComponent.rect.width;
             float ownHeight = _movableElement.RectTransformComponent.rect.height;
 
+            // Calculating anchors
             float anchorXMin = (xPos - ownWidth / 2.0f) / holderWidth + 0.5f;
             float anchorXMax = (xPos + ownWidth / 2.0f) / holderWidth + 0.5f;
 
             float anchorYMin = (yPos - ownHeight / 2.0f) / holderHeight + 0.5f;
             float anchorYMax = (yPos + ownHeight / 2.0f) / holderHeight + 0.5f;
 
-            _movableElementData.AnchorMin = new(anchorXMin, anchorYMin);
-            _movableElementData.AnchorMax = new(anchorXMax, anchorYMax);
+            // Checking that the anchors don't go over borders
+            if (anchorXMin < 0)
+            {
+                anchorXMax += Mathf.Abs(anchorXMin); 
+                anchorXMin = 0;
+            }
 
-            _movableElement.SetData(_movableElementData);
+            if (anchorXMax > 1)
+            {
+                anchorXMin -= anchorXMax - 1;
+                anchorXMax = 1;
+
+                if (anchorXMin < 0)
+                {
+                    anchorXMin = 0;
+                }
+            }
+
+            if (anchorYMin < 0)
+            {
+                anchorYMax += Mathf.Abs(anchorYMin);
+                anchorYMin = 0;
+            }
+
+            if (anchorYMax > 1)
+            {
+                anchorYMin -= anchorYMax - 1;
+                anchorYMax = 1;
+
+                if (anchorYMin < 0)
+                {
+                    anchorYMin = 0;
+                }
+            }
+
+            _data.AnchorMin = new(anchorXMin, anchorYMin);
+            _data.AnchorMax = new(anchorXMax, anchorYMax);
+
+            _movableElement.SetData(_data);
         }
 
         // Method used to calculate appropiate size for the control buttons, since if they were anchored they would grow with the element when it's scaled
@@ -149,25 +187,25 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             switch (_multiOrientationElement.Orientation)
             {
                 case OrientationType.Horizontal:
-                    _movableElementData.Orientation = OrientationType.HorizontalFlipped;
+                    _data.Orientation = OrientationType.HorizontalFlipped;
                     break;
                 case OrientationType.HorizontalFlipped:
-                    _movableElementData.Orientation = OrientationType.Horizontal;
+                    _data.Orientation = OrientationType.Horizontal;
                     break;
                 case OrientationType.Vertical:
-                    _movableElementData.Orientation = OrientationType.VerticalFlipped;
+                    _data.Orientation = OrientationType.VerticalFlipped;
                     break;
                 case OrientationType.VerticalFlipped:
-                    _movableElementData.Orientation = OrientationType.Vertical;
+                    _data.Orientation = OrientationType.Vertical;
                     break;
             }
-            _multiOrientationElement.SetData(_movableElementData);
+            _multiOrientationElement.SetData(_data);
         }
 
         private void ChangeOrientation()
         {
-            _movableElementData.Orientation = _multiOrientationElement.IsHorizontal ? OrientationType.Vertical : OrientationType.Horizontal;
-            _multiOrientationElement.SetData(_movableElementData);
+            _data.Orientation = _multiOrientationElement.IsHorizontal ? OrientationType.Vertical : OrientationType.Horizontal;
+            _multiOrientationElement.SetData(_data);
         }
     }
 }

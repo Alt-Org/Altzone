@@ -76,7 +76,7 @@ namespace Altzone.Scripts.BattleUiShared
             }
         }
 
-        private OrientationType _orientation;
+        private OrientationType _orientation = OrientationType.Horizontal;
 
         private void SetOrientation(OrientationType newOrientation)
         {
