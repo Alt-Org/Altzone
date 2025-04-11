@@ -15,6 +15,7 @@ public class AdEditor : AltMonoBehaviour
     [SerializeField] private Image _effectImage;
     [SerializeField] private Image _itemImage;
     [SerializeField] private Image _borderImage;
+    [SerializeField] private AdPosterHandler _adGraphicHandler;
 
     [SerializeField] private Color orangeColor;
     [SerializeField] private Color yellowColor;
@@ -31,6 +32,7 @@ public class AdEditor : AltMonoBehaviour
     private List<Image> _borderFrameList;
 
     private AdStoreObject _adData;
+    private string _posterName = null;
 
 
     void Start()    
@@ -39,17 +41,16 @@ public class AdEditor : AltMonoBehaviour
         {
             if (data != null)
             {
-                clanNameText.text = (data.Name);
                 if(data.AdData != null) _adData = data.AdData;
                 else _adData = new(null, null);
+                _posterName = data.Name;
             }
             else
             {
                 _adData = new(null, null);
-                clanNameText.text = "Et ole klaanissa";
+                _posterName = "Et ole klaanissa";
             }
-            _borderImage.sprite = AdDecorationReference.Instance.GetBorderFrameSprite(_adData.BorderFrame);
-            if(ColorUtility.TryParseHtmlString(_adData.BackgroundColour, out Color colour)) _backgroundImage.color = colour;
+            _adGraphicHandler.SetAdPoster(_adData, _posterName);
         }));
 
 
@@ -94,58 +95,58 @@ public class AdEditor : AltMonoBehaviour
 
     public void ChangeOrangeColor()
     {
-        _backgroundImage.color = orangeColor;
         _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(orangeColor);
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
     }
     public void ChangeYellowColor()
     {
-        _backgroundImage.color = yellowColor;
         _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(yellowColor);
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
     }
     public void ChangeLightGreenColor()
     {
-        _backgroundImage.color = lightGreenColor;
         _adData.BackgroundColour = "#"+ColorUtility.ToHtmlStringRGBA(lightGreenColor);
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
     }
 
     public void ChangeLightBlueColor()
     {
-        _backgroundImage.color = lightBlueColor;
         _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(lightBlueColor);
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
     }
     public void ChangeBlueColor()
     {
-        _backgroundImage.color = blueColor;
         _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(blueColor);
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
     }
     public void ChangePurpleColor()
     {
-        _backgroundImage.color = purpleColor;
         _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(purpleColor);
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
     }
     public void ChangeDarkPinkColor()
     {
-        _backgroundImage.color = darkPinkColor;
         _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(darkPinkColor);
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
     }
     public void ChangeRedColor()
     {
-        _backgroundImage.color = redColor;
         _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(redColor);
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
     }
 
     public void ChangeBorder(AdBorderFrameObject frame)
     {
-        _borderImage.sprite = frame.Image;
         _adData.BorderFrame = frame.Name;
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
     }
 
