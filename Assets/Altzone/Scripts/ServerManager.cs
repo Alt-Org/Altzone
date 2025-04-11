@@ -330,23 +330,23 @@ public class ServerManager : MonoBehaviour
             playerData.ClanId = clan._id;
             store.SavePlayerData(playerData, null);
 
-            clanData = new ClanData(clan);
+            //clanData = new ClanData(clan);
 
             // Checks if the clan is found in DataStorage or if we have to create new one.
-            /*
+            
             store.GetClanData(playerData.ClanId, clanDataFromStorage =>
             {
                 if (clanDataFromStorage == null)
                 {
                     clanData = new ClanData(clan);
-                    return;
                 }
                 else
                 {
                     clanData = clanDataFromStorage;
+                    clanData.UpdateClanData(clan);
                 }
 
-            }); */
+            }); 
         });
 
         // Creates or fetches the most up to date clan Stock before saving.
