@@ -23,6 +23,8 @@ namespace Altzone.Scripts.BattleUiShared
         }
 
         public OrientationType Orientation => _orientation;
+        public float HorizontalAspectRatio => _horizontalAspectRatio;
+        public float VerticalAspectRatio => _verticalAspectRatio;
 
         public bool IsHorizontal
         {
