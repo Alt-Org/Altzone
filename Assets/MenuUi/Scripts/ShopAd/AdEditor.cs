@@ -27,9 +27,12 @@ public class AdEditor : AltMonoBehaviour
     [SerializeField] private Color redColor;
 
     [SerializeField] private AdDecorationReference _borderReference;
+    [Header("Frame Selectors")]
     [SerializeField] private Transform _borderSelectionContent;
     [SerializeField] private GameObject _borderFramePrefab;
-    private List<Image> _borderFrameList;
+    [Header("Colour Selectors")]
+    [SerializeField] private Transform _backgroundColourSelectorContent;
+    [SerializeField] private GameObject _backgroundColourSelectorPrefab;
 
     private AdStoreObject _adData;
     private string _posterName = null;
@@ -54,9 +57,9 @@ public class AdEditor : AltMonoBehaviour
         }));
 
 
-        List<AdBorderFrameObject> list = _borderReference.Info;
+        List<AdBorderFrameObject> frameList = _borderReference.FrameList;
 
-        foreach (AdBorderFrameObject frame in list)
+        foreach (AdBorderFrameObject frame in frameList)
         {
             GameObject frameObject = Instantiate(_borderFramePrefab, _borderSelectionContent);
             frameObject.GetComponent<Image>().sprite = frame.Image;
@@ -64,6 +67,18 @@ public class AdEditor : AltMonoBehaviour
             frameObject.GetComponent<RectTransform>().sizeDelta = new(objectHeight * 0.625f, objectHeight);
             frameObject.GetComponent<Button>().onClick.AddListener(() => ChangeBorder(frame));
         }
+
+        List<Color> colorList = _borderReference.ColourList;
+
+        foreach (Color colour in colorList)
+        {
+            GameObject colourObject = Instantiate(_backgroundColourSelectorPrefab, _backgroundColourSelectorContent);
+            colourObject.GetComponent<Image>().color = colour;
+            float objectWidth = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.width;
+            colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth*0.4f);
+            colourObject.GetComponent<Button>().onClick.AddListener(() => ChangeColor(colour));
+        }
+        _backgroundColourSelectorContent.GetComponent<VerticalLayoutGroup>().spacing = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.width*0.1f;
 
         StartCoroutine(SetFrameSelectionSize());
     }
@@ -92,53 +107,9 @@ public class AdEditor : AltMonoBehaviour
         folder.SetAsLastSibling();
     }
 
-
-    public void ChangeOrangeColor()
+    public void ChangeColor(Color colour)
     {
-        _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(orangeColor);
-        _adGraphicHandler.SetAdPoster(_adData, _posterName);
-        SaveAdData();
-    }
-    public void ChangeYellowColor()
-    {
-        _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(yellowColor);
-        _adGraphicHandler.SetAdPoster(_adData, _posterName);
-        SaveAdData();
-    }
-    public void ChangeLightGreenColor()
-    {
-        _adData.BackgroundColour = "#"+ColorUtility.ToHtmlStringRGBA(lightGreenColor);
-        _adGraphicHandler.SetAdPoster(_adData, _posterName);
-        SaveAdData();
-    }
-
-    public void ChangeLightBlueColor()
-    {
-        _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(lightBlueColor);
-        _adGraphicHandler.SetAdPoster(_adData, _posterName);
-        SaveAdData();
-    }
-    public void ChangeBlueColor()
-    {
-        _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(blueColor);
-        _adGraphicHandler.SetAdPoster(_adData, _posterName);
-        SaveAdData();
-    }
-    public void ChangePurpleColor()
-    {
-        _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(purpleColor);
-        _adGraphicHandler.SetAdPoster(_adData, _posterName);
-        SaveAdData();
-    }
-    public void ChangeDarkPinkColor()
-    {
-        _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(darkPinkColor);
-        _adGraphicHandler.SetAdPoster(_adData, _posterName);
-        SaveAdData();
-    }
-    public void ChangeRedColor()
-    {
-        _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(redColor);
+        _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
     }

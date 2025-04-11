@@ -9,11 +9,45 @@ namespace Altzone.Scripts.ReferenceSheets
     public class AdDecorationReference : ScriptableObject
     {
 
-        [SerializeField] private List<AdBorderFrameObject> _info;
+        [SerializeField] private List<AdBorderFrameObject> _frameList;
+
+        [Header("Colours")]
+        [SerializeField] private Color _orangeColor;
+        [SerializeField] private Color _yellowColor;
+        [SerializeField] private Color _lightGreenColor;
+        [SerializeField] private Color _lightBlueColor;
+        [SerializeField] private Color _blueColor;
+        [SerializeField] private Color _purpleColor;
+        [SerializeField] private Color _darkPinkColor;
+        [SerializeField] private Color _redColor;
+        private List<Color> _colourList;
+
+
         private static AdDecorationReference _instance = null;
         private static bool _hasInstance = false;
 
-        public List<AdBorderFrameObject> Info => _info; // Public accessor for _info
+        public List<AdBorderFrameObject> FrameList => _frameList; // Public accessor for _info
+
+        public List<Color> ColourList
+        {
+            get
+            {
+                if (_colourList == null || _colourList.Count == 0)
+                {
+                    _colourList = new();
+                    _colourList.Add(_orangeColor);
+                    _colourList.Add(_yellowColor);
+                    _colourList.Add(_lightGreenColor);
+                    _colourList.Add(_lightBlueColor);
+                    _colourList.Add(_blueColor);
+                    _colourList.Add(_purpleColor);
+                    _colourList.Add(_darkPinkColor);
+                    _colourList.Add(_redColor);
+                }
+                return _colourList;
+            }
+        }
+
 
         public static AdDecorationReference Instance
         {
@@ -27,7 +61,6 @@ namespace Altzone.Scripts.ReferenceSheets
                 return _instance;
             }
         }
-
 
         public Sprite GetBorderFrameSprite(string name)
         {
@@ -44,7 +77,7 @@ namespace Altzone.Scripts.ReferenceSheets
                 return null;
             }
 
-            foreach (AdBorderFrameObject info in _info)
+            foreach (AdBorderFrameObject info in _frameList)
             {
                 if (info.Name == name)
                 {

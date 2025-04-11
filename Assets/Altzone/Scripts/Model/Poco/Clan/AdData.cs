@@ -43,7 +43,7 @@ namespace Altzone.Scripts.Store
             else
             {
                 Debug.LogWarning($"Invalid border id: \"{border}\". Using the default border.");
-                _borderFrame = AdDecorationReference.Instance.Info[0].Name;
+                _borderFrame = AdDecorationReference.Instance.FrameList[0].Name;
             }
 
             if (ColorUtility.TryParseHtmlString(backgroundColour, out Color colour)) _backgroundColour = backgroundColour;
