@@ -62,6 +62,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
             else
             {
+                // Calculating offset so that moving gameobject is relative to the click position and not the pivot
+                _moveOffset.x = _movableElement.transform.position.x - eventData.pressPosition.x;
+                _moveOffset.y = _movableElement.transform.position.y - eventData.pressPosition.y;
+
                 _currentAction = ActionType.Move;
             }
         }
@@ -71,7 +75,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             switch (_currentAction)
             {
                 case ActionType.Move:
-                    _movableElement.transform.position = eventData.position;
+                    Debug.Log(_moveOffset);
+                    _movableElement.transform.position = eventData.position + _moveOffset;
                     break;
                 case ActionType.Scale:
                     // Scaling while keeping aspect ratio
@@ -85,6 +90,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         public void OnEndDrag(PointerEventData eventData)
         {
             CalculateAndSetAnchors();
+            _currentAction = ActionType.None;
         }
 
         enum ActionType
@@ -99,6 +105,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private BattleUiMultiOrientationElement _multiOrientationElement;
         private BattleUiMovableElementData _movableElementData;
         private ActionType _currentAction;
+        private Vector2 _moveOffset;
 
         private void OnDestroy()
         {
