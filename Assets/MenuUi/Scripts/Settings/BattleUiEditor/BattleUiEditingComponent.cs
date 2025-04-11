@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 using Altzone.Scripts.BattleUiShared;
+using OrientationType = Altzone.Scripts.BattleUiShared.BattleUiMultiOrientationElement.OrientationType;
 
 namespace MenuUi.Scripts.Settings.BattleUiEditor
 {
@@ -40,6 +41,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             SetControlButtonSize(_scaleHandleButton, 0.05f);
             SetControlButtonSize(_flipButton, 0.1f);
             SetControlButtonSize(_changeOrientationButton, 0.1f);
+
+            _flipButton.onClick.AddListener(FlipOrientation);
+            _changeOrientationButton.onClick.AddListener(ChangeOrientation);
 
             _movableElementData = multiOrientationElement.GetData();
         }
@@ -96,6 +100,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private BattleUiMovableElementData _movableElementData;
         private ActionType _currentAction;
 
+        private void OnDestroy()
+        {
+            _flipButton.onClick.RemoveAllListeners();
+            _changeOrientationButton.onClick.RemoveAllListeners();
+        }
+
         private void CalculateAndSetAnchors()
         {
             float holderWidth = _uiElementHolder.rect.width;
@@ -125,6 +135,32 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             float buttonWidth = _uiElementHolder.rect.width * sizeRatio;
             Vector2 buttonSize = new Vector2(buttonWidth, buttonWidth);
             button.GetComponent<RectTransform>().sizeDelta = buttonSize;
+        }
+
+        private void FlipOrientation()
+        {
+            switch (_multiOrientationElement.Orientation)
+            {
+                case OrientationType.Horizontal:
+                    _movableElementData.Orientation = OrientationType.HorizontalFlipped;
+                    break;
+                case OrientationType.HorizontalFlipped:
+                    _movableElementData.Orientation = OrientationType.Horizontal;
+                    break;
+                case OrientationType.Vertical:
+                    _movableElementData.Orientation = OrientationType.VerticalFlipped;
+                    break;
+                case OrientationType.VerticalFlipped:
+                    _movableElementData.Orientation = OrientationType.Vertical;
+                    break;
+            }
+            _multiOrientationElement.SetData(_movableElementData);
+        }
+
+        private void ChangeOrientation()
+        {
+            _movableElementData.Orientation = _multiOrientationElement.IsHorizontal ? OrientationType.Vertical : OrientationType.Horizontal;
+            _multiOrientationElement.SetData(_movableElementData);
         }
     }
 }
