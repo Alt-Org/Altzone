@@ -6,16 +6,22 @@ using UnityEngine.EventSystems;
 using System.Collections;
 using MenuUi.Scripts.TabLine;
 using Altzone.Scripts.ReferenceSheets;
-using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Model.Poco.Game;
 
 public class Chat : AltMonoBehaviour
 {
-    [Header("Chat")] 
-    public GameObject languageChat; 
+    [Header("Chat")]
+    public GameObject languageChat;
     public GameObject globalChat;
     public GameObject clanChat;
     public GameObject currentContent; // Tällä hetkellä aktiivinen chatin content
+
+    [Header("Send buttons")]
+    [SerializeField] private Button _sendButtonSadness;
+    [SerializeField] private Button _sendButtonAnger;
+    [SerializeField] private Button _sendButtonJoy;
+    [SerializeField] private Button _sendButtonPlayful;
+    [SerializeField] private Button _sendButtonLove;
 
     [Header("InputField")]
     public TMP_InputField inputField;
@@ -54,9 +60,7 @@ public class Chat : AltMonoBehaviour
     [Header("TablineScript reference")]
     public TabLine tablineScript;
 
-    private ScrollRect currentScrollRect; // Tällä hetkellä aktiivinen Scroll Rect
-
-    private GameObject currentPrefab; // Tällä hetkellä valittu message Prefab
+    private ScrollRect _currentScrollRect; // Tällä hetkellä aktiivinen Scroll Rect
 
     private bool shouldScroll = false;
 
@@ -68,7 +72,6 @@ public class Chat : AltMonoBehaviour
 
     // Sanakirja (List), jossa viestit järjestetään chat-tyypin mukaan
     private Dictionary<GameObject, List<GameObject>> messagesByChat = new Dictionary<GameObject, List<GameObject>>();
-
 
     private void Start()
     {
@@ -83,6 +86,13 @@ public class Chat : AltMonoBehaviour
         LanguageChatActive();
         tablineScript.ActivateTabButton(1);
         AddResponses();
+
+        // Add send button listeners
+        _sendButtonSadness.onClick.AddListener(() => SendChatMessage(messagePrefabBlue));
+        _sendButtonAnger.onClick.AddListener(() => SendChatMessage(messagePrefabRed));
+        _sendButtonJoy.onClick.AddListener(() => SendChatMessage(messagePrefabYellow));
+        _sendButtonPlayful.onClick.AddListener(() => SendChatMessage(messagePrefabOrange));
+        _sendButtonLove.onClick.AddListener(() => SendChatMessage(messagePrefabPink));
     }
 
     private void Update()
@@ -94,7 +104,7 @@ public class Chat : AltMonoBehaviour
             {
                 GameObject touchedObject = EventSystem.current.currentSelectedGameObject;
 
-                if (touchedObject != null && touchedObject.CompareTag("ChatMessage")) 
+                if (touchedObject != null && touchedObject.CompareTag("ChatMessage"))
                 {
                     Debug.Log("Touched UI object with the specified tag ChatMessage");
                 }
@@ -106,25 +116,25 @@ public class Chat : AltMonoBehaviour
     {
         StartCoroutine(GetPlayerData(data =>
         {
-            List<string> messageList = _chatResponseList.GetResponses((CharacterClassID)((data.SelectedCharacterId/100)*100));
+            List<string> messageList = _chatResponseList.GetResponses((CharacterClassID)((data.SelectedCharacterId / 100) * 100));
             foreach (string message in messageList)
             {
                 GameObject messageObject = Instantiate(_quickMessagePrefab, _chatResponseContent.transform);
-                Button button= messageObject.GetComponent<QuickResponceHandler>().SetData(message);
+                Button button = messageObject.GetComponent<QuickResponceHandler>().SetData(message);
                 button.onClick.AddListener(() => SendQuickMessage(messageObject.GetComponent<Button>()));
             }
         }));
 
     }
 
-    public void SendChatMessage()
+    public void SendChatMessage(GameObject messagePrefab)
     {
         // Lähettää käyttäjän syöttämän viestin aktiiviseen chattiin
         if (currentContent == null)
         {
             Debug.LogWarning("Aktiivista Chat ei ole valittu");
         }
-        
+
         if (inputField != null && !string.IsNullOrEmpty(inputField.text) && inputField.text.Trim().Length >= 3)
         {
             string inputText = inputField.text.Trim();
@@ -137,7 +147,7 @@ public class Chat : AltMonoBehaviour
                 inputField.text = "";
                 return;
             }
-            else if(inputText == deleteAllMessages)
+            else if (inputText == deleteAllMessages)
             {
                 Debug.Log("Deleting last message...");
                 DeleteAllMessages();
@@ -145,8 +155,7 @@ public class Chat : AltMonoBehaviour
                 return;
             }
 
-            Debug.Log("Current Prefab: " + currentPrefab.name);
-            DisplayMessage(inputField.text);
+            DisplayMessage(inputField.text, messagePrefab);
             inputField.text = "";
             this.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
             MinimizeOptions();
@@ -173,16 +182,17 @@ public class Chat : AltMonoBehaviour
     }
 
     // Näyttää viestin aktiivisessa chatti-ikkunassa
-    public void DisplayMessage(string messageText)
+    public void DisplayMessage(string messageText, GameObject messagePrefab)
     {
-        if (currentPrefab != null)
+        if (messagePrefab != null)
         {
-            GameObject newMessage = Instantiate(currentPrefab, currentContent.transform);
+            //GameObject newMessage = Instantiate(_currentPrefab, currentContent.transform);
+            GameObject newMessage = Instantiate(messagePrefab, currentContent.transform);
 
             TMP_Text messageUI = newMessage.GetComponentInChildren<TMP_Text>();
             if (messageUI != null)
             {
-                messageUI.text = messageText;  
+                messageUI.text = messageText;
             }
             else
             {
@@ -222,7 +232,7 @@ public class Chat : AltMonoBehaviour
 
         yield return null;
 
-        currentScrollRect.verticalNormalizedPosition = 0f;
+        _currentScrollRect.verticalNormalizedPosition = 0f;
     }
 
     // Lisää vuorovaikutuksen viestiin (klikkauksen)
@@ -363,10 +373,10 @@ public class Chat : AltMonoBehaviour
     }
 
     // Aktivoi globaalin chatin
-    public void GlobalCahtActive()
-    { 
+    public void GlobalChatActive()
+    {
         currentContent = globalChat;
-        currentScrollRect = globalChatScrollRect;
+        _currentScrollRect = globalChatScrollRect;
 
         globalChat.SetActive(true);
         languageChat.SetActive(false);
@@ -376,23 +386,23 @@ public class Chat : AltMonoBehaviour
     }
 
     // Aktivoi klaanichatin
-    public void ClanCahtActive()
+    public void ClanChatActive()
     {
         currentContent = clanChat;
-        currentScrollRect = clanChatScrollRect;
+        _currentScrollRect = clanChatScrollRect;
 
         clanChat.SetActive(true);
         languageChat.SetActive(false);
         globalChat.SetActive(false);
-       
+
         Debug.Log("Klaani Chat aktivoitu");
     }
 
     // Aktivoi kielichatin
     public void LanguageChatActive()
     {
-        currentContent = languageChat; 
-        currentScrollRect = languageChatScrollRect;
+        currentContent = languageChat;
+        _currentScrollRect = languageChatScrollRect;
 
         languageChat.SetActive(true);
         globalChat.SetActive(false);
@@ -401,19 +411,7 @@ public class Chat : AltMonoBehaviour
         Debug.Log("Kielivalinnan mukainen Chat aktivoitu");
     }
 
-
     private int chosenButton = 2;
-    // Asettaa sinisen viestipohjan ja lähettää viestin
-    public void SetBluePrefab() { currentPrefab = messagePrefabBlue; chosenButton = 0; SendChatMessage(); }
-    // Asettaa punaisen viestipohjan ja lähettää viestin
-    public void SetRedPrefab() { currentPrefab = messagePrefabRed; chosenButton = 1; SendChatMessage(); }
-    // Asettaa keltaisen viestipohjan ja lähettää viestin
-    public void SetYellowPrefab() { currentPrefab = messagePrefabYellow; chosenButton = 2; SendChatMessage(); }
-    // Asettaa oranssin viestipohjan ja lähettää viestin
-    public void SetOrangePrefab() { currentPrefab = messagePrefabOrange; chosenButton = 3; SendChatMessage(); }
-    // Asettaa vaaleanpunaisen viestipohjan ja lähettää viestin
-    public void SetPinkPrefab() { currentPrefab = messagePrefabPink; chosenButton = 4; SendChatMessage(); }
-
     /// <summary>
     /// Minimizes quick messages panel and send buttons. Last used send button is the one left visible.
     /// </summary>
@@ -423,9 +421,9 @@ public class Chat : AltMonoBehaviour
 
         for (int i = 0; i < sendButtons.Length; i++)
         {
-            if(i != chosenButton)
+            if (i != chosenButton)
             {
-                sendButtons[i].SetActive(false); 
+                sendButtons[i].SetActive(false);
             }
             else
             {
@@ -462,11 +460,11 @@ public class Chat : AltMonoBehaviour
     {
         yield return null;
 
-        if(reactionsField != null)
+        if (reactionsField != null)
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
         }
-        
+
         VerticalLayoutGroup currentLayout = currentContent.GetComponentInChildren<VerticalLayoutGroup>();
         LayoutRebuilder.ForceRebuildLayoutImmediate(currentLayout.GetComponent<RectTransform>());
     }

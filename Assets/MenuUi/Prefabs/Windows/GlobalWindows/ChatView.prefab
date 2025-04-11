@@ -317,19 +317,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4902137308248284456}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7358076422430287421}
-        m_TargetAssemblyTypeName: Chat, MainMenu
-        m_MethodName: SetBluePrefab
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &679424904233247838
 GameObject:
   m_ObjectHideFlags: 0
@@ -2019,19 +2007,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6904759659702267211}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7358076422430287421}
-        m_TargetAssemblyTypeName: Chat, MainMenu
-        m_MethodName: SetYellowPrefab
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &2985428712201558362
 GameObject:
   m_ObjectHideFlags: 0
@@ -3186,19 +3162,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1845890855603600987}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7358076422430287421}
-        m_TargetAssemblyTypeName: Chat, MainMenu
-        m_MethodName: SetRedPrefab
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &5122027827646287395
 GameObject:
   m_ObjectHideFlags: 0
@@ -4036,19 +4000,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 782444512269204344}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7358076422430287421}
-        m_TargetAssemblyTypeName: Chat, MainMenu
-        m_MethodName: SetOrangePrefab
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &6086783591708459899
 GameObject:
   m_ObjectHideFlags: 0
@@ -4612,6 +4564,11 @@ MonoBehaviour:
   globalChat: {fileID: 7703225872503541342}
   clanChat: {fileID: 1206508976571793912}
   currentContent: {fileID: 0}
+  _sendButtonSadness: {fileID: 3259344104525364856}
+  _sendButtonAnger: {fileID: 8867080251875204377}
+  _sendButtonJoy: {fileID: 993502511043796009}
+  _sendButtonPlayful: {fileID: 8645019309255837952}
+  _sendButtonLove: {fileID: 8822930230156111468}
   inputField: {fileID: 189633976828316623}
   deleteButtons: {fileID: 7972993240215453466}
   addReactionsPanel: {fileID: 6132093213275908080}
@@ -5196,19 +5153,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1362996188009511178}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7358076422430287421}
-        m_TargetAssemblyTypeName: Chat, MainMenu
-        m_MethodName: SetPinkPrefab
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &8703943205553305902
 GameObject:
   m_ObjectHideFlags: 0
@@ -6225,15 +6170,20 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2544346663654659494, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 31
+      objectReference: {fileID: 0}
     - target: {fileID: 2641932565321544379, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.95851153
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2665311521893521844, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_fontSize
-      value: 44.45
+      value: 42.9
       objectReference: {fileID: 0}
     - target: {fileID: 2853600601693954760, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -6263,12 +6213,12 @@ PrefabInstance:
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.88347816
+      value: 0.9236
       objectReference: {fileID: 0}
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.19761667
+      value: 0.2024
       objectReference: {fileID: 0}
     - target: {fileID: 3778881251723653096, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -6478,7 +6428,7 @@ PrefabInstance:
     - target: {fileID: 5307693372017883855, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: GlobalCahtActive
+      value: GlobalChatActive
       objectReference: {fileID: 0}
     - target: {fileID: 5307693372017883855, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -6763,7 +6713,7 @@ PrefabInstance:
     - target: {fileID: 5735419373750562373, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ClanCahtActive
+      value: ClanChatActive
       objectReference: {fileID: 0}
     - target: {fileID: 5735419373750562373, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -7111,12 +7061,27 @@ PrefabInstance:
     - target: {fileID: 7827142668286818857, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.19761667
+      value: 0.2024
+      objectReference: {fileID: 0}
+    - target: {fileID: 8213419814490648445, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_Name
+      value: TabGlobal
       objectReference: {fileID: 0}
     - target: {fileID: 8247631838125921094, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8356775703520088113, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_Name
+      value: TabLanguage
+      objectReference: {fileID: 0}
+    - target: {fileID: 8382358179720365468, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_Name
+      value: TabClan
       objectReference: {fileID: 0}
     - target: {fileID: 8620236399698832103, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -7146,17 +7111,17 @@ PrefabInstance:
     - target: {fileID: 8653999386452040614, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_fontSize
-      value: 44.45
+      value: 42.9
       objectReference: {fileID: 0}
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.95851153
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.88347816
+      value: 0.9236
       objectReference: {fileID: 0}
     - target: {fileID: 9092001840253612742, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
