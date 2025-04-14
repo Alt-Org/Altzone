@@ -4,9 +4,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class JukeBox1 : MonoBehaviour
+public class JukeBoxSoulhomeHandler : MonoBehaviour
 {
-    public static JukeBox1 Instance;
+    public static JukeBoxSoulhomeHandler Instance;
 
     public AudioSource audioSource;
     public Image diskImage;
@@ -16,6 +16,13 @@ public class JukeBox1 : MonoBehaviour
     public JukeboxSong[] songDisks;
 
     public float rotationSpeed = 100f;
+
+    [SerializeField]
+    private GameObject _jokeboxObject;
+    [SerializeField]
+    private Button _backButton;
+    [SerializeField]
+    private TextMeshProUGUI _songName;
 
     [Header("songlist")]
     public Transform songlistContent;
@@ -42,8 +49,9 @@ public class JukeBox1 : MonoBehaviour
         { 
             GameObject jukeboxObject = Instantiate(jukeboxButtonprefab, songlistContent);
             jukeboxObject.GetComponent<Button>().onClick.AddListener(()=> PlaySongByIndex(song));
-            jukeboxObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = song.songName;
+            jukeboxObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = song.songName;
         }
+        _backButton.onClick.AddListener(()=> ToggleJokeBoxScreen(false));
     }
 
     private void Update()
@@ -66,6 +74,11 @@ public class JukeBox1 : MonoBehaviour
 
     }
 
+    public void ToggleJokeBoxScreen(bool toggle)
+    {
+        _jokeboxObject.SetActive(toggle);
+    }
+
     public void PlaySongByIndex(JukeboxSong song)
     {
         if (isMainMenuMode) return;
@@ -86,6 +99,7 @@ public class JukeBox1 : MonoBehaviour
         //currentSongIndex = index;
         audioSource.clip = song.songs;
         audioSource.Play();
+        _songName.text = song.songName;
 
         diskImage.sprite = song.songDisks;
         isDiskSpinning = true;
