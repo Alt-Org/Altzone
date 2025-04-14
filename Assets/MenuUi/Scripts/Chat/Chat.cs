@@ -418,6 +418,12 @@ public class Chat : AltMonoBehaviour
         Debug.Log("Kielivalinnan mukainen Chat aktivoitu");
     }
 
+    public void OpenQuickMessages()
+    {
+        quickMessages.SetActive(true);
+        CloseOnButtonClick(true);
+    }
+
     /// <summary>
     /// Minimizes quick messages panel and send buttons. Last used send button is the one left visible.
     /// </summary>
@@ -438,9 +444,9 @@ public class Chat : AltMonoBehaviour
     /// Added to buttons to deselect messages and close the sending options
     /// </summary>
     /// <param name="onlyMessages"></param>
-    public void CloseOnButtonClick(bool onlyMessages)
+    public void CloseOnButtonClick(bool onlyDeselectMessages)
     {
-        if (onlyMessages)
+        if (onlyDeselectMessages)
         {
             DeselectMessage(selectedMessage);
         }
