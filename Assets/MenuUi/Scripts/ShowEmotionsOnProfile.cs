@@ -8,6 +8,7 @@ public class WeekEmotions : AltMonoBehaviour
 {
     // Sprites that are used to show the moods in profile.
     [SerializeField] private Sprite[] _emotionImages;
+    [SerializeField] private Sprite _blankEmotionImage;
 
     // Components that hold the sprite and shows the moods in profile.
     [SerializeField] private GameObject[] _weekEmotions;
@@ -51,7 +52,9 @@ public class WeekEmotions : AltMonoBehaviour
 
         for (int i = 0; i < _weekEmotions.Length; i++)
         {
-            _weekEmotions[i].GetComponent<Image>().sprite = _emotionImages[Convert.ToInt32(_playerData.playerDataEmotionList[i])];
+            if ((int)_playerData.playerDataEmotionList[i] == -1) _weekEmotions[i].GetComponent<Image>().sprite = _blankEmotionImage;
+            else
+             _weekEmotions[i].GetComponent<Image>().sprite = _emotionImages[(int)_playerData.playerDataEmotionList[i]];
         }
     }
 }
