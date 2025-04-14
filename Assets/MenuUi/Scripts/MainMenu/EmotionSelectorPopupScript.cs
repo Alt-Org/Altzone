@@ -44,8 +44,8 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
         _loveButton.onClick.AddListener(() => SaveMoodData(Emotion.Love));
         _playfulButton.onClick.AddListener(() => SaveMoodData(Emotion.Playful));
         _joyButton.onClick.AddListener(() => SaveMoodData(Emotion.Joy));
-        _sadButton.onClick.AddListener(() => SaveMoodData(Emotion.Sad));
-        _angryButton.onClick.AddListener(() => SaveMoodData(Emotion.Angry));
+        _sadButton.onClick.AddListener(() => SaveMoodData(Emotion.Sorrow));
+        _angryButton.onClick.AddListener(() => SaveMoodData(Emotion.Anger));
     }
 
     // Closes the popup.

@@ -63,7 +63,7 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public string daysBetweenInput = "0";
 
-        public List<string> _playerDataEmotionList = new List<string> { Emotion.Blank.ToString(), Emotion.Love.ToString(), Emotion.Playful.ToString(), Emotion.Joy.ToString(), Emotion.Sorrow.ToString(), Emotion.Angry.ToString(), Emotion.Blank.ToString() };
+        public List<string> _playerDataEmotionList = new List<string> { Emotion.Blank.ToString(), Emotion.Love.ToString(), Emotion.Playful.ToString(), Emotion.Joy.ToString(), Emotion.Sorrow.ToString(), Emotion.Anger.ToString(), Emotion.Blank.ToString() };
 
         public List<PlayerVoteData> playerVotes = new List<PlayerVoteData>();
 
@@ -175,7 +175,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             points = player.points;
             stats = player.gameStatistics;
             Task = player.DailyTask != null ? new(player.DailyTask) : null;
-            if (_playerDataEmotionList == null || _playerDataEmotionList.Count == 0) playerDataEmotionList = new List<Emotion> { Emotion.Blank, Emotion.Love, Emotion.Playful, Emotion.Joy, Emotion.Sorrow, Emotion.Angry, Emotion.Blank };
+            if (_playerDataEmotionList == null || _playerDataEmotionList.Count == 0) playerDataEmotionList = new List<Emotion> { Emotion.Blank, Emotion.Love, Emotion.Playful, Emotion.Joy, Emotion.Sorrow, Emotion.Anger, Emotion.Blank };
             if (emotionSelectorDate == null) emotionSelectorDate = DateTime.Today.ToString();
             if (daysBetweenInput == null) daysBetweenInput = "0";
         }
