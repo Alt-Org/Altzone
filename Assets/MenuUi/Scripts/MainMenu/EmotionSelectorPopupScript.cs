@@ -17,8 +17,6 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
     [SerializeField] private Button _sadButton;
     [SerializeField] private Button _angryButton;
 
-    DateTime _dateToday = DateTime.Today;
-    TimeSpan _days;
     bool _bSwitch = true;
 
     // Creates the variable that is used to get the list of the moods.
@@ -30,11 +28,11 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
         // Gets the needed playerdata.
         StartCoroutine(GetPlayerData(data => _playerData = data));
 
-        // Checks if the player has given input the same day.
-        if (DateTime.Parse(_playerData.emotionSelectorDate) == _dateToday) _bSwitch = false;
-
-        // Gets the amoubnt of days between player input.
-        _days = _dateToday - DateTime.Parse(_playerData.emotionSelectorDate);
+        if (!string.IsNullOrWhiteSpace(_playerData.emotionSelectorDate))
+        {
+            // Checks if the player has given input the same day.
+            if (DateTime.Parse(_playerData.emotionSelectorDate) == DateTime.Today) _bSwitch = false;
+        }
 
         // Opens the popup unless the player has given input the same day.
         _popupPrefab.SetActive(_bSwitch);
@@ -58,6 +56,22 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
     public void SaveMoodData(Emotion emotion)
     {
         List<Emotion> data = _playerData.playerDataEmotionList;
+        int days = 7;
+        if (!string.IsNullOrWhiteSpace(_playerData.emotionSelectorDate))
+        {
+            TimeSpan span = DateTime.Today - DateTime.Parse(_playerData.emotionSelectorDate);
+            days = span.Days;
+            if(days > 7) days = 7;
+        }
+
+        for (int i = days; i > 0; i--)
+        {
+            // Removes the last item in the list of moods
+            data.RemoveAt(data.Count - 1);
+
+            // Adds the newest item to the list of emotions.
+            data.Insert(0, Emotion.Blank);
+        }
 
         // Removes the last item in the list of moods
         data.RemoveAt(data.Count-1);
@@ -65,13 +79,13 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
         // Adds the newest item to the list of emotions.
         data.Insert(0, emotion);
 
-        _playerData.emotionSelectorDate = _dateToday.ToString();
+        _playerData.emotionSelectorDate = DateTime.Today.ToString();
 
-        _playerData.daysBetweenInput = _days.ToString();
+        _playerData.daysBetweenInput = days.ToString();
 
         _playerData.playerDataEmotionList = data;
 
-        Debug.Log(_days);
+        Debug.Log(days);
 
         // Saves the playerdata that has been changed.
         StartCoroutine(SavePlayerData(_playerData, null));

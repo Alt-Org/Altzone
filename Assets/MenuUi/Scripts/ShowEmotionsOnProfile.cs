@@ -25,27 +25,18 @@ public class WeekEmotions : AltMonoBehaviour
         // Gets the needed playerdata
         StartCoroutine(GetPlayerData(data => _playerData = data));
 
-        _days = TimeSpan.Parse(_playerData.daysBetweenInput);
-
-        // Sets the amount of blanks to be 6 if there are more than 7 days between input.
-        if (Convert.ToInt32(_days.TotalDays) > 7)
-        {
-            _blanks = 6;
-        } else
-        {
-            _blanks = Convert.ToInt32(_days.TotalDays);
-        }
-
         ValuesToWeekEmotions();
     }
 
     // Assigns the values from PlayerData to weekmoods and updates it.
     private void ValuesToWeekEmotions()
     {
-        // Sets values in list to be blank except the first one.
-        for (int i = 1; i <= _blanks; i++)
+        if (!string.IsNullOrWhiteSpace(_playerData.emotionSelectorDate))
         {
-            _playerData._playerDataEmotionList[i] = Emotion.Blank.ToString();
+            for (int i = 0; i < _weekEmotions.Length; i++)
+            {
+                _weekEmotions[i].GetComponent<Image>().sprite = _blankEmotionImage;
+            }
         }
 
         StartCoroutine(SavePlayerData(_playerData, null));

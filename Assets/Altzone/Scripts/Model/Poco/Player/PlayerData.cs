@@ -59,7 +59,7 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public PlayStyles playStyles;
 
-       public string emotionSelectorDate = DateTime.Today.ToString();
+       public string emotionSelectorDate = null;
 
         public string daysBetweenInput = "0";
 
@@ -176,7 +176,6 @@ namespace Altzone.Scripts.Model.Poco.Player
             stats = player.gameStatistics;
             Task = player.DailyTask != null ? new(player.DailyTask) : null;
             if (_playerDataEmotionList == null || _playerDataEmotionList.Count == 0) playerDataEmotionList = new List<Emotion> { Emotion.Blank, Emotion.Love, Emotion.Playful, Emotion.Joy, Emotion.Sorrow, Emotion.Anger, Emotion.Blank };
-            if (emotionSelectorDate == null) emotionSelectorDate = DateTime.Today.ToString();
             if (daysBetweenInput == null) daysBetweenInput = "0";
         }
 
