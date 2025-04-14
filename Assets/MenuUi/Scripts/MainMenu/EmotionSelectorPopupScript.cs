@@ -57,7 +57,7 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
     // Saves the mood that the player has chosen.
     public void SaveMoodData(Emotion emotion)
     {
-        List<Enum> data = _playerData.playerDataEmotionList;
+        List<Emotion> data = _playerData.playerDataEmotionList;
 
         // Removes the last item in the list of moods
         data.RemoveAt(data.Count-1);
