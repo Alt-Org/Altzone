@@ -17,12 +17,12 @@ namespace Altzone.Scripts.BattleUiShared
         {
             None = -1,
             Horizontal = 0,
-            HorizontalFlipped = 1,
-            Vertical = 2,
-            VerticalFlipped = 3,
+            Vertical = 1,
         }
 
         public OrientationType Orientation => _orientation;
+        public bool IsFlippedHorizontally => _isFlippedHorizontally;
+        public bool IsFlippedVertically => _isFlippedVertically;
         public float HorizontalAspectRatio => _horizontalAspectRatio;
         public float VerticalAspectRatio => _verticalAspectRatio;
 
@@ -30,7 +30,7 @@ namespace Altzone.Scripts.BattleUiShared
         {
             get
             {
-                return _orientation == OrientationType.Horizontal || _orientation == OrientationType.HorizontalFlipped;
+                return _orientation == OrientationType.Horizontal;
             }
         }
 
@@ -57,7 +57,7 @@ namespace Altzone.Scripts.BattleUiShared
         public override void SetData(BattleUiMovableElementData data)
         {
             base.SetData(data);
-            SetOrientation(data.Orientation);
+            SetOrientation(data);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace Altzone.Scripts.BattleUiShared
         {
             if (_rectTransform != null)
             {
-                return new BattleUiMovableElementData(_rectTransform.anchorMin, _rectTransform.anchorMax, _orientation);
+                return new BattleUiMovableElementData(_rectTransform.anchorMin, _rectTransform.anchorMax, _orientation, IsFlippedHorizontally, IsFlippedVertically);
             }
             else
             {
@@ -77,54 +77,39 @@ namespace Altzone.Scripts.BattleUiShared
         }
 
         private OrientationType _orientation = OrientationType.Horizontal;
+        private bool _isFlippedHorizontally = false;
+        private bool _isFlippedVertically = false;
 
-        private void SetOrientation(OrientationType newOrientation)
+        private void SetOrientation(BattleUiMovableElementData data)
         {
-            // If orientation is same we don't have to do anything
-            if (_orientation == newOrientation) return;
-
-            // If we had flipped orientation resetting the flip, Horizontal and Vertical are the default configurations
-            switch (_orientation)
-            {
-                case OrientationType.HorizontalFlipped:
-                case OrientationType.VerticalFlipped:
-                    FlipOrientation();
-                    break;
-            }
+            // If orientation and flip is same we don't have to do anything
+            if (_orientation == data.Orientation &&
+                _isFlippedHorizontally == data.IsFlippedHorizontally &&
+                _isFlippedVertically == data.IsFlippedVertically) return;
 
             // Setting new orientation value
-            _orientation = newOrientation;
+            _orientation = data.Orientation;
 
             // Showing either horizontal or vertical configuration
             if (_horizontalConfiguration != null) _horizontalConfiguration.SetActive(IsHorizontal);
             if (_verticalConfiguration != null) _verticalConfiguration.SetActive(!IsHorizontal);
 
-            // Flipping orientation if new orientation is flipped
-            switch (newOrientation)
+            // Flipping orientation if data flip status is different
+            if (data.IsFlippedHorizontally != _isFlippedHorizontally)
             {
-                case OrientationType.HorizontalFlipped:
-                case OrientationType.VerticalFlipped:
-                    FlipOrientation();
-                    break;
+                if (_horizontalConfiguration != null) FlipChildrenHorizontally(_horizontalConfiguration.transform);
+                if (_verticalConfiguration != null) FlipChildrenHorizontally(_verticalConfiguration.transform);
             }
-        }
 
-        private void FlipOrientation()
-        {
-            if (_orientation == OrientationType.Horizontal || _orientation == OrientationType.HorizontalFlipped)
+            if (data.IsFlippedVertically != _isFlippedVertically)
             {
-                if (_horizontalConfiguration == null) return;
-
-                // Repositioning every horizontal configuration child anchor
-                FlipChildrenHorizontally(_horizontalConfiguration.transform);
+                if (_horizontalConfiguration != null) FlipChildrenVertically(_horizontalConfiguration.transform);
+                if (_verticalConfiguration != null) FlipChildrenVertically(_verticalConfiguration.transform);
             }
-            else if (_orientation == OrientationType.Vertical || _orientation == OrientationType.VerticalFlipped)
-            {
-                if (_verticalConfiguration == null) return;
 
-                // Repositioning every vertical configuration child anchor
-                FlipChildrenHorizontally(_verticalConfiguration.transform);
-            }
+            // Setting new flip value
+            _isFlippedHorizontally = data.IsFlippedHorizontally;
+            _isFlippedVertically = data.IsFlippedVertically;
         }
 
         private void FlipChildrenHorizontally(Transform parent)
@@ -149,6 +134,31 @@ namespace Altzone.Scripts.BattleUiShared
 
                 // Flipping the child's children
                 FlipChildrenHorizontally(childRectTransform);
+            }
+        }
+
+        private void FlipChildrenVertically(Transform parent)
+        {
+            for (int i = 0; i < parent.childCount; i++)
+            {
+                RectTransform childRectTransform = parent.GetChild(i).GetComponent<RectTransform>();
+
+                if (childRectTransform == null) return;
+
+                // Calculating flipped y anchors
+                float flippedYMin = GetFlippedAnchor(childRectTransform.anchorMax.y);
+                float flippedYMax = GetFlippedAnchor(childRectTransform.anchorMin.y);
+
+                // Setting new y anchors
+                childRectTransform.anchorMin = new Vector2(childRectTransform.anchorMin.x, flippedYMin);
+                childRectTransform.anchorMax = new Vector2(childRectTransform.anchorMax.x, flippedYMax);
+
+                // Resetting offset values in case they changed
+                childRectTransform.offsetMin = Vector2.zero;
+                childRectTransform.offsetMax = Vector2.zero;
+
+                // Flipping the child's children
+                FlipChildrenVertically(childRectTransform);
             }
         }
 
