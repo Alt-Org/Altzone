@@ -5,9 +5,10 @@ namespace Battle.View.UI
 {
     public class BattleUiAnnouncementHandler : MonoBehaviour
     {
-        //UICountDownView
         [SerializeField] private GameObject _view;
         [SerializeField] private TextMeshProUGUI _announcerText;
+
+        public bool IsVisible => _view.activeSelf;
 
         public void SetShow(bool show)
         {

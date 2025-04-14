@@ -1,7 +1,8 @@
 using System;
-using Quantum;
 
 using UnityEngine;
+using Quantum;
+
 using TMPro;
 
 namespace Battle.View.UI
@@ -29,6 +30,8 @@ namespace Battle.View.UI
                 Value.fontSize = size;
             }
         }
+
+        public bool IsVisible => _view.activeSelf;
 
         public void SetShow(bool show)
         {
