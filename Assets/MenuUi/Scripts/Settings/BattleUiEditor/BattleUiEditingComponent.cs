@@ -88,6 +88,19 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     float sizeIncreaseX = eventData.delta.x * 2;
                     float sizeIncreaseY = sizeIncreaseX / (_movableElement.RectTransformComponent.rect.width / _movableElement.RectTransformComponent.rect.height);
                     _movableElement.RectTransformComponent.sizeDelta += new Vector2 (sizeIncreaseX, sizeIncreaseY);
+
+                    // Preventing out of bounds scaling or being scaled too small
+                    float maxWidth = _uiElementHolder.rect.width / 2;
+                    float maxHeight = _uiElementHolder.rect.height / 2;
+                    float minWidth = _uiElementHolder.rect.width / 10;
+                    float minHeight = _uiElementHolder.rect.height / 10;
+
+                    float clampedWidth = Mathf.Clamp(_movableElement.RectTransformComponent.rect.width, minWidth, maxWidth);
+                    //float clampedHeight = Mathf.Clamp(_movableElement.RectTransformComponent.rect.height, minHeight, maxHeight);
+
+                    _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, clampedWidth);
+                    //_movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, clampedHeight);
+
                     break;
             }
         }
