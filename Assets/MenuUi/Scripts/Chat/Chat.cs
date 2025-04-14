@@ -17,11 +17,11 @@ public class Chat : AltMonoBehaviour
     public GameObject currentContent; // Tällä hetkellä aktiivinen chatin content
 
     [Header("Send buttons")]
-    [SerializeField] private Button _sendButtonSadness;
-    [SerializeField] private Button _sendButtonAnger;
-    [SerializeField] private Button _sendButtonJoy;
-    [SerializeField] private Button _sendButtonPlayful;
-    [SerializeField] private Button _sendButtonLove;
+    [SerializeField] private GameObject _sendButtonSadness;
+    [SerializeField] private GameObject _sendButtonAnger;
+    [SerializeField] private GameObject _sendButtonJoy;
+    [SerializeField] private GameObject _sendButtonPlayful;
+    [SerializeField] private GameObject _sendButtonLove;
 
     [Header("InputField")]
     public TMP_InputField inputField;
@@ -73,6 +73,8 @@ public class Chat : AltMonoBehaviour
     // Sanakirja (List), jossa viestit järjestetään chat-tyypin mukaan
     private Dictionary<GameObject, List<GameObject>> messagesByChat = new Dictionary<GameObject, List<GameObject>>();
 
+    private GameObject _lastSendButtonUsed;
+
     private void Start()
     {
         // Alustaa chatit ja asettaa kielichatin oletukseksi
@@ -87,12 +89,18 @@ public class Chat : AltMonoBehaviour
         tablineScript.ActivateTabButton(1);
         AddResponses();
 
+        _lastSendButtonUsed = _sendButtonJoy;
         // Add send button listeners
-        _sendButtonSadness.onClick.AddListener(() => SendChatMessage(messagePrefabBlue));
-        _sendButtonAnger.onClick.AddListener(() => SendChatMessage(messagePrefabRed));
-        _sendButtonJoy.onClick.AddListener(() => SendChatMessage(messagePrefabYellow));
-        _sendButtonPlayful.onClick.AddListener(() => SendChatMessage(messagePrefabOrange));
-        _sendButtonLove.onClick.AddListener(() => SendChatMessage(messagePrefabPink));
+        Button buttonSadness = _sendButtonSadness.GetComponent<Button>();
+        Button buttonAnger = _sendButtonAnger.GetComponent<Button>();
+        Button buttonJoy = _sendButtonJoy.GetComponent<Button>();
+        Button buttonPlayful = _sendButtonPlayful.GetComponent<Button>();
+        Button buttonLove = _sendButtonLove.GetComponent<Button>();
+        buttonSadness.onClick.AddListener(() => { _lastSendButtonUsed = _sendButtonSadness; SendChatMessage(messagePrefabBlue); });
+        buttonAnger.onClick.AddListener(() => {  _lastSendButtonUsed = _sendButtonAnger; SendChatMessage(messagePrefabRed); });
+        buttonJoy.onClick.AddListener(() => { _lastSendButtonUsed = _sendButtonJoy; SendChatMessage(messagePrefabYellow); });
+        buttonPlayful.onClick.AddListener(() => { _lastSendButtonUsed = _sendButtonPlayful; SendChatMessage(messagePrefabOrange); });
+        buttonLove.onClick.AddListener(() => { _lastSendButtonUsed = _sendButtonLove; SendChatMessage(messagePrefabPink); });
     }
 
     private void Update()
@@ -291,7 +299,6 @@ public class Chat : AltMonoBehaviour
         addReactionsPanel.transform.position = reactionPosition;
     }
 
-
     // Korostaa valitun viestin
     private void HighlightMessage(GameObject message)
     {
@@ -411,7 +418,6 @@ public class Chat : AltMonoBehaviour
         Debug.Log("Kielivalinnan mukainen Chat aktivoitu");
     }
 
-    private int chosenButton = 2;
     /// <summary>
     /// Minimizes quick messages panel and send buttons. Last used send button is the one left visible.
     /// </summary>
@@ -419,16 +425,10 @@ public class Chat : AltMonoBehaviour
     {
         quickMessages.SetActive(false);
 
-        for (int i = 0; i < sendButtons.Length; i++)
+        // Deactivate all but last used button
+        foreach (var button in sendButtons)
         {
-            if (i != chosenButton)
-            {
-                sendButtons[i].SetActive(false);
-            }
-            else
-            {
-                sendButtons[chosenButton].SetActive(true);
-            }
+            button.SetActive(_lastSendButtonUsed == button);
         }
 
         buttonOpenSendButtons.SetActive(true);
