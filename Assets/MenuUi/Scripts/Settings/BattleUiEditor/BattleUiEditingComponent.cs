@@ -114,7 +114,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _changeOrientationButton.onClick.RemoveAllListeners();
         }
 
-        private void CalculateAndSetAnchors()
+        private void CalculateAndSetAnchors(Vector2? newSize = null)
         {
             // Saving values used in calculations to easier to read variables
             float holderWidth = _uiElementHolder.rect.width;
@@ -122,9 +122,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             float xPos = _movableElement.RectTransformComponent.localPosition.x;
             float yPos = _movableElement.RectTransformComponent.localPosition.y;
-
-            float ownWidth = _movableElement.RectTransformComponent.rect.width;
-            float ownHeight = _movableElement.RectTransformComponent.rect.height;
+            
+            float ownWidth = newSize == null ? _movableElement.RectTransformComponent.rect.width : newSize.Value.x;
+            float ownHeight = newSize == null ? _movableElement.RectTransformComponent.rect.height : newSize.Value.y;
 
             // Calculating anchors
             float anchorXMin = (xPos - ownWidth / 2.0f) / holderWidth + 0.5f;
@@ -205,7 +205,21 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private void ChangeOrientation()
         {
             _data.Orientation = _multiOrientationElement.IsHorizontal ? OrientationType.Vertical : OrientationType.Horizontal;
-            _multiOrientationElement.SetData(_data);
+
+            // Calculating new aspect ratio size
+            Vector2 newSize = new();
+            if (_multiOrientationElement.IsHorizontal) // If element is currently horizontal we are trying to change it to be vertical
+            {
+                newSize.y = _multiOrientationElement.RectTransformComponent.rect.width;
+                newSize.x = newSize.y * _multiOrientationElement.VerticalAspectRatio;
+            }
+            else
+            {
+                newSize.x = _multiOrientationElement.RectTransformComponent.rect.height;
+                newSize.y = newSize.x / _multiOrientationElement.HorizontalAspectRatio;
+            }
+
+            CalculateAndSetAnchors(newSize);
         }
     }
 }
