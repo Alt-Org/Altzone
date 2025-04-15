@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -34,9 +35,10 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     
 
     private Queue<JukeboxSong> songQueue = new();
-    private int? currentSongIndex = null;
+    private JukeboxSong _currentSong;
     private bool isMainMenuMode = false;
-    private bool isDiskSpinning = false;
+    private Coroutine _diskSpinCoroutine;
+    private Coroutine _waitSongEndCoroutine;
 
     private void Awake()
     {
@@ -54,24 +56,36 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         _backButton.onClick.AddListener(()=> ToggleJokeBoxScreen(false));
     }
 
-    private void Update()
+    private IEnumerator WaitUntilSongEnd()
     {
-        if (!audioSource.isPlaying && songQueue.Count > 0 && !isMainMenuMode)
-        {
-            PlayNextSongInQueue();
-        }
+        yield return new WaitWhile(() => (audioSource.time > 0));
 
-        if (!audioSource.isPlaying && songQueue.Count == 0 && !isMainMenuMode)
+        CheckIfSongInQueue();
+    }
+
+    private void CheckIfSongInQueue()
+    {
+        if (songQueue.Count == 0 )
         {
-            isDiskSpinning = false;
             diskImage.sprite = noDisk;
         }
-
-        if (isDiskSpinning)
+        else
         {
-            diskTransform.Rotate(Vector3.forward * -rotationSpeed * Time.deltaTime);
+            if (_diskSpinCoroutine != null)
+            {
+                StopCoroutine(_diskSpinCoroutine);
+                _diskSpinCoroutine = null;
+                diskTransform.rotation = Quaternion.identity;
+            }
+            PlayNextSongInQueue();
+            _diskSpinCoroutine = StartCoroutine(SpinDisk());
         }
+    }
 
+    private IEnumerator SpinDisk()
+    {
+        diskTransform.Rotate(Vector3.forward * -rotationSpeed * Time.deltaTime);
+        yield return null;
     }
 
     public void ToggleJokeBoxScreen(bool toggle)
@@ -97,12 +111,19 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     private void StartSong(JukeboxSong song)
     {
         //currentSongIndex = index;
+        _currentSong = song;
         audioSource.clip = song.songs;
         audioSource.Play();
         _songName.text = song.songName;
 
         diskImage.sprite = song.songDisks;
-        isDiskSpinning = true;
+        if (_waitSongEndCoroutine != null)
+        {
+            StopCoroutine(_waitSongEndCoroutine);
+            _waitSongEndCoroutine = null;
+        }
+        _waitSongEndCoroutine = StartCoroutine(WaitUntilSongEnd());
+        if(_diskSpinCoroutine == null) _diskSpinCoroutine = StartCoroutine(SpinDisk());
     }
 
     private void PlayNextSongInQueue()
@@ -130,7 +151,6 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         audioSource.Stop();
         songQueue.Clear();
         isMainMenuMode = true;
-        isDiskSpinning = false;
         diskImage.sprite = null;
     }
 
