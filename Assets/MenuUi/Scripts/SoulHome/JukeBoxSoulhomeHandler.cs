@@ -9,8 +9,7 @@ using UnityEngine.UI;
 public class JukeBoxSoulhomeHandler : MonoBehaviour
 {
     public static JukeBoxSoulhomeHandler Instance;
-
-    public AudioSource audioSource;
+    
     public Image diskImage;
     public Transform diskTransform;
 
@@ -55,8 +54,11 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
     private IEnumerator SpinDisk()
     {
-        diskTransform.Rotate(Vector3.forward * -rotationSpeed * Time.deltaTime);
-        yield return null;
+        while (true)
+        {
+            diskTransform.Rotate(Vector3.forward * -rotationSpeed * Time.deltaTime);
+            yield return null;
+        }
     }
 
     public void ToggleJokeBoxScreen(bool toggle)
