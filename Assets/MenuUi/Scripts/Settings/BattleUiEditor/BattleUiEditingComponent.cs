@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -10,7 +13,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
     /// <summary>
     /// Handles the functionality for BattleUiEditingComponent prefab.
     /// </summary>
-    public class BattleUiEditingComponent : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+    public class BattleUiEditingComponent : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler
     {
         [SerializeField] private Button _scaleHandleButton;
         [SerializeField] private Button _flipHorizontallyButton;
@@ -19,10 +22,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         public void SetInfo(BattleUiMovableElement movableElement, Transform uiElementHolder)
         {
-            _flipHorizontallyButton.gameObject.SetActive(false);
-            _flipVerticallyButton.gameObject.SetActive(false);
-            _changeOrientationButton.gameObject.SetActive(false);
-
             _movableElement = movableElement;
             _uiElementHolder = uiElementHolder.GetComponent<RectTransform>();
 
@@ -34,10 +33,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         public void SetInfo(BattleUiMultiOrientationElement multiOrientationElement, Transform uiElementHolder)
         {
-            _flipHorizontallyButton.gameObject.SetActive(true);
-            _flipVerticallyButton.gameObject.SetActive(true);
-            _changeOrientationButton.gameObject.SetActive(true);
-
             _multiOrientationElement = multiOrientationElement;
             _movableElement = multiOrientationElement;
             _uiElementHolder = uiElementHolder.GetComponent<RectTransform>();
@@ -54,9 +49,32 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _data = multiOrientationElement.GetData();
         }
 
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            _isPointerDown = true;
+
+            if (_dragTimerHolder == null) _dragTimerHolder = StartCoroutine(StartDragTimer(() =>
+            {
+                _dragTimerHolder = null;
+                if (!_isPointerDown) return;
+                _currentAction = ActionType.Move;
+            }));
+        }
+
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            _isPointerDown = false;
+            if (_dragTimerHolder != null)
+            {
+                StopCoroutine(_dragTimerHolder);
+                _dragTimerHolder = null;
+                if (_multiOrientationElement != null) ShowControls(!_scaleHandleButton.gameObject.activeSelf);
+            }
+        }
+
         public void OnBeginDrag(PointerEventData eventData)
         {
-            Button selectedButton = eventData.selectedObject.GetComponent<Button>();
+            Button selectedButton = eventData.selectedObject != null ? eventData.selectedObject.GetComponent<Button>() : null;
 
             if (selectedButton == _flipHorizontallyButton || selectedButton == _flipVerticallyButton || selectedButton == _changeOrientationButton)
             {
@@ -66,14 +84,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             {
                 _currentAction = ActionType.Scale;
             }
-            else
-            {
-                // Calculating offset so that moving gameobject is relative to the click position and not the pivot
-                _moveOffset.x = _movableElement.transform.position.x - eventData.pressPosition.x;
-                _moveOffset.y = _movableElement.transform.position.y - eventData.pressPosition.y;
-
-                _currentAction = ActionType.Move;
-            }
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -81,7 +91,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             switch (_currentAction)
             {
                 case ActionType.Move:
-                    _movableElement.transform.position = eventData.position + _moveOffset;
+                    _movableElement.transform.position = eventData.position;
                     break;
                 case ActionType.Scale:
                     // Scaling while keeping aspect ratio
@@ -143,14 +153,26 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private float _movableElementAspectRatio;
 
+        private bool _isPointerDown = false;
+        private Coroutine _dragTimerHolder = null;
         private ActionType _currentAction;
-        private Vector2 _moveOffset;
+
+        private void OnEnable()
+        {
+            ShowControls(false);
+        }
 
         private void OnDestroy()
         {
             _flipHorizontallyButton.onClick.RemoveAllListeners();
             _flipVerticallyButton.onClick.RemoveAllListeners();
             _changeOrientationButton.onClick.RemoveAllListeners();
+        }
+
+        private IEnumerator StartDragTimer(Action callback)
+        {
+            yield return new WaitForSeconds(0.5f);
+            callback();
         }
 
         private void CalculateAndSetAnchors(Vector2? newSize = null)
@@ -245,6 +267,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
 
             CalculateAndSetAnchors(newSize);
+        }
+
+        private void ShowControls(bool show)
+        {
+            _scaleHandleButton.gameObject.SetActive(show);
+            _flipHorizontallyButton.gameObject.SetActive(show);
+            _flipVerticallyButton.gameObject.SetActive(show);
+            _changeOrientationButton.gameObject.SetActive(show);
         }
 
         // Method used to calculate appropiate size for the control buttons, since if they were anchored they would grow with the element when it's scaled
