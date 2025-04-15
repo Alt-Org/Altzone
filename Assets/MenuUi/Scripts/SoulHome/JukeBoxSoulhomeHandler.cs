@@ -101,12 +101,18 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         }
     }
 
-    public void StopAndGoToMainMenu()
+    public void StopJukebox()
     {
         AudioManager.Instance.StopMusic();
         AudioManager.Instance.JukeBoxQueue.Clear();
-        isMainMenuMode = true;
+        //isMainMenuMode = true;
         diskImage.sprite = null;
+        if (_diskSpinCoroutine != null)
+        {
+            StopCoroutine(_diskSpinCoroutine);
+            _diskSpinCoroutine = null;
+            diskTransform.rotation = Quaternion.identity;
+        }
     }
 
     public void ExitMainMenuMode()

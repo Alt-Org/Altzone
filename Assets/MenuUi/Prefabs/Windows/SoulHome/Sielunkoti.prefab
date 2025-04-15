@@ -11357,6 +11357,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8629688725313486270, guid: 3992223c47c97da49acf7d85220ce9bd,
+        type: 3}
+      propertyPath: _jukeboxObject
+      value: 
+      objectReference: {fileID: 5925553887742558621}
     m_RemovedComponents:
     - {fileID: 0}
     - {fileID: 0}
@@ -11364,6 +11369,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3992223c47c97da49acf7d85220ce9bd, type: 3}
+--- !u!1 &5925553887742558621 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8593317523588494251, guid: 3992223c47c97da49acf7d85220ce9bd,
+    type: 3}
+  m_PrefabInstance: {fileID: 2700562321653445174}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &5960658365674016648 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8629688725313486270, guid: 3992223c47c97da49acf7d85220ce9bd,

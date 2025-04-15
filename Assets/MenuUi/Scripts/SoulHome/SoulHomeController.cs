@@ -94,6 +94,7 @@ namespace MenuUI.Scripts.SoulHome
                     rootObject.GetComponent<MainMenuAudioManager>()?.PlayMusic();
             }
             AudioManager.Instance?.StopMusic();
+            _jukeBoxPopup.StopJukebox();
             _jukeBoxPopup.ToggleJokeBoxScreen(false);
         }
 

@@ -19,7 +19,14 @@ namespace MenuUi.Scripts.Audio
         private JukeboxSong _emptySong;
 
         public Queue<JukeboxSong> SongQueue { get => _songQueue; }
-        public JukeboxSong CurrentSong { get => _currentSong; }
+        public JukeboxSong CurrentSong
+        {
+            get
+            {
+                if (_currentSong == null) return _emptySong;
+                return _currentSong;
+            }
+        }
         public JukeboxSong[] Songs { get => _songs; }
 
         public delegate void ChangeJukeBoxSong(JukeboxSong song);
@@ -41,9 +48,10 @@ namespace MenuUi.Scripts.Audio
 
         private IEnumerator WaitUntilSongEnd()
         {
-            yield return new WaitWhile(() => (_audioSource.time > 0));
+            yield return null;
+            yield return new WaitWhile(() => (_audioSource.time == 0));
 
-            CheckIfSongInQueue();
+            //CheckIfSongInQueue();
         }
 
         private void CheckIfSongInQueue()
@@ -51,6 +59,8 @@ namespace MenuUi.Scripts.Audio
             if (_songQueue.Count == 0)
             {
                 OnChangeJukeBoxSong?.Invoke(_emptySong);
+                _currentSong = null;
+                AudioManager.Instance.PlayMusic(MusicSection.SoulHome);
             }
             else
             {
@@ -62,7 +72,7 @@ namespace MenuUi.Scripts.Audio
         {
             if (isMainMenuMode) return;
 
-            if (!_audioSource.isPlaying && _songQueue.Count == 0)
+            if ((!_audioSource.isPlaying && _songQueue.Count == 0)|| _currentSong == null)
             {
                 StartSong(song);
             }
@@ -91,6 +101,7 @@ namespace MenuUi.Scripts.Audio
         public void ContinueSong()
         {
             if(_audioSource.clip != null) _audioSource.Play();
+            OnChangeJukeBoxSong?.Invoke(_currentSong);
         }
 
         private void PlayNextSongInQueue()

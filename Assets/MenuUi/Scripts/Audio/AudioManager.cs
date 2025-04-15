@@ -127,6 +127,14 @@ namespace MenuUi.Scripts.Audio
         public string PlayMusic(MusicSection section, int musicindex = -1)
         {
             if (_musicHandler == null) return null;
+            else if (section == MusicSection.SoulHome)
+            {
+                if (JukeBoxCurrentSong?.songs != null)
+                {
+                    _jukebox.ContinueSong();
+                    return JukeBoxCurrentSong.songName;
+                }
+            }
             return _musicHandler.PlayMusic(section, musicindex);
         }
 
