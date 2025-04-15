@@ -82,7 +82,7 @@ namespace MenuUI.Scripts.SoulHome
             _musicName.text = AudioManager.Instance?.PlayMusic(MusicSection.SoulHome);
             EditModeTrayResize();
             if (GameAnalyticsManager.Instance != null) GameAnalyticsManager.Instance.OpenSoulHome();
-            
+            JukeboxController.OnChangeJukeBoxSong += SetSongName;
         }
 
         public void OnDisable()
@@ -96,6 +96,7 @@ namespace MenuUI.Scripts.SoulHome
             AudioManager.Instance?.StopMusic();
             _jukeBoxPopup.StopJukebox();
             _jukeBoxPopup.ToggleJokeBoxScreen(false);
+            JukeboxController.OnChangeJukeBoxSong -= SetSongName;
         }
 
         public void SetRoomName(GameObject room)
@@ -256,6 +257,11 @@ namespace MenuUI.Scripts.SoulHome
         public void ShowInfoPopup(string popupText)
         {
             SignalBus.OnChangePopupInfoSignal(popupText);
+        }
+
+        private void SetSongName(JukeboxSong song)
+        {
+            _musicName.text = song.songName;
         }
 
     }

@@ -39,8 +39,6 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
      void Start()
     {
-        JukeboxController.OnChangeJukeBoxSong += SetSongInfo;
-        JukeboxController.OnChangeJukeBoxQueue += UpdateQueueText;
         foreach (var song in AudioManager.Instance.JukeBoxSongs) 
         { 
             GameObject jukeboxObject = Instantiate(jukeboxButtonprefab, songlistContent);
@@ -48,8 +46,19 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
             jukeboxObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = song.songName;
         }
         _backButton.onClick.AddListener(()=> ToggleJokeBoxScreen(false));
+    }
+    private void OnEnable()
+    {
+        JukeboxController.OnChangeJukeBoxSong += SetSongInfo;
+        JukeboxController.OnChangeJukeBoxQueue += UpdateQueueText;
         SetSongInfo(AudioManager.Instance.JukeBoxCurrentSong);
         UpdateQueueText(AudioManager.Instance.JukeBoxQueue);
+    }
+
+    private void OnDisable()
+    {
+        JukeboxController.OnChangeJukeBoxSong -= SetSongInfo;
+        JukeboxController.OnChangeJukeBoxQueue -= UpdateQueueText;
     }
 
     private IEnumerator SpinDisk()
