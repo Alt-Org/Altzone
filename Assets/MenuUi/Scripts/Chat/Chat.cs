@@ -4,14 +4,18 @@ using TMPro;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using System.Collections;
+using MenuUi.Scripts.TabLine;
+using Altzone.Scripts.ReferenceSheets;
+using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.Model.Poco.Game;
 
-public class Chat : MonoBehaviour
+public class Chat : AltMonoBehaviour
 {
     [Header("Chat")] 
     public GameObject languageChat; 
     public GameObject globalChat;
     public GameObject clanChat;
-    private GameObject currentContent; // Tällä hetkellä aktiivinen chatin content
+    public GameObject currentContent; // Tällä hetkellä aktiivinen chatin content
 
     [Header("InputField")]
     public TMP_InputField inputField;
@@ -19,12 +23,23 @@ public class Chat : MonoBehaviour
     [Header("Delete Ui")]
     public GameObject deleteButtons;
 
+    [Header("Add reactions UI")]
+    public GameObject addReactionsPanel;
+    public GameObject commonReactions;
+    public GameObject allReactions;
+    public GameObject usersWhoAdded;
+
+    [Header("Chat Reactions")]
+    [SerializeField] private ChatResponseList _chatResponseList;
+    [SerializeField] private GameObject _chatResponseContent;
+
     [Header("Prefab")]
     public GameObject messagePrefabBlue;
     public GameObject messagePrefabRed;
     public GameObject messagePrefabYellow;
     public GameObject messagePrefabOrange;
     public GameObject messagePrefabPink;
+    [SerializeField] private GameObject _quickMessagePrefab;
 
     [Header("Scroll Rects")]
     public ScrollRect languageChatScrollRect;
@@ -35,6 +50,9 @@ public class Chat : MonoBehaviour
     public GameObject quickMessages;
     public GameObject[] sendButtons;
     public GameObject buttonOpenSendButtons;
+
+    [Header("TablineScript reference")]
+    public TabLine tablineScript;
 
     private ScrollRect currentScrollRect; // Tällä hetkellä aktiivinen Scroll Rect
 
@@ -63,6 +81,8 @@ public class Chat : MonoBehaviour
         messagesByChat[clanChat] = new List<GameObject>();
 
         LanguageChatActive();
+        tablineScript.ActivateTabButton(1);
+        AddResponses();
     }
 
     private void Update()
@@ -80,6 +100,21 @@ public class Chat : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void AddResponses()
+    {
+        StartCoroutine(GetPlayerData(data =>
+        {
+            List<string> messageList = _chatResponseList.GetResponses((CharacterClassID)((data.SelectedCharacterId/100)*100));
+            foreach (string message in messageList)
+            {
+                GameObject messageObject = Instantiate(_quickMessagePrefab, _chatResponseContent.transform);
+                Button button= messageObject.GetComponent<QuickResponceHandler>().SetData(message);
+                button.onClick.AddListener(() => SendQuickMessage(messageObject.GetComponent<Button>()));
+            }
+        }));
+
     }
 
     public void SendChatMessage()
@@ -199,7 +234,8 @@ public class Chat : MonoBehaviour
             button = message.AddComponent<Button>();
         }
 
-        button.onClick.AddListener(() => SelectMessage(message)); 
+        button.onClick.AddListener(() => SelectMessage(message));
+        button.onClick.AddListener(() => MinimizeOptions());
     }
 
     // Valitsee viestin
@@ -214,10 +250,35 @@ public class Chat : MonoBehaviour
         HighlightMessage(selectedMessage);
 
         Vector3 deletePosition = deleteButtons.transform.position;
-        deletePosition.y = selectedMessage.transform.position.y; 
+        deletePosition.y = selectedMessage.transform.position.y;
         deleteButtons.transform.position = deletePosition;
 
+        SetReactionPanelPosition();
+
         deleteButtons.SetActive(true);// Näytä poistopainikkeet, jos viesti on valittuna
+        addReactionsPanel.SetActive(true);
+    }
+
+    /// <summary>
+    /// Sets the reaction panel at the bottom of the selected message's reaction field
+    /// </summary>
+    private void SetReactionPanelPosition()
+    {
+        Vector3 reactionPosition = addReactionsPanel.transform.position;
+        RectTransform reactionPanelTransfrom = commonReactions.GetComponent<RectTransform>();
+
+        HorizontalLayoutGroup reactionField = selectedMessage.GetComponentInChildren<HorizontalLayoutGroup>();
+        RectTransform reactionFieldTransform = reactionField.GetComponent<RectTransform>();
+
+        float fieldBottomY = reactionField.transform.position.y - (reactionFieldTransform.rect.height * reactionFieldTransform.pivot.y);
+        float newPanelY = fieldBottomY - (reactionPanelTransfrom.rect.height * reactionPanelTransfrom.pivot.y);
+        reactionPosition.y = newPanelY;
+
+        float fieldEdgeX = reactionField.transform.position.x - (reactionFieldTransform.rect.width * reactionFieldTransform.pivot.x);
+        float newPanelX = fieldEdgeX + (reactionPanelTransfrom.rect.width * reactionPanelTransfrom.pivot.x);
+        reactionPosition.x = newPanelX;
+
+        addReactionsPanel.transform.position = reactionPosition;
     }
 
 
@@ -241,8 +302,12 @@ public class Chat : MonoBehaviour
             }
 
             deleteButtons.SetActive(false);
-        }
 
+            commonReactions.SetActive(true);
+            allReactions.SetActive(false);
+            addReactionsPanel.SetActive(false);
+            usersWhoAdded.SetActive(false);
+        }
     }
 
     // Poistaa valitun viestin
@@ -257,6 +322,11 @@ public class Chat : MonoBehaviour
 
             //Poistopainikkeiden piilottaminen viestin poistamisen jälkeen
             deleteButtons.SetActive(false);
+
+            commonReactions.SetActive(true);
+            allReactions.SetActive(false);
+            addReactionsPanel.SetActive(false);
+            usersWhoAdded.SetActive(false);
         }
         else
         {
@@ -364,5 +434,49 @@ public class Chat : MonoBehaviour
         }
 
         buttonOpenSendButtons.SetActive(true);
+    }
+
+    /// <summary>
+    /// Added to buttons to deselect messages and close the sending options
+    /// </summary>
+    /// <param name="onlyMessages"></param>
+    public void CloseOnButtonClick(bool onlyMessages)
+    {
+        if (onlyMessages)
+        {
+            DeselectMessage(selectedMessage);
+        }
+        else
+        {
+            DeselectMessage(selectedMessage);
+            MinimizeOptions();
+        }
+    }
+
+    public void UpdateContentLayout(HorizontalLayoutGroup reactionsField)
+    {
+        StartCoroutine(UpdateLayout(reactionsField));
+    }
+
+    private IEnumerator UpdateLayout(HorizontalLayoutGroup reactionsField)
+    {
+        yield return null;
+
+        if(reactionsField != null)
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
+        }
+        
+        VerticalLayoutGroup currentLayout = currentContent.GetComponentInChildren<VerticalLayoutGroup>();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(currentLayout.GetComponent<RectTransform>());
+    }
+
+    public void OpenUsersWhoAddedReactionPanel()
+    {
+        addReactionsPanel.SetActive(true);
+        commonReactions.SetActive(false);
+        allReactions.SetActive(false);
+        usersWhoAdded.SetActive(true);
+        SetReactionPanelPosition();
     }
 }

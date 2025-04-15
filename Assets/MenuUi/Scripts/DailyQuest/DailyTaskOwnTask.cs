@@ -1,4 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,10 +17,13 @@ public class DailyTaskOwnTask : MonoBehaviour
         Depressed
     }
 
+    [SerializeField] private DailyTaskCardImageReference _cardImageReference;
+
     [Header("Current task")]
     [SerializeField] private TextMeshProUGUI _taskDescription;
     [SerializeField] private TextMeshProUGUI _taskPointsReward;
     [SerializeField] private TextMeshProUGUI _taskCoinsReward;
+    [SerializeField] private Image _taskTypeImage;
     [Space]
     [SerializeField] private Image _taskProgressFillImage;
     [SerializeField] private RectTransform _taskProgressLayoutGroup;
@@ -62,13 +68,16 @@ public class DailyTaskOwnTask : MonoBehaviour
 
     #region Task
 
-    public void SetDailyTask(string taskDescription, int amount, int points, int coins)
+    public IEnumerator SetDailyTask(PlayerTask data)
     {
-        _taskDescription.text = taskDescription;
-        _taskPointsReward.text = "" + points;
-        _taskCoinsReward.text = "" + coins;
+        _taskDescription.text = data.Title;
+        _taskPointsReward.text = "" + data.Points;
+        _taskCoinsReward.text = "" + data.Coins;
+        _taskTypeImage.sprite = _cardImageReference.GetTaskImage(data);
 
-        SetProgressBarMarkers(amount);
+        yield return new WaitUntil(() => (_taskProgressMarkers.Count != 0));
+
+        SetProgressBarMarkers(data.Amount);
     }
 
     /// <summary>
