@@ -18,7 +18,7 @@ public class Reward
     public string description;
 }
 
-public class LevelUpController : MonoBehaviour
+public class LevelUpController : AltMonoBehaviour
 {
     [Header("UI Elements")]
     // The panel that appears when the player levels up
@@ -43,12 +43,6 @@ public class LevelUpController : MonoBehaviour
     private List<BaseCharacter> availableCharacters = new();
     private List<Reward> currentRewards = new();
 
-
-    private void Awake()
-    {
-        Debug.Log("LevelUpController awakened");
-        gameObject.SetActive(true);
-    }
     // Start is called before the first frame update
     void Start()
     {
@@ -116,9 +110,11 @@ public class LevelUpController : MonoBehaviour
         if (availableCharacters.Count > 0)
         {
             var character = availableCharacters[Random.Range(0, availableCharacters.Count)];
-            var charData = PlayerCharacterPrototypes.GetCharacter(character.Id.ToString());
+            var charData = PlayerCharacterPrototypes.GetCharacter(((int)character.Id).ToString()); 
             if (charData != null)
             {
+                Debug.Log($"Adding character reward: {charData.Name}");
+
                 currentRewards.Add(new Reward
                 {
                     image = charData.GalleryImage,
