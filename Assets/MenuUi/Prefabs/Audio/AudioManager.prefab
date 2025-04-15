@@ -715,6 +715,70 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _useAudioSourceBaseVolume: 1
   _soundType: 1
+--- !u!1 &1876944904163156040
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6166932957916187927}
+  - component: {fileID: 1796067170315154734}
+  m_Layer: 0
+  m_Name: Jukebox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6166932957916187927
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1876944904163156040}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1881148736243464547}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1796067170315154734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1876944904163156040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5674bdab8b7163a48a60c9470031d617, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSource: {fileID: 4283766005048424298}
+  songDisks:
+  - songName: In Awe
+    songs: {fileID: 8300000, guid: 6ab022fd759eb2e418ff0169150f67b1, type: 3}
+    songDisks: {fileID: 21300000, guid: a9ff27d78d02db9428e00c963f429b43, type: 3}
+  - songName: Lingering Smoothness
+    songs: {fileID: 8300000, guid: 206d22de247615540869e783709230d4, type: 3}
+    songDisks: {fileID: 21300000, guid: 19b45a0d55711f845848895c797669f4, type: 3}
+  - songName: Emotional Waves
+    songs: {fileID: 8300000, guid: 77263ef85cbf60a448b496bdd8029a11, type: 3}
+    songDisks: {fileID: 21300000, guid: 117ff4b0aae501d49a04904563a17686, type: 3}
+  - songName: Soul Atmos
+    songs: {fileID: 8300000, guid: 280c87abcfabe804f8b177e519c22c11, type: 3}
+    songDisks: {fileID: 21300000, guid: 117ff4b0aae501d49a04904563a17686, type: 3}
+  - songName: Soul
+    songs: {fileID: 8300000, guid: 5dbc7fd70bf96ac4eb223411d552b66d, type: 3}
+    songDisks: {fileID: 21300000, guid: 117ff4b0aae501d49a04904563a17686, type: 3}
+  - songName: Falling Bird
+    songs: {fileID: 8300000, guid: 45bf53d82e22ced439d9560c0e31b037, type: 3}
+    songDisks: {fileID: 21300000, guid: 6b10d61836065ad4d8bc5ddfad23d3d3, type: 3}
 --- !u!1 &2155083248955265168
 GameObject:
   m_ObjectHideFlags: 0
@@ -1303,6 +1367,7 @@ Transform:
   m_Children:
   - {fileID: 8334165992721528750}
   - {fileID: 2245219081603531259}
+  - {fileID: 6166932957916187927}
   - {fileID: 7824826247596195586}
   m_Father: {fileID: 5648691658492065204}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
