@@ -55,7 +55,6 @@ public class Chat : AltMonoBehaviour
     [Header("Minimize")]
     public GameObject quickMessages;
     public GameObject[] sendButtons;
-    public GameObject buttonOpenSendButtons;
 
     [Header("TablineScript reference")]
     public TabLine tablineScript;
@@ -74,6 +73,7 @@ public class Chat : AltMonoBehaviour
     private Dictionary<GameObject, List<GameObject>> messagesByChat = new Dictionary<GameObject, List<GameObject>>();
 
     private GameObject _lastSendButtonUsed;
+    private bool _sendButtonsAreClosed = true;
 
     private void Start()
     {
@@ -90,17 +90,13 @@ public class Chat : AltMonoBehaviour
         AddResponses();
 
         _lastSendButtonUsed = _sendButtonJoy;
+
         // Add send button listeners
-        Button buttonSadness = _sendButtonSadness.GetComponent<Button>();
-        Button buttonAnger = _sendButtonAnger.GetComponent<Button>();
-        Button buttonJoy = _sendButtonJoy.GetComponent<Button>();
-        Button buttonPlayful = _sendButtonPlayful.GetComponent<Button>();
-        Button buttonLove = _sendButtonLove.GetComponent<Button>();
-        buttonSadness.onClick.AddListener(() => { _lastSendButtonUsed = _sendButtonSadness; SendChatMessage(messagePrefabBlue); });
-        buttonAnger.onClick.AddListener(() => {  _lastSendButtonUsed = _sendButtonAnger; SendChatMessage(messagePrefabRed); });
-        buttonJoy.onClick.AddListener(() => { _lastSendButtonUsed = _sendButtonJoy; SendChatMessage(messagePrefabYellow); });
-        buttonPlayful.onClick.AddListener(() => { _lastSendButtonUsed = _sendButtonPlayful; SendChatMessage(messagePrefabOrange); });
-        buttonLove.onClick.AddListener(() => { _lastSendButtonUsed = _sendButtonLove; SendChatMessage(messagePrefabPink); });
+        foreach (GameObject sendButton in sendButtons)
+        {
+            Button button = sendButton.GetComponent<Button>();
+            button.onClick.AddListener(() => CheckSendButton(sendButton));
+        }
     }
 
     private void Update()
@@ -133,6 +129,51 @@ public class Chat : AltMonoBehaviour
             }
         }));
 
+    }
+
+    /// <summary>
+    /// Checks if other send buttons should be opened or a message sent.
+    /// </summary>
+    /// <param name="buttonUsed"></param>
+    private void CheckSendButton(GameObject buttonUsed)
+    {
+        if (_sendButtonsAreClosed) // Open other send buttons
+        {
+            foreach (GameObject sendButton in sendButtons)
+            {
+                sendButton.SetActive(true);
+            }
+
+            CloseOnButtonClick(true);
+
+            _sendButtonsAreClosed = false;
+        }
+        else // send a message
+        {
+            _lastSendButtonUsed = buttonUsed;
+
+            // Check which message prefab should be used
+            if(buttonUsed == _sendButtonSadness)
+            {
+                SendChatMessage(messagePrefabBlue);
+            }
+            else if (buttonUsed == _sendButtonAnger)
+            {
+                SendChatMessage(messagePrefabRed);
+            }
+            else if (buttonUsed == _sendButtonJoy)
+            {
+                SendChatMessage(messagePrefabYellow);
+            }
+            else if (buttonUsed == _sendButtonPlayful)
+            {
+                SendChatMessage(messagePrefabOrange);
+            }
+            else if (buttonUsed == _sendButtonLove)
+            {
+                SendChatMessage(messagePrefabPink);
+            }
+        }
     }
 
     public void SendChatMessage(GameObject messagePrefab)
@@ -436,8 +477,7 @@ public class Chat : AltMonoBehaviour
         {
             button.SetActive(_lastSendButtonUsed == button);
         }
-
-        buttonOpenSendButtons.SetActive(true);
+        _sendButtonsAreClosed = true;
     }
 
     /// <summary>
