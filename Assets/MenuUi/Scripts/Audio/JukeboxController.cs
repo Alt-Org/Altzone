@@ -50,8 +50,13 @@ namespace MenuUi.Scripts.Audio
 
         private IEnumerator WaitUntilSongEnd()
         {
-            yield return new WaitUntil(() => (_audioSource.time > 2));
-            yield return new WaitUntil(() => (_audioSource.time <= 2));
+            float songLength = _currentSong.songs.length;
+            float songCurrentTime = 0f;
+            do
+            {
+                yield return null;
+                songCurrentTime += Time.deltaTime;
+            } while(songLength > songCurrentTime);
 
             CheckIfSongInQueue();
         }
