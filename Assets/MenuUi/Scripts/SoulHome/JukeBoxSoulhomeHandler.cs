@@ -100,7 +100,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
             _diskSpinCoroutine = null;
             diskTransform.rotation = Quaternion.identity;
         }
-        _diskSpinCoroutine = StartCoroutine(SpinDisk());
+        if(song.songs != null)_diskSpinCoroutine = StartCoroutine(SpinDisk());
     }
 
     private void UpdateQueueText(Queue<JukeboxSong> songQueue) 
