@@ -264,5 +264,13 @@ namespace MenuUI.Scripts.SoulHome
             _musicName.text = song.songName;
         }
 
+        public bool CheckInteractableStatus()
+        {
+            if (_exitPending) return false;
+            if (_confirmPopupOpen) return false;
+            if (_jukeBoxPopup.JukeBoxOpen) return false;
+
+            return true;
+        }
     }
 }

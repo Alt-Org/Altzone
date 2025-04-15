@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class JukeBoxSoulhomeHandler : MonoBehaviour
 {
     public static JukeBoxSoulhomeHandler Instance;
-    
+
     public Image diskImage;
     public Transform diskTransform;
 
@@ -27,10 +27,16 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     public GameObject jukeboxButtonprefab;
     [Header("Queuelist")]
     public Transform QueueContent;
-    [SerializeField]private GameObject Queuetextprefab;
+    [SerializeField] private GameObject Queuetextprefab;
 
     private bool isMainMenuMode = false;
     private Coroutine _diskSpinCoroutine;
+
+    public bool JukeBoxOpen { get
+        {
+            return _jukeboxObject.activeSelf;
+        }
+    }
 
     private void Awake()
     {

@@ -85,7 +85,7 @@ namespace MenuUI.Scripts.SoulHome
                 GetTrayHandler().SetTrayContentSize();
                 GetTrayHandler().GetComponent<ResizeCollider>().Resize();
             }
-            if (!CheckInteractableStatus()) return;
+            if (!_soulHomeController.CheckInteractableStatus()) return;
 
             if (transform.Find("Screen").GetComponent<RectTransform>().rect.width != transform.Find("Screen").GetComponent<BoxCollider2D>().size.x || transform.Find("Screen").GetComponent<RectTransform>().rect.height != transform.Find("Screen").GetComponent<BoxCollider2D>().size.y)
             //if ((Screen.orientation == ScreenOrientation.LandscapeLeft && !rotated) || (Screen.orientation == ScreenOrientation.Portrait && rotated))
@@ -652,7 +652,7 @@ namespace MenuUI.Scripts.SoulHome
         }
         private void CheckTrayButtonStatus()
         {
-            if (_soulHomeTower.ChangedFurnitureList.Count > 0 && CheckInteractableStatus())
+            if (_soulHomeTower.ChangedFurnitureList.Count > 0 && _soulHomeController.CheckInteractableStatus())
             {
                 _changeHandleButtonTray.transform.Find("DiscardChangesButton").GetComponent<Button>().interactable = true;
                 _changeHandleButtonTray.transform.Find("SaveChangesButton").GetComponent<Button>().interactable = true;
