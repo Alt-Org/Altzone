@@ -12,6 +12,7 @@ namespace MenuUi.Scripts.TabLine
     {
         [SerializeField] private bool _getActiveButtonFromSwipe = false;
         [SerializeField] private TabLineButton[] _tabLineButtons;
+        [SerializeField] private Image _tabLineImage;
 
         private SwipeUI _swipe;
 
@@ -67,7 +68,13 @@ namespace MenuUi.Scripts.TabLine
                 return;
             }
 
-            _tabLineButtons[index].SetActiveVisuals();
+            Sprite image = _tabLineButtons[index].SetActiveVisuals();
+            if (image != null)
+            {
+                _tabLineImage.sprite = image;
+                _tabLineImage.enabled = true;
+            }
+            else _tabLineImage.enabled = false;
 
             for (int i = 0; i < _tabLineButtons.Length; i++)
             {
@@ -97,10 +104,11 @@ namespace MenuUi.Scripts.TabLine
             [Header("References to components")]
             [SerializeField] private Image _tabImageComponent;
             [SerializeField] private Image _detailImageComponent;
+            [SerializeField] private Sprite _tablineImage;
 
             const float InactiveAlpha = 0.5f;
 
-            public void SetActiveVisuals()
+            public Sprite SetActiveVisuals()
             {
                 if (_tabImageComponent != null)
                 {
@@ -111,6 +119,7 @@ namespace MenuUi.Scripts.TabLine
                 {
                     _detailImageComponent.color = new Color(_tabImageComponent.color.r, _tabImageComponent.color.g, _tabImageComponent.color.b, 1);
                 }
+                return _tablineImage;
             }
 
 

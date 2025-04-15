@@ -179,7 +179,7 @@ GameObject:
   - component: {fileID: 76015281}
   - component: {fileID: 76015280}
   - component: {fileID: 76015284}
-  - component: {fileID: 76015283}
+  - component: {fileID: 76015285}
   m_Layer: 0
   m_Name: ArenaBorderLeft
   m_TagString: Untagged
@@ -252,26 +252,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1596240043}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &76015283
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 76015278}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: beb1734e5eb7c406596f06707e0802e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Prototype:
-    Normal:
-      X:
-        RawValue: 65536
-      Y:
-        RawValue: 0
-    CollisionMinOffset:
-      RawValue: 294912
 --- !u!114 &76015284
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -426,6 +406,26 @@ MonoBehaviour:
   View:
     Id:
       Value: 0
+--- !u!114 &76015285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 76015278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b168b1a0b52f6b4daf50fbe62bfbd0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    Normal:
+      X:
+        RawValue: 65536
+      Y:
+        RawValue: 0
+    CollisionMinOffset:
+      RawValue: 294912
 --- !u!1 &88804845
 GameObject:
   m_ObjectHideFlags: 0
@@ -552,7 +552,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1957537065}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &113196676 stripped
 MonoBehaviour:
@@ -2338,9 +2338,9 @@ GameObject:
   m_Component:
   - component: {fileID: 196834849}
   - component: {fileID: 196834851}
-  - component: {fileID: 196834850}
+  - component: {fileID: 196834852}
   m_Layer: 0
-  m_Name: ArenaBorderTop(Goal)
+  m_Name: ArenaBorderTop(GoalTeamBeta)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2355,30 +2355,12 @@ Transform:
   m_GameObject: {fileID: 196834848}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 12.5}
-  m_LocalScale: {x: 9, y: 1, z: 14}
+  m_LocalPosition: {x: 0, y: 0, z: 13}
+  m_LocalScale: {x: 9, y: 1, z: 6}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1596240043}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &196834850
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 196834848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09e0b7a6cf96d1a469c8e6e8ac4007a8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Prototype:
-    goalConfig:
-      Id:
-        Value: 337072248309995173
-    hasTriggered:
-      Value: 0
 --- !u!114 &196834851
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2423,7 +2405,7 @@ MonoBehaviour:
         X:
           RawValue: 32768
         Y:
-          RawValue: 16384
+          RawValue: 32768
       PositionOffset:
         X:
           RawValue: 0
@@ -2533,6 +2515,23 @@ MonoBehaviour:
   View:
     Id:
       Value: 0
+--- !u!114 &196834852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 196834848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89cdfcc2225e9d541a992e746024e9f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    TeamNumber:
+      Value: 2
+    HasTriggered:
+      Value: 0
 --- !u!1 &321734676
 GameObject:
   m_ObjectHideFlags: 0
@@ -2579,16 +2578,11 @@ MonoBehaviour:
     SystemsConfig:
       Id:
         Value: 289946063136722323
-    BattleArenaSpec:
+    BattleConfig:
       Id:
-        Value: 317773981887578547
-    SoulWallSpec:
-      Id:
-        Value: 452592589216878726
-    ProjectileSpec:
-      Id:
-        Value: 356697573389229340
-    InitialProjectileEmotion: 0
+        Value: 422639178081310304
+    BattleParameters:
+      ProjectileInitialEmotion: 0
   UseRandomSeed: 0
   SessionConfig: {fileID: 0}
   LocalPlayers:
@@ -2903,7 +2897,7 @@ GameObject:
   - component: {fileID: 655040187}
   - component: {fileID: 655040186}
   - component: {fileID: 655040190}
-  - component: {fileID: 655040189}
+  - component: {fileID: 655040191}
   m_Layer: 0
   m_Name: ArenaBorderRight
   m_TagString: Untagged
@@ -2976,26 +2970,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1596240043}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &655040189
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 655040184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: beb1734e5eb7c406596f06707e0802e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Prototype:
-    Normal:
-      X:
-        RawValue: -65536
-      Y:
-        RawValue: 0
-    CollisionMinOffset:
-      RawValue: 294912
 --- !u!114 &655040190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3150,6 +3124,26 @@ MonoBehaviour:
   View:
     Id:
       Value: 0
+--- !u!114 &655040191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 655040184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b168b1a0b52f6b4daf50fbe62bfbd0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    Normal:
+      X:
+        RawValue: -65536
+      Y:
+        RawValue: 0
+    CollisionMinOffset:
+      RawValue: 294912
 --- !u!1 &677758277
 GameObject:
   m_ObjectHideFlags: 0
@@ -3452,9 +3446,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1663712103}
   - component: {fileID: 1663712105}
-  - component: {fileID: 1663712104}
+  - component: {fileID: 1663712106}
   m_Layer: 0
-  m_Name: ArenaBorderBottom(Goal)
+  m_Name: ArenaBorderBottom(GoalTeamAlpha)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3469,30 +3463,12 @@ Transform:
   m_GameObject: {fileID: 1663712102}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -12.5}
-  m_LocalScale: {x: 9, y: 1, z: 14}
+  m_LocalPosition: {x: 0, y: 0, z: -13}
+  m_LocalScale: {x: 9, y: 1, z: 6}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1596240043}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1663712104
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1663712102}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09e0b7a6cf96d1a469c8e6e8ac4007a8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Prototype:
-    goalConfig:
-      Id:
-        Value: 269125312843482111
-    hasTriggered:
-      Value: 0
 --- !u!114 &1663712105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3537,7 +3513,7 @@ MonoBehaviour:
         X:
           RawValue: 32768
         Y:
-          RawValue: 16384
+          RawValue: 32768
       PositionOffset:
         X:
           RawValue: 0
@@ -3647,6 +3623,35 @@ MonoBehaviour:
   View:
     Id:
       Value: 0
+--- !u!114 &1663712106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1663712102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89cdfcc2225e9d541a992e746024e9f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    TeamNumber:
+      Value: 1
+    HasTriggered:
+      Value: 0
+--- !u!114 &1715260851 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1498203579526516830, guid: 1621131824e870d4b951f05b192c9ff7,
+    type: 3}
+  m_PrefabInstance: {fileID: 5589480802127671713}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfe6c0ccac828df4396f16b76c5a528c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1735170625
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3730,56 +3735,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4c9026e52048f4c4a9a4b484571e84ed, type: 3}
---- !u!1 &1957537064
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1957537065}
-  - component: {fileID: 1957537066}
-  m_Layer: 0
-  m_Name: BattleSoundFXController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1957537065
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1957537064}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 88804847}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1957537066
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1957537064}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfe6c0ccac828df4396f16b76c5a528c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _audioSource: {fileID: 88804846}
-  _soulWallHitClip: {fileID: 8300000, guid: a49df0fafb838bb4bb12d1db861d2180, type: 3}
-  _goalHitClip: {fileID: 8300000, guid: 95bda2344d4425241b2cbebfe061b59e, type: 3}
-  _sideWallHitClip: {fileID: 8300000, guid: b0ae6de9d4aa295418e449cb48da532d, type: 3}
-  _wallBroken: {fileID: 8300000, guid: a3b5573c1b83344a2a235f402729ab83, type: 3}
 --- !u!1001 &2118663603
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3893,6 +3848,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BattleUi
       objectReference: {fileID: 0}
+    - target: {fileID: 7342130735435193128, guid: 97e8f0ca20408d042a38f07b90b44946,
+        type: 3}
+      propertyPath: GameViewController
+      value: 
+      objectReference: {fileID: 4759642362552276934}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4048,6 +4008,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8816702143117302233, guid: 7e0904d2b2ca0f145ad03f5086282bbb,
         type: 3}
+      propertyPath: _uiController
+      value: 
+      objectReference: {fileID: 2118663608}
+    - target: {fileID: 8816702143117302233, guid: 7e0904d2b2ca0f145ad03f5086282bbb,
+        type: 3}
       propertyPath: _gameUiController
       value: 
       objectReference: {fileID: 2118663608}
@@ -4058,6 +4023,11 @@ PrefabInstance:
       objectReference: {fileID: 113196676}
     - target: {fileID: 8816702143117302233, guid: 7e0904d2b2ca0f145ad03f5086282bbb,
         type: 3}
+      propertyPath: _soundFXViewController
+      value: 
+      objectReference: {fileID: 1715260851}
+    - target: {fileID: 8816702143117302233, guid: 7e0904d2b2ca0f145ad03f5086282bbb,
+        type: 3}
       propertyPath: _screenEffectViewController
       value: 
       objectReference: {fileID: 1538956172}
@@ -4066,6 +4036,91 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7e0904d2b2ca0f145ad03f5086282bbb, type: 3}
+--- !u!114 &4759642362552276934 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8816702143117302233, guid: 7e0904d2b2ca0f145ad03f5086282bbb,
+    type: 3}
+  m_PrefabInstance: {fileID: 4759642362552276933}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfb4c9f35e07d2546801ffb7e0e673ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1001 &5589480802127671713
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1498203579526516830, guid: 1621131824e870d4b951f05b192c9ff7,
+        type: 3}
+      propertyPath: _audioSource
+      value: 
+      objectReference: {fileID: 88804846}
+    - target: {fileID: 3580548721989974009, guid: 1621131824e870d4b951f05b192c9ff7,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3580548721989974009, guid: 1621131824e870d4b951f05b192c9ff7,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3580548721989974009, guid: 1621131824e870d4b951f05b192c9ff7,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3580548721989974009, guid: 1621131824e870d4b951f05b192c9ff7,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3580548721989974009, guid: 1621131824e870d4b951f05b192c9ff7,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3580548721989974009, guid: 1621131824e870d4b951f05b192c9ff7,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3580548721989974009, guid: 1621131824e870d4b951f05b192c9ff7,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3580548721989974009, guid: 1621131824e870d4b951f05b192c9ff7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3580548721989974009, guid: 1621131824e870d4b951f05b192c9ff7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3580548721989974009, guid: 1621131824e870d4b951f05b192c9ff7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7691488460640292807, guid: 1621131824e870d4b951f05b192c9ff7,
+        type: 3}
+      propertyPath: m_Name
+      value: BattleSoundFXViewController
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1621131824e870d4b951f05b192c9ff7, type: 3}
 --- !u!4 &5756210810806569137
 Transform:
   m_ObjectHideFlags: 0
@@ -4189,6 +4244,7 @@ SceneRoots:
   - {fileID: 4759642362552276933}
   - {fileID: 2433098026093766787}
   - {fileID: 1735170625}
-  - {fileID: 1957537065}
+  - {fileID: 5589480802127671713}
+  - {fileID: 88804847}
   - {fileID: 2118663603}
   - {fileID: 1117656564}

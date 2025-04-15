@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4593766363808855663}
   - component: {fileID: 5798555723279569877}
-  - component: {fileID: 660663061108912838}
-  - component: {fileID: 5387198546616411795}
+  - component: {fileID: 6941196017106160998}
+  - component: {fileID: 6318226639611977352}
   m_Layer: 0
   m_Name: BattleSimulationData
   m_TagString: Untagged
@@ -188,7 +188,7 @@ MonoBehaviour:
   View:
     Id:
       Value: 0
---- !u!114 &660663061108912838
+--- !u!114 &6941196017106160998
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -197,7 +197,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5403119264126220646}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b28b6be54fe52744796349804f59af64, type: 3}
+  m_Script: {fileID: 11500000, guid: 2a8700106c9c70444ae719c9ccf92212, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
@@ -205,7 +205,7 @@ MonoBehaviour:
       Value: 0
     TimeUntilStart:
       RawValue: 262144
---- !u!114 &5387198546616411795
+--- !u!114 &6318226639611977352
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -214,7 +214,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5403119264126220646}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84aa05e62e63ef245afa86dc860c6f5a, type: 3}
+  m_Script: {fileID: 11500000, guid: d08767b1037ba774889651a73c5e0e39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
