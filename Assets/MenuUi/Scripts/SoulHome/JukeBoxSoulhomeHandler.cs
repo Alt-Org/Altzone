@@ -14,8 +14,6 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     public Image diskImage;
     public Transform diskTransform;
 
-    public JukeboxSong[] songDisks;
-
     public float rotationSpeed = 100f;
 
     [SerializeField]
@@ -44,7 +42,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     {
         JukeboxController.OnChangeJukeBoxSong += SetSongInfo;
         JukeboxController.OnChangeJukeBoxQueue += UpdateQueueText;
-        foreach (var song in songDisks) 
+        foreach (var song in AudioManager.Instance.JukeBoxSongs) 
         { 
             GameObject jukeboxObject = Instantiate(jukeboxButtonprefab, songlistContent);
             jukeboxObject.GetComponent<Button>().onClick.AddListener(()=> PlaySongByIndex(song));
@@ -104,7 +102,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     public void StopJukebox()
     {
         AudioManager.Instance.StopMusic();
-        AudioManager.Instance.JukeBoxQueue.Clear();
+        //AudioManager.Instance.JukeBoxQueue.Clear();
         //isMainMenuMode = true;
         diskImage.sprite = null;
         if (_diskSpinCoroutine != null)

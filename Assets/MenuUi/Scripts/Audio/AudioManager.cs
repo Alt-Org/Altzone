@@ -153,6 +153,10 @@ namespace MenuUi.Scripts.Audio
         public void StopMusic()
         {
             if (_musicHandler == null) return;
+            if (JukeBoxCurrentSong?.songs != null)
+            {
+                _jukebox.StopSong();
+            }
             _musicHandler.StopMusic();
         }
 

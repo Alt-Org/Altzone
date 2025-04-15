@@ -11,6 +11,8 @@ namespace MenuUi.Scripts.Audio
         private AudioSource _audioSource;
         [SerializeField]
         private JukeboxSong[] _songs;
+        [SerializeField]
+        private Sprite _emptyDisk;
 
         private Queue<JukeboxSong> _songQueue = new();
         private JukeboxSong _currentSong;
@@ -41,17 +43,17 @@ namespace MenuUi.Scripts.Audio
             {
                 songName = "NoName",
                 songs = null,
-                songDisks = null
+                songDisks = _emptyDisk
 
             };
         }
 
         private IEnumerator WaitUntilSongEnd()
         {
-            yield return null;
-            yield return new WaitWhile(() => (_audioSource.time == 0));
+            yield return new WaitUntil(() => (_audioSource.time > 2));
+            yield return new WaitUntil(() => (_audioSource.time <= 2));
 
-            //CheckIfSongInQueue();
+            CheckIfSongInQueue();
         }
 
         private void CheckIfSongInQueue()
@@ -100,8 +102,23 @@ namespace MenuUi.Scripts.Audio
 
         public void ContinueSong()
         {
-            if(_audioSource.clip != null) _audioSource.Play();
+            if (_currentSong != null)
+            {
+                _audioSource.clip = _currentSong.songs;
+                _audioSource.Play();
+                _waitSongEndCoroutine = StartCoroutine(WaitUntilSongEnd());
+            }
             OnChangeJukeBoxSong?.Invoke(_currentSong);
+        }
+
+        public void StopSong()
+        {
+            if (_waitSongEndCoroutine != null)
+            {
+                StopCoroutine(_waitSongEndCoroutine);
+                _waitSongEndCoroutine = null;
+            }
+            _audioSource.Pause();
         }
 
         private void PlayNextSongInQueue()

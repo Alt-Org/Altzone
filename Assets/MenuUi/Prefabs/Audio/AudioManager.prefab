@@ -760,7 +760,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _audioSource: {fileID: 4283766005048424298}
-  _songDisks:
+  _songs:
   - songName: In Awe
     songs: {fileID: 8300000, guid: 6ab022fd759eb2e418ff0169150f67b1, type: 3}
     songDisks: {fileID: 21300000, guid: a9ff27d78d02db9428e00c963f429b43, type: 3}
@@ -779,6 +779,7 @@ MonoBehaviour:
   - songName: Falling Bird
     songs: {fileID: 8300000, guid: 45bf53d82e22ced439d9560c0e31b037, type: 3}
     songDisks: {fileID: 21300000, guid: 6b10d61836065ad4d8bc5ddfad23d3d3, type: 3}
+  _emptyDisk: {fileID: 21300000, guid: a9ff27d78d02db9428e00c963f429b43, type: 3}
 --- !u!1 &2155083248955265168
 GameObject:
   m_ObjectHideFlags: 0
