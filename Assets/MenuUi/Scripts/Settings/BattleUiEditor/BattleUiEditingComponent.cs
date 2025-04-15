@@ -10,7 +10,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
     /// <summary>
     /// Handles the functionality for BattleUiEditingComponent prefab.
     /// </summary>
-    public class BattleUiEditingComponent: MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+    public class BattleUiEditingComponent : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         [SerializeField] private Button _scaleHandleButton;
         [SerializeField] private Button _flipHorizontallyButton;
@@ -85,9 +85,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     break;
                 case ActionType.Scale:
                     // Scaling while keeping aspect ratio
-                    float sizeIncreaseX = eventData.delta.x * 2;
+                    float sizeIncreaseX = eventData.delta.x;
                     float sizeIncreaseY = sizeIncreaseX / (_movableElement.RectTransformComponent.rect.width / _movableElement.RectTransformComponent.rect.height);
-                    _movableElement.RectTransformComponent.sizeDelta += new Vector2 (sizeIncreaseX, sizeIncreaseY);
+                    _movableElement.RectTransformComponent.sizeDelta += new Vector2(sizeIncreaseX, sizeIncreaseY);
 
                     // Preventing out of bounds scaling or being scaled too small
                     if (_multiOrientationElement == null || _multiOrientationElement.IsHorizontal)
@@ -112,6 +112,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         public void OnEndDrag(PointerEventData eventData)
         {
             CalculateAndSetAnchors();
+            CheckControlButtonsVisibility();
             _currentAction = ActionType.None;
         }
 
@@ -120,6 +121,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             None,
             Move,
             Scale
+        }
+
+        enum CornerType // Helper enum to access button world corners more readably.
+        {
+            BottomLeft = 0,
+            TopLeft = 1,
+            TopRight = 2,
+            BottomRight = 3,
         }
 
         private RectTransform _uiElementHolder;
@@ -152,7 +161,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             float xPos = _movableElement.RectTransformComponent.localPosition.x;
             float yPos = _movableElement.RectTransformComponent.localPosition.y;
-            
+
             float ownWidth = newSize == null ? _movableElement.RectTransformComponent.rect.width : newSize.Value.x;
             float ownHeight = newSize == null ? _movableElement.RectTransformComponent.rect.height : newSize.Value.y;
 
@@ -166,7 +175,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Checking that the anchors don't go over borders
             if (anchorXMin < 0)
             {
-                anchorXMax += Mathf.Abs(anchorXMin); 
+                anchorXMax += Mathf.Abs(anchorXMin);
                 anchorXMin = 0;
             }
 
@@ -204,14 +213,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _movableElement.SetData(_data);
         }
 
-        // Method used to calculate appropiate size for the control buttons, since if they were anchored they would grow with the element when it's scaled
-        private void SetControlButtonSize(Button button, float sizeRatio)
-        {
-            float buttonWidth = _uiElementHolder.rect.width * sizeRatio;
-            Vector2 buttonSize = new Vector2(buttonWidth, buttonWidth);
-            button.GetComponent<RectTransform>().sizeDelta = buttonSize;
-        }
-
         private void FlipHorizontally()
         {
             _data.IsFlippedHorizontally = !_data.IsFlippedHorizontally;
@@ -244,6 +245,83 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
 
             CalculateAndSetAnchors(newSize);
+        }
+
+        // Method used to calculate appropiate size for the control buttons, since if they were anchored they would grow with the element when it's scaled
+        private void SetControlButtonSize(Button button, float sizeRatio)
+        {
+            float buttonWidth = _uiElementHolder.rect.width * sizeRatio;
+            Vector2 buttonSize = new Vector2(buttonWidth, buttonWidth);
+            button.GetComponent<RectTransform>().sizeDelta = buttonSize;
+        }
+
+        private void CheckControlButtonsVisibility()
+        {
+            Button[] buttons = new Button[] { _scaleHandleButton, _changeOrientationButton, _flipHorizontallyButton, _flipVerticallyButton };
+
+            foreach (Button button in buttons)
+            {
+                RectTransform buttonRectTransform = button.GetComponent<RectTransform>();
+
+                // Setting button to default position
+                buttonRectTransform.anchoredPosition = Vector2.zero;
+
+                // Getting button corners
+                Vector3[] buttonCorners = new Vector3[4];
+                buttonRectTransform.GetWorldCorners(buttonCorners);
+
+                // Checking that the button is entirely inside ui element holder
+                bool isButtonInside = true;
+                for (int i = 0; i < buttonCorners.Length; i++)
+                {
+                    Vector3 localSpacePoint = _uiElementHolder.InverseTransformPoint(buttonCorners[i]);
+                    if (!_uiElementHolder.rect.Contains(localSpacePoint))
+                    {
+                        isButtonInside = false;
+                        break;
+                    }
+                }
+
+                // If not updating the position
+                if (!isButtonInside)
+                {
+                    Vector3[] holderCorners = new Vector3[4];
+                    _uiElementHolder.GetWorldCorners(holderCorners);
+
+                    Vector2 newPosition = Vector2.zero;
+                    // Checking left side
+                    float left = buttonCorners[(int)CornerType.BottomLeft].x;
+                    if (left < 0)
+                    {
+                        newPosition.x += Mathf.Abs(left);
+                    }
+
+                    // Checking right side
+                    float buttonRight = buttonCorners[(int)CornerType.BottomRight].x;
+                    float holderRight = holderCorners[(int)CornerType.BottomRight].x;
+                    if (buttonRight > holderRight)
+                    {
+                        newPosition.x -= buttonRight - holderRight;
+                    }
+
+                    // Checking bottom side
+                    float bottom = buttonCorners[(int)CornerType.BottomLeft].y;
+                    if (bottom < 0)
+                    {
+                        newPosition.y += Mathf.Abs(bottom);
+                    }
+
+                    // Checking top side
+                    float buttonTop = buttonCorners[(int)CornerType.TopLeft].y;
+                    float holderTop = holderCorners[(int)CornerType.TopLeft].y;
+                    if (buttonTop > holderTop)
+                    {
+                        newPosition.y -= buttonTop - holderTop;
+                    }
+
+                    buttonRectTransform.anchoredPosition = newPosition;
+                }
+            }
         }
     }
 }
