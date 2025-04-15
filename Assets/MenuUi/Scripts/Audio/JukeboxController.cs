@@ -1,0 +1,121 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace MenuUi.Scripts.Audio
+{
+    public class JukeboxController : MonoBehaviour
+    {
+        [SerializeField]
+        private AudioSource _audioSource;
+        [SerializeField]
+        private JukeboxSong[] _songs;
+
+        private Queue<JukeboxSong> _songQueue = new();
+        private JukeboxSong _currentSong;
+        private bool isMainMenuMode = false;
+        private Coroutine _waitSongEndCoroutine;
+        private JukeboxSong _emptySong;
+
+        public Queue<JukeboxSong> SongQueue { get => _songQueue; }
+        public JukeboxSong CurrentSong { get => _currentSong; }
+        public JukeboxSong[] Songs { get => _songs; }
+
+        public delegate void ChangeJukeBoxSong(JukeboxSong song);
+        public static event ChangeJukeBoxSong OnChangeJukeBoxSong;
+
+        public delegate void ChangeJukeBoxQueue(Queue<JukeboxSong> songQueue);
+        public static event ChangeJukeBoxQueue OnChangeJukeBoxQueue;
+
+        private void Start()
+        {
+            _emptySong = new JukeboxSong
+            {
+                songName = "NoName",
+                songs = null,
+                songDisks = null
+
+            };
+        }
+
+        private IEnumerator WaitUntilSongEnd()
+        {
+            yield return new WaitWhile(() => (_audioSource.time > 0));
+
+            CheckIfSongInQueue();
+        }
+
+        private void CheckIfSongInQueue()
+        {
+            if (_songQueue.Count == 0)
+            {
+                OnChangeJukeBoxSong?.Invoke(_emptySong);
+            }
+            else
+            {
+                PlayNextSongInQueue();
+            }
+        }
+
+        public void PlaySongByIndex(JukeboxSong song)
+        {
+            if (isMainMenuMode) return;
+
+            if (!_audioSource.isPlaying && _songQueue.Count == 0)
+            {
+                StartSong(song);
+            }
+            else
+            {
+                _songQueue.Enqueue(song);
+            }
+            OnChangeJukeBoxQueue.Invoke(_songQueue);
+        }
+
+        private void StartSong(JukeboxSong song)
+        {
+            _currentSong = song;
+            _audioSource.clip = song.songs;
+            _audioSource.Play();
+
+            if (_waitSongEndCoroutine != null)
+            {
+                StopCoroutine(_waitSongEndCoroutine);
+                _waitSongEndCoroutine = null;
+            }
+            _waitSongEndCoroutine = StartCoroutine(WaitUntilSongEnd());
+            OnChangeJukeBoxSong?.Invoke(_currentSong);
+        }
+
+        public void ContinueSong()
+        {
+            if(_audioSource.clip != null) _audioSource.Play();
+        }
+
+        private void PlayNextSongInQueue()
+        {
+            if (_songQueue.Count == 0) return;
+            StartSong(_songQueue.Dequeue());
+            OnChangeJukeBoxQueue.Invoke(_songQueue);
+        }
+
+        public void ClearJokeBox()
+        {
+            _audioSource.Stop();
+            _songQueue.Clear();
+        }
+
+        public void ExitMainMenuMode()
+        {
+            isMainMenuMode = false;
+        }
+    }
+    [Serializable]
+    public class JukeboxSong
+    {
+        public string songName;
+        public AudioClip songs;
+        public Sprite songDisks;
+    }
+}

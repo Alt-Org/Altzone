@@ -31,11 +31,18 @@ namespace MenuUi.Scripts.Audio
 
         [SerializeField] private AudioSource _musicAudio;
         private MusicHandler _musicHandler;
+        [SerializeField] private JukeboxController _jukebox;
         [SerializeField] private List<AudioBlock> _sfxList;
         [SerializeField] private List<AudioBlock> _ambientList;
 
         [SerializeField] private GameObject _audioSourcePrefab;
         [SerializeField] public List<string> _audioSections = new();
+
+        public JukeboxSong[] JukeBoxSongs => _jukebox.Songs;
+        public Queue<JukeboxSong> JukeBoxQueue => _jukebox.SongQueue;
+        public JukeboxSong JukeBoxCurrentSong => _jukebox.CurrentSong;
+        public JukeboxController Jukebox { get => _jukebox; }
+
         private void Awake()
         {
             if (Instance != null && Instance != this)

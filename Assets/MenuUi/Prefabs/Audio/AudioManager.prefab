@@ -759,8 +759,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5674bdab8b7163a48a60c9470031d617, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioSource: {fileID: 4283766005048424298}
-  songDisks:
+  _audioSource: {fileID: 4283766005048424298}
+  _songDisks:
   - songName: In Awe
     songs: {fileID: 8300000, guid: 6ab022fd759eb2e418ff0169150f67b1, type: 3}
     songDisks: {fileID: 21300000, guid: a9ff27d78d02db9428e00c963f429b43, type: 3}
@@ -1715,6 +1715,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _musicAudio: {fileID: 4283766005048424298}
+  _jukebox: {fileID: 1796067170315154734}
   _sfxList:
   - name: ButtonClick
     audioSource: {fileID: 1000530172632091687}
