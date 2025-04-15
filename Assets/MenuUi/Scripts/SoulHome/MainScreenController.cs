@@ -664,14 +664,6 @@ namespace MenuUI.Scripts.SoulHome
             }
         }
 
-        private bool CheckInteractableStatus()
-        {
-            if(_soulHomeController.ExitPending) return false;
-            if (_soulHomeController.ConfirmPopupOpen) return false;
-
-            return true;
-        }
-
         private void CheckHoverButtons()
         {
             if(_soulHomeTower.SelectedFurniture != null && _soulHomeTower.SelectedFurniture.GetComponent<SpriteRenderer>().enabled) _hoverButtons.SetActive(true);
