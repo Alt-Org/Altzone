@@ -11182,10 +11182,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -0.000061035156
       objectReference: {fileID: 0}
-    - target: {fileID: 3786018407308730931, guid: 3992223c47c97da49acf7d85220ce9bd,
+    - target: {fileID: 4018264411508806859, guid: 3992223c47c97da49acf7d85220ce9bd,
         type: 3}
-      propertyPath: m_AspectRatio
-      value: 1.0769231
+      propertyPath: m_PreserveAspect
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5335459718406915445, guid: 3992223c47c97da49acf7d85220ce9bd,
         type: 3}
@@ -11270,7 +11270,7 @@ PrefabInstance:
     - target: {fileID: 8211195655536039687, guid: 3992223c47c97da49acf7d85220ce9bd,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.9
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 8211195655536039687, guid: 3992223c47c97da49acf7d85220ce9bd,
         type: 3}
@@ -11280,7 +11280,7 @@ PrefabInstance:
     - target: {fileID: 8211195655536039687, guid: 3992223c47c97da49acf7d85220ce9bd,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.1
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 8211195655536039687, guid: 3992223c47c97da49acf7d85220ce9bd,
         type: 3}
@@ -11357,11 +11357,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8629688725313486270, guid: 3992223c47c97da49acf7d85220ce9bd,
-        type: 3}
-      propertyPath: _jukeboxObject
-      value: 
-      objectReference: {fileID: 5925553887742558621}
     m_RemovedComponents:
     - {fileID: 0}
     - {fileID: 0}
@@ -11369,12 +11364,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3992223c47c97da49acf7d85220ce9bd, type: 3}
---- !u!1 &5925553887742558621 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8593317523588494251, guid: 3992223c47c97da49acf7d85220ce9bd,
-    type: 3}
-  m_PrefabInstance: {fileID: 2700562321653445174}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &5960658365674016648 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8629688725313486270, guid: 3992223c47c97da49acf7d85220ce9bd,
