@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+using TMPro;
+
 using Altzone.Scripts.BattleUiShared;
 
 namespace MenuUi.Scripts.Settings.BattleUiEditor
@@ -29,10 +31,16 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             gameObject.SetActive(true);
 
             _instantiatedTimer = InstantiateBattleUiElement(_timer);
-            _instantiatedPlayerInfo = InstantiateBattleUiElement(_playerInfo);
-            _instantiatedTeammateInfo = InstantiateBattleUiElement(_playerInfo);
             _instantiatedDiamonds = InstantiateBattleUiElement(_diamonds);
             _instantiatedGiveUpButton = InstantiateBattleUiElement(_giveUpButton);
+
+            _instantiatedPlayerInfo = InstantiateBattleUiElement(_playerInfo);
+            TextMeshProUGUI playerName = _instantiatedPlayerInfo.GetComponentInChildren<TextMeshProUGUI>();
+            if (playerName != null) playerName.text = "Minä";
+
+            _instantiatedTeammateInfo = InstantiateBattleUiElement(_playerInfo);
+            TextMeshProUGUI teammateName = _instantiatedTeammateInfo.GetComponentInChildren<TextMeshProUGUI>();
+            if (teammateName != null) teammateName.text = "Tiimikaveri";
         }
 
         /// <summary>
