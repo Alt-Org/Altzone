@@ -90,17 +90,21 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     _movableElement.RectTransformComponent.sizeDelta += new Vector2 (sizeIncreaseX, sizeIncreaseY);
 
                     // Preventing out of bounds scaling or being scaled too small
-                    float maxWidth = _uiElementHolder.rect.width / 2;
-                    float maxHeight = _uiElementHolder.rect.height / 2;
-                    float minWidth = _uiElementHolder.rect.width / 10;
-                    float minHeight = _uiElementHolder.rect.height / 10;
+                    if (_multiOrientationElement == null || _multiOrientationElement.IsHorizontal)
+                    {
+                        float clampedWidth = Mathf.Clamp(_movableElement.RectTransformComponent.rect.width, _minWidth, _maxWidth);
+                        float aspectRatio = _multiOrientationElement == null ? _movableElementAspectRatio : _multiOrientationElement.HorizontalAspectRatio;
 
-                    float clampedWidth = Mathf.Clamp(_movableElement.RectTransformComponent.rect.width, minWidth, maxWidth);
-                    //float clampedHeight = Mathf.Clamp(_movableElement.RectTransformComponent.rect.height, minHeight, maxHeight);
+                        _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, clampedWidth);
+                        _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, clampedWidth / aspectRatio);
+                    }
+                    else if (!_multiOrientationElement.IsHorizontal)
+                    {
+                        float clampedHeight = Mathf.Clamp(_movableElement.RectTransformComponent.rect.height, _minHeight, _maxHeight);
 
-                    _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, clampedWidth);
-                    //_movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, clampedHeight);
-
+                        _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, clampedHeight * _multiOrientationElement.VerticalAspectRatio);
+                        _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, clampedHeight);
+                    }
                     break;
             }
         }
@@ -119,12 +123,19 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         }
 
         private RectTransform _uiElementHolder;
+        private float _maxWidth => _uiElementHolder.rect.width / 1.5f;
+        private float _maxHeight => _uiElementHolder.rect.height / 2;
+        private float _minWidth => _uiElementHolder.rect.width / 7.5f;
+        private float _minHeight => _uiElementHolder.rect.height / 10;
+
         private BattleUiMovableElement _movableElement;
         private BattleUiMultiOrientationElement _multiOrientationElement;
         private BattleUiMovableElementData _data;
+
+        private float _movableElementAspectRatio;
+
         private ActionType _currentAction;
         private Vector2 _moveOffset;
-        private float _movableElementAspectRatio;
 
         private void OnDestroy()
         {
@@ -223,12 +234,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             Vector2 newSize = new();
             if (_multiOrientationElement.IsHorizontal) // If element is currently horizontal we are trying to change it to be vertical
             {
-                newSize.y = _multiOrientationElement.RectTransformComponent.rect.width;
+                newSize.y = Mathf.Clamp(_multiOrientationElement.RectTransformComponent.rect.width, _minHeight, _maxHeight);
                 newSize.x = newSize.y * _multiOrientationElement.VerticalAspectRatio;
             }
             else
             {
-                newSize.x = _multiOrientationElement.RectTransformComponent.rect.height;
+                newSize.x = Mathf.Clamp(_multiOrientationElement.RectTransformComponent.rect.height, _minWidth, _maxWidth);
                 newSize.y = newSize.x / _multiOrientationElement.HorizontalAspectRatio;
             }
 
