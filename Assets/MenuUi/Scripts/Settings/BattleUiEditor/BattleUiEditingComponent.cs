@@ -58,6 +58,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             else _data = _multiOrientationElement.GetData();
         }
 
+        public void ToggleGrid(bool toggle)
+        {
+            _isGridToggled = toggle;
+        }
+
         public void OnPointerDown(PointerEventData eventData)
         {
             _isPointerDown = true;
@@ -101,7 +106,18 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             switch (_currentAction)
             {
                 case ActionType.Move:
-                    _movableElement.transform.position = eventData.position;
+                    if (_isGridToggled)
+                    {
+                        Vector2 newPos = Vector2.zero;
+                        newPos.x = Mathf.Round(eventData.position.x / BattleUiEditor.GridCellWidth) * BattleUiEditor.GridCellWidth;
+                        newPos.y = Mathf.Round(eventData.position.y / BattleUiEditor.GridCellHeight) * BattleUiEditor.GridCellHeight;
+
+                        _movableElement.transform.position = newPos;
+                    }
+                    else
+                    {
+                        _movableElement.transform.position = eventData.position;
+                    }
                     break;
                 case ActionType.Scale:
                     // Scaling while keeping aspect ratio
@@ -163,6 +179,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private float _movableElementAspectRatio;
 
         private bool _isPointerDown = false;
+        private bool _isGridToggled = false;
         private Coroutine _dragTimerHolder = null;
         private ActionType _currentAction;
 

@@ -26,6 +26,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private GameObject _diamonds;
         [SerializeField] private GameObject _giveUpButton;
 
+        public static float GridCellWidth => Screen.width / 20;
+        public static float GridCellHeight => Screen.height / 40;
+
         /// <summary>
         /// Open and initialize BattleUiEditor
         /// </summary>
@@ -99,6 +102,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             _closeButton.onClick.RemoveAllListeners();
             _resetButton.onClick.RemoveAllListeners();
+            _gridToggle.onValueChanged.RemoveAllListeners();
         }
 
         private GameObject InstantiateBattleUiElement(UiElementType uiElementType)
@@ -150,6 +154,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             {
                 return null;
             }
+
+            // Setting listener for grid toggle
+            _gridToggle.onValueChanged.AddListener(editingComponent.ToggleGrid);
+            editingComponent.ToggleGrid(_gridToggle.isOn);
 
             return uiElementGameObject;
         }
