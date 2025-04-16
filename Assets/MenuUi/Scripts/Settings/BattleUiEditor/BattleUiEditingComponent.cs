@@ -251,18 +251,21 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void FlipHorizontally()
         {
+            _data = _multiOrientationElement.GetData();
             _data.IsFlippedHorizontally = !_data.IsFlippedHorizontally;
             _multiOrientationElement.SetData(_data);
         }
 
         private void FlipVertically()
         {
+            _data = _multiOrientationElement.GetData();
             _data.IsFlippedVertically = !_data.IsFlippedVertically;
             _multiOrientationElement.SetData(_data);
         }
 
         private void ChangeOrientation()
         {
+            _data = _multiOrientationElement.GetData();
             _data.Orientation = _multiOrientationElement.IsHorizontal ? OrientationType.Vertical : OrientationType.Horizontal;
             _data.IsFlippedHorizontally = false; // Resetting flip statuses for new orientation
             _data.IsFlippedVertically = false;
