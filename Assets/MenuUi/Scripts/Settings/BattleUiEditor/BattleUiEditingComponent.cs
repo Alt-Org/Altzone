@@ -19,6 +19,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Button _flipHorizontallyButton;
         [SerializeField] private Button _flipVerticallyButton;
         [SerializeField] private Button _changeOrientationButton;
+        [SerializeField] private GameObject _dragDelayDisplay;
+        [SerializeField] private Image _dragDelayFill;
 
         public void SetInfo(BattleUiMovableElement movableElement, Transform uiElementHolder)
         {
@@ -68,7 +70,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             {
                 StopCoroutine(_dragTimerHolder);
                 _dragTimerHolder = null;
-                if (_multiOrientationElement != null) ShowControls(!_scaleHandleButton.gameObject.activeSelf);
+                _dragDelayDisplay.SetActive(false);
+                ShowControls(!_scaleHandleButton.gameObject.activeSelf);
             }
         }
 
@@ -171,7 +174,18 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private IEnumerator StartDragTimer(Action callback)
         {
-            yield return new WaitForSeconds(0.5f);
+            _dragDelayFill.fillAmount = 0;
+            _dragDelayDisplay.SetActive(true);
+
+            float timePassed = 0f;
+            while (timePassed < 0.5f)
+            {
+                _dragDelayFill.fillAmount = timePassed * 2;
+                yield return null;
+                timePassed += Time.deltaTime;
+            }
+
+            _dragDelayDisplay.SetActive(false);
             callback();
         }
 
@@ -272,6 +286,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private void ShowControls(bool show)
         {
             _scaleHandleButton.gameObject.SetActive(show);
+
+            if (_multiOrientationElement == null) show = false;
             _flipHorizontallyButton.gameObject.SetActive(show);
             _flipVerticallyButton.gameObject.SetActive(show);
             _changeOrientationButton.gameObject.SetActive(show);
