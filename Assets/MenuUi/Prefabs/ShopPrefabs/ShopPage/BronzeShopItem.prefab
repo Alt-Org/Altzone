@@ -139,19 +139,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1485701050104962541}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4247753172218462768}
-        m_TargetAssemblyTypeName: GameFurniturePasser, MainMenu
-        m_MethodName: PassFurnitureToVoting
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &2772616211571145321
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,6 +168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b25f7d33b5c3f6542a52433d5db02fc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _acceptButton: {fileID: 8655163248595062648}
 --- !u!1 &2582442863878075617
 GameObject:
   m_ObjectHideFlags: 0
@@ -554,9 +543,6 @@ GameObject:
   - component: {fileID: 2964482881561170246}
   - component: {fileID: 2794736405096450}
   - component: {fileID: 8112132553834139366}
-  - component: {fileID: 2666827943996243960}
-  - component: {fileID: 7391423183555945395}
-  - component: {fileID: 7929656103386753776}
   m_Layer: 5
   m_Name: BronzeShopItem
   m_TagString: Untagged
@@ -636,90 +622,6 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 4, y: -5}
   m_UseGraphicAlpha: 1
---- !u!114 &2666827943996243960
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5000007057541635876}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Navigation:
-    m_Mode: 3
-    m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
-  m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.45490196, g: 0.45490196, b: 0.45490196, a: 1}
-    m_PressedColor: {r: 0.454902, g: 0.454902, b: 0.454902, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
-    m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
-  m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
-  m_AnimationTriggers:
-    m_NormalTrigger: Normal
-    m_HighlightedTrigger: Highlighted
-    m_PressedTrigger: Pressed
-    m_SelectedTrigger: Selected
-    m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 2794736405096450}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7929656103386753776}
-        m_TargetAssemblyTypeName: GameFurniturePasser, MainMenu
-        m_MethodName: PassFurnitureToVoting
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &7391423183555945395
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5000007057541635876}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6a6d4ea936a31844849d416e2a64dc6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _contentImage: {fileID: 0}
-  _productText: {fileID: 0}
-  _priceText: {fileID: 0}
-  _button: {fileID: 2666827943996243960}
---- !u!114 &7929656103386753776
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5000007057541635876}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b25f7d33b5c3f6542a52433d5db02fc8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7078461963063588964
 GameObject:
   m_ObjectHideFlags: 0

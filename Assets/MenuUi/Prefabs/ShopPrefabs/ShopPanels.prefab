@@ -11894,19 +11894,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5454281383396190581}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 79751826681461813}
-        m_TargetAssemblyTypeName: ConfirmationPopupHandler, MainMenu
-        m_MethodName: CreatePollPopup
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &2999827077212429362
 GameObject:
   m_ObjectHideFlags: 0
@@ -16002,6 +15990,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Background: {fileID: 8389003531615729201}
+  _confirmText: {fileID: 8974195091115181778}
+  _acceptButton: {fileID: 6435421168607672169}
+  _declineButton: {fileID: 1201087625212750532}
 --- !u!1 &4403274603618974323
 GameObject:
   m_ObjectHideFlags: 0
@@ -16993,19 +16984,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3894779617472207590}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8389003531615729201}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &4649833135033928037
 GameObject:
   m_ObjectHideFlags: 0
@@ -19951,7 +19930,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6753777386326083072}
-  - component: {fileID: 1070941577591118977}
+  - component: {fileID: 7740456561805972483}
   m_Layer: 5
   m_Name: PersonontiKauppa
   m_TagString: Untagged
@@ -19980,7 +19959,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -443.15997}
   m_SizeDelta: {x: 1080, y: 886.31995}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1070941577591118977
+--- !u!114 &7740456561805972483
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -19989,7 +19968,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5574709076925975175}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7a53f91a74442045bcc8a75f96df781, type: 3}
+  m_Script: {fileID: 11500000, guid: 46852602d58f15b48a09de8f89ebcfaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _Content: {fileID: 1937301060003644650}
@@ -20005,7 +19984,9 @@ MonoBehaviour:
     type: 3}
   _antiquePrefab: {fileID: 8143632840695435461, guid: 84ad8cb0a866635498bc1183e0d70760,
     type: 3}
-  _popUp: {fileID: 0}
+  _popUp: {fileID: 4381035186530635306}
+  _avatarPartsReference: {fileID: 11400000, guid: 671ccbc5ba5e0df42acde4b71995e434,
+    type: 2}
 --- !u!1 &5582931000704752099
 GameObject:
   m_ObjectHideFlags: 0
@@ -33045,7 +33026,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 778d1fe5f61fd3c42b8489e106783784, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  content: {fileID: 0}
+  content: {fileID: 1937301060003644650}
   horizontallyScrollable: 0
   verticallyScrollable: 1
   scrollingMovementType: 2
