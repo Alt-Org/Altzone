@@ -15,6 +15,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
     {
         [Header("GameObject references")]
         [SerializeField] private Button _closeButton;
+        [SerializeField] private Button _resetButton;
+        [SerializeField] private Toggle _gridToggle;
         [SerializeField] private Transform _uiElementsHolder;
 
         [Header("BattleUi prefabs")]
