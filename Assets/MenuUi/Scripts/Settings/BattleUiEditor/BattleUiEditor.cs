@@ -85,11 +85,20 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private void Awake()
         {
             _closeButton.onClick.AddListener(CloseEditor);
+            _resetButton.onClick.AddListener(()=>
+            {
+                SetDefaultData(UiElementType.Timer);
+                SetDefaultData(UiElementType.Diamonds);
+                SetDefaultData(UiElementType.GiveUpButton);
+                SetDefaultData(UiElementType.PlayerInfo);
+                SetDefaultData(UiElementType.TeammateInfo);
+            });
         }
 
         private void OnDestroy()
         {
             _closeButton.onClick.RemoveAllListeners();
+            _resetButton.onClick.RemoveAllListeners();
         }
 
         private GameObject InstantiateBattleUiElement(UiElementType uiElementType)
@@ -242,38 +251,50 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void SetDefaultData(UiElementType uiElementType)
         {
+            // Getting the default data for this ui element type
             BattleUiMovableElementData data = GetDefaultData(uiElementType);
             if (data == null) return;
 
+            // Getting the correct movable or multi orientation element and editing component
             BattleUiMovableElement movableElement = null;
             BattleUiMultiOrientationElement multiOrientationElement = null;
+            BattleUiEditingComponent editingComponent = null;
 
             switch (uiElementType)
             {
                 case UiElementType.Timer:
                     if (_instantiatedTimer == null) return;
                     movableElement = _instantiatedTimer.GetComponent<BattleUiMovableElement>();
+                    editingComponent = _instantiatedTimer.GetComponentInChildren<BattleUiEditingComponent>();
                     break;
                 case UiElementType.GiveUpButton:
                     if (_instantiatedGiveUpButton == null) return;
                     movableElement = _instantiatedGiveUpButton.GetComponent<BattleUiMovableElement>();
+                    editingComponent = _instantiatedGiveUpButton.GetComponentInChildren<BattleUiEditingComponent>();
                     break;
                 case UiElementType.Diamonds:
                     if (_instantiatedDiamonds == null) return;
                     movableElement = _instantiatedDiamonds.GetComponent<BattleUiMovableElement>();
+                    editingComponent = _instantiatedDiamonds.GetComponentInChildren<BattleUiEditingComponent>();
                     break;
                 case UiElementType.PlayerInfo:
                     if (_instantiatedPlayerInfo == null) return;
                     multiOrientationElement = _instantiatedPlayerInfo.GetComponent<BattleUiMultiOrientationElement>();
+                    editingComponent = _instantiatedPlayerInfo.GetComponentInChildren<BattleUiEditingComponent>();
                     break;
                 case UiElementType.TeammateInfo:
                     if (_instantiatedTeammateInfo == null) return;
                     multiOrientationElement = _instantiatedTeammateInfo.GetComponent<BattleUiMultiOrientationElement>();
+                    editingComponent = _instantiatedTeammateInfo.GetComponentInChildren<BattleUiEditingComponent>();
                     break;
             }
 
+            // Setting data to movable or multi orientation element
             if (movableElement != null) movableElement.SetData(data);
             else if (multiOrientationElement != null) multiOrientationElement.SetData(data);
+
+            // Updating editing component data
+            editingComponent.UpdateData();
         }
     }
 }
