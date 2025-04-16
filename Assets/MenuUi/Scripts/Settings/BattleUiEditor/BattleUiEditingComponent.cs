@@ -125,7 +125,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         public void OnEndDrag(PointerEventData eventData)
         {
             CalculateAndSetAnchors();
-            CheckControlButtonsVisibility();
             _currentAction = ActionType.None;
         }
 
@@ -247,6 +246,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _data.AnchorMax = new(anchorXMax, anchorYMax);
 
             _movableElement.SetData(_data);
+            CheckControlButtonsVisibility();
         }
 
         private void FlipHorizontally()
@@ -308,9 +308,15 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             Button[] buttons = new Button[] { _scaleHandleButton, _changeOrientationButton, _flipHorizontallyButton, _flipVerticallyButton };
 
+            RectTransform _changeOrientationRectTransform = null;
+            RectTransform _flipHorizontallyRectTransform = null;
+
             foreach (Button button in buttons)
             {
                 RectTransform buttonRectTransform = button.GetComponent<RectTransform>();
+
+                if (button == _changeOrientationButton) _changeOrientationRectTransform = buttonRectTransform;
+                if (button == _flipHorizontallyButton) _flipHorizontallyRectTransform = buttonRectTransform;
 
                 // Setting button to default position
                 buttonRectTransform.anchoredPosition = Vector2.zero;
@@ -370,6 +376,19 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
                     buttonRectTransform.anchoredPosition = newPosition;
                 }
+            }
+
+            // Ensuring the two top buttons are next to each other
+            if (_flipHorizontallyRectTransform == null || _changeOrientationRectTransform == null) return;
+            if (_changeOrientationRectTransform.anchoredPosition == _flipHorizontallyRectTransform.anchoredPosition) return;
+
+            if (_changeOrientationRectTransform.anchoredPosition != Vector2.zero)
+            {
+                _flipHorizontallyRectTransform.anchoredPosition += _changeOrientationRectTransform.anchoredPosition;
+            }
+            else if (_flipHorizontallyRectTransform.anchoredPosition != Vector2.zero)
+            {
+                _changeOrientationRectTransform.anchoredPosition += _flipHorizontallyRectTransform.anchoredPosition;
             }
         }
     }
