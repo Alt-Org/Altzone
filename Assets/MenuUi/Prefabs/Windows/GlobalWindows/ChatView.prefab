@@ -1759,7 +1759,7 @@ RectTransform:
   m_Father: {fileID: 4289024160624170964}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2081,7 +2081,7 @@ RectTransform:
   m_Father: {fileID: 7256629577891226893}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3259,7 +3259,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5584812021587328956
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4083,7 +4083,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8557409658164920778
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4547,47 +4547,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c97841244ea1b54ab819e553c5eb9d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  languageChat: {fileID: 6086783591708459899}
-  globalChat: {fileID: 7703225872503541342}
-  clanChat: {fileID: 1206508976571793912}
-  currentContent: {fileID: 0}
+  _languageChat: {fileID: 6086783591708459899}
+  _globalChat: {fileID: 7703225872503541342}
+  _clanChat: {fileID: 1206508976571793912}
   _sendButtonSadness: {fileID: 652102874510165360}
   _sendButtonAnger: {fileID: 4980087199686146618}
   _sendButtonJoy: {fileID: 2977898987667073549}
   _sendButtonPlayful: {fileID: 6067375122463891519}
   _sendButtonLove: {fileID: 8678484190465885865}
-  inputField: {fileID: 189633976828316623}
-  deleteButtons: {fileID: 7972993240215453466}
-  addReactionsPanel: {fileID: 6132093213275908080}
-  commonReactions: {fileID: 1908627713028673014}
-  allReactions: {fileID: 8188821779799061194}
-  usersWhoAdded: {fileID: 7502893936901402389}
+  _inputField: {fileID: 189633976828316623}
+  _deleteButtons: {fileID: 7972993240215453466}
+  _addReactionsPanel: {fileID: 6132093213275908080}
+  _commonReactions: {fileID: 1908627713028673014}
+  _allReactions: {fileID: 8188821779799061194}
+  _usersWhoAdded: {fileID: 7502893936901402389}
   _chatResponseList: {fileID: 11400000, guid: 0c97ef5ec4dd42d49854c48853a3e90c, type: 2}
   _chatResponseContent: {fileID: 1228178274405547610}
-  messagePrefabBlue: {fileID: 4250206361280662525, guid: a9452349421b15f4e859be225428f09d,
+  _messagePrefabBlue: {fileID: 4250206361280662525, guid: a9452349421b15f4e859be225428f09d,
     type: 3}
-  messagePrefabRed: {fileID: 4250206361280662525, guid: 6a98a15d1249bf44dab95e2c43a5690f,
+  _messagePrefabRed: {fileID: 4250206361280662525, guid: 6a98a15d1249bf44dab95e2c43a5690f,
     type: 3}
-  messagePrefabYellow: {fileID: 4250206361280662525, guid: ad864a503f335a74dbb525f5804b8e36,
+  _messagePrefabYellow: {fileID: 4250206361280662525, guid: ad864a503f335a74dbb525f5804b8e36,
     type: 3}
-  messagePrefabOrange: {fileID: 4250206361280662525, guid: 7e0ddbe400f4d614eb59b3167ce066e3,
+  _messagePrefabOrange: {fileID: 4250206361280662525, guid: 7e0ddbe400f4d614eb59b3167ce066e3,
     type: 3}
-  messagePrefabPink: {fileID: 4250206361280662525, guid: 9f081876bd42ff04f8f28ddd8e6fd08c,
+  _messagePrefabPink: {fileID: 4250206361280662525, guid: 9f081876bd42ff04f8f28ddd8e6fd08c,
     type: 3}
   _quickMessagePrefab: {fileID: 7096046977997727650, guid: d021202948771ba4493627b0aaf31381,
     type: 3}
-  languageChatScrollRect: {fileID: 5692141976376438495}
-  globalChatScrollRect: {fileID: 5345705474066992928}
-  clanChatScrollRect: {fileID: 6182957393491053538}
-  quickMessages: {fileID: 2740101029024463485}
-  sendButtons:
+  _languageChatScrollRect: {fileID: 5692141976376438495}
+  _globalChatScrollRect: {fileID: 5345705474066992928}
+  _clanChatScrollRect: {fileID: 6182957393491053538}
+  _quickMessages: {fileID: 2740101029024463485}
+  _sendButtons:
   - {fileID: 652102874510165360}
   - {fileID: 4980087199686146618}
   - {fileID: 2977898987667073549}
   - {fileID: 6067375122463891519}
   - {fileID: 8678484190465885865}
-  tablineScript: {fileID: 7120743843305630683}
-  selectedMessage: {fileID: 0}
+  _tablineScript: {fileID: 7120743843305630683}
   delete: /deleteMessage
   deleteAllMessages: /clear
 --- !u!114 &1176563068381732146
