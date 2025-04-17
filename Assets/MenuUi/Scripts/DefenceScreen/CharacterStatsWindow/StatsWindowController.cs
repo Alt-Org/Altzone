@@ -232,7 +232,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>Current character's description as string.</returns>
         public string GetCurrentCharacterDescription()
         {
-            return "Hahmon kuvaus";
+            var info = PlayerCharacterPrototypes.GetCharacter(((int)_characterId).ToString());
+            if (info == null)
+            {
+                return null;
+            }
+            else
+            {
+                return info.ShortDescription;
+            }
         }
 
 
@@ -307,7 +315,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>If decreasing was successful. If true, player's erasers were decreased by 1. If false, player didn't have enough erasers.</returns>
         private bool TryDecreaseEraser()
         {
-            if (_playerData.Eraser > 0)
+            if (CheckIfEnoughErasers(1))
             {
                 _playerData.Eraser--;
                 OnEraserAmountChanged.Invoke();
@@ -316,6 +324,23 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             else
             {
                 PopupSignalBus.OnChangePopupInfoSignal("Ei tarpeeksi pyyhekumeja.");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks if player has enough erasers.
+        /// </summary>
+        /// <param name="eraserCost">Eraser cost to check</param>
+        /// <returns>True if the player does, false if doesn't</returns>
+        public bool CheckIfEnoughErasers(int eraserCost)
+        {
+            if (_playerData.Eraser >= eraserCost || UnlimitedErasers) 
+            {
+                return true;
+            }
+            else
+            {
                 return false;
             }
         }
@@ -344,7 +369,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>If decreasing was successful. If true, player's diamonds were decreased by amount. If false, player didn't have enough diamonds.</returns>
         private bool TryDecreaseDiamonds(int amount)
         {
-            if (_playerData.DiamondSpeed >= amount) // using DiamondSpeed as a placeholder
+            if (CheckIfEnoughDiamonds(amount)) 
             {
                 _playerData.DiamondSpeed -= amount;
                 OnDiamondAmountChanged.Invoke();
@@ -369,7 +394,22 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             return _customCharacter.GetPriceToNextLevel(statType);
         }
-
+        /// <summary>
+        /// Checks if player has enough diamonds.
+        /// </summary>
+        /// <param name="diamondCost">Diamond cost to check</param>
+        /// <returns>True if the player does, false if doesn't</returns>
+        public bool CheckIfEnoughDiamonds(int diamondCost) 
+        {
+            if (_playerData.DiamondSpeed >= diamondCost || UnlimitedDiamonds) // using DiamondSpeed as a placeholder
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         /// <summary>
         /// Get currently displayed character's stat level according to the stat type.
