@@ -477,6 +477,32 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
 
         /// <summary>
+        /// Get stat's strength.
+        /// </summary>
+        /// <param name="statType">The stat type which strength to get./param>
+        /// <returns>ValueStrength enum value.</returns>
+        public ValueStrength GetStatStrength(StatType statType)
+        {
+            switch (statType)
+            {
+                case StatType.Speed:
+                    return _baseCharacter.SpeedStrength;
+                case StatType.Attack:
+                    return _baseCharacter.AttackStrength;
+                case StatType.Hp:
+                    return _baseCharacter.HpStrength;
+                case StatType.CharacterSize:
+                    return _baseCharacter.CharacterSizeStrength;
+                case StatType.Defence:
+                    return _baseCharacter.DefenceStrength;
+                case StatType.None:
+                default:
+                    return ValueStrength.None;
+            }
+        }
+
+
+        /// <summary>
         /// Check if stat can be increased. (all stats combined is less than the combined level cap, stat is less than individual stat level cap, and player has increased stats less times than the maximum allowed amount)
         /// </summary>
         /// <param name="statType">The stat type to check.</param>
