@@ -121,14 +121,16 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     break;
                 case ActionType.Scale:
                     // Scaling while keeping aspect ratio
-                    float sizeIncreaseX = eventData.delta.x;
+                    float sizeIncreaseX = (eventData.position.x - eventData.pressPosition.x) * 2;
                     float sizeIncreaseY = sizeIncreaseX / (_movableElement.RectTransformComponent.rect.width / _movableElement.RectTransformComponent.rect.height);
-                    _movableElement.RectTransformComponent.sizeDelta += new Vector2(sizeIncreaseX, sizeIncreaseY);
+                    _movableElement.RectTransformComponent.sizeDelta = new Vector2(sizeIncreaseX, sizeIncreaseY);
 
                     // Preventing out of bounds scaling or being scaled too small
                     if (_multiOrientationElement == null || _multiOrientationElement.IsHorizontal)
                     {
                         float clampedWidth = Mathf.Clamp(_movableElement.RectTransformComponent.rect.width, _minWidth, _maxWidth);
+                        if (_isGridToggled) clampedWidth = Mathf.Round(clampedWidth / (BattleUiEditor.GridCellWidth * 2)) * (BattleUiEditor.GridCellWidth * 2);
+
                         float aspectRatio = _multiOrientationElement == null ? _movableElementAspectRatio : _multiOrientationElement.HorizontalAspectRatio;
 
                         _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, clampedWidth);
@@ -137,6 +139,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     else if (!_multiOrientationElement.IsHorizontal)
                     {
                         float clampedHeight = Mathf.Clamp(_movableElement.RectTransformComponent.rect.height, _minHeight, _maxHeight);
+                        if (_isGridToggled) clampedHeight = Mathf.Round(clampedHeight / (BattleUiEditor.GridCellHeight * 2)) * (BattleUiEditor.GridCellHeight * 2);
 
                         _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, clampedHeight * _multiOrientationElement.VerticalAspectRatio);
                         _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, clampedHeight);
@@ -167,10 +170,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         }
 
         private RectTransform _uiElementHolder;
-        private float _maxWidth => _uiElementHolder.rect.width / 1.5f;
-        private float _maxHeight => _uiElementHolder.rect.height / 2;
-        private float _minWidth => _uiElementHolder.rect.width / 7.5f;
-        private float _minHeight => _uiElementHolder.rect.height / 10;
+        private float _maxWidth => BattleUiEditor.GridCellWidth * 14;
+        private float _maxHeight => BattleUiEditor.GridCellHeight * 20;
+        private float _minWidth => BattleUiEditor.GridCellWidth * 2;
+        private float _minHeight => BattleUiEditor.GridCellHeight * 4;
 
         private BattleUiMovableElement _movableElement;
         private BattleUiMultiOrientationElement _multiOrientationElement;
