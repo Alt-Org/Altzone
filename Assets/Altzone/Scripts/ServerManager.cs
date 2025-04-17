@@ -393,7 +393,7 @@ public class ServerManager : MonoBehaviour
                         clanFurniture = CreateDefaultModels.CreateDefaultDebugFurniture(baseFurniture);
                     }
                 }
-                if (clanFurniture.Count == 0)
+                if (clanFurniture.Count != 0)
                 {
                     inventory.Furniture = clanFurniture;
                     clanData.Inventory = inventory;
