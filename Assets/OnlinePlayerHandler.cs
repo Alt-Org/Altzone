@@ -34,11 +34,15 @@ public class OnlinePlayerHandler : AltMonoBehaviour
         }
         StartCoroutine(GetClanData(data =>
         {
+            if (data == null)
+            {
+                Debug.LogError("Unable to find ClanData.");
+                return;
+            }
             foreach (string name in list)
             {
-                string newName = null;
-                if (data != null) newName = data.Members.FirstOrDefault(x => x.Id == name)?.Name;
-                if(newName == null) newName = name;
+                string newName = data.Members.FirstOrDefault(x => x.Id == name)?.Name;
+                if (newName == null) continue;
                 GameObject textObject = Instantiate(_textPrefab, _content);
                 textObject.GetComponent<OnlinePlayerTextHandler>().SetInfo(newName);
             }
