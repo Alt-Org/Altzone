@@ -37,24 +37,40 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             gameObject.SetActive(true);
 
             // Instantiating ui element prefabs
-            _instantiatedTimer = InstantiateBattleUiElement(UiElementType.Timer);
-            SetDefaultData(UiElementType.Timer);
 
-            _instantiatedDiamonds = InstantiateBattleUiElement(UiElementType.Diamonds);
-            SetDefaultData(UiElementType.Diamonds);
+            if (_instantiatedTimer == null)
+            {
+                _instantiatedTimer = InstantiateBattleUiElement(UiElementType.Timer);
+                SetDefaultData(UiElementType.Timer);
+            }
 
-            _instantiatedGiveUpButton = InstantiateBattleUiElement(UiElementType.GiveUpButton);
-            SetDefaultData(UiElementType.GiveUpButton);
+            if (_instantiatedDiamonds == null)
+            {
+                _instantiatedDiamonds = InstantiateBattleUiElement(UiElementType.Diamonds);
+                SetDefaultData(UiElementType.Diamonds);
+            }
 
-            _instantiatedPlayerInfo = InstantiateBattleUiElement(UiElementType.PlayerInfo);
-            TextMeshProUGUI playerName = _instantiatedPlayerInfo.GetComponentInChildren<TextMeshProUGUI>();
-            if (playerName != null) playerName.text = "Minä";
-            SetDefaultData(UiElementType.PlayerInfo);
+            if (_instantiatedGiveUpButton == null)
+            {
+                _instantiatedGiveUpButton = InstantiateBattleUiElement(UiElementType.GiveUpButton);
+                SetDefaultData(UiElementType.GiveUpButton);
+            }
 
-            _instantiatedTeammateInfo = InstantiateBattleUiElement(UiElementType.TeammateInfo);
-            TextMeshProUGUI teammateName = _instantiatedTeammateInfo.GetComponentInChildren<TextMeshProUGUI>();
-            if (teammateName != null) teammateName.text = "Tiimikaveri";
-            SetDefaultData(UiElementType.TeammateInfo);
+            if (_instantiatedPlayerInfo == null)
+            {
+                _instantiatedPlayerInfo = InstantiateBattleUiElement(UiElementType.PlayerInfo);
+                TextMeshProUGUI playerName = _instantiatedPlayerInfo.GetComponentInChildren<TextMeshProUGUI>();
+                if (playerName != null) playerName.text = "Minä";
+                SetDefaultData(UiElementType.PlayerInfo);
+            }
+
+            if (_instantiatedTeammateInfo == null)
+            {
+                _instantiatedTeammateInfo = InstantiateBattleUiElement(UiElementType.TeammateInfo);
+                TextMeshProUGUI teammateName = _instantiatedTeammateInfo.GetComponentInChildren<TextMeshProUGUI>();
+                if (teammateName != null) teammateName.text = "Tiimikaveri";
+                SetDefaultData(UiElementType.TeammateInfo);
+            }
         }
 
         /// <summary>
@@ -79,11 +95,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private GameObject _instantiatedTeammateInfo;
         private GameObject _instantiatedDiamonds;
         private GameObject _instantiatedGiveUpButton;
-
-        private void OnEnable()
-        {
-            OpenEditor(); // for testing only
-        }
 
         private void Awake()
         {
