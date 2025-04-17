@@ -491,7 +491,42 @@ MonoBehaviour:
         Value: 1
       NormalAngle:
         RawValue: 14745600
-    HitboxListCharacter: []
+    HitboxListCharacter:
+    - Position:
+        X: 0
+        Y: 1
+      CollisionType:
+        Value: 0
+      NormalAngle:
+        RawValue: 0
+    - Position:
+        X: 0
+        Y: 0
+      CollisionType:
+        Value: 0
+      NormalAngle:
+        RawValue: 0
+    - Position:
+        X: -1
+        Y: 0
+      CollisionType:
+        Value: 0
+      NormalAngle:
+        RawValue: 0
+    - Position:
+        X: 1
+        Y: 0
+      CollisionType:
+        Value: 0
+      NormalAngle:
+        RawValue: 0
+    - Position:
+        X: 0
+        Y: -1
+      CollisionType:
+        Value: 0
+      NormalAngle:
+        RawValue: 0
 --- !u!1 &5555457871378360869
 GameObject:
   m_ObjectHideFlags: 0
