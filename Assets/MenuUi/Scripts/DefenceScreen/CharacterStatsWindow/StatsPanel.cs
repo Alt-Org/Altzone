@@ -13,9 +13,11 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private Image _characterImage;
         [SerializeField] private Image _lockImage;
 
-        [SerializeField] private GameObject _statPage;
-        [SerializeField] private GameObject _infoPage;
+        [SerializeField] private GameObject currentPage;
+        [SerializeField] private GameObject targetPage;
         private StatsWindowController _controller;
+
+        private GameObject previousPage;
 
         private void OnEnable()
         {
@@ -44,13 +46,12 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             }
         }
 
-
-       
         public void SwitchPage()
         {
-            if (_statPage != null) _statPage.SetActive(false);
-            if (_infoPage != null) _infoPage.SetActive(true);
+            if (currentPage != null) currentPage.SetActive(false);
+            if (targetPage != null) targetPage.SetActive(true);
         }
+
         public void ClosePopup()
         {
             gameObject.SetActive(false);

@@ -19,6 +19,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private ClassColorReference _classColorReference;
         [SerializeField] private StatsReference _statsReference;
         [SerializeField] private GameObject _swipeBlocker;
+        [SerializeField] private GameObject _statsPanel;
+        [SerializeField] private GameObject _infoPanel;
 
         private PlayerData _playerData;
         private CharacterID _characterId;
@@ -81,9 +83,12 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         public void OpenPopup()
         {
             gameObject.SetActive(true);
-            _swipeBlocker.SetActive(true) ;
-        }
+            _swipeBlocker.SetActive(true);
 
+            if (_statsPanel != null) _statsPanel.SetActive(true);
+
+            if (_infoPanel != null) _infoPanel.SetActive(false);
+        }
         public void ClosePopup()
         {
             gameObject.SetActive(false);

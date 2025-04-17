@@ -21,6 +21,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private TMP_Text _eraserCost;
         [SerializeField] private Button _eraserButton;
         [SerializeField] private Button _diamondButton;
+        [SerializeField] private TMP_Text _statDescription;
 
         private StatsWindowController _controller;
         StatInfo _statInfo;
@@ -28,40 +29,45 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private void OnEnable()
         {
             if (_controller == null) _controller = FindObjectOfType<StatsWindowController>();
-            _controller.OnStatUpdated += UpdateStatLevel;
-            _controller.OnStatUpdated += UpdateDiamondCost;
-            _controller.OnStatUpdated += UpdateEraserCost;
-            _controller.OnStatUpdated += UpdateStatValue;
-
-            if (_statInfo == null) _statInfo = _controller.GetStatInfo(_statType);
-            _statIcon.sprite = _statInfo.Image;
-            _statBackground.color = _statInfo.StatBoxColor;
-            _statName.text = _statInfo.Name;
-            UpdateStatLevel(_statType);
-            UpdateStatValue(_statType);
-            UpdateDiamondCost(_statType);
-            UpdateEraserCost(_statType);
+            if (_statLevel != null) _controller.OnStatUpdated += UpdateStatLevel;
+            if (_diamondCost != null) _controller.OnStatUpdated += UpdateDiamondCost;
+            if (_eraserCost != null) _controller.OnStatUpdated += UpdateEraserCost;
+            if (_statValue != null) _controller.OnStatUpdated += UpdateStatValue;
+            if (_statValue != null) UpdateStatValue(_statType);
         }
 
         private void Awake()
         {
-            _diamondButton.onClick.AddListener(IncreaseStat);
-            _eraserButton.onClick.AddListener(DecreaseStat);
+            if (_diamondButton != null) _diamondButton.onClick.AddListener(IncreaseStat);
+            if (_eraserButton != null) _eraserButton.onClick.AddListener(DecreaseStat);
         }
 
         private void OnDisable()
         {
-            _controller.OnStatUpdated -= UpdateStatLevel;
-            _controller.OnStatUpdated -= UpdateDiamondCost;
-            _controller.OnStatUpdated -= UpdateEraserCost;
-            _controller.OnStatUpdated -= UpdateStatValue;
+            if (_statLevel != null) _controller.OnStatUpdated -= UpdateStatLevel;
+            if (_diamondCost != null) _controller.OnStatUpdated -= UpdateDiamondCost;
+            if (_eraserCost != null) _controller.OnStatUpdated -= UpdateEraserCost;
+            if (_statValue != null) _controller.OnStatUpdated -= UpdateStatValue;
 
         }
 
         private void OnDestroy()
         {
-            _diamondButton.onClick.RemoveAllListeners();
-            _eraserButton.onClick.RemoveAllListeners();
+            if (_diamondButton != null) _diamondButton.onClick.RemoveAllListeners();
+            if (_eraserButton != null) _eraserButton.onClick.RemoveAllListeners();
+        }
+
+        public void ChangeStatBox(int statType)
+        {
+            _statType = (StatType)statType;
+            _statInfo = _controller.GetStatInfo(_statType);
+            _statIcon.sprite = _statInfo.Image;
+            _statBackground.color = _statInfo.StatBoxColor;
+            _statDescription.text = _statInfo.Description;
+            UpdateStatLevel(_statType);
+            UpdateStatValue(_statType);
+            UpdateDiamondCost(_statType);
+            UpdateEraserCost(_statType);
         }
 
         private void UpdateStatLevel(StatType statType)
@@ -118,13 +124,13 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             }
             return true;
         }
-        private void IncreaseStat ()
+        private void IncreaseStat()
         {
             if (!CanUpdateCharacter()) return;
             _controller.TryIncreaseStat(_statType);
         }
 
-        private void DecreaseStat ()
+        private void DecreaseStat()
         {
             if (!CanUpdateCharacter()) return;
             _controller.TryDecreaseStat(_statType);

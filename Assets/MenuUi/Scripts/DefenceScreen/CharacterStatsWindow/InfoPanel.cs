@@ -53,6 +53,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             _wins.text = _controller.GetCurrentCharacterWins().ToString();
             _losses.text = _controller.GetCurrentCharacterLosses().ToString();
         }
+
         public void SwitchPage()
         {
             if (currentPage != null) currentPage.SetActive(false);
