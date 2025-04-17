@@ -50,40 +50,30 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Instantiating ui element prefabs
 
-            if (_instantiatedTimer == null)
-            {
-                _instantiatedTimer = InstantiateBattleUiElement(BattleUiElementType.Timer);
-                BattleUiMovableElementData timerData = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.Timer);
-                SetData(BattleUiElementType.Timer);
-            }
+            if (_instantiatedTimer == null) _instantiatedTimer = InstantiateBattleUiElement(BattleUiElementType.Timer);
+            SetData(BattleUiElementType.Timer);
 
-            if (_instantiatedDiamonds == null)
-            {
-                _instantiatedDiamonds = InstantiateBattleUiElement(BattleUiElementType.Diamonds);
-                SetData(BattleUiElementType.Diamonds);
-            }
+            if (_instantiatedDiamonds == null) _instantiatedDiamonds = InstantiateBattleUiElement(BattleUiElementType.Diamonds);
+            SetData(BattleUiElementType.Diamonds);
 
-            if (_instantiatedGiveUpButton == null)
-            {
-                _instantiatedGiveUpButton = InstantiateBattleUiElement(BattleUiElementType.GiveUpButton);
-                SetData(BattleUiElementType.GiveUpButton);
-            }
+            if (_instantiatedGiveUpButton == null) _instantiatedGiveUpButton = InstantiateBattleUiElement(BattleUiElementType.GiveUpButton);
+            SetData(BattleUiElementType.GiveUpButton);
 
             if (_instantiatedPlayerInfo == null)
             {
                 _instantiatedPlayerInfo = InstantiateBattleUiElement(BattleUiElementType.PlayerInfo);
                 TextMeshProUGUI playerName = _instantiatedPlayerInfo.GetComponentInChildren<TextMeshProUGUI>();
                 if (playerName != null) playerName.text = "Minä";
-                SetData(BattleUiElementType.PlayerInfo);
             }
+            SetData(BattleUiElementType.PlayerInfo);
 
             if (_instantiatedTeammateInfo == null)
             {
                 _instantiatedTeammateInfo = InstantiateBattleUiElement(BattleUiElementType.TeammateInfo);
                 TextMeshProUGUI teammateName = _instantiatedTeammateInfo.GetComponentInChildren<TextMeshProUGUI>();
                 if (teammateName != null) teammateName.text = "Tiimikaveri";
-                SetData(BattleUiElementType.TeammateInfo);
             }
+            SetData(BattleUiElementType.TeammateInfo);
         }
 
         /// <summary>
