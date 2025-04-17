@@ -44,6 +44,17 @@ namespace Battle.QSimulation.Game
                     f.Signals.BattleOnProjectileHitGoal(projectile, info.Entity, goal, info.Other);
                 }
             }
+
+            // if diamond
+            else if (f.Unsafe.TryGetPointer(info.Entity, out BattleDiamondDataQComponent* diamond))
+            {
+                if (f.Unsafe.TryGetPointer(info.Other, out BattlePlayerHitboxQComponent* playerHitbox))
+                {
+                    Debug.Log("[CollisionSystem] Diamond hit player");
+                    f.Signals.BattleOnDiamondHitPlayer(diamond, info.Entity, playerHitbox, info.Other);
+                }
+            }
+
         }
     }
 }
