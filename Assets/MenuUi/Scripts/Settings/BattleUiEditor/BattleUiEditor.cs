@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,6 +32,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private GameObject _playerInfo;
         [SerializeField] private GameObject _diamonds;
         [SerializeField] private GameObject _giveUpButton;
+
+        [Header("Save changes popup")]
+        [SerializeField] private GameObject _saveChangesPopup;
+        [SerializeField] private Button _okButton;
+        [SerializeField] private Button _noButton;
 
         public static float GridCellWidth => Screen.width / 20;
         public static float GridCellHeight => Screen.height / 40;
@@ -79,11 +87,24 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         }
 
         /// <summary>
-        /// Close BattleUiEditor
+        /// Close BattleUiEditor, before closing show save changes popup.
         /// </summary>
         public void CloseEditor()
         {
-            gameObject.SetActive(false);
+            StartCoroutine(ShowSaveChangesPopup(saveChanges =>
+            {
+                if (saveChanges == null) return;
+                if (saveChanges.Value == true) SaveChanges();
+                gameObject.SetActive(false);
+            }));
+        }
+
+        /// <summary>
+        /// Close save changes popup
+        /// </summary>
+        public void CloseSaveChangesPopup()
+        {
+            _saveChangesPopup.SetActive(false);
         }
 
         private GameObject _instantiatedTimer;
@@ -112,6 +133,27 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _resetButton.onClick.RemoveAllListeners();
             _gridToggle.onValueChanged.RemoveAllListeners();
             _saveButton.onClick.RemoveAllListeners();
+            _okButton.onClick.RemoveAllListeners();
+            _noButton.onClick.RemoveAllListeners();
+        }
+
+        private IEnumerator ShowSaveChangesPopup(Action<bool?> callback)
+        {
+            _saveChangesPopup.SetActive(true);
+
+            _okButton.onClick.RemoveAllListeners();
+            _noButton.onClick.RemoveAllListeners();
+
+            bool? saveChanges = null;
+
+            _okButton.onClick.AddListener(() => saveChanges = true);
+            _noButton.onClick.AddListener(() => saveChanges = false);
+
+            yield return new WaitUntil(() => saveChanges.HasValue || !_saveChangesPopup.activeSelf);
+
+            if (_saveChangesPopup.activeSelf) CloseSaveChangesPopup();
+
+            callback(saveChanges);
         }
 
         private void SaveChanges()
