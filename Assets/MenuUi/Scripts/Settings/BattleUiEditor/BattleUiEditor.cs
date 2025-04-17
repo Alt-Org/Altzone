@@ -7,6 +7,8 @@ using Altzone.Scripts.BattleUiShared;
 using OrientationType = Altzone.Scripts.BattleUiShared.BattleUiMultiOrientationElement.OrientationType;
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
 
+using PopupSignalBus = MenuUI.Scripts.SignalBus;
+
 namespace MenuUi.Scripts.Settings.BattleUiEditor
 {
     /// <summary>
@@ -16,6 +18,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
     {
         [Header("GameObject references")]
         [SerializeField] private Button _closeButton;
+        [SerializeField] private Button _saveButton;
         [SerializeField] private Button _resetButton;
         [SerializeField] private Toggle _gridToggle;
         [SerializeField] private Transform _uiElementsHolder;
@@ -100,6 +103,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 SetDefaultData(BattleUiElementType.PlayerInfo);
                 SetDefaultData(BattleUiElementType.TeammateInfo);
             });
+            _saveButton.onClick.AddListener(SaveChanges);
         }
 
         private void OnDestroy()
@@ -107,6 +111,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _closeButton.onClick.RemoveAllListeners();
             _resetButton.onClick.RemoveAllListeners();
             _gridToggle.onValueChanged.RemoveAllListeners();
+            _saveButton.onClick.RemoveAllListeners();
         }
 
         private void SaveChanges()
@@ -120,11 +125,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             BattleUiMovableElementData giveUpButtonData = GetMovableElement(BattleUiElementType.GiveUpButton).GetData();
             SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.GiveUpButton, giveUpButtonData);
 
-            BattleUiMovableElementData playerInfoData = GetMovableElement(BattleUiElementType.PlayerInfo).GetData();
+            BattleUiMovableElementData playerInfoData = GetMultiOrientationElement(BattleUiElementType.PlayerInfo).GetData();
             SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.PlayerInfo, playerInfoData);
 
-            BattleUiMovableElementData teammateInfoData = GetMovableElement(BattleUiElementType.TeammateInfo).GetData();
+            BattleUiMovableElementData teammateInfoData = GetMultiOrientationElement(BattleUiElementType.TeammateInfo).GetData();
             SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.TeammateInfo, teammateInfoData);
+
+            PopupSignalBus.OnChangePopupInfoSignal("Muutokset on tallennettu.");
         }
 
         private GameObject InstantiateBattleUiElement(BattleUiElementType uiElementType)
