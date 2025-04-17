@@ -22,6 +22,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private GameObject _dragDelayDisplay;
         [SerializeField] private Image _dragDelayFill;
 
+        public Action UiElementEdited;
+
         public void SetInfo(BattleUiMovableElement movableElement, Transform uiElementHolder)
         {
             _movableElement = movableElement;
@@ -106,7 +108,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             switch (_currentAction)
             {
                 case ActionType.Move:
-                    if (_isGridToggled)
+                    if (_isGridToggled) // Snapping to grid while moving
                     {
                         Vector2 newPos = Vector2.zero;
                         newPos.x = Mathf.Round(eventData.position.x / BattleUiEditor.GridCellWidth) * BattleUiEditor.GridCellWidth;
@@ -114,7 +116,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
                         _movableElement.transform.position = newPos;
                     }
-                    else
+                    else // Free movement
                     {
                         _movableElement.transform.position = eventData.position;
                     }
@@ -129,6 +131,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     if (_multiOrientationElement == null || _multiOrientationElement.IsHorizontal)
                     {
                         float clampedWidth = Mathf.Clamp(_movableElement.RectTransformComponent.rect.width, _minWidth, _maxWidth);
+
+                        // Snapping scaling to grid
                         if (_isGridToggled) clampedWidth = Mathf.Round(clampedWidth / (BattleUiEditor.GridCellWidth * 2)) * (BattleUiEditor.GridCellWidth * 2);
 
                         float aspectRatio = _multiOrientationElement == null ? _movableElementAspectRatio : _multiOrientationElement.HorizontalAspectRatio;
@@ -139,6 +143,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     else if (!_multiOrientationElement.IsHorizontal)
                     {
                         float clampedHeight = Mathf.Clamp(_movableElement.RectTransformComponent.rect.height, _minHeight, _maxHeight);
+
+                        // Snapping scaling to grid
                         if (_isGridToggled) clampedHeight = Mathf.Round(clampedHeight / (BattleUiEditor.GridCellHeight * 2)) * (BattleUiEditor.GridCellHeight * 2);
 
                         _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, clampedHeight * _multiOrientationElement.VerticalAspectRatio);
@@ -150,7 +156,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            CalculateAndSetAnchors();
+            if (_currentAction == ActionType.Move || _currentAction == ActionType.Scale) CalculateAndSetAnchors();
             _currentAction = ActionType.None;
         }
 
@@ -274,18 +280,24 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             _movableElement.SetData(_data);
             CheckControlButtonsVisibility();
+
+            UiElementEdited?.Invoke();
         }
 
         private void FlipHorizontally()
         {
             _data.IsFlippedHorizontally = !_data.IsFlippedHorizontally;
             _multiOrientationElement.SetData(_data);
+
+            UiElementEdited?.Invoke();
         }
 
         private void FlipVertically()
         {
             _data.IsFlippedVertically = !_data.IsFlippedVertically;
             _multiOrientationElement.SetData(_data);
+
+            UiElementEdited?.Invoke();
         }
 
         private void ChangeOrientation()

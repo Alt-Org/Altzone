@@ -91,12 +91,19 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// </summary>
         public void CloseEditor()
         {
-            StartCoroutine(ShowSaveChangesPopup(saveChanges =>
+            if (_unsavedChanges)
             {
-                if (saveChanges == null) return;
-                if (saveChanges.Value == true) SaveChanges();
+                StartCoroutine(ShowSaveChangesPopup(saveChanges =>
+                {
+                    if (saveChanges == null) return;
+                    if (saveChanges.Value == true) SaveChanges();
+                    gameObject.SetActive(false);
+                }));
+            }
+            else
+            {
                 gameObject.SetActive(false);
-            }));
+            }
         }
 
         /// <summary>
@@ -112,6 +119,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private GameObject _instantiatedTeammateInfo;
         private GameObject _instantiatedDiamonds;
         private GameObject _instantiatedGiveUpButton;
+
+        private bool _unsavedChanges = false;
 
         private void Awake()
         {
@@ -135,6 +144,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _saveButton.onClick.RemoveAllListeners();
             _okButton.onClick.RemoveAllListeners();
             _noButton.onClick.RemoveAllListeners();
+
+            foreach (var editingComponent in GetComponentsInChildren<BattleUiEditingComponent>())
+            {
+                editingComponent.UiElementEdited -= OnUiElementEdited;
+            }
         }
 
         private IEnumerator ShowSaveChangesPopup(Action<bool?> callback)
@@ -173,6 +187,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             BattleUiMovableElementData teammateInfoData = GetMultiOrientationElement(BattleUiElementType.TeammateInfo).GetData();
             SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.TeammateInfo, teammateInfoData);
 
+            _unsavedChanges = false;
             PopupSignalBus.OnChangePopupInfoSignal("Muutokset on tallennettu.");
         }
 
@@ -229,6 +244,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Setting listener for grid toggle
             _gridToggle.onValueChanged.AddListener(editingComponent.ToggleGrid);
             editingComponent.ToggleGrid(_gridToggle.isOn);
+
+            // Setting listener for editing component event
+            editingComponent.UiElementEdited += OnUiElementEdited;
 
             return uiElementGameObject;
         }
@@ -442,6 +460,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 default:
                     return null;
             }
+        }
+
+        private void OnUiElementEdited()
+        {
+            _unsavedChanges = true;
         }
     }
 }
