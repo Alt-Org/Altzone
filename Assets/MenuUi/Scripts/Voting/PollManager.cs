@@ -140,7 +140,7 @@ public static class PollManager
 
             if (pollType == FurniturePollType.Selling)
             {
-                ClanFurniture clanFurniture = clan.Inventory.Furniture.First(furn => furn.GameFurnitureName == furniturePollData.Furniture.Name);
+                ClanFurniture clanFurniture = clan.Inventory.Furniture.First(furn => furn.GameFurnitureName == furniturePollData.Furniture.Name && furn.InVoting == true);
                 clanFurniture.VotedToSell = yesVotesWon;
                 clanFurniture.InVoting = false;
             }
