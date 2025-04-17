@@ -17,6 +17,8 @@ using System.Collections.ObjectModel;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Altzone.Scripts.Settings;
+using uPLibrary.Networking.M2Mqtt;
+using uPLibrary.Networking.M2Mqtt.Messages;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -182,6 +184,9 @@ public class ServerManager : MonoBehaviour
             SetPlayerValues(Player, characters);
 
             OnLogInStatusChanged?.Invoke(true);
+
+            MqttClient client = new(DEVADDRESS);
+            client.Connect(Player._id);
 
             if (Clan == null)
             {
