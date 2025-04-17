@@ -24,6 +24,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private TMP_Text _statDescription;
         [SerializeField] private GameObject _contents;
         [SerializeField] private GameObject _defenceIconColor;
+        [SerializeField] private TMP_Text _developmentName;
 
         private StatsWindowController _controller;
         StatInfo _statInfo;
@@ -70,10 +71,43 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             _statIcon.sprite = _statInfo.Image;
             _statBackground.color = _statInfo.StatBoxColor;
             _statDescription.text = _statInfo.Description;
+            string developmentName = string.Empty;
+            ValueStrength statStrenght = _controller.GetStatStrength(_statType);
+            switch(statStrenght)
+            {
+                case ValueStrength.VeryStrong:
+                    developmentName = "Mestari";
+                    break;
+                case ValueStrength.Strong:
+                    developmentName = "Asiantuntija";
+                    break;
+                case ValueStrength.SemiStrong:
+                    developmentName = "Kokenut";
+                    break;
+                case ValueStrength.Medium:
+                    developmentName = "Perusosaaja";
+                    break;
+                case ValueStrength.SemiWeak:
+                    developmentName = "Harjoittelija";
+                    break;
+                case ValueStrength.Weak:
+                    developmentName = "Aloittelija";
+                    break;
+                case ValueStrength.VeryWeak:
+                    developmentName = "Taidoton";
+                    break;
+                case ValueStrength.None:
+                default:
+                    developmentName = "Ei tietoa";
+                    break;
+            }
+            _developmentName.text = developmentName;
+
             UpdateStatLevel(_statType);
             UpdateStatValue(_statType);
             UpdateDiamondCost(_statType);
             UpdateEraserCost(_statType);
+
             if (_statType == StatType.Defence)
             {
                 _defenceIconColor.SetActive(true);

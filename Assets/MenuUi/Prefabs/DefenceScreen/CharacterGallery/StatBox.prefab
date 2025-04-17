@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 816564854154563019}
   - component: {fileID: 6127762283299821738}
   m_Layer: 0
-  m_Name: EvelopmentThreshold
+  m_Name: DevelopmentThreshold
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -892,6 +892,7 @@ MonoBehaviour:
   _statDescription: {fileID: 7931634601961747846}
   _contents: {fileID: 6602685662844446540}
   _defenceIconColor: {fileID: 6542202654652092692}
+  _developmentName: {fileID: 2490386748948339622}
 --- !u!222 &3857889079084756813
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1867,8 +1868,8 @@ RectTransform:
   - {fileID: 7925496864949290023}
   - {fileID: 1007856311080199049}
   - {fileID: 3883136634550361372}
-  - {fileID: 1266651342986662010}
   - {fileID: 4990129050411272550}
+  - {fileID: 1266651342986662010}
   m_Father: {fileID: 1002876866613206839}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
