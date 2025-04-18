@@ -37,6 +37,7 @@ public class VoteManager : MonoBehaviour
 
     public void InstantiatePolls()
     {
+        PollManager.LoadClanData();
         // Clear existing polls
         for (int i = 0; i < Polls.Count; i++)
         {
