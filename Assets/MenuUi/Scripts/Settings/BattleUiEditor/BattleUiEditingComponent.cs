@@ -276,8 +276,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private float _minWidth => BattleUiEditor.GridCellWidth * 2;
         private float _minHeight => BattleUiEditor.GridCellHeight * 4;
 
-        private float _maxPosX => _uiElementHolder.rect.width - _movableElement.RectTransformComponent.rect.width / 2;
-        private float _maxPosY => _uiElementHolder.rect.height - _movableElement.RectTransformComponent.rect.height / 2;
+        private float _maxPosX => _uiElementHolder.rect.width * (Screen.width/ _uiElementHolder.rect.width) - _movableElement.RectTransformComponent.rect.width / 2;
+        private float _maxPosY => _uiElementHolder.rect.height * (Screen.width / _uiElementHolder.rect.width) - _movableElement.RectTransformComponent.rect.height / 2;
         private float _minPosX => _movableElement.RectTransformComponent.rect.width / 2;
         private float _minPosY => _movableElement.RectTransformComponent.rect.height / 2;
 
