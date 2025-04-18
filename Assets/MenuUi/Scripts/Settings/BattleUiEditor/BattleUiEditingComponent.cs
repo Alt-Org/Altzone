@@ -22,7 +22,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private GameObject _dragDelayDisplay;
         [SerializeField] private Image _dragDelayFill;
 
-        public Action UiElementEdited;
+        public Action OnUiElementEdited;
+
+        public delegate void UiElementSelectedHandler(BattleUiEditingComponent self);
+        public UiElementSelectedHandler OnUiElementSelected;
 
         public void SetInfo(BattleUiMovableElement movableElement, Transform uiElementHolder)
         {
@@ -54,6 +57,16 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             UpdateData();
         }
 
+        public void ShowControls(bool show)
+        {
+            _scaleHandleButton.gameObject.SetActive(show);
+
+            if (_multiOrientationElement == null) show = false;
+            _flipHorizontallyButton.gameObject.SetActive(show);
+            _flipVerticallyButton.gameObject.SetActive(show);
+            _changeOrientationButton.gameObject.SetActive(show);
+        }
+
         public void UpdateData()
         {
             if (_multiOrientationElement == null) _data = _movableElement.GetData();
@@ -68,13 +81,17 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         public void OnPointerDown(PointerEventData eventData)
         {
             _isPointerDown = true;
+            OnUiElementSelected?.Invoke(this);
 
-            if (_dragTimerHolder == null) _dragTimerHolder = StartCoroutine(StartDragTimer(() =>
+            if (_dragTimerHolder == null)
             {
-                _dragTimerHolder = null;
-                if (!_isPointerDown) return;
-                _currentAction = ActionType.Move;
-            }));
+                _dragTimerHolder = StartCoroutine(StartDragTimer(() =>
+                {
+                    _dragTimerHolder = null;
+                    if (!_isPointerDown) return;
+                    _currentAction = ActionType.Move;
+                }));
+            }
         }
 
         public void OnPointerUp(PointerEventData eventData)
@@ -219,7 +236,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             float timePassed = 0f;
             while (timePassed < 0.5f)
             {
-                if (!_dragDelayDisplay.activeSelf && timePassed >= 0.2f) _dragDelayDisplay.SetActive(true);
+                if (!_dragDelayDisplay.activeSelf && timePassed >= 0.2f)
+                {
+                    _dragDelayDisplay.SetActive(true);
+                    ShowControls(false);
+                }
                 _dragDelayFill.fillAmount = timePassed * 2;
                 yield return null;
                 timePassed += Time.deltaTime;
@@ -289,7 +310,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _movableElement.SetData(_data);
             CheckControlButtonsVisibility();
 
-            UiElementEdited?.Invoke();
+            OnUiElementEdited?.Invoke();
         }
 
         private void FlipHorizontally()
@@ -297,7 +318,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _data.IsFlippedHorizontally = !_data.IsFlippedHorizontally;
             _multiOrientationElement.SetData(_data);
 
-            UiElementEdited?.Invoke();
+            OnUiElementEdited?.Invoke();
         }
 
         private void FlipVertically()
@@ -305,7 +326,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _data.IsFlippedVertically = !_data.IsFlippedVertically;
             _multiOrientationElement.SetData(_data);
 
-            UiElementEdited?.Invoke();
+            OnUiElementEdited?.Invoke();
         }
 
         private void ChangeOrientation()
@@ -328,16 +349,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
 
             CalculateAndSetAnchors(newSize);
-        }
-
-        private void ShowControls(bool show)
-        {
-            _scaleHandleButton.gameObject.SetActive(show);
-
-            if (_multiOrientationElement == null) show = false;
-            _flipHorizontallyButton.gameObject.SetActive(show);
-            _flipVerticallyButton.gameObject.SetActive(show);
-            _changeOrientationButton.gameObject.SetActive(show);
         }
 
         // Method used to calculate appropiate size for the control buttons, since if they were anchored they would grow with the element when it's scaled

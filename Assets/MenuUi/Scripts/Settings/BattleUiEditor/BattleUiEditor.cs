@@ -112,6 +112,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private bool _unsavedChanges = false;
 
+        private BattleUiEditingComponent _currentlySelectedEditingComponent;
+
         private void Awake()
         {
             _closeButton.onClick.AddListener(CloseEditor);
@@ -137,7 +139,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             foreach (var editingComponent in GetComponentsInChildren<BattleUiEditingComponent>())
             {
-                editingComponent.UiElementEdited -= OnUiElementEdited;
+                editingComponent.OnUiElementEdited -= OnUiElementEdited;
+                editingComponent.OnUiElementSelected -= OnUiElementSelected;
             }
         }
 
@@ -235,8 +238,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _gridToggle.onValueChanged.AddListener(editingComponent.ToggleGrid);
             editingComponent.ToggleGrid(_gridToggle.isOn);
 
-            // Setting listener for editing component event
-            editingComponent.UiElementEdited += OnUiElementEdited;
+            // Setting listener for editing component events
+            editingComponent.OnUiElementEdited += OnUiElementEdited;
+            editingComponent.OnUiElementSelected += OnUiElementSelected;
 
             return uiElementGameObject;
         }
@@ -455,6 +459,16 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private void OnUiElementEdited()
         {
             _unsavedChanges = true;
+        }
+
+        private void OnUiElementSelected(BattleUiEditingComponent newSelectedEditingComponent)
+        {
+            if (_currentlySelectedEditingComponent != null && _currentlySelectedEditingComponent != newSelectedEditingComponent)
+            {
+                _currentlySelectedEditingComponent.ShowControls(false);
+            }
+
+            _currentlySelectedEditingComponent = newSelectedEditingComponent;
         }
     }
 }
