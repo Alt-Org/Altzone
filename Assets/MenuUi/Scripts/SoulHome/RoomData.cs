@@ -268,6 +268,11 @@ namespace MenuUI.Scripts.SoulHome
                     furnitureSlot.name = (1 + j).ToString();
                     furnitureSlot.GetComponent<FurnitureSlot>().InitializeSlot(row, col, _roomInfo.Id, FurnitureGrid.Floor, _slotMaxGrowthPercentage, ceilingSlotRows, slotWidth, slotDepth);
                     furnitureSlot.tag = "CeilingFurnitureSlot";
+
+                    float initialHeightOffset = Mathf.Abs(furnitureSlot.transform.position.y - _wallBackFurniturePoints.position.y);
+                    float interactHeight = (_backWallBounds.size.y / ceilingSlotRows);
+                    furnitureSlot.GetComponent<BoxCollider2D>().offset = new(0, -initialHeightOffset - interactHeight * (i+0.5f));
+                    furnitureSlot.GetComponent<BoxCollider2D>().size = new Vector2(slotWidth, interactHeight);
                     col++;
                 }
                 prevBottom -= ceilingHeight / ceilingSlotRows + (ceilingHeight / ceilingSlotRows) * (0.05f * (ceilingSlotRows / -2 + 0.5f + i));
