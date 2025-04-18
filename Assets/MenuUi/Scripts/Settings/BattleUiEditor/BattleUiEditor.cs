@@ -338,8 +338,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     anchorMin.x = 0.75f;
                     anchorMax.x = 0.95f;
 
-                    anchorMin.y = 0.01f;
-                    anchorMax.y = 0.08f;
+                    anchorMin.y = 0.025f;
+                    anchorMax.y = 0.075f;
 
                     uiElementRect = _instantiatedDiamonds.GetComponent<RectTransform>().rect;
                     break;
@@ -348,10 +348,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     if (_instantiatedGiveUpButton == null) return null;
 
                     anchorMin.x = 0.05f;
-                    anchorMax.x = 0.3f;
+                    anchorMax.x = 0.25f;
 
-                    anchorMin.y = 0.01f;
-                    anchorMax.y = 0.08f;
+                    anchorMin.y = 0.025f;
+                    anchorMax.y = 0.075f;
 
                     uiElementRect = _instantiatedGiveUpButton.GetComponent<RectTransform>().rect;
                     break;
@@ -360,7 +360,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     if (_instantiatedPlayerInfo == null) return null;
 
                     anchorMin.x = 0.05f;
-                    anchorMax.x = 0.375f;
+                    anchorMax.x = 0.35f;
 
                     anchorMin.y = 0.45f;
                     anchorMax.y = 0.55f;
@@ -373,7 +373,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 case BattleUiElementType.TeammateInfo:
                     if (_instantiatedTeammateInfo == null) return null;
 
-                    anchorMin.x = 0.625f;
+                    anchorMin.x = 0.65f;
                     anchorMax.x = 0.95f;
 
                     anchorMin.y = 0.45f;
