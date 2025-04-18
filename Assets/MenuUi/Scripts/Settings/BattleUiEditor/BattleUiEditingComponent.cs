@@ -165,8 +165,17 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     break;
 
                 case ActionType.Scale:
-                    // Scaling while keeping aspect ratio
-                    float sizeIncreaseX = (eventData.position.x - eventData.pressPosition.x) * 2;
+                    // Scaling while keeping aspect ratio, we have to invert scaling for the left side scale handles
+                    float sizeIncreaseX;
+                    if (_currentScaleHandleIdx == (int)CornerType.TopLeft || _currentScaleHandleIdx == (int)CornerType.BottomLeft)
+                    {
+                        sizeIncreaseX = -((eventData.position.x - eventData.pressPosition.x) * 2);
+                    }
+                    else
+                    {
+                        sizeIncreaseX = (eventData.position.x - eventData.pressPosition.x) * 2;
+                    }
+                         
                     float sizeIncreaseY = sizeIncreaseX / (_movableElement.RectTransformComponent.rect.width / _movableElement.RectTransformComponent.rect.height);
                     _movableElement.RectTransformComponent.sizeDelta = new Vector2(sizeIncreaseX, sizeIncreaseY);
 
