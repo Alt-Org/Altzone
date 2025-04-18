@@ -325,7 +325,7 @@ namespace MenuUI.Scripts.SoulHome
             startRow = row - (furnitureSize.y - 1);
             endColumn = column + (furnitureSize.x - 1);
 
-            if (furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorNonblock or FurniturePlacement.Wall)
+            if (furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorNonblock or FurniturePlacement.Wall or FurniturePlacement.Ceiling)
             {
                 if (gridtoCheck is FurnitureGrid.Floor or FurnitureGrid.Ceiling)
                 {
