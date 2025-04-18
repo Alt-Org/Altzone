@@ -1,37 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
+using MenuUi.Scripts.TabLine;
 using MenuUi.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ProfileMenuTabs : MonoBehaviour
 {
+    [System.Serializable]
+    public class ButtonWindowBind
+    {
+        public Button Button;
+        public GameObject Window;
+        public Image Image;
+    }
+    [Header("TablineScript reference")]
+    public TabLine _tablineScript;
 
-    [Header("Toggles")]
-    public Toggle basicToggle;
-    public Toggle statsToggle;
-    public Toggle roleplayToggle;
-
-
-    [Header("Objects")]
-    public GameObject basicObject;
-    public GameObject statsObject;
-    public GameObject roleplayObject;
+    [SerializeField] List<ButtonWindowBind> _buttons = new List<ButtonWindowBind>();
 
     // Start is called before the first frame update
     void Start()
     {
-        basicToggle.onValueChanged.AddListener((isOn) => UpdateVisibility(basicObject, isOn));
-        statsToggle.onValueChanged.AddListener((isOn) => UpdateVisibility(statsObject, isOn));
-        roleplayToggle.onValueChanged.AddListener((isOn) => UpdateVisibility(roleplayObject, isOn));
-
-        UpdateVisibility(basicObject, basicToggle.isOn);
-        UpdateVisibility(statsObject, statsToggle.isOn);
-        UpdateVisibility(roleplayObject, roleplayToggle.isOn);
+        for (int i = 0; i < _buttons.Count; i++)
+        {
+            int j = i;
+            _buttons[i].Button.onClick.AddListener(() => SetVisible(j));
+        }
+        SetVisible(1);
     }
 
-    void UpdateVisibility(GameObject obj, bool isVisible)
+    void SetVisible(int activeIndex)
     {
-        obj.SetActive(isVisible);
+        for (int i = 0; i < _buttons.Count; i++)
+            _buttons[i].Window.SetActive(i == activeIndex);
+        _tablineScript.ActivateTabButton(activeIndex);
     }
 }

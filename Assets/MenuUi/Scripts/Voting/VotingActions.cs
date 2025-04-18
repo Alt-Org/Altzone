@@ -8,6 +8,7 @@ using UnityEngine;
 public static class VotingActions
 {
     public static Action<GameFurniture> PassShopItem;
+    public static Action<AvatarPartsReference.AvatarPartInfo> PassShopItemAvatar;
     public static Action PollPopupReady;
     public static Action<string> PassPollId;
     public static Action ReloadPollList;
