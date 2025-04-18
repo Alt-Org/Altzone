@@ -376,6 +376,22 @@ MonoBehaviour:
         Value: 170
         Material: 
         Recycling: 
+    - Name: CeilingLamp
+      Image: {fileID: 21300000, guid: 622f3fc6e612df2448b72d5a929b5de9, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Kattolamppu
+      ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
+      DiagnoseNumber: F52.0
+      BaseFurniture:
+        Name: CeilingLamp_Rakkaus
+        Rarity: 2
+        Size: 6
+        RotatedSize: 6
+        Placement: 3
+        Weight: 2
+        Value: 200
+        Material: 
+        Recycling: 
   - SetName: Neuro
     ArtistName: "Simo Ryh\xE4nen"
     list:
