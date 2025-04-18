@@ -151,7 +151,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _okButton.onClick.RemoveAllListeners();
             _noButton.onClick.RemoveAllListeners();
 
-            foreach (var editingComponent in GetComponentsInChildren<BattleUiEditingComponent>())
+            foreach (var editingComponent in _uiElementsHolder.GetComponentsInChildren<BattleUiEditingComponent>())
             {
                 editingComponent.OnUiElementEdited -= OnUiElementEdited;
                 editingComponent.OnUiElementSelected -= OnUiElementSelected;
