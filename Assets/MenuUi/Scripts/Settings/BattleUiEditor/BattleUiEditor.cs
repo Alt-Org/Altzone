@@ -314,8 +314,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             bool isFlippedHorizontally = false;
             bool isFlippedVertically = false;
 
-            // Rect variable so that we can do aspect ratio calculations later
-            Rect uiElementRect = new();
+            // Rect variable so that we can do aspect ratio calculations
+            Rect uiElementRect;
+            float aspectRatio = 0f;
 
             // Setting hardcoded default anchors (maybe there's a better way for this?)
             switch (uiElementType)
@@ -330,6 +331,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     anchorMax.y = 0.55f;
 
                     uiElementRect = _instantiatedTimer.GetComponent<RectTransform>().rect;
+                    aspectRatio = uiElementRect.width / uiElementRect.height;
                     break;
 
                 case BattleUiElementType.Diamonds:
@@ -340,8 +342,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
                     anchorMin.y = 0.025f;
                     anchorMax.y = 0.075f;
-
                     uiElementRect = _instantiatedDiamonds.GetComponent<RectTransform>().rect;
+                    aspectRatio = uiElementRect.width / uiElementRect.height;
                     break;
 
                 case BattleUiElementType.GiveUpButton:
@@ -354,6 +356,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     anchorMax.y = 0.075f;
 
                     uiElementRect = _instantiatedGiveUpButton.GetComponent<RectTransform>().rect;
+                    aspectRatio = uiElementRect.width / uiElementRect.height;
                     break;
 
                 case BattleUiElementType.PlayerInfo:
@@ -367,7 +370,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
                     orientation = OrientationType.Horizontal;
 
-                    uiElementRect = _instantiatedPlayerInfo.GetComponent<RectTransform>().rect;
+                    aspectRatio = GetMultiOrientationElement(BattleUiElementType.PlayerInfo).HorizontalAspectRatio;
                     break;
 
                 case BattleUiElementType.TeammateInfo:
@@ -381,13 +384,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
                     orientation = OrientationType.Horizontal;
 
-                    uiElementRect = _instantiatedTeammateInfo.GetComponent<RectTransform>().rect;
+                    aspectRatio = GetMultiOrientationElement(BattleUiElementType.TeammateInfo).HorizontalAspectRatio;
                     break;
             }
 
             // Fitting height to aspect ratio
-            float aspectRatio = uiElementRect.width / uiElementRect.height;
-
             float uiElementWidth = Screen.width * (anchorMax.x - anchorMin.x);
             float uiElementHeight = uiElementWidth / aspectRatio;
 
