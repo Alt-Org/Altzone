@@ -17,6 +17,7 @@ using System.Collections.ObjectModel;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Altzone.Scripts.Settings;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -391,13 +392,18 @@ public class ServerManager : MonoBehaviour
                 }
                 else
                 {
-                    ReadOnlyCollection<GameFurniture> baseFurniture = null;
-                    store.GetAllGameFurnitureYield(result => baseFurniture = result);
-                    clanFurniture = CreateDefaultModels.CreateDefaultDebugFurniture(baseFurniture);
+                    if (SceneManager.GetActiveScene().buildIndex == 0)
+                    {
+                        ReadOnlyCollection<GameFurniture> baseFurniture = null;
+                        store.GetAllGameFurnitureYield(result => baseFurniture = result);
+                        clanFurniture = CreateDefaultModels.CreateDefaultDebugFurniture(baseFurniture);
+                    }
                 }
-
-                inventory.Furniture = clanFurniture;
-                clanData.Inventory = inventory;
+                if (clanFurniture.Count != 0)
+                {
+                    inventory.Furniture = clanFurniture;
+                    clanData.Inventory = inventory;
+                }
             }
         }));
 
