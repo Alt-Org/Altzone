@@ -84,8 +84,16 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             {
                 StopCoroutine(_dragTimerHolder);
                 _dragTimerHolder = null;
-                _dragDelayDisplay.SetActive(false);
-                ShowControls(!_scaleHandleButton.gameObject.activeSelf);
+
+                if (_dragDelayDisplay.activeSelf)
+                {
+                    ShowControls(false);
+                    _dragDelayDisplay.SetActive(false);
+                }
+                else
+                {
+                    ShowControls(!_scaleHandleButton.gameObject.activeSelf);
+                }
             }
         }
 
