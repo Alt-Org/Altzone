@@ -62,16 +62,27 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             if (_instantiatedPlayerInfo == null)
             {
                 _instantiatedPlayerInfo = InstantiateBattleUiElement(BattleUiElementType.PlayerInfo);
-                TextMeshProUGUI playerName = _instantiatedPlayerInfo.GetComponentInChildren<TextMeshProUGUI>();
-                if (playerName != null) playerName.text = "Minä";
+
+                BattleUiMultiOrientationElement playerInfo = GetMultiOrientationElement(BattleUiElementType.PlayerInfo);
+
+                TextMeshProUGUI playerNameHorizontal = playerInfo.HorizontalConfiguration.GetComponentInChildren<TextMeshProUGUI>();
+                TextMeshProUGUI playerNameVertical = playerInfo.VerticalConfiguration.GetComponentInChildren<TextMeshProUGUI>();
+                
+                if (playerNameHorizontal != null) playerNameHorizontal.text = PlayerText;
+                if (playerNameVertical != null) playerNameVertical.text = PlayerText;
             }
             SetData(BattleUiElementType.PlayerInfo);
 
             if (_instantiatedTeammateInfo == null)
             {
                 _instantiatedTeammateInfo = InstantiateBattleUiElement(BattleUiElementType.TeammateInfo);
-                TextMeshProUGUI teammateName = _instantiatedTeammateInfo.GetComponentInChildren<TextMeshProUGUI>();
-                if (teammateName != null) teammateName.text = "Tiimikaveri";
+
+                BattleUiMultiOrientationElement teammateInfo = GetMultiOrientationElement(BattleUiElementType.TeammateInfo);
+
+                TextMeshProUGUI teammateNameHorizontal = teammateInfo.HorizontalConfiguration.GetComponentInChildren<TextMeshProUGUI>();
+                TextMeshProUGUI teammateNameVertical = teammateInfo.VerticalConfiguration.GetComponentInChildren<TextMeshProUGUI>();
+                if (teammateNameHorizontal != null) teammateNameHorizontal.text = TeammateText;
+                if (teammateNameVertical != null) teammateNameVertical.text = TeammateText;
             }
             SetData(BattleUiElementType.TeammateInfo);
         }
@@ -103,6 +114,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             _saveChangesPopup.SetActive(false);
         }
+
+        private const string PlayerText = "Minä";
+        private const string TeammateText = "Tiimikaveri";
 
         private GameObject _instantiatedTimer;
         private GameObject _instantiatedPlayerInfo;

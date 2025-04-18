@@ -21,6 +21,8 @@ namespace Altzone.Scripts.BattleUiShared
         }
 
         public OrientationType Orientation => _orientation;
+        public GameObject HorizontalConfiguration => _horizontalConfiguration;
+        public GameObject VerticalConfiguration => _verticalConfiguration;
         public bool IsFlippedHorizontally => _isFlippedHorizontally;
         public bool IsFlippedVertically => _isFlippedVertically;
         public float HorizontalAspectRatio => _horizontalAspectRatio;
