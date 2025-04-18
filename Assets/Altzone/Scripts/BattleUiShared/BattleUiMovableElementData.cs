@@ -11,15 +11,19 @@ namespace Altzone.Scripts.BattleUiShared
     [Serializable]
     public class BattleUiMovableElementData
     {
+        public bool IsFlippedHorizontally;
+        public bool IsFlippedVertically;
         public Vector2 AnchorMin;
         public Vector2 AnchorMax;
         public OrientationType Orientation;
 
-        public BattleUiMovableElementData(Vector2 anchorMin, Vector2 anchorMax, OrientationType orientation = OrientationType.None)
+        public BattleUiMovableElementData(Vector2 anchorMin, Vector2 anchorMax, OrientationType orientation = OrientationType.None, bool isFlippedHorizontally = false, bool isFlippedVertically = false)
         {
             AnchorMin = anchorMin;
             AnchorMax = anchorMax;
             Orientation = orientation;
+            IsFlippedHorizontally = isFlippedHorizontally;
+            IsFlippedVertically = isFlippedVertically;
         }
     }
 }
