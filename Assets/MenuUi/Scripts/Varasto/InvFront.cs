@@ -477,6 +477,8 @@ namespace MenuUi.Scripts.Storage
         private void UpdateInVotingText(bool inVoting)
         {
             _inVoting.SetActive(inVoting);
+
+            SortStored(); // Called here to update InvSlotObject overlay panels
         }
 
         private void ScaleSprite(StorageFurniture furn, RectTransform rTransform)
