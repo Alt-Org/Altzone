@@ -201,8 +201,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         }
 
         private RectTransform _uiElementHolder;
-        private float _maxWidth => BattleUiEditor.GridCellWidth * 14;
-        private float _maxHeight => BattleUiEditor.GridCellHeight * 20;
+        private float _maxWidth => BattleUiEditor.GridCellWidth * 10;
+        private float _maxHeight => BattleUiEditor.GridCellHeight * 16;
         private float _minWidth => BattleUiEditor.GridCellWidth * 2;
         private float _minHeight => BattleUiEditor.GridCellHeight * 4;
 
