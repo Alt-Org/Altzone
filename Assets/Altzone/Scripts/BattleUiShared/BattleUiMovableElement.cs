@@ -8,6 +8,8 @@ namespace Altzone.Scripts.BattleUiShared
     [RequireComponent(typeof(RectTransform))]
     public class BattleUiMovableElement : MonoBehaviour
     {
+        public RectTransform RectTransformComponent => _rectTransform;
+
         /// <summary>
         /// Set BattleUiMovableElementData to this Ui element.
         /// </summary>
