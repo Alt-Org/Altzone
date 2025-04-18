@@ -68,6 +68,40 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleDiamondCounterQSingleton))]
+  public unsafe partial class BattleDiamondCounterQSingletonPrototype : ComponentPrototype<Quantum.BattleDiamondCounterQSingleton> {
+    public Int32 AlphaDiamonds;
+    public Int32 BetaDiamonds;
+    partial void MaterializeUser(Frame frame, ref Quantum.BattleDiamondCounterQSingleton result, in PrototypeMaterializationContext context);
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.BattleDiamondCounterQSingleton component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.BattleDiamondCounterQSingleton result, in PrototypeMaterializationContext context = default) {
+        result.AlphaDiamonds = this.AlphaDiamonds;
+        result.BetaDiamonds = this.BetaDiamonds;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleDiamondDataQComponent))]
+  public unsafe partial class BattleDiamondDataQComponentPrototype : ComponentPrototype<Quantum.BattleDiamondDataQComponent> {
+    public Quantum.QEnum32<BattleTeamNumber> OwnerTeam;
+    public FP TimeUntilDisappearance;
+    partial void MaterializeUser(Frame frame, ref Quantum.BattleDiamondDataQComponent result, in PrototypeMaterializationContext context);
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.BattleDiamondDataQComponent component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.BattleDiamondDataQComponent result, in PrototypeMaterializationContext context = default) {
+        result.OwnerTeam = this.OwnerTeam;
+        result.TimeUntilDisappearance = this.TimeUntilDisappearance;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattleGameSessionQSingleton))]
   public unsafe partial class BattleGameSessionQSingletonPrototype : ComponentPrototype<Quantum.BattleGameSessionQSingleton> {
     public QBoolean GameInitialized;

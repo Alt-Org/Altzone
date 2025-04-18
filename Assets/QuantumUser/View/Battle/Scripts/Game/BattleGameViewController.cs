@@ -126,6 +126,10 @@ namespace Battle.View.Game
                         // Starting game timer
                         _uiController.TimerHandler.SetShow(true);
                         _uiController.TimerHandler.StartTimer(frame);
+
+                        // updating diamonds (at the moment shows only alpha team's diamonds)
+                        BattleDiamondCounterQSingleton diamondCounter = frame.GetSingleton<BattleDiamondCounterQSingleton>();
+                        _uiController.DiamondsHandler.SetDiamondsText(diamondCounter.AlphaDiamonds);
                         break;
 
                     case BattleGameState.GetReadyToPlay:
@@ -145,6 +149,7 @@ namespace Battle.View.Game
                         _uiController.GameOverHandler.SetShow(true);
                         break;
                 }
+
             }
         }
 
