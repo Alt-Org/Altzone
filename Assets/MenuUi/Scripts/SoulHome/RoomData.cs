@@ -243,6 +243,8 @@ namespace MenuUI.Scripts.SoulHome
                 col++;
             }
             //Ceiling Slot generation
+            col = 0;
+            row = 0;
             float ceilingWidth = _ceilingBounds.size.x;
             float ceilingHeight = _ceilingBounds.size.y;
             int ceilingSlotRows = _slotRows;
