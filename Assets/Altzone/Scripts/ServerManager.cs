@@ -30,6 +30,7 @@ public class ServerManager : MonoBehaviour
     private ServerPlayer _player;               // Player info from server
     private ServerClan _clan;                   // Clan info from server
     private ServerStock _stock;                 // Stock info from server
+    private List<string> _onlinePlayers;
 
     [SerializeField] private bool _automaticallyLogIn = false;
     private int _accessTokenExpiration;
@@ -56,6 +57,9 @@ public class ServerManager : MonoBehaviour
     public delegate void ClanInventoryChanged();
     public static event ClanInventoryChanged OnClanInventoryChanged;
 
+    public delegate void OnlinePlayersChanged(List<string> onlinePlayers);
+    public static event OnlinePlayersChanged OnOnlinePlayersChanged;
+
     #endregion
 
     #region Getters & Setters
@@ -74,6 +78,7 @@ public class ServerManager : MonoBehaviour
         }
     }
     public ServerStock Stock { get => _stock; set => _stock = value; }
+    public List<string> OnlinePlayers { get => _onlinePlayers;}
 
     #endregion
 
@@ -183,6 +188,7 @@ public class ServerManager : MonoBehaviour
             SetPlayerValues(Player, characters);
 
             OnLogInStatusChanged?.Invoke(true);
+            StartCoroutine(ServiceHeartBeat());
 
             if (Clan == null)
             {
@@ -467,6 +473,56 @@ public class ServerManager : MonoBehaviour
         else callback(true);
     }
 
+    public IEnumerator ServiceHeartBeat()
+    {
+        float timeCurrent = 0f;
+        float timeToNext = 120f;
+
+        while (true)
+        {
+            timeCurrent = 0f;
+            bool? heartBeat = null;
+            yield return HeartbeatToServer(callback =>
+            {
+                if(callback == false)
+                {
+                    timeToNext = 5f;
+                }
+                else
+                {
+                    timeToNext = 5f;
+                }
+                heartBeat = callback;
+            });
+            yield return new WaitUntil(() => heartBeat != null);
+            bool? list = null;
+            if (heartBeat == true)
+            {
+                yield return GetOnlinePlayersFromServer(callback =>
+                {
+                    if (callback != null)
+                    {
+                        list = true;
+                        _onlinePlayers = callback;
+                        OnOnlinePlayersChanged?.Invoke(_onlinePlayers);
+                        timeToNext = 120f;
+                    }
+                    else
+                    {
+                        list = false;
+                        timeToNext = 5f;
+                    }
+                });
+            }
+            yield return new WaitUntil(() => list != null);
+            while (timeCurrent < timeToNext)
+            {
+                yield return null;
+                timeCurrent += Time.deltaTime;
+            }
+        }
+    }
+
     #region Server
 
     #region Player
@@ -551,97 +607,6 @@ public class ServerManager : MonoBehaviour
             {
                 if (callback != null)
                     callback(null);
-            }
-        }));
-    }
-
-    public IEnumerator GetPlayerTasksFromServer(Action<List<PlayerTask>> callback)
-    {
-        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "dailyTasks", AccessToken, request =>
-        {
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                JObject result = JObject.Parse(request.downloadHandler.text);
-                Debug.LogWarning(result);
-                List<ServerPlayerTask> serverTasks = ((JArray)result["data"]["DailyTask"]).ToObject<List<ServerPlayerTask>>();
-                //Clan = clan;
-                if(serverTasks.Count < 1) { callback(null); return; }
-
-                List<PlayerTask> tasks = new();
-                foreach (ServerPlayerTask task in serverTasks)
-                {
-                    tasks.Add(new(task));
-                }
-                
-
-                if (callback != null)
-                    callback(new(tasks));
-            }
-            else
-            {
-                if (callback != null)
-                    callback(null);
-            }
-        }));
-    }
-
-    public IEnumerator GetPlayerTaskFromServer(string taskId, Action<PlayerTask> callback)
-    {
-        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "dailyTasks/"+taskId, AccessToken, request =>
-        {
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                JObject result = JObject.Parse(request.downloadHandler.text);
-                //Debug.LogWarning(result);
-                ServerPlayerTask serverTask = result["data"]["DailyTask"].ToObject<ServerPlayerTask>();
-                //Clan = clan;
-
-                if (callback != null)
-                    callback(new(serverTask));
-            }
-            else
-            {
-                if (callback != null)
-                    callback(null);
-            }
-        }));
-    }
-
-    public IEnumerator ReservePlayerTaskFromServer(string taskId, Action<PlayerTask> callback)
-    {
-        yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "dailyTasks/reserve/"+taskId, "", AccessToken, request =>
-        {
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                JObject result = JObject.Parse(request.downloadHandler.text);
-                Debug.LogWarning(result);
-                ServerPlayerTask task = result["data"]["Object"].ToObject<ServerPlayerTask>();
-                //Clan = clan;
-
-                if (callback != null)
-                    callback(new(task));
-            }
-            else
-            {
-                if (callback != null)
-                    callback(null);
-            }
-        }));
-    }
-
-    public IEnumerator UnreservePlayerTaskFromServer(Action<bool> callback)
-    {
-        yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "dailyTasks/unreserve/", "", AccessToken, request =>
-        {
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                if (callback != null)
-                    callback(true);
-            }
-            else
-            {
-                if (callback != null)
-                    callback(false);
             }
         }));
     }
@@ -935,6 +900,150 @@ public class ServerManager : MonoBehaviour
                 {
                     callback(false);
                 }
+            }
+        }));
+    }
+
+    #endregion
+
+    #region Heartbeat
+
+    public IEnumerator GetOnlinePlayersFromServer(Action<List<string>> callback)
+    {
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "online-players/", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                //ServerPlayer player = result["data"]["Object"].ToObject<ServerPlayer>();
+                List<string> player = result["data"]["Object"].ToObject<List<string>>();
+
+                if (callback != null)
+                    callback(player);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator HeartbeatToServer(Action<bool> callback)
+    {
+        if (Player == null)
+        {
+            Debug.LogError("Cannot find Player.");
+            yield break;
+        }
+
+        yield return StartCoroutine(WebRequests.Post(DEVADDRESS + "online-players/ping", "", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
+    #endregion
+
+    #region DailyTasks
+
+    public IEnumerator GetPlayerTasksFromServer(Action<List<PlayerTask>> callback)
+    {
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "dailyTasks", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                List<ServerPlayerTask> serverTasks = ((JArray)result["data"]["DailyTask"]).ToObject<List<ServerPlayerTask>>();
+                //Clan = clan;
+                if (serverTasks.Count < 1) { callback(null); return; }
+
+                List<PlayerTask> tasks = new();
+                foreach (ServerPlayerTask task in serverTasks)
+                {
+                    tasks.Add(new(task));
+                }
+
+
+                if (callback != null)
+                    callback(new(tasks));
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator GetPlayerTaskFromServer(string taskId, Action<PlayerTask> callback)
+    {
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "dailyTasks/" + taskId, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                //Debug.LogWarning(result);
+                ServerPlayerTask serverTask = result["data"]["DailyTask"].ToObject<ServerPlayerTask>();
+                //Clan = clan;
+
+                if (callback != null)
+                    callback(new(serverTask));
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator ReservePlayerTaskFromServer(string taskId, Action<PlayerTask> callback)
+    {
+        yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "dailyTasks/reserve/" + taskId, "", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                ServerPlayerTask task = result["data"]["Object"].ToObject<ServerPlayerTask>();
+                //Clan = clan;
+
+                if (callback != null)
+                    callback(new(task));
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator UnreservePlayerTaskFromServer(Action<bool> callback)
+    {
+        yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "dailyTasks/unreserve/", "", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
             }
         }));
     }
