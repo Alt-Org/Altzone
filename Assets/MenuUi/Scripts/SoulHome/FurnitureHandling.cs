@@ -256,6 +256,12 @@ namespace MenuUI.Scripts.SoulHome
                     _sortingGroup.sortingOrder = 1 + (row + 2) * 10;
                 transform.localScale *= (1.0f + (slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));
             }
+            else if (Furniture.Place is FurniturePlacement.Ceiling)
+            {
+                transform.localScale /= 1.0f + (slot.maxDepthScale / 100f) * ((_sortingGroup.sortingOrder < 101 ? 1 : (_sortingGroup.sortingOrder - 4) / 100 - 1) / (slot.maxRow - 1f));
+                _sortingGroup.sortingOrder = 4 + (row + 1) * 100;
+                transform.localScale *= (1.0f + (slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));
+            }
             //Debug.Log("Scale 2: " +(slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));
         }
 

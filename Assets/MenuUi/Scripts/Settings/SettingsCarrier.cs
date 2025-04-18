@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
-using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.BattleUiShared;
 
 public class SettingsCarrier : MonoBehaviour // Script for carrying settings data between scenes
 {
@@ -22,6 +22,15 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         Small,
         Medium,
         Large
+    }
+
+    public enum BattleUiElementType
+    {
+        Timer,
+        PlayerInfo,
+        TeammateInfo,
+        Diamonds,
+        GiveUpButton,
     }
 
     // Events
@@ -117,5 +126,18 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         _textSize = size;
         PlayerPrefs.SetInt("TextSize", (int)size);
         OnTextSizeChange?.Invoke();
+    }
+
+    public BattleUiMovableElementData GetBattleUiMovableElementData(BattleUiElementType type)
+    {
+        string json = PlayerPrefs.GetString($"BattleUi{type}", string.Empty);
+        if (string.IsNullOrEmpty(json)) return null;
+        return JsonUtility.FromJson<BattleUiMovableElementData>(json);
+    }
+
+    public void SetBattleUiMovableElementData(BattleUiElementType type, BattleUiMovableElementData data)
+    {
+        string json = JsonUtility.ToJson(data);
+        PlayerPrefs.SetString($"BattleUi{type}", json);
     }
 }

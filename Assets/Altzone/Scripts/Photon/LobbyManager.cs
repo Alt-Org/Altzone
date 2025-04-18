@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -13,17 +15,16 @@ using Quantum;
 
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Settings;
-using PlayerData = Altzone.Scripts.Model.Poco.Player.PlayerData;
-using Prg.Scripts.Common.PubSub;
-
-using System.Threading.Tasks;
+using Altzone.Scripts.Common;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby.Wrappers;
-using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.AzDebug;
-using System.Collections.ObjectModel;
-using Altzone.Scripts.Common;
-using Altzone.Scripts.ModelV2;
+using Prg.Scripts.Common.PubSub;
+
+using Battle.QSimulation.Game;
 
 namespace Altzone.Scripts.Lobby
 {
@@ -67,16 +68,17 @@ namespace Altzone.Scripts.Lobby
         [SerializeField] private string _blueTeamName;
         [SerializeField] private string _redTeamName;
 
-        [Header("Player")]
+        [Header("Battle Quantum Player")]
         [SerializeField] private RuntimePlayer _player;
 
-        [Header("Configs")]
-        [SerializeField] private Map _map;
-        [SerializeField] private SimulationConfig _simulationConfig;
-        [SerializeField] private SystemsConfig _systemsConfig;
-        [SerializeField] private BattleArenaSpec _battleArenaSpec;
-        [SerializeField] private ProjectileSpec _projectileSpec;
-        [SerializeField] private SoulWallSpec _soulWallSpec;
+        [Header("Battle Quantum Configs")]
+        // Quantum Configs
+        [SerializeField] private Map _quantumBattleMap;
+        [SerializeField] private SimulationConfig _quantumBattleSimulationConfig;
+        [SerializeField] private SystemsConfig _quantumBattleSystemsConfig;
+
+        [Header("Battle Quantum Custom Configs")]
+        [SerializeField] private BattleQConfig _battleQConfig;
 
         [Header("Battle Map reference")]
         [SerializeField] private BattleMapReference _battleMapReference;
@@ -428,7 +430,7 @@ namespace Altzone.Scripts.Lobby
 
             // Waiting until in lobby and that current room list has rooms
             yield return new WaitUntil(() => PhotonRealtimeClient.InLobby && CurrentRooms != null);
-            
+
             // Searching for suitable room
             bool roomFound = false;
             foreach (LobbyRoomInfo room in CurrentRooms)
@@ -464,7 +466,7 @@ namespace Altzone.Scripts.Lobby
                         }
                         break;
                 }
-                
+
             }
 
             // If suitable room not found creating new room
@@ -759,7 +761,7 @@ namespace Altzone.Scripts.Lobby
                 Emotion startingEmotion = (Emotion)PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.StartingEmotionKey, (int)Emotion.Blank);
 
                 // If starting emotion is blank getting a random starting emotion
-                if (startingEmotion == Emotion.Blank) 
+                if (startingEmotion == Emotion.Blank)
                 {
                     startingEmotion = (Emotion)UnityEngine.Random.Range(0, 4);
                 }
@@ -779,12 +781,12 @@ namespace Altzone.Scripts.Lobby
 
                 // Setting map to variable
                 Map map = _battleMapReference.GetBattleMap(mapId).Map;
-                if (map != null) _map = map;
+                if (map != null) _quantumBattleMap = map;
 
                 yield return null;
                 if (isCloseRoom)
                 {
-                    PhotonRealtimeClient.CloseRoom(true);
+                    PhotonRealtimeClient.CloseRoom(false);
                     yield return null;
                 }
             }
@@ -810,13 +812,17 @@ namespace Altzone.Scripts.Lobby
 
             RuntimeConfig config = new()
             {
-                Map              = _map,
-                SimulationConfig = _simulationConfig,
-                SystemsConfig    = _systemsConfig,
-                BattleArenaSpec  = _battleArenaSpec,
-                ProjectileSpec   = _projectileSpec,
-                SoulWallSpec     = _soulWallSpec,
-                InitialProjectileEmotion = (EmotionState)_projectileInitialEmotion,
+                // quantum
+                Map              = _quantumBattleMap,
+                SimulationConfig = _quantumBattleSimulationConfig,
+                SystemsConfig    = _quantumBattleSystemsConfig,
+
+                // battle
+                BattleConfig     = _battleQConfig,
+                BattleParameters = new()
+                {
+                    ProjectileInitialEmotion = (BattleEmotionState)_projectileInitialEmotion
+                }
             };
 
             SessionRunner.Arguments sessionRunnerArguments = new()
@@ -860,7 +866,7 @@ namespace Altzone.Scripts.Lobby
             //Move to Battle and start Runner
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Battle);
 
-            yield return new WaitUntil(()=>SceneManager.GetActiveScene().name == _map.Scene);
+            yield return new WaitUntil(()=>SceneManager.GetActiveScene().name == _quantumBattleMap.Scene);
 
             DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.Battle);
             DebugLogFileHandler.FileOpen(battleID, playerPosition);

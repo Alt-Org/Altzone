@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 365475382052161339}
   - component: {fileID: 5574122708305743662}
   - component: {fileID: 644753131678271565}
-  - component: {fileID: 459243190881250253}
+  - component: {fileID: 6426410192925854614}
   m_Layer: 5
   m_Name: GalleryCharacter
   m_TagString: Untagged
@@ -163,7 +163,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &459243190881250253
+--- !u!114 &6426410192925854614
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -172,11 +172,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1775543799907187927}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 806eb039eb87c65439ca883140a317a5, type: 3}
+  m_Script: {fileID: 11500000, guid: 1e1f4a98897509e4a9efdca7eb40b686, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _naviTarget: {fileID: 11400000, guid: d47e6ecceba2f8a46a80909ef0ecdc0e, type: 2}
-  _isCurrentPopOutWindow: 0
 --- !u!1 &2076896918164513980
 GameObject:
   m_ObjectHideFlags: 0

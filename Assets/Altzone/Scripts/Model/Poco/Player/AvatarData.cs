@@ -22,5 +22,15 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
         //public Vector2 Scale = new(ScaleX, ScaleY);
         public float ScaleX;
         public float ScaleY;
+
+        public bool Validate()
+        {
+            if ((Name == null) ||
+                (FeatureIds == null || FeatureIds.Count == 0) ||
+                (Colors == null || Colors.Count == 0))
+                return (false);
+
+            return (true);
+        }
     }
 }
