@@ -133,18 +133,22 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             switch (_currentAction)
             {
                 case ActionType.Move:
+                    Vector2 newPos = Vector2.zero;
                     if (_isGridToggled) // Snapping to grid while moving
                     {
-                        Vector2 newPos = Vector2.zero;
                         newPos.x = Mathf.Round(eventData.position.x / BattleUiEditor.GridCellWidth) * BattleUiEditor.GridCellWidth;
                         newPos.y = Mathf.Round(eventData.position.y / BattleUiEditor.GridCellHeight) * BattleUiEditor.GridCellHeight;
-
-                        _movableElement.transform.position = newPos;
                     }
                     else // Free movement
                     {
-                        _movableElement.transform.position = eventData.position;
+                        newPos = eventData.position;
                     }
+
+                    // Clamping position to be inside the editor
+                    newPos.x = Mathf.Clamp(newPos.x, _minPosX, _maxPosX);
+                    newPos.y = Mathf.Clamp(newPos.y, _minPosY, _maxPosY);
+
+                    _movableElement.transform.position = newPos;
                     break;
                 case ActionType.Scale:
                     // Scaling while keeping aspect ratio
@@ -200,11 +204,17 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             BottomRight = 3,
         }
 
-        private RectTransform _uiElementHolder;
         private float _maxWidth => BattleUiEditor.GridCellWidth * 10;
         private float _maxHeight => BattleUiEditor.GridCellHeight * 16;
         private float _minWidth => BattleUiEditor.GridCellWidth * 2;
         private float _minHeight => BattleUiEditor.GridCellHeight * 4;
+
+        private float _maxPosX => _uiElementHolder.rect.width - _movableElement.RectTransformComponent.rect.width / 2;
+        private float _maxPosY => _uiElementHolder.rect.height - _movableElement.RectTransformComponent.rect.height / 2;
+        private float _minPosX => _movableElement.RectTransformComponent.rect.width / 2;
+        private float _minPosY => _movableElement.RectTransformComponent.rect.height / 2;
+
+        private RectTransform _uiElementHolder;
 
         private BattleUiMovableElement _movableElement;
         private BattleUiMultiOrientationElement _multiOrientationElement;
@@ -214,7 +224,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private bool _isPointerDown = false;
         private bool _isGridToggled = false;
+
         private Coroutine _dragTimerHolder = null;
+
         private ActionType _currentAction;
 
         private void OnEnable()
