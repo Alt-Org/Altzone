@@ -30,7 +30,7 @@ public class OnlinePlayerHandler : AltMonoBehaviour
     {
         foreach(Transform t in _content)
         {
-            Destroy(t);
+            Destroy(t.gameObject);
         }
         StartCoroutine(GetClanData(data =>
         {
