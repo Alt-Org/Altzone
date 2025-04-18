@@ -33,10 +33,10 @@ RectTransform:
   - {fileID: 1464865493268934865}
   m_Father: {fileID: 1002876866613206839}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.34087712, y: 0.08114114}
-  m_AnchorMax: {x: 0.94000006, y: 0.96300006}
-  m_AnchoredPosition: {x: -0.8944359, y: -0.7840004}
-  m_SizeDelta: {x: 1.7897882, y: 1.5682037}
+  m_AnchorMin: {x: 0.35, y: 0.11}
+  m_AnchorMax: {x: 0.92, y: 0.92}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4913284804963280497
 CanvasRenderer:
@@ -108,10 +108,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 3002659562009119403}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.29200003, y: 0.31175163}
-  m_AnchorMax: {x: 0.9523688, y: 0.89829445}
-  m_AnchoredPosition: {x: 0.1662178, y: -0.08849335}
-  m_SizeDelta: {x: 0.6355383, y: 0.110015124}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3548120377659531055
 CanvasRenderer:
@@ -409,7 +409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 211d26b341353bb4187448c70fed5152, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _statType: 0
+  _statType: 4
   _statIcon: {fileID: 1832168351158264861}
   _statBackground: {fileID: 7735686211676286870}
   _statName: {fileID: 501599911241166654}
@@ -419,6 +419,10 @@ MonoBehaviour:
   _eraserCost: {fileID: 0}
   _eraserButton: {fileID: 0}
   _diamondButton: {fileID: 0}
+  _statDescription: {fileID: 0}
+  _contents: {fileID: 0}
+  _defenceIconColor: {fileID: 0}
+  _developmentName: {fileID: 0}
 --- !u!222 &3857889079084756813
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -472,14 +476,14 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MenuUi.Scripts.DefenceScreen.CharacterStatsWindow.StatUpdatePopUp,
+        m_TargetAssemblyTypeName: MenuUi.Scripts.DefenceScreen.CharacterStatsWindow.StatBox,
           MainMenu
-        m_MethodName: OpenPopUp
+        m_MethodName: ChangeStatBox
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
+          m_IntArgument: 4
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -535,7 +539,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.2, y: 1}
   m_AnchorMax: {x: 1, y: 1.2951561}
-  m_AnchoredPosition: {x: 0, y: 0.00642395}
+  m_AnchoredPosition: {x: 0, y: 0.0064086914}
   m_SizeDelta: {x: 0, y: 0.013411403}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2414534487840977418
@@ -566,7 +570,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Iskuvoima
+  m_text: 'Elinvoima
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
   m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
@@ -594,7 +600,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 31.35
+  m_fontSize: 32.75
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -696,7 +702,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.5372549, b: 0.14901961, a: 1}
+  m_Color: {r: 0.44705886, g: 0.8431373, b: 0.3647059, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -746,10 +752,10 @@ RectTransform:
   - {fileID: 7925496864949290023}
   m_Father: {fileID: 1002876866613206839}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
-  m_AnchorMin: {x: -0.15400001, y: 0.20700002}
-  m_AnchorMax: {x: 0.16180715, y: 1.3620001}
-  m_AnchoredPosition: {x: -0.029571533, y: -0.44612122}
-  m_SizeDelta: {x: 0.25604796, y: -0.822109}
+  m_AnchorMin: {x: -0.11, y: 0.39}
+  m_AnchorMax: {x: 0.19, y: 1.4}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &523046714520647136
 CanvasRenderer:
@@ -779,7 +785,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 22afc52c1384a5045a3df50c1b96db10, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 25a90b5c5a58baa48802c3136bd0479c, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
