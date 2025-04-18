@@ -134,6 +134,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             {
                 case ActionType.Move:
                     Vector2 newPos = Vector2.zero;
+
                     if (_isGridToggled) // Snapping to grid while moving
                     {
                         newPos.x = Mathf.Round(eventData.position.x / BattleUiEditor.GridCellWidth) * BattleUiEditor.GridCellWidth;
@@ -150,13 +151,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
                     _movableElement.transform.position = newPos;
                     break;
+
                 case ActionType.Scale:
                     // Scaling while keeping aspect ratio
                     float sizeIncreaseX = (eventData.position.x - eventData.pressPosition.x) * 2;
                     float sizeIncreaseY = sizeIncreaseX / (_movableElement.RectTransformComponent.rect.width / _movableElement.RectTransformComponent.rect.height);
                     _movableElement.RectTransformComponent.sizeDelta = new Vector2(sizeIncreaseX, sizeIncreaseY);
 
-                    // Preventing out of bounds scaling or being scaled too small
+                    // Preventing being scaled too small or too big
                     if (_multiOrientationElement == null || _multiOrientationElement.IsHorizontal)
                     {
                         float clampedWidth = Mathf.Clamp(_movableElement.RectTransformComponent.rect.width, _minWidth, _maxWidth);
@@ -178,6 +180,15 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
                         _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, clampedHeight * _multiOrientationElement.VerticalAspectRatio);
                         _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, clampedHeight);
+                    }
+
+                    // Preventing Ui element from going out of editor bounds while scaling
+                    float clampedPosX = Mathf.Clamp(_movableElement.RectTransformComponent.position.x, _minPosX, _maxPosX);
+                    float clampedPosY = Mathf.Clamp(_movableElement.RectTransformComponent.position.y, _minPosY, _maxPosY);
+
+                    if (clampedPosX != _movableElement.RectTransformComponent.position.x || clampedPosY != _movableElement.RectTransformComponent.position.y)
+                    {
+                        _movableElement.RectTransformComponent.position = new Vector2(clampedPosX, clampedPosY);
                     }
                     break;
             }
