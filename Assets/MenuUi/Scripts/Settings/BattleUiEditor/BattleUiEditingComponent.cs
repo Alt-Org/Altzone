@@ -207,11 +207,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private IEnumerator StartDragTimer(Action callback)
         {
             _dragDelayFill.fillAmount = 0;
-            _dragDelayDisplay.SetActive(true);
 
             float timePassed = 0f;
             while (timePassed < 0.5f)
             {
+                if (!_dragDelayDisplay.activeSelf && timePassed >= 0.2f) _dragDelayDisplay.SetActive(true);
                 _dragDelayFill.fillAmount = timePassed * 2;
                 yield return null;
                 timePassed += Time.deltaTime;
