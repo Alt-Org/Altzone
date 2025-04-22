@@ -96,6 +96,8 @@ namespace Battle.QSimulation.Player
                 EntityRef                     playerHitboxEntity;
                 BattlePlayerHitboxQComponent  playerHitbox;
                 PhysicsCollider2D             playerHitboxCollider;
+                // player - hitBox - collisionTrigger variables
+                BattleCollisionTriggerQComponent collisionTrigger;
                 //} player variables
 
                 for (int i = 0; i < playerCharacterEntityArray.Length; i++)
@@ -202,6 +204,12 @@ namespace Battle.QSimulation.Player
                                 CollisionMinOffset = playerHitboxExtents
                             };
 
+                            // initialize collisionTrigger component
+                            collisionTrigger = new BattleCollisionTriggerQComponent
+                            {
+                                CollisionTriggerType = BattleCollisionTriggerType.Player
+                            };
+
                             // initialize hitBox position
                             playerHitboxPosition = new FPVector2(
                                 (FP)playerHitboxTemplate.Position.X * BattleGridManager.GridScaleFactor,
@@ -219,6 +227,7 @@ namespace Battle.QSimulation.Player
                             f.Add(playerHitboxEntity, playerHitbox);
                             f.Add<Transform2D>(playerHitboxEntity);
                             f.Add(playerHitboxEntity, playerHitboxCollider);
+                            f.Add(playerHitboxEntity, collisionTrigger);
 
                             // create hitBox link
                             playerHitboxLink = new BattlePlayerHitboxLink
