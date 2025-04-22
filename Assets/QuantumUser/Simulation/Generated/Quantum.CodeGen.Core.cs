@@ -50,6 +50,12 @@ namespace Quantum {
   using RuntimeInitializeOnLoadMethodAttribute = UnityEngine.RuntimeInitializeOnLoadMethodAttribute;
   #endif //;
   
+  public enum BattleCollisionTriggerType : int {
+    ArenaBorder = 0,
+    SoulWall = 1,
+    Player = 2,
+    Goal = 3,
+  }
   public enum BattleEmotionState : int {
     Sadness = 0,
     Joy = 1,
@@ -704,6 +710,24 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct BattleCollisionTrigger : Quantum.IComponent {
+    public const Int32 SIZE = 4;
+    public const Int32 ALIGNMENT = 4;
+    [FieldOffset(0)]
+    public BattleCollisionTriggerType CollisionTriggerType;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 18217;
+        hash = hash * 31 + (Int32)CollisionTriggerType;
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (BattleCollisionTrigger*)ptr;
+        serializer.Stream.Serialize((Int32*)&p->CollisionTriggerType);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattleDiamondCounterQSingleton : Quantum.IComponentSingleton {
     public const Int32 SIZE = 8;
     public const Int32 ALIGNMENT = 4;
@@ -1163,6 +1187,8 @@ namespace Quantum {
       _ComponentSignalsOnRemoved = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       BuildSignalsArrayOnComponentAdded<Quantum.BattleArenaBorderQComponent>();
       BuildSignalsArrayOnComponentRemoved<Quantum.BattleArenaBorderQComponent>();
+      BuildSignalsArrayOnComponentAdded<Quantum.BattleCollisionTrigger>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.BattleCollisionTrigger>();
       BuildSignalsArrayOnComponentAdded<Quantum.BattleDiamondCounterQSingleton>();
       BuildSignalsArrayOnComponentRemoved<Quantum.BattleDiamondCounterQSingleton>();
       BuildSignalsArrayOnComponentAdded<Quantum.BattleDiamondDataQComponent>();
@@ -1314,6 +1340,8 @@ namespace Quantum {
       typeRegistry.Register(typeof(AssetGuid), AssetGuid.SIZE);
       typeRegistry.Register(typeof(AssetRef), AssetRef.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleArenaBorderQComponent), Quantum.BattleArenaBorderQComponent.SIZE);
+      typeRegistry.Register(typeof(Quantum.BattleCollisionTrigger), Quantum.BattleCollisionTrigger.SIZE);
+      typeRegistry.Register(typeof(Quantum.BattleCollisionTriggerType), 4);
       typeRegistry.Register(typeof(Quantum.BattleDiamondCounterQSingleton), Quantum.BattleDiamondCounterQSingleton.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleDiamondDataQComponent), Quantum.BattleDiamondDataQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleEmotionState), 4);
@@ -1417,9 +1445,10 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum._globals_), Quantum._globals_.SIZE);
     }
     static partial void InitComponentTypeIdGen() {
-      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 12)
+      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 13)
         .AddBuiltInComponents()
         .Add<Quantum.BattleArenaBorderQComponent>(Quantum.BattleArenaBorderQComponent.Serialize, null, null, ComponentFlags.None)
+        .Add<Quantum.BattleCollisionTrigger>(Quantum.BattleCollisionTrigger.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.BattleDiamondCounterQSingleton>(Quantum.BattleDiamondCounterQSingleton.Serialize, null, null, ComponentFlags.Singleton)
         .Add<Quantum.BattleDiamondDataQComponent>(Quantum.BattleDiamondDataQComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.BattleGameSessionQSingleton>(Quantum.BattleGameSessionQSingleton.Serialize, null, null, ComponentFlags.Singleton)
@@ -1436,6 +1465,7 @@ namespace Quantum {
     [Preserve()]
     public static void EnsureNotStrippedGen() {
       FramePrinter.EnsureNotStripped();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleCollisionTriggerType>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleEmotionState>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleGameState>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerCollisionType>();
