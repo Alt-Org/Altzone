@@ -605,46 +605,48 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 {
                     _currentChangeOrientationButtonIdx = i;
                     _currentFlipHorizontallyButtonIdx = i;
-
-                    // Check if the scale handle is overlapping (only if vertical multi orientation element)
-                    if (_multiOrientationElement.IsHorizontal) return;
-
-                    float xOffset = 20f;
-                    RectTransform scaleHandleRectTransform = _currentScaleHandle.GetComponent<RectTransform>();
-                    switch ((CornerType)_currentScaleHandleIdx)
-                    {
-                        case CornerType.TopRight:
-                            if ((ControlButtonVertical)i == ControlButtonVertical.Top)
-                            {
-                                xOffset = _changeOrientationRectTransform.anchoredPosition.x + xOffset + _uiElementHolder.rect.width * ScaleHandleSizeRatio;
-                            }
-                            break;
-
-                        case CornerType.TopLeft:
-                            if ((ControlButtonVertical)i == ControlButtonVertical.Top)
-                            {
-                                xOffset = _changeOrientationRectTransform.anchoredPosition.x - xOffset - _uiElementHolder.rect.width * ScaleHandleSizeRatio;
-                            }
-                            break;
-
-                        case CornerType.BottomRight:
-                            if ((ControlButtonVertical)i == ControlButtonVertical.Bottom)
-                            {
-                                xOffset = _changeOrientationRectTransform.anchoredPosition.x + xOffset + _uiElementHolder.rect.width * ScaleHandleSizeRatio;
-                            }
-                            break;
-
-                        case CornerType.BottomLeft:
-                            if ((ControlButtonVertical)i == ControlButtonVertical.Bottom)
-                            {
-                                xOffset = _changeOrientationRectTransform.anchoredPosition.x - xOffset - _uiElementHolder.rect.width * ScaleHandleSizeRatio;
-                            }
-                            break;
-                    }
-                    scaleHandleRectTransform.anchoredPosition += new Vector2(xOffset, 0);
                     break;
                 }
             }
+
+            /*
+            // Check if the scale handle is overlapping (only if vertical multi orientation element)
+            if (_multiOrientationElement.IsHorizontal) return;
+
+            float xOffset = 20f;
+            RectTransform scaleHandleRectTransform = _currentScaleHandle.GetComponent<RectTransform>();
+            switch ((CornerType)_currentScaleHandleIdx)
+            {
+                case CornerType.TopRight:
+                    if ((ControlButtonVertical)i == ControlButtonVertical.Top)
+                    {
+                        xOffset = _changeOrientationRectTransform.anchoredPosition.x + xOffset + _uiElementHolder.rect.width * ScaleHandleSizeRatio;
+                    }
+                    break;
+
+                case CornerType.TopLeft:
+                    if ((ControlButtonVertical)i == ControlButtonVertical.Top)
+                    {
+                        xOffset = _changeOrientationRectTransform.anchoredPosition.x - xOffset - _uiElementHolder.rect.width * ScaleHandleSizeRatio;
+                    }
+                    break;
+
+                case CornerType.BottomRight:
+                    if ((ControlButtonVertical)i == ControlButtonVertical.Bottom)
+                    {
+                        xOffset = _changeOrientationRectTransform.anchoredPosition.x + xOffset + _uiElementHolder.rect.width * ScaleHandleSizeRatio;
+                    }
+                    break;
+
+                case CornerType.BottomLeft:
+                    if ((ControlButtonVertical)i == ControlButtonVertical.Bottom)
+                    {
+                        xOffset = _changeOrientationRectTransform.anchoredPosition.x - xOffset - _uiElementHolder.rect.width * ScaleHandleSizeRatio;
+                    }
+                    break;
+            }
+            scaleHandleRectTransform.anchoredPosition += new Vector2(xOffset, 0);
+            */
         }
 
         private Vector3[] GetButtonCorners(Button button)
@@ -658,11 +660,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private bool IsButtonInsideEditor(Vector3[] buttonCorners)
         {
             bool isButtonInside = true;
-
             for (int i = 0; i < buttonCorners.Length; i++)
             {
                 Vector3 localSpacePoint = _uiElementHolder.InverseTransformPoint(buttonCorners[i]);
-                if (!_uiElementHolder.rect.Contains(localSpacePoint))
+                if (!HolderRectContains(localSpacePoint))
                 {
                     isButtonInside = false;
                     break;
@@ -670,6 +671,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
 
             return isButtonInside;
+        }
+
+        // This method is needed because the default Contains method compares with < and > instead of <= and >= for the max x and y values
+        private bool HolderRectContains(Vector3 point) 
+        {
+            Rect uiRect = _uiElementHolder.rect;
+            return point.x >= uiRect.xMin && point.x <= uiRect.xMax && point.y >= uiRect.yMin && point.y <= uiRect.yMax;
         }
     }
 }
