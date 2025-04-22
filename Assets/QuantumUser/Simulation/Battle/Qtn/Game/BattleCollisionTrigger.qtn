@@ -7,7 +7,7 @@ enum BattleCollisionTriggerType
 }
 
 
-component BattleCollisionTrigger
+component BattleCollisionTriggerQComponent
 {
     BattleCollisionTriggerType CollisionTriggerType;
 }
