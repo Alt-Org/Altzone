@@ -11,6 +11,7 @@ using OrientationType = Altzone.Scripts.BattleUiShared.BattleUiMultiOrientationE
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
 
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
+using Newtonsoft.Json.Linq;
 
 namespace MenuUi.Scripts.Settings.BattleUiEditor
 {
@@ -58,8 +59,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Button _okButton;
         [SerializeField] private Button _noButton;
 
-        public static float GridCellWidth => Screen.width / 20;
-        public static float GridCellHeight => Screen.height / 40;
+        public static float GridCellWidth => Screen.width / _columns;
+        public static float GridCellHeight => Screen.height / _rows;
 
         /// <summary>
         /// Open and initialize BattleUiEditor
@@ -148,6 +149,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private const string PlayerText = "Minä";
         private const string TeammateText = "Tiimikaveri";
 
+        private static int _rows = 40;
+        private static int _columns = 20;
+
         private GameObject _instantiatedTimer;
         private GameObject _instantiatedPlayerInfo;
         private GameObject _instantiatedTeammateInfo;
@@ -179,13 +183,24 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             UpdateInputFieldValue(_gridColumnsSlider.value, _gridColumnsInputField);
             UpdateInputFieldValue(_gridRowsSlider.value, _gridRowsInputField);
+            _columns = (int)_gridColumnsSlider.value;
+            _rows = (int)_gridRowsSlider.value;
 
             _arenaScaleSlider.onValueChanged.AddListener((value) => UpdateInputFieldValue(value, _arenaScaleInputField));
             _arenaPosXSlider.onValueChanged.AddListener((value) => UpdateInputFieldValue(value, _arenaPosXInputField));
             _arenaPosYSlider.onValueChanged.AddListener((value) => UpdateInputFieldValue(value, _arenaPosYInputField));
 
-            _gridColumnsSlider.onValueChanged.AddListener((value) => UpdateInputFieldValue(value, _gridColumnsInputField));
-            _gridRowsSlider.onValueChanged.AddListener((value) => UpdateInputFieldValue(value, _gridRowsInputField));
+            _gridColumnsSlider.onValueChanged.AddListener((value) =>
+            {
+                UpdateInputFieldValue(value, _gridColumnsInputField);
+                _columns = (int)value;
+            });
+
+            _gridRowsSlider.onValueChanged.AddListener((value) =>
+            {
+                UpdateInputFieldValue(value, _gridRowsInputField);
+                _rows = (int)value;
+            });
         }
 
         private void OnDestroy()
