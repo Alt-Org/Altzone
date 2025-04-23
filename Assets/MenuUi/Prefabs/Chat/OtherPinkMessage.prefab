@@ -113,7 +113,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 800, y: -133.65}
+  m_AnchoredPosition: {x: 800, y: -131.65}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.99999994, y: 0.5}
 --- !u!114 &787268395511671366
@@ -359,7 +359,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 2
-  m_Spacing: 0
+  m_Spacing: -2
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
@@ -474,6 +474,7 @@ MonoBehaviour:
   textBackground: {fileID: 7834880922425643845}
   messageText: {fileID: 2154884223929565169}
   panel: {fileID: 5820141880569448322}
+  _messageVerticalLayoutGroup: {fileID: 7239434952908049081}
   heightStep: 30
 --- !u!114 &733438841860864555
 MonoBehaviour:

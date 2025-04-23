@@ -93,6 +93,7 @@ MonoBehaviour:
   textBackground: {fileID: 1355985985701982470}
   messageText: {fileID: 7173626627776896434}
   panel: {fileID: 3363965265471710657}
+  _messageVerticalLayoutGroup: {fileID: 7477828390577148755}
   heightStep: 30
 --- !u!114 &7174392261396321063
 MonoBehaviour:
@@ -251,7 +252,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 49.9159, y: -152.4172}
+  m_AnchoredPosition: {x: 49.9159, y: -142.4172}
   m_SizeDelta: {x: 99.8318, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5586069264188212030
@@ -360,7 +361,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: 0
+  m_Spacing: -10
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0

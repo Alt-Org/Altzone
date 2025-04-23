@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Photon.Deterministic;
+using UnityEngine.UI;
 
 public class ChatMessageScript : MonoBehaviour
 {
     [Header("Objects")]
     public RectTransform textBackground;
     public TextMeshProUGUI messageText;
-    public RectTransform panel; 
+    public RectTransform panel;
+
+    [SerializeField] private VerticalLayoutGroup _messageVerticalLayoutGroup;
 
     public float heightStep = 30f; // Korkeus, jonka verran tausta kasvaa jokaisen lisärivin myötä.
 
@@ -47,6 +50,11 @@ public class ChatMessageScript : MonoBehaviour
                 textBackground.sizeDelta = new Vector2(textBackground.sizeDelta.x, newHeight);
 
                 lastLineCount = lineCount;
+
+                // Adjust the spacing so that the reaction panel stays at the bottom line of the message
+                float originalSpacing = _messageVerticalLayoutGroup.spacing;
+                float newSpacing = originalSpacing * 0.2f * (lineCount - 1);
+                _messageVerticalLayoutGroup.spacing += newSpacing;   
             }
             
         }
