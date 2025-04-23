@@ -22,9 +22,20 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [Header("GameObject references")]
         [SerializeField] private Button _closeButton;
         [SerializeField] private Button _saveButton;
-        [SerializeField] private Button _resetButton;
-        [SerializeField] private Toggle _gridToggle;
         [SerializeField] private Transform _uiElementsHolder;
+
+        [Header("Options dropdown references")]
+        [SerializeField] private Button _optionsDropdownButton;
+        [SerializeField] private Image _optionsDropdownButtonImage;
+        [SerializeField] private GameObject _optionsDropdownContents;
+        [SerializeField] private Slider _arenaScaleSlider;
+        [SerializeField] private Slider _arenaPosXSlider;
+        [SerializeField] private Slider _arenaPosYSlider;
+        [SerializeField] private Toggle _showGridToggle;
+        [SerializeField] private Toggle _alignToGridToggle;
+        [SerializeField] private Slider _gridColumnsSlider;
+        [SerializeField] private Slider _gridRowsSlider;
+        [SerializeField] private Button _resetButton;
 
         [Header("BattleUi prefabs")]
         [SerializeField] private GameObject _editingComponent;
@@ -146,7 +157,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             _closeButton.onClick.RemoveAllListeners();
             _resetButton.onClick.RemoveAllListeners();
-            _gridToggle.onValueChanged.RemoveAllListeners();
+            _alignToGridToggle.onValueChanged.RemoveAllListeners();
             _saveButton.onClick.RemoveAllListeners();
             _okButton.onClick.RemoveAllListeners();
             _noButton.onClick.RemoveAllListeners();
@@ -249,8 +260,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
 
             // Setting listener for grid toggle
-            _gridToggle.onValueChanged.AddListener(editingComponent.ToggleGrid);
-            editingComponent.ToggleGrid(_gridToggle.isOn);
+            _alignToGridToggle.onValueChanged.AddListener(editingComponent.ToggleGrid);
+            editingComponent.ToggleGrid(_alignToGridToggle.isOn);
 
             // Setting listener for editing component events
             editingComponent.OnUiElementEdited += OnUiElementEdited;

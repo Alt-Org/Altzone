@@ -83,10 +83,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 7243275890651382034}
   m_HandleRect: {fileID: 8004638578702925388}
   m_Direction: 0
-  m_MinValue: 0
+  m_MinValue: 2
   m_MaxValue: 100
   m_WholeNumbers: 1
-  m_Value: 50
+  m_Value: 40
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1822,10 +1822,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 460855060645780338}
   m_HandleRect: {fileID: 5809167856408751077}
   m_Direction: 0
-  m_MinValue: 0
-  m_MaxValue: 100
+  m_MinValue: 2
+  m_MaxValue: 50
   m_WholeNumbers: 1
-  m_Value: 50
+  m_Value: 20
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -4117,9 +4117,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _closeButton: {fileID: 7246965627836759804}
   _saveButton: {fileID: 5802049319318472387}
-  _resetButton: {fileID: 3419605329659924392}
-  _gridToggle: {fileID: 2468994717923468779}
   _uiElementsHolder: {fileID: 3557577885498150299}
+  _optionsDropdownButton: {fileID: 1414349704300555210}
+  _optionsDropdownButtonImage: {fileID: 8241121386439629842}
+  _optionsDropdownContents: {fileID: 6824507644871256333}
+  _arenaScaleSlider: {fileID: 1616881507630687267}
+  _arenaPosXSlider: {fileID: 5493400861996452595}
+  _arenaPosYSlider: {fileID: 8021266012328765564}
+  _showGridToggle: {fileID: 1593570390660561613}
+  _alignToGridToggle: {fileID: 2468994717923468779}
+  _gridColumnsSlider: {fileID: 7051559201979517653}
+  _gridRowsSlider: {fileID: 2128342622491219458}
+  _resetButton: {fileID: 3419605329659924392}
   _editingComponent: {fileID: 7795057816738114330, guid: 2da1bc0d7742a4f419be8b03d44ba171,
     type: 3}
   _timer: {fileID: 1616917245377245213, guid: 96b37da3f89dc24429d5d3c8813ec4a0, type: 3}
