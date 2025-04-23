@@ -28,14 +28,23 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Button _optionsDropdownButton;
         [SerializeField] private Image _optionsDropdownButtonImage;
         [SerializeField] private GameObject _optionsDropdownContents;
+        [SerializeField] private Button _resetButton;
+
+        [Header("Arena options")]
         [SerializeField] private Slider _arenaScaleSlider;
+        [SerializeField] private TMP_InputField _arenaScaleInputField;
         [SerializeField] private Slider _arenaPosXSlider;
+        [SerializeField] private TMP_InputField _arenaPosXInputField;
         [SerializeField] private Slider _arenaPosYSlider;
+        [SerializeField] private TMP_InputField _arenaPosYInputField;
+
+        [Header("Grid options")]
         [SerializeField] private Toggle _showGridToggle;
         [SerializeField] private Toggle _alignToGridToggle;
         [SerializeField] private Slider _gridColumnsSlider;
+        [SerializeField] private TMP_InputField _gridColumnsInputField;
         [SerializeField] private Slider _gridRowsSlider;
-        [SerializeField] private Button _resetButton;
+        [SerializeField] private TMP_InputField _gridRowsInputField;
 
         [Header("BattleUi prefabs")]
         [SerializeField] private GameObject _editingComponent;
@@ -119,6 +128,15 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         }
 
         /// <summary>
+        /// Close options dropdown
+        /// </summary>
+        public void CloseOptionsDropdown()
+        {
+            _optionsDropdownContents.SetActive(false);
+            _optionsDropdownButtonImage.transform.localEulerAngles = Vector3.zero;
+        }
+
+        /// <summary>
         /// Close save changes popup
         /// </summary>
         public void CloseSaveChangesPopup()
@@ -151,6 +169,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 SetDefaultData(BattleUiElementType.TeammateInfo);
             });
             _saveButton.onClick.AddListener(SaveChanges);
+            _optionsDropdownButton.onClick.AddListener(ToggleOptionsDropdown);
         }
 
         private void OnDestroy()
@@ -167,6 +186,24 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 editingComponent.OnUiElementEdited -= OnUiElementEdited;
                 editingComponent.OnUiElementSelected -= OnUiElementSelected;
             }
+        }
+
+        private void ToggleOptionsDropdown()
+        {
+            if (_optionsDropdownContents.activeSelf)
+            {
+                CloseOptionsDropdown();
+            }
+            else
+            {
+                OpenOptionsDropdown();
+            }
+        }
+
+        private void OpenOptionsDropdown()
+        {
+            _optionsDropdownContents.SetActive(true);
+            _optionsDropdownButtonImage.transform.localEulerAngles = new Vector3(0,0,-90);
         }
 
         private IEnumerator ShowSaveChangesPopup(Action<bool?> callback)
