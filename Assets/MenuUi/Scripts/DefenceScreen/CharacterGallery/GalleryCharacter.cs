@@ -16,9 +16,8 @@ namespace MenuUi.Scripts.CharacterGallery
     public class GalleryCharacter : MonoBehaviour, IGalleryCharacterData
     {
         [SerializeField] private Image _spriteImage;
-        [SerializeField] private Image _backgroundImage;
-        [SerializeField] private Image _contentsImage;
-        [SerializeField] private Image _contentsDetailsImage;
+        [SerializeField] private Image _backgroundLowerImage;
+        [SerializeField] private Image _backgroundUpperImage;
         [SerializeField] private TextMeshProUGUI _characterNameText;
         [SerializeField] private AspectRatioFitter _aspectRatioFitter;
         [SerializeField] private PieChartPreview _piechartPreview;
@@ -111,8 +110,8 @@ namespace MenuUi.Scripts.CharacterGallery
             _spriteImage.sprite = sprite;
             _characterNameText.text = name;
             _id = id;
-            _backgroundImage.color = bgColor;
-            _contentsImage.color = bgAltColor;
+            _backgroundLowerImage.color = bgColor;
+            _backgroundUpperImage.color = bgAltColor;
             _originalSlot = originalSlot;
         }
 
@@ -131,12 +130,9 @@ namespace MenuUi.Scripts.CharacterGallery
             _piechartPreview.gameObject.SetActive(true);
             _piechartPreview.UpdateChart(Id);
 
-            _contentsImage.gameObject.SetActive(false);
-            _contentsDetailsImage.gameObject.SetActive(false);
-
             _spriteImage.material = null;
-            _contentsImage.material = null;
-            _backgroundImage.material = null;
+            _backgroundLowerImage.material = null;
+            _backgroundUpperImage.material = null;
 
             if (_addCharacterButton.gameObject.activeSelf) _addCharacterButton.gameObject.SetActive(false);
         }
@@ -155,12 +151,9 @@ namespace MenuUi.Scripts.CharacterGallery
 
             _piechartPreview.gameObject.SetActive(false);
 
-            _contentsImage.gameObject.SetActive(true);
-            _contentsDetailsImage.gameObject.SetActive(true);
-
             _spriteImage.material = null;
-            _contentsImage.material = null;
-            _backgroundImage.material = null;
+            _backgroundLowerImage.material = null;
+            _backgroundUpperImage.material = null;
 
             if (_addCharacterButton.gameObject.activeSelf) _addCharacterButton.gameObject.SetActive(false);
         }
@@ -173,10 +166,10 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             SetUnselectedVisuals();
             _spriteImage.material = _grayscaleMaterialInstance;
-            _contentsImage.material = _grayscaleMaterialInstance;
-            _contentsImage.material.SetColor("_Color", _contentsImage.color);
-            _backgroundImage.material = _grayscaleMaterialInstance;
-            _backgroundImage.material.SetColor("_Color", _backgroundImage.color);
+            _backgroundLowerImage.material = _grayscaleMaterialInstance;
+            _backgroundUpperImage.material = _grayscaleMaterialInstance;
+            _backgroundLowerImage.material.SetColor("_Color", _backgroundLowerImage.color);
+            _backgroundUpperImage.material.SetColor("_Color", _backgroundLowerImage.color);
             _addCharacterButton.gameObject.SetActive(true);
         }
 
@@ -196,7 +189,7 @@ namespace MenuUi.Scripts.CharacterGallery
         /// </summary>
         public void EnableNaviButton()
         {
-            _backgroundImage.raycastTarget = true; // the button depends on background image being raycast target.
+            _backgroundLowerImage.raycastTarget = true; // the button depends on background image being raycast target.
         }
 
 
@@ -205,7 +198,7 @@ namespace MenuUi.Scripts.CharacterGallery
         /// </summary>
         public void DisableNaviButton()
         {
-            _backgroundImage.raycastTarget = false;
+            _backgroundLowerImage.raycastTarget = false;
         }
     }
 }
