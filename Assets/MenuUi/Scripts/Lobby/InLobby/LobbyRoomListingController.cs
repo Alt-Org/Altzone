@@ -1,12 +1,17 @@
 using System;
 using System.Collections;
 using System.Linq;
+
+using UnityEngine;
+using UnityEngine.UI;
+
+using Prg.Scripts.Common.PubSub;
+
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Common.Photon;
 using Altzone.Scripts.Lobby;
+
 using MenuUi.Scripts.Lobby.CreateRoom;
-using Prg.Scripts.Common.PubSub;
-using UnityEngine;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.Lobby.InLobby
@@ -21,6 +26,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
         [SerializeField] private RoomSearchPanelController _searchPanel;
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
         [SerializeField] private CreateRoomCustom _createRoomCustom;
+        [SerializeField] private Button _createRoomFromMainMenuButton;
         [SerializeField] private PasswordPopup _passwordPopup;
         [SerializeField] private GameObject _creatingRoomText;
 
@@ -29,8 +35,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private void Awake()
         {
             _photonRoomList = gameObject.GetOrAddComponent<PhotonRoomList>();
-            _createRoomCustom.CreateRoomButton.onClick.RemoveAllListeners();
             _createRoomCustom.CreateRoomButton.onClick.AddListener(CreateCustomRoomOnClick);
+            _createRoomFromMainMenuButton.onClick.AddListener(CreateCustomRoomOnClick);
             LobbyManager.OnClanMemberDisconnected += HandleClanMemberDisconnected;
         }
 
@@ -58,6 +64,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private void OnDestroy()
         {
             LobbyManager.OnClanMemberDisconnected -= HandleClanMemberDisconnected;
+            _createRoomCustom.CreateRoomButton.onClick.RemoveAllListeners();
+            _createRoomFromMainMenuButton.onClick.RemoveAllListeners();
         }
 
         private void CreateCustomRoomOnClick()
