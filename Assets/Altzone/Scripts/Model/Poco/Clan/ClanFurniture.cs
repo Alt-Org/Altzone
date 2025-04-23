@@ -16,6 +16,8 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public FurnitureGrid FurnitureGrid = FurnitureGrid.None;
         public int Room = -1;
         public bool IsRotated;
+        public bool InVoting = false;
+        public bool VotedToSell = false;
 
         public ClanFurniture(string id, string gameFurnitureId, int column = -1, int row = -1, FurnitureGrid grid = FurnitureGrid.None, int room = -1, bool isRotated = false)
         {

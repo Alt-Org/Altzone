@@ -57,6 +57,15 @@ namespace Altzone.Scripts.ModelV2.Internal
         /// Player character class.
         /// </summary>
         public CharacterClassID ClassType;
+        /// <summary>
+        /// A long description of the character. If you want a short description use <see cref="CharacterShortDescription"/>.
+        /// </summary>
+        [TextArea(10, 20)]
+        public string CharacterDescription;
+        /// <summary>
+        /// A short few word description of the character.
+        /// </summary>
+        public string CharacterShortDescription;
 
         #endregion
 

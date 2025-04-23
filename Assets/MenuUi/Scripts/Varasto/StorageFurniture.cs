@@ -66,5 +66,6 @@ namespace MenuUi.Scripts.Storage
         public string Material { get => _material;}
         public string Recycling { get => _recycling;}
         public FurnitureInfo Info { get => _info; set => _info = value; }
+        public ClanFurniture ClanFurniture { get => _furniture; }
     }
 }

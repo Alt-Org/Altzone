@@ -17,6 +17,10 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     public class StatsWindowController : AltMonoBehaviour
     {
         [SerializeField] private ClassColorReference _classColorReference;
+        [SerializeField] private StatsReference _statsReference;
+        [SerializeField] private GameObject _swipeBlocker;
+        [SerializeField] private GameObject _statsPanel;
+        [SerializeField] private GameObject _infoPanel;
 
         private PlayerData _playerData;
         private CharacterID _characterId;
@@ -24,6 +28,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private BaseCharacter _baseCharacter;
         private bool _unlimitedDiamonds;
         private bool _unlimitedErasers;
+
 
         public CharacterID CurrentCharacterID { get { return _characterId; } }
         [HideInInspector] public bool UnlimitedDiamonds {
@@ -75,6 +80,21 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             SetCurrentCharacter();
         }
 
+        public void OpenPopup()
+        {
+            gameObject.SetActive(true);
+            _swipeBlocker.SetActive(true);
+
+            if (_statsPanel != null) _statsPanel.SetActive(true);
+
+            if (_infoPanel != null) _infoPanel.SetActive(false);
+        }
+        public void ClosePopup()
+        {
+            gameObject.SetActive(false);
+            _swipeBlocker.SetActive(false);
+        }
+
 
         private void SetPlayerData() // Get player data from data store and set it to variable
         {
@@ -113,11 +133,9 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             SetPlayerData();
             SetCurrentCharacter();
 
-            for (int i = 0; i < transform.childCount; i++) // triggering onenable functions
-            {
-                transform.GetChild(i).gameObject.SetActive(false);
-                transform.GetChild(i).gameObject.SetActive(true);
-            }
+            // Triggering onenable functions
+            ClosePopup();
+            OpenPopup();
         }
 
 
@@ -149,6 +167,26 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             CharacterClassID classID = GetCurrentCharacterClass();
             return _classColorReference.GetAlternativeColor(classID);
+        }
+
+        /// <summary>
+        /// Get current character class color from character class color reference sheet.
+        /// </summary>
+        /// <returns>Current character class color as Color.</returns>
+        public Color GetCurrentCharacterClassColor()
+        {
+            CharacterClassID classID = GetCurrentCharacterClass();
+            return _classColorReference.GetColor(classID);
+        }
+        /// <summary>
+        /// Get StatInfo from Reference sheet
+        /// </summary>
+        /// <param name="statType">The StatInfo which to get</param>
+        /// <returns>Returns StatInfo object</returns>
+        public StatInfo GetStatInfo(StatType statType)
+        {
+            return _statsReference.GetStatInfo(statType);
+
         }
 
 
@@ -194,7 +232,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>Current character's description as string.</returns>
         public string GetCurrentCharacterDescription()
         {
-            return "Hahmon kuvaus";
+            var info = PlayerCharacterPrototypes.GetCharacter(((int)_characterId).ToString());
+            if (info == null)
+            {
+                return null;
+            }
+            else
+            {
+                return info.ShortDescription;
+            }
         }
 
 
@@ -269,7 +315,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>If decreasing was successful. If true, player's erasers were decreased by 1. If false, player didn't have enough erasers.</returns>
         private bool TryDecreaseEraser()
         {
-            if (_playerData.Eraser > 0)
+            if (CheckIfEnoughErasers(1))
             {
                 _playerData.Eraser--;
                 OnEraserAmountChanged.Invoke();
@@ -278,6 +324,23 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             else
             {
                 PopupSignalBus.OnChangePopupInfoSignal("Ei tarpeeksi pyyhekumeja.");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks if player has enough erasers.
+        /// </summary>
+        /// <param name="eraserCost">Eraser cost to check</param>
+        /// <returns>True if the player does, false if doesn't</returns>
+        public bool CheckIfEnoughErasers(int eraserCost)
+        {
+            if (_playerData.Eraser >= eraserCost || UnlimitedErasers) 
+            {
+                return true;
+            }
+            else
+            {
                 return false;
             }
         }
@@ -306,7 +369,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>If decreasing was successful. If true, player's diamonds were decreased by amount. If false, player didn't have enough diamonds.</returns>
         private bool TryDecreaseDiamonds(int amount)
         {
-            if (_playerData.DiamondSpeed >= amount) // using DiamondSpeed as a placeholder
+            if (CheckIfEnoughDiamonds(amount)) 
             {
                 _playerData.DiamondSpeed -= amount;
                 OnDiamondAmountChanged.Invoke();
@@ -331,13 +394,28 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             return _customCharacter.GetPriceToNextLevel(statType);
         }
-
+        /// <summary>
+        /// Checks if player has enough diamonds.
+        /// </summary>
+        /// <param name="diamondCost">Diamond cost to check</param>
+        /// <returns>True if the player does, false if doesn't</returns>
+        public bool CheckIfEnoughDiamonds(int diamondCost) 
+        {
+            if (_playerData.DiamondSpeed >= diamondCost || UnlimitedDiamonds) // using DiamondSpeed as a placeholder
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         /// <summary>
-        /// Get currently displayed character's stat value according to the stat type.
+        /// Get currently displayed character's stat level according to the stat type.
         /// </summary>
         /// <param name="statType">The stat type which to get.</param>
-        /// <returns>Stat value as int.</returns>
+        /// <returns>Stat level as int.</returns>
         public int GetStat(StatType statType)
         {
             if (_customCharacter == null) return GetBaseStat(statType);
@@ -365,7 +443,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// Get currently displayed character's base stat without upgrades according to the stat type.
         /// </summary>
         /// <param name="statType">The stat type which to get.</param>
-        /// <returns>Base stat value as int.</returns>
+        /// <returns>Base stat level as int.</returns>
         public int GetBaseStat(StatType statType)
         {
             switch (statType)
@@ -384,6 +462,43 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                     return _baseCharacter.DefaultDefence;
             }
             return -1;
+        }
+
+
+        /// <summary>
+        /// Get currently displayed character's stat value according to the stat type.
+        /// </summary>
+        /// <param name="statType">The stat type which value to get.</param>
+        /// <returns>Stat value as int.</returns>
+        public int GetStatValue(StatType statType)
+        {
+            return (int)BaseCharacter.GetStatValueFP(statType, GetStat(statType));
+        }
+
+
+        /// <summary>
+        /// Get stat's strength.
+        /// </summary>
+        /// <param name="statType">The stat type which strength to get./param>
+        /// <returns>ValueStrength enum value.</returns>
+        public ValueStrength GetStatStrength(StatType statType)
+        {
+            switch (statType)
+            {
+                case StatType.Speed:
+                    return _baseCharacter.SpeedStrength;
+                case StatType.Attack:
+                    return _baseCharacter.AttackStrength;
+                case StatType.Hp:
+                    return _baseCharacter.HpStrength;
+                case StatType.CharacterSize:
+                    return _baseCharacter.CharacterSizeStrength;
+                case StatType.Defence:
+                    return _baseCharacter.DefenceStrength;
+                case StatType.None:
+                default:
+                    return ValueStrength.None;
+            }
         }
 
 
@@ -584,5 +699,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 return false;
             }
         }
+
     }
 }

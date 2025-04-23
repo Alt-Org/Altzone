@@ -1,4 +1,5 @@
 using MenuUi.Scripts.MainMenu;
+using MenuUi.Scripts.Settings.BattleUiEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,8 @@ public class SettingEditor : MonoBehaviour
     [SerializeField] private Slider[] volumeSliders;
     [SerializeField] private Toggle _introSkipToggle;
     [SerializeField] private Toggle _showButtonLabelsToggle;
+    [SerializeField] private Button _battleSettingsButton;
+    [SerializeField] private BattleUiEditor _battleEditor;
 
     private void OnEnable()
     {
@@ -25,6 +28,10 @@ public class SettingEditor : MonoBehaviour
         SetFPSButtons();
         SetIntroSkipToggle();
         SetShowButtonLabelsToggle();
+    }
+    private void Start()
+    {
+        _battleSettingsButton.onClick.AddListener(() => _battleEditor.OpenEditor());
     }
 
     public void SetFromSlider(Slider usedSlider)

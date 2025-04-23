@@ -7,7 +7,7 @@ public class ServerItem
     public string name { get; set; }
     public string shape { get; set; }
     public int weight { get; set; }
-    public string material { get; set; }
+    public string[] material { get; set; }
     public string recycling { get; set; }
     public string unityKey { get; set; }
     public string filename { get; set; }

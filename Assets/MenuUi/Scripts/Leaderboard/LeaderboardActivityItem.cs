@@ -8,6 +8,7 @@ public class LeaderboardActivityItem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _rankText;
     [SerializeField] private TextMeshProUGUI _nameText;
     [SerializeField] private TextMeshProUGUI _coinsText;
+    [SerializeField] private ClanHeartColorSetter _clanHeart;
 
     public void Initialize(int rank, string name, int coins)
     {

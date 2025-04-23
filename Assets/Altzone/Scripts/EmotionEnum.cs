@@ -7,7 +7,7 @@ namespace Altzone.Scripts.Common
         Joy = 1,
         Playful = 2,
         Anger = 3,
-        Love = 4,
+        Love = 4
     }
 
 }

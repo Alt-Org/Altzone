@@ -6,6 +6,8 @@ public class AvatarPartsReference : ScriptableObject
     [SerializeField] private Sprite _head;
     [SerializeField] private List<AvatarPartCategoryInfo> _info;
 
+    public List<AvatarPartCategoryInfo> AvatarPartData { get => _info;}
+
     public AvatarPartInfo GetAvatarPartById(string Id)
     {
         try

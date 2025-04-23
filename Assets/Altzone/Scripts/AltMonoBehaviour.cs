@@ -138,9 +138,9 @@ public class AltMonoBehaviour : MonoBehaviour
             if(callback2 != null)
             {
                 playerData.UpdatePlayerData(callback2);
-                callback(playerData);
+                if(callback != null) callback(playerData);
             }
-            else callback(playerData);
+            else if (callback != null) callback(playerData);
         }));
 
         yield return new WaitUntil(() => callback != null);

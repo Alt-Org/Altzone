@@ -1,0 +1,7 @@
+using Battle.QSimulation.Goal;
+
+component BattleGoalQComponent
+{
+    BattleTeamNumber TeamNumber;
+    bool HasTriggered;
+}

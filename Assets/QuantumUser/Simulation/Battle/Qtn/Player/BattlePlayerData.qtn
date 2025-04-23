@@ -1,0 +1,56 @@
+//{ PlayerData
+
+struct BattlePlayerHitboxLink
+{
+    EntityRef Entity;
+    FPVector2 Position;
+}
+
+component BattlePlayerDataQComponent
+{
+    PlayerRef PlayerRef;
+    BattlePlayerSlot Slot;
+    BattleTeamNumber TeamNumber;
+    int CharacterId;
+    int CharacterClass;
+
+    FP StatHp;
+    FP StatSpeed;
+    FP StatCharacterSize;
+    FP StatAttack;
+    FP StatDefence;
+
+    int GridExtendTop;
+    int GridExtendBottom;
+
+    FPVector2 TargetPosition;
+    FP RotationBase;
+    FP RotationOffset;
+
+    [FreeOnComponentRemoved] list<BattlePlayerHitboxLink> HitboxListAll;
+    [FreeOnComponentRemoved] list<BattlePlayerHitboxLink> HitboxListShield;
+    [FreeOnComponentRemoved] list<BattlePlayerHitboxLink> HitboxListCharacter;
+}
+
+//} PlayerData
+
+//{ PlayerDataTemplate
+
+[Serializable]
+struct BattlePlayerHitboxTemplate
+{
+    IntVector2 Position;
+    BattlePlayerCollisionType CollisionType;
+    FP NormalAngle;
+}
+
+component BattlePlayerDataTemplateQComponent
+{
+    int GridExtendTop;
+    int GridExtendBottom;
+
+    [FreeOnComponentRemoved] list<BattlePlayerHitboxTemplate> HitboxListShield;
+    [FreeOnComponentRemoved] list<BattlePlayerHitboxTemplate> HitboxListCharacter;
+}
+
+//} PlayerDataTemplate
