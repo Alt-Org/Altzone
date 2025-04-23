@@ -169,7 +169,22 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 SetDefaultData(BattleUiElementType.TeammateInfo);
             });
             _saveButton.onClick.AddListener(SaveChanges);
+
             _optionsDropdownButton.onClick.AddListener(ToggleOptionsDropdown);
+
+            UpdateInputFieldValue(_arenaScaleSlider.value, _arenaScaleInputField);
+            UpdateInputFieldValue(_arenaPosXSlider.value, _arenaPosXInputField);
+            UpdateInputFieldValue(_arenaPosYSlider.value, _arenaPosYInputField);
+
+            UpdateInputFieldValue(_gridColumnsSlider.value, _gridColumnsInputField);
+            UpdateInputFieldValue(_gridRowsSlider.value, _gridRowsInputField);
+
+            _arenaScaleSlider.onValueChanged.AddListener((value) => UpdateInputFieldValue(value, _arenaScaleInputField));
+            _arenaPosXSlider.onValueChanged.AddListener((value) => UpdateInputFieldValue(value, _arenaPosXInputField));
+            _arenaPosYSlider.onValueChanged.AddListener((value) => UpdateInputFieldValue(value, _arenaPosYInputField));
+
+            _gridColumnsSlider.onValueChanged.AddListener((value) => UpdateInputFieldValue(value, _gridColumnsInputField));
+            _gridRowsSlider.onValueChanged.AddListener((value) => UpdateInputFieldValue(value, _gridRowsInputField));
         }
 
         private void OnDestroy()
@@ -186,6 +201,15 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 editingComponent.OnUiElementEdited -= OnUiElementEdited;
                 editingComponent.OnUiElementSelected -= OnUiElementSelected;
             }
+
+            _optionsDropdownButton.onClick.RemoveAllListeners();
+
+            _arenaScaleSlider.onValueChanged.RemoveAllListeners();
+            _arenaPosXSlider.onValueChanged.RemoveAllListeners();
+            _arenaPosYSlider.onValueChanged.RemoveAllListeners();
+
+            _gridColumnsSlider.onValueChanged.RemoveAllListeners();
+            _gridRowsSlider.onValueChanged.RemoveAllListeners();
         }
 
         private void ToggleOptionsDropdown()
@@ -203,7 +227,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private void OpenOptionsDropdown()
         {
             _optionsDropdownContents.SetActive(true);
-            _optionsDropdownButtonImage.transform.localEulerAngles = new Vector3(0,0,-90);
+            _optionsDropdownButtonImage.transform.localEulerAngles = new Vector3(0, 0, -90);
         }
 
         private IEnumerator ShowSaveChangesPopup(Action<bool?> callback)
@@ -532,6 +556,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
 
             _currentlySelectedEditingComponent = newSelectedEditingComponent;
+        }
+
+        private void UpdateInputFieldValue(float value, TMP_InputField field)
+        {
+            field.text = value.ToString();
         }
     }
 }
