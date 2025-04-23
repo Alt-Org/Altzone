@@ -36,6 +36,7 @@ public class AdEditor : AltMonoBehaviour
 
     private AdStoreObject _adData;
     private string _posterName = null;
+    private List<HeartPieceData> _heartPieceData = new();
 
 
     void Start()    
@@ -47,13 +48,14 @@ public class AdEditor : AltMonoBehaviour
                 if(data.AdData != null) _adData = data.AdData;
                 else _adData = new(null, null);
                 _posterName = data.Name;
+                _heartPieceData = data.ClanHeartPieces;
             }
             else
             {
                 _adData = new(null, null);
                 _posterName = "Et ole klaanissa";
             }
-            _adGraphicHandler.SetAdPoster(_adData, _posterName);
+            _adGraphicHandler.SetAdPoster(_adData, _posterName, _heartPieceData);
         }));
 
 
