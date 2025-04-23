@@ -651,7 +651,7 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator GetAllClans(int page, Action<List<ServerClan>, PaginationData> callback)
     {
-        string query = DEVADDRESS + "clan?page=" + page + "&limit=5";
+        string query = DEVADDRESS + "clan";//?page=" + page + "&limit=5";
 
         StartCoroutine(WebRequests.Get(query, AccessToken, request =>
         {
@@ -661,7 +661,7 @@ public class ServerManager : MonoBehaviour
                 Debug.LogWarning(result);
                 JArray clans = (JArray)result["data"]["Clan"];
 
-                PaginationData paginationData = result["paginationData"].ToObject<PaginationData>();
+                PaginationData paginationData = new();//result["paginationData"].ToObject<PaginationData>();
 
                 if (callback != null)
                     callback(clans.ToObject<List<ServerClan>>(), paginationData);
