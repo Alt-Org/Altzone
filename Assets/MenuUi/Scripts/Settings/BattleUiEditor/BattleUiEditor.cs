@@ -112,6 +112,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// </summary>
         public void CloseEditor()
         {
+            CloseOptionsDropdown();
             if (_unsavedChanges)
             {
                 StartCoroutine(ShowSaveChangesPopup(saveChanges =>
@@ -550,6 +551,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void OnUiElementSelected(BattleUiEditingComponent newSelectedEditingComponent)
         {
+            CloseOptionsDropdown();
+
             if (_currentlySelectedEditingComponent != null && _currentlySelectedEditingComponent != newSelectedEditingComponent)
             {
                 _currentlySelectedEditingComponent.ShowControls(false);
