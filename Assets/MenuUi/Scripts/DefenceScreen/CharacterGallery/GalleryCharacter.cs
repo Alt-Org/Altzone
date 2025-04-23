@@ -16,6 +16,7 @@ namespace MenuUi.Scripts.CharacterGallery
     public class GalleryCharacter : MonoBehaviour, IGalleryCharacterData
     {
         [SerializeField] private Image _spriteImage;
+        [SerializeField] private Image _backgroundBorderImage;
         [SerializeField] private Image _backgroundLowerImage;
         [SerializeField] private Image _backgroundUpperImage;
         [SerializeField] private TextMeshProUGUI _characterNameText;
@@ -89,7 +90,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 }
                 else
                 {
-                    PopupSignalBus.OnChangePopupInfoSignal("T‰t‰ hahmoa ei ole viel‰ lis‰tty pelipalvelimelle.");
+                    PopupSignalBus.OnChangePopupInfoSignal("T√§t√§ hahmoa ei ole viel√§ lis√§tty pelipalvelimelle.");
                 }
 
             }));
@@ -112,6 +113,7 @@ namespace MenuUi.Scripts.CharacterGallery
             _id = id;
             _backgroundLowerImage.color = bgColor;
             _backgroundUpperImage.color = bgAltColor;
+            _backgroundBorderImage.color = bgAltColor;
             _originalSlot = originalSlot;
         }
 
@@ -133,6 +135,7 @@ namespace MenuUi.Scripts.CharacterGallery
             _spriteImage.material = null;
             _backgroundLowerImage.material = null;
             _backgroundUpperImage.material = null;
+            _backgroundBorderImage.material = null;
 
             if (_addCharacterButton.gameObject.activeSelf) _addCharacterButton.gameObject.SetActive(false);
         }
@@ -154,6 +157,7 @@ namespace MenuUi.Scripts.CharacterGallery
             _spriteImage.material = null;
             _backgroundLowerImage.material = null;
             _backgroundUpperImage.material = null;
+            _backgroundBorderImage.material = null;
 
             if (_addCharacterButton.gameObject.activeSelf) _addCharacterButton.gameObject.SetActive(false);
         }
@@ -168,8 +172,10 @@ namespace MenuUi.Scripts.CharacterGallery
             _spriteImage.material = _grayscaleMaterialInstance;
             _backgroundLowerImage.material = _grayscaleMaterialInstance;
             _backgroundUpperImage.material = _grayscaleMaterialInstance;
+            _backgroundBorderImage.material = _grayscaleMaterialInstance;
             _backgroundLowerImage.material.SetColor("_Color", _backgroundLowerImage.color);
             _backgroundUpperImage.material.SetColor("_Color", _backgroundLowerImage.color);
+            _backgroundBorderImage.material.SetColor("_Color", _backgroundLowerImage.color);
             _addCharacterButton.gameObject.SetActive(true);
         }
 
