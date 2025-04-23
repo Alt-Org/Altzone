@@ -218,6 +218,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         public void OnEndDrag(PointerEventData eventData)
         {
             if (_currentAction == ActionType.Move || _currentAction == ActionType.Scale) CalculateAndSetAnchors();
+            if (_currentAction == ActionType.Scale) CheckControlButtonsVisibility();
             _currentAction = ActionType.None;
         }
 
@@ -498,9 +499,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void CheckControlButtonsVisibility()
         {
-            // Setting current scale handle inactive so that it doesn't remain visible and resetting the position in case it has offset
-            if (_currentScaleHandle.gameObject.activeSelf) _currentScaleHandle.gameObject.SetActive(false);
+            // Resetting scale handle offset in case it had any
             _currentScaleHandle.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+
+            Button oldScaleHandle = _currentScaleHandle;
 
             // Checking first if the default scale handle is free
             Vector3[] defaultScaleHandleCorners = GetButtonCorners(_scaleHandles[DefaultScaleHandleIdx]);
@@ -524,12 +526,15 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 }
             }
 
-            if (_multiOrientationElement == null) return; // Returning if not a multiorientation element
- 
-            // Doing the same things for flip vertically buttons
-            if (_currentFlipVerticallyButton.gameObject.activeSelf) _currentFlipVerticallyButton.gameObject.SetActive(false);
+            // Using method to check and switch visible scale handle in case it changed
+            CheckAndSwitchVisibleControlButton(oldScaleHandle, _currentScaleHandle);
 
-            // Checking if default button is inside editor
+            // Returning if not a multiorientation element since the other control buttons aren't needed for normal elements
+            if (_multiOrientationElement == null) return;
+
+            Button oldFlipVerticallyButton = _currentFlipVerticallyButton;
+
+            // Checking if default flip vertically button button is inside editor
             Vector3[] defaultFlipVerticallyCorners = GetButtonCorners(_flipVerticallyButtons[DefaultFlipVerticallyButtonIdx]);
             if (IsButtonInsideEditor(defaultFlipVerticallyCorners))
             {
@@ -540,12 +545,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 _currentFlipVerticallyButtonIdx = (int)ControlButtonHorizontal.Left;
             }
 
-            // Positioning top buttons
-            if (_currentFlipHorizontallyButton.gameObject.activeSelf) _currentFlipHorizontallyButton.gameObject.SetActive(false);
-            if (_currentChangeOrientationButton.gameObject.activeSelf) _currentChangeOrientationButton.gameObject.SetActive(false);
+            // Checking if we should change the visible button
+            CheckAndSwitchVisibleControlButton(oldFlipVerticallyButton, _currentFlipVerticallyButton);
 
+            // Positioning top buttons, placing them into one array first
             Button[] topButtons = _flipHorizontallyButtons.Concat(_changeOrientationButtons).ToArray();
 
+            // Adding left or right side offset to the buttons if they go outside the ui element holder
             foreach (Button button in topButtons)
             {
                 RectTransform buttonRectTransform = button.GetComponent<RectTransform>();
@@ -564,14 +570,15 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     _uiElementHolder.GetWorldCorners(holderCorners);
 
                     Vector2 newPosition = Vector2.zero;
-                    // Checking left side
+
+                    // Checking left side and adding offset
                     float left = buttonCorners[(int)CornerType.BottomLeft].x;
                     if (left < 0)
                     {
                         newPosition.x += Mathf.Abs(left);
                     }
 
-                    // Checking right side
+                    // Checking right side and adding offset
                     float buttonRight = buttonCorners[(int)CornerType.BottomRight].x;
                     float holderRight = holderCorners[(int)CornerType.BottomRight].x;
                     if (buttonRight > holderRight)
@@ -583,9 +590,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 }
             }
 
+            Button oldFlipHorizontallyButton = _currentFlipHorizontallyButton;
+            Button oldChangeOrientationButton = _currentChangeOrientationButton;
+
+            // Ensuring the top and bottom buttons are next to each other
             for (int i = 0; i < _flipHorizontallyButtons.Length; i++)
             {
-                // Ensuring the top and bottom buttons are next to each other
                 RectTransform _changeOrientationRectTransform = _changeOrientationButtons[i].GetComponent<RectTransform>();
                 RectTransform _flipHorizontallyRectTransform = _flipHorizontallyButtons[i].GetComponent<RectTransform>();
 
@@ -600,49 +610,62 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     _changeOrientationRectTransform.anchoredPosition += _flipHorizontallyRectTransform.anchoredPosition;
                 }
 
-                // Showing the buttons which are both inside the editor
+                // Setting the buttons which are both inside the editor as current
                 if (IsButtonInsideEditor(GetButtonCorners(_changeOrientationButtons[i])) && IsButtonInsideEditor(GetButtonCorners(_flipHorizontallyButtons[i])))
                 {
                     _currentChangeOrientationButtonIdx = i;
                     _currentFlipHorizontallyButtonIdx = i;
-
-                    // Check if the scale handle is overlapping (only if vertical multi orientation element)
-                    if (_multiOrientationElement.IsHorizontal) return;
-
-                    float xOffset = 20f;
-                    RectTransform scaleHandleRectTransform = _currentScaleHandle.GetComponent<RectTransform>();
-                    switch ((CornerType)_currentScaleHandleIdx)
-                    {
-                        case CornerType.TopRight:
-                            if ((ControlButtonVertical)i == ControlButtonVertical.Top)
-                            {
-                                xOffset = _changeOrientationRectTransform.anchoredPosition.x + xOffset + _uiElementHolder.rect.width * ScaleHandleSizeRatio;
-                            }
-                            break;
-
-                        case CornerType.TopLeft:
-                            if ((ControlButtonVertical)i == ControlButtonVertical.Top)
-                            {
-                                xOffset = _changeOrientationRectTransform.anchoredPosition.x - xOffset - _uiElementHolder.rect.width * ScaleHandleSizeRatio;
-                            }
-                            break;
-
-                        case CornerType.BottomRight:
-                            if ((ControlButtonVertical)i == ControlButtonVertical.Bottom)
-                            {
-                                xOffset = _changeOrientationRectTransform.anchoredPosition.x + xOffset + _uiElementHolder.rect.width * ScaleHandleSizeRatio;
-                            }
-                            break;
-
-                        case CornerType.BottomLeft:
-                            if ((ControlButtonVertical)i == ControlButtonVertical.Bottom)
-                            {
-                                xOffset = _changeOrientationRectTransform.anchoredPosition.x - xOffset - _uiElementHolder.rect.width * ScaleHandleSizeRatio;
-                            }
-                            break;
-                    }
-                    scaleHandleRectTransform.anchoredPosition += new Vector2(xOffset, 0);
                     break;
+                }
+            }
+
+            // Checking visibility for the top buttons
+            CheckAndSwitchVisibleControlButton(oldFlipHorizontallyButton, _currentFlipHorizontallyButton);
+            CheckAndSwitchVisibleControlButton(oldChangeOrientationButton, _currentChangeOrientationButton);
+
+            // Check if the scale handle is overlapping (only if vertical multi orientation element)
+            if (_multiOrientationElement.IsHorizontal) return;
+
+            // Getting rects and rect transforms
+            RectTransform scaleHandleRectTransform = _currentScaleHandle.GetComponent<RectTransform>();
+            Rect scaleHandleRect = scaleHandleRectTransform.rect;
+
+            Rect flipHorizontallyRect = _currentFlipHorizontallyButton.GetComponent<RectTransform>().rect;
+            Vector3[] flipHorizontallyCorners = GetButtonCorners(_currentFlipHorizontallyButton);
+
+            Rect changeOrientationRect = _currentChangeOrientationButton.GetComponent<RectTransform>().rect;
+            Vector3[] changeOrientationCorners = GetButtonCorners(_currentChangeOrientationButton);
+
+            // Checking if the scale handle overlaps with flip horizontally or change orientation buttons
+            if (scaleHandleRect.Overlaps(flipHorizontallyRect) || scaleHandleRect.Overlaps(changeOrientationRect))
+            {
+                // Changing scaleHandle world position
+                switch ((CornerType)_currentScaleHandleIdx)
+                {
+                    case CornerType.BottomLeft:
+                        scaleHandleRectTransform.position = changeOrientationCorners[(int)CornerType.TopLeft];
+                        break;
+                    case CornerType.TopLeft:
+                        scaleHandleRectTransform.position = changeOrientationCorners[(int)CornerType.BottomLeft];
+                        break;
+                    case CornerType.BottomRight:
+                        scaleHandleRectTransform.position = flipHorizontallyCorners[(int)CornerType.TopRight];
+                        break;
+                    case CornerType.TopRight:
+                        scaleHandleRectTransform.position = flipHorizontallyCorners[(int)CornerType.BottomRight];
+                        break;
+                }
+            }
+        }
+
+        private void CheckAndSwitchVisibleControlButton(Button oldButton, Button currentButton)
+        {
+            if (oldButton != currentButton)
+            {
+                if (oldButton.gameObject.activeSelf)
+                {
+                    oldButton.gameObject.SetActive(false);
+                    currentButton.gameObject.SetActive(true);
                 }
             }
         }
@@ -658,11 +681,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private bool IsButtonInsideEditor(Vector3[] buttonCorners)
         {
             bool isButtonInside = true;
-
             for (int i = 0; i < buttonCorners.Length; i++)
             {
                 Vector3 localSpacePoint = _uiElementHolder.InverseTransformPoint(buttonCorners[i]);
-                if (!_uiElementHolder.rect.Contains(localSpacePoint))
+                if (!HolderRectContains(localSpacePoint))
                 {
                     isButtonInside = false;
                     break;
@@ -670,6 +692,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
 
             return isButtonInside;
+        }
+
+        // This method is needed because the default Contains method compares with < and > instead of <= and >= for the max x and y values
+        private bool HolderRectContains(Vector3 point) 
+        {
+            Rect uiRect = _uiElementHolder.rect;
+            return point.x >= uiRect.xMin && point.x <= uiRect.xMax && point.y >= uiRect.yMin && point.y <= uiRect.yMax;
         }
     }
 }
