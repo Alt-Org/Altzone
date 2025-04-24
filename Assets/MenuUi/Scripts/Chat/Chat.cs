@@ -382,9 +382,8 @@ public class Chat : AltMonoBehaviour
             Destroy(_selectedMessage);
             _selectedMessage = null;
 
-            //Poistopainikkeiden piilottaminen viestin poistamisen jälkeen
+            // Disable message interaction elements
             _deleteButtons.SetActive(false);
-
             DisableReactionPanel();
         }
         else
@@ -419,6 +418,10 @@ public class Chat : AltMonoBehaviour
         }
 
         messagesByChat[_currentContent].Clear();
+
+        // Disable message interaction elements
+        _deleteButtons.SetActive(false);
+        DisableReactionPanel();
     }
 
     // Aktivoi globaalin chatin
