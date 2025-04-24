@@ -129,6 +129,9 @@ namespace MenuUI.Scripts.SoulHome
                         localFurniture.FurnitureHandling = furnitureInfo.FurnitureHandling;
                         localFurniture.TrayFurniture = furnitureInfo.TrayFurniture;
                         added = true;
+                        AssetDatabase.Refresh();
+                        EditorUtility.SetDirty(this);
+                        AssetDatabase.SaveAssets();
                     }
                 }
                 return added;
