@@ -714,17 +714,17 @@ namespace Quantum {
     public const Int32 SIZE = 4;
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(0)]
-    public BattleCollisionTriggerType CollisionTriggerType;
+    public BattleCollisionTriggerType Type;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 18133;
-        hash = hash * 31 + (Int32)CollisionTriggerType;
+        hash = hash * 31 + (Int32)Type;
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (BattleCollisionTriggerQComponent*)ptr;
-        serializer.Stream.Serialize((Int32*)&p->CollisionTriggerType);
+        serializer.Stream.Serialize((Int32*)&p->Type);
     }
   }
   [StructLayout(LayoutKind.Explicit)]

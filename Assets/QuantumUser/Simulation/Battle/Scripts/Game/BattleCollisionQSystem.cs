@@ -16,7 +16,7 @@ namespace Battle.QSimulation.Game
             {
                 if(!f.Unsafe.TryGetPointer<BattleCollisionTriggerQComponent>(info.Other, out BattleCollisionTriggerQComponent* collisionTrigger)) return;
 
-                switch(collisionTrigger->CollisionTriggerType)
+                switch(collisionTrigger->Type)
                 {
                     case BattleCollisionTriggerType.ArenaBorder:
                         BattleArenaBorderQComponent* arenaBorder = f.Unsafe.GetPointer<BattleArenaBorderQComponent>(info.Other);

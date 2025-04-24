@@ -207,7 +207,7 @@ namespace Battle.QSimulation.Player
                             // initialize collisionTrigger component
                             collisionTrigger = new BattleCollisionTriggerQComponent
                             {
-                                CollisionTriggerType = BattleCollisionTriggerType.Player
+                                Type = BattleCollisionTriggerType.Player
                             };
 
                             // initialize hitBox position

@@ -70,7 +70,7 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattleCollisionTriggerQComponent))]
   public unsafe partial class BattleCollisionTriggerQComponentPrototype : ComponentPrototype<Quantum.BattleCollisionTriggerQComponent> {
-    public Quantum.QEnum32<BattleCollisionTriggerType> CollisionTriggerType;
+    public Quantum.QEnum32<BattleCollisionTriggerType> Type;
     partial void MaterializeUser(Frame frame, ref Quantum.BattleCollisionTriggerQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattleCollisionTriggerQComponent component = default;
@@ -78,7 +78,7 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.BattleCollisionTriggerQComponent result, in PrototypeMaterializationContext context = default) {
-        result.CollisionTriggerType = this.CollisionTriggerType;
+        result.Type = this.Type;
         MaterializeUser(frame, ref result, in context);
     }
   }
