@@ -11,7 +11,6 @@ using OrientationType = Altzone.Scripts.BattleUiShared.BattleUiMultiOrientationE
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
 
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
-using Newtonsoft.Json.Linq;
 
 namespace MenuUi.Scripts.Settings.BattleUiEditor
 {
@@ -24,6 +23,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Button _closeButton;
         [SerializeField] private Button _saveButton;
         [SerializeField] private Transform _uiElementsHolder;
+        [SerializeField] private GridController _grid;
 
         [Header("Options dropdown references")]
         [SerializeField] private Button _optionsDropdownButton;
@@ -194,13 +194,17 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             {
                 UpdateInputFieldValue(value, _gridColumnsInputField);
                 _columns = (int)value;
+                _grid.SetColumns(_columns);
             });
 
             _gridRowsSlider.onValueChanged.AddListener((value) =>
             {
                 UpdateInputFieldValue(value, _gridRowsInputField);
                 _rows = (int)value;
+                _grid.SetRows(_rows);
             });
+
+            _showGridToggle.onValueChanged.AddListener(_grid.SetShow);
         }
 
         private void OnDestroy()
@@ -226,6 +230,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             _gridColumnsSlider.onValueChanged.RemoveAllListeners();
             _gridRowsSlider.onValueChanged.RemoveAllListeners();
+
+            _showGridToggle.onValueChanged.RemoveAllListeners();
+        }
+
+        private void Start()
+        {
+            _grid.SetRows(_rows);
+            _grid.SetColumns(_columns);
         }
 
         private void ToggleOptionsDropdown()
