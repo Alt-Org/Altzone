@@ -242,7 +242,6 @@ public class Chat : AltMonoBehaviour
     {
         if (messagePrefab != null)
         {
-            //GameObject newMessage = Instantiate(_currentPrefab, currentContent.transform);
             GameObject newMessage = Instantiate(messagePrefab, _currentContent.transform);
 
             TMP_Text messageUI = newMessage.GetComponentInChildren<TMP_Text>();
@@ -265,7 +264,7 @@ public class Chat : AltMonoBehaviour
             {
                 if (_currentContent != null)
                 {
-                    StartCoroutine(UpdateLayoutAndScroll());
+                    StartCoroutine(UpdateLayoutAndScroll(newMessage));
                     shouldScroll = false;
                 }
                 else
@@ -280,11 +279,12 @@ public class Chat : AltMonoBehaviour
         }
     }
 
-    private IEnumerator UpdateLayoutAndScroll()
+    private IEnumerator UpdateLayoutAndScroll(GameObject message)
     {
         yield return null;
 
         Canvas.ForceUpdateCanvases();
+        message.GetComponentInChildren<ChatMessageScript>().MessageSetHeight();
 
         yield return null;
 
