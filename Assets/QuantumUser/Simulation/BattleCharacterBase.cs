@@ -7,7 +7,7 @@ namespace Quantum
     public struct BattleCharacterBase
     {
         public int Id;
-        public int ClassID;
+        public int Class;
 
         public FP Hp;
         public FP Speed;

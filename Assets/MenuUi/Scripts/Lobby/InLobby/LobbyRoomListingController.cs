@@ -1,34 +1,49 @@
 using System;
+using System.Collections;
 using System.Linq;
+
+using UnityEngine;
+using UnityEngine.UI;
+
+using Prg.Scripts.Common.PubSub;
+
+using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Common.Photon;
 using Altzone.Scripts.Lobby;
-using Prg.Scripts.Common.PubSub;
-using TMPro;
-using UnityEngine;
 
-namespace MenuUI.Scripts.Lobby.InLobby
+using MenuUi.Scripts.Lobby.CreateRoom;
+using PopupSignalBus = MenuUI.Scripts.SignalBus;
+
+namespace MenuUi.Scripts.Lobby.InLobby
 {
-    public class LobbyRoomListingController : MonoBehaviour
+    /// <summary>
+    /// Handles calling the photon methods for creating a new room or joining a room, and forwarding the photon room list to RoomSearchPanelController.
+    /// </summary>
+    public class LobbyRoomListingController : AltMonoBehaviour
     {
-        private const string DefaultRoomNameName = "Battle ";
+        private const string DefaultRoomNameCustom = "Custom ";
 
-        [SerializeField] private LobbyRoomListingView _view;
-        [SerializeField] private TMP_InputField _roomName;
-        [SerializeField] private BattlePopupCreateCustomRoomPanel _roomSwitcher;
+        [SerializeField] private RoomSearchPanelController _searchPanel;
+        [SerializeField] private BattlePopupPanelManager _roomSwitcher;
+        [SerializeField] private CreateRoomCustom _createRoomCustom;
+        [SerializeField] private Button _createRoomFromMainMenuButton;
+        [SerializeField] private PasswordPopup _passwordPopup;
+        [SerializeField] private GameObject _creatingRoomText;
 
         private PhotonRoomList _photonRoomList;
 
         private void Awake()
         {
             _photonRoomList = gameObject.GetOrAddComponent<PhotonRoomList>();
-            _view.RoomButtonOnClick = CreateRoomOnClick;
+            _createRoomCustom.CreateRoomButton.onClick.AddListener(CreateCustomRoomOnClick);
+            _createRoomFromMainMenuButton.onClick.AddListener(CreateCustomRoomOnClick);
+            LobbyManager.OnClanMemberDisconnected += HandleClanMemberDisconnected;
         }
 
         public void OnEnable()
         {
             PhotonRealtimeClient.AddCallbackTarget(this);
             Debug.Log($"OnEnable {PhotonRealtimeClient.LobbyNetworkClientState}");
-            _view.Reset();
             if (PhotonRealtimeClient.InLobby)
             {
                 UpdateStatus();
@@ -44,17 +59,93 @@ namespace MenuUI.Scripts.Lobby.InLobby
             _photonRoomList.OnRoomsUpdated -= UpdateStatus;
             LobbyManager.LobbyOnJoinedRoom -= OnJoinedRoom;
             LobbyWindowNavigationHandler.OnLobbyWindowChangeRequest -= SwitchToRoom;
-            _view.Reset();
         }
 
-        private void CreateRoomOnClick()
+        private void OnDestroy()
         {
-            var roomName = string.IsNullOrWhiteSpace(_roomName.text) ? $"{DefaultRoomNameName}{DateTime.Now.Second:00}" : _roomName.text;
-            
-            Debug.Log($"{roomName}");
-            PhotonRealtimeClient.CreateLobbyRoom(roomName);
+            LobbyManager.OnClanMemberDisconnected -= HandleClanMemberDisconnected;
+            _createRoomCustom.CreateRoomButton.onClick.RemoveAllListeners();
+            _createRoomFromMainMenuButton.onClick.RemoveAllListeners();
         }
 
+        private void CreateCustomRoomOnClick()
+        {
+            int randomNumber = UnityEngine.Random.Range(0, 100) + DateTime.Now.Millisecond;
+            var roomName = string.IsNullOrWhiteSpace(_createRoomCustom.RoomName) ? $"{DefaultRoomNameCustom} {randomNumber}" : $"{_createRoomCustom.RoomName} {randomNumber}";
+
+            if (_createRoomCustom.IsPrivate && _createRoomCustom.RoomPassword != null && _createRoomCustom.RoomPassword != "")
+            {
+                PhotonRealtimeClient.CreateCustomLobbyRoom(roomName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, _createRoomCustom.RoomPassword);
+            }
+            else
+            {
+                PhotonRealtimeClient.CreateCustomLobbyRoom(roomName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion);
+            }
+        }
+
+        /// <summary>
+        /// Coroutine to create Clan2v2 room after client is connected to lobby.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator StartCreatingClan2v2Room(Action callback)
+        {
+            _creatingRoomText.SetActive(true);
+            bool roomCreated = false;
+            do
+            {
+                yield return null;
+                if (PhotonRealtimeClient.InLobby)
+                {
+                    CreateClan2v2Room();
+                    roomCreated = true;
+                }
+            } while (!roomCreated);
+
+            callback();
+        }
+
+        private void CreateClan2v2Room()  // soulhome value for matchmaking
+        {
+            StartCoroutine(GetClanData( clanData =>
+            {
+                if (clanData != null)
+                {
+                    PhotonRealtimeClient.JoinRandomOrCreateLobbyRoom("", GameType.Clan2v2, clanData.Name, UnityEngine.Random.Range(0,5001));
+                }
+            }));
+        }
+
+        /// <summary>
+        /// Coroutine to create Random2v2 room after client is connected to lobby.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator StartCreatingRandom2v2Room(Action callback)
+        {
+            _creatingRoomText.SetActive(true);
+            bool roomCreated = false;
+            do
+            {
+                yield return null;
+                if (PhotonRealtimeClient.InLobby)
+                {
+                    CreateRandom2v2Room();
+                    roomCreated = true;
+                }
+            } while (!roomCreated);
+
+            callback();
+        }
+
+        private void CreateRandom2v2Room()  // soulhome value for matchmaking
+        {
+            StartCoroutine(GetClanData(clanData =>
+            {
+                if (clanData != null)
+                {
+                    PhotonRealtimeClient.CreateRandom2v2LobbyRoom();
+                }
+            }));
+        }
 
         private void JoinRoom(string roomName)
         {
@@ -64,6 +155,25 @@ namespace MenuUI.Scripts.Lobby.InLobby
             {
                 if (roomInfo.Name.Equals(roomName, StringComparison.Ordinal) && !roomInfo.RemovedFromList && roomInfo.IsOpen)
                 {
+                    // Asking for password if there is one
+                    if (roomInfo.CustomProperties.ContainsKey(PhotonBattleRoom.PasswordKey))
+                    {
+                        string password = (string)roomInfo.CustomProperties[PhotonBattleRoom.PasswordKey];
+                        StartCoroutine(_passwordPopup.AskForPassword(passwordInput =>
+                        {
+                            if (password.Trim() == passwordInput.Trim())
+                            {
+                                PhotonRealtimeClient.JoinRoom(roomInfo.Name);
+                            }
+                            else
+                            {
+                                PopupSignalBus.OnChangePopupInfoSignal("Salasana on väärin.");
+                            }
+                            _passwordPopup.ClosePopup();
+                        }));
+                        return;
+                    }
+
                     PhotonRealtimeClient.JoinRoom(roomInfo.Name);
                     break;
                 }
@@ -72,6 +182,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         public void OnJoinedRoom()
         {
+            if (_creatingRoomText.activeSelf) _creatingRoomText.SetActive(false);
             var room = PhotonRealtimeClient.LobbyCurrentRoom; // hakee pelaajan tiedot // 
             var player = PhotonRealtimeClient.LocalLobbyPlayer;
             //PhotonRealtimeClient.NickName = room.GetUniquePlayerNameForRoom(player, PhotonRealtimeClient.NickName, "");
@@ -81,16 +192,12 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         public void SwitchToRoom()
         {
-            _roomSwitcher.SwitchRoom();
+            _roomSwitcher.SwitchRoom(InLobbyController.SelectedGameType);
         }
 
         private void UpdateStatus()
         {
-            if (!PhotonRealtimeClient.InLobby)
-            {
-                _view.Reset();
-                return;
-            }
+            LobbyManager.Instance.CurrentRooms = _photonRoomList.CurrentRooms;
             var rooms = _photonRoomList.CurrentRooms.ToList();
             rooms.Sort((a, b) =>
             {
@@ -99,7 +206,13 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 var strB = $"{(b.IsOpen ? 0 : 1)}{b.Name}";
                 return string.Compare(strA, strB, StringComparison.Ordinal);
             });
-            _view.UpdateStatus(rooms, JoinRoom);
+            _searchPanel.RoomsData = rooms;
+            _searchPanel.SetOnJoinRoom(JoinRoom);
+        }
+
+        private void HandleClanMemberDisconnected()
+        {
+            PopupSignalBus.OnChangePopupInfoSignal("Pelin etsiminen lopetetaan. Klaanin jäsen sulki pelin.");
         }
     }
 }

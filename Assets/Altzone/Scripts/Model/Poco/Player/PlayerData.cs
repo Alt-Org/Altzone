@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Altzone.Scripts.Common;
 using Altzone.Scripts.Model.Poco.Attributes;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Voting;
+using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -51,11 +53,17 @@ namespace Altzone.Scripts.Model.Poco.Player
         public int BackpackCapacity;
 
         public PlayerTask Task = null;
+        public AvatarData AvatarData;
 
         public int points = 0;
 
         public PlayStyles playStyles;
 
+       public string emotionSelectorDate = null;
+
+        public string daysBetweenInput = "0";
+
+        public List<string> _playerDataEmotionList = new List<string> { Emotion.Blank.ToString(), Emotion.Love.ToString(), Emotion.Playful.ToString(), Emotion.Joy.ToString(), Emotion.Sorrow.ToString(), Emotion.Anger.ToString(), Emotion.Blank.ToString() };
 
         public List<PlayerVoteData> playerVotes = new List<PlayerVoteData>();
 
@@ -77,7 +85,9 @@ namespace Altzone.Scripts.Model.Poco.Player
                 foreach (var id in SelectedCharacterIds)
                 {
                     if (string.IsNullOrEmpty(id)) continue;
-                    list.Add(CustomCharacters.FirstOrDefault(x => x.ServerID == id));
+                    CustomCharacter character = CustomCharacters.FirstOrDefault(x => x.ServerID == id);
+                    if(character == null) continue;
+                    list.Add(character);
                 }
                 while(list.Count < 3)
                 {
@@ -88,6 +98,27 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         }
 
+        public List<Emotion> playerDataEmotionList
+        {
+            get
+            {
+                List<Emotion> list = new();
+                foreach(string emotion in _playerDataEmotionList)
+                {
+                    list.Add((Emotion)Enum.Parse(typeof(Emotion), emotion));
+                }
+                return list;
+            }
+            set
+            {
+                List<string> list = new();
+                foreach (Emotion emotion in value)
+                {
+                    list.Add(emotion.ToString());
+                }
+                _playerDataEmotionList = list;
+            }
+        }
 
         public PlayerData(string id, string clanId, int currentCustomCharacterId, string[]currentBattleCharacterIds, string name, int backpackCapacity, string uniqueIdentifier)
         {
@@ -117,12 +148,35 @@ namespace Altzone.Scripts.Model.Poco.Player
             Id = player._id;
             ClanId = player.clan_id ?? string.Empty;
             SelectedCharacterId = (int)(player.currentAvatarId == null ? 0 : player.currentAvatarId);
-            SelectedCharacterIds = player?.battleCharacter_ids == null ? new string[3] {"0","0","0"} : player.battleCharacter_ids;
+            SelectedCharacterIds = (player?.battleCharacter_ids == null || player.battleCharacter_ids.Length < 3) ? new string[3] {"0","0","0"} : player.battleCharacter_ids;
             Name = player.name;
             BackpackCapacity = player.backpackCapacity;
             UniqueIdentifier = player.uniqueIdentifier;
             points = player.points;
             stats = player.gameStatistics;
+            Task = player.DailyTask != null ? new(player.DailyTask): null;
+        }
+
+        public void UpdatePlayerData(ServerPlayer player)
+        {
+            Assert.IsTrue(player._id.IsPrimaryKey());
+            Assert.IsTrue(player.clan_id.IsNullOEmptyOrNonWhiteSpace());
+            //Assert.IsTrue(player.currentCustomCharacterId >= 0);
+            Assert.IsTrue(player.name.IsMandatory());
+            Assert.IsTrue(player.backpackCapacity >= 0);
+            Assert.IsTrue(player.uniqueIdentifier.IsMandatory());
+            Id = player._id;
+            ClanId = player.clan_id ?? string.Empty;
+            SelectedCharacterId = (int)(player.currentAvatarId == null ? 0 : player.currentAvatarId);
+            SelectedCharacterIds = player?.battleCharacter_ids == null || player.battleCharacter_ids.Length < 3 ? new string[3] { "0", "0", "0" } : player.battleCharacter_ids;
+            Name = player.name;
+            BackpackCapacity = player.backpackCapacity;
+            UniqueIdentifier = player.uniqueIdentifier;
+            points = player.points;
+            stats = player.gameStatistics;
+            Task = player.DailyTask != null ? new(player.DailyTask) : null;
+            if (_playerDataEmotionList == null || _playerDataEmotionList.Count == 0) playerDataEmotionList = new List<Emotion> { Emotion.Blank, Emotion.Love, Emotion.Playful, Emotion.Joy, Emotion.Sorrow, Emotion.Anger, Emotion.Blank };
+            if (daysBetweenInput == null) daysBetweenInput = "0";
         }
 
         public void UpdateCustomCharacter(CustomCharacter character)

@@ -5,9 +5,9 @@ using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ModelV2;
-using MenuUI.Scripts;
+using Altzone.Scripts.ReferenceSheets;
 using UnityEngine;
-
+using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
@@ -16,16 +16,61 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     /// </summary>
     public class StatsWindowController : AltMonoBehaviour
     {
+        [SerializeField] private ClassColorReference _classColorReference;
+        [SerializeField] private StatsReference _statsReference;
+        [SerializeField] private GameObject _swipeBlocker;
+        [SerializeField] private GameObject _statsPanel;
+        [SerializeField] private GameObject _infoPanel;
+
         private PlayerData _playerData;
         private CharacterID _characterId;
         private CustomCharacter _customCharacter;
         private BaseCharacter _baseCharacter;
+        private bool _unlimitedDiamonds;
+        private bool _unlimitedErasers;
 
-        public event Action OnEraserDecreased;
-        public event Action OnDiamondDecreased;
+
+        public CharacterID CurrentCharacterID { get { return _characterId; } }
+        [HideInInspector] public bool UnlimitedDiamonds {
+            get
+            {
+                return _unlimitedDiamonds;
+            }
+            set
+            {
+                _unlimitedDiamonds = value;
+                PlayerPrefs.SetInt("UnlimitedDiamonds", value ? 1 : 0);
+                OnDiamondAmountChanged?.Invoke();
+            }
+        }
+
+        [HideInInspector] public bool UnlimitedErasers
+        {
+            get
+            {
+                return _unlimitedErasers;
+            }
+            set
+            {
+                _unlimitedErasers = value;
+                PlayerPrefs.SetInt("UnlimitedErasers", value ? 1 : 0);
+                OnEraserAmountChanged?.Invoke();
+            }
+        }
+
+        public event Action OnEraserAmountChanged;
+        public event Action OnDiamondAmountChanged;
 
         public delegate void StatUpdatedHandler(StatType statType);
         public event StatUpdatedHandler OnStatUpdated;
+
+
+        private void Awake()
+        {
+            // Getting unlimited diamonds and erasers value from playerPrefs
+            _unlimitedDiamonds = PlayerPrefs.GetInt("UnlimitedDiamonds", 0) == 1;
+            _unlimitedErasers = PlayerPrefs.GetInt("UnlimitedErasers", 0) == 1;
+        }
 
 
         private void OnEnable()
@@ -33,6 +78,21 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             _characterId = SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow;
             SetPlayerData();
             SetCurrentCharacter();
+        }
+
+        public void OpenPopup()
+        {
+            gameObject.SetActive(true);
+            _swipeBlocker.SetActive(true);
+
+            if (_statsPanel != null) _statsPanel.SetActive(true);
+
+            if (_infoPanel != null) _infoPanel.SetActive(false);
+        }
+        public void ClosePopup()
+        {
+            gameObject.SetActive(false);
+            _swipeBlocker.SetActive(false);
         }
 
 
@@ -66,6 +126,20 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
 
         /// <summary>
+        /// Reload stat window data and trigger onenable function for children.
+        /// </summary>
+        public void ReloadStatWindow()
+        {
+            SetPlayerData();
+            SetCurrentCharacter();
+
+            // Triggering onenable functions
+            ClosePopup();
+            OpenPopup();
+        }
+
+
+        /// <summary>
         /// Check if current character is locked or no.
         /// </summary>
         /// <returns>True if current character is locked (player does not own it) and false if not (player owns this character).</returns>
@@ -82,6 +156,37 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         public CharacterClassID GetCurrentCharacterClass()
         {
             return CustomCharacter.GetClassID(_characterId);
+        }
+
+
+        /// <summary>
+        /// Get current character class alternative color from character class color reference sheet.
+        /// </summary>
+        /// <returns>Current character class alternative color as Color.</returns>
+        public Color GetCurrentCharacterClassAlternativeColor()
+        {
+            CharacterClassID classID = GetCurrentCharacterClass();
+            return _classColorReference.GetAlternativeColor(classID);
+        }
+
+        /// <summary>
+        /// Get current character class color from character class color reference sheet.
+        /// </summary>
+        /// <returns>Current character class color as Color.</returns>
+        public Color GetCurrentCharacterClassColor()
+        {
+            CharacterClassID classID = GetCurrentCharacterClass();
+            return _classColorReference.GetColor(classID);
+        }
+        /// <summary>
+        /// Get StatInfo from Reference sheet
+        /// </summary>
+        /// <param name="statType">The StatInfo which to get</param>
+        /// <returns>Returns StatInfo object</returns>
+        public StatInfo GetStatInfo(StatType statType)
+        {
+            return _statsReference.GetStatInfo(statType);
+
         }
 
 
@@ -127,7 +232,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>Current character's description as string.</returns>
         public string GetCurrentCharacterDescription()
         {
-            return "Hahmon kuvaus";
+            var info = PlayerCharacterPrototypes.GetCharacter(((int)_characterId).ToString());
+            if (info == null)
+            {
+                return null;
+            }
+            else
+            {
+                return info.ShortDescription;
+            }
         }
 
 
@@ -190,6 +303,11 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             return _playerData.Eraser;
         }
 
+        public void InvokeOnEraserAmountChanged()
+        {
+            OnEraserAmountChanged.Invoke();
+        }
+
 
         /// <summary>
         /// Try to decrease player's eraser amount by 1.
@@ -197,15 +315,32 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>If decreasing was successful. If true, player's erasers were decreased by 1. If false, player didn't have enough erasers.</returns>
         private bool TryDecreaseEraser()
         {
-            if (_playerData.Eraser > 0)
+            if (CheckIfEnoughErasers(1))
             {
                 _playerData.Eraser--;
-                OnEraserDecreased.Invoke();
+                OnEraserAmountChanged.Invoke();
                 return true;
             }
             else
             {
-                SignalBus.OnChangePopupInfoSignal("Ei tarpeeksi pyyhekumeja.");
+                PopupSignalBus.OnChangePopupInfoSignal("Ei tarpeeksi pyyhekumeja.");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks if player has enough erasers.
+        /// </summary>
+        /// <param name="eraserCost">Eraser cost to check</param>
+        /// <returns>True if the player does, false if doesn't</returns>
+        public bool CheckIfEnoughErasers(int eraserCost)
+        {
+            if (_playerData.Eraser >= eraserCost || UnlimitedErasers) 
+            {
+                return true;
+            }
+            else
+            {
                 return false;
             }
         }
@@ -221,6 +356,12 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         }
 
 
+        public void InvokeOnDiamondAmountChanged()
+        {
+            OnDiamondAmountChanged.Invoke();
+        }
+
+
         /// <summary>
         /// Try to decrease player's diamonds by the amount specified.
         /// </summary>
@@ -228,15 +369,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>If decreasing was successful. If true, player's diamonds were decreased by amount. If false, player didn't have enough diamonds.</returns>
         private bool TryDecreaseDiamonds(int amount)
         {
-            if (_playerData.DiamondSpeed >= amount) // using DiamondSpeed as a placeholder
+            if (CheckIfEnoughDiamonds(amount)) 
             {
                 _playerData.DiamondSpeed -= amount;
-                OnDiamondDecreased.Invoke();
+                OnDiamondAmountChanged.Invoke();
                 return true;
             }
             else
             {
-                SignalBus.OnChangePopupInfoSignal("Ei tarpeeksi timantteja.");
+                PopupSignalBus.OnChangePopupInfoSignal("Ei tarpeeksi timantteja.");
                 return false;
             }
         }
@@ -253,13 +394,28 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             return _customCharacter.GetPriceToNextLevel(statType);
         }
-
+        /// <summary>
+        /// Checks if player has enough diamonds.
+        /// </summary>
+        /// <param name="diamondCost">Diamond cost to check</param>
+        /// <returns>True if the player does, false if doesn't</returns>
+        public bool CheckIfEnoughDiamonds(int diamondCost) 
+        {
+            if (_playerData.DiamondSpeed >= diamondCost || UnlimitedDiamonds) // using DiamondSpeed as a placeholder
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         /// <summary>
-        /// Get currently displayed character's stat value according to the stat type.
+        /// Get currently displayed character's stat level according to the stat type.
         /// </summary>
         /// <param name="statType">The stat type which to get.</param>
-        /// <returns>Stat value as int.</returns>
+        /// <returns>Stat level as int.</returns>
         public int GetStat(StatType statType)
         {
             if (_customCharacter == null) return GetBaseStat(statType);
@@ -287,7 +443,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// Get currently displayed character's base stat without upgrades according to the stat type.
         /// </summary>
         /// <param name="statType">The stat type which to get.</param>
-        /// <returns>Base stat value as int.</returns>
+        /// <returns>Base stat level as int.</returns>
         public int GetBaseStat(StatType statType)
         {
             switch (statType)
@@ -310,6 +466,43 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
 
         /// <summary>
+        /// Get currently displayed character's stat value according to the stat type.
+        /// </summary>
+        /// <param name="statType">The stat type which value to get.</param>
+        /// <returns>Stat value as int.</returns>
+        public int GetStatValue(StatType statType)
+        {
+            return (int)BaseCharacter.GetStatValueFP(statType, GetStat(statType));
+        }
+
+
+        /// <summary>
+        /// Get stat's strength.
+        /// </summary>
+        /// <param name="statType">The stat type which strength to get./param>
+        /// <returns>ValueStrength enum value.</returns>
+        public ValueStrength GetStatStrength(StatType statType)
+        {
+            switch (statType)
+            {
+                case StatType.Speed:
+                    return _baseCharacter.SpeedStrength;
+                case StatType.Attack:
+                    return _baseCharacter.AttackStrength;
+                case StatType.Hp:
+                    return _baseCharacter.HpStrength;
+                case StatType.CharacterSize:
+                    return _baseCharacter.CharacterSizeStrength;
+                case StatType.Defence:
+                    return _baseCharacter.DefenceStrength;
+                case StatType.None:
+                default:
+                    return ValueStrength.None;
+            }
+        }
+
+
+        /// <summary>
         /// Check if stat can be increased. (all stats combined is less than the combined level cap, stat is less than individual stat level cap, and player has increased stats less times than the maximum allowed amount)
         /// </summary>
         /// <param name="statType">The stat type to check.</param>
@@ -321,15 +514,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             {
                 if (!CheckCombinedLevelCap())
                 {
-                    SignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, taitojen summa on enintään {CustomCharacter.STATMAXCOMBINED}.");
+                    PopupSignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, taitojen summa on enintään {CustomCharacter.STATMAXCOMBINED}.");
                 }
                 else if (!CheckStatLevelCap(statType))
                 {
-                    SignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, maksimitaso on {CustomCharacter.STATMAXLEVEL}.");
+                    PopupSignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, maksimitaso on {CustomCharacter.STATMAXLEVEL}.");
                 }
                 else if (!CheckMaxPlayerIncreases())
                 {
-                    SignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoja enemmän kuin {CustomCharacter.STATMAXPLAYERINCREASE} kertaa."); // when every characters' combined base stats are 40 remove this
+                    PopupSignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoja enemmän kuin {CustomCharacter.STATMAXPLAYERINCREASE} kertaa."); // when every characters' combined base stats are 40 remove this
                 }
             }
 
@@ -350,7 +543,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (CanIncreaseStat(statType, true))
             {
-                bool diamondsDecreased = true; //TryDecreaseDiamonds(GetDiamondCost(statType));
+                bool diamondsDecreased = UnlimitedDiamonds || TryDecreaseDiamonds(GetDiamondCost(statType));
 
                 if (diamondsDecreased)
                 {
@@ -396,7 +589,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             if (showPopupMessages && !(GetStat(statType) > GetBaseStat(statType)))
             {
-                SignalBus.OnChangePopupInfoSignal($"Et voi vähentää pohjataitoa.");
+                PopupSignalBus.OnChangePopupInfoSignal($"Et voi vähentää pohjataitoa.");
             }
 
             return GetStat(statType) > CustomCharacter.STATMINLEVEL && GetStat(statType) > GetBaseStat(statType);
@@ -416,7 +609,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (CanDecreaseStat(statType, true))
             {
-                bool eraserDecreased = true; // TryDecreaseEraser();
+                bool eraserDecreased = UnlimitedErasers || TryDecreaseEraser();
 
                 if (eraserDecreased)
                 {
@@ -506,5 +699,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 return false;
             }
         }
+
     }
 }

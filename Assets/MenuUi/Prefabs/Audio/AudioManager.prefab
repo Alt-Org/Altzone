@@ -43,7 +43,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 595928f310ec2824dbd71320fc3d408c, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 25873fa0b00b3bc4c837e541d0b3967e, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.5
   m_Pitch: 1
@@ -472,7 +472,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: c5c5518792892da4b81cbe4c91476e26, type: 3}
+  m_audioClip: {fileID: 8300000, guid: a8c5e1a4cbcdc514188ca3d58426d6ac, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.5
   m_Pitch: 1
@@ -715,6 +715,71 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _useAudioSourceBaseVolume: 1
   _soundType: 1
+--- !u!1 &1876944904163156040
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6166932957916187927}
+  - component: {fileID: 1796067170315154734}
+  m_Layer: 0
+  m_Name: Jukebox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6166932957916187927
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1876944904163156040}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1881148736243464547}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1796067170315154734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1876944904163156040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5674bdab8b7163a48a60c9470031d617, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioSource: {fileID: 4283766005048424298}
+  _songs:
+  - songName: In Awe
+    songs: {fileID: 8300000, guid: 6ab022fd759eb2e418ff0169150f67b1, type: 3}
+    songDisks: {fileID: 21300000, guid: 117ff4b0aae501d49a04904563a17686, type: 3}
+  - songName: Lingering Smoothness
+    songs: {fileID: 8300000, guid: 206d22de247615540869e783709230d4, type: 3}
+    songDisks: {fileID: 21300000, guid: 19b45a0d55711f845848895c797669f4, type: 3}
+  - songName: Emotional Waves
+    songs: {fileID: 8300000, guid: 77263ef85cbf60a448b496bdd8029a11, type: 3}
+    songDisks: {fileID: 21300000, guid: 3311b13ccf7415f4fa621aa45aa51153, type: 3}
+  - songName: Soul Atmos
+    songs: {fileID: 8300000, guid: 280c87abcfabe804f8b177e519c22c11, type: 3}
+    songDisks: {fileID: 21300000, guid: 117ff4b0aae501d49a04904563a17686, type: 3}
+  - songName: Soul
+    songs: {fileID: 8300000, guid: 5dbc7fd70bf96ac4eb223411d552b66d, type: 3}
+    songDisks: {fileID: 21300000, guid: 117ff4b0aae501d49a04904563a17686, type: 3}
+  - songName: Falling Bird
+    songs: {fileID: 8300000, guid: 45bf53d82e22ced439d9560c0e31b037, type: 3}
+    songDisks: {fileID: 21300000, guid: 6b10d61836065ad4d8bc5ddfad23d3d3, type: 3}
+  _emptyDisk: {fileID: 21300000, guid: 37ef35f7c464cfe44b62522404887fe2, type: 3}
 --- !u!1 &2155083248955265168
 GameObject:
   m_ObjectHideFlags: 0
@@ -793,7 +858,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _musicList:
   - _name: MenuMusic
-    _musicClip: {fileID: 8300000, guid: d170cf89cf5ff454c9b97dd1482d1fc4, type: 3}
+    _musicClip: {fileID: 8300000, guid: 6e18d076df649554985ce212cbdcf42b, type: 3}
   - _name: Ei musiikkia
     _musicClip: {fileID: 0}
   _musicSection: 1
@@ -841,7 +906,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 5b9e687c74e4b2144b452f9b73451145, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 88c3bc81f88bd30459d5f5c0d9f3ec3f, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.5
   m_Pitch: 1
@@ -1303,6 +1368,8 @@ Transform:
   m_Children:
   - {fileID: 8334165992721528750}
   - {fileID: 2245219081603531259}
+  - {fileID: 6166932957916187927}
+  - {fileID: 7824826247596195586}
   m_Father: {fileID: 5648691658492065204}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &4283766005048424298
@@ -1315,7 +1382,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: a75399b6c1f032b4ea71e434b15990e8, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -1470,7 +1537,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 32fb8dbea4f87154cb455a50bb2c85f2, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 13c4e91382d151449982ba7e8031186b, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.5
   m_Pitch: 1
@@ -1570,6 +1637,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _useAudioSourceBaseVolume: 1
   _soundType: 1
+--- !u!1 &4694069201121622208
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7824826247596195586}
+  m_Layer: 0
+  m_Name: Undefined
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7824826247596195586
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4694069201121622208}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1881148736243464547}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5048184117055766121
 GameObject:
   m_ObjectHideFlags: 0
@@ -1582,7 +1680,7 @@ GameObject:
   - component: {fileID: 1317116093072134270}
   m_Layer: 0
   m_Name: AudioManager
-  m_TagString: Untagged
+  m_TagString: AudioManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1618,6 +1716,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _musicAudio: {fileID: 4283766005048424298}
+  _jukebox: {fileID: 1796067170315154734}
   _sfxList:
   - name: ButtonClick
     audioSource: {fileID: 1000530172632091687}
@@ -1818,7 +1917,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: c9831f6c73497ca4e9d0a2441595017c, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 1f27b89d04b66f74d9d6a886cc80e1de, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.5
   m_Pitch: 1

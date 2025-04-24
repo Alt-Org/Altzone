@@ -1,6 +1,5 @@
 using UnityEngine;
 using Altzone.Scripts.Model.Poco.Game;
-using static DailyTaskClanReward;
 
 public struct PopupData
 {
@@ -30,36 +29,56 @@ public struct PopupData
     private PlayerTask _ownPage;
     public PlayerTask OwnPage { get { return _ownPage; } }
 
-    private ClanRewardData? _clanRewardData;
-    public ClanRewardData? ClanRewardData { get { return _clanRewardData; } }
+    private int? _dailyTaskCardIndex;
+    public int? DailyTaskCardIndex { get { return _dailyTaskCardIndex; } }
 
-    public PopupData(PopupDataType type, Vector3? location)
+    private DailyTaskClanReward.ClanRewardData? _clanRewardData;
+    public DailyTaskClanReward.ClanRewardData? ClanRewardData { get { return _clanRewardData; } }
+
+    /// <summary>
+    /// Used for showing task cancel window.
+    /// </summary>
+    /// <param name="type"></param>
+    public PopupData(PopupDataType type)
     {
         _ownPage = null;
         _clanRewardData = null;
         _type = type;
-        _location = location;
+        _location = null;
+        _dailyTaskCardIndex = null;
     }
 
-    public PopupData(PlayerTask task, Vector3? location)
+    /// <summary>
+    /// Used for showing task accept window.
+    /// </summary>
+    /// <param name="task"></param>
+    /// <param name="location"></param>
+    public PopupData(PlayerTask task, Vector3 location, int index)
     {
         _ownPage = task;
         _clanRewardData = null;
         _type = PopupDataType.OwnTask;
         _location = location;
+        _dailyTaskCardIndex = index;
     }
 
-    public PopupData(ClanRewardData clanRewardData, Vector3 location)
+    /// <summary>
+    /// Used for showing clan milestone info window.
+    /// </summary>
+    /// <param name="clanRewardData"></param>
+    /// <param name="location"></param>
+    public PopupData(DailyTaskClanReward.ClanRewardData clanRewardData, Vector3 location)
     {
         _ownPage = null;
         _clanRewardData = clanRewardData;
         _type = PopupDataType.ClanMilestone;
         _location = location;
+        _dailyTaskCardIndex = null;
     }
 
-    public void SetOwnPageData(PlayerTask task)
-    {
-        _ownPage = task;
-        _type = PopupDataType.OwnTask;
-    }
+    //public void SetOwnPageData(PlayerTask task)
+    //{
+    //    _ownPage = task;
+    //    _type = PopupDataType.OwnTask;
+    //}
 }

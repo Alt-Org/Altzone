@@ -24,9 +24,12 @@ namespace Altzone.Scripts.ModelV2
         }
 
         public string Id => _characterSpec.Id;
+        public CharacterID CharacterId => _characterSpec.CharacterId;
         public CharacterClassID ClassType => _characterSpec.ClassType;
         public string Name => _characterSpec.Name;
         public Sprite GalleryImage => _characterSpec.GalleryImage;
+        public string Description => _characterSpec.CharacterDescription;
+        public string ShortDescription => _characterSpec.CharacterShortDescription;
 
         public readonly SpecialAttribute Hp;
         public readonly SpecialAttribute Speed;
@@ -39,8 +42,6 @@ namespace Altzone.Scripts.ModelV2
         internal PlayerCharacterPrototype(CharacterSpec characterSpec)
         {
             _characterSpec = characterSpec;
-            Hp = new SpecialAttribute((int)BaseCharacter.GetStatValue(StatType.Hp, _characterSpec.Hp.Level),
-                _characterSpec.Hp.Level, _characterSpec.Hp.Coefficient);
             Hp = new SpecialAttribute((int)BaseCharacter.GetStatValue(StatType.Hp, _characterSpec.Hp.Level),
                 _characterSpec.Hp.Level, _characterSpec.Hp.Coefficient);
             Speed = new SpecialAttribute((int)BaseCharacter.GetStatValue(StatType.Speed, _characterSpec.Speed.Level),

@@ -25,6 +25,7 @@ public class AddPlayerHeads : MonoBehaviour
     public void InstantiateHeads(string pollId)
     {
         PollData pollData = PollManager.GetPollData(pollId);
+        if (pollData == null) return;
 
         // Clear existing heads
         for (int i = 0; i < YesHeads.Count; i++)

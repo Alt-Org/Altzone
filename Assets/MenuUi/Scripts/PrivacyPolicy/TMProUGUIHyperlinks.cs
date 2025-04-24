@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Prg.Scripts.Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -109,7 +110,7 @@ public class TMProUGUIHyperlinks : MonoBehaviour, IPointerDownHandler, IPointerU
 
     private int GetLinkIndex()
     {
-        return TMP_TextUtilities.FindIntersectingLink(textMeshPro, Input.mousePosition, null);
+        return TMP_TextUtilities.FindIntersectingLink(textMeshPro, ClickStateHandler.GetClickPosition(), null);
     }
 
     private List<Color32[]> SetLinkColor(int linkIndex, Color32 color)

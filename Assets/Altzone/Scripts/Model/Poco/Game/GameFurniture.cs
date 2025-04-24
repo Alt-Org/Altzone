@@ -30,6 +30,8 @@ namespace Altzone.Scripts.Model.Poco.Game
         FourXTwo,
         FourXThree,
         FourXFour,
+        FiveXTwo,
+        FiveXThree,
         FiveXFive,
         FiveXEight,
         SevenXThree

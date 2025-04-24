@@ -17,6 +17,7 @@ using System.Collections.ObjectModel;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Altzone.Scripts.Settings;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -29,6 +30,7 @@ public class ServerManager : MonoBehaviour
     private ServerPlayer _player;               // Player info from server
     private ServerClan _clan;                   // Clan info from server
     private ServerStock _stock;                 // Stock info from server
+    private List<string> _onlinePlayers;
 
     [SerializeField] private bool _automaticallyLogIn = false;
     private int _accessTokenExpiration;
@@ -55,6 +57,9 @@ public class ServerManager : MonoBehaviour
     public delegate void ClanInventoryChanged();
     public static event ClanInventoryChanged OnClanInventoryChanged;
 
+    public delegate void OnlinePlayersChanged(List<string> onlinePlayers);
+    public static event OnlinePlayersChanged OnOnlinePlayersChanged;
+
     #endregion
 
     #region Getters & Setters
@@ -73,6 +78,7 @@ public class ServerManager : MonoBehaviour
         }
     }
     public ServerStock Stock { get => _stock; set => _stock = value; }
+    public List<string> OnlinePlayers { get => _onlinePlayers;}
 
     #endregion
 
@@ -138,7 +144,7 @@ public class ServerManager : MonoBehaviour
             bool gettingTasks = true;
             List<CustomCharacter> characters = null;
             // Checks if we can get Player & player Clan from the server
-            yield return StartCoroutine(GetPlayerFromServer(player =>
+            yield return StartCoroutine(GetOwnPlayerFromServer(player =>
             {
                 if (player == null)
                 {
@@ -182,6 +188,7 @@ public class ServerManager : MonoBehaviour
             SetPlayerValues(Player, characters);
 
             OnLogInStatusChanged?.Invoke(true);
+            StartCoroutine(ServiceHeartBeat());
 
             if (Clan == null)
             {
@@ -262,11 +269,16 @@ public class ServerManager : MonoBehaviour
 
         storefront.GetPlayerData(player.uniqueIdentifier, p => playerData = p);
 
-        int currentCustomCharacterId = (int)(player?.currentAvatarId == null ? (playerData == null? 0:playerData.SelectedCharacterId) : player.currentAvatarId);
+        int currentCustomCharacterId = (int)(player?.currentAvatarId == null ? (playerData == null ? 0 : playerData.SelectedCharacterId) : player.currentAvatarId);
         string[] currentBattleCharacterIds = /*(player?.battleCharacter_ids == null || player.battleCharacter_ids.Length < 3)*/true ? ((playerData == null || playerData.SelectedCharacterIds.Length < 3) ? new string[3] { "0", "0", "0" } : playerData.SelectedCharacterIds) : player.battleCharacter_ids;
 
-        PlayerData newPlayerData = null;
-        newPlayerData = new PlayerData(player._id, player.clan_id, currentCustomCharacterId, currentBattleCharacterIds, player.name, player.backpackCapacity, player.uniqueIdentifier);
+        if (playerData == null) { 
+            playerData = new PlayerData(player._id, player.clan_id, currentCustomCharacterId, currentBattleCharacterIds, player.name, player.backpackCapacity, player.uniqueIdentifier);
+        }
+        else
+        {
+            playerData.UpdatePlayerData(player);
+        }
 
         if (characters == null)
         {
@@ -277,15 +289,15 @@ public class ServerManager : MonoBehaviour
             {
                 character.Add(characterItem);
             }
-            newPlayerData.BuildCharacterLists(character);
+            playerData.BuildCharacterLists(character);
         }
         else
         {
-            newPlayerData.BuildCharacterLists(characters);
+            playerData.BuildCharacterLists(characters);
         }
         PlayerPrefs.SetString("profileId", player.profile_id);
 
-        Storefront.Get().SavePlayerData(newPlayerData, null);
+        Storefront.Get().SavePlayerData(playerData, null);
         PlayerSettings playerSettings = GameConfig.Get().PlayerSettings;
 
         playerSettings.PlayerGuid = player.uniqueIdentifier;
@@ -325,23 +337,23 @@ public class ServerManager : MonoBehaviour
             playerData.ClanId = clan._id;
             store.SavePlayerData(playerData, null);
 
-            clanData = new ClanData(clan);
+            //clanData = new ClanData(clan);
 
             // Checks if the clan is found in DataStorage or if we have to create new one.
-            /*
+            
             store.GetClanData(playerData.ClanId, clanDataFromStorage =>
             {
                 if (clanDataFromStorage == null)
                 {
                     clanData = new ClanData(clan);
-                    return;
                 }
                 else
                 {
                     clanData = clanDataFromStorage;
+                    clanData.UpdateClanData(clan);
                 }
 
-            }); */
+            }); 
         });
 
         // Creates or fetches the most up to date clan Stock before saving.
@@ -380,13 +392,18 @@ public class ServerManager : MonoBehaviour
                 }
                 else
                 {
-                    ReadOnlyCollection<GameFurniture> baseFurniture = null;
-                    store.GetAllGameFurnitureYield(result => baseFurniture = result);
-                    clanFurniture = CreateDefaultModels.CreateDefaultDebugFurniture(baseFurniture);
+                    if (SceneManager.GetActiveScene().buildIndex == 0)
+                    {
+                        ReadOnlyCollection<GameFurniture> baseFurniture = null;
+                        store.GetAllGameFurnitureYield(result => baseFurniture = result);
+                        clanFurniture = CreateDefaultModels.CreateDefaultDebugFurniture(baseFurniture);
+                    }
                 }
-
-                inventory.Furniture = clanFurniture;
-                clanData.Inventory = inventory;
+                if (clanFurniture.Count != 0)
+                {
+                    inventory.Furniture = clanFurniture;
+                    clanData.Inventory = inventory;
+                }
             }
         }));
 
@@ -456,15 +473,93 @@ public class ServerManager : MonoBehaviour
         else callback(true);
     }
 
+    public IEnumerator ServiceHeartBeat()
+    {
+        float timeCurrent = 0f;
+        float timeToNext = 120f;
+
+        while (true)
+        {
+            timeCurrent = 0f;
+            bool? heartBeat = null;
+            yield return HeartbeatToServer(callback =>
+            {
+                if(callback == false)
+                {
+                    timeToNext = 5f;
+                }
+                else
+                {
+                    timeToNext = 5f;
+                }
+                heartBeat = callback;
+            });
+            yield return new WaitUntil(() => heartBeat != null);
+            bool? list = null;
+            if (heartBeat == true)
+            {
+                yield return GetOnlinePlayersFromServer(callback =>
+                {
+                    if (callback != null)
+                    {
+                        list = true;
+                        _onlinePlayers = callback;
+                        OnOnlinePlayersChanged?.Invoke(_onlinePlayers);
+                        timeToNext = 120f;
+                    }
+                    else
+                    {
+                        list = false;
+                        timeToNext = 5f;
+                    }
+                });
+            }
+            yield return new WaitUntil(() => list != null);
+            while (timeCurrent < timeToNext)
+            {
+                yield return null;
+                timeCurrent += Time.deltaTime;
+            }
+        }
+    }
+
     #region Server
 
     #region Player
-    public IEnumerator GetPlayerFromServer(Action<ServerPlayer> callback)
+    public IEnumerator GetOwnPlayerFromServer(Action<ServerPlayer> callback)
     {
         if (Player != null)
             Debug.LogWarning("Player already exists. Consider using ServerManager.Instance.Player if the most up to data data from server is not needed.");
 
-        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "player/" + PlayerPrefs.GetString("playerId", string.Empty), AccessToken, request =>
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "player/" + PlayerPrefs.GetString("playerId", string.Empty) + "?with=DailyTask", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                ServerPlayer player = result["data"]["Player"].ToObject<ServerPlayer>();
+                Player = player;
+
+                if (callback != null)
+                    callback(player);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator GetOtherPlayerFromServer(string id, Action<ServerPlayer> callback, bool dailyTask = false)
+    {
+        if (Player != null)
+            Debug.LogWarning("Player already exists. Consider using ServerManager.Instance.Player if the most up to data data from server is not needed.");
+
+        string withDailyTask = "";
+        if (dailyTask)withDailyTask= "?with=DailyTask";
+
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "player/" + id + withDailyTask, AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
@@ -516,58 +611,6 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
-    public IEnumerator GetPlayerTasksFromServer(Action<List<PlayerTask>> callback)
-    {
-        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "dailyTasks", AccessToken, request =>
-        {
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                JObject result = JObject.Parse(request.downloadHandler.text);
-                Debug.LogWarning(result);
-                List<ServerPlayerTask> serverTasks = ((JArray)result["data"]["DailyTask"]).ToObject<List<ServerPlayerTask>>();
-                //Clan = clan;
-                if(serverTasks.Count < 1) { callback(null); return; }
-
-                List<PlayerTask> tasks = new();
-                foreach (ServerPlayerTask task in serverTasks)
-                {
-                    tasks.Add(new(task));
-                }
-                
-
-                if (callback != null)
-                    callback(new(tasks));
-            }
-            else
-            {
-                if (callback != null)
-                    callback(null);
-            }
-        }));
-    }
-
-    public IEnumerator ReservePlayerTaskFromServer(string taskId, Action<PlayerTask> callback)
-    {
-        yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "dailyTasks/reserve/"+taskId, taskId, AccessToken, request =>
-        {
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                JObject result = JObject.Parse(request.downloadHandler.text);
-                //Debug.LogWarning(result);
-                ServerPlayerTask task = result["data"]["DailyTask"].ToObject<ServerPlayerTask>();
-                //Clan = clan;
-
-                if (callback != null)
-                    callback(new(task));
-            }
-            else
-            {
-                if (callback != null)
-                    callback(null);
-            }
-        }));
-    }
-
     #endregion
 
     #region Clan
@@ -608,7 +651,7 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator GetAllClans(int page, Action<List<ServerClan>, PaginationData> callback)
     {
-        string query = DEVADDRESS + "clan?page=" + page + "&limit=5";
+        string query = DEVADDRESS + "clan";//?page=" + page + "&limit=5";
 
         StartCoroutine(WebRequests.Get(query, AccessToken, request =>
         {
@@ -618,7 +661,7 @@ public class ServerManager : MonoBehaviour
                 Debug.LogWarning(result);
                 JArray clans = (JArray)result["data"]["Clan"];
 
-                PaginationData paginationData = result["paginationData"].ToObject<PaginationData>();
+                PaginationData paginationData = new();//result["paginationData"].ToObject<PaginationData>();
 
                 if (callback != null)
                     callback(clans.ToObject<List<ServerClan>>(), paginationData);
@@ -813,26 +856,38 @@ public class ServerManager : MonoBehaviour
         }
 
         string body = JObject.FromObject(
-            new {
-                _id=data.Id,
-                name=data.Name,
-                tag=data.Tag,
-                isOpen=Clan.isOpen,
+            new
+            {
+                _id = data.Id,
+                name = data.Name,
+                tag = data.Tag,
+                isOpen = Clan.isOpen,
                 labels = serverValues,
-                ageRange=data.ClanAge,
-                goal=data.Goals,
-                phrase=data.Phrase,
-                language=data.Language,
+                ageRange = data.ClanAge,
+                goal = data.Goals,
+                phrase = data.Phrase,
+                language = data.Language,
                 clanLogo = logo
             },
             JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
         ).ToString();
 
+        yield return UpdateClanToServer(body, callback);
+        Storefront.Get().SaveClanData(data, null);
+    }
+
+    public IEnumerator UpdateClanToServer(string body, Action<bool> callback)
+    {
+
         yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "clan", body, AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                Storefront.Get().SaveClanData(data, null);
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                ServerClan clan = result["data"]["Clan"].ToObject<ServerClan>();
+                Clan = clan;
+
+                StartCoroutine(SaveClanFromServerToDataStorage(Clan));
 
                 if (callback != null)
                 {
@@ -845,6 +900,150 @@ public class ServerManager : MonoBehaviour
                 {
                     callback(false);
                 }
+            }
+        }));
+    }
+
+    #endregion
+
+    #region Heartbeat
+
+    public IEnumerator GetOnlinePlayersFromServer(Action<List<string>> callback)
+    {
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "online-players/", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                //ServerPlayer player = result["data"]["Object"].ToObject<ServerPlayer>();
+                List<string> player = result["data"]["Object"].ToObject<List<string>>();
+
+                if (callback != null)
+                    callback(player);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator HeartbeatToServer(Action<bool> callback)
+    {
+        if (Player == null)
+        {
+            Debug.LogError("Cannot find Player.");
+            yield break;
+        }
+
+        yield return StartCoroutine(WebRequests.Post(DEVADDRESS + "online-players/ping", "", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
+    #endregion
+
+    #region DailyTasks
+
+    public IEnumerator GetPlayerTasksFromServer(Action<List<PlayerTask>> callback)
+    {
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "dailyTasks", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                List<ServerPlayerTask> serverTasks = ((JArray)result["data"]["DailyTask"]).ToObject<List<ServerPlayerTask>>();
+                //Clan = clan;
+                if (serverTasks.Count < 1) { callback(null); return; }
+
+                List<PlayerTask> tasks = new();
+                foreach (ServerPlayerTask task in serverTasks)
+                {
+                    tasks.Add(new(task));
+                }
+
+
+                if (callback != null)
+                    callback(new(tasks));
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator GetPlayerTaskFromServer(string taskId, Action<PlayerTask> callback)
+    {
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "dailyTasks/" + taskId, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                //Debug.LogWarning(result);
+                ServerPlayerTask serverTask = result["data"]["DailyTask"].ToObject<ServerPlayerTask>();
+                //Clan = clan;
+
+                if (callback != null)
+                    callback(new(serverTask));
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator ReservePlayerTaskFromServer(string taskId, Action<PlayerTask> callback)
+    {
+        yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "dailyTasks/reserve/" + taskId, "", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                ServerPlayerTask task = result["data"]["Object"].ToObject<ServerPlayerTask>();
+                //Clan = clan;
+
+                if (callback != null)
+                    callback(new(task));
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator UnreservePlayerTaskFromServer(Action<bool> callback)
+    {
+        yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "dailyTasks/unreserve/", "", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
             }
         }));
     }

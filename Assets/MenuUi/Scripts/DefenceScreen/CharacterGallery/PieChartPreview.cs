@@ -80,21 +80,35 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterGallery
             int characterSize = customCharacter.CharacterSize;
             int speed = customCharacter.Speed;
 
+            UpdateChart(impactForce,healthPoints, defence, characterSize, speed);
+        }
+
+
+        /// <summary>
+        /// Update/create piechart preview based on individual stat numbers.
+        /// </summary>
+        /// <param name="impactForce">Impact force stat level as integer.</param>
+        /// <param name="healthPoints">Health points stat level as integer.</param>
+        /// <param name="defence">Defence stat level as integer.</param>
+        /// <param name="characterSize">Character size stat level as integer.</param>
+        /// <param name="speed">Speed stat level as integer.</param>
+        public void UpdateChart(int impactForce, int healthPoints, int defence, int characterSize, int speed)
+        {
             // Arrange stats
             var stats = new List<(int level, Color color)>
             {
-                (defence, _defenceColor),
+                (impactForce, _impactForceColor),
+                (healthPoints, _healthPointsColor),
                 (characterSize, _characterSizeColor),
                 (speed, _speedColor),
-                (healthPoints, _healthPointsColor),
-                (impactForce, _impactForceColor),
+                (defence, _defenceColor),
             };
 
             // Create slices
             int maxCombinedStatLevel = CustomCharacter.STATMAXCOMBINED;
             float oneLevelFillAmount = 1.0f / maxCombinedStatLevel;
             float currentSliceFill = 1.0f;
-            
+
             foreach (var stat in stats) // Colored slices
             {
                 CreateSlice(currentSliceFill, stat.color);
@@ -105,7 +119,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterGallery
                     return;
                 }
             }
-            
+
             if (currentSliceFill > 0.0f) // White slice
             {
                 CreateSlice(currentSliceFill, _defaultColor);

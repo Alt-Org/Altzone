@@ -1,15 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class DailyTaskOwnTask : MonoBehaviour
 {
+    public enum MoodType
+    {
+        NoWork,
+        Lazy,
+        Ok,
+        Headache,
+        Depressed
+    }
+
+    [SerializeField] private DailyTaskCardImageReference _cardImageReference;
+
     [Header("Current task")]
     [SerializeField] private TextMeshProUGUI _taskDescription;
     [SerializeField] private TextMeshProUGUI _taskPointsReward;
     [SerializeField] private TextMeshProUGUI _taskCoinsReward;
+    [SerializeField] private Image _taskTypeImage;
     [Space]
     [SerializeField] private Image _taskProgressFillImage;
     [SerializeField] private RectTransform _taskProgressLayoutGroup;
@@ -17,7 +31,7 @@ public class DailyTaskOwnTask : MonoBehaviour
     [SerializeField] private int _progressMarkersMaxAmount = 8;
     [Range(0f, 1f)]
     [SerializeField] private float _progressMarkerXScale = 0.05f;
-    [SerializeField] private TMP_Text _testTaskProgressValue;
+    [SerializeField] private TMP_Text _testTaskProgressValue; //TODO: Remove when testing done.
 
     private List<GameObject> _taskProgressMarkers = new List<GameObject>();
 
@@ -31,34 +45,52 @@ public class DailyTaskOwnTask : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _stipendClanRankValue;
 
     [Header("Texts")]
-    [SerializeField] private TextMeshProUGUI _breakRemainder;
     [SerializeField] private TextMeshProUGUI _randomText;
 
     [Header("Player Character")]
     [SerializeField] private Image _playerCharacterImage;
+    [Space]
+    [SerializeField] private GameObject _breakReminder;
+    [Space]
+    [SerializeField] private GameObject _workMoodNoWork;
+    [SerializeField] private GameObject _workMoodLazy;
+    [SerializeField] private GameObject _workMoodOk;
+    [SerializeField] private GameObject _workMoodHeadache;
+    [SerializeField] private GameObject _workMoodDepressed;
+
+    private MoodType _moodType = MoodType.Ok;
 
     private void Start()
     {
         CreateProgressBarMarkers(_progressMarkersMaxAmount);
+        SetMood(MoodType.Ok);
     }
 
-    #region SetTask
-    public void SetDailyTask(string taskDescription, int amount, int points, int coins)
+    #region Task
+
+    public IEnumerator SetDailyTask(PlayerTask data)
     {
-        _taskDescription.text = taskDescription;
-        _taskPointsReward.text = "" + points;
-        _taskCoinsReward.text = "" + coins;
+        _taskDescription.text = data.Title;
+        _taskPointsReward.text = "" + data.Points;
+        _taskCoinsReward.text = "" + data.Coins;
+        _taskTypeImage.sprite = _cardImageReference.GetTaskImage(data);
 
-        SetProgressBar(amount);
+        yield return new WaitUntil(() => (_taskProgressMarkers.Count != 0));
+
+        SetProgressBarMarkers(data.Amount);
     }
 
-    private void SetProgressBar(int amount)
+    /// <summary>
+    /// Set the amount of visible progress bar markers.
+    /// </summary>
+    private void SetProgressBarMarkers(int amount)
     {
         DeactivateAllProgressBarMarkers();
 
         if (amount > _taskProgressMarkers.Count)
             amount = _taskProgressMarkers.Count + 1;
 
+        //Activate needed amount or all progress bar markers and set their locations.
         for (int i = 0; (i < (amount - 1) && i < _taskProgressMarkers.Count); i++)
         {
             _taskProgressMarkers[i].SetActive(true);
@@ -83,7 +115,19 @@ public class DailyTaskOwnTask : MonoBehaviour
             _taskProgressMarkers.Add(marker);
         }
     }
-    #endregion
+
+    /// <summary>
+    /// Set the current tasks visual progress bar fill amount.
+    /// </summary>
+    public void SetTaskProgress(float progress)
+    {
+        _taskProgressFillImage.fillAmount = progress;
+    }
+
+    public void TESTSetTaskValue(int progress) //TODO: Remove when testing done.
+    {
+        _testTaskProgressValue.text = "" + progress;
+    }
 
     public void ClearCurrentTask()
     {
@@ -91,17 +135,40 @@ public class DailyTaskOwnTask : MonoBehaviour
         _taskPointsReward.text = "";
         _taskCoinsReward.text = "";
 
-        SetProgressBar(0);
+        SetProgressBarMarkers(0);
     }
 
-    public void SetTaskProgress(float progress)
-    {
-        _taskProgressFillImage.fillAmount = progress;
-    }
+    #endregion
 
-    public void TESTSetTaskValue(int progress)
+    public void SetMood(MoodType type)
     {
-        _testTaskProgressValue.text = "" + progress;
+        //Turn off old mood.
+        switch (_moodType)
+        {
+            case MoodType.NoWork: break;
+            case MoodType.Lazy: break;
+            case MoodType.Ok: break;
+            case MoodType.Headache: _workMoodHeadache.SetActive(false); break;
+            case MoodType.Depressed: _workMoodDepressed.SetActive(false); break;
+        }
+
+        _moodType = type;
+
+        //Turn on new mood.
+        switch (type)
+        {
+            case MoodType.NoWork: break;
+            case MoodType.Lazy: break;
+            case MoodType.Ok: break;
+            case MoodType.Headache: _workMoodHeadache.SetActive(true); break;
+            case MoodType.Depressed: _workMoodDepressed.SetActive(true); break;
+        }
+
+        //Take a break reminder.
+        if (_moodType == MoodType.Headache || _moodType == MoodType.Depressed)
+            _breakReminder.SetActive(true);
+        else
+            _breakReminder.SetActive(false);
     }
 
     public void SetStipend(int points, int coins, int rank)
