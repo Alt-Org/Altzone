@@ -54,11 +54,14 @@ public class Chat : AltMonoBehaviour
 
     [Header("Minimize")]
     [SerializeField] private GameObject _quickMessages;
+    [SerializeField] private GameObject _quickMessagesScrollBar;
     [SerializeField] private GameObject[] _sendButtons;
-
+    
     // Public getters
     public GameObject QuickMessages => _quickMessages;
+    public GameObject QuickMessagesScrollBar => _quickMessagesScrollBar;
     public GameObject[] SendButtons => _sendButtons;
+
 
     [Header("TablineScript reference")]
     [SerializeField] private TabLine _tablineScript;

@@ -12,6 +12,7 @@ public class ChatClickOutside : MonoBehaviour, IPointerClickHandler
     {
         // Checks for clicks outside of the quick message and send button panels. Closes them if so.
         if (!((PointerEventData)eventData).pointerCurrentRaycast.gameObject.Equals(_chatScript.QuickMessages)
+            && !((PointerEventData)eventData).pointerCurrentRaycast.gameObject.Equals(_chatScript.QuickMessagesScrollBar)
             && !((PointerEventData)eventData).pointerCurrentRaycast.gameObject.Equals(_chatScript.SendButtons))
         {
             _chatScript.MinimizeOptions();
