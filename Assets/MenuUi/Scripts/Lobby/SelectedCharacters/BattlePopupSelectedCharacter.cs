@@ -142,6 +142,12 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
 
         private void OpenSelectionDropdown()
         {
+            if (_selectionDropdownContent.childCount > 0)
+            {
+                _selectionDropdown.SetActive(true);
+                return;
+            }
+
             StartCoroutine(GetPlayerData(playerData =>
             {
                 var characters = playerData.CustomCharacters.GroupBy(x => x.Id).Select(x => x.First()).ToList(); // ensuring no duplicate characters are shown
@@ -168,14 +174,6 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             if (_selectionDropdown.activeSelf)
             {
                 _selectionDropdown.SetActive(false);
-                for (int i = 0; i < _selectionDropdownContent.childCount; i++)
-                {
-                    Transform dropdownButton = _selectionDropdownContent.GetChild(i);
-                    Button buttonComponent = dropdownButton.GetComponent<Button>();
-                    buttonComponent.onClick.RemoveAllListeners();
-
-                    Destroy(dropdownButton.gameObject);
-                }
                 _dropdownScrollRect.VerticalNormalizedPosition = 1;
             }
         }
