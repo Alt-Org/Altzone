@@ -264,7 +264,7 @@ public class Chat : AltMonoBehaviour
             {
                 if (_currentContent != null)
                 {
-                    StartCoroutine(UpdateLayoutAndScroll(newMessage));
+                    StartCoroutine(UpdateLayoutAndScroll(newMessage, _currentContent));
                     shouldScroll = false;
                 }
                 else
@@ -279,15 +279,19 @@ public class Chat : AltMonoBehaviour
         }
     }
 
-    private IEnumerator UpdateLayoutAndScroll(GameObject message)
+    private IEnumerator UpdateLayoutAndScroll(GameObject message, GameObject contentLayout)
     {
         yield return null;
-
-        Canvas.ForceUpdateCanvases();
         message.GetComponentInChildren<ChatMessageScript>().MessageSetHeight();
 
         yield return null;
+        Canvas.ForceUpdateCanvases();
 
+        yield return null;
+        RectTransform rectTransform = contentLayout.GetComponent<RectTransform>();
+        LayoutRebuilder.MarkLayoutForRebuild(rectTransform);
+
+        yield return null;
         _currentScrollRect.verticalNormalizedPosition = 0f;
     }
 
