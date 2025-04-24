@@ -170,8 +170,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void Awake()
         {
+            // Close and save button listeners
             _closeButton.onClick.AddListener(CloseEditor);
             _saveButton.onClick.AddListener(SaveChanges);
+
+            // Options dropdown listeners
+            _optionsDropdownButton.onClick.AddListener(ToggleOptionsDropdown);
 
             _resetButton.onClick.AddListener(() =>
             {
@@ -182,32 +186,53 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 SetDefaultData(BattleUiElementType.TeammateInfo);
             });
 
-            _optionsDropdownButton.onClick.AddListener(ToggleOptionsDropdown);
+            // Updating input fields from the slider values
+            UpdateInputFieldText(_arenaScaleSlider.value, _arenaScaleInputField);
+            UpdateInputFieldText(_arenaPosXSlider.value, _arenaPosXInputField);
+            UpdateInputFieldText(_arenaPosYSlider.value, _arenaPosYInputField);
 
-            UpdateInputFieldValue(_arenaScaleSlider.value, _arenaScaleInputField);
-            UpdateInputFieldValue(_arenaPosXSlider.value, _arenaPosXInputField);
-            UpdateInputFieldValue(_arenaPosYSlider.value, _arenaPosYInputField);
+            UpdateInputFieldText(_gridColumnsSlider.value, _gridColumnsInputField);
+            UpdateInputFieldText(_gridRowsSlider.value, _gridRowsInputField);
 
-            UpdateInputFieldValue(_gridColumnsSlider.value, _gridColumnsInputField);
-            UpdateInputFieldValue(_gridRowsSlider.value, _gridRowsInputField);
+            // Updating column and row variables from the slider values
             _columns = (int)_gridColumnsSlider.value;
             _rows = (int)_gridRowsSlider.value;
 
-            _arenaScaleSlider.onValueChanged.AddListener((value) => UpdateInputFieldValue(value, _arenaScaleInputField));
-            _arenaPosXSlider.onValueChanged.AddListener((value) => UpdateInputFieldValue(value, _arenaPosXInputField));
-            _arenaPosYSlider.onValueChanged.AddListener((value) => UpdateInputFieldValue(value, _arenaPosYInputField));
+            // Arena scale listeners
+            _arenaScaleSlider.onValueChanged.AddListener((value) => UpdateInputFieldText(value, _arenaScaleInputField));
+            _arenaPosXSlider.onValueChanged.AddListener((value) => UpdateInputFieldText(value, _arenaPosXInputField));
+            _arenaPosYSlider.onValueChanged.AddListener((value) => UpdateInputFieldText(value, _arenaPosYInputField));
 
+            _arenaScaleInputField.onValueChanged.AddListener((value) => VerifyAndUpdateSliderValue(_arenaScaleInputField, _arenaScaleSlider));
+            _arenaPosXInputField.onValueChanged.AddListener((value) => VerifyAndUpdateSliderValue(_arenaPosXInputField, _arenaPosXSlider));
+            _arenaPosYInputField.onValueChanged.AddListener((value) => VerifyAndUpdateSliderValue(_arenaPosYInputField, _arenaPosYSlider));
+
+            // Grid listeners
             _gridColumnsSlider.onValueChanged.AddListener((value) =>
             {
-                UpdateInputFieldValue(value, _gridColumnsInputField);
+                UpdateInputFieldText(value, _gridColumnsInputField);
                 _columns = (int)value;
                 _grid.SetColumns(_columns);
             });
 
             _gridRowsSlider.onValueChanged.AddListener((value) =>
             {
-                UpdateInputFieldValue(value, _gridRowsInputField);
+                UpdateInputFieldText(value, _gridRowsInputField);
                 _rows = (int)value;
+                _grid.SetRows(_rows);
+            });
+
+            _gridColumnsInputField.onValueChanged.AddListener((value) =>
+            {
+                VerifyAndUpdateSliderValue(_gridColumnsInputField, _gridColumnsSlider);
+                _columns = int.Parse(value);
+                _grid.SetColumns(_columns);
+            });
+
+            _gridRowsInputField.onValueChanged.AddListener((value) =>
+            {
+                VerifyAndUpdateSliderValue(_gridRowsInputField, _gridRowsSlider);
+                _rows = int.Parse(value);
                 _grid.SetRows(_rows);
             });
 
@@ -216,28 +241,34 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void OnDestroy()
         {
+            // Removing close and save button listeners
             _closeButton.onClick.RemoveAllListeners();
             _saveButton.onClick.RemoveAllListeners();
 
-            _resetButton.onClick.RemoveAllListeners();
-            _alignToGridToggle.onValueChanged.RemoveAllListeners();
-            _incrementalScalingToggle.onValueChanged.RemoveAllListeners();
-
+            // Removing save changes popup listeners
             _okButton.onClick.RemoveAllListeners();
             _noButton.onClick.RemoveAllListeners();
 
+            // Removing editing component listeners
             foreach (var editingComponent in _uiElementsHolder.GetComponentsInChildren<BattleUiEditingComponent>())
             {
                 editingComponent.OnUiElementEdited -= OnUiElementEdited;
                 editingComponent.OnUiElementSelected -= OnUiElementSelected;
             }
 
+            // Removing options dropdown listeners
             _optionsDropdownButton.onClick.RemoveAllListeners();
 
+            _resetButton.onClick.RemoveAllListeners();
+            _alignToGridToggle.onValueChanged.RemoveAllListeners();
+            _incrementalScalingToggle.onValueChanged.RemoveAllListeners();
+
+            // Removing arena scale listeners
             _arenaScaleSlider.onValueChanged.RemoveAllListeners();
             _arenaPosXSlider.onValueChanged.RemoveAllListeners();
             _arenaPosYSlider.onValueChanged.RemoveAllListeners();
 
+            // Removing grid listeners
             _gridColumnsSlider.onValueChanged.RemoveAllListeners();
             _gridRowsSlider.onValueChanged.RemoveAllListeners();
 
@@ -595,9 +626,24 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _currentlySelectedEditingComponent = newSelectedEditingComponent;
         }
 
-        private void UpdateInputFieldValue(float value, TMP_InputField field)
+        private void UpdateInputFieldText(float value, TMP_InputField field)
         {
-            field.text = value.ToString();
+            field.SetTextWithoutNotify(value.ToString());
+        }
+
+        private void VerifyAndUpdateSliderValue(TMP_InputField field, Slider slider)
+        {
+            if (int.TryParse(field.text, out int value))
+            {
+                int clampedValue = Math.Clamp(value, (int)slider.minValue, (int)slider.maxValue);
+                field.SetTextWithoutNotify(clampedValue.ToString());
+                slider.SetValueWithoutNotify(clampedValue);
+            }
+            else
+            {
+                field.SetTextWithoutNotify(slider.minValue.ToString());
+                slider.SetValueWithoutNotify(slider.minValue);
+            }
         }
     }
 }
