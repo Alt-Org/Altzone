@@ -170,22 +170,46 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     break;
 
                 case ActionType.Scale:
-                    // Scaling while keeping aspect ratio, we have to invert scaling for the left side scale handles
-                    float sizeIncreaseX;
-                    if (_currentScaleHandleIdx == (int)CornerType.TopLeft || _currentScaleHandleIdx == (int)CornerType.BottomLeft)
+                    float sizeIncreaseX = 0f;
+                    float sizeIncreaseY = 0f;
+
+                    // If vertical multiorientation element we scale in y axis
+                    if (_multiOrientationElement != null && !_multiOrientationElement.IsHorizontal) 
                     {
-                        sizeIncreaseX = -((eventData.position.x - eventData.pressPosition.x) * 2);
+                        sizeIncreaseY = -((eventData.position.y - eventData.pressPosition.y) * 2);
+
+                        // We have to invert scaling for the top side scale handles when scaling vertically
+                        if (_currentScaleHandleIdx == (int)CornerType.TopLeft || _currentScaleHandleIdx == (int)CornerType.TopRight)
+                        {
+                            sizeIncreaseY = -sizeIncreaseY;
+                        }
                     }
-                    else
+                    else // If horizontal ui element we scale in x axis
                     {
                         sizeIncreaseX = (eventData.position.x - eventData.pressPosition.x) * 2;
+
+                        // We have to invert scaling for the left side scale handles when scaling horizontally
+                        if (_currentScaleHandleIdx == (int)CornerType.TopLeft || _currentScaleHandleIdx == (int)CornerType.BottomLeft)
+                        {
+                            sizeIncreaseX = -sizeIncreaseX;
+                        }
                     }
-                         
-                    float sizeIncreaseY = sizeIncreaseX / (_movableElement.RectTransformComponent.rect.width / _movableElement.RectTransformComponent.rect.height);
+
+                    // Getting the other value from aspect ratio
+                    if (sizeIncreaseX == 0f)
+                    {
+                        sizeIncreaseX = sizeIncreaseY * _aspectRatio;
+                    }
+                    else if (sizeIncreaseY == 0f)
+                    {
+                        sizeIncreaseY = sizeIncreaseX / _aspectRatio;
+                    }
+
+                    // Setting sizeDelta from the size increase
                     _movableElement.RectTransformComponent.sizeDelta = new Vector2(sizeIncreaseX, sizeIncreaseY);
 
                     // Preventing being scaled too small or too big
-                    if (_multiOrientationElement == null || _multiOrientationElement.IsHorizontal)
+                    if (_multiOrientationElement == null || _multiOrientationElement.IsHorizontal) // For horizontal elements
                     {
                         float clampedWidth = Mathf.Clamp(_movableElement.RectTransformComponent.rect.width, _minWidth, _maxWidth);
 
@@ -196,12 +220,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                             clampedWidth = Mathf.Round(clampedWidth / increment) * increment;
                         }
 
-                        float aspectRatio = _multiOrientationElement == null ? _movableElementAspectRatio : _multiOrientationElement.HorizontalAspectRatio;
-
                         _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, clampedWidth);
-                        _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, clampedWidth / aspectRatio);
+                        _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, clampedWidth / _aspectRatio);
                     }
-                    else if (!_multiOrientationElement.IsHorizontal)
+                    else if (!_multiOrientationElement.IsHorizontal) // For vertical elements
                     {
                         float clampedHeight = Mathf.Clamp(_movableElement.RectTransformComponent.rect.height, _minHeight, _maxHeight);
 
@@ -295,6 +317,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private float _maxPosY => _uiElementHolder.rect.height * (Screen.width / _uiElementHolder.rect.width) - _movableElement.RectTransformComponent.rect.height / 2;
         private float _minPosX => _movableElement.RectTransformComponent.rect.width / 2;
         private float _minPosY => _movableElement.RectTransformComponent.rect.height / 2;
+
+        private float _aspectRatio => _multiOrientationElement == null ? _movableElementAspectRatio : _multiOrientationElement.HorizontalAspectRatio;
 
         private RectTransform _uiElementHolder;
 
