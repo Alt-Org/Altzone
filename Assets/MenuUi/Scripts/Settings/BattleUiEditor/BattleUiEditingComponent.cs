@@ -87,7 +87,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         public void ToggleGrid(bool toggle)
         {
-            _isGridToggled = toggle;
+            _isGridAlignToggled = toggle;
+        }
+
+        public void ToggleIncrementScaling(bool toggle)
+        {
+            _isIncrementScalingToggled = toggle;
         }
 
         public void OnPointerDown(PointerEventData eventData)
@@ -147,7 +152,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 case ActionType.Move:
                     Vector2 newPos = Vector2.zero;
 
-                    if (_isGridToggled) // Snapping to grid while moving
+                    if (_isGridAlignToggled) // Snapping to grid while moving
                     {
                         newPos.x = Mathf.Round(eventData.position.x / BattleUiEditor.GridCellWidth) * BattleUiEditor.GridCellWidth;
                         newPos.y = Mathf.Round(eventData.position.y / BattleUiEditor.GridCellHeight) * BattleUiEditor.GridCellHeight;
@@ -184,8 +189,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     {
                         float clampedWidth = Mathf.Clamp(_movableElement.RectTransformComponent.rect.width, _minWidth, _maxWidth);
 
-                        // Snapping scaling to grid
-                        if (_isGridToggled) clampedWidth = Mathf.Round(clampedWidth / (BattleUiEditor.GridCellWidth * 2)) * (BattleUiEditor.GridCellWidth * 2);
+                        // Increment scaling
+                        if (_isIncrementScalingToggled)
+                        {
+                            float increment = (_maxWidth - _minWidth) / ScalingIncrementAmount;
+                            clampedWidth = Mathf.Round(clampedWidth / increment) * increment;
+                        }
 
                         float aspectRatio = _multiOrientationElement == null ? _movableElementAspectRatio : _multiOrientationElement.HorizontalAspectRatio;
 
@@ -196,8 +205,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     {
                         float clampedHeight = Mathf.Clamp(_movableElement.RectTransformComponent.rect.height, _minHeight, _maxHeight);
 
-                        // Snapping scaling to grid
-                        if (_isGridToggled) clampedHeight = Mathf.Round(clampedHeight / (BattleUiEditor.GridCellHeight * 2)) * (BattleUiEditor.GridCellHeight * 2);
+                        // Increment scaling
+                        if (_isIncrementScalingToggled)
+                        {
+                            float increment = (_maxHeight - _minHeight) / ScalingIncrementAmount;
+                            clampedHeight = Mathf.Round(clampedHeight / increment) * increment;
+                        }
 
                         _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, clampedHeight * _multiOrientationElement.VerticalAspectRatio);
                         _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, clampedHeight);
@@ -256,6 +269,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private const int DefaultChangeOrientationButtonIdx = (int)ControlButtonVertical.Top;
         private const int DefaultFlipHorizontallyButtonIdx = (int)ControlButtonVertical.Top;
         private const int DefaultFlipVerticallyButtonIdx = (int)ControlButtonHorizontal.Right;
+        private const int ScalingIncrementAmount = 5;
 
         private Button[] _scaleHandles;
         private Button[] _changeOrientationButtons;
@@ -272,10 +286,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private Button _currentFlipHorizontallyButton => _flipHorizontallyButtons[(int)_currentFlipHorizontallyButtonIdx];
         private Button _currentFlipVerticallyButton => _flipVerticallyButtons[(int)_currentFlipVerticallyButtonIdx];
 
-        private float _maxWidth => BattleUiEditor.GridCellWidth * 10;
-        private float _maxHeight => BattleUiEditor.GridCellHeight * 16;
-        private float _minWidth => BattleUiEditor.GridCellWidth * 2;
-        private float _minHeight => BattleUiEditor.GridCellHeight * 4;
+        private float _maxWidth => _uiElementHolder.rect.width / 2;
+        private float _maxHeight => _uiElementHolder.rect.height / 2;
+        private float _minWidth => _uiElementHolder.rect.width / 6;
+        private float _minHeight => _uiElementHolder.rect.height / 10;
 
         private float _maxPosX => _uiElementHolder.rect.width * (Screen.width/ _uiElementHolder.rect.width) - _movableElement.RectTransformComponent.rect.width / 2;
         private float _maxPosY => _uiElementHolder.rect.height * (Screen.width / _uiElementHolder.rect.width) - _movableElement.RectTransformComponent.rect.height / 2;
@@ -291,7 +305,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private float _movableElementAspectRatio;
 
         private bool _isPointerDown = false;
-        private bool _isGridToggled = false;
+        private bool _isGridAlignToggled = false;
+        private bool _isIncrementScalingToggled = false;
 
         private Coroutine _dragTimerHolder = null;
 

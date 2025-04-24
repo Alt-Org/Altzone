@@ -30,6 +30,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Image _optionsDropdownButtonImage;
         [SerializeField] private GameObject _optionsDropdownContents;
         [SerializeField] private Button _resetButton;
+        [SerializeField] private Toggle _incrementalScalingToggle;
 
         [Header("Arena options")]
         [SerializeField] private Slider _arenaScaleSlider;
@@ -106,6 +107,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 if (teammateNameVertical != null) teammateNameVertical.text = TeammateText;
             }
             SetData(BattleUiElementType.TeammateInfo);
+
+            // Initializing grid
+            _grid.SetRows(_rows);
+            _grid.SetColumns(_columns);
+            _grid.SetShow(_showGridToggle.isOn);
         }
 
         /// <summary>
@@ -165,6 +171,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private void Awake()
         {
             _closeButton.onClick.AddListener(CloseEditor);
+            _saveButton.onClick.AddListener(SaveChanges);
+
             _resetButton.onClick.AddListener(() =>
             {
                 SetDefaultData(BattleUiElementType.Timer);
@@ -173,7 +181,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 SetDefaultData(BattleUiElementType.PlayerInfo);
                 SetDefaultData(BattleUiElementType.TeammateInfo);
             });
-            _saveButton.onClick.AddListener(SaveChanges);
 
             _optionsDropdownButton.onClick.AddListener(ToggleOptionsDropdown);
 
@@ -210,9 +217,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private void OnDestroy()
         {
             _closeButton.onClick.RemoveAllListeners();
+            _saveButton.onClick.RemoveAllListeners();
+
             _resetButton.onClick.RemoveAllListeners();
             _alignToGridToggle.onValueChanged.RemoveAllListeners();
-            _saveButton.onClick.RemoveAllListeners();
+            _incrementalScalingToggle.onValueChanged.RemoveAllListeners();
+
             _okButton.onClick.RemoveAllListeners();
             _noButton.onClick.RemoveAllListeners();
 
@@ -232,12 +242,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _gridRowsSlider.onValueChanged.RemoveAllListeners();
 
             _showGridToggle.onValueChanged.RemoveAllListeners();
-        }
-
-        private void Start()
-        {
-            _grid.SetRows(_rows);
-            _grid.SetColumns(_columns);
         }
 
         private void ToggleOptionsDropdown()
@@ -348,9 +352,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 return null;
             }
 
-            // Setting listener for grid toggle
+            // Setting listener for toggles
             _alignToGridToggle.onValueChanged.AddListener(editingComponent.ToggleGrid);
             editingComponent.ToggleGrid(_alignToGridToggle.isOn);
+
+            _incrementalScalingToggle.onValueChanged.AddListener(editingComponent.ToggleIncrementScaling);
+            editingComponent.ToggleIncrementScaling(_incrementalScalingToggle.isOn);
 
             // Setting listener for editing component events
             editingComponent.OnUiElementEdited += OnUiElementEdited;
