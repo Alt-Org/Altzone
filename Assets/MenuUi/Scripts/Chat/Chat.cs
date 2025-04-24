@@ -319,7 +319,7 @@ public class Chat : AltMonoBehaviour
         deletePosition.y = _selectedMessage.transform.position.y;
         _deleteButtons.transform.position = deletePosition;
 
-        SetReactionPanelPosition();
+        StartCoroutine(SetReactionPanelPosition());
 
         _deleteButtons.SetActive(true);// Näytä poistopainikkeet, jos viesti on valittuna
         _addReactionsPanel.SetActive(true);
@@ -328,8 +328,10 @@ public class Chat : AltMonoBehaviour
     /// <summary>
     /// Sets the reaction panel at the bottom of the selected message's reaction field
     /// </summary>
-    private void SetReactionPanelPosition()
+    private IEnumerator SetReactionPanelPosition()
     {
+        yield return null;
+
         Vector3 reactionPosition = _addReactionsPanel.transform.position;
         RectTransform reactionPanelTransfrom = _commonReactions.GetComponent<RectTransform>();
 
