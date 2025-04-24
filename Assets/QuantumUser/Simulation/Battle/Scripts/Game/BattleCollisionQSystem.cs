@@ -14,7 +14,7 @@ namespace Battle.QSimulation.Game
             // if projectile
             if (f.Unsafe.TryGetPointer(info.Entity, out BattleProjectileQComponent* projectile))
             {
-                if(!f.Unsafe.TryGetPointer<BattleCollisionTriggerQComponent>(info.Other, out BattleCollisionTriggerQComponent* collisionTrigger)) return;
+                if(!f.Unsafe.TryGetPointer(info.Other, out BattleCollisionTriggerQComponent* collisionTrigger)) return;
 
                 switch(collisionTrigger->Type)
                 {
