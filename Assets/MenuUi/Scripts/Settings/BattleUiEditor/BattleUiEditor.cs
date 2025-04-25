@@ -55,8 +55,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private GameObject _diamonds;
         [SerializeField] private GameObject _giveUpButton;
 
-        [Header("Save changes popup")]
-        [SerializeField] private GameObject _saveChangesPopup;
+        [Header("Save/reset popup")]
+        [SerializeField] private GameObject _saveResetPopup;
+        [SerializeField] private TMP_Text _popupText;
         [SerializeField] private Button _okButton;
         [SerializeField] private Button _noButton;
 
@@ -122,7 +123,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             CloseOptionsDropdown();
             if (_unsavedChanges)
             {
-                StartCoroutine(ShowSaveChangesPopup(saveChanges =>
+                StartCoroutine(ShowSaveResetPopup(SaveChangesText, saveChanges =>
                 {
                     if (saveChanges == null) return;
                     if (saveChanges.Value == true) SaveChanges();
@@ -149,11 +150,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// </summary>
         public void CloseSaveChangesPopup()
         {
-            _saveChangesPopup.SetActive(false);
+            _saveResetPopup.SetActive(false);
         }
 
         private const string PlayerText = "Minä";
         private const string TeammateText = "Tiimikaveri";
+
+        private const string SaveChangesText = "Tallenna muutokset?";
+        private const string ResetChangesText = "Palauta UI-elementtien oletusasettelu?";
 
         private const string GridColumnsKey = "BattleUiEditorGridColumns";
         private const string GridRowsKey = "BattleUiEditorGridRows";
@@ -183,14 +187,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Options dropdown listeners
             _optionsDropdownButton.onClick.AddListener(ToggleOptionsDropdown);
 
-            _resetButton.onClick.AddListener(() =>
-            {
-                SetDefaultData(BattleUiElementType.Timer);
-                SetDefaultData(BattleUiElementType.Diamonds);
-                SetDefaultData(BattleUiElementType.GiveUpButton);
-                SetDefaultData(BattleUiElementType.PlayerInfo);
-                SetDefaultData(BattleUiElementType.TeammateInfo);
-            });
+            _resetButton.onClick.AddListener(OnResetButtonClicked);
 
             // Arena scale listeners
             _arenaScaleSlider.onValueChanged.AddListener((value) =>
@@ -331,9 +328,19 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _optionsDropdownButtonImage.transform.localEulerAngles = new Vector3(0, 0, -90);
         }
 
-        private IEnumerator ShowSaveChangesPopup(Action<bool?> callback)
+        private void OnResetButtonClicked()
         {
-            _saveChangesPopup.SetActive(true);
+            StartCoroutine(ShowSaveResetPopup(ResetChangesText, resetChanges =>
+            {
+                if (resetChanges == null) return;
+                if (resetChanges.Value == true) ResetChanges();
+            }));
+        }
+
+        private IEnumerator ShowSaveResetPopup(string message, Action<bool?> callback)
+        {
+            _popupText.text = message;
+            _saveResetPopup.SetActive(true);
 
             _okButton.onClick.RemoveAllListeners();
             _noButton.onClick.RemoveAllListeners();
@@ -343,9 +350,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _okButton.onClick.AddListener(() => saveChanges = true);
             _noButton.onClick.AddListener(() => saveChanges = false);
 
-            yield return new WaitUntil(() => saveChanges.HasValue || !_saveChangesPopup.activeSelf);
+            yield return new WaitUntil(() => saveChanges.HasValue || !_saveResetPopup.activeSelf);
 
-            if (_saveChangesPopup.activeSelf) CloseSaveChangesPopup();
+            if (_saveResetPopup.activeSelf) CloseSaveChangesPopup();
 
             callback(saveChanges);
         }
@@ -369,6 +376,15 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             _unsavedChanges = false;
             PopupSignalBus.OnChangePopupInfoSignal("Muutokset on tallennettu.");
+        }
+
+        private void ResetChanges()
+        {
+            SetDefaultData(BattleUiElementType.Timer);
+            SetDefaultData(BattleUiElementType.Diamonds);
+            SetDefaultData(BattleUiElementType.GiveUpButton);
+            SetDefaultData(BattleUiElementType.PlayerInfo);
+            SetDefaultData(BattleUiElementType.TeammateInfo);
         }
 
         private GameObject InstantiateBattleUiElement(BattleUiElementType uiElementType)

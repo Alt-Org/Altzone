@@ -723,7 +723,7 @@ GameObject:
   - component: {fileID: 6955023554436840847}
   - component: {fileID: 8252338872719668695}
   m_Layer: 5
-  m_Name: SaveChangesPopup
+  m_Name: SaveResetPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1321,7 +1321,7 @@ GameObject:
   - component: {fileID: 5455790479425737035}
   - component: {fileID: 5494727294575861901}
   m_Layer: 5
-  m_Name: SaveChangesText
+  m_Name: PopupText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6571,7 +6571,8 @@ MonoBehaviour:
     type: 3}
   _giveUpButton: {fileID: 1616917245377245213, guid: 8ed4dd9a40dd4514b9cf3cb595753384,
     type: 3}
-  _saveChangesPopup: {fileID: 1313701494920502350}
+  _saveResetPopup: {fileID: 1313701494920502350}
+  _popupText: {fileID: 5494727294575861901}
   _okButton: {fileID: 544604813055288685}
   _noButton: {fileID: 4890329012955817898}
 --- !u!114 &5825138239432314174
