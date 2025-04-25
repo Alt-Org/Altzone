@@ -95,9 +95,11 @@ namespace Altzone.Scripts.ReferenceSheets
                     {
                         localSet.list.Add(furnitureInfo);
                         added = true;
+#if UNITY_EDITOR
                         AssetDatabase.Refresh();
                         EditorUtility.SetDirty(this);
                         AssetDatabase.SaveAssets();
+#endif
                     }
                     else
                     {
