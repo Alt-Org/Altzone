@@ -6,7 +6,7 @@ later this page can used for more specific instructions about writing documentat
 
 ## External Hyperlink format
 
-Markdow
+Markdown
 ```
 [link text🡵](url)
 [link text🡵]: url
