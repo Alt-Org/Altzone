@@ -155,6 +155,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private const string PlayerText = "Minä";
         private const string TeammateText = "Tiimikaveri";
 
+        private const string GridColumnsKey = "BattleUiEditorGridColumns";
+        private const string GridRowsKey = "BattleUiEditorGridRows";
+        private const string ShowGridKey = "BattleUiEditorShowGrid";
+        private const string AlignToGridKey = "BattleUiEditorAlignToGrid";
+        private const string IncrementalScalingKey = "BattleUiEditorIncScaling";
+
         private static int _rows = 40;
         private static int _columns = 20;
 
@@ -186,57 +192,89 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 SetDefaultData(BattleUiElementType.TeammateInfo);
             });
 
-            // Updating input fields from the slider values
-            UpdateInputFieldText(_arenaScaleSlider.value, _arenaScaleInputField);
-            UpdateInputFieldText(_arenaPosXSlider.value, _arenaPosXInputField);
-            UpdateInputFieldText(_arenaPosYSlider.value, _arenaPosYInputField);
-
-            UpdateInputFieldText(_gridColumnsSlider.value, _gridColumnsInputField);
-            UpdateInputFieldText(_gridRowsSlider.value, _gridRowsInputField);
-
-            // Updating column and row variables from the slider values
-            _columns = (int)_gridColumnsSlider.value;
-            _rows = (int)_gridRowsSlider.value;
-
             // Arena scale listeners
-            _arenaScaleSlider.onValueChanged.AddListener((value) => UpdateInputFieldText(value, _arenaScaleInputField));
-            _arenaPosXSlider.onValueChanged.AddListener((value) => UpdateInputFieldText(value, _arenaPosXInputField));
-            _arenaPosYSlider.onValueChanged.AddListener((value) => UpdateInputFieldText(value, _arenaPosYInputField));
+            _arenaScaleSlider.onValueChanged.AddListener((value) =>
+            {
+                UpdateInputFieldText(value, _arenaScaleInputField);
+                SettingsCarrier.Instance.BattleArenaScale = (int)value;
+            });
+            _arenaPosXSlider.onValueChanged.AddListener((value) =>
+            {
+                UpdateInputFieldText(value, _arenaPosXInputField);
+                SettingsCarrier.Instance.BattleArenaPosX = (int)value;
+            });
+            _arenaPosYSlider.onValueChanged.AddListener((value) =>
+            {
+                UpdateInputFieldText(value, _arenaPosYInputField);
+                SettingsCarrier.Instance.BattleArenaPosY = (int)value;
+            });
 
-            _arenaScaleInputField.onValueChanged.AddListener((value) => VerifyAndUpdateSliderValue(_arenaScaleInputField, _arenaScaleSlider));
-            _arenaPosXInputField.onValueChanged.AddListener((value) => VerifyAndUpdateSliderValue(_arenaPosXInputField, _arenaPosXSlider));
-            _arenaPosYInputField.onValueChanged.AddListener((value) => VerifyAndUpdateSliderValue(_arenaPosYInputField, _arenaPosYSlider));
+            _arenaScaleInputField.onValueChanged.AddListener((value) =>
+            {
+                VerifyAndUpdateSliderValue(_arenaScaleInputField, _arenaScaleSlider);
+                SettingsCarrier.Instance.BattleArenaScale = (int)_arenaScaleSlider.value;
+            });
+            _arenaPosXInputField.onValueChanged.AddListener((value) =>
+            {
+                VerifyAndUpdateSliderValue(_arenaPosXInputField, _arenaPosXSlider);
+                SettingsCarrier.Instance.BattleArenaPosX = (int)_arenaPosXSlider.value;
+            });
+            _arenaPosYInputField.onValueChanged.AddListener((value) =>
+            {
+                VerifyAndUpdateSliderValue(_arenaPosYInputField, _arenaPosYSlider);
+                SettingsCarrier.Instance.BattleArenaPosY = (int)_arenaPosYSlider.value;
+            });
 
             // Grid listeners
             _gridColumnsSlider.onValueChanged.AddListener((value) =>
             {
                 UpdateInputFieldText(value, _gridColumnsInputField);
-                _columns = (int)value;
-                _grid.SetColumns(_columns);
+                UpdateGridColumns();
             });
 
             _gridRowsSlider.onValueChanged.AddListener((value) =>
             {
                 UpdateInputFieldText(value, _gridRowsInputField);
-                _rows = (int)value;
-                _grid.SetRows(_rows);
+                UpdateGridRows();
             });
 
             _gridColumnsInputField.onValueChanged.AddListener((value) =>
             {
                 VerifyAndUpdateSliderValue(_gridColumnsInputField, _gridColumnsSlider);
-                _columns = int.Parse(value);
-                _grid.SetColumns(_columns);
+                UpdateGridColumns();
             });
 
             _gridRowsInputField.onValueChanged.AddListener((value) =>
             {
                 VerifyAndUpdateSliderValue(_gridRowsInputField, _gridRowsSlider);
-                _rows = int.Parse(value);
-                _grid.SetRows(_rows);
+                UpdateGridRows();
             });
 
-            _showGridToggle.onValueChanged.AddListener(_grid.SetShow);
+            _showGridToggle.onValueChanged.AddListener((value)=>
+            {
+                _grid.SetShow(value);
+                PlayerPrefs.SetInt(ShowGridKey, value ? 1 : 0);
+            });
+        }
+
+        private void Start()
+        {
+            // Getting saved settings. This will invoke the listeners added in Awake so the input fields will be updated as well.
+            _arenaScaleSlider.value = SettingsCarrier.Instance.BattleArenaScale;
+            _arenaPosXSlider.value = SettingsCarrier.Instance.BattleArenaPosX;
+            _arenaPosYSlider.value = SettingsCarrier.Instance.BattleArenaPosY;
+
+            // Grid and incremental scaling settings are saved locally from this script because they aren't accessed anywhere else
+            _gridColumnsSlider.value = PlayerPrefs.GetInt(GridColumnsKey, _columns);
+            _gridRowsSlider.value = PlayerPrefs.GetInt(GridRowsKey, _rows);
+            _showGridToggle.isOn = PlayerPrefs.GetInt(ShowGridKey, 1) == 1 ? true : false;
+            _alignToGridToggle.isOn = PlayerPrefs.GetInt(AlignToGridKey, 1) == 1 ? true : false;
+
+            _incrementalScalingToggle.isOn = PlayerPrefs.GetInt(IncrementalScalingKey, 1) == 1 ? true : false;
+
+            // Updating column and row variables from the slider values
+            _columns = (int)_gridColumnsSlider.value;
+            _rows = (int)_gridRowsSlider.value;
         }
 
         private void OnDestroy()
@@ -384,10 +422,18 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
 
             // Setting listener for toggles
-            _alignToGridToggle.onValueChanged.AddListener(editingComponent.ToggleGrid);
+            _alignToGridToggle.onValueChanged.AddListener((value)=>
+            {
+                editingComponent.ToggleGrid(value);
+                PlayerPrefs.SetInt(AlignToGridKey, value ? 1 : 0);
+            });
             editingComponent.ToggleGrid(_alignToGridToggle.isOn);
 
-            _incrementalScalingToggle.onValueChanged.AddListener(editingComponent.ToggleIncrementScaling);
+            _incrementalScalingToggle.onValueChanged.AddListener((value) =>
+            {
+                editingComponent.ToggleIncrementScaling(value);
+                PlayerPrefs.SetInt(IncrementalScalingKey, value ? 1 : 0);
+            });
             editingComponent.ToggleIncrementScaling(_incrementalScalingToggle.isOn);
 
             // Setting listener for editing component events
@@ -644,6 +690,26 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 field.SetTextWithoutNotify(slider.minValue.ToString());
                 slider.SetValueWithoutNotify(slider.minValue);
             }
+        }
+
+        private void UpdateGridColumns()
+        {
+            int value = (int)_gridColumnsSlider.value;
+            if (_columns == value) return; // If the value didn't change we return
+
+            _columns = value;
+            PlayerPrefs.SetInt(GridColumnsKey, _columns);
+            _grid.SetColumns(_columns);
+        }
+
+        private void UpdateGridRows()
+        {
+            int value = (int)_gridRowsSlider.value;
+            if (_rows == value) return;
+
+            _rows = value;
+            PlayerPrefs.SetInt(GridRowsKey, _rows);
+            _grid.SetRows(_rows);
         }
     }
 }
