@@ -29,9 +29,9 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum system update method</a>.<br/>
         /// Handles player input, movement and rotations.<br/>
-        /// (this method should only be called by Quantum)
+        /// @warning This method should only be called by Quantum.
         /// </summary>
-        /// 
+        ///
         /// Skips players that have PlayerRef = none.<br/>
         /// Gets player's Quantum Input and calls <see cref="UpdatePlayerMovement(Frame, ref Filter, Input*)">UpdatePlayerMovement</see> method.
         /// <param name="f">Current Quantum Frame</param>

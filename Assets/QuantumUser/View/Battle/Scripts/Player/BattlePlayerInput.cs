@@ -11,15 +11,27 @@ using Battle.View.Game;
 
 namespace Battle.View.Player
 {
+    /// <summary>
+    /// Player input <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour</a> script.<br/>
+    /// Handles subscribing to QuantumCallBack and polling player inputs for Quantum.
+    /// </summary>
     public class BattlePlayerInput : MonoBehaviour
     {
+         /// <value>Previous click by a player.</value>
         private bool _mouseDownPrevious;
 
+        /// <summary>
+        /// Subscribes to QuantumCallBack when this script is enabled.
+        /// </summary>
         private void OnEnable()
         {
             QuantumCallback.Subscribe(this, (CallbackPollInput callback) => PollInput(callback));
         }
 
+        /// <summary>
+        /// Handles polling player input for Quantum.
+        /// </summary>
+        /// <param name="callback"></param>
         private void PollInput(CallbackPollInput callback)
         {
             bool mouseDown = ClickStateHandler.GetClickState() is ClickState.Start or ClickState.Hold or ClickState.Move;

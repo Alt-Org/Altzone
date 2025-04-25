@@ -5,6 +5,10 @@ using Quantum;
 
 namespace Battle.QSimulation.Game
 {
+    /// <summary>
+    /// Collision <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">SystemSignalsOnly Quantum System</a>.<br/>
+    /// Handles all collisions in the game. Reacts only when it receives a signal upon collision.
+    /// </summary>
     [Preserve]
     public unsafe class BattleCollisionQSystem : SystemSignalsOnly, ISignalOnTrigger2D
     {

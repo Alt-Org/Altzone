@@ -10,7 +10,7 @@ using Battle.QSimulation.Game;
 namespace Battle.QSimulation.Projectile
 {
     /// <summary>
-    /// Projectile
+    /// Projectile <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System</a>.<br/>
     /// Handles Projectile logic.
     /// </summary>
     [Preserve]
@@ -47,10 +47,11 @@ namespace Battle.QSimulation.Projectile
         }
 
         /// <summary>
-        /// Launches the projectile and sets properties based on the Projectile spec.
+        /// Launches the projectile and sets properties based on the <see cref="Battle.QSimulation.Projectile.BattleProjectileQSpec">Projectile spec.</see>
+        /// @warning This method should only be called by Quantum. 
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="filter"></param>
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter</a>.</param>
         public override void Update(Frame f, ref Filter filter)
         {
             // unpack filter
@@ -91,8 +92,8 @@ namespace Battle.QSimulation.Projectile
         /// </summary>
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="projectileEntity">Entity of the projectile.</param>
-        /// <param name="otherEntity">Entity the projectile collided with.</param>
+        /// <param name="projectileEntity">EntityRef of the projectile.</param>
+        /// <param name="otherEntity">EntityRef the projectile collided with.</param>
         /// <param name="normal">Normal vector of the collision surface.</param>
         /// <param name="collisionMinOffset">Minimum offset to resolve collision penetration.</param>
         private void ProjectileBounce(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, EntityRef otherEntity, FPVector2 normal, FP collisionMinOffset)
@@ -123,9 +124,9 @@ namespace Battle.QSimulation.Projectile
         /// </summary>
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="projectileEntity">Entity of the projectile.</param>
+        /// <param name="projectileEntity">EntityRef of the projectile.</param>
         /// <param name="soulWall">Pointer to the SoulWall component.</param>
-        /// <param name="soulWallEntity">Entity of the SoulWall.</param>
+        /// <param name="soulWallEntity">EntityRef of the SoulWall.</param>
         public void BattleOnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)
         {
             ProjectileBounce(f, projectile, projectileEntity, soulWallEntity, soulWall->Normal, soulWall->CollisionMinOffset);
@@ -141,9 +142,9 @@ namespace Battle.QSimulation.Projectile
         /// </summary>
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="projectileEntity">Entity of the projectile.</param>
+        /// <param name="projectileEntity">EntityRef of the projectile.</param>
         /// <param name="arenaBorder">Pointer to the ArenaBorder component.</param>
-        /// <param name="arenaBorderEntity">Entity of the ArenaBorder.</param>
+        /// <param name="arenaBorderEntity">EntityRef of the ArenaBorder.</param>
         public void BattleOnProjectileHitArenaBorder(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity)
         {
             ProjectileBounce(f, projectile,  projectileEntity, arenaBorderEntity, arenaBorder->Normal, arenaBorder->CollisionMinOffset);
@@ -155,9 +156,9 @@ namespace Battle.QSimulation.Projectile
         /// </summary>
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="projectileEntity">Entity of the projectile.</param>
+        /// <param name="projectileEntity">EntityRef of the projectile.</param>
         /// <param name="playerHitbox">Pointer to the PlayerHitbox component.</param>
-        /// <param name="playerEntity">Entity of the player hitbox.</param>
+        /// <param name="playerEntity">EntityRef of the player hitbox.</param>
         public void BattleOnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity)
         {
             ProjectileBounce(f, projectile,  projectileEntity, playerEntity, playerHitbox->Normal, playerHitbox->CollisionMinOffset);

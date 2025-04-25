@@ -6,16 +6,19 @@ using Photon.Deterministic;
 namespace Battle.QSimulation.Projectile
 {
     /// <summary>
-    /// Spec for projectile, defines how the projectile works.
+    /// Asset that defines projectile's initial values.
     /// </summary>
     public class BattleProjectileQSpec: AssetObject
     {
         [Header("Projectile configuration")]
         [Tooltip("Prototype reference to spawn projectile")]
+        /// <value>EntityPrototype of the projectile.</value>
         public AssetRef<EntityPrototype> ProjectilePrototype;
         [Tooltip("Speed applied to the projectile when spawned")]
+        /// <value>Speed applied to the projectile when it's spawned.</value>
         public FP ProjectileInitialSpeed;
-        [Tooltip("Amount of projectile spawned in ")]
+        [Tooltip("Amount of projectiles spawned in")]
+        /// <value>Amount of projectiles spawned in.</value>
         public int InitialProjectilesCount;
     }
 }

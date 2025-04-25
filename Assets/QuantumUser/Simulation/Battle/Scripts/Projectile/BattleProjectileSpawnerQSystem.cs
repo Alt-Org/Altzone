@@ -7,6 +7,10 @@ using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Projectile
 {
+    /// <summary>
+    /// Projectile Spawner <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System</a>.<br/>
+    /// Handles spawning the projectile at the beginning of the game.
+    /// </summary>
     [Preserve]
     public unsafe class BattleProjectileSpawnerQSystem : SystemMainThreadFilter<BattleProjectileSpawnerQSystem.Filter>
     {
