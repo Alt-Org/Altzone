@@ -30,7 +30,7 @@ public class ServerManager : MonoBehaviour
     private ServerPlayer _player;               // Player info from server
     private ServerClan _clan;                   // Clan info from server
     private ServerStock _stock;                 // Stock info from server
-    private List<string> _onlinePlayers;
+    private List<ServerOnlinePlayer> _onlinePlayers;
 
     [SerializeField] private bool _automaticallyLogIn = false;
     private int _accessTokenExpiration;
@@ -57,7 +57,7 @@ public class ServerManager : MonoBehaviour
     public delegate void ClanInventoryChanged();
     public static event ClanInventoryChanged OnClanInventoryChanged;
 
-    public delegate void OnlinePlayersChanged(List<string> onlinePlayers);
+    public delegate void OnlinePlayersChanged(List<ServerOnlinePlayer> onlinePlayers);
     public static event OnlinePlayersChanged OnOnlinePlayersChanged;
 
     #endregion
@@ -78,7 +78,7 @@ public class ServerManager : MonoBehaviour
         }
     }
     public ServerStock Stock { get => _stock; set => _stock = value; }
-    public List<string> OnlinePlayers { get => _onlinePlayers;}
+    public List<ServerOnlinePlayer> OnlinePlayers { get => _onlinePlayers;}
 
     #endregion
 
@@ -908,7 +908,7 @@ public class ServerManager : MonoBehaviour
 
     #region Heartbeat
 
-    public IEnumerator GetOnlinePlayersFromServer(Action<List<string>> callback)
+    public IEnumerator GetOnlinePlayersFromServer(Action<List<ServerOnlinePlayer>> callback)
     {
         yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "online-players/", AccessToken, request =>
         {
@@ -917,7 +917,7 @@ public class ServerManager : MonoBehaviour
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 Debug.LogWarning(result);
                 //ServerPlayer player = result["data"]["Object"].ToObject<ServerPlayer>();
-                List<string> player = result["data"]["Object"].ToObject<List<string>>();
+                List<ServerOnlinePlayer> player = result["data"]["Object"].ToObject<List<ServerOnlinePlayer>>();
 
                 if (callback != null)
                     callback(player);
@@ -973,8 +973,15 @@ public class ServerManager : MonoBehaviour
                 foreach (ServerPlayerTask task in serverTasks)
                 {
                     tasks.Add(new(task));
+                    if (task._id == Player.DailyTask._id) Player.DailyTask = task;
                 }
 
+                if(Player.DailyTask?._id != null && Player.DailyTask.title == null){
+                    StartCoroutine(GetPlayerTaskFromServer(Player.DailyTask._id, task =>
+                    {
+                        Player.DailyTask = task;
+                    }));
+                }
 
                 if (callback != null)
                     callback(new(tasks));
@@ -987,7 +994,7 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
-    public IEnumerator GetPlayerTaskFromServer(string taskId, Action<PlayerTask> callback)
+    public IEnumerator GetPlayerTaskFromServer(string taskId, Action<ServerPlayerTask> callback)
     {
         yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "dailyTasks/" + taskId, AccessToken, request =>
         {
@@ -999,7 +1006,7 @@ public class ServerManager : MonoBehaviour
                 //Clan = clan;
 
                 if (callback != null)
-                    callback(new(serverTask));
+                    callback(serverTask);
             }
             else
             {
