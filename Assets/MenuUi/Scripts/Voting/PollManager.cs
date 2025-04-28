@@ -19,6 +19,8 @@ public static class PollManager
     private static PlayerData player = null;
     private static ClanData clan = null;
 
+    public static Action<FurniturePollType> ShowVotingPopup;
+
     public static void CreateFurniturePoll(FurniturePollType furniturePollType, GameFurniture furniture)
     {
         LoadClanData();
@@ -30,6 +32,8 @@ public static class PollManager
 
         PollData pollData = new FurniturePollData(id, clanMembers, furniturePollType, furniture);
         pollDataList.Add(pollData);
+
+        ShowVotingPopup?.Invoke(furniturePollType);
 
         //PrintPollList();
         SaveClanData();
@@ -49,6 +53,8 @@ public static class PollManager
 
         PollData pollData = new FurniturePollData(id, clanMembers, furniturePollType, gameFurniture);
         pollDataList.Add(pollData);
+
+        ShowVotingPopup?.Invoke(furniturePollType);
 
         //PrintPollList();
         SaveClanData();
