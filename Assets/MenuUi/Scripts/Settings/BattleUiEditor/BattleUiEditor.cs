@@ -75,13 +75,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Instantiating ui element prefabs
 
             if (_instantiatedTimer == null) _instantiatedTimer = InstantiateBattleUiElement(BattleUiElementType.Timer);
-            SetData(BattleUiElementType.Timer);
+            SetDataToUiElement(BattleUiElementType.Timer);
 
             if (_instantiatedDiamonds == null) _instantiatedDiamonds = InstantiateBattleUiElement(BattleUiElementType.Diamonds);
-            SetData(BattleUiElementType.Diamonds);
+            SetDataToUiElement(BattleUiElementType.Diamonds);
 
             if (_instantiatedGiveUpButton == null) _instantiatedGiveUpButton = InstantiateBattleUiElement(BattleUiElementType.GiveUpButton);
-            SetData(BattleUiElementType.GiveUpButton);
+            SetDataToUiElement(BattleUiElementType.GiveUpButton);
 
             if (_instantiatedPlayerInfo == null)
             {
@@ -95,7 +95,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 if (playerNameHorizontal != null) playerNameHorizontal.text = PlayerText;
                 if (playerNameVertical != null) playerNameVertical.text = PlayerText;
             }
-            SetData(BattleUiElementType.PlayerInfo);
+            SetDataToUiElement(BattleUiElementType.PlayerInfo);
 
             if (_instantiatedTeammateInfo == null)
             {
@@ -108,7 +108,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 if (teammateNameHorizontal != null) teammateNameHorizontal.text = TeammateText;
                 if (teammateNameVertical != null) teammateNameVertical.text = TeammateText;
             }
-            SetData(BattleUiElementType.TeammateInfo);
+            SetDataToUiElement(BattleUiElementType.TeammateInfo);
 
             // Initializing grid
             _grid.SetRows(_rows);
@@ -124,6 +124,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             CloseOptionsDropdown();
             if (_unsavedChanges)
             {
+                OnUiElementSelected(null);
                 StartCoroutine(ShowSaveResetPopup(SaveChangesText, saveChanges =>
                 {
                     if (saveChanges == null) return;
@@ -138,20 +139,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         }
 
         /// <summary>
-        /// Close options dropdown
+        /// Function which closes any editor popups.
         /// </summary>
-        public void CloseOptionsDropdown()
+        public void ClosePopups()
         {
-            _optionsDropdownContents.SetActive(false);
-            _optionsDropdownButtonImage.transform.localEulerAngles = Vector3.zero;
-        }
-
-        /// <summary>
-        /// Close save changes popup
-        /// </summary>
-        public void CloseSaveChangesPopup()
-        {
-            _saveResetPopup.SetActive(false);
+            if (_saveResetPopup.activeSelf) CloseSaveResetPopup();
+            OnUiElementSelected(null);
         }
 
         private const string PlayerText = "Minä";
@@ -337,17 +330,15 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void OpenOptionsDropdown()
         {
+            OnUiElementSelected(null);
             _optionsDropdownContents.SetActive(true);
             _optionsDropdownButtonImage.transform.localEulerAngles = new Vector3(0, 0, -90);
         }
 
-        private void OnResetButtonClicked()
+        private void CloseOptionsDropdown()
         {
-            StartCoroutine(ShowSaveResetPopup(ResetChangesText, resetChanges =>
-            {
-                if (resetChanges == null) return;
-                if (resetChanges.Value == true) ResetChanges();
-            }));
+            _optionsDropdownContents.SetActive(false);
+            _optionsDropdownButtonImage.transform.localEulerAngles = Vector3.zero;
         }
 
         private IEnumerator ShowSaveResetPopup(string message, Action<bool?> callback)
@@ -365,9 +356,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             yield return new WaitUntil(() => saveChanges.HasValue || !_saveResetPopup.activeSelf);
 
-            if (_saveResetPopup.activeSelf) CloseSaveChangesPopup();
+            if (_saveResetPopup.activeSelf) CloseSaveResetPopup();
 
             callback(saveChanges);
+        }
+
+        private void CloseSaveResetPopup()
+        {
+            _saveResetPopup.SetActive(false);
         }
 
         private void SaveChanges()
@@ -391,13 +387,22 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             PopupSignalBus.OnChangePopupInfoSignal("Muutokset on tallennettu.");
         }
 
+        private void OnResetButtonClicked()
+        {
+            StartCoroutine(ShowSaveResetPopup(ResetChangesText, resetChanges =>
+            {
+                if (resetChanges == null) return;
+                if (resetChanges.Value == true) ResetChanges();
+            }));
+        }
+
         private void ResetChanges()
         {
-            SetDefaultData(BattleUiElementType.Timer);
-            SetDefaultData(BattleUiElementType.Diamonds);
-            SetDefaultData(BattleUiElementType.GiveUpButton);
-            SetDefaultData(BattleUiElementType.PlayerInfo);
-            SetDefaultData(BattleUiElementType.TeammateInfo);
+            SetDefaultDataToUiElement(BattleUiElementType.Timer);
+            SetDefaultDataToUiElement(BattleUiElementType.Diamonds);
+            SetDefaultDataToUiElement(BattleUiElementType.GiveUpButton);
+            SetDefaultDataToUiElement(BattleUiElementType.PlayerInfo);
+            SetDefaultDataToUiElement(BattleUiElementType.TeammateInfo);
         }
 
         private GameObject InstantiateBattleUiElement(BattleUiElementType uiElementType)
@@ -472,7 +477,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             return uiElementGameObject;
         }
 
-        private void SetData(BattleUiElementType uiElementType)
+        private void SetDataToUiElement(BattleUiElementType uiElementType)
         {
             // Getting the saved data for this ui element type
             BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(uiElementType);
@@ -480,7 +485,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Setting default data if saved data is null
             if (data == null)
             {
-                SetDefaultData(uiElementType);
+                SetDefaultDataToUiElement(uiElementType);
                 return;
             }
 
@@ -497,10 +502,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             editingComponent.UpdateData();
         }
 
-        private void SetDefaultData(BattleUiElementType uiElementType)
+        private void SetDefaultDataToUiElement(BattleUiElementType uiElementType)
         {
             // Getting the default data for this ui element type
-            BattleUiMovableElementData data = GetDefaultData(uiElementType);
+            BattleUiMovableElementData data = GetDefaultDataForUiElement(uiElementType);
             if (data == null) return;
 
             // Getting the movable or multi orientation element and editing component
@@ -516,7 +521,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             editingComponent.UpdateData();
         }
 
-        private BattleUiMovableElementData GetDefaultData(BattleUiElementType uiElementType)
+        private BattleUiMovableElementData GetDefaultDataForUiElement(BattleUiElementType uiElementType)
         {
             // Initializing variables for creating data object
             Vector2 anchorMin = Vector2.zero;
