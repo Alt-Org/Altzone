@@ -980,7 +980,7 @@ public class ServerManager : MonoBehaviour
                 foreach (ServerPlayerTask task in serverTasks)
                 {
                     tasks.Add(new(task));
-                    if (task._id == Player.DailyTask._id) Player.DailyTask = task;
+                    if (task._id == Player.DailyTask?._id) Player.DailyTask = task;
                 }
 
                 if(Player.DailyTask?._id != null && Player.DailyTask.title == null){
