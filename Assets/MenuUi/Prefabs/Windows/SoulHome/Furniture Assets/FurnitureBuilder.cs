@@ -152,8 +152,8 @@ public class FurnitureBuilder : ScriptableObject
         obj.GetComponent<FurnitureHandling>().FurnitureSpriteBack = _furnitureBackSprite;
 
         var size = Furniture.GetFurnitureSize(_size);
-        obj.GetComponent<BoxCollider2D>().size = new(size.y,size.x);
-        obj.GetComponent<BoxCollider2D>().offset = new(0, size.x/2);
+        obj.GetComponent<BoxCollider2D>().size = new(size.x,size.y);
+        obj.GetComponent<BoxCollider2D>().offset = new(0, (size.y/2) * (-2 *( (_furnitureFrontSprite.pivot.y/ _furnitureFrontSprite.rect.size.y) -0.5f)));
 
         bool furnitureAdded = _furnitureReference.AddFurniture(furnitureSetInfo);
         if (!furnitureAdded) return;

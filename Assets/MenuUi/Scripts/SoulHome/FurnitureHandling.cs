@@ -151,7 +151,7 @@ namespace MenuUI.Scripts.SoulHome
             else furnitureSize = Furniture.Size;
 
             float width;
-            if (furnitureSize is FurnitureSize.OneXOne or FurnitureSize.TwoXOne)
+            if (furnitureSize is FurnitureSize.OneXOne or FurnitureSize.TwoXOne or FurnitureSize.ThreeXOne or FurnitureSize.FourXOne)
             {
                 //if(_tempSlot != null)width = _tempSlot.width;
                 /*else*/ width = transform.parent.GetComponent<FurnitureSlot>().width;
@@ -172,13 +172,13 @@ namespace MenuUI.Scripts.SoulHome
                 //if (_tempSlot != null) width = _tempSlot.width * 4;
                 /*else*/ width = transform.parent.GetComponent<FurnitureSlot>().width * 4;
             }
-            else if (furnitureSize is FurnitureSize.TwoXFive or FurnitureSize.FiveXFive)
+            else if (furnitureSize is FurnitureSize.TwoXFive or FurnitureSize.ThreeXFive or FurnitureSize.FiveXFive or FurnitureSize.SixXFive)
             {
                 //if (_tempSlot != null) width = _tempSlot.width * 4;
                 /*else*/
                 width = transform.parent.GetComponent<FurnitureSlot>().width * 5;
             }
-            else if (furnitureSize is FurnitureSize.OneXSix or FurnitureSize.TwoXSix or FurnitureSize.ThreeXSix)
+            else if (furnitureSize is FurnitureSize.OneXSix or FurnitureSize.TwoXSix or FurnitureSize.ThreeXSix or FurnitureSize.FiveXSix)
             {
                 //if (_tempSlot != null) width = _tempSlot.width * 4;
                 /*else*/
@@ -254,6 +254,12 @@ namespace MenuUI.Scripts.SoulHome
                     _sortingGroup.sortingOrder = 10 - (row+1);
                 if (grid is FurnitureGrid.RightWall or FurnitureGrid.LeftWall)
                     _sortingGroup.sortingOrder = 1 + (row + 2) * 10;
+                transform.localScale *= (1.0f + (slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));
+            }
+            else if (Furniture.Place is FurniturePlacement.Ceiling)
+            {
+                transform.localScale /= 1.0f + (slot.maxDepthScale / 100f) * ((_sortingGroup.sortingOrder < 101 ? 1 : (_sortingGroup.sortingOrder - 4) / 100 - 1) / (slot.maxRow - 1f));
+                _sortingGroup.sortingOrder = 4 + (row + 1) * 100;
                 transform.localScale *= (1.0f + (slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));
             }
             //Debug.Log("Scale 2: " +(slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));

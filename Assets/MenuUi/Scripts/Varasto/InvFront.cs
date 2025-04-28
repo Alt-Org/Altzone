@@ -44,10 +44,12 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private Image _type;
         [SerializeField] private TMP_Text _typeText;
         [SerializeField] private GameObject _inSoulHome;
+        [SerializeField] private GameObject _inVoting;
         [SerializeField] private TMP_Text _artist;
         [SerializeField] private TMP_Text _artisticDescription;
         [SerializeField] private TMP_Text _rarityText;
         [SerializeField] private Image _rarityImage;
+        [SerializeField] private FurnitureSellHandler _sellHandler;
 
         [Header("Filtering")]
         [SerializeField] private Toggle[] _rarityToggles;
@@ -83,12 +85,16 @@ namespace MenuUi.Scripts.Storage
         {
             if (!_startCompleted) { StartCoroutine(Begin()); }
 
+            _sellHandler.UpdateInfoAction += UpdateInVotingText;
+
             ServerManager.OnClanInventoryChanged += UpdateInventory;
             UpdateInventory();
         }
 
         private void OnDisable()
         {
+            _sellHandler.UpdateInfoAction -= UpdateInVotingText;
+
             ServerManager.OnClanInventoryChanged -= UpdateInventory;
         }
 
@@ -459,9 +465,20 @@ namespace MenuUi.Scripts.Storage
             _rarityText.text = _furn.Rarity.ToString();
 
             // Get rarity color from the selected furniture
-            _rarityImage.color = _slotsList[slotVal].transform.GetChild(1).GetComponent<Image>().color;
+            _rarityImage.color = _slotsList[slotVal].transform.GetChild(0).GetComponent<Image>().color;
+
+            _sellHandler.Furniture = _furn;
+
+            _sellHandler.UpdateInfoAction?.Invoke(_furn.ClanFurniture.InVoting);
 
             _infoSlot.SetActive(true);
+        }
+
+        private void UpdateInVotingText(bool inVoting)
+        {
+            _inVoting.SetActive(inVoting);
+
+            SortStored(); // Called here to update InvSlotObject overlay panels
         }
 
         private void ScaleSprite(StorageFurniture furn, RectTransform rTransform)

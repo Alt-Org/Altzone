@@ -376,6 +376,22 @@ MonoBehaviour:
         Value: 170
         Material: 
         Recycling: 
+    - Name: CeilingLamp
+      Image: {fileID: -627347190, guid: 622f3fc6e612df2448b72d5a929b5de9, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Kattolamppu
+      ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
+      DiagnoseNumber: F52.0
+      BaseFurniture:
+        Name: CeilingLamp_Rakkaus
+        Rarity: 2
+        Size: 6
+        RotatedSize: 6
+        Placement: 3
+        Weight: 2
+        Value: 200
+        Material: 
+        Recycling: 
   - SetName: Neuro
     ArtistName: "Simo Ryh\xE4nen"
     list:
@@ -770,5 +786,167 @@ MonoBehaviour:
         Placement: 0
         Weight: 15
         Value: 130
+        Material: 
+        Recycling: 
+    - Name: Bed
+      Image: {fileID: -864293954, guid: b27973bcd7dd95e47954ab222c12fbe2, type: 3}
+      PosterImage: {fileID: 21300000, guid: 88fc050c13abd014083f0129f5810a4c, type: 3}
+      VisibleName: "S\xE4nky"
+      ArtisticDescription: "Unet ovat t\xE4rke\xE4 portti alitajuntaan."
+      DiagnoseNumber: F52.0
+      BaseFurniture:
+        Name: Bed_Uni
+        Rarity: 1
+        Size: 27
+        RotatedSize: 17
+        Placement: 0
+        Weight: 30
+        Value: 200
+        Material: 
+        Recycling: 
+    - Name: Closet
+      Image: {fileID: 250947397, guid: 89024992418f5c4499ae70952c6efed7, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Kaappi
+      ArtisticDescription: "Unet ovat t\xE4rke\xE4 portti alitajuntaan."
+      DiagnoseNumber: F52.0
+      BaseFurniture:
+        Name: Closet_Uni
+        Rarity: 2
+        Size: 15
+        RotatedSize: 15
+        Placement: 0
+        Weight: 40
+        Value: 240
+        Material: 
+        Recycling: 
+  - SetName: ColdFuture
+    ArtistName: Ida Vesterinen
+    list:
+    - Name: Hologram
+      Image: {fileID: 719040038, guid: b4831fd18e8e2e948a034f02bbcd3a13, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Hologrammi
+      ArtisticDescription: "Milt\xE4 maailma n\xE4ytt\xE4\xE4, kun teknologia ja
+        ilmastonmuutos kehittyy."
+      DiagnoseNumber: F0
+      BaseFurniture:
+        Name: Hologram_ColdFuture
+        Rarity: 2
+        Size: 1
+        RotatedSize: 5
+        Placement: 0
+        Weight: 0
+        Value: 200
+        Material: 
+        Recycling: 
+    - Name: Sofa
+      Image: {fileID: -1180185098, guid: 0d86948a83d08c94083b1234ee903d16, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Sohva
+      ArtisticDescription: "Milt\xE4 maailma n\xE4ytt\xE4\xE4, kun teknologia ja
+        ilmastonmuutos kehittyy."
+      DiagnoseNumber: F0
+      BaseFurniture:
+        Name: Sofa_ColdFuture
+        Rarity: 0
+        Size: 17
+        RotatedSize: 25
+        Placement: 0
+        Weight: 35
+        Value: 150
+        Material: 
+        Recycling: 
+  - SetName: Kipu
+    ArtistName: Ville Julius
+    list:
+    - Name: Closet
+      Image: {fileID: 2005414215, guid: 8bb44278ea388cb4e85d871ee055263b, type: 3}
+      PosterImage: {fileID: 21300000, guid: bb9a8c0ec135e064cbe1196ba81e3e48, type: 3}
+      VisibleName: Kaappi
+      ArtisticDescription: "Kipu on henkist\xE4 ja fyysist\xE4. Kipu on pysyv\xE4\xE4
+        ja ohimenev\xE4\xE4. Kipu on tuskallista ja nautinnollista. Kipu on osa jokap\xE4iv\xE4ist\xE4
+        el\xE4m\xE4\xE4."
+      DiagnoseNumber: F45
+      BaseFurniture:
+        Name: Closet_Kipu
+        Rarity: 0
+        Size: 16
+        RotatedSize: 23
+        Placement: 0
+        Weight: 50
+        Value: 150
+        Material: 
+        Recycling: 
+    - Name: Sofa
+      Image: {fileID: -1010160331, guid: ea747327d8c0a1841b8299133bdcb93e, type: 3}
+      PosterImage: {fileID: 21300000, guid: 09b35a23552772b469bd847c275729c5, type: 3}
+      VisibleName: Sohva
+      ArtisticDescription: "Kipu on henkist\xE4 ja fyysist\xE4. Kipu on pysyv\xE4\xE4
+        ja ohimenev\xE4\xE4. Kipu on tuskallista ja nautinnollista. Kipu on osa jokap\xE4iv\xE4ist\xE4
+        el\xE4m\xE4\xE4."
+      DiagnoseNumber: F45
+      BaseFurniture:
+        Name: Sofa_Kipu
+        Rarity: 0
+        Size: 18
+        RotatedSize: 26
+        Placement: 0
+        Weight: 80
+        Value: 125
+        Material: 
+        Recycling: 
+    - Name: Chair
+      Image: {fileID: 96773911, guid: 3b68f427ae685a944b8327899a3727f2, type: 3}
+      PosterImage: {fileID: 21300000, guid: 1ca1430b75f5413438dcc388a7e7d056, type: 3}
+      VisibleName: Tuoli
+      ArtisticDescription: "Kipu on henkist\xE4 ja fyysist\xE4. Kipu on pysyv\xE4\xE4
+        ja ohimenev\xE4\xE4. Kipu on tuskallista ja nautinnollista. Kipu on osa jokap\xE4iv\xE4ist\xE4
+        el\xE4m\xE4\xE4."
+      DiagnoseNumber: F45
+      BaseFurniture:
+        Name: Chair_Kipu
+        Rarity: 0
+        Size: 6
+        RotatedSize: 6
+        Placement: 0
+        Weight: 15
+        Value: 65
+        Material: 
+        Recycling: 
+    - Name: Table
+      Image: {fileID: 459369904, guid: e2dc0b56be754c8468fb61653e8be6b6, type: 3}
+      PosterImage: {fileID: 21300000, guid: fc5d8c27472607744a3a139e0fded250, type: 3}
+      VisibleName: "P\xF6yt\xE4"
+      ArtisticDescription: "Kipu on henkist\xE4 ja fyysist\xE4. Kipu on pysyv\xE4\xE4
+        ja ohimenev\xE4\xE4. Kipu on tuskallista ja nautinnollista. Kipu on osa jokap\xE4iv\xE4ist\xE4
+        el\xE4m\xE4\xE4."
+      DiagnoseNumber: F45
+      BaseFurniture:
+        Name: Table_Kipu
+        Rarity: 0
+        Size: 7
+        RotatedSize: 14
+        Placement: 0
+        Weight: 28
+        Value: 50
+        Material: 
+        Recycling: 
+    - Name: Plant
+      Image: {fileID: 21300000, guid: ce8ccd95426cdc54b926069b66b83da5, type: 3}
+      PosterImage: {fileID: 21300000, guid: 96301b22b64b228408e330654d8200c9, type: 3}
+      VisibleName: Piikkikasvi
+      ArtisticDescription: "Kipu on henkist\xE4 ja fyysist\xE4. Kipu on pysyv\xE4\xE4
+        ja ohimenev\xE4\xE4. Kipu on tuskallista ja nautinnollista. Kipu on osa jokap\xE4iv\xE4ist\xE4
+        el\xE4m\xE4\xE4."
+      DiagnoseNumber: F45
+      BaseFurniture:
+        Name: Plant_Kipu
+        Rarity: 0
+        Size: 6
+        RotatedSize: 6
+        Placement: 0
+        Weight: 1.5
+        Value: 25
         Material: 
         Recycling: 

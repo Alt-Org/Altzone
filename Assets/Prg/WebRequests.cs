@@ -37,6 +37,7 @@ public static class WebRequests
     public static IEnumerator Post(string address, string body, string accessToken, Action<UnityWebRequest> callback)
     {
         byte[] data = new UTF8Encoding().GetBytes(body);
+        if (string.IsNullOrEmpty(body)) body = ".";
 
         using (UnityWebRequest request = UnityWebRequest.PostWwwForm(address, body))
         {
