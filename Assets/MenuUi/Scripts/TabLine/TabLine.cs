@@ -74,7 +74,7 @@ namespace MenuUi.Scripts.TabLine
                 _tabLineImage.sprite = image;
                 _tabLineImage.enabled = true;
             }
-            else _tabLineImage.enabled = false;
+            else if(_tabLineImage.sprite == null) _tabLineImage.enabled = false;
 
             for (int i = 0; i < _tabLineButtons.Length; i++)
             {
