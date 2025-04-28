@@ -14,16 +14,19 @@ Markdown
 
 C# Doc Comment / HTML
 ```
-<see href="url">link text🡵</>
-<a href="url">link text🡵</a>
+<see href="url">link text@u-exlink</>
+<a href="url">link text@u-exlink</a>
 ```
 
 @note 
-External links should have the "🡵" unicode character at the end
+External links should have the "🡵" unicode character or @@u-exlink at the end
+
+@important
+In source code @@u-exlink should be used instead of "🡵"
 
 ## Quantum System Update method brief/summary format
 ```
-<span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method🡵</a> gets called every frame.</span><br/>
+<span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method@u-exlink</a> gets called every frame.</span><br/>
 // brief text
 @warning
 This method should only be called by Quantum.
@@ -31,7 +34,15 @@ This method should only be called by Quantum.
 
 ## Quantum System OnInit method brief/summary format
 ```
-<span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System OnInit method🡵</a> gets called when the system is initialized.</span><br/>
+<span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System OnInit method@u-exlink</a> gets called when the system is initialized.</span><br/>
+// brief text
+@warning
+This method should only be called by Quantum.
+```
+
+## Quantum System Signal method brief/summary format
+```
+<span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a> gets called when <see cref="signal interface">signal interface</see> is send.</span><br/>
 // brief text
 @warning
 This method should only be called by Quantum.
