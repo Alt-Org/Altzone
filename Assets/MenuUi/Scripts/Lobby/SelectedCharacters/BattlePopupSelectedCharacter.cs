@@ -19,7 +19,9 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
     {
         [Header("Character slot references")]
         [SerializeField] private Image _spriteImage;
-        [SerializeField] private Image _backgroundImage;
+        [SerializeField] private Image _bordersBackgroundImage;
+        [SerializeField] private Image _upperBackgroundImage;
+        [SerializeField] private Image _lowerBackgroundImage;
         [SerializeField] private PieChartPreview _piechartPreview;
 
         [Header("Dropdown references")]
@@ -65,7 +67,8 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             _spriteImage.enabled = true;
 
             CharacterClassID charClassID = CustomCharacter.GetClassID(charID);
-            _backgroundImage.color = _classColorReference.GetColor(charClassID);
+            _upperBackgroundImage.color = _classColorReference.GetAlternativeColor(charClassID);
+            _lowerBackgroundImage.color = _classColorReference.GetColor(charClassID);
 
             _characterId = charID;
 
@@ -107,7 +110,8 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         public void SetEmpty(bool isEditable, int slotIdx)
         {
             _spriteImage.enabled = false;
-            _backgroundImage.color = Color.white;
+            _upperBackgroundImage.color = Color.white;
+            _lowerBackgroundImage.color = Color.white;
             _piechartPreview.gameObject.SetActive(false);
             _characterId =CharacterID.None;
             _slotIdx = slotIdx;
@@ -138,6 +142,12 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
 
         private void OpenSelectionDropdown()
         {
+            if (_selectionDropdownContent.childCount > 0)
+            {
+                _selectionDropdown.SetActive(true);
+                return;
+            }
+
             StartCoroutine(GetPlayerData(playerData =>
             {
                 var characters = playerData.CustomCharacters.GroupBy(x => x.Id).Select(x => x.First()).ToList(); // ensuring no duplicate characters are shown
@@ -164,14 +174,6 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             if (_selectionDropdown.activeSelf)
             {
                 _selectionDropdown.SetActive(false);
-                for (int i = 0; i < _selectionDropdownContent.childCount; i++)
-                {
-                    Transform dropdownButton = _selectionDropdownContent.GetChild(i);
-                    Button buttonComponent = dropdownButton.GetComponent<Button>();
-                    buttonComponent.onClick.RemoveAllListeners();
-
-                    Destroy(dropdownButton.gameObject);
-                }
                 _dropdownScrollRect.VerticalNormalizedPosition = 1;
             }
         }
@@ -204,10 +206,17 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
 
             GameObject dropdownButton = new();
 
-            // Background image
-            Image backgroundImage = dropdownButton.AddComponent<Image>();
-            backgroundImage.sprite = _backgroundImage.sprite;
-            backgroundImage.color = _classColorReference.GetColor(charClassID);
+            // Background images
+            Image bordersBackgroundImage = dropdownButton.AddComponent<Image>();
+            bordersBackgroundImage.sprite = _bordersBackgroundImage.sprite;
+
+            Image upperBackgroundImage = AddImageChildToParent(dropdownButton.transform);
+            upperBackgroundImage.sprite = _upperBackgroundImage.sprite;
+            upperBackgroundImage.color = _classColorReference.GetAlternativeColor(charClassID);
+
+            Image lowerBackgroundImage = AddImageChildToParent(dropdownButton.transform);
+            lowerBackgroundImage.sprite = _lowerBackgroundImage.sprite;
+            lowerBackgroundImage.color = _classColorReference.GetColor(charClassID);
 
             // Button component
             Button button = dropdownButton.AddComponent<Button>();
@@ -218,19 +227,26 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             });
 
             // Sprite image
-            GameObject gallerySprite = new();
-            Image spriteImage = gallerySprite.AddComponent<Image>();
+            Image spriteImage = AddImageChildToParent(dropdownButton.transform);
             spriteImage.preserveAspect = true;
             spriteImage.sprite = charInfo.GalleryImage;
-            gallerySprite.transform.SetParent(dropdownButton.transform, false);
-
-            RectTransform spriteRect = gallerySprite.GetComponent<RectTransform>();
-            spriteRect.sizeDelta = Vector2.zero;
-            spriteRect.anchorMin = Vector2.zero;
-            spriteRect.anchorMax = Vector2.one;
 
             // Adding dropdown button to dropdown contents
             dropdownButton.transform.SetParent(_selectionDropdownContent, false);
+        }
+
+        private Image AddImageChildToParent(Transform parent)
+        {
+            GameObject image = new();
+            Image imageComponent = image.AddComponent<Image>();
+            image.transform.SetParent(parent, false);
+
+            RectTransform rectTransform = image.GetComponent<RectTransform>();
+            rectTransform.sizeDelta = Vector2.zero;
+            rectTransform.anchorMin = Vector2.zero;
+            rectTransform.anchorMax = Vector2.one;
+
+            return imageComponent;
         }
     }
 }
