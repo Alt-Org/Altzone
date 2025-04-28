@@ -253,6 +253,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         public void OnEndDrag(PointerEventData eventData)
         {
             if (_currentAction == ActionType.Move || _currentAction == ActionType.Scale) CalculateAndSetAnchors();
+            if (_currentAction == ActionType.Move) ShowControls(true);
             if (_currentAction == ActionType.Scale) CheckControlButtonsVisibility();
             _currentAction = ActionType.None;
         }
