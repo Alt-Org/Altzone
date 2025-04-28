@@ -34,10 +34,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Button _flipVerticallyButtonRight;
         [SerializeField] private Button _flipVerticallyButtonLeft;
 
-        [Header("Drag delay display")]
-        [SerializeField] private GameObject _dragDelayDisplay;
-        [SerializeField] private Image _dragDelayFill;
-
         public Action OnUiElementEdited;
 
         public delegate void UiElementSelectedHandler(BattleUiEditingComponent self);
@@ -97,38 +93,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            _isPointerDown = true;
             OnUiElementSelected?.Invoke(this);
-
-            if (_dragTimerHolder == null)
-            {
-                _dragTimerHolder = StartCoroutine(StartDragTimer(() =>
-                {
-                    _dragTimerHolder = null;
-                    if (!_isPointerDown) return;
-                    _currentAction = ActionType.Move;
-                }));
-            }
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            _isPointerDown = false;
-            if (_dragTimerHolder != null)
-            {
-                StopCoroutine(_dragTimerHolder);
-                _dragTimerHolder = null;
-
-                if (_dragDelayDisplay.activeSelf)
-                {
-                    ShowControls(false);
-                    _dragDelayDisplay.SetActive(false);
-                }
-                else
-                {
-                    ShowControls(!_currentScaleHandle.gameObject.activeSelf);
-                }
-            }
+            if (_currentAction != ActionType.Scale) ShowControls(!_currentScaleHandle.gameObject.activeSelf);
         }
 
         public void OnBeginDrag(PointerEventData eventData)
@@ -149,17 +119,26 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             switch (_currentAction)
             {
+                case ActionType.None:
+                    // Starting moving element if player dragged at least for the treshold amount
+                    if ((eventData.position - eventData.pressPosition).magnitude > MoveActionTreshold)
+                    {
+                        ShowControls(false);
+                        _currentAction = ActionType.Move;
+
+                        // Setting offset for moving
+                        _moveOffset.x = _movableElement.transform.position.x - eventData.pressPosition.x;
+                        _moveOffset.y = _movableElement.transform.position.y - eventData.pressPosition.y;
+                    }
+                    break;
+
                 case ActionType.Move:
-                    Vector2 newPos = Vector2.zero;
+                    Vector2 newPos = eventData.position + _moveOffset;
 
                     if (_isGridAlignToggled) // Snapping to grid while moving
                     {
-                        newPos.x = Mathf.Round(eventData.position.x / BattleUiEditor.GridCellWidth) * BattleUiEditor.GridCellWidth;
-                        newPos.y = Mathf.Round(eventData.position.y / BattleUiEditor.GridCellHeight) * BattleUiEditor.GridCellHeight;
-                    }
-                    else // Free movement
-                    {
-                        newPos = eventData.position;
+                        newPos.x = Mathf.Round(newPos.x / BattleUiEditor.GridCellWidth) * BattleUiEditor.GridCellWidth;
+                        newPos.y = Mathf.Round(newPos.y / BattleUiEditor.GridCellHeight) * BattleUiEditor.GridCellHeight;
                     }
 
                     // Clamping position to be inside the editor
@@ -253,7 +232,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         public void OnEndDrag(PointerEventData eventData)
         {
             if (_currentAction == ActionType.Move || _currentAction == ActionType.Scale) CalculateAndSetAnchors();
-            if (_currentAction == ActionType.Move) ShowControls(true);
             if (_currentAction == ActionType.Scale) CheckControlButtonsVisibility();
             _currentAction = ActionType.None;
         }
@@ -292,7 +270,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private const int DefaultChangeOrientationButtonIdx = (int)ControlButtonVertical.Top;
         private const int DefaultFlipHorizontallyButtonIdx = (int)ControlButtonVertical.Top;
         private const int DefaultFlipVerticallyButtonIdx = (int)ControlButtonHorizontal.Right;
+
         private const int ScalingIncrementAmount = 5;
+        private const int MoveActionTreshold = 20;
 
         private Button[] _scaleHandles;
         private Button[] _changeOrientationButtons;
@@ -329,13 +309,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private float _movableElementAspectRatio;
 
-        private bool _isPointerDown = false;
         private bool _isGridAlignToggled = false;
         private bool _isIncrementScalingToggled = false;
 
-        private Coroutine _dragTimerHolder = null;
-
         private ActionType _currentAction;
+        private Vector2 _moveOffset;
 
         private void OnDisable()
         {
@@ -382,27 +360,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             {
                 button.onClick.RemoveAllListeners();
             }
-        }
-
-        private IEnumerator StartDragTimer(Action callback)
-        {
-            _dragDelayFill.fillAmount = 0;
-
-            float timePassed = 0f;
-            while (timePassed < 0.5f)
-            {
-                if (!_dragDelayDisplay.activeSelf && timePassed >= 0.2f)
-                {
-                    _dragDelayDisplay.SetActive(true);
-                    ShowControls(false);
-                }
-                _dragDelayFill.fillAmount = timePassed * 2;
-                yield return null;
-                timePassed += Time.deltaTime;
-            }
-
-            _dragDelayDisplay.SetActive(false);
-            callback();
         }
 
         private void CalculateAndSetAnchors(Vector2? newSize = null)
