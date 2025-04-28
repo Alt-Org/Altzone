@@ -45,6 +45,7 @@ MonoBehaviour:
   - Components:
     - rid: 9189874137361809408
     - rid: 9189874137361809409
+    - rid: 9189874137361809410
   - Components:
     - rid: 3915831314950914048
     - rid: 3915831314950914049
@@ -314,6 +315,12 @@ MonoBehaviour:
         CollisionMinOffset:
           RawValue: 294912
     - rid: 9189874137361809408
+      type: {class: BattleDiamondCounterQSingletonPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
+      data:
+        AlphaDiamonds: 0
+        BetaDiamonds: 0
+    - rid: 9189874137361809409
       type: {class: BattleGameSessionQSingletonPrototype, ns: Quantum.Prototypes,
         asm: Quantum.Simulation}
       data:
@@ -323,7 +330,7 @@ MonoBehaviour:
           Value: 0
         TimeUntilStart:
           RawValue: 262144
-    - rid: 9189874137361809409
+    - rid: 9189874137361809410
       type: {class: BattlePlayerManagerDataQSingletonPrototype, ns: Quantum.Prototypes,
         asm: Quantum.Simulation}
       data:
