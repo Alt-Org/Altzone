@@ -694,6 +694,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private void OnUiElementEdited()
         {
             _unsavedChanges = true;
+            _grid.RemoveLineHighlight();
         }
 
         private void OnUiElementSelected(BattleUiEditingComponent newSelectedEditingComponent)
