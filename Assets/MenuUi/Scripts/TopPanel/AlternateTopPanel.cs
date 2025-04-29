@@ -1,12 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts;
+using Altzone.Scripts.Model.Poco.Clan;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class AlternateTopPanel : MonoBehaviour
 {
-
+    [Header("Clan/Player info")]
+    [SerializeField] private GameObject _playerInfo;
+    [SerializeField] private GameObject _clanInfo;
 
     [Header("LeaderBoard")]
     [SerializeField] private Image _leaderboardButton;
@@ -15,8 +19,14 @@ public class AlternateTopPanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _rankingTextWins;
     [SerializeField] private TextMeshProUGUI _rankingTextActivity;
 
-    private float _timer = 5;
-    private string _ownPlayerName;
+    private float _timerLeaderboard = 5;
+    private float _timerInfo = 10;
+    private string _ownPlayerID;
+    private string _ownClanID;
+    private int _playerActivityRanking;
+    private int _playerWinsRanking;
+    private int _clanActivityRanking;
+    private int _clanWinsRanking;
 
     private enum TopPanelInfo
     {
@@ -24,23 +34,45 @@ public class AlternateTopPanel : MonoBehaviour
         Clan
     }
 
-    private enum LeaderboardType
-    {
-        Wins,
-        Activity
-    }
-
-    private TopPanelInfo _currentTopPanelInfo = TopPanelInfo.Player;
-    private LeaderboardType _currentLeaderboardType = LeaderboardType.Wins;
+    private TopPanelInfo _currentTopPanelInfo = TopPanelInfo.Clan;
 
     private void OnEnable()
     {
         StartCoroutine(ServerManager.Instance.GetOwnPlayerFromServer((player) =>
         {
-            _ownPlayerName = player.name;
+            _ownPlayerID = player._id;
+            _ownClanID = player.clan_id;
 
-            StartCoroutine(ChangeLeaderboardType());
+            FetchRankings();
+            StartCoroutine(ChangeInfoType());
         }));
+    }
+
+    /// <summary>
+    /// Alternates between showing player's info and clan's info
+    /// </summary>
+    private IEnumerator ChangeInfoType()
+    {
+        YieldInstruction wait = new WaitForSeconds(_timerInfo);
+
+        while (enabled)
+        {
+            switch (_currentTopPanelInfo)
+            {
+                case TopPanelInfo.Player:
+                    _currentTopPanelInfo = TopPanelInfo.Clan;
+                    break;
+                case TopPanelInfo.Clan:
+                    _currentTopPanelInfo = TopPanelInfo.Player;
+                    break;
+            }
+
+            _playerInfo.SetActive(_currentTopPanelInfo == TopPanelInfo.Player);
+            _clanInfo.SetActive(_currentTopPanelInfo == TopPanelInfo.Clan);
+            StartCoroutine(ChangeLeaderboardType());
+
+            yield return wait;
+        }
     }
 
     /// <summary>
@@ -48,65 +80,118 @@ public class AlternateTopPanel : MonoBehaviour
     /// </summary>
     private IEnumerator ChangeLeaderboardType()
     {
-        YieldInstruction wait = new WaitForSeconds(_timer);
+        YieldInstruction wait = new WaitForSeconds(_timerLeaderboard);
 
-        while (enabled)
-        {
-            switch (_currentLeaderboardType)
-            {
-                case LeaderboardType.Wins:
-                    LoadActivity();
-                    break;
-                case LeaderboardType.Activity:
-                    LoadWins();
-                    break;
-            }
+        LoadWins();
 
-            yield return wait;
-        }
+        yield return wait;
+
+        LoadActivity();
     }
 
     private void LoadWins()
     {
-        _currentLeaderboardType = LeaderboardType.Wins;
-
-        // Find the player's wins ranking
-        StartCoroutine(ServerManager.Instance.GetPlayerLeaderboardFromServer((playerLeaderboard) =>
+        switch (_currentTopPanelInfo)
         {
-            int rank = 1;
+            case TopPanelInfo.Player:
+                _rankingTextWins.text = _playerWinsRanking.ToString();
+                break;
+            case TopPanelInfo.Clan:
+                _rankingTextWins.text = _clanWinsRanking.ToString();
+                break;
+        }
 
-            playerLeaderboard.Sort((a, b) => a.WonBattles.CompareTo(b.WonBattles));
-
-            foreach (PlayerLeaderboard ranking in playerLeaderboard)
-            {
-                if (ranking.Clan.Name.Equals(_ownPlayerName))
-                {
-                    break;
-                }
-
-                rank++;
-            }
-
-            _rankingTextWins.text = rank.ToString();
-            _rankingTextActivity.text = "";
-            _leaderboardButton.sprite = _star;
-        }));
+        _rankingTextActivity.text = "";
+        _leaderboardButton.sprite = _star;
     }
 
     private void LoadActivity()
     {
-        _currentLeaderboardType = LeaderboardType.Activity;
+        switch (_currentTopPanelInfo)
+        {
+            case TopPanelInfo.Player:
+                _rankingTextActivity.text = _playerActivityRanking.ToString();
+                break;
+            case TopPanelInfo.Clan:
+                _rankingTextActivity.text = _clanActivityRanking.ToString();
+                break;
+        }
+
+        _rankingTextWins.text = "";
+        _leaderboardButton.sprite = _bow;
+    }
+
+    private void FetchRankings()
+    {
+        // Find the player's rankings within clan
+        Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
+        {
+            // Wins
+            clanData.Members.Sort((a, b) => a.LeaderBoardWins.CompareTo(b.LeaderBoardWins));
+
+            int rankWins = 1;
+
+            foreach (ClanMember player in clanData.Members)
+            {
+                if(player.Id.Equals(_ownPlayerID))
+                {
+                    break;
+                }
+
+                rankWins++;
+            }
+
+            _playerWinsRanking = rankWins;
+
+            // Activity
+            clanData.Members.Sort((a, b) => a.LeaderBoardCoins.CompareTo(b.LeaderBoardCoins));
+
+            int rankActivity = 1;
+
+            foreach (ClanMember player in clanData.Members)
+            {
+                if (player.Id.Equals(_ownPlayerID))
+                {
+                    break;
+                }
+
+                rankActivity++;
+            }
+
+            _playerActivityRanking = rankActivity;
+        });
         
-        // Find the player's activity ranking
-        StartCoroutine(ServerManager.Instance.GetPlayerLeaderboardFromServer((playerLeaderboard) =>
+
+        // Find the clan's global wins ranking (not available yet)
+        //StartCoroutine(ServerManager.Instance.GetClanLeaderboardFromServer((clanLeaderboard) =>
+        //{
+        //    int rank = 1;
+
+        //    clanLeaderboard.Sort((a, b) => a.WonBattles.CompareTo(b.WonBattles));
+
+        //    foreach (ClanLeaderboard ranking in clanLeaderboard)
+        //    {
+        //        if (ranking.Clan.Name.Equals(_ownClanName))
+        //        {
+        //            break;
+        //        }
+
+        //        rank++;
+        //    }
+
+        //    _clanWinsRanking = rank;
+        //}));
+
+        // Find the clan's global activity ranking
+        StartCoroutine(ServerManager.Instance.GetClanLeaderboardFromServer((clanLeaderboard) =>
         {
             int rank = 1;
 
-            playerLeaderboard.Sort((a, b) => a.Points.CompareTo(b.Points));
+            clanLeaderboard.Sort((a, b) => a.Points.CompareTo(b.Points));
 
-            foreach (PlayerLeaderboard ranking in playerLeaderboard)
+            foreach (ClanLeaderboard ranking in clanLeaderboard)
             {
-                if (ranking.Clan.Name.Equals(_ownPlayerName))
+                if (ranking.Clan.Id.Equals(_ownClanID))
                 {
                     break;
                 }
@@ -114,9 +199,7 @@ public class AlternateTopPanel : MonoBehaviour
                 rank++;
             }
 
-            _rankingTextActivity.text = rank.ToString();
-            _rankingTextWins.text = "";
-            _leaderboardButton.sprite = _bow;
+            _clanActivityRanking = rank;
         }));
     }
 }
