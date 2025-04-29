@@ -42,7 +42,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         private float[] scrollPageValues;
         private float valueDistance = 0;
         public int currentPage = 1;
-        private int maxPage = 0;
+        protected int maxPage = 0;
         public Vector2 _startTouch;
         public Vector2 _endTouch;
         private bool isSwipeMode = false;
@@ -312,7 +312,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             }
         }
 
-        public void NextSlide()
+        public virtual void NextSlide()
         {
             if (CurrentPage == maxPage)
             {
@@ -327,7 +327,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             }
         }
 
-        public void PreviousSlide()
+        public virtual void PreviousSlide()
         {
             if (CurrentPage == 0)
             {
