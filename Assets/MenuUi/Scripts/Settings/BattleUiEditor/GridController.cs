@@ -67,9 +67,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             RemoveLineHighlight();
 
+            // Calculating editor height and width
+            float editorHeight = _parentRectTransform.rect.height * (Screen.height / _parentRectTransform.rect.height);
+            float editorWidth = _parentRectTransform.rect.width * (Screen.width / _parentRectTransform.rect.width);
+
             // Getting nearest row line index
             int rowCount = _gridRows.transform.childCount;
-            int nearestRowLine = Mathf.RoundToInt(position.y / (_parentRectTransform.rect.height / rowCount));
+            int nearestRowLine = Mathf.CeilToInt(position.y / (editorHeight / rowCount));
             nearestRowLine = rowCount - nearestRowLine;
             nearestRowLine = Mathf.Clamp(nearestRowLine, 0, rowCount - 1);
 
@@ -79,7 +83,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Getting nearest column line index
             int columnCount = _gridColumns.transform.childCount;
-            int nearestColumnLine = Mathf.RoundToInt(position.x / (_parentRectTransform.rect.width / columnCount)) - 1;
+            int nearestColumnLine = Mathf.CeilToInt(position.x / (editorWidth / columnCount)) - 1;
             nearestColumnLine = Mathf.Clamp(nearestColumnLine, 0, columnCount - 1);
 
             // Highlighting the column color

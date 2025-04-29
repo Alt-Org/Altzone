@@ -142,13 +142,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     {
                         newPos.x = Mathf.Round(newPos.x / BattleUiEditor.GridCellWidth) * BattleUiEditor.GridCellWidth;
                         newPos.y = Mathf.Round(newPos.y / BattleUiEditor.GridCellHeight) * BattleUiEditor.GridCellHeight;
-                        OnGridSnap?.Invoke(newPos);
                     }
 
                     // Clamping position to be inside the editor
                     newPos.x = Mathf.Clamp(newPos.x, _minPosX, _maxPosX);
                     newPos.y = Mathf.Clamp(newPos.y, _minPosY, _maxPosY);
 
+                    if (_isGridAlignToggled) OnGridSnap?.Invoke(newPos);
                     _movableElement.transform.position = newPos;
                     break;
 
@@ -298,11 +298,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private float _minWidth => _uiElementHolder.rect.width / 6;
         private float _minHeight => _uiElementHolder.rect.height / 10;
 
-        private float _maxPosX => _uiElementHolder.rect.width * (Screen.width/ _uiElementHolder.rect.width) - _movableElement.RectTransformComponent.rect.width / 2;
-        private float _maxPosY => _uiElementHolder.rect.height * (Screen.width / _uiElementHolder.rect.width) - _movableElement.RectTransformComponent.rect.height / 2;
-        private float _minPosX => _movableElement.RectTransformComponent.rect.width / 2;
-        private float _minPosY => _movableElement.RectTransformComponent.rect.height / 2;
+        private float _maxPosX => _uiElementHolder.rect.width * _screenSpaceRatio - _movableElement.RectTransformComponent.rect.width * _screenSpaceRatio / 2;
+        private float _maxPosY => _uiElementHolder.rect.height * _screenSpaceRatio - _movableElement.RectTransformComponent.rect.height * _screenSpaceRatio / 2;
+        private float _minPosX => _movableElement.RectTransformComponent.rect.width * _screenSpaceRatio / 2;
+        private float _minPosY => _movableElement.RectTransformComponent.rect.height * _screenSpaceRatio / 2;
 
+        // To make coordinates match for min and max position we need to multiply the rect width and height values with this ratio
+        private float _screenSpaceRatio => Screen.width / _uiElementHolder.rect.width;
         private float _aspectRatio => _multiOrientationElement == null ? _movableElementAspectRatio : _multiOrientationElement.HorizontalAspectRatio;
 
         private RectTransform _uiElementHolder;
