@@ -296,6 +296,8 @@ ALIASES                = dirref{1}="@ref \"%project-dir%/\1\" \"\1/\"" \
                          cref{2}="@ref \1.\2 \"\2\"" \
                          crefd{1}="@ref \1 \"\1.\"" \
                          crefd{2}="@ref \1.\2 \"\2.\"" \
+                         systemslink="[[Systems]](#page-simulation-systems)" \
+                         bigtext{1}="<span class=\"big-text\">\1</span>" \
                          u-exlink="🡵"
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources
