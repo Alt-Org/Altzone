@@ -51,13 +51,10 @@ public class AvatarDesignLoader : AltMonoBehaviour
         if (playerData == null)
             yield break;
 
-        List<Sprite> sprites = new List<Sprite>();
-        PlayerAvatar playerAvatar = null;
-
         if (playerData.AvatarData == null || !playerData.AvatarData.Validate())
         {
             Debug.Log("AvatarData is null. Using default data.");
-            playerAvatar = new(_avatarDefaultReference.GetByCharacterId(playerData.SelectedCharacterId)[0]);
+            PlayerAvatar playerAvatar = new(_avatarDefaultReference.GetByCharacterId(playerData.SelectedCharacterId)[0]);
             playerData.AvatarData = new(playerAvatar.Name, playerAvatar.FeatureIds, playerAvatar.Color, playerAvatar.Scale);
         }
 
