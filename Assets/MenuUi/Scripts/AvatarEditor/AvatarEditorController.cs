@@ -128,7 +128,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _featurePicker.SetLoadedFeatures(_playerAvatar.FeatureIds);
 
             //_colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
-            _colorPicker.SetLoadedColors(_playerAvatar.Colors, _playerAvatar.FeatureIds);
+            _colorPicker.SetLoadedColors(_playerAvatar.Color, _playerAvatar.FeatureIds);
 
             _avatarScaler.SetLoadedScale(_playerAvatar.Scale);
         }
@@ -152,7 +152,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _featurePicker.SetLoadedFeatures(_playerAvatar.FeatureIds);
 
             //_colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
-            _colorPicker.SetLoadedColors(_playerAvatar.Colors, _playerAvatar.FeatureIds);
+            _colorPicker.SetLoadedColors(_playerAvatar.Color, _playerAvatar.FeatureIds);
 
             _avatarScaler.SetLoadedScale(_playerAvatar.Scale);
         }

@@ -62,11 +62,11 @@ namespace MenuUi.Scripts.AvatarEditor
             _avatarEditorCharacterHandle.SetHeadColor(color);
         }
 
-        public List<string> GetCurrentColors()
+        public string GetCurrentColors()
         {
             string[] colors = new string[_currentColors.Count];
             _currentColors.CopyTo(colors);
-            return (colors.ToList());
+            return colors[0];
         }
 
         public List<Color> GetCurrentColorsAsColors()
@@ -87,9 +87,9 @@ namespace MenuUi.Scripts.AvatarEditor
             return (colors);
         }
 
-        public void SetLoadedColors(List<string> colors, List<string> features)
+        public void SetLoadedColors(string colorCode, List<string> features)
         {
-            if (colors.Count != 0 && ColorUtility.TryParseHtmlString(colors[0], out Color color))
+            if (string.IsNullOrWhiteSpace(colorCode) && ColorUtility.TryParseHtmlString(colorCode, out Color color))
                 SetColor(color);
             //for (int i = 0; i < _currentColor.Count; i++)
             //{

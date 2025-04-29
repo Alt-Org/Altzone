@@ -57,7 +57,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
             Debug.Log("AvatarData is null. Using default data.");
             playerAvatar = new(_avatarDefaultReference.GetByCharacterId(playerData.SelectedCharacterId)[0]);
 
-            playerAvatar.Colors.Add("#ffffff");
+            playerAvatar.Color = "#ffffff";
         }
         else
             playerAvatar = new(playerData.AvatarData);
@@ -72,7 +72,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
         }
 
         Color color = Color.white;
-        ColorUtility.TryParseHtmlString(playerAvatar.Colors[0],out color);
+        ColorUtility.TryParseHtmlString(playerAvatar.Color,out color);
         colors.Add(color);
 
         _avatarVisualDataScriptableObject.sprites = sprites;
