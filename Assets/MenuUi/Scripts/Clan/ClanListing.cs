@@ -32,7 +32,7 @@ public class ClanListing : MonoBehaviour
             ClanData clanData = new ClanData(_clan);
 
             _clanName.text = _clan.name;
-            _clanMembers.text = "Jäsenet: " + _clan.playerCount;
+            _clanMembers.text = "Jäsenet: " + _clan.playerCount + "/25";
             _lockImage.enabled = !_clan.isOpen;
             ToggleJoinButton(_clan.isOpen);
 
