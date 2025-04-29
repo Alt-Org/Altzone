@@ -295,6 +295,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             {
                 editingComponent.OnUiElementEdited -= OnUiElementEdited;
                 editingComponent.OnUiElementSelected -= OnUiElementSelected;
+                editingComponent.OnGridSnap -= _grid.HighlightLinesNearPosition;
             }
 
             // Removing options dropdown listeners
@@ -473,6 +474,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Setting listener for editing component events
             editingComponent.OnUiElementEdited += OnUiElementEdited;
             editingComponent.OnUiElementSelected += OnUiElementSelected;
+            editingComponent.OnGridSnap += _grid.HighlightLinesNearPosition;
 
             return uiElementGameObject;
         }
@@ -697,6 +699,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private void OnUiElementSelected(BattleUiEditingComponent newSelectedEditingComponent)
         {
             CloseOptionsDropdown();
+            _grid.RemoveLineHighlight();
 
             if (_currentlySelectedEditingComponent != null && _currentlySelectedEditingComponent != newSelectedEditingComponent)
             {

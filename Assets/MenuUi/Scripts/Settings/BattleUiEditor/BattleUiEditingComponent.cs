@@ -39,6 +39,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         public delegate void UiElementSelectedHandler(BattleUiEditingComponent self);
         public UiElementSelectedHandler OnUiElementSelected;
 
+        public delegate void GridSnapHandler(Vector2 position);
+        public GridSnapHandler OnGridSnap;
+
         public void SetInfo(BattleUiMovableElement movableElement, Transform uiElementHolder)
         {
             _movableElement = movableElement;
@@ -139,6 +142,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     {
                         newPos.x = Mathf.Round(newPos.x / BattleUiEditor.GridCellWidth) * BattleUiEditor.GridCellWidth;
                         newPos.y = Mathf.Round(newPos.y / BattleUiEditor.GridCellHeight) * BattleUiEditor.GridCellHeight;
+                        OnGridSnap?.Invoke(newPos);
                     }
 
                     // Clamping position to be inside the editor

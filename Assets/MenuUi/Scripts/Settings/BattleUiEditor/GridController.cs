@@ -11,6 +11,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
     {
         [Header("Grid options")]
         [SerializeField] private int _gridLineThickness = 5;
+        [SerializeField] private Color _lineDefaultColor = Color.black;
+        [SerializeField] private Color _lineHighlightedColor = Color.blue;
 
         [Header("GameObject references.")]
         [SerializeField] private HorizontalLayoutGroup _gridColumns;
@@ -57,7 +59,53 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _gridRows.padding.bottom = Mathf.FloorToInt(spaceBetweenLines);
         }
 
+        /// <summary>
+        /// Highlight grid lines which are near the position.
+        /// </summary>
+        /// <param name="position">Position as Vector2 in world space.</param>
+        public void HighlightLinesNearPosition(Vector2 position)
+        {
+            RemoveLineHighlight();
+
+            // Getting nearest row line index
+            int rowCount = _gridRows.transform.childCount;
+            int nearestRowLine = Mathf.RoundToInt(position.y / (_parentRectTransform.rect.height / rowCount));
+            nearestRowLine = rowCount - nearestRowLine;
+            nearestRowLine = Mathf.Clamp(nearestRowLine, 0, rowCount - 1);
+
+            // Highlighting the row color
+            Image highlightedRow = _gridRows.transform.GetChild(nearestRowLine).GetComponent<Image>();
+            highlightedRow.color = _lineHighlightedColor;
+
+            // Getting nearest column line index
+            int columnCount = _gridColumns.transform.childCount;
+            int nearestColumnLine = Mathf.RoundToInt(position.x / (_parentRectTransform.rect.width / columnCount)) - 1;
+            nearestColumnLine = Mathf.Clamp(nearestColumnLine, 0, columnCount - 1);
+
+            // Highlighting the column color
+            Image highlightedColumn = _gridColumns.transform.GetChild(nearestColumnLine).GetComponent<Image>();
+            highlightedColumn.color = _lineHighlightedColor;
+
+            _highlightedLines = new[] { highlightedRow, highlightedColumn };
+        }
+
+        /// <summary>
+        /// Changes highlighted lines back to the default color.
+        /// </summary>
+        public void RemoveLineHighlight()
+        {
+            if (_highlightedLines != null)
+            {
+                foreach (var line in _highlightedLines)
+                {
+                    line.color = _lineDefaultColor;
+                }
+                _highlightedLines = null;
+            }
+        }
+
         private RectTransform _parentRectTransform;
+        private Image[] _highlightedLines;
 
         private void Awake()
         {
@@ -76,6 +124,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 for (int i = 0; i < linesToInstantiate; i++)
                 {
                     GameObject line = Instantiate(_gridLinePrefab);
+                    line.GetComponent<Image>().color = _lineDefaultColor;
                     line.transform.SetParent(lineParent.transform, false);
                 }
                 return;
