@@ -39,7 +39,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         public delegate void UiElementSelectedHandler(BattleUiEditingComponent self);
         public UiElementSelectedHandler OnUiElementSelected;
 
-        public delegate void GridSnapHandler(Vector2 position);
+        public delegate void GridSnapHandler(int gridColumnIndex, int gridRowIndex);
         public GridSnapHandler OnGridSnap;
 
         public void SetInfo(BattleUiMovableElement movableElement, Transform uiElementHolder)
@@ -140,15 +140,19 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
                     if (_isGridAlignToggled) // Snapping to grid while moving
                     {
-                        newPos.x = Mathf.Round(newPos.x / BattleUiEditor.GridCellWidth) * BattleUiEditor.GridCellWidth;
-                        newPos.y = Mathf.Round(newPos.y / BattleUiEditor.GridCellHeight) * BattleUiEditor.GridCellHeight;
+                        int gridColumnIndex = GridController.GetGridColumnIndex(newPos.x);
+                        int gridRowIndex = GridController.GetGridRowIndex(newPos.y);
+
+                        newPos.x = GridController.GetGridSnapPositionX(gridColumnIndex);
+                        newPos.y = GridController.GetGridSnapPositionY(gridRowIndex);
+
+                        OnGridSnap?.Invoke(gridColumnIndex, gridRowIndex);
                     }
 
                     // Clamping position to be inside the editor
                     newPos.x = Mathf.Clamp(newPos.x, _minPosX, _maxPosX);
                     newPos.y = Mathf.Clamp(newPos.y, _minPosY, _maxPosY);
 
-                    if (_isGridAlignToggled) OnGridSnap?.Invoke(newPos);
                     _movableElement.transform.position = newPos;
                     break;
 
@@ -334,17 +338,17 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _flipHorizontallyButtons = new[] { _flipHorizontallyButtonTop, _flipHorizontallyButtonBottom };
             _flipVerticallyButtons = new[] { _flipVerticallyButtonLeft, _flipVerticallyButtonRight };
 
-            foreach (var button in _changeOrientationButtons)
+            foreach (Button button in _changeOrientationButtons)
             {
                 button.onClick.AddListener(ChangeOrientation);
             }
 
-            foreach (var button in _flipHorizontallyButtons)
+            foreach (Button button in _flipHorizontallyButtons)
             {
                 button.onClick.AddListener(FlipHorizontally);
             }
 
-            foreach (var button in _flipVerticallyButtons)
+            foreach (Button button in _flipVerticallyButtons)
             {
                 button.onClick.AddListener(FlipVertically);
             }
@@ -370,60 +374,51 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void CalculateAndSetAnchors(Vector2? newSize = null)
         {
-            // Saving values used in calculations to easier to read variables
-            float holderWidth = _uiElementHolder.rect.width;
-            float holderHeight = _uiElementHolder.rect.height;
-
-            float xPos = _movableElement.RectTransformComponent.localPosition.x;
-            float yPos = _movableElement.RectTransformComponent.localPosition.y;
-
-            float ownWidth = newSize == null ? _movableElement.RectTransformComponent.rect.width : newSize.Value.x;
-            float ownHeight = newSize == null ? _movableElement.RectTransformComponent.rect.height : newSize.Value.y;
+            Vector2 size = new(
+                newSize == null ? _movableElement.RectTransformComponent.rect.width : newSize.Value.x,
+                newSize == null ? _movableElement.RectTransformComponent.rect.height : newSize.Value.y
+            );
 
             // Calculating anchors
-            float anchorXMin = (xPos - ownWidth / 2.0f) / holderWidth + 0.5f;
-            float anchorXMax = (xPos + ownWidth / 2.0f) / holderWidth + 0.5f;
-
-            float anchorYMin = (yPos - ownHeight / 2.0f) / holderHeight + 0.5f;
-            float anchorYMax = (yPos + ownHeight / 2.0f) / holderHeight + 0.5f;
+            (Vector2 anchorMin, Vector2 anchorMax) = BattleUiEditor.CalculateAnchors(size, _movableElement.RectTransformComponent.localPosition, 0.5f);
 
             // Checking that the anchors don't go over borders
-            if (anchorXMin < 0)
+            if (anchorMin.x < 0)
             {
-                anchorXMax += Mathf.Abs(anchorXMin);
-                anchorXMin = 0;
+                anchorMax.x += Mathf.Abs(anchorMin.x);
+                anchorMin.x = 0;
             }
 
-            if (anchorXMax > 1)
+            if (anchorMax.x > 1)
             {
-                anchorXMin -= anchorXMax - 1;
-                anchorXMax = 1;
+                anchorMin.x -= anchorMax.x - 1;
+                anchorMax.x = 1;
 
-                if (anchorXMin < 0)
+                if (anchorMin.x < 0)
                 {
-                    anchorXMin = 0;
+                    anchorMin.x = 0;
                 }
             }
 
-            if (anchorYMin < 0)
+            if (anchorMin.y < 0)
             {
-                anchorYMax += Mathf.Abs(anchorYMin);
-                anchorYMin = 0;
+                anchorMax.y += Mathf.Abs(anchorMin.y);
+                anchorMin.y = 0;
             }
 
-            if (anchorYMax > 1)
+            if (anchorMax.y > 1)
             {
-                anchorYMin -= anchorYMax - 1;
-                anchorYMax = 1;
+                anchorMin.y -= anchorMax.y - 1;
+                anchorMax.y = 1;
 
-                if (anchorYMin < 0)
+                if (anchorMin.y < 0)
                 {
-                    anchorYMin = 0;
+                    anchorMin.y = 0;
                 }
             }
 
-            _data.AnchorMin = new(anchorXMin, anchorYMin);
-            _data.AnchorMax = new(anchorXMax, anchorYMax);
+            _data.AnchorMin = anchorMin;
+            _data.AnchorMax = anchorMax;
 
             _movableElement.SetData(_data);
 

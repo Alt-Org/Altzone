@@ -15,9 +15,32 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Color _lineHighlightedColor = Color.blue;
 
         [Header("GameObject references.")]
-        [SerializeField] private HorizontalLayoutGroup _gridColumns;
-        [SerializeField] private VerticalLayoutGroup _gridRows;
+        [SerializeField] private Transform _gridColumns;
+        [SerializeField] private Transform _gridRows;
         [SerializeField] private GameObject _gridLinePrefab;
+
+        public static float GridCellWidth => Screen.width / s_columns;
+        public static float GridCellHeight => Screen.height / s_rows;
+
+        public static int GetGridColumnIndex(float xPos)
+        {
+            return Mathf.RoundToInt(xPos / GridCellWidth) - 1;
+        }
+
+        public static float GetGridSnapPositionX(int gridColumnIndex)
+        {
+            return (gridColumnIndex + 1) * GridCellWidth;
+        }
+
+        public static int GetGridRowIndex(float yPos)
+        {
+            return Mathf.RoundToInt(yPos / GridCellHeight) - 1;
+        }
+
+        public static float GetGridSnapPositionY(int gridRowIndex)
+        {
+            return (gridRowIndex + 1) * GridCellHeight;
+        }
 
         /// <summary>
         /// Set grid visibility.
@@ -33,61 +56,89 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// Set column grid lines.
         /// </summary>
         /// <param name="columns">The amount of columns as int.</param>
-        public void SetColumns(int columns)
+        public bool SetColumns(int columns)
         {
-            int lineAmount = columns - 1;
-            SetGridLines(lineAmount, _gridColumns.transform);
+            if (s_columns == columns) return false; // If the value didn't change we return
+            s_columns = columns;
 
-            float spaceBetweenLines = _parentRectTransform.rect.width / columns - _gridLineThickness / 2;
-            if (lineAmount > 1) _gridColumns.spacing = spaceBetweenLines;
-            _gridColumns.padding.left = Mathf.FloorToInt(spaceBetweenLines);
-            _gridColumns.padding.right = Mathf.FloorToInt(spaceBetweenLines);
+            int lineAmount = columns - 1;
+            InstantiateGridLines(lineAmount, _gridColumns.transform);
+
+            // Positioning column lines
+            for (int i = 0; i < _gridColumns.childCount; i++)
+            {
+                Transform child = _gridColumns.GetChild(i);
+                RectTransform childRectTransform = child.GetComponent<RectTransform>();
+
+                Vector2 size = new(
+                    _gridLineThickness,
+                    _editorHeight
+                );
+
+                Vector2 pos = new(
+                    GetGridSnapPositionX(i),
+                    _editorHeight * 0.5f
+                );
+
+                (Vector2 anchorMin, Vector2 anchorMax) = BattleUiEditor.CalculateAnchors(size, pos);
+
+                childRectTransform.anchorMin = anchorMin;
+                childRectTransform.anchorMax = anchorMax;
+            }
+
+            return true;
         }
 
         /// <summary>
         /// Set row grid lines.
         /// </summary>
         /// <param name="rows">The amount of rows as int.</param>
-        public void SetRows(int rows)
+        public bool SetRows(int rows)
         {
-            int lineAmount = rows - 1;
-            SetGridLines(lineAmount, _gridRows.transform);
+            if (s_rows == rows) return false;
+            s_rows = rows;
 
-            float spaceBetweenLines = _parentRectTransform.rect.height / rows - _gridLineThickness / 2;
-            if (lineAmount > 1) _gridRows.spacing = spaceBetweenLines;
-            _gridRows.padding.top = Mathf.FloorToInt(spaceBetweenLines);
-            _gridRows.padding.bottom = Mathf.FloorToInt(spaceBetweenLines);
+            int lineAmount = rows - 1;
+            InstantiateGridLines(lineAmount, _gridRows.transform);
+
+            // Positioning row lines
+            for (int i = 0; i < _gridRows.childCount; i++)
+            {
+                Transform child = _gridRows.GetChild(i);
+                RectTransform childRectTransform = child.GetComponent<RectTransform>();
+
+                Vector2 size = new(
+                    _editorWidth,
+                    _gridLineThickness
+                );
+
+                Vector2 pos = new(
+                    _editorWidth * 0.5f,
+                    GetGridSnapPositionY(i)
+                );
+
+                (Vector2 anchorMin, Vector2 anchorMax) = BattleUiEditor.CalculateAnchors(size, pos);
+
+                childRectTransform.anchorMin = anchorMin;
+                childRectTransform.anchorMax = anchorMax;
+            }
+
+            return true;
         }
 
         /// <summary>
         /// Highlight grid lines which are near the position.
         /// </summary>
-        /// <param name="position">Position as Vector2 in world space.</param>
-        public void HighlightLinesNearPosition(Vector2 position)
+        public void HighlightLinesNearPosition(int gridColumnIndex, int gridRowIndex)
         {
             RemoveLineHighlight();
 
-            // Calculating editor height and width
-            float editorHeight = _parentRectTransform.rect.height * (Screen.height / _parentRectTransform.rect.height);
-            float editorWidth = _parentRectTransform.rect.width * (Screen.width / _parentRectTransform.rect.width);
-
-            // Getting nearest row line index
-            int rowCount = _gridRows.transform.childCount;
-            int nearestRowLine = Mathf.CeilToInt(position.y / (editorHeight / rowCount));
-            nearestRowLine = rowCount - nearestRowLine;
-            nearestRowLine = Mathf.Clamp(nearestRowLine, 0, rowCount - 1);
-
             // Highlighting the row color
-            Image highlightedRow = _gridRows.transform.GetChild(nearestRowLine).GetComponent<Image>();
+            Image highlightedRow = _gridRows.transform.GetChild(gridRowIndex).GetComponent<Image>();
             highlightedRow.color = _lineHighlightedColor;
 
-            // Getting nearest column line index
-            int columnCount = _gridColumns.transform.childCount;
-            int nearestColumnLine = Mathf.CeilToInt(position.x / (editorWidth / columnCount)) - 1;
-            nearestColumnLine = Mathf.Clamp(nearestColumnLine, 0, columnCount - 1);
-
             // Highlighting the column color
-            Image highlightedColumn = _gridColumns.transform.GetChild(nearestColumnLine).GetComponent<Image>();
+            Image highlightedColumn = _gridColumns.transform.GetChild(gridColumnIndex).GetComponent<Image>();
             highlightedColumn.color = _lineHighlightedColor;
 
             _highlightedLines = new[] { highlightedRow, highlightedColumn };
@@ -108,6 +159,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
         }
 
+        private static int s_rows = -1;
+        private static int s_columns = -1;
+
+        private float _editorHeight => Screen.height;
+        private float _editorWidth => Screen.width;
+
         private RectTransform _parentRectTransform;
         private Image[] _highlightedLines;
 
@@ -116,7 +173,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _parentRectTransform = GetComponentInParent<RectTransform>();
         }
 
-        private void SetGridLines(int lineAmount, Transform lineParent)
+        private void InstantiateGridLines(int lineAmount, Transform lineParent)
         {
             // If we don't need to add or remove lines we return.
             if (lineAmount == lineParent.childCount) return;

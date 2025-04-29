@@ -23,7 +23,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Button _closeButton;
         [SerializeField] private Button _saveButton;
         [SerializeField] private RectTransform _arenaImage;
-        [SerializeField] private Transform _uiElementsHolder;
+        [SerializeField] private RectTransform _uiElementsHolder;
         [SerializeField] private GridController _grid;
 
         [Header("Options dropdown references")]
@@ -62,8 +62,20 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Button _okButton;
         [SerializeField] private Button _noButton;
 
-        public static float GridCellWidth => Screen.width / _columns;
-        public static float GridCellHeight => Screen.height / _rows;
+        public static (Vector2 anchorMin, Vector2 anchorMax) CalculateAnchors(Vector2 size, Vector2 pos, float offset = 0f)
+        {
+            float uiHolderWidth = s_instance._uiElementsHolder.rect.width;
+            float uiHolderHeight = s_instance._uiElementsHolder.rect.height;
+
+            // Calculating anchors
+            float anchorXMin = (pos.x - size.x / 2.0f) / uiHolderWidth + offset;
+            float anchorXMax = (pos.x + size.x / 2.0f) / uiHolderWidth + offset;
+
+            float anchorYMin = (pos.y - size.y / 2.0f) / uiHolderHeight + offset;
+            float anchorYMax = (pos.y + size.y / 2.0f) / uiHolderHeight + offset;
+
+            return (new Vector2(anchorXMin, anchorXMax), new Vector2(anchorYMin, anchorYMax));
+        }
 
         /// <summary>
         /// Open and initialize BattleUiEditor
@@ -109,11 +121,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 if (teammateNameVertical != null) teammateNameVertical.text = TeammateText;
             }
             SetDataToUiElement(BattleUiElementType.TeammateInfo);
-
-            // Initializing grid
-            _grid.SetRows(_rows);
-            _grid.SetColumns(_columns);
-            _grid.SetShow(_showGridToggle.isOn);
         }
 
         /// <summary>
@@ -161,8 +168,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private const float GameAspectRatio = 9f / 16f;
 
-        private static int _rows = 40;
-        private static int _columns = 20;
+        private static BattleUiEditor s_instance;
 
         private GameObject _instantiatedTimer;
         private GameObject _instantiatedPlayerInfo;
@@ -178,6 +184,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void Awake()
         {
+            s_instance = this;
             _editorRect = GetComponent<RectTransform>().rect;
 
             // Close and save button listeners
@@ -268,16 +275,17 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _arenaPosYSlider.value = SettingsCarrier.Instance.BattleArenaPosY;
 
             // Grid and incremental scaling settings are saved locally from this script because they aren't accessed anywhere else
-            _gridColumnsSlider.value = PlayerPrefs.GetInt(GridColumnsKey, _columns);
-            _gridRowsSlider.value = PlayerPrefs.GetInt(GridRowsKey, _rows);
+            _gridColumnsSlider.value = PlayerPrefs.GetInt(GridColumnsKey, 20);
+            _gridRowsSlider.value = PlayerPrefs.GetInt(GridRowsKey, 40);
             _showGridToggle.isOn = PlayerPrefs.GetInt(ShowGridKey, 1) == 1 ? true : false;
             _alignToGridToggle.isOn = PlayerPrefs.GetInt(AlignToGridKey, 1) == 1 ? true : false;
 
             _incrementalScalingToggle.isOn = PlayerPrefs.GetInt(IncrementalScalingKey, 1) == 1 ? true : false;
 
-            // Updating column and row variables from the slider values
-            _columns = (int)_gridColumnsSlider.value;
-            _rows = (int)_gridRowsSlider.value;
+            // Initializing grid
+            _grid.SetRows((int)_gridRowsSlider.value);
+            _grid.SetColumns((int)_gridColumnsSlider.value);
+            _grid.SetShow(_showGridToggle.isOn);
         }
 
         private void OnDestroy()
@@ -608,13 +616,17 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     break;
             }
 
-            // Fitting height to aspect ratio
-            float uiElementWidth = Screen.width * (anchorMax.x - anchorMin.x);
-            float uiElementHeight = uiElementWidth / aspectRatio;
+            // Calculating anchors
+            Vector2 size = new();
+            size.x = Screen.width * (anchorMax.x - anchorMin.x);
+            size.y = size.x / aspectRatio;
 
-            float yPos = (anchorMax.y + anchorMin.y) / 2 * Screen.height;
-            anchorMin.y = (yPos - uiElementHeight / 2.0f) / Screen.height;
-            anchorMax.y = (yPos + uiElementHeight / 2.0f) / Screen.height;
+            Vector2 pos = new(
+                (anchorMin.x + anchorMax.x) * 0.5f * Screen.width,
+                (anchorMax.y + anchorMin.y) * 0.5f * Screen.height
+            );
+
+            (anchorMin, anchorMax) = CalculateAnchors(size, pos);
 
             return new(anchorMin, anchorMax, orientation, isFlippedHorizontally, isFlippedVertically);
         }
@@ -732,22 +744,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void UpdateGridColumns()
         {
-            int value = (int)_gridColumnsSlider.value;
-            if (_columns == value) return; // If the value didn't change we return
-
-            _columns = value;
-            PlayerPrefs.SetInt(GridColumnsKey, _columns);
-            _grid.SetColumns(_columns);
+            int columns = (int)_gridColumnsSlider.value;
+            if (_grid.SetColumns(columns)) PlayerPrefs.SetInt(GridColumnsKey, columns);
         }
 
         private void UpdateGridRows()
         {
-            int value = (int)_gridRowsSlider.value;
-            if (_rows == value) return;
-
-            _rows = value;
-            PlayerPrefs.SetInt(GridRowsKey, _rows);
-            _grid.SetRows(_rows);
+            int rows = (int)_gridRowsSlider.value;
+            if (_grid.SetRows(rows)) PlayerPrefs.SetInt(GridRowsKey, rows);
         }
 
         private void UpdateArena()
