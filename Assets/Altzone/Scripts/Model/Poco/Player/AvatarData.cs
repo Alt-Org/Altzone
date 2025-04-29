@@ -5,6 +5,17 @@ using UnityEngine;
 
 namespace Assets.Altzone.Scripts.Model.Poco.Player
 {
+    public enum AvatarPiece
+    {
+        Hair,
+        Eyes,
+        Nose,
+        Mouth,
+        Clothes,
+        Feet,
+        Hands
+    }
+
     [Serializable]
     public class AvatarData
     {
@@ -74,6 +85,21 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
                 return (false);
 
             return (true);
+        }
+
+        public int GetPieceID(AvatarPiece piece)
+        {
+            return piece switch
+            {
+                AvatarPiece.Hair => Hair,
+                AvatarPiece.Eyes => Eyes,
+                AvatarPiece.Nose => Nose,
+                AvatarPiece.Mouth => Mouth,
+                AvatarPiece.Clothes => Clothes,
+                AvatarPiece.Feet => Feet,
+                AvatarPiece.Hands => Hands,
+                _ => -1,
+            };
         }
     }
 }

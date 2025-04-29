@@ -69,7 +69,7 @@ namespace MenuUi.Scripts.AvatarEditor
             return colors[0];
         }
 
-        public List<Color> GetCurrentColorsAsColors()
+        public Color GetCurrentColorsAsColors()
         {
             List<Color> colors = new List<Color>();
 
@@ -78,13 +78,13 @@ namespace MenuUi.Scripts.AvatarEditor
                 if (stringColor != null && ColorUtility.TryParseHtmlString(stringColor, out Color color))
                 {
                     colors.Add(color);
-                    continue;
+                    return color;
                 }
 
                 colors.Add(Color.white);
             }
 
-            return (colors);
+            return Color.white;
         }
 
         public void SetLoadedColors(string colorCode, List<string> features)

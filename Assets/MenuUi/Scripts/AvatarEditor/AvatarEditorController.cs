@@ -189,7 +189,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _currentPlayerData = playerData;
 
             _visualDataScriptableObject.sprites = _featurePicker.GetCurrentlySelectedFeaturesAsSprites();
-            _visualDataScriptableObject.colors = _colorPicker.GetCurrentColorsAsColors();
+            _visualDataScriptableObject.color = _colorPicker.GetCurrentColorsAsColors();
 
             AvatarDesignLoader.Instance.InvokeOnAvatarDesignUpdate();
         }

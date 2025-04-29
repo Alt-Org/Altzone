@@ -1,6 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Altzone.Scripts.Model.Poco.Player;
+using Assets.Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.AvatarEditor;
 using UnityEngine;
 
@@ -49,34 +52,30 @@ public class AvatarDesignLoader : AltMonoBehaviour
             yield break;
 
         List<Sprite> sprites = new List<Sprite>();
-        List<Color> colors = new List<Color>();
         PlayerAvatar playerAvatar = null;
 
         if (playerData.AvatarData == null || !playerData.AvatarData.Validate())
         {
             Debug.Log("AvatarData is null. Using default data.");
             playerAvatar = new(_avatarDefaultReference.GetByCharacterId(playerData.SelectedCharacterId)[0]);
-
-            playerAvatar.Color = "#ffffff";
+            playerData.AvatarData = new(playerAvatar.Name, playerAvatar.FeatureIds, playerAvatar.Color, playerAvatar.Scale);
         }
-        else
-            playerAvatar = new(playerData.AvatarData);
 
-        foreach (string id in playerAvatar.FeatureIds)
+        List<AvatarPiece> pieceIDs = Enum.GetValues(typeof(AvatarPiece)).Cast<AvatarPiece>().ToList();
+        foreach (AvatarPiece id in pieceIDs)
         {
-            var partInfo = _avatarPartsReference.GetAvatarPartById(id);
+            int pieceId= playerData.AvatarData.GetPieceID(id);
+            var partInfo = _avatarPartsReference.GetAvatarPartById(pieceId.ToString());
             if (partInfo != null)
-                sprites.Add(partInfo.AvatarImage);
+                _avatarVisualDataScriptableObject.SetAvatarPiece(id, partInfo.AvatarImage);
             else
-                sprites.Add(null);
+                _avatarVisualDataScriptableObject.SetAvatarPiece(id, null);
         }
 
         Color color = Color.white;
-        ColorUtility.TryParseHtmlString(playerAvatar.Color,out color);
-        colors.Add(color);
+        ColorUtility.TryParseHtmlString(playerData.AvatarData.Color,out color);
 
-        _avatarVisualDataScriptableObject.sprites = sprites;
-        _avatarVisualDataScriptableObject.colors = colors;
+        _avatarVisualDataScriptableObject.color = color;
 
         InvokeOnAvatarDesignUpdate();
     }
