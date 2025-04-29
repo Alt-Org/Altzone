@@ -11,7 +11,13 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
         public AvatarData(string name, List<string> featureIds, string color, Vector2 scale)
         {
             Name = (string)name.Clone();
-            FeatureIds = new(featureIds);
+            Hair = int.Parse(featureIds[0]);
+            Eyes = int.Parse(featureIds[1]);
+            Nose = int.Parse(featureIds[2]);
+            Mouth = int.Parse(featureIds[3]);
+            Clothes = int.Parse(featureIds[4]);
+            Feet = int.Parse(featureIds[5]);
+            Hands = int.Parse(featureIds[6]);
             Color = new(color);
             ScaleX = scale.x;
             ScaleY = scale.y;
@@ -20,21 +26,41 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
         public AvatarData(string name, ServerAvatar data)
         {
             Name = (string)name.Clone();
-            FeatureIds = new();
-            FeatureIds.Add(data.hair.ToString());
-            FeatureIds.Add(data.eyes.ToString());
-            FeatureIds.Add(data.nose.ToString());
-            FeatureIds.Add(data.mouth.ToString());
-            FeatureIds.Add(data.clothes.ToString());
-            FeatureIds.Add(data.feet.ToString());
-            FeatureIds.Add(data.hands.ToString());
+            Hair = data.hair;
+            Eyes = data.eyes;
+            Nose = data.nose;
+            Mouth = data.mouth;
+            Clothes = data.clothes;
+            Feet = data.feet;
+            Hands = data.hands;
             Color = new(data.skinColor);
             ScaleX = 1;
             ScaleY = 1;
         }
 
         public string Name;
-        public List<string> FeatureIds;
+        public List<string> FeatureIds
+        {
+            get
+            {
+                List<string> list = new();
+                list.Add(Hair.ToString());
+                list.Add(Eyes.ToString());
+                list.Add(Nose.ToString());
+                list.Add(Mouth.ToString());
+                list.Add(Clothes.ToString());
+                list.Add(Feet.ToString());
+                list.Add(Hands.ToString());
+                return list;
+            }
+        }
+        public int Hair;
+        public int Eyes;
+        public int Nose;
+        public int Mouth;
+        public int Clothes;
+        public int Feet;
+        public int Hands;
         public string Color;
         //public Vector2 Scale = new(ScaleX, ScaleY);
         public float ScaleX;

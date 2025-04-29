@@ -47,21 +47,21 @@ namespace Altzone.Scripts.Model.Poco.Player
         public string skinColor { get; set; }
 
 
-        public ServerAvatar()
+        public ServerAvatar() //This is needed because json parser tries to use the other one otherwise
         {
 
         }
         public ServerAvatar(AvatarData data)
         {
             head = 0;
-            hair = int.Parse(data.FeatureIds[0]);
-            eyes = int.Parse(data.FeatureIds[1]);
-            nose = int.Parse(data.FeatureIds[2]);
-            mouth = int.Parse(data.FeatureIds[3]);
+            hair = data.Hair;
+            eyes = data.Eyes;
+            nose = data.Nose;
+            mouth = data.Mouth;
             eyebrows = 0;
-            clothes = int.Parse(data.FeatureIds[4]);
-            feet = int.Parse(data.FeatureIds[5]);
-            hands = int.Parse(data.FeatureIds[6]);
+            clothes = data.Clothes;
+            feet = data.Feet;
+            hands = data.Hands;
             skinColor = data.Color;
         }
     }
