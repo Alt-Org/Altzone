@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using System.Linq;
+using UnityEditor;
 
 namespace Altzone.Scripts.ReferenceSheets
 {
@@ -94,6 +95,11 @@ namespace Altzone.Scripts.ReferenceSheets
                     {
                         localSet.list.Add(furnitureInfo);
                         added = true;
+#if UNITY_EDITOR
+                        AssetDatabase.Refresh();
+                        EditorUtility.SetDirty(this);
+                        AssetDatabase.SaveAssets();
+#endif
                     }
                     else
                     {
