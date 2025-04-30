@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Common;
 using Altzone.Scripts.Lobby;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -44,6 +45,8 @@ public class BattleStoryController : MonoBehaviour
     private Image _topLineImage;
     [SerializeField]
     private Image _bottomLineImage;
+    [SerializeField]
+    private List<ConversationLine> _conversationList;
 
     // Start is called before the first frame update
     void Start()
@@ -69,9 +72,11 @@ public class BattleStoryController : MonoBehaviour
         if (_routesRight.Count <= 0) yield break;
         List<Emotion> randomClipOrder1 = new();
         List<int> randomBallOrder1 = new();
+        List<string> lineOrder1 = new();
 
         List<Emotion> randomClipOrder2 = new();
         List<int> randomBallOrder2 = new();
+        List<string> lineOrder2 = new();
         int prevSelectedValue1 = -1;
         int selectedvalue1 = -1;
         int prevSelectedValue2 = -1;
@@ -96,6 +101,13 @@ public class BattleStoryController : MonoBehaviour
             int ballAnimation2 = Random.Range(0, _routesRight.Count);
             randomBallOrder2.Add(ballAnimation2);
         }
+
+        foreach(ConversationLine line in _conversationList)
+        {
+            if (line.Character == 0) lineOrder1.Add(line.Line);
+            else if(line.Character == 1) lineOrder2.Add(line.Line);
+        }
+
         yield return new WaitForSeconds(1f);
         for (int i = 0; i < randomClipOrder1.Count; i++)
         {
@@ -117,6 +129,7 @@ public class BattleStoryController : MonoBehaviour
                 StartCoroutine(_routesLeft[randomBallOrder1[i]].TraverseRoute(ball, done => ballDone = done));
                 _bottomLineImage.gameObject.SetActive(true);
                 _bottomLineImage.sprite = GetEmotionData(randomClipOrder1[i]).LineSprite;
+                _bottomLineImage.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = lineOrder1[i];
                 _characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
             }
 
@@ -143,6 +156,7 @@ public class BattleStoryController : MonoBehaviour
                 StartCoroutine(_routesRight[randomBallOrder2[i]].TraverseRoute(ball2, done => ballDone = done));
                 _topLineImage.gameObject.SetActive(true);
                 _topLineImage.sprite = GetEmotionData(randomClipOrder2[i]).LineSprite;
+                _topLineImage.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = lineOrder2[i];
                 _characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
             }
 
@@ -325,4 +339,16 @@ public class RouteSection
     public Transform PathSectionEndPoint { get => _pathSectionEndPoint; }
     public AnimationCurve PathSectionCurve { get => _pathSectionCurve; }
     public float Speed { get => _speed; }
+}
+
+[Serializable]
+public class ConversationLine
+{
+    /// <summary>
+    /// Character conversation line>.
+    /// </summary>
+    [TextArea(1, 3)]
+    public string Line;
+
+    public int Character;
 }
