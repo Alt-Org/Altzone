@@ -115,13 +115,16 @@ public class BattleStoryController : MonoBehaviour
             else
             {
                 StartCoroutine(_routesLeft[randomBallOrder1[i]].TraverseRoute(ball, done => ballDone = done));
+                _bottomLineImage.gameObject.SetActive(true);
+                _bottomLineImage.sprite = GetEmotionData(randomClipOrder1[i]).LineSprite;
+                _characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
             }
 
             yield return new WaitUntil(() => ballDone is true);
             Destroy(ball);
-            _bottomLineImage.gameObject.SetActive(true);
-            _bottomLineImage.sprite = GetEmotionData(randomClipOrder1[i]).LineSprite;
-            _characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
+            //_bottomLineImage.gameObject.SetActive(true);
+            //_bottomLineImage.sprite = GetEmotionData(randomClipOrder1[i]).LineSprite;
+            //_characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
             yield return new WaitForSeconds(0.5f);
             //Debug.LogWarning($"Character 2: {randomClipOrder2[i]}:{validatedList.First(x => x.Emotion == randomClipOrder2[i]).Character2Animation.name}, Ball 2: {randomBallOrder2[i]}");
             //_characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
@@ -138,13 +141,16 @@ public class BattleStoryController : MonoBehaviour
             else
             {
                 StartCoroutine(_routesRight[randomBallOrder2[i]].TraverseRoute(ball2, done => ballDone = done));
+                _topLineImage.gameObject.SetActive(true);
+                _topLineImage.sprite = GetEmotionData(randomClipOrder2[i]).LineSprite;
+                _characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
             }
 
             yield return new WaitUntil(() => ballDone is true);
             Destroy(ball2);
-            _topLineImage.gameObject.SetActive(true);
-            _topLineImage.sprite = GetEmotionData(randomClipOrder2[i]).LineSprite;
-            _characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
+            //_topLineImage.gameObject.SetActive(true);
+            //_topLineImage.sprite = GetEmotionData(randomClipOrder2[i]).LineSprite;
+            //_characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
             yield return new WaitForSeconds(0.5f);
         }
     }
