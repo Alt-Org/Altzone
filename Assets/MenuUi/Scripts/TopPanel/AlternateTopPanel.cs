@@ -34,7 +34,7 @@ public class AlternateTopPanel : MonoBehaviour
         Clan
     }
 
-    private TopPanelInfo _currentTopPanelInfo = TopPanelInfo.Clan;
+    private TopPanelInfo _currentTopPanelInfo = TopPanelInfo.Player;
 
     private void OnEnable()
     {
@@ -57,6 +57,12 @@ public class AlternateTopPanel : MonoBehaviour
 
         while (enabled)
         {
+            _playerInfo.SetActive(_currentTopPanelInfo == TopPanelInfo.Player);
+            _clanInfo.SetActive(_currentTopPanelInfo == TopPanelInfo.Clan);
+            StartCoroutine(ChangeLeaderboardType());
+
+            yield return wait;
+
             switch (_currentTopPanelInfo)
             {
                 case TopPanelInfo.Player:
@@ -66,12 +72,6 @@ public class AlternateTopPanel : MonoBehaviour
                     _currentTopPanelInfo = TopPanelInfo.Player;
                     break;
             }
-
-            _playerInfo.SetActive(_currentTopPanelInfo == TopPanelInfo.Player);
-            _clanInfo.SetActive(_currentTopPanelInfo == TopPanelInfo.Clan);
-            StartCoroutine(ChangeLeaderboardType());
-
-            yield return wait;
         }
     }
 
