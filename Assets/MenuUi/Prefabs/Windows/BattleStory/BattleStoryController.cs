@@ -40,12 +40,22 @@ public class BattleStoryController : MonoBehaviour
     [SerializeField]
     private Animator _characterAnimator2;
 
+    [Header("Text lines"), SerializeField]
+    private Image _topLineImage;
+    [SerializeField]
+    private Image _bottomLineImage;
+
     // Start is called before the first frame update
     void Start()
     {
         _exitButton.onClick.AddListener(ExitStory);
         StartCoroutine(SetPathArea());
         StartCoroutine(PlayAnimation());
+    }
+    private void OnEnable()
+    {
+        _topLineImage.gameObject.SetActive(false);
+        _bottomLineImage.gameObject.SetActive(false);
     }
 
 
@@ -109,6 +119,8 @@ public class BattleStoryController : MonoBehaviour
 
             yield return new WaitUntil(() => ballDone is true);
             Destroy(ball);
+            _bottomLineImage.gameObject.SetActive(true);
+            _bottomLineImage.sprite = GetEmotionData(randomClipOrder1[i]).LineSprite;
             _characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
             yield return new WaitForSeconds(0.5f);
             //Debug.LogWarning($"Character 2: {randomClipOrder2[i]}:{validatedList.First(x => x.Emotion == randomClipOrder2[i]).Character2Animation.name}, Ball 2: {randomBallOrder2[i]}");
@@ -130,6 +142,8 @@ public class BattleStoryController : MonoBehaviour
 
             yield return new WaitUntil(() => ballDone is true);
             Destroy(ball2);
+            _topLineImage.gameObject.SetActive(true);
+            _topLineImage.sprite = GetEmotionData(randomClipOrder2[i]).LineSprite;
             _characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
             yield return new WaitForSeconds(0.5f);
         }
@@ -204,11 +218,14 @@ public class EmotionObject
     private AnimationClip _character1Animation;
     [SerializeField]
     private AnimationClip _character2Animation;
+    [SerializeField]
+    private Sprite _lineSprite;
 
     public Emotion Emotion { get => _emotion;}
     public Sprite BallSprite { get => _ballSprite;}
     public AnimationClip Character1Animation { get => _character1Animation;}
     public AnimationClip Character2Animation { get => _character2Animation;}
+    public Sprite LineSprite { get => _lineSprite;}
 }
 
 [Serializable]
