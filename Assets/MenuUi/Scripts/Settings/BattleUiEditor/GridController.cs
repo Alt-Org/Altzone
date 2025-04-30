@@ -19,27 +19,24 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Transform _gridRows;
         [SerializeField] private GameObject _gridLinePrefab;
 
-        public static float GridCellWidth => Screen.width / s_columns;
-        public static float GridCellHeight => Screen.height / s_rows;
-
         public static int GetGridColumnIndex(float xPos)
         {
-            return Mathf.RoundToInt(xPos / GridCellWidth) - 1;
+            return Mathf.Clamp(Mathf.RoundToInt(xPos / s_gridCellWidth) - 1, 0, 99);
         }
 
         public static float GetGridSnapPositionX(int gridColumnIndex)
         {
-            return (gridColumnIndex + 1) * GridCellWidth;
+            return (gridColumnIndex + 1) * s_gridCellWidth;
         }
 
         public static int GetGridRowIndex(float yPos)
         {
-            return Mathf.RoundToInt(yPos / GridCellHeight) - 1;
+            return Mathf.Clamp(Mathf.RoundToInt(yPos / s_gridCellHeight) - 1, 0, 49);
         }
 
         public static float GetGridSnapPositionY(int gridRowIndex)
         {
-            return (gridRowIndex + 1) * GridCellHeight;
+            return (gridRowIndex + 1) * s_gridCellHeight;
         }
 
         /// <summary>
@@ -58,7 +55,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// <param name="columns">The amount of columns as int.</param>
         public bool SetColumns(int columns)
         {
-            if (s_columns == columns) return false; // If the value didn't change we return
+            //if (s_columns == columns) return false; // If the value didn't change we return
             s_columns = columns;
 
             int lineAmount = columns - 1;
@@ -72,12 +69,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
                 Vector2 size = new(
                     _gridLineThickness,
-                    _editorHeight
+                    Screen.height
                 );
 
                 Vector2 pos = new(
-                    GetGridSnapPositionX(i),
-                    _editorHeight * 0.5f
+                    GetGridSnapPositionX(i) - _gridLineThickness * 0.5f,
+                    Screen.height * 0.5f
                 );
 
                 (Vector2 anchorMin, Vector2 anchorMax) = BattleUiEditor.CalculateAnchors(size, pos);
@@ -95,7 +92,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// <param name="rows">The amount of rows as int.</param>
         public bool SetRows(int rows)
         {
-            if (s_rows == rows) return false;
+            //if (s_rows == rows) return false;
             s_rows = rows;
 
             int lineAmount = rows - 1;
@@ -108,13 +105,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 RectTransform childRectTransform = child.GetComponent<RectTransform>();
 
                 Vector2 size = new(
-                    _editorWidth,
+                    Screen.width,
                     _gridLineThickness
                 );
 
                 Vector2 pos = new(
-                    _editorWidth * 0.5f,
-                    GetGridSnapPositionY(i)
+                    Screen.width * 0.5f,
+                    GetGridSnapPositionY(i) - _gridLineThickness * 0.5f
                 );
 
                 (Vector2 anchorMin, Vector2 anchorMax) = BattleUiEditor.CalculateAnchors(size, pos);
@@ -159,19 +156,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
         }
 
+
+        private static float s_gridCellWidth => Screen.width / s_columns;
+        private static float s_gridCellHeight => Screen.height / s_rows;
+
         private static int s_rows = -1;
         private static int s_columns = -1;
 
-        private float _editorHeight => Screen.height;
-        private float _editorWidth => Screen.width;
-
-        private RectTransform _parentRectTransform;
         private Image[] _highlightedLines;
-
-        private void Awake()
-        {
-            _parentRectTransform = GetComponentInParent<RectTransform>();
-        }
 
         private void InstantiateGridLines(int lineAmount, Transform lineParent)
         {

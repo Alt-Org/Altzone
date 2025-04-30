@@ -61,20 +61,22 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private TMP_Text _popupText;
         [SerializeField] private Button _okButton;
         [SerializeField] private Button _noButton;
+        
+        public static float ScreenSpaceRatio => Screen.width / s_editorRect.width;
 
         public static (Vector2 anchorMin, Vector2 anchorMax) CalculateAnchors(Vector2 size, Vector2 pos, float offset = 0f)
         {
-            float uiHolderWidth = s_instance._uiElementsHolder.rect.width;
-            float uiHolderHeight = s_instance._uiElementsHolder.rect.height;
+            float uiHolderWidth = s_editorRect.width * ScreenSpaceRatio;
+            float uiHolderHeight = s_editorRect.height * ScreenSpaceRatio;
 
             // Calculating anchors
-            float anchorXMin = (pos.x - size.x / 2.0f) / uiHolderWidth + offset;
-            float anchorXMax = (pos.x + size.x / 2.0f) / uiHolderWidth + offset;
+            float anchorXMin = (pos.x - size.x * 0.5f) / uiHolderWidth + offset;
+            float anchorXMax = (pos.x + size.x * 0.5f) / uiHolderWidth + offset;
 
-            float anchorYMin = (pos.y - size.y / 2.0f) / uiHolderHeight + offset;
-            float anchorYMax = (pos.y + size.y / 2.0f) / uiHolderHeight + offset;
+            float anchorYMin = (pos.y - size.y * 0.5f) / uiHolderHeight + offset;
+            float anchorYMax = (pos.y + size.y * 0.5f) / uiHolderHeight + offset;
 
-            return (new Vector2(anchorXMin, anchorXMax), new Vector2(anchorYMin, anchorYMax));
+            return (new Vector2(anchorXMin, anchorYMin), new Vector2(anchorXMax, anchorYMax));
         }
 
         /// <summary>
@@ -168,7 +170,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private const float GameAspectRatio = 9f / 16f;
 
-        private static BattleUiEditor s_instance;
+        private static Rect s_editorRect;
 
         private GameObject _instantiatedTimer;
         private GameObject _instantiatedPlayerInfo;
@@ -180,12 +182,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private BattleUiEditingComponent _currentlySelectedEditingComponent;
 
-        private Rect _editorRect;
-
         private void Awake()
         {
-            s_instance = this;
-            _editorRect = GetComponent<RectTransform>().rect;
+            s_editorRect = GetComponent<RectTransform>().rect;
 
             // Close and save button listeners
             _closeButton.onClick.AddListener(CloseEditor);
@@ -765,29 +764,29 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             float arenaHeight; 
             if (screenAspectRatio <= GameAspectRatio)
             {
-                arenaWidth = _arenaScaleSlider.value / 100f * _editorRect.width;
+                arenaWidth = _arenaScaleSlider.value / 100f * s_editorRect.width;
                 arenaHeight = arenaWidth / GameAspectRatio;
             }
             else
             {
-                arenaHeight = _arenaScaleSlider.value / 100f * _editorRect.height;
+                arenaHeight = _arenaScaleSlider.value / 100f * s_editorRect.height;
                 arenaWidth = arenaHeight * GameAspectRatio;
             }
             
             // Calculating arena position
             Vector2 position = Vector2.zero;
-            position.x = (_arenaPosXSlider.value / 100 * (_editorRect.width - arenaWidth)) + arenaWidth / 2f;
-            position.y = ((100f - _arenaPosYSlider.value) / 100f * (_editorRect.height - arenaHeight)) + arenaHeight / 2f;
+            position.x = (_arenaPosXSlider.value / 100 * (s_editorRect.width - arenaWidth)) + arenaWidth / 2f;
+            position.y = ((100f - _arenaPosYSlider.value) / 100f * (s_editorRect.height - arenaHeight)) + arenaHeight / 2f;
 
             // Calculating arena anchors
             Vector2 anchorMin = Vector2.zero;
             Vector2 anchorMax = Vector2.zero;
 
-            anchorMin.x = (position.x - arenaWidth / 2.0f) / _editorRect.width;
-            anchorMax.x = (position.x + arenaWidth / 2.0f) / _editorRect.width;
+            anchorMin.x = (position.x - arenaWidth / 2.0f) / s_editorRect.width;
+            anchorMax.x = (position.x + arenaWidth / 2.0f) / s_editorRect.width;
 
-            anchorMin.y = (position.y - arenaHeight / 2.0f) / _editorRect.height;
-            anchorMax.y = (position.y + arenaHeight / 2.0f) / _editorRect.height;
+            anchorMin.y = (position.y - arenaHeight / 2.0f) / s_editorRect.height;
+            anchorMax.y = (position.y + arenaHeight / 2.0f) / s_editorRect.height;
 
             // Setting arena anchors
             _arenaImage.anchorMin = anchorMin;
