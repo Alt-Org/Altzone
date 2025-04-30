@@ -51,21 +51,25 @@ MonoBehaviour:
     - rid: 3915831314950914049
     - rid: 3915831314950914050
     - rid: 3915831314950914051
+    - rid: 3915831314950914052
   - Components:
     - rid: 4158493136064086016
     - rid: 4158493136064086017
     - rid: 4158493136064086018
     - rid: 4158493136064086019
+    - rid: 4158493136064086020
   - Components:
     - rid: 924740730520338432
     - rid: 924740730520338433
     - rid: 924740730520338434
     - rid: 924740730520338435
+    - rid: 924740730520338436
   - Components:
     - rid: 8446298868303265792
     - rid: 8446298868303265793
     - rid: 8446298868303265794
     - rid: 8446298868303265795
+    - rid: 8446298868303265796
   SerializedTriangleDataUncompressedSize: 8
   references:
     version: 2
@@ -133,6 +137,12 @@ MonoBehaviour:
             RawValue: 0
         CollisionMinOffset:
           RawValue: 294912
+    - rid: 924740730520338436
+      type: {class: BattleCollisionTriggerQComponentPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
+      data:
+        Type:
+          Value: 0
     - rid: 3915831314950914048
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -186,6 +196,12 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 3915831314950914051
+      type: {class: BattleCollisionTriggerQComponentPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
+      data:
+        Type:
+          Value: 3
+    - rid: 3915831314950914052
       type: {class: BattleGoalQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         TeamNumber:
@@ -245,6 +261,12 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 4158493136064086019
+      type: {class: BattleCollisionTriggerQComponentPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
+      data:
+        Type:
+          Value: 3
+    - rid: 4158493136064086020
       type: {class: BattleGoalQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         TeamNumber:
@@ -314,6 +336,12 @@ MonoBehaviour:
             RawValue: 0
         CollisionMinOffset:
           RawValue: 294912
+    - rid: 8446298868303265796
+      type: {class: BattleCollisionTriggerQComponentPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
+      data:
+        Type:
+          Value: 0
     - rid: 9189874137361809408
       type: {class: BattleDiamondCounterQSingletonPrototype, ns: Quantum.Prototypes,
         asm: Quantum.Simulation}

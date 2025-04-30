@@ -166,6 +166,7 @@ GameObject:
   - component: {fileID: 76015280}
   - component: {fileID: 76015284}
   - component: {fileID: 76015285}
+  - component: {fileID: 76015286}
   m_Layer: 0
   m_Name: ArenaBorderLeft
   m_TagString: Untagged
@@ -231,7 +232,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 76015278}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -9, y: 0, z: 0}
   m_LocalScale: {x: 9, y: 1, z: 32}
   m_ConstrainProportionsScale: 0
@@ -412,6 +413,21 @@ MonoBehaviour:
         RawValue: 0
     CollisionMinOffset:
       RawValue: 294912
+--- !u!114 &76015286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 76015278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d28504b7d1755c57ae0529ef8c0139d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    Type:
+      Value: 0
 --- !u!1 &88804845
 GameObject:
   m_ObjectHideFlags: 0
@@ -2325,6 +2341,7 @@ GameObject:
   - component: {fileID: 196834849}
   - component: {fileID: 196834851}
   - component: {fileID: 196834852}
+  - component: {fileID: 196834853}
   m_Layer: 0
   m_Name: ArenaBorderTop(GoalTeamBeta)
   m_TagString: Untagged
@@ -2518,6 +2535,21 @@ MonoBehaviour:
       Value: 2
     HasTriggered:
       Value: 0
+--- !u!114 &196834853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 196834848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d28504b7d1755c57ae0529ef8c0139d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    Type:
+      Value: 3
 --- !u!1 &321734676
 GameObject:
   m_ObjectHideFlags: 0
@@ -2884,6 +2916,7 @@ GameObject:
   - component: {fileID: 655040186}
   - component: {fileID: 655040190}
   - component: {fileID: 655040191}
+  - component: {fileID: 655040192}
   m_Layer: 0
   m_Name: ArenaBorderRight
   m_TagString: Untagged
@@ -3130,6 +3163,21 @@ MonoBehaviour:
         RawValue: 0
     CollisionMinOffset:
       RawValue: 294912
+--- !u!114 &655040192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 655040184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d28504b7d1755c57ae0529ef8c0139d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    Type:
+      Value: 0
 --- !u!1 &677758277
 GameObject:
   m_ObjectHideFlags: 0
@@ -3603,6 +3651,7 @@ GameObject:
   - component: {fileID: 1663712103}
   - component: {fileID: 1663712105}
   - component: {fileID: 1663712106}
+  - component: {fileID: 1663712107}
   m_Layer: 0
   m_Name: ArenaBorderBottom(GoalTeamAlpha)
   m_TagString: Untagged
@@ -3796,6 +3845,21 @@ MonoBehaviour:
       Value: 1
     HasTriggered:
       Value: 0
+--- !u!114 &1663712107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1663712102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d28504b7d1755c57ae0529ef8c0139d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    Type:
+      Value: 3
 --- !u!114 &1715260851 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1498203579526516830, guid: 1621131824e870d4b951f05b192c9ff7,

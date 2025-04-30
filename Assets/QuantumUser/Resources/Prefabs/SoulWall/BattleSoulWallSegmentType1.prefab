@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1572721459727303304}
   - component: {fileID: 3828829633926915963}
   - component: {fileID: 9042017567012426290}
+  - component: {fileID: 2439202691060113539}
   m_Layer: 0
   m_Name: BattleSoulWallSegmentType1
   m_TagString: Untagged
@@ -243,6 +244,21 @@ MonoBehaviour:
         RawValue: 0
     CollisionMinOffset:
       RawValue: 0
+--- !u!114 &2439202691060113539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781388111915340693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d28504b7d1755c57ae0529ef8c0139d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    CollisionTriggerType:
+      Value: 1
 --- !u!1001 &1645362824321417054
 PrefabInstance:
   m_ObjectHideFlags: 0
