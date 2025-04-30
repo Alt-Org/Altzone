@@ -17,6 +17,11 @@ public class BattleStoryController : MonoBehaviour
     private GameObject _emotionBall;
 
     [SerializeField]
+    private Image _tableSprite;
+    [SerializeField]
+    private RectTransform _pathArea;
+
+    [SerializeField]
     private Transform _startPositionLeft;
     [SerializeField]
     private Transform _startPositionRight;
@@ -39,6 +44,7 @@ public class BattleStoryController : MonoBehaviour
     void Start()
     {
         _exitButton.onClick.AddListener(ExitStory);
+        StartCoroutine(SetPathArea());
         StartCoroutine(PlayAnimation());
     }
 
@@ -156,6 +162,28 @@ public class BattleStoryController : MonoBehaviour
             validatedList.Add(emotionObj);
         }
         return validatedList;
+    }
+
+    private IEnumerator SetPathArea()
+    {
+        yield return new WaitForEndOfFrame();
+        Vector2 spriteSize = _tableSprite.sprite.rect.size;
+        float spriteRatio = spriteSize.y / spriteSize.x;
+
+        Vector2 areaSize = _pathArea.rect.size;
+        float areaRatio = areaSize.y / areaSize.x;
+        if(spriteRatio < areaRatio)
+        {
+            float diff = 1 - spriteRatio/areaRatio;
+            _pathArea.anchorMin = new Vector2(0, diff/2);
+            _pathArea.anchorMax = new Vector2(1, 1- diff/2);
+        }
+        else
+        {
+            float diff = 1 - areaRatio / spriteRatio;
+            _pathArea.anchorMin = new Vector2(diff / 2, 0);
+            _pathArea.anchorMax = new Vector2(1 - diff / 2, 1);
+        }
     }
 
     private void ExitStory()
