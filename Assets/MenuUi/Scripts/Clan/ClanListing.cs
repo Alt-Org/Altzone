@@ -24,6 +24,8 @@ public class ClanListing : MonoBehaviour
     [SerializeField] private ClanHeartColorSetter _clanHeart;
     [SerializeField] private TextMeshProUGUI _winsRankText;
     [SerializeField] private TextMeshProUGUI _activityRankText;
+    public TextMeshProUGUI WinsRank => _winsRankText;
+    public TextMeshProUGUI ActivityRank => _activityRankText;
     [SerializeField] private LanguageFlagImage _languageFlagImage;
 
     private ServerClan _clan;
