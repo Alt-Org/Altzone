@@ -19,21 +19,41 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Transform _gridRows;
         [SerializeField] private GameObject _gridLinePrefab;
 
+        /// <summary>
+        /// Get the grid column line's index which is nearest to the x axis position.
+        /// </summary>
+        /// <param name="xPos">The x axis position.</param>
+        /// <returns>The column line index as float.</returns>
         public static int GetGridColumnIndex(float xPos)
         {
-            return Mathf.Clamp(Mathf.RoundToInt(xPos / s_gridCellWidth) - 1, 0, 99);
+            return Mathf.Clamp(Mathf.RoundToInt(xPos / s_gridCellWidth) - 1, 0, s_columns - 2);
         }
 
+        /// <summary>
+        /// Get grid snap position in the y axis according to the grid column line's index.
+        /// </summary>
+        /// <param name="gridColumnIndex">The grid column line index which position to get.</param>
+        /// <returns>Grid y axis snap position as float.</returns>
         public static float GetGridSnapPositionX(int gridColumnIndex)
         {
             return (gridColumnIndex + 1) * s_gridCellWidth;
         }
 
+        /// <summary>
+        /// Get the grid row line's index which is nearest to the y axis position.
+        /// </summary>
+        /// <param name="yPos">The y axis position.</param>
+        /// <returns>The row line index as float.</returns>
         public static int GetGridRowIndex(float yPos)
         {
-            return Mathf.Clamp(Mathf.RoundToInt(yPos / s_gridCellHeight) - 1, 0, 49);
+            return Mathf.Clamp(Mathf.RoundToInt(yPos / s_gridCellHeight) - 1, 0, s_rows - 2);
         }
 
+        /// <summary>
+        /// Get grid snap position in the x axis according to the grid row line's index.
+        /// </summary>
+        /// <param name="gridRowIndex">The grid row line index which position to get.</param>
+        /// <returns>Grid x axis snap position as float.</returns>
         public static float GetGridSnapPositionY(int gridRowIndex)
         {
             return (gridRowIndex + 1) * s_gridCellHeight;
@@ -55,7 +75,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// <param name="columns">The amount of columns as int.</param>
         public bool SetColumns(int columns)
         {
-            //if (s_columns == columns) return false; // If the value didn't change we return
+            if (s_columns == columns && _gridColumns.transform.childCount > 0) return false; // If the value didn't change we return
             s_columns = columns;
 
             int lineAmount = columns - 1;
@@ -92,7 +112,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// <param name="rows">The amount of rows as int.</param>
         public bool SetRows(int rows)
         {
-            //if (s_rows == rows) return false;
+            if (s_rows == rows && _gridRows.transform.childCount > 0) return false;
             s_rows = rows;
 
             int lineAmount = rows - 1;
@@ -124,9 +144,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         }
 
         /// <summary>
-        /// Highlight grid lines which are near the position.
+        /// Highlight grid lines.
         /// </summary>
-        public void HighlightLinesNearPosition(int gridColumnIndex, int gridRowIndex)
+        /// <param name="gridColumnIndex">The grid column line index which to highlight.</param>
+        /// <param name="gridRowIndex">The grid row line index which to highlight.</param>
+        public void HighlightLines(int gridColumnIndex, int gridRowIndex)
         {
             RemoveLineHighlight();
 
@@ -148,14 +170,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             if (_highlightedLines != null)
             {
-                foreach (var line in _highlightedLines)
+                foreach (Image line in _highlightedLines)
                 {
                     line.color = _lineDefaultColor;
                 }
                 _highlightedLines = null;
             }
         }
-
 
         private static float s_gridCellWidth => Screen.width / s_columns;
         private static float s_gridCellHeight => Screen.height / s_rows;

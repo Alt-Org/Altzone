@@ -62,19 +62,30 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Button _okButton;
         [SerializeField] private Button _noButton;
         
-        public static float ScreenSpaceRatio => Screen.width / s_editorRect.width;
+        public static float ScreenSpaceRatio => Screen.width / EditorRect.width;
 
+        public static Rect EditorRect;
+        public static RectTransform EditorRectTransform;
+
+        /// <summary>
+        /// Calculate anchors based on Ui element size position and offset.
+        /// </summary>
+        /// <param name="size">Size of the Ui element.</param>
+        /// <param name="pos">Ui element position.</param>
+        /// <param name="offset">Optional offset for the anchors.</param>
+        /// <returns>Two Vector2, anchorMin and anchorMax.</returns>
         public static (Vector2 anchorMin, Vector2 anchorMax) CalculateAnchors(Vector2 size, Vector2 pos, float offset = 0f)
         {
-            float uiHolderWidth = s_editorRect.width * ScreenSpaceRatio;
-            float uiHolderHeight = s_editorRect.height * ScreenSpaceRatio;
+            // For some reason the calculation didn't work with screen space ratio when called from BattleUiEditingComponent which also needs the offset, so added a check.
+            float uiHolderWidth = offset == 0f ? EditorRect.width * ScreenSpaceRatio : EditorRect.width;
+            float uiHolderHeight = offset == 0f ? EditorRect.height * ScreenSpaceRatio : EditorRect.height;
 
             // Calculating anchors
-            float anchorXMin = (pos.x - size.x * 0.5f) / uiHolderWidth + offset;
-            float anchorXMax = (pos.x + size.x * 0.5f) / uiHolderWidth + offset;
+            float anchorXMin = Mathf.Clamp01((pos.x - size.x * 0.5f) / uiHolderWidth + offset);
+            float anchorXMax = Mathf.Clamp01((pos.x + size.x * 0.5f) / uiHolderWidth + offset);
 
-            float anchorYMin = (pos.y - size.y * 0.5f) / uiHolderHeight + offset;
-            float anchorYMax = (pos.y + size.y * 0.5f) / uiHolderHeight + offset;
+            float anchorYMin = Mathf.Clamp01((pos.y - size.y * 0.5f) / uiHolderHeight + offset);
+            float anchorYMax = Mathf.Clamp01((pos.y + size.y * 0.5f) / uiHolderHeight + offset);
 
             return (new Vector2(anchorXMin, anchorYMin), new Vector2(anchorXMax, anchorYMax));
         }
@@ -170,8 +181,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private const float GameAspectRatio = 9f / 16f;
 
-        private static Rect s_editorRect;
-
         private GameObject _instantiatedTimer;
         private GameObject _instantiatedPlayerInfo;
         private GameObject _instantiatedTeammateInfo;
@@ -184,7 +193,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void Awake()
         {
-            s_editorRect = GetComponent<RectTransform>().rect;
+            EditorRectTransform = GetComponent<RectTransform>();
+            EditorRect = EditorRectTransform.rect;
 
             // Close and save button listeners
             _closeButton.onClick.AddListener(CloseEditor);
@@ -276,10 +286,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Grid and incremental scaling settings are saved locally from this script because they aren't accessed anywhere else
             _gridColumnsSlider.value = PlayerPrefs.GetInt(GridColumnsKey, 20);
             _gridRowsSlider.value = PlayerPrefs.GetInt(GridRowsKey, 40);
-            _showGridToggle.isOn = PlayerPrefs.GetInt(ShowGridKey, 1) == 1 ? true : false;
-            _alignToGridToggle.isOn = PlayerPrefs.GetInt(AlignToGridKey, 1) == 1 ? true : false;
+            _showGridToggle.isOn = PlayerPrefs.GetInt(ShowGridKey, 1) == 1;
+            _alignToGridToggle.isOn = PlayerPrefs.GetInt(AlignToGridKey, 1) == 1;
 
-            _incrementalScalingToggle.isOn = PlayerPrefs.GetInt(IncrementalScalingKey, 1) == 1 ? true : false;
+            _incrementalScalingToggle.isOn = PlayerPrefs.GetInt(IncrementalScalingKey, 1) == 1;
 
             // Initializing grid
             _grid.SetRows((int)_gridRowsSlider.value);
@@ -298,11 +308,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _noButton.onClick.RemoveAllListeners();
 
             // Removing editing component listeners
-            foreach (var editingComponent in _uiElementsHolder.GetComponentsInChildren<BattleUiEditingComponent>())
+            foreach (BattleUiEditingComponent editingComponent in _uiElementsHolder.GetComponentsInChildren<BattleUiEditingComponent>())
             {
                 editingComponent.OnUiElementEdited -= OnUiElementEdited;
                 editingComponent.OnUiElementSelected -= OnUiElementSelected;
-                editingComponent.OnGridSnap -= _grid.HighlightLinesNearPosition;
+                editingComponent.OnGridSnap -= _grid.HighlightLines;
             }
 
             // Removing options dropdown listeners
@@ -452,11 +462,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Setting info to the editing component
             if (movableElement != null && multiOrientationElement == null)
             {
-                editingComponent.SetInfo(movableElement, _uiElementsHolder);
+                editingComponent.SetInfo(movableElement);
             }
             else if (multiOrientationElement != null)
             {
-                editingComponent.SetInfo(multiOrientationElement, _uiElementsHolder);
+                editingComponent.SetInfo(multiOrientationElement);
             }
             else
             {
@@ -481,7 +491,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Setting listener for editing component events
             editingComponent.OnUiElementEdited += OnUiElementEdited;
             editingComponent.OnUiElementSelected += OnUiElementSelected;
-            editingComponent.OnGridSnap += _grid.HighlightLinesNearPosition;
+            editingComponent.OnGridSnap += _grid.HighlightLines;
 
             return uiElementGameObject;
         }
@@ -764,29 +774,29 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             float arenaHeight; 
             if (screenAspectRatio <= GameAspectRatio)
             {
-                arenaWidth = _arenaScaleSlider.value / 100f * s_editorRect.width;
+                arenaWidth = _arenaScaleSlider.value / 100f * EditorRect.width;
                 arenaHeight = arenaWidth / GameAspectRatio;
             }
             else
             {
-                arenaHeight = _arenaScaleSlider.value / 100f * s_editorRect.height;
+                arenaHeight = _arenaScaleSlider.value / 100f * EditorRect.height;
                 arenaWidth = arenaHeight * GameAspectRatio;
             }
             
             // Calculating arena position
             Vector2 position = Vector2.zero;
-            position.x = (_arenaPosXSlider.value / 100 * (s_editorRect.width - arenaWidth)) + arenaWidth / 2f;
-            position.y = ((100f - _arenaPosYSlider.value) / 100f * (s_editorRect.height - arenaHeight)) + arenaHeight / 2f;
+            position.x = (_arenaPosXSlider.value / 100 * (EditorRect.width - arenaWidth)) + arenaWidth / 2f;
+            position.y = ((100f - _arenaPosYSlider.value) / 100f * (EditorRect.height - arenaHeight)) + arenaHeight / 2f;
 
             // Calculating arena anchors
             Vector2 anchorMin = Vector2.zero;
             Vector2 anchorMax = Vector2.zero;
 
-            anchorMin.x = (position.x - arenaWidth / 2.0f) / s_editorRect.width;
-            anchorMax.x = (position.x + arenaWidth / 2.0f) / s_editorRect.width;
+            anchorMin.x = (position.x - arenaWidth / 2.0f) / EditorRect.width;
+            anchorMax.x = (position.x + arenaWidth / 2.0f) / EditorRect.width;
 
-            anchorMin.y = (position.y - arenaHeight / 2.0f) / s_editorRect.height;
-            anchorMax.y = (position.y + arenaHeight / 2.0f) / s_editorRect.height;
+            anchorMin.y = (position.y - arenaHeight / 2.0f) / EditorRect.height;
+            anchorMax.y = (position.y + arenaHeight / 2.0f) / EditorRect.height;
 
             // Setting arena anchors
             _arenaImage.anchorMin = anchorMin;
