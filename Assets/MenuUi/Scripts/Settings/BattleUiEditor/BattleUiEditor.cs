@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -179,6 +180,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private const string AlignToGridKey = "BattleUiEditorAlignToGrid";
         private const string IncrementalScalingKey = "BattleUiEditorIncScaling";
 
+        private const int GridRowsDefault = 40;
+        private const int GridColumnsDefault = 20;
+
         private const float GameAspectRatio = 9f / 16f;
 
         private GameObject _instantiatedTimer;
@@ -186,6 +190,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private GameObject _instantiatedTeammateInfo;
         private GameObject _instantiatedDiamonds;
         private GameObject _instantiatedGiveUpButton;
+        private readonly List<BattleUiEditingComponent> _editingComponents = new();
 
         private bool _unsavedChanges = false;
 
@@ -284,8 +289,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _arenaPosYSlider.value = SettingsCarrier.Instance.BattleArenaPosY;
 
             // Grid and incremental scaling settings are saved locally from this script because they aren't accessed anywhere else
-            _gridColumnsSlider.value = PlayerPrefs.GetInt(GridColumnsKey, 20);
-            _gridRowsSlider.value = PlayerPrefs.GetInt(GridRowsKey, 40);
+            _gridColumnsSlider.value = PlayerPrefs.GetInt(GridColumnsKey, GridColumnsDefault);
+            _gridRowsSlider.value = PlayerPrefs.GetInt(GridRowsKey, GridRowsDefault);
             _showGridToggle.isOn = PlayerPrefs.GetInt(ShowGridKey, 1) == 1;
             _alignToGridToggle.isOn = PlayerPrefs.GetInt(AlignToGridKey, 1) == 1;
 
@@ -308,7 +313,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _noButton.onClick.RemoveAllListeners();
 
             // Removing editing component listeners
-            foreach (BattleUiEditingComponent editingComponent in _uiElementsHolder.GetComponentsInChildren<BattleUiEditingComponent>())
+            foreach (BattleUiEditingComponent editingComponent in _editingComponents)
             {
                 editingComponent.OnUiElementEdited -= OnUiElementEdited;
                 editingComponent.OnUiElementSelected -= OnUiElementSelected;
@@ -492,6 +497,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             editingComponent.OnUiElementEdited += OnUiElementEdited;
             editingComponent.OnUiElementSelected += OnUiElementSelected;
             editingComponent.OnGridSnap += _grid.HighlightLines;
+
+            _editingComponents.Add(editingComponent);
 
             return uiElementGameObject;
         }
