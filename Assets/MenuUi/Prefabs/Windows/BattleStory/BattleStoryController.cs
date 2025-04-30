@@ -42,9 +42,9 @@ public class BattleStoryController : MonoBehaviour
     private Animator _characterAnimator2;
 
     [Header("Text lines"), SerializeField]
-    private Image _topLineImage;
+    private BattleStoryLineHandler _topLineImage;
     [SerializeField]
-    private Image _bottomLineImage;
+    private BattleStoryLineHandler _bottomLineImage;
     [SerializeField]
     private List<ConversationLine> _conversationList;
 
@@ -127,9 +127,7 @@ public class BattleStoryController : MonoBehaviour
             else
             {
                 StartCoroutine(_routesLeft[randomBallOrder1[i]].TraverseRoute(ball, done => ballDone = done));
-                _bottomLineImage.gameObject.SetActive(true);
-                _bottomLineImage.sprite = GetEmotionData(randomClipOrder1[i]).LineSprite;
-                _bottomLineImage.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = lineOrder1[i];
+                _bottomLineImage.SetText(GetEmotionData(randomClipOrder1[i]).LineSprite, lineOrder1[i]);
                 _characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
             }
 
@@ -154,9 +152,7 @@ public class BattleStoryController : MonoBehaviour
             else
             {
                 StartCoroutine(_routesRight[randomBallOrder2[i]].TraverseRoute(ball2, done => ballDone = done));
-                _topLineImage.gameObject.SetActive(true);
-                _topLineImage.sprite = GetEmotionData(randomClipOrder2[i]).LineSprite;
-                _topLineImage.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = lineOrder2[i];
+                _topLineImage.SetText(GetEmotionData(randomClipOrder2[i]).LineSprite, lineOrder2[i]);
                 _characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
             }
 

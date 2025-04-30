@@ -810,8 +810,8 @@ MonoBehaviour:
     _lineSprite: {fileID: 21300000, guid: 0925bf9fae9ddb346b2f70a484eb413f, type: 3}
   _characterAnimator1: {fileID: 1715033929214055479}
   _characterAnimator2: {fileID: 8889435277165240542}
-  _topLineImage: {fileID: 4220822954772692703}
-  _bottomLineImage: {fileID: 2405354602748325802}
+  _topLineImage: {fileID: 663949150751432669}
+  _bottomLineImage: {fileID: 6648518108213591171}
   _conversationList:
   - Line: "Meid\xE4n pit\xE4isi v\xE4h\xE4n jutella..."
     Character: 0
@@ -1078,7 +1078,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.3}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -4}
-  m_SizeDelta: {x: -20, y: -12}
+  m_SizeDelta: {x: -40, y: -12}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7997085780593356606
 CanvasRenderer:
@@ -1780,7 +1780,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.3}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -4}
-  m_SizeDelta: {x: -20, y: -12}
+  m_SizeDelta: {x: -40, y: -12}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5824422199169807792
 CanvasRenderer:
@@ -2223,6 +2223,7 @@ GameObject:
   - component: {fileID: 3947934395242205661}
   - component: {fileID: 6969848568534395061}
   - component: {fileID: 2405354602748325802}
+  - component: {fileID: 6648518108213591171}
   m_Layer: 5
   m_Name: BottomLine
   m_TagString: Untagged
@@ -2288,6 +2289,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6648518108213591171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6250745060665637785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32f99a93585323c47b84399e1c48b5fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _textBackground: {fileID: 3947934395242205661}
+  _messageText: {fileID: 7194868231666971723}
+  _lineSprite: {fileID: 2405354602748325802}
+  heightStep: 50
 --- !u!1 &6307973442706419069
 GameObject:
   m_ObjectHideFlags: 0
@@ -2511,6 +2528,7 @@ GameObject:
   - component: {fileID: 7415811832998780261}
   - component: {fileID: 3728264424025310854}
   - component: {fileID: 4220822954772692703}
+  - component: {fileID: 663949150751432669}
   m_Layer: 5
   m_Name: TopLine
   m_TagString: Untagged
@@ -2576,6 +2594,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &663949150751432669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6725196796637494713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32f99a93585323c47b84399e1c48b5fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _textBackground: {fileID: 7415811832998780261}
+  _messageText: {fileID: 6861153504766434351}
+  _lineSprite: {fileID: 4220822954772692703}
+  heightStep: 50
 --- !u!1 &6935624147595481882
 GameObject:
   m_ObjectHideFlags: 0
