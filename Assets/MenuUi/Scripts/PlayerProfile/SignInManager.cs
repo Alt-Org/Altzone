@@ -145,7 +145,7 @@ namespace MenuUi.Scripts.Login
 
                 body = "{\"username\":\"" + logInUsernameInputField.text + "\",\"password\":\"" + logInPasswordInputField.text + "\"}";
             }
-            StartCoroutine(WebRequests.Post(ServerManager.ADDRESS + "auth/signIn", body, null, request =>
+            StartCoroutine(WebRequests.Post(ServerManager.SERVERADDRESS + "auth/signIn", body, null, request =>
             {
                 if (request.result != UnityWebRequest.Result.Success)
                 {
@@ -235,7 +235,7 @@ namespace MenuUi.Scripts.Login
             string body = @$"{{""username"":""{registerUsernameInputField.text}"",""password"":""{registerPasswordInputField.text}"",
                 ""Player"":{{""name"":""{username}"",""backpackCapacity"":{backpackCapacity},""uniqueIdentifier"":""{username}"",
                     ""above13"":{_registerAgeVerificationToggle.isOn.ToString().ToLower()},""parentalAuth"":{_registerParentalAuthToggle.isOn.ToString().ToLower()}}}}}";
-            StartCoroutine(WebRequests.Post(ServerManager.ADDRESS + "profile", body, null, request =>
+            StartCoroutine(WebRequests.Post(ServerManager.SERVERADDRESS + "profile", body, null, request =>
             {
                 if (request.result != UnityWebRequest.Result.Success)
                 {
