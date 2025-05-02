@@ -100,23 +100,21 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Instantiating ui element prefabs
 
-            if (_instantiatedTimer == null) _instantiatedTimer = InstantiateBattleUiElement(BattleUiElementType.Timer);
+            if (_instantiatedTimer == null) _instantiatedTimer = InstantiateBattleUiElement(BattleUiElementType.Timer).GetComponent<BattleUiMovableElement>();
             SetDataToUiElement(BattleUiElementType.Timer);
 
-            if (_instantiatedDiamonds == null) _instantiatedDiamonds = InstantiateBattleUiElement(BattleUiElementType.Diamonds);
+            if (_instantiatedDiamonds == null) _instantiatedDiamonds = InstantiateBattleUiElement(BattleUiElementType.Diamonds).GetComponent<BattleUiMovableElement>();
             SetDataToUiElement(BattleUiElementType.Diamonds);
 
-            if (_instantiatedGiveUpButton == null) _instantiatedGiveUpButton = InstantiateBattleUiElement(BattleUiElementType.GiveUpButton);
+            if (_instantiatedGiveUpButton == null) _instantiatedGiveUpButton = InstantiateBattleUiElement(BattleUiElementType.GiveUpButton).GetComponent<BattleUiMovableElement>();
             SetDataToUiElement(BattleUiElementType.GiveUpButton);
 
             if (_instantiatedPlayerInfo == null)
             {
-                _instantiatedPlayerInfo = InstantiateBattleUiElement(BattleUiElementType.PlayerInfo);
+                _instantiatedPlayerInfo = InstantiateBattleUiElement(BattleUiElementType.PlayerInfo).GetComponent<BattleUiMultiOrientationElement>();
 
-                BattleUiMultiOrientationElement playerInfo = GetMultiOrientationElement(BattleUiElementType.PlayerInfo);
-
-                TextMeshProUGUI playerNameHorizontal = playerInfo.HorizontalConfiguration.GetComponentInChildren<TextMeshProUGUI>();
-                TextMeshProUGUI playerNameVertical = playerInfo.VerticalConfiguration.GetComponentInChildren<TextMeshProUGUI>();
+                TextMeshProUGUI playerNameHorizontal = _instantiatedPlayerInfo.HorizontalConfiguration.GetComponentInChildren<TextMeshProUGUI>();
+                TextMeshProUGUI playerNameVertical = _instantiatedPlayerInfo.VerticalConfiguration.GetComponentInChildren<TextMeshProUGUI>();
                 
                 if (playerNameHorizontal != null) playerNameHorizontal.text = PlayerText;
                 if (playerNameVertical != null) playerNameVertical.text = PlayerText;
@@ -125,12 +123,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             if (_instantiatedTeammateInfo == null)
             {
-                _instantiatedTeammateInfo = InstantiateBattleUiElement(BattleUiElementType.TeammateInfo);
+                _instantiatedTeammateInfo = InstantiateBattleUiElement(BattleUiElementType.TeammateInfo).GetComponent<BattleUiMultiOrientationElement>();
 
-                BattleUiMultiOrientationElement teammateInfo = GetMultiOrientationElement(BattleUiElementType.TeammateInfo);
-
-                TextMeshProUGUI teammateNameHorizontal = teammateInfo.HorizontalConfiguration.GetComponentInChildren<TextMeshProUGUI>();
-                TextMeshProUGUI teammateNameVertical = teammateInfo.VerticalConfiguration.GetComponentInChildren<TextMeshProUGUI>();
+                TextMeshProUGUI teammateNameHorizontal = _instantiatedTeammateInfo.HorizontalConfiguration.GetComponentInChildren<TextMeshProUGUI>();
+                TextMeshProUGUI teammateNameVertical = _instantiatedTeammateInfo.VerticalConfiguration.GetComponentInChildren<TextMeshProUGUI>();
                 if (teammateNameHorizontal != null) teammateNameHorizontal.text = TeammateText;
                 if (teammateNameVertical != null) teammateNameVertical.text = TeammateText;
             }
@@ -185,12 +181,19 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private const float GameAspectRatio = 9f / 16f;
 
-        private GameObject _instantiatedTimer;
-        private GameObject _instantiatedPlayerInfo;
-        private GameObject _instantiatedTeammateInfo;
-        private GameObject _instantiatedDiamonds;
-        private GameObject _instantiatedGiveUpButton;
+        private BattleUiMovableElement _instantiatedTimer;
+        private BattleUiMultiOrientationElement _instantiatedPlayerInfo;
+        private BattleUiMultiOrientationElement _instantiatedTeammateInfo;
+        private BattleUiMovableElement _instantiatedDiamonds;
+        private BattleUiMovableElement _instantiatedGiveUpButton;
+
         private readonly List<BattleUiEditingComponent> _editingComponents = new();
+
+        BattleUiEditingComponent _timerEditingComponent;
+        BattleUiEditingComponent _playerInfoEditingComponent;
+        BattleUiEditingComponent _teammateInfoEditingComponent;
+        BattleUiEditingComponent _diamondsEditingComponent;
+        BattleUiEditingComponent _giveUpButtonEditingComponent;
 
         private bool _unsavedChanges = false;
 
@@ -498,7 +501,27 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             editingComponent.OnUiElementSelected += OnUiElementSelected;
             editingComponent.OnGridSnap += _grid.HighlightLines;
 
+            // Saving references for the editing component
             _editingComponents.Add(editingComponent);
+
+            switch (uiElementType)
+            {
+                case BattleUiElementType.Timer:
+                    _timerEditingComponent = editingComponent;
+                    break;
+                case BattleUiElementType.GiveUpButton:
+                    _giveUpButtonEditingComponent = editingComponent;
+                    break;
+                case BattleUiElementType.Diamonds:
+                    _diamondsEditingComponent = editingComponent;
+                    break;
+                case BattleUiElementType.PlayerInfo:
+                    _playerInfoEditingComponent = editingComponent;
+                    break;
+                case BattleUiElementType.TeammateInfo:
+                    _teammateInfoEditingComponent = editingComponent;
+                    break;
+            }
 
             return uiElementGameObject;
         }
@@ -652,16 +675,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             switch (uiElementType)
             {
                 case BattleUiElementType.Timer:
-                    if (_instantiatedTimer == null) return null;
-                    return _instantiatedTimer.GetComponent<BattleUiMovableElement>();
+                    return _instantiatedTimer;
 
                 case BattleUiElementType.GiveUpButton:
-                    if (_instantiatedGiveUpButton == null) return null;
-                    return _instantiatedGiveUpButton.GetComponent<BattleUiMovableElement>();
+                    return _instantiatedGiveUpButton;
 
                 case BattleUiElementType.Diamonds:
-                    if (_instantiatedDiamonds == null) return null;
-                    return _instantiatedDiamonds.GetComponent<BattleUiMovableElement>();
+                    return _instantiatedDiamonds;
 
                 case BattleUiElementType.PlayerInfo:
                 case BattleUiElementType.TeammateInfo:
@@ -675,12 +695,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             switch (uiElementType)
             {
                 case BattleUiElementType.PlayerInfo:
-                    if (_instantiatedPlayerInfo == null) return null;
-                    return _instantiatedPlayerInfo.GetComponent<BattleUiMultiOrientationElement>();
+                    return _instantiatedPlayerInfo;
 
                 case BattleUiElementType.TeammateInfo:
-                    if (_instantiatedTeammateInfo == null) return null;
-                    return _instantiatedTeammateInfo.GetComponent<BattleUiMultiOrientationElement>();
+                    return _instantiatedTeammateInfo;
 
                 case BattleUiElementType.Timer:
                 case BattleUiElementType.GiveUpButton:
@@ -695,24 +713,19 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             switch (uiElementType)
             {
                 case BattleUiElementType.Timer:
-                    if (_instantiatedTimer == null) return null;
-                    return _instantiatedTimer.GetComponentInChildren<BattleUiEditingComponent>();
+                    return _timerEditingComponent;
 
                 case BattleUiElementType.GiveUpButton:
-                    if (_instantiatedGiveUpButton == null) return null;
-                    return _instantiatedGiveUpButton.GetComponentInChildren<BattleUiEditingComponent>();
+                    return _giveUpButtonEditingComponent.GetComponentInChildren<BattleUiEditingComponent>();
 
                 case BattleUiElementType.Diamonds:
-                    if (_instantiatedDiamonds == null) return null;
-                    return _instantiatedDiamonds.GetComponentInChildren<BattleUiEditingComponent>();
+                    return _diamondsEditingComponent;
 
                 case BattleUiElementType.PlayerInfo:
-                    if (_instantiatedPlayerInfo == null) return null;
-                    return _instantiatedPlayerInfo.GetComponentInChildren<BattleUiEditingComponent>();
+                    return _playerInfoEditingComponent;
 
                 case BattleUiElementType.TeammateInfo:
-                    if (_instantiatedTeammateInfo == null) return null;
-                    return _instantiatedTeammateInfo.GetComponentInChildren<BattleUiEditingComponent>();
+                    return _teammateInfoEditingComponent;
 
                 default:
                     return null;
