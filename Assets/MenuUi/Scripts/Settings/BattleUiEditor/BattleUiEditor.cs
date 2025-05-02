@@ -683,8 +683,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 case BattleUiElementType.Diamonds:
                     return _instantiatedDiamonds;
 
-                case BattleUiElementType.PlayerInfo:
-                case BattleUiElementType.TeammateInfo:
                 default:
                     return null;
             }
@@ -700,9 +698,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 case BattleUiElementType.TeammateInfo:
                     return _instantiatedTeammateInfo;
 
-                case BattleUiElementType.Timer:
-                case BattleUiElementType.GiveUpButton:
-                case BattleUiElementType.Diamonds:
                 default:
                     return null;
             }
