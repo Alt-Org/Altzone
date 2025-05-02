@@ -463,22 +463,16 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             BattleUiEditingComponent editingComponent = editingComponentGameObject.GetComponent<BattleUiEditingComponent>();
             if (editingComponent == null) return null;
 
-            // Getting movable element and multi orientation script from the ui element game object
-            BattleUiMovableElement movableElement = uiElementGameObject.GetComponent<BattleUiMovableElement>();
-            BattleUiMultiOrientationElement multiOrientationElement = uiElementGameObject.GetComponent<BattleUiMultiOrientationElement>();
-
             // Setting info to the editing component
-            if (movableElement != null && multiOrientationElement == null)
-            {
-                editingComponent.SetInfo(movableElement);
-            }
-            else if (multiOrientationElement != null)
+            BattleUiMultiOrientationElement multiOrientationElement = uiElementGameObject.GetComponent<BattleUiMultiOrientationElement>();
+            if (multiOrientationElement != null)
             {
                 editingComponent.SetInfo(multiOrientationElement);
             }
             else
             {
-                return null;
+                BattleUiMovableElement movableElement = uiElementGameObject.GetComponent<BattleUiMovableElement>();
+                editingComponent.SetInfo(movableElement);
             }
 
             // Setting listener for toggles
