@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -79,29 +82,30 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             s_columns = columns;
 
             int lineAmount = columns - 1;
-            InstantiateGridLines(lineAmount, _gridColumns.transform);
-
-            // Positioning column lines
-            for (int i = 0; i < _gridColumns.childCount; i++)
+            StartCoroutine(InstantiateGridLines(lineAmount, _gridColumns.transform, () =>
             {
-                Transform child = _gridColumns.GetChild(i);
-                RectTransform childRectTransform = child.GetComponent<RectTransform>();
+                // Positioning column lines
+                for (int i = 0; i < _gridColumns.childCount; i++)
+                {
+                    Transform child = _gridColumns.GetChild(i);
+                    RectTransform childRectTransform = child.GetComponent<RectTransform>();
 
-                Vector2 size = new(
-                    _gridLineThickness,
-                    Screen.height
-                );
+                    Vector2 size = new(
+                        _gridLineThickness,
+                        Screen.height
+                    );
 
-                Vector2 pos = new(
-                    GetGridSnapPositionX(i) - _gridLineThickness * 0.5f,
-                    Screen.height * 0.5f
-                );
+                    Vector2 pos = new(
+                        GetGridSnapPositionX(i) - _gridLineThickness * 0.5f,
+                        Screen.height * 0.5f
+                    );
 
-                (Vector2 anchorMin, Vector2 anchorMax) = BattleUiEditor.CalculateAnchors(size, pos);
+                    (Vector2 anchorMin, Vector2 anchorMax) = BattleUiEditor.CalculateAnchors(size, pos);
 
-                childRectTransform.anchorMin = anchorMin;
-                childRectTransform.anchorMax = anchorMax;
-            }
+                    childRectTransform.anchorMin = anchorMin;
+                    childRectTransform.anchorMax = anchorMax;
+                }
+            }));
 
             return true;
         }
@@ -116,29 +120,30 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             s_rows = rows;
 
             int lineAmount = rows - 1;
-            InstantiateGridLines(lineAmount, _gridRows.transform);
-
-            // Positioning row lines
-            for (int i = 0; i < _gridRows.childCount; i++)
+            StartCoroutine(InstantiateGridLines(lineAmount, _gridRows.transform, () =>
             {
-                Transform child = _gridRows.GetChild(i);
-                RectTransform childRectTransform = child.GetComponent<RectTransform>();
+                // Positioning row lines
+                for (int i = 0; i < _gridRows.childCount; i++)
+                {
+                    Transform child = _gridRows.GetChild(i);
+                    RectTransform childRectTransform = child.GetComponent<RectTransform>();
 
-                Vector2 size = new(
-                    Screen.width,
-                    _gridLineThickness
-                );
+                    Vector2 size = new(
+                        Screen.width,
+                        _gridLineThickness
+                    );
 
-                Vector2 pos = new(
-                    Screen.width * 0.5f,
-                    GetGridSnapPositionY(i) - _gridLineThickness * 0.5f
-                );
+                    Vector2 pos = new(
+                        Screen.width * 0.5f,
+                        GetGridSnapPositionY(i) - _gridLineThickness * 0.5f
+                    );
 
-                (Vector2 anchorMin, Vector2 anchorMax) = BattleUiEditor.CalculateAnchors(size, pos);
+                    (Vector2 anchorMin, Vector2 anchorMax) = BattleUiEditor.CalculateAnchors(size, pos);
 
-                childRectTransform.anchorMin = anchorMin;
-                childRectTransform.anchorMax = anchorMax;
-            }
+                    childRectTransform.anchorMin = anchorMin;
+                    childRectTransform.anchorMax = anchorMax;
+                }
+            }));
 
             return true;
         }
@@ -186,10 +191,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private Image[] _highlightedLines;
 
-        private void InstantiateGridLines(int lineAmount, Transform lineParent)
+        private IEnumerator InstantiateGridLines(int lineAmount, Transform lineParent, Action callback)
         {
-            // If we don't need to add or remove lines we return.
-            if (lineAmount == lineParent.childCount) return;
+            // If we don't need to add or remove lines we stop coroutine.
+            if (lineAmount == lineParent.childCount) yield break;
 
             // Adding missing lines
             int linesToInstantiate = lineAmount - lineParent.childCount;
@@ -201,7 +206,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     line.GetComponent<Image>().color = _lineDefaultColor;
                     line.transform.SetParent(lineParent.transform, false);
                 }
-                return;
+
+                // We don't need to wait 1 frame when adding lines and it will cause flickering
+                callback();
+                yield break;
             }
 
             // Removing extra lines
@@ -210,6 +218,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             {
                 Destroy(lineParent.GetChild(i).gameObject);
             }
+
+            // Waiting 1 frame after deleting lines so that they are really deleted and can be positioned correctly
+            yield return null;
+            callback();
         }
     }
 }
