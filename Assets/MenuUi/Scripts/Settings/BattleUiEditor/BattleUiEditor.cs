@@ -716,7 +716,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     return _timerEditingComponent;
 
                 case BattleUiElementType.GiveUpButton:
-                    return _giveUpButtonEditingComponent.GetComponentInChildren<BattleUiEditingComponent>();
+                    return _giveUpButtonEditingComponent;
 
                 case BattleUiElementType.Diamonds:
                     return _diamondsEditingComponent;
