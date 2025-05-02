@@ -95,6 +95,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         public void OnPointerDown(PointerEventData eventData)
         {
             OnUiElementSelected?.Invoke(this);
+            _movableElement.transform.SetAsLastSibling();
         }
 
         public void OnPointerUp(PointerEventData eventData)
