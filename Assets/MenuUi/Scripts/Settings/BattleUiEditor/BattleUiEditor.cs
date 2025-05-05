@@ -169,14 +169,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private const string SaveChangesText = "Tallenna muutokset?";
         private const string ResetChangesText = "Palauta UI-elementtien oletusasettelu?";
 
-        private const string GridColumnsKey = "BattleUiEditorGridColumns";
-        private const string GridRowsKey = "BattleUiEditorGridRows";
+        private const string GridColumnLinesKey = "BattleUiEditorGridColumns";
+        private const string GridRowLinesKey = "BattleUiEditorGridRows";
         private const string ShowGridKey = "BattleUiEditorShowGrid";
         private const string AlignToGridKey = "BattleUiEditorAlignToGrid";
         private const string IncrementalScalingKey = "BattleUiEditorIncScaling";
 
-        private const int GridRowsDefault = 40;
-        private const int GridColumnsDefault = 20;
+        private const int GridRowLinesDefault = 39;
+        private const int GridColumnLinesDefault = 19;
 
         private const float GameAspectRatio = 9f / 16f;
 
@@ -255,25 +255,25 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _gridColumnsSlider.onValueChanged.AddListener((value) =>
             {
                 UpdateInputFieldText(value, _gridColumnsInputField);
-                UpdateGridColumns();
+                UpdateGridColumnLines();
             });
 
             _gridRowsSlider.onValueChanged.AddListener((value) =>
             {
                 UpdateInputFieldText(value, _gridRowsInputField);
-                UpdateGridRows();
+                UpdateGridRowLines();
             });
 
             _gridColumnsInputField.onValueChanged.AddListener((value) =>
             {
                 VerifyAndUpdateSliderValue(_gridColumnsInputField, _gridColumnsSlider);
-                UpdateGridColumns();
+                UpdateGridColumnLines();
             });
 
             _gridRowsInputField.onValueChanged.AddListener((value) =>
             {
                 VerifyAndUpdateSliderValue(_gridRowsInputField, _gridRowsSlider);
-                UpdateGridRows();
+                UpdateGridRowLines();
             });
 
             _showGridToggle.onValueChanged.AddListener((value)=>
@@ -291,16 +291,16 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _arenaPosYSlider.value = SettingsCarrier.Instance.BattleArenaPosY;
 
             // Grid and incremental scaling settings are saved locally from this script because they aren't accessed anywhere else
-            _gridColumnsSlider.value = PlayerPrefs.GetInt(GridColumnsKey, GridColumnsDefault);
-            _gridRowsSlider.value = PlayerPrefs.GetInt(GridRowsKey, GridRowsDefault);
+            _gridColumnsSlider.value = PlayerPrefs.GetInt(GridColumnLinesKey, GridColumnLinesDefault);
+            _gridRowsSlider.value = PlayerPrefs.GetInt(GridRowLinesKey, GridRowLinesDefault);
             _showGridToggle.isOn = PlayerPrefs.GetInt(ShowGridKey, 1) == 1;
             _alignToGridToggle.isOn = PlayerPrefs.GetInt(AlignToGridKey, 1) == 1;
 
             _incrementalScalingToggle.isOn = PlayerPrefs.GetInt(IncrementalScalingKey, 1) == 1;
 
             // Initializing grid
-            _grid.SetRows((int)_gridRowsSlider.value);
-            _grid.SetColumns((int)_gridColumnsSlider.value);
+            _grid.SetRowLines((int)_gridRowsSlider.value);
+            _grid.SetColumnLines((int)_gridColumnsSlider.value);
             _grid.SetShow(_showGridToggle.isOn);
         }
 
@@ -800,16 +800,16 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
         }
 
-        private void UpdateGridColumns()
+        private void UpdateGridColumnLines()
         {
             int columns = (int)_gridColumnsSlider.value;
-            if (_grid.SetColumns(columns)) PlayerPrefs.SetInt(GridColumnsKey, columns);
+            if (_grid.SetColumnLines(columns)) PlayerPrefs.SetInt(GridColumnLinesKey, columns);
         }
 
-        private void UpdateGridRows()
+        private void UpdateGridRowLines()
         {
             int rows = (int)_gridRowsSlider.value;
-            if (_grid.SetRows(rows)) PlayerPrefs.SetInt(GridRowsKey, rows);
+            if (_grid.SetRowLines(rows)) PlayerPrefs.SetInt(GridRowLinesKey, rows);
         }
 
         private void UpdateArena()

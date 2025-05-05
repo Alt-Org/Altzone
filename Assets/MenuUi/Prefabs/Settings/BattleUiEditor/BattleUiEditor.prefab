@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3718816039466662345}
   - component: {fileID: 2128342622491219458}
   m_Layer: 5
-  m_Name: GridRowsSlider
+  m_Name: GridRowLinesSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -83,10 +83,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 7243275890651382034}
   m_HandleRect: {fileID: 8004638578702925388}
   m_Direction: 0
-  m_MinValue: 2
-  m_MaxValue: 100
+  m_MinValue: 1
+  m_MaxValue: 99
   m_WholeNumbers: 1
-  m_Value: 40
+  m_Value: 39
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2461,7 +2461,7 @@ GameObject:
   - component: {fileID: 8118204415385239089}
   - component: {fileID: 7051559201979517653}
   m_Layer: 5
-  m_Name: GridColumnsSlider
+  m_Name: GridColumnLinesSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2533,10 +2533,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 460855060645780338}
   m_HandleRect: {fileID: 5809167856408751077}
   m_Direction: 0
-  m_MinValue: 2
-  m_MaxValue: 50
+  m_MinValue: 1
+  m_MaxValue: 49
   m_WholeNumbers: 1
-  m_Value: 20
+  m_Value: 19
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -5721,7 +5721,7 @@ GameObject:
   - component: {fileID: 8184964371059164955}
   - component: {fileID: 2364838650708775042}
   m_Layer: 5
-  m_Name: ColumnsLabel
+  m_Name: ColumnLinesLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5774,7 +5774,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Sarakkeet
+  m_text: 'Pystyviivat
 
 '
   m_isRightToLeft: 0
@@ -5861,7 +5861,7 @@ GameObject:
   - component: {fileID: 5486941372688907108}
   - component: {fileID: 3283804259862905722}
   m_Layer: 5
-  m_Name: GridColumnsInputField
+  m_Name: GridColumnLinesInputField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6011,7 +6011,7 @@ MonoBehaviour:
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.65882355, g: 0.80784315, b: 1, a: 0.7529412}
-  m_Text: 40
+  m_Text: 39
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
@@ -6216,7 +6216,7 @@ GameObject:
   - component: {fileID: 8062246119015855567}
   - component: {fileID: 8339489454671159940}
   m_Layer: 5
-  m_Name: RowsLabel
+  m_Name: RowLinesLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6269,7 +6269,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Rivit
+  m_text: 'Vaakaviivat
 
 
 '
@@ -8041,7 +8041,7 @@ GameObject:
   - component: {fileID: 4633897671897010531}
   - component: {fileID: 6248424310289610018}
   m_Layer: 5
-  m_Name: GridRowsInputField
+  m_Name: GridRowLinesInputField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8191,7 +8191,7 @@ MonoBehaviour:
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.65882355, g: 0.80784315, b: 1, a: 0.7529412}
-  m_Text: 20
+  m_Text: 19
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0

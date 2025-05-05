@@ -29,7 +29,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// <returns>The column line index as float.</returns>
         public static int GetGridColumnIndex(float xPos)
         {
-            return Mathf.Clamp(Mathf.RoundToInt(xPos / s_gridCellWidth) - 1, 0, s_columns - 2);
+            return Mathf.Clamp(Mathf.RoundToInt(xPos / s_gridCellWidth) - 1, 0, s_columnLines - 1);
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// <returns>The row line index as float.</returns>
         public static int GetGridRowIndex(float yPos)
         {
-            return Mathf.Clamp(Mathf.RoundToInt(yPos / s_gridCellHeight) - 1, 0, s_rows - 2);
+            return Mathf.Clamp(Mathf.RoundToInt(yPos / s_gridCellHeight) - 1, 0, s_rowLines - 1);
         }
 
         /// <summary>
@@ -75,14 +75,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// <summary>
         /// Set column grid lines.
         /// </summary>
-        /// <param name="columns">The amount of columns as int.</param>
-        public bool SetColumns(int columns)
+        /// <param name="columnLines">The amount of column lines as int.</param>
+        public bool SetColumnLines(int columnLines)
         {
-            if (s_columns == columns && _gridColumns.transform.childCount > 0) return false; // If the value didn't change we return
-            s_columns = columns;
+            if (s_columnLines == columnLines && _gridColumns.transform.childCount > 0) return false; // If the value didn't change we return
+            s_columnLines = columnLines;
 
-            int lineAmount = columns - 1;
-            StartCoroutine(InstantiateGridLines(lineAmount, _gridColumns.transform, () =>
+            StartCoroutine(InstantiateGridLines(columnLines, _gridColumns.transform, () =>
             {
                 // Positioning column lines
                 for (int i = 0; i < _gridColumns.childCount; i++)
@@ -96,7 +95,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     );
 
                     Vector2 pos = new(
-                        GetGridSnapPositionX(i) - _gridLineThickness * 0.5f,
+                        GetGridSnapPositionX(i),
                         Screen.height * 0.5f
                     );
 
@@ -113,14 +112,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// <summary>
         /// Set row grid lines.
         /// </summary>
-        /// <param name="rows">The amount of rows as int.</param>
-        public bool SetRows(int rows)
+        /// <param name="rowLines">The amount of row lines as int.</param>
+        public bool SetRowLines(int rowLines)
         {
-            if (s_rows == rows && _gridRows.transform.childCount > 0) return false;
-            s_rows = rows;
+            if (s_rowLines == rowLines && _gridRows.transform.childCount > 0) return false;
+            s_rowLines = rowLines;
 
-            int lineAmount = rows - 1;
-            StartCoroutine(InstantiateGridLines(lineAmount, _gridRows.transform, () =>
+            StartCoroutine(InstantiateGridLines(rowLines, _gridRows.transform, () =>
             {
                 // Positioning row lines
                 for (int i = 0; i < _gridRows.childCount; i++)
@@ -135,7 +133,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
                     Vector2 pos = new(
                         Screen.width * 0.5f,
-                        GetGridSnapPositionY(i) - _gridLineThickness * 0.5f
+                        GetGridSnapPositionY(i)
                     );
 
                     (Vector2 anchorMin, Vector2 anchorMax) = BattleUiEditor.CalculateAnchors(size, pos);
@@ -183,11 +181,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
         }
 
-        private static float s_gridCellWidth => Screen.width / s_columns;
-        private static float s_gridCellHeight => Screen.height / s_rows;
+        private static float s_gridCellWidth => (float)Screen.width / (s_columnLines + 1);
+        private static float s_gridCellHeight => (float)Screen.height / (s_rowLines + 1);
 
-        private static int s_rows = -1;
-        private static int s_columns = -1;
+        private static int s_rowLines = -1;
+        private static int s_columnLines = -1;
 
         private Image[] _highlightedLines;
 
