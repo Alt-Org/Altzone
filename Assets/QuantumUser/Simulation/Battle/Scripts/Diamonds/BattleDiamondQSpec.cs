@@ -4,6 +4,7 @@
 ///
 /// This spec defines spawnable diamond's Entity Prototype and the amount of diamonds spawned.
 /// </summary>
+
 using Quantum;
 
 namespace Battle.QSimulation.Diamond

@@ -5,6 +5,7 @@
 /// This system spawns diamonds when it receices a signal, filters all diamond entities and handles their lifetime, and destroys diamonds
 /// when player collects them by colliding with them or if diamond's lifetime ends.
 /// </summary>
+
 using UnityEngine.Scripting;
 
 using Quantum;
@@ -15,7 +16,7 @@ using Battle.QSimulation.Game;
 namespace Battle.QSimulation.Diamond
 {
     /// <summary>
-    /// <span class="brief-h">Diamond <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
+    /// <span class="brief-h">%Diamond <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
     /// Handles spawning diamonds, managing their lifetime and destroying them.
     /// </summary>
     [Preserve]

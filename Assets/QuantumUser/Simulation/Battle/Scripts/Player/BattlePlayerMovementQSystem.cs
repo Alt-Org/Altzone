@@ -1,3 +1,8 @@
+/// <summary>
+/// @file BattlePlayerMovementQSystem.cs
+/// @brief Handles player input, movement and rotations.
+/// </summary>
+
 using System.Runtime.CompilerServices;
 
 using UnityEngine;
@@ -13,12 +18,15 @@ using Battle.QSimulation.Game;
 namespace Battle.QSimulation.Player
 {
     /// <summary>
-    /// PlayerMovement <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System</a>.<br/>
+    /// <span class="brief-h">PlayerMovement <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
     /// Handles player input, movement and rotations.<br/>
     /// </summary>
     [Preserve]
     public unsafe class BattlePlayerMovementQSystem : SystemMainThreadFilter<BattlePlayerMovementQSystem.Filter>
     {
+        /// <summary>
+        /// Filter for filtering player entities.
+        /// </summary>
         public struct Filter
         {
             public EntityRef Entity;
@@ -27,15 +35,15 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum system update method</a>.<br/>
+        /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method@u-exlink</a> gets called every frame.</span><br/>
         /// Handles player input, movement and rotations.<br/>
-        /// @warning This method should only be called by Quantum.
-        /// </summary>
-        ///
         /// Skips players that have PlayerRef = none.<br/>
         /// Gets player's Quantum Input and calls <see cref="UpdatePlayerMovement(Frame, ref Filter, Input*)">UpdatePlayerMovement</see> method.
+        /// @warning
+        /// This method should only be called by Quantum.
+        /// </summary>
         /// <param name="f">Current Quantum Frame</param>
-        /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter</a>.</param>
+        /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter@u-exlink</a>.</param>
         public override void Update(Frame f, ref Filter filter)
         {
             if (filter.PlayerData->PlayerRef == PlayerRef.None) return;
@@ -85,24 +93,57 @@ namespace Battle.QSimulation.Player
             TeleportHitbox(f, playerData, transform);
         }
 
+        /// <summary>
+        /// Private method for moving only player towards the specified position.
+        /// </summary>
+        /// <param name="f">Current Quantum frame.</param>
+        /// <param name="transform">Pointer to the player's transform component.</param>
+        /// <param name="position">Target world position to move towards.</param>
+        /// <param name="maxDelta">Maximum movement delta per frame.</param>
         private static void MoveTowardsNoHitboxUpdate(Frame f, Transform2D* transform, FPVector2 position, FP maxDelta)
         {
             transform->Position = FPVector2.MoveTowards(transform->Position, position, maxDelta);
         }
 
+        /// <summary>
+        /// Private method for rotating only player to the specified angle.
+        /// </summary>
+        /// <param name="f">Current Quantum frame.</param>
+        /// <param name="transform">Pointer to the player's transform component.</param>
+        /// <param name="radians">Target rotation angle in radians.</param>
         private static void RotateNoHitboxUpdate(Frame f, Transform2D* transform, FP radians)
         {
             transform->Rotation = radians;
         }
 
+        /// <summary>
+        /// Private method for instantly teleporting only player to the specified position and rotation.
+        /// </summary>
+        /// <param name="f">Current Quantum frame.</param>
+        /// <param name="transform">Pointer to the player's transform component.</param>
+        /// <param name="position">New world position.</param>
+        /// <param name="rotation">New rotation in radians.</param>
         private static void TeleportNoHitboxUpdate(Frame f, Transform2D* transform, FPVector2 position, FP rotation)
         {
             transform->Teleport(f, position, rotation);
         }
 
+        /// <summary>
+        /// Inlined private method for calculating hitbox's position based on player's position, rotation and hitbox's offset from player.
+        /// </summary>
+        /// <param name="position">Player's position.</param>
+        /// <param name="rotation">Player's rotation.</param>
+        /// <param name="offset">Offset between player and hitbox.</param>
+        /// <returns>FPVector2 of hitbox's position.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static FPVector2 CalculateHitboxPosition(FPVector2 position, FP rotation, FPVector2 offset) => position + FPVector2.Rotate(offset, rotation);
 
+        /// <summary>
+        /// Private method for moving all of player's hitboxes towards the specified position and/or moves them when player rotates.
+        /// </summary>
+        /// <param name="f">Current Quantum frame.</param>
+        /// <param name="playerData">Pointer to the player's data component.</param>
+        /// <param name="transform">Pointer to the player's transform component.</param>
         private static void MoveHitbox(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform)
         {
             if (!f.TryResolveList(playerData->HitboxListAll, out QList<BattlePlayerHitboxLink> hitboxListAll)) return;
@@ -120,6 +161,12 @@ namespace Battle.QSimulation.Player
             }
         }
 
+        /// <summary>
+        /// Private method for instantly teleporting all of player's hitboxes to the specified position and rotation.
+        /// </summary>
+        /// <param name="f">Current Quantum frame.</param>
+        /// <param name="playerData">Pointer to the player's data component.</param>
+        /// <param name="transform">Pointer to the player's transform component.</param>
         private static void TeleportHitbox(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform)
         {
             if (!f.TryResolveList(playerData->HitboxListAll, out QList<BattlePlayerHitboxLink> hitboxListAll)) return;
@@ -149,7 +196,7 @@ namespace Battle.QSimulation.Player
         /// When rotation action is not taken: updates player's RotationOffset back to zero.<br/>
         /// Always: updates player's position and rotation based on the current TargetPosition and RotationOffset.<br/>
         /// <param name="f">Current Quantum Frame</param>
-        /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter</a>.</param>
+        /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter@u-exlink</a>.</param>
         /// <param name="input">Player's Quantum Input</param>
         private void UpdatePlayerMovement(Frame f, ref Filter filter, Input* input)
         {
@@ -163,13 +210,13 @@ namespace Battle.QSimulation.Player
             // handle movement
             if (input->MouseClick)
             {
-                // get players TargetPosition
+                // get player's TargetPosition
                 BattleGridPosition targetGridPosition = input->MovementPosition;
 
                 // clamp the TargetPosition inside sidebounds
                 targetGridPosition.Col = Mathf.Clamp(targetGridPosition.Col, 0, BattleGridManager.Columns-1);
 
-                // clamp the TargetPosition inside teams playfield for alphateam
+                // clamp the TargetPosition inside team's playfield for alphateam
                 if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha)
                 {
                     targetGridPosition.Row = Mathf.Clamp(
@@ -179,7 +226,7 @@ namespace Battle.QSimulation.Player
                     );
                 }
 
-                // clamp the TargetPosition inside teams playfield for betateam
+                // clamp the TargetPosition inside team's playfield for betateam
                 else
                 {
                     targetGridPosition.Row = Mathf.Clamp(
@@ -189,7 +236,7 @@ namespace Battle.QSimulation.Player
                     );
                 }
 
-                // get players TargetPositions as WorldPosition
+                // get player's TargetPositions as WorldPosition
                 playerData->TargetPosition = BattleGridManager.GridPositionToWorldPosition(targetGridPosition);
 
                 Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", playerData->TargetPosition);
@@ -201,17 +248,17 @@ namespace Battle.QSimulation.Player
                 {
                     FP maxAngle = FP.Rad_45;
 
-                    //stops player before rotation
+                    //stop player before rotation
                     playerData->TargetPosition = transform->Position;
 
-                    //rotates to right
+                    //rotate to right
                     if (input->RotationDirection > 0 && playerData->RotationOffset < maxAngle)
                     {
                         playerData->RotationOffset += rotationSpeed;
                         Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", playerData->RotationOffset);
                     }
 
-                    //rotates to left
+                    //rotate to left
                     else if (input->RotationDirection < 0 && playerData->RotationOffset > -maxAngle)
                     {
                         playerData->RotationOffset -= rotationSpeed;
@@ -219,7 +266,7 @@ namespace Battle.QSimulation.Player
                     }
                 }
 
-                // returns player to 0 rotation when RotateMotion-input ends
+                // return player to 0 rotation when RotateMotion-input ends
                 if (!input->RotateMotion && playerData->RotationOffset != 0)
                 {
                     if (playerData->RotationOffset > 0)

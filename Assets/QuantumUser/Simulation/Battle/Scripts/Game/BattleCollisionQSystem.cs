@@ -1,3 +1,8 @@
+/// <summary>
+/// @file BattleCollisionQSystem.cs
+/// @brief Handles all collisions in the game.
+/// </summary>
+
 using UnityEngine;
 using UnityEngine.Scripting;
 
@@ -6,15 +11,19 @@ using Quantum;
 namespace Battle.QSimulation.Game
 {
     /// <summary>
-    /// Collision <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">SystemSignalsOnly Quantum System</a>.<br/>
+    /// <span class="brief-h">Collision <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum SystemSignalsOnly@u-exlink</a> @systemslink</span><br/>
     /// Handles all collisions in the game. Reacts only when it receives a signal upon collision.
     /// </summary>
     [Preserve]
     public unsafe class BattleCollisionQSystem : SystemSignalsOnly, ISignalOnTrigger2D
     {
         /// <summary>
+        /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
+        /// that gets called when <see cref="Quantum.ISignalOnTrigger2D">ISignalOnTrigger2D</see> is sent.</span><br/>
         /// Handles all 2D trigger collisions in the game.
         /// Routes projectile collisions to the correct signal handler based on the type of object hit.
+        /// @warning
+        /// This method should only be called via Quantum signal.
         /// </summary>
         /// <param name="f">Current simulation frame.</param>
         /// <param name="info">Trigger collision information.</param>

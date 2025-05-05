@@ -1,3 +1,10 @@
+/// <summary>
+/// @file BattleGoalQSystem.cs
+/// @brief Handles goals.
+///
+/// This system listens to signal that is sent when projectile hits a goal. System then changes GameState to initiate game over procedures.
+/// </summary>
+
 using UnityEngine;
 using UnityEngine.Scripting;
 
@@ -6,15 +13,19 @@ using Quantum;
 namespace Battle.QSimulation.Goal
 {
     /// <summary>
-    /// Goal <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">SystemSignalsOnly Quantum System</a>.<br/>
+    /// <span class="brief-h">%Goal <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum SystemSignalsOnly@u-exlink</a> @systemslink</span><br/>
     /// Triggers the end of the game when it receives signal
     /// </summary>
     [Preserve]
     public unsafe class BattleGoalQSystem : SystemSignalsOnly, ISignalBattleOnProjectileHitGoal
     {
         /// <summary>
+        /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
+        /// that gets called when <see cref="Quantum.ISignalBattleOnProjectileHitGoal">ISignalBattleOnProjectileHitGoal</see> is sent.</span><br/>
         /// Signal handler for when a projectile hits a goal.
-        /// Triggers the end of the game by setting the state to GameOver.
+        /// Triggers the end of the game by setting the GameState to GameOver.
+        /// @warning
+        /// This method should only be called via Quantum signal.
         /// </summary>
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>

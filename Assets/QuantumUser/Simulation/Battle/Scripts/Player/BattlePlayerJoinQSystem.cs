@@ -1,21 +1,33 @@
+/// <summary>
+/// @file BattlePlayerJoinQSystem.cs
+/// @brief Handles players joining the game
+///
+/// This system handles players joining the game by using BattlePlayerManager to initialize players in playerslots and spawn them. Also updates debug overlay.
+/// </summary>
+
 using UnityEngine.Scripting;
 using Quantum;
 
 namespace Battle.QSimulation.Player
 {
     /// <summary>
-    /// Quantum system activated when a new player joins the game.<br/>
-    /// Initializes player slots, spawns entities, and updates debug overlays.
+    /// <span class="brief-h">PlayerJoin <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum SystemSignalsOnly@u-exlink</a> @systemslink</span><br/>
+    /// Handles new players joining the game.
+    /// Uses BattlePlayerManager to initialize players in playerslots and spawn them.
     /// </summary>
     [Preserve]
     public unsafe class BattlePlayerJoinQSystem : SystemSignalsOnly, ISignalOnPlayerAdded
     {
         /// <summary>
-        /// Called when a player is added.
+        /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
+        /// that gets called when <see cref="Quantum.ISignalOnPlayerAdded">ISignalOnPlayerAdded</see> is sent.</span><br/>
+        /// Called when a player is added for the first time. Uses BattlePlayerManager to initialize players in playerslots and spawn them.
+        /// @warning
+        /// This method should only be called via Quantum signal.
         /// </summary>
         /// <param name="f">Quantum simulation frame.</param>
         /// <param name="player">Reference to the player.</param>
-        /// <param name="firstTime">True if this is the first join.</param> 
+        /// <param name="firstTime">True if this is the first join.</param>
         public void OnPlayerAdded(Frame f, PlayerRef player, bool firstTime)
         {
             RuntimePlayer data = f.GetPlayerData(player);

@@ -1,3 +1,9 @@
+/// <summary>
+/// @file BattleProjectileQSpec.cs
+/// @brief Defines projectile's specifications.
+///
+/// This spec defines projectile's Entity Prototype, initial speed and amount.
+/// </summary>
 using UnityEngine;
 
 using Quantum;

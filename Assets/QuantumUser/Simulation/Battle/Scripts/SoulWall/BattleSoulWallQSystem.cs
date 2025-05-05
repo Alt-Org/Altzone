@@ -1,3 +1,11 @@
+/// <summary>
+/// @file BattleSoulWallQSystem.cs
+/// @brief Handles creating and destroying SoulWalls.
+///
+/// This system creates SoulWalls based on BattleArena and SoulWall Specs when GameControlSystem calls CreateSoulWalls method during the map creation.
+/// This system also listens for Quantum.ISignalBattleOnProjectileHitSoulWall signals and upon receiving them destroys SoulWall segments.
+/// </summary>
+
 using UnityEngine;
 using UnityEngine.Scripting;
 
@@ -10,14 +18,14 @@ using Photon.Deterministic;
 namespace Battle.QSimulation.SoulWall
 {
     /// <summary>
-    /// SoulWall <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">SystemSignalsOnly Quantum System</a>.<br/>
+    /// <span class="brief-h">%SoulWall <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum SystemSignalsOnly@u-exlink</a> @systemslink</span><br/>
     /// Handles creating SoulWalls and reacting to the projectile colliding with them.
     /// </summary>
     [Preserve]
     public unsafe class BattleSoulWallQSystem : SystemSignalsOnly, ISignalBattleOnProjectileHitSoulWall
     {
         /// <summary>
-        /// Creates soulwalls based on BattleArena and SoulWall Specs during map creation phase.<br/>
+        /// Creates soulwalls based on BattleArena and SoulWall Specs during map creation phase.
         /// @warning this method should only be called once by GameControlSystem during the map creation
         /// </summary>
         /// <param name="f">Current Quantum Frame.</param>
@@ -31,7 +39,11 @@ namespace Battle.QSimulation.SoulWall
         }
 
         /// <summary>
+        /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
+        /// that gets called when <see cref="Quantum.ISignalBattleOnProjectileHitSoulWall">ISignalBattleOnProjectileHitSoulWall</see> is sent.</span><br/>
         /// Signal handler for when a projectile hits a SoulWall. Handles destroying the SoulWall Entity.
+        /// @warning
+        /// This method should only be called via Quantum signal.
         /// </summary>
         /// <param name="f">Current Quantum Frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>

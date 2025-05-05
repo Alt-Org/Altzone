@@ -1,3 +1,8 @@
+/// <summary>
+/// @file BattleProjectileQSystem.cs
+/// @brief Controls projectile's movements and reactions to collisions.
+/// </summary>
+
 using System.Runtime.CompilerServices;
 
 using UnityEngine;
@@ -10,12 +15,15 @@ using Battle.QSimulation.Game;
 namespace Battle.QSimulation.Projectile
 {
     /// <summary>
-    /// Projectile <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System</a>.<br/>
-    /// Handles Projectile logic.
+    /// <span class="brief-h">%Projectile <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
+    /// Handles projectile logic, including projectile's movements and reactions to collisionsignals.
     /// </summary>
     [Preserve]
     public unsafe class BattleProjectileQSystem : SystemMainThreadFilter<BattleProjectileQSystem.Filter>, ISignalBattleOnProjectileHitSoulWall, ISignalBattleOnProjectileHitArenaBorder, ISignalBattleOnProjectileHitPlayerHitbox
     {
+        /// <summary>
+        /// Filter for filtering projectile entities
+        /// </summary>
         public struct Filter
         {
             public EntityRef Entity;
@@ -47,11 +55,13 @@ namespace Battle.QSimulation.Projectile
         }
 
         /// <summary>
+        /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method@u-exlink</a> gets called every frame.</span><br/>
         /// Launches the projectile and sets properties based on the <see cref="Battle.QSimulation.Projectile.BattleProjectileQSpec">Projectile spec.</see>
-        /// @warning This method should only be called by Quantum. 
+        /// @warning
+        /// This method should only be called by Quantum.
         /// </summary>
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter</a>.</param>
+        /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter@u-exlink</a>.</param>
         public override void Update(Frame f, ref Filter filter)
         {
             // unpack filter
@@ -88,8 +98,12 @@ namespace Battle.QSimulation.Projectile
         }
 
         /// <summary>
-        /// Handles behavior when the projectile hits a soul wall.
-        /// Updates projectile emotion and applies bounce logic.
+        /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
+        /// that gets called when <see cref="Quantum.ISignalBattleOnProjectileHitSoulWall">ISignalBattleOnProjectileHitSoulWall</see> is sent.</span><br/>
+        /// Handles behavior when the projectile hits a SoulWall.
+        /// Updates projectile's emotion and applies bounce logic.
+        /// @warning
+        /// This method should only be called via Quantum signal.
         /// </summary>
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
@@ -106,8 +120,12 @@ namespace Battle.QSimulation.Projectile
         }
 
         /// <summary>
+        /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
+        /// that gets called when <see cref="Quantum.ISignalBattleOnProjectileHitArenaBorder">ISignalBattleOnProjectileHitArenaBorder</see> is sent.</span><br/>
         /// Handles behavior when the projectile hits the arena border.
         /// Applies bounce logic based on border surface normal.
+        /// @warning
+        /// This method should only be called via Quantum signal.
         /// </summary>
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
@@ -120,8 +138,12 @@ namespace Battle.QSimulation.Projectile
         }
 
         /// <summary>
+        /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
+        /// that gets called when <see cref="Quantum.ISignalBattleOnProjectileHitPlayerHitbox">ISignalBattleOnProjectileHitPlayerHitbox</see> is sent.</span><br/>
         /// Handles behavior when the projectile hits a player hitbox.
         /// Applies bounce logic based on surface normal of the hitbox.
+        /// @warning
+        /// This method should only be called via Quantum signal.
         /// </summary>
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
@@ -134,6 +156,21 @@ namespace Battle.QSimulation.Projectile
             ProjectileDirectionUpdate(f, projectile,  projectileEntity, playerEntity, playerHitbox->Normal, playerHitbox->CollisionMinOffset, playerHitbox->CollisionType);
         }
 
+        /// <summary>
+        /// Updates projectile's direction depending on other colliding entity's collisionType.<br/>
+        /// Reflect: Projectile gets reflected following laws of physics.<br/>
+        /// Override: Projectile gets directed to a specific direction set in other entity's component.<br/>
+        /// @warning
+        /// None is not a valid collisionType for this method.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectile">Pointer to the projectile component.</param>
+        /// <param name="projectileEntity">EntityRef of the projectile.</param>
+        /// <param name="otherEntity">EntityRef of the other colliding entity.</param>
+        /// <param name="normal">Normal of the other colliding entity.</param>
+        /// <param name="collisionMinOffset">CollisionMinOffset(how far projectile is allowed to penetrate) of the other colliding entity.</param>
+        /// <param name="collisionType">CollisionType of the other colliding entity.</param>
         private void ProjectileDirectionUpdate(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, EntityRef otherEntity, FPVector2 normal, FP collisionMinOffset, BattlePlayerCollisionType collisionType = BattlePlayerCollisionType.Reflect)
         {
             if (IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Projectile)) return;
@@ -141,7 +178,7 @@ namespace Battle.QSimulation.Projectile
             Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
             Transform2D* otherTransform = f.Unsafe.GetPointer<Transform2D>(otherEntity);
 
-            // calculate how far off from other entity's position is the projectile supposed to hit it's surface
+            // calculate how far off from other entity's position projectile is supposed to hit its surface
             FPVector2 offsetVector = projectileTransform->Position - otherTransform->Position;
             FP collisionOffset = FPVector2.Rotate(offsetVector, -FPVector2.RadiansSigned(FPVector2.Up, normal)).Y;
 
