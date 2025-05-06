@@ -601,88 +601,105 @@ namespace Altzone.Scripts.Lobby
         {
             if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient) yield break;
 
-            // Checking every 0,5s if we can start gameplay
-            bool canStartGameplay = false;
+            bool gameStarting = false;
             do
             {
-                yield return new WaitForSeconds(0.5f);
-
-                // Checking if room is full
-                if (PhotonRealtimeClient.CurrentRoom.PlayerCount != PhotonRealtimeClient.CurrentRoom.MaxPlayers) continue;
-
-                // Checking that all of the positions in the room are set
-                bool isSetPosition1 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition1);
-                bool isSetPosition2 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition2);
-                bool isSetPosition3 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition3);
-                bool isSetPosition4 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition4);
-
-                if (isSetPosition1 && isSetPosition2 && isSetPosition3 && isSetPosition4)
+                // Checking every 0,5s if we can start gameplay
+                bool canStartGameplay = false;
+                do
                 {
-                    canStartGameplay = true;
-                }
+                    yield return new WaitForSeconds(0.5f);
 
-            } while (!canStartGameplay);
+                    // Checking if room is full
+                    if (PhotonRealtimeClient.CurrentRoom.PlayerCount != PhotonRealtimeClient.CurrentRoom.MaxPlayers) continue;
+
+                    // Checking that all of the positions in the room are set
+                    bool isSetPosition1 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition1);
+                    bool isSetPosition2 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition2);
+                    bool isSetPosition3 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition3);
+                    bool isSetPosition4 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition4);
+
+                    if (isSetPosition1 && isSetPosition2 && isSetPosition3 && isSetPosition4)
+                    {
+                        canStartGameplay = true;
+                    }
+
+                } while (!canStartGameplay);
 
 
-            // Updating player positions from room to player properties, and waiting that they have been synced
-            string positionValue1 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey1);
-            string positionValue2 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey2);
-            string positionValue3 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey3);
-            string positionValue4 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey4);
-
-            foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
-            {
-                int position = PhotonBattleRoom.PlayerPositionGuest;
-
-                if      (player.Value.UserId == positionValue1)     position = PhotonBattleRoom.PlayerPosition1;
-                else if (player.Value.UserId == positionValue2)     position = PhotonBattleRoom.PlayerPosition2;
-                else if (player.Value.UserId == positionValue3)     position = PhotonBattleRoom.PlayerPosition3;
-                else if (player.Value.UserId == positionValue4)     position = PhotonBattleRoom.PlayerPosition4;
-                else
-                {
-                    // TODO: add check if player isn't in any position
-                }
-
-                player.Value.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, position);
-                yield return new WaitUntil(() => player.Value.GetCustomProperty<int>(PhotonBattleRoom.PlayerPositionKey) == position);
-            }
-
-            // Checking that the clan names are in order
-            GameType roomGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
-            if (roomGameType == GameType.Clan2v2)
-            {
-                string primaryClan = string.Empty;
-                string opponentClan = string.Empty;
+                // Updating player positions from room to player properties, and waiting that they have been synced
+                string positionValue1 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey1);
+                string positionValue2 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey2);
+                string positionValue3 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey3);
+                string positionValue4 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey4);
 
                 foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
                 {
-                    int playerPos = player.Value.GetCustomProperty<int>(PhotonBattleRoom.PlayerPositionKey);
+                    int position = PhotonBattleRoom.PlayerPositionGuest;
 
-                    if (playerPos == PhotonBattleRoom.PlayerPosition1)
+                    if (player.Value.UserId == positionValue1) position = PhotonBattleRoom.PlayerPosition1;
+                    else if (player.Value.UserId == positionValue2) position = PhotonBattleRoom.PlayerPosition2;
+                    else if (player.Value.UserId == positionValue3) position = PhotonBattleRoom.PlayerPosition3;
+                    else if (player.Value.UserId == positionValue4) position = PhotonBattleRoom.PlayerPosition4;
+                    else
                     {
-                        primaryClan = player.Value.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty);
+                        // If player isn't in any position, getting the first free player position.
+                        // This method checks for duplicate and missing players
+                        position = PhotonLobbyRoom.GetFirstFreePlayerPos();
+                        string positionKey = PhotonBattleRoom.GetPositionKey(position);
+
+                        // Setting position to room and waiting until it's synced
+                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(positionKey, player.Value.UserId);
+                        yield return new WaitUntil(() => PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(positionKey) == position);
                     }
-                    else if (playerPos == PhotonBattleRoom.PlayerPosition3)
+
+                    // Setting position to player properties and waiting until it's synced
+                    player.Value.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, position);
+                    yield return new WaitUntil(() => player.Value.GetCustomProperty<int>(PhotonBattleRoom.PlayerPositionKey) == position);
+                }
+
+                // Checking that the clan names are in order
+                GameType roomGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                if (roomGameType == GameType.Clan2v2)
+                {
+                    string primaryClan = string.Empty;
+                    string opponentClan = string.Empty;
+
+                    foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
                     {
-                        opponentClan = player.Value.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty);
+                        int playerPos = player.Value.GetCustomProperty<int>(PhotonBattleRoom.PlayerPositionKey);
+
+                        if (playerPos == PhotonBattleRoom.PlayerPosition1)
+                        {
+                            primaryClan = player.Value.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty);
+                        }
+                        else if (playerPos == PhotonBattleRoom.PlayerPosition3)
+                        {
+                            opponentClan = player.Value.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty);
+                        }
                     }
+                    if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey) != primaryClan)
+                    {
+                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.ClanNameKey, primaryClan);
+                    }
+
+                    if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.ClanOpponentNameKey) != opponentClan)
+                    {
+                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.ClanOpponentNameKey, opponentClan);
+                    }
+
+                    _blueTeamName = primaryClan;
+                    _redTeamName = opponentClan;
                 }
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey) != primaryClan)
+
+                // Starting gameplay coroutine if all 4 room members are still present, else we loop again
+                if (PhotonRealtimeClient.CurrentRoom.PlayerCount == PhotonRealtimeClient.CurrentRoom.MaxPlayers)
                 {
-                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.ClanNameKey, primaryClan);
+                    StartCoroutine(StartTheGameplay(_isCloseRoomOnGameStart, _blueTeamName, _redTeamName));
+                    gameStarting = true;
                 }
 
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.ClanOpponentNameKey) != opponentClan)
-                {
-                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.ClanOpponentNameKey, opponentClan);
-                }
-
-                _blueTeamName = primaryClan;
-                _redTeamName = opponentClan;
-            }
-
-            // Starting game
-            StartCoroutine(StartTheGameplay(_isCloseRoomOnGameStart, _blueTeamName, _redTeamName));
+            } while (!gameStarting);
         }
 
         private IEnumerator FollowLeaderToNewRoom(string leaderUserId)
