@@ -11,6 +11,7 @@ public class ClanSearchView : MonoBehaviour
     [SerializeField] private GameObject _clanPrefab;
     [SerializeField] private Transform _clanListParent;
     [SerializeField] private GameObject _loadMoreButton;
+    [SerializeField] private GameObject _clanPopup;
 
     private int _currentPage;    // Current page found in pagination data
     private int _totalPages;     // Total pages in pagination data
@@ -73,7 +74,8 @@ public class ClanSearchView : MonoBehaviour
             clanListing.OpenProfileButton.onClick.RemoveAllListeners();
             clanListing.OpenProfileButton.onClick.AddListener(() =>
             {
-                DataCarrier.AddData(DataCarrier.ClanListing, clan);
+                _clanPopup.SetActive(true);
+                _clanPopup.GetComponent<ClanSearchPopup>().SetClanInfo(clan, clanListing);
             });
 
             if (ServerManager.Instance.Clan != null && clanListing.Clan._id == ServerManager.Instance.Clan._id)
