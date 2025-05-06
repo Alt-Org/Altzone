@@ -5,6 +5,7 @@
 |  Namespace                                                       || Description                              |
 | :------------------------- | :----------------------------------- | :--------------------------------------- |
 | @cref{Battle.QSimulation}                                        || @copybrief Battle.QSimulation            |
+| @crefd{Battle.QSimulation} | @cref{Battle.QSimulation,Diamond}    | @copybrief Battle.QSimulation.Diamond    |
 | @crefd{Battle.QSimulation} | @cref{Battle.QSimulation,Game}       | @copybrief Battle.QSimulation.Game       |
 | @crefd{Battle.QSimulation} | @cref{Battle.QSimulation,Player}     | @copybrief Battle.QSimulation.Player     |
 | @crefd{Battle.QSimulation} | @cref{Battle.QSimulation,SoulWall}   | @copybrief Battle.QSimulation.SoulWall   |
@@ -26,11 +27,13 @@
 
 ## Systems {#page-simulation-systems}
 
-[Quantum Systems🡵] are C# classes that handle game logic.  
-In %Battle [Quantum Systems🡵] have QSystem sufix. [[Naming]](#index-naming)
+[Quantum Systems🡵] are C# classes that handle game logic.
+In %Battle [Quantum Systems🡵] have QSystem suffix. [[Naming]](#index-naming)
 
 |  Namespace                                                        || Class                                                               | Description                                                             |
 | :------------------------- | :------------------------------------ | :------------------------------------------------------------------ | :---------------------------------------------------------------------- |
+| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Diamond}    | @cref{Battle.QSimulation.Diamond,BattleDiamondQSystem}              | @copybrief Battle.QSimulation.Diamond.BattleDiamondQSystem                 |
+|                                                                                                                                                                                                                 ||||
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Game}       | @cref{Battle.QSimulation.Game,BattleGameControlQSystem}             | @copybrief Battle.QSimulation.Game.BattleGameControlQSystem             |
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Game}       | @cref{Battle.QSimulation.Game,BattleCollisionQSystem}               | @copybrief Battle.QSimulation.Game.BattleCollisionQSystem               |
 |                                                                                                                                                                                                                 ||||
@@ -46,8 +49,8 @@ In %Battle [Quantum Systems🡵] have QSystem sufix. [[Naming]](#index-naming)
 
 ## Components {#page-simulatio-components}
 
-[Quantum Components🡵] are C# structs that are generated from qtn files which can be attached to %Quantum Entities.  
-In %Battle [Quantum Components🡵] have QComponent sufix. [[Naming]](#index-naming)
+[Quantum Components🡵] are C# structs that are generated from qtn files which can be attached to %Quantum Entities.
+In %Battle [Quantum Components🡵] have QComponent suffix. [[Naming]](#index-naming)
 
 [Quantum Systems🡵]:    https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems
 [Quantum Components🡵]: https://doc.photonengine.com/quantum/current/manual/quantum-ecs/dsl
