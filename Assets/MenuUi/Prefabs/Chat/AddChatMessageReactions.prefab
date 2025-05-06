@@ -557,9 +557,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9727dc90ced796e4c9ffbdc2ef0b41ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _commonReactionsPanel: {fileID: 7590566020932995991}
-  _allReactionsPanel: {fileID: 6559096388707040172}
-  _usersWhoAdded: {fileID: 2521219262151437009}
+  _commonReactionsPanel: {fileID: 5802966991068120548}
+  _allReactionsPanel: {fileID: 4273919845466323672}
+  _usersWhoAdded: {fileID: 2516152344154220295}
   _addedReactionPrefab: {fileID: 180403975915856165, guid: cfe1da6a4c8a1c74094d8e0cf3ce5df8,
     type: 3}
   _chatScript: {fileID: 0}
@@ -569,6 +569,7 @@ MonoBehaviour:
   - {fileID: 321150691627384789}
   - {fileID: 2635431206013583011}
   - {fileID: 667402235613522531}
+  _openMoreButton: {fileID: 5946895988784392763}
 --- !u!1 &2516152344154220295
 GameObject:
   m_ObjectHideFlags: 0
@@ -1204,31 +1205,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7405589894080084367}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4273919845466323672}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 5802966991068120548}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &4218326238345428089
 GameObject:
   m_ObjectHideFlags: 0

@@ -34,19 +34,17 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Button _flipVerticallyButtonRight;
         [SerializeField] private Button _flipVerticallyButtonLeft;
 
-        [Header("Drag delay display")]
-        [SerializeField] private GameObject _dragDelayDisplay;
-        [SerializeField] private Image _dragDelayFill;
-
-        public Action OnUiElementEdited;
-
         public delegate void UiElementSelectedHandler(BattleUiEditingComponent self);
         public UiElementSelectedHandler OnUiElementSelected;
 
-        public void SetInfo(BattleUiMovableElement movableElement, Transform uiElementHolder)
+        public delegate void GridSnapHandler(int gridColumnIndex, int gridRowIndex);
+        public GridSnapHandler OnGridSnap;
+
+        public Action OnUiElementEdited;
+
+        public void SetInfo(BattleUiMovableElement movableElement)
         {
             _movableElement = movableElement;
-            _uiElementHolder = uiElementHolder.GetComponent<RectTransform>();
 
             SetControlButtonSizes();
             ShowControls(false);
@@ -56,11 +54,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             UpdateData();
         }
 
-        public void SetInfo(BattleUiMultiOrientationElement multiOrientationElement, Transform uiElementHolder)
+        public void SetInfo(BattleUiMultiOrientationElement multiOrientationElement)
         {
             _multiOrientationElement = multiOrientationElement;
             _movableElement = multiOrientationElement;
-            _uiElementHolder = uiElementHolder.GetComponent<RectTransform>();
 
             SetControlButtonSizes();
             ShowControls(false);
@@ -87,43 +84,23 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         public void ToggleGrid(bool toggle)
         {
-            _isGridToggled = toggle;
+            _isGridAlignToggled = toggle;
+        }
+
+        public void ToggleIncrementScaling(bool toggle)
+        {
+            _isIncrementalScalingToggled = toggle;
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            _isPointerDown = true;
             OnUiElementSelected?.Invoke(this);
-
-            if (_dragTimerHolder == null)
-            {
-                _dragTimerHolder = StartCoroutine(StartDragTimer(() =>
-                {
-                    _dragTimerHolder = null;
-                    if (!_isPointerDown) return;
-                    _currentAction = ActionType.Move;
-                }));
-            }
+            _movableElement.transform.SetAsLastSibling();
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            _isPointerDown = false;
-            if (_dragTimerHolder != null)
-            {
-                StopCoroutine(_dragTimerHolder);
-                _dragTimerHolder = null;
-
-                if (_dragDelayDisplay.activeSelf)
-                {
-                    ShowControls(false);
-                    _dragDelayDisplay.SetActive(false);
-                }
-                else
-                {
-                    ShowControls(!_currentScaleHandle.gameObject.activeSelf);
-                }
-            }
+            if (_currentAction != ActionType.Scale) ShowControls(!_currentScaleHandle.gameObject.activeSelf);
         }
 
         public void OnBeginDrag(PointerEventData eventData)
@@ -144,17 +121,31 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             switch (_currentAction)
             {
-                case ActionType.Move:
-                    Vector2 newPos = Vector2.zero;
+                case ActionType.None:
+                    // Starting moving element if player dragged at least for the treshold amount
+                    if ((eventData.position - eventData.pressPosition).magnitude > MoveActionTreshold)
+                    {
+                        ShowControls(false);
+                        _currentAction = ActionType.Move;
 
-                    if (_isGridToggled) // Snapping to grid while moving
-                    {
-                        newPos.x = Mathf.Round(eventData.position.x / BattleUiEditor.GridCellWidth) * BattleUiEditor.GridCellWidth;
-                        newPos.y = Mathf.Round(eventData.position.y / BattleUiEditor.GridCellHeight) * BattleUiEditor.GridCellHeight;
+                        // Setting offset for moving
+                        _moveOffset.x = _movableElement.transform.position.x - eventData.pressPosition.x;
+                        _moveOffset.y = _movableElement.transform.position.y - eventData.pressPosition.y;
                     }
-                    else // Free movement
+                    break;
+
+                case ActionType.Move:
+                    Vector2 newPos = eventData.position + _moveOffset;
+
+                    if (_isGridAlignToggled) // Snapping to grid while moving
                     {
-                        newPos = eventData.position;
+                        int gridColumnIndex = GridController.GetGridColumnIndex(newPos.x);
+                        int gridRowIndex = GridController.GetGridRowIndex(newPos.y);
+
+                        newPos.x = GridController.GetGridSnapPositionX(gridColumnIndex);
+                        newPos.y = GridController.GetGridSnapPositionY(gridRowIndex);
+
+                        OnGridSnap?.Invoke(gridColumnIndex, gridRowIndex);
                     }
 
                     // Clamping position to be inside the editor
@@ -165,39 +156,69 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     break;
 
                 case ActionType.Scale:
-                    // Scaling while keeping aspect ratio, we have to invert scaling for the left side scale handles
-                    float sizeIncreaseX;
-                    if (_currentScaleHandleIdx == (int)CornerType.TopLeft || _currentScaleHandleIdx == (int)CornerType.BottomLeft)
+                    float sizeIncreaseX = 0f;
+                    float sizeIncreaseY = 0f;
+
+                    // If vertical multiorientation element we scale in y axis
+                    if (_multiOrientationElement != null && !_multiOrientationElement.IsHorizontal) 
                     {
-                        sizeIncreaseX = -((eventData.position.x - eventData.pressPosition.x) * 2);
+                        sizeIncreaseY = -((eventData.position.y - eventData.pressPosition.y) * 2);
+
+                        // We have to invert scaling for the top side scale handles when scaling vertically
+                        if (_currentScaleHandleIdx == (int)CornerType.TopLeft || _currentScaleHandleIdx == (int)CornerType.TopRight)
+                        {
+                            sizeIncreaseY = -sizeIncreaseY;
+                        }
                     }
-                    else
+                    else // If horizontal ui element we scale in x axis
                     {
                         sizeIncreaseX = (eventData.position.x - eventData.pressPosition.x) * 2;
+
+                        // We have to invert scaling for the left side scale handles when scaling horizontally
+                        if (_currentScaleHandleIdx == (int)CornerType.TopLeft || _currentScaleHandleIdx == (int)CornerType.BottomLeft)
+                        {
+                            sizeIncreaseX = -sizeIncreaseX;
+                        }
                     }
-                         
-                    float sizeIncreaseY = sizeIncreaseX / (_movableElement.RectTransformComponent.rect.width / _movableElement.RectTransformComponent.rect.height);
+
+                    // Getting the other value from aspect ratio
+                    if (sizeIncreaseX == 0f)
+                    {
+                        sizeIncreaseX = sizeIncreaseY * _aspectRatio;
+                    }
+                    else if (sizeIncreaseY == 0f)
+                    {
+                        sizeIncreaseY = sizeIncreaseX / _aspectRatio;
+                    }
+
+                    // Setting sizeDelta from the size increase
                     _movableElement.RectTransformComponent.sizeDelta = new Vector2(sizeIncreaseX, sizeIncreaseY);
 
                     // Preventing being scaled too small or too big
-                    if (_multiOrientationElement == null || _multiOrientationElement.IsHorizontal)
+                    if (_multiOrientationElement == null || _multiOrientationElement.IsHorizontal) // For horizontal elements
                     {
                         float clampedWidth = Mathf.Clamp(_movableElement.RectTransformComponent.rect.width, _minWidth, _maxWidth);
 
-                        // Snapping scaling to grid
-                        if (_isGridToggled) clampedWidth = Mathf.Round(clampedWidth / (BattleUiEditor.GridCellWidth * 2)) * (BattleUiEditor.GridCellWidth * 2);
-
-                        float aspectRatio = _multiOrientationElement == null ? _movableElementAspectRatio : _multiOrientationElement.HorizontalAspectRatio;
+                        // Incremental scaling
+                        if (_isIncrementalScalingToggled)
+                        {
+                            float increment = (_maxWidth - _minWidth) / ScalingIncrementAmount;
+                            clampedWidth = Mathf.Round(clampedWidth / increment) * increment;
+                        }
 
                         _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, clampedWidth);
-                        _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, clampedWidth / aspectRatio);
+                        _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, clampedWidth / _aspectRatio);
                     }
-                    else if (!_multiOrientationElement.IsHorizontal)
+                    else if (!_multiOrientationElement.IsHorizontal) // For vertical elements
                     {
                         float clampedHeight = Mathf.Clamp(_movableElement.RectTransformComponent.rect.height, _minHeight, _maxHeight);
 
-                        // Snapping scaling to grid
-                        if (_isGridToggled) clampedHeight = Mathf.Round(clampedHeight / (BattleUiEditor.GridCellHeight * 2)) * (BattleUiEditor.GridCellHeight * 2);
+                        // Incremental scaling
+                        if (_isIncrementalScalingToggled)
+                        {
+                            float increment = (_maxHeight - _minHeight) / ScalingIncrementAmount;
+                            clampedHeight = Mathf.Round(clampedHeight / increment) * increment;
+                        }
 
                         _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, clampedHeight * _multiOrientationElement.VerticalAspectRatio);
                         _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, clampedHeight);
@@ -218,6 +239,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         public void OnEndDrag(PointerEventData eventData)
         {
             if (_currentAction == ActionType.Move || _currentAction == ActionType.Scale) CalculateAndSetAnchors();
+            if (_currentAction == ActionType.Scale) CheckControlButtonsVisibility();
             _currentAction = ActionType.None;
         }
 
@@ -256,6 +278,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private const int DefaultFlipHorizontallyButtonIdx = (int)ControlButtonVertical.Top;
         private const int DefaultFlipVerticallyButtonIdx = (int)ControlButtonHorizontal.Right;
 
+        private const int ScalingIncrementAmount = 5;
+        private const int MoveActionTreshold = 20;
+
         private Button[] _scaleHandles;
         private Button[] _changeOrientationButtons;
         private Button[] _flipHorizontallyButtons;
@@ -266,22 +291,21 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private int _currentFlipHorizontallyButtonIdx = DefaultFlipHorizontallyButtonIdx;
         private int _currentFlipVerticallyButtonIdx = DefaultFlipVerticallyButtonIdx;
 
-        private Button _currentScaleHandle => _scaleHandles[(int)_currentScaleHandleIdx];
-        private Button _currentChangeOrientationButton => _changeOrientationButtons[(int)_currentChangeOrientationButtonIdx];
-        private Button _currentFlipHorizontallyButton => _flipHorizontallyButtons[(int)_currentFlipHorizontallyButtonIdx];
-        private Button _currentFlipVerticallyButton => _flipVerticallyButtons[(int)_currentFlipVerticallyButtonIdx];
+        private Button _currentScaleHandle => _scaleHandles[_currentScaleHandleIdx];
+        private Button _currentChangeOrientationButton => _changeOrientationButtons[_currentChangeOrientationButtonIdx];
+        private Button _currentFlipHorizontallyButton => _flipHorizontallyButtons[_currentFlipHorizontallyButtonIdx];
+        private Button _currentFlipVerticallyButton => _flipVerticallyButtons[_currentFlipVerticallyButtonIdx];
 
-        private float _maxWidth => BattleUiEditor.GridCellWidth * 10;
-        private float _maxHeight => BattleUiEditor.GridCellHeight * 16;
-        private float _minWidth => BattleUiEditor.GridCellWidth * 2;
-        private float _minHeight => BattleUiEditor.GridCellHeight * 4;
+        private float _maxWidth => BattleUiEditor.EditorRect.width / 2;
+        private float _maxHeight => BattleUiEditor.EditorRect.height / 3;
+        private float _minWidth => BattleUiEditor.EditorRect.width / 6;
+        private float _minHeight => BattleUiEditor.EditorRect.height / 10;
 
-        private float _maxPosX => _uiElementHolder.rect.width * (Screen.width/ _uiElementHolder.rect.width) - _movableElement.RectTransformComponent.rect.width / 2;
-        private float _maxPosY => _uiElementHolder.rect.height * (Screen.width / _uiElementHolder.rect.width) - _movableElement.RectTransformComponent.rect.height / 2;
-        private float _minPosX => _movableElement.RectTransformComponent.rect.width / 2;
-        private float _minPosY => _movableElement.RectTransformComponent.rect.height / 2;
-
-        private RectTransform _uiElementHolder;
+        private float _maxPosX => BattleUiEditor.EditorRect.width * BattleUiEditor.ScreenSpaceRatio - _movableElement.RectTransformComponent.rect.width * BattleUiEditor.ScreenSpaceRatio / 2;
+        private float _maxPosY => BattleUiEditor.EditorRect.height * BattleUiEditor.ScreenSpaceRatio - _movableElement.RectTransformComponent.rect.height * BattleUiEditor.ScreenSpaceRatio / 2;
+        private float _minPosX => _movableElement.RectTransformComponent.rect.width * BattleUiEditor.ScreenSpaceRatio / 2;
+        private float _minPosY => _movableElement.RectTransformComponent.rect.height * BattleUiEditor.ScreenSpaceRatio / 2;
+        private float _aspectRatio => _multiOrientationElement == null ? _movableElementAspectRatio : _multiOrientationElement.HorizontalAspectRatio;
 
         private BattleUiMovableElement _movableElement;
         private BattleUiMultiOrientationElement _multiOrientationElement;
@@ -289,12 +313,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private float _movableElementAspectRatio;
 
-        private bool _isPointerDown = false;
-        private bool _isGridToggled = false;
-
-        private Coroutine _dragTimerHolder = null;
+        private bool _isGridAlignToggled = false;
+        private bool _isIncrementalScalingToggled = false;
 
         private ActionType _currentAction;
+        private Vector2 _moveOffset;
 
         private void OnDisable()
         {
@@ -309,17 +332,17 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _flipHorizontallyButtons = new[] { _flipHorizontallyButtonTop, _flipHorizontallyButtonBottom };
             _flipVerticallyButtons = new[] { _flipVerticallyButtonLeft, _flipVerticallyButtonRight };
 
-            foreach (var button in _changeOrientationButtons)
+            foreach (Button button in _changeOrientationButtons)
             {
                 button.onClick.AddListener(ChangeOrientation);
             }
 
-            foreach (var button in _flipHorizontallyButtons)
+            foreach (Button button in _flipHorizontallyButtons)
             {
                 button.onClick.AddListener(FlipHorizontally);
             }
 
-            foreach (var button in _flipVerticallyButtons)
+            foreach (Button button in _flipVerticallyButtons)
             {
                 button.onClick.AddListener(FlipVertically);
             }
@@ -327,99 +350,34 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void OnDestroy()
         {
-            foreach (var button in _changeOrientationButtons)
+            foreach (Button button in _changeOrientationButtons)
             {
                 button.onClick.RemoveAllListeners();
             }
 
-            foreach (var button in _flipHorizontallyButtons)
+            foreach (Button button in _flipHorizontallyButtons)
             {
                 button.onClick.RemoveAllListeners();
             }
 
-            foreach (var button in _flipVerticallyButtons)
+            foreach (Button button in _flipVerticallyButtons)
             {
                 button.onClick.RemoveAllListeners();
             }
-        }
-
-        private IEnumerator StartDragTimer(Action callback)
-        {
-            _dragDelayFill.fillAmount = 0;
-
-            float timePassed = 0f;
-            while (timePassed < 0.5f)
-            {
-                if (!_dragDelayDisplay.activeSelf && timePassed >= 0.2f)
-                {
-                    _dragDelayDisplay.SetActive(true);
-                    ShowControls(false);
-                }
-                _dragDelayFill.fillAmount = timePassed * 2;
-                yield return null;
-                timePassed += Time.deltaTime;
-            }
-
-            _dragDelayDisplay.SetActive(false);
-            callback();
         }
 
         private void CalculateAndSetAnchors(Vector2? newSize = null)
         {
-            // Saving values used in calculations to easier to read variables
-            float holderWidth = _uiElementHolder.rect.width;
-            float holderHeight = _uiElementHolder.rect.height;
-
-            float xPos = _movableElement.RectTransformComponent.localPosition.x;
-            float yPos = _movableElement.RectTransformComponent.localPosition.y;
-
-            float ownWidth = newSize == null ? _movableElement.RectTransformComponent.rect.width : newSize.Value.x;
-            float ownHeight = newSize == null ? _movableElement.RectTransformComponent.rect.height : newSize.Value.y;
+            Vector2 size = new(
+                newSize == null ? _movableElement.RectTransformComponent.rect.width : newSize.Value.x,
+                newSize == null ? _movableElement.RectTransformComponent.rect.height : newSize.Value.y
+            );
 
             // Calculating anchors
-            float anchorXMin = (xPos - ownWidth / 2.0f) / holderWidth + 0.5f;
-            float anchorXMax = (xPos + ownWidth / 2.0f) / holderWidth + 0.5f;
+            (Vector2 anchorMin, Vector2 anchorMax) = BattleUiEditor.CalculateAnchors(size, _movableElement.RectTransformComponent.localPosition, 0.5f);
 
-            float anchorYMin = (yPos - ownHeight / 2.0f) / holderHeight + 0.5f;
-            float anchorYMax = (yPos + ownHeight / 2.0f) / holderHeight + 0.5f;
-
-            // Checking that the anchors don't go over borders
-            if (anchorXMin < 0)
-            {
-                anchorXMax += Mathf.Abs(anchorXMin);
-                anchorXMin = 0;
-            }
-
-            if (anchorXMax > 1)
-            {
-                anchorXMin -= anchorXMax - 1;
-                anchorXMax = 1;
-
-                if (anchorXMin < 0)
-                {
-                    anchorXMin = 0;
-                }
-            }
-
-            if (anchorYMin < 0)
-            {
-                anchorYMax += Mathf.Abs(anchorYMin);
-                anchorYMin = 0;
-            }
-
-            if (anchorYMax > 1)
-            {
-                anchorYMin -= anchorYMax - 1;
-                anchorYMax = 1;
-
-                if (anchorYMin < 0)
-                {
-                    anchorYMin = 0;
-                }
-            }
-
-            _data.AnchorMin = new(anchorXMin, anchorYMin);
-            _data.AnchorMax = new(anchorXMax, anchorYMax);
+            _data.AnchorMin = anchorMin;
+            _data.AnchorMax = anchorMax;
 
             _movableElement.SetData(_data);
 
@@ -467,8 +425,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         // Method used to calculate appropiate size for the control buttons, since if they were anchored they would grow with the element when it's scaled
         private void SetControlButtonSizes()
         {
-            float scaleHandleWidth = _uiElementHolder.rect.width * ScaleHandleSizeRatio;
-            Vector2 buttonSize = new Vector2(scaleHandleWidth, scaleHandleWidth);
+            float scaleHandleWidth = BattleUiEditor.EditorRect.width * ScaleHandleSizeRatio;
+            Vector2 buttonSize = new(scaleHandleWidth, scaleHandleWidth);
 
             foreach (Button scaleHandle in _scaleHandles)
             {
@@ -477,7 +435,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             if (_multiOrientationElement == null) return; // Returning if not a multiorientation element
 
-            float controlButtonWidth = _uiElementHolder.rect.width * ControlButtonSizeRatio;
+            float controlButtonWidth = BattleUiEditor.EditorRect.width * ControlButtonSizeRatio;
             buttonSize = new Vector2(controlButtonWidth, controlButtonWidth);
 
             foreach (Button button in _changeOrientationButtons)
@@ -498,9 +456,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void CheckControlButtonsVisibility()
         {
-            // Setting current scale handle inactive so that it doesn't remain visible and resetting the position in case it has offset
-            if (_currentScaleHandle.gameObject.activeSelf) _currentScaleHandle.gameObject.SetActive(false);
+            // Resetting scale handle offset in case it had any
             _currentScaleHandle.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+
+            Button oldScaleHandle = _currentScaleHandle;
 
             // Checking first if the default scale handle is free
             Vector3[] defaultScaleHandleCorners = GetButtonCorners(_scaleHandles[DefaultScaleHandleIdx]);
@@ -524,12 +483,15 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 }
             }
 
-            if (_multiOrientationElement == null) return; // Returning if not a multiorientation element
- 
-            // Doing the same things for flip vertically buttons
-            if (_currentFlipVerticallyButton.gameObject.activeSelf) _currentFlipVerticallyButton.gameObject.SetActive(false);
+            // Using method to check and switch visible scale handle in case it changed
+            CheckAndSwitchVisibleControlButton(oldScaleHandle, _currentScaleHandle);
 
-            // Checking if default button is inside editor
+            // Returning if not a multiorientation element since the other control buttons aren't needed for normal elements
+            if (_multiOrientationElement == null) return;
+
+            Button oldFlipVerticallyButton = _currentFlipVerticallyButton;
+
+            // Checking if default flip vertically button button is inside editor
             Vector3[] defaultFlipVerticallyCorners = GetButtonCorners(_flipVerticallyButtons[DefaultFlipVerticallyButtonIdx]);
             if (IsButtonInsideEditor(defaultFlipVerticallyCorners))
             {
@@ -540,12 +502,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 _currentFlipVerticallyButtonIdx = (int)ControlButtonHorizontal.Left;
             }
 
-            // Positioning top buttons
-            if (_currentFlipHorizontallyButton.gameObject.activeSelf) _currentFlipHorizontallyButton.gameObject.SetActive(false);
-            if (_currentChangeOrientationButton.gameObject.activeSelf) _currentChangeOrientationButton.gameObject.SetActive(false);
+            // Checking if we should change the visible button
+            CheckAndSwitchVisibleControlButton(oldFlipVerticallyButton, _currentFlipVerticallyButton);
 
+            // Positioning top buttons, placing them into one array first
             Button[] topButtons = _flipHorizontallyButtons.Concat(_changeOrientationButtons).ToArray();
 
+            // Adding left or right side offset to the buttons if they go outside the ui element holder
             foreach (Button button in topButtons)
             {
                 RectTransform buttonRectTransform = button.GetComponent<RectTransform>();
@@ -561,17 +524,18 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 if (!IsButtonInsideEditor(buttonCorners))
                 {
                     Vector3[] holderCorners = new Vector3[4];
-                    _uiElementHolder.GetWorldCorners(holderCorners);
+                    BattleUiEditor.EditorRectTransform.GetWorldCorners(holderCorners);
 
                     Vector2 newPosition = Vector2.zero;
-                    // Checking left side
+
+                    // Checking left side and adding offset
                     float left = buttonCorners[(int)CornerType.BottomLeft].x;
                     if (left < 0)
                     {
                         newPosition.x += Mathf.Abs(left);
                     }
 
-                    // Checking right side
+                    // Checking right side and adding offset
                     float buttonRight = buttonCorners[(int)CornerType.BottomRight].x;
                     float holderRight = holderCorners[(int)CornerType.BottomRight].x;
                     if (buttonRight > holderRight)
@@ -583,9 +547,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 }
             }
 
+            Button oldFlipHorizontallyButton = _currentFlipHorizontallyButton;
+            Button oldChangeOrientationButton = _currentChangeOrientationButton;
+
+            // Ensuring the top and bottom buttons are next to each other
             for (int i = 0; i < _flipHorizontallyButtons.Length; i++)
             {
-                // Ensuring the top and bottom buttons are next to each other
                 RectTransform _changeOrientationRectTransform = _changeOrientationButtons[i].GetComponent<RectTransform>();
                 RectTransform _flipHorizontallyRectTransform = _flipHorizontallyButtons[i].GetComponent<RectTransform>();
 
@@ -600,49 +567,62 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     _changeOrientationRectTransform.anchoredPosition += _flipHorizontallyRectTransform.anchoredPosition;
                 }
 
-                // Showing the buttons which are both inside the editor
+                // Setting the buttons which are both inside the editor as current
                 if (IsButtonInsideEditor(GetButtonCorners(_changeOrientationButtons[i])) && IsButtonInsideEditor(GetButtonCorners(_flipHorizontallyButtons[i])))
                 {
                     _currentChangeOrientationButtonIdx = i;
                     _currentFlipHorizontallyButtonIdx = i;
-
-                    // Check if the scale handle is overlapping (only if vertical multi orientation element)
-                    if (_multiOrientationElement.IsHorizontal) return;
-
-                    float xOffset = 20f;
-                    RectTransform scaleHandleRectTransform = _currentScaleHandle.GetComponent<RectTransform>();
-                    switch ((CornerType)_currentScaleHandleIdx)
-                    {
-                        case CornerType.TopRight:
-                            if ((ControlButtonVertical)i == ControlButtonVertical.Top)
-                            {
-                                xOffset = _changeOrientationRectTransform.anchoredPosition.x + xOffset + _uiElementHolder.rect.width * ScaleHandleSizeRatio;
-                            }
-                            break;
-
-                        case CornerType.TopLeft:
-                            if ((ControlButtonVertical)i == ControlButtonVertical.Top)
-                            {
-                                xOffset = _changeOrientationRectTransform.anchoredPosition.x - xOffset - _uiElementHolder.rect.width * ScaleHandleSizeRatio;
-                            }
-                            break;
-
-                        case CornerType.BottomRight:
-                            if ((ControlButtonVertical)i == ControlButtonVertical.Bottom)
-                            {
-                                xOffset = _changeOrientationRectTransform.anchoredPosition.x + xOffset + _uiElementHolder.rect.width * ScaleHandleSizeRatio;
-                            }
-                            break;
-
-                        case CornerType.BottomLeft:
-                            if ((ControlButtonVertical)i == ControlButtonVertical.Bottom)
-                            {
-                                xOffset = _changeOrientationRectTransform.anchoredPosition.x - xOffset - _uiElementHolder.rect.width * ScaleHandleSizeRatio;
-                            }
-                            break;
-                    }
-                    scaleHandleRectTransform.anchoredPosition += new Vector2(xOffset, 0);
                     break;
+                }
+            }
+
+            // Checking visibility for the top buttons
+            CheckAndSwitchVisibleControlButton(oldFlipHorizontallyButton, _currentFlipHorizontallyButton);
+            CheckAndSwitchVisibleControlButton(oldChangeOrientationButton, _currentChangeOrientationButton);
+
+            // Check if the scale handle is overlapping (only if vertical multi orientation element)
+            if (_multiOrientationElement.IsHorizontal) return;
+
+            // Getting rects and rect transforms
+            RectTransform scaleHandleRectTransform = _currentScaleHandle.GetComponent<RectTransform>();
+            Rect scaleHandleRect = scaleHandleRectTransform.rect;
+
+            Rect flipHorizontallyRect = _currentFlipHorizontallyButton.GetComponent<RectTransform>().rect;
+            Vector3[] flipHorizontallyCorners = GetButtonCorners(_currentFlipHorizontallyButton);
+
+            Rect changeOrientationRect = _currentChangeOrientationButton.GetComponent<RectTransform>().rect;
+            Vector3[] changeOrientationCorners = GetButtonCorners(_currentChangeOrientationButton);
+
+            // Checking if the scale handle overlaps with flip horizontally or change orientation buttons
+            if (scaleHandleRect.Overlaps(flipHorizontallyRect) || scaleHandleRect.Overlaps(changeOrientationRect))
+            {
+                // Changing scaleHandle world position
+                switch ((CornerType)_currentScaleHandleIdx)
+                {
+                    case CornerType.BottomLeft:
+                        scaleHandleRectTransform.position = changeOrientationCorners[(int)CornerType.TopLeft];
+                        break;
+                    case CornerType.TopLeft:
+                        scaleHandleRectTransform.position = changeOrientationCorners[(int)CornerType.BottomLeft];
+                        break;
+                    case CornerType.BottomRight:
+                        scaleHandleRectTransform.position = flipHorizontallyCorners[(int)CornerType.TopRight];
+                        break;
+                    case CornerType.TopRight:
+                        scaleHandleRectTransform.position = flipHorizontallyCorners[(int)CornerType.BottomRight];
+                        break;
+                }
+            }
+        }
+
+        private void CheckAndSwitchVisibleControlButton(Button oldButton, Button currentButton)
+        {
+            if (oldButton != currentButton)
+            {
+                if (oldButton.gameObject.activeSelf)
+                {
+                    oldButton.gameObject.SetActive(false);
+                    currentButton.gameObject.SetActive(true);
                 }
             }
         }
@@ -658,11 +638,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private bool IsButtonInsideEditor(Vector3[] buttonCorners)
         {
             bool isButtonInside = true;
-
             for (int i = 0; i < buttonCorners.Length; i++)
             {
-                Vector3 localSpacePoint = _uiElementHolder.InverseTransformPoint(buttonCorners[i]);
-                if (!_uiElementHolder.rect.Contains(localSpacePoint))
+                Vector3 localSpacePoint = BattleUiEditor.EditorRectTransform.InverseTransformPoint(buttonCorners[i]);
+                if (!HolderRectContains(localSpacePoint))
                 {
                     isButtonInside = false;
                     break;
@@ -670,6 +649,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
 
             return isButtonInside;
+        }
+
+        // This method is needed because the default Contains method compares with < and > instead of <= and >= for the max x and y values
+        private bool HolderRectContains(Vector3 point) 
+        {
+            Rect uiRect = BattleUiEditor.EditorRect;
+            return point.x >= uiRect.xMin && point.x <= uiRect.xMax && point.y >= uiRect.yMin && point.y <= uiRect.yMax;
         }
     }
 }
