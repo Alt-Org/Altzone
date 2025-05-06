@@ -1,9 +1,11 @@
-/// <summary>
 /// @file BattlePlayerJoinQSystem.cs
-/// @brief Handles players joining the game
-///
-/// This system handles players joining the game by using BattlePlayerManager to initialize players in playerslots and spawn them. Also updates debug overlay.
+/// <summary>
+/// Handles players joining the game
 /// </summary>
+///
+/// This system handles players joining the game by using BattlePlayerManager to initialize players in playerslots and spawn them.
+/// Also updates debug overlay to display player's stats.
+
 
 using UnityEngine.Scripting;
 using Quantum;

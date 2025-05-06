@@ -1,10 +1,10 @@
-/// <summary>
 /// @file BattleSoulWallQSystem.cs
-/// @brief Handles creating and destroying SoulWalls.
-///
-/// This system creates SoulWalls based on BattleArena and SoulWall Specs when GameControlSystem calls CreateSoulWalls method during the map creation.
-/// This system also listens for Quantum.ISignalBattleOnProjectileHitSoulWall signals and upon receiving them destroys SoulWall segments.
+/// <summary>
+/// Handles creating and destroying SoulWalls.
 /// </summary>
+///
+/// This system creates SoulWalls based on BattleArena and SoulWall Specs when GameControlSystem calls CreateSoulWalls method during the map creation.<br/>
+/// Also listens for ISignalBattleOnProjectileHitSoulWall signals and upon receiving them destroys SoulWall segments.
 
 using UnityEngine;
 using UnityEngine.Scripting;

@@ -1,7 +1,9 @@
-/// <summary>
 /// @file BattleCollisionQSystem.cs
-/// @brief Handles all collisions in the game.
+/// <summary>
+/// Handles all collisions in the game.
 /// </summary>
+///
+/// This system reacts to ISignalOnTrigger2D signals. Depending on which entities are colliding, a new signal is sent for other systems to react to.
 
 using UnityEngine;
 using UnityEngine.Scripting;

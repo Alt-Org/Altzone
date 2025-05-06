@@ -1,7 +1,8 @@
-/// <summary>
 /// @file BattleSoulWallQSpec.cs
-/// @brief Asset that defines a list of usable SoulWall EntityPrototypes used when creating SoulWalls.
+/// <summary>
+/// Asset that defines a list of usable SoulWall EntityPrototypes, which are used when creating SoulWalls.
 /// </summary>
+
 using Quantum;
 
 namespace Battle.QSimulation.SoulWall

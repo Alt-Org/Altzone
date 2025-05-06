@@ -1,7 +1,12 @@
-/// <summary>
 /// @file BattleProjectileQSystem.cs
-/// @brief Controls projectile's movements and reactions to collisions.
+/// <summary>
+/// Controls projectile's movements and reactions to collisions.
 /// </summary>
+///
+/// This system:<br/>
+/// Launches projectile when battle starts and updates its movements.<br/>
+/// Handles projectile's collisionflags to ensure projectile doesn't hit more than one SoulWall segment at a time.<br/>
+/// Reacts to signals of the projectile colliding with different entities.
 
 using System.Runtime.CompilerServices;
 

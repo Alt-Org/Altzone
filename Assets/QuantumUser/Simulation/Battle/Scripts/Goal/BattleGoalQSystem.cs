@@ -1,9 +1,11 @@
-/// <summary>
 /// @file BattleGoalQSystem.cs
-/// @brief Handles goals.
-///
-/// This system listens to signal that is sent when projectile hits a goal. System then changes GameState to initiate game over procedures.
+/// <summary>
+/// Handles goals.
 /// </summary>
+///
+/// This system listens to ISignalBattleOnProjectileHitGoal signal that is sent when projectile hits a goal.
+/// System then changes BattleGameState to "GameOver" to initiate game over procedures.
+
 
 using UnityEngine;
 using UnityEngine.Scripting;

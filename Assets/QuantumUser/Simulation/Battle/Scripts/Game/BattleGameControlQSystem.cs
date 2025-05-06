@@ -1,9 +1,10 @@
-/// <summary>
 /// @file BattleGameControlQSystem.cs
-/// @brief Controls the overall game state flow in Quantum simulation.
-/// 
-/// This system initializes the battle grid and player manager, and controls game state transitions from initialization to active gameplay.
+/// <summary>
+/// Controls the overall game state flow in Quantum simulation.
 /// </summary>
+///
+/// This system initializes the battle grid and player manager, and controls game state transitions from initialization to active gameplay.
+
 //#define DEBUG_LOG_STATE
 
 using UnityEngine.Scripting;

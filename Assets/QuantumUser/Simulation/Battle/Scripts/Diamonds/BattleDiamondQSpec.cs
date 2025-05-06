@@ -1,9 +1,9 @@
-/// <summary>
 /// @file BattleDiamondQSpec.cs
-/// @brief Defines spawnable diamond's specifications.
-///
-/// This spec defines spawnable diamond's Entity Prototype and the amount of diamonds spawned.
+/// <summary>
+/// Defines spawnable diamond's specifications.
 /// </summary>
+/// 
+/// This spec defines spawnable diamond's Entity Prototype and the amount of diamonds spawned.
 
 using Quantum;
 

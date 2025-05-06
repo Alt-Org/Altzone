@@ -1,9 +1,9 @@
-/// <summary>
 /// @file BattleArenaQSpec.cs
-/// @brief Defines arena specifications and layout used during battle simulations.
+/// <summary>
+/// Defines arena specifications and layout used during battle simulations.
+/// </summary>
 ///
 /// This spec defines physical dimensions, grid configuration, and spawn templates for use in the Quantum simulation.
-/// </summary>
 
 using Quantum;
 using Photon.Deterministic;

@@ -1,7 +1,10 @@
-/// <summary>
 /// @file BattleProjectileSpawnerQSystem.cs
-/// @brief Spawns projectile when game starts.
+/// <summary>
+/// Spawns projectile when game starts.
 /// </summary>
+///
+/// Creates an invisible entity with BattleProjectileSpawnerQComponent when system is initiated,
+/// which is then used to spawn the projectile when BattleGameState is changed to "Playing".
 
 using UnityEngine;
 using UnityEngine.Scripting;

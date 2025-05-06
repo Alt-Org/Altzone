@@ -1,10 +1,12 @@
-/// <summary>
 /// @file BattleDiamondQSystem.cs
-/// @brief Handles spawning, managing and destroying diamonds.
-///
-/// This system spawns diamonds when it receices a signal, filters all diamond entities and handles their lifetime, and destroys diamonds
-/// when player collects them by colliding with them or if diamond's lifetime ends.
+/// <summary>
+/// Handles spawning, managing and destroying diamonds.
 /// </summary>
+///
+/// This system:<br/>
+/// Spawns diamonds when it receives ISignalBattleOnProjectileHitSoulWall signal upon SoulWall segment's destruction.<br/>
+/// Filters all diamond entities and handles their lifetime.<br/>
+/// Destroys diamonds when player collects them by colliding with them or if diamond's lifetime ends.
 
 using UnityEngine.Scripting;
 

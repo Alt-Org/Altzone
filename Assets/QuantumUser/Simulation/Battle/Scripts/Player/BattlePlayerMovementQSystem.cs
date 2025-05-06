@@ -1,7 +1,10 @@
-/// <summary>
 /// @file BattlePlayerMovementQSystem.cs
-/// @brief Handles player input, movement and rotations.
+/// <summary>
+/// Handles player input, movement and rotations.
 /// </summary>
+///
+/// Gets player's Quantum.Input and updates player's position and rotation depending on player's actions.
+/// Handles moving, rotating and teleporting players and all their hitboxes.
 
 using System.Runtime.CompilerServices;
 
