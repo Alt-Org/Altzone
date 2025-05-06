@@ -47,10 +47,25 @@ In %Battle [Quantum Systems🡵] have QSystem suffix. [[Naming]](#index-naming)
 |                                                                                                                                                                                                                 ||||
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Goal}       | @cref{Battle.QSimulation.Goal,BattleGoalQSystem}                    | @copybrief Battle.QSimulation.Goal.BattleGoalQSystem                    |
 
-## Components {#page-simulatio-components}
+## Components {#page-simulation-components}
 
 [Quantum Components🡵] are C# structs that are generated from qtn files which can be attached to %Quantum Entities.
-In %Battle [Quantum Components🡵] have QComponent suffix. [[Naming]](#index-naming)
+In %Battle [Quantum Components🡵] have QComponent or QSingleton suffix. [[Naming]](#index-naming)
+
+|  Namespace                                        | Component                                                          |Description                                                             |
+|:------------------------------------------------- | :----------------------------------------------------------------- | :--------------------------------------------------------------------- |
+| @crefd{Quantum}                                   | @cref{Quantum,BattleArenaBorderQComponent}                         | @copybrief Quantum.BattleArenaBorderQComponent                         |
+| @crefd{Quantum}                                   | @cref{Quantum,BattleDiamondCounterQSingleton}                      | @copybrief Quantum.BattleDiamondCounterQSingleton                      |
+| @crefd{Quantum}                                   | @cref{Quantum,BattleDiamondDataQComponent}                         | @copybrief Quantum.BattleDiamondDataQComponent                         |
+| @crefd{Quantum}                                   | @cref{Quantum,BattleGameSessionQSingleton}                         | @copybrief Quantum.BattleGameSessionQSingleton                         |
+| @crefd{Quantum}                                   | @cref{Quantum,BattleGoalQComponent}                                | @copybrief Quantum.BattleGoalQComponent                                |
+| @crefd{Quantum}                                   | @cref{Quantum,BattlePlayerDataQComponent}                          | @copybrief Quantum.BattlePlayerDataQComponent                          |
+| @crefd{Quantum}                                   | @cref{Quantum,BattlePlayerDataTemplateQComponent}                  | @copybrief Quantum.BattlePlayerDataTemplateQComponent                  |
+| @crefd{Quantum}                                   | @cref{Quantum,BattlePlayerHitboxQComponent}                        | @copybrief Quantum.BattlePlayerHitboxQComponent                        |
+| @crefd{Quantum}                                   | @cref{Quantum,BattlePlayerManagerDataQSingleton}                   | @copybrief Quantum.BattlePlayerManagerDataQSingleton                   |
+| @crefd{Quantum}                                   | @cref{Quantum,BattleProjectileQComponent}                          | @copybrief Quantum.BattleProjectileQComponent                          |
+| @crefd{Quantum}                                   | @cref{Quantum,BattleProjectileSpawnerQComponent}                   | @copybrief Quantum.BattleProjectileSpawnerQComponent                   |
+| @crefd{Quantum}                                   | @cref{Quantum,BattleSoulWallQComponent}                            | @copybrief Quantum.BattleSoulWallQComponent                            |
 
 [Quantum Systems🡵]:    https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems
 [Quantum Components🡵]: https://doc.photonengine.com/quantum/current/manual/quantum-ecs/dsl
