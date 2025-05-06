@@ -761,6 +761,8 @@ namespace Altzone.Scripts.Lobby
             }
         }
 
+        // TODO: return to custom game/matchmaking room if starting game failed
+        // TODO: add the last check for player positions
         private IEnumerator StartTheGameplay(bool isCloseRoom, string blueTeamName, string redTeamName)
         {
             if (!PhotonBattleRoom.IsValidAllSelectedCharacters())
