@@ -26,7 +26,7 @@ public class OnlinePlayerHandler : AltMonoBehaviour
         ServerManager.OnOnlinePlayersChanged -= BuildOnlinePlayerList;
     }
 
-    private void BuildOnlinePlayerList(List<string> list)
+    private void BuildOnlinePlayerList(List<ServerOnlinePlayer> list)
     {
         foreach(Transform t in _content)
         {
@@ -39,9 +39,9 @@ public class OnlinePlayerHandler : AltMonoBehaviour
                 Debug.LogError("Unable to find ClanData.");
                 return;
             }
-            foreach (string name in list)
+            foreach (ServerOnlinePlayer player in list)
             {
-                string newName = data.Members.FirstOrDefault(x => x.Id == name)?.Name;
+                string newName = data.Members.FirstOrDefault(x => x.Id == player.id)?.Name;
                 if (newName == null) continue;
                 GameObject textObject = Instantiate(_textPrefab, _content);
                 textObject.GetComponent<OnlinePlayerTextHandler>().SetInfo(newName);

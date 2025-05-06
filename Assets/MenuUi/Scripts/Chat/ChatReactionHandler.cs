@@ -6,9 +6,14 @@ public class ChatReactionHandler : MonoBehaviour
 {
     [SerializeField] private GameObject _messageReaction;
     [SerializeField] private TextMeshProUGUI _counter;
-    public Image _reactionImage;
-    public Button _button;
-    public LongClickButton _longClickButton;
+    [SerializeField] private Image _reactionImage;
+    [SerializeField] private Button _button;
+    [SerializeField] private LongClickButton _longClickButton;
+
+    // Public getters
+    public Image ReactionImage => _reactionImage;
+    public Button Button => _button;
+    public LongClickButton LongClickButton => _longClickButton;
 
     public int _messageID;
     public int _count = 0;
