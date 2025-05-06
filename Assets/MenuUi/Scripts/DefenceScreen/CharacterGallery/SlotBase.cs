@@ -1,4 +1,4 @@
-using UnityEngine;
+/*using UnityEngine;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -49,7 +49,7 @@ namespace MenuUi.Scripts.CharacterGallery
             OnCharacterSelected?.Invoke(this);
         }
     }
-}
+}*/
 
 
 

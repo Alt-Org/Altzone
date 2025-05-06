@@ -119,32 +119,9 @@ namespace MenuUi.Scripts.CharacterGallery
 
 
         /// <summary>
-        /// Set visual information and anchoring for when character is selected. (Placed to one of the top slots.)
-        /// </summary>
-        public void SetSelectedVisuals()
-        {
-            _aspectRatioFitter.aspectRatio = 1;
-            _characterNameText.gameObject.SetActive(false);
-
-            _spriteImage.rectTransform.anchorMax = new Vector2(1, 1);
-            _spriteImage.rectTransform.anchorMin = new Vector2(0, 0);
-
-            _piechartPreview.gameObject.SetActive(true);
-            _piechartPreview.UpdateChart(Id);
-
-            _spriteImage.material = null;
-            _backgroundLowerImage.material = null;
-            _backgroundUpperImage.material = null;
-            _backgroundBorderImage.material = null;
-
-            if (_addCharacterButton.gameObject.activeSelf) _addCharacterButton.gameObject.SetActive(false);
-        }
-
-
-        /// <summary>
         /// Set visual information and anchoring for when character is unselected. (Not in one of the top slots.)
         /// </summary>
-        public void SetUnselectedVisuals()
+        public void SetUnlockedVisuals()
         {
             _aspectRatioFitter.aspectRatio = 0.6f;
             _characterNameText.gameObject.SetActive(true);
@@ -168,7 +145,7 @@ namespace MenuUi.Scripts.CharacterGallery
         /// </summary>
         public void SetLockedVisuals()
         {
-            SetUnselectedVisuals();
+            SetUnlockedVisuals();
             _spriteImage.material = _grayscaleMaterialInstance;
             _backgroundLowerImage.material = _grayscaleMaterialInstance;
             _backgroundUpperImage.material = _grayscaleMaterialInstance;
@@ -177,34 +154,6 @@ namespace MenuUi.Scripts.CharacterGallery
             _backgroundUpperImage.material.SetColor("_Color", _backgroundLowerImage.color);
             _backgroundBorderImage.material.SetColor("_Color", _backgroundLowerImage.color);
             _addCharacterButton.gameObject.SetActive(true);
-        }
-
-
-        /// <summary>
-        /// Reparent this character to its original slot.
-        /// </summary>
-        public void ReturnToOriginalSlot()
-        {
-            transform.SetParent(_originalSlot.transform, false);
-            SetUnselectedVisuals();
-        }
-
-
-        /// <summary>
-        /// Enable being able to press the navi button which can open character stats edit window.
-        /// </summary>
-        public void EnableNaviButton()
-        {
-            _backgroundLowerImage.raycastTarget = true; // the button depends on background image being raycast target.
-        }
-
-
-        /// <summary>
-        /// Disable being able to press the navi button which can open character stats edit window.
-        /// </summary>
-        public void DisableNaviButton()
-        {
-            _backgroundLowerImage.raycastTarget = false;
         }
     }
 }
