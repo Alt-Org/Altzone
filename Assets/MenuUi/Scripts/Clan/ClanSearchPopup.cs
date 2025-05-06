@@ -25,7 +25,7 @@ public class ClanSearchPopup : MonoBehaviour
 
             _clanName.text = clanData.Name;
             _clanDescription.text = clanData.Phrase;
-            _clanMembers.text = "jäsenet: " + clanData.Members.Count + "/25";
+            _clanMembers.text = "JÃ¤senet: " + clan.playerCount + "/25";
             _clanHeart.SetOtherClanColors(clanData);
             _winsRankText.text = clanListing.WinsRank.text;
             _activityRankText.text = clanListing.ActivityRank.text;
