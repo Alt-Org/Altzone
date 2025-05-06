@@ -132,12 +132,15 @@ namespace MenuUi.Scripts.Lobby.InRoom
             yield return new WaitUntil(() => playerData != null);
 
             // Checking if player is already in the room (can happen if battle popup is minimized while in room)
-            string positionValue1 = room.GetCustomProperty(PlayerPositionKey1, "");
-            string positionValue2 = room.GetCustomProperty(PlayerPositionKey2, "");
-            string positionValue3 = room.GetCustomProperty(PlayerPositionKey3, "");
-            string positionValue4 = room.GetCustomProperty(PlayerPositionKey4, "");
+            string positionValue1 = room.GetCustomProperty(PlayerPositionKey1, string.Empty);
+            string positionValue2 = room.GetCustomProperty(PlayerPositionKey2, string.Empty);
+            string positionValue3 = room.GetCustomProperty(PlayerPositionKey3, string.Empty);
+            string positionValue4 = room.GetCustomProperty(PlayerPositionKey4, string.Empty);
 
-            if (player.UserId == positionValue1 || player.UserId == positionValue2 || player.UserId == positionValue3 || player.UserId == positionValue3)
+            if (player.UserId == positionValue1 ||
+                player.UserId == positionValue2 ||
+                player.UserId == positionValue3 ||
+                player.UserId == positionValue4)
             {
                 // Checking if we have to update defence characters
                 if (player.GetCustomProperty<int[]>(PlayerCharactersKey) != GetSelectedCharacterIds(playerData))
