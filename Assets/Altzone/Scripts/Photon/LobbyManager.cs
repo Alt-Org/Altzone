@@ -87,6 +87,7 @@ namespace Altzone.Scripts.Lobby
 
         private QuantumRunner _runner = null;
 
+        private Coroutine _reserveFreePositionHolder = null;
         private Coroutine _requestPositionChangeHolder = null;
         private Coroutine _matchmakingHolder = null;
         private Coroutine _followLeaderHolder = null;
@@ -204,6 +205,7 @@ namespace Altzone.Scripts.Lobby
         {
             PhotonRealtimeClient.Client.AddCallbackTarget(this);
             PhotonRealtimeClient.Client.StateChanged += OnStateChange;
+            this.Subscribe<ReserveFreePositionEvent>(OnReserveFreePositionEvent);
             this.Subscribe<PlayerPosEvent>(OnPlayerPosEvent);
             this.Subscribe<StartRoomEvent>(OnStartRoomEvent);
             this.Subscribe<StartPlayingEvent>(OnStartPlayingEvent);
@@ -277,6 +279,52 @@ namespace Altzone.Scripts.Lobby
         private void OnStateChange(ClientState arg1, ClientState arg2)
         {
             Debug.Log(arg1 + " -> " + arg2);
+        }
+
+        private void OnReserveFreePositionEvent(ReserveFreePositionEvent data)
+        {
+            if (_reserveFreePositionHolder == null)
+            {
+                _reserveFreePositionHolder = StartCoroutine(ReserveFreePosition(true));
+            }
+        }
+
+        private IEnumerator ReserveFreePosition(bool setToPlayerProperties = false)
+        {
+            // Loop until player correctly reserves slot
+            int freePosition;
+            bool success = false;
+            do
+            {
+                // Getting first free position from the room and creating the photon hashtables for setting property
+                freePosition = PhotonLobbyRoom.GetFirstFreePlayerPos();
+                string positionKey = PhotonBattleRoom.GetPositionKey(freePosition);
+
+                PhotonHashtable propertyToSet = new() { { positionKey, PhotonRealtimeClient.LocalLobbyPlayer.UserId } };
+                PhotonHashtable expectedValue = new() { { positionKey, string.Empty } };
+
+                // Setting custom property, checking if the request could be sent to the server
+                if (PhotonRealtimeClient.CurrentRoom.SetCustomProperties(propertyToSet, expectedValue))
+                {
+                    // Waiting until that position in the room is reserved
+                    string positionValue = string.Empty;
+                    yield return new WaitUntil(() =>
+                    {
+                        positionValue = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(positionKey, string.Empty);
+                        return positionValue != string.Empty;
+                    });
+
+                    // Checking if local player is the one in the slot or if there was a conflict
+                    success = positionValue == PhotonRealtimeClient.LocalLobbyPlayer.UserId;
+                }
+
+                if (!success) yield return null;
+            } while (!success);
+
+            // Setting to player properties
+            if (setToPlayerProperties) PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, freePosition);
+
+            _reserveFreePositionHolder = null;
         }
 
         private void OnPlayerPosEvent(PlayerPosEvent data)
@@ -503,11 +551,9 @@ namespace Altzone.Scripts.Lobby
                     case GameType.Random2v2:
                         if (_teammates.Length == 0) // If queuing solo
                         {
-                            // Getting first free position from the room and setting own user id to that position in room
-                            int freePosition = PhotonLobbyRoom.GetFirstFreePlayerPos();
-                            PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.GetPositionKey(freePosition), PhotonRealtimeClient.LocalLobbyPlayer.UserId);
+                            StartCoroutine(ReserveFreePosition());
                         }
-                        else // Queuing with a teammate
+                        else // Queuing with a teammate TODO: untested code, when queueing with teammate is possible test this and fix any issues
                         {
                             // Checking if position is free and if so setting userid from old room to that position
                             if (PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition3))
@@ -579,33 +625,26 @@ namespace Altzone.Scripts.Lobby
 
 
             // Updating player positions from room to player properties, and waiting that they have been synced
+            string positionValue1 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey1);
+            string positionValue2 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey2);
+            string positionValue3 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey3);
+            string positionValue4 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey4);
+
             foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
             {
-                string positionValue1 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey1);
-                string positionValue2 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey2);
-                string positionValue3 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey3);
-                string positionValue4 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey4);
+                int position = PhotonBattleRoom.PlayerPositionGuest;
 
-                if (player.Value.UserId == positionValue1)
+                if      (player.Value.UserId == positionValue1)     position = PhotonBattleRoom.PlayerPosition1;
+                else if (player.Value.UserId == positionValue2)     position = PhotonBattleRoom.PlayerPosition2;
+                else if (player.Value.UserId == positionValue3)     position = PhotonBattleRoom.PlayerPosition3;
+                else if (player.Value.UserId == positionValue4)     position = PhotonBattleRoom.PlayerPosition4;
+                else
                 {
-                    player.Value.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, PhotonBattleRoom.PlayerPosition1);
-                    yield return new WaitUntil(() => player.Value.GetCustomProperty<int>(PhotonBattleRoom.PlayerPositionKey) == PhotonBattleRoom.PlayerPosition1);
+                    // TODO: add check if player isn't in any position
                 }
-                else if (player.Value.UserId == positionValue2)
-                {
-                    player.Value.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, PhotonBattleRoom.PlayerPosition2);
-                    yield return new WaitUntil(() => player.Value.GetCustomProperty<int>(PhotonBattleRoom.PlayerPositionKey) == PhotonBattleRoom.PlayerPosition2);
-                }
-                else if (player.Value.UserId == positionValue3)
-                {
-                    player.Value.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, PhotonBattleRoom.PlayerPosition3);
-                    yield return new WaitUntil(() => player.Value.GetCustomProperty<int>(PhotonBattleRoom.PlayerPositionKey) == PhotonBattleRoom.PlayerPosition3);
-                }
-                else if (player.Value.UserId == positionValue4)
-                {
-                    player.Value.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, PhotonBattleRoom.PlayerPosition4);
-                    yield return new WaitUntil(() => player.Value.GetCustomProperty<int>(PhotonBattleRoom.PlayerPositionKey) == PhotonBattleRoom.PlayerPosition4);
-                }
+
+                player.Value.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, position);
+                yield return new WaitUntil(() => player.Value.GetCustomProperty<int>(PhotonBattleRoom.PlayerPositionKey) == position);
             }
 
             // Checking that the clan names are in order
@@ -1223,6 +1262,10 @@ namespace Altzone.Scripts.Lobby
             {
                 _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
             }
+        }
+
+        public class ReserveFreePositionEvent
+        {
         }
 
         public class PlayerPosEvent

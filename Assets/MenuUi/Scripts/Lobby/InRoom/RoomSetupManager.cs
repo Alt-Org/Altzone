@@ -1,14 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+
+using UnityEngine;
+using UnityEngine.UI;
+
+using TMPro;
+
+using Prg.Scripts.Common.PubSub;
+
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Lobby.Wrappers;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
+
 using MenuUi.Scripts.Lobby.SelectedCharacters;
-using TMPro;
-using UnityEngine;
-using UnityEngine.UI;
 
 namespace MenuUi.Scripts.Lobby.InRoom
 {
@@ -151,55 +157,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
             player.CustomProperties.Clear();
 
             // Reserving player position
-            int playerPos;
-            bool success = false;
-            do
-            {
-                // Getting first free player pos
-                playerPos = PhotonLobbyRoom.GetFirstFreePlayerPos();
-
-                // Reserving player position inside the room
-                string positionKey;
-                switch (playerPos)
-                {
-                    case PlayerPosition1:
-                        positionKey = PlayerPositionKey1;
-                        break;
-                    case PlayerPosition2:
-                        positionKey = PlayerPositionKey2;
-                        break;
-                    case PlayerPosition3:
-                        positionKey = PlayerPositionKey3;
-                        break;
-                    case PlayerPosition4:
-                        positionKey = PlayerPositionKey4;
-                        break;
-                    default:
-                        positionKey = PlayerPositionKey1;
-                        break;
-                }
-
-                LobbyPhotonHashtable propertyToSet = new LobbyPhotonHashtable(new Dictionary<object, object> { { positionKey, player.UserId } });
-                LobbyPhotonHashtable expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { positionKey, string.Empty } });
-
-                // Checking if set custom properties could be sent to the server
-                if (room.SetCustomProperties(propertyToSet, expectedValue))
-                {
-                    // Waiting to verify that player position is reserved
-                    string positionValue = string.Empty;
-
-                    yield return new WaitUntil(()=> {
-                        positionValue = room.GetCustomProperty(positionKey, string.Empty);
-                        return positionValue != string.Empty;
-                    });
-
-                    // Checking if the position value is local player userid or if there is a conflict
-                    success = positionValue == player.UserId;
-                }
-
-                yield return null;
-            }
-            while (!success); // If there was a conflict we try getting and setting the first free player position again
+            this.Publish<LobbyManager.ReserveFreePositionEvent>(new());
+            yield return new WaitUntil(() => player.GetCustomProperty(PlayerPositionKey, -1) != -1);
 
             // Getting character id and stat int arrays
             int[] characterIds = GetSelectedCharacterIds(playerData);
@@ -208,7 +167,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
             // Creating custom properties
             player.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object>
             {
-                { PlayerPositionKey, playerPos },
                 { PlayerCharactersKey, characterIds },
                 { PlayerStatsKey, characterStats },
                 { "Role", (int)currentRole },
