@@ -1035,6 +1035,12 @@ namespace Altzone.Scripts.Lobby
 
         private void StopHolderCoroutines()
         {
+            if (_reserveFreePositionHolder != null)
+            {
+                StopCoroutine(_reserveFreePositionHolder);
+                _reserveFreePositionHolder = null;
+            }
+
             if (_requestPositionChangeHolder != null)
             {
                 StopCoroutine(_requestPositionChangeHolder);
