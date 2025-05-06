@@ -49,7 +49,7 @@ namespace MenuUi.Scripts.CharacterGallery
     /// </summary>
     public class ModelController : AltMonoBehaviour
     {
-        [SerializeField] private ModelView _view; //modelview script
+        [SerializeField] private GalleryView _view; 
 
         private PlayerData _playerData;
         private bool _reloadRequested = false;
@@ -58,7 +58,6 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             ServerManager.OnLogInStatusChanged += StartLoading;
             SignalBus.OnRandomSelectedCharactersRequested += SetRandomSelectedCharactersToEmptySlots;
-            _view.OnTopSlotCharacterSet += HandleCharacterSelected;
             SignalBus.OnReloadCharacterGalleryRequested += OnReloadRequested;
             SignalBus.OnSelectedDefenceCharacterChanged += HandleCharacterSelected;
         }
@@ -90,7 +89,6 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             ServerManager.OnLogInStatusChanged -= StartLoading;
             SignalBus.OnRandomSelectedCharactersRequested -= SetRandomSelectedCharactersToEmptySlots;
-            _view.OnTopSlotCharacterSet -= HandleCharacterSelected;
             SignalBus.OnReloadCharacterGalleryRequested -= OnReloadRequested;
             SignalBus.OnSelectedDefenceCharacterChanged -= HandleCharacterSelected;
         }

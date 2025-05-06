@@ -1,5 +1,4 @@
-﻿/*
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Altzone.Scripts;
 using System.Collections.ObjectModel;
 using Altzone.Scripts.Model.Poco.Game;
@@ -14,8 +13,7 @@ using System;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
-    
-    public class ModelView : MonoBehaviour
+    public class GalleryView : MonoBehaviour
     {
         enum FilterType
         {
@@ -32,7 +30,6 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
         [SerializeField] private Transform _characterGridContent;
-        [SerializeField] private Toggle _editModeToggle;
         [SerializeField] private Button _filterButton;
         [SerializeField] private TMP_Text _filterText;
         [SerializeField] private BaseScrollRect _scrollRect;
@@ -43,16 +40,9 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private bool _isReady;
         private FilterType _currentFilter = FilterType.All;
-
-        // Array of character slots in selected grid
-        [SerializeField] private SelectedCharacterSlot[] _selectedCharacterSlots;
+        
         // List of character slots in character grid
         private List<CharacterSlot> _characterSlots = new();
-
-        public delegate void TopSlotCharacterSetHandler(CharacterID characterId, int slotIdx);
-        public event TopSlotCharacterSetHandler OnTopSlotCharacterSet;
-
-        private SwipeUI _swipe;
 
         public bool IsReady
         {
@@ -65,95 +55,27 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void Awake()
         {
-            _swipe = FindObjectOfType<SwipeUI>(true);
-            _swipe.OnCurrentPageChanged += ChangeEditToggleStatusToFalse;
-
-            for (int i = 0; i < _selectedCharacterSlots.Length; i++)
-            {
-                _selectedCharacterSlots[i].OnCharacterSelected += HandleCharacterSelected;
-                _selectedCharacterSlots[i].SlotIndex = i;
-            }
-
-            SignalBus.OnDefenceGalleryEditModeRequested += ChangeEditToggleStatusToTrue;
             _filterButton.onClick.AddListener(RotateFilters);
             SetFilterText(_currentFilter);
         }
 
-
-        private void OnDisable()
-        {
-            ChangeEditToggleStatusToFalse();
-        }
-
-
         private void OnDestroy()
         {
-            foreach (SelectedCharacterSlot slot in _selectedCharacterSlots)
-            {
-                slot.OnCharacterSelected -= HandleCharacterSelected;
-            }
-
-            foreach (CharacterSlot slot in _characterSlots)
-            {
-                slot.OnCharacterSelected -= HandleCharacterSelected;
-            }
-
-            _swipe.OnCurrentPageChanged -= ChangeEditToggleStatusToFalse;
-            SignalBus.OnDefenceGalleryEditModeRequested -= ChangeEditToggleStatusToTrue;
+            _filterButton.onClick.RemoveAllListeners();
         }
-
 
         public void Reset()
         {
             _isReady = false;
 
-            // Remove selected characters
-            foreach (SelectedCharacterSlot slot in _selectedCharacterSlots)
-            {
-                GalleryCharacter topSlotCharacter = slot.transform.GetComponentInChildren<GalleryCharacter>();
-                if (topSlotCharacter != null)
-                {
-                    Destroy(topSlotCharacter.gameObject);
-                }
-            }
-
             // Remove all character slots
             foreach (CharacterSlot characterSlot in _characterSlots)
             {
-                characterSlot.OnCharacterSelected -= HandleCharacterSelected;
                 Destroy(characterSlot.gameObject);
             }
             _characterSlots.Clear();
             _isReady = true;
         }
-
-
-        /// <summary>
-        /// Set edit toggle status to true.
-        /// </summary>
-        public void ChangeEditToggleStatusToTrue()
-        {
-            _editModeToggle.isOn = true;
-        }
-
-
-        /// <summary>
-        /// Set edit toggle status to false.
-        /// </summary>
-        public void ChangeEditToggleStatusToFalse()
-        {
-            _editModeToggle.isOn = false;
-        }
-
-
-        /// <summary>
-        /// Toggle edit mode based on the value of edit mode toggle.
-        /// </summary>
-        public void ToggleEditMode()
-        {
-            SetCharacterSlotsSelectable(_editModeToggle.isOn);
-        }
-
 
         /// <summary>
         /// Place the characters to character gallery.
@@ -166,17 +88,6 @@ namespace MenuUi.Scripts.CharacterGallery
             foreach (CustomCharacter character in customCharacters)
             {
                 var charSlot = InstantiateCharacterSlot(character.Id, false);
-
-                for (int i = 0; i < _selectedCharacterSlots.Length; i++)
-                {
-                    if (charSlot == null) break;
-
-                    if (character.Id == (CharacterID)selectedCharacterIds[i]) // Check if character is selected
-                    {
-                        charSlot.Character.transform.SetParent(_selectedCharacterSlots[i].transform, false);
-                        charSlot.Character.SetSelectedVisuals();
-                    }
-                }
             }
 
             // Placing locked characters
@@ -200,12 +111,6 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 InstantiateCharacterSlot(baseCharacter.Id, true);
             }
-
-            // ensures character slots are selectable if edit toggle is on, it can happen if adding unowned character from the + button while edit mode is on
-            if (_editModeToggle.isOn)
-            {
-                SetCharacterSlotsSelectable(true);
-            }
         }
 
 
@@ -224,7 +129,6 @@ namespace MenuUi.Scripts.CharacterGallery
             charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, charID);
 
             _characterSlots.Add(charSlot);
-            charSlot.OnCharacterSelected += HandleCharacterSelected;
 
             if (isLocked)
             {
@@ -234,60 +138,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
             return charSlot;
         }
-
-
-        private void SetCharacterSlotsSelectable(bool selectable)
-        {
-            foreach (CharacterSlot charSlot in _characterSlots)
-            {
-                charSlot.SetSelectable(selectable);
-            }
-
-            foreach (SelectedCharacterSlot selectedSlot in _selectedCharacterSlots)
-            {
-                selectedSlot.SetSelectable(selectable);
-            }
-        }
-
-
-        private void HandleCharacterSelected(SlotBase pressedSlot)
-        {
-            GalleryCharacter galleryCharacter = pressedSlot.GetComponentInChildren<GalleryCharacter>();
-
-            SelectedCharacterSlot selectedCharacterSlot = pressedSlot as SelectedCharacterSlot;
-            if (selectedCharacterSlot != null && galleryCharacter != null)
-            {
-                galleryCharacter.ReturnToOriginalSlot();
-                SetTopSlotCharacter(CharacterID.None, selectedCharacterSlot.SlotIndex);
-            }
-            else if (galleryCharacter != null && !pressedSlot.IsLocked) // can only place owned characters to top slots
-            {
-                PlaceCharacterToTopSlot(galleryCharacter);
-            }
-        }
-
-
-        private void PlaceCharacterToTopSlot(GalleryCharacter galleryCharacter)
-        {
-            for (int i = 0; i < _selectedCharacterSlots.Length; i++)
-            {
-                if (_selectedCharacterSlots[i].GetComponentInChildren<GalleryCharacter>() == null)
-                {
-                    galleryCharacter.transform.SetParent(_selectedCharacterSlots[i].transform, false);
-                    galleryCharacter.SetSelectedVisuals();
-                    SetTopSlotCharacter(galleryCharacter.Id, i);
-                    return;
-                }
-            }
-        }
-
-
-        private void SetTopSlotCharacter(CharacterID id, int selectedSlotIdx)
-        {
-            OnTopSlotCharacterSet?.Invoke(id, selectedSlotIdx);
-        }
-
-
+       
         private void RotateFilters()
         {
             int[] enumValues = (int[])Enum.GetValues(typeof(FilterType));
@@ -423,5 +274,7 @@ namespace MenuUi.Scripts.CharacterGallery
                     break;
             }
         }
+
+        
     }
-}*/
+}
