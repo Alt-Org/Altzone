@@ -123,20 +123,42 @@ namespace Altzone.Scripts.Battle.Photon
             return PhotonRealtimeClient.PlayerListOthers.FirstOrDefault(x => GetTeamNumber(x) == teamNumber);
         }
 
-        public int GetFirstFreePlayerPos(int wantedPlayerPos = PlayerPosition1, bool isAllocateByTeams = false)
+        public int GetFirstFreePlayerPos(Player player = null, int wantedPlayerPos = PlayerPosition1, bool isAllocateByTeams = false)
         {
+            if (player == null) player = PhotonRealtimeClient.LocalPlayer;
+
             // Checking which of the room's player positions are free
-            HashSet<int> usedPlayerPositions = new HashSet<int>();
-
-            if (CheckIfPositionIsFree(PlayerPosition1) == false) usedPlayerPositions.Add(PlayerPosition1);
-            if (CheckIfPositionIsFree(PlayerPosition2) == false) usedPlayerPositions.Add(PlayerPosition2);
-
-            if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 4)
+            HashSet<int> usedPlayerPositions = new();
+            do
             {
-                if (CheckIfPositionIsFree(PlayerPosition3) == false) usedPlayerPositions.Add(PlayerPosition3);
-                if (CheckIfPositionIsFree(PlayerPosition4) == false) usedPlayerPositions.Add(PlayerPosition4);
-            }
+                if (usedPlayerPositions.Count > 0) usedPlayerPositions.Clear();
 
+                // Filling hashset with used player positions
+                if (CheckIfPositionIsFree(PlayerPosition1) == false) usedPlayerPositions.Add(PlayerPosition1);
+                if (CheckIfPositionIsFree(PlayerPosition2) == false) usedPlayerPositions.Add(PlayerPosition2);
+
+                if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 4)
+                {
+                    if (CheckIfPositionIsFree(PlayerPosition3) == false) usedPlayerPositions.Add(PlayerPosition3);
+                    if (CheckIfPositionIsFree(PlayerPosition4) == false) usedPlayerPositions.Add(PlayerPosition4);
+                }
+
+                // If for some reason all player positions are reserved
+                if (usedPlayerPositions.Count == PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers)
+                {
+                    // Removing duplicate or missing player slot reservations with this method
+                    if (VerifyPlayerPositions()) continue;
+
+                    // Checking if player is already in a slot
+                    int playerPos = GetPlayerPos(player);
+
+                    if (IsValidPlayerPos(playerPos) && player.UserId == PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(GetPositionKey(playerPos)))
+                    {
+                        return playerPos;
+                    }
+                }
+            } while (usedPlayerPositions.Count == PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers);
+            
             if (usedPlayerPositions.Contains(wantedPlayerPos))
             {
                 int[] playerPositions;
@@ -161,10 +183,22 @@ namespace Altzone.Scripts.Battle.Photon
                 }
             }
 
-            // If for some reason all player positions are reserved
-            if (usedPlayerPositions.Count == PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers)
+            if (!IsValidPlayerPos(wantedPlayerPos))
             {
-                string[] positionValues = new[]
+                wantedPlayerPos = PlayerPositionSpectator;
+            }
+            return wantedPlayerPos;
+        }
+
+        /// <summary>
+        /// Remove any duplicate or missing player positions from room custom properties
+        /// </summary>
+        /// <returns>True if any duplicate or missing players were found and removed</returns>
+        public bool VerifyPlayerPositions()
+        {
+            bool duplicateOrMissingFound = false;
+
+            string[] positionValues = new[]
                 {
                     PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PlayerPositionKey1),
                     PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PlayerPositionKey2),
@@ -172,77 +206,63 @@ namespace Altzone.Scripts.Battle.Photon
                     PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PlayerPositionKey4)
                 };
 
-                HashSet<string> uniquePositionValues = new();
-                for (int i = 0; i < positionValues.Count(); i++)
+            HashSet<string> uniquePositionValues = new();
+            for (int i = 0; i < positionValues.Count(); i++)
+            {
+                // Checking if there is duplicate player
+                if (!uniquePositionValues.Add(positionValues[i]))
                 {
-                    // Checking if there is duplicate player
-                    if (!uniquePositionValues.Add(positionValues[i]))
-                    {
-                        // Getting the player whose position is duplicate
-                        Player player = null;
-                        foreach (KeyValuePair<int, Player> p in PhotonRealtimeClient.CurrentRoom.Players)
-                        {
-                            if (p.Value.UserId == positionValues[i])
-                            {
-                                player = p.Value;
-                                break;
-                            }
-                        }
-
-                        // Getting player's real position with the method, it will check for player's custom properties first
-                        if (player != null)
-                        {
-                            int playerRealPos = GetPlayerPos(player);
-                            int playerDuplicatePos;
-
-                            // If real position is this index, get the first occurence index as the duplicate, else this position as duplicate
-                            if (playerRealPos == i + 1)
-                            {
-                                playerDuplicatePos = Array.IndexOf(positionValues, positionValues[i]);
-                            }
-                            else
-                            {
-                                playerDuplicatePos = i + 1;
-                            }
-
-                            // Clearing duplicate position and setting it as the valid wanted player pos
-                            PhotonRealtimeClient.CurrentRoom.SetCustomProperty(GetPositionKey(playerDuplicatePos), string.Empty);
-                            wantedPlayerPos = playerDuplicatePos;
-                        }
-                    }
-
-                    // Checking if there is missing player
-                    bool playerExists = false;
+                    // Getting the player whose position is duplicate
+                    Player player = null;
                     foreach (KeyValuePair<int, Player> p in PhotonRealtimeClient.CurrentRoom.Players)
                     {
                         if (p.Value.UserId == positionValues[i])
                         {
-                            playerExists = true;
+                            player = p.Value;
+                            break;
                         }
                     }
 
-                    if (!playerExists) // If missing player we clear the custom property and set it as wanted player pos
+                    // Getting player's real position with the method, it will check for player's custom properties first
+                    if (player != null)
                     {
-                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(GetPositionKey(i + 1), string.Empty);
-                        wantedPlayerPos = i + 1;
+                        int playerRealPos = GetPlayerPos(player);
+                        int playerDuplicatePos;
+
+                        // If real position is this index, get the first occurence index as the duplicate, else this position as duplicate
+                        if (playerRealPos == i + 1)
+                        {
+                            playerDuplicatePos = Array.IndexOf(positionValues, positionValues[i]);
+                        }
+                        else
+                        {
+                            playerDuplicatePos = i + 1;
+                        }
+
+                        // Clearing duplicate position
+                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(GetPositionKey(playerDuplicatePos), string.Empty);
+                        duplicateOrMissingFound = true;
                     }
                 }
 
-
-                // Checking if local player is already in a slot
-                int playerPos = GetPlayerPos(PhotonRealtimeClient.LocalPlayer);
-
-                if (IsValidPlayerPos(playerPos))
+                // Checking if there is missing player
+                bool playerExists = false;
+                foreach (KeyValuePair<int, Player> p in PhotonRealtimeClient.CurrentRoom.Players)
                 {
-                    return playerPos;
+                    if (p.Value.UserId == positionValues[i])
+                    {
+                        playerExists = true;
+                    }
+                }
+
+                if (!playerExists) // If missing player we clear the custom property
+                {
+                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(GetPositionKey(i + 1), string.Empty);
+                    duplicateOrMissingFound = true;
                 }
             }
 
-            if (!IsValidPlayerPos(wantedPlayerPos))
-            {
-                wantedPlayerPos = PlayerPositionSpectator;
-            }
-            return wantedPlayerPos;
+            return duplicateOrMissingFound;
         }
 
         /// <summary>
