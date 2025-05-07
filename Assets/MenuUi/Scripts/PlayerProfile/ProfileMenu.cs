@@ -29,6 +29,7 @@ public class ProfileMenu : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _playerNameText;
     [SerializeField] private TMP_InputField _playerNameInputField;
     [SerializeField] private TextMeshProUGUI _playerClanNameText;
+    [SerializeField] private TextMeshProUGUI _rolesErrorMessage;
     [SerializeField] private TextMeshProUGUI _MottoText;
     [SerializeField] private TextMeshProUGUI _TimePlayedText;
     [SerializeField] private TextMeshProUGUI _activityText;
@@ -260,12 +261,14 @@ public class ProfileMenu : MonoBehaviour
                 {
                     if (clan == null)
                     {
+                        _rolesErrorMessage.text = "Klaania ei löydetty.";
                         Debug.LogError("Klaanitietojen haku epäonnistui.");
                         return;
                     }
 
                     _clanData = clan;
                     _playerClanNameText.text = _clanData.Name;
+                    _rolesErrorMessage.text = "Rooleja ei voitu hakea.";
 
                     if (_ClanButtonText != null)
                     {
