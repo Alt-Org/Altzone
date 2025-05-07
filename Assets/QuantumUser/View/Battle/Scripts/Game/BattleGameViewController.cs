@@ -81,15 +81,21 @@ namespace Battle.View.Game
             {
                 _uiController.PlayerInfoHandler.SetShow(true);
 
-                // Setting local player info and data
-                _uiController.PlayerInfoHandler.SetInfo(PlayerType.LocalPlayer, "Min�", new int[3] { 101, 201, 301 });
-                BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.PlayerInfo);
-                if (data != null) _uiController.PlayerInfoHandler.LocalPlayerMultiOrientationElement.SetData(data);
+                // Setting local player info
+                _uiController.PlayerInfoHandler.SetInfo(
+                    PlayerType.LocalPlayer,
+                    "Minä",
+                    new int[3] { 101, 201, 301 },
+                    SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.PlayerInfo)
+                );
 
-                // Setting local teammate info and data
-                _uiController.PlayerInfoHandler.SetInfo(PlayerType.LocalTeammate, "Tiimil�inen", new int[3] { 401, 501, 601 });
-                data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.TeammateInfo);
-                if (data != null) _uiController.PlayerInfoHandler.LocalTeammateMultiOrientationElement.SetData(data);
+                // Setting local teammate info
+                _uiController.PlayerInfoHandler.SetInfo(
+                    PlayerType.LocalTeammate,
+                    "Tiimiläinen",
+                    new int[3] { 401, 501, 601 },
+                    SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.TeammateInfo)
+                );
             }
             */
 
