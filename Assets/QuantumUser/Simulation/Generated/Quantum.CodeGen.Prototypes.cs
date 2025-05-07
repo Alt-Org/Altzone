@@ -191,6 +191,8 @@ namespace Quantum.Prototypes {
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.BattlePlayerHitboxLinkPrototype[] HitboxListCharacter = {};
+    public QBoolean ControlledByAi;
+    public FP MovementCooldown;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerDataQComponent component = default;
         Materialize((Frame)f, ref component, in context);
@@ -242,6 +244,8 @@ namespace Quantum.Prototypes {
             list.Add(tmp);
           }
         }
+        result.ControlledByAi = this.ControlledByAi;
+        result.MovementCooldown = this.MovementCooldown;
     }
   }
   [System.SerializableAttribute()]
@@ -373,6 +377,7 @@ namespace Quantum.Prototypes {
   public unsafe partial class BattleProjectileQComponentPrototype : ComponentPrototype<Quantum.BattleProjectileQComponent> {
     public QBoolean IsLaunched;
     public FP Speed;
+    public FPVector2 Position;
     public FPVector2 Direction;
     public FP Radius;
     public Quantum.QEnum32<BattleEmotionState> Emotion;
@@ -387,6 +392,7 @@ namespace Quantum.Prototypes {
     public void Materialize(Frame frame, ref Quantum.BattleProjectileQComponent result, in PrototypeMaterializationContext context = default) {
         result.IsLaunched = this.IsLaunched;
         result.Speed = this.Speed;
+        result.Position = this.Position;
         result.Direction = this.Direction;
         result.Radius = this.Radius;
         result.Emotion = this.Emotion;

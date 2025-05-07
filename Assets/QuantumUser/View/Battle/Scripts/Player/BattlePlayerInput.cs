@@ -51,7 +51,7 @@ namespace Battle.View.Player
                 MouseClick = mouseClick,
                 MovementPosition = movementPosition,
                 //RotateMotion = twoFingers,
-                RotationDirection = twoFingers ? FP.FromFloat_UNSAFE(ClickStateHandler.GetRotationDirection()) : 0,
+                /*RotationDirection = twoFingers ? FP.FromFloat_UNSAFE(ClickStateHandler.GetRotationDirection()) : 0,*/
             };
 
             callback.SetInput(i, DeterministicInputFlags.Repeatable);

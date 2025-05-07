@@ -157,7 +157,9 @@ namespace Battle.QSimulation.Player
 
                         HitboxListAll       = playerHitboxListAll,
                         HitboxListShield    = playerHitboxListShield,
-                        HitboxListCharacter = playerHitboxListCharacter
+                        HitboxListCharacter = playerHitboxListCharacter,
+                        ControlledByAi      = data.IsBot,
+                        MovementCooldown = FP._0
                     };
 
 #if DEBUG_PLAYER_STAT_OVERRIDE
