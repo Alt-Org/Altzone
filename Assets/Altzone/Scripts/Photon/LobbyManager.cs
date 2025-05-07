@@ -185,6 +185,9 @@ namespace Altzone.Scripts.Lobby
         public delegate void ClanMemberDisconnected();
         public static event ClanMemberDisconnected OnClanMemberDisconnected;
 
+        public delegate void FailedToStartMatchmakingGame();
+        public static event FailedToStartMatchmakingGame OnFailedToStartMatchmakingGame;
+
         #endregion
 
 
@@ -761,28 +764,30 @@ namespace Altzone.Scripts.Lobby
             }
         }
 
-        // TODO: return to custom game/matchmaking room if starting game failed
         private IEnumerator StartTheGameplay(bool isCloseRoom, string blueTeamName, string redTeamName)
         {
             if (!PhotonBattleRoom.IsValidAllSelectedCharacters())
             {
+                StartingGameFailed();
                 throw new UnityException("can't start game, everyone needs to have 3 defence characters selected");
             }
             //Debug.Log($"startTheGameplay {gameWindow}");
             if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient)
             {
+                StartingGameFailed();
                 throw new UnityException("only master client can start the game");
             }
             Player player = PhotonRealtimeClient.LocalPlayer;
             int masterPosition = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
             if (!PhotonLobbyRoom.IsValidPlayerPos(masterPosition))
             {
+                StartingGameFailed();
                 throw new UnityException($"master client does not have valid player position: {masterPosition}");
             }
 
             // Checking player positions before starting gameplay
             Room room = PhotonRealtimeClient.CurrentRoom;
-            List<Player> players = PhotonRealtimeClient.CurrentRoom.Players.Values.ToList();
+            List<Player> players = room.Players.Values.ToList();
             int playerCount = 0;
             foreach (Player roomPlayer in players)
             {
@@ -811,14 +816,14 @@ namespace Altzone.Scripts.Lobby
                 //room.CustomProperties.Add(PlayerCountKey, realPlayerCount);
                 room.SetCustomProperties(new PhotonHashtable
                 {
-                    { BattleID, PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.BattleID)},
+                    { BattleID, room.GetCustomProperty<string>(PhotonBattleRoom.BattleID)},
                     { TeamAlphaNameKey, blueTeamName },
                     { TeamBetaNameKey, redTeamName },
                     { PlayerCountKey, playerCount }
                 });
 
                 // Getting starting emotion from current room custom properties
-                Emotion startingEmotion = (Emotion)PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.StartingEmotionKey, (int)Emotion.Blank);
+                Emotion startingEmotion = (Emotion)room.GetCustomProperty(PhotonBattleRoom.StartingEmotionKey, (int)Emotion.Blank);
 
                 // If starting emotion is blank getting a random starting emotion
                 if (startingEmotion == Emotion.Blank)
@@ -830,7 +835,7 @@ namespace Altzone.Scripts.Lobby
                 _projectileInitialEmotion = startingEmotion;
 
                 // Getting map id from room custom properties
-                string mapId = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.MapKey, string.Empty);
+                string mapId = room.GetCustomProperty(PhotonBattleRoom.MapKey, string.Empty);
 
                 // If there is no map id getting a random map
                 if (mapId == string.Empty)
@@ -853,10 +858,23 @@ namespace Altzone.Scripts.Lobby
             if (!PhotonRealtimeClient.Client.OpRaiseEvent(PhotonRealtimeClient.PhotonEvent.StartGame, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), new RaiseEventArgs{Receivers = ReceiverGroup.All}, SendOptions.SendReliable))
             {
                 Debug.LogError("Unable to start game.");
+                StartingGameFailed();
                 yield break;
             }
             Debug.Log("Starting Game");
             //WindowManager.Get().ShowWindow(gameWindow);
+        }
+
+        private void StartingGameFailed()
+        {
+            if (!PhotonRealtimeClient.CurrentRoom.IsOpen) PhotonRealtimeClient.OpenRoom();
+
+            if (PhotonRealtimeClient.InMatchmakingRoom)
+            {
+                OnFailedToStartMatchmakingGame?.Invoke();
+                GameType gameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                OnStopMatchmakingEvent(new(gameType));
+            }
         }
 
         private IEnumerator StartQuantum(long sendTime)

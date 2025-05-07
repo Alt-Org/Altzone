@@ -829,7 +829,7 @@ public static class PhotonRealtimeClient
         //return true;
     }
 
-    public static void CloseRoom(bool keepVisible = false)
+    public static void OpenRoom()
     {
         if (!Client.InRoom)
         {
@@ -840,6 +840,25 @@ public static class PhotonRealtimeClient
             throw new UnityException($"Player is not Master Client: {LocalPlayer.GetDebugLabel()}");
         }
         var room = CurrentRoom;
+        if (room.IsOpen)
+        {
+            throw new UnityException($"Room is open already: {room.GetDebugLabel()}");
+        }
+        room.IsOpen = true;
+        room.IsVisible = true;
+    }
+
+    public static void CloseRoom(bool keepVisible = false)
+    {
+        if (!Client.InRoom)
+        {
+            throw new UnityException($"Invalid connection state: {NetworkClientState}");
+        }
+        if (!LocalPlayer.IsMasterClient)
+        {
+            throw new UnityException($"Player is not Master Client: {LocalPlayer.GetDebugLabel()}");
+        }
+        Room room = CurrentRoom;
         if (!room.IsOpen)
         {
             throw new UnityException($"Room is closed already: {room.GetDebugLabel()}");
