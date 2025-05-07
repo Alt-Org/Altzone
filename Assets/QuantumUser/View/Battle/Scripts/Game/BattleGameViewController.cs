@@ -70,6 +70,8 @@ namespace Battle.View.Game
                 _uiController.PlayerInfoHandler.SetInfo(PlayerType.LocalTeammate, "Tiimil�inen", new int[3] { 401, 501, 601 });
             }
             */
+
+            BattleCamera.SetView(1.0f, new Vector2(0.5f, 0.5f), false);
         }
 
         private void QEventOnChangeEmotionState(EventBattleChangeEmotionState e)

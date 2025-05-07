@@ -23,9 +23,20 @@ public class AdPosterHandler : AltMonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        ClanData.OnAdDataUpdated += FetchAdData;
+        FetchAdData();
+    }
+
+    private void OnDestroy()
+    {
+        ClanData.OnAdDataUpdated -= FetchAdData;
+    }
+
+    private void FetchAdData()
+    {
         StartCoroutine(GetClanData(data =>
         {
-            if(data != null) SetAdPoster(data.AdData, data.Name, data.ClanHeartPieces);
+            if (data != null) SetAdPoster(data.AdData, data.Name, data.ClanHeartPieces);
         }));
     }
 

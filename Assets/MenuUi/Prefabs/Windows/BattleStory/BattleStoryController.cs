@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Common;
 using Altzone.Scripts.Lobby;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -15,6 +16,11 @@ public class BattleStoryController : MonoBehaviour
 
     [SerializeField]
     private GameObject _emotionBall;
+
+    [SerializeField]
+    private Image _tableSprite;
+    [SerializeField]
+    private RectTransform _pathArea;
 
     [SerializeField]
     private Transform _startPositionLeft;
@@ -35,11 +41,24 @@ public class BattleStoryController : MonoBehaviour
     [SerializeField]
     private Animator _characterAnimator2;
 
+    [Header("Text lines"), SerializeField]
+    private BattleStoryLineHandler _topLineImage;
+    [SerializeField]
+    private BattleStoryLineHandler _bottomLineImage;
+    [SerializeField]
+    private List<ConversationLine> _conversationList;
+
     // Start is called before the first frame update
     void Start()
     {
         _exitButton.onClick.AddListener(ExitStory);
+        StartCoroutine(SetPathArea());
         StartCoroutine(PlayAnimation());
+    }
+    private void OnEnable()
+    {
+        _topLineImage.gameObject.SetActive(false);
+        _bottomLineImage.gameObject.SetActive(false);
     }
 
 
@@ -53,9 +72,11 @@ public class BattleStoryController : MonoBehaviour
         if (_routesRight.Count <= 0) yield break;
         List<Emotion> randomClipOrder1 = new();
         List<int> randomBallOrder1 = new();
+        List<string> lineOrder1 = new();
 
         List<Emotion> randomClipOrder2 = new();
         List<int> randomBallOrder2 = new();
+        List<string> lineOrder2 = new();
         int prevSelectedValue1 = -1;
         int selectedvalue1 = -1;
         int prevSelectedValue2 = -1;
@@ -80,6 +101,13 @@ public class BattleStoryController : MonoBehaviour
             int ballAnimation2 = Random.Range(0, _routesRight.Count);
             randomBallOrder2.Add(ballAnimation2);
         }
+
+        foreach(ConversationLine line in _conversationList)
+        {
+            if (line.Character == 0) lineOrder1.Add(line.Line);
+            else if(line.Character == 1) lineOrder2.Add(line.Line);
+        }
+
         yield return new WaitForSeconds(1f);
         for (int i = 0; i < randomClipOrder1.Count; i++)
         {
@@ -99,11 +127,15 @@ public class BattleStoryController : MonoBehaviour
             else
             {
                 StartCoroutine(_routesLeft[randomBallOrder1[i]].TraverseRoute(ball, done => ballDone = done));
+                _bottomLineImage.SetText(GetEmotionData(randomClipOrder1[i]).LineSprite, lineOrder1[i]);
+                _characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
             }
 
             yield return new WaitUntil(() => ballDone is true);
             Destroy(ball);
-            _characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
+            //_bottomLineImage.gameObject.SetActive(true);
+            //_bottomLineImage.sprite = GetEmotionData(randomClipOrder1[i]).LineSprite;
+            //_characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
             yield return new WaitForSeconds(0.5f);
             //Debug.LogWarning($"Character 2: {randomClipOrder2[i]}:{validatedList.First(x => x.Emotion == randomClipOrder2[i]).Character2Animation.name}, Ball 2: {randomBallOrder2[i]}");
             //_characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
@@ -120,11 +152,15 @@ public class BattleStoryController : MonoBehaviour
             else
             {
                 StartCoroutine(_routesRight[randomBallOrder2[i]].TraverseRoute(ball2, done => ballDone = done));
+                _topLineImage.SetText(GetEmotionData(randomClipOrder2[i]).LineSprite, lineOrder2[i]);
+                _characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
             }
 
             yield return new WaitUntil(() => ballDone is true);
             Destroy(ball2);
-            _characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
+            //_topLineImage.gameObject.SetActive(true);
+            //_topLineImage.sprite = GetEmotionData(randomClipOrder2[i]).LineSprite;
+            //_characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
             yield return new WaitForSeconds(0.5f);
         }
     }
@@ -158,6 +194,28 @@ public class BattleStoryController : MonoBehaviour
         return validatedList;
     }
 
+    private IEnumerator SetPathArea()
+    {
+        yield return new WaitForEndOfFrame();
+        Vector2 spriteSize = _tableSprite.sprite.rect.size;
+        float spriteRatio = spriteSize.y / spriteSize.x;
+
+        Vector2 areaSize = _pathArea.rect.size;
+        float areaRatio = areaSize.y / areaSize.x;
+        if(spriteRatio < areaRatio)
+        {
+            float diff = 1 - spriteRatio/areaRatio;
+            _pathArea.anchorMin = new Vector2(0, diff/2);
+            _pathArea.anchorMax = new Vector2(1, 1- diff/2);
+        }
+        else
+        {
+            float diff = 1 - areaRatio / spriteRatio;
+            _pathArea.anchorMin = new Vector2(diff / 2, 0);
+            _pathArea.anchorMax = new Vector2(1 - diff / 2, 1);
+        }
+    }
+
     private void ExitStory()
     {
         LobbyManager.ExitBattleStory();
@@ -176,11 +234,14 @@ public class EmotionObject
     private AnimationClip _character1Animation;
     [SerializeField]
     private AnimationClip _character2Animation;
+    [SerializeField]
+    private Sprite _lineSprite;
 
     public Emotion Emotion { get => _emotion;}
     public Sprite BallSprite { get => _ballSprite;}
     public AnimationClip Character1Animation { get => _character1Animation;}
     public AnimationClip Character2Animation { get => _character2Animation;}
+    public Sprite LineSprite { get => _lineSprite;}
 }
 
 [Serializable]
@@ -274,4 +335,16 @@ public class RouteSection
     public Transform PathSectionEndPoint { get => _pathSectionEndPoint; }
     public AnimationCurve PathSectionCurve { get => _pathSectionCurve; }
     public float Speed { get => _speed; }
+}
+
+[Serializable]
+public class ConversationLine
+{
+    /// <summary>
+    /// Character conversation line>.
+    /// </summary>
+    [TextArea(1, 3)]
+    public string Line;
+
+    public int Character;
 }

@@ -29,7 +29,10 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public List<PollData> Polls = new();
 
-        public AdStoreObject AdData = new(null,null);
+        public AdStoreObject _adData;
+        public AdStoreObject AdData {
+            get { return _adData != null ? _adData : _adData = new(null, null); }
+            set { _adData = value; CallAdDataUpdate(); } }
 
         public List<ClanMember> Members = new();
         public List<RaidRoom> Rooms = new();
@@ -42,6 +45,9 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public delegate void ClanInfoUpdated();
         public static event ClanInfoUpdated OnClanInfoUpdated;
+
+        public delegate void AdDataUpdated();
+        public static event AdDataUpdated OnAdDataUpdated;
 
         public ClanData(string id, string name, string tag, int gameCoins)
         {
@@ -127,6 +133,11 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public void CallDataUpdate()
         {
             OnClanInfoUpdated?.Invoke();
+        }
+
+        public void CallAdDataUpdate()
+        {
+            OnAdDataUpdated?.Invoke();
         }
 
         public override string ToString()

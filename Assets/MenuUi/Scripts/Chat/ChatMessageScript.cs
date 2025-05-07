@@ -14,15 +14,15 @@ public class ChatMessageScript : MonoBehaviour
 
     [SerializeField] private VerticalLayoutGroup _messageVerticalLayoutGroup;
 
-    public float heightStep = 30f; // Korkeus, jonka verran tausta kasvaa jokaisen lisärivin myötä.
+    public float heightStep = 30f; // Korkeus, jonka verran tausta kasvaa jokaisen lisï¿½rivin myï¿½tï¿½.
 
-    private int _lastLineCount = 0; // Tallentaa viimeksi lasketun rivimäärän.
-    private float _initialHeight; // Alkuperäinen taustan korkeus, joka asetetaan alussa.
+    private int _lastLineCount = 0; // Tallentaa viimeksi lasketun rivimï¿½ï¿½rï¿½n.
+    private float _initialHeight; // Alkuperï¿½inen taustan korkeus, joka asetetaan alussa.
 
 
     private void Start()
     {
-        // Alustetaan alkuperäinen taustan korkeus ja paneelin koko.
+        // Alustetaan alkuperï¿½inen taustan korkeus ja paneelin koko.
         if (textBackground != null && panel != null)
         {
             _initialHeight = textBackground.sizeDelta.y;
@@ -33,10 +33,10 @@ public class ChatMessageScript : MonoBehaviour
 
     public void MessageSetHeight()
     {
-        // Dynaamisesti muuttaa taustan korkeutta ja paneelia tekstin rivimäärän mukaan.
+        // Dynaamisesti muuttaa taustan korkeutta ja paneelia tekstin rivimï¿½ï¿½rï¿½n mukaan.
         if (textBackground != null && messageText != null)
         {
-            int lineCount = messageText.textInfo.lineCount; // Haetaan nykyinen rivimäärä tekstistä.
+            int lineCount = messageText.textInfo.lineCount; // Haetaan nykyinen rivimï¿½ï¿½rï¿½ tekstistï¿½.
 
             if (lineCount != _lastLineCount)
             {
