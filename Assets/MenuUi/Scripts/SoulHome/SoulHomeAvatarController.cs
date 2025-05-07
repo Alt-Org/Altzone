@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -15,6 +16,18 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField] private float _minIdleTimer = 2f;
         [SerializeField] private float _maxIdleTimer = 4f;
         [SerializeField] private float _speed = 5;
+        [SerializeField]
+        private SortingGroup _sortingGroup;
+        [SerializeField]
+        private Animator _animator;
+        [SerializeField]
+        private AnimationClip _idleAnimation;
+        [SerializeField]
+        private AnimationClip _walkAnimation;
+        [SerializeField]
+        private AnimationClip _waveAnimation;
+
+        private bool _performingAnimation = false;
 
         private AvatarStatus _status;
         private bool _idleTimerStarted = false;
@@ -46,8 +59,9 @@ namespace MenuUI.Scripts.SoulHome
             }
             else if(_status == AvatarStatus.Wander)
             {
+                if (_performingAnimation) return;
                 //Debug.Log("Character Wander");
-
+                if (!_animator.GetCurrentAnimatorStateInfo(0).IsName(_walkAnimation.name)) _animator.Play(_walkAnimation.name);
                 MoveAvatar();
                 //transform.SetParent(_points.GetChild(_newPosition.y).GetChild(_newPosition.x), false);
 
@@ -63,13 +77,15 @@ namespace MenuUI.Scripts.SoulHome
             float idleTimer = 0;
             bool firstFrame = true;
             float checkTimer = 0;
+            if (!_animator.GetCurrentAnimatorStateInfo(0).IsName(_idleAnimation.name)) _animator.Play(_idleAnimation.name);
             while (true)
             {
                 if (firstFrame) firstFrame = false;
                 else
                 {
-                    idleTimer += Time.deltaTime;
-                    checkTimer += Time.deltaTime;
+                        yield return new WaitUntil(() => !_performingAnimation);
+                        idleTimer += Time.deltaTime;
+                        checkTimer += Time.deltaTime;
                 }
 
 
@@ -121,7 +137,7 @@ namespace MenuUI.Scripts.SoulHome
             }
             //transform.SetParent(points.GetChild(row).GetChild(column), false);
             FurnitureSlot slot = points.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>();
-            transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = 6 + (slot.row) * 100 + (slot.roomId) * 1000;
+            _sortingGroup.sortingOrder = 6 + (slot.row) * 100;
 
             Vector2 position = slot.transform.position;
 
@@ -214,7 +230,10 @@ namespace MenuUI.Scripts.SoulHome
         {
             Vector2 position = transform.position;
             Vector2 direction = GetDirection(position,_travelPoints[0]);
-            position += direction.normalized * _speed * Time.deltaTime;
+            if(direction.x < 0) transform.rotation = Quaternion.Euler(new(0, 180, 0));
+            else transform.rotation = Quaternion.Euler(Vector3.zero);
+            if (Vector2.Distance(position, position + direction.normalized * _speed * Time.deltaTime) > Vector2.Distance(position, _travelPoints[0])) position = _travelPoints[0];
+            else position += direction.normalized * _speed * Time.deltaTime;
             transform.position = position;
             if(GetDirection(position, _travelPoints[0]).magnitude < 0.01f) _travelPoints.RemoveAt(0);
             if(_travelPoints.Count == 0) _status = AvatarStatus.Idle;
@@ -571,7 +590,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (hit2.collider.gameObject.GetComponent<FurnitureSlot>() != null)
                 {
-                    transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = 6 + (hit2.collider.gameObject.GetComponent<FurnitureSlot>().row) * 100 + (hit2.collider.gameObject.GetComponent<FurnitureSlot>().roomId) * 1000;
+                    _sortingGroup.sortingOrder = 6 + (hit2.collider.gameObject.GetComponent<FurnitureSlot>().row) * 100;
                     return;
                 }
             }
@@ -583,8 +602,19 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (hit.collider.gameObject.GetComponent<FurnitureSlot>() != null)
                 {
-                    transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = 6 + (hit.collider.gameObject.GetComponent<FurnitureSlot>().row+1) * 100 + (hit.collider.gameObject.GetComponent<FurnitureSlot>().roomId) * 1000;
+                    _sortingGroup.sortingOrder = 6 + (hit.collider.gameObject.GetComponent<FurnitureSlot>().row+1) * 100;
                 }
+            }
+        }
+
+        public IEnumerator WaveAnimation()
+        {
+            if (!_performingAnimation)
+            {
+                _animator.Play(_waveAnimation.name);
+                _performingAnimation = true;
+                yield return new WaitUntil(() => !_animator.GetCurrentAnimatorStateInfo(0).IsName(_waveAnimation.name) && !_animator.IsInTransition(0));
+                _performingAnimation = false;
             }
         }
     }

@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-
-namespace Quantum
+﻿namespace Quantum
 {
     public partial class RuntimePlayer
     {
-        public const int CharacterCount = 3;
+        public const int PlayerSlotCount = Constants.BATTLE_PLAYER_SLOT_COUNT;
+        public const int CharacterCount = Constants.BATTLE_PLAYER_CHARACTER_COUNT;
 
-        public int PlayerPosition;
+        public int PlayerSlot;
         public BattleCharacterBase[] Characters = new BattleCharacterBase[CharacterCount];
     }
 }

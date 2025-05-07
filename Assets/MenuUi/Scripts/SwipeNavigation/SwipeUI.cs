@@ -15,7 +15,8 @@ namespace MenuUi.Scripts.SwipeNavigation
     {
         All,
         Vertical,
-        Horizontal
+        Horizontal,
+        None
     }
 
     /// <summary>
@@ -80,15 +81,20 @@ namespace MenuUi.Scripts.SwipeNavigation
             set
             {
                 if (isSwipeMode && gameObject.activeInHierarchy) return;
-                currentPage = value;
-                if (_isInMainMenu) SettingsCarrier.Instance.mainMenuWindowIndex = currentPage;
-                UpdateButtonContent();
-                StartCoroutine(OnSwipeOneStep(CurrentPage));
-                OnCurrentPageChanged?.Invoke();
+                if (currentPage != value)
+                {
+                    currentPage = value;
+                    if (_isInMainMenu) SettingsCarrier.Instance.mainMenuWindowIndex = currentPage;
+                    UpdateButtonContent();
+                    StartCoroutine(OnSwipeOneStep(CurrentPage));
+                    OnCurrentPageChanged?.Invoke();
+                }
             }
         }
 
         public bool IsInMainMenu { get => _isInMainMenu;}
+
+        public float ScrollbarValue { get => scrollBar.value; }
 
         private void Awake()
         {
@@ -106,16 +112,16 @@ namespace MenuUi.Scripts.SwipeNavigation
             if (_isInMainMenu)
             {
                 //CurrentPage = SettingsCarrier.Instance.mainMenuWindowIndex;
-                CurrentPage = 2;
+                currentPage = 2;
             }
             else
             {
-                CurrentPage = 0;
+                currentPage = 0;
             }
 
             scrollRect = GetComponent<ScrollRect>();
             UpdateSwipeAreaValues();
-            StartCoroutine(SetScrollBarValue(CurrentPage, true));
+            StartCoroutine(SetScrollBarValue(currentPage, true));
         }
 
         private void Start()
@@ -206,7 +212,7 @@ namespace MenuUi.Scripts.SwipeNavigation
                 if (!instant) StartCoroutine(OnSwipeOneStep(index));
                 else scrollBar.value = scrollPageValues[index];
             }
-            currentPage = index;
+            CurrentPage = index;
         }
 
         private void UpdateInput()
@@ -247,7 +253,17 @@ namespace MenuUi.Scripts.SwipeNavigation
                 {
                     _swipeAllowed = true;
                 }
-
+                if (_swipeAllowed && IsEnabled)
+                {
+                    float totalSlideWidth = 0;
+                    foreach (var slide in slides)
+                    {
+                        totalSlideWidth += slide.GetComponent<RectTransform>().rect.width;
+                    }
+                    float currentSwipeDistance = _startTouch.x - currentTouch.x;
+                    float currentScrollvalue = Mathf.Clamp(_startScrollvalue + currentSwipeDistance/totalSlideWidth,0,1);
+                    scrollBar.value = currentScrollvalue;
+                }
 
                 if (Mathf.Abs(_startTouch.y - currentTouch.y) > swipeDistance && !_swipeAllowed)
                 {
@@ -339,7 +355,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             float start = scrollBar.value;
             float current = 0;
             float percent = 0;
-
+            Debug.LogWarning("Swipe");
             isSwipeMode = true;
             if (scrollRect)
             {
@@ -427,7 +443,7 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         }
 
-        public void DragWithBlock(PointerEventData eventData, SwipeBlockType blockType)
+        public void OnBeginDrag(PointerEventData eventData, SwipeBlockType blockType = SwipeBlockType.None)
         {
             PointerEventData pointerData = eventData as PointerEventData;
             if (blockType == SwipeBlockType.All)

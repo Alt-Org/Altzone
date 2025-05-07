@@ -12,7 +12,7 @@ namespace Altzone.Scripts.Settings
 
         public string PhotonRegion
         {
-            get => PlayerPrefs.GetString("PhotonRegion", "");
+            get => PlayerPrefs.GetString("PhotonRegion", "eu");
             set => PlayerPrefs.SetString("PhotonRegion", value);
         }
         

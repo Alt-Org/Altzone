@@ -32,8 +32,18 @@ namespace MenuUi.Scripts.Loader
             set
             {
                 _status = value;
-                if (_status == LogInStatus.Finished) _moveToMainButton.interactable = true;
+                if (_status == LogInStatus.Finished)
+                {
+                    _moveToMainButton.interactable = true;
+                    _loadingText.gameObject.SetActive(false);
+                }
+                else if (_status == LogInStatus.MovingToMain)
+                {
+                    _moveToMainButton.interactable = false;
+                    _loadingText.gameObject.SetActive(false);
+                }
                 else _moveToMainButton.interactable = false;
+
                 SetInfoText(_status);
             }
         }

@@ -1,8 +1,8 @@
 using Altzone.Scripts.Model.Poco.Game;
-using MenuUI.Scripts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
@@ -11,7 +11,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     /// </summary>
     public class StatUpdatePopUp : MonoBehaviour
     {
-        [SerializeField] private StatsWindowController _controller;
         [SerializeField] private StatsReference _statsReference;
         [SerializeField] private GameObject _contents;
         [SerializeField] private Image _statIcon;
@@ -21,11 +20,13 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private TMP_Text _eraserCost;
         [SerializeField] private Image _touchBlocker;
 
+        private StatsWindowController _controller;
         private StatType _statType;
 
 
         private void OnEnable()
         {
+            if (_controller == null) _controller = FindObjectOfType<StatsWindowController>();
             ClosePopUp();
             _controller.OnStatUpdated += UpdateStatNumber;
             _controller.OnStatUpdated += UpdateDiamondCost;
@@ -51,14 +52,14 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (_controller.IsCurrentCharacterLocked())
             {
-                SignalBus.OnChangePopupInfoSignal("Et voi muokata lukittua hahmoa.");
+                PopupSignalBus.OnChangePopupInfoSignal("Et voi muokata lukittua hahmoa.");
                 ClosePopUp();
                 return;
             }
 
             if (_controller.GetCurrentCharacterClass() == CharacterClassID.Obedient) // obedient characters can't be modified
             {
-                SignalBus.OnChangePopupInfoSignal("Tottelijoita ei voi muokata.");
+                PopupSignalBus.OnChangePopupInfoSignal("Tottelijoita ei voi muokata.");
                 ClosePopUp();
                 return;
             }

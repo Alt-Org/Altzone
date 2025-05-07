@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
+using System.Linq;
+using UnityEditor;
 
 namespace Altzone.Scripts.ReferenceSheets
 {
@@ -68,6 +70,44 @@ namespace Altzone.Scripts.ReferenceSheets
                 }
             }
             return furnitures;
+        }
+        public bool AddFurniture(FurnitureSetInfo setInfo)
+        {
+            if (Application.isPlaying)
+            {
+                Debug.LogError("Don't try to add furniture while the game is running.");
+                return false;
+            }
+
+            FurnitureSetInfo localSet = _info.FirstOrDefault(x => x.SetName == setInfo.SetName);
+            if (localSet == null)
+            {
+                _info.Add(setInfo);
+                return true;
+            }
+            else
+            {
+                bool added = false;
+                foreach (FurnitureInfoObject furnitureInfo in setInfo.list)
+                {
+                    FurnitureInfoObject localFurniture = localSet.list.FirstOrDefault(x => x.Name == furnitureInfo.Name);
+                    if (localFurniture == null)
+                    {
+                        localSet.list.Add(furnitureInfo);
+                        added = true;
+#if UNITY_EDITOR
+                        AssetDatabase.Refresh();
+                        EditorUtility.SetDirty(this);
+                        AssetDatabase.SaveAssets();
+#endif
+                    }
+                    else
+                    {
+                        Debug.LogError("Furniture already exist.");
+                    }
+                }
+                return added;
+            }
         }
     }
 

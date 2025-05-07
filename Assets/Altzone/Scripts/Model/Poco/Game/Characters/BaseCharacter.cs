@@ -59,6 +59,10 @@ namespace Altzone.Scripts.Model.Poco.Game
         public int Defence { get => _defence;}
         public int DefaultDefence { get => _defaultDefence; }
         public ValueStrength HpStrength { get => _hpStrength; }
+        public ValueStrength SpeedStrength { get => _speedStrength; }
+        public ValueStrength CharacterSizeStrength { get => _characterSizeStrength; }
+        public ValueStrength AttackStrength { get => _attackStrength; }
+        public ValueStrength DefenceStrength { get => _defenceStrength; }
 
         protected BaseCharacter()
         {
@@ -424,7 +428,7 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public static CharacterClassID GetClassID(CharacterID id)
         {
-            CharacterClassID ClassId = (CharacterClassID)((int)id & 0b1111_1111__0000_0000);
+            CharacterClassID ClassId = (CharacterClassID)((((int)id) / 100) * 100);
             return ClassId;
         }
     }

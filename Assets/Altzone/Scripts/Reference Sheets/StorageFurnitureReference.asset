@@ -18,7 +18,7 @@ MonoBehaviour:
     list:
     - Name: Sofa
       Image: {fileID: -1978675626, guid: 7c2470a4a5672df4bb80e5250cf54825, type: 3}
-      PosterImage: {fileID: 0}
+      PosterImage: {fileID: 21300000, guid: 5c84e0586f7c09646b20a02f677a9086, type: 3}
       VisibleName: Sohva
       ArtisticDescription: "Teemana on Taakka. Sen voi tulkita monella tapaa, mutta
         huonekaluista on tarkoitus tulla painava vaikutelma. V\xE4rit mukailevat
@@ -54,7 +54,7 @@ MonoBehaviour:
         Recycling: 
     - Name: Mirror
       Image: {fileID: -161112231, guid: ad3afe4e6fc144447a9680d150e6a742, type: 3}
-      PosterImage: {fileID: 0}
+      PosterImage: {fileID: 21300000, guid: f2935bb9a0efcc84a97b1b9649237eff, type: 3}
       VisibleName: Peili
       ArtisticDescription: "Teemana on Taakka. Sen voi tulkita monella tapaa, mutta
         huonekaluista on tarkoitus tulla painava vaikutelma. V\xE4rit mukailevat
@@ -72,7 +72,7 @@ MonoBehaviour:
         Recycling: 
     - Name: Floorlamp
       Image: {fileID: 109053680, guid: d78e035099366ca4c8d375b0e53d2a42, type: 3}
-      PosterImage: {fileID: 0}
+      PosterImage: {fileID: 21300000, guid: 69e28c0e8765dcc4a8341520aa879c35, type: 3}
       VisibleName: Lattialamppu
       ArtisticDescription: "Teemana on Taakka. Sen voi tulkita monella tapaa, mutta
         huonekaluista on tarkoitus tulla painava vaikutelma. V\xE4rit mukailevat
@@ -90,7 +90,7 @@ MonoBehaviour:
         Recycling: 
     - Name: CoffeeTable
       Image: {fileID: -1372830714, guid: b920dbb0579dea643b33800a975ffc99, type: 3}
-      PosterImage: {fileID: 0}
+      PosterImage: {fileID: 21300000, guid: 39afa94c677560c4dbe0171e3abf1b53, type: 3}
       VisibleName: "KahviP\xF6yt\xE4"
       ArtisticDescription: "Teemana on Taakka. Sen voi tulkita monella tapaa, mutta
         huonekaluista on tarkoitus tulla painava vaikutelma. V\xE4rit mukailevat
@@ -108,7 +108,7 @@ MonoBehaviour:
         Recycling: 
     - Name: SideTable
       Image: {fileID: 399228340, guid: 09f23977174f0dd4896fcfe3edc5555b, type: 3}
-      PosterImage: {fileID: 0}
+      PosterImage: {fileID: 21300000, guid: 4cc423dfc62939a45a0eacb28a702629, type: 3}
       VisibleName: "SivuP\xF6yt\xE4"
       ArtisticDescription: "Teemana on Taakka. Sen voi tulkita monella tapaa, mutta
         huonekaluista on tarkoitus tulla painava vaikutelma. V\xE4rit mukailevat
@@ -126,7 +126,7 @@ MonoBehaviour:
         Recycling: 
     - Name: Closet
       Image: {fileID: 2099301597, guid: 4b7d24540118a534993dcd36ff455c4e, type: 3}
-      PosterImage: {fileID: 0}
+      PosterImage: {fileID: 21300000, guid: 2fa21cf9213828d4fb3af06f3ac8c1ea, type: 3}
       VisibleName: Kaappi
       ArtisticDescription: "Teemana on Taakka. Sen voi tulkita monella tapaa, mutta
         huonekaluista on tarkoitus tulla painava vaikutelma. V\xE4rit mukailevat
@@ -376,12 +376,28 @@ MonoBehaviour:
         Value: 170
         Material: 
         Recycling: 
+    - Name: CeilingLamp
+      Image: {fileID: -627347190, guid: 622f3fc6e612df2448b72d5a929b5de9, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Kattolamppu
+      ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
+      DiagnoseNumber: F52.0
+      BaseFurniture:
+        Name: CeilingLamp_Rakkaus
+        Rarity: 2
+        Size: 6
+        RotatedSize: 6
+        Placement: 3
+        Weight: 2
+        Value: 200
+        Material: 
+        Recycling: 
   - SetName: Neuro
     ArtistName: "Simo Ryh\xE4nen"
     list:
     - Name: Chair
       Image: {fileID: -542428133, guid: e04086fbcd7d07f4fab56452eafc9b8b, type: 3}
-      PosterImage: {fileID: 0}
+      PosterImage: {fileID: 21300000, guid: 3a525ef8014e6d54fa755d1e3e0cd511, type: 3}
       VisibleName: Tuoli
       ArtisticDescription: "Tuoli kuvastaa harhakuvia tai fobiaa. Tuoli hieman muistuttaa
         jonkinlaista \xF6t\xF6kk\xE4\xE4."
@@ -398,7 +414,7 @@ MonoBehaviour:
         Recycling: 
     - Name: Dresser
       Image: {fileID: -989629432, guid: c13a038f10db45540a32ec27e8fd8eb0, type: 3}
-      PosterImage: {fileID: 0}
+      PosterImage: {fileID: 21300000, guid: 7334ae911a843274992c572e916b384c, type: 3}
       VisibleName: Lipasto
       ArtisticDescription: "Lipasto n\xE4ytt\xE4\xE4 pelokkaalta tai ahdistuneelta
         ja pitelee p\xE4\xE4t\xE4\xE4n, ihan kuin k\xE4det hakeutuisivat kipualueelle."
@@ -432,7 +448,7 @@ MonoBehaviour:
         Recycling: 
     - Name: Clock
       Image: {fileID: -191785817, guid: 7eb890d72e3cf3f4da3fd6d0580bb91d, type: 3}
-      PosterImage: {fileID: 0}
+      PosterImage: {fileID: 21300000, guid: 2697d9b2d47bb9d4698039ae0d8f997a, type: 3}
       VisibleName: Kello
       ArtisticDescription: "Kello kuvastaa jakautunutta persoonallisuutta ja kaksisuuntaista
         mielenh\xE4iri\xF6t\xE4."
@@ -452,7 +468,7 @@ MonoBehaviour:
     list:
     - Name: Chair
       Image: {fileID: -1910366402, guid: dec3d4f72adf8894bb90aa4167431d9e, type: 3}
-      PosterImage: {fileID: 0}
+      PosterImage: {fileID: 21300000, guid: a7e54c564c10cea4cb7dbf1a49610d9a, type: 3}
       VisibleName: Tuoli
       ArtisticDescription: "Polarity-huonekalut kuvastavat kaksisuuntaista mielialah\xE4iri\xF6t\xE4."
       DiagnoseNumber: F31
@@ -489,7 +505,7 @@ MonoBehaviour:
       ArtisticDescription: "Polarity-huonekalut kuvastavat kaksisuuntaista mielialah\xE4iri\xF6t\xE4."
       DiagnoseNumber: F31
       BaseFurniture:
-        Name: Bookshelf_Polarity
+        Name: Table_Polarity
         Rarity: 0
         Size: 21
         RotatedSize: 21
@@ -751,5 +767,186 @@ MonoBehaviour:
         Placement: 0
         Weight: 1
         Value: 70
+        Material: 
+        Recycling: 
+  - SetName: Uni
+    ArtistName: Vanelei
+    list:
+    - Name: Sofa
+      Image: {fileID: -395311538, guid: 27a27d546070c1e408175b1f15171428, type: 3}
+      PosterImage: {fileID: 21300000, guid: 759a1e42241a9fd4a803d45888fd9c06, type: 3}
+      VisibleName: Sohva
+      ArtisticDescription: "Unet ovat t\xE4rke\xE4 portti alitajuntaan."
+      DiagnoseNumber: F52.0
+      BaseFurniture:
+        Name: Sofa_Uni
+        Rarity: 0
+        Size: 10
+        RotatedSize: 23
+        Placement: 0
+        Weight: 15
+        Value: 130
+        Material: 
+        Recycling: 
+    - Name: Bed
+      Image: {fileID: -864293954, guid: b27973bcd7dd95e47954ab222c12fbe2, type: 3}
+      PosterImage: {fileID: 21300000, guid: 88fc050c13abd014083f0129f5810a4c, type: 3}
+      VisibleName: "S\xE4nky"
+      ArtisticDescription: "Unet ovat t\xE4rke\xE4 portti alitajuntaan."
+      DiagnoseNumber: F52.0
+      BaseFurniture:
+        Name: Bed_Uni
+        Rarity: 1
+        Size: 27
+        RotatedSize: 17
+        Placement: 0
+        Weight: 30
+        Value: 200
+        Material: 
+        Recycling: 
+    - Name: Closet
+      Image: {fileID: 250947397, guid: 89024992418f5c4499ae70952c6efed7, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Kaappi
+      ArtisticDescription: "Unet ovat t\xE4rke\xE4 portti alitajuntaan."
+      DiagnoseNumber: F52.0
+      BaseFurniture:
+        Name: Closet_Uni
+        Rarity: 2
+        Size: 15
+        RotatedSize: 15
+        Placement: 0
+        Weight: 40
+        Value: 240
+        Material: 
+        Recycling: 
+  - SetName: ColdFuture
+    ArtistName: Ida Vesterinen
+    list:
+    - Name: Hologram
+      Image: {fileID: 719040038, guid: b4831fd18e8e2e948a034f02bbcd3a13, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Hologrammi
+      ArtisticDescription: "Milt\xE4 maailma n\xE4ytt\xE4\xE4, kun teknologia ja
+        ilmastonmuutos kehittyy."
+      DiagnoseNumber: F0
+      BaseFurniture:
+        Name: Hologram_ColdFuture
+        Rarity: 2
+        Size: 1
+        RotatedSize: 5
+        Placement: 0
+        Weight: 0
+        Value: 200
+        Material: 
+        Recycling: 
+    - Name: Sofa
+      Image: {fileID: -1180185098, guid: 0d86948a83d08c94083b1234ee903d16, type: 3}
+      PosterImage: {fileID: 0}
+      VisibleName: Sohva
+      ArtisticDescription: "Milt\xE4 maailma n\xE4ytt\xE4\xE4, kun teknologia ja
+        ilmastonmuutos kehittyy."
+      DiagnoseNumber: F0
+      BaseFurniture:
+        Name: Sofa_ColdFuture
+        Rarity: 0
+        Size: 17
+        RotatedSize: 25
+        Placement: 0
+        Weight: 35
+        Value: 150
+        Material: 
+        Recycling: 
+  - SetName: Kipu
+    ArtistName: Ville Julius
+    list:
+    - Name: Closet
+      Image: {fileID: 2005414215, guid: 8bb44278ea388cb4e85d871ee055263b, type: 3}
+      PosterImage: {fileID: 21300000, guid: bb9a8c0ec135e064cbe1196ba81e3e48, type: 3}
+      VisibleName: Kaappi
+      ArtisticDescription: "Kipu on henkist\xE4 ja fyysist\xE4. Kipu on pysyv\xE4\xE4
+        ja ohimenev\xE4\xE4. Kipu on tuskallista ja nautinnollista. Kipu on osa jokap\xE4iv\xE4ist\xE4
+        el\xE4m\xE4\xE4."
+      DiagnoseNumber: F45
+      BaseFurniture:
+        Name: Closet_Kipu
+        Rarity: 0
+        Size: 16
+        RotatedSize: 23
+        Placement: 0
+        Weight: 50
+        Value: 150
+        Material: 
+        Recycling: 
+    - Name: Sofa
+      Image: {fileID: -1010160331, guid: ea747327d8c0a1841b8299133bdcb93e, type: 3}
+      PosterImage: {fileID: 21300000, guid: 09b35a23552772b469bd847c275729c5, type: 3}
+      VisibleName: Sohva
+      ArtisticDescription: "Kipu on henkist\xE4 ja fyysist\xE4. Kipu on pysyv\xE4\xE4
+        ja ohimenev\xE4\xE4. Kipu on tuskallista ja nautinnollista. Kipu on osa jokap\xE4iv\xE4ist\xE4
+        el\xE4m\xE4\xE4."
+      DiagnoseNumber: F45
+      BaseFurniture:
+        Name: Sofa_Kipu
+        Rarity: 0
+        Size: 18
+        RotatedSize: 26
+        Placement: 0
+        Weight: 80
+        Value: 125
+        Material: 
+        Recycling: 
+    - Name: Chair
+      Image: {fileID: 96773911, guid: 3b68f427ae685a944b8327899a3727f2, type: 3}
+      PosterImage: {fileID: 21300000, guid: 1ca1430b75f5413438dcc388a7e7d056, type: 3}
+      VisibleName: Tuoli
+      ArtisticDescription: "Kipu on henkist\xE4 ja fyysist\xE4. Kipu on pysyv\xE4\xE4
+        ja ohimenev\xE4\xE4. Kipu on tuskallista ja nautinnollista. Kipu on osa jokap\xE4iv\xE4ist\xE4
+        el\xE4m\xE4\xE4."
+      DiagnoseNumber: F45
+      BaseFurniture:
+        Name: Chair_Kipu
+        Rarity: 0
+        Size: 6
+        RotatedSize: 6
+        Placement: 0
+        Weight: 15
+        Value: 65
+        Material: 
+        Recycling: 
+    - Name: Table
+      Image: {fileID: 459369904, guid: e2dc0b56be754c8468fb61653e8be6b6, type: 3}
+      PosterImage: {fileID: 21300000, guid: fc5d8c27472607744a3a139e0fded250, type: 3}
+      VisibleName: "P\xF6yt\xE4"
+      ArtisticDescription: "Kipu on henkist\xE4 ja fyysist\xE4. Kipu on pysyv\xE4\xE4
+        ja ohimenev\xE4\xE4. Kipu on tuskallista ja nautinnollista. Kipu on osa jokap\xE4iv\xE4ist\xE4
+        el\xE4m\xE4\xE4."
+      DiagnoseNumber: F45
+      BaseFurniture:
+        Name: Table_Kipu
+        Rarity: 0
+        Size: 7
+        RotatedSize: 14
+        Placement: 0
+        Weight: 28
+        Value: 50
+        Material: 
+        Recycling: 
+    - Name: Plant
+      Image: {fileID: 21300000, guid: ce8ccd95426cdc54b926069b66b83da5, type: 3}
+      PosterImage: {fileID: 21300000, guid: 96301b22b64b228408e330654d8200c9, type: 3}
+      VisibleName: Piikkikasvi
+      ArtisticDescription: "Kipu on henkist\xE4 ja fyysist\xE4. Kipu on pysyv\xE4\xE4
+        ja ohimenev\xE4\xE4. Kipu on tuskallista ja nautinnollista. Kipu on osa jokap\xE4iv\xE4ist\xE4
+        el\xE4m\xE4\xE4."
+      DiagnoseNumber: F45
+      BaseFurniture:
+        Name: Plant_Kipu
+        Rarity: 0
+        Size: 6
+        RotatedSize: 6
+        Placement: 0
+        Weight: 1.5
+        Value: 25
         Material: 
         Recycling: 

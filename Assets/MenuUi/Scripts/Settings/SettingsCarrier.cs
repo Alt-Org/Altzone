@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
-using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.BattleUiShared;
 
 public class SettingsCarrier : MonoBehaviour // Script for carrying settings data between scenes
 {
@@ -24,10 +24,28 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         Large
     }
 
+    public enum BattleUiElementType
+    {
+        Timer,
+        PlayerInfo,
+        TeammateInfo,
+        Diamonds,
+        GiveUpButton,
+    }
+
     // Events
     public event Action OnTextSizeChange;
     public event Action OnButtonLabelVisibilityChange;
     public event Action<CharacterID> OnCharacterGalleryCharacterStatWindowToShowChange;
+
+    // Constants
+    public const string BattleArenaScaleKey = "BattleUiArenaScale";
+    public const string BattleArenaPosXKey = "BattleUiPosX";
+    public const string BattleArenaPosYKey = "BattleUiPosY";
+
+    public const int BattleArenaScaleDefault = 100;
+    public const int BattleArenaPosXDefault = 50;
+    public const int BattleArenaPosYDefault = 50;
 
     // Settings variables
     public int mainMenuWindowIndex;
@@ -75,6 +93,42 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         }
     }
 
+    private int _battleArenaScale;
+    public int BattleArenaScale
+    {
+        get => _battleArenaScale;
+        set
+        {
+            if (_battleArenaScale == value) return;
+            _battleArenaScale = value;
+            PlayerPrefs.SetInt(BattleArenaScaleKey, value);
+        }
+    }
+
+    private int _battleArenaPosX;
+    public int BattleArenaPosX
+    {
+        get => _battleArenaPosX;
+        set
+        {
+            if (_battleArenaPosX == value) return;
+            _battleArenaPosX = value;
+            PlayerPrefs.SetInt(BattleArenaPosXKey, value);
+        }
+    }
+
+    private int _battleArenaPosY;
+    public int BattleArenaPosY
+    {
+        get => _battleArenaPosY;
+        set
+        {
+            if (_battleArenaPosY == value) return;
+            _battleArenaPosY = value;
+            PlayerPrefs.SetInt(BattleArenaPosYKey, value);
+        }
+    }
+
     // Functions
     private void Awake()
     {
@@ -96,6 +150,10 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
         _textSize = (TextSize)PlayerPrefs.GetInt("TextSize", 1);
         _showButtonLabels = (PlayerPrefs.GetInt("showButtonLabels", 1) == 1);
+
+        _battleArenaScale = PlayerPrefs.GetInt(BattleArenaScaleKey, BattleArenaScaleDefault);
+        _battleArenaPosX = PlayerPrefs.GetInt(BattleArenaPosXKey, BattleArenaPosXDefault);
+        _battleArenaPosY = PlayerPrefs.GetInt(BattleArenaPosYKey, BattleArenaPosYDefault);
     }
 
     // SentVolume combines masterVolume and another volume chosen by the sent type
@@ -117,5 +175,18 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         _textSize = size;
         PlayerPrefs.SetInt("TextSize", (int)size);
         OnTextSizeChange?.Invoke();
+    }
+
+    public BattleUiMovableElementData GetBattleUiMovableElementData(BattleUiElementType type)
+    {
+        string json = PlayerPrefs.GetString($"BattleUi{type}", string.Empty);
+        if (string.IsNullOrEmpty(json)) return null;
+        return JsonUtility.FromJson<BattleUiMovableElementData>(json);
+    }
+
+    public void SetBattleUiMovableElementData(BattleUiElementType type, BattleUiMovableElementData data)
+    {
+        string json = JsonUtility.ToJson(data);
+        PlayerPrefs.SetString($"BattleUi{type}", json);
     }
 }

@@ -1,0 +1,23 @@
+var searchData=
+[
+  ['radius_0',['Radius',['../struct_quantum_1_1_projectile.html#a43aa0829883e810bb3261a082f3c4373',1,'Quantum.Projectile.Radius'],['../class_quantum_1_1_prototypes_1_1_projectile_prototype.html#a9a4f8dbdc5e5449e1e87e3c2b6bad9b6',1,'Quantum.Prototypes.ProjectilePrototype.Radius']]],
+  ['readytostart_1',['ReadyToStart',['../namespace_quantum.html#aac5eaf809e69afd5f3a6a8ef606b74eeabbca3d3cec09f823c699d1e1083207cc',1,'Quantum']]],
+  ['reflect_2',['Reflect',['../namespace_quantum.html#a3cf181ce7fd7d1b545a501e359d1e528a74de3e45e4491e956e8dc18d841d9b00',1,'Quantum']]],
+  ['registersimulationtypesgen_3',['RegisterSimulationTypesGen',['../class_quantum_1_1_statics.html#a8eb69e2c80a07a0f26d25e9c9650f99d',1,'Quantum::Statics']]],
+  ['resetphysicscodegen_4',['ResetPhysicsCodeGen',['../class_quantum_1_1_frame.html#af12246f25ab1246f3ee30ca7a5de1041',1,'Quantum::Frame']]],
+  ['resizefontsizes_5',['ResizeFontSizes',['../class_quantum_user_1_1_scripts_1_1_u_i_1_1_views_1_1_game_ui_debug_stats_overlay.html#a2e315d16da5188284a440359a047f464',1,'QuantumUser::Scripts::UI::Views::GameUiDebugStatsOverlay']]],
+  ['rngsession_6',['RngSession',['../struct_quantum_1_1__globals__.html#afa2a6c5fb7de1a493f9a3d2e4b60afbc',1,'Quantum::_globals_']]],
+  ['rotate_7',['Rotate',['../class_quantum_1_1_player_movement_system.html#ac6621a68b9c706262f5b2d6fb4357f42',1,'Quantum::PlayerMovementSystem']]],
+  ['rotate180_8',['Rotate180',['../class_quantum_user_1_1_scripts_1_1_battle_camera.html#a2b6539a9efc74ca27e9f509a57005200',1,'QuantumUser::Scripts::BattleCamera']]],
+  ['rotatemotion_9',['RotateMotion',['../struct_quantum_1_1_input.html#a7b518cfab13aea9bb0e5c86b2c3cee0a',1,'Quantum.Input.RotateMotion'],['../class_quantum_1_1_prototypes_1_1_input_prototype.html#ab5cfc9695eea9154af8edb1380cec454',1,'Quantum.Prototypes.InputPrototype.RotateMotion'],['../namespace_quantum.html#aa520808502001060d4d013db491af53cae851501432cb9981ca34f68fa262eb16',1,'Quantum.RotateMotion']]],
+  ['rotatenohitboxupdate_10',['RotateNoHitboxUpdate',['../class_quantum_1_1_player_movement_system.html#aa9c2fdb5187bfbfd2599556ce5bc92f4',1,'Quantum::PlayerMovementSystem']]],
+  ['rotationbase_11',['RotationBase',['../struct_quantum_1_1_player_data.html#a96d7b676176f6b09659ca1263a3ccf35',1,'Quantum.PlayerData.RotationBase'],['../class_quantum_1_1_prototypes_1_1_player_data_prototype.html#a6b133d69b3989bc21ab6299edd49e5f3',1,'Quantum.Prototypes.PlayerDataPrototype.RotationBase']]],
+  ['rotationdirection_12',['RotationDirection',['../struct_quantum_1_1_input.html#a8488940f1e45776b973a573291fe3c8a',1,'Quantum.Input.RotationDirection'],['../class_quantum_1_1_prototypes_1_1_input_prototype.html#ae93b07b13447c2e2779e64ad76b63f6d',1,'Quantum.Prototypes.InputPrototype.RotationDirection']]],
+  ['rotationoffset_13',['RotationOffset',['../struct_quantum_1_1_player_data.html#aa6b85b9973ae5f48d42201f7fd4cc287',1,'Quantum.PlayerData.RotationOffset'],['../class_quantum_1_1_prototypes_1_1_player_data_prototype.html#aea18fc6b30feca0ef73625c606f7b855',1,'Quantum.Prototypes.PlayerDataPrototype.RotationOffset']]],
+  ['row_14',['Row',['../struct_quantum_1_1_grid_position.html#a052a94871dcb777becf7f74c4b9d3bbc',1,'Quantum.GridPosition.Row'],['../class_quantum_1_1_prototypes_1_1_grid_position_prototype.html#ac2d9a5f897d8a84038187e56c9e7a4aa',1,'Quantum.Prototypes.GridPositionPrototype.Row']]],
+  ['rows_15',['Rows',['../class_quantum_1_1_grid_manager.html#a18fd8887b5482c5a43856b7c0e061403',1,'Quantum::GridManager']]],
+  ['runtimeconfig_16',['RuntimeConfig',['../class_quantum_1_1_runtime_config.html',1,'Quantum']]],
+  ['runtimeconfig_2euser_2ecs_17',['RuntimeConfig.User.cs',['../_runtime_config_8_user_8cs.html',1,'']]],
+  ['runtimeplayer_18',['RuntimePlayer',['../class_quantum_1_1_runtime_player.html',1,'Quantum']]],
+  ['runtimeplayer_2euser_2ecs_19',['RuntimePlayer.User.cs',['../_runtime_player_8_user_8cs.html',1,'']]]
+];

@@ -1,0 +1,20 @@
+// Team positions in world coordinates (game arena when camera isn't rotated)
+//  Beta team number 2
+//  - Player slots 3 and 4
+// | ======= |
+// |  4 | 3  |      Team number 0
+// | ======= |      - Guest number is 0
+// |  1 | 2  |      - Spectator number is 10
+// | ======= |
+//  Alpha team number 1
+//  - Player slots 1 and 2
+
+enum BattlePlayerSlot
+{
+    Guest     =  0,
+    Slot1     =  1,
+    Slot2     =  2,
+    Slot3     =  3,
+    Slot4     =  4,
+    Spectator = 10
+}

@@ -137,7 +137,7 @@ namespace MenuUI.Scripts.SoulHome
             SetScrollSpeed();
             //Debug.Log(cameraWidth+" : "+ _mainScreen.transform.GetComponent<RectTransform>().rect.width);
             //Debug.Log(cameraMove);
-            if (!CheckInteractableStatus()) return;
+            if (!_soulHomeController.CheckInteractableStatus()) return;
 
             if (ClickStateHandler.GetClickType(ClickInputDevice.Touch) is ClickType.Click && (ClickStateHandler.GetClickState() is ClickState.Start || prevp == Vector2.zero)) prevp = ClickStateHandler.GetClickPosition(ClickInputDevice.Touch);
             if (ClickStateHandler.GetClickType() is ClickType.Click && cameraMove)
@@ -360,6 +360,11 @@ namespace MenuUI.Scripts.SoulHome
                     {
                         hitPoint = hit2.point;
                         continue;
+                    }
+
+                    if (hit2.collider.gameObject.CompareTag("SoulHomeAvatar"))
+                    {
+                        StartCoroutine(hit2.collider.gameObject.GetComponent<SoulHomeAvatarController>().WaveAnimation());
                     }
 
                     if (hit2.collider.gameObject.CompareTag("Furniture"))
@@ -617,7 +622,6 @@ namespace MenuUI.Scripts.SoulHome
         {
             Vector2 checkPoint;
             Vector2Int size = _selectedFurniture.GetComponent<FurnitureHandling>().GetFurnitureSize();
-            bool isFurniturePlaceHolder = _selectedFurniture.GetComponent<FurnitureHandling>().IsPlaceHolder;
             if(hitPoint.Equals(Vector2.negativeInfinity)) hitPoint = _selectedFurniture.transform.position + new Vector3(0, 0.001f);
 
             Ray ray = new(transform.position, (Vector3)hitPoint - transform.position);
@@ -634,13 +638,11 @@ namespace MenuUI.Scripts.SoulHome
             }
 
 
-            if (!isFurniturePlaceHolder)
-                if(!hitLeftWall)
-                    checkPoint = hitPoint + new Vector2((slotWidth / 2) + ((slotWidth * size.x)/2)*-1, 0);
-                else
-                    checkPoint = hitPoint + new Vector2((slotWidth / 2) * -1 + ((slotWidth * size.x) / 2), 0);
+
+            if(!hitLeftWall)
+                checkPoint = hitPoint + new Vector2((slotWidth / 2) + ((slotWidth * size.x)/2)*-1, 0);
             else
-                checkPoint = hitPoint + new Vector2((slotWidth / 2) * -1 + slotWidth / (2 * size.x), 0);
+                checkPoint = hitPoint + new Vector2((slotWidth / 2) * -1 + ((slotWidth * size.x) / 2), 0);
 
             Ray ray2 = new(transform.position, (Vector3)checkPoint - transform.position);
             RaycastHit2D[] hitArray;
@@ -928,14 +930,6 @@ namespace MenuUI.Scripts.SoulHome
             //Debug.Log("CurrentX:"+currentX+", CameraMinX:"+ cameraMinX + ", OffsetX:" + offsetX + ", CameraMaxX:" + cameraMaxX +", OffsetX:" + offsetX);
             transform.position = new(x, y, transform.position.z);
 
-        }
-
-        private bool CheckInteractableStatus()
-        {
-            if (_soulHomeController.ExitPending) return false;
-            if (_soulHomeController.ConfirmPopupOpen) return false;
-
-            return true;
         }
 
         public void SetCameraBounds()

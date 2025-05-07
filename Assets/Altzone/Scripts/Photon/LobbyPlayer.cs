@@ -160,7 +160,8 @@ namespace Altzone.Scripts.Lobby.Wrappers
         /// </summary>
         public override bool Equals(object p)
         {
-            return _player.Equals(p);
+            LobbyPlayer pp = p as LobbyPlayer;
+            return (pp != null && this.GetHashCode() == pp.GetHashCode());
         }
 
         /// <summary>

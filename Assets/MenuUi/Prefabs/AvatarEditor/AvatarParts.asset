@@ -1,0 +1,454 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c24d39d96c494884d922be2b249c6975, type: 3}
+  m_Name: AvatarParts
+  m_EditorClassIdentifier: 
+  _head: {fileID: 21300000, guid: 1d4fc0232dad0b7469f0c97a352bb3e7, type: 3}
+  _info:
+  - SetName: Hair
+    Id: 10
+    AvatarCategories:
+    - Name: Desentisizer
+      Id: 1
+      Parts:
+      - Name: Avatar101Hair1
+        Id: 1010101
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: ef6f832bdbc9e324a84ffee8bad32533, type: 3}
+        IconImage: {fileID: 21300000, guid: ef6f832bdbc9e324a84ffee8bad32533, type: 3}
+      - Name: Avatar101Hair2
+        Id: 1010102
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: c4c59ba02fb490c4b905a657abfe5bcb, type: 3}
+        IconImage: {fileID: 21300000, guid: c4c59ba02fb490c4b905a657abfe5bcb, type: 3}
+    - Name: Trickster
+      Id: 2
+      Parts: []
+    - Name: Obedient
+      Id: 3
+      Parts:
+      - Name: Avatar301Hair
+        Id: 1030101
+        VisibleName: 
+        AvatarImage: {fileID: 2018717533, guid: fd8ba004fcf667d46b109d1717cfa6c6,
+          type: 3}
+        IconImage: {fileID: -1490592614, guid: fd8ba004fcf667d46b109d1717cfa6c6, type: 3}
+    - Name: Projector
+      Id: 4
+      Parts:
+      - Name: Avatar401Hair
+        Id: 1040101
+        VisibleName: 
+        AvatarImage: {fileID: -1473015319, guid: 83834478f6d6be44d9e634b24f047175,
+          type: 3}
+        IconImage: {fileID: -16101452, guid: 83834478f6d6be44d9e634b24f047175, type: 3}
+      - Name: Avatar401Hair1
+        Id: 1040102
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: b3492fef78441e74393f315f497fe8d6, type: 3}
+        IconImage: {fileID: 21300000, guid: b3492fef78441e74393f315f497fe8d6, type: 3}
+      - Name: Avatar401Hair2
+        Id: 1040103
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: eab36d592964d1f45aa9d8b543489510, type: 3}
+        IconImage: {fileID: 21300000, guid: eab36d592964d1f45aa9d8b543489510, type: 3}
+    - Name: Retroflector
+      Id: 5
+      Parts:
+      - Name: Avatar501Hair
+        Id: 1050101
+        VisibleName: 
+        AvatarImage: {fileID: -1807108265, guid: 54ac73de859e4374db347d55dbb1b304,
+          type: 3}
+        IconImage: {fileID: 1064981456, guid: 54ac73de859e4374db347d55dbb1b304, type: 3}
+    - Name: Confluent
+      Id: 6
+      Parts:
+      - Name: Avatar601-1Hair
+        Id: 1060101
+        VisibleName: 
+        AvatarImage: {fileID: -1725010981, guid: eb717d27d62edaf4da18a970c67e4856,
+          type: 3}
+        IconImage: {fileID: 733761766, guid: eb717d27d62edaf4da18a970c67e4856, type: 3}
+      - Name: Avatar601-2Hair
+        Id: 1060102
+        VisibleName: 
+        AvatarImage: {fileID: -2043455551, guid: b841929f2a12f78418d324b6ce593c75,
+          type: 3}
+        IconImage: {fileID: 1371503085, guid: b841929f2a12f78418d324b6ce593c75, type: 3}
+      - Name: Avatar601Hair
+        Id: 1060103
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: 7da5df9fa89cc6a438347ffcdbddda60, type: 3}
+        IconImage: {fileID: 21300000, guid: 7da5df9fa89cc6a438347ffcdbddda60, type: 3}
+      - Name: Avatar602Hair
+        Id: 1060104
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: 1e28f29f2ac5f4a4dba090f881d20925, type: 3}
+        IconImage: {fileID: 21300000, guid: 1e28f29f2ac5f4a4dba090f881d20925, type: 3}
+      - Name: Avatar603Hair
+        Id: 1060201
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: 0eab622eec444ce4ca52c6a4e20f62e8, type: 3}
+        IconImage: {fileID: 21300000, guid: 0eab622eec444ce4ca52c6a4e20f62e8, type: 3}
+    - Name: Intellectualizer
+      Id: 7
+      Parts:
+      - Name: Avatar701Hair
+        Id: 1070101
+        VisibleName: 
+        AvatarImage: {fileID: 863161390, guid: 46f1d4648671f7d44885d653991fdc5a, type: 3}
+        IconImage: {fileID: -536489129, guid: 46f1d4648671f7d44885d653991fdc5a, type: 3}
+  - SetName: Eyes
+    Id: 21
+    AvatarCategories:
+    - Name: Desentisizer
+      Id: 1
+      Parts:
+      - Name: Avatar101Eyes1
+        Id: 2110101
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: d77606713f565864581b34926d47eada, type: 3}
+        IconImage: {fileID: 21300000, guid: d77606713f565864581b34926d47eada, type: 3}
+      - Name: Avatar101Eyes2
+        Id: 2110102
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: 17f9d68e5c5fd294a8ab95b98ef4a8e2, type: 3}
+        IconImage: {fileID: 21300000, guid: 17f9d68e5c5fd294a8ab95b98ef4a8e2, type: 3}
+    - Name: Trickster
+      Id: 2
+      Parts: []
+    - Name: Obedient
+      Id: 3
+      Parts:
+      - Name: Avatar301Eyes
+        Id: 2130101
+        VisibleName: 
+        AvatarImage: {fileID: -1447417178, guid: 2596350cfaab3a44ea5bbcc6d88e53e0,
+          type: 3}
+        IconImage: {fileID: 1706704398, guid: 2596350cfaab3a44ea5bbcc6d88e53e0, type: 3}
+    - Name: Projector
+      Id: 4
+      Parts:
+      - Name: Avatar401Eyes
+        Id: 2140101
+        VisibleName: 
+        AvatarImage: {fileID: -2077553971, guid: c24563afc89dc904ba488ceecf0e93c8,
+          type: 3}
+        IconImage: {fileID: -1323754224, guid: c24563afc89dc904ba488ceecf0e93c8, type: 3}
+    - Name: Retroflector
+      Id: 5
+      Parts:
+      - Name: Avatar501Eyes
+        Id: 2150101
+        VisibleName: 
+        AvatarImage: {fileID: -1283087708, guid: d11919efe7a69314e806eb2a40733f22,
+          type: 3}
+        IconImage: {fileID: -1847228272, guid: d11919efe7a69314e806eb2a40733f22, type: 3}
+    - Name: Confluent
+      Id: 6
+      Parts:
+      - Name: Avatar601-1Eyes
+        Id: 2160101
+        VisibleName: 
+        AvatarImage: {fileID: 276900323, guid: 8924ce594a5ff2f4ba4004580b59f9e4, type: 3}
+        IconImage: {fileID: -102407655, guid: 8924ce594a5ff2f4ba4004580b59f9e4, type: 3}
+      - Name: Avatar601-2Eyes
+        Id: 2160102
+        VisibleName: 
+        AvatarImage: {fileID: -247635600, guid: b8915a22e9caefb4fb38a885f045b40f,
+          type: 3}
+        IconImage: {fileID: -1491075339, guid: b8915a22e9caefb4fb38a885f045b40f, type: 3}
+      - Name: Avatar601Eyes
+        Id: 2160103
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: 5f61a658a700ef144bdb1d38f1b510f1, type: 3}
+        IconImage: {fileID: 21300000, guid: 5f61a658a700ef144bdb1d38f1b510f1, type: 3}
+      - Name: Avatar602Eyes
+        Id: 2160104
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: 400a3b983f1823f4980140792b648189, type: 3}
+        IconImage: {fileID: 21300000, guid: 400a3b983f1823f4980140792b648189, type: 3}
+      - Name: Avatar603Eyes
+        Id: 2160201
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: a90318dc78b288e43a2ea7628f6034cb, type: 3}
+        IconImage: {fileID: 21300000, guid: a90318dc78b288e43a2ea7628f6034cb, type: 3}
+    - Name: Intellectualizer
+      Id: 7
+      Parts:
+      - Name: Avatar701Eyes
+        Id: 2170101
+        VisibleName: 
+        AvatarImage: {fileID: -65895240, guid: d79139055f8ec134ab21cb4652afb88f, type: 3}
+        IconImage: {fileID: -1592021546, guid: d79139055f8ec134ab21cb4652afb88f, type: 3}
+  - SetName: Nose
+    Id: 22
+    AvatarCategories:
+    - Name: Desentisizer
+      Id: 1
+      Parts:
+      - Name: Avatar101Nose
+        Id: 2210101
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: cb4d860aca39df84ea76e9c9267168a6, type: 3}
+        IconImage: {fileID: 21300000, guid: cb4d860aca39df84ea76e9c9267168a6, type: 3}
+    - Name: Trickster
+      Id: 2
+      Parts:
+      - Name: Avatar203Nose
+        Id: 2220101
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: 6827cbd5b871f824cbc7ea674e7b570d, type: 3}
+        IconImage: {fileID: 21300000, guid: 6827cbd5b871f824cbc7ea674e7b570d, type: 3}
+    - Name: Obedient
+      Id: 3
+      Parts:
+      - Name: Avatar301Nose
+        Id: 2230101
+        VisibleName: 
+        AvatarImage: {fileID: -406953806, guid: 92435f9a7f3ff0043b1efac4e67527ff,
+          type: 3}
+        IconImage: {fileID: 614660070, guid: 92435f9a7f3ff0043b1efac4e67527ff, type: 3}
+    - Name: Projector
+      Id: 4
+      Parts:
+      - Name: Avatar401Nose
+        Id: 2240101
+        VisibleName: 
+        AvatarImage: {fileID: 1073230330, guid: 5d81820abd0b1cb46b088b027920b8e3,
+          type: 3}
+        IconImage: {fileID: -993965572, guid: 5d81820abd0b1cb46b088b027920b8e3, type: 3}
+    - Name: Retroflector
+      Id: 5
+      Parts:
+      - Name: Avatar501Nose
+        Id: 2250101
+        VisibleName: 
+        AvatarImage: {fileID: -1156824149, guid: 98fcfb4d4905c054db75384f0517c102,
+          type: 3}
+        IconImage: {fileID: -486337350, guid: 98fcfb4d4905c054db75384f0517c102, type: 3}
+    - Name: Confluent
+      Id: 6
+      Parts:
+      - Name: Avatar601Nose
+        Id: 2260101
+        VisibleName: 
+        AvatarImage: {fileID: -1395288451, guid: 63ddbbcae2ca78f41b38b3a1860dd2e9,
+          type: 3}
+        IconImage: {fileID: -2000453404, guid: 63ddbbcae2ca78f41b38b3a1860dd2e9, type: 3}
+      - Name: Avatar603Nose
+        Id: 2260201
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: b95e5f519a687864388bd3b453c78ab0, type: 3}
+        IconImage: {fileID: 21300000, guid: b95e5f519a687864388bd3b453c78ab0, type: 3}
+    - Name: Intellectualizer
+      Id: 7
+      Parts: []
+  - SetName: Mouth
+    Id: 23
+    AvatarCategories:
+    - Name: Desentisizer
+      Id: 1
+      Parts:
+      - Name: Avatar101Mouth1
+        Id: 2310101
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: 3a39ee8a0f57ca849b3abdb49a4b25b4, type: 3}
+        IconImage: {fileID: 21300000, guid: 3a39ee8a0f57ca849b3abdb49a4b25b4, type: 3}
+      - Name: Avatar101Mouth2
+        Id: 2310102
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: f7505903e8b6e044faab5fe26191ee89, type: 3}
+        IconImage: {fileID: 21300000, guid: f7505903e8b6e044faab5fe26191ee89, type: 3}
+      - Name: Avatar101Mouth3
+        Id: 2310103
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: c54ca3c79bcf6884a80c9003ffd1e7e7, type: 3}
+        IconImage: {fileID: 21300000, guid: c54ca3c79bcf6884a80c9003ffd1e7e7, type: 3}
+    - Name: Trickster
+      Id: 2
+      Parts:
+      - Name: Avatar203Mouth
+        Id: 2320101
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: 36871e3517548d24589a25546a5a553e, type: 3}
+        IconImage: {fileID: 21300000, guid: 36871e3517548d24589a25546a5a553e, type: 3}
+    - Name: Obedient
+      Id: 3
+      Parts:
+      - Name: Avatar301Mouth
+        Id: 2330101
+        VisibleName: 
+        AvatarImage: {fileID: -662965352, guid: d0ee66730ec0b074f9a0d11784ccd663,
+          type: 3}
+        IconImage: {fileID: 564325136, guid: d0ee66730ec0b074f9a0d11784ccd663, type: 3}
+    - Name: Projector
+      Id: 4
+      Parts:
+      - Name: Avatar401Mouth
+        Id: 2340101
+        VisibleName: 
+        AvatarImage: {fileID: -1791973942, guid: 540ddf9d5960692409e3d8d202f7d19b,
+          type: 3}
+        IconImage: {fileID: -1782993440, guid: 540ddf9d5960692409e3d8d202f7d19b, type: 3}
+    - Name: Retroflector
+      Id: 5
+      Parts:
+      - Name: Avatar501Mouth
+        Id: 2350101
+        VisibleName: 
+        AvatarImage: {fileID: 1927878131, guid: bdf78138e8e36454fa7710a26833ef09,
+          type: 3}
+        IconImage: {fileID: 606431217, guid: bdf78138e8e36454fa7710a26833ef09, type: 3}
+    - Name: Confluent
+      Id: 6
+      Parts:
+      - Name: Avatar601Mouth
+        Id: 2360101
+        VisibleName: 
+        AvatarImage: {fileID: -1684243270, guid: 1a8436d123f124941986b25b55ad91e5,
+          type: 3}
+        IconImage: {fileID: 944608852, guid: 1a8436d123f124941986b25b55ad91e5, type: 3}
+      - Name: Avatar603Mouth
+        Id: 2360201
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: 0e56e73a004334b4a93c7fbd56caf2fa, type: 3}
+        IconImage: {fileID: 21300000, guid: 0e56e73a004334b4a93c7fbd56caf2fa, type: 3}
+    - Name: Intellectualizer
+      Id: 7
+      Parts:
+      - Name: Avatar701Mouth
+        Id: 2370101
+        VisibleName: 
+        AvatarImage: {fileID: 1259838726, guid: 8787befeee8897947b444c208972ddea,
+          type: 3}
+        IconImage: {fileID: 345364686, guid: 8787befeee8897947b444c208972ddea, type: 3}
+  - SetName: Body
+    Id: 31
+    AvatarCategories:
+    - Name: Desentisizer
+      Id: 1
+      Parts:
+      - Name: Avatar101Clothes
+        Id: 3110101
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: 34a58b5941b436c4c9d970e8313d38b5, type: 3}
+        IconImage: {fileID: 21300000, guid: 34a58b5941b436c4c9d970e8313d38b5, type: 3}
+    - Name: Trickster
+      Id: 2
+      Parts: []
+    - Name: Obedient
+      Id: 3
+      Parts:
+      - Name: Avatar301Clothes
+        Id: 3130101
+        VisibleName: 
+        AvatarImage: {fileID: -678837532, guid: a950927c8986a4d41b8e342fcfbc8577,
+          type: 3}
+        IconImage: {fileID: 1950605503, guid: a950927c8986a4d41b8e342fcfbc8577, type: 3}
+    - Name: Projector
+      Id: 4
+      Parts:
+      - Name: Avatar401Clothes
+        Id: 3140101
+        VisibleName: 
+        AvatarImage: {fileID: 1854502665, guid: 9d9ee2b0c51a3c44abe1f015d73296e4,
+          type: 3}
+        IconImage: {fileID: 2082151784, guid: 9d9ee2b0c51a3c44abe1f015d73296e4, type: 3}
+    - Name: Retroflector
+      Id: 5
+      Parts: []
+    - Name: Confluent
+      Id: 6
+      Parts:
+      - Name: Avatar603Clothes
+        Id: 3160101
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: c688e7c11ddfe774da24e46df27b3863, type: 3}
+        IconImage: {fileID: 21300000, guid: c688e7c11ddfe774da24e46df27b3863, type: 3}
+    - Name: Intellectualizer
+      Id: 7
+      Parts: []
+  - SetName: Hands
+    Id: 32
+    AvatarCategories:
+    - Name: Desentisizer
+      Id: 1
+      Parts:
+      - Name: Avatar101Hands
+        Id: 3210101
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: c5f3654515488724a86cd2145d8140d2, type: 3}
+        IconImage: {fileID: 21300000, guid: c5f3654515488724a86cd2145d8140d2, type: 3}
+    - Name: Trickster
+      Id: 2
+      Parts: []
+    - Name: Obedient
+      Id: 3
+      Parts: []
+    - Name: Projector
+      Id: 4
+      Parts: []
+    - Name: Retroflector
+      Id: 5
+      Parts: []
+    - Name: Confluent
+      Id: 6
+      Parts:
+      - Name: Avatar603Hands
+        Id: 3260101
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: 4ed162f344222324f8b46dfb95042b18, type: 3}
+        IconImage: {fileID: 21300000, guid: 4ed162f344222324f8b46dfb95042b18, type: 3}
+    - Name: Intellectualizer
+      Id: 7
+      Parts: []
+  - SetName: Feet
+    Id: 33
+    AvatarCategories:
+    - Name: Desentisizer
+      Id: 1
+      Parts: []
+    - Name: Trickster
+      Id: 2
+      Parts: []
+    - Name: Obedient
+      Id: 3
+      Parts:
+      - Name: Avatar301Legs
+        Id: 3330101
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: 9d6b80df8d98b4447badf13e520dec4b, type: 3}
+        IconImage: {fileID: 21300000, guid: 9d6b80df8d98b4447badf13e520dec4b, type: 3}
+    - Name: Projector
+      Id: 4
+      Parts:
+      - Name: Avatar401Legs
+        Id: 3340101
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: 61da20f308ddb1940bdc7070f3242b7f, type: 3}
+        IconImage: {fileID: 21300000, guid: 61da20f308ddb1940bdc7070f3242b7f, type: 3}
+      - Name: Avatar401Shoes
+        Id: 3340201
+        VisibleName: 
+        AvatarImage: {fileID: 21300000, guid: 5fa7f5783d2c91e42a8cae5276dbd652, type: 3}
+        IconImage: {fileID: 21300000, guid: 5fa7f5783d2c91e42a8cae5276dbd652, type: 3}
+    - Name: Retroflector
+      Id: 5
+      Parts: []
+    - Name: Confluent
+      Id: 6
+      Parts: []
+    - Name: Intellectualizer
+      Id: 7
+      Parts: []
