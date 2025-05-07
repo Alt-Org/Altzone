@@ -65,7 +65,7 @@ namespace Battle.View.UI
                 int minutes = FPMath.FloorToInt(secondsSinceStart.Value / 60);
                 int seconds = FPMath.FloorToInt(secondsSinceStart.Value - minutes * 60);
 
-                if (seconds > _oldSeconds)
+                if (Mathf.Abs(seconds - _oldSeconds) >= 1)
                 {
                     if (IsVisible) _timerText.text = _hours == 0 ? $"{minutes}:{seconds:00}" : $"{_hours}:{minutes:00}:{seconds:00}";
                     _oldSeconds = seconds;
