@@ -71,7 +71,12 @@ namespace Battle.View.Game
             }
             */
 
-            BattleCamera.SetView(1.0f, new Vector2(0.5f, 0.5f), false);
+            // Loading and setting arena scale and offset
+            BattleCamera.SetView(
+                SettingsCarrier.Instance.BattleArenaScale * 0.01f,
+                new(SettingsCarrier.Instance.BattleArenaPosX * 0.01f, SettingsCarrier.Instance.BattleArenaPosY * 0.01f),
+                false
+            );
         }
 
         private void QEventOnChangeEmotionState(EventBattleChangeEmotionState e)
