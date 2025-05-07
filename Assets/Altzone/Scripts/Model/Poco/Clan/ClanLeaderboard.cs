@@ -6,12 +6,14 @@ using UnityEngine;
 public class ClanLeaderboard
 {
     private int _points;
+    private ServerClan _serverclan;
     private ClanData _clan;
 
     public ClanLeaderboard(ServerClan clan)
     {
         _points = clan.points;
         _clan = new(clan);
+        _serverclan = clan;
     }
     public ClanLeaderboard(ClanData clan)
     {
@@ -21,4 +23,5 @@ public class ClanLeaderboard
 
     public int Points { get => _points; }
     public ClanData Clan { get => _clan; }
+    public ServerClan ServerClan { get => _serverclan; }
 }

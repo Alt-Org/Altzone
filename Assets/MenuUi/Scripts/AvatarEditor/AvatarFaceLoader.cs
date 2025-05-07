@@ -19,16 +19,16 @@ namespace MenuUi.Scripts.AvatarEditor{
 
         private void UpdateVisuals()
         {
-            if (_avatarVisuals.colors != null && _avatarVisuals.colors.Count != 0)
-                _characterHandle.SetHeadColor(_avatarVisuals.colors[0]);
+            if (_avatarVisuals.color != null)
+                _characterHandle.SetHeadColor(_avatarVisuals.color);
 
             if (_avatarVisuals.sprites == null || _avatarVisuals.sprites.Count == 0)
                 return;
 
-            _characterHandle.SetMainCharacterImage(FeatureSlot.Hair, _avatarVisuals.sprites[0]);
-            _characterHandle.SetMainCharacterImage(FeatureSlot.Eyes, _avatarVisuals.sprites[1]);
-            _characterHandle.SetMainCharacterImage(FeatureSlot.Nose, _avatarVisuals.sprites[2]);
-            _characterHandle.SetMainCharacterImage(FeatureSlot.Mouth, _avatarVisuals.sprites[3]);
+            _characterHandle.SetMainCharacterImage(FeatureSlot.Hair, _avatarVisuals.Hair);
+            _characterHandle.SetMainCharacterImage(FeatureSlot.Eyes, _avatarVisuals.Eyes);
+            _characterHandle.SetMainCharacterImage(FeatureSlot.Nose, _avatarVisuals.Nose);
+            _characterHandle.SetMainCharacterImage(FeatureSlot.Mouth, _avatarVisuals.Mouth);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace MenuUi.Scripts.AvatarEditor
     {
         private string _characterName;
         private List<string> _features;
-        private List<string> _colors;
+        private string _color;
         private Vector2 _scale;
 
         public PlayerAvatar(AvatarDefaultReference.AvatarDefaultPartInfo featureIds)
@@ -23,15 +23,15 @@ namespace MenuUi.Scripts.AvatarEditor
             _features.Add(featureIds.FeetId);
 
             _characterName = "";
-            _colors = new List<string>() { "#ffffff" };
+            _color = new string("#ffffff");
             _scale = Vector2.one;
         }
 
-        public PlayerAvatar(string name, List<string> featuresIds, List<string> colors, Vector2 scale)
+        public PlayerAvatar(string name, List<string> featuresIds, string color, Vector2 scale)
         {
             _characterName = name;
             _features = featuresIds;
-            _colors = colors;
+            _color = color;
             _scale = scale;
         }
 
@@ -41,7 +41,7 @@ namespace MenuUi.Scripts.AvatarEditor
             //Debug.LogError(data.Name == null);
             _characterName = (string)data.Name.Clone();
             _features = new(data.FeatureIds);
-            _colors = new(data.Colors);
+            _color = new(data.Color);
             _scale = new(data.ScaleX, data.ScaleY);
         }
 
@@ -54,9 +54,9 @@ namespace MenuUi.Scripts.AvatarEditor
             get => _features;
             set => _features = value;
         }
-        public List<string> Colors{
-            get => _colors;
-            set => _colors = value;
+        public string Color{
+            get => _color;
+            set => _color = value;
         }
         public Vector2 Scale{
             get => _scale;

@@ -175,6 +175,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             points = player.points;
             stats = player.gameStatistics;
             Task = player.DailyTask != null ? new(player.DailyTask) : null;
+            AvatarData = player.avatar !=null ? new(player.name ,player.avatar): null;
             if (_playerDataEmotionList == null || _playerDataEmotionList.Count == 0) playerDataEmotionList = new List<Emotion> { Emotion.Blank, Emotion.Love, Emotion.Playful, Emotion.Joy, Emotion.Sorrow, Emotion.Anger, Emotion.Blank };
             if (daysBetweenInput == null) daysBetweenInput = "0";
         }

@@ -26,9 +26,15 @@ namespace MenuUi.Scripts.Login
             }
             else if (SceneManager.GetActiveScene().buildIndex == 2)
             {
+                ServerManager.OnClanFetchFinished += ReturnToMain;
                 StartCoroutine(ServerManager.Instance.LogIn());
-                StartCoroutine(_navigation.Navigate());
             }
+        }
+
+        public void ReturnToMain()
+        {
+            ServerManager.OnClanFetchFinished -= ReturnToMain;
+            StartCoroutine(_navigation.Navigate());
         }
 
         public void LogInReturn()

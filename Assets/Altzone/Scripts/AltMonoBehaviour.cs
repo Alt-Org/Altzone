@@ -115,6 +115,7 @@ public class AltMonoBehaviour : MonoBehaviour
                 _id = playerData.Id,
                 name = playerData.Name,
                 clan_Id = playerData.ClanId,
+                avatar = new ServerAvatar(playerData.AvatarData),
                 currentAvatarId = playerData.SelectedCharacterId,
                 battleCharacter_ids = playerData.SelectedCharacterIds,
                 

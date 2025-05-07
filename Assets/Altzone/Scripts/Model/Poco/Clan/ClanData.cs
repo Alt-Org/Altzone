@@ -100,6 +100,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
             Phrase = clan.phrase ?? string.Empty;
             _gameCoins = clan.gameCoins;
             Points = clan.points;
+            Values = new();
             foreach (string point in clan.labels)
             {
                 Values.Add((ClanValues)Enum.Parse(typeof(ClanValues), string.Concat(point[0].ToString().ToUpper(), point.AsSpan(1).ToString()).Replace("ä", "a").Replace("ö", "o").Replace("+", "").Replace(" ", "")));

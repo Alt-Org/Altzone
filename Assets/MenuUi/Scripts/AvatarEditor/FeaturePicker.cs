@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.Model.Poco.Game;
 using TMPro;
+using Assets.Altzone.Scripts.Model.Poco.Player;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
@@ -283,27 +284,34 @@ namespace MenuUi.Scripts.AvatarEditor
 
             for (int i = 0; i < _selectedFeatures.Count; i++)
             {
-                List<AvatarPartsReference.AvatarPartInfo> currentCategoryFeatureDataPlaceholder = GetSpritesByCategory((FeatureSlot)i);
+                Sprite sprite = GetCurrentlySelectedFeatureSprite((AvatarPiece)i);
+                sprites.Add(sprite);
+
+            }
+
+            return sprites;
+        }
+
+        public Sprite GetCurrentlySelectedFeatureSprite(AvatarPiece pieceSlot)
+        {
+            
+                List<AvatarPartsReference.AvatarPartInfo> currentCategoryFeatureDataPlaceholder = GetSpritesByCategory((FeatureSlot)pieceSlot);
 
                 if (currentCategoryFeatureDataPlaceholder == null)
                     return (null);
 
-                if (_selectedFeatures[i] != null && _selectedFeatures[i] != "")
+                if (_selectedFeatures[(int)pieceSlot] != null && _selectedFeatures[(int)pieceSlot] != "")
                 {
                     AvatarPartsReference.AvatarPartInfo partData =
-                        currentCategoryFeatureDataPlaceholder.Find(part => part.Id == _selectedFeatures[i]);
+                        currentCategoryFeatureDataPlaceholder.Find(part => part.Id == _selectedFeatures[(int)pieceSlot]);
 
                     if (partData != null)
                     {
-                        sprites.Add(partData.AvatarImage);
-                        continue;
+                        return partData.AvatarImage;
                     }
                 }
 
-                sprites.Add(null);
-            }
-
-            return (sprites);
+            return null;
         }
 
         public void SetCharacterClassID(CharacterClassID id)

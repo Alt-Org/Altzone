@@ -465,7 +465,7 @@ namespace MenuUi.Scripts.Storage
             _rarityText.text = _furn.Rarity.ToString();
 
             // Get rarity color from the selected furniture
-            _rarityImage.color = _slotsList[slotVal].transform.GetChild(1).GetComponent<Image>().color;
+            _rarityImage.color = _slotsList[slotVal].transform.GetChild(0).GetComponent<Image>().color;
 
             _sellHandler.Furniture = _furn;
 

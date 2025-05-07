@@ -1,6 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Altzone.Scripts.Model.Poco.Player;
+using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -128,7 +131,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _featurePicker.SetLoadedFeatures(_playerAvatar.FeatureIds);
 
             //_colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
-            _colorPicker.SetLoadedColors(_playerAvatar.Colors, _playerAvatar.FeatureIds);
+            _colorPicker.SetLoadedColors(_playerAvatar.Color, _playerAvatar.FeatureIds);
 
             _avatarScaler.SetLoadedScale(_playerAvatar.Scale);
         }
@@ -152,7 +155,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _featurePicker.SetLoadedFeatures(_playerAvatar.FeatureIds);
 
             //_colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
-            _colorPicker.SetLoadedColors(_playerAvatar.Colors, _playerAvatar.FeatureIds);
+            _colorPicker.SetLoadedColors(_playerAvatar.Color, _playerAvatar.FeatureIds);
 
             _avatarScaler.SetLoadedScale(_playerAvatar.Scale);
         }
@@ -188,8 +191,12 @@ namespace MenuUi.Scripts.AvatarEditor
 
             _currentPlayerData = playerData;
 
-            _visualDataScriptableObject.sprites = _featurePicker.GetCurrentlySelectedFeaturesAsSprites();
-            _visualDataScriptableObject.colors = _colorPicker.GetCurrentColorsAsColors();
+            List<AvatarPiece> pieceIDs = Enum.GetValues(typeof(AvatarPiece)).Cast<AvatarPiece>().ToList();
+            foreach(AvatarPiece piece in pieceIDs)
+            {
+                _visualDataScriptableObject.SetAvatarPiece(piece, _featurePicker.GetCurrentlySelectedFeatureSprite(piece));
+            }
+            _visualDataScriptableObject.color = _colorPicker.GetCurrentColorsAsColors();
 
             AvatarDesignLoader.Instance.InvokeOnAvatarDesignUpdate();
         }
