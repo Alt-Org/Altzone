@@ -645,7 +645,7 @@ namespace Altzone.Scripts.Lobby
                     {
                         // If player isn't in any position, getting the first free player position.
                         // This method checks for duplicate and missing players
-                        position = PhotonLobbyRoom.GetFirstFreePlayerPos();
+                        position = PhotonLobbyRoom.GetFirstFreePlayerPos(new(player.Value));
                         string positionKey = PhotonBattleRoom.GetPositionKey(position);
 
                         // Setting position to room and waiting until it's synced
@@ -762,7 +762,6 @@ namespace Altzone.Scripts.Lobby
         }
 
         // TODO: return to custom game/matchmaking room if starting game failed
-        // TODO: add the last check for player positions
         private IEnumerator StartTheGameplay(bool isCloseRoom, string blueTeamName, string redTeamName)
         {
             if (!PhotonBattleRoom.IsValidAllSelectedCharacters())
@@ -780,30 +779,33 @@ namespace Altzone.Scripts.Lobby
             {
                 throw new UnityException($"master client does not have valid player position: {masterPosition}");
             }
-            // Snapshot player list before iteration because we can change it
+
+            // Checking player positions before starting gameplay
+            Room room = PhotonRealtimeClient.CurrentRoom;
             List<Player> players = PhotonRealtimeClient.CurrentRoom.Players.Values.ToList();
-            int realPlayerCount = 0;
+            int playerCount = 0;
             foreach (Player roomPlayer in players)
             {
                 int playerPos = roomPlayer.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
-                if (PhotonLobbyRoom.IsValidPlayerPos(playerPos))
+                if (!PhotonLobbyRoom.IsValidPlayerPos(playerPos))
                 {
-                    realPlayerCount += 1;
-                    continue;
+                    // If player position is not valid we get new position for them, this method checks for duplicate and missing player positions
+                    int newPos = PhotonLobbyRoom.GetFirstFreePlayerPos(new(roomPlayer));
+
+                    // Setting the new position to player and room properties and waiting until it's synced
+                    roomPlayer.SetCustomProperty(PlayerPositionKey, newPos);
+                    yield return new WaitUntil(() => roomPlayer.GetCustomProperty<int>(PlayerPositionKey) == newPos);
+
+                    string positionKey = PhotonBattleRoom.GetPositionKey(newPos);
+                    room.SetCustomProperty(positionKey, roomPlayer.UserId);
+                    yield return new WaitUntil(() => room.GetCustomProperty<string>(positionKey) == roomPlayer.UserId);
                 }
-                if (playerPos == PlayerPositionSpectator)
-                {
-                    continue;
-                }
-                Debug.Log($"Kick player (close connection) @ {PlayerPositionKey}={playerPos} {roomPlayer.GetDebugLabel()}");
-                PhotonRealtimeClient.CloseConnection(roomPlayer);
-                yield return null;
+                playerCount += 1;
             }
             if (player.IsMasterClient)
             {
                 Assert.IsTrue(!string.IsNullOrWhiteSpace(blueTeamName), "!string.IsNullOrWhiteSpace(blueTeamName)");
                 Assert.IsTrue(!string.IsNullOrWhiteSpace(redTeamName), "!string.IsNullOrWhiteSpace(redTeamName)");
-                Room room = PhotonRealtimeClient.CurrentRoom;
                 //room.CustomProperties.Add(TeamAlphaNameKey, blueTeamName);
                 //room.CustomProperties.Add(TeamBetaNameKey, redTeamName);
                 //room.CustomProperties.Add(PlayerCountKey, realPlayerCount);
@@ -812,7 +814,7 @@ namespace Altzone.Scripts.Lobby
                     { BattleID, PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.BattleID)},
                     { TeamAlphaNameKey, blueTeamName },
                     { TeamBetaNameKey, redTeamName },
-                    { PlayerCountKey, realPlayerCount }
+                    { PlayerCountKey, playerCount }
                 });
 
                 // Getting starting emotion from current room custom properties
