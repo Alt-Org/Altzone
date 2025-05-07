@@ -2,12 +2,15 @@ using UnityEngine;
 
 using Quantum;
 
+using Altzone.Scripts.BattleUiShared;
 using Altzone.Scripts.Lobby;
 
 using Battle.View.UI;
 using Battle.View.Effect;
 using Battle.View.Audio;
 using PlayerType = Battle.View.UI.BattleUiPlayerInfoHandler.PlayerType;
+
+using BattleUiElementType = SettingsCarrier.BattleUiElementType;
 
 namespace Battle.View.Game
 {
@@ -52,22 +55,41 @@ namespace Battle.View.Game
             {
                 _uiController.DiamondsHandler.SetShow(true);
                 _uiController.DiamondsHandler.SetDiamondsText(0);
+
+                BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.Diamonds);
+                if (data != null) _uiController.DiamondsHandler.MovableUiElement.SetData(data);
+            }
+
+            if (_uiController.TimerHandler != null)
+            {
+                BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.Timer);
+                if (data != null) _uiController.TimerHandler.MovableUiElement.SetData(data);
             }
 
             // Commented out code to hide the ui elements which shouldn't be shown at this point, but the code will be used later
-
             /*
             if (_uiController.GiveUpButtonHandler != null)
             {
                 _uiController.GiveUpButtonHandler.SetShow(true);
                 _uiController.GiveUpButtonHandler.SetShow(true);
+
+                BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.GiveUpButton);
+                if (data != null) _uiController.GiveUpButtonHandler.MovableUiElement.SetData(data);
             }
 
             if (_uiController.PlayerInfoHandler != null)
             {
                 _uiController.PlayerInfoHandler.SetShow(true);
+
+                // Setting local player info and data
                 _uiController.PlayerInfoHandler.SetInfo(PlayerType.LocalPlayer, "Min�", new int[3] { 101, 201, 301 });
+                BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.PlayerInfo);
+                if (data != null) _uiController.PlayerInfoHandler.LocalPlayerMultiOrientationElement.SetData(data);
+
+                // Setting local teammate info and data
                 _uiController.PlayerInfoHandler.SetInfo(PlayerType.LocalTeammate, "Tiimil�inen", new int[3] { 401, 501, 601 });
+                data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.TeammateInfo);
+                if (data != null) _uiController.PlayerInfoHandler.LocalTeammateMultiOrientationElement.SetData(data);
             }
             */
 
