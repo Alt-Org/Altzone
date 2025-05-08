@@ -30,7 +30,7 @@ namespace Battle.View.UI
             if (_recordTime) return;
 
             _hours = 0;
-            _oldSeconds = -1;
+            _secondsElapsedPrevious = -1;
 
             _timer = FrameTimer.FromSeconds(f, 3600);
             _recordTime = true;
@@ -44,7 +44,7 @@ namespace Battle.View.UI
         private bool _recordTime = false;
         private FrameTimer _timer;
         private int _hours;
-        private int _oldSeconds;
+        private int _secondsElapsedPrevious;
 
         private void Update()
         {
@@ -53,22 +53,23 @@ namespace Battle.View.UI
 
             if (_timer.IsExpired(f))
             {
-                _oldSeconds = -1;
+                _secondsElapsedPrevious = -1;
                 _timer.Restart(f);
                 _hours++;
             }
 
-            FP? secondsSinceStart = _timer.TimeInSecondsSinceStart(f);
+            FP? secondsElapsedFloat = _timer.TimeInSecondsSinceStart(f);
 
-            if (secondsSinceStart != null)
+            if (secondsElapsedFloat != null)
             {
-                int minutes = FPMath.FloorToInt(secondsSinceStart.Value / 60);
-                int seconds = FPMath.FloorToInt(secondsSinceStart.Value - minutes * 60);
+                int secondsElapsed = FPMath.FloorToInt(secondsElapsedFloat.Value);
+                int minutes = FPMath.FloorToInt(secondsElapsedFloat.Value / 60);
+                int seconds = secondsElapsed - (minutes * 60);
 
-                if (Mathf.Abs(seconds - _oldSeconds) >= 1)
+                if (secondsElapsed > _secondsElapsedPrevious)
                 {
-                    if (IsVisible) _timerText.text = _hours == 0 ? $"{minutes}:{seconds:00}" : $"{_hours}:{minutes:00}:{seconds:00}";
-                    _oldSeconds = seconds;
+                    if (IsVisible) _timerText.text = _hours == 0 ? $"<mspace=1em>{minutes:D2}:{seconds:00}</mspace>" : $"{_hours}:{minutes:00}:{seconds:00}";
+                    _secondsElapsedPrevious = secondsElapsed;
                 }
             }
         }
