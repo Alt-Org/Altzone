@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using MenuUi.Scripts.ReferenceSheets;
 using UnityEngine;
 using UnityEngine.UI;
-using SignalBusPopup = MenuUI.Scripts.SignalBus;
 using MenuUi.Scripts.Signals;
 using MenuUi.Scripts.SwipeNavigation;
 using Altzone.Scripts.Lobby;
@@ -140,6 +139,9 @@ namespace MenuUi.Scripts.Lobby.BattleButton
                 bool selected = gameTypeOption.Info.gameType == _selectedGameType;
                 gameTypeOption.SetSelected(selected);
             }
+
+            // Opening battle popup after selecting a game type
+            SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
         }
     }
 }
