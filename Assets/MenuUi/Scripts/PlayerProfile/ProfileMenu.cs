@@ -86,6 +86,8 @@ public class ProfileMenu : MonoBehaviour
 
     private ServerPlayer _player;
 
+    private const string _mottoDefault = "Paina tästä valitaksesi...";
+
     private void Update()
     {
         updateTime();
@@ -175,6 +177,13 @@ public class ProfileMenu : MonoBehaviour
             Debug.Log($"Saved Lore: {lore} at {path}");
         }
 
+        if (_MottoText != null)
+        {
+            string motto = _MottoText.text;
+            string path = Path.Combine(Application.persistentDataPath, "Motto.txt");
+            File.WriteAllText(path, motto);
+            Debug.Log($"Saved Motto: {motto} at {path}");
+        }
     }
 
     // Lataa tallennetut tiedostot
@@ -182,6 +191,7 @@ public class ProfileMenu : MonoBehaviour
     {
         string quotePath = Path.Combine(Application.persistentDataPath, "LifeQuote.txt");
         string lorePath = Path.Combine(Application.persistentDataPath, "Lore.txt");
+        string mottoPath = Path.Combine(Application.persistentDataPath, "Motto.txt");
         if (File.Exists(quotePath))
         {
             //string loadedQuote = File.ReadAllText(quotePath);
@@ -209,6 +219,21 @@ public class ProfileMenu : MonoBehaviour
         {
             Debug.Log("No lore found.");
         }
+
+        if (File.Exists(mottoPath))
+        {
+            string loadedMotto = File.ReadAllText(mottoPath);
+            Debug.Log($"Loaded Motto: {loadedMotto} from {mottoPath}");
+            if (_MottoText != null)
+            {
+                _MottoText.text = loadedMotto;
+            }
+        }
+        else
+        {
+            Debug.Log("No motto found.");
+            _MottoText.text = _mottoDefault;
+        }
     }
 
     /// <summary>
@@ -216,8 +241,9 @@ public class ProfileMenu : MonoBehaviour
     /// </summary>
     private void AddAnswerOptions()
     {
-        _openMottoOptions.onClick.AddListener(()  => { _mottoOptionsPopup.SetActive(true); });
+        _openMottoOptions.onClick.AddListener(() => { _mottoOptionsPopup.SetActive(true); });
 
+        // Get motto options based on character class
         List<string> mottoOptionList = _characterResponseList.GetMottoOptions((CharacterClassID)((_playerData.SelectedCharacterId / 100) * 100));
         foreach (string option in mottoOptionList)
         {
