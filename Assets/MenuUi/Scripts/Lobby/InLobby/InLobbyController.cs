@@ -17,6 +17,13 @@ namespace MenuUi.Scripts.Signals
         {
             OnBattlePopupRequested?.Invoke(gameType);
         }
+
+        public delegate void CloseBattlePopupRequestedHandler();
+        public static event CloseBattlePopupRequestedHandler OnCloseBattlePopupRequested;
+        public static void OnCloseBattlePopupRequestedSignal()
+        {
+            OnCloseBattlePopupRequested?.Invoke();
+        }
     }
 }
 
@@ -40,12 +47,14 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private void Awake()
         {
             SignalBus.OnBattlePopupRequested += OpenWindow;
+            SignalBus.OnCloseBattlePopupRequested += CloseWindow;
         }
 
 
         private void OnDestroy()
         {
             SignalBus.OnBattlePopupRequested -= OpenWindow;
+            SignalBus.OnCloseBattlePopupRequested -= CloseWindow;
         }
 
 

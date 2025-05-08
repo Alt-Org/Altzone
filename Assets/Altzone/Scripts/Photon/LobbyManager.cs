@@ -753,9 +753,9 @@ namespace Altzone.Scripts.Lobby
             // Creating back the non-matchmaking room which the teammates can join
             switch (matchmakingRoomGameType)
             {
-                case GameType.Random2v2:
-                    PhotonRealtimeClient.CreateRandom2v2LobbyRoom(_teammates);
-                    break;
+                //case GameType.Random2v2:
+                //    PhotonRealtimeClient.CreateRandom2v2LobbyRoom(_teammates);
+                //    break;
                 case GameType.Clan2v2:
                     string clanName = PhotonRealtimeClient.LocalLobbyPlayer.GetCustomProperty(PhotonBattleRoom.ClanNameKey, "");
                     int soulhomeRank = PhotonRealtimeClient.LocalLobbyPlayer.GetCustomProperty(PhotonBattleRoom.SoulhomeRank, 0);
