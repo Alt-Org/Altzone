@@ -1,7 +1,11 @@
-using MenuUi.Scripts.ReferenceSheets;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+
+using TMPro;
+
+using GameType = Altzone.Scripts.Lobby.GameType;
+
+using MenuUi.Scripts.ReferenceSheets;
 
 namespace MenuUi.Scripts.Lobby.BattleButton
 {
@@ -53,6 +57,11 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             _gameTypeText.text = info.Name;
             _gameTypeInfo = info;
             SetSelected(selected);
+
+            if(info.gameType == GameType.Clan2v2)
+            {
+                ButtonComponent.interactable = false;
+            }
         }
 
         /// <summary>
