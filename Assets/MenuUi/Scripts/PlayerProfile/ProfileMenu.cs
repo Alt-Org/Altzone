@@ -14,6 +14,8 @@ using Altzone.Scripts.Model.Poco.Clan;
 using UnityEngine.InputSystem.HID;
 using System.IO;
 using UnityEngine.EventSystems;
+using Altzone.Scripts.ReferenceSheets;
+using Altzone.Scripts.Model.Poco.Game;
 
 public class ProfileMenu : MonoBehaviour
 {
@@ -36,8 +38,14 @@ public class ProfileMenu : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _LosesText;
     [SerializeField] private TextMeshProUGUI _WinsText;
     [SerializeField] private TextMeshProUGUI _CarbonText;
-    [SerializeField] private TMP_InputField _LifeQuoteInputField;
+    //[SerializeField] private TMP_InputField _LifeQuoteInputField;
     [SerializeField] private TMP_InputField _LoreInputField;
+
+    [Header("Selectors")]
+    [SerializeField] private GameObject _answerOptionPrefab;
+    [SerializeField] private Button _openMottoOptions;
+    [SerializeField] private GameObject _mottoOptionsPopup;
+    [SerializeField] private CharacterResponseList _characterResponseList;
 
     [Header("Clan Button")]
     [SerializeField] private Button _ClanURLButton;
@@ -122,7 +130,7 @@ public class ProfileMenu : MonoBehaviour
     private void OnEnable()
     {
         Debug.Log($"_ClanURLButton is null: {_ClanURLButton == null}");
-        Debug.Log($"Initial LifeQuote text: {_LifeQuoteInputField.text}");
+        //Debug.Log($"Initial LifeQuote text: {_LifeQuoteInputField.text}");
         LoadInputFromFile();
         LoadMinutes();
 
@@ -133,6 +141,9 @@ public class ProfileMenu : MonoBehaviour
             SetPlayerProfileValues(false);
         else
             SetPlayerProfileValues(true);
+
+
+        AddAnswerOptions();
     }
 
     private void Reset()
@@ -148,13 +159,13 @@ public class ProfileMenu : MonoBehaviour
     // Tallentaa lifequote ja lore inputkentät
     public void SaveInputToFile()
     {
-        if (_LifeQuoteInputField != null)
-        {
-            string lifeQuote = _LifeQuoteInputField.text;
-            string path = Path.Combine(Application.persistentDataPath, "LifeQuote.txt");
-            File.WriteAllText(path, lifeQuote);
-            Debug.Log($"Saved Life Quote: {lifeQuote} at {path}");
-        }
+        //if (_LifeQuoteInputField != null)
+        //{
+        //    string lifeQuote = _LifeQuoteInputField.text;
+        //    string path = Path.Combine(Application.persistentDataPath, "LifeQuote.txt");
+        //    File.WriteAllText(path, lifeQuote);
+        //    Debug.Log($"Saved Life Quote: {lifeQuote} at {path}");
+        //}
 
         if (_LoreInputField != null)
         {
@@ -173,12 +184,12 @@ public class ProfileMenu : MonoBehaviour
         string lorePath = Path.Combine(Application.persistentDataPath, "Lore.txt");
         if (File.Exists(quotePath))
         {
-            string loadedQuote = File.ReadAllText(quotePath);
-            Debug.Log($"Loaded Life Quote: {loadedQuote} from {quotePath}");
-            if (_LifeQuoteInputField != null)
-            {
-                _LifeQuoteInputField.text = loadedQuote;
-            }
+            //string loadedQuote = File.ReadAllText(quotePath);
+            //Debug.Log($"Loaded Life Quote: {loadedQuote} from {quotePath}");
+            //if (_LifeQuoteInputField != null)
+            //{
+            //    _LifeQuoteInputField.text = loadedQuote;
+            //}
         }
         else
         {
@@ -197,6 +208,26 @@ public class ProfileMenu : MonoBehaviour
         else
         {
             Debug.Log("No lore found.");
+        }
+    }
+
+    /// <summary>
+    /// Adds the answer options and opening/closing functionality to the selector popups
+    /// </summary>
+    private void AddAnswerOptions()
+    {
+        _openMottoOptions.onClick.AddListener(()  => { _mottoOptionsPopup.SetActive(true); });
+
+        List<string> mottoOptionList = _characterResponseList.GetMottoOptions((CharacterClassID)((_playerData.SelectedCharacterId / 100) * 100));
+        foreach (string option in mottoOptionList)
+        {
+            GameObject optionObject = Instantiate(_answerOptionPrefab, _mottoOptionsPopup.GetComponentInChildren<VerticalLayoutGroup>().transform);
+            Button button = optionObject.GetComponent<AnswerOptionHandler>().SetData(option);
+            button.onClick.AddListener(() =>
+            {
+                _MottoText.text = option;
+                _mottoOptionsPopup.SetActive(false);
+            });
         }
     }
 
@@ -255,7 +286,7 @@ public class ProfileMenu : MonoBehaviour
                 _playerNameInputField.text = _playerData.Name;
 
                 _activityText.text = _playerData.points.ToString();
-                _WinsText.text = _playerData.stats.wonBattles.ToString();
+                //_WinsText.text = _playerData.stats.wonBattles.ToString();
 
                 store.GetClanData(_playerData.ClanId, clan =>
                 {
