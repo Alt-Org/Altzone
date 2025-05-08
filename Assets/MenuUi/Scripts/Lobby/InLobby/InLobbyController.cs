@@ -24,6 +24,13 @@ namespace MenuUi.Scripts.Signals
         {
             OnCloseBattlePopupRequested?.Invoke();
         }
+
+        public delegate void CustomRoomSettingsRequestedHandler();
+        public static event CustomRoomSettingsRequestedHandler OnCustomRoomSettingsRequested;
+        public static void OnCustomRoomSettingsRequestedSignal()
+        {
+            OnCustomRoomSettingsRequested?.Invoke();
+        }
     }
 }
 
@@ -177,6 +184,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
                         }
                     }
                     break;
+                default:
+                    return;
             }
 
             SelectedGameType = gameType;

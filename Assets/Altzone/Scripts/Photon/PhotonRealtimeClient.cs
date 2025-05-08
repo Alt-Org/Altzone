@@ -785,7 +785,7 @@ public static class PhotonRealtimeClient
         EnterRoomArgs enterRoomArgs = GetEnterRoomArgs(roomName, roomOptions, expectedUsers);
 
         JoinRandomRoomArgs joinRandomRoomArgs = new JoinRandomRoomArgs();
-        joinRandomRoomArgs.ExpectedCustomRoomProperties = new PhotonHashtable{ { PhotonBattleRoom.GameTypeKey, GameType.Custom }, { PhotonBattleRoom.IsMatchmakingKey, false } };
+        joinRandomRoomArgs.ExpectedCustomRoomProperties = new PhotonHashtable{ { PhotonBattleRoom.GameTypeKey, GameType.Custom } };
         joinRandomRoomArgs.ExpectedMaxPlayers = roomOptions.MaxPlayers;
         joinRandomRoomArgs.Lobby = enterRoomArgs.Lobby;
         joinRandomRoomArgs.ExpectedUsers = expectedUsers;

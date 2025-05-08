@@ -6,6 +6,7 @@ using TMPro;
 using GameType = Altzone.Scripts.Lobby.GameType;
 
 using MenuUi.Scripts.ReferenceSheets;
+using MenuUi.Scripts.Signals;
 
 namespace MenuUi.Scripts.Lobby.BattleButton
 {
@@ -30,32 +31,23 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         public delegate void GameTypeOptionSelectedHandler(GameTypeInfo gameTypeInfo);
         public GameTypeOptionSelectedHandler OnGameTypeOptionSelected;
 
-        public delegate void GameTypeSettingsRequestedHandler(GameTypeInfo gameTypeInfo);
-        public GameTypeSettingsRequestedHandler OnGameTypeSettingsRequested;
-
 
         private void Awake()
         {
             ButtonComponent.onClick.AddListener(OnButtonComponentPressed);
-            _settingsButton.onClick.AddListener(OnSettingsButtonPressed);
         }
 
 
         private void OnDestroy()
         {
             ButtonComponent.onClick.RemoveListener(OnButtonComponentPressed);
-            _settingsButton.onClick.RemoveListener(OnSettingsButtonPressed);
+            _settingsButton.onClick.RemoveAllListeners();
         }
 
 
         private void OnButtonComponentPressed()
         {
             OnGameTypeOptionSelected?.Invoke(_gameTypeInfo);
-        }
-
-        private void OnSettingsButtonPressed()
-        {
-            OnGameTypeSettingsRequested?.Invoke(_gameTypeInfo);
         }
 
         /// <summary>
@@ -74,7 +66,17 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             if(info.gameType != GameType.Custom)
             {
                 ButtonComponent.interactable = false;
+                _settingsButton.gameObject.SetActive(false);
             }
+            //else
+            //{
+            //    _settingsButton.onClick.RemoveAllListeners();
+            //    _settingsButton.onClick.AddListener(()=>
+            //    {
+            //        SignalBus.OnBattlePopupRequestedSignal(GameType.None);
+            //        SignalBus.OnCustomRoomSettingsRequestedSignal();
+            //    });
+            //}
         }
 
         /// <summary>
