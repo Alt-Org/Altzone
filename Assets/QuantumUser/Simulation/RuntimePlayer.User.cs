@@ -8,6 +8,6 @@
         public int PlayerSlot;
         public BattleCharacterBase[] Characters = new BattleCharacterBase[CharacterCount];
 
-        public bool IsBot = true;
+        public bool IsBot = false;
     }
 }
