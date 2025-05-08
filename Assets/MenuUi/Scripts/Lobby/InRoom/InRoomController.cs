@@ -72,11 +72,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private void StartPlaying()
         {
-            if (!PhotonLobbyRoom.IsValidAllSelectedCharacters())
-            {
-                SignalBus.OnChangePopupInfoSignal("Kaikkien pelaajien pitää ensin valita 3 puolustushahmoa.");
-                return;
-            }
+            //if (!PhotonLobbyRoom.IsValidAllSelectedCharacters())
+            //{
+            //    SignalBus.OnChangePopupInfoSignal("Kaikkien pelaajien pitää ensin valita 3 puolustushahmoa.");
+            //    return;
+            //}
 
             _startGameButton.interactable = false;
 
