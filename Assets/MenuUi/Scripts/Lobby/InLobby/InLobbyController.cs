@@ -169,37 +169,16 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     }
                     break;
             }
-            
+
             SelectedGameType = gameType;
 
-            switch (gameType)
+            // Starting creating room of a selected game type if the coroutine is not already running
+            if (_creatingRoomCoroutineHolder != null) return;
+            _roomSwitcher.ClosePanels();
+            _creatingRoomCoroutineHolder = StartCoroutine(_roomListingController.StartCreatingRoom(gameType, () =>
             {
-                case GameType.Custom:
-                    _roomSwitcher.ReturnToMain();
-                    break;
-                case GameType.Clan2v2:
-                    _roomSwitcher.ClosePanels();
-                    // Starting coroutine to create clan 2v2 room if player is not in a room and a room is currently being created
-                    if (_creatingRoomCoroutineHolder == null)
-                    {
-                        _creatingRoomCoroutineHolder = StartCoroutine(_roomListingController.StartCreatingClan2v2Room(() =>
-                        {
-                            _creatingRoomCoroutineHolder = null;
-                        }));
-                    }
-                    break;
-                case GameType.Random2v2:
-                    _roomSwitcher.ClosePanels();
-                    // Starting coroutine to create clan 2v2 room if player is not in a room and a room is currently being created
-                    if (_creatingRoomCoroutineHolder == null)
-                    {
-                        _creatingRoomCoroutineHolder = StartCoroutine(_roomListingController.StartCreatingRandom2v2Room(() =>
-                        {
-                            _creatingRoomCoroutineHolder = null;
-                        }));
-                    }
-                    break;
-            }
+                _creatingRoomCoroutineHolder = null;
+            }));
         }
 
 

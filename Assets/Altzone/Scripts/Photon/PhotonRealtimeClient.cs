@@ -755,18 +755,37 @@ public static class PhotonRealtimeClient
         return Client.OpCreateRoom(opParams);
     }
 
-    public static bool JoinRandomOrCreateLobbyRoom(string roomName, GameType gameType, string clanName = "", int soulhomeRank = -1, string[] expectedUsers = null, bool isMatchmaking = false)
+    public static bool JoinRandomOrCreateClan2v2Room(string clanName = "", int soulhomeRank = -1, string[] expectedUsers = null, bool isMatchmaking = false)
     {
         if (Client.Server != ServerConnection.MasterServer || !Client.IsConnectedAndReady)
         {
             Debug.LogError("CreateRoom failed. Client is on " + Client.Server + " (must be Master Server for matchmaking)" + (Client.IsConnectedAndReady ? " and ready" : "but not ready for operations (State: " + Client.State + ")") + ". Wait for callback: OnJoinedLobby or OnConnectedToMaster.");
             return false;
         }
-        RoomOptions roomOptions = GetRoomOptions(gameType, isMatchmaking, "", Emotion.Blank, "", clanName, soulhomeRank);
+        RoomOptions roomOptions = GetRoomOptions(GameType.Clan2v2, isMatchmaking, "", Emotion.Blank, "", clanName, soulhomeRank);
+        EnterRoomArgs enterRoomArgs = GetEnterRoomArgs("", roomOptions, expectedUsers);
+
+        JoinRandomRoomArgs joinRandomRoomArgs = new JoinRandomRoomArgs();
+        joinRandomRoomArgs.ExpectedCustomRoomProperties = new PhotonHashtable{ { PhotonBattleRoom.GameTypeKey, GameType.Clan2v2 }, { PhotonBattleRoom.ClanNameKey, clanName }, { PhotonBattleRoom.IsMatchmakingKey, isMatchmaking } };
+        joinRandomRoomArgs.ExpectedMaxPlayers = roomOptions.MaxPlayers;
+        joinRandomRoomArgs.Lobby = enterRoomArgs.Lobby;
+        joinRandomRoomArgs.ExpectedUsers = expectedUsers;
+        
+        return Client.OpJoinRandomOrCreateRoom(joinRandomRoomArgs, enterRoomArgs);
+    }
+
+    public static bool JoinRandomOrCreateCustomRoom(string roomName, string mapId, Emotion startingEmotion, string password = "", string[] expectedUsers = null)
+    {
+        if (Client.Server != ServerConnection.MasterServer || !Client.IsConnectedAndReady)
+        {
+            Debug.LogError("CreateRoom failed. Client is on " + Client.Server + " (must be Master Server for matchmaking)" + (Client.IsConnectedAndReady ? " and ready" : "but not ready for operations (State: " + Client.State + ")") + ". Wait for callback: OnJoinedLobby or OnConnectedToMaster.");
+            return false;
+        }
+        RoomOptions roomOptions = GetRoomOptions(GameType.Custom, false, mapId, startingEmotion);
         EnterRoomArgs enterRoomArgs = GetEnterRoomArgs(roomName, roomOptions, expectedUsers);
 
         JoinRandomRoomArgs joinRandomRoomArgs = new JoinRandomRoomArgs();
-        joinRandomRoomArgs.ExpectedCustomRoomProperties = new PhotonHashtable{ { PhotonBattleRoom.GameTypeKey, gameType }, { PhotonBattleRoom.ClanNameKey, clanName }, { PhotonBattleRoom.IsMatchmakingKey, isMatchmaking } };
+        joinRandomRoomArgs.ExpectedCustomRoomProperties = new PhotonHashtable{ { PhotonBattleRoom.GameTypeKey, GameType.Custom }, { PhotonBattleRoom.IsMatchmakingKey, false } };
         joinRandomRoomArgs.ExpectedMaxPlayers = roomOptions.MaxPlayers;
         joinRandomRoomArgs.Lobby = enterRoomArgs.Lobby;
         joinRandomRoomArgs.ExpectedUsers = expectedUsers;
