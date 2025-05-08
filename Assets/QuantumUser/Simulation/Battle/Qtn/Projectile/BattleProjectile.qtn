@@ -9,6 +9,7 @@ component BattleProjectileQComponent
 {
     bool IsLaunched;
     FP Speed;
+    FPVector2 Position;
     FPVector2 Direction;
     FP Radius;
     BattleEmotionState Emotion;

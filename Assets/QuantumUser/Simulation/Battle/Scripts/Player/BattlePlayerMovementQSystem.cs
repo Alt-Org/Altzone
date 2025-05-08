@@ -25,6 +25,12 @@ namespace Battle.QSimulation.Player
             public Transform2D* Transform;
             public BattlePlayerDataQComponent* PlayerData;
         }
+        static class InterceptConstants
+        {
+            public static readonly FP CooldownThreshold = FP._0_33;
+            public static readonly FP CooldownRandAddMax = FP._0_02;
+            public static readonly FP LookAheadTime = FP._0_50;
+        }
 
         /// <summary>
         /// <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum system update method</a>.<br/>
@@ -38,7 +44,18 @@ namespace Battle.QSimulation.Player
         public override void Update(Frame f, ref Filter filter)
         {
             if (filter.PlayerData->PlayerRef == PlayerRef.None) return;
-            Input* input = f.GetPlayerInput(filter.PlayerData->PlayerRef);
+            Input* input;
+            Input botInput;
+            if(!filter.PlayerData->ControlledByAi)
+            {
+                input = f.GetPlayerInput(filter.PlayerData->PlayerRef);
+            }
+            else
+            {
+                input = &botInput;
+                GetBotInput(f, filter.PlayerData, input);
+            }
+            
 
             UpdatePlayerMovement(f, ref filter, input);
         }
@@ -115,6 +132,55 @@ namespace Battle.QSimulation.Player
             }
         }
 
+        private void GetBotInput(Frame f, BattlePlayerDataQComponent* playerData, Input* outBotInput)
+        {
+            if (playerData->MovementCooldown < InterceptConstants.CooldownThreshold)
+            {
+                FP randnum = f.RNG->Next(0, InterceptConstants.CooldownRandAddMax);
+                playerData->MovementCooldown += randnum;
+                *outBotInput = new Input();
+                return;
+            }
+
+            playerData->MovementCooldown = 0;
+            ComponentFilter<BattleProjectileQComponent> projectiles = f.Filter<BattleProjectileQComponent>();
+            bool found = projectiles.NextUnsafe(out EntityRef projectileEntity, out BattleProjectileQComponent* projectile);
+            if (!found) return;
+            FPVector2 projectileDirection = projectile->Direction;
+            if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? projectileDirection.Y > 0 : projectileDirection.Y < 0) return;
+            FPVector2 projectilePosition = projectile->Position;
+            FP predictionTime = InterceptConstants.LookAheadTime;
+
+            FPVector2 predictedPosition = projectilePosition + projectileDirection * projectile->Speed * predictionTime;
+
+            BattleGridPosition predictedGridPosition = BattleGridManager.WorldPositionToGridPosition(predictedPosition);
+
+
+            // clamp the TargetPosition inside sidebounds
+            predictedGridPosition.Col = Mathf.Clamp(predictedGridPosition.Col, 0, BattleGridManager.Columns - 1);
+
+            if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha)
+            {
+                predictedGridPosition.Row = Mathf.Clamp(
+                    predictedGridPosition.Row,
+                    BattleGridManager.TeamAlphaFieldStart + playerData->GridExtendBottom,
+                    BattleGridManager.TeamAlphaFieldEnd - playerData->GridExtendTop
+            );
+            }
+
+            // clamp the TargetPosition inside teams playfield for betateam
+            else
+            {
+                predictedGridPosition.Row = Mathf.Clamp(
+                    predictedGridPosition.Row,
+                    BattleGridManager.TeamBetaFieldStart + playerData->GridExtendBottom,
+                    BattleGridManager.TeamBetaFieldEnd - playerData->GridExtendTop
+                );
+            }
+
+            *outBotInput = new Input() { MouseClick = true, MovementPosition = predictedGridPosition };
+        }
+
         /// <summary>
         /// Private helper method for the public <see cref="Update(Frame, ref Filter)">Update</see> method.<br/>
         /// Handles player's movement and rotation.
@@ -170,6 +236,7 @@ namespace Battle.QSimulation.Player
 
                 Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", playerData->TargetPosition);
             }
+
 
             // handle rotation
             {

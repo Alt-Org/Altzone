@@ -877,6 +877,7 @@ namespace Altzone.Scripts.Lobby
             if(task.Result)
             {
                 _player.PlayerSlot = playerPosition;
+                /*_player.IsBot = true;*/
                 _runner?.Game.AddPlayer(_player);
             }
             else

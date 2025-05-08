@@ -30,6 +30,9 @@ component BattlePlayerDataQComponent
     [FreeOnComponentRemoved] list<BattlePlayerHitboxLink> HitboxListAll;
     [FreeOnComponentRemoved] list<BattlePlayerHitboxLink> HitboxListShield;
     [FreeOnComponentRemoved] list<BattlePlayerHitboxLink> HitboxListCharacter;
+
+    bool ControlledByAi;
+    FP MovementCooldown;
 }
 
 //} PlayerData
