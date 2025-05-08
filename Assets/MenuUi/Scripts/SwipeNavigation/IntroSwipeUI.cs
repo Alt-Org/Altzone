@@ -14,11 +14,11 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         public override void PreviousSlide()
         {
-            if (CurrentPage == 1)
+            if (CurrentPage == 8)
             {
                 return;
             }
-            else if (CurrentPage == 6)
+            else if (CurrentPage == 13)
             {
                 CurrentPage  = maxPage;
             }
@@ -31,7 +31,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         {
             if (CurrentPage == maxPage)
             {
-                CurrentPage = 6;
+                CurrentPage = 8;
             }
             else
             {
