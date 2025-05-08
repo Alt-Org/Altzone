@@ -33,8 +33,8 @@ namespace Battle.View.UI
         {
             // Selecting correct multiorientation element
             BattleUiMultiOrientationElement multiOrientationElement = playerType == PlayerType.LocalPlayer
-                                                                        ? _localPlayerMultiOrientationElement
-                                                                        : _localTeammateMultiOrientationElement;
+                ? _localPlayerMultiOrientationElement
+                : _localTeammateMultiOrientationElement;
 
             // Setting BattleUiMovableElementData to multi orientation element
             if (data != null) multiOrientationElement.SetData(data);
