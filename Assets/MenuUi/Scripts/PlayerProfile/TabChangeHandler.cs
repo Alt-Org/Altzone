@@ -5,7 +5,7 @@ using MenuUi.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ProfileMenuTabs : MonoBehaviour
+public class TabChangeHandler : MonoBehaviour
 {
     [System.Serializable]
     public class ButtonWindowBind
