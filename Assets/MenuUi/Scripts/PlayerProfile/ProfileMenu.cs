@@ -32,6 +32,7 @@ public class ProfileMenu : MonoBehaviour
     [SerializeField] private TMP_InputField _playerNameInputField;
     [SerializeField] private TextMeshProUGUI _playerClanNameText;
     [SerializeField] private TextMeshProUGUI _rolesErrorMessage;
+    [SerializeField] private TextMeshProUGUI _DefenceClassText;
     [SerializeField] private TextMeshProUGUI _MottoText;
     [SerializeField] private TextMeshProUGUI _TimePlayedText;
     [SerializeField] private TextMeshProUGUI _activityText;
@@ -313,6 +314,9 @@ public class ProfileMenu : MonoBehaviour
 
                 _activityText.text = _playerData.points.ToString();
                 //_WinsText.text = _playerData.stats.wonBattles.ToString();
+
+                CharacterClassID defenceClass = (CharacterClassID)((_playerData.SelectedCharacterId / 100) * 100);
+                _DefenceClassText.text = defenceClass.ToString();
 
                 store.GetClanData(_playerData.ClanId, clan =>
                 {
