@@ -15,8 +15,10 @@ namespace MenuUi.Scripts.Lobby.BattleButton
     public class GameTypeOption : MonoBehaviour
     {
         [SerializeField] public Button ButtonComponent;
+        [SerializeField] private Button _settingsButton;
         [SerializeField] private Image _gameTypeImage;
         [SerializeField] private TMP_Text _gameTypeText;
+        [SerializeField] private TMP_Text _gameTypeDescription;
         [SerializeField] private Image _backgroundImage;
         [SerializeField] private Color _selectedColor;
         [SerializeField] private Color _unselectedColor;
@@ -28,22 +30,32 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         public delegate void GameTypeOptionSelectedHandler(GameTypeInfo gameTypeInfo);
         public GameTypeOptionSelectedHandler OnGameTypeOptionSelected;
 
+        public delegate void GameTypeSettingsRequestedHandler(GameTypeInfo gameTypeInfo);
+        public GameTypeSettingsRequestedHandler OnGameTypeSettingsRequested;
+
 
         private void Awake()
         {
-            ButtonComponent.onClick.AddListener(OnButtonPressed);
+            ButtonComponent.onClick.AddListener(OnButtonComponentPressed);
+            _settingsButton.onClick.AddListener(OnSettingsButtonPressed);
         }
 
 
         private void OnDestroy()
         {
-            ButtonComponent.onClick.RemoveListener(OnButtonPressed);
+            ButtonComponent.onClick.RemoveListener(OnButtonComponentPressed);
+            _settingsButton.onClick.RemoveListener(OnSettingsButtonPressed);
         }
 
 
-        private void OnButtonPressed()
+        private void OnButtonComponentPressed()
         {
             OnGameTypeOptionSelected?.Invoke(_gameTypeInfo);
+        }
+
+        private void OnSettingsButtonPressed()
+        {
+            OnGameTypeSettingsRequested?.Invoke(_gameTypeInfo);
         }
 
         /// <summary>
@@ -55,6 +67,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         {
             _gameTypeImage.sprite = info.Icon;
             _gameTypeText.text = info.Name;
+            _gameTypeDescription.text = info.Description;
             _gameTypeInfo = info;
             SetSelected(selected);
 
