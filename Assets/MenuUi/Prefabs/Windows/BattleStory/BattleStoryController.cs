@@ -48,7 +48,16 @@ public class BattleStoryController : MonoBehaviour
     [SerializeField]
     private List<ConversationLine> _conversationList;
 
+    [Header("Story Play Controls"), SerializeField]
+    private TextMeshProUGUI _currentSegmentText;
+    [SerializeField]
+    private Button _previousSegment;
+    [SerializeField]
+    private Button _nextSegment;
+
     private List<StorySegment> _storySegments = new();
+    private int _currentSegment;
+    private int _totalSegments;
 
     // Start is called before the first frame update
     void Start()
@@ -56,6 +65,8 @@ public class BattleStoryController : MonoBehaviour
         _exitButton.onClick.AddListener(ExitStory);
         StartCoroutine(SetPathArea());
         GenerateStory();
+        _totalSegments = _storySegments.Count;
+        _currentSegment = 0;
         StartCoroutine(PlayAnimation());
     }
     private void OnEnable()
@@ -104,7 +115,9 @@ public class BattleStoryController : MonoBehaviour
         yield return new WaitForSeconds(1f);
         for (int i = 0; i < _storySegments.Count; i++)
         {
-            
+            _currentSegment++;
+            _currentSegmentText.text = $"{_currentSegment}/{_totalSegments}";
+
             GameObject ball = _storySegments[i].Player == 0? Instantiate(_emotionBall, _startPositionLeft) : Instantiate(_emotionBall, _startPositionRight);
 
             ball.GetComponent<Image>().sprite = GetEmotionData(_storySegments[i].ClipEmotion).BallSprite;
