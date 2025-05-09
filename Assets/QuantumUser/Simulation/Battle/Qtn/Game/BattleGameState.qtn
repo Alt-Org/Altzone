@@ -1,0 +1,11 @@
+enum BattleGameState
+{
+  InitializeGame,
+  CreateMap,
+  ReadyToStart,
+  Countdown,
+  GetReadyToPlay,
+  Playing,
+  GameOver,
+  PostGame
+}

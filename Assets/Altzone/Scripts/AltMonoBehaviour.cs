@@ -115,6 +115,7 @@ public class AltMonoBehaviour : MonoBehaviour
                 _id = playerData.Id,
                 name = playerData.Name,
                 clan_Id = playerData.ClanId,
+                avatar = new ServerAvatar(playerData.AvatarData),
                 currentAvatarId = playerData.SelectedCharacterId,
                 battleCharacter_ids = playerData.SelectedCharacterIds,
                 
@@ -138,9 +139,9 @@ public class AltMonoBehaviour : MonoBehaviour
             if(callback2 != null)
             {
                 playerData.UpdatePlayerData(callback2);
-                callback(playerData);
+                if(callback != null) callback(playerData);
             }
-            else callback(playerData);
+            else if (callback != null) callback(playerData);
         }));
 
         yield return new WaitUntil(() => callback != null);

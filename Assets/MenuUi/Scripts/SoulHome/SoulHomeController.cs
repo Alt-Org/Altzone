@@ -35,7 +35,13 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private Button _editButton;
         [SerializeField]
+        private TextMeshProUGUI _editButtonText;
+        [SerializeField]
         private GameObject _editTray;
+        [SerializeField]
+        private JukeBoxSoulhomeHandler _jukeBoxPopup;
+        [SerializeField]
+        private Button _openJukeBox;
         [SerializeField]
         private TextMeshProUGUI _musicName;
         [SerializeField]
@@ -60,6 +66,8 @@ namespace MenuUI.Scripts.SoulHome
             }
             EditModeTrayResize();
             _audioManager = AudioManager.Instance;
+            _editButton.onClick.AddListener(()=>EditModeToggle());
+            _openJukeBox.onClick.AddListener(()=>_jukeBoxPopup.ToggleJokeBoxScreen(true));
         }
 
         public void OnEnable()
@@ -74,6 +82,7 @@ namespace MenuUI.Scripts.SoulHome
             _musicName.text = AudioManager.Instance?.PlayMusic(MusicSection.SoulHome);
             EditModeTrayResize();
             if (GameAnalyticsManager.Instance != null) GameAnalyticsManager.Instance.OpenSoulHome();
+            JukeboxController.OnChangeJukeBoxSong += SetSongName;
         }
 
         public void OnDisable()
@@ -85,6 +94,9 @@ namespace MenuUI.Scripts.SoulHome
                     rootObject.GetComponent<MainMenuAudioManager>()?.PlayMusic();
             }
             AudioManager.Instance?.StopMusic();
+            _jukeBoxPopup.StopJukebox();
+            _jukeBoxPopup.ToggleJokeBoxScreen(false);
+            JukeboxController.OnChangeJukeBoxSong -= SetSongName;
         }
 
         public void SetRoomName(GameObject room)
@@ -181,12 +193,14 @@ namespace MenuUI.Scripts.SoulHome
                 _editButton.interactable = true;
                 _editTray.GetComponent<RectTransform>().pivot = new(0, 0.5f);
                 _editTray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                _editButtonText.text = "Avaa\nMuokkaustila";
             }
             else
             {
-                _editButton.interactable = false;
-                _editTray.GetComponent<RectTransform>().pivot = new(1, 0.5f);
-                _editTray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                //_editButton.interactable = false;
+                //_editTray.GetComponent<RectTransform>().pivot = new(1, 0.5f);
+                //_editTray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                _editButtonText.text = "Sulje\nMuokkaustila";
             }
         }
 
@@ -245,5 +259,18 @@ namespace MenuUI.Scripts.SoulHome
             SignalBus.OnChangePopupInfoSignal(popupText);
         }
 
+        private void SetSongName(JukeboxSong song)
+        {
+            _musicName.text = song.songName;
+        }
+
+        public bool CheckInteractableStatus()
+        {
+            if (_exitPending) return false;
+            if (_confirmPopupOpen) return false;
+            if (_jukeBoxPopup.JukeBoxOpen) return false;
+
+            return true;
+        }
     }
 }

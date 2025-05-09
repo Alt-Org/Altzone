@@ -1,0 +1,4 @@
+#define BATTLE_PLAYER_SLOT_COUNT 4
+#define BATTLE_PLAYER_CHARACTER_COUNT 3
+#define BATTLE_PLAYER_CHARACTER_TOTAL_COUNT 12 // PLAYER_SLOT_COUNT * PLAYER_CHARACTER_COUNT
+// If you change PLAYER_SLOT_COUNT or PLAYER_CHARACTER_COUNT, then you have to recalculate and change PLAYER_CHARACTER_TOTAL_COUNT. We would do it automatically, but Quantum won't let us. :|

@@ -25,6 +25,7 @@ public class PollPopup : MonoBehaviour
     {
         pollId = newPollId;
         pollData = PollManager.GetPollData(pollId);
+        if (pollData == null) return;
         //Debug.Log("PollId Set: " + pollId);
 
         SetValues();
@@ -66,5 +67,7 @@ public class PollPopup : MonoBehaviour
         pollData.AddVote(answer);
         SetValues();
         VotingActions.ReloadPollList?.Invoke();
+
+        gameObject.SetActive(false);
     }
 }

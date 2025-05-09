@@ -81,11 +81,14 @@ namespace MenuUi.Scripts.SwipeNavigation
             set
             {
                 if (isSwipeMode && gameObject.activeInHierarchy) return;
-                currentPage = value;
-                if (_isInMainMenu) SettingsCarrier.Instance.mainMenuWindowIndex = currentPage;
-                UpdateButtonContent();
-                StartCoroutine(OnSwipeOneStep(CurrentPage));
-                OnCurrentPageChanged?.Invoke();
+                if (currentPage != value)
+                {
+                    currentPage = value;
+                    if (_isInMainMenu) SettingsCarrier.Instance.mainMenuWindowIndex = currentPage;
+                    UpdateButtonContent();
+                    StartCoroutine(OnSwipeOneStep(CurrentPage));
+                    OnCurrentPageChanged?.Invoke();
+                }
             }
         }
 
@@ -109,16 +112,16 @@ namespace MenuUi.Scripts.SwipeNavigation
             if (_isInMainMenu)
             {
                 //CurrentPage = SettingsCarrier.Instance.mainMenuWindowIndex;
-                CurrentPage = 2;
+                currentPage = 2;
             }
             else
             {
-                CurrentPage = 0;
+                currentPage = 0;
             }
 
             scrollRect = GetComponent<ScrollRect>();
             UpdateSwipeAreaValues();
-            StartCoroutine(SetScrollBarValue(CurrentPage, true));
+            StartCoroutine(SetScrollBarValue(currentPage, true));
         }
 
         private void Start()
@@ -209,7 +212,7 @@ namespace MenuUi.Scripts.SwipeNavigation
                 if (!instant) StartCoroutine(OnSwipeOneStep(index));
                 else scrollBar.value = scrollPageValues[index];
             }
-            currentPage = index;
+            CurrentPage = index;
         }
 
         private void UpdateInput()
@@ -352,7 +355,6 @@ namespace MenuUi.Scripts.SwipeNavigation
             float start = scrollBar.value;
             float current = 0;
             float percent = 0;
-
             isSwipeMode = true;
             if (scrollRect)
             {

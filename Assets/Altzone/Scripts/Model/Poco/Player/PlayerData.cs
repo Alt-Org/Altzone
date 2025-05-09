@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Altzone.Scripts.Common;
 using Altzone.Scripts.Model.Poco.Attributes;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
@@ -58,6 +59,11 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public PlayStyles playStyles;
 
+       public string emotionSelectorDate = null;
+
+        public string daysBetweenInput = "0";
+
+        public List<string> _playerDataEmotionList = new List<string> { Emotion.Blank.ToString(), Emotion.Love.ToString(), Emotion.Playful.ToString(), Emotion.Joy.ToString(), Emotion.Sorrow.ToString(), Emotion.Anger.ToString(), Emotion.Blank.ToString() };
 
         public List<PlayerVoteData> playerVotes = new List<PlayerVoteData>();
 
@@ -92,6 +98,27 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         }
 
+        public List<Emotion> playerDataEmotionList
+        {
+            get
+            {
+                List<Emotion> list = new();
+                foreach(string emotion in _playerDataEmotionList)
+                {
+                    list.Add((Emotion)Enum.Parse(typeof(Emotion), emotion));
+                }
+                return list;
+            }
+            set
+            {
+                List<string> list = new();
+                foreach (Emotion emotion in value)
+                {
+                    list.Add(emotion.ToString());
+                }
+                _playerDataEmotionList = list;
+            }
+        }
 
         public PlayerData(string id, string clanId, int currentCustomCharacterId, string[]currentBattleCharacterIds, string name, int backpackCapacity, string uniqueIdentifier)
         {
@@ -148,6 +175,9 @@ namespace Altzone.Scripts.Model.Poco.Player
             points = player.points;
             stats = player.gameStatistics;
             Task = player.DailyTask != null ? new(player.DailyTask) : null;
+            AvatarData = player.avatar !=null ? new(player.name ,player.avatar): null;
+            if (_playerDataEmotionList == null || _playerDataEmotionList.Count == 0) playerDataEmotionList = new List<Emotion> { Emotion.Blank, Emotion.Love, Emotion.Playful, Emotion.Joy, Emotion.Sorrow, Emotion.Anger, Emotion.Blank };
+            if (daysBetweenInput == null) daysBetweenInput = "0";
         }
 
         public void UpdateCustomCharacter(CustomCharacter character)
