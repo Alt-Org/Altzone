@@ -85,7 +85,7 @@ GameObject:
   - component: {fileID: 1481283929620429481}
   - component: {fileID: 2068831372368765768}
   m_Layer: 5
-  m_Name: ExitButton (1)
+  m_Name: PreviousSegmentButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -954,6 +954,9 @@ MonoBehaviour:
     Character: 0
   - Line: Kelan kassalle
     Character: 1
+  _currentSegmentText: {fileID: 1685547280073614959}
+  _previousSegment: {fileID: 2068831372368765768}
+  _nextSegment: {fileID: 3678908690295927505}
 --- !u!1 &1468451348633219363
 GameObject:
   m_ObjectHideFlags: 0
@@ -2155,7 +2158,7 @@ GameObject:
   - component: {fileID: 4475346310935847126}
   - component: {fileID: 3678908690295927505}
   m_Layer: 5
-  m_Name: ExitButton (2)
+  m_Name: NextSegmentButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
