@@ -19,7 +19,6 @@ namespace Altzone.Scripts.ReferenceSheets
 {
     [CreateAssetMenu(menuName = "ALT-Zone/RarityColourReference", fileName = "RarityColourReference")]
     public class RarityColourReference : ScriptableObject
-        public class RarityColourReference : ScriptableObject
     {
         [Header("Rarity Color")]
         [SerializeField] private Color _commonColor;
