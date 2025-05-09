@@ -67,11 +67,11 @@ public class InvSlotInfoHandler : MonoBehaviour
         }
 
         // Marked for selling
-        _markedForSellingText.text = "Myynniss‰";
+        _markedForSellingText.text = "Myynniss√§";
         _markedForSellingPanel.SetActive(furn.ClanFurniture.VotedToSell);
 
         // In voting
-        _inVotingText.text = "ƒ‰nestyksess‰";
+        _inVotingText.text = "√Ñ√§nestyksess√§";
         _inVotingPanel.SetActive(furn.ClanFurniture.InVoting);
 
         // Coin

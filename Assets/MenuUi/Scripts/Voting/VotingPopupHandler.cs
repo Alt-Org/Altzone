@@ -70,10 +70,10 @@ public class VotingPopupHandler : MonoBehaviour
         switch (pollType)
         {
             case FurniturePollType.Buying:
-                _popupText.text = "Uusi osto-‰‰nestys k‰ynniss‰";
+                _popupText.text = "Uusi osto-√§√§nestys k√§ynniss√§";
                 break;
             case FurniturePollType.Selling:
-                _popupText.text = "Uusi myynti-‰‰nestys k‰ynniss‰";
+                _popupText.text = "Uusi myynti-√§√§nestys k√§ynniss√§";
                 break;
         }
 
