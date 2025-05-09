@@ -48,11 +48,14 @@ public class BattleStoryController : MonoBehaviour
     [SerializeField]
     private List<ConversationLine> _conversationList;
 
+    private List<StorySegment> _storySegments = new();
+
     // Start is called before the first frame update
     void Start()
     {
         _exitButton.onClick.AddListener(ExitStory);
         StartCoroutine(SetPathArea());
+        GenerateStory();
         StartCoroutine(PlayAnimation());
     }
     private void OnEnable()
@@ -61,107 +64,85 @@ public class BattleStoryController : MonoBehaviour
         _bottomLineImage.gameObject.SetActive(false);
     }
 
-
-    public IEnumerator PlayAnimation()
+    private void GenerateStory()
     {
         _validatedList = ValidateEmotions();
 
         int clipsCount = _validatedList.Count;
-        if (clipsCount <= 0) yield break;
-        if (_routesLeft.Count <= 0) yield break;
-        if (_routesRight.Count <= 0) yield break;
-        List<Emotion> randomClipOrder1 = new();
-        List<int> randomBallOrder1 = new();
-        List<string> lineOrder1 = new();
+        if (clipsCount <= 0) return;
+        if (_routesLeft.Count <= 0) return;
+        if (_routesRight.Count <= 0) return;
 
-        List<Emotion> randomClipOrder2 = new();
-        List<int> randomBallOrder2 = new();
-        List<string> lineOrder2 = new();
         int prevSelectedValue1 = -1;
         int selectedvalue1 = -1;
         int prevSelectedValue2 = -1;
         int selectedvalue2 = -1;
-        for (int i= 0; i<5; i++)
+        for (int i = 0; i < 5; i++)
         {
             do
             {
                 selectedvalue1 = Random.Range(0, clipsCount);
-            } while(selectedvalue1.Equals(prevSelectedValue1));
-            randomClipOrder1.Add(_validatedList[selectedvalue1].Emotion);
+            } while (selectedvalue1.Equals(prevSelectedValue1));
+            Emotion emotion = _validatedList[selectedvalue1].Emotion;
             prevSelectedValue1 = selectedvalue1;
             int ballAnimation1 = Random.Range(0, _routesLeft.Count);
-            randomBallOrder1.Add(ballAnimation1);
+            _storySegments.Add(new(emotion, 0, ballAnimation1, _conversationList[i * 2].Line));
 
             do
             {
                 selectedvalue2 = Random.Range(0, clipsCount);
             } while (selectedvalue2.Equals(prevSelectedValue2));
-            randomClipOrder2.Add(_validatedList[selectedvalue2].Emotion);
+            emotion = _validatedList[selectedvalue2].Emotion;
             prevSelectedValue2 = selectedvalue2;
             int ballAnimation2 = Random.Range(0, _routesRight.Count);
-            randomBallOrder2.Add(ballAnimation2);
+            _storySegments.Add(new(emotion, 1, ballAnimation2, _conversationList[i * 2 + 1].Line));
         }
+    }
 
-        foreach(ConversationLine line in _conversationList)
-        {
-            if (line.Character == 0) lineOrder1.Add(line.Line);
-            else if(line.Character == 1) lineOrder2.Add(line.Line);
-        }
-
+    public IEnumerator PlayAnimation()
+    {
         yield return new WaitForSeconds(1f);
-        for (int i = 0; i < randomClipOrder1.Count; i++)
+        for (int i = 0; i < _storySegments.Count; i++)
         {
-            //Debug.LogWarning($"Character 1: {randomClipOrder1[i]}:{validatedList.First(x => x.Emotion == randomClipOrder1[i]).Character1Animation.name}, Ball 1: {randomBallOrder1[i]}");
-            //_characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
-            GameObject ball = Instantiate(_emotionBall, _startPositionLeft);
-
-            ball.GetComponent<Image>().sprite = GetEmotionData(randomClipOrder1[i]).BallSprite;
             
-            ball.GetComponent<RectTransform>().rotation = Quaternion.Euler(new(0, 180, 0));
+            GameObject ball = _storySegments[i].Player == 0? Instantiate(_emotionBall, _startPositionLeft) : Instantiate(_emotionBall, _startPositionRight);
+
+            ball.GetComponent<Image>().sprite = GetEmotionData(_storySegments[i].ClipEmotion).BallSprite;
+
+            if (_storySegments[i].Player == 0) ball.GetComponent<RectTransform>().rotation = Quaternion.Euler(new(0, 180, 0));
             bool ballDone = false;
 
-            if (_routesLeft.Count <= randomBallOrder1[i] || 0 > randomBallOrder1[i])
+            if (_storySegments[i].Player == 0)
             {
-                ballDone = true;
+                if (_routesLeft.Count <= _storySegments[i].BallRoute || 0 > _storySegments[i].BallRoute)
+                {
+                    ballDone = true;
+                }
+                else
+                {
+                    StartCoroutine(_routesLeft[_storySegments[i].BallRoute].TraverseRoute(ball, done => ballDone = done));
+                    _bottomLineImage.SetText(GetEmotionData(_storySegments[i].ClipEmotion).LineSprite, _storySegments[i].Line);
+                    _characterAnimator1.Play(GetEmotionData(_storySegments[i].ClipEmotion).Character1Animation.name);
+                }
             }
             else
             {
-                StartCoroutine(_routesLeft[randomBallOrder1[i]].TraverseRoute(ball, done => ballDone = done));
-                _bottomLineImage.SetText(GetEmotionData(randomClipOrder1[i]).LineSprite, lineOrder1[i]);
-                _characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
+                if (_routesRight.Count <= _storySegments[i].BallRoute || 0 > _storySegments[i].BallRoute)
+                {
+                    ballDone = true;
+                }
+                else
+                {
+                    StartCoroutine(_routesRight[_storySegments[i].BallRoute].TraverseRoute(ball, done => ballDone = done));
+                    _topLineImage.SetText(GetEmotionData(_storySegments[i].ClipEmotion).LineSprite, _storySegments[i].Line);
+                    _characterAnimator2.Play(GetEmotionData(_storySegments[i].ClipEmotion).Character2Animation.name);
+                }
             }
 
             yield return new WaitUntil(() => ballDone is true);
             Destroy(ball);
-            //_bottomLineImage.gameObject.SetActive(true);
-            //_bottomLineImage.sprite = GetEmotionData(randomClipOrder1[i]).LineSprite;
-            //_characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
-            yield return new WaitForSeconds(0.5f);
-            //Debug.LogWarning($"Character 2: {randomClipOrder2[i]}:{validatedList.First(x => x.Emotion == randomClipOrder2[i]).Character2Animation.name}, Ball 2: {randomBallOrder2[i]}");
-            //_characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
-            GameObject ball2 = Instantiate(_emotionBall, _startPositionRight);
 
-            ball2.GetComponent<Image>().sprite = GetEmotionData(randomClipOrder2[i]).BallSprite;
-
-            ballDone = false;
-
-            if (_routesRight.Count <= randomBallOrder2[i] || 0 > randomBallOrder2[i])
-            {
-                ballDone = true;
-            }
-            else
-            {
-                StartCoroutine(_routesRight[randomBallOrder2[i]].TraverseRoute(ball2, done => ballDone = done));
-                _topLineImage.SetText(GetEmotionData(randomClipOrder2[i]).LineSprite, lineOrder2[i]);
-                _characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
-            }
-
-            yield return new WaitUntil(() => ballDone is true);
-            Destroy(ball2);
-            //_topLineImage.gameObject.SetActive(true);
-            //_topLineImage.sprite = GetEmotionData(randomClipOrder2[i]).LineSprite;
-            //_characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(1f);
         }
     }
 
@@ -242,6 +223,28 @@ public class EmotionObject
     public AnimationClip Character1Animation { get => _character1Animation;}
     public AnimationClip Character2Animation { get => _character2Animation;}
     public Sprite LineSprite { get => _lineSprite;}
+}
+
+public class StorySegment
+{
+    private Emotion _clipEmotion;
+    private int _ballRoute;
+    private string _line;
+    private int _player;
+
+    public Emotion ClipEmotion { get => _clipEmotion; }
+    public int BallRoute { get => _ballRoute;}
+    public string Line { get => _line;}
+    public int Player { get => _player;}
+
+    public StorySegment(Emotion emotion, int player, int route, string line)
+    {
+        _clipEmotion = emotion;
+        _player = player;
+        _line = line;
+        _ballRoute = route;
+    }
+
 }
 
 [Serializable]
