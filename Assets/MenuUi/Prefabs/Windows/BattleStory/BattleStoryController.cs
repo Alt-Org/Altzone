@@ -59,20 +59,32 @@ public class BattleStoryController : MonoBehaviour
     private int _currentSegment;
     private int _totalSegments;
 
+    private Coroutine _playbackCoroutine;
+    private GameObject _ball;
+
     // Start is called before the first frame update
     void Start()
     {
         _exitButton.onClick.AddListener(ExitStory);
+        _previousSegment.onClick.AddListener(PlayPreviousSegment);
+        _nextSegment.onClick.AddListener(PlayNextSegment);
         StartCoroutine(SetPathArea());
         GenerateStory();
         _totalSegments = _storySegments.Count;
         _currentSegment = 0;
-        StartCoroutine(PlayAnimation());
+        _playbackCoroutine = StartCoroutine(PlayAnimation());
     }
     private void OnEnable()
     {
         _topLineImage.gameObject.SetActive(false);
         _bottomLineImage.gameObject.SetActive(false);
+    }
+
+    private void OnDestroy()
+    {
+        _exitButton.onClick.RemoveAllListeners();
+        _previousSegment.onClick.RemoveAllListeners();
+        _nextSegment.onClick.RemoveAllListeners();
     }
 
     private void GenerateStory()
@@ -113,49 +125,79 @@ public class BattleStoryController : MonoBehaviour
     public IEnumerator PlayAnimation()
     {
         yield return new WaitForSeconds(1f);
-        for (int i = 0; i < _storySegments.Count; i++)
+        for (int i = _currentSegment; i < _storySegments.Count; i++)
         {
             _currentSegment++;
-            _currentSegmentText.text = $"{_currentSegment}/{_totalSegments}";
+            yield return PlayAnimationSegment(i);
 
-            GameObject ball = _storySegments[i].Player == 0? Instantiate(_emotionBall, _startPositionLeft) : Instantiate(_emotionBall, _startPositionRight);
+            yield return new WaitForSeconds(1f);
+        }
+    }
 
-            ball.GetComponent<Image>().sprite = GetEmotionData(_storySegments[i].ClipEmotion).BallSprite;
+    private IEnumerator PlayAnimationSegment(int segment)
+    {
+        _currentSegmentText.text = $"{_currentSegment}/{_totalSegments}";
 
-            if (_storySegments[i].Player == 0) ball.GetComponent<RectTransform>().rotation = Quaternion.Euler(new(0, 180, 0));
-            bool ballDone = false;
+        _ball = _storySegments[segment].Player == 0 ? Instantiate(_emotionBall, _startPositionLeft) : Instantiate(_emotionBall, _startPositionRight);
 
-            if (_storySegments[i].Player == 0)
+        _ball.GetComponent<Image>().sprite = GetEmotionData(_storySegments[segment].ClipEmotion).BallSprite;
+
+        if (_storySegments[segment].Player == 0) _ball.GetComponent<RectTransform>().rotation = Quaternion.Euler(new(0, 180, 0));
+        bool ballDone = false;
+
+        if (_storySegments[segment].Player == 0)
+        {
+            if (_routesLeft.Count <= _storySegments[segment].BallRoute || 0 > _storySegments[segment].BallRoute)
             {
-                if (_routesLeft.Count <= _storySegments[i].BallRoute || 0 > _storySegments[i].BallRoute)
-                {
-                    ballDone = true;
-                }
-                else
-                {
-                    StartCoroutine(_routesLeft[_storySegments[i].BallRoute].TraverseRoute(ball, done => ballDone = done));
-                    _bottomLineImage.SetText(GetEmotionData(_storySegments[i].ClipEmotion).LineSprite, _storySegments[i].Line);
-                    _characterAnimator1.Play(GetEmotionData(_storySegments[i].ClipEmotion).Character1Animation.name);
-                }
+                ballDone = true;
             }
             else
             {
-                if (_routesRight.Count <= _storySegments[i].BallRoute || 0 > _storySegments[i].BallRoute)
-                {
-                    ballDone = true;
-                }
-                else
-                {
-                    StartCoroutine(_routesRight[_storySegments[i].BallRoute].TraverseRoute(ball, done => ballDone = done));
-                    _topLineImage.SetText(GetEmotionData(_storySegments[i].ClipEmotion).LineSprite, _storySegments[i].Line);
-                    _characterAnimator2.Play(GetEmotionData(_storySegments[i].ClipEmotion).Character2Animation.name);
-                }
+                StartCoroutine(_routesLeft[_storySegments[segment].BallRoute].TraverseRoute(_ball, done => ballDone = done));
+                _bottomLineImage.SetText(GetEmotionData(_storySegments[segment].ClipEmotion).LineSprite, _storySegments[segment].Line);
+                _characterAnimator1.Play(GetEmotionData(_storySegments[segment].ClipEmotion).Character1Animation.name);
             }
+        }
+        else
+        {
+            if (_routesRight.Count <= _storySegments[segment].BallRoute || 0 > _storySegments[segment].BallRoute)
+            {
+                ballDone = true;
+            }
+            else
+            {
+                StartCoroutine(_routesRight[_storySegments[segment].BallRoute].TraverseRoute(_ball, done => ballDone = done));
+                _topLineImage.SetText(GetEmotionData(_storySegments[segment].ClipEmotion).LineSprite, _storySegments[segment].Line);
+                _characterAnimator2.Play(GetEmotionData(_storySegments[segment].ClipEmotion).Character2Animation.name);
+            }
+        }
 
-            yield return new WaitUntil(() => ballDone is true);
-            Destroy(ball);
+        yield return new WaitUntil(() => ballDone is true);
+        Destroy(_ball);
+        _ball = null;
+    }
 
-            yield return new WaitForSeconds(1f);
+    private void PlayNextSegment()
+    {
+        if (_currentSegment < _totalSegments)
+        {
+            if (_playbackCoroutine != null) StopCoroutine(_playbackCoroutine);
+            if (_ball != null) Destroy(_ball);
+            _ball = null;
+            _currentSegment++;
+            StartCoroutine(PlayAnimationSegment(_currentSegment - 1));
+        }
+    }
+
+    private void PlayPreviousSegment()
+    {
+        if (_currentSegment > 1)
+        {
+            if (_playbackCoroutine != null) StopCoroutine(_playbackCoroutine);
+            if (_ball != null) Destroy(_ball);
+            _ball = null;
+            _currentSegment--;
+            StartCoroutine(PlayAnimationSegment(_currentSegment - 1));
         }
     }
 
