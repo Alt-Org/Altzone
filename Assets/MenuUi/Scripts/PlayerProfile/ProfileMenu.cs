@@ -16,6 +16,7 @@ using System.IO;
 using UnityEngine.EventSystems;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ModelV2;
 
 public class ProfileMenu : MonoBehaviour
 {
@@ -44,9 +45,16 @@ public class ProfileMenu : MonoBehaviour
 
     [Header("Selectors")]
     [SerializeField] private GameObject _answerOptionPrefab;
-    [SerializeField] private Button _openMottoOptions;
     [SerializeField] private GameObject _mottoOptionsPopup;
     [SerializeField] private CharacterResponseList _characterResponseList;
+    [SerializeField] private Image _favoriteCharacterImage;
+    [SerializeField] private GameObject _characterOptionsPopup;
+    [SerializeField] private GameObject _characterOptionPrefab;
+
+    [Header("Buttons")]
+    [SerializeField] private Button _openMottoOptions;
+    [SerializeField] private Button _openFavoriteDefenceSelection;
+    [SerializeField] private GameObject _closePopupAreaButton;
 
     [Header("Clan Button")]
     [SerializeField] private Button _ClanURLButton;
@@ -244,6 +252,18 @@ public class ProfileMenu : MonoBehaviour
     {
         _openMottoOptions.onClick.AddListener(() => { _mottoOptionsPopup.SetActive(true); });
 
+        _closePopupAreaButton.GetComponentInChildren<Button>().onClick.AddListener(() =>
+        {
+            _characterOptionsPopup.SetActive(false);
+            _closePopupAreaButton.SetActive(false);
+        });
+
+        _openFavoriteDefenceSelection.onClick.AddListener(() =>
+        {
+            _characterOptionsPopup.SetActive(true);
+            _closePopupAreaButton.SetActive(true);
+        });
+
         // Get motto options based on character class
         List<string> mottoOptionList = _characterResponseList.GetMottoOptions((CharacterClassID)((_playerData.SelectedCharacterId / 100) * 100));
         foreach (string option in mottoOptionList)
@@ -254,6 +274,20 @@ public class ProfileMenu : MonoBehaviour
             {
                 _MottoText.text = option;
                 _mottoOptionsPopup.SetActive(false);
+            });
+        }
+
+        // Get all defences for choosing the favorite
+        IEnumerable<PlayerCharacterPrototype> characters = PlayerCharacterPrototypes.Prototypes.Where(c => c != null);
+        foreach (PlayerCharacterPrototype character in characters)
+        {
+            GameObject defenceOption = Instantiate(_characterOptionPrefab, _characterOptionsPopup.GetComponentInChildren<GridLayoutGroup>().transform);
+            Button button = defenceOption.GetComponent<FavoriteDefenceOptionHandler>().SetData(character.Name, character.GalleryImage);
+            button.onClick.AddListener(() =>
+            {
+                _favoriteCharacterImage.sprite = character.GalleryImage;
+                _characterOptionsPopup.SetActive(false);
+                _closePopupAreaButton.SetActive(false);
             });
         }
     }

@@ -1391,7 +1391,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2627300448629494888}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1399,12 +1399,12 @@ RectTransform:
   - {fileID: 2323955220154490699}
   - {fileID: 6607696901585527458}
   - {fileID: 6221721849011494024}
-  m_Father: {fileID: 536423649987349203}
+  m_Father: {fileID: 6619757172094321945}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0.41045296}
+  m_AnchorMax: {x: 0.9, y: 0.67410487}
+  m_AnchoredPosition: {x: -0.14027, y: -0.19785309}
+  m_SizeDelta: {x: -0.28049, y: -4.0107}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4295079196897515146
 CanvasRenderer:
@@ -1434,7 +1434,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1558,7 +1558,6 @@ RectTransform:
   m_Children:
   - {fileID: 2047688902295938898}
   - {fileID: 2682576313590777180}
-  - {fileID: 3425410429959518556}
   m_Father: {fileID: 870139712881781926}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.37221137}
@@ -2637,7 +2636,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 70.8
+  m_fontSize: 71.05
   m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3981,7 +3980,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 20}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &8459023322420499203
 MonoBehaviour:
@@ -3996,10 +3995,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
+    m_Left: 10
+    m_Right: 10
+    m_Top: 10
+    m_Bottom: 10
   m_ChildAlignment: 0
   m_Spacing: 5
   m_ChildForceExpandWidth: 1
@@ -4257,6 +4256,7 @@ RectTransform:
   - {fileID: 870139712881781926}
   - {fileID: 3639321446007985317}
   - {fileID: 8473724441426572181}
+  - {fileID: 3425410429959518556}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -4693,7 +4693,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 70.8
+  m_fontSize: 71.05
   m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 1
