@@ -49,16 +49,17 @@ namespace MenuUi.Scripts.CharacterGallery
     /// </summary>
     public class ModelController : AltMonoBehaviour
     {
-        [SerializeField] private ModelView _view; //modelview script
+        [SerializeField] private GalleryView _view;
+        [SerializeField] private GalleryView _editingPanelView;
 
         private PlayerData _playerData;
         private bool _reloadRequested = false;
+
 
         private void Awake()
         {
             ServerManager.OnLogInStatusChanged += StartLoading;
             SignalBus.OnRandomSelectedCharactersRequested += SetRandomSelectedCharactersToEmptySlots;
-            _view.OnTopSlotCharacterSet += HandleCharacterSelected;
             SignalBus.OnReloadCharacterGalleryRequested += OnReloadRequested;
             SignalBus.OnSelectedDefenceCharacterChanged += HandleCharacterSelected;
         }
@@ -90,7 +91,6 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             ServerManager.OnLogInStatusChanged -= StartLoading;
             SignalBus.OnRandomSelectedCharactersRequested -= SetRandomSelectedCharactersToEmptySlots;
-            _view.OnTopSlotCharacterSet -= HandleCharacterSelected;
             SignalBus.OnReloadCharacterGalleryRequested -= OnReloadRequested;
             SignalBus.OnSelectedDefenceCharacterChanged -= HandleCharacterSelected;
         }
@@ -121,6 +121,7 @@ namespace MenuUi.Scripts.CharacterGallery
         private IEnumerator Load()
         {
             _view.Reset();
+            _editingPanelView.Reset();
             yield return new WaitUntil(() => _view.IsReady);
 
             StartCoroutine(GetPlayerData(playerData =>
@@ -136,6 +137,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 characters.Sort((a, b) => a.Id.CompareTo(b.Id));
                 // Set characters in the ModelView
                 _view.SetCharacters(characters, characterIds);
+                _editingPanelView.SetCharacters(characters, characterIds);
             }));
         }
 

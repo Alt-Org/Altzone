@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
-    public class CharacterSlot : SlotBase, IGalleryCharacterData
+    public class CharacterSlot : MonoBehaviour, IGalleryCharacterData
     {
         [SerializeField] public GalleryCharacter Character;
 
@@ -16,7 +16,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private TextMeshProUGUI _nameText;
 
         public CharacterID Id { get => _id; }
-
+        [HideInInspector] public bool IsLocked = false;
         public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, CharacterID id)
         {
             _spriteImage.sprite = sprite;
