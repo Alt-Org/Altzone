@@ -355,7 +355,6 @@ namespace MenuUi.Scripts.SwipeNavigation
             float start = scrollBar.value;
             float current = 0;
             float percent = 0;
-            Debug.LogWarning("Swipe");
             isSwipeMode = true;
             if (scrollRect)
             {
