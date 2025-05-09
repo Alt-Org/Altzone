@@ -16,7 +16,10 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private Image _statBackground;
         [SerializeField] private TMP_Text _statName;
         [SerializeField] private TMP_Text _statLevel;
+        [SerializeField] private TMP_Text _statLevel2;
+        [SerializeField] private TMP_Text _statNextLevel;
         [SerializeField] private TMP_Text _statValue;
+        [SerializeField] private TMP_Text _statNextLevelValue;
         [SerializeField] private TMP_Text _diamondCost;
         [SerializeField] private TMP_Text _eraserCost;
         [SerializeField] private Button _eraserButton;
@@ -39,6 +42,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             if (_statValue != null) _controller.OnStatUpdated += UpdateStatValue;
             if (_statValue != null) UpdateStatValue(_statType);
             if (_statLevel != null) UpdateStatLevel(_statType);
+            
 
         }
 
@@ -71,6 +75,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             _statIcon.sprite = _statInfo.Image;
             _statBackground.color = _statInfo.StatBoxColor;
             _statDescription.text = _statInfo.Description;
+            _statName.text = _statInfo.Name;
+
             string developmentName = string.Empty;
             ValueStrength statStrenght = _controller.GetStatStrength(_statType);
             switch(statStrenght)
@@ -121,13 +127,22 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private void UpdateStatLevel(StatType statType)
         {
             if (statType != _statType) return;
-            _statLevel.text = _controller.GetStat(statType).ToString();
+            int statLevel = _controller.GetStat(statType);
+            if (_statLevel != null) _statLevel.text = statLevel.ToString();
+            if (_statLevel2 != null) _statLevel2.text = statLevel.ToString();
+            if (_statNextLevel != null) _statNextLevel.text = (statLevel+1).ToString();
         }
 
         private void UpdateStatValue(StatType statType)
         {
             if (statType != _statType) return;
             _statValue.text = _controller.GetStatValue(statType).ToString();
+            if (_statNextLevelValue == null)
+            {
+                return;
+            }
+            int statLevel = _controller.GetStat(statType);
+            _statNextLevelValue.text = _controller.GetStatValue(statType,statLevel+1).ToString();
         }
 
         private void UpdateDiamondCost(StatType statType)

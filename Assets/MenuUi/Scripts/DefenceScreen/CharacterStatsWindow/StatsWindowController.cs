@@ -158,6 +158,33 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             return CustomCharacter.GetClassID(_characterId);
         }
 
+        /// <summary>
+        /// Get currently displayed character's class name.
+        /// </summary>
+        /// <returns>Current character's ClassName.</returns>
+        public string GetCurrentCharacterClassName()//To do: make this scritable object
+        {
+            switch (CustomCharacter.GetClassID(_characterId))
+            {
+                case CharacterClassID.Confluent:
+                    return "Sulautujat";
+                case CharacterClassID.Desensitizer:
+                    return "Tunnottomat";
+                case CharacterClassID.Intellectualizer:
+                    return "Älyllistäjät";
+                case CharacterClassID.Projector:
+                    return "Peilaajat";
+                case CharacterClassID.Retroflector:
+                    return "Torjujat";
+                case CharacterClassID.Obedient:
+                    return "Tottelijat";
+                case CharacterClassID.Trickster:
+                    return "Hämääjät";
+                default:
+                    return string.Empty;
+            }
+        }
+
 
         /// <summary>
         /// Get current character class alternative color from character class color reference sheet.
@@ -475,6 +502,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             return (int)BaseCharacter.GetStatValueFP(statType, GetStat(statType));
         }
 
+        /// <summary>
+        /// Get stat value according to the stat type and level.
+        /// </summary>
+        /// <param name="statType">The stat type which value to get.</param>
+        /// <param name="level">The stat's level.</param>
+        /// <returns>Stat value as int.</returns>
+        public int GetStatValue(StatType statType, int level)
+        {
+            return (int)BaseCharacter.GetStatValueFP(statType, level);
+        }
 
         /// <summary>
         /// Get stat's strength.
@@ -500,6 +537,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                     return ValueStrength.None;
             }
         }
+
 
 
         /// <summary>
