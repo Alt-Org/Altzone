@@ -83,6 +83,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         PlayerRole currentRole = PlayerRole.Player;
 
+        private bool _firstOnEnable = true;
+
         public enum PlayerRole
         {
             Player,
@@ -132,15 +134,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             yield return new WaitUntil(() => playerData != null);
 
             // Checking if player is already in the room (can happen if battle popup is minimized while in room)
-            string positionValue1 = room.GetCustomProperty(PlayerPositionKey1, string.Empty);
-            string positionValue2 = room.GetCustomProperty(PlayerPositionKey2, string.Empty);
-            string positionValue3 = room.GetCustomProperty(PlayerPositionKey3, string.Empty);
-            string positionValue4 = room.GetCustomProperty(PlayerPositionKey4, string.Empty);
-
-            if (player.UserId == positionValue1 ||
-                player.UserId == positionValue2 ||
-                player.UserId == positionValue3 ||
-                player.UserId == positionValue4)
+            if (!_firstOnEnable)
             {
                 // Checking if we have to update defence characters
                 if (player.GetCustomProperty<int[]>(PlayerCharactersKey) != GetSelectedCharacterIds(playerData))
@@ -159,9 +153,20 @@ namespace MenuUi.Scripts.Lobby.InRoom
             // Reset player custom properties for new game
             player.CustomProperties.Clear();
 
-            // Reserving player position
-            this.Publish<LobbyManager.ReserveFreePositionEvent>(new());
-            yield return new WaitUntil(() => player.GetCustomProperty(PlayerPositionKey, -1) != -1);
+            // Reserving player position if not a master client
+            if (!player.IsMasterClient)
+            {
+                this.Publish<LobbyManager.ReserveFreePositionEvent>(new());
+                yield return new WaitUntil(() => player.GetCustomProperty(PlayerPositionKey, -1) != -1);
+            }
+            else // If player is a master client setting the position which was set to room during creation to player properties too
+            {
+                player.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object> {
+                    {
+                        PlayerPositionKey, PlayerPosition1
+                    }
+                }));
+            }
 
             // Getting character id and stat int arrays
             int[] characterIds = GetSelectedCharacterIds(playerData);
@@ -180,6 +185,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             LobbyManager.Instance.SetPlayerQuantumCharacters(selectedCharacters);
 
             UpdateStatus();
+            _firstOnEnable = false;
             _onEnableCoroutineHolder = null;
         }
 

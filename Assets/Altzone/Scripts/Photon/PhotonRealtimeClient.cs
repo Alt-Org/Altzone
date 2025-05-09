@@ -633,7 +633,7 @@ public static class PhotonRealtimeClient
             { PhotonBattleRoom.IsMatchmakingKey, isMatchmaking },
             { PhotonBattleRoom.MapKey, mapId },
             { PhotonBattleRoom.StartingEmotionKey, startingEmotion },
-            { PhotonBattleRoom.PlayerPositionKey1, "" },
+            { PhotonBattleRoom.PlayerPositionKey1, LocalPlayer.UserId }, // Local player always starts in slot 1 first when creating room
             { PhotonBattleRoom.PlayerPositionKey2, "" },
         };
 
