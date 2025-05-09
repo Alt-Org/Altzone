@@ -774,7 +774,7 @@ public static class PhotonRealtimeClient
         return Client.OpJoinRandomOrCreateRoom(joinRandomRoomArgs, enterRoomArgs);
     }
 
-    public static bool JoinRandomOrCreateCustomRoom(string roomName, string mapId, Emotion startingEmotion, string password = "", string[] expectedUsers = null)
+    public static bool JoinRandomOrCreateCustomRoom(string roomName, string mapId, Emotion startingEmotion, string[] expectedUsers = null)
     {
         if (Client.Server != ServerConnection.MasterServer || !Client.IsConnectedAndReady)
         {
