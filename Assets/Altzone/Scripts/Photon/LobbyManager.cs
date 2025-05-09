@@ -1298,7 +1298,19 @@ namespace Altzone.Scripts.Lobby
         public void OnCustomAuthenticationResponse(Dictionary<string, object> data) { LobbyOnCustomAuthenticationResponse?.Invoke(data); }
         public void OnCustomAuthenticationFailed(string debugMessage) { LobbyOnCustomAuthenticationFailed?.Invoke(debugMessage); }
 
-        public void OnPlayerEnteredRoom(Player newPlayer) { LobbyOnPlayerEnteredRoom?.Invoke(new(newPlayer)); }
+        public void OnPlayerEnteredRoom(Player newPlayer)
+        {
+            LobbyOnPlayerEnteredRoom?.Invoke(new(newPlayer));
+
+            if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+            {
+                Room room = PhotonRealtimeClient.CurrentRoom;
+                if (room.PlayerCount != room.MaxPlayers) return;
+
+                GameType gameType = (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                if (gameType == GameType.Custom) OnStartPlayingEvent(new());
+            }
+        }
         public void OnRoomPropertiesUpdate(PhotonHashtable propertiesThatChanged) { LobbyOnRoomPropertiesUpdate?.Invoke(new(propertiesThatChanged)); }
         public void OnPlayerPropertiesUpdate(Player targetPlayer, PhotonHashtable changedProps) { LobbyOnPlayerPropertiesUpdate?.Invoke(new(targetPlayer),new(changedProps)); }
         public void OnMasterClientSwitched(Player newMasterClient) {
