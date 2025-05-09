@@ -60,6 +60,7 @@ public class BattleStoryController : MonoBehaviour
     private int _totalSegments;
 
     private Coroutine _playbackCoroutine;
+    private Coroutine _routeTraversingCoroutine;
     private GameObject _ball;
 
     // Start is called before the first frame update
@@ -153,8 +154,16 @@ public class BattleStoryController : MonoBehaviour
             }
             else
             {
-                StartCoroutine(_routesLeft[_storySegments[segment].BallRoute].TraverseRoute(_ball, done => ballDone = done));
+                _routeTraversingCoroutine = StartCoroutine(_routesLeft[_storySegments[segment].BallRoute].TraverseRoute(_ball, done => ballDone = done));
                 _bottomLineImage.SetText(GetEmotionData(_storySegments[segment].ClipEmotion).LineSprite, _storySegments[segment].Line);
+                for (int i = _currentSegment-1; i >= 0; i--)
+                {
+                    if (_storySegments[i].Player != 0)
+                    {
+                        _topLineImage.SetText(GetEmotionData(_storySegments[i].ClipEmotion).LineSprite, _storySegments[i].Line);
+                        break;
+                    }
+                }
                 _characterAnimator1.Play(GetEmotionData(_storySegments[segment].ClipEmotion).Character1Animation.name);
             }
         }
@@ -166,13 +175,22 @@ public class BattleStoryController : MonoBehaviour
             }
             else
             {
-                StartCoroutine(_routesRight[_storySegments[segment].BallRoute].TraverseRoute(_ball, done => ballDone = done));
+                _routeTraversingCoroutine = StartCoroutine(_routesRight[_storySegments[segment].BallRoute].TraverseRoute(_ball, done => ballDone = done));
                 _topLineImage.SetText(GetEmotionData(_storySegments[segment].ClipEmotion).LineSprite, _storySegments[segment].Line);
+                for (int i = _currentSegment - 1; i >= 0; i--)
+                {
+                    if (_storySegments[i].Player == 0)
+                    {
+                        _bottomLineImage.SetText(GetEmotionData(_storySegments[i].ClipEmotion).LineSprite, _storySegments[i].Line);
+                        break;
+                    }
+                }
                 _characterAnimator2.Play(GetEmotionData(_storySegments[segment].ClipEmotion).Character2Animation.name);
             }
         }
 
         yield return new WaitUntil(() => ballDone is true);
+        _routeTraversingCoroutine = null;
         Destroy(_ball);
         _ball = null;
     }
@@ -182,6 +200,9 @@ public class BattleStoryController : MonoBehaviour
         if (_currentSegment < _totalSegments)
         {
             if (_playbackCoroutine != null) StopCoroutine(_playbackCoroutine);
+            _playbackCoroutine = null;
+            if (_routeTraversingCoroutine != null) StopCoroutine(_routeTraversingCoroutine);
+            _routeTraversingCoroutine = null;
             if (_ball != null) Destroy(_ball);
             _ball = null;
             _currentSegment++;
@@ -194,6 +215,9 @@ public class BattleStoryController : MonoBehaviour
         if (_currentSegment > 1)
         {
             if (_playbackCoroutine != null) StopCoroutine(_playbackCoroutine);
+            _playbackCoroutine = null;
+            if (_routeTraversingCoroutine != null) StopCoroutine(_routeTraversingCoroutine);
+            _routeTraversingCoroutine = null;
             if (_ball != null) Destroy(_ball);
             _ball = null;
             _currentSegment--;
