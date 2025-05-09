@@ -68,15 +68,15 @@ namespace MenuUi.Scripts.Lobby.BattleButton
                 ButtonComponent.interactable = false;
                 _settingsButton.gameObject.SetActive(false);
             }
-            else
-            {
-                _settingsButton.onClick.RemoveAllListeners();
-                _settingsButton.onClick.AddListener(()=>
-                {
-                    SignalBus.OnBattlePopupRequestedSignal(GameType.None);
-                    SignalBus.OnCustomRoomSettingsRequestedSignal();
-                });
-            }
+            //else
+            //{
+            //    _settingsButton.onClick.RemoveAllListeners();
+            //    _settingsButton.onClick.AddListener(()=>
+            //    {
+            //        SignalBus.OnBattlePopupRequestedSignal(GameType.None);
+            //        SignalBus.OnCustomRoomSettingsRequestedSignal();
+            //    });
+            //}
         }
 
         /// <summary>
