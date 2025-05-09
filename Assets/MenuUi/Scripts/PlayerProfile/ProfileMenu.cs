@@ -156,6 +156,11 @@ public class ProfileMenu : MonoBehaviour
 
         AddAnswerOptions();
     }
+    private void OnDisable()
+    {
+        _characterOptionsPopup.SetActive(false);
+        _closePopupAreaButton.SetActive(false);
+    }
 
     private void Reset()
     {
