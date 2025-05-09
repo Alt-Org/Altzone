@@ -49,6 +49,7 @@ public class ProfileMenu : MonoBehaviour
     [SerializeField] private CharacterResponseList _characterResponseList;
     [SerializeField] private Image _favoriteCharacterImage;
     [SerializeField] private GameObject _characterOptionsPopup;
+    [SerializeField] private Transform _characterOptionsContent;
     [SerializeField] private GameObject _characterOptionPrefab;
 
     [Header("Buttons")]
@@ -258,7 +259,7 @@ public class ProfileMenu : MonoBehaviour
         IEnumerable<PlayerCharacterPrototype> characters = PlayerCharacterPrototypes.Prototypes.Where(c => c != null);
         foreach (PlayerCharacterPrototype character in characters)
         {
-            GameObject defenceOption = Instantiate(_characterOptionPrefab, _characterOptionsPopup.GetComponentInChildren<GridLayoutGroup>().transform);
+            GameObject defenceOption = Instantiate(_characterOptionPrefab, _characterOptionsContent);
             Button button = defenceOption.GetComponent<FavoriteDefenceOptionHandler>().SetData(character.Name, character.GalleryImage);
             button.onClick.AddListener(() =>
             {
