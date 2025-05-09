@@ -58,7 +58,6 @@ public class ProfileMenu : MonoBehaviour
 
     [Header("Clan Button")]
     [SerializeField] private Button _ClanURLButton;
-    [SerializeField] private TextMeshProUGUI _ClanButtonText;
 
     [Header("Save Button")]
     [SerializeField] private Button _saveEditsButton;
@@ -170,14 +169,6 @@ public class ProfileMenu : MonoBehaviour
     // Tallentaa lifequote ja lore inputkentät
     public void SaveInputToFile()
     {
-        //if (_LifeQuoteInputField != null)
-        //{
-        //    string lifeQuote = _LifeQuoteInputField.text;
-        //    string path = Path.Combine(Application.persistentDataPath, "LifeQuote.txt");
-        //    File.WriteAllText(path, lifeQuote);
-        //    Debug.Log($"Saved Life Quote: {lifeQuote} at {path}");
-        //}
-
         if (_LoreInputField != null)
         {
             string lore = _LoreInputField.text;
@@ -198,22 +189,8 @@ public class ProfileMenu : MonoBehaviour
     // Lataa tallennetut tiedostot
     public void LoadInputFromFile()
     {
-        string quotePath = Path.Combine(Application.persistentDataPath, "LifeQuote.txt");
         string lorePath = Path.Combine(Application.persistentDataPath, "Lore.txt");
         string mottoPath = Path.Combine(Application.persistentDataPath, "Motto.txt");
-        if (File.Exists(quotePath))
-        {
-            //string loadedQuote = File.ReadAllText(quotePath);
-            //Debug.Log($"Loaded Life Quote: {loadedQuote} from {quotePath}");
-            //if (_LifeQuoteInputField != null)
-            //{
-            //    _LifeQuoteInputField.text = loadedQuote;
-            //}
-        }
-        else
-        {
-            Debug.Log("No quote found.");
-        }
 
         if (File.Exists(lorePath))
         {
@@ -347,7 +324,7 @@ public class ProfileMenu : MonoBehaviour
                 _playerNameInputField.text = _playerData.Name;
 
                 _activityText.text = _playerData.points.ToString();
-                //_WinsText.text = _playerData.stats.wonBattles.ToString();
+                _WinsText.text = _playerData.stats.wonBattles.ToString();
 
                 CharacterClassID defenceClass = (CharacterClassID)((_playerData.SelectedCharacterId / 100) * 100);
                 _DefenceClassText.text = defenceClass.ToString();
@@ -365,16 +342,8 @@ public class ProfileMenu : MonoBehaviour
                     _playerClanNameText.text = _clanData.Name;
                     _rolesErrorMessage.text = "Rooleja ei voitu hakea.";
 
-                    if (_ClanButtonText != null)
-                    {
-                        _clanID = _playerData.ClanId;
-                        _url = "https://altzone.fi/clans/" + _playerData.ClanId;
-                        _ClanButtonText.text = _playerClanNameText.text; // Asetetaan painikkeen teksti
-                    }
-                    else
-                    {
-                        Debug.LogError("Klaanin URL-tekstiobjekti ei ole asetettu.");
-                    }
+                    _clanID = _playerData.ClanId;
+                    _url = "https://altzone.fi/clans/" + _playerData.ClanId;
                 });
             });
 
