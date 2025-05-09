@@ -54,6 +54,8 @@ public class BattleStoryController : MonoBehaviour
     private Button _previousSegment;
     [SerializeField]
     private Button _nextSegment;
+    [SerializeField]
+    private Button _autoPlayButton;
 
     private List<StorySegment> _storySegments = new();
     private int _currentSegment;
@@ -69,6 +71,8 @@ public class BattleStoryController : MonoBehaviour
         _exitButton.onClick.AddListener(ExitStory);
         _previousSegment.onClick.AddListener(PlayPreviousSegment);
         _nextSegment.onClick.AddListener(PlayNextSegment);
+        _autoPlayButton.onClick.AddListener(ToggleAutoPlay);
+        Route.OnRouteFinished += DestroyBall;
         StartCoroutine(SetPathArea());
         GenerateStory();
         _totalSegments = _storySegments.Count;
@@ -86,6 +90,8 @@ public class BattleStoryController : MonoBehaviour
         _exitButton.onClick.RemoveAllListeners();
         _previousSegment.onClick.RemoveAllListeners();
         _nextSegment.onClick.RemoveAllListeners();
+        _autoPlayButton.onClick.RemoveAllListeners();
+        Route.OnRouteFinished -= DestroyBall;
     }
 
     private void GenerateStory()
@@ -125,6 +131,7 @@ public class BattleStoryController : MonoBehaviour
 
     public IEnumerator PlayAnimation()
     {
+        _autoPlayButton.GetComponent<Image>().color = Color.yellow;
         yield return new WaitForSeconds(1f);
         for (int i = _currentSegment; i < _storySegments.Count; i++)
         {
@@ -133,10 +140,14 @@ public class BattleStoryController : MonoBehaviour
 
             yield return new WaitForSeconds(1f);
         }
+        _autoPlayButton.GetComponent<Image>().color = Color.white;
+        _playbackCoroutine = null;
     }
 
     private IEnumerator PlayAnimationSegment(int segment)
     {
+        if(_ball != null) DestroyBall();
+
         _currentSegmentText.text = $"{_currentSegment}/{_totalSegments}";
 
         _ball = _storySegments[segment].Player == 0 ? Instantiate(_emotionBall, _startPositionLeft) : Instantiate(_emotionBall, _startPositionRight);
@@ -190,9 +201,6 @@ public class BattleStoryController : MonoBehaviour
         }
 
         yield return new WaitUntil(() => ballDone is true);
-        _routeTraversingCoroutine = null;
-        Destroy(_ball);
-        _ball = null;
     }
 
     private void PlayNextSegment()
@@ -201,10 +209,8 @@ public class BattleStoryController : MonoBehaviour
         {
             if (_playbackCoroutine != null) StopCoroutine(_playbackCoroutine);
             _playbackCoroutine = null;
-            if (_routeTraversingCoroutine != null) StopCoroutine(_routeTraversingCoroutine);
-            _routeTraversingCoroutine = null;
-            if (_ball != null) Destroy(_ball);
-            _ball = null;
+            _autoPlayButton.GetComponent<Image>().color = Color.white;
+            DestroyBall();
             _currentSegment++;
             StartCoroutine(PlayAnimationSegment(_currentSegment - 1));
         }
@@ -216,13 +222,38 @@ public class BattleStoryController : MonoBehaviour
         {
             if (_playbackCoroutine != null) StopCoroutine(_playbackCoroutine);
             _playbackCoroutine = null;
-            if (_routeTraversingCoroutine != null) StopCoroutine(_routeTraversingCoroutine);
-            _routeTraversingCoroutine = null;
-            if (_ball != null) Destroy(_ball);
-            _ball = null;
+            _autoPlayButton.GetComponent<Image>().color = Color.white;
+            DestroyBall();
             _currentSegment--;
             StartCoroutine(PlayAnimationSegment(_currentSegment - 1));
         }
+    }
+
+    private void ToggleAutoPlay()
+    {
+        if (_playbackCoroutine != null)
+        {
+            StopCoroutine(_playbackCoroutine);
+            _playbackCoroutine = null;
+            _autoPlayButton.GetComponent<Image>().color = Color.white;
+        }
+        else
+        {
+            _playbackCoroutine = StartCoroutine(PlayAnimation());
+        }
+    }
+
+    private void DestroyBall()
+    {
+        Debug.LogWarning("Ball");
+        if (_routeTraversingCoroutine != null)
+        {
+            StopCoroutine(_routeTraversingCoroutine);
+            _routeTraversingCoroutine = null;
+        }
+        if (_ball == null) return;
+        Destroy(_ball);
+        _ball = null;
     }
 
     private EmotionObject GetEmotionData(Emotion emotion)
@@ -345,6 +376,9 @@ public class Route
     public Transform EndPoint { get => _endPoint;}
     public float DefaultSpeed { get => _defaultSpeed;}
 
+    public delegate void RouteFinished();
+    public static event RouteFinished OnRouteFinished;
+
     public IEnumerator TraverseRoute(GameObject ball, Action<bool> callback)
     {
         float defaultBallSize = ball.GetComponent<RectTransform>().rect.width;
@@ -382,6 +416,7 @@ public class Route
         if (Mathf.Abs(Vector2.Distance(_endPoint.position, startPosition)) <= Mathf.Epsilon)
         {
             callback(true);
+            OnRouteFinished?.Invoke();
             yield break;
         }
         speed = baseSpeed * _defaultSpeed;
@@ -396,6 +431,7 @@ public class Route
             ball.transform.position = pos;
         }
         callback(true);
+        OnRouteFinished?.Invoke();
     }
 
     private float GetScaledSpeed()
