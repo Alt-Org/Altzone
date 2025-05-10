@@ -14,6 +14,7 @@ using ReasonType = Altzone.Scripts.Lobby.LobbyManager.GetKickedEvent.ReasonType;
 
 using MenuUi.Scripts.Lobby.CreateRoom;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
+using MenuUi.Scripts.Signals;
 
 namespace MenuUi.Scripts.Lobby.InLobby
 {
@@ -221,6 +222,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     PopupSignalBus.OnChangePopupInfoSignal("Huoneen johtaja poisti sinut huoneesta.");
                     break;
             }
+            SignalBus.OnCloseBattlePopupRequestedSignal();
         }
     }
 }
