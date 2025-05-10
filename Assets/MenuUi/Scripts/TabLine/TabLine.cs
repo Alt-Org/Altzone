@@ -16,6 +16,7 @@ namespace MenuUi.Scripts.TabLine
 
         private SwipeUI _swipe;
 
+        public SwipeUI Swipe { get => _swipe;}
 
         private void OnEnable()
         {
