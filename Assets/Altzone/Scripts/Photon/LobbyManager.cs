@@ -188,6 +188,9 @@ namespace Altzone.Scripts.Lobby
         public delegate void FailedToStartMatchmakingGame();
         public static event FailedToStartMatchmakingGame OnFailedToStartMatchmakingGame;
 
+        public delegate void KickedOutOfTheRoom(GetKickedEvent.ReasonType reason);
+        public static event KickedOutOfTheRoom OnKickedOutOfTheRoom;
+
         #endregion
 
 
@@ -215,6 +218,7 @@ namespace Altzone.Scripts.Lobby
             this.Subscribe<StartRaidTestEvent>(OnStartRaidTestEvent);
             this.Subscribe<StartMatchmakingEvent>(OnStartMatchmakingEvent);
             this.Subscribe<StopMatchmakingEvent>(OnStopMatchmakingEvent);
+            this.Subscribe<GetKickedEvent>(OnGetKickedEvent);
             StartCoroutine(Service());
         }
 
@@ -301,6 +305,7 @@ namespace Altzone.Scripts.Lobby
             {
                 // Getting first free position from the room and creating the photon hashtables for setting property
                 freePosition = PhotonLobbyRoom.GetFirstFreePlayerPos();
+                if (!PhotonLobbyRoom.IsValidPlayerPos(freePosition)) yield break;
                 string positionKey = PhotonBattleRoom.GetPositionKey(freePosition);
 
                 PhotonHashtable propertyToSet = new() { { positionKey, PhotonRealtimeClient.LocalLobbyPlayer.UserId } };
@@ -567,6 +572,7 @@ namespace Altzone.Scripts.Lobby
                             {
                                 // Moving the player at the position to the first free position (should be either 1 or 2 since room max players is 4)
                                 int freePosition = PhotonLobbyRoom.GetFirstFreePlayerPos();
+                                if (!PhotonLobbyRoom.IsValidPlayerPos(freePosition)) yield break;
                                 string newRoomPositionValue3 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey3);
                                 PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.GetPositionKey(freePosition), newRoomPositionValue3);
                             }
@@ -578,6 +584,7 @@ namespace Altzone.Scripts.Lobby
                             else
                             {
                                 int freePosition = PhotonLobbyRoom.GetFirstFreePlayerPos();
+                                if (!PhotonLobbyRoom.IsValidPlayerPos(freePosition)) yield break;
                                 string newRoomPositionValue4 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey4);
                                 PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.GetPositionKey(freePosition), newRoomPositionValue4);
                             }
@@ -649,6 +656,7 @@ namespace Altzone.Scripts.Lobby
                         // If player isn't in any position, getting the first free player position.
                         // This method checks for duplicate and missing players
                         position = PhotonLobbyRoom.GetFirstFreePlayerPos(new(player.Value));
+                        if (!PhotonLobbyRoom.IsValidPlayerPos(position)) continue;
                         string positionKey = PhotonBattleRoom.GetPositionKey(position);
 
                         // Setting position to room and waiting until it's synced
@@ -797,6 +805,7 @@ namespace Altzone.Scripts.Lobby
                 {
                     // If player position is not valid we get new position for them, this method checks for duplicate and missing player positions
                     int newPos = PhotonLobbyRoom.GetFirstFreePlayerPos(new(roomPlayer));
+                    if (!PhotonLobbyRoom.IsValidPlayerPos(newPos)) continue;
 
                     // Setting the new position to player and room properties and waiting until it's synced
                     roomPlayer.SetCustomProperty(PlayerPositionKey, newPos);
@@ -1101,6 +1110,12 @@ namespace Altzone.Scripts.Lobby
             }
         }
 
+        private void OnGetKickedEvent(GetKickedEvent data)
+        {
+            PhotonRealtimeClient.LeaveRoom();
+            OnKickedOutOfTheRoom?.Invoke(data.Reason);
+        }
+
         public void OnDisconnected(DisconnectCause cause)
         {
             // Stopping any coroutines which are stored in holder variables
@@ -1127,6 +1142,7 @@ namespace Altzone.Scripts.Lobby
             if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
             {
                 int otherPlayerPosition = otherPlayer.GetCustomProperty<int>(PlayerPositionKey);
+                if (!PhotonLobbyRoom.IsValidPlayerPos(otherPlayerPosition)) return;
                 string positionKey = PhotonBattleRoom.GetPositionKey(otherPlayerPosition);
 
                 var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { positionKey, "" } });
@@ -1380,6 +1396,27 @@ namespace Altzone.Scripts.Lobby
             public override string ToString()
             {
                 return $"{nameof(SelectedGameType)}: {SelectedGameType}";
+            }
+        }
+
+        public class GetKickedEvent
+        {
+            public enum ReasonType
+            {
+                FullRoom,
+                RoomLeader
+            }
+
+            public readonly ReasonType Reason;
+
+            public GetKickedEvent(ReasonType reasonType)
+            {
+                Reason = reasonType;
+            }
+
+            public override string ToString()
+            {
+                return $"{nameof(Reason)}: {Enum.GetName(typeof(ReasonType), Reason)}";
             }
         }
     }

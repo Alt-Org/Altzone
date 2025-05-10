@@ -10,8 +10,11 @@ using Debug = UnityEngine.Debug;
 using Photon.Realtime;
 using Photon.Client;
 
+using Prg.Scripts.Common.PubSub;
+
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Lobby.Wrappers;
+using static Altzone.Scripts.Lobby.LobbyManager;
 //using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 //using Player = Battle1.PhotonRealtime.Code.Player;
 //using Room = Battle1.PhotonRealtime.Code.Room;
@@ -128,36 +131,31 @@ namespace Altzone.Scripts.Battle.Photon
             if (player == null) player = PhotonRealtimeClient.LocalPlayer;
 
             // Checking which of the room's player positions are free
-            HashSet<int> usedPlayerPositions = new();
-            do
+            HashSet<int> usedPlayerPositions = GetUsedPlayerPositions();
+
+            // If for some reason all player positions are reserved
+            if (usedPlayerPositions.Count == PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers)
             {
-                if (usedPlayerPositions.Count > 0) usedPlayerPositions.Clear();
+                // Removing duplicate or missing player slot reservations with this method
+                VerifyPlayerPositions();
 
-                // Filling hashset with used player positions
-                if (CheckIfPositionIsFree(PlayerPosition1) == false) usedPlayerPositions.Add(PlayerPosition1);
-                if (CheckIfPositionIsFree(PlayerPosition2) == false) usedPlayerPositions.Add(PlayerPosition2);
+                // Checking if player is already in a slot
+                int playerPos = GetPlayerPos(player);
 
-                if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 4)
+                if (IsValidPlayerPos(playerPos) && player.UserId == PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(GetPositionKey(playerPos)))
                 {
-                    if (CheckIfPositionIsFree(PlayerPosition3) == false) usedPlayerPositions.Add(PlayerPosition3);
-                    if (CheckIfPositionIsFree(PlayerPosition4) == false) usedPlayerPositions.Add(PlayerPosition4);
+                    return playerPos;
                 }
 
-                // If for some reason all player positions are reserved
+                // If there is still no free position it means player somehow joined already full room then we kick player
+                usedPlayerPositions = GetUsedPlayerPositions();
                 if (usedPlayerPositions.Count == PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers)
                 {
-                    // Removing duplicate or missing player slot reservations with this method
-                    if (VerifyPlayerPositions()) continue;
-
-                    // Checking if player is already in a slot
-                    int playerPos = GetPlayerPos(player);
-
-                    if (IsValidPlayerPos(playerPos) && player.UserId == PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(GetPositionKey(playerPos)))
-                    {
-                        return playerPos;
-                    }
+                    this.Publish<GetKickedEvent>(new(GetKickedEvent.ReasonType.FullRoom));
+                    return PlayerPositionSpectator;
                 }
-            } while (usedPlayerPositions.Count == PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers);
+            }
+            
             
             if (usedPlayerPositions.Contains(wantedPlayerPos))
             {
@@ -188,6 +186,27 @@ namespace Altzone.Scripts.Battle.Photon
                 wantedPlayerPos = PlayerPositionSpectator;
             }
             return wantedPlayerPos;
+        }
+
+        /// <summary>
+        /// Get used player positions.
+        /// </summary>
+        /// <returns>Integer hashset which contains all of the used player positions.</returns>
+        public HashSet<int> GetUsedPlayerPositions()
+        {
+            HashSet<int> usedPlayerPositions = new();
+
+            // Filling hashset with used player positions
+            if (CheckIfPositionIsFree(PlayerPosition1) == false) usedPlayerPositions.Add(PlayerPosition1);
+            if (CheckIfPositionIsFree(PlayerPosition2) == false) usedPlayerPositions.Add(PlayerPosition2);
+
+            if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 4)
+            {
+                if (CheckIfPositionIsFree(PlayerPosition3) == false) usedPlayerPositions.Add(PlayerPosition3);
+                if (CheckIfPositionIsFree(PlayerPosition4) == false) usedPlayerPositions.Add(PlayerPosition4);
+            }
+
+            return usedPlayerPositions;
         }
 
         /// <summary>

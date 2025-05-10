@@ -10,10 +10,10 @@ using Prg.Scripts.Common.PubSub;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Common.Photon;
 using Altzone.Scripts.Lobby;
+using ReasonType = Altzone.Scripts.Lobby.LobbyManager.GetKickedEvent.ReasonType;
 
 using MenuUi.Scripts.Lobby.CreateRoom;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
-using Altzone.Scripts.Model.Poco.Clan;
 
 namespace MenuUi.Scripts.Lobby.InLobby
 {
@@ -39,6 +39,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             _createRoomCustom.CreateRoomButton.onClick.AddListener(CreateCustomRoom);
             _createRoomFromMainMenuButton.onClick.AddListener(CreateCustomRoom);
             LobbyManager.OnClanMemberDisconnected += HandleClanMemberDisconnected;
+            LobbyManager.OnKickedOutOfTheRoom += HandleKickedOutOfRoom;
         }
 
         public void OnEnable()
@@ -65,6 +66,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private void OnDestroy()
         {
             LobbyManager.OnClanMemberDisconnected -= HandleClanMemberDisconnected;
+            LobbyManager.OnKickedOutOfTheRoom -= HandleKickedOutOfRoom;
             _createRoomCustom.CreateRoomButton.onClick.RemoveAllListeners();
             _createRoomFromMainMenuButton.onClick.RemoveAllListeners();
         }
@@ -206,6 +208,19 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private void HandleClanMemberDisconnected()
         {
             PopupSignalBus.OnChangePopupInfoSignal("Pelin etsiminen lopetetaan. Klaanin jäsen sulki pelin.");
+        }
+
+        private void HandleKickedOutOfRoom(ReasonType reason)
+        {
+            switch (reason)
+            {
+                case ReasonType.FullRoom:
+                    PopupSignalBus.OnChangePopupInfoSignal("Virhe pelin etsimisessä, huone on täysi.");
+                    break;
+                case ReasonType.RoomLeader:
+                    PopupSignalBus.OnChangePopupInfoSignal("Huoneen johtaja poisti sinut huoneesta.");
+                    break;
+            }
         }
     }
 }
