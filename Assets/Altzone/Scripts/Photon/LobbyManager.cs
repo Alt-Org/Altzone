@@ -326,7 +326,8 @@ namespace Altzone.Scripts.Lobby
                     success = positionValue == PhotonRealtimeClient.LocalLobbyPlayer.UserId;
                 }
 
-                if (!success) yield return null;
+                if (success) break;
+                yield return null;
             } while (!success);
 
             // Setting to player properties
