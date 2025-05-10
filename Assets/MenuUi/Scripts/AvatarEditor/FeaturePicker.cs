@@ -340,6 +340,10 @@ namespace MenuUi.Scripts.AvatarEditor
 
                     if (partData != null)
                         SetFeature(partData, i);
+                    else
+                    {
+                        _selectedFeatures[i] = "0";
+                    }
                 }
             }
         }
