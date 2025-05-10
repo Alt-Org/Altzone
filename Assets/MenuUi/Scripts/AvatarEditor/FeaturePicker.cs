@@ -181,6 +181,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void SetFeatureToNone(int slot)
         {
+            _selectedFeatures[slot] = "0";
             _avatarEditorCharacterHandle.SetMainCharacterImage((FeatureSlot)slot, null);
 
             if (_characterClassID == CharacterClassID.Confluent)
