@@ -45,7 +45,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         protected int maxPage = 0;
         public Vector2 _startTouch;
         public Vector2 _endTouch;
-        private bool isSwipeMode = false;
+        protected bool isSwipeMode = false;
         private float _startScrollvalue;
         private bool _swipeAllowed = false;
         [SerializeField] private RectTransform _scrollTransform;
@@ -350,7 +350,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         /// </summary>
         /// <param name="index">Index of the page we are snapping to.</param>
         /// <returns></returns>
-        private IEnumerator OnSwipeOneStep(int index)
+        protected IEnumerator OnSwipeOneStep(int index)
         {
             float start = scrollBar.value;
             float current = 0;

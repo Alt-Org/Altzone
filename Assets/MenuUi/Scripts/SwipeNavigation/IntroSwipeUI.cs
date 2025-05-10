@@ -28,7 +28,8 @@ namespace MenuUi.Scripts.SwipeNavigation
         {
             if (CurrentPage < startSlides.Length)
             {
-                return;
+                if (isSwipeMode) return;
+                StartCoroutine(OnSwipeOneStep(CurrentPage));
             }
             else if (CurrentPage == startSlides.Length)
             {
