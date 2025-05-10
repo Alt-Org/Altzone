@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,17 @@ namespace MenuUi.Scripts.SwipeNavigation
 {
     public class IntroSwipeUI : SwipeUI
     {
+        [SerializeField] private GameObject[] startSlides;
+        [SerializeField] private GameObject[] rotatingSlides;
+
+        protected override void Awake()
+        {
+            GameObject[] slides;
+            slides = startSlides.Concat(rotatingSlides).ToArray();
+            base.slides = slides;
+            base.Awake();
+        }
+
         void Start()
         {
             
@@ -14,13 +26,16 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         public override void PreviousSlide()
         {
-            if (CurrentPage == 8)
+            if (CurrentPage < startSlides.Length)
             {
                 return;
             }
-            else if (CurrentPage == 13)
+            else if (CurrentPage == startSlides.Length)
             {
-                CurrentPage  = maxPage;
+                if (_willRotate)
+                {
+                    CurrentPage = maxPage; // Goes to the last slide when swiping left on the first normal slide
+                }
             }
             else
             {
@@ -29,9 +44,9 @@ namespace MenuUi.Scripts.SwipeNavigation
         }
         public override void NextSlide()
         {
-            if (CurrentPage == maxPage)
+            if (CurrentPage >= maxPage)
             {
-                CurrentPage = 8;
+                CurrentPage = startSlides.Length;
             }
             else
             {

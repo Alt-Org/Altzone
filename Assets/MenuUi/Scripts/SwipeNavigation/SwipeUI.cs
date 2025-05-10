@@ -32,7 +32,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         [SerializeField, Tooltip("The area from the bottom of the screen from where swiping is disabled (between 0/1))")] private float verticalDeadzone;
 
         private ScrollRect scrollRect;
-        [SerializeField] private GameObject[] slides;
+        [SerializeField] protected GameObject[] slides;
         [SerializeField] private Scrollbar scrollBar;
         [SerializeField] private Button[] buttons;
         //[SerializeField] private Button battleButton;
@@ -55,7 +55,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         private Rect swipeRect;
 
         [SerializeField] private bool _isInMainMenu;
-        [SerializeField] private bool _willRotate;
+        [SerializeField] protected bool _willRotate;
 
         public Action OnCurrentPageChanged;
 
@@ -96,7 +96,7 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         public float ScrollbarValue { get => scrollBar.value; }
 
-        private void Awake()
+        protected virtual void Awake()
         {
             scrollPageValues = new float[slides.Length];
 
