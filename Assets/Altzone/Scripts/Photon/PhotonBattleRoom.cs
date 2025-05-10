@@ -223,24 +223,22 @@ namespace Altzone.Scripts.Battle.Photon
                         }
                     }
 
+                    // Calculating the duplicate position from the loop index since array starts at 0 instead of 1
+                    int duplicatePos = i + 1; 
+
                     // Getting player's real position with the method, it will check for player's custom properties first
                     if (player != null)
                     {
                         int playerRealPos = GetPlayerPos(player);
-                        int playerDuplicatePos;
 
-                        // If real position is this index, get the first occurence index as the duplicate, else this position as duplicate
-                        if (playerRealPos == i + 1)
+                        // If player's real position is this duplicate position, get the first occurence as the duplicate
+                        if (playerRealPos == duplicatePos)
                         {
-                            playerDuplicatePos = Array.IndexOf(positionValues, positionValues[i]);
-                        }
-                        else
-                        {
-                            playerDuplicatePos = i + 1;
+                            duplicatePos = Array.IndexOf(positionValues, positionValues[i]) + 1;
                         }
 
                         // Clearing duplicate position
-                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(GetPositionKey(playerDuplicatePos), string.Empty);
+                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(GetPositionKey(duplicatePos), string.Empty);
                         duplicateOrMissingFound = true;
                     }
                 }
