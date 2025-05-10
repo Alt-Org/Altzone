@@ -656,7 +656,7 @@ namespace Altzone.Scripts.Lobby
                     {
                         // If player isn't in any position, getting the first free player position.
                         // This method checks for duplicate and missing players
-                        position = PhotonLobbyRoom.GetFirstFreePlayerPos(new(player.Value));
+                        position = PhotonLobbyRoom.GetFirstFreePlayerPos(new(player.Value)); // TODO: if Clan2v2 ensure that player ends on the correct side
                         if (!PhotonLobbyRoom.IsValidPlayerPos(position)) continue;
                         string positionKey = PhotonBattleRoom.GetPositionKey(position);
 
