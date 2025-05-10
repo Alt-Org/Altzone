@@ -408,8 +408,8 @@ public class Route
                 float yPos = startPosition.y + (nextPoint.y - startPosition.y) * route.PathSectionCurve.Evaluate(Mathf.Clamp(currentTime / duration,0,1));
                 ball.transform.position = new(pos.x, yPos);
                 float depthDistance = Mathf.Abs(yPos - _startPoint.position.y)/depth;
-                ballsize = defaultBallSize * Mathf.Lerp(1.2f, 0.8f, depthDistance);
-                ball.GetComponent<RectTransform>().sizeDelta = new(ballsize, ballsize);
+                //ballsize = defaultBallSize * Mathf.Lerp(1.2f, 0.8f, depthDistance);
+                //ball.GetComponent<RectTransform>().sizeDelta = new(ballsize, ballsize);
             }
             startPosition = nextPoint;
         }
