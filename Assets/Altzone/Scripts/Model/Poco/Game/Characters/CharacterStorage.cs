@@ -7,21 +7,35 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
-    //[CreateAssetMenu(menuName = "ALT-Zone/CharacterStorage", fileName = "CharacterStorage")]
-    public class CharacterStorage{
+    [CreateAssetMenu(menuName = "ALT-Zone/CharacterStorage", fileName = "CharacterStorage")]
+    public class CharacterStorage : ScriptableObject
+    {
 
         [SerializeField] private List<BaseCharacter> _characterList;
 
-        public List<BaseCharacter> CharacterList { get => _characterList;}
+        public List<BaseCharacter> CharacterList {
+            get
+            {
+                UpdateList();
+                return _characterList;
+            }
+        }
 
         public CharacterStorage()
         {
-            _characterList = new List<BaseCharacter>();
+            //UpdateList();
+        }
+
+        private void UpdateList()
+        {
+            if(_characterList == null)_characterList = new List<BaseCharacter>();
             //This finds every class that inherits the BaseCharacter class (and isn't abstract class like the CharacterClass classes)
             //and calls their constructor followed by adding them to the characterlist.
-            foreach ( Type type in Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(BaseCharacter))))
+            foreach (Type type in Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(BaseCharacter))))
             {
-                _characterList.Add((BaseCharacter)Activator.CreateInstance(type));
+                BaseCharacter character = (BaseCharacter)Activator.CreateInstance(type);
+                if (!_characterList.Exists(x => x.Id == character.Id))
+                _characterList.Add(character);
             }
             _characterList.Sort((a, b) => a.Id.CompareTo(b.Id));
         }
