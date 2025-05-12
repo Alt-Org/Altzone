@@ -49,6 +49,7 @@ public class AlternateTopPanel : AltMonoBehaviour
         else
         StartCoroutine(ServerManager.Instance.GetOwnPlayerFromServer((player) =>
         {
+            if (player == null) { Debug.LogError("Cannot get PlayerData."); return; }
             _ownPlayerID = player._id;
             _ownClanID = player.clan_id;
 

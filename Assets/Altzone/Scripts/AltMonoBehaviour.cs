@@ -151,7 +151,7 @@ public class AltMonoBehaviour : MonoBehaviour
     {
         if(clanId == null)
         {
-            StartCoroutine(GetPlayerData(data => clanId = data.ClanId));
+            StartCoroutine(GetPlayerData(data => clanId = data?.ClanId));
             yield return new WaitUntil(() => clanId != null);
         }
 
