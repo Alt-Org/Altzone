@@ -1,0 +1,14 @@
+/// @enum Quantum::BattlePlayerHitboxType
+/// <summary>
+/// Is the hitbox a part of shield or character.
+/// </summary>
+
+/// @enum Quantum::BattlePlayerCollisionType
+/// <summary>
+/// How projectile is supposed to act when colliding with the hitbox.
+/// </summary>
+
+/// @struct Quantum::BattlePlayerHitboxQComponent
+/// <summary>
+/// Contains hitbox's data, inluding which player the hitbox belongs to, which type it is, etc.
+/// </summary>
