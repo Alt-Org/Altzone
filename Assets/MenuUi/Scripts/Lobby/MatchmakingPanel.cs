@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using MenuUi.Scripts.Lobby.InLobby;
+using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.Lobby
 {
@@ -14,6 +15,11 @@ namespace MenuUi.Scripts.Lobby
     {
         [SerializeField] private TMP_Text _matchmakingText;
         [SerializeField] private Button _cancelButton;
+
+        private void Awake()
+        {
+            LobbyManager.OnFailedToStartMatchmakingGame += OnFailedToStartMatchmakingGame;
+        }
 
         private void OnEnable()
         {
@@ -28,6 +34,7 @@ namespace MenuUi.Scripts.Lobby
         private void OnDestroy()
         {
             _cancelButton.onClick.RemoveAllListeners();
+            LobbyManager.OnFailedToStartMatchmakingGame -= OnFailedToStartMatchmakingGame;
         }
 
         /// <summary>
@@ -51,6 +58,11 @@ namespace MenuUi.Scripts.Lobby
             {
                 _cancelButton.gameObject.SetActive(false);
             }
+        }
+
+        private void OnFailedToStartMatchmakingGame()
+        {
+            PopupSignalBus.OnChangePopupInfoSignal("Virhe pelin aloittamisessa, lopetetaan pelin etsiminen.");
         }
     }
 }
