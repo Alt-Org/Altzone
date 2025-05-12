@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
-    [CreateAssetMenu(menuName = "ALT-Zone/CharacterStorage", fileName = "CharacterStorage")]
+    //[CreateAssetMenu(menuName = "ALT-Zone/CharacterStorage", fileName = "CharacterStorage")]
     public class CharacterStorage : ScriptableObject
     {
 
