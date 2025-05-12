@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
+    //[CreateAssetMenu(menuName = "ALT-Zone/GraffitiartistCharacter", fileName = "GraffitiartistCharacterStats")]
     public class GraffitiartistCharacter : ProjectorClassCharacter
     {
         public GraffitiartistCharacter() : base()

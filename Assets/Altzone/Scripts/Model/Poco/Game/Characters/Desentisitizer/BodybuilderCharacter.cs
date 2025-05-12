@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
+    //[CreateAssetMenu(menuName = "ALT-Zone/BodybuilderCharacter", fileName = "BodybuilderCharacterStats")]
     public class BodybuilderCharacter : DesentisitizerClassCharacter
     {
         public BodybuilderCharacter()
