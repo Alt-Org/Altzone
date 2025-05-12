@@ -87,6 +87,8 @@ namespace Altzone.Scripts.ModelV2.Internal
         /// </summary>
         [Header("General Asset References")] public Sprite GalleryImage;
 
+        public Sprite GalleryHeadImage;
+
         #endregion
 
         #region Battle Asset References
