@@ -120,15 +120,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private IEnumerator SetRoomTitle()
         {
+            yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
+
             // Getting room name either from custom properties or from the room's name itself.
             string roomName = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PhotonLobbyRoom.RoomNameKey);
             if (string.IsNullOrEmpty(roomName)) roomName = PhotonRealtimeClient.LobbyCurrentRoom.Name;
-
-            do
-            {
-                yield return null;
-                _title.text = PhotonRealtimeClient.InRoom ? roomName : "<color=red>Not in room</color>";
-            } while (!PhotonRealtimeClient.InRoom);
         }
     }
 }
