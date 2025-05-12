@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using Photon.Deterministic;
+using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
@@ -25,24 +26,29 @@ namespace Altzone.Scripts.Model.Poco.Game
         VeryWeak
     }
 
-    public abstract class BaseCharacter
+    public abstract class BaseCharacter : ScriptableObject
     {
-        protected CharacterID _id = CharacterID.None;
+        [SerializeField] protected CharacterID _id = CharacterID.None;
+
+        [Header("HP"), SerializeField] protected int _defaultHp;
         protected int _hp;
-        protected int _defaultHp;
-        protected ValueStrength _hpStrength = ValueStrength.None;
+        [SerializeField] protected ValueStrength _hpStrength = ValueStrength.None;
+        
+        [Header("Speed"), SerializeField] protected int _defaultSpeed;
         protected int _speed;
-        protected int _defaultSpeed;
-        protected ValueStrength _speedStrength = ValueStrength.None;
+        [SerializeField] protected ValueStrength _speedStrength = ValueStrength.None;
+        
+        [Header("Character Size"), SerializeField] protected int _defaultCharacterSize;
         protected int _characterSize;
-        protected int _defaultCharacterSize;
-        protected ValueStrength _characterSizeStrength = ValueStrength.None;
+        [SerializeField] protected ValueStrength _characterSizeStrength = ValueStrength.None;
+
+        [Header("Attack"), SerializeField] protected int _defaultAttack;
         protected int _attack;
-        protected int _defaultAttack;
-        protected ValueStrength _attackStrength = ValueStrength.None;
+        [SerializeField] protected ValueStrength _attackStrength = ValueStrength.None;
+
+        [Header("Defence"), SerializeField] protected int _defaultDefence;
         protected int _defence;
-        protected int _defaultDefence;
-        protected ValueStrength _defenceStrength = ValueStrength.None;
+        [SerializeField] protected ValueStrength _defenceStrength = ValueStrength.None;
 
         protected bool active = true;
 
