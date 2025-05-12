@@ -309,8 +309,12 @@ namespace Battle.QSimulation.Player
 
         #endregion Public - Static Methods
 
+        #region Public - PlayerHandle struct
+
         public struct PlayerHandle
         {
+            //{ Public Static Methods
+
             public static BattlePlayerSlot GetSlot(Frame f, PlayerRef playerRef)
             {
                 BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
@@ -349,6 +353,10 @@ namespace Battle.QSimulation.Player
                 return array;
             }
 
+            //} Public Static Methods
+
+            //{ Public Properties
+
             public BattlePlayerPlayState PlayState
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.PlayState; }
 
@@ -361,6 +369,10 @@ namespace Battle.QSimulation.Player
             public int SelectedCharacterNumber
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacterNumber; }
 
+            //} Public Properties
+
+            //{ Private
+
             private PlayerHandleInternal _internalHandle;
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -368,13 +380,19 @@ namespace Battle.QSimulation.Player
             {
                 _internalHandle = internalHandle;
             }
+
+            //} Private
         }
+
+        #endregion Public - PlayerHandle struct
 
         #endregion Public
 
         #region Private
 
         private static readonly FPVector2[] s_spawnPoints = new FPVector2[Constants.BATTLE_PLAYER_SLOT_COUNT];
+
+        #region Private - PlayerHandleInternal struct
 
         private struct PlayerHandleInternal
         {
@@ -573,6 +591,8 @@ namespace Battle.QSimulation.Player
 
             //} Private Methods
         }
+
+        #endregion Private - PlayerHandleInternal struct
 
         #region Private - Static Methods
 
