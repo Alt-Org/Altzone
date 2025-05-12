@@ -181,6 +181,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void SetFeatureToNone(int slot)
         {
+            _selectedFeatures[slot] = "0";
             _avatarEditorCharacterHandle.SetMainCharacterImage((FeatureSlot)slot, null);
 
             if (_characterClassID == CharacterClassID.Confluent)
@@ -340,6 +341,10 @@ namespace MenuUi.Scripts.AvatarEditor
 
                     if (partData != null)
                         SetFeature(partData, i);
+                    else
+                    {
+                        _selectedFeatures[i] = "0";
+                    }
                 }
             }
         }

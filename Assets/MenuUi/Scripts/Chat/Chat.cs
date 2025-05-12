@@ -36,7 +36,7 @@ public class Chat : AltMonoBehaviour
     [SerializeField] private GameObject _usersWhoAdded;
 
     [Header("Chat Reactions")]
-    [SerializeField] private ChatResponseList _chatResponseList;
+    [SerializeField] private CharacterResponseList _chatResponseList;
     [SerializeField] private GameObject _chatResponseContent;
 
     [Header("Prefab")]
@@ -130,7 +130,7 @@ public class Chat : AltMonoBehaviour
     {
         StartCoroutine(GetPlayerData(data =>
         {
-            List<string> messageList = _chatResponseList.GetResponses((CharacterClassID)((data.SelectedCharacterId / 100) * 100));
+            List<string> messageList = _chatResponseList.GetChatResponses((CharacterClassID)((data.SelectedCharacterId / 100) * 100));
             foreach (string message in messageList)
             {
                 GameObject messageObject = Instantiate(_quickMessagePrefab, _chatResponseContent.transform);

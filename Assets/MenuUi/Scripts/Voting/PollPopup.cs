@@ -67,5 +67,7 @@ public class PollPopup : MonoBehaviour
         pollData.AddVote(answer);
         SetValues();
         VotingActions.ReloadPollList?.Invoke();
+
+        gameObject.SetActive(false);
     }
 }

@@ -32,5 +32,6 @@ namespace MenuUi.Scripts.ReferenceSheets
         public Sprite Icon;
         public string Name;
         public GameType gameType;
+        public string Description;
     }
 }

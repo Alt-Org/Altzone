@@ -5,7 +5,7 @@ using MenuUi.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ProfileMenuTabs : MonoBehaviour
+public class TabChangeHandler : MonoBehaviour
 {
     [System.Serializable]
     public class ButtonWindowBind
@@ -19,6 +19,8 @@ public class ProfileMenuTabs : MonoBehaviour
 
     [SerializeField] List<ButtonWindowBind> _buttons = new List<ButtonWindowBind>();
 
+    [SerializeField] private int _defaultTab = 1;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,13 +29,16 @@ public class ProfileMenuTabs : MonoBehaviour
             int j = i;
             _buttons[i].Button.onClick.AddListener(() => SetVisible(j));
         }
-        SetVisible(1);
+        SetVisible(_defaultTab);
     }
 
     void SetVisible(int activeIndex)
     {
+        // If the window uses a swipe scroll then send the message to it to change the tab, otherwise switch panels the old way.
+        if (_tablineScript.Swipe == null)
         for (int i = 0; i < _buttons.Count; i++)
             _buttons[i].Window.SetActive(i == activeIndex);
+        else _tablineScript.Swipe.CurrentPage = activeIndex;
         _tablineScript.ActivateTabButton(activeIndex);
     }
 }

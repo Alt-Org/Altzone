@@ -1,18 +1,14 @@
-using System.Collections;
 using System.Collections.Generic;
-using Altzone.Scripts.Config;
-using Altzone.Scripts.Model.Poco.Clan;
-using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts;
-using Altzone.Scripts.Voting;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
-using TMPro;
 
 public class VoteManager : MonoBehaviour
 {
-    [SerializeField] private GameObject Content;
+    [SerializeField] private GameObject VotedListContent;
+    [SerializeField] private GameObject NotVotedListContent;
     [SerializeField] private GameObject PollObjectPrefab;
     [SerializeField] private GameObject PollPopup;
     [SerializeField] private GameObject Blocker;
@@ -46,14 +42,23 @@ public class VoteManager : MonoBehaviour
         }
         Polls.Clear();
 
+        PlayerData player = null;
+        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
+
         // Instantiate new polls
         foreach (var pollData in PollManager.GetPollList())
         {
-            GameObject obj = Instantiate(PollObjectPrefab, Content.transform);
-            obj.GetComponent<PollObject>().SetPollId(pollData.Id);
-            Polls.Add(obj);
+            GameObject obj = null;
+            if (pollData.NotVoted.Contains(player.Id)) obj = Instantiate(PollObjectPrefab, NotVotedListContent.transform);
+            else obj = Instantiate(PollObjectPrefab, VotedListContent.transform);
 
-            obj.gameObject.GetComponent<Button>().onClick.AddListener(delegate { PollPopup.SetActive(true); });
+            if (obj != null)
+            {
+                obj.GetComponent<PollObject>().SetPollId(pollData.Id);
+                Polls.Add(obj);
+
+                obj.gameObject.GetComponent<Button>().onClick.AddListener(delegate { PollPopup.SetActive(true); });
+            }
         }
 
         if (Polls.Count == 0) NoPollsText.SetActive(true);

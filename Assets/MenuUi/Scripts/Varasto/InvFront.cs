@@ -321,7 +321,7 @@ namespace MenuUi.Scripts.Storage
             switch (_sortingBy)
             {
                 case 0:
-                    _sortingByText.text = "Jarjestetty: Aakkoset";
+                    _sortingByText.text = "Järjestetty: Aakkoset";
 
                     _items.Sort((StorageFurniture a, StorageFurniture b) => {
                         StorageFurniture first = _descendingOrder ? b : a;
@@ -338,7 +338,7 @@ namespace MenuUi.Scripts.Storage
 
                     break;
                 case 1:
-                    _sortingByText.text = "Jarjestetty: Arvo";
+                    _sortingByText.text = "Järjestetty: Arvo";
 
                     _items.Sort((StorageFurniture a, StorageFurniture b) => {
                         StorageFurniture first = _descendingOrder ? b : a;
@@ -358,7 +358,7 @@ namespace MenuUi.Scripts.Storage
 
                     break;
                 case 2:
-                    _sortingByText.text = "Jarjestetty: Paino";
+                    _sortingByText.text = "Järjestetty: Paino";
 
                     _items.Sort((StorageFurniture a, StorageFurniture b) => {
                         StorageFurniture first = _descendingOrder ? b : a;
@@ -378,7 +378,7 @@ namespace MenuUi.Scripts.Storage
 
                     break;
                 case 3:
-                    _sortingByText.text = "Jarjestetty: Harvinaisuus";
+                    _sortingByText.text = "Järjestetty: Harvinaisuus";
 
                     _items.Sort((StorageFurniture a, StorageFurniture b) => {
                         StorageFurniture first = _descendingOrder ? b : a;
@@ -398,7 +398,7 @@ namespace MenuUi.Scripts.Storage
 
                     break;
                 case 4:
-                    _sortingByText.text = "Jarjestetty: Linjasto";
+                    _sortingByText.text = "Järjestetty: Linjasto";
 
                     _items.Sort((StorageFurniture a, StorageFurniture b) => {
                         StorageFurniture first = _descendingOrder ? b : a;

@@ -32,7 +32,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         [SerializeField, Tooltip("The area from the bottom of the screen from where swiping is disabled (between 0/1))")] private float verticalDeadzone;
 
         private ScrollRect scrollRect;
-        [SerializeField] private GameObject[] slides;
+        [SerializeField] protected GameObject[] slides;
         [SerializeField] private Scrollbar scrollBar;
         [SerializeField] private Button[] buttons;
         //[SerializeField] private Button battleButton;
@@ -45,7 +45,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         protected int maxPage = 0;
         public Vector2 _startTouch;
         public Vector2 _endTouch;
-        private bool isSwipeMode = false;
+        protected bool isSwipeMode = false;
         private float _startScrollvalue;
         private bool _swipeAllowed = false;
         [SerializeField] private RectTransform _scrollTransform;
@@ -55,7 +55,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         private Rect swipeRect;
 
         [SerializeField] private bool _isInMainMenu;
-        [SerializeField] private bool _willRotate;
+        [SerializeField] protected bool _willRotate;
 
         public Action OnCurrentPageChanged;
 
@@ -96,7 +96,7 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         public float ScrollbarValue { get => scrollBar.value; }
 
-        private void Awake()
+        protected virtual void Awake()
         {
             scrollPageValues = new float[slides.Length];
 
@@ -350,12 +350,11 @@ namespace MenuUi.Scripts.SwipeNavigation
         /// </summary>
         /// <param name="index">Index of the page we are snapping to.</param>
         /// <returns></returns>
-        private IEnumerator OnSwipeOneStep(int index)
+        protected IEnumerator OnSwipeOneStep(int index)
         {
             float start = scrollBar.value;
             float current = 0;
             float percent = 0;
-            Debug.LogWarning("Swipe");
             isSwipeMode = true;
             if (scrollRect)
             {

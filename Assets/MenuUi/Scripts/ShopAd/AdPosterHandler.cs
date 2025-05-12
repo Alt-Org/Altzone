@@ -27,6 +27,11 @@ public class AdPosterHandler : AltMonoBehaviour
         FetchAdData();
     }
 
+    private void OnEnable()
+    {
+        FetchAdData();
+    }
+
     private void OnDestroy()
     {
         ClanData.OnAdDataUpdated -= FetchAdData;

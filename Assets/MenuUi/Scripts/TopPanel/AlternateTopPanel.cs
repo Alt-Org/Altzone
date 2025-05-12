@@ -38,6 +38,15 @@ public class AlternateTopPanel : MonoBehaviour
 
     private void OnEnable()
     {
+        if(ServerManager.Instance.Player != null)
+        {
+            _ownPlayerID = ServerManager.Instance.Player._id;
+            _ownClanID = ServerManager.Instance.Player.clan_id;
+
+            FetchRankings();
+            StartCoroutine(ChangeInfoType());
+        }
+        else
         StartCoroutine(ServerManager.Instance.GetOwnPlayerFromServer((player) =>
         {
             _ownPlayerID = player._id;
