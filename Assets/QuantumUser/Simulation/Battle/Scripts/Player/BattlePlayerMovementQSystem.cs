@@ -40,7 +40,7 @@ namespace Battle.QSimulation.Player
             if (filter.PlayerData->PlayerRef == PlayerRef.None) return;
             Input* input = f.GetPlayerInput(filter.PlayerData->PlayerRef);
 
-            UpdatePlayerMovement(f, ref filter, input);
+            //UpdatePlayerMovement(f, ref filter, input);
         }
 
         public static void MoveTowards(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform, FPVector2 position, FP maxDelta)
@@ -116,7 +116,6 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Private helper method for the public <see cref="Update(Frame, ref Filter)">Update</see> method.<br/>
         /// Handles player's movement and rotation.
         /// </summary>
         /// Checks Quantum Input for player's actions.<br/>
@@ -127,14 +126,10 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current Quantum Frame</param>
         /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter</a>.</param>
         /// <param name="input">Player's Quantum Input</param>
-        private void UpdatePlayerMovement(Frame f, ref Filter filter, Input* input)
+        public static void UpdateMovement(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform, Input* input)
         {
             // constant
             FP rotationSpeed = FP._0_20;
-
-            // unpack filter
-            BattlePlayerDataQComponent* playerData = filter.PlayerData;
-            Transform2D* transform = filter.Transform;
 
             // handle movement
             if (input->MouseClick)
@@ -143,7 +138,7 @@ namespace Battle.QSimulation.Player
                 BattleGridPosition targetGridPosition = input->MovementPosition;
 
                 // clamp the TargetPosition inside sidebounds
-                targetGridPosition.Col = Mathf.Clamp(targetGridPosition.Col, 0, BattleGridManager.Columns-1);
+                targetGridPosition.Col = Mathf.Clamp(targetGridPosition.Col, 0, BattleGridManager.Columns - 1);
 
                 // clamp the TargetPosition inside teams playfield for alphateam
                 if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha)
