@@ -625,7 +625,7 @@ public static class PhotonRealtimeClient
         Client.RemoveCallbackTarget(target);
     }
 
-    private static RoomOptions GetRoomOptions(GameType gameType, bool isMatchmaking = false, string mapId = "", Emotion startingEmotion = Emotion.Blank, string password = "", string clanName = "", int soulhomeRank = -1)
+    private static RoomOptions GetRoomOptions(GameType gameType, bool isMatchmaking = false, string mapId = "", Emotion startingEmotion = Emotion.Blank, string roomName = "", string password = "", string clanName = "", int soulhomeRank = -1)
     {
         PhotonHashtable customRoomProperties = new PhotonHashtable
         {
@@ -663,6 +663,12 @@ public static class PhotonRealtimeClient
         {
             customRoomProperties.Add(PhotonBattleRoom.PlayerPositionKey3, "");
             customRoomProperties.Add(PhotonBattleRoom.PlayerPositionKey4, "");
+        }
+
+        if (!string.IsNullOrEmpty(roomName))
+        {
+            customRoomProperties.Add(PhotonBattleRoom.RoomNameKey, roomName);
+            // propertiesShowingToLobby.Add(PhotonBattleRoom.RoomNameKey); Commented out because maybe needed later
         }
 
         if (!string.IsNullOrEmpty(password))
@@ -703,11 +709,13 @@ public static class PhotonRealtimeClient
 
     private static EnterRoomArgs GetEnterRoomArgs(string roomName, RoomOptions roomOptions, string[] expectedUsers = null)
     {
-        EnterRoomArgs opParams = new EnterRoomArgs();
-        opParams.RoomName = roomName;
-        opParams.RoomOptions = roomOptions;
-        opParams.Lobby = Client.InLobby ? Client.CurrentLobby : null;
-        opParams.ExpectedUsers = expectedUsers;
+        EnterRoomArgs opParams = new()
+        {
+            RoomName = roomName,
+            RoomOptions = roomOptions,
+            Lobby = Client.InLobby ? Client.CurrentLobby : null,
+            ExpectedUsers = expectedUsers
+        };
         return opParams;
     }
 
@@ -715,24 +723,44 @@ public static class PhotonRealtimeClient
     {
         RoomOptions roomOptions = GetRoomOptions(GameType.Random2v2, isMatchmaking);
 
-        return CreateRoom("", roomOptions, null, expectedUsers);
+        return CreateRoom(
+            roomOptions: roomOptions,
+            expectedUsers: expectedUsers
+        );
     }
 
     public static bool CreateClan2v2LobbyRoom(string clanName, int soulhomeRank, string[] expectedUsers = null, bool isMatchmaking = false)
     {
-        RoomOptions roomOptions = GetRoomOptions(GameType.Clan2v2, isMatchmaking, "", Emotion.Blank, "", clanName, soulhomeRank);
+        RoomOptions roomOptions = GetRoomOptions(
+            gameType: GameType.Clan2v2,
+            isMatchmaking: isMatchmaking,
+            clanName: clanName,
+            soulhomeRank: soulhomeRank
+        );
 
-        return CreateRoom("", roomOptions, null, expectedUsers);
+        return CreateRoom(
+            roomOptions: roomOptions,
+            expectedUsers: expectedUsers
+        );
     }
 
     public static bool CreateCustomLobbyRoom(string roomName, string mapId, Emotion startingEmotion, string password = "", string[] expectedUsers = null)
     {
-        RoomOptions roomOptions = GetRoomOptions(GameType.Custom, false, mapId, startingEmotion, password);
+        RoomOptions roomOptions = GetRoomOptions(
+            gameType: GameType.Custom,
+            mapId: mapId,
+            startingEmotion: startingEmotion,
+            password: password
+        );
 
-        return CreateRoom(roomName, roomOptions, null, expectedUsers);
+        return CreateRoom(
+            roomName: roomName,
+            roomOptions: roomOptions,
+            expectedUsers: expectedUsers
+        );
     }
 
-    public static bool CreateRoom(string roomName, RoomOptions roomOptions = null, TypedLobby typedLobby = null, string[] expectedUsers = null)
+    public static bool CreateRoom(string roomName = "", RoomOptions roomOptions = null, TypedLobby typedLobby = null, string[] expectedUsers = null)
     {
         /*if (OfflineMode)
         {
@@ -762,7 +790,14 @@ public static class PhotonRealtimeClient
             Debug.LogError("CreateRoom failed. Client is on " + Client.Server + " (must be Master Server for matchmaking)" + (Client.IsConnectedAndReady ? " and ready" : "but not ready for operations (State: " + Client.State + ")") + ". Wait for callback: OnJoinedLobby or OnConnectedToMaster.");
             return false;
         }
-        RoomOptions roomOptions = GetRoomOptions(GameType.Clan2v2, isMatchmaking, "", Emotion.Blank, "", clanName, soulhomeRank);
+
+        RoomOptions roomOptions = GetRoomOptions(
+            gameType: GameType.Clan2v2,
+            isMatchmaking: isMatchmaking,
+            clanName: clanName,
+            soulhomeRank: soulhomeRank
+        );
+
         EnterRoomArgs enterRoomArgs = GetEnterRoomArgs("", roomOptions, expectedUsers);
 
         JoinRandomRoomArgs joinRandomRoomArgs = new JoinRandomRoomArgs();
@@ -781,8 +816,13 @@ public static class PhotonRealtimeClient
             Debug.LogError("CreateRoom failed. Client is on " + Client.Server + " (must be Master Server for matchmaking)" + (Client.IsConnectedAndReady ? " and ready" : "but not ready for operations (State: " + Client.State + ")") + ". Wait for callback: OnJoinedLobby or OnConnectedToMaster.");
             return false;
         }
-        RoomOptions roomOptions = GetRoomOptions(GameType.Custom, false, mapId, startingEmotion);
-        EnterRoomArgs enterRoomArgs = GetEnterRoomArgs(roomName, roomOptions, expectedUsers);
+        RoomOptions roomOptions = GetRoomOptions(
+            gameType: GameType.Custom,
+            roomName: roomName, // For join random or create custom room we use GUID for room name so setting it to room options
+            mapId: mapId,
+            startingEmotion: startingEmotion
+        );
+        EnterRoomArgs enterRoomArgs = GetEnterRoomArgs("", roomOptions, expectedUsers);
 
         JoinRandomRoomArgs joinRandomRoomArgs = new JoinRandomRoomArgs();
         joinRandomRoomArgs.ExpectedCustomRoomProperties = new PhotonHashtable{ { PhotonBattleRoom.GameTypeKey, GameType.Custom } };

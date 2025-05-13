@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AlternateTopPanel : MonoBehaviour
+public class AlternateTopPanel : AltMonoBehaviour
 {
     [Header("Clan/Player info")]
     [SerializeField] private GameObject _playerInfo;
@@ -49,6 +49,7 @@ public class AlternateTopPanel : MonoBehaviour
         else
         StartCoroutine(ServerManager.Instance.GetOwnPlayerFromServer((player) =>
         {
+            if (player == null) { Debug.LogError("Cannot get PlayerData."); return; }
             _ownPlayerID = player._id;
             _ownClanID = player.clan_id;
 
@@ -133,7 +134,7 @@ public class AlternateTopPanel : MonoBehaviour
     private void FetchRankings()
     {
         // Find the player's rankings within clan
-        Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
+        StartCoroutine(GetClanData(ServerManager.Instance.Clan?._id, (clanData) =>
         {
             // Wins
             clanData.Members.Sort((a, b) => a.LeaderBoardWins.CompareTo(b.LeaderBoardWins));
@@ -168,8 +169,8 @@ public class AlternateTopPanel : MonoBehaviour
             }
 
             _playerActivityRanking = rankActivity;
-        });
-        
+        }));
+
 
         // Find the clan's global wins ranking (not available yet)
         //StartCoroutine(ServerManager.Instance.GetClanLeaderboardFromServer((clanLeaderboard) =>
