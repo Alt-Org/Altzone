@@ -18,11 +18,11 @@ namespace MenuUi.Scripts.Signals
             OnRandomSelectedCharactersRequested?.Invoke();
         }
 
-        public delegate void DefenceGalleryEditModeRequested();
-        public static event DefenceGalleryEditModeRequested OnDefenceGalleryEditModeRequested;
-        public static void OnDefenceGalleryEditModeRequestedSignal()
+        public delegate void DefenceGalleryEditPanelRequested();
+        public static event DefenceGalleryEditPanelRequested OnDefenceGalleryEditPanelRequested;
+        public static void OnDefenceGalleryEditPanelRequestedSignal()
         {
-            OnDefenceGalleryEditModeRequested?.Invoke();
+            OnDefenceGalleryEditPanelRequested?.Invoke();
         }
 
         public delegate void ReloadCharacterGalleryRequested();

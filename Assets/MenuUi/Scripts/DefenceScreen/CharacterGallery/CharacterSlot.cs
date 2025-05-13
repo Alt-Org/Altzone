@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
-    public class CharacterSlot : MonoBehaviour, IGalleryCharacterData
+    public class CharacterSlot : SlotBase, IGalleryCharacterData
     {
         [SerializeField] public GalleryCharacter Character;
 
@@ -28,10 +28,3 @@ namespace MenuUi.Scripts.CharacterGallery
         }
     }
 }
-
-
-
-
-
-
-

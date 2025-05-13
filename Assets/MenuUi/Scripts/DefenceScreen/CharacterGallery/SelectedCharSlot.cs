@@ -1,33 +1,38 @@
 using UnityEngine.UI;
 using UnityEngine;
-using MenuUi.Scripts.DefenceScreen.CharacterStatsWindow;
 using TMPro;
+using MenuUi.Scripts.Signals;
 
-public class SelectedCharSlot : MonoBehaviour
+namespace MenuUi.Scripts.CharacterGallery
 {
-    [SerializeField] private Image _characterHeadImage;
-    [SerializeField] private Image _lockImage;
-    [SerializeField] private TMP_Text _className;
-
-    private StatsWindowController _controller;
-    void OnEnable()
+    public class SelectedCharSlot : SlotBase
     {
-        if (_controller == null) _controller = FindObjectOfType<StatsWindowController>();
+        [SerializeField] private Image _characterHeadImage;
+        [SerializeField] private TMP_Text _className;
 
-        SetCharacterHeadImage();
-        SetClassName();
-    }
-    private void SetCharacterHeadImage()
-    {
-        Sprite sprite = _controller.GetCurrentCharacterSprite();
-
-        if (sprite != null)
+        private void Awake()
         {
-            _characterHeadImage.sprite = sprite;
+            if (_slotButton != null) _slotButton.onClick.AddListener(SignalBus.OnDefenceGalleryEditPanelRequestedSignal);
         }
-    }
-    private void SetClassName()
-    {
-        _className.text = _controller.GetCurrentCharacterClassName();
+
+        void OnEnable()
+        {
+            SetCharacterHeadImage();
+            SetClassName();
+        }
+
+        private void SetCharacterHeadImage()
+        {
+            Sprite sprite = null;
+
+            if (sprite != null)
+            {
+                _characterHeadImage.sprite = sprite;
+            }
+        }
+        private void SetClassName()
+        {
+            _className.text = "";
+        }
     }
 }
