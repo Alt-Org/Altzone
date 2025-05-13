@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
-    //[CreateAssetMenu(menuName = "ALT-Zone/Character/JokerCharacter", fileName = "JokerCharacterStats")]
-    public class JokerCharacter : TricksterClassCharacter
+    [CreateAssetMenu(menuName = "ALT-Zone/Characters/SeducerCharacter", fileName = "SeducerCharacterStats")]
+    public class SeducerCharacter : TricksterClassCharacter
     {
-        public JokerCharacter()
+        public SeducerCharacter()
         {
-            _id = CharacterID.Joker;
+            _id = CharacterID.Seducer;
             _defaultAttack = 8;
             _defaultDefence = 4;
             _defaultHp = 2;

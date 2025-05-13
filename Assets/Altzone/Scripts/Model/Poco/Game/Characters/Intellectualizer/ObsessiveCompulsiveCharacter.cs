@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
-    //[CreateAssetMenu(menuName = "ALT-Zone/Characters/ResearcherCharacter", fileName = "ResearcherCharacterStats")]
-    public class ResearcherCharacter : IntellectualizerClassCharacter
+    [CreateAssetMenu(menuName = "ALT-Zone/Characters/ObsessiveCompulsiveCharacter", fileName = "ObsessiveCompulsiveCharacterStats")]
+    public class ObsessiveCompulsiveCharacter : IntellectualizerClassCharacter
     {
-        public ResearcherCharacter() : base()
+        public ObsessiveCompulsiveCharacter() : base()
         {
-            _id = CharacterID.Booksmart;
+            _id = CharacterID.ObsessiveCompulsive;
             _defaultAttack = 10;
             _defaultDefence = 3;
             _defaultHp = 8;

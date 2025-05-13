@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
-    //[CreateAssetMenu(menuName = "ALT-Zone/Characters/GraffitiartistCharacter", fileName = "GraffitiartistCharacterStats")]
-    public class GraffitiartistCharacter : ProjectorClassCharacter
+    [CreateAssetMenu(menuName = "ALT-Zone/Characters/ArguerCharacter", fileName = "ArguerCharacterStats")]
+    public class ArguerCharacter : ProjectorClassCharacter
     {
-        public GraffitiartistCharacter() : base()
+        public ArguerCharacter() : base()
         {
-            _id = CharacterID.Artist;
+            _id = CharacterID.Arguer;
             _defaultAttack = 7;
             _defaultDefence = 10;
             _defaultHp = 3;

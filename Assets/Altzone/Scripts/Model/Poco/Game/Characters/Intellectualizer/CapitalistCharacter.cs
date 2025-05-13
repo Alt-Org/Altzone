@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
-    //[CreateAssetMenu(menuName = "ALT-Zone/Characters/ResearcherCharacter", fileName = "ResearcherCharacterStats")]
-    public class ResearcherCharacter : IntellectualizerClassCharacter
+    [CreateAssetMenu(menuName = "ALT-Zone/Characters/CapitalistCharacter", fileName = "CapitalistCharacterStats")]
+    public class CapitalistCharacter : IntellectualizerClassCharacter
     {
-        public ResearcherCharacter() : base()
+        public CapitalistCharacter() : base()
         {
-            _id = CharacterID.Booksmart;
+            _id = CharacterID.Capitalist;
             _defaultAttack = 10;
             _defaultDefence = 3;
             _defaultHp = 8;

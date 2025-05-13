@@ -29,6 +29,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     public abstract class BaseCharacter : ScriptableObject
     {
         [SerializeField] protected CharacterID _id = CharacterID.None;
+        [SerializeField] protected bool active = true;
 
         [Header("HP"), SerializeField] protected int _defaultHp;
         protected int _hp;
@@ -49,8 +50,6 @@ namespace Altzone.Scripts.Model.Poco.Game
         [Header("Defence"), SerializeField] protected int _defaultDefence;
         protected int _defence;
         [SerializeField] protected ValueStrength _defenceStrength = ValueStrength.None;
-
-        protected bool active = true;
 
         public CharacterID Id { get => _id;}
         public virtual CharacterClassID ClassID { get => GetClassID(Id); }
