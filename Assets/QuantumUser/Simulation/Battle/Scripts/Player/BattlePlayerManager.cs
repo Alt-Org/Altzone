@@ -35,7 +35,7 @@ namespace Battle.QSimulation.Player
         }
 
         /// </summary>
-        /// <param name="f">Quantum Frame</param>
+        /// <param name="f">Current simulation frame</param>
         /// <param name="playerRef">Reference to the player</param>
         /// <returns>Initialized BattlePlayerSlot</returns>
         public static BattlePlayerSlot InitPlayer(Frame f, PlayerRef playerRef)

@@ -28,7 +28,7 @@ namespace Battle.QSimulation.SoulWall
         /// Creates soulwalls based on BattleArena and SoulWall Specs during map creation phase.
         /// @warning this method should only be called once by GameControlSystem during the map creation
         /// </summary>
-        /// <param name="f">Current Quantum Frame.</param>
+        /// <param name="f">Current simulation frame.</param>
         /// <param name="battleArenaSpec">The BattleArenaSpec.</param>
         /// <param name="soulWallSpec">The SoulWallSpec.</param>
         public static void CreateSoulWalls(Frame f, BattleArenaQSpec battleArenaSpec, BattleSoulWallQSpec soulWallSpec)
@@ -45,7 +45,7 @@ namespace Battle.QSimulation.SoulWall
         /// @warning
         /// This method should only be called via Quantum signal.
         /// </summary>
-        /// <param name="f">Current Quantum Frame.</param>
+        /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="projectileEntity">EntityRef of the projectile.</param>
         /// <param name="soulWall">Pointer to the SoulWall component.</param>
@@ -66,7 +66,7 @@ namespace Battle.QSimulation.SoulWall
         /// <summary>
         /// Private helper method (for the public <see cref="CreateSoulWalls(Frame, BattleArenaQSpec BattleSoulWallQSpec)">CreateSoulWalls</see>) that creates soulwalls on one side of the arena.
         /// </summary>
-        /// <param name="f">Current Quantum Frame.</param>
+        /// <param name="f">Current simulation frame.</param>
         /// <param name="teamNumber">The teamNumber of the team whose side is being created.</param>
         /// <param name="soulWallTemplates">An array of soulwall templates that are used to create the soulwalls.</param>
         /// <param name="soulWallPrototypes">An array of entityPrototypes that can be created.</param>

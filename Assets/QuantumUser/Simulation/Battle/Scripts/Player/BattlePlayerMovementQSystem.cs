@@ -58,7 +58,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Moves the player towards the specified position while updating the hitbox.
         /// </summary>
-        /// <param name="f">Current Quantum frame.</param>
+        /// <param name="f">Current simulation frame.</param>
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="transform">Pointer to the player's transform component.</param>
         /// <param name="position">Target world position to move towards.</param>
@@ -72,7 +72,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Rotates the player to the specified angle while updating the hitbox.
         /// </summary>
-        /// <param name="f">Current Quantum frame.</param>
+        /// <param name="f">Current simulation frame.</param>
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="transform">Pointer to the player's transform component.</param>
         /// <param name="radians">Target rotation angle in radians.</param>
@@ -85,7 +85,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Instantly moves and rotates the player to the specified position and rotation, and teleports the hitbox.
         /// </summary>
-        /// <param name="f">Current Quantum frame.</param>
+        /// <param name="f">Current simulation frame.</param>
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="transform">Pointer to the player's transform component.</param>
         /// <param name="position">New world position.</param>
@@ -99,7 +99,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Private method for moving only player towards the specified position.
         /// </summary>
-        /// <param name="f">Current Quantum frame.</param>
+        /// <param name="f">Current simulation frame.</param>
         /// <param name="transform">Pointer to the player's transform component.</param>
         /// <param name="position">Target world position to move towards.</param>
         /// <param name="maxDelta">Maximum movement delta per frame.</param>
@@ -111,7 +111,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Private method for rotating only player to the specified angle.
         /// </summary>
-        /// <param name="f">Current Quantum frame.</param>
+        /// <param name="f">Current simulation frame.</param>
         /// <param name="transform">Pointer to the player's transform component.</param>
         /// <param name="radians">Target rotation angle in radians.</param>
         private static void RotateNoHitboxUpdate(Frame f, Transform2D* transform, FP radians)
@@ -122,7 +122,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Private method for instantly teleporting only player to the specified position and rotation.
         /// </summary>
-        /// <param name="f">Current Quantum frame.</param>
+        /// <param name="f">Current simulation frame.</param>
         /// <param name="transform">Pointer to the player's transform component.</param>
         /// <param name="position">New world position.</param>
         /// <param name="rotation">New rotation in radians.</param>
@@ -144,7 +144,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Private method for moving all of player's hitboxes towards the specified position and/or moves them when player rotates.
         /// </summary>
-        /// <param name="f">Current Quantum frame.</param>
+        /// <param name="f">Current simulation frame.</param>
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="transform">Pointer to the player's transform component.</param>
         private static void MoveHitbox(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform)
@@ -167,7 +167,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Private method for instantly teleporting all of player's hitboxes to the specified position and rotation.
         /// </summary>
-        /// <param name="f">Current Quantum frame.</param>
+        /// <param name="f">Current simulation frame.</param>
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="transform">Pointer to the player's transform component.</param>
         private static void TeleportHitbox(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform)
@@ -198,7 +198,7 @@ namespace Battle.QSimulation.Player
         /// When rotation action is taken: updates player's RotationOffset based on input.<br/>
         /// When rotation action is not taken: updates player's RotationOffset back to zero.<br/>
         /// Always: updates player's position and rotation based on the current TargetPosition and RotationOffset.<br/>
-        /// <param name="f">Current Quantum Frame</param>
+        /// <param name="f">Current simulation Frame</param>
         /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter@u-exlink</a>.</param>
         /// <param name="input">Player's Quantum Input</param>
         private void UpdatePlayerMovement(Frame f, ref Filter filter, Input* input)

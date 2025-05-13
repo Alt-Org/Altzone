@@ -40,7 +40,7 @@ namespace Battle.QSimulation.Diamond
         /// @warning
         /// This method should only be called via Quantum signal.
         /// </summary>
-        /// <param name="f">Current Quantum Frame.</param>
+        /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="projectileEntity">EntityRef of the projectile.</param>
         /// <param name="soulWall">Pointer to the SoulWall component.</param>
@@ -58,7 +58,7 @@ namespace Battle.QSimulation.Diamond
         /// @warning
         /// This method should only be called by Quantum.
         /// </summary>
-        /// <param name="f">Current Quantum Frame.</param>
+        /// <param name="f">Current simulation frame.</param>
         /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter@u-exlink</a>.</param>
         public override void Update(Frame f, ref Filter filter)
         {
@@ -75,7 +75,7 @@ namespace Battle.QSimulation.Diamond
         /// @warning
         /// This method should only be called via Quantum signal.
         /// </summary>
-        /// <param name="f">Current Quantum Frame.</param>
+        /// <param name="f">Current simulation frame.</param>
         /// <param name="diamond">Pointer to the diamond component.</param>
         /// <param name="diamondEntity">EntityRef of the diamond.</param>
         /// <param name="playerHitbox">Pointer to the playerHitbox component.</param>
@@ -95,7 +95,7 @@ namespace Battle.QSimulation.Diamond
         /// <summary>
         /// Creates diamonds and teleports them to a random position on scoring team's side of the arena.
         /// </summary>
-        /// <param name="f">Current Quantum Frame.</param>
+        /// <param name="f">Current simulation frame.</param>
         /// <param name="wallNormal">Normal of the SoulWall.</param>
         /// <param name="diamondSpec">The DiamondSpec.</param>
         private void CreateDiamonds(Frame f, FPVector2 wallNormal, BattleDiamondQSpec diamondSpec)

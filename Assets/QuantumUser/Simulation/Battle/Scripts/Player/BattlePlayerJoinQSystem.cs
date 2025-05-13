@@ -27,7 +27,7 @@ namespace Battle.QSimulation.Player
         /// @warning
         /// This method should only be called via Quantum signal.
         /// </summary>
-        /// <param name="f">Quantum simulation frame.</param>
+        /// <param name="f">Current simulation frame.</param>
         /// <param name="player">Reference to the player.</param>
         /// <param name="firstTime">True if this is the first join.</param>
         public void OnPlayerAdded(Frame f, PlayerRef player, bool firstTime)
