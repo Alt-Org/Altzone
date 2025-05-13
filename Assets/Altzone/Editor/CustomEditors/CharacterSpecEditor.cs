@@ -24,6 +24,12 @@ namespace Altzone.Editor.CustomEditors
         SerializedProperty GalleryHeadImage;
         SerializedProperty BattleSprite;
 
+        int _prevHp = 0;
+        int _prevSpeed = 0;
+        int _prevCharSize = 0;
+        int _prevAttack = 0;
+        int _prevDefence = 0;
+
         private void OnEnable()
         {
             IsApproved = serializedObject.FindProperty(nameof(CharacterSpec.IsApproved));
@@ -64,15 +70,15 @@ namespace Altzone.Editor.CustomEditors
             }
             if (script.CharacterStats != null)
             {
-                script.Hp.Level = script.CharacterStats.Hp;
+                script.Hp.Level = script.CharacterStats.DefaultHp;
                 script.Hp.Coefficient = script.CharacterStats.HpStrength;
-                script.Speed.Level = script.CharacterStats.Speed;
+                script.Speed.Level = script.CharacterStats.DefaultSpeed;
                 script.Speed.Coefficient = script.CharacterStats.SpeedStrength;
-                script.CharacterSize.Level = script.CharacterStats.CharacterSize;
+                script.CharacterSize.Level = script.CharacterStats.DefaultCharacterSize;
                 script.CharacterSize.Coefficient = script.CharacterStats.CharacterSizeStrength;
-                script.Attack.Level = script.CharacterStats.Attack;
+                script.Attack.Level = script.CharacterStats.DefaultAttack;
                 script.Attack.Coefficient = script.CharacterStats.AttackStrength;
-                script.Defence.Level = script.CharacterStats.Defence;
+                script.Defence.Level = script.CharacterStats.DefaultDefence;
                 script.Defence.Coefficient = script.CharacterStats.DefenceStrength;
             }
 
@@ -84,6 +90,11 @@ namespace Altzone.Editor.CustomEditors
             {
                 script.CharacterId = 0;
             }*/
+            _prevHp = script.Hp.Level;
+            _prevSpeed = script.Speed.Level;
+            _prevCharSize = script.CharacterSize.Level;
+            _prevAttack = script.Attack.Level;
+            _prevDefence = script.Defence.Level;
             serializedObject.ApplyModifiedProperties();
         }
 
@@ -111,14 +122,21 @@ namespace Altzone.Editor.CustomEditors
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Special Attributes", EditorStyles.boldLabel);
+            EditorGUI.BeginDisabledGroup(true);
             script.CharacterStats = EditorGUILayout.ObjectField("Character Stats", script.CharacterStats, typeof(BaseCharacter),false) as BaseCharacter;
+            EditorGUI.EndDisabledGroup();
             if (script.CharacterStats != null)
             {
                 EditorGUILayout.PropertyField(Hp);
+                if(_prevHp != script.Hp.Level && _prevHp > 0) script.CharacterStats.DefaultHp = script.Hp.Level;
                 EditorGUILayout.PropertyField(Speed);
+                if (_prevSpeed != script.Speed.Level && _prevSpeed> 0) script.CharacterStats.DefaultSpeed = script.Speed.Level;
                 EditorGUILayout.PropertyField(CharacterSize);
+                if (_prevCharSize != script.CharacterSize.Level && _prevCharSize > 0) script.CharacterStats.DefaultCharacterSize = script.CharacterSize.Level;
                 EditorGUILayout.PropertyField(Attack);
+                if (_prevAttack != script.Attack.Level && _prevAttack > 0) script.CharacterStats.DefaultAttack = script.Attack.Level;
                 EditorGUILayout.PropertyField(Defence);
+                if (_prevDefence != script.Defence.Level && _prevDefence > 0) script.CharacterStats.DefaultDefence = script.Defence.Level;
             }
 
             EditorGUILayout.Space();

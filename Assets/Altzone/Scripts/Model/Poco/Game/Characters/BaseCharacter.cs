@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using Photon.Deterministic;
+using UnityEditor;
 using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
@@ -54,15 +55,15 @@ namespace Altzone.Scripts.Model.Poco.Game
         public CharacterID Id { get => _id;}
         public virtual CharacterClassID ClassID { get => GetClassID(Id); }
         public int Hp { get => _hp;}
-        public int DefaultHp { get => _defaultHp; }
+        public int DefaultHp { get => _defaultHp; set { _defaultHp = value; SaveData(); } }
         public int Speed { get => _speed;}
-        public int DefaultSpeed { get => _defaultSpeed; }
+        public int DefaultSpeed { get => _defaultSpeed; set { _defaultSpeed = value; SaveData(); } }
         public int CharacterSize { get => _characterSize;}
-        public int DefaultCharacterSize { get => _defaultCharacterSize; }
+        public int DefaultCharacterSize { get => _defaultCharacterSize; set { _defaultCharacterSize = value; SaveData(); } }
         public int Attack { get => _attack;}
-        public int DefaultAttack { get => _defaultAttack; }
+        public int DefaultAttack { get => _defaultAttack; set { _defaultAttack = value; SaveData(); } }
         public int Defence { get => _defence;}
-        public int DefaultDefence { get => _defaultDefence; }
+        public int DefaultDefence { get => _defaultDefence; set { _defaultDefence = value; SaveData(); } }
         public ValueStrength HpStrength { get => _hpStrength; }
         public ValueStrength SpeedStrength { get => _speedStrength; }
         public ValueStrength CharacterSizeStrength { get => _characterSizeStrength; }
@@ -81,6 +82,13 @@ namespace Altzone.Scripts.Model.Poco.Game
             _defence = _defaultDefence;
             _characterSize = _defaultCharacterSize;
             _speed = _defaultSpeed;
+        }
+
+        private void SaveData()
+        {
+            AssetDatabase.Refresh();
+            EditorUtility.SetDirty(this);
+            AssetDatabase.SaveAssets();
         }
 
         #region Stat value getters
