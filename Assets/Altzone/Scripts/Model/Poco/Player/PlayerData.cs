@@ -68,6 +68,10 @@ namespace Altzone.Scripts.Model.Poco.Player
         public List<PlayerVoteData> playerVotes = new List<PlayerVoteData>();
 
         public ServerGameStatistics stats = null;
+
+        public string ChosenMotto = null;
+        public string FavoriteDefenceID = null;
+
         /// <summary>
         /// Unique string to identify this player across devices and systems.
         /// </summary>

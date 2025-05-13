@@ -18,7 +18,7 @@ using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ModelV2;
 
-public class ProfileMenu : MonoBehaviour
+public class ProfileMenu : AltMonoBehaviour
 {
     [Header("Text")]
     [SerializeField] private string loggedOutPlayerText;
@@ -40,8 +40,6 @@ public class ProfileMenu : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _LosesText;
     [SerializeField] private TextMeshProUGUI _WinsText;
     [SerializeField] private TextMeshProUGUI _CarbonText;
-    //[SerializeField] private TMP_InputField _LifeQuoteInputField;
-    [SerializeField] private TMP_InputField _LoreInputField;
 
     [Header("Selectors")]
     [SerializeField] private GameObject _answerOptionPrefab;
@@ -95,7 +93,9 @@ public class ProfileMenu : MonoBehaviour
 
     private ServerPlayer _player;
 
-    private const string _mottoDefault = "Paina tästä valitaksesi...";
+    private const string MottoDefault = "Paina tästä valitaksesi...";
+
+    private string _tempFavoriteDefenceID;
 
     private void Update()
     {
@@ -141,8 +141,6 @@ public class ProfileMenu : MonoBehaviour
     private void OnEnable()
     {
         Debug.Log($"_ClanURLButton is null: {_ClanURLButton == null}");
-        //Debug.Log($"Initial LifeQuote text: {_LifeQuoteInputField.text}");
-        LoadInputFromFile();
         LoadMinutes();
 
         ServerManager.OnLogInStatusChanged += SetPlayerProfileValues;
@@ -152,7 +150,6 @@ public class ProfileMenu : MonoBehaviour
             SetPlayerProfileValues(false);
         else
             SetPlayerProfileValues(true);
-
 
         AddAnswerOptions();
     }
@@ -170,62 +167,6 @@ public class ProfileMenu : MonoBehaviour
         _LosesText.text = loggedOutLosesText;
         _WinsText.text = loggedOutWinsText;
         _CarbonText.text = loggedOutCarbonText;
-    }
-
-    // Tallentaa lifequote ja lore inputkentät
-    public void SaveInputToFile()
-    {
-        if (_LoreInputField != null)
-        {
-            string lore = _LoreInputField.text;
-            string path = Path.Combine(Application.persistentDataPath, "Lore.txt");
-            File.WriteAllText(path, lore);
-            Debug.Log($"Saved Lore: {lore} at {path}");
-        }
-
-        if (_MottoText != null)
-        {
-            string motto = _MottoText.text;
-            string path = Path.Combine(Application.persistentDataPath, "Motto.txt");
-            File.WriteAllText(path, motto);
-            Debug.Log($"Saved Motto: {motto} at {path}");
-        }
-    }
-
-    // Lataa tallennetut tiedostot
-    public void LoadInputFromFile()
-    {
-        string lorePath = Path.Combine(Application.persistentDataPath, "Lore.txt");
-        string mottoPath = Path.Combine(Application.persistentDataPath, "Motto.txt");
-
-        if (File.Exists(lorePath))
-        {
-            string loadedLore = File.ReadAllText(lorePath);
-            Debug.Log($"Loaded Lore: {loadedLore} from {lorePath}");
-            if (_LoreInputField != null)
-            {
-                _LoreInputField.text = loadedLore;
-            }
-        }
-        else
-        {
-            Debug.Log("No lore found.");
-        }
-
-        if (File.Exists(mottoPath))
-        {
-            string loadedMotto = File.ReadAllText(mottoPath);
-            Debug.Log($"Loaded Motto: {loadedMotto} from {mottoPath}");
-            if (_MottoText != null)
-            {
-                _MottoText.text = loadedMotto;
-            }
-        }
-        else
-        {
-            Debug.Log("No motto found.");
-            _MottoText.text = _mottoDefault;
-        }
     }
 
     /// <summary>
@@ -268,6 +209,7 @@ public class ProfileMenu : MonoBehaviour
             Button button = defenceOption.GetComponent<FavoriteDefenceOptionHandler>().SetData(character.Name, character.GalleryImage);
             button.onClick.AddListener(() =>
             {
+                _tempFavoriteDefenceID = character.Id;
                 _favoriteCharacterImage.sprite = character.GalleryImage;
                 _characterOptionsPopup.SetActive(false);
                 _closePopupAreaButton.SetActive(false);
@@ -275,18 +217,27 @@ public class ProfileMenu : MonoBehaviour
         }
     }
 
+    private void SaveChanges()
+    {
+        string motto = _MottoText.text;
+        _playerData.ChosenMotto = motto;
+
+        _playerData.FavoriteDefenceID = _tempFavoriteDefenceID;
+
+        StartCoroutine(SavePlayerData(_playerData, null));
+    }
+
     private void Start()
     {
         _saveEditsButton.onClick.AddListener(() =>
         {
             Debug.Log("Save button clicked!");
-            SaveInputToFile();
+            SaveChanges();
         });
 
         // Asetetaan URL-painikkeen teksti
         _ClanURLButton.onClick.AddListener(OpenClanURL);
 
-        LoadInputFromFile();
         LoadMinutes();
     }
 
@@ -312,7 +263,6 @@ public class ProfileMenu : MonoBehaviour
     {
         if (isLoggedIn)
         {
-
             //_BattleCharacter.AddComponent(typeof(Image));
             //Img = Resources.Load<Sprite>(playerData.BattleCharacter.Name);
             //_BattleCharacter.GetComponent<Image>().sprite = Img;
@@ -334,6 +284,19 @@ public class ProfileMenu : MonoBehaviour
 
                 CharacterClassID defenceClass = (CharacterClassID)((_playerData.SelectedCharacterId / 100) * 100);
                 _DefenceClassText.text = defenceClass.ToString();
+
+                _MottoText.text = _playerData.ChosenMotto;
+                if (_MottoText.text == "")
+                {
+                    _MottoText.text = MottoDefault;
+                }
+
+                PlayerCharacterPrototype favoriteDefence = PlayerCharacterPrototypes.GetCharacter(_playerData.FavoriteDefenceID);
+                if (favoriteDefence != null)
+                {
+                    _tempFavoriteDefenceID = _playerData.FavoriteDefenceID;
+                    _favoriteCharacterImage.sprite = favoriteDefence.GalleryImage;
+                }
 
                 store.GetClanData(_playerData.ClanId, clan =>
                 {
@@ -381,7 +344,4 @@ public class ProfileMenu : MonoBehaviour
             Debug.Log("No saved minutes found.");
         }
     }
-
-
-
 }
