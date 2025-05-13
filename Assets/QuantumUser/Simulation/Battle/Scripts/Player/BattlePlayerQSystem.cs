@@ -25,6 +25,8 @@ namespace Battle.QSimulation.Player
                 playerEntity    = playerHandle.SelectedCharacter;
                 playerData      = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerEntity);
                 playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
+
+                BattlePlayerMovementController.UpdateMovement(f, playerData, playerTransform, input);
             }
         }
     }
