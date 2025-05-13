@@ -59,13 +59,18 @@ namespace Altzone.Scripts.Model.Poco.Game
             foreach (Type type in Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(BaseCharacter))))
             {
                 BaseCharacter character = Resources.Load<BaseCharacter>("Characters/Stats/" + type.Name + "Stats");
-                if(character == null) character = (BaseCharacter)ScriptableObject.CreateInstance(type);
+                bool isNew = false;
+                if (character == null)
+                {
+                    character = (BaseCharacter)ScriptableObject.CreateInstance(type);
+                    isNew = true;
+                }
                 //BaseCharacter character = (BaseCharacter)Activator.CreateInstance(type);
                 if (!_characterList.Exists(x => x.Id == character.Id))
                 _characterList.Add(character);
                 else
                 {
-                    //Destroy(character);
+                    if(isNew)Destroy(character);
                 }
             }
             _characterList.Sort((a, b) => a.Id.CompareTo(b.Id));
@@ -81,7 +86,7 @@ namespace Altzone.Scripts.Model.Poco.Game
 
             CharacterStorage script = (CharacterStorage)target;
 
-            if (GUILayout.Button("Add Audio Section"))
+            if (GUILayout.Button("Update CharacterStat list"))
             {
                 script.UpdateList();
             }
