@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEditor;
 using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
@@ -30,7 +31,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             {
                 if (!_hasInstance)
                 {
-                    _instance = Resources.Load<CharacterStorage>(nameof(CharacterStorage));
+                    _instance = Resources.Load<CharacterStorage>("Characters/"+nameof(CharacterStorage));
                     _hasInstance = _instance != null;
                 }
                 return _instance;
@@ -50,14 +51,15 @@ namespace Altzone.Scripts.Model.Poco.Game
             //UpdateList();
         }
 
-        private void UpdateList()
+        internal void UpdateList()
         {
             if(_characterList == null)_characterList = new List<BaseCharacter>();
             //This finds every class that inherits the BaseCharacter class (and isn't abstract class like the CharacterClass classes)
             //and calls their constructor followed by adding them to the characterlist.
             foreach (Type type in Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(BaseCharacter))))
             {
-                BaseCharacter character = (BaseCharacter)ScriptableObject.CreateInstance(type);
+                BaseCharacter character = Resources.Load<BaseCharacter>("Characters/Stats/" + type.Name + "Stats");
+                if(character == null) character = (BaseCharacter)ScriptableObject.CreateInstance(type);
                 //BaseCharacter character = (BaseCharacter)Activator.CreateInstance(type);
                 if (!_characterList.Exists(x => x.Id == character.Id))
                 _characterList.Add(character);
@@ -69,5 +71,20 @@ namespace Altzone.Scripts.Model.Poco.Game
             _characterList.Sort((a, b) => a.Id.CompareTo(b.Id));
         }
 
+    }
+    [CustomEditor(typeof(CharacterStorage))]
+    public class CharacterStorageEditor : UnityEditor.Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            DrawDefaultInspector();
+
+            CharacterStorage script = (CharacterStorage)target;
+
+            if (GUILayout.Button("Add Audio Section"))
+            {
+                script.UpdateList();
+            }
+        }
     }
 }
