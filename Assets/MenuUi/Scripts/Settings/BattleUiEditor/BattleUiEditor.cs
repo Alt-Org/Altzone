@@ -423,6 +423,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void ResetChanges()
         {
+            _unsavedChanges = true;
             SetDefaultDataToUiElement(_instantiatedTimer);
             SetDefaultDataToUiElement(_instantiatedDiamonds);
             SetDefaultDataToUiElement(_instantiatedGiveUpButton);
