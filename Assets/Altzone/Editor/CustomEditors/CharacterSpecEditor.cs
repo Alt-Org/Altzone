@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Altzone.Scripts.Config.ScriptableObjects;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ModelV2;
@@ -38,6 +39,7 @@ namespace Altzone.Editor.CustomEditors
         public override void OnInspectorGUI()
         {
             CharacterSpec script = (CharacterSpec)target;
+            serializedObject.Update();
             DrawEditor(script);
             //DrawDefaultInspector();
 
@@ -56,6 +58,24 @@ namespace Altzone.Editor.CustomEditors
                 _prevID = script.CharacterId;
             }
 
+            if (script.CharacterStats == null || script.CharacterStats.Id != script.CharacterId)
+            {
+                script.CharacterStats = CharacterStorage.Instance.CharacterList.FirstOrDefault(x => x.Id == script.CharacterId);
+            }
+            if (script.CharacterStats != null)
+            {
+                script.Hp.Level = script.CharacterStats.Hp;
+                script.Hp.Coefficient = script.CharacterStats.HpStrength;
+                script.Speed.Level = script.CharacterStats.Speed;
+                script.Speed.Coefficient = script.CharacterStats.SpeedStrength;
+                script.CharacterSize.Level = script.CharacterStats.CharacterSize;
+                script.CharacterSize.Coefficient = script.CharacterStats.CharacterSizeStrength;
+                script.Attack.Level = script.CharacterStats.Attack;
+                script.Attack.Coefficient = script.CharacterStats.AttackStrength;
+                script.Defence.Level = script.CharacterStats.Defence;
+                script.Defence.Coefficient = script.CharacterStats.DefenceStrength;
+            }
+
             /*if (PlayerCharacters.GetCharacter(((int)script.CharacterId).ToString()) == null)
             {
                 script.Id = ((int)script.CharacterId).ToString();
@@ -64,6 +84,7 @@ namespace Altzone.Editor.CustomEditors
             {
                 script.CharacterId = 0;
             }*/
+            serializedObject.ApplyModifiedProperties();
         }
 
         private void DrawEditor(CharacterSpec script)
