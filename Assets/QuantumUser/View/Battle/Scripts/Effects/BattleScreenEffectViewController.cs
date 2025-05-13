@@ -1,9 +1,18 @@
+/// @file BattleScreenEffectViewController.cs
+/// <summary>
+/// Handles screen overlay and particle effect changes.
+/// </summary>
+///
+/// This script:<br/>
+/// Changes screen overlay's color.<br/>
+/// Toggles particle systems on both sides of the screen to active/inactive.
+
 using UnityEngine;
 
 namespace Battle.View.Effect
 {
     /// <summary>
-    /// Screen Effect <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour</a> script.<br/>
+    /// Screen effect <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour</a> script.<br/>
     /// Handles screen overlay and particle effect changes.
     /// </summary>
     public class BattleScreenEffectViewController : MonoBehaviour
@@ -11,10 +20,10 @@ namespace Battle.View.Effect
         /// <value>[SerializeField] The screen overlay GameObject.</value>
         [SerializeField] private GameObject _overlay;
 
-        /// <value>[SerializeField] A list of all particleSources.</value>
+        /// <value>[SerializeField] An array of all particleSources.</value>
         [SerializeField] private GameObject[] _particleSources;
 
-        /// <value>[SerializeField] A list of usable overlay colors.</value>
+        /// <value>[SerializeField] An array of usable overlay colors.</value>
         [SerializeField] private Color[] _colors;
 
         /// <value>Are screen effects active or not.</value>

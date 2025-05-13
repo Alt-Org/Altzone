@@ -1,12 +1,26 @@
+/// @file BattlePlayerViewController.cs
+/// <summary>
+/// Handles player sprites and animations.
+/// </summary>
+
 using UnityEngine;
 using Quantum;
 
 namespace Battle.View.Player
 {
+    /// <summary>
+    /// %Player's entityview script.<br/>
+    /// Handles player sprites and animations.
+    /// </summary>
     public unsafe class BattlePlayerViewController : QuantumEntityViewComponent
     {
+        /// <value>[SerializeField] Animator GameObject that handles player animations.</value>
         [SerializeField] private Animator _animator;
+
+        /// <value>[SerializeField] %Player's ChildObject where heart sprite is located.</value>
         [SerializeField] private GameObject _heart;
+
+        /// <value>[SerializeField] %Player's SpriteRenderer.</value>
         [SerializeField] private SpriteRenderer _spriteRenderer;
 
         public override void OnActivate(Frame _) => QuantumEvent.Subscribe(this, (EventBattlePlayerViewInit e) => {

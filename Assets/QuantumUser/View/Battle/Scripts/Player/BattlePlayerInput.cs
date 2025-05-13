@@ -1,3 +1,14 @@
+/// @file BattlePlayerInput.cs
+/// <summary>
+/// Handles subscribing to QuantumCallBack and polling player inputs for Quantum.
+/// </summary>
+///
+/// This script:<br/>
+/// Subscribes to QuantumCallBack.<br/>
+/// Polls player inputs for Quantum.<br/>
+/// Checks that player isn't dragging their finger on the screen to move their character.<br/>
+/// Converts Unity's worldposition the player clicked into BattleGridManager's GridPosition.
+
 using UnityEngine;
 
 using Quantum;
@@ -12,12 +23,12 @@ using Battle.View.Game;
 namespace Battle.View.Player
 {
     /// <summary>
-    /// Player input <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour</a> script.<br/>
+    /// %Player input <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour</a> script.<br/>
     /// Handles subscribing to QuantumCallBack and polling player inputs for Quantum.
     /// </summary>
     public class BattlePlayerInput : MonoBehaviour
     {
-         /// <value>Previous click by a player.</value>
+        /// <value>Previous click by a player.</value>
         private bool _mouseDownPrevious;
 
         /// <summary>
@@ -31,7 +42,7 @@ namespace Battle.View.Player
         /// <summary>
         /// Handles polling player input for Quantum.
         /// </summary>
-        /// <param name="callback"></param>
+        /// <param name="callback">Quantum Callback</param>
         private void PollInput(CallbackPollInput callback)
         {
             bool mouseDown = ClickStateHandler.GetClickState() is ClickState.Start or ClickState.Hold or ClickState.Move;
