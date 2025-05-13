@@ -18,78 +18,6 @@ namespace Battle.QSimulation.Player
     [Preserve]
     public static unsafe class BattlePlayerMovementController
     {
-        public static void MoveTowards(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform, FPVector2 position, FP maxDelta)
-        {
-            MoveTowardsNoHitboxUpdate(f, transform, position, maxDelta);
-            MoveHitbox(f, playerData, transform);
-        }
-
-        public static void Rotate(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform, FP radians)
-        {
-            RotateNoHitboxUpdate(f, transform, radians);
-            MoveHitbox(f, playerData, transform);
-        }
-
-        public static void Teleport(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform, FPVector2 position, FP rotation)
-        {
-            TeleportNoHitboxUpdate(f, transform, position, rotation);
-            TeleportHitbox(f, playerData, transform);
-        }
-
-        private static void MoveTowardsNoHitboxUpdate(Frame f, Transform2D* transform, FPVector2 position, FP maxDelta)
-        {
-            transform->Position = FPVector2.MoveTowards(transform->Position, position, maxDelta);
-        }
-
-        private static void RotateNoHitboxUpdate(Frame f, Transform2D* transform, FP radians)
-        {
-            transform->Rotation = radians;
-        }
-
-        private static void TeleportNoHitboxUpdate(Frame f, Transform2D* transform, FPVector2 position, FP rotation)
-        {
-            transform->Teleport(f, position, rotation);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static FPVector2 CalculateHitboxPosition(FPVector2 position, FP rotation, FPVector2 offset) => position + FPVector2.Rotate(offset, rotation);
-
-        private static void MoveHitbox(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform)
-        {
-            if (!f.TryResolveList(playerData->HitboxListAll, out QList<BattlePlayerHitboxLink> hitboxListAll)) return;
-
-            FPVector2 position = transform->Position;
-            FP rotation = transform->Rotation;
-
-            Transform2D* hitBoxTransform;
-            foreach (BattlePlayerHitboxLink hitBoxLink in hitboxListAll)
-            {
-                hitBoxTransform = f.Unsafe.GetPointer<Transform2D>(hitBoxLink.Entity);
-
-                hitBoxTransform->Position = CalculateHitboxPosition(position, rotation, hitBoxLink.Position);
-                hitBoxTransform->Rotation = rotation;
-            }
-        }
-
-        private static void TeleportHitbox(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform)
-        {
-            if (!f.TryResolveList(playerData->HitboxListAll, out QList<BattlePlayerHitboxLink> hitboxListAll)) return;
-
-            FPVector2 position = transform->Position;
-            FP rotation = transform->Rotation;
-
-            Transform2D* hitBoxTransform;
-            foreach (BattlePlayerHitboxLink hitBoxLink in hitboxListAll)
-            {
-                hitBoxTransform = f.Unsafe.GetPointer<Transform2D>(hitBoxLink.Entity);
-
-                hitBoxTransform->Teleport(f,
-                    CalculateHitboxPosition(position, rotation, hitBoxLink.Position),
-                    rotation
-                );
-            }
-        }
-
         /// <summary>
         /// Handles player's movement and rotation.
         /// </summary>
@@ -184,6 +112,78 @@ namespace Battle.QSimulation.Player
                     MoveTowardsNoHitboxUpdate(f, transform, playerData->TargetPosition, playerData->StatSpeed * f.DeltaTime);
 
                 MoveHitbox(f, playerData, transform);
+            }
+        }
+
+        public static void MoveTowards(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform, FPVector2 position, FP maxDelta)
+        {
+            MoveTowardsNoHitboxUpdate(f, transform, position, maxDelta);
+            MoveHitbox(f, playerData, transform);
+        }
+
+        public static void Rotate(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform, FP radians)
+        {
+            RotateNoHitboxUpdate(f, transform, radians);
+            MoveHitbox(f, playerData, transform);
+        }
+
+        public static void Teleport(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform, FPVector2 position, FP rotation)
+        {
+            TeleportNoHitboxUpdate(f, transform, position, rotation);
+            TeleportHitbox(f, playerData, transform);
+        }
+
+        private static void MoveTowardsNoHitboxUpdate(Frame f, Transform2D* transform, FPVector2 position, FP maxDelta)
+        {
+            transform->Position = FPVector2.MoveTowards(transform->Position, position, maxDelta);
+        }
+
+        private static void RotateNoHitboxUpdate(Frame f, Transform2D* transform, FP radians)
+        {
+            transform->Rotation = radians;
+        }
+
+        private static void TeleportNoHitboxUpdate(Frame f, Transform2D* transform, FPVector2 position, FP rotation)
+        {
+            transform->Teleport(f, position, rotation);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static FPVector2 CalculateHitboxPosition(FPVector2 position, FP rotation, FPVector2 offset) => position + FPVector2.Rotate(offset, rotation);
+
+        private static void MoveHitbox(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform)
+        {
+            if (!f.TryResolveList(playerData->HitboxListAll, out QList<BattlePlayerHitboxLink> hitboxListAll)) return;
+
+            FPVector2 position = transform->Position;
+            FP rotation = transform->Rotation;
+
+            Transform2D* hitBoxTransform;
+            foreach (BattlePlayerHitboxLink hitBoxLink in hitboxListAll)
+            {
+                hitBoxTransform = f.Unsafe.GetPointer<Transform2D>(hitBoxLink.Entity);
+
+                hitBoxTransform->Position = CalculateHitboxPosition(position, rotation, hitBoxLink.Position);
+                hitBoxTransform->Rotation = rotation;
+            }
+        }
+
+        private static void TeleportHitbox(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform)
+        {
+            if (!f.TryResolveList(playerData->HitboxListAll, out QList<BattlePlayerHitboxLink> hitboxListAll)) return;
+
+            FPVector2 position = transform->Position;
+            FP rotation = transform->Rotation;
+
+            Transform2D* hitBoxTransform;
+            foreach (BattlePlayerHitboxLink hitBoxLink in hitboxListAll)
+            {
+                hitBoxTransform = f.Unsafe.GetPointer<Transform2D>(hitBoxLink.Entity);
+
+                hitBoxTransform->Teleport(f,
+                    CalculateHitboxPosition(position, rotation, hitBoxLink.Position),
+                    rotation
+                );
             }
         }
     }
