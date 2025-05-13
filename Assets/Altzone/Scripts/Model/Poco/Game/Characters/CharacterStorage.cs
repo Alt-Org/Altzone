@@ -13,6 +13,30 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         [SerializeField] private List<BaseCharacter> _characterList;
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void SubsystemRegistration()
+        {
+            // Manual reset if UNITY Domain Reloading is disabled.
+            _instance = null;
+            _hasInstance = false;
+        }
+
+        private static CharacterStorage _instance;
+        private static bool _hasInstance;
+
+        public static CharacterStorage Instance
+        {
+            get
+            {
+                if (!_hasInstance)
+                {
+                    _instance = Resources.Load<CharacterStorage>(nameof(CharacterStorage));
+                    _hasInstance = _instance != null;
+                }
+                return _instance;
+            }
+        }
+
         public List<BaseCharacter> CharacterList {
             get
             {
@@ -33,9 +57,14 @@ namespace Altzone.Scripts.Model.Poco.Game
             //and calls their constructor followed by adding them to the characterlist.
             foreach (Type type in Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(BaseCharacter))))
             {
-                BaseCharacter character = (BaseCharacter)Activator.CreateInstance(type);
+                BaseCharacter character = (BaseCharacter)ScriptableObject.CreateInstance(type);
+                //BaseCharacter character = (BaseCharacter)Activator.CreateInstance(type);
                 if (!_characterList.Exists(x => x.Id == character.Id))
                 _characterList.Add(character);
+                else
+                {
+                    Destroy(character);
+                }
             }
             _characterList.Sort((a, b) => a.Id.CompareTo(b.Id));
         }
