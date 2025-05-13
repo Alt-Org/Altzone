@@ -119,6 +119,29 @@ namespace MenuUi.Scripts.CharacterGallery
 
 
         /// <summary>
+        /// Set visual information and anchoring for when character is selected. (Placed to one of the top slots.)
+        /// </summary>
+        public void SetSelectedVisuals()
+        {
+            _aspectRatioFitter.aspectRatio = 1;
+            _characterNameText.gameObject.SetActive(false);
+
+            _spriteImage.rectTransform.anchorMax = new Vector2(1, 1);
+            _spriteImage.rectTransform.anchorMin = new Vector2(0, 0);
+
+            _piechartPreview.gameObject.SetActive(true);
+            _piechartPreview.UpdateChart(Id);
+
+            _spriteImage.material = null;
+            _backgroundLowerImage.material = null;
+            _backgroundUpperImage.material = null;
+            _backgroundBorderImage.material = null;
+
+            if (_addCharacterButton.gameObject.activeSelf) _addCharacterButton.gameObject.SetActive(false);
+        }
+
+
+        /// <summary>
         /// Set visual information and anchoring for when character is unselected. (Not in one of the top slots.)
         /// </summary>
         public void SetUnlockedVisuals()
@@ -154,6 +177,15 @@ namespace MenuUi.Scripts.CharacterGallery
             _backgroundUpperImage.material.SetColor("_Color", _backgroundLowerImage.color);
             _backgroundBorderImage.material.SetColor("_Color", _backgroundLowerImage.color);
             _addCharacterButton.gameObject.SetActive(true);
+        }
+
+        /// <summary>
+        /// Reparent this character to its original slot.
+        /// </summary>
+        public void ReturnToOriginalSlot()
+        {
+            transform.SetParent(_originalSlot.transform, false);
+            SetUnlockedVisuals();
         }
     }
 }
