@@ -821,7 +821,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattlePlayerDataQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 112;
+    public const Int32 SIZE = 128;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(24)]
     public PlayerRef PlayerRef;
@@ -833,35 +833,39 @@ namespace Quantum {
     public Int32 CharacterId;
     [FieldOffset(8)]
     public Int32 CharacterClass;
-    [FieldOffset(80)]
+    [FieldOffset(96)]
     public FP StatHp;
-    [FieldOffset(88)]
+    [FieldOffset(104)]
     public FP StatSpeed;
-    [FieldOffset(64)]
+    [FieldOffset(80)]
     public FP StatCharacterSize;
-    [FieldOffset(56)]
-    public FP StatAttack;
     [FieldOffset(72)]
+    public FP StatAttack;
+    [FieldOffset(88)]
     public FP StatDefence;
     [FieldOffset(20)]
     public Int32 GridExtendTop;
     [FieldOffset(16)]
     public Int32 GridExtendBottom;
-    [FieldOffset(96)]
+    [FieldOffset(112)]
     public FPVector2 TargetPosition;
-    [FieldOffset(40)]
+    [FieldOffset(56)]
     public FP RotationBase;
-    [FieldOffset(48)]
+    [FieldOffset(64)]
     public FP RotationOffset;
-    [FieldOffset(28)]
-    [FreeOnComponentRemoved()]
-    public QListPtr<BattlePlayerHitboxLink> HitboxListAll;
-    [FieldOffset(36)]
-    [FreeOnComponentRemoved()]
-    public QListPtr<BattlePlayerHitboxLink> HitboxListShield;
     [FieldOffset(32)]
     [FreeOnComponentRemoved()]
+    public QListPtr<BattlePlayerHitboxLink> HitboxListAll;
+    [FieldOffset(40)]
+    [FreeOnComponentRemoved()]
+    public QListPtr<BattlePlayerHitboxLink> HitboxListShield;
+    [FieldOffset(36)]
+    [FreeOnComponentRemoved()]
     public QListPtr<BattlePlayerHitboxLink> HitboxListCharacter;
+    [FieldOffset(28)]
+    public QBoolean ControlledByAi;
+    [FieldOffset(48)]
+    public FP MovementCooldown;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 6911;
@@ -883,6 +887,8 @@ namespace Quantum {
         hash = hash * 31 + HitboxListAll.GetHashCode();
         hash = hash * 31 + HitboxListShield.GetHashCode();
         hash = hash * 31 + HitboxListCharacter.GetHashCode();
+        hash = hash * 31 + ControlledByAi.GetHashCode();
+        hash = hash * 31 + MovementCooldown.GetHashCode();
         return hash;
       }
     }
@@ -904,9 +910,11 @@ namespace Quantum {
         serializer.Stream.Serialize(&p->GridExtendBottom);
         serializer.Stream.Serialize(&p->GridExtendTop);
         PlayerRef.Serialize(&p->PlayerRef, serializer);
+        QBoolean.Serialize(&p->ControlledByAi, serializer);
         QList.Serialize(&p->HitboxListAll, serializer, Statics.SerializeBattlePlayerHitboxLink);
         QList.Serialize(&p->HitboxListCharacter, serializer, Statics.SerializeBattlePlayerHitboxLink);
         QList.Serialize(&p->HitboxListShield, serializer, Statics.SerializeBattlePlayerHitboxLink);
+        FP.Serialize(&p->MovementCooldown, serializer);
         FP.Serialize(&p->RotationBase, serializer);
         FP.Serialize(&p->RotationOffset, serializer);
         FP.Serialize(&p->StatAttack, serializer);
@@ -1051,12 +1059,14 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattleProjectileQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 48;
+    public const Int32 SIZE = 64;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(8)]
     public QBoolean IsLaunched;
     [FieldOffset(24)]
     public FP Speed;
+    [FieldOffset(48)]
+    public FPVector2 Position;
     [FieldOffset(32)]
     public FPVector2 Direction;
     [FieldOffset(16)]
@@ -1076,6 +1086,7 @@ namespace Quantum {
         var hash = 4001;
         hash = hash * 31 + IsLaunched.GetHashCode();
         hash = hash * 31 + Speed.GetHashCode();
+        hash = hash * 31 + Position.GetHashCode();
         hash = hash * 31 + Direction.GetHashCode();
         hash = hash * 31 + Radius.GetHashCode();
         hash = hash * 31 + (Int32)Emotion;
@@ -1091,6 +1102,7 @@ namespace Quantum {
         FP.Serialize(&p->Radius, serializer);
         FP.Serialize(&p->Speed, serializer);
         FPVector2.Serialize(&p->Direction, serializer);
+        FPVector2.Serialize(&p->Position, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]

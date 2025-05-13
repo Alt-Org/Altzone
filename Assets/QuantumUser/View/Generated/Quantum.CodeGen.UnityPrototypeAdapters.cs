@@ -76,6 +76,8 @@ namespace Quantum.Prototypes.Unity {
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.Unity.BattlePlayerHitboxLinkPrototype[] HitboxListCharacter = {};
+    public QBoolean ControlledByAi;
+    public FP MovementCooldown;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerDataQComponentPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerDataQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerDataQComponentPrototype();
@@ -97,6 +99,8 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.HitboxListAll, out result.HitboxListAll);
       converter.Convert(this.HitboxListShield, out result.HitboxListShield);
       converter.Convert(this.HitboxListCharacter, out result.HitboxListCharacter);
+      converter.Convert(this.ControlledByAi, out result.ControlledByAi);
+      converter.Convert(this.MovementCooldown, out result.MovementCooldown);
       ConvertUser(converter, ref result);
       return result;
     }
