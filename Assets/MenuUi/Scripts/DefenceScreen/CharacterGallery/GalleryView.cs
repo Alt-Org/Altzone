@@ -59,6 +59,11 @@ namespace MenuUi.Scripts.CharacterGallery
             SetFilterText(_currentFilter);
         }
 
+        private void OnEnable()
+        {
+            _scrollRect.VerticalNormalizedPosition = 1; // setting scroll to the top
+        }
+
         private void OnDestroy()
         {
             _filterButton.onClick.RemoveAllListeners();
