@@ -263,6 +263,7 @@ GameObject:
   - component: {fileID: 7416824875522468832}
   - component: {fileID: 2243875951298469219}
   - component: {fileID: 7293491093636343906}
+  - component: {fileID: 7004798611793443685}
   m_Layer: 5
   m_Name: KojuSlotObject
   m_TagString: Untagged
@@ -410,6 +411,18 @@ MonoBehaviour:
   _rareColor: {r: 0.8156863, g: 0.8156863, b: 0.8156863, a: 1}
   _epicColor: {r: 1, g: 0.9137255, b: 0.6117647, a: 1}
   _antiqueColor: {r: 0.65882355, g: 0.85882354, b: 0.9098039, a: 1}
+--- !u!114 &7004798611793443685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1992715369758776530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58ba833b0217c1e4f8c9585e3d5534b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2737426877649979594
 GameObject:
   m_ObjectHideFlags: 0
