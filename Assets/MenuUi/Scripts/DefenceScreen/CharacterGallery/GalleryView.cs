@@ -46,13 +46,10 @@ namespace MenuUi.Scripts.CharacterGallery
         private List<CharacterSlot> _characterSlots = new();
         public List<CharacterSlot> CharacterSlots => _characterSlots;
 
-        public bool IsReady
-        {
-            get
-            {
-                return _isReady;
-            }
-        }
+        public bool IsReady => _isReady;
+
+        public delegate void GalleryCharactersSetHandler(int[] _selectedCharacterIds);
+        public GalleryCharactersSetHandler OnGalleryCharactersSet;
 
 
         private void Awake()
@@ -78,6 +75,7 @@ namespace MenuUi.Scripts.CharacterGallery
             // Remove all character slots
             foreach (CharacterSlot characterSlot in _characterSlots)
             {
+                Destroy(characterSlot.Character);
                 Destroy(characterSlot.gameObject);
             }
             _characterSlots.Clear();
@@ -118,6 +116,8 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 InstantiateCharacterSlot(baseCharacter.Id, true);
             }
+
+            OnGalleryCharactersSet?.Invoke(selectedCharacterIds);
         }
 
 
