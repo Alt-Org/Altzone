@@ -31,7 +31,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             {
                 if (!_hasInstance)
                 {
-                    _instance = Resources.Load<CharacterStorage>("Characters/"+nameof(CharacterStorage));
+                    _instance = Resources.Load<CharacterStorage>(nameof(CharacterStorage));
                     _hasInstance = _instance != null;
                 }
                 return _instance;
@@ -65,7 +65,7 @@ namespace Altzone.Scripts.Model.Poco.Game
                 _characterList.Add(character);
                 else
                 {
-                    Destroy(character);
+                    //Destroy(character);
                 }
             }
             _characterList.Sort((a, b) => a.Id.CompareTo(b.Id));
