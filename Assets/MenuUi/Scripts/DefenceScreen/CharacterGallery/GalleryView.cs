@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
-using Altzone.Scripts;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Altzone.Scripts.Model.Poco.Game;
+
 using UnityEngine;
+using UnityEngine.UI;
+
+using TMPro;
+
+using Altzone.Scripts;
+using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ReferenceSheets;
-using MenuUi.Scripts.SwipeNavigation;
-using UnityEngine.UI;
-using MenuUi.Scripts.Signals;
-using TMPro;
-using System;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -43,6 +44,7 @@ namespace MenuUi.Scripts.CharacterGallery
         
         // List of character slots in character grid
         private List<CharacterSlot> _characterSlots = new();
+        public List<CharacterSlot> CharacterSlots => _characterSlots;
 
         public bool IsReady
         {
