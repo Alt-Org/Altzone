@@ -13,36 +13,11 @@ using Battle.QSimulation.Game;
 namespace Battle.QSimulation.Player
 {
     /// <summary>
-    /// PlayerMovement <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System</a>.<br/>
     /// Handles player input, movement and rotations.<br/>
     /// </summary>
     [Preserve]
-    public unsafe class BattlePlayerMovementQSystem : SystemMainThreadFilter<BattlePlayerMovementQSystem.Filter>
+    public static unsafe class BattlePlayerMovementController
     {
-        public struct Filter
-        {
-            public EntityRef Entity;
-            public Transform2D* Transform;
-            public BattlePlayerDataQComponent* PlayerData;
-        }
-
-        /// <summary>
-        /// <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum system update method</a>.<br/>
-        /// Handles player input, movement and rotations.<br/>
-        /// (this method should only be called by Quantum)
-        /// </summary>
-        /// Skips players that have PlayerRef = none.<br/>
-        /// Gets player's Quantum Input and calls <see cref="UpdatePlayerMovement(Frame, ref Filter, Input*)">UpdatePlayerMovement</see> method.
-        /// <param name="f">Current Quantum Frame</param>
-        /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter</a>.</param>
-        public override void Update(Frame f, ref Filter filter)
-        {
-            if (filter.PlayerData->PlayerRef == PlayerRef.None) return;
-            Input* input = f.GetPlayerInput(filter.PlayerData->PlayerRef);
-
-            //UpdatePlayerMovement(f, ref filter, input);
-        }
-
         public static void MoveTowards(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform, FPVector2 position, FP maxDelta)
         {
             MoveTowardsNoHitboxUpdate(f, transform, position, maxDelta);
