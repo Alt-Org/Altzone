@@ -38,5 +38,10 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             OnSlotPressed?.Invoke(this);
         }
+
+        private void OnTransformChildrenChanged()
+        {
+            if (_slotButton != null) _slotButton.transform.SetAsLastSibling();
+        }
     }
 }

@@ -1,14 +1,15 @@
-using System.Collections.Generic;
-
 using UnityEngine;
-
-using Altzone.Scripts.Model.Poco.Game;
 
 using MenuUi.Scripts.Signals;
 
+using Altzone.Scripts.Model.Poco.Game;
+
 namespace MenuUi.Scripts.CharacterGallery
 {
-
+    /// <summary>
+    /// Handles the functionality for character gallery editing popup.
+    /// Note: it's important that the prefab is active at first so Awake triggers to connect SignalBus event.
+    /// </summary>
     public class EditingPopup : MonoBehaviour
     {
         [SerializeField] private GalleryView _galleryView;
@@ -19,6 +20,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             if (gameObject.activeSelf) gameObject.SetActive(false);
 
+            _galleryView.OnGalleryCharactersSet += SetCharacters;
             SignalBus.OnDefenceGalleryEditPanelRequested += OpenPopup;
 
             for (int i = 0; i < _selectedCharacterSlots.Length; i++)
@@ -30,6 +32,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void OnDestroy()
         {
+            _galleryView.OnGalleryCharactersSet -= SetCharacters;
             SignalBus.OnDefenceGalleryEditPanelRequested -= OpenPopup;
         }
 
@@ -43,6 +46,67 @@ namespace MenuUi.Scripts.CharacterGallery
         public void ClosePopup()
         {
             gameObject.SetActive(false);
+            SignalBus.OnReloadCharacterGalleryRequestedSignal();
+        }
+
+
+        private void SetCharacters(int[] selectedCharacterIds)
+        {
+            foreach (CharacterSlot slot in _galleryView.CharacterSlots)
+            {
+                slot.SetEditable(true);
+                slot.OnSlotPressed -= HandleSlotPressed;
+                slot.OnSlotPressed += HandleSlotPressed;
+
+                for (int i = 0; i < _selectedCharacterSlots.Length; i++)
+                {
+                    if (selectedCharacterIds[i] == (int)slot.Id)
+                    {
+                        if (_selectedCharacterSlots[i].SelectedCharacter != null) Destroy(_selectedCharacterSlots[i].SelectedCharacter);
+                        _selectedCharacterSlots[i].SelectedCharacter = slot.Character;
+
+                        slot.Character.transform.SetParent(_selectedCharacterSlots[i].transform, false);
+                        slot.Character.SetSelectedVisuals();
+                    }
+                }
+            }
+        }
+
+
+        private void HandleSlotPressed(SlotBase pressedSlot)
+        {
+            // Checking if player pressed selected character slot
+            SelectedCharacterEditingSlot selectedCharacterSlot = pressedSlot as SelectedCharacterEditingSlot;
+            if (selectedCharacterSlot != null)
+            {
+                // Checking if the slot is empty or has a selected character in it
+                if (selectedCharacterSlot.SelectedCharacter == null) return;
+
+                // Returning selected character to original slot
+                selectedCharacterSlot.SelectedCharacter.ReturnToOriginalSlot();
+                SignalBus.OnSelectedDefenceCharacterChangedSignal(CharacterID.None, selectedCharacterSlot.SlotIndex);
+            }
+            else
+            {
+                // Checking if the pressed slot is a CharacterSlot
+                CharacterSlot characterSlot = pressedSlot as CharacterSlot;
+                if (characterSlot == null) return;
+
+                // Finding free selected character slot for the pressed character
+                foreach (SelectedCharacterEditingSlot slot in _selectedCharacterSlots)
+                {
+                    if (slot.SelectedCharacter == null) selectedCharacterSlot = slot;
+                }
+
+                // If no free slots we don't need to do anything
+                if (selectedCharacterSlot == null) return;
+
+                // Setting the gallery character to the free slot
+                characterSlot.Character.transform.SetParent(selectedCharacterSlot.transform, false);
+                characterSlot.Character.SetSelectedVisuals();
+                selectedCharacterSlot.SelectedCharacter = characterSlot.Character;
+                SignalBus.OnSelectedDefenceCharacterChangedSignal(characterSlot.Character.Id, selectedCharacterSlot.SlotIndex);
+            }
         }
     }
 }
