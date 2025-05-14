@@ -13,7 +13,7 @@ public class KojuItemSlot : MonoBehaviour
 
         
         card.transform.SetParent(PanelContent, false);
-        card.transform.SetSiblingIndex(transform.GetSiblingIndex());
+        card.transform.SetSiblingIndex(0);
 
         gameObject.SetActive(false); 
     }
