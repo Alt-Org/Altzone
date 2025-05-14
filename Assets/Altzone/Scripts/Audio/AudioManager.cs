@@ -52,7 +52,7 @@ namespace Altzone.Scripts.Audio
             else
             {
                 Instance = this;
-                DontDestroyOnLoad(this);
+                DontDestroyOnLoad(gameObject);
             }
         }
 
