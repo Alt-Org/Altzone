@@ -1,7 +1,9 @@
-using Altzone.Scripts.Model.Poco.Game;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+
+using TMPro;
+
+using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUi.Scripts.CharacterGallery
 {

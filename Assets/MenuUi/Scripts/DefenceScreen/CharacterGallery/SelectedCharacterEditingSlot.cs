@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 namespace MenuUi.Scripts.CharacterGallery
