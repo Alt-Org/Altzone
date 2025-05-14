@@ -18,12 +18,12 @@ namespace MenuUi.Scripts.Window
         {
             if (Instance != null && Instance != this)
             {
-                Destroy(this);
+                Destroy(gameObject);
             }
             else
             {
                 Instance = this;
-                DontDestroyOnLoad(this);
+                DontDestroyOnLoad(gameObject);
             }
             clanToView = null;
         }

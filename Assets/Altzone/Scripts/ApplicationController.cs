@@ -7,6 +7,7 @@ using Debug = UnityEngine.Debug;
 
 using Altzone.Scripts.Config.ScriptableObjects;
 using Altzone.Scripts.AzDebug;
+using Altzone.Scripts.GA;
 
 namespace Altzone.Scripts
 {
@@ -38,6 +39,12 @@ namespace Altzone.Scripts
                 .Append(" Screen ").Append(Screen.currentResolution)
                 .ToString();
             Debug.Log(startupMessage);
+
+            //UnitySingleton.CreateGameObjectAndComponent<SettingsCarrier>();
+            Instantiate(Resources.Load("Prefabs/SettingsCarrier"));
+            Instantiate(Resources.Load("Prefabs/Carbon"));
+            Instantiate(Resources.Load("Prefabs/OnlineProfileManager"));
+            Instantiate(Resources.Load("Prefabs/GameAnalytics"));
         }
 
         private void OnApplicationPause(bool pause)
