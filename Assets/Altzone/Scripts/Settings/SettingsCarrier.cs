@@ -134,12 +134,12 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(this);
+            Destroy(gameObject);
         }
         else
         {
             Instance = this;
-            DontDestroyOnLoad(this);
+            DontDestroyOnLoad(gameObject);
         }
     }
 
@@ -150,6 +150,11 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
         _textSize = (TextSize)PlayerPrefs.GetInt("TextSize", 1);
         _showButtonLabels = (PlayerPrefs.GetInt("showButtonLabels", 1) == 1);
+
+        masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1);
+        menuVolume = PlayerPrefs.GetFloat("MenuVolume", 1);
+        musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1);
+        soundVolume = PlayerPrefs.GetFloat("SoundVolume", 1);
 
         _battleArenaScale = PlayerPrefs.GetInt(BattleArenaScaleKey, BattleArenaScaleDefault);
         _battleArenaPosX = PlayerPrefs.GetInt(BattleArenaPosXKey, BattleArenaPosXDefault);

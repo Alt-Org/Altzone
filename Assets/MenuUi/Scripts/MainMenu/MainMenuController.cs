@@ -57,10 +57,10 @@ namespace MenuUi.Scripts.MainMenu
         {
             audioSources = FindObjectsOfType<SetVolume>(true);
 
-            carrier.masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1);
-            carrier.menuVolume = PlayerPrefs.GetFloat("MenuVolume", 1);
-            carrier.musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1);
-            carrier.soundVolume = PlayerPrefs.GetFloat("SoundVolume", 1);
+            //carrier.masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1);
+            //carrier.menuVolume = PlayerPrefs.GetFloat("MenuVolume", 1);
+            //carrier.musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1);
+            //carrier.soundVolume = PlayerPrefs.GetFloat("SoundVolume", 1);
 
             foreach (SetVolume audioSource in audioSources)
             {
