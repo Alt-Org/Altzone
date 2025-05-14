@@ -116,10 +116,10 @@ public class AlternateTopPanel : AltMonoBehaviour
             switch (_currentTopPanelInfo)
             {
                 case TopPanelInfo.Player:
-                    AlternateTopPanel._currentTopPanelInfo = TopPanelInfo.Clan;
+                    _currentTopPanelInfo = TopPanelInfo.Clan;
                     break;
                 case TopPanelInfo.Clan:
-                    AlternateTopPanel._currentTopPanelInfo = TopPanelInfo.Player;
+                    _currentTopPanelInfo = TopPanelInfo.Player;
                     break;
             }
             OnTopPanelChanged.Invoke();
