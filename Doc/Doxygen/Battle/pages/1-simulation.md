@@ -14,6 +14,8 @@
 
 @bigtext{[[Namespace Summary]](#index-namespace-summary)}
 
+<br/>
+
 ## Directories {#page-simulation-directories}
 
 |  Path                                                                                                                                              ||| Description                                                                                      |
@@ -24,6 +26,8 @@
 | @dirref{Altzone/Assets/QuantumUser} | @dirref{Altzone/Assets/QuantumUser,Simulation} | @dirref{Altzone/Assets/QuantumUser/Simulation,Generated}      | Generated Simulation scripts                                                                     |
 
 @bigtext{[[File Summary]](#index-file-summary)}
+
+<br/>
 
 ## Systems {#page-simulation-systems}
 
@@ -46,6 +50,8 @@ In %Battle [Quantum Systems🡵] have QSystem suffix. [[Naming]](#index-naming)
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Projectile} | @cref{Battle.QSimulation.Projectile,BattleProjectileQSystem}        | @copybrief Battle.QSimulation.Projectile.BattleProjectileQSystem        |
 |                                                                                                                                                                                                                 ||||
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Goal}       | @cref{Battle.QSimulation.Goal,BattleGoalQSystem}                    | @copybrief Battle.QSimulation.Goal.BattleGoalQSystem                    |
+
+<br/>
 
 ## Components {#page-simulation-components}
 
