@@ -59,8 +59,6 @@ public class AlternateTopPanel : AltMonoBehaviour
     {
         OnTopPanelChanged += ChangeInfoData;
         OnLeaderBoardChange += ChangeLeaderboardType;
-        ChangeInfoData();
-        ChangeLeaderboardType();
 
         if (ServerManager.Instance.Player != null)
         {
@@ -68,7 +66,11 @@ public class AlternateTopPanel : AltMonoBehaviour
             _ownClanID = ServerManager.Instance.Player.clan_id;
 
             FetchRankings();
-            StartCoroutine(ChangeInfoType());
+            if (ServerManager.Instance.Player?.clan_id != null) _currentTopPanelInfo = TopPanelInfo.Player;
+            ChangeInfoData();
+            ChangeLeaderboardType();
+            if(ServerManager.Instance.Player?.clan_id != null)
+                StartCoroutine(ChangeInfoType());
         }
         else
         {
@@ -79,7 +81,11 @@ public class AlternateTopPanel : AltMonoBehaviour
                 _ownClanID = player.clan_id;
 
                 FetchRankings();
-                StartCoroutine(ChangeInfoType());
+                if (ServerManager.Instance.Player?.clan_id != null) _currentTopPanelInfo = TopPanelInfo.Player;
+                ChangeInfoData();
+                ChangeLeaderboardType();
+                if (ServerManager.Instance.Player?.clan_id != null)
+                    StartCoroutine(ChangeInfoType());
             }));
         }
     }
@@ -107,7 +113,7 @@ public class AlternateTopPanel : AltMonoBehaviour
             StartCoroutine(ChangeLeaderboardCoroutine());
 
             yield return new WaitUntil(() => _currenttimerInfo <= 0);
-            switch (AlternateTopPanel._currentTopPanelInfo)
+            switch (_currentTopPanelInfo)
             {
                 case TopPanelInfo.Player:
                     AlternateTopPanel._currentTopPanelInfo = TopPanelInfo.Clan;
@@ -138,16 +144,16 @@ public class AlternateTopPanel : AltMonoBehaviour
     {
         YieldInstruction wait = new WaitForSeconds(_timerLeaderboard);
 
-        if (AlternateTopPanel._currentTopLeaderboardInfo != TopLeaderboardInfo.Wins)
+        if (_currentTopLeaderboardInfo != TopLeaderboardInfo.Wins)
         {
             if (_currenttimerLeaderboard <= 0) _currenttimerLeaderboard += _timerLeaderboard;
             yield return new WaitUntil(() => _currenttimerLeaderboard <= 0);
-            AlternateTopPanel._currentTopLeaderboardInfo = TopLeaderboardInfo.Wins;
+            _currentTopLeaderboardInfo = TopLeaderboardInfo.Wins;
             OnLeaderBoardChange.Invoke();
         }
         if (_currenttimerLeaderboard <= 0) _currenttimerLeaderboard += _timerLeaderboard;
         yield return new WaitUntil(() => _currenttimerLeaderboard <= 0);
-        AlternateTopPanel._currentTopLeaderboardInfo = TopLeaderboardInfo.Activity;
+        _currentTopLeaderboardInfo = TopLeaderboardInfo.Activity;
         OnLeaderBoardChange.Invoke();
 
     }
@@ -159,11 +165,12 @@ public class AlternateTopPanel : AltMonoBehaviour
         _clanInfo.SetActive(_currentTopPanelInfo == TopPanelInfo.Clan);
         _clanButton.enabled = _currentTopPanelInfo == TopPanelInfo.Clan;
         _clanButton.GetComponent<Image>().raycastTarget = _currentTopPanelInfo == TopPanelInfo.Clan;
+        _clanButton.gameObject.SetActive(ServerManager.Instance.Player?.clan_id != null);
     }
 
     private void ChangeLeaderboardType()
     {
-        switch (AlternateTopPanel._currentTopLeaderboardInfo)
+        switch (_currentTopLeaderboardInfo)
         {
             case TopLeaderboardInfo.Wins:
                 LoadWins();
