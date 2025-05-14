@@ -26,6 +26,7 @@ namespace MenuUi.Scripts.CharacterGallery
             for (int i = 0; i < _selectedCharacterSlots.Length; i++)
             {
                 _selectedCharacterSlots[i].SlotIndex = i;
+                _selectedCharacterSlots[i].OnSlotPressed += HandleSlotPressed;
             }
         }
 
@@ -34,6 +35,12 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             _galleryView.OnGalleryCharactersSet -= SetCharacters;
             SignalBus.OnDefenceGalleryEditPanelRequested -= OpenPopup;
+
+            for (int i = 0; i < _selectedCharacterSlots.Length; i++)
+            {
+                _selectedCharacterSlots[i].SlotIndex = i;
+                _selectedCharacterSlots[i].OnSlotPressed -= HandleSlotPressed;
+            }
         }
 
 
@@ -62,7 +69,6 @@ namespace MenuUi.Scripts.CharacterGallery
                 {
                     if (selectedCharacterIds[i] == (int)slot.Id)
                     {
-                        if (_selectedCharacterSlots[i].SelectedCharacter != null) Destroy(_selectedCharacterSlots[i].SelectedCharacter);
                         _selectedCharacterSlots[i].SelectedCharacter = slot.Character;
 
                         slot.Character.transform.SetParent(_selectedCharacterSlots[i].transform, false);
@@ -84,6 +90,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 // Returning selected character to original slot
                 selectedCharacterSlot.SelectedCharacter.ReturnToOriginalSlot();
+                selectedCharacterSlot.SelectedCharacter = null;
                 SignalBus.OnSelectedDefenceCharacterChangedSignal(CharacterID.None, selectedCharacterSlot.SlotIndex);
             }
             else
@@ -95,7 +102,9 @@ namespace MenuUi.Scripts.CharacterGallery
                 // Finding free selected character slot for the pressed character
                 foreach (SelectedCharacterEditingSlot slot in _selectedCharacterSlots)
                 {
-                    if (slot.SelectedCharacter == null) selectedCharacterSlot = slot;
+                    if (slot.SelectedCharacter != null) continue;
+                    selectedCharacterSlot = slot;
+                    break;
                 }
 
                 // If no free slots we don't need to do anything
