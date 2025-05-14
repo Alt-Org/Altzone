@@ -41,6 +41,7 @@ public class ItemMover : MonoBehaviour
         {
             
             transform.SetParent(trayParent, false);
+            transform.localScale = Vector3.one;
             assignedSlot.ClearSlot();
             assignedSlot = null;
         }
