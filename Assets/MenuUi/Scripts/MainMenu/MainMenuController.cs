@@ -2,6 +2,7 @@
 using System.Linq;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Lobby;
 using MenuUi.Scripts.Audio;
 using MenuUi.Scripts.SwipeNavigation;
 using MenuUi.Scripts.Window;
@@ -38,6 +39,7 @@ namespace MenuUi.Scripts.MainMenu
             _swipe = GetComponentInParent<SwipeUI>();
             StartCoroutine(CheckWindowSize());
             AudioManager.Instance?.PlayMusic(MusicSection.MainMenu);
+            LobbyManager.Instance.Activate();
         }
 
         private void Start()
