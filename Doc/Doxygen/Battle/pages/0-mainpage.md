@@ -1,5 +1,7 @@
 @mainpage Overview
 
+---
+
 # Namespace Summary {#index-namespace-summary}
 
 |  Namespace                     || Description                                                                        |
@@ -11,6 +13,8 @@
 | @cref{Quantum}                            || @copybrief Quantum                                                      |
 
 @bigtext{[[Namespace List]](./namespaces.html)}
+
+<br/>
 
 # File Summary {#index-file-summary}
 
@@ -27,11 +31,38 @@
 
 @bigtext{[[File List]](./files.html)}
 
+<br/>
+
+---
+
 # Naming {#index-naming}
+
+@bigtext{**Prefix**}
+- **%Battle**  
+  Marks type as %Battle related.
+
+@bigtext{**Suffix**}
+- **%QSystem**  
+  Marks type as [Quantum System🡵].
+- **%QComponent**  
+  Marks type as [Quantum Component🡵].
+- **%QSingleton**  
+  Marks type as [Quantum Singleton🡵].
+
+<br/>
+
+---
 
 # Other Pages {#index-other-pages}
 
 - @bigtext{[[Simulation]](#page-simulation)}
 - @bigtext{[[View]](#page-view)}
 
-[Doxygen🡵]: https://www.doxygen.nl/index.html
+<br/>
+
+---
+
+[Quantum System🡵]:    https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems
+[Quantum Component🡵]: https://doc.photonengine.com/quantum/current/manual/quantum-ecs/dsl
+[Quantum Singleton🡵]: https://doc.photonengine.com/quantum/current/manual/quantum-ecs/dsl
+[Doxygen🡵]:           https://www.doxygen.nl/index.html
