@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MenuUi.Scripts.Audio
+namespace Altzone.Scripts.Audio
 {
     public enum MusicSection
     {

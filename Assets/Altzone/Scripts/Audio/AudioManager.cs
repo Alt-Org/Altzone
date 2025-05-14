@@ -6,7 +6,7 @@ using UnityEditorInternal;
 #endif
 using UnityEngine;
 
-namespace MenuUi.Scripts.Audio
+namespace Altzone.Scripts.Audio
 {
     public enum AudioSourceType
     {
