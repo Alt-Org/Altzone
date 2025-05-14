@@ -1,6 +1,6 @@
 project-dir = AbsPath("../../../../../")
 doc-dir     = AbsPath("../")
-have-dot    = "Yes"
+have-dot    = "YES"
 
 # config
   output-dir = doc-dir + "/doc"
@@ -10,4 +10,4 @@ have-dot    = "Yes"
 
 # config-test-nodot
   output-dir = doc-dir + "/doc-test"
-  have-dot   = "No"
+  have-dot   = "NO"
