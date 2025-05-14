@@ -45,6 +45,7 @@ namespace Altzone.Scripts
             Instantiate(Resources.Load("Prefabs/Carbon"));
             Instantiate(Resources.Load("Prefabs/OnlineProfileManager"));
             Instantiate(Resources.Load("Prefabs/GameAnalytics"));
+            Instantiate(Resources.Load("Prefabs/LobbyManager"));
         }
 
         private void OnApplicationPause(bool pause)
