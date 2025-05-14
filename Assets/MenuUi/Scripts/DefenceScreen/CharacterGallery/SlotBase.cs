@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace MenuUi.Scripts.CharacterGallery
 {
     /// <summary>
-    /// TODO: write doc comment
+    /// Base class for defence gallery character slots. Has a serializefield for the slot's button and an event which gets invoked on button press.
     /// </summary>
     public class SlotBase : MonoBehaviour
     {

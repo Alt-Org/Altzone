@@ -121,7 +121,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
 
         /// <summary>
-        /// Set visual information and anchoring for when character is selected. (Placed to one of the top slots.)
+        /// Set visual information and anchoring for when character is selected.
         /// </summary>
         public void SetSelectedVisuals()
         {
@@ -144,7 +144,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
 
         /// <summary>
-        /// Set visual information and anchoring for when character is unselected. (Not in one of the top slots.)
+        /// Set default visual information and anchoring for when character is unlocked and displayed in the gallery grid.
         /// </summary>
         public void SetDefaultVisuals()
         {
@@ -166,7 +166,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
 
         /// <summary>
-        /// Set visual information for when character is locked. (Not owned.)
+        /// Set visual information for when character is locked.
         /// </summary>
         public void SetLockedVisuals()
         {

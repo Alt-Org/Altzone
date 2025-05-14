@@ -14,6 +14,9 @@ using Altzone.Scripts.ReferenceSheets;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
+    /// <summary>
+    /// Controls the defence gallery's character gallery view by initializing CharacterInventorySlots to a grid.
+    /// </summary>
     public class GalleryView : MonoBehaviour
     {
         enum FilterType
@@ -42,7 +45,7 @@ namespace MenuUi.Scripts.CharacterGallery
         private FilterType _currentFilter = FilterType.All;
         
         // List of character slots in character grid
-        private List<CharacterSlot> _characterSlots = new();
+        private readonly List<CharacterSlot> _characterSlots = new();
         public List<CharacterSlot> CharacterSlots => _characterSlots;
 
         public delegate void GalleryCharactersSetHandler(int[] _selectedCharacterIds);
@@ -80,7 +83,7 @@ namespace MenuUi.Scripts.CharacterGallery
         /// Place the characters to character gallery.
         /// </summary>
         /// <param name="customCharacters">List of player's custom (owned) characters.</param>
-        /// <param name="selectedCharacterIds">Array of selected character ids which will be placed to the top slot.</param>
+        /// <param name="selectedCharacterIds">Array of selected character ids.</param>
         public void SetCharacters(List<CustomCharacter> customCharacters, int[] selectedCharacterIds)
         {
             Reset();

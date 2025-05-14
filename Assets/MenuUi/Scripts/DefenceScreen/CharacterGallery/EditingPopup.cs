@@ -13,6 +13,7 @@ namespace MenuUi.Scripts.CharacterGallery
     public class EditingPopup : MonoBehaviour
     {
         [SerializeField] private GalleryView _galleryView;
+
         // Array of character slots in selected grid
         [SerializeField] private SelectedCharacterEditingSlot[] _selectedCharacterSlots;
 
@@ -44,12 +45,18 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
+        /// <summary>
+        /// Open selected defence characters editing popup.
+        /// </summary>
         public void OpenPopup()
         {
             gameObject.SetActive(true);
         }
 
 
+        /// <summary>
+        /// Close selected defence characters editing popup.
+        /// </summary>
         public void ClosePopup()
         {
             gameObject.SetActive(false);
@@ -59,12 +66,15 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void SetCharacters(int[] selectedCharacterIds)
         {
+            // Going through every character slot in the gallery to see which ones are selected
             foreach (CharacterSlot slot in _galleryView.CharacterSlots)
             {
+                // Setting slot as editable and adding listeners
                 slot.SetEditable(true);
                 slot.OnSlotPressed -= HandleSlotPressed;
                 slot.OnSlotPressed += HandleSlotPressed;
 
+                // Changing parent and setting selected visuals for the selected characters
                 for (int i = 0; i < _selectedCharacterSlots.Length; i++)
                 {
                     if (selectedCharacterIds[i] == (int)slot.Id)
