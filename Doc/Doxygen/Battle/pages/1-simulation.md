@@ -12,7 +12,7 @@
 | @crefd{Battle.QSimulation} | @cref{Battle.QSimulation,Projectile} | @copybrief Battle.QSimulation.Projectile |
 | @crefd{Battle.QSimulation} | @cref{Battle.QSimulation,Goal}       | @copybrief Battle.QSimulation.Goal       |
 
-[[Namespace Summary]](#index-namespace-summary)
+@bigtext{[[Namespace Summary]](#index-namespace-summary)}
 
 ## Directories {#page-simulation-directories}
 
@@ -20,19 +20,19 @@
 | :---------------------------------- | :--------------------------------------------- | :------------------------------------------------------------ | :----------------------------------------------------------------------------------------------- |
 | @dirref{Altzone/Assets/QuantumUser} | @dirref{Altzone/Assets/QuantumUser,Simulation}                                                                || Game Simulation Logic Directory.<br/>Contains deterministic %Quantum Simulation logic and state. |
 | @dirref{Altzone/Assets/QuantumUser} | @dirref{Altzone/Assets/QuantumUser,Simulation} | @dirref{Altzone/Assets/QuantumUser/Simulation,Battle/Scripts} | Simulation %Battle C# Script                                                                     |
-| @dirref{Altzone/Assets/QuantumUser} | @dirref{Altzone/Assets/QuantumUser,Simulation} | Battle/Qtn/                                                   | Simulation %Battle QTN files                                                                     |
+| @dirref{Altzone/Assets/QuantumUser} | @dirref{Altzone/Assets/QuantumUser,Simulation} | @dirref{Altzone/Assets/QuantumUser/Simulation,Battle/Qtn}     | Simulation %Battle QTN files                                                                     |
 | @dirref{Altzone/Assets/QuantumUser} | @dirref{Altzone/Assets/QuantumUser,Simulation} | @dirref{Altzone/Assets/QuantumUser/Simulation,Generated}      | Generated Simulation scripts                                                                     |
 
-[[File Summary]](#index-file-summary)
+@bigtext{[[File Summary]](#index-file-summary)}
 
 ## Systems {#page-simulation-systems}
 
-[Quantum Systems🡵] are C# classes that handle game logic.
+[Quantum Systems🡵] are C# classes that handle game logic.  
 In %Battle [Quantum Systems🡵] have QSystem suffix. [[Naming]](#index-naming)
 
 |  Namespace                                                        || Class                                                               | Description                                                             |
 | :------------------------- | :------------------------------------ | :------------------------------------------------------------------ | :---------------------------------------------------------------------- |
-| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Diamond}    | @cref{Battle.QSimulation.Diamond,BattleDiamondQSystem}              | @copybrief Battle.QSimulation.Diamond.BattleDiamondQSystem                 |
+| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Diamond}    | @cref{Battle.QSimulation.Diamond,BattleDiamondQSystem}              | @copybrief Battle.QSimulation.Diamond.BattleDiamondQSystem              |
 |                                                                                                                                                                                                                 ||||
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Game}       | @cref{Battle.QSimulation.Game,BattleGameControlQSystem}             | @copybrief Battle.QSimulation.Game.BattleGameControlQSystem             |
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Game}       | @cref{Battle.QSimulation.Game,BattleCollisionQSystem}               | @copybrief Battle.QSimulation.Game.BattleCollisionQSystem               |
@@ -49,10 +49,10 @@ In %Battle [Quantum Systems🡵] have QSystem suffix. [[Naming]](#index-naming)
 
 ## Components {#page-simulation-components}
 
-[Quantum Components🡵] are C# structs that are generated from qtn files which can be attached to %Quantum Entities.
+[Quantum Components🡵] are C# structs that are generated from qtn files which can be attached to %Quantum Entities.  
 In %Battle [Quantum Components🡵] have QComponent or QSingleton suffix. [[Naming]](#index-naming)
 
-|  Namespace                                        | Component                                                          |Description                                                             |
+|  Namespace                                        | Component                                                          | Description                                                             |
 |:------------------------------------------------- | :----------------------------------------------------------------- | :--------------------------------------------------------------------- |
 | @crefd{Quantum}                                   | @cref{Quantum,BattleArenaBorderQComponent}                         | @copybrief Quantum.BattleArenaBorderQComponent                         |
 | @crefd{Quantum}                                   | @cref{Quantum,BattleDiamondCounterQSingleton}                      | @copybrief Quantum.BattleDiamondCounterQSingleton                      |

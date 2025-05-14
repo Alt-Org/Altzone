@@ -10,7 +10,7 @@
 |                                                                                                                    |||
 | @cref{Quantum}                            || @copybrief Quantum                                                      |
 
-[[Namespace List]](./namespaces.html)
+@bigtext{[[Namespace List]](./namespaces.html)}
 
 # File Summary {#index-file-summary}
 
@@ -25,13 +25,13 @@
 |                                                                                                                                                                                                                                                                                                                                    |||||
 | @dirref{Altzone} | @dirref{Altzone,Doc/Doxygen/Battle}                                                                          ||| %Battle Documentation files. @dirlink{More...:Altzone/Doc/Doxygen/Battle}<br/>Contains [Doxygen🡵] configuration files, additional documentation files and the generated documentation for %Battle. |
 
-[[File List]](./files.html)
+@bigtext{[[File List]](./files.html)}
 
 # Naming {#index-naming}
 
 # Other Pages {#index-other-pages}
 
-- [[Simulation]](#page-simulation)
-- [[View]](#page-view)
+- @bigtext{[[Simulation]](#page-simulation)}
+- @bigtext{[[View]](#page-view)}
 
 [Doxygen🡵]: https://www.doxygen.nl/index.html
