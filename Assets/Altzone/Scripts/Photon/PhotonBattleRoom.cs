@@ -39,6 +39,7 @@ namespace Altzone.Scripts.Battle.Photon
         public const string TeamRedScoreKey = "t2";
         public const string MapKey = "m";
         public const string StartingEmotionKey = "e";
+        public const string RoomNameKey = "n";
         public const string PasswordKey = "pw";
         public const string GameTypeKey = "gt";
         public const string IsMatchmakingKey = "mm";

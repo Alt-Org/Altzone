@@ -159,34 +159,21 @@ public class DailyTaskManager : AltMonoBehaviour
 
         //Get clan data.
         ClanData clanData = null;
-
-        Storefront.Get().GetClanData(_currentPlayerData.ClanId, data => clanData = data);
-
-        if (clanData == null)
+        if (_currentPlayerData?.ClanId != null)
         {
-            StartCoroutine(ServerManager.Instance.GetClanFromServer(content =>
+            StartCoroutine(GetClanData(_currentPlayerData.ClanId, data => clanData = data));
+
+            StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+            yield return new WaitUntil(() => (clanData != null || timeout != null));
+            if (clanData == null)
             {
-                if (content != null)
-                    clanData = new(content);
-                else
-                {
-                    Debug.LogError("Could not connect to server and receive player");
-                    return;
-                }
-            }));
-        }
-
-        StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
-        yield return new WaitUntil(() => (clanData != null || timeout != null));
-
-        if (clanData == null)
-        {
-            Debug.LogError("Failed to fetch clan data.");
-        }
-        else
-        {
-            PopulateClanPlayers(clanData);
-            SetClanProgressBar(clanData);
+                Debug.LogError("Failed to fetch clan data.");
+            }
+            else
+            {
+                PopulateClanPlayers(clanData);
+                SetClanProgressBar(clanData);
+            }
         }
 
         CreateClanProgressBar(); //TODO: Move to inside the brackets when server is ready.
@@ -223,7 +210,11 @@ public class DailyTaskManager : AltMonoBehaviour
         }
 
         List<PlayerTask> tasklist = null;
+        PlayerData playerData = null;
         Storefront.Get().GetPlayerTasks(content => tasklist = content);
+        StartCoroutine(GetPlayerData(content => playerData = content));
+        if (playerData == null || playerData.HasClanId) tasklist = TESTGenerateNormalTasks();
+        else
         StartCoroutine(ServerManager.Instance.GetPlayerTasksFromServer(content =>
         {
             if (content != null)

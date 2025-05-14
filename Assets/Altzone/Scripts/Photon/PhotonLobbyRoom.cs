@@ -26,6 +26,7 @@ namespace Altzone.Scripts.Lobby.Wrappers
         public const string TeamWinKey = PhotonBattleRoom.TeamWinKey;
         public const string TeamBlueScoreKey = PhotonBattleRoom.TeamBlueScoreKey;
         public const string TeamRedScoreKey = PhotonBattleRoom.TeamRedScoreKey;
+        public const string RoomNameKey = PhotonBattleRoom.RoomNameKey;
 
         // Team positions in world coordinates (game arena when camera isn't rotated)
         //  Beta team number 2

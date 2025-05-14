@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
+    //[CreateAssetMenu(menuName = "ALT-Zone/ConmanCharacter", fileName = "ConmanCharacterStats")]
     public class ConmanCharacter : TricksterClassCharacter
     {
         public ConmanCharacter()

@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
+    //[CreateAssetMenu(menuName = "ALT-Zone/Characters/PreacherCharacter", fileName = "PreacherCharacterStats")]
     public class PreacherCharacter : ObedientClassCharacter
     {
         public PreacherCharacter() : base()

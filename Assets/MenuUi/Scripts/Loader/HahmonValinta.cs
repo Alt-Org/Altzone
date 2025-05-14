@@ -97,7 +97,7 @@ public class HahmonValinta : AltMonoBehaviour
             bool callFinished = false;
             bool characterAdded = false;
             int i = 0;
-            if (/*ServerManager.Instance.Player.currentAvatarId is null or 0*/true)
+            if (ServerManager.Instance.Player.currentAvatarId is null or 0 || !Enum.IsDefined(typeof(CharacterID), ServerManager.Instance.Player.currentAvatarId))
             {
                 _playerData.SelectedCharacterId = (int)id;
                 _playerData.SelectedCharacterIds = new string[3] { "0", "0", "0" };

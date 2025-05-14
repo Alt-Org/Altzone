@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
+    //[CreateAssetMenu(menuName = "ALT-Zone/SleepyHeadCharacter", fileName = "SleepyHeadCharacterStats")]
     public class SleepyHeadCharacter : ConfluentClassCharacter
     {
         public SleepyHeadCharacter() : base()

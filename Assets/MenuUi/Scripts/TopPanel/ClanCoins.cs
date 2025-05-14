@@ -16,7 +16,7 @@ namespace MenuUi.Scripts.TopPanel
 
         private void OnEnable()
         {
-            if (_clanData == null)
+            if (_clanData != null)
             {
                 ClanData.OnClanInfoUpdated += SetCoinsAmountText;
             }

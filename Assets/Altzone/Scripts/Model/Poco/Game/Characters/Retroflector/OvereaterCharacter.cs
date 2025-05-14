@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
+    //[CreateAssetMenu(menuName = "ALT-Zone/OvereaterCharacter", fileName = "OvereaterCharacterStats")]
     public class OvereaterCharacter : RetroflectorClassCharacter
     {
         public OvereaterCharacter() : base()

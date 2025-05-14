@@ -6,8 +6,6 @@ namespace Altzone.Scripts.Model.Poco.Game
 {
     public abstract class ObedientClassCharacter : BaseCharacter
     {
-
-
         public override CharacterClassID ClassID => CharacterClassID.Obedient;
 
 

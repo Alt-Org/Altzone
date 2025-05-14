@@ -112,7 +112,7 @@ public static class PollManager
             {
                 store.GetClanData(player.ClanId, data => clan = data);
                 
-                if (clan.Polls != null)
+                if (clan?.Polls != null)
                 {
                     pollDataList = clan.Polls;
                 }
