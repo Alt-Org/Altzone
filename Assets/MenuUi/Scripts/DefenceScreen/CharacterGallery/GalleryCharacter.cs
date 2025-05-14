@@ -1,7 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
+
 using TMPro;
+
 using Altzone.Scripts.Model.Poco.Game;
+
 using MenuUi.Scripts.DefenceScreen.CharacterGallery;
 using MenuUi.Scripts.Signals;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
@@ -35,7 +38,6 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void Awake()
         {
-            _piechartPreview.gameObject.SetActive(false);
             if (_grayscaleMaterialInstance == null )
             {
                 _grayscaleMaterialInstance = Instantiate(_grayScaleMaterial);
@@ -144,7 +146,7 @@ namespace MenuUi.Scripts.CharacterGallery
         /// <summary>
         /// Set visual information and anchoring for when character is unselected. (Not in one of the top slots.)
         /// </summary>
-        public void SetUnlockedVisuals()
+        public void SetDefaultVisuals()
         {
             _aspectRatioFitter.aspectRatio = 0.6f;
             _characterNameText.gameObject.SetActive(true);
@@ -168,7 +170,7 @@ namespace MenuUi.Scripts.CharacterGallery
         /// </summary>
         public void SetLockedVisuals()
         {
-            SetUnlockedVisuals();
+            SetDefaultVisuals();
             _spriteImage.material = _grayscaleMaterialInstance;
             _backgroundLowerImage.material = _grayscaleMaterialInstance;
             _backgroundUpperImage.material = _grayscaleMaterialInstance;
@@ -185,7 +187,7 @@ namespace MenuUi.Scripts.CharacterGallery
         public void ReturnToOriginalSlot()
         {
             transform.SetParent(_originalSlot.transform, false);
-            SetUnlockedVisuals();
+            SetDefaultVisuals();
         }
     }
 }

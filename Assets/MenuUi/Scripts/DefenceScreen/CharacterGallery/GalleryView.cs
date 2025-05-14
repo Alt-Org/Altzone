@@ -39,14 +39,11 @@ namespace MenuUi.Scripts.CharacterGallery
 
         [SerializeField] private ClassColorReference _classColorReference;
 
-        private bool _isReady;
         private FilterType _currentFilter = FilterType.All;
         
         // List of character slots in character grid
         private List<CharacterSlot> _characterSlots = new();
         public List<CharacterSlot> CharacterSlots => _characterSlots;
-
-        public bool IsReady => _isReady;
 
         public delegate void GalleryCharactersSetHandler(int[] _selectedCharacterIds);
         public GalleryCharactersSetHandler OnGalleryCharactersSet;
@@ -70,16 +67,13 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public void Reset()
         {
-            _isReady = false;
-
             // Remove all character slots
             foreach (CharacterSlot characterSlot in _characterSlots)
             {
-                Destroy(characterSlot.Character);
+                Destroy(characterSlot.Character.gameObject);
                 Destroy(characterSlot.gameObject);
             }
             _characterSlots.Clear();
-            _isReady = true;
         }
 
         /// <summary>
@@ -89,6 +83,8 @@ namespace MenuUi.Scripts.CharacterGallery
         /// <param name="selectedCharacterIds">Array of selected character ids which will be placed to the top slot.</param>
         public void SetCharacters(List<CustomCharacter> customCharacters, int[] selectedCharacterIds)
         {
+            Reset();
+
             // Placing unlocked characters
             foreach (CustomCharacter character in customCharacters)
             {
@@ -141,6 +137,10 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 charSlot.Character.SetLockedVisuals();
                 charSlot.IsLocked = true;
+            }
+            else
+            {
+                charSlot.Character.SetDefaultVisuals();
             }
 
             return charSlot;

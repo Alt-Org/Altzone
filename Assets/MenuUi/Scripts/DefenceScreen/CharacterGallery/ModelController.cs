@@ -1,11 +1,14 @@
-﻿using System.Collections;
-using System.Linq;
+﻿using System.Linq;
+
+using UnityEngine;
+
+using Newtonsoft.Json.Linq;
+
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
-using UnityEngine;
+
 using MenuUi.Scripts.Signals;
-using Newtonsoft.Json.Linq;
 
 namespace MenuUi.Scripts.Signals
 {
@@ -81,7 +84,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             if (_reloadRequested)
             {
-                StartCoroutine(Load());
+                Load();
                 _reloadRequested = false;
             }
         }
@@ -100,7 +103,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             if (isLoggedIn)
             {
-                StartCoroutine(Load());
+                Load();
             }
         }
 
@@ -109,7 +112,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             if (gameObject.activeInHierarchy)
             {
-                StartCoroutine(Load());
+                Load();
             }
             else
             {
@@ -118,12 +121,8 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
-        private IEnumerator Load()
+        private void Load()
         {
-            _view.Reset();
-            _editingPanelView.Reset();
-            yield return new WaitUntil(() => _view.IsReady);
-
             StartCoroutine(GetPlayerData(playerData =>
             {
                 _playerData = playerData;
@@ -212,7 +211,7 @@ namespace MenuUi.Scripts.CharacterGallery
             }
             var store = Storefront.Get();
             store.SavePlayerData(_playerData, null);
-            StartCoroutine(Load());
+            Load();
         }
     }
 }
