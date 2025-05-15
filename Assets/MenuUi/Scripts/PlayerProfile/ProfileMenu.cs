@@ -50,6 +50,7 @@ public class ProfileMenu : AltMonoBehaviour
     [SerializeField] private GameObject _characterOptionsPopup;
     [SerializeField] private Transform _characterOptionsContent;
     [SerializeField] private GameObject _characterOptionPrefab;
+    [SerializeField] private TextMeshProUGUI _characterSelectionMessage;
 
     [Header("Buttons")]
     [SerializeField] private Button _openMottoOptions;
@@ -95,8 +96,8 @@ public class ProfileMenu : AltMonoBehaviour
 
     private ServerPlayer _player;
 
-    private const string MottoDefault = "Paina tästä valitaksesi...";
-    private const string MottoDefaultOther = "Ei valittu";
+    private const string SelectionMessageDefault = "Paina tästä valitaksesi...";
+    private const string SelectionMessageDefaultOther = "Ei valittu";
 
     private string _tempFavoriteDefenceID;
 
@@ -219,6 +220,14 @@ public class ProfileMenu : AltMonoBehaviour
             {
                 _tempFavoriteDefenceID = character.Id;
                 _favoriteCharacterImage.sprite = character.GalleryImage;
+
+                //Show image
+                Image image = _favoriteCharacterImage;
+                var tempColor = image.color;
+                tempColor.a = 1f;
+                image.color = tempColor;
+                _characterSelectionMessage.text = "";
+
                 _characterOptionsPopup.SetActive(false);
                 _closePopupAreaButton.SetActive(false);
             });
@@ -311,27 +320,52 @@ public class ProfileMenu : AltMonoBehaviour
             CharacterClassID defenceClass = (CharacterClassID)((_playerData.SelectedCharacterId / 100) * 100);
             _DefenceClassText.text = defenceClass.ToString();
 
-            if (_playerData.ChosenMotto != null || _MottoText.text == "")
-            {
-                _MottoText.text = _playerData.ChosenMotto;
-            }
-            else
+            if (_playerData.ChosenMotto == null || _MottoText.text == "")
             {
                 if (_otherPlayerProfile)
                 {
-                    _MottoText.text = MottoDefaultOther;
+                    _MottoText.text = SelectionMessageDefaultOther;
                 }
                 else
                 {
-                    _MottoText.text = MottoDefault;
-                }
+                    _MottoText.text = SelectionMessageDefault;
+                } 
+            }
+            else
+            {
+                _MottoText.text = _playerData.ChosenMotto;
             }
 
             PlayerCharacterPrototype favoriteDefence = PlayerCharacterPrototypes.GetCharacter(_playerData.FavoriteDefenceID);
+            Image image = _favoriteCharacterImage;
+            var tempColor = image.color;
             if (favoriteDefence != null)
             {
-                _tempFavoriteDefenceID = _playerData.FavoriteDefenceID;
+                //Show image
+                tempColor.a = 1f;
+                image.color = tempColor;
+                _characterSelectionMessage.text = "";
+
+                if (!_otherPlayerProfile)
+                {
+                    _tempFavoriteDefenceID = _playerData.FavoriteDefenceID;
+                }
                 _favoriteCharacterImage.sprite = favoriteDefence.GalleryImage;
+            }
+            else
+            {
+                // Hide image
+                tempColor.a = 0f;
+                image.color = tempColor;
+
+                if (_otherPlayerProfile)
+                {
+                    _characterSelectionMessage.text = SelectionMessageDefaultOther;
+                }
+                else
+                {
+                    _characterSelectionMessage.text = SelectionMessageDefault;
+                }
             }
 
             store.GetClanData(_playerData.ClanId, clan =>
@@ -363,7 +397,6 @@ public class ProfileMenu : AltMonoBehaviour
     /// <summary>
     /// Disables editing when viewing other player's profile
     /// </summary>
-    /// <param name="otherPlayer"></param>
     private void ToggleProfileViewMode()
     {
         if (_otherPlayerProfile)
@@ -371,23 +404,33 @@ public class ProfileMenu : AltMonoBehaviour
             _openFavoriteDefenceSelection.interactable = false;
             _openMottoOptions.interactable = false;
             _saveEditsButton.gameObject.SetActive(false);
-            foreach(GameObject button in _playStyleButtons)
+            foreach (GameObject button in _playStyleButtons)
             {
                 button.SetActive(false);
             }
         }
         else
         {
-            _openFavoriteDefenceSelection.interactable = true;
-            _openMottoOptions.interactable = true;
-            if(_saveEditsButton != null)
+            if (_openFavoriteDefenceSelection != null)
+            {
+                _openFavoriteDefenceSelection.interactable = true;
+            }
+
+            if (_openMottoOptions != null)
+            {
+                _openMottoOptions.interactable = true;
+            }
+
+            if (_saveEditsButton != null)
             {
                 _saveEditsButton.gameObject.SetActive(true);
             }
-
             foreach (GameObject button in _playStyleButtons)
             {
-                button.SetActive(true);
+                if (button != null)
+                {
+                    button.SetActive(true);
+                } 
             }
         }
     }
