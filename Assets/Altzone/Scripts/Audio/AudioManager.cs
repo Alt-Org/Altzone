@@ -6,7 +6,7 @@ using UnityEditorInternal;
 #endif
 using UnityEngine;
 
-namespace MenuUi.Scripts.Audio
+namespace Altzone.Scripts.Audio
 {
     public enum AudioSourceType
     {
@@ -52,7 +52,7 @@ namespace MenuUi.Scripts.Audio
             else
             {
                 Instance = this;
-                DontDestroyOnLoad(this);
+                DontDestroyOnLoad(gameObject);
             }
         }
 

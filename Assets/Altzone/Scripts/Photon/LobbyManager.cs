@@ -98,6 +98,7 @@ namespace Altzone.Scripts.Lobby
 
         [HideInInspector] public ReadOnlyCollection<LobbyRoomInfo> CurrentRooms = null; // Set from LobbyRoomListingController.cs through Instance variable maybe this could be refactored?
         public static LobbyManager Instance { get; private set; }
+        private static bool isActive = false;
 
         #region Delegates & Events
 
@@ -198,28 +199,18 @@ namespace Altzone.Scripts.Lobby
         {
             if (Instance != null && Instance != this)
             {
-                Destroy(this);
+                Destroy(gameObject);
             }
             else
             {
                 Instance = this;
-                DontDestroyOnLoad(this);
+                DontDestroyOnLoad(gameObject);
             }
         }
 
         public void OnEnable()
         {
-            PhotonRealtimeClient.Client.AddCallbackTarget(this);
-            PhotonRealtimeClient.Client.StateChanged += OnStateChange;
-            this.Subscribe<ReserveFreePositionEvent>(OnReserveFreePositionEvent);
-            this.Subscribe<PlayerPosEvent>(OnPlayerPosEvent);
-            this.Subscribe<StartRoomEvent>(OnStartRoomEvent);
-            this.Subscribe<StartPlayingEvent>(OnStartPlayingEvent);
-            this.Subscribe<StartRaidTestEvent>(OnStartRaidTestEvent);
-            this.Subscribe<StartMatchmakingEvent>(OnStartMatchmakingEvent);
-            this.Subscribe<StopMatchmakingEvent>(OnStopMatchmakingEvent);
-            this.Subscribe<GetKickedEvent>(OnGetKickedEvent);
-            StartCoroutine(Service());
+            if(!isActive && SceneManager.GetActiveScene().buildIndex != 0) Activate();
         }
 
         public void OnDisable()
@@ -238,6 +229,22 @@ namespace Altzone.Scripts.Lobby
             {
                 PhotonRealtimeClient.LeaveLobby();
             }
+        }
+        public void Activate()
+        {
+            if (isActive) { Debug.LogWarning("LobbyManager is already active."); return; }
+            isActive = true;
+            PhotonRealtimeClient.Client.AddCallbackTarget(this);
+            PhotonRealtimeClient.Client.StateChanged += OnStateChange;
+            this.Subscribe<ReserveFreePositionEvent>(OnReserveFreePositionEvent);
+            this.Subscribe<PlayerPosEvent>(OnPlayerPosEvent);
+            this.Subscribe<StartRoomEvent>(OnStartRoomEvent);
+            this.Subscribe<StartPlayingEvent>(OnStartPlayingEvent);
+            this.Subscribe<StartRaidTestEvent>(OnStartRaidTestEvent);
+            this.Subscribe<StartMatchmakingEvent>(OnStartMatchmakingEvent);
+            this.Subscribe<StopMatchmakingEvent>(OnStopMatchmakingEvent);
+            this.Subscribe<GetKickedEvent>(OnGetKickedEvent);
+            StartCoroutine(Service());
         }
 
         private IEnumerator Service()

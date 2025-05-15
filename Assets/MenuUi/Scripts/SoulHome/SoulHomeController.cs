@@ -6,7 +6,7 @@ using TMPro;
 using MenuUi.Scripts.Window;
 using UnityEngine.UI;
 using Altzone.Scripts.GA;
-using MenuUi.Scripts.Audio;
+using Altzone.Scripts.Audio;
 
 namespace MenuUI.Scripts.SoulHome
 {
