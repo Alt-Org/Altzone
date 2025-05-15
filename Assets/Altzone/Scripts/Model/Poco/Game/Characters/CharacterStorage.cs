@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
@@ -77,6 +79,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         }
 
     }
+#if UNITY_EDITOR
     [CustomEditor(typeof(CharacterStorage))]
     public class CharacterStorageEditor : UnityEditor.Editor
     {
@@ -92,4 +95,5 @@ namespace Altzone.Scripts.Model.Poco.Game
             }
         }
     }
+#endif
 }
