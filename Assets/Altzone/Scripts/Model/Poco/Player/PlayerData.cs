@@ -141,24 +141,24 @@ namespace Altzone.Scripts.Model.Poco.Player
             UniqueIdentifier = uniqueIdentifier;
         }
 
-        public PlayerData(ServerPlayer player)
+        public PlayerData(ServerPlayer player, bool limited = false)
         {
             Assert.IsTrue(player._id.IsPrimaryKey());
             Assert.IsTrue(player.clan_id.IsNullOEmptyOrNonWhiteSpace());
             //Assert.IsTrue(player.currentCustomCharacterId >= 0);
             Assert.IsTrue(player.name.IsMandatory());
-            Assert.IsTrue(player.backpackCapacity >= 0);
+            if (!limited) Assert.IsTrue(player.backpackCapacity >= 0);
             Assert.IsTrue(player.uniqueIdentifier.IsMandatory());
             Id = player._id;
             ClanId = player.clan_id ?? string.Empty;
             SelectedCharacterId = (int)(player.currentAvatarId == null ? 0 : player.currentAvatarId);
-            SelectedCharacterIds = (player?.battleCharacter_ids == null || player.battleCharacter_ids.Length < 3) ? new string[3] {"0","0","0"} : player.battleCharacter_ids;
+            if(!limited)SelectedCharacterIds = (player?.battleCharacter_ids == null || player.battleCharacter_ids.Length < 3) ? new string[3] {"0","0","0"} : player.battleCharacter_ids;
             Name = player.name;
-            BackpackCapacity = player.backpackCapacity;
+            if (!limited) BackpackCapacity = player.backpackCapacity;
             UniqueIdentifier = player.uniqueIdentifier;
             points = player.points;
             stats = player.gameStatistics;
-            Task = player.DailyTask != null ? new(player.DailyTask): null;
+            if (!limited) Task = player.DailyTask != null ? new(player.DailyTask): null;
         }
 
         public void UpdatePlayerData(ServerPlayer player)
