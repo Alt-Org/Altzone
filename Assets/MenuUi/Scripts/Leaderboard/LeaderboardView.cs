@@ -227,20 +227,22 @@ public class LeaderboardView : MonoBehaviour
                         int rank = 1;
                         foreach (ClanMember player in clanData.Members)
                         {
+                            PlayerData playerData = player.GetPlayerData();
+
                             if (rank < 4)
                             {
-                                _podium.InitilializePodium(rank, player.Name, player.LeaderBoardWins, null, null, null);
+                                _podium.InitilializePodium(rank, player.Name, player.LeaderBoardWins, null, null, playerData);
                             }
                             else
                             {
                                 LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
                                 item.Initialize(rank, player.Name, player.LeaderBoardWins);
 
-                                // View player profile button
-                                //item.OpenProfileButton.onClick.AddListener(() =>
-                                //{
-                                //    DataCarrier.AddData(DataCarrier.PlayerProfile, playerData);
-                                //});
+                                //View player profile button
+                                item.OpenProfileButton.onClick.AddListener(() =>
+                                {
+                                    DataCarrier.AddData(DataCarrier.PlayerProfile, playerData);
+                                });
                             }
 
                             rank++;
@@ -274,9 +276,11 @@ public class LeaderboardView : MonoBehaviour
                         int rank = 1;
                         foreach (ClanMember player in clanData.Members)
                         {
+                            PlayerData playerData = player.GetPlayerData();
+
                             if (rank < 4)
                             {
-                                _podium.InitilializePodium(rank, player.Name, player.LeaderBoardCoins, null, null, null);
+                                _podium.InitilializePodium(rank, player.Name, player.LeaderBoardCoins, null, null, playerData);
                             }
                             else
                             {
@@ -284,10 +288,10 @@ public class LeaderboardView : MonoBehaviour
                                 item.Initialize(rank, player.Name, player.LeaderBoardCoins);
 
                                 // View player profile button
-                                //item.OpenProfileButton.onClick.AddListener(() =>
-                                //{
-                                //    DataCarrier.AddData(DataCarrier.PlayerProfile, playerData);
-                                //});
+                                item.OpenProfileButton.onClick.AddListener(() =>
+                                {
+                                    DataCarrier.AddData(DataCarrier.PlayerProfile, playerData);
+                                });
                             }
 
                             rank++;

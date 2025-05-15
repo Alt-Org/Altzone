@@ -380,7 +380,11 @@ public class ProfileMenu : AltMonoBehaviour
         {
             _openFavoriteDefenceSelection.interactable = true;
             _openMottoOptions.interactable = true;
-            _saveEditsButton.gameObject.SetActive(true);
+            if(_saveEditsButton != null)
+            {
+                _saveEditsButton.gameObject.SetActive(true);
+            }
+
             foreach (GameObject button in _playStyleButtons)
             {
                 button.SetActive(true);
