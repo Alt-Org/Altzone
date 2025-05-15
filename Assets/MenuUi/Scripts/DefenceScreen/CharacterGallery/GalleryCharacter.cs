@@ -38,15 +38,18 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void Awake()
         {
-            if (_grayscaleMaterialInstance == null )
-            {
-                _grayscaleMaterialInstance = Instantiate(_grayScaleMaterial);
-            }
+            if (_grayscaleMaterialInstance == null) InstantiateGrayscaleMaterial();
 
             if (_addCharacterButton != null )
             {
                 _addCharacterButton.onClick.AddListener( OnAddCharacterButtonClicked );
             }
+        }
+
+
+        private void InstantiateGrayscaleMaterial()
+        {
+            _grayscaleMaterialInstance = Instantiate(_grayScaleMaterial);
         }
 
 
@@ -115,7 +118,6 @@ namespace MenuUi.Scripts.CharacterGallery
             _id = id;
             _backgroundLowerImage.color = bgColor;
             _backgroundUpperImage.color = bgAltColor;
-            _backgroundBorderImage.color = bgAltColor;
             _originalSlot = originalSlot;
         }
 
@@ -171,15 +173,19 @@ namespace MenuUi.Scripts.CharacterGallery
         public void SetLockedVisuals()
         {
             SetDefaultVisuals();
+            _addCharacterButton.gameObject.SetActive(true);
+
+            if (_grayscaleMaterialInstance == null) InstantiateGrayscaleMaterial();
+
             _spriteImage.material = _grayscaleMaterialInstance;
             _backgroundLowerImage.material = _grayscaleMaterialInstance;
             _backgroundUpperImage.material = _grayscaleMaterialInstance;
             _backgroundBorderImage.material = _grayscaleMaterialInstance;
+
             _backgroundLowerImage.material.SetColor("_Color", _backgroundLowerImage.color);
-            _backgroundUpperImage.material.SetColor("_Color", _backgroundLowerImage.color);
-            _backgroundBorderImage.material.SetColor("_Color", _backgroundLowerImage.color);
-            _addCharacterButton.gameObject.SetActive(true);
+            _backgroundUpperImage.material.SetColor("_Color", _backgroundUpperImage.color);
         }
+
 
         /// <summary>
         /// Reparent this character to its original slot.
