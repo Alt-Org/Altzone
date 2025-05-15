@@ -93,7 +93,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30.1
+  m_fontSize: 34.8
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -203,6 +203,8 @@ MonoBehaviour:
   _filterButton: {fileID: 7760375590366275014}
   _filterText: {fileID: 4873729512373761633}
   _scrollRect: {fileID: 5811318848700392278}
+  _showUnlockedCharacters: 1
+  _showLockedCharacters: 0
   _characterSlotPrefab: {fileID: 4297384447084397024, guid: 4aaf0fba9ac0bb64bbb8abb1ff0c485b,
     type: 3}
   _classColorReference: {fileID: 11400000, guid: 3b5ea09e8ee0a3c4fb7574a299b54fe0,
@@ -420,7 +422,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 8386760330166972209}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []

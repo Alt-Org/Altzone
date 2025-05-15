@@ -38,6 +38,9 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private TMP_Text _filterText;
         [SerializeField] private BaseScrollRect _scrollRect;
 
+        [SerializeField] private bool _showUnlockedCharacters;
+        [SerializeField] private bool _showLockedCharacters;
+
         [SerializeField] private GameObject _characterSlotPrefab;
 
         [SerializeField] private ClassColorReference _classColorReference;
