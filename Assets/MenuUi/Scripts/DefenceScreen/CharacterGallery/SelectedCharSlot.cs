@@ -2,6 +2,8 @@ using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 using MenuUi.Scripts.Signals;
+using Altzone.Scripts.Model.Poco.Game;
+using MenuUi.Scripts.DefenceScreen.CharacterGallery;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -9,30 +11,32 @@ namespace MenuUi.Scripts.CharacterGallery
     {
         [SerializeField] private Image _characterHeadImage;
         [SerializeField] private TMP_Text _className;
+        [SerializeField] private TMP_Text _characterNameText;
 
+        [SerializeField] private Image _backgroundLowerImage;
+        [SerializeField] private Image _backgroundUpperImage;
+
+        [SerializeField] private PieChartPreview _pieChartPreview;
+
+        [SerializeField] private GameObject _characterCard;
         private void Awake()
         {
             if (_slotButton != null) _slotButton.onClick.AddListener(SignalBus.OnDefenceGalleryEditPanelRequestedSignal);
         }
 
-        void OnEnable()
+        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, string className, CharacterID id)
         {
-            SetCharacterHeadImage();
-            SetClassName();
+            _characterHeadImage.sprite = sprite;
+            _characterNameText.text = name;
+            _className.text = className;
+            _backgroundLowerImage.color = bgColor;
+            _backgroundUpperImage.color = bgAltColor;
+            _pieChartPreview.UpdateChart(id);
         }
 
-        private void SetCharacterHeadImage()
+        public void SetCharacterVisibility(bool visible)
         {
-            Sprite sprite = null;
-
-            if (sprite != null)
-            {
-                _characterHeadImage.sprite = sprite;
-            }
-        }
-        private void SetClassName()
-        {
-            _className.text = "";
+           _characterCard.SetActive(visible);
         }
     }
 }
