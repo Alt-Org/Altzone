@@ -248,7 +248,7 @@ namespace Battle.QSimulation.Player
                     f.Add(playerEntity, playerData, out BattlePlayerDataQComponent* playerDataPtr);
 
                     playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
-                    BattlePlayerMovementQSystem.Teleport(f, playerDataPtr, playerTransform,
+                    BattlePlayerMovementController.Teleport(f, playerDataPtr, playerTransform,
                         playerSpawnPosition,
                         playerRotationBase
                     );
@@ -631,7 +631,7 @@ namespace Battle.QSimulation.Player
 
             playerData->PlayerRef = playerHandle.PlayerRef;
 
-            BattlePlayerMovementQSystem.Teleport(f, playerData, playerTransform,
+            BattlePlayerMovementController.Teleport(f, playerData, playerTransform,
                 worldPosition,
                 playerData->RotationBase
             );
@@ -652,7 +652,7 @@ namespace Battle.QSimulation.Player
 
             playerData->PlayerRef = PlayerRef.None;
 
-            BattlePlayerMovementQSystem.Teleport(f, playerData, playerTransform,
+            BattlePlayerMovementController.Teleport(f, playerData, playerTransform,
                 worldPosition,
                 playerData->RotationBase
             );
