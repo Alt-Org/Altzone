@@ -44,7 +44,28 @@ namespace Battle.QSimulation.Game
     [Serializable]
     public struct BattleParameters
     {
+        public enum PlayerType
+        {
+            None = 0,
+            Player = 1,
+            Bot = 2,
+        }
+
+        public PlayerType[] PlayerSlotTypes;
+        public string[] PlayerSlotUserIDs;
+
+        public int PlayerCount;
+
         public BattleEmotionState ProjectileInitialEmotion;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static PlayerType[] GetPlayerSlotTypes(Frame f) => f.RuntimeConfig.BattleParameters.PlayerSlotTypes;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string[] GetPlayerSlotUserIDs(Frame f) => f.RuntimeConfig.BattleParameters.PlayerSlotUserIDs;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int GetPlayerCount(Frame f) => f.RuntimeConfig.BattleParameters.PlayerCount;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BattleEmotionState GetProjectileInitialEmotion(Frame f) => f.RuntimeConfig.BattleParameters.ProjectileInitialEmotion;
