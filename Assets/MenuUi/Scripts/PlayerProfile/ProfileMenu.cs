@@ -17,6 +17,7 @@ using UnityEngine.EventSystems;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ModelV2;
+using System.Data;
 
 public class ProfileMenu : AltMonoBehaviour
 {
@@ -261,69 +262,81 @@ public class ProfileMenu : AltMonoBehaviour
     /// </summary>
     private void SetPlayerProfileValues(bool isLoggedIn)
     {
-        if (isLoggedIn)
+        PlayerData player = DataCarrier.GetData<PlayerData>(DataCarrier.PlayerProfile);
+        var store = Storefront.Get();
+
+        if (player != null)
         {
-            //_BattleCharacter.AddComponent(typeof(Image));
-            //Img = Resources.Load<Sprite>(playerData.BattleCharacter.Name);
-            //_BattleCharacter.GetComponent<Image>().sprite = Img;
-            var store = Storefront.Get();
-            store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p =>
-            {
-                if (p == null)
-                {
-                    Debug.LogError("Pelaajatietojen haku epäonnistui.");
-                    return;
-                }
-
-                _playerData = p;
-                _playerNameText.text = _playerData.Name;
-                _playerNameInputField.text = _playerData.Name;
-
-                _activityText.text = _playerData.points.ToString();
-                _WinsText.text = _playerData.stats.wonBattles.ToString();
-
-                CharacterClassID defenceClass = (CharacterClassID)((_playerData.SelectedCharacterId / 100) * 100);
-                _DefenceClassText.text = defenceClass.ToString();
-
-                _MottoText.text = _playerData.ChosenMotto;
-                if (_MottoText.text == "")
-                {
-                    _MottoText.text = MottoDefault;
-                }
-
-                PlayerCharacterPrototype favoriteDefence = PlayerCharacterPrototypes.GetCharacter(_playerData.FavoriteDefenceID);
-                if (favoriteDefence != null)
-                {
-                    _tempFavoriteDefenceID = _playerData.FavoriteDefenceID;
-                    _favoriteCharacterImage.sprite = favoriteDefence.GalleryImage;
-                }
-
-                store.GetClanData(_playerData.ClanId, clan =>
-                {
-                    if (clan == null)
-                    {
-                        _rolesErrorMessage.text = "Klaania ei löydetty.";
-                        Debug.LogError("Klaanitietojen haku epäonnistui.");
-                        return;
-                    }
-
-                    _clanData = clan;
-                    _playerClanNameText.text = _clanData.Name;
-                    _rolesErrorMessage.text = "Rooleja ei voitu hakea.";
-
-                    _clanID = _playerData.ClanId;
-                    _url = "https://altzone.fi/clans/" + _playerData.ClanId;
-                });
-            });
-
-            updateTime();
+            _playerData = player;
         }
         else
         {
-            Reset();
-        }
-    }
+            if (isLoggedIn)
+            {
+                store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p =>
+                {
+                    if (p == null)
+                    {
+                        Debug.LogError("Pelaajatietojen haku epäonnistui.");
+                        return;
+                    }
 
+                    _playerData = p;
+                });
+            }
+            else
+            {
+                Reset();
+            }
+        }
+
+        _playerNameText.text = _playerData.Name;
+        _playerNameInputField.text = _playerData.Name;
+
+        _activityText.text = _playerData.points.ToString();
+        if (_playerData.stats != null)
+        {
+            _WinsText.text = _playerData.stats.wonBattles.ToString();
+        }
+
+        CharacterClassID defenceClass = (CharacterClassID)((_playerData.SelectedCharacterId / 100) * 100);
+        _DefenceClassText.text = defenceClass.ToString();
+
+        if (_playerData.ChosenMotto != null || _MottoText.text == "")
+        {
+            _MottoText.text = _playerData.ChosenMotto;
+        }
+        else
+        {
+            _MottoText.text = MottoDefault;
+        }
+
+        PlayerCharacterPrototype favoriteDefence = PlayerCharacterPrototypes.GetCharacter(_playerData.FavoriteDefenceID);
+        if (favoriteDefence != null)
+        {
+            _tempFavoriteDefenceID = _playerData.FavoriteDefenceID;
+            _favoriteCharacterImage.sprite = favoriteDefence.GalleryImage;
+        }
+
+        store.GetClanData(_playerData.ClanId, clan =>
+            {
+                if (clan == null)
+                {
+                    _rolesErrorMessage.text = "Klaania ei löydetty.";
+                    Debug.LogError("Klaanitietojen haku epäonnistui.");
+                    return;
+                }
+
+                _clanData = clan;
+                _playerClanNameText.text = _clanData.Name;
+                _rolesErrorMessage.text = "Rooleja ei voitu hakea.";
+
+                _clanID = _playerData.ClanId;
+                _url = "https://altzone.fi/clans/" + _playerData.ClanId;
+            });
+
+        updateTime();
+    }
 
     private void SaveMinutes()
     {

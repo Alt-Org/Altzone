@@ -2,6 +2,7 @@
 using System;
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.TabLine;
 using MenuUi.Scripts.Window;
 using UnityEngine;
@@ -128,12 +129,18 @@ public class LeaderboardView : MonoBehaviour
                             {
                                 if (rank < 4)
                                 {
-                                    _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, null, null);
+                                    _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, null, null, ranking.Clan);
                                 }
                                 else
                                 {
                                     LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
                                     item.Initialize(rank, ranking.Clan.Name, ranking.Points);
+
+                                    // View player profile button
+                                    item.OpenProfileButton.onClick.AddListener(() =>
+                                    {
+                                        DataCarrier.AddData(DataCarrier.PlayerProfile, ranking.Clan);
+                                    });
                                 }
 
                                 rank++;
@@ -148,12 +155,18 @@ public class LeaderboardView : MonoBehaviour
                             {
                                 if (rank < 4)
                                 {
-                                    _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, null, null);
+                                    _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, null, null, ranking.Clan);
                                 }
                                 else
                                 {
                                     LeaderboardActivityItem item = Instantiate(_playerActivityItemPrefab, parent: _activityContent).GetComponent<LeaderboardActivityItem>();
                                     item.Initialize(rank, ranking.Clan.Name, ranking.Points);
+
+                                    // View player profile button
+                                    item.OpenProfileButton.onClick.AddListener(() =>
+                                    {
+                                        DataCarrier.AddData(DataCarrier.PlayerProfile, ranking.Clan);
+                                    });
                                 }
 
                                 rank++;
@@ -179,7 +192,7 @@ public class LeaderboardView : MonoBehaviour
 
                             if (rank < 4)
                             {
-                                _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, clanData, serverClan);
+                                _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, clanData, serverClan, null);
                             }
                             else
                             {
@@ -216,12 +229,18 @@ public class LeaderboardView : MonoBehaviour
                         {
                             if (rank < 4)
                             {
-                                _podium.InitilializePodium(rank, player.Name, player.LeaderBoardWins, null, null);
+                                _podium.InitilializePodium(rank, player.Name, player.LeaderBoardWins, null, null, null);
                             }
                             else
                             {
                                 LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
                                 item.Initialize(rank, player.Name, player.LeaderBoardWins);
+
+                                // View player profile button
+                                //item.OpenProfileButton.onClick.AddListener(() =>
+                                //{
+                                //    DataCarrier.AddData(DataCarrier.PlayerProfile, playerData);
+                                //});
                             }
 
                             rank++;
@@ -236,7 +255,7 @@ public class LeaderboardView : MonoBehaviour
                             {
                                 if (rank < 4)
                                 {
-                                    _podium.InitilializePodium(rank, "", 0, null, null);
+                                    _podium.InitilializePodium(rank, "", 0, null, null, null);
                                 }
                                 else
                                 {
@@ -257,12 +276,18 @@ public class LeaderboardView : MonoBehaviour
                         {
                             if (rank < 4)
                             {
-                                _podium.InitilializePodium(rank, player.Name, player.LeaderBoardCoins, null, null);
+                                _podium.InitilializePodium(rank, player.Name, player.LeaderBoardCoins, null, null, null);
                             }
                             else
                             {
                                 LeaderboardActivityItem item = Instantiate(_playerActivityItemPrefab, parent: _activityContent).GetComponent<LeaderboardActivityItem>();
                                 item.Initialize(rank, player.Name, player.LeaderBoardCoins);
+
+                                // View player profile button
+                                //item.OpenProfileButton.onClick.AddListener(() =>
+                                //{
+                                //    DataCarrier.AddData(DataCarrier.PlayerProfile, playerData);
+                                //});
                             }
 
                             rank++;
@@ -277,7 +302,7 @@ public class LeaderboardView : MonoBehaviour
                             {
                                 if (rank < 4)
                                 {
-                                    _podium.InitilializePodium(rank, "", 0, null, null);
+                                    _podium.InitilializePodium(rank, "", 0, null, null, null);
                                 }
                                 else
                                 {
@@ -299,12 +324,18 @@ public class LeaderboardView : MonoBehaviour
                     {
                         if (i < 4)
                         {
-                            _podium.InitilializePodium(i, "", 0, null, null);
+                            _podium.InitilializePodium(i, "", 0, null, null, null);
                         }
                         else
                         {
                             LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
                             item.Initialize(i, "", 0);
+
+                            // View player profile button
+                            //item.OpenProfileButton.onClick.AddListener(() =>
+                            //{
+                            //    DataCarrier.AddData(DataCarrier.PlayerProfile, playerData);
+                            //});
                         }
                     }
                 }
@@ -314,12 +345,18 @@ public class LeaderboardView : MonoBehaviour
                     {
                         if (i < 4)
                         {
-                            _podium.InitilializePodium(i, "", 0, null, null);
+                            _podium.InitilializePodium(i, "", 0, null, null, null);
                         }
                         else
                         {
                             LeaderboardActivityItem item = Instantiate(_playerActivityItemPrefab, parent: _activityContent).GetComponent<LeaderboardActivityItem>();
                             item.Initialize(i, "", 0);
+
+                            // View player profile button
+                            //item.OpenProfileButton.onClick.AddListener(() =>
+                            //{
+                            //    DataCarrier.AddData(DataCarrier.PlayerProfile, playerData);
+                            //});
                         }
                     }
                 }
