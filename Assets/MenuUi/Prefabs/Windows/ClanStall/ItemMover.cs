@@ -7,23 +7,34 @@ public class ItemMover : MonoBehaviour
     private Transform gridParent;
     private KojuItemSlot assignedSlot;
 
+    private KojuPopup popup;
+
     void Start()
     {
-        //Find containers in the start and add listeners to the buttons in the cards
-
         trayParent = GameObject.Find("TrayContent").transform;
         gridParent = GameObject.Find("PanelContent").transform;
 
         GetComponent<Button>().onClick.AddListener(OnClick);
+
+        //This includes inactive Popup when searching for it
+        popup = FindObjectOfType<KojuPopup>(true);
+
+        if (popup == null)
+        {
+            Debug.LogError("KojuPopup not found");
+        }
     }
 
     void OnClick()
     {
-        //When clicking the card, move it into an available slot in the Koju panel. If the object is already in the Koju panel, move it back to the tray.
+        popup?.Open(gameObject);
+    }
 
+    //Called when the user confirms the moving
+    public void ExecuteMove()
+    {
         if (assignedSlot == null)
         {
-           
             KojuItemSlot[] slots = GameObject.FindObjectsOfType<KojuItemSlot>();
             foreach (var slot in slots)
             {
@@ -39,9 +50,7 @@ public class ItemMover : MonoBehaviour
         }
         else
         {
-            
             transform.SetParent(trayParent, false);
-          
             assignedSlot.ClearSlot();
             assignedSlot = null;
         }
