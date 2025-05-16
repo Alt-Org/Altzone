@@ -26,11 +26,12 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
     public enum BattleUiElementType
     {
-        Timer,
-        PlayerInfo,
-        TeammateInfo,
-        Diamonds,
-        GiveUpButton,
+        None = -1,
+        Timer = 0,
+        PlayerInfo = 1,
+        TeammateInfo = 2,
+        Diamonds = 3,
+        GiveUpButton = 4,
     }
 
     // Events
@@ -184,13 +185,18 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
     public BattleUiMovableElementData GetBattleUiMovableElementData(BattleUiElementType type)
     {
+        if (type == BattleUiElementType.None) return null;
+
         string json = PlayerPrefs.GetString($"BattleUi{type}", string.Empty);
         if (string.IsNullOrEmpty(json)) return null;
+
         return JsonUtility.FromJson<BattleUiMovableElementData>(json);
     }
 
     public void SetBattleUiMovableElementData(BattleUiElementType type, BattleUiMovableElementData data)
     {
+        if (type == BattleUiElementType.None) return;
+
         string json = JsonUtility.ToJson(data);
         PlayerPrefs.SetString($"BattleUi{type}", json);
     }
