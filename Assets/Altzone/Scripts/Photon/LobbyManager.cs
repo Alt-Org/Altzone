@@ -25,6 +25,7 @@ using Altzone.Scripts.AzDebug;
 using Prg.Scripts.Common.PubSub;
 
 using Battle.QSimulation.Game;
+using static Battle.QSimulation.Game.BattleParameters;
 
 namespace Altzone.Scripts.Lobby
 {
@@ -798,6 +799,10 @@ namespace Altzone.Scripts.Lobby
             // Checking player positions before starting gameplay
             Room room = PhotonRealtimeClient.CurrentRoom;
             List<Player> players = room.Players.Values.ToList();
+
+            string[] playerUserIds = new string[4] { "", "", "", "" };
+            PlayerType[] playerTypes = new PlayerType[4] { PlayerType.None, PlayerType.None, PlayerType.None, PlayerType.None, };
+
             int playerCount = 0;
             foreach (Player roomPlayer in players)
             {
@@ -815,9 +820,33 @@ namespace Altzone.Scripts.Lobby
                     string positionKey = PhotonBattleRoom.GetPositionKey(newPos);
                     room.SetCustomProperty(positionKey, roomPlayer.UserId);
                     yield return new WaitUntil(() => room.GetCustomProperty<string>(positionKey) == roomPlayer.UserId);
+
+                    playerPos = newPos;
                 }
+                playerTypes[playerPos-1] = PlayerType.Player;
+                playerUserIds[playerPos - 1] = roomPlayer.UserId;
                 playerCount += 1;
             }
+
+            // Getting starting emotion from current room custom properties
+            Emotion startingEmotion = (Emotion)room.GetCustomProperty(PhotonBattleRoom.StartingEmotionKey, (int)Emotion.Blank);
+
+            // If starting emotion is blank getting a random starting emotion
+            if (startingEmotion == Emotion.Blank)
+            {
+                startingEmotion = (Emotion)UnityEngine.Random.Range(0, 4);
+            }
+
+            // Getting map id from room custom properties
+            string mapId = room.GetCustomProperty(PhotonBattleRoom.MapKey, string.Empty);
+
+            // If there is no map id getting a random map
+            if (mapId == string.Empty)
+            {
+                int mapIndex = UnityEngine.Random.Range(0, _battleMapReference.Maps.Count);
+                mapId = _battleMapReference.Maps[mapIndex].MapId;
+            }
+
             if (player.IsMasterClient)
             {
                 Assert.IsTrue(!string.IsNullOrWhiteSpace(blueTeamName), "!string.IsNullOrWhiteSpace(blueTeamName)");
@@ -833,32 +862,6 @@ namespace Altzone.Scripts.Lobby
                     { PlayerCountKey, playerCount }
                 });
 
-                // Getting starting emotion from current room custom properties
-                Emotion startingEmotion = (Emotion)room.GetCustomProperty(PhotonBattleRoom.StartingEmotionKey, (int)Emotion.Blank);
-
-                // If starting emotion is blank getting a random starting emotion
-                if (startingEmotion == Emotion.Blank)
-                {
-                    startingEmotion = (Emotion)UnityEngine.Random.Range(0, 4);
-                }
-
-                // Saving projectile initial emotion to a variable in case the room closes TODO: remove cast when battle uses Emotion enum also
-                _projectileInitialEmotion = startingEmotion;
-
-                // Getting map id from room custom properties
-                string mapId = room.GetCustomProperty(PhotonBattleRoom.MapKey, string.Empty);
-
-                // If there is no map id getting a random map
-                if (mapId == string.Empty)
-                {
-                    int mapIndex = UnityEngine.Random.Range(0, _battleMapReference.Maps.Count);
-                    mapId = _battleMapReference.Maps[mapIndex].MapId;
-                }
-
-                // Setting map to variable
-                Map map = _battleMapReference.GetBattleMap(mapId).Map;
-                if (map != null) _quantumBattleMap = map;
-
                 yield return null;
                 if (isCloseRoom)
                 {
@@ -866,7 +869,17 @@ namespace Altzone.Scripts.Lobby
                     yield return null;
                 }
             }
-            if (!PhotonRealtimeClient.Client.OpRaiseEvent(PhotonRealtimeClient.PhotonEvent.StartGame, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), new RaiseEventArgs{Receivers = ReceiverGroup.All}, SendOptions.SendReliable))
+
+            StartGameData data = new(
+                DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                playerUserIds,
+                playerTypes,
+                startingEmotion,
+                mapId,
+                playerCount
+            );
+
+            if (!PhotonRealtimeClient.Client.OpRaiseEvent(PhotonRealtimeClient.PhotonEvent.StartGame, data, new RaiseEventArgs{Receivers = ReceiverGroup.All}, SendOptions.SendReliable))
             {
                 Debug.LogError("Unable to start game.");
                 StartingGameFailed();
@@ -888,11 +901,18 @@ namespace Altzone.Scripts.Lobby
             }
         }
 
-        private IEnumerator StartQuantum(long sendTime)
+        private IEnumerator StartQuantum(StartGameData data)
         {
             string battleID = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(BattleID);
-            int playerPosition = PhotonRealtimeClient.LocalPlayer.GetCustomProperty<int>(PlayerPositionKey);
             string userId = PhotonRealtimeClient.LocalPlayer.UserId;
+            int playerPosition = Array.IndexOf(data.PlayerSlotUserIds, userId);
+
+            // Setting projectile initial emotion to a variable
+            _projectileInitialEmotion = data.ProjectileInitialEmotion;
+
+            // Setting map to variable
+            Map map = _battleMapReference.GetBattleMap(data.MapId).Map;
+            if (map != null) _quantumBattleMap = map;
 
             if (QuantumRunner.Default != null)
             {
@@ -911,6 +931,9 @@ namespace Altzone.Scripts.Lobby
                 BattleConfig     = _battleQConfig,
                 BattleParameters = new()
                 {
+                    PlayerSlotTypes = data.PlayerSlotTypes,
+                    PlayerSlotUserIDs = data.PlayerSlotUserIds,
+                    PlayerCount = data.PlayerCount,
                     ProjectileInitialEmotion = (BattleEmotionState)_projectileInitialEmotion
                 }
             };
@@ -931,9 +954,9 @@ namespace Altzone.Scripts.Lobby
             //Start Battle Countdown
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleLoad);
 
-            if(sendTime == 0) sendTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            long timeToStart = (sendTime+5000) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            long startTime = sendTime + timeToStart;
+            if(data.SendTime == 0) data.SendTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            long timeToStart = (data.SendTime + 5000) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            long startTime = data.SendTime + timeToStart;
 
             yield return new WaitForEndOfFrame();
 
@@ -946,7 +969,7 @@ namespace Altzone.Scripts.Lobby
                 }
                 yield return null;
             } while (startTime > DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
-            timeToStart = (sendTime + 5000) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            timeToStart = (data.SendTime + 5000) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
             if (timeToStart > 5000) timeToStart = 5000;
 
@@ -1272,7 +1295,7 @@ namespace Altzone.Scripts.Lobby
             switch (photonEvent.Code)
             {
                 case PhotonRealtimeClient.PhotonEvent.StartGame:
-                    StartCoroutine(StartQuantum((long)photonEvent.CustomData));
+                    StartCoroutine(StartQuantum((StartGameData)photonEvent.CustomData));
                     break;
                 case PhotonRealtimeClient.PhotonEvent.PlayerPositionChangeRequested:
                     int position = (int)photonEvent.CustomData;
@@ -1420,6 +1443,32 @@ namespace Altzone.Scripts.Lobby
             public override string ToString()
             {
                 return $"{nameof(Reason)}: {Enum.GetName(typeof(ReasonType), Reason)}";
+            }
+        }
+
+        public struct StartGameData
+        {
+            public long SendTime;
+            public string[] PlayerSlotUserIds;
+            public PlayerType[] PlayerSlotTypes;
+            public Emotion ProjectileInitialEmotion;
+            public string MapId;
+            public int PlayerCount;
+
+            public StartGameData(long sendTime, string[] playerSlotUserIds, PlayerType[] playerSlotTypes, Emotion projectileInitialEmotion, string mapId, int playerCount)
+            {
+                SendTime = sendTime;
+                PlayerSlotUserIds = playerSlotUserIds;
+                PlayerSlotTypes = playerSlotTypes;
+                ProjectileInitialEmotion = projectileInitialEmotion;
+                MapId = mapId;
+                PlayerCount = playerCount;
+            }
+
+            public static short Serialize(StreamBuffer outStream, object customObject)
+            {
+                var data = (StartGameData)customObject;
+
             }
         }
     }
