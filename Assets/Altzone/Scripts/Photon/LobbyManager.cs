@@ -85,6 +85,8 @@ namespace Altzone.Scripts.Lobby
 
         private Emotion _projectileInitialEmotion = Emotion.Sorrow;
 
+        private const long STARTDELAY = 6000;
+
         private QuantumRunner _runner = null;
 
         private Coroutine _reserveFreePositionHolder = null;
@@ -938,7 +940,7 @@ namespace Altzone.Scripts.Lobby
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleLoad);
 
             if(sendTime == 0) sendTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            long timeToStart = (sendTime+5000) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            long timeToStart = (sendTime+ STARTDELAY) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             long startTime = sendTime + timeToStart;
 
             yield return new WaitForEndOfFrame();
@@ -952,9 +954,9 @@ namespace Altzone.Scripts.Lobby
                 }
                 yield return null;
             } while (startTime > DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
-            timeToStart = (sendTime + 5000) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            timeToStart = (sendTime + STARTDELAY) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-            if (timeToStart > 5000) timeToStart = 5000;
+            if (timeToStart > STARTDELAY) timeToStart = STARTDELAY;
 
             if(timeToStart > 0)
             yield return new WaitForSeconds(timeToStart / 1000f);
