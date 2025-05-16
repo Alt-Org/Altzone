@@ -13,6 +13,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         [ForeignKey(nameof(PlayerData)), Mandatory] public string PlayerDataId;
         [ForeignKey(nameof(RaidRoom)), Optional] public string RaidRoomId;
         public ClanMemberRole Role;
+        private ServerPlayer _player;
 
         private int _leaderBoardWins = 0;
         private int _leaderBoardCoins = 0;
@@ -26,6 +27,12 @@ namespace Altzone.Scripts.Model.Poco.Clan
         {
             _id = player._id;
             _name = player.name;
+            _player = player;
+        }
+
+        public PlayerData GetPlayerData()
+        {
+            return new(_player, true);
         }
 
         public void Update(int wins, int coins)
