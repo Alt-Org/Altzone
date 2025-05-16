@@ -33,13 +33,11 @@ namespace MenuUi.Scripts.CharacterGallery
             Intellectualizer = 700,
         }
 
-        [SerializeField] private Transform _characterGridContent;
+        [SerializeField] private Transform _unlockedCharacterGridContent;
+        [SerializeField] private Transform _lockedCharacterGridContent;
         [SerializeField] private Button _filterButton;
         [SerializeField] private TMP_Text _filterText;
         [SerializeField] private BaseScrollRect _scrollRect;
-
-        [SerializeField] private bool _showUnlockedCharacters;
-        [SerializeField] private bool _showLockedCharacters;
 
         [SerializeField] private GameObject _characterSlotPrefab;
 
@@ -94,41 +92,44 @@ namespace MenuUi.Scripts.CharacterGallery
             // Placing unlocked characters
             foreach (CustomCharacter character in customCharacters)
             {
-                var charSlot = InstantiateCharacterSlot(character.Id, false);
+                var charSlot = InstantiateCharacterSlot(character.Id, false, _unlockedCharacterGridContent);
             }
 
             // Placing locked characters
-            DataStore store = Storefront.Get();
-            ReadOnlyCollection<BaseCharacter> allItems = null;
-            store.GetAllBaseCharacterYield(result => allItems = result);
-
-            foreach (BaseCharacter baseCharacter in allItems)
+            if (_lockedCharacterGridContent != null)
             {
-                // Checking if player has already unlocked the character and if so, skipping the character
-                bool characterUnlocked = false;
-                foreach (CharacterSlot slot in _characterSlots)
-                {
-                    if (slot.Character.Id == baseCharacter.Id)
-                    {
-                        characterUnlocked = true;
-                        break;
-                    }
-                }
-                if (characterUnlocked) continue;
+                DataStore store = Storefront.Get();
+                ReadOnlyCollection<BaseCharacter> allItems = null;
+                store.GetAllBaseCharacterYield(result => allItems = result);
 
-                InstantiateCharacterSlot(baseCharacter.Id, true);
+                foreach (BaseCharacter baseCharacter in allItems)
+                {
+                    // Checking if player has already unlocked the character and if so, skipping the character
+                    bool characterUnlocked = false;
+                    foreach (CharacterSlot slot in _characterSlots)
+                    {
+                        if (slot.Character.Id == baseCharacter.Id)
+                        {
+                            characterUnlocked = true;
+                            break;
+                        }
+                    }
+                    if (characterUnlocked) continue;
+
+                    InstantiateCharacterSlot(baseCharacter.Id, true, _lockedCharacterGridContent);
+                }
             }
 
             OnGalleryCharactersSet?.Invoke(selectedCharacterIds);
         }
 
 
-        private CharacterSlot InstantiateCharacterSlot(CharacterID charID, bool isLocked)
+        private CharacterSlot InstantiateCharacterSlot(CharacterID charID, bool isLocked, Transform parent)
         {
             PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(((int)charID).ToString());
             if (info == null) return null;
 
-            GameObject slot = Instantiate(_characterSlotPrefab, _characterGridContent);
+            GameObject slot = Instantiate(_characterSlotPrefab, parent);
 
             CharacterClassID classID = CustomCharacter.GetClassID(charID);
             Color bgColor = _classColorReference.GetColor(classID);

@@ -96,6 +96,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 else
                 {
                     PopupSignalBus.OnChangePopupInfoSignal("Tätä hahmoa ei ole vielä lisätty pelipalvelimelle.");
+                    _addCharacterButton.gameObject.SetActive(false);
                 }
 
             }));
