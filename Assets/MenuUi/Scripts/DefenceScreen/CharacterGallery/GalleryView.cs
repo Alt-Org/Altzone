@@ -44,7 +44,8 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private ClassColorReference _classColorReference;
 
         private FilterType _currentFilter = FilterType.All;
-        
+        private List<int> filterEnumValues;
+
         // List of character slots in character grid
         private readonly List<CharacterSlot> _characterSlots = new();
         public List<CharacterSlot> CharacterSlots => _characterSlots;
@@ -55,6 +56,16 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void Awake()
         {
+            // Initializing the list of enum values for filtering
+            filterEnumValues = new((int[])Enum.GetValues(typeof(FilterType)));
+
+            if (_lockedCharacterGridContent == null)
+            {
+                filterEnumValues.Remove((int)FilterType.Locked);
+                filterEnumValues.Remove((int)FilterType.Unlocked);
+            }
+
+            // Adding listener to filter button and setting the initial filter text
             _filterButton.onClick.AddListener(RotateFilters);
             SetFilterText(_currentFilter);
         }
@@ -155,19 +166,17 @@ namespace MenuUi.Scripts.CharacterGallery
        
         private void RotateFilters()
         {
-            int[] enumValues = (int[])Enum.GetValues(typeof(FilterType));
-
-            for (int i = 0; i < enumValues.Length; i++)
+            for (int i = 0; i < filterEnumValues.Count; i++)
             {
-                if ((int)_currentFilter == enumValues[i])
+                if ((int)_currentFilter == filterEnumValues[i])
                 {
-                    if (i + 1 < enumValues.Length)
+                    if (i + 1 < filterEnumValues.Count)
                     {
-                        SetFilter((FilterType)enumValues[i + 1]);
+                        SetFilter((FilterType)filterEnumValues[i + 1]);
                     }
                     else
                     {
-                        SetFilter((FilterType)enumValues[0]);
+                        SetFilter((FilterType)filterEnumValues[0]);
                     }
                     break;
                 }
