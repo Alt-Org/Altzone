@@ -193,6 +193,7 @@ namespace MenuUi.Scripts.CharacterGallery
         /// </summary>
         public void ReturnToOriginalSlot()
         {
+            _originalSlot.gameObject.SetActive(true);
             transform.SetParent(_originalSlot.transform, false);
             SetDefaultVisuals();
         }

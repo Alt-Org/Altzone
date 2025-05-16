@@ -83,6 +83,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
                         slot.Character.transform.SetParent(_selectedCharacterSlots[i].transform, false);
                         slot.Character.SetSelectedVisuals();
+                        slot.gameObject.SetActive(false);
                     }
                 }
             }
@@ -124,6 +125,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 characterSlot.Character.transform.SetParent(selectedCharacterSlot.transform, false);
                 characterSlot.Character.SetSelectedVisuals();
                 selectedCharacterSlot.SelectedCharacter = characterSlot.Character;
+                characterSlot.gameObject.SetActive(false);
                 SignalBus.OnSelectedDefenceCharacterChangedSignal(characterSlot.Character.Id, selectedCharacterSlot.SlotIndex);
             }
         }
