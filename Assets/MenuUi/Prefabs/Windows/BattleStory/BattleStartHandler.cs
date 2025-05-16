@@ -48,6 +48,7 @@ public class BattleStartHandler : MonoBehaviour
         _loadImage.sprite = _startAnimationSprites[0];
         _loadImage.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0f);
         _loadImage.transform.localScale = new Vector2(1f, 1f);
+        _timerText.gameObject.SetActive(false);
         float timeleft = startTime/1000f;
         float frametimeleft = 0;
 
@@ -62,24 +63,21 @@ public class BattleStartHandler : MonoBehaviour
                 frametimeleft -= Time.deltaTime;
             } while (frametimeleft > 0);
         }
-
-            do
+        _timerText.gameObject.SetActive(true);
+        do
         {
-            timeleft -= Time.deltaTime;
             _timerText.text = Mathf.CeilToInt(timeleft).ToString();
 
-            if(timeleft <= 3)
+            if (!_loadImage.sprite.Equals(_tableAboveSprite))
             {
-                if (!_loadImage.sprite.Equals(_tableAboveSprite))
-                {
-                    _loadImage.sprite = _tableAboveSprite;
-                    _loadImage.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
-                }
-                //float scale = 1f + 0.4f * (1 - (Mathf.Clamp(timeleft,0,3f) / 3f));
-                //_loadImage.transform.localScale = new Vector2(scale, scale);
+                _loadImage.sprite = _tableAboveSprite;
+                _loadImage.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
             }
+            //float scale = 1f + 0.4f * (1 - (Mathf.Clamp(timeleft,0,3f) / 3f));
+            //_loadImage.transform.localScale = new Vector2(scale, scale);
 
             yield return null;
+            timeleft -= Time.deltaTime;
         } while (timeleft > 0f);
     }
 }
