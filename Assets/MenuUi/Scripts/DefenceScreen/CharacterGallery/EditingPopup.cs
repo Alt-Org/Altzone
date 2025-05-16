@@ -22,6 +22,7 @@ namespace MenuUi.Scripts.CharacterGallery
             if (gameObject.activeSelf) gameObject.SetActive(false);
 
             _galleryView.OnGalleryCharactersSet += SetCharacters;
+            _galleryView.OnFilterChanged += HandleFilterChanged;
             SignalBus.OnDefenceGalleryEditPanelRequested += OpenPopup;
 
             for (int i = 0; i < _selectedCharacterSlots.Length; i++)
@@ -35,6 +36,7 @@ namespace MenuUi.Scripts.CharacterGallery
         private void OnDestroy()
         {
             _galleryView.OnGalleryCharactersSet -= SetCharacters;
+            _galleryView.OnFilterChanged -= HandleFilterChanged;
             SignalBus.OnDefenceGalleryEditPanelRequested -= OpenPopup;
 
             for (int i = 0; i < _selectedCharacterSlots.Length; i++)
@@ -127,6 +129,20 @@ namespace MenuUi.Scripts.CharacterGallery
                 selectedCharacterSlot.SelectedCharacter = characterSlot.Character;
                 characterSlot.gameObject.SetActive(false);
                 SignalBus.OnSelectedDefenceCharacterChangedSignal(characterSlot.Character.Id, selectedCharacterSlot.SlotIndex);
+            }
+        }
+
+
+        private void HandleFilterChanged() // Ensuring the selected character's slots are still hidden even though filter changed
+        {
+            foreach (SelectedCharacterEditingSlot slot in _selectedCharacterSlots)
+            {
+                if (slot.SelectedCharacter == null) continue;
+
+                if (slot.SelectedCharacter.OriginalSlot.gameObject.activeSelf)
+                {
+                    slot.SelectedCharacter.OriginalSlot.gameObject.SetActive(false);
+                }
             }
         }
     }

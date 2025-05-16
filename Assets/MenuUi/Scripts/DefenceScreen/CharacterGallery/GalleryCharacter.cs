@@ -28,9 +28,10 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private Material _grayScaleMaterial;
         [SerializeField] private Button _addCharacterButton;
 
-        private CharacterSlot _originalSlot;
-
         private static Material _grayscaleMaterialInstance;
+
+        private CharacterSlot _originalSlot;
+        public CharacterSlot OriginalSlot => _originalSlot;
 
         private CharacterID _id;
         public CharacterID Id { get => _id; }

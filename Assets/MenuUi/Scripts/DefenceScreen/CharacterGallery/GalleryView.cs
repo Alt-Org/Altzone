@@ -53,6 +53,8 @@ namespace MenuUi.Scripts.CharacterGallery
         public delegate void GalleryCharactersSetHandler(int[] _selectedCharacterIds);
         public GalleryCharactersSetHandler OnGalleryCharactersSet;
 
+        public Action OnFilterChanged;
+
 
         private void Awake()
         {
@@ -242,6 +244,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
             SetFilterText(filter);
             _currentFilter = filter;
+            OnFilterChanged?.Invoke();
         }
 
 
