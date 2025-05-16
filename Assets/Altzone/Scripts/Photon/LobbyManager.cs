@@ -892,6 +892,7 @@ namespace Altzone.Scripts.Lobby
         {
             string battleID = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(BattleID);
             int playerPosition = PhotonRealtimeClient.LocalPlayer.GetCustomProperty<int>(PlayerPositionKey);
+            string userId = PhotonRealtimeClient.LocalPlayer.UserId;
 
             if (QuantumRunner.Default != null)
             {
@@ -966,6 +967,7 @@ namespace Altzone.Scripts.Lobby
             if(task.Result)
             {
                 _player.PlayerSlot = playerPosition;
+                _player.UserID = userId;
                 _runner?.Game.AddPlayer(_player);
             }
             else
