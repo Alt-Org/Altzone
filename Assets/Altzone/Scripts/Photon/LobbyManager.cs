@@ -25,6 +25,7 @@ using Altzone.Scripts.AzDebug;
 using Prg.Scripts.Common.PubSub;
 
 using Battle.QSimulation.Game;
+using Altzone.PhotonSerializer;
 
 namespace Altzone.Scripts.Lobby
 {
@@ -808,6 +809,7 @@ namespace Altzone.Scripts.Lobby
             Room room = PhotonRealtimeClient.CurrentRoom;
             List<Player> players = room.Players.Values.ToList();
             int playerCount = 0;
+            StartGameData data = null;
             foreach (Player roomPlayer in players)
             {
                 int playerPos = roomPlayer.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
@@ -874,8 +876,18 @@ namespace Altzone.Scripts.Lobby
                     PhotonRealtimeClient.CloseRoom(false);
                     yield return null;
                 }
+
+                data = new()
+                {
+                    StartTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                    //PlayerSlotUserIds = player;
+                    ProjectionInitialEmotion = startingEmotion,
+                    MapId = mapId,
+                    PlayerCount = playerCount
+                };
+
             }
-            if (!PhotonRealtimeClient.Client.OpRaiseEvent(PhotonRealtimeClient.PhotonEvent.StartGame, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), new RaiseEventArgs{Receivers = ReceiverGroup.All}, SendOptions.SendReliable))
+            if (!PhotonRealtimeClient.Client.OpRaiseEvent(PhotonRealtimeClient.PhotonEvent.StartGame, StartGameData.Serialize(data), new RaiseEventArgs{Receivers = ReceiverGroup.All}, SendOptions.SendReliable))
             {
                 Debug.LogError("Unable to start game.");
                 StartingGameFailed();
@@ -897,7 +909,7 @@ namespace Altzone.Scripts.Lobby
             }
         }
 
-        private IEnumerator StartQuantum(long sendTime)
+        private IEnumerator StartQuantum(StartGameData data)
         {
             string battleID = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(BattleID);
             int playerPosition = PhotonRealtimeClient.LocalPlayer.GetCustomProperty<int>(PlayerPositionKey);
@@ -935,6 +947,7 @@ namespace Altzone.Scripts.Lobby
                 StartGameTimeoutInSeconds = 10,
                 Communicator              = new QuantumNetworkCommunicator(PhotonRealtimeClient.Client)
             };
+            long sendTime = data.StartTime;
 
             //Start Battle Countdown
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleLoad);
@@ -1279,7 +1292,7 @@ namespace Altzone.Scripts.Lobby
             switch (photonEvent.Code)
             {
                 case PhotonRealtimeClient.PhotonEvent.StartGame:
-                    StartCoroutine(StartQuantum((long)photonEvent.CustomData));
+                    StartCoroutine(StartQuantum(StartGameData.Deserialize((byte[])photonEvent.CustomData)));
                     break;
                 case PhotonRealtimeClient.PhotonEvent.PlayerPositionChangeRequested:
                     int position = (int)photonEvent.CustomData;
@@ -1428,6 +1441,42 @@ namespace Altzone.Scripts.Lobby
             {
                 return $"{nameof(Reason)}: {Enum.GetName(typeof(ReasonType), Reason)}";
             }
+        }
+    }
+
+
+    public class StartGameData
+    {
+        public long StartTime { get; set; }
+        public string[] PlayerSlotUserIds { get; set; }
+        public Emotion ProjectionInitialEmotion { get; set; }
+        public string MapId { get; set; }
+        public int PlayerCount { get; set; }
+
+        public static byte[] Serialize(StartGameData data)
+        {
+            var b = data;
+            byte[] bytes = new byte[0];
+            Serializer.Serialize(b.StartTime, ref bytes);
+            Serializer.Serialize(b.PlayerSlotUserIds, ref bytes);
+            Serializer.Serialize((int)b.ProjectionInitialEmotion, ref bytes);
+            Serializer.Serialize(b.MapId, ref bytes);
+            Serializer.Serialize(b.PlayerCount, ref bytes);
+
+            return bytes;
+        }
+
+        public static StartGameData Deserialize(byte[] data)
+        {
+            var result = new StartGameData();
+            int offset = 0;
+            result.StartTime = Serializer.DeserializeLong(data, ref offset);
+            result.PlayerSlotUserIds = Serializer.DeserializeStringArray(data, ref offset);
+            result.ProjectionInitialEmotion = (Emotion)Serializer.DeserializeInt(data, ref offset);
+            result.MapId = Serializer.DeserializeString(data, ref offset);
+            result.PlayerCount = Serializer.DeserializeInt(data, ref offset);
+
+            return result;
         }
     }
 }
