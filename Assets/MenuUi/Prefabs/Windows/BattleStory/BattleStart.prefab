@@ -55,8 +55,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _timerText: {fileID: 8031968842280725110}
   _loadImage: {fileID: 8307023487685937781}
-  _sittingDownSprite: {fileID: 159820536, guid: 39098b05f35b2c04daae3f0163d97384,
-    type: 3}
+  _startAnimationSprites:
+  - {fileID: 21300000, guid: bfec65d4033c49f46a9b25e7b4947181, type: 3}
+  - {fileID: 21300000, guid: 82cda5bdccb39ca45bf2e0913c602c78, type: 3}
+  - {fileID: 21300000, guid: 8117277adf88fad4d9978131bd5a3d57, type: 3}
+  _animationFrameTime: 0.8
   _tableAboveSprite: {fileID: 21300000, guid: 2665e82741cb3e44a87cedd2bed557d8, type: 3}
 --- !u!114 &4975943389745530478
 MonoBehaviour:
@@ -412,7 +415,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000030517578, y: -0.000061035156}
+  m_AnchoredPosition: {x: 0, y: -0.000061035156}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &7248113999758605031
@@ -443,7 +446,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 159820536, guid: 39098b05f35b2c04daae3f0163d97384, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bfec65d4033c49f46a9b25e7b4947181, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -1023,6 +1026,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7695168990374541663, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7745775173061689966, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_IsActive
@@ -1098,6 +1106,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9167956055133618418, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_TargetGraphic
+      value: 
+      objectReference: {fileID: 1683284532706751461}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -1113,6 +1126,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 8198285669569388275}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1683284532706751461 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7393242888819109142, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 8198285669569388275}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &1949093320059512750 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7695168990374541661, guid: 57890b7dbec8a984abb7d8148eefe9f6,
