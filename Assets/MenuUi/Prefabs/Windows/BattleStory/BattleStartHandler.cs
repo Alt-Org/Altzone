@@ -14,7 +14,9 @@ public class BattleStartHandler : MonoBehaviour
     [SerializeField]
     private Image _loadImage;
     [SerializeField]
-    private Sprite _sittingDownSprite;
+    private List<Sprite> _startAnimationSprites;
+    [SerializeField]
+    private float _animationFrameTime = 0.5f;
     [SerializeField]
     private Sprite _tableAboveSprite;
 
@@ -43,24 +45,38 @@ public class BattleStartHandler : MonoBehaviour
 
     private IEnumerator TimerStart(long startTime)
     {
-        _loadImage.sprite = _sittingDownSprite;
+        _loadImage.sprite = _startAnimationSprites[0];
         _loadImage.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0f);
         _loadImage.transform.localScale = new Vector2(1f, 1f);
         float timeleft = startTime/1000f;
-        do
+        float frametimeleft = 0;
+
+        foreach (Sprite sprite in _startAnimationSprites)
+        {
+            frametimeleft += _animationFrameTime;
+            _loadImage.sprite = sprite;
+            do
+            {
+                yield return null;
+                timeleft -= Time.deltaTime;
+                frametimeleft -= Time.deltaTime;
+            } while (frametimeleft > 0);
+        }
+
+            do
         {
             timeleft -= Time.deltaTime;
             _timerText.text = Mathf.CeilToInt(timeleft).ToString();
 
             if(timeleft <= 3)
             {
-                if (_loadImage.sprite.Equals(_sittingDownSprite))
+                if (!_loadImage.sprite.Equals(_tableAboveSprite))
                 {
                     _loadImage.sprite = _tableAboveSprite;
                     _loadImage.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
                 }
-                float scale = 1f + 0.4f * (1 - (Mathf.Clamp(timeleft,0,3f) / 3f));
-                _loadImage.transform.localScale = new Vector2(scale, scale);
+                //float scale = 1f + 0.4f * (1 - (Mathf.Clamp(timeleft,0,3f) / 3f));
+                //_loadImage.transform.localScale = new Vector2(scale, scale);
             }
 
             yield return null;
