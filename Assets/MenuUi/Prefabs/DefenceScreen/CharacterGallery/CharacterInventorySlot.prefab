@@ -421,7 +421,6 @@ GameObject:
   - component: {fileID: 4381437622224976902}
   - component: {fileID: 8170631812076819300}
   - component: {fileID: 9141382081616983759}
-  - component: {fileID: 6663672098119100784}
   - component: {fileID: 1027269411744576477}
   m_Layer: 5
   m_Name: CharacterInventorySlot
@@ -506,14 +505,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc6815991ec267d439cf4d921e094dd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animator: {fileID: 6663672098119100784}
-  _selectButton: {fileID: 7018444139741886887}
-  IsLocked: 0
+  _slotButton: {fileID: 7849232512336679511}
   Character: {fileID: 8169646972705860285}
   _spriteImage: {fileID: 4373653401983087985}
   _backgroundLowerImage: {fileID: 2053534294522563814}
   _backgroundUpperImage: {fileID: 5059424912043922917}
   _nameText: {fileID: 1401336240080573343}
+  IsLocked: 0
 --- !u!114 &8170631812076819300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -572,27 +570,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AspectMode: 1
   m_AspectRatio: 0.6
---- !u!95 &6663672098119100784
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4297384447084397024}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: aa2eb7d17586aea4a86b5a73004e1ddc, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &1027269411744576477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -799,19 +776,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3353469126584684611}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4381437622224976902}
-        m_TargetAssemblyTypeName: MenuUi.Scripts.CharacterGallery.SlotBase, MainMenu
-        m_MethodName: SelectButtonPressed
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1001 &4340108514400331155
 PrefabInstance:
   m_ObjectHideFlags: 0

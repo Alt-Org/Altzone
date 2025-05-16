@@ -28,6 +28,7 @@ namespace Altzone.Scripts.ModelV2
         public CharacterClassID ClassType => _characterSpec.ClassType;
         public string Name => _characterSpec.Name;
         public Sprite GalleryImage => _characterSpec.GalleryImage;
+        public Sprite GalleryHeadImage => _characterSpec.GalleryHeadImage;
         public string Description => _characterSpec.CharacterDescription;
         public string ShortDescription => _characterSpec.CharacterShortDescription;
 
