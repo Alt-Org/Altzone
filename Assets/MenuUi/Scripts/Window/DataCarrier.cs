@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
 namespace MenuUi.Scripts.Window
@@ -8,9 +9,11 @@ namespace MenuUi.Scripts.Window
     public class DataCarrier : MonoBehaviour
     {
         public const string ClanListing = "cl";
+        public const string PlayerProfile = "pp";
 
         public static DataCarrier Instance { get; private set; }
         public ServerClan clanToView;
+        public PlayerData playerToView;
 
         private static Dictionary<string, object> s_datastorage = new();
 
@@ -26,6 +29,7 @@ namespace MenuUi.Scripts.Window
                 DontDestroyOnLoad(gameObject);
             }
             clanToView = null;
+            playerToView = null;
         }
 
         public static void AddData<T>(string key, T value) where T : class
