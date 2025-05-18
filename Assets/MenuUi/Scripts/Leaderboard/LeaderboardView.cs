@@ -129,7 +129,7 @@ public class LeaderboardView : MonoBehaviour
                             {
                                 if (rank < 4)
                                 {
-                                    _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, null, null, ranking.Clan);
+                                    _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, ranking.Clan);
                                 }
                                 else
                                 {
@@ -155,7 +155,7 @@ public class LeaderboardView : MonoBehaviour
                             {
                                 if (rank < 4)
                                 {
-                                    _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, null, null, ranking.Clan);
+                                    _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, ranking.Clan);
                                 }
                                 else
                                 {
@@ -192,7 +192,7 @@ public class LeaderboardView : MonoBehaviour
 
                             if (rank < 4)
                             {
-                                _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, clanData, serverClan, null);
+                                _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, clanData, serverClan);
                             }
                             else
                             {
@@ -231,7 +231,7 @@ public class LeaderboardView : MonoBehaviour
 
                             if (rank < 4)
                             {
-                                _podium.InitilializePodium(rank, player.Name, player.LeaderBoardWins, null, null, playerData);
+                                _podium.InitilializePodium(rank, player.Name, player.LeaderBoardWins, playerData);
                             }
                             else
                             {
@@ -257,7 +257,7 @@ public class LeaderboardView : MonoBehaviour
                             {
                                 if (rank < 4)
                                 {
-                                    _podium.InitilializePodium(rank, "", 0, null, null, null);
+                                    _podium.InitilializePodium(rank, "", 0, null);
                                 }
                                 else
                                 {
@@ -280,7 +280,7 @@ public class LeaderboardView : MonoBehaviour
 
                             if (rank < 4)
                             {
-                                _podium.InitilializePodium(rank, player.Name, player.LeaderBoardCoins, null, null, playerData);
+                                _podium.InitilializePodium(rank, player.Name, player.LeaderBoardCoins, playerData);
                             }
                             else
                             {
@@ -306,7 +306,7 @@ public class LeaderboardView : MonoBehaviour
                             {
                                 if (rank < 4)
                                 {
-                                    _podium.InitilializePodium(rank, "", 0, null, null, null);
+                                    _podium.InitilializePodium(rank, "", 0, null);
                                 }
                                 else
                                 {
@@ -328,7 +328,7 @@ public class LeaderboardView : MonoBehaviour
                     {
                         if (i < 4)
                         {
-                            _podium.InitilializePodium(i, "", 0, null, null, null);
+                            _podium.InitilializePodium(i, "", 0, null);
                         }
                         else
                         {
@@ -349,7 +349,7 @@ public class LeaderboardView : MonoBehaviour
                     {
                         if (i < 4)
                         {
-                            _podium.InitilializePodium(i, "", 0, null, null, null);
+                            _podium.InitilializePodium(i, "", 0, null);
                         }
                         else
                         {
