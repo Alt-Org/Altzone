@@ -166,6 +166,7 @@ public class ProfileMenu : AltMonoBehaviour
     {
         _characterOptionsPopup.SetActive(false);
         _closePopupAreaButton.SetActive(false);
+        ServerManager.OnLogInStatusChanged -= SetPlayerProfileValues;
     }
 
     private void Reset()
