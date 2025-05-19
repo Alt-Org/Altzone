@@ -1,0 +1,51 @@
+/// @file BattleSignals.qtn
+/// <summary>
+/// Contains all battle signals.
+/// </summary>
+///
+/// ## Generated Interfaces
+/// - @cref{Quantum,ISignalBattleOnProjectileHitSoulWall}  
+///   @copybrief Quantum.ISignalBattleOnProjectileHitSoulWall
+/// - @cref{Quantum,ISignalBattleOnProjectileHitArenaBorder}  
+///   @copybrief Quantum.ISignalBattleOnProjectileHitArenaBorder
+/// - @cref{Quantum,ISignalBattleOnProjectileHitPlayerHitbox}  
+///   @copybrief Quantum.ISignalBattleOnProjectileHitPlayerHitbox
+/// - @cref{Quantum,ISignalBattleOnProjectileHitGoal}  
+///   @copybrief Quantum.ISignalBattleOnProjectileHitGoal
+/// - @cref{Quantum,ISignalBattleOnDiamondHitPlayer}  
+///   @copybrief Quantum.ISignalBattleOnDiamondHitPlayer
+
+/// @interface Quantum::ISignalBattleOnProjectileHitSoulWall
+/// <summary>
+/// Signal for projectile's and soulwalls's collision.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleSignals.qtn}
+
+/// @interface Quantum::ISignalBattleOnProjectileHitArenaBorder
+/// <summary>
+/// Signal for projectile's and arenaborder's collision.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleSignals.qtn}
+
+/// @interface Quantum::ISignalBattleOnProjectileHitPlayerHitbox
+/// <summary>
+/// Signal for projectile's and player's collision.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleSignals.qtn}
+
+/// @interface Quantum::ISignalBattleOnProjectileHitGoal
+/// <summary>
+/// Signal for projectile's and goal's collision.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleSignals.qtn}
+
+/// @interface Quantum::ISignalBattleOnDiamondHitPlayer
+/// <summary>
+/// Signal for player's and diamond's collision.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleSignals.qtn}
