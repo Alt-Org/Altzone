@@ -19,6 +19,7 @@ namespace Battle.View.Game
         [SerializeField] private BattleGridViewController _gridViewController;
         [SerializeField] private BattleUiController _uiController;
         [SerializeField] private BattleScreenEffectViewController _screenEffectViewController;
+        [SerializeField] private BattleLightrayEffectViewController _lightrayEffectViewController;
         [SerializeField] private BattleSoundFXViewController _soundFXViewController;
 
         public void UiInputOnLocalPlayerGiveUp()
@@ -42,6 +43,15 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, QEventOnChangeEmotionState);
             QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, QEventPlaySoundFX);
             QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, QEventDebugOnUpdateStatsOverlay);
+            QuantumEvent.Subscribe<EventBattleLightray>(this, QEventOnLightray);
+        }
+
+        private void QEventOnLightray(EventBattleLightray e)
+        {
+            if (_lightrayEffectViewController != null)
+            {
+                _lightrayEffectViewController.SpawnLightray(e.Position.ToUnityVector2(), (float)e.Rotation, e.Color, e.Size);
+            }
         }
 
         private void QEventOnViewInit(EventViewInit e)

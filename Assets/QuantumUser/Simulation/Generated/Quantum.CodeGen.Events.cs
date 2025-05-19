@@ -53,7 +53,7 @@ namespace Quantum {
   public unsafe partial class Frame {
     public unsafe partial struct FrameEvents {
       static partial void GetEventTypeCountCodeGen(ref Int32 eventCount) {
-        eventCount = 7;
+        eventCount = 8;
       }
       static partial void GetParentEventIDCodeGen(Int32 eventID, ref Int32 parentEventID) {
         switch (eventID) {
@@ -68,6 +68,7 @@ namespace Quantum {
           case EventBattleChangeEmotionState.ID: result = typeof(EventBattleChangeEmotionState); return;
           case EventBattlePlaySoundFX.ID: result = typeof(EventBattlePlaySoundFX); return;
           case EventBattleDebugUpdateStatsOverlay.ID: result = typeof(EventBattleDebugUpdateStatsOverlay); return;
+          case EventBattleLightray.ID: result = typeof(EventBattleLightray); return;
           default: break;
         }
       }
@@ -112,6 +113,16 @@ namespace Quantum {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventBattleDebugUpdateStatsOverlay>(EventBattleDebugUpdateStatsOverlay.ID);
         ev.Character = Character;
+        _f.AddEvent(ev);
+        return ev;
+      }
+      public EventBattleLightray BattleLightray(FPVector2 Position, FP Rotation, BattleLightrayColor Color, BattleLightraySize Size) {
+        if (_f.IsPredicted) return null;
+        var ev = _f.Context.AcquireEvent<EventBattleLightray>(EventBattleLightray.ID);
+        ev.Position = Position;
+        ev.Rotation = Rotation;
+        ev.Color = Color;
+        ev.Size = Size;
         _f.AddEvent(ev);
         return ev;
       }
@@ -269,6 +280,37 @@ namespace Quantum {
       unchecked {
         var hash = 61;
         hash = hash * 31 + Character.GetHashCode();
+        return hash;
+      }
+    }
+  }
+  public unsafe partial class EventBattleLightray : EventBase {
+    public new const Int32 ID = 7;
+    public FPVector2 Position;
+    public FP Rotation;
+    public BattleLightrayColor Color;
+    public BattleLightraySize Size;
+    protected EventBattleLightray(Int32 id, EventFlags flags) : 
+        base(id, flags) {
+    }
+    public EventBattleLightray() : 
+        base(7, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
+    }
+    public new QuantumGame Game {
+      get {
+        return (QuantumGame)base.Game;
+      }
+      set {
+        base.Game = value;
+      }
+    }
+    public override Int32 GetHashCode() {
+      unchecked {
+        var hash = 67;
+        hash = hash * 31 + Position.GetHashCode();
+        hash = hash * 31 + Rotation.GetHashCode();
+        hash = hash * 31 + Color.GetHashCode();
+        hash = hash * 31 + Size.GetHashCode();
         return hash;
       }
     }
