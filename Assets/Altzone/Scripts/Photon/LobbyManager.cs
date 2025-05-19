@@ -1500,5 +1500,15 @@ namespace Altzone.Scripts.Lobby
 
             return result;
         }
+
+        public override string ToString()
+        {
+            return $"Start time: {StartTime}" +
+                 $"\nPlayerSlotUserIds: {string.Join(",", PlayerSlotUserIds)}" +
+                 $"\nPlayerSlotTypes: {string.Join(",",PlayerSlotTypes)}" +
+                 $"\nProjectileInitialEmotion: {ProjectileInitialEmotion}" +
+                 $"\nMapId: {MapId}" +
+                 $"\nPlayerCount: {PlayerCount}";  
+        }
     }
 }
