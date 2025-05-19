@@ -6,6 +6,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ReferenceSheets;
+using MenuUi.Scripts.CharacterGallery;
 using UnityEngine;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
@@ -21,6 +22,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private GameObject _swipeBlocker;
         [SerializeField] private GameObject _statsPanel;
         [SerializeField] private GameObject _infoPanel;
+        [SerializeField] private GalleryView _galleryView;
 
         private PlayerData _playerData;
         private CharacterID _characterId;
@@ -88,11 +90,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             if (_statsPanel != null) _statsPanel.SetActive(true);
 
             if (_infoPanel != null) _infoPanel.SetActive(false);
+
+            if (_galleryView != null) _galleryView.ShowFilterButton(false);
         }
+
+
         public void ClosePopup()
         {
             gameObject.SetActive(false);
             _swipeBlocker.SetActive(false);
+            if (_galleryView != null) _galleryView.ShowFilterButton(true);
         }
 
 

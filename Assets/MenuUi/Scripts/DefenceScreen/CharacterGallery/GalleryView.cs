@@ -93,6 +93,17 @@ namespace MenuUi.Scripts.CharacterGallery
             _characterSlots.Clear();
         }
 
+
+        /// <summary>
+        /// Set filter button visibility.
+        /// </summary>
+        /// <param name="show">If the filter button should be shown or not.</param>
+        public void ShowFilterButton(bool show)
+        {
+            _filterButton.gameObject.SetActive(show);
+        }
+
+
         /// <summary>
         /// Place the characters to character gallery.
         /// </summary>
