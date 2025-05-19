@@ -13,6 +13,8 @@ using Photon.Client;
 using Photon.Realtime;
 using Quantum;
 
+using Prg.Scripts.Common.PubSub;
+
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Settings;
 using Altzone.Scripts.Common;
@@ -22,11 +24,10 @@ using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby.Wrappers;
 using Altzone.Scripts.AzDebug;
-using Prg.Scripts.Common.PubSub;
+using Altzone.PhotonSerializer;
 
 using Battle.QSimulation.Game;
-using static Battle.QSimulation.Game.BattleParameters;
-using Altzone.PhotonSerializer;
+using PlayerType = Battle.QSimulation.Game.BattleParameters.PlayerType;
 
 namespace Altzone.Scripts.Lobby
 {
@@ -885,7 +886,8 @@ namespace Altzone.Scripts.Lobby
                 data = new()
                 {
                     StartTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-                    //PlayerSlotUserIds = player;
+                    PlayerSlotUserIds = playerUserIds,
+                    PlayerSlotTypes = playerTypes,
                     ProjectileInitialEmotion = startingEmotion,
                     MapId = mapId,
                     PlayerCount = playerCount
@@ -1477,6 +1479,7 @@ namespace Altzone.Scripts.Lobby
             byte[] bytes = new byte[0];
             Serializer.Serialize(b.StartTime, ref bytes);
             Serializer.Serialize(b.PlayerSlotUserIds, ref bytes);
+            Serializer.Serialize(b.PlayerSlotTypes.Cast<int>().ToArray(), ref bytes);
             Serializer.Serialize((int)b.ProjectileInitialEmotion, ref bytes);
             Serializer.Serialize(b.MapId, ref bytes);
             Serializer.Serialize(b.PlayerCount, ref bytes);
@@ -1490,6 +1493,7 @@ namespace Altzone.Scripts.Lobby
             int offset = 0;
             result.StartTime = Serializer.DeserializeLong(data, ref offset);
             result.PlayerSlotUserIds = Serializer.DeserializeStringArray(data, ref offset);
+            result.PlayerSlotTypes = Serializer.DeserializeIntArray(data, ref offset).Cast<PlayerType>().ToArray();
             result.ProjectileInitialEmotion = (Emotion)Serializer.DeserializeInt(data, ref offset);
             result.MapId = Serializer.DeserializeString(data, ref offset);
             result.PlayerCount = Serializer.DeserializeInt(data, ref offset);
