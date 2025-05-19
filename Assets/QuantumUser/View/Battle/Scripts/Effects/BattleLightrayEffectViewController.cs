@@ -22,6 +22,6 @@ namespace Battle.View.Effect
             _spawnedLightrays.Add(spawnedLightray);
         }
 
-        private List<GameObject> _spawnedLightrays = new List<GameObject>();
+        private List<GameObject> _spawnedLightrays = new();
     }
 }
