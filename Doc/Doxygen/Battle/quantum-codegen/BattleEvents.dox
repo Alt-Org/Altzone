@@ -1,0 +1,60 @@
+/// @file BattleEvents.qtn
+/// <summary>
+/// Contains all battle events.
+/// </summary>
+///
+/// ## Generated Classes
+/// - @cref{Quantum,EventViewInit}  
+///   @copybrief Quantum.EventViewInit
+/// - @cref{Quantum,EventBattlePlayerViewInit}  
+///   @copybrief Quantum.EventBattlePlayerViewInit
+/// - @cref{Quantum,EventBattleSoulWallViewInit}  
+///   @copybrief Quantum.EventBattleSoulWallViewInit
+/// - @cref{Quantum,EventBattleChangeEmotionState}  
+///   @copybrief Quantum.EventBattleChangeEmotionState
+/// - @cref{Quantum,EventBattlePlaySoundFX}  
+///   @copybrief Quantum.EventBattlePlaySoundFX
+/// - @cref{Quantum,EventBattleDebugUpdateStatsOverlay}  
+///   @copybrief Quantum.EventBattleDebugUpdateStatsOverlay
+
+/// @class Quantum::EventViewInit
+/// <summary>
+/// Synced event. Used to initiate game view.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattlePlayerViewInit
+/// <summary>
+/// Synced event. Used to initiate player's view model on Unity side.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattleSoulWallViewInit
+/// <summary>
+/// Synced event. Used to initiate SoulWalls's view models on Unity side.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattleChangeEmotionState
+/// <summary>
+/// Synced event. Used to change sprites etc. during game depending on given BattleEmotionState.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattlePlaySoundFX
+/// <summary>
+/// Event used to play sound effects during battle.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattleDebugUpdateStatsOverlay
+/// <summary>
+/// Synced event. Used to update debug overlay displaying player's stats.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleEvents.qtn}
