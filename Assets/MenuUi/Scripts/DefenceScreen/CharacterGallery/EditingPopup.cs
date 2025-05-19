@@ -39,10 +39,9 @@ namespace MenuUi.Scripts.CharacterGallery
             _galleryView.OnFilterChanged -= HandleFilterChanged;
             SignalBus.OnDefenceGalleryEditPanelRequested -= OpenPopup;
 
-            for (int i = 0; i < _selectedCharacterSlots.Length; i++)
+            foreach (SelectedCharacterEditingSlot slot in _selectedCharacterSlots)
             {
-                _selectedCharacterSlots[i].SlotIndex = i;
-                _selectedCharacterSlots[i].OnSlotPressed -= HandleSlotPressed;
+                slot.OnSlotPressed -= HandleSlotPressed;
             }
         }
 
