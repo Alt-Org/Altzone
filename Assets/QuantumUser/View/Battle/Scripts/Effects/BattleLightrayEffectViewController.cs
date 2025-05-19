@@ -14,8 +14,10 @@ namespace Battle.View.Effect
             Debug.LogWarning(rotation);
 
             GameObject spawnedLightray = GameObject.Instantiate(_lightrays[(int)color * 3 + (int)size], transform);
-            spawnedLightray.transform.position = new Vector3(position.x, 0, position.y);
-            spawnedLightray.transform.rotation = Quaternion.Euler(90, rotation, 0);
+            spawnedLightray.transform.SetPositionAndRotation(
+                new Vector3(position.x, 0, position.y),
+                Quaternion.Euler(90, rotation, 0)
+            );
             spawnedLightray.SetActive(true);
             _spawnedLightrays.Add(spawnedLightray);
         }
