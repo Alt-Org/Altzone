@@ -35,24 +35,25 @@
 
 /// @dir QuantumUser/Simulation/Battle
 /// <summary>
-/// %Battle Simulation Logic Directory.
+/// %Battle Simulation Logic Directory.  
 /// Contains deterministic %Quantum Simulation logic and state for %Battle.
 /// </summary>
 
 /// @dir QuantumUser/Simulation/Generated
 /// <summary>
-///
+/// Generated Simulation Code Directory.  
+/// Contains generated %Quantum Simulation code.
 /// </summary>
 
 /// @dir QuantumUser/View
 /// <summary>
-/// Game View Logic Directory.  
+/// Game %View Logic Directory.  
 /// Contains non-deterministic Unity View/Visual logic that is client-side representation of the Simulation.
 /// </summary>
 
 /// @dir QuantumUser/View/Battle
 /// <summary>
-/// %Battle View Logic Directory.  
+/// %Battle %View Logic Directory.  
 /// Contains non-deterministic Unity View/Visual logic for %Battle that is client-side representation of the Simulation.
 /// </summary>
 
@@ -136,6 +137,8 @@
 /// </summary>
 ///
 /// Files (not listed automatically)
+/// - namespace.dox  
+///   @copybrief namespace.dox
 /// - directory.dox  
 ///   @copybrief directory.dox  
 ///   Including the documentation you are reading now.
