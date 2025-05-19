@@ -1,15 +1,21 @@
 using System.Collections.Generic;
-using UnityEngine;
-using Altzone.Scripts.Model.Poco.Game;
-using UnityEngine.UI;
-using Altzone.Scripts.Config;
-using Altzone.Scripts;
-using Altzone.Scripts.Model.Poco.Player;
 using System.Linq;
+
+using UnityEngine;
+using UnityEngine.UI;
+
+using Altzone.Scripts;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
+
 
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterGallery
 {
+    /// <summary>
+    /// Control the piechart preview's visual functionality.
+    /// </summary>
     public class PieChartPreview : MonoBehaviour
     {
         [SerializeField] private PiechartReference _referenceSheet;
@@ -22,17 +28,12 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterGallery
         private Color _defaultColor;
         private Sprite _circleSprite;
 
+        private bool _colorsCached = false;
+
 
         private void Awake() 
         {
-            // caching colors and circle sprite from the reference sheet to avoid unneccessary function calls
-            _impactForceColor = _referenceSheet.GetColor(StatType.Attack);
-            _healthPointsColor = _referenceSheet.GetColor(StatType.Hp);
-            _defenceColor = _referenceSheet.GetColor(StatType.Defence);
-            _characterSizeColor = _referenceSheet.GetColor(StatType.CharacterSize);
-            _speedColor = _referenceSheet.GetColor(StatType.Speed);
-            _defaultColor = _referenceSheet.GetColor(StatType.None);
-            _circleSprite = _referenceSheet.GetCircleSprite();
+            if (!_colorsCached) CacheColors();
         }
 
 
@@ -42,30 +43,26 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterGallery
         /// <param name="characterId">Character Id whose piechart preview to show.</param>
         public void UpdateChart(CharacterID characterId)
         {
-            // Get CustomCharacter
+            if (!_colorsCached) CacheColors();
+
+            // Get PlayerData (Note: AltMonoBehavior didn't work here because the game object may be inactive in the beginning)
             PlayerData playerData = null;
             CustomCharacter customCharacter = null;
 
             DataStore dataStore = Storefront.Get();
-            dataStore.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, playerData_ =>
+            dataStore.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data =>
             {
-                if (playerData_ == null)
+                if (data == null)
                 {
                     Debug.Log("GetPlayerData is null");
                     return;
                 }
-                playerData = playerData_;
+                playerData = data;
             });
 
-            if (playerData != null)
-            {
-                customCharacter = playerData.CustomCharacters.FirstOrDefault(c => c.Id == characterId);
-            }
-
-            if (customCharacter == null)
-            {
-                return;
-            }
+            // Get CustomCharacter
+            customCharacter = playerData.CustomCharacters.FirstOrDefault(c => c.Id == characterId);
+            if (customCharacter == null) return;
 
             // Destroy old pie slices
             for (int i = 0; i < transform.childCount; i++)
@@ -94,6 +91,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterGallery
         /// <param name="speed">Speed stat level as integer.</param>
         public void UpdateChart(int impactForce, int healthPoints, int defence, int characterSize, int speed)
         {
+            if (!_colorsCached) CacheColors();
+
             // Arrange stats
             var stats = new List<(int level, Color color)>
             {
@@ -159,6 +158,21 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterGallery
             sliceRect.offsetMin = Vector2.zero;
             sliceRect.anchorMin = Vector3.zero;
             sliceRect.anchorMax = Vector3.one;
+        }
+
+
+        private void CacheColors()
+        {
+            // caching colors and circle sprite from the reference sheet to avoid unneccessary function calls
+            _impactForceColor = _referenceSheet.GetColor(StatType.Attack);
+            _healthPointsColor = _referenceSheet.GetColor(StatType.Hp);
+            _defenceColor = _referenceSheet.GetColor(StatType.Defence);
+            _characterSizeColor = _referenceSheet.GetColor(StatType.CharacterSize);
+            _speedColor = _referenceSheet.GetColor(StatType.Speed);
+            _defaultColor = _referenceSheet.GetColor(StatType.None);
+            _circleSprite = _referenceSheet.GetCircleSprite();
+
+            _colorsCached = true;
         }
     }
 }

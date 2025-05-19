@@ -1,21 +1,23 @@
-﻿/*
+﻿using System;
 using System.Collections.Generic;
-using Altzone.Scripts;
 using System.Collections.ObjectModel;
-using Altzone.Scripts.Model.Poco.Game;
+
 using UnityEngine;
+using UnityEngine.UI;
+
+using TMPro;
+
+using Altzone.Scripts;
+using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ReferenceSheets;
-using MenuUi.Scripts.SwipeNavigation;
-using UnityEngine.UI;
-using MenuUi.Scripts.Signals;
-using TMPro;
-using System;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
-    
-    public class ModelView : MonoBehaviour
+    /// <summary>
+    /// Controls the defence gallery's character gallery view by initializing CharacterInventorySlots to a grid.
+    /// </summary>
+    public class GalleryView : MonoBehaviour
     {
         enum FilterType
         {
@@ -31,8 +33,8 @@ namespace MenuUi.Scripts.CharacterGallery
             Intellectualizer = 700,
         }
 
-        [SerializeField] private Transform _characterGridContent;
-        [SerializeField] private Toggle _editModeToggle;
+        [SerializeField] private Transform _unlockedCharacterGridContent;
+        [SerializeField] private Transform _lockedCharacterGridContent;
         [SerializeField] private Button _filterButton;
         [SerializeField] private TMP_Text _filterText;
         [SerializeField] private BaseScrollRect _scrollRect;
@@ -41,117 +43,64 @@ namespace MenuUi.Scripts.CharacterGallery
 
         [SerializeField] private ClassColorReference _classColorReference;
 
-        private bool _isReady;
         private FilterType _currentFilter = FilterType.All;
+        private List<int> filterEnumValues;
 
-        // Array of character slots in selected grid
-        [SerializeField] private SelectedCharacterSlot[] _selectedCharacterSlots;
         // List of character slots in character grid
-        private List<CharacterSlot> _characterSlots = new();
+        private readonly List<CharacterSlot> _characterSlots = new();
+        public List<CharacterSlot> CharacterSlots => _characterSlots;
 
-        public delegate void TopSlotCharacterSetHandler(CharacterID characterId, int slotIdx);
-        public event TopSlotCharacterSetHandler OnTopSlotCharacterSet;
+        public delegate void GalleryCharactersSetHandler(int[] _selectedCharacterIds);
+        public GalleryCharactersSetHandler OnGalleryCharactersSet;
 
-        private SwipeUI _swipe;
-
-        public bool IsReady
-        {
-            get
-            {
-                return _isReady;
-            }
-        }
+        public Action OnFilterChanged;
 
 
         private void Awake()
         {
-            _swipe = FindObjectOfType<SwipeUI>(true);
-            _swipe.OnCurrentPageChanged += ChangeEditToggleStatusToFalse;
+            // Initializing the list of enum values for filtering
+            filterEnumValues = new((int[])Enum.GetValues(typeof(FilterType)));
 
-            for (int i = 0; i < _selectedCharacterSlots.Length; i++)
+            if (_lockedCharacterGridContent == null)
             {
-                _selectedCharacterSlots[i].OnCharacterSelected += HandleCharacterSelected;
-                _selectedCharacterSlots[i].SlotIndex = i;
+                filterEnumValues.Remove((int)FilterType.Locked);
+                filterEnumValues.Remove((int)FilterType.Unlocked);
             }
 
-            SignalBus.OnDefenceGalleryEditModeRequested += ChangeEditToggleStatusToTrue;
+            // Adding listener to filter button and setting the initial filter text
             _filterButton.onClick.AddListener(RotateFilters);
             SetFilterText(_currentFilter);
         }
 
-
-        private void OnDisable()
+        private void OnEnable()
         {
-            ChangeEditToggleStatusToFalse();
+            _scrollRect.VerticalNormalizedPosition = 1; // setting scroll to the top
         }
-
 
         private void OnDestroy()
         {
-            foreach (SelectedCharacterSlot slot in _selectedCharacterSlots)
-            {
-                slot.OnCharacterSelected -= HandleCharacterSelected;
-            }
-
-            foreach (CharacterSlot slot in _characterSlots)
-            {
-                slot.OnCharacterSelected -= HandleCharacterSelected;
-            }
-
-            _swipe.OnCurrentPageChanged -= ChangeEditToggleStatusToFalse;
-            SignalBus.OnDefenceGalleryEditModeRequested -= ChangeEditToggleStatusToTrue;
+            _filterButton.onClick.RemoveAllListeners();
         }
-
 
         public void Reset()
         {
-            _isReady = false;
-
-            // Remove selected characters
-            foreach (SelectedCharacterSlot slot in _selectedCharacterSlots)
-            {
-                GalleryCharacter topSlotCharacter = slot.transform.GetComponentInChildren<GalleryCharacter>();
-                if (topSlotCharacter != null)
-                {
-                    Destroy(topSlotCharacter.gameObject);
-                }
-            }
-
             // Remove all character slots
             foreach (CharacterSlot characterSlot in _characterSlots)
             {
-                characterSlot.OnCharacterSelected -= HandleCharacterSelected;
+                Destroy(characterSlot.Character.gameObject);
                 Destroy(characterSlot.gameObject);
             }
             _characterSlots.Clear();
-            _isReady = true;
         }
 
 
         /// <summary>
-        /// Set edit toggle status to true.
+        /// Set filter button visibility.
         /// </summary>
-        public void ChangeEditToggleStatusToTrue()
+        /// <param name="show">If the filter button should be shown or not.</param>
+        public void ShowFilterButton(bool show)
         {
-            _editModeToggle.isOn = true;
-        }
-
-
-        /// <summary>
-        /// Set edit toggle status to false.
-        /// </summary>
-        public void ChangeEditToggleStatusToFalse()
-        {
-            _editModeToggle.isOn = false;
-        }
-
-
-        /// <summary>
-        /// Toggle edit mode based on the value of edit mode toggle.
-        /// </summary>
-        public void ToggleEditMode()
-        {
-            SetCharacterSlotsSelectable(_editModeToggle.isOn);
+            _filterButton.gameObject.SetActive(show);
         }
 
 
@@ -159,62 +108,52 @@ namespace MenuUi.Scripts.CharacterGallery
         /// Place the characters to character gallery.
         /// </summary>
         /// <param name="customCharacters">List of player's custom (owned) characters.</param>
-        /// <param name="selectedCharacterIds">Array of selected character ids which will be placed to the top slot.</param>
+        /// <param name="selectedCharacterIds">Array of selected character ids.</param>
         public void SetCharacters(List<CustomCharacter> customCharacters, int[] selectedCharacterIds)
         {
+            Reset();
+
             // Placing unlocked characters
             foreach (CustomCharacter character in customCharacters)
             {
-                var charSlot = InstantiateCharacterSlot(character.Id, false);
-
-                for (int i = 0; i < _selectedCharacterSlots.Length; i++)
-                {
-                    if (charSlot == null) break;
-
-                    if (character.Id == (CharacterID)selectedCharacterIds[i]) // Check if character is selected
-                    {
-                        charSlot.Character.transform.SetParent(_selectedCharacterSlots[i].transform, false);
-                        charSlot.Character.SetSelectedVisuals();
-                    }
-                }
+                var charSlot = InstantiateCharacterSlot(character.Id, false, _unlockedCharacterGridContent);
             }
 
             // Placing locked characters
-            DataStore store = Storefront.Get();
-            ReadOnlyCollection<BaseCharacter> allItems = null;
-            store.GetAllBaseCharacterYield(result => allItems = result);
-
-            foreach (BaseCharacter baseCharacter in allItems)
+            if (_lockedCharacterGridContent != null)
             {
-                // Checking if player has already unlocked the character and if so, skipping the character
-                bool characterUnlocked = false;
-                foreach (CharacterSlot slot in _characterSlots)
+                DataStore store = Storefront.Get();
+                ReadOnlyCollection<BaseCharacter> allItems = null;
+                store.GetAllBaseCharacterYield(result => allItems = result);
+
+                foreach (BaseCharacter baseCharacter in allItems)
                 {
-                    if (slot.Character.Id == baseCharacter.Id)
+                    // Checking if player has already unlocked the character and if so, skipping the character
+                    bool characterUnlocked = false;
+                    foreach (CharacterSlot slot in _characterSlots)
                     {
-                        characterUnlocked = true;
-                        break;
+                        if (slot.Character.Id == baseCharacter.Id)
+                        {
+                            characterUnlocked = true;
+                            break;
+                        }
                     }
+                    if (characterUnlocked) continue;
+
+                    InstantiateCharacterSlot(baseCharacter.Id, true, _lockedCharacterGridContent);
                 }
-                if (characterUnlocked) continue;
-
-                InstantiateCharacterSlot(baseCharacter.Id, true);
             }
 
-            // ensures character slots are selectable if edit toggle is on, it can happen if adding unowned character from the + button while edit mode is on
-            if (_editModeToggle.isOn)
-            {
-                SetCharacterSlotsSelectable(true);
-            }
+            OnGalleryCharactersSet?.Invoke(selectedCharacterIds);
         }
 
 
-        private CharacterSlot InstantiateCharacterSlot(CharacterID charID, bool isLocked)
+        private CharacterSlot InstantiateCharacterSlot(CharacterID charID, bool isLocked, Transform parent)
         {
             PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(((int)charID).ToString());
             if (info == null) return null;
 
-            GameObject slot = Instantiate(_characterSlotPrefab, _characterGridContent);
+            GameObject slot = Instantiate(_characterSlotPrefab, parent);
 
             CharacterClassID classID = CustomCharacter.GetClassID(charID);
             Color bgColor = _classColorReference.GetColor(classID);
@@ -224,85 +163,33 @@ namespace MenuUi.Scripts.CharacterGallery
             charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, charID);
 
             _characterSlots.Add(charSlot);
-            charSlot.OnCharacterSelected += HandleCharacterSelected;
 
             if (isLocked)
             {
                 charSlot.Character.SetLockedVisuals();
                 charSlot.IsLocked = true;
             }
+            else
+            {
+                charSlot.Character.SetDefaultVisuals();
+            }
 
             return charSlot;
         }
-
-
-        private void SetCharacterSlotsSelectable(bool selectable)
-        {
-            foreach (CharacterSlot charSlot in _characterSlots)
-            {
-                charSlot.SetSelectable(selectable);
-            }
-
-            foreach (SelectedCharacterSlot selectedSlot in _selectedCharacterSlots)
-            {
-                selectedSlot.SetSelectable(selectable);
-            }
-        }
-
-
-        private void HandleCharacterSelected(SlotBase pressedSlot)
-        {
-            GalleryCharacter galleryCharacter = pressedSlot.GetComponentInChildren<GalleryCharacter>();
-
-            SelectedCharacterSlot selectedCharacterSlot = pressedSlot as SelectedCharacterSlot;
-            if (selectedCharacterSlot != null && galleryCharacter != null)
-            {
-                galleryCharacter.ReturnToOriginalSlot();
-                SetTopSlotCharacter(CharacterID.None, selectedCharacterSlot.SlotIndex);
-            }
-            else if (galleryCharacter != null && !pressedSlot.IsLocked) // can only place owned characters to top slots
-            {
-                PlaceCharacterToTopSlot(galleryCharacter);
-            }
-        }
-
-
-        private void PlaceCharacterToTopSlot(GalleryCharacter galleryCharacter)
-        {
-            for (int i = 0; i < _selectedCharacterSlots.Length; i++)
-            {
-                if (_selectedCharacterSlots[i].GetComponentInChildren<GalleryCharacter>() == null)
-                {
-                    galleryCharacter.transform.SetParent(_selectedCharacterSlots[i].transform, false);
-                    galleryCharacter.SetSelectedVisuals();
-                    SetTopSlotCharacter(galleryCharacter.Id, i);
-                    return;
-                }
-            }
-        }
-
-
-        private void SetTopSlotCharacter(CharacterID id, int selectedSlotIdx)
-        {
-            OnTopSlotCharacterSet?.Invoke(id, selectedSlotIdx);
-        }
-
-
+       
         private void RotateFilters()
         {
-            int[] enumValues = (int[])Enum.GetValues(typeof(FilterType));
-
-            for (int i = 0; i < enumValues.Length; i++)
+            for (int i = 0; i < filterEnumValues.Count; i++)
             {
-                if ((int)_currentFilter == enumValues[i])
+                if ((int)_currentFilter == filterEnumValues[i])
                 {
-                    if (i + 1 < enumValues.Length)
+                    if (i + 1 < filterEnumValues.Count)
                     {
-                        SetFilter((FilterType)enumValues[i + 1]);
+                        SetFilter((FilterType)filterEnumValues[i + 1]);
                     }
                     else
                     {
-                        SetFilter((FilterType)enumValues[0]);
+                        SetFilter((FilterType)filterEnumValues[0]);
                     }
                     break;
                 }
@@ -368,6 +255,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
             SetFilterText(filter);
             _currentFilter = filter;
+            OnFilterChanged?.Invoke();
         }
 
 
@@ -423,5 +311,7 @@ namespace MenuUi.Scripts.CharacterGallery
                     break;
             }
         }
+
+        
     }
-}*/
+}

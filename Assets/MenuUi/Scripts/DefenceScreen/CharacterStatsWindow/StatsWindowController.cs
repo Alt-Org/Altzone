@@ -6,6 +6,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ReferenceSheets;
+using MenuUi.Scripts.CharacterGallery;
 using UnityEngine;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
@@ -21,6 +22,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private GameObject _swipeBlocker;
         [SerializeField] private GameObject _statsPanel;
         [SerializeField] private GameObject _infoPanel;
+        [SerializeField] private GalleryView _galleryView;
 
         private PlayerData _playerData;
         private CharacterID _characterId;
@@ -88,11 +90,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             if (_statsPanel != null) _statsPanel.SetActive(true);
 
             if (_infoPanel != null) _infoPanel.SetActive(false);
+
+            if (_galleryView != null) _galleryView.ShowFilterButton(false);
         }
+
+
         public void ClosePopup()
         {
             gameObject.SetActive(false);
             _swipeBlocker.SetActive(false);
+            if (_galleryView != null) _galleryView.ShowFilterButton(true);
         }
 
 
@@ -156,6 +163,33 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         public CharacterClassID GetCurrentCharacterClass()
         {
             return CustomCharacter.GetClassID(_characterId);
+        }
+
+        /// <summary>
+        /// Get currently displayed character's class name.
+        /// </summary>
+        /// <returns>Current character's ClassName.</returns>
+        public string GetCurrentCharacterClassName()//To do: make this scritable object
+        {
+            switch (CustomCharacter.GetClassID(_characterId))
+            {
+                case CharacterClassID.Confluent:
+                    return "Sulautujat";
+                case CharacterClassID.Desensitizer:
+                    return "Tunnottomat";
+                case CharacterClassID.Intellectualizer:
+                    return "Älyllistäjät";
+                case CharacterClassID.Projector:
+                    return "Peilaajat";
+                case CharacterClassID.Retroflector:
+                    return "Torjujat";
+                case CharacterClassID.Obedient:
+                    return "Tottelijat";
+                case CharacterClassID.Trickster:
+                    return "Hämääjät";
+                default:
+                    return string.Empty;
+            }
         }
 
 
@@ -475,6 +509,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             return (int)BaseCharacter.GetStatValueFP(statType, GetStat(statType));
         }
 
+        /// <summary>
+        /// Get stat value according to the stat type and level.
+        /// </summary>
+        /// <param name="statType">The stat type which value to get.</param>
+        /// <param name="level">The stat's level.</param>
+        /// <returns>Stat value as int.</returns>
+        public int GetStatValue(StatType statType, int level)
+        {
+            return (int)BaseCharacter.GetStatValueFP(statType, level);
+        }
 
         /// <summary>
         /// Get stat's strength.
@@ -500,6 +544,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                     return ValueStrength.None;
             }
         }
+
 
 
         /// <summary>
