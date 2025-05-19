@@ -208,6 +208,8 @@ namespace Altzone.Scripts.Lobby
             {
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
+                isActive = false;
+                if (!isActive && SceneManager.GetActiveScene().buildIndex != 0) Activate();
             }
         }
 
