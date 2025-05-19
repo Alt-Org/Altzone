@@ -9,8 +9,6 @@ namespace Battle.View.Effect
     {
         [SerializeField] private GameObject[] _lightrays;
 
-        // (int)color*3 + (int)size
-
         public void SpawnLightray(Vector2 position, float rotation, BattleLightrayColor color, BattleLightraySize size)
         {
             Debug.LogWarning(rotation);
