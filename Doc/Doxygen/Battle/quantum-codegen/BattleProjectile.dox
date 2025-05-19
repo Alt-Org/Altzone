@@ -1,9 +1,26 @@
+/// @file BattleProjectile.qtn
+/// <summary>
+/// Contains flags and component used for the projectile.
+/// </summary>
+///
+/// ## Generated Enum
+/// - @cref{Quantum,BattleProjectileCollisionFlags}  
+///   @copybrief Quantum.BattleProjectileCollisionFlags
+///
+/// ## Generated Struct
+/// - @cref{Quantum,BattleProjectileQComponent}  
+///   @copybrief Quantum.BattleProjectileQComponent
+
 /// @enum Quantum::BattleProjectileCollisionFlags
 /// <summary>
 /// Flags that are used to ensure the projectile doesn't collide with multiple SoulWalls during the same frame.
 /// </summary>
+///
+/// @bigtext{Generated from @ref BattleProjectile.qtn}
 
 /// @struct Quantum::BattleProjectileQComponent
 /// <summary>
 /// Contains projectile's data, including speed, direction, emotion, etc.
 /// </summary>
+///
+/// @bigtext{Generated from @ref BattleProjectile.qtn}
