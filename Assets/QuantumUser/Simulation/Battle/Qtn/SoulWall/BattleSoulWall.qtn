@@ -8,8 +8,9 @@ struct BattleSoulWallTemplate
 
 component BattleSoulWallQComponent
 {
-    EntityRef ChildEntity;
+    BattleTeamNumber Team;
     BattleEmotionState Emotion;
+    bool CreatesLightray;
     FPVector2 Normal;
     FP CollisionMinOffset;
 }

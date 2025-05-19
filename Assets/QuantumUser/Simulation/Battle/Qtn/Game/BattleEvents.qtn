@@ -28,3 +28,11 @@ synced event BattleDebugUpdateStatsOverlay
 {
     BattleCharacterBase Character;
 }
+
+synced event BattleLightray
+{
+    FPVector2 Position;
+    FP Rotation;
+    BattleLightrayColor Color;
+    BattleLightraySize Size;
+}
