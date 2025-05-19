@@ -27,7 +27,15 @@ public class ItemMover : MonoBehaviour
 
     void OnClick()
     {
-        popup?.Open(gameObject);
+        if (assignedSlot != null || HasFreeSlot())
+            popup?.Open(gameObject);
+        else
+            Debug.Log("Panel is full!");
+    }
+
+    private bool HasFreeSlot()
+    {
+        return System.Array.Exists(GameObject.FindObjectsOfType<KojuItemSlot>(), slot => !slot.IsOccupied);
     }
 
     //Called when the user confirms the moving

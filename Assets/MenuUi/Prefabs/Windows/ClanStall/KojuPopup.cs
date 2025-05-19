@@ -18,7 +18,7 @@ public class KojuPopup : MonoBehaviour
         denyButton.onClick.AddListener(OnDeny);
     }
 
-    //Called when clicking ietm on the tray. Opens the confirmation window by activating the Popup window
+    //Called when clicking item on the tray. Opens the confirmation window by activating the Popup window
     public void Open(GameObject card)
     {
         currentCard = card;
