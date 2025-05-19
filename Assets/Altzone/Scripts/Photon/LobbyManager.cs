@@ -918,9 +918,10 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator StartQuantum(StartGameData data)
         {
+            Debug.Log(data.ToString());
             string battleID = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(BattleID);
             string userId = PhotonRealtimeClient.LocalPlayer.UserId;
-            int playerPosition = Array.IndexOf(data.PlayerSlotUserIds, userId);
+            int playerPosition = Array.IndexOf(data.PlayerSlotUserIds, userId) + 1;
 
             // Setting projectile initial emotion to a variable
             _projectileInitialEmotion = data.ProjectileInitialEmotion;
@@ -1311,7 +1312,9 @@ namespace Altzone.Scripts.Lobby
             switch (photonEvent.Code)
             {
                 case PhotonRealtimeClient.PhotonEvent.StartGame:
-                    StartCoroutine(StartQuantum(StartGameData.Deserialize((byte[])photonEvent.CustomData)));
+                    // For some reason sometimes in Android build the CustomData is a ByteArraySlice and causes errors, so doing a null check to the cast
+                    byte[] byteArray = photonEvent.CustomData as byte[] ?? ((ByteArraySlice)photonEvent.CustomData).Buffer;
+                    StartCoroutine(StartQuantum(StartGameData.Deserialize(byteArray)));
                     break;
                 case PhotonRealtimeClient.PhotonEvent.PlayerPositionChangeRequested:
                     int position = (int)photonEvent.CustomData;
