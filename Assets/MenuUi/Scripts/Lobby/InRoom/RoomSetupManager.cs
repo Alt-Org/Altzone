@@ -91,6 +91,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
             Spectator
         }
 
+        private void Awake()
+        {
+            LobbyManager.LobbyOnLeftRoom += OnLocalPlayerLeftRoom;
+        }
+
         private void OnEnable()
         {
             _selectedCharactersEditable.SelectedCharactersChanged += UpdateCharactersAndStatsKey;
@@ -120,6 +125,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
             PhotonRealtimeClient.RemoveCallbackTarget(this);
         }
 
+        private void OnDestroy()
+        {
+            LobbyManager.LobbyOnLeftRoom -= OnLocalPlayerLeftRoom;
+        }
+
         private IEnumerator OnEnableInRoom()
         {
             yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
@@ -144,6 +154,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
                 // Updating room status and stopping coroutine
                 UpdateStatus();
+                _onEnableCoroutineHolder = null;
                 yield break;
             }
 
@@ -418,10 +429,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
             _captionPlayerP4 = "Pelaaja 4";
         }
 
-        private static void SetButtonActive(Selectable selectable, bool active)
+        private static void SetButtonActive(Selectable selectable, bool active, bool interactable = true)
         {
             if (selectable == null) return;
             selectable.gameObject.SetActive(active);
+            selectable.interactable = interactable;
         }
 
         void OnPlayerEnteredRoom(LobbyPlayer newPlayer)
@@ -447,6 +459,16 @@ namespace MenuUi.Scripts.Lobby.InRoom
         void OnMasterClientSwitched(LobbyPlayer newMasterClient)
         {
             UpdateStatus();
+        }
+
+        private void OnLocalPlayerLeftRoom()
+        {
+            _firstOnEnable = true;
+
+            SetButtonActive(_buttonPlayerP1, true, false);
+            SetButtonActive(_buttonPlayerP2, true, false);
+            SetButtonActive(_buttonPlayerP3, true, false);
+            SetButtonActive(_buttonPlayerP4, true, false);
         }
     }
 }
