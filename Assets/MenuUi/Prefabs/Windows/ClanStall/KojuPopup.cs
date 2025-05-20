@@ -10,7 +10,6 @@ public class KojuPopup : MonoBehaviour
 
     private GameObject currentCard;
     private ItemMover currentItemMover;
-    private FurnitureGenerator furniture;
 
     private void Awake()
     {
@@ -18,28 +17,17 @@ public class KojuPopup : MonoBehaviour
         denyButton.onClick.AddListener(OnDeny);
     }
 
-    //Called when clicking item on the tray. Opens the confirmation window by activating the Popup window
+    // Called when clicking item on the tray. Opens the confirmation window by activating the Popup window
     public void Open(GameObject card)
     {
         currentCard = card;
         currentItemMover = card.GetComponent<ItemMover>();
-        furniture = card.GetComponent<FurnitureGenerator>();
-
-        if (furniture != null)
-        {
-            priceInputField.text = furniture.Value.ToString();
-        }
 
         gameObject.SetActive(true);
     }
 
     private void OnConfirm()
     {
-        if (furniture != null && int.TryParse(priceInputField.text, out int newValue))
-        {
-            furniture.SetValue(newValue);
-        }
-
         currentItemMover?.ExecuteMove();
         Close();
     }
@@ -51,6 +39,5 @@ public class KojuPopup : MonoBehaviour
         gameObject.SetActive(false);
         currentCard = null;
         currentItemMover = null;
-        furniture = null;
     }
 }
