@@ -819,7 +819,12 @@ namespace Altzone.Scripts.Lobby
 
             foreach (int actorNumber in missingPlayers) // Wait until every player has a custom property PlayerPositionKey
             {
-                yield return new WaitUntil(() => room.GetPlayer(actorNumber).HasCustomProperty(PlayerPositionKey));
+                yield return new WaitUntil(() =>
+                {
+                    Player playerMissingPosition = room.GetPlayer(actorNumber);
+                    if (playerMissingPosition == null) return true;
+                    return playerMissingPosition.HasCustomProperty(PlayerPositionKey);
+                });
             }
 
             // Checking player positions before starting gameplay
