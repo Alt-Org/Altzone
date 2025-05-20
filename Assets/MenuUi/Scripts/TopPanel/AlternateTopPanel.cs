@@ -66,7 +66,7 @@ public class AlternateTopPanel : AltMonoBehaviour
             _ownClanID = ServerManager.Instance.Player.clan_id;
 
             FetchRankings();
-            if (ServerManager.Instance.Player?.clan_id != null) _currentTopPanelInfo = TopPanelInfo.Player;
+            if (ServerManager.Instance.Player?.clan_id == null) _currentTopPanelInfo = TopPanelInfo.Player;
             ChangeInfoData();
             ChangeLeaderboardType();
             if(ServerManager.Instance.Player?.clan_id != null)
