@@ -72,12 +72,12 @@ namespace Battle.QSimulation.SoulWall
         private static void CreateSoulWalls(Frame f, BattleTeamNumber teamNumber, BattleSoulWallTemplate[] soulWallTemplates, AssetRef<EntityPrototype>[] soulWallPrototypes)
         {
             // soulwall temp variables
-            FPVector2 soulWallPosition;
-            int       soulWallEmotionIndex;
-            int       soulWallRow;
-            FP        soulWallScale;
-            FPVector2 soulWallNormal;
-            FPVector2 soulWallColliderExtents;
+            FPVector2               soulWallPosition;
+            int                     soulWallEmotionIndex;
+            BattleSoulWallRow       soulWallRow = BattleSoulWallRow.First;
+            FP                      soulWallScale;
+            FPVector2               soulWallNormal;
+            FPVector2               soulWallColliderExtents;
 
             // set all soulwall common temp variables (used for all soulwalls on this side)
             soulWallScale  = BattleGridManager.GridScaleFactor;
@@ -109,21 +109,21 @@ namespace Battle.QSimulation.SoulWall
                 soulWallColliderExtents = soulWallCollider->Shape.Box.Extents;
                 if (soulWallTemplate.Position.Row == 3 || soulWallTemplate.Position.Row == BattleGridManager.Rows - 3)
                 {
-                    soulWallRow = 0;
+                    soulWallRow = BattleSoulWallRow.First;
                 }
                 else if (soulWallTemplate.Position.Row == 2 || soulWallTemplate.Position.Row == BattleGridManager.Rows - 2)
                 {
-                    soulWallRow = 1;
+                    soulWallRow = BattleSoulWallRow.Middle;
                 }
-                else
+                else if(soulWallTemplate.Position.Row == 1 || soulWallTemplate.Position.Row == BattleGridManager.Rows - 1)
                 {
-                    soulWallRow = 2;
+                    soulWallRow = BattleSoulWallRow.Last;
                 }
 
                 // initialize soulwall component
                 soulWall->Team               = teamNumber;
                 soulWall->Emotion            = (BattleEmotionState)soulWallEmotionIndex;
-                soulWall->Row                = (BattleSoulWallRow)soulWallRow;
+                soulWall->Row                = soulWallRow;
                 soulWall->Normal             = soulWallNormal;
                 soulWall->CollisionMinOffset = soulWallScale * FP._0_50;
                 soulWall->WallNumber         = counter;
