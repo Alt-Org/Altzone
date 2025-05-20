@@ -23,6 +23,8 @@ public class BattleStoryController : MonoBehaviour
     private Image _endScreen;
     [SerializeField]
     private RectTransform _pathArea;
+    [SerializeField]
+    private TextMeshProUGUI _victoryDefeatText;
 
     [SerializeField]
     private Transform _startPositionLeft;
@@ -170,8 +172,9 @@ public class BattleStoryController : MonoBehaviour
             yield return new WaitForSeconds(1f);
         }
         _currentSegment++;
-        PlayEndSegment();
-        yield return new WaitForSeconds(1f);
+        float clipLength = PlayEndSegment();
+        yield return new WaitForSeconds(clipLength);
+        _victoryDefeatText.gameObject.SetActive(true);
         _autoPlayButton.GetComponent<Image>().color = Color.white;
         _playbackCoroutine = null;
     }
@@ -185,6 +188,7 @@ public class BattleStoryController : MonoBehaviour
         {
             _tableSprite.gameObject.SetActive(true);
             _endScreen.gameObject.SetActive(false);
+            _victoryDefeatText.gameObject.SetActive(false);
         }
 
         _ball = _storySegments[segment].Player == 0 ? Instantiate(_emotionBall, _startPositionLeft) : Instantiate(_emotionBall, _startPositionRight);
@@ -240,7 +244,7 @@ public class BattleStoryController : MonoBehaviour
         yield return new WaitUntil(() => ballDone is true);
     }
 
-    private void PlayEndSegment()
+    private float PlayEndSegment()
     {
         _currentSegmentText.text = $"{_totalSegments+1}/{_totalSegments+1}";
         _tableSprite.gameObject.SetActive(false);
@@ -248,11 +252,19 @@ public class BattleStoryController : MonoBehaviour
         if (_victory)
         {
             _victoryDefeatAnimation.Play(_victoryAnimation.name);
+            return _victoryAnimation.length;
         }
         else
         {
             _victoryDefeatAnimation.Play(_defeatAnimation.name);
+            return _defeatAnimation.length;
         }
+    }
+
+    private IEnumerator ShowEndText(float timer = 0f)
+    {
+        yield return new WaitForSeconds(timer);
+        _victoryDefeatText.gameObject.SetActive(true);
     }
 
     private void PlayNextSegment()
@@ -267,7 +279,10 @@ public class BattleStoryController : MonoBehaviour
             if (_currentSegment <= _totalSegments)
                 StartCoroutine(PlayAnimationSegment(_currentSegment - 1));
             else
+            {
                 PlayEndSegment();
+                StartCoroutine(ShowEndText());
+            }
         }
     }
 

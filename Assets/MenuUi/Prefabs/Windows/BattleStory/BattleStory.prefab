@@ -257,7 +257,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 4152629958515309657}
   m_Father: {fileID: 8159269658355781703}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.35, y: 0.1}
@@ -355,7 +356,6 @@ RectTransform:
   m_Children:
   - {fileID: 8812348523359537911}
   - {fileID: 6155329291236019718}
-  - {fileID: 4152629958515309657}
   - {fileID: 1845032332535517949}
   m_Father: {fileID: 461357502150947860}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -382,6 +382,7 @@ MonoBehaviour:
   _tableSprite: {fileID: 6211572013908941883}
   _endScreen: {fileID: 7015379095163157656}
   _pathArea: {fileID: 2204815953665472423}
+  _victoryDefeatText: {fileID: 7602696735392189691}
   _startPositionLeft: {fileID: 2927413413296410193}
   _startPositionRight: {fileID: 2655058495426733673}
   _routesLeft:
@@ -1780,7 +1781,7 @@ GameObject:
   - component: {fileID: 152637478413910806}
   - component: {fileID: 7602696735392189691}
   m_Layer: 5
-  m_Name: RealityText
+  m_Name: VictoryDefeatText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1793,15 +1794,15 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3046146607820102699}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4345852239180735943}
+  m_Father: {fileID: 1964364555584892352}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.825}
-  m_AnchorMax: {x: 1, y: 0.875}
+  m_AnchorMin: {x: 0, y: 0.775}
+  m_AnchorMax: {x: 1, y: 0.825}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1833,7 +1834,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Tunteiden paloa
+  m_text: Voitto
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e6ad6b116f046f343ba8473329c51a08, type: 2}
   m_sharedMaterial: {fileID: -3791027296549133254, guid: e6ad6b116f046f343ba8473329c51a08,
