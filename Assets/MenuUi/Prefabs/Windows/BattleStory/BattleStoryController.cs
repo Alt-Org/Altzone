@@ -134,7 +134,7 @@ public class BattleStoryController : MonoBehaviour
         }
         for (int i = 0; i < 5; i++)
         {
-            if(conversationList.List.Count < (i * 2)) break;
+            if(conversationList.List.Count <= (i * 2)) break;
             do
             {
                 selectedvalue1 = Random.Range(0, clipsCount);
@@ -145,7 +145,7 @@ public class BattleStoryController : MonoBehaviour
             string line = conversationList.List[i * 2].Line;
             _storySegments.Add(new(emotion, 0, ballAnimation1, line));
 
-            if (conversationList.List.Count < (i * 2 +1)) break;
+            if (conversationList.List.Count <= (i * 2 +1)) break;
             do
             {
                 selectedvalue2 = Random.Range(0, clipsCount);
@@ -342,7 +342,7 @@ public class BattleStoryController : MonoBehaviour
 
     private IEnumerator SetPathArea()
     {
-        yield return new WaitForEndOfFrame();
+        yield return null;
         Vector2 spriteSize = _tableSprite.sprite.rect.size;
         float spriteRatio = spriteSize.y / spriteSize.x;
 
