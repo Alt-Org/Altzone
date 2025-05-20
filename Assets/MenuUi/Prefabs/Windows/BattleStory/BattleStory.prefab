@@ -240,12 +240,12 @@ GameObject:
   - component: {fileID: 7015379095163157656}
   - component: {fileID: 247348247969150680}
   m_Layer: 5
-  m_Name: Image
+  m_Name: VictoryDefeatScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1964364555584892352
 RectTransform:
   m_ObjectHideFlags: 0
@@ -293,7 +293,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d899f63eed927b6449cc73b6265a756b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 82cda5bdccb39ca45bf2e0913c602c78, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -380,6 +380,7 @@ MonoBehaviour:
   _emotionBall: {fileID: 8040064176901046757, guid: 38856b8b4981c4e42acd16435803089d,
     type: 3}
   _tableSprite: {fileID: 6211572013908941883}
+  _endScreen: {fileID: 7015379095163157656}
   _pathArea: {fileID: 2204815953665472423}
   _startPositionLeft: {fileID: 2927413413296410193}
   _startPositionRight: {fileID: 2655058495426733673}
@@ -1027,6 +1028,9 @@ MonoBehaviour:
     _lineSprite: {fileID: 21300000, guid: 0925bf9fae9ddb346b2f70a484eb413f, type: 3}
   _characterAnimator1: {fileID: 1715033929214055479}
   _characterAnimator2: {fileID: 8889435277165240542}
+  _victoryDefeatAnimation: {fileID: 247348247969150680}
+  _victoryAnimation: {fileID: 7400000, guid: ec988039abdcf6b42919713f4d593a9a, type: 2}
+  _defeatAnimation: {fileID: 7400000, guid: 81d9297b61f6323409e4f5539052e3f1, type: 2}
   _topLineImage: {fileID: 663949150751432669}
   _bottomLineImage: {fileID: 6648518108213591171}
   _conversationsList:

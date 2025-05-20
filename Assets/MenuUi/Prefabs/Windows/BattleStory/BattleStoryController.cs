@@ -20,6 +20,8 @@ public class BattleStoryController : MonoBehaviour
     [SerializeField]
     private Image _tableSprite;
     [SerializeField]
+    private Image _endScreen;
+    [SerializeField]
     private RectTransform _pathArea;
 
     [SerializeField]
@@ -40,6 +42,13 @@ public class BattleStoryController : MonoBehaviour
     private Animator _characterAnimator1;
     [SerializeField]
     private Animator _characterAnimator2;
+
+    [Header("End Animator"),SerializeField]
+    private Animator _victoryDefeatAnimation;
+    [SerializeField]
+    private AnimationClip _victoryAnimation;
+    [SerializeField]
+    private AnimationClip _defeatAnimation;
 
     [Header("Text lines"), SerializeField]
     private BattleStoryLineHandler _topLineImage;
@@ -64,6 +73,7 @@ public class BattleStoryController : MonoBehaviour
     private Coroutine _playbackCoroutine;
     private Coroutine _routeTraversingCoroutine;
     private GameObject _ball;
+    private bool _victory;
 
     // Start is called before the first frame update
     void Start()
@@ -112,8 +122,16 @@ public class BattleStoryController : MonoBehaviour
         {
             conversationList = _conversationsList[0];
         }
-        else if (Random.Range(0, 2) is 0) conversationList = _conversationsList[1];
-        else conversationList = _conversationsList[2];
+        else if (Random.Range(0, 2) is 0)
+        {
+            _victory = false;
+            conversationList = _conversationsList[1];
+        }
+        else
+        {
+            _victory = true;
+            conversationList = _conversationsList[2];
+        }
         for (int i = 0; i < 5; i++)
         {
             if(conversationList.List.Count < (i * 2)) break;
@@ -151,6 +169,9 @@ public class BattleStoryController : MonoBehaviour
 
             yield return new WaitForSeconds(1f);
         }
+        _currentSegment++;
+        PlayEndSegment();
+        yield return new WaitForSeconds(1f);
         _autoPlayButton.GetComponent<Image>().color = Color.white;
         _playbackCoroutine = null;
     }
@@ -159,7 +180,12 @@ public class BattleStoryController : MonoBehaviour
     {
         if(_ball != null) DestroyBall();
 
-        _currentSegmentText.text = $"{_currentSegment}/{_totalSegments}";
+        _currentSegmentText.text = $"{_currentSegment}/{_totalSegments+1}";
+        if (!_tableSprite.gameObject.activeSelf)
+        {
+            _tableSprite.gameObject.SetActive(true);
+            _endScreen.gameObject.SetActive(false);
+        }
 
         _ball = _storySegments[segment].Player == 0 ? Instantiate(_emotionBall, _startPositionLeft) : Instantiate(_emotionBall, _startPositionRight);
 
@@ -214,16 +240,34 @@ public class BattleStoryController : MonoBehaviour
         yield return new WaitUntil(() => ballDone is true);
     }
 
+    private void PlayEndSegment()
+    {
+        _currentSegmentText.text = $"{_totalSegments+1}/{_totalSegments+1}";
+        _tableSprite.gameObject.SetActive(false);
+        _endScreen.gameObject.SetActive(true);
+        if (_victory)
+        {
+            _victoryDefeatAnimation.Play(_victoryAnimation.name);
+        }
+        else
+        {
+            _victoryDefeatAnimation.Play(_defeatAnimation.name);
+        }
+    }
+
     private void PlayNextSegment()
     {
-        if (_currentSegment < _totalSegments)
+        if (_currentSegment <= _totalSegments)
         {
             if (_playbackCoroutine != null) StopCoroutine(_playbackCoroutine);
             _playbackCoroutine = null;
             _autoPlayButton.GetComponent<Image>().color = Color.white;
             DestroyBall();
             _currentSegment++;
-            StartCoroutine(PlayAnimationSegment(_currentSegment - 1));
+            if (_currentSegment <= _totalSegments)
+                StartCoroutine(PlayAnimationSegment(_currentSegment - 1));
+            else
+                PlayEndSegment();
         }
     }
 
