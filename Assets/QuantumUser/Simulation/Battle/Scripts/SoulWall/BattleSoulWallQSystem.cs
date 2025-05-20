@@ -72,12 +72,12 @@ namespace Battle.QSimulation.SoulWall
         private static void CreateSoulWalls(Frame f, BattleTeamNumber teamNumber, BattleSoulWallTemplate[] soulWallTemplates, AssetRef<EntityPrototype>[] soulWallPrototypes)
         {
             // soulwall temp variables
-            FPVector2               soulWallPosition;
-            int                     soulWallEmotionIndex;
-            BattleSoulWallRow       soulWallRow = BattleSoulWallRow.First;
-            FP                      soulWallScale;
-            FPVector2               soulWallNormal;
-            FPVector2               soulWallColliderExtents;
+            FPVector2         soulWallPosition;
+            int               soulWallEmotionIndex;
+            BattleSoulWallRow soulWallRow = BattleSoulWallRow.First;
+            FP                soulWallScale;
+            FPVector2         soulWallNormal;
+            FPVector2         soulWallColliderExtents;
 
             // set all soulwall common temp variables (used for all soulwalls on this side)
             soulWallScale  = BattleGridManager.GridScaleFactor;
