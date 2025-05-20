@@ -86,8 +86,6 @@ namespace Altzone.Scripts.Lobby
         [Header("Battle Map reference")]
         [SerializeField] private BattleMapReference _battleMapReference;
 
-        private Emotion _projectileInitialEmotion = Emotion.Sorrow;
-
         private const long STARTDELAY = 6000;
 
         private QuantumRunner _runner = null;
@@ -921,10 +919,7 @@ namespace Altzone.Scripts.Lobby
             Debug.Log(data.ToString());
             string battleID = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(BattleID);
             string userId = PhotonRealtimeClient.LocalPlayer.UserId;
-            int playerPosition = Array.IndexOf(data.PlayerSlotUserIds, userId) + 1;
-
-            // Setting projectile initial emotion to a variable
-            _projectileInitialEmotion = data.ProjectileInitialEmotion;
+            int playerSlot = Array.IndexOf(data.PlayerSlotUserIds, userId) + 1;
 
             // Setting map to variable
             Map map = _battleMapReference.GetBattleMap(data.MapId).Map;
@@ -950,7 +945,7 @@ namespace Altzone.Scripts.Lobby
                     PlayerSlotTypes = data.PlayerSlotTypes,
                     PlayerSlotUserIDs = data.PlayerSlotUserIds,
                     PlayerCount = data.PlayerCount,
-                    ProjectileInitialEmotion = (BattleEmotionState)_projectileInitialEmotion
+                    ProjectileInitialEmotion = (BattleEmotionState)data.ProjectileInitialEmotion
                 }
             };
 
@@ -999,14 +994,14 @@ namespace Altzone.Scripts.Lobby
             yield return new WaitUntil(()=>SceneManager.GetActiveScene().name == _quantumBattleMap.Scene);
 
             DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.Battle);
-            DebugLogFileHandler.FileOpen(battleID, playerPosition);
+            DebugLogFileHandler.FileOpen(battleID, playerSlot);
 
             Task<bool> task = StartRunner(sessionRunnerArguments);
 
             yield return new WaitUntil(() => task.IsCompleted);
             if(task.Result)
             {
-                _player.PlayerSlot = playerPosition;
+                _player.PlayerSlot = playerSlot;
                 _player.UserID = userId;
                 _runner?.Game.AddPlayer(_player);
             }
@@ -1507,8 +1502,8 @@ namespace Altzone.Scripts.Lobby
         public override string ToString()
         {
             return $"Start time: {StartTime}" +
-                 $"\nPlayerSlotUserIds: {string.Join(",", PlayerSlotUserIds)}" +
-                 $"\nPlayerSlotTypes: {string.Join(",",PlayerSlotTypes)}" +
+                 $"\nPlayerSlotUserIds: {string.Join(", ", PlayerSlotUserIds)}" +
+                 $"\nPlayerSlotTypes: {string.Join(", ",PlayerSlotTypes)}" +
                  $"\nProjectileInitialEmotion: {ProjectileInitialEmotion}" +
                  $"\nMapId: {MapId}" +
                  $"\nPlayerCount: {PlayerCount}";  
