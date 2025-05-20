@@ -807,10 +807,23 @@ namespace Altzone.Scripts.Lobby
                 throw new UnityException($"master client does not have valid player position: {masterPosition}");
             }
 
-            // Checking player positions before starting gameplay
+            // Checking that every player has a player position key and if not waiting until they have one (every one who joins room will reserve position for themselves)
             Room room = PhotonRealtimeClient.CurrentRoom;
             List<Player> players = room.Players.Values.ToList();
+            List<int> missingPlayers = new();
 
+            foreach (Player roomPlayer in players)
+            {
+                if (!roomPlayer.HasCustomProperty(PlayerPositionKey)) missingPlayers.Add(roomPlayer.ActorNumber);
+            }
+
+            foreach (int actorNumber in missingPlayers) // Wait until every player has a custom property PlayerPositionKey
+            {
+                yield return new WaitUntil(() => room.GetPlayer(actorNumber).HasCustomProperty(PlayerPositionKey));
+            }
+
+            // Checking player positions before starting gameplay
+            players = room.Players.Values.ToList();
             string[] playerUserIds = new string[4] { "", "", "", "" };
             PlayerType[] playerTypes = new PlayerType[4] { PlayerType.None, PlayerType.None, PlayerType.None, PlayerType.None, };
 
@@ -1243,6 +1256,9 @@ namespace Altzone.Scripts.Lobby
 
         public void OnLeftRoom() // IMatchmakingCallbacks
         {
+            // Clearing player position key from own custom properties
+            if (PhotonRealtimeClient.LocalPlayer.HasCustomProperty(PlayerPositionKey)) PhotonRealtimeClient.LocalPlayer.RemoveCustomProperty(PlayerPositionKey);
+
             // If position change coroutine is running stopping it
             if (_requestPositionChangeHolder != null)
             {
