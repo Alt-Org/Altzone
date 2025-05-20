@@ -46,7 +46,7 @@ public class BattleStoryController : MonoBehaviour
     [SerializeField]
     private BattleStoryLineHandler _bottomLineImage;
     [SerializeField]
-    private List<ConversationLine> _conversationList;
+    private List<Conversations> _conversationsList;
 
     [Header("Story Play Controls"), SerializeField]
     private TextMeshProUGUI _currentSegmentText;
@@ -107,8 +107,16 @@ public class BattleStoryController : MonoBehaviour
         int selectedvalue1 = -1;
         int prevSelectedValue2 = -1;
         int selectedvalue2 = -1;
+        Conversations conversationList;
+        if (Random.Range(0, 10) is 0)
+        {
+            conversationList = _conversationsList[0];
+        }
+        else if (Random.Range(0, 2) is 0) conversationList = _conversationsList[1];
+        else conversationList = _conversationsList[2];
         for (int i = 0; i < 5; i++)
         {
+            if(conversationList.List.Count < (i * 2)) break;
             do
             {
                 selectedvalue1 = Random.Range(0, clipsCount);
@@ -116,8 +124,10 @@ public class BattleStoryController : MonoBehaviour
             Emotion emotion = _validatedList[selectedvalue1].Emotion;
             prevSelectedValue1 = selectedvalue1;
             int ballAnimation1 = Random.Range(0, _routesLeft.Count);
-            _storySegments.Add(new(emotion, 0, ballAnimation1, _conversationList[i * 2].Line));
+            string line = conversationList.List[i * 2].Line;
+            _storySegments.Add(new(emotion, 0, ballAnimation1, line));
 
+            if (conversationList.List.Count < (i * 2 +1)) break;
             do
             {
                 selectedvalue2 = Random.Range(0, clipsCount);
@@ -125,7 +135,8 @@ public class BattleStoryController : MonoBehaviour
             emotion = _validatedList[selectedvalue2].Emotion;
             prevSelectedValue2 = selectedvalue2;
             int ballAnimation2 = Random.Range(0, _routesRight.Count);
-            _storySegments.Add(new(emotion, 1, ballAnimation2, _conversationList[i * 2 + 1].Line));
+            string line2 = conversationList.List[i * 2 + 1].Line;
+            _storySegments.Add(new(emotion, 1, ballAnimation2, line2));
         }
     }
 
@@ -453,6 +464,15 @@ public class RouteSection
     public Transform PathSectionEndPoint { get => _pathSectionEndPoint; }
     public AnimationCurve PathSectionCurve { get => _pathSectionCurve; }
     public float Speed { get => _speed; }
+}
+
+[Serializable]
+public class Conversations
+{
+    /// <summary>
+    /// Character conversation line>.
+    /// </summary>
+    public List<ConversationLine> List;
 }
 
 [Serializable]
