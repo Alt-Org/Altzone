@@ -3,6 +3,8 @@ using UnityEngine;
 using MenuUi.Scripts.Signals;
 
 using Altzone.Scripts.Model.Poco.Game;
+using MenuUi.Scripts.UIScaling;
+using MenuUi.Scripts.SwipeNavigation;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -13,12 +15,17 @@ namespace MenuUi.Scripts.CharacterGallery
     public class EditingPopup : MonoBehaviour
     {
         [SerializeField] private GalleryView _galleryView;
+        private SwipeUI _swipe;
+        private RectTransform _rectTransform;
 
         // Array of character slots in selected grid
         [SerializeField] private SelectedCharacterEditingSlot[] _selectedCharacterSlots;
 
         private void Awake()
         {
+            _swipe = FindObjectOfType<SwipeUI>();
+            _swipe.OnCurrentPageChanged += ClosePopup;
+
             if (gameObject.activeSelf) gameObject.SetActive(false);
 
             _galleryView.OnGalleryCharactersSet += SetCharacters;
@@ -32,6 +39,13 @@ namespace MenuUi.Scripts.CharacterGallery
             }
         }
 
+        private void OnEnable()
+        {
+            if (_rectTransform == null)_rectTransform = GetComponent<RectTransform>();
+
+            _rectTransform.anchorMin = new Vector2(0, PanelScaler.CalculateBottomPanelHeight());
+            _rectTransform.anchorMax = new Vector2(1, 1 - (PanelScaler.CalculateTopPanelHeight() + PanelScaler.CalculateUnsafeAreaHeight()));
+        }
 
         private void OnDestroy()
         {
@@ -43,8 +57,14 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 slot.OnSlotPressed -= HandleSlotPressed;
             }
+
+            _swipe.OnCurrentPageChanged -= ClosePopup;
         }
 
+        private void OnDisable()
+        {
+            ClosePopup();
+        }
 
         /// <summary>
         /// Open selected defence characters editing popup.
