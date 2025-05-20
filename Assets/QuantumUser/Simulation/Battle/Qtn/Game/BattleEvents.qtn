@@ -29,6 +29,12 @@ synced event BattleDebugUpdateStatsOverlay
     BattleCharacterBase Character;
 }
 
+synced event BattleStoneCharacter
+{
+    int RowPosition;
+    BattleTeamNumber Team;
+}
+
 synced event BattleLightray
 {
     FPVector2 Position;

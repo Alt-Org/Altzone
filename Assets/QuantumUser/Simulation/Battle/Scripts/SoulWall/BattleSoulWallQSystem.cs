@@ -55,6 +55,11 @@ namespace Battle.QSimulation.SoulWall
                 f.Events.BattleLightray(soulWallTransform->Position, battleLightrayRotation, battleLightrayColor, battleLightraySize);
             }
 
+            if (soulWall->WallNumber < 10)
+            {
+                f.Events.BattleStoneCharacter(soulWall->WallNumber, soulWall->Team);
+            }
+
             // Destroy the SoulWall entity
             f.Events.BattlePlaySoundFX(BattleSoundFX.WallBroken);
             f.Destroy(soulWallEntity);
@@ -89,6 +94,9 @@ namespace Battle.QSimulation.SoulWall
             Transform2D*              soulWallTransform;
             PhysicsCollider2D*        soulWallCollider;
 
+            // helper variable to assign row positions
+            int counter = 0;
+
             // create soulwalls
             foreach (BattleSoulWallTemplate soulWallTemplate in soulWallTemplates)
             {
@@ -112,6 +120,10 @@ namespace Battle.QSimulation.SoulWall
                 soulWall->CreatesLightray    = soulWallCreatesLightray;
                 soulWall->Normal             = soulWallNormal;
                 soulWall->CollisionMinOffset = soulWallScale * FP._0_50;
+                soulWall->WallNumber         = counter;
+
+                // increment helper counter
+                counter++;
 
                 // initialize collider
                 soulWallCollider->Shape = Shape2D.CreateBox(

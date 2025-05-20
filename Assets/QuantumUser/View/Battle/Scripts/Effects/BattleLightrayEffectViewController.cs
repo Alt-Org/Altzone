@@ -11,8 +11,6 @@ namespace Battle.View.Effect
 
         public void SpawnLightray(Vector2 position, float rotation, BattleLightrayColor color, BattleLightraySize size)
         {
-            Debug.LogWarning(rotation);
-
             GameObject spawnedLightray = GameObject.Instantiate(_lightrays[(int)color * 3 + (int)size], transform);
             spawnedLightray.transform.SetPositionAndRotation(
                 new Vector3(position.x, 0, position.y),

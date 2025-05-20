@@ -19,6 +19,7 @@ namespace Battle.View.Game
         [SerializeField] private BattleGridViewController _gridViewController;
         [SerializeField] private BattleUiController _uiController;
         [SerializeField] private BattleScreenEffectViewController _screenEffectViewController;
+        [SerializeField] private BattleStoneCharacterViewController _stoneCharacterViewController;
         [SerializeField] private BattleLightrayEffectViewController _lightrayEffectViewController;
         [SerializeField] private BattleSoundFXViewController _soundFXViewController;
 
@@ -43,7 +44,16 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, QEventOnChangeEmotionState);
             QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, QEventPlaySoundFX);
             QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, QEventDebugOnUpdateStatsOverlay);
+            QuantumEvent.Subscribe<EventBattleStoneCharacter>(this, QEventOnStoneCharacter);
             QuantumEvent.Subscribe<EventBattleLightray>(this, QEventOnLightray);
+        }
+
+        private void QEventOnStoneCharacter(EventBattleStoneCharacter e)
+        {
+            if (_stoneCharacterViewController != null)
+            {
+                _stoneCharacterViewController.DestroyCharacterPart(e.RowPosition, e.Team);
+            }
         }
 
         private void QEventOnLightray(EventBattleLightray e)

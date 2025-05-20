@@ -419,6 +419,7 @@ namespace Quantum.Prototypes {
     public QBoolean CreatesLightray;
     public FPVector2 Normal;
     public FP CollisionMinOffset;
+    public Int32 WallNumber;
     partial void MaterializeUser(Frame frame, ref Quantum.BattleSoulWallQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattleSoulWallQComponent component = default;
@@ -431,6 +432,7 @@ namespace Quantum.Prototypes {
         result.CreatesLightray = this.CreatesLightray;
         result.Normal = this.Normal;
         result.CollisionMinOffset = this.CollisionMinOffset;
+        result.WallNumber = this.WallNumber;
         MaterializeUser(frame, ref result, in context);
     }
   }

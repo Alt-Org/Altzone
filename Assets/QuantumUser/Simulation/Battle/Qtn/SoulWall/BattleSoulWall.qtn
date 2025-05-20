@@ -13,4 +13,5 @@ component BattleSoulWallQComponent
     bool CreatesLightray;
     FPVector2 Normal;
     FP CollisionMinOffset;
+    int WallNumber;
 }

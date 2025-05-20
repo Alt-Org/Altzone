@@ -1128,12 +1128,14 @@ namespace Quantum {
     public BattleTeamNumber Team;
     [FieldOffset(0)]
     public BattleEmotionState Emotion;
-    [FieldOffset(8)]
+    [FieldOffset(12)]
     public QBoolean CreatesLightray;
     [FieldOffset(24)]
     public FPVector2 Normal;
     [FieldOffset(16)]
     public FP CollisionMinOffset;
+    [FieldOffset(8)]
+    public Int32 WallNumber;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 9463;
@@ -1142,6 +1144,7 @@ namespace Quantum {
         hash = hash * 31 + CreatesLightray.GetHashCode();
         hash = hash * 31 + Normal.GetHashCode();
         hash = hash * 31 + CollisionMinOffset.GetHashCode();
+        hash = hash * 31 + WallNumber.GetHashCode();
         return hash;
       }
     }
@@ -1149,6 +1152,7 @@ namespace Quantum {
         var p = (BattleSoulWallQComponent*)ptr;
         serializer.Stream.Serialize((Int32*)&p->Emotion);
         serializer.Stream.Serialize((Int32*)&p->Team);
+        serializer.Stream.Serialize(&p->WallNumber);
         QBoolean.Serialize(&p->CreatesLightray, serializer);
         FP.Serialize(&p->CollisionMinOffset, serializer);
         FPVector2.Serialize(&p->Normal, serializer);
