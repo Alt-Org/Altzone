@@ -32,7 +32,7 @@ namespace Battle.QSimulation.SoulWall
 
             if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.SoulWall)) return;
 
-            if (soulWall->CreatesLightray)
+            if (soulWall->Row == BattleSoulWallRow.Last)
             {
                 FP battleLightrayRotation = 0;
                 BattleLightrayColor battleLightrayColor = BattleLightrayColor.Red;
@@ -52,7 +52,7 @@ namespace Battle.QSimulation.SoulWall
 
                 Transform2D* soulWallTransform = f.Unsafe.GetPointer<Transform2D>(soulWallEntity);
 
-                f.Events.BattleLightray(soulWallTransform->Position, battleLightrayRotation, battleLightrayColor, battleLightraySize);
+                f.Events.BattleLastRowWallDestroyed(soulWall->WallNumber, soulWall->Team, battleLightrayRotation, battleLightrayColor, battleLightraySize);
             }
 
             // Destroy the SoulWall entity
@@ -72,12 +72,12 @@ namespace Battle.QSimulation.SoulWall
         private static void CreateSoulWalls(Frame f, BattleTeamNumber teamNumber, BattleSoulWallTemplate[] soulWallTemplates, AssetRef<EntityPrototype>[] soulWallPrototypes)
         {
             // soulwall temp variables
-            FPVector2 soulWallPosition;
-            int       soulWallEmotionIndex;
-            bool      soulWallCreatesLightray;
-            FP        soulWallScale;
-            FPVector2 soulWallNormal;
-            FPVector2 soulWallColliderExtents;
+            FPVector2         soulWallPosition;
+            int               soulWallEmotionIndex;
+            BattleSoulWallRow soulWallRow = BattleSoulWallRow.First;
+            FP                soulWallScale;
+            FPVector2         soulWallNormal;
+            FPVector2         soulWallColliderExtents;
 
             // set all soulwall common temp variables (used for all soulwalls on this side)
             soulWallScale  = BattleGridManager.GridScaleFactor;
@@ -88,6 +88,9 @@ namespace Battle.QSimulation.SoulWall
             BattleSoulWallQComponent* soulWall;
             Transform2D*              soulWallTransform;
             PhysicsCollider2D*        soulWallCollider;
+
+            // helper variable to assign row positions
+            int counter = 0;
 
             // create soulwalls
             foreach (BattleSoulWallTemplate soulWallTemplate in soulWallTemplates)
@@ -100,18 +103,37 @@ namespace Battle.QSimulation.SoulWall
                 soulWallTransform = f.Unsafe.GetPointer<Transform2D>(soulWallEntity);
                 soulWallCollider  = f.Unsafe.GetPointer<PhysicsCollider2D>(soulWallEntity);
 
-                // set temp variables
+                //{ set temp variables
+
                 soulWallPosition        = BattleGridManager.GridPositionToWorldPosition(soulWallTemplate.Position);
                 soulWallEmotionIndex    = f.RNG->NextInclusive((int)BattleEmotionState.Sadness, (int)BattleEmotionState.Aggression);
                 soulWallColliderExtents = soulWallCollider->Shape.Box.Extents;
-                soulWallCreatesLightray = soulWallTemplate.Position.Row == 1 || soulWallTemplate.Position.Row == BattleGridManager.Rows - 1;
+
+                if (soulWallTemplate.Position.Row == 5 || soulWallTemplate.Position.Row == BattleGridManager.Rows - 5)
+                {
+                    soulWallRow = BattleSoulWallRow.First;
+                }
+                else if (soulWallTemplate.Position.Row == 3 || soulWallTemplate.Position.Row == BattleGridManager.Rows - 3)
+                {
+                    soulWallRow = BattleSoulWallRow.Middle;
+                }
+                else if(soulWallTemplate.Position.Row == 1 || soulWallTemplate.Position.Row == BattleGridManager.Rows - 1)
+                {
+                    soulWallRow = BattleSoulWallRow.Last;
+                }
+
+                //} set temp variables
 
                 // initialize soulwall component
                 soulWall->Team               = teamNumber;
                 soulWall->Emotion            = (BattleEmotionState)soulWallEmotionIndex;
-                soulWall->CreatesLightray    = soulWallCreatesLightray;
+                soulWall->Row                = soulWallRow;
                 soulWall->Normal             = soulWallNormal;
                 soulWall->CollisionMinOffset = soulWallScale * FP._0_50;
+                soulWall->WallNumber         = counter;
+
+                // increment helper counter
+                counter++;
 
                 // initialize collider
                 soulWallCollider->Shape = Shape2D.CreateBox(

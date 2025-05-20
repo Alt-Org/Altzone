@@ -104,6 +104,11 @@ namespace Quantum {
     Slot4 = 4,
     Spectator = 10,
   }
+  public enum BattleSoulWallRow : int {
+    First = 0,
+    Middle = 1,
+    Last = 2,
+  }
   public enum BattleSoundFX : int {
     SoulWallHit,
     GoalHit,
@@ -1124,12 +1129,14 @@ namespace Quantum {
   public unsafe partial struct BattleSoulWallQComponent : Quantum.IComponent {
     public const Int32 SIZE = 40;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(4)]
+    [FieldOffset(8)]
     public BattleTeamNumber Team;
+    [FieldOffset(4)]
+    public BattleSoulWallRow Row;
+    [FieldOffset(12)]
+    public Int32 WallNumber;
     [FieldOffset(0)]
     public BattleEmotionState Emotion;
-    [FieldOffset(8)]
-    public QBoolean CreatesLightray;
     [FieldOffset(24)]
     public FPVector2 Normal;
     [FieldOffset(16)]
@@ -1138,8 +1145,9 @@ namespace Quantum {
       unchecked { 
         var hash = 9463;
         hash = hash * 31 + (Int32)Team;
+        hash = hash * 31 + (Int32)Row;
+        hash = hash * 31 + WallNumber.GetHashCode();
         hash = hash * 31 + (Int32)Emotion;
-        hash = hash * 31 + CreatesLightray.GetHashCode();
         hash = hash * 31 + Normal.GetHashCode();
         hash = hash * 31 + CollisionMinOffset.GetHashCode();
         return hash;
@@ -1148,8 +1156,9 @@ namespace Quantum {
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (BattleSoulWallQComponent*)ptr;
         serializer.Stream.Serialize((Int32*)&p->Emotion);
+        serializer.Stream.Serialize((Int32*)&p->Row);
         serializer.Stream.Serialize((Int32*)&p->Team);
-        QBoolean.Serialize(&p->CreatesLightray, serializer);
+        serializer.Stream.Serialize(&p->WallNumber);
         FP.Serialize(&p->CollisionMinOffset, serializer);
         FPVector2.Serialize(&p->Normal, serializer);
     }
@@ -1378,6 +1387,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.BattleProjectileQComponent), Quantum.BattleProjectileQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleProjectileSpawnerQComponent), Quantum.BattleProjectileSpawnerQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleSoulWallQComponent), Quantum.BattleSoulWallQComponent.SIZE);
+      typeRegistry.Register(typeof(Quantum.BattleSoulWallRow), 4);
       typeRegistry.Register(typeof(Quantum.BattleSoulWallTemplate), Quantum.BattleSoulWallTemplate.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleSoundFX), 4);
       typeRegistry.Register(typeof(Quantum.BattleTeamNumber), 4);
@@ -1490,6 +1500,7 @@ namespace Quantum {
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerPlayState>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerSlot>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleProjectileCollisionFlags>();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleSoulWallRow>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleSoundFX>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleTeamNumber>();
       FramePrinter.EnsurePrimitiveNotStripped<CallbackFlags>();

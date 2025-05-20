@@ -19,6 +19,7 @@ namespace Battle.View.Game
         [SerializeField] private BattleGridViewController _gridViewController;
         [SerializeField] private BattleUiController _uiController;
         [SerializeField] private BattleScreenEffectViewController _screenEffectViewController;
+        [SerializeField] private BattleStoneCharacterViewController _stoneCharacterViewController;
         [SerializeField] private BattleLightrayEffectViewController _lightrayEffectViewController;
         [SerializeField] private BattleSoundFXViewController _soundFXViewController;
 
@@ -43,14 +44,19 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, QEventOnChangeEmotionState);
             QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, QEventPlaySoundFX);
             QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, QEventDebugOnUpdateStatsOverlay);
-            QuantumEvent.Subscribe<EventBattleLightray>(this, QEventOnLightray);
+            QuantumEvent.Subscribe<EventBattleLastRowWallDestroyed>(this, QEventOnLastRowWallDestroyed);
         }
 
-        private void QEventOnLightray(EventBattleLightray e)
+        private void QEventOnLastRowWallDestroyed(EventBattleLastRowWallDestroyed e)
         {
+            if (_stoneCharacterViewController != null)
+            {
+                _stoneCharacterViewController.DestroyCharacterPart(e.WallNumber, e.Team);
+            }
+
             if (_lightrayEffectViewController != null)
             {
-                _lightrayEffectViewController.SpawnLightray(e.Position.ToUnityVector2(), (float)e.Rotation, e.Color, e.Size);
+                _lightrayEffectViewController.SpawnLightray(e.WallNumber, (float)e.LightrayRotation, e.LightrayColor, e.LightraySize);
             }
         }
 

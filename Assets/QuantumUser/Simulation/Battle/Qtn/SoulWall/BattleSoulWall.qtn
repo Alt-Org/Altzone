@@ -9,8 +9,16 @@ struct BattleSoulWallTemplate
 component BattleSoulWallQComponent
 {
     BattleTeamNumber Team;
+    BattleSoulWallRow Row;
+    int WallNumber;
     BattleEmotionState Emotion;
-    bool CreatesLightray;
     FPVector2 Normal;
     FP CollisionMinOffset;
+}
+
+enum BattleSoulWallRow
+{
+    First  = 0,
+    Middle = 1,
+    Last   = 2
 }
