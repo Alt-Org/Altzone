@@ -3,19 +3,73 @@
 /// Contains all battle events.
 /// </summary>
 ///
-/// ## Generated Classes
-/// - @cref{Quantum,EventViewInit}  
+/// ## Events
+/// - synced event ViewInit {}  
 ///   @copybrief Quantum.EventViewInit
-/// - @cref{Quantum,EventBattlePlayerViewInit}  
+/// - synced event BattlePlayerViewInit {EntityRef Entity; FP ModelScale}  
 ///   @copybrief Quantum.EventBattlePlayerViewInit
-/// - @cref{Quantum,EventBattleSoulWallViewInit}  
+/// - synced event BattleSoulWallViewInit {EntityRef Entity; FP ModelScale; int EmotionIndicatorColorIndex; int DebugColorIndex}  
 ///   @copybrief Quantum.EventBattleSoulWallViewInit
-/// - @cref{Quantum,EventBattleChangeEmotionState}  
+/// - synced event BattleChangeEmotionState {BattleEmotionState Emotion}  
 ///   @copybrief Quantum.EventBattleChangeEmotionState
-/// - @cref{Quantum,EventBattlePlaySoundFX}  
+/// - event BattlePlaySoundFX {BattleSoundFX Effect}  
 ///   @copybrief Quantum.EventBattlePlaySoundFX
-/// - @cref{Quantum,EventBattleDebugUpdateStatsOverlay}  
+/// - synced event BattleDebugUpdateStatsOverlay {BattleCharacterBase Character}  
 ///   @copybrief Quantum.EventBattleDebugUpdateStatsOverlay
+///
+/// ---
+///
+/// <br/>
+///
+/// ## Event Documentation
+///
+/// ---
+///
+/// ### ViewInit
+/// @copybrief Quantum.EventViewInit
+///
+/// Generated Class @cref{Quantum,EventViewInit}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.ViewInit}
+///
+/// ---
+///
+/// ### BattlePlayerViewInit
+/// @copybrief Quantum.EventBattlePlayerViewInit
+///
+/// Generated Class @cref{Quantum,EventBattlePlayerViewInit}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattlePlayerViewInit}
+///
+/// ---
+///
+/// ### BattleSoulWallViewInit
+/// @copybrief Quantum.EventBattleSoulWallViewInit
+///
+/// Generated Class @cref{Quantum,EventBattleSoulWallViewInit}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleSoulWallViewInit}
+///
+/// ---
+///
+/// ### BattleChangeEmotionState
+/// @copybrief Quantum.EventBattleChangeEmotionState
+///
+/// Generated Class @cref{Quantum,EventBattleChangeEmotionState}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleChangeEmotionState}
+///
+/// ---
+///
+/// ### BattlePlaySoundFX
+/// @copybrief Quantum.EventBattlePlaySoundFX
+///
+/// Generated Class @cref{Quantum,EventBattlePlaySoundFX}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattlePlaySoundFX}
+///
+/// ---
+///
+/// ### BattleDebugUpdateStatsOverlay
+/// @copybrief Quantum.EventBattleDebugUpdateStatsOverlay
+///
+/// Generated Class @cref{Quantum,EventBattleDebugUpdateStatsOverlay}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleDebugUpdateStatsOverlay}
 
 /// @class Quantum::EventViewInit
 /// <summary>
