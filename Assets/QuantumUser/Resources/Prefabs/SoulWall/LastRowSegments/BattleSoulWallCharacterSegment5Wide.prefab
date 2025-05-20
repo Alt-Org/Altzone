@@ -238,8 +238,6 @@ MonoBehaviour:
       Value: 0
     Emotion:
       Value: 0
-    CreatesLightray:
-      Value: 0
     Normal:
       X:
         RawValue: 0
@@ -247,6 +245,9 @@ MonoBehaviour:
         RawValue: 0
     CollisionMinOffset:
       RawValue: 0
+    WallNumber: 0
+    Row:
+      Value: 0
 --- !u!114 &2439202691060113539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -466,7 +467,8 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -0.5
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7787884752148353987, guid: cf6114ddf4664f330a499fb4cca33ed8, type: 3}
     m_RemovedGameObjects:
     - {fileID: 6537143282256487563, guid: cf6114ddf4664f330a499fb4cca33ed8, type: 3}
     - {fileID: 8669846514663460406, guid: cf6114ddf4664f330a499fb4cca33ed8, type: 3}

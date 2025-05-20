@@ -234,7 +234,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    ChildEntity: {fileID: 0}
+    Team:
+      Value: 0
     Emotion:
       Value: 0
     Normal:
@@ -244,6 +245,9 @@ MonoBehaviour:
         RawValue: 0
     CollisionMinOffset:
       RawValue: 0
+    WallNumber: 0
+    Row:
+      Value: 0
 --- !u!114 &235158837314665552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -381,6 +385,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SoulWallType2ViewModel
+      objectReference: {fileID: 0}
+    - target: {fileID: 7787884752148353987, guid: cf6114ddf4664f330a499fb4cca33ed8,
+        type: 3}
+      propertyPath: _useDebugSprites
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7787884752148353987, guid: cf6114ddf4664f330a499fb4cca33ed8,
         type: 3}

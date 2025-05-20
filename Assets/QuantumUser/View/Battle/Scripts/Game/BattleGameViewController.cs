@@ -56,7 +56,7 @@ namespace Battle.View.Game
 
             if (_lightrayEffectViewController != null)
             {
-                _lightrayEffectViewController.SpawnLightray(e.LightrayPosition.ToUnityVector2(), (float)e.LightrayRotation, e.LightrayColor, e.LightraySize);
+                _lightrayEffectViewController.SpawnLightray(e.WallNumber, (float)e.LightrayRotation, e.LightrayColor, e.LightraySize);
             }
         }
 

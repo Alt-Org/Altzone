@@ -52,7 +52,7 @@ namespace Battle.QSimulation.SoulWall
 
                 Transform2D* soulWallTransform = f.Unsafe.GetPointer<Transform2D>(soulWallEntity);
 
-                f.Events.BattleLastRowWallDestroyed(soulWall->WallNumber, soulWall->Team, soulWallTransform->Position, battleLightrayRotation, battleLightrayColor, battleLightraySize);
+                f.Events.BattleLastRowWallDestroyed(soulWall->WallNumber, soulWall->Team, battleLightrayRotation, battleLightrayColor, battleLightraySize);
             }
 
             // Destroy the SoulWall entity
@@ -107,11 +107,13 @@ namespace Battle.QSimulation.SoulWall
                 soulWallPosition        = BattleGridManager.GridPositionToWorldPosition(soulWallTemplate.Position);
                 soulWallEmotionIndex    = f.RNG->NextInclusive((int)BattleEmotionState.Sadness, (int)BattleEmotionState.Aggression);
                 soulWallColliderExtents = soulWallCollider->Shape.Box.Extents;
-                if (soulWallTemplate.Position.Row == 3 || soulWallTemplate.Position.Row == BattleGridManager.Rows - 3)
+
+                //{ set soul wall row temp variable
+                if (soulWallTemplate.Position.Row == 5 || soulWallTemplate.Position.Row == BattleGridManager.Rows - 5)
                 {
                     soulWallRow = BattleSoulWallRow.First;
                 }
-                else if (soulWallTemplate.Position.Row == 2 || soulWallTemplate.Position.Row == BattleGridManager.Rows - 2)
+                else if (soulWallTemplate.Position.Row == 3 || soulWallTemplate.Position.Row == BattleGridManager.Rows - 3)
                 {
                     soulWallRow = BattleSoulWallRow.Middle;
                 }
@@ -119,6 +121,7 @@ namespace Battle.QSimulation.SoulWall
                 {
                     soulWallRow = BattleSoulWallRow.Last;
                 }
+                //} 
 
                 // initialize soulwall component
                 soulWall->Team               = teamNumber;

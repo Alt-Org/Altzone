@@ -33,7 +33,6 @@ synced event BattleLastRowWallDestroyed
 {
     int WallNumber;
     BattleTeamNumber Team;
-    FPVector2 LightrayPosition;
     FP LightrayRotation;
     BattleLightrayColor LightrayColor;
     BattleLightraySize LightraySize;
