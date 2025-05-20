@@ -32,7 +32,7 @@ namespace Battle.QSimulation.SoulWall
 
             if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.SoulWall)) return;
 
-            if (soulWall->CreatesLightray)
+            if (soulWall->Row == BattleSoulWallRow.Last)
             {
                 FP battleLightrayRotation = 0;
                 BattleLightrayColor battleLightrayColor = BattleLightrayColor.Red;
@@ -52,12 +52,7 @@ namespace Battle.QSimulation.SoulWall
 
                 Transform2D* soulWallTransform = f.Unsafe.GetPointer<Transform2D>(soulWallEntity);
 
-                f.Events.BattleLightray(soulWallTransform->Position, battleLightrayRotation, battleLightrayColor, battleLightraySize);
-            }
-
-            if (soulWall->WallNumber < 10)
-            {
-                f.Events.BattleStoneCharacter(soulWall->WallNumber, soulWall->Team);
+                f.Events.BattleLastRowWallDestroyed(soulWall->WallNumber, soulWall->Team, soulWallTransform->Position, battleLightrayRotation, battleLightrayColor, battleLightraySize);
             }
 
             // Destroy the SoulWall entity
@@ -79,7 +74,7 @@ namespace Battle.QSimulation.SoulWall
             // soulwall temp variables
             FPVector2 soulWallPosition;
             int       soulWallEmotionIndex;
-            bool      soulWallCreatesLightray;
+            int       soulWallRow;
             FP        soulWallScale;
             FPVector2 soulWallNormal;
             FPVector2 soulWallColliderExtents;
@@ -112,12 +107,23 @@ namespace Battle.QSimulation.SoulWall
                 soulWallPosition        = BattleGridManager.GridPositionToWorldPosition(soulWallTemplate.Position);
                 soulWallEmotionIndex    = f.RNG->NextInclusive((int)BattleEmotionState.Sadness, (int)BattleEmotionState.Aggression);
                 soulWallColliderExtents = soulWallCollider->Shape.Box.Extents;
-                soulWallCreatesLightray = soulWallTemplate.Position.Row == 1 || soulWallTemplate.Position.Row == BattleGridManager.Rows - 1;
+                if (soulWallTemplate.Position.Row == 3 || soulWallTemplate.Position.Row == BattleGridManager.Rows - 3)
+                {
+                    soulWallRow = 0;
+                }
+                else if (soulWallTemplate.Position.Row == 2 || soulWallTemplate.Position.Row == BattleGridManager.Rows - 2)
+                {
+                    soulWallRow = 1;
+                }
+                else
+                {
+                    soulWallRow = 2;
+                }
 
                 // initialize soulwall component
                 soulWall->Team               = teamNumber;
                 soulWall->Emotion            = (BattleEmotionState)soulWallEmotionIndex;
-                soulWall->CreatesLightray    = soulWallCreatesLightray;
+                soulWall->Row                = (BattleSoulWallRow)soulWallRow;
                 soulWall->Normal             = soulWallNormal;
                 soulWall->CollisionMinOffset = soulWallScale * FP._0_50;
                 soulWall->WallNumber         = counter;

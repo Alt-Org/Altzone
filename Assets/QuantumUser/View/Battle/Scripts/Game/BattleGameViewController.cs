@@ -44,23 +44,19 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, QEventOnChangeEmotionState);
             QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, QEventPlaySoundFX);
             QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, QEventDebugOnUpdateStatsOverlay);
-            QuantumEvent.Subscribe<EventBattleStoneCharacter>(this, QEventOnStoneCharacter);
-            QuantumEvent.Subscribe<EventBattleLightray>(this, QEventOnLightray);
+            QuantumEvent.Subscribe<EventBattleLastRowWallDestroyed>(this, QEventOnLastRowWallDestroyed);
         }
 
-        private void QEventOnStoneCharacter(EventBattleStoneCharacter e)
+        private void QEventOnLastRowWallDestroyed(EventBattleLastRowWallDestroyed e)
         {
             if (_stoneCharacterViewController != null)
             {
-                _stoneCharacterViewController.DestroyCharacterPart(e.RowPosition, e.Team);
+                _stoneCharacterViewController.DestroyCharacterPart(e.WallNumber, e.Team);
             }
-        }
 
-        private void QEventOnLightray(EventBattleLightray e)
-        {
             if (_lightrayEffectViewController != null)
             {
-                _lightrayEffectViewController.SpawnLightray(e.Position.ToUnityVector2(), (float)e.Rotation, e.Color, e.Size);
+                _lightrayEffectViewController.SpawnLightray(e.LightrayPosition.ToUnityVector2(), (float)e.LightrayRotation, e.LightrayColor, e.LightraySize);
             }
         }
 

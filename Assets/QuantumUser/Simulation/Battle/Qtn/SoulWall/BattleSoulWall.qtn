@@ -10,8 +10,15 @@ component BattleSoulWallQComponent
 {
     BattleTeamNumber Team;
     BattleEmotionState Emotion;
-    bool CreatesLightray;
     FPVector2 Normal;
     FP CollisionMinOffset;
     int WallNumber;
+    BattleSoulWallRow Row;
+}
+
+enum BattleSoulWallRow
+{
+    First = 0,
+    Middle = 1,
+    Last = 2
 }

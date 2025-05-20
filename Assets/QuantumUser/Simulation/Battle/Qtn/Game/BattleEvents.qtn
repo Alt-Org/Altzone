@@ -29,16 +29,12 @@ synced event BattleDebugUpdateStatsOverlay
     BattleCharacterBase Character;
 }
 
-synced event BattleStoneCharacter
+synced event BattleLastRowWallDestroyed
 {
-    int RowPosition;
+    int WallNumber;
     BattleTeamNumber Team;
-}
-
-synced event BattleLightray
-{
-    FPVector2 Position;
-    FP Rotation;
-    BattleLightrayColor Color;
-    BattleLightraySize Size;
+    FPVector2 LightrayPosition;
+    FP LightrayRotation;
+    BattleLightrayColor LightrayColor;
+    BattleLightraySize LightraySize;
 }
