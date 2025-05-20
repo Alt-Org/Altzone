@@ -1010,7 +1010,7 @@ namespace Altzone.Scripts.Lobby
             yield return new WaitUntil(()=>SceneManager.GetActiveScene().name == _quantumBattleMap.Scene);
 
             DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.Battle);
-            DebugLogFileHandler.FileOpen(battleID, playerSlot);
+            DebugLogFileHandler.FileOpen(battleID, (int)playerSlot);
 
             Task<bool> task = StartRunner(sessionRunnerArguments);
 
