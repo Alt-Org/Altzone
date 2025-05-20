@@ -1,43 +1,70 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class KojuPopup : MonoBehaviour
 {
-    public Button confirmButton;
-    public Button denyButton;
-    public TMP_InputField priceInputField;
+    [SerializeField] private Button confirmButton;
+    [SerializeField] private Button denyButton;
+    [SerializeField] private TMP_InputField priceInput;
 
     private GameObject currentCard;
-    private ItemMover currentItemMover;
+    private KojuFurnitureData furnitureData;
+    private ItemMover itemMover;
 
-    private void Awake()
+    void Start()
     {
-        confirmButton.onClick.AddListener(OnConfirm);
-        denyButton.onClick.AddListener(OnDeny);
+        confirmButton.onClick.AddListener(Confirm);
+        denyButton.onClick.AddListener(Deny);
     }
 
-    // Called when clicking item on the tray. Opens the confirmation window by activating the Popup window
     public void Open(GameObject card)
     {
         currentCard = card;
-        currentItemMover = card.GetComponent<ItemMover>();
+        furnitureData = currentCard.GetComponent<KojuFurnitureData>();
+        itemMover = currentCard.GetComponent<ItemMover>();
+
+        if (furnitureData == null /*|| itemMover == null*/)
+        {
+            Debug.LogError("Missing KojuFurnitureData component on card.");
+            return;
+        }
+
+        // Show the current price (hardcoded or set earlier) in the input field
+        priceInput.text = furnitureData.GetPrice().ToString();
 
         gameObject.SetActive(true);
     }
 
-    private void OnConfirm()
+    public void Confirm()
     {
-        currentItemMover?.ExecuteMove();
+        if (float.TryParse(priceInput.text, out float price))
+        {
+            furnitureData.SetPrice(price);  // Update the local price and refresh UI
+        }
+        else
+        {
+            Debug.LogWarning("Invalid price entered");
+            return;
+        }
+
+        // Disabled to isolate price logic:
+        itemMover.ExecuteMove();
+
         Close();
     }
 
-    private void OnDeny() => Close();
+    public void Deny()
+    {
+        Close();
+    }
 
     private void Close()
     {
-        gameObject.SetActive(false);
         currentCard = null;
-        currentItemMover = null;
+        furnitureData = null;
+        itemMover = null;
+        priceInput.text = "";
+        gameObject.SetActive(false);
     }
 }

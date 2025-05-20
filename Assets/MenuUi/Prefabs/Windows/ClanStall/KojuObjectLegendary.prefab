@@ -547,7 +547,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   furnitureImage: {fileID: 3600470467406064918}
   furnitureName: {fileID: 2294432065809037680}
-  furnitureRarity: {fileID: 5618174223713593658}
   furnitureValue: {fileID: 5648022852003446422}
 --- !u!1 &2737426877649979594
 GameObject:
@@ -808,10 +807,10 @@ RectTransform:
   - {fileID: 5880636547185422211}
   m_Father: {fileID: 5831215860556876152}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.05, y: 0.74333334}
-  m_AnchorMax: {x: 0.7277778, y: 0.83000004}
-  m_AnchoredPosition: {x: 0.311615, y: -169.5}
-  m_SizeDelta: {x: 0.62329865, y: -1.0001}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -19.688385, y: 66.5}
+  m_SizeDelta: {x: -57.3767, y: 24.999893}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8596433333780171601
 CanvasRenderer:
@@ -1970,7 +1969,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ' 100'
+  m_text: ' 300'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
   m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,

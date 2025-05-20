@@ -1,39 +1,56 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using MenuUi.Scripts.Storage;
-using Altzone.Scripts.ReferenceSheets;
 
 public class KojuFurnitureData : MonoBehaviour
 {
     [Header("UI References")]
     [SerializeField] private Image furnitureImage;
     [SerializeField] private TMP_Text furnitureName;
-    [SerializeField] private TMP_Text furnitureRarity;
     [SerializeField] private TMP_Text furnitureValue;
 
     private StorageFurniture storageFurniture;
+    private float price;
 
-    // Called to initialize this UI card
-    public void SetFurniture(StorageFurniture furniture)
+    private void Start()
     {
-        storageFurniture = furniture;
-
-        if (furnitureImage != null)
-            furnitureImage.sprite = storageFurniture.Sprite;
-
-        if (furnitureName != null)
-            furnitureName.text = storageFurniture.VisibleName;
-
-        if (furnitureRarity != null)
-            furnitureRarity.text = storageFurniture.Rarity.ToString();
-
-        if (furnitureValue != null)
-            furnitureValue.text = $"Value: {storageFurniture.Value}";
+        
+        price = 100f; //for testing purposes
+        RefreshUI();
     }
 
-    public StorageFurniture GetFurnitureData()
+    public void SetFurniture(StorageFurniture data)
     {
-        return storageFurniture;
+        storageFurniture = data;
+        // price = 100f; 
+        RefreshUI();
+    }
+
+    private void RefreshUI()
+    {
+        if (storageFurniture == null)
+        {
+            Debug.LogWarning("StorageFurniture not set.");
+           
+        }
+        else
+        {
+            furnitureImage.sprite = storageFurniture.Sprite;
+            furnitureName.text = storageFurniture.VisibleName;
+        }
+
+        furnitureValue.text = $"{price}";
+    }
+
+    public void SetPrice(float newPrice)
+    {
+        price = newPrice;
+        RefreshUI();
+    }
+
+    public float GetPrice()
+    {
+        return price;
     }
 }
