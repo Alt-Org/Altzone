@@ -932,10 +932,10 @@ namespace Altzone.Scripts.Lobby
             Debug.Log(data.ToString());
             string battleID = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(BattleID);
 
-            // Getting the index of own user id from the player slot user id array to determine which player slot number is for local player.
-            // Adding + 1 since the player slot numbers start from 1 (1-4)
+            // Getting the index of own user id from the player slot user id array to determine which player slot is for local player.
             string userId = PhotonRealtimeClient.LocalPlayer.UserId;
-            int playerSlot = Array.IndexOf(data.PlayerSlotUserIds, userId) + 1;
+            int slotIndex = Array.IndexOf(data.PlayerSlotUserIds, userId);
+            BattlePlayerSlot playerSlot = RuntimePlayer.PlayerSlots[slotIndex];
 
             // Setting map to variable
             Map map = _battleMapReference.GetBattleMap(data.MapId).Map;
