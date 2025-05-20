@@ -7,6 +7,7 @@ using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ReferenceSheets;
 using MenuUi.Scripts.CharacterGallery;
+using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
@@ -30,7 +31,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private BaseCharacter _baseCharacter;
         private bool _unlimitedDiamonds;
         private bool _unlimitedErasers;
-
+        private SwipeUI _swipe;
 
         public CharacterID CurrentCharacterID { get { return _characterId; } }
         [HideInInspector] public bool UnlimitedDiamonds {
@@ -69,6 +70,10 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         private void Awake()
         {
+            _swipe = FindObjectOfType<SwipeUI>();
+            _swipe.OnCurrentPageChanged += ClosePopup;
+
+            _statsPanel.SetActive(false);
             // Getting unlimited diamonds and erasers value from playerPrefs
             _unlimitedDiamonds = PlayerPrefs.GetInt("UnlimitedDiamonds", 0) == 1;
             _unlimitedErasers = PlayerPrefs.GetInt("UnlimitedErasers", 0) == 1;
@@ -82,6 +87,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             SetCurrentCharacter();
         }
 
+        private void OnDisable()
+        {
+            ClosePopup();
+        }
+
+        private void OnDestroy()
+        {
+            _swipe.OnCurrentPageChanged -= ClosePopup;
+        }
         public void OpenPopup()
         {
             gameObject.SetActive(true);
