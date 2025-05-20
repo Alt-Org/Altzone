@@ -42,8 +42,8 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             _button = GetComponent<Button>();
             _button.onClick.AddListener(RequestBattlePopup);
 
-            // Loading selected game type from player prefs
-            _selectedGameType = (GameType)PlayerPrefs.GetInt(SelectedGameTypeKey, (int)_selectedGameType);
+            // Loading selected game type from player prefs Note: Only custom available for now
+            _selectedGameType = GameType.Custom; //(GameType)PlayerPrefs.GetInt(SelectedGameTypeKey, (int)_selectedGameType);
 
             // Instantiate game type option buttons to game type selection menu
             foreach (GameTypeInfo gameTypeInfo in _gameTypeReference.GetGameTypeInfos())

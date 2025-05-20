@@ -202,6 +202,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         public void CloseWindow()
         {
+            _roomSwitcher.ClosePanels();
             _popupContents.SetActive(false);
         }
 
