@@ -1131,25 +1131,25 @@ namespace Quantum {
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(8)]
     public BattleTeamNumber Team;
+    [FieldOffset(4)]
+    public BattleSoulWallRow Row;
+    [FieldOffset(12)]
+    public Int32 WallNumber;
     [FieldOffset(0)]
     public BattleEmotionState Emotion;
     [FieldOffset(24)]
     public FPVector2 Normal;
     [FieldOffset(16)]
     public FP CollisionMinOffset;
-    [FieldOffset(12)]
-    public Int32 WallNumber;
-    [FieldOffset(4)]
-    public BattleSoulWallRow Row;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 9463;
         hash = hash * 31 + (Int32)Team;
+        hash = hash * 31 + (Int32)Row;
+        hash = hash * 31 + WallNumber.GetHashCode();
         hash = hash * 31 + (Int32)Emotion;
         hash = hash * 31 + Normal.GetHashCode();
         hash = hash * 31 + CollisionMinOffset.GetHashCode();
-        hash = hash * 31 + WallNumber.GetHashCode();
-        hash = hash * 31 + (Int32)Row;
         return hash;
       }
     }

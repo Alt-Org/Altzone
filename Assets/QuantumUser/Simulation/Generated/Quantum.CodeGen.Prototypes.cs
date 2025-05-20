@@ -415,11 +415,11 @@ namespace Quantum.Prototypes {
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattleSoulWallQComponent))]
   public unsafe partial class BattleSoulWallQComponentPrototype : ComponentPrototype<Quantum.BattleSoulWallQComponent> {
     public Quantum.QEnum32<BattleTeamNumber> Team;
+    public Quantum.QEnum32<BattleSoulWallRow> Row;
+    public Int32 WallNumber;
     public Quantum.QEnum32<BattleEmotionState> Emotion;
     public FPVector2 Normal;
     public FP CollisionMinOffset;
-    public Int32 WallNumber;
-    public Quantum.QEnum32<BattleSoulWallRow> Row;
     partial void MaterializeUser(Frame frame, ref Quantum.BattleSoulWallQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattleSoulWallQComponent component = default;
@@ -428,11 +428,11 @@ namespace Quantum.Prototypes {
     }
     public void Materialize(Frame frame, ref Quantum.BattleSoulWallQComponent result, in PrototypeMaterializationContext context = default) {
         result.Team = this.Team;
+        result.Row = this.Row;
+        result.WallNumber = this.WallNumber;
         result.Emotion = this.Emotion;
         result.Normal = this.Normal;
         result.CollisionMinOffset = this.CollisionMinOffset;
-        result.WallNumber = this.WallNumber;
-        result.Row = this.Row;
         MaterializeUser(frame, ref result, in context);
     }
   }

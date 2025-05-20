@@ -103,12 +103,11 @@ namespace Battle.QSimulation.SoulWall
                 soulWallTransform = f.Unsafe.GetPointer<Transform2D>(soulWallEntity);
                 soulWallCollider  = f.Unsafe.GetPointer<PhysicsCollider2D>(soulWallEntity);
 
-                // set temp variables
+                //{ set temp variables
                 soulWallPosition        = BattleGridManager.GridPositionToWorldPosition(soulWallTemplate.Position);
                 soulWallEmotionIndex    = f.RNG->NextInclusive((int)BattleEmotionState.Sadness, (int)BattleEmotionState.Aggression);
                 soulWallColliderExtents = soulWallCollider->Shape.Box.Extents;
 
-                //{ set soul wall row temp variable
                 if (soulWallTemplate.Position.Row == 5 || soulWallTemplate.Position.Row == BattleGridManager.Rows - 5)
                 {
                     soulWallRow = BattleSoulWallRow.First;
