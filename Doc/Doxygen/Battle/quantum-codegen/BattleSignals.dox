@@ -3,17 +3,65 @@
 /// Contains all battle signals.
 /// </summary>
 ///
-/// ## Generated Interfaces
-/// - @cref{Quantum,ISignalBattleOnProjectileHitSoulWall}  
+/// ## Signals
+/// - signal BattleOnProjectileHitSoulWall(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)  
 ///   @copybrief Quantum.ISignalBattleOnProjectileHitSoulWall
-/// - @cref{Quantum,ISignalBattleOnProjectileHitArenaBorder}  
+/// - signal BattleOnProjectileHitArenaBorder(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity)  
 ///   @copybrief Quantum.ISignalBattleOnProjectileHitArenaBorder
-/// - @cref{Quantum,ISignalBattleOnProjectileHitPlayerHitbox}  
+/// - signal BattleOnProjectileHitPlayerHitbox (BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity)  
 ///   @copybrief Quantum.ISignalBattleOnProjectileHitPlayerHitbox
-/// - @cref{Quantum,ISignalBattleOnProjectileHitGoal}  
+/// - signal BattleOnProjectileHitGoal(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleGoalQComponent* goal, EntityRef goalEntity)  
 ///   @copybrief Quantum.ISignalBattleOnProjectileHitGoal
-/// - @cref{Quantum,ISignalBattleOnDiamondHitPlayer}  
+/// - signal BattleOnDiamondHitPlayer(BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity)   
 ///   @copybrief Quantum.ISignalBattleOnDiamondHitPlayer
+///
+/// ---
+///
+/// <br/>
+///
+/// ## Signal Documentation
+///
+/// ---
+///
+/// ### BattleOnProjectileHitSoulWall
+/// @copybrief Quantum.ISignalBattleOnProjectileHitSoulWall
+///
+/// Generated Interface @cref{Quantum,ISignalBattleOnProjectileHitSoulWall}  
+/// Generated Method @cref{Quantum,Frame.FrameSignals.BattleOnProjectileHitSoulWall}
+///
+/// ---
+///
+/// ### BattleOnProjectileHitArenaBorder
+/// @copybrief Quantum.ISignalBattleOnProjectileHitArenaBorder
+///
+/// Generated Interface @cref{Quantum,ISignalBattleOnProjectileHitArenaBorder}  
+/// Generated Method @cref{Quantum,Frame.FrameSignals.BattleOnProjectileHitArenaBorder}
+///
+/// ---
+///
+/// ### BattleOnProjectileHitPlayerHitbox
+/// @copybrief Quantum.ISignalBattleOnProjectileHitPlayerHitbox
+///
+/// Generated Interface @cref{Quantum,ISignalBattleOnProjectileHitPlayerHitbox}  
+/// Generated Method @cref{Quantum,Frame.FrameSignals.BattleOnProjectileHitPlayerHitbox}
+///
+/// ---
+///
+/// ### BattleOnProjectileHitGoal
+/// @copybrief Quantum.ISignalBattleOnProjectileHitGoal
+///
+/// Generated Interface @cref{Quantum,ISignalBattleOnProjectileHitGoal}  
+/// Generated Method @cref{Quantum,Frame.FrameSignals.BattleOnProjectileHitGoal}
+///
+/// ---
+///
+/// ### BattleOnDiamondHitPlayer
+/// @copybrief Quantum.ISignalBattleOnDiamondHitPlayer
+///
+/// This signal is sent when player picks up a collectable diamond.
+///
+/// Generated Interface @cref{Quantum,ISignalBattleOnDiamondHitPlayer}  
+/// Generated Method @cref{Quantum,Frame.FrameSignals.BattleOnDiamondHitPlayer}
 
 /// @interface Quantum::ISignalBattleOnProjectileHitSoulWall
 /// <summary>
