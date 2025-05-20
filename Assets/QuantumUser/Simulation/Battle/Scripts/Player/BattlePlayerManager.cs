@@ -37,7 +37,7 @@ namespace Battle.QSimulation.Player
 
             RuntimePlayer data = f.GetPlayerData(playerRef);
 
-            BattlePlayerSlot playerSlot = (BattlePlayerSlot)data.PlayerSlot;
+            BattlePlayerSlot playerSlot = data.PlayerSlot;
             BattleTeamNumber teamNumber = PlayerHandleInternal.GetTeamNumber(playerSlot);
             PlayerHandleInternal playerHandle = PlayerHandleInternal.GetPlayerHandle(playerManagerData, playerSlot);
 
