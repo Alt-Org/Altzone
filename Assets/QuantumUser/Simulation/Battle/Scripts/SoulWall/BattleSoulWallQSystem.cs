@@ -104,6 +104,7 @@ namespace Battle.QSimulation.SoulWall
                 soulWallCollider  = f.Unsafe.GetPointer<PhysicsCollider2D>(soulWallEntity);
 
                 //{ set temp variables
+
                 soulWallPosition        = BattleGridManager.GridPositionToWorldPosition(soulWallTemplate.Position);
                 soulWallEmotionIndex    = f.RNG->NextInclusive((int)BattleEmotionState.Sadness, (int)BattleEmotionState.Aggression);
                 soulWallColliderExtents = soulWallCollider->Shape.Box.Extents;
@@ -120,7 +121,8 @@ namespace Battle.QSimulation.SoulWall
                 {
                     soulWallRow = BattleSoulWallRow.Last;
                 }
-                //} 
+
+                //} set temp variables
 
                 // initialize soulwall component
                 soulWall->Team               = teamNumber;
