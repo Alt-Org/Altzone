@@ -18,6 +18,7 @@ using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ModelV2;
 using System.Data;
+using MenuUi.Scripts.AvatarEditor;
 
 public class ProfileMenu : AltMonoBehaviour
 {
@@ -52,11 +53,17 @@ public class ProfileMenu : AltMonoBehaviour
     [SerializeField] private GameObject _characterOptionPrefab;
     [SerializeField] private TextMeshProUGUI _characterSelectionMessage;
 
+    [Header("Avatar")]
+    [SerializeField] private AvatarLoader _avatarLoaderInfoPage;
+    [SerializeField] private AvatarLoader _avatarLoaderStoryPage;
+    [SerializeField] private AvatarFaceLoader _avatarFaceLoaderTabline;
+
     [Header("Buttons")]
     [SerializeField] private Button _openMottoOptions;
     [SerializeField] private Button _openFavoriteDefenceSelection;
     [SerializeField] private GameObject _closePopupAreaButton;
     [SerializeField] private GameObject[] _playStyleButtons;
+    [SerializeField] private Button _avatarPageTabButton;
 
     [Header("Clan Button")]
     [SerializeField] private Button _ClanURLButton;
@@ -68,8 +75,8 @@ public class ProfileMenu : AltMonoBehaviour
     [SerializeField] private Button _addFriendButton;
 
     [Header("Others")]
-
     [SerializeField] private PlayStyle _playStyle;
+    [SerializeField] private WeekEmotions _weekEmotions;
 
     public TextMeshProUGUI textMeshPro;
 
@@ -288,11 +295,12 @@ public class ProfileMenu : AltMonoBehaviour
             {
                 _playerData = player;
                 _otherPlayerProfile = true;
+                _avatarPageTabButton.gameObject.SetActive(false);
             }
             else
             {
                 _otherPlayerProfile = false;
-
+                _avatarPageTabButton.gameObject.SetActive(true);
 
                 store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p =>
                 {
@@ -385,6 +393,23 @@ public class ProfileMenu : AltMonoBehaviour
                 _clanID = _playerData.ClanId;
                 _url = "https://altzone.fi/clans/" + _playerData.ClanId;
             });
+
+            if(_otherPlayerProfile)
+            {
+                _weekEmotions.ShowOtherPlayerEmotions();
+            }
+            else
+            {
+                _weekEmotions.ValuesToWeekEmotions(_playerData);
+            }
+
+            if(_playerData.SelectedCharacterId != 0 && _playerData.SelectedCharacterId != 201)
+            {
+                AvatarVisualData avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(_playerData);
+                _avatarLoaderInfoPage.UpdateVisuals(avatarVisualData);
+                _avatarLoaderStoryPage.UpdateVisuals(avatarVisualData);
+                _avatarFaceLoaderTabline.UpdateVisuals(avatarVisualData);
+            }
 
             updateTime();
 

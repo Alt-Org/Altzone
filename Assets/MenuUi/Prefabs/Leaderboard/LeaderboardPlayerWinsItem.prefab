@@ -239,6 +239,7 @@ MonoBehaviour:
   _nameText: {fileID: 1437532963947543663}
   _winsText: {fileID: 5482741490182790832}
   _clanHeart: {fileID: 6253194504039477938}
+  _avatarFaceLoader: {fileID: 8534578983844424251}
   <OpenProfileButton>k__BackingField: {fileID: 4330713747197579326}
 --- !u!114 &4330713747197579326
 MonoBehaviour:
@@ -1221,6 +1222,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7547356067027439156}
     m_Modifications:
+    - target: {fileID: 2907023324437588145, guid: 242eb41c9b6db9841a5c6610aa625c54,
+        type: 3}
+      propertyPath: _useOwnAvatarVisuals
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4395214235301648805, guid: 242eb41c9b6db9841a5c6610aa625c54,
         type: 3}
       propertyPath: m_Pivot.x
@@ -1299,12 +1305,12 @@ PrefabInstance:
     - target: {fileID: 4395214235301648805, guid: 242eb41c9b6db9841a5c6610aa625c54,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 7
+      value: 7.600006
       objectReference: {fileID: 0}
     - target: {fileID: 4395214235301648805, guid: 242eb41c9b6db9841a5c6610aa625c54,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -27
+      value: -20.700005
       objectReference: {fileID: 0}
     - target: {fileID: 4395214235301648805, guid: 242eb41c9b6db9841a5c6610aa625c54,
         type: 3}
@@ -1337,3 +1343,15 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 6784453012030947978}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8534578983844424251 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2907023324437588145, guid: 242eb41c9b6db9841a5c6610aa625c54,
+    type: 3}
+  m_PrefabInstance: {fileID: 6784453012030947978}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39ec419aaf903c747b6c6e5ac7dd4bbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
