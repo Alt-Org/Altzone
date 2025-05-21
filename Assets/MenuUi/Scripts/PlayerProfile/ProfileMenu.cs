@@ -401,10 +401,13 @@ public class ProfileMenu : AltMonoBehaviour
                 _weekEmotions.ValuesToWeekEmotions(_playerData);
             }
 
-            AvatarVisualData avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(_playerData);
-            _avatarLoaderInfoPage.UpdateVisuals(avatarVisualData);
-            _avatarLoaderStoryPage.UpdateVisuals(avatarVisualData);
-            _avatarFaceLoaderTabline.UpdateVisuals(avatarVisualData);
+            if(_playerData.SelectedCharacterId != 0 && _playerData.SelectedCharacterId != 201)
+            {
+                AvatarVisualData avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(_playerData);
+                _avatarLoaderInfoPage.UpdateVisuals(avatarVisualData);
+                _avatarLoaderStoryPage.UpdateVisuals(avatarVisualData);
+                _avatarFaceLoaderTabline.UpdateVisuals(avatarVisualData);
+            }
 
             updateTime();
 

@@ -315,6 +315,7 @@ MonoBehaviour:
   _nameText: {fileID: 8825604220182762085}
   _coinsText: {fileID: 6191827188570660342}
   _clanHeart: {fileID: 1709619670028437936}
+  _avatarFaceLoader: {fileID: 6762053843641485935}
   <OpenProfileButton>k__BackingField: {fileID: 2880526593071471378}
 --- !u!114 &2880526593071471378
 MonoBehaviour:
@@ -1625,12 +1626,12 @@ PrefabInstance:
     - target: {fileID: 4395214235301648805, guid: 242eb41c9b6db9841a5c6610aa625c54,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.5
+      value: -0.28900146
       objectReference: {fileID: 0}
     - target: {fileID: 4395214235301648805, guid: 242eb41c9b6db9841a5c6610aa625c54,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -28
+      value: -19.099998
       objectReference: {fileID: 0}
     - target: {fileID: 4395214235301648805, guid: 242eb41c9b6db9841a5c6610aa625c54,
         type: 3}
@@ -1663,3 +1664,15 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 8466897503146500830}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6762053843641485935 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2907023324437588145, guid: 242eb41c9b6db9841a5c6610aa625c54,
+    type: 3}
+  m_PrefabInstance: {fileID: 8466897503146500830}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39ec419aaf903c747b6c6e5ac7dd4bbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -127,6 +127,13 @@ public class LeaderboardView : MonoBehaviour
                             int rank = 1;
                             foreach (PlayerLeaderboard ranking in playerLeaderboard)
                             {
+                                AvatarVisualData avatarVisualData = null;
+
+                                if (ranking.Clan.SelectedCharacterId != 201 && ranking.Clan.SelectedCharacterId != 0)
+                                {
+                                    avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(ranking.Clan);
+                                }
+
                                 if (rank < 4)
                                 {
                                     _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, ranking.Clan);
@@ -134,7 +141,7 @@ public class LeaderboardView : MonoBehaviour
                                 else
                                 {
                                     LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-                                    item.Initialize(rank, ranking.Clan.Name, ranking.Points);
+                                    item.Initialize(rank, ranking.Clan.Name, ranking.Points, avatarVisualData);
 
                                     // View player profile button
                                     item.OpenProfileButton.onClick.AddListener(() =>
@@ -153,6 +160,13 @@ public class LeaderboardView : MonoBehaviour
                             int rank = 1;
                             foreach (PlayerLeaderboard ranking in playerLeaderboard)
                             {
+                                AvatarVisualData avatarVisualData = null;
+
+                                if (ranking.Clan.SelectedCharacterId != 201 && ranking.Clan.SelectedCharacterId != 0)
+                                {
+                                    avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(ranking.Clan);
+                                }
+
                                 if (rank < 4)
                                 {
                                     _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, ranking.Clan);
@@ -160,7 +174,7 @@ public class LeaderboardView : MonoBehaviour
                                 else
                                 {
                                     LeaderboardActivityItem item = Instantiate(_playerActivityItemPrefab, parent: _activityContent).GetComponent<LeaderboardActivityItem>();
-                                    item.Initialize(rank, ranking.Clan.Name, ranking.Points);
+                                    item.Initialize(rank, ranking.Clan.Name, ranking.Points, avatarVisualData);
 
                                     // View player profile button
                                     item.OpenProfileButton.onClick.AddListener(() =>
@@ -228,6 +242,12 @@ public class LeaderboardView : MonoBehaviour
                         foreach (ClanMember player in clanData.Members)
                         {
                             PlayerData playerData = player.GetPlayerData();
+                            AvatarVisualData avatarVisualData = null;
+
+                            if (playerData.SelectedCharacterId != 201 && playerData.SelectedCharacterId != 0)
+                            {
+                                avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
+                            }
 
                             if (rank < 4)
                             {
@@ -236,7 +256,7 @@ public class LeaderboardView : MonoBehaviour
                             else
                             {
                                 LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-                                item.Initialize(rank, player.Name, player.LeaderBoardWins);
+                                item.Initialize(rank, player.Name, player.LeaderBoardWins, avatarVisualData);
 
                                 //View player profile button
                                 item.OpenProfileButton.onClick.AddListener(() =>
@@ -262,7 +282,7 @@ public class LeaderboardView : MonoBehaviour
                                 else
                                 {
                                     LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-                                    item.Initialize(rank, "", 0);
+                                    item.Initialize(rank, "", 0, null);
                                 }
 
                                 rank++;
@@ -277,6 +297,12 @@ public class LeaderboardView : MonoBehaviour
                         foreach (ClanMember player in clanData.Members)
                         {
                             PlayerData playerData = player.GetPlayerData();
+                            AvatarVisualData avatarVisualData = null;
+
+                            if (playerData.SelectedCharacterId != 201 && playerData.SelectedCharacterId != 0)
+                            {
+                                avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
+                            }
 
                             if (rank < 4)
                             {
@@ -285,7 +311,7 @@ public class LeaderboardView : MonoBehaviour
                             else
                             {
                                 LeaderboardActivityItem item = Instantiate(_playerActivityItemPrefab, parent: _activityContent).GetComponent<LeaderboardActivityItem>();
-                                item.Initialize(rank, player.Name, player.LeaderBoardCoins);
+                                item.Initialize(rank, player.Name, player.LeaderBoardCoins, avatarVisualData);
 
                                 // View player profile button
                                 item.OpenProfileButton.onClick.AddListener(() =>
@@ -311,7 +337,7 @@ public class LeaderboardView : MonoBehaviour
                                 else
                                 {
                                     LeaderboardActivityItem item = Instantiate(_playerActivityItemPrefab, parent: _activityContent).GetComponent<LeaderboardActivityItem>();
-                                    item.Initialize(rank, "", 0);
+                                    item.Initialize(rank, "", 0, null);
                                 }
 
                                 rank++;
@@ -333,7 +359,7 @@ public class LeaderboardView : MonoBehaviour
                         else
                         {
                             LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-                            item.Initialize(i, "", 0);
+                            item.Initialize(i, "", 0, null);
 
                             // View player profile button
                             //item.OpenProfileButton.onClick.AddListener(() =>
@@ -354,7 +380,7 @@ public class LeaderboardView : MonoBehaviour
                         else
                         {
                             LeaderboardActivityItem item = Instantiate(_playerActivityItemPrefab, parent: _activityContent).GetComponent<LeaderboardActivityItem>();
-                            item.Initialize(i, "", 0);
+                            item.Initialize(i, "", 0, null);
 
                             // View player profile button
                             //item.OpenProfileButton.onClick.AddListener(() =>

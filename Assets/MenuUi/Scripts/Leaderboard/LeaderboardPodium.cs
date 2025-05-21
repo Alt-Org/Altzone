@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
+using MenuUi.Scripts.AvatarEditor;
 using MenuUi.Scripts.Window;
 using TMPro;
 using UnityEngine;
@@ -98,6 +99,17 @@ public class LeaderboardPodium : MonoBehaviour
                 {
                     DataCarrier.AddData(DataCarrier.PlayerProfile, playerData);
                 });
+
+                AvatarVisualData avatarVisualData = null;
+
+                if (playerData.SelectedCharacterId != 201 && playerData.SelectedCharacterId != 0)
+                {
+                    avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
+                }
+                if (avatarVisualData != null)
+                {
+                    _firstAvatarHead.GetComponent<AvatarFaceLoader>().UpdateVisuals(avatarVisualData);
+                }
             }
 
         }
@@ -128,6 +140,17 @@ public class LeaderboardPodium : MonoBehaviour
                 {
                     DataCarrier.AddData(DataCarrier.PlayerProfile, playerData);
                 });
+
+                AvatarVisualData avatarVisualData = null;
+
+                if (playerData.SelectedCharacterId != 201 && playerData.SelectedCharacterId != 0)
+                {
+                    avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
+                }
+                if (avatarVisualData != null)
+                {
+                    _secondAvatarHead.GetComponent<AvatarFaceLoader>().UpdateVisuals(avatarVisualData);
+                }
             }
         }
     }
@@ -157,6 +180,17 @@ public class LeaderboardPodium : MonoBehaviour
                 {
                     DataCarrier.AddData(DataCarrier.PlayerProfile, playerData);
                 });
+
+                AvatarVisualData avatarVisualData = null;
+
+                if (playerData.SelectedCharacterId != 201 && playerData.SelectedCharacterId != 0)
+                {
+                    avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
+                }
+                if (avatarVisualData != null)
+                {
+                    _thirdAvatarHead.GetComponent<AvatarFaceLoader>().UpdateVisuals(avatarVisualData);
+                }
             }
         }
     }
