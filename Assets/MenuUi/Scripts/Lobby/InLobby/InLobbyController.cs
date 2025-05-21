@@ -163,7 +163,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
             switch (gameType)
             {
                 case GameType.Custom:
-                    if (PhotonRealtimeClient.InRoom) return;
+                    if (PhotonRealtimeClient.InRoom)
+                    {
+                        _roomSwitcher.SwitchRoom(GameType.Custom);
+                        return;
+                    }
                     break;
                 case GameType.Clan2v2:
                 case GameType.Random2v2:
