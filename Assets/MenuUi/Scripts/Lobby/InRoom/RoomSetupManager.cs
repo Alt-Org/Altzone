@@ -15,6 +15,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 
 using MenuUi.Scripts.Lobby.SelectedCharacters;
+using MenuUi.Scripts.Signals;
 
 namespace MenuUi.Scripts.Lobby.InRoom
 {
@@ -84,6 +85,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         PlayerRole currentRole = PlayerRole.Player;
 
         private bool _firstOnEnable = true;
+        private bool _reloadCharacters = false;
 
         public enum PlayerRole
         {
@@ -94,11 +96,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private void Awake()
         {
             LobbyManager.LobbyOnLeftRoom += OnLocalPlayerLeftRoom;
+            SignalBus.OnReloadCharacterGalleryRequested += OnReloadCharactersRequested;
         }
 
         private void OnEnable()
         {
-            _selectedCharactersEditable.SelectedCharactersChanged += UpdateCharactersAndStatsKey;
             Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState}");
             _buttonStartPlay.interactable = false;
             //_buttonRaidTest.interactable = false;
@@ -115,7 +117,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private void OnDisable()
         {
-            _selectedCharactersEditable.SelectedCharactersChanged += UpdateCharactersAndStatsKey;
             Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState}");
             LobbyManager.LobbyOnPlayerEnteredRoom -= OnPlayerEnteredRoom;
             LobbyManager.LobbyOnPlayerLeftRoom -= OnPlayerLeftRoom;
@@ -128,6 +129,15 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private void OnDestroy()
         {
             LobbyManager.LobbyOnLeftRoom -= OnLocalPlayerLeftRoom;
+            SignalBus.OnReloadCharacterGalleryRequested -= OnReloadCharactersRequested;
+        }
+
+        private void OnReloadCharactersRequested()
+        {
+            if (!PhotonRealtimeClient.InRoom) return;
+
+            if (gameObject.activeInHierarchy) UpdateCharactersAndStatsKey();
+            else _reloadCharacters = true;
         }
 
         private IEnumerator OnEnableInRoom()
@@ -146,14 +156,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
             // Checking if player is already in the room (can happen if battle popup is minimized while in room)
             if (!_firstOnEnable)
             {
-                // Checking if we have to update defence characters
-                if (player.GetCustomProperty<int[]>(PlayerCharactersKey) != GetSelectedCharacterIds(playerData))
-                {
-                    UpdateCharactersAndStatsKey();
-                }
+                // If we have to reload characters we call the method to update them else only updatestatus
+                if (_reloadCharacters) UpdateCharactersAndStatsKey();
+                else UpdateStatus();
 
-                // Updating room status and stopping coroutine
-                UpdateStatus();
+                // Stopping coroutine
                 _onEnableCoroutineHolder = null;
                 yield break;
             }
@@ -202,6 +209,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private void UpdateCharactersAndStatsKey()
         {
+            if (!PhotonRealtimeClient.InRoom) return;
             StartCoroutine(GetPlayerData(playerData =>
             {
                 // Getting character id and stat int arrays
@@ -219,6 +227,9 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 // Setting custom characters for quantum
                 List<CustomCharacter> selectedCharacters = GetSelectedCustomCharacters(playerData);
                 LobbyManager.Instance.SetPlayerQuantumCharacters(selectedCharacters);
+                _selectedCharactersEditable.SetCharacters();
+                _reloadCharacters = false;
+                UpdateStatus();
             }));
         }
 

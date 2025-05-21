@@ -17,6 +17,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private GalleryView _galleryView;
         private SwipeUI _swipe;
         private RectTransform _rectTransform;
+        private bool _charactersUpdated = false;
 
         // Array of character slots in selected grid
         [SerializeField] private SelectedCharacterEditingSlot[] _selectedCharacterSlots;
@@ -71,6 +72,7 @@ namespace MenuUi.Scripts.CharacterGallery
         /// </summary>
         public void OpenPopup()
         {
+            _charactersUpdated = false;
             gameObject.SetActive(true);
         }
 
@@ -81,7 +83,7 @@ namespace MenuUi.Scripts.CharacterGallery
         public void ClosePopup()
         {
             gameObject.SetActive(false);
-            SignalBus.OnReloadCharacterGalleryRequestedSignal();
+            if (_charactersUpdated) SignalBus.OnReloadCharacterGalleryRequestedSignal();
         }
 
 
@@ -124,6 +126,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 selectedCharacterSlot.SelectedCharacter.ReturnToOriginalSlot();
                 selectedCharacterSlot.SelectedCharacter = null;
                 SignalBus.OnSelectedDefenceCharacterChangedSignal(CharacterID.None, selectedCharacterSlot.SlotIndex);
+                _charactersUpdated = true;
             }
             else
             {
@@ -148,6 +151,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 selectedCharacterSlot.SelectedCharacter = characterSlot.Character;
                 characterSlot.gameObject.SetActive(false);
                 SignalBus.OnSelectedDefenceCharacterChangedSignal(characterSlot.Character.Id, selectedCharacterSlot.SlotIndex);
+                _charactersUpdated = true;
             }
         }
 
