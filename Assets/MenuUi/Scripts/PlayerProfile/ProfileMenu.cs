@@ -63,6 +63,7 @@ public class ProfileMenu : AltMonoBehaviour
     [SerializeField] private Button _openFavoriteDefenceSelection;
     [SerializeField] private GameObject _closePopupAreaButton;
     [SerializeField] private GameObject[] _playStyleButtons;
+    [SerializeField] private Button _avatarPageTabButton;
 
     [Header("Clan Button")]
     [SerializeField] private Button _ClanURLButton;
@@ -294,11 +295,12 @@ public class ProfileMenu : AltMonoBehaviour
             {
                 _playerData = player;
                 _otherPlayerProfile = true;
+                _avatarPageTabButton.gameObject.SetActive(false);
             }
             else
             {
                 _otherPlayerProfile = false;
-
+                _avatarPageTabButton.gameObject.SetActive(true);
 
                 store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p =>
                 {
