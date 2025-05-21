@@ -8,6 +8,7 @@ public class KojuPopup : MonoBehaviour
     [SerializeField] private Button denyButton;
     [SerializeField] private TMP_InputField priceInput;
 
+    [SerializeField] private TMP_Text kojuPriceText;
 
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private TMP_Text weightText;
@@ -48,6 +49,11 @@ public class KojuPopup : MonoBehaviour
         priceInput.text = furnitureData.GetPrice().ToString("F2");
 
         gameObject.SetActive(true);
+
+        float currentPrice = furnitureData.GetPrice();
+        priceInput.text = currentPrice.ToString("F2");
+        kojuPriceText.text = currentPrice.ToString("F2");
+
     }
 
     //Call when confirming the Popup
