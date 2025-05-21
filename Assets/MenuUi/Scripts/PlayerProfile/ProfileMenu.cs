@@ -18,6 +18,7 @@ using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ModelV2;
 using System.Data;
+using MenuUi.Scripts.AvatarEditor;
 
 public class ProfileMenu : AltMonoBehaviour
 {
@@ -52,6 +53,11 @@ public class ProfileMenu : AltMonoBehaviour
     [SerializeField] private GameObject _characterOptionPrefab;
     [SerializeField] private TextMeshProUGUI _characterSelectionMessage;
 
+    [Header("Avatar")]
+    [SerializeField] private AvatarLoader _avatarLoaderInfoPage;
+    [SerializeField] private AvatarLoader _avatarLoaderStoryPage;
+    [SerializeField] private AvatarFaceLoader _avatarFaceLoaderTabline;
+
     [Header("Buttons")]
     [SerializeField] private Button _openMottoOptions;
     [SerializeField] private Button _openFavoriteDefenceSelection;
@@ -68,7 +74,6 @@ public class ProfileMenu : AltMonoBehaviour
     [SerializeField] private Button _addFriendButton;
 
     [Header("Others")]
-
     [SerializeField] private PlayStyle _playStyle;
     [SerializeField] private WeekEmotions _weekEmotions;
 
@@ -395,6 +400,11 @@ public class ProfileMenu : AltMonoBehaviour
             {
                 _weekEmotions.ValuesToWeekEmotions(_playerData);
             }
+
+            AvatarVisualData avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(_playerData);
+            _avatarLoaderInfoPage.UpdateVisuals(avatarVisualData);
+            _avatarLoaderStoryPage.UpdateVisuals(avatarVisualData);
+            _avatarFaceLoaderTabline.UpdateVisuals(avatarVisualData);
 
             updateTime();
 
