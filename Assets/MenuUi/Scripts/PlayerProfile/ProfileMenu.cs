@@ -70,6 +70,7 @@ public class ProfileMenu : AltMonoBehaviour
     [Header("Others")]
 
     [SerializeField] private PlayStyle _playStyle;
+    [SerializeField] private WeekEmotions _weekEmotions;
 
     public TextMeshProUGUI textMeshPro;
 
@@ -385,6 +386,15 @@ public class ProfileMenu : AltMonoBehaviour
                 _clanID = _playerData.ClanId;
                 _url = "https://altzone.fi/clans/" + _playerData.ClanId;
             });
+
+            if(_otherPlayerProfile)
+            {
+                _weekEmotions.ShowOtherPlayerEmotions();
+            }
+            else
+            {
+                _weekEmotions.ValuesToWeekEmotions(_playerData);
+            }
 
             updateTime();
 
