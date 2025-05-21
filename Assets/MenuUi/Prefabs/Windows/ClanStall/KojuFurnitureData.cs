@@ -15,24 +15,23 @@ public class KojuFurnitureData : MonoBehaviour
 
     private void Start()
     {
-        
-        price = 100f; //for testing purposes
+        price = 100f; //for testing purposes, set the price for 100. Should be replaced later with actual data
         RefreshUI();
     }
 
     public void SetFurniture(StorageFurniture data)
     {
         storageFurniture = data;
-        // price = 100f; 
         RefreshUI();
     }
 
+    //Updates the item to show the data
     private void RefreshUI()
     {
         if (storageFurniture == null)
         {
             Debug.LogWarning("StorageFurniture not set.");
-           
+
         }
         else
         {
@@ -53,4 +52,4 @@ public class KojuFurnitureData : MonoBehaviour
     {
         return price;
     }
-}
+}

@@ -16,7 +16,7 @@ public class ItemMover : MonoBehaviour
 
         GetComponent<Button>().onClick.AddListener(OnClick);
 
-        //This includes inactive Popup when searching for it
+        //This includes inactive Popup prefab when searching for object of type
         popup = FindObjectOfType<KojuPopup>(true);
 
         if (popup == null)
@@ -27,11 +27,22 @@ public class ItemMover : MonoBehaviour
 
     void OnClick()
     {
-        if (assignedSlot != null || HasFreeSlot())
+        if (assignedSlot != null)
+        {
+            //If the item is already in the panel, move it immediately to tray
+            ExecuteMove();
+        }
+        else if (HasFreeSlot())
+        {
+            //Open the popup if the user is trying to move the item from the tray to the panel
             popup?.Open(gameObject);
+        }
         else
+        {
             Debug.Log("Panel is full!");
+        }
     }
+
 
     private bool HasFreeSlot()
     {
@@ -41,6 +52,7 @@ public class ItemMover : MonoBehaviour
     //Called when the user confirms the moving
     public void ExecuteMove()
     {
+        //If item is not in grid, try to put it into the grid
         if (assignedSlot == null)
         {
             KojuItemSlot[] slots = GameObject.FindObjectsOfType<KojuItemSlot>();
@@ -58,6 +70,7 @@ public class ItemMover : MonoBehaviour
         }
         else
         {
+            //If object is already in the grid, put it in the tray
             transform.SetParent(trayParent, false);
             assignedSlot.ClearSlot();
             assignedSlot = null;

@@ -8,6 +8,12 @@ public class KojuPopup : MonoBehaviour
     [SerializeField] private Button denyButton;
     [SerializeField] private TMP_InputField priceInput;
 
+
+    [SerializeField] private TMP_Text nameText;
+    [SerializeField] private TMP_Text weightText;
+    [SerializeField] private TMP_Text rarityText;
+    [SerializeField] private TMP_Text setNameText;
+
     private GameObject currentCard;
     private KojuFurnitureData furnitureData;
     private ItemMover itemMover;
@@ -18,42 +24,52 @@ public class KojuPopup : MonoBehaviour
         denyButton.onClick.AddListener(Deny);
     }
 
+    //Open the popup and fills it with the necessary data, currently hardcoded for testing purposes
     public void Open(GameObject card)
     {
+
         currentCard = card;
+
         furnitureData = currentCard.GetComponent<KojuFurnitureData>();
         itemMover = currentCard.GetComponent<ItemMover>();
 
-        if (furnitureData == null /*|| itemMover == null*/)
+        if (furnitureData == null)
         {
             Debug.LogError("Missing KojuFurnitureData component on card.");
             return;
         }
 
-        // Show the current price (hardcoded or set earlier) in the input field
-        priceInput.text = furnitureData.GetPrice().ToString();
+        //Hardcoded test values for now, this data is used in the Popup card. Should use the data directly from the cards in the future.
+        nameText.text = "Mirror";
+        weightText.text = "10 kg";
+        rarityText.text = "Common";
+        setNameText.text = "Furniture Set";
+
+        priceInput.text = furnitureData.GetPrice().ToString("F2");
 
         gameObject.SetActive(true);
     }
 
+    //Call when confirming the Popup
     public void Confirm()
     {
+        //Assigns the new price
         if (float.TryParse(priceInput.text, out float price))
         {
-            furnitureData.SetPrice(price);  // Update the local price and refresh UI
+            furnitureData.SetPrice(price);
         }
         else
         {
             Debug.LogWarning("Invalid price entered");
             return;
         }
-
-        // Disabled to isolate price logic:
-        itemMover.ExecuteMove();
+        //Moves the item, see ItemMover.cs
+        itemMover?.ExecuteMove();
 
         Close();
     }
 
+    //If the user cancels the Popup
     public void Deny()
     {
         Close();
