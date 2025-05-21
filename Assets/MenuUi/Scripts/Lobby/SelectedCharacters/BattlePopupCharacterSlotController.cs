@@ -41,7 +41,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                     }
 
                     PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(((int)charID).ToString());
-                    _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charID, editable);
+                    _selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charID, editable);
                 }
             }));
         }
@@ -63,7 +63,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                 }
 
                 PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(selectedCharacterIds[i].ToString());
-                _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charInfo.CharacterId, false, stats[(i * 5)..(i * 5 + 5)]);
+                _selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charInfo.CharacterId, false, stats[(i * 5)..(i * 5 + 5)]);
             }
         }
     }
