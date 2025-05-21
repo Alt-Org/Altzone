@@ -48,8 +48,19 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
         yield return new WaitUntil(() => ((timeout != null) || (playerData != null)));
 
+        AvatarVisualData data = LoadAvatarDesign(playerData);
+
+        if (data == null) yield break;
+
+        _avatarVisualDataScriptableObject.Data = data;
+
+        InvokeOnAvatarDesignUpdate();
+    }
+
+    public AvatarVisualData LoadAvatarDesign(PlayerData playerData)
+    {
         if (playerData == null)
-            yield break;
+            return null;
 
         if (playerData.AvatarData == null || !playerData.AvatarData.Validate())
         {
@@ -58,23 +69,24 @@ public class AvatarDesignLoader : AltMonoBehaviour
             playerData.AvatarData = new(playerAvatar.Name, playerAvatar.FeatureIds, playerAvatar.Color, playerAvatar.Scale);
         }
 
+        AvatarVisualData data = new();
         List<AvatarPiece> pieceIDs = Enum.GetValues(typeof(AvatarPiece)).Cast<AvatarPiece>().ToList();
         foreach (AvatarPiece id in pieceIDs)
         {
-            int pieceId= playerData.AvatarData.GetPieceID(id);
+            int pieceId = playerData.AvatarData.GetPieceID(id);
             var partInfo = _avatarPartsReference.GetAvatarPartById(pieceId.ToString());
             if (partInfo != null)
-                _avatarVisualDataScriptableObject.SetAvatarPiece(id, partInfo.AvatarImage);
+                data.SetAvatarPiece(id, partInfo.AvatarImage);
             else
-                _avatarVisualDataScriptableObject.SetAvatarPiece(id, null);
+                data.SetAvatarPiece(id, null);
         }
 
         Color color = Color.white;
-        ColorUtility.TryParseHtmlString(playerData.AvatarData.Color,out color);
+        ColorUtility.TryParseHtmlString(playerData.AvatarData.Color, out color);
 
-        _avatarVisualDataScriptableObject.color = color;
+        data.color = color;
 
-        InvokeOnAvatarDesignUpdate();
+        return data;
     }
 
     public void InvokeOnAvatarDesignUpdate()

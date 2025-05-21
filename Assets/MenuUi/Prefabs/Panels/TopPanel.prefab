@@ -2184,6 +2184,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 9212066207485454122}
     m_Modifications:
+    - target: {fileID: 2907023324437588145, guid: 242eb41c9b6db9841a5c6610aa625c54,
+        type: 3}
+      propertyPath: _useOwnAvatarVisuals
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4063899545734868318, guid: 242eb41c9b6db9841a5c6610aa625c54,
+        type: 3}
+      propertyPath: _useOwnAvatarVisuals
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4395214235301648805, guid: 242eb41c9b6db9841a5c6610aa625c54,
         type: 3}
       propertyPath: m_Pivot.x
