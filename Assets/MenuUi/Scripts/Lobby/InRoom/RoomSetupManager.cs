@@ -202,6 +202,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
             List<CustomCharacter> selectedCharacters = GetSelectedCustomCharacters(playerData);
             LobbyManager.Instance.SetPlayerQuantumCharacters(selectedCharacters);
 
+            _selectedCharactersEditable.SetCharacters();
+
             UpdateStatus();
             _firstOnEnable = false;
             _onEnableCoroutineHolder = null;
@@ -406,22 +408,22 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 case PlayerPosition1:
                     _interactablePlayerP1 = false;
                     if (_captionPlayerP1 != null) _captionPlayerP1 = $"<color=blue>{player.NickName}</color>";
-                    if (_selectedCharactersP1 != null) _selectedCharactersP1.SetCharacters(false);
+                    if (_selectedCharactersP1 != null) _selectedCharactersP1.SetCharacters();
                     break;
                 case PlayerPosition2:
                     _interactablePlayerP2 = false;
                     if (_captionPlayerP2 != null) _captionPlayerP2 = $"<color=blue>{player.NickName}</color>";
-                    if (_selectedCharactersP2 != null) _selectedCharactersP2.SetCharacters(false);
+                    if (_selectedCharactersP2 != null) _selectedCharactersP2.SetCharacters();
                     break;
                 case PlayerPosition3:
                     _interactablePlayerP3 = false;
                     if (_captionPlayerP3 != null) _captionPlayerP3 = $"<color=blue>{player.NickName}</color>";
-                    if (_selectedCharactersP4 != null) _selectedCharactersP3.SetCharacters(false);
+                    if (_selectedCharactersP4 != null) _selectedCharactersP3.SetCharacters();
                     break;
                 case PlayerPosition4:
                     _interactablePlayerP4 = false;
                     if (_captionPlayerP4 != null) _captionPlayerP4 = $"<color=blue>{player.NickName}</color>";
-                    if (_selectedCharactersP4 != null) _selectedCharactersP4.SetCharacters(false);
+                    if (_selectedCharactersP4 != null) _selectedCharactersP4.SetCharacters();
                     break;
             }
         }

@@ -33,16 +33,17 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         public Button ButtonComponent => _button;
 
 
-        private void Awake()
-        {
-            if (_button == null) _button = GetComponent<Button>();
-            _button.onClick.AddListener(() => SignalBus.OnDefenceGalleryEditPanelRequestedSignal());
-        }
-
-
         private void OnDestroy()
         {
             _button.onClick.RemoveAllListeners();
+        }
+
+
+        // Method for adding the edit panel listener because in KotiView the button should open defence gallery using SetMainMenuWindowIndex script instead
+        public void SetOpenEditPanelListener() 
+        {
+            if (_button == null) _button = GetComponent<Button>();
+            _button.onClick.AddListener(() => SignalBus.OnDefenceGalleryEditPanelRequestedSignal());
         }
 
 
@@ -58,16 +59,15 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             _spriteImage.sprite = galleryImage;
             _spriteImage.enabled = true;
 
-            CharacterClassID charClassID = CustomCharacter.GetClassID(charID);
-            _upperBackgroundImage.color = _classColorReference.GetAlternativeColor(charClassID);
-            _lowerBackgroundImage.color = _classColorReference.GetColor(charClassID);
+            //CharacterClassID charClassID = CustomCharacter.GetClassID(charID);
+            //_upperBackgroundImage.color = _classColorReference.GetAlternativeColor(charClassID);
+            //_lowerBackgroundImage.color = _classColorReference.GetColor(charClassID);
 
             _characterId = charID;
 
             if (_button == null) _button = GetComponent<Button>();
             _button.enabled = isEditable;
 
-            _piechartPreview.gameObject.SetActive(true);
             if (stats != null)
             {
                 _piechartPreview.UpdateChart(stats[3], stats[0], stats[4], stats[2], stats[1]);
@@ -87,9 +87,10 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         public void SetEmpty(bool isEditable)
         {
             _spriteImage.enabled = false;
-            _upperBackgroundImage.color = Color.white;
-            _lowerBackgroundImage.color = Color.white;
-            _piechartPreview.gameObject.SetActive(false);
+            //_upperBackgroundImage.color = Color.white;
+            //_lowerBackgroundImage.color = Color.white;
+
+            _piechartPreview.ClearChart();
             _characterId = CharacterID.None;
 
             if (_button == null) _button = GetComponent<Button>();

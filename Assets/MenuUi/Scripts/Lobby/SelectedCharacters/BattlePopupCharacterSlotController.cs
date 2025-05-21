@@ -16,16 +16,38 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         [SerializeField] private bool _isInRoom;
 
 
+        private void Awake()
+        {
+            if (_isInRoom)
+            {
+                foreach (BattlePopupSelectedCharacter slot in _selectedCharacterSlots)
+                {
+                    slot.SetOpenEditPanelListener();
+                }
+            }
+            else
+            {
+                SignalBus.OnReloadCharacterGalleryRequested += SetCharacters;
+            }
+        }
+
+
         private void OnEnable()
         {
             if (!_isInRoom) SetCharacters();
         }
 
 
+        private void OnDestroy()
+        {
+            if (!_isInRoom) SignalBus.OnReloadCharacterGalleryRequested -= SetCharacters;
+        }
+
+
         /// <summary>
         /// Set player characters. Gets info from player data.
         /// </summary>
-        public void SetCharacters(bool editable = true)
+        public void SetCharacters()
         {
             StartCoroutine(GetPlayerData(playerData =>
             {
@@ -36,12 +58,12 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
 
                     if (charID is CharacterID.None)
                     {
-                        _selectedCharacterSlots[i].SetEmpty(editable);
+                        _selectedCharacterSlots[i].SetEmpty(true);
                         continue;
                     }
 
                     PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(((int)charID).ToString());
-                    _selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charID, editable);
+                    _selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charID, true);
                 }
             }));
         }
