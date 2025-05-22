@@ -48,6 +48,11 @@
   Marks type as [Quantum Component🡵].
 - **%QSingleton**  
   Marks type as [Quantum Singleton🡵].
+- **%QConfig**  
+  Marks type as %Quantum Config.
+- **%QSpec**  
+  Marks type as [Quantum Spec🡵].
+
 
 <br/>
 
@@ -65,4 +70,5 @@
 [Quantum System🡵]:    https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems
 [Quantum Component🡵]: https://doc.photonengine.com/quantum/current/manual/quantum-ecs/dsl
 [Quantum Singleton🡵]: https://doc.photonengine.com/quantum/current/manual/quantum-ecs/dsl
+[Quantum Spec🡵]:      https://doc.photonengine.com/quantum/current/manual/assets/assets-simulation
 [Doxygen🡵]:           https://www.doxygen.nl/index.html
