@@ -27,6 +27,7 @@ namespace Battle.QSimulation.Game
             f.Events.ViewInit();
 
             BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
+            gameSession->GameTimeSec = 0;
             gameSession->GameInitialized = true;
         }
 
@@ -70,6 +71,11 @@ namespace Battle.QSimulation.Game
                     {
                         gameSession->State = BattleGameState.Playing;
                     }
+                    break;
+
+                case BattleGameState.Playing:
+                    gameSession->GameTimeSec += f.DeltaTime;
+
                     break;
             }
         }
