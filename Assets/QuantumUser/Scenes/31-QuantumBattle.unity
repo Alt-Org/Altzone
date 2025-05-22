@@ -2612,6 +2612,9 @@ MonoBehaviour:
       Id:
         Value: 422639178081310304
     BattleParameters:
+      PlayerSlotTypes: 
+      PlayerSlotUserIDs: []
+      PlayerCount: 0
       ProjectileInitialEmotion: 0
   UseRandomSeed: 0
   SessionConfig: {fileID: 0}
@@ -2620,6 +2623,7 @@ MonoBehaviour:
       Id:
         Value: 1499697656464696716
     PlayerNickname: 
+    UserID: 
     PlayerSlot: 1
     Characters:
     - Id: 0
@@ -2740,8 +2744,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 571960767
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 011608ea3fae4bb0682f72db602e258d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -2891,9 +2895,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 999
+  m_SortingLayerID: -787008501
+  m_SortingLayer: 5
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: ea7945c8319e67449ab0c53e5170afd5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
