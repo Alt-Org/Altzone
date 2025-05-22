@@ -1,5 +1,6 @@
 using MenuUi.Scripts.MainMenu;
 using MenuUi.Scripts.Settings.BattleUiEditor;
+using MenuUi.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,6 +29,8 @@ public class SettingEditor : MonoBehaviour
         SetFPSButtons();
         SetIntroSkipToggle();
         SetShowButtonLabelsToggle();
+
+        if (DataCarrier.GetData<object>(DataCarrier.BattleUiEditorRequested) != null) _battleEditor.OpenEditor();
     }
     private void Start()
     {

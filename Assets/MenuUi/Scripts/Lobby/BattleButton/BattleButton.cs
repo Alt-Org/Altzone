@@ -6,6 +6,7 @@ using MenuUi.Scripts.Signals;
 using MenuUi.Scripts.SwipeNavigation;
 using Altzone.Scripts.Lobby;
 using TMPro;
+using MenuUi.Scripts.Window;
 
 namespace MenuUi.Scripts.Lobby.BattleButton
 {
@@ -20,6 +21,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         [SerializeField] private TMP_Text _gameTypeDescription;
         [SerializeField] private GameObject _gameTypeSelectionMenu;
         [SerializeField] private GameObject _gameTypeOptionPrefab;
+        [SerializeField] private Button _openBattleUiEditorButton;
         [SerializeField] private GameTypeReference _gameTypeReference;
         [SerializeField] private GameObject _touchBlocker;
 
@@ -67,8 +69,10 @@ namespace MenuUi.Scripts.Lobby.BattleButton
                 gameTypeOption.ButtonComponent.onClick.AddListener(ToggleGameTypeSelection);
                 gameTypeOption.OnGameTypeOptionSelected += UpdateGameType;
             }
-        }
 
+            _openBattleUiEditorButton.transform.SetAsLastSibling();
+            _openBattleUiEditorButton.onClick.AddListener(OnOpenBattleUiEditorButtonPressed);
+        }
 
         private void OnDestroy()
         {
@@ -81,6 +85,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
             _button.onClick.RemoveListener(RequestBattlePopup);
             _swipe.OnCurrentPageChanged -= CloseGameTypeSelection;
+            _openBattleUiEditorButton.onClick.RemoveListener(OnOpenBattleUiEditorButtonPressed);
         }
 
 
@@ -142,6 +147,12 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
             // Opening battle popup after selecting a game type
             SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
+        }
+
+
+        private void OnOpenBattleUiEditorButtonPressed()
+        {
+            DataCarrier.AddData<object>(DataCarrier.BattleUiEditorRequested, new()); // Since bool can't be used using new object
         }
     }
 }

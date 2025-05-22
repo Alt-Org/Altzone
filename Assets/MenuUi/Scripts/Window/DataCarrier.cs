@@ -11,6 +11,7 @@ namespace MenuUi.Scripts.Window
     {
         public const string ClanListing = "cl";
         public const string PlayerProfile = "pp";
+        public const string BattleUiEditorRequested = "bui";
 
         public static DataCarrier Instance { get; private set; }
         public ServerClan clanToView;
