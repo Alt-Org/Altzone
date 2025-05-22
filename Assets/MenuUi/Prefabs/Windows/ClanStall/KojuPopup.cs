@@ -6,6 +6,10 @@ public class KojuPopup : MonoBehaviour
 {
     [SerializeField] private Button confirmButton;
     [SerializeField] private Button denyButton;
+
+    [SerializeField] private Button increasePriceButton;
+    [SerializeField] private Button decreasePriceButton;
+
     [SerializeField] private TMP_InputField priceInput;
 
     [SerializeField] private TMP_Text kojuPriceText;
@@ -23,12 +27,15 @@ public class KojuPopup : MonoBehaviour
     {
         confirmButton.onClick.AddListener(Confirm);
         denyButton.onClick.AddListener(Deny);
+
+       
+        increasePriceButton.onClick.AddListener(OnIncreasePrice);
+        decreasePriceButton.onClick.AddListener(OnDecreasePrice);
     }
 
     //Open the popup and fills it with the necessary data, currently hardcoded for testing purposes
     public void Open(GameObject card)
     {
-
         currentCard = card;
 
         furnitureData = currentCard.GetComponent<KojuFurnitureData>();
@@ -46,14 +53,40 @@ public class KojuPopup : MonoBehaviour
         rarityText.text = "Common";
         setNameText.text = "Furniture Set";
 
-        priceInput.text = furnitureData.GetPrice().ToString("F2");
-
-        gameObject.SetActive(true);
-
         float currentPrice = furnitureData.GetPrice();
         priceInput.text = currentPrice.ToString("F2");
         kojuPriceText.text = currentPrice.ToString("F2");
 
+        gameObject.SetActive(true);
+    }
+
+    //Increases price in input field 
+    private void OnIncreasePrice()
+    {
+        if (float.TryParse(priceInput.text, out float price))
+        {
+            price += 1f;
+            priceInput.text = price.ToString("F2");
+            UpdateKojuPriceText(price);
+        }
+    }
+
+    //Decreases price in input field
+    private void OnDecreasePrice()
+    {
+        if (float.TryParse(priceInput.text, out float price))
+        {
+            price -= 1f;
+            if (price < 0) price = 0; //Prevent negative prices
+            priceInput.text = price.ToString("F2");
+            UpdateKojuPriceText(price);
+        }
+    }
+
+    private void UpdateKojuPriceText(float price)
+    {
+        if (kojuPriceText != null)
+            kojuPriceText.text = price.ToString("F2");
     }
 
     //Call when confirming the Popup
@@ -75,7 +108,7 @@ public class KojuPopup : MonoBehaviour
         Close();
     }
 
-    //If the user cancels the Popup
+    //Ifthe user cancels the Popup
     public void Deny()
     {
         Close();
