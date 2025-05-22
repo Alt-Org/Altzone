@@ -27,8 +27,8 @@ namespace Battle.QSimulation.Game
             f.Events.ViewInit();
 
             BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
-            gameSession->GameInitialized = true;
             gameSession->GameTimeSec = 0;
+            gameSession->GameInitialized = true;
         }
 
         public override void Update(Frame f)
