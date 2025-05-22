@@ -52,16 +52,26 @@ public class ItemMover : MonoBehaviour
     //Called when the user confirms the moving
     public void ExecuteMove()
     {
-        //If item is not in grid, try to put it into the grid
+        //Check if the furniture is in the panel or in the tray
         if (assignedSlot == null)
         {
             KojuItemSlot[] slots = GameObject.FindObjectsOfType<KojuItemSlot>();
+
+            //Sort the panel using sibling index in the hierarchy
+            System.Array.Sort(slots, (a, b) => a.transform.GetSiblingIndex().CompareTo(b.transform.GetSiblingIndex()));
+
+            //Do a loop for each slot in the panel to find the first one available
             foreach (var slot in slots)
             {
-                if (!slot.IsOccupied)
+                if (!slot.IsOccupied && slot.gameObject.activeSelf)
                 {
-                    slot.AssignCard(gameObject, gridParent);
                     assignedSlot = slot;
+                    assignedSlot.AssignCard(gameObject, gridParent);
+
+                    //Move the card to the same sibling index as the slot
+                    int targetIndex = slot.transform.GetSiblingIndex();
+                    gameObject.transform.SetSiblingIndex(targetIndex);
+
                     return;
                 }
             }
@@ -70,10 +80,11 @@ public class ItemMover : MonoBehaviour
         }
         else
         {
-            //If object is already in the grid, put it in the tray
+            //If the furniture is already in the panel, put it back into the tray
             transform.SetParent(trayParent, false);
             assignedSlot.ClearSlot();
             assignedSlot = null;
         }
     }
+
 }
