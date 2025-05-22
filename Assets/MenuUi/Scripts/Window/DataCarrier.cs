@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Clan;
@@ -32,7 +33,31 @@ namespace MenuUi.Scripts.Window
             playerToView = null;
         }
 
-        public static void AddData<T>(string key, T value) where T : class
+        public static void AddData<T>(string key, T value)
+        {
+            if (typeof(T).Equals(typeof(int)))
+            {
+                AddPrimitiveData(key, Convert.ToInt32(value));
+            }
+            else if (typeof(T).Equals(typeof(bool)))
+            {
+                AddPrimitiveData(key, Convert.ToBoolean(value));
+            }
+            else if (typeof(T).Equals(typeof(string)))
+            {
+                AddPrimitiveData(key, Convert.ToString(value));
+            }
+            else if (typeof(T).Equals(typeof(float)))
+            {
+                AddPrimitiveData(key, Convert.ToSingle(value));
+            }
+            else if (typeof(T).IsClass)
+            {
+                AddClassData<object>(key, value);
+            }
+        }
+
+        public static void AddClassData<T>(string key, T value) where T : class
         {
             if (Instance == null)
             {
@@ -47,7 +72,47 @@ namespace MenuUi.Scripts.Window
             s_datastorage.Add(key, value);
         }
 
-        public static T GetData<T>(string key, bool clear = true) where T : class
+        public static void AddPrimitiveData<T>(string key, T value) where T : IComparable<T>
+        {
+            if (Instance == null)
+            {
+                GameObject carrier = Instantiate(new GameObject());
+                carrier.AddComponent<DataCarrier>();
+            }
+            if (s_datastorage.ContainsKey(key))
+            {
+                Debug.LogWarning($"Cannot add Data: Data with supplied key ({key}) already exist in DataCarrier.");
+                return;
+            }
+            s_datastorage.Add(key, value);
+        }
+
+        public static T GetData<T>(string key, bool clear = true)
+        {
+            if(typeof(T).Equals(typeof(int)))
+            {
+                return (T)(object)GetPrimitiveData<int>(key, clear);
+            }
+            else if(typeof(T).Equals(typeof(bool)))
+            {
+                return (T)(object)GetPrimitiveData<bool>(key, clear);
+            }
+            else if(typeof(T).Equals(typeof(string)))
+            {
+                return (T)(object)GetPrimitiveData<string>(key, clear);
+            }
+            else if(typeof(T).Equals(typeof(float)))
+            {
+                return (T)(object)GetPrimitiveData<float>(key, clear);
+            }
+            else if (typeof(T).IsClass)
+            {
+                return (T)GetClassData<object>(key, clear);
+            }
+            return default;
+        }
+
+        public static T GetClassData<T>(string key, bool clear = true) where T : class
         {
             if (s_datastorage.ContainsKey(key))
             {
@@ -62,6 +127,24 @@ namespace MenuUi.Scripts.Window
             {
                 Debug.LogWarning($"Cannot find Data: Data with supplied key ({key}) cannot be found in DataCarrier.");
                 return null;
+            }
+        }
+
+        public static T GetPrimitiveData<T>(string key, bool clear = true) where T : IComparable
+        {
+            if (s_datastorage.ContainsKey(key))
+            {
+                T value = (T)s_datastorage[key];
+                if (clear)
+                {
+                    s_datastorage.Remove(key);
+                }
+                return value;
+            }
+            else
+            {
+                Debug.LogWarning($"Cannot find Data: Data with supplied key ({key}) cannot be found in DataCarrier.");
+                return default;
             }
         }
     }
