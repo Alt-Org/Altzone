@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 
 public class AvatarDefaultReference : ScriptableObject
@@ -39,6 +41,7 @@ public class AvatarDefaultReference : ScriptableObject
     /// </param>
     public List<AvatarDefaultPartInfo> GetByCharacterId(int Id)
     {
+        if(!Enum.IsDefined(typeof(CharacterID), Id)) Id = 701;
         return (Get("0" + Id.ToString()[0] + Id.ToString()));
     }
 
