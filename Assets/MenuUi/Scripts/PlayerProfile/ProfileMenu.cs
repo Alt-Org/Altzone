@@ -403,7 +403,7 @@ public class ProfileMenu : AltMonoBehaviour
                 _weekEmotions.ValuesToWeekEmotions(_playerData);
             }
 
-            if(_playerData.SelectedCharacterId != 0 && _playerData.SelectedCharacterId != 201)
+            if (_playerData.SelectedCharacterId != 0 /*&& _playerData.SelectedCharacterId != 201*/)
             {
                 AvatarVisualData avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(_playerData);
                 _avatarLoaderInfoPage.UpdateVisuals(avatarVisualData);
