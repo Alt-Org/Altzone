@@ -93,7 +93,7 @@ public class ClanSearchView : MonoBehaviour
         else _loadMoreButton.SetActive(false);
 
         _loadMoreButton.transform.SetAsLastSibling();
-        FilterListings();
+        //FilterListings();
     }
 
     private void UpdateFilters(ClanSearchFilters newFilters)
@@ -106,7 +106,7 @@ public class ClanSearchView : MonoBehaviour
     {
         foreach (ClanListing clanListing in _listedClans)
         {
-            bool hidelisting = (_filters.removeLocked && !clanListing.Clan.isOpen)
+            bool hidelisting = (_filters.isOpen != clanListing.Clan.isOpen)
                 || (_filters.clanName != "" && !clanListing.Clan.name.ToLower().Contains(_filters.clanName.ToLower()))
                 || (_filters.language != Language.None && _filters.language != clanListing.Clan.language)
                 || (_filters.age != ClanAge.None && _filters.age != clanListing.Clan.ageRange)
