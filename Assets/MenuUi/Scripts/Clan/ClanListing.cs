@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Clan;
 using TMPro;
@@ -16,22 +17,79 @@ public class ClanListing : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _clanName;
     [SerializeField] private TextMeshProUGUI _clanMembers;
     [SerializeField] private Image _lockImage;
+    [SerializeField] private Sprite _lockOpen;
     [SerializeField] private Transform _heartContainer;
+    [SerializeField] private Transform _labelsField;
+    [SerializeField] private GameObject _labelImagePrefab;
+    [SerializeField] private ClanHeartColorSetter _clanHeart;
+    [SerializeField] private TextMeshProUGUI _winsRankText;
+    [SerializeField] private TextMeshProUGUI _activityRankText;
+    public TextMeshProUGUI WinsRank => _winsRankText;
+    public TextMeshProUGUI ActivityRank => _activityRankText;
+    [SerializeField] private LanguageFlagImage _languageFlagImage;
 
     private ServerClan _clan;
-    public ServerClan Clan { get => _clan; set { _clan = value; SetClanValues(); } }
+    public ServerClan Clan { get => _clan; set { _clan = value; SetClanInfo(); } }
 
-    private void SetClanValues()
+    private void SetClanInfo()
     {
-        _clanName.text = _clan.name;
-        _clanMembers.text = "Jäsenet: " + _clan.playerCount;
-        _lockImage.enabled = !_clan.isOpen;
-        ToggleJoinButton(_clan.isOpen);
+        if (_clan != null)
+        {
+            ClanData clanData = new ClanData(_clan);
 
-        // Temp clan heart values until those can be get from server
-        List<HeartPieceData> heartPieces = new();
-        for (int j = 0; j < 50; j++) heartPieces.Add(new HeartPieceData(j, Color.red));
-        SetHeartColors(heartPieces);
+            _clanName.text = _clan.name;
+            _clanMembers.text = "Jäsenet: " + _clan.playerCount + "/25";
+            // By default the lock image is locked
+            if (_clan.isOpen)
+            {
+                _lockImage.sprite = _lockOpen;
+            }
+            ToggleJoinButton(_clan.isOpen);
+
+            _clanHeart.SetOwnClanHeart = false;
+            _clanHeart.SetOtherClanColors(clanData);
+
+            _languageFlagImage.SetFlag(clanData.Language);
+
+            // Get rankings
+            StartCoroutine(ServerManager.Instance.GetClanLeaderboardFromServer((clanLeaderboard) =>
+            {
+                // Wins are not available yet
+                _winsRankText.text = "0";
+
+                // Activity
+                clanLeaderboard.Sort((a, b) => a.Points.CompareTo(b.Points));
+
+                int rankActivity = 1;
+
+                foreach (ClanLeaderboard ranking in clanLeaderboard)
+                {
+                    if (ranking.Clan.Id.Equals(clanData.Id))
+                    {
+                        break;
+                    }
+
+                    rankActivity++;
+                }
+
+                _activityRankText.text = rankActivity.ToString();
+            }));
+
+            foreach (Transform child in _labelsField) Destroy(child.gameObject);
+            int i = 0;
+            foreach (ClanValues value in clanData.Values)
+            {
+                if (i < 3)
+                {
+                    GameObject label = Instantiate(_labelImagePrefab, _labelsField);
+                    ValueImageHandle imageHandler = label.GetComponent<ValueImageHandle>();
+                    imageHandler.SetLabelInfo(value);
+
+                    i++;
+                }
+
+            }
+        }
     }
 
     internal void ToggleJoinButton(bool value)

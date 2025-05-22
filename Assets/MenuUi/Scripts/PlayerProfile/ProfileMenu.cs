@@ -14,8 +14,13 @@ using Altzone.Scripts.Model.Poco.Clan;
 using UnityEngine.InputSystem.HID;
 using System.IO;
 using UnityEngine.EventSystems;
+using Altzone.Scripts.ReferenceSheets;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ModelV2;
+using System.Data;
+using MenuUi.Scripts.AvatarEditor;
 
-public class ProfileMenu : MonoBehaviour
+public class ProfileMenu : AltMonoBehaviour
 {
     [Header("Text")]
     [SerializeField] private string loggedOutPlayerText;
@@ -27,18 +32,41 @@ public class ProfileMenu : MonoBehaviour
 
     [Header("Text Components")]
     [SerializeField] private TextMeshProUGUI _playerNameText;
+    [SerializeField] private TMP_InputField _playerNameInputField;
     [SerializeField] private TextMeshProUGUI _playerClanNameText;
+    [SerializeField] private TextMeshProUGUI _rolesErrorMessage;
+    [SerializeField] private TextMeshProUGUI _DefenceClassText;
     [SerializeField] private TextMeshProUGUI _MottoText;
     [SerializeField] private TextMeshProUGUI _TimePlayedText;
+    [SerializeField] private TextMeshProUGUI _activityText;
     [SerializeField] private TextMeshProUGUI _LosesText;
     [SerializeField] private TextMeshProUGUI _WinsText;
     [SerializeField] private TextMeshProUGUI _CarbonText;
-    [SerializeField] private TMP_InputField _LifeQuoteInputField;
-    [SerializeField] private TMP_InputField _LoreInputField;
+
+    [Header("Selectors")]
+    [SerializeField] private GameObject _answerOptionPrefab;
+    [SerializeField] private GameObject _mottoOptionsPopup;
+    [SerializeField] private CharacterResponseList _characterResponseList;
+    [SerializeField] private Image _favoriteCharacterImage;
+    [SerializeField] private GameObject _characterOptionsPopup;
+    [SerializeField] private Transform _characterOptionsContent;
+    [SerializeField] private GameObject _characterOptionPrefab;
+    [SerializeField] private TextMeshProUGUI _characterSelectionMessage;
+
+    [Header("Avatar")]
+    [SerializeField] private AvatarLoader _avatarLoaderInfoPage;
+    [SerializeField] private AvatarLoader _avatarLoaderStoryPage;
+    [SerializeField] private AvatarFaceLoader _avatarFaceLoaderTabline;
+
+    [Header("Buttons")]
+    [SerializeField] private Button _openMottoOptions;
+    [SerializeField] private Button _openFavoriteDefenceSelection;
+    [SerializeField] private GameObject _closePopupAreaButton;
+    [SerializeField] private GameObject[] _playStyleButtons;
+    [SerializeField] private Button _avatarPageTabButton;
 
     [Header("Clan Button")]
     [SerializeField] private Button _ClanURLButton;
-    [SerializeField] private TextMeshProUGUI _ClanButtonText;
 
     [Header("Save Button")]
     [SerializeField] private Button _saveEditsButton;
@@ -47,8 +75,8 @@ public class ProfileMenu : MonoBehaviour
     [SerializeField] private Button _addFriendButton;
 
     [Header("Others")]
-
     [SerializeField] private PlayStyle _playStyle;
+    [SerializeField] private WeekEmotions _weekEmotions;
 
     public TextMeshProUGUI textMeshPro;
 
@@ -74,6 +102,13 @@ public class ProfileMenu : MonoBehaviour
     private const string _Orange = "#FFA100";
 
     private ServerPlayer _player;
+
+    private const string SelectionMessageDefault = "Paina tästä valitaksesi...";
+    private const string SelectionMessageDefaultOther = "Ei valittu";
+
+    private string _tempFavoriteDefenceID;
+
+    private bool _otherPlayerProfile = false;
 
     private void Update()
     {
@@ -119,8 +154,6 @@ public class ProfileMenu : MonoBehaviour
     private void OnEnable()
     {
         Debug.Log($"_ClanURLButton is null: {_ClanURLButton == null}");
-        Debug.Log($"Initial LifeQuote text: {_LifeQuoteInputField.text}");
-        LoadInputFromFile();
         LoadMinutes();
 
         ServerManager.OnLogInStatusChanged += SetPlayerProfileValues;
@@ -130,6 +163,17 @@ public class ProfileMenu : MonoBehaviour
             SetPlayerProfileValues(false);
         else
             SetPlayerProfileValues(true);
+
+        if (!_otherPlayerProfile)
+        {
+            AddAnswerOptions();
+        }
+    }
+    private void OnDisable()
+    {
+        _characterOptionsPopup.SetActive(false);
+        _closePopupAreaButton.SetActive(false);
+        ServerManager.OnLogInStatusChanged -= SetPlayerProfileValues;
     }
 
     private void Reset()
@@ -142,59 +186,70 @@ public class ProfileMenu : MonoBehaviour
         _CarbonText.text = loggedOutCarbonText;
     }
 
-    // Tallentaa lifequote ja lore inputkentät
-    public void SaveInputToFile()
+    /// <summary>
+    /// Adds the answer options and opening/closing functionality to the selector popups
+    /// </summary>
+    private void AddAnswerOptions()
     {
-        if (_LifeQuoteInputField != null)
+        _openMottoOptions.onClick.AddListener(() => { _mottoOptionsPopup.SetActive(true); });
+
+        _closePopupAreaButton.GetComponentInChildren<Button>().onClick.AddListener(() =>
         {
-            string lifeQuote = _LifeQuoteInputField.text;
-            string path = Path.Combine(Application.persistentDataPath, "LifeQuote.txt");
-            File.WriteAllText(path, lifeQuote);
-            Debug.Log($"Saved Life Quote: {lifeQuote} at {path}");
+            _characterOptionsPopup.SetActive(false);
+            _closePopupAreaButton.SetActive(false);
+        });
+
+        _openFavoriteDefenceSelection.onClick.AddListener(() =>
+        {
+            _characterOptionsPopup.SetActive(true);
+            _closePopupAreaButton.SetActive(true);
+        });
+
+        // Get motto options based on character class
+        List<string> mottoOptionList = _characterResponseList.GetMottoOptions((CharacterClassID)((_playerData.SelectedCharacterId / 100) * 100));
+        foreach (string option in mottoOptionList)
+        {
+            GameObject optionObject = Instantiate(_answerOptionPrefab, _mottoOptionsPopup.GetComponentInChildren<VerticalLayoutGroup>().transform);
+            Button button = optionObject.GetComponent<AnswerOptionHandler>().SetData(option);
+            button.onClick.AddListener(() =>
+            {
+                _MottoText.text = option;
+                _mottoOptionsPopup.SetActive(false);
+            });
         }
 
-        if (_LoreInputField != null)
+        // Get all defences for choosing the favorite
+        IEnumerable<PlayerCharacterPrototype> characters = PlayerCharacterPrototypes.Prototypes.Where(c => c != null);
+        foreach (PlayerCharacterPrototype character in characters)
         {
-            string lore = _LoreInputField.text;
-            string path = Path.Combine(Application.persistentDataPath, "Lore.txt");
-            File.WriteAllText(path, lore);
-            Debug.Log($"Saved Lore: {lore} at {path}");
-        }
+            GameObject defenceOption = Instantiate(_characterOptionPrefab, _characterOptionsContent);
+            Button button = defenceOption.GetComponent<FavoriteDefenceOptionHandler>().SetData(character.Name, character.GalleryImage);
+            button.onClick.AddListener(() =>
+            {
+                _tempFavoriteDefenceID = character.Id;
+                _favoriteCharacterImage.sprite = character.GalleryImage;
 
+                //Show image
+                Image image = _favoriteCharacterImage;
+                var tempColor = image.color;
+                tempColor.a = 1f;
+                image.color = tempColor;
+                _characterSelectionMessage.text = "";
+
+                _characterOptionsPopup.SetActive(false);
+                _closePopupAreaButton.SetActive(false);
+            });
+        }
     }
 
-    // Lataa tallennetut tiedostot
-    public void LoadInputFromFile()
+    private void SaveChanges()
     {
-        string quotePath = Path.Combine(Application.persistentDataPath, "LifeQuote.txt");
-        string lorePath = Path.Combine(Application.persistentDataPath, "Lore.txt");
-        if (File.Exists(quotePath))
-        {
-            string loadedQuote = File.ReadAllText(quotePath);
-            Debug.Log($"Loaded Life Quote: {loadedQuote} from {quotePath}");
-            if (_LifeQuoteInputField != null)
-            {
-                _LifeQuoteInputField.text = loadedQuote;
-            }
-        }
-        else
-        {
-            Debug.Log("No quote found.");
-        }
+        string motto = _MottoText.text;
+        _playerData.ChosenMotto = motto;
 
-        if (File.Exists(lorePath))
-        {
-            string loadedLore = File.ReadAllText(lorePath);
-            Debug.Log($"Loaded Lore: {loadedLore} from {lorePath}");
-            if (_LoreInputField != null)
-            {
-                _LoreInputField.text = loadedLore;
-            }
-        }
-        else
-        {
-            Debug.Log("No lore found.");
-        }
+        _playerData.FavoriteDefenceID = _tempFavoriteDefenceID;
+
+        StartCoroutine(SavePlayerData(_playerData, null));
     }
 
     private void Start()
@@ -202,13 +257,12 @@ public class ProfileMenu : MonoBehaviour
         _saveEditsButton.onClick.AddListener(() =>
         {
             Debug.Log("Save button clicked!");
-            SaveInputToFile();
+            SaveChanges();
         });
 
         // Asetetaan URL-painikkeen teksti
         _ClanURLButton.onClick.AddListener(OpenClanURL);
 
-        LoadInputFromFile();
         LoadMinutes();
     }
 
@@ -234,47 +288,131 @@ public class ProfileMenu : MonoBehaviour
     {
         if (isLoggedIn)
         {
-
-            //_BattleCharacter.AddComponent(typeof(Image));
-            //Img = Resources.Load<Sprite>(playerData.BattleCharacter.Name);
-            //_BattleCharacter.GetComponent<Image>().sprite = Img;
+            PlayerData player = DataCarrier.GetData<PlayerData>(DataCarrier.PlayerProfile);
             var store = Storefront.Get();
-            store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p =>
+
+            if (player != null)
             {
-                if (p == null)
-                {
-                    Debug.LogError("Pelaajatietojen haku epäonnistui.");
-                    return;
-                }
+                _playerData = player;
+                _otherPlayerProfile = true;
+                _avatarPageTabButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                _otherPlayerProfile = false;
+                _avatarPageTabButton.gameObject.SetActive(true);
 
-                _playerData = p;
-                _playerNameText.text = _playerData.Name;
-
-                store.GetClanData(_playerData.ClanId, clan =>
+                store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p =>
                 {
-                    if (clan == null)
+                    if (p == null)
                     {
-                        Debug.LogError("Klaanitietojen haku epäonnistui.");
+                        Debug.LogError("Pelaajatietojen haku epäonnistui.");
                         return;
                     }
 
-                    _clanData = clan;
-                    _playerClanNameText.text = _clanData.Name;
-
-                    if (_ClanButtonText != null)
-                    {
-                        _clanID = _playerData.ClanId;
-                        _url = "https://altzone.fi/clans/" + _playerData.ClanId;
-                        _ClanButtonText.text = _playerClanNameText.text; // Asetetaan painikkeen teksti
-                    }
-                    else
-                    {
-                        Debug.LogError("Klaanin URL-tekstiobjekti ei ole asetettu.");
-                    }
+                    _playerData = p;
                 });
+
+            }
+
+            ToggleProfileViewMode();
+
+            _playerNameText.text = _playerData.Name;
+            _playerNameInputField.text = _playerData.Name;
+
+            _activityText.text = _playerData.points.ToString();
+            if (_playerData.stats != null)
+            {
+                _WinsText.text = _playerData.stats.wonBattles.ToString();
+            }
+
+            CharacterClassID defenceClass = (CharacterClassID)((_playerData.SelectedCharacterId / 100) * 100);
+            _DefenceClassText.text = defenceClass.ToString();
+
+            if (_playerData.ChosenMotto == null || _MottoText.text == "")
+            {
+                if (_otherPlayerProfile)
+                {
+                    _MottoText.text = SelectionMessageDefaultOther;
+                }
+                else
+                {
+                    _MottoText.text = SelectionMessageDefault;
+                } 
+            }
+            else
+            {
+                _MottoText.text = _playerData.ChosenMotto;
+            }
+
+            PlayerCharacterPrototype favoriteDefence = PlayerCharacterPrototypes.GetCharacter(_playerData.FavoriteDefenceID);
+            Image image = _favoriteCharacterImage;
+            var tempColor = image.color;
+            if (favoriteDefence != null)
+            {
+                //Show image
+                tempColor.a = 1f;
+                image.color = tempColor;
+                _characterSelectionMessage.text = "";
+
+                if (!_otherPlayerProfile)
+                {
+                    _tempFavoriteDefenceID = _playerData.FavoriteDefenceID;
+                }
+                _favoriteCharacterImage.sprite = favoriteDefence.GalleryImage;
+            }
+            else
+            {
+                // Hide image
+                tempColor.a = 0f;
+                image.color = tempColor;
+
+                if (_otherPlayerProfile)
+                {
+                    _characterSelectionMessage.text = SelectionMessageDefaultOther;
+                }
+                else
+                {
+                    _characterSelectionMessage.text = SelectionMessageDefault;
+                }
+            }
+
+            store.GetClanData(_playerData.ClanId, clan =>
+            {
+                if (clan == null)
+                {
+                    _rolesErrorMessage.text = "Klaania ei löydetty.";
+                    Debug.LogError("Klaanitietojen haku epäonnistui.");
+                    return;
+                }
+
+                _clanData = clan;
+                _playerClanNameText.text = _clanData.Name;
+                _rolesErrorMessage.text = "Rooleja ei voitu hakea.";
+
+                _clanID = _playerData.ClanId;
+                _url = "https://altzone.fi/clans/" + _playerData.ClanId;
             });
 
+            if(_otherPlayerProfile)
+            {
+                _weekEmotions.ShowOtherPlayerEmotions();
+            }
+            else
+            {
+                _weekEmotions.ValuesToWeekEmotions(_playerData);
+            }
+
+            if(_playerData.SelectedCharacterId != 0 && _playerData.SelectedCharacterId != 201)
+            {
+                AvatarVisualData avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(_playerData);
+                _avatarLoaderInfoPage.UpdateVisuals(avatarVisualData);
+                _avatarLoaderStoryPage.UpdateVisuals(avatarVisualData);
+                _avatarFaceLoaderTabline.UpdateVisuals(avatarVisualData);
+            }
+
             updateTime();
+
         }
         else
         {
@@ -282,6 +420,46 @@ public class ProfileMenu : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Disables editing when viewing other player's profile
+    /// </summary>
+    private void ToggleProfileViewMode()
+    {
+        if (_otherPlayerProfile)
+        {
+            _openFavoriteDefenceSelection.interactable = false;
+            _openMottoOptions.interactable = false;
+            _saveEditsButton.gameObject.SetActive(false);
+            foreach (GameObject button in _playStyleButtons)
+            {
+                button.SetActive(false);
+            }
+        }
+        else
+        {
+            if (_openFavoriteDefenceSelection != null)
+            {
+                _openFavoriteDefenceSelection.interactable = true;
+            }
+
+            if (_openMottoOptions != null)
+            {
+                _openMottoOptions.interactable = true;
+            }
+
+            if (_saveEditsButton != null)
+            {
+                _saveEditsButton.gameObject.SetActive(true);
+            }
+            foreach (GameObject button in _playStyleButtons)
+            {
+                if (button != null)
+                {
+                    button.SetActive(true);
+                } 
+            }
+        }
+    }
 
     private void SaveMinutes()
     {
@@ -302,7 +480,4 @@ public class ProfileMenu : MonoBehaviour
             Debug.Log("No saved minutes found.");
         }
     }
-
-
-
 }

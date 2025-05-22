@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
+  m_Name: CharacterSpec_603
+  m_EditorClassIdentifier: 
+  Id: 603
+  CharacterId: 603
+  IsApproved: 1
+  Name: "Valveenv\xE4lttely"
+  ClassType: 600
+  CharacterDescription: "Valveenv\xE4lttely pakenee ylikuormittavaa todellisuutta
+    unimaailmaan. Uni on h\xE4nelle keino irtautua ja saada turvaa ymp\xE4rist\xF6st\xE4,
+    jossa h\xE4nen tunteensa ja tarpeensa ovat toissijaisia ja miss\xE4 h\xE4nen
+    oma identiteettins\xE4 on kadonnut muihin mukautumisen j\xE4ljilt\xE4. Alati
+    v\xE4synyt, Valveenv\xE4lttely selviytyy p\xE4iv\xE4st\xE4 tiet\xE4en, ett\xE4
+    pian h\xE4n voi taas nukahtaa.\r\n\nTunnetila-ammuksen tullessa Valveenv\xE4lttely
+    kietoutuu suojapeittonsa alle, paeten hetkeksi h\xE4nt\xE4 uhkaavalta vaaralta
+    unten maille.\r\n"
+  CharacterShortDescription: 'Peiton alla maailmaa pakeneva unikeko '
+  CharacterStats: {fileID: 11400000, guid: 90969f0d5f4fd634094177939fc112a7, type: 2}
+  Hp:
+    Level: 2
+    Coefficient: 5
+  Speed:
+    Level: 2
+    Coefficient: 4
+  CharacterSize:
+    Level: 12
+    Coefficient: 2
+  Attack:
+    Level: 2
+    Coefficient: 7
+  Defence:
+    Level: 11
+    Coefficient: 2
+  GalleryImage: {fileID: 21300000, guid: 9aa5e625812e131439a894722f0b1d66, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: 1db187b168a56284dab8d4b21a59b65a, type: 3}
+  BattleSprite: {fileID: 0}

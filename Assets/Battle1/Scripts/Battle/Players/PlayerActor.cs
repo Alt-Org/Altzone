@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Battle;
@@ -10,6 +11,8 @@ using Prg.Scripts.Common.PubSub;
 using UnityConstants;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Random = UnityEngine.Random;
+
 /*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;*/
 
 namespace Battle1.Scripts.Battle.Players
@@ -18,11 +21,13 @@ namespace Battle1.Scripts.Battle.Players
     /// <c>PlayerActor</c> for local and remote instances.
     /// </summary>
     /// <remarks>
-    /// Needs to derive from <c>PlayerActorBase</c> for type safe UNITY prefab instantiation.
+    /// DOES NOT: Needs to derive from <c>PlayerActorBase</c> for type safe UNITY prefab instantiation.
     /// </remarks>
-    internal class PlayerActor : PlayerActorBase
+    [Obsolete]
+    internal class PlayerActor : MonoBehaviour
     {
         #region Serialized Fields
+
         [SerializeField] private Transform _geometryRoot;
         [SerializeField] private float _movementSpeed;
         [SerializeField] private float _shieldActivationDistance;
@@ -30,27 +35,40 @@ namespace Battle1.Scripts.Battle.Players
         [SerializeField] public string SeePlayerName;
         [SerializeField] private float _sparkleUpdateInterval;
         [SerializeField] private float _timeSinceLastUpdate;
+
         #endregion Serialized Fields
 
         #region Public
 
         #region Public - Constants
+
         public const int SpriteVariantCount = (int)SpriteVariant.B + 1;
+
         #endregion Public - Constants
 
         #region Public - Enums
-        public enum SpriteVariant { A = 0, B = 1 }
+
+        public enum SpriteVariant
+        {
+            A = 0,
+            B = 1
+        }
+
         #endregion Public - Enums
 
         #region Public -  Static Fields
+
         public static string PlayerName;
+
         #endregion Public -  Static Fields
 
         #region Public - Properties
+
         public IReadOnlyBattlePlayer BattlePlayer => _battlePlayer;
         public bool IsBusy => _isMoving || _hasTarget;
         public float MovementSpeed => _movementSpeed;
         public float ImpactForce => _impactForce;
+
         #endregion Public - Properties
 
         #region Public - Methods
@@ -64,10 +82,13 @@ namespace Battle1.Scripts.Battle.Players
             Characters playerPrefabs = GameConfig.Get().Characters;
 
             // get instantiation args
-            PlayerActor playerPrefab = playerPrefabs.GetPlayerPrefab(battlePlayer.BattleCharacter.CharacterID) as PlayerActor;
+            PlayerActor
+                playerPrefab =
+                    null; //playerPrefabs.GetPlayerPrefab(battlePlayer.BattleCharacter.CharacterID) as PlayerActor;
             Vector2 instantiationPosition;
             {
-                Game.GridPos instantiationGridPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(battlePlayer.PlayerPosition);
+                Game.GridPos instantiationGridPosition =
+                    Context.GetBattlePlayArea.GetPlayerStartPosition(battlePlayer.PlayerPosition);
                 instantiationPosition = Context.GetGridManager.GridPositionToWorldPoint(instantiationGridPosition);
             }
 
@@ -144,10 +165,14 @@ namespace Battle1.Scripts.Battle.Players
             _isMoving = true;
             playerCharacter.transform.position = playerShieldManager.transform.position;
             playerSoul.Show = true;
-            Debug.Log(string.Format(DEBUG_LOG_IS_MOVING, _syncedFixedUpdateClock.UpdateCount, teamNumber, playerPosition, _isMoving));
+            Debug.Log(string.Format(DEBUG_LOG_IS_MOVING, _syncedFixedUpdateClock.UpdateCount, teamNumber,
+                playerPosition, _isMoving));
 
-            float targetDistance = (targetPosition - new Vector2(playerShieldManager.transform.position.x, playerShieldManager.transform.position.y)).magnitude;
-            float movementTimeS = (float)_syncedFixedUpdateClock.ToSeconds(Mathf.Max(teleportUpdateNumber - _syncedFixedUpdateClock.UpdateCount, 1));
+            float targetDistance = (targetPosition - new Vector2(playerShieldManager.transform.position.x,
+                playerShieldManager.transform.position.y)).magnitude;
+            float movementTimeS =
+                (float)_syncedFixedUpdateClock.ToSeconds(
+                    Mathf.Max(teleportUpdateNumber - _syncedFixedUpdateClock.UpdateCount, 1));
             float movementSpeed = targetDistance / movementTimeS;
 
             _playerMovementIndicator.transform.position = targetPosition;
@@ -160,22 +185,27 @@ namespace Battle1.Scripts.Battle.Players
             _syncedFixedUpdateClock.ExecuteOnUpdate(teleportUpdateNumber, 1, () =>
             {
                 StopCoroutine(move);
-                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Move coroutine stopped", _syncedFixedUpdateClock.UpdateCount, teamNumber, playerPosition));
+                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Move coroutine stopped",
+                    _syncedFixedUpdateClock.UpdateCount, teamNumber, playerPosition));
 
                 _hasTarget = false;
 
                 playerShieldManager.transform.position = targetPosition;
 
                 playerCharacter.transform.position = targetPosition;
-                playerCharacter.SpritIndex = _isUsingShield ? PlayerCharacter.SpriteIndexEnum.IdleWithShield : PlayerCharacter.SpriteIndexEnum.IdleWithoutShield;
+                playerCharacter.SpritIndex = _isUsingShield
+                    ? PlayerCharacter.SpriteIndexEnum.IdleWithShield
+                    : PlayerCharacter.SpriteIndexEnum.IdleWithoutShield;
 
                 playerSoul.Show = false;
                 /*_shieldHitboxIndicators.SetActive(true);*/
 
                 _isMoving = false;
 
-                Debug.Log(string.Format(DEBUG_LOG_HAS_TARGET, _syncedFixedUpdateClock.UpdateCount, teamNumber, playerPosition, _hasTarget));
-                Debug.Log(string.Format(DEBUG_LOG_IS_MOVING, _syncedFixedUpdateClock.UpdateCount, teamNumber, playerPosition, _isMoving));
+                Debug.Log(string.Format(DEBUG_LOG_HAS_TARGET, _syncedFixedUpdateClock.UpdateCount, teamNumber,
+                    playerPosition, _hasTarget));
+                Debug.Log(string.Format(DEBUG_LOG_IS_MOVING, _syncedFixedUpdateClock.UpdateCount, teamNumber,
+                    playerPosition, _isMoving));
                 Debug.Log(string.Format(
                     DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Shield teleported (current position: {3})",
                     _syncedFixedUpdateClock.UpdateCount,
@@ -191,17 +221,19 @@ namespace Battle1.Scripts.Battle.Players
                 IReadOnlyBattlePlayer teammate = _battlePlayer.Teammate;
                 if (teammate != null)
                 {
-                    float teammateDistance = (playerShieldManager.transform.position - teammate.PlayerShieldManager.transform.position).magnitude;
+                    float teammateDistance = (playerShieldManager.transform.position -
+                                              teammate.PlayerShieldManager.transform.position).magnitude;
                     GameAnalyticsManager.Instance.DistanceToPlayer(teammateDistance);
                 }
 
-                GameAnalyticsManager.Instance.DistanceToWall(Context.GetBattlePlayArea.ArenaHeight / 2 - Mathf.Abs(playerShieldManager.transform.position.y));
+                GameAnalyticsManager.Instance.DistanceToWall(Context.GetBattlePlayArea.ArenaHeight / 2 -
+                                                             Mathf.Abs(playerShieldManager.transform.position.y));
 
                 //} GA info
             });
 
             // GA info
-         /*   if (PhotonNetwork.IsMasterClient) GameAnalyticsManager.Instance.MoveCommand(targetPosition);*/
+            /*   if (PhotonNetwork.IsMasterClient) GameAnalyticsManager.Instance.MoveCommand(targetPosition);*/
         }
 
         #endregion Public - Methods
@@ -226,13 +258,14 @@ namespace Battle1.Scripts.Battle.Players
 
         //private CharacterID _characterID;
 
-
         // Player Parts
 
         BattlePlayer _battlePlayer;
 
         private GameObject _playerMovementIndicator;
+
         private GameObject _sparkleSprite;
+
         //private GameObject _shieldHitboxIndicators;
         private float _shieldHitboxIndicatorsYPosition;
 
@@ -246,11 +279,16 @@ namespace Battle1.Scripts.Battle.Players
         #endregion Private - Fields
 
         #region DEBUG
+
         private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER ACTOR] ";
         private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
-        private const string DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO = DEBUG_LOG_NAME_AND_TIME + "(team: {1}, pos: {2}) ";
+
+        private const string DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO =
+            DEBUG_LOG_NAME_AND_TIME + "(team: {1}, pos: {2}) ";
+
         private const string DEBUG_LOG_IS_MOVING = DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Is moving: {3}";
         private const string DEBUG_LOG_HAS_TARGET = DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Has target: {3}";
+
         #endregion DEBUG
 
         #region Private - Methods
@@ -324,6 +362,7 @@ namespace Battle1.Scripts.Battle.Players
         }
 
         #region Private - Methods - Message Listeners
+
         private void OnTeamsReadyForGameplay(TeamsAreReadyForGameplay data)
         {
             foreach (IReadOnlyBattlePlayer player in data.AllPlayers)
@@ -338,6 +377,7 @@ namespace Battle1.Scripts.Battle.Players
                 _otherPlayers.Add(player);
             }
         }
+
         #endregion Private - Methods - Message Listeners
 
         #region Private - Methods - Coroutines
@@ -356,21 +396,26 @@ namespace Battle1.Scripts.Battle.Players
 
             Transform playerSoulTransform = _battlePlayer.PlayerSoul.transform;
 
-            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Move coroutine started", _syncedFixedUpdateClock.UpdateCount, teamNumber, playerPosition));
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Move coroutine started",
+                _syncedFixedUpdateClock.UpdateCount, teamNumber, playerPosition));
             _hasTarget = true;
-            Debug.Log(string.Format(DEBUG_LOG_HAS_TARGET, _syncedFixedUpdateClock.UpdateCount, teamNumber, playerPosition, _hasTarget));
+            Debug.Log(string.Format(DEBUG_LOG_HAS_TARGET, _syncedFixedUpdateClock.UpdateCount, teamNumber,
+                playerPosition, _hasTarget));
             while (_hasTarget)
             {
                 yield return null;
                 float maxDistanceDelta = movementSpeed * Time.deltaTime;
-                playerSoulTransform.position = Vector3.MoveTowards(playerSoulTransform.position, targetPosition, maxDistanceDelta);
+                playerSoulTransform.position =
+                    Vector3.MoveTowards(playerSoulTransform.position, targetPosition, maxDistanceDelta);
                 _hasTarget = !(
                     Mathf.Approximately(playerSoulTransform.position.x, targetPosition.x) &&
                     Mathf.Approximately(playerSoulTransform.position.y, targetPosition.y
-                ));
+                    ));
             }
-            Debug.Log(string.Format(DEBUG_LOG_HAS_TARGET, _syncedFixedUpdateClock.UpdateCount, teamNumber, playerPosition, _hasTarget));
-            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Move coroutine finished", _syncedFixedUpdateClock.UpdateCount, teamNumber, playerPosition));
+            Debug.Log(string.Format(DEBUG_LOG_HAS_TARGET, _syncedFixedUpdateClock.UpdateCount, teamNumber,
+                playerPosition, _hasTarget));
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Move coroutine finished",
+                _syncedFixedUpdateClock.UpdateCount, teamNumber, playerPosition));
         }
 
         #endregion Private - Methods - Coroutines
@@ -378,7 +423,6 @@ namespace Battle1.Scripts.Battle.Players
         private void FixedUpdate()
         {
             _timeSinceLastUpdate += Time.fixedDeltaTime;
-
 
             ShieldManager playerShieldManager = _battlePlayer.PlayerShieldManager;
             PlayerCharacter playerCharacter = _battlePlayer.PlayerCharacter;
@@ -409,7 +453,8 @@ namespace Battle1.Scripts.Battle.Players
             foreach (IReadOnlyBattlePlayer otherPlayer in _otherPlayers)
             {
                 ShieldManager otherPlayerShieldManager = otherPlayer.PlayerShieldManager;
-                if ((playerShieldManager.transform.position - otherPlayerShieldManager.transform.position).sqrMagnitude < _shieldActivationDistance * _shieldActivationDistance)
+                if ((playerShieldManager.transform.position - otherPlayerShieldManager.transform.position)
+                    .sqrMagnitude < _shieldActivationDistance * _shieldActivationDistance)
                 {
                     useShield = false;
                     break;

@@ -2,6 +2,8 @@
 using System.Linq;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Lobby;
+using Altzone.Scripts.Audio;
 using MenuUi.Scripts.SwipeNavigation;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
@@ -36,6 +38,8 @@ namespace MenuUi.Scripts.MainMenu
         {
             _swipe = GetComponentInParent<SwipeUI>();
             StartCoroutine(CheckWindowSize());
+            AudioManager.Instance?.PlayMusic(MusicSection.MainMenu);
+            LobbyManager.Instance.Activate();
         }
 
         private void Start()
@@ -45,6 +49,7 @@ namespace MenuUi.Scripts.MainMenu
             _scrollRectCanvas = GameObject.FindGameObjectWithTag("ScrollRectCanvas").GetComponent<RectTransform>();
             SetMainMenuLayoutDimensions();
             SetAudioVolumeLevels();
+            AudioManager.Instance?.PlayMusic(MusicSection.MainMenu);
         }
 
         /// <summary>
@@ -54,10 +59,10 @@ namespace MenuUi.Scripts.MainMenu
         {
             audioSources = FindObjectsOfType<SetVolume>(true);
 
-            carrier.masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1);
-            carrier.menuVolume = PlayerPrefs.GetFloat("MenuVolume", 1);
-            carrier.musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1);
-            carrier.soundVolume = PlayerPrefs.GetFloat("SoundVolume", 1);
+            //carrier.masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1);
+            //carrier.menuVolume = PlayerPrefs.GetFloat("MenuVolume", 1);
+            //carrier.musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1);
+            //carrier.soundVolume = PlayerPrefs.GetFloat("SoundVolume", 1);
 
             foreach (SetVolume audioSource in audioSources)
             {

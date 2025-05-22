@@ -4,17 +4,18 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
+    //[CreateAssetMenu(menuName = "ALT-Zone/Characters/ResearcherCharacter", fileName = "ResearcherCharacterStats")]
     public class ResearcherCharacter : IntellectualizerClassCharacter
     {
         public ResearcherCharacter() : base()
         {
-            _id = CharacterID.IntellectualizerResearcher;
+            _id = CharacterID.Booksmart;
             _defaultAttack = 10;
             _defaultDefence = 3;
             _defaultHp = 8;
-            _defaultResistance = 8;
+            _defaultCharacterSize = 8;
             _defaultSpeed = 6;
-            InitilizeValues();
+            InitializeValues();
         }
     }
 }

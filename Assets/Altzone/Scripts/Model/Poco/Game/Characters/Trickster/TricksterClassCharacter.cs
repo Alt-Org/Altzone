@@ -12,11 +12,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         protected TricksterClassCharacter()
         {
             _attackStrength = ValueStrength.SemiWeak;
-            _resistanceStrength = ValueStrength.Weak;
+            _characterSizeStrength = ValueStrength.Weak;
             _hpStrength = ValueStrength.Medium;
             _defenceStrength = ValueStrength.VeryWeak;
             _speedStrength = ValueStrength.Strong;
-            InitilizeValues();
+            InitializeValues();
         }
     }
 }

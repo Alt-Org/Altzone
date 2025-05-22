@@ -1,6 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Photon.Deterministic;
+using UnityEditor;
 using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
@@ -10,10 +10,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         None,
         Attack,
         Defence,
-        Resistance,
+        CharacterSize,
         Hp,
         Speed
     }
+
     public enum ValueStrength
     {
         None,
@@ -26,231 +27,253 @@ namespace Altzone.Scripts.Model.Poco.Game
         VeryWeak
     }
 
-    public abstract class BaseCharacter
+    public abstract class BaseCharacter : ScriptableObject
     {
-        protected CharacterID _id = CharacterID.None;
-        protected int _hp;
-        protected int _defaultHp;
-        protected ValueStrength _hpStrength = ValueStrength.None;
-        protected int _speed;
-        protected int _defaultSpeed;
-        protected ValueStrength _speedStrength = ValueStrength.None;
-        protected int _resistance;
-        protected int _defaultResistance;
-        protected ValueStrength _resistanceStrength = ValueStrength.None;
-        protected int _attack;
-        protected int _defaultAttack;
-        protected ValueStrength _attackStrength = ValueStrength.None;
-        protected int _defence;
-        protected int _defaultDefence;
-        protected ValueStrength _defenceStrength = ValueStrength.None;
+        [SerializeField] protected CharacterID _id = CharacterID.None;
+        [SerializeField] protected bool active = true;
 
-        protected bool active = true;
+        [Header("HP"), SerializeField] protected int _defaultHp;
+        protected int _hp;
+        [SerializeField] protected ValueStrength _hpStrength = ValueStrength.None;
+        
+        [Header("Speed"), SerializeField] protected int _defaultSpeed;
+        protected int _speed;
+        [SerializeField] protected ValueStrength _speedStrength = ValueStrength.None;
+        
+        [Header("Character Size"), SerializeField] protected int _defaultCharacterSize;
+        protected int _characterSize;
+        [SerializeField] protected ValueStrength _characterSizeStrength = ValueStrength.None;
+
+        [Header("Attack"), SerializeField] protected int _defaultAttack;
+        protected int _attack;
+        [SerializeField] protected ValueStrength _attackStrength = ValueStrength.None;
+
+        [Header("Defence"), SerializeField] protected int _defaultDefence;
+        protected int _defence;
+        [SerializeField] protected ValueStrength _defenceStrength = ValueStrength.None;
 
         public CharacterID Id { get => _id;}
         public virtual CharacterClassID ClassID { get => GetClassID(Id); }
         public int Hp { get => _hp;}
-        public int DefaultHp { get => _defaultHp; }
+        public int DefaultHp { get => _defaultHp; set { _defaultHp = value; SaveData(); } }
         public int Speed { get => _speed;}
-        public int Resistance { get => _resistance;}
-        public int DefaultResistance { get => _defaultResistance; }
+        public int DefaultSpeed { get => _defaultSpeed; set { _defaultSpeed = value; SaveData(); } }
+        public int CharacterSize { get => _characterSize;}
+        public int DefaultCharacterSize { get => _defaultCharacterSize; set { _defaultCharacterSize = value; SaveData(); } }
         public int Attack { get => _attack;}
-        public int DefaultAttack { get => _defaultAttack; }
+        public int DefaultAttack { get => _defaultAttack; set { _defaultAttack = value; SaveData(); } }
         public int Defence { get => _defence;}
-        public int DefaultDefence { get => _defaultDefence; }
+        public int DefaultDefence { get => _defaultDefence; set { _defaultDefence = value; SaveData(); } }
         public ValueStrength HpStrength { get => _hpStrength; }
+        public ValueStrength SpeedStrength { get => _speedStrength; }
+        public ValueStrength CharacterSizeStrength { get => _characterSizeStrength; }
+        public ValueStrength AttackStrength { get => _attackStrength; }
+        public ValueStrength DefenceStrength { get => _defenceStrength; }
 
         protected BaseCharacter()
         {
-            InitilizeValues();
+            InitializeValues();
         }
 
-        protected void InitilizeValues()
+        protected void InitializeValues()
         {
             _hp = _defaultHp;
             _attack = _defaultAttack;
             _defence = _defaultDefence;
-            _resistance = _defaultResistance;
+            _characterSize = _defaultCharacterSize;
             _speed = _defaultSpeed;
         }
 
+        private void SaveData()
+        {
+            #if UNITY_EDITOR
+            AssetDatabase.Refresh();
+            EditorUtility.SetDirty(this);
+            AssetDatabase.SaveAssets();
+            #endif
+        }
+
         #region Stat value getters
-        public static float GetStatValue(StatType type, int level)
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float GetStatValue(StatType type, int level) => (float)GetStatValueFP(type, level);
+
+        public static FP GetStatValueFP(StatType type, int level)
         {
-            switch (type)
+            return type switch
             {
-                case StatType.None:
-                    return -1;
-                case StatType.Attack:
-                    return GetAttackValue(level);
-                case StatType.Defence:
-                    return GetDefenceValue(level);
-                case StatType.Resistance:
-                    return GetResistanceValue(level);
-                case StatType.Hp:
-                    return GetHpValue(level);
-                case StatType.Speed:
-                    return GetSpeedValue(level);
-                default:
-                    return -1;
-            }
+                StatType.None       => (FP)(-1),
+                StatType.Attack     => GetAttackValue(level),
+                StatType.Defence    => GetDefenceValue(level),
+                StatType.CharacterSize => GetCharacterSizeValue(level),
+                StatType.Hp         => GetHpValue(level),
+                StatType.Speed      => GetSpeedValue(level),
+
+                _ => (FP)(-1),
+            };
         }
-        private static float GetAttackValue(int level)
+
+        private static FP GetAttackValue(int level)
         {
             return level switch
             {
-                1 => 5f,
-                2 => 10f,
-                3 => 20f,
-                4 => 30f,
-                5 => 40f,
-                6 => 50f,
-                7 => 60f,
-                8 => 70f,
-                9 => 80f,
-                10 => 90f,
-                11 => 100f,
-                12 => 110f,
-                13 => 120f,
-                14 => 130f,
-                15 => 140f,
-                16 => 150f,
-                17 => 160f,
-                18 => 170f,
-                19 => 180f,
-                20 => 190f,
-                21 => 200f,
-                22 => 210f,
-                23 => 220f,
-                24 => 230f,
+                 1 =>   5,
+                 2 =>  10,
+                 3 =>  20,
+                 4 =>  30,
+                 5 =>  40,
+                 6 =>  50,
+                 7 =>  60,
+                 8 =>  70,
+                 9 =>  80,
+                10 =>  90,
+                11 => 100,
+                12 => 110,
+                13 => 120,
+                14 => 130,
+                15 => 140,
+                16 => 150,
+                17 => 160,
+                18 => 170,
+                19 => 180,
+                20 => 190,
+                21 => 200,
+                22 => 210,
+                23 => 220,
+                24 => 230,
+
                 _ => -1,
             };
         }
 
-        private static float GetDefenceValue(int level)
+        private static FP GetDefenceValue(int level)
         {
             return level switch
             {
-                1 => 50f,
-                2 => 75f,
-                3 => 100f,
-                4 => 125f,
-                5 => 150f,
-                6 => 175f,
-                7 => 200f,
-                8 => 225f,
-                9 => 250f,
-                10 => 275f,
-                11 => 300f,
-                12 => 325f,
-                13 => 350f,
-                14 => 375f,
-                15 => 400f,
-                16 => 425f,
-                17 => 450f,
-                18 => 475f,
-                19 => 500f,
-                20 => 525f,
-                21 => 550f,
-                22 => 575f,
-                23 => 600f,
-                24 => 625f,
+                 1 =>  50,
+                 2 =>  75,
+                 3 => 100,
+                 4 => 125,
+                 5 => 150,
+                 6 => 175,
+                 7 => 200,
+                 8 => 225,
+                 9 => 250,
+                10 => 275,
+                11 => 300,
+                12 => 325,
+                13 => 350,
+                14 => 375,
+                15 => 400,
+                16 => 425,
+                17 => 450,
+                18 => 475,
+                19 => 500,
+                20 => 525,
+                21 => 550,
+                22 => 575,
+                23 => 600,
+                24 => 625,
+
                 _ => -1,
             };
         }
 
-        private static float GetResistanceValue(int level)
+        private static FP GetCharacterSizeValue(int level)
         {
             return level switch
             {
-                1 => 4f,
-                2 => 4f,
-                3 => 4f,
-                4 => 6f,
-                5 => 6f,
-                6 => 6f,
-                7 => 8f,
-                8 => 8f,
-                9 => 8f,
-                10 => 8f,
-                11 => 10f,
-                12 => 10f,
-                13 => 10f,
-                14 => 10f,
-                15 => 12f,
-                16 => 12f,
-                17 => 12f,
-                18 => 12f,
-                19 => 14f,
-                20 => 14f,
-                21 => 14f,
-                22 => 16f,
-                23 => 16f,
-                24 => 16f,
+                 1 =>  4,
+                 2 =>  4,
+                 3 =>  4,
+                 4 =>  6,
+                 5 =>  6,
+                 6 =>  6,
+                 7 =>  8,
+                 8 =>  8,
+                 9 =>  8,
+                10 =>  8,
+                11 => 10,
+                12 => 10,
+                13 => 10,
+                14 => 10,
+                15 => 12,
+                16 => 12,
+                17 => 12,
+                18 => 12,
+                19 => 14,
+                20 => 14,
+                21 => 14,
+                22 => 16,
+                23 => 16,
+                24 => 16,
+
                 _ => -1,
             };
         }
 
-        private static float GetHpValue(int level)
+        private static FP GetHpValue(int level)
         {
             return level switch
             {
-                1 => 50f,
-                2 => 75f,
-                3 => 100f,
-                4 => 125f,
-                5 => 150f,
-                6 => 175f,
-                7 => 200f,
-                8 => 225f,
-                9 => 250f,
-                10 => 275f,
-                11 => 300f,
-                12 => 325f,
-                13 => 350f,
-                14 => 375f,
-                15 => 400f,
-                16 => 425f,
-                17 => 450f,
-                18 => 475f,
-                19 => 500f,
-                20 => 525f,
-                21 => 550f,
-                22 => 575f,
-                23 => 600f,
-                24 => 625f,
+                 1 =>  50,
+                 2 =>  75,
+                 3 => 100,
+                 4 => 125,
+                 5 => 150,
+                 6 => 175,
+                 7 => 200,
+                 8 => 225,
+                 9 => 250,
+                10 => 275,
+                11 => 300,
+                12 => 325,
+                13 => 350,
+                14 => 375,
+                15 => 400,
+                16 => 425,
+                17 => 450,
+                18 => 475,
+                19 => 500,
+                20 => 525,
+                21 => 550,
+                22 => 575,
+                23 => 600,
+                24 => 625,
+
                 _ => -1,
             };
         }
 
-        private static float GetSpeedValue(int level)
+        private static FP GetSpeedValue(int level)
         {
             return level switch
             {
-                1 => 4f,
-                2 => 4f,
-                3 => 4f,
-                4 => 6f,
-                5 => 6f,
-                6 => 6f,
-                7 => 8f,
-                8 => 8f,
-                9 => 8f,
-                10 => 8f,
-                11 => 10f,
-                12 => 10f,
-                13 => 10f,
-                14 => 10f,
-                15 => 12f,
-                16 => 12f,
-                17 => 12f,
-                18 => 12f,
-                19 => 14f,
-                20 => 14f,
-                21 => 14f,
-                22 => 16f,
-                23 => 16f,
-                24 => 16f,
+                 1 =>  4,
+                 2 =>  4,
+                 3 =>  4,
+                 4 =>  6,
+                 5 =>  6,
+                 6 =>  6,
+                 7 =>  8,
+                 8 =>  8,
+                 9 =>  8,
+                10 =>  8,
+                11 => 10,
+                12 => 10,
+                13 => 10,
+                14 => 10,
+                15 => 12,
+                16 => 12,
+                17 => 12,
+                18 => 12,
+                19 => 14,
+                20 => 14,
+                21 => 14,
+                22 => 16,
+                23 => 16,
+                24 => 16,
+
                 _ => -1,
             };
         }
@@ -265,8 +288,8 @@ namespace Altzone.Scripts.Model.Poco.Game
                     return GetSegmentAmount(nextLevel - character._defaultAttack) * GetStatSegmentPrice(character, type, nextLevel - character._defaultAttack);
                 case StatType.Defence:
                     return GetSegmentAmount(nextLevel - character._defaultDefence) * GetStatSegmentPrice(character, type, nextLevel - character._defaultDefence);
-                case StatType.Resistance:
-                    return GetSegmentAmount(nextLevel - character._defaultResistance) * GetStatSegmentPrice(character, type, nextLevel - character._defaultResistance);
+                case StatType.CharacterSize:
+                    return GetSegmentAmount(nextLevel - character._defaultCharacterSize) * GetStatSegmentPrice(character, type, nextLevel - character._defaultCharacterSize);
                 case StatType.Hp:
                     return GetSegmentAmount(nextLevel - character._defaultHp) * GetStatSegmentPrice(character, type, nextLevel - character._defaultHp);
                 case StatType.Speed:
@@ -284,8 +307,8 @@ namespace Altzone.Scripts.Model.Poco.Game
                     return GetStrengthMulti(character._attackStrength) * GetSegmentPrice(nextLevel - character._defaultAttack);
                 case StatType.Defence:
                     return GetStrengthMulti(character._defenceStrength) * GetSegmentPrice(nextLevel - character._defaultDefence);
-                case StatType.Resistance:
-                    return GetStrengthMulti(character._resistanceStrength) * GetSegmentPrice(nextLevel - character._defaultResistance);
+                case StatType.CharacterSize:
+                    return GetStrengthMulti(character._characterSizeStrength) * GetSegmentPrice(nextLevel - character._defaultCharacterSize);
                 case StatType.Hp:
                     return GetStrengthMulti(character._hpStrength) * GetSegmentPrice(nextLevel - character._defaultHp);
                 case StatType.Speed:
@@ -358,8 +381,8 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case StatType.Defence:
                     nextLevel = nextLevel - character._defaultDefence;
                     break;
-                case StatType.Resistance:
-                    nextLevel = nextLevel - character._defaultResistance;
+                case StatType.CharacterSize:
+                    nextLevel = nextLevel - character._defaultCharacterSize;
                     break;
                 case StatType.Hp:
                     nextLevel = nextLevel - character._defaultHp;
@@ -420,7 +443,7 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public static CharacterClassID GetClassID(CharacterID id)
         {
-            CharacterClassID ClassId = (CharacterClassID)((int)id & 0b1111_1111__0000_0000);
+            CharacterClassID ClassId = (CharacterClassID)((((int)id) / 100) * 100);
             return ClassId;
         }
     }

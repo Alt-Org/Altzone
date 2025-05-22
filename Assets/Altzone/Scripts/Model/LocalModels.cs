@@ -11,7 +11,6 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Settings;
-using AltZone.Scripts.ReferenceSheets;
 using Prg.Scripts.Common.Unity;
 using UnityEngine;
 #if UNITY_WEBGL
@@ -107,7 +106,7 @@ namespace Altzone.Scripts.Model
                 _storagePath = AppPlatform.ConvertToWindowsPath(_storagePath);
             }
             Debug.Log($"StorageFilename {_storagePath}");
-            _characters = new CharacterStorage().CharacterList;
+            _characters = CharacterStorage.Instance.CharacterList;
             _storageData = File.Exists(_storagePath)
                 ?  LoadStorage(_storagePath)
                 : CreateDefaultStorage(_storagePath);
@@ -156,7 +155,7 @@ namespace Altzone.Scripts.Model
             if (playerData != null)
             {
                 // This storage is by no means a complete object model we want to serve.
-                playerData.BuildCharacterLists(_GetAllBattleCharacters(), _storageData.CustomCharacters);
+                if(playerData.CustomCharacters == null)playerData.BuildCharacterLists(_storageData.CustomCharacters);
             }
             Debug.Log($"playerData {playerData}");
             callback(playerData);
@@ -297,12 +296,17 @@ namespace Altzone.Scripts.Model
             callback(new ReadOnlyCollection<BaseCharacter>(_storageData.Characters));
         }
 
-        internal void GetPlayerTasks(Action<PlayerTasks> callback)
+        internal void GetAllDefaultCharacters(Action<ReadOnlyCollection<CustomCharacter>> callback)
+        {
+            callback(new ReadOnlyCollection<CustomCharacter>(_storageData.CustomCharacters));
+        }
+
+        internal void GetPlayerTasks(Action<List<PlayerTask>> callback)
         {
             callback(_storageData.PlayerTasks);
         }
 
-        internal void SavePlayerTasks(PlayerTasks tasks, Action<PlayerTasks> callback)
+        internal void SavePlayerTasks(List<PlayerTask> tasks, Action<List<PlayerTask>> callback)
         {
             _storageData.PlayerTasks = tasks;
             callback(_storageData.PlayerTasks);
@@ -364,7 +368,7 @@ namespace Altzone.Scripts.Model
             if (storageData?.StorageVersion != STORAGEVERSION) storageData = CreateDefaultStorage(storagePath);
             else
             {
-                storageData.Characters = new CharacterStorage().CharacterList;
+                storageData.Characters = CharacterStorage.Instance.CharacterList;
                 storageData.CustomCharacters = new();
                 storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(storageData.Characters));
                 storageData.GameFurniture = new();
@@ -399,6 +403,6 @@ namespace Altzone.Scripts.Model
         public List<GameFurniture> GameFurniture = new();
         public List<PlayerData> PlayerData = new();
         public List<ClanData> ClanData = new();
-        public PlayerTasks PlayerTasks= null;
+        public List<PlayerTask> PlayerTasks= null;
     }
 }

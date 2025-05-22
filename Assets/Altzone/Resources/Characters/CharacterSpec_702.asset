@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
+  m_Name: CharacterSpec_702
+  m_EditorClassIdentifier: 
+  Id: 702
+  CharacterId: 702
+  IsApproved: 1
+  Name: Kapitalismi
+  ClassType: 700
+  CharacterDescription: "Kapitalismi n\xE4kee maailman p\xF6rssikursseina ja vaihtokauppoina.
+    H\xE4nelle raha on ainoa ihmisarvon mittari ja h\xE4n onkin omistanut el\xE4m\xE4ns\xE4
+    sen haalimiselle. Kapitalismin itsetunto nousee pankkitilin saldon mukana mutta
+    v\xE4\xE4r\xE4 sijoitus sy\xF6ksee h\xE4net syv\xE4\xE4n h\xE4pe\xE4\xE4n ja
+    identiteettikriisiin. Kylm\xE4 ja laskelmoiva, Kapitalismi ajaa aina omaa etuaan
+    muiden ollessa vain askelkivi\xE4 matkalla menestykseen.\r\n\nKapitalismi pys\xE4ytt\xE4\xE4
+    tunnetila-ammukset nahkasalkullaan, josta leijailevat setelit ennustavat ammuksen
+    lentoradan pelikent\xE4ll\xE4 mutta setelisateen samentuessa vaikeuttavat liittolaisten
+    t\xE4ht\xE4yst\xE4.\r\n"
+  CharacterShortDescription: 'Vaurauteen verhoutunut menestyksen tavoittelija '
+  CharacterStats: {fileID: 11400000, guid: baa4c98962452dd49a5bd0c198f914ce, type: 2}
+  Hp:
+    Level: 8
+    Coefficient: 4
+  Speed:
+    Level: 6
+    Coefficient: 5
+  CharacterSize:
+    Level: 8
+    Coefficient: 6
+  Attack:
+    Level: 10
+    Coefficient: 4
+  Defence:
+    Level: 3
+    Coefficient: 5
+  GalleryImage: {fileID: 21300000, guid: a75d04797409cb44da6e19eebbc47611, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: e8c16f7d371b73f4db14bbb6354f9d99, type: 3}
+  BattleSprite: {fileID: 0}

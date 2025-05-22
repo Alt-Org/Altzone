@@ -4,17 +4,18 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
+    //[CreateAssetMenu(menuName = "ALT-Zone/ConmanCharacter", fileName = "ConmanCharacterStats")]
     public class ConmanCharacter : TricksterClassCharacter
     {
         public ConmanCharacter()
         {
-            _id = CharacterID.TricksterConman;
+            _id = CharacterID.Conman;
             _defaultAttack = 7;
             _defaultDefence = 5;
             _defaultHp = 2;
-            _defaultResistance = 6;
+            _defaultCharacterSize = 6;
             _defaultSpeed = 10;
-            InitilizeValues();
+            InitializeValues();
         }
     }
 }

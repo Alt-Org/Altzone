@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Voting;
@@ -8,54 +7,54 @@ using UnityEngine;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
-using UnityEditor;
 using System.Linq;
+using MenuUi.Scripts.Storage;
 
 public static class PollManager
 {
     private static List<PollData> pollDataList = new List<PollData>();
+    private static List<PollData> pastPollDataList = new List<PollData>();
 
     private static DataStore store = Storefront.Get();
     private static PlayerData player = null;
     private static ClanData clan = null;
 
-    public static void CreatePoll(PollType pollType, int durationInHours, Sprite sprite, EsinePollType esinePollType, float value)
+    public static Action<FurniturePollType> ShowVotingPopup;
+
+    public static void CreateFurniturePoll(FurniturePollType furniturePollType, GameFurniture furniture)
     {
         LoadClanData();
 
         string id = GetFirstAvailableId();
-        string name = "joku";
-        long endTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + durationInHours * 60;
-        long startTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
         List<string> clanMembers = new List<string>();
-        //if (clan != null ) clanMembers = clan.Members.Select(member => member.Id).ToList();
-        if (player != null) clanMembers.Add(player.Id);
+        if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
 
-        PollData pollData = new EsinePollData(pollType, id, name, startTime, endTime, sprite, clanMembers, esinePollType, value);
-
+        PollData pollData = new FurniturePollData(id, clanMembers, furniturePollType, furniture);
         pollDataList.Add(pollData);
+
+        ShowVotingPopup?.Invoke(furniturePollType);
 
         //PrintPollList();
         SaveClanData();
-        VotingActions.ReloadPollList?.Invoke();
     }
 
-    public static void CreatePoll(PollType pollType, int durationInHours, Sprite sprite, FurniturePollType furniturePollType, GameFurniture furniture, double weight, float value)
+    public static void CreateFurniturePoll(FurniturePollType furniturePollType, StorageFurniture furniture)
     {
         LoadClanData();
 
         string id = GetFirstAvailableId();
-        string name = "joku";
-        long endTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + durationInHours * 3600;
-        long startTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
         List<string> clanMembers = new List<string>();
-        //if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
-        if (player != null) clanMembers.Add(player.Id);
+        if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
 
-        PollData pollData = new FurniturePollData(pollType, id, name, startTime, endTime, sprite, clanMembers, furniturePollType, furniture, weight, value);    
+        GameFurniture gameFurniture = null;
+        store.GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == furniture.Name));
+
+        PollData pollData = new FurniturePollData(id, clanMembers, furniturePollType, gameFurniture);
         pollDataList.Add(pollData);
+
+        ShowVotingPopup?.Invoke(furniturePollType);
 
         //PrintPollList();
         SaveClanData();
@@ -70,16 +69,12 @@ public static class PollManager
             DateTime dateTimeEnd = DateTimeOffset.FromUnixTimeSeconds(pollData.EndTime).DateTime;
 
             // Basic information common to all PollDatas
-            string output = $"Poll Data {i + 1}: ID={pollData.Id}, Name={pollData.Name}, Time={dateTimeEnd}, Type={pollData.PollType}";
+            string output = $"Poll Data {i + 1}: ID={pollData.Id}, Time={dateTimeEnd}";
 
             // Check the type of pollData and append specific information
             if (pollData is FurniturePollData furniturePoll)
             {
-                output += $", FurniturePollType={furniturePoll.FurniturePollType}, Weight={furniturePoll.Weight}, Value={furniturePoll.Value}";
-            }
-            else if (pollData is EsinePollData esinePoll)
-            {
-                output += $", EsinePollType={esinePoll.EsinePollType}, Value={esinePoll.Value}";
+                output += $", FurniturePollType={furniturePoll.FurniturePollType}, Weight={furniturePoll.Furniture.Weight}, Value={furniturePoll.Furniture.Value}";
             }
 
             Debug.Log(output);
@@ -104,7 +99,7 @@ public static class PollManager
 
     public static PollData GetPollData(string id)
     {
-        return pollDataList.First(x => x.Id == id);
+        return pollDataList.FirstOrDefault(x => x.Id == id);
     }
 
     public static void LoadClanData()
@@ -117,7 +112,7 @@ public static class PollManager
             {
                 store.GetClanData(player.ClanId, data => clan = data);
                 
-                if (clan.Polls != null)
+                if (clan?.Polls != null)
                 {
                     pollDataList = clan.Polls;
                 }
@@ -139,5 +134,35 @@ public static class PollManager
                 store.SaveClanData(clan, data => clan = data);
             }
         }
+    }
+
+    public static void EndPoll(string pollId)
+    {
+        LoadClanData();
+        
+        PollData pollData = GetPollData(pollId);
+        if (pollData == null) return;
+
+        bool yesVotesWon = (pollData.YesVotes.Count >= Mathf.CeilToInt(clan.Members.Count / 3.0f)) && pollData.YesVotes.Count > pollData.NoVotes.Count;
+
+        if (pollData is FurniturePollData furniturePollData)
+        {
+            FurniturePollType pollType = furniturePollData.FurniturePollType;
+
+            if (pollType == FurniturePollType.Selling)
+            {
+                ClanFurniture clanFurniture = clan.Inventory.Furniture.First(furn => furn.GameFurnitureName == furniturePollData.Furniture.Name && furn.InVoting == true);
+                clanFurniture.VotedToSell = yesVotesWon;
+                clanFurniture.InVoting = false;
+            }
+            // TODO: Buying
+        }
+        
+        pollDataList.Remove(pollData);
+        pastPollDataList.Add(pollData);
+
+        SaveClanData();
+
+        VotingActions.ReloadPollList?.Invoke();
     }
 }

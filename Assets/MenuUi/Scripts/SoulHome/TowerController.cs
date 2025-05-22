@@ -8,6 +8,7 @@ using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using Prg.Scripts.Common;
 using UnityEngine.InputSystem;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Audio;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -98,7 +99,7 @@ namespace MenuUI.Scripts.SoulHome
         private IEnumerator StartActions()
         {
             yield return new WaitUntil(() => _loadScript.LoadFinished);
-            AudioManager.Instance?.PlayMusic();
+            AudioManager.Instance?.PlayMusic(MusicSection.SoulHome);
             _camera = GetComponent<Camera>();
             SetCameraBounds();
 
@@ -136,7 +137,7 @@ namespace MenuUI.Scripts.SoulHome
             SetScrollSpeed();
             //Debug.Log(cameraWidth+" : "+ _mainScreen.transform.GetComponent<RectTransform>().rect.width);
             //Debug.Log(cameraMove);
-            if (!CheckInteractableStatus()) return;
+            if (!_soulHomeController.CheckInteractableStatus()) return;
 
             if (ClickStateHandler.GetClickType(ClickInputDevice.Touch) is ClickType.Click && (ClickStateHandler.GetClickState() is ClickState.Start || prevp == Vector2.zero)) prevp = ClickStateHandler.GetClickPosition(ClickInputDevice.Touch);
             if (ClickStateHandler.GetClickType() is ClickType.Click && cameraMove)
@@ -359,6 +360,11 @@ namespace MenuUI.Scripts.SoulHome
                     {
                         hitPoint = hit2.point;
                         continue;
+                    }
+
+                    if (hit2.collider.gameObject.CompareTag("SoulHomeAvatar"))
+                    {
+                        StartCoroutine(hit2.collider.gameObject.GetComponent<SoulHomeAvatarController>().WaveAnimation());
                     }
 
                     if (hit2.collider.gameObject.CompareTag("Furniture"))
@@ -616,13 +622,27 @@ namespace MenuUI.Scripts.SoulHome
         {
             Vector2 checkPoint;
             Vector2Int size = _selectedFurniture.GetComponent<FurnitureHandling>().GetFurnitureSize();
-            bool isFurniturePlaceHolder = _selectedFurniture.GetComponent<FurnitureHandling>().IsPlaceHolder;
             if(hitPoint.Equals(Vector2.negativeInfinity)) hitPoint = _selectedFurniture.transform.position + new Vector3(0, 0.001f);
 
-            if(!isFurniturePlaceHolder)
-                checkPoint = hitPoint + new Vector2((_selectedFurniture.transform.localScale.x / 2) + ((_selectedFurniture.transform.localScale.x *size.x)/2)*-1, 0);
+            Ray ray = new(transform.position, (Vector3)hitPoint - transform.position);
+            RaycastHit2D[] hitCheckArray;
+            hitCheckArray = Physics2D.GetRayIntersectionAll(ray, 1000);
+            bool hitLeftWall = false;
+            float slotWidth = 2.5f;
+            foreach (RaycastHit2D hit2 in hitCheckArray)
+            {
+                if (hit2.collider.gameObject.CompareTag("FloorFurnitureSlot")) { slotWidth = hit2.collider.gameObject.GetComponent<BoxCollider2D>().size.x; break; }
+                else if (hit2.collider.gameObject.CompareTag("WallFurnitureSlot")) { slotWidth = hit2.collider.gameObject.GetComponent<BoxCollider2D>().size.x; break; }
+                else if (hit2.collider.gameObject.CompareTag("RightWallFurnitureSlot")) { slotWidth = hit2.collider.gameObject.GetComponent<BoxCollider2D>().size.x; break; }
+                else if (hit2.collider.gameObject.CompareTag("LeftWallFurnitureSlot")) { hitLeftWall = true; slotWidth = hit2.collider.gameObject.GetComponent<BoxCollider2D>().size.x; break; }
+            }
+
+
+
+            if(!hitLeftWall)
+                checkPoint = hitPoint + new Vector2((slotWidth / 2) + ((slotWidth * size.x)/2)*-1, 0);
             else
-                checkPoint = hitPoint + new Vector2((_selectedFurniture.transform.localScale.x / 2) * -1 + _selectedFurniture.transform.localScale.x / (2 * size.x), 0);
+                checkPoint = hitPoint + new Vector2((slotWidth / 2) * -1 + ((slotWidth * size.x) / 2), 0);
 
             Ray ray2 = new(transform.position, (Vector3)checkPoint - transform.position);
             RaycastHit2D[] hitArray;
@@ -677,7 +697,7 @@ namespace MenuUI.Scripts.SoulHome
                 }
                 if (_selectedFurniture != null) {
                     _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(1f);
-                    _selectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
+                    _selectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition(_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.furnitureGrid is FurnitureGrid.LeftWall);
                     //SelectedFurniture = null;
                 }
                 //_mainScreen.DeselectTrayFurniture();
@@ -756,7 +776,7 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     _rooms.transform.GetChild(_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.roomId).GetChild(0).GetComponent<RoomData>().ResetPosition(SelectedFurniture, true);
                     _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(1f);
-                    _selectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
+                    _selectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition(_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.furnitureGrid is FurnitureGrid.LeftWall);
                     SelectedFurniture = null;
                 }
             }
@@ -786,7 +806,7 @@ namespace MenuUI.Scripts.SoulHome
                 int roomId = furniture.GetComponent<FurnitureHandling>().Slot.roomId;
                 _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().SetFurnitureSlots(furniture.GetComponent<FurnitureHandling>());
                 _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().ResetPosition(furniture, false);
-                furniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
+                furniture.GetComponent<FurnitureHandling>().ResetFurniturePosition(_selectedFurniture.GetComponent<FurnitureHandling>().Slot.furnitureGrid is FurnitureGrid.LeftWall);
                 furniture.GetComponent<FurnitureHandling>().SetScale();
                 furniture.GetComponent<FurnitureHandling>().SetTransparency(1f);
                 furniture.GetComponent<FurnitureHandling>().TempSlot = furniture.GetComponent<FurnitureHandling>().Slot;
@@ -910,14 +930,6 @@ namespace MenuUI.Scripts.SoulHome
             //Debug.Log("CurrentX:"+currentX+", CameraMinX:"+ cameraMinX + ", OffsetX:" + offsetX + ", CameraMaxX:" + cameraMaxX +", OffsetX:" + offsetX);
             transform.position = new(x, y, transform.position.z);
 
-        }
-
-        private bool CheckInteractableStatus()
-        {
-            if (_soulHomeController.ExitPending) return false;
-            if (_soulHomeController.ConfirmPopupOpen) return false;
-
-            return true;
         }
 
         public void SetCameraBounds()

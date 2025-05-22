@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8424176910884188875}
   - component: {fileID: -4477838665465569415}
   - component: {fileID: -724820267442525664}
+  - component: {fileID: -6528344164651242795}
   m_Layer: 0
   m_Name: Mirror_Schrodinger_Furniture
   m_TagString: Furniture
@@ -147,11 +148,24 @@ MonoBehaviour:
   _furnitureSpriteFront: {fileID: 21300000, guid: 1668e6a82af181649a95fd18184b69b4,
     type: 3}
   _furnitureSpriteRight: {fileID: 0}
-  _furnitureSpriteLeft: {fileID: 0}
+  _furnitureSpriteLeft: {fileID: 21300000, guid: 238c71c1f7832ae42ba31d2f0c554805,
+    type: 3}
   _furnitureSpriteBack: {fileID: 0}
   _defaultSpriteDirection: 0
   _spriteCanBeFlipped: 1
+  _sortingGroup: {fileID: -6528344164651242795}
   _trayFurnitureObject: {fileID: 6752174233831251881, guid: 75d4f485eb02ef340bbe25ff7f6f926c,
     type: 3}
   cullCheckAmount: 0.1
-  _isPlaceHolder: 0
+--- !u!210 &-6528344164651242795
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7560384329901659850}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortAtRoot: 0

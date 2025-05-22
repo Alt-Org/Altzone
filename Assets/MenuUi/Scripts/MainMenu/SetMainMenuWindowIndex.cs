@@ -14,6 +14,13 @@ public class SetMainMenuWindowIndex : MonoBehaviour
 {
     public void SetMainMenuWindowIndexValue(int index)
     {
-        FindObjectOfType<SwipeUI>(true).CurrentPage = index;
+
+        SwipeUI[] foundSwipes =FindObjectsOfType<SwipeUI>(true);
+
+        for (int i = 0; i < foundSwipes.Length; i++)
+        {
+            if (foundSwipes[i].IsInMainMenu)
+            foundSwipes[i].CurrentPage = index;
+        }
     }
 }

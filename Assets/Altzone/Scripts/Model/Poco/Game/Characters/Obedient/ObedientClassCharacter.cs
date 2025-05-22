@@ -6,19 +6,17 @@ namespace Altzone.Scripts.Model.Poco.Game
 {
     public abstract class ObedientClassCharacter : BaseCharacter
     {
-
-
         public override CharacterClassID ClassID => CharacterClassID.Obedient;
 
 
         protected ObedientClassCharacter()
         {
             _attackStrength = ValueStrength.None;
-            _resistanceStrength = ValueStrength.None;
+            _characterSizeStrength = ValueStrength.None;
             _hpStrength = ValueStrength.None;
             _defenceStrength = ValueStrength.None;
             _speedStrength = ValueStrength.None;
-            InitilizeValues();
+            InitializeValues();
         }
     }
 }

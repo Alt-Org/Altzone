@@ -6,6 +6,7 @@ using TMPro;
 using MenuUi.Scripts.Window;
 using UnityEngine.UI;
 using Altzone.Scripts.GA;
+using Altzone.Scripts.Audio;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -34,7 +35,13 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private Button _editButton;
         [SerializeField]
+        private TextMeshProUGUI _editButtonText;
+        [SerializeField]
         private GameObject _editTray;
+        [SerializeField]
+        private JukeBoxSoulhomeHandler _jukeBoxPopup;
+        [SerializeField]
+        private Button _openJukeBox;
         [SerializeField]
         private TextMeshProUGUI _musicName;
         [SerializeField]
@@ -59,20 +66,23 @@ namespace MenuUI.Scripts.SoulHome
             }
             EditModeTrayResize();
             _audioManager = AudioManager.Instance;
+            _editButton.onClick.AddListener(()=>EditModeToggle());
+            _openJukeBox.onClick.AddListener(()=>_jukeBoxPopup.ToggleJokeBoxScreen(true));
         }
 
         public void OnEnable()
         {
-            if (_infoPopup != null && _infoPopup.gameObject.activeSelf == true) _infoPopup.gameObject.SetActive(false);
+            //if (_infoPopup != null && _infoPopup.gameObject.activeSelf == true) _infoPopup.gameObject.SetActive(false);
             GameObject[] root = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
             foreach (GameObject rootObject in root)
             {
                 if (rootObject.name == "AudioManager")
                     rootObject.GetComponent<MainMenuAudioManager>()?.StopMusic();
             }
-            _musicName.text = AudioManager.Instance?.PlayMusic();
+            _musicName.text = AudioManager.Instance?.PlayMusic(MusicSection.SoulHome);
             EditModeTrayResize();
             if (GameAnalyticsManager.Instance != null) GameAnalyticsManager.Instance.OpenSoulHome();
+            JukeboxController.OnChangeJukeBoxSong += SetSongName;
         }
 
         public void OnDisable()
@@ -84,6 +94,9 @@ namespace MenuUI.Scripts.SoulHome
                     rootObject.GetComponent<MainMenuAudioManager>()?.PlayMusic();
             }
             AudioManager.Instance?.StopMusic();
+            _jukeBoxPopup.StopJukebox();
+            _jukeBoxPopup.ToggleJokeBoxScreen(false);
+            JukeboxController.OnChangeJukeBoxSong -= SetSongName;
         }
 
         public void SetRoomName(GameObject room)
@@ -180,12 +193,14 @@ namespace MenuUI.Scripts.SoulHome
                 _editButton.interactable = true;
                 _editTray.GetComponent<RectTransform>().pivot = new(0, 0.5f);
                 _editTray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                _editButtonText.text = "Avaa\nMuokkaustila";
             }
             else
             {
-                _editButton.interactable = false;
-                _editTray.GetComponent<RectTransform>().pivot = new(1, 0.5f);
-                _editTray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                //_editButton.interactable = false;
+                //_editTray.GetComponent<RectTransform>().pivot = new(1, 0.5f);
+                //_editTray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                _editButtonText.text = "Sulje\nMuokkaustila";
             }
         }
 
@@ -224,8 +239,8 @@ namespace MenuUI.Scripts.SoulHome
                 else _mainScreen.ResetChanges();
                 CloseConfirmPopup(PopupType.EditClose);
                 _soulHomeTower.ToggleEdit();
-                if(save) _audioManager.PlaySfxAudio(AudioTypeName.Save);
-                else _audioManager.PlaySfxAudio(AudioTypeName.Revert);
+                if(save) _audioManager.PlaySfxAudio("SaveChanges");
+                else _audioManager.PlaySfxAudio("RevertChanges");
             }
             else
             {
@@ -241,8 +256,21 @@ namespace MenuUI.Scripts.SoulHome
 
         public void ShowInfoPopup(string popupText)
         {
-            _infoPopup.ActivatePopUp(popupText);
+            SignalBus.OnChangePopupInfoSignal(popupText);
         }
 
+        private void SetSongName(JukeboxSong song)
+        {
+            _musicName.text = song.songName;
+        }
+
+        public bool CheckInteractableStatus()
+        {
+            if (_exitPending) return false;
+            if (_confirmPopupOpen) return false;
+            if (_jukeBoxPopup.JukeBoxOpen) return false;
+
+            return true;
+        }
     }
 }

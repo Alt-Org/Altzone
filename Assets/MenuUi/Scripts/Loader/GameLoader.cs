@@ -11,7 +11,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Video;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using Prg.Scripts.Common;
-using AltZone.Scripts.ReferenceSheets;
+using Altzone.Scripts.ReferenceSheets;
 
 namespace MenuUi.Scripts.Loader
 {

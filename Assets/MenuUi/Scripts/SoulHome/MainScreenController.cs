@@ -7,6 +7,7 @@ using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.UI;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using Prg.Scripts.Common;
+using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -84,7 +85,7 @@ namespace MenuUI.Scripts.SoulHome
                 GetTrayHandler().SetTrayContentSize();
                 GetTrayHandler().GetComponent<ResizeCollider>().Resize();
             }
-            if (!CheckInteractableStatus()) return;
+            if (!_soulHomeController.CheckInteractableStatus()) return;
 
             if (transform.Find("Screen").GetComponent<RectTransform>().rect.width != transform.Find("Screen").GetComponent<BoxCollider2D>().size.x || transform.Find("Screen").GetComponent<RectTransform>().rect.height != transform.Find("Screen").GetComponent<BoxCollider2D>().size.y)
             //if ((Screen.orientation == ScreenOrientation.LandscapeLeft && !rotated) || (Screen.orientation == ScreenOrientation.Portrait && rotated))
@@ -326,7 +327,7 @@ namespace MenuUI.Scripts.SoulHome
                     {
                         if (_soulHomeTower.SelectedFurniture.GetComponent<FurnitureHandling>().TempSlot != null)
                         {
-                            _soulHomeTower.SelectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
+                            _soulHomeTower.SelectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition(_soulHomeTower.SelectedFurniture.GetComponent<FurnitureHandling>().TempSlot.furnitureGrid is FurnitureGrid.LeftWall);
                             _soulHomeTower.SelectedFurniture.GetComponent<SpriteRenderer>().enabled = true;
                             _soulHomeTower.SelectedFurniture.GetComponent<BoxCollider2D>().enabled = true;
                             _soulHomeTower.UnfocusFurniture();
@@ -651,7 +652,7 @@ namespace MenuUI.Scripts.SoulHome
         }
         private void CheckTrayButtonStatus()
         {
-            if (_soulHomeTower.ChangedFurnitureList.Count > 0 && CheckInteractableStatus())
+            if (_soulHomeTower.ChangedFurnitureList.Count > 0 && _soulHomeController.CheckInteractableStatus())
             {
                 _changeHandleButtonTray.transform.Find("DiscardChangesButton").GetComponent<Button>().interactable = true;
                 _changeHandleButtonTray.transform.Find("SaveChangesButton").GetComponent<Button>().interactable = true;
@@ -661,14 +662,6 @@ namespace MenuUI.Scripts.SoulHome
                 _changeHandleButtonTray.transform.Find("DiscardChangesButton").GetComponent<Button>().interactable = false;
                 _changeHandleButtonTray.transform.Find("SaveChangesButton").GetComponent<Button>().interactable = false;
             }
-        }
-
-        private bool CheckInteractableStatus()
-        {
-            if(_soulHomeController.ExitPending) return false;
-            if (_soulHomeController.ConfirmPopupOpen) return false;
-
-            return true;
         }
 
         private void CheckHoverButtons()

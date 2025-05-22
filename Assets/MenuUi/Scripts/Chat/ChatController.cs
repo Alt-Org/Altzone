@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// ChatController handles sending new chat messages and displaying received chat messages on the Global, Country and Clan chat windows.

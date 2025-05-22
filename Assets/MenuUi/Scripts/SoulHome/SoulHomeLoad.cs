@@ -138,7 +138,7 @@ namespace MenuUI.Scripts.SoulHome {
                 }
                 StartCoroutine(GetFurniture());
                 yield return new WaitUntil(()=> _furnitureFetchFinished == true);
-                Debug.LogWarning("Test");
+                //Debug.LogWarning("Test");
                 if(_furnitureList != null)
                 foreach (Furniture furniture in _furnitureList)
                 {

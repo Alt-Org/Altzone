@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,22 +13,32 @@ using Photon.Client;
 using Photon.Realtime;
 using Quantum;
 
-using Altzone.Scripts.Config;
-using Altzone.Scripts.Settings;
-using PlayerData = Altzone.Scripts.Model.Poco.Player.PlayerData;
 using Prg.Scripts.Common.PubSub;
 
-using System.Threading.Tasks;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Settings;
+using Altzone.Scripts.Common;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby.Wrappers;
+using Altzone.Scripts.AzDebug;
+using Altzone.PhotonSerializer;
+
+using Battle.QSimulation.Game;
+using PlayerType = Battle.QSimulation.Game.BattleParameters.PlayerType;
 
 namespace Altzone.Scripts.Lobby
 {
     public enum LobbyWindowTarget
     {
+        None,
         MainMenu,
         LobbyRoom,
+        BattleLoad,
         Battle,
+        BattleStory,
         Raid
     }
 
@@ -55,29 +67,49 @@ namespace Altzone.Scripts.Lobby
         [SerializeField] private bool _isCloseRoomOnGameStart;
         //[SerializeField] private SceneDef _raidScene;
 
-        [Header("Team Names"), SerializeField] private string _blueTeamName;
+        [Header("Team Names")]
+        [SerializeField] private string _blueTeamName;
         [SerializeField] private string _redTeamName;
 
-        [Header("Player"), SerializeField]
-        private RuntimePlayer _player;
+        [Header("Battle Quantum Player")]
+        [SerializeField] private RuntimePlayer _player;
 
-        [Header("Configs"), SerializeField]
-        private SimulationConfig _simulationConfig;
-        [SerializeField]
-        private SystemsConfig _systemsConfig;
+        [Header("Battle Quantum Configs")]
+        // Quantum Configs
+        [SerializeField] private Map _quantumBattleMap;
+        [SerializeField] private SimulationConfig _quantumBattleSimulationConfig;
+        [SerializeField] private SystemsConfig _quantumBattleSystemsConfig;
 
-        [SerializeField] private ProjectileGameConfig _projectileGameConfig;
-        [SerializeField]
-        private Map _map;
+        [Header("Battle Quantum Custom Configs")]
+        [SerializeField] private BattleQConfig _battleQConfig;
+
+        [Header("Battle Map reference")]
+        [SerializeField] private BattleMapReference _battleMapReference;
+
+        private const long STARTDELAY = 6000;
 
         private QuantumRunner _runner = null;
 
+        private Coroutine _reserveFreePositionHolder = null;
+        private Coroutine _requestPositionChangeHolder = null;
+        private Coroutine _matchmakingHolder = null;
+        private Coroutine _followLeaderHolder = null;
+
+        private string[] _teammates = null;
+
+        private List<FriendInfo> _friendList;
+
+        [HideInInspector] public ReadOnlyCollection<LobbyRoomInfo> CurrentRooms = null; // Set from LobbyRoomListingController.cs through Instance variable maybe this could be refactored?
         public static LobbyManager Instance { get; private set; }
+        private static bool isActive = false;
 
         #region Delegates & Events
 
-        public delegate void LobbyWindowChangeRequest(LobbyWindowTarget target);
+        public delegate void LobbyWindowChangeRequest(LobbyWindowTarget target, LobbyWindowTarget lobbyWindow = LobbyWindowTarget.None);
         public static event LobbyWindowChangeRequest OnLobbyWindowChangeRequest;
+
+        public delegate void StartTimeSet(long startTime);
+        public static event StartTimeSet OnStartTimeSet;
 
         public delegate void LobbyConnected();
         public static event LobbyConnected LobbyOnConnected;
@@ -148,6 +180,21 @@ namespace Altzone.Scripts.Lobby
         public delegate void LobbyCustomAuthenticationFailed(string debugMessage);
         public static event LobbyCustomAuthenticationFailed LobbyOnCustomAuthenticationFailed;
 
+        public delegate void MatchmakingRoomEntered(bool isLeader);
+        public static event MatchmakingRoomEntered OnMatchmakingRoomEntered;
+
+        public delegate void RoomLeaderChanged(bool isLeader);
+        public static event RoomLeaderChanged OnRoomLeaderChanged;
+
+        public delegate void ClanMemberDisconnected();
+        public static event ClanMemberDisconnected OnClanMemberDisconnected;
+
+        public delegate void FailedToStartMatchmakingGame();
+        public static event FailedToStartMatchmakingGame OnFailedToStartMatchmakingGame;
+
+        public delegate void KickedOutOfTheRoom(GetKickedEvent.ReasonType reason);
+        public static event KickedOutOfTheRoom OnKickedOutOfTheRoom;
+
         #endregion
 
 
@@ -155,24 +202,20 @@ namespace Altzone.Scripts.Lobby
         {
             if (Instance != null && Instance != this)
             {
-                Destroy(this);
+                Destroy(gameObject);
             }
             else
             {
                 Instance = this;
-                DontDestroyOnLoad(this);
+                DontDestroyOnLoad(gameObject);
+                isActive = false;
+                if (!isActive && SceneManager.GetActiveScene().buildIndex != 0) Activate();
             }
         }
 
         public void OnEnable()
         {
-            PhotonRealtimeClient.Client.AddCallbackTarget(this);
-            PhotonRealtimeClient.Client.StateChanged += OnStateChange;
-            this.Subscribe<PlayerPosEvent>(OnPlayerPosEvent);
-            this.Subscribe<StartRoomEvent>(OnStartRoomEvent);
-            this.Subscribe<StartPlayingEvent>(OnStartPlayingEvent);
-            this.Subscribe<StartRaidTestEvent>(OnStartRaidTestEvent);
-            StartCoroutine(Service());
+            if(!isActive && SceneManager.GetActiveScene().buildIndex != 0) Activate();
         }
 
         public void OnDisable()
@@ -192,14 +235,30 @@ namespace Altzone.Scripts.Lobby
                 PhotonRealtimeClient.LeaveLobby();
             }
         }
+        public void Activate()
+        {
+            if (isActive) { Debug.LogWarning("LobbyManager is already active."); return; }
+            isActive = true;
+            PhotonRealtimeClient.Client.AddCallbackTarget(this);
+            PhotonRealtimeClient.Client.StateChanged += OnStateChange;
+            this.Subscribe<ReserveFreePositionEvent>(OnReserveFreePositionEvent);
+            this.Subscribe<PlayerPosEvent>(OnPlayerPosEvent);
+            this.Subscribe<StartRoomEvent>(OnStartRoomEvent);
+            this.Subscribe<StartPlayingEvent>(OnStartPlayingEvent);
+            this.Subscribe<StartRaidTestEvent>(OnStartRaidTestEvent);
+            this.Subscribe<StartMatchmakingEvent>(OnStartMatchmakingEvent);
+            this.Subscribe<StopMatchmakingEvent>(OnStopMatchmakingEvent);
+            this.Subscribe<GetKickedEvent>(OnGetKickedEvent);
+            StartCoroutine(Service());
+        }
 
         private IEnumerator Service()
         {
             while (true)
             {
                 PhotonRealtimeClient.Client?.Service();
-                Debug.LogWarning(".");
-                yield return new WaitForSeconds(0.1f);
+                //Debug.LogWarning(".");
+                yield return new WaitForSeconds(0.05f);
             }
         }
 
@@ -241,10 +300,94 @@ namespace Altzone.Scripts.Lobby
             Debug.Log(arg1 + " -> " + arg2);
         }
 
+        private void OnReserveFreePositionEvent(ReserveFreePositionEvent data)
+        {
+            if (_reserveFreePositionHolder == null)
+            {
+                _reserveFreePositionHolder = StartCoroutine(ReserveFreePosition(true));
+            }
+        }
+
+        private IEnumerator ReserveFreePosition(bool setToPlayerProperties = false)
+        {
+            // Loop until player correctly reserves slot
+            int freePosition;
+            bool success = false;
+            do
+            {
+                // Getting first free position from the room and creating the photon hashtables for setting property
+                freePosition = PhotonLobbyRoom.GetFirstFreePlayerPos();
+                if (!PhotonLobbyRoom.IsValidPlayerPos(freePosition)) yield break;
+                string positionKey = PhotonBattleRoom.GetPositionKey(freePosition);
+
+                PhotonHashtable propertyToSet = new() { { positionKey, PhotonRealtimeClient.LocalLobbyPlayer.UserId } };
+                PhotonHashtable expectedValue = new() { { positionKey, string.Empty } };
+
+                // Setting custom property, checking if the request could be sent to the server
+                if (PhotonRealtimeClient.CurrentRoom.SetCustomProperties(propertyToSet, expectedValue))
+                {
+                    // Waiting until that position in the room is reserved
+                    string positionValue = string.Empty;
+                    yield return new WaitUntil(() =>
+                    {
+                        positionValue = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(positionKey, string.Empty);
+                        return positionValue != string.Empty;
+                    });
+
+                    // Checking if local player is the one in the slot or if there was a conflict
+                    success = positionValue == PhotonRealtimeClient.LocalLobbyPlayer.UserId;
+                }
+
+                if (success) break;
+                yield return null;
+            } while (!success);
+
+            // Setting to player properties
+            if (setToPlayerProperties) PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, freePosition);
+
+            _reserveFreePositionHolder = null;
+        }
+
         private void OnPlayerPosEvent(PlayerPosEvent data)
         {
-            Debug.Log($"onEvent {data}");
-            SetPlayer(PhotonRealtimeClient.LocalPlayer, data.PlayerPosition);
+            if (_requestPositionChangeHolder == null)
+            {
+                _requestPositionChangeHolder = StartCoroutine(RequestPositionChange(data.PlayerPosition));
+            }
+        }
+
+        private IEnumerator RequestPositionChange(int position)
+        {
+            // Saving the previous position to a variable
+            int oldPosition = PhotonRealtimeClient.LocalPlayer.GetCustomProperty(PlayerPositionKey, -1);
+            int currentPosition = oldPosition;
+
+            do
+            {
+                // Checking if the new position is free before raising event to master client
+                if (PhotonBattleRoom.CheckIfPositionIsFree(position) == false)
+                {
+                    _requestPositionChangeHolder = null;
+                    yield break;
+                }
+
+                // Raising event to master client
+                PhotonRealtimeClient.Client.OpRaiseEvent(
+                    PhotonRealtimeClient.PhotonEvent.PlayerPositionChangeRequested,
+                    position,
+                    new RaiseEventArgs { Receivers = ReceiverGroup.MasterClient },
+                    SendOptions.SendReliable
+                );
+
+                // Giving position time to update, loop will send request again if position didn't update within this time.
+                yield return new WaitForSeconds(0.5f);
+
+                // Getting the current position
+                currentPosition = PhotonRealtimeClient.LocalPlayer.GetCustomProperty(PlayerPositionKey, -1);
+
+            } while (currentPosition == oldPosition); // Checking if the position has changed. If not sending event again.
+
+            _requestPositionChangeHolder = null;
         }
 
         private void OnStartRoomEvent(StartRoomEvent data)
@@ -280,71 +423,529 @@ namespace Altzone.Scripts.Lobby
             StartCoroutine(StartTheRaidTestRoom());
         }
 
+        private void OnStartMatchmakingEvent(StartMatchmakingEvent data)
+        {
+            Debug.Log($"onEvent {data}");
+
+            if (!PhotonRealtimeClient.InRoom) return;
+
+            // Starting matchmaking coroutine
+            if (_matchmakingHolder == null)
+            {
+                _matchmakingHolder = StartCoroutine(StartMatchmaking(data.SelectedGameType));
+            }
+        }
+
+        private void OnStopMatchmakingEvent(StopMatchmakingEvent data)
+        {
+            Debug.Log($"onEvent {data}");
+
+            // Sending others event to leave matchmaking
+            PhotonRealtimeClient.Client.OpRaiseEvent(
+                    PhotonRealtimeClient.PhotonEvent.RoomChangeRequested,
+                    PhotonRealtimeClient.LocalPlayer.UserId,
+                    new RaiseEventArgs { Receivers = ReceiverGroup.Others },
+                    SendOptions.SendReliable
+                );
+
+            StartCoroutine(LeaveMatchmaking());
+        }
+
+        private IEnumerator StartMatchmaking(GameType gameType)
+        {
+            // Closing the room so that no others can join
+            PhotonRealtimeClient.CurrentRoom.IsOpen = false;
+
+            // Saving custom properties from the room to the variables
+            string clanName = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.ClanNameKey, "");
+            int soulhomeRank = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.SoulhomeRank, 0);
+
+            string positionValue1 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, "");
+            string positionValue2 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, "");
+            string positionValue3 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, "");
+            string positionValue4 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, "");
+
+            // Saving other player's userids to enter the new game room together with master client
+            List<string> expectedUsers = new();
+            foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
+            {
+                if (player.Value.UserId != PhotonRealtimeClient.LocalPlayer.UserId)
+                {
+                    expectedUsers.Add(player.Value.UserId);
+                }
+
+                // Saving clan name and soulhome rank to player's custom properties in case the matchmaking leader leaves
+                if (!string.IsNullOrEmpty(clanName))
+                {
+                    player.Value.SetCustomProperty(PhotonBattleRoom.ClanNameKey, clanName);
+                    player.Value.SetCustomProperty(PhotonBattleRoom.SoulhomeRank, soulhomeRank);
+                }
+            }
+            _teammates = expectedUsers.ToArray();
+
+            // Sending other players in the room the room change request, setting own leader id key as own userid to indicate being the leader
+            PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, PhotonRealtimeClient.LocalPlayer.UserId);
+
+            PhotonRealtimeClient.Client.OpRaiseEvent(
+                    PhotonRealtimeClient.PhotonEvent.RoomChangeRequested,
+                    PhotonRealtimeClient.LocalPlayer.UserId,
+                    new RaiseEventArgs { Receivers = ReceiverGroup.Others },
+                    SendOptions.SendReliable
+                );
+
+            // Nulling room list and leaving room so that client can get room list
+            CurrentRooms = null;
+            PhotonRealtimeClient.LeaveRoom();
+
+            // Waiting until in lobby and that current room list has rooms
+            yield return new WaitUntil(() => PhotonRealtimeClient.InLobby && CurrentRooms != null);
+
+            // Searching for suitable room
+            bool roomFound = false;
+            foreach (LobbyRoomInfo room in CurrentRooms)
+            {
+                // Checking if the room has a game type and matchmaking key in the first place
+                if (!room.CustomProperties.ContainsKey(PhotonBattleRoom.GameTypeKey) || !room.CustomProperties.ContainsKey(PhotonBattleRoom.IsMatchmakingKey))
+                {
+                    continue;
+                }
+
+                // Checking that the game type matches and that the room is a matchmaking room
+                if ((GameType)room.CustomProperties[PhotonBattleRoom.GameTypeKey] != gameType || (bool)room.CustomProperties[PhotonBattleRoom.IsMatchmakingKey] == false)
+                {
+                    continue;
+                }
+
+                // Matchmaking logic
+                switch (gameType)
+                {
+                    case GameType.Clan2v2: // TODO: Add soulhome rank matchmaking and a coroutine which increases the rank variance periodically
+                        if ((string)room.CustomProperties[PhotonBattleRoom.ClanNameKey] != clanName && room.MaxPlayers - room.PlayerCount >= _teammates.Length + 1)
+                        {
+                            PhotonRealtimeClient.JoinRoom(room.Name, _teammates);
+                            roomFound = true;
+                            break;
+                        }
+                        break;
+                    case GameType.Random2v2:
+                        if (room.MaxPlayers - room.PlayerCount >= _teammates.Length + 1)
+                        {
+                            PhotonRealtimeClient.JoinRoom(room.Name, _teammates);
+                            roomFound = true;
+                        }
+                        break;
+                }
+
+            }
+
+            // If suitable room not found creating new room
+            if (!roomFound)
+            {
+                switch (gameType)
+                {
+                    case GameType.Clan2v2:
+                        PhotonRealtimeClient.CreateClan2v2LobbyRoom(clanName, soulhomeRank, _teammates, true);
+                        break;
+                    case GameType.Random2v2:
+                        PhotonRealtimeClient.CreateRandom2v2LobbyRoom(_teammates, true);
+                        break;
+                }
+            }
+
+            // Waiting until client is in room
+            yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
+
+            // If room was found setting room properties
+            if (roomFound)
+            {
+                switch (gameType)
+                {
+                    case GameType.Clan2v2:
+                        // Setting clan name as opponent clan
+                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.ClanOpponentNameKey, clanName);
+
+                        // Setting own and teammate positions from old room to position keys 3 and 4
+                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, positionValue1);
+                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, positionValue2);
+                        break;
+
+                    case GameType.Random2v2:
+                        if (_teammates.Length == 0) // If queuing solo
+                        {
+                            StartCoroutine(ReserveFreePosition());
+                        }
+                        else // Queuing with a teammate TODO: untested code, when queueing with teammate is possible test this and fix any issues
+                        {
+                            // Checking if position is free and if so setting userid from old room to that position
+                            if (PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition3))
+                            {
+                                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, positionValue3);
+                            }
+                            else // If position is not free
+                            {
+                                // Moving the player at the position to the first free position (should be either 1 or 2 since room max players is 4)
+                                int freePosition = PhotonLobbyRoom.GetFirstFreePlayerPos();
+                                if (!PhotonLobbyRoom.IsValidPlayerPos(freePosition)) yield break;
+                                string newRoomPositionValue3 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey3);
+                                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.GetPositionKey(freePosition), newRoomPositionValue3);
+                            }
+
+                            if (PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition4))
+                            {
+                                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, positionValue4);
+                            }
+                            else
+                            {
+                                int freePosition = PhotonLobbyRoom.GetFirstFreePlayerPos();
+                                if (!PhotonLobbyRoom.IsValidPlayerPos(freePosition)) yield break;
+                                string newRoomPositionValue4 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey4);
+                                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.GetPositionKey(freePosition), newRoomPositionValue4);
+                            }
+                        }
+                        break;
+                }
+            }
+            else if (!roomFound) // Initializing new created room properties
+            {
+                // Setting player positions from the old room
+                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, positionValue1);
+                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, positionValue2);
+                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, positionValue3);
+                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, positionValue4);
+            }
+
+            // Stopping coroutine if not a master client
+            if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient) yield break;
+
+            _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
+        }
+
+        private IEnumerator WaitForMatchmakingPlayers()
+        {
+            if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient) yield break;
+
+            bool gameStarting = false;
+            do
+            {
+                // Checking every 0,5s if we can start gameplay
+                bool canStartGameplay = false;
+                do
+                {
+                    yield return new WaitForSeconds(0.5f);
+
+                    // Checking if room is full
+                    if (PhotonRealtimeClient.CurrentRoom.PlayerCount != PhotonRealtimeClient.CurrentRoom.MaxPlayers) continue;
+
+                    // Checking that all of the positions in the room are set
+                    bool isSetPosition1 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition1);
+                    bool isSetPosition2 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition2);
+                    bool isSetPosition3 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition3);
+                    bool isSetPosition4 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition4);
+
+                    if (isSetPosition1 && isSetPosition2 && isSetPosition3 && isSetPosition4)
+                    {
+                        canStartGameplay = true;
+                    }
+
+                } while (!canStartGameplay);
+
+
+                // Updating player positions from room to player properties, and waiting that they have been synced
+                string positionValue1 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey1);
+                string positionValue2 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey2);
+                string positionValue3 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey3);
+                string positionValue4 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey4);
+
+                foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
+                {
+                    int position = PhotonBattleRoom.PlayerPositionGuest;
+
+                    if (player.Value.UserId == positionValue1) position = PhotonBattleRoom.PlayerPosition1;
+                    else if (player.Value.UserId == positionValue2) position = PhotonBattleRoom.PlayerPosition2;
+                    else if (player.Value.UserId == positionValue3) position = PhotonBattleRoom.PlayerPosition3;
+                    else if (player.Value.UserId == positionValue4) position = PhotonBattleRoom.PlayerPosition4;
+                    else
+                    {
+                        // If player isn't in any position, getting the first free player position.
+                        // This method checks for duplicate and missing players
+                        position = PhotonLobbyRoom.GetFirstFreePlayerPos(new(player.Value)); // TODO: if Clan2v2 ensure that player ends on the correct side
+                        if (!PhotonLobbyRoom.IsValidPlayerPos(position)) continue;
+                        string positionKey = PhotonBattleRoom.GetPositionKey(position);
+
+                        // Setting position to room and waiting until it's synced
+                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(positionKey, player.Value.UserId);
+                        yield return new WaitUntil(() => PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(positionKey) == position);
+                    }
+
+                    // Setting position to player properties and waiting until it's synced
+                    player.Value.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, position);
+                    yield return new WaitUntil(() => player.Value.GetCustomProperty<int>(PhotonBattleRoom.PlayerPositionKey) == position);
+                }
+
+                // Checking that the clan names are in order
+                GameType roomGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                if (roomGameType == GameType.Clan2v2)
+                {
+                    string primaryClan = string.Empty;
+                    string opponentClan = string.Empty;
+
+                    foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
+                    {
+                        int playerPos = player.Value.GetCustomProperty<int>(PhotonBattleRoom.PlayerPositionKey);
+
+                        if (playerPos == PhotonBattleRoom.PlayerPosition1)
+                        {
+                            primaryClan = player.Value.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty);
+                        }
+                        else if (playerPos == PhotonBattleRoom.PlayerPosition3)
+                        {
+                            opponentClan = player.Value.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty);
+                        }
+                    }
+                    if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey) != primaryClan)
+                    {
+                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.ClanNameKey, primaryClan);
+                    }
+
+                    if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.ClanOpponentNameKey) != opponentClan)
+                    {
+                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.ClanOpponentNameKey, opponentClan);
+                    }
+
+                    _blueTeamName = primaryClan;
+                    _redTeamName = opponentClan;
+                }
+
+                // Starting gameplay coroutine if all 4 room members are still present, else we loop again
+                if (PhotonRealtimeClient.CurrentRoom.PlayerCount == PhotonRealtimeClient.CurrentRoom.MaxPlayers)
+                {
+                    StartCoroutine(StartTheGameplay(_isCloseRoomOnGameStart, _blueTeamName, _redTeamName));
+                    gameStarting = true;
+                }
+
+            } while (!gameStarting);
+        }
+
+        private IEnumerator FollowLeaderToNewRoom(string leaderUserId)
+        {
+            string oldRoomName = PhotonRealtimeClient.CurrentRoom.Name;
+
+            // Leaving room and waiting until in lobby
+            PhotonRealtimeClient.LeaveRoom();
+            yield return new WaitUntil(() => PhotonRealtimeClient.InLobby);
+
+            // Trying to see which room the leader joined
+            bool newRoomJoined = false;
+            do
+            {
+                _friendList = null;
+                PhotonRealtimeClient.Client.OpFindFriends(new string[1] { leaderUserId });
+                yield return new WaitUntil(() => _friendList != null );
+
+                foreach (FriendInfo friend in _friendList)
+                {
+                    if (friend.UserId == leaderUserId && friend.IsInRoom && friend.Room != oldRoomName)
+                    {
+                        PhotonRealtimeClient.JoinRoom(friend.Room);
+                        newRoomJoined = true;
+                    }
+                }
+            } while (!newRoomJoined);
+
+            _followLeaderHolder = null;
+        }
+
+        private IEnumerator LeaveMatchmaking()
+        {
+            GameType matchmakingRoomGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+
+            if (_matchmakingHolder != null)
+            {
+                StopCoroutine(_matchmakingHolder);
+                _matchmakingHolder = null;
+            }
+
+            yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
+
+            PhotonRealtimeClient.LeaveRoom();
+
+            yield return new WaitUntil(() => PhotonRealtimeClient.InLobby);
+
+            // Creating back the non-matchmaking room which the teammates can join
+            switch (matchmakingRoomGameType)
+            {
+                //case GameType.Random2v2:
+                //    PhotonRealtimeClient.CreateRandom2v2LobbyRoom(_teammates);
+                //    break;
+                case GameType.Clan2v2:
+                    string clanName = PhotonRealtimeClient.LocalLobbyPlayer.GetCustomProperty(PhotonBattleRoom.ClanNameKey, "");
+                    int soulhomeRank = PhotonRealtimeClient.LocalLobbyPlayer.GetCustomProperty(PhotonBattleRoom.SoulhomeRank, 0);
+                    PhotonRealtimeClient.CreateClan2v2LobbyRoom(clanName, soulhomeRank, _teammates);
+                    break;
+            }
+        }
+
         private IEnumerator StartTheGameplay(bool isCloseRoom, string blueTeamName, string redTeamName)
         {
+            // TODO: Select random characters if some are not selected
+            //if (!PhotonBattleRoom.IsValidAllSelectedCharacters()) 
+            //{
+            //    StartingGameFailed();
+            //    throw new UnityException("can't start game, everyone needs to have 3 defence characters selected");
+            //}
             //Debug.Log($"startTheGameplay {gameWindow}");
             if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient)
             {
+                StartingGameFailed();
                 throw new UnityException("only master client can start the game");
             }
             Player player = PhotonRealtimeClient.LocalPlayer;
             int masterPosition = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
             if (!PhotonLobbyRoom.IsValidPlayerPos(masterPosition))
             {
+                StartingGameFailed();
                 throw new UnityException($"master client does not have valid player position: {masterPosition}");
             }
-            // Snapshot player list before iteration because we can change it
-            List<Player> players = PhotonRealtimeClient.CurrentRoom.Players.Values.ToList();
-            int realPlayerCount = 0;
+
+            // Checking that every player has a player position key and if not waiting until they have one (every one who joins room will reserve position for themselves)
+            Room room = PhotonRealtimeClient.CurrentRoom;
+            List<Player> players = room.Players.Values.ToList();
+            List<int> missingPlayers = new();
+
+            foreach (Player roomPlayer in players)
+            {
+                if (!roomPlayer.HasCustomProperty(PlayerPositionKey)) missingPlayers.Add(roomPlayer.ActorNumber);
+            }
+
+            foreach (int actorNumber in missingPlayers) // Wait until every player has a custom property PlayerPositionKey
+            {
+                yield return new WaitUntil(() =>
+                {
+                    Player playerMissingPosition = room.GetPlayer(actorNumber);
+                    if (playerMissingPosition == null) return true;
+                    return playerMissingPosition.HasCustomProperty(PlayerPositionKey);
+                });
+            }
+
+            // Checking player positions before starting gameplay
+            players = room.Players.Values.ToList();
+            string[] playerUserIds = new string[4] { "", "", "", "" };
+            PlayerType[] playerTypes = new PlayerType[4] { PlayerType.None, PlayerType.None, PlayerType.None, PlayerType.None, };
+
+            int playerCount = 0;
+            StartGameData data = null;
             foreach (Player roomPlayer in players)
             {
                 int playerPos = roomPlayer.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
-                if (PhotonLobbyRoom.IsValidPlayerPos(playerPos))
+                if (!PhotonLobbyRoom.IsValidPlayerPos(playerPos))
                 {
-                    realPlayerCount += 1;
-                    continue;
+                    // If player position is not valid we get new position for them, this method checks for duplicate and missing player positions
+                    int newPos = PhotonLobbyRoom.GetFirstFreePlayerPos(new(roomPlayer));
+                    if (!PhotonLobbyRoom.IsValidPlayerPos(newPos)) continue;
+
+                    // Setting the new position to player and room properties and waiting until it's synced
+                    roomPlayer.SetCustomProperty(PlayerPositionKey, newPos);
+                    yield return new WaitUntil(() => roomPlayer.GetCustomProperty<int>(PlayerPositionKey) == newPos);
+
+                    string positionKey = PhotonBattleRoom.GetPositionKey(newPos);
+                    room.SetCustomProperty(positionKey, roomPlayer.UserId);
+                    yield return new WaitUntil(() => room.GetCustomProperty<string>(positionKey) == roomPlayer.UserId);
+
+                    playerPos = newPos;
                 }
-                if (playerPos == PlayerPositionSpectator)
-                {
-                    continue;
-                }
-                Debug.Log($"Kick player (close connection) @ {PlayerPositionKey}={playerPos} {roomPlayer.GetDebugLabel()}");
-                PhotonRealtimeClient.CloseConnection(roomPlayer);
-                yield return null;
+                playerTypes[playerPos-1] = PlayerType.Player;
+                playerUserIds[playerPos - 1] = roomPlayer.UserId;
+                playerCount += 1;
             }
+
+            // Getting starting emotion from current room custom properties
+            Emotion startingEmotion = (Emotion)room.GetCustomProperty(PhotonBattleRoom.StartingEmotionKey, (int)Emotion.Blank);
+
+            // If starting emotion is blank getting a random starting emotion
+            if (startingEmotion == Emotion.Blank)
+            {
+                startingEmotion = (Emotion)UnityEngine.Random.Range(0, 4);
+            }
+
+            // Getting map id from room custom properties
+            string mapId = room.GetCustomProperty(PhotonBattleRoom.MapKey, string.Empty);
+
+            // If there is no map id getting a random map
+            if (mapId == string.Empty)
+            {
+                int mapIndex = UnityEngine.Random.Range(0, _battleMapReference.Maps.Count);
+                mapId = _battleMapReference.Maps[mapIndex].MapId;
+            }
+
             if (player.IsMasterClient)
             {
                 Assert.IsTrue(!string.IsNullOrWhiteSpace(blueTeamName), "!string.IsNullOrWhiteSpace(blueTeamName)");
                 Assert.IsTrue(!string.IsNullOrWhiteSpace(redTeamName), "!string.IsNullOrWhiteSpace(redTeamName)");
-                Room room = PhotonRealtimeClient.CurrentRoom;
                 //room.CustomProperties.Add(TeamAlphaNameKey, blueTeamName);
                 //room.CustomProperties.Add(TeamBetaNameKey, redTeamName);
                 //room.CustomProperties.Add(PlayerCountKey, realPlayerCount);
                 room.SetCustomProperties(new PhotonHashtable
                 {
-                    { BattleID, PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>("bid")},
+                    { BattleID, room.GetCustomProperty<string>(PhotonBattleRoom.BattleID)},
                     { TeamAlphaNameKey, blueTeamName },
                     { TeamBetaNameKey, redTeamName },
-                    { PlayerCountKey, realPlayerCount }
+                    { PlayerCountKey, playerCount }
                 });
+
                 yield return null;
                 if (isCloseRoom)
                 {
-                    PhotonRealtimeClient.CloseRoom(true);
+                    PhotonRealtimeClient.CloseRoom(false);
                     yield return null;
                 }
+
+                data = new()
+                {
+                    StartTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                    PlayerSlotUserIds = playerUserIds,
+                    PlayerSlotTypes = playerTypes,
+                    ProjectileInitialEmotion = startingEmotion,
+                    MapId = mapId,
+                    PlayerCount = playerCount
+                };
+
             }
-            if (!PhotonRealtimeClient.Client.OpRaiseEvent(PhotonRealtimeClient.PhotonEvent.StartGame,null, new RaiseEventArgs{Receivers = ReceiverGroup.All}, SendOptions.SendReliable))
+            if (!PhotonRealtimeClient.Client.OpRaiseEvent(PhotonRealtimeClient.PhotonEvent.StartGame, StartGameData.Serialize(data), new RaiseEventArgs{Receivers = ReceiverGroup.All}, SendOptions.SendReliable))
             {
                 Debug.LogError("Unable to start game.");
+                StartingGameFailed();
                 yield break;
             }
             Debug.Log("Starting Game");
             //WindowManager.Get().ShowWindow(gameWindow);
         }
 
-        private IEnumerator StartQuantum()
+        private void StartingGameFailed()
         {
+            if (!PhotonRealtimeClient.CurrentRoom.IsOpen) PhotonRealtimeClient.OpenRoom();
+
+            if (PhotonRealtimeClient.InMatchmakingRoom)
+            {
+                OnFailedToStartMatchmakingGame?.Invoke();
+                GameType gameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                OnStopMatchmakingEvent(new(gameType));
+            }
+        }
+
+        private IEnumerator StartQuantum(StartGameData data)
+        {
+            Debug.Log(data.ToString());
+            string battleID = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(BattleID);
+
+            // Getting the index of own user id from the player slot user id array to determine which player slot is for local player.
+            string userId = PhotonRealtimeClient.LocalPlayer.UserId;
+            int slotIndex = Array.IndexOf(data.PlayerSlotUserIds, userId);
+            BattlePlayerSlot playerSlot = RuntimePlayer.PlayerSlots[slotIndex];
+
+            // Setting map to variable
+            Map map = _battleMapReference.GetBattleMap(data.MapId).Map;
+            if (map != null) _quantumBattleMap = map;
+
             if (QuantumRunner.Default != null)
             {
                 Debug.Log($"QuantumRunner is already running: {QuantumRunner.Default.Id}");
@@ -353,65 +954,82 @@ namespace Altzone.Scripts.Lobby
 
             RuntimeConfig config = new()
             {
-                Map = _map,
-                SimulationConfig = _simulationConfig,
-                SystemsConfig = _systemsConfig,
-                GameConfig = _projectileGameConfig
+                // quantum
+                Map              = _quantumBattleMap,
+                SimulationConfig = _quantumBattleSimulationConfig,
+                SystemsConfig    = _quantumBattleSystemsConfig,
+
+                // battle
+                BattleConfig     = _battleQConfig,
+                BattleParameters = new()
+                {
+                    PlayerSlotTypes = data.PlayerSlotTypes,
+                    PlayerSlotUserIDs = data.PlayerSlotUserIds,
+                    PlayerCount = data.PlayerCount,
+                    ProjectileInitialEmotion = (BattleEmotionState)data.ProjectileInitialEmotion
+                }
             };
 
             SessionRunner.Arguments sessionRunnerArguments = new()
             {
-                RunnerFactory = QuantumRunnerUnityFactory.DefaultFactory,
-                GameParameters = QuantumRunnerUnityFactory.CreateGameParameters,
-                ClientId = ServerManager.Instance.Player._id,
-                RuntimeConfig = config,
-                SessionConfig = QuantumDeterministicSessionConfigAsset.Global.Config,
-                GameMode = Photon.Deterministic.DeterministicGameMode.Multiplayer,
-                PlayerCount = PhotonRealtimeClient.CurrentRoom.MaxPlayers,
+                RunnerFactory             = QuantumRunnerUnityFactory.DefaultFactory,
+                GameParameters            = QuantumRunnerUnityFactory.CreateGameParameters,
+                ClientId                  = ServerManager.Instance.Player._id,
+                RuntimeConfig             = config,
+                SessionConfig             = QuantumDeterministicSessionConfigAsset.Global.Config,
+                GameMode                  = Photon.Deterministic.DeterministicGameMode.Multiplayer,
+                PlayerCount               = PhotonRealtimeClient.CurrentRoom.MaxPlayers,
                 StartGameTimeoutInSeconds = 10,
-                Communicator = new QuantumNetworkCommunicator(PhotonRealtimeClient.Client)
+                Communicator              = new QuantumNetworkCommunicator(PhotonRealtimeClient.Client)
             };
+            long sendTime = data.StartTime;
 
-            /*Transform currentRoot = null;
-            GameObject[] roots = SceneManager.GetActiveScene().GetRootGameObjects();
-            foreach (GameObject root in roots)
+            //Start Battle Countdown
+            OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleLoad);
+
+            if(sendTime == 0) sendTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            long timeToStart = (sendTime+ STARTDELAY) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            long startTime = sendTime + timeToStart;
+
+            yield return new WaitForEndOfFrame();
+
+            do
             {
-                if(root.name == "DefaultWindow")
+                if(OnStartTimeSet != null)
                 {
-                    currentRoot = root.transform;
+                    OnStartTimeSet?.Invoke(timeToStart);
+                    break;
                 }
-            }*/
+                yield return null;
+            } while (startTime > DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+            timeToStart = (sendTime + STARTDELAY) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-            //WindowManager.Get().ShowWindow(_gameWindow);
+            if (timeToStart > STARTDELAY) timeToStart = STARTDELAY;
+
+            if(timeToStart > 0)
+            yield return new WaitForSeconds(timeToStart / 1000f);
+
+            //Move to Battle and start Runner
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Battle);
 
-            yield return new WaitUntil(()=>SceneManager.GetActiveScene().name == _map.Scene);
+            yield return new WaitUntil(()=>SceneManager.GetActiveScene().name == _quantumBattleMap.Scene);
+
+            DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.Battle);
+            DebugLogFileHandler.FileOpen(battleID, (int)playerSlot);
 
             Task<bool> task = StartRunner(sessionRunnerArguments);
 
-            /*QuantumRunner runner = null;
-            try
-            {
-                runner = (QuantumRunner)await SessionRunner.StartAsync(sessionRunnerArguments);
-            }catch (Exception ex)
-            {
-                pluginDisconnectListener.Dispose();
-                Debug.LogException(ex);
-            }
-            foreach (Transform window in currentRoot)
-            {
-                Debug.Log(window.name);
-                if (window.gameObject.activeSelf == true)
-                {
-                    window.gameObject.SetActive(false);
-                }
-            }*/
             yield return new WaitUntil(() => task.IsCompleted);
             if(task.Result)
-            _runner?.Game.AddPlayer(_player);
+            {
+                _player.PlayerSlot = playerSlot;
+                _player.UserID = userId;
+                _runner?.Game.AddPlayer(_player);
+            }
             else
-                //WindowManager.Get().GoBack();
+            {
                 OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
+            }
         }
 
         private async Task<bool> StartRunner(SessionRunner.Arguments sessionRunnerArguments)
@@ -433,6 +1051,18 @@ namespace Altzone.Scripts.Lobby
             return true;
         }
 
+        public static void ExitQuantum()
+        {
+            QuantumRunner.ShutdownAll();
+            DebugLogFileHandler.ContextExit();
+            OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleStory);
+        }
+
+        public static void ExitBattleStory()
+        {
+            OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu, LobbyWindowTarget.BattleStory);
+        }
+
         private static IEnumerator StartTheRaidTestRoom()
         {
             //Debug.Log($"RAID TEST {raidScene}");
@@ -452,20 +1082,104 @@ namespace Altzone.Scripts.Lobby
 
         private void SetPlayer(Player player, int playerPosition)
         {
+            // Checking if any of the players in the room are already in the position (value is anything else than empty string) and if so return.
+            if (PhotonBattleRoom.CheckIfPositionIsFree(playerPosition) == false) return;
+
             Assert.IsTrue(PhotonLobbyRoom.IsValidGameplayPosOrGuest(playerPosition));
+
             if (!player.HasCustomProperty(PlayerPositionKey))
             {
                 Debug.Log($"setPlayer {PlayerPositionKey}={playerPosition}");
                 player.SetCustomProperties(new PhotonHashtable { { PlayerPositionKey, playerPosition } });
                 return;
             }
+
+            // Setting new position to player's custom properties
             int curValue = player.GetCustomProperty<int>(PlayerPositionKey);
-            Debug.Log($"setPlayer {PlayerPositionKey}=({curValue}<-){playerPosition}");
             player.SafeSetCustomProperty(PlayerPositionKey, playerPosition, curValue);
+
+            // Initializing hash tables for setting the previous position empty
+            string previousPositionKey = PhotonBattleRoom.GetPositionKey(curValue);
+
+            var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, "" } });
+            var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, player.UserId } }); // Expected to have the player's id in the previous position
+
+            // Setting previous position empty
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue);
+
+            // Initializing hash tables for setting the new position as taken
+            string newPositionKey = PhotonBattleRoom.GetPositionKey(playerPosition);
+
+            var newPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, player.UserId } });
+            expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, "" } }); // Expecting the new position to be empty
+
+            // Setting new position as taken
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(newPosition, expectedValue);
+        }
+
+        public void SetPlayerQuantumCharacters(List<CustomCharacter> characters)
+        {
+            Assert.IsTrue(
+                characters.Count == RuntimePlayer.CharacterCount,
+                string.Format("Invalid number of Characters (not {0})", RuntimePlayer.CharacterCount)
+            );
+
+            CustomCharacter character;
+            for (int i = 0; i < RuntimePlayer.CharacterCount; i++) {
+                character = characters[i];
+                _player.Characters[i] = new BattleCharacterBase()
+                {
+                    Id            = (int)character.Id,
+                    Class         = (int)character.CharacterClassID,
+
+                    Hp            = BaseCharacter.GetStatValueFP(StatType.Hp,            character.Hp),
+                    Attack        = BaseCharacter.GetStatValueFP(StatType.Attack,        character.Attack),
+                    Defence       = BaseCharacter.GetStatValueFP(StatType.Defence,       character.Defence),
+                    CharacterSize = BaseCharacter.GetStatValueFP(StatType.CharacterSize, character.CharacterSize),
+                    Speed         = BaseCharacter.GetStatValueFP(StatType.Speed,         character.Speed)
+                };
+            }
+        }
+
+        private void StopHolderCoroutines()
+        {
+            if (_reserveFreePositionHolder != null)
+            {
+                StopCoroutine(_reserveFreePositionHolder);
+                _reserveFreePositionHolder = null;
+            }
+
+            if (_requestPositionChangeHolder != null)
+            {
+                StopCoroutine(_requestPositionChangeHolder);
+                _requestPositionChangeHolder = null;
+            }
+
+            if (_matchmakingHolder != null)
+            {
+                StopCoroutine(_matchmakingHolder);
+                _matchmakingHolder = null;
+                _teammates = null;
+            }
+
+            if (_followLeaderHolder != null)
+            {
+                StopCoroutine(_followLeaderHolder);
+                _followLeaderHolder = null;
+            }
+        }
+
+        private void OnGetKickedEvent(GetKickedEvent data)
+        {
+            PhotonRealtimeClient.LeaveRoom();
+            OnKickedOutOfTheRoom?.Invoke(data.Reason);
         }
 
         public void OnDisconnected(DisconnectCause cause)
         {
+            // Stopping any coroutines which are stored in holder variables
+            StopHolderCoroutines();
+
             Debug.Log($"OnDisconnected {cause}");
             if (cause != DisconnectCause.DisconnectByClientLogic && cause != DisconnectCause.DisconnectByServerLogic)
             {
@@ -480,6 +1194,51 @@ namespace Altzone.Scripts.Lobby
         public void OnPlayerLeftRoom(Player otherPlayer)
         {
             Debug.Log($"OnPlayerLeftRoom {otherPlayer.GetDebugLabel()}");
+
+            if (PhotonRealtimeClient.Client.State == ClientState.Leaving) return;
+
+            // Clearing the player position in the room if player is master client
+            if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+            {
+                int otherPlayerPosition = otherPlayer.GetCustomProperty<int>(PlayerPositionKey);
+                if (!PhotonLobbyRoom.IsValidPlayerPos(otherPlayerPosition)) return;
+                string positionKey = PhotonBattleRoom.GetPositionKey(otherPlayerPosition);
+
+                var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { positionKey, "" } });
+                var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { positionKey, otherPlayer.UserId } });
+
+                PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue);
+            }
+
+            if (PhotonRealtimeClient.InMatchmakingRoom && _followLeaderHolder == null)
+            {
+                // If the game type is clan 2v2 and the player who left was a teammate we leave the room,
+                // since you can't play the game mode without 2 person team from the same clan
+                GameType roomGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                if (roomGameType == GameType.Clan2v2)
+                {
+                    string ownClan = PhotonRealtimeClient.LocalPlayer.GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey);
+                    string otherPlayerClan = otherPlayer.GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey);
+
+                    if (ownClan == otherPlayerClan)
+                    {
+                        _teammates = null;
+                        StartCoroutine(LeaveMatchmaking());
+                        OnClanMemberDisconnected?.Invoke();
+                    }
+                    return;
+                }
+
+                // Checking if the other player who left was local player's leader
+                string matchmakingLeaderId = PhotonRealtimeClient.LocalPlayer.GetCustomProperty(PhotonBattleRoom.LeaderIdKey, string.Empty);
+                if (matchmakingLeaderId == otherPlayer.UserId)
+                {
+                    // Changing leader status if the other player was this player's leader
+                    PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, PhotonRealtimeClient.LocalPlayer.UserId);
+                    OnRoomLeaderChanged?.Invoke(true);
+                }
+            }
+
             LobbyOnPlayerLeftRoom?.Invoke(new(otherPlayer));
         }
 
@@ -487,11 +1246,31 @@ namespace Altzone.Scripts.Lobby
         {
             // Enable: PhotonNetwork.CloseConnection needs to to work across all clients - to kick off invalid players!
             PhotonRealtimeClient.EnableCloseConnection = true;
-            LobbyOnJoinedRoom?.Invoke();
+
+            // Getting info if room is matchmaking room or not
+            if (PhotonRealtimeClient.InMatchmakingRoom)
+            {
+                bool isLeader = PhotonRealtimeClient.LocalPlayer.UserId == PhotonRealtimeClient.LocalPlayer.GetCustomProperty<string>(PhotonBattleRoom.LeaderIdKey);
+                OnMatchmakingRoomEntered?.Invoke(isLeader);
+            }
+            else
+            {
+                LobbyOnJoinedRoom?.Invoke();
+            }
         }
 
         public void OnLeftRoom() // IMatchmakingCallbacks
         {
+            // Clearing player position key from own custom properties
+            if (PhotonRealtimeClient.LocalPlayer.HasCustomProperty(PlayerPositionKey)) PhotonRealtimeClient.LocalPlayer.RemoveCustomProperty(PlayerPositionKey);
+
+            // If position change coroutine is running stopping it
+            if (_requestPositionChangeHolder != null)
+            {
+                StopCoroutine(_requestPositionChangeHolder);
+                _requestPositionChangeHolder = null;
+            }
+
             Debug.Log($"OnLeftRoom {PhotonRealtimeClient.LocalPlayer.GetDebugLabel()}");
             StartCoroutine(Service());
             LobbyOnLeftRoom?.Invoke();
@@ -506,7 +1285,15 @@ namespace Altzone.Scripts.Lobby
         {
             Debug.Log($"Created room {PhotonRealtimeClient.Client.CurrentRoom.Name}");
             StartCoroutine(Service());
-            LobbyOnCreatedRoom?.Invoke();
+
+            if (_matchmakingHolder == null)
+            {
+                LobbyOnCreatedRoom?.Invoke();
+            }
+            else
+            {
+                OnMatchmakingRoomEntered?.Invoke(true);
+            }
         }
         public void OnJoinedLobby() { StartCoroutine(Service()); LobbyOnJoinedLobby?.Invoke(); }
 
@@ -521,7 +1308,10 @@ namespace Altzone.Scripts.Lobby
         }
         public void OnLeftLobby() { LobbyOnLeftLobby?.Invoke(); }
         public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics) { LobbyOnLobbyStatisticsUpdate?.Invoke(); }
-        public void OnFriendListUpdate(List<FriendInfo> friendList) { LobbyOnFriendListUpdate?.Invoke(); }
+        public void OnFriendListUpdate(List<FriendInfo> friendList) {
+            _friendList = friendList;
+            LobbyOnFriendListUpdate?.Invoke();
+        }
         public void OnCreateRoomFailed(short returnCode, string message)
         {
             Debug.LogError($"CreateRoomFailed {returnCode} {message}");
@@ -541,7 +1331,36 @@ namespace Altzone.Scripts.Lobby
             switch (photonEvent.Code)
             {
                 case PhotonRealtimeClient.PhotonEvent.StartGame:
-                    StartCoroutine(StartQuantum());
+                    // For some reason sometimes in Android build the CustomData is a ByteArraySlice and causes errors, so doing a null check to the cast
+                    byte[] byteArray = photonEvent.CustomData as byte[] ?? ((ByteArraySlice)photonEvent.CustomData).Buffer;
+                    StartCoroutine(StartQuantum(StartGameData.Deserialize(byteArray)));
+                    break;
+                case PhotonRealtimeClient.PhotonEvent.PlayerPositionChangeRequested:
+                    int position = (int)photonEvent.CustomData;
+                    Player player = PhotonRealtimeClient.CurrentRoom.GetPlayer(photonEvent.Sender);
+                    if (player != null) SetPlayer(player, position);
+                    break;
+
+                case PhotonRealtimeClient.PhotonEvent.RoomChangeRequested:
+                    string leaderUserId = (string)photonEvent.CustomData;
+                    string matchmakingLeaderId = string.Empty;
+
+                    // If room is not a matchmaking room the person sending the event is the leader.
+                    if (!PhotonRealtimeClient.InMatchmakingRoom)
+                    {
+                        PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, leaderUserId);
+                        matchmakingLeaderId = leaderUserId;
+                    }
+
+                    if (matchmakingLeaderId == string.Empty)
+                    {
+                        matchmakingLeaderId = PhotonRealtimeClient.LocalPlayer.GetCustomProperty(PhotonBattleRoom.LeaderIdKey, string.Empty);
+                    }
+
+                    if (_followLeaderHolder == null && leaderUserId == matchmakingLeaderId)
+                    {
+                        _followLeaderHolder = StartCoroutine(FollowLeaderToNewRoom(leaderUserId));
+                    }
                     break;
             }
             LobbyOnEvent?.Invoke();
@@ -559,10 +1378,33 @@ namespace Altzone.Scripts.Lobby
         public void OnCustomAuthenticationResponse(Dictionary<string, object> data) { LobbyOnCustomAuthenticationResponse?.Invoke(data); }
         public void OnCustomAuthenticationFailed(string debugMessage) { LobbyOnCustomAuthenticationFailed?.Invoke(debugMessage); }
 
-        public void OnPlayerEnteredRoom(Player newPlayer) { LobbyOnPlayerEnteredRoom?.Invoke(new(newPlayer)); }
+        public void OnPlayerEnteredRoom(Player newPlayer)
+        {
+            LobbyOnPlayerEnteredRoom?.Invoke(new(newPlayer));
+
+            if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+            {
+                Room room = PhotonRealtimeClient.CurrentRoom;
+                if (room.PlayerCount != room.MaxPlayers) return;
+
+                GameType gameType = (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                if (gameType == GameType.Custom) OnStartPlayingEvent(new());
+            }
+        }
         public void OnRoomPropertiesUpdate(PhotonHashtable propertiesThatChanged) { LobbyOnRoomPropertiesUpdate?.Invoke(new(propertiesThatChanged)); }
         public void OnPlayerPropertiesUpdate(Player targetPlayer, PhotonHashtable changedProps) { LobbyOnPlayerPropertiesUpdate?.Invoke(new(targetPlayer),new(changedProps)); }
-        public void OnMasterClientSwitched(Player newMasterClient) { LobbyOnMasterClientSwitched?.Invoke(new(newMasterClient)); }
+        public void OnMasterClientSwitched(Player newMasterClient) {
+            LobbyOnMasterClientSwitched?.Invoke(new(newMasterClient));
+
+            if (PhotonRealtimeClient.InMatchmakingRoom && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient)
+            {
+                _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
+            }
+        }
+
+        public class ReserveFreePositionEvent
+        {
+        }
 
         public class PlayerPosEvent
         {
@@ -589,6 +1431,106 @@ namespace Altzone.Scripts.Lobby
 
         public class StartRaidTestEvent
         {
+        }
+
+        public class StartMatchmakingEvent
+        {
+            public readonly GameType SelectedGameType;
+
+            public StartMatchmakingEvent(GameType gameType)
+            {
+                SelectedGameType = gameType;
+            }
+
+            public override string ToString()
+            {
+                return $"{nameof(SelectedGameType)}: {SelectedGameType}";
+            }
+        }
+
+        public class StopMatchmakingEvent
+        {
+            public readonly GameType SelectedGameType;
+
+            public StopMatchmakingEvent(GameType gameType)
+            {
+                SelectedGameType = gameType;
+            }
+
+            public override string ToString()
+            {
+                return $"{nameof(SelectedGameType)}: {SelectedGameType}";
+            }
+        }
+
+        public class GetKickedEvent
+        {
+            public enum ReasonType
+            {
+                FullRoom,
+                RoomLeader
+            }
+
+            public readonly ReasonType Reason;
+
+            public GetKickedEvent(ReasonType reasonType)
+            {
+                Reason = reasonType;
+            }
+
+            public override string ToString()
+            {
+                return $"{nameof(Reason)}: {Enum.GetName(typeof(ReasonType), Reason)}";
+            }
+        }
+    }
+
+
+    public class StartGameData
+    {
+        public long StartTime { get; set; }
+        public string[] PlayerSlotUserIds { get; set; }
+        public PlayerType[] PlayerSlotTypes { get; set; }
+        public Emotion ProjectileInitialEmotion { get; set; }
+        public string MapId { get; set; }
+        public int PlayerCount { get; set; }
+
+        public static byte[] Serialize(StartGameData data)
+        {
+            var b = data;
+            byte[] bytes = new byte[0];
+            Serializer.Serialize(b.StartTime, ref bytes);
+            Serializer.Serialize(b.PlayerSlotUserIds, ref bytes);
+            Serializer.Serialize(b.PlayerSlotTypes.Cast<int>().ToArray(), ref bytes);
+            Serializer.Serialize((int)b.ProjectileInitialEmotion, ref bytes);
+            Serializer.Serialize(b.MapId, ref bytes);
+            Serializer.Serialize(b.PlayerCount, ref bytes);
+
+            return bytes;
+        }
+
+        public static StartGameData Deserialize(byte[] data)
+        {
+            var result = new StartGameData();
+            int offset = 0;
+            result.StartTime = Serializer.DeserializeLong(data, ref offset);
+            result.PlayerSlotUserIds = Serializer.DeserializeStringArray(data, ref offset);
+            result.PlayerSlotTypes = Serializer.DeserializeIntArray(data, ref offset).Cast<PlayerType>().ToArray();
+            result.ProjectileInitialEmotion = (Emotion)Serializer.DeserializeInt(data, ref offset);
+            result.MapId = Serializer.DeserializeString(data, ref offset);
+            result.PlayerCount = Serializer.DeserializeInt(data, ref offset);
+
+            return result;
+        }
+
+        public override string ToString()
+        {
+            return $"Start time: {StartTime}" +
+                 $"\nPlayerSlotUserIds: {string.Join(", ", PlayerSlotUserIds)}" +
+                 $"\nPlayerSlotTypes: {string.Join(", ",PlayerSlotTypes)}" +
+                 $"\nProjectileInitialEmotion: {ProjectileInitialEmotion}" +
+                 $"\nMapId: {MapId}" +
+                 $"\nPlayerCount: {PlayerCount}";  
         }
     }
 }

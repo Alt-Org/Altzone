@@ -9,6 +9,8 @@ using Altzone.Scripts;
 using System.Linq;
 using Altzone.Scripts.Model.Poco.Game;
 using MenuUi.Scripts.Window;
+using Newtonsoft.Json.Linq;
+using System;
 
 [System.Serializable]
 public class CharacterData
@@ -24,7 +26,7 @@ public class CharacterData
     }
 }
 
-public class HahmonValinta : MonoBehaviour
+public class HahmonValinta : AltMonoBehaviour
 {
     [SerializeField] private Button lockInButton;
     [SerializeField] private CharacterData[] characterData;
@@ -73,7 +75,7 @@ public class HahmonValinta : MonoBehaviour
     {
         lockInButton.onClick.RemoveAllListeners();
         // 
-        lockInButton.onClick.AddListener(()=>LockInCharacter(data.uniqueID));
+        lockInButton.onClick.AddListener(()=>StartCoroutine(LockInCharacter(data.uniqueID)));
 
         // Activate the pop-up window
         popupWindow.SetActive(true);
@@ -85,35 +87,186 @@ public class HahmonValinta : MonoBehaviour
         Debug.Log("Selected character: " + data.characterName);
     }
 
-    public void LockInCharacter(CharacterID id)
+    public IEnumerator LockInCharacter(CharacterID id)
     {
         // Check if a character is selected
         if (id != CharacterID.None)
         {
             // Log the selected character's information
-           // Debug.Log("Locked in character: " + characterData[selectedCharacterIndex].characterName);
-
-            if ((int) id != _playerData.SelectedCharacterId)
+            // Debug.Log("Locked in character: " + characterData[selectedCharacterIndex].characterName);
+            bool callFinished = false;
+            bool characterAdded = false;
+            int i = 0;
+            if (ServerManager.Instance.Player.currentAvatarId is null or 0 || !Enum.IsDefined(typeof(CharacterID), ServerManager.Instance.Player.currentAvatarId))
             {
-                _playerData.SelectedCharacterId = (int) id;
-                _playerData.SelectedCharacterIds[0] = (int) id;
-                var store = Storefront.Get();
-                store.SavePlayerData(_playerData, null);
+                _playerData.SelectedCharacterId = (int)id;
+                _playerData.SelectedCharacterIds = new string[3] { "0", "0", "0" };
+
+                string body = JObject.FromObject(
+                    new
+                    {
+                        _id = _playerData.Id,
+                        currentAvatarId = _playerData.SelectedCharacterId
+
+                    }/*,
+                    JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })*/
+                ).ToString();
+
+                yield return StartCoroutine(ServerManager.Instance.UpdatePlayerToServer(body, callback =>
+                {
+                    if (callback != null)
+                    {
+                        Debug.Log("Profile info updated.");
+                        var store = Storefront.Get();
+                        store.SavePlayerData(_playerData, null);
+                    }
+                    else
+                    {
+                        Debug.Log("Profile info update failed.");
+                    }
+                }));
+                new WaitUntil(() => callFinished == true);
             }
-            // Reset the selected character index and disable the lock-in button
-            selectedCharacterIndex = -1;
-            lockInButton.interactable = false;
 
-            // Deactivate the pop-up window
-            popupWindow.SetActive(false);
+            List<CustomCharacter> serverCharacters = null;
+            bool gettingCharacter = true;
+            yield return StartCoroutine(ServerManager.Instance.GetCustomCharactersFromServer(characterList =>
+            {
+                if (characterList == null)
+                {
+                    Debug.LogError("Failed to fetch Custom Characters.");
+                    gettingCharacter = false;
+                    serverCharacters = new();
+                }
+                else
+                {
+                    gettingCharacter = false;
+                    serverCharacters = characterList;
+                }
+            }));
+            new WaitUntil(() => gettingCharacter == false);
 
+            if (serverCharacters.Count < 3)
+            {
+                List<CharacterID> characters = SelectStartingCharacter(id);
+                foreach (var character in characters)
+                {
+                    callFinished = false;
+                    StartCoroutine(ServerManager.Instance.AddCustomCharactersToServer(character, callback =>
+                    {
+                        if (callback != null)
+                        {
+                            Debug.Log("CustomCharacter added: " + character);
+                            _playerData.SelectedCharacterIds[i] = callback._id;
+                            characterAdded = true;
+                        }
+                        else
+                        {
+                            Debug.Log("CustomCharacter adding failed.");
+                        }
+                        callFinished = true;
+                    }));
+                    yield return new WaitUntil(() => callFinished == true);
+                    i++;
+                }
+                if (characterAdded)
+                {
+                    callFinished = false;
+                    StartCoroutine(ServerManager.Instance.UpdateCustomCharacters(c => callFinished = c));
+                }
+                new WaitUntil(() => callFinished == true);
+                string body = JObject.FromObject(
+                    new
+                    {
+                        _id = _playerData.Id,
+                        currentAvatarId = _playerData.SelectedCharacterId,
+                        battleCharacter_ids = _playerData.SelectedCharacterIds
 
-            StartCoroutine(_windowNavigation.Navigate());
+                    }).ToString();
+                callFinished = false;
+                StartCoroutine(ServerManager.Instance.UpdatePlayerToServer(body, callback =>
+                {
+                    if (callback != null)
+                    {
+                        Debug.Log("Profile info updated.");
+                        var store = Storefront.Get();
+                        store.SavePlayerData(_playerData, null);
+                    }
+                    else
+                    {
+                        Debug.Log("Profile info update failed.");
+                    }
+                    callFinished = true;
+                }));
+                new WaitUntil(() => callFinished == true);
+
+                // Reset the selected character index and disable the lock-in button
+                selectedCharacterIndex = -1;
+                lockInButton.interactable = false;
+
+                // Deactivate the pop-up window
+                popupWindow.SetActive(false);
+
+                StartCoroutine(_windowNavigation.Navigate());
+                yield break;
+            }
+            else
+            {
+                Debug.LogWarning("Player already had starting characters set.");
+                StartCoroutine(_windowNavigation.Navigate());
+            }
+
         }
         else
         {
             // No character selected, log a message or handle the case as needed
             Debug.Log("No character selected.");
         }
+    }
+
+    public List<CharacterID> SelectStartingCharacter(CharacterID id)
+    {
+        var list = new List<CharacterID>();
+        switch (id)
+        {
+            case CharacterID.Bodybuilder:
+                list.Add(CharacterID.Bodybuilder);
+                list.Add(CharacterID.Joker);
+                list.Add(CharacterID.Religious);
+                break;
+            case CharacterID.Comedian:
+                list.Add(CharacterID.Comedian);
+                list.Add(CharacterID.Racist);
+                list.Add(CharacterID.Religious);
+                break;
+            case CharacterID.Religious:
+                list.Add(CharacterID.Bodybuilder);
+                list.Add(CharacterID.Joker);
+                list.Add(CharacterID.Religious);
+                break;
+            case CharacterID.Artist:
+                list.Add(CharacterID.Artist);
+                list.Add(CharacterID.Soulsisters);
+                list.Add(CharacterID.Religious);
+                break;
+            case CharacterID.Overeater:
+                list.Add(CharacterID.Overeater);
+                list.Add(CharacterID.Booksmart);
+                list.Add(CharacterID.Religious);
+                break;
+            case CharacterID.SleepyHead:
+                list.Add(CharacterID.SleepyHead);
+                list.Add(CharacterID.Artist);
+                list.Add(CharacterID.Religious);
+                break;
+            case CharacterID.Booksmart:
+                list.Add(CharacterID.Booksmart);
+                list.Add(CharacterID.Alcoholic);
+                list.Add(CharacterID.Religious);
+                break;
+            default:
+                break;
+        }
+        return list;
     }
 }

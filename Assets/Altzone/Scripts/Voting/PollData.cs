@@ -1,23 +1,13 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
-using Newtonsoft.Json.Linq;
-using Photon.Realtime;
 using UnityEngine;
 
 namespace Altzone.Scripts.Voting
 {
-    public enum PollType
-    {
-        Kauppa,
-        Kirpputori,
-        MemberPromote,
-        MemberKick
-    }
-
     public enum FurniturePollType
     {
         Buying,
@@ -47,9 +37,7 @@ namespace Altzone.Scripts.Voting
 
     public class PollData
     {
-        public PollType PollType;
         public string Id;
-        public string Name;
         public long StartTime;
         public long EndTime;
         public Sprite Sprite;
@@ -58,15 +46,13 @@ namespace Altzone.Scripts.Voting
         public List<PollVoteData> YesVotes;
         public List<PollVoteData> NoVotes;
 
-        public PollData(PollType pollType, string id, string name,long startTime, long endTime, Sprite sprite, List<string> clanMembers)
+        public PollData(string id, Sprite sprite, List<string> clanMembers, long endTime)
         {
-            PollType = pollType;
             Id = id;
-            Name = name;
-            StartTime = startTime;
-            EndTime = endTime;
+            StartTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            EndTime = StartTime + endTime * 60;
             Sprite = sprite;
-            NotVoted = new List<string>();
+            NotVoted = clanMembers;
             YesVotes = new List<PollVoteData>();
             NoVotes = new List<PollVoteData>();
         }
@@ -75,24 +61,36 @@ namespace Altzone.Scripts.Voting
         {
             DataStore store = Storefront.Get();
             PlayerData player = null;
+            
             store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
 
-            string playerId = null;
-            string playerName = null;
-            if (player != null) playerId = player.Id;
-            if (player != null) playerName = player.Name;
-
-            if (NotVoted.Contains(playerId) || true) //temporarily true for testing
+            if (player != null)
             {
-                if (answer)
+                PollVoteData previousPollVote = null;
+                if (answer) previousPollVote = NoVotes.FirstOrDefault(vote => vote.PlayerId == player.Id);
+                else previousPollVote = YesVotes.FirstOrDefault(vote => vote.PlayerId == player.Id);
+
+                PollVoteData newPollVote = new(player.Id, player.Name, answer);
+
+                if (NotVoted.Contains(player.Id))
                 {
-                    PollVoteData newPollVote = new PollVoteData(playerId, playerName, answer);
-                    YesVotes.Add(newPollVote);
+                    if (answer) YesVotes.Add(newPollVote);
+                    else NoVotes.Add(newPollVote);
+
+                    NotVoted.Remove(player.Id);
                 }
-                else
+                else if (previousPollVote != null) // Has already voted on this poll
                 {
-                    PollVoteData newPollVote = new PollVoteData(playerId, playerName, answer);
-                    NoVotes.Add(newPollVote);
+                    if (previousPollVote.Answer == true && answer == false)
+                    {
+                        YesVotes.Remove(previousPollVote);
+                        NoVotes.Add(newPollVote);
+                    }
+                    else if (previousPollVote.Answer == false && answer == true)
+                    {
+                        NoVotes.Remove(previousPollVote);
+                        YesVotes.Add(newPollVote);
+                    }
                 }
             }
 
@@ -107,29 +105,12 @@ namespace Altzone.Scripts.Voting
     {
         public FurniturePollType FurniturePollType;
         public GameFurniture Furniture;
-        public double Weight;
-        public float Value;
-
-        public FurniturePollData(PollType pollType, string id, string name, long startTime, long endTime, Sprite sprite, List<string> clanMembers, FurniturePollType furniturePollType, GameFurniture furniture, double weight, float value)
-        : base(pollType, id, name, startTime, endTime, sprite, clanMembers)
+        
+        public FurniturePollData(string id, List<string> clanMembers, FurniturePollType furniturePollType, GameFurniture furniture, long endTime = 15)
+        : base(id, furniture.FurnitureInfo.Image, clanMembers, endTime)
         {
             FurniturePollType = furniturePollType;
             Furniture = furniture;
-            Weight = weight;
-            Value = value;
-        }
-    }
-
-    public class EsinePollData : PollData
-    {
-        public EsinePollType EsinePollType;
-        public float Value;
-
-        public EsinePollData(PollType pollType, string id, string name, long startTime, long endTime, Sprite sprite, List<string> clanMembers, EsinePollType esinePollType, float value)
-        : base(pollType, id, name, startTime, endTime, sprite, clanMembers)
-        {
-            EsinePollType = esinePollType;
-            Value = value;
         }
     }
 
@@ -139,8 +120,8 @@ namespace Altzone.Scripts.Voting
         public string RoleId;
         public string PlayerId;
 
-        public RolePollData(PollType pollType, string id, string name, long startTime, long endTime, Sprite sprite, List<string> clanMembers, RolePollType rolePollType, string roleId, string playerId)
-        : base(pollType, id, name, startTime, endTime, sprite, clanMembers)
+        public RolePollData(string id, Sprite sprite, List<string> clanMembers, RolePollType rolePollType, string roleId, string playerId, long endTime = 15)
+        : base(id, sprite, clanMembers, endTime)
         {
             RolePollType = rolePollType;
             RoleId = roleId;
@@ -153,8 +134,8 @@ namespace Altzone.Scripts.Voting
         public MemberPollType MemberPollType;
         public string PlayerId;
 
-        public MemberPollData(PollType pollType, string id, string name, long startTime, long endTime, Sprite sprite, List<string> clanMembers, MemberPollType memberPollType, string playerId)
-        : base(pollType, id, name, startTime, endTime, sprite, clanMembers)
+        public MemberPollData(string id, Sprite sprite, List<string> clanMembers, MemberPollType memberPollType, string playerId, long endTime = 15)
+        : base(id, sprite, clanMembers, endTime)
         {
             MemberPollType = memberPollType;
             PlayerId = playerId;

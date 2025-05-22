@@ -1,258 +1,427 @@
-﻿using System;
+﻿/*
 using System.Collections.Generic;
 using Altzone.Scripts;
 using System.Collections.ObjectModel;
-using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
+using Altzone.Scripts.ModelV2;
+using Altzone.Scripts.ReferenceSheets;
+using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine.UI;
+using MenuUi.Scripts.Signals;
+using TMPro;
+using System;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
+    
     public class ModelView : MonoBehaviour
     {
-        [SerializeField] private Transform VerticalContentPanel;
-        [SerializeField] private Transform HorizontalContentPanel;
+        enum FilterType
+        {
+            All = 0,
+            Unlocked = 1,
+            Locked = 2,
+            Desensitizer = 100,
+            Trickster = 200,
+            Obedient = 300,
+            Projector = 400,
+            Retroflector = 500,
+            Confluent = 600,
+            Intellectualizer = 700,
+        }
 
-        [SerializeField] private GameObject _characterSlotprefab;
-        [SerializeField] private GalleryCharacterReference _referenceSheet;
+        [SerializeField] private Transform _characterGridContent;
+        [SerializeField] private Toggle _editModeToggle;
+        [SerializeField] private Button _filterButton;
+        [SerializeField] private TMP_Text _filterText;
+        [SerializeField] private BaseScrollRect _scrollRect;
 
-        [SerializeField] private bool _isReady;
+        [SerializeField] private GameObject _characterSlotPrefab;
 
-        // character buttons
-        private List<Button> _characterButtons = new();
+        [SerializeField] private ClassColorReference _classColorReference;
 
-        // Array of character slots in horizontalpanel
-        public CharacterSlot[] _CurSelectedCharacterSlots { get; private set; }
-        // array of character slots in verticalpanel
+        private bool _isReady;
+        private FilterType _currentFilter = FilterType.All;
+
+        // Array of character slots in selected grid
+        [SerializeField] private SelectedCharacterSlot[] _selectedCharacterSlots;
+        // List of character slots in character grid
         private List<CharacterSlot> _characterSlots = new();
 
-        public delegate void CurrentCharacterIdChangedHandler(CharacterID newCharacterId, int slot);
-        public event CurrentCharacterIdChangedHandler OnCurrentCharacterIdChanged;
-        public bool IsReady => _isReady;
-        public int characterTextCounter;
+        public delegate void TopSlotCharacterSetHandler(CharacterID characterId, int slotIdx);
+        public event TopSlotCharacterSetHandler OnTopSlotCharacterSet;
 
-        private CharacterID _currentCharacterId;
-        private int _slotToSet = 0;
+        private SwipeUI _swipe;
 
-        public ColorBlock _colorBlock = new();
-
-        public CharacterID CurrentCharacterId
+        public bool IsReady
         {
-            get => _currentCharacterId;
-            private set
+            get
             {
-                _currentCharacterId = value;
-                OnCurrentCharacterIdChanged?.Invoke(_currentCharacterId, _slotToSet);
-
+                return _isReady;
             }
         }
 
 
         private void Awake()
         {
-            _CurSelectedCharacterSlots = HorizontalContentPanel.GetComponentsInChildren<CharacterSlot>();
-            LoadAndCachePrefabs();
+            _swipe = FindObjectOfType<SwipeUI>(true);
+            _swipe.OnCurrentPageChanged += ChangeEditToggleStatusToFalse;
+
+            for (int i = 0; i < _selectedCharacterSlots.Length; i++)
+            {
+                _selectedCharacterSlots[i].OnCharacterSelected += HandleCharacterSelected;
+                _selectedCharacterSlots[i].SlotIndex = i;
+            }
+
+            SignalBus.OnDefenceGalleryEditModeRequested += ChangeEditToggleStatusToTrue;
+            _filterButton.onClick.AddListener(RotateFilters);
+            SetFilterText(_currentFilter);
         }
 
 
-        private void LoadAndCachePrefabs()
+        private void OnDisable()
         {
-            var gameConfig = GameConfig.Get();
-            var playerPrefabs = gameConfig.PlayerPrefabs;
-            var prefabs = playerPrefabs._playerPrefabs;
-            for (var prefabIndex = 0; prefabIndex < prefabs.Length; ++prefabIndex)
+            ChangeEditToggleStatusToFalse();
+        }
+
+
+        private void OnDestroy()
+        {
+            foreach (SelectedCharacterSlot slot in _selectedCharacterSlots)
             {
-                var playerPrefab = GameConfig.Get().PlayerPrefabs.GetPlayerPrefab(prefabIndex);
-                Debug.Log($"prefabIndex {prefabIndex} playerPrefab {playerPrefab.name}");
+                slot.OnCharacterSelected -= HandleCharacterSelected;
             }
-            _isReady = true;
+
+            foreach (CharacterSlot slot in _characterSlots)
+            {
+                slot.OnCharacterSelected -= HandleCharacterSelected;
+            }
+
+            _swipe.OnCurrentPageChanged -= ChangeEditToggleStatusToFalse;
+            SignalBus.OnDefenceGalleryEditModeRequested -= ChangeEditToggleStatusToTrue;
         }
 
 
         public void Reset()
         {
-            foreach (var button in _characterButtons)
+            _isReady = false;
+
+            // Remove selected characters
+            foreach (SelectedCharacterSlot slot in _selectedCharacterSlots)
             {
-                if (!button.transform.IsChildOf(HorizontalContentPanel))
-                    Destroy(button.gameObject);
+                GalleryCharacter topSlotCharacter = slot.transform.GetComponentInChildren<GalleryCharacter>();
+                if (topSlotCharacter != null)
+                {
+                    Destroy(topSlotCharacter.gameObject);
+                }
             }
-            // remove all character slots
-            foreach (var characterSlot in _characterSlots)
+
+            // Remove all character slots
+            foreach (CharacterSlot characterSlot in _characterSlots)
             {
-                if (!characterSlot.transform.IsChildOf(HorizontalContentPanel))
-                    Destroy(characterSlot.gameObject);
+                characterSlot.OnCharacterSelected -= HandleCharacterSelected;
+                Destroy(characterSlot.gameObject);
             }
-            _characterButtons.Clear();
             _characterSlots.Clear();
-        }
-
-
-        public Color GetCharacterClassColor(CharacterClassID id)
-        {
-            switch (id)
-            {
-                case CharacterClassID.Desensitizer:
-                    return new Color(0.68f, 0.84f, 0.9f, 1);
-                case CharacterClassID.Trickster:
-                    return Color.green;
-                case CharacterClassID.Obedient:
-                    return new Color(1f, 0.64f, 0, 1);
-                case CharacterClassID.Projector:
-                    return Color.yellow;
-                case CharacterClassID.Retroflector:
-                    return Color.red;
-                case CharacterClassID.Confluent:
-                    return new Color(0.5f, 0, 0.5f, 1);
-                case CharacterClassID.Intellectualizer:
-                    return Color.blue;
-                default:
-                    return Color.gray;
-            }
-        }
-
-
-        public Transform GetContent()
-        {
-            Transform content = (VerticalContentPanel == null) ? transform.Find("Content") :
-                VerticalContentPanel.transform;
-
-            return content;
-        }
-
-
-        public void SetCharacters(List<CustomCharacter> characters, int[] currentCharacterIds)
-        {
-            var store = Storefront.Get();
-
-            ReadOnlyCollection<BaseCharacter> allItems = null;
-            store.GetAllBaseCharacterYield(result => allItems = result);
-
-            foreach (var character in allItems)
-            {
-                GalleryCharacterInfo info = _referenceSheet.GetCharacterPrefabInfoFast((int)character.Id);
-                if (info == null) continue;
-
-                GameObject slot = Instantiate(_characterSlotprefab, GetContent());
-                slot.GetComponent<CharacterSlot>().SetInfo(info.Image, info.Name, character.Id, this);
-
-                Button button = slot.transform.Find("GalleryCharacter").GetComponent<Button>();
-
-                Outline outline = button.gameObject.GetComponent<Outline>();
-
-                outline.effectDistance = new Vector2(3, 3);
-                outline.effectColor = GetCharacterClassColor(character.ClassID);
-                _colorBlock.normalColor = GetCharacterClassColor(default);
-                button.colors = _colorBlock;
-
-                _characterButtons.Add(button);
-                _characterSlots.Add(slot.GetComponent<CharacterSlot>());
-            }
-
-            for (int i = 0; i < _characterButtons.Count && i < _characterSlots.Count; i++)
-            {
-                Button button = _characterButtons[i];
-                CharacterSlot characterSlot = _characterSlots[i];
-
-                if (_CurSelectedCharacterSlots[0].Id == characterSlot.Id ||
-                    _CurSelectedCharacterSlots[1].Id == characterSlot.Id ||
-                    _CurSelectedCharacterSlots[2].Id == characterSlot.Id)
-                {
-                    continue;
-                }
-
-                foreach (CustomCharacter customCharacter in characters)
-                {
-                    if (characterSlot.Id != customCharacter.Id) continue;
-
-                    else
-                    {
-                        _colorBlock.normalColor = GetCharacterClassColor(customCharacter.CharacterClassID);
-                        button.colors = _colorBlock;
-                        button.GetComponent<DraggableCharacter>().enabled = true;
-                    }
-                    // Check if the character is currently selected
-                    // Subscribe to the event of parent change for the button 
-                    var parentChangeMonitor = button.GetComponent<DraggableCharacter>();
-                    parentChangeMonitor.OnParentChanged += newParent =>
-                    {
-                        int i = 0;
-                        // Go through each topslot
-                        foreach (var curSlot in _CurSelectedCharacterSlots)
-                        {
-                            // Check if newParent is one of the topslots
-                            if (newParent == curSlot.transform)
-                            {
-                                _slotToSet = i;
-                                // Set characterID, because it has been moved to the topslot
-                                CurrentCharacterId = customCharacter.Id;
-                                break;
-                            }
-                            i++;
-                        }
-                    };
-
-                    // subscribing to removed from top slot event
-                    button.GetComponent<DraggableCharacter>().OnRemovedFromTopSlot += ReorderSelectedCharacters;
-                }
-            }
-
-            int idx = 0;
-            foreach (CharacterID curCharacter in currentCharacterIds)
-            {
-                if (curCharacter == 0) continue;
-                foreach (Button button in _characterButtons)
-                {
-                    CharacterID id = button.GetComponent<DraggableCharacter>().Id;
-                    if (curCharacter == id && idx < _CurSelectedCharacterSlots.Length)
-                    {
-                        // Set the character in the horizontal character slot
-                        if (_CurSelectedCharacterSlots.Length > 0)
-                        {
-                            button.transform.SetParent(_CurSelectedCharacterSlots[idx].transform, false);
-                            idx++;
-                            break;
-                        }
-                    }
-                }
-            }
+            _isReady = true;
         }
 
 
         /// <summary>
-        /// Reorders selected characters to the left and saves it.
+        /// Set edit toggle status to true.
         /// </summary>
-        public void ReorderSelectedCharacters()
+        public void ChangeEditToggleStatusToTrue()
         {
-            List<DraggableCharacter> characters = new List<DraggableCharacter>();
+            _editModeToggle.isOn = true;
+        }
 
-            foreach (CharacterSlot slot in _CurSelectedCharacterSlots) // if slot has character add its character to list
+
+        /// <summary>
+        /// Set edit toggle status to false.
+        /// </summary>
+        public void ChangeEditToggleStatusToFalse()
+        {
+            _editModeToggle.isOn = false;
+        }
+
+
+        /// <summary>
+        /// Toggle edit mode based on the value of edit mode toggle.
+        /// </summary>
+        public void ToggleEditMode()
+        {
+            SetCharacterSlotsSelectable(_editModeToggle.isOn);
+        }
+
+
+        /// <summary>
+        /// Place the characters to character gallery.
+        /// </summary>
+        /// <param name="customCharacters">List of player's custom (owned) characters.</param>
+        /// <param name="selectedCharacterIds">Array of selected character ids which will be placed to the top slot.</param>
+        public void SetCharacters(List<CustomCharacter> customCharacters, int[] selectedCharacterIds)
+        {
+            // Placing unlocked characters
+            foreach (CustomCharacter character in customCharacters)
             {
-                if (slot.transform.childCount > 0)
+                var charSlot = InstantiateCharacterSlot(character.Id, false);
+
+                for (int i = 0; i < _selectedCharacterSlots.Length; i++)
                 {
-                    characters.Add(slot.transform.GetComponentInChildren<DraggableCharacter>());
+                    if (charSlot == null) break;
+
+                    if (character.Id == (CharacterID)selectedCharacterIds[i]) // Check if character is selected
+                    {
+                        charSlot.Character.transform.SetParent(_selectedCharacterSlots[i].transform, false);
+                        charSlot.Character.SetSelectedVisuals();
+                    }
                 }
             }
 
-            for (int i = 0; i < characters.Count; i++) // reparent the characters starting from the leftmost characterslot
+            // Placing locked characters
+            DataStore store = Storefront.Get();
+            ReadOnlyCollection<BaseCharacter> allItems = null;
+            store.GetAllBaseCharacterYield(result => allItems = result);
+
+            foreach (BaseCharacter baseCharacter in allItems)
             {
-                characters[i].transform.SetParent(_CurSelectedCharacterSlots[i].transform);
+                // Checking if player has already unlocked the character and if so, skipping the character
+                bool characterUnlocked = false;
+                foreach (CharacterSlot slot in _characterSlots)
+                {
+                    if (slot.Character.Id == baseCharacter.Id)
+                    {
+                        characterUnlocked = true;
+                        break;
+                    }
+                }
+                if (characterUnlocked) continue;
+
+                InstantiateCharacterSlot(baseCharacter.Id, true);
             }
 
-            for (int i = 0; i < _CurSelectedCharacterSlots.Length; i++) // save character ids to slots through assigning CurrentCharacterId
+            // ensures character slots are selectable if edit toggle is on, it can happen if adding unowned character from the + button while edit mode is on
+            if (_editModeToggle.isOn)
             {
-                _slotToSet = i;
-                if (i < characters.Count)
+                SetCharacterSlotsSelectable(true);
+            }
+        }
+
+
+        private CharacterSlot InstantiateCharacterSlot(CharacterID charID, bool isLocked)
+        {
+            PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(((int)charID).ToString());
+            if (info == null) return null;
+
+            GameObject slot = Instantiate(_characterSlotPrefab, _characterGridContent);
+
+            CharacterClassID classID = CustomCharacter.GetClassID(charID);
+            Color bgColor = _classColorReference.GetColor(classID);
+            Color bgAltColor = _classColorReference.GetAlternativeColor(classID);
+
+            CharacterSlot charSlot = slot.GetComponent<CharacterSlot>();
+            charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, charID);
+
+            _characterSlots.Add(charSlot);
+            charSlot.OnCharacterSelected += HandleCharacterSelected;
+
+            if (isLocked)
+            {
+                charSlot.Character.SetLockedVisuals();
+                charSlot.IsLocked = true;
+            }
+
+            return charSlot;
+        }
+
+
+        private void SetCharacterSlotsSelectable(bool selectable)
+        {
+            foreach (CharacterSlot charSlot in _characterSlots)
+            {
+                charSlot.SetSelectable(selectable);
+            }
+
+            foreach (SelectedCharacterSlot selectedSlot in _selectedCharacterSlots)
+            {
+                selectedSlot.SetSelectable(selectable);
+            }
+        }
+
+
+        private void HandleCharacterSelected(SlotBase pressedSlot)
+        {
+            GalleryCharacter galleryCharacter = pressedSlot.GetComponentInChildren<GalleryCharacter>();
+
+            SelectedCharacterSlot selectedCharacterSlot = pressedSlot as SelectedCharacterSlot;
+            if (selectedCharacterSlot != null && galleryCharacter != null)
+            {
+                galleryCharacter.ReturnToOriginalSlot();
+                SetTopSlotCharacter(CharacterID.None, selectedCharacterSlot.SlotIndex);
+            }
+            else if (galleryCharacter != null && !pressedSlot.IsLocked) // can only place owned characters to top slots
+            {
+                PlaceCharacterToTopSlot(galleryCharacter);
+            }
+        }
+
+
+        private void PlaceCharacterToTopSlot(GalleryCharacter galleryCharacter)
+        {
+            for (int i = 0; i < _selectedCharacterSlots.Length; i++)
+            {
+                if (_selectedCharacterSlots[i].GetComponentInChildren<GalleryCharacter>() == null)
                 {
-                    CurrentCharacterId = characters[i].Id;
-                }
-                else
-                {
-                    CurrentCharacterId = CharacterID.None;
+                    galleryCharacter.transform.SetParent(_selectedCharacterSlots[i].transform, false);
+                    galleryCharacter.SetSelectedVisuals();
+                    SetTopSlotCharacter(galleryCharacter.Id, i);
+                    return;
                 }
             }
         }
+
+
+        private void SetTopSlotCharacter(CharacterID id, int selectedSlotIdx)
+        {
+            OnTopSlotCharacterSet?.Invoke(id, selectedSlotIdx);
+        }
+
+
+        private void RotateFilters()
+        {
+            int[] enumValues = (int[])Enum.GetValues(typeof(FilterType));
+
+            for (int i = 0; i < enumValues.Length; i++)
+            {
+                if ((int)_currentFilter == enumValues[i])
+                {
+                    if (i + 1 < enumValues.Length)
+                    {
+                        SetFilter((FilterType)enumValues[i + 1]);
+                    }
+                    else
+                    {
+                        SetFilter((FilterType)enumValues[0]);
+                    }
+                    break;
+                }
+            }
+
+            _scrollRect.VerticalNormalizedPosition = 1; // setting scroll to the top so that it's not possibly scrolled too far
+        }
+
+
+        private void SetFilter(FilterType filter)
+        {
+            switch (filter)
+            {
+                case FilterType.All: // Showing all characters
+                    foreach (CharacterSlot characterSlot in _characterSlots)
+                    {
+                        if (!characterSlot.gameObject.activeSelf) characterSlot.gameObject.SetActive(true);
+                    }
+                    break;
+
+                case FilterType.Unlocked: // Only showing unlocked characters
+                    foreach (CharacterSlot characterSlot in _characterSlots)
+                    {
+                        characterSlot.gameObject.SetActive(!characterSlot.IsLocked);
+                    }
+                    break;
+
+                case FilterType.Locked: // Only showing locked characters
+                    foreach (CharacterSlot characterSlot in _characterSlots)
+                    {
+                        characterSlot.gameObject.SetActive(characterSlot.IsLocked);
+                    }
+                    break;
+
+                case FilterType.Desensitizer: // Only showing desensitizers
+                    FilterForClassID(CharacterClassID.Desensitizer);
+                    break;
+
+                case FilterType.Trickster: // Only showing tricksters
+                    FilterForClassID(CharacterClassID.Trickster);
+                    break;
+
+                case FilterType.Obedient: // Only showing obedients
+                    FilterForClassID(CharacterClassID.Obedient);
+                    break;
+
+                case FilterType.Projector: // Only showing projectors
+                    FilterForClassID(CharacterClassID.Projector);
+                    break;
+
+                case FilterType.Retroflector: // Only showing retroflectors
+                    FilterForClassID(CharacterClassID.Retroflector);
+                    break;
+
+                case FilterType.Confluent: // Only showing confluents
+                    FilterForClassID(CharacterClassID.Confluent);
+                    break;
+
+                case FilterType.Intellectualizer: // Only showing intellectualizers
+                    FilterForClassID(CharacterClassID.Intellectualizer);
+                    break;
+            }
+
+            SetFilterText(filter);
+            _currentFilter = filter;
+        }
+
+
+        private void FilterForClassID(CharacterClassID classID)
+        {
+            foreach (CharacterSlot characterSlot in _characterSlots)
+            {
+                if (CustomCharacter.GetClassID(characterSlot.Character.Id) == classID)
+                {
+                    if (!characterSlot.gameObject.activeSelf) characterSlot.gameObject.SetActive(true);
+                }
+                else
+                {
+                    if (characterSlot.gameObject.activeSelf) characterSlot.gameObject.SetActive(false);
+                }
+            }
+        }
+
+
+        private void SetFilterText(FilterType filter)
+        {
+            switch (filter)
+            {
+                case FilterType.All:
+                    _filterText.text = "Kaikki";
+                    break;
+                case FilterType.Unlocked:
+                    _filterText.text = "Tietoiset";
+                    break;
+                case FilterType.Locked:
+                    _filterText.text = "Tiedostamattomat";
+                    break;
+                case FilterType.Desensitizer:
+                    _filterText.text = "Tunnottomat";
+                    break;
+                case FilterType.Trickster:
+                    _filterText.text = "Hämääjät";
+                    break;
+                case FilterType.Obedient:
+                    _filterText.text = "Tottelijat";
+                    break;
+                case FilterType.Projector:
+                    _filterText.text = "Peilaajat";
+                    break;
+                case FilterType.Retroflector:
+                    _filterText.text = "Torjujat";
+                    break;
+                case FilterType.Confluent:
+                    _filterText.text = "Sulautujat";
+                    break;
+                case FilterType.Intellectualizer:
+                    _filterText.text = "Älyllistäjät";
+                    break;
+            }
+        }
     }
-}
-
-
+}*/

@@ -9,21 +9,20 @@ using System.Collections.ObjectModel;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using UnityEngine.UI;
-using static ServerManager;
-using AltZone.Scripts.ReferenceSheets;
+using Altzone.Scripts.ReferenceSheets;
 
 namespace MenuUi.Scripts.Storage
 {
     public class InvFront : MonoBehaviour
     {
         [Header("UI")]
-        [SerializeField] private TMP_Text _sortText;
         [SerializeField] private Transform _content;
         [SerializeField] private BaseScrollRect _scrollRect;
         [SerializeField] private GameObject _infoSlot;
         [SerializeField] private GameObject _loadingText;
         [SerializeField] private GameObject _topButtons;
         [SerializeField] private TMP_Text _totalValueText;
+        [SerializeField] private TMP_Text _sortingByText;
 
         [Header("Placeholders")] // These should not remain to the finalized game
         [SerializeField] private Sprite _furnImagePlaceholder;
@@ -39,19 +38,26 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private Image _icon;
         [SerializeField] private TMP_Text _name;
         [SerializeField] private TMP_Text _weight;
+        [SerializeField] private TMP_Text _diagnoseNumber;
         [SerializeField] private TMP_Text _value;
         [SerializeField] private TMP_Text _material;
         [SerializeField] private Image _type;
         [SerializeField] private TMP_Text _typeText;
         [SerializeField] private GameObject _inSoulHome;
+        [SerializeField] private GameObject _inVoting;
         [SerializeField] private TMP_Text _artist;
         [SerializeField] private TMP_Text _artisticDescription;
+        [SerializeField] private TMP_Text _rarityText;
+        [SerializeField] private Image _rarityImage;
+        [SerializeField] private FurnitureSellHandler _sellHandler;
 
-        [Header("Rarity Color")]
-        [SerializeField] private Color commonColor = Color.gray;
-        [SerializeField] private Color rareColor = Color.blue;
-        [SerializeField] private Color epicColor = Color.magenta;
-        [SerializeField] private Color antiqueColor = Color.yellow;
+        [Header("Filtering")]
+        [SerializeField] private Toggle[] _rarityToggles;
+        [SerializeField] private SetFilterHandler _setFilterHandler;
+        [SerializeField] private Toggle _inSoulHomeToggle;
+        //[SerializeField] private Toggle _onSaleToggle;
+        [SerializeField] private ValueSlider _maxValueSlider;
+        [SerializeField] private ValueSlider _minValueSlider;
 
         private List<StorageFurniture> _items;
         private List<GameObject> _slotsList = new();
@@ -59,14 +65,27 @@ namespace MenuUi.Scripts.Storage
         bool _startCompleted = false;
         bool _updatingInventory = false;
 
-        private int _maxSortingBy = 3;
-        private int _sortingBy = -1; // used as a carrier for info on how to sort
+        private int _maxSortingBy = 4;
+        private int _sortingBy = 0; // used as a carrier for info on how to sort
+        private bool _descendingOrder = false;
 
         private const string INVENTORY_EMPTY_TEXT = "Varasto tyhjä";
+
+        private void Start()
+        {
+            // Make the filter buttons update the inventory
+            _setFilterHandler.CreateSetFilterButtons();
+            foreach (Toggle toggle in _setFilterHandler.toggleList)
+            {
+                toggle.onValueChanged.AddListener(delegate { UpdateInventory(); });
+            }
+        }
 
         private void OnEnable()
         {
             if (!_startCompleted) { StartCoroutine(Begin()); }
+
+            _sellHandler.UpdateInfoAction += UpdateInVotingText;
 
             ServerManager.OnClanInventoryChanged += UpdateInventory;
             UpdateInventory();
@@ -74,6 +93,8 @@ namespace MenuUi.Scripts.Storage
 
         private void OnDisable()
         {
+            _sellHandler.UpdateInfoAction -= UpdateInVotingText;
+
             ServerManager.OnClanInventoryChanged -= UpdateInventory;
         }
 
@@ -139,8 +160,47 @@ namespace MenuUi.Scripts.Storage
             }
 
             yield return StartCoroutine(Begin());
-            _totalValueText.text = $"Varaston arvo: {GetTotalInventoryValue()}";
             _updatingInventory = false;
+        }
+
+        private bool CheckFilters(StorageFurniture furn)
+        {
+            bool setCheck = false;
+            for (int i = 0; i < _setFilterHandler.toggleList.Count; i++)
+            {
+                if (_furnitureReference.Info[i].SetName == furn.SetName && _setFilterHandler.toggleList[i].isOn) setCheck = true;
+            }
+
+            bool rarityCheck = false;
+            switch (furn.Rarity)
+            {
+                case FurnitureRarity.Common:
+                    if (_rarityToggles[0].isOn) rarityCheck = true;
+                    break;
+                case FurnitureRarity.Rare:
+                    if (_rarityToggles[1].isOn) rarityCheck = true;
+                    break;
+                case FurnitureRarity.Epic:
+                    if (_rarityToggles[2].isOn) rarityCheck = true;
+                    break;
+                case FurnitureRarity.Antique:
+                    if (_rarityToggles[3].isOn) rarityCheck = true;
+                    break;
+            }
+
+            float maxValue = _maxValueSlider.GetSliderValue();
+            float minValue = _minValueSlider.GetSliderValue();
+            bool valueCheck = (furn.Value <= maxValue && furn.Value >= minValue) || (maxValue == 0 && furn.Value >= minValue);
+
+            // Soul home check
+            if (furn.Position != new Vector2Int(-1, -1) && !_inSoulHomeToggle.isOn)
+            {
+                return false;
+            }
+            else
+            {
+                return setCheck && rarityCheck && valueCheck;
+            }
         }
 
         private IEnumerator GetFurnitureFromClanInventory(string playerGuid)
@@ -176,6 +236,9 @@ namespace MenuUi.Scripts.Storage
             ReadOnlyCollection<GameFurniture> allItems = null;
             yield return store.GetAllGameFurnitureYield(result => allItems = result);
             Debug.Log($"all items {allItems.Count}");
+
+            float totalValue = 0;
+
             foreach (var clanFurniture in clanFurnitureList)
             {
                 //Debug.LogWarning(clanFurniture.GameFurnitureName);
@@ -185,9 +248,25 @@ namespace MenuUi.Scripts.Storage
                 {
                     continue;
                 }
-                StorageFurniture storageFurniture = new(clanFurniture,furniture,_furnitureReference.GetFurnitureInfo(clanFurniture.GameFurnitureName));
+                StorageFurniture storageFurniture = new(clanFurniture, furniture);
+
+                // Take total value before filtering so it always stays the same
+                totalValue += storageFurniture.Value;
+
+                // Skip if no filters match this furniture
+                if (CheckFilters(storageFurniture) == false)
+                {
+                    continue;
+                }
+
                 _items.Add(storageFurniture);
             }
+            
+            _totalValueText.text = $"{totalValue}";
+
+            _minValueSlider.SetSliderMaxValue(allItems.Max(item => item.Value));
+            _maxValueSlider.SetSliderMaxValue(allItems.Max(item => item.Value));
+
             Debug.Log($"found clan items {_items.Count}");
         }
 
@@ -198,20 +277,10 @@ namespace MenuUi.Scripts.Storage
                 GameObject newSlot = Instantiate(_invSlot, _content);
                 var capturedSlotVal = i;
 
-                // Default rarity to "common" since no rarity system is implemented yet
-                string rarity = "common";
-
-                // Set color based on rarity
-                var backgroundImage = newSlot.GetComponent<Image>();
-                if (backgroundImage != null)
-                {
-                    backgroundImage.color = GetColorByRarity(rarity);
-                }
-
                 newSlot.GetComponent<Button>().onClick.AddListener(() =>
                 {
-                // C# variable capture in the body of anonymous function!
-                OnShowInfo(capturedSlotVal);
+                    // C# variable capture in the body of anonymous function!
+                    OnShowInfo(capturedSlotVal);
                 });
                 _slotsList.Add(newSlot);
             }
@@ -225,81 +294,128 @@ namespace MenuUi.Scripts.Storage
             {
                 Transform toSet = _slotsList[i].transform;
 
-                // Icon
-                toSet.GetChild(0).GetComponent<Image>().sprite = _furn.Sprite;
-                ScaleSprite(_furn, toSet.GetChild(0).GetComponent<RectTransform>());
+                InvSlotInfoHandler infoHandler = toSet.GetComponent<InvSlotInfoHandler>();
+                infoHandler.SetSlotInfo(_furn, _sortingBy);
 
-                // Name
-                if(_sortingBy != 0) toSet.GetChild(1).GetComponent<TMP_Text>().text = _furn.VisibleName;
-                else toSet.GetChild(1).GetComponent<TMP_Text>().text = "";
-
-                // Weight
-                switch (_sortingBy)
-                {
-                    case 0:
-                        toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.VisibleName;
-                        break;
-                    case 1:
-                        toSet.GetChild(3).GetComponent<TMP_Text>().text = "Arvo " + _furn.Value.ToString();
-                        break;
-                    case 2:
-                        toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
-                        break;
-                    case 3:
-                        toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.Material;
-                        break;
-                }
-                // Shape
-                toSet.GetChild(4).GetComponent<Image>().sprite = GetIcon("");
-
-                // SetName
-                FurnitureSetInfo setInfo = GetFurnitureSetInfo(_furn.Name);
-                toSet.GetChild(5).GetComponent<TMP_Text>().text = setInfo.SetName;
-
-                // Id
-                FurnitureInfoObject furnitureInfoObject = _furnitureReference.GetFurnitureData(_furn.Name);
-                toSet.GetChild(6).GetComponent<TMP_Text>().text = furnitureInfoObject.DiagnoseNumber;
-                // Name
-                toSet.GetChild(7).GetChild(0).GetComponent<TMP_Text>().text = "Sielunkodissa";
-                if (_furn.Position == new Vector2Int(-1, -1))
-                {
-                    toSet.GetChild(7).gameObject.SetActive(false);
-                }
-                else
-                {
-                    toSet.GetChild(7).gameObject.SetActive(true);
-                }
-
-                // Coin
-                if(_sortingBy == 1) toSet.GetChild(8).gameObject.SetActive(true);
-                else toSet.GetChild(8).gameObject.SetActive(false);
+                ScaleSprite(_furn, toSet.GetChild(3).GetComponent<RectTransform>());
 
                 i++;
             }
         }
 
-        public void SortStored() // A very much hardcoded system for sorting 
-        {
+        public void IncrementSort() {
             if (_sortingBy < _maxSortingBy) { _sortingBy++; }
             else { _sortingBy = 0; }
 
+            SortStored();
+        }
+
+        public void SwitchSortOrder() {
+            _descendingOrder = !_descendingOrder;
+
+            SortStored();
+        }
+
+        private void SortStored() // A very much hardcoded system for sorting 
+        {
             switch (_sortingBy)
             {
                 case 0:
-                    _sortText.text = "Jarjestetty\nAakkoset";
-                    _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.VisibleName.CompareTo(b.VisibleName); });
+                    _sortingByText.text = "Järjestetty: Aakkoset";
+
+                    _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                        StorageFurniture first = _descendingOrder ? b : a;
+                        StorageFurniture second = _descendingOrder ? a : b;
+
+                        int primaryResult = first.VisibleName.CompareTo(second.VisibleName);
+                        if (primaryResult != 0) return primaryResult;
+
+                        int idResult = first.Id.CompareTo(second.Id);
+                        if (idResult != 0) return idResult;
+
+                        return 0;
+                    });
+
                     break;
                 case 1:
-                    _sortText.text = "Jarjestetty\nArvo";
-                    _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.Value.CompareTo(b.Value); });
+                    _sortingByText.text = "Järjestetty: Arvo";
+
+                    _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                        StorageFurniture first = _descendingOrder ? b : a;
+                        StorageFurniture second = _descendingOrder ? a : b;
+
+                        int primaryResult = first.Value.CompareTo(second.Value);
+                        if (primaryResult != 0) return primaryResult;
+
+                        int nameResult = first.VisibleName.CompareTo(second.VisibleName);
+                        if (nameResult != 0) return nameResult;
+
+                        int idResult = first.Id.CompareTo(second.Id);
+                        if (idResult != 0) return idResult;
+
+                        return 0;
+                    });
+
                     break;
                 case 2:
-                    _sortText.text = "Jarjestetty\nPaino";
-                    _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.Weight.CompareTo(b.Weight); });
+                    _sortingByText.text = "Järjestetty: Paino";
+
+                    _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                        StorageFurniture first = _descendingOrder ? b : a;
+                        StorageFurniture second = _descendingOrder ? a : b;
+
+                        int primaryResult = first.Weight.CompareTo(second.Weight);
+                        if (primaryResult != 0) return primaryResult;
+
+                        int nameResult = first.VisibleName.CompareTo(second.VisibleName);
+                        if (nameResult != 0) return nameResult;
+
+                        int idResult = first.Id.CompareTo(second.Id);
+                        if (idResult != 0) return idResult;
+
+                        return 0;
+                    });
+
                     break;
                 case 3:
-                    _sortText.text = "Jarjestetty\nMateriaali";
-                    _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.Material.CompareTo(b.Material); });
+                    _sortingByText.text = "Järjestetty: Harvinaisuus";
+
+                    _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                        StorageFurniture first = _descendingOrder ? b : a;
+                        StorageFurniture second = _descendingOrder ? a : b;
+
+                        int primaryResult = first.Rarity.CompareTo(second.Rarity);
+                        if (primaryResult != 0) return primaryResult;
+
+                        int nameResult = first.VisibleName.CompareTo(second.VisibleName);
+                        if (nameResult != 0) return nameResult;
+
+                        int idResult = first.Id.CompareTo(second.Id);
+                        if (idResult != 0) return idResult;
+
+                        return 0;
+                    });
+
+                    break;
+                case 4:
+                    _sortingByText.text = "Järjestetty: Linjasto";
+
+                    _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                        StorageFurniture first = _descendingOrder ? b : a;
+                        StorageFurniture second = _descendingOrder ? a : b;
+
+                        int primaryResult = first.SetName.CompareTo(second.SetName);
+                        if (primaryResult != 0) return primaryResult;
+
+                        int nameResult = first.VisibleName.CompareTo(second.VisibleName);
+                        if (nameResult != 0) return nameResult;
+
+                        int idResult = first.Id.CompareTo(second.Id);
+                        if (idResult != 0) return idResult;
+
+                        return 0;
+                    });
+
                     break;
             }
             SetSlots();
@@ -310,29 +426,24 @@ namespace MenuUi.Scripts.Storage
             Transform parentSlot = _infoSlot.transform;
             StorageFurniture _furn = _items[slotVal];
 
-            FurnitureInfoObject furnitureInfoObject = _furnitureReference.GetFurnitureData(_furn.Name);
-            if (furnitureInfoObject == null)
-            {
-                Debug.LogWarning("FurnitureInfoObject not found for: " + _furn.Name);
-                return;
-            }
-
             // Icon
             _icon.sprite = _furn.Sprite;
             ScaleSprite(_furn, _icon.rectTransform);
 
             // Name
-            FurnitureSetInfo setInfo = GetFurnitureSetInfo(_furn.Name);
-            _name.text = furnitureInfoObject.DiagnoseNumber + setInfo.SetName + ": " + _furn.VisibleName;
+            _name.text = _furn.SetName + " " + _furn.VisibleName;
             
             //Artists name
-            _artist.text = setInfo != null ? "Suunnittelu: " + setInfo.ArtistName : "Unknown Artist";
+            _artist.text = _furn.Info != null ? "Suunnittelu: " + _furn.Info.ArtistName : "Unknown Artist";
             
             //Artistic description
-            _artisticDescription.text = furnitureInfoObject.ArtisticDescription;
+            _artisticDescription.text = _furn.Info.ArtisticDescription;
 
             // Weight
-            _weight.text = "Paino:" + _furn.Weight + " KG";
+            _weight.text = _furn.Weight + " KG";
+
+            // Diagnose number
+            _diagnoseNumber.text = _furn.Info.DiagnoseNumber;
 
             // Material text
             _material.text = $"{_furn.Material}";
@@ -351,7 +462,23 @@ namespace MenuUi.Scripts.Storage
             // Type Text
             _typeText.text = "";
 
+            _rarityText.text = _furn.Rarity.ToString();
+
+            // Get rarity color from the selected furniture
+            _rarityImage.color = _slotsList[slotVal].transform.GetChild(0).GetComponent<Image>().color;
+
+            _sellHandler.Furniture = _furn;
+
+            _sellHandler.UpdateInfoAction?.Invoke(_furn.ClanFurniture.InVoting);
+
             _infoSlot.SetActive(true);
+        }
+
+        private void UpdateInVotingText(bool inVoting)
+        {
+            _inVoting.SetActive(inVoting);
+
+            SortStored(); // Called here to update InvSlotObject overlay panels
         }
 
         private void ScaleSprite(StorageFurniture furn, RectTransform rTransform)
@@ -375,30 +502,13 @@ namespace MenuUi.Scripts.Storage
         private Sprite GetIcon(string name)
         {
             //Sprite returned = _icons.Find(x => x.name == name);
-            FurnitureInfo furnitureInfo = _furnitureReference.GetFurnitureInfo(name);
+            FurnitureInfo furnitureInfo = null/*_furnitureReference.GetFurnitureInfo(name)*/;
             Sprite returned = furnitureInfo?.Image;
             if (returned == null)
             {
                 return _furnImagePlaceholder;
             }
             return returned;
-        }
-
-        private float GetTotalInventoryValue()
-        {
-            return _items.Sum(item => item.Value);
-        }
-
-        private Color GetColorByRarity(string rarity)
-        {
-            return rarity switch
-            {
-                "common" => commonColor,
-                "rare" => rareColor,
-                "epic" => epicColor,
-                "antique" => antiqueColor,
-                _ => commonColor, // Default to common color
-            };
         }
 
         private FurnitureSetInfo GetFurnitureSetInfo(string furnitureName)

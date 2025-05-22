@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
+  m_Name: CharacterSpec_301
+  m_EditorClassIdentifier: 
+  Id: 301
+  CharacterId: 301
+  IsApproved: 1
+  Name: Tapauskovaisuus
+  ClassType: 300
+  CharacterDescription: "Tapauskovaisuus luottaa luojansa ohjaukseen. Dogmaattisesti
+    oppineena h\xE4n tuntee oikean ja v\xE4\xE4r\xE4n, sek\xE4 seuraamukset polulta
+    eksymisest\xE4. Oikean tien sokea seuraaminen on pit\xE4nyt h\xE4net poissa hankaluuksista
+    ja vaikkei h\xE4n s\xE4\xE4nt\xF6j\xE4 tai niiden syit\xE4 ymm\xE4rr\xE4k\xE4\xE4n,
+    h\xE4n tiet\xE4\xE4, ett\xE4 niill\xE4 on tarkoitus ja sukupolvet h\xE4nt\xE4
+    ennenkin ovat niit\xE4 noudattaneet.\r\n\r\nTapauskovaisuuden suojana toimii
+    vanha suvussa kulkenut pyh\xE4 kirja, joka heijastaa tunnetila-ammuksen aina
+    samassa kulmassa takaisin vastustajia kohti, kuvaten h\xE4nen k\xE4\xE4ntymist\xE4\xE4n
+    uskoonsa vaikeuksien ja p\xE4\xE4t\xF6sten edess\xE4.\r\n"
+  CharacterShortDescription: 'Uskollinen ja dogmaattinen oikean tien kulkija. '
+  CharacterStats: {fileID: 11400000, guid: 8f704e732259143479e4c3daa6812945, type: 2}
+  Hp:
+    Level: 10
+    Coefficient: 0
+  Speed:
+    Level: 10
+    Coefficient: 0
+  CharacterSize:
+    Level: 10
+    Coefficient: 0
+  Attack:
+    Level: 10
+    Coefficient: 0
+  Defence:
+    Level: 10
+    Coefficient: 0
+  GalleryImage: {fileID: 21300000, guid: a8195e5c386ed2345988b958495c4c19, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: 30a124467348a7f4f97b1b0486e49ef3, type: 3}
+  BattleSprite: {fileID: 21300000, guid: def607f3bee21874f908728bdee9980b, type: 3}
