@@ -23,6 +23,13 @@ namespace Battle.View.Game
         [SerializeField] private BattleLightrayEffectViewController _lightrayEffectViewController;
         [SerializeField] private BattleSoundFXViewController _soundFXViewController;
 
+        public static GameObject ProjectileReference { get; private set; }
+
+        public static void AssignProjectileReference(GameObject projectileReference)
+        {
+            ProjectileReference = projectileReference;
+        }
+
         public void UiInputOnLocalPlayerGiveUp()
         {
             Debug.Log("Give up button pressed!");
