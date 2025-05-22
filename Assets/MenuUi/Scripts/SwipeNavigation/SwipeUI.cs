@@ -83,7 +83,6 @@ namespace MenuUi.Scripts.SwipeNavigation
             set
             {
                 if (isSwipeMode && gameObject.activeInHierarchy) return;
-                Debug.LogWarning($"{value}:{currentPage}");
                 if (currentPage != value)
                 {
                     currentPage = value;
@@ -175,7 +174,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         {
             if (_firstFrame)
             {
-                 _scrollTransform.localPosition = new(-1 * (_scrollTransform.rect.width * scrollPageValues[CurrentPage] * (1 - 1f / scrollPageValues.Length)), _scrollTransform.localPosition.y, 0);
+                _scrollTransform.localPosition = new(-1 * (_scrollTransform.rect.width * scrollPageValues[CurrentPage] * (1 - 1f / scrollPageValues.Length)), _scrollTransform.localPosition.y, 0);
                 _firstFrame = false;
                 isSwipeMode = false;
                 DataCarrier.GetData<int>(DataCarrier.RequestedWindow, true);
@@ -212,7 +211,6 @@ namespace MenuUi.Scripts.SwipeNavigation
             if (settingScroll) yield break;
             settingScroll = true;
             yield return new WaitForEndOfFrame();
-            //Debug.LogWarning($"Index: {index}");
             if (scrollBar)
             {
                 if (!IsEnabled)
@@ -221,9 +219,7 @@ namespace MenuUi.Scripts.SwipeNavigation
                 if (!instant) StartCoroutine(OnSwipeOneStep(index));
                 else
                 {
-                    Debug.LogWarning($"Index: {scrollBar.value}");
                     scrollBar.value = scrollPageValues[index];
-                    Debug.LogWarning($"Index: {scrollBar.value}");
                     settingScroll = false;
                 }
             }
@@ -308,7 +304,6 @@ namespace MenuUi.Scripts.SwipeNavigation
         /// </summary>
         public void UpdateSwipe()
         {
-            Debug.LogWarning($"Index: {scrollBar.value}");
             if (isSwipeMode || !IsEnabled)
                 return;
             //Debug.Log("Value: " + Mathf.Abs(_startScrollvalue - scrollBar.value) + ", Marginal:  " + ((1f / scrollPageValues.Length) * (20f / 100f)));
