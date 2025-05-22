@@ -42,6 +42,10 @@ public class LeaderboardPodium : MonoBehaviour
 
     private bool _isClanView = false;
 
+    private PlayerData _firstPlayerData;
+    private PlayerData _secondPlayerData;
+    private PlayerData _thirdPlayerData;
+
     public void InitilializePodium(int rank, string name, int points, ClanData clanData, ServerClan serverClan)
     {
         switch (rank)
@@ -95,10 +99,9 @@ public class LeaderboardPodium : MonoBehaviour
         {
             if (playerData != null)
             {
-                FirstOpenPlayerProfileButton.onClick.AddListener(() =>
-                {
-                    DataCarrier.AddData(DataCarrier.PlayerProfile, playerData);
-                });
+                FirstOpenPlayerProfileButton.onClick.RemoveListener(FirstAddDataCarrierData); // Remove in case the button already has another player's info
+                _firstPlayerData = playerData;
+                FirstOpenPlayerProfileButton.onClick.AddListener(FirstAddDataCarrierData);
 
                 AvatarVisualData avatarVisualData = null;
 
@@ -136,10 +139,9 @@ public class LeaderboardPodium : MonoBehaviour
         {
             if (playerData != null)
             {
-                SecondOpenPlayerProfileButton.onClick.AddListener(() =>
-                {
-                    DataCarrier.AddData(DataCarrier.PlayerProfile, playerData);
-                });
+                SecondOpenPlayerProfileButton.onClick.RemoveListener(SecondAddDataCarrierData); // Remove in case the button already has another player's info
+                _secondPlayerData = playerData;
+                SecondOpenPlayerProfileButton.onClick.AddListener(SecondAddDataCarrierData);
 
                 AvatarVisualData avatarVisualData = null;
 
@@ -176,9 +178,12 @@ public class LeaderboardPodium : MonoBehaviour
         {
             if (playerData != null)
             {
+                ThirdOpenPlayerProfileButton.onClick.RemoveListener(ThirdAddDataCarrierData); // Remove incase the button already has another player's info
+                _thirdPlayerData = playerData;
+                ThirdOpenPlayerProfileButton.onClick.AddListener(ThirdAddDataCarrierData);
                 ThirdOpenPlayerProfileButton.onClick.AddListener(() =>
                 {
-                    DataCarrier.AddData(DataCarrier.PlayerProfile, playerData);
+                    
                 });
 
                 AvatarVisualData avatarVisualData = null;
@@ -193,6 +198,19 @@ public class LeaderboardPodium : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void FirstAddDataCarrierData()
+    {
+        DataCarrier.AddData(DataCarrier.PlayerProfile, _firstPlayerData);
+    }
+    private void SecondAddDataCarrierData()
+    {
+        DataCarrier.AddData(DataCarrier.PlayerProfile, _secondPlayerData);
+    }
+    private void ThirdAddDataCarrierData()
+    {
+        DataCarrier.AddData(DataCarrier.PlayerProfile, _thirdPlayerData);
     }
 
     public void SetPlayerView()
