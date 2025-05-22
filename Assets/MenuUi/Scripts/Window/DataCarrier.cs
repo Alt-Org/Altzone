@@ -12,6 +12,8 @@ namespace MenuUi.Scripts.Window
         public const string ClanListing = "cl";
         public const string PlayerProfile = "pp";
         public const string BattleUiEditorRequested = "bui";
+        public const string RequestedWindow = "rw";
+
 
         public static DataCarrier Instance { get; private set; }
         public ServerClan clanToView;
@@ -94,9 +96,21 @@ namespace MenuUi.Scripts.Window
             {
                 return (T)(object)GetPrimitiveData<int>(key, clear);
             }
+            if (typeof(T).Equals(typeof(int?)))
+            {
+                int? value = GetNullablePrimitiveData<int>(key, clear);
+                if (value == null) return default;
+                return (T)(object)value;
+            }
             else if(typeof(T).Equals(typeof(bool)))
             {
                 return (T)(object)GetPrimitiveData<bool>(key, clear);
+            }
+            if (typeof(T).Equals(typeof(bool?)))
+            {
+                bool? value = GetNullablePrimitiveData<bool>(key, clear);
+                if (value == null) return default;
+                return (T)(object)value;
             }
             else if(typeof(T).Equals(typeof(string)))
             {
@@ -146,6 +160,24 @@ namespace MenuUi.Scripts.Window
             {
                 Debug.LogWarning($"Cannot find Data: Data with supplied key ({key}) cannot be found in DataCarrier.");
                 return default;
+            }
+        }
+
+        public static T? GetNullablePrimitiveData<T>(string key, bool clear = true) where T : struct
+        {
+            if (s_datastorage.ContainsKey(key))
+            {
+                T value = (T)s_datastorage[key];
+                if (clear)
+                {
+                    s_datastorage.Remove(key);
+                }
+                return value;
+            }
+            else
+            {
+                Debug.LogWarning($"Cannot find Data: Data with supplied key ({key}) cannot be found in DataCarrier.");
+                return null;
             }
         }
     }
