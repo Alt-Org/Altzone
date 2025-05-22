@@ -28,6 +28,7 @@ namespace Battle.QSimulation.Game
 
             BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
             gameSession->GameInitialized = true;
+            gameSession->GameTimeSec = 0;
         }
 
         public override void Update(Frame f)
@@ -41,7 +42,6 @@ namespace Battle.QSimulation.Game
             switch (gameSession->State)
             {
                 case BattleGameState.InitializeGame:
-                    gameSession->GameTimeSec = 0;
                     if (gameSession->GameInitialized) gameSession->State = BattleGameState.CreateMap;
                     break;
 
