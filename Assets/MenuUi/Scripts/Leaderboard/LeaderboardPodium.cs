@@ -102,7 +102,7 @@ public class LeaderboardPodium : MonoBehaviour
 
                 AvatarVisualData avatarVisualData = null;
 
-                if (playerData.SelectedCharacterId != 201 && playerData.SelectedCharacterId != 0)
+                if (/*ranking.Player.SelectedCharacterId != 201 &&*/ playerData.SelectedCharacterId != 0)
                 {
                     avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
                 }
@@ -143,7 +143,7 @@ public class LeaderboardPodium : MonoBehaviour
 
                 AvatarVisualData avatarVisualData = null;
 
-                if (playerData.SelectedCharacterId != 201 && playerData.SelectedCharacterId != 0)
+                if (/*ranking.Player.SelectedCharacterId != 201 &&*/ playerData.SelectedCharacterId != 0)
                 {
                     avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
                 }
@@ -183,7 +183,7 @@ public class LeaderboardPodium : MonoBehaviour
 
                 AvatarVisualData avatarVisualData = null;
 
-                if (playerData.SelectedCharacterId != 201 && playerData.SelectedCharacterId != 0)
+                if (/*ranking.Player.SelectedCharacterId != 201 &&*/ playerData.SelectedCharacterId != 0)
                 {
                     avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
                 }

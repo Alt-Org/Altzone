@@ -129,7 +129,7 @@ public class LeaderboardView : MonoBehaviour
                             {
                                 AvatarVisualData avatarVisualData = null;
 
-                                if (ranking.Player.SelectedCharacterId != 201 && ranking.Player.SelectedCharacterId != 0)
+                                if (/*ranking.Player.SelectedCharacterId != 201 &&*/ ranking.Player.SelectedCharacterId != 0)
                                 {
                                     avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(ranking.Player);
                                 }
@@ -162,7 +162,7 @@ public class LeaderboardView : MonoBehaviour
                             {
                                 AvatarVisualData avatarVisualData = null;
 
-                                if (ranking.Player.SelectedCharacterId != 201 && ranking.Player.SelectedCharacterId != 0)
+                                if (/*ranking.Player.SelectedCharacterId != 201 &&*/ ranking.Player.SelectedCharacterId != 0)
                                 {
                                     avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(ranking.Player);
                                 }
@@ -244,7 +244,7 @@ public class LeaderboardView : MonoBehaviour
                             PlayerData playerData = player.GetPlayerData();
                             AvatarVisualData avatarVisualData = null;
 
-                            if (playerData.SelectedCharacterId != 201 && playerData.SelectedCharacterId != 0)
+                            if (/*ranking.Player.SelectedCharacterId != 201 &&*/ playerData.SelectedCharacterId != 0)
                             {
                                 avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
                             }
@@ -299,7 +299,7 @@ public class LeaderboardView : MonoBehaviour
                             PlayerData playerData = player.GetPlayerData();
                             AvatarVisualData avatarVisualData = null;
 
-                            if (playerData.SelectedCharacterId != 201 && playerData.SelectedCharacterId != 0)
+                            if (/*ranking.Player.SelectedCharacterId != 201 &&*/ playerData.SelectedCharacterId != 0)
                             {
                                 avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
                             }
