@@ -30,7 +30,8 @@ public class SettingEditor : MonoBehaviour
         SetIntroSkipToggle();
         SetShowButtonLabelsToggle();
 
-        if (DataCarrier.GetData<object>(DataCarrier.BattleUiEditorRequested) != null) _battleEditor.OpenEditor();
+        // Opening Battle Ui Editor if DataCarrier has a bool BattleUiEditorRequested and it's true
+        if (DataCarrier.GetData<bool>(DataCarrier.BattleUiEditorRequested)) _battleEditor.OpenEditor();
     }
     private void Start()
     {

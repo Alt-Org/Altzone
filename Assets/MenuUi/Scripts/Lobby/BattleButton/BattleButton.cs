@@ -152,7 +152,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
         private void OnOpenBattleUiEditorButtonPressed()
         {
-            DataCarrier.AddData<object>(DataCarrier.BattleUiEditorRequested, new()); // Since bool can't be used using new object
+            DataCarrier.AddData(DataCarrier.BattleUiEditorRequested, true);
         }
     }
 }
