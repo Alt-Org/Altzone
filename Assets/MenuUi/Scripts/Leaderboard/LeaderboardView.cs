@@ -83,9 +83,9 @@ public class LeaderboardView : MonoBehaviour
     private void OnEnable()
     {
         SetLeaderboardType(LeaderboardType.Activity);
-        OpenLeaderboard(Leaderboard.Clan);
+        OpenLeaderboard(Leaderboard.Global);
         LoadActivityView();
-        _tablineScript.ActivateTabButton(1);
+        _tablineScript.ActivateTabButton(0);
     }
 
     private void OpenLeaderboard(Leaderboard leaderboard)
