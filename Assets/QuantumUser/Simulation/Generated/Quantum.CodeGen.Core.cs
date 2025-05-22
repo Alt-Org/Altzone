@@ -787,20 +787,23 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattleGameSessionQSingleton : Quantum.IComponentSingleton {
-    public const Int32 SIZE = 16;
+    public const Int32 SIZE = 24;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(4)]
     public QBoolean GameInitialized;
     [FieldOffset(0)]
     public BattleGameState State;
-    [FieldOffset(8)]
+    [FieldOffset(16)]
     public FP TimeUntilStart;
+    [FieldOffset(8)]
+    public FP GameTimeSec;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 1487;
         hash = hash * 31 + GameInitialized.GetHashCode();
         hash = hash * 31 + (Int32)State;
         hash = hash * 31 + TimeUntilStart.GetHashCode();
+        hash = hash * 31 + GameTimeSec.GetHashCode();
         return hash;
       }
     }
@@ -808,6 +811,7 @@ namespace Quantum {
         var p = (BattleGameSessionQSingleton*)ptr;
         serializer.Stream.Serialize((Int32*)&p->State);
         QBoolean.Serialize(&p->GameInitialized, serializer);
+        FP.Serialize(&p->GameTimeSec, serializer);
         FP.Serialize(&p->TimeUntilStart, serializer);
     }
   }
@@ -1065,18 +1069,22 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattleProjectileQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 48;
+    public const Int32 SIZE = 64;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(8)]
     public QBoolean IsLaunched;
-    [FieldOffset(24)]
-    public FP Speed;
     [FieldOffset(32)]
+    public FP Speed;
+    [FieldOffset(48)]
     public FPVector2 Direction;
-    [FieldOffset(16)]
+    [FieldOffset(24)]
     public FP Radius;
     [FieldOffset(4)]
     public BattleEmotionState Emotion;
+    [FieldOffset(40)]
+    public FP SpeedPotential;
+    [FieldOffset(16)]
+    public FP AccelerationTimer;
     [FieldOffset(0)]
     [FramePrinter.FixedArrayAttribute(typeof(BattleProjectileCollisionFlags), 2)]
     private fixed Byte _CollisionFlags_[2];
@@ -1093,6 +1101,8 @@ namespace Quantum {
         hash = hash * 31 + Direction.GetHashCode();
         hash = hash * 31 + Radius.GetHashCode();
         hash = hash * 31 + (Int32)Emotion;
+        hash = hash * 31 + SpeedPotential.GetHashCode();
+        hash = hash * 31 + AccelerationTimer.GetHashCode();
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(CollisionFlags);
         return hash;
       }
@@ -1102,8 +1112,10 @@ namespace Quantum {
         FixedArray.Serialize(p->CollisionFlags, serializer, Statics.SerializeBattleProjectileCollisionFlags);
         serializer.Stream.Serialize((Int32*)&p->Emotion);
         QBoolean.Serialize(&p->IsLaunched, serializer);
+        FP.Serialize(&p->AccelerationTimer, serializer);
         FP.Serialize(&p->Radius, serializer);
         FP.Serialize(&p->Speed, serializer);
+        FP.Serialize(&p->SpeedPotential, serializer);
         FPVector2.Serialize(&p->Direction, serializer);
     }
   }

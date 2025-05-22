@@ -20,10 +20,17 @@ public class AvatarDefaultReference : ScriptableObject
     {
         try
         {
-            var data = _info.Find(characterClass => characterClass.Id == Id.Substring(0, 2)).
-                Characters.Find(character => character.Id == Id.Substring(2, 3)).Variations;
+            var characters = _info.Find(characterClass => characterClass.Id == Id.Substring(0, 2)).
+                Characters;
+            var data = characters.Find(character => character.Id == Id.Substring(2, 3)).Variations;
+            if(data.Count > 0) return (data);
 
-            return (data);
+            foreach(var character in characters)
+            {
+                if(character.Variations.Count > 0) return (data);
+            }
+
+            return (null);
         }
         catch
         {

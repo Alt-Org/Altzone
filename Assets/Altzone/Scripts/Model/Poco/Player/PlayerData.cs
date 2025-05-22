@@ -158,6 +158,8 @@ namespace Altzone.Scripts.Model.Poco.Player
             UniqueIdentifier = player.uniqueIdentifier;
             points = player.points;
             stats = player.gameStatistics;
+            Task = player.DailyTask != null ? new(player.DailyTask) : null;
+            AvatarData = player.avatar != null ? new(player.name, player.avatar) : null;
             if (!limited) Task = player.DailyTask != null ? new(player.DailyTask): null;
         }
 
