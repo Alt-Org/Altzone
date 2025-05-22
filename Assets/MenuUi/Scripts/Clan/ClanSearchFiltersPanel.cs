@@ -49,11 +49,6 @@ public class ClanSearchFiltersPanel : MonoBehaviour
 
     public Action<ClanSearchFilters> OnFiltersChanged;
 
-    private enum Ranking
-    {
-        LessThan10,
-    }
-
     private ClanAge _clanAge = ClanAge.All;
     private Language _clanLanguage = Language.None;
     private bool _isOpen = true;
