@@ -39,7 +39,7 @@ public class KojuFurnitureData : MonoBehaviour
             furnitureName.text = storageFurniture.VisibleName;
         }
 
-        furnitureValue.text = $"{price}";
+        furnitureValue.text = $"{price:F0}";
     }
 
     public void SetPrice(float newPrice)

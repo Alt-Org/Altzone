@@ -16,7 +16,7 @@ public class KojuPopup : MonoBehaviour
 
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private TMP_Text weightText;
-    [SerializeField] private TMP_Text rarityText;
+    [SerializeField] private Image rarity;
     [SerializeField] private TMP_Text setNameText;
 
     private GameObject currentCard;
@@ -50,12 +50,13 @@ public class KojuPopup : MonoBehaviour
         //Hardcoded test values for now, this data is used in the Popup card. Should use the data directly from the cards in the future.
         nameText.text = "Mirror";
         weightText.text = "10 kg";
-        rarityText.text = "Common";
         setNameText.text = "Furniture Set";
+        rarity.color = Color.cyan;
 
         float currentPrice = furnitureData.GetPrice();
-        priceInput.text = currentPrice.ToString("F2");
-        kojuPriceText.text = currentPrice.ToString("F2");
+        priceInput.text = ((int)currentPrice).ToString();
+        kojuPriceText.text = ((int)currentPrice).ToString();
+
 
         gameObject.SetActive(true);
     }
@@ -66,7 +67,7 @@ public class KojuPopup : MonoBehaviour
         if (float.TryParse(priceInput.text, out float price))
         {
             price += 1f;
-            priceInput.text = price.ToString("F2");
+            priceInput.text = price.ToString("F0");
             UpdateKojuPriceText(price);
         }
     }
@@ -78,7 +79,7 @@ public class KojuPopup : MonoBehaviour
         {
             price -= 1f;
             if (price < 0) price = 0; //Prevent negative prices
-            priceInput.text = price.ToString("F2");
+            priceInput.text = price.ToString("F0");
             UpdateKojuPriceText(price);
         }
     }
@@ -86,7 +87,7 @@ public class KojuPopup : MonoBehaviour
     private void UpdateKojuPriceText(float price)
     {
         if (kojuPriceText != null)
-            kojuPriceText.text = price.ToString("F2");
+            kojuPriceText.text = price.ToString("F0");
     }
 
     //Call when confirming the Popup
@@ -108,7 +109,7 @@ public class KojuPopup : MonoBehaviour
         Close();
     }
 
-    //Ifthe user cancels the Popup
+    //If the user cancels the Popup
     public void Deny()
     {
         Close();
