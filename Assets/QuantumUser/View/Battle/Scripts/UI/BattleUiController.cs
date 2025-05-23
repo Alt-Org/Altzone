@@ -4,7 +4,7 @@
 /// </summary>
 ///
 /// This script:<br/>
-/// Holds references to all of the %UI Handler and Debug %UI Handler scripts, and the BattleGameViewController script.
+/// Holds references to all of the @ref UIHandlers and @ref DebugUIHandlers scripts, and the BattleGameViewController script.
 
 using UnityEngine;
 
@@ -14,15 +14,16 @@ namespace Battle.View.UI
 {
     /// <summary>
     /// Base class that handles %Battle %UI.<br/>
-    /// BattleGameViewController accesses the %UI Handler scripts through this class.
+    /// BattleGameViewController accesses the @ref UIHandlers scripts through this class.
     /// </summary>
     ///
-    /// Holds references to all of the %UI Handler and Debug %UI Handler scripts, and the BattleGameViewController script.
+    /// Holds references to all of the @ref UIHandlers and @ref DebugUIHandlers scripts, and the BattleGameViewController script.
     public class BattleUiController : MonoBehaviour
     {
         /// <value>BattleGameViewController script back reference.</value>
         public BattleGameViewController GameViewController;
 
+        /// @anchor UIHandlers
         /// @name UI Handler script references
         /// Handler scripts control the visual functionality of the %UI prefabs and GameObjects.
         /// @{
@@ -47,6 +48,7 @@ namespace Battle.View.UI
 
         /// @}
 
+        /// @anchor DebugUIHandlers
         /// @name Debug UI Handler script references
         /// These handler scripts handle visual functionality for the debug %UI.
         /// @{

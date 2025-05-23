@@ -1,3 +1,11 @@
+/// @file BattleGameViewController.cs
+/// <summary>
+/// Has a class BattleGameViewController which controls the %Battle %UI elements.
+/// </summary>
+///
+/// This script:<br/>
+/// Initializes %Battle %UI elements, and controls their visibility and functionality.
+
 using UnityEngine;
 
 using Quantum;
@@ -11,28 +19,57 @@ using PlayerType = Battle.View.UI.BattleUiPlayerInfoHandler.PlayerType;
 
 namespace Battle.View.Game
 {
+    /// <summary>
+    /// Initializes %Battle %UI elements, and controls their visibility and functionality.
+    /// </summary>
+    ///
+    /// Accesses all of the @ref UIHandlers scripts through the BattleUiController reference variable #_uiController.<br/>
+    /// Handles any functionality needed by the @ref UIHandlers scripts which need to access other parts of %Battle, for example triggering the selection of another character.
     public class BattleGameViewController : QuantumCallbacks
     {
+        /// <value>[SerializeField] Reference to BattleGridViewController which handles visual functionality for the %Battle arena's grid.</value>
         [SerializeField] private BattleGridViewController _gridViewController;
+
+        /// <value>[SerializeField] Reference to BattleUiController which holds references to all of the @ref UIHandlers scripts.</value>
         [SerializeField] private BattleUiController _uiController;
+
+        /// <value>[SerializeField] Reference to BattleScreenEffectViewController which handles the screen effects.</value>
         [SerializeField] private BattleScreenEffectViewController _screenEffectViewController;
+
+        /// <value>[SerializeField] Reference to BattleSoundFXViewController which plays sound effects.</value>
         [SerializeField] private BattleSoundFXViewController _soundFXViewController;
 
+        /// <summary>
+        /// Public method that gets called when the local player pressed the give up button.<br/>
+        /// No functionality yet.
+        /// </summary>
         public void UiInputOnLocalPlayerGiveUp()
         {
             Debug.Log("Give up button pressed!");
         }
 
+        /// <summary>
+        /// Public method that gets called when the local player selected another character.<br/>
+        /// No functionality yet.
+        /// </summary>
+        /// <param name="characterNumber">The character number which the local player selected.</param>
         public void UiInputOnCharacterSelected(int characterNumber)
         {
             Debug.Log($"Character number {characterNumber} selected!");
         }
 
+        /// <summary>
+        /// Public method that gets called when the local player pressed the exit game button.<br/>
+        /// Calls ExitQuantum method in LobbyManager, which makes the local player leave the game.
+        /// </summary>
         public void UiInputOnExitGamePressed()
         {
             LobbyManager.ExitQuantum();
         }
 
+        /// <summary>
+        /// Private Awake method which handles subscribing to QuantumEvents.
+        /// </summary>
         private void Awake()
         {
             QuantumEvent.Subscribe<EventViewInit>(this, QEventOnViewInit);
@@ -41,6 +78,11 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, QEventDebugOnUpdateStatsOverlay);
         }
 
+        /// <summary>
+        /// Private handler method for EventViewInit QuantumEvent.<br/>
+        /// Handles initializing the @ref UIHandlers scripts, #_gridViewController, and BattleCamera scale and rotation.
+        /// </summary>
+        /// <param name="e">The event data.</param>
         private void QEventOnViewInit(EventViewInit e)
         {
             if (_gridViewController != null)
@@ -72,24 +114,41 @@ namespace Battle.View.Game
             */
         }
 
+        /// <summary>
+        /// Private handler method for EventBattleChangeEmotionState QuantumEvent.<br/>
+        /// Handles calling BattleScreenEffectViewController::ChangeColor in #_screenEffectViewController.
+        /// </summary>
+        /// <param name="e">The event data.</param>
         private void QEventOnChangeEmotionState(EventBattleChangeEmotionState e)
         {
             if (!_screenEffectViewController.IsActive) _screenEffectViewController.SetActive(true);
             _screenEffectViewController.ChangeColor((int)e.Emotion);
         }
 
+        /// <summary>
+        /// Private handler method for EventBattlePlaySoundFX QuantumEvent.<br/>
+        /// Handles calling BattleSoundFXViewController::PlaySound in #_soundFXViewController.
+        /// </summary>
+        /// <param name="e">The event data.</param>
         private void QEventPlaySoundFX(EventBattlePlaySoundFX e)
         {
             _soundFXViewController.PlaySound(e.Effect);
         }
 
+        /// <summary>
+        /// Private handler method for EventBattleDebugUpdateStatsOverlay QuantumEvent.<br/>
+        /// Handles setting stats to BattleUiController::DebugStatsOverlayHandler in #_uiController using BattleUiDebugStatsOverlayHandler::SetStats method.
+        /// </summary>
+        /// <param name="e">The event data.</param>
         private void QEventDebugOnUpdateStatsOverlay(EventBattleDebugUpdateStatsOverlay e)
         {
             _uiController.DebugStatsOverlayHandler.SetShow(true);
             _uiController.DebugStatsOverlayHandler.SetStats(e.Character);
         }
 
-        // Handles UI updates based on the game's state and countdown
+        /// <summary>
+        /// Handles %UI updates based on the game's state and countdown.
+        /// </summary>
         private void Update()
         {
             // Try to get the current Quantum frame
