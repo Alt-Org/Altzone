@@ -30,7 +30,7 @@ namespace MenuUi.Scripts.Window
                 ReadOnlyCollection<GameFurniture> baseFurniture = null;
                 Storefront.Get().GetAllGameFurnitureYield(callback => baseFurniture = callback);
                 if (baseFurniture == null || baseFurniture.Count < 1)
-                    Storefront.Get().SetFurniture(_furnitureReference.GetGameFurniture());
+                    Storefront.Get().SetFurniture(_furnitureReference.GetAllGameFurniture());
             }
         }
 

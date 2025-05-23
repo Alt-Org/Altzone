@@ -90,7 +90,7 @@ namespace MenuUi.Scripts.Loader
         {
             yield return new WaitUntil(() => Storefront.Get() != null);
             Debug.Log("Datastore initialized");
-            yield return new WaitUntil(() => Storefront.Get().SetFurniture(_furnitureReference.GetGameFurniture()));
+            yield return new WaitUntil(() => Storefront.Get().SetFurniture(_furnitureReference.GetAllGameFurniture()));
             OpenLogIn();
         }
 

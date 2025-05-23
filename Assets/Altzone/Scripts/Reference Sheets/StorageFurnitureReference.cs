@@ -15,6 +15,23 @@ namespace Altzone.Scripts.ReferenceSheets
 
         public List<FurnitureSetInfo> Info => _info; // Public accessor for _info
 
+        private static StorageFurnitureReference _instance;
+        private static bool _hasInstance;
+
+        public static StorageFurnitureReference Instance
+        {
+            get
+            {
+                if (!_hasInstance)
+                {
+                    _instance = Resources.Load<StorageFurnitureReference>(nameof(StorageFurnitureReference));
+                    _hasInstance = _instance != null;
+                }
+                return _instance;
+            }
+        }
+
+
         public FurnitureInfo GetFurnitureInfo(string name)
         {
             (FurnitureInfoObject data, FurnitureSetInfo setData) = GetFurnitureDataSet(name);
@@ -54,7 +71,7 @@ namespace Altzone.Scripts.ReferenceSheets
             return (null, null);
         }
 
-        public List<GameFurniture> GetGameFurniture()
+        public List<GameFurniture> GetAllGameFurniture()
         {
             List<GameFurniture> furnitures = new();
             int i = 1;
