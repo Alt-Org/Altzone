@@ -31,7 +31,7 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
         public BattleMap SelectedBattleMap { get; private set; }
         public MapEmotionalSituation SelectedEmotionalSituation { get; private set; }
 
-        private void Awake()
+        public void Initialize()
         {
             SelectedBattleMap = _battleMapReference.Maps[_selectedMapIndex];
             SelectedEmotionalSituation = SelectedBattleMap.EmotionalSituations[_selectedNameIndex];

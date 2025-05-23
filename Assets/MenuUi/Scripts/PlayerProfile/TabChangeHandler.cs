@@ -29,7 +29,13 @@ public class TabChangeHandler : MonoBehaviour
             int j = i;
             _buttons[i].Button.onClick.AddListener(() => SetVisible(j));
         }
-        SetVisible(_defaultTab);
+    }
+
+    private void OnEnable()
+    {
+        int? value = DataCarrier.GetData<int?>(DataCarrier.RequestedWindow, false);
+        if (value != null) SetVisible((int)value);
+        else SetVisible(_defaultTab);
     }
 
     void SetVisible(int activeIndex)

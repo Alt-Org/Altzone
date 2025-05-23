@@ -38,6 +38,18 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterGallery
 
 
         /// <summary>
+        /// Clear piechart. Destroys all old pie slices.
+        /// </summary>
+        public void ClearChart()
+        {
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                Destroy(transform.GetChild(i).gameObject);
+            }
+        }
+
+
+        /// <summary>
         /// Update/Create piechart preview based on characterId.
         /// </summary>
         /// <param name="characterId">Character Id whose piechart preview to show.</param>
@@ -63,12 +75,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterGallery
             // Get CustomCharacter
             customCharacter = playerData.CustomCharacters.FirstOrDefault(c => c.Id == characterId);
             if (customCharacter == null) return;
-
-            // Destroy old pie slices
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                Destroy(transform.GetChild(i).gameObject);
-            }
 
             // Get stats
             int impactForce = customCharacter.Attack;
@@ -102,6 +108,9 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterGallery
                 (speed, _speedColor),
                 (defence, _defenceColor),
             };
+
+            // Destroy old pie slices
+            ClearChart();
 
             // Create slices
             int maxCombinedStatLevel = CustomCharacter.STATMAXCOMBINED;
