@@ -22,7 +22,7 @@ namespace Battle.QSimulation.Player
     {
         /// <summary>
         /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
-        /// that gets called when <see cref="Quantum.ISignalOnPlayerAdded">ISignalOnPlayerAdded</see> is sent.</span><br/>
+        /// that gets called when <a href="https://doc-api.photonengine.com/en/quantum/current/interface_quantum_1_1_i_signal_on_player_added.html">ISignalOnPlayerAdded</a> is sent.</span><br/>
         /// Called when a player is added for the first time. Uses BattlePlayerManager to initialize players in playerslots and spawn them.
         /// @warning
         /// This method should only be called via Quantum signal.

@@ -21,7 +21,7 @@ namespace Battle.QSimulation.Game
     {
         /// <summary>
         /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
-        /// that gets called when <see cref="Quantum.ISignalOnTrigger2D">ISignalOnTrigger2D</see> is sent.</span><br/>
+        /// that gets called when <a href="https://doc-api.photonengine.com/en/quantum/current/interface_quantum_1_1_i_signal_on_trigger2_d.html">ISignalOnTrigger2D@u-exlink</a> is sent.</span><br/>
         /// Handles all 2D trigger collisions in the game.
         /// Routes projectile collisions to the correct signal handler based on the type of object hit.
         /// @warning
