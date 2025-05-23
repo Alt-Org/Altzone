@@ -18,6 +18,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Altzone.Scripts.Settings;
 using UnityEngine.SceneManagement;
+using Altzone.Scripts.ReferenceSheets;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -1312,6 +1313,37 @@ public class ServerManager : MonoBehaviour
     }
 
     #endregion
+
+    public IEnumerator GetClanShopListFromServer(Action<List<GameFurniture>> callback)
+    {
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "clan-shop/items/", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                //ServerPlayer player = result["data"]["Object"].ToObject<ServerPlayer>();
+                JArray middleresult = (JArray)result["data"]["Item"];
+
+                List<GameFurniture> furniturelist = new();
+                foreach(var item in middleresult)
+                {
+                    string name = item["name"].ToString();
+                    GameFurniture furniture = StorageFurnitureReference.Instance.GetGameFurniture(name);
+                    if (furniture != null)
+                    furniturelist.Add(StorageFurnitureReference.Instance.GetGameFurniture(name));
+                }
+
+                if (callback != null)
+                    callback(furniturelist);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
 
     #region Leaderboard
     public IEnumerator GetClanLeaderboardFromServer(Action<List<ClanLeaderboard>> callback)
