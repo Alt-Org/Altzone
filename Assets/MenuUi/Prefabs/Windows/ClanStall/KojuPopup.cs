@@ -15,7 +15,6 @@ public class KojuPopup : MonoBehaviour
     [SerializeField] private TMP_Text kojuPriceText;
 
     [SerializeField] private TMP_Text nameText;
-    [SerializeField] private TMP_Text weightText;
     [SerializeField] private Image rarity;
     [SerializeField] private TMP_Text setNameText;
 
@@ -55,7 +54,6 @@ public class KojuPopup : MonoBehaviour
 
         //Hardcoded test values for now, this data is used in the Popup card. Should use the data directly from the cards in the future.
         nameText.text = "Mirror";
-        weightText.text = "10 kg";
         setNameText.text = "Furniture Set";
         rarity.color = Color.cyan;
 
@@ -139,4 +137,14 @@ public class KojuPopup : MonoBehaviour
         priceInput.text = "";
         gameObject.SetActive(false);
     }
+
+    public void ToggleInfo(GameObject target)
+    {
+        if (target != null)
+        {
+            target.SetActive(!target.activeSelf);
+        }
+    }
+
+
 }
