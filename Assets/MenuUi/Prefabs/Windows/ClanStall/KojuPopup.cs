@@ -31,6 +31,12 @@ public class KojuPopup : MonoBehaviour
        
         increasePriceButton.onClick.AddListener(OnIncreasePrice);
         decreasePriceButton.onClick.AddListener(OnDecreasePrice);
+
+        priceInput.onValueChanged.AddListener(OnPriceInputChanged);
+
+        //Limits the amount if digits you can input
+        priceInput.characterLimit = 4;
+
     }
 
     //Open the popup and fills it with the necessary data, currently hardcoded for testing purposes
@@ -89,6 +95,16 @@ public class KojuPopup : MonoBehaviour
         if (kojuPriceText != null)
             kojuPriceText.text = price.ToString("F0");
     }
+
+    //Update the KojuPriceText when typing
+    private void OnPriceInputChanged(string input)
+    {
+        if (float.TryParse(input, out float price))
+        {
+            UpdateKojuPriceText(price);
+        }
+    }
+
 
     //Call when confirming the Popup
     public void Confirm()

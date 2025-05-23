@@ -13,7 +13,6 @@ public class KojuItemSlot : MonoBehaviour
         gameObject.SetActive(false); 
     }
 
-
     public void ClearSlot()
     {
         currentCard = null;
