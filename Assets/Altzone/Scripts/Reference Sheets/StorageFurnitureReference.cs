@@ -88,6 +88,17 @@ namespace Altzone.Scripts.ReferenceSheets
             }
             return furnitures;
         }
+
+        public GameFurniture GetGameFurniture(string name)
+        {
+            (FurnitureInfoObject data, FurnitureSetInfo setData) = GetFurnitureDataSet(name);
+
+            FurnitureInfo furnitureInfo = new(data, setData);
+            GameFurniture furniture = new("0", data.BaseFurniture, furnitureInfo);
+
+            return furniture;
+        }
+
         public bool AddFurniture(FurnitureSetInfo setInfo)
         {
             if (Application.isPlaying)
