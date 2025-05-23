@@ -4,24 +4,48 @@ using Battle.View.Game;
 
 namespace Battle.View.UI
 {
-    /**
-     *  Base class that handles battle ui
-     *  Should take most of its commands from the BattleGameViewController, which in turn monitors the game session state on the quantum side
-     */
+    /// <summary>
+    /// Base class that handles %Battle %UI.<br/>
+    /// BattleGameViewController accesses the %UI Handler scripts through this class.
+    /// </summary>
+    ///
+    /// Holds references to all of the %UI Handler and Debug %UI Handler scripts, and the BattleGameViewController script.<br/>
     public class BattleUiController : MonoBehaviour
     {
-        // View controller script back reference
+        /// <value>BattleGameViewController script back reference.</value>
         public BattleGameViewController GameViewController;
 
-        // UI Handler Scripts
+        /// @name UI Handler script references
+        /// Handler scripts control the visual functionality of the %UI prefabs and GameObjects.
+        /// @{
+
+        /// <value>Reference to BattleUiAnnouncementHandler which handles showing the countdown.</value>
         public BattleUiAnnouncementHandler AnnouncementHandler;
+
+        /// <value>Reference to BattleUiGameOverHandler which handles showing the game over popup.</value>
         public BattleUiGameOverHandler GameOverHandler;
+
+        /// <value>Reference to BattleUiTimerHandler which handles the game timer.</value>
         public BattleUiTimerHandler TimerHandler;
+
+        /// <value>Reference to BattleUiDiamondsHandler which handles displaying the diamonds acquired during the game.</value>
         public BattleUiDiamondsHandler DiamondsHandler;
+
+        /// <value>Reference to BattleUiGiveUpButtonHandler which handles the give up button.</value>
         public BattleUiGiveUpButtonHandler GiveUpButtonHandler;
+
+        /// <value>Reference to BattleUiPlayerInfoHandler which handles the local player's and teammate's player info.</value>
         public BattleUiPlayerInfoHandler PlayerInfoHandler;
 
-        // UI Debug Handler scripts
+        /// @}
+
+        /// @name Debug UI Handler script references
+        /// These handler scripts handle visual functionality for the debug %UI.
+        /// @{
+
+        /// <value>Reference to BattleUiDebugStatsOverlayHandler which displays the character's stats.</value>
         public BattleUiDebugStatsOverlayHandler DebugStatsOverlayHandler;
+
+        /// @}
     }
 }
