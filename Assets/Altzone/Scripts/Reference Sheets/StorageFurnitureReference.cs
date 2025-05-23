@@ -92,6 +92,11 @@ namespace Altzone.Scripts.ReferenceSheets
         public GameFurniture GetGameFurniture(string name)
         {
             (FurnitureInfoObject data, FurnitureSetInfo setData) = GetFurnitureDataSet(name);
+            if (data == null || setData == null)
+            {
+                Debug.LogWarning($"No Furniture can be found with name: {name}");
+                return null;
+            }
 
             FurnitureInfo furnitureInfo = new(data, setData);
             GameFurniture furniture = new("0", data.BaseFurniture, furnitureInfo);
