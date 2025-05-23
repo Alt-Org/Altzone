@@ -1,3 +1,11 @@
+/// @file BattleUiController.cs
+/// <summary>
+/// Has a base class BattleUiController which controls the %Battle %UI.
+/// </summary>
+///
+/// This script:<br/>
+/// Holds references to all of the %UI Handler and Debug %UI Handler scripts, and the BattleGameViewController script.
+
 using UnityEngine;
 
 using Battle.View.Game;
@@ -9,7 +17,7 @@ namespace Battle.View.UI
     /// BattleGameViewController accesses the %UI Handler scripts through this class.
     /// </summary>
     ///
-    /// Holds references to all of the %UI Handler and Debug %UI Handler scripts, and the BattleGameViewController script.<br/>
+    /// Holds references to all of the %UI Handler and Debug %UI Handler scripts, and the BattleGameViewController script.
     public class BattleUiController : MonoBehaviour
     {
         /// <value>BattleGameViewController script back reference.</value>
