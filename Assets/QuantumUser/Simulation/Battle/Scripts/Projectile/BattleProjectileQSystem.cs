@@ -10,7 +10,7 @@ using Battle.QSimulation.Game;
 namespace Battle.QSimulation.Projectile
 {
     [Preserve]
-    public unsafe class BattleProjectileQSystem : SystemMainThreadFilter<BattleProjectileQSystem.Filter>, ISignalBattleOnProjectileHitSoulWall, ISignalBattleOnProjectileHitArenaBorder, ISignalBattleOnProjectileHitPlayerHitbox
+    public unsafe class BattleProjectileQSystem : SystemMainThreadFilter<BattleProjectileQSystem.Filter>, ISignalBattleOnProjectileHitSoulWall, ISignalBattleOnProjectileHitArenaBorder, ISignalBattleOnProjectileHitPlayerHitbox, ISignalBattleOnGameOver
     {
         public struct Filter
         {
@@ -58,8 +58,12 @@ namespace Battle.QSimulation.Projectile
                 // set the IsLaunched field to true to ensure it's launched only once
                 projectile->IsLaunched = true;
 
+                projectile->IsMoving = true;
+
                 Debug.Log("Projectile Launched");
             }
+
+            if (!projectile->IsMoving) return;
 
             FP gameTimeSec = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>()->GameTimeSec;
 
@@ -122,6 +126,20 @@ namespace Battle.QSimulation.Projectile
             }
 
             SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Projectile);
+        }
+
+        public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)
+        {
+            // stop the projectile
+            projectile->IsMoving = false;
+
+            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
+
+            // move the projectile out of bounds after a goal is scored
+            if (winningTeam == BattleTeamNumber.TeamAlpha)
+                projectileTransform->Position += new FPVector2(0, -10);
+            else if (winningTeam == BattleTeamNumber.TeamBeta)
+                projectileTransform->Position += new FPVector2(0, 10);
         }
     }
 }

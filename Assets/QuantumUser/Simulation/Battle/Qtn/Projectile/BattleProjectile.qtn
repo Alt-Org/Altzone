@@ -8,12 +8,13 @@ flags BattleProjectileCollisionFlags : Byte
 component BattleProjectileQComponent
 {
     bool IsLaunched;
+    bool IsMoving;
     FP Speed;
+    FP SpeedPotential;
+    FP AccelerationTimer;
     FPVector2 Direction;
     FP Radius;
     BattleEmotionState Emotion;
-    FP SpeedPotential;
-    FP AccelerationTimer;
 
     array<BattleProjectileCollisionFlags>[2] CollisionFlags;
 }
