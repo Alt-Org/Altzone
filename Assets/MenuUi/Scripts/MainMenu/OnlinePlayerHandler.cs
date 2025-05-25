@@ -36,7 +36,7 @@ public class OnlinePlayerHandler : AltMonoBehaviour
         {
             if (data == null)
             {
-                Debug.LogError("Unable to find ClanData.");
+                Debug.LogWarning("Unable to find ClanData.");
                 return;
             }
             foreach (ServerOnlinePlayer player in list)

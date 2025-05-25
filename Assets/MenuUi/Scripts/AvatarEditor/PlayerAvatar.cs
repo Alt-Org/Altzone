@@ -14,13 +14,13 @@ namespace MenuUi.Scripts.AvatarEditor
         public PlayerAvatar(AvatarDefaultReference.AvatarDefaultPartInfo featureIds)
         {
             _features = new List<string>();
-            _features.Add(featureIds.HairId);
-            _features.Add(featureIds.EyesId);
-            _features.Add(featureIds.NoseId);
-            _features.Add(featureIds.MouthId);
-            _features.Add(featureIds.BodyId);
-            _features.Add(featureIds.HandsId);
-            _features.Add(featureIds.FeetId);
+            _features.Add(!string.IsNullOrWhiteSpace(featureIds.HairId) ? featureIds.HairId : "0");
+            _features.Add(!string.IsNullOrWhiteSpace(featureIds.EyesId) ? featureIds.EyesId : "0");
+            _features.Add(!string.IsNullOrWhiteSpace(featureIds.NoseId) ? featureIds.NoseId : "0");
+            _features.Add(!string.IsNullOrWhiteSpace(featureIds.MouthId) ? featureIds.MouthId : "0");
+            _features.Add(!string.IsNullOrWhiteSpace(featureIds.BodyId) ? featureIds.BodyId : "0");
+            _features.Add(!string.IsNullOrWhiteSpace(featureIds.HandsId) ? featureIds.HandsId : "0");
+            _features.Add(!string.IsNullOrWhiteSpace(featureIds.FeetId) ? featureIds.FeetId : "0");
 
             _characterName = "";
             _color = new string("#ffffff");

@@ -151,7 +151,7 @@ public class AltMonoBehaviour : MonoBehaviour
     {
         if(clanId == null)
         {
-            StartCoroutine(GetPlayerData(data => clanId = data.ClanId));
+            StartCoroutine(GetPlayerData(data => clanId = data?.ClanId));
             yield return new WaitUntil(() => clanId != null);
         }
 
@@ -165,7 +165,7 @@ public class AltMonoBehaviour : MonoBehaviour
                     callback(new(content));
                 else
                 {
-                    Debug.LogError("Could not connect to server and receive player");
+                    Debug.LogWarning("Could not connect to server and receive player");
                     return;
                 }
             }));
