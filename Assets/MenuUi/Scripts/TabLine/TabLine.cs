@@ -12,6 +12,7 @@ namespace MenuUi.Scripts.TabLine
     {
         [SerializeField] private bool _getActiveButtonFromSwipe = false;
         [SerializeField] private TabLineButton[] _tabLineButtons;
+        [SerializeField] private Image _tabLineRibbon;
         [SerializeField] private Image _tabLineImage;
 
         private SwipeUI _swipe;
@@ -29,6 +30,11 @@ namespace MenuUi.Scripts.TabLine
 
         private void Awake()
         {
+            foreach (TabLineButton button in _tabLineButtons)
+            {
+                button.SetColour(_tabLineRibbon.color);
+            }
+
             if (_getActiveButtonFromSwipe)
             {
                 _swipe = FindObjectOfType<SwipeUI>();
@@ -135,6 +141,11 @@ namespace MenuUi.Scripts.TabLine
                 {
                     _detailImageComponent.color = new Color(_tabImageComponent.color.r, _tabImageComponent.color.g, _tabImageComponent.color.b, InactiveAlpha);
                 }
+            }
+
+            public void SetColour(Color colour)
+            {
+                if(_tabImageComponent != null) _tabImageComponent.color = colour;
             }
         }
     }
