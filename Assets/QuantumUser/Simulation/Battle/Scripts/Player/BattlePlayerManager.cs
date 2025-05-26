@@ -405,6 +405,9 @@ namespace Battle.QSimulation.Player
             public BattlePlayerPlayState PlayState
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.PlayState; }
 
+            public BattlePlayerSlot Slot
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => PlayerHandleInternal.GetSlot(_internalHandle.Index); }
+
             public PlayerRef PlayerRef
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.PlayerRef; }
 

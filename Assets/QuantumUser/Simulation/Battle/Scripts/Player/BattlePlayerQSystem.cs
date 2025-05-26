@@ -8,6 +8,16 @@ namespace Battle.QSimulation.Player
     [Preserve]
     public unsafe class BattlePlayerQSystem : SystemMainThread
     {
+        public static void SpawnPLayers(Frame f)
+        {
+            foreach (BattlePlayerManager.PlayerHandle playerHandle in BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f))
+            {
+                if (playerHandle.PlayState == BattlePlayerPlayState.NotInGame) continue;
+
+                BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, 0);
+            }
+        }
+
         public override void Update(Frame f)
         {
             Input* input;
