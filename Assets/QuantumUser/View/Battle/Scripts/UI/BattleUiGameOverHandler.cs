@@ -4,7 +4,7 @@
 /// </summary>
 ///
 /// This script:<br/>
-/// Handles showing the game over popup. Part of @ref UIHandlers.
+/// Handles showing the game over popup. Part of @uihandlerslink.
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,7 +12,7 @@ using UnityEngine.UI;
 namespace Battle.View.UI
 {
     /// <summary>
-    /// Handles showing the game over popup. Part of @ref UIHandlers.
+    /// Handles showing the game over popup. Part of @uihandlerslink.
     /// </summary>
     public class BattleUiGameOverHandler : MonoBehaviour
     {

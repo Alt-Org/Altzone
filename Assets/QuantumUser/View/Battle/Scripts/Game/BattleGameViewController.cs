@@ -23,14 +23,14 @@ namespace Battle.View.Game
     /// Initializes %Battle %UI elements, and controls their visibility and functionality.
     /// </summary>
     ///
-    /// Accesses all of the @ref UIHandlers scripts through the BattleUiController reference variable #_uiController.<br/>
-    /// Handles any functionality needed by the @ref UIHandlers scripts which need to access other parts of %Battle, for example triggering the selection of another character.
+    /// Accesses all of the @ref UIHandlerReferences through the BattleUiController reference variable #_uiController.<br/>
+    /// Handles any functionality needed by the @uihandlerslink which need to access other parts of %Battle, for example triggering the selection of another character.
     public class BattleGameViewController : QuantumCallbacks
     {
         /// <value>[SerializeField] Reference to BattleGridViewController which handles visual functionality for the %Battle arena's grid.</value>
         [SerializeField] private BattleGridViewController _gridViewController;
 
-        /// <value>[SerializeField] Reference to BattleUiController which holds references to all of the @ref UIHandlers scripts.</value>
+        /// <value>[SerializeField] Reference to BattleUiController which holds references to all of the @ref UIHandlerReferences scripts.</value>
         [SerializeField] private BattleUiController _uiController;
 
         /// <value>[SerializeField] Reference to BattleScreenEffectViewController which handles the screen effects.</value>
@@ -80,7 +80,7 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventViewInit QuantumEvent.<br/>
-        /// Handles initializing the @ref UIHandlers scripts, #_gridViewController, and BattleCamera scale and rotation.
+        /// Handles initializing the @ref UIHandlerReferences scripts, #_gridViewController, and BattleCamera scale and rotation.
         /// </summary>
         /// <param name="e">The event data.</param>
         private void QEventOnViewInit(EventViewInit e)

@@ -4,7 +4,7 @@
 /// </summary>
 ///
 /// This script:<br/>
-/// Handles showing the announcement/countdown text. Part of @ref UIHandlers.
+/// Handles showing the announcement/countdown text. Part of @uihandlerslink.
 
 using UnityEngine;
 
@@ -13,7 +13,7 @@ using TMPro;
 namespace Battle.View.UI
 {
     /// <summary>
-    /// Handles showing the announcement/countdown text. Part of @ref UIHandlers.
+    /// Handles showing the announcement/countdown text. Part of @uihandlerslink.
     /// </summary>
     public class BattleUiAnnouncementHandler : MonoBehaviour
     {
