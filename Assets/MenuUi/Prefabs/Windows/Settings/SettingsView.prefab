@@ -4646,7 +4646,6 @@ MonoBehaviour:
   _showButtonLabelsToggle: {fileID: 217142808483193757}
   _battleSettingsButton: {fileID: 4404511080943597989}
   _battleEditor: {fileID: 1362077338744673454}
-  _swipe: {fileID: 178940843021721604}
 --- !u!114 &8981252872597385631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13248,7 +13247,7 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 6251713821646766710}
-    - targetCorrespondingSourceObject: {fileID: 5872830137075860331, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+    - targetCorrespondingSourceObject: {fileID: 7712695879676282831, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 2392060877180955961}
@@ -13278,6 +13277,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &5540301433651740397 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7712695879676282831, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2876140746209982754}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &5557619683642785919 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7695168990374541661, guid: 57890b7dbec8a984abb7d8148eefe9f6,
@@ -13290,19 +13295,13 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 2876140746209982754}
   m_PrefabAsset: {fileID: 0}
---- !u!224 &8532739241845914185 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5872830137075860331, guid: 57890b7dbec8a984abb7d8148eefe9f6,
-    type: 3}
-  m_PrefabInstance: {fileID: 2876140746209982754}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3918587185402537765
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 8532739241845914185}
+    m_TransformParent: {fileID: 5540301433651740397}
     m_Modifications:
     - target: {fileID: 1256493804267341119, guid: 333f39dbbf4842c4592131e56b1dcf5d,
         type: 3}
