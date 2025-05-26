@@ -270,7 +270,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             Right = 1,
         }
 
-        private const float ScaleHandleSizeRatio = 0.05f;
+        private const float ScaleHandleSizeRatio = 0.075f;
         private const float ControlButtonSizeRatio = 0.1f;
 
         private const int DefaultScaleHandleIdx = (int)CornerType.BottomRight;
