@@ -100,6 +100,7 @@ namespace Battle.QSimulation.Game
             BattleSoulWallQSystem.CreateSoulWalls(f, battleArenaSpec, soulWallSpec);
 
             BattlePlayerManager.CreatePlayers(f);
+            BattlePlayerQSystem.SpawnPLayers(f);
         }
     }
 }
