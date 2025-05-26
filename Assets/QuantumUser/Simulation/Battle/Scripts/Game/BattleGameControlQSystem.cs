@@ -42,7 +42,11 @@ namespace Battle.QSimulation.Game
             switch (gameSession->State)
             {
                 case BattleGameState.InitializeGame:
-                    if (gameSession->GameInitialized) gameSession->State = BattleGameState.CreateMap;
+                    if (gameSession->GameInitialized) gameSession->State = BattleGameState.WaitForPlayers;
+                    break;
+
+                case BattleGameState.WaitForPlayers:
+                    if (BattlePlayerManager.IsAllPlayersRegistered(f)) gameSession->State = BattleGameState.CreateMap;
                     break;
 
                 case BattleGameState.CreateMap:
@@ -75,7 +79,6 @@ namespace Battle.QSimulation.Game
 
                 case BattleGameState.Playing:
                     gameSession->GameTimeSec += f.DeltaTime;
-
                     break;
             }
         }
