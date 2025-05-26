@@ -13,7 +13,7 @@ namespace Battle.QSimulation.Game
      *  -ProjectileSpawnerSystem
      */
     [Preserve]
-    public unsafe class BattleGameControlQSystem : SystemMainThread
+    public unsafe class BattleGameControlQSystem : SystemMainThread, ISignalOnPlayerAdded
     {
         public override void OnInit(Frame f)
         {
@@ -29,6 +29,15 @@ namespace Battle.QSimulation.Game
             BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
             gameSession->GameTimeSec = 0;
             gameSession->GameInitialized = true;
+        }
+
+        public void OnPlayerAdded(Frame f, PlayerRef playerRef, bool firstTime)
+        {
+            RuntimePlayer data = f.GetPlayerData(playerRef);
+
+            BattlePlayerManager.RegisterPlayer(f, playerRef);
+
+            f.Events.BattleDebugUpdateStatsOverlay(data.Characters[0]);
         }
 
         public override void Update(Frame f)
