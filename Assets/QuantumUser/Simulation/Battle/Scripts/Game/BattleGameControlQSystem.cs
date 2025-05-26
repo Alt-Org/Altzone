@@ -98,6 +98,8 @@ namespace Battle.QSimulation.Game
             BattleSoulWallQSpec soulWallSpec = BattleQConfig.GetSoulWallSpec(f);
 
             BattleSoulWallQSystem.CreateSoulWalls(f, battleArenaSpec, soulWallSpec);
+
+            BattlePlayerManager.CreatePlayers(f);
         }
     }
 }
