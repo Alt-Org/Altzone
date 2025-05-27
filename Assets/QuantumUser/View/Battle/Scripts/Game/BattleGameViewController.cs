@@ -19,7 +19,16 @@ namespace Battle.View.Game
         [SerializeField] private BattleGridViewController _gridViewController;
         [SerializeField] private BattleUiController _uiController;
         [SerializeField] private BattleScreenEffectViewController _screenEffectViewController;
+        [SerializeField] private BattleStoneCharacterViewController _stoneCharacterViewController;
+        [SerializeField] private BattleLightrayEffectViewController _lightrayEffectViewController;
         [SerializeField] private BattleSoundFXViewController _soundFXViewController;
+
+        public static GameObject ProjectileReference { get; private set; }
+
+        public static void AssignProjectileReference(GameObject projectileReference)
+        {
+            ProjectileReference = projectileReference;
+        }
 
         public void UiInputOnLocalPlayerGiveUp()
         {
@@ -42,6 +51,20 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, QEventOnChangeEmotionState);
             QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, QEventPlaySoundFX);
             QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, QEventDebugOnUpdateStatsOverlay);
+            QuantumEvent.Subscribe<EventBattleLastRowWallDestroyed>(this, QEventOnLastRowWallDestroyed);
+        }
+
+        private void QEventOnLastRowWallDestroyed(EventBattleLastRowWallDestroyed e)
+        {
+            if (_stoneCharacterViewController != null)
+            {
+                _stoneCharacterViewController.DestroyCharacterPart(e.WallNumber, e.Team);
+            }
+
+            if (_lightrayEffectViewController != null)
+            {
+                _lightrayEffectViewController.SpawnLightray(e.WallNumber, (float)e.LightrayRotation, e.LightrayColor, e.LightraySize);
+            }
         }
 
         private void QEventOnViewInit(EventViewInit e)

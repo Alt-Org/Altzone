@@ -106,7 +106,7 @@ namespace Altzone.Scripts.Model
                 _storagePath = AppPlatform.ConvertToWindowsPath(_storagePath);
             }
             Debug.Log($"StorageFilename {_storagePath}");
-            _characters = new CharacterStorage().CharacterList;
+            _characters = CharacterStorage.Instance.CharacterList;
             _storageData = File.Exists(_storagePath)
                 ?  LoadStorage(_storagePath)
                 : CreateDefaultStorage(_storagePath);
@@ -368,7 +368,7 @@ namespace Altzone.Scripts.Model
             if (storageData?.StorageVersion != STORAGEVERSION) storageData = CreateDefaultStorage(storagePath);
             else
             {
-                storageData.Characters = new CharacterStorage().CharacterList;
+                storageData.Characters = CharacterStorage.Instance.CharacterList;
                 storageData.CustomCharacters = new();
                 storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(storageData.Characters));
                 storageData.GameFurniture = new();

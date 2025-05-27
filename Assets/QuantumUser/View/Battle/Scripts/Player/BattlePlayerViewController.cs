@@ -8,6 +8,7 @@ namespace Battle.View.Player
         [SerializeField] private Animator _animator;
         [SerializeField] private GameObject _heart;
         [SerializeField] private SpriteRenderer _spriteRenderer;
+        [SerializeField] private GameObject _localPlayerIndicator;
 
         public override void OnActivate(Frame _) => QuantumEvent.Subscribe(this, (EventBattlePlayerViewInit e) => {
             if (EntityRef != e.Entity) return;

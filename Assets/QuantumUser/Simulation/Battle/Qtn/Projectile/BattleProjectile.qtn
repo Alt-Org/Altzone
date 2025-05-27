@@ -12,6 +12,8 @@ component BattleProjectileQComponent
     FPVector2 Direction;
     FP Radius;
     BattleEmotionState Emotion;
+    FP SpeedPotential;
+    FP AccelerationTimer;
 
     array<BattleProjectileCollisionFlags>[2] CollisionFlags;
 }
