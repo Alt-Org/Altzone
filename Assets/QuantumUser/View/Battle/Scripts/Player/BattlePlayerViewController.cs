@@ -13,7 +13,7 @@ namespace Battle.View.Player
 
         [SerializeField] private float _transparencyEffectRange;
         [SerializeField] private float _transparencyEffectTransitionRate;
-        [SerializeField] private float _minimumAlpha;
+        [SerializeField] private float _transparencyEffectMinimumAlpha;
 
         public override void OnActivate(Frame _) => QuantumEvent.Subscribe(this, (EventBattlePlayerViewInit e) => {
             if (EntityRef != e.Entity) return;
@@ -37,16 +37,16 @@ namespace Battle.View.Player
 
             if (BattleGameViewController.ProjectileReference != null)
             {
-                if (Vector3.Distance(gameObject.transform.position, BattleGameViewController.ProjectileReference.transform.position) <= _transparencyEffectRange && _spriteRenderer.color.a > _minimumAlpha)
+                if (Vector3.Distance(gameObject.transform.position, BattleGameViewController.ProjectileReference.transform.position) <= _transparencyEffectRange && _spriteRenderer.color.a > _transparencyEffectMinimumAlpha)
                 {
                     Color tempColor = _spriteRenderer.color;
-                    tempColor.a = Mathf.Clamp(tempColor.a - _transparencyEffectTransitionRate * Time.deltaTime, _minimumAlpha, 1);
+                    tempColor.a = Mathf.Clamp(tempColor.a - _transparencyEffectTransitionRate * Time.deltaTime, _transparencyEffectMinimumAlpha, 1);
                     _spriteRenderer.color = tempColor;
                 }
                 else if (_spriteRenderer.color.a < 1)
                 {
                     Color tempColor = _spriteRenderer.color;
-                    tempColor.a = Mathf.Clamp(tempColor.a + _transparencyEffectTransitionRate * Time.deltaTime, _minimumAlpha, 1);
+                    tempColor.a = Mathf.Clamp(tempColor.a + _transparencyEffectTransitionRate * Time.deltaTime, _transparencyEffectMinimumAlpha, 1);
                     _spriteRenderer.color = tempColor;
                 }
             }
