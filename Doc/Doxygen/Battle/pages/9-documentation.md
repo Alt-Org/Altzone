@@ -56,8 +56,14 @@ This method should only be called by Quantum.
 
 ## Quantum System Signal method brief/summary format
 ```
-<span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a> that gets called when <see cref="signal interface">signal interface</see> is sent.</span><br/>
+<span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a> that gets called when <see cref="signal interface">signal interface</see> is sent.</span><br/>
 // brief text
 @warning
 This method should only be called via Quantum signal.
+```
+
+## UI Handler class method brief/summary format
+```
+<span class="brief-h">handler name @uihandlerlink (<a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>).</span><br/>
+// brief text
 ```
