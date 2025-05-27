@@ -21,8 +21,6 @@ namespace Battle.QSimulation.Player
         {
             Debug.Log("[PlayerManager] Init");
 
-            bool invalidState = false;
-
             for (int i = 0; i < s_spawnPoints.Length; i++)
             {
                 s_spawnPoints[i] = BattleGridManager.GridPositionToWorldPosition(battleArenaSpec.PlayerSpawnPositions[i]);
