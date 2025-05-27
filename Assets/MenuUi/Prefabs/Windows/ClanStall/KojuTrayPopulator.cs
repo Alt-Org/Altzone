@@ -23,7 +23,7 @@ public class KojuTrayPopulator : MonoBehaviour
         // Waits for the data to be retrieved
         yield return store.GetAllGameFurnitureYield(result => allFurniture = result);
 
-        // Exists and debugs if fetching of items fail
+        // Exits and debugs if fetching of items fail
         if (allFurniture == null || allFurniture.Count == 0)
         {
             Debug.LogWarning("No furniture items found.");
