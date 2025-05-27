@@ -136,10 +136,15 @@ namespace Battle.QSimulation.Projectile
             Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
 
             // move the projectile out of bounds after a goal is scored
-            if (winningTeam == BattleTeamNumber.TeamAlpha)
-                projectileTransform->Position += new FPVector2(0, -10);
-            else if (winningTeam == BattleTeamNumber.TeamBeta)
-                projectileTransform->Position += new FPVector2(0, 10);
+            switch (winningTeam)
+            {
+                case BattleTeamNumber.TeamAlpha:
+                    projectileTransform->Position += new FPVector2(0, -10);
+                    break;
+                case BattleTeamNumber.TeamBeta:
+                    projectileTransform->Position += new FPVector2(0, 10);
+                    break;
+            }
         }
     }
 }
