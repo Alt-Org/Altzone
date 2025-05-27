@@ -1,9 +1,9 @@
-using MenuUi.Scripts.Audio;
+using Altzone.Scripts.Audio;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using AudioTypeName = MenuUi.Scripts.Audio.AudioTypeName;
+using AudioTypeName = Altzone.Scripts.Audio.AudioTypeName;
 
 enum AudioSelection
 {

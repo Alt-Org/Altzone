@@ -1,5 +1,6 @@
 using MenuUi.Scripts.MainMenu;
 using MenuUi.Scripts.Settings.BattleUiEditor;
+using MenuUi.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,6 +29,13 @@ public class SettingEditor : MonoBehaviour
         SetFPSButtons();
         SetIntroSkipToggle();
         SetShowButtonLabelsToggle();
+
+        // Opening Battle Ui Editor if DataCarrier has a bool BattleUiEditorRequested and it's true
+        if (DataCarrier.GetData<bool>(DataCarrier.BattleUiEditorRequested))
+        {
+            DataCarrier.AddData(DataCarrier.RequestedWindow, 1);
+            _battleEditor.OpenEditor();
+        }
     }
     private void Start()
     {

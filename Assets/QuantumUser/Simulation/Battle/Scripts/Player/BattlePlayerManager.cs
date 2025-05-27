@@ -28,7 +28,7 @@ namespace Battle.QSimulation.Player
 
             BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
 
-            PlayerHandle.SetAllPlayStates(playerManagerData, BattlePlayerPlayState.NotInGame);
+            PlayerHandleInternal.SetAllPlayStates(playerManagerData, BattlePlayerPlayState.NotInGame);
         }
 
         public static BattlePlayerSlot InitPlayer(Frame f, PlayerRef playerRef)
@@ -37,9 +37,9 @@ namespace Battle.QSimulation.Player
 
             RuntimePlayer data = f.GetPlayerData(playerRef);
 
-            BattlePlayerSlot playerSlot = (BattlePlayerSlot)data.PlayerSlot;
-            BattleTeamNumber teamNumber = PlayerHandle.GetTeamNumber(playerSlot);
-            PlayerHandle playerHandle = new(playerManagerData, playerSlot);
+            BattlePlayerSlot playerSlot = data.PlayerSlot;
+            BattleTeamNumber teamNumber = PlayerHandleInternal.GetTeamNumber(playerSlot);
+            PlayerHandleInternal playerHandle = PlayerHandleInternal.GetPlayerHandle(playerManagerData, playerSlot);
 
             // TODO: Fetch EntityPrototype for each character based on the BattleCharacterBase Id
             EntityPrototype entityPrototypeAsset = f.FindAsset(data.PlayerAvatar);
@@ -248,7 +248,7 @@ namespace Battle.QSimulation.Player
                     f.Add(playerEntity, playerData, out BattlePlayerDataQComponent* playerDataPtr);
 
                     playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
-                    BattlePlayerMovementQSystem.Teleport(f, playerDataPtr, playerTransform,
+                    BattlePlayerMovementController.Teleport(f, playerDataPtr, playerTransform,
                         playerSpawnPosition,
                         playerRotationBase
                     );
@@ -275,7 +275,7 @@ namespace Battle.QSimulation.Player
 
         public static void SpawnPlayer(Frame f, BattlePlayerSlot slot, int characterNumber)
         {
-            PlayerHandle playerHandle = new(GetPlayerManagerData(f), slot);
+            PlayerHandleInternal playerHandle = PlayerHandleInternal.GetPlayerHandle(GetPlayerManagerData(f), slot);
 
             if (playerHandle.PlayState == BattlePlayerPlayState.NotInGame)
             {
@@ -283,7 +283,7 @@ namespace Battle.QSimulation.Player
                 return;
             }
 
-            if (!PlayerHandle.IsValidCharacterNumber(characterNumber))
+            if (!PlayerHandleInternal.IsValidCharacterNumber(characterNumber))
             {
                 Debug.LogErrorFormat("[PlayerManager] Invalid characterNumber = {0}", characterNumber);
                 return;
@@ -294,7 +294,7 @@ namespace Battle.QSimulation.Player
 
         public static void DespawnPlayer(Frame f, BattlePlayerSlot slot)
         {
-            PlayerHandle playerHandle = new(GetPlayerManagerData(f), slot);
+            PlayerHandleInternal playerHandle = PlayerHandleInternal.GetPlayerHandle(GetPlayerManagerData(f), slot);
 
             if (playerHandle.PlayState != BattlePlayerPlayState.InPlay)
             {
@@ -307,41 +307,84 @@ namespace Battle.QSimulation.Player
 
         #endregion Public - Static Methods - Spawn/Despawn
 
-        #region Public - Static Methods - Utility
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static BattleTeamNumber GetPlayerTeamNumber(BattlePlayerSlot slot) => PlayerHandle.GetTeamNumber(slot);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static BattlePlayerPlayState GetPlayerPlayState(Frame f, BattlePlayerSlot slot)
-        {
-            BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
-            int playerIndex = PlayerHandle.GetPlayerIndex(slot);
-            return PlayerHandle.GetPlayState(playerManagerData, playerIndex);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static EntityRef GetPlayerEntity(Frame f, BattlePlayerSlot slot)
-        {
-            BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
-            int playerIndex = PlayerHandle.GetPlayerIndex(slot);
-            return PlayerHandle.GetSelectedCharacter(playerManagerData, playerIndex);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static EntityRef GetTeammateEntity(Frame f, BattlePlayerSlot slot)
-        {
-            BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
-            int teammatePlayerIndex = PlayerHandle.GetTeammatePlayerIndex(slot);
-            return PlayerHandle.GetSelectedCharacter(playerManagerData, teammatePlayerIndex);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsValidCharacterNumber(int characterNumber) => PlayerHandle.IsValidCharacterNumber(characterNumber);
-
-        #endregion Public - Static Methods - Utility
-
         #endregion Public - Static Methods
+
+        #region Public - PlayerHandle struct
+
+        public struct PlayerHandle
+        {
+            //{ Public Static Methods
+
+            public static BattlePlayerSlot GetSlot(Frame f, PlayerRef playerRef)
+            {
+                BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
+                int playerIndex = PlayerHandleInternal.GetPlayerIndex(playerManagerData, playerRef);
+                return PlayerHandleInternal.GetSlot(playerIndex);
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static BattleTeamNumber GetTeamNumber(BattlePlayerSlot slot) => PlayerHandleInternal.GetTeamNumber(slot);
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static bool IsValidCharacterNumber(int characterNumber) => PlayerHandleInternal.IsValidCharacterNumber(characterNumber);
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static PlayerHandle GetPlayerHandle(Frame f, BattlePlayerSlot slot)
+            {
+                BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
+                return new PlayerHandle(PlayerHandleInternal.GetPlayerHandle(playerManagerData, slot));
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static PlayerHandle GetTeammateHandle(Frame f, BattlePlayerSlot slot)
+            {
+                BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
+                return new PlayerHandle(PlayerHandleInternal.GetTeammateHandle(playerManagerData, slot));
+            }
+
+            public static PlayerHandle[] GetPlayerHandleArray(Frame f)
+            {
+                BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
+                PlayerHandle[] array = new PlayerHandle[Constants.BATTLE_PLAYER_SLOT_COUNT];
+                for (int i = 0; i < array.Length; i++)
+                {
+                    array[i] = new PlayerHandle(new PlayerHandleInternal(playerManagerData, i));
+                }
+                return array;
+            }
+
+            //} Public Static Methods
+
+            //{ Public Properties
+
+            public BattlePlayerPlayState PlayState
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.PlayState; }
+
+            public PlayerRef PlayerRef
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.PlayerRef; }
+
+            public EntityRef SelectedCharacter
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacter; }
+
+            public int SelectedCharacterNumber
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacterNumber; }
+
+            //} Public Properties
+
+            //{ Private
+
+            private PlayerHandleInternal _internalHandle;
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private PlayerHandle(PlayerHandleInternal internalHandle)
+            {
+                _internalHandle = internalHandle;
+            }
+
+            //} Private
+        }
+
+        #endregion Public - PlayerHandle struct
 
         #endregion Public
 
@@ -349,9 +392,25 @@ namespace Battle.QSimulation.Player
 
         private static readonly FPVector2[] s_spawnPoints = new FPVector2[Constants.BATTLE_PLAYER_SLOT_COUNT];
 
-        private struct PlayerHandle
+        #region Private - PlayerHandleInternal struct
+
+        private struct PlayerHandleInternal
         {
             //{ Public Static Methods
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static BattlePlayerSlot GetSlot(int playerIndex)
+            {
+                return playerIndex switch
+                {
+                    0 => BattlePlayerSlot.Slot1,
+                    1 => BattlePlayerSlot.Slot2,
+                    2 => BattlePlayerSlot.Slot3,
+                    3 => BattlePlayerSlot.Slot4,
+
+                    _ => BattlePlayerSlot.Spectator
+                };
+            }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static BattleTeamNumber GetTeamNumber(BattlePlayerSlot slot)
@@ -382,6 +441,16 @@ namespace Battle.QSimulation.Player
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static int GetPlayerIndex(BattlePlayerManagerDataQSingleton* playerManagerData, PlayerRef playerRef)
+            {
+                for (int i = 0; i < Constants.BATTLE_PLAYER_SLOT_COUNT; i++)
+                {
+                    if (playerManagerData->PlayerRefs[i] == playerRef) return i;
+                }
+                return -1;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static int GetTeammatePlayerIndex(BattlePlayerSlot slot)
             {
                 return slot switch
@@ -396,7 +465,18 @@ namespace Battle.QSimulation.Player
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public static BattlePlayerPlayState GetPlayState(BattlePlayerManagerDataQSingleton* playerManagerData, int playerIndex) => playerManagerData->PlayStates[playerIndex];
+            public static PlayerHandleInternal GetPlayerHandle(BattlePlayerManagerDataQSingleton* playerManagerData, BattlePlayerSlot slot)
+            {
+                int playerIndex = GetPlayerIndex(slot);
+                return new PlayerHandleInternal(playerManagerData, playerIndex);
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static PlayerHandleInternal GetTeammateHandle(BattlePlayerManagerDataQSingleton* playerManagerData, BattlePlayerSlot slot)
+            {
+                int playerIndex = GetTeammatePlayerIndex(slot);
+                return new PlayerHandleInternal(playerManagerData, playerIndex);
+            }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static void SetAllPlayStates(BattlePlayerManagerDataQSingleton* playerManagerData, BattlePlayerPlayState playerPlayState)
@@ -410,18 +490,15 @@ namespace Battle.QSimulation.Player
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static bool IsValidCharacterNumber(int characterNumber) => characterNumber >= 0 && characterNumber < Constants.BATTLE_PLAYER_CHARACTER_COUNT;
 
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public static EntityRef GetSelectedCharacter(BattlePlayerManagerDataQSingleton* playerManagerData, int playerIndex) => playerManagerData->SelectedCharacters[playerIndex];
-
             //} Public Static Methods
 
             //{ Public Properties
 
-            public int Index { get; private set; }
+            public int Index { get; set; }
 
             public BattlePlayerPlayState PlayState
             {
-                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => GetPlayState(_playerManagerData, Index);
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->PlayStates[Index];
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->PlayStates[Index] = value;
             }
 
@@ -432,7 +509,7 @@ namespace Battle.QSimulation.Player
             }
 
             public EntityRef SelectedCharacter
-            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => GetSelectedCharacter(_playerManagerData, Index); }
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->SelectedCharacters[Index]; }
 
             public int SelectedCharacterNumber
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->SelectedCharacterNumbers[Index]; }
@@ -442,9 +519,10 @@ namespace Battle.QSimulation.Player
 
             //} Public Properties
 
-            public PlayerHandle(BattlePlayerManagerDataQSingleton* playerManagerData, BattlePlayerSlot slot)
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public PlayerHandleInternal(BattlePlayerManagerDataQSingleton* playerManagerData, int playerIndex)
             {
-                Index = GetPlayerIndex(slot);
+                Index = playerIndex;
                 _playerManagerData = playerManagerData;
             }
 
@@ -514,6 +592,8 @@ namespace Battle.QSimulation.Player
             //} Private Methods
         }
 
+        #endregion Private - PlayerHandleInternal struct
+
         #region Private - Static Methods
 
         private static BattlePlayerManagerDataQSingleton* GetPlayerManagerData(Frame f)
@@ -531,7 +611,7 @@ namespace Battle.QSimulation.Player
             }
         }
 
-        private static void SpawnPlayer(Frame f, PlayerHandle playerHandle, int characterNumber)
+        private static void SpawnPlayer(Frame f, PlayerHandleInternal playerHandle, int characterNumber)
         {
             EntityRef character = playerHandle.GetCharacter(characterNumber);
             BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(character);
@@ -551,7 +631,7 @@ namespace Battle.QSimulation.Player
 
             playerData->PlayerRef = playerHandle.PlayerRef;
 
-            BattlePlayerMovementQSystem.Teleport(f, playerData, playerTransform,
+            BattlePlayerMovementController.Teleport(f, playerData, playerTransform,
                 worldPosition,
                 playerData->RotationBase
             );
@@ -562,7 +642,7 @@ namespace Battle.QSimulation.Player
             playerHandle.PlayState = BattlePlayerPlayState.InPlay;
         }
 
-        private static void DespawnPlayer(Frame f, PlayerHandle playerHandle)
+        private static void DespawnPlayer(Frame f, PlayerHandleInternal playerHandle)
         {
             EntityRef selectedCharacter = playerHandle.SelectedCharacter;
             BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(selectedCharacter);
@@ -572,7 +652,7 @@ namespace Battle.QSimulation.Player
 
             playerData->PlayerRef = PlayerRef.None;
 
-            BattlePlayerMovementQSystem.Teleport(f, playerData, playerTransform,
+            BattlePlayerMovementController.Teleport(f, playerData, playerTransform,
                 worldPosition,
                 playerData->RotationBase
             );

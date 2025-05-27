@@ -12,13 +12,13 @@ public class AvatarVisualDataScriptableObject : ScriptableObject
         get
         {
             var list = new List<Sprite>();
-            list.Add(Hair);
-            list.Add(Eyes);
-            list.Add(Nose);
-            list.Add(Mouth);
-            list.Add(Clothes);
-            list.Add(Feet);
-            list.Add(Hands);
+            list.Add(Data.Hair);
+            list.Add(Data.Eyes);
+            list.Add(Data.Nose);
+            list.Add(Data.Mouth);
+            list.Add(Data.Clothes);
+            list.Add(Data.Feet);
+            list.Add(Data.Hands);
             return list;
         }
         set
@@ -32,6 +32,49 @@ public class AvatarVisualDataScriptableObject : ScriptableObject
             Hands = value[6];
         }
     }
+    public AvatarVisualData Data = new ();
+    public Sprite Hair { get => Data.Hair; set => Data.Hair = value; }
+    public Sprite Eyes { get => Data.Eyes; set => Data.Eyes = value; }
+    public Sprite Nose { get => Data.Nose; set => Data.Nose = value; }
+    public Sprite Mouth { get => Data.Mouth; set => Data.Mouth = value; }
+    public Sprite Clothes { get => Data.Clothes; set => Data.Clothes = value; }
+    public Sprite Feet { get => Data.Feet; set => Data.Feet = value; }
+    public Sprite Hands { get => Data.Hands; set => Data.Hands = value; }
+    public Color color { get => Data.color; set => Data.color = value; }
+
+
+
+    public void SetAvatarPiece(AvatarPiece piece, Sprite id) => Data.SetAvatarPiece(piece, id);
+    /*{
+        switch (piece)
+        {
+            case AvatarPiece.Hair:
+                Data.Hair = id;
+                break;
+            case AvatarPiece.Eyes:
+                Data.Eyes = id;
+                break;
+            case AvatarPiece.Nose:
+                Data.Nose = id;
+                break;
+            case AvatarPiece.Mouth:
+                Data.Mouth = id;
+                break;
+            case AvatarPiece.Clothes:
+                Data.Clothes = id;
+                break;
+            case AvatarPiece.Feet:
+                Data.Feet = id;
+                break;
+            case AvatarPiece.Hands:
+                Data.Hands = id;
+                break;
+        }
+    }*/
+}
+
+public class AvatarVisualData
+{
     public Sprite Hair;
     public Sprite Eyes;
     public Sprite Nose;
@@ -40,7 +83,6 @@ public class AvatarVisualDataScriptableObject : ScriptableObject
     public Sprite Feet;
     public Sprite Hands;
     public Color color = new();
-
 
     public void SetAvatarPiece(AvatarPiece piece, Sprite id)
     {

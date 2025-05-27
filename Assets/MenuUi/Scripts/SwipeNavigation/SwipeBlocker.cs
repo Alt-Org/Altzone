@@ -48,17 +48,17 @@ namespace MenuUi.Scripts.SwipeNavigation
         {
             if (_swipe != null)
                 _swipe.OnBeginDrag(eventData, _blockType);
-            parentBeginDragHandler.OnBeginDrag(eventData);
+            parentBeginDragHandler?.OnBeginDrag(eventData);
         }
 
         public virtual void OnDrag(PointerEventData eventData)
         {
-            parentDragHandler.OnDrag(eventData);
+            parentDragHandler?.OnDrag(eventData);
         }
 
         public virtual void OnEndDrag(PointerEventData eventData)
         {
-            parentEndDragHandler.OnEndDrag(eventData);
+            parentEndDragHandler?.OnEndDrag(eventData);
         }
     }
 }

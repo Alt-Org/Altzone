@@ -26,11 +26,12 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
     public enum BattleUiElementType
     {
-        Timer,
-        PlayerInfo,
-        TeammateInfo,
-        Diamonds,
-        GiveUpButton,
+        None = -1,
+        Timer = 0,
+        PlayerInfo = 1,
+        TeammateInfo = 2,
+        Diamonds = 3,
+        GiveUpButton = 4,
     }
 
     // Events
@@ -134,12 +135,12 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(this);
+            Destroy(gameObject);
         }
         else
         {
             Instance = this;
-            DontDestroyOnLoad(this);
+            DontDestroyOnLoad(gameObject);
         }
     }
 
@@ -150,6 +151,11 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
         _textSize = (TextSize)PlayerPrefs.GetInt("TextSize", 1);
         _showButtonLabels = (PlayerPrefs.GetInt("showButtonLabels", 1) == 1);
+
+        masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1);
+        menuVolume = PlayerPrefs.GetFloat("MenuVolume", 1);
+        musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1);
+        soundVolume = PlayerPrefs.GetFloat("SoundVolume", 1);
 
         _battleArenaScale = PlayerPrefs.GetInt(BattleArenaScaleKey, BattleArenaScaleDefault);
         _battleArenaPosX = PlayerPrefs.GetInt(BattleArenaPosXKey, BattleArenaPosXDefault);
@@ -179,13 +185,18 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
     public BattleUiMovableElementData GetBattleUiMovableElementData(BattleUiElementType type)
     {
+        if (type == BattleUiElementType.None) return null;
+
         string json = PlayerPrefs.GetString($"BattleUi{type}", string.Empty);
         if (string.IsNullOrEmpty(json)) return null;
+
         return JsonUtility.FromJson<BattleUiMovableElementData>(json);
     }
 
     public void SetBattleUiMovableElementData(BattleUiElementType type, BattleUiMovableElementData data)
     {
+        if (type == BattleUiElementType.None) return;
+
         string json = JsonUtility.ToJson(data);
         PlayerPrefs.SetString($"BattleUi{type}", json);
     }
