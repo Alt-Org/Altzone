@@ -23,7 +23,7 @@ using Battle.View.Game;
 namespace Battle.View.Player
 {
     /// <summary>
-    /// %Player input <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour</a> script.<br/>
+    /// %Player input <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour@u-exlink</a> script.<br/>
     /// Handles subscribing to QuantumCallBack and polling player inputs for Quantum.
     /// </summary>
     public class BattlePlayerInput : MonoBehaviour

@@ -9,7 +9,7 @@ using Quantum;
 namespace Battle.View.Projectile
 {
     /// <summary>
-    /// %Projectile view <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour</a> script.<br/>
+    /// %Projectile view <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour@u-exlink</a> script.<br/>
     /// Handles projectile's sprite changes and its trail's color.
     /// </summary>
     public class BattleProjectileViewController : QuantumEntityViewComponent
