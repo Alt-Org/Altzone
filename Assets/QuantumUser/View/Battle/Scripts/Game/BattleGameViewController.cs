@@ -23,10 +23,16 @@ namespace Battle.View.Game
     /// Initializes %Battle %UI elements, and controls their visibility and functionality.
     /// </summary>
     ///
-    /// Accesses all of the @ref UIHandlerReferences through the BattleUiController reference variable #_uiController.<br/>
     /// Handles any functionality needed by the @uihandlerslink which need to access other parts of %Battle, for example triggering the selection of another character.
+    /// Accesses all of the @ref UIHandlerReferences through the BattleUiController reference variable #_uiController.<br/>
     public class BattleGameViewController : QuantumCallbacks
     {
+        #region SerializeFields
+
+        /// @name SerializeField variables
+        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// @{
+
         /// <value>[SerializeField] Reference to BattleGridViewController which handles visual functionality for the %Battle arena's grid.</value>
         [SerializeField] private BattleGridViewController _gridViewController;
 
@@ -38,6 +44,16 @@ namespace Battle.View.Game
 
         /// <value>[SerializeField] Reference to BattleSoundFXViewController which plays sound effects.</value>
         [SerializeField] private BattleSoundFXViewController _soundFXViewController;
+
+        /// @}
+
+        #endregion
+
+        #region UiInput methods
+
+        /// @name UiInput methods
+        /// UiInput methods are called when the player gives an %UI input, such as presses a button. These methods shouldn't be called any other way.
+        /// @{
 
         /// <summary>
         /// Public method that gets called when the local player pressed the give up button.<br/>
@@ -67,8 +83,12 @@ namespace Battle.View.Game
             LobbyManager.ExitQuantum();
         }
 
+        /// @}
+
+        #endregion
+
         /// <summary>
-        /// Private Awake method which handles subscribing to QuantumEvents.
+        /// Private <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/MonoBehaviour.Awake.html">Awake@u-exlink</a> method. Handles subscribing to QuantumEvents.
         /// </summary>
         private void Awake()
         {
@@ -77,6 +97,12 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, QEventPlaySoundFX);
             QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, QEventDebugOnUpdateStatsOverlay);
         }
+
+        #region QuantumEvent handlers
+
+        /// @name QuantumEvent handlers
+        /// QuantumEvent handler methods are called by QuantumEvents. These methods shouldn't be called any other way.
+        /// @{
 
         /// <summary>
         /// Private handler method for EventViewInit QuantumEvent.<br/>
@@ -146,8 +172,12 @@ namespace Battle.View.Game
             _uiController.DebugStatsOverlayHandler.SetStats(e.Character);
         }
 
+        /// @}
+        
+        #endregion
+
         /// <summary>
-        /// Handles %UI updates based on the game's state and countdown.
+        /// Private <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/MonoBehaviour.Update.html">Update@u-exlink</a> method. Handles %UI updates based on the game's state and countdown.
         /// </summary>
         private void Update()
         {
