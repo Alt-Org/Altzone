@@ -21,6 +21,8 @@ namespace Battle.QSimulation.Player
         {
             Debug.Log("[PlayerManager] Init");
 
+            bool invalidState = false;
+
             for (int i = 0; i < s_spawnPoints.Length; i++)
             {
                 s_spawnPoints[i] = BattleGridManager.GridPositionToWorldPosition(battleArenaSpec.PlayerSpawnPositions[i]);
@@ -30,6 +32,29 @@ namespace Battle.QSimulation.Player
 
             PlayerHandleInternal.SetAllPlayStates(playerManagerData, BattlePlayerPlayState.NotInGame);
             playerManagerData->PlayerCount = 0;
+
+            {
+                BattleParameters.PlayerType[] playerSlotTypes = BattleParameters.GetPlayerSlotTypes(f);
+                int                           playerCount     = BattleParameters.GetPlayerCount(f);
+
+                int playerCountCheckNumber = 0;
+                foreach (BattleParameters.PlayerType playerSlotType in playerSlotTypes)
+                {
+                    if (playerSlotType == BattleParameters.PlayerType.Player) playerCountCheckNumber++;
+                }
+
+                if (playerCountCheckNumber != playerCount)
+                {
+                    Debug.LogErrorFormat("[PlayerManager] BattleParameters player count does not match the number of player slots with type of Player\n"
+                        + "BattleParameters player count {0}, Counted {1}",
+                        playerCount,
+                        playerCountCheckNumber
+                    );
+
+                    // this will prevent the game from starting
+                    playerManagerData->PlayerCount = -100;
+                }
+            }
         }
 
         public static void RegisterPlayer(Frame f, PlayerRef playerRef)
