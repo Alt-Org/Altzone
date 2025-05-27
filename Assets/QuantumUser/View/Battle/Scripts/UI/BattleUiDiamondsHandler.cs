@@ -4,7 +4,8 @@
 /// </summary>
 ///
 /// This script:<br/>
-/// Handles setting collected diamond amount text. Part of @uihandlerslink.
+/// Handles setting collected diamond amount text. Part of @uihandlerslink.<br/>
+/// <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour@u-exlink</a> script.
 
 using UnityEngine;
 using TMPro;
@@ -14,16 +15,23 @@ using Altzone.Scripts.BattleUiShared;
 namespace Battle.View.UI
 {
     /// <summary>
-    /// Handles setting collected diamond amount text. Part of @uihandlerslink.
+    /// Handles setting collected diamond amount text. Part of @uihandlerslink.<br/>
+    /// <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour@u-exlink</a> script.
     /// </summary>
     public class BattleUiDiamondsHandler : MonoBehaviour
     {
+        /// @name SerializeField variables
+        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// @{
+
         /// <value>[SerializeField] Reference to the BattleUiMovableElement script which is attached to a BattleUiDiamonds prefab.</value>
         [SerializeField] private BattleUiMovableElement _movableUiElement;
 
         /// <value>[SerializeField] Reference to the TMP_Text component which the diamond amount text is set to.</value>
         [SerializeField] private TMP_Text _diamondText;
 
+        /// @}
+        
         /// <value>Is the %UI element visible or not.</value>
         public bool IsVisible => MovableUiElement.gameObject.activeSelf;
 
