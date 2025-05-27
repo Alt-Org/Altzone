@@ -4,7 +4,8 @@
 /// </summary>
 ///
 /// This script:<br/>
-/// Initializes %Battle %UI elements, and controls their visibility and functionality.
+/// Initializes %Battle %UI elements, and controls their visibility and functionality.<br/>
+/// Inherits <a href="https://doc-api.photonengine.com/en/quantum/current/class_quantum_1_1_quantum_callbacks.html">QuantumCallbacks@u-exlink</a>.
 
 using UnityEngine;
 
@@ -20,7 +21,8 @@ using PlayerType = Battle.View.UI.BattleUiPlayerInfoHandler.PlayerType;
 namespace Battle.View.Game
 {
     /// <summary>
-    /// Initializes %Battle %UI elements, and controls their visibility and functionality.
+    /// Initializes %Battle %UI elements, and controls their visibility and functionality.<br/>
+    /// Inherits <a href="https://doc-api.photonengine.com/en/quantum/current/class_quantum_1_1_quantum_callbacks.html">QuantumCallbacks@u-exlink</a>.
     /// </summary>
     ///
     /// Handles any functionality needed by the @uihandlerslink which need to access other parts of %Battle, for example triggering the selection of another character.

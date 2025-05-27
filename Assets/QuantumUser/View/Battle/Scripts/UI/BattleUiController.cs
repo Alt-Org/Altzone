@@ -1,10 +1,11 @@
 /// @file BattleUiController.cs
 /// <summary>
-/// Has a base class BattleUiController which controls the %Battle %UI.
+/// Has a class BattleUiController which controls the %Battle %UI.
 /// </summary>
 ///
 /// This script:<br/>
-/// Holds references to all of the @ref UIHandlerReferences and @ref DebugUIHandlerReferences, and the BattleGameViewController script.
+/// Holds references to all of the @ref UIHandlerReferences and @ref DebugUIHandlerReferences, and the BattleGameViewController script.<br/>
+/// <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour@u-exlink</a> script.
 
 using UnityEngine;
 
@@ -13,8 +14,9 @@ using Battle.View.Game;
 namespace Battle.View.UI
 {
     /// <summary>
-    /// Base class that handles %Battle %UI.<br/>
-    /// BattleGameViewController accesses the @uihandlerslink scripts through this class. 
+    /// Main controller for %Battle %UI.<br/>
+    /// BattleGameViewController accesses the @uihandlerslink scripts through this class.<br/>
+    /// <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour@u-exlink</a> script.
     /// </summary>
     ///
     /// Holds references to all of the @ref UIHandlerReferences and @ref DebugUIHandlerReferences, and the BattleGameViewController script.
