@@ -111,27 +111,12 @@ namespace MenuUi.Scripts.TabLine
         private class TabLineButton
         {
             [Header("References to components")]
-            [SerializeField] private Image _tabImageComponent;
-            [SerializeField] private Image _tabDarkeningImage;
+            [SerializeField] private TabObjectHandler _tabObjectHandler;
             [SerializeField] private Sprite _tablineImage;
 
-            public Sprite SetActiveVisuals()
-            {
-                if (_tabDarkeningImage != null) _tabDarkeningImage.gameObject.SetActive(false);
-                return _tablineImage;
-            }
-
-
-            public void SetInactiveVisuals()
-            {
-                if (_tabDarkeningImage != null) _tabDarkeningImage.gameObject.SetActive(true);
-            }
-
-
-            public void SetColour(Color colour)
-            {
-                if(_tabImageComponent != null) _tabImageComponent.color = colour;
-            }
+            public Sprite SetActiveVisuals() => _tabObjectHandler.SetActiveVisuals(_tablineImage);
+            public void SetInactiveVisuals() => _tabObjectHandler.SetInactiveVisuals();
+            public void SetColour(Color colour) => _tabObjectHandler.SetColour(colour);
         }
     }
 }
