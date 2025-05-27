@@ -6,6 +6,7 @@ using UnityEngine.Scripting;
 using Quantum;
 using Photon.Deterministic;
 using Battle.QSimulation.Game;
+using Battle.QSimulation.Player;
 
 namespace Battle.QSimulation.Projectile
 {
@@ -95,10 +96,43 @@ namespace Battle.QSimulation.Projectile
             ProjectileVelocityUpdate(f, projectile,  projectileEntity, arenaBorderEntity, arenaBorder->Normal, arenaBorder->CollisionMinOffset);
         }
 
-        public void BattleOnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity)
+        public void BattleOnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
         {
+            if (projectile->Emotion == BattleEmotionState.Love) return;
             if (playerHitbox->CollisionType == BattlePlayerCollisionType.None) return;
-            ProjectileVelocityUpdate(f, projectile,  projectileEntity, playerEntity, playerHitbox->Normal, playerHitbox->CollisionMinOffset, playerHitbox->CollisionType);
+
+            BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
+
+            bool isOnTopOfTeammate = false;
+
+            BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot);
+
+            if (teammateHandle.PlayState == BattlePlayerPlayState.InPlay)
+            {          
+                EntityRef teammateEntity = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot).SelectedCharacter;
+
+                Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(playerHitbox->PlayerEntity);
+                Transform2D* teammateTransform = f.Unsafe.GetPointer<Transform2D>(teammateEntity);
+
+                BattleGridPosition playerGridPosition = BattleGridManager.WorldPositionToGridPosition(playerTransform->Position);
+                BattleGridPosition teammateGridPosition = BattleGridManager.WorldPositionToGridPosition(teammateTransform->Position);
+
+                isOnTopOfTeammate = playerGridPosition.Row == teammateGridPosition.Row && playerGridPosition.Col == teammateGridPosition.Col;
+ 
+            }
+
+            // if player is in the same grid cell as teammate, change the projectile to love emotion
+            if (isOnTopOfTeammate)
+            {
+                Debug.Log("[ProjectileSystem] changing projectile emotion to Love");
+                projectile->Emotion = BattleEmotionState.Love;
+                f.Events.BattleChangeEmotionState(BattleEmotionState.Love);
+
+                // send a projectileVelocityUpdate with the direction being straight up or down depending on the team
+                ProjectileVelocityUpdate(f, projectile, projectileEntity, playerHitboxEntity, playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? FPVector2.Up : FPVector2.Down, playerHitbox->CollisionMinOffset, BattlePlayerCollisionType.Override);
+                return;
+            }
+            ProjectileVelocityUpdate(f, projectile, projectileEntity, playerHitboxEntity, playerHitbox->Normal, playerHitbox->CollisionMinOffset, playerHitbox->CollisionType);
         }
 
         public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)
