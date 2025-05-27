@@ -16,6 +16,10 @@ namespace Battle.View.UI
     /// </summary>
     public class BattleUiGameOverHandler : MonoBehaviour
     {
+        /// @name SerializeField variables
+        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// @{
+        
         /// <value>[SerializeField] Reference to BattleUiController.</value>
         [SerializeField] private BattleUiController _controller;
 
@@ -24,6 +28,8 @@ namespace Battle.View.UI
 
         /// <value>[SerializeField] Reference to the button which is used to exit game.</value>
         [SerializeField] private Button _button;
+
+        /// @}
 
         /// <value>Is the %UI element visible or not.</value>
         public bool IsVisible => _view.activeSelf;
@@ -38,7 +44,7 @@ namespace Battle.View.UI
         }
 
         /// <summary>
-        /// Private Awake method which adds listener to the #_button's onClick event.
+        /// Private <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/MonoBehaviour.Awake.html">Awake@u-exlink</a> method which adds listener to the #_button's onClick event.
         /// </summary>
         ///
         /// The listener added to the #_button's onClick event calls @ref Battle::View::Game::BattleGameViewController::UiInputOnExitGamePressed "UiInputOnExitGamePressed" method through BattleUiController::GameViewController reference from #_controller.
@@ -48,7 +54,7 @@ namespace Battle.View.UI
         }
 
         /// <summary>
-        /// Private OnDestroy method which removes all listeners from #_button's onClick event.
+        /// Private <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/MonoBehaviour.OnDestroy.html">OnDestroy@u-exlink</a> method which removes all listeners from #_button's onClick event.
         /// </summary>
         private void OnDestroy()
         {
