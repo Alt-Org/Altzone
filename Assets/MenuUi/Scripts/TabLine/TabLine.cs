@@ -110,13 +110,25 @@ namespace MenuUi.Scripts.TabLine
         {
             [Header("References to components")]
             [SerializeField] private Image _tabImageComponent;
+            [SerializeField] private Image _tabIconImageComponent;
             [SerializeField] private Image _detailImageComponent;
             [SerializeField] private Sprite _tablineImage;
+
+            [Header("Active/Inactive sprites")]
+            [SerializeField] private Sprite _activeSprite;
+            [SerializeField] private Sprite _inactiveSprite;
 
             const float InactiveAlpha = 0.5f;
 
             public Sprite SetActiveVisuals()
             {
+                // Testing new tabline activation, setting the different icon images
+                if (_tabIconImageComponent != null && _activeSprite != null && _inactiveSprite != null)
+                {
+                    _tabIconImageComponent.sprite = _activeSprite;
+                    return _tablineImage;
+                }
+
                 if (_tabImageComponent != null)
                 {
                     _tabImageComponent.color = new Color(_tabImageComponent.color.r, _tabImageComponent.color.g, _tabImageComponent.color.b, 1);
@@ -132,6 +144,13 @@ namespace MenuUi.Scripts.TabLine
 
             public void SetInactiveVisuals()
             {
+                // Testing new tabline activation, setting the different icon images
+                if (_tabIconImageComponent != null && _activeSprite != null && _inactiveSprite != null)
+                {
+                    _tabIconImageComponent.sprite = _inactiveSprite;
+                    return;
+                }
+
                 if (_tabImageComponent != null)
                 {
                     _tabImageComponent.color = new Color(_tabImageComponent.color.r, _tabImageComponent.color.g, _tabImageComponent.color.b, InactiveAlpha);

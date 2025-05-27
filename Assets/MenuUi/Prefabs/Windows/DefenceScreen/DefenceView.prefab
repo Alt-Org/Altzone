@@ -1727,6 +1727,30 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 406035742189508960, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
+      propertyPath: _tabLineButtons.Array.data[0]._activeSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 053d3ce84c1b65a4b8d02f1446a1c41b,
+        type: 3}
+    - target: {fileID: 406035742189508960, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: _tabLineButtons.Array.data[1]._activeSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 89dcd30358cdcbe42954478194da85d0,
+        type: 3}
+    - target: {fileID: 406035742189508960, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: _tabLineButtons.Array.data[0]._inactiveSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 10927623ac33e3a4d9543e630aeab3a6,
+        type: 3}
+    - target: {fileID: 406035742189508960, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: _tabLineButtons.Array.data[1]._inactiveSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 22783a36136528743834f752d041cdd5,
+        type: 3}
+    - target: {fileID: 406035742189508960, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
       propertyPath: _tabLineButtons.Array.data[0]._tabImageComponent
       value: 
       objectReference: {fileID: 5750324406778014736}
@@ -1745,6 +1769,16 @@ PrefabInstance:
       propertyPath: _tabLineButtons.Array.data[1]._detailImageComponent
       value: 
       objectReference: {fileID: 3909583327967370737}
+    - target: {fileID: 406035742189508960, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: _tabLineButtons.Array.data[0]._tabIconImageComponent
+      value: 
+      objectReference: {fileID: 8986002150650883254}
+    - target: {fileID: 406035742189508960, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: _tabLineButtons.Array.data[1]._tabIconImageComponent
+      value: 
+      objectReference: {fileID: 2884645237985230048}
     - target: {fileID: 824098025196654482, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -2413,6 +2447,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 5539651250363517124}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2884645237985230048 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7271231993773749284, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 5539651250363517124}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &3909583327967370737 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8836460649249740085, guid: 57890b7dbec8a984abb7d8148eefe9f6,
@@ -2464,6 +2510,18 @@ MonoBehaviour:
 --- !u!114 &6302612452093079498 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1988246704012486414, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 5539651250363517124}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8986002150650883254 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3482542752552871026, guid: 57890b7dbec8a984abb7d8148eefe9f6,
     type: 3}
   m_PrefabInstance: {fileID: 5539651250363517124}
   m_PrefabAsset: {fileID: 0}
