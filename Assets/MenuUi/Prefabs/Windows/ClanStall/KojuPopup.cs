@@ -19,6 +19,8 @@ public class KojuPopup : MonoBehaviour
     [SerializeField] private TMP_Text weightText;
     [SerializeField] private Image iconImage;
 
+    [SerializeField] private GameObject infoObject;
+
     private GameObject currentCard;
     private KojuFurnitureData furnitureData;
     private ItemMover itemMover;
@@ -134,6 +136,7 @@ public class KojuPopup : MonoBehaviour
         furnitureData = null;
         itemMover = null;
         priceInput.text = "";
+        infoObject.SetActive(false);
         gameObject.SetActive(false);
     }
 
