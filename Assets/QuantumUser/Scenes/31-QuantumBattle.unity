@@ -2612,9 +2612,13 @@ MonoBehaviour:
       Id:
         Value: 422639178081310304
     BattleParameters:
-      PlayerSlotTypes: 
-      PlayerSlotUserIDs: []
-      PlayerCount: 0
+      PlayerSlotTypes: 01000000000000000000000000000000
+      PlayerSlotUserIDs:
+      - A
+      - 
+      - 
+      - 
+      PlayerCount: 1
       ProjectileInitialEmotion: 0
   UseRandomSeed: 0
   SessionConfig: {fileID: 0}
@@ -2623,7 +2627,7 @@ MonoBehaviour:
       Id:
         Value: 1499697656464696716
     PlayerNickname: 
-    UserID: 
+    UserID: A
     PlayerSlot: 1
     Characters:
     - Id: 0

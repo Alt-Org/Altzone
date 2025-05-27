@@ -337,6 +337,7 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerManagerDataQSingleton))]
   public unsafe class BattlePlayerManagerDataQSingletonPrototype : ComponentPrototype<Quantum.BattlePlayerManagerDataQSingleton> {
+    public Int32 PlayerCount;
     [ArrayLengthAttribute(4)]
     public Quantum.QEnum32<BattlePlayerPlayState>[] PlayStates = new Quantum.QEnum32<BattlePlayerPlayState>[4];
     [ArrayLengthAttribute(4)]
@@ -353,6 +354,7 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.BattlePlayerManagerDataQSingleton result, in PrototypeMaterializationContext context = default) {
+        result.PlayerCount = this.PlayerCount;
         for (int i = 0, count = PrototypeValidator.CheckLength(PlayStates, 4, in context); i < count; ++i) {
           *result.PlayStates.GetPointer(i) = this.PlayStates[i];
         }
