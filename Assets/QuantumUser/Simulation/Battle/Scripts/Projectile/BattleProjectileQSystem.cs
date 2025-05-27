@@ -124,7 +124,7 @@ namespace Battle.QSimulation.Projectile
                 projectile->Emotion = BattleEmotionState.Love;
                 f.Events.BattleChangeEmotionState(BattleEmotionState.Love);
 
-                // send a projectileVelocityUpdate with the direction being straight up
+                // send a projectileVelocityUpdate with the direction being straight up or down depending on the team
                 ProjectileVelocityUpdate(f, projectile, projectileEntity, playerHitboxEntity, playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? FPVector2.Up : FPVector2.Down, playerHitbox->CollisionMinOffset, BattlePlayerCollisionType.Override);
                 return;
             }
