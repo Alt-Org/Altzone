@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Altzone.Scripts.Model.Poco.Game; 
+using Altzone.Scripts.Model.Poco.Game;
 
 public class FurnitureCardUI : MonoBehaviour
 {
@@ -12,6 +12,8 @@ public class FurnitureCardUI : MonoBehaviour
     [SerializeField] private TMP_Text weightText;
     [SerializeField] private TMP_Text valueText;
     [SerializeField] private Image rarityColorImage;
+    [SerializeField] private TMP_Text descriptionText;
+    [SerializeField] private TMP_Text creatorText;
 
     public string GetNameText() => nameText.text;
     public string GetSetNameText() => setNameText.text;
@@ -19,9 +21,10 @@ public class FurnitureCardUI : MonoBehaviour
     public string GetWeightText() => weightText.text;
     public string GetValueText() => valueText.text;
     public Sprite GetIcon() => iconImage.sprite;
+    public string GetDescriptionText() => descriptionText != null ? descriptionText.text : "";
+    public string GetCreatorText() => creatorText != null ? creatorText.text : "";
 
-
-    //Populates the card UI with furniture data
+    // Populates the card UI with furniture data
     public void PopulateCard(GameFurniture furniture)
     {
         nameText.text = furniture.FurnitureInfo.VisibleName;
@@ -30,11 +33,13 @@ public class FurnitureCardUI : MonoBehaviour
         weightText.text = $"Weight: {furniture.Weight:0.0}";
         valueText.text = $"Value: {furniture.Value:0.0}";
 
-        
+        descriptionText.text = furniture.FurnitureInfo.ArtisticDescription;
+        creatorText.text = $"Creator: {furniture.FurnitureInfo.ArtistName}";
+
         SetRarityColor(furniture.Rarity);
     }
 
-    //Sets the color of the cards by rarity
+    // Sets the color of the cards by rarity
     private void SetRarityColor(FurnitureRarity rarity)
     {
         Color color = rarity switch

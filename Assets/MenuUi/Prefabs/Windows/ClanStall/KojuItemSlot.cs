@@ -7,7 +7,7 @@ public class KojuItemSlot : MonoBehaviour
 
     public void AssignCard(GameObject card, Transform PanelContent)
     {
-        //Moves the card to the Koju Panel, disables the available card slot element 
+        // Moves the card to the Koju Panel, disables the available card slot element 
         currentCard = card;
         card.transform.SetParent(PanelContent, false);
         gameObject.SetActive(false); 

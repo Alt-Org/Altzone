@@ -19,7 +19,18 @@ public class KojuPopup : MonoBehaviour
     [SerializeField] private TMP_Text weightText;
     [SerializeField] private Image iconImage;
 
+    [SerializeField] private TMP_Text descriptionText;  
+    [SerializeField] private TMP_Text artistNameText;   
+
     [SerializeField] private GameObject infoObject;
+
+    [SerializeField] private GameObject removePopup;
+    [SerializeField] private Button removeConfirmButton;
+    [SerializeField] private Button removeCancelButton;
+
+    [SerializeField] private Image infoBoxBackground;
+
+    [SerializeField] private Image removePopupBackground;
 
     private GameObject currentCard;
     private KojuFurnitureData furnitureData;
@@ -33,9 +44,12 @@ public class KojuPopup : MonoBehaviour
         decreasePriceButton.onClick.AddListener(OnDecreasePrice);
         priceInput.onValueChanged.AddListener(OnPriceInputChanged);
         priceInput.characterLimit = 4;
+
+        removeConfirmButton.onClick.AddListener(ConfirmRemove);
+        removeCancelButton.onClick.AddListener(Close);
     }
 
-    //Opens the popup and fills it with the necessary data
+    // Opens the popup and fills it with the necessary data
     public void Open(GameObject card)
     {
         currentCard = card;
@@ -58,14 +72,46 @@ public class KojuPopup : MonoBehaviour
         iconImage.sprite = cardUI.GetIcon();
 
         rarityText.text = "Rarity: " + GetRarityNameFromColor(rarity.color);
+        priceInput.text = currentPrice.ToString("0.0");
+        kojuPriceText.text = $"Value: {currentPrice:0.0}";
 
-        priceInput.text = currentPrice.ToString("0.0");              
-        kojuPriceText.text = $"Value: {currentPrice:0.0}";         
+        
+        descriptionText.text = cardUI.GetDescriptionText();
+        artistNameText.text = $"Artist: {cardUI.GetCreatorText()}";
 
+        removePopup.SetActive(false);
+        gameObject.SetActive(true);
+
+        rarity.color = cardUI.GetRarityColor();
+
+        // Set the background of the info based on the rarity of the card
+        if (infoBoxBackground != null)
+        {
+            infoBoxBackground.color = rarity.color;
+        }
+
+    }
+
+    // Opens the popup in removal confirmation mode
+    public void OpenRemovePopup(GameObject card)
+    {
+        currentCard = card;
+        itemMover = card.GetComponent<ItemMover>();
+
+        // Apply rarity color to the background in RemovePopup
+        var cardUI = card.GetComponent<FurnitureCardUI>();
+        if (cardUI != null && removePopupBackground != null)
+        {
+            Color rarityColor = cardUI.GetRarityColor();
+            removePopupBackground.color = rarityColor;
+        }
+
+        removePopup.SetActive(true);
         gameObject.SetActive(true);
     }
 
-    //Gets the rarity text for the card based on the retrieved color from data
+
+    // Gets the rarity text for the card based on the retrieved color from data
     private string GetRarityNameFromColor(Color color)
     {
         if (color == Color.gray) return "Common";
@@ -75,7 +121,6 @@ public class KojuPopup : MonoBehaviour
         return "Unknown";
     }
 
- 
     private void OnIncreasePrice()
     {
         if (float.TryParse(priceInput.text, out float price))
@@ -86,7 +131,6 @@ public class KojuPopup : MonoBehaviour
         }
     }
 
-   
     private void OnDecreasePrice()
     {
         if (float.TryParse(priceInput.text, out float price))
@@ -111,7 +155,7 @@ public class KojuPopup : MonoBehaviour
         }
     }
 
-    //Called when confirming the Poup
+    // Called when confirming the Popup
     public void Confirm()
     {
         if (float.TryParse(priceInput.text, out float price))
@@ -124,12 +168,19 @@ public class KojuPopup : MonoBehaviour
             return;
         }
 
-        //Moves the item, see ItemMover.cs
+        // Moves the item, see ItemMover.cs
         itemMover?.ExecuteMove();
         Close();
     }
 
-    //Called when pressing the deny button
+    // Called when confirming moving from panel to tray
+    private void ConfirmRemove()
+    {
+        itemMover?.ExecuteMove();
+        Close();
+    }
+
+    // Called when pressing the cancel button
     private void Close()
     {
         currentCard = null;
@@ -137,11 +188,13 @@ public class KojuPopup : MonoBehaviour
         itemMover = null;
         priceInput.text = "";
         infoObject.SetActive(false);
+        removePopup.SetActive(false);
         gameObject.SetActive(false);
     }
 
     public void ToggleInfo(GameObject target)
     {
+
         if (target != null)
         {
             target.SetActive(!target.activeSelf);

@@ -16,7 +16,7 @@ public class ItemMover : MonoBehaviour
 
         GetComponent<Button>().onClick.AddListener(OnClick);
 
-        //This includes inactive Popup prefab when searching for object of type
+        // This includes inactive Popup prefab when searching for object of type
         popup = FindObjectOfType<KojuPopup>(true);
 
         if (popup == null)
@@ -29,12 +29,12 @@ public class ItemMover : MonoBehaviour
     {
         if (assignedSlot != null)
         {
-            //If the item is already in the panel, move it immediately to tray
-            ExecuteMove();
+            // If the item is already in the panel, ask for confirmation before removing
+            popup?.OpenRemovePopup(gameObject);
         }
         else if (HasFreeSlot())
         {
-            //Open the popup if the user is trying to move the item from the tray to the panel
+            // Open the popup if the user is trying to move the item from the tray to the panel
             popup?.Open(gameObject);
         }
         else
@@ -43,24 +43,23 @@ public class ItemMover : MonoBehaviour
         }
     }
 
-
     private bool HasFreeSlot()
     {
         return System.Array.Exists(GameObject.FindObjectsOfType<KojuItemSlot>(), slot => !slot.IsOccupied);
     }
 
-    //Called when the user confirms the moving
+    // Called when the user confirms the moving
     public void ExecuteMove()
     {
-        //Check if the furniture is in the panel or in the tray
+        // Check if the furniture is in the panel or in the tray
         if (assignedSlot == null)
         {
             KojuItemSlot[] slots = GameObject.FindObjectsOfType<KojuItemSlot>();
 
-            //Sort the panel using sibling index in the hierarchy
+            // Sort the panel using sibling index in the hierarchy
             System.Array.Sort(slots, (a, b) => a.transform.GetSiblingIndex().CompareTo(b.transform.GetSiblingIndex()));
 
-            //Do a loop for each slot in the panel to find the first one available
+            // Loop through each slot in the panel to find the first available one
             foreach (var slot in slots)
             {
                 if (!slot.IsOccupied && slot.gameObject.activeSelf)
@@ -68,7 +67,7 @@ public class ItemMover : MonoBehaviour
                     assignedSlot = slot;
                     assignedSlot.AssignCard(gameObject, gridParent);
 
-                    //Move the card to the same sibling index as the slot
+                    // Move the card to the same sibling index as the slot
                     int targetIndex = slot.transform.GetSiblingIndex();
                     gameObject.transform.SetSiblingIndex(targetIndex);
 
@@ -80,11 +79,10 @@ public class ItemMover : MonoBehaviour
         }
         else
         {
-            //If the furniture is already in the panel, put it back into the tray
+            // If the furniture is already in the panel, put it back into the tray
             transform.SetParent(trayParent, false);
             assignedSlot.ClearSlot();
             assignedSlot = null;
         }
     }
-
 }
