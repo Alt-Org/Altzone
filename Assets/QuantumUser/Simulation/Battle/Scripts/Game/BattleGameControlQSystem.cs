@@ -40,6 +40,15 @@ namespace Battle.QSimulation.Game
             f.Events.BattleDebugUpdateStatsOverlay(data.Characters[0]);
         }
 
+        public static void OnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)
+        {
+            BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
+            gameSession->State = BattleGameState.GameOver;
+
+            BattleTeamNumber WinningTeam = winningTeam;
+            f.Signals.BattleOnGameOver(WinningTeam, projectile, projectileEntity);
+        }
+
         public override void Update(Frame f)
         {
             BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
