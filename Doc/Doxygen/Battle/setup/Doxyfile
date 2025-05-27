@@ -961,10 +961,18 @@ WARN_LOGFILE           = warn.log
 
 INPUT                  = "%doc-dir%/pages" \
                          "%doc-dir%/code-structure" \
+                         \
                          "%project-dir%/Altzone/Assets/Battle" \
-                         "%project-dir%/Altzone/Assets/QuantumUser/View/Battle" \
                          "%project-dir%/Altzone/Assets/QuantumUser/Simulation"  \
-                         "%doc-dir%/quantum-codegen"
+                         "%project-dir%/Altzone/Assets/QuantumUser/View/Battle" \
+                         "%project-dir%/Altzone/Assets/QuantumUser/View/Generated" \
+                         "%doc-dir%/quantum-codegen" \
+                         \
+                         "%project-dir%/Altzone/Assets/QuantumUser/Resources/Configs" \
+                         "%project-dir%/Altzone/Assets/QuantumUser/Resources/Specs" \
+                         "%project-dir%/Altzone/Assets/QuantumUser/Resources/Prefabs" \
+                         \
+                         "%project-dir%/Altzone/Assets/QuantumUser/Scenes"
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -1006,6 +1014,11 @@ INPUT_FILE_ENCODING    =
 
 FILE_PATTERNS          = *.cs \
                          *.qtn \
+                         \
+                         *.unity \
+                         *.asset \
+                         *.prefab \
+                         *.qprototype \
                          \
                          *.md \
                          *.dox \
