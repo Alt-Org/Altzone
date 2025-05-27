@@ -8,7 +8,7 @@ namespace Battle.QSimulation.Player
     [Preserve]
     public unsafe class BattlePlayerQSystem : SystemMainThread
     {
-        public static void SpawnPLayers(Frame f)
+        public static void SpawnPlayers(Frame f)
         {
             foreach (BattlePlayerManager.PlayerHandle playerHandle in BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f))
             {
