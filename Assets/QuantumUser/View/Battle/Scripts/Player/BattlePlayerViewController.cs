@@ -1,5 +1,6 @@
 using UnityEngine;
 using Quantum;
+using Battle.View.Game;
 
 namespace Battle.View.Player
 {
@@ -9,6 +10,10 @@ namespace Battle.View.Player
         [SerializeField] private GameObject _heart;
         [SerializeField] private SpriteRenderer _spriteRenderer;
         [SerializeField] private GameObject _localPlayerIndicator;
+
+        [SerializeField] private float _transparencyEffectRange;
+        [SerializeField] private float _transparencyEffectTransitionRate;
+        [SerializeField] private float _transparencyEffectMinimumAlpha;
 
         public override void OnActivate(Frame _) => QuantumEvent.Subscribe(this, (EventBattlePlayerViewInit e) => {
             if (EntityRef != e.Entity) return;
@@ -29,6 +34,22 @@ namespace Battle.View.Player
 
             UpdateModelPositionAdjustment(&targetPosition);
             UpdateAnimator(&targetPosition, battleTeamNumber);
+
+            if (BattleGameViewController.ProjectileReference != null)
+            {
+                if (Vector3.Distance(gameObject.transform.position, BattleGameViewController.ProjectileReference.transform.position) <= _transparencyEffectRange && _spriteRenderer.color.a > _transparencyEffectMinimumAlpha)
+                {
+                    Color tempColor = _spriteRenderer.color;
+                    tempColor.a = Mathf.Clamp(tempColor.a - _transparencyEffectTransitionRate * Time.deltaTime, _transparencyEffectMinimumAlpha, 1);
+                    _spriteRenderer.color = tempColor;
+                }
+                else if (_spriteRenderer.color.a < 1)
+                {
+                    Color tempColor = _spriteRenderer.color;
+                    tempColor.a = Mathf.Clamp(tempColor.a + _transparencyEffectTransitionRate * Time.deltaTime, _transparencyEffectMinimumAlpha, 1);
+                    _spriteRenderer.color = tempColor;
+                }
+            }
         }
 
         private void UpdateModelPositionAdjustment(Vector3* targetPosition)
