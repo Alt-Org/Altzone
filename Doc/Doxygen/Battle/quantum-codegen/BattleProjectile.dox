@@ -24,3 +24,24 @@
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleProjectile.qtn}
+
+/// @var bool Quantum.BattleProjectileQComponent::IsLaunched
+/// <summary>Is the projectile launched or not.</summary>
+///
+/// @var FP Quantum.BattleProjectileQComponent::Speed
+/// <summary>Projectile's speed.</summary>
+///
+/// @var FPVector2 Quantum.BattleProjectileQComponent::Direction
+/// <summary>The direction the projectile is going towards.</summary>
+///
+/// @var FP Quantum.BattleProjectileQComponent::Radius
+/// <summary>Projectile's radius.</summary>
+///
+/// @var BattleEmotionState Quantum.BattleProjectileQComponent::Emotion
+/// <summary>Which emotion the projectile has at the moment.</summary>
+///
+/// @var array Quantum.BattleProjectileQComponent::CollisionFlags
+/// <summary>Array of flags for projectile's collisions. Used to prevent hitting multiple entities per frame.</summary>
+///
+/// @var byte Quantum.BattleProjectileQComponent::_CollisionFlags_
+/// <summary>Flag for projectile's collisions.</summary>

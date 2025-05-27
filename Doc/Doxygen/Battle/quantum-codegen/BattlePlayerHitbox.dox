@@ -33,3 +33,19 @@
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattlePlayerHitbox.qtn}
+
+/// @var EntityRef Quantum.BattlePlayerHitboxQComponent::PlayerEntity
+/// <summary>EntityRef to the player the hitbox belongs to.</summary>
+///
+/// @var BattlePlayerHitboxType Quantum.BattlePlayerHitboxQComponent::HitboxType
+/// <summary>Is the hitbox a character hitbox or a shield hitbox.</summary>
+///
+/// @var BattlePlayerCollisionType Quantum.BattlePlayerHitboxQComponent::CollisionType
+/// <summary>Type of the hitbox, affects how the projectile bounces off of it.</summary>
+///
+/// @var FPVector2 Quantum.BattlePlayerHitboxQComponent::Normal
+/// <summary>Hitbox's <a href="https://en.wikipedia.org/wiki/Normal_(geometry)">Normal vector@u-exlink</a>.</summary>
+///
+/// @var FP Quantum.BattlePlayerHitboxQComponent::CollisionMinOffset
+/// <summary>How much projectile is allowed to accidentally penetrate into the player's hitbox before it's forcibly lifted out.</summary>
+/// Used as a precaution to minimize cases where projectile gets stuck inside other entities. 

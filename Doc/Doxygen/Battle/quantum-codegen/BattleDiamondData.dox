@@ -13,3 +13,13 @@
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleDiamondData.qtn}
+
+/// @var BattleTeamNumber Quantum.BattleDiamondDataQComponent::OwnerTeam
+/// <summary>
+/// Will be used to identify which team diamond belongs to and prevent wrong team from picking it up.<br/>
+/// Currently unused (but defined when diamonds are created). This variable will be needed, when diamonds are changed to spawn on opponent's destroyed
+/// SoulWall's position and then floated to own team's side of the arena.
+/// </summary>
+///
+/// @var FP Quantum.BattleDiamondDataQComponent::TimeUntilDisappearance
+/// <summary>Keeps count of diamond's lifetime. Diamond entity is destroyed when counter reaches 0.</summary>

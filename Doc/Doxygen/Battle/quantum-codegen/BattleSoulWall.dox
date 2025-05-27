@@ -22,3 +22,25 @@
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleSoulWall.qtn}
+
+/// @var BattleGridPosition Quantum.BattleSoulWallTemplate::Position
+/// <summary>SoulWall's position in GridPositions.</summary>
+///
+/// @var int Quantum.BattleSoulWallTemplate::WidthType
+/// <summary>How wide the SoulWall segment is.</summary>
+///
+/// @var int Quantum.BattleSoulWallTemplate::ColorIndex
+/// <summary>SoulWall's color by ColorIndex.</summary>
+
+/// @var EntityRef Quantum.BattleSoulWallQComponent::ChildEntity
+/// <summary>.</summary>
+///
+/// @var BattleEmotionState Quantum.BattleSoulWallQComponent::Emotion
+/// <summary>Which emotion the SoulWall has. Changes projectile's emotion into SoulWall's emotion upon collision.</summary>
+///
+/// @var FPVector2 Quantum.BattleSoulWallQComponent::Normal
+/// <summary>SoulWall's <a href="https://en.wikipedia.org/wiki/Normal_(geometry)">Normal vector@u-exlink</a>..</summary>
+///
+/// @var FP Quantum.BattleSoulWallQComponent::CollisionMinOffset
+/// <summary>How much projectile is allowed to accidentally penetrate into SoulWall before it's forcibly lifted out.</summary>
+/// Used as a precaution to minimize cases where projectile gets stuck inside other entities.

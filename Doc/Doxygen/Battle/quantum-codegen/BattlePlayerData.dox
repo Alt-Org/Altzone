@@ -40,3 +40,103 @@
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattlePlayerData.qtn}
+
+/// @var EntityRef Quantum.BattlePlayerHitboxLink::Entity
+/// <summary>EntityRef of the hitbox.</summary>
+///
+/// @var FPVector2 Quantum.BattlePlayerHitboxLink::Position
+/// <summary>Position of the hitbox.</summary>
+
+
+/// @anchor PlayerID
+/// @name Player's refs and IDs
+/// @{
+/// @var PlayerRef Quantum.BattlePlayerDataQComponent::PlayerRef
+/// <summary>PlayerRef used to identify the player.</summary>
+///
+/// @var BattlePlayerSlot Quantum.BattlePlayerDataQComponent::Slot
+/// <summary>Which PlayerSlot the player is on.</summary>
+///
+/// @var BattleTeamNumber Quantum.BattlePlayerDataQComponent::TeamNumber
+/// <summary>Which team the player is on.</summary>
+///
+/// @var int Quantum.BattlePlayerDataQComponent::CharacterId
+/// <summary>Character's 3-digit ID number.</summary>
+///
+/// @var int Quantum.BattlePlayerDataQComponent::CharacterClass
+/// <summary>Which defense class the character belongs to.</summary>
+/// @}
+
+/// @anchor PlayerStats
+/// @name Player's Stats
+/// @{
+/// @var FP Quantum.BattlePlayerDataQComponent::StatHp
+/// <summary>Character's HP.</summary>
+///
+/// @var FP Quantum.BattlePlayerDataQComponent::StatSpeed
+/// <summary>Character's speed.</summary>
+///
+/// @var FP Quantum.BattlePlayerDataQComponent::StatCharacterSize
+/// <summary>Character's size.</summary>
+///
+/// @var FP Quantum.BattlePlayerDataQComponent::StatAttack
+/// <summary>Character's attack.</summary>
+///
+/// @var FP Quantum.BattlePlayerDataQComponent::StatDefence
+/// <summary>Character's defense.</summary>
+/// @}
+
+/// @anchor PlayerMovement
+/// @name Player's movement related attributes
+/// @{
+/// @var int Quantum.BattlePlayerDataQComponent::GridExtendTop
+/// <summary>How many GridCells the character extends above the center heart position.</summary>
+///
+/// @var int Quantum.BattlePlayerDataQComponent::GridExtendBottom
+/// <summary>How many GridCells the character extends below the center heart position.</summary>
+///
+/// @var FPVector2 Quantum.BattlePlayerDataQComponent::TargetPosition
+/// <summary>The position the player is moving towards.</summary>
+///
+/// @var FP Quantum.BattlePlayerDataQComponent::RotationBase
+/// <summary>Base rotation value of the character. Depends of which side of the play arena the player is on.</summary>
+///
+/// @var FP Quantum.BattlePlayerDataQComponent::RotationOffset
+/// <summary>How much the player has rotated the character.</summary>
+/// @}
+
+/// @anchor PlayerHitboxLists
+/// @name Player's hitboxlists
+/// @{
+/// @var list<BattlePlayerHitboxLink> Quantum.BattlePlayerDataQComponent::HitboxListAll
+/// <summary>List of all the hitboxes.</summary>
+///
+/// @var list<BattlePlayerHitboxLink> Quantum.BattlePlayerDataQComponent::HitboxListShield
+/// <summary>List of the shield hitboxes.</summary>
+///
+/// @var list<BattlePlayerHitboxLink> Quantum.BattlePlayerDataQComponent::HitboxListCharacter
+/// <summary>List of the character hitboxes.</summary>
+/// @}
+
+
+/// @var IntVector2 Quantum.BattlePlayerHitboxTemplate::Position
+/// <summary>Position of the hitbox.</summary>
+///
+/// @var BattlePlayerCollisionType Quantum.BattlePlayerHitboxTemplate::CollisionType
+/// <summary>Type of the hitbox, affects how the projectile bounces off of it.</summary>
+///
+/// @var FP Quantum.BattlePlayerHitboxTemplate::NormalAngle
+/// <summary>Hitbox's <a href="https://en.wikipedia.org/wiki/Normal_(geometry)">Normal vector@u-exlink</a>.</summary>
+
+
+/// @var int Quantum.BattlePlayerDataTemplateQComponent::GridExtendTop
+/// <summary>How many GridCells the character extends above the center heart position.</summary>
+///
+/// @var int Quantum.BattlePlayerDataTemplateQComponent::GridExtendBottom
+/// <summary>How many GridCells the character extends below the center heart position.</summary>
+///
+/// @var list<BattlePlayerHitboxTemplate> Quantum.BattlePlayerDataTemplateQComponent::HitboxListShield
+/// <summary>List of shield hitboxes made using the BattlePlayerHitboxTemplate.</summary>
+///
+/// @var list<BattlePlayerHitboxTemplate> Quantum.BattlePlayerDataTemplateQComponent::HitboxListCharacter
+/// <summary>List of character hitboxes made using the BattlePlayerHitboxTemplate.</summary>
