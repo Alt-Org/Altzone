@@ -17,11 +17,17 @@ namespace Battle.View.UI
     /// </summary>
     public class BattleUiAnnouncementHandler : MonoBehaviour
     {
+        /// @name SerializeField variables
+        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// @{
+
         /// <value>[SerializeField] Reference to the GameObject which can be used to hide or show the announcement.</value>
         [SerializeField] private GameObject _view;
 
         /// <value>[SerializeField] Reference to the TextMeshProUGUI component which the announcement text is set to.</value>
         [SerializeField] private TextMeshProUGUI _announcerText;
+
+        /// @}
 
         /// <value>Is the %UI element visible or not.</value>
         public bool IsVisible => _view.activeSelf;
@@ -69,7 +75,7 @@ namespace Battle.View.UI
         }
 
         /// <summary>
-        /// Private Awake method which clears the text in #_announcerText.
+        /// Private <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/MonoBehaviour.Awake.html">Awake@u-exlink</a> method which clears the text in #_announcerText.
         /// </summary>
         private void Awake()
         {
