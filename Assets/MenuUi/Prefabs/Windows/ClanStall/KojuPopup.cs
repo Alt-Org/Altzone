@@ -6,17 +6,18 @@ public class KojuPopup : MonoBehaviour
 {
     [SerializeField] private Button confirmButton;
     [SerializeField] private Button denyButton;
-
     [SerializeField] private Button increasePriceButton;
     [SerializeField] private Button decreasePriceButton;
 
     [SerializeField] private TMP_InputField priceInput;
-
     [SerializeField] private TMP_Text kojuPriceText;
 
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private Image rarity;
     [SerializeField] private TMP_Text setNameText;
+    [SerializeField] private TMP_Text rarityText;
+    [SerializeField] private TMP_Text weightText;
+    [SerializeField] private Image iconImage;
 
     private GameObject currentCard;
     private KojuFurnitureData furnitureData;
@@ -25,65 +26,71 @@ public class KojuPopup : MonoBehaviour
     void Start()
     {
         confirmButton.onClick.AddListener(Confirm);
-        denyButton.onClick.AddListener(Deny);
-
-       
+        denyButton.onClick.AddListener(Close);
         increasePriceButton.onClick.AddListener(OnIncreasePrice);
         decreasePriceButton.onClick.AddListener(OnDecreasePrice);
-
         priceInput.onValueChanged.AddListener(OnPriceInputChanged);
-
-        //Limits the amount if digits you can input
         priceInput.characterLimit = 4;
-
     }
 
-    //Open the popup and fills it with the necessary data, currently hardcoded for testing purposes
+    //Opens the popup and fills it with the necessary data
     public void Open(GameObject card)
     {
         currentCard = card;
+        var cardUI = card.GetComponent<FurnitureCardUI>();
+        itemMover = card.GetComponent<ItemMover>();
 
-        furnitureData = currentCard.GetComponent<KojuFurnitureData>();
-        itemMover = currentCard.GetComponent<ItemMover>();
-
-        if (furnitureData == null)
+        if (cardUI == null)
         {
-            Debug.LogError("Missing KojuFurnitureData component on card.");
+            Debug.LogError("Missing FurnitureCardUI component on the card.");
             return;
         }
 
-        //Hardcoded test values for now, this data is used in the Popup card. Should use the data directly from the cards in the future.
-        nameText.text = "Mirror";
-        setNameText.text = "Furniture Set";
-        rarity.color = Color.cyan;
+        furnitureData = card.GetComponent<KojuFurnitureData>();
+        float currentPrice = furnitureData != null ? furnitureData.GetPrice() : 0;
 
-        float currentPrice = furnitureData.GetPrice();
-        priceInput.text = ((int)currentPrice).ToString();
-        kojuPriceText.text = ((int)currentPrice).ToString();
+        nameText.text = cardUI.GetNameText();
+        setNameText.text = cardUI.GetSetNameText();
+        rarity.color = cardUI.GetRarityColor();
+        weightText.text = cardUI.GetWeightText();
+        iconImage.sprite = cardUI.GetIcon();
 
+        rarityText.text = "Rarity: " + GetRarityNameFromColor(rarity.color);
+
+        priceInput.text = currentPrice.ToString("0.0");              
+        kojuPriceText.text = $"Value: {currentPrice:0.0}";         
 
         gameObject.SetActive(true);
     }
 
-    //Increases price in input field 
+    //Gets the rarity text for the card based on the retrieved color from data
+    private string GetRarityNameFromColor(Color color)
+    {
+        if (color == Color.gray) return "Common";
+        if (color == Color.cyan) return "Rare";
+        if (color == new Color(0.6f, 0.2f, 0.8f)) return "Epic";
+        if (color == new Color(1f, 0.55f, 0f)) return "Antique";
+        return "Unknown";
+    }
+
+ 
     private void OnIncreasePrice()
     {
         if (float.TryParse(priceInput.text, out float price))
         {
             price += 1f;
-            priceInput.text = price.ToString("F0");
+            priceInput.text = price.ToString("0.0");
             UpdateKojuPriceText(price);
         }
     }
 
-    //Decreases price in input field
+   
     private void OnDecreasePrice()
     {
         if (float.TryParse(priceInput.text, out float price))
         {
-            price -= 1f;
-            if (price < 0) price = 0; //Prevent negative prices
-            priceInput.text = price.ToString("F0");
+            price = Mathf.Max(0, price - 1f);
+            priceInput.text = price.ToString("0.0");
             UpdateKojuPriceText(price);
         }
     }
@@ -91,10 +98,9 @@ public class KojuPopup : MonoBehaviour
     private void UpdateKojuPriceText(float price)
     {
         if (kojuPriceText != null)
-            kojuPriceText.text = price.ToString("F0");
+            kojuPriceText.text = $"Value: {price:0.0}";
     }
 
-    //Update the KojuPriceText when typing
     private void OnPriceInputChanged(string input)
     {
         if (float.TryParse(input, out float price))
@@ -103,11 +109,9 @@ public class KojuPopup : MonoBehaviour
         }
     }
 
-
-    //Call when confirming the Popup
+    //Called when confirming the Poup
     public void Confirm()
     {
-        //Assigns the new price
         if (float.TryParse(priceInput.text, out float price))
         {
             furnitureData.SetPrice(price);
@@ -117,18 +121,13 @@ public class KojuPopup : MonoBehaviour
             Debug.LogWarning("Invalid price entered");
             return;
         }
+
         //Moves the item, see ItemMover.cs
         itemMover?.ExecuteMove();
-
         Close();
     }
 
-    //If the user cancels the Popup
-    public void Deny()
-    {
-        Close();
-    }
-
+    //Called when pressing the deny button
     private void Close()
     {
         currentCard = null;
@@ -145,6 +144,4 @@ public class KojuPopup : MonoBehaviour
             target.SetActive(!target.activeSelf);
         }
     }
-
-
 }

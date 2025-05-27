@@ -15,7 +15,6 @@ public class KojuFurnitureData : MonoBehaviour
 
     private void Start()
     {
-        price = 100f; //for testing purposes, set the price for 100. Should be replaced later with actual data
         RefreshUI();
     }
 
@@ -25,13 +24,11 @@ public class KojuFurnitureData : MonoBehaviour
         RefreshUI();
     }
 
-    //Updates the item to show the data
     private void RefreshUI()
     {
         if (storageFurniture == null)
         {
             Debug.LogWarning("StorageFurniture not set.");
-
         }
         else
         {
@@ -39,7 +36,7 @@ public class KojuFurnitureData : MonoBehaviour
             furnitureName.text = storageFurniture.VisibleName;
         }
 
-        furnitureValue.text = $"{price:F0}";
+        furnitureValue.text = $"Value: {price:0.0}";
     }
 
     public void SetPrice(float newPrice)
@@ -52,4 +49,4 @@ public class KojuFurnitureData : MonoBehaviour
     {
         return price;
     }
-}
+}

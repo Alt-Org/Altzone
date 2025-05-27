@@ -13,6 +13,14 @@ public class FurnitureCardUI : MonoBehaviour
     [SerializeField] private TMP_Text valueText;
     [SerializeField] private Image rarityColorImage;
 
+    public string GetNameText() => nameText.text;
+    public string GetSetNameText() => setNameText.text;
+    public Color GetRarityColor() => rarityColorImage.color;
+    public string GetWeightText() => weightText.text;
+    public string GetValueText() => valueText.text;
+    public Sprite GetIcon() => iconImage.sprite;
+
+
     //Populates the card UI with furniture data
     public void PopulateCard(GameFurniture furniture)
     {
