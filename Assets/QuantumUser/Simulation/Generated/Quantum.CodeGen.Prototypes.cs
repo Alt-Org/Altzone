@@ -122,6 +122,7 @@ namespace Quantum.Prototypes {
     public QBoolean GameInitialized;
     public Quantum.QEnum32<BattleGameState> State;
     public FP TimeUntilStart;
+    public FP GameTimeSec;
     partial void MaterializeUser(Frame frame, ref Quantum.BattleGameSessionQSingleton result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattleGameSessionQSingleton component = default;
@@ -132,6 +133,7 @@ namespace Quantum.Prototypes {
         result.GameInitialized = this.GameInitialized;
         result.State = this.State;
         result.TimeUntilStart = this.TimeUntilStart;
+        result.GameTimeSec = this.GameTimeSec;
         MaterializeUser(frame, ref result, in context);
     }
   }
@@ -376,6 +378,8 @@ namespace Quantum.Prototypes {
     public FPVector2 Direction;
     public FP Radius;
     public Quantum.QEnum32<BattleEmotionState> Emotion;
+    public FP SpeedPotential;
+    public FP AccelerationTimer;
     [ArrayLengthAttribute(2)]
     public Quantum.QEnum8<BattleProjectileCollisionFlags>[] CollisionFlags = new Quantum.QEnum8<BattleProjectileCollisionFlags>[2];
     partial void MaterializeUser(Frame frame, ref Quantum.BattleProjectileQComponent result, in PrototypeMaterializationContext context);
@@ -390,6 +394,8 @@ namespace Quantum.Prototypes {
         result.Direction = this.Direction;
         result.Radius = this.Radius;
         result.Emotion = this.Emotion;
+        result.SpeedPotential = this.SpeedPotential;
+        result.AccelerationTimer = this.AccelerationTimer;
         for (int i = 0, count = PrototypeValidator.CheckLength(CollisionFlags, 2, in context); i < count; ++i) {
           *result.CollisionFlags.GetPointer(i) = this.CollisionFlags[i];
         }
@@ -413,21 +419,27 @@ namespace Quantum.Prototypes {
   }
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattleSoulWallQComponent))]
-  public unsafe class BattleSoulWallQComponentPrototype : ComponentPrototype<Quantum.BattleSoulWallQComponent> {
-    public MapEntityId ChildEntity;
+  public unsafe partial class BattleSoulWallQComponentPrototype : ComponentPrototype<Quantum.BattleSoulWallQComponent> {
+    public Quantum.QEnum32<BattleTeamNumber> Team;
+    public Quantum.QEnum32<BattleSoulWallRow> Row;
+    public Int32 WallNumber;
     public Quantum.QEnum32<BattleEmotionState> Emotion;
     public FPVector2 Normal;
     public FP CollisionMinOffset;
+    partial void MaterializeUser(Frame frame, ref Quantum.BattleSoulWallQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattleSoulWallQComponent component = default;
         Materialize((Frame)f, ref component, in context);
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.BattleSoulWallQComponent result, in PrototypeMaterializationContext context = default) {
-        PrototypeValidator.FindMapEntity(this.ChildEntity, in context, out result.ChildEntity);
+        result.Team = this.Team;
+        result.Row = this.Row;
+        result.WallNumber = this.WallNumber;
         result.Emotion = this.Emotion;
         result.Normal = this.Normal;
         result.CollisionMinOffset = this.CollisionMinOffset;
+        MaterializeUser(frame, ref result, in context);
     }
   }
   [System.SerializableAttribute()]

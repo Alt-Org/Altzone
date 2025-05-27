@@ -71,7 +71,9 @@ namespace Altzone.Scripts.ModelV2.Internal
 
         #region Special attributes
 
-        [Header("Special Attributes")] public NumAttribute Hp;
+        [Header("Special Attributes")]
+        public BaseCharacter CharacterStats;
+        public NumAttribute Hp;
         public NumAttribute Speed;
         public NumAttribute CharacterSize;
         public NumAttribute Attack;
@@ -86,6 +88,8 @@ namespace Altzone.Scripts.ModelV2.Internal
         /// TODO: add relevant doc comment here!
         /// </summary>
         [Header("General Asset References")] public Sprite GalleryImage;
+
+        public Sprite GalleryHeadImage;
 
         #endregion
 

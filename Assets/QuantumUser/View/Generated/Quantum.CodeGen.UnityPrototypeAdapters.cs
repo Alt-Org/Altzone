@@ -157,23 +157,6 @@ namespace Quantum.Prototypes.Unity {
       return result;
     }
   }
-  [System.SerializableAttribute()]
-  public unsafe partial class BattleSoulWallQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattleSoulWallQComponentPrototype> {
-    public Quantum.QuantumEntityPrototype ChildEntity;
-    public Quantum.QEnum32<BattleEmotionState> Emotion;
-    public FPVector2 Normal;
-    public FP CollisionMinOffset;
-    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattleSoulWallQComponentPrototype prototype);
-    public override Quantum.Prototypes.BattleSoulWallQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
-      var result = new Quantum.Prototypes.BattleSoulWallQComponentPrototype();
-      converter.Convert(this.ChildEntity, out result.ChildEntity);
-      converter.Convert(this.Emotion, out result.Emotion);
-      converter.Convert(this.Normal, out result.Normal);
-      converter.Convert(this.CollisionMinOffset, out result.CollisionMinOffset);
-      ConvertUser(converter, ref result);
-      return result;
-    }
-  }
 }
 #pragma warning restore 0109
 #pragma warning restore 1591

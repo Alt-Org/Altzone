@@ -96,6 +96,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                             CreateRandom2v2Room();
                             break;
                         case GameType.Custom:
+                            if (!_createRoomCustom.IsCustomRoomOptionsReady) _createRoomCustom.InitializeCustomRoomOptions();
                             CreateCustomRoom();
                             break;
                     }

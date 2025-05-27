@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
+    //[CreateAssetMenu(menuName = "ALT-Zone/Characters/ResearcherCharacter", fileName = "ResearcherCharacterStats")]
     public class ResearcherCharacter : IntellectualizerClassCharacter
     {
         public ResearcherCharacter() : base()

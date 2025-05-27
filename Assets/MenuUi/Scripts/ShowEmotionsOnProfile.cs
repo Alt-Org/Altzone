@@ -23,14 +23,16 @@ public class WeekEmotions : AltMonoBehaviour
     void Start()
     {
         // Gets the needed playerdata
-        StartCoroutine(GetPlayerData(data => _playerData = data));
+        //StartCoroutine(GetPlayerData(data => _playerData = data));
 
-        ValuesToWeekEmotions();
+        //ValuesToWeekEmotions();
     }
 
     // Assigns the values from PlayerData to weekmoods and updates it.
-    private void ValuesToWeekEmotions()
+    public void ValuesToWeekEmotions(PlayerData player)
     {
+        _playerData = player;
+
         if (!string.IsNullOrWhiteSpace(_playerData.emotionSelectorDate))
         {
             for (int i = 0; i < _weekEmotions.Length; i++)
@@ -46,6 +48,18 @@ public class WeekEmotions : AltMonoBehaviour
             if ((int)_playerData.playerDataEmotionList[i] == -1) _weekEmotions[i].GetComponent<Image>().sprite = _blankEmotionImage;
             else
              _weekEmotions[i].GetComponent<Image>().sprite = _emotionImages[(int)_playerData.playerDataEmotionList[i]];
+        }
+    }
+
+    /// <summary>
+    /// Shows the week emotions when viewing another player's profile.
+    /// </summary>
+    public void ShowOtherPlayerEmotions()
+    {
+        // Just fill with empty slots since no data can be fetched from the server yet.
+        for (int i = 0; i < _weekEmotions.Length; i++)
+        {
+            _weekEmotions[i].GetComponent<Image>().sprite = _blankEmotionImage;
         }
     }
 }
