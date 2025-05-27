@@ -34,7 +34,7 @@ public class FurnitureCardUI : MonoBehaviour
         valueText.text = $"Value: {furniture.Value:0.0}";
 
         descriptionText.text = furniture.FurnitureInfo.ArtisticDescription;
-        creatorText.text = $"Creator: {furniture.FurnitureInfo.ArtistName}";
+        creatorText.text = $"{furniture.FurnitureInfo.ArtistName}";
 
         SetRarityColor(furniture.Rarity);
     }
