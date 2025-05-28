@@ -9,3 +9,5 @@ signal BattleOnProjectileHitGoal(BattleProjectileQComponent* projectile, EntityR
 
 // other signals
 signal BattleOnDiamondHitPlayer(BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity);
+
+signal BattleOnGameOver(BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity);

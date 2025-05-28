@@ -1,5 +1,6 @@
 using UnityEngine;
 using Quantum;
+using Battle.View.Game;
 
 namespace Battle.View.Projectile
 {
@@ -18,6 +19,8 @@ namespace Battle.View.Projectile
             _trailRenderer = GetComponent<TrailRenderer>();
 
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, OnChangeEmotionState);
+
+            BattleGameViewController.AssignProjectileReference(gameObject);
         }
 
         private void OnChangeEmotionState(EventBattleChangeEmotionState e)

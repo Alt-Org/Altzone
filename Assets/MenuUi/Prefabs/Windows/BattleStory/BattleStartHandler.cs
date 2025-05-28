@@ -10,6 +10,8 @@ using UnityEngine.UI;
 public class BattleStartHandler : MonoBehaviour
 {
     [SerializeField]
+    private TextMeshProUGUI _battleStartText;
+    [SerializeField]
     private TextMeshProUGUI _timerText;
     [SerializeField]
     private Image _loadImage;
@@ -48,6 +50,7 @@ public class BattleStartHandler : MonoBehaviour
         _loadImage.sprite = _startAnimationSprites[0];
         _loadImage.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0f);
         _loadImage.transform.localScale = new Vector2(1f, 1f);
+        _battleStartText.gameObject.SetActive(false);
         _timerText.gameObject.SetActive(false);
         float timeleft = startTime/1000f;
         float frametimeleft = 0;
@@ -63,6 +66,7 @@ public class BattleStartHandler : MonoBehaviour
                 frametimeleft -= Time.deltaTime;
             } while (frametimeleft > 0);
         }
+        _battleStartText.gameObject.SetActive(true);
         _timerText.gameObject.SetActive(true);
         do
         {

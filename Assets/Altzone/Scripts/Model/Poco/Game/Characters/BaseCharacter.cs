@@ -86,9 +86,11 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         private void SaveData()
         {
+            #if UNITY_EDITOR
             AssetDatabase.Refresh();
             EditorUtility.SetDirty(this);
             AssetDatabase.SaveAssets();
+            #endif
         }
 
         #region Stat value getters

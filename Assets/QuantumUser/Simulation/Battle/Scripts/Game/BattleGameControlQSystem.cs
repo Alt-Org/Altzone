@@ -13,7 +13,7 @@ namespace Battle.QSimulation.Game
      *  -ProjectileSpawnerSystem
      */
     [Preserve]
-    public unsafe class BattleGameControlQSystem : SystemMainThread
+    public unsafe class BattleGameControlQSystem : SystemMainThread, ISignalOnPlayerAdded
     {
         public override void OnInit(Frame f)
         {
@@ -27,7 +27,26 @@ namespace Battle.QSimulation.Game
             f.Events.ViewInit();
 
             BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
+            gameSession->GameTimeSec = 0;
             gameSession->GameInitialized = true;
+        }
+
+        public void OnPlayerAdded(Frame f, PlayerRef playerRef, bool firstTime)
+        {
+            RuntimePlayer data = f.GetPlayerData(playerRef);
+
+            BattlePlayerManager.RegisterPlayer(f, playerRef);
+
+            f.Events.BattleDebugUpdateStatsOverlay(data.Characters[0]);
+        }
+
+        public static void OnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)
+        {
+            BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
+            gameSession->State = BattleGameState.GameOver;
+
+            BattleTeamNumber WinningTeam = winningTeam;
+            f.Signals.BattleOnGameOver(WinningTeam, projectile, projectileEntity);
         }
 
         public override void Update(Frame f)
@@ -41,7 +60,11 @@ namespace Battle.QSimulation.Game
             switch (gameSession->State)
             {
                 case BattleGameState.InitializeGame:
-                    if (gameSession->GameInitialized) gameSession->State = BattleGameState.CreateMap;
+                    if (gameSession->GameInitialized) gameSession->State = BattleGameState.WaitForPlayers;
+                    break;
+
+                case BattleGameState.WaitForPlayers:
+                    if (BattlePlayerManager.IsAllPlayersRegistered(f)) gameSession->State = BattleGameState.CreateMap;
                     break;
 
                 case BattleGameState.CreateMap:
@@ -71,6 +94,10 @@ namespace Battle.QSimulation.Game
                         gameSession->State = BattleGameState.Playing;
                     }
                     break;
+
+                case BattleGameState.Playing:
+                    gameSession->GameTimeSec += f.DeltaTime;
+                    break;
             }
         }
 
@@ -80,6 +107,9 @@ namespace Battle.QSimulation.Game
             BattleSoulWallQSpec soulWallSpec = BattleQConfig.GetSoulWallSpec(f);
 
             BattleSoulWallQSystem.CreateSoulWalls(f, battleArenaSpec, soulWallSpec);
+
+            BattlePlayerManager.CreatePlayers(f);
+            BattlePlayerQSystem.SpawnPlayers(f);
         }
     }
 }
