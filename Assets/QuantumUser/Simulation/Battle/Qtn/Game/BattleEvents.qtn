@@ -1,6 +1,12 @@
+//{ Game Flow events - View Pre-Activate
+
 synced event BattleViewWaitForPlayers {}
 
 synced event BattleViewInit {}
+
+//} Game Flow events - View Pre-Activate
+
+//{ Game Flow events
 
 synced event BattleViewActivate {}
 
@@ -13,6 +19,10 @@ synced event BattleViewGameOver
     BattleTeamNumber WinningTeam;
     FP GameLengthSec;
 }
+
+//} Game Flow events
+
+//{ ViewInit events
 
 synced event BattlePlayerViewInit
 {
@@ -28,6 +38,10 @@ synced event BattleSoulWallViewInit
     int DebugColorIndex;
 }
 
+//} ViewInit events
+
+//{ Gameplay events
+
 synced event BattleChangeEmotionState
 {
     BattleEmotionState Emotion;
@@ -38,11 +52,6 @@ event BattlePlaySoundFX
     BattleSoundFX Effect;
 }
 
-synced event BattleDebugUpdateStatsOverlay
-{
-    BattleCharacterBase Character;
-}
-
 synced event BattleLastRowWallDestroyed
 {
     int WallNumber;
@@ -51,3 +60,14 @@ synced event BattleLastRowWallDestroyed
     BattleLightrayColor LightrayColor;
     BattleLightraySize LightraySize;
 }
+
+//} Gameplay events
+
+//{ Debug events
+
+synced event BattleDebugUpdateStatsOverlay
+{
+    BattleCharacterBase Character;
+}
+
+//} Debug events
