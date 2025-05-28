@@ -47,7 +47,7 @@ namespace Battle.View.Game
 
         private void Awake()
         {
-            QuantumEvent.Subscribe<EventViewInit>(this, QEventOnViewInit);
+            QuantumEvent.Subscribe<EventBattleViewInit>(this, QEventOnViewInit);
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, QEventOnChangeEmotionState);
             QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, QEventPlaySoundFX);
             QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, QEventDebugOnUpdateStatsOverlay);
@@ -67,7 +67,7 @@ namespace Battle.View.Game
             }
         }
 
-        private void QEventOnViewInit(EventViewInit e)
+        private void QEventOnViewInit(EventBattleViewInit e)
         {
             if (_gridViewController != null)
             {
