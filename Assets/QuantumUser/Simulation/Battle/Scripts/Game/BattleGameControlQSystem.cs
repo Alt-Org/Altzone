@@ -24,8 +24,6 @@ namespace Battle.QSimulation.Game
             BattleGridManager.Init(battleArenaSpec);
             BattlePlayerManager.Init(f, battleArenaSpec);
 
-            f.Events.BattleViewInit();
-
             BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
             gameSession->GameTimeSec = 0;
             gameSession->GameInitialized = true;
@@ -64,11 +62,16 @@ namespace Battle.QSimulation.Game
                     break;
 
                 case BattleGameState.WaitForPlayers:
-                    if (BattlePlayerManager.IsAllPlayersRegistered(f)) gameSession->State = BattleGameState.CreateMap;
+                    if (BattlePlayerManager.IsAllPlayersRegistered(f))
+                    {
+                        f.Events.BattleViewInit();
+                        gameSession->State = BattleGameState.CreateMap;
+                    }
                     break;
 
                 case BattleGameState.CreateMap:
                     CreateMap(f);
+                    f.Events.BattleViewActivate();
                     gameSession->State = BattleGameState.Countdown;
                     break;
 

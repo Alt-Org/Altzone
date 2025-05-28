@@ -5,6 +5,7 @@ using Quantum;
 using Altzone.Scripts.BattleUiShared;
 using Altzone.Scripts.Lobby;
 
+using Battle.QSimulation.Player;
 using Battle.View.UI;
 using Battle.View.Effect;
 using Battle.View.Audio;
@@ -22,6 +23,9 @@ namespace Battle.View.Game
         [SerializeField] private BattleStoneCharacterViewController _stoneCharacterViewController;
         [SerializeField] private BattleLightrayEffectViewController _lightrayEffectViewController;
         [SerializeField] private BattleSoundFXViewController _soundFXViewController;
+
+        public static BattlePlayerSlot LocalPlayerSlot { get; private set; }
+        public static BattleTeamNumber LocalPlayerTeam { get; private set; }
 
         public static GameObject ProjectileReference { get; private set; }
 
@@ -47,7 +51,11 @@ namespace Battle.View.Game
 
         private void Awake()
         {
+            _uiController.AnnouncementHandler.SetShow(true);
+            _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.Loading);
+
             QuantumEvent.Subscribe<EventBattleViewInit>(this, QEventOnViewInit);
+            QuantumEvent.Subscribe<EventBattleViewActivate>(this, QEventOnViewActivate);
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, QEventOnChangeEmotionState);
             QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, QEventPlaySoundFX);
             QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, QEventDebugOnUpdateStatsOverlay);
@@ -69,6 +77,13 @@ namespace Battle.View.Game
 
         private void QEventOnViewInit(EventBattleViewInit e)
         {
+            if (Utils.TryGetQuantumFrame(out Frame f))
+            {
+                PlayerRef playerRef = QuantumRunner.Default.Game.GetLocalPlayers()[0];
+                LocalPlayerSlot = BattlePlayerManager.PlayerHandle.GetSlot(f, playerRef);
+                LocalPlayerTeam = BattlePlayerManager.PlayerHandle.GetTeamNumber(LocalPlayerSlot);
+            }
+
             if (_gridViewController != null)
             {
                 _gridViewController.SetGrid();
@@ -121,12 +136,15 @@ namespace Battle.View.Game
                 );
             }
             */
+        }
 
+        private void QEventOnViewActivate(EventBattleViewActivate e)
+        {
             // Loading and setting arena scale and offset
             BattleCamera.SetView(
                 SettingsCarrier.Instance.BattleArenaScale * 0.01f,
                 new(SettingsCarrier.Instance.BattleArenaPosX * 0.01f, SettingsCarrier.Instance.BattleArenaPosY * 0.01f),
-                false
+                LocalPlayerTeam == BattleTeamNumber.TeamBeta
             );
         }
 
@@ -170,9 +188,11 @@ namespace Battle.View.Game
                 // Handle different game states to update the UI
                 switch (gameSession.State)
                 {
+                    case BattleGameState.WaitForPlayers:
+                        _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.WaitingForPlayers);
+                        break;
                     case BattleGameState.Countdown:
                         // If the game is in the countdown state, display the countdown timer
-                        _uiController.AnnouncementHandler.SetShow(true);
                         _uiController.AnnouncementHandler.SetCountDownNumber(countDown);
                         break;
 
@@ -192,7 +212,7 @@ namespace Battle.View.Game
 
                     case BattleGameState.GetReadyToPlay:
                         // Display "GO!" when the countdown reaches zero
-                        _uiController.AnnouncementHandler.ShowEndOfCountDownText();
+                        _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.EndOfCountdown);
                         break;
 
                     case BattleGameState.GameOver:
