@@ -288,7 +288,7 @@ public class ProfileMenu : AltMonoBehaviour
     {
         if (isLoggedIn)
         {
-            PlayerData player = DataCarrier.GetData<PlayerData>(DataCarrier.PlayerProfile);
+            PlayerData player = DataCarrier.GetData<PlayerData>(DataCarrier.PlayerProfile, supressWarning: true);
             var store = Storefront.Get();
 
             if (player != null)

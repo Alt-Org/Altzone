@@ -31,7 +31,7 @@ public class SettingEditor : MonoBehaviour
         SetShowButtonLabelsToggle();
 
         // Opening Battle Ui Editor if DataCarrier has a bool BattleUiEditorRequested and it's true
-        if (DataCarrier.GetData<bool>(DataCarrier.BattleUiEditorRequested))
+        if (DataCarrier.GetData<bool>(DataCarrier.BattleUiEditorRequested, supressWarning: true))
         {
             DataCarrier.AddData(DataCarrier.RequestedWindow, 1);
             _battleEditor.OpenEditor();

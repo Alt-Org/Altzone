@@ -40,7 +40,7 @@ public class ClanMainView : MonoBehaviour
     {
         ToggleClanPanel(false);
 
-        ServerClan clan = DataCarrier.GetData<ServerClan>(DataCarrier.ClanListing);
+        ServerClan clan = DataCarrier.GetData<ServerClan>(DataCarrier.ClanListing, supressWarning: true);
         if (clan != null)
         {
             ClanData data = new ClanData(clan);
