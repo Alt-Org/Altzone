@@ -19,6 +19,7 @@ using Newtonsoft.Json.Converters;
 using Altzone.Scripts.Settings;
 using UnityEngine.SceneManagement;
 using Altzone.Scripts.ReferenceSheets;
+using Altzone.Scripts.Voting;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -1314,6 +1315,34 @@ public class ServerManager : MonoBehaviour
 
     #endregion
 
+    public IEnumerator GetClanVoteListFromServer(Action<List<ServerPoll>> callback)
+    {
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "voting/", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                //ServerPlayer player = result["data"]["Object"].ToObject<ServerPlayer>();
+                JArray middleresult = (JArray)result["data"]["Voting"];
+
+                List<ServerPoll> pollList = new();
+                foreach (var item in middleresult)
+                {
+                    pollList.Add(item.ToObject<ServerPoll>());
+                }
+
+                if (callback != null)
+                    callback(pollList);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
     public IEnumerator GetClanShopListFromServer(Action<List<GameFurniture>> callback)
     {
         yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "clan-shop/items/", AccessToken, request =>
@@ -1331,7 +1360,7 @@ public class ServerManager : MonoBehaviour
                     string name = item["name"].ToString();
                     GameFurniture furniture = StorageFurnitureReference.Instance.GetGameFurniture(name);
                     if (furniture != null)
-                    furniturelist.Add(StorageFurnitureReference.Instance.GetGameFurniture(name));
+                    furniturelist.Add(furniture);
                 }
 
                 if (callback != null)
