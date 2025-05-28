@@ -14,6 +14,13 @@ synced event BattleSoulWallViewInit
     int DebugColorIndex;
 }
 
+synced event BattleStoneCharacterPieceViewInit
+{
+    int WallNumber;
+    BattleTeamNumber Team;
+    int EmotionIndicatorColorIndex;
+}
+
 synced event BattleChangeEmotionState
 {
     BattleEmotionState Emotion;

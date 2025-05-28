@@ -148,7 +148,14 @@ namespace Battle.QSimulation.SoulWall
                 soulWallTransform->Teleport(f, soulWallPosition, FP._0);
 
                 // initialize view
-                f.Events.BattleSoulWallViewInit(soulWallEntity, soulWallScale, soulWallEmotionIndex, soulWallTemplate.ColorIndex);
+                if (soulWallRow == BattleSoulWallRow.Last)
+                {
+                    f.Events.BattleStoneCharacterPieceViewInit(soulWall->WallNumber, soulWall->Team, soulWallEmotionIndex);
+                }
+                else
+                {
+                    f.Events.BattleSoulWallViewInit(soulWallEntity, soulWallScale, soulWallEmotionIndex, soulWallTemplate.ColorIndex);
+                }
             }
         }
     }

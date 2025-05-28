@@ -52,6 +52,15 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, QEventPlaySoundFX);
             QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, QEventDebugOnUpdateStatsOverlay);
             QuantumEvent.Subscribe<EventBattleLastRowWallDestroyed>(this, QEventOnLastRowWallDestroyed);
+            QuantumEvent.Subscribe<EventBattleStoneCharacterPieceViewInit>(this, QEventOnStoneCharacterPieceViewInit);
+        }
+
+        private void QEventOnStoneCharacterPieceViewInit(EventBattleStoneCharacterPieceViewInit e)
+        {
+            if (_stoneCharacterViewController != null)
+            {
+                _stoneCharacterViewController.SetEmotionIndicator(e.WallNumber, e.Team, e.EmotionIndicatorColorIndex);
+            }
         }
 
         private void QEventOnLastRowWallDestroyed(EventBattleLastRowWallDestroyed e)
@@ -63,7 +72,7 @@ namespace Battle.View.Game
 
             if (_lightrayEffectViewController != null)
             {
-                _lightrayEffectViewController.SpawnLightray(e.WallNumber, (float)e.LightrayRotation, e.LightrayColor, e.LightraySize);
+                _lightrayEffectViewController.SpawnLightray(e.WallNumber, e.LightrayColor);
             }
         }
 
