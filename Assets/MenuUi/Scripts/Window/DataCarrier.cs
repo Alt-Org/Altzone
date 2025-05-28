@@ -90,44 +90,44 @@ namespace MenuUi.Scripts.Window
             s_datastorage.Add(key, value);
         }
 
-        public static T GetData<T>(string key, bool clear = true, bool supressWarning = false)
+        public static T GetData<T>(string key, bool clear = true, bool suppressWarning = false)
         {
             if(typeof(T).Equals(typeof(int)))
             {
-                return (T)(object)GetPrimitiveData<int>(key, clear, supressWarning);
+                return (T)(object)GetPrimitiveData<int>(key, clear, suppressWarning);
             }
             if (typeof(T).Equals(typeof(int?)))
             {
-                int? value = GetNullablePrimitiveData<int>(key, clear, supressWarning);
+                int? value = GetNullablePrimitiveData<int>(key, clear, suppressWarning);
                 if (value == null) return default;
                 return (T)(object)value;
             }
             else if(typeof(T).Equals(typeof(bool)))
             {
-                return (T)(object)GetPrimitiveData<bool>(key, clear, supressWarning);
+                return (T)(object)GetPrimitiveData<bool>(key, clear, suppressWarning);
             }
             if (typeof(T).Equals(typeof(bool?)))
             {
-                bool? value = GetNullablePrimitiveData<bool>(key, clear, supressWarning);
+                bool? value = GetNullablePrimitiveData<bool>(key, clear, suppressWarning);
                 if (value == null) return default;
                 return (T)(object)value;
             }
             else if(typeof(T).Equals(typeof(string)))
             {
-                return (T)(object)GetPrimitiveData<string>(key, clear, supressWarning);
+                return (T)(object)GetPrimitiveData<string>(key, clear, suppressWarning);
             }
             else if(typeof(T).Equals(typeof(float)))
             {
-                return (T)(object)GetPrimitiveData<float>(key, clear, supressWarning);
+                return (T)(object)GetPrimitiveData<float>(key, clear, suppressWarning);
             }
             else if (typeof(T).IsClass)
             {
-                return (T)GetClassData<object>(key, clear, supressWarning);
+                return (T)GetClassData<object>(key, clear, suppressWarning);
             }
             return default;
         }
 
-        public static T GetClassData<T>(string key, bool clear = true, bool supressWarning = false) where T : class
+        public static T GetClassData<T>(string key, bool clear = true, bool suppressWarning = false) where T : class
         {
             if (s_datastorage.ContainsKey(key))
             {
@@ -140,12 +140,12 @@ namespace MenuUi.Scripts.Window
             }
             else
             {
-                if (!supressWarning) Debug.LogWarning($"Cannot find Data: Data with supplied key ({key}) cannot be found in DataCarrier.");
+                if (!suppressWarning) Debug.LogWarning($"Cannot find Data: Data with supplied key ({key}) cannot be found in DataCarrier.");
                 return null;
             }
         }
 
-        public static T GetPrimitiveData<T>(string key, bool clear = true, bool supressWarning = false) where T : IComparable
+        public static T GetPrimitiveData<T>(string key, bool clear = true, bool suppressWarning = false) where T : IComparable
         {
             if (s_datastorage.ContainsKey(key))
             {
@@ -158,12 +158,12 @@ namespace MenuUi.Scripts.Window
             }
             else
             {
-                if (!supressWarning) Debug.LogWarning($"Cannot find Data: Data with supplied key ({key}) cannot be found in DataCarrier.");
+                if (!suppressWarning) Debug.LogWarning($"Cannot find Data: Data with supplied key ({key}) cannot be found in DataCarrier.");
                 return default;
             }
         }
 
-        public static T? GetNullablePrimitiveData<T>(string key, bool clear = true, bool supressWarning = false) where T : struct
+        public static T? GetNullablePrimitiveData<T>(string key, bool clear = true, bool suppressWarning = false) where T : struct
         {
             if (s_datastorage.ContainsKey(key))
             {
@@ -176,7 +176,7 @@ namespace MenuUi.Scripts.Window
             }
             else
             {
-                if(!supressWarning) Debug.LogWarning($"Cannot find Data: Data with supplied key ({key}) cannot be found in DataCarrier.");
+                if(!suppressWarning) Debug.LogWarning($"Cannot find Data: Data with supplied key ({key}) cannot be found in DataCarrier.");
                 return null;
             }
         }
