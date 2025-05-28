@@ -91,7 +91,6 @@ namespace Battle.View.Game
 
             if (_uiController.DiamondsHandler != null)
             {
-                _uiController.DiamondsHandler.SetShow(true);
                 _uiController.DiamondsHandler.SetDiamondsText(0);
 
                 BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.Diamonds);
@@ -108,17 +107,12 @@ namespace Battle.View.Game
             /*
             if (_uiController.GiveUpButtonHandler != null)
             {
-                _uiController.GiveUpButtonHandler.SetShow(true);
-                _uiController.GiveUpButtonHandler.SetShow(true);
-
                 BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.GiveUpButton);
                 if (data != null) _uiController.GiveUpButtonHandler.MovableUiElement.SetData(data);
             }
 
             if (_uiController.PlayerInfoHandler != null)
             {
-                _uiController.PlayerInfoHandler.SetShow(true);
-
                 // Setting local player info
                 _uiController.PlayerInfoHandler.SetInfo(
                     PlayerType.LocalPlayer,
@@ -146,6 +140,12 @@ namespace Battle.View.Game
                 new(SettingsCarrier.Instance.BattleArenaPosX * 0.01f, SettingsCarrier.Instance.BattleArenaPosY * 0.01f),
                 LocalPlayerTeam == BattleTeamNumber.TeamBeta
             );
+
+            if (_uiController.DiamondsHandler != null) _uiController.DiamondsHandler.SetShow(true);
+            /* These Ui elements aren't ready and shouldn't be shown yet
+            if (_uiController.GiveUpButtonHandler != null) _uiController.GiveUpButtonHandler.SetShow(true);
+            if (_uiController.PlayerInfoHandler != null) _uiController.PlayerInfoHandler.SetShow(true);
+            */
         }
 
         private void QEventOnChangeEmotionState(EventBattleChangeEmotionState e)
