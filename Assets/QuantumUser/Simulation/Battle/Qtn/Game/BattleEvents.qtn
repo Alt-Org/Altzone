@@ -1,6 +1,18 @@
+synced event BattleViewWaitForPlayers {}
+
 synced event BattleViewInit {}
 
 synced event BattleViewActivate {}
+
+synced event BattleViewGetReadyToPlay {}
+
+synced event BattleViewGameStart {}
+
+synced event BattleViewGameOver
+{
+    BattleTeamNumber WinningTeam;
+    FP GameLengthSec;
+}
 
 synced event BattlePlayerViewInit
 {

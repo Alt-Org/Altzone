@@ -41,6 +41,7 @@ namespace Battle.QSimulation.Game
         public static void OnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)
         {
             BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
+            f.Events.BattleViewGameOver(winningTeam, gameSession->GameTimeSec);
             gameSession->State = BattleGameState.GameOver;
 
             BattleTeamNumber WinningTeam = winningTeam;
@@ -58,7 +59,11 @@ namespace Battle.QSimulation.Game
             switch (gameSession->State)
             {
                 case BattleGameState.InitializeGame:
-                    if (gameSession->GameInitialized) gameSession->State = BattleGameState.WaitForPlayers;
+                    if (gameSession->GameInitialized)
+                    {
+                        f.Events.BattleViewWaitForPlayers();
+                        gameSession->State = BattleGameState.WaitForPlayers;
+                    }
                     break;
 
                 case BattleGameState.WaitForPlayers:
@@ -82,6 +87,7 @@ namespace Battle.QSimulation.Game
                     // Transition from Countdown to GetReadyToPlay
                     if (gameSession->TimeUntilStart < 1)
                     {
+                        f.Events.BattleViewGetReadyToPlay();
                         gameSession->State = BattleGameState.GetReadyToPlay;
                         gameSession->TimeUntilStart = 1; // Set 1 second for the GetReadyToPlay state
                     }
@@ -94,6 +100,7 @@ namespace Battle.QSimulation.Game
                     // Transition from GetReadyToPlay to Playing
                     if (gameSession->TimeUntilStart <= 0)
                     {
+                        f.Events.BattleViewGameStart();
                         gameSession->State = BattleGameState.Playing;
                     }
                     break;
