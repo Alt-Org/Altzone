@@ -4,17 +4,17 @@
 /// </summary>
 ///
 /// ## Events
-/// - synced event ViewInit {}  
+/// - <b>synced event</b> @ref ViewInit {}  
 ///   @copybrief Quantum.EventViewInit
-/// - synced event BattlePlayerViewInit {EntityRef Entity; FP ModelScale}  
+/// - <b>synced event</b> @ref BattlePlayerViewInit {EntityRef Entity; FP ModelScale}  
 ///   @copybrief Quantum.EventBattlePlayerViewInit
-/// - synced event BattleSoulWallViewInit {EntityRef Entity; FP ModelScale; int EmotionIndicatorColorIndex; int DebugColorIndex}  
+/// - <b>synced event</b> @ref BattleSoulWallViewInit {EntityRef Entity; FP ModelScale; int EmotionIndicatorColorIndex; int DebugColorIndex}  
 ///   @copybrief Quantum.EventBattleSoulWallViewInit
-/// - synced event BattleChangeEmotionState {BattleEmotionState Emotion}  
+/// - <b>synced event</b> @ref BattleChangeEmotionState {BattleEmotionState Emotion}  
 ///   @copybrief Quantum.EventBattleChangeEmotionState
-/// - event BattlePlaySoundFX {BattleSoundFX Effect}  
+/// - <b>event</b> @ref BattlePlaySoundFX {BattleSoundFX Effect}  
 ///   @copybrief Quantum.EventBattlePlaySoundFX
-/// - synced event BattleDebugUpdateStatsOverlay {BattleCharacterBase Character}  
+/// - <b>synced event</b> @ref BattleDebugUpdateStatsOverlay {BattleCharacterBase Character}  
 ///   @copybrief Quantum.EventBattleDebugUpdateStatsOverlay
 ///
 /// ---
@@ -25,6 +25,7 @@
 ///
 /// ---
 ///
+/// @anchor ViewInit
 /// ### ViewInit
 /// @copybrief Quantum.EventViewInit
 ///
@@ -33,6 +34,7 @@
 ///
 /// ---
 ///
+/// @anchor BattlePlayerViewInit
 /// ### BattlePlayerViewInit
 /// @copybrief Quantum.EventBattlePlayerViewInit
 ///
@@ -41,6 +43,7 @@
 ///
 /// ---
 ///
+/// @anchor BattleSoulWallViewInit
 /// ### BattleSoulWallViewInit
 /// @copybrief Quantum.EventBattleSoulWallViewInit
 ///
@@ -49,6 +52,7 @@
 ///
 /// ---
 ///
+/// @anchor BattleChangeEmotionState
 /// ### BattleChangeEmotionState
 /// @copybrief Quantum.EventBattleChangeEmotionState
 ///
@@ -57,6 +61,7 @@
 ///
 /// ---
 ///
+/// @anchor BattlePlaySoundFX
 /// ### BattlePlaySoundFX
 /// @copybrief Quantum.EventBattlePlaySoundFX
 ///
@@ -65,11 +70,14 @@
 ///
 /// ---
 ///
+/// @anchor BattleDebugUpdateStatsOverlay
 /// ### BattleDebugUpdateStatsOverlay
 /// @copybrief Quantum.EventBattleDebugUpdateStatsOverlay
 ///
 /// Generated Class @cref{Quantum,EventBattleDebugUpdateStatsOverlay}  
 /// Generated Method @cref{Quantum,Frame.FrameEvents.BattleDebugUpdateStatsOverlay}
+///
+/// ---
 
 /// @class Quantum::EventViewInit
 /// <summary>
