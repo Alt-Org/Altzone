@@ -5,12 +5,12 @@
 |  Namespace                                                       || Description                              |
 | :------------------------- | :----------------------------------- | :--------------------------------------- |
 | @cref{Battle.QSimulation}                                        || @copybrief Battle.QSimulation            |
-| @crefd{Battle.QSimulation} | @cref{Battle.QSimulation,Diamond}    | @copybrief Battle.QSimulation.Diamond    |
 | @crefd{Battle.QSimulation} | @cref{Battle.QSimulation,Game}       | @copybrief Battle.QSimulation.Game       |
 | @crefd{Battle.QSimulation} | @cref{Battle.QSimulation,Player}     | @copybrief Battle.QSimulation.Player     |
 | @crefd{Battle.QSimulation} | @cref{Battle.QSimulation,SoulWall}   | @copybrief Battle.QSimulation.SoulWall   |
 | @crefd{Battle.QSimulation} | @cref{Battle.QSimulation,Projectile} | @copybrief Battle.QSimulation.Projectile |
 | @crefd{Battle.QSimulation} | @cref{Battle.QSimulation,Goal}       | @copybrief Battle.QSimulation.Goal       |
+| @crefd{Battle.QSimulation} | @cref{Battle.QSimulation,Diamond}    | @copybrief Battle.QSimulation.Diamond    |
 
 @bigtext{[[Namespace Summary]](#index-namespace-summary)}
 
@@ -36,8 +36,6 @@ In %Battle [Quantum Systems🡵] have QSystem suffix. [[Naming]](#index-naming)
 
 |  Namespace                                                        || Class                                                               | Description                                                             |
 | :------------------------- | :------------------------------------ | :------------------------------------------------------------------ | :---------------------------------------------------------------------- |
-| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Diamond}    | @cref{Battle.QSimulation.Diamond,BattleDiamondQSystem}              | @copybrief Battle.QSimulation.Diamond.BattleDiamondQSystem              |
-|                                                                                                                                                                                                                 ||||
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Game}       | @cref{Battle.QSimulation.Game,BattleGameControlQSystem}             | @copybrief Battle.QSimulation.Game.BattleGameControlQSystem             |
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Game}       | @cref{Battle.QSimulation.Game,BattleCollisionQSystem}               | @copybrief Battle.QSimulation.Game.BattleCollisionQSystem               |
 |                                                                                                                                                                                                                 ||||
@@ -50,6 +48,19 @@ In %Battle [Quantum Systems🡵] have QSystem suffix. [[Naming]](#index-naming)
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Projectile} | @cref{Battle.QSimulation.Projectile,BattleProjectileQSystem}        | @copybrief Battle.QSimulation.Projectile.BattleProjectileQSystem        |
 |                                                                                                                                                                                                                 ||||
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Goal}       | @cref{Battle.QSimulation.Goal,BattleGoalQSystem}                    | @copybrief Battle.QSimulation.Goal.BattleGoalQSystem                    |
+|                                                                                                                                                                                                                 ||||
+| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Diamond}    | @cref{Battle.QSimulation.Diamond,BattleDiamondQSystem}              | @copybrief Battle.QSimulation.Diamond.BattleDiamondQSystem              |
+
+<br/>
+
+## Managers {#page-simulation-managers}
+
+In %Battle managers have Manager suffix. [[Naming]](#index-naming)
+
+|  Namespace                                                    || Class                                                | Description                                              |
+| :------------------------- | :-------------------------------- | :--------------------------------------------------- | :------------------------------------------------------- |
+| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Game}   | @cref{Battle.QSimulation.Game,BattleGridManager}     | @copybrief Battle.QSimulation.Game.BattleGridManager     |
+| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Player} | @cref{Battle.QSimulation.Player,BattlePlayerManager} | @copybrief Battle.QSimulation.Player.BattlePlayerManager |
 
 <br/>
 
@@ -60,19 +71,19 @@ In %Battle [Quantum Components🡵] have QComponent suffix. [[Naming]](#index-na
 
 |  Namespace        | Component                                          | Description                                            |
 | :---------------- | :------------------------------------------------- | :----------------------------------------------------- |
-| @crefd{Quantum}   | @cref{Quantum,BattleDiamondDataQComponent}         | @copybrief Quantum.BattleDiamondDataQComponent         |
-                                                                                                                               ||||
 | @crefd{Quantum}   | @cref{Quantum,BattleArenaBorderQComponent}         | @copybrief Quantum.BattleArenaBorderQComponent         |
-                                                                                                                               ||||
+|                                                                                                                               |||
+| @crefd{Quantum}   | @cref{Quantum,BattleDiamondDataQComponent}         | @copybrief Quantum.BattleDiamondDataQComponent         |
+|                                                                                                                               |||
 | @crefd{Quantum}   | @cref{Quantum,BattleGoalQComponent}                | @copybrief Quantum.BattleGoalQComponent                |
-                                                                                                                               ||||
+|                                                                                                                               |||
 | @crefd{Quantum}   | @cref{Quantum,BattlePlayerDataQComponent}          | @copybrief Quantum.BattlePlayerDataQComponent          |
 | @crefd{Quantum}   | @cref{Quantum,BattlePlayerDataTemplateQComponent}  | @copybrief Quantum.BattlePlayerDataTemplateQComponent  |
 | @crefd{Quantum}   | @cref{Quantum,BattlePlayerHitboxQComponent}        | @copybrief Quantum.BattlePlayerHitboxQComponent        |
-                                                                                                                               ||||
+|                                                                                                                               |||
 | @crefd{Quantum}   | @cref{Quantum,BattleProjectileQComponent}          | @copybrief Quantum.BattleProjectileQComponent          |
 | @crefd{Quantum}   | @cref{Quantum,BattleProjectileSpawnerQComponent}   | @copybrief Quantum.BattleProjectileSpawnerQComponent   |
-                                                                                                                               ||||
+|                                                                                                                               |||
 | @crefd{Quantum}   | @cref{Quantum,BattleSoulWallQComponent}            | @copybrief Quantum.BattleSoulWallQComponent            |
 
 <br/>
@@ -87,6 +98,39 @@ In %Battle Singletons have QSingleton suffix. [[Naming]](#index-naming)
 | @crefd{Quantum}   | @cref{Quantum,BattleDiamondCounterQSingleton}      | @copybrief Quantum.BattleDiamondCounterQSingleton      |
 | @crefd{Quantum}   | @cref{Quantum,BattleGameSessionQSingleton}         | @copybrief Quantum.BattleGameSessionQSingleton         |
 | @crefd{Quantum}   | @cref{Quantum,BattlePlayerManagerDataQSingleton}   | @copybrief Quantum.BattlePlayerManagerDataQSingleton   |
+
+<br/>
+
+## Signals {#page-simulation-signals}
+
+[Quantum Signals🡵] are C# interfaces that are generated from qtn files.  
+In %Battle all [Quantum Signals🡵] are located in BattleSignals.qtn file.
+
+|  Namespace        | Component                                                | Description                                                  |
+| :---------------- | :------------------------------------------------------- | :----------------------------------------------------------- |
+| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitSoulWall}      | @copybrief Quantum.ISignalBattleOnProjectileHitSoulWall      |
+| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitArenaBorder}   | @copybrief Quantum.ISignalBattleOnProjectileHitArenaBorder   |
+| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitPlayerHitbox}  | @copybrief Quantum.ISignalBattleOnProjectileHitPlayerHitbox  |
+| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitGoal}          | @copybrief Quantum.ISignalBattleOnProjectileHitGoal          |
+|                                                                                                                                           |||
+| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnDiamondHitPlayer}           | @copybrief Quantum.ISignalBattleOnDiamondHitPlayer           |
+
+<br/>
+
+## Events {#page-simulation-events}
+
+[Quantum Events🡵] are C# classes that are generated from qtn files.  
+In %Battle all [Quantum Events🡵] are located in BattleEvents.qtn file.
+
+|  Namespace        | Component                                          | Description                                            |
+| :---------------- | :------------------------------------------------- | :----------------------------------------------------- |
+| @crefd{Quantum}   | @cref{Quantum,EventViewInit}                       | @copybrief Quantum.EventViewInit                       |
+| @crefd{Quantum}   | @cref{Quantum,EventBattlePlayerViewInit}           | @copybrief Quantum.EventBattlePlayerViewInit           |
+| @crefd{Quantum}   | @cref{Quantum,EventBattleSoulWallViewInit}         | @copybrief Quantum.EventBattleSoulWallViewInit         |
+|                                                                                                                               |||
+| @crefd{Quantum}   | @cref{Quantum,EventBattleChangeEmotionState}       | @copybrief Quantum.EventBattleChangeEmotionState       |
+| @crefd{Quantum}   | @cref{Quantum,EventBattlePlaySoundFX}              | @copybrief Quantum.EventBattlePlaySoundFX              |
+| @crefd{Quantum}   | @cref{Quantum,EventBattleDebugUpdateStatsOverlay}  | @copybrief Quantum.EventBattleDebugUpdateStatsOverlay  |
 
 <br/>
 
@@ -113,48 +157,6 @@ In %Battle Specs have QSpec suffix. [[Naming]](#index-naming)
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,SoulWall}   | @cref{Battle.QSimulation.SoulWall,BattleSoulWallQSpec}            | @copybrief Battle.QSimulation.SoulWall.BattleSoulWallQSpec       |
 
 <br/>
-
-## Events {#page-simulation-events}
-
-[Quantum Events🡵] are C# classes that are generated from qtn files.  
-In %Battle all [Quantum Events🡵] are located in BattleEvents.qtn file.
-
-|  Namespace        | Component                                          | Description                                            |
-| :---------------- | :------------------------------------------------- | :----------------------------------------------------- |
-| @crefd{Quantum}   | @cref{Quantum,EventViewInit}                       | @copybrief Quantum.EventViewInit                       |
-| @crefd{Quantum}   | @cref{Quantum,EventBattlePlayerViewInit}           | @copybrief Quantum.EventBattlePlayerViewInit           |
-| @crefd{Quantum}   | @cref{Quantum,EventBattleSoulWallViewInit}         | @copybrief Quantum.EventBattleSoulWallViewInit         |
-                                                                                                                               ||||
-| @crefd{Quantum}   | @cref{Quantum,EventBattleChangeEmotionState}       | @copybrief Quantum.EventBattleChangeEmotionState       |
-| @crefd{Quantum}   | @cref{Quantum,EventBattlePlaySoundFX}              | @copybrief Quantum.EventBattlePlaySoundFX              |
-| @crefd{Quantum}   | @cref{Quantum,EventBattleDebugUpdateStatsOverlay}  | @copybrief Quantum.EventBattleDebugUpdateStatsOverlay  |
-
-<br/>
-
-## Signals {#page-simulation-signals}
-
-[Quantum Signals🡵] are C# interfaces that are generated from qtn files.  
-In %Battle all [Quantum Signals🡵] are located in BattleSignals.qtn file.
-
-|  Namespace        | Component                                                | Description                                                  |
-| :---------------- | :------------------------------------------------------- | :----------------------------------------------------------- |
-| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitSoulWall}      | @copybrief Quantum.ISignalBattleOnProjectileHitSoulWall      |
-| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitArenaBorder}   | @copybrief Quantum.ISignalBattleOnProjectileHitArenaBorder   |
-| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitPlayerHitbox}  | @copybrief Quantum.ISignalBattleOnProjectileHitPlayerHitbox  |
-| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitGoal}          | @copybrief Quantum.ISignalBattleOnProjectileHitGoal          |
-                                                                                                                                           ||||
-| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnDiamondHitPlayer}           | @copybrief Quantum.ISignalBattleOnDiamondHitPlayer           |
-
-<br/>
-
-## Managers {#page-simulation-managers}
-
-In %Battle managers have Manager suffix. [[Naming]](#index-naming)
-
-|  Namespace                                                    || Class                                                | Description                                              |
-| :------------------------- | :-------------------------------- | :--------------------------------------------------- | :------------------------------------------------------- |
-| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Game}   | @cref{Battle.QSimulation.Game,BattleGridManager}     | @copybrief Battle.QSimulation.Game.BattleGridManager     |
-| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Player} | @cref{Battle.QSimulation.Player,BattlePlayerManager} | @copybrief Battle.QSimulation.Player.BattlePlayerManager |
 
 [Quantum Systems🡵]:    https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems
 [Quantum Components🡵]: https://doc.photonengine.com/quantum/current/manual/quantum-ecs/dsl
