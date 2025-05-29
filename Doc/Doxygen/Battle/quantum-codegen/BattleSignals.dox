@@ -4,15 +4,15 @@
 /// </summary>
 ///
 /// ## Signals
-/// - signal BattleOnProjectileHitSoulWall(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)  
+/// - <b>signal</b> @ref BattleOnProjectileHitSoulWall (BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)  
 ///   @copybrief Quantum.ISignalBattleOnProjectileHitSoulWall
-/// - signal BattleOnProjectileHitArenaBorder(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity)  
+/// - <b>signal</b> @ref BattleOnProjectileHitArenaBorder (BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity)  
 ///   @copybrief Quantum.ISignalBattleOnProjectileHitArenaBorder
-/// - signal BattleOnProjectileHitPlayerHitbox (BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity)  
+/// - <b>signal</b> @ref BattleOnProjectileHitPlayerHitbox (BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity)  
 ///   @copybrief Quantum.ISignalBattleOnProjectileHitPlayerHitbox
-/// - signal BattleOnProjectileHitGoal(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleGoalQComponent* goal, EntityRef goalEntity)  
+/// - <b>signal</b> @ref BattleOnProjectileHitGoal (BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleGoalQComponent* goal, EntityRef goalEntity)  
 ///   @copybrief Quantum.ISignalBattleOnProjectileHitGoal
-/// - signal BattleOnDiamondHitPlayer(BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity)   
+/// - <b>signal</b> @ref BattleOnDiamondHitPlayer (BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity)   
 ///   @copybrief Quantum.ISignalBattleOnDiamondHitPlayer
 ///
 /// ---
@@ -23,6 +23,7 @@
 ///
 /// ---
 ///
+/// @anchor BattleOnProjectileHitSoulWall
 /// ### BattleOnProjectileHitSoulWall
 /// @copybrief Quantum.ISignalBattleOnProjectileHitSoulWall
 ///
@@ -31,6 +32,7 @@
 ///
 /// ---
 ///
+/// @anchor BattleOnProjectileHitArenaBorder
 /// ### BattleOnProjectileHitArenaBorder
 /// @copybrief Quantum.ISignalBattleOnProjectileHitArenaBorder
 ///
@@ -39,6 +41,7 @@
 ///
 /// ---
 ///
+/// @anchor BattleOnProjectileHitPlayerHitbox
 /// ### BattleOnProjectileHitPlayerHitbox
 /// @copybrief Quantum.ISignalBattleOnProjectileHitPlayerHitbox
 ///
@@ -47,6 +50,7 @@
 ///
 /// ---
 ///
+/// @anchor BattleOnProjectileHitGoal
 /// ### BattleOnProjectileHitGoal
 /// @copybrief Quantum.ISignalBattleOnProjectileHitGoal
 ///
@@ -55,6 +59,7 @@
 ///
 /// ---
 ///
+/// @anchor BattleOnDiamondHitPlayer
 /// ### BattleOnDiamondHitPlayer
 /// @copybrief Quantum.ISignalBattleOnDiamondHitPlayer
 ///
@@ -62,6 +67,8 @@
 ///
 /// Generated Interface @cref{Quantum,ISignalBattleOnDiamondHitPlayer}  
 /// Generated Method @cref{Quantum,Frame.FrameSignals.BattleOnDiamondHitPlayer}
+///
+/// ---
 
 /// @interface Quantum::ISignalBattleOnProjectileHitSoulWall
 /// <summary>
