@@ -53,18 +53,23 @@
 /// @{
 /// @var PlayerRef Quantum.BattlePlayerDataQComponent::PlayerRef
 /// <summary>PlayerRef used to identify the player.</summary>
+/// Part of @ref PlayerID "[Player's refs and IDs]"
 ///
 /// @var BattlePlayerSlot Quantum.BattlePlayerDataQComponent::Slot
 /// <summary>Which PlayerSlot the player is on.</summary>
+/// Part of @ref PlayerID "[Player's refs and IDs]"
 ///
 /// @var BattleTeamNumber Quantum.BattlePlayerDataQComponent::TeamNumber
 /// <summary>Which team the player is on.</summary>
+/// Part of @ref PlayerID "[Player's refs and IDs]"
 ///
 /// @var int Quantum.BattlePlayerDataQComponent::CharacterId
 /// <summary>Character's 3-digit ID number.</summary>
+/// Part of @ref PlayerID "[Player's refs and IDs]"
 ///
 /// @var int Quantum.BattlePlayerDataQComponent::CharacterClass
 /// <summary>Which defense class the character belongs to.</summary>
+/// Part of @ref PlayerID "[Player's refs and IDs]"
 /// @}
 
 /// @anchor PlayerStats
@@ -72,18 +77,23 @@
 /// @{
 /// @var FP Quantum.BattlePlayerDataQComponent::StatHp
 /// <summary>Character's HP.</summary>
+/// Part of @ref PlayerStats "[Player's Stats]"
 ///
 /// @var FP Quantum.BattlePlayerDataQComponent::StatSpeed
 /// <summary>Character's speed.</summary>
+/// Part of @ref PlayerStats "[Player's Stats]"
 ///
 /// @var FP Quantum.BattlePlayerDataQComponent::StatCharacterSize
 /// <summary>Character's size.</summary>
+/// Part of @ref PlayerStats "[Player's Stats]"
 ///
 /// @var FP Quantum.BattlePlayerDataQComponent::StatAttack
 /// <summary>Character's attack.</summary>
+/// Part of @ref PlayerStats "[Player's Stats]"
 ///
 /// @var FP Quantum.BattlePlayerDataQComponent::StatDefence
 /// <summary>Character's defense.</summary>
+/// Part of @ref PlayerStats "[Player's Stats]"
 /// @}
 
 /// @anchor PlayerMovement
@@ -91,18 +101,23 @@
 /// @{
 /// @var int Quantum.BattlePlayerDataQComponent::GridExtendTop
 /// <summary>How many GridCells the character extends above the center heart position.</summary>
+/// Part of @ref PlayerMovement "[Player's movement related attributes]"
 ///
 /// @var int Quantum.BattlePlayerDataQComponent::GridExtendBottom
 /// <summary>How many GridCells the character extends below the center heart position.</summary>
+/// Part of @ref PlayerMovement "[Player's movement related attributes]"
 ///
 /// @var FPVector2 Quantum.BattlePlayerDataQComponent::TargetPosition
 /// <summary>The position the player is moving towards.</summary>
+/// Part of @ref PlayerMovement "[Player's movement related attributes]"
 ///
 /// @var FP Quantum.BattlePlayerDataQComponent::RotationBase
 /// <summary>Base rotation value of the character. Depends of which side of the play arena the player is on.</summary>
+/// Part of @ref PlayerMovement "[Player's movement related attributes]"
 ///
 /// @var FP Quantum.BattlePlayerDataQComponent::RotationOffset
 /// <summary>How much the player has rotated the character.</summary>
+/// Part of @ref PlayerMovement "[Player's movement related attributes]"
 /// @}
 
 /// @anchor PlayerHitboxLists
@@ -110,12 +125,15 @@
 /// @{
 /// @var list<BattlePlayerHitboxLink> Quantum.BattlePlayerDataQComponent::HitboxListAll
 /// <summary>List of all the hitboxes.</summary>
+/// Part of @ref PlayerHitboxLists "[Player's hitboxlists]"
 ///
 /// @var list<BattlePlayerHitboxLink> Quantum.BattlePlayerDataQComponent::HitboxListShield
 /// <summary>List of the shield hitboxes.</summary>
+/// Part of @ref PlayerHitboxLists "[Player's hitboxlists]"
 ///
 /// @var list<BattlePlayerHitboxLink> Quantum.BattlePlayerDataQComponent::HitboxListCharacter
 /// <summary>List of the character hitboxes.</summary>
+/// Part of @ref PlayerHitboxLists "[Player's hitboxlists]"
 /// @}
 
 
