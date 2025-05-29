@@ -4,11 +4,11 @@
 
 # Namespace Summary {#index-namespace-summary}
 
-|  Namespace                     || Description                                                                        |
+|  Namespace                                || Description                                                             |
 | :------------- | :------------------------ | :---------------------------------------------------------------------- |
 | @cref{Battle}                             || @copybrief Battle                                                       |
 | @crefd{Battle} | @cref{Battle,QSimulation} | @copybrief Battle.QSimulation @ref page-simulation-namespaces "More..." |
-| @crefd{Battle} | @cref{Battle,View}        | @copybrief Battle.View                                                  |
+| @crefd{Battle} | @cref{Battle,View}        | @copybrief Battle.View        @ref page-view-namespaces "More..."       |
 |                                                                                                                    |||
 | @cref{Quantum}                            || @copybrief Quantum                                                      |
 
@@ -24,12 +24,24 @@
 | @dirref{Altzone} | @dirref{Altzone,Assets}                                                                                      ||| Unity Resources Directory.<br/>Where all game resources are stored, including scripts, graphics, audio, etc.                                                                                       |
 |                                                                                                                                                                                                                                                                                                                                    |||||
 | @dirref{Altzone} | @dirref{Altzone,Assets} | @dirref{Altzone/Assets,QuantumUser}                                                 || Main %Quantum Directory.<br/>Contains files for %Battle and other %Quantum based development.                                                                                                      |
+| @dirref{Altzone} | @dirref{Altzone,Assets} | @dirref{Altzone/Assets,QuantumUser} | @dirref{Altzone/Assets/QuantumUser,Resources}  | Game Resource Directory.<br/>Contains %Battle resources like prefabs, configs, spec assets, graphics, audio, etc.                                                                                  |
+| @dirref{Altzone} | @dirref{Altzone,Assets} | @dirref{Altzone/Assets,QuantumUser} | @dirref{Altzone/Assets/QuantumUser,Scenes}     | Game Scene Directory.<br/>Contains %Battle Scenes.                                                                                                                                                 |
 | @dirref{Altzone} | @dirref{Altzone,Assets} | @dirref{Altzone/Assets,QuantumUser} | @dirref{Altzone/Assets/QuantumUser,Simulation} | Game Simulation Logic Directory. @ref page-simulation-directories "More..."<br/>Contains deterministic %Quantum Simulation logic and state.                                                        |
-| @dirref{Altzone} | @dirref{Altzone,Assets} | @dirref{Altzone/Assets,QuantumUser} | @dirref{Altzone/Assets/QuantumUser,View}       | Game View Logic Directory. @ref page-view "More..."<br/>Contains non-deterministic Unity View/Visual logic that is client-side representation of the Simulation.                                   |
+| @dirref{Altzone} | @dirref{Altzone,Assets} | @dirref{Altzone/Assets,QuantumUser} | @dirref{Altzone/Assets/QuantumUser,View}       | Game View Logic Directory. @ref page-view-directories "More..."<br/>Contains non-deterministic Unity View/Visual logic that is client-side representation of the Simulation.                       |
 |                                                                                                                                                                                                                                                                                                                                    |||||
 | @dirref{Altzone} | @dirref{Altzone,Doc/Doxygen/Battle}                                                                          ||| %Battle Documentation files. @dirlink{More...:Altzone/Doc/Doxygen/Battle}<br/>Contains [Doxygen🡵] configuration files, additional documentation files and the generated documentation for %Battle. |
 
 @bigtext{[[File List]](./files.html)}
+
+<br/>
+
+# Scenes {#index-scenes}
+
+|  Directory                                 | Scene                                                              | Description                                |
+| :----------------------------------------- | :----------------------------------------------------------------- | :----------------------------------------- |
+| @dirref{Altzone/Assets/QuantumUser,Scenes} | @ref 31-QuantumBattle.unity            "31-QuantumBattle"          | @copybrief 31-QuantumBattle.unity          |
+| @dirref{Altzone/Assets/QuantumUser,Scenes} | @ref 32-QuantumBattle_TestGrid.unity   "32-QuantumBattle_TestGrid" | @copybrief 32-QuantumBattle_TestGrid.unity |
+| @dirref{Altzone/Assets/QuantumUser,Scenes} | @ref QuantumGameScene.unity            "QuantumGameScene"          | @copybrief QuantumGameScene.unity          |
 
 <br/>
 
@@ -52,6 +64,8 @@
   Marks type as %Quantum Config.
 - **%QSpec**  
   Marks type as [Quantum Spec🡵].
+- **%ViewController**  
+  Marks type as ViewController.
 
 
 <br/>
