@@ -11,12 +11,9 @@ public class ItemMover : MonoBehaviour
 
     void Start()
     {
-        GetComponent<Button>().onClick.AddListener(OnClick);
+       
 
-        if (popup == null)
-        {
-            Debug.LogError("KojuPopup reference not assigned to ItemMover.");
-        }
+        GetComponent<Button>().onClick.AddListener(OnClick);
     }
 
     public void SetParents(Transform tray, Transform panel)
@@ -25,6 +22,7 @@ public class ItemMover : MonoBehaviour
         gridParent = panel;
     }
 
+    
     public void SetPopup(KojuPopup popupRef)
     {
         popup = popupRef;
@@ -35,10 +33,12 @@ public class ItemMover : MonoBehaviour
     {
         if (assignedSlot != null)
         {
+            // If the item is already in the panel, ask for confirmation before removing
             popup?.OpenRemovePopup(gameObject);
         }
         else if (HasFreeSlot())
         {
+            // Open the popup if the user is trying to move the item from the tray to the panel
             popup?.Open(gameObject);
         }
         else
