@@ -1,36 +1,45 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts.ReferenceSheets;
+using Altzone.Scripts.Model.Poco.Game;
 
 public class KojuPopup : MonoBehaviour
 {
+    [Header("Popup Buttons")]
     [SerializeField] private Button confirmButton;
     [SerializeField] private Button denyButton;
     [SerializeField] private Button increasePriceButton;
     [SerializeField] private Button decreasePriceButton;
 
+    [Header("Price UI")]
     [SerializeField] private TMP_InputField priceInput;
     [SerializeField] private TMP_Text kojuPriceText;
 
+    [Header("Info UI")]
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private Image rarity;
     [SerializeField] private TMP_Text setNameText;
     [SerializeField] private TMP_Text rarityText;
     [SerializeField] private TMP_Text weightText;
     [SerializeField] private Image iconImage;
+    [SerializeField] private TMP_Text descriptionText;
+    [SerializeField] private TMP_Text artistNameText;
 
-    [SerializeField] private TMP_Text descriptionText;  
-    [SerializeField] private TMP_Text artistNameText;   
-
+    [Header("Panels")]
     [SerializeField] private GameObject infoObject;
-
     [SerializeField] private GameObject removePopup;
+
+    [Header("Remove Confirmation")]
     [SerializeField] private Button removeConfirmButton;
     [SerializeField] private Button removeCancelButton;
 
+    [Header("Backgrounds")]
     [SerializeField] private Image infoBoxBackground;
-
     [SerializeField] private Image removePopupBackground;
+
+    [Header("Rarity Color Reference")]
+    [SerializeField] private RarityColourReference rarityColourReference;
 
     private GameObject currentCard;
     private KojuFurnitureData furnitureData;
@@ -67,29 +76,31 @@ public class KojuPopup : MonoBehaviour
 
         nameText.text = cardUI.GetNameText();
         setNameText.text = cardUI.GetSetNameText();
-        rarity.color = cardUI.GetRarityColor();
         weightText.text = cardUI.GetWeightText();
         iconImage.sprite = cardUI.GetIcon();
 
-        rarityText.text = "Rarity: " + GetRarityNameFromColor(rarity.color);
+        // Use stored enum to get color and name
+        FurnitureRarity rarityEnum = cardUI.GetFurnitureRarity();
+        Color rarityColor = rarityColourReference.GetColor(rarityEnum);
+        rarity.color = rarityColor;
+        rarityText.text = $"Rarity: {rarityEnum}";
+
+        // Price fields
         priceInput.text = currentPrice.ToString("0.0");
         kojuPriceText.text = $"Value: {currentPrice:0.0}";
 
-        
+        // Description
         descriptionText.text = cardUI.GetDescriptionText();
         artistNameText.text = $"Artist: {cardUI.GetCreatorText()}";
 
         removePopup.SetActive(false);
         gameObject.SetActive(true);
 
-        rarity.color = cardUI.GetRarityColor();
-
-        // Set the background of the info based on the rarity of the card
+        // Set background color to match rarity
         if (infoBoxBackground != null)
         {
-            infoBoxBackground.color = rarity.color;
+            infoBoxBackground.color = rarityColor;
         }
-
     }
 
     // Opens the popup in removal confirmation mode
@@ -108,17 +119,6 @@ public class KojuPopup : MonoBehaviour
 
         removePopup.SetActive(true);
         gameObject.SetActive(true);
-    }
-
-
-    // Gets the rarity text for the card based on the retrieved color from data
-    private string GetRarityNameFromColor(Color color)
-    {
-        if (color == Color.gray) return "Common";
-        if (color == Color.cyan) return "Rare";
-        if (color == new Color(0.6f, 0.2f, 0.8f)) return "Epic";
-        if (color == new Color(1f, 0.55f, 0f)) return "Antique";
-        return "Unknown";
     }
 
     private void OnIncreasePrice()
@@ -194,7 +194,6 @@ public class KojuPopup : MonoBehaviour
 
     public void ToggleInfo(GameObject target)
     {
-
         if (target != null)
         {
             target.SetActive(!target.activeSelf);

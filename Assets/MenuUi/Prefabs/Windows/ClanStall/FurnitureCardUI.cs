@@ -1,59 +1,58 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ReferenceSheets;
 
 public class FurnitureCardUI : MonoBehaviour
 {
-    [Header("UI References")]
-    [SerializeField] private Image iconImage;
+    [Header("UI Elements")]
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private TMP_Text setNameText;
     [SerializeField] private TMP_Text weightText;
-    [SerializeField] private TMP_Text valueText;
+    [SerializeField] private Image iconImage;
     [SerializeField] private Image rarityColorImage;
-    [SerializeField] private TMP_Text descriptionText;
-    [SerializeField] private TMP_Text creatorText;
 
-    public string GetNameText() => nameText.text;
-    public string GetSetNameText() => setNameText.text;
-    public Color GetRarityColor() => rarityColorImage.color;
-    public string GetWeightText() => weightText.text;
-    public string GetValueText() => valueText.text;
-    public Sprite GetIcon() => iconImage.sprite;
-    public string GetDescriptionText() => descriptionText != null ? descriptionText.text : "";
-    public string GetCreatorText() => creatorText != null ? creatorText.text : "";
+    [Header("References")]
+    [SerializeField] private RarityColourReference rarityColourReference;
 
-    // Populates the card UI with furniture data
+    private string creatorName;
+    private string description;
+    private FurnitureRarity storedRarity;
+
     public void PopulateCard(GameFurniture furniture)
     {
         nameText.text = furniture.FurnitureInfo.VisibleName;
         setNameText.text = furniture.FurnitureInfo.SetName;
-        iconImage.sprite = furniture.FurnitureInfo.Image;
         weightText.text = $"Weight: {furniture.Weight:0.0}";
-        valueText.text = $"Value: {furniture.Value:0.0}";
+        iconImage.sprite = furniture.FurnitureInfo.Image;
+        description = furniture.FurnitureInfo.ArtisticDescription;
+        creatorName = furniture.FurnitureInfo.ArtistName;
 
-        descriptionText.text = furniture.FurnitureInfo.ArtisticDescription;
-        creatorText.text = $"{furniture.FurnitureInfo.ArtistName}";
+        storedRarity = furniture.Rarity;
 
-        SetRarityColor(furniture.Rarity);
+        // Apply color using rarity reference
+        if (rarityColourReference != null)
+        {
+            rarityColorImage.color = rarityColourReference.GetColor(storedRarity);
+        }
     }
 
-    // Sets the color of the cards by rarity
-    private void SetRarityColor(FurnitureRarity rarity)
-    {
-        Color color = rarity switch
-        {
-            FurnitureRarity.Common => Color.gray,
-            FurnitureRarity.Rare => Color.cyan,
-            FurnitureRarity.Epic => new Color(0.6f, 0.2f, 0.8f),  // Violet
-            FurnitureRarity.Antique => new Color(1f, 0.55f, 0f),  // Orange
-            _ => Color.white
-        };
+    public string GetNameText() => nameText.text;
+    public string GetSetNameText() => setNameText.text;
+    public string GetWeightText() => weightText.text;
+    public Sprite GetIcon() => iconImage.sprite;
+    public string GetDescriptionText() => description;
+    public string GetCreatorText() => creatorName;
 
-        if (rarityColorImage != null)
-        {
-            rarityColorImage.color = color;
-        }
+    // Added getter for rarity enum
+    public FurnitureRarity GetFurnitureRarity() => storedRarity;
+
+    // Added getter for color
+    public Color GetRarityColor()
+    {
+        if (rarityColourReference != null)
+            return rarityColourReference.GetColor(storedRarity);
+        return Color.white;
     }
 }
