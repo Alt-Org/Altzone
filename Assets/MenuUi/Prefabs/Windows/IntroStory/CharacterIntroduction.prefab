@@ -2160,7 +2160,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 329.36, y: -432}
+  m_AnchoredPosition: {x: 329.36, y: -517}
   m_SizeDelta: {x: 1125.072, y: 657.399}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1054653415584228527
@@ -2191,9 +2191,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Sulautujissa kahdesta tulee yksi, voittamaton tiimi. Tunteiden l\xE4hestyess\xE4
-    he puhaltavat suuren kuplan suojakseen ja hidastavat tapahtumien kulkua imulla,
-    josta on vaikea p\xE4\xE4st\xE4 irti."
+  m_text: "n\xE4m\xE4 itseens\xE4 houkuttelevat defenssit turvautuvat turvaesineeseens\xE4
+    tai henkil\xF6\xF6\xF6n, jonka kanssa yhdest\xE4 tulee useampi. He muodostavat
+    voimakkaan kuplan suojakseen ja hidastavat tapahtumien kulkua imulla, josta on
+    vaikea p\xE4\xE4st\xE4 irti."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
   m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
@@ -4544,7 +4545,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: AHMATTI
+  m_text: TORJUJAT
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 31fb2bbeeb88b8f4fa87e595eb13b936, type: 2}
   m_sharedMaterial: {fileID: 7919689120557700827, guid: 31fb2bbeeb88b8f4fa87e595eb13b936,
@@ -4610,7 +4611,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: -0.95596343, z: -10.009773, w: 0}
+  m_margin: {x: -89.71457, y: -0.95596343, z: -10.009773, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -5410,7 +5411,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: SULAUTUJA
+  m_text: 'SULAUTUJAT '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 31fb2bbeeb88b8f4fa87e595eb13b936, type: 2}
   m_sharedMaterial: {fileID: 7919689120557700827, guid: 31fb2bbeeb88b8f4fa87e595eb13b936,
@@ -6176,7 +6177,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 292, y: -480}
+  m_AnchoredPosition: {x: 292, y: -493}
   m_SizeDelta: {x: 1077.583, y: 683.363}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7672520379851417936
@@ -6207,9 +6208,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Peilaajat projisoivat taitavasti tunteet itsens\xE4 ulkopuolelle - niin
-    toisiin hahmoihin, kuin vaikka taiteeseen. He ohjaavat tunteet joukkuetoverinsa
-    hoidettavaksi. Peilaajat eiv\xE4t kanna vastuuta.\r\n"
+  m_text: "l\xF6yt\xE4v\xE4t aina vikoja muista ja heid\xE4n vahvin aseensa onkin
+    k\xE4\xE4nt\xE4\xE4 tunteet tiimikaverin hoidettavaksi. Koska he ovat kyvytt\xF6mi\xE4
+    k\xE4sittelem\xE4\xE4n omia sotkujaan, niin ilman syyllist\xE4 heist\xE4 ei ole
+    mihink\xE4\xE4n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
   m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
@@ -6685,7 +6687,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TUNNOTTOMUUS
+  m_text: TUNNOTTOMAT
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 31fb2bbeeb88b8f4fa87e595eb13b936, type: 2}
   m_sharedMaterial: {fileID: 7919689120557700827, guid: 31fb2bbeeb88b8f4fa87e595eb13b936,
@@ -8277,7 +8279,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: PEILAAJA
+  m_text: PEILAAJAT
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 31fb2bbeeb88b8f4fa87e595eb13b936, type: 2}
   m_sharedMaterial: {fileID: 7919689120557700827, guid: 31fb2bbeeb88b8f4fa87e595eb13b936,
@@ -8343,7 +8345,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 5.5297847, w: 0}
+  m_margin: {x: 0, y: 0, z: -92.50638, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -9536,7 +9538,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -404, y: -480}
+  m_AnchoredPosition: {x: -404, y: -328}
   m_SizeDelta: {x: 1296.677, y: 881.424}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1662001848823854998
@@ -9567,10 +9569,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "H\xE4m\xE4\xE4j\xE4 v\xE4istelee tunteita hurtilla huumorilla ja pierutyynyll\xE4,
-    joka  muuttaa muotoaan ja saa kent\xE4ll\xE4 liikkuvan tunnetila-ammuksen vaihtamaan
-    sattumanvaraisesti suuntaa ja n\xE4in vastajoukkueen on vaikea ennustaa mihin
-    ammus menee."
+  m_text: "v\xE4istelev\xE4t tunteita kuin saippua ja muuttavat suuntaa niin vikkel\xE4sti
+    ettei kukaan aavista mihin kent\xE4ll\xE4 liikkuva tunnetila-ammus vaihtaa suuntaa."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
   m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
@@ -9798,8 +9798,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 314, y: -130}
-  m_SizeDelta: {x: 1147.956, y: 143.555}
+  m_AnchoredPosition: {x: 426, y: -130}
+  m_SizeDelta: {x: 986.45, y: 143.555}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1478231436614009347
 CanvasRenderer:
@@ -9829,7 +9829,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TAPAUSKOVAINEN
+  m_text: TOTTELIJAT
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 31fb2bbeeb88b8f4fa87e595eb13b936, type: 2}
   m_sharedMaterial: {fileID: 7919689120557700827, guid: 31fb2bbeeb88b8f4fa87e595eb13b936,
@@ -9895,7 +9895,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: 4.115815, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -11624,7 +11624,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -300, y: -461}
+  m_AnchoredPosition: {x: -300, y: -412}
   m_SizeDelta: {x: 971.212, y: 759.66}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7527728228740838517
@@ -11655,9 +11655,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Ahmatti torjuu tunteita keskittym\xE4ll\xE4 sy\xF6miseen. H\xE4n on jatkuvasti
-    varuillaan, eik\xE4 h\xE4n koskaan luovu suojakilvest\xE4\xE4n, vaan se el\xE4\xE4
-    jatkuvassa muodonmuutoksessa. \r\n"
+  m_text: "kielt\xE4ytyv\xE4t tuntemasta tunteita ollenkaan. He ovat varuillaan aamusta
+    iltaan, eik\xE4 heid\xE4n suojakilpens\xE4 poistu koskaan vaan se el\xE4\xE4
+    jatkuvassa muodonmuutoksessa. \n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
   m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
@@ -13519,7 +13519,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -585, y: -480}
+  m_AnchoredPosition: {x: -585, y: -342}
   m_SizeDelta: {x: 1122.942, y: 881.424}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6555010457345053683
@@ -13550,10 +13550,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Tapauskovaisen toimintaa m\xE4\xE4rittelev\xE4t ahtaat uskonnolliset pelis\xE4\xE4nn\xF6t
-    joista ei saa poiketa. Tapauskovainen tekee asiat kuten pit\xE4\xE4, ymm\xE4rt\xE4m\xE4tt\xE4
-    miksi. H\xE4nen suuri pyh\xE4 kirjansa kimmottaa tunteet kohti vastustajaa -
-    aina kuten ennenkin."
+  m_text: "tekev\xE4t sen mit\xE4 pit\xE4\xE4, kirjaimellisesti ja ymm\xE4rt\xE4m\xE4tt\xE4
+    miksi. Tottelijat ovat tarkkoja ja s\xE4\xE4nn\xF6nmukaisia sotureita, jotka
+    eiv\xE4t ole muokattavissa. "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
   m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
@@ -14337,7 +14336,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -4, y: -401}
+  m_AnchoredPosition: {x: -4, y: -308}
   m_SizeDelta: {x: 1136.646, y: 755.763}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3877040265605625718
@@ -14368,9 +14367,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Tutkija suojautuu tunteilta tietokirjalla, joka muodostaa pelikent\xE4lle
-    tunteiden kulkurataa kuvaavia kaavioita. Albertin jatkuvat kaaviot saattavat
-    kuitenkin toisinaan \xE4rsytt\xE4\xE4 h\xE4nen joukkuetovereitaan. "
+  m_text: "suojautuvat kyvyll\xE4\xE4n ennakoida ja laskelmoida tulevia tilanteita.
+    Heid\xE4n analyysistaan ja palautetulvastaan ei tule koskaan loppua, joka saattaa
+    \xE4rsytt\xE4\xE4 joukkuetovereita. "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
   m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
@@ -14476,7 +14475,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -485, y: -480}
+  m_AnchoredPosition: {x: -485, y: -381}
   m_SizeDelta: {x: 1043.836, y: 595.644}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &549780947572692662
@@ -14507,8 +14506,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Patriootti ohittaa taistelussa tunteet, kivun ja pelon, mutta sisimm\xE4ss\xE4\xE4n
-    kaipaa yhteytt\xE4. Patriootti kest\xE4\xE4 - kunnes romahtaa.\n\n"
+  m_text: "pystyv\xE4t piilottamaan tunteet kovan ulkokuorensa taakse, mutta vaikka
+    vahva olemus suojaakin egoa k\xE4tev\xE4sti kolhuilta, niin kaikella on rajansa."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
   m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
