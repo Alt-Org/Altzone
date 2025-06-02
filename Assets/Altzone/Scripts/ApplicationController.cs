@@ -41,7 +41,7 @@ namespace Altzone.Scripts
                 .ToString();
             Debug.Log(startupMessage);
 
-            AltzoneBattleLink.Int();
+            AltzoneBattleLink.Init();
 
             InstantiateGlobalGameObjects();
         }

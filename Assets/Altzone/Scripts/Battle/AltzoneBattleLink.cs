@@ -1,18 +1,16 @@
 
+using System.Runtime.CompilerServices;
 using Quantum;
 
-using Battle.QSimulation.Game;
-
 using Altzone.Scripts.ModelV2;
+using Battle.QSimulation.Game;
 
 public static class AltzoneBattleLink
 {
-    public static void Int()
-    {
-        BattleAltzoneLink.InitLink(
-            getCharacterPrototypeFnRef: GetCharacterPrototype
-        );
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Init() => BattleAltzoneLink.InitLink(
+        getCharacterPrototypeFnRef: GetCharacterPrototype
+    );
 
     private static AssetRef<EntityPrototype> GetCharacterPrototype(int characterID)
     {
