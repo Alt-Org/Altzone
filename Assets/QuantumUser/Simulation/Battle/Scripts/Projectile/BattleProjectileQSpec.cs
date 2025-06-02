@@ -3,7 +3,8 @@
 /// Defines projectile's specifications.
 /// </summary>
 ///
-/// This spec defines projectile's Entity Prototype, initial speed and amount.
+/// This spec defines projectile's Entity Prototype, initial speed and amount.<br/>  
+/// @bigtext{Filled with data from @ref BattleProjectileQSpec.asset "BattleProjectileQSpec" data asset.}
 
 using UnityEngine;
 
@@ -15,6 +16,8 @@ namespace Battle.QSimulation.Projectile
     /// <summary>
     /// Asset that defines projectile's initial values.
     /// </summary>
+    ///
+    /// @bigtext{Filled with data from @ref BattleProjectileQSpec.asset "BattleProjectileQSpec" data asset.}
     public class BattleProjectileQSpec: AssetObject
     {
         [Header("Projectile configuration")]

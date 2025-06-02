@@ -3,7 +3,8 @@
 /// Defines arena specifications and layout used during battle simulations.
 /// </summary>
 ///
-/// This spec defines physical dimensions, grid configuration, and spawn templates for use in the Quantum simulation.
+/// This spec defines physical dimensions, grid configuration, and spawn templates for use in the Quantum simulation.<br/>  
+/// @bigtext{Filled with data from @ref BattleArenaQSpec.asset "BattleArenaQSpec" data asset.}
 
 using Quantum;
 using Photon.Deterministic;
@@ -14,6 +15,8 @@ namespace Battle.QSimulation.Game
     /// Asset that defines the battlefield layout and settings.
     /// Includes dimensions, grid size, and template references for player spawns and SoulWalls.
     /// </summary>
+    ///
+    /// @bigtext{Filled with data from @ref BattleArenaQSpec.asset "BattleArenaQSpec" data asset.}
     public class BattleArenaQSpec : AssetObject
     {
         /// <value>Width of the playable arena in world units.</value>
