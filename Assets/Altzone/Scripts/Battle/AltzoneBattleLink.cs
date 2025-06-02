@@ -3,6 +3,8 @@ using Quantum;
 
 using Battle.QSimulation.Game;
 
+using Altzone.Scripts.ModelV2;
+
 public static class AltzoneBattleLink
 {
     public static void Int()
@@ -14,7 +16,7 @@ public static class AltzoneBattleLink
 
     private static AssetRef<EntityPrototype> GetCharacterPrototype(int characterID)
     {
-        // add implementation
-        return null;
+        PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(characterID.ToString());
+        return info != null ? info.BattleEntityPrototype: null;
     }
 }
