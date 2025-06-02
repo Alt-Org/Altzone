@@ -8,8 +8,10 @@ public class KojuTrayPopulator : MonoBehaviour
 {
     [Header("UI Setup")]
     [SerializeField] private GameObject cardPrefab;
-    [SerializeField] private Transform contentParent; 
-    [SerializeField] private Transform panelContent; 
+    [SerializeField] private Transform trayContent;  
+    [SerializeField] private Transform panelContent;    
+
+    [SerializeField] private KojuPopup kojuPopup;      
 
     private void Start()
     {
@@ -34,7 +36,7 @@ public class KojuTrayPopulator : MonoBehaviour
         // Populates the tray by instantiating a card and filling it with the data
         foreach (var furniture in allFurniture)
         {
-            GameObject cardGO = Instantiate(cardPrefab, contentParent);
+            GameObject cardGO = Instantiate(cardPrefab, trayContent);
             FurnitureCardUI cardUI = cardGO.GetComponent<FurnitureCardUI>();
             KojuFurnitureData data = cardGO.GetComponent<KojuFurnitureData>();
             ItemMover mover = cardGO.GetComponent<ItemMover>();
@@ -52,7 +54,8 @@ public class KojuTrayPopulator : MonoBehaviour
             // Pass the references to ItemMover
             if (mover != null)
             {
-                mover.SetParents(contentParent, panelContent);
+                mover.SetParents(trayContent, panelContent); 
+                mover.SetPopup(kojuPopup);                     
             }
         }
 

@@ -11,24 +11,23 @@ public class ItemMover : MonoBehaviour
 
     void Start()
     {
-        
-
         GetComponent<Button>().onClick.AddListener(OnClick);
-
-        // This should be changed
-        popup = FindObjectOfType<KojuPopup>(true);
 
         if (popup == null)
         {
-            Debug.LogError("KojuPopup not found");
+            Debug.LogError("KojuPopup reference not assigned to ItemMover.");
         }
     }
 
-    
     public void SetParents(Transform tray, Transform panel)
     {
         trayParent = tray;
         gridParent = panel;
+    }
+
+    public void SetPopup(KojuPopup popupRef)
+    {
+        popup = popupRef;
     }
 
     // Call when clicking a card in the panel or the tray, see KojuPopup.cs
@@ -60,7 +59,7 @@ public class ItemMover : MonoBehaviour
         {
             KojuItemSlot[] slots = GameObject.FindObjectsOfType<KojuItemSlot>();
 
-            //Sort the panel using sibling index in the hierarchy
+            // Sort the panel using sibling index in the hierarchy
             System.Array.Sort(slots, (a, b) => a.transform.GetSiblingIndex().CompareTo(b.transform.GetSiblingIndex()));
 
             // Loop through each slot in the panel to find the first available slot
