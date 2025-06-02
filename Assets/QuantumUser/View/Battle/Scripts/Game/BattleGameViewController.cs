@@ -4,8 +4,7 @@
 /// </summary>
 ///
 /// This script:<br/>
-/// Initializes %Battle %UI elements, and controls their visibility and functionality.<br/>
-/// Inherits <a href="https://doc-api.photonengine.com/en/quantum/current/class_quantum_1_1_quantum_callbacks.html">QuantumCallbacks@u-exlink</a>.
+/// Initializes %Battle %UI elements, and controls their visibility and functionality.
 
 using UnityEngine;
 

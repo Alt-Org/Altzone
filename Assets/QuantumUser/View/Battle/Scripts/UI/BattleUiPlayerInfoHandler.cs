@@ -1,3 +1,11 @@
+/// @file BattleUiPlayerInfoHandler.cs
+/// <summary>
+/// Has a class BattleUiPlayerInfoHandler which handles %Battle %UI player and teammate info visual functionality..
+/// </summary>
+///
+/// This script:<br/>
+/// Handles %Battle %UI player and teammate info visual functionality through BattleUiPlayerInfoComponent.
+
 using UnityEngine;
 
 using Altzone.Scripts.BattleUiShared;
@@ -5,30 +13,60 @@ using Altzone.Scripts.BattleUiShared;
 namespace Battle.View.UI
 {
     /// <summary>
-    /// Handles Battle Ui player info functionality.
+    /// <span class="brief-h">PlayerInfo @uihandlerlink (<a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>).</span><br/>
+    /// Handles %Battle %UI player and teammate info visual functionality through BattleUiPlayerInfoComponent.
     /// </summary>
     public class BattleUiPlayerInfoHandler : MonoBehaviour
     {
+        /// @name SerializeField variables
+        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// @{
+
+        /// <value>[SerializeField] Reference to BattleUiController.</value>
         [SerializeField] private BattleUiController _uiController;
+
+        /// <value>[SerializeField] Reference to the BattleUiMultiOrientationElement script which is attached to the local player's BattleUiPlayerInfo prefab.</value>
         [SerializeField] private BattleUiMultiOrientationElement _localPlayerMultiOrientationElement;
+
+        /// <value>[SerializeField] Reference to the BattleUiMultiOrientationElement script which is attached to the local player's teammate's BattleUiPlayerInfo prefab.</value>
         [SerializeField] private BattleUiMultiOrientationElement _localTeammateMultiOrientationElement;
 
+        /// @}
+
+        /// <summary>
+        /// Helper enum to differentiate between local player and local player's teammate when calling #SetInfo method.
+        /// </summary>
         public enum PlayerType
         {
             LocalPlayer,
             LocalTeammate,
         }
 
+        /// <value>Is the %UI element visible or not.</value>
         public bool IsVisible => _localPlayerMultiOrientationElement.gameObject.activeSelf;
+
+        /// <value>Public getter for #_localPlayerMultiOrientationElement.</value>
         public BattleUiMultiOrientationElement LocalPlayerMultiOrientationElement   => _localPlayerMultiOrientationElement;
+
+        /// <value>Public getter for #_localTeammateMultiOrientationElement.</value>
         public BattleUiMultiOrientationElement LocalTeammateMultiOrientationElement => _localTeammateMultiOrientationElement;
 
+        /// <summary>
+        /// Sets the %UI element visibility.
+        /// </summary>
+        /// <param name="show">If the %UI element should be visible or not.</param>
         public void SetShow(bool show)
         {
             _localPlayerMultiOrientationElement.gameObject.SetActive(show);
             _localTeammateMultiOrientationElement.gameObject.SetActive(show);
         }
 
+        /// <summary>
+        /// Sets the player's info to BattleUiPlayerInfo prefab through BattleUiPlayerInfoComponent.
+        /// </summary>
+        /// <param name="playerType">The PlayerType which info to set.</param>
+        /// <param name="playerName">The player's name.</param>
+        /// <param name="characterIds">The player's selected characters CharacterIds as a int array.</param>
         public void SetInfo(PlayerType playerType, string playerName, int[] characterIds)
         {
             // Getting player info component from multi orientation element

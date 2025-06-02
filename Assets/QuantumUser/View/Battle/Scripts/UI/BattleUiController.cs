@@ -4,8 +4,7 @@
 /// </summary>
 ///
 /// This script:<br/>
-/// Holds references to all of the @ref UIHandlerReferences and @ref DebugUIHandlerReferences, and the BattleGameViewController script.<br/>
-/// <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour@u-exlink</a> script.
+/// Holds references to all of the @ref UIHandlerReferences and @ref DebugUIHandlerReferences, and the BattleGameViewController script.
 
 using UnityEngine;
 
@@ -16,7 +15,7 @@ namespace Battle.View.UI
     /// <summary>
     /// Main controller for %Battle %UI.<br/>
     /// BattleGameViewController accesses the @uihandlerslink scripts through this class.<br/>
-    /// <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour@u-exlink</a> script.
+    /// <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>.
     /// </summary>
     ///
     /// Holds references to all of the @ref UIHandlerReferences and @ref DebugUIHandlerReferences, and the BattleGameViewController script.

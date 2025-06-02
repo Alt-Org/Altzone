@@ -4,8 +4,7 @@
 /// </summary>
 ///
 /// This script:<br/>
-/// Handles showing the announcement/countdown text. Part of @uihandlerslink.<br/>
-/// <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour@u-exlink</a> script.
+/// Handles showing the announcement/countdown text.
 
 using UnityEngine;
 
@@ -14,8 +13,8 @@ using TMPro;
 namespace Battle.View.UI
 {
     /// <summary>
-    /// Handles showing the announcement/countdown text. Part of @uihandlerslink.<br/>
-    /// <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour@u-exlink</a> script.
+    /// <span class="brief-h">Announcement @uihandlerlink (<a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>).</span><br/>
+    /// Handles showing the announcement/countdown text.
     /// </summary>
     public class BattleUiAnnouncementHandler : MonoBehaviour
     {
@@ -26,7 +25,7 @@ namespace Battle.View.UI
         /// <value>[SerializeField] Reference to the GameObject which can be used to hide or show the announcement.</value>
         [SerializeField] private GameObject _view;
 
-        /// <value>[SerializeField] Reference to the TextMeshProUGUI component which the announcement text is set to.</value>
+        /// <value>[SerializeField] Reference to the <a href="https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/api/TMPro.TextMeshProUGUI.html">TextMeshProUGUI@u-exlink</a> component which the announcement text is set to.</value>
         [SerializeField] private TextMeshProUGUI _announcerText;
 
         /// @}

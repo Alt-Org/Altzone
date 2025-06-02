@@ -4,8 +4,7 @@
 /// </summary>
 ///
 /// This script:<br/>
-/// Handles setting collected diamond amount text. Part of @uihandlerslink.<br/>
-/// <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour@u-exlink</a> script.
+/// Handles setting collected diamond amount text.
 
 using UnityEngine;
 using TMPro;
@@ -15,8 +14,8 @@ using Altzone.Scripts.BattleUiShared;
 namespace Battle.View.UI
 {
     /// <summary>
-    /// Handles setting collected diamond amount text. Part of @uihandlerslink.<br/>
-    /// <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour@u-exlink</a> script.
+    /// <span class="brief-h">Diamonds @uihandlerlink (<a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>).</span><br/>
+    /// Handles setting collected diamond amount text.
     /// </summary>
     public class BattleUiDiamondsHandler : MonoBehaviour
     {
