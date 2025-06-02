@@ -358,10 +358,13 @@ MonoBehaviour:
           Value: 0
         TimeUntilStart:
           RawValue: 262144
+        GameTimeSec:
+          RawValue: 0
     - rid: 9189874137361809410
       type: {class: BattlePlayerManagerDataQSingletonPrototype, ns: Quantum.Prototypes,
         asm: Quantum.Simulation}
       data:
+        PlayerCount: 0
         PlayStates:
         - Value: 0
         - Value: 0
