@@ -17,6 +17,6 @@ public static class AltzoneBattleLink
     private static AssetRef<EntityPrototype> GetCharacterPrototype(int characterID)
     {
         PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(characterID.ToString());
-        return info != null ? info.BattleEntityPrototype: null;
+        return info != null ? info.BattleEntityPrototype : null;
     }
 }
