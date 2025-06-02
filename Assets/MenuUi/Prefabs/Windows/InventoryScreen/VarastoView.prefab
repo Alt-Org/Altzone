@@ -5837,6 +5837,7 @@ MonoBehaviour:
   cardPrefab: {fileID: 1992715369758776530, guid: 1c15b33f768b88d4fa2253558ccdb4c7,
     type: 3}
   contentParent: {fileID: 1846379613799014715}
+  panelContent: {fileID: 2844279996087878636}
 --- !u!1 &3630242131242719021
 GameObject:
   m_ObjectHideFlags: 0
@@ -13265,6 +13266,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1700831355370661009, guid: faf3d3e322be9a940a310f9404492cd8,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2082420161837013928, guid: faf3d3e322be9a940a310f9404492cd8,
         type: 3}
       propertyPath: m_Name
@@ -13274,6 +13280,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5415034576622081522, guid: faf3d3e322be9a940a310f9404492cd8,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -797.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5415034576622081522, guid: faf3d3e322be9a940a310f9404492cd8,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: -1467.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5943190843763056081, guid: faf3d3e322be9a940a310f9404492cd8,
+        type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
