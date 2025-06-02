@@ -93,6 +93,27 @@ namespace Altzone.Scripts.Model.Poco.Clan
         RarelyActive
     }
 
+    public enum ClanRanking
+    {
+        None,
+        Top10,
+        Top25,
+        Top50,
+        Top100,
+        All
+    }
+
+    public enum ClanMembers
+    {
+        None,
+        Small,      
+        Medium,     
+        Large,      
+        VeryLarge,  
+        Huge,        
+        All
+    }
+
     public static class ClanDataTypeConverter
     {
         public static string GetAgeText(ClanAge age)
@@ -140,7 +161,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         {
             return activity switch
             {
-                ClanActivity.None => "Aktiivisuusluokka",
+                ClanActivity.None => "Aktiivisuus",
                 ClanActivity.VeryActive => "Erittäin aktiivinen",
                 ClanActivity.Active => "Aktiivinen",
                 ClanActivity.OccasionallyActive => "Satunnainen",
@@ -148,6 +169,35 @@ namespace Altzone.Scripts.Model.Poco.Clan
                 _ => "",
             };
         }
+
+        public static string GetRankingText(ClanRanking ranking)
+        {
+            return ranking switch
+            {
+                ClanRanking.None => "Sijoitus",
+                ClanRanking.Top10 => "Top 10",
+                ClanRanking.Top25 => "Top 25",
+                ClanRanking.Top50 => "Top 50",
+                ClanRanking.Top100 => "Top 100",
+                ClanRanking.All => "Kaikki",
+                _ => "",
+            };
+        }
+
+      public static string GetMembersText(ClanMembers members)
+{
+    return members switch
+    {
+        ClanMembers.None => "Jäsenmäärä",
+        ClanMembers.Small => "Pieni (1-10)",
+        ClanMembers.Medium => "Keskikokoinen (11-25)",
+        ClanMembers.Large => "Suuri (26-50)",
+        ClanMembers.VeryLarge => "Hyvin suuri (51-100)",
+        ClanMembers.Huge => "Valtava (100+)",
+        ClanMembers.All => "Kaikki",     
+        _ => "",
+    };
+}
 
         public static string ClanValuesToString(ClanValues value)
         {

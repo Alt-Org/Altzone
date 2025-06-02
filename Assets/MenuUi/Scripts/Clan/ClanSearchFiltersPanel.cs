@@ -42,7 +42,6 @@ public class ClanSearchFiltersPanel : MonoBehaviour
     [SerializeField] private Sprite _closedLockSprite;
 
     [Header("Values selection")]
-
     [Space]
     [SerializeField] private Button _confirmButton;
     [SerializeField] private GameObject _filtersPopup;
@@ -51,22 +50,21 @@ public class ClanSearchFiltersPanel : MonoBehaviour
 
     private ClanAge _clanAge = ClanAge.All;
     private Language _clanLanguage = Language.None;
+    private ClanActivity _clanActivity = ClanActivity.None;
+    private ClanRanking _clanRanking = ClanRanking.All;
+    private ClanMembers _clanMembers = ClanMembers.All;
+    private Goals _clanGoal = Goals.None;  // Lisätty puuttuva goal
     private bool _isOpen = true;
 
     private void OnEnable()
     {
         InitSelectors();
-        //_clanNameField.onEndEdit.RemoveAllListeners();
-        //_clanNameField.onEndEdit.AddListener((value) => UpdateFilters());
-
         _confirmButton.onClick.RemoveAllListeners();
         _confirmButton.onClick.AddListener(() =>
         {
             UpdateFilters();
             _filtersPopup.SetActive(false);
         });
-
-        //UpdateFilters();
     }
 
     private void OnDisable()
@@ -78,27 +76,9 @@ public class ClanSearchFiltersPanel : MonoBehaviour
     {
         InitializeAge();
         InitializeLanguage();
-
-        //_goalDropdown.onValueChanged.RemoveAllListeners();
-        //_goalDropdown.value = 0;
-        //_goalDropdown.options.Clear();
-        //foreach (Goals goal in Enum.GetValues(typeof(Goals)))
-        //{
-        //    string text = ClanDataTypeConverter.GetGoalText(goal);
-        //    _goalDropdown.options.Add(new TMP_Dropdown.OptionData(text));
-        //}
-        //_goalDropdown.onValueChanged.AddListener((value) => UpdateFilters());
-
-        //_activityDropdown.onValueChanged.RemoveAllListeners();
-        //_activityDropdown.value = 0;
-        //_activityDropdown.options.Clear();
-        //foreach (ClanActivity activity in Enum.GetValues(typeof(ClanActivity)))
-        //{
-        //    string text = ClanDataTypeConverter.GetActivityText(activity);
-        //    _activityDropdown.options.Add(new TMP_Dropdown.OptionData(text));
-        //}
-        //_activityDropdown.onValueChanged.AddListener((value) => UpdateFilters());
-
+        InitializeActivity();
+        InitializeRanking();
+        InitializeMembers();
         InitializeLock();
     }
 
@@ -143,37 +123,77 @@ public class ClanSearchFiltersPanel : MonoBehaviour
         });
     }
 
+    private void InitializeActivity()
+    {
+        _activityText.text = ClanDataTypeConverter.GetActivityText(_clanActivity);
+
+        _activityButtonNext.onClick.AddListener(() =>
+        {
+            bool isLast = _clanActivity == Enum.GetValues(typeof(ClanActivity)).Cast<ClanActivity>().Last();
+            _clanActivity = isLast ? (ClanActivity)1 : _clanActivity + 1;
+            _activityText.text = ClanDataTypeConverter.GetActivityText(_clanActivity);
+        });
+
+        _activityButtonPrevious.onClick.AddListener(() =>
+        {
+            bool isFirst = (int)_clanActivity <= 1;
+            _clanActivity = isFirst ? Enum.GetValues(typeof(ClanActivity)).Cast<ClanActivity>().Last() : _clanActivity - 1;
+            _activityText.text = ClanDataTypeConverter.GetActivityText(_clanActivity);
+        });
+    }
+
+    private void InitializeRanking()
+    {
+        _rankingText.text = ClanDataTypeConverter.GetRankingText(_clanRanking);
+
+        _rankingButtonNext.onClick.AddListener(() =>
+        {
+            bool isLast = _clanRanking == Enum.GetValues(typeof(ClanRanking)).Cast<ClanRanking>().Last();
+            _clanRanking = isLast ? (ClanRanking)1 : _clanRanking + 1;
+            _rankingText.text = ClanDataTypeConverter.GetRankingText(_clanRanking);
+        });
+
+        _rankingButtonPrevious.onClick.AddListener(() =>
+        {
+            bool isFirst = (int)_clanRanking <= 1;
+            _clanRanking = isFirst ? Enum.GetValues(typeof(ClanRanking)).Cast<ClanRanking>().Last() : _clanRanking - 1;
+            _rankingText.text = ClanDataTypeConverter.GetRankingText(_clanRanking);
+        });
+    }
+
+    private void InitializeMembers()
+    {
+        _membersText.text = ClanDataTypeConverter.GetMembersText(_clanMembers);
+
+        _membersButtonNext.onClick.AddListener(() =>
+        {
+            bool isLast = _clanMembers == Enum.GetValues(typeof(ClanMembers)).Cast<ClanMembers>().Last();
+            _clanMembers = isLast ? (ClanMembers)1 : _clanMembers + 1;
+            _membersText.text = ClanDataTypeConverter.GetMembersText(_clanMembers);
+        });
+
+        _membersButtonPrevious.onClick.AddListener(() =>
+        {
+            bool isFirst = (int)_clanMembers <= 1;
+            _clanMembers = isFirst ? Enum.GetValues(typeof(ClanMembers)).Cast<ClanMembers>().Last() : _clanMembers - 1;
+            _membersText.text = ClanDataTypeConverter.GetMembersText(_clanMembers);
+        });
+    }
+
     private void InitializeLock()
     {
         _openButtonNext.onClick.RemoveAllListeners();
         _openButtonPrevious.onClick.RemoveAllListeners();
 
-        _openButtonNext.onClick.AddListener(() =>
-        {
-            ToggleLock();
-        });
-
-        _openButtonPrevious.onClick.AddListener(() =>
-        {
-            ToggleLock();
-        });
+        _openButtonNext.onClick.AddListener(() => ToggleLock());
+        _openButtonPrevious.onClick.AddListener(() => ToggleLock());
     }
 
     private void ToggleLock()
     {
-        switch (_isOpen)
-        {
-            case true:
-                _isOpen = false;
-                _openText.text = "Lukittu";
-                _lockImage.sprite = _closedLockSprite;
-                break;
-            case false:
-                _isOpen = true;
-                _openText.text = "Avoin";
-                _lockImage.sprite = _openLockSprite;
-                break;
-        }
+        _isOpen = !_isOpen;
+        _openText.text = _isOpen ? "Avoin" : "Lukittu";
+        _lockImage.sprite = _isOpen ? _openLockSprite : _closedLockSprite;
     }
 
     private void UpdateFilters()
@@ -181,10 +201,12 @@ public class ClanSearchFiltersPanel : MonoBehaviour
         OnFiltersChanged?.Invoke(new ClanSearchFilters()
         {
             clanName = "",
-            activity = ClanActivity.None,
+            activity = _clanActivity,
             age = _clanAge,
             language = _clanLanguage,
-            goal = Goals.None,
+            goal = _clanGoal,      // Lisätty puuttuva goal kenttä
+            ranking = _clanRanking,
+            memberCount = _clanMembers,  // Korjattu: members -> memberCount
             isOpen = _isOpen
         });
     }
