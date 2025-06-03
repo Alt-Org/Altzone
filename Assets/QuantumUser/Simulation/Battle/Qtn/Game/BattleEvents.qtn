@@ -27,6 +27,7 @@ synced event BattleViewGameOver
 synced event BattlePlayerViewInit
 {
     EntityRef Entity;
+    BattlePlayerSlot Slot;
     FP ModelScale;
 }
 
