@@ -7,6 +7,8 @@ enum BattlePlayerPlayState
 
 singleton component BattlePlayerManagerDataQSingleton
 {
+    int PlayerCount;
+
     array<BattlePlayerPlayState>[BATTLE_PLAYER_SLOT_COUNT] PlayStates;
     array<PlayerRef>[BATTLE_PLAYER_SLOT_COUNT] PlayerRefs;
     array<EntityRef>[BATTLE_PLAYER_SLOT_COUNT] SelectedCharacters;

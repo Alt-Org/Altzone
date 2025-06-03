@@ -18,6 +18,11 @@ namespace Battle.View.Projectile
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _trailRenderer = GetComponent<TrailRenderer>();
 
+            if (BattleGameViewController.LocalPlayerTeam == BattleTeamNumber.TeamBeta)
+            {
+                transform.rotation = Quaternion.Euler(90, 180, 0);
+            }
+
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, OnChangeEmotionState);
 
             BattleGameViewController.AssignProjectileReference(gameObject);

@@ -1051,7 +1051,7 @@ namespace Altzone.Scripts.Lobby
             return true;
         }
 
-        public static void ExitQuantum()
+        public static void ExitQuantum(BattleTeamNumber winningTeam, float gameLengthSec)
         {
             QuantumRunner.ShutdownAll();
             DebugLogFileHandler.ContextExit();

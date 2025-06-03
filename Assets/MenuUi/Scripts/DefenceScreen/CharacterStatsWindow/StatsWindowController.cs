@@ -579,13 +579,9 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 {
                     PopupSignalBus.OnChangePopupInfoSignal($"Et voi p‰ivitt‰‰ taitoa, maksimitaso on {CustomCharacter.STATMAXLEVEL}.");
                 }
-                else if (!CheckMaxPlayerIncreases())
-                {
-                    PopupSignalBus.OnChangePopupInfoSignal($"Et voi p‰ivitt‰‰ taitoja enemm‰n kuin {CustomCharacter.STATMAXPLAYERINCREASE} kertaa."); // when every characters' combined base stats are 40 remove this
-                }
             }
 
-            return statType != StatType.None && CheckCombinedLevelCap() && CheckStatLevelCap(statType) && CheckMaxPlayerIncreases();
+            return statType != StatType.None && CheckCombinedLevelCap() && CheckStatLevelCap(statType);
         }
 
 
@@ -744,20 +740,5 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             return allowedToIncrease;
         }
-
-
-        // Check if player has increased stats for max allowed player increases
-        private bool CheckMaxPlayerIncreases()
-        {
-            if (GetStatsCombined() - GetBaseStatsCombined() < CustomCharacter.STATMAXPLAYERINCREASE)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
     }
 }
