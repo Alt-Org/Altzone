@@ -11,8 +11,6 @@ public class ItemMover : MonoBehaviour
 
     void Start()
     {
-       
-
         GetComponent<Button>().onClick.AddListener(OnClick);
     }
 
@@ -22,23 +20,22 @@ public class ItemMover : MonoBehaviour
         gridParent = panel;
     }
 
-    
     public void SetPopup(KojuPopup popupRef)
     {
         popup = popupRef;
     }
 
-    // Call when clicking a card in the panel or the tray, see KojuPopup.cs
-    void OnClick()
+    //Call when clicking a card in the panel or the tray, see KojuPopup.cs
+    private void OnClick()
     {
         if (assignedSlot != null)
         {
-            // If the item is already in the panel, ask for confirmation before removing
+            
             popup?.OpenRemovePopup(gameObject);
         }
         else if (HasFreeSlot())
         {
-            // Open the popup if the user is trying to move the item from the tray to the panel
+            
             popup?.Open(gameObject);
         }
         else
@@ -49,7 +46,16 @@ public class ItemMover : MonoBehaviour
 
     private bool HasFreeSlot()
     {
-        return System.Array.Exists(GameObject.FindObjectsOfType<KojuItemSlot>(), slot => !slot.IsOccupied);
+        foreach (Transform child in gridParent)
+        {
+            var slot = child.GetComponent<KojuItemSlot>();
+            if (slot != null && !slot.IsOccupied)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // Call when user confirms the moving of a furniture
@@ -57,33 +63,26 @@ public class ItemMover : MonoBehaviour
     {
         if (assignedSlot == null)
         {
-            KojuItemSlot[] slots = GameObject.FindObjectsOfType<KojuItemSlot>();
-
-            // Sort the panel using sibling index in the hierarchy
-            System.Array.Sort(slots, (a, b) => a.transform.GetSiblingIndex().CompareTo(b.transform.GetSiblingIndex()));
-
-            // Loop through each slot in the panel to find the first available slot
-            foreach (var slot in slots)
+            // Moving from tray to panel
+            foreach (Transform child in gridParent)
             {
-                if (!slot.IsOccupied && slot.gameObject.activeSelf)
+                var slot = child.GetComponent<KojuItemSlot>();
+                if (slot != null && !slot.IsOccupied)
                 {
                     assignedSlot = slot;
-                    assignedSlot.AssignCard(gameObject, gridParent);
-
-                    // Move the card to the same sibling index as the slot
-                    int targetIndex = slot.transform.GetSiblingIndex();
-                    gameObject.transform.SetSiblingIndex(targetIndex);
-
+                    assignedSlot.AssignCard(gameObject); // Handles parenting and hiding KojuEmpty
+                    transform.SetSiblingIndex(child.GetSiblingIndex());
                     return;
                 }
             }
 
-            Debug.Log("No more space available for furniture");
+            Debug.LogWarning("No available slot found, but HasFreeSlot returned true. Check slot logic.");
         }
-        else // If furniture is already in the panel, put it back into the tray
+        else
         {
+            // Moving from panel back to tray
             transform.SetParent(trayParent, false);
-            assignedSlot.ClearSlot();
+            assignedSlot.ClearSlot(); // Handles showing KojuEmpty again
             assignedSlot = null;
         }
     }

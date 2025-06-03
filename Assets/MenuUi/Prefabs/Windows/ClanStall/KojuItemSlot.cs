@@ -2,20 +2,40 @@ using UnityEngine;
 
 public class KojuItemSlot : MonoBehaviour
 {
-    public bool IsOccupied => currentCard != null;
-    private GameObject currentCard;
+    [SerializeField] private GameObject kojuEmptyVisual;
 
-    public void AssignCard(GameObject card, Transform PanelContent)
+    public bool IsOccupied
     {
-        // Moves the card to the Koju Panel, disables the available card slot element 
-        currentCard = card;
-        card.transform.SetParent(PanelContent, false);
-        gameObject.SetActive(false); 
+        get
+        {
+            foreach (Transform child in transform)
+            {
+                // Check if the object in the child is an empty visual or not
+                if (child.gameObject != kojuEmptyVisual)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
+    // Assign a card to the slot
+    public void AssignCard(GameObject card)
+    {
+        card.transform.SetParent(transform, false);
+        if (kojuEmptyVisual != null)
+        {
+            kojuEmptyVisual.SetActive(false);
+        }
+    }
+
+    // Clear slot
     public void ClearSlot()
     {
-        currentCard = null;
-        gameObject.SetActive(true); 
+        if (kojuEmptyVisual != null)
+        {
+            kojuEmptyVisual.SetActive(true);
+        }
     }
 }
