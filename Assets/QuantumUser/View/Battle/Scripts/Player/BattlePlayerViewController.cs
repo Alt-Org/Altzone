@@ -1,6 +1,7 @@
 using UnityEngine;
 using Quantum;
 using Battle.View.Game;
+using Battle.QSimulation.Player;
 
 namespace Battle.View.Player
 {
@@ -8,12 +9,14 @@ namespace Battle.View.Player
     {
         [SerializeField] private Animator _animator;
         [SerializeField] private GameObject _heart;
-        [SerializeField] private SpriteRenderer _spriteRenderer;
+        [SerializeField] private GameObject[] _characterGameObjects;
         [SerializeField] private GameObject _localPlayerIndicator;
 
         [SerializeField] private float _transparencyEffectRange;
         [SerializeField] private float _transparencyEffectTransitionRate;
         [SerializeField] private float _transparencyEffectMinimumAlpha;
+
+        private SpriteRenderer _spriteRenderer;
 
         public override void OnActivate(Frame _) => QuantumEvent.Subscribe(this, (EventBattlePlayerViewInit e) => {
             if (EntityRef != e.Entity) return;
@@ -21,6 +24,20 @@ namespace Battle.View.Player
 
             float scale = (float)e.ModelScale;
             transform.localScale = new Vector3(scale, scale, scale);
+
+            if (BattlePlayerManager.PlayerHandle.GetTeamNumber(e.Slot) == BattleGameViewController.LocalPlayerTeam)
+            {
+                GameObject _characterGameObject = _characterGameObjects[0];
+                _characterGameObject.SetActive(true);
+                _spriteRenderer = _characterGameObject.GetComponent<SpriteRenderer>();
+            }
+            else
+            {
+                GameObject _characterGameObject = _characterGameObjects[1];
+                _characterGameObject.SetActive(true);
+                _heart.SetActive(false);
+                _spriteRenderer = _characterGameObject.GetComponent<SpriteRenderer>();
+            }
         });
 
         public override void OnUpdateView()

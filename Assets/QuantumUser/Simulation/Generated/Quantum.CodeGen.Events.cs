@@ -116,10 +116,11 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventBattlePlayerViewInit BattlePlayerViewInit(EntityRef Entity, FP ModelScale) {
+      public EventBattlePlayerViewInit BattlePlayerViewInit(EntityRef Entity, BattlePlayerSlot Slot, FP ModelScale) {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventBattlePlayerViewInit>(EventBattlePlayerViewInit.ID);
         ev.Entity = Entity;
+        ev.Slot = Slot;
         ev.ModelScale = ModelScale;
         _f.AddEvent(ev);
         return ev;
@@ -321,6 +322,7 @@ namespace Quantum {
   public unsafe partial class EventBattlePlayerViewInit : EventBase {
     public new const Int32 ID = 7;
     public EntityRef Entity;
+    public BattlePlayerSlot Slot;
     public FP ModelScale;
     protected EventBattlePlayerViewInit(Int32 id, EventFlags flags) : 
         base(id, flags) {
@@ -340,6 +342,7 @@ namespace Quantum {
       unchecked {
         var hash = 67;
         hash = hash * 31 + Entity.GetHashCode();
+        hash = hash * 31 + Slot.GetHashCode();
         hash = hash * 31 + ModelScale.GetHashCode();
         return hash;
       }
