@@ -38,6 +38,13 @@ synced event BattleSoulWallViewInit
     int DebugColorIndex;
 }
 
+synced event BattleStoneCharacterPieceViewInit
+{
+    int WallNumber;
+    BattleTeamNumber Team;
+    int EmotionIndicatorColorIndex;
+}
+
 //} ViewInit events
 
 //{ Gameplay events
