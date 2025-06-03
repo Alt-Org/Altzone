@@ -18,6 +18,11 @@ namespace Battle.View.Projectile
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _trailRenderer = GetComponent<TrailRenderer>();
 
+            if (BattleGameViewController.LocalPlayerTeam == BattleTeamNumber.TeamBeta)
+            {
+                _spriteRenderer.flipY = true;
+            }
+
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, OnChangeEmotionState);
 
             BattleGameViewController.AssignProjectileReference(gameObject);
