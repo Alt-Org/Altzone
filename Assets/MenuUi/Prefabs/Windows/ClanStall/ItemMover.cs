@@ -9,6 +9,8 @@ public class ItemMover : MonoBehaviour
 
     private KojuPopup popup;
 
+    private KojuItemSlot[] panelSlots;
+
     void Start()
     {
         GetComponent<Button>().onClick.AddListener(OnClick);
@@ -18,6 +20,9 @@ public class ItemMover : MonoBehaviour
     {
         trayParent = tray;
         gridParent = panel;
+
+        // Cache KojuItemSlot components in the panel to optimize slot lookup
+        panelSlots = gridParent.GetComponentsInChildren<KojuItemSlot>(true);
     }
 
     public void SetPopup(KojuPopup popupRef)
@@ -25,17 +30,15 @@ public class ItemMover : MonoBehaviour
         popup = popupRef;
     }
 
-    //Call when clicking a card in the panel or the tray, see KojuPopup.cs
+    // Call when clicking a card in the panel or the tray, see KojuPopup.cs
     private void OnClick()
     {
         if (assignedSlot != null)
         {
-            
             popup?.OpenRemovePopup(gameObject);
         }
         else if (HasFreeSlot())
         {
-            
             popup?.Open(gameObject);
         }
         else
@@ -46,15 +49,13 @@ public class ItemMover : MonoBehaviour
 
     private bool HasFreeSlot()
     {
-        foreach (Transform child in gridParent)
+        foreach (var slot in panelSlots)
         {
-            var slot = child.GetComponent<KojuItemSlot>();
-            if (slot != null && !slot.IsOccupied)
+            if (!slot.IsOccupied)
             {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -64,19 +65,18 @@ public class ItemMover : MonoBehaviour
         if (assignedSlot == null)
         {
             // Moving from tray to panel
-            foreach (Transform child in gridParent)
+            foreach (var slot in panelSlots)
             {
-                var slot = child.GetComponent<KojuItemSlot>();
-                if (slot != null && !slot.IsOccupied)
+                if (!slot.IsOccupied)
                 {
                     assignedSlot = slot;
                     assignedSlot.AssignCard(gameObject); // Handles parenting and hiding KojuEmpty
-                    transform.SetSiblingIndex(child.GetSiblingIndex());
+                    transform.SetSiblingIndex(assignedSlot.transform.GetSiblingIndex());
                     return;
                 }
             }
 
-            Debug.LogWarning("No available slot found, but HasFreeSlot returned true. Check slot logic.");
+            Debug.LogWarning("No available slot found");
         }
         else
         {
@@ -98,5 +98,4 @@ public class ItemMover : MonoBehaviour
             assignedSlot = null;
         }
     }
-
 }
