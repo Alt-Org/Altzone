@@ -13,11 +13,6 @@ public class KojuFurnitureData : MonoBehaviour
     private StorageFurniture storageFurniture;
     private float price;
 
-    private void Start()
-    {
-        RefreshUI();
-    }
-
     public void SetFurniture(StorageFurniture data)
     {
         storageFurniture = data;
@@ -28,7 +23,7 @@ public class KojuFurnitureData : MonoBehaviour
     {
         if (storageFurniture == null)
         {
-            Debug.LogWarning("StorageFurniture not set.");
+            // Place debug warning here if problems arise with the UI elements don't properly update
         }
         else
         {
