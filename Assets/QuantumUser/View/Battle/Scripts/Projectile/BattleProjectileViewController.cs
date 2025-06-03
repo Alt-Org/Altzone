@@ -20,7 +20,7 @@ namespace Battle.View.Projectile
 
             if (BattleGameViewController.LocalPlayerTeam == BattleTeamNumber.TeamBeta)
             {
-                _spriteRenderer.flipY = true;
+                transform.rotation = Quaternion.Euler(90, 180, 0);
             }
 
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, OnChangeEmotionState);
