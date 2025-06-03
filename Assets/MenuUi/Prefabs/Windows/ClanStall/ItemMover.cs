@@ -82,8 +82,21 @@ public class ItemMover : MonoBehaviour
         {
             // Moving from panel back to tray
             transform.SetParent(trayParent, false);
+
+            // **Reset price here**
+            var furnitureData = GetComponent<KojuFurnitureData>();
+            if (furnitureData != null)
+            {
+                furnitureData.ResetPrice();
+            }
+            else
+            {
+                Debug.LogWarning("KojuFurnitureData component not found on item.");
+            }
+
             assignedSlot.ClearSlot(); // Handles showing KojuEmpty again
             assignedSlot = null;
         }
     }
+
 }

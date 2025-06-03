@@ -8,11 +8,11 @@ public class KojuTrayPopulator : MonoBehaviour
 {
     [Header("UI Setup")]
     [SerializeField] private GameObject cardPrefab;
-    [SerializeField] private Transform trayContent;  
+    [SerializeField] private Transform trayContent;
     [SerializeField] private Transform panelContent;
 
     [Header("Popup Reference")]
-    [SerializeField] private KojuPopup popup; 
+    [SerializeField] private KojuPopup popup;
 
     private void Start()
     {
@@ -49,15 +49,13 @@ public class KojuTrayPopulator : MonoBehaviour
 
             if (data != null)
             {
-                data.SetPrice(furniture.Value);
+                // Set the base data and initial price
+                data.SetFurniture(furniture); 
             }
 
-            // Pass the references to ItemMover
             if (mover != null)
             {
                 mover.SetParents(trayContent, panelContent);
-
-                // While instantiating, we also give the popup info so we don't need to search later
                 mover.SetPopup(popup);
             }
         }
