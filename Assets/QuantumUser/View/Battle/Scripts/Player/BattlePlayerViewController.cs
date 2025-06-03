@@ -37,6 +37,11 @@ namespace Battle.View.Player
                 _heart.SetActive(false);
                 _spriteRenderer = _characterGameObject.GetComponent<SpriteRenderer>();
             }
+
+            if (e.Slot == BattleGameViewController.LocalPlayerSlot)
+            {
+                _localPlayerIndicator.SetActive(true);
+            }
         });
 
         public override void OnUpdateView()
