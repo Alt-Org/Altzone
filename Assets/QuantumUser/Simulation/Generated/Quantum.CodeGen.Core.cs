@@ -1182,7 +1182,7 @@ namespace Quantum {
     void BattleOnProjectileHitArenaBorder(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity);
   }
   public unsafe partial interface ISignalBattleOnProjectileHitPlayerHitbox : ISignal {
-    void BattleOnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity);
+    void BattleOnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity);
   }
   public unsafe partial interface ISignalBattleOnProjectileHitGoal : ISignal {
     void BattleOnProjectileHitGoal(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleGoalQComponent* goal, EntityRef goalEntity);
@@ -1324,12 +1324,12 @@ namespace Quantum {
           }
         }
       }
-      public void BattleOnProjectileHitPlayerHitbox(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity) {
+      public void BattleOnProjectileHitPlayerHitbox(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity) {
         var array = _f._ISignalBattleOnProjectileHitPlayerHitboxSystems;
         for (Int32 i = 0; i < array.Length; ++i) {
           var s = array[i];
           if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
-            s.BattleOnProjectileHitPlayerHitbox(_f, projectile, projectileEntity, playerHitbox, playerEntity);
+            s.BattleOnProjectileHitPlayerHitbox(_f, projectile, projectileEntity, playerHitbox, playerHitboxEntity);
           }
         }
       }
