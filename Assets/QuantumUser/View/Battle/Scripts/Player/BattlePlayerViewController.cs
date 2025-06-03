@@ -16,7 +16,6 @@ namespace Battle.View.Player
         [SerializeField] private float _transparencyEffectTransitionRate;
         [SerializeField] private float _transparencyEffectMinimumAlpha;
 
-        private SpriteRenderer _spriteRenderer;
 
         public override void OnActivate(Frame _) => QuantumEvent.Subscribe(this, (EventBattlePlayerViewInit e) => {
             if (EntityRef != e.Entity) return;
@@ -50,7 +49,7 @@ namespace Battle.View.Player
             BattleTeamNumber battleTeamNumber = playerData->TeamNumber;
 
             UpdateModelPositionAdjustment(&targetPosition);
-            UpdateAnimator(&targetPosition, battleTeamNumber);
+            //UpdateAnimator(&targetPosition, battleTeamNumber);
 
             if (BattleGameViewController.ProjectileReference != null)
             {
@@ -68,6 +67,8 @@ namespace Battle.View.Player
                 }
             }
         }
+
+        private SpriteRenderer _spriteRenderer;
 
         private void UpdateModelPositionAdjustment(Vector3* targetPosition)
         {
