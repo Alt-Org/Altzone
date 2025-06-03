@@ -68,10 +68,12 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleViewGameStart>(this, QEventOnViewGameStart);
             QuantumEvent.Subscribe<EventBattleViewGameOver>(this, QEventOnViewGameOver);
 
+            // Subscribing to other View Init events
+            QuantumEvent.Subscribe<EventBattleStoneCharacterPieceViewInit>(this, QEventOnStoneCharacterPieceViewInit);
+
             // Subscribing to Gameplay events
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, QEventOnChangeEmotionState);
             QuantumEvent.Subscribe<EventBattleLastRowWallDestroyed>(this, QEventOnLastRowWallDestroyed);
-            QuantumEvent.Subscribe<EventBattleStoneCharacterPieceViewInit>(this, QEventOnStoneCharacterPieceViewInit);
             QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, QEventPlaySoundFX);
 
             // Subscribing to Debug events
@@ -147,6 +149,14 @@ namespace Battle.View.Game
             //} Initializing UI Handlers
         }
 
+        private void QEventOnStoneCharacterPieceViewInit(EventBattleStoneCharacterPieceViewInit e)
+        {
+            if (_stoneCharacterViewController != null)
+            {
+                _stoneCharacterViewController.SetEmotionIndicator(e.WallNumber, e.Team, e.EmotionIndicatorColorIndex);
+            }
+        }
+
         private void QEventOnViewActivate(EventBattleViewActivate e)
         {
             // Activating view, meaning displaying all visual elements of the game view except for pre-activation elements
@@ -209,14 +219,6 @@ namespace Battle.View.Game
         {
             if (!_screenEffectViewController.IsActive) _screenEffectViewController.SetActive(true);
             _screenEffectViewController.ChangeColor((int)e.Emotion);
-        }
-
-        private void QEventOnStoneCharacterPieceViewInit(EventBattleStoneCharacterPieceViewInit e)
-        {
-            if (_stoneCharacterViewController != null)
-            {
-                _stoneCharacterViewController.SetEmotionIndicator(e.WallNumber, e.Team, e.EmotionIndicatorColorIndex);
-            }
         }
 
         private void QEventOnLastRowWallDestroyed(EventBattleLastRowWallDestroyed e)
