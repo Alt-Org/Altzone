@@ -9,6 +9,9 @@ namespace Battle.View
     {
         [SerializeField] private GameObject[] _topCharacterParts;
         [SerializeField] private GameObject[] _bottomCharacterParts;
+        [SerializeField] private SpriteRenderer[] _topCharacterEmotionIndicators;
+        [SerializeField] private SpriteRenderer[] _bottomCharacterEmotionIndicators;
+        [SerializeField] private Color[] _emotionColors;
 
         public void DestroyCharacterPart(int wallNumber, BattleTeamNumber team)
         {
@@ -19,6 +22,19 @@ namespace Battle.View
                     break;
                 case BattleTeamNumber.TeamBeta:
                     _topCharacterParts[wallNumber].gameObject.SetActive(false);
+                    break;
+            }
+        }
+
+        public void SetEmotionIndicator(int wallNumber, BattleTeamNumber team, int emotionIndex)
+        {
+            switch (team)
+            {
+                case BattleTeamNumber.TeamAlpha:
+                    _bottomCharacterEmotionIndicators[wallNumber].color = _emotionColors[emotionIndex];
+                    break;
+                case BattleTeamNumber.TeamBeta:
+                    _topCharacterEmotionIndicators[wallNumber].color = _emotionColors[emotionIndex];
                     break;
             }
         }
