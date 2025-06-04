@@ -97,6 +97,11 @@ namespace Quantum {
     OutOfPlay,
     InPlay,
   }
+  public enum BattlePlayerRotationDirection : int {
+    Left = -1,
+    None = 0,
+    Right = 1,
+  }
   public enum BattlePlayerSlot : int {
     Guest = 0,
     Slot1 = 1,
@@ -130,7 +135,6 @@ namespace Quantum {
   [System.FlagsAttribute()]
   public enum InputButtons : int {
     MouseClick = 1 << 0,
-    RotateMotion = 1 << 1,
   }
   public static unsafe partial class FlagsExtensions {
     public static Boolean IsFlagSet(this BattleProjectileCollisionFlags self, BattleProjectileCollisionFlags flag) {
@@ -512,52 +516,53 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
-  public unsafe partial struct BattlePlayerHitboxLink {
-    public const Int32 SIZE = 24;
+  [Serializable()]
+  public unsafe partial struct BattlePlayerHitboxColliderTemplate {
+    public const Int32 SIZE = 16;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
-    public EntityRef Entity;
+    public IntVector2 Position;
     [FieldOffset(8)]
-    public FPVector2 Position;
+    public IntVector2 Size;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 1279;
-        hash = hash * 31 + Entity.GetHashCode();
+        var hash = 15461;
         hash = hash * 31 + Position.GetHashCode();
+        hash = hash * 31 + Size.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
-        var p = (BattlePlayerHitboxLink*)ptr;
-        EntityRef.Serialize(&p->Entity, serializer);
-        FPVector2.Serialize(&p->Position, serializer);
+        var p = (BattlePlayerHitboxColliderTemplate*)ptr;
+        IntVector2.Serialize(&p->Position, serializer);
+        IntVector2.Serialize(&p->Size, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
   [Serializable()]
   public unsafe partial struct BattlePlayerHitboxTemplate {
-    public const Int32 SIZE = 24;
-    public const Int32 ALIGNMENT = 8;
-    [FieldOffset(16)]
-    public IntVector2 Position;
+    public const Int32 SIZE = 8;
+    public const Int32 ALIGNMENT = 4;
+    [FieldOffset(4)]
+    [FreeOnComponentRemoved()]
+    public QListPtr<BattlePlayerHitboxColliderTemplate> ColliderTemplateList;
     [FieldOffset(0)]
     public BattlePlayerCollisionType CollisionType;
-    [FieldOffset(8)]
-    public FP NormalAngle;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 12821;
-        hash = hash * 31 + Position.GetHashCode();
+        hash = hash * 31 + ColliderTemplateList.GetHashCode();
         hash = hash * 31 + (Int32)CollisionType;
-        hash = hash * 31 + NormalAngle.GetHashCode();
         return hash;
       }
+    }
+    public void ClearPointers(FrameBase f, EntityRef entity) {
+      if (ColliderTemplateList != default) f.FreeList(ref ColliderTemplateList);
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (BattlePlayerHitboxTemplate*)ptr;
         serializer.Stream.Serialize((Int32*)&p->CollisionType);
-        FP.Serialize(&p->NormalAngle, serializer);
-        IntVector2.Serialize(&p->Position, serializer);
+        QList.Serialize(&p->ColliderTemplateList, serializer, Statics.SerializeBattlePlayerHitboxColliderTemplate);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -589,23 +594,20 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Input {
-    public const Int32 SIZE = 40;
-    public const Int32 ALIGNMENT = 8;
-    [FieldOffset(16)]
+    public const Int32 SIZE = 24;
+    public const Int32 ALIGNMENT = 4;
+    [FieldOffset(12)]
     public Button MouseClick;
-    [FieldOffset(0)]
+    [FieldOffset(4)]
     public BattleGridPosition MovementPosition;
-    [FieldOffset(28)]
-    public Button RotateMotion;
-    [FieldOffset(8)]
-    public FP RotationDirection;
+    [FieldOffset(0)]
+    public BattlePlayerRotationDirection RotationDirection;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 19249;
         hash = hash * 31 + MouseClick.GetHashCode();
         hash = hash * 31 + MovementPosition.GetHashCode();
-        hash = hash * 31 + RotateMotion.GetHashCode();
-        hash = hash * 31 + RotationDirection.GetHashCode();
+        hash = hash * 31 + (Int32)RotationDirection;
         return hash;
       }
     }
@@ -615,28 +617,25 @@ namespace Quantum {
     public Boolean IsDown(InputButtons button) {
       switch (button) {
         case InputButtons.MouseClick: return MouseClick.IsDown;
-        case InputButtons.RotateMotion: return RotateMotion.IsDown;
         default: return false;
       }
     }
     public Boolean WasPressed(InputButtons button) {
       switch (button) {
         case InputButtons.MouseClick: return MouseClick.WasPressed;
-        case InputButtons.RotateMotion: return RotateMotion.WasPressed;
         default: return false;
       }
     }
     static partial void SerializeCodeGen(void* ptr, FrameSerializer serializer) {
         var p = (Input*)ptr;
+        serializer.Stream.Serialize((Int32*)&p->RotationDirection);
         Quantum.BattleGridPosition.Serialize(&p->MovementPosition, serializer);
-        FP.Serialize(&p->RotationDirection, serializer);
         Button.Serialize(&p->MouseClick, serializer);
-        Button.Serialize(&p->RotateMotion, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct _globals_ {
-    public const Int32 SIZE = 808;
+    public const Int32 SIZE = 712;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public AssetRef<Map> Map;
@@ -658,14 +657,14 @@ namespace Quantum {
     public PhysicsSceneSettings PhysicsSettings;
     [FieldOffset(552)]
     public Int32 PlayerConnectedCount;
-    [FieldOffset(560)]
+    [FieldOffset(556)]
     [FramePrinter.FixedArrayAttribute(typeof(Input), 6)]
-    private fixed Byte _input_[240];
-    [FieldOffset(800)]
+    private fixed Byte _input_[144];
+    [FieldOffset(704)]
     public BitSet6 PlayerLastConnectionState;
     public FixedArray<Input> input {
       get {
-        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 40, 6); }
+        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 24, 6); }
       }
     }
     public override Int32 GetHashCode() {
@@ -840,47 +839,46 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattlePlayerDataQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 112;
+    public const Int32 SIZE = 128;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(24)]
-    public PlayerRef PlayerRef;
-    [FieldOffset(0)]
-    public BattlePlayerSlot Slot;
-    [FieldOffset(4)]
-    public BattleTeamNumber TeamNumber;
-    [FieldOffset(12)]
-    public Int32 CharacterId;
-    [FieldOffset(8)]
-    public Int32 CharacterClass;
-    [FieldOffset(80)]
-    public FP StatHp;
-    [FieldOffset(88)]
-    public FP StatSpeed;
-    [FieldOffset(64)]
-    public FP StatCharacterSize;
-    [FieldOffset(56)]
-    public FP StatAttack;
-    [FieldOffset(72)]
-    public FP StatDefence;
-    [FieldOffset(20)]
-    public Int32 GridExtendTop;
-    [FieldOffset(16)]
-    public Int32 GridExtendBottom;
-    [FieldOffset(96)]
-    public FPVector2 TargetPosition;
-    [FieldOffset(40)]
-    public FP RotationBase;
-    [FieldOffset(48)]
-    public FP RotationOffset;
     [FieldOffset(28)]
-    [FreeOnComponentRemoved()]
-    public QListPtr<BattlePlayerHitboxLink> HitboxListAll;
-    [FieldOffset(36)]
-    [FreeOnComponentRemoved()]
-    public QListPtr<BattlePlayerHitboxLink> HitboxListShield;
+    public PlayerRef PlayerRef;
+    [FieldOffset(4)]
+    public BattlePlayerSlot Slot;
+    [FieldOffset(8)]
+    public BattleTeamNumber TeamNumber;
+    [FieldOffset(16)]
+    public Int32 CharacterId;
+    [FieldOffset(12)]
+    public Int32 CharacterClass;
+    [FieldOffset(96)]
+    public FP StatHp;
+    [FieldOffset(104)]
+    public FP StatSpeed;
+    [FieldOffset(80)]
+    public FP StatCharacterSize;
+    [FieldOffset(72)]
+    public FP StatAttack;
+    [FieldOffset(88)]
+    public FP StatDefence;
+    [FieldOffset(24)]
+    public Int32 GridExtendTop;
+    [FieldOffset(20)]
+    public Int32 GridExtendBottom;
+    [FieldOffset(112)]
+    public FPVector2 TargetPosition;
+    [FieldOffset(48)]
+    public FP RotationBase;
+    [FieldOffset(56)]
+    public FP RotationOffset;
+    [FieldOffset(0)]
+    public BattlePlayerRotationDirection RotationDirection;
+    [FieldOffset(64)]
+    public FP RotationTimerSec;
+    [FieldOffset(40)]
+    public EntityRef HitboxShieldEntity;
     [FieldOffset(32)]
-    [FreeOnComponentRemoved()]
-    public QListPtr<BattlePlayerHitboxLink> HitboxListCharacter;
+    public EntityRef HitboxCharacterEntity;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 6911;
@@ -899,23 +897,16 @@ namespace Quantum {
         hash = hash * 31 + TargetPosition.GetHashCode();
         hash = hash * 31 + RotationBase.GetHashCode();
         hash = hash * 31 + RotationOffset.GetHashCode();
-        hash = hash * 31 + HitboxListAll.GetHashCode();
-        hash = hash * 31 + HitboxListShield.GetHashCode();
-        hash = hash * 31 + HitboxListCharacter.GetHashCode();
+        hash = hash * 31 + (Int32)RotationDirection;
+        hash = hash * 31 + RotationTimerSec.GetHashCode();
+        hash = hash * 31 + HitboxShieldEntity.GetHashCode();
+        hash = hash * 31 + HitboxCharacterEntity.GetHashCode();
         return hash;
       }
     }
-    public void ClearPointers(FrameBase f, EntityRef entity) {
-      if (HitboxListAll != default) f.FreeList(ref HitboxListAll);
-      if (HitboxListShield != default) f.FreeList(ref HitboxListShield);
-      if (HitboxListCharacter != default) f.FreeList(ref HitboxListCharacter);
-    }
-    public static void OnRemoved(FrameBase frame, EntityRef entity, void* ptr) {
-      var p = (Quantum.BattlePlayerDataQComponent*)ptr;
-      p->ClearPointers((Frame)frame, entity);
-    }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (BattlePlayerDataQComponent*)ptr;
+        serializer.Stream.Serialize((Int32*)&p->RotationDirection);
         serializer.Stream.Serialize((Int32*)&p->Slot);
         serializer.Stream.Serialize((Int32*)&p->TeamNumber);
         serializer.Stream.Serialize(&p->CharacterClass);
@@ -923,11 +914,11 @@ namespace Quantum {
         serializer.Stream.Serialize(&p->GridExtendBottom);
         serializer.Stream.Serialize(&p->GridExtendTop);
         PlayerRef.Serialize(&p->PlayerRef, serializer);
-        QList.Serialize(&p->HitboxListAll, serializer, Statics.SerializeBattlePlayerHitboxLink);
-        QList.Serialize(&p->HitboxListCharacter, serializer, Statics.SerializeBattlePlayerHitboxLink);
-        QList.Serialize(&p->HitboxListShield, serializer, Statics.SerializeBattlePlayerHitboxLink);
+        EntityRef.Serialize(&p->HitboxCharacterEntity, serializer);
+        EntityRef.Serialize(&p->HitboxShieldEntity, serializer);
         FP.Serialize(&p->RotationBase, serializer);
         FP.Serialize(&p->RotationOffset, serializer);
+        FP.Serialize(&p->RotationTimerSec, serializer);
         FP.Serialize(&p->StatAttack, serializer);
         FP.Serialize(&p->StatCharacterSize, serializer);
         FP.Serialize(&p->StatDefence, serializer);
@@ -938,31 +929,29 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattlePlayerDataTemplateQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 16;
+    public const Int32 SIZE = 24;
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(4)]
     public Int32 GridExtendTop;
     [FieldOffset(0)]
     public Int32 GridExtendBottom;
-    [FieldOffset(12)]
-    [FreeOnComponentRemoved()]
-    public QListPtr<BattlePlayerHitboxTemplate> HitboxListShield;
+    [FieldOffset(16)]
+    public BattlePlayerHitboxTemplate HitboxShield;
     [FieldOffset(8)]
-    [FreeOnComponentRemoved()]
-    public QListPtr<BattlePlayerHitboxTemplate> HitboxListCharacter;
+    public BattlePlayerHitboxTemplate HitboxCharacter;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 8821;
         hash = hash * 31 + GridExtendTop.GetHashCode();
         hash = hash * 31 + GridExtendBottom.GetHashCode();
-        hash = hash * 31 + HitboxListShield.GetHashCode();
-        hash = hash * 31 + HitboxListCharacter.GetHashCode();
+        hash = hash * 31 + HitboxShield.GetHashCode();
+        hash = hash * 31 + HitboxCharacter.GetHashCode();
         return hash;
       }
     }
     public void ClearPointers(FrameBase f, EntityRef entity) {
-      if (HitboxListShield != default) f.FreeList(ref HitboxListShield);
-      if (HitboxListCharacter != default) f.FreeList(ref HitboxListCharacter);
+      HitboxShield.ClearPointers(f, entity);
+      HitboxCharacter.ClearPointers(f, entity);
     }
     public static void OnRemoved(FrameBase frame, EntityRef entity, void* ptr) {
       var p = (Quantum.BattlePlayerDataTemplateQComponent*)ptr;
@@ -972,8 +961,8 @@ namespace Quantum {
         var p = (BattlePlayerDataTemplateQComponent*)ptr;
         serializer.Stream.Serialize(&p->GridExtendBottom);
         serializer.Stream.Serialize(&p->GridExtendTop);
-        QList.Serialize(&p->HitboxListCharacter, serializer, Statics.SerializeBattlePlayerHitboxTemplate);
-        QList.Serialize(&p->HitboxListShield, serializer, Statics.SerializeBattlePlayerHitboxTemplate);
+        Quantum.BattlePlayerHitboxTemplate.Serialize(&p->HitboxCharacter, serializer);
+        Quantum.BattlePlayerHitboxTemplate.Serialize(&p->HitboxShield, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -1303,7 +1292,6 @@ namespace Quantum {
       var i = _globals->input.GetPointer(player);
       i->MouseClick = i->MouseClick.Update(this.Number, input.MouseClick);
       i->MovementPosition = input.MovementPosition;
-      i->RotateMotion = i->RotateMotion.Update(this.Number, input.RotateMotion);
       i->RotationDirection = input.RotationDirection;
     }
     public Input* GetPlayerInput(PlayerRef player) {
@@ -1377,16 +1365,14 @@ namespace Quantum {
     }
   }
   public unsafe partial class Statics {
-    public static FrameSerializer.Delegate SerializeBattlePlayerHitboxLink;
-    public static FrameSerializer.Delegate SerializeBattlePlayerHitboxTemplate;
+    public static FrameSerializer.Delegate SerializeBattlePlayerHitboxColliderTemplate;
     public static FrameSerializer.Delegate SerializeEntityRef;
     public static FrameSerializer.Delegate SerializeBattlePlayerPlayState;
     public static FrameSerializer.Delegate SerializePlayerRef;
     public static FrameSerializer.Delegate SerializeBattleProjectileCollisionFlags;
     public static FrameSerializer.Delegate SerializeInput;
     static partial void InitStaticDelegatesGen() {
-      SerializeBattlePlayerHitboxLink = Quantum.BattlePlayerHitboxLink.Serialize;
-      SerializeBattlePlayerHitboxTemplate = Quantum.BattlePlayerHitboxTemplate.Serialize;
+      SerializeBattlePlayerHitboxColliderTemplate = Quantum.BattlePlayerHitboxColliderTemplate.Serialize;
       SerializeEntityRef = EntityRef.Serialize;
       SerializeBattlePlayerPlayState = (v, s) => {{ s.Stream.Serialize((Int32*)v); }};
       SerializePlayerRef = PlayerRef.Serialize;
@@ -1411,12 +1397,13 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.BattlePlayerCollisionType), 4);
       typeRegistry.Register(typeof(Quantum.BattlePlayerDataQComponent), Quantum.BattlePlayerDataQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattlePlayerDataTemplateQComponent), Quantum.BattlePlayerDataTemplateQComponent.SIZE);
-      typeRegistry.Register(typeof(Quantum.BattlePlayerHitboxLink), Quantum.BattlePlayerHitboxLink.SIZE);
+      typeRegistry.Register(typeof(Quantum.BattlePlayerHitboxColliderTemplate), Quantum.BattlePlayerHitboxColliderTemplate.SIZE);
       typeRegistry.Register(typeof(Quantum.BattlePlayerHitboxQComponent), Quantum.BattlePlayerHitboxQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattlePlayerHitboxTemplate), Quantum.BattlePlayerHitboxTemplate.SIZE);
       typeRegistry.Register(typeof(Quantum.BattlePlayerHitboxType), 4);
       typeRegistry.Register(typeof(Quantum.BattlePlayerManagerDataQSingleton), Quantum.BattlePlayerManagerDataQSingleton.SIZE);
       typeRegistry.Register(typeof(Quantum.BattlePlayerPlayState), 4);
+      typeRegistry.Register(typeof(Quantum.BattlePlayerRotationDirection), 4);
       typeRegistry.Register(typeof(Quantum.BattlePlayerSlot), 4);
       typeRegistry.Register(typeof(Quantum.BattleProjectileCollisionFlags), 1);
       typeRegistry.Register(typeof(Quantum.BattleProjectileQComponent), Quantum.BattleProjectileQComponent.SIZE);
@@ -1513,7 +1500,7 @@ namespace Quantum {
         .Add<Quantum.BattleDiamondDataQComponent>(Quantum.BattleDiamondDataQComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.BattleGameSessionQSingleton>(Quantum.BattleGameSessionQSingleton.Serialize, null, null, ComponentFlags.Singleton)
         .Add<Quantum.BattleGoalQComponent>(Quantum.BattleGoalQComponent.Serialize, null, null, ComponentFlags.None)
-        .Add<Quantum.BattlePlayerDataQComponent>(Quantum.BattlePlayerDataQComponent.Serialize, null, Quantum.BattlePlayerDataQComponent.OnRemoved, ComponentFlags.None)
+        .Add<Quantum.BattlePlayerDataQComponent>(Quantum.BattlePlayerDataQComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.BattlePlayerDataTemplateQComponent>(Quantum.BattlePlayerDataTemplateQComponent.Serialize, null, Quantum.BattlePlayerDataTemplateQComponent.OnRemoved, ComponentFlags.None)
         .Add<Quantum.BattlePlayerHitboxQComponent>(Quantum.BattlePlayerHitboxQComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.BattlePlayerManagerDataQSingleton>(Quantum.BattlePlayerManagerDataQSingleton.Serialize, null, null, ComponentFlags.Singleton)
@@ -1533,6 +1520,7 @@ namespace Quantum {
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerCollisionType>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerHitboxType>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerPlayState>();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerRotationDirection>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerSlot>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleProjectileCollisionFlags>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleSoulWallRow>();

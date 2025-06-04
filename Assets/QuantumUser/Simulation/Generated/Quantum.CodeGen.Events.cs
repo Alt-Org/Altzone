@@ -53,7 +53,7 @@ namespace Quantum {
   public unsafe partial class Frame {
     public unsafe partial struct FrameEvents {
       static partial void GetEventTypeCountCodeGen(ref Int32 eventCount) {
-        eventCount = 14;
+        eventCount = 15;
       }
       static partial void GetParentEventIDCodeGen(Int32 eventID, ref Int32 parentEventID) {
         switch (eventID) {
@@ -74,6 +74,7 @@ namespace Quantum {
           case EventBattleChangeEmotionState.ID: result = typeof(EventBattleChangeEmotionState); return;
           case EventBattlePlaySoundFX.ID: result = typeof(EventBattlePlaySoundFX); return;
           case EventBattleLastRowWallDestroyed.ID: result = typeof(EventBattleLastRowWallDestroyed); return;
+          case EventBattlePlayerRotationAction.ID: result = typeof(EventBattlePlayerRotationAction); return;
           case EventBattleDebugUpdateStatsOverlay.ID: result = typeof(EventBattleDebugUpdateStatsOverlay); return;
           default: break;
         }
@@ -165,6 +166,14 @@ namespace Quantum {
         ev.LightrayRotation = LightrayRotation;
         ev.LightrayColor = LightrayColor;
         ev.LightraySize = LightraySize;
+        _f.AddEvent(ev);
+        return ev;
+      }
+      public EventBattlePlayerRotationAction BattlePlayerRotationAction(EntityRef PlayerEntity, BattlePlayerRotationDirection RotationDirection) {
+        if (_f.IsPredicted) return null;
+        var ev = _f.Context.AcquireEvent<EventBattlePlayerRotationAction>(EventBattlePlayerRotationAction.ID);
+        ev.PlayerEntity = PlayerEntity;
+        ev.RotationDirection = RotationDirection;
         _f.AddEvent(ev);
         return ev;
       }
@@ -491,13 +500,14 @@ namespace Quantum {
       }
     }
   }
-  public unsafe partial class EventBattleDebugUpdateStatsOverlay : EventBase {
+  public unsafe partial class EventBattlePlayerRotationAction : EventBase {
     public new const Int32 ID = 13;
-    public BattleCharacterBase Character;
-    protected EventBattleDebugUpdateStatsOverlay(Int32 id, EventFlags flags) : 
+    public EntityRef PlayerEntity;
+    public BattlePlayerRotationDirection RotationDirection;
+    protected EventBattlePlayerRotationAction(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventBattleDebugUpdateStatsOverlay() : 
+    public EventBattlePlayerRotationAction() : 
         base(13, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
     }
     public new QuantumGame Game {
@@ -511,6 +521,32 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 97;
+        hash = hash * 31 + PlayerEntity.GetHashCode();
+        hash = hash * 31 + RotationDirection.GetHashCode();
+        return hash;
+      }
+    }
+  }
+  public unsafe partial class EventBattleDebugUpdateStatsOverlay : EventBase {
+    public new const Int32 ID = 14;
+    public BattleCharacterBase Character;
+    protected EventBattleDebugUpdateStatsOverlay(Int32 id, EventFlags flags) : 
+        base(id, flags) {
+    }
+    public EventBattleDebugUpdateStatsOverlay() : 
+        base(14, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
+    }
+    public new QuantumGame Game {
+      get {
+        return (QuantumGame)base.Game;
+      }
+      set {
+        base.Game = value;
+      }
+    }
+    public override Int32 GetHashCode() {
+      unchecked {
+        var hash = 101;
         hash = hash * 31 + Character.GetHashCode();
         return hash;
       }
