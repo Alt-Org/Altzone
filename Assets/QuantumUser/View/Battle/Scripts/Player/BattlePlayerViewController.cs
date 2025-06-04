@@ -16,6 +16,8 @@ namespace Battle.View.Player
         [SerializeField] private float _transparencyEffectTransitionRate;
         [SerializeField] private float _transparencyEffectMinimumAlpha;
 
+        private BattlePlayerRotationDirection _rotationDirection;
+        private float _playerRotation;
 
         public override void OnActivate(Frame _) => QuantumEvent.Subscribe(this, (EventBattlePlayerViewInit e) => {
             if (EntityRef != e.Entity) return;
@@ -42,7 +44,17 @@ namespace Battle.View.Player
             {
                 _localPlayerIndicator.SetActive(true);
             }
+
+            QuantumEvent.Subscribe<EventBattlePlayerRotationAction>(this, PlayerRotationAction);
         });
+
+        private void PlayerRotationAction(EventBattlePlayerRotationAction e)
+        {
+            if (EntityRef != e.PlayerEntity) return;
+
+            _playerRotation = 0;
+            _rotationDirection = e.RotationDirection;
+        }
 
         public override void OnUpdateView()
         {
@@ -53,8 +65,28 @@ namespace Battle.View.Player
             Vector3 targetPosition = playerData->TargetPosition.ToUnityVector3();
             BattleTeamNumber battleTeamNumber = playerData->TeamNumber;
 
-            UpdateModelPositionAdjustment(&targetPosition);
             //UpdateAnimator(&targetPosition, battleTeamNumber);
+
+            switch (_rotationDirection)
+            {
+                case BattlePlayerRotationDirection.Left:
+                    _playerRotation -= 720f * Time.deltaTime;
+                    break;
+                case BattlePlayerRotationDirection.Right:
+                    _playerRotation += 720f * Time.deltaTime;
+                    break;
+            }
+
+            if (_rotationDirection != BattlePlayerRotationDirection.None)
+            {
+                if (Mathf.Abs(_playerRotation) >= 360f)
+                {
+                    _playerRotation = 0;
+                    _rotationDirection = BattlePlayerRotationDirection.None;
+                }
+            }
+
+            UpdateModelAdjustment(&targetPosition);
 
             if (BattleGameViewController.ProjectileReference != null)
             {
@@ -75,7 +107,7 @@ namespace Battle.View.Player
 
         private SpriteRenderer _spriteRenderer;
 
-        private void UpdateModelPositionAdjustment(Vector3* targetPosition)
+        private void UpdateModelAdjustment(Vector3* targetPosition)
         {
             const float adjustmentDistance = 0.25f;
             Vector3 distanceToTargetPosition = *targetPosition - transform.position;
@@ -83,6 +115,8 @@ namespace Battle.View.Player
             {
                 transform.position = *targetPosition;
             }
+
+            transform.localRotation = Quaternion.Euler(0, _playerRotation, 0);
         }
 
         private void UpdateAnimator(Vector3* targetPosition, BattleTeamNumber battleTeamNumber)

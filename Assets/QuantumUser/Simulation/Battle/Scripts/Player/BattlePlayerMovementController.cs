@@ -71,36 +71,50 @@ namespace Battle.QSimulation.Player
 
             // handle rotation
             {
-                if (input->RotateMotion)
+                //if (input->RotateMotion)
+                //{
+                //    FP maxAngle = FP.Rad_45;
+
+                //    //stops player before rotation
+                //    playerData->TargetPosition = transform->Position;
+
+                //    //rotates to right
+                //    if (input->RotationDirection > 0 && playerData->RotationOffset < maxAngle)
+                //    {
+                //        playerData->RotationOffset += rotationSpeed;
+                //        Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", playerData->RotationOffset);
+                //    }
+
+                //    //rotates to left
+                //    else if (input->RotationDirection < 0 && playerData->RotationOffset > -maxAngle)
+                //    {
+                //        playerData->RotationOffset -= rotationSpeed;
+                //        Debug.LogFormat("[PlayerRotatingSystem] Leaning left(rotation: {0}", playerData->RotationOffset);
+                //    }
+                //}
+
+                //// returns player to 0 rotation when RotateMotion-input ends
+                //if (!input->RotateMotion && playerData->RotationOffset != 0)
+                //{
+                //    if (playerData->RotationOffset > 0)
+                //        playerData->RotationOffset -= rotationSpeed;
+
+                //    else
+                //        playerData->RotationOffset += rotationSpeed;
+                //}
+
+                if (input->RotationDirection != BattlePlayerRotationDirection.None)
                 {
-                    FP maxAngle = FP.Rad_45;
-
-                    //stops player before rotation
-                    playerData->TargetPosition = transform->Position;
-
-                    //rotates to right
-                    if (input->RotationDirection > 0 && playerData->RotationOffset < maxAngle)
-                    {
-                        playerData->RotationOffset += rotationSpeed;
-                        Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", playerData->RotationOffset);
-                    }
-
-                    //rotates to left
-                    else if (input->RotationDirection < 0 && playerData->RotationOffset > -maxAngle)
-                    {
-                        playerData->RotationOffset -= rotationSpeed;
-                        Debug.LogFormat("[PlayerRotatingSystem] Leaning left(rotation: {0}", playerData->RotationOffset);
-                    }
+                    playerData->RotationDirection = input->RotationDirection;
+                    playerData->RotationTimerSec = 2;
                 }
-
-                // returns player to 0 rotation when RotateMotion-input ends
-                if (!input->RotateMotion && playerData->RotationOffset != 0)
+                else
                 {
-                    if (playerData->RotationOffset > 0)
-                        playerData->RotationOffset -= rotationSpeed;
-
-                    else
-                        playerData->RotationOffset += rotationSpeed;
+                    playerData->RotationTimerSec -= f.DeltaTime;
+                    if (playerData->RotationTimerSec <= 0)
+                    {
+                        playerData->RotationDirection = BattlePlayerRotationDirection.None;
+                    }
                 }
             }
 

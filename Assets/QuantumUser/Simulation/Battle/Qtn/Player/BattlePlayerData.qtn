@@ -1,6 +1,10 @@
 //{ PlayerData
 
+enum BattlePlayerRotationDirection
 {
+    Left = -1,
+    None = 0
+    Right = 1,
 }
 
 component BattlePlayerDataQComponent
@@ -23,6 +27,8 @@ component BattlePlayerDataQComponent
     FPVector2 TargetPosition;
     FP RotationBase;
     FP RotationOffset;
+    BattlePlayerRotationDirection RotationDirection;
+    FP RotationTimerSec;
 
     EntityRef HitboxShieldEntity;
     EntityRef HitboxCharacterEntity;

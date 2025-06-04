@@ -132,7 +132,21 @@ namespace Battle.QSimulation.Projectile
                 ProjectileVelocityUpdate(f, projectile, projectileEntity, playerHitboxEntity, playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? FPVector2.Up : FPVector2.Down, playerHitbox->CollisionMinOffset, BattlePlayerCollisionType.Override);
                 return;
             }
-            ProjectileVelocityUpdate(f, projectile, projectileEntity, playerHitboxEntity, playerHitbox->Normal, playerHitbox->CollisionMinOffset, playerHitbox->CollisionType);
+            else
+            {
+                if (playerData->RotationDirection != BattlePlayerRotationDirection.None)
+                {
+                    f.Events.BattlePlayerRotationAction(playerHitbox->PlayerEntity, playerData->RotationDirection);
+                }
+
+                FP angle = playerData->RotationDirection switch
+                {
+                    BattlePlayerRotationDirection.Left  =>  FP.Rad_45,
+                    BattlePlayerRotationDirection.None  =>  FP._0,
+                    BattlePlayerRotationDirection.Right => -FP.Rad_45,
+                };
+                ProjectileVelocityUpdate(f, projectile, projectileEntity, playerHitboxEntity, FPVector2.Rotate(playerHitbox->Normal, angle), playerHitbox->CollisionMinOffset, playerHitbox->CollisionType);
+            }
         }
 
         public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)

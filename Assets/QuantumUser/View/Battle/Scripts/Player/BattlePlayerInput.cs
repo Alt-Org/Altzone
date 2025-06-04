@@ -14,6 +14,8 @@ namespace Battle.View.Player
     public class BattlePlayerInput : MonoBehaviour
     {
         private bool _mouseDownPrevious;
+        private bool _rotationRegistered;
+        private Vector3 _unityPositionPrevious;
 
         private void OnEnable()
         {
@@ -23,14 +25,20 @@ namespace Battle.View.Player
         private void PollInput(CallbackPollInput callback)
         {
             bool mouseDown = ClickStateHandler.GetClickState() is ClickState.Start or ClickState.Hold or ClickState.Move;
-            bool twoFingers = ClickStateHandler.GetClickType() is ClickType.TwoFingerOrScroll;
-            bool mouseClick = !twoFingers && mouseDown && !_mouseDownPrevious;
+            //bool twoFingers = ClickStateHandler.GetClickType() is ClickType.TwoFingerOrScroll;
+            bool mouseClick = /*!twoFingers && */mouseDown && !_mouseDownPrevious;
             _mouseDownPrevious = mouseDown;
 
+            Vector3 unityPosition = new();
+            if (mouseDown)
+            {
+                unityPosition = BattleCamera.Camera.ScreenToWorldPoint(ClickStateHandler.GetClickPosition());
+            }
+            
             BattleGridPosition movementPosition;
             if (mouseClick)
             {
-                Vector3 unityPosition = BattleCamera.Camera.ScreenToWorldPoint(ClickStateHandler.GetClickPosition());
+                _unityPositionPrevious = unityPosition;
                 movementPosition = new BattleGridPosition()
                 {
                     Row = BattleGridManager.WorldYPositionToGridRow(FP.FromFloat_UNSAFE(unityPosition.z)),
@@ -46,12 +54,33 @@ namespace Battle.View.Player
                 };
             }
 
+            BattlePlayerRotationDirection rotationDirection = BattlePlayerRotationDirection.None;
+            if (mouseDown && !_rotationRegistered)
+            {
+                float distance = unityPosition.x - _unityPositionPrevious.x;
+                if (distance < -3f)
+                {
+                    rotationDirection = BattlePlayerRotationDirection.Left;
+                    _rotationRegistered = true;
+                }
+                else if (distance > 3f)
+                {
+                    rotationDirection = BattlePlayerRotationDirection.Right;
+                    _rotationRegistered = true;
+                }
+            }
+            else
+            {
+                _rotationRegistered = false;
+            }
+
             Input i = new()
             {
                 MouseClick = mouseClick,
                 MovementPosition = movementPosition,
+                RotationDirection = rotationDirection
                 //RotateMotion = twoFingers,
-                RotationDirection = twoFingers ? FP.FromFloat_UNSAFE(ClickStateHandler.GetRotationDirection()) : 0,
+                //RotationDirection = twoFingers ? FP.FromFloat_UNSAFE(ClickStateHandler.GetRotationDirection()) : 0,
             };
 
             callback.SetInput(i, DeterministicInputFlags.Repeatable);
