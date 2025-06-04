@@ -548,78 +548,38 @@ MonoBehaviour:
   Prototype:
     GridExtendTop: 4
     GridExtendBottom: 1
-    HitboxListShield:
-    - Position:
-        X: 0
-        Y: 4
+    HitboxShield:
+      ColliderTemplateList:
+      - Position:
+          X: -2
+          Y: 4
+        Size:
+          X: 5
+          Y: 1
       CollisionType:
         Value: 2
-      NormalAngle:
-        RawValue: 11796480
-    - Position:
-        X: -1
-        Y: 4
-      CollisionType:
-        Value: 2
-      NormalAngle:
-        RawValue: 8847360
-    - Position:
-        X: 1
-        Y: 4
-      CollisionType:
-        Value: 2
-      NormalAngle:
-        RawValue: 14745600
-    - Position:
-        X: -2
-        Y: 4
-      CollisionType:
-        Value: 2
-      NormalAngle:
-        RawValue: 8847360
-    - Position:
-        X: 2
-        Y: 4
-      CollisionType:
-        Value: 2
-      NormalAngle:
-        RawValue: 14745600
-    HitboxListCharacter:
-    - Position:
-        X: 0
-        Y: 1
+    HitboxCharacter:
+      ColliderTemplateList:
+      - Position:
+          X: 0
+          Y: 1
+        Size:
+          X: 1
+          Y: 3
+      - Position:
+          X: -1
+          Y: 0
+        Size:
+          X: 1
+          Y: 1
+      - Position:
+          X: 1
+          Y: 0
+        Size:
+          X: 1
+          Y: 1
       CollisionType:
         Value: 0
-      NormalAngle:
-        RawValue: 0
-    - Position:
-        X: 0
-        Y: 0
-      CollisionType:
-        Value: 0
-      NormalAngle:
-        RawValue: 0
-    - Position:
-        X: -1
-        Y: 0
-      CollisionType:
-        Value: 0
-      NormalAngle:
-        RawValue: 0
-    - Position:
-        X: 1
-        Y: 0
-      CollisionType:
-        Value: 0
-      NormalAngle:
-        RawValue: 0
-    - Position:
-        X: 0
-        Y: -1
-      CollisionType:
-        Value: 0
-      NormalAngle:
-        RawValue: 0
 --- !u!1 &5555457871378360869
 GameObject:
   m_ObjectHideFlags: 0

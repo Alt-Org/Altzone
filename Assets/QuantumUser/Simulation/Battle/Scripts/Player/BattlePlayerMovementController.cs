@@ -153,38 +153,52 @@ namespace Battle.QSimulation.Player
 
         private static void MoveHitbox(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform)
         {
-            if (!f.TryResolveList(playerData->HitboxListAll, out QList<BattlePlayerHitboxLink> hitboxListAll)) return;
+            //if (!f.TryResolveList(playerData->HitboxListAll, out QList<BattlePlayerHitboxLink> hitboxListAll)) return;
 
-            FPVector2 position = transform->Position;
-            FP rotation = transform->Rotation;
+            Transform2D* shieldTransform = f.Unsafe.GetPointer<Transform2D>(playerData->HitboxShieldEntity);
+            Transform2D* characterTransform = f.Unsafe.GetPointer<Transform2D>(playerData->HitboxCharacterEntity);
 
-            Transform2D* hitBoxTransform;
-            foreach (BattlePlayerHitboxLink hitBoxLink in hitboxListAll)
-            {
-                hitBoxTransform = f.Unsafe.GetPointer<Transform2D>(hitBoxLink.Entity);
+            shieldTransform->Position = transform->Position;
+            shieldTransform->Rotation = transform->Rotation;
+            characterTransform->Position = transform->Position;
+            characterTransform->Rotation = transform->Rotation;
 
-                hitBoxTransform->Position = CalculateHitboxPosition(position, rotation, hitBoxLink.Position);
-                hitBoxTransform->Rotation = rotation;
-            }
+            //FPVector2 position = transform->Position;
+            //FP rotation = transform->Rotation;
+
+            //Transform2D* hitBoxTransform;
+            //foreach (BattlePlayerHitboxLink hitBoxLink in hitboxListAll)
+            //{
+            //    hitBoxTransform = f.Unsafe.GetPointer<Transform2D>(hitBoxLink.Entity);
+
+            //    hitBoxTransform->Position = CalculateHitboxPosition(position, rotation, hitBoxLink.Position);
+            //    hitBoxTransform->Rotation = rotation;
+            //}
         }
 
         private static void TeleportHitbox(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform)
         {
-            if (!f.TryResolveList(playerData->HitboxListAll, out QList<BattlePlayerHitboxLink> hitboxListAll)) return;
+            //if (!f.TryResolveList(playerData->HitboxListAll, out QList<BattlePlayerHitboxLink> hitboxListAll)) return;
 
-            FPVector2 position = transform->Position;
-            FP rotation = transform->Rotation;
+            Transform2D* shieldTransform = f.Unsafe.GetPointer<Transform2D>(playerData->HitboxShieldEntity);
+            Transform2D* characterTransform = f.Unsafe.GetPointer<Transform2D>(playerData->HitboxCharacterEntity);
 
-            Transform2D* hitBoxTransform;
-            foreach (BattlePlayerHitboxLink hitBoxLink in hitboxListAll)
-            {
-                hitBoxTransform = f.Unsafe.GetPointer<Transform2D>(hitBoxLink.Entity);
+            shieldTransform->Teleport(f, transform->Position, transform->Rotation);
+            characterTransform->Teleport(f, transform->Position, transform->Rotation);
 
-                hitBoxTransform->Teleport(f,
-                    CalculateHitboxPosition(position, rotation, hitBoxLink.Position),
-                    rotation
-                );
-            }
+            //FPVector2 position = transform->Position;
+            //FP rotation = transform->Rotation;
+
+            //Transform2D* hitBoxTransform;
+            //foreach (BattlePlayerHitboxLink hitBoxLink in hitboxListAll)
+            //{
+            //    hitBoxTransform = f.Unsafe.GetPointer<Transform2D>(hitBoxLink.Entity);
+
+            //    hitBoxTransform->Teleport(f,
+            //        CalculateHitboxPosition(position, rotation, hitBoxLink.Position),
+            //        rotation
+            //    );
+            //}
         }
     }
 }
