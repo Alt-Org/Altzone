@@ -9,7 +9,7 @@ namespace MenuUi.Scripts.CharacterGallery
 {
     public class SelectedCharSlot : SlotBase
     {
-        [SerializeField] private Image _characterHeadImage;
+        [SerializeField] private Image _characterImage;
         [SerializeField] private TMP_Text _className;
         [SerializeField] private TMP_Text _characterNameText;
 
@@ -26,7 +26,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, string className, CharacterID id)
         {
-            _characterHeadImage.sprite = sprite;
+            _characterImage.sprite = sprite;
             _characterNameText.text = name;
             _className.text = className;
             _backgroundLowerImage.color = bgColor;

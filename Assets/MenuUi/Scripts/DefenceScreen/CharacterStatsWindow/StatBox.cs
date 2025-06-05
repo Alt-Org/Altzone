@@ -26,7 +26,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private Button _diamondButton;
         [SerializeField] private TMP_Text _statDescription;
         [SerializeField] private GameObject _contents;
-        [SerializeField] private GameObject _defenceIconColor;
         [SerializeField] private TMP_Text _developmentName;
 
         private StatsWindowController _controller;
@@ -113,15 +112,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             UpdateStatValue(_statType);
             UpdateDiamondCost(_statType);
             UpdateEraserCost(_statType);
-
-            if (_statType == StatType.Defence)
-            {
-                _defenceIconColor.SetActive(true);
-            }
-            else
-            {
-                _defenceIconColor.SetActive(false);
-            }
         }
 
         private void UpdateStatLevel(StatType statType)
