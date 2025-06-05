@@ -29,40 +29,13 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private CharacterID _characterId;
         private CustomCharacter _customCharacter;
         private BaseCharacter _baseCharacter;
-        private bool _unlimitedDiamonds;
+        private bool _unlimitedUpgradeMaterial;
         private bool _unlimitedErasers;
         private SwipeUI _swipe;
 
         public CharacterID CurrentCharacterID { get { return _characterId; } }
-        [HideInInspector] public bool UnlimitedDiamonds {
-            get
-            {
-                return _unlimitedDiamonds;
-            }
-            set
-            {
-                _unlimitedDiamonds = value;
-                PlayerPrefs.SetInt("UnlimitedDiamonds", value ? 1 : 0);
-                OnDiamondAmountChanged?.Invoke();
-            }
-        }
 
-        [HideInInspector] public bool UnlimitedErasers
-        {
-            get
-            {
-                return _unlimitedErasers;
-            }
-            set
-            {
-                _unlimitedErasers = value;
-                PlayerPrefs.SetInt("UnlimitedErasers", value ? 1 : 0);
-                OnEraserAmountChanged?.Invoke();
-            }
-        }
-
-        public event Action OnEraserAmountChanged;
-        public event Action OnDiamondAmountChanged;
+        public event Action OnUpgradeMaterialAmountChanged;
 
         public delegate void StatUpdatedHandler(StatType statType);
         public event StatUpdatedHandler OnStatUpdated;
@@ -75,7 +48,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             _statsPanel.SetActive(false);
             // Getting unlimited diamonds and erasers value from playerPrefs
-            _unlimitedDiamonds = PlayerPrefs.GetInt("UnlimitedDiamonds", 0) == 1;
+            _unlimitedUpgradeMaterial = PlayerPrefs.GetInt("UnlimitedDiamonds", 0) == 1;
             _unlimitedErasers = PlayerPrefs.GetInt("UnlimitedErasers", 0) == 1;
         }
 
@@ -96,6 +69,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             _swipe.OnCurrentPageChanged -= ClosePopup;
         }
+
         public void OpenPopup()
         {
             gameObject.SetActive(true);
@@ -179,6 +153,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             return CustomCharacter.GetClassID(_characterId);
         }
 
+
         /// <summary>
         /// Get currently displayed character's class name.
         /// </summary>
@@ -217,6 +192,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             return _classColorReference.GetAlternativeColor(classID);
         }
 
+
         /// <summary>
         /// Get current character class color from character class color reference sheet.
         /// </summary>
@@ -226,6 +202,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             CharacterClassID classID = GetCurrentCharacterClass();
             return _classColorReference.GetColor(classID);
         }
+
+
         /// <summary>
         /// Get StatInfo from Reference sheet
         /// </summary>
@@ -343,113 +321,63 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
 
         /// <summary>
-        /// Get player's eraser amount from player data.
+        /// Get player's upgrade material amount from player data.
         /// </summary>
-        /// <returns>Player's eraser amount as int.</returns>
-        public int GetEraserAmount()
-        {
-            return _playerData.Eraser;
-        }
-
-        public void InvokeOnEraserAmountChanged()
-        {
-            OnEraserAmountChanged.Invoke();
-        }
-
-
-        /// <summary>
-        /// Try to decrease player's eraser amount by 1.
-        /// </summary>
-        /// <returns>If decreasing was successful. If true, player's erasers were decreased by 1. If false, player didn't have enough erasers.</returns>
-        private bool TryDecreaseEraser()
-        {
-            if (CheckIfEnoughErasers(1))
-            {
-                _playerData.Eraser--;
-                OnEraserAmountChanged.Invoke();
-                return true;
-            }
-            else
-            {
-                PopupSignalBus.OnChangePopupInfoSignal("Ei tarpeeksi pyyhekumeja.");
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Checks if player has enough erasers.
-        /// </summary>
-        /// <param name="eraserCost">Eraser cost to check</param>
-        /// <returns>True if the player does, false if doesn't</returns>
-        public bool CheckIfEnoughErasers(int eraserCost)
-        {
-            if (_playerData.Eraser >= eraserCost || UnlimitedErasers) 
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-
-        /// <summary>
-        /// Get player's diamond amount from player data.
-        /// </summary>
-        /// <returns>Player's diamond amount as int.</returns>
-        public int GetDiamondAmount()
+        /// <returns>Player's upgrade material amount as int.</returns>
+        public int GetUpgradeMaterialAmount()
         {
             return _playerData.DiamondSpeed; // using DiamondSpeed as a placeholder
         }
 
 
-        public void InvokeOnDiamondAmountChanged()
+        public void InvokeOnUpgradeMaterialAmountChanged()
         {
-            OnDiamondAmountChanged.Invoke();
+            OnUpgradeMaterialAmountChanged.Invoke();
         }
 
 
         /// <summary>
-        /// Try to decrease player's diamonds by the amount specified.
+        /// Try to decrease player's upgrade material by the amount specified.
         /// </summary>
-        /// <param name="amount">The amount how many diamonds will be decreased from the player.</param>
-        /// <returns>If decreasing was successful. If true, player's diamonds were decreased by amount. If false, player didn't have enough diamonds.</returns>
-        private bool TryDecreaseDiamonds(int amount)
+        /// <param name="amount">The amount how many upgrade material will be decreased from the player.</param>
+        /// <returns>If decreasing was successful. If true, player's upgrade material was decreased by amount. If false, player didn't have enough upgrade material.</returns>
+        private bool TryDecreaseUpgradeMaterial(int amount)
         {
-            if (CheckIfEnoughDiamonds(amount)) 
+            if (CheckIfEnoughUpgradeMaterial(amount)) 
             {
                 _playerData.DiamondSpeed -= amount;
-                OnDiamondAmountChanged.Invoke();
+                OnUpgradeMaterialAmountChanged.Invoke();
                 return true;
             }
             else
             {
-                PopupSignalBus.OnChangePopupInfoSignal("Ei tarpeeksi timantteja.");
+                PopupSignalBus.OnChangePopupInfoSignal("Ei tarpeeksi kyyneliä.");
                 return false;
             }
         }
 
 
         /// <summary>
-        /// Get how many diamonds it costs to upgrade currently displayed character's stat according to the stat type.
+        /// Get how many upgrade material it costs to upgrade currently displayed character's stat according to the stat type.
         /// </summary>
-        /// <param name="statType">The stat type which diamond cost will be checked.</param>
-        /// <returns>Stat diamond upgrade cost as int.</returns>
-        public int GetDiamondCost(StatType statType)
+        /// <param name="statType">The stat type which upgrade material cost will be checked.</param>
+        /// <returns>Stat upgrade material cost as int.</returns>
+        public int GetUpgradeMaterialCost(StatType statType)
         {
             if (_customCharacter == null) return 0;
 
             return _customCharacter.GetPriceToNextLevel(statType);
         }
+
+
         /// <summary>
-        /// Checks if player has enough diamonds.
+        /// Checks if player has enough upgrade material.
         /// </summary>
-        /// <param name="diamondCost">Diamond cost to check</param>
+        /// <param name="cost">Upgrade material cost to check</param>
         /// <returns>True if the player does, false if doesn't</returns>
-        public bool CheckIfEnoughDiamonds(int diamondCost) 
+        public bool CheckIfEnoughUpgradeMaterial(int cost) 
         {
-            if (_playerData.DiamondSpeed >= diamondCost || UnlimitedDiamonds) // using DiamondSpeed as a placeholder
+            if (_playerData.DiamondSpeed >= cost || SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials) // using DiamondSpeed as a placeholder
             {
                 return true;
             }
@@ -458,6 +386,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 return false;
             }
         }
+
 
         /// <summary>
         /// Get currently displayed character's stat level according to the stat type.
@@ -523,6 +452,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             return (int)BaseCharacter.GetStatValueFP(statType, GetStat(statType));
         }
 
+
         /// <summary>
         /// Get stat value according to the stat type and level.
         /// </summary>
@@ -533,6 +463,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             return (int)BaseCharacter.GetStatValueFP(statType, level);
         }
+
 
         /// <summary>
         /// Get stat's strength.
@@ -558,7 +489,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                     return ValueStrength.None;
             }
         }
-
 
 
         /// <summary>
@@ -598,7 +528,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (CanIncreaseStat(statType, true))
             {
-                bool diamondsDecreased = UnlimitedDiamonds || TryDecreaseDiamonds(GetDiamondCost(statType));
+                bool diamondsDecreased = SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials || TryDecreaseUpgradeMaterial(GetUpgradeMaterialCost(statType));
 
                 if (diamondsDecreased)
                 {
@@ -664,30 +594,25 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (CanDecreaseStat(statType, true))
             {
-                bool eraserDecreased = UnlimitedErasers || TryDecreaseEraser();
-
-                if (eraserDecreased)
+                switch (statType)
                 {
-                    switch (statType)
-                    {
-                        case StatType.Speed:
-                            _customCharacter.Speed--;
-                            break;
-                        case StatType.Attack:
-                            _customCharacter.Attack--;
-                            break;
-                        case StatType.Hp:
-                            _customCharacter.Hp--;
-                            break;
-                        case StatType.CharacterSize:
-                            _customCharacter.CharacterSize--;
-                            break;
-                        case StatType.Defence:
-                            _customCharacter.Defence--;
-                            break;
-                    }
-                    success = true;
+                    case StatType.Speed:
+                        _customCharacter.Speed--;
+                        break;
+                    case StatType.Attack:
+                        _customCharacter.Attack--;
+                        break;
+                    case StatType.Hp:
+                        _customCharacter.Hp--;
+                        break;
+                    case StatType.CharacterSize:
+                        _customCharacter.CharacterSize--;
+                        break;
+                    case StatType.Defence:
+                        _customCharacter.Defence--;
+                        break;
                 }
+                success = true;
             }
 
             if (success)
