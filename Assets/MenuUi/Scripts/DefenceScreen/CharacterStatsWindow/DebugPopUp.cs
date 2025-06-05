@@ -13,25 +13,18 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         
         [SerializeField] private GameObject _contents;
         [SerializeField] private Image _touchBlocker;
-        [SerializeField] private Button _addCharacterButton;
-        [SerializeField] private Toggle _unlimitedDiamondsToggle;
-        [SerializeField] private Toggle _unlimitedErasersToggle;
-        [SerializeField] private Button _addDiamondsButton;
-        [SerializeField] private Button _addErasersButton;
+        [SerializeField] private Toggle _unlimitedUpgradeMaterialsToggle;
+        [SerializeField] private Button _addUpgradeMaterialsButton;
 
         private StatsWindowController _controller;
 
-        private const int DiamondsToAdd = 10000;
-        private const int ErasersToAdd = 100;
+        private const int UpgradeMaterialsToAdd = 10000;
 
 
         private void OnDestroy()
         {
-            _addCharacterButton.onClick.RemoveAllListeners();
-            _unlimitedDiamondsToggle.onValueChanged.RemoveAllListeners();
-            _unlimitedDiamondsToggle.onValueChanged.RemoveAllListeners();
-            _addDiamondsButton.onClick.RemoveAllListeners();
-            _addErasersButton.onClick.RemoveAllListeners();
+            _unlimitedUpgradeMaterialsToggle.onValueChanged.RemoveAllListeners();
+            _addUpgradeMaterialsButton.onClick.RemoveAllListeners();
         }
 
 
@@ -45,37 +38,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             {
                 _controller = FindObjectOfType<StatsWindowController>();
 
-                _unlimitedDiamondsToggle.isOn = _controller.UnlimitedDiamonds;
-                _unlimitedErasersToggle.isOn = _controller.UnlimitedErasers;
-                _addDiamondsButton.interactable = !_controller.UnlimitedDiamonds;
-                _addErasersButton.interactable = !_controller.UnlimitedErasers;
+                _unlimitedUpgradeMaterialsToggle.isOn = SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials;
+                _addUpgradeMaterialsButton.interactable = !SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials;
 
-                _unlimitedDiamondsToggle.onValueChanged.AddListener(value =>
+                _unlimitedUpgradeMaterialsToggle.onValueChanged.AddListener(value =>
                 {
-                    _controller.UnlimitedDiamonds = value;
-                    _addDiamondsButton.interactable = !value;
+                    SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials = value;
+                    _addUpgradeMaterialsButton.interactable = !value;
                 });
 
-                _unlimitedErasersToggle.onValueChanged.AddListener(value =>
-                {
-                    _controller.UnlimitedErasers = value;
-                    _addErasersButton.interactable = !value;
-                });
-
-                _addDiamondsButton.onClick.AddListener(AddDiamonds);
-                _addErasersButton.onClick.AddListener(AddErasers);
-            }
-
-            // Adding listener to add character button
-            if (_controller.IsCurrentCharacterLocked())
-            {
-                _addCharacterButton.interactable = true;
-                _addCharacterButton.onClick.RemoveAllListeners();
-                _addCharacterButton.onClick.AddListener(AddCharacter);
-            }
-            else
-            {
-                _addCharacterButton.interactable = false;
+                _addUpgradeMaterialsButton.onClick.AddListener(AddUpgradeMaterials);
             }
 
             // Setting popup active
@@ -94,55 +66,12 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         }
 
 
-        private void AddCharacter()
-        {
-            _addCharacterButton.interactable = false;
-
-            bool success = false;
-            StartCoroutine(ServerManager.Instance.AddCustomCharactersToServer(_controller.CurrentCharacterID, result =>
-            {
-                if (result != null)
-                {
-                    success = true;
-                }
-
-                if (success)
-                {
-                    StartCoroutine(ServerManager.Instance.UpdateCustomCharacters(result =>
-                    {
-                        if (result)
-                        {
-                            SignalBus.OnReloadCharacterGalleryRequestedSignal();
-                            _controller.ReloadStatWindow();
-                            ClosePopUp();
-                        }
-                    }
-                    ));
-                }
-                else
-                {
-                    PopupSignalBus.OnChangePopupInfoSignal("Tätä hahmoa ei ole vielä lisätty pelipalvelimelle.");
-                }
-            }));
-        }
-
-
-        private void AddDiamonds()
+        private void AddUpgradeMaterials()
         {
             StartCoroutine(GetPlayerData(playerData =>
             {
-                playerData.DiamondSpeed += DiamondsToAdd;
-                _controller.InvokeOnDiamondAmountChanged();
-            }));
-        }
-
-
-        private void AddErasers()
-        {
-            StartCoroutine(GetPlayerData(playerData =>
-            {
-                playerData.Eraser += ErasersToAdd;
-                _controller.InvokeOnEraserAmountChanged();
+                playerData.DiamondSpeed += UpgradeMaterialsToAdd;
+                _controller.InvokeOnUpgradeMaterialAmountChanged();
             }));
         }
     }
