@@ -40,7 +40,8 @@ SystemSignalsOnly
 
 ## Quantum System Update method brief/summary format
 ```
-<span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method@u-exlink</a> gets called every frame.</span><br/>
+<span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method@u-exlink</a>
+gets called every frame.</span><br/>
 // brief text
 @warning
 This method should only be called by Quantum.
@@ -48,7 +49,8 @@ This method should only be called by Quantum.
 
 ## Quantum System OnInit method brief/summary format
 ```
-<span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System OnInit method@u-exlink</a> gets called when the system is initialized.</span><br/>
+<span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System OnInit method@u-exlink</a>
+gets called when the system is initialized.</span><br/>
 // brief text
 @warning
 This method should only be called by Quantum.
@@ -56,7 +58,8 @@ This method should only be called by Quantum.
 
 ## Quantum System Signal method brief/summary format
 ```
-<span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a> that gets called when <see cref="signal interface">signal interface</see> is sent.</span><br/>
+<span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Signal method@u-exlink</a>
+that gets called when <see cref="signal interface">signal interface</see> is sent.</span><br/>
 // brief text
 @warning
 This method should only be called via Quantum signal.
