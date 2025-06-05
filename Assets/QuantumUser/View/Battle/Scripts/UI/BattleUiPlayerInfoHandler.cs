@@ -54,6 +54,7 @@ namespace Battle.View.UI
         /// <summary>
         /// Sets the %UI element visibility.
         /// </summary>
+        ///
         /// <param name="show">If the %UI element should be visible or not.</param>
         public void SetShow(bool show)
         {
@@ -64,18 +65,23 @@ namespace Battle.View.UI
         /// <summary>
         /// Sets the player's info to BattleUiPlayerInfo prefab through BattleUiPlayerInfoComponent.
         /// </summary>
+        ///
         /// <param name="playerType">The PlayerType which info to set.</param>
         /// <param name="playerName">The player's name.</param>
         /// <param name="characterIds">The player's selected characters CharacterIds as a int array.</param>
-        public void SetInfo(PlayerType playerType, string playerName, int[] characterIds)
+        /// <param name="data">The BattleUiMovableElementData for this UI element.</param>
+        public void SetInfo(PlayerType playerType, string playerName, int[] characterIds, BattleUiMovableElementData data)
         {
-            // Getting player info component from multi orientation element
-            BattleUiPlayerInfoComponent playerInfoComponent =
-                (playerType == PlayerType.LocalPlayer
-                    ? _localPlayerMultiOrientationElement
-                    : _localTeammateMultiOrientationElement
-                ).GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>();
+            // Selecting correct multiorientation element
+            BattleUiMultiOrientationElement multiOrientationElement = playerType == PlayerType.LocalPlayer
+                ? _localPlayerMultiOrientationElement
+                : _localTeammateMultiOrientationElement;
 
+            // Setting BattleUiMovableElementData to multi orientation element
+            if (data != null) multiOrientationElement.SetData(data);
+
+            // Getting player info component from multiorientation element
+            BattleUiPlayerInfoComponent playerInfoComponent = multiOrientationElement.GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>();
             if (playerInfoComponent == null) return;
 
             // Setting player name

@@ -59,7 +59,7 @@ namespace Battle.View.UI
             if (_recordTime) return;
 
             _hours = 0;
-            _oldSeconds = -1;
+            _secondsElapsedPrevious = -1;
 
             _timer = FrameTimer.FromSeconds(f, 3600);
             _recordTime = true;
@@ -79,8 +79,9 @@ namespace Battle.View.UI
         private FrameTimer _timer;
         /// <value>Keeps track of hours passed.</value>
         private int _hours;
+
         /// <value>Holder variable for keeping track of passed seconds, so that the #_timerText is set in #Update only when the seconds increase.</value>
-        private int _oldSeconds;
+        private int _secondsElapsedPrevious;
 
         /// <summary>
         /// Private <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/MonoBehaviour.Update.html">Update@u-exlink</a> method. Handles formatting and setting the #_timerText.
@@ -92,22 +93,23 @@ namespace Battle.View.UI
 
             if (_timer.IsExpired(f))
             {
-                _oldSeconds = -1;
+                _secondsElapsedPrevious = -1;
                 _timer.Restart(f);
                 _hours++;
             }
 
-            FP? secondsSinceStart = _timer.TimeInSecondsSinceStart(f);
+            FP? secondsElapsedFloat = _timer.TimeInSecondsSinceStart(f);
 
-            if (secondsSinceStart != null)
+            if (secondsElapsedFloat != null)
             {
-                int minutes = FPMath.FloorToInt(secondsSinceStart.Value / 60);
-                int seconds = FPMath.FloorToInt(secondsSinceStart.Value - minutes * 60);
+                int secondsElapsed = FPMath.FloorToInt(secondsElapsedFloat.Value);
+                int minutes = FPMath.FloorToInt(secondsElapsedFloat.Value / 60);
+                int seconds = secondsElapsed - (minutes * 60);
 
-                if (seconds > _oldSeconds)
+                if (secondsElapsed > _secondsElapsedPrevious)
                 {
-                    if (IsVisible) _timerText.text = _hours == 0 ? $"{minutes}:{seconds:00}" : $"{_hours}:{minutes:00}:{seconds:00}";
-                    _oldSeconds = seconds;
+                    if (IsVisible) _timerText.text = _hours == 0 ? $"<mspace=1em>{minutes:D2}:{seconds:00}</mspace>" : $"{_hours}:{minutes:00}:{seconds:00}";
+                    _secondsElapsedPrevious = secondsElapsed;
                 }
             }
         }

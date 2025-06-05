@@ -17,6 +17,20 @@ namespace MenuUi.Scripts.Signals
         {
             OnBattlePopupRequested?.Invoke(gameType);
         }
+
+        public delegate void CloseBattlePopupRequestedHandler();
+        public static event CloseBattlePopupRequestedHandler OnCloseBattlePopupRequested;
+        public static void OnCloseBattlePopupRequestedSignal()
+        {
+            OnCloseBattlePopupRequested?.Invoke();
+        }
+
+        public delegate void CustomRoomSettingsRequestedHandler();
+        public static event CustomRoomSettingsRequestedHandler OnCustomRoomSettingsRequested;
+        public static void OnCustomRoomSettingsRequestedSignal()
+        {
+            OnCustomRoomSettingsRequested?.Invoke();
+        }
     }
 }
 
@@ -40,12 +54,14 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private void Awake()
         {
             SignalBus.OnBattlePopupRequested += OpenWindow;
+            SignalBus.OnCloseBattlePopupRequested += CloseWindow;
         }
 
 
         private void OnDestroy()
         {
             SignalBus.OnBattlePopupRequested -= OpenWindow;
+            SignalBus.OnCloseBattlePopupRequested -= CloseWindow;
         }
 
 
@@ -147,7 +163,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
             switch (gameType)
             {
                 case GameType.Custom:
-                    if (PhotonRealtimeClient.InRoom) return;
+                    if (PhotonRealtimeClient.InRoom)
+                    {
+                        _roomSwitcher.SwitchRoom(GameType.Custom);
+                        return;
+                    }
                     break;
                 case GameType.Clan2v2:
                 case GameType.Random2v2:
@@ -168,43 +188,25 @@ namespace MenuUi.Scripts.Lobby.InLobby
                         }
                     }
                     break;
+                default:
+                    return;
             }
-            
+
             SelectedGameType = gameType;
 
-            switch (gameType)
+            // Starting creating room of a selected game type if the coroutine is not already running
+            if (_creatingRoomCoroutineHolder != null) return;
+            _roomSwitcher.ClosePanels();
+            _creatingRoomCoroutineHolder = StartCoroutine(_roomListingController.StartCreatingRoom(gameType, () =>
             {
-                case GameType.Custom:
-                    _roomSwitcher.ReturnToMain();
-                    break;
-                case GameType.Clan2v2:
-                    _roomSwitcher.ClosePanels();
-                    // Starting coroutine to create clan 2v2 room if player is not in a room and a room is currently being created
-                    if (_creatingRoomCoroutineHolder == null)
-                    {
-                        _creatingRoomCoroutineHolder = StartCoroutine(_roomListingController.StartCreatingClan2v2Room(() =>
-                        {
-                            _creatingRoomCoroutineHolder = null;
-                        }));
-                    }
-                    break;
-                case GameType.Random2v2:
-                    _roomSwitcher.ClosePanels();
-                    // Starting coroutine to create clan 2v2 room if player is not in a room and a room is currently being created
-                    if (_creatingRoomCoroutineHolder == null)
-                    {
-                        _creatingRoomCoroutineHolder = StartCoroutine(_roomListingController.StartCreatingRandom2v2Room(() =>
-                        {
-                            _creatingRoomCoroutineHolder = null;
-                        }));
-                    }
-                    break;
-            }
+                _creatingRoomCoroutineHolder = null;
+            }));
         }
 
 
         public void CloseWindow()
         {
+            _roomSwitcher.ClosePanels();
             _popupContents.SetActive(false);
         }
 

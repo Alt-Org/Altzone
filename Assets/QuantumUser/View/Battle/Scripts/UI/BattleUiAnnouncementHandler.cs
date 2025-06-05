@@ -30,6 +30,14 @@ namespace Battle.View.UI
 
         /// @}
 
+
+        public enum TextType
+        {
+            Loading,
+            WaitingForPlayers,
+            EndOfCountdown,
+        }
+
         /// <value>Is the %UI element visible or not.</value>
         public bool IsVisible => _view.activeSelf;
 
@@ -42,6 +50,20 @@ namespace Battle.View.UI
             _view.SetActive(show);
         }
 
+        public void SetText(TextType textType)
+        {
+            _announcerText.text = textType switch
+            {
+                TextType.Loading            => "Loading...",
+                TextType.WaitingForPlayers  => "Waiting for\nplayers...",
+                TextType.EndOfCountdown     => "GO!",
+
+                _ => string.Format("Unimplemented text type {0}.", textType),
+            };
+        }
+
+        //countdown from x to 0 based on GameSessionState
+
         /// <summary>
         /// Sets a countdown number to the #_announcerText.
         /// </summary>
@@ -51,25 +73,6 @@ namespace Battle.View.UI
             _announcerText.text = $"{countDown}";
         }
 
-        /// <summary>
-        /// Sets the end of the countdown text to the #_announcerText.
-        /// </summary>
-        public void ShowEndOfCountDownText()
-        {
-            _announcerText.text = "GO!";
-        }
-
-        /// <summary>
-        /// Sets the game over text to the #_announcerText.
-        /// </summary>
-        public void ShowGameOverText()
-        {
-            _announcerText.text = "Game Over!";
-        }
-
-        /// <summary>
-        /// Clears the text in #_announcerText.
-        /// </summary>
         public void ClearAnnouncerTextField()
         {
             _announcerText.text = "";
@@ -80,7 +83,7 @@ namespace Battle.View.UI
         /// </summary>
         private void Awake()
         {
-            _announcerText.text = "";
+            ClearAnnouncerTextField();
         }
     }
 }

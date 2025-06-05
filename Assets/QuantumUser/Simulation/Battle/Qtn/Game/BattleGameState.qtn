@@ -1,6 +1,7 @@
 enum BattleGameState
 {
   InitializeGame,
+  WaitForPlayers,
   CreateMap,
   ReadyToStart,
   Countdown,

@@ -135,6 +135,7 @@ namespace Quantum.Prototypes.Unity {
   }
   [System.SerializableAttribute()]
   public unsafe partial class BattlePlayerManagerDataQSingletonPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerManagerDataQSingletonPrototype> {
+    public Int32 PlayerCount;
     [ArrayLengthAttribute(4)]
     public Quantum.QEnum32<BattlePlayerPlayState>[] PlayStates = new Quantum.QEnum32<BattlePlayerPlayState>[4];
     [ArrayLengthAttribute(4)]
@@ -148,28 +149,12 @@ namespace Quantum.Prototypes.Unity {
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerManagerDataQSingletonPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerManagerDataQSingletonPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerManagerDataQSingletonPrototype();
+      converter.Convert(this.PlayerCount, out result.PlayerCount);
       converter.Convert(this.PlayStates, out result.PlayStates);
       converter.Convert(this.PlayerRefs, out result.PlayerRefs);
       converter.Convert(this.SelectedCharacters, out result.SelectedCharacters);
       converter.Convert(this.AllCharacters, out result.AllCharacters);
       converter.Convert(this.SelectedCharacterNumbers, out result.SelectedCharacterNumbers);
-      ConvertUser(converter, ref result);
-      return result;
-    }
-  }
-  [System.SerializableAttribute()]
-  public unsafe partial class BattleSoulWallQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattleSoulWallQComponentPrototype> {
-    public Quantum.QuantumEntityPrototype ChildEntity;
-    public Quantum.QEnum32<BattleEmotionState> Emotion;
-    public FPVector2 Normal;
-    public FP CollisionMinOffset;
-    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattleSoulWallQComponentPrototype prototype);
-    public override Quantum.Prototypes.BattleSoulWallQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
-      var result = new Quantum.Prototypes.BattleSoulWallQComponentPrototype();
-      converter.Convert(this.ChildEntity, out result.ChildEntity);
-      converter.Convert(this.Emotion, out result.Emotion);
-      converter.Convert(this.Normal, out result.Normal);
-      converter.Convert(this.CollisionMinOffset, out result.CollisionMinOffset);
       ConvertUser(converter, ref result);
       return result;
     }

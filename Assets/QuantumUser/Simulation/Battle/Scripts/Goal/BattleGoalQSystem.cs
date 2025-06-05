@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.Scripting;
 
 using Quantum;
+using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Goal
 {
@@ -38,8 +39,7 @@ namespace Battle.QSimulation.Goal
         {
             if (goal->HasTriggered) return;
 
-            BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
-            gameSession->State = BattleGameState.GameOver;
+            BattleGameControlQSystem.OnGameOver(f, goal->TeamNumber, projectile, projectileEntity);
 
             goal->HasTriggered = true;
 

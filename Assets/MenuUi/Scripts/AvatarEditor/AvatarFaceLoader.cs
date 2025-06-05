@@ -5,11 +5,15 @@ namespace MenuUi.Scripts.AvatarEditor{
     {
         [SerializeField] private AvatarVisualDataScriptableObject _avatarVisuals;
         [SerializeField] private AvatarEditorCharacterHandle _characterHandle;
+        [SerializeField] private bool _useOwnAvatarVisuals = true;
 
         private void OnEnable()
         {
-            UpdateVisuals();
-            AvatarDesignLoader.OnAvatarDesignUpdate += UpdateVisuals;
+            if (_useOwnAvatarVisuals)
+            {
+                UpdateVisuals();
+                AvatarDesignLoader.OnAvatarDesignUpdate += UpdateVisuals;
+            }
         }
 
         private void OnDisable()
@@ -19,16 +23,30 @@ namespace MenuUi.Scripts.AvatarEditor{
 
         private void UpdateVisuals()
         {
-            if (_avatarVisuals.colors != null && _avatarVisuals.colors.Count != 0)
-                _characterHandle.SetHeadColor(_avatarVisuals.colors[0]);
+            if (_avatarVisuals.color != null)
+                _characterHandle.SetHeadColor(_avatarVisuals.color);
 
             if (_avatarVisuals.sprites == null || _avatarVisuals.sprites.Count == 0)
                 return;
 
-            _characterHandle.SetMainCharacterImage(FeatureSlot.Hair, _avatarVisuals.sprites[0]);
-            _characterHandle.SetMainCharacterImage(FeatureSlot.Eyes, _avatarVisuals.sprites[1]);
-            _characterHandle.SetMainCharacterImage(FeatureSlot.Nose, _avatarVisuals.sprites[2]);
-            _characterHandle.SetMainCharacterImage(FeatureSlot.Mouth, _avatarVisuals.sprites[3]);
+            _characterHandle.SetMainCharacterImage(FeatureSlot.Hair, _avatarVisuals.Hair);
+            _characterHandle.SetMainCharacterImage(FeatureSlot.Eyes, _avatarVisuals.Eyes);
+            _characterHandle.SetMainCharacterImage(FeatureSlot.Nose, _avatarVisuals.Nose);
+            _characterHandle.SetMainCharacterImage(FeatureSlot.Mouth, _avatarVisuals.Mouth);
+        }
+
+        public void UpdateVisuals(AvatarVisualData data)
+        {
+            if (data.color != null)
+                _characterHandle.SetHeadColor(data.color);
+
+            /*if (_avatarVisuals.sprites == null || _avatarVisuals.sprites.Count == 0)
+                return;*/
+
+            _characterHandle.SetMainCharacterImage(FeatureSlot.Hair, data.Hair);
+            _characterHandle.SetMainCharacterImage(FeatureSlot.Eyes, data.Eyes);
+            _characterHandle.SetMainCharacterImage(FeatureSlot.Nose, data.Nose);
+            _characterHandle.SetMainCharacterImage(FeatureSlot.Mouth, data.Mouth);
         }
     }
 }

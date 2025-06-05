@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1572721459727303304}
   - component: {fileID: 3828829633926915963}
   - component: {fileID: 6317591852034463844}
+  - component: {fileID: 235158837314665552}
   m_Layer: 0
   m_Name: BattleSoulWallSegmentType2
   m_TagString: Untagged
@@ -233,7 +234,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    ChildEntity: {fileID: 0}
+    Team:
+      Value: 0
+    Row:
+      Value: 0
+    WallNumber: 0
     Emotion:
       Value: 0
     Normal:
@@ -243,6 +248,21 @@ MonoBehaviour:
         RawValue: 0
     CollisionMinOffset:
       RawValue: 0
+--- !u!114 &235158837314665552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781388111915340693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d28504b7d1755c57ae0529ef8c0139d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    Type:
+      Value: 1
 --- !u!1001 &2207902013808120081
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -251,6 +271,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8344968339860513469}
     m_Modifications:
+    - target: {fileID: 131105179235431738, guid: cf6114ddf4664f330a499fb4cca33ed8,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 131105179235431738, guid: cf6114ddf4664f330a499fb4cca33ed8,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 131105179235431738, guid: cf6114ddf4664f330a499fb4cca33ed8,
+        type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1477692605
+      objectReference: {fileID: 0}
     - target: {fileID: 2155321048667000348, guid: cf6114ddf4664f330a499fb4cca33ed8,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -368,6 +403,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7787884752148353987, guid: cf6114ddf4664f330a499fb4cca33ed8,
         type: 3}
+      propertyPath: _useDebugSprites
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7787884752148353987, guid: cf6114ddf4664f330a499fb4cca33ed8,
+        type: 3}
       propertyPath: _soulWallEntityGameObject
       value: 
       objectReference: {fileID: 1781388111915340693}
@@ -382,6 +422,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1579532838, guid: f19482c6dce475820a8c7c6b5f7aa6c6,
         type: 3}
+    - target: {fileID: 8224459561721514793, guid: cf6114ddf4664f330a499fb4cca33ed8,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8224459561721514793, guid: cf6114ddf4664f330a499fb4cca33ed8,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8224459561721514793, guid: cf6114ddf4664f330a499fb4cca33ed8,
+        type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1477692605
+      objectReference: {fileID: 0}
     - target: {fileID: 8224459561721514793, guid: cf6114ddf4664f330a499fb4cca33ed8,
         type: 3}
       propertyPath: m_WasSpriteAssigned

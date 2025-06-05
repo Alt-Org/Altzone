@@ -1,5 +1,7 @@
 using System.Runtime.CompilerServices;
 using Photon.Deterministic;
+using UnityEditor;
+using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
@@ -25,39 +27,43 @@ namespace Altzone.Scripts.Model.Poco.Game
         VeryWeak
     }
 
-    public abstract class BaseCharacter
+    public abstract class BaseCharacter : ScriptableObject
     {
-        protected CharacterID _id = CharacterID.None;
-        protected int _hp;
-        protected int _defaultHp;
-        protected ValueStrength _hpStrength = ValueStrength.None;
-        protected int _speed;
-        protected int _defaultSpeed;
-        protected ValueStrength _speedStrength = ValueStrength.None;
-        protected int _characterSize;
-        protected int _defaultCharacterSize;
-        protected ValueStrength _characterSizeStrength = ValueStrength.None;
-        protected int _attack;
-        protected int _defaultAttack;
-        protected ValueStrength _attackStrength = ValueStrength.None;
-        protected int _defence;
-        protected int _defaultDefence;
-        protected ValueStrength _defenceStrength = ValueStrength.None;
+        [SerializeField] protected CharacterID _id = CharacterID.None;
+        [SerializeField] protected bool active = true;
 
-        protected bool active = true;
+        [Header("HP"), SerializeField] protected int _defaultHp;
+        protected int _hp;
+        [SerializeField] protected ValueStrength _hpStrength = ValueStrength.None;
+        
+        [Header("Speed"), SerializeField] protected int _defaultSpeed;
+        protected int _speed;
+        [SerializeField] protected ValueStrength _speedStrength = ValueStrength.None;
+        
+        [Header("Character Size"), SerializeField] protected int _defaultCharacterSize;
+        protected int _characterSize;
+        [SerializeField] protected ValueStrength _characterSizeStrength = ValueStrength.None;
+
+        [Header("Attack"), SerializeField] protected int _defaultAttack;
+        protected int _attack;
+        [SerializeField] protected ValueStrength _attackStrength = ValueStrength.None;
+
+        [Header("Defence"), SerializeField] protected int _defaultDefence;
+        protected int _defence;
+        [SerializeField] protected ValueStrength _defenceStrength = ValueStrength.None;
 
         public CharacterID Id { get => _id;}
         public virtual CharacterClassID ClassID { get => GetClassID(Id); }
         public int Hp { get => _hp;}
-        public int DefaultHp { get => _defaultHp; }
+        public int DefaultHp { get => _defaultHp; set { _defaultHp = value; SaveData(); } }
         public int Speed { get => _speed;}
-        public int DefaultSpeed { get => _defaultSpeed; }
+        public int DefaultSpeed { get => _defaultSpeed; set { _defaultSpeed = value; SaveData(); } }
         public int CharacterSize { get => _characterSize;}
-        public int DefaultCharacterSize { get => _defaultCharacterSize; }
+        public int DefaultCharacterSize { get => _defaultCharacterSize; set { _defaultCharacterSize = value; SaveData(); } }
         public int Attack { get => _attack;}
-        public int DefaultAttack { get => _defaultAttack; }
+        public int DefaultAttack { get => _defaultAttack; set { _defaultAttack = value; SaveData(); } }
         public int Defence { get => _defence;}
-        public int DefaultDefence { get => _defaultDefence; }
+        public int DefaultDefence { get => _defaultDefence; set { _defaultDefence = value; SaveData(); } }
         public ValueStrength HpStrength { get => _hpStrength; }
         public ValueStrength SpeedStrength { get => _speedStrength; }
         public ValueStrength CharacterSizeStrength { get => _characterSizeStrength; }
@@ -76,6 +82,15 @@ namespace Altzone.Scripts.Model.Poco.Game
             _defence = _defaultDefence;
             _characterSize = _defaultCharacterSize;
             _speed = _defaultSpeed;
+        }
+
+        private void SaveData()
+        {
+            #if UNITY_EDITOR
+            AssetDatabase.Refresh();
+            EditorUtility.SetDirty(this);
+            AssetDatabase.SaveAssets();
+            #endif
         }
 
         #region Stat value getters

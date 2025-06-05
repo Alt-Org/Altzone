@@ -1,6 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Altzone.Scripts.Model.Poco.Player;
+using Assets.Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.AvatarEditor;
 using UnityEngine;
 
@@ -45,40 +48,45 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
         yield return new WaitUntil(() => ((timeout != null) || (playerData != null)));
 
-        if (playerData == null)
-            yield break;
+        AvatarVisualData data = LoadAvatarDesign(playerData);
 
-        List<Sprite> sprites = new List<Sprite>();
-        List<Color> colors = new List<Color>();
-        PlayerAvatar playerAvatar = null;
+        if (data == null) yield break;
+
+        _avatarVisualDataScriptableObject.Data = data;
+
+        InvokeOnAvatarDesignUpdate();
+    }
+
+    public AvatarVisualData LoadAvatarDesign(PlayerData playerData)
+    {
+        if (playerData == null)
+            return null;
 
         if (playerData.AvatarData == null || !playerData.AvatarData.Validate())
         {
             Debug.Log("AvatarData is null. Using default data.");
-            playerAvatar = new(_avatarDefaultReference.GetByCharacterId(playerData.SelectedCharacterId)[0]);
-
-            playerAvatar.Colors.Add("#ffffff");
+            PlayerAvatar playerAvatar = new(_avatarDefaultReference.GetByCharacterId(playerData.SelectedCharacterId)[0]);
+            playerData.AvatarData = new(playerAvatar.Name, playerAvatar.FeatureIds, playerAvatar.Color, playerAvatar.Scale);
         }
-        else
-            playerAvatar = new(playerData.AvatarData);
 
-        foreach (string id in playerAvatar.FeatureIds)
+        AvatarVisualData data = new();
+        List<AvatarPiece> pieceIDs = Enum.GetValues(typeof(AvatarPiece)).Cast<AvatarPiece>().ToList();
+        foreach (AvatarPiece id in pieceIDs)
         {
-            var partInfo = _avatarPartsReference.GetAvatarPartById(id);
+            int pieceId = playerData.AvatarData.GetPieceID(id);
+            var partInfo = _avatarPartsReference.GetAvatarPartById(pieceId.ToString());
             if (partInfo != null)
-                sprites.Add(partInfo.AvatarImage);
+                data.SetAvatarPiece(id, partInfo.AvatarImage);
             else
-                sprites.Add(null);
+                data.SetAvatarPiece(id, null);
         }
 
         Color color = Color.white;
-        ColorUtility.TryParseHtmlString(playerAvatar.Colors[0],out color);
-        colors.Add(color);
+        ColorUtility.TryParseHtmlString(playerData.AvatarData.Color, out color);
 
-        _avatarVisualDataScriptableObject.sprites = sprites;
-        _avatarVisualDataScriptableObject.colors = colors;
+        data.color = color;
 
-        InvokeOnAvatarDesignUpdate();
+        return data;
     }
 
     public void InvokeOnAvatarDesignUpdate()

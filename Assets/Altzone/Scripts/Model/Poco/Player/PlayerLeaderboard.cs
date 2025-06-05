@@ -24,5 +24,5 @@ public class PlayerLeaderboard
 
     public int Points { get => _points; }
     public int WonBattles { get => _wonBattles; }
-    public PlayerData Clan { get => _player;}
+    public PlayerData Player { get => _player;}
 }

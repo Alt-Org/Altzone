@@ -6,6 +6,8 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ReferenceSheets;
+using MenuUi.Scripts.CharacterGallery;
+using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
@@ -21,6 +23,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private GameObject _swipeBlocker;
         [SerializeField] private GameObject _statsPanel;
         [SerializeField] private GameObject _infoPanel;
+        [SerializeField] private GalleryView _galleryView;
 
         private PlayerData _playerData;
         private CharacterID _characterId;
@@ -28,7 +31,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private BaseCharacter _baseCharacter;
         private bool _unlimitedDiamonds;
         private bool _unlimitedErasers;
-
+        private SwipeUI _swipe;
 
         public CharacterID CurrentCharacterID { get { return _characterId; } }
         [HideInInspector] public bool UnlimitedDiamonds {
@@ -67,6 +70,10 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         private void Awake()
         {
+            _swipe = FindObjectOfType<SwipeUI>();
+            _swipe.OnCurrentPageChanged += ClosePopup;
+
+            _statsPanel.SetActive(false);
             // Getting unlimited diamonds and erasers value from playerPrefs
             _unlimitedDiamonds = PlayerPrefs.GetInt("UnlimitedDiamonds", 0) == 1;
             _unlimitedErasers = PlayerPrefs.GetInt("UnlimitedErasers", 0) == 1;
@@ -80,6 +87,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             SetCurrentCharacter();
         }
 
+        private void OnDisable()
+        {
+            ClosePopup();
+        }
+
+        private void OnDestroy()
+        {
+            _swipe.OnCurrentPageChanged -= ClosePopup;
+        }
         public void OpenPopup()
         {
             gameObject.SetActive(true);
@@ -88,11 +104,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             if (_statsPanel != null) _statsPanel.SetActive(true);
 
             if (_infoPanel != null) _infoPanel.SetActive(false);
+
+            if (_galleryView != null) _galleryView.ShowFilterButton(false);
         }
+
+
         public void ClosePopup()
         {
             gameObject.SetActive(false);
             _swipeBlocker.SetActive(false);
+            if (_galleryView != null) _galleryView.ShowFilterButton(true);
         }
 
 
@@ -156,6 +177,33 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         public CharacterClassID GetCurrentCharacterClass()
         {
             return CustomCharacter.GetClassID(_characterId);
+        }
+
+        /// <summary>
+        /// Get currently displayed character's class name.
+        /// </summary>
+        /// <returns>Current character's ClassName.</returns>
+        public string GetCurrentCharacterClassName()//To do: make this scritable object
+        {
+            switch (CustomCharacter.GetClassID(_characterId))
+            {
+                case CharacterClassID.Confluent:
+                    return "Sulautujat";
+                case CharacterClassID.Desensitizer:
+                    return "Tunnottomat";
+                case CharacterClassID.Intellectualizer:
+                    return "ƒlyllist‰j‰t";
+                case CharacterClassID.Projector:
+                    return "Peilaajat";
+                case CharacterClassID.Retroflector:
+                    return "Torjujat";
+                case CharacterClassID.Obedient:
+                    return "Tottelijat";
+                case CharacterClassID.Trickster:
+                    return "H‰m‰‰j‰t";
+                default:
+                    return string.Empty;
+            }
         }
 
 
@@ -475,6 +523,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             return (int)BaseCharacter.GetStatValueFP(statType, GetStat(statType));
         }
 
+        /// <summary>
+        /// Get stat value according to the stat type and level.
+        /// </summary>
+        /// <param name="statType">The stat type which value to get.</param>
+        /// <param name="level">The stat's level.</param>
+        /// <returns>Stat value as int.</returns>
+        public int GetStatValue(StatType statType, int level)
+        {
+            return (int)BaseCharacter.GetStatValueFP(statType, level);
+        }
 
         /// <summary>
         /// Get stat's strength.
@@ -502,6 +560,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         }
 
 
+
         /// <summary>
         /// Check if stat can be increased. (all stats combined is less than the combined level cap, stat is less than individual stat level cap, and player has increased stats less times than the maximum allowed amount)
         /// </summary>
@@ -520,13 +579,9 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 {
                     PopupSignalBus.OnChangePopupInfoSignal($"Et voi p‰ivitt‰‰ taitoa, maksimitaso on {CustomCharacter.STATMAXLEVEL}.");
                 }
-                else if (!CheckMaxPlayerIncreases())
-                {
-                    PopupSignalBus.OnChangePopupInfoSignal($"Et voi p‰ivitt‰‰ taitoja enemm‰n kuin {CustomCharacter.STATMAXPLAYERINCREASE} kertaa."); // when every characters' combined base stats are 40 remove this
-                }
             }
 
-            return statType != StatType.None && CheckCombinedLevelCap() && CheckStatLevelCap(statType) && CheckMaxPlayerIncreases();
+            return statType != StatType.None && CheckCombinedLevelCap() && CheckStatLevelCap(statType);
         }
 
 
@@ -685,20 +740,5 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             return allowedToIncrease;
         }
-
-
-        // Check if player has increased stats for max allowed player increases
-        private bool CheckMaxPlayerIncreases()
-        {
-            if (GetStatsCombined() - GetBaseStatsCombined() < CustomCharacter.STATMAXPLAYERINCREASE)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
     }
 }

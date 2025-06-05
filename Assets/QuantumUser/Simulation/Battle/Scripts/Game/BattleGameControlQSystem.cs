@@ -20,7 +20,7 @@ namespace Battle.QSimulation.Game
      *  -ProjectileSpawnerSystem
      */
     [Preserve]
-    public unsafe class BattleGameControlQSystem : SystemMainThread
+    public unsafe class BattleGameControlQSystem : SystemMainThread, ISignalOnPlayerAdded
     {
         /// <summary>
         /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System OnInit method</a> gets called when the system is initialized.</span><br/>
@@ -37,13 +37,41 @@ namespace Battle.QSimulation.Game
             BattleGridManager.Init(battleArenaSpec);
             BattlePlayerManager.Init(f, battleArenaSpec);
 
-            f.Events.ViewInit();
-
             BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
+            gameSession->GameTimeSec = 0;
             gameSession->GameInitialized = true;
         }
 
         /// <summary>
+        /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Signal method@u-exlink</a>
+        /// that gets called when <a href="https://doc-api.photonengine.com/en/quantum/current/interface_quantum_1_1_i_signal_on_player_added.html">ISignalOnPlayerAdded</a> is sent.</span><br/>
+        /// Called when a player is added for the first time. Registers the player in BattlePlayerManager.<br/>
+        /// @warning
+        /// This method should only be called via Quantum signal.
+        /// </summary>
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerRef">Reference to the player.</param>
+        /// <param name="firstTime">True if this is the first join.</param>
+        public void OnPlayerAdded(Frame f, PlayerRef playerRef, bool firstTime)
+        {
+            RuntimePlayer data = f.GetPlayerData(playerRef);
+
+            BattlePlayerManager.RegisterPlayer(f, playerRef);
+
+            f.Events.BattleDebugUpdateStatsOverlay(data.Characters[0]);
+        }
+
+        public static void OnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)
+        {
+            BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
+            f.Events.BattleViewGameOver(winningTeam, gameSession->GameTimeSec);
+            gameSession->State = BattleGameState.GameOver;
+
+            BattleTeamNumber WinningTeam = winningTeam;
+            f.Signals.BattleOnGameOver(WinningTeam, projectile, projectileEntity);
+        }
+
+         /// <summary>
         /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method</a> gets called every frame.</span><br/>
         /// Controls state transitions of the game session per frame. Manages countdowns and progression to 'Playing'.
         /// @warning This method should only be called by Quantum.
@@ -60,11 +88,24 @@ namespace Battle.QSimulation.Game
             switch (gameSession->State)
             {
                 case BattleGameState.InitializeGame:
-                    if (gameSession->GameInitialized) gameSession->State = BattleGameState.CreateMap;
+                    if (gameSession->GameInitialized)
+                    {
+                        f.Events.BattleViewWaitForPlayers();
+                        gameSession->State = BattleGameState.WaitForPlayers;
+                    }
+                    break;
+
+                case BattleGameState.WaitForPlayers:
+                    if (BattlePlayerManager.IsAllPlayersRegistered(f))
+                    {
+                        f.Events.BattleViewInit();
+                        gameSession->State = BattleGameState.CreateMap;
+                    }
                     break;
 
                 case BattleGameState.CreateMap:
                     CreateMap(f);
+                    f.Events.BattleViewActivate();
                     gameSession->State = BattleGameState.Countdown;
                     break;
 
@@ -75,6 +116,7 @@ namespace Battle.QSimulation.Game
                     // Transition from Countdown to GetReadyToPlay
                     if (gameSession->TimeUntilStart < 1)
                     {
+                        f.Events.BattleViewGetReadyToPlay();
                         gameSession->State = BattleGameState.GetReadyToPlay;
                         gameSession->TimeUntilStart = 1; // Set 1 second for the GetReadyToPlay state
                     }
@@ -87,8 +129,13 @@ namespace Battle.QSimulation.Game
                     // Transition from GetReadyToPlay to Playing
                     if (gameSession->TimeUntilStart <= 0)
                     {
+                        f.Events.BattleViewGameStart();
                         gameSession->State = BattleGameState.Playing;
                     }
+                    break;
+
+                case BattleGameState.Playing:
+                    gameSession->GameTimeSec += f.DeltaTime;
                     break;
             }
         }
@@ -103,6 +150,9 @@ namespace Battle.QSimulation.Game
             BattleSoulWallQSpec soulWallSpec = BattleQConfig.GetSoulWallSpec(f);
 
             BattleSoulWallQSystem.CreateSoulWalls(f, battleArenaSpec, soulWallSpec);
+
+            BattlePlayerManager.CreatePlayers(f);
+            BattlePlayerQSystem.SpawnPlayers(f);
         }
     }
 }

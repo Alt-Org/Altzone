@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ModelV2;
+using MenuUi.Scripts.Signals;
 using UnityEngine;
 
 namespace MenuUi.Scripts.Lobby.SelectedCharacters
@@ -14,7 +15,22 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         [SerializeField] private BattlePopupSelectedCharacter[] _selectedCharacterSlots;
         [SerializeField] private bool _isInRoom;
 
-        public Action SelectedCharactersChanged;
+
+        private void Awake()
+        {
+            if (_isInRoom)
+            {
+                foreach (BattlePopupSelectedCharacter slot in _selectedCharacterSlots)
+                {
+                    slot.SetOpenEditPanelListener();
+                }
+            }
+            else
+            {
+                SignalBus.OnReloadCharacterGalleryRequested += SetCharacters;
+            }
+        }
+
 
         private void OnEnable()
         {
@@ -24,24 +40,14 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
 
         private void OnDestroy()
         {
-            foreach (BattlePopupSelectedCharacter character in _selectedCharacterSlots)
-            {
-                character.SelectedCharactersChanged -= OnSelectedCharactersChanged;
-            }
-        }
-
-
-        private void OnSelectedCharactersChanged()
-        {
-            SelectedCharactersChanged?.Invoke(); // invoking (own) event onwards to update the slots in lobby waiting room
-            SetCharacters();
+            if (!_isInRoom) SignalBus.OnReloadCharacterGalleryRequested -= SetCharacters;
         }
 
 
         /// <summary>
         /// Set player characters. Gets info from player data.
         /// </summary>
-        public void SetCharacters(bool editable = true)
+        public void SetCharacters()
         {
             StartCoroutine(GetPlayerData(playerData =>
             {
@@ -52,20 +58,12 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
 
                     if (charID is CharacterID.None)
                     {
-                        _selectedCharacterSlots[i].SetEmpty(editable,i);
+                        _selectedCharacterSlots[i].SetEmpty(true);
                         continue;
                     }
 
                     PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(((int)charID).ToString());
-                    _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charID, editable, i);
-                }
-
-                if (!editable) return;
-
-                foreach (BattlePopupSelectedCharacter character in _selectedCharacterSlots)
-                {
-                    character.SelectedCharactersChanged -= OnSelectedCharactersChanged; // Ensuring there is no duplicate events since this method can be called multiple times when the characters change
-                    character.SelectedCharactersChanged += OnSelectedCharactersChanged;
+                    _selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charID, true);
                 }
             }));
         }
@@ -82,12 +80,12 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             {
                 if (selectedCharacterIds[i] == 0)
                 {
-                    _selectedCharacterSlots[i].SetEmpty(false,i);
+                    _selectedCharacterSlots[i].SetEmpty(false);
                     continue;
                 }
 
                 PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(selectedCharacterIds[i].ToString());
-                _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charInfo.CharacterId, false, i, stats[(i * 5)..(i * 5 + 5)]);
+                _selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charInfo.CharacterId, false, stats[(i * 5)..(i * 5 + 5)]);
             }
         }
     }

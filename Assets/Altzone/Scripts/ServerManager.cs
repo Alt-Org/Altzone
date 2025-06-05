@@ -37,12 +37,13 @@ public class ServerManager : MonoBehaviour
     public bool isLoggedIn = false;
     [SerializeField] private bool _skipServerFurniture = false;
     private static string ADDRESS = "https://altzone.fi/api/";
+    private static string LATESTDEVBUILDADDRESS = "https://devapi.altzone.fi/latest-release/";
     private static string DEVADDRESS = "https://devapi.altzone.fi/";
 
     public static string SERVERADDRESS { get
         {
             if(AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild) return DEVADDRESS;
-            else return ADDRESS;
+            else return LATESTDEVBUILDADDRESS;
         }
     }
 
@@ -93,12 +94,12 @@ public class ServerManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(this);
+            Destroy(gameObject);
         }
         else
         {
             Instance = this;
-            DontDestroyOnLoad(this);
+            DontDestroyOnLoad(gameObject);
         }
     }
 
@@ -917,7 +918,7 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator GetOnlinePlayersFromServer(Action<List<ServerOnlinePlayer>> callback)
     {
-        yield return StartCoroutine(WebRequests.Get(SERVERADDRESS + "online-players/", AccessToken, request =>
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "online-players", AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
@@ -980,7 +981,7 @@ public class ServerManager : MonoBehaviour
                 foreach (ServerPlayerTask task in serverTasks)
                 {
                     tasks.Add(new(task));
-                    if (task._id == Player.DailyTask._id) Player.DailyTask = task;
+                    if (task._id == Player.DailyTask?._id) Player.DailyTask = task;
                 }
 
                 if(Player.DailyTask?._id != null && Player.DailyTask.title == null){
@@ -1315,7 +1316,7 @@ public class ServerManager : MonoBehaviour
     #region Leaderboard
     public IEnumerator GetClanLeaderboardFromServer(Action<List<ClanLeaderboard>> callback)
     {
-        yield return StartCoroutine(WebRequests.Get(SERVERADDRESS + "latest-release/leaderboard/clan", AccessToken, request =>
+        yield return StartCoroutine(WebRequests.Get(SERVERADDRESS + "leaderboard/clan", AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
