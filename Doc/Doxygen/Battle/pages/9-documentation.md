@@ -40,19 +40,19 @@ SystemSignalsOnly
 // brief text
 ```
 
-### Quantum System Update method brief/summary format
+### Quantum System OnInit method brief/summary format
 ```
-<span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method@u-exlink</a>
-gets called every frame.</span><br/>
+<span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System OnInit method@u-exlink</a>
+gets called when the system is initialized.</span><br/>
 // brief text
 @warning
 This method should only be called by Quantum.
 ```
 
-### Quantum System OnInit method brief/summary format
+### Quantum System Update method brief/summary format
 ```
-<span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System OnInit method@u-exlink</a>
-gets called when the system is initialized.</span><br/>
+<span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method@u-exlink</a>
+gets called every frame.</span><br/>
 // brief text
 @warning
 This method should only be called by Quantum.
