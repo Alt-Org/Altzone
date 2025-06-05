@@ -14,6 +14,10 @@ public class KojuTrayPopulator : MonoBehaviour
     [Header("Popup Reference")]
     [SerializeField] private KojuPopup popup;
 
+    [Header("Panel Warning")]
+    [SerializeField] private GameObject panelFullWarningUI;
+    private bool isWarningActive = false;
+
     private void Start()
     {
         StartCoroutine(PopulateTray());
@@ -57,9 +61,32 @@ public class KojuTrayPopulator : MonoBehaviour
             {
                 mover.SetParents(trayContent, panelContent);
                 mover.SetPopup(popup);
+                mover.SetPopulator(this);
             }
         }
 
         Debug.Log($"Spawned {allFurniture.Count} furniture cards.");
     }
+
+    public void ShowPanelFullWarning()
+    {
+        if (!isWarningActive)
+        {
+            StartCoroutine(ShowWarningCoroutine());
+        }
+    }
+
+    private IEnumerator ShowWarningCoroutine()
+    {
+        isWarningActive = true;
+        panelFullWarningUI.SetActive(true);
+
+        yield return new WaitForSeconds(1f); // How long it's visible
+        panelFullWarningUI.SetActive(false);
+
+        yield return new WaitForSeconds(0.5f); // Cooldown to prevent re-triggering too fast
+        isWarningActive = false;
+    }
+
+
 }
