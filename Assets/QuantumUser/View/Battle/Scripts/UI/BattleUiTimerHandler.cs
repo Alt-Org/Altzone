@@ -25,53 +25,21 @@ namespace Battle.View.UI
             MovableUiElement.gameObject.SetActive(show);
         }
 
-        public void StartTimer(Frame f)
+        public void FormatAndSetTimerText(FP gameTimeSec)
         {
-            if (_recordTime) return;
+            int secondsElapsed = FPMath.FloorToInt(gameTimeSec);
+            int hours = Mathf.FloorToInt(secondsElapsed / (float)TimeConversionRatio / TimeConversionRatio);
+            int minutes = Mathf.FloorToInt(secondsElapsed / (float)TimeConversionRatio) - hours * TimeConversionRatio;
+            int seconds = secondsElapsed - (minutes * TimeConversionRatio);
 
-            _hours = 0;
-            _secondsElapsedPrevious = -1;
-
-            _timer = FrameTimer.FromSeconds(f, 3600);
-            _recordTime = true;
+            if (secondsElapsed > _secondsElapsedPrevious)
+            {
+                if (IsVisible) _timerText.text = hours == 0 ? $"<mspace=1em>{minutes:D2}:{seconds:00}</mspace>" : $"{hours}:{minutes:00}:{seconds:00}";
+                _secondsElapsedPrevious = secondsElapsed;
+            }
         }
 
-        public void StopTimer()
-        {
-            _recordTime = false;
-        }
-
-        private bool _recordTime = false;
-        private FrameTimer _timer;
-        private int _hours;
+        private const int TimeConversionRatio = 60;
         private int _secondsElapsedPrevious;
-
-        private void Update()
-        {
-            if (!_recordTime) return;
-            if (!Utils.TryGetQuantumFrame(out Frame f)) return;
-
-            if (_timer.IsExpired(f))
-            {
-                _secondsElapsedPrevious = -1;
-                _timer.Restart(f);
-                _hours++;
-            }
-
-            FP? secondsElapsedFloat = _timer.TimeInSecondsSinceStart(f);
-
-            if (secondsElapsedFloat != null)
-            {
-                int secondsElapsed = FPMath.FloorToInt(secondsElapsedFloat.Value);
-                int minutes = FPMath.FloorToInt(secondsElapsedFloat.Value / 60);
-                int seconds = secondsElapsed - (minutes * 60);
-
-                if (secondsElapsed > _secondsElapsedPrevious)
-                {
-                    if (IsVisible) _timerText.text = _hours == 0 ? $"<mspace=1em>{minutes:D2}:{seconds:00}</mspace>" : $"{_hours}:{minutes:00}:{seconds:00}";
-                    _secondsElapsedPrevious = secondsElapsed;
-                }
-            }
-        }
     }
 }
