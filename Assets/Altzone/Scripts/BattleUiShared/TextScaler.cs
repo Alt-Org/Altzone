@@ -17,12 +17,11 @@ namespace Altzone.Scripts.BattleUiShared
 
         [Header("Text box scaling options")]
         [SerializeField] private float _textBoxAspectRatio = 0;
+        [SerializeField] private float _startScalingHolderAspectRatio = 9.0f / 16.0f;
         [SerializeField] private RectTransform _holderRectTransform;
 
         [Header("Text component references")]
         [SerializeField] private TextMeshProUGUI _text;
-
-        private const float PortraitAspectRatio = 9.0f / 16.0f;
 
         private RectTransform _rectTransform;
 
@@ -86,14 +85,13 @@ namespace Altzone.Scripts.BattleUiShared
             _rectTransform.anchorMin = anchorMin;
             _rectTransform.anchorMax = anchorMax;
 
-            // If aspect ratio is wider than portrait we don't need to calculate new text box height
-            if ((float)Screen.width / Screen.height > PortraitAspectRatio) return;
+            // If aspect ratio is wider than start scaling aspect ratio we don't need to calculate new text box height
+            if (_holderRectTransform.rect.width / _holderRectTransform.rect.height > _startScalingHolderAspectRatio) return;
 
             // Calculating new height for text box
             float newHeight = _rectTransform.rect.width / _textBoxAspectRatio;
 
             // Calculating the Y anchors
-            if (_holderRectTransform == null) return;
             anchorMin.y = Mathf.Clamp01((_rectTransform.position.y - newHeight * 0.5f) / _holderRectTransform.rect.height);
             anchorMax.y = Mathf.Clamp01((_rectTransform.position.y + newHeight * 0.5f) / _holderRectTransform.rect.height);
 
