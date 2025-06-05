@@ -24,7 +24,9 @@ External links should have the "🡵" unicode character or @@u-exlink at the end
 @important
 In source code @@u-exlink should be used instead of "🡵"
 
-## Quantum System Class brief/summary format
+## Quantum Systems
+
+### Quantum System Class brief/summary format
 
 System
 ```
@@ -38,7 +40,7 @@ SystemSignalsOnly
 // brief text
 ```
 
-## Quantum System Update method brief/summary format
+### Quantum System Update method brief/summary format
 ```
 <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method@u-exlink</a>
 gets called every frame.</span><br/>
@@ -47,7 +49,7 @@ gets called every frame.</span><br/>
 This method should only be called by Quantum.
 ```
 
-## Quantum System OnInit method brief/summary format
+### Quantum System OnInit method brief/summary format
 ```
 <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System OnInit method@u-exlink</a>
 gets called when the system is initialized.</span><br/>
@@ -56,7 +58,7 @@ gets called when the system is initialized.</span><br/>
 This method should only be called by Quantum.
 ```
 
-## Quantum System Signal method brief/summary format
+### Quantum System Signal method brief/summary format
 ```
 <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Signal method@u-exlink</a>
 that gets called when <see cref="signal interface">signal interface</see> is sent.</span><br/>
@@ -65,7 +67,9 @@ that gets called when <see cref="signal interface">signal interface</see> is sen
 This method should only be called via Quantum signal.
 ```
 
-## UI Handler class method brief/summary format
+## Unity
+
+### UI Handler class method brief/summary format
 ```
 <span class="brief-h">handler name @uihandlerlink (<a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>).</span><br/>
 // brief text
