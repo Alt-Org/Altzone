@@ -18,7 +18,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     /// </summary>
     public class StatsWindowController : AltMonoBehaviour
     {
-        [SerializeField] private ClassColorReference _classColorReference;
+        [SerializeField] private ClassReference _classReference;
         [SerializeField] private StatsReference _statsReference;
         [SerializeField] private GameObject _swipeBlocker;
         [SerializeField] private GameObject _statsPanel;
@@ -29,8 +29,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private CharacterID _characterId;
         private CustomCharacter _customCharacter;
         private BaseCharacter _baseCharacter;
-        private bool _unlimitedUpgradeMaterial;
-        private bool _unlimitedErasers;
         private SwipeUI _swipe;
 
         public CharacterID CurrentCharacterID { get { return _characterId; } }
@@ -47,9 +45,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             _swipe.OnCurrentPageChanged += ClosePopup;
 
             _statsPanel.SetActive(false);
-            // Getting unlimited diamonds and erasers value from playerPrefs
-            _unlimitedUpgradeMaterial = PlayerPrefs.GetInt("UnlimitedDiamonds", 0) == 1;
-            _unlimitedErasers = PlayerPrefs.GetInt("UnlimitedErasers", 0) == 1;
         }
 
 
@@ -158,27 +153,9 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// Get currently displayed character's class name.
         /// </summary>
         /// <returns>Current character's ClassName.</returns>
-        public string GetCurrentCharacterClassName()//To do: make this scritable object
+        public string GetCurrentCharacterClassName()
         {
-            switch (CustomCharacter.GetClassID(_characterId))
-            {
-                case CharacterClassID.Confluent:
-                    return "Sulautujat";
-                case CharacterClassID.Desensitizer:
-                    return "Tunnottomat";
-                case CharacterClassID.Intellectualizer:
-                    return "Älyllistäjät";
-                case CharacterClassID.Projector:
-                    return "Peilaajat";
-                case CharacterClassID.Retroflector:
-                    return "Torjujat";
-                case CharacterClassID.Obedient:
-                    return "Tottelijat";
-                case CharacterClassID.Trickster:
-                    return "Hämääjät";
-                default:
-                    return string.Empty;
-            }
+            return _classReference.GetName(CustomCharacter.GetClassID(_characterId));
         }
 
 
@@ -189,7 +166,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         public Color GetCurrentCharacterClassAlternativeColor()
         {
             CharacterClassID classID = GetCurrentCharacterClass();
-            return _classColorReference.GetAlternativeColor(classID);
+            return _classReference.GetAlternativeColor(classID);
         }
 
 
@@ -200,7 +177,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         public Color GetCurrentCharacterClassColor()
         {
             CharacterClassID classID = GetCurrentCharacterClass();
-            return _classColorReference.GetColor(classID);
+            return _classReference.GetColor(classID);
         }
 
 

@@ -41,7 +41,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
         [SerializeField] private GameObject _characterSlotPrefab;
 
-        [SerializeField] private ClassColorReference _classColorReference;
+        [SerializeField] private ClassReference _classReference;
 
         private FilterType _currentFilter = FilterType.All;
         private List<int> filterEnumValues;
@@ -156,8 +156,8 @@ namespace MenuUi.Scripts.CharacterGallery
             GameObject slot = Instantiate(_characterSlotPrefab, parent);
 
             CharacterClassID classID = CustomCharacter.GetClassID(charID);
-            Color bgColor = _classColorReference.GetColor(classID);
-            Color bgAltColor = _classColorReference.GetAlternativeColor(classID);
+            Color bgColor = _classReference.GetColor(classID);
+            Color bgAltColor = _classReference.GetAlternativeColor(classID);
 
             CharacterSlot charSlot = slot.GetComponent<CharacterSlot>();
             charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, charID);
