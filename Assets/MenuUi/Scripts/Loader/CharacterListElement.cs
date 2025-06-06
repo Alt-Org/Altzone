@@ -8,5 +8,5 @@ using UnityEngine.UI;
 public class CharacterListElement
 {
     public string className;
-    public Image image;
+    public Sprite characterImage;
 }

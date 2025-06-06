@@ -292,7 +292,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Olet valitsemassa #Hahmon nimi\nhahmoluokan edustajan \nedustmaan itse\xE4si"
+  m_text: "Olet valitsemassa #Hahmon nimi hahmoluokan edustajan edustmaan itse\xE4si"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
   m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
@@ -320,7 +320,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 93.15
+  m_fontSize: 102.6
   m_fontSizeBase: 150
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -7168,6 +7168,7 @@ GameObject:
   - component: {fileID: 1499488894086366542}
   - component: {fileID: 4035445905454136296}
   - component: {fileID: 8560726208958461827}
+  - component: {fileID: 3752279736733220292}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -7236,6 +7237,24 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3752279736733220292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4635491801427140914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b45ee03dfe395624f8a6068dd5fac9d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupOptions:
+  - className: 
+    characterImage: {fileID: 0}
+  backupImage: {fileID: 21300000, guid: 74915dd2a5d23e64a935cb219f434533, type: 3}
+  classChoiseText: {fileID: 8420817607893711084}
+  charaterImage: {fileID: 5952637404347166158}
 --- !u!1 &4738632609032510672
 GameObject:
   m_ObjectHideFlags: 0
@@ -7835,7 +7854,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72.8
+  m_fontSize: 75.95
   m_fontSizeBase: 80
   m_fontWeight: 400
   m_enableAutoSizing: 1

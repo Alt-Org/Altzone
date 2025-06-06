@@ -2,9 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class CharacterPopupHandler : MonoBehaviour
 {
+
+    //this crap is harder than usual cause it doesn't sugest these, i dunno why, maybe it's broken?
+    [SerializeField]
+    List<CharacterListElement> popupOptions = new List<CharacterListElement>();
+    [SerializeField]
+    Sprite backupImage;
+    [SerializeField]
+    TextMeshProUGUI classChoiseText;
+    [SerializeField]
+    Image charaterImage;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -15,5 +27,23 @@ public class CharacterPopupHandler : MonoBehaviour
     void Update()
     {
         
+    }
+
+    //function that changes the name and image
+
+    public void UpdateImageAndText(int id)
+    {
+        if (id <= popupOptions.Count)
+        {
+            string cname = popupOptions[id].className;
+
+            charaterImage.sprite = popupOptions[id].characterImage;
+            classChoiseText.text = "Olet valitsemassa " + cname + "hahmoluokan edustajan dustmaan itseäsi";
+        }
+        else
+        {
+            charaterImage.sprite = backupImage;
+            classChoiseText.text = "Olet valitsemassa ERROR hahmoluokan edustajan edustmaan itseäsi";
+        }
     }
 }
