@@ -165,6 +165,8 @@ MonoBehaviour:
   _bottomPanelRectTransfrom: {fileID: 7827142668286818857}
   _topPanelRectTransfrom: {fileID: 9009743781400064838}
   _unsafeAreaRectTransfrom: {fileID: 2641932565321544379}
+  _fullPanelPopupsTransform: {fileID: 0}
+  _infoPopupsTransform: {fileID: 0}
   _contentPanelRectTransfrom: {fileID: 3472046463813142143}
 --- !u!1 &1539631392874335665
 GameObject:
@@ -474,7 +476,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &6649403788596313716
 MonoBehaviour:
   m_ObjectHideFlags: 0
