@@ -156,11 +156,12 @@ namespace MenuUi.Scripts.CharacterGallery
             GameObject slot = Instantiate(_characterSlotPrefab, parent);
 
             CharacterClassID classID = CustomCharacter.GetClassID(charID);
+            string className = _classReference.GetName(classID);
             Color bgColor = _classReference.GetColor(classID);
             Color bgAltColor = _classReference.GetAlternativeColor(classID);
 
             CharacterSlot charSlot = slot.GetComponent<CharacterSlot>();
-            charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, charID);
+            charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, className, charID);
 
             _characterSlots.Add(charSlot);
 

@@ -297,16 +297,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         }
 
 
-        /// <summary>
-        /// Get player's upgrade material amount from player data.
-        /// </summary>
-        /// <returns>Player's upgrade material amount as int.</returns>
-        public int GetUpgradeMaterialAmount()
-        {
-            return _playerData.DiamondSpeed; // using DiamondSpeed as a placeholder
-        }
-
-
         public void InvokeOnUpgradeMaterialAmountChanged()
         {
             OnUpgradeMaterialAmountChanged.Invoke();

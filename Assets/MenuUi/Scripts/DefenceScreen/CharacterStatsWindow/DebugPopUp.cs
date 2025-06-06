@@ -21,6 +21,24 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private const int UpgradeMaterialsToAdd = 10000;
 
 
+        private void Awake()
+        {
+            _controller = FindObjectOfType<StatsWindowController>(true);
+
+            _unlimitedUpgradeMaterialsToggle.isOn = SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials;
+            _addUpgradeMaterialsButton.interactable = !SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials;
+            
+            _unlimitedUpgradeMaterialsToggle.onValueChanged.AddListener(value =>
+            {
+                SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials = value;
+                _addUpgradeMaterialsButton.interactable = !value;
+                _controller.InvokeOnUpgradeMaterialAmountChanged();
+            });
+
+            _addUpgradeMaterialsButton.onClick.AddListener(AddUpgradeMaterials);
+        }
+
+
         private void OnDestroy()
         {
             _unlimitedUpgradeMaterialsToggle.onValueChanged.RemoveAllListeners();
@@ -33,23 +51,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// </summary>
         public void OpenPopUp()
         {
-            // If _controller is null initializing
-            if (_controller == null)
-            {
-                _controller = FindObjectOfType<StatsWindowController>();
-
-                _unlimitedUpgradeMaterialsToggle.isOn = SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials;
-                _addUpgradeMaterialsButton.interactable = !SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials;
-
-                _unlimitedUpgradeMaterialsToggle.onValueChanged.AddListener(value =>
-                {
-                    SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials = value;
-                    _addUpgradeMaterialsButton.interactable = !value;
-                });
-
-                _addUpgradeMaterialsButton.onClick.AddListener(AddUpgradeMaterials);
-            }
-
             // Setting popup active
             _contents.SetActive(true);
             _touchBlocker.enabled = true;
