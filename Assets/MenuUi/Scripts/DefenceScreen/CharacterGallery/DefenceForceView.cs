@@ -13,7 +13,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private GalleryView _galleryView;
         [SerializeField] private SelectedCharSlot[] _selectedCharSlots;
 
-        [SerializeField] private ClassColorReference _classColorReference;
+        [SerializeField] private ClassReference _classReference;
         private void Awake()
         {
             _galleryView.OnGalleryCharactersSet += SetCharacters;
@@ -40,11 +40,11 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 CharacterID charID =(CharacterID)selectedCharacterIds[i];
                 CharacterClassID classID = CustomCharacter.GetClassID(charID);
-                Color bgColor = _classColorReference.GetColor(classID);
-                Color bgAltColor = _classColorReference.GetAlternativeColor(classID);
+                Color bgColor = _classReference.GetColor(classID);
+                Color bgAltColor = _classReference.GetAlternativeColor(classID);
 
 
-                _selectedCharSlots[i].SetInfo(info.GalleryImage,bgColor, bgAltColor, info.Name,classID.ToString(),charID);
+                _selectedCharSlots[i].SetInfo(info.GalleryImage,bgColor, bgAltColor, info.Name, _classReference.GetName(classID), charID);
             }
           
         }
