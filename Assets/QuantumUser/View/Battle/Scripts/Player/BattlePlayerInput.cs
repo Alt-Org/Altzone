@@ -8,6 +8,7 @@ using Prg.Scripts.Common;
 
 using Battle.QSimulation.Game;
 using Battle.View.Game;
+using TMPro;
 
 namespace Battle.View.Player
 {
@@ -50,8 +51,8 @@ namespace Battle.View.Player
             {
                 MouseClick = mouseClick,
                 MovementPosition = movementPosition,
-                //RotateMotion = twoFingers,
-                RotationDirection = twoFingers ? FP.FromFloat_UNSAFE(ClickStateHandler.GetRotationDirection()) : 0,
+                RotateMotion = twoFingers,
+                RotationValue = twoFingers ? FP.FromFloat_UNSAFE(ClickStateHandler.GetRotationValue()) : 0,
             };
 
             callback.SetInput(i, DeterministicInputFlags.Repeatable);

@@ -278,7 +278,7 @@ namespace Battle.QSimulation.Player
                                 PlayerEntity = playerEntity,
                                 HitboxType = playerHitboxType,
                                 CollisionType = playerHitboxCollisionType,
-                                Normal = FPVector2.Rotate(FPVector2.Up, playerRotationBase),
+                                Normal = FPVector2.Zero,
                                 CollisionMinOffset = ((FP)playerHitboxHeight + FP._0_50) * BattleGridManager.GridScaleFactor
                             };
 

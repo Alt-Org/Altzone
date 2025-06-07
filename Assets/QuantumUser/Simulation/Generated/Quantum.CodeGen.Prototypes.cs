@@ -420,13 +420,13 @@ namespace Quantum.Prototypes {
     public Button MouseClick;
     public Quantum.Prototypes.BattleGridPositionPrototype MovementPosition;
     public Button RotateMotion;
-    public FP RotationDirection;
+    public FP RotationValue;
     partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
         result.MouseClick = this.MouseClick;
         this.MovementPosition.Materialize(frame, ref result.MovementPosition, in context);
         result.RotateMotion = this.RotateMotion;
-        result.RotationDirection = this.RotationDirection;
+        result.RotationValue = this.RotationValue;
         MaterializeUser(frame, ref result, in context);
     }
   }
