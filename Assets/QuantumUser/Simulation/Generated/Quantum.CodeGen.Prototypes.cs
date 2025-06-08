@@ -337,6 +337,7 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerManagerDataQSingleton))]
   public unsafe class BattlePlayerManagerDataQSingletonPrototype : ComponentPrototype<Quantum.BattlePlayerManagerDataQSingleton> {
+    public Int32 PlayerCount;
     [ArrayLengthAttribute(4)]
     public Quantum.QEnum32<BattlePlayerPlayState>[] PlayStates = new Quantum.QEnum32<BattlePlayerPlayState>[4];
     [ArrayLengthAttribute(4)]
@@ -353,6 +354,7 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.BattlePlayerManagerDataQSingleton result, in PrototypeMaterializationContext context = default) {
+        result.PlayerCount = this.PlayerCount;
         for (int i = 0, count = PrototypeValidator.CheckLength(PlayStates, 4, in context); i < count; ++i) {
           *result.PlayStates.GetPointer(i) = this.PlayStates[i];
         }
@@ -374,12 +376,13 @@ namespace Quantum.Prototypes {
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattleProjectileQComponent))]
   public unsafe partial class BattleProjectileQComponentPrototype : ComponentPrototype<Quantum.BattleProjectileQComponent> {
     public QBoolean IsLaunched;
+    public QBoolean IsMoving;
     public FP Speed;
+    public FP SpeedPotential;
+    public FP AccelerationTimer;
     public FPVector2 Direction;
     public FP Radius;
     public Quantum.QEnum32<BattleEmotionState> Emotion;
-    public FP SpeedPotential;
-    public FP AccelerationTimer;
     [ArrayLengthAttribute(2)]
     public Quantum.QEnum8<BattleProjectileCollisionFlags>[] CollisionFlags = new Quantum.QEnum8<BattleProjectileCollisionFlags>[2];
     partial void MaterializeUser(Frame frame, ref Quantum.BattleProjectileQComponent result, in PrototypeMaterializationContext context);
@@ -390,12 +393,13 @@ namespace Quantum.Prototypes {
     }
     public void Materialize(Frame frame, ref Quantum.BattleProjectileQComponent result, in PrototypeMaterializationContext context = default) {
         result.IsLaunched = this.IsLaunched;
+        result.IsMoving = this.IsMoving;
         result.Speed = this.Speed;
+        result.SpeedPotential = this.SpeedPotential;
+        result.AccelerationTimer = this.AccelerationTimer;
         result.Direction = this.Direction;
         result.Radius = this.Radius;
         result.Emotion = this.Emotion;
-        result.SpeedPotential = this.SpeedPotential;
-        result.AccelerationTimer = this.AccelerationTimer;
         for (int i = 0, count = PrototypeValidator.CheckLength(CollisionFlags, 2, in context); i < count; ++i) {
           *result.CollisionFlags.GetPointer(i) = this.CollisionFlags[i];
         }
