@@ -193,7 +193,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             // Modify image properties
             Image sliceImage = slice.GetComponent<Image>();
 
-            if (!isBaseSlice)
+            if (isBaseSlice && color != _defaultColor && color != _defaultAltColor)
             {
                 sliceImage.sprite = _circlePatternedSprite;
             }

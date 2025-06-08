@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class ServerOnlinePlayer 
 {
-    public string id { get; set; }
+    public string _id { get; set; }
     public string name { get; set; }
 }
