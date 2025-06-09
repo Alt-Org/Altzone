@@ -35,15 +35,15 @@ namespace MenuUi.Scripts.CharacterGallery
             _editingPopupButton.onClick.RemoveAllListeners();
         }
 
-        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, string className, CharacterID id)
+        public void SetInfo(CustomCharacter customCharacter, Sprite sprite, Color bgColor, Color bgAltColor, string name, string className)
         {
             _characterImage.sprite = sprite;
             _characterNameText.text = name;
             _className.text = className;
             _backgroundLowerImage.color = bgColor;
             _backgroundUpperImage.color = bgAltColor;
-            _pieChartPreview.UpdateChart(id);
-            _id = id;
+            _pieChartPreview.UpdateChart(customCharacter.Id);
+            _id = customCharacter.Id;
         }
 
         public void SetCharacterVisibility(bool visible)

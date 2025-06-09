@@ -23,11 +23,13 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             _galleryView.OnGalleryCharactersSet -= SetCharacters;
         }
-        private void SetCharacters(int[] selectedCharacterIds)
+        private void SetCharacters(CustomCharacter[] selectedCharacters)
         {
-            for (int i = 0; i<selectedCharacterIds.Length; i++)
+            for (int i = 0; i< selectedCharacters.Length; i++)
             {
-                PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(selectedCharacterIds[i].ToString());
+                CharacterID charID = selectedCharacters[i] == null ? CharacterID.None : selectedCharacters[i].Id;
+
+                PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(((int)charID).ToString());
                 if (info == null)
                 {
                     _selectedCharSlots[i].SetCharacterVisibility(false);
@@ -38,13 +40,11 @@ namespace MenuUi.Scripts.CharacterGallery
                     _selectedCharSlots[i].SetCharacterVisibility(true);
                 }
 
-                CharacterID charID =(CharacterID)selectedCharacterIds[i];
                 CharacterClassID classID = CustomCharacter.GetClassID(charID);
                 Color bgColor = _classReference.GetColor(classID);
                 Color bgAltColor = _classReference.GetAlternativeColor(classID);
 
-
-                _selectedCharSlots[i].SetInfo(info.GalleryImage,bgColor, bgAltColor, info.Name, _classReference.GetName(classID), charID);
+                _selectedCharSlots[i].SetInfo(selectedCharacters[i], info.GalleryImage,bgColor, bgAltColor, info.Name, _classReference.GetName(classID));
             }
           
         }
