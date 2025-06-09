@@ -3,19 +3,22 @@ using UnityEngine;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine.UI;
 using TMPro;
+using System.Linq;
 
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
     public class PieChartManager : MonoBehaviour
     {
-        
         [SerializeField] private PiechartReference _referenceSheet;
         [SerializeField] private TMP_Text _piechartText;
 
-        private const int LineLengthOffset = 20;
+        private const int LineLengthOffset = 5;
 
         private StatsWindowController _controller;
+
+        private RectTransform _rectTransform;
+        private Vector2 _oldSize;
 
         private int _sliceAmount;
 
@@ -34,7 +37,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private Sprite _circleSprite;
         private Sprite _circlePatternedSprite;
 
-        private GameObject _firstSliceLine = null;
+        private List<RectTransform> _sliceLines = new();
+        private float _lineLength = 0f;
 
 
         private void Awake() // caching colors and circle sprite from the reference sheet to avoid unneccessary function calls
@@ -55,6 +59,12 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             _circlePatternedSprite = _referenceSheet.GetPatternedSprite();
 
             _sliceAmount = CustomCharacter.STATMAXCOMBINED;
+
+            _rectTransform = GetComponent<RectTransform>();
+            _oldSize = _rectTransform.rect.size;
+
+            // Calculating line length for the first time
+            CalculateLineLength();
         }
 
 
@@ -74,9 +84,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         public void UpdateChart(StatType statType = StatType.None)
         {
-            _firstSliceLine = null;
-
-            // Destroy old pie slices
+            // Destroy old pie slices and lines
+            _sliceLines.Clear();
             for (int i = 0; i < transform.childCount; i++)
             {
                 Destroy(transform.GetChild(i).gameObject);
@@ -129,7 +138,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             CreateSlice(currentSliceFill, _defaultColor, true);
 
             // Putting first slice line topmost so that it's not under white slice
-            _firstSliceLine.transform.SetAsLastSibling();
+            _sliceLines.First().transform.SetAsLastSibling();
         }
 
 
@@ -172,12 +181,11 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             sliceRect.anchorMax = Vector3.one;
 
             // Draw slice line
-            float lineLength = sliceImage.sprite.rect.width - LineLengthOffset;
-            DrawSliceLine(fillAmount, lineLength, isBaseSlice ? _referenceSheet.StatBorderThickness : _referenceSheet.StatUpgradeBorderThickness);
+            DrawSliceLine(fillAmount, isBaseSlice ? _referenceSheet.StatBorderThickness : _referenceSheet.StatUpgradeBorderThickness);
         }
 
 
-        private void DrawSliceLine(float fillAmount, float length, float thickness)
+        private void DrawSliceLine(float fillAmount, float thickness)
         {
             // Create gameobject and add components for line
             GameObject line = new GameObject();
@@ -190,14 +198,35 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             // Configure rect transform
             lineRectTransform.pivot = new Vector2(0.5f, 0);
-            lineRectTransform.sizeDelta = new Vector2(thickness, length);
+            lineRectTransform.sizeDelta = new Vector2(thickness, _lineLength);
             lineRectTransform.rotation = Quaternion.Euler(0, 0, fillAmount * 360);
 
             // Reparent to this node
             line.transform.SetParent(transform, false);
 
-            // Saving the first slice line so it can be placed topmost later
-            if (_firstSliceLine == null) _firstSliceLine = line;
+            // Saving the slice line to the list
+            _sliceLines.Add(lineRectTransform);
+        }
+
+
+        private void CalculateLineLength()
+        {
+            _lineLength = Mathf.Min(_rectTransform.rect.width, _rectTransform.rect.height) / 2 - LineLengthOffset;
+        }
+
+
+        private void Update() // Resizing lines length if size changed
+        {
+            if (_rectTransform.rect.size == _oldSize) return;
+
+            CalculateLineLength();
+
+            foreach (RectTransform line in  _sliceLines)
+            {
+                line.sizeDelta = new Vector2(line.sizeDelta.x, _lineLength);
+            }
+
+            _oldSize = _rectTransform.rect.size;
         }
     }
 }
