@@ -7,6 +7,7 @@ using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ReferenceSheets;
 using MenuUi.Scripts.CharacterGallery;
+using MenuUi.Scripts.Signals;
 using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
@@ -25,6 +26,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private GameObject _infoPanel;
         [SerializeField] private GalleryView _galleryView;
 
+        private bool _statsUpdated = false;
+        private bool _isSelected = false;
         private PlayerData _playerData;
         private CharacterID _characterId;
         private CustomCharacter _customCharacter;
@@ -67,6 +70,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         public void OpenPopup()
         {
+            _statsUpdated = false;
+
             gameObject.SetActive(true);
             _swipeBlocker.SetActive(true);
 
@@ -80,6 +85,9 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         public void ClosePopup()
         {
+            // If stats got updated and character is currently selected, reloading character gallery so that the stats update to the selected characters
+            if (_isSelected && _statsUpdated) SignalBus.OnReloadCharacterGalleryRequestedSignal();
+
             gameObject.SetActive(false);
             _swipeBlocker.SetActive(false);
             if (_galleryView != null) _galleryView.ShowFilterButton(true);
@@ -107,10 +115,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 store.GetAllBaseCharacterYield(result => allItems = result);
 
                 _baseCharacter = allItems.FirstOrDefault(c => c.Id == _characterId);
+
+                _isSelected = false;
             }
             else
             {
                 _baseCharacter = _customCharacter.CharacterBase;
+
+                // Setting _isSelected if _customCharacter is one of the characters the player has selected
+                string[] selectedCharacterIds = _playerData.SelectedCharacterIds;
+                _isSelected = selectedCharacterIds.Contains(_customCharacter.ServerID);
             }
         }
 
@@ -523,6 +537,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (success)
             {
+                _statsUpdated = true;
                 _playerData.UpdateCustomCharacter(_customCharacter);
                 OnStatUpdated.Invoke(statType);
             }
@@ -584,6 +599,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (success)
             {
+                _statsUpdated = true;
                 _playerData.UpdateCustomCharacter(_customCharacter);
                 OnStatUpdated.Invoke(statType);
             }
