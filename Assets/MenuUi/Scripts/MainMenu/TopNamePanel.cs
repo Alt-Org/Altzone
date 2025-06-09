@@ -5,7 +5,7 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 
-public class ClanPanel : MonoBehaviour
+public class TopNamePanel : MonoBehaviour
 {
     [Header("Text")]
     [SerializeField] private string loggedOutClanText;
@@ -58,6 +58,11 @@ public class ClanPanel : MonoBehaviour
 
             ClanData clanData = null;
             string clanId = "";
+            if(playerData == null)
+            {
+                _playerClanText.text = "Et ole kirjautunut sisään";
+                _playerClanDescription.text = "";
+            }
             if (playerData.HasClanId)
             {
                 clanId = playerData.ClanId;
@@ -65,18 +70,18 @@ public class ClanPanel : MonoBehaviour
                 if (clanData != null)
                 {
                     _playerClanText.text = clanData.Name;
-                    _playerClanDescription.text = clanData.Phrase;
+                    _playerClanDescription.text = playerData.Name;
                 }
                 else
                 {
                     _playerClanText.text = "Klaanin tietojen hakeminen ei onnistunut";
-                    _playerClanDescription.text = "";
+                    _playerClanDescription.text = playerData.Name;
                 }
             }
             else
             {
                 _playerClanText.text = "Et ole klaanissa";
-                _playerClanDescription.text = "Paina t�st� liitty�ksesi klaaniin";
+                _playerClanDescription.text = playerData.Name;
             }
         }
         else
