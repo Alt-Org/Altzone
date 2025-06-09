@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AspectMode: 0
-  m_AspectRatio: 0.8695887
+  m_AspectRatio: 0.9991049
 --- !u!1001 &64477876836325259
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -161,12 +161,12 @@ PrefabInstance:
     - target: {fileID: 172246432720726226, guid: ba0ea8c0f34ca1541b08d0074b66c6bd,
         type: 3}
       propertyPath: m_fontSize
-      value: 40
+      value: 52.65
       objectReference: {fileID: 0}
     - target: {fileID: 282743369033436052, guid: ba0ea8c0f34ca1541b08d0074b66c6bd,
         type: 3}
       propertyPath: m_fontSize
-      value: 22.7
+      value: 29.95
       objectReference: {fileID: 0}
     - target: {fileID: 344867035340093094, guid: ba0ea8c0f34ca1541b08d0074b66c6bd,
         type: 3}
@@ -241,7 +241,7 @@ PrefabInstance:
     - target: {fileID: 2500103017515913138, guid: ba0ea8c0f34ca1541b08d0074b66c6bd,
         type: 3}
       propertyPath: m_fontSize
-      value: 55.75
+      value: 72
       objectReference: {fileID: 0}
     - target: {fileID: 2709564691109907880, guid: ba0ea8c0f34ca1541b08d0074b66c6bd,
         type: 3}
@@ -286,7 +286,7 @@ PrefabInstance:
     - target: {fileID: 4141919429608506878, guid: ba0ea8c0f34ca1541b08d0074b66c6bd,
         type: 3}
       propertyPath: m_fontSize
-      value: 24.7
+      value: 31.55
       objectReference: {fileID: 0}
     - target: {fileID: 5189571196726944639, guid: ba0ea8c0f34ca1541b08d0074b66c6bd,
         type: 3}
@@ -393,6 +393,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 0.0019683987
       objectReference: {fileID: 0}
+    - target: {fileID: 6226062989449442856, guid: ba0ea8c0f34ca1541b08d0074b66c6bd,
+        type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 6602074375136533362, guid: ba0ea8c0f34ca1541b08d0074b66c6bd,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -441,7 +446,7 @@ PrefabInstance:
     - target: {fileID: 8899860303651503561, guid: ba0ea8c0f34ca1541b08d0074b66c6bd,
         type: 3}
       propertyPath: m_PresetInfoIsWorld
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

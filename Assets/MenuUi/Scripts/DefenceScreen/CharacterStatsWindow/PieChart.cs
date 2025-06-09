@@ -18,22 +18,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private int _sliceAmount;
 
         private Color _impactForceColor;
-        private Color _impactForceAltColor;
 
         private Color _healthPointsColor;
-        private Color _healthPointsAltColor;
 
         private Color _defenceColor;
-        private Color _defenceAltColor;
 
         private Color _characterSizeColor;
-        private Color _characterSizeAltColor;
 
         private Color _speedColor;
-        private Color _speedAltColor;
 
         private Color _defaultColor;
-        private Color _defaultAltColor;
 
         private Sprite _circleSprite;
         private Sprite _circlePatternedSprite;
@@ -42,22 +36,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private void Awake() // caching colors and circle sprite from the reference sheet to avoid unneccessary function calls
         {
             _impactForceColor = _referenceSheet.GetColor(StatType.Attack);
-            _impactForceAltColor = _referenceSheet.GetAlternativeColor(StatType.Attack);
 
             _healthPointsColor = _referenceSheet.GetColor(StatType.Hp);
-            _healthPointsAltColor = _referenceSheet.GetAlternativeColor(StatType.Hp);
 
             _defenceColor = _referenceSheet.GetColor(StatType.Defence);
-            _defenceAltColor = _referenceSheet.GetAlternativeColor(StatType.Defence);
 
             _characterSizeColor = _referenceSheet.GetColor(StatType.CharacterSize);
-            _characterSizeAltColor = _referenceSheet.GetAlternativeColor(StatType.CharacterSize);
 
             _speedColor = _referenceSheet.GetColor(StatType.Speed);
-            _speedAltColor = _referenceSheet.GetAlternativeColor(StatType.Speed);
 
             _defaultColor = _referenceSheet.GetColor(StatType.None);
-            _defaultAltColor = _referenceSheet.GetAlternativeColor(StatType.None);
 
             _circleSprite = _referenceSheet.GetCircleSprite();
             _circlePatternedSprite = _referenceSheet.GetPatternedSprite();
@@ -105,17 +93,17 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             _piechartText.text = $"{impactForce+healthPoints+defence+characterSize+speed}/{_sliceAmount}";
 
             // Arrange stats
-            var stats = new List<(int upgradesLevel, int baseLevel, Color color, Color altColor)>
+            var stats = new List<(int upgradesLevel, int baseLevel, Color color)>
             {
-                (impactForce - impactForceBase, impactForceBase, _impactForceColor, _impactForceAltColor),
-                (healthPoints - healthPointsBase, healthPointsBase, _healthPointsColor, _healthPointsAltColor),
-                (characterSize - characterSizeBase, characterSizeBase, _characterSizeColor, _characterSizeAltColor),
-                (speed - speedBase, speedBase, _speedColor, _speedAltColor),
-                (defence - defenceBase, defenceBase, _defenceColor, _defenceAltColor),
+                (healthPoints - healthPointsBase, healthPointsBase, _healthPointsColor),
+                (speed - speedBase, speedBase, _speedColor),
+                (characterSize - characterSizeBase, characterSizeBase, _characterSizeColor),
+                (impactForce - impactForceBase, impactForceBase, _impactForceColor),
+                (defence - defenceBase, defenceBase, _defenceColor),
             };
 
             // Create slices
-            float sliceFillAmount = 1.0f / (float)_sliceAmount;
+            float oneStatLevelFillAmount = 1.0f / (float)_sliceAmount;
             float currentSliceFill = 1.0f;
 
             int remainingSlices = _sliceAmount;
@@ -123,63 +111,17 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             // Colored slices
             foreach (var stat in stats)
             {
-                // base stats
-                for (int i = 0; i < stat.baseLevel; i++) 
-                {
-                    if (remainingSlices % 2 == 0)
-                    {
-                        CreateSlice(currentSliceFill, stat.color, true);
-                    }
-                    else
-                    {
-                        CreateSlice(currentSliceFill, stat.altColor, true);
-                    }
+                // Create base slice
+                CreateSlice(currentSliceFill, stat.color, true);
+                currentSliceFill -= oneStatLevelFillAmount * stat.baseLevel;
 
-                    currentSliceFill -= sliceFillAmount;
-
-                    remainingSlices--;
-                    if (remainingSlices == 0) // if runs out of slices return
-                    {
-                        return;
-                    }
-                }
-
-                // upgraded stats
-                for (int i = 0; i < stat.upgradesLevel; i++)
-                {
-                    if (remainingSlices % 2 == 0)
-                    {
-                        CreateSlice(currentSliceFill, stat.color, false);
-                    }
-                    else
-                    {
-                        CreateSlice(currentSliceFill, stat.altColor, false);
-                    }
-
-                    currentSliceFill -= sliceFillAmount;
-
-                    remainingSlices--;
-                    if (remainingSlices == 0) // if runs out of slices return
-                    {
-                        return;
-                    }
-                }
+                // Create upgrade slice
+                CreateSlice(currentSliceFill, stat.color, false);
+                currentSliceFill -= oneStatLevelFillAmount * stat.upgradesLevel;
             }
 
-            // White slices
-            for (int i = remainingSlices; i > 0; i--)
-            {
-                if (i % 2 == 0)
-                {
-                    CreateSlice(currentSliceFill, _defaultAltColor, true);
-                }
-                else
-                {
-                    CreateSlice(currentSliceFill, _defaultColor, true);
-                }
-
-                currentSliceFill -= sliceFillAmount;
-            }
+            // White slice
+            CreateSlice(currentSliceFill, _defaultColor, false);
         }
 
 
@@ -193,7 +135,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             // Modify image properties
             Image sliceImage = slice.GetComponent<Image>();
 
-            if (isBaseSlice && color != _defaultColor && color != _defaultAltColor)
+            if (isBaseSlice && color != _defaultColor)
             {
                 sliceImage.sprite = _circlePatternedSprite;
             }
