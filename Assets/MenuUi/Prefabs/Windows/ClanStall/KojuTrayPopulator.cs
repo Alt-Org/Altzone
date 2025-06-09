@@ -128,7 +128,8 @@ public class KojuTrayPopulator : MonoBehaviour
 
             if (cardUI != null)
             {
-                cardUI.PopulateCard(matchingFurniture);
+                // Use the StorageFurniture to preserve unique ID and metadata
+                cardUI.PopulateCard(storageFurniture);
             }
 
             if (data != null)
