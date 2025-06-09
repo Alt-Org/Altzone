@@ -1,6 +1,6 @@
 /// @file BattleSoulWallQSpec.cs
 /// <summary>
-/// Asset that defines a list of usable SoulWall EntityPrototypes, which are used when creating SoulWalls.
+/// Class for defining a list of usable SoulWall EntityPrototypes for creating SoulWalls.
 /// </summary>
 /// @bigtext{Filled with data from @ref BattleSoulWallQSpec.asset "BattleSoulWallQSpec" data asset.}
 
@@ -9,9 +9,11 @@ using Quantum;
 namespace Battle.QSimulation.SoulWall
 {
     /// <summary>
-    /// Asset that defines a list of usable SoulWall EntityPrototypes
+    /// Class for defining a list of usable SoulWall EntityPrototypes.
     /// </summary>
     ///
+    /// This class is used to define the data asset's structure, the data itself is not contained here.  
+    /// Can be used to make multiple %BattleSoulWallQSpec data assets.<br/>  
     /// @bigtext{Filled with data from @ref BattleSoulWallQSpec.asset "BattleSoulWallQSpec" data asset.}
     public class BattleSoulWallQSpec : AssetObject
     {

@@ -1,9 +1,8 @@
 /// @file BattleProjectileQSpec.cs
 /// <summary>
-/// Defines projectile's specifications.
+/// Class for defining the projectile's initial values.
 /// </summary>
 ///
-/// This spec defines projectile's Entity Prototype, initial speed and amount.<br/>  
 /// @bigtext{Filled with data from @ref BattleProjectileQSpec.asset "BattleProjectileQSpec" data asset.}
 
 using UnityEngine;
@@ -14,9 +13,11 @@ using Photon.Deterministic;
 namespace Battle.QSimulation.Projectile
 {
     /// <summary>
-    /// Asset that defines projectile's initial values.
+    /// Class for defining the projectile's initial values.
     /// </summary>
     ///
+    /// This class is used to define the data asset's structure, the data itself is not contained here.  
+    /// Can be used to make multiple %BattleProjectileQSpec data assets.<br/>  
     /// @bigtext{Filled with data from @ref BattleProjectileQSpec.asset "BattleProjectileQSpec" data asset.}
     public class BattleProjectileQSpec: AssetObject
     {

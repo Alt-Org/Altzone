@@ -1,9 +1,8 @@
 /// @file BattleDiamondQSpec.cs
 /// <summary>
-/// Defines spawnable diamond's specifications.
+/// Class for defining spawnable diamond's specifications.
 /// </summary>
 /// 
-/// This spec defines spawnable diamond's Entity Prototype and the amount of diamonds spawned.<br/>  
 /// @bigtext{Filled with data from @ref BattleDiamondQSpec.asset "BattleDiamondQSpec" data asset.}
 
 using Quantum;
@@ -11,9 +10,11 @@ using Quantum;
 namespace Battle.QSimulation.Diamond
 {
     /// <summary>
-    /// Asset that defines diamond settings.
+    /// Class for defining spawnable diamond's specifications.
     /// </summary>
     ///
+    /// This class is used to define the data asset's structure, the data itself is not contained here.  
+    /// Can be used to make multiple %BattleDiamondQSpec data assets.<br/>  
     /// @bigtext{Filled with data from @ref BattleDiamondQSpec.asset "BattleDiamondQSpec" data asset.}
     public class BattleDiamondQSpec : AssetObject
     {
