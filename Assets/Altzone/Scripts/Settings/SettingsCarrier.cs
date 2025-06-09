@@ -146,7 +146,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
     private void Start()
     {
-        Application.targetFrameRate = PlayerPrefs.GetInt("TargetFrameRate", Screen.currentResolution.refreshRate);
+        Application.targetFrameRate = PlayerPrefs.GetInt("TargetFrameRate", (int)Screen.currentResolution.refreshRateRatio.value);
         mainMenuWindowIndex = 0;
 
         _textSize = (TextSize)PlayerPrefs.GetInt("TextSize", 1);

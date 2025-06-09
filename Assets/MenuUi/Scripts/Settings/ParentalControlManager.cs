@@ -1,25 +1,28 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class ParentalControlManager : MonoBehaviour
 {
     public GameObject parentalControlPanel;
     public GameObject passwordPanel;
-    public InputField passwordInput;
-    public InputField confirmPasswordInput;
-    public Text messageText;
+    //public InputField passwordInput;
+    public TMP_InputField passwordInput;
+    public TMP_InputField confirmPasswordInput;
+    //public Text messageText;
+    public TMP_Text messageText;
     public Toggle controlToggle;
-    public InputField timeLimitInput;
+    public TMP_InputField timeLimitInput;
 
     private string sessionPassword = "";
 
     void Start()
     {
-        parentalControlPanel.SetActive(false);
-        passwordPanel.SetActive(false);
+        parentalControlPanel.SetActive(true);
+        passwordPanel.SetActive(true);
 
-        controlToggle.isOn = PlayerPrefs.GetInt("ParentalControl", 0) == 1;
-        timeLimitInput.text = PlayerPrefs.GetFloat("MaxPlayTime", 2f).ToString();
+        controlToggle.isOn = true; // PlayerPrefs.GetInt("ParentalControl", 0) == 1;
+        timeLimitInput.text = 10f.ToString(); //PlayerPrefs.GetFloat("MaxPlayTime", 2f).ToString();
 
     }
 
@@ -33,7 +36,7 @@ public class ParentalControlManager : MonoBehaviour
     {
         if (sessionPassword == "")
         {
-            if (passwordInput.text.Length < 4-8)
+            if (passwordInput.text.Length < 4-8)            // < -4 ??
             {
                 messageText.text = "Password must be at least 4-8 characters";
                 return;
