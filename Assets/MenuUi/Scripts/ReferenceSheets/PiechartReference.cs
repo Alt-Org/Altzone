@@ -28,6 +28,12 @@ namespace MenuUi.Scripts.DefenceScreen
         [SerializeField] private Sprite _circlePatternedSprite;
         [SerializeField] private Sprite _tearSprite;
 
+        [Space, SerializeField] private float _statBorderThickness = 10f;
+        [SerializeField] private float _statUpgradeBorderThickness = 5f;
+
+        public float StatBorderThickness => _statBorderThickness;
+        public float StatUpgradeBorderThickness => _statUpgradeBorderThickness;
+
 
         /// <summary>
         /// Get color from the reference sheet which matches the stat type. None is for default color.

@@ -13,6 +13,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private PiechartReference _referenceSheet;
         [SerializeField] private TMP_Text _piechartText;
 
+        private const int LineLengthOffset = 20;
+
         private StatsWindowController _controller;
 
         private int _sliceAmount;
@@ -31,6 +33,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         private Sprite _circleSprite;
         private Sprite _circlePatternedSprite;
+
+        private GameObject _firstSliceLine = null;
 
 
         private void Awake() // caching colors and circle sprite from the reference sheet to avoid unneccessary function calls
@@ -70,6 +74,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         public void UpdateChart(StatType statType = StatType.None)
         {
+            _firstSliceLine = null;
+
             // Destroy old pie slices
             for (int i = 0; i < transform.childCount; i++)
             {
@@ -106,8 +112,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             float oneStatLevelFillAmount = 1.0f / (float)_sliceAmount;
             float currentSliceFill = 1.0f;
 
-            int remainingSlices = _sliceAmount;
-
             // Colored slices
             foreach (var stat in stats)
             {
@@ -116,12 +120,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 currentSliceFill -= oneStatLevelFillAmount * stat.baseLevel;
 
                 // Create upgrade slice
+                if (stat.upgradesLevel == 0) continue;
                 CreateSlice(currentSliceFill, stat.color, false);
                 currentSliceFill -= oneStatLevelFillAmount * stat.upgradesLevel;
             }
 
             // White slice
             CreateSlice(currentSliceFill, _defaultColor, false);
+
+            // Putting first slice line topmost so that it's not under white slice
+            _firstSliceLine.transform.SetAsLastSibling();
         }
 
 
@@ -129,12 +137,10 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             // Create gameobject and add components
             GameObject slice = new GameObject();
-            slice.AddComponent<RectTransform>();
-            slice.AddComponent<Image>();
+            RectTransform sliceRect = slice.AddComponent<RectTransform>();
+            Image sliceImage = slice.AddComponent<Image>();
 
             // Modify image properties
-            Image sliceImage = slice.GetComponent<Image>();
-
             if (isBaseSlice && color != _defaultColor)
             {
                 sliceImage.sprite = _circlePatternedSprite;
@@ -159,11 +165,39 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             slice.transform.localScale = Vector3.one;
 
             // Set anchors
-            RectTransform sliceRect = slice.GetComponent<RectTransform>();
+            slice.GetComponent<RectTransform>();
             sliceRect.offsetMax = Vector2.zero;
             sliceRect.offsetMin = Vector2.zero;
             sliceRect.anchorMin = Vector3.zero;
             sliceRect.anchorMax = Vector3.one;
+
+            // Draw slice line
+            float lineLength = sliceImage.sprite.rect.width - LineLengthOffset;
+            DrawSliceLine(fillAmount, lineLength, isBaseSlice ? _referenceSheet.StatBorderThickness : _referenceSheet.StatUpgradeBorderThickness);
+        }
+
+
+        private void DrawSliceLine(float fillAmount, float length, float thickness)
+        {
+            // Create gameobject and add components for line
+            GameObject line = new GameObject();
+            RectTransform lineRectTransform = line.AddComponent<RectTransform>();
+            Image lineImage = line.AddComponent<Image>();
+
+            // Configure image component
+            lineImage.color = Color.black;
+            lineImage.raycastTarget = false;
+
+            // Configure rect transform
+            lineRectTransform.pivot = new Vector2(0.5f, 0);
+            lineRectTransform.sizeDelta = new Vector2(thickness, length);
+            lineRectTransform.rotation = Quaternion.Euler(0, 0, fillAmount * 360);
+
+            // Reparent to this node
+            line.transform.SetParent(transform, false);
+
+            // Saving the first slice line so it can be placed topmost later
+            if (_firstSliceLine == null) _firstSliceLine = line;
         }
     }
 }
