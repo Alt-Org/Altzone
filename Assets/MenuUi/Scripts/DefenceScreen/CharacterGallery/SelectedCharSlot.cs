@@ -13,14 +13,19 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private TMP_Text _className;
         [SerializeField] private TMP_Text _characterNameText;
 
-        [SerializeField] private Image _backgroundLowerImage;
+        [Space, SerializeField] private Image _backgroundLowerImage;
         [SerializeField] private Image _backgroundUpperImage;
 
-        [SerializeField] private PieChartPreview _pieChartPreview;
+        [Space, SerializeField] private PieChartPreview _pieChartPreview;
 
-        [SerializeField] private Button _editingPopupButton;
+        [Space, SerializeField] private Button _editingPopupButton;
 
-        [SerializeField] private GameObject _characterCard;
+        [Space, SerializeField] private GameObject _characterCard;
+        [SerializeField] private TMP_Text _hpText;
+        [SerializeField] private TMP_Text _impactForceText;
+        [SerializeField] private TMP_Text _speedText;
+        [SerializeField] private TMP_Text _defenceText;
+        [SerializeField] private TMP_Text _charSizeText;
 
         private CharacterID _id;
         public CharacterID Id => _id;
@@ -44,6 +49,12 @@ namespace MenuUi.Scripts.CharacterGallery
             _backgroundUpperImage.color = bgAltColor;
             _pieChartPreview.UpdateChart(customCharacter.Id);
             _id = customCharacter.Id;
+
+            _hpText.text = customCharacter.Hp.ToString();
+            _impactForceText.text = customCharacter.Attack.ToString();
+            _speedText.text = customCharacter.Speed.ToString();
+            _defenceText.text = customCharacter.Defence.ToString();
+            _charSizeText.text = customCharacter.CharacterSize.ToString();
         }
 
         public void SetCharacterVisibility(bool visible)
