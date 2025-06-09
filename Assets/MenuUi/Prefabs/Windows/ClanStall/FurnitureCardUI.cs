@@ -1,8 +1,9 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ReferenceSheets;
+using MenuUi.Scripts.Storage;  // For StorageFurniture
 
 public class FurnitureCardUI : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class FurnitureCardUI : MonoBehaviour
     private string description;
     private FurnitureRarity storedRarity;
 
+    // Existing method to populate from GameFurniture
     public void PopulateCard(GameFurniture furniture)
     {
         nameText.text = furniture.FurnitureInfo.VisibleName;
@@ -38,6 +40,25 @@ public class FurnitureCardUI : MonoBehaviour
         }
     }
 
+    // Populate the card with information
+    public void PopulateCard(StorageFurniture storageFurniture)
+    {
+        nameText.text = storageFurniture.VisibleName;
+        setNameText.text = storageFurniture.SetName;
+        weightText.text = $"Weight: {storageFurniture.Weight:0.0}";
+        iconImage.sprite = storageFurniture.Sprite;
+
+        description = storageFurniture.Info.ArtisticDescription;
+        creatorName = storageFurniture.Info.ArtistName;
+
+        storedRarity = storageFurniture.Rarity;
+
+        if (rarityColourReference != null)
+        {
+            rarityColorImage.color = rarityColourReference.GetColor(storedRarity);
+        }
+    }
+
     public string GetNameText() => nameText.text;
     public string GetSetNameText() => setNameText.text;
     public string GetWeightText() => weightText.text;
@@ -45,10 +66,8 @@ public class FurnitureCardUI : MonoBehaviour
     public string GetDescriptionText() => description;
     public string GetCreatorText() => creatorName;
 
-    // Added getter for rarity enum
     public FurnitureRarity GetFurnitureRarity() => storedRarity;
 
-    // Added getter for color
     public Color GetRarityColor()
     {
         if (rarityColourReference != null)

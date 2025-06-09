@@ -1,8 +1,14 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using UnityEngine;
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Player;
+using MenuUi.Scripts.Storage;
+using Altzone.Scripts.Config;
 
 public class KojuTrayPopulator : MonoBehaviour
 {
@@ -18,43 +24,116 @@ public class KojuTrayPopulator : MonoBehaviour
     [SerializeField] private GameObject panelFullWarningUI;
     private bool isWarningActive = false;
 
+    private DataStore koju;
+    private PlayerData player;
+    private ClanData clan;
+
     private void Start()
     {
+        // Populate koju and initialize StoreFront
+        koju = Storefront.Get();
         StartCoroutine(PopulateTray());
     }
 
     private IEnumerator PopulateTray()
     {
-        var store = Storefront.Get(); // Access the data
-        ReadOnlyCollection<GameFurniture> allFurniture = null;
-
-        // Waits for the data to be retrieved
-        yield return store.GetAllGameFurnitureYield(result => allFurniture = result);
-
-        // Exits and debugs if fetching of items fail
-        if (allFurniture == null || allFurniture.Count == 0)
+        // Load player data
+        bool playerLoaded = false;
+        koju.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data =>
         {
-            Debug.LogWarning("No furniture items found.");
+            player = data;
+            playerLoaded = true;
+        });
+        yield return new WaitUntil(() => playerLoaded);
+
+        if (player == null)
+        {
+            Debug.LogWarning("Player data not found.");
             yield break;
         }
 
-        // Populates the tray by instantiating cards and filling them with data
-        foreach (var furniture in allFurniture)
+        if (string.IsNullOrEmpty(player.ClanId))
         {
+            Debug.LogWarning("Player is not in a clan.");
+            yield break;
+        }
+
+        // Load clan data
+        bool clanLoaded = false;
+        koju.GetClanData(player.ClanId, data =>
+        {
+            clan = data;
+            clanLoaded = true;
+        });
+        yield return new WaitUntil(() => clanLoaded);
+
+        if (clan == null)
+        {
+            Debug.LogWarning("Clan data not found.");
+            yield break;
+        }
+
+        if (clan.Inventory == null || clan.Inventory.Furniture == null || clan.Inventory.Furniture.Count == 0)
+        {
+            Debug.LogWarning("No clan storage furniture found.");
+            yield break;
+        }
+
+        // Filter clan furniture voted to sell, you can remove .Where and .ToList(); to show all the furniture in the clan
+        List<ClanFurniture> votedToSellFurniture = clan.Inventory.Furniture
+            .Where(f => f.VotedToSell)
+            .ToList();
+
+        if (votedToSellFurniture.Count == 0)
+        {
+            Debug.LogWarning("No clan furniture voted to sell.");
+            yield break;
+        }
+
+        // Load gamefurniture
+        ReadOnlyCollection<GameFurniture> allGameFurniture = null;
+        yield return koju.GetAllGameFurnitureYield(result => allGameFurniture = result);
+
+        if (allGameFurniture == null || allGameFurniture.Count == 0)
+        {
+            Debug.LogWarning("No GameFurniture data found in Storefront.");
+            yield break;
+        }
+
+        int spawnedCount = 0;
+
+        // Loop through all voted furniture and create cards for them
+        foreach (var clanFurniture in votedToSellFurniture)
+        {
+            // Match clan item with master furniture
+            GameFurniture matchingFurniture = allGameFurniture
+                .FirstOrDefault(gf => gf.Name == clanFurniture.GameFurnitureName);
+
+            if (matchingFurniture == null)
+            {
+                Debug.LogWarning($"Matching GameFurniture not found for: {clanFurniture.GameFurnitureName}");
+                continue;
+            }
+
+            // Create StorageFurniture wrapper, containing both the clan and gamefurniture info
+            StorageFurniture storageFurniture = new StorageFurniture(clanFurniture, matchingFurniture);
+
+            // Instantiate card UI
             GameObject cardGO = Instantiate(cardPrefab, trayContent);
+
+            // Fill in the UI components
             FurnitureCardUI cardUI = cardGO.GetComponent<FurnitureCardUI>();
             KojuFurnitureData data = cardGO.GetComponent<KojuFurnitureData>();
             ItemMover mover = cardGO.GetComponent<ItemMover>();
 
             if (cardUI != null)
             {
-                cardUI.PopulateCard(furniture); // Passes the data onto the cards
+                cardUI.PopulateCard(matchingFurniture);
             }
 
             if (data != null)
             {
-                // Set the base data and initial price
-                data.SetFurniture(furniture); 
+                data.SetFurniture(storageFurniture);
             }
 
             if (mover != null)
@@ -63,11 +142,14 @@ public class KojuTrayPopulator : MonoBehaviour
                 mover.SetPopup(popup);
                 mover.SetPopulator(this);
             }
+
+            spawnedCount++;
         }
 
-        Debug.Log($"Spawned {allFurniture.Count} furniture cards.");
+        Debug.Log($"Spawned {spawnedCount} furniture cards voted to sell.");
     }
 
+    // Prompt if the panel is full
     public void ShowPanelFullWarning()
     {
         if (!isWarningActive)
@@ -76,17 +158,16 @@ public class KojuTrayPopulator : MonoBehaviour
         }
     }
 
+    // Coroutine to flash the warning, and make the warning non spammable
     private IEnumerator ShowWarningCoroutine()
     {
         isWarningActive = true;
         panelFullWarningUI.SetActive(true);
 
-        yield return new WaitForSeconds(1f); // How long it's visible
+        yield return new WaitForSeconds(1f); // Visible duration
         panelFullWarningUI.SetActive(false);
 
-        yield return new WaitForSeconds(0.5f); // Cooldown to prevent re-triggering too fast
+        yield return new WaitForSeconds(0.5f); // Cooldown to prevent spamming
         isWarningActive = false;
     }
-
-
 }
