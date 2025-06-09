@@ -37,7 +37,14 @@ public class CharacterPopupHandler : MonoBehaviour
         {
             string cname = popupOptions[id].className;
 
-            charaterImage.sprite = popupOptions[id].characterImage;
+            if (popupOptions[id].characterImage == null)
+            {
+                charaterImage.sprite = backupImage;
+            }
+            else
+            {
+                charaterImage.sprite = popupOptions[id].characterImage;
+            }
             classChoiseText.text = "Olet valitsemassa " + cname + "hahmoluokan edustajan dustmaan itseäsi";
         }
         else
