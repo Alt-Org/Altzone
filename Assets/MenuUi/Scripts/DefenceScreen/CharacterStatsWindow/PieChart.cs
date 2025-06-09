@@ -126,7 +126,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             }
 
             // White slice
-            CreateSlice(currentSliceFill, _defaultColor, false);
+            CreateSlice(currentSliceFill, _defaultColor, true);
 
             // Putting first slice line topmost so that it's not under white slice
             _firstSliceLine.transform.SetAsLastSibling();
