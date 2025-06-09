@@ -33,7 +33,11 @@ public class TabChangeHandler : MonoBehaviour
 
     private void OnEnable()
     {
-        int? value = DataCarrier.GetData<int?>(DataCarrier.RequestedWindow, false, suppressWarning: true);
+        int? value;
+        if (_tablineScript.Swipe == null)
+            value = DataCarrier.GetData<int?>(DataCarrier.RequestedWindow, true, suppressWarning: true);
+        else
+            value = DataCarrier.GetData<int?>(DataCarrier.RequestedWindow, false, suppressWarning: true);
         if (value != null) SetVisible((int)value);
         else SetVisible(_defaultTab);
     }
