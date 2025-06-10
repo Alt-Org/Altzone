@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using MenuUi.Scripts.MainMenu;
 using MenuUi.Scripts.Settings.BattleUiEditor;
-using MenuUi.Scripts.Window;
+using Altzone.Scripts.Window;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

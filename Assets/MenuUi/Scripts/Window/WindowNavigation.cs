@@ -1,5 +1,5 @@
 using System.Collections;
-using MenuUi.Scripts.Window;
+using Altzone.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
 using UnityEditor;
 using UnityEngine;

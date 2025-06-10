@@ -1,4 +1,4 @@
-using MenuUi.Scripts.Window;
+using Altzone.Scripts.Window;
 using UnityEngine;
 
 public class KojuNavigationButton : MonoBehaviour

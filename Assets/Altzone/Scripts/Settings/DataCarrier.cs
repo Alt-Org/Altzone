@@ -5,7 +5,7 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
-namespace MenuUi.Scripts.Window
+namespace Altzone.Scripts.Window
 {
     public class DataCarrier : MonoBehaviour
     {
@@ -13,7 +13,7 @@ namespace MenuUi.Scripts.Window
         public const string PlayerProfile = "pp";
         public const string BattleUiEditorRequested = "bui";
         public const string RequestedWindow = "rw";
-
+        public const string BattleWinner = "bw";
 
         public static DataCarrier Instance { get; private set; }
         public ServerClan clanToView;
