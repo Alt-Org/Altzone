@@ -174,11 +174,7 @@ namespace Quantum.Prototypes {
     public Quantum.QEnum32<BattleTeamNumber> TeamNumber;
     public Int32 CharacterId;
     public Int32 CharacterClass;
-    public FP StatHp;
-    public FP StatSpeed;
-    public FP StatCharacterSize;
-    public FP StatAttack;
-    public FP StatDefence;
+    public Quantum.Prototypes.BattlePlayerStatsPrototype Stats;
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
     public FPVector2 TargetPosition;
@@ -197,11 +193,7 @@ namespace Quantum.Prototypes {
         result.TeamNumber = this.TeamNumber;
         result.CharacterId = this.CharacterId;
         result.CharacterClass = this.CharacterClass;
-        result.StatHp = this.StatHp;
-        result.StatSpeed = this.StatSpeed;
-        result.StatCharacterSize = this.StatCharacterSize;
-        result.StatAttack = this.StatAttack;
-        result.StatDefence = this.StatDefence;
+        this.Stats.Materialize(frame, ref result.Stats, in context);
         result.GridExtendTop = this.GridExtendTop;
         result.GridExtendBottom = this.GridExtendBottom;
         result.TargetPosition = this.TargetPosition;
@@ -324,6 +316,24 @@ namespace Quantum.Prototypes {
         for (int i = 0, count = PrototypeValidator.CheckLength(SelectedCharacterNumbers, 4, in context); i < count; ++i) {
           result.SelectedCharacterNumbers[i] = this.SelectedCharacterNumbers[i];
         }
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerStats))]
+  public unsafe partial class BattlePlayerStatsPrototype : StructPrototype {
+    public FP StatHp;
+    public FP StatSpeed;
+    public FP StatCharacterSize;
+    public FP StatAttack;
+    public FP StatDefence;
+    partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerStats result, in PrototypeMaterializationContext context);
+    public void Materialize(Frame frame, ref Quantum.BattlePlayerStats result, in PrototypeMaterializationContext context = default) {
+        result.StatHp = this.StatHp;
+        result.StatSpeed = this.StatSpeed;
+        result.StatCharacterSize = this.StatCharacterSize;
+        result.StatAttack = this.StatAttack;
+        result.StatDefence = this.StatDefence;
+        MaterializeUser(frame, ref result, in context);
     }
   }
   [System.SerializableAttribute()]

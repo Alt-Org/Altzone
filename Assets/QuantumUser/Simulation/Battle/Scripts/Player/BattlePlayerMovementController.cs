@@ -116,7 +116,7 @@ namespace Battle.QSimulation.Player
                 RotateNoHitboxUpdate(f, transform, playerData->RotationBase + playerData->RotationOffset);
 
                 if (transform->Position != playerData->TargetPosition)
-                    MoveTowardsNoHitboxUpdate(f, transform, playerData->TargetPosition, playerData->StatSpeed * f.DeltaTime);
+                    MoveTowardsNoHitboxUpdate(f, transform, playerData->TargetPosition, playerData->Stats.StatSpeed * f.DeltaTime);
 
                 MoveHitbox(f, playerData, transform);
             }

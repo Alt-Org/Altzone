@@ -57,11 +57,7 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.QEnum32<BattleTeamNumber> TeamNumber;
     public Int32 CharacterId;
     public Int32 CharacterClass;
-    public FP StatHp;
-    public FP StatSpeed;
-    public FP StatCharacterSize;
-    public FP StatAttack;
-    public FP StatDefence;
+    public Quantum.Prototypes.BattlePlayerStatsPrototype Stats;
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
     public FPVector2 TargetPosition;
@@ -77,11 +73,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.TeamNumber, out result.TeamNumber);
       converter.Convert(this.CharacterId, out result.CharacterId);
       converter.Convert(this.CharacterClass, out result.CharacterClass);
-      converter.Convert(this.StatHp, out result.StatHp);
-      converter.Convert(this.StatSpeed, out result.StatSpeed);
-      converter.Convert(this.StatCharacterSize, out result.StatCharacterSize);
-      converter.Convert(this.StatAttack, out result.StatAttack);
-      converter.Convert(this.StatDefence, out result.StatDefence);
+      converter.Convert(this.Stats, out result.Stats);
       converter.Convert(this.GridExtendTop, out result.GridExtendTop);
       converter.Convert(this.GridExtendBottom, out result.GridExtendBottom);
       converter.Convert(this.TargetPosition, out result.TargetPosition);

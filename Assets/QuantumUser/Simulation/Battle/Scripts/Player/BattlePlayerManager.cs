@@ -159,6 +159,7 @@ namespace Battle.QSimulation.Player
 
                     //{ player variables
                     EntityRef                  playerEntity;
+                    BattlePlayerStats          playerStats;
                     BattlePlayerDataQComponent playerData;
                     Transform2D*               playerTransform;
                     // player - hitBox variables
@@ -290,6 +291,16 @@ namespace Battle.QSimulation.Player
                             f.Add(playerHitboxTargetEntity, collisionTrigger);
                         }
 
+                        // initialize player stats
+                        playerStats = new BattlePlayerStats
+                        {
+                            StatHp = data.Characters[playerCharacterNumber].Hp,
+                            StatSpeed = data.Characters[playerCharacterNumber].Speed,
+                            StatCharacterSize = data.Characters[playerCharacterNumber].CharacterSize,
+                            StatAttack = data.Characters[playerCharacterNumber].Attack,
+                            StatDefence = data.Characters[playerCharacterNumber].Defence,
+                        };
+
                         // initialize playerData
                         playerData = new BattlePlayerDataQComponent
                         {
@@ -299,11 +310,7 @@ namespace Battle.QSimulation.Player
                             CharacterId       = data.Characters[playerCharacterNumber].Id,
                             CharacterClass    = data.Characters[playerCharacterNumber].Class,
 
-                            StatHp            = data.Characters[playerCharacterNumber].Hp,
-                            StatSpeed         = data.Characters[playerCharacterNumber].Speed,
-                            StatCharacterSize = data.Characters[playerCharacterNumber].CharacterSize,
-                            StatAttack        = data.Characters[playerCharacterNumber].Attack,
-                            StatDefence       = data.Characters[playerCharacterNumber].Defence,
+                            Stats             = playerStats,
 
                             GridExtendTop     = playerGridExtendTop,
                             GridExtendBottom  = playerGridExtendBottom,
@@ -317,11 +324,11 @@ namespace Battle.QSimulation.Player
                         };
 
 #if DEBUG_PLAYER_STAT_OVERRIDE
-                        playerData.StatHp            = FP.FromString("1.0");
-                        playerData.StatSpeed         = FP.FromString("20.0");
-                        playerData.StatCharacterSize = FP.FromString("1.0");
-                        playerData.StatAttack        = FP.FromString("1.0");
-                        playerData.StatDefence       = FP.FromString("1.0");
+                        playerData.Stats.StatHp            = FP.FromString("1.0");
+                        playerData.Stats.StatSpeed         = FP.FromString("20.0");
+                        playerData.Stats.StatCharacterSize = FP.FromString("1.0");
+                        playerData.Stats.StatAttack        = FP.FromString("1.0");
+                        playerData.Stats.StatDefence       = FP.FromString("1.0");
 #endif
 
                         //{ initialize entity

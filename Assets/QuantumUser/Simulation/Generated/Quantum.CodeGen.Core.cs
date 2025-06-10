@@ -562,6 +562,40 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct BattlePlayerStats {
+    public const Int32 SIZE = 40;
+    public const Int32 ALIGNMENT = 8;
+    [FieldOffset(24)]
+    public FP StatHp;
+    [FieldOffset(32)]
+    public FP StatSpeed;
+    [FieldOffset(8)]
+    public FP StatCharacterSize;
+    [FieldOffset(0)]
+    public FP StatAttack;
+    [FieldOffset(16)]
+    public FP StatDefence;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 5557;
+        hash = hash * 31 + StatHp.GetHashCode();
+        hash = hash * 31 + StatSpeed.GetHashCode();
+        hash = hash * 31 + StatCharacterSize.GetHashCode();
+        hash = hash * 31 + StatAttack.GetHashCode();
+        hash = hash * 31 + StatDefence.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (BattlePlayerStats*)ptr;
+        FP.Serialize(&p->StatAttack, serializer);
+        FP.Serialize(&p->StatCharacterSize, serializer);
+        FP.Serialize(&p->StatDefence, serializer);
+        FP.Serialize(&p->StatHp, serializer);
+        FP.Serialize(&p->StatSpeed, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
   [Serializable()]
   public unsafe partial struct BattleSoulWallTemplate {
     public const Int32 SIZE = 16;
@@ -853,21 +887,13 @@ namespace Quantum {
     public Int32 CharacterId;
     [FieldOffset(8)]
     public Int32 CharacterClass;
-    [FieldOffset(88)]
-    public FP StatHp;
-    [FieldOffset(96)]
-    public FP StatSpeed;
-    [FieldOffset(72)]
-    public FP StatCharacterSize;
-    [FieldOffset(64)]
-    public FP StatAttack;
     [FieldOffset(80)]
-    public FP StatDefence;
+    public BattlePlayerStats Stats;
     [FieldOffset(20)]
     public Int32 GridExtendTop;
     [FieldOffset(16)]
     public Int32 GridExtendBottom;
-    [FieldOffset(104)]
+    [FieldOffset(64)]
     public FPVector2 TargetPosition;
     [FieldOffset(48)]
     public FP RotationBase;
@@ -885,11 +911,7 @@ namespace Quantum {
         hash = hash * 31 + (Int32)TeamNumber;
         hash = hash * 31 + CharacterId.GetHashCode();
         hash = hash * 31 + CharacterClass.GetHashCode();
-        hash = hash * 31 + StatHp.GetHashCode();
-        hash = hash * 31 + StatSpeed.GetHashCode();
-        hash = hash * 31 + StatCharacterSize.GetHashCode();
-        hash = hash * 31 + StatAttack.GetHashCode();
-        hash = hash * 31 + StatDefence.GetHashCode();
+        hash = hash * 31 + Stats.GetHashCode();
         hash = hash * 31 + GridExtendTop.GetHashCode();
         hash = hash * 31 + GridExtendBottom.GetHashCode();
         hash = hash * 31 + TargetPosition.GetHashCode();
@@ -913,12 +935,8 @@ namespace Quantum {
         EntityRef.Serialize(&p->HitboxShieldEntity, serializer);
         FP.Serialize(&p->RotationBase, serializer);
         FP.Serialize(&p->RotationOffset, serializer);
-        FP.Serialize(&p->StatAttack, serializer);
-        FP.Serialize(&p->StatCharacterSize, serializer);
-        FP.Serialize(&p->StatDefence, serializer);
-        FP.Serialize(&p->StatHp, serializer);
-        FP.Serialize(&p->StatSpeed, serializer);
         FPVector2.Serialize(&p->TargetPosition, serializer);
+        Quantum.BattlePlayerStats.Serialize(&p->Stats, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -1399,6 +1417,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.BattlePlayerManagerDataQSingleton), Quantum.BattlePlayerManagerDataQSingleton.SIZE);
       typeRegistry.Register(typeof(Quantum.BattlePlayerPlayState), 4);
       typeRegistry.Register(typeof(Quantum.BattlePlayerSlot), 4);
+      typeRegistry.Register(typeof(Quantum.BattlePlayerStats), Quantum.BattlePlayerStats.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleProjectileCollisionFlags), 1);
       typeRegistry.Register(typeof(Quantum.BattleProjectileQComponent), Quantum.BattleProjectileQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleProjectileSpawnerQComponent), Quantum.BattleProjectileSpawnerQComponent.SIZE);
