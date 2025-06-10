@@ -67,15 +67,8 @@ namespace Quantum.Prototypes.Unity {
     public FPVector2 TargetPosition;
     public FP RotationBase;
     public FP RotationOffset;
-    [FreeOnComponentRemoved()]
-    [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.Unity.BattlePlayerHitboxLinkPrototype[] HitboxListAll = {};
-    [FreeOnComponentRemoved()]
-    [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.Unity.BattlePlayerHitboxLinkPrototype[] HitboxListShield = {};
-    [FreeOnComponentRemoved()]
-    [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.Unity.BattlePlayerHitboxLinkPrototype[] HitboxListCharacter = {};
+    public Quantum.QuantumEntityPrototype HitboxShieldEntity;
+    public Quantum.QuantumEntityPrototype HitboxCharacterEntity;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerDataQComponentPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerDataQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerDataQComponentPrototype();
@@ -94,22 +87,8 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.TargetPosition, out result.TargetPosition);
       converter.Convert(this.RotationBase, out result.RotationBase);
       converter.Convert(this.RotationOffset, out result.RotationOffset);
-      converter.Convert(this.HitboxListAll, out result.HitboxListAll);
-      converter.Convert(this.HitboxListShield, out result.HitboxListShield);
-      converter.Convert(this.HitboxListCharacter, out result.HitboxListCharacter);
-      ConvertUser(converter, ref result);
-      return result;
-    }
-  }
-  [System.SerializableAttribute()]
-  public unsafe partial class BattlePlayerHitboxLinkPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerHitboxLinkPrototype> {
-    public Quantum.QuantumEntityPrototype Entity;
-    public FPVector2 Position;
-    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerHitboxLinkPrototype prototype);
-    public override Quantum.Prototypes.BattlePlayerHitboxLinkPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
-      var result = new Quantum.Prototypes.BattlePlayerHitboxLinkPrototype();
-      converter.Convert(this.Entity, out result.Entity);
-      converter.Convert(this.Position, out result.Position);
+      converter.Convert(this.HitboxShieldEntity, out result.HitboxShieldEntity);
+      converter.Convert(this.HitboxCharacterEntity, out result.HitboxCharacterEntity);
       ConvertUser(converter, ref result);
       return result;
     }

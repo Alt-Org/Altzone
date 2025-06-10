@@ -184,15 +184,8 @@ namespace Quantum.Prototypes {
     public FPVector2 TargetPosition;
     public FP RotationBase;
     public FP RotationOffset;
-    [FreeOnComponentRemoved()]
-    [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.BattlePlayerHitboxLinkPrototype[] HitboxListAll = {};
-    [FreeOnComponentRemoved()]
-    [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.BattlePlayerHitboxLinkPrototype[] HitboxListShield = {};
-    [FreeOnComponentRemoved()]
-    [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.BattlePlayerHitboxLinkPrototype[] HitboxListCharacter = {};
+    public MapEntityId HitboxShieldEntity;
+    public MapEntityId HitboxCharacterEntity;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerDataQComponent component = default;
         Materialize((Frame)f, ref component, in context);
@@ -214,36 +207,8 @@ namespace Quantum.Prototypes {
         result.TargetPosition = this.TargetPosition;
         result.RotationBase = this.RotationBase;
         result.RotationOffset = this.RotationOffset;
-        if (this.HitboxListAll.Length == 0) {
-          result.HitboxListAll = default;
-        } else {
-          var list = frame.AllocateList(out result.HitboxListAll, this.HitboxListAll.Length);
-          for (int i = 0; i < this.HitboxListAll.Length; ++i) {
-            Quantum.BattlePlayerHitboxLink tmp = default;
-            this.HitboxListAll[i].Materialize(frame, ref tmp, in context);
-            list.Add(tmp);
-          }
-        }
-        if (this.HitboxListShield.Length == 0) {
-          result.HitboxListShield = default;
-        } else {
-          var list = frame.AllocateList(out result.HitboxListShield, this.HitboxListShield.Length);
-          for (int i = 0; i < this.HitboxListShield.Length; ++i) {
-            Quantum.BattlePlayerHitboxLink tmp = default;
-            this.HitboxListShield[i].Materialize(frame, ref tmp, in context);
-            list.Add(tmp);
-          }
-        }
-        if (this.HitboxListCharacter.Length == 0) {
-          result.HitboxListCharacter = default;
-        } else {
-          var list = frame.AllocateList(out result.HitboxListCharacter, this.HitboxListCharacter.Length);
-          for (int i = 0; i < this.HitboxListCharacter.Length; ++i) {
-            Quantum.BattlePlayerHitboxLink tmp = default;
-            this.HitboxListCharacter[i].Materialize(frame, ref tmp, in context);
-            list.Add(tmp);
-          }
-        }
+        PrototypeValidator.FindMapEntity(this.HitboxShieldEntity, in context, out result.HitboxShieldEntity);
+        PrototypeValidator.FindMapEntity(this.HitboxCharacterEntity, in context, out result.HitboxCharacterEntity);
     }
   }
   [System.SerializableAttribute()]
@@ -251,12 +216,8 @@ namespace Quantum.Prototypes {
   public unsafe partial class BattlePlayerDataTemplateQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerDataTemplateQComponent> {
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
-    [FreeOnComponentRemoved()]
-    [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.BattlePlayerHitboxTemplatePrototype[] HitboxListShield = {};
-    [FreeOnComponentRemoved()]
-    [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.BattlePlayerHitboxTemplatePrototype[] HitboxListCharacter = {};
+    public Quantum.Prototypes.BattlePlayerHitboxTemplatePrototype HitboxShield;
+    public Quantum.Prototypes.BattlePlayerHitboxTemplatePrototype HitboxCharacter;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerDataTemplateQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerDataTemplateQComponent component = default;
@@ -266,37 +227,21 @@ namespace Quantum.Prototypes {
     public void Materialize(Frame frame, ref Quantum.BattlePlayerDataTemplateQComponent result, in PrototypeMaterializationContext context = default) {
         result.GridExtendTop = this.GridExtendTop;
         result.GridExtendBottom = this.GridExtendBottom;
-        if (this.HitboxListShield.Length == 0) {
-          result.HitboxListShield = default;
-        } else {
-          var list = frame.AllocateList(out result.HitboxListShield, this.HitboxListShield.Length);
-          for (int i = 0; i < this.HitboxListShield.Length; ++i) {
-            Quantum.BattlePlayerHitboxTemplate tmp = default;
-            this.HitboxListShield[i].Materialize(frame, ref tmp, in context);
-            list.Add(tmp);
-          }
-        }
-        if (this.HitboxListCharacter.Length == 0) {
-          result.HitboxListCharacter = default;
-        } else {
-          var list = frame.AllocateList(out result.HitboxListCharacter, this.HitboxListCharacter.Length);
-          for (int i = 0; i < this.HitboxListCharacter.Length; ++i) {
-            Quantum.BattlePlayerHitboxTemplate tmp = default;
-            this.HitboxListCharacter[i].Materialize(frame, ref tmp, in context);
-            list.Add(tmp);
-          }
-        }
+        this.HitboxShield.Materialize(frame, ref result.HitboxShield, in context);
+        this.HitboxCharacter.Materialize(frame, ref result.HitboxCharacter, in context);
         MaterializeUser(frame, ref result, in context);
     }
   }
   [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerHitboxLink))]
-  public unsafe class BattlePlayerHitboxLinkPrototype : StructPrototype {
-    public MapEntityId Entity;
-    public FPVector2 Position;
-    public void Materialize(Frame frame, ref Quantum.BattlePlayerHitboxLink result, in PrototypeMaterializationContext context = default) {
-        PrototypeValidator.FindMapEntity(this.Entity, in context, out result.Entity);
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerHitboxColliderTemplate))]
+  public unsafe partial class BattlePlayerHitboxColliderTemplatePrototype : StructPrototype {
+    public IntVector2 Position;
+    public IntVector2 Size;
+    partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerHitboxColliderTemplate result, in PrototypeMaterializationContext context);
+    public void Materialize(Frame frame, ref Quantum.BattlePlayerHitboxColliderTemplate result, in PrototypeMaterializationContext context = default) {
         result.Position = this.Position;
+        result.Size = this.Size;
+        MaterializeUser(frame, ref result, in context);
     }
   }
   [System.SerializableAttribute()]
@@ -323,14 +268,23 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerHitboxTemplate))]
   public unsafe partial class BattlePlayerHitboxTemplatePrototype : StructPrototype {
-    public IntVector2 Position;
+    [FreeOnComponentRemoved()]
+    [DynamicCollectionAttribute()]
+    public Quantum.Prototypes.BattlePlayerHitboxColliderTemplatePrototype[] ColliderTemplateList = {};
     public Quantum.QEnum32<BattlePlayerCollisionType> CollisionType;
-    public FP NormalAngle;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerHitboxTemplate result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.BattlePlayerHitboxTemplate result, in PrototypeMaterializationContext context = default) {
-        result.Position = this.Position;
+        if (this.ColliderTemplateList.Length == 0) {
+          result.ColliderTemplateList = default;
+        } else {
+          var list = frame.AllocateList(out result.ColliderTemplateList, this.ColliderTemplateList.Length);
+          for (int i = 0; i < this.ColliderTemplateList.Length; ++i) {
+            Quantum.BattlePlayerHitboxColliderTemplate tmp = default;
+            this.ColliderTemplateList[i].Materialize(frame, ref tmp, in context);
+            list.Add(tmp);
+          }
+        }
         result.CollisionType = this.CollisionType;
-        result.NormalAngle = this.NormalAngle;
         MaterializeUser(frame, ref result, in context);
     }
   }

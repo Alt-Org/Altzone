@@ -1,11 +1,5 @@
 //{ PlayerData
 
-struct BattlePlayerHitboxLink
-{
-    EntityRef Entity;
-    FPVector2 Position;
-}
-
 component BattlePlayerDataQComponent
 {
     PlayerRef PlayerRef;
@@ -27,9 +21,8 @@ component BattlePlayerDataQComponent
     FP RotationBase;
     FP RotationOffset;
 
-    [FreeOnComponentRemoved] list<BattlePlayerHitboxLink> HitboxListAll;
-    [FreeOnComponentRemoved] list<BattlePlayerHitboxLink> HitboxListShield;
-    [FreeOnComponentRemoved] list<BattlePlayerHitboxLink> HitboxListCharacter;
+    EntityRef HitboxShieldEntity;
+    EntityRef HitboxCharacterEntity;
 }
 
 //} PlayerData
@@ -37,11 +30,17 @@ component BattlePlayerDataQComponent
 //{ PlayerDataTemplate
 
 [Serializable]
-struct BattlePlayerHitboxTemplate
+struct BattlePlayerHitboxColliderTemplate
 {
     IntVector2 Position;
+    IntVector2 Size;
+}
+
+[Serializable]
+struct BattlePlayerHitboxTemplate
+{
+    [FreeOnComponentRemoved] list<BattlePlayerHitboxColliderTemplate> ColliderTemplateList;
     BattlePlayerCollisionType CollisionType;
-    FP NormalAngle;
 }
 
 component BattlePlayerDataTemplateQComponent
@@ -49,8 +48,8 @@ component BattlePlayerDataTemplateQComponent
     int GridExtendTop;
     int GridExtendBottom;
 
-    [FreeOnComponentRemoved] list<BattlePlayerHitboxTemplate> HitboxListShield;
-    [FreeOnComponentRemoved] list<BattlePlayerHitboxTemplate> HitboxListCharacter;
+    BattlePlayerHitboxTemplate HitboxShield;
+    BattlePlayerHitboxTemplate HitboxCharacter;
 }
 
 //} PlayerDataTemplate
