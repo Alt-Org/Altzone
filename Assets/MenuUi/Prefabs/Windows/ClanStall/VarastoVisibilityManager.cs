@@ -9,11 +9,10 @@ public class VarastoVisibilityManager : MonoBehaviour
 
     private bool kojuWindowStatus = false;
 
+    // When notified, toggle UI elements off
     private void OnEnable()
     {
         KojuContentNotifier.OnActiveStateChanged += HandleKojuActiveChanged;
-
-        // Initialize UI state based on current active state of kojuContentWindow
         if (kojuContentWindow != null)
         {
             kojuWindowStatus = kojuContentWindow.activeSelf;
@@ -21,11 +20,10 @@ public class VarastoVisibilityManager : MonoBehaviour
         }
     }
 
+    // When notified, toggle UI elements on
     private void OnDisable()
     {
         KojuContentNotifier.OnActiveStateChanged -= HandleKojuActiveChanged;
-
-        // Optionally reset UI elements to visible when this manager is disabled
         ToggleUIElements(true);
     }
 
