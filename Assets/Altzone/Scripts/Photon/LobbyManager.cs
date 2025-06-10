@@ -1130,11 +1130,11 @@ namespace Altzone.Scripts.Lobby
 
                 var stats = new BattlePlayerStats()
                 {
-                    Hp = BaseCharacter.GetStatValueFP(StatType.Hp, character.Hp),
-                    Attack = BaseCharacter.GetStatValueFP(StatType.Attack, character.Attack),
-                    Defence = BaseCharacter.GetStatValueFP(StatType.Defence, character.Defence),
+                    Hp            = BaseCharacter.GetStatValueFP(StatType.Hp, character.Hp),
+                    Attack        = BaseCharacter.GetStatValueFP(StatType.Attack, character.Attack),
+                    Defence       = BaseCharacter.GetStatValueFP(StatType.Defence, character.Defence),
                     CharacterSize = BaseCharacter.GetStatValueFP(StatType.CharacterSize, character.CharacterSize),
-                    Speed = BaseCharacter.GetStatValueFP(StatType.Speed, character.Speed)
+                    Speed         = BaseCharacter.GetStatValueFP(StatType.Speed, character.Speed)
                 };
 
                 _player.Characters[i] = new BattleCharacterBase()
