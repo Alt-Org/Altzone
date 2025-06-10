@@ -36,7 +36,7 @@ public class ClanValuesUIManager : MonoBehaviour
         CreateValueButtons();
     }
     
-    // Julkinen metodi UI:n päivittämiseen
+    
     public void RefreshUI()
     {
         InitializeIconDictionary();
@@ -58,7 +58,7 @@ public class ClanValuesUIManager : MonoBehaviour
 
     void CreateValueButtons()
     {
-        // Tyhjennä aiemmat buttonit
+        
         foreach (Transform child in iconGrid)
         {
             if (Application.isPlaying)
@@ -68,21 +68,21 @@ public class ClanValuesUIManager : MonoBehaviour
         }
         createdButtons.Clear();
 
-        // Luo button jokaiselle ClanValues enumille
+       
         foreach (ClanValues value in System.Enum.GetValues(typeof(ClanValues)))
         {
             GameObject buttonObj = Instantiate(iconButtonPrefab, iconGrid);
             Button button = buttonObj.GetComponent<Button>();
             Image iconImage = buttonObj.GetComponentInChildren<Image>();
             
-            // Aseta ikoni jos löytyy
+           
             if (iconDictionary.ContainsKey(value))
             {
                 iconImage.sprite = iconDictionary[value];
             }
             
-            // Aseta button toiminnallisuus
-            ClanValues capturedValue = value; // Lambda capture
+            
+            ClanValues capturedValue = value;
             button.onClick.AddListener(() => OnValueSelected(capturedValue, button));
             
             createdButtons.Add(button);
@@ -93,13 +93,13 @@ public class ClanValuesUIManager : MonoBehaviour
     {
         if (selectedValues.Contains(value))
         {
-            // Poista valinta
+            
             selectedValues.Remove(value);
             UpdateButtonVisual(button, false);
         }
         else if (selectedValues.Count < maxSelections)
         {
-            // Lisää valinta
+            
             selectedValues.Add(value);
             UpdateButtonVisual(button, true);
         }
@@ -123,19 +123,19 @@ public class ClanValuesUIManager : MonoBehaviour
         button.colors = colors;
     }
 
-    // Julkinen metodi valittujen arvojen hakemiseen
+    
     public List<ClanValues> GetSelectedValues()
     {
         return new List<ClanValues>(selectedValues);
     }
 
-    // Metodi asetusten lataamiseen
+    
     public void LoadSelectedValues(List<ClanValues> values)
     {
         selectedValues.Clear();
         selectedValues.AddRange(values.Take(maxSelections));
         
-        // Päivitä button visualit
+        
         for (int i = 0; i < createdButtons.Count; i++)
         {
             var buttonValue = (ClanValues)i;
