@@ -42,6 +42,8 @@ namespace Altzone.Scripts
                 .ToString();
             Debug.Log(startupMessage);
 
+            AltzoneBattleLink.Init();
+
             InstantiateGlobalGameObjects();
 
             ClickStateHandler.Initialize();

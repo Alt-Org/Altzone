@@ -187,19 +187,12 @@ namespace Battle.View.Game
             // Clear the countdown text
             _uiController.AnnouncementHandler.ClearAnnouncerTextField();
 
-            // Starting game timer
-            if (Utils.TryGetQuantumFrame(out Frame frame))
-            {
-                _uiController.TimerHandler.SetShow(true);
-                _uiController.TimerHandler.StartTimer(frame);
-            }
+            // Show the timer
+            _uiController.TimerHandler.SetShow(true);
         }
 
         private void QEventOnViewGameOver(EventBattleViewGameOver e)
         {
-            // Stopping timer
-            _uiController.TimerHandler.StopTimer();
-
             // Hiding UI elements
             _uiController.TimerHandler.SetShow(false);
             _uiController.DiamondsHandler.SetShow(false);
@@ -241,6 +234,7 @@ namespace Battle.View.Game
 
         private void QEventDebugOnUpdateStatsOverlay(EventBattleDebugUpdateStatsOverlay e)
         {
+            if (!SettingsCarrier.Instance.BattleShowDebugStatsOverlay) return;
             _uiController.DebugStatsOverlayHandler.SetShow(true);
             _uiController.DebugStatsOverlayHandler.SetStats(e.Character);
         }
@@ -277,6 +271,9 @@ namespace Battle.View.Game
                         // Updating diamonds (at the moment shows only alpha team's diamonds)
                         BattleDiamondCounterQSingleton diamondCounter = frame.GetSingleton<BattleDiamondCounterQSingleton>();
                         _uiController.DiamondsHandler.SetDiamondsText(diamondCounter.AlphaDiamonds);
+
+                        // Updating timer text
+                        _uiController.TimerHandler.FormatAndSetTimerText(gameSession.GameTimeSec);
                         break;
                 }
 

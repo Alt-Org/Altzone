@@ -9,6 +9,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 
 using MenuUi.Scripts.Signals;
+using MenuUi.Scripts.DefenceScreen.CharacterStatsWindow;
 
 namespace MenuUi.Scripts.Signals
 {
@@ -26,6 +27,13 @@ namespace MenuUi.Scripts.Signals
         public static void OnDefenceGalleryEditPanelRequestedSignal()
         {
             OnDefenceGalleryEditPanelRequested?.Invoke();
+        }
+
+        public delegate void DefenceGalleryStatPopupRequested(CharacterID characterId);
+        public static event DefenceGalleryStatPopupRequested OnDefenceGalleryStatPopupRequested;
+        public static void OnDefenceGalleryStatPopupRequestedSignal(CharacterID characterID)
+        {
+            OnDefenceGalleryStatPopupRequested?.Invoke(characterID);
         }
 
         public delegate void ReloadCharacterGalleryRequested();
@@ -54,6 +62,7 @@ namespace MenuUi.Scripts.CharacterGallery
     {
         [SerializeField] private GalleryView _view;
         [SerializeField] private GalleryView _editingPanelView;
+        [SerializeField] private StatsWindowController _statsWindowController;
 
         private PlayerData _playerData;
         private bool _reloadRequested = false;
@@ -65,6 +74,7 @@ namespace MenuUi.Scripts.CharacterGallery
             SignalBus.OnRandomSelectedCharactersRequested += SetRandomSelectedCharactersToEmptySlots;
             SignalBus.OnReloadCharacterGalleryRequested += OnReloadRequested;
             SignalBus.OnSelectedDefenceCharacterChanged += HandleCharacterSelected;
+            SignalBus.OnDefenceGalleryStatPopupRequested += _statsWindowController.OpenPopup;
         }
 
 
@@ -96,6 +106,7 @@ namespace MenuUi.Scripts.CharacterGallery
             SignalBus.OnRandomSelectedCharactersRequested -= SetRandomSelectedCharactersToEmptySlots;
             SignalBus.OnReloadCharacterGalleryRequested -= OnReloadRequested;
             SignalBus.OnSelectedDefenceCharacterChanged -= HandleCharacterSelected;
+            SignalBus.OnDefenceGalleryStatPopupRequested -= _statsWindowController.OpenPopup;
         }
 
 
