@@ -313,11 +313,11 @@ namespace Battle.QSimulation.Player
                         };
 
 #if DEBUG_PLAYER_STAT_OVERRIDE
-                        playerData.Stats.StatHp            = FP.FromString("1.0");
-                        playerData.Stats.StatSpeed         = FP.FromString("20.0");
-                        playerData.Stats.StatCharacterSize = FP.FromString("1.0");
-                        playerData.Stats.StatAttack        = FP.FromString("1.0");
-                        playerData.Stats.StatDefence       = FP.FromString("1.0");
+                        playerData.Stats.Hp            = FP.FromString("1.0");
+                        playerData.Stats.Speed         = FP.FromString("20.0");
+                        playerData.Stats.CharacterSize = FP.FromString("1.0");
+                        playerData.Stats.Attack        = FP.FromString("1.0");
+                        playerData.Stats.Defence       = FP.FromString("1.0");
 #endif
 
                         //{ initialize entity

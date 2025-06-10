@@ -566,33 +566,33 @@ namespace Quantum {
     public const Int32 SIZE = 40;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(24)]
-    public FP StatHp;
+    public FP Hp;
     [FieldOffset(32)]
-    public FP StatSpeed;
+    public FP Speed;
     [FieldOffset(8)]
-    public FP StatCharacterSize;
+    public FP CharacterSize;
     [FieldOffset(0)]
-    public FP StatAttack;
+    public FP Attack;
     [FieldOffset(16)]
-    public FP StatDefence;
+    public FP Defence;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 5557;
-        hash = hash * 31 + StatHp.GetHashCode();
-        hash = hash * 31 + StatSpeed.GetHashCode();
-        hash = hash * 31 + StatCharacterSize.GetHashCode();
-        hash = hash * 31 + StatAttack.GetHashCode();
-        hash = hash * 31 + StatDefence.GetHashCode();
+        hash = hash * 31 + Hp.GetHashCode();
+        hash = hash * 31 + Speed.GetHashCode();
+        hash = hash * 31 + CharacterSize.GetHashCode();
+        hash = hash * 31 + Attack.GetHashCode();
+        hash = hash * 31 + Defence.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (BattlePlayerStats*)ptr;
-        FP.Serialize(&p->StatAttack, serializer);
-        FP.Serialize(&p->StatCharacterSize, serializer);
-        FP.Serialize(&p->StatDefence, serializer);
-        FP.Serialize(&p->StatHp, serializer);
-        FP.Serialize(&p->StatSpeed, serializer);
+        FP.Serialize(&p->Attack, serializer);
+        FP.Serialize(&p->CharacterSize, serializer);
+        FP.Serialize(&p->Defence, serializer);
+        FP.Serialize(&p->Hp, serializer);
+        FP.Serialize(&p->Speed, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]

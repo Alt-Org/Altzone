@@ -40,11 +40,11 @@ namespace Battle.View.UI
 
         public void SetStats(BattlePlayerStats stats)
         {
-            _impactForce.Value.text = stats.StatAttack.ToString();
-            _hp.Value.text          = stats.StatHp.ToString();
-            _speed.Value.text       = stats.StatSpeed.ToString();
-            _charSize.Value.text    = stats.StatCharacterSize.ToString();
-            _defence.Value.text     = stats.StatDefence.ToString();
+            _impactForce.Value.text = stats.Attack.ToString();
+            _hp.Value.text          = stats.Hp.ToString();
+            _speed.Value.text       = stats.Speed.ToString();
+            _charSize.Value.text    = stats.CharacterSize.ToString();
+            _defence.Value.text     = stats.Defence.ToString();
         }
 
         private float _currentFontSize;

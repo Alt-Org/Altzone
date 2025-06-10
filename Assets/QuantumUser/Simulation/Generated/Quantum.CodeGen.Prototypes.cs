@@ -321,18 +321,18 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerStats))]
   public unsafe partial class BattlePlayerStatsPrototype : StructPrototype {
-    public FP StatHp;
-    public FP StatSpeed;
-    public FP StatCharacterSize;
-    public FP StatAttack;
-    public FP StatDefence;
+    public FP Hp;
+    public FP Speed;
+    public FP CharacterSize;
+    public FP Attack;
+    public FP Defence;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerStats result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.BattlePlayerStats result, in PrototypeMaterializationContext context = default) {
-        result.StatHp = this.StatHp;
-        result.StatSpeed = this.StatSpeed;
-        result.StatCharacterSize = this.StatCharacterSize;
-        result.StatAttack = this.StatAttack;
-        result.StatDefence = this.StatDefence;
+        result.Hp = this.Hp;
+        result.Speed = this.Speed;
+        result.CharacterSize = this.CharacterSize;
+        result.Attack = this.Attack;
+        result.Defence = this.Defence;
         MaterializeUser(frame, ref result, in context);
     }
   }
