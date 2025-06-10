@@ -299,11 +299,7 @@ namespace Battle.QSimulation.Player
                             CharacterId       = data.Characters[playerCharacterNumber].Id,
                             CharacterClass    = data.Characters[playerCharacterNumber].Class,
 
-                            StatHp            = data.Characters[playerCharacterNumber].Hp,
-                            StatSpeed         = data.Characters[playerCharacterNumber].Speed,
-                            StatCharacterSize = data.Characters[playerCharacterNumber].CharacterSize,
-                            StatAttack        = data.Characters[playerCharacterNumber].Attack,
-                            StatDefence       = data.Characters[playerCharacterNumber].Defence,
+                            Stats             = data.Characters[playerCharacterNumber].Stats,
 
                             GridExtendTop     = playerGridExtendTop,
                             GridExtendBottom  = playerGridExtendBottom,
@@ -317,11 +313,11 @@ namespace Battle.QSimulation.Player
                         };
 
 #if DEBUG_PLAYER_STAT_OVERRIDE
-                        playerData.StatHp            = FP.FromString("1.0");
-                        playerData.StatSpeed         = FP.FromString("20.0");
-                        playerData.StatCharacterSize = FP.FromString("1.0");
-                        playerData.StatAttack        = FP.FromString("1.0");
-                        playerData.StatDefence       = FP.FromString("1.0");
+                        playerData.Stats.Hp            = FP.FromString("1.0");
+                        playerData.Stats.Speed         = FP.FromString("20.0");
+                        playerData.Stats.CharacterSize = FP.FromString("1.0");
+                        playerData.Stats.Attack        = FP.FromString("1.0");
+                        playerData.Stats.Defence       = FP.FromString("1.0");
 #endif
 
                         //{ initialize entity
@@ -722,6 +718,8 @@ namespace Battle.QSimulation.Player
             playerData->TargetPosition = worldPosition;
 
             playerHandle.SetSelectedCharacter(characterNumber);
+            f.Events.BattleDebugUpdateStatsOverlay(playerData->Slot, playerData->Stats);
+            
             playerHandle.PlayState = BattlePlayerPlayState.InPlay;
         }
 
