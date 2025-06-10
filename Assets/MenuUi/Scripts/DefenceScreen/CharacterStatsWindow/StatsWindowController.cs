@@ -34,7 +34,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private BaseCharacter _baseCharacter;
         private SwipeUI _swipe;
 
-        public CharacterID CurrentCharacterID { get { return _characterId; } }
+        public CharacterID CurrentCharacterID => _characterId;
 
         public event Action OnUpgradeMaterialAmountChanged;
 
@@ -50,14 +50,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             _statsPanel.SetActive(false);
         }
 
-
-        private void OnEnable()
-        {
-            _characterId = SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow;
-            SetPlayerData();
-            SetCurrentCharacter();
-        }
-
         private void OnDisable()
         {
             ClosePopup();
@@ -68,17 +60,24 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             _swipe.OnCurrentPageChanged -= ClosePopup;
         }
 
-        public void OpenPopup()
+        public void OpenPopup(CharacterID characterId)
         {
-            _statsUpdated = false;
-
+            // Setting visibility to popup game objects
             gameObject.SetActive(true);
             _swipeBlocker.SetActive(true);
 
+            // Initializing variables for stats window controller functionality
+            _statsUpdated = false;
+            _characterId = characterId;
+            SetPlayerData();
+            SetCurrentCharacter();
+
+            // Setting visibility to panel game objects
             if (_statsPanel != null) _statsPanel.SetActive(true);
 
             if (_infoPanel != null) _infoPanel.SetActive(false);
 
+            // Hiding filter button from gallery since it shouldn't be shown TODO: needs to be refactored
             if (_galleryView != null) _galleryView.ShowFilterButton(false);
         }
 
@@ -90,6 +89,10 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             gameObject.SetActive(false);
             _swipeBlocker.SetActive(false);
+
+            if (_statsPanel != null) _statsPanel.SetActive(false);
+            if (_infoPanel != null) _infoPanel.SetActive(false);
+
             if (_galleryView != null) _galleryView.ShowFilterButton(true);
         }
 
@@ -139,7 +142,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             // Triggering onenable functions
             ClosePopup();
-            OpenPopup();
+            OpenPopup(_characterId);
         }
 
 

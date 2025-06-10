@@ -37,7 +37,6 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     // Events
     public event Action OnTextSizeChange;
     public event Action OnButtonLabelVisibilityChange;
-    public event Action<CharacterID> OnCharacterGalleryCharacterStatWindowToShowChange;
 
     // Constants
     public const string BattleArenaScaleKey = "BattleUiArenaScale";
@@ -89,22 +88,6 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
             if (_unlimitedStatUpgradeMaterials == value) return;
             _unlimitedStatUpgradeMaterials = value;
             PlayerPrefs.SetInt(UnlimitedStatUpgradeMaterialsKey, value ? 1 : 0);
-        }
-    }
-
-    // Determines which character stat window to load/show from character gallery
-    private CharacterID _characterGalleryCharacterStatWindowToShow = CharacterID.None;
-    public CharacterID CharacterGalleryCharacterStatWindowToShow
-    {
-        get => _characterGalleryCharacterStatWindowToShow;
-        set
-        {
-            if (_characterGalleryCharacterStatWindowToShow != value)
-            {
-                _characterGalleryCharacterStatWindowToShow = value;
-                OnCharacterGalleryCharacterStatWindowToShowChange?.Invoke(_characterGalleryCharacterStatWindowToShow);
-                Debug.Log("CharacterGallery value changed" + _characterGalleryCharacterStatWindowToShow);
-            }
         }
     }
 

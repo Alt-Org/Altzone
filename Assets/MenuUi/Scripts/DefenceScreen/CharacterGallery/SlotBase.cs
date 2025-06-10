@@ -1,3 +1,4 @@
+using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,20 +7,21 @@ namespace MenuUi.Scripts.CharacterGallery
     /// <summary>
     /// Base class for defence gallery character slots. Has a serializefield for the slot's button and an event which gets invoked on button press.
     /// </summary>
-    public class SlotBase : MonoBehaviour
+    public class SlotBase : MonoBehaviour, IGalleryCharacterData
     {
         [SerializeField] protected Button _slotButton;
 
         public delegate void SlotPressedHandler(SlotBase slot);
         public SlotPressedHandler OnSlotPressed;
 
+        protected CharacterID _id;
+        public CharacterID Id => _id;
 
         private void Awake()
         {
             if (_slotButton == null) return;
             _slotButton.onClick.AddListener(SlotButtonPressed);
         }
-
 
         private void OnDestroy()
         {
