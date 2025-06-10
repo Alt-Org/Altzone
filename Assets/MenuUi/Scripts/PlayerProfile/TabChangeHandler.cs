@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using MenuUi.Scripts.TabLine;
-using MenuUi.Scripts.Window;
+using Altzone.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,7 +29,17 @@ public class TabChangeHandler : MonoBehaviour
             int j = i;
             _buttons[i].Button.onClick.AddListener(() => SetVisible(j));
         }
-        SetVisible(_defaultTab);
+    }
+
+    private void OnEnable()
+    {
+        int? value;
+        if (_tablineScript.Swipe == null)
+            value = DataCarrier.GetData<int?>(DataCarrier.RequestedWindow, true, suppressWarning: true);
+        else
+            value = DataCarrier.GetData<int?>(DataCarrier.RequestedWindow, false, suppressWarning: true);
+        if (value != null) SetVisible((int)value);
+        else SetVisible(_defaultTab);
     }
 
     void SetVisible(int activeIndex)

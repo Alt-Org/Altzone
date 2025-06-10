@@ -33,6 +33,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     [SerializeField] private TMP_Text _taskShort;
     [SerializeField] private TMP_Text _taskDebugID;
     [SerializeField] private TMP_Text _taskPoints;
+    [SerializeField] private TMP_Text _taskCoins;
     [SerializeField] private TMP_Text _taskAmount;
     [Space]
     [SerializeField] private RectTransform _topLeftCorner;
@@ -142,9 +143,10 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 
     public void PopulateData()
     {
-        _taskShort.text = GetShortDescription(_taskData.Type);
+        _taskShort.text = _taskData.Title;
         _taskDebugID.text = _taskData.Id.ToString();
-        _taskPoints.text = _taskData.Points.ToString() + " pistettä";
+        _taskPoints.text = _taskData.Points.ToString();
+        _taskCoins.text = _taskData.Coins.ToString();
         _taskAmount.text = _taskData.Amount.ToString();
         _coinIndicator.SetActive(_taskData.Coins >= 0);
 

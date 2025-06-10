@@ -6,11 +6,13 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AlternateTopPanel : MonoBehaviour
+public class AlternateTopPanel : AltMonoBehaviour
 {
     [Header("Clan/Player info")]
     [SerializeField] private GameObject _playerInfo;
     [SerializeField] private GameObject _clanInfo;
+    [SerializeField] private Button _playerButton;
+    [SerializeField] private Button _clanButton;
 
     [Header("LeaderBoard")]
     [SerializeField] private Image _leaderboardButton;
@@ -18,9 +20,13 @@ public class AlternateTopPanel : MonoBehaviour
     [SerializeField] private Sprite _bow;
     [SerializeField] private TextMeshProUGUI _rankingTextWins;
     [SerializeField] private TextMeshProUGUI _rankingTextActivity;
+    [SerializeField] private bool _alternateLeaderboard;
+
 
     private float _timerLeaderboard = 5;
     private float _timerInfo = 10;
+    private static float _currenttimerLeaderboard = 0;
+    private static float _currenttimerInfo = 0;
     private string _ownPlayerID;
     private string _ownClanID;
     private int _playerActivityRanking;
@@ -33,28 +39,75 @@ public class AlternateTopPanel : MonoBehaviour
         Player,
         Clan
     }
+    private enum TopLeaderboardInfo
+    {
+        Wins,
+        Activity
+    }
 
-    private TopPanelInfo _currentTopPanelInfo = TopPanelInfo.Player;
+    private static TopPanelInfo _currentTopPanelInfo = TopPanelInfo.Player;
+    private static TopLeaderboardInfo _currentTopLeaderboardInfo = TopLeaderboardInfo.Wins;
+    private static Coroutine _timerCoroutine;
+    private static Coroutine _leaderBoardCoroutine;
+
+    private delegate void TopPanelChanged();
+    private static event TopPanelChanged OnTopPanelChanged;
+
+    private delegate void LeaderBoardChange();
+    private static event LeaderBoardChange OnLeaderBoardChange;
+
 
     private void OnEnable()
     {
-        if(ServerManager.Instance.Player != null)
+        OnTopPanelChanged += ChangeInfoData;
+        OnLeaderBoardChange += ChangeLeaderboardType;
+
+        if (!_alternateLeaderboard)
+        {
+            _currentTopPanelInfo = TopPanelInfo.Clan;
+            _currentTopLeaderboardInfo = TopLeaderboardInfo.Wins;
+        }
+
+        if (ServerManager.Instance.Player != null)
         {
             _ownPlayerID = ServerManager.Instance.Player._id;
             _ownClanID = ServerManager.Instance.Player.clan_id;
 
             FetchRankings();
-            StartCoroutine(ChangeInfoType());
+            if (ServerManager.Instance.Player?.clan_id == null) _currentTopPanelInfo = TopPanelInfo.Player;
+            if (_alternateLeaderboard)
+            {
+                ChangeInfoData();
+                ChangeLeaderboardType();
+                if (ServerManager.Instance.Player?.clan_id != null)
+                    StartCoroutine(ChangeInfoType());
+            }
         }
         else
-        StartCoroutine(ServerManager.Instance.GetOwnPlayerFromServer((player) =>
         {
-            _ownPlayerID = player._id;
-            _ownClanID = player.clan_id;
+            StartCoroutine(ServerManager.Instance.GetOwnPlayerFromServer((player) =>
+            {
+                if (player == null) { Debug.LogError("Cannot get PlayerData."); return; }
+                _ownPlayerID = player._id;
+                _ownClanID = player.clan_id;
 
-            FetchRankings();
-            StartCoroutine(ChangeInfoType());
-        }));
+                FetchRankings();
+                if (ServerManager.Instance.Player?.clan_id != null) _currentTopPanelInfo = TopPanelInfo.Player;
+                if (_alternateLeaderboard)
+                {
+                    ChangeInfoData();
+                    ChangeLeaderboardType();
+                    if (ServerManager.Instance.Player?.clan_id != null)
+                        StartCoroutine(ChangeInfoType());
+                }
+            }));
+        }
+    }
+    private void OnDisable()
+    {
+        OnTopPanelChanged -= ChangeInfoData;
+        OnLeaderBoardChange -= ChangeLeaderboardType;
+        StopCoroutine(ChangeLeaderboardCoroutine());
     }
 
     /// <summary>
@@ -62,16 +115,18 @@ public class AlternateTopPanel : MonoBehaviour
     /// </summary>
     private IEnumerator ChangeInfoType()
     {
-        YieldInstruction wait = new WaitForSeconds(_timerInfo);
+        if (_currenttimerInfo <= 0) _currenttimerInfo += _timerInfo;
+        //if (_currenttimerLeaderboard < 0) _currenttimerLeaderboard = 0;
+        if (_timerCoroutine != null)
+        StopCoroutine(_timerCoroutine);
+        _timerCoroutine = StartCoroutine(StartTimer());
+        //YieldInstruction wait = new WaitUntil(() => _currenttimerInfo <= 0);
 
         while (enabled)
         {
-            _playerInfo.SetActive(_currentTopPanelInfo == TopPanelInfo.Player);
-            _clanInfo.SetActive(_currentTopPanelInfo == TopPanelInfo.Clan);
-            StartCoroutine(ChangeLeaderboardType());
+            StartCoroutine(ChangeLeaderboardCoroutine());
 
-            yield return wait;
-
+            yield return new WaitUntil(() => _currenttimerInfo <= 0);
             switch (_currentTopPanelInfo)
             {
                 case TopPanelInfo.Player:
@@ -81,21 +136,63 @@ public class AlternateTopPanel : MonoBehaviour
                     _currentTopPanelInfo = TopPanelInfo.Player;
                     break;
             }
+            OnTopPanelChanged.Invoke();
+            _currenttimerInfo += _timerInfo;
+        }
+    }
+
+    private IEnumerator StartTimer()
+    {
+        while (true)
+        {
+            yield return null;
+            _currenttimerInfo -= Time.deltaTime;
+            _currenttimerLeaderboard -= Time.deltaTime;
         }
     }
 
     /// <summary>
     /// Alternates between the activity and wins leaderboards.
     /// </summary>
-    private IEnumerator ChangeLeaderboardType()
+    private IEnumerator ChangeLeaderboardCoroutine()
     {
         YieldInstruction wait = new WaitForSeconds(_timerLeaderboard);
 
-        LoadWins();
+        if (_currentTopLeaderboardInfo != TopLeaderboardInfo.Wins)
+        {
+            if (_currenttimerLeaderboard <= 0) _currenttimerLeaderboard += _timerLeaderboard;
+            yield return new WaitUntil(() => _currenttimerLeaderboard <= 0);
+            _currentTopLeaderboardInfo = TopLeaderboardInfo.Wins;
+            OnLeaderBoardChange.Invoke();
+        }
+        if (_currenttimerLeaderboard <= 0) _currenttimerLeaderboard += _timerLeaderboard;
+        yield return new WaitUntil(() => _currenttimerLeaderboard <= 0);
+        _currentTopLeaderboardInfo = TopLeaderboardInfo.Activity;
+        OnLeaderBoardChange.Invoke();
 
-        yield return wait;
+    }
 
-        LoadActivity();
+    private void ChangeInfoData()
+    {
+        _playerInfo.SetActive(_currentTopPanelInfo == TopPanelInfo.Player);
+        _playerButton.enabled = _currentTopPanelInfo == TopPanelInfo.Player;
+        _clanInfo.SetActive(_currentTopPanelInfo == TopPanelInfo.Clan);
+        _clanButton.enabled = _currentTopPanelInfo == TopPanelInfo.Clan;
+        _clanButton.GetComponent<Image>().raycastTarget = _currentTopPanelInfo == TopPanelInfo.Clan;
+        _clanButton.gameObject.SetActive(ServerManager.Instance.Player?.clan_id != null);
+    }
+
+    private void ChangeLeaderboardType()
+    {
+        switch (_currentTopLeaderboardInfo)
+        {
+            case TopLeaderboardInfo.Wins:
+                LoadWins();
+                break;
+            case TopLeaderboardInfo.Activity:
+                LoadActivity();
+                break;
+        }
     }
 
     private void LoadWins()
@@ -133,7 +230,7 @@ public class AlternateTopPanel : MonoBehaviour
     private void FetchRankings()
     {
         // Find the player's rankings within clan
-        Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
+        StartCoroutine(GetClanData(ServerManager.Instance.Clan?._id, (clanData) =>
         {
             // Wins
             clanData.Members.Sort((a, b) => a.LeaderBoardWins.CompareTo(b.LeaderBoardWins));
@@ -168,8 +265,8 @@ public class AlternateTopPanel : MonoBehaviour
             }
 
             _playerActivityRanking = rankActivity;
-        });
-        
+        }));
+
 
         // Find the clan's global wins ranking (not available yet)
         //StartCoroutine(ServerManager.Instance.GetClanLeaderboardFromServer((clanLeaderboard) =>

@@ -9,23 +9,30 @@ namespace MenuUi.Scripts.DefenceScreen
         [SerializeField] private Color _impactForceColor;
         [SerializeField] private Color _impactForceAlternativeColor;
 
-        [SerializeField] private Color _healthPointsColor;
+        [Space, SerializeField] private Color _healthPointsColor;
         [SerializeField] private Color _healthPointsAlternativeColor;
 
-        [SerializeField] private Color _defenceColor;
+        [Space, SerializeField] private Color _defenceColor;
         [SerializeField] private Color _defenceAlternativeColor;
 
-        [SerializeField] private Color _characterSizeColor;
+        [Space, SerializeField] private Color _characterSizeColor;
         [SerializeField] private Color _characterSizeAlternativeColor;
 
-        [SerializeField] private Color _speedColor;
+        [Space, SerializeField] private Color _speedColor;
         [SerializeField] private Color _speedAlternativeColor;
 
-        [SerializeField] private Color _defaultColor;
+        [Space, SerializeField] private Color _defaultColor;
         [SerializeField] private Color _defaultAlternativeColor;
 
-        [SerializeField] private Sprite _circleSprite;
+        [Space, SerializeField] private Sprite _circleSprite;
         [SerializeField] private Sprite _circlePatternedSprite;
+        [SerializeField] private Sprite _tearSprite;
+
+        [Space, SerializeField] private float _statBorderThickness = 10f;
+        [SerializeField] private float _statUpgradeBorderThickness = 5f;
+
+        public float StatBorderThickness => _statBorderThickness;
+        public float StatUpgradeBorderThickness => _statUpgradeBorderThickness;
 
 
         /// <summary>

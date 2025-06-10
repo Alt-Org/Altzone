@@ -6,6 +6,7 @@ using MenuUi.Scripts.Signals;
 using MenuUi.Scripts.SwipeNavigation;
 using Altzone.Scripts.Lobby;
 using TMPro;
+using Altzone.Scripts.Window;
 
 namespace MenuUi.Scripts.Lobby.BattleButton
 {
@@ -20,6 +21,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         [SerializeField] private TMP_Text _gameTypeDescription;
         [SerializeField] private GameObject _gameTypeSelectionMenu;
         [SerializeField] private GameObject _gameTypeOptionPrefab;
+        [SerializeField] private Button _openBattleUiEditorButton;
         [SerializeField] private GameTypeReference _gameTypeReference;
         [SerializeField] private GameObject _touchBlocker;
 
@@ -42,8 +44,8 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             _button = GetComponent<Button>();
             _button.onClick.AddListener(RequestBattlePopup);
 
-            // Loading selected game type from player prefs
-            _selectedGameType = (GameType)PlayerPrefs.GetInt(SelectedGameTypeKey, (int)_selectedGameType);
+            // Loading selected game type from player prefs Note: Only custom available for now
+            _selectedGameType = GameType.Custom; //(GameType)PlayerPrefs.GetInt(SelectedGameTypeKey, (int)_selectedGameType);
 
             // Instantiate game type option buttons to game type selection menu
             foreach (GameTypeInfo gameTypeInfo in _gameTypeReference.GetGameTypeInfos())
@@ -67,8 +69,10 @@ namespace MenuUi.Scripts.Lobby.BattleButton
                 gameTypeOption.ButtonComponent.onClick.AddListener(ToggleGameTypeSelection);
                 gameTypeOption.OnGameTypeOptionSelected += UpdateGameType;
             }
-        }
 
+            _openBattleUiEditorButton.transform.SetAsLastSibling();
+            _openBattleUiEditorButton.onClick.AddListener(OnOpenBattleUiEditorButtonPressed);
+        }
 
         private void OnDestroy()
         {
@@ -81,6 +85,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
             _button.onClick.RemoveListener(RequestBattlePopup);
             _swipe.OnCurrentPageChanged -= CloseGameTypeSelection;
+            _openBattleUiEditorButton.onClick.RemoveListener(OnOpenBattleUiEditorButtonPressed);
         }
 
 
@@ -142,6 +147,12 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
             // Opening battle popup after selecting a game type
             SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
+        }
+
+
+        private void OnOpenBattleUiEditorButtonPressed()
+        {
+            DataCarrier.AddData(DataCarrier.BattleUiEditorRequested, true);
         }
     }
 }

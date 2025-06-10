@@ -29,20 +29,25 @@ MonoBehaviour:
     suuntaan.\r\n"
   CharacterShortDescription: "Nousuhumalan ja morkkiksen v\xE4lill\xE4 liit\xE4v\xE4
     y\xF6lintu "
+  CharacterStats: {fileID: 11400000, guid: e0dcda479cce71544906f70dd2112c96, type: 2}
   Hp:
-    Level: 0
-    Coefficient: 0
+    Level: 1
+    Coefficient: 3
   Speed:
-    Level: 0
-    Coefficient: 0
+    Level: 5
+    Coefficient: 6
   CharacterSize:
-    Level: 0
-    Coefficient: 0
+    Level: 10
+    Coefficient: 1
   Attack:
-    Level: 0
-    Coefficient: 0
+    Level: 9
+    Coefficient: 5
   Defence:
-    Level: 0
-    Coefficient: 0
+    Level: 8
+    Coefficient: 2
   GalleryImage: {fileID: 21300000, guid: 1ad7ef75f9ecfb945b0d71f9b329269c, type: 3}
-  BattleSprite: {fileID: 0}
+  GalleryHeadImage: {fileID: 21300000, guid: 586b64090f07a7946bfa670f3ee1a33e, type: 3}
+  BattleEntityPrototype:
+    Id:
+      Value: 1410690482395355018
+  BattleUiSprite: {fileID: 0}

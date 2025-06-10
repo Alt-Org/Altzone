@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Altzone.Scripts.Model.Poco.Clan;
 using TMPro;
 using UnityEngine;
@@ -6,88 +7,185 @@ using UnityEngine.UI;
 
 public class ClanSearchFiltersPanel : MonoBehaviour
 {
-    [SerializeField] private TMP_InputField _clanNameField;
-    [SerializeField] private TMP_Dropdown _ageDropdown;
-    [SerializeField] private TMP_Dropdown _activityDropdown;
-    [SerializeField] private TMP_Dropdown _languageDropdown;
-    [SerializeField] private TMP_Dropdown _goalDropdown;
-    [SerializeField] private Toggle _removeLockedToggle;
+    [Header("Member Selection")]
+    [SerializeField] private TextMeshProUGUI _membersText;
+    [SerializeField] private Button _membersButtonPrevious;
+    [SerializeField] private Button _membersButtonNext;
+
+    [Header("Ranking Selection")]
+    [SerializeField] private TextMeshProUGUI _rankingText;
+    [SerializeField] private Button _rankingButtonPrevious;
+    [SerializeField] private Button _rankingButtonNext;
+
+    [Header("Age Selection")]
+    [SerializeField] private TextMeshProUGUI _ageText;
+    [SerializeField] private Button _ageButtonPrevious;
+    [SerializeField] private Button _ageButtonNext;
+
+    [Header("Language Selection")]
+    [SerializeField] private TextMeshProUGUI _languageText;
+    [SerializeField] private LanguageFlagImage _languageFlag;
+    [SerializeField] private Button _languageButtonPrevious;
+    [SerializeField] private Button _languageButtonNext;
+
+    [Header("Activity Selection")]
+    [SerializeField] private TextMeshProUGUI _activityText;
+    [SerializeField] private Button _activityButtonPrevious;
+    [SerializeField] private Button _activityButtonNext;
+
+    [Header("Open Selection")]
+    [SerializeField] private TextMeshProUGUI _openText;
+    [SerializeField] private Button _openButtonPrevious;
+    [SerializeField] private Button _openButtonNext;
+    [SerializeField] private Image _lockImage;
+    [SerializeField] private Sprite _openLockSprite;
+    [SerializeField] private Sprite _closedLockSprite;
+
+    [Header("Values selection")]
+
+    [Space]
+    [SerializeField] private Button _confirmButton;
+    [SerializeField] private GameObject _filtersPopup;
 
     public Action<ClanSearchFilters> OnFiltersChanged;
 
+    private ClanAge _clanAge = ClanAge.All;
+    private Language _clanLanguage = Language.None;
+    private bool _isOpen = true;
+
     private void OnEnable()
     {
-        InitDropdowns();
-        SetToggleListeners();
-        _clanNameField.onEndEdit.RemoveAllListeners();
-        _clanNameField.onEndEdit.AddListener((value) => UpdateFilters());
-        UpdateFilters();
-    }
+        InitSelectors();
+        //_clanNameField.onEndEdit.RemoveAllListeners();
+        //_clanNameField.onEndEdit.AddListener((value) => UpdateFilters());
 
-    private void InitDropdowns()
-    {
-        _languageDropdown.onValueChanged.RemoveAllListeners();
-        _languageDropdown.value = 0;
-        _languageDropdown.options.Clear();
-        foreach (Language language in Enum.GetValues(typeof(Language)))
+        _confirmButton.onClick.RemoveAllListeners();
+        _confirmButton.onClick.AddListener(() =>
         {
-            string text = ClanDataTypeConverter.GetLanguageText(language);
-            _languageDropdown.options.Add(new TMP_Dropdown.OptionData(text));
-        }
-        _languageDropdown.onValueChanged.AddListener((value) => UpdateFilters());
-
-        _goalDropdown.onValueChanged.RemoveAllListeners();
-        _goalDropdown.value = 0;
-        _goalDropdown.options.Clear();
-        foreach (Goals goal in Enum.GetValues(typeof(Goals)))
-        {
-            string text = ClanDataTypeConverter.GetGoalText(goal);
-            _goalDropdown.options.Add(new TMP_Dropdown.OptionData(text));
-        }
-        _goalDropdown.onValueChanged.AddListener((value) => UpdateFilters());
-
-        _ageDropdown.onValueChanged.RemoveAllListeners();
-        _ageDropdown.value = 0;
-        _ageDropdown.options.Clear();
-        foreach (ClanAge age in Enum.GetValues(typeof(ClanAge)))
-        {
-            string text = ClanDataTypeConverter.GetAgeText(age);
-            _ageDropdown.options.Add(new TMP_Dropdown.OptionData(text));
-        }
-        _ageDropdown.onValueChanged.AddListener((value) => UpdateFilters());
-
-        _activityDropdown.onValueChanged.RemoveAllListeners();
-        _activityDropdown.value = 0;
-        _activityDropdown.options.Clear();
-        foreach (ClanActivity activity in Enum.GetValues(typeof(ClanActivity)))
-        {
-            string text = ClanDataTypeConverter.GetActivityText(activity);
-            _activityDropdown.options.Add(new TMP_Dropdown.OptionData(text));
-        }
-        _activityDropdown.onValueChanged.AddListener((value) => UpdateFilters());
-    }
-
-    private void SetToggleListeners()
-    {
-        _removeLockedToggle.isOn = false;
-        _removeLockedToggle.onValueChanged.RemoveAllListeners();
-        _removeLockedToggle.onValueChanged.AddListener((isOn) =>
-        {
-            _removeLockedToggle.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = isOn ? "Näytä lukitut" : "Poista lukitut";
             UpdateFilters();
+            _filtersPopup.SetActive(false);
         });
+
+        //UpdateFilters();
+    }
+
+    private void OnDisable()
+    {
+        _filtersPopup.SetActive(false);
+    }
+
+    private void InitSelectors()
+    {
+        InitializeAge();
+        InitializeLanguage();
+
+        //_goalDropdown.onValueChanged.RemoveAllListeners();
+        //_goalDropdown.value = 0;
+        //_goalDropdown.options.Clear();
+        //foreach (Goals goal in Enum.GetValues(typeof(Goals)))
+        //{
+        //    string text = ClanDataTypeConverter.GetGoalText(goal);
+        //    _goalDropdown.options.Add(new TMP_Dropdown.OptionData(text));
+        //}
+        //_goalDropdown.onValueChanged.AddListener((value) => UpdateFilters());
+
+        //_activityDropdown.onValueChanged.RemoveAllListeners();
+        //_activityDropdown.value = 0;
+        //_activityDropdown.options.Clear();
+        //foreach (ClanActivity activity in Enum.GetValues(typeof(ClanActivity)))
+        //{
+        //    string text = ClanDataTypeConverter.GetActivityText(activity);
+        //    _activityDropdown.options.Add(new TMP_Dropdown.OptionData(text));
+        //}
+        //_activityDropdown.onValueChanged.AddListener((value) => UpdateFilters());
+
+        InitializeLock();
+    }
+
+    private void InitializeAge()
+    {
+        _ageText.text = ClanDataTypeConverter.GetAgeText(_clanAge);
+
+        _ageButtonNext.onClick.AddListener(() =>
+        {
+            bool isLast = _clanAge == Enum.GetValues(typeof(ClanAge)).Cast<ClanAge>().Last();
+            _clanAge = isLast ? (ClanAge)1 : _clanAge + 1;
+            _ageText.text = ClanDataTypeConverter.GetAgeText(_clanAge);
+        });
+
+        _ageButtonPrevious.onClick.AddListener(() =>
+        {
+            bool isFirst = (int)_clanAge <= 1;
+            _clanAge = isFirst ? Enum.GetValues(typeof(ClanAge)).Cast<ClanAge>().Last() : _clanAge - 1;
+            _ageText.text = ClanDataTypeConverter.GetAgeText(_clanAge);
+        });
+    }
+
+    private void InitializeLanguage()
+    {
+        _languageText.text = ClanDataTypeConverter.GetLanguageText(_clanLanguage);
+        _languageFlag.SetFlag(_clanLanguage);
+
+        _languageButtonNext.onClick.AddListener(() =>
+        {
+            bool isLast = _clanLanguage == Enum.GetValues(typeof(Language)).Cast<Language>().Last();
+            _clanLanguage = isLast ? (Language)1 : _clanLanguage + 1;
+            _languageText.text = ClanDataTypeConverter.GetLanguageText(_clanLanguage);
+            _languageFlag.SetFlag(_clanLanguage);
+        });
+
+        _languageButtonPrevious.onClick.AddListener(() =>
+        {
+            bool isFirst = (int)_clanLanguage <= 1;
+            _clanLanguage = isFirst ? Enum.GetValues(typeof(Language)).Cast<Language>().Last() : _clanLanguage - 1;
+            _languageText.text = ClanDataTypeConverter.GetLanguageText(_clanLanguage);
+            _languageFlag.SetFlag(_clanLanguage);
+        });
+    }
+
+    private void InitializeLock()
+    {
+        _openButtonNext.onClick.RemoveAllListeners();
+        _openButtonPrevious.onClick.RemoveAllListeners();
+
+        _openButtonNext.onClick.AddListener(() =>
+        {
+            ToggleLock();
+        });
+
+        _openButtonPrevious.onClick.AddListener(() =>
+        {
+            ToggleLock();
+        });
+    }
+
+    private void ToggleLock()
+    {
+        switch (_isOpen)
+        {
+            case true:
+                _isOpen = false;
+                _openText.text = "Lukittu";
+                _lockImage.sprite = _closedLockSprite;
+                break;
+            case false:
+                _isOpen = true;
+                _openText.text = "Avoin";
+                _lockImage.sprite = _openLockSprite;
+                break;
+        }
     }
 
     private void UpdateFilters()
     {
         OnFiltersChanged?.Invoke(new ClanSearchFilters()
         {
-            clanName = _clanNameField.text,
-            activity = (ClanActivity)_activityDropdown.value,
-            age = (ClanAge)_ageDropdown.value,
-            language = (Language)_languageDropdown.value,
-            goal = (Goals)_goalDropdown.value,
-            removeLocked = _removeLockedToggle.isOn
+            clanName = "",
+            activity = ClanActivity.None,
+            age = _clanAge,
+            language = _clanLanguage,
+            goal = Goals.None,
+            isOpen = _isOpen
         });
     }
 }

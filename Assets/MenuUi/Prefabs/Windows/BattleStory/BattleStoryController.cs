@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Common;
 using Altzone.Scripts.Lobby;
+using Altzone.Scripts.Window;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,7 +21,11 @@ public class BattleStoryController : MonoBehaviour
     [SerializeField]
     private Image _tableSprite;
     [SerializeField]
+    private Image _endScreen;
+    [SerializeField]
     private RectTransform _pathArea;
+    [SerializeField]
+    private TextMeshProUGUI _victoryDefeatText;
 
     [SerializeField]
     private Transform _startPositionLeft;
@@ -41,12 +46,19 @@ public class BattleStoryController : MonoBehaviour
     [SerializeField]
     private Animator _characterAnimator2;
 
+    [Header("End Animator"),SerializeField]
+    private Animator _victoryDefeatAnimation;
+    [SerializeField]
+    private AnimationClip _victoryAnimation;
+    [SerializeField]
+    private AnimationClip _defeatAnimation;
+
     [Header("Text lines"), SerializeField]
     private BattleStoryLineHandler _topLineImage;
     [SerializeField]
     private BattleStoryLineHandler _bottomLineImage;
     [SerializeField]
-    private List<ConversationLine> _conversationList;
+    private List<Conversations> _conversationsList;
 
     [Header("Story Play Controls"), SerializeField]
     private TextMeshProUGUI _currentSegmentText;
@@ -64,6 +76,7 @@ public class BattleStoryController : MonoBehaviour
     private Coroutine _playbackCoroutine;
     private Coroutine _routeTraversingCoroutine;
     private GameObject _ball;
+    private bool _victory;
 
     // Start is called before the first frame update
     void Start()
@@ -103,12 +116,31 @@ public class BattleStoryController : MonoBehaviour
         if (_routesLeft.Count <= 0) return;
         if (_routesRight.Count <= 0) return;
 
+        bool? winner = DataCarrier.GetData<bool?>(DataCarrier.BattleWinner, false);
+        _victory = winner.Value;
+
         int prevSelectedValue1 = -1;
         int selectedvalue1 = -1;
         int prevSelectedValue2 = -1;
         int selectedvalue2 = -1;
+        Conversations conversationList;
+        if (Random.Range(0, 10) is 0)
+        {
+            conversationList = _conversationsList[0];
+        }
+        else if ((winner.HasValue && !winner.Value) || (!winner.HasValue && Random.Range(0, 2) is 0))
+        {
+            _victory = false;
+            conversationList = _conversationsList[1];
+        }
+        else
+        {
+            _victory = true;
+            conversationList = _conversationsList[2];
+        }
         for (int i = 0; i < 5; i++)
         {
+            if(conversationList.List.Count <= (i * 2)) break;
             do
             {
                 selectedvalue1 = Random.Range(0, clipsCount);
@@ -116,8 +148,10 @@ public class BattleStoryController : MonoBehaviour
             Emotion emotion = _validatedList[selectedvalue1].Emotion;
             prevSelectedValue1 = selectedvalue1;
             int ballAnimation1 = Random.Range(0, _routesLeft.Count);
-            _storySegments.Add(new(emotion, 0, ballAnimation1, _conversationList[i * 2].Line));
+            string line = conversationList.List[i * 2].Line;
+            _storySegments.Add(new(emotion, 0, ballAnimation1, line));
 
+            if (conversationList.List.Count <= (i * 2 +1)) break;
             do
             {
                 selectedvalue2 = Random.Range(0, clipsCount);
@@ -125,7 +159,8 @@ public class BattleStoryController : MonoBehaviour
             emotion = _validatedList[selectedvalue2].Emotion;
             prevSelectedValue2 = selectedvalue2;
             int ballAnimation2 = Random.Range(0, _routesRight.Count);
-            _storySegments.Add(new(emotion, 1, ballAnimation2, _conversationList[i * 2 + 1].Line));
+            string line2 = conversationList.List[i * 2 + 1].Line;
+            _storySegments.Add(new(emotion, 1, ballAnimation2, line2));
         }
     }
 
@@ -140,6 +175,10 @@ public class BattleStoryController : MonoBehaviour
 
             yield return new WaitForSeconds(1f);
         }
+        _currentSegment++;
+        float clipLength = PlayEndSegment();
+        yield return new WaitForSeconds(clipLength);
+        _victoryDefeatText.gameObject.SetActive(true);
         _autoPlayButton.GetComponent<Image>().color = Color.white;
         _playbackCoroutine = null;
     }
@@ -148,7 +187,13 @@ public class BattleStoryController : MonoBehaviour
     {
         if(_ball != null) DestroyBall();
 
-        _currentSegmentText.text = $"{_currentSegment}/{_totalSegments}";
+        _currentSegmentText.text = $"{_currentSegment}/{_totalSegments+1}";
+        if (!_tableSprite.gameObject.activeSelf)
+        {
+            _tableSprite.gameObject.SetActive(true);
+            _endScreen.gameObject.SetActive(false);
+            _victoryDefeatText.gameObject.SetActive(false);
+        }
 
         _ball = _storySegments[segment].Player == 0 ? Instantiate(_emotionBall, _startPositionLeft) : Instantiate(_emotionBall, _startPositionRight);
 
@@ -203,16 +248,45 @@ public class BattleStoryController : MonoBehaviour
         yield return new WaitUntil(() => ballDone is true);
     }
 
+    private float PlayEndSegment()
+    {
+        _currentSegmentText.text = $"{_totalSegments+1}/{_totalSegments+1}";
+        _tableSprite.gameObject.SetActive(false);
+        _endScreen.gameObject.SetActive(true);
+        if (_victory)
+        {
+            _victoryDefeatAnimation.Play(_victoryAnimation.name);
+            return _victoryAnimation.length;
+        }
+        else
+        {
+            _victoryDefeatAnimation.Play(_defeatAnimation.name);
+            return _defeatAnimation.length;
+        }
+    }
+
+    private IEnumerator ShowEndText(float timer = 0f)
+    {
+        yield return new WaitForSeconds(timer);
+        _victoryDefeatText.gameObject.SetActive(true);
+    }
+
     private void PlayNextSegment()
     {
-        if (_currentSegment < _totalSegments)
+        if (_currentSegment <= _totalSegments)
         {
             if (_playbackCoroutine != null) StopCoroutine(_playbackCoroutine);
             _playbackCoroutine = null;
             _autoPlayButton.GetComponent<Image>().color = Color.white;
             DestroyBall();
             _currentSegment++;
-            StartCoroutine(PlayAnimationSegment(_currentSegment - 1));
+            if (_currentSegment <= _totalSegments)
+                StartCoroutine(PlayAnimationSegment(_currentSegment - 1));
+            else
+            {
+                PlayEndSegment();
+                StartCoroutine(ShowEndText());
+            }
         }
     }
 
@@ -287,7 +361,7 @@ public class BattleStoryController : MonoBehaviour
 
     private IEnumerator SetPathArea()
     {
-        yield return new WaitForEndOfFrame();
+        yield return null;
         Vector2 spriteSize = _tableSprite.sprite.rect.size;
         float spriteRatio = spriteSize.y / spriteSize.x;
 
@@ -309,6 +383,7 @@ public class BattleStoryController : MonoBehaviour
 
     private void ExitStory()
     {
+        DataCarrier.GetData<bool?>(DataCarrier.BattleWinner, suppressWarning: true);
         LobbyManager.ExitBattleStory();
     }
 
@@ -453,6 +528,15 @@ public class RouteSection
     public Transform PathSectionEndPoint { get => _pathSectionEndPoint; }
     public AnimationCurve PathSectionCurve { get => _pathSectionCurve; }
     public float Speed { get => _speed; }
+}
+
+[Serializable]
+public class Conversations
+{
+    /// <summary>
+    /// Character conversation line>.
+    /// </summary>
+    public List<ConversationLine> List;
 }
 
 [Serializable]

@@ -2,18 +2,22 @@ namespace Altzone.Scripts.Model.Poco.Game
 {
     public enum CharacterID
     {
-        None = 0,
+        None = -1,
+
+        // Test character
+        Test = 0,
 
         // Desensitizers class characters
         Racist = CharacterClassID.Desensitizer + 1, //101
         Bodybuilder = CharacterClassID.Desensitizer + 2, //102
-        Jingoist = CharacterClassID.Desensitizer + 3, //103
+        WarVeteran = CharacterClassID.Desensitizer + 3, //103
+        Bully = CharacterClassID.Desensitizer + 4, //104
 
         // Tricksters class characters
         Comedian = CharacterClassID.Trickster + 1, //201
         Joker = CharacterClassID.Trickster + 2, //202
         Conman = CharacterClassID.Trickster + 3, //203
-        Seducer = CharacterClassID.Trickster + 4, //204, Alternatively could be named Womanizer
+        Seducer = CharacterClassID.Trickster + 4, //204
 
         // Obedientes class characters
         Religious = CharacterClassID.Obedient + 1, //301
@@ -22,10 +26,13 @@ namespace Altzone.Scripts.Model.Poco.Game
         // Projectors class characters
         Artist = CharacterClassID.Projector + 1, //401
         Arguer = CharacterClassID.Projector + 2, //402
+        Reflector = CharacterClassID.Projector + 3, //403
 
         // Retroflectors class characters
         Overeater = CharacterClassID.Retroflector + 1, //501
         Alcoholic = CharacterClassID.Retroflector + 2, //502
+        Anorectic = CharacterClassID.Retroflector + 3, //503
+        Stoner = CharacterClassID.Retroflector + 4, //504
 
         // Confluents class characters
         Soulsisters = CharacterClassID.Confluent + 1, //601
@@ -34,6 +41,7 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         // Intellectualizers class characters
         Booksmart = CharacterClassID.Intellectualizer + 1, //701
-        Capitalist = CharacterClassID.Intellectualizer + 2 //702
+        Capitalist = CharacterClassID.Intellectualizer + 2, //702
+        ObsessiveCompulsive = CharacterClassID.Intellectualizer + 3 //703
     }
 }

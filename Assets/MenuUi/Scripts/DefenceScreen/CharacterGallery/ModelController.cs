@@ -1,11 +1,15 @@
-﻿using System.Collections;
-using System.Linq;
+﻿using System.Linq;
+
+using UnityEngine;
+
+using Newtonsoft.Json.Linq;
+
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
-using UnityEngine;
+
 using MenuUi.Scripts.Signals;
-using Newtonsoft.Json.Linq;
+using MenuUi.Scripts.DefenceScreen.CharacterStatsWindow;
 
 namespace MenuUi.Scripts.Signals
 {
@@ -18,11 +22,18 @@ namespace MenuUi.Scripts.Signals
             OnRandomSelectedCharactersRequested?.Invoke();
         }
 
-        public delegate void DefenceGalleryEditModeRequested();
-        public static event DefenceGalleryEditModeRequested OnDefenceGalleryEditModeRequested;
-        public static void OnDefenceGalleryEditModeRequestedSignal()
+        public delegate void DefenceGalleryEditPanelRequested();
+        public static event DefenceGalleryEditPanelRequested OnDefenceGalleryEditPanelRequested;
+        public static void OnDefenceGalleryEditPanelRequestedSignal()
         {
-            OnDefenceGalleryEditModeRequested?.Invoke();
+            OnDefenceGalleryEditPanelRequested?.Invoke();
+        }
+
+        public delegate void DefenceGalleryStatPopupRequested(CharacterID characterId);
+        public static event DefenceGalleryStatPopupRequested OnDefenceGalleryStatPopupRequested;
+        public static void OnDefenceGalleryStatPopupRequestedSignal(CharacterID characterID)
+        {
+            OnDefenceGalleryStatPopupRequested?.Invoke(characterID);
         }
 
         public delegate void ReloadCharacterGalleryRequested();
@@ -49,18 +60,23 @@ namespace MenuUi.Scripts.CharacterGallery
     /// </summary>
     public class ModelController : AltMonoBehaviour
     {
-        [SerializeField] private ModelView _view; //modelview script
+        [SerializeField] private GalleryView _view;
+        [SerializeField] private GalleryView _editingPanelView;
+        [SerializeField] private StatsWindowController _statsWindowController;
+
+        public const string TestCharacterID = "test";
 
         private PlayerData _playerData;
         private bool _reloadRequested = false;
+
 
         private void Awake()
         {
             ServerManager.OnLogInStatusChanged += StartLoading;
             SignalBus.OnRandomSelectedCharactersRequested += SetRandomSelectedCharactersToEmptySlots;
-            _view.OnTopSlotCharacterSet += HandleCharacterSelected;
             SignalBus.OnReloadCharacterGalleryRequested += OnReloadRequested;
             SignalBus.OnSelectedDefenceCharacterChanged += HandleCharacterSelected;
+            SignalBus.OnDefenceGalleryStatPopupRequested += _statsWindowController.OpenPopup;
         }
 
 
@@ -80,7 +96,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             if (_reloadRequested)
             {
-                StartCoroutine(Load());
+                Load();
                 _reloadRequested = false;
             }
         }
@@ -90,9 +106,9 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             ServerManager.OnLogInStatusChanged -= StartLoading;
             SignalBus.OnRandomSelectedCharactersRequested -= SetRandomSelectedCharactersToEmptySlots;
-            _view.OnTopSlotCharacterSet -= HandleCharacterSelected;
             SignalBus.OnReloadCharacterGalleryRequested -= OnReloadRequested;
             SignalBus.OnSelectedDefenceCharacterChanged -= HandleCharacterSelected;
+            SignalBus.OnDefenceGalleryStatPopupRequested -= _statsWindowController.OpenPopup;
         }
 
 
@@ -100,7 +116,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             if (isLoggedIn)
             {
-                StartCoroutine(Load());
+                Load();
             }
         }
 
@@ -109,7 +125,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             if (gameObject.activeInHierarchy)
             {
-                StartCoroutine(Load());
+                Load();
             }
             else
             {
@@ -118,11 +134,8 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
-        private IEnumerator Load()
+        private void Load()
         {
-            _view.Reset();
-            yield return new WaitUntil(() => _view.IsReady);
-
             StartCoroutine(GetPlayerData(playerData =>
             {
                 _playerData = playerData;
@@ -130,12 +143,14 @@ namespace MenuUi.Scripts.CharacterGallery
                 int[] characterIds = new int[3];
                 for (int i = 0; i < selectedCharacterIds.Length; i++)
                 {
-                    characterIds[i] = _playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == selectedCharacterIds[i]) == null ? 0 : (int)_playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == selectedCharacterIds[i]).Id;
+                    characterIds[i] = _playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == selectedCharacterIds[i]) == null ? -1 : (int)_playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == selectedCharacterIds[i]).Id;
+                    if (selectedCharacterIds[i] == TestCharacterID) characterIds[i] = (int)CharacterID.Test;
                 }
                 var characters = playerData.CustomCharacters.GroupBy(x => x.Id).Select(x => x.First()).ToList(); // ensuring no duplicate characters if account is bugged
                 characters.Sort((a, b) => a.Id.CompareTo(b.Id));
                 // Set characters in the ModelView
                 _view.SetCharacters(characters, characterIds);
+                _editingPanelView.SetCharacters(characters, characterIds);
             }));
         }
 
@@ -147,6 +162,7 @@ namespace MenuUi.Scripts.CharacterGallery
             string newServerId = _playerData.CustomCharacters.FirstOrDefault(x => x.Id == newCharacterId)?.ServerID;
             if (newServerId == null)
             {
+                if (newCharacterId == CharacterID.Test) newServerId = TestCharacterID;
                 _playerData.SelectedCharacterIds[slot] = "0";
             }
 
@@ -210,7 +226,7 @@ namespace MenuUi.Scripts.CharacterGallery
             }
             var store = Storefront.Get();
             store.SavePlayerData(_playerData, null);
-            StartCoroutine(Load());
+            Load();
         }
     }
 }

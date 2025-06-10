@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 702
   CharacterId: 702
-  IsApproved: 0
+  IsApproved: 1
   Name: Kapitalismi
   ClassType: 700
   CharacterDescription: "Kapitalismi n\xE4kee maailman p\xF6rssikursseina ja vaihtokauppoina.
@@ -27,20 +27,25 @@ MonoBehaviour:
     lentoradan pelikent\xE4ll\xE4 mutta setelisateen samentuessa vaikeuttavat liittolaisten
     t\xE4ht\xE4yst\xE4.\r\n"
   CharacterShortDescription: 'Vaurauteen verhoutunut menestyksen tavoittelija '
+  CharacterStats: {fileID: 11400000, guid: baa4c98962452dd49a5bd0c198f914ce, type: 2}
   Hp:
-    Level: 0
-    Coefficient: 0
+    Level: 8
+    Coefficient: 4
   Speed:
-    Level: 0
-    Coefficient: 0
+    Level: 6
+    Coefficient: 5
   CharacterSize:
-    Level: 0
-    Coefficient: 0
+    Level: 8
+    Coefficient: 6
   Attack:
-    Level: 0
-    Coefficient: 0
+    Level: 10
+    Coefficient: 4
   Defence:
-    Level: 0
-    Coefficient: 0
-  GalleryImage: {fileID: 0}
-  BattleSprite: {fileID: 0}
+    Level: 3
+    Coefficient: 5
+  GalleryImage: {fileID: 21300000, guid: a75d04797409cb44da6e19eebbc47611, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: e8c16f7d371b73f4db14bbb6354f9d99, type: 3}
+  BattleEntityPrototype:
+    Id:
+      Value: 1412624666523584977
+  BattleUiSprite: {fileID: 0}

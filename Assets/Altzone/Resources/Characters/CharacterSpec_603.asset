@@ -26,20 +26,25 @@ MonoBehaviour:
     kietoutuu suojapeittonsa alle, paeten hetkeksi h\xE4nt\xE4 uhkaavalta vaaralta
     unten maille.\r\n"
   CharacterShortDescription: 'Peiton alla maailmaa pakeneva unikeko '
+  CharacterStats: {fileID: 11400000, guid: 90969f0d5f4fd634094177939fc112a7, type: 2}
   Hp:
-    Level: 0
-    Coefficient: 0
+    Level: 2
+    Coefficient: 5
   Speed:
-    Level: 0
-    Coefficient: 0
+    Level: 2
+    Coefficient: 4
   CharacterSize:
-    Level: 0
-    Coefficient: 0
+    Level: 12
+    Coefficient: 2
   Attack:
-    Level: 0
-    Coefficient: 0
+    Level: 2
+    Coefficient: 7
   Defence:
-    Level: 0
-    Coefficient: 0
+    Level: 11
+    Coefficient: 2
   GalleryImage: {fileID: 21300000, guid: 9aa5e625812e131439a894722f0b1d66, type: 3}
-  BattleSprite: {fileID: 0}
+  GalleryHeadImage: {fileID: 21300000, guid: 1db187b168a56284dab8d4b21a59b65a, type: 3}
+  BattleEntityPrototype:
+    Id:
+      Value: 1435907982705750939
+  BattleUiSprite: {fileID: 0}

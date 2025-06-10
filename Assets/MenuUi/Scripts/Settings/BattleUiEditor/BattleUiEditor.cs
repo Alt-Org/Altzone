@@ -145,6 +145,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 {
                     if (saveChanges == null) return;
                     if (saveChanges.Value == true) SaveChanges();
+                    else _unsavedChanges = false;
                     gameObject.SetActive(false);
                 }));
             }
@@ -357,13 +358,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             OnUiElementSelected(null);
             _optionsDropdownContents.SetActive(true);
-            _optionsDropdownButtonImage.transform.localEulerAngles = new Vector3(0, 0, -90);
         }
 
         private void CloseOptionsDropdown()
         {
             _optionsDropdownContents.SetActive(false);
-            _optionsDropdownButtonImage.transform.localEulerAngles = Vector3.zero;
         }
 
         private IEnumerator ShowSaveResetPopup(string message, Action<bool?> callback)
@@ -394,19 +393,19 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private void SaveChanges()
         {
             BattleUiMovableElementData timerData = _instantiatedTimer.GetData();
-            SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.Timer, timerData);
+            if (!IsSavedDataSimilar(BattleUiElementType.Timer)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.Timer, timerData);
 
             BattleUiMovableElementData diamondsData = _instantiatedDiamonds.GetData();
-            SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.Diamonds, diamondsData);
+            if (!IsSavedDataSimilar(BattleUiElementType.Diamonds)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.Diamonds, diamondsData);
 
             BattleUiMovableElementData giveUpButtonData = _instantiatedGiveUpButton.GetData();
-            SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.GiveUpButton, giveUpButtonData);
+            if (!IsSavedDataSimilar(BattleUiElementType.GiveUpButton)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.GiveUpButton, giveUpButtonData);
 
             BattleUiMovableElementData playerInfoData = _instantiatedPlayerInfo.GetData();
-            SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.PlayerInfo, playerInfoData);
+            if (!IsSavedDataSimilar(BattleUiElementType.PlayerInfo)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.PlayerInfo, playerInfoData);
 
             BattleUiMovableElementData teammateInfoData = _instantiatedTeammateInfo.GetData();
-            SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.TeammateInfo, teammateInfoData);
+            if (!IsSavedDataSimilar(BattleUiElementType.TeammateInfo)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.TeammateInfo, teammateInfoData);
 
             _unsavedChanges = false;
             PopupSignalBus.OnChangePopupInfoSignal("Muutokset on tallennettu.");
@@ -428,10 +427,57 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             SetDefaultDataToUiElement(_instantiatedGiveUpButton);
             SetDefaultDataToUiElement(_instantiatedPlayerInfo);
             SetDefaultDataToUiElement(_instantiatedTeammateInfo);
+
+            _unsavedChanges = !IsSavedDataSimilar();
+        }
+
+        private bool IsSavedDataSimilar(BattleUiElementType uiElementType = BattleUiElementType.None)
+        {
+            BattleUiMovableElementData savedData = SettingsCarrier.Instance.GetBattleUiMovableElementData(uiElementType);
+            BattleUiMovableElementData compareData;
+            
+            switch (uiElementType)
+            {
+                case BattleUiElementType.Timer:
+                    compareData = _instantiatedTimer.GetData();
+                    break;
+                case BattleUiElementType.Diamonds:
+                    compareData = _instantiatedDiamonds.GetData();
+                    break;
+                case BattleUiElementType.GiveUpButton:
+                    compareData = _instantiatedGiveUpButton.GetData();
+                    break;
+                case BattleUiElementType.PlayerInfo:
+                    compareData = _instantiatedPlayerInfo.GetData();
+                    break;
+                case BattleUiElementType.TeammateInfo:
+                    compareData = _instantiatedTeammateInfo.GetData();
+                    break;
+                default: // Checking if saved data is similar for every ui element
+                    // Note: if more ui elements are added change from GiveUpButton to the last element in the enum
+                    bool isSavedDataSimilar = true;
+                    for (int i = 0; i <= (int)BattleUiElementType.GiveUpButton; i++) 
+                    {
+                        isSavedDataSimilar = IsSavedDataSimilar((BattleUiElementType)i);
+                        if (!isSavedDataSimilar) break;
+                    }
+                    return isSavedDataSimilar;
+            }
+
+            if (savedData == null || compareData == null) return false;
+
+            // Compare if the data is similar
+            return savedData.IsFlippedHorizontally == compareData.IsFlippedHorizontally
+                && savedData.IsFlippedVertically == compareData.IsFlippedVertically
+                && savedData.AnchorMin == compareData.AnchorMin
+                && savedData.AnchorMax == compareData.AnchorMax
+                && savedData.Orientation == compareData.Orientation;
         }
 
         private GameObject InstantiateBattleUiElement(BattleUiElementType uiElementType)
         {
+            if (uiElementType == BattleUiElementType.None) return null;
+
             GameObject uiElementPrefab = null;
 
             switch (uiElementType)
@@ -525,6 +571,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Getting ui element type
             BattleUiElementType uiElementType = GetUiElementType(movableElement);
+            if (uiElementType == BattleUiElementType.None) return;
 
             // Getting the saved data for this ui element type
             BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(uiElementType);
@@ -550,6 +597,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Getting ui element type
             BattleUiElementType uiElementType = GetUiElementType(multiOrientationElement);
+            if (uiElementType == BattleUiElementType.None) return;
 
             // Getting the saved data for this ui element type
             BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(uiElementType);
@@ -575,6 +623,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Getting ui element type
             BattleUiElementType uiElementType = GetUiElementType(movableElement);
+            if (uiElementType == BattleUiElementType.None) return;
 
             // Getting the default data for this ui element type
             BattleUiMovableElementData data = GetDefaultDataForUiElement(uiElementType);
@@ -596,6 +645,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Getting ui element type
             BattleUiElementType uiElementType = GetUiElementType(multiOrientationElement);
+            if (uiElementType == BattleUiElementType.None) return;
 
             // Getting the default data for this ui element type
             BattleUiMovableElementData data = GetDefaultDataForUiElement(uiElementType);
@@ -619,9 +669,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             {
                 return BattleUiElementType.GiveUpButton;
             }
-            else
+            else if (movableElement == _instantiatedDiamonds)
             {
                 return BattleUiElementType.Diamonds;
+            }
+            else
+            {
+                return BattleUiElementType.None;
             }
         }
 
@@ -631,14 +685,20 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             {
                 return BattleUiElementType.PlayerInfo;
             }
-            else
+            else if (multiOrientationElement == _instantiatedTeammateInfo)
             {
                 return BattleUiElementType.TeammateInfo;
+            }
+            else
+            {
+                return BattleUiElementType.None;
             }
         }
 
         private BattleUiMovableElementData GetDefaultDataForUiElement(BattleUiElementType uiElementType)
         {
+            if (uiElementType == BattleUiElementType.None) return null;
+
             // Initializing variables for creating data object
             Vector2 anchorMin = Vector2.zero;
             Vector2 anchorMax = Vector2.zero;
@@ -763,7 +823,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void OnUiElementEdited()
         {
-            _unsavedChanges = true;
+            _unsavedChanges = !IsSavedDataSimilar();
             _grid.RemoveLineHighlight();
         }
 

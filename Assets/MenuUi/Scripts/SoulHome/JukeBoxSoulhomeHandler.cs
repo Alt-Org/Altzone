@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using MenuUi.Scripts.Audio;
+using Altzone.Scripts.Audio;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

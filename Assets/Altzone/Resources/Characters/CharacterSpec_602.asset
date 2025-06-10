@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 602
   CharacterId: 602
-  IsApproved: 0
+  IsApproved: 1
   Name: Pihkaantuminen
   ClassType: 600
   CharacterDescription: "Pihkaantuminen on nuoripari t\xE4ysin toistensa lumoissa.
@@ -26,20 +26,25 @@ MonoBehaviour:
     tehokkaasti hyv\xE4kseen.\r\nPihkaantuminen suojautuu tunnetila-ammukselta muodostamalla
     syd\xE4nkuplan, joka symboloi heid\xE4n toisiltaan saamaa turvaa.\r\n"
   CharacterShortDescription: 'Lemmenkuplansa lumoissa kuhertelevat kyyhkyset '
+  CharacterStats: {fileID: 11400000, guid: 5ec05f18528981f45b8551c2e4f70e6e, type: 2}
   Hp:
-    Level: 0
-    Coefficient: 0
+    Level: 2
+    Coefficient: 5
   Speed:
-    Level: 0
-    Coefficient: 0
+    Level: 2
+    Coefficient: 4
   CharacterSize:
-    Level: 0
-    Coefficient: 0
+    Level: 12
+    Coefficient: 2
   Attack:
-    Level: 0
-    Coefficient: 0
+    Level: 2
+    Coefficient: 7
   Defence:
-    Level: 0
-    Coefficient: 0
-  GalleryImage: {fileID: 0}
-  BattleSprite: {fileID: 0}
+    Level: 11
+    Coefficient: 2
+  GalleryImage: {fileID: 21300000, guid: 71f85a25d859be84e99e559858e424d0, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: 0dfcec7123e6302499e8eb190ea9a7a8, type: 3}
+  BattleEntityPrototype:
+    Id:
+      Value: 1402699471887754154
+  BattleUiSprite: {fileID: 0}

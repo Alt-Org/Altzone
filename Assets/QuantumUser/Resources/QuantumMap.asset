@@ -150,7 +150,7 @@ MonoBehaviour:
           X:
             RawValue: 0
           Y:
-            RawValue: 851968
+            RawValue: 819200
         Rotation:
           RawValue: 0
     - rid: 3915831314950914049
@@ -174,7 +174,7 @@ MonoBehaviour:
             X:
               RawValue: 294912
             Y:
-              RawValue: 196608
+              RawValue: 229376
           PositionOffset:
             X:
               RawValue: 0
@@ -215,7 +215,7 @@ MonoBehaviour:
           X:
             RawValue: 0
           Y:
-            RawValue: -851968
+            RawValue: -819200
         Rotation:
           RawValue: 0
     - rid: 4158493136064086017
@@ -239,7 +239,7 @@ MonoBehaviour:
             X:
               RawValue: 294912
             Y:
-              RawValue: 196608
+              RawValue: 229376
           PositionOffset:
             X:
               RawValue: 0
@@ -358,10 +358,13 @@ MonoBehaviour:
           Value: 0
         TimeUntilStart:
           RawValue: 262144
+        GameTimeSec:
+          RawValue: 0
     - rid: 9189874137361809410
       type: {class: BattlePlayerManagerDataQSingletonPrototype, ns: Quantum.Prototypes,
         asm: Quantum.Simulation}
       data:
+        PlayerCount: 0
         PlayStates:
         - Value: 0
         - Value: 0

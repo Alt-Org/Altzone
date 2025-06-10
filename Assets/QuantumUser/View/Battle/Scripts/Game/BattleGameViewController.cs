@@ -1,10 +1,12 @@
 using UnityEngine;
 
 using Quantum;
+using Photon.Deterministic;
 
 using Altzone.Scripts.BattleUiShared;
 using Altzone.Scripts.Lobby;
 
+using Battle.QSimulation.Player;
 using Battle.View.UI;
 using Battle.View.Effect;
 using Battle.View.Audio;
@@ -19,7 +21,19 @@ namespace Battle.View.Game
         [SerializeField] private BattleGridViewController _gridViewController;
         [SerializeField] private BattleUiController _uiController;
         [SerializeField] private BattleScreenEffectViewController _screenEffectViewController;
+        [SerializeField] private BattleStoneCharacterViewController _stoneCharacterViewController;
+        [SerializeField] private BattleLightrayEffectViewController _lightrayEffectViewController;
         [SerializeField] private BattleSoundFXViewController _soundFXViewController;
+
+        public static BattlePlayerSlot LocalPlayerSlot { get; private set; }
+        public static BattleTeamNumber LocalPlayerTeam { get; private set; }
+
+        public static GameObject ProjectileReference { get; private set; }
+
+        public static void AssignProjectileReference(GameObject projectileReference)
+        {
+            ProjectileReference = projectileReference;
+        }
 
         public void UiInputOnLocalPlayerGiveUp()
         {
@@ -33,27 +47,65 @@ namespace Battle.View.Game
 
         public void UiInputOnExitGamePressed()
         {
-            LobbyManager.ExitQuantum();
+            if (_endOfGameDataHasEnded) LobbyManager.ExitQuantum(_endOfGameDataWinningTeam == LocalPlayerTeam, (float)_endOfGameDataGameLengthSec);
         }
+
+        private bool _endOfGameDataHasEnded = false;
+        private BattleTeamNumber _endOfGameDataWinningTeam;
+        private FP _endOfGameDataGameLengthSec;
 
         private void Awake()
         {
-            QuantumEvent.Subscribe<EventViewInit>(this, QEventOnViewInit);
+            // Showing announcement handler and setting view pre-activate loading text
+            _uiController.AnnouncementHandler.SetShow(true);
+            _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.Loading);
+
+            // Subscribing to Game Flow events
+            QuantumEvent.Subscribe<EventBattleViewWaitForPlayers>(this, QEventOnViewWaitForPlayers);
+            QuantumEvent.Subscribe<EventBattleViewInit>(this, QEventOnViewInit);
+            QuantumEvent.Subscribe<EventBattleViewActivate>(this, QEventOnViewActivate);
+            QuantumEvent.Subscribe<EventBattleViewGetReadyToPlay>(this, QEventOnViewGetReadyToPlay);
+            QuantumEvent.Subscribe<EventBattleViewGameStart>(this, QEventOnViewGameStart);
+            QuantumEvent.Subscribe<EventBattleViewGameOver>(this, QEventOnViewGameOver);
+
+            // Subscribing to other View Init events
+            QuantumEvent.Subscribe<EventBattleStoneCharacterPieceViewInit>(this, QEventOnStoneCharacterPieceViewInit);
+
+            // Subscribing to Gameplay events
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, QEventOnChangeEmotionState);
+            QuantumEvent.Subscribe<EventBattleLastRowWallDestroyed>(this, QEventOnLastRowWallDestroyed);
             QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, QEventPlaySoundFX);
+
+            // Subscribing to Debug events
             QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, QEventDebugOnUpdateStatsOverlay);
         }
 
-        private void QEventOnViewInit(EventViewInit e)
+        private void QEventOnViewWaitForPlayers(EventBattleViewWaitForPlayers e)
         {
+            // Setting view pre-activate waiting for players text
+            _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.WaitingForPlayers);
+        }
+
+        private void QEventOnViewInit(EventBattleViewInit e)
+        {
+            // Getting LocalPlayerSlot and LocalPlayerTeam
+            if (Utils.TryGetQuantumFrame(out Frame f))
+            {
+                PlayerRef playerRef = QuantumRunner.Default.Game.GetLocalPlayers()[0];
+                LocalPlayerSlot = BattlePlayerManager.PlayerHandle.GetSlot(f, playerRef);
+                LocalPlayerTeam = BattlePlayerManager.PlayerHandle.GetTeamNumber(LocalPlayerSlot);
+            }
+
+            // Initializing BattleGridViewController
             if (_gridViewController != null)
             {
                 _gridViewController.SetGrid();
             }
 
+            //{ Initializing UI Handlers
+
             if (_uiController.DiamondsHandler != null)
             {
-                _uiController.DiamondsHandler.SetShow(true);
                 _uiController.DiamondsHandler.SetDiamondsText(0);
 
                 BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.Diamonds);
@@ -70,17 +122,12 @@ namespace Battle.View.Game
             /*
             if (_uiController.GiveUpButtonHandler != null)
             {
-                _uiController.GiveUpButtonHandler.SetShow(true);
-                _uiController.GiveUpButtonHandler.SetShow(true);
-
                 BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.GiveUpButton);
                 if (data != null) _uiController.GiveUpButtonHandler.MovableUiElement.SetData(data);
             }
 
             if (_uiController.PlayerInfoHandler != null)
             {
-                _uiController.PlayerInfoHandler.SetShow(true);
-
                 // Setting local player info
                 _uiController.PlayerInfoHandler.SetInfo(
                     PlayerType.LocalPlayer,
@@ -99,18 +146,85 @@ namespace Battle.View.Game
             }
             */
 
-            // Loading and setting arena scale and offset
+            //} Initializing UI Handlers
+        }
+
+        private void QEventOnStoneCharacterPieceViewInit(EventBattleStoneCharacterPieceViewInit e)
+        {
+            if (_stoneCharacterViewController != null)
+            {
+                _stoneCharacterViewController.SetEmotionIndicator(e.WallNumber, e.Team, e.EmotionIndicatorColorIndex);
+            }
+        }
+
+        private void QEventOnViewActivate(EventBattleViewActivate e)
+        {
+            // Activating view, meaning displaying all visual elements of the game view except for pre-activation elements
+
+            // Show UI elements
+            if (_uiController.DiamondsHandler != null) _uiController.DiamondsHandler.SetShow(true);
+            /* These UI elements aren't ready and shouldn't be shown yet
+            if (_uiController.GiveUpButtonHandler != null) _uiController.GiveUpButtonHandler.SetShow(true);
+            if (_uiController.PlayerInfoHandler != null) _uiController.PlayerInfoHandler.SetShow(true);
+            */
+
+            // Load settings and set BattleCamera to show game scene with previously loaded settings
             BattleCamera.SetView(
                 SettingsCarrier.Instance.BattleArenaScale * 0.01f,
                 new(SettingsCarrier.Instance.BattleArenaPosX * 0.01f, SettingsCarrier.Instance.BattleArenaPosY * 0.01f),
-                false
+                LocalPlayerTeam == BattleTeamNumber.TeamBeta
             );
+        }
+
+        private void QEventOnViewGetReadyToPlay(EventBattleViewGetReadyToPlay e)
+        {
+            // Show end of countdown text in announcement handler
+            _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.EndOfCountdown);
+        }
+
+        private void QEventOnViewGameStart(EventBattleViewGameStart e)
+        {
+            // Clear the countdown text
+            _uiController.AnnouncementHandler.ClearAnnouncerTextField();
+
+            // Show the timer
+            _uiController.TimerHandler.SetShow(true);
+        }
+
+        private void QEventOnViewGameOver(EventBattleViewGameOver e)
+        {
+            // Hiding UI elements
+            _uiController.TimerHandler.SetShow(false);
+            _uiController.DiamondsHandler.SetShow(false);
+            _uiController.GiveUpButtonHandler.SetShow(false);
+            _uiController.PlayerInfoHandler.SetShow(false);
+
+            // If the game is over, display "Game Over!" and show the Game Over UI
+            _uiController.GameOverHandler.SetShow(true);
+
+            // Setting end of game data variables
+            _endOfGameDataHasEnded = true;
+            _endOfGameDataWinningTeam = e.WinningTeam;
+            _endOfGameDataGameLengthSec = e.GameLengthSec;
         }
 
         private void QEventOnChangeEmotionState(EventBattleChangeEmotionState e)
         {
             if (!_screenEffectViewController.IsActive) _screenEffectViewController.SetActive(true);
             _screenEffectViewController.ChangeColor((int)e.Emotion);
+        }
+
+        private void QEventOnLastRowWallDestroyed(EventBattleLastRowWallDestroyed e)
+        {
+            if (_stoneCharacterViewController != null)
+            {
+                _stoneCharacterViewController.DestroyCharacterPart(e.WallNumber, e.Team);
+            }
+
+            if (_lightrayEffectViewController != null)
+            {
+                _lightrayEffectViewController.SpawnLightray(e.WallNumber, e.LightrayColor);
+            }
         }
 
         private void QEventPlaySoundFX(EventBattlePlaySoundFX e)
@@ -120,8 +234,11 @@ namespace Battle.View.Game
 
         private void QEventDebugOnUpdateStatsOverlay(EventBattleDebugUpdateStatsOverlay e)
         {
+            if (!SettingsCarrier.Instance.BattleShowDebugStatsOverlay) return;
+            if (e.Slot != LocalPlayerSlot) return;
+
             _uiController.DebugStatsOverlayHandler.SetShow(true);
-            _uiController.DebugStatsOverlayHandler.SetStats(e.Character);
+            _uiController.DebugStatsOverlayHandler.SetStats(e.Stats);
         }
 
         // Handles UI updates based on the game's state and countdown
@@ -149,39 +266,16 @@ namespace Battle.View.Game
                 {
                     case BattleGameState.Countdown:
                         // If the game is in the countdown state, display the countdown timer
-                        _uiController.AnnouncementHandler.SetShow(true);
                         _uiController.AnnouncementHandler.SetCountDownNumber(countDown);
                         break;
 
                     case BattleGameState.Playing:
-                        // Clear the countdown text when the countdown is negative
-                        _uiController.AnnouncementHandler.ClearAnnouncerTextField();
-                        _uiController.AnnouncementHandler.SetShow(true);
-
-                        // Starting game timer
-                        _uiController.TimerHandler.SetShow(true);
-                        _uiController.TimerHandler.StartTimer(frame);
-
-                        // updating diamonds (at the moment shows only alpha team's diamonds)
+                        // Updating diamonds (at the moment shows only alpha team's diamonds)
                         BattleDiamondCounterQSingleton diamondCounter = frame.GetSingleton<BattleDiamondCounterQSingleton>();
                         _uiController.DiamondsHandler.SetDiamondsText(diamondCounter.AlphaDiamonds);
-                        break;
 
-                    case BattleGameState.GetReadyToPlay:
-                        // Display "GO!" when the countdown reaches zero
-                        _uiController.AnnouncementHandler.ShowEndOfCountDownText();
-                        break;
-
-                    case BattleGameState.GameOver:
-                        _uiController.TimerHandler.StopTimer();
-                        _uiController.TimerHandler.SetShow(false);
-
-                        _uiController.DiamondsHandler.SetShow(false);
-                        _uiController.GiveUpButtonHandler.SetShow(false);
-                        _uiController.PlayerInfoHandler.SetShow(false);
-
-                        // If the game is over, display "Game Over!" and show the Game Over UI
-                        _uiController.GameOverHandler.SetShow(true);
+                        // Updating timer text
+                        _uiController.TimerHandler.FormatAndSetTimerText(gameSession.GameTimeSec);
                         break;
                 }
 

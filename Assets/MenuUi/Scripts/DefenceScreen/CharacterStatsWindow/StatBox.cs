@@ -16,14 +16,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private Image _statBackground;
         [SerializeField] private TMP_Text _statName;
         [SerializeField] private TMP_Text _statLevel;
+        [SerializeField] private TMP_Text _statLevel2;
+        [SerializeField] private TMP_Text _statNextLevel;
         [SerializeField] private TMP_Text _statValue;
+        [SerializeField] private TMP_Text _statNextLevelValue;
         [SerializeField] private TMP_Text _diamondCost;
-        [SerializeField] private TMP_Text _eraserCost;
         [SerializeField] private Button _eraserButton;
         [SerializeField] private Button _diamondButton;
         [SerializeField] private TMP_Text _statDescription;
         [SerializeField] private GameObject _contents;
-        [SerializeField] private GameObject _defenceIconColor;
         [SerializeField] private TMP_Text _developmentName;
 
         private StatsWindowController _controller;
@@ -35,11 +36,9 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             if (_controller == null) _controller = FindObjectOfType<StatsWindowController>();
             if (_statLevel != null) _controller.OnStatUpdated += UpdateStatLevel;
             if (_diamondCost != null) _controller.OnStatUpdated += UpdateDiamondCost;
-            if (_eraserCost != null) _controller.OnStatUpdated += UpdateEraserCost;
             if (_statValue != null) _controller.OnStatUpdated += UpdateStatValue;
             if (_statValue != null) UpdateStatValue(_statType);
             if (_statLevel != null) UpdateStatLevel(_statType);
-
         }
 
         private void Awake()
@@ -52,7 +51,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             if (_statLevel != null) _controller.OnStatUpdated -= UpdateStatLevel;
             if (_diamondCost != null) _controller.OnStatUpdated -= UpdateDiamondCost;
-            if (_eraserCost != null) _controller.OnStatUpdated -= UpdateEraserCost;
             if (_statValue != null) _controller.OnStatUpdated -= UpdateStatValue;
 
         }
@@ -71,6 +69,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             _statIcon.sprite = _statInfo.Image;
             _statBackground.color = _statInfo.StatBoxColor;
             _statDescription.text = _statInfo.Description;
+            _statName.text = _statInfo.Name;
+
             string developmentName = string.Empty;
             ValueStrength statStrenght = _controller.GetStatStrength(_statType);
             switch(statStrenght)
@@ -106,57 +106,41 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             UpdateStatLevel(_statType);
             UpdateStatValue(_statType);
             UpdateDiamondCost(_statType);
-            UpdateEraserCost(_statType);
-
-            if (_statType == StatType.Defence)
-            {
-                _defenceIconColor.SetActive(true);
-            }
-            else
-            {
-                _defenceIconColor.SetActive(false);
-            }
         }
 
         private void UpdateStatLevel(StatType statType)
         {
             if (statType != _statType) return;
-            _statLevel.text = _controller.GetStat(statType).ToString();
+            int statLevel = _controller.GetStat(statType);
+            if (_statLevel != null) _statLevel.text = statLevel.ToString();
+            if (_statLevel2 != null) _statLevel2.text = statLevel.ToString();
+            if (_statNextLevel != null) _statNextLevel.text = (statLevel+1).ToString();
         }
 
         private void UpdateStatValue(StatType statType)
         {
             if (statType != _statType) return;
             _statValue.text = _controller.GetStatValue(statType).ToString();
+            if (_statNextLevelValue == null)
+            {
+                return;
+            }
+            int statLevel = _controller.GetStat(statType);
+            _statNextLevelValue.text = _controller.GetStatValue(statType,statLevel+1).ToString();
         }
 
         private void UpdateDiamondCost(StatType statType)
         {
             if (statType != _statType) return;
-            int diamondCost = _controller.GetDiamondCost(statType);
+            int diamondCost = _controller.GetUpgradeMaterialCost(statType);
             _diamondCost.text = diamondCost.ToString();
-            if (_controller.CheckIfEnoughDiamonds(diamondCost))
+            if (_controller.CheckIfEnoughUpgradeMaterial(diamondCost))
             {
                 _diamondCost.color = Color.black;
             }
             else
             {
                 _diamondCost.color = Color.red;
-            }
-        }
-
-
-        private void UpdateEraserCost(StatType statType)
-        {
-            if (statType != _statType) return;
-            _eraserCost.text = "1";
-            if (_controller.CheckIfEnoughErasers(1))
-            {
-                _eraserCost.color = Color.black;
-            }
-            else
-            {
-                _eraserCost.color = Color.red;
             }
         }
 
