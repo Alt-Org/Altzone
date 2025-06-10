@@ -24,14 +24,14 @@ public class KojuTrayPopulator : MonoBehaviour
     [SerializeField] private GameObject panelFullWarningUI;
     private bool isWarningActive = false;
 
-    private DataStore koju;
+    private DataStore store;
     private PlayerData player;
     private ClanData clan;
 
     private void Start()
     {
         // Populate koju and initialize StoreFront
-        koju = Storefront.Get();
+        store = Storefront.Get();
         StartCoroutine(PopulateTray());
     }
 
@@ -39,7 +39,7 @@ public class KojuTrayPopulator : MonoBehaviour
     {
         // Load player data
         bool playerLoaded = false;
-        koju.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data =>
+        store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data =>
         {
             player = data;
             playerLoaded = true;
@@ -60,7 +60,7 @@ public class KojuTrayPopulator : MonoBehaviour
 
         // Load clan data
         bool clanLoaded = false;
-        koju.GetClanData(player.ClanId, data =>
+        store.GetClanData(player.ClanId, data =>
         {
             clan = data;
             clanLoaded = true;
@@ -79,7 +79,7 @@ public class KojuTrayPopulator : MonoBehaviour
             yield break;
         }
 
-        // Filter clan furniture voted to sell, you can remove .Where and .ToList(); to show all the furniture in the clan
+        // Filter clan furniture voted to sell, you can remove .Where(f => f.VotedToSell) and .ToList(); to show all clan furniture
         List<ClanFurniture> votedToSellFurniture = clan.Inventory.Furniture
             .Where(f => f.VotedToSell)
             .ToList();
@@ -92,7 +92,7 @@ public class KojuTrayPopulator : MonoBehaviour
 
         // Load gamefurniture
         ReadOnlyCollection<GameFurniture> allGameFurniture = null;
-        yield return koju.GetAllGameFurnitureYield(result => allGameFurniture = result);
+        yield return store.GetAllGameFurnitureYield(result => allGameFurniture = result);
 
         if (allGameFurniture == null || allGameFurniture.Count == 0)
         {
