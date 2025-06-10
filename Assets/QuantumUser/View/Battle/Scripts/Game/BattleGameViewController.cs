@@ -236,7 +236,7 @@ namespace Battle.View.Game
         {
             if (!SettingsCarrier.Instance.BattleShowDebugStatsOverlay) return;
             _uiController.DebugStatsOverlayHandler.SetShow(true);
-            _uiController.DebugStatsOverlayHandler.SetStats(e.Character);
+            _uiController.DebugStatsOverlayHandler.SetStats(e.Stats);
         }
 
         // Handles UI updates based on the game's state and countdown

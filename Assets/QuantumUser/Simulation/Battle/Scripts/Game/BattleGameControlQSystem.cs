@@ -35,7 +35,7 @@ namespace Battle.QSimulation.Game
 
             BattlePlayerManager.RegisterPlayer(f, playerRef);
 
-            f.Events.BattleDebugUpdateStatsOverlay(data.Characters[0]);
+            f.Events.BattleDebugUpdateStatsOverlay(data.Characters[0].Stats);
         }
 
         public static void OnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)

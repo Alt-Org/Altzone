@@ -38,13 +38,13 @@ namespace Battle.View.UI
             _view.SetActive(show);
         }
 
-        public void SetStats(BattleCharacterBase character)
+        public void SetStats(BattlePlayerStats stats)
         {
-            _impactForce.Value.text = character.Attack.ToString();
-            _hp.Value.text          = character.Hp.ToString();
-            _speed.Value.text       = character.Speed.ToString();
-            _charSize.Value.text    = character.CharacterSize.ToString();
-            _defence.Value.text     = character.Defence.ToString();
+            _impactForce.Value.text = stats.StatAttack.ToString();
+            _hp.Value.text          = stats.StatHp.ToString();
+            _speed.Value.text       = stats.StatSpeed.ToString();
+            _charSize.Value.text    = stats.StatCharacterSize.ToString();
+            _defence.Value.text     = stats.StatDefence.ToString();
         }
 
         private float _currentFontSize;

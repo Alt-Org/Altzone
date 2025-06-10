@@ -75,7 +75,7 @@ synced event BattleLastRowWallDestroyed
 
 synced event BattleDebugUpdateStatsOverlay
 {
-    BattleCharacterBase Character;
+    BattlePlayerStats Stats;
 }
 
 //} Debug events

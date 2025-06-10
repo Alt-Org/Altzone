@@ -159,7 +159,6 @@ namespace Battle.QSimulation.Player
 
                     //{ player variables
                     EntityRef                  playerEntity;
-                    BattlePlayerStats          playerStats;
                     BattlePlayerDataQComponent playerData;
                     Transform2D*               playerTransform;
                     // player - hitBox variables
@@ -291,16 +290,6 @@ namespace Battle.QSimulation.Player
                             f.Add(playerHitboxTargetEntity, collisionTrigger);
                         }
 
-                        // initialize player stats
-                        playerStats = new BattlePlayerStats
-                        {
-                            StatHp = data.Characters[playerCharacterNumber].Hp,
-                            StatSpeed = data.Characters[playerCharacterNumber].Speed,
-                            StatCharacterSize = data.Characters[playerCharacterNumber].CharacterSize,
-                            StatAttack = data.Characters[playerCharacterNumber].Attack,
-                            StatDefence = data.Characters[playerCharacterNumber].Defence,
-                        };
-
                         // initialize playerData
                         playerData = new BattlePlayerDataQComponent
                         {
@@ -310,7 +299,7 @@ namespace Battle.QSimulation.Player
                             CharacterId       = data.Characters[playerCharacterNumber].Id,
                             CharacterClass    = data.Characters[playerCharacterNumber].Class,
 
-                            Stats             = playerStats,
+                            Stats             = data.Characters[playerCharacterNumber].Stats,
 
                             GridExtendTop     = playerGridExtendTop,
                             GridExtendBottom  = playerGridExtendBottom,

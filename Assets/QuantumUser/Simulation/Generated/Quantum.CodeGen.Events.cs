@@ -168,10 +168,10 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventBattleDebugUpdateStatsOverlay BattleDebugUpdateStatsOverlay(BattleCharacterBase Character) {
+      public EventBattleDebugUpdateStatsOverlay BattleDebugUpdateStatsOverlay(BattlePlayerStats Stats) {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventBattleDebugUpdateStatsOverlay>(EventBattleDebugUpdateStatsOverlay.ID);
-        ev.Character = Character;
+        ev.Stats = Stats;
         _f.AddEvent(ev);
         return ev;
       }
@@ -493,7 +493,7 @@ namespace Quantum {
   }
   public unsafe partial class EventBattleDebugUpdateStatsOverlay : EventBase {
     public new const Int32 ID = 13;
-    public BattleCharacterBase Character;
+    public BattlePlayerStats Stats;
     protected EventBattleDebugUpdateStatsOverlay(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
@@ -511,7 +511,7 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 97;
-        hash = hash * 31 + Character.GetHashCode();
+        hash = hash * 31 + Stats.GetHashCode();
         return hash;
       }
     }
