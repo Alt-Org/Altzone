@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ReferenceSheets;
-using MenuUi.Scripts.Storage;  // For StorageFurniture
+using MenuUi.Scripts.Storage;
+using Altzone.Scripts.Model.Poco.Game;
 
 public class FurnitureCardUI : MonoBehaviour
 {
@@ -21,28 +21,17 @@ public class FurnitureCardUI : MonoBehaviour
     private string description;
     private FurnitureRarity storedRarity;
 
-    // Existing method to populate from GameFurniture
-    public void PopulateCard(GameFurniture furniture)
-    {
-        nameText.text = furniture.FurnitureInfo.VisibleName;
-        setNameText.text = furniture.FurnitureInfo.SetName;
-        weightText.text = $"Weight: {furniture.Weight:0.0}";
-        iconImage.sprite = furniture.FurnitureInfo.Image;
-        description = furniture.FurnitureInfo.ArtisticDescription;
-        creatorName = furniture.FurnitureInfo.ArtistName;
+    private float currentPrice = 0f;
 
-        storedRarity = furniture.Rarity;
-
-        // Apply color using rarity reference
-        if (rarityColourReference != null)
-        {
-            rarityColorImage.color = rarityColourReference.GetColor(storedRarity);
-        }
-    }
-
-    // Populate the card with information
+    // Populate from StorageFurniture
     public void PopulateCard(StorageFurniture storageFurniture)
     {
+        if (storageFurniture == null)
+        {
+            Debug.LogWarning("StorageFurniture is null when populating card.");
+            return;
+        }
+
         nameText.text = storageFurniture.VisibleName;
         setNameText.text = storageFurniture.SetName;
         weightText.text = $"Weight: {storageFurniture.Weight:0.0}";
@@ -57,6 +46,8 @@ public class FurnitureCardUI : MonoBehaviour
         {
             rarityColorImage.color = rarityColourReference.GetColor(storedRarity);
         }
+
+        currentPrice = storageFurniture.Value;  
     }
 
     public string GetNameText() => nameText.text;
@@ -73,5 +64,11 @@ public class FurnitureCardUI : MonoBehaviour
         if (rarityColourReference != null)
             return rarityColourReference.GetColor(storedRarity);
         return Color.white;
+    }
+
+    // Get current price value for sorting
+    public float GetValue()
+    {
+        return currentPrice;
     }
 }

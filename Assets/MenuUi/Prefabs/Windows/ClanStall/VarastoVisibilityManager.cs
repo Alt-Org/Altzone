@@ -7,9 +7,15 @@ public class VarastoVisibilityManager : MonoBehaviour
     [SerializeField] private GameObject kojuContentWindow;
     [SerializeField] private List<GameObject> uiElementsToHide;
 
+    [Header("Sorting UI Elements")]
+    [SerializeField] private GameObject kojuSortingText;
+    [SerializeField] private GameObject kojuSortButton;
+    [SerializeField] private GameObject varastoSortingText;
+    [SerializeField] private GameObject varastoSortButton;
+
     private bool kojuWindowStatus = false;
 
-    // When notified, toggle UI elements off
+    // When KojuView is activated
     private void OnEnable()
     {
         KojuContentNotifier.OnActiveStateChanged += HandleKojuActiveChanged;
@@ -17,14 +23,16 @@ public class VarastoVisibilityManager : MonoBehaviour
         {
             kojuWindowStatus = kojuContentWindow.activeSelf;
             ToggleUIElements(!kojuWindowStatus);
+            ToggleSortingUI(kojuWindowStatus);
         }
     }
 
-    // When notified, toggle UI elements on
+    // When KojuView is deactivated
     private void OnDisable()
     {
         KojuContentNotifier.OnActiveStateChanged -= HandleKojuActiveChanged;
         ToggleUIElements(true);
+        ToggleSortingUI(false);  
     }
 
     private void HandleKojuActiveChanged(bool isActive)
@@ -32,6 +40,7 @@ public class VarastoVisibilityManager : MonoBehaviour
         if (isActive != kojuWindowStatus)
         {
             ToggleUIElements(!isActive);
+            ToggleSortingUI(isActive);
             kojuWindowStatus = isActive;
         }
     }
@@ -43,5 +52,18 @@ public class VarastoVisibilityManager : MonoBehaviour
             if (uiElement != null)
                 uiElement.SetActive(show);
         }
+    }
+
+    private void ToggleSortingUI(bool isKojuActive)
+    {
+        if (kojuSortingText != null)
+            kojuSortingText.SetActive(isKojuActive);
+        if (kojuSortButton != null)
+            kojuSortButton.SetActive(isKojuActive);
+
+        if (varastoSortingText != null)
+            varastoSortingText.SetActive(!isKojuActive);
+        if (varastoSortButton != null)
+            varastoSortButton.SetActive(!isKojuActive);
     }
 }

@@ -80,9 +80,7 @@ public class KojuTrayPopulator : MonoBehaviour
         }
 
         // Filter clan furniture voted to sell, you can remove .Where(f => f.VotedToSell) and .ToList(); to show all clan furniture
-        List<ClanFurniture> votedToSellFurniture = clan.Inventory.Furniture
-            .Where(f => f.VotedToSell)
-            .ToList();
+        List<ClanFurniture> votedToSellFurniture = clan.Inventory.Furniture;
 
         if (votedToSellFurniture.Count == 0)
         {

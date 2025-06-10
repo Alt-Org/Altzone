@@ -4,6 +4,9 @@ public class KojuItemSlot : MonoBehaviour
 {
     [SerializeField] private GameObject kojuEmptyVisual;
 
+   public GameObject KojuEmptyVisual => kojuEmptyVisual;
+
+
     public bool IsOccupied
     {
         get
