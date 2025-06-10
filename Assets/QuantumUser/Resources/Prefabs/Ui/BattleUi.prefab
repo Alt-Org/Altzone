@@ -2762,6 +2762,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7159658355199045281}
+  - component: {fileID: 8595071680069480649}
   - component: {fileID: 2123960977946624082}
   - component: {fileID: 1560703308592050577}
   m_Layer: 5
@@ -2785,11 +2786,30 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 3300782618133613160}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0.1, y: 0.45}
+  m_AnchorMax: {x: 0.9, y: 0.55}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 732.67, y: 144.57007}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &8595071680069480649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8847665615427807107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 267a7639004ed724f9535653aada6aec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _relativePercentageTarget: 0.5
+  _relativePercentageMax: 0.5
+  _fontSizeMin: 18
+  _fontSizeMax: 256
+  _textBoxAspectRatio: 5
+  _holderRectTransform: {fileID: 3300782618133613160}
+  _text: {fileID: 1560703308592050577}
 --- !u!222 &2123960977946624082
 CanvasRenderer:
   m_ObjectHideFlags: 0
