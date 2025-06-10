@@ -37,7 +37,7 @@ namespace MenuUi.Scripts.Window
         {
             StartCoroutine(Navigate());
         }
-
+#if UNITY_EDITOR
         [CustomEditor(typeof(NaviButton))]
         public class NaviButtonEditor : WindowNavigationEditor
         {
@@ -46,5 +46,6 @@ namespace MenuUi.Scripts.Window
                 base.OnInspectorGUI();
             }
         }
+#endif
     }
 }
