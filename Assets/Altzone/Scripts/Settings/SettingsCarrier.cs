@@ -48,6 +48,8 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public const int BattleArenaPosXDefault = 50;
     public const int BattleArenaPosYDefault = 50;
 
+    public const string UnlimitedStatUpgradeMaterialsKey = "UnlimitedStatUpgrade";
+
     // Settings variables
     public int mainMenuWindowIndex;
 
@@ -75,6 +77,18 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         {
             _showButtonLabels = value;
             OnButtonLabelVisibilityChange?.Invoke();
+        }
+    }
+
+    private bool _unlimitedStatUpgradeMaterials;
+    public bool UnlimitedStatUpgradeMaterials
+    {
+        get => _unlimitedStatUpgradeMaterials;
+        set
+        {
+            if (_unlimitedStatUpgradeMaterials == value) return;
+            _unlimitedStatUpgradeMaterials = value;
+            PlayerPrefs.SetInt(UnlimitedStatUpgradeMaterialsKey, value ? 1 : 0);
         }
     }
 
@@ -160,6 +174,8 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         _battleArenaScale = PlayerPrefs.GetInt(BattleArenaScaleKey, BattleArenaScaleDefault);
         _battleArenaPosX = PlayerPrefs.GetInt(BattleArenaPosXKey, BattleArenaPosXDefault);
         _battleArenaPosY = PlayerPrefs.GetInt(BattleArenaPosYKey, BattleArenaPosYDefault);
+
+        _unlimitedStatUpgradeMaterials = PlayerPrefs.GetInt(UnlimitedStatUpgradeMaterialsKey, 1) == 1;
     }
 
     // SentVolume combines masterVolume and another volume chosen by the sent type

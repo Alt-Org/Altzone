@@ -20,6 +20,8 @@ public class AlternateTopPanel : AltMonoBehaviour
     [SerializeField] private Sprite _bow;
     [SerializeField] private TextMeshProUGUI _rankingTextWins;
     [SerializeField] private TextMeshProUGUI _rankingTextActivity;
+    [SerializeField] private bool _alternateLeaderboard;
+
 
     private float _timerLeaderboard = 5;
     private float _timerInfo = 10;
@@ -69,7 +71,7 @@ public class AlternateTopPanel : AltMonoBehaviour
             if (ServerManager.Instance.Player?.clan_id == null) _currentTopPanelInfo = TopPanelInfo.Player;
             ChangeInfoData();
             ChangeLeaderboardType();
-            if(ServerManager.Instance.Player?.clan_id != null)
+            if(ServerManager.Instance.Player?.clan_id != null && _alternateLeaderboard)
                 StartCoroutine(ChangeInfoType());
         }
         else
@@ -84,7 +86,7 @@ public class AlternateTopPanel : AltMonoBehaviour
                 if (ServerManager.Instance.Player?.clan_id != null) _currentTopPanelInfo = TopPanelInfo.Player;
                 ChangeInfoData();
                 ChangeLeaderboardType();
-                if (ServerManager.Instance.Player?.clan_id != null)
+                if (ServerManager.Instance.Player?.clan_id != null && _alternateLeaderboard)
                     StartCoroutine(ChangeInfoType());
             }));
         }

@@ -25,7 +25,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         [SerializeField] private PieChartPreview _piechartPreview;
 
         [Header("Reference sheet")]
-        [SerializeField] private ClassColorReference _classColorReference;
+        [SerializeField] private ClassReference _classReference;
 
         private CharacterID _characterId;
 
