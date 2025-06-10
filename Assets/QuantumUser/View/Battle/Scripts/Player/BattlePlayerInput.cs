@@ -8,7 +8,6 @@ using Prg.Scripts.Common;
 
 using Battle.QSimulation.Game;
 using Battle.View.Game;
-using TMPro;
 
 namespace Battle.View.Player
 {

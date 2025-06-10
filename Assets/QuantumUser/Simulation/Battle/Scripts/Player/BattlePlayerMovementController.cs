@@ -29,7 +29,6 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current Quantum Frame</param>
         /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter</a>.</param>
         /// <param name="input">Player's Quantum Input</param>
-
         public static void UpdateMovement(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform, Input* input)
         {
             // constant
