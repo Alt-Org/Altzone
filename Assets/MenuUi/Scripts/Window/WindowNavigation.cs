@@ -47,7 +47,7 @@ namespace MenuUi.Scripts.Window
                 DataCarrier.AddData(DataCarrier.RequestedWindow, _targetWindow);
             windowManager.ShowWindow(_naviTarget);
         }
-
+#if UNITY_EDITOR
         [CustomEditor(typeof(WindowNavigation))]
         public class WindowNavigationEditor : Editor
         {
@@ -78,5 +78,6 @@ namespace MenuUi.Scripts.Window
                 serializedObject.ApplyModifiedProperties();
             }
         }
+#endif
     }
 }
