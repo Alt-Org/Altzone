@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,30 +7,43 @@ public class VarastoVisibilityManager : MonoBehaviour
     [SerializeField] private GameObject kojuContentWindow;
     [SerializeField] private List<GameObject> uiElementsToHide;
 
-    private bool kojuStatus = false;
+    private bool kojuWindowStatus = false;
 
-    private void Update()
+    private void OnEnable()
     {
-        if (kojuContentWindow == null) return;
+        KojuContentNotifier.OnActiveStateChanged += HandleKojuActiveChanged;
 
-        bool isKojuActive = kojuContentWindow.activeSelf;
-
-        if (isKojuActive != kojuStatus)
+        // Initialize UI state based on current active state of kojuContentWindow
+        if (kojuContentWindow != null)
         {
-            ToggleUIElements(!isKojuActive); // Hide if Koju is active, show if not
-            kojuStatus = isKojuActive;
+            kojuWindowStatus = kojuContentWindow.activeSelf;
+            ToggleUIElements(!kojuWindowStatus);
         }
     }
 
-    // Hides or shows the UI elements
+    private void OnDisable()
+    {
+        KojuContentNotifier.OnActiveStateChanged -= HandleKojuActiveChanged;
+
+        // Optionally reset UI elements to visible when this manager is disabled
+        ToggleUIElements(true);
+    }
+
+    private void HandleKojuActiveChanged(bool isActive)
+    {
+        if (isActive != kojuWindowStatus)
+        {
+            ToggleUIElements(!isActive);
+            kojuWindowStatus = isActive;
+        }
+    }
+
     private void ToggleUIElements(bool show)
     {
         foreach (var uiElement in uiElementsToHide)
         {
             if (uiElement != null)
-            {
                 uiElement.SetActive(show);
-            }
         }
     }
 }
