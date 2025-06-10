@@ -8,6 +8,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         Test = 0,
 
         // Desensitizers class characters
+        DesensitizerTest = CharacterClassID.Desensitizer,
         Racist = CharacterClassID.Desensitizer + 1, //101
         Bodybuilder = CharacterClassID.Desensitizer + 2, //102
         WarVeteran = CharacterClassID.Desensitizer + 3, //103
@@ -35,6 +36,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         Stoner = CharacterClassID.Retroflector + 4, //504
 
         // Confluents class characters
+        ConfluentTest = CharacterClassID.Confluent,
         Soulsisters = CharacterClassID.Confluent + 1, //601
         Lovers = CharacterClassID.Confluent + 2, //602
         SleepyHead = CharacterClassID.Confluent + 3, //603
