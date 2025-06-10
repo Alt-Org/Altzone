@@ -44,9 +44,9 @@ namespace Altzone.Scripts
 
             AltzoneBattleLink.Init();
 
-            InstantiateGlobalGameObjects();
+            ClickStateHandler.Init();
 
-            ClickStateHandler.Initialize();
+            InstantiateGlobalGameObjects();
         }
 
         private void OnApplicationPause(bool pause)

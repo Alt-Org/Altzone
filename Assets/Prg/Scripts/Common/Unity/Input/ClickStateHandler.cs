@@ -36,7 +36,7 @@ namespace Prg.Scripts.Common
         private static Vector2 s_rotationStartVector = Vector2.zero;
         private static float s_scrollWheelValue = 0f;
 
-        public static void Initialize()
+        public static void Init()
         {
             EnhancedTouchSupport.Enable();
         }
