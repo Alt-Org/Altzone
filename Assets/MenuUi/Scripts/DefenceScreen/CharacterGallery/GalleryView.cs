@@ -132,29 +132,43 @@ namespace MenuUi.Scripts.CharacterGallery
                 }
             }
 
-            // Placing locked characters
-            if (_lockedCharacterGridContent != null)
+            for (int i = 0; i < selectedCharacterIds.Length; i++)
             {
-                DataStore store = Storefront.Get();
-                ReadOnlyCollection<BaseCharacter> allItems = null;
-                store.GetAllBaseCharacterYield(result => allItems = result);
-
-                foreach (BaseCharacter baseCharacter in allItems)
+                if (selectedCharacterIds[i] == (int)CharacterID.Test)
                 {
-                    // Checking if player has already unlocked the character and if so, skipping the character
-                    bool characterUnlocked = false;
-                    foreach (CharacterSlot slot in _characterSlots)
-                    {
-                        if (slot.Character.Id == baseCharacter.Id)
-                        {
-                            characterUnlocked = true;
-                            break;
-                        }
-                    }
-                    if (characterUnlocked) continue;
-
-                    InstantiateCharacterSlot(baseCharacter.Id, true, _lockedCharacterGridContent);
+                    selectedCharacters[i] = new(CharacterID.Test, 2, 20, 2, 2, 2);
                 }
+            }
+
+            // Placing locked and test characters
+            DataStore store = Storefront.Get();
+            ReadOnlyCollection<BaseCharacter> allItems = null;
+            store.GetAllBaseCharacterYield(result => allItems = result);
+
+            foreach (BaseCharacter baseCharacter in allItems)
+            {
+                // If test character adding it to the normal grid
+                if (baseCharacter.Id == CharacterID.Test)
+                {
+                    InstantiateCharacterSlot(baseCharacter.Id, false, _unlockedCharacterGridContent);
+                    continue;
+                }
+
+                if (_lockedCharacterGridContent == null) continue;
+
+                // Checking if player has already unlocked the character and if so, skipping the character
+                bool characterUnlocked = false;
+                foreach (CharacterSlot slot in _characterSlots)
+                {
+                    if (slot.Character.Id == baseCharacter.Id)
+                    {
+                        characterUnlocked = true;
+                        break;
+                    }
+                }
+                if (characterUnlocked) continue;
+
+                InstantiateCharacterSlot(baseCharacter.Id, true, _lockedCharacterGridContent);
             }
 
             // Invoking the event with selectedCharacters CustomCharacter array
@@ -191,7 +205,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
             return charSlot;
         }
-       
+
         private void RotateFilters()
         {
             for (int i = 0; i < filterEnumValues.Count; i++)
@@ -327,6 +341,6 @@ namespace MenuUi.Scripts.CharacterGallery
             }
         }
 
-        
+
     }
 }

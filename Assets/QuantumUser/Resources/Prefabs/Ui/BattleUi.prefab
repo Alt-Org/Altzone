@@ -2808,6 +2808,7 @@ MonoBehaviour:
   _fontSizeMin: 18
   _fontSizeMax: 256
   _textBoxAspectRatio: 5
+  _startScalingHolderAspectRatio: 0.5625
   _holderRectTransform: {fileID: 3300782618133613160}
   _text: {fileID: 1560703308592050577}
 --- !u!222 &2123960977946624082
@@ -3099,7 +3100,7 @@ PrefabInstance:
     - target: {fileID: 6682025077758413645, guid: 96b37da3f89dc24429d5d3c8813ec4a0,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.55
+      value: 0.51
       objectReference: {fileID: 0}
     - target: {fileID: 6682025077758413645, guid: 96b37da3f89dc24429d5d3c8813ec4a0,
         type: 3}
@@ -3109,7 +3110,7 @@ PrefabInstance:
     - target: {fileID: 6682025077758413645, guid: 96b37da3f89dc24429d5d3c8813ec4a0,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.45
+      value: 0.49
       objectReference: {fileID: 0}
     - target: {fileID: 6682025077758413645, guid: 96b37da3f89dc24429d5d3c8813ec4a0,
         type: 3}

@@ -113,7 +113,7 @@ namespace Altzone.Scripts.ModelV2.Internal
         /// Missing fields or values makes player character invalid because
         /// they can cause e.g. undefined behaviour or NRE at runtime.
         /// </remarks>
-        public bool IsValid => ClassType != CharacterClassID.None
+        public bool IsValid => (ClassType != CharacterClassID.None || CharacterId == CharacterID.Test) 
                                && !string.IsNullOrWhiteSpace(Id)
                                && !string.IsNullOrWhiteSpace(name);
 

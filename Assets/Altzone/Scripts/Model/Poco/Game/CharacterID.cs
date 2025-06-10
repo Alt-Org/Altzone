@@ -2,7 +2,10 @@ namespace Altzone.Scripts.Model.Poco.Game
 {
     public enum CharacterID
     {
-        None = 0,
+        None = -1,
+
+        // Test character
+        Test = 0,
 
         // Desensitizers class characters
         Racist = CharacterClassID.Desensitizer + 1, //101
