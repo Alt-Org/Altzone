@@ -235,6 +235,8 @@ namespace Battle.View.Game
         private void QEventDebugOnUpdateStatsOverlay(EventBattleDebugUpdateStatsOverlay e)
         {
             if (!SettingsCarrier.Instance.BattleShowDebugStatsOverlay) return;
+            if (e.Slot != LocalPlayerSlot) return;
+
             _uiController.DebugStatsOverlayHandler.SetShow(true);
             _uiController.DebugStatsOverlayHandler.SetStats(e.Stats);
         }

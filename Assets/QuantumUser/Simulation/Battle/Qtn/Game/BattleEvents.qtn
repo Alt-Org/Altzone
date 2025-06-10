@@ -75,6 +75,7 @@ synced event BattleLastRowWallDestroyed
 
 synced event BattleDebugUpdateStatsOverlay
 {
+    BattlePlayerSlot Slot;
     BattlePlayerStats Stats;
 }
 

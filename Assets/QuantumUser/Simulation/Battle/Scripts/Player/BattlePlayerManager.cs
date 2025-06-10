@@ -718,6 +718,8 @@ namespace Battle.QSimulation.Player
             playerData->TargetPosition = worldPosition;
 
             playerHandle.SetSelectedCharacter(characterNumber);
+            f.Events.BattleDebugUpdateStatsOverlay(playerData->Slot, playerData->Stats);
+            
             playerHandle.PlayState = BattlePlayerPlayState.InPlay;
         }
 

@@ -31,11 +31,7 @@ namespace Battle.QSimulation.Game
 
         public void OnPlayerAdded(Frame f, PlayerRef playerRef, bool firstTime)
         {
-            RuntimePlayer data = f.GetPlayerData(playerRef);
-
             BattlePlayerManager.RegisterPlayer(f, playerRef);
-
-            f.Events.BattleDebugUpdateStatsOverlay(data.Characters[0].Stats);
         }
 
         public static void OnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)
