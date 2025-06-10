@@ -562,6 +562,7 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  [Serializable()]
   public unsafe partial struct BattlePlayerStats {
     public const Int32 SIZE = 40;
     public const Int32 ALIGNMENT = 8;
