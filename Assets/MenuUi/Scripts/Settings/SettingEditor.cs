@@ -1,6 +1,9 @@
+using System;
+using System.Linq;
 using MenuUi.Scripts.MainMenu;
 using MenuUi.Scripts.Settings.BattleUiEditor;
 using MenuUi.Scripts.Window;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,6 +19,8 @@ public class SettingEditor : MonoBehaviour
     [SerializeField] private Button _battleSettingsButton;
     [SerializeField] private BattleUiEditor _battleEditor;
     [SerializeField] private GameObject[] _settingsPopups;
+    [SerializeField] private Button _topBarStyleButton;
+    [SerializeField] private TextMeshProUGUI _topBarStyleText;
 
     private void OnEnable()
     {
@@ -49,6 +54,8 @@ public class SettingEditor : MonoBehaviour
 
         PlayerPrefs.SetFloat("MasterVolume", 1f);
 
+        _topBarStyleButton.onClick.AddListener(() => ChangeTopbarStyle());
+        _topBarStyleText.text = "Tyyli: " + carrier.TopBarStyleSetting;
     }
 
     public void SetFromSlider(Slider usedSlider)
@@ -116,5 +123,17 @@ public class SettingEditor : MonoBehaviour
     {
         PlayerPrefs.SetInt("showButtonLabels", _showButtonLabelsToggle.isOn ? 1 : 0);
         carrier.ShowButtonLabels = _showButtonLabelsToggle.isOn;
+    }
+
+    public void ChangeTopbarStyle()
+    {
+        if (carrier.TopBarStyleSetting == ((SettingsCarrier.TopBarStyle[])Enum.GetValues(typeof(SettingsCarrier.TopBarStyle))).ToList().Last())
+        {
+            carrier.TopBarStyleSetting = 0;
+        }
+        else carrier.TopBarStyleSetting++;
+
+        _topBarStyleText.text = "Tyyli: " + carrier.TopBarStyleSetting;
+
     }
 }
