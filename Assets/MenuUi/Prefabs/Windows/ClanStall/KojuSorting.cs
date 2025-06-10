@@ -17,6 +17,18 @@ public class KojuSorting : MonoBehaviour
 
     private SortMode currentSortMode = SortMode.Nimi;
 
+    private void Start()
+    {
+        SetSortMode(SortMode.Nimi);
+    }
+
+    public void SetSortMode(SortMode mode)
+    {
+        currentSortMode = mode;
+        UpdateSortingText();
+        SortItems();
+    }
+
     // Call this from a button
     public void OnKojuSort()
     {

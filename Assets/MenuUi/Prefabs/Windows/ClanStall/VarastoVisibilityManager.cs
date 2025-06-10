@@ -15,7 +15,7 @@ public class VarastoVisibilityManager : MonoBehaviour
 
     private bool kojuWindowStatus = false;
 
-    // When KojuView is activated
+    // When KojuContent is activated
     private void OnEnable()
     {
         KojuContentNotifier.OnActiveStateChanged += HandleKojuActiveChanged;
@@ -27,7 +27,7 @@ public class VarastoVisibilityManager : MonoBehaviour
         }
     }
 
-    // When KojuView is deactivated
+    // When KojuContent is deactivated
     private void OnDisable()
     {
         KojuContentNotifier.OnActiveStateChanged -= HandleKojuActiveChanged;
