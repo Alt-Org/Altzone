@@ -12,32 +12,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
   m_Name: CharacterSpec_000
   m_EditorClassIdentifier: 
-  Id: 
+  Id: 0
   CharacterId: 0
-  IsApproved: 0
-  Name: 
+  IsApproved: 1
+  Name: Test
   ClassType: 0
-  CharacterDescription: 
-  CharacterShortDescription: 
-  CharacterStats: {fileID: 0}
+  CharacterDescription: Test Character of testing player base logic
+  CharacterShortDescription: Test Character of testing player base logic
+  CharacterStats: {fileID: 11400000, guid: 469e351f5fcc4a943aee0f39959c4605, type: 2}
   Hp:
-    Level: 0
-    Coefficient: 0
+    Level: 7
+    Coefficient: 4
   Speed:
-    Level: 0
-    Coefficient: 0
+    Level: 7
+    Coefficient: 4
   CharacterSize:
-    Level: 0
-    Coefficient: 0
+    Level: 7
+    Coefficient: 4
   Attack:
-    Level: 0
-    Coefficient: 0
+    Level: 7
+    Coefficient: 4
   Defence:
-    Level: 0
-    Coefficient: 0
+    Level: 7
+    Coefficient: 4
   GalleryImage: {fileID: 0}
   GalleryHeadImage: {fileID: 0}
   BattleEntityPrototype:
     Id:
-      Value: 0
+      Value: 1499697656464696716
   BattleUiSprite: {fileID: 0}
