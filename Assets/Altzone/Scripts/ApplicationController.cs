@@ -9,6 +9,7 @@ using Altzone.Scripts.Config.ScriptableObjects;
 using Altzone.Scripts.AzDebug;
 using Altzone.Scripts.GA;
 using System.Linq;
+using Prg.Scripts.Common;
 
 namespace Altzone.Scripts
 {
@@ -42,6 +43,8 @@ namespace Altzone.Scripts
             Debug.Log(startupMessage);
 
             InstantiateGlobalGameObjects();
+
+            ClickStateHandler.Initialize();
         }
 
         private void OnApplicationPause(bool pause)

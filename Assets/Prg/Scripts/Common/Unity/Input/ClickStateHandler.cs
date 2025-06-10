@@ -36,6 +36,11 @@ namespace Prg.Scripts.Common
         private static Vector2 s_rotationStartVector = Vector2.zero;
         private static float s_scrollWheelValue = 0f;
 
+        public static void Initialize()
+        {
+            EnhancedTouchSupport.Enable();
+        }
+
         /// <summary>
         /// <para>Returns a <c>ClickState</c> enum according to the either the current <c>Touch</c> phase or the current <c>Mouse</c> clickstate.</para>
         ///
@@ -48,8 +53,6 @@ namespace Prg.Scripts.Common
         /// <returns> ClickState </returns>
         public static ClickState GetClickState(ClickInputDevice inputDevice = ClickInputDevice.None)
         {
-            if (!EnhancedTouchSupport.enabled) EnhancedTouchSupport.Enable();
-
             // Mouse
             if (Mouse.current != null && inputDevice is not ClickInputDevice.Touch)
             {
@@ -91,8 +94,6 @@ namespace Prg.Scripts.Common
 
         public static ClickType GetClickType(ClickInputDevice inputDevice = ClickInputDevice.None)
         {
-            if (!EnhancedTouchSupport.enabled) EnhancedTouchSupport.Enable();
-
             if (inputDevice is not ClickInputDevice.Mouse)
             {
                 if (Touch.activeTouches.Count == 1)
@@ -118,8 +119,6 @@ namespace Prg.Scripts.Common
 
         public static Vector2 GetClickPosition(ClickInputDevice inputDevice = ClickInputDevice.None)
         {
-            if (!EnhancedTouchSupport.enabled) EnhancedTouchSupport.Enable();
-
             if (GetClickState() is not ClickState.None)
             {
                 if (Touch.activeFingers.Count >= 1 && inputDevice is not ClickInputDevice.Mouse)
@@ -134,8 +133,6 @@ namespace Prg.Scripts.Common
 
         public static float GetPinchDistance(ClickInputDevice inputDevice = ClickInputDevice.None)
         {
-            if (!EnhancedTouchSupport.enabled) EnhancedTouchSupport.Enable();
-
             if (Touch.activeTouches.Count >= 2 && inputDevice is not ClickInputDevice.Mouse)
             {
                 Vector2 touch1 = Touch.activeFingers[0].screenPosition;
@@ -154,8 +151,6 @@ namespace Prg.Scripts.Common
 
         public static float GetRotationValue(ClickInputDevice inputDevice = ClickInputDevice.None)
         {
-            if (!EnhancedTouchSupport.enabled) EnhancedTouchSupport.Enable();
-
             if (Touch.activeTouches.Count >= 2 && (inputDevice is ClickInputDevice.Touch or ClickInputDevice.None))
             {
                 Touch touch1 = Touch.activeTouches[0];
@@ -185,12 +180,11 @@ namespace Prg.Scripts.Common
                     s_rotationStartVector = Vector2.zero;
                     return 0;
                 }
-
             }
 
             if (Mouse.current != null && inputDevice is not ClickInputDevice.Touch)
             {
-                if (s_scrollWheelValue < 720) s_scrollWheelValue += Mouse.current.scroll.ReadValue().y;
+                if (s_scrollWheelValue < 720 && s_scrollWheelValue > -720) s_scrollWheelValue += Mouse.current.scroll.ReadValue().y;
 
                 return s_scrollWheelValue;
             }
