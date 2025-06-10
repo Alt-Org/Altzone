@@ -111,14 +111,12 @@ namespace Battle.QSimulation.Player
 
                 RuntimePlayer data = f.GetPlayerData(playerHandle.PlayerRef);
 
-                // TODO: Fetch EntityPrototype for each character based on the BattleCharacterBase Id
-                EntityPrototype entityPrototypeAsset = f.FindAsset(data.PlayerAvatar);
-
                 EntityRef[] playerCharacterEntityArray = new EntityRef[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
 
                 // create playerEntity for each characters
                 {
                     //{ player temp variables
+                    AssetRef<EntityPrototype>           playerEntityPrototype;
                     BattlePlayerDataTemplateQComponent* playerDataTemplate;
                     FPVector2                           playerSpawnPosition;
                     FP                                  playerRotationBase;
@@ -172,9 +170,15 @@ namespace Battle.QSimulation.Player
 
                     for (int playerCharacterNumber = 0; playerCharacterNumber < playerCharacterEntityArray.Length; playerCharacterNumber++)
                     {
+                        // entity prototype
+                        playerEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(data.Characters[playerCharacterNumber].Id);
+                        if (playerEntityPrototype == null)
+                        {
+                            playerEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(0);
+                        }
 
                         // create entity
-                        playerEntity = f.Create(entityPrototypeAsset);
+                        playerEntity = f.Create(playerEntityPrototype);
 
                         // get template data
                         playerDataTemplate                     = f.Unsafe.GetPointer<BattlePlayerDataTemplateQComponent>(playerEntity);
