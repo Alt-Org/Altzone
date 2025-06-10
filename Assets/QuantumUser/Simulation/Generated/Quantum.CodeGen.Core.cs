@@ -599,14 +599,14 @@ namespace Quantum {
     [FieldOffset(28)]
     public Button RotateMotion;
     [FieldOffset(8)]
-    public FP RotationDirection;
+    public FP RotationValue;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 19249;
         hash = hash * 31 + MouseClick.GetHashCode();
         hash = hash * 31 + MovementPosition.GetHashCode();
         hash = hash * 31 + RotateMotion.GetHashCode();
-        hash = hash * 31 + RotationDirection.GetHashCode();
+        hash = hash * 31 + RotationValue.GetHashCode();
         return hash;
       }
     }
@@ -630,7 +630,7 @@ namespace Quantum {
     static partial void SerializeCodeGen(void* ptr, FrameSerializer serializer) {
         var p = (Input*)ptr;
         Quantum.BattleGridPosition.Serialize(&p->MovementPosition, serializer);
-        FP.Serialize(&p->RotationDirection, serializer);
+        FP.Serialize(&p->RotationValue, serializer);
         Button.Serialize(&p->MouseClick, serializer);
         Button.Serialize(&p->RotateMotion, serializer);
     }
@@ -1287,7 +1287,7 @@ namespace Quantum {
       i->MouseClick = i->MouseClick.Update(this.Number, input.MouseClick);
       i->MovementPosition = input.MovementPosition;
       i->RotateMotion = i->RotateMotion.Update(this.Number, input.RotateMotion);
-      i->RotationDirection = input.RotationDirection;
+      i->RotationValue = input.RotationValue;
     }
     public Input* GetPlayerInput(PlayerRef player) {
       if ((int)player >= (int)_globals->input.Length) { throw new System.ArgumentOutOfRangeException("player"); }

@@ -73,20 +73,27 @@ namespace Battle.QSimulation.Player
             {
                 if (input->RotateMotion)
                 {
-                    FP maxAngle = FP.Rad_45;
+                    //set target angle
+                    FP maxAngle;
+#if PLATFORM_ANDROID
+                    maxAngle = FP.Rad_45 * (FPMath.Abs(input->RotationValue) / (FP)45);
+#else
+                    maxAngle = FP.Rad_45 * (FPMath.Abs(input->RotationValue) / (FP)360);
+#endif
+                    maxAngle = FPMath.Clamp(maxAngle, FP._0, FP.Rad_45);
 
                     //stops player before rotation
                     playerData->TargetPosition = transform->Position;
 
                     //rotates to right
-                    if (input->RotationDirection > 0 && playerData->RotationOffset < maxAngle)
+                    if (input->RotationValue > 0 && playerData->RotationOffset < maxAngle)
                     {
                         playerData->RotationOffset += rotationSpeed;
                         Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", playerData->RotationOffset);
                     }
 
                     //rotates to left
-                    else if (input->RotationDirection < 0 && playerData->RotationOffset > -maxAngle)
+                    else if (input->RotationValue < 0 && playerData->RotationOffset > -maxAngle)
                     {
                         playerData->RotationOffset -= rotationSpeed;
                         Debug.LogFormat("[PlayerRotatingSystem] Leaning left(rotation: {0}", playerData->RotationOffset);
@@ -163,17 +170,7 @@ namespace Battle.QSimulation.Player
             characterTransform->Position = transform->Position;
             characterTransform->Rotation = transform->Rotation;
 
-            //FPVector2 position = transform->Position;
-            //FP rotation = transform->Rotation;
-
-            //Transform2D* hitBoxTransform;
-            //foreach (BattlePlayerHitboxLink hitBoxLink in hitboxListAll)
-            //{
-            //    hitBoxTransform = f.Unsafe.GetPointer<Transform2D>(hitBoxLink.Entity);
-
-            //    hitBoxTransform->Position = CalculateHitboxPosition(position, rotation, hitBoxLink.Position);
-            //    hitBoxTransform->Rotation = rotation;
-            //}
+            f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity)->Normal = FPVector2.Rotate(FPVector2.Up, transform->Rotation);
         }
 
         private static void TeleportHitbox(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform)
@@ -186,19 +183,7 @@ namespace Battle.QSimulation.Player
             shieldTransform->Teleport(f, transform->Position, transform->Rotation);
             characterTransform->Teleport(f, transform->Position, transform->Rotation);
 
-            //FPVector2 position = transform->Position;
-            //FP rotation = transform->Rotation;
-
-            //Transform2D* hitBoxTransform;
-            //foreach (BattlePlayerHitboxLink hitBoxLink in hitboxListAll)
-            //{
-            //    hitBoxTransform = f.Unsafe.GetPointer<Transform2D>(hitBoxLink.Entity);
-
-            //    hitBoxTransform->Teleport(f,
-            //        CalculateHitboxPosition(position, rotation, hitBoxLink.Position),
-            //        rotation
-            //    );
-            //}
+            f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity)->Normal = FPVector2.Rotate(FPVector2.Up, transform->Rotation);
         }
     }
 }
