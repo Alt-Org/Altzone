@@ -43,13 +43,13 @@ public class KojuSorting : MonoBehaviour
         switch (currentSortMode)
         {
             case SortMode.Nimi:
-                sortingText.text = "Järjestetty: Aakkoset"; 
+                sortingText.text = "JÃ¤rjestetty: Aakkoset"; 
                 break;
             case SortMode.Hinta:
-                sortingText.text = "Järjestetty: Hinta";
+                sortingText.text = "JÃ¤rjestetty: Hinta";
                 break;
             case SortMode.Harvinaisuus:
-                sortingText.text = "Järjestetty: Harvinaisuus"; 
+                sortingText.text = "JÃ¤rjestetty: Harvinaisuus"; 
                 break;
         }
     }
