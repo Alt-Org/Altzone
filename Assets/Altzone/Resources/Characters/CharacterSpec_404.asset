@@ -12,27 +12,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
   m_Name: CharacterSpec_404
   m_EditorClassIdentifier: 
-  Id: 404
+  Id: 0
   CharacterId: 0
   IsApproved: 0
   Name: Harhaisuus
   ClassType: 400
   CharacterDescription: 
   CharacterShortDescription: 
+  CharacterStats: {fileID: 11400000, guid: 469e351f5fcc4a943aee0f39959c4605, type: 2}
   Hp:
-    Level: 0
-    Coefficient: 0
+    Level: 7
+    Coefficient: 4
   Speed:
-    Level: 0
-    Coefficient: 0
+    Level: 7
+    Coefficient: 4
   CharacterSize:
-    Level: 0
-    Coefficient: 0
+    Level: 7
+    Coefficient: 4
   Attack:
-    Level: 0
-    Coefficient: 0
+    Level: 7
+    Coefficient: 4
   Defence:
-    Level: 0
-    Coefficient: 0
+    Level: 7
+    Coefficient: 4
   GalleryImage: {fileID: 0}
-  BattleSprite: {fileID: 0}
+  GalleryHeadImage: {fileID: 0}
+  BattleEntityPrototype:
+    Id:
+      Value: 1351919908784755385
+  BattleUiSprite: {fileID: 0}
