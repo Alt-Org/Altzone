@@ -39,6 +39,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public event Action OnButtonLabelVisibilityChange;
 
     // Constants
+    public const string BattleShowDebugStatsOverlayKey = "BattleStatsOverlay";
     public const string BattleArenaScaleKey = "BattleUiArenaScale";
     public const string BattleArenaPosXKey = "BattleUiPosX";
     public const string BattleArenaPosYKey = "BattleUiPosY";
@@ -88,6 +89,18 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
             if (_unlimitedStatUpgradeMaterials == value) return;
             _unlimitedStatUpgradeMaterials = value;
             PlayerPrefs.SetInt(UnlimitedStatUpgradeMaterialsKey, value ? 1 : 0);
+        }
+    }
+
+    private bool _battleShowDebugStatsOverlay;
+    public bool BattleShowDebugStatsOverlay
+    {
+        get => _battleShowDebugStatsOverlay;
+        set
+        {
+            if (_battleShowDebugStatsOverlay == value) return;
+            _battleShowDebugStatsOverlay = value;
+            PlayerPrefs.SetInt(BattleShowDebugStatsOverlayKey, value ? 1 : 0);
         }
     }
 
@@ -153,6 +166,8 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         menuVolume = PlayerPrefs.GetFloat("MenuVolume", 1);
         musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1);
         soundVolume = PlayerPrefs.GetFloat("SoundVolume", 1);
+
+        _battleShowDebugStatsOverlay = PlayerPrefs.GetInt(BattleShowDebugStatsOverlayKey, 0) == 1;
 
         _battleArenaScale = PlayerPrefs.GetInt(BattleArenaScaleKey, BattleArenaScaleDefault);
         _battleArenaPosX = PlayerPrefs.GetInt(BattleArenaPosXKey, BattleArenaPosXDefault);
