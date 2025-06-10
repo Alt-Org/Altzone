@@ -7,7 +7,7 @@ using MenuUi.Scripts.DefenceScreen.CharacterGallery;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
-    public class SelectedCharSlot : SlotBase, IGalleryCharacterData
+    public class SelectedCharSlot : SlotBase
     {
         [SerializeField] private Image _characterImage;
         [SerializeField] private TMP_Text _className;
@@ -18,7 +18,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
         [Space, SerializeField] private PieChartPreview _pieChartPreview;
 
-        [Space, SerializeField] private Button _editingPopupButton;
+        [Space, SerializeField] private Button _statPopupButton;
 
         [Space, SerializeField] private GameObject _characterCard;
         [SerializeField] private TMP_Text _hpText;
@@ -27,17 +27,14 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private TMP_Text _defenceText;
         [SerializeField] private TMP_Text _charSizeText;
 
-        private CharacterID _id;
-        public CharacterID Id => _id;
-
         private void Awake()
         {
-            if (_editingPopupButton != null) _editingPopupButton.onClick.AddListener(SignalBus.OnDefenceGalleryEditPanelRequestedSignal);
+            if (_slotButton != null) _slotButton.onClick.AddListener(SignalBus.OnDefenceGalleryEditPanelRequestedSignal);
         }
 
         private void OnDestroy()
         {
-            _editingPopupButton.onClick.RemoveAllListeners();
+            _slotButton.onClick.RemoveAllListeners();
         }
 
         public void SetInfo(CustomCharacter customCharacter, Sprite sprite, Color bgColor, Color bgAltColor, string name, string className)
@@ -60,7 +57,7 @@ namespace MenuUi.Scripts.CharacterGallery
         public void SetCharacterVisibility(bool visible)
         {
            _characterCard.SetActive(visible);
-           _slotButton.enabled = visible;
+           _statPopupButton.gameObject.SetActive(visible);
         }
     }
 }

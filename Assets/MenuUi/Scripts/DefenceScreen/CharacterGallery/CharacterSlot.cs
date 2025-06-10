@@ -12,13 +12,10 @@ namespace MenuUi.Scripts.CharacterGallery
     /// Has a reference to GalleryCharacter, and the info to GalleryCharacter is also set through SetInfo function.
     /// Inherits SlotBase for editing selected characters.
     /// </summary>
-    public class CharacterSlot : SlotBase, IGalleryCharacterData
+    public class CharacterSlot : SlotBase
     {
         [SerializeField] public GalleryCharacter Character;
 
-        private CharacterID _id;
-
-        public CharacterID Id { get => _id; }
         [HideInInspector] public bool IsLocked = false;
         public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, string className, CharacterID id)
         {
