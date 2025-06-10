@@ -8,9 +8,19 @@ public class TopBarSelector : MonoBehaviour
 
     void Start()
     {
+        SetPanel((int)SettingsCarrier.Instance.TopBarStyleSetting);
+    }
+
+    private void OnEnable()
+    {
         SettingsCarrier.OnTopBarChanged += SetPanel;
 
         SetPanel((int)SettingsCarrier.Instance.TopBarStyleSetting);
+    }
+
+    private void OnDisable()
+    {
+        SettingsCarrier.OnTopBarChanged -= SetPanel;
     }
 
     private int CheckIndexRange(int index)
