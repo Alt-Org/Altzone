@@ -110,7 +110,8 @@ namespace Prg.Scripts.Common
                 if (Mouse.current.middleButton.wasPressedThisFrame || Mouse.current.middleButton.wasReleasedThisFrame || Mouse.current.middleButton.isPressed) s_scrollWheelValue = 0f;
 
                 if (Mouse.current.scroll.ReadValue() == Vector2.zero && s_scrollWheelValue == 0f) return ClickType.Click;
-                else return ClickType.TwoFingerOrScroll;
+
+                return ClickType.TwoFingerOrScroll;
             }
 
             s_rotationStartVector = Vector2.zero;
