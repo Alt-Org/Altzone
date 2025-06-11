@@ -14,6 +14,14 @@ namespace Battle.View.Player
     public class BattlePlayerInput : MonoBehaviour
     {
         private bool _mouseDownPrevious;
+        private static Vector2 s_rotationStartVector;
+        private enum RotationInputType
+        {
+            Swipe,
+            TwoFinger,
+            JoyStick
+        }
+        private const RotationInputType _rotationInputType = RotationInputType.TwoFinger;
 
         private void OnEnable()
         {
@@ -27,9 +35,14 @@ namespace Battle.View.Player
             bool mouseClick = !twoFingers && mouseDown && !_mouseDownPrevious;
             _mouseDownPrevious = mouseDown;
 
-            BattleGridPosition movementPosition;
+            bool movementInput = false;
+            BattleGridPosition movementPosition = new BattleGridPosition() {Row = -1, Col = -1};
+            bool rotationInput = false;
+            FP rotationValue = FP._0;
+
             if (mouseClick)
             {
+                movementInput = true;
                 Vector3 unityPosition = BattleCamera.Camera.ScreenToWorldPoint(ClickStateHandler.GetClickPosition());
                 movementPosition = new BattleGridPosition()
                 {
@@ -37,21 +50,46 @@ namespace Battle.View.Player
                     Col = BattleGridManager.WorldXPositionToGridCol(FP.FromFloat_UNSAFE(unityPosition.x))
                 };
             }
-            else
+
+            switch (_rotationInputType)
             {
-                movementPosition = new BattleGridPosition()
-                {
-                    Row = -1,
-                    Col = -1
-                };
+                case RotationInputType.Swipe:
+                    
+                    float swipeMinDistance = 30f;
+
+                    if (mouseDown && s_rotationStartVector == Vector2.zero)
+                    {
+                        s_rotationStartVector = ClickStateHandler.GetClickPosition();
+                    }
+                    else if (mouseDown && (ClickStateHandler.GetClickPosition().x - s_rotationStartVector.x > swipeMinDistance || ClickStateHandler.GetClickPosition().x - s_rotationStartVector.x < -swipeMinDistance))
+                    {
+                        rotationInput = true;
+                        Vector2 currentPosition = ClickStateHandler.GetClickPosition();
+                        float distance = currentPosition.x - s_rotationStartVector.x;
+                        rotationValue = -FP.FromFloat_UNSAFE(distance);
+
+                    }
+                    else if (!mouseDown)
+                    {
+                        s_rotationStartVector = Vector2.zero;
+                    }
+                    break;
+
+                case RotationInputType.TwoFinger:
+                    if (twoFingers)
+                    {
+                        rotationInput = true;
+                        rotationValue = FP.FromFloat_UNSAFE(ClickStateHandler.GetRotationValue());
+                    }
+                    break;
             }
 
             Input i = new()
             {
-                MouseClick = mouseClick,
+                MovementInput = movementInput,
                 MovementPosition = movementPosition,
-                RotateMotion = twoFingers,
-                RotationValue = twoFingers ? FP.FromFloat_UNSAFE(ClickStateHandler.GetRotationValue()) : 0,
+                RotationInput = rotationInput,
+                RotationValue = rotationValue,
             };
 
             callback.SetInput(i, DeterministicInputFlags.Repeatable);

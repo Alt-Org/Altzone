@@ -35,7 +35,7 @@ namespace Battle.QSimulation.Player
             FP rotationSpeed = FP._0_20;
 
             // handle movement
-            if (input->MouseClick)
+            if (input->MovementInput)
             {
                 // get players TargetPosition
                 BattleGridPosition targetGridPosition = input->MovementPosition;
@@ -71,7 +71,7 @@ namespace Battle.QSimulation.Player
 
             // handle rotation
             {
-                if (input->RotateMotion)
+                if (input->RotationInput)
                 {
                     //set target angle
                     FP maxAngle;
@@ -101,7 +101,7 @@ namespace Battle.QSimulation.Player
                 }
 
                 // returns player to 0 rotation when RotateMotion-input ends
-                if (!input->RotateMotion && playerData->RotationOffset != 0)
+                if (!input->RotationInput && playerData->RotationOffset != 0)
                 {
                     if (playerData->RotationOffset > 0)
                         playerData->RotationOffset -= rotationSpeed;
