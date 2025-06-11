@@ -15,26 +15,26 @@ MonoBehaviour:
   Id: 700
   CharacterId: 700
   IsApproved: 0
-  Name: TestiÄlykkö
+  Name: "Testi\xC4lykk\xF6"
   ClassType: 700
   CharacterDescription: 
   CharacterShortDescription: 
-  CharacterStats: {fileID: 11400000, guid: 469e351f5fcc4a943aee0f39959c4605, type: 2}
+  CharacterStats: {fileID: 11400000, guid: cd56cb4b4e6308448bb79df79e4fad7f, type: 2}
   Hp:
-    Level: 7
+    Level: 8
     Coefficient: 4
   Speed:
-    Level: 7
-    Coefficient: 4
+    Level: 6
+    Coefficient: 5
   CharacterSize:
-    Level: 7
-    Coefficient: 4
+    Level: 8
+    Coefficient: 6
   Attack:
-    Level: 7
+    Level: 10
     Coefficient: 4
   Defence:
-    Level: 7
-    Coefficient: 4
+    Level: 3
+    Coefficient: 5
   GalleryImage: {fileID: 0}
   GalleryHeadImage: {fileID: 0}
   BattleEntityPrototype:

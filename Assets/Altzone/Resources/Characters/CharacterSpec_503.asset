@@ -19,6 +19,7 @@ MonoBehaviour:
   ClassType: 500
   CharacterDescription: 
   CharacterShortDescription: 
+  CharacterStats: {fileID: 0}
   Hp:
     Level: 0
     Coefficient: 0
@@ -35,4 +36,8 @@ MonoBehaviour:
     Level: 0
     Coefficient: 0
   GalleryImage: {fileID: 0}
-  BattleSprite: {fileID: 0}
+  GalleryHeadImage: {fileID: 0}
+  BattleEntityPrototype:
+    Id:
+      Value: 0
+  BattleUiSprite: {fileID: 0}
