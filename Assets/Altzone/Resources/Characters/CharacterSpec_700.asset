@@ -10,29 +10,34 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
-  m_Name: CharacterSpec_404
+  m_Name: CharacterSpec_700
   m_EditorClassIdentifier: 
-  Id: 404
-  CharacterId: 404
+  Id: 700
+  CharacterId: 700
   IsApproved: 0
-  Name: Harhaisuus
-  ClassType: 400
+  Name: "Testi\xC4lykk\xF6"
+  ClassType: 700
   CharacterDescription: 
   CharacterShortDescription: 
+  CharacterStats: {fileID: 11400000, guid: cd56cb4b4e6308448bb79df79e4fad7f, type: 2}
   Hp:
-    Level: 0
-    Coefficient: 0
+    Level: 8
+    Coefficient: 4
   Speed:
-    Level: 0
-    Coefficient: 0
+    Level: 6
+    Coefficient: 5
   CharacterSize:
-    Level: 0
-    Coefficient: 0
+    Level: 8
+    Coefficient: 6
   Attack:
-    Level: 0
-    Coefficient: 0
+    Level: 10
+    Coefficient: 4
   Defence:
-    Level: 0
-    Coefficient: 0
+    Level: 3
+    Coefficient: 5
   GalleryImage: {fileID: 0}
-  BattleSprite: {fileID: 0}
+  GalleryHeadImage: {fileID: 0}
+  BattleEntityPrototype:
+    Id:
+      Value: 0
+  BattleUiSprite: {fileID: 0}
