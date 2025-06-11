@@ -32,6 +32,8 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         TeammateInfo = 2,
         Diamonds = 3,
         GiveUpButton = 4,
+        MoveJoystick = 5,
+        RotateJoystick = 6,
     }
 
     public enum TopBarStyle

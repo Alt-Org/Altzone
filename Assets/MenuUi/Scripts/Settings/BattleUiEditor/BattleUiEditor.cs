@@ -56,6 +56,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private GameObject _playerInfo;
         [SerializeField] private GameObject _diamonds;
         [SerializeField] private GameObject _giveUpButton;
+        [SerializeField] private GameObject _joystick;
 
         [Header("Save/reset popup")]
         [SerializeField] private GameObject _saveResetPopup;
@@ -186,14 +187,18 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private BattleUiMultiOrientationElement _instantiatedTeammateInfo;
         private BattleUiMovableElement _instantiatedDiamonds;
         private BattleUiMovableElement _instantiatedGiveUpButton;
+        private BattleUiMovableElement _instantiatedMoveJoystick;
+        private BattleUiMovableElement _instantiatedRotateJoystick;
 
         private readonly List<BattleUiEditingComponent> _editingComponents = new();
 
-        BattleUiEditingComponent _timerEditingComponent;
-        BattleUiEditingComponent _playerInfoEditingComponent;
-        BattleUiEditingComponent _teammateInfoEditingComponent;
-        BattleUiEditingComponent _diamondsEditingComponent;
-        BattleUiEditingComponent _giveUpButtonEditingComponent;
+        private BattleUiEditingComponent _timerEditingComponent;
+        private BattleUiEditingComponent _playerInfoEditingComponent;
+        private BattleUiEditingComponent _teammateInfoEditingComponent;
+        private BattleUiEditingComponent _diamondsEditingComponent;
+        private BattleUiEditingComponent _giveUpButtonEditingComponent;
+        private BattleUiEditingComponent _moveJoystickEditingComponent;
+        private BattleUiEditingComponent _rotateJoystickEditingComponent;
 
         private bool _unsavedChanges = false;
 
@@ -709,7 +714,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             bool isFlippedVertically = false;
 
             // Rect variable so that we can do aspect ratio calculations
-            Rect uiElementRect;
+            Rect movableUiElementRect = Rect.zero;
             float aspectRatio = 0f;
 
             // Setting hardcoded default anchors (maybe there's a better way for this?)
@@ -724,8 +729,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     anchorMin.y = 0.45f;
                     anchorMax.y = 0.55f;
 
-                    uiElementRect = _instantiatedTimer.GetComponent<RectTransform>().rect;
-                    aspectRatio = uiElementRect.width / uiElementRect.height;
+                    movableUiElementRect = _instantiatedTimer.GetComponent<RectTransform>().rect;
                     break;
 
                 case BattleUiElementType.Diamonds:
@@ -736,8 +740,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
                     anchorMin.y = 0.025f;
                     anchorMax.y = 0.075f;
-                    uiElementRect = _instantiatedDiamonds.GetComponent<RectTransform>().rect;
-                    aspectRatio = uiElementRect.width / uiElementRect.height;
+                    movableUiElementRect = _instantiatedDiamonds.GetComponent<RectTransform>().rect;
                     break;
 
                 case BattleUiElementType.GiveUpButton:
@@ -749,8 +752,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     anchorMin.y = 0.025f;
                     anchorMax.y = 0.075f;
 
-                    uiElementRect = _instantiatedGiveUpButton.GetComponent<RectTransform>().rect;
-                    aspectRatio = uiElementRect.width / uiElementRect.height;
+                    movableUiElementRect = _instantiatedGiveUpButton.GetComponent<RectTransform>().rect;
                     break;
 
                 case BattleUiElementType.PlayerInfo:
@@ -780,7 +782,22 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
                     aspectRatio = _instantiatedTeammateInfo.HorizontalAspectRatio;
                     break;
+
+                case BattleUiElementType.MoveJoystick:
+                    if (_instantiatedMoveJoystick == null) return null;
+
+                    anchorMin.x = 0f;
+                    anchorMax.x = 0.4f;
+
+                    anchorMin.y = 0f;
+                    anchorMax.y = 0.2f;
+
+                    movableUiElementRect = _instantiatedMoveJoystick.GetComponent<RectTransform>().rect;
+                    break;
             }
+
+            // Calculating aspect ratio for movable elements (multiorientation elements have aspect ratios saved to serializefield)
+            if (movableUiElementRect != Rect.zero) aspectRatio = movableUiElementRect.width / movableUiElementRect.height;
 
             // Calculating anchors
             Vector2 size = new();
