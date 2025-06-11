@@ -69,19 +69,19 @@ public class TopNamePanel : MonoBehaviour
                 store.GetClanData(clanId, p => clanData = p);
                 if (clanData != null)
                 {
-                    _playerClanText.text = clanData.Name;
-                    _playerClanDescription.text = playerData.Name;
+                    if(_playerClanText != null) _playerClanText.text = clanData.Name;
+                    if (_playerClanDescription != null) _playerClanDescription.text = playerData.Name;
                 }
                 else
                 {
-                    _playerClanText.text = "Klaanin tietojen hakeminen ei onnistunut";
-                    _playerClanDescription.text = playerData.Name;
+                    if (_playerClanText != null) _playerClanText.text = "Klaanin tietojen hakeminen ei onnistunut";
+                    if (_playerClanDescription != null) _playerClanDescription.text = playerData.Name;
                 }
             }
             else
             {
-                _playerClanText.text = "Et ole klaanissa";
-                _playerClanDescription.text = playerData.Name;
+                if (_playerClanText != null) _playerClanText.text = "Et ole klaanissa";
+                if (_playerClanDescription != null) _playerClanDescription.text = playerData.Name;
             }
         }
         else

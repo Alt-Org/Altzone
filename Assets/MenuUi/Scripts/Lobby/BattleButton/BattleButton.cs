@@ -6,7 +6,7 @@ using MenuUi.Scripts.Signals;
 using MenuUi.Scripts.SwipeNavigation;
 using Altzone.Scripts.Lobby;
 using TMPro;
-using MenuUi.Scripts.Window;
+using Altzone.Scripts.Window;
 
 namespace MenuUi.Scripts.Lobby.BattleButton
 {

@@ -1,8 +1,9 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Altzone.Scripts.Model.Poco.Game;
+using TMPro;
 using Altzone.Scripts.ReferenceSheets;
+using MenuUi.Scripts.Storage;
+using Altzone.Scripts.Model.Poco.Game;
 
 public class FurnitureCardUI : MonoBehaviour
 {
@@ -20,22 +21,33 @@ public class FurnitureCardUI : MonoBehaviour
     private string description;
     private FurnitureRarity storedRarity;
 
-    public void PopulateCard(GameFurniture furniture)
+    private float currentPrice = 0f;
+
+    // Populate from StorageFurniture
+    public void PopulateCard(StorageFurniture storageFurniture)
     {
-        nameText.text = furniture.FurnitureInfo.VisibleName;
-        setNameText.text = furniture.FurnitureInfo.SetName;
-        weightText.text = $"Weight: {furniture.Weight:0.0}";
-        iconImage.sprite = furniture.FurnitureInfo.Image;
-        description = furniture.FurnitureInfo.ArtisticDescription;
-        creatorName = furniture.FurnitureInfo.ArtistName;
+        if (storageFurniture == null)
+        {
+            Debug.LogWarning("StorageFurniture is null when populating card.");
+            return;
+        }
 
-        storedRarity = furniture.Rarity;
+        nameText.text = storageFurniture.VisibleName;
+        setNameText.text = storageFurniture.SetName;
+        weightText.text = $"Weight: {storageFurniture.Weight:0.0}";
+        iconImage.sprite = storageFurniture.Sprite;
 
-        // Apply color using rarity reference
+        description = storageFurniture.Info.ArtisticDescription;
+        creatorName = storageFurniture.Info.ArtistName;
+
+        storedRarity = storageFurniture.Rarity;
+
         if (rarityColourReference != null)
         {
             rarityColorImage.color = rarityColourReference.GetColor(storedRarity);
         }
+
+        currentPrice = storageFurniture.Value;  
     }
 
     public string GetNameText() => nameText.text;
@@ -45,14 +57,18 @@ public class FurnitureCardUI : MonoBehaviour
     public string GetDescriptionText() => description;
     public string GetCreatorText() => creatorName;
 
-    // Added getter for rarity enum
     public FurnitureRarity GetFurnitureRarity() => storedRarity;
 
-    // Added getter for color
     public Color GetRarityColor()
     {
         if (rarityColourReference != null)
             return rarityColourReference.GetColor(storedRarity);
         return Color.white;
+    }
+
+    // Get current price value for sorting
+    public float GetValue()
+    {
+        return currentPrice;
     }
 }

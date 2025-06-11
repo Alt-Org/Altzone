@@ -62,6 +62,12 @@ public class AlternateTopPanel : AltMonoBehaviour
         OnTopPanelChanged += ChangeInfoData;
         OnLeaderBoardChange += ChangeLeaderboardType;
 
+        if (!_alternateLeaderboard)
+        {
+            _currentTopPanelInfo = TopPanelInfo.Clan;
+            _currentTopLeaderboardInfo = TopLeaderboardInfo.Wins;
+        }
+
         if (ServerManager.Instance.Player != null)
         {
             _ownPlayerID = ServerManager.Instance.Player._id;
@@ -69,10 +75,13 @@ public class AlternateTopPanel : AltMonoBehaviour
 
             FetchRankings();
             if (ServerManager.Instance.Player?.clan_id == null) _currentTopPanelInfo = TopPanelInfo.Player;
-            ChangeInfoData();
-            ChangeLeaderboardType();
-            if(ServerManager.Instance.Player?.clan_id != null && _alternateLeaderboard)
-                StartCoroutine(ChangeInfoType());
+            if (_alternateLeaderboard)
+            {
+                ChangeInfoData();
+                ChangeLeaderboardType();
+                if (ServerManager.Instance.Player?.clan_id != null)
+                    StartCoroutine(ChangeInfoType());
+            }
         }
         else
         {
@@ -84,10 +93,13 @@ public class AlternateTopPanel : AltMonoBehaviour
 
                 FetchRankings();
                 if (ServerManager.Instance.Player?.clan_id != null) _currentTopPanelInfo = TopPanelInfo.Player;
-                ChangeInfoData();
-                ChangeLeaderboardType();
-                if (ServerManager.Instance.Player?.clan_id != null && _alternateLeaderboard)
-                    StartCoroutine(ChangeInfoType());
+                if (_alternateLeaderboard)
+                {
+                    ChangeInfoData();
+                    ChangeLeaderboardType();
+                    if (ServerManager.Instance.Player?.clan_id != null)
+                        StartCoroutine(ChangeInfoType());
+                }
             }));
         }
     }

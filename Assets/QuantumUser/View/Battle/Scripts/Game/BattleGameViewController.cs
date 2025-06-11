@@ -47,7 +47,7 @@ namespace Battle.View.Game
 
         public void UiInputOnExitGamePressed()
         {
-            if (_endOfGameDataHasEnded) LobbyManager.ExitQuantum(_endOfGameDataWinningTeam, (float)_endOfGameDataGameLengthSec);
+            if (_endOfGameDataHasEnded) LobbyManager.ExitQuantum(_endOfGameDataWinningTeam == LocalPlayerTeam, (float)_endOfGameDataGameLengthSec);
         }
 
         private bool _endOfGameDataHasEnded = false;
@@ -235,8 +235,10 @@ namespace Battle.View.Game
         private void QEventDebugOnUpdateStatsOverlay(EventBattleDebugUpdateStatsOverlay e)
         {
             if (!SettingsCarrier.Instance.BattleShowDebugStatsOverlay) return;
+            if (e.Slot != LocalPlayerSlot) return;
+
             _uiController.DebugStatsOverlayHandler.SetShow(true);
-            _uiController.DebugStatsOverlayHandler.SetStats(e.Character);
+            _uiController.DebugStatsOverlayHandler.SetStats(e.Stats);
         }
 
         // Handles UI updates based on the game's state and countdown

@@ -34,9 +34,19 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         GiveUpButton = 4,
     }
 
+    public enum TopBarStyle
+    {
+        Old,
+        NewHelena,
+        NewNiko
+    }
+
     // Events
     public event Action OnTextSizeChange;
     public event Action OnButtonLabelVisibilityChange;
+
+    public delegate void TopBarChanged(int index);
+    public static event TopBarChanged OnTopBarChanged;
 
     // Constants
     public const string BattleShowDebugStatsOverlayKey = "BattleStatsOverlay";
@@ -49,6 +59,8 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public const int BattleArenaPosYDefault = 50;
 
     public const string UnlimitedStatUpgradeMaterialsKey = "UnlimitedStatUpgrade";
+
+    public const string TopBarStyleSettingKey = "TopBarStyleSetting";
 
     // Settings variables
     public int mainMenuWindowIndex;
@@ -140,6 +152,19 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         }
     }
 
+    private TopBarStyle _topBarStyleSetting;
+    public TopBarStyle TopBarStyleSetting
+    {
+        get => _topBarStyleSetting;
+        set
+        {
+            if (_topBarStyleSetting == value) return;
+            _topBarStyleSetting = value;
+            PlayerPrefs.SetInt(TopBarStyleSettingKey, (int)value);
+            OnTopBarChanged?.Invoke((int)value);
+        }
+    }
+
     // Functions
     private void Awake()
     {
@@ -156,7 +181,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
     private void Start()
     {
-        Application.targetFrameRate = PlayerPrefs.GetInt("TargetFrameRate", Screen.currentResolution.refreshRate);
+        Application.targetFrameRate = PlayerPrefs.GetInt("TargetFrameRate", (int)Screen.currentResolution.refreshRateRatio.value);
         mainMenuWindowIndex = 0;
 
         _textSize = (TextSize)PlayerPrefs.GetInt("TextSize", 1);
@@ -174,6 +199,8 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         _battleArenaPosY = PlayerPrefs.GetInt(BattleArenaPosYKey, BattleArenaPosYDefault);
 
         _unlimitedStatUpgradeMaterials = PlayerPrefs.GetInt(UnlimitedStatUpgradeMaterialsKey, 1) == 1;
+
+        _topBarStyleSetting = (TopBarStyle)PlayerPrefs.GetInt(TopBarStyleSettingKey, 1);
     }
 
     // SentVolume combines masterVolume and another volume chosen by the sent type

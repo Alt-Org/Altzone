@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using MenuUi.Scripts.TabLine;
-using MenuUi.Scripts.Window;
+using Altzone.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
 
