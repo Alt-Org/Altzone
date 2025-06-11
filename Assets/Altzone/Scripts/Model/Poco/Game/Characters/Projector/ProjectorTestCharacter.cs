@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
-    [CreateAssetMenu(menuName = "ALT-Zone/Characters/ProjectorTestCharacter", fileName = "ProjectorTestCharacterStats")]
+    [CreateAssetMenu(menuName = "ALT-Zone/Characters/TestCharacters/ProjectorTestCharacter", fileName = "ProjectorTestCharacterStats")]
     public class ProjectorTestCharacter : ProjectorClassCharacter
     {
         public ProjectorTestCharacter() : base()

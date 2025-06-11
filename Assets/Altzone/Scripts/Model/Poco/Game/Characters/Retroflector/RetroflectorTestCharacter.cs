@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
-    [CreateAssetMenu(menuName = "ALT-Zone/RetroflectorTestCharacter", fileName = "RetroflectorTestCharacterStats")]
+    [CreateAssetMenu(menuName = "ALT-Zone/Characters/TestCharacters/RetroflectorTestCharacter", fileName = "RetroflectorTestCharacterStats")]
     public class RetroflectorTestCharacter : RetroflectorClassCharacter
     {
         public RetroflectorTestCharacter() : base()

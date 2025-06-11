@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
-    [CreateAssetMenu(menuName = "ALT-Zone/LoversCharacter", fileName = "LoversCharacterStats")]
+    [CreateAssetMenu(menuName = "ALT-Zone/Characters/TestCharacters/ConfluentTestCharacter", fileName = "ConfluentTestCharacterStats")]
     public class ConfluentTestCharacter : ConfluentClassCharacter
     {
         public ConfluentTestCharacter() : base()
