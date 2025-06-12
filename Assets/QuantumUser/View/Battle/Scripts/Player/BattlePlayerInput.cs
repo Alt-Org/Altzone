@@ -9,18 +9,16 @@ using Prg.Scripts.Common;
 using Battle.QSimulation.Game;
 using Battle.View.Game;
 
+using MovementInputType = SettingsCarrier.BattleMovementInputType;
+using RotationInputType = SettingsCarrier.BattleRotationInputType;
+
 namespace Battle.View.Player
 {
     public class BattlePlayerInput : MonoBehaviour
     {
         private bool _mouseDownPrevious;
         private static Vector2 s_rotationStartVector;
-        private enum RotationInputType
-        {
-            Swipe,
-            TwoFinger,
-            JoyStick
-        }
+        
         private const RotationInputType _rotationInputType = RotationInputType.TwoFinger;
 
         private void OnEnable()
