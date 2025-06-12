@@ -31,6 +31,7 @@ namespace Battle.View.Player
             bool twoFingers = ClickStateHandler.GetClickType() is ClickType.TwoFingerOrScroll;
             bool mouseClick = !twoFingers && mouseDown && !_mouseDownPrevious;
             _mouseDownPrevious = mouseDown;
+            _rotationInputType = SettingsCarrier.Instance.BattleRotationInput;
 
             bool movementInput = false;
             BattleGridPosition movementPosition = new BattleGridPosition() {Row = -1, Col = -1};
