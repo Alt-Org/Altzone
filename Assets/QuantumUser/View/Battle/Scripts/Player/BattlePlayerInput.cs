@@ -18,8 +18,7 @@ namespace Battle.View.Player
     {
         private bool _mouseDownPrevious;
         private static Vector2 s_rotationStartVector;
-        
-        private const RotationInputType _rotationInputType = RotationInputType.TwoFinger;
+        private RotationInputType _rotationInputType;
 
         private void OnEnable()
         {
