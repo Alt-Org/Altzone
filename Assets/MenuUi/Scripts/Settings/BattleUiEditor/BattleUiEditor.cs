@@ -125,12 +125,17 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 if (teammateNameVertical != null) teammateNameVertical.text = TeammateText;
             }
 
+            if (_instantiatedMoveJoystick == null) _instantiatedMoveJoystick = InstantiateBattleUiElement(BattleUiElementType.MoveJoystick).GetComponent<BattleUiMovableElement>();
+            if (_instantiatedRotateJoystick == null) _instantiatedRotateJoystick = InstantiateBattleUiElement(BattleUiElementType.RotateJoystick).GetComponent<BattleUiMovableElement>();
+
             // Setting data to Ui elements
             SetDataToUiElement(_instantiatedTimer);
             SetDataToUiElement(_instantiatedDiamonds);
             SetDataToUiElement(_instantiatedGiveUpButton);
             SetDataToUiElement(_instantiatedPlayerInfo);
             SetDataToUiElement(_instantiatedTeammateInfo);
+            SetDataToUiElement(_instantiatedMoveJoystick);
+            SetDataToUiElement(_instantiatedRotateJoystick);
         }
 
         /// <summary>
@@ -412,6 +417,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             BattleUiMovableElementData teammateInfoData = _instantiatedTeammateInfo.GetData();
             if (!IsSavedDataSimilar(BattleUiElementType.TeammateInfo)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.TeammateInfo, teammateInfoData);
 
+            BattleUiMovableElementData moveJoystickData = _instantiatedMoveJoystick.GetData();
+            if (!IsSavedDataSimilar(BattleUiElementType.MoveJoystick)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.MoveJoystick, moveJoystickData);
+
+            BattleUiMovableElementData rotateJoystickData = _instantiatedRotateJoystick.GetData();
+            if (!IsSavedDataSimilar(BattleUiElementType.RotateJoystick)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.RotateJoystick, rotateJoystickData);
+
             _unsavedChanges = false;
             PopupSignalBus.OnChangePopupInfoSignal("Muutokset on tallennettu.");
         }
@@ -432,6 +443,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             SetDefaultDataToUiElement(_instantiatedGiveUpButton);
             SetDefaultDataToUiElement(_instantiatedPlayerInfo);
             SetDefaultDataToUiElement(_instantiatedTeammateInfo);
+            SetDefaultDataToUiElement(_instantiatedMoveJoystick);
+            SetDefaultDataToUiElement(_instantiatedRotateJoystick);
 
             _unsavedChanges = !IsSavedDataSimilar();
         }
@@ -457,6 +470,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     break;
                 case BattleUiElementType.TeammateInfo:
                     compareData = _instantiatedTeammateInfo.GetData();
+                    break;
+                case BattleUiElementType.MoveJoystick:
+                    compareData = _instantiatedMoveJoystick.GetData();
+                    break;
+                case BattleUiElementType.RotateJoystick:
+                    compareData = _instantiatedRotateJoystick.GetData();
                     break;
                 default: // Checking if saved data is similar for every ui element
                     // Note: if more ui elements are added change from GiveUpButton to the last element in the enum
@@ -499,6 +518,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 case BattleUiElementType.PlayerInfo:
                 case BattleUiElementType.TeammateInfo:
                     uiElementPrefab = _playerInfo;
+                    break;
+                case BattleUiElementType.MoveJoystick:
+                case BattleUiElementType.RotateJoystick:
+                    uiElementPrefab = _joystick;
                     break;
             }
 
@@ -564,6 +587,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     break;
                 case BattleUiElementType.TeammateInfo:
                     _teammateInfoEditingComponent = editingComponent;
+                    break;
+                case BattleUiElementType.MoveJoystick:
+                    _moveJoystickEditingComponent = editingComponent;
+                    break;
+                case BattleUiElementType.RotateJoystick:
+                    _rotateJoystickEditingComponent = editingComponent;
                     break;
             }
 
@@ -677,6 +706,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             else if (movableElement == _instantiatedDiamonds)
             {
                 return BattleUiElementType.Diamonds;
+            }
+            else if (movableElement == _instantiatedMoveJoystick)
+            {
+                return BattleUiElementType.MoveJoystick;
+            }
+            else if (movableElement == _instantiatedRotateJoystick)
+            {
+                return BattleUiElementType.RotateJoystick;
             }
             else
             {
@@ -794,6 +831,18 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
                     movableUiElementRect = _instantiatedMoveJoystick.GetComponent<RectTransform>().rect;
                     break;
+
+                case BattleUiElementType.RotateJoystick:
+                    if (_instantiatedRotateJoystick == null) return null;
+
+                    anchorMin.x = 0.6f;
+                    anchorMax.x = 1f;
+
+                    anchorMin.y = 0f;
+                    anchorMax.y = 0.2f;
+
+                    movableUiElementRect = _instantiatedRotateJoystick.GetComponent<RectTransform>().rect;
+                    break;
             }
 
             // Calculating aspect ratio for movable elements (multiorientation elements have aspect ratios saved to serializefield)
@@ -832,6 +881,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
                 case BattleUiElementType.TeammateInfo:
                     return _teammateInfoEditingComponent;
+
+                case BattleUiElementType.MoveJoystick:
+                    return _moveJoystickEditingComponent;
+
+                case BattleUiElementType.RotateJoystick:
+                    return _rotateJoystickEditingComponent;
 
                 default:
                     return null;
