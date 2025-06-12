@@ -36,6 +36,22 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         RotateJoystick = 6,
     }
 
+    public enum BattleMovementInputType
+    {
+        PointAndClick,
+        Swipe,
+        Joystick
+    }
+
+    public enum BattleRotationInputType
+    {
+        Swipe,
+        TwoFinger,
+        Joystick,
+        Gyroscope,
+        ScreenArea
+    }
+
     public enum TopBarStyle
     {
         Old,
@@ -55,10 +71,15 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public const string BattleArenaScaleKey = "BattleUiArenaScale";
     public const string BattleArenaPosXKey = "BattleUiPosX";
     public const string BattleArenaPosYKey = "BattleUiPosY";
+    public const string BattleMovementInputKey = "BattleMovement";
+    public const string BattleRotationInputKey = "BattleRotation";
 
     public const int BattleArenaScaleDefault = 100;
     public const int BattleArenaPosXDefault = 50;
     public const int BattleArenaPosYDefault = 50;
+
+    public const BattleMovementInputType BattleMovementInputDefault = BattleMovementInputType.PointAndClick;
+    public const BattleRotationInputType BattleRotationInputDefault = BattleRotationInputType.Swipe;
 
     public const string UnlimitedStatUpgradeMaterialsKey = "UnlimitedStatUpgrade";
 
@@ -154,6 +175,30 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         }
     }
 
+    private BattleMovementInputType _battleMovementInput;
+    public BattleMovementInputType BattleMovementInput
+    {
+        get => _battleMovementInput;
+        set
+        {
+            if (_battleMovementInput == value) return;
+            _battleMovementInput = value;
+            PlayerPrefs.SetInt(BattleMovementInputKey, (int)value);
+        }
+    }
+
+    private BattleRotationInputType _battleRotationInput;
+    public BattleRotationInputType BattleRotationInput
+    {
+        get => _battleRotationInput;
+        set
+        {
+            if (_battleRotationInput == value) return;
+            _battleRotationInput = value;
+            PlayerPrefs.SetInt(BattleRotationInputKey, (int)value);
+        }
+    }
+
     private TopBarStyle _topBarStyleSetting;
     public TopBarStyle TopBarStyleSetting
     {
@@ -199,6 +244,9 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         _battleArenaScale = PlayerPrefs.GetInt(BattleArenaScaleKey, BattleArenaScaleDefault);
         _battleArenaPosX = PlayerPrefs.GetInt(BattleArenaPosXKey, BattleArenaPosXDefault);
         _battleArenaPosY = PlayerPrefs.GetInt(BattleArenaPosYKey, BattleArenaPosYDefault);
+
+        _battleMovementInput = (BattleMovementInputType)PlayerPrefs.GetInt(BattleMovementInputKey, (int)BattleMovementInputDefault);
+        _battleRotationInput = (BattleRotationInputType)PlayerPrefs.GetInt(BattleRotationInputKey, (int)BattleRotationInputDefault);
 
         _unlimitedStatUpgradeMaterials = PlayerPrefs.GetInt(UnlimitedStatUpgradeMaterialsKey, 1) == 1;
 
