@@ -104,26 +104,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             if (_instantiatedDiamonds == null) _instantiatedDiamonds = InstantiateBattleUiElement(BattleUiElementType.Diamonds).GetComponent<BattleUiMovableElement>();
             if (_instantiatedGiveUpButton == null) _instantiatedGiveUpButton = InstantiateBattleUiElement(BattleUiElementType.GiveUpButton).GetComponent<BattleUiMovableElement>();
 
-            if (_instantiatedPlayerInfo == null)
-            {
-                _instantiatedPlayerInfo = InstantiateBattleUiElement(BattleUiElementType.PlayerInfo).GetComponent<BattleUiMultiOrientationElement>();
-
-                TextMeshProUGUI playerNameHorizontal = _instantiatedPlayerInfo.HorizontalConfiguration.GetComponentInChildren<TextMeshProUGUI>();
-                TextMeshProUGUI playerNameVertical = _instantiatedPlayerInfo.VerticalConfiguration.GetComponentInChildren<TextMeshProUGUI>();
-                
-                if (playerNameHorizontal != null) playerNameHorizontal.text = PlayerText;
-                if (playerNameVertical != null) playerNameVertical.text = PlayerText;
-            }
-
-            if (_instantiatedTeammateInfo == null)
-            {
-                _instantiatedTeammateInfo = InstantiateBattleUiElement(BattleUiElementType.TeammateInfo).GetComponent<BattleUiMultiOrientationElement>();
-
-                TextMeshProUGUI teammateNameHorizontal = _instantiatedTeammateInfo.HorizontalConfiguration.GetComponentInChildren<TextMeshProUGUI>();
-                TextMeshProUGUI teammateNameVertical = _instantiatedTeammateInfo.VerticalConfiguration.GetComponentInChildren<TextMeshProUGUI>();
-                if (teammateNameHorizontal != null) teammateNameHorizontal.text = TeammateText;
-                if (teammateNameVertical != null) teammateNameVertical.text = TeammateText;
-            }
+            if (_instantiatedPlayerInfo == null) _instantiatedPlayerInfo = InstantiateBattleUiElement(BattleUiElementType.PlayerInfo).GetComponent<BattleUiMultiOrientationElement>();
+            if (_instantiatedTeammateInfo == null) _instantiatedTeammateInfo = InstantiateBattleUiElement(BattleUiElementType.TeammateInfo).GetComponent<BattleUiMultiOrientationElement>();
 
             if (_instantiatedMoveJoystick == null) _instantiatedMoveJoystick = InstantiateBattleUiElement(BattleUiElementType.MoveJoystick).GetComponent<BattleUiMovableElement>();
             if (_instantiatedRotateJoystick == null) _instantiatedRotateJoystick = InstantiateBattleUiElement(BattleUiElementType.RotateJoystick).GetComponent<BattleUiMovableElement>();
@@ -132,8 +114,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             SetDataToUiElement(_instantiatedTimer);
             SetDataToUiElement(_instantiatedDiamonds);
             SetDataToUiElement(_instantiatedGiveUpButton);
+
             SetDataToUiElement(_instantiatedPlayerInfo);
             SetDataToUiElement(_instantiatedTeammateInfo);
+
             SetDataToUiElement(_instantiatedMoveJoystick);
             SetDataToUiElement(_instantiatedRotateJoystick);
         }
@@ -596,6 +580,27 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     break;
             }
 
+            // Initializing visuals if needed to differentiate them
+            switch (uiElementType)
+            {
+                case BattleUiElementType.PlayerInfo:
+                case BattleUiElementType.TeammateInfo:
+                    TextMeshProUGUI playerNameHorizontal = multiOrientationElement.HorizontalConfiguration.GetComponentInChildren<TextMeshProUGUI>();
+                    TextMeshProUGUI playerNameVertical = multiOrientationElement.VerticalConfiguration.GetComponentInChildren<TextMeshProUGUI>();
+
+                    string nameText = uiElementType == BattleUiElementType.PlayerInfo ? PlayerText : TeammateText;
+
+                    if (playerNameHorizontal != null) playerNameHorizontal.text = nameText;
+                    if (playerNameVertical != null) playerNameVertical.text = nameText;
+                    break;
+
+                case BattleUiElementType.MoveJoystick:
+                case BattleUiElementType.RotateJoystick:
+                    BattleUiJoystickIconSetter iconSetter = uiElementGameObject.GetComponent<BattleUiJoystickIconSetter>();
+                    if (iconSetter != null) iconSetter.SetIcon(uiElementType);
+                    break;
+            }
+
             return uiElementGameObject;
         }
 
@@ -775,8 +780,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     anchorMin.x = 0.75f;
                     anchorMax.x = 0.95f;
 
-                    anchorMin.y = 0.025f;
-                    anchorMax.y = 0.075f;
+                    anchorMin.y = 0.925f;
+                    anchorMax.y = 0.975f;
                     movableUiElementRect = _instantiatedDiamonds.GetComponent<RectTransform>().rect;
                     break;
 
@@ -786,8 +791,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     anchorMin.x = 0.05f;
                     anchorMax.x = 0.25f;
 
-                    anchorMin.y = 0.025f;
-                    anchorMax.y = 0.075f;
+                    anchorMin.y = 0.925f;
+                    anchorMax.y = 0.975f;
 
                     movableUiElementRect = _instantiatedGiveUpButton.GetComponent<RectTransform>().rect;
                     break;
