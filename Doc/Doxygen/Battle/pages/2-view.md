@@ -9,6 +9,7 @@
 | @crefd{Battle.View} | @cref{Battle.View,Player}     | @copybrief Battle.View.Player     |
 | @crefd{Battle.View} | @cref{Battle.View,SoulWall}   | @copybrief Battle.View.SoulWall   |
 | @crefd{Battle.View} | @cref{Battle.View,Projectile} | @copybrief Battle.View.Projectile |
+| @crefd{Battle.View} | @cref{Battle.View,Diamond}    | @copybrief Battle.View.Diamond    |
 | @crefd{Battle.View} | @cref{Battle.View,UI}         | @copybrief Battle.View.UI         |
 | @crefd{Battle.View} | @cref{Battle.View,Effect}     | @copybrief Battle.View.Effect     |
 | @crefd{Battle.View} | @cref{Battle.View,Audio}      | @copybrief Battle.View.Audio      |
@@ -47,9 +48,14 @@ In %Battle View Controllers have ViewController suffix. [[Naming]](#index-naming
 |                                                                                                                                                                                     ||||
 | @crefd{Battle.View} | @crefd{Battle.View,Projectile} | @cref{Battle.View.Projectile,BattleProjectileViewController} | @copybrief Battle.View.Projectile.BattleProjectileViewController |
 |                                                                                                                                                                                     ||||
+| @crefd{Battle.View} | @crefd{Battle.View,Diamond}    | @cref{Battle.View.Diamond,BattleDiamondViewController}       | @copybrief Battle.View.Diamond.BattleDiamondViewController       |
+|                                                                                                                                                                                     ||||
+| @crefd{Battle.View} | @crefd{Battle.View,Effect}     | @cref{Battle.View.Effect,BattleLightrayEffectViewController} | @copybrief Battle.View.Effect.BattleLightrayEffectViewController |
 | @crefd{Battle.View} | @crefd{Battle.View,Effect}     | @cref{Battle.View.Effect,BattleScreenEffectViewController}   | @copybrief Battle.View.Effect.BattleScreenEffectViewController   |
 |                                                                                                                                                                                     ||||
 | @crefd{Battle.View} | @crefd{Battle.View,Audio}      | @cref{Battle.View.Audio,BattleSoundFXViewController}         | @copybrief Battle.View.Audio.BattleSoundFXViewController         |
+|                                                                                                                                                                                     ||||
+| @crefd{Battle.View}                                 || @cref{Battle.View,BattleStoneCharacterViewController}        | @copybrief Battle.View.BattleStoneCharacterViewController        |
 
 <br/>
 
@@ -58,8 +64,11 @@ In %Battle View Controllers have ViewController suffix. [[Naming]](#index-naming
 |  Namespace                                          || Class                                                        | Description                                                      |
 | :------------------ | :----------------------------- | :----------------------------------------------------------- | :--------------------------------------------------------------- |
 | @crefd{Battle.View} | @crefd{Battle.View,Game}       | @cref{Battle.View.Game,BattleCamera}                         | @copybrief Battle.View.Game.BattleCamera                         |
+| @crefd{Battle.View} | @crefd{Battle.View,Game}       | @cref{Battle.View.Game,BattleCameraTest}                     | @copybrief Battle.View.Game.BattleCameraTest                     |
 |                                                                                                                                                                                     ||||
 | @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerInput}                  | @copybrief Battle.View.Player.BattlePlayerInput                  |
+|                                                                                                                                                                                     ||||
+| @crefd{Battle.View}                                 || @cref{Battle.View.Utils}                                     | @copybrief Battle.View.Utils                                     |
 
 <br/>
 
