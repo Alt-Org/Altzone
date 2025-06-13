@@ -115,6 +115,8 @@ In %Battle all [Quantum Signals🡵] are located in BattleSignals.qtn file.
 | @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitGoal}          | @copybrief Quantum.ISignalBattleOnProjectileHitGoal          |
 |                                                                                                                                           |||
 | @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnDiamondHitPlayer}           | @copybrief Quantum.ISignalBattleOnDiamondHitPlayer           |
+|                                                                                                                                           |||
+| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnGameOver}                   | @copybrief Quantum.ISignalBattleOnGameOver                   |
 
 <br/>
 

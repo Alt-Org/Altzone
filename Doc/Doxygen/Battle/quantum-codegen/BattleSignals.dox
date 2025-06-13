@@ -14,6 +14,8 @@
 ///   @copybrief Quantum.ISignalBattleOnProjectileHitGoal
 /// - <b>signal</b> @ref BattleOnDiamondHitPlayer (BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity)   
 ///   @copybrief Quantum.ISignalBattleOnDiamondHitPlayer
+/// - <b>signal</b> @ref BattleOnGameOver (BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)   
+///   @copybrief Quantum.ISignalBattleOnGameOver
 ///
 /// ---
 ///
@@ -69,6 +71,17 @@
 /// Generated Method @cref{Quantum,Frame.FrameSignals.BattleOnDiamondHitPlayer}
 ///
 /// ---
+///
+/// @anchor BattleOnGameOver
+/// ### BattleOnGameOver
+/// @copybrief Quantum.ISignalBattleOnGameOver
+///
+/// This signal is sent when the game ends.
+///
+/// Generated Interface @cref{Quantum,ISignalBattleOnGameOver}  
+/// Generated Method @cref{Quantum,Frame.FrameSignals.BattleOnGameOver}
+///
+/// ---
 
 /// @interface Quantum::ISignalBattleOnProjectileHitSoulWall
 /// <summary>
@@ -101,6 +114,13 @@
 /// @interface Quantum::ISignalBattleOnDiamondHitPlayer
 /// <summary>
 /// Signal for player's and diamond's collision.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleSignals.qtn}
+
+/// @interface Quantum::ISignalBattleOnGameOver
+/// <summary>
+/// Signal for ending battle.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleSignals.qtn}
