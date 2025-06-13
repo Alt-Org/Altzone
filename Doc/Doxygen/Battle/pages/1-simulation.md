@@ -125,15 +125,25 @@ In %Battle all [Quantum Signals🡵] are located in BattleSignals.qtn file.
 [Quantum Events🡵] are C# classes that are generated from qtn files.  
 In %Battle all [Quantum Events🡵] are located in BattleEvents.qtn file.
 
-|  Namespace        | Component                                          | Description                                            |
-| :---------------- | :------------------------------------------------- | :----------------------------------------------------- |
-| @crefd{Quantum}   | @cref{Quantum,EventBattleViewInit}                 | @copybrief Quantum.EventBattleViewInit                 |
-| @crefd{Quantum}   | @cref{Quantum,EventBattlePlayerViewInit}           | @copybrief Quantum.EventBattlePlayerViewInit           |
-| @crefd{Quantum}   | @cref{Quantum,EventBattleSoulWallViewInit}         | @copybrief Quantum.EventBattleSoulWallViewInit         |
-|                                                                                                                               |||
-| @crefd{Quantum}   | @cref{Quantum,EventBattleChangeEmotionState}       | @copybrief Quantum.EventBattleChangeEmotionState       |
-| @crefd{Quantum}   | @cref{Quantum,EventBattlePlaySoundFX}              | @copybrief Quantum.EventBattlePlaySoundFX              |
-| @crefd{Quantum}   | @cref{Quantum,EventBattleDebugUpdateStatsOverlay}  | @copybrief Quantum.EventBattleDebugUpdateStatsOverlay  |
+|  Namespace        | Component                                             | Description                                               |
+| :---------------- | :---------------------------------------------------- | :-------------------------------------------------------- |
+| @crefd{Quantum}   | @cref{Quantum,EventBattleViewWaitForPlayers}          | @copybrief Quantum.EventBattleViewWaitForPlayers          |
+| @crefd{Quantum}   | @cref{Quantum,EventBattleViewInit}                    | @copybrief Quantum.EventBattleViewInit                    |
+|                                                                                                                                     |||
+| @crefd{Quantum}   | @cref{Quantum,EventBattleViewActivate}                | @copybrief Quantum.EventBattleViewActivate                |
+| @crefd{Quantum}   | @cref{Quantum,EventBattleViewGetReadyToPlay}          | @copybrief Quantum.EventBattleViewGetReadyToPlay          |
+| @crefd{Quantum}   | @cref{Quantum,EventBattleViewGameStart}               | @copybrief Quantum.EventBattleViewGameStart               |
+| @crefd{Quantum}   | @cref{Quantum,EventBattleViewGameOver}                | @copybrief Quantum.EventBattleViewGameOver                |
+|                                                                                                                                     |||
+| @crefd{Quantum}   | @cref{Quantum,EventBattlePlayerViewInit}              | @copybrief Quantum.EventBattlePlayerViewInit              |
+| @crefd{Quantum}   | @cref{Quantum,EventBattleSoulWallViewInit}            | @copybrief Quantum.EventBattleSoulWallViewInit            |
+| @crefd{Quantum}   | @cref{Quantum,EventBattleStoneCharacterPieceViewInit} | @copybrief Quantum.EventBattleStoneCharacterPieceViewInit |
+|                                                                                                                                     |||
+| @crefd{Quantum}   | @cref{Quantum,EventBattleChangeEmotionState}          | @copybrief Quantum.EventBattleChangeEmotionState          |
+| @crefd{Quantum}   | @cref{Quantum,EventBattlePlaySoundFX}                 | @copybrief Quantum.EventBattlePlaySoundFX                 |
+| @crefd{Quantum}   | @cref{Quantum,EventBattleLastRowWallDestroyed}        | @copybrief Quantum.EventBattleLastRowWallDestroyed        |
+|                                                                                                                                     |||
+| @crefd{Quantum}   | @cref{Quantum,EventBattleDebugUpdateStatsOverlay}     | @copybrief Quantum.EventBattleDebugUpdateStatsOverlay     |
 
 <br/>
 
