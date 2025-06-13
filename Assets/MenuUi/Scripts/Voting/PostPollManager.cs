@@ -30,7 +30,7 @@ public class PastPollManager : MonoBehaviour
             obj.GetComponent<PollObject>().SetPollId(pollData.Id);
             PastPolls.Add(obj);
 
-            // Optional: Disable interaction
+            // Disable interaction
             obj.GetComponent<UnityEngine.UI.Button>().interactable = false;
         }
 
