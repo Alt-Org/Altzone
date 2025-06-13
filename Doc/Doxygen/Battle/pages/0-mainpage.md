@@ -35,16 +35,6 @@
 
 <br/>
 
-# Scenes {#index-scenes}
-
-|  Directory                                 | Scene                                                              | Description                                |
-| :----------------------------------------- | :----------------------------------------------------------------- | :----------------------------------------- |
-| @dirref{Altzone/Assets/QuantumUser,Scenes} | @ref 31-QuantumBattle.unity            "31-QuantumBattle"          | @copybrief 31-QuantumBattle.unity          |
-| @dirref{Altzone/Assets/QuantumUser,Scenes} | @ref 32-QuantumBattle_TestGrid.unity   "32-QuantumBattle_TestGrid" | @copybrief 32-QuantumBattle_TestGrid.unity |
-| @dirref{Altzone/Assets/QuantumUser,Scenes} | @ref QuantumGameScene.unity            "QuantumGameScene"          | @copybrief QuantumGameScene.unity          |
-
-<br/>
-
 ---
 
 # Naming {#index-naming}
