@@ -13,6 +13,8 @@ using Battle.View.Audio;
 using PlayerType = Battle.View.UI.BattleUiPlayerInfoHandler.PlayerType;
 
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
+using BattleMovementInputType = SettingsCarrier.BattleMovementInputType;
+using BattleRotationInputType = SettingsCarrier.BattleRotationInputType;
 
 namespace Battle.View.Game
 {
@@ -118,6 +120,21 @@ namespace Battle.View.Game
                 if (data != null) _uiController.TimerHandler.MovableUiElement.SetData(data);
             }
 
+            if (_uiController.JoystickHandler != null)
+            {
+                if (SettingsCarrier.Instance.BattleMovementInput == BattleMovementInputType.Joystick)
+                {
+                    BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.MoveJoystick);
+                    _uiController.JoystickHandler.SetInfo(BattleUiElementType.MoveJoystick, data);
+                }
+
+                if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick)
+                {
+                    BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.RotateJoystick);
+                    _uiController.JoystickHandler.SetInfo(BattleUiElementType.RotateJoystick, data);
+                }
+            }
+
             // Commented out code to hide the ui elements which shouldn't be shown at this point, but the code will be used later
             /*
             if (_uiController.GiveUpButtonHandler != null)
@@ -180,6 +197,12 @@ namespace Battle.View.Game
         {
             // Show end of countdown text in announcement handler
             _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.EndOfCountdown);
+
+            // Show movement joystick
+            if (SettingsCarrier.Instance.BattleMovementInput == BattleMovementInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.MoveJoystick);
+
+            // Show rotation joystick
+            if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.RotateJoystick);
         }
 
         private void QEventOnViewGameStart(EventBattleViewGameStart e)
@@ -198,6 +221,7 @@ namespace Battle.View.Game
             _uiController.DiamondsHandler.SetShow(false);
             _uiController.GiveUpButtonHandler.SetShow(false);
             _uiController.PlayerInfoHandler.SetShow(false);
+            _uiController.JoystickHandler.SetShow(false);
 
             // If the game is over, display "Game Over!" and show the Game Over UI
             _uiController.GameOverHandler.SetShow(true);
