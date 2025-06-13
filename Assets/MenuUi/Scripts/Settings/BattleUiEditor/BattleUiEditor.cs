@@ -189,9 +189,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private const string ShowGridKey = "BattleUiEditorShowGrid";
         private const string AlignToGridKey = "BattleUiEditorAlignToGrid";
         private const string IncrementalScalingKey = "BattleUiEditorIncScaling";
+        private const string GridHueKey = "BattleUiEditorGridHue";
+        private const string GridTransparencyKey = "BattleUiEditorGridTransparency";
 
         private const int GridRowLinesDefault = 39;
         private const int GridColumnLinesDefault = 19;
+        private const int GridHueDefault = 33;
+        private const int GridTransparencyDefault = 50;
 
         private const float GameAspectRatio = 9f / 16f;
 
@@ -232,6 +236,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Reset button listener
             _resetButton.onClick.AddListener(OnResetButtonClicked);
 
+            // Show grid toggle listener
+            _showGridToggle.onValueChanged.AddListener((value) =>
+            {
+                _grid.SetShow(value);
+                PlayerPrefs.SetInt(ShowGridKey, value ? 1 : 0);
+            });
+
             // Grid columns listeners
             _gridColumnsSlider.onValueChanged.AddListener((value) =>
             {
@@ -256,11 +267,32 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 UpdateGridRowLines();
             });
 
-            // Show grid toggle listener
-            _showGridToggle.onValueChanged.AddListener((value) =>
+            // Grid hue listeners
+            _gridHueSlider.onValueChanged.AddListener((value) =>
             {
-                _grid.SetShow(value);
-                PlayerPrefs.SetInt(ShowGridKey, value ? 1 : 0);
+                UpdateInputFieldText(value, _gridHueInputField);
+                _grid.SetGridHue(value);
+                PlayerPrefs.SetInt(GridHueKey, (int)value);
+            });
+            _gridHueInputField.onValueChanged.AddListener((value) =>
+            {
+                VerifyAndUpdateSliderValue(_gridHueInputField, _gridHueSlider);
+                _grid.SetGridHue(_gridHueSlider.value);
+                PlayerPrefs.SetInt(GridHueKey, (int)_gridHueSlider.value);
+            });
+
+            // Grid transparency listeners
+            _gridTransparencySlider.onValueChanged.AddListener((value) =>
+            {
+                UpdateInputFieldText(value, _gridTransparencyInputField);
+                _grid.SetGridTransparency(value);
+                PlayerPrefs.SetInt(GridTransparencyKey, (int)value);
+            });
+            _gridTransparencyInputField.onValueChanged.AddListener((value) =>
+            {
+                VerifyAndUpdateSliderValue(_gridTransparencyInputField, _gridTransparencySlider);
+                _grid.SetGridTransparency(_gridTransparencySlider.value);
+                PlayerPrefs.SetInt(GridTransparencyKey, (int)_gridTransparencySlider.value);
             });
 
             // Movement input toggles listeners
@@ -323,6 +355,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Loading grid settings. Grid settings are saved locally from this script because they aren't accessed anywhere else.
             _gridColumnsSlider.value = PlayerPrefs.GetInt(GridColumnLinesKey, GridColumnLinesDefault);
             _gridRowsSlider.value = PlayerPrefs.GetInt(GridRowLinesKey, GridRowLinesDefault);
+            _gridHueSlider.value = PlayerPrefs.GetInt(GridHueKey, GridHueDefault);
+            _gridTransparencySlider.value = PlayerPrefs.GetInt(GridTransparencyKey, GridTransparencyDefault);
 
             _showGridToggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(ShowGridKey, 1) == 1);
             _alignToGridToggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(AlignToGridKey, 1) == 1);
@@ -334,38 +368,42 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _grid.SetShow(_showGridToggle.isOn);
 
             // Loading saved movement settings. Since the toggles are part of a toggle group the other toggles will update
+            Toggle isOnToggle = null;
             switch (SettingsCarrier.Instance.BattleMovementInput)
             {
                 case BattleMovementInputType.PointAndClick:
-                    _movementPointAndClickToggle.SetIsOnWithoutNotify(true);
+                    isOnToggle = _movementPointAndClickToggle;
                     break;
                 case BattleMovementInputType.Swipe:
-                    _movementSwipeToggle.SetIsOnWithoutNotify(true);
+                    isOnToggle = _movementSwipeToggle;
                     break;
                 case BattleMovementInputType.Joystick:
-                    _movementJoystickToggle.SetIsOnWithoutNotify(true);
+                    isOnToggle = _movementJoystickToggle;
                     break;
             }
+            if (isOnToggle != null) isOnToggle.SetIsOnWithoutNotify(true);
 
             // Loading saved rotation settings
+            isOnToggle = null;
             switch (SettingsCarrier.Instance.BattleRotationInput)
             {
                 case BattleRotationInputType.Swipe:
-                    _rotationSwipeToggle.SetIsOnWithoutNotify(true);
+                    isOnToggle = _rotationSwipeToggle;
                     break;
                 case BattleRotationInputType.TwoFinger:
-                    _rotationTwoFingerToggle.SetIsOnWithoutNotify(true);
+                    isOnToggle = _rotationTwoFingerToggle;
                     break;
                 case BattleRotationInputType.Joystick:
-                    _rotationJoystickToggle.SetIsOnWithoutNotify(true);
+                    isOnToggle = _rotationJoystickToggle;
                     break;
                 case BattleRotationInputType.Gyroscope:
-                    _rotationGyroscopeToggle.SetIsOnWithoutNotify(true);
+                    isOnToggle = _rotationGyroscopeToggle;
                     break;
                 case BattleRotationInputType.ScreenArea:
-                    _rotationScreenAreaToggle.SetIsOnWithoutNotify(true);
+                    isOnToggle = _rotationScreenAreaToggle;
                     break;
             }
+            if (isOnToggle != null) isOnToggle.SetIsOnWithoutNotify(true);
 
             // Loading saved arena settings. Setting slider vlaue will invoke the listeners added in Awake so the input fields will be updated as well.
             _arenaScaleSlider.value = SettingsCarrier.Instance.BattleArenaScale;
@@ -397,7 +435,16 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Removing grid listeners
             _gridColumnsSlider.onValueChanged.RemoveAllListeners();
+            _gridColumnsInputField.onValueChanged.RemoveAllListeners();
+
             _gridRowsSlider.onValueChanged.RemoveAllListeners();
+            _gridRowsInputField.onValueChanged.RemoveAllListeners();
+
+            _gridHueSlider.onValueChanged.RemoveAllListeners();
+            _gridHueInputField.onValueChanged.RemoveAllListeners();
+
+            _gridTransparencySlider.onValueChanged.RemoveAllListeners();
+            _gridTransparencyInputField.onValueChanged.RemoveAllListeners();
 
             _showGridToggle.onValueChanged.RemoveAllListeners();
             _incrementalScalingToggle.onValueChanged.RemoveAllListeners();
@@ -417,8 +464,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Removing arena scale listeners
             _arenaScaleSlider.onValueChanged.RemoveAllListeners();
+            _arenaScaleInputField.onValueChanged.RemoveAllListeners();
+
             _arenaPosXSlider.onValueChanged.RemoveAllListeners();
+            _arenaPosXInputField.onValueChanged.RemoveAllListeners();
+
             _arenaPosYSlider.onValueChanged.RemoveAllListeners();
+            _arenaPosYInputField.onValueChanged.RemoveAllListeners();
         }
 
         private void ToggleOptionsDropdown()

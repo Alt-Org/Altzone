@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -147,6 +148,35 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         }
 
         /// <summary>
+        /// Set grid lines' grayscale hue.
+        /// </summary>
+        /// <param name="hue">The hue value to set. (0-100)</param>
+        public void SetGridHue(float hue)
+        {
+            float alpha = _lineDefaultColor.a;
+            _lineDefaultColor = Color.HSVToRGB(0, 0, hue / 100);
+            _lineDefaultColor.a = alpha;
+
+            UpdateGridLineColors();
+        }
+
+
+        /// <summary>
+        /// Set grid lines' transparency.
+        /// </summary>
+        /// <param name="transparency">The transparency value to set. (0-100)</param>
+        public void SetGridTransparency(float transparency)
+        {
+            float newOpacity = 1f - transparency / 100;
+
+            _lineDefaultColor.a = newOpacity;
+            _lineHighlightedColor.a = newOpacity;
+
+            UpdateGridLineColors();
+        }
+
+
+        /// <summary>
         /// Highlight grid lines.
         /// </summary>
         /// <param name="gridColumnIndex">The grid column line index which to highlight.</param>
@@ -156,11 +186,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             RemoveLineHighlight();
 
             // Highlighting the row color
-            Image highlightedRow = _gridRows.transform.GetChild(gridRowIndex).GetComponent<Image>();
+            Image highlightedRow = _rowLineImages[gridRowIndex];
             highlightedRow.color = _lineHighlightedColor;
 
             // Highlighting the column color
-            Image highlightedColumn = _gridColumns.transform.GetChild(gridColumnIndex).GetComponent<Image>();
+            Image highlightedColumn = _columnLineImages[gridColumnIndex];
             highlightedColumn.color = _lineHighlightedColor;
 
             _highlightedLines = new[] { highlightedRow, highlightedColumn };
@@ -187,6 +217,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private static int s_rowLines = -1;
         private static int s_columnLines = -1;
 
+        private List<Image> _rowLineImages = new();
+        private List<Image> _columnLineImages = new();
         private Image[] _highlightedLines;
 
         private IEnumerator InstantiateGridLines(int lineAmount, Transform lineParent, Action callback)
@@ -201,7 +233,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 for (int i = 0; i < linesToInstantiate; i++)
                 {
                     GameObject line = Instantiate(_gridLinePrefab);
-                    line.GetComponent<Image>().color = _lineDefaultColor;
+
+                    Image lineImage = line.GetComponent<Image>();
+                    lineImage.color = _lineDefaultColor;
+
+                    if (lineParent == _gridRows) _rowLineImages.Add(lineImage);
+                    else _columnLineImages.Add(lineImage);
+
                     line.transform.SetParent(lineParent.transform, false);
                 }
 
@@ -214,12 +252,30 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             int linesToRemove = lineParent.childCount - lineAmount;
             for (int i = 0; i < linesToRemove; i++)
             {
+                if (lineParent == _gridRows) _rowLineImages.RemoveAt(i);
+                else _columnLineImages.RemoveAt(i);
+
                 Destroy(lineParent.GetChild(i).gameObject);
             }
 
             // Waiting 1 frame after deleting lines so that they are really deleted and can be positioned correctly
             yield return null;
             callback();
+        }
+
+        private void UpdateGridLineColors()
+        {
+            foreach (Image line in _rowLineImages)
+            {
+                if (_highlightedLines != null && _highlightedLines[0] == line) line.color = _lineHighlightedColor;
+                else line.color = _lineDefaultColor;
+            }
+
+            foreach (Image line in _columnLineImages)
+            {
+                if (_highlightedLines != null && _highlightedLines[1] == line) line.color = _lineHighlightedColor;
+                else line.color = _lineDefaultColor;
+            }
         }
     }
 }
