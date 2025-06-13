@@ -1,1 +1,71 @@
 # Resources {#page-resources}
+
+## Directories {#page-resources-directories}
+
+| Path                                                                                                                                      ||| Description                                                                                                               |
+| :---------------------------------- | :-------------------------------------------- | :---------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------ |
+| @dirref{Altzone/Assets/QuantumUser} | @dirref{Altzone/Assets/QuantumUser,Resources}                                                        || Game Simulation Logic Directory.<br/>Contains %Battle resources like prefabs, configs, spec assets, graphics, audio, etc. |
+| @dirref{Altzone/Assets/QuantumUser} | @dirref{Altzone/Assets/QuantumUser,Resources} | @dirref{Altzone/Assets/QuantumUser/Resources,Configs} | Contains %Battle's Config files                                                                                           |
+| @dirref{Altzone/Assets/QuantumUser} | @dirref{Altzone/Assets/QuantumUser,Resources} | @dirref{Altzone/Assets/QuantumUser/Resources,Prefabs} | Contains Unity prefabs and %Quantum EntityPrototypes                                                                      |
+| @dirref{Altzone/Assets/QuantumUser} | @dirref{Altzone/Assets/QuantumUser,Resources} | @dirref{Altzone/Assets/QuantumUser/Resources,Specs}   | Contains spec data assets. Specs's structures can be found @ref page-simulation-specs "here".                             |
+
+@bigtext{[[File Summary]](#index-file-summary)}
+
+<br/>
+
+# Configs {#page-resources-configs}
+Config files used in %Battle.
+
+| Path                                                  | File                                     | Description                                    |
+| :---------------------------------------------------- | :--------------------------------------- | :--------------------------------------------- |
+| @dirref{Altzone/Assets/QuantumUser/Resources,Configs} | @ref BattleQConfig.asset                 | @copybrief BattleQConfig.asset                 |
+| @dirref{Altzone/Assets/QuantumUser/Resources,Configs} | @ref QuantumBattleSimulationConfig.asset | @copybrief QuantumBattleSimulationConfig.asset |
+| @dirref{Altzone/Assets/QuantumUser/Resources,Configs} | @ref QuantumBattleSystemsConfig.asset    | @copybrief QuantumBattleSystemsConfig.asset    |
+
+<br/>
+
+# GameObjects {#page-resources-gameobjects}
+GameObjects used in %Battle. %Quantum Entities have both Unity Prefab and EntityPrototype while non-entities only contain Unity Prefab.
+
+| Path                                                                                                                                                                                                         ||| Prefab File                                      | EntityPrototype File                                                | Description                                           |
+| :---------------------------------------------------- | :------------------------------------------------------------------- | :------------------------------------------------------------------------------ |:------------------------------------------------ | :------------------------------------------------------------------ | :---------------------------------------------------- |
+| @dirref{Altzone/Assets/QuantumUser/Resources,Prefabs}                                                                                                                                                                                                                                                                              ||| || Contains Unity prefabs and %Quantum EntityPrototypes  |
+| @dirref{Altzone/Assets/QuantumUser/Resources,Prefabs} | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,Diamonds}                                                                                        || @ref BattleDiamond.prefab                        | @ref BattleDiamondEntityPrototype.qprototype                        | @copybrief BattleDiamond.prefab                       |
+|                                                                                                                                                                                                                                                                                                                                                                                            ||||||
+| @dirref{Altzone/Assets/QuantumUser/Resources,Prefabs} | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,Player}                                                                                          || @ref BattlePlayer.prefab                         | @ref BattlePlayerEntityPrototype.qprototype                         | @copybrief BattlePlayer.prefab                        |
+|                                                                                                                                                                                                                                                                                                                                                                                            ||||||
+| @dirref{Altzone/Assets/QuantumUser/Resources,Prefabs} | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,Projectile}                                                                                      || @ref BattleProjectile.prefab                     | @ref BattleProjectileEntityPrototype.qprototype                     | @copybrief BattleProjectile.prefab                    |
+|                                                                                                                                                                                                                                                                                                                                                                                            ||||||
+| @dirref{Altzone/Assets/QuantumUser/Resources,Prefabs} | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,Simulation}                                                                                      || @ref BattleSimulationData.prefab                 | @ref BattleSimulationDataEntityPrototype.qprototype                 | @copybrief BattleSimulationData.prefab                |
+|                                                                                                                                                                                                                                                                                                                                                                                            ||||||
+| @dirref{Altzone/Assets/QuantumUser/Resources,Prefabs} | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,SoulWall}                                                                                        || @ref BattleSoulWallSegmentType1.prefab           | @ref BattleSoulWallSegmentType1EntityPrototype.qprototype           | @copybrief BattleSoulWallSegmentType1.prefab          |
+| @dirref{Altzone/Assets/QuantumUser/Resources,Prefabs} | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,SoulWall}                                                                                        || @ref BattleSoulWallSegmentType2.prefab           | @ref BattleSoulWallSegmentType2EntityPrototype.qprototype           | @copybrief BattleSoulWallSegmentType2.prefab          |
+| @dirref{Altzone/Assets/QuantumUser/Resources,Prefabs} | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,SoulWall}                                                                                        || @ref BattleSoulWallSegmentType3.prefab           | @ref BattleSoulWallSegmentType3EntityPrototype.qprototype           | @copybrief BattleSoulWallSegmentType3.prefab          |
+| @dirref{Altzone/Assets/QuantumUser/Resources,Prefabs} | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,SoulWall}                                                                                        || @ref SoulWallBaseViewModel.prefab                                                                                     || @copybrief BattleSoulWallSegmentType3.prefab          |
+| @dirref{Altzone/Assets/QuantumUser/Resources,Prefabs} | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,SoulWall}       | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs/SoulWall,LastRowSegments}  | @ref BattleSoulWallCharacterSegment3Wide.prefab  | @ref BattleSoulWallCharacterSegment3WideEntityPrototype.qprototype  | @copybrief BattleSoulWallCharacterSegment3Wide.prefab |
+| @dirref{Altzone/Assets/QuantumUser/Resources,Prefabs} | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,SoulWall}       | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs/SoulWall,LastRowSegments}  | @ref BattleSoulWallCharacterSegment4Wide.prefab  | @ref BattleSoulWallCharacterSegment4WideEntityPrototype.qprototype  | @copybrief BattleSoulWallCharacterSegment4Wide.prefab |
+| @dirref{Altzone/Assets/QuantumUser/Resources,Prefabs} | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,SoulWall}       | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs/SoulWall,LastRowSegments}  | @ref BattleSoulWallCharacterSegment5Wide.prefab  | @ref BattleSoulWallCharacterSegment5WideEntityPrototype.qprototype  | @copybrief BattleSoulWallCharacterSegment5Wide.prefab |
+|                                                                                                                                                                                                                                                                                                                                                                                            ||||||
+| @dirref{Altzone/Assets/QuantumUser/Resources,Prefabs} | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,Ui}                                                                                              || @ref BattleUi.prefab                                                                                                  || @copybrief BattleUi.prefab                            |
+|                                                                                                                                                                                                                                                                                                                                                                                            ||||||
+| @dirref{Altzone/Assets/QuantumUser/Resources,Prefabs} | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,ViewController}                                                                                  || @ref BattleGameViewController.prefab                                                                                  || @copybrief BattleGameViewController.prefab            |
+| @dirref{Altzone/Assets/QuantumUser/Resources,Prefabs} | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,ViewController}                                                                                  || @ref BattleGridViewController.prefab                                                                                  || @copybrief BattleGridViewController.prefab            |
+| @dirref{Altzone/Assets/QuantumUser/Resources,Prefabs} | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,ViewController}                                                                                  || @ref BattleLightrayEffectViewController.prefab                                                                        || @copybrief BattleLightrayEffectViewController.prefab  |
+| @dirref{Altzone/Assets/QuantumUser/Resources,Prefabs} | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,ViewController}                                                                                  || @ref BattleScreenEffectViewController.prefab                                                                          || @copybrief BattleScreenEffectViewController.prefab    |
+| @dirref{Altzone/Assets/QuantumUser/Resources,Prefabs} | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,ViewController}                                                                                  || @ref BattleSoundFXViewController.prefab                                                                               || @copybrief BattleSoundFXViewController.prefab         |
+| @dirref{Altzone/Assets/QuantumUser/Resources,Prefabs} | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,ViewController}                                                                                  || @ref BattleStoneCharacterViewController.prefab                                                                        || @copybrief BattleStoneCharacterViewController.prefab  |
+
+<br/>
+
+# Spec Data Assets {#page-resources-specs}
+Spec data assets used in %Battle.  
+These assets only contain the data used by the spec. Specs's structures can be found @ref page-simulation-specs "here".
+
+| Path                                                | File                             | Description                            |
+| :-------------------------------------------------- | :------------------------------- | :------------------------------------- |
+| @dirref{Altzone/Assets/QuantumUser/Resources,Specs} | @ref BattleArenaQSpec.asset      | @copybrief BattleArenaQSpec.asset      |
+| @dirref{Altzone/Assets/QuantumUser/Resources,Specs} | @ref BattleDiamondQSpec.asset    | @copybrief BattleDiamondQSpec.asset    |
+| @dirref{Altzone/Assets/QuantumUser/Resources,Specs} | @ref BattleProjectileQSpec.asset | @copybrief BattleProjectileQSpec.asset |
+| @dirref{Altzone/Assets/QuantumUser/Resources,Specs} | @ref BattleSoulWallQSpec.asset   | @copybrief BattleSoulWallQSpec.asset   |
+
+<br/>
