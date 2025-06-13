@@ -92,10 +92,11 @@ public class PollObject : MonoBehaviour
     public void SetPollId(string newPollId)
     {
         pollId = newPollId;
-        pollData = PollManager.GetPollData(pollId);
+        pollData = PollManager.GetAnyPollData(pollId);
         if (pollData == null) return;
         SetValues();
     }
+
 
     public void PassPollId()
     {

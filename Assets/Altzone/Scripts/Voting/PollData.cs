@@ -106,7 +106,7 @@ namespace Altzone.Scripts.Voting
         public FurniturePollType FurniturePollType;
         public GameFurniture Furniture;
         
-        public FurniturePollData(string id, List<string> clanMembers, FurniturePollType furniturePollType, GameFurniture furniture, long endTime = 15)
+        public FurniturePollData(string id, List<string> clanMembers, FurniturePollType furniturePollType, GameFurniture furniture, long endTime = 1)
         : base(id, furniture.FurnitureInfo.Image, clanMembers, endTime)
         {
             FurniturePollType = furniturePollType;
@@ -120,7 +120,7 @@ namespace Altzone.Scripts.Voting
         public string RoleId;
         public string PlayerId;
 
-        public RolePollData(string id, Sprite sprite, List<string> clanMembers, RolePollType rolePollType, string roleId, string playerId, long endTime = 15)
+        public RolePollData(string id, Sprite sprite, List<string> clanMembers, RolePollType rolePollType, string roleId, string playerId, long endTime = 1)
         : base(id, sprite, clanMembers, endTime)
         {
             RolePollType = rolePollType;
@@ -134,7 +134,7 @@ namespace Altzone.Scripts.Voting
         public MemberPollType MemberPollType;
         public string PlayerId;
 
-        public MemberPollData(string id, Sprite sprite, List<string> clanMembers, MemberPollType memberPollType, string playerId, long endTime = 15)
+        public MemberPollData(string id, Sprite sprite, List<string> clanMembers, MemberPollType memberPollType, string playerId, long endTime = 1)
         : base(id, sprite, clanMembers, endTime)
         {
             MemberPollType = memberPollType;
