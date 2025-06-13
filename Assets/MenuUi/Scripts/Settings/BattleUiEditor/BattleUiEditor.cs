@@ -131,9 +131,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             if (_instantiatedPlayerInfo == null) _instantiatedPlayerInfo = InstantiateBattleUiElement(BattleUiElementType.PlayerInfo).GetComponent<BattleUiMultiOrientationElement>();
             if (_instantiatedTeammateInfo == null) _instantiatedTeammateInfo = InstantiateBattleUiElement(BattleUiElementType.TeammateInfo).GetComponent<BattleUiMultiOrientationElement>();
 
-            if (_instantiatedMoveJoystick == null) _instantiatedMoveJoystick = InstantiateBattleUiElement(BattleUiElementType.MoveJoystick).GetComponent<BattleUiMovableElement>();
-            if (_instantiatedRotateJoystick == null) _instantiatedRotateJoystick = InstantiateBattleUiElement(BattleUiElementType.RotateJoystick).GetComponent<BattleUiMovableElement>();
-
             // Setting data to Ui elements
             SetDataToUiElement(_instantiatedTimer);
             SetDataToUiElement(_instantiatedDiamonds);
@@ -141,9 +138,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             SetDataToUiElement(_instantiatedPlayerInfo);
             SetDataToUiElement(_instantiatedTeammateInfo);
-
-            SetDataToUiElement(_instantiatedMoveJoystick);
-            SetDataToUiElement(_instantiatedRotateJoystick);
         }
 
         /// <summary>
@@ -296,16 +290,70 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             });
 
             // Movement input toggles listeners
-            _movementPointAndClickToggle.onValueChanged.AddListener((value) => { if (value) SettingsCarrier.Instance.BattleMovementInput = BattleMovementInputType.PointAndClick; });
-            _movementSwipeToggle.onValueChanged.AddListener((value) => { if (value) SettingsCarrier.Instance.BattleMovementInput = BattleMovementInputType.Swipe; });
-            _movementJoystickToggle.onValueChanged.AddListener((value) => { if (value) SettingsCarrier.Instance.BattleMovementInput = BattleMovementInputType.Joystick; });
+            _movementPointAndClickToggle.onValueChanged.AddListener((value) => {
+                if (value) SettingsCarrier.Instance.BattleMovementInput = BattleMovementInputType.PointAndClick;
+                if (_instantiatedMoveJoystick != null) _instantiatedMoveJoystick.gameObject.SetActive(false);
+            });
+
+            _movementSwipeToggle.onValueChanged.AddListener((value) =>
+            {
+                if (value) SettingsCarrier.Instance.BattleMovementInput = BattleMovementInputType.Swipe;
+                if (_instantiatedMoveJoystick != null) _instantiatedMoveJoystick.gameObject.SetActive(false);
+            });
+
+            _movementJoystickToggle.onValueChanged.AddListener((value) =>
+            {
+                if (value) SettingsCarrier.Instance.BattleMovementInput = BattleMovementInputType.Joystick;
+                if (_instantiatedMoveJoystick == null)
+                {
+                    _instantiatedMoveJoystick = InstantiateBattleUiElement(BattleUiElementType.MoveJoystick).GetComponent<BattleUiMovableElement>();
+                    SetDataToUiElement(_instantiatedMoveJoystick);
+                }
+                else
+                {
+                    _instantiatedMoveJoystick.gameObject.SetActive(true);
+                }
+            });
 
             // Rotation input toggles listeners
-            _rotationSwipeToggle.onValueChanged.AddListener((value) => { if (value) SettingsCarrier.Instance.BattleRotationInput = BattleRotationInputType.Swipe; });
-            _rotationTwoFingerToggle.onValueChanged.AddListener((value) => { if (value) SettingsCarrier.Instance.BattleRotationInput = BattleRotationInputType.TwoFinger; });
-            _rotationJoystickToggle.onValueChanged.AddListener((value) => { if (value) SettingsCarrier.Instance.BattleRotationInput = BattleRotationInputType.Joystick; });
-            _rotationGyroscopeToggle.onValueChanged.AddListener((value) => { if (value) SettingsCarrier.Instance.BattleRotationInput = BattleRotationInputType.Gyroscope; });
-            _rotationScreenAreaToggle.onValueChanged.AddListener((value) => { if (value) SettingsCarrier.Instance.BattleRotationInput = BattleRotationInputType.ScreenArea; });
+            _rotationSwipeToggle.onValueChanged.AddListener((value) =>
+            {
+                if (value) SettingsCarrier.Instance.BattleRotationInput = BattleRotationInputType.Swipe;
+                if (_instantiatedRotateJoystick != null) _instantiatedRotateJoystick.gameObject.SetActive(false);
+            });
+
+            _rotationTwoFingerToggle.onValueChanged.AddListener((value) =>
+            {
+                if (value) SettingsCarrier.Instance.BattleRotationInput = BattleRotationInputType.TwoFinger;
+                if (_instantiatedRotateJoystick != null) _instantiatedRotateJoystick.gameObject.SetActive(false);
+            });
+
+            _rotationJoystickToggle.onValueChanged.AddListener((value) =>
+            {
+                if (value) SettingsCarrier.Instance.BattleRotationInput = BattleRotationInputType.Joystick;
+
+                if (_instantiatedRotateJoystick == null)
+                {
+                    if (_instantiatedRotateJoystick == null) _instantiatedRotateJoystick = InstantiateBattleUiElement(BattleUiElementType.RotateJoystick).GetComponent<BattleUiMovableElement>();
+                    SetDataToUiElement(_instantiatedRotateJoystick);
+                }
+                else
+                {
+                    _instantiatedRotateJoystick.gameObject.SetActive(true);
+                }
+            });
+
+            _rotationGyroscopeToggle.onValueChanged.AddListener((value) =>
+            {
+                if (value) SettingsCarrier.Instance.BattleRotationInput = BattleRotationInputType.Gyroscope;
+                if (_instantiatedRotateJoystick != null) _instantiatedRotateJoystick.gameObject.SetActive(false);
+            });
+
+            _rotationScreenAreaToggle.onValueChanged.AddListener((value) =>
+            {
+                if (value) SettingsCarrier.Instance.BattleRotationInput = BattleRotationInputType.ScreenArea;
+                if (_instantiatedRotateJoystick != null) _instantiatedRotateJoystick.gameObject.SetActive(false);
+            });
 
             // Arena scale listeners
             _arenaScaleSlider.onValueChanged.AddListener((value) =>
@@ -377,8 +425,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 case BattleMovementInputType.Swipe:
                     isOnToggle = _movementSwipeToggle;
                     break;
-                case BattleMovementInputType.Joystick:
-                    isOnToggle = _movementJoystickToggle;
+                case BattleMovementInputType.Joystick: // For joystick we need to instantiate it so setting the value with notify
+                    _movementJoystickToggle.isOn = true;
                     break;
             }
             if (isOnToggle != null) isOnToggle.SetIsOnWithoutNotify(true);
@@ -393,8 +441,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 case BattleRotationInputType.TwoFinger:
                     isOnToggle = _rotationTwoFingerToggle;
                     break;
-                case BattleRotationInputType.Joystick:
-                    isOnToggle = _rotationJoystickToggle;
+                case BattleRotationInputType.Joystick: // For joystick we need to instantiate it so setting the value with notify
+                    _rotationJoystickToggle.isOn = true;
                     break;
                 case BattleRotationInputType.Gyroscope:
                     isOnToggle = _rotationGyroscopeToggle;
