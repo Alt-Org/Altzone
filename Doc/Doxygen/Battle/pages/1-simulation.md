@@ -39,8 +39,7 @@ In %Battle [Quantum Systems🡵] have QSystem suffix. [[Naming]](#index-naming)
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Game}       | @cref{Battle.QSimulation.Game,BattleGameControlQSystem}             | @copybrief Battle.QSimulation.Game.BattleGameControlQSystem             |
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Game}       | @cref{Battle.QSimulation.Game,BattleCollisionQSystem}               | @copybrief Battle.QSimulation.Game.BattleCollisionQSystem               |
 |                                                                                                                                                                                                                 ||||
-| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Player}     | @cref{Battle.QSimulation.Player,BattlePlayerJoinQSystem}            | @copybrief Battle.QSimulation.Player.BattlePlayerJoinQSystem            |
-| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Player}     | @cref{Battle.QSimulation.Player,BattlePlayerMovementQSystem}        | @copybrief Battle.QSimulation.Player.BattlePlayerMovementQSystem        |
+| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Player}     | @cref{Battle.QSimulation.Player,BattlePlayerQSystem}                | @copybrief Battle.QSimulation.Player.BattlePlayerQSystem                |
 |                                                                                                                                                                                                                 ||||
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,SoulWall}   | @cref{Battle.QSimulation.SoulWall,BattleSoulWallQSystem}            | @copybrief Battle.QSimulation.SoulWall.BattleSoulWallQSystem            |
 |                                                                                                                                                                                                                 ||||
@@ -53,14 +52,16 @@ In %Battle [Quantum Systems🡵] have QSystem suffix. [[Naming]](#index-naming)
 
 <br/>
 
-## Managers {#page-simulation-managers}
+## Managers & Controllers {#page-simulation-managers}
 
-In %Battle managers have Manager suffix. [[Naming]](#index-naming)
+In %Battle managers have Manager suffix and controllers have Controller suffix. [[Naming]](#index-naming)
 
-|  Namespace                                                    || Class                                                | Description                                              |
-| :------------------------- | :-------------------------------- | :--------------------------------------------------- | :------------------------------------------------------- |
-| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Game}   | @cref{Battle.QSimulation.Game,BattleGridManager}     | @copybrief Battle.QSimulation.Game.BattleGridManager     |
-| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Player} | @cref{Battle.QSimulation.Player,BattlePlayerManager} | @copybrief Battle.QSimulation.Player.BattlePlayerManager |
+|  Namespace                                                    || Class                                                           | Description                                                         |
+| :------------------------- | :-------------------------------- | :---------------------------------------------------            | :------------------------------------------------------------------ |
+| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Game}   | @cref{Battle.QSimulation.Game,BattleGridManager}                | @copybrief Battle.QSimulation.Game.BattleGridManager                |
+|                                                                                                                                                                                                     ||||
+| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Player} | @cref{Battle.QSimulation.Player,BattlePlayerManager}            | @copybrief Battle.QSimulation.Player.BattlePlayerManager            |
+| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Player} | @cref{Battle.QSimulation.Player,BattlePlayerMovementController} | @copybrief Battle.QSimulation.Player.BattlePlayerMovementController |
 
 <br/>
 
@@ -124,7 +125,7 @@ In %Battle all [Quantum Events🡵] are located in BattleEvents.qtn file.
 
 |  Namespace        | Component                                          | Description                                            |
 | :---------------- | :------------------------------------------------- | :----------------------------------------------------- |
-| @crefd{Quantum}   | @cref{Quantum,EventViewInit}                       | @copybrief Quantum.EventViewInit                       |
+| @crefd{Quantum}   | @cref{Quantum,EventBattleViewInit}                 | @copybrief Quantum.EventBattleViewInit                 |
 | @crefd{Quantum}   | @cref{Quantum,EventBattlePlayerViewInit}           | @copybrief Quantum.EventBattlePlayerViewInit           |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleSoulWallViewInit}         | @copybrief Quantum.EventBattleSoulWallViewInit         |
 |                                                                                                                               |||
