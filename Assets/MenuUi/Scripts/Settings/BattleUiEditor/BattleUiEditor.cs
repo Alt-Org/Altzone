@@ -138,6 +138,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             SetDataToUiElement(_instantiatedPlayerInfo);
             SetDataToUiElement(_instantiatedTeammateInfo);
+
+            if (_instantiatedMoveJoystick != null) SetDataToUiElement(_instantiatedMoveJoystick);
+            if (_instantiatedRotateJoystick != null) SetDataToUiElement(_instantiatedRotateJoystick);
         }
 
         /// <summary>
@@ -641,15 +644,17 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     compareData = _instantiatedTeammateInfo.GetData();
                     break;
                 case BattleUiElementType.MoveJoystick:
+                    if (_instantiatedMoveJoystick == null) return true;
                     compareData = _instantiatedMoveJoystick.GetData();
                     break;
                 case BattleUiElementType.RotateJoystick:
+                    if (_instantiatedRotateJoystick == null) return true;
                     compareData = _instantiatedRotateJoystick.GetData();
                     break;
                 default: // Checking if saved data is similar for every ui element
                     // Note: if more ui elements are added change from GiveUpButton to the last element in the enum
                     bool isSavedDataSimilar = true;
-                    for (int i = 0; i <= (int)BattleUiElementType.GiveUpButton; i++) 
+                    for (int i = 0; i <= (int)BattleUiElementType.RotateJoystick; i++) 
                     {
                         isSavedDataSimilar = IsSavedDataSimilar((BattleUiElementType)i);
                         if (!isSavedDataSimilar) break;
