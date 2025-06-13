@@ -4873,7 +4873,7 @@ GameObject:
   - component: {fileID: 6713647649182535342}
   - component: {fileID: 3521010742480371968}
   m_Layer: 5
-  m_Name: GridOpacityLabel
+  m_Name: GridTransparencyLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5377,7 +5377,7 @@ GameObject:
   - component: {fileID: 9085371676596215513}
   - component: {fileID: 1038428802470334504}
   m_Layer: 5
-  m_Name: GridOpacity
+  m_Name: GridTransparency
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9294,7 +9294,7 @@ GameObject:
   - component: {fileID: 4052236142854965935}
   - component: {fileID: 7115813200138964417}
   m_Layer: 5
-  m_Name: GridOpacitySlider
+  m_Name: GridTransparencySlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12766,11 +12766,17 @@ MonoBehaviour:
   _arenaImage: {fileID: 701258777320508953}
   _uiElementsHolder: {fileID: 3557577885498150299}
   _grid: {fileID: 3340137523758032160}
-  _optionsDropdownButton: {fileID: 7851444692094907736}
-  _optionsDropdownButtonImage: {fileID: 8293618674711115328}
-  _optionsDropdownContents: {fileID: 8967390266792359755}
+  _optionsButton: {fileID: 7851444692094907736}
+  _optionsContents: {fileID: 8967390266792359755}
   _resetButton: {fileID: 2382406319090268328}
-  _incrementalScalingToggle: {fileID: 1618390108446488835}
+  _movementPointAndClickToggle: {fileID: 5031605211129940501}
+  _movementSwipeToggle: {fileID: 5682246025729715515}
+  _movementJoystickToggle: {fileID: 3797342682940857715}
+  _rotationSwipeToggle: {fileID: 3254415481706291353}
+  _rotationTwoFingerToggle: {fileID: 3835469513093671198}
+  _rotationScreenAreaToggle: {fileID: 8850397227339936776}
+  _rotationJoystickToggle: {fileID: 8870386740588002527}
+  _rotationGyroscopeToggle: {fileID: 7409318415590935314}
   _arenaScaleSlider: {fileID: 1616881507630687267}
   _arenaScaleInputField: {fileID: 3920803536846015568}
   _arenaPosXSlider: {fileID: 5493400861996452595}
@@ -12779,10 +12785,19 @@ MonoBehaviour:
   _arenaPosYInputField: {fileID: 2543945177267168781}
   _showGridToggle: {fileID: 2713396874909085333}
   _alignToGridToggle: {fileID: 5065879502632102312}
+  _incrementalScalingToggle: {fileID: 1618390108446488835}
   _gridColumnsSlider: {fileID: 4208640309230986687}
   _gridColumnsInputField: {fileID: 8565598654724886348}
   _gridRowsSlider: {fileID: 5831115552648485873}
   _gridRowsInputField: {fileID: 8425215832682196529}
+  _gridHueSlider: {fileID: 3004803682384212480}
+  _gridHueInputField: {fileID: 6175344212485011570}
+  _gridTransparencySlider: {fileID: 7115813200138964417}
+  _gridTransparencyInputField: {fileID: 5565208280179217906}
+  _saveResetPopup: {fileID: 1313701494920502350}
+  _popupText: {fileID: 5494727294575861901}
+  _okButton: {fileID: 5920154304606893585}
+  _noButton: {fileID: 9032519778982032273}
   _editingComponent: {fileID: 7795057816738114330, guid: 2da1bc0d7742a4f419be8b03d44ba171,
     type: 3}
   _timer: {fileID: 1616917245377245213, guid: 96b37da3f89dc24429d5d3c8813ec4a0, type: 3}
@@ -12794,10 +12809,6 @@ MonoBehaviour:
     type: 3}
   _joystick: {fileID: 1616917245377245213, guid: 591cfa412db14444a95de31d9e80b8dd,
     type: 3}
-  _saveResetPopup: {fileID: 1313701494920502350}
-  _popupText: {fileID: 5494727294575861901}
-  _okButton: {fileID: 5920154304606893585}
-  _noButton: {fileID: 9032519778982032273}
 --- !u!114 &5825138239432314174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14709,7 +14720,7 @@ GameObject:
   - component: {fileID: 152394788225149666}
   - component: {fileID: 5565208280179217906}
   m_Layer: 5
-  m_Name: GridOpacityInputField
+  m_Name: GridTransparencyInputField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16186,7 +16197,7 @@ PrefabInstance:
     - target: {fileID: 494602832215206654, guid: 868b431746af8d441a90ea62da9484e5,
         type: 3}
       propertyPath: m_Name
-      value: AdjustButton
+      value: OptionsButton
       objectReference: {fileID: 0}
     - target: {fileID: 6870950948765546815, guid: 868b431746af8d441a90ea62da9484e5,
         type: 3}
@@ -16333,18 +16344,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &8293618674711115328 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1599492782089742773, guid: 868b431746af8d441a90ea62da9484e5,
-    type: 3}
-  m_PrefabInstance: {fileID: 7289726958147018741}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7203365408331003147}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &7818774565789850332

@@ -20,35 +20,63 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
     /// </summary>
     public class BattleUiEditor : MonoBehaviour
     {
-        [Header("GameObject references")]
+        [Header("Editor GameObject references")]
         [SerializeField] private Button _closeButton;
         [SerializeField] private Button _saveButton;
+        [Space]
         [SerializeField] private RectTransform _arenaImage;
         [SerializeField] private RectTransform _uiElementsHolder;
         [SerializeField] private GridController _grid;
 
-        [Header("Options dropdown references")]
-        [SerializeField] private Button _optionsDropdownButton;
-        [SerializeField] private Image _optionsDropdownButtonImage;
-        [SerializeField] private GameObject _optionsDropdownContents;
+        [Header("Options popup")]
+        [SerializeField] private Button _optionsButton;
+        [SerializeField] private GameObject _optionsContents;
         [SerializeField] private Button _resetButton;
-        [SerializeField] private Toggle _incrementalScalingToggle;
-
-        [Header("Arena options")]
-        [SerializeField] private Slider _arenaScaleSlider;
-        [SerializeField] private TMP_InputField _arenaScaleInputField;
-        [SerializeField] private Slider _arenaPosXSlider;
-        [SerializeField] private TMP_InputField _arenaPosXInputField;
-        [SerializeField] private Slider _arenaPosYSlider;
-        [SerializeField] private TMP_InputField _arenaPosYInputField;
 
         [Header("Grid options")]
         [SerializeField] private Toggle _showGridToggle;
         [SerializeField] private Toggle _alignToGridToggle;
+        [SerializeField] private Toggle _incrementalScalingToggle;
+        [Space]
         [SerializeField] private Slider _gridColumnsSlider;
         [SerializeField] private TMP_InputField _gridColumnsInputField;
+        [Space]
         [SerializeField] private Slider _gridRowsSlider;
         [SerializeField] private TMP_InputField _gridRowsInputField;
+        [Space]
+        [SerializeField] private Slider _gridHueSlider;
+        [SerializeField] private TMP_InputField _gridHueInputField;
+        [Space]
+        [SerializeField] private Slider _gridTransparencySlider;
+        [SerializeField] private TMP_InputField _gridTransparencyInputField;
+
+        [Header("Movement input options")]
+        [SerializeField] private Toggle _movementPointAndClickToggle;
+        [SerializeField] private Toggle _movementSwipeToggle;
+        [SerializeField] private Toggle _movementJoystickToggle;
+
+        [Header("Rotation input options")]
+        [SerializeField] private Toggle _rotationSwipeToggle;
+        [SerializeField] private Toggle _rotationTwoFingerToggle;
+        [SerializeField] private Toggle _rotationScreenAreaToggle;
+        [SerializeField] private Toggle _rotationJoystickToggle;
+        [SerializeField] private Toggle _rotationGyroscopeToggle;
+
+        [Header("Arena options")]
+        [SerializeField] private Slider _arenaScaleSlider;
+        [SerializeField] private TMP_InputField _arenaScaleInputField;
+        [Space]
+        [SerializeField] private Slider _arenaPosXSlider;
+        [SerializeField] private TMP_InputField _arenaPosXInputField;
+        [Space]
+        [SerializeField] private Slider _arenaPosYSlider;
+        [SerializeField] private TMP_InputField _arenaPosYInputField;
+
+        [Header("Save/reset popup")]
+        [SerializeField] private GameObject _saveResetPopup;
+        [SerializeField] private TMP_Text _popupText;
+        [SerializeField] private Button _okButton;
+        [SerializeField] private Button _noButton;
 
         [Header("BattleUi prefabs")]
         [SerializeField] private GameObject _editingComponent;
@@ -57,12 +85,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private GameObject _diamonds;
         [SerializeField] private GameObject _giveUpButton;
         [SerializeField] private GameObject _joystick;
-
-        [Header("Save/reset popup")]
-        [SerializeField] private GameObject _saveResetPopup;
-        [SerializeField] private TMP_Text _popupText;
-        [SerializeField] private Button _okButton;
-        [SerializeField] private Button _noButton;
         
         public static float ScreenSpaceRatio => Screen.width / EditorRect.width;
 
@@ -203,7 +225,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _saveButton.onClick.AddListener(SaveChanges);
 
             // Options dropdown listeners
-            _optionsDropdownButton.onClick.AddListener(ToggleOptionsDropdown);
+            _optionsButton.onClick.AddListener(ToggleOptionsDropdown);
 
             _resetButton.onClick.AddListener(OnResetButtonClicked);
 
@@ -318,7 +340,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
 
             // Removing options dropdown listeners
-            _optionsDropdownButton.onClick.RemoveAllListeners();
+            _optionsButton.onClick.RemoveAllListeners();
 
             _resetButton.onClick.RemoveAllListeners();
             _alignToGridToggle.onValueChanged.RemoveAllListeners();
@@ -338,7 +360,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void ToggleOptionsDropdown()
         {
-            if (_optionsDropdownContents.activeSelf)
+            if (_optionsContents.activeSelf)
             {
                 CloseOptionsDropdown();
             }
@@ -351,12 +373,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private void OpenOptionsDropdown()
         {
             OnUiElementSelected(null);
-            _optionsDropdownContents.SetActive(true);
+            _optionsContents.SetActive(true);
         }
 
         private void CloseOptionsDropdown()
         {
-            _optionsDropdownContents.SetActive(false);
+            _optionsContents.SetActive(false);
         }
 
         private IEnumerator ShowSaveResetPopup(string message, Action<bool?> callback)
