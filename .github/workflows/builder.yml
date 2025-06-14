@@ -18,12 +18,12 @@ jobs:
           - targetPlatform: WebGL
             #branch: main
             branch: feature/AddPipelineWebglBuilds
-          #- targetPlatform: WebGL
-          #  branch: Production
-          #- targetPlatform: Android
-          #  branch: Production
-          #- targetPlatform: Android #Remove this
-          #  branch: feature/AddPipelineWebglBuilds
+          - targetPlatform: WebGL
+            branch: Production
+          - targetPlatform: Android
+            branch: Production
+          - targetPlatform: Android #Remove this
+            branch: feature/AddPipelineWebglBuilds
 
     steps:
       - name: Check branch match
