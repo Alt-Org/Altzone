@@ -1,4 +1,4 @@
-# Documentation
+# Documentation {#page-documentation}
 
 at the moment this page is used as shared clipboard where people working on documentation can write down documentation templates for speed and consistency
 

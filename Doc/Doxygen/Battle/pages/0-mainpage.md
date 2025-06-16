@@ -66,6 +66,9 @@
 
 - @bigtext{[[Simulation]](#page-simulation)}
 - @bigtext{[[View]](#page-view)}
+- @bigtext{[[Resources]](#page-resources)}
+- @bigtext{[[Scenes]](#page-scenes)}
+- @bigtext{[[Documentation]](#page-documentation)}
 
 <br/>
 
