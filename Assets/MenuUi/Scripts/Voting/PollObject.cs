@@ -23,6 +23,8 @@ public class PollObject : MonoBehaviour
 
     [SerializeField] private AddPlayerHeads playerHeads;
 
+    [SerializeField] private UnityEngine.UI.Image Background;
+
     PollData pollData;
 
     private void Start()
@@ -71,7 +73,10 @@ public class PollObject : MonoBehaviour
             yield return new WaitForSeconds(1);
         }
     }
-
+    private bool PollPassed()
+    {
+        return pollData.YesVotes.Count > pollData.NoVotes.Count;
+    }
 
     private void SetValues()
     {
@@ -114,10 +119,21 @@ public class PollObject : MonoBehaviour
         else
         {
             Clock.fillAmount = 1f;
+            SetResultColor();
         }
     }
 
-
+    private void SetResultColor()
+    {
+        if (PollPassed())
+        {
+            Background.color = new Color(0.4f, 1f, 0.4f, 0.4f); // light green
+        }
+        else
+        {
+            Background.color = new Color(1f, 0.4f, 0.4f, 0.4f); // light red
+        }
+    }
 
     public void PassPollId()
     {
