@@ -107,7 +107,7 @@ In %Battle Singletons have QSingleton suffix. [[Naming]](#index-naming)
 [Quantum Signals🡵] are C# interfaces that are generated from qtn files.  
 In %Battle all [Quantum Signals🡵] are located in BattleSignals.qtn file.
 
-|  Namespace        | Component                                                | Description                                                  |
+|  Namespace        | Interface                                                | Description                                                  |
 | :---------------- | :------------------------------------------------------- | :----------------------------------------------------------- |
 | @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitSoulWall}      | @copybrief Quantum.ISignalBattleOnProjectileHitSoulWall      |
 | @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitArenaBorder}   | @copybrief Quantum.ISignalBattleOnProjectileHitArenaBorder   |
@@ -125,7 +125,7 @@ In %Battle all [Quantum Signals🡵] are located in BattleSignals.qtn file.
 [Quantum Events🡵] are C# classes that are generated from qtn files.  
 In %Battle all [Quantum Events🡵] are located in BattleEvents.qtn file.
 
-|  Namespace        | Component                                             | Description                                               |
+|  Namespace        | Class                                                 | Description                                               |
 | :---------------- | :---------------------------------------------------- | :-------------------------------------------------------- |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleViewWaitForPlayers}          | @copybrief Quantum.EventBattleViewWaitForPlayers          |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleViewInit}                    | @copybrief Quantum.EventBattleViewInit                    |
