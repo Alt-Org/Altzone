@@ -42,27 +42,36 @@ public class PollObject : MonoBehaviour
 
     private IEnumerator UpdateValues()
     {
+        float totalDuration = pollData.EndTime - pollData.StartTime;
+
         while (true)
         {
-            Clock.fillAmount = 1 - (float)(pollData.EndTime - DateTimeOffset.UtcNow.ToUnixTimeSeconds()) / (pollData.EndTime - pollData.StartTime);
-
-            int secondsLeft = (int)(pollData.EndTime - DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-            int minutesLeft = secondsLeft / 60;
-            int hoursLeft = minutesLeft / 60;
-
-            if (secondsLeft < 60) TimeLeftText.text = (secondsLeft.ToString() + "s");
-            else if (minutesLeft < 60) TimeLeftText.text = (minutesLeft.ToString() + "m");
-            else TimeLeftText.text = (hoursLeft.ToString() + "h");
+            long currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            long secondsLeft = pollData.EndTime - currentTime;
 
             if (secondsLeft <= 0)
             {
+                // Clamp fill amount and timer to zero
+                Clock.fillAmount = 1f;
+                TimeLeftText.text = "0s";
+
+                // End the poll
                 PollManager.EndPoll(pollId);
-                break;
+
+                // Stop updating after poll ends
+                yield break;
             }
+
+            Clock.fillAmount = 1 - (float)(secondsLeft) / totalDuration;
+
+            if (secondsLeft < 60) TimeLeftText.text = secondsLeft + "s";
+            else if (secondsLeft < 3600) TimeLeftText.text = (secondsLeft / 60) + "m";
+            else TimeLeftText.text = (secondsLeft / 3600) + "h";
 
             yield return new WaitForSeconds(1);
         }
     }
+
 
     private void SetValues()
     {
@@ -94,8 +103,20 @@ public class PollObject : MonoBehaviour
         pollId = newPollId;
         pollData = PollManager.GetAnyPollData(pollId);
         if (pollData == null) return;
+
         SetValues();
+
+        long currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        if (currentTime < pollData.EndTime)
+        {
+            StartCoroutine(UpdateValues());
+        }
+        else
+        {
+            Clock.fillAmount = 1f;
+        }
     }
+
 
 
     public void PassPollId()
