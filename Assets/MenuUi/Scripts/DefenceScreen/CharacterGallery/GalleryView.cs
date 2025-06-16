@@ -41,7 +41,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
         [SerializeField] private GameObject _characterSlotPrefab;
 
-        [SerializeField] private ClassColorReference _classColorReference;
+        [SerializeField] private ClassReference _classReference;
 
         private FilterType _currentFilter = FilterType.All;
         private List<int> filterEnumValues;
@@ -50,7 +50,7 @@ namespace MenuUi.Scripts.CharacterGallery
         private readonly List<CharacterSlot> _characterSlots = new();
         public List<CharacterSlot> CharacterSlots => _characterSlots;
 
-        public delegate void GalleryCharactersSetHandler(int[] _selectedCharacterIds);
+        public delegate void GalleryCharactersSetHandler(CustomCharacter[] _selectedCharacters);
         public GalleryCharactersSetHandler OnGalleryCharactersSet;
 
         public Action OnFilterChanged;
@@ -113,38 +113,66 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             Reset();
 
+            CustomCharacter[] selectedCharacters = new CustomCharacter[3];
+
             // Placing unlocked characters
             foreach (CustomCharacter character in customCharacters)
             {
                 var charSlot = InstantiateCharacterSlot(character.Id, false, _unlockedCharacterGridContent);
-            }
 
-            // Placing locked characters
-            if (_lockedCharacterGridContent != null)
-            {
-                DataStore store = Storefront.Get();
-                ReadOnlyCollection<BaseCharacter> allItems = null;
-                store.GetAllBaseCharacterYield(result => allItems = result);
-
-                foreach (BaseCharacter baseCharacter in allItems)
+                // Going through selectedCharacterIds to check if the CustomCharacter is one of the selected characters
+                for (int i = 0; i < selectedCharacterIds.Length; i++)
                 {
-                    // Checking if player has already unlocked the character and if so, skipping the character
-                    bool characterUnlocked = false;
-                    foreach (CharacterSlot slot in _characterSlots)
+                    if ((int)character.Id == selectedCharacterIds[i])
                     {
-                        if (slot.Character.Id == baseCharacter.Id)
-                        {
-                            characterUnlocked = true;
-                            break;
-                        }
+                        // Adding the CustomCharacter to the array of selected characters
+                        selectedCharacters[i] = character;
+                        break;
                     }
-                    if (characterUnlocked) continue;
-
-                    InstantiateCharacterSlot(baseCharacter.Id, true, _lockedCharacterGridContent);
                 }
             }
 
-            OnGalleryCharactersSet?.Invoke(selectedCharacterIds);
+            for (int i = 0; i < selectedCharacterIds.Length; i++)
+            {
+                if (selectedCharacterIds[i] == (int)CharacterID.Test)
+                {
+                    selectedCharacters[i] = new(CharacterID.Test, 2, 20, 2, 2, 2);
+                }
+            }
+
+            // Placing locked and test characters
+            DataStore store = Storefront.Get();
+            ReadOnlyCollection<BaseCharacter> allItems = null;
+            store.GetAllBaseCharacterYield(result => allItems = result);
+
+            foreach (BaseCharacter baseCharacter in allItems)
+            {
+                // If test character adding it to the normal grid
+                if (baseCharacter.Id == CharacterID.Test)
+                {
+                    InstantiateCharacterSlot(baseCharacter.Id, false, _unlockedCharacterGridContent);
+                    continue;
+                }
+
+                if (_lockedCharacterGridContent == null) continue;
+
+                // Checking if player has already unlocked the character and if so, skipping the character
+                bool characterUnlocked = false;
+                foreach (CharacterSlot slot in _characterSlots)
+                {
+                    if (slot.Character.Id == baseCharacter.Id)
+                    {
+                        characterUnlocked = true;
+                        break;
+                    }
+                }
+                if (characterUnlocked) continue;
+
+                InstantiateCharacterSlot(baseCharacter.Id, true, _lockedCharacterGridContent);
+            }
+
+            // Invoking the event with selectedCharacters CustomCharacter array
+            OnGalleryCharactersSet?.Invoke(selectedCharacters);
         }
 
 
@@ -156,11 +184,12 @@ namespace MenuUi.Scripts.CharacterGallery
             GameObject slot = Instantiate(_characterSlotPrefab, parent);
 
             CharacterClassID classID = CustomCharacter.GetClassID(charID);
-            Color bgColor = _classColorReference.GetColor(classID);
-            Color bgAltColor = _classColorReference.GetAlternativeColor(classID);
+            string className = _classReference.GetName(classID);
+            Color bgColor = _classReference.GetColor(classID);
+            Color bgAltColor = _classReference.GetAlternativeColor(classID);
 
             CharacterSlot charSlot = slot.GetComponent<CharacterSlot>();
-            charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, charID);
+            charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, className, charID);
 
             _characterSlots.Add(charSlot);
 
@@ -176,7 +205,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
             return charSlot;
         }
-       
+
         private void RotateFilters()
         {
             for (int i = 0; i < filterEnumValues.Count; i++)
@@ -312,6 +341,6 @@ namespace MenuUi.Scripts.CharacterGallery
             }
         }
 
-        
+
     }
 }

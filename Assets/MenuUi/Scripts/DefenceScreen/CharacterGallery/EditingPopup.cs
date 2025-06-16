@@ -87,7 +87,7 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
-        private void SetCharacters(int[] selectedCharacterIds)
+        private void SetCharacters(CustomCharacter[] selectedCharacters)
         {
             // Going through every character slot in the gallery to see which ones are selected
             foreach (CharacterSlot slot in _galleryView.CharacterSlots)
@@ -100,7 +100,8 @@ namespace MenuUi.Scripts.CharacterGallery
                 // Changing parent and setting selected visuals for the selected characters
                 for (int i = 0; i < _selectedCharacterSlots.Length; i++)
                 {
-                    if (selectedCharacterIds[i] == (int)slot.Id)
+                    if (selectedCharacters[i] == null) continue;
+                    if (selectedCharacters[i].Id == slot.Id)
                     {
                         _selectedCharacterSlots[i].SelectedCharacter = slot.Character;
 

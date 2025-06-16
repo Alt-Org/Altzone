@@ -13,12 +13,13 @@ MonoBehaviour:
   m_Name: CharacterSpec_604
   m_EditorClassIdentifier: 
   Id: 604
-  CharacterId: 0
+  CharacterId: -1
   IsApproved: 0
   Name: Heimoidentiteetti
-  ClassType: 1536
+  ClassType: 600
   CharacterDescription: 
   CharacterShortDescription: 
+  CharacterStats: {fileID: 0}
   Hp:
     Level: 0
     Coefficient: 0
@@ -36,4 +37,7 @@ MonoBehaviour:
     Coefficient: 0
   GalleryImage: {fileID: 0}
   GalleryHeadImage: {fileID: 0}
-  BattleSprite: {fileID: 0}
+  BattleEntityPrototype:
+    Id:
+      Value: 0
+  BattleUiSprite: {fileID: 0}
