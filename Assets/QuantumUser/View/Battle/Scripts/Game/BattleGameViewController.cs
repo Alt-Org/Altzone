@@ -47,6 +47,16 @@ namespace Battle.View.Game
             Debug.Log($"Character number {characterNumber} selected!");
         }
 
+        public void UiInputOnMoveJoystickInput(Vector2 input)
+        {
+            Debug.Log($"Move joystick input {input}");
+        }
+
+        public void UiInputOnRotateJoystickInput(Vector2 input)
+        {
+            Debug.Log($"Rotate joystick input {input}");
+        }
+
         public void UiInputOnExitGamePressed()
         {
             if (_endOfGameDataHasEnded) LobbyManager.ExitQuantum(_endOfGameDataWinningTeam == LocalPlayerTeam, (float)_endOfGameDataGameLengthSec);
