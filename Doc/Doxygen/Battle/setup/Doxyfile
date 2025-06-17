@@ -974,7 +974,10 @@ INPUT                  = "%doc-dir%/pages" \
                          "%project-dir%/Altzone/Assets/QuantumUser/Resources/Specs" \
                          "%project-dir%/Altzone/Assets/QuantumUser/Resources/Prefabs" \
                          \
-                         "%project-dir%/Altzone/Assets/QuantumUser/Scenes"
+                         "%project-dir%/Altzone/Assets/QuantumUser/Scenes" \
+                         \
+                         "%project-dir%/Altzone/Assets/Altzone/Scripts/BattleUiShared" \
+                         "%project-dir%/Altzone/Assets/Altzone/Resources/Prefabs/BattleUiShared"
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
