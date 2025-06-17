@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PostPollManager : MonoBehaviour
+public class PPstPollManager : MonoBehaviour
 {
     [SerializeField] private GameObject PastPollListContent;
     [SerializeField] private GameObject PollObjectPrefab;
