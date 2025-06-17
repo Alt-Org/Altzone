@@ -19,7 +19,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6682025077758413645
 RectTransform:
   m_ObjectHideFlags: 0
@@ -67,7 +67,11 @@ MonoBehaviour:
   _relativePercentageMax: 0.984
   _fontSizeMin: 18
   _fontSizeMax: 512
-  _text: {fileID: 1593729887214093640}
+  _textBoxAspectRatio: 0
+  _startScalingHolderAspectRatio: 0.5625
+  _holderRectTransform: {fileID: 0}
+  _textArray:
+  - {fileID: 1593729887214093640}
 --- !u!222 &1554362590128268219
 CanvasRenderer:
   m_ObjectHideFlags: 0

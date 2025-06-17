@@ -21,90 +21,106 @@ namespace Altzone.Scripts.BattleUiShared
         [SerializeField] private RectTransform _holderRectTransform;
 
         [Header("Text component references")]
-        [SerializeField] private TextMeshProUGUI _text;
+        [SerializeField] private TextMeshProUGUI[] _textArray;
 
-        private RectTransform _rectTransform;
+        private RectTransform[] _rectTransformArray;
 
-        private Vector2 _oldRectSize = Vector2.zero;
-        private string _oldText = string.Empty;
+        private Vector2[] _oldRectSizeArray;
+        private string[] _oldTextArray;
 
-        private Vector2 _textBoxDefaultAnchorMin;
-        private Vector2 _textBoxDefaultAnchorMax;
+        private Vector2[] _textBoxDefaultAnchorMinArray;
+        private Vector2[] _textBoxDefaultAnchorMaxArray;
 
         private void Awake()
         {
-            // Getting rect transform component for size comparisons
-            if (_text == null) return;
-            _rectTransform = _text.gameObject.GetComponent<RectTransform>();
+            _rectTransformArray = new RectTransform[_textArray.Length];
+            _oldRectSizeArray = new Vector2[_textArray.Length];
+            _oldTextArray = new string[_textArray.Length];
+            _textBoxDefaultAnchorMinArray = new Vector2[_textArray.Length];
+            _textBoxDefaultAnchorMaxArray = new Vector2[_textArray.Length];
 
-            // Setting text box settings
-            if (_text.enableAutoSizing == true) _text.enableAutoSizing = false;
-            if (_text.textWrappingMode != TextWrappingModes.NoWrap) _text.textWrappingMode = TextWrappingModes.NoWrap;
+            for (int i = 0; i < _textArray.Length; i++)
+            {
+                // Getting rect transform component for size comparisons
+                if (_textArray[i] == null) return;
+                _rectTransformArray[i] = _textArray[i].gameObject.GetComponent<RectTransform>();
 
-            // Saving text box scaling variables
-            if (_textBoxAspectRatio == 0 || _holderRectTransform == null) return;
-            _textBoxDefaultAnchorMin = _rectTransform.anchorMin;
-            _textBoxDefaultAnchorMax = _rectTransform.anchorMax;
+                // Setting text box settings
+                if (_textArray[i].enableAutoSizing == true) _textArray[i].enableAutoSizing = false;
+                if (_textArray[i].textWrappingMode != TextWrappingModes.NoWrap) _textArray[i].textWrappingMode = TextWrappingModes.NoWrap;
+
+                // Setting empty values to arrays
+                _oldRectSizeArray[i] = Vector2.zero;
+                _oldTextArray[i] = string.Empty;
+
+                // Saving text box scaling variables
+                if (_textBoxAspectRatio == 0 || _holderRectTransform == null) continue;
+                _textBoxDefaultAnchorMinArray[i] = _rectTransformArray[i].anchorMin;
+                _textBoxDefaultAnchorMaxArray[i] = _rectTransformArray[i].anchorMax;
+            }
         }
 
         private void Update()
         {
-            if (_rectTransform == null) return;
-            bool textBoxSizeChanged = _rectTransform.rect.size != _oldRectSize;
+            for (int i = 0; i < _textArray.Length; i++)
+            {
+                if (_rectTransformArray[i] == null) return;
+                bool textBoxSizeChanged = _rectTransformArray[i].rect.size != _oldRectSizeArray[i];
 
-            // If text box size changed and the text box scaling variables are set, scale text box
-            if (textBoxSizeChanged && _textBoxAspectRatio != 0 && _holderRectTransform != null) ScaleTextBox();
+                // If text box size changed and the text box scaling variables are set, scale text box
+                if (textBoxSizeChanged && _textBoxAspectRatio != 0 && _holderRectTransform != null) ScaleTextBox(i);
 
-            // Recalculating font size if text box size changed
-            if (textBoxSizeChanged) RecalculateFontSize();
+                // Recalculating font size if text box size changed
+                if (textBoxSizeChanged) RecalculateFontSize(i);
 
-            // If the text changed or text box size changed checking for text clipping
-            if (_oldText != _text.text || textBoxSizeChanged) CheckTextClipping();
+                // If the text changed or text box size changed checking for text clipping
+                if (_oldTextArray[i] != _textArray[i].text || textBoxSizeChanged) CheckTextClipping(i);
+            }
         }
 
-        private void RecalculateFontSize()
+        private void RecalculateFontSize(int index)
         {
             // Calculating the font target and max relative size
-            float fontSize = _rectTransform.rect.height * _relativePercentageTarget;
-            float fontRelativeSizeMax = _rectTransform.rect.height * _relativePercentageMax;
+            float fontSize = _rectTransformArray[index].rect.height * _relativePercentageTarget;
+            float fontRelativeSizeMax = _rectTransformArray[index].rect.height * _relativePercentageMax;
 
             // Clamping font size to min and max font sizes
             fontSize = Mathf.Clamp(fontSize, Mathf.Min(_fontSizeMin, fontRelativeSizeMax), _fontSizeMax == 0 ? float.PositiveInfinity : _fontSizeMax);
 
             // Setting font size and _oldRectSize
-            _text.fontSize = fontSize;
-            _oldRectSize = _rectTransform.rect.size;
+            _textArray[index].fontSize = fontSize;
+            _oldRectSizeArray[index] = _rectTransformArray[index].rect.size;
         }
 
-        private void ScaleTextBox()
+        private void ScaleTextBox(int index)
         {
-            Vector2 anchorMin = _textBoxDefaultAnchorMin;
-            Vector2 anchorMax = _textBoxDefaultAnchorMax;
+            Vector2 anchorMin = _textBoxDefaultAnchorMinArray[index];
+            Vector2 anchorMax = _textBoxDefaultAnchorMaxArray[index];
 
             // Setting default anchors
-            _rectTransform.anchorMin = anchorMin;
-            _rectTransform.anchorMax = anchorMax;
+            _rectTransformArray[index].anchorMin = anchorMin;
+            _rectTransformArray[index].anchorMax = anchorMax;
 
             // If aspect ratio is wider than start scaling aspect ratio we don't need to calculate new text box height
             if (_holderRectTransform.rect.width / _holderRectTransform.rect.height > _startScalingHolderAspectRatio) return;
 
             // Calculating new height for text box
-            float newHeight = _rectTransform.rect.width / _textBoxAspectRatio;
+            float newHeight = _rectTransformArray[index].rect.width / _textBoxAspectRatio;
 
             // Calculating the Y anchors
-            anchorMin.y = Mathf.Clamp01((_rectTransform.position.y - newHeight * 0.5f) / _holderRectTransform.rect.height);
-            anchorMax.y = Mathf.Clamp01((_rectTransform.position.y + newHeight * 0.5f) / _holderRectTransform.rect.height);
+            anchorMin.y = Mathf.Clamp01((_rectTransformArray[index].position.y - newHeight * 0.5f) / _holderRectTransform.rect.height);
+            anchorMax.y = Mathf.Clamp01((_rectTransformArray[index].position.y + newHeight * 0.5f) / _holderRectTransform.rect.height);
 
             // Setting updated anchors
-            _rectTransform.anchorMin = anchorMin;
-            _rectTransform.anchorMax = anchorMax;
+            _rectTransformArray[index].anchorMin = anchorMin;
+            _rectTransformArray[index].anchorMax = anchorMax;
         }
 
-        private void CheckTextClipping()
+        private void CheckTextClipping(int index)
         {
             // Printing warning text if the text is too long to fit in the box
-            if (_text.preferredWidth > _rectTransform.rect.width) Debug.LogWarning($"TextScaler: Text is too long to fit in the box: {_text.text}");
-            _oldText = _text.text;
+            if (_textArray[index].preferredWidth > _rectTransformArray[index].rect.width) Debug.LogWarning($"TextScaler: Text is too long to fit in the box: {_textArray[index].text}");
+            _oldTextArray[index] = _textArray[index].text;
         }
     }
 }
