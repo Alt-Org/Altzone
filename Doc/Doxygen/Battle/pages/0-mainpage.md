@@ -42,6 +42,8 @@
 @bigtext{**Prefix**}
 - **%Battle**  
   Marks type as %Battle related.
+- **%Ui**  
+  Marks type as %UI related. Used in addition to the %Battle prefix.
 
 @bigtext{**Suffix**}
 - **%QSystem**  
@@ -56,6 +58,10 @@
   Marks type as [Quantum Spec🡵].
 - **%ViewController**  
   Marks type as ViewController.
+- **%Handler**  
+  Marks type as @uihandlerlink.
+- **%Component**  
+  Marks type as @uicomponentlink.
 
 
 <br/>

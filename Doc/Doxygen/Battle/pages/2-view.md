@@ -75,7 +75,7 @@ In %Battle View Controllers have ViewController suffix. [[Naming]](#index-naming
 ## UI {#page-view-ui}
 
 UI -scripts handle %Battle UI functionality.  
-In addition to the "Battle" prefix, the scripts have a "Ui" prefix.  
+In %Battle the UI scripts have a Ui prefix following the %Battle prefix. [[Naming]](#index-naming)
 
 |  Namespace                                          || Class                                                        | Description                                                      |
 | :------------------ | :----------------------------- | :----------------------------------------------------------- | :--------------------------------------------------------------- |
@@ -87,7 +87,7 @@ In addition to the "Battle" prefix, the scripts have a "Ui" prefix.
 
 UI Handlers are scripts which handle visual functionality for BattleUiShared -prefabs. They are attached to the top level parent GameObject of the BattleUi -prefab.  
 The handler scripts also add listeners to call UiInput methods in BattleGameViewController when the local player gives an UI input.  
-In addition to the "Battle" and "Ui" prefixes, the scripts have a "Handler" -suffix.  
+In %Battle the UI Handlers have a Handler suffix in addition to the Ui prefix. [[Naming]](#index-naming)
 
 BattleUiShared -prefabs can be found in the Assets/Altzone/Resources/Prefabs/BattleUiShared -folder, and the scripts are in the Assets/Altzone/Scripts/BattleUiShared -folder.  
 Every one of the BattleUiShared -prefabs has either a BattleUiMovableElement or a BattleUiMultiOrientationElement -script, which allow setting the saved BattleUiMovableElementData.  
@@ -96,19 +96,19 @@ BattleUiMovableElementData holds the anchor and orientation information for each
 |  Namespace                                          || Class                                                        | Description                                                      |
 | :------------------ | :----------------------------- | :----------------------------------------------------------- | :--------------------------------------------------------------- |
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiAnnouncementHandler}            | @copybrief Battle.View.UI.BattleUiAnnouncementHandler            |
-| @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiDebugStatsOverlayHandler}       | @copybrief Battle.View.UI.BattleUiDebugStatsOverlayHandler       |
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiDiamondsHandler}                | @copybrief Battle.View.UI.BattleUiDiamondsHandler                |
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiGameOverHandler}                | @copybrief Battle.View.UI.BattleUiGameOverHandler                |
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiGiveUpButtonHandler}            | @copybrief Battle.View.UI.BattleUiGiveUpButtonHandler            |
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiPlayerInfoHandler}              | @copybrief Battle.View.UI.BattleUiPlayerInfoHandler              |
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiTimerHandler}                   | @copybrief Battle.View.UI.BattleUiTimerHandler                   |
+| @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiDebugStatsOverlayHandler}       | @copybrief Battle.View.UI.BattleUiDebugStatsOverlayHandler       |
 
 <br/>
 
 ## UI Component {#page-view-uicomponent}
 
-UI Components are scripts which unlike UI Handlers, are attached to the BattleUiShared -prefabs' GameObjects themselves.  
-In addition to the "Battle" and "Ui" prefixes, the scripts have a "Component" -suffix.  
+UI Components are scripts which unlike @uihandlerslink are attached to the BattleUiShared -prefabs' GameObjects themselves.  
+In %Battle the UI Components have a Component suffix in addition to the Ui prefix. [[Naming]](#index-naming)
 
 The UI Component scripts exist to make it easier to handle BattleUiShared prefabs which have several instances, for example BattleUiPlayerInfo.  
 The different instances of the duplicated prefab each have their own GameObjects which need to be accessed to set visual information or attach listeners.  
