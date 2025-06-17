@@ -64,8 +64,6 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private GalleryView _editingPanelView;
         [SerializeField] private StatsWindowController _statsWindowController;
 
-        public const string TestCharacterID = "test";
-
         private PlayerData _playerData;
         private bool _reloadRequested = false;
 
@@ -144,7 +142,6 @@ namespace MenuUi.Scripts.CharacterGallery
                 for (int i = 0; i < selectedCharacterIds.Length; i++)
                 {
                     characterIds[i] = _playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == selectedCharacterIds[i]) == null ? -1 : (int)_playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == selectedCharacterIds[i]).Id;
-                    if (selectedCharacterIds[i] == TestCharacterID) characterIds[i] = (int)CharacterID.Test;
                 }
                 var characters = playerData.CustomCharacters.GroupBy(x => x.Id).Select(x => x.First()).ToList(); // ensuring no duplicate characters if account is bugged
                 characters.Sort((a, b) => a.Id.CompareTo(b.Id));
@@ -162,7 +159,7 @@ namespace MenuUi.Scripts.CharacterGallery
             string newServerId = _playerData.CustomCharacters.FirstOrDefault(x => x.Id == newCharacterId)?.ServerID;
             if (newServerId == null)
             {
-                if (newCharacterId == CharacterID.Test) newServerId = TestCharacterID;
+                if (CustomCharacter.IsTestCharacter(newCharacterId)) newServerId = newCharacterId.ToString();
                 _playerData.SelectedCharacterIds[slot] = "0";
             }
 

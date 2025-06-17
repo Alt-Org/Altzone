@@ -86,17 +86,6 @@ namespace Altzone.Scripts.Model.Poco.Player
             get
             {
                 List<CustomCharacter> list = new();
-                foreach(string id in SelectedCharacterIds)
-                {
-                    if (id == "test")
-                    {
-                        list.Add(new(CharacterID.Test, 2, 20, 2, 2, 2));
-                        list.Add(new(CharacterID.Test, 2, 10, 2, 2, 2));
-                        list.Add(new(CharacterID.Test, 2, 15, 2, 2, 2));
-                        return new ReadOnlyCollection<CustomCharacter>(list);
-                    }
-                }
-
                 foreach (string id in SelectedCharacterIds)
                 {
                     if (string.IsNullOrEmpty(id)) continue;

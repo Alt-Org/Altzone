@@ -264,5 +264,15 @@ namespace Altzone.Scripts.Model.Poco.Game
             int characterId = (int)id % 100;
             return characterId;
         }
+
+        public static bool IsTestCharacter(CharacterID id)
+        {
+            return (int)id % 100 == 0;
+        }
+
+        public bool IsTestCharacter()
+        {
+            return (int)Id % 100 == 0;
+        }
     }
 }
