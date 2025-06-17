@@ -24,6 +24,7 @@ namespace MenuUi.Scripts.CharacterGallery
             All = 0,
             Unlocked = 1,
             Locked = 2,
+            Test = 3,
             Desensitizer = 100,
             Trickster = 200,
             Obedient = 300,
@@ -239,6 +240,13 @@ namespace MenuUi.Scripts.CharacterGallery
                     }
                     break;
 
+                case FilterType.Test:
+                    foreach (CharacterSlot characterSlot in _characterSlots)
+                    {
+                        characterSlot.gameObject.SetActive(CustomCharacter.IsTestCharacter(characterSlot.Id));
+                    }
+                    break;
+
                 case FilterType.Desensitizer: // Only showing desensitizers
                     FilterForClassID(CharacterClassID.Desensitizer);
                     break;
@@ -303,6 +311,11 @@ namespace MenuUi.Scripts.CharacterGallery
                 case FilterType.Locked:
                     _filterText.text = "Tiedostamattomat";
                     break;
+
+                case FilterType.Test:
+                    _filterText.text = "Testihahmot";
+                    break;
+
                 case FilterType.Desensitizer:
                     _filterText.text = "Tunnottomat";
                     break;
