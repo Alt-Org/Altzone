@@ -65,15 +65,15 @@ namespace Battle.View.UI
         private void Awake()
         {
             // Connecting listeners for the joystick input
-            if (_moveJoystickComponent != null) _moveJoystickComponent.OnJoystickInput += _uiController.GameViewController.UiInputOnMoveJoystickInput;
-            if (_rotateJoystickComponent != null) _rotateJoystickComponent.OnJoystickInput += _uiController.GameViewController.UiInputOnRotateJoystickInput;
+            if (_moveJoystickComponent != null) _moveJoystickComponent.OnJoystickInput += _uiController.GameViewController.UiInputOnMovementJoystick;
+            if (_rotateJoystickComponent != null) _rotateJoystickComponent.OnJoystickInput += _uiController.GameViewController.UiInputOnRotationJoystick;
         }
 
         private void OnDestroy()
         {
             // Removing listeners for the joystick input
-            if (_moveJoystickComponent != null) _moveJoystickComponent.OnJoystickInput -= _uiController.GameViewController.UiInputOnMoveJoystickInput;
-            if (_rotateJoystickComponent != null) _rotateJoystickComponent.OnJoystickInput -= _uiController.GameViewController.UiInputOnRotateJoystickInput;
+            if (_moveJoystickComponent != null) _moveJoystickComponent.OnJoystickInput -= _uiController.GameViewController.UiInputOnMovementJoystick;
+            if (_rotateJoystickComponent != null) _rotateJoystickComponent.OnJoystickInput -= _uiController.GameViewController.UiInputOnRotationJoystick;
         }
     }
 }
