@@ -65,9 +65,6 @@ public class AddPlayerHeads : MonoBehaviour
         if (YesHeads.Count != 0) YesHeadsCombinedWidth = YesHeads[0].GetComponent<RectTransform>().rect.width * YesHeads[0].transform.localScale.x * YesHeads.Count;
         if (NoHeads.Count != 0) NoHeadsCombinedWidth = NoHeads[0].GetComponent<RectTransform>().rect.width * NoHeads[0].transform.localScale.x * NoHeads.Count;
 
-        //Debug.Log("YesHeadsCombinedWidth: " + YesHeadsCombinedWidth);
-        //Debug.Log("NoHeadsCombinedWidth: " + NoHeadsCombinedWidth);
-
         if (YesHeadsCombinedWidth > MaskWidth || NoHeadsCombinedWidth > MaskWidth) StartCoroutine(ScrollHeads());
     }
 

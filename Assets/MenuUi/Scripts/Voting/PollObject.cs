@@ -125,13 +125,14 @@ public class PollObject : MonoBehaviour
 
     private void SetResultColor()
     {
+        // Set color based on if the poll passed or not
         if (PollPassed())
         {
-            Background.color = new Color(0.4f, 1f, 0.4f, 0.4f); // light green
+            Background.color = new Color(0.4f, 1f, 0.4f, 0.4f);
         }
         else
         {
-            Background.color = new Color(1f, 0.4f, 0.4f, 0.4f); // light red
+            Background.color = new Color(1f, 0.4f, 0.4f, 0.4f);
         }
     }
 
