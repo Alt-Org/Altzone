@@ -74,6 +74,9 @@ In %Battle View Controllers have ViewController suffix. [[Naming]](#index-naming
 
 ## UI {#page-view-ui}
 
+UI -scripts handle %Battle UI functionality.  
+In addition to the "Battle" prefix, the scripts have a "Ui" prefix.  
+
 |  Namespace                                          || Class                                                        | Description                                                      |
 | :------------------ | :----------------------------- | :----------------------------------------------------------- | :--------------------------------------------------------------- |
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiController}                     | @copybrief Battle.View.UI.BattleUiController                     |
@@ -81,6 +84,14 @@ In %Battle View Controllers have ViewController suffix. [[Naming]](#index-naming
 <br/>
 
 ## UI Handler {#page-view-uihandler}
+
+UI Handlers are scripts which handle visual functionality for BattleUiShared -prefabs. They are attached to the top level parent GameObject of the BattleUi -prefab.  
+The handler scripts also add listeners to call UiInput methods in BattleGameViewController when the local player gives an UI input.  
+In addition to the "Battle" and "Ui" prefixes, the scripts have a "Handler" -suffix.  
+
+BattleUiShared -prefabs can be found in the Assets/Altzone/Resources/Prefabs/BattleUiShared -folder, and the scripts are in the Assets/Altzone/Scripts/BattleUiShared -folder.  
+Every one of the BattleUiShared -prefabs has either a BattleUiMovableElement or a BattleUiMultiOrientationElement -script, which allow setting the saved BattleUiMovableElementData.  
+BattleUiMovableElementData holds the anchor and orientation information for each BattleUiShared -prefab. It is serialized and deserialized in SettingsCarrier using GetBattleUiMovableElementData and SetBattleUiMovableElementData -methods.  
 
 |  Namespace                                          || Class                                                        | Description                                                      |
 | :------------------ | :----------------------------- | :----------------------------------------------------------- | :--------------------------------------------------------------- |
@@ -95,6 +106,12 @@ In %Battle View Controllers have ViewController suffix. [[Naming]](#index-naming
 <br/>
 
 ## UI Component {#page-view-uicomponent}
+
+UI Components are scripts which unlike UI Handlers, are attached to the BattleUiShared -prefabs' GameObjects themselves.  
+In addition to the "Battle" and "Ui" prefixes, the scripts have a "Component" -suffix.  
+
+The UI Component scripts exist to make it easier to handle BattleUiShared prefabs which have several instances, for example BattleUiPlayerInfo.  
+The different instances of the duplicated prefab each have their own GameObjects which need to be accessed to set visual information or attach listeners.  
 
 |  Namespace                                          || Class                                                        | Description                                                      |
 | :------------------ | :----------------------------- | :----------------------------------------------------------- | :--------------------------------------------------------------- |
