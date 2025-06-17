@@ -11,8 +11,13 @@ namespace Battle.View.UI
     {
         [SerializeField] private RectTransform _handleRectTransform;
 
+        public bool LockYAxis = false;
+
         public delegate void JoystickInputHandler(Vector2 input);
         public event JoystickInputHandler OnJoystickInput;
+
+        public delegate void JoystickXAxisInputHandler(float input);
+        public event JoystickXAxisInputHandler OnJoystickXAxisInput;
 
         public void OnPointerDown(PointerEventData eventData)
         {
@@ -28,7 +33,9 @@ namespace Battle.View.UI
         public void OnPointerUp(PointerEventData eventData)
         {
             _handleRectTransform.localPosition = Vector3.zero;
-            OnJoystickInput(Vector2.zero);
+
+            if (LockYAxis) OnJoystickXAxisInput(0);
+            else OnJoystickInput(Vector2.zero);
         }
 
         private const int JoystickRadiusOffset = 10;
@@ -45,8 +52,13 @@ namespace Battle.View.UI
             Vector2 joystickPos = _rectTransform.position;
             Vector2 dragVector = Vector2.ClampMagnitude(dragPos - joystickPos, _joystickRadius);
 
+            if (LockYAxis) dragVector.y = 0;
+
             _handleRectTransform.position = joystickPos + dragVector;
-            OnJoystickInput(dragVector / _joystickRadius);
+
+            Vector2 inputVector = dragVector / _joystickRadius;
+            if (LockYAxis) OnJoystickXAxisInput(inputVector.x);
+            else OnJoystickInput(inputVector);
         }
     }
 }

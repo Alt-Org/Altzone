@@ -52,7 +52,7 @@ namespace Battle.View.Game
             Debug.Log($"Move joystick input {input}");
         }
 
-        public void UiInputOnRotationJoystick(Vector2 input)
+        public void UiInputOnRotationJoystick(float input)
         {
             Debug.Log($"Rotate joystick input {input}");
         }
