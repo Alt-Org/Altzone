@@ -194,14 +194,13 @@ namespace Altzone.Scripts.Model.Poco.Player
             Patch();
 
             if (_characterList.Contains(character)) ServerManager.Instance.StartUpdatingCustomCharacterToServer(character);
-            else if (_testCharacterList.Contains(character)) Storefront.Get().SavePlayerData(this, null);
+            else Storefront.Get().SavePlayerData(this, null);
         }
 
 
-        public void BuildCharacterLists(List<CustomCharacter> customCharacters, List<CustomCharacter> testCharacters = null)
+        public void BuildCharacterLists(List<CustomCharacter> customCharacters)
         {
             List<CustomCharacter> newCustomCharacters = new();
-            if (testCharacters != null) _testCharacterList = testCharacters;
 
             foreach(CustomCharacter character in customCharacters)
             {
@@ -221,6 +220,13 @@ namespace Altzone.Scripts.Model.Poco.Player
             _characterList = newCustomCharacters;
             Debug.LogWarning(_characterList.Count + " : " + _characterList[0].ServerID);
 
+            List<CustomCharacter> testCharacters = _characterList.Where(c => c.IsTestCharacter()).ToList();
+            if (testCharacters != null && testCharacters.Count != 0)
+            {
+                _testCharacterList = testCharacters;
+                _characterList.RemoveAll(c => c.IsTestCharacter());
+            }
+            
             Patch();
         }
 
@@ -228,7 +234,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         internal void Patch()
         {
             List<CustomCharacter> charList = _characterList;
-            if (_testCharacterList != null) charList.AddRange(_testCharacterList);
+            if (_testCharacterList != null && _testCharacterList.Count != 0) charList = charList.Concat(_testCharacterList).ToList();
             CustomCharacters = new ReadOnlyCollection<CustomCharacter>(charList).ToList();
         }
 
