@@ -200,11 +200,10 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public void BuildCharacterLists(List<CustomCharacter> customCharacters, List<CustomCharacter> testCharacters = null)
         {
-            _characterList = customCharacters;
+            List<CustomCharacter> newCustomCharacters = new();
             if (testCharacters != null) _testCharacterList = testCharacters;
-            Debug.LogWarning(_characterList.Count + " : " + _characterList[0].ServerID);
 
-            foreach(CustomCharacter character in _characterList)
+            foreach(CustomCharacter character in customCharacters)
             {
                 if(character.CharacterBase == null)
                 {
@@ -217,7 +216,10 @@ namespace Altzone.Scripts.Model.Poco.Player
                         if (item.Id.Equals(character.Id)) character.CharacterBase = item;
                     }
                 }
+                if(character.CharacterBase != null) newCustomCharacters.Add(character);
             }
+            _characterList = newCustomCharacters;
+            Debug.LogWarning(_characterList.Count + " : " + _characterList[0].ServerID);
 
             Patch();
         }
