@@ -122,6 +122,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 store.GetAllBaseCharacterYield(result => allItems = result);
 
                 _baseCharacter = allItems.FirstOrDefault(c => c.Id == _characterId);
+                return;
             }
             else // else setting base character from the _customCharacter's variable
             {
