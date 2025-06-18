@@ -57,9 +57,13 @@ namespace Altzone.Scripts.ModelV2.Internal
                 }
                 return _instance;
 
-                bool SelectApproved(CharacterSpec characterSpec) => characterSpec.IsValid && characterSpec.IsApproved;
+                bool SelectApproved(CharacterSpec characterSpec) => characterSpec.IsValid && characterSpec.IsApproved && (!IsTesting(characterSpec) || AllowTesting(characterSpec));
 
                 bool SelectAll(CharacterSpec characterSpec) => characterSpec.IsValid;
+
+                bool IsTesting(CharacterSpec characterSpec) => (int)characterSpec.CharacterId % 100 == 0;
+
+                bool AllowTesting(CharacterSpec characterSpec) => _instance._allowTestCharacters && (AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild);
             }
         }
 
@@ -87,6 +91,8 @@ namespace Altzone.Scripts.ModelV2.Internal
         #region ScriptableObject 'inspector' implementation
 
         [SerializeField, Header("For Production")] private bool _approvedOnly;
+
+        [SerializeField, Tooltip("Allow Test Characters in test environment (Editor or Dev Build). Production doesn't allow test characters.")] private bool _allowTestCharacters;
 
         [SerializeField, Header("All Player Characters")] private List<CharacterSpec> _characters;
 
