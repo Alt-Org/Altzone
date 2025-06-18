@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.CompilerServices;
 using Photon.Deterministic;
 using UnityEditor;
@@ -28,7 +27,6 @@ namespace Altzone.Scripts.Model.Poco.Game
         VeryWeak
     }
 
-    [Serializable]
     public abstract class BaseCharacter : ScriptableObject
     {
         [SerializeField] protected CharacterID _id = CharacterID.None;
