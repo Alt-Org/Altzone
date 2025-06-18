@@ -23,7 +23,13 @@ namespace Altzone.Scripts.Model.Poco.Game
         public CharacterClassID CharacterClassID => GetClassID(Id);
         public int InsideCharacterID => GetInsideCharacterID(Id);
 
-        public BaseCharacter CharacterBase { get => _characterBase;}
+        public BaseCharacter CharacterBase { get => _characterBase;
+            set
+            {
+                if(_characterBase == null)
+                _characterBase = value;
+            }
+        }
 
         private BaseCharacter _characterBase;
         /// <summary>

@@ -203,6 +203,22 @@ namespace Altzone.Scripts.Model.Poco.Player
             _characterList = customCharacters;
             if (testCharacters != null) _testCharacterList = testCharacters;
             Debug.LogWarning(_characterList.Count + " : " + _characterList[0].ServerID);
+
+            foreach(CustomCharacter character in _characterList)
+            {
+                if(character.CharacterBase == null)
+                {
+                    var store = Storefront.Get();
+                    ReadOnlyCollection<BaseCharacter> allItems = null;
+                    store.GetAllBaseCharacterYield(result => allItems = result);
+
+                    foreach (var item in allItems)
+                    {
+                        if (item.Id.Equals(character.Id)) character.CharacterBase = item;
+                    }
+                }
+            }
+
             Patch();
         }
 
