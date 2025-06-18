@@ -155,7 +155,7 @@ namespace Altzone.Scripts.Model
             if (playerData != null)
             {
                 // This storage is by no means a complete object model we want to serve.
-                if(playerData.CustomCharacters == null)playerData.BuildCharacterLists(_storageData.CustomCharacters);
+                if(playerData.CustomCharacters == null)playerData.BuildCharacterLists(_storageData.CustomCharacters, _storageData.TestCharacters);
             }
             Debug.Log($"playerData {playerData}");
             callback(playerData);
@@ -183,6 +183,7 @@ namespace Altzone.Scripts.Model
             _saving = false;
             callback?.Invoke(playerData);
         }
+
         internal void DeletePlayerData(PlayerData playerData, Action<bool> callback)
         {
             var index = _storageData.PlayerData.FindIndex(x => x.Id == playerData.Id);
@@ -347,6 +348,7 @@ namespace Altzone.Scripts.Model
             storageData.Characters = new CharacterStorage().CharacterList;
             //storageData.CharacterClasses.AddRange(CreateDefaultModels.CreateCharacterClasses());
             storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(storageData.Characters));
+            storageData.TestCharacters = storageData.CustomCharacters.Where(c => c.IsTestCharacter()).ToList();
 
             var playerGuid = new PlayerSettings().PlayerGuid;
             var clanGuid = playerGuid;
@@ -369,8 +371,21 @@ namespace Altzone.Scripts.Model
             else
             {
                 storageData.Characters = CharacterStorage.Instance.CharacterList;
-                storageData.CustomCharacters = new();
-                storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(storageData.Characters));
+
+                // Loading new custom characters if the list is null or 0 long, or that it is old version which doesn't have CharacterBase
+                if (storageData.CustomCharacters == null || storageData.CustomCharacters.Count == 0 || storageData.CustomCharacters[0].CharacterBase == null)
+                {
+                    storageData.CustomCharacters = new();
+                    storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(storageData.Characters));
+                }
+
+                // Loading new test characters if the list is null or 0 long, or that it is old version which doesn't have CharacterBase
+                if (storageData.TestCharacters == null || storageData.TestCharacters.Count == 0 || storageData.TestCharacters[0].CharacterBase == null)
+                {
+                    storageData.TestCharacters = storageData.CustomCharacters.Where(c => c.IsTestCharacter()).ToList();
+                    storageData.CustomCharacters.RemoveAll(c => c.IsTestCharacter());
+                }
+
                 storageData.GameFurniture = new();
                 //storageData.GameFurniture.AddRange(CreateDefaultModels.CreateGameFurniture());
                 storageData.PlayerTasks = null;
@@ -400,6 +415,7 @@ namespace Altzone.Scripts.Model
         public List<BaseCharacter> Characters = new();
         public List<CharacterClass> CharacterClasses = new();
         public List<CustomCharacter> CustomCharacters = new();
+        public List<CustomCharacter> TestCharacters = new();
         public List<GameFurniture> GameFurniture = new();
         public List<PlayerData> PlayerData = new();
         public List<ClanData> ClanData = new();

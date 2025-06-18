@@ -27,8 +27,6 @@ public class ServerManager : MonoBehaviour
 {
     public static ServerManager Instance { get; private set; }
 
-    private const string TestCharacterKey = "TestChar";
-
     private ServerPlayer _player;               // Player info from server
     private ServerClan _clan;                   // Clan info from server
     private ServerStock _stock;                 // Stock info from server
@@ -1089,22 +1087,6 @@ public class ServerManager : MonoBehaviour
                     characterList.Add(new(character));
                 }
 
-                // Getting locally saved test characters
-                Array charIds = Enum.GetValues(typeof(CharacterID));
-                foreach (CharacterID charId in charIds)
-                {
-                    if (CustomCharacter.IsTestCharacter(charId))
-                    {
-                        string testCharJson = PlayerPrefs.GetString(TestCharacterKey + ((int)charId).ToString());
-                        if (string.IsNullOrEmpty(testCharJson)) continue;
-
-                        JObject testCharJObject = JObject.Parse(testCharJson);
-                        ServerCharacter testChar = testCharJObject.ToObject<ServerCharacter>();
-
-                        if (testChar != null) characterList.Add(new(testChar));
-                    }
-                }
-
                 if (callback != null)
                     callback(characterList);
             }
@@ -1122,15 +1104,6 @@ public class ServerManager : MonoBehaviour
     /// <param name="character">The CustomCharacter which to save to server.</param>
     public void StartUpdatingCustomCharacterToServer(CustomCharacter character)
     {
-        // If test character saving it locally
-        if (character.IsTestCharacter())
-        {
-            ServerCharacter serverCharacter = new(character);
-            string body = JObject.FromObject(serverCharacter).ToString();
-            PlayerPrefs.SetString(TestCharacterKey + serverCharacter.characterId, body);
-            return;
-        }
-
         StartCoroutine(UpdateCustomCharactersToServer(character, success =>
         {
             if (!success) Debug.LogError("Failed to save custom character to server!");
@@ -1175,19 +1148,10 @@ public class ServerManager : MonoBehaviour
         }
 
         ServerCharacter serverCharacter = new(id);
-        if (CustomCharacter.IsTestCharacter(id)) serverCharacter._id = ((int)id).ToString(); // If test character setting ServerID as the id
 
         string body = JObject.FromObject(serverCharacter).ToString();
 
         Debug.LogWarning(body);
-
-        // Saving locally if test character
-        if (CustomCharacter.IsTestCharacter(id))
-        {
-            PlayerPrefs.SetString(TestCharacterKey + serverCharacter.characterId, body);
-            if (callback != null) callback(serverCharacter);
-            yield break;
-        }
 
         yield return StartCoroutine(WebRequests.Post(SERVERADDRESS + "customCharacter/", body, AccessToken, request =>
         {

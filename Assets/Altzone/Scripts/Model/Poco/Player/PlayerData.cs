@@ -42,6 +42,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         [Unique] public string Name;
 
         private List<CustomCharacter> _characterList;
+        private List<CustomCharacter> _testCharacterList;
 
         public int DiamondSpeed = 1000;
         public int DiamondCharacterSize = 1000;
@@ -190,28 +191,17 @@ namespace Altzone.Scripts.Model.Poco.Player
         {
             if (character == null) return;
 
-            bool characterInCharacterList = false;
-            int i = 0;
-            foreach (CustomCharacter item in _characterList)
-            {
-                if (item.Id != character.Id)
-                {
-                    i++;
-                    continue;
-                }
-
-                _characterList[i] = character;
-                characterInCharacterList = true;
-                break;
-            }
             Patch();
-            if (characterInCharacterList) ServerManager.Instance.StartUpdatingCustomCharacterToServer(character);
+
+            if (_characterList.Contains(character)) ServerManager.Instance.StartUpdatingCustomCharacterToServer(character);
+            else if (_testCharacterList.Contains(character)) Storefront.Get().SavePlayerData(this, null);
         }
 
 
-        public void BuildCharacterLists(List<CustomCharacter> customCharacters)
+        public void BuildCharacterLists(List<CustomCharacter> customCharacters, List<CustomCharacter> testCharacters = null)
         {
             _characterList = customCharacters;
+            if (testCharacters != null) _testCharacterList = testCharacters;
             Debug.LogWarning(_characterList.Count + " : " + _characterList[0].ServerID);
             Patch();
         }
@@ -219,7 +209,9 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         internal void Patch()
         {
-            CustomCharacters = new ReadOnlyCollection<CustomCharacter>(_characterList).ToList();
+            List<CustomCharacter> charList = _characterList;
+            if (_testCharacterList != null) charList.AddRange(_testCharacterList);
+            CustomCharacters = new ReadOnlyCollection<CustomCharacter>(charList).ToList();
         }
 
 
