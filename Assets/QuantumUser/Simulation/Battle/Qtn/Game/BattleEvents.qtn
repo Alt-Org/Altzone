@@ -27,6 +27,7 @@ synced event BattleViewGameOver
 synced event BattlePlayerViewInit
 {
     EntityRef Entity;
+    BattlePlayerSlot Slot;
     FP ModelScale;
 }
 
@@ -36,6 +37,13 @@ synced event BattleSoulWallViewInit
     FP ModelScale;
     int EmotionIndicatorColorIndex;
     int DebugColorIndex;
+}
+
+synced event BattleStoneCharacterPieceViewInit
+{
+    int WallNumber;
+    BattleTeamNumber Team;
+    int EmotionIndicatorColorIndex;
 }
 
 //} ViewInit events
@@ -67,7 +75,8 @@ synced event BattleLastRowWallDestroyed
 
 synced event BattleDebugUpdateStatsOverlay
 {
-    BattleCharacterBase Character;
+    BattlePlayerSlot Slot;
+    BattlePlayerStats Stats;
 }
 
 //} Debug events

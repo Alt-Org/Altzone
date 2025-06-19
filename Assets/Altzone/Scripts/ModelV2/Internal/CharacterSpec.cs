@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using Quantum;
 
 namespace Altzone.Scripts.ModelV2.Internal
 {
@@ -99,7 +100,9 @@ namespace Altzone.Scripts.ModelV2.Internal
         /// Battle sprite sheet for something.
         /// TODO: add relevant doc comment here!
         /// </summary>
-        [Header("Battle Asset References")] public Sprite BattleSprite;
+        [Header("Battle Asset References")]
+        public AssetRef<EntityPrototype> BattleEntityPrototype;
+        public Sprite BattleUiSprite;
 
         #endregion
 
@@ -110,17 +113,19 @@ namespace Altzone.Scripts.ModelV2.Internal
         /// Missing fields or values makes player character invalid because
         /// they can cause e.g. undefined behaviour or NRE at runtime.
         /// </remarks>
-        public bool IsValid => ClassType != CharacterClassID.None
+        public bool IsValid => (ClassType != CharacterClassID.None || CharacterId == CharacterID.Test) 
                                && !string.IsNullOrWhiteSpace(Id)
                                && !string.IsNullOrWhiteSpace(name);
 
         public override string ToString()
         {
             return $"{Id}:{ClassType}:{Name}" +
-                   $", {ResName(GalleryImage)}" +
-                   $", {ResName(BattleSprite)}";
+                   $", {UResName(GalleryImage)}" +
+                   $", {QResName(BattleEntityPrototype)}" +
+                   $", {UResName(BattleUiSprite)}";
 
-            string ResName(Object instance) => $"{(instance == null ? "null" : instance.name)}";
+            string UResName(Object instance) => $"{(instance == null ? "null" : instance.name)}";
+            string QResName<T>(AssetRef<T> instance) where T : AssetObject => $"{(instance == null ? "null" : instance.ToString())}";
         }
     }
 }

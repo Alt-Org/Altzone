@@ -146,7 +146,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             if (_controller.CanIncreaseStat(statType))
             {
-                _diamondCost.text = _controller.GetDiamondCost(statType).ToString();
+                _diamondCost.text = _controller.GetUpgradeMaterialCost(statType).ToString();
             }
             else
             {

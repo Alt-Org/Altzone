@@ -47,7 +47,7 @@ namespace Battle.View.Game
 
         public void UiInputOnExitGamePressed()
         {
-            if (_endOfGameDataHasEnded) LobbyManager.ExitQuantum(_endOfGameDataWinningTeam, (float)_endOfGameDataGameLengthSec);
+            if (_endOfGameDataHasEnded) LobbyManager.ExitQuantum(_endOfGameDataWinningTeam == LocalPlayerTeam, (float)_endOfGameDataGameLengthSec);
         }
 
         private bool _endOfGameDataHasEnded = false;
@@ -67,6 +67,9 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleViewGetReadyToPlay>(this, QEventOnViewGetReadyToPlay);
             QuantumEvent.Subscribe<EventBattleViewGameStart>(this, QEventOnViewGameStart);
             QuantumEvent.Subscribe<EventBattleViewGameOver>(this, QEventOnViewGameOver);
+
+            // Subscribing to other View Init events
+            QuantumEvent.Subscribe<EventBattleStoneCharacterPieceViewInit>(this, QEventOnStoneCharacterPieceViewInit);
 
             // Subscribing to Gameplay events
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, QEventOnChangeEmotionState);
@@ -146,6 +149,14 @@ namespace Battle.View.Game
             //} Initializing UI Handlers
         }
 
+        private void QEventOnStoneCharacterPieceViewInit(EventBattleStoneCharacterPieceViewInit e)
+        {
+            if (_stoneCharacterViewController != null)
+            {
+                _stoneCharacterViewController.SetEmotionIndicator(e.WallNumber, e.Team, e.EmotionIndicatorColorIndex);
+            }
+        }
+
         private void QEventOnViewActivate(EventBattleViewActivate e)
         {
             // Activating view, meaning displaying all visual elements of the game view except for pre-activation elements
@@ -176,19 +187,12 @@ namespace Battle.View.Game
             // Clear the countdown text
             _uiController.AnnouncementHandler.ClearAnnouncerTextField();
 
-            // Starting game timer
-            if (Utils.TryGetQuantumFrame(out Frame frame))
-            {
-                _uiController.TimerHandler.SetShow(true);
-                _uiController.TimerHandler.StartTimer(frame);
-            }
+            // Show the timer
+            _uiController.TimerHandler.SetShow(true);
         }
 
         private void QEventOnViewGameOver(EventBattleViewGameOver e)
         {
-            // Stopping timer
-            _uiController.TimerHandler.StopTimer();
-
             // Hiding UI elements
             _uiController.TimerHandler.SetShow(false);
             _uiController.DiamondsHandler.SetShow(false);
@@ -219,7 +223,7 @@ namespace Battle.View.Game
 
             if (_lightrayEffectViewController != null)
             {
-                _lightrayEffectViewController.SpawnLightray(e.WallNumber, (float)e.LightrayRotation, e.LightrayColor, e.LightraySize);
+                _lightrayEffectViewController.SpawnLightray(e.WallNumber, e.LightrayColor);
             }
         }
 
@@ -230,8 +234,11 @@ namespace Battle.View.Game
 
         private void QEventDebugOnUpdateStatsOverlay(EventBattleDebugUpdateStatsOverlay e)
         {
+            if (!SettingsCarrier.Instance.BattleShowDebugStatsOverlay) return;
+            if (e.Slot != LocalPlayerSlot) return;
+
             _uiController.DebugStatsOverlayHandler.SetShow(true);
-            _uiController.DebugStatsOverlayHandler.SetStats(e.Character);
+            _uiController.DebugStatsOverlayHandler.SetStats(e.Stats);
         }
 
         // Handles UI updates based on the game's state and countdown
@@ -266,6 +273,9 @@ namespace Battle.View.Game
                         // Updating diamonds (at the moment shows only alpha team's diamonds)
                         BattleDiamondCounterQSingleton diamondCounter = frame.GetSingleton<BattleDiamondCounterQSingleton>();
                         _uiController.DiamondsHandler.SetDiamondsText(diamondCounter.AlphaDiamonds);
+
+                        // Updating timer text
+                        _uiController.TimerHandler.FormatAndSetTimerText(gameSession.GameTimeSec);
                         break;
                 }
 

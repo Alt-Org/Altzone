@@ -247,6 +247,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2825607680782119824}
   - component: {fileID: 3609369183935864645}
+  - component: {fileID: 32401795426311117}
   m_Layer: 0
   m_Name: DiamondViewModel
   m_TagString: Untagged
@@ -268,7 +269,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1529637963346434884}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!212 &3609369183935864645
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -321,3 +322,15 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &32401795426311117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7722483135608033401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: deea2b15d5d271e4cac958eb61b3ea55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

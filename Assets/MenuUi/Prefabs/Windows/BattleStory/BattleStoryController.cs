@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Common;
 using Altzone.Scripts.Lobby;
+using Altzone.Scripts.Window;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -115,6 +116,9 @@ public class BattleStoryController : MonoBehaviour
         if (_routesLeft.Count <= 0) return;
         if (_routesRight.Count <= 0) return;
 
+        bool? winner = DataCarrier.GetData<bool?>(DataCarrier.BattleWinner, false);
+        _victory = winner.Value;
+
         int prevSelectedValue1 = -1;
         int selectedvalue1 = -1;
         int prevSelectedValue2 = -1;
@@ -124,7 +128,7 @@ public class BattleStoryController : MonoBehaviour
         {
             conversationList = _conversationsList[0];
         }
-        else if (Random.Range(0, 2) is 0)
+        else if ((winner.HasValue && !winner.Value) || (!winner.HasValue && Random.Range(0, 2) is 0))
         {
             _victory = false;
             conversationList = _conversationsList[1];
@@ -379,6 +383,7 @@ public class BattleStoryController : MonoBehaviour
 
     private void ExitStory()
     {
+        DataCarrier.GetData<bool?>(DataCarrier.BattleWinner, suppressWarning: true);
         LobbyManager.ExitBattleStory();
     }
 

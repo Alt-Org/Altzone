@@ -9,6 +9,7 @@ using Altzone.Scripts.Config.ScriptableObjects;
 using Altzone.Scripts.AzDebug;
 using Altzone.Scripts.GA;
 using System.Linq;
+using Prg.Scripts.Common;
 
 namespace Altzone.Scripts
 {
@@ -40,6 +41,10 @@ namespace Altzone.Scripts
                 .Append(" Screen ").Append(Screen.currentResolution)
                 .ToString();
             Debug.Log(startupMessage);
+
+            AltzoneBattleLink.Init();
+
+            ClickStateHandler.Init();
 
             InstantiateGlobalGameObjects();
         }

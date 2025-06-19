@@ -28,6 +28,7 @@ using Altzone.PhotonSerializer;
 
 using Battle.QSimulation.Game;
 using PlayerType = Battle.QSimulation.Game.BattleParameters.PlayerType;
+using Altzone.Scripts.Window;
 
 namespace Altzone.Scripts.Lobby
 {
@@ -1051,10 +1052,11 @@ namespace Altzone.Scripts.Lobby
             return true;
         }
 
-        public static void ExitQuantum(BattleTeamNumber winningTeam, float gameLengthSec)
+        public static void ExitQuantum(bool winningTeam, float gameLengthSec)
         {
             QuantumRunner.ShutdownAll();
             DebugLogFileHandler.ContextExit();
+            DataCarrier.AddData(DataCarrier.BattleWinner,winningTeam);
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleStory);
         }
 
@@ -1127,16 +1129,21 @@ namespace Altzone.Scripts.Lobby
             CustomCharacter character;
             for (int i = 0; i < RuntimePlayer.CharacterCount; i++) {
                 character = characters[i];
+
+                var stats = new BattlePlayerStats()
+                {
+                    Hp            = BaseCharacter.GetStatValueFP(StatType.Hp, character.Hp),
+                    Attack        = BaseCharacter.GetStatValueFP(StatType.Attack, character.Attack),
+                    Defence       = BaseCharacter.GetStatValueFP(StatType.Defence, character.Defence),
+                    CharacterSize = BaseCharacter.GetStatValueFP(StatType.CharacterSize, character.CharacterSize),
+                    Speed         = BaseCharacter.GetStatValueFP(StatType.Speed, character.Speed)
+                };
+
                 _player.Characters[i] = new BattleCharacterBase()
                 {
                     Id            = (int)character.Id,
                     Class         = (int)character.CharacterClassID,
-
-                    Hp            = BaseCharacter.GetStatValueFP(StatType.Hp,            character.Hp),
-                    Attack        = BaseCharacter.GetStatValueFP(StatType.Attack,        character.Attack),
-                    Defence       = BaseCharacter.GetStatValueFP(StatType.Defence,       character.Defence),
-                    CharacterSize = BaseCharacter.GetStatValueFP(StatType.CharacterSize, character.CharacterSize),
-                    Speed         = BaseCharacter.GetStatValueFP(StatType.Speed,         character.Speed)
+                    Stats         = stats,
                 };
             }
         }
