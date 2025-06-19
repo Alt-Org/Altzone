@@ -53,11 +53,11 @@
 - **%QSingleton**  
   Marks type as [Quantum Singleton🡵].
 - **%QConfig**  
-  Marks type as %Quantum Config.
+  Marks type as %Quantum @ref page-resources-configs "Config".
 - **%QSpec**  
   Marks type as [Quantum Spec🡵].
 - **%ViewController**  
-  Marks type as ViewController.
+  Marks type as @ref page-view-controllers "ViewController".
 - **%Handler**  
   Marks type as @uihandlerlink.
 - **%Component**  
