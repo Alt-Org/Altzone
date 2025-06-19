@@ -94,12 +94,8 @@ namespace Battle.QSimulation.Player
                     //stops player before rotation
                     playerData->TargetPosition = transform->Position;
 
-                    //Debug.LogWarning("value: " + input->RotationValue);
-                    Debug.LogWarning("offset: " + playerData->RotationOffset);
-                    Debug.LogWarning("maxangle: " + maxAngle);
-
                     //rotates to left
-                    if (maxAngle > playerData->RotationOffset/* && (playerData->RotationOffset < maxAngle || playerData->RotationOffset < -maxAngle)*/)
+                    if (maxAngle > playerData->RotationOffset)
                     {
                         playerData->RotationOffset += rotationSpeed * f.DeltaTime;
                         if (playerData->RotationOffset > maxAngle)
@@ -110,7 +106,7 @@ namespace Battle.QSimulation.Player
                     }
 
                     //rotates to right
-                    else if (maxAngle < playerData->RotationOffset/* && (playerData->RotationOffset > -maxAngle || playerData->RotationOffset > maxAngle)*/)
+                    else if (maxAngle < playerData->RotationOffset)
                     {
                         playerData->RotationOffset -= rotationSpeed * f.DeltaTime;
                         if (playerData->RotationOffset < maxAngle)
