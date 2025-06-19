@@ -625,22 +625,25 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Input {
-    public const Int32 SIZE = 56;
+    public const Int32 SIZE = 64;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(16)]
+    [FieldOffset(24)]
     public Button MovementInput;
     [FieldOffset(0)]
+    public QBoolean MovementDirectionIsNormalized;
+    [FieldOffset(4)]
     public BattleGridPosition MovementPosition;
-    [FieldOffset(40)]
+    [FieldOffset(48)]
     public FPVector2 MovementDirection;
-    [FieldOffset(28)]
+    [FieldOffset(36)]
     public Button RotationInput;
-    [FieldOffset(8)]
+    [FieldOffset(16)]
     public FP RotationValue;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 19249;
         hash = hash * 31 + MovementInput.GetHashCode();
+        hash = hash * 31 + MovementDirectionIsNormalized.GetHashCode();
         hash = hash * 31 + MovementPosition.GetHashCode();
         hash = hash * 31 + MovementDirection.GetHashCode();
         hash = hash * 31 + RotationInput.GetHashCode();
@@ -667,6 +670,7 @@ namespace Quantum {
     }
     static partial void SerializeCodeGen(void* ptr, FrameSerializer serializer) {
         var p = (Input*)ptr;
+        QBoolean.Serialize(&p->MovementDirectionIsNormalized, serializer);
         Quantum.BattleGridPosition.Serialize(&p->MovementPosition, serializer);
         FP.Serialize(&p->RotationValue, serializer);
         Button.Serialize(&p->MovementInput, serializer);
@@ -676,7 +680,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct _globals_ {
-    public const Int32 SIZE = 904;
+    public const Int32 SIZE = 952;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public AssetRef<Map> Map;
@@ -700,12 +704,12 @@ namespace Quantum {
     public Int32 PlayerConnectedCount;
     [FieldOffset(560)]
     [FramePrinter.FixedArrayAttribute(typeof(Input), 6)]
-    private fixed Byte _input_[336];
-    [FieldOffset(896)]
+    private fixed Byte _input_[384];
+    [FieldOffset(944)]
     public BitSet6 PlayerLastConnectionState;
     public FixedArray<Input> input {
       get {
-        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 56, 6); }
+        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 64, 6); }
       }
     }
     public override Int32 GetHashCode() {
@@ -1312,6 +1316,7 @@ namespace Quantum {
       if ((int)player >= (int)_globals->input.Length) { throw new System.ArgumentOutOfRangeException("player"); }
       var i = _globals->input.GetPointer(player);
       i->MovementInput = i->MovementInput.Update(this.Number, input.MovementInput);
+      i->MovementDirectionIsNormalized = input.MovementDirectionIsNormalized;
       i->MovementPosition = input.MovementPosition;
       i->MovementDirection = input.MovementDirection;
       i->RotationInput = i->RotationInput.Update(this.Number, input.RotationInput);

@@ -29,13 +29,14 @@ namespace Battle.View.Player
         private MovementInputType _movementInputType;
         private RotationInputType _rotationInputType;
 
+        private float _previousTime;
         private bool _mouseDownPrevious;
         private Vector2 _rotationStartVector;
-        private Vector2 _movementStartVector;
+        private Vector3 _movementStartVector;
         private Vector2 _joystickMovementVector;
         private float _joystickRotationValue;
 
-        private float _swipeMinDistance = 30f;
+        private float _swipeMinDistance = 0.1f;
 
         private void OnEnable()
         {
@@ -47,7 +48,7 @@ namespace Battle.View.Player
 
         private void PollInput(CallbackPollInput callback)
         {
-            Vector2 clickPosition = ClickStateHandler.GetClickPosition();
+            FP deltaTime = FP.FromFloat_UNSAFE(Time.time - _previousTime);
 
             bool mouseDown = ClickStateHandler.GetClickState() is ClickState.Start or ClickState.Hold or ClickState.Move;
             bool twoFingers = ClickStateHandler.GetClickType() is ClickType.TwoFingerOrScroll;
@@ -55,18 +56,26 @@ namespace Battle.View.Player
             _mouseDownPrevious = mouseDown;
 
             bool movementInput = false;
+            bool movementDirectionIsNormalized = false;
             BattleGridPosition movementPosition = new BattleGridPosition() {Row = -1, Col = -1};
             FPVector2 movementDirection = FPVector2.Zero;
             bool rotationInput = false;
             FP rotationValue = FP._0;
 
+            Vector2 clickPosition = Vector2.zero;
+            Vector3 unityPosition = Vector3.zero;
+            if (mouseDown)
+            { 
+                clickPosition = ClickStateHandler.GetClickPosition();
+                unityPosition = BattleCamera.Camera.ScreenToWorldPoint(clickPosition);
+            }
+            
             switch (_movementInputType)
             {
                 case MovementInputType.PointAndClick:
                     if (mouseClick)
                     {
                         movementInput = true;
-                        Vector3 unityPosition = BattleCamera.Camera.ScreenToWorldPoint(ClickStateHandler.GetClickPosition());
                         movementPosition = new BattleGridPosition()
                         {
                             Row = BattleGridManager.WorldYPositionToGridRow(FP.FromFloat_UNSAFE(unityPosition.z)),
@@ -76,19 +85,20 @@ namespace Battle.View.Player
                     break;
 
                 case MovementInputType.Swipe:
-                    if (mouseDown && _movementStartVector == Vector2.zero)
+                    if (mouseDown && _movementStartVector == Vector3.zero)
                     {
-                        _movementStartVector = clickPosition;
+                        _movementStartVector = unityPosition;
                     }
-                    else if (mouseDown && (clickPosition.x - _movementStartVector.x > _swipeMinDistance || clickPosition.x - _movementStartVector.x < -_swipeMinDistance))
+                    else if (mouseDown && ((unityPosition - _movementStartVector).sqrMagnitude > _swipeMinDistance * _swipeMinDistance))
                     {
                         movementInput = true;
-                        Vector2 direction = clickPosition - _movementStartVector;
-                        movementDirection = new FPVector2(FP.FromFloat_UNSAFE(direction.x), FP.FromFloat_UNSAFE(direction.y));
+                        Vector3 direction = unityPosition - _movementStartVector;
+                        movementDirection = new FPVector2(FP.FromFloat_UNSAFE(direction.x), FP.FromFloat_UNSAFE(direction.z)) / deltaTime;
+                        _movementStartVector = unityPosition;
                     }
                     else if (!mouseDown)
                     {
-                        _movementStartVector = Vector2.zero;
+                        _movementStartVector = Vector3.zero;
                     }
                     break;
 
@@ -96,6 +106,7 @@ namespace Battle.View.Player
                     if (_joystickMovementVector != Vector2.zero)
                     {
                         movementInput = true;
+                        movementDirectionIsNormalized = true;
                         movementDirection = new FPVector2(FP.FromFloat_UNSAFE(_joystickMovementVector.x), FP.FromFloat_UNSAFE(_joystickMovementVector.y));
                     }
                     break;
@@ -144,6 +155,7 @@ namespace Battle.View.Player
             Input i = new()
             {
                 MovementInput = movementInput,
+                MovementDirectionIsNormalized = movementDirectionIsNormalized,
                 MovementPosition = movementPosition,
                 MovementDirection = movementDirection,
                 RotationInput = rotationInput,
@@ -151,6 +163,7 @@ namespace Battle.View.Player
             };
 
             callback.SetInput(i, DeterministicInputFlags.Repeatable);
+            _previousTime = Time.time;
         }
     }
 }

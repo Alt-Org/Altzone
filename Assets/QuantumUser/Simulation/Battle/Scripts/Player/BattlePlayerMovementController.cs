@@ -43,7 +43,8 @@ namespace Battle.QSimulation.Player
                 // get players TargetPosition
                 if (input->MovementDirection != FPVector2.Zero)
                 {
-                    positionNext = transform->Position + FPVector2.ClampMagnitude(input->MovementDirection, FP._1) * playerData->Stats.Speed * f.DeltaTime;
+                    FPVector2 movementDirection = input->MovementDirection * (input->MovementDirectionIsNormalized ? playerData->Stats.Speed : FP._1);
+                    positionNext = transform->Position + FPVector2.ClampMagnitude(movementDirection, playerData->Stats.Speed) * f.DeltaTime;
                     if (ClampPosition(playerData, positionNext, out FPVector2 clampedPosition))
                     {
                         positionNext = clampedPosition;

@@ -1,6 +1,7 @@
 input
 {
     button MovementInput;
+    bool MovementDirectionIsNormalized;
     BattleGridPosition MovementPosition;
     FPVector2 MovementDirection;
     button RotationInput;
