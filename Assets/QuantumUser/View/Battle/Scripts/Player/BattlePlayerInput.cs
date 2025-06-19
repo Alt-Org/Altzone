@@ -60,7 +60,7 @@ namespace Battle.View.Player
             bool rotationInput = false;
             FP rotationValue = FP._0;
 
-            switch ( _movementInputType)
+            switch (_movementInputType)
             {
                 case MovementInputType.PointAndClick:
                     if (mouseClick)
@@ -84,7 +84,7 @@ namespace Battle.View.Player
                     {
                         movementInput = true;
                         Vector2 direction = clickPosition - _movementStartVector;
-                        movementDirection = new FPVector2(FP.FromFloat_UNSAFE(direction.x), FP.FromFloat_UNSAFE(direction.y)).Normalized;
+                        movementDirection = new FPVector2(FP.FromFloat_UNSAFE(direction.x), FP.FromFloat_UNSAFE(direction.y));
                     }
                     else if (!mouseDown)
                     {
@@ -96,7 +96,7 @@ namespace Battle.View.Player
                     if (_joystickMovementVector != Vector2.zero)
                     {
                         movementInput = true;
-                        movementDirection = new FPVector2(FP.FromFloat_UNSAFE(_joystickMovementVector.x), FP.FromFloat_UNSAFE(_joystickMovementVector.y)).Normalized;
+                        movementDirection = new FPVector2(FP.FromFloat_UNSAFE(_joystickMovementVector.x), FP.FromFloat_UNSAFE(_joystickMovementVector.y));
                     }
                     break;
             }
@@ -135,9 +135,8 @@ namespace Battle.View.Player
                     if (_joystickRotationValue != 0)
                     {
                         rotationInput = true;
-                        rotationValue = FP.FromFloat_UNSAFE(Vector2.Angle(new Vector2(0, 1), new Vector2(_joystickRotationValue, 1)));
-                        if (_joystickRotationValue > 0) rotationValue *= -1;
-                        rotationValue /= (FP)75;
+                        rotationValue = FP.FromFloat_UNSAFE(_joystickRotationValue);
+                        rotationValue *= -1;
                     }
                     break;
             }

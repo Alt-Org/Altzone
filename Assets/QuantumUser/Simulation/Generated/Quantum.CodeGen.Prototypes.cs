@@ -177,6 +177,7 @@ namespace Quantum.Prototypes {
     public Quantum.Prototypes.BattlePlayerStatsPrototype Stats;
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
+    public QBoolean HasTargetPosition;
     public FPVector2 TargetPosition;
     public FP RotationBase;
     public FP RotationOffset;
@@ -196,6 +197,7 @@ namespace Quantum.Prototypes {
         this.Stats.Materialize(frame, ref result.Stats, in context);
         result.GridExtendTop = this.GridExtendTop;
         result.GridExtendBottom = this.GridExtendBottom;
+        result.HasTargetPosition = this.HasTargetPosition;
         result.TargetPosition = this.TargetPosition;
         result.RotationBase = this.RotationBase;
         result.RotationOffset = this.RotationOffset;
