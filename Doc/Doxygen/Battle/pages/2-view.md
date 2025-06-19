@@ -33,7 +33,9 @@
 
 ## View Controllers {#page-view-controllers}
 
-View Controllers are non-deterministic Unity View/Visual logic for %Battle. They are attached to entities and react to [Quantum Events🡵].  
+View Controllers are non-deterministic Unity View/Visual logic for %Battle.  
+There are 2 types of View Controllers, Global View Controllers and View Controllers that are attached to entities.  
+Global View Controllers's methods are called by GameViewController and entity attached View Controllers react to [Quantum Events🡵].  
 View Controllers are used to change entities's sprites, animations, effects, etc.  
 In %Battle View Controllers have ViewController suffix. [[Naming]](#index-naming)
 
@@ -60,6 +62,7 @@ In %Battle View Controllers have ViewController suffix. [[Naming]](#index-naming
 <br/>
 
 ## Other Classes {#page-view-other}
+Miscellaneous classes that don't belong in other categories.
 
 |  Namespace                                          || Class                                                        | Description                                                      |
 | :------------------ | :----------------------------- | :----------------------------------------------------------- | :--------------------------------------------------------------- |
