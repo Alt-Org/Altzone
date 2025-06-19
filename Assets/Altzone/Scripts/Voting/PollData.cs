@@ -61,14 +61,18 @@ namespace Altzone.Scripts.Voting
         {
             DataStore store = Storefront.Get();
             PlayerData player = null;
-            
+
             store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
 
+            // Method to check if the player has already voted. Interacting with the PollObject is already blocked in votemanager, but this can act as a failsafe for now
             if (player != null)
             {
-                PollVoteData previousPollVote = null;
-                if (answer) previousPollVote = NoVotes.FirstOrDefault(vote => vote.PlayerId == player.Id);
-                else previousPollVote = YesVotes.FirstOrDefault(vote => vote.PlayerId == player.Id);
+                bool hasVoted = YesVotes.Any(vote => vote.PlayerId == player.Id) ||
+                                NoVotes.Any(vote => vote.PlayerId == player.Id);
+                if (hasVoted)
+                {
+                    return;
+                }
 
                 PollVoteData newPollVote = new(player.Id, player.Name, answer);
 
@@ -78,19 +82,6 @@ namespace Altzone.Scripts.Voting
                     else NoVotes.Add(newPollVote);
 
                     NotVoted.Remove(player.Id);
-                }
-                else if (previousPollVote != null) // Has already voted on this poll
-                {
-                    if (previousPollVote.Answer == true && answer == false)
-                    {
-                        YesVotes.Remove(previousPollVote);
-                        NoVotes.Add(newPollVote);
-                    }
-                    else if (previousPollVote.Answer == false && answer == true)
-                    {
-                        NoVotes.Remove(previousPollVote);
-                        YesVotes.Add(newPollVote);
-                    }
                 }
             }
 
