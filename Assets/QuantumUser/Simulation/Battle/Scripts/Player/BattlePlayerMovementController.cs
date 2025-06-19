@@ -88,12 +88,7 @@ namespace Battle.QSimulation.Player
                 if (input->RotationInput)
                 {
                     //set target angle
-                    FP maxAngle;
-#if PLATFORM_ANDROID
-                    maxAngle = FP.Rad_45 * (input->RotationValue / (FP)75);
-#else
-                    maxAngle = FP.Rad_45 * (input->RotationValue / (FP)360);
-#endif
+                    FP maxAngle = FP.Rad_45 * input->RotationValue;
                     maxAngle = FPMath.Clamp(maxAngle, -FP.Rad_45, FP.Rad_45);
 
                     //stops player before rotation

@@ -127,6 +127,7 @@ namespace Battle.View.Player
                     {
                         rotationInput = true;
                         rotationValue = FP.FromFloat_UNSAFE(ClickStateHandler.GetRotationValue());
+                        rotationValue /= (FP)45;
                     }
                     break;
 
@@ -136,6 +137,7 @@ namespace Battle.View.Player
                         rotationInput = true;
                         rotationValue = FP.FromFloat_UNSAFE(Vector2.Angle(new Vector2(0, 1), new Vector2(_joystickRotationValue, 1)));
                         if (_joystickRotationValue > 0) rotationValue *= -1;
+                        rotationValue /= (FP)75;
                     }
                     break;
             }
