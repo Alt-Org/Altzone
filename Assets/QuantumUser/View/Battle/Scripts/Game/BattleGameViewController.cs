@@ -15,6 +15,7 @@ using PlayerType = Battle.View.UI.BattleUiPlayerInfoHandler.PlayerType;
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
 using BattleMovementInputType = SettingsCarrier.BattleMovementInputType;
 using BattleRotationInputType = SettingsCarrier.BattleRotationInputType;
+using Battle.View.Player;
 
 namespace Battle.View.Game
 {
@@ -26,6 +27,7 @@ namespace Battle.View.Game
         [SerializeField] private BattleStoneCharacterViewController _stoneCharacterViewController;
         [SerializeField] private BattleLightrayEffectViewController _lightrayEffectViewController;
         [SerializeField] private BattleSoundFXViewController _soundFXViewController;
+        [SerializeField] private BattlePlayerInput _playerInput;
 
         public static BattlePlayerSlot LocalPlayerSlot { get; private set; }
         public static BattleTeamNumber LocalPlayerTeam { get; private set; }
@@ -47,14 +49,16 @@ namespace Battle.View.Game
             Debug.Log($"Character number {characterNumber} selected!");
         }
 
-        public void UiInputOnMovementJoystick(Vector2 input)
+        public void UiInputOnJoystickMovement(Vector2 input)
         {
-            Debug.Log($"Move joystick input {input}");
+            _playerInput.OnJoystickMovement(input);
+            //Debug.Log($"Move joystick input {input}");
         }
 
-        public void UiInputOnRotationJoystick(float input)
+        public void UiInputOnJoystickRotation(float input)
         {
-            Debug.Log($"Rotate joystick input {input}");
+            _playerInput.OnJoystickRotation(input);
+            //Debug.Log($"Rotate joystick input {input}");
         }
 
         public void UiInputOnExitGamePressed()

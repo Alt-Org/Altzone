@@ -2,6 +2,7 @@ input
 {
     button MovementInput;
     BattleGridPosition MovementPosition;
+    FPVector2 MovementDirection;
     button RotationInput;
     FP RotationValue;
 }

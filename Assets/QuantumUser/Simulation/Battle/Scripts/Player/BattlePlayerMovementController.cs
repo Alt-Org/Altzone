@@ -32,13 +32,27 @@ namespace Battle.QSimulation.Player
         public static void UpdateMovement(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform, Input* input)
         {
             // constant
-            FP rotationSpeed = FP._0_20;
+            FP rotationSpeed = 4;
 
             // handle movement
             if (input->MovementInput)
             {
                 // get players TargetPosition
-                BattleGridPosition targetGridPosition = input->MovementPosition;
+                BattleGridPosition targetGridPosition;
+                if (input->MovementDirection != FPVector2.Zero)
+                {
+                    Debug.LogWarning(input->MovementDirection);
+                    FPVector2 targetWorldPosition = transform->Position + input->MovementDirection;
+                    targetGridPosition = new BattleGridPosition()
+                    {
+                        Row = BattleGridManager.WorldYPositionToGridRow(targetWorldPosition.Y),
+                        Col = BattleGridManager.WorldXPositionToGridCol(targetWorldPosition.X)
+                    };
+                }
+                else
+                {
+                    targetGridPosition = input->MovementPosition;
+                }
 
                 // clamp the TargetPosition inside sidebounds
                 targetGridPosition.Col = Mathf.Clamp(targetGridPosition.Col, 0, BattleGridManager.Columns - 1);
@@ -76,26 +90,38 @@ namespace Battle.QSimulation.Player
                     //set target angle
                     FP maxAngle;
 #if PLATFORM_ANDROID
-                    maxAngle = FP.Rad_45 * (FPMath.Abs(input->RotationValue) / (FP)45);
+                    maxAngle = FP.Rad_45 * (input->RotationValue / (FP)75);
 #else
-                    maxAngle = FP.Rad_45 * (FPMath.Abs(input->RotationValue) / (FP)360);
+                    maxAngle = FP.Rad_45 * (input->RotationValue / (FP)360);
 #endif
-                    maxAngle = FPMath.Clamp(maxAngle, FP._0, FP.Rad_45);
+                    maxAngle = FPMath.Clamp(maxAngle, -FP.Rad_45, FP.Rad_45);
 
                     //stops player before rotation
                     playerData->TargetPosition = transform->Position;
 
-                    //rotates to right
-                    if (input->RotationValue > 0 && playerData->RotationOffset < maxAngle)
+                    //Debug.LogWarning("value: " + input->RotationValue);
+                    Debug.LogWarning("offset: " + playerData->RotationOffset);
+                    Debug.LogWarning("maxangle: " + maxAngle);
+
+                    //rotates to left
+                    if (maxAngle > playerData->RotationOffset/* && (playerData->RotationOffset < maxAngle || playerData->RotationOffset < -maxAngle)*/)
                     {
-                        playerData->RotationOffset += rotationSpeed;
+                        playerData->RotationOffset += rotationSpeed * f.DeltaTime;
+                        if (playerData->RotationOffset > maxAngle)
+                        {
+                            playerData->RotationOffset = maxAngle;
+                        }
                         Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", playerData->RotationOffset);
                     }
 
-                    //rotates to left
-                    else if (input->RotationValue < 0 && playerData->RotationOffset > -maxAngle)
+                    //rotates to right
+                    else if (maxAngle < playerData->RotationOffset/* && (playerData->RotationOffset > -maxAngle || playerData->RotationOffset > maxAngle)*/)
                     {
-                        playerData->RotationOffset -= rotationSpeed;
+                        playerData->RotationOffset -= rotationSpeed * f.DeltaTime;
+                        if (playerData->RotationOffset < maxAngle)
+                        {
+                            playerData->RotationOffset = maxAngle;
+                        }
                         Debug.LogFormat("[PlayerRotatingSystem] Leaning left(rotation: {0}", playerData->RotationOffset);
                     }
                 }
@@ -104,10 +130,21 @@ namespace Battle.QSimulation.Player
                 if (!input->RotationInput && playerData->RotationOffset != 0)
                 {
                     if (playerData->RotationOffset > 0)
-                        playerData->RotationOffset -= rotationSpeed;
-
+                    {
+                        playerData->RotationOffset -= rotationSpeed * f.DeltaTime;
+                        if (playerData->RotationOffset < 0)
+                        {
+                            playerData->RotationOffset = 0;
+                        }
+                    }
                     else
-                        playerData->RotationOffset += rotationSpeed;
+                    {
+                        playerData->RotationOffset += rotationSpeed * f.DeltaTime;
+                        if (playerData->RotationOffset > 0)
+                        {
+                            playerData->RotationOffset = 0;
+                        }
+                    }
                 }
             }
 

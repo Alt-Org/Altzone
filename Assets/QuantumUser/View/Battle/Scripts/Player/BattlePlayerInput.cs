@@ -16,60 +16,109 @@ namespace Battle.View.Player
 {
     public class BattlePlayerInput : MonoBehaviour
     {
-        private bool _mouseDownPrevious;
-        private static Vector2 s_rotationStartVector;
+        public void OnJoystickMovement(Vector2 input)
+        {
+            _joystickMovementVector = input;
+        }
+
+        public void OnJoystickRotation(float input)
+        {
+            _joystickRotationValue = input;
+        }
+
+        private MovementInputType _movementInputType;
         private RotationInputType _rotationInputType;
+
+        private bool _mouseDownPrevious;
+        private Vector2 _rotationStartVector;
+        private Vector2 _movementStartVector;
+        private Vector2 _joystickMovementVector;
+        private float _joystickRotationValue;
+
+        private float _swipeMinDistance = 30f;
 
         private void OnEnable()
         {
+            _movementInputType = SettingsCarrier.Instance.BattleMovementInput;
+            _rotationInputType = SettingsCarrier.Instance.BattleRotationInput;
+
             QuantumCallback.Subscribe(this, (CallbackPollInput callback) => PollInput(callback));
         }
 
         private void PollInput(CallbackPollInput callback)
         {
+            Vector2 clickPosition = ClickStateHandler.GetClickPosition();
+
             bool mouseDown = ClickStateHandler.GetClickState() is ClickState.Start or ClickState.Hold or ClickState.Move;
             bool twoFingers = ClickStateHandler.GetClickType() is ClickType.TwoFingerOrScroll;
             bool mouseClick = !twoFingers && mouseDown && !_mouseDownPrevious;
             _mouseDownPrevious = mouseDown;
-            _rotationInputType = SettingsCarrier.Instance.BattleRotationInput;
 
             bool movementInput = false;
             BattleGridPosition movementPosition = new BattleGridPosition() {Row = -1, Col = -1};
+            FPVector2 movementDirection = FPVector2.Zero;
             bool rotationInput = false;
             FP rotationValue = FP._0;
 
-            if (mouseClick)
+            switch ( _movementInputType)
             {
-                movementInput = true;
-                Vector3 unityPosition = BattleCamera.Camera.ScreenToWorldPoint(ClickStateHandler.GetClickPosition());
-                movementPosition = new BattleGridPosition()
-                {
-                    Row = BattleGridManager.WorldYPositionToGridRow(FP.FromFloat_UNSAFE(unityPosition.z)),
-                    Col = BattleGridManager.WorldXPositionToGridCol(FP.FromFloat_UNSAFE(unityPosition.x))
-                };
+                case MovementInputType.PointAndClick:
+                    if (mouseClick)
+                    {
+                        movementInput = true;
+                        Vector3 unityPosition = BattleCamera.Camera.ScreenToWorldPoint(ClickStateHandler.GetClickPosition());
+                        movementPosition = new BattleGridPosition()
+                        {
+                            Row = BattleGridManager.WorldYPositionToGridRow(FP.FromFloat_UNSAFE(unityPosition.z)),
+                            Col = BattleGridManager.WorldXPositionToGridCol(FP.FromFloat_UNSAFE(unityPosition.x))
+                        };
+                    }
+                    break;
+
+                case MovementInputType.Swipe:
+                    if (mouseDown && _movementStartVector == Vector2.zero)
+                    {
+                        _movementStartVector = clickPosition;
+                    }
+                    else if (mouseDown && (clickPosition.x - _movementStartVector.x > _swipeMinDistance || clickPosition.x - _movementStartVector.x < -_swipeMinDistance))
+                    {
+                        movementInput = true;
+                        Vector2 direction = clickPosition - _movementStartVector;
+                        movementDirection = new FPVector2(FP.FromFloat_UNSAFE(direction.x), FP.FromFloat_UNSAFE(direction.y)).Normalized;
+                    }
+                    else if (!mouseDown)
+                    {
+                        _movementStartVector = Vector2.zero;
+                    }
+                    break;
+
+                case MovementInputType.Joystick:
+                    if (_joystickMovementVector != Vector2.zero)
+                    {
+                        movementInput = true;
+                        movementDirection = new FPVector2(FP.FromFloat_UNSAFE(_joystickMovementVector.x), FP.FromFloat_UNSAFE(_joystickMovementVector.y)).Normalized;
+                    }
+                    break;
             }
 
             switch (_rotationInputType)
             {
                 case RotationInputType.Swipe:
                     
-                    float swipeMinDistance = 30f;
-
-                    if (mouseDown && s_rotationStartVector == Vector2.zero)
+                    if (mouseDown && _rotationStartVector == Vector2.zero)
                     {
-                        s_rotationStartVector = ClickStateHandler.GetClickPosition();
+                        _rotationStartVector = clickPosition;
                     }
-                    else if (mouseDown && (ClickStateHandler.GetClickPosition().x - s_rotationStartVector.x > swipeMinDistance || ClickStateHandler.GetClickPosition().x - s_rotationStartVector.x < -swipeMinDistance))
+                    else if (mouseDown && (clickPosition.x - _rotationStartVector.x > _swipeMinDistance || clickPosition.x - _rotationStartVector.x < -_swipeMinDistance))
                     {
                         rotationInput = true;
-                        Vector2 currentPosition = ClickStateHandler.GetClickPosition();
-                        float distance = currentPosition.x - s_rotationStartVector.x;
+                        float distance = clickPosition.x - _rotationStartVector.x;
                         rotationValue = -FP.FromFloat_UNSAFE(distance);
 
                     }
                     else if (!mouseDown)
                     {
-                        s_rotationStartVector = Vector2.zero;
+                        _rotationStartVector = Vector2.zero;
                     }
                     break;
 
@@ -80,12 +129,22 @@ namespace Battle.View.Player
                         rotationValue = FP.FromFloat_UNSAFE(ClickStateHandler.GetRotationValue());
                     }
                     break;
+
+                case RotationInputType.Joystick:
+                    if (_joystickRotationValue != 0)
+                    {
+                        rotationInput = true;
+                        rotationValue = FP.FromFloat_UNSAFE(Vector2.Angle(new Vector2(0, 1), new Vector2(_joystickRotationValue, 1)));
+                        if (_joystickRotationValue > 0) rotationValue *= -1;
+                    }
+                    break;
             }
 
             Input i = new()
             {
                 MovementInput = movementInput,
                 MovementPosition = movementPosition,
+                MovementDirection = movementDirection,
                 RotationInput = rotationInput,
                 RotationValue = rotationValue,
             };

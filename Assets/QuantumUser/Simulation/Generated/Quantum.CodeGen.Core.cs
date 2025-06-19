@@ -129,8 +129,8 @@ namespace Quantum {
   }
   [System.FlagsAttribute()]
   public enum InputButtons : int {
-    MouseClick = 1 << 0,
-    RotateMotion = 1 << 1,
+    MovementInput = 1 << 0,
+    RotationInput = 1 << 1,
   }
   public static unsafe partial class FlagsExtensions {
     public static Boolean IsFlagSet(this BattleProjectileCollisionFlags self, BattleProjectileCollisionFlags flag) {
@@ -625,22 +625,25 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Input {
-    public const Int32 SIZE = 40;
+    public const Int32 SIZE = 56;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(16)]
-    public Button MouseClick;
+    public Button MovementInput;
     [FieldOffset(0)]
     public BattleGridPosition MovementPosition;
+    [FieldOffset(40)]
+    public FPVector2 MovementDirection;
     [FieldOffset(28)]
-    public Button RotateMotion;
+    public Button RotationInput;
     [FieldOffset(8)]
     public FP RotationValue;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 19249;
-        hash = hash * 31 + MouseClick.GetHashCode();
+        hash = hash * 31 + MovementInput.GetHashCode();
         hash = hash * 31 + MovementPosition.GetHashCode();
-        hash = hash * 31 + RotateMotion.GetHashCode();
+        hash = hash * 31 + MovementDirection.GetHashCode();
+        hash = hash * 31 + RotationInput.GetHashCode();
         hash = hash * 31 + RotationValue.GetHashCode();
         return hash;
       }
@@ -650,15 +653,15 @@ namespace Quantum {
     }
     public Boolean IsDown(InputButtons button) {
       switch (button) {
-        case InputButtons.MouseClick: return MouseClick.IsDown;
-        case InputButtons.RotateMotion: return RotateMotion.IsDown;
+        case InputButtons.MovementInput: return MovementInput.IsDown;
+        case InputButtons.RotationInput: return RotationInput.IsDown;
         default: return false;
       }
     }
     public Boolean WasPressed(InputButtons button) {
       switch (button) {
-        case InputButtons.MouseClick: return MouseClick.WasPressed;
-        case InputButtons.RotateMotion: return RotateMotion.WasPressed;
+        case InputButtons.MovementInput: return MovementInput.WasPressed;
+        case InputButtons.RotationInput: return RotationInput.WasPressed;
         default: return false;
       }
     }
@@ -666,13 +669,14 @@ namespace Quantum {
         var p = (Input*)ptr;
         Quantum.BattleGridPosition.Serialize(&p->MovementPosition, serializer);
         FP.Serialize(&p->RotationValue, serializer);
-        Button.Serialize(&p->MouseClick, serializer);
-        Button.Serialize(&p->RotateMotion, serializer);
+        Button.Serialize(&p->MovementInput, serializer);
+        Button.Serialize(&p->RotationInput, serializer);
+        FPVector2.Serialize(&p->MovementDirection, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct _globals_ {
-    public const Int32 SIZE = 808;
+    public const Int32 SIZE = 904;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public AssetRef<Map> Map;
@@ -696,12 +700,12 @@ namespace Quantum {
     public Int32 PlayerConnectedCount;
     [FieldOffset(560)]
     [FramePrinter.FixedArrayAttribute(typeof(Input), 6)]
-    private fixed Byte _input_[240];
-    [FieldOffset(800)]
+    private fixed Byte _input_[336];
+    [FieldOffset(896)]
     public BitSet6 PlayerLastConnectionState;
     public FixedArray<Input> input {
       get {
-        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 40, 6); }
+        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 56, 6); }
       }
     }
     public override Int32 GetHashCode() {
@@ -1303,9 +1307,10 @@ namespace Quantum {
     partial void SetPlayerInputCodeGen(PlayerRef player, Input input) {
       if ((int)player >= (int)_globals->input.Length) { throw new System.ArgumentOutOfRangeException("player"); }
       var i = _globals->input.GetPointer(player);
-      i->MouseClick = i->MouseClick.Update(this.Number, input.MouseClick);
+      i->MovementInput = i->MovementInput.Update(this.Number, input.MovementInput);
       i->MovementPosition = input.MovementPosition;
-      i->RotateMotion = i->RotateMotion.Update(this.Number, input.RotateMotion);
+      i->MovementDirection = input.MovementDirection;
+      i->RotationInput = i->RotationInput.Update(this.Number, input.RotationInput);
       i->RotationValue = input.RotationValue;
     }
     public Input* GetPlayerInput(PlayerRef player) {

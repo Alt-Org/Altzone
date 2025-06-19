@@ -427,15 +427,17 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Input))]
   public unsafe partial class InputPrototype : StructPrototype {
-    public Button MouseClick;
+    public Button MovementInput;
     public Quantum.Prototypes.BattleGridPositionPrototype MovementPosition;
-    public Button RotateMotion;
+    public FPVector2 MovementDirection;
+    public Button RotationInput;
     public FP RotationValue;
     partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
-        result.MouseClick = this.MouseClick;
+        result.MovementInput = this.MovementInput;
         this.MovementPosition.Materialize(frame, ref result.MovementPosition, in context);
-        result.RotateMotion = this.RotateMotion;
+        result.MovementDirection = this.MovementDirection;
+        result.RotationInput = this.RotationInput;
         result.RotationValue = this.RotationValue;
         MaterializeUser(frame, ref result, in context);
     }
