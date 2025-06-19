@@ -102,7 +102,7 @@ namespace Battle.QSimulation.Player
                         {
                             playerData->RotationOffset = maxAngle;
                         }
-                        Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", playerData->RotationOffset);
+                        Debug.LogFormat("[PlayerRotatingSystem] Leaning left(rotation: {0}", playerData->RotationOffset);
                     }
 
                     //rotates to right
@@ -113,7 +113,7 @@ namespace Battle.QSimulation.Player
                         {
                             playerData->RotationOffset = maxAngle;
                         }
-                        Debug.LogFormat("[PlayerRotatingSystem] Leaning left(rotation: {0}", playerData->RotationOffset);
+                        Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", playerData->RotationOffset);
                     }
                 }
 
