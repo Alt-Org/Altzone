@@ -165,4 +165,18 @@ public static class PollManager
 
         VotingActions.ReloadPollList?.Invoke();
     }
+
+    public static PollData GetAnyPollData(string id)
+    {
+        var poll = pollDataList.FirstOrDefault(p => p.Id == id);
+        if (poll != null) return poll;
+
+        return pastPollDataList.FirstOrDefault(p => p.Id == id);
+    }
+
+
+    public static List<PollData> GetPastPollList()
+    {
+        return pastPollDataList;
+    }
 }
