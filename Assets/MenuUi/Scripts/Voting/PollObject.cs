@@ -35,6 +35,11 @@ public class PollObject : MonoBehaviour
     private void OnEnable()
     {
         VotingActions.ReloadPollList += SetValues;
+
+        if (pollData != null)
+        {
+            StartCoroutine(UpdateValues());
+        }
     }
 
     private void OnDisable()
@@ -52,27 +57,31 @@ public class PollObject : MonoBehaviour
             long secondsLeft = pollData.EndTime - currentTime;
 
             if (secondsLeft <= 0)
-            {
-                // Clamp fill amount and timer to zero
-                Clock.fillAmount = 1f;
-                TimeLeftText.text = "0s";
+            {      
 
-                // End the poll
+                // Convert poll end time to local time
+                DateTimeOffset endDateTime = DateTimeOffset.FromUnixTimeSeconds(pollData.EndTime).ToLocalTime();
+
+                // Format and show local time. Example of this: "20.6. 13:50"
+                TimeLeftText.text = endDateTime.ToString("d.M. HH:mm");
+
                 PollManager.EndPoll(pollId);
 
-                // Stop updating after poll ends
                 yield break;
             }
 
             Clock.fillAmount = 1 - (float)(secondsLeft) / totalDuration;
 
-            if (secondsLeft < 60) TimeLeftText.text = secondsLeft + "s";
-            else if (secondsLeft < 3600) TimeLeftText.text = (secondsLeft / 60) + "m";
-            else TimeLeftText.text = (secondsLeft / 3600) + "h";
+            if (secondsLeft < 60) TimeLeftText.text = secondsLeft + "s\nleft";
+            else if (secondsLeft < 3600) TimeLeftText.text = (secondsLeft / 60) + "m\nleft";
+            else TimeLeftText.text = (secondsLeft / 3600) + "h\nleft";
 
             yield return new WaitForSeconds(1);
         }
     }
+
+
+
     private bool PollPassed()
     {
         return pollData.YesVotes.Count > pollData.NoVotes.Count;
@@ -114,7 +123,11 @@ public class PollObject : MonoBehaviour
         long currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         if (currentTime < pollData.EndTime)
         {
-            StartCoroutine(UpdateValues());
+            // Start coroutine only if GameObject is active in hierarchy in order to stop errors from happening
+            if (gameObject.activeInHierarchy)
+            {
+                StartCoroutine(UpdateValues());
+            }
         }
         else
         {
@@ -122,6 +135,7 @@ public class PollObject : MonoBehaviour
             SetResultColor();
         }
     }
+
 
     private void SetResultColor()
     {
