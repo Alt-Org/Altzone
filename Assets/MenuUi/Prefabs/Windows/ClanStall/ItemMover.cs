@@ -11,6 +11,8 @@ public class ItemMover : MonoBehaviour
 
     private KojuItemSlot[] panelSlots;
 
+    private KojuTrayPopulator trayPopulator;
+
     void Start()
     {
         GetComponent<Button>().onClick.AddListener(OnClick);
@@ -30,6 +32,11 @@ public class ItemMover : MonoBehaviour
         popup = popupRef;
     }
 
+    public void SetPopulator(KojuTrayPopulator populator)
+    {
+        trayPopulator = populator;
+    }
+
     // Call when clicking a card in the panel or the tray, see KojuPopup.cs
     private void OnClick()
     {
@@ -43,7 +50,7 @@ public class ItemMover : MonoBehaviour
         }
         else
         {
-            Debug.Log("Panel is full!");
+            trayPopulator?.ShowPanelFullWarning();
         }
     }
 

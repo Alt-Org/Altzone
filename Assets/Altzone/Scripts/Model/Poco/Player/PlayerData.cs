@@ -86,14 +86,25 @@ namespace Altzone.Scripts.Model.Poco.Player
             get
             {
                 List<CustomCharacter> list = new();
-                foreach (var id in SelectedCharacterIds)
+                foreach(string id in SelectedCharacterIds)
+                {
+                    if (id == "test")
+                    {
+                        list.Add(new(CharacterID.Test, 2, 20, 2, 2, 2));
+                        list.Add(new(CharacterID.Test, 2, 10, 2, 2, 2));
+                        list.Add(new(CharacterID.Test, 2, 15, 2, 2, 2));
+                        return new ReadOnlyCollection<CustomCharacter>(list);
+                    }
+                }
+
+                foreach (string id in SelectedCharacterIds)
                 {
                     if (string.IsNullOrEmpty(id)) continue;
                     CustomCharacter character = CustomCharacters.FirstOrDefault(x => x.ServerID == id);
                     if(character == null) continue;
                     list.Add(character);
                 }
-                while(list.Count < 3)
+                while(list.Count < SelectedCharacterIds.Length)
                 {
                     list.Add(CustomCharacter.CreateEmpty());
                 }

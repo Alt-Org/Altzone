@@ -54,11 +54,7 @@ namespace Battle.QSimulation.Game
         /// <param name="firstTime">True if this is the first join.</param>
         public void OnPlayerAdded(Frame f, PlayerRef playerRef, bool firstTime)
         {
-            RuntimePlayer data = f.GetPlayerData(playerRef);
-
             BattlePlayerManager.RegisterPlayer(f, playerRef);
-
-            f.Events.BattleDebugUpdateStatsOverlay(data.Characters[0]);
         }
 
         public static void OnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)

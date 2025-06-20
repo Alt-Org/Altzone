@@ -54,64 +54,21 @@ namespace Battle.View.UI
         /// Start the timer from the given <a href="https://doc.photonengine.com/quantum/current/manual/frames">Frame@u-exlink</a>.
         /// </summary>
         /// <param name="f">The <a href="https://doc.photonengine.com/quantum/current/manual/frames">Frame@u-exlink</a> which the timer will be started from.</param>
-        public void StartTimer(Frame f)
+        public void FormatAndSetTimerText(FP gameTimeSec)
         {
-            if (_recordTime) return;
+            int secondsElapsed = FPMath.FloorToInt(gameTimeSec);
+            int hours = Mathf.FloorToInt(secondsElapsed / (float)TimeConversionRatio / TimeConversionRatio);
+            int minutes = Mathf.FloorToInt(secondsElapsed / (float)TimeConversionRatio) - hours * TimeConversionRatio;
+            int seconds = secondsElapsed - (minutes * TimeConversionRatio);
 
-            _hours = 0;
-            _secondsElapsedPrevious = -1;
-
-            _timer = FrameTimer.FromSeconds(f, 3600);
-            _recordTime = true;
+            if (secondsElapsed > _secondsElapsedPrevious)
+            {
+                if (IsVisible) _timerText.text = hours == 0 ? $"<mspace=1em>{minutes:D2}:{seconds:00}</mspace>" : $"{hours}:{minutes:00}:{seconds:00}";
+                _secondsElapsedPrevious = secondsElapsed;
+            }
         }
 
-        /// <summary>
-        /// Stops the timer.
-        /// </summary>
-        public void StopTimer()
-        {
-            _recordTime = false;
-        }
-
-        /// <value>Bool which toggles recording time in the #Update method.</value>
-        private bool _recordTime = false;
-        /// <value><a href="https://doc.photonengine.com/quantum/current/concepts-and-patterns/frame-timer">FrameTimer@u-exlink</a> which is used for getting the game time in seconds since the game started.</value>
-        private FrameTimer _timer;
-        /// <value>Keeps track of hours passed.</value>
-        private int _hours;
-
-        /// <value>Holder variable for keeping track of passed seconds, so that the #_timerText is set in #Update only when the seconds increase.</value>
+        private const int TimeConversionRatio = 60;
         private int _secondsElapsedPrevious;
-
-        /// <summary>
-        /// Private <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/MonoBehaviour.Update.html">Update@u-exlink</a> method. Handles formatting and setting the #_timerText.
-        /// </summary>
-        private void Update()
-        {
-            if (!_recordTime) return;
-            if (!Utils.TryGetQuantumFrame(out Frame f)) return;
-
-            if (_timer.IsExpired(f))
-            {
-                _secondsElapsedPrevious = -1;
-                _timer.Restart(f);
-                _hours++;
-            }
-
-            FP? secondsElapsedFloat = _timer.TimeInSecondsSinceStart(f);
-
-            if (secondsElapsedFloat != null)
-            {
-                int secondsElapsed = FPMath.FloorToInt(secondsElapsedFloat.Value);
-                int minutes = FPMath.FloorToInt(secondsElapsedFloat.Value / 60);
-                int seconds = secondsElapsed - (minutes * 60);
-
-                if (secondsElapsed > _secondsElapsedPrevious)
-                {
-                    if (IsVisible) _timerText.text = _hours == 0 ? $"<mspace=1em>{minutes:D2}:{seconds:00}</mspace>" : $"{_hours}:{minutes:00}:{seconds:00}";
-                    _secondsElapsedPrevious = secondsElapsed;
-                }
-            }
-        }
     }
 }

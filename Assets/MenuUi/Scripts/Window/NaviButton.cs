@@ -1,4 +1,5 @@
 ﻿using MenuUi.Scripts.Window.ScriptableObjects;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -36,5 +37,15 @@ namespace MenuUi.Scripts.Window
         {
             StartCoroutine(Navigate());
         }
+#if UNITY_EDITOR
+        [CustomEditor(typeof(NaviButton))]
+        public class NaviButtonEditor : WindowNavigationEditor
+        {
+            public override void OnInspectorGUI()
+            {
+                base.OnInspectorGUI();
+            }
+        }
+#endif
     }
 }

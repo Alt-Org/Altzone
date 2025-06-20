@@ -9,6 +9,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 
 using MenuUi.Scripts.Signals;
+using MenuUi.Scripts.DefenceScreen.CharacterStatsWindow;
 
 namespace MenuUi.Scripts.Signals
 {
@@ -26,6 +27,13 @@ namespace MenuUi.Scripts.Signals
         public static void OnDefenceGalleryEditPanelRequestedSignal()
         {
             OnDefenceGalleryEditPanelRequested?.Invoke();
+        }
+
+        public delegate void DefenceGalleryStatPopupRequested(CharacterID characterId);
+        public static event DefenceGalleryStatPopupRequested OnDefenceGalleryStatPopupRequested;
+        public static void OnDefenceGalleryStatPopupRequestedSignal(CharacterID characterID)
+        {
+            OnDefenceGalleryStatPopupRequested?.Invoke(characterID);
         }
 
         public delegate void ReloadCharacterGalleryRequested();
@@ -54,6 +62,9 @@ namespace MenuUi.Scripts.CharacterGallery
     {
         [SerializeField] private GalleryView _view;
         [SerializeField] private GalleryView _editingPanelView;
+        [SerializeField] private StatsWindowController _statsWindowController;
+
+        public const string TestCharacterID = "test";
 
         private PlayerData _playerData;
         private bool _reloadRequested = false;
@@ -65,6 +76,7 @@ namespace MenuUi.Scripts.CharacterGallery
             SignalBus.OnRandomSelectedCharactersRequested += SetRandomSelectedCharactersToEmptySlots;
             SignalBus.OnReloadCharacterGalleryRequested += OnReloadRequested;
             SignalBus.OnSelectedDefenceCharacterChanged += HandleCharacterSelected;
+            SignalBus.OnDefenceGalleryStatPopupRequested += _statsWindowController.OpenPopup;
         }
 
 
@@ -96,6 +108,7 @@ namespace MenuUi.Scripts.CharacterGallery
             SignalBus.OnRandomSelectedCharactersRequested -= SetRandomSelectedCharactersToEmptySlots;
             SignalBus.OnReloadCharacterGalleryRequested -= OnReloadRequested;
             SignalBus.OnSelectedDefenceCharacterChanged -= HandleCharacterSelected;
+            SignalBus.OnDefenceGalleryStatPopupRequested -= _statsWindowController.OpenPopup;
         }
 
 
@@ -130,7 +143,8 @@ namespace MenuUi.Scripts.CharacterGallery
                 int[] characterIds = new int[3];
                 for (int i = 0; i < selectedCharacterIds.Length; i++)
                 {
-                    characterIds[i] = _playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == selectedCharacterIds[i]) == null ? 0 : (int)_playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == selectedCharacterIds[i]).Id;
+                    characterIds[i] = _playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == selectedCharacterIds[i]) == null ? -1 : (int)_playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == selectedCharacterIds[i]).Id;
+                    if (selectedCharacterIds[i] == TestCharacterID) characterIds[i] = (int)CharacterID.Test;
                 }
                 var characters = playerData.CustomCharacters.GroupBy(x => x.Id).Select(x => x.First()).ToList(); // ensuring no duplicate characters if account is bugged
                 characters.Sort((a, b) => a.Id.CompareTo(b.Id));
@@ -148,6 +162,7 @@ namespace MenuUi.Scripts.CharacterGallery
             string newServerId = _playerData.CustomCharacters.FirstOrDefault(x => x.Id == newCharacterId)?.ServerID;
             if (newServerId == null)
             {
+                if (newCharacterId == CharacterID.Test) newServerId = TestCharacterID;
                 _playerData.SelectedCharacterIds[slot] = "0";
             }
 

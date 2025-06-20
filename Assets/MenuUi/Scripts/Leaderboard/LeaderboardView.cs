@@ -4,7 +4,7 @@ using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.TabLine;
-using MenuUi.Scripts.Window;
+using Altzone.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
 

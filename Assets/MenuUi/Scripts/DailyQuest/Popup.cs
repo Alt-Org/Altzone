@@ -36,6 +36,9 @@ public class Popup : MonoBehaviour
     [SerializeField] private List<Button> _acceptButtons;
     [Space]
     [SerializeField] private TMP_Text _acceptConfirmButtonText;
+    [Space]
+    [SerializeField] private TextMeshProUGUI _taskPointsText;
+    [SerializeField] private TextMeshProUGUI _taskCoinsText;
 
     [Header("FadeIn/Out")]
     [SerializeField] private CanvasGroup _popupCanvasGroup;
@@ -109,7 +112,10 @@ public class Popup : MonoBehaviour
                 Instance.SetClanMilestone(data.Value.ClanRewardData.Value.RewardImage, data.Value.ClanRewardData.Value.RewardAmount);
 
             if (data.Value.OwnPage != null)
+            {
                 Instance.SetTaskAcceptImage(data.Value.OwnPage);
+                Instance.SetTaskRewardTexts(data.Value.OwnPage);
+            }
         }
 
         // Show the popup and get the result
@@ -143,6 +149,12 @@ public class Popup : MonoBehaviour
     private void SetTaskAcceptImage(PlayerTask data)
     {
         _taskAcceptImage.sprite = _cardImageReference.GetTaskImage(data);
+    }
+
+    private void SetTaskRewardTexts(PlayerTask data)
+    {
+        _taskPointsText.text = data.Points.ToString();
+        _taskCoinsText.text = data.Coins.ToString();
     }
 
     private void SwitchWindow(PopupWindowType type)
