@@ -89,6 +89,9 @@ public class VoteManager : MonoBehaviour
                     }
                 });
             }
+
+            Canvas.ForceUpdateCanvases();
+
         }
 
         if (Polls.Count == 0) NoPollsText.SetActive(true);
