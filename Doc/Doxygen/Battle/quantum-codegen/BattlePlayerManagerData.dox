@@ -1,0 +1,49 @@
+/// @file BattlePlayerManagerData.qtn
+/// <summary>
+/// Contains enum and component used for managing all players's all characters and their states.
+/// </summary>
+///
+/// ## Generated Enums
+/// - @cref{Quantum,BattlePlayerPlayState}  
+///   @copybrief Quantum.BattlePlayerPlayState
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattlePlayerManagerDataQSingleton}  
+///   @copybrief Quantum.BattlePlayerManagerDataQSingleton
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @enum Quantum::BattlePlayerPlayState
+/// <summary>
+/// Is player's state in play, out of play or out of the game.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerManagerData.qtn}
+
+/// @struct Quantum::BattlePlayerManagerDataQSingleton
+/// <summary>
+/// Singleton component that manages players's states, playerRefs, characters, etc.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerManagerData.qtn}
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @var int Quantum.BattlePlayerManagerDataQSingleton::PlayerCount
+/// <summary>How many players are in the game session.</summary>
+///
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::PlayStates
+/// <summary>Array of all characters's current PlayStates.</summary>
+///
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::PlayerRefs
+/// <summary>Array of all PlayerRefs.</summary>
+///
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::SelectedCharacters
+/// <summary>Array of all currently selected characters.</summary>
+///
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::AllCharacters
+/// <summary>Array of all characters in the game session.</summary>
+///
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::SelectedCharacterNumbers
+/// <summary>Array of characters's numbers that are currently selected.</summary>
+///

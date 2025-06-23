@@ -1,0 +1,33 @@
+/// @file BattleCollisionTrigger.qtn
+/// <summary>
+/// Contains enum and component for defining entity's collider trigger type.
+/// </summary>
+///
+/// ## Generated Enums
+/// - @cref{Quantum,BattleCollisionTriggerType}  
+///   @copybrief Quantum.BattleCollisionTriggerType
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattleCollisionTriggerQComponent}  
+///   @copybrief Quantum.BattleCollisionTriggerQComponent
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @enum Quantum::BattleCollisionTriggerType
+/// <summary>
+/// Type of the collision trigger.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleCollisionTrigger.qtn}
+
+/// @struct Quantum::BattleCollisionTriggerQComponent
+/// <summary>
+/// Component that contains entity's collider's type.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleCollisionTrigger.qtn}
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @var BattleCollisionTriggerType Quantum.BattleCollisionTriggerQComponent::Type
+/// <summary> Type of the collision trigger.</summary>

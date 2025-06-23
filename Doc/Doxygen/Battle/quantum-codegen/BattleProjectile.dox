@@ -11,6 +11,8 @@
 /// - @cref{Quantum,BattleProjectileQComponent}  
 ///   @copybrief Quantum.BattleProjectileQComponent
 
+// ---------------------------------------------------------------------------------------------------- //
+
 /// @enum Quantum::BattleProjectileCollisionFlags
 /// <summary>
 /// Flags that are used to ensure the projectile doesn't collide with multiple SoulWalls during the same frame.
@@ -25,11 +27,22 @@
 ///
 /// @bigtext{Generated from @ref BattleProjectile.qtn}
 
+// ---------------------------------------------------------------------------------------------------- //
+
 /// @var bool Quantum.BattleProjectileQComponent::IsLaunched
 /// <summary>Is the projectile launched or not.</summary>
 ///
+/// @var bool Quantum.BattleProjectileQComponent::IsMoving
+/// <summary>Is the projectile moving or not.</summary>
+///
 /// @var FP Quantum.BattleProjectileQComponent::Speed
 /// <summary>Projectile's speed.</summary>
+///
+/// @var FP Quantum.BattleProjectileQComponent::SpeedPotential
+/// <summary>.</summary>
+///
+/// @var FP Quantum.BattleProjectileQComponent::AccelerationTimer
+/// <summary>.</summary>
 ///
 /// @var FPVector2 Quantum.BattleProjectileQComponent::Direction
 /// <summary>The direction the projectile is going towards.</summary>

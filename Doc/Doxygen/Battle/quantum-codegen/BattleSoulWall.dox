@@ -3,11 +3,24 @@
 /// Contains components used for %SoulWalls
 /// </summary>
 ///
+/// ## Generated Enums
+/// - @cref{Quantum,BattleSoulWallRow}  
+///   @copybrief Quantum.BattleSoulWallRow
+///
 /// ## Generated Structs
 /// - @cref{Quantum,BattleSoulWallTemplate}  
 ///   @copybrief Quantum.BattleSoulWallTemplate
 /// - @cref{Quantum,BattleSoulWallQComponent}  
 ///   @copybrief Quantum.BattleSoulWallQComponent
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @enum Quantum::BattleSoulWallRow
+/// <summary>
+/// Which row of the SoulWall this SoulWall segment is located at.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleProjectile.qtn}
 
 /// @struct Quantum::BattleSoulWallTemplate
 /// <summary>
@@ -23,6 +36,8 @@
 ///
 /// @bigtext{Generated from @ref BattleSoulWall.qtn}
 
+// ---------------------------------------------------------------------------------------------------- //
+
 /// @var BattleGridPosition Quantum.BattleSoulWallTemplate::Position
 /// <summary>SoulWall's position in GridPositions.</summary>
 ///
@@ -32,8 +47,16 @@
 /// @var int Quantum.BattleSoulWallTemplate::ColorIndex
 /// <summary>SoulWall's color by ColorIndex.</summary>
 
-/// @var EntityRef Quantum.BattleSoulWallQComponent::ChildEntity
-/// <summary>.</summary>
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @var BattleTeamNumber Quantum.BattleSoulWallQComponent::Team
+/// <summary>Which team the SoulWall segment belongs to.</summary>
+///
+/// @var BattleSoulWallRow Quantum.BattleSoulWallQComponent::Row
+/// <summary>Which row of the SoulWall this SoulWall segment is located at.</summary>
+///
+/// @var int Quantum.BattleSoulWallQComponent::WallNumber
+/// <summary>Which number is the SoulWall segment.</summary>
 ///
 /// @var BattleEmotionState Quantum.BattleSoulWallQComponent::Emotion
 /// <summary>Which emotion the SoulWall has. Changes projectile's emotion into SoulWall's emotion upon collision.</summary>
@@ -43,4 +66,5 @@
 ///
 /// @var FP Quantum.BattleSoulWallQComponent::CollisionMinOffset
 /// <summary>How much projectile is allowed to accidentally penetrate into SoulWall before it's forcibly lifted out.</summary>
+///
 /// Used as a precaution to minimize cases where projectile gets stuck inside other entities.

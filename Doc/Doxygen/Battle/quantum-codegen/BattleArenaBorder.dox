@@ -7,12 +7,16 @@
 /// - @cref{Quantum,BattleArenaBorderQComponent}  
 ///   @copybrief Quantum.BattleArenaBorderQComponent
 
+// ---------------------------------------------------------------------------------------------------- //
+
 /// @struct Quantum::BattleArenaBorderQComponent
 /// <summary>
 /// Component for left and right borders of play arena. Used to calculate projectile bounces.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleArenaBorder.qtn}
+
+// ---------------------------------------------------------------------------------------------------- //
 
 /// @var FPVector2 Quantum.BattleArenaBorderQComponent::Normal
 /// <summary>
@@ -22,4 +26,5 @@
 ///
 /// @var FP Quantum.BattleArenaBorderQComponent::CollisionMinOffset
 /// <summary>How much projectile is allowed to accidentally penetrate into arena border before it's forcibly lifted out.</summary>
+///
 /// Used as a precaution to minimize cases where projectile gets stuck inside other entities.
