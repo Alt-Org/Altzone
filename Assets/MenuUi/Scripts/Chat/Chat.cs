@@ -216,7 +216,9 @@ public class Chat : AltMonoBehaviour
 
             DisplayMessage(_inputField.text, messagePrefab);
             _inputField.text = "";
-            this.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+            GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+            if (_currentContent == _clanChat)
+                _clanChat.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
             MinimizeOptions();
         }
         else
