@@ -73,6 +73,7 @@ In %Battle [Quantum Components🡵] have QComponent suffix. [[Naming]](#index-na
 |  Namespace        | Component                                          | Description                                            |
 | :---------------- | :------------------------------------------------- | :----------------------------------------------------- |
 | @crefd{Quantum}   | @cref{Quantum,BattleArenaBorderQComponent}         | @copybrief Quantum.BattleArenaBorderQComponent         |
+| @crefd{Quantum}   | @cref{Quantum,BattleCollisionTriggerQComponent}    | @copybrief Quantum.BattleCollisionTriggerQComponent    |
 |                                                                                                                               |||
 | @crefd{Quantum}   | @cref{Quantum,BattleDiamondDataQComponent}         | @copybrief Quantum.BattleDiamondDataQComponent         |
 |                                                                                                                               |||
