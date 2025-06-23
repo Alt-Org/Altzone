@@ -51,10 +51,18 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         {
             StartCoroutine(GetPlayerData(playerData =>
             {
-                var characters = playerData.CustomCharacters.ToList();
                 for (int i = 0; i < _selectedCharacterSlots.Length; i++)
                 {
-                    CharacterID charID = playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i]) == null ? CharacterID.None : playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i]).Id;
+                    CharacterID charID;
+                    if (playerData.SelectedTestCharacterIds[i] != (int)CharacterID.None)
+                    {
+                        charID = (CharacterID)playerData.SelectedTestCharacterIds[i];
+                    }
+                    else
+                    {
+                        CustomCharacter matchingCharacter = playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i]);
+                        charID = matchingCharacter == null || playerData.SelectedCharacterIds[i] == ((int)CharacterID.None).ToString() ? CharacterID.None : matchingCharacter.Id;
+                    }
 
                     if (charID is CharacterID.None)
                     {
