@@ -171,6 +171,18 @@ In %Battle Specs have QSpec suffix. [[Naming]](#index-naming)
 
 <br/>
 
+## Other {#page-simulation-other}
+
+Miscellaneous classes and structs that don't belong in other categories.
+
+|  Namespace                                                  || Class                                            | Description                                          |
+| :------------------------- | :------------------------------ | :----------------------------------------------- | :--------------------------------------------------- |
+| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Game} | @cref{Battle.QSimulation.Game,BattleAltzoneLink} | @copybrief Battle.QSimulation.Game.BattleAltzoneLink |
+| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Game} | @cref{Battle.QSimulation.Game,BattleParameters}  | @copybrief Battle.QSimulation.Game.BattleParameters  |
+
+
+<br/>
+
 [Quantum Systems🡵]:    https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems
 [Quantum Components🡵]: https://doc.photonengine.com/quantum/current/manual/quantum-ecs/dsl
 [Quantum Component🡵]:  https://doc.photonengine.com/quantum/current/manual/quantum-ecs/dsl
