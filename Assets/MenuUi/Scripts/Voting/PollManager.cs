@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Altzone.Scripts.Model.Poco.Game;
-using Altzone.Scripts.Voting;
-using Altzone.Scripts;
+using System.Linq;
 using UnityEngine;
+using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
-using System.Linq;
+using Altzone.Scripts.Voting;
 using MenuUi.Scripts.Storage;
 
 public static class PollManager
@@ -65,7 +65,6 @@ public static class PollManager
         for (int i = 0; i < pollDataList.Count; i++)
         {
             PollData pollData = pollDataList[i];
-
             DateTime dateTimeEnd = DateTimeOffset.FromUnixTimeSeconds(pollData.EndTime).DateTime;
 
             // Basic information common to all PollDatas
@@ -106,16 +105,13 @@ public static class PollManager
     {
         store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
 
-        if (player != null)
+        if (player != null && player.ClanId != null)
         {
-            if (player.ClanId != null)
+            store.GetClanData(player.ClanId, data => clan = data);
+
+            if (clan?.Polls != null)
             {
-                store.GetClanData(player.ClanId, data => clan = data);
-                
-                if (clan?.Polls != null)
-                {
-                    pollDataList = clan.Polls;
-                }
+                pollDataList = clan.Polls;
             }
         }
     }
@@ -124,22 +120,19 @@ public static class PollManager
     {
         store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
 
-        if (player != null)
+        if (player != null && player.ClanId != null)
         {
-            if (player.ClanId != null)
-            {
-                store.GetClanData(player.ClanId, data => clan = data);
+            store.GetClanData(player.ClanId, data => clan = data);
 
-                clan.Polls = pollDataList;
-                store.SaveClanData(clan, data => clan = data);
-            }
+            clan.Polls = pollDataList;
+            store.SaveClanData(clan, data => clan = data);
         }
     }
 
     public static void EndPoll(string pollId)
     {
         LoadClanData();
-        
+
         PollData pollData = GetPollData(pollId);
         if (pollData == null) return;
 
@@ -151,19 +144,37 @@ public static class PollManager
 
             if (pollType == FurniturePollType.Selling)
             {
-                ClanFurniture clanFurniture = clan.Inventory.Furniture.First(furn => furn.GameFurnitureName == furniturePollData.Furniture.Name && furn.InVoting == true);
+                ClanFurniture clanFurniture = clan.Inventory.Furniture .First(furn => furn.GameFurnitureName == furniturePollData.Furniture.Name && furn.InVoting);
+
                 clanFurniture.VotedToSell = yesVotesWon;
                 clanFurniture.InVoting = false;
             }
-            // TODO: Buying
+
+            // TODO: Bying
         }
-        
+
         pollDataList.Remove(pollData);
         pastPollDataList.Add(pollData);
 
         SaveClanData();
 
         VotingActions.ReloadPollList?.Invoke();
+        PastPollManager.OnPastPollsChanged?.Invoke(); 
+    }
+
+    public static void CheckAndExpiredPolls()
+    {
+        LoadClanData();
+
+        // Copy list to avoid modifying during iteration
+        var pollsToCheck = new List<PollData>(pollDataList);
+        foreach (var poll in pollsToCheck)
+        {
+            if (poll.IsExpired)
+            {
+                EndPoll(poll.Id);
+            }
+        }
     }
 
     public static PollData GetAnyPollData(string id)
@@ -173,7 +184,6 @@ public static class PollManager
 
         return pastPollDataList.FirstOrDefault(p => p.Id == id);
     }
-
 
     public static List<PollData> GetPastPollList()
     {

@@ -35,6 +35,8 @@ namespace Altzone.Scripts.Voting
         Kick
     }
 
+
+
     public class PollData
     {
         public string Id;
@@ -45,6 +47,9 @@ namespace Altzone.Scripts.Voting
         public List<string> NotVoted;
         public List<PollVoteData> YesVotes;
         public List<PollVoteData> NoVotes;
+
+        public bool IsExpired => EndTime < DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
 
         public PollData(string id, Sprite sprite, List<string> clanMembers, long endTime)
         {

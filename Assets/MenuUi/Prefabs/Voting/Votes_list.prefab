@@ -1592,8 +1592,8 @@ GameObject:
   - component: {fileID: 579012227306666714}
   - component: {fileID: 3677831363808568632}
   - component: {fileID: 8022112971996978276}
-  - component: {fileID: 89112508469893079}
   - component: {fileID: 8477676545251884746}
+  - component: {fileID: 1410239876093481942}
   m_Layer: 5
   m_Name: Pastvotelist
   m_TagString: Untagged
@@ -1661,22 +1661,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &89112508469893079
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3319575337094808590}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0248f2005f233e42823e6cf0e07514a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PastPollListContent: {fileID: 6806921726880215794}
-  PollObjectPrefab: {fileID: 2192335415255639714, guid: 76f68cdcd5c35b94ab4025573eec546c,
-    type: 3}
-  NoPollsText: {fileID: 4962243500976399678}
 --- !u!114 &8477676545251884746
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1708,6 +1692,22 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1410239876093481942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3319575337094808590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3853ac59d034efb4c9ba808b927adf4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PastPollListContent: {fileID: 6806921726880215794}
+  PollObjectPrefab: {fileID: 2192335415255639714, guid: 76f68cdcd5c35b94ab4025573eec546c,
+    type: 3}
+  NoPollsText: {fileID: 4962243500976399678}
 --- !u!1 &3321925696601456261
 GameObject:
   m_ObjectHideFlags: 0
@@ -1989,7 +1989,6 @@ GameObject:
   - component: {fileID: 699816328063641928}
   - component: {fileID: 4119798434605862266}
   - component: {fileID: 8688294253861808612}
-  - component: {fileID: 4525390647423468661}
   - component: {fileID: 3658028902272187160}
   m_Layer: 5
   m_Name: CurrentVoteList
@@ -2058,25 +2057,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4525390647423468661
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4274764364711400907}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7bd276cd2fcd7fe41b0bc5bb6c147e4c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  VotedListContent: {fileID: 2536955498331057612}
-  NotVotedListContent: {fileID: 8194445375855840336}
-  PollObjectPrefab: {fileID: 2192335415255639714, guid: 76f68cdcd5c35b94ab4025573eec546c,
-    type: 3}
-  PollPopup: {fileID: 8037404059670993213}
-  Blocker: {fileID: 6127460242155925334}
-  NoPollsText: {fileID: 1299545118275546062}
 --- !u!114 &3658028902272187160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5320,7 +5300,15 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 579012227306666714}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 380158908593822016, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7750361271460772672}
+    - targetCorrespondingSourceObject: {fileID: 380158908593822016, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 641768072602256236}
   m_SourcePrefab: {fileID: 100100000, guid: 57890b7dbec8a984abb7d8148eefe9f6, type: 3}
 --- !u!114 &257435706030537955 stripped
 MonoBehaviour:
@@ -5380,6 +5368,43 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 48bd9b2820919a14b9d5fc0f9e5bfe9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &7044151888776419131 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 380158908593822016, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 7243831441887661691}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7750361271460772672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7044151888776419131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bd276cd2fcd7fe41b0bc5bb6c147e4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  VotedListContent: {fileID: 2536955498331057612}
+  NotVotedListContent: {fileID: 8194445375855840336}
+  PollObjectPrefab: {fileID: 2192335415255639714, guid: 76f68cdcd5c35b94ab4025573eec546c,
+    type: 3}
+  PollPopup: {fileID: 8037404059670993213}
+  Blocker: {fileID: 6127460242155925334}
+  NoPollsText: {fileID: 1299545118275546062}
+--- !u!114 &641768072602256236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7044151888776419131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84c50e64faefd0f41b4cda042225be23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &7806010016749528616 stripped
