@@ -371,8 +371,9 @@ namespace Altzone.Scripts.Model
             {
                 storageData.Characters = CharacterStorage.Instance.CharacterList;
 
-                // Loading new custom characters if the list is for some reason null or 0 long
-                if (storageData.CustomCharacters == null || storageData.CustomCharacters.Count == 0)
+                // Loading new custom characters if the list is for some reason null or 0 long or it doesn't have test characters
+                bool noTestCharacters = storageData.CustomCharacters.Where(c => c.IsTestCharacter()).ToList().Count == 0;
+                if (storageData.CustomCharacters == null || storageData.CustomCharacters.Count == 0 || noTestCharacters)
                 {
                     storageData.CustomCharacters = new();
                     storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(storageData.Characters));
