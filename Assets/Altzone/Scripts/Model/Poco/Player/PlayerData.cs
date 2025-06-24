@@ -7,6 +7,7 @@ using Altzone.Scripts.Common;
 using Altzone.Scripts.Model.Poco.Attributes;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ModelV2.Internal;
 using Altzone.Scripts.Voting;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
@@ -146,6 +147,12 @@ namespace Altzone.Scripts.Model.Poco.Player
             Name = name;
             BackpackCapacity = backpackCapacity;
             UniqueIdentifier = uniqueIdentifier;
+
+            // Getting characters from data store if they are not initialized, fixes not having test characters when changing accounts
+            if (_characterList == null && _testCharacterList == null)
+            {
+                Storefront.Get().GetAllDefaultCharacterYield(characters => BuildCharacterLists(characters.ToList()));
+            }
         }
 
         public PlayerData(ServerPlayer player, bool limited = false)
@@ -170,7 +177,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             AvatarData = player.avatar != null ? new(player.name, player.avatar) : null;
             if (!limited) Task = player.DailyTask != null ? new(player.DailyTask): null;
 
-            SetTestCharacterIds();
+            if (CharacterSpecConfig.Instance.AllowTestCharacters) SetTestCharacterIds();
         }
 
         public void UpdatePlayerData(ServerPlayer player)
@@ -196,7 +203,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             if (_playerDataEmotionList == null || _playerDataEmotionList.Count == 0) playerDataEmotionList = new List<Emotion> { Emotion.Blank, Emotion.Love, Emotion.Playful, Emotion.Joy, Emotion.Sorrow, Emotion.Anger, Emotion.Blank };
             if (daysBetweenInput == null) daysBetweenInput = "0";
 
-            SetTestCharacterIds();
+            if (CharacterSpecConfig.Instance.AllowTestCharacters) SetTestCharacterIds();
         }
 
         public void UpdateCustomCharacter(CustomCharacter character)
@@ -232,11 +239,14 @@ namespace Altzone.Scripts.Model.Poco.Player
             _characterList = newCustomCharacters;
             Debug.LogWarning(_characterList.Count + " : " + _characterList[0].ServerID);
 
-            List<CustomCharacter> testCharacters = _characterList.Where(c => c.IsTestCharacter()).ToList();
-            if (testCharacters != null && testCharacters.Count != 0)
+            if (CharacterSpecConfig.Instance.AllowTestCharacters)
             {
-                _testCharacterList = testCharacters;
-                _characterList.RemoveAll(c => c.IsTestCharacter());
+                List<CustomCharacter> testCharacters = _characterList.Where(c => c.IsTestCharacter()).ToList();
+                if (testCharacters != null && testCharacters.Count != 0)
+                {
+                    _testCharacterList = testCharacters;
+                    _characterList.RemoveAll(c => c.IsTestCharacter());
+                }
             }
             
             Patch();
