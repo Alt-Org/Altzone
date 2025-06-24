@@ -130,8 +130,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             }
 
             // Setting _isSelected if _customCharacter is one of the characters the player has selected. Checking also for character id for test characters 
-            string[] selectedCharacterIds = _playerData.SelectedCharacterIds;
-            _isSelected = selectedCharacterIds.Contains(_customCharacter.ServerID) || selectedCharacterIds.Contains(((int)_customCharacter.Id).ToString());
+            _isSelected = _playerData.SelectedCharacterIds.Contains(_customCharacter.ServerID) || _playerData.SelectedTestCharacterIds.Contains((int)_customCharacter.Id);
         }
 
 
