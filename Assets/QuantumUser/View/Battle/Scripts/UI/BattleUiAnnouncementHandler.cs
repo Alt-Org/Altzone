@@ -27,7 +27,7 @@ namespace Battle.View.UI
             _announcerText.text = textType switch
             {
                 TextType.Loading            => "Loading...",
-                TextType.WaitingForPlayers  => "Waiting for\nplayers...",
+                TextType.WaitingForPlayers  => "Waiting for\nplayers to connect...",
                 TextType.EndOfCountdown     => "GO!",
 
                 _ => string.Format("Unimplemented text type {0}.", textType),
