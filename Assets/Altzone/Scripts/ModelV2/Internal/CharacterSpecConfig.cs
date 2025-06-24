@@ -57,13 +57,11 @@ namespace Altzone.Scripts.ModelV2.Internal
                 }
                 return _instance;
 
-                bool SelectApproved(CharacterSpec characterSpec) => characterSpec.IsValid && characterSpec.IsApproved && (!IsTesting(characterSpec) || AllowTesting(characterSpec));
+                bool SelectApproved(CharacterSpec characterSpec) => characterSpec.IsValid && characterSpec.IsApproved && (!IsTesting(characterSpec) || _instance.AllowTestCharacters);
 
                 bool SelectAll(CharacterSpec characterSpec) => characterSpec.IsValid;
 
                 bool IsTesting(CharacterSpec characterSpec) => (int)characterSpec.CharacterId % 100 == 0;
-
-                bool AllowTesting(CharacterSpec characterSpec) => _instance._allowTestCharacters && (AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild);
             }
         }
 
@@ -85,6 +83,11 @@ namespace Altzone.Scripts.ModelV2.Internal
         public IEnumerable<ModelV2.PlayerCharacterPrototype> Prototypes => _runtimePrototypes;
 
         private ReadOnlyCollection<ModelV2.PlayerCharacterPrototype> _runtimePrototypes;
+
+        /// <summary>
+        /// Gets whether test characters are allowed in the current build.
+        /// </summary>
+        public bool AllowTestCharacters => _allowTestCharacters && (AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild);
 
         #endregion
 
