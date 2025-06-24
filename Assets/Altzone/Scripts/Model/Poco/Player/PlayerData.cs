@@ -88,20 +88,24 @@ namespace Altzone.Scripts.Model.Poco.Player
             get
             {
                 List<CustomCharacter> list = new();
-                foreach (string id in SelectedCharacterIds)
+                for (int i = 0; i < SelectedCharacterIds.Length; i++)
                 {
-                    if (string.IsNullOrEmpty(id)) continue;
-                    CustomCharacter character = CustomCharacters.FirstOrDefault(x => x.ServerID == id);
+                    string serverId = SelectedCharacterIds[i];
+                    CharacterID testCharId = (CharacterID)SelectedTestCharacterIds[i];
+                    bool isTestCharacter = testCharId != CharacterID.None;
+
+                    if (string.IsNullOrEmpty(serverId) && !isTestCharacter)
+                    {
+                        list.Add(CustomCharacter.CreateEmpty());
+                        continue;
+                    }
+
+                    CustomCharacter character = isTestCharacter ? CustomCharacters.FirstOrDefault(x => x.Id == testCharId) : CustomCharacters.FirstOrDefault(x => x.ServerID == serverId);
                     if(character == null) continue;
                     list.Add(character);
                 }
-                while(list.Count < SelectedCharacterIds.Length)
-                {
-                    list.Add(CustomCharacter.CreateEmpty());
-                }
                 return new ReadOnlyCollection<CustomCharacter>(list);
             }
-
         }
 
         public List<Emotion> playerDataEmotionList
