@@ -199,7 +199,7 @@ namespace MenuUi.Scripts.CharacterGallery
                     _playerData.SelectedTestCharacterIds[slot] = (int)CharacterID.None;
                 }
 
-                _playerData.SelectedCharacterIds[slot] = ((int)CharacterID.None).ToString();
+                _playerData.SelectedCharacterIds[slot] = null;
             }
             else if (newServerId != _playerData.SelectedCharacterIds[slot])
             {
