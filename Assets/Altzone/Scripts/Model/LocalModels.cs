@@ -10,6 +10,7 @@ using System.Text;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.ModelV2.Internal;
 using Altzone.Scripts.Settings;
 using Prg.Scripts.Common.Unity;
 using UnityEngine;
@@ -372,7 +373,7 @@ namespace Altzone.Scripts.Model
                 storageData.Characters = CharacterStorage.Instance.CharacterList;
 
                 // Loading new custom characters if the list is for some reason null or 0 long or it doesn't have test characters
-                bool noTestCharacters = storageData.CustomCharacters.Where(c => c.IsTestCharacter()).ToList().Count == 0;
+                bool noTestCharacters = CharacterSpecConfig.Instance.AllowTestCharacters ? storageData.CustomCharacters.Where(c => c.IsTestCharacter()).ToList().Count == 0 : false;
                 if (storageData.CustomCharacters == null || storageData.CustomCharacters.Count == 0 || noTestCharacters)
                 {
                     storageData.CustomCharacters = new();
