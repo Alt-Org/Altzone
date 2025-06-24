@@ -278,14 +278,13 @@ public class ServerManager : MonoBehaviour
         storefront.GetPlayerData(player.uniqueIdentifier, p => playerData = p);
 
         if (playerData == null) {
-            int currentCustomCharacterId = (int)(player?.currentAvatarId == null ? (playerData == null ? 0 : playerData.SelectedCharacterId) : player.currentAvatarId);
+            int currentCustomCharacterId = (int)(player?.currentAvatarId == null ? (int)CharacterID.None : player.currentAvatarId);
 
             int none = (int)CharacterID.None;
             string noneStr = none.ToString();
-            string[] currentBattleCharacterIds = /*(player?.battleCharacter_ids == null || player.battleCharacter_ids.Length < 3)*/true ? ((playerData == null || playerData.SelectedCharacterIds.Length < 3) ? new string[3] { noneStr, noneStr, noneStr } : playerData.SelectedCharacterIds) : player.battleCharacter_ids;
-            int[] currentTestCharacterIds = (playerData == null || playerData.SelectedTestCharacterIds == null || playerData.SelectedTestCharacterIds.Length < 3) ? new int[3] { none, none, none } : playerData.SelectedTestCharacterIds;
+            string[] currentBattleCharacterIds = (player?.battleCharacter_ids == null || player.battleCharacter_ids.Length < 3) ? new string[3] { noneStr, noneStr, noneStr } : player.battleCharacter_ids;
 
-            playerData = new PlayerData(player._id, player.clan_id, currentCustomCharacterId, currentBattleCharacterIds, currentTestCharacterIds, player.name, player.backpackCapacity, player.uniqueIdentifier);
+            playerData = new PlayerData(player._id, player.clan_id, currentCustomCharacterId, currentBattleCharacterIds, null, player.name, player.backpackCapacity, player.uniqueIdentifier);
         }
         else
         {

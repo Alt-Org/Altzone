@@ -143,7 +143,8 @@ namespace Altzone.Scripts.Model.Poco.Player
             ClanId = clanId ?? string.Empty;
             SelectedCharacterId = currentCustomCharacterId;
             SelectedCharacterIds = currentBattleCharacterIds;
-            SelectedTestCharacterIds = currentTestCharacterIds;
+            if (currentTestCharacterIds == null) SetTestCharacterIds();
+            else SelectedTestCharacterIds = currentTestCharacterIds;
             Name = name;
             BackpackCapacity = backpackCapacity;
             UniqueIdentifier = uniqueIdentifier;
@@ -263,6 +264,8 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         private void SetTestCharacterIds()
         {
+            if (!CharacterSpecConfig.Instance.AllowTestCharacters) return;
+
             // Getting test characters from data store and setting to SelectedTestCharacterIds
             DataStore store = Storefront.Get();
             store.GetPlayerData(UniqueIdentifier, playerData =>
