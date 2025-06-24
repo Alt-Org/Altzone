@@ -1,12 +1,15 @@
 using UnityEngine;
 using TMPro;
 
+using Altzone.Scripts.BattleUiShared;
+
 namespace Battle.View.UI
 {
     public class BattleUiAnnouncementHandler : MonoBehaviour
     {
         [SerializeField] private GameObject _view;
         [SerializeField] private TextMeshProUGUI _announcerText;
+        [SerializeField] private TextScaler _announcementTextScaler;
 
         public enum TextType
         {
