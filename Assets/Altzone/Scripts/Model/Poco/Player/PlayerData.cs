@@ -44,7 +44,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         [Unique] public string Name;
 
         private List<CustomCharacter> _characterList;
-        private List<CustomCharacter> _testCharacterList;
+        public List<CustomCharacter> TestCharacterList;
 
         public int DiamondSpeed = 1000;
         public int DiamondCharacterSize = 1000;
@@ -230,23 +230,23 @@ namespace Altzone.Scripts.Model.Poco.Player
             _characterList = newCustomCharacters;
             Debug.LogWarning(_characterList.Count + " : " + _characterList[0].ServerID);
 
-            if (CharacterSpecConfig.Instance.AllowTestCharacters)
+            if (CharacterSpecConfig.Instance.AllowTestCharacters && (TestCharacterList == null || TestCharacterList.Count == 0))
             {
-                // Getting locally saved test characters from data store
+                // Getting test characters from data store
                 List<CustomCharacter> testCharacters = null;
                 store.GetAllDefaultCharacterYield(characters => testCharacters = characters.Where(c => c.IsTestCharacter()).ToList());
 
-                // If there were locally saved test characters checking base characters are set and adding character to _testCharacterList
+                // Checking base characters are set and adding character to TestCharacterList
                 if (testCharacters != null && testCharacters.Count != 0)
                 {
-                    _testCharacterList = new();
+                    TestCharacterList = new();
                     foreach (CustomCharacter character in testCharacters)
                     {
-                        if (SetBaseCharacter(baseCharacters, character)) _testCharacterList.Add(character);
+                        if (SetBaseCharacter(baseCharacters, character)) TestCharacterList.Add(character);
                     }
                 }
             }
-            
+
             Patch();
         }
 
@@ -254,7 +254,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         internal void Patch()
         {
             List<CustomCharacter> charList = _characterList;
-            if (_testCharacterList != null && _testCharacterList.Count != 0) charList = charList.Concat(_testCharacterList).ToList();
+            if (TestCharacterList != null && TestCharacterList.Count != 0) charList = charList.Concat(TestCharacterList).ToList();
             CustomCharacters = new ReadOnlyCollection<CustomCharacter>(charList).ToList();
         }
 
