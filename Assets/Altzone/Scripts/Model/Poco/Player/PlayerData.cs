@@ -230,21 +230,26 @@ namespace Altzone.Scripts.Model.Poco.Player
             _characterList = newCustomCharacters;
             Debug.LogWarning(_characterList.Count + " : " + _characterList[0].ServerID);
 
-            if (CharacterSpecConfig.Instance.AllowTestCharacters && (TestCharacterList == null || TestCharacterList.Count == 0))
+            if (CharacterSpecConfig.Instance.AllowTestCharacters)
             {
-                // Getting test characters from data store
-                List<CustomCharacter> testCharacters = null;
-                store.GetAllDefaultCharacterYield(characters => testCharacters = characters.Where(c => c.IsTestCharacter()).ToList());
-
-                // Checking base characters are set and adding character to TestCharacterList
-                if (testCharacters != null && testCharacters.Count != 0)
+                // If test character list wasn't serialized getting them from data store
+                if (TestCharacterList == null || TestCharacterList.Count == 0)
                 {
-                    TestCharacterList = new();
-                    foreach (CustomCharacter character in testCharacters)
-                    {
-                        if (SetBaseCharacter(baseCharacters, character)) TestCharacterList.Add(character);
-                    }
+                    // Getting test characters from data store
+                    List<CustomCharacter> testCharacters = null;
+                    store.GetAllDefaultCharacterYield(characters => testCharacters = characters.Where(c => c.IsTestCharacter()).ToList());
+                    if (testCharacters != null && testCharacters.Count != 0) TestCharacterList = testCharacters;
                 }
+
+                // Checking base characters are set
+                List<CustomCharacter> newTestCharacters = new();
+
+                foreach (CustomCharacter character in TestCharacterList)
+                {
+                    if (SetBaseCharacter(baseCharacters, character)) newTestCharacters.Add(character);
+                }
+
+                TestCharacterList = newTestCharacters;
             }
 
             Patch();

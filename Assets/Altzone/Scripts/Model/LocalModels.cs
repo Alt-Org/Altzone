@@ -367,13 +367,9 @@ namespace Altzone.Scripts.Model
             {
                 storageData.Characters = CharacterStorage.Instance.CharacterList;
 
-                // Loading new custom characters if the list is for some reason null or 0 long or it doesn't have test characters
-                bool noTestCharacters = CharacterSpecConfig.Instance.AllowTestCharacters ? storageData.CustomCharacters.Where(c => c.IsTestCharacter()).ToList().Count == 0 : false;
-                if (storageData.CustomCharacters == null || storageData.CustomCharacters.Count == 0 || noTestCharacters)
-                {
-                    storageData.CustomCharacters = new();
-                    storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(storageData.Characters));
-                }
+                // Loading custom characters
+                storageData.CustomCharacters = new();
+                storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(storageData.Characters));
 
                 storageData.GameFurniture = new();
                 //storageData.GameFurniture.AddRange(CreateDefaultModels.CreateGameFurniture());
