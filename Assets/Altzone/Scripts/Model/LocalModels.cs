@@ -153,11 +153,6 @@ namespace Altzone.Scripts.Model
         {
             new WaitUntil(() => _saving = false);
             var playerData = _storageData.PlayerData.FirstOrDefault(x => x.UniqueIdentifier == uniqueIdentifier);
-            if (playerData != null)
-            {
-                // This storage is by no means a complete object model we want to serve.
-                if(playerData.CustomCharacters == null)playerData.BuildCharacterLists(_storageData.CustomCharacters);
-            }
             Debug.Log($"playerData {playerData}");
             callback(playerData);
         }

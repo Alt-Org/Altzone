@@ -148,12 +148,6 @@ namespace Altzone.Scripts.Model.Poco.Player
             Name = name;
             BackpackCapacity = backpackCapacity;
             UniqueIdentifier = uniqueIdentifier;
-
-            // Getting characters from data store if they are not initialized, fixes not having test characters when changing accounts
-            if (_characterList == null && _testCharacterList == null)
-            {
-                Storefront.Get().GetAllDefaultCharacterYield(characters => BuildCharacterLists(characters.ToList()));
-            }
         }
 
         public PlayerData(ServerPlayer player, bool limited = false)
@@ -222,31 +216,34 @@ namespace Altzone.Scripts.Model.Poco.Player
         {
             List<CustomCharacter> newCustomCharacters = new();
 
-            foreach(CustomCharacter character in customCharacters)
-            {
-                if(character.CharacterBase == null)
-                {
-                    var store = Storefront.Get();
-                    ReadOnlyCollection<BaseCharacter> allItems = null;
-                    store.GetAllBaseCharacterYield(result => allItems = result);
+            // Getting base characters from data store
+            DataStore store = Storefront.Get();
+            ReadOnlyCollection<BaseCharacter> baseCharacters = null;
+            store.GetAllBaseCharacterYield(result => baseCharacters = result);
 
-                    foreach (var item in allItems)
-                    {
-                        if (item.Id.Equals(character.Id)) character.CharacterBase = item;
-                    }
-                }
-                if(character.CharacterBase != null) newCustomCharacters.Add(character);
+            // Checking base character is set for custom characters
+            foreach (CustomCharacter character in customCharacters)
+            {
+                if (SetBaseCharacter(baseCharacters, character)) newCustomCharacters.Add(character);
             }
+
             _characterList = newCustomCharacters;
             Debug.LogWarning(_characterList.Count + " : " + _characterList[0].ServerID);
 
             if (CharacterSpecConfig.Instance.AllowTestCharacters)
             {
-                List<CustomCharacter> testCharacters = _characterList.Where(c => c.IsTestCharacter()).ToList();
+                // Getting locally saved test characters from data store
+                List<CustomCharacter> testCharacters = null;
+                store.GetAllDefaultCharacterYield(characters => testCharacters = characters.Where(c => c.IsTestCharacter()).ToList());
+
+                // If there were locally saved test characters checking base characters are set and adding character to _testCharacterList
                 if (testCharacters != null && testCharacters.Count != 0)
                 {
-                    _testCharacterList = testCharacters;
-                    _characterList.RemoveAll(c => c.IsTestCharacter());
+                    _testCharacterList = new();
+                    foreach (CustomCharacter character in testCharacters)
+                    {
+                        if (SetBaseCharacter(baseCharacters, character)) _testCharacterList.Add(character);
+                    }
                 }
             }
             
@@ -259,6 +256,20 @@ namespace Altzone.Scripts.Model.Poco.Player
             List<CustomCharacter> charList = _characterList;
             if (_testCharacterList != null && _testCharacterList.Count != 0) charList = charList.Concat(_testCharacterList).ToList();
             CustomCharacters = new ReadOnlyCollection<CustomCharacter>(charList).ToList();
+        }
+
+
+        private bool SetBaseCharacter(ReadOnlyCollection<BaseCharacter> baseCharacters, CustomCharacter character)
+        {
+            if (character.CharacterBase == null)
+            {
+                foreach (BaseCharacter item in baseCharacters)
+                {
+                    if (item.Id.Equals(character.Id)) character.CharacterBase = item;
+                }
+            }
+
+            return character.CharacterBase != null;
         }
 
 
