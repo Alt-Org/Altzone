@@ -1,4 +1,5 @@
 using UnityEngine;
+using BattleUiElementType = SettingsCarrier.BattleUiElementType;
 
 namespace Altzone.Scripts.BattleUiShared
 {
@@ -9,6 +10,7 @@ namespace Altzone.Scripts.BattleUiShared
     public class BattleUiMovableElement : MonoBehaviour
     {
         public RectTransform RectTransformComponent => _rectTransform;
+        public BattleUiElementType UiElementType { get; private set; }
 
         /// <summary>
         /// Set BattleUiMovableElementData to this Ui element.
@@ -23,6 +25,8 @@ namespace Altzone.Scripts.BattleUiShared
 
             _rectTransform.offsetMin = Vector2.zero;
             _rectTransform.offsetMax = Vector2.zero;
+
+            UiElementType = data.UiElementType;
         }
 
         /// <summary>
@@ -33,7 +37,7 @@ namespace Altzone.Scripts.BattleUiShared
         {
             if (_rectTransform != null)
             {
-                return new BattleUiMovableElementData(_rectTransform.anchorMin, _rectTransform.anchorMax);
+                return new BattleUiMovableElementData(UiElementType, _rectTransform.anchorMin, _rectTransform.anchorMax);
             }
             else
             {
