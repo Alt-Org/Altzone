@@ -543,6 +543,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 _statsUpdated = true;
                 _playerData.UpdateCustomCharacter(_customCharacter);
                 OnStatUpdated.Invoke(statType);
+                gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
             }
 
             return success;
@@ -605,6 +606,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 _statsUpdated = true;
                 _playerData.UpdateCustomCharacter(_customCharacter);
                 OnStatUpdated.Invoke(statType);
+                gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
             }
 
             return success;
