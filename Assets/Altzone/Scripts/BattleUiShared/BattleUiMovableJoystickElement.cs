@@ -9,7 +9,15 @@ namespace Altzone.Scripts.BattleUiShared
     [RequireComponent(typeof(RectTransform))]
     public class BattleUiMovableJoystickElement : BattleUiMovableElement
     {
+        [Header("Component references")]
+        [SerializeField] private Image _backgroundImage;
         [SerializeField] private Image _handleImage;
         [SerializeField] private RectTransform _handleRectTransform;
+        [Header("Sprite references")]
+        [SerializeField] private Sprite _moveIcon;
+        [SerializeField] private Sprite _moveBackground;
+        [SerializeField] private Sprite _rotateIcon;
+        [SerializeField] private Sprite _rotateBackground;
+        
     }
 }
