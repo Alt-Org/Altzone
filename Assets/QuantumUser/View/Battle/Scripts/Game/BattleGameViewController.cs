@@ -46,6 +46,7 @@ namespace Battle.View.Game
 
         public void UiInputOnCharacterSelected(int characterNumber)
         {
+            _playerInput.OnCharacterSelected(characterNumber);
             Debug.Log($"Character number {characterNumber} selected!");
         }
 
@@ -156,6 +157,7 @@ namespace Battle.View.Game
                 BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.GiveUpButton);
                 if (data != null) _uiController.GiveUpButtonHandler.MovableUiElement.SetData(data);
             }
+            */
 
             if (_uiController.PlayerInfoHandler != null)
             {
@@ -175,7 +177,6 @@ namespace Battle.View.Game
                     SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.TeammateInfo)
                 );
             }
-            */
 
             //} Initializing UI Handlers
         }
@@ -196,8 +197,8 @@ namespace Battle.View.Game
             if (_uiController.DiamondsHandler != null) _uiController.DiamondsHandler.SetShow(true);
             /* These UI elements aren't ready and shouldn't be shown yet
             if (_uiController.GiveUpButtonHandler != null) _uiController.GiveUpButtonHandler.SetShow(true);
-            if (_uiController.PlayerInfoHandler != null) _uiController.PlayerInfoHandler.SetShow(true);
             */
+            if (_uiController.PlayerInfoHandler != null) _uiController.PlayerInfoHandler.SetShow(true);
 
             // Load settings and set BattleCamera to show game scene with previously loaded settings
             BattleCamera.SetView(

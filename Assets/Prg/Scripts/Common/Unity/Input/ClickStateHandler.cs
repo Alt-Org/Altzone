@@ -35,10 +35,14 @@ namespace Prg.Scripts.Common
     {
         private static Vector2 s_rotationStartVector = Vector2.zero;
         private static float s_scrollWheelValue = 0f;
+        private static AttitudeSensor s_attitudeSensor;
 
         public static void Init()
         {
             EnhancedTouchSupport.Enable();
+            InputSystem.EnableDevice(AttitudeSensor.current);
+            s_attitudeSensor = AttitudeSensor.current;
+
         }
 
         /// <summary>
@@ -191,6 +195,17 @@ namespace Prg.Scripts.Common
             }
 
             return 0;
+        }
+
+        public static float GetGyroValue()
+        {
+            Quaternion deviceRotation = new Quaternion(0.5f, 0.5f, -0.5f, 0.5f) * s_attitudeSensor.attitude.ReadValue() * new Quaternion(0, 0, 1, 0);
+            Vector3 rot = (Quaternion.Inverse(Quaternion.FromToRotation(Quaternion.identity * Vector3.forward, deviceRotation * Vector3.forward)) * deviceRotation).eulerAngles;
+            if (rot.z > 180f)
+            {
+                rot = new Vector3(0, 0, rot.z - 360f);
+            }
+            return rot.z;
         }
     }
 }
