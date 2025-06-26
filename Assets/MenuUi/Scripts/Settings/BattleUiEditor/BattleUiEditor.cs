@@ -52,17 +52,28 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Slider _gridTransparencySlider;
         [SerializeField] private TMP_InputField _gridTransparencyInputField;
 
-        [Header("Movement input options")]
-        [SerializeField] private Toggle _movementPointAndClickToggle;
-        [SerializeField] private Toggle _movementSwipeToggle;
-        [SerializeField] private Toggle _movementJoystickToggle;
-
-        [Header("Rotation input options")]
-        [SerializeField] private Toggle _rotationSwipeToggle;
-        [SerializeField] private Toggle _rotationTwoFingerToggle;
-        [SerializeField] private Toggle _rotationScreenAreaToggle;
-        [SerializeField] private Toggle _rotationJoystickToggle;
-        [SerializeField] private Toggle _rotationGyroscopeToggle;
+        [Header("Input options")]
+        [SerializeField] private Button _inputSelectorLeftButton;
+        [SerializeField] private Button _inputSelectorRightButton;
+        [SerializeField] private TMP_Text _inputSelectorLabel;
+        [Space]
+        [SerializeField] private GameObject _swipeMinDistanceHolder;
+        [SerializeField] private Slider _swipeMinDistanceSlider;
+        [SerializeField] private TMP_InputField _swipeMinDistanceInputField;
+        [Space]
+        [SerializeField] private GameObject _swipeMaxDistanceHolder;
+        [SerializeField] private Slider _rotationSwipeMaxDistanceSlider;
+        [SerializeField] private TMP_InputField _rotationSwipeMaxDistanceInputField;
+        [Space]
+        [SerializeField] private GameObject _movementSwipeSensitivityHolder;
+        [SerializeField] private Slider _movementSwipeSensitivitySlider;
+        [SerializeField] private TMP_InputField _movementSwipeSensitivityInputField;
+        [Space]
+        [SerializeField] private Toggle _rotationGyroscopeOverrideToggle;
+        [Space]
+        [SerializeField] private GameObject _gyroscopeMinAngleHolder;
+        [SerializeField] private Slider _gyroscopeMinAngleSlider;
+        [SerializeField] private TMP_InputField _gyroscopeMinAngleInputField;
 
         [Header("Arena options")]
         [SerializeField] private Slider _arenaScaleSlider;
@@ -87,7 +98,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private GameObject _diamonds;
         [SerializeField] private GameObject _giveUpButton;
         [SerializeField] private GameObject _joystick;
-        
+
         public static float ScreenSpaceRatio => Screen.width / EditorRect.width;
 
         public static Rect EditorRect;
@@ -175,6 +186,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             OnUiElementSelected(null);
         }
 
+        private enum InputCombinationType
+        {
+            SwipeTwoFinger,
+            PointAndClickSwipe,
+            Joysticks,
+        }
+
         private const string PlayerText = "Min‰";
         private const string TeammateText = "Tiimikaveri";
 
@@ -217,6 +235,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private bool _unsavedChanges = false;
 
         private BattleUiEditingComponent _currentlySelectedEditingComponent;
+        private InputCombinationType _currentInputCombinationType;
 
         private void Awake()
         {
@@ -292,70 +311,53 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 PlayerPrefs.SetInt(GridTransparencyKey, (int)_gridTransparencySlider.value);
             });
 
-            // Movement input toggles listeners
-            _movementPointAndClickToggle.onValueChanged.AddListener((value) => {
-                if (value) SettingsCarrier.Instance.BattleMovementInput = BattleMovementInputType.PointAndClick;
-                if (_instantiatedMoveJoystick != null) _instantiatedMoveJoystick.gameObject.SetActive(false);
+            // Input options listeners
+            _inputSelectorLeftButton.onClick.AddListener(() => PreviousInputCombination());
+            _inputSelectorRightButton.onClick.AddListener(() => NextInputCombination());
+            _rotationGyroscopeOverrideToggle.onValueChanged.AddListener((value) => { UpdateInputSettings(); });
+
+            _swipeMinDistanceSlider.onValueChanged.AddListener((value) =>
+            {
+                UpdateInputFieldText(value, _swipeMinDistanceInputField);
+                SettingsCarrier.Instance.BattleSwipeMinDistance = value;
+            });
+            _swipeMinDistanceInputField.onValueChanged.AddListener((value) =>
+            {
+                VerifyAndUpdateSliderValue(_swipeMinDistanceInputField, _swipeMinDistanceSlider);
+                SettingsCarrier.Instance.BattleSwipeMinDistance = _swipeMinDistanceSlider.value;
             });
 
-            _movementSwipeToggle.onValueChanged.AddListener((value) =>
+            _rotationSwipeMaxDistanceSlider.onValueChanged.AddListener((value) =>
             {
-                if (value) SettingsCarrier.Instance.BattleMovementInput = BattleMovementInputType.Swipe;
-                if (_instantiatedMoveJoystick != null) _instantiatedMoveJoystick.gameObject.SetActive(false);
+                UpdateInputFieldText(value, _rotationSwipeMaxDistanceInputField);
+                SettingsCarrier.Instance.BattleSwipeMaxDistance = value;
+            });
+            _rotationSwipeMaxDistanceInputField.onValueChanged.AddListener((value) =>
+            {
+                VerifyAndUpdateSliderValue(_rotationSwipeMaxDistanceInputField, _rotationSwipeMaxDistanceSlider);
+                SettingsCarrier.Instance.BattleSwipeMaxDistance = _rotationSwipeMaxDistanceSlider.value;
             });
 
-            _movementJoystickToggle.onValueChanged.AddListener((value) =>
+            _movementSwipeSensitivitySlider.onValueChanged.AddListener((value) =>
             {
-                if (value) SettingsCarrier.Instance.BattleMovementInput = BattleMovementInputType.Joystick;
-                if (_instantiatedMoveJoystick == null)
-                {
-                    _instantiatedMoveJoystick = InstantiateBattleUiElement(BattleUiElementType.MoveJoystick).GetComponent<BattleUiMovableElement>();
-                    SetDataToUiElement(_instantiatedMoveJoystick);
-                }
-                else
-                {
-                    _instantiatedMoveJoystick.gameObject.SetActive(true);
-                }
+                UpdateInputFieldText(value, _movementSwipeSensitivityInputField);
+                SettingsCarrier.Instance.BattleSwipeSensitivity = value;
+            });
+            _movementSwipeSensitivityInputField.onValueChanged.AddListener((value) =>
+            {
+                VerifyAndUpdateSliderValue(_movementSwipeSensitivityInputField, _movementSwipeSensitivitySlider);
+                SettingsCarrier.Instance.BattleSwipeSensitivity = _movementSwipeSensitivitySlider.value;
             });
 
-            // Rotation input toggles listeners
-            _rotationSwipeToggle.onValueChanged.AddListener((value) =>
+            _gyroscopeMinAngleSlider.onValueChanged.AddListener((value) =>
             {
-                if (value) SettingsCarrier.Instance.BattleRotationInput = BattleRotationInputType.Swipe;
-                if (_instantiatedRotateJoystick != null) _instantiatedRotateJoystick.gameObject.SetActive(false);
+                UpdateInputFieldText(value, _gyroscopeMinAngleInputField);
+                SettingsCarrier.Instance.BattleGyroMinAngle = value;
             });
-
-            _rotationTwoFingerToggle.onValueChanged.AddListener((value) =>
+            _gyroscopeMinAngleInputField.onValueChanged.AddListener((value) =>
             {
-                if (value) SettingsCarrier.Instance.BattleRotationInput = BattleRotationInputType.TwoFinger;
-                if (_instantiatedRotateJoystick != null) _instantiatedRotateJoystick.gameObject.SetActive(false);
-            });
-
-            _rotationJoystickToggle.onValueChanged.AddListener((value) =>
-            {
-                if (value) SettingsCarrier.Instance.BattleRotationInput = BattleRotationInputType.Joystick;
-
-                if (_instantiatedRotateJoystick == null)
-                {
-                    if (_instantiatedRotateJoystick == null) _instantiatedRotateJoystick = InstantiateBattleUiElement(BattleUiElementType.RotateJoystick).GetComponent<BattleUiMovableElement>();
-                    SetDataToUiElement(_instantiatedRotateJoystick);
-                }
-                else
-                {
-                    _instantiatedRotateJoystick.gameObject.SetActive(true);
-                }
-            });
-
-            _rotationGyroscopeToggle.onValueChanged.AddListener((value) =>
-            {
-                if (value) SettingsCarrier.Instance.BattleRotationInput = BattleRotationInputType.Gyroscope;
-                if (_instantiatedRotateJoystick != null) _instantiatedRotateJoystick.gameObject.SetActive(false);
-            });
-
-            _rotationScreenAreaToggle.onValueChanged.AddListener((value) =>
-            {
-                if (value) SettingsCarrier.Instance.BattleRotationInput = BattleRotationInputType.ScreenArea;
-                if (_instantiatedRotateJoystick != null) _instantiatedRotateJoystick.gameObject.SetActive(false);
+                VerifyAndUpdateSliderValue(_gyroscopeMinAngleInputField, _gyroscopeMinAngleSlider);
+                SettingsCarrier.Instance.BattleGyroMinAngle = _gyroscopeMinAngleSlider.value;
             });
 
             // Arena scale listeners
@@ -418,44 +420,40 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _grid.SetColumnLines((int)_gridColumnsSlider.value);
             _grid.SetShow(_showGridToggle.isOn);
 
-            // Loading saved movement settings. Since the toggles are part of a toggle group the other toggles will update
-            Toggle isOnToggle = null;
+            // Loading saved input settings
+            _rotationGyroscopeOverrideToggle.SetIsOnWithoutNotify(SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Gyroscope);
+
             switch (SettingsCarrier.Instance.BattleMovementInput)
             {
                 case BattleMovementInputType.PointAndClick:
-                    isOnToggle = _movementPointAndClickToggle;
+                    _currentInputCombinationType = InputCombinationType.PointAndClickSwipe;
                     break;
                 case BattleMovementInputType.Swipe:
-                    isOnToggle = _movementSwipeToggle;
+                    _currentInputCombinationType = InputCombinationType.SwipeTwoFinger;
                     break;
-                case BattleMovementInputType.Joystick: // For joystick we need to instantiate it so setting the value with notify
-                    _movementJoystickToggle.isOn = true;
-                    break;
-            }
-            if (isOnToggle != null) isOnToggle.SetIsOnWithoutNotify(true);
-
-            // Loading saved rotation settings
-            isOnToggle = null;
-            switch (SettingsCarrier.Instance.BattleRotationInput)
-            {
-                case BattleRotationInputType.Swipe:
-                    isOnToggle = _rotationSwipeToggle;
-                    break;
-                case BattleRotationInputType.TwoFinger:
-                    isOnToggle = _rotationTwoFingerToggle;
-                    break;
-                case BattleRotationInputType.Joystick: // For joystick we need to instantiate it so setting the value with notify
-                    _rotationJoystickToggle.isOn = true;
-                    break;
-                case BattleRotationInputType.Gyroscope:
-                    isOnToggle = _rotationGyroscopeToggle;
-                    break;
-                case BattleRotationInputType.ScreenArea:
-                    isOnToggle = _rotationScreenAreaToggle;
+                case BattleMovementInputType.Joystick:
+                    _currentInputCombinationType = InputCombinationType.Joysticks;
                     break;
             }
-            if (isOnToggle != null) isOnToggle.SetIsOnWithoutNotify(true);
 
+            UpdateInputSettings();
+
+            float swipeMinDistance = SettingsCarrier.Instance.BattleSwipeMinDistance;
+            _swipeMinDistanceSlider.value = swipeMinDistance;
+            UpdateInputFieldText(swipeMinDistance, _swipeMinDistanceInputField);
+
+            float swipeMaxDistance = SettingsCarrier.Instance.BattleSwipeMaxDistance;
+            _rotationSwipeMaxDistanceSlider.value = swipeMaxDistance;
+            UpdateInputFieldText(swipeMaxDistance, _rotationSwipeMaxDistanceInputField);
+
+            float swipeSensitivity = SettingsCarrier.Instance.BattleSwipeSensitivity;
+            _movementSwipeSensitivitySlider.value = swipeSensitivity;
+            UpdateInputFieldText(swipeSensitivity, _movementSwipeSensitivityInputField);
+
+            float gyroMinAngle = SettingsCarrier.Instance.BattleGyroMinAngle;
+            _gyroscopeMinAngleSlider.value = gyroMinAngle;
+            UpdateInputFieldText(gyroMinAngle, _gyroscopeMinAngleInputField);
+            
             // Loading saved arena settings. Setting slider vlaue will invoke the listeners added in Awake so the input fields will be updated as well.
             _arenaScaleSlider.value = SettingsCarrier.Instance.BattleArenaScale;
             _arenaPosXSlider.value = SettingsCarrier.Instance.BattleArenaPosX;
@@ -501,17 +499,22 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _incrementalScalingToggle.onValueChanged.RemoveAllListeners();
             _alignToGridToggle.onValueChanged.RemoveAllListeners();
 
-            // Removing movement input listeners
-            _movementPointAndClickToggle.onValueChanged.RemoveAllListeners();
-            _movementJoystickToggle.onValueChanged.RemoveAllListeners();
-            _movementSwipeToggle.onValueChanged.RemoveAllListeners();
+            // Removing input options listeners
+            _inputSelectorLeftButton.onClick.RemoveAllListeners();
+            _inputSelectorRightButton.onClick.RemoveAllListeners();
+            _rotationGyroscopeOverrideToggle.onValueChanged.RemoveAllListeners();
 
-            // Removing rotation input listeners
-            _rotationSwipeToggle.onValueChanged.RemoveAllListeners();
-            _rotationTwoFingerToggle.onValueChanged.RemoveAllListeners();
-            _rotationJoystickToggle.onValueChanged.RemoveAllListeners();
-            _rotationGyroscopeToggle.onValueChanged.RemoveAllListeners();
-            _rotationScreenAreaToggle.onValueChanged.RemoveAllListeners();
+            _swipeMinDistanceSlider.onValueChanged.RemoveAllListeners();
+            _swipeMinDistanceInputField.onValueChanged.RemoveAllListeners();
+
+            _rotationSwipeMaxDistanceSlider.onValueChanged.RemoveAllListeners();
+            _rotationSwipeMaxDistanceInputField.onValueChanged.RemoveAllListeners();
+
+            _movementSwipeSensitivitySlider.onValueChanged.RemoveAllListeners();
+            _movementSwipeSensitivityInputField.onValueChanged.RemoveAllListeners();
+
+            _gyroscopeMinAngleSlider.onValueChanged.RemoveAllListeners();
+            _gyroscopeMinAngleInputField.onValueChanged.RemoveAllListeners();
 
             // Removing arena scale listeners
             _arenaScaleSlider.onValueChanged.RemoveAllListeners();
@@ -711,6 +714,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Instantiating gameobjects for ui element and editing component
             GameObject uiElementGameObject = Instantiate(uiElementPrefab, _uiElementsHolder);
             GameObject editingComponentGameObject = Instantiate(_editingComponent, uiElementGameObject.transform);
+
+            uiElementGameObject.SetActive(true);
+            editingComponentGameObject.SetActive(true);
 
             // Getting editing component script from the editing component game object
             BattleUiEditingComponent editingComponent = editingComponentGameObject.GetComponent<BattleUiEditingComponent>();
@@ -1117,7 +1123,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void UpdateInputFieldText(float value, TMP_InputField field)
         {
-            field.SetTextWithoutNotify(value.ToString());
+            field.SetTextWithoutNotify(value.ToString("0.00"));
         }
 
         private void VerifyAndUpdateSliderValue(TMP_InputField field, Slider slider)
@@ -1125,12 +1131,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             if (int.TryParse(field.text, out int value))
             {
                 int clampedValue = Math.Clamp(value, (int)slider.minValue, (int)slider.maxValue);
-                field.SetTextWithoutNotify(clampedValue.ToString());
+                field.SetTextWithoutNotify(clampedValue.ToString("0.00"));
                 slider.SetValueWithoutNotify(clampedValue);
             }
             else
             {
-                field.SetTextWithoutNotify(slider.minValue.ToString());
+                field.SetTextWithoutNotify(slider.minValue.ToString("0.00"));
                 slider.SetValueWithoutNotify(slider.minValue);
             }
         }
@@ -1188,6 +1194,118 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             _arenaImage.offsetMin = Vector2.zero;
             _arenaImage.offsetMax = Vector2.zero;
+        }
+
+        private void NextInputCombination()
+        {
+            if ((int)_currentInputCombinationType < (int)InputCombinationType.Joysticks) _currentInputCombinationType++;
+            else _currentInputCombinationType = 0;
+
+            UpdateInputSettings();
+        }
+
+        private void PreviousInputCombination()
+        {
+            if ((int)_currentInputCombinationType > 0) _currentInputCombinationType--;
+            else _currentInputCombinationType = InputCombinationType.Joysticks;
+
+            UpdateInputSettings();
+        }
+
+        private void UpdateInputSettings()
+        {
+            // Initializing variables
+            BattleMovementInputType movementType;
+            BattleRotationInputType rotationType;
+
+            string text;
+
+            bool showSwipeMinDistance;
+            bool showSwipeMaxDistance;
+            bool showSwipeSensitivity;
+
+            bool useGyroscope = _rotationGyroscopeOverrideToggle.isOn;
+
+            // Setting values to variables based on current input combination
+            switch (_currentInputCombinationType)
+            {
+                case InputCombinationType.SwipeTwoFinger:
+                    movementType = BattleMovementInputType.Swipe;
+                    rotationType = BattleRotationInputType.TwoFinger;
+
+                    text = useGyroscope ? "Liiku pyyhk‰isem‰ll‰ &\nk‰‰nn‰ puhelinta k‰‰nt‰m‰ll‰" : "Liiku pyyhk‰isem‰ll‰ &\nk‰‰nn‰ kahdella sormella";
+
+                    showSwipeMinDistance = true;
+                    showSwipeMaxDistance = false;
+                    showSwipeSensitivity = true;
+                    break;
+
+                case InputCombinationType.PointAndClickSwipe:
+                    movementType = BattleMovementInputType.PointAndClick;
+                    rotationType = BattleRotationInputType.Swipe;
+
+                    text = useGyroscope ? "Liiku painamalla &\nk‰‰nn‰ puhelinta k‰‰nt‰m‰ll‰" : "Liiku painamalla &\nk‰‰nn‰ pyyhk‰isem‰ll‰";
+
+                    showSwipeMinDistance = !useGyroscope;
+                    showSwipeMaxDistance = !useGyroscope;
+                    showSwipeSensitivity = false;
+                    break;
+
+                case InputCombinationType.Joysticks:
+                    movementType = BattleMovementInputType.Joystick;
+                    rotationType = BattleRotationInputType.Joystick;
+
+                    text = useGyroscope ? "Liiku ohjausympyr‰ll‰ &\nk‰‰nn‰ puhelinta k‰‰nt‰m‰ll‰" : "Liiku & k‰‰nn‰ ohjausympyrˆill‰.";
+
+                    showSwipeMinDistance = false;
+                    showSwipeMaxDistance = false;
+                    showSwipeSensitivity = false;
+
+                    // Instantianting the joysticks if they are not yet instantiated
+                    if (_instantiatedMoveJoystick == null)
+                    {
+                        _instantiatedMoveJoystick = InstantiateBattleUiElement(BattleUiElementType.MoveJoystick).GetComponent<BattleUiMovableElement>();
+                        SetDataToUiElement(_instantiatedMoveJoystick);
+                    }
+
+                    if (_instantiatedRotateJoystick == null)
+                    {
+                        _instantiatedRotateJoystick = InstantiateBattleUiElement(BattleUiElementType.RotateJoystick).GetComponent<BattleUiMovableElement>();
+                        SetDataToUiElement(_instantiatedRotateJoystick);
+                    }
+                    break;
+
+                default:
+                    movementType = SettingsCarrier.BattleMovementInputDefault;
+                    rotationType = SettingsCarrier.BattleRotationInputDefault;
+
+                    text = "Virhe, t‰t‰ vaihtoehtoa ei lˆydy";
+
+                    showSwipeMinDistance = false;
+                    showSwipeMaxDistance = false;
+                    showSwipeSensitivity = false;
+                    break;
+            }
+
+            // Overriding rotation with gyroscope if it's enabled
+            if (useGyroscope) rotationType = BattleRotationInputType.Gyroscope;
+
+            // Setting input values to settings carrier
+            SettingsCarrier.Instance.BattleMovementInput = movementType;
+            SettingsCarrier.Instance.BattleRotationInput = rotationType;
+
+            // Setting text to the input selector label
+            _inputSelectorLabel.text = text;
+
+            // Setting visibility for the swipe and gyroscope additional options
+            _swipeMinDistanceHolder.SetActive(showSwipeMinDistance);
+            _swipeMaxDistanceHolder.SetActive(showSwipeMaxDistance);
+            _movementSwipeSensitivityHolder.SetActive(showSwipeSensitivity);
+            _gyroscopeMinAngleHolder.SetActive(useGyroscope);
+
+            // Setting visibility to joysticks
+            if (_instantiatedMoveJoystick != null) _instantiatedMoveJoystick.gameObject.SetActive(movementType == BattleMovementInputType.Joystick);
+            if (_instantiatedRotateJoystick != null) _instantiatedRotateJoystick.gameObject.SetActive(rotationType == BattleRotationInputType.Joystick);
         }
     }
 }
