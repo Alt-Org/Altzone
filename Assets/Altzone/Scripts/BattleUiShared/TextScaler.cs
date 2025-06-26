@@ -23,6 +23,58 @@ namespace Altzone.Scripts.BattleUiShared
         [Header("Text component references")]
         [SerializeField] private TextMeshProUGUI[] _textArray;
 
+        public float RelativePercentageTarget
+        {
+            get => _relativePercentageTarget;
+            set
+            {
+                value = Mathf.Clamp01(value);
+                if (_relativePercentageTarget == value) return;
+
+                _relativePercentageTarget = value;
+                _fontSettingsChanged = true;
+            }
+        }
+
+        public float RelativePercentageMax
+        {
+            get => _relativePercentageMax;
+            set
+            {
+                value = Mathf.Clamp01(value);
+                if (_relativePercentageMax == value) return;
+
+                _relativePercentageMax = value;
+                _fontSettingsChanged = true;
+            }
+        }
+
+        public float FontSizeMin
+        {
+            get => _fontSizeMin;
+            set
+            {
+                value = Mathf.Clamp(value, 0, float.PositiveInfinity);
+                if (_fontSizeMin == value) return;
+
+                _fontSizeMin = value;
+                _fontSettingsChanged = true;
+            }
+        }
+
+        public float FontSizeMax
+        {
+            get => _fontSizeMax;
+            set
+            {
+                value = Mathf.Clamp(value, 0, float.PositiveInfinity);
+                if (_fontSizeMax == value) return;
+
+                _fontSizeMax = value;
+                _fontSettingsChanged = true;
+            }
+        }
+
         private RectTransform[] _rectTransformArray;
 
         private Vector2[] _oldRectSizeArray;
@@ -31,6 +83,8 @@ namespace Altzone.Scripts.BattleUiShared
         private Vector2[] _textBoxDefaultAnchorMinArray;
         private Vector2[] _textBoxDefaultAnchorMaxArray;
 
+        private bool _fontSettingsChanged;
+
         private void Awake()
         {
             _rectTransformArray = new RectTransform[_textArray.Length];
@@ -38,6 +92,7 @@ namespace Altzone.Scripts.BattleUiShared
             _oldTextArray = new string[_textArray.Length];
             _textBoxDefaultAnchorMinArray = new Vector2[_textArray.Length];
             _textBoxDefaultAnchorMaxArray = new Vector2[_textArray.Length];
+            _fontSettingsChanged = false;
 
             for (int i = 0; i < _textArray.Length; i++)
             {
@@ -62,20 +117,27 @@ namespace Altzone.Scripts.BattleUiShared
 
         private void Update()
         {
+            bool textBoxSizeChanged;
+            bool changeFontSize;
+
             for (int i = 0; i < _textArray.Length; i++)
             {
                 if (_rectTransformArray[i] == null) return;
-                bool textBoxSizeChanged = _rectTransformArray[i].rect.size != _oldRectSizeArray[i];
+
+                textBoxSizeChanged = _rectTransformArray[i].rect.size != _oldRectSizeArray[i];
+                changeFontSize = _fontSettingsChanged || textBoxSizeChanged;
 
                 // If text box size changed and the text box scaling variables are set, scale text box
                 if (textBoxSizeChanged && _textBoxAspectRatio != 0 && _holderRectTransform != null) ScaleTextBox(i);
 
-                // Recalculating font size if text box size changed
-                if (textBoxSizeChanged) RecalculateFontSize(i);
+                // Recalculating font size if font settings changed or text box size changed
+                if (changeFontSize) RecalculateFontSize(i);
 
-                // If the text changed or text box size changed checking for text clipping
-                if (_oldTextArray[i] != _textArray[i].text || textBoxSizeChanged) CheckTextClipping(i);
+                // If the font settings, text or text box size changed checking for text clipping
+                if (changeFontSize || _oldTextArray[i] != _textArray[i].text) CheckTextClipping(i);
             }
+
+            _fontSettingsChanged = false;
         }
 
         private void RecalculateFontSize(int index)
