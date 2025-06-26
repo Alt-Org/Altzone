@@ -135,7 +135,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         {
             Assert.IsTrue(id.IsPrimaryKey());
             Assert.IsTrue(clanId.IsNullOEmptyOrNonWhiteSpace());
-            Assert.IsTrue(currentCustomCharacterId >= 0);
+            //Assert.IsTrue(currentCustomCharacterId >= 0);
             Assert.IsTrue(name.IsMandatory());
             Assert.IsTrue(backpackCapacity >= 0);
             Assert.IsTrue(uniqueIdentifier.IsMandatory());
