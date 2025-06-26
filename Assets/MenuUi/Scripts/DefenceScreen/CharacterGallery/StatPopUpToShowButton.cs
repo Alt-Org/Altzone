@@ -2,25 +2,20 @@ using Altzone.Scripts.Model.Poco.Game;
 using MenuUi.Scripts.DefenceScreen.CharacterStatsWindow;
 using UnityEngine.UI;
 using UnityEngine;
+using MenuUi.Scripts.Signals;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
     [RequireComponent(typeof(Button))]
     public class StatPopUpToShowButton : MonoBehaviour
     {
-        private CharacterID CharacterStatWindowToShowValue;
-
-        private StatsWindowController _controller;
+        [SerializeField] SlotBase _characterSlot;
         private Button _button;
 
-        private void OnEnable()
+        private void Awake()
         {
-            if (_controller == null) _controller = FindObjectOfType<StatsWindowController>(true);
-            if (_button == null)
-            {
-                _button = GetComponent<Button>();
-                _button.onClick.AddListener(OnButtonClick);
-            }
+            _button = GetComponent<Button>();
+            _button.onClick.AddListener(OnButtonClick);
         }
 
         private void OnDestroy()
@@ -30,13 +25,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
         protected void OnButtonClick()
         {
-            IGalleryCharacterData data = GetComponent<IGalleryCharacterData>();
-
-            CharacterStatWindowToShowValue = data.Id;
-
-            SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow = CharacterStatWindowToShowValue;
-
-            _controller.OpenPopup();
+            SignalBus.OnDefenceGalleryStatPopupRequestedSignal(_characterSlot.Id);
         }
     }
 }

@@ -358,13 +358,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             OnUiElementSelected(null);
             _optionsDropdownContents.SetActive(true);
-            _optionsDropdownButtonImage.transform.localEulerAngles = new Vector3(0, 0, -90);
         }
 
         private void CloseOptionsDropdown()
         {
             _optionsDropdownContents.SetActive(false);
-            _optionsDropdownButtonImage.transform.localEulerAngles = Vector3.zero;
         }
 
         private IEnumerator ShowSaveResetPopup(string message, Action<bool?> callback)

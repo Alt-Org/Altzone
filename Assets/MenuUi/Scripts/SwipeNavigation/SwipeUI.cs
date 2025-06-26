@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using MenuUi.Scripts.Window;
+using Altzone.Scripts.Window;
 using Prg.Scripts.Common;
 using UnityEngine;
 using UnityEngine.EventSystems;

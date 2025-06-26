@@ -104,7 +104,7 @@ namespace Altzone.Scripts.ModelV2.Internal
             var uniqueNames = new HashSet<string>();
             foreach (var character in instance._characters)
             {
-                if (character.ClassType == CharacterClassID.None)
+                if (character.ClassType == CharacterClassID.None && character.CharacterId != CharacterID.Test)
                 {
                     Debug.LogError($"invalid ClassType {character}", character);
                     continue;
