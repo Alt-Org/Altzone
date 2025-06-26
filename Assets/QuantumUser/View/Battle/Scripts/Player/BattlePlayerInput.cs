@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 using Quantum;
 using Input = Quantum.Input;
@@ -11,7 +12,6 @@ using Battle.View.Game;
 
 using MovementInputType = SettingsCarrier.BattleMovementInputType;
 using RotationInputType = SettingsCarrier.BattleRotationInputType;
-using TMPro;
 
 namespace Battle.View.Player
 {
@@ -49,6 +49,8 @@ namespace Battle.View.Player
         private float _swipeSensitivity = 1.0f;
         private float _gyroMinAngle = 10f;
 
+        private AttitudeSensor _attitudeSensor;
+
         private void OnEnable()
         {
             _movementInputType = SettingsCarrier.Instance.BattleMovementInput;
@@ -57,6 +59,9 @@ namespace Battle.View.Player
             _swipeMaxDistance  = SettingsCarrier.Instance.BattleSwipeMaxDistance;
             _swipeSensitivity  = SettingsCarrier.Instance.BattleSwipeSensitivity;
             _gyroMinAngle      = SettingsCarrier.Instance.BattleGyroMinAngle;
+
+            InputSystem.EnableDevice(AttitudeSensor.current);
+            _attitudeSensor = AttitudeSensor.current;
 
             QuantumCallback.Subscribe(this, (CallbackPollInput callback) => PollInput(callback));
         }
@@ -178,11 +183,11 @@ namespace Battle.View.Player
                     break;
 
                 case RotationInputType.Gyroscope:
-                    float gyroValue = ClickStateHandler.GetGyroValue();
+                    float gyroValue = GetGyroValue();
                     if (Mathf.Abs(gyroValue) >= _gyroMinAngle)
                     {
                         rotationInput = true;
-                        rotationValue = FP.FromFloat_UNSAFE(-(Mathf.Clamp(gyroValue/75, -1, 1)));
+                        rotationValue = FP.FromFloat_UNSAFE(-(Mathf.Clamp(gyroValue/75f, -1, 1)));
                     }
                     break;
             }
@@ -199,6 +204,17 @@ namespace Battle.View.Player
 
             callback.SetInput(i, DeterministicInputFlags.Repeatable);
             _previousTime = Time.time;
+        }
+
+        public float GetGyroValue()
+        {
+            Quaternion deviceRotation = new Quaternion(0.5f, 0.5f, -0.5f, 0.5f) * _attitudeSensor.attitude.ReadValue() * new Quaternion(0, 0, 1, 0);
+            Vector3 rot = (Quaternion.Inverse(Quaternion.FromToRotation(Quaternion.identity * Vector3.forward, deviceRotation * Vector3.forward)) * deviceRotation).eulerAngles;
+            if (rot.z > 180f)
+            {
+                rot = new Vector3(0, 0, rot.z - 360f);
+            }
+            return rot.z;
         }
     }
 }
