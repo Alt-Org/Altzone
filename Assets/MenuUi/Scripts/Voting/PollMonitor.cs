@@ -12,8 +12,8 @@ public class PollMonitor : MonoBehaviour // Handles monitoring the polls and exp
     {
         while (true)
         {
-            PollManager.CheckAndExpiredPolls();  
-            yield return new WaitForSeconds(5f); 
+            PollManager.CheckAndExpiredPolls();  // Correctly reference the static method from PollManager
+            yield return new WaitForSeconds(5f); // Check every 5 seconds
         }
     }
 }

@@ -144,7 +144,15 @@ public static class PollManager
 
             if (pollType == FurniturePollType.Selling)
             {
-                ClanFurniture clanFurniture = clan.Inventory.Furniture .First(furn => furn.GameFurnitureName == furniturePollData.Furniture.Name && furn.InVoting);
+                ClanFurniture clanFurniture = clan.Inventory.Furniture
+                     .FirstOrDefault(furn => furn.GameFurnitureName == furniturePollData.Furniture.Name && furn.InVoting);
+
+                if (clanFurniture == null)
+                {
+                    Debug.LogWarning($"Furniture not found for poll: {furniturePollData.Furniture.Name}");
+                    return;
+                }
+
 
                 clanFurniture.VotedToSell = yesVotesWon;
                 clanFurniture.InVoting = false;
@@ -159,7 +167,7 @@ public static class PollManager
         SaveClanData();
 
         VotingActions.ReloadPollList?.Invoke();
-        PastPollManager.OnPastPollsChanged?.Invoke(); 
+        PastPollManager.OnPastPollsChanged?.Invoke();
     }
 
     public static void CheckAndExpiredPolls()
