@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 100
   CharacterId: 100
-  IsApproved: 0
+  IsApproved: 1
   Name: TestiTunnoton
   ClassType: 100
   CharacterDescription: 
@@ -35,8 +35,9 @@ MonoBehaviour:
   Defence:
     Level: 12
     Coefficient: 1
-  GalleryImage: {fileID: 0}
-  GalleryHeadImage: {fileID: 0}
+  GalleryImage: {fileID: 49914648, guid: 0b8c7df743389e04b9b2394020e2274c, type: 3}
+  GalleryHeadImage: {fileID: 3323784572005849981, guid: 6b7f8f6787aebdc4da339e49694e1f45,
+    type: 3}
   BattleEntityPrototype:
     Id:
       Value: 0
