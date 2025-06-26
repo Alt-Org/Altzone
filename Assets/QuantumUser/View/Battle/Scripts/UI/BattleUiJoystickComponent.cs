@@ -21,7 +21,11 @@ namespace Battle.View.UI
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            _joystickRadius = Mathf.Min(_rectTransform.rect.width, _rectTransform.rect.height) * 0.5f - JoystickRadiusOffset;
+            // Calculating joystick radius. If y axis is locked the joystick is rectangular and we take background radius from the width instead of which side is smaller.
+            float handleOffset = _handleRectTransform.rect.width * 0.5f;
+            float backgroundRadius = (LockYAxis ? _rectTransform.rect.width : Mathf.Min(_rectTransform.rect.width, _rectTransform.rect.height)) * 0.5f;
+            _joystickRadius = backgroundRadius - handleOffset;
+
             HandleDrag(eventData.position);
         }
 
@@ -38,7 +42,6 @@ namespace Battle.View.UI
             else OnJoystickInput(Vector2.zero);
         }
 
-        private const int JoystickRadiusOffset = 10;
         private float _joystickRadius;
         private RectTransform _rectTransform;
 
