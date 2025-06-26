@@ -161,9 +161,10 @@ namespace Altzone.Scripts.Model
         {
             _saving = true;
             var index = _storageData.PlayerData.FindIndex(x => x.Id == playerData.Id);
-            if (index >= 0)
+            if (index >= 0 && _storageData.PlayerData.Count > index)
             {
-                _storageData.PlayerData[0] = playerData;
+                _storageData.PlayerData[index] = playerData;
+                
             }
             else
             {
@@ -171,8 +172,7 @@ namespace Altzone.Scripts.Model
                 {
                     playerData.Id = CreateDefaultModels.FakeMongoDbId();
                 }
-                if(_storageData.PlayerData.Count == 0)_storageData.PlayerData.Add(playerData);
-                else _storageData.PlayerData[0] = playerData;
+                _storageData.PlayerData.Add(playerData);
             }
             Debug.Log($"playerData {playerData}");
             SaveStorage(_storageData, _storagePath);
