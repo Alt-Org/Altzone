@@ -589,11 +589,17 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             BattleUiMovableElementData teammateInfoData = _instantiatedTeammateInfo.GetData();
             if (!IsSavedDataSimilar(BattleUiElementType.TeammateInfo)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.TeammateInfo, teammateInfoData);
 
-            BattleUiMovableElementData moveJoystickData = _instantiatedMoveJoystick.GetData();
-            if (!IsSavedDataSimilar(BattleUiElementType.MoveJoystick)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.MoveJoystick, moveJoystickData);
+            if (_instantiatedMoveJoystick != null) // Joysticks might not be initialized so doing a null check
+            {
+                BattleUiMovableElementData moveJoystickData = _instantiatedMoveJoystick.GetData();
+                if (!IsSavedDataSimilar(BattleUiElementType.MoveJoystick)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.MoveJoystick, moveJoystickData);
+            }
 
-            BattleUiMovableElementData rotateJoystickData = _instantiatedRotateJoystick.GetData();
-            if (!IsSavedDataSimilar(BattleUiElementType.RotateJoystick)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.RotateJoystick, rotateJoystickData);
+            if (_instantiatedRotateJoystick != null)
+            {
+                BattleUiMovableElementData rotateJoystickData = _instantiatedRotateJoystick.GetData();
+                if (!IsSavedDataSimilar(BattleUiElementType.RotateJoystick)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.RotateJoystick, rotateJoystickData);
+            }
 
             _unsavedChanges = false;
             PopupSignalBus.OnChangePopupInfoSignal("Muutokset on tallennettu.");
@@ -945,6 +951,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             bool isFlippedHorizontally = false;
             bool isFlippedVertically = false;
 
+            float handleSize = 0;
+
             // Rect variable so that we can do aspect ratio calculations
             Rect movableUiElementRect = Rect.zero;
             float aspectRatio = 0f;
@@ -1055,7 +1063,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             (anchorMin, anchorMax) = CalculateAnchors(size, pos);
 
-            return new(anchorMin, anchorMax, orientation, isFlippedHorizontally, isFlippedVertically);
+            return new(uiElementType, anchorMin, anchorMax, orientation, isFlippedHorizontally, isFlippedVertically, handleSize);
         }
 
         private BattleUiEditingComponent GetEditingComponent(BattleUiElementType uiElementType)

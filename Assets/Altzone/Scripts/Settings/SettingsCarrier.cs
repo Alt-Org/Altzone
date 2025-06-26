@@ -342,7 +342,10 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         string json = PlayerPrefs.GetString($"BattleUi{type}", string.Empty);
         if (string.IsNullOrEmpty(json)) return null;
 
-        return JsonUtility.FromJson<BattleUiMovableElementData>(json);
+        BattleUiMovableElementData data = JsonUtility.FromJson<BattleUiMovableElementData>(json);
+        if (data != null) data.UiElementType = data.UiElementType == BattleUiElementType.None ? type : data.UiElementType; // Backwards compatibility with old BattleUiMovableElementData
+
+        return data;
     }
 
     public void SetBattleUiMovableElementData(BattleUiElementType type, BattleUiMovableElementData data)

@@ -188,7 +188,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     }
                     else if (sizeIncreaseY == 0f)
                     {
-                        sizeIncreaseY = sizeIncreaseX / _aspectRatio;
+                        // Exception for setting height to rotate joystick since its height should stay the same
+                        if (_data.UiElementType != SettingsCarrier.BattleUiElementType.RotateJoystick) sizeIncreaseY = sizeIncreaseX / _aspectRatio;
                     }
 
                     // Setting sizeDelta from the size increase
@@ -207,7 +208,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                         }
 
                         _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, clampedWidth);
-                        _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, clampedWidth / _aspectRatio);
+                        if (_data.UiElementType != SettingsCarrier.BattleUiElementType.RotateJoystick) _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, clampedWidth / _aspectRatio);
                     }
                     else if (!_multiOrientationElement.IsHorizontal) // For vertical elements
                     {
