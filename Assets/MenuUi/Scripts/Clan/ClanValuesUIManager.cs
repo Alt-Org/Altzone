@@ -107,22 +107,23 @@ public class ClanValuesUIManager : MonoBehaviour
         Debug.Log($"Selected values: {string.Join(", ", selectedValues)}");
     }
 
-    void UpdateButtonVisual(Button button, bool isSelected)
+  void UpdateButtonVisual(Button button, bool isSelected)
+{
+    // Hae Target Graphic (se Image joka on asetettu Button-komponentissa)
+    Image targetGraphic = button.targetGraphic as Image;
+    
+    if (targetGraphic != null)
     {
-        ColorBlock colors = button.colors;
         if (isSelected)
         {
-            colors.normalColor = Color.green;
-            colors.selectedColor = Color.green;
+            targetGraphic.color = Color.green;
         }
         else
         {
-            colors.normalColor = Color.white;
-            colors.selectedColor = Color.white;
+            targetGraphic.color = Color.white;
         }
-        button.colors = colors;
     }
-
+}
     
     public List<ClanValues> GetSelectedValues()
     {

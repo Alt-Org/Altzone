@@ -60,8 +60,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         None,
         Teenagers,
         Toddlers,
-        Adults,
-        All
+        Adults
     }
 
     public enum Language
@@ -99,8 +98,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         Top10,
         Top25,
         Top50,
-        Top100,
-        All
+        Top100
     }
 
     public enum ClanMembers
@@ -110,8 +108,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         Medium,     
         Large,      
         VeryLarge,  
-        Huge,        
-        All
+        Huge
     }
 
     public static class ClanDataTypeConverter
@@ -124,7 +121,6 @@ namespace Altzone.Scripts.Model.Poco.Clan
                 ClanAge.Teenagers => "Teinit",
                 ClanAge.Toddlers => "Taaperot",
                 ClanAge.Adults => "Aikuiset",
-                ClanAge.All => "Kaiken ikäiset",
                 _ => "",
             };
         }
@@ -179,25 +175,23 @@ namespace Altzone.Scripts.Model.Poco.Clan
                 ClanRanking.Top25 => "Top 25",
                 ClanRanking.Top50 => "Top 50",
                 ClanRanking.Top100 => "Top 100",
-                ClanRanking.All => "Kaikki",
                 _ => "",
             };
         }
 
-      public static string GetMembersText(ClanMembers members)
-{
-    return members switch
-    {
-        ClanMembers.None => "Jäsenmäärä",
-        ClanMembers.Small => "Pieni (1-10)",
-        ClanMembers.Medium => "Keskikokoinen (11-25)",
-        ClanMembers.Large => "Suuri (26-50)",
-        ClanMembers.VeryLarge => "Hyvin suuri (51-100)",
-        ClanMembers.Huge => "Valtava (100+)",
-        ClanMembers.All => "Kaikki",     
-        _ => "",
-    };
-}
+        public static string GetMembersText(ClanMembers members)
+        {
+            return members switch
+            {
+                ClanMembers.None => "Jäsenmäärä",
+                ClanMembers.Small => "Pieni (1-10)",
+                ClanMembers.Medium => "Keskikokoinen (11-25)",
+                ClanMembers.Large => "Suuri (26-50)",
+                ClanMembers.VeryLarge => "Hyvin suuri (51-100)",
+                ClanMembers.Huge => "Valtava (100+)",
+                _ => "",
+            };
+        }
 
         public static string ClanValuesToString(ClanValues value)
         {
