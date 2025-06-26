@@ -79,4 +79,9 @@ synced event BattleDebugUpdateStatsOverlay
     BattlePlayerStats Stats;
 }
 
+synced event BattleDebugOnScreenMessage
+{
+    QString<512> Message;
+}
+
 //} Debug events
