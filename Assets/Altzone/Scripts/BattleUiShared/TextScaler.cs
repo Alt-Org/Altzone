@@ -23,7 +23,6 @@ namespace Altzone.Scripts.BattleUiShared
         [Header("Text component references")]
         [SerializeField] private TextMeshProUGUI[] _textArray;
 
-        [HideInInspector]
         public float RelativePercentageTarget
         {
             get => _relativePercentageTarget;
@@ -37,7 +36,6 @@ namespace Altzone.Scripts.BattleUiShared
             }
         }
 
-        [HideInInspector]
         public float RelativePercentageMax
         {
             get => _relativePercentageMax;
@@ -51,7 +49,6 @@ namespace Altzone.Scripts.BattleUiShared
             }
         }
 
-        [HideInInspector]
         public float FontSizeMin
         {
             get => _fontSizeMin;
@@ -65,7 +62,6 @@ namespace Altzone.Scripts.BattleUiShared
             }
         }
 
-        [HideInInspector]
         public float FontSizeMax
         {
             get => _fontSizeMax;
