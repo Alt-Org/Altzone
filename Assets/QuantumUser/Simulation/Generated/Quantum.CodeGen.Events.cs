@@ -53,7 +53,7 @@ namespace Quantum {
   public unsafe partial class Frame {
     public unsafe partial struct FrameEvents {
       static partial void GetEventTypeCountCodeGen(ref Int32 eventCount) {
-        eventCount = 14;
+        eventCount = 15;
       }
       static partial void GetParentEventIDCodeGen(Int32 eventID, ref Int32 parentEventID) {
         switch (eventID) {
@@ -75,6 +75,7 @@ namespace Quantum {
           case EventBattlePlaySoundFX.ID: result = typeof(EventBattlePlaySoundFX); return;
           case EventBattleLastRowWallDestroyed.ID: result = typeof(EventBattleLastRowWallDestroyed); return;
           case EventBattleDebugUpdateStatsOverlay.ID: result = typeof(EventBattleDebugUpdateStatsOverlay); return;
+          case EventBattleDebugOnScreenMessage.ID: result = typeof(EventBattleDebugOnScreenMessage); return;
           default: break;
         }
       }
@@ -173,6 +174,13 @@ namespace Quantum {
         var ev = _f.Context.AcquireEvent<EventBattleDebugUpdateStatsOverlay>(EventBattleDebugUpdateStatsOverlay.ID);
         ev.Slot = Slot;
         ev.Stats = Stats;
+        _f.AddEvent(ev);
+        return ev;
+      }
+      public EventBattleDebugOnScreenMessage BattleDebugOnScreenMessage(QString512 Message) {
+        if (_f.IsPredicted) return null;
+        var ev = _f.Context.AcquireEvent<EventBattleDebugOnScreenMessage>(EventBattleDebugOnScreenMessage.ID);
+        ev.Message = Message;
         _f.AddEvent(ev);
         return ev;
       }
@@ -515,6 +523,31 @@ namespace Quantum {
         var hash = 97;
         hash = hash * 31 + Slot.GetHashCode();
         hash = hash * 31 + Stats.GetHashCode();
+        return hash;
+      }
+    }
+  }
+  public unsafe partial class EventBattleDebugOnScreenMessage : EventBase {
+    public new const Int32 ID = 14;
+    public QString512 Message;
+    protected EventBattleDebugOnScreenMessage(Int32 id, EventFlags flags) : 
+        base(id, flags) {
+    }
+    public EventBattleDebugOnScreenMessage() : 
+        base(14, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
+    }
+    public new QuantumGame Game {
+      get {
+        return (QuantumGame)base.Game;
+      }
+      set {
+        base.Game = value;
+      }
+    }
+    public override Int32 GetHashCode() {
+      unchecked {
+        var hash = 101;
+        hash = hash * 31 + Message.GetHashCode();
         return hash;
       }
     }

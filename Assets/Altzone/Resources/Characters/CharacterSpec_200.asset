@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
+  m_Name: CharacterSpec_200
+  m_EditorClassIdentifier: 
+  Id: 200
+  CharacterId: 200
+  IsApproved: 0
+  Name: "TestiH\xE4m\xE4\xE4j\xE4"
+  ClassType: 200
+  CharacterDescription: 
+  CharacterShortDescription: 
+  CharacterStats: {fileID: 11400000, guid: 8e7f54e8dde394e4e9a8eea460dd239d, type: 2}
+  Hp:
+    Level: 2
+    Coefficient: 4
+  Speed:
+    Level: 11
+    Coefficient: 2
+  CharacterSize:
+    Level: 4
+    Coefficient: 6
+  Attack:
+    Level: 8
+    Coefficient: 5
+  Defence:
+    Level: 4
+    Coefficient: 7
+  GalleryImage: {fileID: 0}
+  GalleryHeadImage: {fileID: 0}
+  BattleEntityPrototype:
+    Id:
+      Value: 0
+  BattleUiSprite: {fileID: 0}
