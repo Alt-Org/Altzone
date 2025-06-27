@@ -34,10 +34,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         }
 
         /// <summary>
-        /// Get grid snap position in the y axis according to the grid column line's index.
+        /// Get grid snap position in the x axis according to the grid column line's index.
         /// </summary>
         /// <param name="gridColumnIndex">The grid column line index which position to get.</param>
-        /// <returns>Grid y axis snap position as float.</returns>
+        /// <returns>Grid x axis snap position as float.</returns>
         public static float GetGridSnapPositionX(int gridColumnIndex)
         {
             return (gridColumnIndex + 1) * s_gridCellWidth;
@@ -54,10 +54,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         }
 
         /// <summary>
-        /// Get grid snap position in the x axis according to the grid row line's index.
+        /// Get grid snap position in the y axis according to the grid row line's index.
         /// </summary>
         /// <param name="gridRowIndex">The grid row line index which position to get.</param>
-        /// <returns>Grid x axis snap position as float.</returns>
+        /// <returns>Grid y axis snap position as float.</returns>
         public static float GetGridSnapPositionY(int gridRowIndex)
         {
             return (gridRowIndex + 1) * s_gridCellHeight;
@@ -92,12 +92,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
                     Vector2 size = new(
                         _gridLineThickness,
-                        Screen.height
+                        BattleUiEditor.EditorRect.height
                     );
 
                     Vector2 pos = new(
                         GetGridSnapPositionX(i),
-                        Screen.height * 0.5f
+                        BattleUiEditor.EditorRect.height * 0.5f
                     );
 
                     (Vector2 anchorMin, Vector2 anchorMax) = BattleUiEditor.CalculateAnchors(size, pos);
@@ -128,12 +128,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     RectTransform childRectTransform = child.GetComponent<RectTransform>();
 
                     Vector2 size = new(
-                        Screen.width,
+                        BattleUiEditor.EditorRect.width,
                         _gridLineThickness
                     );
 
                     Vector2 pos = new(
-                        Screen.width * 0.5f,
+                        BattleUiEditor.EditorRect.width * 0.5f,
                         GetGridSnapPositionY(i)
                     );
 
@@ -211,8 +211,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
         }
 
-        private static float s_gridCellWidth => (float)Screen.width / (s_columnLines + 1);
-        private static float s_gridCellHeight => (float)Screen.height / (s_rowLines + 1);
+        private static float s_gridCellWidth => BattleUiEditor.EditorRect.width / (s_columnLines + 1);
+        private static float s_gridCellHeight => BattleUiEditor.EditorRect.height / (s_rowLines + 1);
 
         private static int s_rowLines = -1;
         private static int s_columnLines = -1;

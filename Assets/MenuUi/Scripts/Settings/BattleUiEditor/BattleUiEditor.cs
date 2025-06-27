@@ -113,16 +113,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// <returns>Two Vector2, anchorMin and anchorMax.</returns>
         public static (Vector2 anchorMin, Vector2 anchorMax) CalculateAnchors(Vector2 size, Vector2 pos, float offset = 0f)
         {
-            // For some reason the calculation didn't work with screen space ratio when called from BattleUiEditingComponent which also needs the offset, so added a check.
-            float uiHolderWidth = offset == 0f ? EditorRect.width * ScreenSpaceRatio : EditorRect.width;
-            float uiHolderHeight = offset == 0f ? EditorRect.height * ScreenSpaceRatio : EditorRect.height;
-
             // Calculating anchors
-            float anchorXMin = Mathf.Clamp01((pos.x - size.x * 0.5f) / uiHolderWidth + offset);
-            float anchorXMax = Mathf.Clamp01((pos.x + size.x * 0.5f) / uiHolderWidth + offset);
+            float anchorXMin = Mathf.Clamp01((pos.x - size.x * 0.5f) / EditorRect.width + offset);
+            float anchorXMax = Mathf.Clamp01((pos.x + size.x * 0.5f) / EditorRect.width + offset);
 
-            float anchorYMin = Mathf.Clamp01((pos.y - size.y * 0.5f) / uiHolderHeight + offset);
-            float anchorYMax = Mathf.Clamp01((pos.y + size.y * 0.5f) / uiHolderHeight + offset);
+            float anchorYMin = Mathf.Clamp01((pos.y - size.y * 0.5f) / EditorRect.height + offset);
+            float anchorYMax = Mathf.Clamp01((pos.y + size.y * 0.5f) / EditorRect.height + offset);
 
             return (new Vector2(anchorXMin, anchorYMin), new Vector2(anchorXMax, anchorYMax));
         }
@@ -1233,7 +1229,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     movementType = BattleMovementInputType.Swipe;
                     rotationType = BattleRotationInputType.TwoFinger;
 
-                    text = useGyroscope ? "Liiku pyyhk‰isem‰ll‰ &\nk‰‰nn‰ puhelinta k‰‰nt‰m‰ll‰" : "Liiku pyyhk‰isem‰ll‰ &\nk‰‰nn‰ kahdella sormella";
+                    text = useGyroscope ? "Liiku pyyhk‰isem‰ll‰ &\nk‰‰nn‰ puhelinta kallistamalla" : "Liiku pyyhk‰isem‰ll‰ &\nk‰‰nn‰ kahdella sormella";
 
                     showSwipeMinDistance = true;
                     showSwipeMaxDistance = false;
@@ -1244,7 +1240,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     movementType = BattleMovementInputType.PointAndClick;
                     rotationType = BattleRotationInputType.Swipe;
 
-                    text = useGyroscope ? "Liiku painamalla &\nk‰‰nn‰ puhelinta k‰‰nt‰m‰ll‰" : "Liiku painamalla &\nk‰‰nn‰ pyyhk‰isem‰ll‰";
+                    text = useGyroscope ? "Liiku painamalla &\nk‰‰nn‰ puhelinta kallistamalla" : "Liiku painamalla &\nk‰‰nn‰ pyyhk‰isem‰ll‰";
 
                     showSwipeMinDistance = !useGyroscope;
                     showSwipeMaxDistance = !useGyroscope;
@@ -1255,7 +1251,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     movementType = BattleMovementInputType.Joystick;
                     rotationType = BattleRotationInputType.Joystick;
 
-                    text = useGyroscope ? "Liiku ohjausympyr‰ll‰ &\nk‰‰nn‰ puhelinta k‰‰nt‰m‰ll‰" : "Liiku & k‰‰nn‰ ohjausympyrˆill‰.";
+                    text = useGyroscope ? "Liiku ohjausympyr‰ll‰ &\nk‰‰nn‰ puhelinta kallistamalla" : "Liiku & k‰‰nn‰ ohjausympyrˆill‰.";
 
                     showSwipeMinDistance = false;
                     showSwipeMaxDistance = false;

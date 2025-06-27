@@ -127,15 +127,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     {
                         ShowControls(false);
                         _currentAction = ActionType.Move;
-
-                        // Setting offset for moving
-                        _moveOffset.x = _movableElement.transform.position.x - eventData.pressPosition.x;
-                        _moveOffset.y = _movableElement.transform.position.y - eventData.pressPosition.y;
                     }
                     break;
 
                 case ActionType.Move:
-                    Vector2 newPos = eventData.position + _moveOffset;
+                    Vector3 newPos;
+                    RectTransformUtility.ScreenPointToWorldPointInRectangle(BattleUiEditor.EditorRectTransform, eventData.position, null, out newPos);
 
                     if (_isGridAlignToggled) // Snapping to grid while moving
                     {
@@ -149,10 +146,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     }
 
                     // Clamping position to be inside the editor
-                    newPos.x = Mathf.Clamp(newPos.x, _minPosX, _maxPosX);
-                    newPos.y = Mathf.Clamp(newPos.y, _minPosY, _maxPosY);
+                    //newPos.x = Mathf.Clamp(newPos.x, _minPosX, _maxPosX);
+                    //newPos.y = Mathf.Clamp(newPos.y, _minPosY, _maxPosY);
 
-                    _movableElement.transform.position = newPos;
+                    _movableElement.RectTransformComponent.position = newPos;
+                    Debug.LogError(_movableElement.RectTransformComponent.localPosition);
                     break;
 
                 case ActionType.Scale:
@@ -302,10 +300,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private float _minWidth => BattleUiEditor.EditorRect.width / 6;
         private float _minHeight => BattleUiEditor.EditorRect.height / 10;
 
-        private float _maxPosX => BattleUiEditor.EditorRect.width * BattleUiEditor.ScreenSpaceRatio - _movableElement.RectTransformComponent.rect.width * BattleUiEditor.ScreenSpaceRatio / 2;
-        private float _maxPosY => BattleUiEditor.EditorRect.height * BattleUiEditor.ScreenSpaceRatio - _movableElement.RectTransformComponent.rect.height * BattleUiEditor.ScreenSpaceRatio / 2;
-        private float _minPosX => _movableElement.RectTransformComponent.rect.width * BattleUiEditor.ScreenSpaceRatio / 2;
-        private float _minPosY => _movableElement.RectTransformComponent.rect.height * BattleUiEditor.ScreenSpaceRatio / 2;
+        private float _maxPosX => BattleUiEditor.EditorRect.width - _movableElement.RectTransformComponent.rect.width / 2;
+        private float _maxPosY => BattleUiEditor.EditorRect.height - _movableElement.RectTransformComponent.rect.height / 2;
+        private float _minPosX => _movableElement.RectTransformComponent.rect.width / 2;
+        private float _minPosY => _movableElement.RectTransformComponent.rect.height / 2;
         private float _aspectRatio => _multiOrientationElement == null ? _movableElementAspectRatio : _multiOrientationElement.HorizontalAspectRatio;
 
         private BattleUiMovableElement _movableElement;
@@ -318,7 +316,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private bool _isIncrementalScalingToggled = false;
 
         private ActionType _currentAction;
-        private Vector2 _moveOffset;
+        private Vector2 _dragPos;
 
         private void OnDisable()
         {
