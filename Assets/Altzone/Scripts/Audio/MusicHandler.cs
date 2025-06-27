@@ -14,7 +14,7 @@ namespace Altzone.Scripts.Audio
             MusicList musicList = GetMusicList(section);
             if (musicList == null) return null;
             _currentSection = section;
-            MusicObject musicObject =musicList.PlayMusic(musicIndex);
+            MusicObject musicObject =musicList.GetMusicObject(musicIndex);
             if (musicObject == null) return null;
             else
             {
