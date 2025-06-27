@@ -3,7 +3,6 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using AudioTypeName = Altzone.Scripts.Audio.AudioTypeName;
 
 enum AudioSelection
 {
@@ -11,7 +10,6 @@ enum AudioSelection
     Name,
     ID
 }
-
 
 enum PlayType
 {
@@ -22,17 +20,12 @@ enum PlayType
 
 public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
 {
-    [SerializeField]
-    private AudioSelection _audioSelection = AudioSelection.Type;
-    [SerializeField]
-    string _audioType = "";
-    [SerializeField]
-    string _audioName = "";
-    [SerializeField]
-    int _audioId = 0;
+    [SerializeField] private AudioSelection _audioSelection = AudioSelection.Type;
+    [SerializeField] string _audioType = "";
+    [SerializeField] string _audioName = "";
+    [SerializeField] int _audioId = 0;
     [SerializeField, Tooltip("Determines which event to use in order to play the audio clip. OnClick: sound will play when the button is released, OnPointerDown: sound will play when button press is started, Both: sound will play at both of these events")]
     private PlayType _playType = PlayType.OnClick;
-
 
     private void Start()
     {
@@ -43,6 +36,7 @@ public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
                 GetComponent<Button>()?.onClick.AddListener(PlayAudio);
                 break;
         }
+
         GetComponent<Toggle>()?.onValueChanged.AddListener(PlayAudio);
     }
 
@@ -52,17 +46,14 @@ public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
     {
         Button source = GetComponent<Button>();
         Toggle light = GetComponent<Toggle>();
+
 #if UNITY_EDITOR
         if (source == null && light == null)
         {
             if (UnityEditor.EditorUtility.DisplayDialog("Choose a Component", "You are missing one of the required componets. Please choose one to add", "Button", "Toggle"))
-            {
                 gameObject.AddComponent<Button>();
-            }
             else
-            {
                 gameObject.AddComponent<Toggle>();
-            }
         }
 #endif
     }
@@ -76,12 +67,13 @@ public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
             Debug.LogError("Cannot find audio manager. Check if AudioManager is added to the scene.");
             return;
         }
-        if (_audioSelection == AudioSelection.Type)
-            manager.PlaySfxAudioWithType(_audioType);
-        else if(_audioSelection == AudioSelection.Name)
-            manager.PlaySfxAudio(_audioName);
-        else if (_audioSelection == AudioSelection.ID)
-            manager.PlaySfxAudio(_audioId);
+
+        switch (_audioSelection)
+        {
+            case AudioSelection.Type: manager.PlaySfxAudioWithType(_audioType); break;
+            case AudioSelection.Name: manager.PlaySfxAudio(_audioName); break;
+            case AudioSelection.ID: manager.PlaySfxAudio(_audioId); break;
+        }
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -113,27 +105,22 @@ public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
             sectionC = serializedObject.FindProperty(nameof(_audioId));
             sectionPlayType = serializedObject.FindProperty(nameof(_playType));
         }
+
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
-
             EditorGUILayout.PropertyField(section);
+
             switch ((AudioSelection)section.enumValueIndex)
             {
-                case AudioSelection.Type:
-                    EditorGUILayout.PropertyField(sectionA);
-                    break;
-                case AudioSelection.Name:
-                    EditorGUILayout.PropertyField(sectionB);
-                    break;
-                case AudioSelection.ID:
-                    EditorGUILayout.PropertyField(sectionC);
-                    break;
+                case AudioSelection.Type: EditorGUILayout.PropertyField(sectionA); break;
+                case AudioSelection.Name: EditorGUILayout.PropertyField(sectionB); break;
+                case AudioSelection.ID: EditorGUILayout.PropertyField(sectionC); break;
             }
+
             EditorGUILayout.PropertyField(sectionPlayType);
             serializedObject.ApplyModifiedProperties();
         }
     }
 #endif
-
 }
