@@ -67,7 +67,7 @@ namespace MenuUI.Scripts.SoulHome
             EditModeTrayResize();
             _audioManager = AudioManager.Instance;
             _editButton.onClick.AddListener(()=>EditModeToggle());
-            _openJukeBox.onClick.AddListener(()=>_jukeBoxPopup.ToggleJokeBoxScreen(true));
+            _openJukeBox.onClick.AddListener(()=>_jukeBoxPopup.ToggleJukeboxScreen(true));
         }
 
         public void OnEnable()
@@ -95,7 +95,7 @@ namespace MenuUI.Scripts.SoulHome
             }
             AudioManager.Instance?.StopMusic();
             _jukeBoxPopup.StopJukebox();
-            _jukeBoxPopup.ToggleJokeBoxScreen(false);
+            _jukeBoxPopup.ToggleJukeboxScreen(false);
             JukeboxController.OnChangeJukeBoxSong -= SetSongName;
         }
 

@@ -43,7 +43,7 @@ namespace Altzone.Scripts.Audio
             {
                 songName = "NoName",
                 songs = null,
-                songDisks = _emptyDisk
+                songDisk = _emptyDisk
 
             };
         }
@@ -149,6 +149,6 @@ namespace Altzone.Scripts.Audio
     {
         public string songName;
         public AudioClip songs;
-        public Sprite songDisks;
+        public Sprite songDisk;
     }
 }
