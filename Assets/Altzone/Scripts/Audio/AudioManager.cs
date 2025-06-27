@@ -129,10 +129,10 @@ namespace Altzone.Scripts.Audio
             if (_musicHandler == null) return null;
             else if (section == MusicSection.SoulHome)
             {
-                if (JukeBoxCurrentSong?.songs != null)
+                if (JukeBoxCurrentSong?.Song != null)
                 {
                     _jukebox.ContinueSong();
-                    return JukeBoxCurrentSong.songName;
+                    return JukeBoxCurrentSong.Name;
                 }
             }
             return _musicHandler.PlayMusic(section, musicindex);
@@ -153,7 +153,7 @@ namespace Altzone.Scripts.Audio
         public void StopMusic()
         {
             if (_musicHandler == null) return;
-            if (JukeBoxCurrentSong?.songs != null)
+            if (JukeBoxCurrentSong?.Song != null)
             {
                 _jukebox.StopSong();
             }

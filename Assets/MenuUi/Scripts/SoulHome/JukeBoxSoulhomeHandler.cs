@@ -44,7 +44,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         { 
             GameObject jukeboxObject = Instantiate(_jukeboxButtonPrefab, _songListContent);
             jukeboxObject.GetComponent<Button>().onClick.AddListener(() => PlaySong(song));
-            jukeboxObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = song.songName;
+            jukeboxObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = song.Name;
         }
 
         _backButton.onClick.AddListener(() => ToggleJukeboxScreen(false));
@@ -91,8 +91,8 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         if (song == null)
             return;
 
-        _songName.text = song.songName;
-        _diskImage.sprite = song.songDisk;
+        _songName.text = song.Name;
+        _diskImage.sprite = song.Disk;
 
         if (_diskSpinCoroutine != null)
         {
@@ -100,7 +100,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
             _diskSpinCoroutine = null;
             _diskTransform.rotation = Quaternion.identity;
         }
-        if (song.songs != null)
+        if (song.Song != null)
             _diskSpinCoroutine = StartCoroutine(SpinDisk());
     }
 
@@ -112,7 +112,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         foreach (JukeboxSong song in songQueue)
         {
             GameObject jukeboxObject = Instantiate(_queueTextPrefab, _queueContent);
-            jukeboxObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = song.songName;
+            jukeboxObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = song.Name;
         }
     }
 

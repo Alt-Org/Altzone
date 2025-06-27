@@ -261,7 +261,7 @@ namespace MenuUI.Scripts.SoulHome
 
         private void SetSongName(JukeboxSong song)
         {
-            _musicName.text = song.songName;
+            _musicName.text = song.Name;
         }
 
         public bool CheckInteractableStatus()
