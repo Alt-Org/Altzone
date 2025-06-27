@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Altzone.Scripts.Audio
@@ -7,90 +5,117 @@ namespace Altzone.Scripts.Audio
     public class MusicHandler : MonoBehaviour
     {
         private MusicSection _currentSection = MusicSection.None;
+        private AudioSource _audioSource;
+
+        private void Start()
+        {
+            _audioSource = GetComponent<AudioSource>();
+        }
 
         public string PlayMusic(MusicSection section ,int musicIndex = -1)
         {
-            if (section == MusicSection.None) return null;
             MusicList musicList = GetMusicList(section);
-            if (musicList == null) return null;
+
+            if (musicList == null)
+                return (null);
+
             _currentSection = section;
-            MusicObject musicObject =musicList.GetMusicObject(musicIndex);
-            if (musicObject == null) return null;
+            MusicObject musicObject = musicList.GetMusicObject(musicIndex);
+
+            if (musicObject == null)
+                return (null);
             else
             {
-                if (musicObject.MusicClip.Equals(GetComponent<AudioSource>().clip))
+                if (musicObject.MusicClip.Equals(_audioSource.clip))
                 {
-                    if (!GetComponent<AudioSource>().isPlaying) GetComponent<AudioSource>().Play();
-                    return musicObject.Name;
+                    if (!_audioSource.isPlaying)
+                        _audioSource.Play();
+
+                    return (musicObject.Name);
                 }
-                StopMusic();
-                GetComponent<AudioSource>().clip = musicObject.MusicClip;
-                GetComponent<AudioSource>().Play();
+
+                SwitchMusic(musicObject.MusicClip);
             }
 
-            return musicObject.Name;
+            return (musicObject.Name);
         }
-
 
         public string GetTrackName()
         {
-            if (_currentSection == MusicSection.None) return null;
             MusicList musicList = GetMusicList(_currentSection);
-            if (musicList == null) return null;
-            string name =musicList.GetTrackName();
-            if (name == null) return null;
+
+            if (musicList == null)
+                return (null);
+
+            string name = musicList.GetTrackName();
+
+            if (name == null)
+                return (null);
+
             return name;
         }
 
         public void StopMusic()
         {
-            GetComponent<AudioSource>().Stop();
+            _audioSource.Stop();
         }
-
 
         public string NextTrack()
         {
-            if (_currentSection == MusicSection.None) return null;
-            MusicList musicList =GetMusicList(_currentSection);
-            if (musicList == null) return null;
+            MusicList musicList = GetMusicList(_currentSection);
+
+            if (musicList == null)
+                return (null);
+
             MusicObject musicObject = musicList.NextTrack();
-            if (musicObject == null) return null;
+
+            if (musicObject == null)
+                return (null);
             else
-            {
-                StopMusic();
-                GetComponent<AudioSource>().clip = musicObject.MusicClip;
-                GetComponent<AudioSource>().Play();
-            }
-            return musicObject.Name;
+                SwitchMusic(musicObject.MusicClip);
+
+            return (musicObject.Name);
         }
 
         public string PrevTrack()
         {
-            if (_currentSection == MusicSection.None) return null;
             MusicList musicList = GetMusicList(_currentSection);
-            if (musicList == null) return null;
+
+            if (musicList == null)
+                return (null);
+
             MusicObject musicObject = musicList.PrevTrack();
-            if (musicObject == null) return null;
+
+            if (musicObject == null)
+                return (null);
             else
-            {
-                StopMusic();
-                GetComponent<AudioSource>().clip = musicObject.MusicClip;
-                GetComponent<AudioSource>().Play();
-            }
-            return musicObject.Name;
+                SwitchMusic(musicObject.MusicClip);
+
+            return (musicObject.Name);
         }
 
         private MusicList GetMusicList(MusicSection section)
         {
-            foreach(Transform transform in transform)
+            if (section == MusicSection.None)
+                return (null);
+
+            foreach (Transform transform in transform)
             {
                 MusicList currentlist = transform.GetComponent<MusicList>();
+
                 if (currentlist != null)
-                {
-                    if (currentlist.MusicSection == section) return currentlist;
-                }
+                    if (currentlist.MusicSection == section)
+                        return (currentlist);
             }
+
             return null;
+        }
+
+        private void SwitchMusic(AudioClip audioClip)
+        {
+            StopMusic();
+            _audioSource.clip = audioClip;
+            _audioSource.Play();
         }
     }
 }
