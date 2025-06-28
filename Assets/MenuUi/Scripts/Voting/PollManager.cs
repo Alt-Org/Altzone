@@ -37,6 +37,8 @@ public static class PollManager
 
         //PrintPollList();
         SaveClanData();
+
+        PollMonitor.Instance?.StartMonitoring();
     }
 
     public static void CreateFurniturePoll(FurniturePollType furniturePollType, StorageFurniture furniture)
@@ -58,6 +60,8 @@ public static class PollManager
 
         //PrintPollList();
         SaveClanData();
+
+        PollMonitor.Instance?.StartMonitoring();
     }
 
     private static void PrintPollList()
@@ -168,20 +172,24 @@ public static class PollManager
 
         VotingActions.ReloadPollList?.Invoke();
         PastPollManager.OnPastPollsChanged?.Invoke();
+
+        if (pollDataList.Count == 0)
+        {
+            PollMonitor.Instance?.StopMonitoring();
+        }
+
     }
 
     public static void CheckAndExpiredPolls()
     {
-        LoadClanData();
+        if (pollDataList == null || pollDataList.Count == 0) return;
 
-        // Copy list to avoid modifying during iteration
-        var pollsToCheck = new List<PollData>(pollDataList);
-        foreach (var poll in pollsToCheck)
+        List<PollData> expiredPolls = pollDataList.Where(p => p.IsExpired).ToList();
+
+        foreach (var poll in expiredPolls)
         {
-            if (poll.IsExpired)
-            {
-                EndPoll(poll.Id);
-            }
+            Debug.Log($"[CheckExpiredPolls] Poll {poll.Id} expired? {poll.IsExpired}");
+            EndPoll(poll.Id);
         }
     }
 
