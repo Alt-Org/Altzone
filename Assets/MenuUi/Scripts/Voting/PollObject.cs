@@ -45,6 +45,7 @@ public class PollObject : MonoBehaviour
     private void OnDisable()
     {
         VotingActions.ReloadPollList -= SetValues;
+        Canvas.ForceUpdateCanvases();
     }
 
     private IEnumerator UpdateValues()
