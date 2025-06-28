@@ -94,9 +94,15 @@ namespace MenuUi.Scripts.Storage
         private void OnDisable()
         {
             _sellHandler.UpdateInfoAction -= UpdateInVotingText;
-
             ServerManager.OnClanInventoryChanged -= UpdateInventory;
+
+            // Hide the info window when exiting the view
+            if (_infoSlot != null && _infoSlot.activeSelf)
+            {
+                _infoSlot.SetActive(false);
+            }
         }
+
 
         private IEnumerator Begin()
         {
