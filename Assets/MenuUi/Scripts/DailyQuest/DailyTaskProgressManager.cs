@@ -117,6 +117,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationActionType.PlayBattle: HandleSimpleTask(value); break;
             case TaskEducationActionType.SwitchSoulhomeMusic: HandleSimpleTask(value); break;
             case TaskEducationActionType.WinBattle: HandleSimpleTask(value); break;
+            case TaskEducationActionType.MakeMusicWithButtons: HandleSimpleTask(value); break;
             default: break;
         }
     }

@@ -73,5 +73,7 @@ public class PlayStyle : MonoBehaviour
     {
         PlayerPrefs.SetInt("CurrentPlayStyleIndex", currentIndex);
         PlayerPrefs.Save();
+
+        gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
     }
 }

@@ -32,6 +32,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         EditCharacterStats,
         BlowUpYourCharacter,
         SwitchSoulhomeMusic,
+        MakeMusicWithButtons,
     }
 
     public enum TaskEducationSocialType
@@ -266,6 +267,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case "blow_up_your_character":
                     {
                         return TaskEducationActionType.BlowUpYourCharacter;
+                    }
+                case "make_music_with_buttons":
+                    {
+                        return TaskEducationActionType.MakeMusicWithButtons;
                     }
                 default:
                     {

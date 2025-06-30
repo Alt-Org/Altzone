@@ -2494,6 +2494,7 @@ GameObject:
   - component: {fileID: 3001506806316386774}
   - component: {fileID: 1061816443048640515}
   - component: {fileID: 3935453016891834555}
+  - component: {fileID: 7244593444853820937}
   m_Layer: 5
   m_Name: PlayStyle
   m_TagString: Untagged
@@ -2591,6 +2592,25 @@ MonoBehaviour:
   - "Fiilistelij\xE4"
   - Ongelmanratkaisija
   - "Huono H\xE4vi\xE4j\xE4"
+--- !u!114 &7244593444853820937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2411753592638166677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 3
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 4
+  _educationCategoryEthicalType: 0
 --- !u!1 &2461012230006667811
 GameObject:
   m_ObjectHideFlags: 0
@@ -5525,7 +5545,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 29.35
+  m_fontSize: 28.8
   m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6094,6 +6114,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _naviTarget: {fileID: 11400000, guid: 6f4124795cdd1ca45abd928b708b100c, type: 2}
+  _useNonDefaultWindow: 0
+  _targetWindow: 0
   _isCurrentPopOutWindow: 0
 --- !u!1 &5646813450001741537
 GameObject:
@@ -11156,17 +11178,17 @@ PrefabInstance:
     - target: {fileID: 2544346663654659494, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_fontSize
-      value: 29.95
+      value: 32
       objectReference: {fileID: 0}
     - target: {fileID: 2641932565321544379, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.94188035
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2665311521893521844, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_fontSize
-      value: 44.5
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 2822583859474931625, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -11256,12 +11278,12 @@ PrefabInstance:
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.86688036
+      value: 0.922
       objectReference: {fileID: 0}
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.1975
+      value: 0.208
       objectReference: {fileID: 0}
     - target: {fileID: 3482542752552871026, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -11992,7 +12014,7 @@ PrefabInstance:
     - target: {fileID: 7827142668286818857, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.1975
+      value: 0.208
       objectReference: {fileID: 0}
     - target: {fileID: 7929660231049190400, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -12152,12 +12174,12 @@ PrefabInstance:
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.94188035
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.86688036
+      value: 0.922
       objectReference: {fileID: 0}
     - target: {fileID: 9092838377446531208, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
