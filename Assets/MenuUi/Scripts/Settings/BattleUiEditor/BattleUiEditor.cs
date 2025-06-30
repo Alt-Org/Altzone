@@ -99,8 +99,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private GameObject _giveUpButton;
         [SerializeField] private GameObject _joystick;
 
-        public static float ScreenSpaceRatio => Screen.width / EditorRect.width;
-
         public static Rect EditorRect;
         public static RectTransform EditorRectTransform;
 

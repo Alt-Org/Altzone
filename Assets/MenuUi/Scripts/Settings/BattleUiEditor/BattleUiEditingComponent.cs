@@ -530,10 +530,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     Vector2 newPosition = Vector2.zero;
 
                     // Checking left side and adding offset
-                    float left = buttonCorners[(int)CornerType.BottomLeft].x;
-                    if (left < 0)
+                    float buttonLeft = buttonCorners[(int)CornerType.BottomLeft].x;
+                    float holderLeft = holderCorners[(int)CornerType.BottomLeft].x;
+                    if (buttonLeft < holderLeft)
                     {
-                        newPosition.x += Mathf.Abs(left);
+                        newPosition.x += holderLeft - buttonLeft;
                     }
 
                     // Checking right side and adding offset
