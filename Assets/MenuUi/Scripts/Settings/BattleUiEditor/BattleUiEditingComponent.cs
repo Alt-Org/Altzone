@@ -134,14 +134,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     Vector3 newPos;
                     RectTransformUtility.ScreenPointToWorldPointInRectangle(BattleUiEditor.EditorRectTransform, eventData.position, null, out newPos);
 
-                    //if (_isGridAlignToggled) // Snapping to grid while moving
-                    //{
-                    //    (int gridColumnIndex, int gridRowIndex) = GridController.GetGridIndex(newPos);
-                    //
-                    //    newPos = GridController.GetGridSnapPosition(gridColumnIndex, gridRowIndex);
-                    //
-                    //    OnGridSnap?.Invoke(gridColumnIndex, gridRowIndex);
-                    //}
+                    if (_isGridAlignToggled) // Snapping to grid while moving
+                    {
+                        (int gridColumnIndex, int gridRowIndex) = GridController.GetGridLinesIndex(newPos);
+                        newPos = GridController.GetGridSnapPosition(gridColumnIndex, gridRowIndex);
+
+                        OnGridSnap?.Invoke(gridColumnIndex, gridRowIndex);
+                    }
 
                     // Clamping position to be inside the editor
                     newPos.x = Mathf.Clamp(newPos.x, _minPos.x, _maxPos.x);
