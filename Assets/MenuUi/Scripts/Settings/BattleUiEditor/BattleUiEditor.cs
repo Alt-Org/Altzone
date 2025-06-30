@@ -1055,12 +1055,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Calculating anchors
             Vector2 size = new();
-            size.x = Screen.width * (anchorMax.x - anchorMin.x);
+            size.x = EditorRect.width * (anchorMax.x - anchorMin.x);
             size.y = size.x / aspectRatio;
 
             Vector2 pos = new(
-                (anchorMin.x + anchorMax.x) * 0.5f * Screen.width,
-                (anchorMax.y + anchorMin.y) * 0.5f * Screen.height
+                (anchorMin.x + anchorMax.x) * 0.5f * EditorRect.width,
+                (anchorMax.y + anchorMin.y) * 0.5f * EditorRect.height
             );
 
             (anchorMin, anchorMax) = CalculateAnchors(size, pos);
