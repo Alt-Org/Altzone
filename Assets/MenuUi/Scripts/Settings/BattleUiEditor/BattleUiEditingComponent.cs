@@ -134,23 +134,20 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     Vector3 newPos;
                     RectTransformUtility.ScreenPointToWorldPointInRectangle(BattleUiEditor.EditorRectTransform, eventData.position, null, out newPos);
 
-                    if (_isGridAlignToggled) // Snapping to grid while moving
-                    {
-                        int gridColumnIndex = GridController.GetGridColumnIndex(newPos.x);
-                        int gridRowIndex = GridController.GetGridRowIndex(newPos.y);
-
-                        newPos.x = GridController.GetGridSnapPositionX(gridColumnIndex);
-                        newPos.y = GridController.GetGridSnapPositionY(gridRowIndex);
-
-                        OnGridSnap?.Invoke(gridColumnIndex, gridRowIndex);
-                    }
+                    //if (_isGridAlignToggled) // Snapping to grid while moving
+                    //{
+                    //    (int gridColumnIndex, int gridRowIndex) = GridController.GetGridIndex(newPos);
+                    //
+                    //    newPos = GridController.GetGridSnapPosition(gridColumnIndex, gridRowIndex);
+                    //
+                    //    OnGridSnap?.Invoke(gridColumnIndex, gridRowIndex);
+                    //}
 
                     // Clamping position to be inside the editor
-                    //newPos.x = Mathf.Clamp(newPos.x, _minPosX, _maxPosX);
-                    //newPos.y = Mathf.Clamp(newPos.y, _minPosY, _maxPosY);
+                    newPos.x = Mathf.Clamp(newPos.x, _minPos.x, _maxPos.x);
+                    newPos.y = Mathf.Clamp(newPos.y, _minPos.y, _maxPos.y);
 
                     _movableElement.RectTransformComponent.position = newPos;
-                    Debug.LogError(_movableElement.RectTransformComponent.localPosition);
                     break;
 
                 case ActionType.Scale:
@@ -224,8 +221,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     }
 
                     // Preventing Ui element from going out of editor bounds while scaling
-                    float clampedPosX = Mathf.Clamp(_movableElement.RectTransformComponent.position.x, _minPosX, _maxPosX);
-                    float clampedPosY = Mathf.Clamp(_movableElement.RectTransformComponent.position.y, _minPosY, _maxPosY);
+                    float clampedPosX = Mathf.Clamp(_movableElement.RectTransformComponent.position.x, _minPos.x, _maxPos.x);
+                    float clampedPosY = Mathf.Clamp(_movableElement.RectTransformComponent.position.y, _minPos.y, _maxPos.y);
 
                     if (clampedPosX != _movableElement.RectTransformComponent.position.x || clampedPosY != _movableElement.RectTransformComponent.position.y)
                     {
@@ -300,10 +297,16 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private float _minWidth => BattleUiEditor.EditorRect.width / 6;
         private float _minHeight => BattleUiEditor.EditorRect.height / 10;
 
-        private float _maxPosX => BattleUiEditor.EditorRect.width - _movableElement.RectTransformComponent.rect.width / 2;
-        private float _maxPosY => BattleUiEditor.EditorRect.height - _movableElement.RectTransformComponent.rect.height / 2;
-        private float _minPosX => _movableElement.RectTransformComponent.rect.width / 2;
-        private float _minPosY => _movableElement.RectTransformComponent.rect.height / 2;
+        // Converting max and min position to world coordinates using TransformPoint
+        private Vector2 _maxPos => BattleUiEditor.EditorRectTransform.TransformPoint(
+            BattleUiEditor.EditorRect.width * 0.5f - _movableElement.RectTransformComponent.rect.width * 0.5f,
+            BattleUiEditor.EditorRect.height * 0.5f - _movableElement.RectTransformComponent.rect.height * 0.5f,
+            0);
+        private Vector2 _minPos => BattleUiEditor.EditorRectTransform.TransformPoint(
+            _movableElement.RectTransformComponent.rect.width * 0.5f - BattleUiEditor.EditorRect.width * 0.5f,
+            _movableElement.RectTransformComponent.rect.height * 0.5f - BattleUiEditor.EditorRect.height * 0.5f,
+            0);
+
         private float _aspectRatio => _multiOrientationElement == null ? _movableElementAspectRatio : _multiOrientationElement.HorizontalAspectRatio;
 
         private BattleUiMovableElement _movableElement;
