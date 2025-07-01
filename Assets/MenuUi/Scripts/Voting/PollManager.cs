@@ -185,7 +185,7 @@ public static class PollManager // Handles the polls from creation to loading to
     }
 
     // Checks for expired polls and ends those that have expired
-    public static void CheckAndExpiredPolls()
+    public static void CheckAndExpirePolls()
     {
         if (pollDataList == null || pollDataList.Count == 0) return;
 
@@ -193,7 +193,7 @@ public static class PollManager // Handles the polls from creation to loading to
 
         foreach (var poll in expiredPolls)
         {
-            Debug.Log($"[CheckExpiredPolls] Poll {poll.Id} expired? {poll.IsExpired}");
+            Debug.Log($"[CheckExpirePolls] Poll {poll.Id} expired? {poll.IsExpired}");
             EndPoll(poll.Id);
         }
     }

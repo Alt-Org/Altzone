@@ -41,7 +41,7 @@ public class PollMonitor : MonoBehaviour // Monitors active polls to check if th
     {
         while (true)
         {
-            PollManager.CheckAndExpiredPolls();
+            PollManager.CheckAndExpirePolls();
 
             if (PollManager.GetPollList().Count == 0)
             {
