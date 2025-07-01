@@ -13,6 +13,7 @@ using BattleUiElementType = SettingsCarrier.BattleUiElementType;
 using BattleMovementInputType = SettingsCarrier.BattleMovementInputType;
 using BattleRotationInputType = SettingsCarrier.BattleRotationInputType;
 
+using MenuUi.Scripts.UIScaling;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.Settings.BattleUiEditor
@@ -23,6 +24,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
     public class BattleUiEditor : MonoBehaviour
     {
         [Header("Editor GameObject references")]
+        [SerializeField] private RectTransform _editorRectTransform;
         [SerializeField] private Button _closeButton;
         [SerializeField] private Button _saveButton;
         [Space]
@@ -233,8 +235,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void Awake()
         {
-            EditorRectTransform = GetComponent<RectTransform>();
+            // Assign static editor rect variables
+            EditorRectTransform = _editorRectTransform;
             EditorRect = EditorRectTransform.rect;
+
+            // Scale editor to account for unsafe area
+            ScaleEditor();
 
             // Close and save button listeners
             _closeButton.onClick.AddListener(CloseEditor);
@@ -519,6 +525,27 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             _arenaPosYSlider.onValueChanged.RemoveAllListeners();
             _arenaPosYInputField.onValueChanged.RemoveAllListeners();
+        }
+
+        private void ScaleEditor()
+        {
+            float unsafeAreaSize = PanelScaler.CalculateUnsafeAreaHeight();
+
+            if (unsafeAreaSize == 0)
+            {
+                EditorRectTransform.anchorMin = Vector2.zero;
+                EditorRectTransform.anchorMax = Vector2.one;
+                return;
+            }
+
+            float aspectRatio = (float)Screen.width / Screen.height;
+
+            float editorHeight = Screen.height * (1 - unsafeAreaSize);
+            float editorWidth = editorHeight * aspectRatio;
+            float widthAnchorValue = editorWidth / Screen.width;
+
+            EditorRectTransform.anchorMin = new((1 - widthAnchorValue) * 0.5f, 0);
+            EditorRectTransform.anchorMax = new(widthAnchorValue + EditorRectTransform.anchorMin.x, 1 - unsafeAreaSize);
         }
 
         private void ToggleOptionsDropdown()
@@ -1301,5 +1328,18 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             if (_instantiatedMoveJoystick != null) _instantiatedMoveJoystick.gameObject.SetActive(movementType == BattleMovementInputType.Joystick);
             if (_instantiatedRotateJoystick != null) _instantiatedRotateJoystick.gameObject.SetActive(rotationType == BattleRotationInputType.Joystick);
         }
+
+#if (UNITY_EDITOR)
+        private Vector2 _previousScreenResolution;
+
+        void Update()
+        {
+            if (_previousScreenResolution.x != Screen.width || _previousScreenResolution.y != Screen.height)
+            {
+                ScaleEditor();
+                _previousScreenResolution = new(Screen.width, Screen.height);
+            }
+        }
+#endif
     }
 }
