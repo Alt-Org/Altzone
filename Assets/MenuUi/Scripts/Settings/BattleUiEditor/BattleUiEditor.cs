@@ -1155,20 +1155,27 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void UpdateInputFieldText(float value, TMP_InputField field)
         {
-            field.SetTextWithoutNotify(value.ToString("0.00"));
+            bool isDecimal = field.contentType == TMP_InputField.ContentType.DecimalNumber;
+            string valueString = isDecimal ? value.ToString("0.00") : value.ToString();
+            field.SetTextWithoutNotify(valueString);
         }
 
         private void VerifyAndUpdateSliderValue(TMP_InputField field, Slider slider)
         {
+            bool isDecimal = field.contentType == TMP_InputField.ContentType.DecimalNumber;
+
             if (int.TryParse(field.text, out int value))
             {
                 int clampedValue = Math.Clamp(value, (int)slider.minValue, (int)slider.maxValue);
-                field.SetTextWithoutNotify(clampedValue.ToString("0.00"));
+                string clampedValueString = isDecimal ? clampedValue.ToString("0.00") : clampedValue.ToString();
+
+                field.SetTextWithoutNotify(clampedValueString);
                 slider.SetValueWithoutNotify(clampedValue);
             }
             else
             {
-                field.SetTextWithoutNotify(slider.minValue.ToString("0.00"));
+                string minValueString = isDecimal ? slider.minValue.ToString("0.00") : slider.minValue.ToString();
+                field.SetTextWithoutNotify(minValueString);
                 slider.SetValueWithoutNotify(slider.minValue);
             }
         }
