@@ -25,6 +25,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
     {
         [Header("Editor GameObject references")]
         [SerializeField] private RectTransform _editorRectTransform;
+        [SerializeField] private RectTransform _topButtonsRectTransform;
         [SerializeField] private Button _closeButton;
         [SerializeField] private Button _saveButton;
         [Space]
@@ -209,6 +210,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private const int GridTransparencyDefault = 50;
 
         private const float GameAspectRatio = 9f / 16f;
+        private const float TopButtonsHeight = 0.05f;
 
         private BattleUiMovableElement _instantiatedTimer;
         private BattleUiMultiOrientationElement _instantiatedPlayerInfo;
@@ -529,23 +531,39 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void ScaleEditor()
         {
-            float unsafeAreaSize = PanelScaler.CalculateUnsafeAreaHeight();
+            float unsafeAreaHeight = PanelScaler.CalculateUnsafeAreaHeight();
 
-            if (unsafeAreaSize == 0)
+            // Calculating max y anchor for the editor
+            float anchorMaxY = 1 - TopButtonsHeight - unsafeAreaHeight;
+
+            // If the unsafe area is 0 we set default anchors
+            if (unsafeAreaHeight == 0)
             {
                 EditorRectTransform.anchorMin = Vector2.zero;
-                EditorRectTransform.anchorMax = Vector2.one;
+                EditorRectTransform.anchorMax = new(1, anchorMaxY);
+
+                _topButtonsRectTransform.anchorMin = new(0, anchorMaxY);
+                _topButtonsRectTransform.anchorMax = Vector2.one;
                 return;
             }
 
-            float aspectRatio = (float)Screen.width / Screen.height;
+            // Calculating editor aspect ratio and size
+            float editorAspectRatio = Screen.width / (Screen.height * (1 - unsafeAreaHeight));
+            float editorHeight = Screen.height * anchorMaxY;
+            float editorWidth = editorHeight * editorAspectRatio;
 
-            float editorHeight = Screen.height * (1 - unsafeAreaSize);
-            float editorWidth = editorHeight * aspectRatio;
+            // Calculating x anchors
             float widthAnchorValue = editorWidth / Screen.width;
+            float anchorMinX = (1 - widthAnchorValue) * 0.5f;
+            float anchorMaxX = widthAnchorValue + EditorRectTransform.anchorMin.x;
 
-            EditorRectTransform.anchorMin = new((1 - widthAnchorValue) * 0.5f, 0);
-            EditorRectTransform.anchorMax = new(widthAnchorValue + EditorRectTransform.anchorMin.x, 1 - unsafeAreaSize);
+            // Setting editor anchors
+            EditorRectTransform.anchorMin = new(anchorMinX, 0);
+            EditorRectTransform.anchorMax = new(anchorMaxX, anchorMaxY);
+
+            // Setting top button anchors
+            _topButtonsRectTransform.anchorMin = new(0, anchorMaxY);
+            _topButtonsRectTransform.anchorMax = new(1, 1 - unsafeAreaHeight);
         }
 
         private void ToggleOptionsDropdown()
