@@ -49,6 +49,8 @@ public class PollMonitor : MonoBehaviour // Monitors active polls to check if th
                 yield break;
             }
 
+            Debug.Log("[PollMonitor] Checking for expired polls");
+
             yield return new WaitForSeconds(5f);
         }
     }
