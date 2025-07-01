@@ -28,7 +28,7 @@ public class KojuTrayPopulator : MonoBehaviour
     private PlayerData player;
     private ClanData clan;
 
-    private void Start()
+    private void OnEnable()
     {
         // Populate koju and initialize StoreFront
         store = Storefront.Get();
@@ -84,10 +84,18 @@ public class KojuTrayPopulator : MonoBehaviour
         .Where(f => f.VotedToSell)
         .ToList();
 
+
+
         if (votedToSellFurniture.Count == 0)
         {
             Debug.LogWarning("No clan furniture voted to sell.");
             yield break;
+        }
+
+        // Clear existing tray content to avoid duplicates
+        foreach (Transform child in trayContent)
+        {
+            Destroy(child.gameObject);
         }
 
         // Load gamefurniture
