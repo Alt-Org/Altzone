@@ -41,27 +41,23 @@ namespace Altzone.Scripts.Audio
 
         public MusicObject GetMusicObject(int musicIndex = -1)
         {
-            if (_musicList.Count == 0 || _musicList.Count <= musicIndex)
-                return null;
+            if (_musicList.Count == 0 || _musicList.Count <= musicIndex) return (null);
 
-            if (musicIndex >= 0)
-                _musicTrack = musicIndex;
+            if (musicIndex >= 0) _musicTrack = musicIndex;
 
             return (_musicList[_musicTrack]);
         }
 
         public string GetTrackName()
         {
-            if (_musicList.Count == 0)
-                return null;
+            if (_musicList.Count == 0) return (null);
 
             return (_musicList[_musicTrack].Name);
         }
 
         public MusicObject NextTrack()
         {
-            if (_musicList.Count < 2)
-                return null;
+            if (_musicList.Count < 2) return (null);
 
             _musicTrack++;
 
@@ -72,13 +68,11 @@ namespace Altzone.Scripts.Audio
 
         public MusicObject PrevTrack()
         {
-            if (_musicList.Count < 2)
-                return null;
+            if (_musicList.Count < 2) return (null);
 
             _musicTrack--;
 
-            if (_musicTrack < 0)
-                _musicTrack = _musicList.Count - 1;
+            if (_musicTrack < 0) _musicTrack = _musicList.Count - 1;
 
             return (_musicList[_musicTrack]);
         }

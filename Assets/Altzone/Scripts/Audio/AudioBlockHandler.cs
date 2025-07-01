@@ -13,8 +13,7 @@ namespace Altzone.Scripts.Audio
 
         private void OnDestroy()
         {
-            if (Application.isPlaying || _manager == null)
-                return;
+            if (Application.isPlaying || _manager == null) return;
 
             Debug.LogWarning("Tset" + _audioSourceHash + _sourceType);
             _manager.RemoveAudioBlock(_audioSourceHash, _sourceType);
@@ -22,8 +21,7 @@ namespace Altzone.Scripts.Audio
 
         private void OnTransformParentChanged()
         {
-            if (_manager != null)
-                RefreshBlock(_manager);
+            if (_manager != null) RefreshBlock(_manager);
         }
 
         public void SetAudioInfo(string section, AudioSourceType sourceType, AudioManager manager)

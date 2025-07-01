@@ -62,6 +62,7 @@ public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
     public void PlayAudio()
     {
         AudioManager manager = AudioManager.Instance;
+
         if (manager == null)
         {
             Debug.LogError("Cannot find audio manager. Check if AudioManager is added to the scene.");

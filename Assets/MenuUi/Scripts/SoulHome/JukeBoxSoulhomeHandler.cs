@@ -80,16 +80,14 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
     public void PlaySong(JukeboxSong song)
     {
-        if (_isMainMenuMode)
-            return;
+        if (_isMainMenuMode) return;
 
-        AudioManager.Instance.Jukebox.PlaySongByIndex(song);
+        AudioManager.Instance.Jukebox.PlaySong(song);
     }
 
     private void SetSongInfo(JukeboxSong song)
     {
-        if (song == null)
-            return;
+        if (song == null) return;
 
         _songName.text = song.Name;
         _diskImage.sprite = song.Disk;
@@ -100,14 +98,13 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
             _diskSpinCoroutine = null;
             _diskTransform.rotation = Quaternion.identity;
         }
-        if (song.Song != null)
-            _diskSpinCoroutine = StartCoroutine(SpinDisk());
+
+        if (song.Song != null) _diskSpinCoroutine = StartCoroutine(SpinDisk());
     }
 
     private void UpdateQueueText(Queue<JukeboxSong> songQueue) 
     {
-        foreach(Transform queueText in _queueContent) 
-            Destroy(queueText.gameObject);
+        foreach(Transform queueText in _queueContent) Destroy(queueText.gameObject);
 
         foreach (JukeboxSong song in songQueue)
         {
@@ -118,6 +115,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
     public void StopJukebox()
     {
+        AudioManager.Instance.StopMusic();
         _diskImage.sprite = null;
 
         if (_diskSpinCoroutine != null)

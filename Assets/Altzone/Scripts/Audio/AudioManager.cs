@@ -45,14 +45,12 @@ namespace Altzone.Scripts.Audio
         // Start is called before the first frame update
         void Start()
         {
-            if (_musicAudio != null)
-                _musicHandler = _musicAudio.GetComponent<MusicHandler>();
+            if (_musicAudio != null) _musicHandler = _musicAudio.GetComponent<MusicHandler>();
         }
 
         public void PlaySfxAudioWithType(string type)
         {
-            if (string.IsNullOrWhiteSpace(type))
-                return;
+            if (string.IsNullOrWhiteSpace(type)) return;
 
             foreach (AudioBlock block in _sfxList)
                 if (block.type == type)
@@ -61,8 +59,7 @@ namespace Altzone.Scripts.Audio
 
         public void PlaySfxAudio(string name)
         {
-            if (string.IsNullOrWhiteSpace(name))
-                return;
+            if (string.IsNullOrWhiteSpace(name)) return;
 
             foreach (AudioBlock block in _sfxList)
                 if (string.Equals(name, block.name))
@@ -71,17 +68,12 @@ namespace Altzone.Scripts.Audio
 
         public void PlaySfxAudio(int value)
         {
-            if (value < 1)
-                return;
-
-            if (_sfxList.Count < value - 1)
-                _sfxList[value - 1].audioSource.Play();
+            if (_sfxList.Count > 0 && _sfxList.Count < value - 1) _sfxList[value - 1].audioSource.Play();
         }
 
         public void PlayAmbientAudioWithType(string type)
         {
-            if (string.IsNullOrWhiteSpace(type))
-                return;
+            if (string.IsNullOrWhiteSpace(type)) return;
 
             foreach (AudioBlock block in _ambientList)
                 if (block.type == type)
@@ -90,8 +82,7 @@ namespace Altzone.Scripts.Audio
 
         public void PlayAmbientAudio(string name)
         {
-            if (string.IsNullOrWhiteSpace(name))
-                return;
+            if (string.IsNullOrWhiteSpace(name)) return;
 
             foreach (AudioBlock block in _ambientList)
                 if (string.Equals(name, block.name))
@@ -100,11 +91,7 @@ namespace Altzone.Scripts.Audio
 
         public void PlayAmbientAudio(int value)
         {
-            if (value < 1)
-                return;
-
-            if (_ambientList.Count < value - 1)
-                _ambientList[value - 1].audioSource.Play();
+            if (_ambientList.Count > 0 && _ambientList.Count < value - 1) _ambientList[value - 1].audioSource.Play();
         }
 
         public string PlayMusic(MusicSection section, int musicindex = -1)
@@ -123,27 +110,23 @@ namespace Altzone.Scripts.Audio
 
         public string NextMusicTrack()
         {
-            if (_musicHandler == null)
-                return (null);
+            if (_musicHandler == null) return (null);
 
             return (_musicHandler.NextTrack());
         }
 
         public string PrevMusicTrack()
         {
-            if (_musicHandler == null)
-                return (null);
+            if (_musicHandler == null) return (null);
 
             return (_musicHandler.PrevTrack());
         }
 
         public void StopMusic()
         {
-            if (_musicHandler == null)
-                return;
+            if (_musicHandler == null) return;
 
-            if (JukeBoxCurrentSong?.Song != null)
-                _jukebox.StopSong();
+            if (JukeBoxCurrentSong?.Song != null) _jukebox.StopSong();
 
             _musicHandler.StopMusic();
         }
@@ -180,14 +163,11 @@ namespace Altzone.Scripts.Audio
                             gameObject.name = "Music";
                         }
 
-                        if (musicTransform.GetComponent<AudioSource>() == null)
-                            gameObject.AddComponent<AudioSource>();
+                        if (musicTransform.GetComponent<AudioSource>() == null) gameObject.AddComponent<AudioSource>();
 
-                        if (musicTransform.GetComponent<MusicList>() == null)
-                            gameObject.AddComponent<MusicList>();
+                        if (musicTransform.GetComponent<MusicList>() == null) gameObject.AddComponent<MusicList>();
 
-                        if (musicTransform.GetComponent<SetVolume>() == null)
-                            gameObject.AddComponent<SetVolume>();
+                        if (musicTransform.GetComponent<SetVolume>() == null) gameObject.AddComponent<SetVolume>();
 
                         return;
                     }
@@ -256,8 +236,7 @@ namespace Altzone.Scripts.Audio
 
             GameObject gameObject2 = Instantiate(_audioSourcePrefab, parentTransform);
 
-            if (!string.IsNullOrWhiteSpace(name))
-                gameObject2.name = name;
+            if (!string.IsNullOrWhiteSpace(name)) gameObject2.name = name;
 
             gameObject2.GetComponent<AudioBlockHandler>().SetAudioInfo(section, sourcetype, this);
             AudioBlock audioBlock = new(gameObject2.name);
@@ -273,16 +252,14 @@ namespace Altzone.Scripts.Audio
 
         public void CheckAudioTree()
         {
-            if (!transform.gameObject.CompareTag("AudioManager")) // This makes sure that this only activates inside the AudioManager prefab.
-                return;
+            if (!transform.gameObject.CompareTag("AudioManager")) return; // This makes sure that this only activates inside the AudioManager prefab.
 
             foreach (Transform transform in transform)
             {
                 List<Transform> childrenToBeMoved = new();
                 foreach (Transform transform2 in transform)
                 {
-                    if (transform2.GetComponent<AudioSource>() != null)
-                        childrenToBeMoved.Add(transform2);
+                    if (transform2.GetComponent<AudioSource>() != null) childrenToBeMoved.Add(transform2);
 
                     transform2.GetComponent<AudioBlockHandler>()?.RefreshBlock(this);
                 }
@@ -296,8 +273,7 @@ namespace Altzone.Scripts.Audio
                     undefined = gameObject.transform;
                 }
 
-                foreach (Transform audio in childrenToBeMoved)
-                    audio.SetParent(undefined);
+                foreach (Transform audio in childrenToBeMoved) audio.SetParent(undefined);
             }
         }
 
@@ -342,22 +318,18 @@ namespace Altzone.Scripts.Audio
                         undefined = gameObject.transform;
                     }
 
-                    foreach (Transform audio in childrenToBeMoved)
-                        audio.SetParent(undefined);
+                    foreach (Transform audio in childrenToBeMoved) audio.SetParent(undefined);
 
-                    if (section != null)
-                        DestroyImmediate(section.gameObject);
+                    if (section != null) DestroyImmediate(section.gameObject);
                 }
             }
         }
 
         public void RefreshLists()
         {
-            foreach(AudioBlock block in _sfxList)
-                block.UpdateHash();
+            foreach(AudioBlock block in _sfxList) block.UpdateHash();
 
-            foreach (AudioBlock block in _ambientList)
-                block.UpdateHash();
+            foreach (AudioBlock block in _ambientList) block.UpdateHash();
         }
     }
 
@@ -378,8 +350,7 @@ namespace Altzone.Scripts.Audio
 
         public void UpdateHash()
         {
-            if (audioSource != null)
-                _sourceHash = audioSource.GetHashCode();
+            if (audioSource != null) _sourceHash = audioSource.GetHashCode();
         }
     }
     #endregion
@@ -400,8 +371,7 @@ namespace Altzone.Scripts.Audio
 
         private void OnEnable()
         {
-            if (Application.isPlaying)
-                return;
+            if (Application.isPlaying) return;
 
             ((AudioManager)target).CheckAudioTree();
         }
@@ -415,8 +385,7 @@ namespace Altzone.Scripts.Audio
             _audioSection.Clear();
             int i = 0;
 
-            for (i = 0; i < prop.arraySize; i++)
-                _audioSection.Add(prop.GetArrayElementAtIndex(i).stringValue);
+            for (i = 0; i < prop.arraySize; i++) _audioSection.Add(prop.GetArrayElementAtIndex(i).stringValue);
 
             AudioManager script = (AudioManager)target;
 
@@ -444,8 +413,7 @@ namespace Altzone.Scripts.Audio
                 _audioSection.Remove(sectionName);
                 prop.DeleteArrayElementAtIndex(index);
 
-                if (index != 0)
-                    index--;
+                if (index != 0) index--;
 
                 script.RemoveSection(sectionName);
                 _newSectionName = "";

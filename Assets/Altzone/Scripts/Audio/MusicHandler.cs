@@ -16,8 +16,7 @@ namespace Altzone.Scripts.Audio
         {
             MusicList musicList = GetMusicList(section);
 
-            if (musicList == null)
-                return (null);
+            if (musicList == null) return (null);
 
             _currentSection = section;
             MusicObject musicObject = musicList.GetMusicObject(musicIndex);
@@ -28,8 +27,7 @@ namespace Altzone.Scripts.Audio
             {
                 if (musicObject.MusicClip.Equals(_audioSource.clip))
                 {
-                    if (!_audioSource.isPlaying)
-                        _audioSource.Play();
+                    if (!_audioSource.isPlaying) _audioSource.Play();
 
                     return (musicObject.Name);
                 }
@@ -44,13 +42,11 @@ namespace Altzone.Scripts.Audio
         {
             MusicList musicList = GetMusicList(_currentSection);
 
-            if (musicList == null)
-                return (null);
+            if (musicList == null) return (null);
 
             string name = musicList.GetTrackName();
 
-            if (name == null)
-                return (null);
+            if (name == null) return (null);
 
             return name;
         }
@@ -64,8 +60,7 @@ namespace Altzone.Scripts.Audio
         {
             MusicList musicList = GetMusicList(_currentSection);
 
-            if (musicList == null)
-                return (null);
+            if (musicList == null) return (null);
 
             MusicObject musicObject = musicList.NextTrack();
 
@@ -81,8 +76,7 @@ namespace Altzone.Scripts.Audio
         {
             MusicList musicList = GetMusicList(_currentSection);
 
-            if (musicList == null)
-                return (null);
+            if (musicList == null) return (null);
 
             MusicObject musicObject = musicList.PrevTrack();
 
@@ -96,19 +90,16 @@ namespace Altzone.Scripts.Audio
 
         private MusicList GetMusicList(MusicSection section)
         {
-            if (section == MusicSection.None)
-                return (null);
+            if (section == MusicSection.None) return (null);
 
             foreach (Transform transform in transform)
             {
                 MusicList currentlist = transform.GetComponent<MusicList>();
 
-                if (currentlist != null)
-                    if (currentlist.MusicSection == section)
-                        return (currentlist);
+                if (currentlist != null && currentlist.MusicSection == section) return (currentlist);
             }
 
-            return null;
+            return (null);
         }
 
         private void SwitchMusic(AudioClip audioClip)

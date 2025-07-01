@@ -70,10 +70,9 @@ namespace Altzone.Scripts.Audio
                 PlayNextSongInQueue();
         }
 
-        public void PlaySongByIndex(JukeboxSong song)
+        public void PlaySong(JukeboxSong song)
         {
-            if (_isMainMenuMode)
-                return;
+            if (_isMainMenuMode) return;
 
             if ((!_audioSource.isPlaying && _songQueue.Count == 0) || _currentSong == null)
                 StartSong(song);
@@ -124,8 +123,7 @@ namespace Altzone.Scripts.Audio
 
         private void PlayNextSongInQueue()
         {
-            if (_songQueue.Count == 0)
-                return;
+            if (_songQueue.Count == 0) return;
 
             StartSong(_songQueue.Dequeue());
             OnChangeJukeBoxQueue.Invoke(_songQueue);
