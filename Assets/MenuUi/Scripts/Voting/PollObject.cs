@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine.UI;
 using System;
 
-public class PollObject : MonoBehaviour
+public class PollObject : MonoBehaviour // Works as the object used to represent polls
 {
     private string pollId;
 
@@ -73,6 +73,7 @@ public class PollObject : MonoBehaviour
 
             Clock.fillAmount = 1 - (float)(secondsLeft) / totalDuration;
 
+            // Display the remaining time, requires the "left" to read properly in-game
             if (secondsLeft < 60) TimeLeftText.text = secondsLeft + "s\nleft";
             else if (secondsLeft < 3600) TimeLeftText.text = (secondsLeft / 60) + "m\nleft";
             else TimeLeftText.text = (secondsLeft / 3600) + "h\nleft";
@@ -81,8 +82,6 @@ public class PollObject : MonoBehaviour
         }
     }
 
-
-
     private bool PollPassed()
     {
         return pollData.YesVotes.Count > pollData.NoVotes.Count;
@@ -90,6 +89,7 @@ public class PollObject : MonoBehaviour
 
     private void SetValues()
     {
+        // Update UI for FurniturePollData type polls
         if (pollData is FurniturePollData)
         {
             FurniturePollData furniturePollData = (FurniturePollData)pollData;

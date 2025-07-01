@@ -10,7 +10,7 @@ using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Voting;
 using MenuUi.Scripts.Storage;
 
-public static class PollManager
+public static class PollManager // Handles the polls from creation to loading to ending them
 {
     private static List<PollData> pollDataList = new List<PollData>();
     private static List<PollData> pastPollDataList = new List<PollData>();
@@ -21,6 +21,7 @@ public static class PollManager
 
     public static Action<FurniturePollType> ShowVotingPopup;
 
+    // Create poll for GameFurniture
     public static void CreateFurniturePoll(FurniturePollType furniturePollType, GameFurniture furniture)
     {
         LoadClanData();
@@ -41,6 +42,7 @@ public static class PollManager
         PollMonitor.Instance?.StartMonitoring();
     }
 
+    // Create poll for StorageFurniture
     public static void CreateFurniturePoll(FurniturePollType furniturePollType, StorageFurniture furniture)
     {
         LoadClanData();
@@ -84,6 +86,7 @@ public static class PollManager
         }
     }
 
+    // Create a unique ID for the poll
     private static string GetFirstAvailableId()
     {
         string newId;
@@ -133,6 +136,7 @@ public static class PollManager
         }
     }
 
+    // Ends the poll and determines if it passed, and updates clan invetory accordingly (WIP)
     public static void EndPoll(string pollId)
     {
         LoadClanData();
@@ -180,6 +184,7 @@ public static class PollManager
 
     }
 
+    // Checks for expired polls and ends those that have expired
     public static void CheckAndExpiredPolls()
     {
         if (pollDataList == null || pollDataList.Count == 0) return;

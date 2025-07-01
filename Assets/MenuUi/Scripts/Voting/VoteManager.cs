@@ -6,7 +6,7 @@ using Altzone.Scripts.Voting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class VoteManager : MonoBehaviour
+public class VoteManager : MonoBehaviour // Manages the display and interaction for polls
 {
     [SerializeField] private GameObject VotedListContent;
     [SerializeField] private GameObject NotVotedListContent;
@@ -85,7 +85,7 @@ public class VoteManager : MonoBehaviour
                     else
                     {
                         Debug.Log("You have already voted on this poll.");
-                        // Maybe add visual indicator for the player in the future?
+                        // Maybe add visual indicator for the player in the future such as a popup
                     }
                 });
             }

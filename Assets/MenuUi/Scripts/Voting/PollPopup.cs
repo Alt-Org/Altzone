@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using System;
 
-public class PollPopup : MonoBehaviour
+public class PollPopup : MonoBehaviour // Controls the popup display for polls
 {
     private string pollId;
     private PollData pollData;
@@ -32,6 +32,7 @@ public class PollPopup : MonoBehaviour
 
     private void SetValues()
     {
+        // Populate based on the furniture info
         if (pollData is FurniturePollData)
         {
             FurniturePollData furniturePollData = (FurniturePollData)pollData;

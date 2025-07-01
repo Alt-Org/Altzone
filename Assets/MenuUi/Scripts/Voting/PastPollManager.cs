@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PastPollManager : MonoBehaviour
+public class PastPollManager : MonoBehaviour // Handles the Ui display for past polls
 {
     [SerializeField] private GameObject PastPollListContent;
     [SerializeField] private GameObject PollObjectPrefab;
@@ -32,8 +32,10 @@ public class PastPollManager : MonoBehaviour
         }
         PastPolls.Clear();
 
+        // Retrieve the list of past polls from pollmanager
         var pastPollList = PollManager.GetPastPollList();
 
+        // Instantiate PollObject for every poll
         foreach (var pollData in pastPollList)
         {
             GameObject obj = Instantiate(PollObjectPrefab, PastPollListContent.transform);
