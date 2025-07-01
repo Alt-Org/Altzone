@@ -86,6 +86,22 @@ public static class PollManager // Handles the polls from creation to loading to
         }
     }
 
+    public static void DebugPrintAllActivePolls()
+    {
+        Debug.Log("----- Active Polls Start -----");
+        foreach (var poll in pollDataList)
+        {
+            string furnitureName = "(unknown)";
+            if (poll is FurniturePollData fPoll)
+            {
+                furnitureName = fPoll.Furniture?.Name ?? "(null furniture)";
+            }
+            Debug.Log($"Poll ID: {poll.Id}, Furniture: {furnitureName}, Expired: {poll.IsExpired}");
+        }
+        Debug.Log("----- Active Polls End -----");
+    }
+
+
     // Create a unique ID for the poll
     private static string GetFirstAvailableId()
     {

@@ -23,6 +23,7 @@ public class PollMonitor : MonoBehaviour // Monitors active polls to check if th
         {
             checkRoutine = StartCoroutine(CheckExpiredPollsRoutine());
             Debug.Log("Start Monitoring");
+            PollManager.DebugPrintAllActivePolls();
         }
     }
 
@@ -40,7 +41,7 @@ public class PollMonitor : MonoBehaviour // Monitors active polls to check if th
     private IEnumerator CheckExpiredPollsRoutine()
     {
         while (true)
-        {
+        {   
             PollManager.CheckAndExpirePolls();
 
             if (PollManager.GetPollList().Count == 0)
