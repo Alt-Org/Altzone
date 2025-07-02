@@ -37,7 +37,7 @@ namespace Altzone.Scripts.BattleUiShared
         {
             if (_rectTransform != null)
             {
-                return new BattleUiMovableElementData(UiElementType, _rectTransform.anchorMin, _rectTransform.anchorMax);
+                return new BattleUiMovableElementData(UiElementType, _rectTransform.anchorMin, _rectTransform.anchorMax, 0);
             }
             else
             {

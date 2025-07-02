@@ -989,7 +989,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             bool isFlippedHorizontally = false;
             bool isFlippedVertically = false;
 
-            float handleSize = 0;
+            int handleSize = 0;
 
             // Rect variable so that we can do aspect ratio calculations
             Rect movableUiElementRect = Rect.zero;
@@ -1101,7 +1101,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             (anchorMin, anchorMax) = CalculateAnchors(size, pos);
 
-            return new(uiElementType, anchorMin, anchorMax, orientation, isFlippedHorizontally, isFlippedVertically, handleSize);
+            return new(uiElementType, anchorMin, anchorMax, 0, orientation, isFlippedHorizontally, isFlippedVertically, handleSize);
         }
 
         private BattleUiEditingComponent GetEditingComponent(BattleUiElementType uiElementType)
