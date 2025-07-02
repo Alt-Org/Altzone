@@ -152,53 +152,85 @@ public static class PollManager // Handles the polls from creation to loading to
         }
     }
 
-    // Ends the poll and determines if it passed, and updates clan invetory accordingly (WIP)
+    // Ends the poll and determines if it passed, and updates clan inventory accordingly (WIP)
     public static void EndPoll(string pollId)
     {
         LoadClanData();
 
         PollData pollData = GetPollData(pollId);
-        if (pollData == null) return;
-
-        bool yesVotesWon = (pollData.YesVotes.Count >= Mathf.CeilToInt(clan.Members.Count / 3.0f)) && pollData.YesVotes.Count > pollData.NoVotes.Count;
-
-        if (pollData is FurniturePollData furniturePollData)
+        if (pollData == null)
         {
-            FurniturePollType pollType = furniturePollData.FurniturePollType;
+            Debug.LogWarning($"PollData not found for pollId: {pollId}");
+            return;
+        }
 
-            if (pollType == FurniturePollType.Selling)
+        int memberCount = clan.Members?.Count ?? 0;
+        int yesCount = pollData.YesVotes.Count;
+        int noCount = pollData.NoVotes.Count;
+        bool yesVotesWon = (yesCount >= Mathf.CeilToInt(memberCount / 3.0f)) && (yesCount > noCount);
+
+        FurniturePollData furniturePollData = null;
+        if (pollData is FurniturePollData fpd)
+        {
+            furniturePollData = fpd;
+
+            if (furniturePollData.FurniturePollType == FurniturePollType.Selling)
             {
-                ClanFurniture clanFurniture = clan.Inventory.Furniture
-                     .FirstOrDefault(furn => furn.GameFurnitureName == furniturePollData.Furniture.Name && furn.InVoting);
+                int idx = clan.Inventory.Furniture.FindIndex(furn => furn.GameFurnitureName == furniturePollData.Furniture.Name);
 
-                if (clanFurniture == null)
+                if (idx < 0)
                 {
                     Debug.LogWarning($"Furniture not found for poll: {furniturePollData.Furniture.Name}");
                     return;
                 }
 
+                var clanFurniture = clan.Inventory.Furniture[idx];
 
-                clanFurniture.VotedToSell = yesVotesWon;
-                clanFurniture.InVoting = false;
+                Debug.Log($"Before update - Furniture: {clanFurniture.GameFurnitureName}, VotedToSell: {clanFurniture.VotedToSell}, InVoting: {clanFurniture.InVoting}");
+
+                if (yesVotesWon)
+                {
+                    clanFurniture.VotedToSell = true;
+                    clanFurniture.InVoting = false;
+                }
+                else
+                {
+                    clanFurniture.VotedToSell = false;
+                    clanFurniture.InVoting = false;
+                }
+
+                clan.Inventory.Furniture[idx] = clanFurniture;
+
+                Debug.Log($"After update - VotedToSell: {clanFurniture.VotedToSell}, InVoting: {clanFurniture.InVoting}");
             }
-
-            // TODO: Bying
         }
+
 
         pollDataList.Remove(pollData);
         pastPollDataList.Add(pollData);
 
-        SaveClanData();
-
-        VotingActions.ReloadPollList?.Invoke();
-        PastPollManager.OnPastPollsChanged?.Invoke();
-
-        if (pollDataList.Count == 0)
+        DataStore store = Storefront.Get();
+        store.SaveClanData(clan, savedClan =>
         {
-            PollMonitor.Instance?.StopMonitoring();
-        }
+            clan = savedClan;
+            Debug.Log("Clan data saved with updated VotedToSell and InVoting flags.");
 
+            // Verify furniture flags after save
+            var savedFurniture = clan.Inventory.Furniture.FirstOrDefault(f => f.GameFurnitureName == furniturePollData.Furniture.Name);
+            Debug.Log($"After save - Furniture VotedToSell: {savedFurniture?.VotedToSell}, InVoting: {savedFurniture?.InVoting}");
+
+            VotingActions.ReloadPollList?.Invoke();
+            PastPollManager.OnPastPollsChanged?.Invoke();
+
+            if (pollDataList.Count == 0)
+            {
+                PollMonitor.Instance?.StopMonitoring();
+            }
+        });
     }
+
+
+
 
     // Checks for expired polls and ends those that have expired
     public static void CheckAndExpirePolls()

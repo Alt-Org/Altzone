@@ -84,8 +84,6 @@ public class KojuTrayPopulator : MonoBehaviour
         .Where(f => f.VotedToSell)
         .ToList();
 
-
-
         if (votedToSellFurniture.Count == 0)
         {
             Debug.LogWarning("No clan furniture voted to sell.");
