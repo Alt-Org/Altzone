@@ -82,6 +82,7 @@ namespace Altzone.Scripts.BattleUiShared
             // Setting new opacity to images
             foreach (Image image in _images)
             {
+                if (image.sprite == null) continue;
                 Color newImageColor = image.color;
                 newImageColor.a = newOpacity;
                 image.color = newImageColor;

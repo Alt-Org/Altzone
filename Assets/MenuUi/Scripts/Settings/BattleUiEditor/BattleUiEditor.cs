@@ -256,6 +256,18 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _closeButton.onClick.AddListener(CloseEditor);
             _saveButton.onClick.AddListener(SaveChanges);
 
+            // Ui element transparency listeners
+            _uiTransparencySlider.onValueChanged.AddListener((value) =>
+            {
+                UpdateInputFieldText(value, _uiTransparencyInputField);
+                _currentlySelectedEditingComponent.UpdateTransparency((int)value);
+            });
+            _uiTransparencyInputField.onValueChanged.AddListener((value) =>
+            {
+                VerifyAndUpdateSliderValue(_uiTransparencyInputField, _uiTransparencySlider);
+                _currentlySelectedEditingComponent.UpdateTransparency((int)_uiTransparencySlider.value);
+            });
+
             // Options dropdown listeners
             _optionsButton.onClick.AddListener(ToggleOptionsDropdown);
 
@@ -1159,6 +1171,18 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
 
             _currentlySelectedEditingComponent = newSelectedEditingComponent;
+
+            if (newSelectedEditingComponent != null)
+            {
+                int currentTransparency = _currentlySelectedEditingComponent.GetCurrentTransparency();
+                _uiTransparencySlider.SetValueWithoutNotify(currentTransparency);
+                _uiTransparencyInputField.SetTextWithoutNotify(currentTransparency.ToString());
+                _uiTransparencyHolder.SetActive(true);
+            }
+            else
+            {
+                _uiTransparencyHolder.SetActive(false);
+            }
         }
 
         private void UpdateInputFieldText(float value, TMP_InputField field)

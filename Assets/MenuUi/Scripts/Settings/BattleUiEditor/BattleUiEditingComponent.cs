@@ -92,6 +92,17 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _isIncrementalScalingToggled = toggle;
         }
 
+        public void UpdateTransparency(int newTransparency)
+        {
+            _data.Transparency = newTransparency;
+            _movableElement.SetData(_data);
+        }
+
+        public int GetCurrentTransparency()
+        {
+            return _data.Transparency;
+        }
+
         public void OnPointerDown(PointerEventData eventData)
         {
             OnUiElementSelected?.Invoke(this);
