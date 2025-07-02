@@ -730,7 +730,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 && savedData.IsFlippedVertically == compareData.IsFlippedVertically
                 && savedData.AnchorMin == compareData.AnchorMin
                 && savedData.AnchorMax == compareData.AnchorMax
-                && savedData.Orientation == compareData.Orientation;
+                && savedData.Orientation == compareData.Orientation
+                && savedData.HandleSize == compareData.HandleSize
+                && savedData.Transparency == compareData.Transparency;
         }
 
         private GameObject InstantiateBattleUiElement(BattleUiElementType uiElementType)
