@@ -97,29 +97,29 @@ namespace Altzone.Scripts.Audio
         public string PlayMusic(MusicSection section, int musicindex = -1)
         {
             if (_musicHandler == null)
-                return (null);
+                return null;
             else if (section == MusicSection.SoulHome)
                 if (JukeBoxCurrentSong?.Song != null)
                 {
                     _jukebox.ContinueSong();
-                    return (JukeBoxCurrentSong.Name);
+                    return JukeBoxCurrentSong.Name;
                 }
 
-            return (_musicHandler.PlayMusic(section, musicindex));
+            return _musicHandler.PlayMusic(section, musicindex);
         }
 
         public string NextMusicTrack()
         {
-            if (_musicHandler == null) return (null);
+            if (_musicHandler == null) return null;
 
-            return (_musicHandler.NextTrack());
+            return _musicHandler.NextTrack();
         }
 
         public string PrevMusicTrack()
         {
-            if (_musicHandler == null) return (null);
+            if (_musicHandler == null) return null;
 
-            return (_musicHandler.PrevTrack());
+            return _musicHandler.PrevTrack();
         }
 
         public void StopMusic()
@@ -143,7 +143,7 @@ namespace Altzone.Scripts.Audio
                         if (transform2.GetComponent<AudioSource>() == null)
                             AudioTypes.Add(transform2.gameObject.name);
 
-                return (AudioTypes);
+                return AudioTypes;
             }
         }
 
