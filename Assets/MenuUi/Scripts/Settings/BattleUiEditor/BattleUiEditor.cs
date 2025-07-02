@@ -60,9 +60,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private TMP_InputField _gridTransparencyInputField;
 
         [Header("Input options")]
-        [SerializeField] private Button _inputSelectorLeftButton;
-        [SerializeField] private Button _inputSelectorRightButton;
-        [SerializeField] private TMP_Text _inputSelectorLabel;
+        [SerializeField] private Toggle _swipeTwoFingerToggle;
+        [SerializeField] private TMP_Text _swipeTwoFingerLabel;
+        [SerializeField] private Toggle _pointAndClickSwipeToggle;
+        [SerializeField] private TMP_Text _pointAndClickSwipeLabel;
+        [SerializeField] private Toggle _joysticksToggle;
+        [SerializeField] private TMP_Text _joysticksLabel;
         [Space]
         [SerializeField] private GameObject _swipeMinDistanceHolder;
         [SerializeField] private Slider _swipeMinDistanceSlider;
@@ -189,9 +192,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private enum InputCombinationType
         {
-            SwipeTwoFinger,
-            PointAndClickSwipe,
-            Joysticks,
+            None = -1,
+            SwipeTwoFinger = 0,
+            PointAndClickSwipe = 1,
+            Joysticks = 2,
         }
 
         private const string PlayerText = "Min‰";
@@ -318,9 +322,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             });
 
             // Input options listeners
-            _inputSelectorLeftButton.onClick.AddListener(() => PreviousInputCombination());
-            _inputSelectorRightButton.onClick.AddListener(() => NextInputCombination());
-            _rotationGyroscopeOverrideToggle.onValueChanged.AddListener((value) => { UpdateInputSettings(); });
+            _swipeTwoFingerToggle.onValueChanged.AddListener((value) => UpdateInputSettings(InputCombinationType.SwipeTwoFinger));
+            _pointAndClickSwipeToggle.onValueChanged.AddListener((value) => UpdateInputSettings(InputCombinationType.PointAndClickSwipe));
+            _joysticksToggle.onValueChanged.AddListener((value) => UpdateInputSettings(InputCombinationType.Joysticks));
+            _rotationGyroscopeOverrideToggle.onValueChanged.AddListener((value) => UpdateInputSettings());
 
             _swipeMinDistanceSlider.onValueChanged.AddListener((value) =>
             {
@@ -429,20 +434,22 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Loading saved input settings
             _rotationGyroscopeOverrideToggle.SetIsOnWithoutNotify(SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Gyroscope);
 
+            InputCombinationType newInputType;
             switch (SettingsCarrier.Instance.BattleMovementInput)
             {
+                default:
                 case BattleMovementInputType.PointAndClick:
-                    _currentInputCombinationType = InputCombinationType.PointAndClickSwipe;
+                    newInputType = InputCombinationType.PointAndClickSwipe;
                     break;
                 case BattleMovementInputType.Swipe:
-                    _currentInputCombinationType = InputCombinationType.SwipeTwoFinger;
+                    newInputType = InputCombinationType.SwipeTwoFinger;
                     break;
                 case BattleMovementInputType.Joystick:
-                    _currentInputCombinationType = InputCombinationType.Joysticks;
+                    newInputType = InputCombinationType.Joysticks;
                     break;
             }
 
-            UpdateInputSettings();
+            UpdateInputSettings(newInputType);
 
             float swipeMinDistance = SettingsCarrier.Instance.BattleSwipeMinDistance;
             _swipeMinDistanceSlider.value = swipeMinDistance;
@@ -506,8 +513,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _alignToGridToggle.onValueChanged.RemoveAllListeners();
 
             // Removing input options listeners
-            _inputSelectorLeftButton.onClick.RemoveAllListeners();
-            _inputSelectorRightButton.onClick.RemoveAllListeners();
+            _swipeTwoFingerToggle.onValueChanged.RemoveAllListeners();
+            _pointAndClickSwipeToggle.onValueChanged.RemoveAllListeners();
+            _joysticksToggle.onValueChanged.RemoveAllListeners();
             _rotationGyroscopeOverrideToggle.onValueChanged.RemoveAllListeners();
 
             _swipeMinDistanceSlider.onValueChanged.RemoveAllListeners();
@@ -1235,29 +1243,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _arenaImage.offsetMax = Vector2.zero;
         }
 
-        private void NextInputCombination()
+        private void UpdateInputSettings(InputCombinationType newInputType = InputCombinationType.None)
         {
-            if ((int)_currentInputCombinationType < (int)InputCombinationType.Joysticks) _currentInputCombinationType++;
-            else _currentInputCombinationType = 0;
+            // Setting the current input type
+            if (newInputType != InputCombinationType.None) _currentInputCombinationType = newInputType;
 
-            UpdateInputSettings();
-        }
-
-        private void PreviousInputCombination()
-        {
-            if ((int)_currentInputCombinationType > 0) _currentInputCombinationType--;
-            else _currentInputCombinationType = InputCombinationType.Joysticks;
-
-            UpdateInputSettings();
-        }
-
-        private void UpdateInputSettings()
-        {
             // Initializing variables
             BattleMovementInputType movementType;
             BattleRotationInputType rotationType;
-
-            string text;
 
             bool showSwipeMinDistance;
             bool showSwipeMaxDistance;
@@ -1272,8 +1265,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     movementType = BattleMovementInputType.Swipe;
                     rotationType = BattleRotationInputType.TwoFinger;
 
-                    text = useGyroscope ? "Liiku pyyhk‰isem‰ll‰ &\nk‰‰nn‰ puhelinta kallistamalla" : "Liiku pyyhk‰isem‰ll‰ &\nk‰‰nn‰ kahdella sormella";
-
                     showSwipeMinDistance = true;
                     showSwipeMaxDistance = false;
                     showSwipeSensitivity = true;
@@ -1283,8 +1274,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     movementType = BattleMovementInputType.PointAndClick;
                     rotationType = BattleRotationInputType.Swipe;
 
-                    text = useGyroscope ? "Liiku painamalla &\nk‰‰nn‰ puhelinta kallistamalla" : "Liiku painamalla &\nk‰‰nn‰ pyyhk‰isem‰ll‰";
-
                     showSwipeMinDistance = !useGyroscope;
                     showSwipeMaxDistance = !useGyroscope;
                     showSwipeSensitivity = false;
@@ -1293,8 +1282,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 case InputCombinationType.Joysticks:
                     movementType = BattleMovementInputType.Joystick;
                     rotationType = BattleRotationInputType.Joystick;
-
-                    text = useGyroscope ? "Liiku ohjausympyr‰ll‰ &\nk‰‰nn‰ puhelinta kallistamalla" : "Liiku & k‰‰nn‰ ohjausympyrˆill‰.";
 
                     showSwipeMinDistance = false;
                     showSwipeMaxDistance = false;
@@ -1318,8 +1305,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     movementType = SettingsCarrier.BattleMovementInputDefault;
                     rotationType = SettingsCarrier.BattleRotationInputDefault;
 
-                    text = "Virhe, t‰t‰ vaihtoehtoa ei lˆydy";
-
                     showSwipeMinDistance = false;
                     showSwipeMaxDistance = false;
                     showSwipeSensitivity = false;
@@ -1333,8 +1318,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             SettingsCarrier.Instance.BattleMovementInput = movementType;
             SettingsCarrier.Instance.BattleRotationInput = rotationType;
 
-            // Setting text to the input selector label
-            _inputSelectorLabel.text = text;
+            // Setting label texts
+            _swipeTwoFingerLabel.text = useGyroscope ? "Liiku pyyhk‰isem‰ll‰" : "Liiku pyyhk‰isem‰ll‰ &\nk‰‰nn‰ kahdella sormella";
+            _pointAndClickSwipeLabel.text = useGyroscope ? "Liiku painamalla" : "Liiku painamalla &\nk‰‰nn‰ pyyhk‰isem‰ll‰";
+            _joysticksLabel.text = useGyroscope ? "Liiku ohjausympyr‰ll‰" : "Liiku & k‰‰nn‰ ohjausympyrˆill‰";
 
             // Setting visibility for the swipe and gyroscope additional options
             _swipeMinDistanceHolder.SetActive(showSwipeMinDistance);
