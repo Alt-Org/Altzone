@@ -798,7 +798,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.15, y: 0.15}
   m_AnchorMax: {x: 0.75, y: 0.85}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -0.0000038146973}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &553234721600578415
@@ -15265,6 +15265,9 @@ MonoBehaviour:
   _topButtonsRectTransform: {fileID: 1956556258832461748}
   _closeButton: {fileID: 443264675499335944}
   _saveButton: {fileID: 2158614857934556058}
+  _uiTransparencyHolder: {fileID: 413147020048691176}
+  _uiTransparencySlider: {fileID: 4159385142557186462}
+  _uiTransparencyInputField: {fileID: 3675366722433696340}
   _arenaImage: {fileID: 701258777320508953}
   _uiElementsHolder: {fileID: 3557577885498150299}
   _grid: {fileID: 3340137523758032160}

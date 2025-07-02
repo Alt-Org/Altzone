@@ -29,6 +29,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Button _closeButton;
         [SerializeField] private Button _saveButton;
         [Space]
+        [SerializeField] private GameObject _uiTransparencyHolder;
+        [SerializeField] private Slider _uiTransparencySlider;
+        [SerializeField] private TMP_InputField _uiTransparencyInputField;
+        [Space]
         [SerializeField] private RectTransform _arenaImage;
         [SerializeField] private RectTransform _uiElementsHolder;
         [SerializeField] private GridController _grid;
