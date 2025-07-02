@@ -536,17 +536,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Calculating max y anchor for the editor
             float anchorMaxY = 1 - TopButtonsHeight - unsafeAreaHeight;
 
-            // If the unsafe area is 0 we set default anchors
-            if (unsafeAreaHeight == 0)
-            {
-                EditorRectTransform.anchorMin = Vector2.zero;
-                EditorRectTransform.anchorMax = new(1, anchorMaxY);
-
-                _topButtonsRectTransform.anchorMin = new(0, anchorMaxY);
-                _topButtonsRectTransform.anchorMax = Vector2.one;
-                return;
-            }
-
             // Calculating editor aspect ratio and size
             float editorAspectRatio = Screen.width / (Screen.height * (1 - unsafeAreaHeight));
             float editorHeight = Screen.height * anchorMaxY;
