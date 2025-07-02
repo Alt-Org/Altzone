@@ -51,8 +51,8 @@ namespace Altzone.Scripts.Audio
 
             while (songLength > songCurrentTime)
             {
-                songCurrentTime += Time.deltaTime;
                 yield return null;
+                songCurrentTime += Time.deltaTime;
             }
 
             CheckIfSongInQueue();
