@@ -24,6 +24,7 @@ namespace MenuUi.Scripts.CharacterGallery
             All = 0,
             Unlocked = 1,
             Locked = 2,
+            Test = 3,
             Desensitizer = 100,
             Trickster = 200,
             Obedient = 300,
@@ -109,7 +110,7 @@ namespace MenuUi.Scripts.CharacterGallery
         /// </summary>
         /// <param name="customCharacters">List of player's custom (owned) characters.</param>
         /// <param name="selectedCharacterIds">Array of selected character ids.</param>
-        public void SetCharacters(List<CustomCharacter> customCharacters, int[] selectedCharacterIds)
+        public void SetCharacters(List<CustomCharacter> customCharacters, CharacterID[] selectedCharacterIds)
         {
             Reset();
 
@@ -123,7 +124,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 // Going through selectedCharacterIds to check if the CustomCharacter is one of the selected characters
                 for (int i = 0; i < selectedCharacterIds.Length; i++)
                 {
-                    if ((int)character.Id == selectedCharacterIds[i])
+                    if (character.Id == selectedCharacterIds[i])
                     {
                         // Adding the CustomCharacter to the array of selected characters
                         selectedCharacters[i] = character;
@@ -132,43 +133,29 @@ namespace MenuUi.Scripts.CharacterGallery
                 }
             }
 
-            for (int i = 0; i < selectedCharacterIds.Length; i++)
+            // Placing locked characters
+            if (_lockedCharacterGridContent != null)
             {
-                if (selectedCharacterIds[i] == (int)CharacterID.Test)
+                DataStore store = Storefront.Get();
+                ReadOnlyCollection<BaseCharacter> allItems = null;
+                store.GetAllBaseCharacterYield(result => allItems = result);
+
+                foreach (BaseCharacter baseCharacter in allItems)
                 {
-                    selectedCharacters[i] = new(CharacterID.Test, 2, 20, 2, 2, 2);
-                }
-            }
-
-            // Placing locked and test characters
-            DataStore store = Storefront.Get();
-            ReadOnlyCollection<BaseCharacter> allItems = null;
-            store.GetAllBaseCharacterYield(result => allItems = result);
-
-            foreach (BaseCharacter baseCharacter in allItems)
-            {
-                // If test character adding it to the normal grid
-                if (baseCharacter.Id == CharacterID.Test)
-                {
-                    InstantiateCharacterSlot(baseCharacter.Id, false, _unlockedCharacterGridContent);
-                    continue;
-                }
-
-                if (_lockedCharacterGridContent == null) continue;
-
-                // Checking if player has already unlocked the character and if so, skipping the character
-                bool characterUnlocked = false;
-                foreach (CharacterSlot slot in _characterSlots)
-                {
-                    if (slot.Character.Id == baseCharacter.Id)
+                    // Checking if player has already unlocked the character and if so, skipping the character
+                    bool characterUnlocked = false;
+                    foreach (CharacterSlot slot in _characterSlots)
                     {
-                        characterUnlocked = true;
-                        break;
+                        if (slot.Character.Id == baseCharacter.Id)
+                        {
+                            characterUnlocked = true;
+                            break;
+                        }
                     }
-                }
-                if (characterUnlocked) continue;
+                    if (characterUnlocked) continue;
 
-                InstantiateCharacterSlot(baseCharacter.Id, true, _lockedCharacterGridContent);
+                    InstantiateCharacterSlot(baseCharacter.Id, true, _lockedCharacterGridContent);
+                }
             }
 
             // Invoking the event with selectedCharacters CustomCharacter array
@@ -253,6 +240,13 @@ namespace MenuUi.Scripts.CharacterGallery
                     }
                     break;
 
+                case FilterType.Test:
+                    foreach (CharacterSlot characterSlot in _characterSlots)
+                    {
+                        characterSlot.gameObject.SetActive(CustomCharacter.IsTestCharacter(characterSlot.Id));
+                    }
+                    break;
+
                 case FilterType.Desensitizer: // Only showing desensitizers
                     FilterForClassID(CharacterClassID.Desensitizer);
                     break;
@@ -317,6 +311,11 @@ namespace MenuUi.Scripts.CharacterGallery
                 case FilterType.Locked:
                     _filterText.text = "Tiedostamattomat";
                     break;
+
+                case FilterType.Test:
+                    _filterText.text = "Testihahmot";
+                    break;
+
                 case FilterType.Desensitizer:
                     _filterText.text = "Tunnottomat";
                     break;
