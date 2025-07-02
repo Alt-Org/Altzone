@@ -69,5 +69,7 @@ public class PollPopup : MonoBehaviour
         VotingActions.ReloadPollList?.Invoke();
 
         gameObject.SetActive(false);
+
+        gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
     }
 }

@@ -86,6 +86,8 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         if (isMainMenuMode) return;
 
         AudioManager.Instance.Jukebox.PlaySongByIndex(song);
+
+        gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
     }
 
     private void SetSongInfo(JukeboxSong song)
