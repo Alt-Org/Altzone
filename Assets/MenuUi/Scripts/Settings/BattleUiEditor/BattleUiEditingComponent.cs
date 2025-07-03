@@ -138,12 +138,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     {
                         ShowControls(false);
                         _currentAction = ActionType.Move;
+                        _dragPos = _movableElement.RectTransformComponent.position;
                     }
                     break;
 
                 case ActionType.Move:
-                    Vector3 newPos;
-                    RectTransformUtility.ScreenPointToWorldPointInRectangle(BattleUiEditor.EditorRectTransform, eventData.position, null, out newPos);
+                    _dragPos += eventData.delta;
+                    Vector3 newPos = _dragPos;
+                    //RectTransformUtility.ScreenPointToWorldPointInRectangle(BattleUiEditor.EditorRectTransform, eventData.position, null, out newPos);
 
                     if (_isGridAlignToggled) // Snapping to grid while moving
                     {
@@ -165,7 +167,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     float sizeIncreaseY = 0f;
 
                     // If vertical multiorientation element we scale in y axis
-                    if (_multiOrientationElement != null && !_multiOrientationElement.IsHorizontal) 
+                    if (_multiOrientationElement != null && !_multiOrientationElement.IsHorizontal)
                     {
                         sizeIncreaseY = -((eventData.position.y - eventData.pressPosition.y) * 2);
 
@@ -307,15 +309,30 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private float _minWidth => BattleUiEditor.EditorRect.width / 6;
         private float _minHeight => BattleUiEditor.EditorRect.height / 10;
 
-        // Converting max and min position to world coordinates using TransformPoint
-        private Vector2 _maxPos => BattleUiEditor.EditorRectTransform.TransformPoint(
-            BattleUiEditor.EditorRect.width * 0.5f - _movableElement.RectTransformComponent.rect.width * 0.5f,
-            BattleUiEditor.EditorRect.height * 0.5f - _movableElement.RectTransformComponent.rect.height * 0.5f,
-            0);
-        private Vector2 _minPos => BattleUiEditor.EditorRectTransform.TransformPoint(
-            _movableElement.RectTransformComponent.rect.width * 0.5f - BattleUiEditor.EditorRect.width * 0.5f,
-            _movableElement.RectTransformComponent.rect.height * 0.5f - BattleUiEditor.EditorRect.height * 0.5f,
-            0);
+        private Vector2 _maxPos
+        {
+            get
+            {
+                Vector3[] editorCorners = GetEditorCorners();
+                Vector2 worldSpaceSize = GetUiElementSizeInWorldSpace();
+
+                return new Vector2(
+                editorCorners[(int)CornerType.TopRight].x - worldSpaceSize.x * 0.5f,
+                editorCorners[(int)CornerType.TopRight].y - worldSpaceSize.y * 0.5f);
+            }
+        }
+        private Vector2 _minPos
+        {
+            get
+            {
+                Vector3[] editorCorners = GetEditorCorners();
+                Vector2 worldSpaceSize = GetUiElementSizeInWorldSpace();
+
+                return new Vector2(
+                editorCorners[(int)CornerType.BottomLeft].x + worldSpaceSize.x * 0.5f,
+                editorCorners[(int)CornerType.BottomLeft].y + worldSpaceSize.y * 0.5f);
+            }
+        }
 
         private float _aspectRatio => _multiOrientationElement == null ? _movableElementAspectRatio : _multiOrientationElement.HorizontalAspectRatio;
 
@@ -386,7 +403,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             );
 
             // Calculating anchors
-            (Vector2 anchorMin, Vector2 anchorMax) = BattleUiEditor.CalculateAnchors(size, _movableElement.RectTransformComponent.localPosition, 0.5f);
+            (Vector2 anchorMin, Vector2 anchorMax) = BattleUiEditor.CalculateAnchors(size, BattleUiEditor.EditorRectTransform.InverseTransformVector(_movableElement.RectTransformComponent.position));
 
             _data.AnchorMin = anchorMin;
             _data.AnchorMax = anchorMax;
@@ -535,8 +552,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 // If button is not inside the editor updating the position
                 if (!IsButtonInsideEditor(buttonCorners))
                 {
-                    Vector3[] holderCorners = new Vector3[4];
-                    BattleUiEditor.EditorRectTransform.GetWorldCorners(holderCorners);
+                    Vector3[] holderCorners = GetEditorCorners();
 
                     Vector2 newPosition = Vector2.zero;
 
@@ -669,6 +685,22 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             Rect uiRect = BattleUiEditor.EditorRect;
             return point.x >= uiRect.xMin && point.x <= uiRect.xMax && point.y >= uiRect.yMin && point.y <= uiRect.yMax;
+        }
+
+        private Vector3[] GetEditorCorners()
+        {
+            Vector3[] corners = new Vector3[4];
+            BattleUiEditor.EditorRectTransform.GetWorldCorners(corners);
+            return corners;
+        }
+
+        private Vector2 GetUiElementSizeInWorldSpace()
+        {
+            Vector3[] uiElementCorners = new Vector3[4];
+            _movableElement.RectTransformComponent.GetWorldCorners(uiElementCorners);
+
+            return new(uiElementCorners[(int)CornerType.TopRight].x - uiElementCorners[(int)CornerType.TopLeft].x,
+                       uiElementCorners[(int)CornerType.TopRight].y - uiElementCorners[(int)CornerType.BottomRight].y);
         }
     }
 }

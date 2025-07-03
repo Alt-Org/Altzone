@@ -44,10 +44,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         public static Vector2 GetGridSnapPosition(int gridColumnIndex, int gridRowIndex)
         {
             Vector2 snapPos = new(
-                GetGridSnapPositionX(gridColumnIndex) - BattleUiEditor.EditorRect.width * 0.5f,
-                GetGridSnapPositionY(gridRowIndex) - BattleUiEditor.EditorRect.height * 0.5f
+                GetGridSnapPositionX(gridColumnIndex),
+                GetGridSnapPositionY(gridRowIndex)
             );
-            return BattleUiEditor.EditorRectTransform.TransformPoint(snapPos);
+            return BattleUiEditor.EditorRectTransform.TransformVector(snapPos);
         }
 
         /// <summary>
