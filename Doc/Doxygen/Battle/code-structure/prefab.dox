@@ -1,4 +1,648 @@
 /// @file prefab.dox
 /// <summary>
-/// Contains documentation for Unity Prefabs and %Quantum EntityPrototypes.
+/// Contains documentation for Unity Prefabs and %Quantum EntityPrototypes (excluding player characters which are on a separate dox-file).
 /// </summary>
+
+/// @file BattleDiamond.prefab
+/// <summary>
+/// Prefab for pickable diamonds.
+/// </summary>
+///
+/// ### Structure
+/// - **BattleDiamond**
+///     - *Components:*
+///         - Transform
+///         - %Quantum Entity Prototype
+///             - @cref{Quantum,BattleDiamondDataQComponent}
+///         - %Quantum Entity View
+///     - *Children:*
+///         - **DiamondViewModel**
+///             - *Components:*
+///                 - Transform
+///                 - SpriteRenderer
+///                 - @cref{Battle.View.Diamond,BattleDiamondViewController}
+///                 - Sprites-Default (Material)
+
+/// @file BattleDiamondEntityPrototype.qprototype
+/// <summary>
+/// EntityPrototype counterpart of @ref BattleDiamond.prefab -
+/// @copybrief BattleDiamond.prefab
+/// </summary>
+///
+/// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @file BattleProjectile.prefab
+/// <summary>
+/// Prefab for the projectile.
+/// </summary>
+///
+/// ### Structure
+/// - **BattleProjectile**
+///     - *Components:*
+///         - Transform
+///         - %Quantum Entity Prototype
+///             - @cref{Quantum,BattleProjectileQComponent}
+///         - %Quantum Entity View
+///     - *Children:*
+///         - **ProjectileViewModel**
+///             - *Components:*
+///                 - Transform
+///                 - @cref{Battle.View.Projectile,BattleProjectileViewController}
+///                 - SpriteRenderer
+///                 - TrailRenderer
+
+/// @file BattleProjectileEntityPrototype.qprototype
+/// <summary>
+/// EntityPrototype counterpart of @ref BattleProjectile.prefab
+/// </summary>
+///
+/// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @file BattleSimulationData.prefab
+/// <summary>
+/// Contains GameSession singletons that keep track of the game's and players's states.
+/// </summary>
+///
+/// ### Structure
+/// - **BattleSimulationData**
+///     - *Components:*
+///         - Transform
+///         - %Quantum Entity Prototype
+///             - @cref{Quantum,BattleGameSessionQSingleton}
+///             - @cref{Quantum,BattlePlayerManagerDataQSingleton}
+///             - @cref{Quantum,BattleDiamondCounterQSingleton}
+
+/// @file BattleSimulationDataEntityPrototype.qprototype
+/// <summary>
+/// EntityPrototype counterpart of @ref BattleSimulationData.prefab
+/// </summary>
+///
+/// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @file BattleSoulWallSegmentType1.prefab
+/// <summary>
+/// Prefab for the small 2x2 grid sized SoulWall segment.
+/// </summary>
+///
+/// ### Structure
+/// - **BattleSoulWallSegmentType1**
+///     - *Components:*
+///         - Transform
+///         - %Quantum Entity Prototype
+///             - @cref{Quantum,BattleSoulWallQComponent}
+///             - @cref{Quantum,BattleCollisionTriggerQComponent}
+///         - %Quantum Entity View
+///     - *Children:*
+///         - **SoulWallType1ViewModel**
+///             - *Components:*
+///                 - Transform
+///                 - @cref{Battle.View.SoulWall,BattleSoulWallViewController}
+///             - *Children:*
+///                 - **Sprite**
+///                 - **CementSprite**
+///                 - **DebugSprite**
+///                 - **OriginReference**
+///                 - *Shared components:*
+///                     - Transform
+///                     - SpriteRenderer
+///                     - Sprites-Default (Material)
+
+/// @file BattleSoulWallSegmentType1EntityPrototype.qprototype
+/// <summary>
+/// EntityPrototype counterpart of @ref BattleSoulWallSegmentType1.prefab
+/// </summary>
+///
+/// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @file BattleSoulWallSegmentType2.prefab
+/// <summary>
+/// Prefab for the medium 4x2 grid sized SoulWall segment.
+/// </summary>
+///
+/// ### Structure
+/// - **BattleSoulWallSegmentType2**
+///     - *Components:*
+///         - Transform
+///         - %Quantum Entity Prototype
+///             - @cref{Quantum,BattleSoulWallQComponent}
+///             - @cref{Quantum,BattleCollisionTriggerQComponent}
+///         - %Quantum Entity View
+///     - *Children:*
+///         - **SoulWallType2ViewModel**
+///             - *Components:*
+///                 - Transform
+///                 - @cref{Battle.View.SoulWall,BattleSoulWallViewController}
+///             - *Children:*
+///                 - **Sprite**
+///                 - **CementSprite**
+///                 - **DebugSprite**
+///                 - **OriginReference**
+///                 - *Shared components:*
+///                     - Transform
+///                     - SpriteRenderer
+///                     - Sprites-Default (Material)
+
+/// @file BattleSoulWallSegmentType2EntityPrototype.qprototype
+/// <summary>
+/// EntityPrototype counterpart of @ref BattleSoulWallSegmentType2.prefab
+/// </summary>
+///
+/// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @file BattleSoulWallSegmentType3.prefab
+/// <summary>
+/// Prefab for the wide 8x2 grid sized double tile SoulWall segment.
+/// </summary>
+///
+/// ### Structure
+/// - **BattleSoulWallSegmentType3**
+///     - *Components:*
+///         - Transform
+///         - %Quantum Entity Prototype
+///             - @cref{Quantum,BattleSoulWallQComponent}
+///             - @cref{Quantum,BattleCollisionTriggerQComponent}
+///         - %Quantum Entity View
+///     - *Children:*
+///         - **SoulWallType3ViewModel**
+///             - *Components:*
+///                 - Transform
+///                 - @cref{Battle.View.SoulWall,BattleSoulWallViewController}
+///             - *Children:*
+///                 - **Sprite**
+///                 - **CementSprite**
+///                 - **DebugSprite**
+///                 - **Sprite (1)**
+///                 - **OriginReference**
+///                 - *Shared components:*
+///                     - Transform
+///                     - SpriteRenderer
+///                     - Sprites-Default (Material)
+
+/// @file BattleSoulWallSegmentType3EntityPrototype.qprototype
+/// <summary>
+/// EntityPrototype counterpart of @ref BattleSoulWallSegmentType3.prefab
+/// </summary>
+///
+/// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @file SoulWallBaseViewModel.prefab
+/// <summary>
+/// Prefab for the ViewModel that is used as a base in other SoulWall segment prefabs.
+/// </summary>
+///
+/// ### Structure
+/// - **SoulWallBaseViewModel**
+///     - *Components:*
+///         - Transform
+///         - @cref{Battle.View.SoulWall,BattleSoulWallViewController}
+///     - *Children:*
+///         - **Sprite**
+///         - **CementSprite**
+///         - **DebugSprite**
+///         - **OriginReference**
+///         - *Shared components:*
+///             - Transform
+///             - SpriteRenderer
+///             - Sprites-Default (Material)
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @file BattleSoulWallCharacterSegment3Wide.prefab
+/// <summary>
+/// Prefab for 3x2 grid sized last row SoulWall segment.
+/// </summary>
+///
+/// Last row's SoulWall sprites are pre-set to the scene, so this prefab doesn't have a sprite attached.
+///
+/// ### Structure
+/// - **BattleSoulWallCharacterSegment3Wide**
+///     - *Components:*
+///         - Transform
+///         - %Quantum Entity Prototype
+///             - @cref{Quantum,BattleSoulWallQComponent}
+///             - @cref{Quantum,BattleCollisionTriggerQComponent}
+///         - %Quantum Entity View
+///     - *Children:*
+///         - **SoulWallType1ViewModel**
+///             - *Components:*
+///                 - Transform
+///                 - @cref{Battle.View.SoulWall,BattleSoulWallViewController} (Removed)
+
+/// @file BattleSoulWallCharacterSegment3WideEntityPrototype.qprototype
+/// <summary>
+/// EntityPrototype counterpart of @ref BattleSoulWallCharacterSegment3Wide.prefab
+/// </summary>
+///
+/// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @file BattleSoulWallCharacterSegment4Wide.prefab
+/// <summary>
+/// Prefab for 4x2 grid sized last row SoulWall segment.
+/// </summary>
+///
+/// Last row's SoulWall sprites are pre-set to the scene, so this prefab doesn't have a sprite attached.
+///
+/// ### Structure
+/// - **BattleSoulWallCharacterSegment4Wide**
+///     - *Components:*
+///         - Transform
+///         - %Quantum Entity Prototype
+///             - @cref{Quantum,BattleSoulWallQComponent}
+///             - @cref{Quantum,BattleCollisionTriggerQComponent}
+///         - %Quantum Entity View
+///     - *Children:*
+///         - **SoulWallType1ViewModel**
+///             - *Components:*
+///                 - Transform
+///                 - @cref{Battle.View.SoulWall,BattleSoulWallViewController} (Removed)
+
+/// @file BattleSoulWallCharacterSegment4WideEntityPrototype.qprototype
+/// <summary>
+/// EntityPrototype counterpart of @ref BattleSoulWallCharacterSegment4Wide.prefab
+/// </summary>
+///
+/// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @file BattleSoulWallCharacterSegment5Wide.prefab
+/// <summary>
+/// Prefab for 5x2 grid sized last row SoulWall segment.
+/// </summary>
+///
+/// Last row's SoulWall sprites are pre-set to the scene, so this prefab doesn't have a sprite attached.
+///
+/// ### Structure
+/// - **BattleSoulWallCharacterSegment5Wide**
+///     - *Components:*
+///         - Transform
+///         - %Quantum Entity Prototype
+///             - @cref{Quantum,BattleSoulWallQComponent}
+///             - @cref{Quantum,BattleCollisionTriggerQComponent}
+///         - %Quantum Entity View
+///     - *Children:*
+///         - **SoulWallType1ViewModel**
+///             - *Components:*
+///                 - Transform
+///                 - @cref{Battle.View.SoulWall,BattleSoulWallViewController} (Removed)
+
+/// @file BattleSoulWallCharacterSegment5WideEntityPrototype.qprototype
+/// <summary>
+/// EntityPrototype counterpart of @ref BattleSoulWallCharacterSegment5Wide.prefab
+/// </summary>
+///
+/// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @file BattleUi.prefab
+/// <summary>
+/// Prefab of %Battle's UI.
+/// </summary>
+///
+/// ### Structure
+/// - **BattleUi**
+///     - *Components:*
+///         - RectTransform
+///         - @cref{Battle.View.UI,BattleUiController}
+///         - @cref{Battle.View.UI,BattleUiAnnouncementHandler}
+///         - @cref{Battle.View.UI,BattleUiGameOverHandler}
+///         - @cref{Battle.View.UI,BattleUiTimerHandler}
+///         - @cref{Battle.View.UI,BattleUiDiamondsHandler}
+///         - @cref{Battle.View.UI,BattleUiGiveUpButtonHandler}
+///         - @cref{Battle.View.UI,BattleUiPlayerInfoHandler}
+///         - @cref{Battle.View.UI,BattleUiDebugStatsOverlayHandler}
+///         - Canvas
+///         - CanvasScaler
+///         - GraphicRaycaster
+///     - *Children:*
+///         - **BattleUiTimer** (@ref BattleUiTimer.prefab)
+///         - **AnnouncementText**
+///             - *Components:*
+///                 - RectTransform
+///                 - TextScaler
+///                 - CanvasRenderer
+///                 - TextMeshPro - Text (UI)
+///                 - WorkSans-Regular SDF Material (Material)
+///         - **BattleUiPlayerInfo1** (@ref BattleUiPlayerInfo.prefab)
+///         - **BattleUiPlayerInfo2** (@ref BattleUiPlayerInfo.prefab)
+///         - **GameOverView**
+///             - *Components:*
+///                 - RectTransform
+///             - *Children:*
+///                 - **background**
+///                     - *Components:*
+///                         - Image
+///                 - **TitleText**
+///                     - *Components:*
+///                         - TextMeshPro - Text (UI)
+///                 - **GoalByText**
+///                     - *Components:*
+///                         - TextMeshPro - Text (UI)
+///                 - **RestartButton**
+///                     - *Components:*
+///                         - Image
+///                         - Button
+///                     - *Children:*
+///                         - **Text (TMP)**
+///                             - *Components:*
+///                                 - RectTransform
+///                                 - CanvasRenderer
+///                                 - TextMeshPro - Text (UI)
+///                 - **ExitGameButton**
+///                     - *Components:*
+///                         - Image
+///                         - Button
+///                     - *Children:*
+///                         - **Text (TMP)**
+///                             - *Components:*
+///                                 - RectTransform
+///                                 - CanvasRenderer
+///                                 - TextMeshPro - Text (UI)
+///                 - *Shared components:*
+///                     - RectTransform
+///                     - CanvasRenderer
+///         - **DebugStatsOverlay**
+///             - *Components:*
+///                 - RectTransform
+///             - *Children:*
+///                 - **ImpactForceHolder**
+///                 - **HpHolder**
+///                 - **SpeedHolder**
+///                 - **CharSizeHolder**
+///                 - **DefenceHolder**
+///                 - *Shared components:*
+///                     - RectTransform
+///                 - *Shared children:*
+///                     - **StatName**
+///                     - **StatValue**
+///                     - *Shared components:*
+///                         - RectTransform
+///                         - CanvasRenderer
+///                         - TextMeshPro - Text (UI)
+///         - **BattleUiDiamonds** (@ref BattleUiDiamonds.prefab)
+///         - **BattleUiGiveUpButton** (@ref BattleUiGiveUpButton.prefab)
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @file BattleGameViewController.prefab
+/// <summary>
+/// Prefab of @cref{Battle.View.Game,BattleGameViewController}.
+/// </summary>
+///
+/// Contains references to other ViewControllers.
+///
+/// ### Structure
+/// - **BattleGameViewController**
+///     - *Components:*
+///         - Transform
+///         - @cref{Battle.View.Game,BattleGameViewController}
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @file BattleGridViewController.prefab
+/// <summary>
+/// Prefab for the Grid.
+/// </summary>
+///
+/// ### Structure
+/// - **BattleGridViewController**
+///     - *Components:*
+///         - Transform
+///         - @cref{Battle.View.Game,BattleGridViewController}
+///     - *Children:*
+///         - **GridCell**
+///             - *Components:*
+///                 - Transform
+///                 - SpriteRenderer
+///                 - Sprites-Default (Material)
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @file BattleLightrayEffectViewController.prefab
+/// <summary>
+/// Prefab for the LightRayEffects that come from StoneCharacters.
+/// </summary>
+///
+/// ### Structure
+/// - **BattleLightrayEffectViewController**
+///     - *Components:*
+///         - Transform
+///         - @cref{Battle.View.Effect,BattleLightrayEffectViewController}
+///     - *Children:*
+///         - **BattleLightrayBlue**{ **1** - **10** }
+///         - **BattleLightrayRed**{ **1** - **10** }
+///         - *Shared components:*
+///             - Transform
+///             - SpriteRenderer
+///             - Sprites-Default (Material)
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @file BattleScreenEffectViewController.prefab
+/// <summary>
+/// Prefab for the ScreenEffects.
+/// </summary>
+///
+/// ### Structure
+/// - **BattleScreenEffectViewController**
+///     - *Components:*
+///         - Transform
+///         - @cref{Battle.View.Effect,BattleScreenEffectViewController}
+///     - *Children:*
+///         - **Overlay**
+///             - *Components:*
+///                 - Transform
+///                 - SpriteRenderer
+///                 - Sprites-Default (Material)
+///         - **ParticleSourceLeft**
+///             - *Components:*
+///                 - Transform
+///                 - ParticleSystem
+///                 - BattleScreenEffectSparkleMaterial (Material)
+///         - **ParticleSourceRight**
+///             - *Components:*
+///                 - Transform
+///                 - ParticleSystem
+///                 - BattleScreenEffectSparkleMaterial (Material)
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @file BattleSoundFXViewController.prefab
+/// <summary>
+/// Prefab of @cref{Battle.View.Audio,BattleSoundFXViewController}.
+/// </summary>
+///
+/// ### Structure
+/// - **BattleSoundFXViewController**
+///     - *Components:*
+///         - Transform
+///         - @cref{Battle.View.Audio,BattleSoundFXViewController}
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @file BattleStoneCharacterViewController.prefab
+/// <summary>
+/// Prefab for StoneCharacters and last SoulWall row's sprites.
+/// </summary>
+///
+/// ### Structure
+/// - **BattleStoneCharacterViewController**
+///     - *Components:*
+///         - Transform
+///         - @cref{Battle.View,BattleStoneCharacterViewController}
+///     - *Children:*
+///         - **CharacterTopBase**
+///         - **CharacterBottomBase**
+///         - *Shared components:*
+///             - Transform
+///             - SpriteRenderer
+///             - Sprites-Default (Material)
+///         - *Shared children:*
+///             - **Character**{ **Top** - **Bottom** } **Background**
+///             - **Character**{ **Top** - **Bottom** } **Piece**{ **01** - **10** }
+///             - *Shared components:*
+///                 - Transform
+///                 - SpriteRenderer
+///                 - Sprites-Default (Material)
+///             - *Shared children:*
+///                 - **Character**{ **Top** - **Bottom** } **PieceWhite**{ **01** - **10** }
+///                 - *Shared components:*
+///                     - Transform
+///                     - SpriteRenderer
+///                     - Sprites-Default (Material)
+
+// ---------------------------------------------------------------------------------------------------- //
+
+// BattleUiShared Prefabs
+// Documentation for BattleUiShared prefabs which are used in both Battle's UI and BattleUiEditor in MenuUi.
+
+/// @file BattleUiDiamonds.prefab
+/// <summary>
+/// Prefab for %Battle's DiamondCounter UI element.
+/// </summary>
+///
+/// Used in both %Battle's UI and BattleUiEditor in MenuUi.
+///
+/// ### Structure
+/// - **BattleUiDiamonds**
+///     - *Components:*
+///         - RectTransform
+///         - BattleUiMovableElement
+///         - CanvasRenderer
+///     - *Children:*
+///         - **DiamondIcon**
+///             - *Components:*
+///                 - Image
+///                 - Default UI Material (Material)
+///         - **DiamondCount**
+///             - *Components:*
+///                 - TextMeshPro - Text (UI)
+///                 - WorkSans-SemiBold SDF Material (Material)
+///         - *Shared components:*
+///             - RectTransform
+///             - CanvasRenderer
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @file BattleUiGiveUpButton.prefab
+/// <summary>
+/// Prefab for %Battle's GiveUp-button.
+/// </summary>
+///
+/// Used in both %Battle's UI and BattleUiEditor in MenuUi.
+///
+/// ### Structure
+/// - **BattleUiGiveUpButton**
+///     - *Components:*
+///         - RectTransform
+///         - BattleUiMovableElement
+///         - CanvasRenderer
+///         - Image
+///         - Button
+///         - Default UI Material (Material)
+///     - *Children:*
+///         - **GiveUpText**
+///             - *Components:*
+///                 - RectTransform
+///                 - CanvasRenderer
+///                 - TextMeshPro - Text (UI)
+///                 - WorkSans-SemiBold SDF Material (Material)
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @file BattleUiPlayerInfo.prefab
+/// <summary>
+/// Prefab for %Battle's PlayerInfo elements (PlayerName and CharacterButtons).
+/// </summary>
+///
+/// Used in both %Battle's UI and BattleUiEditor in MenuUi.<br/>  
+///
+/// ### Structure
+/// - **BattleUiPlayerInfo**
+///     - *Components:*
+///         - RectTransform
+///         - BattleUiMultiOrientationElement
+///         - CanvasRenderer
+///     - *Children:*
+///         - **HorizontalConfiguration**
+///         - **VerticalConfiguration**
+///         - *Shared components:*
+///             - RectTransform
+///         - *Shared children:*
+///             - **PlayerName**
+///                 - *Components:*
+///                     - RectTransform
+///                     - CanvasRenderer
+///                     - TextMeshPro - Text (UI)
+///                     - WorkSans-SemiBold SDF Material (Material)
+///             - **PlayerCharacterButton** { **1** - **3** }
+///                 - *Shared components:*
+///                     - RectTransform
+///                     - CanvasRenderer
+///                     - Image
+///                     - Button
+///                     - Default UI Material (Material)
+///                 - *Shared children:*
+///                     - **CharacterSprite**
+///                     - **DamageFill**
+///                     - **ShieldBackground**
+///                     - **ShieldFill**
+///                     - *Shared components:*
+///                         - RectTransform
+///                         - CanvasRenderer
+///                         - Image
+///                         - Default UI Material (Material)
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @file BattleUiTimer.prefab
+/// <summary>
+/// Prefab for %Battle's timer.
+/// </summary>
+///
+/// Used in both %Battle's UI and BattleUiEditor in MenuUi.
+///
+/// ### Structure
+/// - **BattleUiTimer**
+///     - *Components:*
+///         - RectTransform
+///         - BattleUiMovableElement
+///         - TextScaler
+///         - CanvasRenderer
+///         - TextMeshPro - Text (UI)
+///         - WorkSans-SemiBold SDF Material (Material)
