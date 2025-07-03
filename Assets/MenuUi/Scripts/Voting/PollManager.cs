@@ -164,10 +164,10 @@ public static class PollManager // Handles the polls from creation to loading to
             return;
         }
 
-        int memberCount = clan.Members?.Count ?? 0;
         int yesCount = pollData.YesVotes.Count;
         int noCount = pollData.NoVotes.Count;
-        bool yesVotesWon = (yesCount >= Mathf.CeilToInt(memberCount / 3.0f)) && (yesCount > noCount);
+
+        bool votePassed = yesCount > noCount;
 
         FurniturePollData furniturePollData = null;
         if (pollData is FurniturePollData fpd)
@@ -186,9 +186,10 @@ public static class PollManager // Handles the polls from creation to loading to
 
                 var clanFurniture = clan.Inventory.Furniture[idx];
 
-                Debug.Log($"Before update - Furniture: {clanFurniture.GameFurnitureName}, VotedToSell: {clanFurniture.VotedToSell}, InVoting: {clanFurniture.InVoting}");
+                Debug.Log($"Before update - Furniture: {clanFurniture.GameFurnitureName}, VotedToSell={clanFurniture.VotedToSell}, InVoting={clanFurniture.InVoting}");
 
-                if (yesVotesWon)
+
+                if (votePassed)
                 {
                     clanFurniture.VotedToSell = true;
                     clanFurniture.InVoting = false;
@@ -205,7 +206,6 @@ public static class PollManager // Handles the polls from creation to loading to
             }
         }
 
-
         pollDataList.Remove(pollData);
         pastPollDataList.Add(pollData);
 
@@ -216,7 +216,7 @@ public static class PollManager // Handles the polls from creation to loading to
             Debug.Log("Clan data saved with updated VotedToSell and InVoting flags.");
 
             // Verify furniture flags after save
-            var savedFurniture = clan.Inventory.Furniture.FirstOrDefault(f => f.GameFurnitureName == furniturePollData.Furniture.Name);
+            var savedFurniture = clan.Inventory.Furniture.FirstOrDefault(f => f.GameFurnitureName == furniturePollData?.Furniture.Name);
             Debug.Log($"After save - Furniture VotedToSell: {savedFurniture?.VotedToSell}, InVoting: {savedFurniture?.InVoting}");
 
             VotingActions.ReloadPollList?.Invoke();
@@ -228,8 +228,6 @@ public static class PollManager // Handles the polls from creation to loading to
             }
         });
     }
-
-
 
 
     // Checks for expired polls and ends those that have expired
