@@ -17,7 +17,7 @@ public class CharacterPopupHandler : MonoBehaviour
     TextMeshProUGUI classChoiseText;
     [SerializeField]
     Image charaterImage;
-
+    
     // Start is called before the first frame update
     //void Start()
     //{
