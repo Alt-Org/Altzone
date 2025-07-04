@@ -10,7 +10,7 @@ public class SFXReference : ScriptableObject
 
     public SoundEffect Get(string SoundName)
     {
-        foreach (SoundCategory category in SoundCategories)
+        foreach (SoundCategory category in _soundCategories)
             foreach (SoundEffect sfx in category.SoundEffects)
                 if (sfx.Name.ToLower() == SoundName.ToLower())
                     return sfx;
@@ -20,7 +20,7 @@ public class SFXReference : ScriptableObject
 
     public SoundEffect Get(string CategoryName, string SoundName)
     {
-        foreach (SoundCategory category in SoundCategories)
+        foreach (SoundCategory category in _soundCategories)
             if (category.Name.ToLower() == CategoryName.ToLower())
                 foreach (SoundEffect sfx in category.SoundEffects)
                     if (sfx.Name.ToLower() == SoundName.ToLower())
