@@ -20,6 +20,7 @@ namespace Altzone.Scripts.BattleUiShared
         [SerializeField] private Sprite _moveBackground;
         [SerializeField] private Sprite _rotateIcon;
         [SerializeField] private Sprite _rotateBackground;
+        [SerializeField] private Sprite _lockIcon;
 
         /// <summary>
         /// Set BattleUiMovableElementData to this BattleUiMovableJoystickElement.
@@ -51,6 +52,14 @@ namespace Altzone.Scripts.BattleUiShared
                     _rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _handleRectTransform.rect.height);
                     break;
             }
+        }
+
+        public void SetLocked(bool locked)
+        {
+            _backgroundImage.raycastTarget = !locked;
+
+            if (locked) _handleImage.sprite = _lockIcon;
+            else _handleImage.sprite = UiElementType == BattleUiElementType.MoveJoystick ? _moveIcon : _rotateIcon;
         }
         
         private const int HandleSizeMin = 50;

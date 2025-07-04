@@ -59,6 +59,7 @@ MonoBehaviour:
   _moveBackground: {fileID: 21300000, guid: 5d6b7a285a22dc04280327b22536598f, type: 3}
   _rotateIcon: {fileID: 21300000, guid: 86eb8ed5ae6f90242a76ae334514abb8, type: 3}
   _rotateBackground: {fileID: 21300000, guid: c55e8efd1d3bcf04ab52ca51d1ef8708, type: 3}
+  _lockIcon: {fileID: 21300000, guid: 5fefa1145a7743b4998c56f6626d87be, type: 3}
 --- !u!222 &1554362590128268219
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -127,7 +128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.745283, g: 0.745283, b: 0.745283, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -202,7 +203,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
