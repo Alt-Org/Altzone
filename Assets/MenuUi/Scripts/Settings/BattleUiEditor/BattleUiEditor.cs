@@ -1032,25 +1032,30 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 case BattleUiElementType.MoveJoystick:
                     if (_instantiatedMoveJoystick == null) return null;
 
-                    anchorMin.x = 0f;
+                    anchorMin.x = 0.02f;
                     anchorMax.x = 0.4f;
 
                     anchorMin.y = 0f;
                     anchorMax.y = 0.2f;
 
                     movableUiElementRect = _instantiatedMoveJoystick.GetComponent<RectTransform>().rect;
+
+                    // Toggling unsaved changes to save the default joystick data to fix issues with initializing in battle
+                    _unsavedChanges = true;
                     break;
 
                 case BattleUiElementType.RotateJoystick:
                     if (_instantiatedRotateJoystick == null) return null;
 
                     anchorMin.x = 0.6f;
-                    anchorMax.x = 1f;
+                    anchorMax.x = 0.98f;
 
                     anchorMin.y = 0f;
-                    anchorMax.y = 0.2f;
+                    anchorMax.y = 0.15f;
 
                     movableUiElementRect = _instantiatedRotateJoystick.GetComponent<RectTransform>().rect;
+
+                    _unsavedChanges = true;
                     break;
             }
 
