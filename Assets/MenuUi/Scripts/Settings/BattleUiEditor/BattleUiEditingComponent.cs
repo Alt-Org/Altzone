@@ -397,13 +397,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void CalculateAndSetAnchors(Vector2? newSize = null)
         {
-            Vector2 size = new(
-                newSize == null ? _movableElement.RectTransformComponent.rect.width : newSize.Value.x,
-                newSize == null ? _movableElement.RectTransformComponent.rect.height : newSize.Value.y
-            );
+            Vector2 size = newSize == null ? _movableElement.RectTransformComponent.rect.size : newSize.Value;
 
             // Calculating anchors
-            (Vector2 anchorMin, Vector2 anchorMax) = BattleUiEditor.CalculateAnchors(size, BattleUiEditor.EditorRectTransform.InverseTransformVector(_movableElement.RectTransformComponent.position));
+            (Vector2 anchorMin, Vector2 anchorMax) = BattleUiEditor.CalculateAnchors(size, _movableElement.RectTransformComponent.localPosition, 0.5f, true);
 
             _data.AnchorMin = anchorMin;
             _data.AnchorMax = anchorMax;
@@ -698,6 +695,20 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             Vector3[] uiElementCorners = new Vector3[4];
             _movableElement.RectTransformComponent.GetWorldCorners(uiElementCorners);
+
+            return new(uiElementCorners[(int)CornerType.TopRight].x - uiElementCorners[(int)CornerType.TopLeft].x,
+                       uiElementCorners[(int)CornerType.TopRight].y - uiElementCorners[(int)CornerType.BottomRight].y);
+        }
+
+        private Vector2 GetUiElementSizeInEditorSpace()
+        {
+            Vector3[] uiElementCorners = new Vector3[4];
+            _movableElement.RectTransformComponent.GetWorldCorners(uiElementCorners);
+
+            for(int i = 0; i < uiElementCorners.Length; i++)
+            {
+                uiElementCorners[i] = BattleUiEditor.EditorRectTransform.InverseTransformVector(uiElementCorners[i]);
+            }
 
             return new(uiElementCorners[(int)CornerType.TopRight].x - uiElementCorners[(int)CornerType.TopLeft].x,
                        uiElementCorners[(int)CornerType.TopRight].y - uiElementCorners[(int)CornerType.BottomRight].y);

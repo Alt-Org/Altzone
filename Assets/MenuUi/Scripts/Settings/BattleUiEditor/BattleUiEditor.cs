@@ -113,20 +113,23 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         public static RectTransform EditorRectTransform;
 
         /// <summary>
-        /// Calculate anchors based on Ui element size position and offset.
+        /// Calculate anchors based on Ui element size and position.
         /// </summary>
         /// <param name="size">Size of the Ui element.</param>
         /// <param name="pos">Ui element position.</param>
-        /// <param name="offset">Optional offset for the anchors.</param>
+        /// <param name="offset">Offset for calculating the anchors.</param>
+        /// <param name="useUiElementsHolder">If calculation should use Ui elements holder rect instead of editor rect.</param>
         /// <returns>Two Vector2, anchorMin and anchorMax.</returns>
-        public static (Vector2 anchorMin, Vector2 anchorMax) CalculateAnchors(Vector2 size, Vector2 pos, float offset = 0f)
+        public static (Vector2 anchorMin, Vector2 anchorMax) CalculateAnchors(Vector2 size, Vector2 pos, float offset = 0f, bool useUiElementsHolder = false)
         {
-            // Calculating anchors
-            float anchorXMin = Mathf.Clamp01((pos.x - size.x * 0.5f) / EditorRect.width + offset);
-            float anchorXMax = Mathf.Clamp01((pos.x + size.x * 0.5f) / EditorRect.width + offset);
+            Vector2 holderSize = useUiElementsHolder ? s_uiElementsHolder.rect.size : new(EditorRect.width, EditorRect.height);
 
-            float anchorYMin = Mathf.Clamp01((pos.y - size.y * 0.5f) / EditorRect.height + offset);
-            float anchorYMax = Mathf.Clamp01((pos.y + size.y * 0.5f) / EditorRect.height + offset);
+            // Calculating anchors
+            float anchorXMin = Mathf.Clamp01((pos.x - size.x * 0.5f) / holderSize.x + offset);
+            float anchorXMax = Mathf.Clamp01((pos.x + size.x * 0.5f) / holderSize.x + offset);
+
+            float anchorYMin = Mathf.Clamp01((pos.y - size.y * 0.5f) / holderSize.y + offset);
+            float anchorYMax = Mathf.Clamp01((pos.y + size.y * 0.5f) / holderSize.y + offset);
 
             return (new Vector2(anchorXMin, anchorYMin), new Vector2(anchorXMax, anchorYMax));
         }
@@ -220,6 +223,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private const float GameAspectRatio = 9f / 16f;
         private const float TopButtonsHeight = 0.05f;
 
+        private static RectTransform s_uiElementsHolder;
+
         private BattleUiMovableElement _instantiatedTimer;
         private BattleUiMultiOrientationElement _instantiatedPlayerInfo;
         private BattleUiMultiOrientationElement _instantiatedTeammateInfo;
@@ -248,6 +253,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Assign static editor rect variables
             EditorRectTransform = _editorRectTransform;
             EditorRect = EditorRectTransform.rect;
+            s_uiElementsHolder = _uiElementsHolder;
 
             // Scale editor to account for unsafe area
             ScaleEditor();
