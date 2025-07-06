@@ -37,7 +37,9 @@ namespace Battle.QSimulation.Player
 
             FPVector2 positionNext = transform->Position;
 
-            // handle movement
+            //{ handle movement
+
+            // handle movement input
             if (input->MovementInput)
             {
                 // get players TargetPosition
@@ -60,6 +62,7 @@ namespace Battle.QSimulation.Player
                 Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", playerData->TargetPosition);
             }
 
+            // handle target position based movement
             if (playerData->HasTargetPosition)
             {
                 positionNext = FPVector2.MoveTowards(transform->Position, playerData->TargetPosition, playerData->Stats.Speed * f.DeltaTime);
@@ -69,67 +72,69 @@ namespace Battle.QSimulation.Player
                 }
             }
 
-            if (!input->MovementInput && !playerData->HasTargetPosition)
+            // cancel movement if needed
+            if (input->RotationInput || (!input->MovementInput && !playerData->HasTargetPosition))
             {
                 ClampPosition(playerData, transform->Position, out positionNext);
                 playerData->TargetPosition = positionNext;
             }
 
-            // handle rotation
+            //} handle movement
+
+            //{ handle rotation
+
+            // handle rotation input
+            if (input->RotationInput)
             {
-                if (input->RotationInput)
+                // set target angle
+                FP maxAngle = FP.Rad_45 * input->RotationValue;
+                maxAngle = FPMath.Clamp(maxAngle, -FP.Rad_45, FP.Rad_45);
+
+                // rotates to left
+                if (maxAngle > playerData->RotationOffset)
                 {
-                    //set target angle
-                    FP maxAngle = FP.Rad_45 * input->RotationValue;
-                    maxAngle = FPMath.Clamp(maxAngle, -FP.Rad_45, FP.Rad_45);
-
-                    //stops player before rotation
-                    playerData->TargetPosition = transform->Position;
-
-                    //rotates to left
-                    if (maxAngle > playerData->RotationOffset)
+                    playerData->RotationOffset += rotationSpeed * f.DeltaTime;
+                    if (playerData->RotationOffset > maxAngle)
                     {
-                        playerData->RotationOffset += rotationSpeed * f.DeltaTime;
-                        if (playerData->RotationOffset > maxAngle)
-                        {
-                            playerData->RotationOffset = maxAngle;
-                        }
-                        Debug.LogFormat("[PlayerRotatingSystem] Leaning left(rotation: {0}", playerData->RotationOffset);
+                        playerData->RotationOffset = maxAngle;
                     }
-
-                    //rotates to right
-                    else if (maxAngle < playerData->RotationOffset)
-                    {
-                        playerData->RotationOffset -= rotationSpeed * f.DeltaTime;
-                        if (playerData->RotationOffset < maxAngle)
-                        {
-                            playerData->RotationOffset = maxAngle;
-                        }
-                        Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", playerData->RotationOffset);
-                    }
+                    Debug.LogFormat("[PlayerRotatingSystem] Leaning left(rotation: {0}", playerData->RotationOffset);
                 }
 
-                // returns player to 0 rotation when RotateMotion-input ends
-                if (!input->RotationInput && playerData->RotationOffset != 0)
+                // rotates to right
+                else if (maxAngle < playerData->RotationOffset)
                 {
+                    playerData->RotationOffset -= rotationSpeed * f.DeltaTime;
+                    if (playerData->RotationOffset < maxAngle)
+                    {
+                        playerData->RotationOffset = maxAngle;
+                    }
+                    Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", playerData->RotationOffset);
+                }
+            }
+            
+            // returns player to 0 rotation when RotateMotion-input ends
+            if (!input->RotationInput && playerData->RotationOffset != 0)
+            {
+                if (playerData->RotationOffset > 0)
+                {
+                    playerData->RotationOffset -= rotationSpeed * f.DeltaTime;
+                    if (playerData->RotationOffset < 0)
+                    {
+                        playerData->RotationOffset = 0;
+                    }
+                }
+                else
+                {
+                    playerData->RotationOffset += rotationSpeed * f.DeltaTime;
                     if (playerData->RotationOffset > 0)
                     {
-                        playerData->RotationOffset -= rotationSpeed * f.DeltaTime;
-                        if (playerData->RotationOffset < 0)
-                        {
-                            playerData->RotationOffset = 0;
-                        }
-                    }
-                    else
-                    {
-                        playerData->RotationOffset += rotationSpeed * f.DeltaTime;
-                        if (playerData->RotationOffset > 0)
-                        {
-                            playerData->RotationOffset = 0;
-                        }
+                        playerData->RotationOffset = 0;
                     }
                 }
             }
+
+            //} handle rotation
 
             // update position and rotation
             MoveAndRotate(f, playerData, transform, positionNext, playerData->RotationBase + playerData->RotationOffset);

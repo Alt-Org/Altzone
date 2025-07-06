@@ -73,13 +73,21 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public const string BattleArenaPosYKey = "BattleUiPosY";
     public const string BattleMovementInputKey = "BattleMovement";
     public const string BattleRotationInputKey = "BattleRotation";
+    public const string BattleSwipeMinDistanceKey = "BattleSwipeMinDistance";
+    public const string BattleSwipeMaxDistanceKey = "BattleSwipeMaxDistance";
+    public const string BattleSwipeSensitivityKey = "BattleSwipeSensitivity";
+    public const string BattleGyroMinAngleKey = "BattleGyroMinAngle";
 
     public const int BattleArenaScaleDefault = 100;
     public const int BattleArenaPosXDefault = 50;
     public const int BattleArenaPosYDefault = 50;
 
-    public const BattleMovementInputType BattleMovementInputDefault = BattleMovementInputType.PointAndClick;
-    public const BattleRotationInputType BattleRotationInputDefault = BattleRotationInputType.Swipe;
+    public const BattleMovementInputType BattleMovementInputDefault = BattleMovementInputType.Swipe;
+    public const BattleRotationInputType BattleRotationInputDefault = BattleRotationInputType.TwoFinger;
+    public const float BattleSwipeMinDistanceDefault = 0.1f;
+    public const float BattleSwipeMaxDistanceDefault = 1f;
+    public const float BattleSwipeSensitivityDefault = 1f;
+    public const float BattleGyroMinAngleDefault = 10f;
 
     public const string UnlimitedStatUpgradeMaterialsKey = "UnlimitedStatUpgrade";
 
@@ -199,6 +207,54 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         }
     }
 
+    private float _battleSwipeMinDistance;
+    public float BattleSwipeMinDistance
+    {
+        get => _battleSwipeMinDistance;
+        set
+        {
+            if (_battleSwipeMinDistance == value) return;
+            _battleSwipeMinDistance = value;
+            PlayerPrefs.SetFloat(BattleSwipeMinDistanceKey, (float)value);
+        }
+    }
+
+    private float _battleSwipeMaxDistance;
+    public float BattleSwipeMaxDistance
+    {
+        get => _battleSwipeMaxDistance;
+        set
+        {
+            if (_battleSwipeMaxDistance == value) return;
+            _battleSwipeMaxDistance = value;
+            PlayerPrefs.SetFloat(BattleSwipeMaxDistanceKey, (float)value);
+        }
+    }
+
+    private float _battleSwipeSensitivity;
+    public float BattleSwipeSensitivity
+    {
+        get => _battleSwipeSensitivity;
+        set
+        {
+            if (_battleSwipeSensitivity == value) return;
+            _battleSwipeSensitivity = value;
+            PlayerPrefs.SetFloat(BattleSwipeSensitivityKey, (float)value);
+        }
+    }
+
+    private float _battleGyroMinAngle;
+    public float BattleGyroMinAngle
+    {
+        get => _battleGyroMinAngle;
+        set
+        {
+            if (_battleGyroMinAngle == value) return;
+            _battleGyroMinAngle = value;
+            PlayerPrefs.SetFloat(BattleGyroMinAngleKey, (float)value);
+        }
+    }
+
     private TopBarStyle _topBarStyleSetting;
     public TopBarStyle TopBarStyleSetting
     {
@@ -248,6 +304,11 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         _battleMovementInput = (BattleMovementInputType)PlayerPrefs.GetInt(BattleMovementInputKey, (int)BattleMovementInputDefault);
         _battleRotationInput = (BattleRotationInputType)PlayerPrefs.GetInt(BattleRotationInputKey, (int)BattleRotationInputDefault);
 
+        _battleSwipeMinDistance = PlayerPrefs.GetFloat(BattleSwipeMinDistanceKey, BattleSwipeMinDistanceDefault);
+        _battleSwipeMaxDistance = PlayerPrefs.GetFloat(BattleSwipeMaxDistanceKey, BattleSwipeMaxDistanceDefault);
+        _battleSwipeSensitivity = PlayerPrefs.GetFloat(BattleSwipeSensitivityKey, BattleSwipeSensitivityDefault);
+        _battleGyroMinAngle = PlayerPrefs.GetFloat(BattleGyroMinAngleKey, BattleGyroMinAngleDefault);
+
         _unlimitedStatUpgradeMaterials = PlayerPrefs.GetInt(UnlimitedStatUpgradeMaterialsKey, 1) == 1;
 
         _topBarStyleSetting = (TopBarStyle)PlayerPrefs.GetInt(TopBarStyleSettingKey, 1);
@@ -281,7 +342,10 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         string json = PlayerPrefs.GetString($"BattleUi{type}", string.Empty);
         if (string.IsNullOrEmpty(json)) return null;
 
-        return JsonUtility.FromJson<BattleUiMovableElementData>(json);
+        BattleUiMovableElementData data = JsonUtility.FromJson<BattleUiMovableElementData>(json);
+        if (data != null) data.UiElementType = data.UiElementType == BattleUiElementType.None ? type : data.UiElementType; // Backwards compatibility with old BattleUiMovableElementData
+
+        return data;
     }
 
     public void SetBattleUiMovableElementData(BattleUiElementType type, BattleUiMovableElementData data)

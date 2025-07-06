@@ -12,8 +12,8 @@ namespace Battle.View.UI
     public class BattleUiJoystickHandler : MonoBehaviour
     {
         [SerializeField] private BattleUiController _uiController;
-        [SerializeField] private BattleUiMovableElement _moveJoystickMovableElement;
-        [SerializeField] private BattleUiMovableElement _rotateJoystickMovableElement;
+        [SerializeField] private BattleUiMovableJoystickElement _moveJoystickMovableElement;
+        [SerializeField] private BattleUiMovableJoystickElement _rotateJoystickMovableElement;
         [SerializeField] private BattleUiJoystickComponent _moveJoystickComponent;
         [SerializeField] private BattleUiJoystickComponent _rotateJoystickComponent;
 
@@ -36,6 +36,12 @@ namespace Battle.View.UI
                     _rotateJoystickMovableElement.gameObject.SetActive(show);
                     break;
             }
+        }
+
+        public void SetLocked(bool locked)
+        {
+            _moveJoystickMovableElement.SetLocked(locked);
+            _rotateJoystickMovableElement.SetLocked(locked);
         }
 
         public void SetInfo(BattleUiElementType uiElementType, BattleUiMovableElementData data = null)
@@ -66,6 +72,7 @@ namespace Battle.View.UI
         {
             // Connecting listeners for the joystick input
             if (_moveJoystickComponent != null) _moveJoystickComponent.OnJoystickInput += _uiController.GameViewController.UiInputOnJoystickMovement;
+            
             if (_rotateJoystickComponent != null)
             {
                 _rotateJoystickComponent.OnJoystickXAxisInput += _uiController.GameViewController.UiInputOnJoystickRotation;

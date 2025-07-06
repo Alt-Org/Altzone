@@ -46,6 +46,7 @@ namespace Battle.View.Game
 
         public void UiInputOnCharacterSelected(int characterNumber)
         {
+            _playerInput.OnCharacterSelected(characterNumber);
             Debug.Log($"Character number {characterNumber} selected!");
         }
 
@@ -94,6 +95,7 @@ namespace Battle.View.Game
 
             // Subscribing to Debug events
             QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, QEventDebugOnUpdateStatsOverlay);
+            QuantumEvent.Subscribe<EventBattleDebugOnScreenMessage>(this, QEventDebugOnScreenMessage);
         }
 
         private void QEventOnViewWaitForPlayers(EventBattleViewWaitForPlayers e)
@@ -140,13 +142,17 @@ namespace Battle.View.Game
                 {
                     BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.MoveJoystick);
                     _uiController.JoystickHandler.SetInfo(BattleUiElementType.MoveJoystick, data);
+                    _uiController.JoystickHandler.SetShow(true, BattleUiElementType.MoveJoystick);
                 }
 
                 if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick)
                 {
                     BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.RotateJoystick);
                     _uiController.JoystickHandler.SetInfo(BattleUiElementType.RotateJoystick, data);
+                    _uiController.JoystickHandler.SetShow(true, BattleUiElementType.RotateJoystick);
                 }
+
+                _uiController.JoystickHandler.SetLocked(true);
             }
 
             // Commented out code to hide the ui elements which shouldn't be shown at this point, but the code will be used later
@@ -156,6 +162,7 @@ namespace Battle.View.Game
                 BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.GiveUpButton);
                 if (data != null) _uiController.GiveUpButtonHandler.MovableUiElement.SetData(data);
             }
+            */
 
             if (_uiController.PlayerInfoHandler != null)
             {
@@ -175,7 +182,6 @@ namespace Battle.View.Game
                     SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.TeammateInfo)
                 );
             }
-            */
 
             //} Initializing UI Handlers
         }
@@ -196,8 +202,8 @@ namespace Battle.View.Game
             if (_uiController.DiamondsHandler != null) _uiController.DiamondsHandler.SetShow(true);
             /* These UI elements aren't ready and shouldn't be shown yet
             if (_uiController.GiveUpButtonHandler != null) _uiController.GiveUpButtonHandler.SetShow(true);
-            if (_uiController.PlayerInfoHandler != null) _uiController.PlayerInfoHandler.SetShow(true);
             */
+            if (_uiController.PlayerInfoHandler != null) _uiController.PlayerInfoHandler.SetShow(true);
 
             // Load settings and set BattleCamera to show game scene with previously loaded settings
             BattleCamera.SetView(
@@ -212,11 +218,8 @@ namespace Battle.View.Game
             // Show end of countdown text in announcement handler
             _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.EndOfCountdown);
 
-            // Show movement joystick
-            if (SettingsCarrier.Instance.BattleMovementInput == BattleMovementInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.MoveJoystick);
-
-            // Show rotation joystick
-            if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.RotateJoystick);
+            // Unlock the joysticks to allow movement
+            _uiController.JoystickHandler.SetLocked(false);
         }
 
         private void QEventOnViewGameStart(EventBattleViewGameStart e)
@@ -277,6 +280,11 @@ namespace Battle.View.Game
 
             _uiController.DebugStatsOverlayHandler.SetShow(true);
             _uiController.DebugStatsOverlayHandler.SetStats(e.Stats);
+        }
+
+        private void QEventDebugOnScreenMessage(EventBattleDebugOnScreenMessage e)
+        {
+            _uiController.AnnouncementHandler.SetDebugtext(e.Message);
         }
 
         // Handles UI updates based on the game's state and countdown

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 using Quantum;
 using Input = Quantum.Input;
@@ -26,6 +27,12 @@ namespace Battle.View.Player
             _joystickRotationValue = input;
         }
 
+        public void OnCharacterSelected(int characterNumber)
+        {
+            Debug.LogWarning("character select detected");
+            _characterNumber = characterNumber;
+        }
+
         private MovementInputType _movementInputType;
         private RotationInputType _rotationInputType;
 
@@ -35,13 +42,29 @@ namespace Battle.View.Player
         private Vector3 _movementStartVector;
         private Vector2 _joystickMovementVector;
         private float _joystickRotationValue;
+        private int _characterNumber = -1;
 
         private float _swipeMinDistance = 0.1f;
+        private float _swipeMaxDistance = 1.0f;
+        private float _swipeSensitivity = 1.0f;
+        private float _gyroMinAngle = 10f;
+
+        private AttitudeSensor _attitudeSensor;
 
         private void OnEnable()
         {
             _movementInputType = SettingsCarrier.Instance.BattleMovementInput;
             _rotationInputType = SettingsCarrier.Instance.BattleRotationInput;
+            _swipeMinDistance  = SettingsCarrier.Instance.BattleSwipeMinDistance;
+            _swipeMaxDistance  = SettingsCarrier.Instance.BattleSwipeMaxDistance;
+            _swipeSensitivity  = SettingsCarrier.Instance.BattleSwipeSensitivity;
+            _gyroMinAngle      = SettingsCarrier.Instance.BattleGyroMinAngle;
+
+            if (AttitudeSensor.current != null)
+            {
+                InputSystem.EnableDevice(AttitudeSensor.current);
+                _attitudeSensor = AttitudeSensor.current;
+            }
 
             QuantumCallback.Subscribe(this, (CallbackPollInput callback) => PollInput(callback));
         }
@@ -54,6 +77,15 @@ namespace Battle.View.Player
             bool twoFingers = ClickStateHandler.GetClickType() is ClickType.TwoFingerOrScroll;
             bool mouseClick = !twoFingers && mouseDown && !_mouseDownPrevious;
             _mouseDownPrevious = mouseDown;
+
+            if (_characterNumber > -1)
+            {
+                if (!mouseDown)
+                {
+                    _characterNumber = -1;
+                }
+                return;
+            }
 
             bool movementInput = false;
             bool movementDirectionIsNormalized = false;
@@ -69,7 +101,7 @@ namespace Battle.View.Player
                 clickPosition = ClickStateHandler.GetClickPosition();
                 unityPosition = BattleCamera.Camera.ScreenToWorldPoint(clickPosition);
             }
-            
+
             switch (_movementInputType)
             {
                 case MovementInputType.PointAndClick:
@@ -94,6 +126,7 @@ namespace Battle.View.Player
                         movementInput = true;
                         Vector3 direction = unityPosition - _movementStartVector;
                         movementDirection = new FPVector2(FP.FromFloat_UNSAFE(direction.x), FP.FromFloat_UNSAFE(direction.z)) / deltaTime;
+                        movementDirection *= FP.FromFloat_UNSAFE(_swipeSensitivity);
                         _movementStartVector = unityPosition;
                     }
                     else if (!mouseDown)
@@ -124,7 +157,8 @@ namespace Battle.View.Player
                     {
                         rotationInput = true;
                         float distance = clickPosition.x - _rotationStartVector.x;
-                        rotationValue = -FP.FromFloat_UNSAFE(distance);
+                        float maxAdjustedDistance = Mathf.Clamp(distance / _swipeMaxDistance, -1, 1);
+                        rotationValue = -FP.FromFloat_UNSAFE(maxAdjustedDistance);
 
                     }
                     else if (!mouseDown)
@@ -150,6 +184,15 @@ namespace Battle.View.Player
                         rotationValue *= -1;
                     }
                     break;
+
+                case RotationInputType.Gyroscope:
+                    float gyroValue = GetGyroValue();
+                    if (Mathf.Abs(gyroValue) >= _gyroMinAngle)
+                    {
+                        rotationInput = true;
+                        rotationValue = FP.FromFloat_UNSAFE(-(Mathf.Clamp(gyroValue/75f, -1, 1)));
+                    }
+                    break;
             }
 
             Input i = new()
@@ -164,6 +207,17 @@ namespace Battle.View.Player
 
             callback.SetInput(i, DeterministicInputFlags.Repeatable);
             _previousTime = Time.time;
+        }
+
+        private float GetGyroValue()
+        {
+            Quaternion deviceRotation = new Quaternion(0.5f, 0.5f, -0.5f, 0.5f) * _attitudeSensor.attitude.ReadValue() * new Quaternion(0, 0, 1, 0);
+            Vector3 rot = (Quaternion.Inverse(Quaternion.FromToRotation(Quaternion.identity * Vector3.forward, deviceRotation * Vector3.forward)) * deviceRotation).eulerAngles;
+            if (rot.z > 180f)
+            {
+                rot = new Vector3(0, 0, rot.z - 360f);
+            }
+            return rot.z;
         }
     }
 }
