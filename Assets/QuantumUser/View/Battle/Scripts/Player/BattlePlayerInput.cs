@@ -60,8 +60,11 @@ namespace Battle.View.Player
             _swipeSensitivity  = SettingsCarrier.Instance.BattleSwipeSensitivity;
             _gyroMinAngle      = SettingsCarrier.Instance.BattleGyroMinAngle;
 
-            InputSystem.EnableDevice(AttitudeSensor.current);
-            _attitudeSensor = AttitudeSensor.current;
+            if (AttitudeSensor.current != null)
+            {
+                InputSystem.EnableDevice(AttitudeSensor.current);
+                _attitudeSensor = AttitudeSensor.current;
+            }
 
             QuantumCallback.Subscribe(this, (CallbackPollInput callback) => PollInput(callback));
         }
@@ -206,7 +209,7 @@ namespace Battle.View.Player
             _previousTime = Time.time;
         }
 
-        public float GetGyroValue()
+        private float GetGyroValue()
         {
             Quaternion deviceRotation = new Quaternion(0.5f, 0.5f, -0.5f, 0.5f) * _attitudeSensor.attitude.ReadValue() * new Quaternion(0, 0, 1, 0);
             Vector3 rot = (Quaternion.Inverse(Quaternion.FromToRotation(Quaternion.identity * Vector3.forward, deviceRotation * Vector3.forward)) * deviceRotation).eulerAngles;
