@@ -70,9 +70,11 @@ public static class PollManager
         foreach (ServerPoll poll in polls)
         {
 
-            PollData pollData = new FurniturePollData(id, clanMembers, furniturePollType, gameFurniture);
+            PollData pollData = new FurniturePollData(poll);
             pollDataList.Add(pollData);
         }
+
+        SaveClanData();
     }
 
     private static void PrintPollList()

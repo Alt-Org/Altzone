@@ -126,11 +126,17 @@ namespace Altzone.Scripts.Voting
             Furniture = furniture;
         }
 
-        public FurniturePollData(ServerPoll poll, List<string> clanMembers)
+        public FurniturePollData(ServerPoll poll)
         : base(poll)
         {
-            FurniturePollType = furniturePollType;
-            Furniture = furniture;
+            if(poll.type == "selling_item")
+                FurniturePollType = FurniturePollType.Selling;
+            else if(poll.type == "buying_item")
+                FurniturePollType = FurniturePollType.Buying;
+
+            GameFurniture gameFurniture = null;
+            Storefront.Get().GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == poll.entity_name));
+            Furniture = gameFurniture;
         }
     }
 
