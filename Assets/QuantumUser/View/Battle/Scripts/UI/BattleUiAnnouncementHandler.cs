@@ -55,6 +55,7 @@ namespace Battle.View.UI
         {
             _announcerText.text = text;
             _announcerText.color = Color.red;
+            _announcerText.textWrappingMode = TextWrappingModes.Normal;
             _debugmode = true;
         }
 
