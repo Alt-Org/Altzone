@@ -16,8 +16,8 @@ namespace Altzone.Scripts.Voting
         public string[] player_ids { get; set; }
         public int minPercentage { get; set; }
         public PollVote[] votes { get; set; }
-        public string entity_id { get; set; }
-        public string entity_name { get; set; }
+        public string fleaMarketItem_id { get; set; }
+        public string shopItemName { get; set; }
 
     }
 
