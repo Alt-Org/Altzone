@@ -820,17 +820,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 633acec5ce5996e46b8673f73a43fa9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  diskImage: {fileID: 4018264411508806859}
-  diskTransform: {fileID: 260013633593550340}
-  rotationSpeed: 100
+  _diskImage: {fileID: 4018264411508806859}
+  _diskTransform: {fileID: 260013633593550340}
+  _diskRotationSpeed: 100
   _jukeboxObject: {fileID: 8593317523588494251}
   _backButton: {fileID: 3385622372589893288}
   _songName: {fileID: 5921528984723798442}
-  songlistContent: {fileID: 2711868873908538806}
-  jukeboxButtonprefab: {fileID: 7205037451692343932, guid: 3312d1c148605004ead11d34daedce26,
+  _songListContent: {fileID: 2711868873908538806}
+  _jukeboxButtonPrefab: {fileID: 7205037451692343932, guid: 3312d1c148605004ead11d34daedce26,
     type: 3}
-  QueueContent: {fileID: 6854945740586590265}
-  Queuetextprefab: {fileID: 8968269194942016460, guid: 3ec8882e3707fbb46a78d846d81ee4b9,
+  _queueContent: {fileID: 6854945740586590265}
+  _queueTextPrefab: {fileID: 8968269194942016460, guid: 3ec8882e3707fbb46a78d846d81ee4b9,
     type: 3}
 --- !u!114 &8651352192793990803
 MonoBehaviour:

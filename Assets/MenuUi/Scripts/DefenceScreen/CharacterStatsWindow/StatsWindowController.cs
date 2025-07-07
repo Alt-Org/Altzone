@@ -108,8 +108,12 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         private void SetCurrentCharacter() // Get current custom character from player data and set it to variable
         {
+            _isSelected = false;
+
+            // Getting custom character from playerdata's CustomCharacters
             _customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
 
+            // Getting base character from storefront if character is null (locked)
             if (_customCharacter == null)
             {
                 DataStore store = Storefront.Get();
@@ -118,17 +122,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 store.GetAllBaseCharacterYield(result => allItems = result);
 
                 _baseCharacter = allItems.FirstOrDefault(c => c.Id == _characterId);
-
-                _isSelected = false;
+                return;
             }
-            else
+            else // else setting base character from the _customCharacter's variable
             {
                 _baseCharacter = _customCharacter.CharacterBase;
-
-                // Setting _isSelected if _customCharacter is one of the characters the player has selected
-                string[] selectedCharacterIds = _playerData.SelectedCharacterIds;
-                _isSelected = selectedCharacterIds.Contains(_customCharacter.ServerID);
             }
+
+            // Setting _isSelected if _customCharacter is one of the characters the player has selected. Checking also for character id for test characters 
+            _isSelected = _playerData.SelectedCharacterIds.Contains(_customCharacter.ServerID) || _playerData.SelectedTestCharacterIds.Contains((int)_customCharacter.Id);
         }
 
 

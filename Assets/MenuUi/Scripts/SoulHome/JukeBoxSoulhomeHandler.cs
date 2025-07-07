@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Audio;
@@ -8,51 +7,49 @@ using UnityEngine.UI;
 
 public class JukeBoxSoulhomeHandler : MonoBehaviour
 {
-    public static JukeBoxSoulhomeHandler Instance;
+    //public static JukeBoxSoulhomeHandler Instance;
 
-    public Image diskImage;
-    public Transform diskTransform;
+    [Header("Disk")]
+    [SerializeField] private Image _diskImage;
+    [SerializeField] private Transform _diskTransform;
+    [SerializeField] private float _diskRotationSpeed = 100f;
 
-    public float rotationSpeed = 100f;
+    [Header("Other")]
+    [SerializeField] private GameObject _jukeboxObject;
+    [SerializeField] private Button _backButton;
+    [SerializeField] private TextMeshProUGUI _songName;
 
-    [SerializeField]
-    private GameObject _jukeboxObject;
-    [SerializeField]
-    private Button _backButton;
-    [SerializeField]
-    private TextMeshProUGUI _songName;
+    [Header("Songlist")]
+    [SerializeField] private Transform _songListContent;
+    [SerializeField] private GameObject _jukeboxButtonPrefab;
 
-    [Header("songlist")]
-    public Transform songlistContent;
-    public GameObject jukeboxButtonprefab;
     [Header("Queuelist")]
-    public Transform QueueContent;
-    [SerializeField] private GameObject Queuetextprefab;
+    [SerializeField] private Transform _queueContent;
+    [SerializeField] private GameObject _queueTextPrefab;
 
-    private bool isMainMenuMode = false;
+    private bool _isMainMenuMode = false;
     private Coroutine _diskSpinCoroutine;
 
-    public bool JukeBoxOpen { get
-        {
-            return _jukeboxObject.activeSelf;
-        }
-    }
+    public bool JukeBoxOpen { get => _jukeboxObject.activeSelf; }
 
-    private void Awake()
-    {
-        Instance = this;
-    }
+    //private void Awake()
+    //{
+    //    if (Instance == null)
+    //        Instance = this;
+    //}
 
-     void Start()
+    void Start()
     {
         foreach (var song in AudioManager.Instance.JukeBoxSongs) 
         { 
-            GameObject jukeboxObject = Instantiate(jukeboxButtonprefab, songlistContent);
-            jukeboxObject.GetComponent<Button>().onClick.AddListener(()=> PlaySongByIndex(song));
-            jukeboxObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = song.songName;
+            GameObject jukeboxObject = Instantiate(_jukeboxButtonPrefab, _songListContent);
+            jukeboxObject.GetComponent<Button>().onClick.AddListener(() => PlaySong(song));
+            jukeboxObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = song.Name;
         }
-        _backButton.onClick.AddListener(()=> ToggleJokeBoxScreen(false));
+
+        _backButton.onClick.AddListener(() => ToggleJukeboxScreen(false));
     }
+
     private void OnEnable()
     {
         JukeboxController.OnChangeJukeBoxSong += SetSongInfo;
@@ -71,69 +68,68 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     {
         while (true)
         {
-            diskTransform.Rotate(Vector3.forward * -rotationSpeed * Time.deltaTime);
+            _diskTransform.Rotate(Vector3.forward * -_diskRotationSpeed * Time.deltaTime);
             yield return null;
         }
     }
 
-    public void ToggleJokeBoxScreen(bool toggle)
+    public void ToggleJukeboxScreen(bool toggle)
     {
         _jukeboxObject.SetActive(toggle);
     }
 
-    public void PlaySongByIndex(JukeboxSong song)
+    public void PlaySong(JukeboxSong song)
     {
-        if (isMainMenuMode) return;
-
-        AudioManager.Instance.Jukebox.PlaySongByIndex(song);
-
+        if (_isMainMenuMode) return;
+        
+        AudioManager.Instance.Jukebox.PlaySong(song);
+        
         gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
     }
 
     private void SetSongInfo(JukeboxSong song)
     {
         if (song == null) return;
-        _songName.text = song.songName;
-        diskImage.sprite = song.songDisks;
+
+        _songName.text = song.Name;
+        _diskImage.sprite = song.Disk;
 
         if (_diskSpinCoroutine != null)
         {
             StopCoroutine(_diskSpinCoroutine);
             _diskSpinCoroutine = null;
-            diskTransform.rotation = Quaternion.identity;
+            _diskTransform.rotation = Quaternion.identity;
         }
-        if(song.songs != null)_diskSpinCoroutine = StartCoroutine(SpinDisk());
+
+        if (song.Song != null) _diskSpinCoroutine = StartCoroutine(SpinDisk());
     }
 
     private void UpdateQueueText(Queue<JukeboxSong> songQueue) 
     {
-        foreach(Transform queueText in QueueContent) 
-        {
-            Destroy(queueText.gameObject);
-        }
+        foreach(Transform queueText in _queueContent) Destroy(queueText.gameObject);
+
         foreach (JukeboxSong song in songQueue)
         {
-            GameObject jukeboxObject = Instantiate(Queuetextprefab, QueueContent);
-            jukeboxObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = song.songName;
+            GameObject jukeboxObject = Instantiate(_queueTextPrefab, _queueContent);
+            jukeboxObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = song.Name;
         }
     }
 
     public void StopJukebox()
     {
         AudioManager.Instance.StopMusic();
-        //AudioManager.Instance.JukeBoxQueue.Clear();
-        //isMainMenuMode = true;
-        diskImage.sprite = null;
+        _diskImage.sprite = null;
+
         if (_diskSpinCoroutine != null)
         {
             StopCoroutine(_diskSpinCoroutine);
             _diskSpinCoroutine = null;
-            diskTransform.rotation = Quaternion.identity;
+            _diskTransform.rotation = Quaternion.identity;
         }
     }
 
     public void ExitMainMenuMode()
     {
-        isMainMenuMode = false;
+        _isMainMenuMode = false;
     }
 }
