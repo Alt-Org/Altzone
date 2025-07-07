@@ -1068,6 +1068,26 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
+    public IEnumerator ProgressPlayerTaskFromServer(int amount, Action<bool> callback)
+    {
+        string body = JObject.FromObject(new { amount = amount }).ToString();
+
+        yield return StartCoroutine(WebRequests.Put(SERVERADDRESS + "dailyTasks/uiDailyTask/", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
     #endregion
 
     #region BattleCharacter
