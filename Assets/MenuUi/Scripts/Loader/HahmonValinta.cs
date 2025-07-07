@@ -81,7 +81,7 @@ public class HahmonValinta : AltMonoBehaviour
         popupWindow.SetActive(true);
 
         // Update the character name text
-        characterNameText.text = data.characterName;
+        //characterNameText.text = data.characterName;
 
         // Log the selected character's name
         Debug.Log("Selected character: " + data.characterName);
