@@ -577,7 +577,28 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
 
             // Using method to check and switch visible scale handle in case it changed
-            CheckAndSwitchVisibleControlButton(oldScaleHandle, _currentScaleHandle);
+            CheckNewGameObjectIsActive(oldScaleHandle.gameObject, _currentScaleHandle.gameObject);
+
+            if (_movableJoystickElement != null)
+            {
+                RectTransform oldHandleSizeRectTransform = _currentHandleSizeRectTransform;
+
+                // Getting world corners for default handle size control
+                Vector3[] defaultHandleSizeCorners = new Vector3[4];
+                _handleSizeRectTransforms[DefaultHandleSizeRectTransformIdx].GetWorldCorners(defaultHandleSizeCorners);
+
+                // Checking if the default handle size slider is inside the editor
+                if (IsButtonInsideEditor(defaultHandleSizeCorners))
+                {
+                    _currentHandleSizeRectTransformIdx = DefaultHandleSizeRectTransformIdx;
+                }
+                else // Setting the other handle size slider as current
+                {
+                    _currentHandleSizeRectTransformIdx = DefaultHandleSizeRectTransformIdx == ControlButtonVertical.Top ? (int)ControlButtonVertical.Bottom : (int)ControlButtonVertical.Top;
+                }
+
+                CheckNewGameObjectIsActive(oldHandleSizeRectTransform.gameObject, _currentHandleSizeRectTransform.gameObject);
+            }
 
             // Returning if not a multiorientation element since the other control buttons aren't needed for normal elements
             if (_multiOrientationElement == null) return;
@@ -592,11 +613,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
             else // If not setting the other side's button as current
             {
-                _currentFlipVerticallyButtonIdx = (int)ControlButtonHorizontal.Left;
+                _currentFlipVerticallyButtonIdx = DefaultFlipVerticallyButtonIdx == (int)ControlButtonHorizontal.Right ? (int)ControlButtonHorizontal.Left : (int)ControlButtonHorizontal.Right;
             }
 
             // Checking if we should change the visible button
-            CheckAndSwitchVisibleControlButton(oldFlipVerticallyButton, _currentFlipVerticallyButton);
+            CheckNewGameObjectIsActive(oldFlipVerticallyButton.gameObject, _currentFlipVerticallyButton.gameObject);
 
             // Positioning top buttons, placing them into one array first
             Button[] topButtons = _flipHorizontallyButtons.Concat(_changeOrientationButtons).ToArray();
@@ -670,8 +691,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
             
             // Checking visibility for the top buttons
-            CheckAndSwitchVisibleControlButton(oldFlipHorizontallyButton, _currentFlipHorizontallyButton);
-            CheckAndSwitchVisibleControlButton(oldChangeOrientationButton, _currentChangeOrientationButton);
+            CheckNewGameObjectIsActive(oldFlipHorizontallyButton.gameObject, _currentFlipHorizontallyButton.gameObject);
+            CheckNewGameObjectIsActive(oldChangeOrientationButton.gameObject, _currentChangeOrientationButton.gameObject);
 
             // Check if the scale handle is overlapping (only if vertical multi orientation element)
             if (_multiOrientationElement.IsHorizontal) return;
@@ -708,14 +729,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
         }
 
-        private void CheckAndSwitchVisibleControlButton(Button oldButton, Button currentButton)
+        private void CheckNewGameObjectIsActive(GameObject oldControl, GameObject newControl)
         {
-            if (oldButton != currentButton)
+            if (oldControl != newControl)
             {
-                if (oldButton.gameObject.activeSelf)
+                if (oldControl.activeSelf)
                 {
-                    oldButton.gameObject.SetActive(false);
-                    currentButton.gameObject.SetActive(true);
+                    oldControl.SetActive(false);
+                    newControl.SetActive(true);
                 }
             }
         }
