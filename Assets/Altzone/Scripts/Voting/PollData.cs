@@ -63,7 +63,7 @@ namespace Altzone.Scripts.Voting
             StartTime = ((DateTimeOffset)DateTime.Parse(poll.startedAt)).ToUnixTimeSeconds();
             EndTime = ((DateTimeOffset)DateTime.Parse(poll.endsOn)).ToUnixTimeSeconds();
             GameFurniture gameFurniture = null;
-            Storefront.Get().GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == poll.entity_name));
+            Storefront.Get().GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == poll.shopItemName));
             Sprite = gameFurniture.FurnitureInfo.Image;
             NotVoted = poll.player_ids.ToList();
             YesVotes = new List<PollVoteData>();
@@ -135,7 +135,7 @@ namespace Altzone.Scripts.Voting
                 FurniturePollType = FurniturePollType.Buying;
 
             GameFurniture gameFurniture = null;
-            Storefront.Get().GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == poll.entity_name));
+            Storefront.Get().GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == poll.shopItemName));
             Furniture = gameFurniture;
         }
     }
