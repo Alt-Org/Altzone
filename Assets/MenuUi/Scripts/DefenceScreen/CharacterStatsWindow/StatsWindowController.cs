@@ -544,6 +544,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 _playerData.UpdateCustomCharacter(_customCharacter);
                 OnStatUpdated.Invoke(statType);
                 gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+                gameObject.GetComponent<DailyTaskProgressListenerCharacterStats>().UpdateProgressByStatType(statType);
             }
 
             return success;

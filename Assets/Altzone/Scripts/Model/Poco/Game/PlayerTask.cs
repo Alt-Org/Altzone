@@ -33,6 +33,10 @@ namespace Altzone.Scripts.Model.Poco.Game
         BlowUpYourCharacter,
         SwitchSoulhomeMusic,
         MakeMusicWithButtons,
+        MakeCharacterFast,
+        MakeCharacterDurable,
+        MakeCharacterStrong,
+        MakeCharacterBig,
     }
 
     public enum TaskEducationSocialType
@@ -271,6 +275,22 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case "make_music_with_buttons":
                     {
                         return TaskEducationActionType.MakeMusicWithButtons;
+                    }
+                case "make_character_fast":
+                    {
+                        return TaskEducationActionType.MakeCharacterFast;
+                    }
+                case "make_character_durable":
+                    {
+                        return TaskEducationActionType.MakeCharacterDurable;
+                    }
+                case "make_character_strong":
+                    {
+                        return TaskEducationActionType.MakeCharacterStrong;
+                    }
+                case "make_character_big":
+                    {
+                        return TaskEducationActionType.MakeCharacterBig;
                     }
                 default:
                     {

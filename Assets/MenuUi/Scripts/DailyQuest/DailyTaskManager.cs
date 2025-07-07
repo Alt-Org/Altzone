@@ -375,8 +375,8 @@ public class DailyTaskManager : AltMonoBehaviour
         }
 
         //Action
-        string[] actionTasks = { "win_battle", "edit_character_stats", "blow_up_your_character", "switch_soulhome_music" , "play_battle", "make_music_with_buttons"};
-        string[] actionTitles = { "Voita battle.", "Muokkaa hahmosi statseja.", "Räjäytä hahmosi ryöstössä.", "Vaihda biisi sielunkodissa.", "Pelaa battle.", "Tee näppäimillä musiikkia." };
+        string[] actionTasks = { "win_battle", "edit_character_stats", "blow_up_your_character", "switch_soulhome_music" , "play_battle", "make_music_with_buttons", "make_character_fast", "make_character_durable", "make_character_strong", "make_character_big"};
+        string[] actionTitles = { "Voita battle.", "Muokkaa hahmosi statseja.", "Räjäytä hahmosi ryöstössä.", "Vaihda biisi sielunkodissa.", "Pelaa battle.", "Tee näppäimillä musiikkia.", "Muokkaa pelihahmosta nopea.", "Muokkaa pelihahmosta kestävä.", "Muokkaa pelihahmosta voimakas.", "Muokkaa pelihahmosta isokokoinen." };
 
         for (int i = 0; i < actionTasks.Length; i++)
         {
