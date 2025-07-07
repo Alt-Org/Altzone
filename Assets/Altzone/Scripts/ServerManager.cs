@@ -1338,6 +1338,8 @@ public class ServerManager : MonoBehaviour
 
     #endregion
 
+    #region Voting
+
     public IEnumerator GetClanVoteListFromServer(Action<List<ServerPoll>> callback)
     {
         yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "voting/", AccessToken, request =>
@@ -1365,6 +1367,33 @@ public class ServerManager : MonoBehaviour
             }
         }));
     }
+
+    public IEnumerator SendClanVoteToServer(string voteid, bool answer, Action<ServerPoll> callback)
+    {
+        string body = JObject.FromObject(new { voting_id = voteid, choice = answer }).ToString();
+
+        yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "voting/", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+
+                ServerPoll poll = new();
+                poll = result["data"]["Voting"].ToObject<ServerPoll>();
+
+                if (callback != null)
+                    callback(poll);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
+    #endregion
 
     public IEnumerator GetClanShopListFromServer(Action<List<GameFurniture>> callback)
     {
