@@ -60,6 +60,21 @@ public static class PollManager
         SaveClanData();
     }
 
+    public static void BuildPolls(List<ServerPoll> polls)
+    {
+        LoadClanData();
+
+        List<string> clanMembers = new List<string>();
+        if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
+
+        foreach (ServerPoll poll in polls)
+        {
+
+            PollData pollData = new FurniturePollData(id, clanMembers, furniturePollType, gameFurniture);
+            pollDataList.Add(pollData);
+        }
+    }
+
     private static void PrintPollList()
     {
         for (int i = 0; i < pollDataList.Count; i++)

@@ -57,6 +57,19 @@ namespace Altzone.Scripts.Voting
             NoVotes = new List<PollVoteData>();
         }
 
+        public PollData(ServerPoll poll)
+        {
+            Id = poll._id;
+            StartTime = ((DateTimeOffset)DateTime.Parse(poll.startedAt)).ToUnixTimeSeconds();
+            EndTime = ((DateTimeOffset)DateTime.Parse(poll.endsOn)).ToUnixTimeSeconds();
+            GameFurniture gameFurniture = null;
+            Storefront.Get().GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == poll.entity_name));
+            Sprite = gameFurniture.FurnitureInfo.Image;
+            NotVoted = poll.player_ids.ToList();
+            YesVotes = new List<PollVoteData>();
+            NoVotes = new List<PollVoteData>();
+        }
+
         public void AddVote(bool answer)
         {
             DataStore store = Storefront.Get();
@@ -108,6 +121,13 @@ namespace Altzone.Scripts.Voting
         
         public FurniturePollData(string id, List<string> clanMembers, FurniturePollType furniturePollType, GameFurniture furniture, long endTime = 15)
         : base(id, furniture.FurnitureInfo.Image, clanMembers, endTime)
+        {
+            FurniturePollType = furniturePollType;
+            Furniture = furniture;
+        }
+
+        public FurniturePollData(ServerPoll poll, List<string> clanMembers)
+        : base(poll)
         {
             FurniturePollType = furniturePollType;
             Furniture = furniture;
