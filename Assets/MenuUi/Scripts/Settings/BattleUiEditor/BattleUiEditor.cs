@@ -790,8 +790,17 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
             else
             {
-                BattleUiMovableElement movableElement = uiElementGameObject.GetComponent<BattleUiMovableElement>();
-                editingComponent.SetInfo(movableElement);
+                BattleUiMovableJoystickElement movableJoystickElement = uiElementGameObject.GetComponent<BattleUiMovableJoystickElement>();
+
+                if (movableJoystickElement != null)
+                {
+                    editingComponent.SetInfo(movableJoystickElement);
+                }
+                else
+                {
+                    BattleUiMovableElement movableElement = uiElementGameObject.GetComponent<BattleUiMovableElement>();
+                    editingComponent.SetInfo(movableElement);
+                }
             }
 
             // Setting listener for toggles

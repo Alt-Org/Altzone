@@ -34,6 +34,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Button _flipVerticallyButtonRight;
         [SerializeField] private Button _flipVerticallyButtonLeft;
 
+        [Header("Handle size sliders")]
+        [SerializeField] private RectTransform _handleSizeRectTransformTop;
+        [SerializeField] private Slider _handleSizeSliderTop;
+        [SerializeField] private RectTransform _handleSizeRectTransformBottom;
+        [SerializeField] private Slider _handleSizeSliderBottom;
+
         public delegate void UiElementSelectedHandler(BattleUiEditingComponent self);
         public UiElementSelectedHandler OnUiElementSelected;
 
@@ -45,24 +51,25 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         public void SetInfo(BattleUiMovableElement movableElement)
         {
             _movableElement = movableElement;
+            UpdateData();
 
+            InitializeControlButtons();
             SetControlButtonSizes();
             ShowControls(false);
 
             _movableElementAspectRatio = movableElement.RectTransformComponent.rect.width / movableElement.RectTransformComponent.rect.height;
+        }
 
-            UpdateData();
+        public void SetInfo(BattleUiMovableJoystickElement movableJoystickElement)
+        {
+            _movableJoystickElement = movableJoystickElement;
+            SetInfo((BattleUiMovableElement)movableJoystickElement);
         }
 
         public void SetInfo(BattleUiMultiOrientationElement multiOrientationElement)
         {
             _multiOrientationElement = multiOrientationElement;
-            _movableElement = multiOrientationElement;
-
-            SetControlButtonSizes();
-            ShowControls(false);
-
-            UpdateData();
+            SetInfo((BattleUiMovableElement)multiOrientationElement);
         }
 
         public void ShowControls(bool show)
@@ -70,7 +77,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             CheckControlButtonsVisibility();
             _currentScaleHandle.gameObject.SetActive(show);
 
-            if (_multiOrientationElement == null) show = false;
+            if (_movableJoystickElement != null) _currentHandleSizeRectTransform.gameObject.SetActive(show);
+
+            if (_multiOrientationElement == null) return;
             _currentFlipHorizontallyButton.gameObject.SetActive(show);
             _currentFlipVerticallyButton.gameObject.SetActive(show);
             _currentChangeOrientationButton.gameObject.SetActive(show);
@@ -78,8 +87,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         public void UpdateData()
         {
-            if (_multiOrientationElement == null) _data = _movableElement.GetData();
-            else _data = _multiOrientationElement.GetData();
+            if (_multiOrientationElement != null) _data = _multiOrientationElement.GetData();
+            else if (_movableJoystickElement != null) _data = _movableJoystickElement.GetData();
+            else _data = _movableElement.GetData();
+            
         }
 
         public void ToggleGrid(bool toggle)
@@ -118,7 +129,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             Button selectedButton = eventData.selectedObject != null ? eventData.selectedObject.GetComponent<Button>() : null;
 
-            if (selectedButton == _currentFlipHorizontallyButton || selectedButton == _currentFlipVerticallyButton || selectedButton == _currentChangeOrientationButton)
+            if (_multiOrientationElement != null && (selectedButton == _currentFlipHorizontallyButton || selectedButton == _currentFlipVerticallyButton || selectedButton == _currentChangeOrientationButton))
             {
                 _currentAction = ActionType.None;
             }
@@ -285,6 +296,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private const int DefaultChangeOrientationButtonIdx = (int)ControlButtonVertical.Top;
         private const int DefaultFlipHorizontallyButtonIdx = (int)ControlButtonVertical.Top;
         private const int DefaultFlipVerticallyButtonIdx = (int)ControlButtonHorizontal.Right;
+        private const int DefaultHandleSizeRectTransformIdx = (int)ControlButtonVertical.Top;
 
         private const int ScalingIncrementAmount = 5;
         private const int MoveActionTreshold = 20;
@@ -293,16 +305,20 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private Button[] _changeOrientationButtons;
         private Button[] _flipHorizontallyButtons;
         private Button[] _flipVerticallyButtons;
+        private Slider[] _handleSizeSliders;
+        private RectTransform[] _handleSizeRectTransforms;
 
         private int _currentScaleHandleIdx = DefaultScaleHandleIdx;
         private int _currentChangeOrientationButtonIdx = DefaultChangeOrientationButtonIdx;
         private int _currentFlipHorizontallyButtonIdx = DefaultFlipHorizontallyButtonIdx;
         private int _currentFlipVerticallyButtonIdx = DefaultFlipVerticallyButtonIdx;
+        private int _currentHandleSizeRectTransformIdx = DefaultHandleSizeRectTransformIdx;
 
         private Button _currentScaleHandle => _scaleHandles[_currentScaleHandleIdx];
         private Button _currentChangeOrientationButton => _changeOrientationButtons[_currentChangeOrientationButtonIdx];
         private Button _currentFlipHorizontallyButton => _flipHorizontallyButtons[_currentFlipHorizontallyButtonIdx];
         private Button _currentFlipVerticallyButton => _flipVerticallyButtons[_currentFlipVerticallyButtonIdx];
+        private RectTransform _currentHandleSizeRectTransform => _handleSizeRectTransforms[_currentHandleSizeRectTransformIdx];
 
         private float _maxWidth => BattleUiEditor.EditorRect.width / 2;
         private float _maxHeight => BattleUiEditor.EditorRect.height / 3;
@@ -337,6 +353,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private float _aspectRatio => _multiOrientationElement == null ? _movableElementAspectRatio : _multiOrientationElement.HorizontalAspectRatio;
 
         private BattleUiMovableElement _movableElement;
+        private BattleUiMovableJoystickElement _movableJoystickElement;
         private BattleUiMultiOrientationElement _multiOrientationElement;
         private BattleUiMovableElementData _data;
 
@@ -353,45 +370,79 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             ShowControls(false);
         }
 
-        private void Awake()
+        private void OnDestroy()
         {
-            // Arranging scale handles and control buttons to array so that they can be accessed better with the enums
-            _scaleHandles = new[] { _scaleHandleBottomLeft, _scaleHandleTopLeft, _scaleHandleTopRight, _scaleHandleBottomRight };
-            _changeOrientationButtons = new[] { _changeOrientationButtonTop, _changeOrientationButtonBottom };
-            _flipHorizontallyButtons = new[] { _flipHorizontallyButtonTop, _flipHorizontallyButtonBottom };
-            _flipVerticallyButtons = new[] { _flipVerticallyButtonLeft, _flipVerticallyButtonRight };
-
-            foreach (Button button in _changeOrientationButtons)
+            if (_multiOrientationElement != null)
             {
-                button.onClick.AddListener(ChangeOrientation);
+                foreach (Button button in _changeOrientationButtons)
+                {
+                    button.onClick.RemoveAllListeners();
+                }
+
+                foreach (Button button in _flipHorizontallyButtons)
+                {
+                    button.onClick.RemoveAllListeners();
+                }
+
+                foreach (Button button in _flipVerticallyButtons)
+                {
+                    button.onClick.RemoveAllListeners();
+                }
             }
-
-            foreach (Button button in _flipHorizontallyButtons)
+                
+            if (_movableJoystickElement != null)
             {
-                button.onClick.AddListener(FlipHorizontally);
-            }
-
-            foreach (Button button in _flipVerticallyButtons)
-            {
-                button.onClick.AddListener(FlipVertically);
+                foreach (Slider slider in _handleSizeSliders)
+                {
+                    slider.onValueChanged.RemoveAllListeners();
+                }
             }
         }
 
-        private void OnDestroy()
+        private void InitializeControlButtons()
         {
-            foreach (Button button in _changeOrientationButtons)
+            // Arranging scale handles to array so that they can be accessed better with the enums
+            _scaleHandles = new[] { _scaleHandleBottomLeft, _scaleHandleTopLeft, _scaleHandleTopRight, _scaleHandleBottomRight };
+
+            if (_multiOrientationElement != null)
             {
-                button.onClick.RemoveAllListeners();
+                // Arranging control buttons to array so that they can be accessed better with the enums
+                _changeOrientationButtons = new[] { _changeOrientationButtonTop, _changeOrientationButtonBottom };
+                _flipHorizontallyButtons = new[] { _flipHorizontallyButtonTop, _flipHorizontallyButtonBottom };
+                _flipVerticallyButtons = new[] { _flipVerticallyButtonLeft, _flipVerticallyButtonRight };
+
+                // Adding listeners to control buttons
+                foreach (Button button in _changeOrientationButtons)
+                {
+                    button.onClick.AddListener(ChangeOrientation);
+                }
+
+                foreach (Button button in _flipHorizontallyButtons)
+                {
+                    button.onClick.AddListener(FlipHorizontally);
+                }
+
+                foreach (Button button in _flipVerticallyButtons)
+                {
+                    button.onClick.AddListener(FlipVertically);
+                }
             }
 
-            foreach (Button button in _flipHorizontallyButtons)
+            if (_movableJoystickElement != null)
             {
-                button.onClick.RemoveAllListeners();
-            }
+                // Arranging handle size Sliders and RectTransforms to array so that they can be accessed better with the enums
+                _handleSizeRectTransforms = new[] { _handleSizeRectTransformTop, _handleSizeRectTransformBottom };
+                _handleSizeSliders = new[] { _handleSizeSliderTop, _handleSizeSliderBottom };
 
-            foreach (Button button in _flipVerticallyButtons)
-            {
-                button.onClick.RemoveAllListeners();
+                // Initializing sliders and adding listeners
+                foreach (Slider slider in _handleSizeSliders)
+                {
+                    slider.maxValue = BattleUiMovableJoystickElement.HandleSizeMax;
+                    slider.minValue = BattleUiMovableJoystickElement.HandleSizeMin;
+                    slider.SetValueWithoutNotify(_data.HandleSize == 0 ? BattleUiMovableJoystickElement.HandleSizeDefault : _data.HandleSize);
+
+                    slider.onValueChanged.AddListener(ChangeHandleSize);
+                }
             }
         }
 
@@ -448,6 +499,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             CalculateAndSetAnchors(newSize);
         }
 
+        private void ChangeHandleSize(float value)
+        {
+            _data.HandleSize = (int)value;
+            _movableJoystickElement.SetData(_data);
+        }
+
         // Method used to calculate appropiate size for the control buttons, since if they were anchored they would grow with the element when it's scaled
         private void SetControlButtonSizes()
         {
@@ -459,10 +516,20 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 scaleHandle.GetComponent<RectTransform>().sizeDelta = buttonSize;
             }
 
-            if (_multiOrientationElement == null) return; // Returning if not a multiorientation element
-
             float controlButtonWidth = BattleUiEditor.EditorRect.width * ControlButtonSizeRatio;
             buttonSize = new Vector2(controlButtonWidth, controlButtonWidth);
+
+            // Setting handle size slider size if the ui element is a joystick
+            if (_movableJoystickElement != null)
+            {
+                foreach (RectTransform rectTransform in _handleSizeRectTransforms)
+                {
+                    // Aspect ratio fitter will adjust the width to be correct for the handle size sliders
+                    rectTransform.sizeDelta = buttonSize;
+                }
+            }
+
+            if (_multiOrientationElement == null) return; // Returning if not a multiorientation element
 
             foreach (Button button in _changeOrientationButtons)
             {
@@ -601,7 +668,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     break;
                 }
             }
-
+            
             // Checking visibility for the top buttons
             CheckAndSwitchVisibleControlButton(oldFlipHorizontallyButton, _currentFlipHorizontallyButton);
             CheckAndSwitchVisibleControlButton(oldChangeOrientationButton, _currentChangeOrientationButton);
@@ -678,7 +745,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         }
 
         // This method is needed because the default Contains method compares with < and > instead of <= and >= for the max x and y values
-        private bool HolderRectContains(Vector3 point) 
+        private bool HolderRectContains(Vector3 point)
         {
             Rect uiRect = BattleUiEditor.EditorRect;
             return point.x >= uiRect.xMin && point.x <= uiRect.xMax && point.y >= uiRect.yMin && point.y <= uiRect.yMax;
@@ -705,7 +772,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             Vector3[] uiElementCorners = new Vector3[4];
             _movableElement.RectTransformComponent.GetWorldCorners(uiElementCorners);
 
-            for(int i = 0; i < uiElementCorners.Length; i++)
+            for (int i = 0; i < uiElementCorners.Length; i++)
             {
                 uiElementCorners[i] = BattleUiEditor.EditorRectTransform.InverseTransformVector(uiElementCorners[i]);
             }
