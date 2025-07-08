@@ -57,6 +57,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             SetControlButtonSizes();
             ShowControls(false);
 
+            // Hiding handle size rect transforms as a special case because they have aspect ratio fitter which needs to be active to work
+            // And show controls only hides the current controls which the ui element displays
+            _handleSizeRectTransformTop.gameObject.SetActive(false);
+            _handleSizeRectTransformBottom.gameObject.SetActive(false);
+
             _movableElementAspectRatio = movableElement.RectTransformComponent.rect.width / movableElement.RectTransformComponent.rect.height;
         }
 
@@ -74,7 +79,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         public void ShowControls(bool show)
         {
-            CheckControlButtonsVisibility();
+            if (show) CheckControlButtonsVisibility();
             _currentScaleHandle.gameObject.SetActive(show);
 
             if (_movableJoystickElement != null) _currentHandleSizeRectTransform.gameObject.SetActive(show);
@@ -503,6 +508,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             _data.HandleSize = (int)value;
             _movableJoystickElement.SetData(_data);
+            CheckControlButtonsVisibility();
         }
 
         // Method used to calculate appropiate size for the control buttons, since if they were anchored they would grow with the element when it's scaled
@@ -516,9 +522,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 scaleHandle.GetComponent<RectTransform>().sizeDelta = buttonSize;
             }
 
-            float controlButtonWidth = BattleUiEditor.EditorRect.width * ControlButtonSizeRatio;
-            buttonSize = new Vector2(controlButtonWidth, controlButtonWidth);
-
             // Setting handle size slider size if the ui element is a joystick
             if (_movableJoystickElement != null)
             {
@@ -530,6 +533,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
 
             if (_multiOrientationElement == null) return; // Returning if not a multiorientation element
+
+            float controlButtonWidth = BattleUiEditor.EditorRect.width * ControlButtonSizeRatio;
+            buttonSize = new Vector2(controlButtonWidth, controlButtonWidth);
 
             foreach (Button button in _changeOrientationButtons)
             {
@@ -581,6 +587,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             if (_movableJoystickElement != null)
             {
+                // Adding offset to the rect transforms to ensure they are not overlapping with the sides
+                foreach (RectTransform rectTransform in _handleSizeRectTransforms)
+                {
+                    AddXOffsetIfOutsideBounds(rectTransform);
+                }
+
                 RectTransform oldHandleSizeRectTransform = _currentHandleSizeRectTransform;
 
                 // Getting world corners for default handle size control
@@ -597,7 +609,36 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     _currentHandleSizeRectTransformIdx = DefaultHandleSizeRectTransformIdx == ControlButtonVertical.Top ? (int)ControlButtonVertical.Bottom : (int)ControlButtonVertical.Top;
                 }
 
+                // Checking that the new visible handle size slider gameobject is active
                 CheckNewGameObjectIsActive(oldHandleSizeRectTransform.gameObject, _currentHandleSizeRectTransform.gameObject);
+
+                // Getting scale handle rect to check if it's overlapping with the handle size slider rect
+                RectTransform scaleRectTransform = _currentScaleHandle.GetComponent<RectTransform>();
+                Rect scaleRect = scaleRectTransform.rect;
+
+                // Checking if the scale handle overlaps handle size slider rect
+                if (scaleRect.Overlaps(_currentHandleSizeRectTransform.rect))
+                {
+                    Vector3[] handleSizeCorners = new Vector3[4];
+                    _currentHandleSizeRectTransform.GetWorldCorners(handleSizeCorners);
+
+                    // Changing scale handle world position to one of the handle size rect transform's corners
+                    switch ((CornerType)_currentScaleHandleIdx)
+                    {
+                        case CornerType.BottomLeft:
+                            scaleRectTransform.position = handleSizeCorners[(int)CornerType.TopLeft];
+                            break;
+                        case CornerType.TopLeft:
+                            scaleRectTransform.position = handleSizeCorners[(int)CornerType.BottomLeft];
+                            break;
+                        case CornerType.BottomRight:
+                            scaleRectTransform.position = handleSizeCorners[(int)CornerType.TopRight];
+                            break;
+                        case CornerType.TopRight:
+                            scaleRectTransform.position = handleSizeCorners[(int)CornerType.BottomRight];
+                            break;
+                    }
+                }
             }
 
             // Returning if not a multiorientation element since the other control buttons aren't needed for normal elements
@@ -626,39 +667,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             foreach (Button button in topButtons)
             {
                 RectTransform buttonRectTransform = button.GetComponent<RectTransform>();
-
-                // Setting button to default position
-                buttonRectTransform.anchoredPosition = Vector2.zero;
-
-                // Getting button corners
-                Vector3[] buttonCorners = new Vector3[4];
-                buttonRectTransform.GetWorldCorners(buttonCorners);
-
-                // If button is not inside the editor updating the position
-                if (!IsButtonInsideEditor(buttonCorners))
-                {
-                    Vector3[] holderCorners = GetEditorCorners();
-
-                    Vector2 newPosition = Vector2.zero;
-
-                    // Checking left side and adding offset
-                    float buttonLeft = buttonCorners[(int)CornerType.BottomLeft].x;
-                    float holderLeft = holderCorners[(int)CornerType.BottomLeft].x;
-                    if (buttonLeft < holderLeft)
-                    {
-                        newPosition.x += holderLeft - buttonLeft;
-                    }
-
-                    // Checking right side and adding offset
-                    float buttonRight = buttonCorners[(int)CornerType.BottomRight].x;
-                    float holderRight = holderCorners[(int)CornerType.BottomRight].x;
-                    if (buttonRight > holderRight)
-                    {
-                        newPosition.x -= buttonRight - holderRight;
-                    }
-
-                    buttonRectTransform.anchoredPosition = newPosition;
-                }
+                AddXOffsetIfOutsideBounds(buttonRectTransform);
             }
 
             Button oldFlipHorizontallyButton = _currentFlipHorizontallyButton;
@@ -777,6 +786,43 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             Vector3[] corners = new Vector3[4];
             BattleUiEditor.EditorRectTransform.GetWorldCorners(corners);
             return corners;
+        }
+
+        private void AddXOffsetIfOutsideBounds(RectTransform rectTransform)
+        {
+            // Setting rect transform to default position
+            rectTransform.anchoredPosition = Vector2.zero;
+
+            // Getting world corners
+            Vector3[] corners = new Vector3[4];
+            rectTransform.GetWorldCorners(corners);
+
+            // If rect transform corners is not inside the editor adding offset
+            if (!IsButtonInsideEditor(corners))
+            {
+                Vector3[] holderCorners = GetEditorCorners();
+                
+                Vector2 newPosition = Vector2.zero;
+
+                // Checking left side and adding offset
+                float leftSide = corners[(int)CornerType.BottomLeft].x;
+                float holderLeft = holderCorners[(int)CornerType.BottomLeft].x;
+                if (leftSide < holderLeft)
+                {
+                    newPosition.x += holderLeft - leftSide;
+                }
+
+                // Checking right side and adding offset
+                float rightSide = corners[(int)CornerType.BottomRight].x;
+                float holderRight = holderCorners[(int)CornerType.BottomRight].x;
+                if (rightSide > holderRight)
+                {
+                    newPosition.x -= rightSide - holderRight;
+                }
+
+                // Setting the new offset position
+                rectTransform.anchoredPosition = newPosition;
+            }
         }
 
         private Vector2 GetUiElementSizeInWorldSpace()
