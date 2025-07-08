@@ -50,7 +50,7 @@ namespace Altzone.Scripts.BattleUiShared
                     _handleImage.sprite = _rotateIcon;
                     _backgroundImage.sprite = _rotateBackground;
                     _backgroundImage.type = Image.Type.Sliced;
-                    _backgroundImage.pixelsPerUnitMultiplier = (handleSize - HandleSizeMin) / (HandleSizeMax - HandleSizeMin) * (HandleSizeMaxPPU - HandleSizeMinPPU) + HandleSizeMinPPU;
+                    _backgroundImage.pixelsPerUnitMultiplier = Mathf.Pow((handleSize - HandleSizeMin) / (HandleSizeMax - HandleSizeMin), 0.35f) * (HandleSizeMaxPPU - HandleSizeMinPPU) + HandleSizeMinPPU;
 
                     // Workaround to set height according to handle height since the rotate joystick has to be same height as the handle
                     _rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _handleRectTransform.rect.height);
