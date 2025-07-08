@@ -47,6 +47,7 @@ namespace Battle.View.Game
         public void UiInputOnCharacterSelected(int characterNumber)
         {
             _playerInput.OnCharacterSelected(characterNumber);
+
             Debug.Log($"Character number {characterNumber} selected!");
         }
 

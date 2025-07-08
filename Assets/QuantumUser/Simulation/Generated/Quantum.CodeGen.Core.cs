@@ -695,9 +695,9 @@ namespace Quantum {
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(24)]
     public Button MovementInput;
-    [FieldOffset(0)]
-    public QBoolean MovementDirectionIsNormalized;
     [FieldOffset(4)]
+    public QBoolean MovementDirectionIsNormalized;
+    [FieldOffset(8)]
     public BattleGridPosition MovementPosition;
     [FieldOffset(48)]
     public FPVector2 MovementDirection;
@@ -705,6 +705,8 @@ namespace Quantum {
     public Button RotationInput;
     [FieldOffset(16)]
     public FP RotationValue;
+    [FieldOffset(0)]
+    public Int32 PlayerCharacterNumber;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 19249;
@@ -714,6 +716,7 @@ namespace Quantum {
         hash = hash * 31 + MovementDirection.GetHashCode();
         hash = hash * 31 + RotationInput.GetHashCode();
         hash = hash * 31 + RotationValue.GetHashCode();
+        hash = hash * 31 + PlayerCharacterNumber.GetHashCode();
         return hash;
       }
     }
@@ -736,6 +739,7 @@ namespace Quantum {
     }
     static partial void SerializeCodeGen(void* ptr, FrameSerializer serializer) {
         var p = (Input*)ptr;
+        serializer.Stream.Serialize(&p->PlayerCharacterNumber);
         QBoolean.Serialize(&p->MovementDirectionIsNormalized, serializer);
         Quantum.BattleGridPosition.Serialize(&p->MovementPosition, serializer);
         FP.Serialize(&p->RotationValue, serializer);
@@ -1387,6 +1391,7 @@ namespace Quantum {
       i->MovementDirection = input.MovementDirection;
       i->RotationInput = i->RotationInput.Update(this.Number, input.RotationInput);
       i->RotationValue = input.RotationValue;
+      i->PlayerCharacterNumber = input.PlayerCharacterNumber;
     }
     public Input* GetPlayerInput(PlayerRef player) {
       if ((int)player >= (int)_globals->input.Length) { throw new System.ArgumentOutOfRangeException("player"); }

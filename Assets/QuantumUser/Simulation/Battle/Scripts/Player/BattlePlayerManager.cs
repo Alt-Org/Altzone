@@ -723,7 +723,7 @@ namespace Battle.QSimulation.Player
 
             playerHandle.SetSelectedCharacter(characterNumber);
             f.Events.BattleDebugUpdateStatsOverlay(playerData->Slot, playerData->Stats);
-            
+
             playerHandle.PlayState = BattlePlayerPlayState.InPlay;
         }
 
