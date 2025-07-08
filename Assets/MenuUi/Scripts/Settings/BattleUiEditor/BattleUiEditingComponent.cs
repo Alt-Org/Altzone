@@ -171,11 +171,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                         OnGridSnap?.Invoke(gridColumnIndex, gridRowIndex);
                     }
 
-                    // Clamping position to be inside the editor
-                    newPos.x = Mathf.Clamp(newPos.x, _minPos.x, _maxPos.x);
-                    newPos.y = Mathf.Clamp(newPos.y, _minPos.y, _maxPos.y);
-
-                    _movableElement.RectTransformComponent.position = newPos;
+                    // Clamping position to be inside the editor and setting it with the method
+                    ClampAndSetPosition(newPos);
                     break;
 
                 case ActionType.Scale:
@@ -249,13 +246,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     }
 
                     // Preventing Ui element from going out of editor bounds while scaling
-                    float clampedPosX = Mathf.Clamp(_movableElement.RectTransformComponent.position.x, _minPos.x, _maxPos.x);
-                    float clampedPosY = Mathf.Clamp(_movableElement.RectTransformComponent.position.y, _minPos.y, _maxPos.y);
-
-                    if (clampedPosX != _movableElement.RectTransformComponent.position.x || clampedPosY != _movableElement.RectTransformComponent.position.y)
-                    {
-                        _movableElement.RectTransformComponent.position = new Vector2(clampedPosX, clampedPosY);
-                    }
+                    ClampAndSetPosition(_movableElement.RectTransformComponent.position);
                     break;
             }
         }
@@ -451,6 +442,16 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
         }
 
+        private void ClampAndSetPosition(Vector2 newPos)
+        {
+            Vector2 clampedPos = new(
+                Mathf.Clamp(newPos.x, _minPos.x, _maxPos.x),
+                Mathf.Clamp(newPos.y, _minPos.y, _maxPos.y)
+            );
+
+            if ((Vector2)_movableElement.RectTransformComponent.position != clampedPos) _movableElement.RectTransformComponent.position = clampedPos;
+        }
+
         private void CalculateAndSetAnchors(Vector2? newSize = null)
         {
             Vector2 size = newSize == null ? _movableElement.RectTransformComponent.rect.size : newSize.Value;
@@ -509,6 +510,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _data.HandleSize = (int)value;
             _movableJoystickElement.SetData(_data);
             CheckControlButtonsVisibility();
+            ClampAndSetPosition(_movableElement.RectTransformComponent.position);
         }
 
         // Method used to calculate appropiate size for the control buttons, since if they were anchored they would grow with the element when it's scaled
