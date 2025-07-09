@@ -13,16 +13,18 @@ namespace Altzone.Scripts.BattleUiShared
     public class BattleUiMovableElementData
     {
         public BattleUiElementType UiElementType;
+        public int Transparency;
         public bool IsFlippedHorizontally;
         public bool IsFlippedVertically;
         public Vector2 AnchorMin;
         public Vector2 AnchorMax;
         public OrientationType Orientation;
-        public float HandleSize;
+        public int HandleSize;
 
-        public BattleUiMovableElementData(BattleUiElementType uiElementType, Vector2 anchorMin, Vector2 anchorMax, OrientationType orientation = OrientationType.None, bool isFlippedHorizontally = false, bool isFlippedVertically = false, float handleSize = 0)
+        public BattleUiMovableElementData(BattleUiElementType uiElementType, Vector2 anchorMin, Vector2 anchorMax, int transparency, OrientationType orientation = OrientationType.None, bool isFlippedHorizontally = false, bool isFlippedVertically = false, int handleSize = 0)
         {
             UiElementType = uiElementType;
+            Transparency = Math.Clamp(transparency, 0, 90);
             AnchorMin = anchorMin;
             AnchorMax = anchorMax;
             Orientation = orientation;

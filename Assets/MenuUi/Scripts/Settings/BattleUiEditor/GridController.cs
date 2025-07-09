@@ -11,6 +11,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
     /// Instantiate a certain amount of grid line prefabs to vertical and horizontal layout groups to display grid rows and columns,
     /// and adjust layout group padding and spacing accordingly.
     /// </summary>
+    [RequireComponent(typeof(RectTransform))]
     public class GridController : MonoBehaviour
     {
         [Header("Grid options")]
@@ -24,43 +25,29 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private GameObject _gridLinePrefab;
 
         /// <summary>
-        /// Get the grid column line's index which is nearest to the x axis position.
+        /// Get the grid column and row index according to the world position.
         /// </summary>
-        /// <param name="xPos">The x axis position.</param>
-        /// <returns>The column line index as float.</returns>
-        public static int GetGridColumnIndex(float xPos)
+        /// <param name="pos">Position as world position</param>
+        /// <returns>Column and row index as int.</returns>
+        public static (int columnIndex, int rowIndex) GetGridLinesIndex(Vector2 pos)
         {
-            return Mathf.Clamp(Mathf.RoundToInt(xPos / s_gridCellWidth) - 1, 0, s_columnLines - 1);
+            Vector2 localPos = BattleUiEditor.EditorRectTransform.InverseTransformPoint(pos);
+            return (GetGridColumnIndex(localPos.x), GetGridRowIndex(localPos.y));
         }
 
         /// <summary>
-        /// Get grid snap position in the y axis according to the grid column line's index.
+        /// Get grid snap position in world coordinates according to the column and row index.
         /// </summary>
-        /// <param name="gridColumnIndex">The grid column line index which position to get.</param>
-        /// <returns>Grid y axis snap position as float.</returns>
-        public static float GetGridSnapPositionX(int gridColumnIndex)
+        /// <param name="gridColumnIndex">The corresponding grid column index which position to get.</param>
+        /// <param name="gridRowIndex">The corresponding grid row index which position to get.</param>
+        /// <returns>Grid snap position in world coordinates as Vector2.</returns>
+        public static Vector2 GetGridSnapPosition(int gridColumnIndex, int gridRowIndex)
         {
-            return (gridColumnIndex + 1) * s_gridCellWidth;
-        }
-
-        /// <summary>
-        /// Get the grid row line's index which is nearest to the y axis position.
-        /// </summary>
-        /// <param name="yPos">The y axis position.</param>
-        /// <returns>The row line index as float.</returns>
-        public static int GetGridRowIndex(float yPos)
-        {
-            return Mathf.Clamp(Mathf.RoundToInt(yPos / s_gridCellHeight) - 1, 0, s_rowLines - 1);
-        }
-
-        /// <summary>
-        /// Get grid snap position in the x axis according to the grid row line's index.
-        /// </summary>
-        /// <param name="gridRowIndex">The grid row line index which position to get.</param>
-        /// <returns>Grid x axis snap position as float.</returns>
-        public static float GetGridSnapPositionY(int gridRowIndex)
-        {
-            return (gridRowIndex + 1) * s_gridCellHeight;
+            Vector2 snapPos = new(
+                GetGridSnapPositionX(gridColumnIndex),
+                GetGridSnapPositionY(gridRowIndex)
+            );
+            return BattleUiEditor.EditorRectTransform.TransformVector(snapPos);
         }
 
         /// <summary>
@@ -92,12 +79,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
                     Vector2 size = new(
                         _gridLineThickness,
-                        Screen.height
+                        BattleUiEditor.EditorRect.height
                     );
 
                     Vector2 pos = new(
                         GetGridSnapPositionX(i),
-                        Screen.height * 0.5f
+                        BattleUiEditor.EditorRect.height * 0.5f
                     );
 
                     (Vector2 anchorMin, Vector2 anchorMax) = BattleUiEditor.CalculateAnchors(size, pos);
@@ -128,12 +115,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     RectTransform childRectTransform = child.GetComponent<RectTransform>();
 
                     Vector2 size = new(
-                        Screen.width,
+                        BattleUiEditor.EditorRect.width,
                         _gridLineThickness
                     );
 
                     Vector2 pos = new(
-                        Screen.width * 0.5f,
+                        BattleUiEditor.EditorRect.width * 0.5f,
                         GetGridSnapPositionY(i)
                     );
 
@@ -211,8 +198,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
         }
 
-        private static float s_gridCellWidth => (float)Screen.width / (s_columnLines + 1);
-        private static float s_gridCellHeight => (float)Screen.height / (s_rowLines + 1);
+        private static float s_gridCellWidth => BattleUiEditor.EditorRect.width / (s_columnLines + 1);
+        private static float s_gridCellHeight => BattleUiEditor.EditorRect.height / (s_rowLines + 1);
 
         private static int s_rowLines = -1;
         private static int s_columnLines = -1;
@@ -220,6 +207,48 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private List<Image> _rowLineImages = new();
         private List<Image> _columnLineImages = new();
         private Image[] _highlightedLines;
+
+        /// <summary>
+        /// Get the grid column line's index which is nearest to the x axis position.
+        /// </summary>
+        /// <param name="xPos">The x axis position.</param>
+        /// <returns>The column line index as float.</returns>
+        private static int GetGridColumnIndex(float xPos)
+        {
+            float xPosWithOffset = xPos + BattleUiEditor.EditorRect.width * 0.5f;
+            return Mathf.Clamp(Mathf.RoundToInt(xPosWithOffset / s_gridCellWidth) - 1, 0, s_columnLines - 1);
+        }
+
+        /// <summary>
+        /// Get the grid row line's index which is nearest to the y axis position.
+        /// </summary>
+        /// <param name="yPos">The y axis position.</param>
+        /// <returns>The row line index as float.</returns>
+        private static int GetGridRowIndex(float yPos)
+        {
+            float yPosWithOffset = yPos + BattleUiEditor.EditorRect.height * 0.5f;
+            return Mathf.Clamp(Mathf.RoundToInt(yPosWithOffset / s_gridCellHeight) - 1, 0, s_rowLines - 1);
+        }
+
+        /// <summary>
+        /// Get grid snap position in the x axis according to the grid column line's index.
+        /// </summary>
+        /// <param name="gridColumnIndex">The grid column line index which position to get.</param>
+        /// <returns>Grid x axis snap position as float.</returns>
+        private static float GetGridSnapPositionX(int gridColumnIndex)
+        {
+            return (gridColumnIndex + 1) * s_gridCellWidth;
+        }
+
+        /// <summary>
+        /// Get grid snap position in the y axis according to the grid row line's index.
+        /// </summary>
+        /// <param name="gridRowIndex">The grid row line index which position to get.</param>
+        /// <returns>Grid y axis snap position as float.</returns>
+        private static float GetGridSnapPositionY(int gridRowIndex)
+        {
+            return (gridRowIndex + 1) * s_gridCellHeight;
+        }
 
         private IEnumerator InstantiateGridLines(int lineAmount, Transform lineParent, Action callback)
         {
