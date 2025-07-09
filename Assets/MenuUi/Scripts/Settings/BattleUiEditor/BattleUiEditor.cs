@@ -60,12 +60,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private TMP_InputField _gridTransparencyInputField;
 
         [Header("Input options")]
-        [SerializeField] private Toggle _swipeTwoFingerToggle;
-        [SerializeField] private TMP_Text _swipeTwoFingerLabel;
-        [SerializeField] private Toggle _pointAndClickSwipeToggle;
-        [SerializeField] private TMP_Text _pointAndClickSwipeLabel;
-        [SerializeField] private Toggle _joysticksToggle;
-        [SerializeField] private TMP_Text _joysticksLabel;
+        [SerializeField] private Toggle _swipeMovementToggle;
+        [SerializeField] private Toggle _pointAndClickMovementToggle;
+        [SerializeField] private Toggle _joystickMovementToggle;
+        [Space]
+        [SerializeField] private Toggle _twoFingerRotationToggle;
+        [SerializeField] private Toggle _swipeRotationToggle;
+        [SerializeField] private Toggle _joystickRotationToggle;
+        [SerializeField] private Toggle _gyroscopeRotationToggle;
         [Space]
         [SerializeField] private GameObject _swipeMinDistanceHolder;
         [SerializeField] private Slider _swipeMinDistanceSlider;
@@ -78,8 +80,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private GameObject _movementSwipeSensitivityHolder;
         [SerializeField] private Slider _movementSwipeSensitivitySlider;
         [SerializeField] private TMP_InputField _movementSwipeSensitivityInputField;
-        [Space]
-        [SerializeField] private Toggle _rotationGyroscopeOverrideToggle;
         [Space]
         [SerializeField] private GameObject _gyroscopeMinAngleHolder;
         [SerializeField] private Slider _gyroscopeMinAngleSlider;
@@ -193,14 +193,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             OnUiElementSelected(null);
         }
 
-        private enum InputCombinationType
-        {
-            None = -1,
-            SwipeTwoFinger = 0,
-            PointAndClickSwipe = 1,
-            Joysticks = 2,
-        }
-
         private const string PlayerText = "Min‰";
         private const string TeammateText = "Tiimikaveri";
 
@@ -246,7 +238,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private bool _unsavedChanges = false;
 
         private BattleUiEditingComponent _currentlySelectedEditingComponent;
-        private InputCombinationType _currentInputCombinationType;
 
         private void Awake()
         {
@@ -340,10 +331,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             });
 
             // Input options listeners
-            _swipeTwoFingerToggle.onValueChanged.AddListener((value) => UpdateInputSettings(InputCombinationType.SwipeTwoFinger));
-            _pointAndClickSwipeToggle.onValueChanged.AddListener((value) => UpdateInputSettings(InputCombinationType.PointAndClickSwipe));
-            _joysticksToggle.onValueChanged.AddListener((value) => UpdateInputSettings(InputCombinationType.Joysticks));
-            _rotationGyroscopeOverrideToggle.onValueChanged.AddListener((value) => UpdateInputSettings());
+            _swipeMovementToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.Swipe, BattleRotationInputType.TwoFinger); });
+            _pointAndClickMovementToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.PointAndClick, BattleRotationInputType.Swipe); });
+            _joystickMovementToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.Joystick, BattleRotationInputType.Joystick); });
+
+            _twoFingerRotationToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.Swipe, BattleRotationInputType.TwoFinger); });
+            _swipeRotationToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.PointAndClick, BattleRotationInputType.Swipe); });
+            _joystickRotationToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.Joystick, BattleRotationInputType.Joystick); });
+            _gyroscopeRotationToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput, BattleRotationInputType.Gyroscope); });
 
             _swipeMinDistanceSlider.onValueChanged.AddListener((value) =>
             {
@@ -450,24 +445,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _grid.SetShow(_showGridToggle.isOn);
 
             // Loading saved input settings
-            _rotationGyroscopeOverrideToggle.SetIsOnWithoutNotify(SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Gyroscope);
-
-            InputCombinationType newInputType;
-            switch (SettingsCarrier.Instance.BattleMovementInput)
-            {
-                default:
-                case BattleMovementInputType.PointAndClick:
-                    newInputType = InputCombinationType.PointAndClickSwipe;
-                    break;
-                case BattleMovementInputType.Swipe:
-                    newInputType = InputCombinationType.SwipeTwoFinger;
-                    break;
-                case BattleMovementInputType.Joystick:
-                    newInputType = InputCombinationType.Joysticks;
-                    break;
-            }
-
-            UpdateInputSettings(newInputType);
+            UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput, SettingsCarrier.Instance.BattleRotationInput);
 
             float swipeMinDistance = SettingsCarrier.Instance.BattleSwipeMinDistance;
             _swipeMinDistanceSlider.value = swipeMinDistance;
@@ -531,10 +509,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _alignToGridToggle.onValueChanged.RemoveAllListeners();
 
             // Removing input options listeners
-            _swipeTwoFingerToggle.onValueChanged.RemoveAllListeners();
-            _pointAndClickSwipeToggle.onValueChanged.RemoveAllListeners();
-            _joysticksToggle.onValueChanged.RemoveAllListeners();
-            _rotationGyroscopeOverrideToggle.onValueChanged.RemoveAllListeners();
+            _swipeMovementToggle.onValueChanged.RemoveAllListeners();
+            _pointAndClickMovementToggle.onValueChanged.RemoveAllListeners();
+            _joystickMovementToggle.onValueChanged.RemoveAllListeners();
+
+            _twoFingerRotationToggle.onValueChanged.RemoveAllListeners();
+            _swipeRotationToggle.onValueChanged.RemoveAllListeners();
+            _joystickRotationToggle.onValueChanged.RemoveAllListeners();
+            _gyroscopeRotationToggle.onValueChanged.RemoveAllListeners();
 
             _swipeMinDistanceSlider.onValueChanged.RemoveAllListeners();
             _swipeMinDistanceInputField.onValueChanged.RemoveAllListeners();
@@ -1284,91 +1266,45 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _arenaImage.offsetMax = Vector2.zero;
         }
 
-        private void UpdateInputSettings(InputCombinationType newInputType = InputCombinationType.None)
+        private void UpdateInputSettings(BattleMovementInputType movementType, BattleRotationInputType rotationType)
         {
-            // Setting the current input type
-            if (newInputType != InputCombinationType.None) _currentInputCombinationType = newInputType;
-
-            // Initializing variables
-            BattleMovementInputType movementType;
-            BattleRotationInputType rotationType;
-
-            bool showSwipeMinDistance;
-            bool showSwipeMaxDistance;
-            bool showSwipeSensitivity;
-
-            bool useGyroscope = _rotationGyroscopeOverrideToggle.isOn;
-
-            // Setting values to variables based on current input combination
-            switch (_currentInputCombinationType)
-            {
-                case InputCombinationType.SwipeTwoFinger:
-                    movementType = BattleMovementInputType.Swipe;
-                    rotationType = BattleRotationInputType.TwoFinger;
-
-                    showSwipeMinDistance = true;
-                    showSwipeMaxDistance = false;
-                    showSwipeSensitivity = true;
-                    break;
-
-                case InputCombinationType.PointAndClickSwipe:
-                    movementType = BattleMovementInputType.PointAndClick;
-                    rotationType = BattleRotationInputType.Swipe;
-
-                    showSwipeMinDistance = !useGyroscope;
-                    showSwipeMaxDistance = !useGyroscope;
-                    showSwipeSensitivity = false;
-                    break;
-
-                case InputCombinationType.Joysticks:
-                    movementType = BattleMovementInputType.Joystick;
-                    rotationType = BattleRotationInputType.Joystick;
-
-                    showSwipeMinDistance = false;
-                    showSwipeMaxDistance = false;
-                    showSwipeSensitivity = false;
-
-                    // Instantianting the joysticks if they are not yet instantiated
-                    if (_instantiatedMoveJoystick == null)
-                    {
-                        _instantiatedMoveJoystick = InstantiateBattleUiElement(BattleUiElementType.MoveJoystick).GetComponent<BattleUiMovableElement>();
-                        SetDataToUiElement(_instantiatedMoveJoystick);
-                    }
-
-                    if (_instantiatedRotateJoystick == null)
-                    {
-                        _instantiatedRotateJoystick = InstantiateBattleUiElement(BattleUiElementType.RotateJoystick).GetComponent<BattleUiMovableElement>();
-                        SetDataToUiElement(_instantiatedRotateJoystick);
-                    }
-                    break;
-
-                default:
-                    movementType = SettingsCarrier.BattleMovementInputDefault;
-                    rotationType = SettingsCarrier.BattleRotationInputDefault;
-
-                    showSwipeMinDistance = false;
-                    showSwipeMaxDistance = false;
-                    showSwipeSensitivity = false;
-                    break;
-            }
-
-            // Overriding rotation with gyroscope if it's enabled
-            if (useGyroscope) rotationType = BattleRotationInputType.Gyroscope;
-
             // Setting input values to settings carrier
             SettingsCarrier.Instance.BattleMovementInput = movementType;
             SettingsCarrier.Instance.BattleRotationInput = rotationType;
 
-            // Setting label texts
-            _swipeTwoFingerLabel.text = useGyroscope ? "Liiku pyyhk‰isem‰ll‰" : "Liiku pyyhk‰isem‰ll‰ &\nk‰‰nn‰ kahdella sormella";
-            _pointAndClickSwipeLabel.text = useGyroscope ? "Liiku painamalla" : "Liiku painamalla &\nk‰‰nn‰ pyyhk‰isem‰ll‰";
-            _joysticksLabel.text = useGyroscope ? "Liiku ohjausympyr‰ll‰" : "Liiku & k‰‰nn‰ ohjausympyrˆill‰";
+            // If joystick movement was selected instantianting the joysticks if they are not yet instantiated
+            if (movementType == BattleMovementInputType.Joystick)
+            {
+                if (_instantiatedMoveJoystick == null)
+                {
+                    _instantiatedMoveJoystick = InstantiateBattleUiElement(BattleUiElementType.MoveJoystick).GetComponent<BattleUiMovableElement>();
+                    SetDataToUiElement(_instantiatedMoveJoystick);
+                }
+
+                if (_instantiatedRotateJoystick == null)
+                {
+                    _instantiatedRotateJoystick = InstantiateBattleUiElement(BattleUiElementType.RotateJoystick).GetComponent<BattleUiMovableElement>();
+                    SetDataToUiElement(_instantiatedRotateJoystick);
+                }
+            }
+
+            // Toggling rotation toggles isOn based on rotation type and visibility based on movement type
+            _twoFingerRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.TwoFinger);
+            _twoFingerRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.Swipe);
+
+            _swipeRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.Swipe);
+            _swipeRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.PointAndClick);
+
+            _joystickRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.Joystick);
+            _joystickRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.Joystick);
+
+            _gyroscopeRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.Gyroscope);
 
             // Setting visibility for the swipe and gyroscope additional options
-            _swipeMinDistanceHolder.SetActive(showSwipeMinDistance);
-            _swipeMaxDistanceHolder.SetActive(showSwipeMaxDistance);
-            _movementSwipeSensitivityHolder.SetActive(showSwipeSensitivity);
-            _gyroscopeMinAngleHolder.SetActive(useGyroscope);
+            _swipeMinDistanceHolder.SetActive(movementType == BattleMovementInputType.Swipe || rotationType == BattleRotationInputType.Swipe);
+            _swipeMaxDistanceHolder.SetActive(rotationType == BattleRotationInputType.Swipe);
+            _movementSwipeSensitivityHolder.SetActive(movementType == BattleMovementInputType.Swipe);
+            _gyroscopeMinAngleHolder.SetActive(rotationType == BattleRotationInputType.Gyroscope);
 
             // Setting visibility to joysticks
             if (_instantiatedMoveJoystick != null) _instantiatedMoveJoystick.gameObject.SetActive(movementType == BattleMovementInputType.Joystick);
