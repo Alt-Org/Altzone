@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Linq;
 
 using UnityEngine;
@@ -82,7 +81,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             if (show) CheckControlButtonsVisibility();
             _currentScaleHandle.gameObject.SetActive(show);
 
-            if (_movableJoystickElement != null) _currentHandleSizeRectTransform.gameObject.SetActive(show);
+            if (_movableJoystickElement != null)
+            {
+                _handleSizeSliders[_currentHandleSizeIdx].SetValueWithoutNotify(_data.HandleSize == 0 ? BattleUiMovableJoystickElement.HandleSizeDefault : _data.HandleSize);
+                _currentHandleSizeRectTransform.gameObject.SetActive(show);
+            }
 
             if (_multiOrientationElement == null) return;
             _currentFlipHorizontallyButton.gameObject.SetActive(show);
@@ -95,7 +98,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             if (_multiOrientationElement != null) _data = _multiOrientationElement.GetData();
             else if (_movableJoystickElement != null) _data = _movableJoystickElement.GetData();
             else _data = _movableElement.GetData();
-            
         }
 
         public void ToggleGrid(bool toggle)
@@ -216,34 +218,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     _movableElement.RectTransformComponent.sizeDelta = _movableJoystickElement == null ? sizeIncrease : sizeIncrease + _joystickElementSizeDelta;
 
                     // Preventing being scaled too small or too big
-                    if (_multiOrientationElement == null || _multiOrientationElement.IsHorizontal) // For horizontal elements
-                    {
-                        float clampedWidth = Mathf.Clamp(_movableElement.RectTransformComponent.rect.width, _minWidth, _maxWidth);
-
-                        // Incremental scaling
-                        if (_isIncrementalScalingToggled)
-                        {
-                            float increment = (_maxWidth - _minWidth) / ScalingIncrementAmount;
-                            clampedWidth = Mathf.Round(clampedWidth / increment) * increment;
-                        }
-
-                        _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, clampedWidth);
-                        if (_data.UiElementType != SettingsCarrier.BattleUiElementType.RotateJoystick) _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, clampedWidth / _aspectRatio);
-                    }
-                    else if (!_multiOrientationElement.IsHorizontal) // For vertical elements
-                    {
-                        float clampedHeight = Mathf.Clamp(_movableElement.RectTransformComponent.rect.height, _minHeight, _maxHeight);
-
-                        // Incremental scaling
-                        if (_isIncrementalScalingToggled)
-                        {
-                            float increment = (_maxHeight - _minHeight) / ScalingIncrementAmount;
-                            clampedHeight = Mathf.Round(clampedHeight / increment) * increment;
-                        }
-
-                        _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, clampedHeight * _multiOrientationElement.VerticalAspectRatio);
-                        _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, clampedHeight);
-                    }
+                    ClampSize();
 
                     // Preventing Ui element from going out of editor bounds while scaling
                     ClampAndSetPosition(_movableElement.RectTransformComponent.position);
@@ -308,17 +283,17 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private int _currentChangeOrientationButtonIdx = DefaultChangeOrientationButtonIdx;
         private int _currentFlipHorizontallyButtonIdx = DefaultFlipHorizontallyButtonIdx;
         private int _currentFlipVerticallyButtonIdx = DefaultFlipVerticallyButtonIdx;
-        private int _currentHandleSizeRectTransformIdx = DefaultHandleSizeRectTransformIdx;
+        private int _currentHandleSizeIdx = DefaultHandleSizeRectTransformIdx;
 
         private Button _currentScaleHandle => _scaleHandles[_currentScaleHandleIdx];
         private Button _currentChangeOrientationButton => _changeOrientationButtons[_currentChangeOrientationButtonIdx];
         private Button _currentFlipHorizontallyButton => _flipHorizontallyButtons[_currentFlipHorizontallyButtonIdx];
         private Button _currentFlipVerticallyButton => _flipVerticallyButtons[_currentFlipVerticallyButtonIdx];
-        private RectTransform _currentHandleSizeRectTransform => _handleSizeRectTransforms[_currentHandleSizeRectTransformIdx];
+        private RectTransform _currentHandleSizeRectTransform => _handleSizeRectTransforms[_currentHandleSizeIdx];
 
         private float _maxWidth => BattleUiEditor.EditorRect.width / 2;
         private float _maxHeight => BattleUiEditor.EditorRect.height / 3;
-        private float _minWidth => BattleUiEditor.EditorRect.width / 6;
+        private float _minWidth => _movableJoystickElement == null ? BattleUiEditor.EditorRect.width / 6 : _data.HandleSize;
         private float _minHeight => BattleUiEditor.EditorRect.height / 10;
 
         private Vector2 _maxPos
@@ -436,8 +411,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 {
                     slider.maxValue = BattleUiMovableJoystickElement.HandleSizeMax;
                     slider.minValue = BattleUiMovableJoystickElement.HandleSizeMin;
-                    slider.SetValueWithoutNotify(_data.HandleSize == 0 ? BattleUiMovableJoystickElement.HandleSizeDefault : _data.HandleSize);
-
                     slider.onValueChanged.AddListener(ChangeHandleSize);
                 }
             }
@@ -451,6 +424,40 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             );
 
             if ((Vector2)_movableElement.RectTransformComponent.position != clampedPos) _movableElement.RectTransformComponent.position = clampedPos;
+        }
+
+        private void ClampSize(bool useIncrementalScalingIfToggled = true)
+        {
+            Vector2 clampedSize = Vector2.zero;
+            if (_multiOrientationElement == null || _multiOrientationElement.IsHorizontal) // For horizontal elements
+            {
+                clampedSize.x = Mathf.Clamp(_movableElement.RectTransformComponent.rect.width, _minWidth, _maxWidth);
+
+                // Incremental scaling
+                if (_isIncrementalScalingToggled && useIncrementalScalingIfToggled)
+                {
+                    float increment = (_maxWidth - _minWidth) / ScalingIncrementAmount;
+                    clampedSize.x = Mathf.Clamp(Mathf.Round(clampedSize.x / increment) * increment, _minWidth, _maxWidth);
+                }
+
+                clampedSize.y = clampedSize.x / _aspectRatio;
+            }
+            else if (!_multiOrientationElement.IsHorizontal) // For vertical multiorientation elements
+            {
+                clampedSize.y = Mathf.Clamp(_movableElement.RectTransformComponent.rect.height, _minHeight, _maxHeight);
+
+                // Incremental scaling
+                if (_isIncrementalScalingToggled && useIncrementalScalingIfToggled)
+                {
+                    float increment = (_maxHeight - _minHeight) / ScalingIncrementAmount;
+                    clampedSize.y = Mathf.Clamp(Mathf.Round(clampedSize.y / increment) * increment, _minWidth, _maxWidth);
+                }
+
+                clampedSize.x = clampedSize.y * _multiOrientationElement.VerticalAspectRatio;
+            }
+
+            _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, clampedSize.x);
+            if (_data.UiElementType != SettingsCarrier.BattleUiElementType.RotateJoystick) _movableElement.RectTransformComponent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, clampedSize.y);
         }
 
         private void CalculateAndSetAnchors(Vector2? newSize = null)
@@ -510,9 +517,16 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             _data.HandleSize = (int)value;
             _movableJoystickElement.SetData(_data);
-            CheckControlButtonsVisibility();
+
+            // Clamping Ui element size and position because changing handle size makes the ui element grow vertically,
+            // and horizontally it should be atleast the width of the handle
+            ClampSize(false);
             ClampAndSetPosition(_movableElement.RectTransformComponent.position);
+
             _movableElementAspectRatio = _movableJoystickElement.RectTransformComponent.rect.width / _movableJoystickElement.RectTransformComponent.rect.height;
+
+            CheckControlButtonsVisibility();
+            OnUiElementEdited?.Invoke();
         }
 
         // Method used to calculate appropiate size for the control buttons, since if they were anchored they would grow with the element when it's scaled
@@ -606,11 +620,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 // Checking if the default handle size slider is inside the editor
                 if (IsButtonInsideEditor(defaultHandleSizeCorners))
                 {
-                    _currentHandleSizeRectTransformIdx = DefaultHandleSizeRectTransformIdx;
+                    _currentHandleSizeIdx = DefaultHandleSizeRectTransformIdx;
                 }
                 else // Setting the other handle size slider as current
                 {
-                    _currentHandleSizeRectTransformIdx = DefaultHandleSizeRectTransformIdx == ControlButtonVertical.Top ? (int)ControlButtonVertical.Bottom : (int)ControlButtonVertical.Top;
+                    _currentHandleSizeIdx = DefaultHandleSizeRectTransformIdx == ControlButtonVertical.Top ? (int)ControlButtonVertical.Bottom : (int)ControlButtonVertical.Top;
                 }
 
                 // Checking that the new visible handle size slider gameobject is active
@@ -833,20 +847,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             Vector3[] uiElementCorners = new Vector3[4];
             _movableElement.RectTransformComponent.GetWorldCorners(uiElementCorners);
-
-            return new(uiElementCorners[(int)CornerType.TopRight].x - uiElementCorners[(int)CornerType.TopLeft].x,
-                       uiElementCorners[(int)CornerType.TopRight].y - uiElementCorners[(int)CornerType.BottomRight].y);
-        }
-
-        private Vector2 GetUiElementSizeInEditorSpace()
-        {
-            Vector3[] uiElementCorners = new Vector3[4];
-            _movableElement.RectTransformComponent.GetWorldCorners(uiElementCorners);
-
-            for (int i = 0; i < uiElementCorners.Length; i++)
-            {
-                uiElementCorners[i] = BattleUiEditor.EditorRectTransform.InverseTransformVector(uiElementCorners[i]);
-            }
 
             return new(uiElementCorners[(int)CornerType.TopRight].x - uiElementCorners[(int)CornerType.TopLeft].x,
                        uiElementCorners[(int)CornerType.TopRight].y - uiElementCorners[(int)CornerType.BottomRight].y);

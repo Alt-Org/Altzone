@@ -1026,7 +1026,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             bool isFlippedHorizontally = false;
             bool isFlippedVertically = false;
 
-            int handleSize = 0;
+            int handleSize = BattleUiMovableJoystickElement.HandleSizeDefault;
 
             // Rect variable so that we can do aspect ratio calculations
             Rect movableUiElementRect = Rect.zero;
