@@ -141,6 +141,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             else if (selectedButton == _currentScaleHandle)
             {
                 _currentAction = ActionType.Scale;
+                if (_movableJoystickElement != null) _joystickElementSizeDelta = _movableJoystickElement.RectTransformComponent.sizeDelta;
             }
         }
 
@@ -176,44 +177,43 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     break;
 
                 case ActionType.Scale:
-                    float sizeIncreaseX = 0f;
-                    float sizeIncreaseY = 0f;
+                    Vector2 sizeIncrease = Vector2.zero;
 
                     // If vertical multiorientation element we scale in y axis
                     if (_multiOrientationElement != null && !_multiOrientationElement.IsHorizontal)
                     {
-                        sizeIncreaseY = -((eventData.position.y - eventData.pressPosition.y) * 2);
+                        sizeIncrease.y = -((eventData.position.y - eventData.pressPosition.y) * 2);
 
                         // We have to invert scaling for the top side scale handles when scaling vertically
                         if (_currentScaleHandleIdx == (int)CornerType.TopLeft || _currentScaleHandleIdx == (int)CornerType.TopRight)
                         {
-                            sizeIncreaseY = -sizeIncreaseY;
+                            sizeIncrease.y = -sizeIncrease.y;
                         }
                     }
                     else // If horizontal ui element we scale in x axis
                     {
-                        sizeIncreaseX = (eventData.position.x - eventData.pressPosition.x) * 2;
+                        sizeIncrease.x = (eventData.position.x - eventData.pressPosition.x) * 2;
 
                         // We have to invert scaling for the left side scale handles when scaling horizontally
                         if (_currentScaleHandleIdx == (int)CornerType.TopLeft || _currentScaleHandleIdx == (int)CornerType.BottomLeft)
                         {
-                            sizeIncreaseX = -sizeIncreaseX;
+                            sizeIncrease.x = -sizeIncrease.x;
                         }
                     }
 
                     // Getting the other value from aspect ratio
-                    if (sizeIncreaseX == 0f)
+                    if (sizeIncrease.x == 0f)
                     {
-                        sizeIncreaseX = sizeIncreaseY * _aspectRatio;
+                        sizeIncrease.x = sizeIncrease.y * _aspectRatio;
                     }
-                    else if (sizeIncreaseY == 0f)
+                    else if (sizeIncrease.y == 0f)
                     {
                         // Exception for setting height to rotate joystick since its height should stay the same
-                        if (_data.UiElementType != SettingsCarrier.BattleUiElementType.RotateJoystick) sizeIncreaseY = sizeIncreaseX / _aspectRatio;
+                        if (_data.UiElementType != SettingsCarrier.BattleUiElementType.RotateJoystick) sizeIncrease.y = sizeIncrease.x / _aspectRatio;
                     }
 
                     // Setting sizeDelta from the size increase
-                    _movableElement.RectTransformComponent.sizeDelta = new Vector2(sizeIncreaseX, sizeIncreaseY);
+                    _movableElement.RectTransformComponent.sizeDelta = _movableJoystickElement == null ? sizeIncrease : sizeIncrease + _joystickElementSizeDelta;
 
                     // Preventing being scaled too small or too big
                     if (_multiOrientationElement == null || _multiOrientationElement.IsHorizontal) // For horizontal elements
@@ -360,6 +360,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private ActionType _currentAction;
         private Vector2 _dragPos;
+        private Vector2 _joystickElementSizeDelta;
 
         private void OnDisable()
         {
@@ -511,6 +512,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _movableJoystickElement.SetData(_data);
             CheckControlButtonsVisibility();
             ClampAndSetPosition(_movableElement.RectTransformComponent.position);
+            _movableElementAspectRatio = _movableJoystickElement.RectTransformComponent.rect.width / _movableJoystickElement.RectTransformComponent.rect.height;
         }
 
         // Method used to calculate appropiate size for the control buttons, since if they were anchored they would grow with the element when it's scaled
