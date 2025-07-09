@@ -28,15 +28,37 @@ public class KojuTrayPopulator : MonoBehaviour
     private PlayerData player;
     private ClanData clan;
 
+    // Track items moved to panel to avoid re-spawning them on re-populate
+    private HashSet<string> movedFurnitureIds = new HashSet<string>();
+
     private void OnEnable()
     {
-        // Populate koju and initialize StoreFront
+        // Populate tray and initialize StoreFront
         store = Storefront.Get();
         StartCoroutine(PopulateTray());
     }
 
     private IEnumerator PopulateTray()
     {
+        Debug.Log($"PanelContent has {panelContent.childCount} children.");
+        foreach (Transform child in panelContent)
+        {
+            Debug.Log($"Child name: {child.name}");
+            KojuFurnitureData data = child.GetComponent<KojuFurnitureData>();
+            if (data == null)
+            {
+                Debug.LogWarning($"Child '{child.name}' has NO KojuFurnitureData component.");
+            }
+            else if (string.IsNullOrEmpty(data.StorageFurnitureId))
+            {
+                Debug.LogWarning($"Child '{child.name}' has KojuFurnitureData but StorageFurnitureId is empty.");
+            }
+            else
+            {
+                Debug.Log($"Child '{child.name}' StorageFurnitureId: {data.StorageFurnitureId}");
+            }
+        }
+
         // Load player data
         bool playerLoaded = false;
         store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data =>
@@ -46,19 +68,12 @@ public class KojuTrayPopulator : MonoBehaviour
         });
         yield return new WaitUntil(() => playerLoaded);
 
-        if (player == null)
+        if (player == null || string.IsNullOrEmpty(player.ClanId))
         {
-            Debug.LogWarning("Player data not found.");
+            Debug.LogWarning("Player data missing or player not in clan.");
             yield break;
         }
 
-        if (string.IsNullOrEmpty(player.ClanId))
-        {
-            Debug.LogWarning("Player is not in a clan.");
-            yield break;
-        }
-
-        // Load clan data
         bool clanLoaded = false;
         store.GetClanData(player.ClanId, data =>
         {
@@ -67,62 +82,89 @@ public class KojuTrayPopulator : MonoBehaviour
         });
         yield return new WaitUntil(() => clanLoaded);
 
-        if (clan == null)
+        if (clan == null || clan.Inventory?.Furniture == null || clan.Inventory.Furniture.Count == 0)
         {
-            Debug.LogWarning("Clan data not found.");
-            yield break;
-        }
-
-        if (clan.Inventory == null || clan.Inventory.Furniture == null || clan.Inventory.Furniture.Count == 0)
-        {
-            Debug.LogWarning("No clan storage furniture found.");
+            Debug.LogWarning("No clan inventory found.");
             yield break;
         }
 
         // Filter clan furniture voted to sell, you can remove .Where(f => f.VotedToSell) and .ToList(); to show all clan furniture
         List<ClanFurniture> votedToSellFurniture = clan.Inventory.Furniture
-        .Where(f => f.VotedToSell)
-        .ToList();
+            .Where(f => f.VotedToSell)
+            .ToList();
 
         if (votedToSellFurniture.Count == 0)
         {
-            Debug.LogWarning("No clan furniture voted to sell.");
+            Debug.LogWarning("No furniture voted to sell.");
             yield break;
         }
 
-        // Clear existing tray content to avoid duplicates
-        foreach (Transform child in trayContent)
-        {
-            Destroy(child.gameObject);
-        }
-
-        // Load gamefurniture
         ReadOnlyCollection<GameFurniture> allGameFurniture = null;
         yield return store.GetAllGameFurnitureYield(result => allGameFurniture = result);
 
         if (allGameFurniture == null || allGameFurniture.Count == 0)
         {
-            Debug.LogWarning("No GameFurniture data found in Storefront.");
+            Debug.LogWarning("GameFurniture definitions missing.");
             yield break;
         }
 
+        foreach (Transform child in trayContent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        HashSet<string> panelFurnitureIds = new HashSet<string>();
+        foreach (Transform child in panelContent)
+        {
+            KojuFurnitureData data = child.GetComponent<KojuFurnitureData>();
+            if (data != null && !string.IsNullOrEmpty(data.StorageFurnitureId))
+            {
+                string id = data.StorageFurnitureId.Trim();
+                if (!panelFurnitureIds.Contains(id))
+                {
+                    panelFurnitureIds.Add(id);
+                }
+            }
+        }
+
+        Debug.Log($"Total unique furniture in panel: {panelFurnitureIds.Count}");
+
         int spawnedCount = 0;
 
-        // Loop through all voted furniture and create cards for them
         foreach (var clanFurniture in votedToSellFurniture)
         {
-            // Match clan item with master furniture
             GameFurniture matchingFurniture = allGameFurniture
                 .FirstOrDefault(gf => gf.Name == clanFurniture.GameFurnitureName);
 
             if (matchingFurniture == null)
             {
-                Debug.LogWarning($"Matching GameFurniture not found for: {clanFurniture.GameFurnitureName}");
+                Debug.LogWarning($"GameFurniture not found: {clanFurniture.GameFurnitureName}");
                 continue;
             }
 
             // Create StorageFurniture wrapper, containing both the clan and gamefurniture info
             StorageFurniture storageFurniture = new StorageFurniture(clanFurniture, matchingFurniture);
+            string storageId = storageFurniture.Id?.Trim();
+
+            if (string.IsNullOrEmpty(storageId))
+            {
+                Debug.LogWarning("StorageFurniture.Id is null or empty, skipping furniture.");
+                continue;
+            }
+
+            Debug.Log($"Checking furniture to spawn with ID: {storageId}");
+
+            if (panelFurnitureIds.Contains(storageId))
+            {
+                Debug.Log($"Skipping spawn: furniture ID '{storageId}' already in panel.");
+                continue;
+            }
+
+            if (movedFurnitureIds.Contains(storageId)) // Avoid re-spawning moved items
+            {
+                Debug.Log($"Skipping spawn: furniture ID '{storageId}' was moved during session.");
+                continue;
+            }
 
             // Instantiate card UI
             GameObject cardGO = Instantiate(cardPrefab, trayContent);
@@ -133,30 +175,27 @@ public class KojuTrayPopulator : MonoBehaviour
             ItemMover mover = cardGO.GetComponent<ItemMover>();
 
             if (cardUI != null)
-            {
-                // Use the StorageFurniture to preserve unique ID and metadata
                 cardUI.PopulateCard(storageFurniture);
-            }
 
             if (data != null)
-            {
                 data.SetFurniture(storageFurniture);
-            }
 
             if (mover != null)
             {
                 mover.SetParents(trayContent, panelContent);
                 mover.SetPopup(popup);
                 mover.SetPopulator(this);
+                mover.SetFurniture(storageFurniture);
+
+                mover.OnItemMovedToPanel += HandleItemMovedToPanel;
             }
 
             spawnedCount++;
         }
 
-        Debug.Log($"Spawned {spawnedCount} furniture cards voted to sell.");
+        Debug.Log($"Spawned {spawnedCount} furniture cards in tray.");
     }
 
-    // Prompt if the panel is full
     public void ShowPanelFullWarning()
     {
         if (!isWarningActive)
@@ -165,16 +204,34 @@ public class KojuTrayPopulator : MonoBehaviour
         }
     }
 
-    // Coroutine to flash the warning, and make the warning non spammable
     private IEnumerator ShowWarningCoroutine()
     {
         isWarningActive = true;
         panelFullWarningUI.SetActive(true);
-
-        yield return new WaitForSeconds(1f); // Visible duration
+        yield return new WaitForSeconds(1f);
         panelFullWarningUI.SetActive(false);
-
-        yield return new WaitForSeconds(0.5f); // Cooldown to prevent spamming
+        yield return new WaitForSeconds(0.5f);
         isWarningActive = false;
     }
+
+    // When moving from tray to panel
+    private void HandleItemMovedToPanel(StorageFurniture moved)
+    {
+        if (moved != null && !string.IsNullOrEmpty(moved.Id))
+        {
+            movedFurnitureIds.Add(moved.Id.Trim());
+            Debug.Log($"Furniture ID '{moved.Id}' marked as moved.");
+        }
+    }
+
+    // When moving from panel to tray
+    public void HandleItemReturnedToTray(StorageFurniture returned)
+    {
+        if (returned != null && !string.IsNullOrEmpty(returned.Id))
+        {
+            movedFurnitureIds.Remove(returned.Id.Trim());
+            Debug.Log($"Furniture ID '{returned.Id}' marked as returned to tray.");
+        }
+    }
+
 }
