@@ -1426,6 +1426,25 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
+    public IEnumerator BuyFromServerClanShop(string furnitureName,Action<bool> callback)
+    {
+        string body = JObject.FromObject(new { name = furnitureName }).ToString();
+
+        yield return StartCoroutine(WebRequests.Post(DEVADDRESS + "clan-shop/buy/", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
     #region Leaderboard
     public IEnumerator GetClanLeaderboardFromServer(Action<List<ClanLeaderboard>> callback)
     {
