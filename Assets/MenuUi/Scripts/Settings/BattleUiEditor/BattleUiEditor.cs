@@ -445,6 +445,19 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _grid.SetShow(_showGridToggle.isOn);
 
             // Loading saved input settings
+            switch (SettingsCarrier.Instance.BattleMovementInput)
+            {
+                case BattleMovementInputType.Swipe:
+                    _swipeMovementToggle.SetIsOnWithoutNotify(true);
+                    break;
+                case BattleMovementInputType.PointAndClick:
+                    _pointAndClickMovementToggle.SetIsOnWithoutNotify(true);
+                    break;
+                case BattleMovementInputType.Joystick:
+                    _joystickMovementToggle.SetIsOnWithoutNotify(true);
+                    break;
+            }
+
             UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput, SettingsCarrier.Instance.BattleRotationInput);
 
             float swipeMinDistance = SettingsCarrier.Instance.BattleSwipeMinDistance;
