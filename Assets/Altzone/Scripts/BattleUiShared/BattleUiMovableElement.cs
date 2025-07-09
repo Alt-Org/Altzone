@@ -68,12 +68,15 @@ namespace Altzone.Scripts.BattleUiShared
         protected void Awake()
         {
             if (_rectTransform == null) _rectTransform = GetComponent<RectTransform>();
-            if (_images == null) _images = GetComponentsInChildren<Image>().ToList();
-            if (_texts == null) _texts = GetComponentsInChildren<TMP_Text>().ToList();
+            _images = GetComponentsInChildren<Image>().ToList();
+            _texts = GetComponentsInChildren<TMP_Text>().ToList();
         }
 
         protected void SetTransparency()
         {
+            if (_images == null) _images = GetComponentsInChildren<Image>().ToList();
+            if (_texts == null) _texts = GetComponentsInChildren<TMP_Text>().ToList();
+
             // Converting transparency to opacity
             float newOpacity = 1f - _currentTransparency / 100f;
 
