@@ -579,7 +579,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Calculating x anchors
             float widthAnchorValue = editorWidth / Screen.width;
             float anchorMinX = (1 - widthAnchorValue) * 0.5f;
-            float anchorMaxX = widthAnchorValue + EditorRectTransform.anchorMin.x;
+            float anchorMaxX = widthAnchorValue + anchorMinX;
 
             // Setting editor anchors
             EditorRectTransform.anchorMin = new(anchorMinX, 0);
