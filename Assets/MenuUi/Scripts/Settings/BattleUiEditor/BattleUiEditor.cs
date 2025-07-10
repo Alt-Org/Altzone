@@ -572,7 +572,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             float anchorMaxY = 1 - TopButtonsHeight - unsafeAreaHeight;
 
             // Calculating editor aspect ratio and size
-            float editorAspectRatio = Screen.width / (Screen.height * (1 - unsafeAreaHeight));
+            float editorAspectRatio = (float)Screen.width / Screen.height;
             float editorHeight = Screen.height * anchorMaxY;
             float editorWidth = editorHeight * editorAspectRatio;
 
