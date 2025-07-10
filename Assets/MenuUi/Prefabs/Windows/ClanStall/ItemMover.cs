@@ -1,5 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
+using MenuUi.Scripts.Storage;
+using Altzone.Scripts.Config;
+using Altzone.Scripts;
 
 public class ItemMover : MonoBehaviour
 {
@@ -12,6 +16,11 @@ public class ItemMover : MonoBehaviour
     private KojuItemSlot[] panelSlots;
 
     private KojuTrayPopulator trayPopulator;
+
+    private StorageFurniture currentFurniture;
+
+    // Event to notify that this item was moved to panel
+    public event Action<StorageFurniture> OnItemMovedToPanel;
 
     void Start()
     {
@@ -35,6 +44,11 @@ public class ItemMover : MonoBehaviour
     public void SetPopulator(KojuTrayPopulator populator)
     {
         trayPopulator = populator;
+    }
+
+    public void SetFurniture(StorageFurniture furniture)
+    {
+        currentFurniture = furniture;
     }
 
     // Call when clicking a card in the panel or the tray, see KojuPopup.cs
@@ -71,14 +85,17 @@ public class ItemMover : MonoBehaviour
     {
         if (assignedSlot == null)
         {
-            // Moving from tray to panel
+            // Move from tray to panel
             foreach (var slot in panelSlots)
             {
                 if (!slot.IsOccupied)
                 {
                     assignedSlot = slot;
-                    assignedSlot.AssignCard(gameObject); // Handles parenting and hiding KojuEmpty
+                    assignedSlot.AssignCard(gameObject);
                     transform.SetSiblingIndex(assignedSlot.transform.GetSiblingIndex());
+
+                    // Notify trayPopulator this item was moved
+                    OnItemMovedToPanel?.Invoke(currentFurniture);
                     return;
                 }
             }
@@ -87,22 +104,48 @@ public class ItemMover : MonoBehaviour
         }
         else
         {
-            // Moving from panel back to tray
+            // Move from panel back to tray
             transform.SetParent(trayParent, false);
 
-            // **Reset price here**
             var furnitureData = GetComponent<KojuFurnitureData>();
             if (furnitureData != null)
             {
                 furnitureData.ResetPrice();
-            }
-            else
-            {
-                Debug.LogWarning("KojuFurnitureData component not found on item.");
-            }
 
-            assignedSlot.ClearSlot(); // Handles showing KojuEmpty again
-            assignedSlot = null;
+                // Clear slot assignment
+                assignedSlot.ClearSlot();
+                assignedSlot = null;
+
+                // Notify trayPopulator this item was returned
+                trayPopulator?.HandleItemReturnedToTray(currentFurniture);
+
+                var store = Storefront.Get();
+                store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, player =>
+                {
+                    if (player != null && !string.IsNullOrEmpty(player.ClanId))
+                    {
+                        store.GetClanData(player.ClanId, clan =>
+                        {
+                            if (clan != null)
+                            {
+                                store.SaveClanData(clan, saved =>
+                                {
+                                    Debug.Log("Clan data saved after moving item back to tray.");
+                                });
+                            }
+                            else
+                            {
+                                Debug.LogWarning("Clan data not found for saving.");
+                            }
+                        });
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Player data or ClanId missing for saving clan data.");
+                    }
+                });
+            }
         }
     }
+
 }
