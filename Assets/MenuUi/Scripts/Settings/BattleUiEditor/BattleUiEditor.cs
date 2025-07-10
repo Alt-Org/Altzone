@@ -111,6 +111,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private GameObject _giveUpButton;
         [SerializeField] private GameObject _joystick;
 
+        public enum CornerType // Helper enum to access button world corners and scale handles array in editing component script more readably.
+        {
+            BottomLeft = 0,
+            TopLeft = 1,
+            TopRight = 2,
+            BottomRight = 3,
+        }
+
         public static Rect EditorRect;
         public static RectTransform EditorRectTransform;
 
@@ -1272,6 +1280,19 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             float screenAspectRatio = Screen.width / (float)Screen.height;
 
+            // For some reason the editor has different aspect ratio calculated from rect size in local space than in world space because of the editor scaling
+            // Getting editor corners in world space
+            Vector3[] editorCorners = new Vector3[4];
+            EditorRectTransform.GetWorldCorners(editorCorners);
+
+            // Calculating world space size and aspect ratio
+            Vector2 editorWorldSize = new(editorCorners[(int)CornerType.TopRight].x - editorCorners[(int)CornerType.TopLeft].x,
+                       editorCorners[(int)CornerType.TopRight].y - editorCorners[(int)CornerType.BottomRight].y);
+            float editorWorldAspectRatio = editorWorldSize.x / editorWorldSize.y;
+
+            // Calculating a height for the editor from the world aspect ratio so that it works in calculations
+            float editorAspectRatioHeight = EditorRect.width / editorWorldAspectRatio;
+
             // Calculating arena scale.
             // If phone aspect ratio is same or thinner than the game aspect ratio we calculate arena width and height based on
             // editor width, but if it's thicker we calculate based on height so that the arena won't overlap or be too small.
@@ -1279,29 +1300,29 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             float arenaHeight; 
             if (screenAspectRatio <= GameAspectRatio)
             {
-                arenaWidth = _arenaScaleSlider.value / 100f * EditorRect.width;
+                arenaWidth = _arenaScaleSlider.value * 0.01f * EditorRect.width;
                 arenaHeight = arenaWidth / GameAspectRatio;
             }
             else
             {
-                arenaHeight = _arenaScaleSlider.value / 100f * EditorRect.height;
+                arenaHeight = _arenaScaleSlider.value * 0.01f * editorAspectRatioHeight;
                 arenaWidth = arenaHeight * GameAspectRatio;
             }
             
             // Calculating arena position
             Vector2 position = Vector2.zero;
-            position.x = (_arenaPosXSlider.value / 100 * (EditorRect.width - arenaWidth)) + arenaWidth / 2f;
-            position.y = ((100f - _arenaPosYSlider.value) / 100f * (EditorRect.height - arenaHeight)) + arenaHeight / 2f;
+            position.x += _arenaPosXSlider.value * 0.01f * (EditorRect.width - arenaWidth);
+            position.y += (100f - _arenaPosYSlider.value) * 0.01f * (editorAspectRatioHeight - arenaHeight);
 
             // Calculating arena anchors
             Vector2 anchorMin = Vector2.zero;
             Vector2 anchorMax = Vector2.zero;
 
-            anchorMin.x = (position.x - arenaWidth / 2.0f) / EditorRect.width;
-            anchorMax.x = (position.x + arenaWidth / 2.0f) / EditorRect.width;
+            anchorMin.x = position.x / EditorRect.width;
+            anchorMax.x = (position.x + arenaWidth) / EditorRect.width;
 
-            anchorMin.y = (position.y - arenaHeight / 2.0f) / EditorRect.height;
-            anchorMax.y = (position.y + arenaHeight / 2.0f) / EditorRect.height;
+            anchorMin.y = position.y / editorAspectRatioHeight;
+            anchorMax.y = (position.y + arenaHeight) / editorAspectRatioHeight;
 
             // Setting arena anchors
             _arenaImage.anchorMin = anchorMin;

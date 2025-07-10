@@ -8,6 +8,8 @@ using UnityEngine.EventSystems;
 using Altzone.Scripts.BattleUiShared;
 using OrientationType = Altzone.Scripts.BattleUiShared.BattleUiMultiOrientationElement.OrientationType;
 
+using CornerType = MenuUi.Scripts.Settings.BattleUiEditor.BattleUiEditor.CornerType;
+
 namespace MenuUi.Scripts.Settings.BattleUiEditor
 {
     /// <summary>
@@ -238,14 +240,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             None,
             Move,
             Scale
-        }
-
-        enum CornerType // Helper enum to access button world corners and scale handles array more readably.
-        {
-            BottomLeft = 0,
-            TopLeft = 1,
-            TopRight = 2,
-            BottomRight = 3,
         }
 
         enum ControlButtonVertical
