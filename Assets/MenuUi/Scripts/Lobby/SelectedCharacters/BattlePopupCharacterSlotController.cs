@@ -51,10 +51,18 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         {
             StartCoroutine(GetPlayerData(playerData =>
             {
-                var characters = playerData.CustomCharacters.ToList();
                 for (int i = 0; i < _selectedCharacterSlots.Length; i++)
                 {
-                    CharacterID charID = playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i]) == null ? CharacterID.None : playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i]).Id;
+                    CharacterID charID;
+                    if (playerData.SelectedTestCharacterIds[i] != (int)CharacterID.None)
+                    {
+                        charID = (CharacterID)playerData.SelectedTestCharacterIds[i];
+                    }
+                    else
+                    {
+                        CustomCharacter matchingCharacter = playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i]);
+                        charID = matchingCharacter == null || playerData.SelectedCharacterIds[i] == ((int)CharacterID.None).ToString() ? CharacterID.None : matchingCharacter.Id;
+                    }
 
                     if (charID is CharacterID.None)
                     {
@@ -78,12 +86,12 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         {
             for (int i = 0; i < selectedCharacterIds.Length; i++)
             {
-                if (selectedCharacterIds[i] == 0)
+                if (selectedCharacterIds[i] == (int)CharacterID.None)
                 {
                     _selectedCharacterSlots[i].SetEmpty(false);
                     continue;
                 }
-
+                
                 PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(selectedCharacterIds[i].ToString());
                 _selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charInfo.CharacterId, false, stats[(i * 5)..(i * 5 + 5)]);
             }

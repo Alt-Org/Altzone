@@ -117,19 +117,24 @@ namespace Altzone.Scripts.BattleUiShared
 
         private void Update()
         {
+            bool textBoxSizeChanged;
+            bool changeFontSize;
+
             for (int i = 0; i < _textArray.Length; i++)
             {
                 if (_rectTransformArray[i] == null) return;
-                bool textBoxSizeChanged = _rectTransformArray[i].rect.size != _oldRectSizeArray[i];
+
+                textBoxSizeChanged = _rectTransformArray[i].rect.size != _oldRectSizeArray[i];
+                changeFontSize = _fontSettingsChanged || textBoxSizeChanged;
 
                 // If text box size changed and the text box scaling variables are set, scale text box
                 if (textBoxSizeChanged && _textBoxAspectRatio != 0 && _holderRectTransform != null) ScaleTextBox(i);
 
-                // Recalculating font size if text box size changed or font settings changed
-                if (textBoxSizeChanged || _fontSettingsChanged) RecalculateFontSize(i);
+                // Recalculating font size if font settings changed or text box size changed
+                if (changeFontSize) RecalculateFontSize(i);
 
-                // If the text, text box size or font settings changed checking for text clipping
-                if (_oldTextArray[i] != _textArray[i].text || textBoxSizeChanged || _fontSettingsChanged) CheckTextClipping(i);
+                // If the font settings, text or text box size changed checking for text clipping
+                if (changeFontSize || _oldTextArray[i] != _textArray[i].text) CheckTextClipping(i);
             }
 
             _fontSettingsChanged = false;
@@ -142,7 +147,7 @@ namespace Altzone.Scripts.BattleUiShared
             float fontRelativeSizeMax = _rectTransformArray[index].rect.height * _relativePercentageMax;
 
             // Clamping font size to min and max font sizes
-            fontSize = Mathf.Clamp(fontSize, Mathf.Min(_fontSizeMin, fontRelativeSizeMax), _fontSizeMax == 0 ? float.PositiveInfinity : _fontSizeMax);
+            fontSize = Mathf.Min(Mathf.Clamp(fontSize, _fontSizeMin, _fontSizeMax == 0 ? float.PositiveInfinity : _fontSizeMax), fontRelativeSizeMax);
 
             // Setting font size and _oldRectSize
             _textArray[index].fontSize = fontSize;
