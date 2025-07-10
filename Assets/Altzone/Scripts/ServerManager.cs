@@ -1395,6 +1395,8 @@ public class ServerManager : MonoBehaviour
 
     #endregion
 
+    #region Shop
+
     public IEnumerator GetClanShopListFromServer(Action<List<GameFurniture>> callback)
     {
         yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "clan-shop/items/", AccessToken, request =>
@@ -1444,6 +1446,8 @@ public class ServerManager : MonoBehaviour
             }
         }));
     }
+
+    #endregion
 
     #region Leaderboard
     public IEnumerator GetClanLeaderboardFromServer(Action<List<ClanLeaderboard>> callback)
