@@ -1,9 +1,16 @@
 input
 {
-    button MovementInput;
+    BattleMovementInputType MovementInput;
     bool MovementDirectionIsNormalized;
     BattleGridPosition MovementPosition;
     FPVector2 MovementDirection;
     button RotationInput;
     FP RotationValue;
+}
+
+enum BattleMovementInputType
+{
+    None = 0,
+    Position = 1,
+    Direction = 2
 }

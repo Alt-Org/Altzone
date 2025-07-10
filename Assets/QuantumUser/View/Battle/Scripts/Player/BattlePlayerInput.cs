@@ -51,6 +51,8 @@ namespace Battle.View.Player
 
         private AttitudeSensor _attitudeSensor;
 
+        private bool _swipeMovementStarted = false;
+
         private void OnEnable()
         {
             _movementInputType = SettingsCarrier.Instance.BattleMovementInput;
@@ -87,7 +89,7 @@ namespace Battle.View.Player
                 return;
             }
 
-            bool movementInput = false;
+            BattleMovementInputType movementInput = BattleMovementInputType.None;
             bool movementDirectionIsNormalized = false;
             BattleGridPosition movementPosition = new BattleGridPosition() {Row = -1, Col = -1};
             FPVector2 movementDirection = FPVector2.Zero;
@@ -107,7 +109,7 @@ namespace Battle.View.Player
                 case MovementInputType.PointAndClick:
                     if (mouseClick)
                     {
-                        movementInput = true;
+                        movementInput = BattleMovementInputType.Position;
                         movementPosition = new BattleGridPosition()
                         {
                             Row = BattleGridManager.WorldYPositionToGridRow(FP.FromFloat_UNSAFE(unityPosition.z)),
@@ -117,28 +119,41 @@ namespace Battle.View.Player
                     break;
 
                 case MovementInputType.Swipe:
+                    bool _swipePerformed = false;
+
                     if (mouseDown && _movementStartVector == Vector3.zero)
                     {
                         _movementStartVector = unityPosition;
                     }
                     else if (mouseDown && ((unityPosition - _movementStartVector).sqrMagnitude > _swipeMinDistance * _swipeMinDistance))
                     {
-                        movementInput = true;
-                        Vector3 direction = unityPosition - _movementStartVector;
-                        movementDirection = new FPVector2(FP.FromFloat_UNSAFE(direction.x), FP.FromFloat_UNSAFE(direction.z)) / deltaTime;
-                        movementDirection *= FP.FromFloat_UNSAFE(_swipeSensitivity);
-                        _movementStartVector = unityPosition;
+                        _swipeMovementStarted = true;
+                        _swipePerformed = true;
                     }
                     else if (!mouseDown)
                     {
                         _movementStartVector = Vector3.zero;
+                        _swipeMovementStarted = false;
+                    }
+
+                    if (_swipeMovementStarted)
+                    {
+                        movementInput = BattleMovementInputType.Direction;
+                        if (_swipePerformed)
+                        {
+                            Vector3 direction = unityPosition - _movementStartVector;
+                            movementDirection = new FPVector2(FP.FromFloat_UNSAFE(direction.x), FP.FromFloat_UNSAFE(direction.z)) / deltaTime;
+                            movementDirection *= FP.FromFloat_UNSAFE(_swipeSensitivity);
+                            
+                        }
+                        _movementStartVector = unityPosition;
                     }
                     break;
 
                 case MovementInputType.Joystick:
                     if (_joystickMovementVector != Vector2.zero)
                     {
-                        movementInput = true;
+                        movementInput = BattleMovementInputType.Direction;
                         movementDirectionIsNormalized = true;
                         movementDirection = new FPVector2(FP.FromFloat_UNSAFE(_joystickMovementVector.x), FP.FromFloat_UNSAFE(_joystickMovementVector.y));
                     }
@@ -151,15 +166,16 @@ namespace Battle.View.Player
                     
                     if (mouseDown && _rotationStartVector == Vector2.zero)
                     {
-                        _rotationStartVector = clickPosition;
+                        _rotationStartVector = unityPosition;
                     }
-                    else if (mouseDown && (clickPosition.x - _rotationStartVector.x > _swipeMinDistance || clickPosition.x - _rotationStartVector.x < -_swipeMinDistance))
+                    else if (mouseDown && (unityPosition.x - _rotationStartVector.x > _swipeMinDistance || unityPosition.x - _rotationStartVector.x < -_swipeMinDistance))
                     {
                         rotationInput = true;
-                        float distance = clickPosition.x - _rotationStartVector.x;
-                        float maxAdjustedDistance = Mathf.Clamp(distance / _swipeMaxDistance, -1, 1);
+                        float distance = unityPosition.x - _rotationStartVector.x;
+                        float signe = distance < 0 ? -1f : 1f;
+                        distance = Mathf.Abs(distance) - _swipeMinDistance;
+                        float maxAdjustedDistance = Mathf.Clamp(distance / (_swipeMaxDistance - _swipeMinDistance), 0, 1) * signe;
                         rotationValue = -FP.FromFloat_UNSAFE(maxAdjustedDistance);
-
                     }
                     else if (!mouseDown)
                     {

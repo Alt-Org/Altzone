@@ -83,6 +83,11 @@ namespace Quantum {
     Medium = 1,
     Wide = 3,
   }
+  public enum BattleMovementInputType : int {
+    None = 0,
+    Position = 1,
+    Direction = 2,
+  }
   public enum BattlePlayerCollisionType : int {
     None = 0,
     Reflect = 1,
@@ -129,8 +134,7 @@ namespace Quantum {
   }
   [System.FlagsAttribute()]
   public enum InputButtons : int {
-    MovementInput = 1 << 0,
-    RotationInput = 1 << 1,
+    RotationInput = 1 << 0,
   }
   public static unsafe partial class FlagsExtensions {
     public static Boolean IsFlagSet(this BattleProjectileCollisionFlags self, BattleProjectileCollisionFlags flag) {
@@ -691,24 +695,24 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Input {
-    public const Int32 SIZE = 64;
+    public const Int32 SIZE = 56;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(24)]
-    public Button MovementInput;
     [FieldOffset(0)]
-    public QBoolean MovementDirectionIsNormalized;
+    public BattleMovementInputType MovementInput;
     [FieldOffset(4)]
+    public QBoolean MovementDirectionIsNormalized;
+    [FieldOffset(8)]
     public BattleGridPosition MovementPosition;
-    [FieldOffset(48)]
+    [FieldOffset(40)]
     public FPVector2 MovementDirection;
-    [FieldOffset(36)]
+    [FieldOffset(24)]
     public Button RotationInput;
     [FieldOffset(16)]
     public FP RotationValue;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 19249;
-        hash = hash * 31 + MovementInput.GetHashCode();
+        hash = hash * 31 + (Int32)MovementInput;
         hash = hash * 31 + MovementDirectionIsNormalized.GetHashCode();
         hash = hash * 31 + MovementPosition.GetHashCode();
         hash = hash * 31 + MovementDirection.GetHashCode();
@@ -722,31 +726,29 @@ namespace Quantum {
     }
     public Boolean IsDown(InputButtons button) {
       switch (button) {
-        case InputButtons.MovementInput: return MovementInput.IsDown;
         case InputButtons.RotationInput: return RotationInput.IsDown;
         default: return false;
       }
     }
     public Boolean WasPressed(InputButtons button) {
       switch (button) {
-        case InputButtons.MovementInput: return MovementInput.WasPressed;
         case InputButtons.RotationInput: return RotationInput.WasPressed;
         default: return false;
       }
     }
     static partial void SerializeCodeGen(void* ptr, FrameSerializer serializer) {
         var p = (Input*)ptr;
+        serializer.Stream.Serialize((Int32*)&p->MovementInput);
         QBoolean.Serialize(&p->MovementDirectionIsNormalized, serializer);
         Quantum.BattleGridPosition.Serialize(&p->MovementPosition, serializer);
         FP.Serialize(&p->RotationValue, serializer);
-        Button.Serialize(&p->MovementInput, serializer);
         Button.Serialize(&p->RotationInput, serializer);
         FPVector2.Serialize(&p->MovementDirection, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct _globals_ {
-    public const Int32 SIZE = 952;
+    public const Int32 SIZE = 904;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public AssetRef<Map> Map;
@@ -770,12 +772,12 @@ namespace Quantum {
     public Int32 PlayerConnectedCount;
     [FieldOffset(560)]
     [FramePrinter.FixedArrayAttribute(typeof(Input), 6)]
-    private fixed Byte _input_[384];
-    [FieldOffset(944)]
+    private fixed Byte _input_[336];
+    [FieldOffset(896)]
     public BitSet6 PlayerLastConnectionState;
     public FixedArray<Input> input {
       get {
-        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 64, 6); }
+        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 56, 6); }
       }
     }
     public override Int32 GetHashCode() {
@@ -1381,7 +1383,7 @@ namespace Quantum {
     partial void SetPlayerInputCodeGen(PlayerRef player, Input input) {
       if ((int)player >= (int)_globals->input.Length) { throw new System.ArgumentOutOfRangeException("player"); }
       var i = _globals->input.GetPointer(player);
-      i->MovementInput = i->MovementInput.Update(this.Number, input.MovementInput);
+      i->MovementInput = input.MovementInput;
       i->MovementDirectionIsNormalized = input.MovementDirectionIsNormalized;
       i->MovementPosition = input.MovementPosition;
       i->MovementDirection = input.MovementDirection;
@@ -1488,6 +1490,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.BattleGridPosition), Quantum.BattleGridPosition.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleLightrayColor), 4);
       typeRegistry.Register(typeof(Quantum.BattleLightraySize), 4);
+      typeRegistry.Register(typeof(Quantum.BattleMovementInputType), 4);
       typeRegistry.Register(typeof(Quantum.BattlePlayerCollisionType), 4);
       typeRegistry.Register(typeof(Quantum.BattlePlayerDataQComponent), Quantum.BattlePlayerDataQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattlePlayerDataTemplateQComponent), Quantum.BattlePlayerDataTemplateQComponent.SIZE);
@@ -1612,6 +1615,7 @@ namespace Quantum {
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleGameState>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleLightrayColor>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleLightraySize>();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleMovementInputType>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerCollisionType>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerHitboxType>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerPlayState>();
