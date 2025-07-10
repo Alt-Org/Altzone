@@ -28,6 +28,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private RectTransform _topButtonsRectTransform;
         [SerializeField] private Button _closeButton;
         [SerializeField] private Button _saveButton;
+        [SerializeField] private Button _previewButton;
+        [SerializeField] private Button _previewModeTouchDetector;
         [Space]
         [SerializeField] private GameObject _uiTransparencyHolder;
         [SerializeField] private Slider _uiTransparencySlider;
@@ -252,6 +254,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Close and save button listeners
             _closeButton.onClick.AddListener(CloseEditor);
             _saveButton.onClick.AddListener(SaveChanges);
+
+            // Preview mode listeners
+            _previewButton.onClick.AddListener(OpenPreviewMode);
+            _previewModeTouchDetector.onClick.AddListener(ClosePreviewMode);
 
             // Ui element transparency listeners
             _uiTransparencySlider.onValueChanged.AddListener((value) =>
@@ -488,6 +494,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _closeButton.onClick.RemoveAllListeners();
             _saveButton.onClick.RemoveAllListeners();
 
+            // Removing preview mode listeners
+            _previewButton.onClick.RemoveAllListeners();
+            _previewModeTouchDetector.onClick.RemoveAllListeners();
+
             // Removing save changes popup listeners
             _okButton.onClick.RemoveAllListeners();
             _noButton.onClick.RemoveAllListeners();
@@ -578,6 +588,21 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Setting top button anchors
             _topButtonsRectTransform.anchorMin = new(0, anchorMaxY);
             _topButtonsRectTransform.anchorMax = new(1, 1 - unsafeAreaHeight);
+        }
+
+        private void OpenPreviewMode()
+        {
+            _topButtonsRectTransform.gameObject.SetActive(false);
+            _previewModeTouchDetector.gameObject.SetActive(true);
+            EditorRectTransform.anchorMin = Vector2.zero;
+            EditorRectTransform.anchorMax = Vector2.one;
+        }
+
+        private void ClosePreviewMode()
+        {
+            _topButtonsRectTransform.gameObject.SetActive(true);
+            _previewModeTouchDetector.gameObject.SetActive(false);
+            ScaleEditor();
         }
 
         private void ToggleOptionsDropdown()
