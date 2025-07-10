@@ -592,6 +592,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void OpenPreviewMode()
         {
+            OnUiElementSelected(null);
+            CloseOptionsDropdown();
             _topButtonsRectTransform.gameObject.SetActive(false);
             _previewModeTouchDetector.gameObject.SetActive(true);
             EditorRectTransform.anchorMin = Vector2.zero;
