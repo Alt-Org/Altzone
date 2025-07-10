@@ -19,9 +19,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
     {
         [Header("Character slot references")]
         [SerializeField] private Image _spriteImage;
-        [SerializeField] private Image _bordersBackgroundImage;
-        [SerializeField] private Image _upperBackgroundImage;
-        [SerializeField] private Image _lowerBackgroundImage;
+        [SerializeField] private Image _classColorImage;
         [SerializeField] private PieChartPreview _piechartPreview;
 
         [Header("Reference sheet")]
@@ -59,9 +57,8 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             _spriteImage.sprite = galleryImage;
             _spriteImage.enabled = true;
 
-            //CharacterClassID charClassID = CustomCharacter.GetClassID(charID);
-            //_upperBackgroundImage.color = _classColorReference.GetAlternativeColor(charClassID);
-            //_lowerBackgroundImage.color = _classColorReference.GetColor(charClassID);
+            CharacterClassID charClassID = CustomCharacter.GetClassID(charID);
+            _classColorImage.color = _classReference.GetColor(charClassID);
 
             _characterId = charID;
 
@@ -83,12 +80,10 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         /// Set character slot showing as empty.
         /// </summary>
         /// <param name="isEditable">If slot is editable for the local player or not.</param>
-        /// <param name="slotIdx">Slot's index.</param>
         public void SetEmpty(bool isEditable)
         {
             _spriteImage.enabled = false;
-            //_upperBackgroundImage.color = Color.white;
-            //_lowerBackgroundImage.color = Color.white;
+            _classColorImage.color = Color.white;
 
             _piechartPreview.ClearChart();
             _characterId = CharacterID.None;
