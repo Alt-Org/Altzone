@@ -2632,40 +2632,43 @@ MonoBehaviour:
     Characters:
     - Id: 0
       Class: 0
-      Hp:
-        RawValue: 0
-      Speed:
-        RawValue: 0
-      CharacterSize:
-        RawValue: 0
-      Attack:
-        RawValue: 0
-      Defence:
-        RawValue: 0
+      Stats:
+        Hp:
+          RawValue: 0
+        Speed:
+          RawValue: 0
+        CharacterSize:
+          RawValue: 0
+        Attack:
+          RawValue: 0
+        Defence:
+          RawValue: 0
     - Id: 0
       Class: 0
-      Hp:
-        RawValue: 0
-      Speed:
-        RawValue: 0
-      CharacterSize:
-        RawValue: 0
-      Attack:
-        RawValue: 0
-      Defence:
-        RawValue: 0
+      Stats:
+        Hp:
+          RawValue: 0
+        Speed:
+          RawValue: 0
+        CharacterSize:
+          RawValue: 0
+        Attack:
+          RawValue: 0
+        Defence:
+          RawValue: 0
     - Id: 0
       Class: 0
-      Hp:
-        RawValue: 0
-      Speed:
-        RawValue: 0
-      CharacterSize:
-        RawValue: 0
-      Attack:
-        RawValue: 0
-      Defence:
-        RawValue: 0
+      Stats:
+        Hp:
+          RawValue: 0
+        Speed:
+          RawValue: 0
+        CharacterSize:
+          RawValue: 0
+        Attack:
+          RawValue: 0
+        Defence:
+          RawValue: 0
   MaxPlayerCount: 0
   SimulationSpeedMultiplier: 1
   DisplaySaveAndReloadButton: 0
@@ -4308,6 +4311,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8816702143117302233, guid: 7e0904d2b2ca0f145ad03f5086282bbb,
+        type: 3}
+      propertyPath: _playerInput
+      value: 
+      objectReference: {fileID: 992096345}
     - target: {fileID: 8816702143117302233, guid: 7e0904d2b2ca0f145ad03f5086282bbb,
         type: 3}
       propertyPath: _uiController

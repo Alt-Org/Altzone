@@ -177,6 +177,7 @@ namespace Quantum.Prototypes {
     public Quantum.Prototypes.BattlePlayerStatsPrototype Stats;
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
+    public QBoolean HasTargetPosition;
     public FPVector2 TargetPosition;
     public FP RotationBase;
     public FP RotationOffset;
@@ -196,6 +197,7 @@ namespace Quantum.Prototypes {
         this.Stats.Materialize(frame, ref result.Stats, in context);
         result.GridExtendTop = this.GridExtendTop;
         result.GridExtendBottom = this.GridExtendBottom;
+        result.HasTargetPosition = this.HasTargetPosition;
         result.TargetPosition = this.TargetPosition;
         result.RotationBase = this.RotationBase;
         result.RotationOffset = this.RotationOffset;
@@ -427,15 +429,19 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Input))]
   public unsafe partial class InputPrototype : StructPrototype {
-    public Button MouseClick;
+    public Quantum.QEnum32<BattleMovementInputType> MovementInput;
+    public QBoolean MovementDirectionIsNormalized;
     public Quantum.Prototypes.BattleGridPositionPrototype MovementPosition;
-    public Button RotateMotion;
+    public FPVector2 MovementDirection;
+    public Button RotationInput;
     public FP RotationValue;
     partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
-        result.MouseClick = this.MouseClick;
+        result.MovementInput = this.MovementInput;
+        result.MovementDirectionIsNormalized = this.MovementDirectionIsNormalized;
         this.MovementPosition.Materialize(frame, ref result.MovementPosition, in context);
-        result.RotateMotion = this.RotateMotion;
+        result.MovementDirection = this.MovementDirection;
+        result.RotationInput = this.RotationInput;
         result.RotationValue = this.RotationValue;
         MaterializeUser(frame, ref result, in context);
     }
