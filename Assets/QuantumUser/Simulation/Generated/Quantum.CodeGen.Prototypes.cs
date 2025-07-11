@@ -429,7 +429,7 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Input))]
   public unsafe partial class InputPrototype : StructPrototype {
-    public Button MovementInput;
+    public Quantum.QEnum32<BattleMovementInputType> MovementInput;
     public QBoolean MovementDirectionIsNormalized;
     public Quantum.Prototypes.BattleGridPositionPrototype MovementPosition;
     public FPVector2 MovementDirection;

@@ -40,10 +40,10 @@ namespace Battle.QSimulation.Player
             //{ handle movement
 
             // handle movement input
-            if (input->MovementInput)
+            if (input->MovementInput != BattleMovementInputType.None)
             {
                 // get players TargetPosition
-                if (input->MovementDirection != FPVector2.Zero)
+                if (input->MovementInput == BattleMovementInputType.Direction)
                 {
                     FPVector2 movementDirection = input->MovementDirection * (input->MovementDirectionIsNormalized ? playerData->Stats.Speed : FP._1);
                     positionNext = transform->Position + FPVector2.ClampMagnitude(movementDirection, playerData->Stats.Speed) * f.DeltaTime;
@@ -73,7 +73,7 @@ namespace Battle.QSimulation.Player
             }
 
             // cancel movement if needed
-            if (input->RotationInput || (!input->MovementInput && !playerData->HasTargetPosition))
+            if (input->RotationInput || (input->MovementInput == BattleMovementInputType.None && !playerData->HasTargetPosition))
             {
                 ClampPosition(playerData, transform->Position, out positionNext);
                 playerData->TargetPosition = positionNext;

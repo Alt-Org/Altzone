@@ -12,6 +12,7 @@ using Battle.View.Game;
 
 using MovementInputType = SettingsCarrier.BattleMovementInputType;
 using RotationInputType = SettingsCarrier.BattleRotationInputType;
+using static SettingsCarrier;
 
 namespace Battle.View.Player
 {
@@ -53,6 +54,8 @@ namespace Battle.View.Player
 
         private AttitudeSensor _attitudeSensor;
 
+        private bool _swipeMovementStarted = false;
+
         private void OnEnable()
         {
             _movementInputType = SettingsCarrier.Instance.BattleMovementInput;
@@ -80,7 +83,7 @@ namespace Battle.View.Player
             bool mouseClick = !twoFingers && mouseDown && !_mouseDownPrevious;
             _mouseDownPrevious = mouseDown;
 
-            bool movementInput = false;
+            Quantum.BattleMovementInputType movementInput = Quantum.BattleMovementInputType.None;
             bool movementDirectionIsNormalized = false;
             BattleGridPosition movementPosition = new BattleGridPosition() { Row = -1, Col = -1 };
             FPVector2 movementDirection = FPVector2.Zero;
@@ -122,9 +125,9 @@ namespace Battle.View.Player
             _characterNumber = -1;
         }
 
-        private (bool movementInput, bool movementDirectionIsNormalized, BattleGridPosition movementPosition, FPVector2 movementDirection) GetMovementInput(bool mouseDown, bool mouseClick, Vector3 unityPosition, FP deltaTime)
+        private (Quantum.BattleMovementInputType movementInput, bool movementDirectionIsNormalized, BattleGridPosition movementPosition, FPVector2 movementDirection) GetMovementInput(bool mouseDown, bool mouseClick, Vector3 unityPosition, FP deltaTime)
         {
-            bool movementInput = false;
+            Quantum.BattleMovementInputType movementInput = Quantum.BattleMovementInputType.None;
             bool movementDirectionIsNormalized = false;
             BattleGridPosition movementPosition = new BattleGridPosition() { Row = -1, Col = -1 };
             FPVector2 movementDirection = FPVector2.Zero;
@@ -134,7 +137,7 @@ namespace Battle.View.Player
                 case MovementInputType.PointAndClick:
                     if (mouseClick)
                     {
-                        movementInput = true;
+                        movementInput = Quantum.BattleMovementInputType.Position;
                         movementPosition = new BattleGridPosition()
                         {
                             Row = BattleGridManager.WorldYPositionToGridRow(FP.FromFloat_UNSAFE(unityPosition.z)),
@@ -144,28 +147,40 @@ namespace Battle.View.Player
                     break;
 
                 case MovementInputType.Swipe:
+                    bool _swipePerformed = false;
+
                     if (mouseDown && _movementStartVector == Vector3.zero)
                     {
                         _movementStartVector = unityPosition;
                     }
                     else if (mouseDown && ((unityPosition - _movementStartVector).sqrMagnitude > _swipeMinDistance * _swipeMinDistance))
                     {
-                        movementInput = true;
-                        Vector3 direction = unityPosition - _movementStartVector;
-                        movementDirection = new FPVector2(FP.FromFloat_UNSAFE(direction.x), FP.FromFloat_UNSAFE(direction.z)) / deltaTime;
-                        movementDirection *= FP.FromFloat_UNSAFE(_swipeSensitivity);
-                        _movementStartVector = unityPosition;
+                        _swipeMovementStarted = true;
+                        _swipePerformed = true;
                     }
                     else if (!mouseDown)
                     {
                         _movementStartVector = Vector3.zero;
+                    }
+
+                    if (_swipeMovementStarted)
+                    {
+                        movementInput = Quantum.BattleMovementInputType.Direction;
+                        if (_swipePerformed)
+                        {
+                            Vector3 direction = unityPosition - _movementStartVector;
+                            movementDirection = new FPVector2(FP.FromFloat_UNSAFE(direction.x), FP.FromFloat_UNSAFE(direction.z)) / deltaTime;
+                            movementDirection *= FP.FromFloat_UNSAFE(_swipeSensitivity);
+
+                        }
+                        _movementStartVector = unityPosition;
                     }
                     break;
 
                 case MovementInputType.Joystick:
                     if (_joystickMovementVector != Vector2.zero)
                     {
-                        movementInput = true;
+                        movementInput = Quantum.BattleMovementInputType.Direction;
                         movementDirectionIsNormalized = true;
                         movementDirection = new FPVector2(FP.FromFloat_UNSAFE(_joystickMovementVector.x), FP.FromFloat_UNSAFE(_joystickMovementVector.y));
                     }
