@@ -101,7 +101,7 @@ namespace Battle.View.Player
                 }
 
                 (movementInput, movementDirectionIsNormalized, movementPosition, movementDirection) = GetMovementInput(mouseDown, mouseClick, unityPosition, deltaTime);
-                (rotationInput, rotationValue) = GetRotationInput(mouseDown, twoFingers, clickPosition);
+                (rotationInput, rotationValue) = GetRotationInput(mouseDown, twoFingers, unityPosition);
             }
             else if (!mouseDown)
             {
@@ -166,7 +166,7 @@ namespace Battle.View.Player
 
                     if (_swipeMovementStarted)
                     {
-                        movementInput = BattleMovementInputType.Direction;
+                        movementInput = Quantum.BattleMovementInputType.Direction;
                         if (_swipePerformed)
                         {
                             Vector3 direction = unityPosition - _movementStartVector;
@@ -204,7 +204,7 @@ namespace Battle.View.Player
             return (movementInput, movementDirectionIsNormalized, movementPosition, movementDirection);
         }
 
-        private (bool rotationInput, FP rotationValue) GetRotationInput(bool mouseDown, bool twoFingers, Vector3 clickPosition)
+        private (bool rotationInput, FP rotationValue) GetRotationInput(bool mouseDown, bool twoFingers, Vector3 unityPosition)
         {
             bool rotationInput = false;
             FP rotationValue = FP._0;
