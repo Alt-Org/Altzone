@@ -58,13 +58,14 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             _spriteImage.enabled = true;
 
             CharacterClassID charClassID = CustomCharacter.GetClassID(charID);
-            _classColorImage.color = _classReference.GetColor(charClassID);
+            if (_classColorImage != null) _classColorImage.color = _classReference.GetColor(charClassID);
 
             _characterId = charID;
 
             if (_button == null) _button = GetComponent<Button>();
             _button.enabled = isEditable;
 
+            if (_piechartPreview == null) return;
             if (stats != null)
             {
                 _piechartPreview.UpdateChart(stats[3], stats[0], stats[4], stats[2], stats[1]);
@@ -83,9 +84,9 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         public void SetEmpty(bool isEditable)
         {
             _spriteImage.enabled = false;
-            _classColorImage.color = Color.white;
+            if (_classColorImage != null) _classColorImage.color = Color.white;
 
-            _piechartPreview.ClearChart();
+            if (_piechartPreview != null) _piechartPreview.ClearChart();
             _characterId = CharacterID.None;
 
             if (_button == null) _button = GetComponent<Button>();
