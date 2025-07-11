@@ -435,6 +435,7 @@ namespace Quantum.Prototypes {
     public FPVector2 MovementDirection;
     public Button RotationInput;
     public FP RotationValue;
+    public Int32 PlayerCharacterNumber;
     partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
         result.MovementInput = this.MovementInput;
@@ -443,6 +444,7 @@ namespace Quantum.Prototypes {
         result.MovementDirection = this.MovementDirection;
         result.RotationInput = this.RotationInput;
         result.RotationValue = this.RotationValue;
+        result.PlayerCharacterNumber = this.PlayerCharacterNumber;
         MaterializeUser(frame, ref result, in context);
     }
   }

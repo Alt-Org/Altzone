@@ -39,7 +39,6 @@ namespace Prg.Scripts.Common
         public static void Init()
         {
             EnhancedTouchSupport.Enable();
-
         }
 
         /// <summary>

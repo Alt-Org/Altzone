@@ -695,20 +695,22 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Input {
-    public const Int32 SIZE = 56;
+    public const Int32 SIZE = 64;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public BattleMovementInputType MovementInput;
-    [FieldOffset(4)]
-    public QBoolean MovementDirectionIsNormalized;
     [FieldOffset(8)]
+    public QBoolean MovementDirectionIsNormalized;
+    [FieldOffset(12)]
     public BattleGridPosition MovementPosition;
-    [FieldOffset(40)]
+    [FieldOffset(48)]
     public FPVector2 MovementDirection;
-    [FieldOffset(24)]
+    [FieldOffset(32)]
     public Button RotationInput;
-    [FieldOffset(16)]
+    [FieldOffset(24)]
     public FP RotationValue;
+    [FieldOffset(4)]
+    public Int32 PlayerCharacterNumber;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 19249;
@@ -718,6 +720,7 @@ namespace Quantum {
         hash = hash * 31 + MovementDirection.GetHashCode();
         hash = hash * 31 + RotationInput.GetHashCode();
         hash = hash * 31 + RotationValue.GetHashCode();
+        hash = hash * 31 + PlayerCharacterNumber.GetHashCode();
         return hash;
       }
     }
@@ -739,6 +742,7 @@ namespace Quantum {
     static partial void SerializeCodeGen(void* ptr, FrameSerializer serializer) {
         var p = (Input*)ptr;
         serializer.Stream.Serialize((Int32*)&p->MovementInput);
+        serializer.Stream.Serialize(&p->PlayerCharacterNumber);
         QBoolean.Serialize(&p->MovementDirectionIsNormalized, serializer);
         Quantum.BattleGridPosition.Serialize(&p->MovementPosition, serializer);
         FP.Serialize(&p->RotationValue, serializer);
@@ -748,7 +752,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct _globals_ {
-    public const Int32 SIZE = 904;
+    public const Int32 SIZE = 952;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public AssetRef<Map> Map;
@@ -772,12 +776,12 @@ namespace Quantum {
     public Int32 PlayerConnectedCount;
     [FieldOffset(560)]
     [FramePrinter.FixedArrayAttribute(typeof(Input), 6)]
-    private fixed Byte _input_[336];
-    [FieldOffset(896)]
+    private fixed Byte _input_[384];
+    [FieldOffset(944)]
     public BitSet6 PlayerLastConnectionState;
     public FixedArray<Input> input {
       get {
-        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 56, 6); }
+        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 64, 6); }
       }
     }
     public override Int32 GetHashCode() {
@@ -1389,6 +1393,7 @@ namespace Quantum {
       i->MovementDirection = input.MovementDirection;
       i->RotationInput = i->RotationInput.Update(this.Number, input.RotationInput);
       i->RotationValue = input.RotationValue;
+      i->PlayerCharacterNumber = input.PlayerCharacterNumber;
     }
     public Input* GetPlayerInput(PlayerRef player) {
       if ((int)player >= (int)_globals->input.Length) { throw new System.ArgumentOutOfRangeException("player"); }
