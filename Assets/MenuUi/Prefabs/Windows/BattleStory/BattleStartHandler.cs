@@ -48,10 +48,10 @@ public class BattleStartHandler : MonoBehaviour
     private IEnumerator TimerStart(long startTime)
     {
         _loadImage.sprite = _startAnimationSprites[0];
-        _loadImage.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0f);
+        _loadImage.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.8f);
         _loadImage.transform.localScale = new Vector2(1f, 1f);
         _battleStartText.gameObject.SetActive(false);
-        _timerText.gameObject.SetActive(false);
+        //_timerText.gameObject.SetActive(false);
         float timeleft = startTime/1000f;
         float frametimeleft = 0;
 
@@ -67,10 +67,10 @@ public class BattleStartHandler : MonoBehaviour
             } while (frametimeleft > 0);
         }
         _battleStartText.gameObject.SetActive(true);
-        _timerText.gameObject.SetActive(true);
+        //_timerText.gameObject.SetActive(true);
         do
         {
-            _timerText.text = Mathf.CeilToInt(timeleft).ToString();
+            //_timerText.text = Mathf.CeilToInt(timeleft).ToString();
 
             if (!_loadImage.sprite.Equals(_tableAboveSprite))
             {
