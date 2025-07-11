@@ -13,6 +13,7 @@ using BattleUiElementType = SettingsCarrier.BattleUiElementType;
 using BattleMovementInputType = SettingsCarrier.BattleMovementInputType;
 using BattleRotationInputType = SettingsCarrier.BattleRotationInputType;
 
+using MenuUi.Scripts.UIScaling;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.Settings.BattleUiEditor
@@ -23,8 +24,16 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
     public class BattleUiEditor : MonoBehaviour
     {
         [Header("Editor GameObject references")]
+        [SerializeField] private RectTransform _editorRectTransform;
+        [SerializeField] private RectTransform _topButtonsRectTransform;
         [SerializeField] private Button _closeButton;
         [SerializeField] private Button _saveButton;
+        [SerializeField] private Button _previewButton;
+        [SerializeField] private Button _previewModeTouchDetector;
+        [Space]
+        [SerializeField] private GameObject _uiTransparencyHolder;
+        [SerializeField] private Slider _uiTransparencySlider;
+        [SerializeField] private TMP_InputField _uiTransparencyInputField;
         [Space]
         [SerializeField] private RectTransform _arenaImage;
         [SerializeField] private RectTransform _uiElementsHolder;
@@ -53,9 +62,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private TMP_InputField _gridTransparencyInputField;
 
         [Header("Input options")]
-        [SerializeField] private Button _inputSelectorLeftButton;
-        [SerializeField] private Button _inputSelectorRightButton;
-        [SerializeField] private TMP_Text _inputSelectorLabel;
+        [SerializeField] private Toggle _swipeMovementToggle;
+        [SerializeField] private Toggle _pointAndClickMovementToggle;
+        [SerializeField] private Toggle _joystickMovementToggle;
+        [Space]
+        [SerializeField] private Toggle _twoFingerRotationToggle;
+        [SerializeField] private Toggle _swipeRotationToggle;
+        [SerializeField] private Toggle _joystickRotationToggle;
+        [SerializeField] private Toggle _gyroscopeRotationToggle;
         [Space]
         [SerializeField] private GameObject _swipeMinDistanceHolder;
         [SerializeField] private Slider _swipeMinDistanceSlider;
@@ -68,8 +82,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private GameObject _movementSwipeSensitivityHolder;
         [SerializeField] private Slider _movementSwipeSensitivitySlider;
         [SerializeField] private TMP_InputField _movementSwipeSensitivityInputField;
-        [Space]
-        [SerializeField] private Toggle _rotationGyroscopeOverrideToggle;
         [Space]
         [SerializeField] private GameObject _gyroscopeMinAngleHolder;
         [SerializeField] private Slider _gyroscopeMinAngleSlider;
@@ -99,30 +111,35 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private GameObject _giveUpButton;
         [SerializeField] private GameObject _joystick;
 
-        public static float ScreenSpaceRatio => Screen.width / EditorRect.width;
+        public enum CornerType // Helper enum to access button world corners and scale handles array in editing component script more readably.
+        {
+            BottomLeft = 0,
+            TopLeft = 1,
+            TopRight = 2,
+            BottomRight = 3,
+        }
 
         public static Rect EditorRect;
         public static RectTransform EditorRectTransform;
 
         /// <summary>
-        /// Calculate anchors based on Ui element size position and offset.
+        /// Calculate anchors based on Ui element size and position.
         /// </summary>
         /// <param name="size">Size of the Ui element.</param>
         /// <param name="pos">Ui element position.</param>
-        /// <param name="offset">Optional offset for the anchors.</param>
+        /// <param name="offset">Offset for calculating the anchors.</param>
+        /// <param name="useUiElementsHolder">If calculation should use Ui elements holder rect instead of editor rect.</param>
         /// <returns>Two Vector2, anchorMin and anchorMax.</returns>
-        public static (Vector2 anchorMin, Vector2 anchorMax) CalculateAnchors(Vector2 size, Vector2 pos, float offset = 0f)
+        public static (Vector2 anchorMin, Vector2 anchorMax) CalculateAnchors(Vector2 size, Vector2 pos, float offset = 0f, bool useUiElementsHolder = false)
         {
-            // For some reason the calculation didn't work with screen space ratio when called from BattleUiEditingComponent which also needs the offset, so added a check.
-            float uiHolderWidth = offset == 0f ? EditorRect.width * ScreenSpaceRatio : EditorRect.width;
-            float uiHolderHeight = offset == 0f ? EditorRect.height * ScreenSpaceRatio : EditorRect.height;
+            Vector2 holderSize = useUiElementsHolder ? s_uiElementsHolder.rect.size : new(EditorRect.width, EditorRect.height);
 
             // Calculating anchors
-            float anchorXMin = Mathf.Clamp01((pos.x - size.x * 0.5f) / uiHolderWidth + offset);
-            float anchorXMax = Mathf.Clamp01((pos.x + size.x * 0.5f) / uiHolderWidth + offset);
+            float anchorXMin = Mathf.Clamp01((pos.x - size.x * 0.5f) / holderSize.x + offset);
+            float anchorXMax = Mathf.Clamp01((pos.x + size.x * 0.5f) / holderSize.x + offset);
 
-            float anchorYMin = Mathf.Clamp01((pos.y - size.y * 0.5f) / uiHolderHeight + offset);
-            float anchorYMax = Mathf.Clamp01((pos.y + size.y * 0.5f) / uiHolderHeight + offset);
+            float anchorYMin = Mathf.Clamp01((pos.y - size.y * 0.5f) / holderSize.y + offset);
+            float anchorYMax = Mathf.Clamp01((pos.y + size.y * 0.5f) / holderSize.y + offset);
 
             return (new Vector2(anchorXMin, anchorYMin), new Vector2(anchorXMax, anchorYMax));
         }
@@ -186,13 +203,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             OnUiElementSelected(null);
         }
 
-        private enum InputCombinationType
-        {
-            SwipeTwoFinger,
-            PointAndClickSwipe,
-            Joysticks,
-        }
-
         private const string PlayerText = "Min‰";
         private const string TeammateText = "Tiimikaveri";
 
@@ -213,6 +223,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private const int GridTransparencyDefault = 50;
 
         private const float GameAspectRatio = 9f / 16f;
+        private const float TopButtonsHeight = 0.05f;
+
+        private static RectTransform s_uiElementsHolder;
 
         private BattleUiMovableElement _instantiatedTimer;
         private BattleUiMultiOrientationElement _instantiatedPlayerInfo;
@@ -235,16 +248,36 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private bool _unsavedChanges = false;
 
         private BattleUiEditingComponent _currentlySelectedEditingComponent;
-        private InputCombinationType _currentInputCombinationType;
 
         private void Awake()
         {
-            EditorRectTransform = GetComponent<RectTransform>();
+            // Assign static editor rect variables
+            EditorRectTransform = _editorRectTransform;
             EditorRect = EditorRectTransform.rect;
+            s_uiElementsHolder = _uiElementsHolder;
+
+            // Scale editor to account for unsafe area
+            ScaleEditor();
 
             // Close and save button listeners
             _closeButton.onClick.AddListener(CloseEditor);
             _saveButton.onClick.AddListener(SaveChanges);
+
+            // Preview mode listeners
+            _previewButton.onClick.AddListener(OpenPreviewMode);
+            _previewModeTouchDetector.onClick.AddListener(ClosePreviewMode);
+
+            // Ui element transparency listeners
+            _uiTransparencySlider.onValueChanged.AddListener((value) =>
+            {
+                UpdateInputFieldText(value, _uiTransparencyInputField);
+                _currentlySelectedEditingComponent.UpdateTransparency((int)value);
+            });
+            _uiTransparencyInputField.onValueChanged.AddListener((value) =>
+            {
+                VerifyAndUpdateSliderValue(_uiTransparencyInputField, _uiTransparencySlider);
+                _currentlySelectedEditingComponent.UpdateTransparency((int)_uiTransparencySlider.value);
+            });
 
             // Options dropdown listeners
             _optionsButton.onClick.AddListener(ToggleOptionsDropdown);
@@ -312,9 +345,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             });
 
             // Input options listeners
-            _inputSelectorLeftButton.onClick.AddListener(() => PreviousInputCombination());
-            _inputSelectorRightButton.onClick.AddListener(() => NextInputCombination());
-            _rotationGyroscopeOverrideToggle.onValueChanged.AddListener((value) => { UpdateInputSettings(); });
+            _swipeMovementToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.Swipe, BattleRotationInputType.TwoFinger); });
+            _pointAndClickMovementToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.PointAndClick, BattleRotationInputType.Swipe); });
+            _joystickMovementToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.Joystick, BattleRotationInputType.Joystick); });
+
+            _twoFingerRotationToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.Swipe, BattleRotationInputType.TwoFinger); });
+            _swipeRotationToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.PointAndClick, BattleRotationInputType.Swipe); });
+            _joystickRotationToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.Joystick, BattleRotationInputType.Joystick); });
+            _gyroscopeRotationToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput, BattleRotationInputType.Gyroscope); });
 
             _swipeMinDistanceSlider.onValueChanged.AddListener((value) =>
             {
@@ -421,22 +459,20 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _grid.SetShow(_showGridToggle.isOn);
 
             // Loading saved input settings
-            _rotationGyroscopeOverrideToggle.SetIsOnWithoutNotify(SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Gyroscope);
-
             switch (SettingsCarrier.Instance.BattleMovementInput)
             {
-                case BattleMovementInputType.PointAndClick:
-                    _currentInputCombinationType = InputCombinationType.PointAndClickSwipe;
-                    break;
                 case BattleMovementInputType.Swipe:
-                    _currentInputCombinationType = InputCombinationType.SwipeTwoFinger;
+                    _swipeMovementToggle.SetIsOnWithoutNotify(true);
+                    break;
+                case BattleMovementInputType.PointAndClick:
+                    _pointAndClickMovementToggle.SetIsOnWithoutNotify(true);
                     break;
                 case BattleMovementInputType.Joystick:
-                    _currentInputCombinationType = InputCombinationType.Joysticks;
+                    _joystickMovementToggle.SetIsOnWithoutNotify(true);
                     break;
             }
 
-            UpdateInputSettings();
+            UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput, SettingsCarrier.Instance.BattleRotationInput);
 
             float swipeMinDistance = SettingsCarrier.Instance.BattleSwipeMinDistance;
             _swipeMinDistanceSlider.value = swipeMinDistance;
@@ -465,6 +501,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Removing close and save button listeners
             _closeButton.onClick.RemoveAllListeners();
             _saveButton.onClick.RemoveAllListeners();
+
+            // Removing preview mode listeners
+            _previewButton.onClick.RemoveAllListeners();
+            _previewModeTouchDetector.onClick.RemoveAllListeners();
 
             // Removing save changes popup listeners
             _okButton.onClick.RemoveAllListeners();
@@ -500,9 +540,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _alignToGridToggle.onValueChanged.RemoveAllListeners();
 
             // Removing input options listeners
-            _inputSelectorLeftButton.onClick.RemoveAllListeners();
-            _inputSelectorRightButton.onClick.RemoveAllListeners();
-            _rotationGyroscopeOverrideToggle.onValueChanged.RemoveAllListeners();
+            _swipeMovementToggle.onValueChanged.RemoveAllListeners();
+            _pointAndClickMovementToggle.onValueChanged.RemoveAllListeners();
+            _joystickMovementToggle.onValueChanged.RemoveAllListeners();
+
+            _twoFingerRotationToggle.onValueChanged.RemoveAllListeners();
+            _swipeRotationToggle.onValueChanged.RemoveAllListeners();
+            _joystickRotationToggle.onValueChanged.RemoveAllListeners();
+            _gyroscopeRotationToggle.onValueChanged.RemoveAllListeners();
 
             _swipeMinDistanceSlider.onValueChanged.RemoveAllListeners();
             _swipeMinDistanceInputField.onValueChanged.RemoveAllListeners();
@@ -525,6 +570,49 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             _arenaPosYSlider.onValueChanged.RemoveAllListeners();
             _arenaPosYInputField.onValueChanged.RemoveAllListeners();
+        }
+
+        private void ScaleEditor()
+        {
+            float unsafeAreaHeight = PanelScaler.CalculateUnsafeAreaHeight();
+
+            // Calculating max y anchor for the editor
+            float anchorMaxY = 1 - TopButtonsHeight - unsafeAreaHeight;
+
+            // Calculating editor aspect ratio and size
+            float editorAspectRatio = (float)Screen.width / Screen.height;
+            float editorHeight = Screen.height * anchorMaxY;
+            float editorWidth = editorHeight * editorAspectRatio;
+
+            // Calculating x anchors
+            float widthAnchorValue = editorWidth / Screen.width;
+            float anchorMinX = (1 - widthAnchorValue) * 0.5f;
+            float anchorMaxX = widthAnchorValue + anchorMinX;
+
+            // Setting editor anchors
+            EditorRectTransform.anchorMin = new(anchorMinX, 0);
+            EditorRectTransform.anchorMax = new(anchorMaxX, anchorMaxY);
+
+            // Setting top button anchors
+            _topButtonsRectTransform.anchorMin = new(0, anchorMaxY);
+            _topButtonsRectTransform.anchorMax = new(1, 1 - unsafeAreaHeight);
+        }
+
+        private void OpenPreviewMode()
+        {
+            OnUiElementSelected(null);
+            CloseOptionsDropdown();
+            _topButtonsRectTransform.gameObject.SetActive(false);
+            _previewModeTouchDetector.gameObject.SetActive(true);
+            EditorRectTransform.anchorMin = Vector2.zero;
+            EditorRectTransform.anchorMax = Vector2.one;
+        }
+
+        private void ClosePreviewMode()
+        {
+            _topButtonsRectTransform.gameObject.SetActive(true);
+            _previewModeTouchDetector.gameObject.SetActive(false);
+            ScaleEditor();
         }
 
         private void ToggleOptionsDropdown()
@@ -678,7 +766,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 && savedData.IsFlippedVertically == compareData.IsFlippedVertically
                 && savedData.AnchorMin == compareData.AnchorMin
                 && savedData.AnchorMax == compareData.AnchorMax
-                && savedData.Orientation == compareData.Orientation;
+                && savedData.Orientation == compareData.Orientation
+                && savedData.HandleSize == compareData.HandleSize
+                && savedData.Transparency == compareData.Transparency;
         }
 
         private GameObject InstantiateBattleUiElement(BattleUiElementType uiElementType)
@@ -730,8 +820,17 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
             else
             {
-                BattleUiMovableElement movableElement = uiElementGameObject.GetComponent<BattleUiMovableElement>();
-                editingComponent.SetInfo(movableElement);
+                BattleUiMovableJoystickElement movableJoystickElement = uiElementGameObject.GetComponent<BattleUiMovableJoystickElement>();
+
+                if (movableJoystickElement != null)
+                {
+                    editingComponent.SetInfo(movableJoystickElement);
+                }
+                else
+                {
+                    BattleUiMovableElement movableElement = uiElementGameObject.GetComponent<BattleUiMovableElement>();
+                    editingComponent.SetInfo(movableElement);
+                }
             }
 
             // Setting listener for toggles
@@ -957,7 +1056,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             bool isFlippedHorizontally = false;
             bool isFlippedVertically = false;
 
-            float handleSize = 0;
+            int handleSize = BattleUiMovableJoystickElement.HandleSizeDefault;
 
             // Rect variable so that we can do aspect ratio calculations
             Rect movableUiElementRect = Rect.zero;
@@ -1064,17 +1163,17 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Calculating anchors
             Vector2 size = new();
-            size.x = Screen.width * (anchorMax.x - anchorMin.x);
+            size.x = EditorRect.width * (anchorMax.x - anchorMin.x);
             size.y = size.x / aspectRatio;
 
             Vector2 pos = new(
-                (anchorMin.x + anchorMax.x) * 0.5f * Screen.width,
-                (anchorMax.y + anchorMin.y) * 0.5f * Screen.height
+                (anchorMin.x + anchorMax.x) * 0.5f * EditorRect.width,
+                (anchorMax.y + anchorMin.y) * 0.5f * EditorRect.height
             );
 
             (anchorMin, anchorMax) = CalculateAnchors(size, pos);
 
-            return new(uiElementType, anchorMin, anchorMax, orientation, isFlippedHorizontally, isFlippedVertically, handleSize);
+            return new(uiElementType, anchorMin, anchorMax, 0, orientation, isFlippedHorizontally, isFlippedVertically, handleSize);
         }
 
         private BattleUiEditingComponent GetEditingComponent(BattleUiElementType uiElementType)
@@ -1124,6 +1223,18 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
 
             _currentlySelectedEditingComponent = newSelectedEditingComponent;
+
+            if (newSelectedEditingComponent != null)
+            {
+                int currentTransparency = _currentlySelectedEditingComponent.GetCurrentTransparency();
+                _uiTransparencySlider.SetValueWithoutNotify(currentTransparency);
+                _uiTransparencyInputField.SetTextWithoutNotify(currentTransparency.ToString());
+                _uiTransparencyHolder.SetActive(true);
+            }
+            else
+            {
+                _uiTransparencyHolder.SetActive(false);
+            }
         }
 
         private void UpdateInputFieldText(float value, TMP_InputField field)
@@ -1169,6 +1280,19 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             float screenAspectRatio = Screen.width / (float)Screen.height;
 
+            // For some reason the editor has different aspect ratio calculated from rect size in local space than in world space because of the editor scaling
+            // Getting editor corners in world space
+            Vector3[] editorCorners = new Vector3[4];
+            EditorRectTransform.GetWorldCorners(editorCorners);
+
+            // Calculating world space size and aspect ratio
+            Vector2 editorWorldSize = new(editorCorners[(int)CornerType.TopRight].x - editorCorners[(int)CornerType.TopLeft].x,
+                       editorCorners[(int)CornerType.TopRight].y - editorCorners[(int)CornerType.BottomRight].y);
+            float editorWorldAspectRatio = editorWorldSize.x / editorWorldSize.y;
+
+            // Calculating a height for the editor from the world aspect ratio so that it works in calculations
+            float editorAspectRatioHeight = EditorRect.width / editorWorldAspectRatio;
+
             // Calculating arena scale.
             // If phone aspect ratio is same or thinner than the game aspect ratio we calculate arena width and height based on
             // editor width, but if it's thicker we calculate based on height so that the arena won't overlap or be too small.
@@ -1176,29 +1300,29 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             float arenaHeight; 
             if (screenAspectRatio <= GameAspectRatio)
             {
-                arenaWidth = _arenaScaleSlider.value / 100f * EditorRect.width;
+                arenaWidth = _arenaScaleSlider.value * 0.01f * EditorRect.width;
                 arenaHeight = arenaWidth / GameAspectRatio;
             }
             else
             {
-                arenaHeight = _arenaScaleSlider.value / 100f * EditorRect.height;
+                arenaHeight = _arenaScaleSlider.value * 0.01f * editorAspectRatioHeight;
                 arenaWidth = arenaHeight * GameAspectRatio;
             }
             
             // Calculating arena position
             Vector2 position = Vector2.zero;
-            position.x = (_arenaPosXSlider.value / 100 * (EditorRect.width - arenaWidth)) + arenaWidth / 2f;
-            position.y = ((100f - _arenaPosYSlider.value) / 100f * (EditorRect.height - arenaHeight)) + arenaHeight / 2f;
+            position.x += _arenaPosXSlider.value * 0.01f * (EditorRect.width - arenaWidth);
+            position.y += (100f - _arenaPosYSlider.value) * 0.01f * (editorAspectRatioHeight - arenaHeight);
 
             // Calculating arena anchors
             Vector2 anchorMin = Vector2.zero;
             Vector2 anchorMax = Vector2.zero;
 
-            anchorMin.x = (position.x - arenaWidth / 2.0f) / EditorRect.width;
-            anchorMax.x = (position.x + arenaWidth / 2.0f) / EditorRect.width;
+            anchorMin.x = position.x / EditorRect.width;
+            anchorMax.x = (position.x + arenaWidth) / EditorRect.width;
 
-            anchorMin.y = (position.y - arenaHeight / 2.0f) / EditorRect.height;
-            anchorMax.y = (position.y + arenaHeight / 2.0f) / EditorRect.height;
+            anchorMin.y = position.y / editorAspectRatioHeight;
+            anchorMax.y = (position.y + arenaHeight) / editorAspectRatioHeight;
 
             // Setting arena anchors
             _arenaImage.anchorMin = anchorMin;
@@ -1208,116 +1332,62 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _arenaImage.offsetMax = Vector2.zero;
         }
 
-        private void NextInputCombination()
+        private void UpdateInputSettings(BattleMovementInputType movementType, BattleRotationInputType rotationType)
         {
-            if ((int)_currentInputCombinationType < (int)InputCombinationType.Joysticks) _currentInputCombinationType++;
-            else _currentInputCombinationType = 0;
-
-            UpdateInputSettings();
-        }
-
-        private void PreviousInputCombination()
-        {
-            if ((int)_currentInputCombinationType > 0) _currentInputCombinationType--;
-            else _currentInputCombinationType = InputCombinationType.Joysticks;
-
-            UpdateInputSettings();
-        }
-
-        private void UpdateInputSettings()
-        {
-            // Initializing variables
-            BattleMovementInputType movementType;
-            BattleRotationInputType rotationType;
-
-            string text;
-
-            bool showSwipeMinDistance;
-            bool showSwipeMaxDistance;
-            bool showSwipeSensitivity;
-
-            bool useGyroscope = _rotationGyroscopeOverrideToggle.isOn;
-
-            // Setting values to variables based on current input combination
-            switch (_currentInputCombinationType)
-            {
-                case InputCombinationType.SwipeTwoFinger:
-                    movementType = BattleMovementInputType.Swipe;
-                    rotationType = BattleRotationInputType.TwoFinger;
-
-                    text = useGyroscope ? "Liiku pyyhk‰isem‰ll‰ &\nk‰‰nn‰ puhelinta k‰‰nt‰m‰ll‰" : "Liiku pyyhk‰isem‰ll‰ &\nk‰‰nn‰ kahdella sormella";
-
-                    showSwipeMinDistance = true;
-                    showSwipeMaxDistance = false;
-                    showSwipeSensitivity = true;
-                    break;
-
-                case InputCombinationType.PointAndClickSwipe:
-                    movementType = BattleMovementInputType.PointAndClick;
-                    rotationType = BattleRotationInputType.Swipe;
-
-                    text = useGyroscope ? "Liiku painamalla &\nk‰‰nn‰ puhelinta k‰‰nt‰m‰ll‰" : "Liiku painamalla &\nk‰‰nn‰ pyyhk‰isem‰ll‰";
-
-                    showSwipeMinDistance = !useGyroscope;
-                    showSwipeMaxDistance = !useGyroscope;
-                    showSwipeSensitivity = false;
-                    break;
-
-                case InputCombinationType.Joysticks:
-                    movementType = BattleMovementInputType.Joystick;
-                    rotationType = BattleRotationInputType.Joystick;
-
-                    text = useGyroscope ? "Liiku ohjausympyr‰ll‰ &\nk‰‰nn‰ puhelinta k‰‰nt‰m‰ll‰" : "Liiku & k‰‰nn‰ ohjausympyrˆill‰.";
-
-                    showSwipeMinDistance = false;
-                    showSwipeMaxDistance = false;
-                    showSwipeSensitivity = false;
-
-                    // Instantianting the joysticks if they are not yet instantiated
-                    if (_instantiatedMoveJoystick == null)
-                    {
-                        _instantiatedMoveJoystick = InstantiateBattleUiElement(BattleUiElementType.MoveJoystick).GetComponent<BattleUiMovableElement>();
-                        SetDataToUiElement(_instantiatedMoveJoystick);
-                    }
-
-                    if (_instantiatedRotateJoystick == null)
-                    {
-                        _instantiatedRotateJoystick = InstantiateBattleUiElement(BattleUiElementType.RotateJoystick).GetComponent<BattleUiMovableElement>();
-                        SetDataToUiElement(_instantiatedRotateJoystick);
-                    }
-                    break;
-
-                default:
-                    movementType = SettingsCarrier.BattleMovementInputDefault;
-                    rotationType = SettingsCarrier.BattleRotationInputDefault;
-
-                    text = "Virhe, t‰t‰ vaihtoehtoa ei lˆydy";
-
-                    showSwipeMinDistance = false;
-                    showSwipeMaxDistance = false;
-                    showSwipeSensitivity = false;
-                    break;
-            }
-
-            // Overriding rotation with gyroscope if it's enabled
-            if (useGyroscope) rotationType = BattleRotationInputType.Gyroscope;
-
             // Setting input values to settings carrier
             SettingsCarrier.Instance.BattleMovementInput = movementType;
             SettingsCarrier.Instance.BattleRotationInput = rotationType;
 
-            // Setting text to the input selector label
-            _inputSelectorLabel.text = text;
+            // If joystick movement was selected instantianting the joysticks if they are not yet instantiated
+            if (movementType == BattleMovementInputType.Joystick)
+            {
+                if (_instantiatedMoveJoystick == null)
+                {
+                    _instantiatedMoveJoystick = InstantiateBattleUiElement(BattleUiElementType.MoveJoystick).GetComponent<BattleUiMovableElement>();
+                    SetDataToUiElement(_instantiatedMoveJoystick);
+                }
+
+                if (_instantiatedRotateJoystick == null)
+                {
+                    _instantiatedRotateJoystick = InstantiateBattleUiElement(BattleUiElementType.RotateJoystick).GetComponent<BattleUiMovableElement>();
+                    SetDataToUiElement(_instantiatedRotateJoystick);
+                }
+            }
+
+            // Toggling rotation toggles isOn based on rotation type and visibility based on movement type
+            _twoFingerRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.TwoFinger);
+            _twoFingerRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.Swipe);
+
+            _swipeRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.Swipe);
+            _swipeRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.PointAndClick);
+
+            _joystickRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.Joystick);
+            _joystickRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.Joystick);
+
+            _gyroscopeRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.Gyroscope);
 
             // Setting visibility for the swipe and gyroscope additional options
-            _swipeMinDistanceHolder.SetActive(showSwipeMinDistance);
-            _swipeMaxDistanceHolder.SetActive(showSwipeMaxDistance);
-            _movementSwipeSensitivityHolder.SetActive(showSwipeSensitivity);
-            _gyroscopeMinAngleHolder.SetActive(useGyroscope);
+            _swipeMinDistanceHolder.SetActive(movementType == BattleMovementInputType.Swipe || rotationType == BattleRotationInputType.Swipe);
+            _swipeMaxDistanceHolder.SetActive(rotationType == BattleRotationInputType.Swipe);
+            _movementSwipeSensitivityHolder.SetActive(movementType == BattleMovementInputType.Swipe);
+            _gyroscopeMinAngleHolder.SetActive(rotationType == BattleRotationInputType.Gyroscope);
 
             // Setting visibility to joysticks
             if (_instantiatedMoveJoystick != null) _instantiatedMoveJoystick.gameObject.SetActive(movementType == BattleMovementInputType.Joystick);
             if (_instantiatedRotateJoystick != null) _instantiatedRotateJoystick.gameObject.SetActive(rotationType == BattleRotationInputType.Joystick);
         }
+
+#if (UNITY_EDITOR)
+        private Vector2 _previousScreenResolution;
+
+        void Update()
+        {
+            if (_previousScreenResolution.x != Screen.width || _previousScreenResolution.y != Screen.height)
+            {
+                ScaleEditor();
+                _previousScreenResolution = new(Screen.width, Screen.height);
+            }
+        }
+#endif
     }
 }

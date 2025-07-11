@@ -72,6 +72,7 @@ namespace Altzone.Scripts.BattleUiShared
             {
                 return new BattleUiMovableElementData(
                     uiElementType: UiElementType,
+                    transparency: _currentTransparency,
                     anchorMin: _rectTransform.anchorMin,
                     anchorMax: _rectTransform.anchorMax,
                     orientation: _orientation,

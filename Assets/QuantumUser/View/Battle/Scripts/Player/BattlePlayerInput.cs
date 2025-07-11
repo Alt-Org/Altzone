@@ -161,6 +161,20 @@ namespace Battle.View.Player
                     else if (!mouseDown)
                     {
                         _movementStartVector = Vector3.zero;
+                        _swipeMovementStarted = false;
+                    }
+
+                    if (_swipeMovementStarted)
+                    {
+                        movementInput = BattleMovementInputType.Direction;
+                        if (_swipePerformed)
+                        {
+                            Vector3 direction = unityPosition - _movementStartVector;
+                            movementDirection = new FPVector2(FP.FromFloat_UNSAFE(direction.x), FP.FromFloat_UNSAFE(direction.z)) / deltaTime;
+                            movementDirection *= FP.FromFloat_UNSAFE(_swipeSensitivity);
+                            
+                        }
+                        _movementStartVector = unityPosition;
                     }
 
                     if (_swipeMovementStarted)
@@ -201,15 +215,16 @@ namespace Battle.View.Player
 
                     if (mouseDown && _rotationStartVector == Vector2.zero)
                     {
-                        _rotationStartVector = clickPosition;
+                        _rotationStartVector = unityPosition;
                     }
-                    else if (mouseDown && (clickPosition.x - _rotationStartVector.x > _swipeMinDistance || clickPosition.x - _rotationStartVector.x < -_swipeMinDistance))
+                    else if (mouseDown && (unityPosition.x - _rotationStartVector.x > _swipeMinDistance || unityPosition.x - _rotationStartVector.x < -_swipeMinDistance))
                     {
                         rotationInput = true;
-                        float distance = clickPosition.x - _rotationStartVector.x;
-                        float maxAdjustedDistance = Mathf.Clamp(distance / _swipeMaxDistance, -1, 1);
+                        float distance = unityPosition.x - _rotationStartVector.x;
+                        float signe = distance < 0 ? -1f : 1f;
+                        distance = Mathf.Abs(distance) - _swipeMinDistance;
+                        float maxAdjustedDistance = Mathf.Clamp(distance / (_swipeMaxDistance - _swipeMinDistance), 0, 1) * signe;
                         rotationValue = -FP.FromFloat_UNSAFE(maxAdjustedDistance);
-
                     }
                     else if (!mouseDown)
                     {
