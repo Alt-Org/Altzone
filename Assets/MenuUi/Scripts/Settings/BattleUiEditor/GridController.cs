@@ -43,11 +43,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// <returns>Grid snap position in world coordinates as Vector2.</returns>
         public static Vector2 GetGridSnapPosition(int gridColumnIndex, int gridRowIndex)
         {
-            Vector2 snapPos = new(
-                GetGridSnapPositionX(gridColumnIndex),
-                GetGridSnapPositionY(gridRowIndex)
+            return new(
+                s_gridColumns.GetChild(gridColumnIndex).position.x,
+                s_gridRows.GetChild(gridRowIndex).position.y
             );
-            return BattleUiEditor.EditorRectTransform.TransformVector(snapPos);
         }
 
         /// <summary>
@@ -204,6 +203,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private static int s_rowLines = -1;
         private static int s_columnLines = -1;
 
+        private static Transform s_gridRows;
+        private static Transform s_gridColumns;
+
         private List<Image> _rowLineImages = new();
         private List<Image> _columnLineImages = new();
         private Image[] _highlightedLines;
@@ -248,6 +250,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private static float GetGridSnapPositionY(int gridRowIndex)
         {
             return (gridRowIndex + 1) * s_gridCellHeight;
+        }
+
+        private void Awake()
+        {
+            s_gridRows = _gridRows;
+            s_gridColumns = _gridColumns;
         }
 
         private IEnumerator InstantiateGridLines(int lineAmount, Transform lineParent, Action callback)
