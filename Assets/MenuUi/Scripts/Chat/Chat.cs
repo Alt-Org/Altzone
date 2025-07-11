@@ -237,6 +237,8 @@ public class Chat : AltMonoBehaviour
             _InputArea.SetActive(true);
             MinimizeOptions();
             _inputField.text = textFromButton;
+            GameObject sendButton = _sendButtons[0];
+            CheckSendButton(sendButton);
         }
         else
         {
