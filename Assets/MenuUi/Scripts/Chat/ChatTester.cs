@@ -8,4 +8,7 @@ using Random = UnityEngine.Random;
 /// </summary>
 public class ChatTester : MonoBehaviour
 {
+
+    [SerializeField]
+    Chat _chat;
 }
