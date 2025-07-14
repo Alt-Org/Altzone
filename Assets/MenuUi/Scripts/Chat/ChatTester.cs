@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
 
 
@@ -11,6 +12,8 @@ public class ChatTester : MonoBehaviour
 
     [SerializeField]
     Chat _chat;
+    [SerializeField]
+    InputAction _Inputs;
 
     bool testing = false;
     int codePos = 0;
