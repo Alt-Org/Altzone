@@ -95,7 +95,7 @@ public class KojuTrayPopulator : MonoBehaviour
 
         if (votedToSellFurniture.Count == 0)
         {
-            Debug.LogWarning("No furniture voted to sell.");
+            Debug.Log("No furniture voted to sell.");
             yield break;
         }
 
@@ -104,7 +104,7 @@ public class KojuTrayPopulator : MonoBehaviour
 
         if (allGameFurniture == null || allGameFurniture.Count == 0)
         {
-            Debug.LogWarning("GameFurniture definitions missing.");
+            Debug.LogError("GameFurniture definitions missing.");
             yield break;
         }
 
