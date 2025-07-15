@@ -25,20 +25,29 @@ public class PollObject : MonoBehaviour // Works as the object used to represent
 
     [SerializeField] private UnityEngine.UI.Image Background;
 
-    PollData pollData;
+    [SerializeField] private UnityEngine.UI.Button ClockButton;
+
+    private PollData pollData;
+    private bool showEndTimeManually = false;
+    private Coroutine updateCoroutine;
+    private bool pollEnded = false;
 
     private void Start()
     {
-        StartCoroutine(UpdateValues());
+        ClockButton.onClick.AddListener(OnClockButtonClicked);
+        if (pollData != null)
+        {
+            updateCoroutine = StartCoroutine(UpdateValues());
+        }
     }
 
     private void OnEnable()
     {
         VotingActions.ReloadPollList += SetValues;
 
-        if (pollData != null)
+        if (pollData != null && updateCoroutine == null && !pollEnded)
         {
-            StartCoroutine(UpdateValues());
+            updateCoroutine = StartCoroutine(UpdateValues());
         }
     }
 
@@ -46,6 +55,11 @@ public class PollObject : MonoBehaviour // Works as the object used to represent
     {
         VotingActions.ReloadPollList -= SetValues;
         Canvas.ForceUpdateCanvases();
+        if (updateCoroutine != null)
+        {
+            StopCoroutine(updateCoroutine);
+            updateCoroutine = null;
+        }
     }
 
     private IEnumerator UpdateValues()
@@ -58,27 +72,52 @@ public class PollObject : MonoBehaviour // Works as the object used to represent
             long secondsLeft = pollData.EndTime - currentTime;
 
             if (secondsLeft <= 0)
-            {      
+            {
+                pollEnded = true;
+                showEndTimeManually = true;
+                ClockButton.interactable = false;
 
                 // Convert poll end time to local time
                 DateTimeOffset endDateTime = DateTimeOffset.FromUnixTimeSeconds(pollData.EndTime).ToLocalTime();
 
-                // Format and show local time. Example of this: "20.6. 13:50"
+                // Format and show local time. Example: "20.6. 13:50"
                 TimeLeftText.text = endDateTime.ToString("d.M. HH:mm");
 
                 PollManager.EndPoll(pollId);
+                SetResultColor();
 
                 yield break;
             }
 
             Clock.fillAmount = 1 - (float)(secondsLeft) / totalDuration;
 
+            UpdateClockDisplay(secondsLeft);
+
+            yield return new WaitForSeconds(1);
+        }
+    }
+
+    private void UpdateClockDisplay(long secondsLeft = -1)
+    {
+        if (pollData == null) return;
+
+        long currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        if (secondsLeft == -1)
+        {
+            secondsLeft = pollData.EndTime - currentTime;
+        }
+
+        if (pollEnded || showEndTimeManually)
+        {
+            DateTimeOffset endDateTime = DateTimeOffset.FromUnixTimeSeconds(pollData.EndTime).ToLocalTime();
+            TimeLeftText.text = endDateTime.ToString("d.M. HH:mm");
+        }
+        else
+        {
             // Display the remaining time, requires the "left" to read properly in-game
             if (secondsLeft < 60) TimeLeftText.text = secondsLeft + "s\nleft";
             else if (secondsLeft < 3600) TimeLeftText.text = (secondsLeft / 60) + "m\nleft";
             else TimeLeftText.text = (secondsLeft / 3600) + "h\nleft";
-
-            yield return new WaitForSeconds(1);
         }
     }
 
@@ -106,8 +145,10 @@ public class PollObject : MonoBehaviour // Works as the object used to represent
 
         if (GreenFill != null)
         {
-            if (pollData.YesVotes.Count == 0 && pollData.NoVotes.Count == 0) GreenFill.fillAmount = 0.5f;
-            else GreenFill.fillAmount = (float)pollData.YesVotes.Count / (pollData.NoVotes.Count + pollData.YesVotes.Count);
+            if (pollData.YesVotes.Count == 0 && pollData.NoVotes.Count == 0)
+                GreenFill.fillAmount = 0.5f;
+            else
+                GreenFill.fillAmount = (float)pollData.YesVotes.Count / (pollData.NoVotes.Count + pollData.YesVotes.Count);
         }
 
         playerHeads.InstantiateHeads(pollId);
@@ -124,19 +165,26 @@ public class PollObject : MonoBehaviour // Works as the object used to represent
         long currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         if (currentTime < pollData.EndTime)
         {
-            // Start coroutine only if GameObject is active in hierarchy in order to stop errors from happening
+            // Start coroutine only if GameObject is active in hierarchy
             if (gameObject.activeInHierarchy)
             {
-                StartCoroutine(UpdateValues());
+                if (updateCoroutine != null) StopCoroutine(updateCoroutine);
+                pollEnded = false;
+                showEndTimeManually = false;
+                ClockButton.interactable = true;
+                updateCoroutine = StartCoroutine(UpdateValues());
             }
         }
         else
         {
+            pollEnded = true;
+            showEndTimeManually = true;
+            ClockButton.interactable = false;
             Clock.fillAmount = 1f;
             SetResultColor();
+            UpdateClockDisplay(); // show end time immediately
         }
     }
-
 
     private void SetResultColor()
     {
@@ -154,5 +202,14 @@ public class PollObject : MonoBehaviour // Works as the object used to represent
     public void PassPollId()
     {
         VotingActions.PassPollId?.Invoke(pollId);
+    }
+
+    private void OnClockButtonClicked()
+    {
+        // Don’t allow toggling if poll has ended
+        if (pollEnded) return;
+
+        showEndTimeManually = !showEndTimeManually;
+        UpdateClockDisplay(); // update instantly on click
     }
 }
