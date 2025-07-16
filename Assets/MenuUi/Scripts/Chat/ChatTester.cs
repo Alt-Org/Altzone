@@ -13,6 +13,13 @@ public class ChatTester : MonoBehaviour
     Chat _chat;
 
 
+    public void DoShortMessage()
+    {
+        _chat.SendChatMessage(_chat.giveJoyPref());
+    }
 
-    
+    public void DoLongMessage()
+    {
+
+    }
 }

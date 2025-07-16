@@ -554,4 +554,9 @@ public class Chat : AltMonoBehaviour
         _usersWhoAdded.SetActive(true);
         SetReactionPanelPosition();
     }
+
+    public GameObject giveJoyPref()
+    {
+        return _messagePrefabYellow;
+    }
 }
