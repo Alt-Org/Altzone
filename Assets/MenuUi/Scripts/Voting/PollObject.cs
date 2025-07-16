@@ -10,22 +10,31 @@ public class PollObject : MonoBehaviour // Works as the object used to represent
 {
     private string pollId;
 
-    [SerializeField] private UnityEngine.UI.Image Image;
+    [Header("Texts")]
     [SerializeField] private TextMeshProUGUI UpperText;
+
     [SerializeField] private TextMeshProUGUI LowerText;
 
-    [SerializeField] private UnityEngine.UI.Image Clock;
+    [SerializeField] private TextMeshProUGUI YesVotesText;
+
+    [SerializeField] private TextMeshProUGUI NoVotesText;
+
     [SerializeField] private TextMeshProUGUI TimeLeftText;
 
-    [SerializeField] private TextMeshProUGUI YesVotesText;
-    [SerializeField] private TextMeshProUGUI NoVotesText;
-    [SerializeField] private UnityEngine.UI.Image GreenFill;
+    [Header("Images")]
+    [SerializeField] private UnityEngine.UI.Image Clock;
 
-    [SerializeField] private AddPlayerHeads playerHeads;
+    [SerializeField] private UnityEngine.UI.Image Image;
+
+    [SerializeField] private UnityEngine.UI.Image GreenFill;
 
     [SerializeField] private UnityEngine.UI.Image Background;
 
+    [Header("Buttons")]
     [SerializeField] private UnityEngine.UI.Button ClockButton;
+
+    [Header("PlayerHeads")]
+    [SerializeField] private AddPlayerHeads playerHeads;
 
     private PollData pollData;
     private bool showEndTimeManually = false;

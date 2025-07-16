@@ -16593,15 +16593,20 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3341864143048922176, guid: faf3d3e322be9a940a310f9404492cd8,
+        type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5415034576622081522, guid: faf3d3e322be9a940a310f9404492cd8,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: -797.5
+      value: -437.5
       objectReference: {fileID: 0}
     - target: {fileID: 5415034576622081522, guid: faf3d3e322be9a940a310f9404492cd8,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: -1467.5
+      value: -1547.5
       objectReference: {fileID: 0}
     - target: {fileID: 5943190843763056081, guid: faf3d3e322be9a940a310f9404492cd8,
         type: 3}
@@ -18087,7 +18092,6 @@ MonoBehaviour:
     Window: {fileID: 1365502658787519843}
     Image: {fileID: 4010251890051843511}
   _defaultTab: 0
-  _cooldownTimer: 0
 --- !u!114 &1898437261284476720
 MonoBehaviour:
   m_ObjectHideFlags: 0
