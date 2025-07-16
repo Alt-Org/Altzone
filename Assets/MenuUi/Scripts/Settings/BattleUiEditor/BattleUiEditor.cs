@@ -40,9 +40,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private GridController _grid;
 
         [Header("Options popup")]
-        [SerializeField] private Button _optionsButton;
-        [SerializeField] private GameObject _optionsContents;
-        [SerializeField] private Button _resetButton;
+        //[SerializeField] private Button _optionsButton;
+        //[SerializeField] private GameObject _optionsContents;
+        //[SerializeField] private Button _resetButton;
+        [SerializeField] private OptionsPopup _optionsPopup;
 
         [Header("Grid options")]
         [SerializeField] private Toggle _showGridToggle;
@@ -176,7 +177,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// </summary>
         public void CloseEditor()
         {
-            CloseOptionsDropdown();
+            _optionsPopup.CloseOptionsDropdown();
             if (_unsavedChanges)
             {
                 OnUiElementSelected(null);
@@ -280,10 +281,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             });
 
             // Options dropdown listeners
-            _optionsButton.onClick.AddListener(ToggleOptionsDropdown);
+            //_optionsButton.onClick.AddListener(ToggleOptionsDropdown);
 
             // Reset button listener
-            _resetButton.onClick.AddListener(OnResetButtonClicked);
+            //_resetButton.onClick.AddListener(OnResetButtonClicked);
+
+            _optionsPopup.Initialize(this);
 
             // Show grid toggle listener
             _showGridToggle.onValueChanged.AddListener((value) =>
@@ -519,8 +522,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
 
             // Removing options dropdown listeners
-            _optionsButton.onClick.RemoveAllListeners();
-            _resetButton.onClick.RemoveAllListeners();
+            //_optionsButton.onClick.RemoveAllListeners();
+            //_resetButton.onClick.RemoveAllListeners();
 
             // Removing grid listeners
             _gridColumnsSlider.onValueChanged.RemoveAllListeners();
@@ -601,7 +604,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private void OpenPreviewMode()
         {
             OnUiElementSelected(null);
-            CloseOptionsDropdown();
+            _optionsPopup.CloseOptionsDropdown();
             _topButtonsRectTransform.gameObject.SetActive(false);
             _previewModeTouchDetector.gameObject.SetActive(true);
             EditorRectTransform.anchorMin = Vector2.zero;
@@ -615,30 +618,30 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             ScaleEditor();
         }
 
-        private void ToggleOptionsDropdown()
-        {
-            if (_optionsContents.activeSelf)
-            {
-                CloseOptionsDropdown();
-            }
-            else
-            {
-                OpenOptionsDropdown();
-            }
-        }
+        //private void ToggleOptionsDropdown()
+        //{
+        //    if (_optionsContents.activeSelf)
+        //    {
+        //        CloseOptionsDropdown();
+        //    }
+        //    else
+        //    {
+        //        OpenOptionsDropdown();
+        //    }
+        //}
 
-        private void OpenOptionsDropdown()
-        {
-            OnUiElementSelected(null);
-            _optionsContents.SetActive(true);
-        }
+        //private void OpenOptionsDropdown()
+        //{
+        //    OnUiElementSelected(null);
+        //    _optionsContents.SetActive(true);
+        //}
 
-        private void CloseOptionsDropdown()
-        {
-            _optionsContents.SetActive(false);
-        }
+        //private void CloseOptionsDropdown()
+        //{
+        //    _optionsContents.SetActive(false);
+        //}
 
-        private IEnumerator ShowSaveResetPopup(string message, Action<bool?> callback)
+        public IEnumerator ShowSaveResetPopup(string message, Action<bool?> callback)
         {
             _popupText.text = message;
             _saveResetPopup.SetActive(true);
@@ -696,16 +699,16 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             PopupSignalBus.OnChangePopupInfoSignal("Muutokset on tallennettu.");
         }
 
-        private void OnResetButtonClicked()
-        {
-            StartCoroutine(ShowSaveResetPopup(ResetChangesText, resetChanges =>
-            {
-                if (resetChanges == null) return;
-                if (resetChanges.Value == true) ResetChanges();
-            }));
-        }
+        //private void OnResetButtonClicked()
+        //{
+        //    StartCoroutine(ShowSaveResetPopup(ResetChangesText, resetChanges =>
+        //    {
+        //        if (resetChanges == null) return;
+        //        if (resetChanges.Value == true) ResetChanges();
+        //    }));
+        //}
 
-        private void ResetChanges()
+        public void ResetChanges()
         {
             SetDefaultDataToUiElement(_instantiatedTimer);
             SetDefaultDataToUiElement(_instantiatedDiamonds);
@@ -1212,9 +1215,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _grid.RemoveLineHighlight();
         }
 
-        private void OnUiElementSelected(BattleUiEditingComponent newSelectedEditingComponent)
+        public void OnUiElementSelected(BattleUiEditingComponent newSelectedEditingComponent)
         {
-            CloseOptionsDropdown();
+            _optionsPopup.CloseOptionsDropdown();
             _grid.RemoveLineHighlight();
 
             if (_currentlySelectedEditingComponent != null && _currentlySelectedEditingComponent != newSelectedEditingComponent)
