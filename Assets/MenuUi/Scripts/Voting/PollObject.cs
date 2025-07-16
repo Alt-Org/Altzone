@@ -1,37 +1,34 @@
+using System;
 using System.Collections;
 using UnityEngine;
-using Altzone.Scripts.Voting;
-using UnityEngine.UIElements;
 using TMPro;
 using UnityEngine.UI;
-using System;
+using Altzone.Scripts.Voting;
+using Altzone.Scripts.Model.Poco.Game;
+using MenuUi.Scripts.Storage;
 
-public class PollObject : MonoBehaviour // Works as the object used to represent polls
+public class PollObject : MonoBehaviour
 {
     private string pollId;
 
     [Header("Texts")]
     [SerializeField] private TextMeshProUGUI UpperText;
-
     [SerializeField] private TextMeshProUGUI LowerText;
-
     [SerializeField] private TextMeshProUGUI YesVotesText;
-
     [SerializeField] private TextMeshProUGUI NoVotesText;
-
     [SerializeField] private TextMeshProUGUI TimeLeftText;
 
     [Header("Images")]
-    [SerializeField] private UnityEngine.UI.Image Clock;
-
-    [SerializeField] private UnityEngine.UI.Image Image;
-
-    [SerializeField] private UnityEngine.UI.Image GreenFill;
-
-    [SerializeField] private UnityEngine.UI.Image Background;
+    [SerializeField] private Image Clock;
+    [SerializeField] private Image Image;
+    [SerializeField] private Image GreenFill;
+    [SerializeField] private Image Background;
 
     [Header("Buttons")]
-    [SerializeField] private UnityEngine.UI.Button ClockButton;
+    [SerializeField] private Button ClockButton;
+
+    [Header("Debug")]
+    [SerializeField] private Button debugButton;
 
     [Header("PlayerHeads")]
     [SerializeField] private AddPlayerHeads playerHeads;
@@ -44,6 +41,8 @@ public class PollObject : MonoBehaviour // Works as the object used to represent
     private void Start()
     {
         ClockButton.onClick.AddListener(OnClockButtonClicked);
+
+
         if (pollData != null)
         {
             updateCoroutine = StartCoroutine(UpdateValues());
@@ -99,7 +98,6 @@ public class PollObject : MonoBehaviour // Works as the object used to represent
             }
 
             Clock.fillAmount = 1 - (float)(secondsLeft) / totalDuration;
-
             UpdateClockDisplay(secondsLeft);
 
             yield return new WaitForSeconds(1);
@@ -138,15 +136,11 @@ public class PollObject : MonoBehaviour // Works as the object used to represent
     private void SetValues()
     {
         // Update UI for FurniturePollData type polls
-        if (pollData is FurniturePollData)
+        if (pollData is FurniturePollData furniturePollData)
         {
-            FurniturePollData furniturePollData = (FurniturePollData)pollData;
-
             Image.sprite = furniturePollData.Sprite;
-
             UpperText.text = Enum.GetName(typeof(FurniturePollType), furniturePollData.FurniturePollType);
-
-            LowerText.text = furniturePollData.Furniture.Value.ToString();
+            LowerText.text = furniturePollData.Furniture?.Value.ToString() ?? "N/A";
         }
 
         if (YesVotesText != null) YesVotesText.text = pollData.YesVotes.Count.ToString();
@@ -191,7 +185,7 @@ public class PollObject : MonoBehaviour // Works as the object used to represent
             ClockButton.interactable = false;
             Clock.fillAmount = 1f;
             SetResultColor();
-            UpdateClockDisplay(); // show end time immediately
+            UpdateClockDisplay();
         }
     }
 
@@ -215,10 +209,31 @@ public class PollObject : MonoBehaviour // Works as the object used to represent
 
     private void OnClockButtonClicked()
     {
-        // Don’t allow toggling if poll has ended
+        // Don't allow toggling if poll has ended
         if (pollEnded) return;
 
         showEndTimeManually = !showEndTimeManually;
-        UpdateClockDisplay(); // update instantly on click
+        UpdateClockDisplay();
     }
+
+    public void ShowPollInfoPopup()
+    {
+        if (pollData is FurniturePollData furniturePollData && furniturePollData.Furniture != null)
+        {
+            if (PollInfoPopup.Instance != null)
+            {
+                PollInfoPopup.Instance.Open(furniturePollData.Furniture);
+            }
+            else
+            {
+                Debug.LogWarning("PollInfoPopup instance is not found in the scene!");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("FurniturePollData or Furniture is null, cannot open PollInfoPopup.");
+        }
+    }
+
+
 }
