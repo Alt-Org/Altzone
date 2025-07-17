@@ -54,6 +54,7 @@ namespace Altzone.Scripts.ModelV2.Internal
                                 .ToList()
                                 .AsReadOnly();
                     }
+                    if (!_instance.AllowTestCharacters) _instance._fallBackPrototype = new ModelV2.PlayerCharacterPrototype(_instance._characters.FirstOrDefault(x => x.Id == "0"));
                 }
                 return _instance;
 
@@ -75,7 +76,7 @@ namespace Altzone.Scripts.ModelV2.Internal
         /// <param name="id">the character id</param>
         /// <returns>the PlayerCharacterPrototype or null if not found</returns>
         public ModelV2.PlayerCharacterPrototype GetCharacter(string id) =>
-            _runtimePrototypes.FirstOrDefault(x => x.Id == id);
+            _runtimePrototypes.FirstOrDefault(x => x.Id == id) ?? _fallBackPrototype;
 
         /// <summary>
         /// Gets current (configured) player character prototypes in the game.
@@ -83,6 +84,7 @@ namespace Altzone.Scripts.ModelV2.Internal
         public IEnumerable<ModelV2.PlayerCharacterPrototype> Prototypes => _runtimePrototypes;
 
         private ReadOnlyCollection<ModelV2.PlayerCharacterPrototype> _runtimePrototypes;
+        private PlayerCharacterPrototype _fallBackPrototype;
 
         /// <summary>
         /// Gets whether test characters are allowed in the current build.
