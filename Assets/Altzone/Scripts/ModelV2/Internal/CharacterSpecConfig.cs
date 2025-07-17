@@ -53,8 +53,8 @@ namespace Altzone.Scripts.ModelV2.Internal
                                 .Select(x => new ModelV2.PlayerCharacterPrototype(x))
                                 .ToList()
                                 .AsReadOnly();
+                        _instance._fallBackPrototype = new ModelV2.PlayerCharacterPrototype(_instance._characters.FirstOrDefault(x => x.Id == "0"));
                     }
-                    if (!_instance.AllowTestCharacters) _instance._fallBackPrototype = new ModelV2.PlayerCharacterPrototype(_instance._characters.FirstOrDefault(x => x.Id == "0"));
                 }
                 return _instance;
 
