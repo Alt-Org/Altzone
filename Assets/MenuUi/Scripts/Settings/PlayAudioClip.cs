@@ -1,15 +1,7 @@
 using Altzone.Scripts.Audio;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-
-enum AudioSelection
-{
-    Type,
-    Name,
-    ID
-}
 
 enum PlayType
 {
@@ -20,10 +12,9 @@ enum PlayType
 
 public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
 {
-    [SerializeField] private AudioSelection _audioSelection = AudioSelection.Type;
-    [SerializeField] string _audioType = "";
+    [SerializeField] string _audioCategory = "";
     [SerializeField] string _audioName = "";
-    [SerializeField] int _audioId = 0;
+    [SerializeField] SoundPlayType _audioPlayType = SoundPlayType.Default;
     [SerializeField, Tooltip("Determines which event to use in order to play the audio clip. OnClick: sound will play when the button is released, OnPointerDown: sound will play when button press is started, Both: sound will play at both of these events")]
     private PlayType _playType = PlayType.OnClick;
 
@@ -69,12 +60,7 @@ public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
             return;
         }
 
-        switch (_audioSelection)
-        {
-            case AudioSelection.Type: manager.PlaySfxAudioWithType(_audioType); break;
-            case AudioSelection.Name: manager.PlaySfxAudio(_audioName); break;
-            case AudioSelection.ID: manager.PlaySfxAudio(_audioId); break;
-        }
+        manager.PlaySfxAudio(_audioCategory, _audioName);
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -87,41 +73,4 @@ public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
                 break;
         }
     }
-
-#if UNITY_EDITOR
-    [CustomEditor(typeof(PlayAudioClip))]
-    public class PlayAudioClipEditor : Editor
-    {
-        SerializedProperty section;
-        SerializedProperty sectionA;
-        SerializedProperty sectionB;
-        SerializedProperty sectionC;
-        SerializedProperty sectionPlayType;
-
-        void OnEnable()
-        {
-            section = serializedObject.FindProperty(nameof(_audioSelection));
-            sectionA = serializedObject.FindProperty(nameof(_audioType));
-            sectionB = serializedObject.FindProperty(nameof(_audioName));
-            sectionC = serializedObject.FindProperty(nameof(_audioId));
-            sectionPlayType = serializedObject.FindProperty(nameof(_playType));
-        }
-
-        public override void OnInspectorGUI()
-        {
-            serializedObject.Update();
-            EditorGUILayout.PropertyField(section);
-
-            switch ((AudioSelection)section.enumValueIndex)
-            {
-                case AudioSelection.Type: EditorGUILayout.PropertyField(sectionA); break;
-                case AudioSelection.Name: EditorGUILayout.PropertyField(sectionB); break;
-                case AudioSelection.ID: EditorGUILayout.PropertyField(sectionC); break;
-            }
-
-            EditorGUILayout.PropertyField(sectionPlayType);
-            serializedObject.ApplyModifiedProperties();
-        }
-    }
-#endif
 }

@@ -64,7 +64,7 @@ namespace Altzone.Scripts.Audio
             {
                 OnChangeJukeBoxSong?.Invoke(_emptySong);
                 _currentSong = null;
-                AudioManager.Instance.PlayMusic(MusicSection.SoulHome);
+                //AudioManager.Instance.PlayMusic(MusicSection.SoulHome);
             }
             else
                 PlayNextSongInQueue();
