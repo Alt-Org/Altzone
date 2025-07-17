@@ -6,6 +6,8 @@ public class PollMonitor : MonoBehaviour // Monitors active polls to check if th
 
     private Coroutine checkRoutine;
 
+    [SerializeField] private PollInfoPopup pollInfoPopupWindow;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -15,6 +17,11 @@ public class PollMonitor : MonoBehaviour // Monitors active polls to check if th
         }
 
         Instance = this;
+    }
+
+    private void Start()
+    {
+        pollInfoPopupWindow?.InitializeIfNeeded();
     }
 
     public void StartMonitoring()
@@ -41,7 +48,7 @@ public class PollMonitor : MonoBehaviour // Monitors active polls to check if th
     private IEnumerator CheckExpiredPollsRoutine()
     {
         while (true)
-        {   
+        {
             PollManager.CheckAndExpirePolls();
 
             if (PollManager.GetPollList().Count == 0)

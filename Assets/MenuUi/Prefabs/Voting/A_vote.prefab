@@ -752,8 +752,8 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
-    m_ColorMultiplier: 1
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 0.5019608}
+    m_ColorMultiplier: 5
     m_FadeDuration: 0.1
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
@@ -1436,7 +1436,6 @@ GameObject:
   - component: {fileID: 6748621453698762998}
   - component: {fileID: 7861609671611296306}
   - component: {fileID: 8635898792196564556}
-  - component: {fileID: 3671206559619063835}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -1586,32 +1585,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &3671206559619063835
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5313817864454374676}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67b722028752cea43baf45eb00099175, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  furnitureData:
-    Id: 
-    Name: 
-    Shape: 
-    Rarity: 0
-    Size: 0
-    RotatedSize: 0
-    Placement: 0
-    Weight: 0
-    Value: 0
-    Material: 
-    Recycling: 
-    UnityKey: 
-    Filename: 
 --- !u!1 &5390345171887870740
 GameObject:
   m_ObjectHideFlags: 0

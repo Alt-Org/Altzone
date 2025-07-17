@@ -62,7 +62,6 @@ public class PollObject : MonoBehaviour
     private void OnDisable()
     {
         VotingActions.ReloadPollList -= SetValues;
-        Canvas.ForceUpdateCanvases();
         if (updateCoroutine != null)
         {
             StopCoroutine(updateCoroutine);
