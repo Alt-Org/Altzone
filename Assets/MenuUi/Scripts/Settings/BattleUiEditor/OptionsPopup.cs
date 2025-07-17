@@ -6,7 +6,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 {
     public class OptionsPopup : MonoBehaviour
     {
-        //[SerializeField] private Button _optionsButton;
         [SerializeField] private GameObject _optionsContents;
         [SerializeField] private Button _resetButton;
 
@@ -17,7 +16,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void Awake()
         {
-            //_optionsButton.onClick.AddListener(ToggleOptionsDropdown);
             _resetButton.onClick.AddListener(OnResetButtonClicked);
 
             CloseOptionsDropdown();
@@ -25,7 +23,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void OnDestroy()
         {
-            //_optionsButton.onClick.RemoveAllListeners();
             _resetButton.onClick.RemoveAllListeners();
         }
 
@@ -36,7 +33,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         public void ToggleOptionsDropdown()
         {
-            Debug.Log($"OptionsPopup: Current state of _optionsContents: {_optionsContents.activeSelf}");
             if (_optionsContents.activeSelf)
             {
                 CloseOptionsDropdown();

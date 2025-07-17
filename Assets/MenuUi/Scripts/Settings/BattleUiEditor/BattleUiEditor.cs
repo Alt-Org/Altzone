@@ -41,8 +41,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         [Header("Options popup")]
         [SerializeField] private Button _optionsButton;
-        //[SerializeField] private GameObject _optionsContents;
-        //[SerializeField] private Button _resetButton;
         [SerializeField] private OptionsPopup _optionsPopup;
 
         [Header("Grid options")]
@@ -282,9 +280,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Options dropdown listeners
             _optionsButton.onClick.AddListener(_optionsPopup.ToggleOptionsDropdown);
 
-            // Reset button listener
-            //_resetButton.onClick.AddListener(OnResetButtonClicked);
-
             // Show grid toggle listener
             _showGridToggle.onValueChanged.AddListener((value) =>
             {
@@ -521,9 +516,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 editingComponent.OnGridSnap -= _grid.HighlightLines;
             }
 
-            // Removing options dropdown listeners
+            // Removing options button listeners
             _optionsButton.onClick.RemoveAllListeners();
-            //_resetButton.onClick.RemoveAllListeners();
 
             // Removing grid listeners
             _gridColumnsSlider.onValueChanged.RemoveAllListeners();
@@ -618,29 +612,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             ScaleEditor();
         }
 
-        //private void ToggleOptionsDropdown()
-        //{
-        //    if (_optionsContents.activeSelf)
-        //    {
-        //        CloseOptionsDropdown();
-        //    }
-        //    else
-        //    {
-        //        OpenOptionsDropdown();
-        //    }
-        //}
-
-        //private void OpenOptionsDropdown()
-        //{
-        //    OnUiElementSelected(null);
-        //    _optionsContents.SetActive(true);
-        //}
-
-        //private void CloseOptionsDropdown()
-        //{
-        //    _optionsContents.SetActive(false);
-        //}
-
         public IEnumerator ShowSaveResetPopup(string message, Action<bool?> callback)
         {
             _popupText.text = message;
@@ -698,15 +669,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _unsavedChanges = false;
             PopupSignalBus.OnChangePopupInfoSignal("Muutokset on tallennettu.");
         }
-
-        //private void OnResetButtonClicked()
-        //{
-        //    StartCoroutine(ShowSaveResetPopup(ResetChangesText, resetChanges =>
-        //    {
-        //        if (resetChanges == null) return;
-        //        if (resetChanges.Value == true) ResetChanges();
-        //    }));
-        //}
 
         public void ResetChanges()
         {
