@@ -40,7 +40,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private GridController _grid;
 
         [Header("Options popup")]
-        //[SerializeField] private Button _optionsButton;
+        [SerializeField] private Button _optionsButton;
         //[SerializeField] private GameObject _optionsContents;
         //[SerializeField] private Button _resetButton;
         [SerializeField] private OptionsPopup _optionsPopup;
@@ -208,7 +208,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private const string TeammateText = "Tiimikaveri";
 
         private const string SaveChangesText = "Tallenna muutokset?";
-        private const string ResetChangesText = "Palauta UI-elementtien oletusasettelu?";
 
         private const string GridColumnLinesKey = "BattleUiEditorGridColumns";
         private const string GridRowLinesKey = "BattleUiEditorGridRows";
@@ -281,12 +280,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             });
 
             // Options dropdown listeners
-            //_optionsButton.onClick.AddListener(ToggleOptionsDropdown);
+            _optionsButton.onClick.AddListener(_optionsPopup.ToggleOptionsDropdown);
 
             // Reset button listener
             //_resetButton.onClick.AddListener(OnResetButtonClicked);
-
-            _optionsPopup.Initialize(this);
 
             // Show grid toggle listener
             _showGridToggle.onValueChanged.AddListener((value) =>
@@ -461,6 +458,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _grid.SetColumnLines((int)_gridColumnsSlider.value);
             _grid.SetShow(_showGridToggle.isOn);
 
+            // Initializing options popup
+            _optionsPopup.Initialize(this);
+
             // Loading saved input settings
             switch (SettingsCarrier.Instance.BattleMovementInput)
             {
@@ -522,7 +522,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
 
             // Removing options dropdown listeners
-            //_optionsButton.onClick.RemoveAllListeners();
+            _optionsButton.onClick.RemoveAllListeners();
             //_resetButton.onClick.RemoveAllListeners();
 
             // Removing grid listeners
