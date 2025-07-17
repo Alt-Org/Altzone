@@ -30,10 +30,10 @@ public class SFXReference : ScriptableObject
     }
 }
 
-public enum SoundCategoryType
+public enum SoundPlayType
 {
+    Default,
     OneShot,
-    OneShotWithStop,
     Loop
 }
 
@@ -48,6 +48,6 @@ public class SoundCategory
 public class SoundEffect
 {
     public string Name;
-    public SoundCategoryType Type;
+    public SoundPlayType Type;
     public AudioClip Audio;
 }

@@ -148,6 +148,7 @@ GameObject:
   - component: {fileID: 3531476381290196103}
   - component: {fileID: 2312311241321555566}
   - component: {fileID: 1181991709233650580}
+  - component: {fileID: 7737323698428508920}
   m_Layer: 5
   m_Name: Queuetextpref
   m_TagString: Untagged
@@ -213,3 +214,16 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7737323698428508920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8968269194942016460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1573bcf58b762a45bd8a55c799e8527, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _trackNameText: {fileID: 1100702367811545899}

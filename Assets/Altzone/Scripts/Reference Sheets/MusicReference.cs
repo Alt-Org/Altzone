@@ -8,33 +8,30 @@ public class MusicReference : ScriptableObject
 
     public List<MusicCategory> MusicCategories { get =>  _musicCategories; }
 
-    public List<MusicTrack> Get(MusicType type)
-    {
-        List<MusicTrack> tracks = new List<MusicTrack>();
-
-        foreach (MusicCategory category in _musicCategories)
-            if (category.Type == type)
-                tracks.AddRange(category.MusicTracks);
-
-        return tracks;
-    }
-
-    public MusicTrack Get(string name)
+    public MusicCategory GetCategory(string categoryName)
     {
         foreach (MusicCategory category in _musicCategories)
-            foreach (MusicTrack track in category.MusicTracks)
-                if (track.Name == name)
-                    return track;
+            if (category.Name.ToLower() == categoryName.ToLower())
+                return category;
 
         return null;
     }
 
-    public MusicTrack Get(MusicType type, string name)
+    public List<MusicTrack> GetTracksOfCategoryName(string categoryName)
     {
         foreach (MusicCategory category in _musicCategories)
-            if (category.Type == type)
+            if (category.Name.ToLower() == categoryName.ToLower())
+                return category.MusicTracks;
+
+        return null;
+    }
+
+    public MusicTrack GetTrack(string categoryName, string trackName)
+    {
+        foreach (MusicCategory category in _musicCategories)
+            if (category.Name.ToLower() == categoryName.ToLower())
                 foreach (MusicTrack track in category.MusicTracks)
-                    if (track.Name == name)
+                    if (track.Name.ToLower() == trackName.ToLower())
                         return track;
 
         return null;
@@ -45,16 +42,18 @@ public class MusicReference : ScriptableObject
 public class MusicCategory
 {
     public string Name;
-    public MusicType Type;
     public List<MusicTrack> MusicTracks;
-}
 
-public enum MusicType
-{
-    MainMenu,
-    Soulhome,
-    Jukebox,
-    Battle
+    public MusicTrack Get(string name)
+    {
+        if (string.IsNullOrEmpty(name)) return MusicTracks[0];
+
+        foreach (MusicTrack track in MusicTracks)
+            if (track.Name.ToLower() == name.ToLower())
+                return track;
+
+        return null;
+    }
 }
 
 [System.Serializable]
@@ -76,7 +75,4 @@ public class MusicTrackInfo
     [Header("Artist Info")]
     public string ArtistName;
     public Sprite ArtistLogo;
-
-    [Header("Shop Data")]
-    public int Price;
 }

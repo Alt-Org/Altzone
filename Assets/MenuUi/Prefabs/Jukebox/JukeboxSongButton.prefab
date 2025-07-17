@@ -228,6 +228,7 @@ GameObject:
   - component: {fileID: 3045414882781569192}
   - component: {fileID: 121994878987180972}
   - component: {fileID: 4709166590590620622}
+  - component: {fileID: 4504954904356297333}
   m_Layer: 5
   m_Name: JukeboxSongButton
   m_TagString: Untagged
@@ -364,6 +365,19 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &4504954904356297333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7205037451692343932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f4fadc61c8bcd468d064a887ffdb85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _trackNameText: {fileID: 580544296611505195}
 --- !u!1 &7635186138194219643
 GameObject:
   m_ObjectHideFlags: 0
