@@ -4796,6 +4796,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _chat: {fileID: 7358076422430287421}
+  _messagePrefab: {fileID: 5453423255123898535, guid: ed1fb0c62f6a4b44c8124df5e446ef35,
+    type: 3}
 --- !u!1 &7613806092406461691
 GameObject:
   m_ObjectHideFlags: 0
@@ -4916,7 +4918,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8934947071112472894}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6011073459345963383}
+        m_TargetAssemblyTypeName: ChatTester, MainMenu
+        m_MethodName: DoLongMessage
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7703225872503541342
 GameObject:
   m_ObjectHideFlags: 0
