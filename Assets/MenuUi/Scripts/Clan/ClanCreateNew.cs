@@ -75,7 +75,7 @@ public class ClanCreateNew : MonoBehaviour
         _languageWarningOutline.SetActive(false);
         _valuesWarningOutline.SetActive(false);
 
-        _ageSelection.Initialize(ClanAge.All);
+        _ageSelection.Initialize(ClanAge.None);
         _clanGoalSelection.Initialize(Goals.Fiilistely);
 
         _flagImage.SetFlag(Language.None);
