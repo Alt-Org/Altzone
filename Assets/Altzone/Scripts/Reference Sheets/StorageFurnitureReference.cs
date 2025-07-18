@@ -148,6 +148,7 @@ namespace Altzone.Scripts.ReferenceSheets
     {
         public Sprite Image;
         public Sprite PosterImage;
+        public Sprite RibbonImage;
         public string VisibleName;
         public string SetName;
         public string ArtistName;
@@ -158,6 +159,7 @@ namespace Altzone.Scripts.ReferenceSheets
         {
             Image = data.Image;
             PosterImage = data.PosterImage;
+            RibbonImage = data.RibbonImage;
             VisibleName = data.VisibleName;
             SetName = setData.SetName;
             ArtistName = setData.ArtistName;
@@ -172,6 +174,7 @@ namespace Altzone.Scripts.ReferenceSheets
         public string Name;
         public Sprite Image;
         public Sprite PosterImage;
+        public Sprite RibbonImage;
         public string VisibleName;
         public string ArtisticDescription;
         public string DiagnoseNumber;
