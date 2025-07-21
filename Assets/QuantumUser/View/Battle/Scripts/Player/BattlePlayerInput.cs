@@ -176,19 +176,6 @@ namespace Battle.View.Player
                         }
                         _movementStartVector = unityPosition;
                     }
-
-                    if (_swipeMovementStarted)
-                    {
-                        movementInput = Quantum.BattleMovementInputType.Direction;
-                        if (_swipePerformed)
-                        {
-                            Vector3 direction = unityPosition - _movementStartVector;
-                            movementDirection = new FPVector2(FP.FromFloat_UNSAFE(direction.x), FP.FromFloat_UNSAFE(direction.z)) / deltaTime;
-                            movementDirection *= FP.FromFloat_UNSAFE(_swipeSensitivity);
-
-                        }
-                        _movementStartVector = unityPosition;
-                    }
                     break;
 
                 case MovementInputType.Joystick:
