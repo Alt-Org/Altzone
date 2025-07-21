@@ -6,7 +6,7 @@ using Photon.Deterministic;
 namespace Battle.QSimulation.Player
 {
     [Preserve]
-    public unsafe class BattlePlayerQSystem : SystemMainThread
+    public unsafe class BattlePlayerQSystem : SystemMainThread, ISignalBattleOnProjectileHitPlayerHitbox
     {
         public static void SpawnPlayers(Frame f)
         {
@@ -15,6 +15,18 @@ namespace Battle.QSimulation.Player
                 if (playerHandle.PlayState == BattlePlayerPlayState.NotInGame) continue;
 
                 BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, 0);
+            }
+        }
+
+        public unsafe void BattleOnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
+        {
+            BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
+
+            playerData->CurrentHp -= FP._1;
+
+            if (playerData->CurrentHp <= 0)
+            {
+                BattlePlayerManager.DespawnPlayer(f, playerData->Slot);
             }
         }
 

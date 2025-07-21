@@ -312,6 +312,8 @@ namespace Battle.QSimulation.Player
                             RotationBase      = playerRotationBase,
                             RotationOffset    = FP._0,
 
+                            CurrentHp         = data.Characters[playerCharacterNumber].Stats.Hp,
+
                             HitboxShieldEntity      = playerHitboxShieldEntity,
                             HitboxCharacterEntity   = playerHitboxCharacterEntity
                         };
@@ -322,6 +324,8 @@ namespace Battle.QSimulation.Player
                         playerData.Stats.CharacterSize = FP.FromString("1.0");
                         playerData.Stats.Attack        = FP.FromString("1.0");
                         playerData.Stats.Defence       = FP.FromString("1.0");
+
+                        playerData.CurrentHp           = FP.FromString("1.0");
 #endif
 
                         //{ initialize entity
@@ -701,6 +705,12 @@ namespace Battle.QSimulation.Player
             Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(character);
 
             FPVector2 worldPosition;
+
+            if (playerData->CurrentHp <= 0)
+            {
+                Debug.LogFormat("Player character [characterNumber] has no Hp and will not be spawned");
+                return;
+            }
 
             if (playerHandle.PlayState == BattlePlayerPlayState.InPlay)
             {
