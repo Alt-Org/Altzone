@@ -44,6 +44,13 @@ public class KojuTrayPopulator : MonoBehaviour
         foreach (Transform child in panelContent)
         {
             Debug.Log($"Child name: {child.name}");
+
+            // Reserved slot for the poster
+            if (child.GetSiblingIndex() == 0)
+            {
+                continue;
+            }
+
             KojuFurnitureData data = child.GetComponent<KojuFurnitureData>();
             if (data == null)
             {
@@ -89,9 +96,9 @@ public class KojuTrayPopulator : MonoBehaviour
         }
 
         // Filter clan furniture voted to sell, you can remove .Where(f => f.VotedToSell) and .ToList(); to show all clan furniture
-        List<ClanFurniture> votedToSellFurniture = clan.Inventory.Furniture
-            .Where(f => f.VotedToSell)
-            .ToList();
+        List<ClanFurniture> votedToSellFurniture = clan.Inventory.Furniture;
+            //.Where(f => f.VotedToSell)
+            //.ToList();
 
         if (votedToSellFurniture.Count == 0)
         {
@@ -116,6 +123,12 @@ public class KojuTrayPopulator : MonoBehaviour
         HashSet<string> panelFurnitureIds = new HashSet<string>();
         foreach (Transform child in panelContent)
         {
+            // Skip the first slot (locked slot)
+            if (child.GetSiblingIndex() == 0)
+            {
+                continue;
+            }
+
             KojuFurnitureData data = child.GetComponent<KojuFurnitureData>();
             if (data != null && !string.IsNullOrEmpty(data.StorageFurnitureId))
             {
@@ -195,6 +208,7 @@ public class KojuTrayPopulator : MonoBehaviour
 
         Debug.Log($"Spawned {spawnedCount} furniture cards in tray.");
     }
+
 
     public void ShowPanelFullWarning()
     {
