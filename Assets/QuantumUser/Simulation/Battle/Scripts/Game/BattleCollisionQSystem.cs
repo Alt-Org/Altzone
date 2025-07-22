@@ -16,7 +16,9 @@ namespace Battle.QSimulation.Game
             {
                 if(!f.Unsafe.TryGetPointer(info.Other, out BattleCollisionTriggerQComponent* collisionTrigger)) return;
 
-                switch(collisionTrigger->Type)
+                BattlePlayerHitboxQComponent* playerHitbox;
+
+                switch (collisionTrigger->Type)
                 {
                     case BattleCollisionTriggerType.ArenaBorder:
                         BattleArenaBorderQComponent* arenaBorder = f.Unsafe.GetPointer<BattleArenaBorderQComponent>(info.Other);
@@ -32,10 +34,16 @@ namespace Battle.QSimulation.Game
                         break;
 
                     case BattleCollisionTriggerType.Player:
-                        BattlePlayerHitboxQComponent* playerHitbox = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(info.Other);
+                        playerHitbox = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(info.Other);
                         Debug.Log("[CollisionSystem] Projectile hit PlayerHitbox");
                         //f.Events.PlaySoundEvent(SoundEffect.SideWallHit);
                         f.Signals.BattleOnProjectileHitPlayerHitbox(projectile, info.Entity, playerHitbox, info.Other);
+                        break;
+
+                    case BattleCollisionTriggerType.Shield:
+                        playerHitbox = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(info.Other);
+                        Debug.Log("[CollisionSystem] Projectile hit Player Shield");
+                        f.Signals.BattleOnProjectileHitPlayerShield(projectile, info.Entity, playerHitbox, info.Other);
                         break;
 
                     case BattleCollisionTriggerType.Goal:

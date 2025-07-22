@@ -208,6 +208,10 @@ namespace Battle.QSimulation.Player
                             // create hitBox entity
                             playerHitboxTargetEntity = f.Create();
 
+                            //{ initialize collisionTrigger component
+
+                            collisionTrigger = new BattleCollisionTriggerQComponent();
+
                             switch (i)
                             {
                                 case 0:
@@ -221,6 +225,8 @@ namespace Battle.QSimulation.Player
                                     playerHitboxCollisionType              = playerDataTemplate->HitboxShield.CollisionType;
                                     playerHitboxListSourceColliderTemplate = playerHitboxListShieldColliderTemplate;
                                     playerHitboxShieldEntity               = playerHitboxTargetEntity;
+
+                                    collisionTrigger.Type = BattleCollisionTriggerType.Shield;
                                     break;
 
                                 case 1:
@@ -234,6 +240,8 @@ namespace Battle.QSimulation.Player
                                     playerHitboxCollisionType              = playerDataTemplate->HitboxCharacter.CollisionType;
                                     playerHitboxListSourceColliderTemplate = playerHitboxListCharacterColliderTemplate;
                                     playerHitboxCharacterEntity            = playerHitboxTargetEntity;
+
+                                    collisionTrigger.Type = BattleCollisionTriggerType.Player;
                                     break;
 
                                 default:
@@ -241,13 +249,6 @@ namespace Battle.QSimulation.Player
                                     playerHitboxCollisionType = (BattlePlayerCollisionType)(-1);
                                     break;
                             }
-
-                            //{ initialize collisionTrigger component
-
-                            collisionTrigger = new BattleCollisionTriggerQComponent
-                            {
-                                Type = BattleCollisionTriggerType.Player
-                            };
 
                             // initialize hitBox collider
                             playerHitboxCollider = PhysicsCollider2D.Create(f,

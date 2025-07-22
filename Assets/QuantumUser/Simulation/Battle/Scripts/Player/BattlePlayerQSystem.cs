@@ -2,6 +2,7 @@ using UnityEngine.Scripting;
 
 using Quantum;
 using Photon.Deterministic;
+using UnityEngine;
 
 namespace Battle.QSimulation.Player
 {
@@ -32,7 +33,7 @@ namespace Battle.QSimulation.Player
 
         public override void Update(Frame f)
         {
-            Input* input;
+            Quantum.Input* input;
 
             EntityRef                   playerEntity;
             BattlePlayerDataQComponent* playerData;
@@ -40,19 +41,21 @@ namespace Battle.QSimulation.Player
 
             foreach (BattlePlayerManager.PlayerHandle playerHandle in BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f))
             {
-                if (playerHandle.PlayState != BattlePlayerPlayState.InPlay) continue;
+                if (playerHandle.PlayState == BattlePlayerPlayState.NotInGame) continue;
 
                 input = f.GetPlayerInput(playerHandle.PlayerRef);
 
-                playerEntity    = playerHandle.SelectedCharacter;
-                playerData      = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerEntity);
-                playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
-
                 if (input->PlayerCharacterNumber > -1)
                 {
-                    BattlePlayerManager.SpawnPlayer(f, playerData->Slot, input->PlayerCharacterNumber);
+                    BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, input->PlayerCharacterNumber);
                     continue;
                 }
+
+                if (playerHandle.PlayState == BattlePlayerPlayState.OutOfPlay) continue;
+
+                playerEntity = playerHandle.SelectedCharacter;
+                playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerEntity);
+                playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
 
                 BattlePlayerMovementController.UpdateMovement(f, playerData, playerTransform, input);
             }

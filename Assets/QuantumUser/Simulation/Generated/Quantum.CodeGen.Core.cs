@@ -54,7 +54,8 @@ namespace Quantum {
     ArenaBorder = 0,
     SoulWall = 1,
     Player = 2,
-    Goal = 3,
+    Shield = 3,
+    Goal = 4,
   }
   public enum BattleEmotionState : int {
     Sadness = 0,
@@ -1283,6 +1284,9 @@ namespace Quantum {
   public unsafe partial interface ISignalBattleOnProjectileHitPlayerHitbox : ISignal {
     void BattleOnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity);
   }
+  public unsafe partial interface ISignalBattleOnProjectileHitPlayerShield : ISignal {
+    void BattleOnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity);
+  }
   public unsafe partial interface ISignalBattleOnProjectileHitGoal : ISignal {
     void BattleOnProjectileHitGoal(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleGoalQComponent* goal, EntityRef goalEntity);
   }
@@ -1301,6 +1305,7 @@ namespace Quantum {
     private ISignalBattleOnProjectileHitSoulWall[] _ISignalBattleOnProjectileHitSoulWallSystems;
     private ISignalBattleOnProjectileHitArenaBorder[] _ISignalBattleOnProjectileHitArenaBorderSystems;
     private ISignalBattleOnProjectileHitPlayerHitbox[] _ISignalBattleOnProjectileHitPlayerHitboxSystems;
+    private ISignalBattleOnProjectileHitPlayerShield[] _ISignalBattleOnProjectileHitPlayerShieldSystems;
     private ISignalBattleOnProjectileHitGoal[] _ISignalBattleOnProjectileHitGoalSystems;
     private ISignalBattleOnDiamondHitPlayer[] _ISignalBattleOnDiamondHitPlayerSystems;
     private ISignalBattleOnGameOver[] _ISignalBattleOnGameOverSystems;
@@ -1318,6 +1323,7 @@ namespace Quantum {
       _ISignalBattleOnProjectileHitSoulWallSystems = BuildSignalsArray<ISignalBattleOnProjectileHitSoulWall>();
       _ISignalBattleOnProjectileHitArenaBorderSystems = BuildSignalsArray<ISignalBattleOnProjectileHitArenaBorder>();
       _ISignalBattleOnProjectileHitPlayerHitboxSystems = BuildSignalsArray<ISignalBattleOnProjectileHitPlayerHitbox>();
+      _ISignalBattleOnProjectileHitPlayerShieldSystems = BuildSignalsArray<ISignalBattleOnProjectileHitPlayerShield>();
       _ISignalBattleOnProjectileHitGoalSystems = BuildSignalsArray<ISignalBattleOnProjectileHitGoal>();
       _ISignalBattleOnDiamondHitPlayerSystems = BuildSignalsArray<ISignalBattleOnDiamondHitPlayer>();
       _ISignalBattleOnGameOverSystems = BuildSignalsArray<ISignalBattleOnGameOver>();
@@ -1437,6 +1443,15 @@ namespace Quantum {
           var s = array[i];
           if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
             s.BattleOnProjectileHitPlayerHitbox(_f, projectile, projectileEntity, playerHitbox, playerHitboxEntity);
+          }
+        }
+      }
+      public void BattleOnProjectileHitPlayerShield(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity) {
+        var array = _f._ISignalBattleOnProjectileHitPlayerShieldSystems;
+        for (Int32 i = 0; i < array.Length; ++i) {
+          var s = array[i];
+          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
+            s.BattleOnProjectileHitPlayerShield(_f, projectile, projectileEntity, playerHitbox, playerHitboxEntity);
           }
         }
       }
