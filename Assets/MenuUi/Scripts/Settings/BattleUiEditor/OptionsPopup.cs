@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,8 +7,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
     {
         [SerializeField] private GameObject _optionsContents;
         [SerializeField] private Button _resetButton;
-
-        public event Action OnResetClicked;
 
         private const string ResetChangesText = "Palauta UI-elementtien oletusasettelu?";
         private BattleUiEditor _battleUiEditor;
