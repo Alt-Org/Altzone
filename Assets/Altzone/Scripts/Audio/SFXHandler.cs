@@ -19,8 +19,7 @@ public class SFXHandler : MonoBehaviour
 
     private void Start()
     {
-        for (int i = 0; i < _initialAudioChannelChunkAmount; i++)
-            CreateChunk();
+        for (int i = 0; i < _initialAudioChannelChunkAmount; i++) CreateChunk();
 
         _oneShotChannel = GetComponent<AudioSource>();
     }
@@ -94,8 +93,7 @@ public class SFXHandler : MonoBehaviour
             _channelChunks[channel.Chunk].AudioChannels[channel.Channel].Name = "";
         }
 
-        foreach (AudioChannelChunk chunk in _channelChunks)
-            chunk.AmountInUse = 0;
+        foreach (AudioChannelChunk chunk in _channelChunks) chunk.AmountInUse = 0;
 
         _activeChannels.Clear();
     }

@@ -326,7 +326,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     {
         for (int i = _trackVisualQueueChunks.Count - 1; i >= 0; i--)
         {
-            Debug.LogError(i + ", chunk || inuse: " + _trackVisualQueueChunks[i].AmountInUse);
+            //Debug.LogError(i + ", chunk || inuse: " + _trackVisualQueueChunks[i].AmountInUse);
             if (_trackVisualQueueChunks[i].AmountInUse > 0)
             {
                 if (_trackVisualQueueChunks[i].AmountInUse >= _trackChunkSize)
@@ -336,7 +336,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
                 for (int j = _trackVisualQueueChunks[i].Pool.Count - 1; j >= 0; j--)
                 {
-                    Debug.LogError(_trackVisualQueueChunks[i].Pool[j].InUse());
+                    //Debug.LogError(_trackVisualQueueChunks[i].Pool[j].InUse());
                     if (!_trackVisualQueueChunks[i].Pool[j].InUse())
                         _queuePoolPointer = j - 1;
                 }

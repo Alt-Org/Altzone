@@ -54,12 +54,24 @@ public class MusicCategory
 
         return null;
     }
+
+    public MusicTrack Get(int id)
+    {
+        if (id < 0 || id >= MusicTracks.Count) return null;
+
+        foreach (MusicTrack track in MusicTracks)
+            if (track.Id == id)
+                return track;
+
+        return null;
+    }
 }
 
 [System.Serializable]
 public class MusicTrack
 {
     public string Name;
+    public int Id;
     public AudioClip Music;
     public MusicTrackInfo Info;
 }
