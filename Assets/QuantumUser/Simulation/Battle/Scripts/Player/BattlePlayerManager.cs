@@ -645,11 +645,11 @@ namespace Battle.QSimulation.Player
                 {
                     case BattleTeamNumber.TeamAlpha:
                         row    = 0 - 10 * (characterNumber + 1);
-                        column = 10 * Index;
+                        column = -5 - 10 * Index;
                         break;
                     case BattleTeamNumber.TeamBeta:
                         row    = BattleGridManager.Rows - 1 + 10 * (characterNumber + 1);
-                        column = BattleGridManager.Columns - 1 - 10 * (Index - 2);
+                        column = BattleGridManager.Columns + 4 + 10 * (Index - 2);
                         break;
 
                 }
