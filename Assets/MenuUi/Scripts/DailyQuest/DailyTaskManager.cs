@@ -232,7 +232,7 @@ public class DailyTaskManager : AltMonoBehaviour
 
         //For testing puropses. Remove when server can handle Education version tasks.
         if (gameVersion == VersionType.Education && tasklist[0].EducationCategory == EducationCategoryType.None)
-            tasklist = TESTGenerateEducationTasks();
+            tasklist = GenerateEducationTasks();
         //---------------------------------------------------------------------------
 
         for (int i = 0; i < tasklist.Count; i++)
@@ -337,6 +337,31 @@ public class DailyTaskManager : AltMonoBehaviour
         tasklist.AddRange(tasks.Week);
         tasklist.AddRange(tasks.Month);
         return (tasklist);
+    }
+
+    private List<PlayerTask> GenerateEducationTasks()
+    {
+        List<PlayerTask> tasklist = new();
+        List<EducationDailyTaskData> educationTasks = DailyTaskConfig.Instance.GetEducationTasks();
+
+        for (int i = 0; i < educationTasks.Count; i++)
+        {
+            ServerPlayerTask serverTask = new();
+            serverTask._id = i.ToString();
+            serverTask.amount = educationTasks[i].amount;
+            serverTask.amountLeft = serverTask.amount;
+            serverTask.title = new ServerPlayerTask.TaskTitle();
+            serverTask.title.fi = educationTasks[i].title;
+            serverTask.points = educationTasks[i].points;
+            serverTask.coins = educationTasks[i].coins;
+            serverTask.type = "";
+            serverTask.educationCategoryType = educationTasks[i].educationCategoryType;
+            serverTask.educationCategoryTaskType = educationTasks[i].educationCategoryTaskType;
+
+            tasklist.Add(new(serverTask));
+        }
+
+        return tasklist;
     }
 
     private List<PlayerTask> TESTGenerateEducationTasks() //TODO: Remove when fetching education tasks from server is possible.
