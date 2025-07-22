@@ -324,7 +324,6 @@ namespace Battle.QSimulation.Player
                         playerData.Stats.Attack        = FP.FromString("1.0");
                         playerData.Stats.Defence       = FP.FromString("1.0");
 #endif
-                        playerData.CurrentHp = playerData.Stats.Hp;
 
                         //} initialize playerData
 
