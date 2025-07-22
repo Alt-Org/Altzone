@@ -83,6 +83,10 @@ namespace Battle.View.Player
             {
                 transform.position = *targetPosition;
             }
+            else
+            {
+                transform.localPosition = Vector3.zero;
+            }
         }
 
         private void UpdateAnimator(Vector3* targetPosition, BattleTeamNumber battleTeamNumber)

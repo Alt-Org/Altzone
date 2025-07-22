@@ -66,6 +66,23 @@ public static class PollManager // Handles the polls from creation to loading to
         PollMonitor.Instance?.StartMonitoring();
     }
 
+    public static void BuildPolls(List<ServerPoll> polls)
+    {
+        LoadClanData();
+
+        List<string> clanMembers = new List<string>();
+        if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
+
+        foreach (ServerPoll poll in polls)
+        {
+
+            PollData pollData = new FurniturePollData(poll);
+            pollDataList.Add(pollData);
+        }
+
+        SaveClanData();
+    }
+
     private static void PrintPollList()
     {
         for (int i = 0; i < pollDataList.Count; i++)
