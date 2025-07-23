@@ -82,7 +82,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public const int BattleArenaPosXDefault = 50;
     public const int BattleArenaPosYDefault = 50;
 
-    public const BattleMovementInputType BattleMovementInputDefault = BattleMovementInputType.Swipe;
+    public const BattleMovementInputType BattleMovementInputDefault = BattleMovementInputType.PointAndClick;
     public const BattleRotationInputType BattleRotationInputDefault = BattleRotationInputType.TwoFinger;
     public const float BattleSwipeMinDistanceDefault = 0.1f;
     public const float BattleSwipeMaxDistanceDefault = 1f;
