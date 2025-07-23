@@ -15,7 +15,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             _resetButton.onClick.AddListener(OnResetButtonClicked);
 
-            CloseOptionsDropdown();
+            CloseOptionsPopup();
         }
 
         private void OnDestroy()
@@ -28,25 +28,25 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _battleUiEditor = battleUiEditor;
         }
 
-        public void ToggleOptionsDropdown()
+        public void ToggleOptionsPopup()
         {
             if (_optionsContents.activeSelf)
             {
-                CloseOptionsDropdown();
+                CloseOptionsPopup();
             }
             else
             {
-                OpenOptionsDropdown();
+                OpenOptionsPopup();
             }
         }
 
-        public void OpenOptionsDropdown()
+        public void OpenOptionsPopup()
         {
             _battleUiEditor.OnUiElementSelected(null);
             _optionsContents.SetActive(true);
         }
 
-        public void CloseOptionsDropdown()
+        public void CloseOptionsPopup()
         {
             _optionsContents.SetActive(false);
         }

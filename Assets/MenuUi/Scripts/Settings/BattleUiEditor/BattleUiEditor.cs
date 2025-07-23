@@ -175,7 +175,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// </summary>
         public void CloseEditor()
         {
-            _optionsPopup.CloseOptionsDropdown();
+            _optionsPopup.CloseOptionsPopup();
             if (_unsavedChanges)
             {
                 OnUiElementSelected(null);
@@ -598,7 +598,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private void OpenPreviewMode()
         {
             OnUiElementSelected(null);
-            _optionsPopup.CloseOptionsDropdown();
+            _optionsPopup.CloseOptionsPopup();
             _topButtonsRectTransform.gameObject.SetActive(false);
             _previewModeTouchDetector.gameObject.SetActive(true);
             EditorRectTransform.anchorMin = Vector2.zero;
@@ -1179,7 +1179,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         public void OnUiElementSelected(BattleUiEditingComponent newSelectedEditingComponent)
         {
-            _optionsPopup.CloseOptionsDropdown();
+            _optionsPopup.CloseOptionsPopup();
             _grid.RemoveLineHighlight();
 
             if (_currentlySelectedEditingComponent != null && _currentlySelectedEditingComponent != newSelectedEditingComponent)
