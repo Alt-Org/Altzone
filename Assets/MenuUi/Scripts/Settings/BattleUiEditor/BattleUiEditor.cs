@@ -278,7 +278,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             });
 
             // Options dropdown listeners
-            _optionsButton.onClick.AddListener(_optionsPopup.ToggleOptionsDropdown);
+            _optionsButton.onClick.AddListener(_optionsPopup.ToggleOptionsPopup);
 
             // Show grid toggle listener
             _showGridToggle.onValueChanged.AddListener((value) =>
