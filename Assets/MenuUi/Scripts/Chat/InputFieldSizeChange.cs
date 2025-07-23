@@ -14,7 +14,7 @@ public class InputFieldSizeChange : MonoBehaviour
     [SerializeField]
     RectTransform _rect;
 
-    [SerializeField]
+    //[SerializeField]
     float PreferredHeight;
 
     private void OnEnable()
