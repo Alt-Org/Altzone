@@ -26,6 +26,7 @@ namespace Battle.View.UI
 
         /// <value>[SerializeField] Reference to the button component of the character button.</value>
         [SerializeField] private Button _button;
+        [SerializeField] private OnPointerDownButton _eventSender;
 
         /// <value>[SerializeField] Reference to the character image of the character button.</value>
         [SerializeField] private Image _characterImage;
@@ -40,6 +41,7 @@ namespace Battle.View.UI
 
         /// <value>Public getter for #_button.</value>
         public Button ButtonComponent => _button;
+        public OnPointerDownButton EventSender => _eventSender;
 
         /// <summary>
         /// Sets the character image from PlayerCharacterPrototype to #_characterImage.
@@ -60,6 +62,7 @@ namespace Battle.View.UI
         private void OnDisable()
         {
             ButtonComponent.onClick.RemoveAllListeners();
+            EventSender.onClick.RemoveAllListeners();
         }
     }
 }

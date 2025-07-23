@@ -19,9 +19,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
     {
         [Header("Character slot references")]
         [SerializeField] private Image _spriteImage;
-        [SerializeField] private Image _bordersBackgroundImage;
-        [SerializeField] private Image _upperBackgroundImage;
-        [SerializeField] private Image _lowerBackgroundImage;
+        [SerializeField] private Image _classColorImage;
         [SerializeField] private PieChartPreview _piechartPreview;
 
         [Header("Reference sheet")]
@@ -59,15 +57,15 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             _spriteImage.sprite = galleryImage;
             _spriteImage.enabled = true;
 
-            //CharacterClassID charClassID = CustomCharacter.GetClassID(charID);
-            //_upperBackgroundImage.color = _classColorReference.GetAlternativeColor(charClassID);
-            //_lowerBackgroundImage.color = _classColorReference.GetColor(charClassID);
+            CharacterClassID charClassID = CustomCharacter.GetClassID(charID);
+            if (_classColorImage != null) _classColorImage.color = _classReference.GetColor(charClassID);
 
             _characterId = charID;
 
             if (_button == null) _button = GetComponent<Button>();
             _button.enabled = isEditable;
 
+            if (_piechartPreview == null) return;
             if (stats != null)
             {
                 _piechartPreview.UpdateChart(stats[3], stats[0], stats[4], stats[2], stats[1]);
@@ -83,14 +81,12 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         /// Set character slot showing as empty.
         /// </summary>
         /// <param name="isEditable">If slot is editable for the local player or not.</param>
-        /// <param name="slotIdx">Slot's index.</param>
         public void SetEmpty(bool isEditable)
         {
             _spriteImage.enabled = false;
-            //_upperBackgroundImage.color = Color.white;
-            //_lowerBackgroundImage.color = Color.white;
+            if (_classColorImage != null) _classColorImage.color = Color.white;
 
-            _piechartPreview.ClearChart();
+            if (_piechartPreview != null) _piechartPreview.ClearChart();
             _characterId = CharacterID.None;
 
             if (_button == null) _button = GetComponent<Button>();

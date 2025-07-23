@@ -103,7 +103,11 @@ namespace Battle.View.UI
                 // Adding listener to button press
                 int characterNumber = i;
                 characterButton.ButtonComponent.onClick.RemoveAllListeners();
-                characterButton.ButtonComponent.onClick.AddListener(() => _uiController.GameViewController.UiInputOnCharacterSelected(characterNumber));
+                characterButton.EventSender.onClick.RemoveAllListeners();
+                if (playerType == PlayerType.LocalPlayer)
+                {
+                    characterButton.EventSender.onClick.AddListener(() => _uiController.GameViewController.UiInputOnCharacterSelected(characterNumber));
+                }
             }
         }
     }

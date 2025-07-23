@@ -46,7 +46,7 @@ namespace Battle.QSimulation.Player
 
                 if (playerCountCheckNumber != playerCount)
                 {
-                    Debug.LogErrorFormat("[PlayerManager] BattleParameters player count does not match the number of player slots with type of Player\n"
+                    Error(f, "BattleParameters player count does not match the number of player slots with type of Player\n"
                         + "BattleParameters player count {0}, Counted {1}",
                         playerCount,
                         playerCountCheckNumber
@@ -78,7 +78,7 @@ namespace Battle.QSimulation.Player
 
             if (playerSlotType != BattleParameters.PlayerType.Player)
             {
-                Debug.LogErrorFormat("[PlayerManager] Player is in {0} which is type of {1}",
+                Error(f, "Player is in {0} which is type of {1}",
                     playerSlot,
                     playerSlotType
                 );
@@ -87,7 +87,7 @@ namespace Battle.QSimulation.Player
 
             if (playerSlotUserIDs[playerHandle.Index] != playerUserID)
             {
-                Debug.LogErrorFormat("[PlayerManager] Player in {0} has incorrect UsedID",
+                Error(f, "Player in {0} has incorrect UsedID",
                     playerSlot
                 );
                 return;
@@ -724,12 +724,12 @@ namespace Battle.QSimulation.Player
                 switch (teamNumber)
                 {
                     case BattleTeamNumber.TeamAlpha:
-                        row = 0 - 10 * (characterNumber + 1);
-                        column = 10 * Index;
+                        row    = 0 - 10 * (characterNumber + 1);
+                        column = -5 - 10 * Index;
                         break;
                     case BattleTeamNumber.TeamBeta:
-                        row = BattleGridManager.Rows - 1 + 10 * (characterNumber + 1);
-                        column = BattleGridManager.Columns - 1 - 10 * (Index - 2);
+                        row    = BattleGridManager.Rows - 1 + 10 * (characterNumber + 1);
+                        column = BattleGridManager.Columns + 4 + 10 * (Index - 2);
                         break;
 
                 }
@@ -812,7 +812,7 @@ namespace Battle.QSimulation.Player
 
             playerHandle.SetSelectedCharacter(characterNumber);
             f.Events.BattleDebugUpdateStatsOverlay(playerData->Slot, playerData->Stats);
-            
+
             playerHandle.PlayState = BattlePlayerPlayState.InPlay;
         }
 
@@ -835,6 +835,13 @@ namespace Battle.QSimulation.Player
 
             playerHandle.UnsetSelectedCharacter();
             playerHandle.PlayState = BattlePlayerPlayState.OutOfPlay;
+        }
+
+        private static void Error(Frame f, string messageformat, params object[] args)
+        {
+            string message = string.Format(messageformat, args);
+            Debug.LogError("[PlayerManager] " + message);
+            f.Events.BattleDebugOnScreenMessage(message);
         }
 
         #endregion Private - Static Methods

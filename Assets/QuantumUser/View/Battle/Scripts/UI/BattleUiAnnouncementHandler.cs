@@ -10,6 +10,8 @@ using UnityEngine;
 
 using TMPro;
 
+using Altzone.Scripts.BattleUiShared;
+
 namespace Battle.View.UI
 {
     /// <summary>
@@ -27,6 +29,7 @@ namespace Battle.View.UI
 
         /// <value>[SerializeField] Reference to the <a href="https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/api/TMPro.TextMeshProUGUI.html">TextMeshProUGUI@u-exlink</a> component which the announcement text is set to.</value>
         [SerializeField] private TextMeshProUGUI _announcerText;
+        [SerializeField] private TextScaler _announcementTextScaler;
 
         /// @}
 
@@ -52,10 +55,11 @@ namespace Battle.View.UI
 
         public void SetText(TextType textType)
         {
+            if (_debugmode) return;
             _announcerText.text = textType switch
             {
                 TextType.Loading            => "Loading...",
-                TextType.WaitingForPlayers  => "Waiting for\nplayers...",
+                TextType.WaitingForPlayers  => "Waiting for\nplayers to connect...",
                 TextType.EndOfCountdown     => "GO!",
 
                 _ => string.Format("Unimplemented text type {0}.", textType),
@@ -70,13 +74,26 @@ namespace Battle.View.UI
         /// <param name="countDown">The number which to set to the countdown.</param>
         public void SetCountDownNumber(int countDown)
         {
+            if (_debugmode) return;
             _announcerText.text = $"{countDown}";
         }
 
         public void ClearAnnouncerTextField()
         {
+            if (_debugmode) return;
             _announcerText.text = "";
         }
+
+        public void SetDebugtext(string text)
+        {
+            _announcerText.text = text;
+            _announcerText.color = Color.red;
+            _announcerText.textWrappingMode = TextWrappingModes.Normal;
+            _announcementTextScaler.RelativePercentageMax *= 0.5f;
+            _debugmode = true;
+        }
+
+        private bool _debugmode = false;
 
         /// <summary>
         /// Private <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/MonoBehaviour.Awake.html">Awake@u-exlink</a> method which clears the text in #_announcerText.

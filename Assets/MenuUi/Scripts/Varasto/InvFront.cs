@@ -94,9 +94,15 @@ namespace MenuUi.Scripts.Storage
         private void OnDisable()
         {
             _sellHandler.UpdateInfoAction -= UpdateInVotingText;
-
             ServerManager.OnClanInventoryChanged -= UpdateInventory;
+
+            // Hide the info window when exiting the view
+            if (_infoSlot != null && _infoSlot.activeSelf)
+            {
+                _infoSlot.SetActive(false);
+            }
         }
+
 
         private IEnumerator Begin()
         {
@@ -297,7 +303,7 @@ namespace MenuUi.Scripts.Storage
                 InvSlotInfoHandler infoHandler = toSet.GetComponent<InvSlotInfoHandler>();
                 infoHandler.SetSlotInfo(_furn, _sortingBy);
 
-                ScaleSprite(_furn, toSet.GetChild(3).GetComponent<RectTransform>());
+                ScaleSprite(_furn, infoHandler.Icon.GetComponent<RectTransform>());
 
                 i++;
             }
@@ -484,16 +490,18 @@ namespace MenuUi.Scripts.Storage
         private void ScaleSprite(StorageFurniture furn, RectTransform rTransform)
         {
             rTransform.sizeDelta = new(0, 0);
+            Sprite sprite = furn.Info.RibbonImage;
+            if(sprite == null) sprite = furn.Sprite;
             Rect imageRect = rTransform.rect;
-            if (furn.Sprite.bounds.size.x > furn.Sprite.bounds.size.y)
+            if (sprite.bounds.size.x > sprite.bounds.size.y)
             {
-                float diff = furn.Sprite.bounds.size.x / furn.Sprite.bounds.size.y;
+                float diff = sprite.bounds.size.x / sprite.bounds.size.y;
                 float newHeight = imageRect.height / diff;
                 rTransform.sizeDelta = new(0, (newHeight - imageRect.height));
             }
-            if (furn.Sprite.bounds.size.x < furn.Sprite.bounds.size.y)
+            else if (sprite.bounds.size.x < sprite.bounds.size.y)
             {
-                float diff = furn.Sprite.bounds.size.y / furn.Sprite.bounds.size.x;
+                float diff = sprite.bounds.size.y / sprite.bounds.size.x;
                 float newWidth = imageRect.width / diff;
                 rTransform.sizeDelta = new((newWidth - imageRect.width), 0);
             }

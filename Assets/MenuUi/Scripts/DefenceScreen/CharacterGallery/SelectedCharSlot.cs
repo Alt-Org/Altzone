@@ -44,14 +44,17 @@ namespace MenuUi.Scripts.CharacterGallery
             _className.text = className;
             _backgroundLowerImage.color = bgColor;
             _backgroundUpperImage.color = bgAltColor;
-            _pieChartPreview.UpdateChart(customCharacter.Id);
-            _id = customCharacter.Id;
+            if (customCharacter != null)
+            {
+                _pieChartPreview.UpdateChart(customCharacter.Id);
+                _id = customCharacter.Id;
 
-            _hpText.text = customCharacter.Hp.ToString();
-            _impactForceText.text = customCharacter.Attack.ToString();
-            _speedText.text = customCharacter.Speed.ToString();
-            _defenceText.text = customCharacter.Defence.ToString();
-            _charSizeText.text = customCharacter.CharacterSize.ToString();
+                _hpText.text = customCharacter.Hp.ToString();
+                _impactForceText.text = customCharacter.Attack.ToString();
+                _speedText.text = customCharacter.Speed.ToString();
+                _defenceText.text = customCharacter.Defence.ToString();
+                _charSizeText.text = customCharacter.CharacterSize.ToString();
+            }
         }
 
         public void SetCharacterVisibility(bool visible)

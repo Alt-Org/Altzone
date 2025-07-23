@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,10 +15,8 @@ namespace Altzone.Scripts.Audio
     [System.Serializable]
     public class MusicObject
     {
-        [SerializeField]
-        private string _name;
-        [SerializeField]
-        private AudioClip _musicClip;
+        [SerializeField] private string _name;
+        [SerializeField] private AudioClip _musicClip;
 
         public AudioClip MusicClip { get => _musicClip;}
         public string Name { get => _name;}
@@ -27,18 +24,14 @@ namespace Altzone.Scripts.Audio
 
     public class MusicList : MonoBehaviour
     {
-        [SerializeField]
-        private List<MusicObject> _musicList = new();
-        [SerializeField]
-        private MusicSection _musicSection;
+        [SerializeField] private List<MusicObject> _musicList = new();
+        [SerializeField] private MusicSection _musicSection;
 
         public List<MusicObject> Music { get => _musicList;}
-
         public MusicSection MusicSection { get => _musicSection; }
 
+        [SerializeField] private int _defaultMusicTrack = 0;
         private int _musicTrack = 0;
-        [SerializeField]
-        private int _defaultMusicTrack = 0;
 
         // Start is called before the first frame update
         void Start()
@@ -46,35 +39,28 @@ namespace Altzone.Scripts.Audio
             _musicTrack = _defaultMusicTrack;
         }
 
-        public MusicObject PlayMusic(int musicIndex = -1)
+        public MusicObject GetMusicObject(int musicIndex = -1)
         {
             if (_musicList.Count == 0 || _musicList.Count <= musicIndex) return null;
+
             if (musicIndex >= 0) _musicTrack = musicIndex;
-            /*if (_musicList[_musicTrack].MusicClip != null)
-            {
-                GetComponent<AudioSource>().clip =_musicList[_musicTrack].MusicClip;
-                GetComponent<AudioSource>().Play();
-            }*/
+
             return _musicList[_musicTrack];
-        }
-
-        
-
-        public void StopMusic()
-        {
-            GetComponent<AudioSource>().Stop();
         }
 
         public string GetTrackName()
         {
             if (_musicList.Count == 0) return null;
+
             return _musicList[_musicTrack].Name;
         }
 
         public MusicObject NextTrack()
         {
             if (_musicList.Count < 2) return null;
+
             _musicTrack++;
+
             if (_musicTrack >= _musicList.Count) _musicTrack = 0;
 
             return _musicList[_musicTrack];
@@ -85,6 +71,7 @@ namespace Altzone.Scripts.Audio
             if (_musicList.Count < 2) return null;
 
             _musicTrack--;
+
             if (_musicTrack < 0) _musicTrack = _musicList.Count - 1;
 
             return _musicList[_musicTrack];

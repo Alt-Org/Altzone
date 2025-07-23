@@ -10,6 +10,7 @@ using System.Text;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.ModelV2.Internal;
 using Altzone.Scripts.Settings;
 using Prg.Scripts.Common.Unity;
 using UnityEngine;
@@ -152,11 +153,6 @@ namespace Altzone.Scripts.Model
         {
             new WaitUntil(() => _saving = false);
             var playerData = _storageData.PlayerData.FirstOrDefault(x => x.UniqueIdentifier == uniqueIdentifier);
-            if (playerData != null)
-            {
-                // This storage is by no means a complete object model we want to serve.
-                if(playerData.CustomCharacters == null)playerData.BuildCharacterLists(_storageData.CustomCharacters);
-            }
             Debug.Log($"playerData {playerData}");
             callback(playerData);
         }
@@ -165,9 +161,10 @@ namespace Altzone.Scripts.Model
         {
             _saving = true;
             var index = _storageData.PlayerData.FindIndex(x => x.Id == playerData.Id);
-            if (index >= 0)
+            if (index >= 0 && _storageData.PlayerData.Count > index)
             {
-                _storageData.PlayerData[0] = playerData;
+                _storageData.PlayerData[index] = playerData;
+                
             }
             else
             {
@@ -175,14 +172,14 @@ namespace Altzone.Scripts.Model
                 {
                     playerData.Id = CreateDefaultModels.FakeMongoDbId();
                 }
-                if(_storageData.PlayerData.Count == 0)_storageData.PlayerData.Add(playerData);
-                else _storageData.PlayerData[0] = playerData;
+                _storageData.PlayerData.Add(playerData);
             }
             Debug.Log($"playerData {playerData}");
             SaveStorage(_storageData, _storagePath);
             _saving = false;
             callback?.Invoke(playerData);
         }
+
         internal void DeletePlayerData(PlayerData playerData, Action<bool> callback)
         {
             var index = _storageData.PlayerData.FindIndex(x => x.Id == playerData.Id);
@@ -369,8 +366,11 @@ namespace Altzone.Scripts.Model
             else
             {
                 storageData.Characters = CharacterStorage.Instance.CharacterList;
+
+                // Loading custom characters
                 storageData.CustomCharacters = new();
                 storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(storageData.Characters));
+
                 storageData.GameFurniture = new();
                 //storageData.GameFurniture.AddRange(CreateDefaultModels.CreateGameFurniture());
                 storageData.PlayerTasks = null;
