@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Model.Poco.Clan;
 using MenuUi.Scripts.Clan;
+using System;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -23,11 +24,11 @@ public class ClanValuesUIManager : MonoBehaviour
     public int maxSelections = 10;
 
     [Header("Selection Colors (Hex)")]
-    [SerializeField] private string selectedColorHex = "#00FF00";   // Vihre‰
+    [SerializeField] private string selectedColorHex = "#00FF00";   // Vihre√§
     [SerializeField] private string unselectedColorHex = "#FFFFFF"; // Valkoinen
 
     private Dictionary<ClanValues, Sprite> iconDictionary;
-    private List<Button> createdButtons = new List<Button>();
+    private List<IconButtonHandler> createdButtons = new List<IconButtonHandler>();
 
     void Start()
     {
@@ -69,54 +70,31 @@ public class ClanValuesUIManager : MonoBehaviour
         foreach (ClanValues value in System.Enum.GetValues(typeof(ClanValues)))
         {
             GameObject buttonObj = Instantiate(iconButtonPrefab, iconGrid);
-            Button button = buttonObj.GetComponent<Button>();
-            Image iconImage = buttonObj.GetComponentInChildren<Image>();
+            IconButtonHandler handler = buttonObj.GetComponent<IconButtonHandler>();
 
-            if (iconDictionary.TryGetValue(value, out Sprite sprite))
-            {
-                iconImage.sprite = sprite;
-            }
+            iconDictionary.TryGetValue(value, out Sprite sprite);
 
-            ClanValues capturedValue = value;
-            button.onClick.AddListener(() => OnValueSelected(capturedValue, button));
+            handler.Initialize(sprite, value, selectedColorHex, unselectedColorHex, (ActionValue, callback) => OnValueSelected(ActionValue, callback));
 
-            createdButtons.Add(button);
+            createdButtons.Add(handler);
         }
     }
 
-    void OnValueSelected(ClanValues value, Button button)
+    void OnValueSelected(ClanValues value, Action<bool> callback)
     {
+        bool active = false;
         if (selectedValues.Contains(value))
         {
             selectedValues.Remove(value);
-            UpdateButtonVisual(button, false);
         }
         else if (selectedValues.Count < maxSelections)
         {
             selectedValues.Add(value);
-            UpdateButtonVisual(button, true);
+            active = true;
         }
 
         Debug.Log($"Selected values: {string.Join(", ", selectedValues)}");
-    }
-
-    void UpdateButtonVisual(Button button, bool isSelected)
-    {
-        Image targetGraphic = button.targetGraphic as Image;
-
-        if (targetGraphic != null)
-        {
-            string hexColor = isSelected ? selectedColorHex : unselectedColorHex;
-
-            if (ColorUtility.TryParseHtmlString(hexColor, out Color parsedColor))
-            {
-                targetGraphic.color = parsedColor;
-            }
-            else
-            {
-                Debug.LogWarning($"Virheellinen v‰riarvo: {hexColor}");
-            }
-        }
+        callback(active);
     }
 
     public List<ClanValues> GetSelectedValues()
@@ -133,7 +111,7 @@ public class ClanValuesUIManager : MonoBehaviour
         {
             var buttonValue = (ClanValues)i;
             bool isSelected = selectedValues.Contains(buttonValue);
-            UpdateButtonVisual(createdButtons[i], isSelected);
+            createdButtons[i].UpdateButtonVisual(isSelected);
         }
     }
 }
