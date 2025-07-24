@@ -60,7 +60,8 @@ namespace Altzone.Scripts.Model.Poco.Clan
         None,
         Teenagers,
         Toddlers,
-        Adults
+        Adults,
+        All
     }
 
     public enum Language
@@ -113,7 +114,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
     public static class ClanDataTypeConverter
     {
-        public static string GetAgeText(ClanAge age)
+             public static string GetAgeText(ClanAge age)
         {
             return age switch
             {
@@ -121,9 +122,11 @@ namespace Altzone.Scripts.Model.Poco.Clan
                 ClanAge.Teenagers => "Teinit",
                 ClanAge.Toddlers => "Taaperot",
                 ClanAge.Adults => "Aikuiset",
+                ClanAge.All => "Kaikki",
                 _ => "",
             };
         }
+
 
         public static string GetLanguageText(Language language)
         {

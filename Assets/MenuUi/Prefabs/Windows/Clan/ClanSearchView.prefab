@@ -2468,7 +2468,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000030517578, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8503519166183457337
@@ -2521,86 +2521,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27ed58a2dd814c141bf2d81615499b27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clanValueIcons:
-  - clanValue: 0
-    icon: {fileID: 21300000, guid: 05fd4c491992c4e42ad7d483579be195, type: 3}
-  - clanValue: 1
-    icon: {fileID: 21300000, guid: 2c7bc0595e0d5464fa9e27636f8f2c47, type: 3}
-  - clanValue: 2
-    icon: {fileID: 21300000, guid: 9392bae4972b27a499e8363371b84cc1, type: 3}
-  - clanValue: 3
-    icon: {fileID: 21300000, guid: b59c3cdedefc6f542af738e44fefc588, type: 3}
-  - clanValue: 4
-    icon: {fileID: 0}
-  - clanValue: 5
-    icon: {fileID: 0}
-  - clanValue: 6
-    icon: {fileID: 21300000, guid: 928b596fd3b066c4fb66fcbbf96e0550, type: 3}
-  - clanValue: 7
-    icon: {fileID: 21300000, guid: 4c71ff6e4c59147459fec711ba28bed5, type: 3}
-  - clanValue: 8
-    icon: {fileID: 21300000, guid: bc28d155b41f85f4aa8be0a2c5d2801b, type: 3}
-  - clanValue: 9
-    icon: {fileID: 21300000, guid: 04d6d8e04665dd94d886588ead466a6a, type: 3}
-  - clanValue: 10
-    icon: {fileID: 0}
-  - clanValue: 11
-    icon: {fileID: 21300000, guid: 1309793d7d688be4799fb4328bde7d6f, type: 3}
-  - clanValue: 12
-    icon: {fileID: 21300000, guid: 9a02e22920c3e424da23819b72793423, type: 3}
-  - clanValue: 13
-    icon: {fileID: 21300000, guid: b775be9df0f67c348bda4817c56daa6e, type: 3}
-  - clanValue: 14
-    icon: {fileID: 21300000, guid: cbccbb84dea9f1148a4290c776750eaf, type: 3}
-  - clanValue: 15
-    icon: {fileID: 0}
-  - clanValue: 16
-    icon: {fileID: 21300000, guid: 78b7e8cbaae017d439c14b2e5890f1bd, type: 3}
-  - clanValue: 17
-    icon: {fileID: 21300000, guid: 7a4390dad904a234f8cca1fa5e6c6200, type: 3}
-  - clanValue: 18
-    icon: {fileID: 0}
-  - clanValue: 19
-    icon: {fileID: 21300000, guid: 61bca96fbe6941748af285159988f707, type: 3}
-  - clanValue: 20
-    icon: {fileID: 21300000, guid: 5cb176eac18c3db4e92a2bd27c441103, type: 3}
-  - clanValue: 21
-    icon: {fileID: 0}
-  - clanValue: 22
-    icon: {fileID: 21300000, guid: 75e3a846d2336094eae45338c0b6e1ce, type: 3}
-  - clanValue: 23
-    icon: {fileID: 0}
-  - clanValue: 24
-    icon: {fileID: 0}
-  - clanValue: 25
-    icon: {fileID: 21300000, guid: 2c7bc0595e0d5464fa9e27636f8f2c47, type: 3}
-  - clanValue: 26
-    icon: {fileID: 0}
-  - clanValue: 27
-    icon: {fileID: 0}
-  - clanValue: 28
-    icon: {fileID: 0}
-  - clanValue: 29
-    icon: {fileID: 0}
-  - clanValue: 30
-    icon: {fileID: 21300000, guid: dcefb14496ae57449b4439dcccb301a0, type: 3}
-  - clanValue: 31
-    icon: {fileID: 0}
-  - clanValue: 32
-    icon: {fileID: 21300000, guid: 3908cf029c38b744da4215cb239fc106, type: 3}
-  - clanValue: 33
-    icon: {fileID: 0}
-  - clanValue: 34
-    icon: {fileID: 21300000, guid: e894aef66af46744bb0b35b05d5614b0, type: 3}
-  - clanValue: 35
-    icon: {fileID: 21300000, guid: 2dc625dee413b8540b6d3065cc4b343a, type: 3}
-  - clanValue: 36
-    icon: {fileID: 21300000, guid: 33c9ec7b1654cdc44b9ec56eadba0bd7, type: 3}
+  labelReference: {fileID: 11400000, guid: 6973cc6a8f1533546aaf3230189c85c3, type: 2}
   iconGrid: {fileID: 2476525467309515496}
   iconButtonPrefab: {fileID: 2632878634942695829, guid: ec8799f1ccf8ce64da70aed1f1616925,
     type: 3}
   selectedValues: 
   maxSelections: 5
+  selectedColorHex: '#00FF00'
+  unselectedColorHex: '#FFFFFF'
 --- !u!1 &4143045520671894157
 GameObject:
   m_ObjectHideFlags: 0
@@ -6068,7 +5996,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: -3.0000153}
+  m_AnchoredPosition: {x: 0, y: 3}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &696206520843313445
@@ -6357,17 +6285,17 @@ RectTransform:
   m_GameObject: {fileID: 8275226996413066703}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.0096229, y: 1.1925275, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7825391487400440489}
   - {fileID: 479887672587541395}
   m_Father: {fileID: 7124608822471090152}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.07958023, y: 0.25500003}
-  m_AnchorMax: {x: 0.91200006, y: 0.54843664}
-  m_AnchoredPosition: {x: 0, y: -19}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 487.5, y: 498}
+  m_SizeDelta: {x: 819, y: 378}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &8420716058076272483
 GameObject:
@@ -7291,7 +7219,7 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: -17}
-  m_Pivot: {x: 1, y: 0}
+  m_Pivot: {x: 1, y: 1}
 --- !u!222 &7337541221653517149
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7372,9 +7300,9 @@ MonoBehaviour:
   m_Interactable: 1
   m_TargetGraphic: {fileID: 804721418289082446}
   m_HandleRect: {fileID: 5423374464492725707}
-  m_Direction: 3
-  m_Value: 1
-  m_Size: 0.9999999
+  m_Direction: 2
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
