@@ -18,6 +18,8 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     [SerializeField] private GameObject _jukeboxObject;
     [SerializeField] private Button _backButton;
     [SerializeField] private TextMeshProUGUI _songName;
+    [Space]
+    [SerializeField] private bool _loopLastTrack = true;
 
     [Header("Songlist")]
     [SerializeField] private Transform _trackListContent;
@@ -70,12 +72,14 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     {
         //JukeboxController.OnChangeJukeBoxSong += SetSongInfo;
         //JukeboxController.OnChangeJukeBoxQueue += UpdateQueueText;
+        if (_currentMusicTrack != null) PlayTrack(_currentMusicTrack);
     }
 
     private void OnDisable()
     {
         //JukeboxController.OnChangeJukeBoxSong -= SetSongInfo;
         //JukeboxController.OnChangeJukeBoxQueue -= UpdateQueueText;
+        if (_trackEndingControlCoroutine != null) StopCoroutine(_trackEndingControlCoroutine);
     }
 
     #region Chunk
@@ -241,9 +245,13 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
             _queueUseTimes++;
         }
-        else //Keep playing the current track.
+        else if (_loopLastTrack) //Keep playing the current track.
             PlayTrack(_currentMusicTrack);
-            //_trackEndingControlCoroutine = StartCoroutine(TrackEndingControl());
+        else //Go back to Soulhome music
+        {
+            _currentMusicTrack = null;
+            AudioManager.Instance.PlayMusic("Soulhome", "");
+        }
 
         if (_queueUseTimes >= _queueOptimizationThreshold) OptimizeVisualQueueChunks();
     }
