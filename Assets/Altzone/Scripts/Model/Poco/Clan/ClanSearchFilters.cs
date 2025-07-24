@@ -1,4 +1,6 @@
-﻿namespace Altzone.Scripts.Model.Poco.Clan
+﻿using System.Collections.Generic;
+
+namespace Altzone.Scripts.Model.Poco.Clan
 {
     public struct ClanSearchFilters
     {
@@ -10,6 +12,7 @@
         public bool isOpen;
         public ClanRanking ranking;        // Muutettu RankingOption → ClanRanking
         public ClanMembers memberCount;    // Muutettu MemberCountOption → ClanMembers
+        public List<ClanValues> values;
         
         public override string ToString()
         {

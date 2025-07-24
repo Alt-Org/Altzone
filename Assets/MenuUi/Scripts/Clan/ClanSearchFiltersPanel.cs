@@ -41,9 +41,11 @@ public class ClanSearchFiltersPanel : MonoBehaviour
     [SerializeField] private Sprite _closedLockSprite;
 
     [Header("Values selection")]
+    [SerializeField] private ClanValuesUIManager _valueManager;
     [Space]
     [SerializeField] private Button _confirmButton;
     [SerializeField] private GameObject _filtersPopup;
+ 
 
     public Action<ClanSearchFilters> OnFiltersChanged;
 
@@ -293,7 +295,8 @@ public class ClanSearchFiltersPanel : MonoBehaviour
             goal = _clanGoal,
             ranking = _clanRanking,
             memberCount = _clanMembers,
-            isOpen = _isOpen
-        });
+            isOpen = _isOpen,
+            values = _valueManager.selectedValues
+        }) ;
     }
 }
