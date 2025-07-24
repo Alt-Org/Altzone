@@ -24,6 +24,16 @@ public class SFXHandler : MonoBehaviour
         _oneShotChannel = GetComponent<AudioSource>();
     }
 
+    private AudioChannelData GetAudioChannelData(ActiveChannelPath activeChannelPath)
+    {
+        return GetAudioChannelData(activeChannelPath.Chunk, activeChannelPath.Channel);
+    }
+
+    private AudioChannelData GetAudioChannelData(int chunkIndex, int poolIndex)
+    {
+        return _channelChunks[chunkIndex].AudioChannels[poolIndex];
+    }
+
     public void SetMaxVoulme(float volume) { _maxVolume = volume; }
 
     public void SetVolume(float volume, string target)
@@ -33,7 +43,7 @@ public class SFXHandler : MonoBehaviour
         if (target == "all")
         {
             foreach (ActiveChannelPath channel in _activeChannels)
-                _channelChunks[channel.Chunk].AudioChannels[channel.Channel].audioSourceHandler.SetVolume(fixedVolume);
+                GetAudioChannelData(channel).audioSourceHandler.SetVolume(fixedVolume);
 
             if (_oneShotChannel == null) _oneShotChannel = GetComponent<AudioSource>();
 
@@ -43,8 +53,11 @@ public class SFXHandler : MonoBehaviour
         }
         else
             foreach (ActiveChannelPath channel in _activeChannels)
-                if (_channelChunks[channel.Chunk].AudioChannels[channel.Channel].Name.ToLower() == target.ToLower())
-                    _channelChunks[channel.Chunk].AudioChannels[channel.Channel].audioSourceHandler.SetVolume(fixedVolume);
+            {
+                AudioChannelData data = GetAudioChannelData(channel);
+
+                if (data.Name.ToLower() == target.ToLower()) data.audioSourceHandler.SetVolume(fixedVolume);
+            }
     }
 
     public void Play(string categoryName, string sFXName, string mainMenuMusicName)
@@ -76,21 +89,21 @@ public class SFXHandler : MonoBehaviour
     public void StopAll()
     {
         foreach (ActiveChannelPath channel in _activeChannels)
-            _channelChunks[channel.Chunk].AudioChannels[channel.Channel].audioSourceHandler.Stop();
+            GetAudioChannelData(channel).audioSourceHandler.Stop();
     }
 
     public void ContinueAll()
     {
         foreach (ActiveChannelPath channel in _activeChannels)
-            _channelChunks[channel.Chunk].AudioChannels[channel.Channel].audioSourceHandler.Continue();
+            GetAudioChannelData(channel).audioSourceHandler.Continue();
     }
 
     public void ClearAll()
     {
         foreach (ActiveChannelPath channel in _activeChannels)
         {
-            _channelChunks[channel.Chunk].AudioChannels[channel.Channel].audioSourceHandler.Clear();
-            _channelChunks[channel.Chunk].AudioChannels[channel.Channel].Name = "";
+            GetAudioChannelData(channel).audioSourceHandler.Clear();
+            GetAudioChannelData(channel).Name = "";
         }
 
         foreach (AudioChannelChunk chunk in _channelChunks) chunk.AmountInUse = 0;
@@ -120,7 +133,7 @@ public class SFXHandler : MonoBehaviour
                         _activeChannels.Add(new(i, j));
                         _channelChunks[i].AudioChannels[j].Name = name;
 
-                        return _channelChunks[i].AudioChannels[j].audioSourceHandler;
+                        return GetAudioChannelData(i, j).audioSourceHandler;
                     }
 
         //No free AudioSourceHandlers found. Creating new AudioSourceHandler chunk.
@@ -128,25 +141,24 @@ public class SFXHandler : MonoBehaviour
         _channelChunks[_channelChunks.Count - 1].AmountInUse++;
         _activeChannels.Add(new(_channelChunks.Count - 1, 0));
 
-        return _channelChunks[_channelChunks.Count - 1].AudioChannels[0].audioSourceHandler;
+        return GetAudioChannelData(_channelChunks.Count - 1, 0).audioSourceHandler;
     }
 
     private void CreateChunk()
     {
-        _channelChunks = new List<AudioChannelChunk>();
+        AudioChannelChunk audioChannelChunk = new AudioChannelChunk();
+        List<AudioChannelData> audioChannels = new List<AudioChannelData>(_audioChannelAddAmount);
 
-        for (int i = 0; i < _channelChunks.Count; i++)
+        for (int j = 0; j < audioChannels.Count; j++)
         {
-            _channelChunks[i].AudioChannels = new List<AudioChannelData>(_audioChannelAddAmount);
-
-            for (int j = 0; j < _channelChunks[i].AudioChannels.Count; j++)
-            {
-                GameObject audioObject = Instantiate(_audioSourcePrefab, _channelsHolder);
-                _channelChunks[i].AudioChannels[j].audioSourceHandler = audioObject.GetComponent<AudioSourceHandler>();
-                _channelChunks[i].AudioChannels[j].audioSourceHandler.SetChunkIndex(i, j);
-                _channelChunks[i].AudioChannels[j].audioSourceHandler.OnPlaybackFinished += AudioSourceSelfUnregister;
-            }
+            GameObject audioObject = Instantiate(_audioSourcePrefab, _channelsHolder);
+            audioChannels[j].audioSourceHandler = audioObject.GetComponent<AudioSourceHandler>();
+            audioChannels[j].audioSourceHandler.SetChunkIndex(_channelChunks.Count, j);
+            audioChannels[j].audioSourceHandler.OnPlaybackFinished += AudioSourceSelfUnregister;
         }
+
+        audioChannelChunk.AudioChannels = audioChannels;
+        _channelChunks.Add(audioChannelChunk);
     }
 }
 

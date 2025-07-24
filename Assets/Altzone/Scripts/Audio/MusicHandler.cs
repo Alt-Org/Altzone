@@ -37,6 +37,13 @@ namespace Altzone.Scripts.Audio
 
         private bool _musicSwitchInProgress = false;
 
+        public enum MusicListDirection
+        {
+            Next,
+            Previous,
+            None
+        }
+
         public void SetMaxVoulme(float volume) { _maxVolume = volume; }
 
         private void Awake()
@@ -148,10 +155,10 @@ namespace Altzone.Scripts.Audio
 
             _currentCategory = musicCategory;
             _currentTrack = musicTrack;
-            StartCoroutine(SwitchMusic(0, null));
+            StartCoroutine(SwitchMusic(MusicListDirection.None, null));
         }
 
-        public IEnumerator SwitchMusic(int direction, System.Action<string> newTrackName)
+        public IEnumerator SwitchMusic(MusicListDirection direction, System.Action<string> newTrackName)
         {
             MusicTrack musicTrack;
 
@@ -162,9 +169,12 @@ namespace Altzone.Scripts.Audio
                 yield break;
             }
 
-            if (newTrackName != null && direction != 0)
+            if (newTrackName != null && direction != MusicListDirection.None)
             {
-                _currentTrackIndex += direction;
+                if (direction == MusicListDirection.Next)
+                    _currentTrackIndex += 1;
+                else
+                    _currentTrackIndex -= 1;
 
                 if (_currentTrackIndex >= _currentCategory.MusicTracks.Count)
                     _currentTrackIndex = 0;
@@ -214,7 +224,7 @@ namespace Altzone.Scripts.Audio
                 _nextUpCategory = null;
                 _nextUpTrack = null;
 
-                StartCoroutine(SwitchMusic(0, null));
+                StartCoroutine(SwitchMusic(MusicListDirection.None, null));
             }
         }
 
@@ -236,7 +246,6 @@ namespace Altzone.Scripts.Audio
 
             while (_crossFadeTimer < _crossFadeDuration)
             {
-                _crossFadeTimer += Time.deltaTime;
                 yield return null;
 
                 float progression;
@@ -256,6 +265,8 @@ namespace Altzone.Scripts.Audio
                     _musicChannel1.volume = Mathf.Lerp(_maxVolume, 0f, progression);
                     _musicChannel2.volume = Mathf.Lerp(0f, _maxVolume, progression);
                 }
+
+                _crossFadeTimer += Time.deltaTime;
             }
 
             done(true);

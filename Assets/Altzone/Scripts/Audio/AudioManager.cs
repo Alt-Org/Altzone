@@ -87,7 +87,7 @@ namespace Altzone.Scripts.Audio
         {
             string name = null;
 
-            _musicHandler.SwitchMusic(1, sData => name = sData);
+            _musicHandler.SwitchMusic(MusicHandler.MusicListDirection.Next, sData => name = sData);
 
             return name;
         }
@@ -96,7 +96,7 @@ namespace Altzone.Scripts.Audio
         {
             string name = null;
 
-            _musicHandler.SwitchMusic(-1, sData => name = sData);
+            _musicHandler.SwitchMusic(MusicHandler.MusicListDirection.Previous, sData => name = sData);
 
             return name;
         }
