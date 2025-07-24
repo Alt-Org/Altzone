@@ -13,6 +13,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     [SerializeField] private Image _diskImage;
     [SerializeField] private Transform _diskTransform;
     [SerializeField] private float _diskRotationSpeed = 100f;
+    [SerializeField] private Sprite _emptyDisk;
 
     [Header("Other")]
     [SerializeField] private GameObject _jukeboxObject;
@@ -52,6 +53,11 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
     private Coroutine _trackEndingControlCoroutine;
 
+    private const string NoSongName = "Ei valittua biisiä";
+
+    public delegate void ChangeJukeBoxSong(MusicTrack track);
+    public static event ChangeJukeBoxSong OnChangeJukeBoxSong;
+
     private void Awake()
     {
         if (Instance == null)
@@ -69,6 +75,8 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         List<MusicTrack> musicTracks = AudioManager.Instance.GetMusicList("Jukebox");
 
         foreach (MusicTrack track in musicTracks) GetFreeJukeboxTrackButtonHandler().SetTrack(track);
+
+        _songName.text = NoSongName;
     }
 
     private void OnEnable()
@@ -180,7 +188,8 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
     public void StopJukebox()
     {
-        _diskImage.sprite = null;
+        _songName.text = NoSongName;
+        _diskImage.sprite = _emptyDisk;
 
         if (_diskSpinCoroutine != null)
         {
@@ -194,6 +203,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
             StopCoroutine(_trackEndingControlCoroutine);
             _trackEndingControlCoroutine = null;
         }
+        OnChangeJukeBoxSong?.Invoke(null);
     }
 
     private void SetSongInfo(MusicTrack track)
@@ -211,6 +221,8 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         }
 
         if (track.Music != null) _diskSpinCoroutine = StartCoroutine(SpinDisk());
+
+        OnChangeJukeBoxSong?.Invoke(track);
     }
 
     private IEnumerator SpinDisk()
@@ -255,6 +267,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         else //Go back to Soulhome music
         {
             _currentMusicTrack = null;
+            StopJukebox();
             AudioManager.Instance.PlayMusic("Soulhome", "");
         }
 

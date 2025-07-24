@@ -86,7 +86,7 @@ namespace MenuUI.Scripts.SoulHome
 
             EditModeTrayResize();
             if (GameAnalyticsManager.Instance != null) GameAnalyticsManager.Instance.OpenSoulHome();
-            JukeboxController.OnChangeJukeBoxSong += SetSongName;
+            JukeBoxSoulhomeHandler.OnChangeJukeBoxSong += SetSongName;
         }
 
         public void OnDisable()
@@ -100,7 +100,7 @@ namespace MenuUI.Scripts.SoulHome
             //AudioManager.Instance?.StopMusic();
             _jukeBoxPopup.StopJukebox();
             _jukeBoxPopup.ToggleJukeboxScreen(false);
-            JukeboxController.OnChangeJukeBoxSong -= SetSongName;
+            JukeBoxSoulhomeHandler.OnChangeJukeBoxSong -= SetSongName;
         }
 
         public void SetRoomName(GameObject room)
@@ -263,9 +263,9 @@ namespace MenuUI.Scripts.SoulHome
             SignalBus.OnChangePopupInfoSignal(popupText);
         }
 
-        private void SetSongName(JukeboxSong song)
+        private void SetSongName(MusicTrack song)
         {
-            _musicName.text = song.Name;
+            _musicName.text = song != null ? song.Name : "Oletus";
         }
 
         public bool CheckInteractableStatus()
