@@ -16,7 +16,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
             CharacterStatWindowToShowValue = data.Id;
 
-            SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow = CharacterStatWindowToShowValue;
+            //SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow = CharacterStatWindowToShowValue;
             base.OnNaviButtonClick();
             Debug.Log("changed to " + CharacterStatWindowToShowValue);
         }

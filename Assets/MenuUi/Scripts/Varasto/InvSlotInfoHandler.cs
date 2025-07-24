@@ -24,13 +24,16 @@ public class InvSlotInfoHandler : MonoBehaviour
     [SerializeField] private Color _epicColor;
     [SerializeField] private Color _antiqueColor;
 
+    public Image Icon { get => _icon;}
+
     public void SetSlotInfo(StorageFurniture furn, int sortingBy)
     {
         // Set color based on rarity
         _commonBoxAttachmentBase.color = GetColorByRarity(furn.Rarity.ToString());
 
         // Icon
-        _icon.sprite = furn.Sprite;
+        _icon.sprite = furn.Info.RibbonImage;
+        if (_icon.sprite == null) _icon.sprite = furn.Sprite;
 
         // Name
         _topText.text = furn.VisibleName;

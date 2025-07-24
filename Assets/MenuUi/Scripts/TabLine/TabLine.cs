@@ -34,7 +34,7 @@ namespace MenuUi.Scripts.TabLine
             foreach (TabLineButton button in _tabLineButtons)
             {
                 if (_tabColor != Color.white) button.SetColour(_tabColor);
-                else button.SetColour(_tabLineRibbon.color);
+                else button.SetColour(_tabLineRibbon != null ? _tabLineRibbon.color : Color.white);
             }
 
             if (_getActiveButtonFromSwipe)
@@ -78,12 +78,15 @@ namespace MenuUi.Scripts.TabLine
             }
 
             Sprite image = _tabLineButtons[index].SetActiveVisuals();
-            if (image != null)
+            if (_tabLineImage != null)
             {
-                _tabLineImage.sprite = image;
-                _tabLineImage.enabled = true;
+                if (image != null)
+                {
+                    _tabLineImage.sprite = image;
+                    _tabLineImage.enabled = true;
+                }
+                else if (_tabLineImage.sprite == null) _tabLineImage.enabled = false;
             }
-            else if(_tabLineImage.sprite == null) _tabLineImage.enabled = false;
 
             for (int i = 0; i < _tabLineButtons.Length; i++)
             {

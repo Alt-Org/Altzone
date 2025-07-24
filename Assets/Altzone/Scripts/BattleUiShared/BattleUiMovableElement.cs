@@ -1,4 +1,12 @@
+using System.Collections.Generic;
+
 using UnityEngine;
+using UnityEngine.UI;
+
+using TMPro;
+
+using BattleUiElementType = SettingsCarrier.BattleUiElementType;
+using System.Linq;
 
 namespace Altzone.Scripts.BattleUiShared
 {
@@ -9,6 +17,7 @@ namespace Altzone.Scripts.BattleUiShared
     public class BattleUiMovableElement : MonoBehaviour
     {
         public RectTransform RectTransformComponent => _rectTransform;
+        public BattleUiElementType UiElementType { get; private set; }
 
         /// <summary>
         /// Set BattleUiMovableElementData to this Ui element.
@@ -23,6 +32,14 @@ namespace Altzone.Scripts.BattleUiShared
 
             _rectTransform.offsetMin = Vector2.zero;
             _rectTransform.offsetMax = Vector2.zero;
+
+            UiElementType = data.UiElementType;
+
+            if (data.Transparency != _currentTransparency)
+            {
+                _currentTransparency = data.Transparency;
+                SetTransparency();
+            }
         }
 
         /// <summary>
@@ -33,7 +50,7 @@ namespace Altzone.Scripts.BattleUiShared
         {
             if (_rectTransform != null)
             {
-                return new BattleUiMovableElementData(_rectTransform.anchorMin, _rectTransform.anchorMax);
+                return new BattleUiMovableElementData(UiElementType, _rectTransform.anchorMin, _rectTransform.anchorMax, _currentTransparency);
             }
             else
             {
@@ -43,9 +60,42 @@ namespace Altzone.Scripts.BattleUiShared
 
         protected RectTransform _rectTransform;
 
+        protected List<Image> _images;
+        protected List<TMP_Text> _texts;
+
+        protected int _currentTransparency = 0;
+
         protected void Awake()
         {
             if (_rectTransform == null) _rectTransform = GetComponent<RectTransform>();
+            _images = GetComponentsInChildren<Image>().ToList();
+            _texts = GetComponentsInChildren<TMP_Text>().ToList();
+        }
+
+        protected void SetTransparency()
+        {
+            if (_images == null) _images = GetComponentsInChildren<Image>().ToList();
+            if (_texts == null) _texts = GetComponentsInChildren<TMP_Text>().ToList();
+
+            // Converting transparency to opacity
+            float newOpacity = 1f - _currentTransparency / 100f;
+
+            // Setting new opacity to images
+            foreach (Image image in _images)
+            {
+                if (image.sprite == null) continue;
+                Color newImageColor = image.color;
+                newImageColor.a = newOpacity;
+                image.color = newImageColor;
+            }
+
+            // Setting new opacity to texts
+            foreach (TMP_Text text in _texts)
+            {
+                Color newTextColor = text.color;
+                newTextColor.a = newOpacity;
+                text.color = newTextColor;
+            }
         }
     }
 }

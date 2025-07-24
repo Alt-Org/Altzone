@@ -13,6 +13,9 @@ using Battle.View.Audio;
 using PlayerType = Battle.View.UI.BattleUiPlayerInfoHandler.PlayerType;
 
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
+using BattleMovementInputType = SettingsCarrier.BattleMovementInputType;
+using BattleRotationInputType = SettingsCarrier.BattleRotationInputType;
+using Battle.View.Player;
 
 namespace Battle.View.Game
 {
@@ -24,6 +27,7 @@ namespace Battle.View.Game
         [SerializeField] private BattleStoneCharacterViewController _stoneCharacterViewController;
         [SerializeField] private BattleLightrayEffectViewController _lightrayEffectViewController;
         [SerializeField] private BattleSoundFXViewController _soundFXViewController;
+        [SerializeField] private BattlePlayerInput _playerInput;
 
         public static BattlePlayerSlot LocalPlayerSlot { get; private set; }
         public static BattleTeamNumber LocalPlayerTeam { get; private set; }
@@ -42,12 +46,26 @@ namespace Battle.View.Game
 
         public void UiInputOnCharacterSelected(int characterNumber)
         {
+            _playerInput.OnCharacterSelected(characterNumber);
+
             Debug.Log($"Character number {characterNumber} selected!");
+        }
+
+        public void UiInputOnJoystickMovement(Vector2 input)
+        {
+            _playerInput.OnJoystickMovement(input);
+            //Debug.Log($"Move joystick input {input}");
+        }
+
+        public void UiInputOnJoystickRotation(float input)
+        {
+            _playerInput.OnJoystickRotation(input);
+            //Debug.Log($"Rotate joystick input {input}");
         }
 
         public void UiInputOnExitGamePressed()
         {
-            if (_endOfGameDataHasEnded) LobbyManager.ExitQuantum(_endOfGameDataWinningTeam, (float)_endOfGameDataGameLengthSec);
+            if (_endOfGameDataHasEnded) LobbyManager.ExitQuantum(_endOfGameDataWinningTeam == LocalPlayerTeam, (float)_endOfGameDataGameLengthSec);
         }
 
         private bool _endOfGameDataHasEnded = false;
@@ -68,6 +86,9 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleViewGameStart>(this, QEventOnViewGameStart);
             QuantumEvent.Subscribe<EventBattleViewGameOver>(this, QEventOnViewGameOver);
 
+            // Subscribing to other View Init events
+            QuantumEvent.Subscribe<EventBattleStoneCharacterPieceViewInit>(this, QEventOnStoneCharacterPieceViewInit);
+
             // Subscribing to Gameplay events
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, QEventOnChangeEmotionState);
             QuantumEvent.Subscribe<EventBattleLastRowWallDestroyed>(this, QEventOnLastRowWallDestroyed);
@@ -75,6 +96,7 @@ namespace Battle.View.Game
 
             // Subscribing to Debug events
             QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, QEventDebugOnUpdateStatsOverlay);
+            QuantumEvent.Subscribe<EventBattleDebugOnScreenMessage>(this, QEventDebugOnScreenMessage);
         }
 
         private void QEventOnViewWaitForPlayers(EventBattleViewWaitForPlayers e)
@@ -115,6 +137,25 @@ namespace Battle.View.Game
                 if (data != null) _uiController.TimerHandler.MovableUiElement.SetData(data);
             }
 
+            if (_uiController.JoystickHandler != null)
+            {
+                if (SettingsCarrier.Instance.BattleMovementInput == BattleMovementInputType.Joystick)
+                {
+                    BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.MoveJoystick);
+                    _uiController.JoystickHandler.SetInfo(BattleUiElementType.MoveJoystick, data);
+                    _uiController.JoystickHandler.SetShow(true, BattleUiElementType.MoveJoystick);
+                }
+
+                if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick)
+                {
+                    BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.RotateJoystick);
+                    _uiController.JoystickHandler.SetInfo(BattleUiElementType.RotateJoystick, data);
+                    _uiController.JoystickHandler.SetShow(true, BattleUiElementType.RotateJoystick);
+                }
+
+                _uiController.JoystickHandler.SetLocked(true);
+            }
+
             // Commented out code to hide the ui elements which shouldn't be shown at this point, but the code will be used later
             /*
             if (_uiController.GiveUpButtonHandler != null)
@@ -122,6 +163,7 @@ namespace Battle.View.Game
                 BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.GiveUpButton);
                 if (data != null) _uiController.GiveUpButtonHandler.MovableUiElement.SetData(data);
             }
+            */
 
             if (_uiController.PlayerInfoHandler != null)
             {
@@ -141,9 +183,16 @@ namespace Battle.View.Game
                     SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.TeammateInfo)
                 );
             }
-            */
 
             //} Initializing UI Handlers
+        }
+
+        private void QEventOnStoneCharacterPieceViewInit(EventBattleStoneCharacterPieceViewInit e)
+        {
+            if (_stoneCharacterViewController != null)
+            {
+                _stoneCharacterViewController.SetEmotionIndicator(e.WallNumber, e.Team, e.EmotionIndicatorColorIndex);
+            }
         }
 
         private void QEventOnViewActivate(EventBattleViewActivate e)
@@ -154,8 +203,8 @@ namespace Battle.View.Game
             if (_uiController.DiamondsHandler != null) _uiController.DiamondsHandler.SetShow(true);
             /* These UI elements aren't ready and shouldn't be shown yet
             if (_uiController.GiveUpButtonHandler != null) _uiController.GiveUpButtonHandler.SetShow(true);
-            if (_uiController.PlayerInfoHandler != null) _uiController.PlayerInfoHandler.SetShow(true);
             */
+            if (_uiController.PlayerInfoHandler != null) _uiController.PlayerInfoHandler.SetShow(true);
 
             // Load settings and set BattleCamera to show game scene with previously loaded settings
             BattleCamera.SetView(
@@ -169,6 +218,9 @@ namespace Battle.View.Game
         {
             // Show end of countdown text in announcement handler
             _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.EndOfCountdown);
+
+            // Unlock the joysticks to allow movement
+            _uiController.JoystickHandler.SetLocked(false);
         }
 
         private void QEventOnViewGameStart(EventBattleViewGameStart e)
@@ -176,24 +228,18 @@ namespace Battle.View.Game
             // Clear the countdown text
             _uiController.AnnouncementHandler.ClearAnnouncerTextField();
 
-            // Starting game timer
-            if (Utils.TryGetQuantumFrame(out Frame frame))
-            {
-                _uiController.TimerHandler.SetShow(true);
-                _uiController.TimerHandler.StartTimer(frame);
-            }
+            // Show the timer
+            _uiController.TimerHandler.SetShow(true);
         }
 
         private void QEventOnViewGameOver(EventBattleViewGameOver e)
         {
-            // Stopping timer
-            _uiController.TimerHandler.StopTimer();
-
             // Hiding UI elements
             _uiController.TimerHandler.SetShow(false);
             _uiController.DiamondsHandler.SetShow(false);
             _uiController.GiveUpButtonHandler.SetShow(false);
             _uiController.PlayerInfoHandler.SetShow(false);
+            _uiController.JoystickHandler.SetShow(false);
 
             // If the game is over, display "Game Over!" and show the Game Over UI
             _uiController.GameOverHandler.SetShow(true);
@@ -219,7 +265,7 @@ namespace Battle.View.Game
 
             if (_lightrayEffectViewController != null)
             {
-                _lightrayEffectViewController.SpawnLightray(e.WallNumber, (float)e.LightrayRotation, e.LightrayColor, e.LightraySize);
+                _lightrayEffectViewController.SpawnLightray(e.WallNumber, e.LightrayColor);
             }
         }
 
@@ -230,8 +276,16 @@ namespace Battle.View.Game
 
         private void QEventDebugOnUpdateStatsOverlay(EventBattleDebugUpdateStatsOverlay e)
         {
+            if (!SettingsCarrier.Instance.BattleShowDebugStatsOverlay) return;
+            if (e.Slot != LocalPlayerSlot) return;
+
             _uiController.DebugStatsOverlayHandler.SetShow(true);
-            _uiController.DebugStatsOverlayHandler.SetStats(e.Character);
+            _uiController.DebugStatsOverlayHandler.SetStats(e.Stats);
+        }
+
+        private void QEventDebugOnScreenMessage(EventBattleDebugOnScreenMessage e)
+        {
+            _uiController.AnnouncementHandler.SetDebugtext(e.Message);
         }
 
         // Handles UI updates based on the game's state and countdown
@@ -266,6 +320,9 @@ namespace Battle.View.Game
                         // Updating diamonds (at the moment shows only alpha team's diamonds)
                         BattleDiamondCounterQSingleton diamondCounter = frame.GetSingleton<BattleDiamondCounterQSingleton>();
                         _uiController.DiamondsHandler.SetDiamondsText(diamondCounter.AlphaDiamonds);
+
+                        // Updating timer text
+                        _uiController.TimerHandler.FormatAndSetTimerText(gameSession.GameTimeSec);
                         break;
                 }
 

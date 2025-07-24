@@ -36,6 +36,12 @@ namespace Battle.QSimulation.Player
                 playerData      = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerEntity);
                 playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
 
+                if (input->PlayerCharacterNumber > -1)
+                {
+                    BattlePlayerManager.SpawnPlayer(f, playerData->Slot, input->PlayerCharacterNumber);
+                    continue;
+                }
+
                 BattlePlayerMovementController.UpdateMovement(f, playerData, playerTransform, input);
             }
         }

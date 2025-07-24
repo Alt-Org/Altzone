@@ -53,13 +53,16 @@ namespace Altzone.Scripts.ModelV2.Internal
                                 .Select(x => new ModelV2.PlayerCharacterPrototype(x))
                                 .ToList()
                                 .AsReadOnly();
+                        _instance._fallBackPrototype = new ModelV2.PlayerCharacterPrototype(_instance._characters.FirstOrDefault(x => x.Id == "0"));
                     }
                 }
                 return _instance;
 
-                bool SelectApproved(CharacterSpec characterSpec) => characterSpec.IsValid && characterSpec.IsApproved;
+                bool SelectApproved(CharacterSpec characterSpec) => characterSpec.IsValid && characterSpec.IsApproved && (!IsTesting(characterSpec) || _instance.AllowTestCharacters);
 
                 bool SelectAll(CharacterSpec characterSpec) => characterSpec.IsValid;
+
+                bool IsTesting(CharacterSpec characterSpec) => (int)characterSpec.CharacterId % 100 == 0;
             }
         }
 
@@ -73,7 +76,7 @@ namespace Altzone.Scripts.ModelV2.Internal
         /// <param name="id">the character id</param>
         /// <returns>the PlayerCharacterPrototype or null if not found</returns>
         public ModelV2.PlayerCharacterPrototype GetCharacter(string id) =>
-            _runtimePrototypes.FirstOrDefault(x => x.Id == id);
+            _runtimePrototypes.FirstOrDefault(x => x.Id == id) ?? _fallBackPrototype;
 
         /// <summary>
         /// Gets current (configured) player character prototypes in the game.
@@ -81,12 +84,20 @@ namespace Altzone.Scripts.ModelV2.Internal
         public IEnumerable<ModelV2.PlayerCharacterPrototype> Prototypes => _runtimePrototypes;
 
         private ReadOnlyCollection<ModelV2.PlayerCharacterPrototype> _runtimePrototypes;
+        private PlayerCharacterPrototype _fallBackPrototype;
+
+        /// <summary>
+        /// Gets whether test characters are allowed in the current build.
+        /// </summary>
+        public bool AllowTestCharacters => _allowTestCharacters && (AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild);
 
         #endregion
 
         #region ScriptableObject 'inspector' implementation
 
         [SerializeField, Header("For Production")] private bool _approvedOnly;
+
+        [SerializeField, Tooltip("Allow Test Characters in test environment (Editor or Dev Build). Production doesn't allow test characters.")] private bool _allowTestCharacters;
 
         [SerializeField, Header("All Player Characters")] private List<CharacterSpec> _characters;
 
@@ -104,7 +115,7 @@ namespace Altzone.Scripts.ModelV2.Internal
             var uniqueNames = new HashSet<string>();
             foreach (var character in instance._characters)
             {
-                if (character.ClassType == CharacterClassID.None)
+                if (character.ClassType == CharacterClassID.None && character.CharacterId != CharacterID.Test)
                 {
                     Debug.LogError($"invalid ClassType {character}", character);
                     continue;

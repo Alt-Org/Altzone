@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 248657842603628198}
   - component: {fileID: 8221587775735577726}
   - component: {fileID: 1769041602234373325}
+  - component: {fileID: 53744413953528220}
   m_Layer: 0
   m_Name: PieChart
   m_TagString: Untagged
@@ -49,9 +50,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e056d2da65fd9647bb666f044eb738b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _controller: {fileID: 0}
   _referenceSheet: {fileID: 11400000, guid: 5e66c5670c2acee42baa17d9e45255c7, type: 2}
-  _sliceAmount: 50
+  _piechartText: {fileID: 0}
 --- !u!222 &1769041602234373325
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -60,3 +60,33 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4663721464709291427}
   m_CullTransparentMesh: 1
+--- !u!114 &53744413953528220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4663721464709291427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 80f20307a0e7733439e8a9b29acd12a1, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 1
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1

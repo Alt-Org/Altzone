@@ -24,6 +24,7 @@ namespace MenuUi.Scripts.CharacterGallery
             All = 0,
             Unlocked = 1,
             Locked = 2,
+            Test = 3,
             Desensitizer = 100,
             Trickster = 200,
             Obedient = 300,
@@ -41,7 +42,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
         [SerializeField] private GameObject _characterSlotPrefab;
 
-        [SerializeField] private ClassColorReference _classColorReference;
+        [SerializeField] private ClassReference _classReference;
 
         private FilterType _currentFilter = FilterType.All;
         private List<int> filterEnumValues;
@@ -50,7 +51,7 @@ namespace MenuUi.Scripts.CharacterGallery
         private readonly List<CharacterSlot> _characterSlots = new();
         public List<CharacterSlot> CharacterSlots => _characterSlots;
 
-        public delegate void GalleryCharactersSetHandler(int[] _selectedCharacterIds);
+        public delegate void GalleryCharactersSetHandler(CustomCharacter[] _selectedCharacters);
         public GalleryCharactersSetHandler OnGalleryCharactersSet;
 
         public Action OnFilterChanged;
@@ -109,14 +110,27 @@ namespace MenuUi.Scripts.CharacterGallery
         /// </summary>
         /// <param name="customCharacters">List of player's custom (owned) characters.</param>
         /// <param name="selectedCharacterIds">Array of selected character ids.</param>
-        public void SetCharacters(List<CustomCharacter> customCharacters, int[] selectedCharacterIds)
+        public void SetCharacters(List<CustomCharacter> customCharacters, CharacterID[] selectedCharacterIds)
         {
             Reset();
+
+            CustomCharacter[] selectedCharacters = new CustomCharacter[3];
 
             // Placing unlocked characters
             foreach (CustomCharacter character in customCharacters)
             {
                 var charSlot = InstantiateCharacterSlot(character.Id, false, _unlockedCharacterGridContent);
+
+                // Going through selectedCharacterIds to check if the CustomCharacter is one of the selected characters
+                for (int i = 0; i < selectedCharacterIds.Length; i++)
+                {
+                    if (character.Id == selectedCharacterIds[i])
+                    {
+                        // Adding the CustomCharacter to the array of selected characters
+                        selectedCharacters[i] = character;
+                        break;
+                    }
+                }
             }
 
             // Placing locked characters
@@ -144,7 +158,8 @@ namespace MenuUi.Scripts.CharacterGallery
                 }
             }
 
-            OnGalleryCharactersSet?.Invoke(selectedCharacterIds);
+            // Invoking the event with selectedCharacters CustomCharacter array
+            OnGalleryCharactersSet?.Invoke(selectedCharacters);
         }
 
 
@@ -156,11 +171,12 @@ namespace MenuUi.Scripts.CharacterGallery
             GameObject slot = Instantiate(_characterSlotPrefab, parent);
 
             CharacterClassID classID = CustomCharacter.GetClassID(charID);
-            Color bgColor = _classColorReference.GetColor(classID);
-            Color bgAltColor = _classColorReference.GetAlternativeColor(classID);
+            string className = _classReference.GetName(classID);
+            Color bgColor = _classReference.GetColor(classID);
+            Color bgAltColor = _classReference.GetAlternativeColor(classID);
 
             CharacterSlot charSlot = slot.GetComponent<CharacterSlot>();
-            charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, charID);
+            charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, className, charID);
 
             _characterSlots.Add(charSlot);
 
@@ -176,7 +192,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
             return charSlot;
         }
-       
+
         private void RotateFilters()
         {
             for (int i = 0; i < filterEnumValues.Count; i++)
@@ -221,6 +237,13 @@ namespace MenuUi.Scripts.CharacterGallery
                     foreach (CharacterSlot characterSlot in _characterSlots)
                     {
                         characterSlot.gameObject.SetActive(characterSlot.IsLocked);
+                    }
+                    break;
+
+                case FilterType.Test:
+                    foreach (CharacterSlot characterSlot in _characterSlots)
+                    {
+                        characterSlot.gameObject.SetActive(CustomCharacter.IsTestCharacter(characterSlot.Id));
                     }
                     break;
 
@@ -288,6 +311,11 @@ namespace MenuUi.Scripts.CharacterGallery
                 case FilterType.Locked:
                     _filterText.text = "Tiedostamattomat";
                     break;
+
+                case FilterType.Test:
+                    _filterText.text = "Testihahmot";
+                    break;
+
                 case FilterType.Desensitizer:
                     _filterText.text = "Tunnottomat";
                     break;
@@ -312,6 +340,6 @@ namespace MenuUi.Scripts.CharacterGallery
             }
         }
 
-        
+
     }
 }

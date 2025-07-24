@@ -102,10 +102,10 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterGallery
             // Arrange stats
             var stats = new List<(int level, Color color)>
             {
-                (impactForce, _impactForceColor),
                 (healthPoints, _healthPointsColor),
-                (characterSize, _characterSizeColor),
                 (speed, _speedColor),
+                (characterSize, _characterSizeColor),
+                (impactForce, _impactForceColor),
                 (defence, _defenceColor),
             };
 
