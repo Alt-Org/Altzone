@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class JukeBoxSoulhomeHandler : MonoBehaviour
 {
-    //public static JukeBoxSoulhomeHandler Instance;
+    public static JukeBoxSoulhomeHandler Instance;
 
     [Header("Disk")]
     [SerializeField] private Image _diskImage;
@@ -48,14 +48,17 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     private int _queueUseTimes = 0;
 
     private MusicTrack _currentMusicTrack;
+    public MusicTrack CurrentMusicTrack {  get { return _currentMusicTrack; } }
 
     private Coroutine _trackEndingControlCoroutine;
 
-    //private void Awake()
-    //{
-    //    if (Instance == null)
-    //        Instance = this;
-    //}
+    private void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(this);
+    }
 
     void Start()
     {
@@ -72,7 +75,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     {
         //JukeboxController.OnChangeJukeBoxSong += SetSongInfo;
         //JukeboxController.OnChangeJukeBoxQueue += UpdateQueueText;
-        if (_currentMusicTrack != null) PlayTrack(_currentMusicTrack);
+        //if (_currentMusicTrack != null) PlayTrack(_currentMusicTrack);
     }
 
     private void OnDisable()
@@ -158,6 +161,8 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     #endregion
 
     public void ToggleJukeboxScreen(bool toggle) { _jukeboxObject.SetActive(toggle); }
+
+    public string PlayTrack() { return PlayTrack(_currentMusicTrack); }
 
     private string PlayTrack(MusicTrack musicTrack)
     {

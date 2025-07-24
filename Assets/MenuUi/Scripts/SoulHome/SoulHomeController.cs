@@ -79,7 +79,11 @@ namespace MenuUI.Scripts.SoulHome
             //    if (rootObject.name == "AudioManager")
             //        rootObject.GetComponent<MainMenuAudioManager>()?.StopMusic();
             //}
-            _musicName.text = AudioManager.Instance?.PlayMusic("Soulhome", "");
+            if (JukeBoxSoulhomeHandler.Instance.CurrentMusicTrack != null)
+                JukeBoxSoulhomeHandler.Instance.PlayTrack();
+            else
+                _musicName.text = AudioManager.Instance?.PlayMusic("Soulhome", "");
+
             EditModeTrayResize();
             if (GameAnalyticsManager.Instance != null) GameAnalyticsManager.Instance.OpenSoulHome();
             JukeboxController.OnChangeJukeBoxSong += SetSongName;
