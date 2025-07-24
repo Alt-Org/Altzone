@@ -35,6 +35,8 @@ namespace Altzone.Scripts.Voting
         Kick
     }
 
+
+
     public class PollData
     {
         public string Id;
@@ -45,6 +47,9 @@ namespace Altzone.Scripts.Voting
         public List<string> NotVoted;
         public List<PollVoteData> YesVotes;
         public List<PollVoteData> NoVotes;
+
+        public bool IsExpired => EndTime < DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
 
         public PollData(string id, Sprite sprite, List<string> clanMembers, long endTime)
         {
@@ -57,18 +62,35 @@ namespace Altzone.Scripts.Voting
             NoVotes = new List<PollVoteData>();
         }
 
+        public PollData(ServerPoll poll)
+        {
+            Id = poll._id;
+            StartTime = ((DateTimeOffset)DateTime.Parse(poll.startedAt)).ToUnixTimeSeconds();
+            EndTime = ((DateTimeOffset)DateTime.Parse(poll.endsOn)).ToUnixTimeSeconds();
+            GameFurniture gameFurniture = null;
+            Storefront.Get().GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == poll.shopItemName));
+            Sprite = gameFurniture.FurnitureInfo.Image;
+            NotVoted = poll.player_ids.ToList();
+            YesVotes = new List<PollVoteData>();
+            NoVotes = new List<PollVoteData>();
+        }
+
         public void AddVote(bool answer)
         {
             DataStore store = Storefront.Get();
             PlayerData player = null;
-            
+
             store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
 
+            // Method to check if the player has already voted. Interacting with the PollObject is already blocked in votemanager, but this can act as a failsafe for now
             if (player != null)
             {
-                PollVoteData previousPollVote = null;
-                if (answer) previousPollVote = NoVotes.FirstOrDefault(vote => vote.PlayerId == player.Id);
-                else previousPollVote = YesVotes.FirstOrDefault(vote => vote.PlayerId == player.Id);
+                bool hasVoted = YesVotes.Any(vote => vote.PlayerId == player.Id) ||
+                                NoVotes.Any(vote => vote.PlayerId == player.Id);
+                if (hasVoted)
+                {
+                    return;
+                }
 
                 PollVoteData newPollVote = new(player.Id, player.Name, answer);
 
@@ -78,19 +100,6 @@ namespace Altzone.Scripts.Voting
                     else NoVotes.Add(newPollVote);
 
                     NotVoted.Remove(player.Id);
-                }
-                else if (previousPollVote != null) // Has already voted on this poll
-                {
-                    if (previousPollVote.Answer == true && answer == false)
-                    {
-                        YesVotes.Remove(previousPollVote);
-                        NoVotes.Add(newPollVote);
-                    }
-                    else if (previousPollVote.Answer == false && answer == true)
-                    {
-                        NoVotes.Remove(previousPollVote);
-                        YesVotes.Add(newPollVote);
-                    }
                 }
             }
 
@@ -106,11 +115,24 @@ namespace Altzone.Scripts.Voting
         public FurniturePollType FurniturePollType;
         public GameFurniture Furniture;
         
-        public FurniturePollData(string id, List<string> clanMembers, FurniturePollType furniturePollType, GameFurniture furniture, long endTime = 15)
+        public FurniturePollData(string id, List<string> clanMembers, FurniturePollType furniturePollType, GameFurniture furniture, long endTime = 1)
         : base(id, furniture.FurnitureInfo.Image, clanMembers, endTime)
         {
             FurniturePollType = furniturePollType;
             Furniture = furniture;
+        }
+
+        public FurniturePollData(ServerPoll poll)
+        : base(poll)
+        {
+            if(poll.type == "selling_item")
+                FurniturePollType = FurniturePollType.Selling;
+            else if(poll.type == "buying_item")
+                FurniturePollType = FurniturePollType.Buying;
+
+            GameFurniture gameFurniture = null;
+            Storefront.Get().GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == poll.shopItemName));
+            Furniture = gameFurniture;
         }
     }
 
@@ -120,7 +142,7 @@ namespace Altzone.Scripts.Voting
         public string RoleId;
         public string PlayerId;
 
-        public RolePollData(string id, Sprite sprite, List<string> clanMembers, RolePollType rolePollType, string roleId, string playerId, long endTime = 15)
+        public RolePollData(string id, Sprite sprite, List<string> clanMembers, RolePollType rolePollType, string roleId, string playerId, long endTime = 1)
         : base(id, sprite, clanMembers, endTime)
         {
             RolePollType = rolePollType;
@@ -134,7 +156,7 @@ namespace Altzone.Scripts.Voting
         public MemberPollType MemberPollType;
         public string PlayerId;
 
-        public MemberPollData(string id, Sprite sprite, List<string> clanMembers, MemberPollType memberPollType, string playerId, long endTime = 15)
+        public MemberPollData(string id, Sprite sprite, List<string> clanMembers, MemberPollType memberPollType, string playerId, long endTime = 1)
         : base(id, sprite, clanMembers, endTime)
         {
             MemberPollType = memberPollType;

@@ -82,7 +82,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         /// </summary>
         /// <param name="selectedCharacterIds">The selected character ids to display.</param>
         /// <param name="stats">The stats for all three characters in an int array. Order: Hp, Speed, CharacterSize, Attack, Defence.</param>
-        public void SetCharacters(int[] selectedCharacterIds, int[] stats)
+        public void SetCharacters(int[] selectedCharacterIds, int[] stats = null)
         {
             for (int i = 0; i < selectedCharacterIds.Length; i++)
             {
@@ -93,7 +93,8 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                 }
                 
                 PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(selectedCharacterIds[i].ToString());
-                _selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charInfo.CharacterId, false, stats[(i * 5)..(i * 5 + 5)]);
+                int[] statsForCharacter = stats != null ? stats[(i * 5)..(i * 5 + 5)] : null;
+                _selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charInfo.CharacterId, false, statsForCharacter);
             }
         }
     }

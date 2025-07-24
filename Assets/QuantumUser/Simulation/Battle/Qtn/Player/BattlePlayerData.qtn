@@ -13,6 +13,7 @@ component BattlePlayerDataQComponent
     int GridExtendTop;
     int GridExtendBottom;
 
+    bool HasTargetPosition;
     FPVector2 TargetPosition;
     FP RotationBase;
     FP RotationOffset;
