@@ -22,19 +22,7 @@ public class InputFieldSizeChange : MonoBehaviour
         SetHeight();
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        SetHeight();
-    }
-
-    protected virtual void SetHeight()
+    public void SetHeight()
     {
         if (_textMeshProUGUI == null)
             return;
@@ -48,7 +36,7 @@ public class InputFieldSizeChange : MonoBehaviour
             }
             else
             {
-                _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, PreferredHeight);
+                _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, PreferredHeight + 20);
             }
         }
         else
