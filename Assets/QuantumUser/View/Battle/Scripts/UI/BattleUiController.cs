@@ -20,6 +20,7 @@ namespace Battle.View.UI
         public BattleUiDiamondsHandler DiamondsHandler;
         public BattleUiGiveUpButtonHandler GiveUpButtonHandler;
         public BattleUiPlayerInfoHandler PlayerInfoHandler;
+        public BattleUiJoystickHandler JoystickHandler;
 
         // UI Debug Handler scripts
         public BattleUiDebugStatsOverlayHandler DebugStatsOverlayHandler;

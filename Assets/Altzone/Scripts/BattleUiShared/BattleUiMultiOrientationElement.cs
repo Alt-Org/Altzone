@@ -70,7 +70,15 @@ namespace Altzone.Scripts.BattleUiShared
         {
             if (_rectTransform != null)
             {
-                return new BattleUiMovableElementData(_rectTransform.anchorMin, _rectTransform.anchorMax, _orientation, IsFlippedHorizontally, IsFlippedVertically);
+                return new BattleUiMovableElementData(
+                    uiElementType: UiElementType,
+                    transparency: _currentTransparency,
+                    anchorMin: _rectTransform.anchorMin,
+                    anchorMax: _rectTransform.anchorMax,
+                    orientation: _orientation,
+                    isFlippedHorizontally: IsFlippedHorizontally,
+                    isFlippedVertically: IsFlippedVertically
+                );
             }
             else
             {

@@ -2632,40 +2632,43 @@ MonoBehaviour:
     Characters:
     - Id: 0
       Class: 0
-      Hp:
-        RawValue: 0
-      Speed:
-        RawValue: 0
-      CharacterSize:
-        RawValue: 0
-      Attack:
-        RawValue: 0
-      Defence:
-        RawValue: 0
+      Stats:
+        Hp:
+          RawValue: 0
+        Speed:
+          RawValue: 0
+        CharacterSize:
+          RawValue: 0
+        Attack:
+          RawValue: 0
+        Defence:
+          RawValue: 0
     - Id: 0
       Class: 0
-      Hp:
-        RawValue: 0
-      Speed:
-        RawValue: 0
-      CharacterSize:
-        RawValue: 0
-      Attack:
-        RawValue: 0
-      Defence:
-        RawValue: 0
+      Stats:
+        Hp:
+          RawValue: 0
+        Speed:
+          RawValue: 0
+        CharacterSize:
+          RawValue: 0
+        Attack:
+          RawValue: 0
+        Defence:
+          RawValue: 0
     - Id: 0
       Class: 0
-      Hp:
-        RawValue: 0
-      Speed:
-        RawValue: 0
-      CharacterSize:
-        RawValue: 0
-      Attack:
-        RawValue: 0
-      Defence:
-        RawValue: 0
+      Stats:
+        Hp:
+          RawValue: 0
+        Speed:
+          RawValue: 0
+        CharacterSize:
+          RawValue: 0
+        Attack:
+          RawValue: 0
+        Defence:
+          RawValue: 0
   MaxPlayerCount: 0
   SimulationSpeedMultiplier: 1
   DisplaySaveAndReloadButton: 0
@@ -3947,6 +3950,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1982871711592827336, guid: 97e8f0ca20408d042a38f07b90b44946,
+        type: 3}
+      propertyPath: _moveJoystickMovableElement
+      value: 
+      objectReference: {fileID: 2118663605}
+    - target: {fileID: 1982871711592827336, guid: 97e8f0ca20408d042a38f07b90b44946,
+        type: 3}
+      propertyPath: _rotateJoystickMovableElement
+      value: 
+      objectReference: {fileID: 2118663604}
     - target: {fileID: 3300782618133613160, guid: 97e8f0ca20408d042a38f07b90b44946,
         type: 3}
       propertyPath: m_Pivot.x
@@ -4062,6 +4075,30 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 97e8f0ca20408d042a38f07b90b44946, type: 3}
+--- !u!114 &2118663604 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1270898280376774472, guid: 97e8f0ca20408d042a38f07b90b44946,
+    type: 3}
+  m_PrefabInstance: {fileID: 2118663603}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e16f983dca8ddf346ab612d4b1bce417, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2118663605 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3458928511732782321, guid: 97e8f0ca20408d042a38f07b90b44946,
+    type: 3}
+  m_PrefabInstance: {fileID: 2118663603}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e16f983dca8ddf346ab612d4b1bce417, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2118663608 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7342130735435193128, guid: 97e8f0ca20408d042a38f07b90b44946,
@@ -4310,6 +4347,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8816702143117302233, guid: 7e0904d2b2ca0f145ad03f5086282bbb,
         type: 3}
+      propertyPath: _playerInput
+      value: 
+      objectReference: {fileID: 992096345}
+    - target: {fileID: 8816702143117302233, guid: 7e0904d2b2ca0f145ad03f5086282bbb,
+        type: 3}
       propertyPath: _uiController
       value: 
       objectReference: {fileID: 2118663608}
@@ -4368,60 +4410,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 106913845187200172, guid: 5fe56e8e6f1853740841f9c1865d6549,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1212608823221510316, guid: 5fe56e8e6f1853740841f9c1865d6549,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 2421041187303098912, guid: 5fe56e8e6f1853740841f9c1865d6549,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: 4
-      objectReference: {fileID: 0}
     - target: {fileID: 3000155087440252496, guid: 5fe56e8e6f1853740841f9c1865d6549,
         type: 3}
       propertyPath: m_Name
       value: BattleStoneCharacterViewController
-      objectReference: {fileID: 0}
-    - target: {fileID: 3275081109857096720, guid: 5fe56e8e6f1853740841f9c1865d6549,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3470476745796300465, guid: 5fe56e8e6f1853740841f9c1865d6549,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4353245309838449934, guid: 5fe56e8e6f1853740841f9c1865d6549,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4773539068871021552, guid: 5fe56e8e6f1853740841f9c1865d6549,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5459417509943677502, guid: 5fe56e8e6f1853740841f9c1865d6549,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5488242443681592109, guid: 5fe56e8e6f1853740841f9c1865d6549,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 8052585430672968341, guid: 5fe56e8e6f1853740841f9c1865d6549,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8336379887025291688, guid: 5fe56e8e6f1853740841f9c1865d6549,
         type: 3}
@@ -4472,16 +4464,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8774551338486182018, guid: 5fe56e8e6f1853740841f9c1865d6549,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 8998335606856590380, guid: 5fe56e8e6f1853740841f9c1865d6549,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

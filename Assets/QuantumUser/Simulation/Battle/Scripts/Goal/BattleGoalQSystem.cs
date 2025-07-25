@@ -13,11 +13,19 @@ namespace Battle.QSimulation.Goal
         {
             if (goal->HasTriggered) return;
 
-            BattleGameControlQSystem.OnGameOver(f, goal->TeamNumber, projectile, projectileEntity);
+            BattleTeamNumber winningTeam = goal->TeamNumber switch
+            {
+                BattleTeamNumber.TeamAlpha => BattleTeamNumber.TeamBeta,
+                BattleTeamNumber.TeamBeta  => BattleTeamNumber.TeamAlpha,
+
+                _ => BattleTeamNumber.NoTeam
+            };
+
+            BattleGameControlQSystem.OnGameOver(f, winningTeam, projectile, projectileEntity);
 
             goal->HasTriggered = true;
 
-            Debug.LogFormat("[BattleGoalQSystem] GameOver {0} Goal", goal->TeamNumber.ToString());
+            Debug.LogFormat("[BattleGoalQSystem] GameOver {0} Goal", winningTeam.ToString());
         }
     }
 }

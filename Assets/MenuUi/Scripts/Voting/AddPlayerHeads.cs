@@ -24,8 +24,12 @@ public class AddPlayerHeads : MonoBehaviour
 
     public void InstantiateHeads(string pollId)
     {
-        PollData pollData = PollManager.GetPollData(pollId);
-        if (pollData == null) return;
+        PollData pollData = PollManager.GetAnyPollData(pollId);
+        if (pollData == null)
+        {
+            Debug.LogWarning($"InstantiateHeads: PollData is null for pollId {pollId}");
+            return;
+        }
 
         // Clear existing heads
         for (int i = 0; i < YesHeads.Count; i++)
@@ -60,9 +64,6 @@ public class AddPlayerHeads : MonoBehaviour
 
         if (YesHeads.Count != 0) YesHeadsCombinedWidth = YesHeads[0].GetComponent<RectTransform>().rect.width * YesHeads[0].transform.localScale.x * YesHeads.Count;
         if (NoHeads.Count != 0) NoHeadsCombinedWidth = NoHeads[0].GetComponent<RectTransform>().rect.width * NoHeads[0].transform.localScale.x * NoHeads.Count;
-
-        //Debug.Log("YesHeadsCombinedWidth: " + YesHeadsCombinedWidth);
-        //Debug.Log("NoHeadsCombinedWidth: " + NoHeadsCombinedWidth);
 
         if (YesHeadsCombinedWidth > MaskWidth || NoHeadsCombinedWidth > MaskWidth) StartCoroutine(ScrollHeads());
     }
