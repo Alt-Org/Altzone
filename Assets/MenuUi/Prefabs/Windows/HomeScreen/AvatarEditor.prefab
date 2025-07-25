@@ -1803,6 +1803,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3323787166554370220}
   - component: {fileID: 814479154280025250}
+  - component: {fileID: 161865825665755407}
   m_Layer: 5
   m_Name: AvatarEditor
   m_TagString: Untagged
@@ -1870,6 +1871,25 @@ MonoBehaviour:
     type: 2}
   _avatarVisualsParent: {fileID: 631322718943489897}
   _featureButtonsBase: {fileID: 4867203219669639312}
+--- !u!114 &161865825665755407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2777738015282807615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 1
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 3
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
 --- !u!1 &2941429319359562109
 GameObject:
   m_ObjectHideFlags: 0
@@ -4965,6 +4985,7 @@ GameObject:
   - component: {fileID: 6954260797360196332}
   - component: {fileID: 5559116631486768876}
   - component: {fileID: 1539613970310451556}
+  - component: {fileID: 3041156061340642523}
   m_Layer: 0
   m_Name: FeaturePicker
   m_TagString: Untagged
@@ -5037,6 +5058,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _swipeThreshold: 100
+--- !u!114 &3041156061340642523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6616430018071325128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 5
+  _educationCategoryActionType: 10
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
 --- !u!1 &6629516222835262970
 GameObject:
   m_ObjectHideFlags: 0

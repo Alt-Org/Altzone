@@ -192,6 +192,9 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             SetFeature(featureToChange, slot);
             _restoreDefaultColor?.Invoke();
+
+            if (slot == 4)
+                gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
 
         private void SetFeature(AvatarPartsReference.AvatarPartInfo featureToChange, int slot)

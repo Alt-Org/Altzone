@@ -124,6 +124,8 @@ public class ChatAddReactions : MonoBehaviour
 
             _chatScript.DeselectMessage(selectedMessage);
             _chatScript.UpdateContentLayout(reactionsField);
+
+            gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
     }
 

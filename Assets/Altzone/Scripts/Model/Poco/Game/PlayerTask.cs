@@ -37,6 +37,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         MakeCharacterDurable,
         MakeCharacterStrong,
         MakeCharacterBig,
+        ChangeAvatarClothes,
     }
 
     public enum TaskEducationSocialType
@@ -47,6 +48,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         EditCharacterAvatar,
         ShareBattleReplay,
         WriteChatMessageClan,
+        ChatAddReaction,
     }
 
     public enum TaskEducationStoryType
@@ -292,6 +294,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                     {
                         return TaskEducationActionType.MakeCharacterBig;
                     }
+                case "change_avatar_clothes":
+                    {
+                        return TaskEducationActionType.ChangeAvatarClothes;
+                    }
                 default:
                     {
                         return TaskEducationActionType.PlayBattle;
@@ -326,6 +332,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case "create_new_vote":
                     {
                         return TaskEducationSocialType.CreateNewVote;
+                    }
+                case "chat_add_reaction":
+                    {
+                        return TaskEducationSocialType.ChatAddReaction;
                     }
                 default:
                     {

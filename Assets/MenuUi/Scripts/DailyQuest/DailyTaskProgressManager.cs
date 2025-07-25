@@ -122,6 +122,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationActionType.MakeCharacterDurable: HandleSimpleTask(value); break;
             case TaskEducationActionType.MakeCharacterStrong: HandleSimpleTask(value); break;
             case TaskEducationActionType.MakeCharacterBig: HandleSimpleTask(value); break;
+            case TaskEducationActionType.ChangeAvatarClothes: HandleSimpleTask(value); break;
             default: break;
         }
     }
@@ -142,6 +143,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationSocialType.EditCharacterAvatar: HandleSimpleTask(value); break;
             case TaskEducationSocialType.EmoteDuringBattle: HandleSimpleTask(value); break;
             case TaskEducationSocialType.WriteChatMessageClan: HandleSimpleTask(value); break;
+            case TaskEducationSocialType.ChatAddReaction: HandleSimpleTask(value); break;
             default: break;
         }
     }
