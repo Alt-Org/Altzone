@@ -1,8 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
 using TMPro;
-using System.Linq;
+using UnityEngine;
 
 public class InputFieldSizeChange : MonoBehaviour
 {
@@ -13,6 +13,8 @@ public class InputFieldSizeChange : MonoBehaviour
     TextMeshProUGUI _textMeshProUGUI;
     [SerializeField]
     RectTransform _rect;
+    [SerializeField]
+    TMP_Text _tMP_Text;
 
     //[SerializeField]
     float PreferredHeight;
@@ -27,22 +29,16 @@ public class InputFieldSizeChange : MonoBehaviour
         if (_textMeshProUGUI == null)
             return;
 
-        if (_inputField.text.Length != 0)
-        {
-            PreferredHeight = _textMeshProUGUI.preferredHeight;
-            if (PreferredHeight < 100)
-            {
-                _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, 100);
-            }
-            else
-            {
-                _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, PreferredHeight + 20);
-            }
-        }
-        else
+        PreferredHeight = _textMeshProUGUI.preferredHeight;
+        if (PreferredHeight < 100)
         {
             _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, 100);
         }
+        else if (PreferredHeight > 100)
+        {
+            _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, PreferredHeight + 10);
+        }
+
         
     }
 
