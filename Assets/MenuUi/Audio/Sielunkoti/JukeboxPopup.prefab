@@ -772,7 +772,7 @@ GameObject:
   - component: {fileID: 8211195655536039687}
   - component: {fileID: 4358311373943395737}
   - component: {fileID: 8629688725313486270}
-  - component: {fileID: 8651352192793990803}
+  - component: {fileID: 8654671515258668713}
   m_Layer: 5
   m_Name: JukeboxPopup
   m_TagString: Untagged
@@ -836,6 +836,25 @@ MonoBehaviour:
     type: 3}
   _trackChunkSize: 8
   _queueOptimizationThreshold: 4
+--- !u!114 &8654671515258668713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6593386063885733424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 5
+  _educationCategoryActionType: 4
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
 --- !u!1 &7842054957016019911
 GameObject:
   m_ObjectHideFlags: 0

@@ -272,6 +272,8 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         }
 
         if (_queueUseTimes >= _queueOptimizationThreshold) OptimizeVisualQueueChunks();
+
+        gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
     }
 
     #region Queue

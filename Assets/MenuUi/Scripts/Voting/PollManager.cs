@@ -41,6 +41,8 @@ public static class PollManager // Handles the polls from creation to loading to
         SaveClanData();
 
         PollMonitor.Instance?.StartMonitoring();
+
+        OnPollCreated?.Invoke();
     }
 
     // Create poll for StorageFurniture
@@ -65,6 +67,8 @@ public static class PollManager // Handles the polls from creation to loading to
         SaveClanData();
 
         PollMonitor.Instance?.StartMonitoring();
+
+        OnPollCreated?.Invoke();
     }
 
     public static void BuildPolls(List<ServerPoll> polls)
