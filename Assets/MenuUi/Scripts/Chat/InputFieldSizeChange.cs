@@ -13,8 +13,6 @@ public class InputFieldSizeChange : MonoBehaviour
     TextMeshProUGUI _textMeshProUGUI;
     [SerializeField]
     RectTransform _rect;
-    [SerializeField]
-    TMP_Text _tMP_Text;
 
     //[SerializeField]
     float PreferredHeight;
