@@ -26,6 +26,9 @@ public class PollInfoPopup : MonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button closeInfoButton;
 
+    [Header("Panels")]
+    [SerializeField] private GameObject pollInfoObject;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -101,6 +104,7 @@ public class PollInfoPopup : MonoBehaviour
 
     public void Close()
     {
+        pollInfoObject.SetActive(false);
         gameObject.SetActive(false);
     }
 
