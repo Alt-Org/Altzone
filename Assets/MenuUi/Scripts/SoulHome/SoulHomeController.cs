@@ -73,30 +73,34 @@ namespace MenuUI.Scripts.SoulHome
         public void OnEnable()
         {
             //if (_infoPopup != null && _infoPopup.gameObject.activeSelf == true) _infoPopup.gameObject.SetActive(false);
-            GameObject[] root = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
-            foreach (GameObject rootObject in root)
-            {
-                if (rootObject.name == "AudioManager")
-                    rootObject.GetComponent<MainMenuAudioManager>()?.StopMusic();
-            }
-            _musicName.text = AudioManager.Instance?.PlayMusic(MusicSection.SoulHome);
+            //GameObject[] root = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+            //foreach (GameObject rootObject in root)
+            //{
+            //    if (rootObject.name == "AudioManager")
+            //        rootObject.GetComponent<MainMenuAudioManager>()?.StopMusic();
+            //}
+            if (JukeBoxSoulhomeHandler.Instance.CurrentMusicTrack != null)
+                JukeBoxSoulhomeHandler.Instance.PlayTrack();
+            else
+                _musicName.text = AudioManager.Instance?.PlayMusic("Soulhome", "");
+
             EditModeTrayResize();
             if (GameAnalyticsManager.Instance != null) GameAnalyticsManager.Instance.OpenSoulHome();
-            JukeboxController.OnChangeJukeBoxSong += SetSongName;
+            JukeBoxSoulhomeHandler.OnChangeJukeBoxSong += SetSongName;
         }
 
         public void OnDisable()
         {
-            GameObject[] root = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
-            foreach (GameObject rootObject in root)
-            {
-                if (rootObject.name == "AudioManager")
-                    rootObject.GetComponent<MainMenuAudioManager>()?.PlayMusic();
-            }
-            AudioManager.Instance?.StopMusic();
+            //GameObject[] root = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+            //foreach (GameObject rootObject in root)
+            //{
+            //    if (rootObject.name == "AudioManager")
+            //        rootObject.GetComponent<MainMenuAudioManager>()?.PlayMusic();
+            //}
+            //AudioManager.Instance?.StopMusic();
             _jukeBoxPopup.StopJukebox();
             _jukeBoxPopup.ToggleJukeboxScreen(false);
-            JukeboxController.OnChangeJukeBoxSong -= SetSongName;
+            JukeBoxSoulhomeHandler.OnChangeJukeBoxSong -= SetSongName;
         }
 
         public void SetRoomName(GameObject room)
@@ -239,8 +243,8 @@ namespace MenuUI.Scripts.SoulHome
                 else _mainScreen.ResetChanges();
                 CloseConfirmPopup(PopupType.EditClose);
                 _soulHomeTower.ToggleEdit();
-                if(save) _audioManager.PlaySfxAudio("SaveChanges");
-                else _audioManager.PlaySfxAudio("RevertChanges");
+                if(save) _audioManager.PlaySfxAudio("Soulhome", "SaveChanges");
+                else _audioManager.PlaySfxAudio("Soulhome", "RevertChanges");
             }
             else
             {
@@ -259,9 +263,9 @@ namespace MenuUI.Scripts.SoulHome
             SignalBus.OnChangePopupInfoSignal(popupText);
         }
 
-        private void SetSongName(JukeboxSong song)
+        private void SetSongName(MusicTrack song)
         {
-            _musicName.text = song.Name;
+            _musicName.text = song != null ? song.Name : "Oletus";
         }
 
         public bool CheckInteractableStatus()

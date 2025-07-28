@@ -850,7 +850,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28
+  m_fontSize: 26.2
   m_fontSizeBase: 35
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1000,7 +1000,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28
+  m_fontSize: 27.6
   m_fontSizeBase: 35
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5291,6 +5291,16 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1985622612502299867, guid: 34bf39a5a75442e42a08a18d213c90f7,
+        type: 3}
+      propertyPath: _audioName
+      value: NavButton3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1985622612502299867, guid: 34bf39a5a75442e42a08a18d213c90f7,
+        type: 3}
+      propertyPath: _audioCategory
+      value: MainMenu
+      objectReference: {fileID: 0}
     - target: {fileID: 2420414095443131401, guid: 34bf39a5a75442e42a08a18d213c90f7,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -5771,6 +5781,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5007824331407061772}
     m_Modifications:
+    - target: {fileID: 2410016686866483608, guid: d4424075c37f78841b88e4ab76cc5006,
+        type: 3}
+      propertyPath: _audioName
+      value: NavButton5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2410016686866483608, guid: d4424075c37f78841b88e4ab76cc5006,
+        type: 3}
+      propertyPath: _audioCategory
+      value: MainMenu
+      objectReference: {fileID: 0}
     - target: {fileID: 6448420489103042046, guid: d4424075c37f78841b88e4ab76cc5006,
         type: 3}
       propertyPath: m_Name
@@ -5907,6 +5927,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5007824331407061772}
     m_Modifications:
+    - target: {fileID: 152343811253911172, guid: aa8e51fd0fa1b9841bcdbae45e3284f5,
+        type: 3}
+      propertyPath: _audioName
+      value: NavButton4
+      objectReference: {fileID: 0}
+    - target: {fileID: 152343811253911172, guid: aa8e51fd0fa1b9841bcdbae45e3284f5,
+        type: 3}
+      propertyPath: _audioCategory
+      value: MainMenu
+      objectReference: {fileID: 0}
     - target: {fileID: 1343159886761862469, guid: aa8e51fd0fa1b9841bcdbae45e3284f5,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -6367,6 +6397,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: BT_DAILYTASK
       objectReference: {fileID: 0}
+    - target: {fileID: 7861528611053483427, guid: 00bfeafc8680328489a52bc004c139f3,
+        type: 3}
+      propertyPath: _audioName
+      value: NavButton1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7861528611053483427, guid: 00bfeafc8680328489a52bc004c139f3,
+        type: 3}
+      propertyPath: _audioCategory
+      value: MainMenu
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6402,6 +6442,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Volume
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 154243440753551014, guid: f1eb9321867a80347b3e82d95750325c,
+        type: 3}
+      propertyPath: _audioName
+      value: NavButton2
+      objectReference: {fileID: 0}
+    - target: {fileID: 154243440753551014, guid: f1eb9321867a80347b3e82d95750325c,
+        type: 3}
+      propertyPath: _audioCategory
+      value: MainMenu
       objectReference: {fileID: 0}
     - target: {fileID: 188049376999689613, guid: f1eb9321867a80347b3e82d95750325c,
         type: 3}
@@ -6719,6 +6769,21 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2029361718019638718, guid: 2b466a82077db8746ac58e93b935af12,
+        type: 3}
+      propertyPath: _audioName
+      value: ButtonClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 2029361718019638718, guid: 2b466a82077db8746ac58e93b935af12,
+        type: 3}
+      propertyPath: _audioCategory
+      value: Soulhome
+      objectReference: {fileID: 0}
+    - target: {fileID: 2029361718019638718, guid: 2b466a82077db8746ac58e93b935af12,
+        type: 3}
+      propertyPath: _audioPlayType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2090226702107976387, guid: 2b466a82077db8746ac58e93b935af12,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -6809,6 +6874,21 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4717476275841633432, guid: 2b466a82077db8746ac58e93b935af12,
+        type: 3}
+      propertyPath: _audioName
+      value: ButtonClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 4717476275841633432, guid: 2b466a82077db8746ac58e93b935af12,
+        type: 3}
+      propertyPath: _audioCategory
+      value: Soulhome
+      objectReference: {fileID: 0}
+    - target: {fileID: 4717476275841633432, guid: 2b466a82077db8746ac58e93b935af12,
+        type: 3}
+      propertyPath: _audioPlayType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4983552070814566051, guid: 2b466a82077db8746ac58e93b935af12,
         type: 3}
       propertyPath: m_IsActive
@@ -6823,6 +6903,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5261544752714665862, guid: 2b466a82077db8746ac58e93b935af12,
+        type: 3}
+      propertyPath: _audioName
+      value: ButtonClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 5261544752714665862, guid: 2b466a82077db8746ac58e93b935af12,
+        type: 3}
+      propertyPath: _audioCategory
+      value: Soulhome
+      objectReference: {fileID: 0}
+    - target: {fileID: 5261544752714665862, guid: 2b466a82077db8746ac58e93b935af12,
+        type: 3}
+      propertyPath: _audioPlayType
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5372554829396458065, guid: 2b466a82077db8746ac58e93b935af12,
         type: 3}
@@ -6942,7 +7037,7 @@ PrefabInstance:
     - target: {fileID: 7216358446363405444, guid: 2b466a82077db8746ac58e93b935af12,
         type: 3}
       propertyPath: m_fontSize
-      value: 48
+      value: 44.1
       objectReference: {fileID: 0}
     - target: {fileID: 7473087894793389817, guid: 2b466a82077db8746ac58e93b935af12,
         type: 3}
@@ -6963,6 +7058,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7854154580216516761, guid: 2b466a82077db8746ac58e93b935af12,
+        type: 3}
+      propertyPath: _audioName
+      value: ButtonClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 7854154580216516761, guid: 2b466a82077db8746ac58e93b935af12,
+        type: 3}
+      propertyPath: _audioCategory
+      value: Soulhome
+      objectReference: {fileID: 0}
+    - target: {fileID: 7854154580216516761, guid: 2b466a82077db8746ac58e93b935af12,
+        type: 3}
+      propertyPath: _audioPlayType
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7904743196435264038, guid: 2b466a82077db8746ac58e93b935af12,
         type: 3}

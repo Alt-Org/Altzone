@@ -147,7 +147,7 @@ namespace Altzone.Scripts.BattleUiShared
             float fontRelativeSizeMax = _rectTransformArray[index].rect.height * _relativePercentageMax;
 
             // Clamping font size to min and max font sizes
-            fontSize = Mathf.Clamp(fontSize, Mathf.Min(_fontSizeMin, fontRelativeSizeMax), _fontSizeMax == 0 ? float.PositiveInfinity : _fontSizeMax);
+            fontSize = Mathf.Min(Mathf.Clamp(fontSize, _fontSizeMin, _fontSizeMax == 0 ? float.PositiveInfinity : _fontSizeMax), fontRelativeSizeMax);
 
             // Setting font size and _oldRectSize
             _textArray[index].fontSize = fontSize;

@@ -823,34 +823,19 @@ MonoBehaviour:
   _diskImage: {fileID: 4018264411508806859}
   _diskTransform: {fileID: 260013633593550340}
   _diskRotationSpeed: 100
+  _emptyDisk: {fileID: 21300000, guid: 37ef35f7c464cfe44b62522404887fe2, type: 3}
   _jukeboxObject: {fileID: 8593317523588494251}
   _backButton: {fileID: 3385622372589893288}
   _songName: {fileID: 5921528984723798442}
-  _songListContent: {fileID: 2711868873908538806}
+  _loopLastTrack: 0
+  _trackListContent: {fileID: 2711868873908538806}
   _jukeboxButtonPrefab: {fileID: 7205037451692343932, guid: 3312d1c148605004ead11d34daedce26,
     type: 3}
   _queueContent: {fileID: 6854945740586590265}
   _queueTextPrefab: {fileID: 8968269194942016460, guid: 3ec8882e3707fbb46a78d846d81ee4b9,
     type: 3}
---- !u!114 &8651352192793990803
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6593386063885733424}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _normalTaskType: 0
-  _educationCategoryType: 5
-  _educationCategoryActionType: 4
-  _educationCategorySocialType: 1
-  _educationCategoryStoryType: 3
-  _educationCategoryCultureType: 0
-  _educationCategoryEthicalType: 0
+  _trackChunkSize: 8
+  _queueOptimizationThreshold: 4
 --- !u!1 &7842054957016019911
 GameObject:
   m_ObjectHideFlags: 0
