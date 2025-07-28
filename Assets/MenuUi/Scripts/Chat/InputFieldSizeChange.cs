@@ -3,6 +3,7 @@
 
 using TMPro;
 using UnityEngine;
+using System.Collections;
 
 public class InputFieldSizeChange : MonoBehaviour
 {
@@ -19,13 +20,13 @@ public class InputFieldSizeChange : MonoBehaviour
 
     private void OnEnable()
     {
-        SetHeight();
+        _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, 100);
     }
 
-    public void SetHeight()
+    public IEnumerator SetHeight()
     {
-        if (_textMeshProUGUI == null)
-            return;
+
+        yield return new WaitForEndOfFrame();
 
         PreferredHeight = _textMeshProUGUI.preferredHeight;
         if (PreferredHeight < 100)
@@ -38,6 +39,11 @@ public class InputFieldSizeChange : MonoBehaviour
         }
 
         
+    }
+
+    public void DoTheHeight()
+    {
+        StartCoroutine(SetHeight());
     }
 
 }
