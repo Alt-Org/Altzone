@@ -10,7 +10,7 @@ namespace Altzone.Scripts.ReferenceSheets
 
         public List<SoundCategory> SoundCategories { get => _soundCategories; }
 
-        /// <returns>First SounEffect that is found in any sound category.</returns>
+        /// <returns>First SoundEffect that is found in any sound category.</returns>
         public SoundEffect Get(string SoundName)
         {
             foreach (SoundCategory category in _soundCategories)
@@ -21,7 +21,7 @@ namespace Altzone.Scripts.ReferenceSheets
             return null;
         }
 
-        /// <returns>First SounEffect that is found in given SoundCategory name.</returns>
+        /// <returns>First SoundEffect that is found in given SoundCategory name.</returns>
         public SoundEffect Get(string CategoryName, string SoundName)
         {
             foreach (SoundCategory category in _soundCategories)

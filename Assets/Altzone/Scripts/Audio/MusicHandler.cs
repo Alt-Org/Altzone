@@ -144,6 +144,8 @@ namespace Altzone.Scripts.Audio
 
         public void SwitchMusic(MusicCategory musicCategory, MusicTrack musicTrack)
         {
+            if (_currentTrack == musicTrack) return;
+
             if (_musicSwitchInProgress)
             {
                 if (_nextUpTrack == null)
