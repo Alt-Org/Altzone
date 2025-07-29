@@ -46,7 +46,7 @@ namespace Altzone.Scripts.Audio
             if (SettingsCarrier.Instance == null) return;
 
             UpdateMaxVolume();
-            _sFXHandler.SetVolume(1f, "all");
+            _sFXHandler.SetVolume(SettingsCarrier.Instance.SentVolume(SettingsCarrier.SoundType.sound), "all");
         }
 
         public void UpdateMaxVolume()

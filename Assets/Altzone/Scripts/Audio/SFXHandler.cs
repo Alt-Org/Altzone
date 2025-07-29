@@ -147,14 +147,16 @@ public class SFXHandler : MonoBehaviour
     private void CreateChunk()
     {
         AudioChannelChunk audioChannelChunk = new AudioChannelChunk();
-        List<AudioChannelData> audioChannels = new List<AudioChannelData>(_audioChannelAddAmount);
+        List<AudioChannelData> audioChannels = new List<AudioChannelData>();
 
-        for (int j = 0; j < audioChannels.Count; j++)
+        for (int j = 0; j < _audioChannelAddAmount; j++)
         {
+            AudioChannelData audioChannelData = new AudioChannelData();
             GameObject audioObject = Instantiate(_audioSourcePrefab, _channelsHolder);
-            audioChannels[j].audioSourceHandler = audioObject.GetComponent<AudioSourceHandler>();
-            audioChannels[j].audioSourceHandler.SetChunkIndex(_channelChunks.Count, j);
-            audioChannels[j].audioSourceHandler.OnPlaybackFinished += AudioSourceSelfUnregister;
+            audioChannelData.audioSourceHandler = audioObject.GetComponent<AudioSourceHandler>();
+            audioChannelData.audioSourceHandler.SetChunkIndex(_channelChunks.Count, j);
+            audioChannelData.audioSourceHandler.OnPlaybackFinished += AudioSourceSelfUnregister;
+            audioChannels.Add(audioChannelData);
         }
 
         audioChannelChunk.AudioChannels = audioChannels;
