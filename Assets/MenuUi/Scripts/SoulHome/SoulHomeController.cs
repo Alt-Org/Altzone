@@ -7,6 +7,7 @@ using MenuUi.Scripts.Window;
 using UnityEngine.UI;
 using Altzone.Scripts.GA;
 using Altzone.Scripts.Audio;
+using Altzone.Scripts.ReferenceSheets;
 
 namespace MenuUI.Scripts.SoulHome
 {

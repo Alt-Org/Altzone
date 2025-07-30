@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.ReferenceSheets;
 using UnityEngine;
 
 namespace Altzone.Scripts.Audio
@@ -143,6 +144,8 @@ namespace Altzone.Scripts.Audio
 
         public void SwitchMusic(MusicCategory musicCategory, MusicTrack musicTrack)
         {
+            if (_currentTrack == musicTrack) return;
+
             if (_musicSwitchInProgress)
             {
                 if (_nextUpTrack == null)
