@@ -47,7 +47,7 @@ namespace Altzone.Scripts.Audio
             if (SettingsCarrier.Instance == null) return;
 
             UpdateMaxVolume();
-            _sFXHandler.SetVolume(SettingsCarrier.Instance.SentVolume(SettingsCarrier.SoundType.sound), "all");
+            //_sFXHandler.ChangeVolume(SettingsCarrier.Instance.SentVolume(SettingsCarrier.SoundType.sound), "all");
         }
 
         public void UpdateMaxVolume()
@@ -58,9 +58,73 @@ namespace Altzone.Scripts.Audio
 
         #region SFX
 
-        public void PlaySfxAudio(string categoryName, string name)
+        /// <summary>
+        /// Plays a sfx sound by given CategoryName and SFXName
+        /// </summary>
+        /// <param name="categoryName">Category name where the sfx sound resides in. (Note: Can be left empty but it is recommended to be given.)</param>
+        /// <param name="sFXname">Name of the sfx audio that is wanted.</param>
+        /// <returns>Returns the <c>AudioChannelPath</c> wich can be used to pause, continue or clear the audio playback if not OneShot type and is still playing.</returns>
+        public ActiveChannelPath? PlaySfxAudio(string categoryName, string sFXname)
         {
-            _sFXHandler.Play(categoryName, name, _musicHandler.MainMenuMusicName);
+            return _sFXHandler.Play(categoryName, sFXname, _musicHandler.MainMenuMusicName);
+        }
+
+        #region SFX All Commands
+        public void StopAllSFXAudio()
+        {
+            _sFXHandler.PlaybackOperationAll(SFXHandler.SFXPlaybackOperationType.Stop);
+        }
+
+        public void ContinueAllSFXAudio()
+        {
+            _sFXHandler.PlaybackOperationAll(SFXHandler.SFXPlaybackOperationType.Continue);
+        }
+
+        public void ClearAllSFXAudio()
+        {
+            _sFXHandler.PlaybackOperationAll(SFXHandler.SFXPlaybackOperationType.Clear);
+        }
+        #endregion
+
+        #region SFX Single Commands
+        public void StopSFXAudioChannel(string sFXName)
+        {
+            _sFXHandler.PlaybackOperation(SFXHandler.SFXPlaybackOperationType.Stop, sFXName);
+        }
+
+        public void ContinueSFXAudioChannel(string sFXName)
+        {
+            _sFXHandler.PlaybackOperation(SFXHandler.SFXPlaybackOperationType.Continue, sFXName);
+        }
+
+        public void ClearSFXAudioChannel(string sFXName)
+        {
+            _sFXHandler.PlaybackOperation(SFXHandler.SFXPlaybackOperationType.Clear, sFXName);
+        }
+
+        public void StopSFXAudioChannel(ActiveChannelPath path)
+        {
+            _sFXHandler.PlaybackOperation(SFXHandler.SFXPlaybackOperationType.Stop, path);
+        }
+
+        public void ContinueSFXAudioChannel(ActiveChannelPath path)
+        {
+            _sFXHandler.PlaybackOperation(SFXHandler.SFXPlaybackOperationType.Continue, path);
+        }
+
+        public void ClearSFXAudioChannel(ActiveChannelPath path)
+        {
+            _sFXHandler.PlaybackOperation(SFXHandler.SFXPlaybackOperationType.Clear, path);
+        }
+        #endregion
+
+        /// <summary>
+        /// Changes the given sfx sound volume level if it's still playing.
+        /// </summary>
+        /// <param name="targetSFXName">Give either the sfx name or "all". (Note: "all" will change every active sfx channels volume level.)</param>
+        public void ChangeSFXVolume(float volume, string targetSFXName)
+        {
+            _sFXHandler.ChangeVolume(volume, targetSFXName);
         }
 
         #endregion
