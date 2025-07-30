@@ -22,6 +22,7 @@ public class ChatTester : MonoBehaviour
 
     public void DoLongMessage()
     {
-        _chat.DisplayMessage("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus consequat velit non purus auctor pharetra. Maecenas sit amet porttitor lectus, et pellentesque neque. Aenean quis lectus accumsan, impe", _messagePrefab);
+        string process = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus consequat velit non purus auctor pharetra. Maecenas sit amet porttitor lectus, et pellentesque neque. Aenean quis lectus accumsan, impe";
+        _chat.DisplayMessage(process.Trim(), _messagePrefab);
     }
 }
