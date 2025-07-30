@@ -54,5 +54,7 @@ namespace Altzone.Scripts.ReferenceSheets
         public string Name;
         public SoundPlayType Type;
         public AudioClip Audio;
+        [Range(0f, 10f)]
+        public float Volume = 1;
     }
 }
