@@ -16,41 +16,49 @@ namespace Battle.QSimulation.Game
             {
                 if(!f.Unsafe.TryGetPointer(info.Other, out BattleCollisionTriggerQComponent* collisionTrigger)) return;
 
-                BattlePlayerHitboxQComponent* playerHitbox;
-
                 switch (collisionTrigger->Type)
                 {
                     case BattleCollisionTriggerType.ArenaBorder:
-                        BattleArenaBorderQComponent* arenaBorder = f.Unsafe.GetPointer<BattleArenaBorderQComponent>(info.Other);
-                        Debug.Log("[CollisionSystem] Projectile hit ArenaBorder");
-                        //f.Events.PlaySoundEvent(SoundEffect.SideWallHit);
-                        f.Signals.BattleOnProjectileHitArenaBorder(projectile, info.Entity, arenaBorder, info.Other);
-                        break;
+                        {
+                            BattleArenaBorderQComponent* arenaBorder = f.Unsafe.GetPointer<BattleArenaBorderQComponent>(info.Other);
+                            Debug.Log("[CollisionSystem] Projectile hit ArenaBorder");
+                            //f.Events.PlaySoundEvent(SoundEffect.SideWallHit);
+                            f.Signals.BattleOnProjectileHitArenaBorder(projectile, info.Entity, arenaBorder, info.Other);
+                            break;
+                        }
 
                     case BattleCollisionTriggerType.SoulWall:
-                        BattleSoulWallQComponent* soulWall = f.Unsafe.GetPointer<BattleSoulWallQComponent>(info.Other);
-                        Debug.Log("[CollisionSystem] Projectile hit SoulWall");
-                        f.Signals.BattleOnProjectileHitSoulWall(projectile, info.Entity, soulWall, info.Other);
-                        break;
+                        {
+                            BattleSoulWallQComponent* soulWall = f.Unsafe.GetPointer<BattleSoulWallQComponent>(info.Other);
+                            Debug.Log("[CollisionSystem] Projectile hit SoulWall");
+                            f.Signals.BattleOnProjectileHitSoulWall(projectile, info.Entity, soulWall, info.Other);
+                            break;
+                        }
 
                     case BattleCollisionTriggerType.Player:
-                        playerHitbox = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(info.Other);
-                        Debug.Log("[CollisionSystem] Projectile hit PlayerHitbox");
-                        //f.Events.PlaySoundEvent(SoundEffect.SideWallHit);
-                        f.Signals.BattleOnProjectileHitPlayerHitbox(projectile, info.Entity, playerHitbox, info.Other);
-                        break;
+                        {
+                            BattlePlayerHitboxQComponent*  playerHitbox = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(info.Other);
+                            Debug.Log("[CollisionSystem] Projectile hit PlayerHitbox");
+                            //f.Events.PlaySoundEvent(SoundEffect.SideWallHit);
+                            f.Signals.BattleOnProjectileHitPlayerHitbox(projectile, info.Entity, playerHitbox, info.Other);
+                            break;
+                        }
 
                     case BattleCollisionTriggerType.Shield:
-                        playerHitbox = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(info.Other);
-                        Debug.Log("[CollisionSystem] Projectile hit Player Shield");
-                        f.Signals.BattleOnProjectileHitPlayerShield(projectile, info.Entity, playerHitbox, info.Other);
-                        break;
+                        {
+                            BattlePlayerHitboxQComponent* playerHitbox = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(info.Other);
+                            Debug.Log("[CollisionSystem] Projectile hit Player Shield");
+                            f.Signals.BattleOnProjectileHitPlayerShield(projectile, info.Entity, playerHitbox, info.Other);
+                            break;
+                        }
 
                     case BattleCollisionTriggerType.Goal:
-                        BattleGoalQComponent* goal = f.Unsafe.GetPointer<BattleGoalQComponent>(info.Other);
-                        Debug.Log("[CollisionSystem] Projectile hit Goal");
-                        f.Signals.BattleOnProjectileHitGoal(projectile, info.Entity, goal, info.Other);
-                        break;
+                        {
+                            BattleGoalQComponent* goal = f.Unsafe.GetPointer<BattleGoalQComponent>(info.Other);
+                            Debug.Log("[CollisionSystem] Projectile hit Goal");
+                            f.Signals.BattleOnProjectileHitGoal(projectile, info.Entity, goal, info.Other);
+                            break;
+                        }
                 }
             }
 
