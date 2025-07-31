@@ -2,6 +2,7 @@ using UnityEngine.Scripting;
 
 using Quantum;
 using Photon.Deterministic;
+
 using Battle.QSimulation.Projectile;
 
 namespace Battle.QSimulation.Player
@@ -9,10 +10,6 @@ namespace Battle.QSimulation.Player
     [Preserve]
     public unsafe class BattlePlayerQSystem : SystemMainThread, ISignalBattleOnProjectileHitPlayerHitbox
     {
-        //private BattlePlayerDataQComponent* _damagedPlayerData;
-
-        //private FP _damageTaken = FP._0;
-
         public static void SpawnPlayers(Frame f)
         {
             foreach (BattlePlayerManager.PlayerHandle playerHandle in BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f))

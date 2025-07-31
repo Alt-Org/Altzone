@@ -48,7 +48,7 @@ namespace Battle.View.Player
                 _localPlayerIndicator.SetActive(true);
             }
 
-            QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventCharacterTakeDamage);
+            QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
         });
 
         public override void OnUpdateView()
@@ -81,8 +81,6 @@ namespace Battle.View.Player
         }
 
         private SpriteRenderer _spriteRenderer;
-
-        public int RuntimeIndex => throw new System.NotImplementedException();
 
         private void UpdateModelPositionAdjustment(Vector3* targetPosition)
         {
@@ -121,7 +119,7 @@ namespace Battle.View.Player
             _animator.SetInteger("state", animationState);
         }
 
-        private void QEventCharacterTakeDamage(EventBattleCharacterTakeDamage e)
+        private void QEventOnCharacterTakeDamage(EventBattleCharacterTakeDamage e)
         {
             if (EntityRef != e.Entity) return;
 
@@ -129,10 +127,10 @@ namespace Battle.View.Player
             {
                 StopCoroutine(_damageFlashCoroutine);
             }
-            _damageFlashCoroutine = StartCoroutine(DamageFlash());
+            _damageFlashCoroutine = StartCoroutine(DamageFlashCoroutine());
         }
 
-        private IEnumerator DamageFlash()
+        private IEnumerator DamageFlashCoroutine()
         {
             Color tempColor;
             for (int i = 0; i < _damageFlashAmount; i++)

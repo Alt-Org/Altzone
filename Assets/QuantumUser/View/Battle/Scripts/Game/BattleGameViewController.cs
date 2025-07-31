@@ -92,7 +92,7 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, QEventOnChangeEmotionState);
             QuantumEvent.Subscribe<EventBattleLastRowWallDestroyed>(this, QEventOnLastRowWallDestroyed);
             QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, QEventPlaySoundFX);
-            QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventCharacterTakeDamage);
+            QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
 
             // Subscribing to Debug events
             QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, QEventDebugOnUpdateStatsOverlay);
@@ -291,7 +291,7 @@ namespace Battle.View.Game
             _soundFXViewController.PlaySound(e.Effect);
         }
 
-        private void QEventCharacterTakeDamage(EventBattleCharacterTakeDamage e)
+        private void QEventOnCharacterTakeDamage(EventBattleCharacterTakeDamage e)
         {
             if (e.Team == LocalPlayerTeam)
             {
