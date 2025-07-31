@@ -711,7 +711,7 @@ namespace Battle.QSimulation.Player
 
             if (playerData->CurrentHp <= 0)
             {
-                Debug.LogFormat("Player character [characterNumber] has no Hp and will not be spawned");
+                Debug.LogFormat("[PlayerManager] Player character {0} has no Hp and will not be spawned", characterNumber);
                 return;
             }
 
