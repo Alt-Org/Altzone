@@ -43,22 +43,22 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Button _optionsButton;
         [SerializeField] private OptionsPopup _optionsPopup;
 
-        [Header("Grid options")]
-        [SerializeField] private Toggle _showGridToggle;
-        [SerializeField] private Toggle _alignToGridToggle;
-        [SerializeField] private Toggle _incrementalScalingToggle;
-        [Space]
-        [SerializeField] private Slider _gridColumnsSlider;
-        [SerializeField] private TMP_InputField _gridColumnsInputField;
-        [Space]
-        [SerializeField] private Slider _gridRowsSlider;
-        [SerializeField] private TMP_InputField _gridRowsInputField;
-        [Space]
-        [SerializeField] private Slider _gridHueSlider;
-        [SerializeField] private TMP_InputField _gridHueInputField;
-        [Space]
-        [SerializeField] private Slider _gridTransparencySlider;
-        [SerializeField] private TMP_InputField _gridTransparencyInputField;
+        //[Header("Grid options")]
+        //[SerializeField] private Toggle _showGridToggle;
+        //[SerializeField] private Toggle _alignToGridToggle;
+        //[SerializeField] private Toggle _incrementalScalingToggle;
+        //[Space]
+        //[SerializeField] private Slider _gridColumnsSlider;
+        //[SerializeField] private TMP_InputField _gridColumnsInputField;
+        //[Space]
+        //[SerializeField] private Slider _gridRowsSlider;
+        //[SerializeField] private TMP_InputField _gridRowsInputField;
+        //[Space]
+        //[SerializeField] private Slider _gridHueSlider;
+        //[SerializeField] private TMP_InputField _gridHueInputField;
+        //[Space]
+        //[SerializeField] private Slider _gridTransparencySlider;
+        //[SerializeField] private TMP_InputField _gridTransparencyInputField;
 
         //[Header("Input options")]
         //[SerializeField] private Toggle _swipeMovementToggle;
@@ -280,64 +280,64 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Options dropdown listeners
             _optionsButton.onClick.AddListener(_optionsPopup.ToggleOptionsPopup);
 
-            // Show grid toggle listener
-            _showGridToggle.onValueChanged.AddListener((value) =>
-            {
-                _grid.SetShow(value);
-                PlayerPrefs.SetInt(ShowGridKey, value ? 1 : 0);
-            });
+            //// Show grid toggle listener
+            //_optionsPopup._showGridToggle.onValueChanged.AddListener((value) =>
+            //{
+            //    _grid.SetShow(value);
+            //    PlayerPrefs.SetInt(ShowGridKey, value ? 1 : 0);
+            //});
 
-            // Grid columns listeners
-            _gridColumnsSlider.onValueChanged.AddListener((value) =>
-            {
-                UpdateInputFieldText(value, _gridColumnsInputField);
-                UpdateGridColumnLines();
-            });
-            _gridColumnsInputField.onValueChanged.AddListener((value) =>
-            {
-                VerifyAndUpdateSliderValue(_gridColumnsInputField, _gridColumnsSlider);
-                UpdateGridColumnLines();
-            });
+            //// Grid columns listeners
+            //_optionsPopup._gridColumnsSlider.onValueChanged.AddListener((value) =>
+            //{
+            //    UpdateInputFieldText(value, _optionsPopup._gridColumnsInputField);
+            //    UpdateGridColumnLines();
+            //});
+            //_optionsPopup._gridColumnsInputField.onValueChanged.AddListener((value) =>
+            //{
+            //    VerifyAndUpdateSliderValue(_optionsPopup._gridColumnsInputField, _optionsPopup._gridColumnsSlider);
+            //    UpdateGridColumnLines();
+            //});
 
-            // Grid rows listeners
-            _gridRowsSlider.onValueChanged.AddListener((value) =>
-            {
-                UpdateInputFieldText(value, _gridRowsInputField);
-                UpdateGridRowLines();
-            });
-            _gridRowsInputField.onValueChanged.AddListener((value) =>
-            {
-                VerifyAndUpdateSliderValue(_gridRowsInputField, _gridRowsSlider);
-                UpdateGridRowLines();
-            });
+            //// Grid rows listeners
+            //_optionsPopup._gridRowsSlider.onValueChanged.AddListener((value) =>
+            //{
+            //    UpdateInputFieldText(value, _optionsPopup._gridRowsInputField);
+            //    UpdateGridRowLines();
+            //});
+            //_optionsPopup._gridRowsInputField.onValueChanged.AddListener((value) =>
+            //{
+            //    VerifyAndUpdateSliderValue(_optionsPopup._gridRowsInputField, _optionsPopup._gridRowsSlider);
+            //    UpdateGridRowLines();
+            //});
 
-            // Grid hue listeners
-            _gridHueSlider.onValueChanged.AddListener((value) =>
-            {
-                UpdateInputFieldText(value, _gridHueInputField);
-                _grid.SetGridHue(value);
-                PlayerPrefs.SetInt(GridHueKey, (int)value);
-            });
-            _gridHueInputField.onValueChanged.AddListener((value) =>
-            {
-                VerifyAndUpdateSliderValue(_gridHueInputField, _gridHueSlider);
-                _grid.SetGridHue(_gridHueSlider.value);
-                PlayerPrefs.SetInt(GridHueKey, (int)_gridHueSlider.value);
-            });
+            //// Grid hue listeners
+            //_optionsPopup._gridHueSlider.onValueChanged.AddListener((value) =>
+            //{
+            //    UpdateInputFieldText(value, _optionsPopup._gridHueInputField);
+            //    _grid.SetGridHue(value);
+            //    PlayerPrefs.SetInt(GridHueKey, (int)value);
+            //});
+            //_optionsPopup._gridHueInputField.onValueChanged.AddListener((value) =>
+            //{
+            //    VerifyAndUpdateSliderValue(_optionsPopup._gridHueInputField, _optionsPopup._gridHueSlider);
+            //    _grid.SetGridHue(_optionsPopup._gridHueSlider.value);
+            //    PlayerPrefs.SetInt(GridHueKey, (int)_optionsPopup._gridHueSlider.value);
+            //});
 
-            // Grid transparency listeners
-            _gridTransparencySlider.onValueChanged.AddListener((value) =>
-            {
-                UpdateInputFieldText(value, _gridTransparencyInputField);
-                _grid.SetGridTransparency(value);
-                PlayerPrefs.SetInt(GridTransparencyKey, (int)value);
-            });
-            _gridTransparencyInputField.onValueChanged.AddListener((value) =>
-            {
-                VerifyAndUpdateSliderValue(_gridTransparencyInputField, _gridTransparencySlider);
-                _grid.SetGridTransparency(_gridTransparencySlider.value);
-                PlayerPrefs.SetInt(GridTransparencyKey, (int)_gridTransparencySlider.value);
-            });
+            //// Grid transparency listeners
+            //_optionsPopup._gridTransparencySlider.onValueChanged.AddListener((value) =>
+            //{
+            //    UpdateInputFieldText(value, _optionsPopup._gridTransparencyInputField);
+            //    _grid.SetGridTransparency(value);
+            //    PlayerPrefs.SetInt(GridTransparencyKey, (int)value);
+            //});
+            //_optionsPopup._gridTransparencyInputField.onValueChanged.AddListener((value) =>
+            //{
+            //    VerifyAndUpdateSliderValue(_optionsPopup._gridTransparencyInputField, _optionsPopup._gridTransparencySlider);
+            //    _grid.SetGridTransparency(_optionsPopup._gridTransparencySlider.value);
+            //    PlayerPrefs.SetInt(GridTransparencyKey, (int)_optionsPopup._gridTransparencySlider.value);
+            //});
 
             //// Input options listeners
             //_swipeMovementToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.Swipe, BattleRotationInputType.TwoFinger); });
@@ -438,60 +438,60 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void Start()
         {
-            // Loading grid settings. Grid settings are saved locally from this script because they aren't accessed anywhere else.
-            _gridColumnsSlider.value = PlayerPrefs.GetInt(GridColumnLinesKey, GridColumnLinesDefault);
-            _gridRowsSlider.value = PlayerPrefs.GetInt(GridRowLinesKey, GridRowLinesDefault);
-            _gridHueSlider.value = PlayerPrefs.GetInt(GridHueKey, GridHueDefault);
-            _gridTransparencySlider.value = PlayerPrefs.GetInt(GridTransparencyKey, GridTransparencyDefault);
-
-            _showGridToggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(ShowGridKey, 1) == 1);
-            _alignToGridToggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(AlignToGridKey, 1) == 1);
-            _incrementalScalingToggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(IncrementalScalingKey, 1) == 1);
-
-            // Initializing grid
-            _grid.SetRowLines((int)_gridRowsSlider.value);
-            _grid.SetColumnLines((int)_gridColumnsSlider.value);
-            _grid.SetShow(_showGridToggle.isOn);
-
             // Initializing options popup
             _optionsPopup.Initialize(this);
 
-            // Loading saved input settings
-            switch (SettingsCarrier.Instance.BattleMovementInput)
-            {
-                case BattleMovementInputType.Swipe:
-                    _optionsPopup._swipeMovementToggle.SetIsOnWithoutNotify(true);
-                    break;
-                case BattleMovementInputType.PointAndClick:
-                    _optionsPopup._pointAndClickMovementToggle.SetIsOnWithoutNotify(true);
-                    break;
-                case BattleMovementInputType.Joystick:
-                    _optionsPopup._joystickMovementToggle.SetIsOnWithoutNotify(true);
-                    break;
-            }
+            //// Loading grid settings. Grid settings are saved locally from this script because they aren't accessed anywhere else.
+            //_optionsPopup._gridColumnsSlider.value = PlayerPrefs.GetInt(GridColumnLinesKey, GridColumnLinesDefault);
+            //_optionsPopup._gridRowsSlider.value = PlayerPrefs.GetInt(GridRowLinesKey, GridRowLinesDefault);
+            //_optionsPopup._gridHueSlider.value = PlayerPrefs.GetInt(GridHueKey, GridHueDefault);
+            //_optionsPopup._gridTransparencySlider.value = PlayerPrefs.GetInt(GridTransparencyKey, GridTransparencyDefault);
 
-            _optionsPopup.UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput, SettingsCarrier.Instance.BattleRotationInput);
+            //_optionsPopup._showGridToggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(ShowGridKey, 1) == 1);
+            //_optionsPopup._alignToGridToggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(AlignToGridKey, 1) == 1);
+            //_optionsPopup._incrementalScalingToggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(IncrementalScalingKey, 1) == 1);
 
-            float swipeMinDistance = SettingsCarrier.Instance.BattleSwipeMinDistance;
-            _optionsPopup._swipeMinDistanceSlider.value = swipeMinDistance;
-            UpdateInputFieldText(swipeMinDistance, _optionsPopup._swipeMinDistanceInputField);
+            //// Initializing grid
+            //_grid.SetRowLines((int)_optionsPopup._gridRowsSlider.value);
+            //_grid.SetColumnLines((int)_optionsPopup._gridColumnsSlider.value);
+            //_grid.SetShow(_optionsPopup._showGridToggle.isOn);
 
-            float swipeMaxDistance = SettingsCarrier.Instance.BattleSwipeMaxDistance;
-            _optionsPopup._rotationSwipeMaxDistanceSlider.value = swipeMaxDistance;
-            UpdateInputFieldText(swipeMaxDistance, _optionsPopup._rotationSwipeMaxDistanceInputField);
+            //// Loading saved input settings
+            //switch (SettingsCarrier.Instance.BattleMovementInput)
+            //{
+            //    case BattleMovementInputType.Swipe:
+            //        _optionsPopup._swipeMovementToggle.SetIsOnWithoutNotify(true);
+            //        break;
+            //    case BattleMovementInputType.PointAndClick:
+            //        _optionsPopup._pointAndClickMovementToggle.SetIsOnWithoutNotify(true);
+            //        break;
+            //    case BattleMovementInputType.Joystick:
+            //        _optionsPopup._joystickMovementToggle.SetIsOnWithoutNotify(true);
+            //        break;
+            //}
 
-            float swipeSensitivity = SettingsCarrier.Instance.BattleSwipeSensitivity;
-            _optionsPopup._movementSwipeSensitivitySlider.value = swipeSensitivity;
-            UpdateInputFieldText(swipeSensitivity, _optionsPopup._movementSwipeSensitivityInputField);
+            //_optionsPopup.UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput, SettingsCarrier.Instance.BattleRotationInput);
 
-            float gyroMinAngle = SettingsCarrier.Instance.BattleGyroMinAngle;
-            _optionsPopup._gyroscopeMinAngleSlider.value = gyroMinAngle;
-            UpdateInputFieldText(gyroMinAngle, _optionsPopup._gyroscopeMinAngleInputField);
-            
-            // Loading saved arena settings. Setting slider value will invoke the listeners added in Awake so the input fields will be updated as well.
-            _optionsPopup._arenaScaleSlider.value = SettingsCarrier.Instance.BattleArenaScale;
-            _optionsPopup._arenaPosXSlider.value = SettingsCarrier.Instance.BattleArenaPosX;
-            _optionsPopup._arenaPosYSlider.value = SettingsCarrier.Instance.BattleArenaPosY;
+            //float swipeMinDistance = SettingsCarrier.Instance.BattleSwipeMinDistance;
+            //_optionsPopup._swipeMinDistanceSlider.value = swipeMinDistance;
+            //UpdateInputFieldText(swipeMinDistance, _optionsPopup._swipeMinDistanceInputField);
+
+            //float swipeMaxDistance = SettingsCarrier.Instance.BattleSwipeMaxDistance;
+            //_optionsPopup._rotationSwipeMaxDistanceSlider.value = swipeMaxDistance;
+            //UpdateInputFieldText(swipeMaxDistance, _optionsPopup._rotationSwipeMaxDistanceInputField);
+
+            //float swipeSensitivity = SettingsCarrier.Instance.BattleSwipeSensitivity;
+            //_optionsPopup._movementSwipeSensitivitySlider.value = swipeSensitivity;
+            //UpdateInputFieldText(swipeSensitivity, _optionsPopup._movementSwipeSensitivityInputField);
+
+            //float gyroMinAngle = SettingsCarrier.Instance.BattleGyroMinAngle;
+            //_optionsPopup._gyroscopeMinAngleSlider.value = gyroMinAngle;
+            //UpdateInputFieldText(gyroMinAngle, _optionsPopup._gyroscopeMinAngleInputField);
+
+            //// Loading saved arena settings. Setting slider value will invoke the listeners added in Awake so the input fields will be updated as well.
+            //_optionsPopup._arenaScaleSlider.value = SettingsCarrier.Instance.BattleArenaScale;
+            //_optionsPopup._arenaPosXSlider.value = SettingsCarrier.Instance.BattleArenaPosX;
+            //_optionsPopup._arenaPosYSlider.value = SettingsCarrier.Instance.BattleArenaPosY;
         }
 
         private void OnDestroy()
@@ -519,22 +519,22 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Removing options button listeners
             _optionsButton.onClick.RemoveAllListeners();
 
-            // Removing grid listeners
-            _gridColumnsSlider.onValueChanged.RemoveAllListeners();
-            _gridColumnsInputField.onValueChanged.RemoveAllListeners();
+            //// Removing grid listeners
+            //_gridColumnsSlider.onValueChanged.RemoveAllListeners();
+            //_gridColumnsInputField.onValueChanged.RemoveAllListeners();
 
-            _gridRowsSlider.onValueChanged.RemoveAllListeners();
-            _gridRowsInputField.onValueChanged.RemoveAllListeners();
+            //_gridRowsSlider.onValueChanged.RemoveAllListeners();
+            //_gridRowsInputField.onValueChanged.RemoveAllListeners();
 
-            _gridHueSlider.onValueChanged.RemoveAllListeners();
-            _gridHueInputField.onValueChanged.RemoveAllListeners();
+            //_gridHueSlider.onValueChanged.RemoveAllListeners();
+            //_gridHueInputField.onValueChanged.RemoveAllListeners();
 
-            _gridTransparencySlider.onValueChanged.RemoveAllListeners();
-            _gridTransparencyInputField.onValueChanged.RemoveAllListeners();
+            //_gridTransparencySlider.onValueChanged.RemoveAllListeners();
+            //_gridTransparencyInputField.onValueChanged.RemoveAllListeners();
 
-            _showGridToggle.onValueChanged.RemoveAllListeners();
-            _incrementalScalingToggle.onValueChanged.RemoveAllListeners();
-            _alignToGridToggle.onValueChanged.RemoveAllListeners();
+            //_showGridToggle.onValueChanged.RemoveAllListeners();
+            //_incrementalScalingToggle.onValueChanged.RemoveAllListeners();
+            //_alignToGridToggle.onValueChanged.RemoveAllListeners();
 
             //// Removing input options listeners
             //_swipeMovementToggle.onValueChanged.RemoveAllListeners();
@@ -799,19 +799,19 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
 
             // Setting listener for toggles
-            _alignToGridToggle.onValueChanged.AddListener((value)=>
+            _optionsPopup._alignToGridToggle.onValueChanged.AddListener((value)=>
             {
                 editingComponent.ToggleGrid(value);
                 PlayerPrefs.SetInt(AlignToGridKey, value ? 1 : 0);
             });
-            editingComponent.ToggleGrid(_alignToGridToggle.isOn);
+            editingComponent.ToggleGrid(_optionsPopup._alignToGridToggle.isOn);
 
-            _incrementalScalingToggle.onValueChanged.AddListener((value) =>
+            _optionsPopup._incrementalScalingToggle.onValueChanged.AddListener((value) =>
             {
                 editingComponent.ToggleIncrementScaling(value);
                 PlayerPrefs.SetInt(IncrementalScalingKey, value ? 1 : 0);
             });
-            editingComponent.ToggleIncrementScaling(_incrementalScalingToggle.isOn);
+            editingComponent.ToggleIncrementScaling(_optionsPopup._incrementalScalingToggle.isOn);
 
             // Setting listener for editing component events
             editingComponent.OnUiElementEdited += OnUiElementEdited;
@@ -1229,17 +1229,17 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
         }
 
-        private void UpdateGridColumnLines()
-        {
-            int columns = (int)_gridColumnsSlider.value;
-            if (_grid.SetColumnLines(columns)) PlayerPrefs.SetInt(GridColumnLinesKey, columns);
-        }
+        //private void UpdateGridColumnLines()
+        //{
+        //    int columns = (int)_optionsPopup._gridColumnsSlider.value;
+        //    if (_grid.SetColumnLines(columns)) PlayerPrefs.SetInt(GridColumnLinesKey, columns);
+        //}
 
-        private void UpdateGridRowLines()
-        {
-            int rows = (int)_gridRowsSlider.value;
-            if (_grid.SetRowLines(rows)) PlayerPrefs.SetInt(GridRowLinesKey, rows);
-        }
+        //private void UpdateGridRowLines()
+        //{
+        //    int rows = (int)_optionsPopup._gridRowsSlider.value;
+        //    if (_grid.SetRowLines(rows)) PlayerPrefs.SetInt(GridRowLinesKey, rows);
+        //}
 
         //private void UpdateArena()
         //{
@@ -1273,7 +1273,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         //        arenaHeight = _arenaScaleSlider.value * 0.01f * editorAspectRatioHeight;
         //        arenaWidth = arenaHeight * GameAspectRatio;
         //    }
-            
+
         //    // Calculating arena position
         //    Vector2 position = Vector2.zero;
         //    position.x += _arenaPosXSlider.value * 0.01f * (EditorRect.width - arenaWidth);
