@@ -5,7 +5,6 @@ using TMPro;
 using static MenuUi.Scripts.Settings.BattleUiEditor.BattleUiEditor;
 using Altzone.Scripts.BattleUiShared;
 using static SettingsCarrier;
-using Unity.CodeEditor;
 
 namespace MenuUi.Scripts.Settings.BattleUiEditor
 {
@@ -95,6 +94,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             _resetButton.onClick.AddListener(OnResetButtonClicked);
             _closeButton.onClick.AddListener(CloseOptionsPopup);
+
+            // Show grid toggle listener
+            _showGridToggle.onValueChanged.AddListener((value) =>
+            {
+                _grid.SetShow(value);
+                PlayerPrefs.SetInt(ShowGridKey, value ? 1 : 0);
+            });
 
             // Grid columns listeners
             _gridColumnsSlider.onValueChanged.AddListener((value) =>
