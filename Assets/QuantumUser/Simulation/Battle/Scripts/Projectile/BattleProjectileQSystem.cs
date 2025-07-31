@@ -25,7 +25,7 @@ namespace Battle.QSimulation.Projectile
     /// Handles projectile logic, including projectile's movements and reactions to collisionsignals.
     /// </summary>
     [Preserve]
-    public unsafe class BattleProjectileQSystem : SystemMainThreadFilter<BattleProjectileQSystem.Filter>, ISignalBattleOnProjectileHitSoulWall, ISignalBattleOnProjectileHitArenaBorder, ISignalBattleOnProjectileHitPlayerHitbox, ISignalBattleOnGameOver
+    public unsafe class BattleProjectileQSystem : SystemMainThreadFilter<BattleProjectileQSystem.Filter>, ISignalBattleOnProjectileHitSoulWall, ISignalBattleOnProjectileHitArenaBorder, ISignalBattleOnProjectileHitPlayerShield, ISignalBattleOnGameOver
     {
         /// <summary>
         /// Filter for filtering projectile entities
@@ -173,7 +173,7 @@ namespace Battle.QSimulation.Projectile
         /// <param name="projectileEntity">EntityRef of the projectile.</param>
         /// <param name="playerHitbox">Pointer to the PlayerHitbox component.</param>
         /// <param name="playerEntity">EntityRef of the player hitbox.</param>
-        public void BattleOnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
+        public void BattleOnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
         {
             if (projectile->Emotion == BattleEmotionState.Love) return;
             if (playerHitbox->CollisionType == BattlePlayerCollisionType.None) return;

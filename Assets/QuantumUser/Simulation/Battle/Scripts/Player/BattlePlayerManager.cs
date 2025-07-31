@@ -216,6 +216,10 @@ namespace Battle.QSimulation.Player
                             // create hitBox entity
                             playerHitboxTargetEntity = f.Create();
 
+                            //{ initialize collisionTrigger component
+
+                            collisionTrigger = new BattleCollisionTriggerQComponent();
+
                             switch (i)
                             {
                                 case 0:
@@ -229,6 +233,8 @@ namespace Battle.QSimulation.Player
                                     playerHitboxCollisionType              = playerDataTemplate->HitboxShield.CollisionType;
                                     playerHitboxListSourceColliderTemplate = playerHitboxListShieldColliderTemplate;
                                     playerHitboxShieldEntity               = playerHitboxTargetEntity;
+
+                                    collisionTrigger.Type = BattleCollisionTriggerType.Shield;
                                     break;
 
                                 case 1:
@@ -242,6 +248,8 @@ namespace Battle.QSimulation.Player
                                     playerHitboxCollisionType              = playerDataTemplate->HitboxCharacter.CollisionType;
                                     playerHitboxListSourceColliderTemplate = playerHitboxListCharacterColliderTemplate;
                                     playerHitboxCharacterEntity            = playerHitboxTargetEntity;
+
+                                    collisionTrigger.Type = BattleCollisionTriggerType.Player;
                                     break;
 
                                 default:
@@ -249,13 +257,6 @@ namespace Battle.QSimulation.Player
                                     playerHitboxCollisionType = (BattlePlayerCollisionType)(-1);
                                     break;
                             }
-
-                            //{ initialize collisionTrigger component
-
-                            collisionTrigger = new BattleCollisionTriggerQComponent
-                            {
-                                Type = BattleCollisionTriggerType.Player
-                            };
 
                             // initialize hitBox collider
                             playerHitboxCollider = PhysicsCollider2D.Create(f,
@@ -302,7 +303,8 @@ namespace Battle.QSimulation.Player
                             f.Add(playerHitboxTargetEntity, collisionTrigger);
                         }
 
-                        // initialize playerData
+                        //{ initialize playerData
+
                         playerData = new BattlePlayerDataQComponent
                         {
                             PlayerRef         = PlayerRef.None,
@@ -320,17 +322,22 @@ namespace Battle.QSimulation.Player
                             RotationBase      = playerRotationBase,
                             RotationOffset    = FP._0,
 
+                            CurrentHp         = data.Characters[playerCharacterNumber].Stats.Hp,
+
                             HitboxShieldEntity      = playerHitboxShieldEntity,
                             HitboxCharacterEntity   = playerHitboxCharacterEntity
                         };
 
 #if DEBUG_PLAYER_STAT_OVERRIDE
-                        playerData.Stats.Hp            = FP.FromString("1.0");
+                        playerData.Stats.Hp            = FP.FromString("3.0");
                         playerData.Stats.Speed         = FP.FromString("20.0");
                         playerData.Stats.CharacterSize = FP.FromString("1.0");
                         playerData.Stats.Attack        = FP.FromString("1.0");
                         playerData.Stats.Defence       = FP.FromString("1.0");
 #endif
+                        playerData.CurrentHp = playerData.Stats.Hp;
+
+                        //{ initialize playerData
 
                         //{ initialize entity
 
@@ -790,6 +797,12 @@ namespace Battle.QSimulation.Player
             Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(character);
 
             FPVector2 worldPosition;
+
+            if (playerData->CurrentHp <= 0)
+            {
+                Debug.LogFormat("[PlayerManager] Player character {0} has no Hp and will not be spawned", characterNumber);
+                return;
+            }
 
             if (playerHandle.PlayState == BattlePlayerPlayState.InPlay)
             {

@@ -36,8 +36,14 @@ namespace Battle.View.UI
 
         /// <value>[SerializeField] Reference to the shield fill image of the character button. It is used to display the character's current shield health.</value>
         [SerializeField] private Image _shieldFill;
+        
+        [SerializeField] private float _damageFillAnimationDuration = 0.5f;
 
         /// @}
+
+        private float _startDamageFillAmount;
+        private float _targetDamageFillAmount = 0f;
+        private float t = 0f;
 
         /// <value>Public getter for #_button.</value>
         public Button ButtonComponent => _button;
@@ -50,10 +56,33 @@ namespace Battle.View.UI
         public void SetCharacterIcon(int characterId)
         {
             PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(characterId.ToString());
-
+            
             if (info == null) return;
 
-            _characterImage.sprite = info.GalleryImage;
+            Sprite characterSprite = info.BattleUiSprite;
+
+            if (characterSprite == null)
+            {
+                characterSprite = info.GalleryImage;
+            }
+
+            _characterImage.sprite = characterSprite;
+        }
+
+        public void SetDamageFill(float percentage)
+        {
+            t = 0f;
+            _startDamageFillAmount = _damageFill.fillAmount;
+            _targetDamageFillAmount = 1 - percentage;
+        }
+
+        private void Update()
+        {
+            if (_targetDamageFillAmount > _damageFill.fillAmount)
+            {
+                t += Time.deltaTime / _damageFillAnimationDuration;
+                _damageFill.fillAmount = Mathf.Lerp(_startDamageFillAmount, _targetDamageFillAmount, t);
+            }
         }
 
         /// <summary>
