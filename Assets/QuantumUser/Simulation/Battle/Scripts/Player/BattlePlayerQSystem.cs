@@ -2,7 +2,6 @@ using UnityEngine.Scripting;
 
 using Quantum;
 using Photon.Deterministic;
-using UnityEngine;
 using Battle.QSimulation.Projectile;
 
 namespace Battle.QSimulation.Player
@@ -55,7 +54,7 @@ namespace Battle.QSimulation.Player
 
         public override void Update(Frame f)
         {
-            Quantum.Input* input;
+            Input* input;
 
             EntityRef playerEntity;
             BattlePlayerDataQComponent* playerData;
@@ -81,14 +80,6 @@ namespace Battle.QSimulation.Player
 
                 BattlePlayerMovementController.UpdateMovement(f, playerData, playerTransform, input);
             }
-
-            //if (_damageTaken > FP._0 && _damagedPlayerData->CurrentHp > 0 && !_damageCooldown.IsRunning(f))
-            //{
-            //    _damagedPlayerData->CurrentHp -= _damageTaken;
-            //    _damageTaken = FP._0;
-
-            //    _damageCooldown = FrameTimer.FromSeconds(f, 1);
-            //}
         }
     }
 }

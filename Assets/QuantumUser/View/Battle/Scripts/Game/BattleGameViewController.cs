@@ -1,13 +1,16 @@
+using UnityEngine;
+using Quantum;
+using Photon.Deterministic;
+
 using Altzone.Scripts.BattleUiShared;
 using Altzone.Scripts.Lobby;
-using Battle.QSimulation.Player;
+
 using Battle.View.Audio;
 using Battle.View.Effect;
-using Battle.View.Player;
 using Battle.View.UI;
-using Photon.Deterministic;
-using Quantum;
-using UnityEngine;
+using Battle.View.Player;
+using Battle.QSimulation.Player;
+
 using BattleMovementInputType = SettingsCarrier.BattleMovementInputType;
 using BattleRotationInputType = SettingsCarrier.BattleRotationInputType;
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;

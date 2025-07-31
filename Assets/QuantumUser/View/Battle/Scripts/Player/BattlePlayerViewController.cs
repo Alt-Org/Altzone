@@ -1,8 +1,8 @@
+using System.Collections;
 using UnityEngine;
 using Quantum;
 using Battle.View.Game;
 using Battle.QSimulation.Player;
-using System.Collections;
 
 namespace Battle.View.Player
 {
