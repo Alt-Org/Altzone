@@ -41,8 +41,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         [Header("Options popup")]
         [SerializeField] private Button _optionsButton;
-        [SerializeField] private GameObject _optionsContents;
-        [SerializeField] private Button _resetButton;
+        [SerializeField] private OptionsPopup _optionsPopup;
 
         [Header("Grid options")]
         [SerializeField] private Toggle _showGridToggle;
@@ -176,7 +175,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// </summary>
         public void CloseEditor()
         {
-            CloseOptionsDropdown();
+            _optionsPopup.CloseOptionsPopup();
             if (_unsavedChanges)
             {
                 OnUiElementSelected(null);
@@ -207,7 +206,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private const string TeammateText = "Tiimikaveri";
 
         private const string SaveChangesText = "Tallenna muutokset?";
-        private const string ResetChangesText = "Palauta UI-elementtien oletusasettelu?";
 
         private const string GridColumnLinesKey = "BattleUiEditorGridColumns";
         private const string GridRowLinesKey = "BattleUiEditorGridRows";
@@ -280,10 +278,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             });
 
             // Options dropdown listeners
-            _optionsButton.onClick.AddListener(ToggleOptionsDropdown);
-
-            // Reset button listener
-            _resetButton.onClick.AddListener(OnResetButtonClicked);
+            _optionsButton.onClick.AddListener(_optionsPopup.ToggleOptionsPopup);
 
             // Show grid toggle listener
             _showGridToggle.onValueChanged.AddListener((value) =>
@@ -346,12 +341,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Input options listeners
             _swipeMovementToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.Swipe, BattleRotationInputType.TwoFinger); });
-            _pointAndClickMovementToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.PointAndClick, BattleRotationInputType.Swipe); });
+            _pointAndClickMovementToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.PointAndClick, BattleRotationInputType.TwoFinger); });
             _joystickMovementToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.Joystick, BattleRotationInputType.Joystick); });
 
-            _twoFingerRotationToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.Swipe, BattleRotationInputType.TwoFinger); });
-            _swipeRotationToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.PointAndClick, BattleRotationInputType.Swipe); });
-            _joystickRotationToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.Joystick, BattleRotationInputType.Joystick); });
+            _twoFingerRotationToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput, BattleRotationInputType.TwoFinger); });
+            _swipeRotationToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput, BattleRotationInputType.Swipe); });
+            _joystickRotationToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput, BattleRotationInputType.Joystick); });
             _gyroscopeRotationToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput, BattleRotationInputType.Gyroscope); });
 
             _swipeMinDistanceSlider.onValueChanged.AddListener((value) =>
@@ -458,6 +453,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _grid.SetColumnLines((int)_gridColumnsSlider.value);
             _grid.SetShow(_showGridToggle.isOn);
 
+            // Initializing options popup
+            _optionsPopup.Initialize(this);
+
             // Loading saved input settings
             switch (SettingsCarrier.Instance.BattleMovementInput)
             {
@@ -518,9 +516,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 editingComponent.OnGridSnap -= _grid.HighlightLines;
             }
 
-            // Removing options dropdown listeners
+            // Removing options button listeners
             _optionsButton.onClick.RemoveAllListeners();
-            _resetButton.onClick.RemoveAllListeners();
 
             // Removing grid listeners
             _gridColumnsSlider.onValueChanged.RemoveAllListeners();
@@ -601,7 +598,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private void OpenPreviewMode()
         {
             OnUiElementSelected(null);
-            CloseOptionsDropdown();
+            _optionsPopup.CloseOptionsPopup();
             _topButtonsRectTransform.gameObject.SetActive(false);
             _previewModeTouchDetector.gameObject.SetActive(true);
             EditorRectTransform.anchorMin = Vector2.zero;
@@ -615,30 +612,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             ScaleEditor();
         }
 
-        private void ToggleOptionsDropdown()
-        {
-            if (_optionsContents.activeSelf)
-            {
-                CloseOptionsDropdown();
-            }
-            else
-            {
-                OpenOptionsDropdown();
-            }
-        }
-
-        private void OpenOptionsDropdown()
-        {
-            OnUiElementSelected(null);
-            _optionsContents.SetActive(true);
-        }
-
-        private void CloseOptionsDropdown()
-        {
-            _optionsContents.SetActive(false);
-        }
-
-        private IEnumerator ShowSaveResetPopup(string message, Action<bool?> callback)
+        public IEnumerator ShowSaveResetPopup(string message, Action<bool?> callback)
         {
             _popupText.text = message;
             _saveResetPopup.SetActive(true);
@@ -696,16 +670,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             PopupSignalBus.OnChangePopupInfoSignal("Muutokset on tallennettu.");
         }
 
-        private void OnResetButtonClicked()
-        {
-            StartCoroutine(ShowSaveResetPopup(ResetChangesText, resetChanges =>
-            {
-                if (resetChanges == null) return;
-                if (resetChanges.Value == true) ResetChanges();
-            }));
-        }
-
-        private void ResetChanges()
+        public void ResetChanges()
         {
             SetDefaultDataToUiElement(_instantiatedTimer);
             SetDefaultDataToUiElement(_instantiatedDiamonds);
@@ -1212,9 +1177,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _grid.RemoveLineHighlight();
         }
 
-        private void OnUiElementSelected(BattleUiEditingComponent newSelectedEditingComponent)
+        public void OnUiElementSelected(BattleUiEditingComponent newSelectedEditingComponent)
         {
-            CloseOptionsDropdown();
+            _optionsPopup.CloseOptionsPopup();
             _grid.RemoveLineHighlight();
 
             if (_currentlySelectedEditingComponent != null && _currentlySelectedEditingComponent != newSelectedEditingComponent)
@@ -1356,7 +1321,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Toggling rotation toggles isOn based on rotation type and visibility based on movement type
             _twoFingerRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.TwoFinger);
-            _twoFingerRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.Swipe);
+            _twoFingerRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.Swipe || movementType == BattleMovementInputType.PointAndClick);
 
             _swipeRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.Swipe);
             _swipeRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.PointAndClick);
