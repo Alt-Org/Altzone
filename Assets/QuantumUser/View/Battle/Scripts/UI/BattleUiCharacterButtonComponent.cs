@@ -21,7 +21,7 @@ namespace Battle.View.UI
 
         private float _startDamageFillAmount;
         private float _targetDamageFillAmount = 0f;
-        private float t;
+        private float t = 0f;
 
         public Button ButtonComponent => _button;
         public OnPointerDownButton EventSender => _eventSender;
@@ -44,6 +44,7 @@ namespace Battle.View.UI
 
         public void SetDamageFill(float percentage)
         {
+            t = 0f;
             _startDamageFillAmount = _damageFill.fillAmount;
             _targetDamageFillAmount = 1 - percentage;
         }
