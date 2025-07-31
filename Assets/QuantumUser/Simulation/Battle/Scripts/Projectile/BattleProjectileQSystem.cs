@@ -162,9 +162,9 @@ namespace Battle.QSimulation.Projectile
 
         /// <summary>
         /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
-        /// that gets called when <see cref="Quantum.ISignalBattleOnProjectileHitPlayerHitbox">ISignalBattleOnProjectileHitPlayerHitbox</see> is sent.</span><br/>
-        /// Handles behavior when the projectile hits a player hitbox.
-        /// Applies bounce logic based on surface normal of the hitbox.
+        /// that gets called when <see cref="Quantum.ISignalBattleOnProjectileHitPlayerShield">ISignalBattleOnProjectileHitPlayerShield</see> is sent.</span><br/>
+        /// Handles behavior when the projectile hits a player shield.
+        /// Applies bounce logic based on surface normal of the shield hitbox.
         /// @warning
         /// This method should only be called via Quantum signal.
         /// </summary>
