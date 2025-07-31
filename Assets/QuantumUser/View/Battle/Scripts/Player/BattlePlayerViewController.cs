@@ -2,6 +2,7 @@ using UnityEngine;
 using Quantum;
 using Battle.View.Game;
 using Battle.QSimulation.Player;
+using System.Collections;
 
 namespace Battle.View.Player
 {
@@ -16,6 +17,10 @@ namespace Battle.View.Player
         [SerializeField] private float _transparencyEffectTransitionRate;
         [SerializeField] private float _transparencyEffectMinimumAlpha;
 
+        [SerializeField] private float _damageFlashDuration = 1f;
+        [SerializeField] private int _damageFlashAmount = 5;
+
+        private Coroutine _damageFlashCoroutine = null;
 
         public override void OnActivate(Frame _) => QuantumEvent.Subscribe(this, (EventBattlePlayerViewInit e) => {
             if (EntityRef != e.Entity) return;
@@ -42,6 +47,8 @@ namespace Battle.View.Player
             {
                 _localPlayerIndicator.SetActive(true);
             }
+
+            QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventCharacterTakeDamage);
         });
 
         public override void OnUpdateView()
@@ -56,24 +63,26 @@ namespace Battle.View.Player
             UpdateModelPositionAdjustment(&targetPosition);
             //UpdateAnimator(&targetPosition, battleTeamNumber);
 
-            if (BattleGameViewController.ProjectileReference != null)
-            {
-                if (Vector3.Distance(gameObject.transform.position, BattleGameViewController.ProjectileReference.transform.position) <= _transparencyEffectRange && _spriteRenderer.color.a > _transparencyEffectMinimumAlpha)
-                {
-                    Color tempColor = _spriteRenderer.color;
-                    tempColor.a = Mathf.Clamp(tempColor.a - _transparencyEffectTransitionRate * Time.deltaTime, _transparencyEffectMinimumAlpha, 1);
-                    _spriteRenderer.color = tempColor;
-                }
-                else if (_spriteRenderer.color.a < 1)
-                {
-                    Color tempColor = _spriteRenderer.color;
-                    tempColor.a = Mathf.Clamp(tempColor.a + _transparencyEffectTransitionRate * Time.deltaTime, _transparencyEffectMinimumAlpha, 1);
-                    _spriteRenderer.color = tempColor;
-                }
-            }
+            //if (BattleGameViewController.ProjectileReference != null)
+            //{
+            //    if (Vector3.Distance(gameObject.transform.position, BattleGameViewController.ProjectileReference.transform.position) <= _transparencyEffectRange && _spriteRenderer.color.a > _transparencyEffectMinimumAlpha)
+            //    {
+            //        Color tempColor = _spriteRenderer.color;
+            //        tempColor.a = Mathf.Clamp(tempColor.a - _transparencyEffectTransitionRate * Time.deltaTime, _transparencyEffectMinimumAlpha, 1);
+            //        _spriteRenderer.color = tempColor;
+            //    }
+            //    else if (_spriteRenderer.color.a < 1)
+            //    {
+            //        Color tempColor = _spriteRenderer.color;
+            //        tempColor.a = Mathf.Clamp(tempColor.a + _transparencyEffectTransitionRate * Time.deltaTime, _transparencyEffectMinimumAlpha, 1);
+            //        _spriteRenderer.color = tempColor;
+            //    }
+            //}
         }
 
         private SpriteRenderer _spriteRenderer;
+
+        public int RuntimeIndex => throw new System.NotImplementedException();
 
         private void UpdateModelPositionAdjustment(Vector3* targetPosition)
         {
@@ -110,6 +119,36 @@ namespace Battle.View.Player
 
             _spriteRenderer.flipX = flipX;
             _animator.SetInteger("state", animationState);
+        }
+
+        private void QEventCharacterTakeDamage(EventBattleCharacterTakeDamage e)
+        {
+            if (EntityRef != e.Entity) return;
+
+            if (_damageFlashCoroutine != null)
+            {
+                StopCoroutine(_damageFlashCoroutine);
+            }
+            _damageFlashCoroutine = StartCoroutine(DamageFlash());
+        }
+
+        private IEnumerator DamageFlash()
+        {
+            Color tempColor;
+            for (int i = 0; i < _damageFlashAmount; i++)
+            {
+                tempColor = _spriteRenderer.color;
+                tempColor.a = 0;
+                _spriteRenderer.color = tempColor;
+
+                yield return new WaitForSeconds(_damageFlashDuration / (2 * _damageFlashAmount));
+
+                tempColor = _spriteRenderer.color;
+                tempColor.a = 1;
+                _spriteRenderer.color = tempColor;
+
+                yield return new WaitForSeconds(_damageFlashDuration / (2 * _damageFlashAmount));
+            }
         }
     }
 }

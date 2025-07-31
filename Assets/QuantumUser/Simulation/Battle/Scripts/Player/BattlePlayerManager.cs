@@ -295,7 +295,8 @@ namespace Battle.QSimulation.Player
                             f.Add(playerHitboxTargetEntity, collisionTrigger);
                         }
 
-                        // initialize playerData
+                        //{ initialize playerData
+
                         playerData = new BattlePlayerDataQComponent
                         {
                             PlayerRef         = PlayerRef.None,
@@ -320,14 +321,15 @@ namespace Battle.QSimulation.Player
                         };
 
 #if DEBUG_PLAYER_STAT_OVERRIDE
-                        playerData.Stats.Hp            = FP.FromString("1.0");
+                        playerData.Stats.Hp            = FP.FromString("3.0");
                         playerData.Stats.Speed         = FP.FromString("20.0");
                         playerData.Stats.CharacterSize = FP.FromString("1.0");
                         playerData.Stats.Attack        = FP.FromString("1.0");
                         playerData.Stats.Defence       = FP.FromString("1.0");
-
-                        playerData.CurrentHp           = FP.FromString("1.0");
 #endif
+                        playerData.CurrentHp = playerData.Stats.Hp;
+
+                        //{ initialize playerData
 
                         //{ initialize entity
 
