@@ -69,6 +69,15 @@ synced event BattleLastRowWallDestroyed
     BattleLightraySize LightraySize;
 }
 
+synced event BattleCharacterTakeDamage
+{
+    EntityRef Entity;
+    BattleTeamNumber Team;
+    BattlePlayerSlot Slot;
+    int CharacterNumber;
+    FP HealthPercentage;
+}
+
 //} Gameplay events
 
 //{ Debug events

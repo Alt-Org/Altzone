@@ -1,21 +1,20 @@
 using UnityEngine;
-
 using Quantum;
 using Photon.Deterministic;
 
 using Altzone.Scripts.BattleUiShared;
 using Altzone.Scripts.Lobby;
 
-using Battle.QSimulation.Player;
-using Battle.View.UI;
-using Battle.View.Effect;
 using Battle.View.Audio;
-using PlayerType = Battle.View.UI.BattleUiPlayerInfoHandler.PlayerType;
+using Battle.View.Effect;
+using Battle.View.UI;
+using Battle.View.Player;
+using Battle.QSimulation.Player;
 
-using BattleUiElementType = SettingsCarrier.BattleUiElementType;
 using BattleMovementInputType = SettingsCarrier.BattleMovementInputType;
 using BattleRotationInputType = SettingsCarrier.BattleRotationInputType;
-using Battle.View.Player;
+using BattleUiElementType = SettingsCarrier.BattleUiElementType;
+using PlayerType = Battle.View.UI.BattleUiPlayerInfoHandler.PlayerType;
 
 namespace Battle.View.Game
 {
@@ -93,6 +92,7 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, QEventOnChangeEmotionState);
             QuantumEvent.Subscribe<EventBattleLastRowWallDestroyed>(this, QEventOnLastRowWallDestroyed);
             QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, QEventPlaySoundFX);
+            QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
 
             // Subscribing to Debug events
             QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, QEventDebugOnUpdateStatsOverlay);
@@ -107,10 +107,12 @@ namespace Battle.View.Game
 
         private void QEventOnViewInit(EventBattleViewInit e)
         {
+            PlayerRef playerRef = default;
+
             // Getting LocalPlayerSlot and LocalPlayerTeam
             if (Utils.TryGetQuantumFrame(out Frame f))
             {
-                PlayerRef playerRef = QuantumRunner.Default.Game.GetLocalPlayers()[0];
+                playerRef = QuantumRunner.Default.Game.GetLocalPlayers()[0];
                 LocalPlayerSlot = BattlePlayerManager.PlayerHandle.GetSlot(f, playerRef);
                 LocalPlayerTeam = BattlePlayerManager.PlayerHandle.GetTeamNumber(LocalPlayerSlot);
             }
@@ -167,21 +169,36 @@ namespace Battle.View.Game
 
             if (_uiController.PlayerInfoHandler != null)
             {
+                RuntimePlayer localPlayerData = f.GetPlayerData(playerRef);
+                RuntimePlayer localTeammateData = f.GetPlayerData(BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, LocalPlayerSlot).PlayerRef);
+
                 // Setting local player info
                 _uiController.PlayerInfoHandler.SetInfo(
                     PlayerType.LocalPlayer,
                     "Minä",
-                    new int[3] { 101, 201, 301 },
+                    new int[3] { localPlayerData.Characters[0].Id, localPlayerData.Characters[1].Id, localPlayerData.Characters[2].Id },
                     SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.PlayerInfo)
                 );
 
                 // Setting local teammate info
-                _uiController.PlayerInfoHandler.SetInfo(
-                    PlayerType.LocalTeammate,
-                    "Tiimiläinen",
-                    new int[3] { 401, 501, 601 },
-                    SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.TeammateInfo)
-                );
+                if (localTeammateData != null)
+                {
+                    _uiController.PlayerInfoHandler.SetInfo(
+                        PlayerType.LocalTeammate,
+                        "Tiimiläinen",
+                        new int[3] { localTeammateData.Characters[0].Id, localTeammateData.Characters[1].Id, localTeammateData.Characters[2].Id },
+                        SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.TeammateInfo)
+                    );
+                }
+                else
+                {
+                    _uiController.PlayerInfoHandler.SetInfo(
+                        PlayerType.LocalTeammate,
+                        "Tiimiläinen",
+                        new int[3] { 101, 201, 301 },
+                        SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.TeammateInfo)
+                    );
+                }
             }
 
             //} Initializing UI Handlers
@@ -272,6 +289,14 @@ namespace Battle.View.Game
         private void QEventPlaySoundFX(EventBattlePlaySoundFX e)
         {
             _soundFXViewController.PlaySound(e.Effect);
+        }
+
+        private void QEventOnCharacterTakeDamage(EventBattleCharacterTakeDamage e)
+        {
+            if (e.Team == LocalPlayerTeam)
+            {
+                _uiController.PlayerInfoHandler.UpdateHealthVisual(e.Slot, e.CharacterNumber, (float)e.HealthPercentage);
+            }
         }
 
         private void QEventDebugOnUpdateStatsOverlay(EventBattleDebugUpdateStatsOverlay e)

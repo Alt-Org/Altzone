@@ -181,8 +181,10 @@ namespace Quantum.Prototypes {
     public FPVector2 TargetPosition;
     public FP RotationBase;
     public FP RotationOffset;
+    public FP CurrentHp;
     public MapEntityId HitboxShieldEntity;
     public MapEntityId HitboxCharacterEntity;
+    public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerDataQComponent component = default;
         Materialize((Frame)f, ref component, in context);
@@ -201,8 +203,10 @@ namespace Quantum.Prototypes {
         result.TargetPosition = this.TargetPosition;
         result.RotationBase = this.RotationBase;
         result.RotationOffset = this.RotationOffset;
+        result.CurrentHp = this.CurrentHp;
         PrototypeValidator.FindMapEntity(this.HitboxShieldEntity, in context, out result.HitboxShieldEntity);
         PrototypeValidator.FindMapEntity(this.HitboxCharacterEntity, in context, out result.HitboxCharacterEntity);
+        this.DamageCooldown.Materialize(frame, ref result.DamageCooldown, in context);
     }
   }
   [System.SerializableAttribute()]

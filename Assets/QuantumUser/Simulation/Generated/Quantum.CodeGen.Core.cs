@@ -54,7 +54,8 @@ namespace Quantum {
     ArenaBorder = 0,
     SoulWall = 1,
     Player = 2,
-    Goal = 3,
+    Shield = 3,
+    Goal = 4,
   }
   public enum BattleEmotionState : int {
     Sadness = 0,
@@ -956,7 +957,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattlePlayerDataQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 120;
+    public const Int32 SIZE = 136;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(24)]
     public PlayerRef PlayerRef;
@@ -968,7 +969,7 @@ namespace Quantum {
     public Int32 CharacterId;
     [FieldOffset(8)]
     public Int32 CharacterClass;
-    [FieldOffset(80)]
+    [FieldOffset(96)]
     public BattlePlayerStats Stats;
     [FieldOffset(20)]
     public Int32 GridExtendTop;
@@ -976,16 +977,20 @@ namespace Quantum {
     public Int32 GridExtendBottom;
     [FieldOffset(28)]
     public QBoolean HasTargetPosition;
-    [FieldOffset(64)]
+    [FieldOffset(80)]
     public FPVector2 TargetPosition;
-    [FieldOffset(48)]
-    public FP RotationBase;
     [FieldOffset(56)]
+    public FP RotationBase;
+    [FieldOffset(64)]
     public FP RotationOffset;
+    [FieldOffset(48)]
+    public FP CurrentHp;
     [FieldOffset(40)]
     public EntityRef HitboxShieldEntity;
     [FieldOffset(32)]
     public EntityRef HitboxCharacterEntity;
+    [FieldOffset(72)]
+    public FrameTimer DamageCooldown;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 6911;
@@ -1001,8 +1006,10 @@ namespace Quantum {
         hash = hash * 31 + TargetPosition.GetHashCode();
         hash = hash * 31 + RotationBase.GetHashCode();
         hash = hash * 31 + RotationOffset.GetHashCode();
+        hash = hash * 31 + CurrentHp.GetHashCode();
         hash = hash * 31 + HitboxShieldEntity.GetHashCode();
         hash = hash * 31 + HitboxCharacterEntity.GetHashCode();
+        hash = hash * 31 + DamageCooldown.GetHashCode();
         return hash;
       }
     }
@@ -1018,8 +1025,10 @@ namespace Quantum {
         QBoolean.Serialize(&p->HasTargetPosition, serializer);
         EntityRef.Serialize(&p->HitboxCharacterEntity, serializer);
         EntityRef.Serialize(&p->HitboxShieldEntity, serializer);
+        FP.Serialize(&p->CurrentHp, serializer);
         FP.Serialize(&p->RotationBase, serializer);
         FP.Serialize(&p->RotationOffset, serializer);
+        FrameTimer.Serialize(&p->DamageCooldown, serializer);
         FPVector2.Serialize(&p->TargetPosition, serializer);
         Quantum.BattlePlayerStats.Serialize(&p->Stats, serializer);
     }
@@ -1279,6 +1288,9 @@ namespace Quantum {
   public unsafe partial interface ISignalBattleOnProjectileHitPlayerHitbox : ISignal {
     void BattleOnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity);
   }
+  public unsafe partial interface ISignalBattleOnProjectileHitPlayerShield : ISignal {
+    void BattleOnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity);
+  }
   public unsafe partial interface ISignalBattleOnProjectileHitGoal : ISignal {
     void BattleOnProjectileHitGoal(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleGoalQComponent* goal, EntityRef goalEntity);
   }
@@ -1297,6 +1309,7 @@ namespace Quantum {
     private ISignalBattleOnProjectileHitSoulWall[] _ISignalBattleOnProjectileHitSoulWallSystems;
     private ISignalBattleOnProjectileHitArenaBorder[] _ISignalBattleOnProjectileHitArenaBorderSystems;
     private ISignalBattleOnProjectileHitPlayerHitbox[] _ISignalBattleOnProjectileHitPlayerHitboxSystems;
+    private ISignalBattleOnProjectileHitPlayerShield[] _ISignalBattleOnProjectileHitPlayerShieldSystems;
     private ISignalBattleOnProjectileHitGoal[] _ISignalBattleOnProjectileHitGoalSystems;
     private ISignalBattleOnDiamondHitPlayer[] _ISignalBattleOnDiamondHitPlayerSystems;
     private ISignalBattleOnGameOver[] _ISignalBattleOnGameOverSystems;
@@ -1314,6 +1327,7 @@ namespace Quantum {
       _ISignalBattleOnProjectileHitSoulWallSystems = BuildSignalsArray<ISignalBattleOnProjectileHitSoulWall>();
       _ISignalBattleOnProjectileHitArenaBorderSystems = BuildSignalsArray<ISignalBattleOnProjectileHitArenaBorder>();
       _ISignalBattleOnProjectileHitPlayerHitboxSystems = BuildSignalsArray<ISignalBattleOnProjectileHitPlayerHitbox>();
+      _ISignalBattleOnProjectileHitPlayerShieldSystems = BuildSignalsArray<ISignalBattleOnProjectileHitPlayerShield>();
       _ISignalBattleOnProjectileHitGoalSystems = BuildSignalsArray<ISignalBattleOnProjectileHitGoal>();
       _ISignalBattleOnDiamondHitPlayerSystems = BuildSignalsArray<ISignalBattleOnDiamondHitPlayer>();
       _ISignalBattleOnGameOverSystems = BuildSignalsArray<ISignalBattleOnGameOver>();
@@ -1433,6 +1447,15 @@ namespace Quantum {
           var s = array[i];
           if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
             s.BattleOnProjectileHitPlayerHitbox(_f, projectile, projectileEntity, playerHitbox, playerHitboxEntity);
+          }
+        }
+      }
+      public void BattleOnProjectileHitPlayerShield(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity) {
+        var array = _f._ISignalBattleOnProjectileHitPlayerShieldSystems;
+        for (Int32 i = 0; i < array.Length; ++i) {
+          var s = array[i];
+          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
+            s.BattleOnProjectileHitPlayerShield(_f, projectile, projectileEntity, playerHitbox, playerHitboxEntity);
           }
         }
       }
