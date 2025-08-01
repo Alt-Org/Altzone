@@ -85,6 +85,8 @@ public class Chat : AltMonoBehaviour
     private GameObject _lastSendButtonUsed;
     private bool _sendButtonsAreClosed = true;
 
+    [SerializeField] private GameObject _InputArea;
+
     private void Start()
     {
         // Alustaa chatit ja asettaa kielichatin oletukseksi
@@ -232,7 +234,10 @@ public class Chat : AltMonoBehaviour
         if (buttonText != null)
         {
             string textFromButton = buttonText.text;
+            MinimizeOptions();
             _inputField.text = textFromButton;
+            GameObject sendButton = _sendButtons[0];
+            CheckSendButton(sendButton);
         }
         else
         {
@@ -475,6 +480,7 @@ public class Chat : AltMonoBehaviour
     public void OpenQuickMessages()
     {
         _quickMessages.SetActive(true);
+        _InputArea.SetActive(false);
         CloseOnButtonClick(true);
     }
 
@@ -484,6 +490,7 @@ public class Chat : AltMonoBehaviour
     public void MinimizeOptions()
     {
         _quickMessages.SetActive(false);
+        _InputArea.SetActive(true);
 
         // Deactivate all but last used button
         foreach (var button in _sendButtons)
@@ -545,5 +552,10 @@ public class Chat : AltMonoBehaviour
         _allReactions.SetActive(false);
         _usersWhoAdded.SetActive(true);
         SetReactionPanelPosition();
+    }
+
+    public GameObject giveJoyPref()
+    {
+        return _messagePrefabYellow;
     }
 }
