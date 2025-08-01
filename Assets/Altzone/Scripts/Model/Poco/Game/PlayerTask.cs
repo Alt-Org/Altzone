@@ -49,6 +49,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         ShareBattleReplay,
         WriteChatMessageClan,
         ChatAddReaction,
+        FindAllChatOptions,
     }
 
     public enum TaskEducationStoryType
@@ -336,6 +337,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case "chat_add_reaction":
                     {
                         return TaskEducationSocialType.ChatAddReaction;
+                    }
+                case "find_all_chat_options":
+                    {
+                        return TaskEducationSocialType.FindAllChatOptions;
                     }
                 default:
                     {

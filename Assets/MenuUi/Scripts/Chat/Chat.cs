@@ -445,6 +445,8 @@ public class Chat : AltMonoBehaviour
         _languageChat.SetActive(false);
         _clanChat.SetActive(false);
 
+        gameObject.GetComponent<DailyTaskProgressListenerFindAllChatOptions>().ChatOptionFound("Global");
+
         Debug.Log("Global Chat aktivoitu");
     }
 
@@ -458,6 +460,8 @@ public class Chat : AltMonoBehaviour
         _languageChat.SetActive(false);
         _globalChat.SetActive(false);
 
+        gameObject.GetComponent<DailyTaskProgressListenerFindAllChatOptions>().ChatOptionFound("Clan");
+
         Debug.Log("Klaani Chat aktivoitu");
     }
 
@@ -470,6 +474,8 @@ public class Chat : AltMonoBehaviour
         _languageChat.SetActive(true);
         _globalChat.SetActive(false);
         _clanChat.SetActive(false);
+
+        gameObject.GetComponent<DailyTaskProgressListenerFindAllChatOptions>().ChatOptionFound("Language");
 
         Debug.Log("Kielivalinnan mukainen Chat aktivoitu");
     }
