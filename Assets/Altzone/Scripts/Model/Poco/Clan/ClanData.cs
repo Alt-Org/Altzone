@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Altzone.Scripts.Model.Poco.Attributes;
 using Altzone.Scripts.Store;
 using Altzone.Scripts.Voting;

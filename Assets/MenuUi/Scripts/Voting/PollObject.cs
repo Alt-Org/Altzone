@@ -4,8 +4,6 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using Altzone.Scripts.Voting;
-using Altzone.Scripts.Model.Poco.Game;
-using MenuUi.Scripts.Storage;
 
 public class PollObject : MonoBehaviour
 {
