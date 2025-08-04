@@ -62,7 +62,10 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     private void Awake()
     {
         if (Instance == null)
+        {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
         else
             Destroy(this);
     }
@@ -82,16 +85,12 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
     private void OnEnable()
     {
-        //JukeboxController.OnChangeJukeBoxSong += SetSongInfo;
-        //JukeboxController.OnChangeJukeBoxQueue += UpdateQueueText;
-        //if (_currentMusicTrack != null) PlayTrack(_currentMusicTrack);
+
     }
 
     private void OnDisable()
     {
-        //JukeboxController.OnChangeJukeBoxSong -= SetSongInfo;
-        //JukeboxController.OnChangeJukeBoxQueue -= UpdateQueueText;
-        if (_trackEndingControlCoroutine != null) StopCoroutine(_trackEndingControlCoroutine);
+        //if (_trackEndingControlCoroutine != null) StopCoroutine(_trackEndingControlCoroutine);
     }
 
     #region Chunk
@@ -204,6 +203,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
             StopCoroutine(_trackEndingControlCoroutine);
             _trackEndingControlCoroutine = null;
         }
+
         OnChangeJukeBoxSong?.Invoke(null);
     }
 
@@ -250,6 +250,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
     private void PlayNextJukeboxTrack()
     {
+        Debug.LogError("asdad");
         if (_trackQueue.Count > 0) //Play the next track in queue.
         {
             JukeboxTrackQueueHandler trackQueueHandler = _trackQueue.Peek();
@@ -264,12 +265,16 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
             _queueUseTimes++;
         }
         else if (_loopLastTrack) //Keep playing the current track.
-            PlayTrack(_currentMusicTrack);
-        else //Go back to Soulhome music
         {
+            PlayTrack(_currentMusicTrack);
+        }
+        else //Go back to latest requested music in AudioManager.
+        {
+            AudioManager manager = AudioManager.Instance;
+
             _currentMusicTrack = null;
             StopJukebox();
-            AudioManager.Instance.PlayMusic("Soulhome", "");
+            manager.PlayMusic(manager.FallbackMusicCategory, manager.FallbackMusicTrack);
         }
 
         if (_queueUseTimes >= _queueOptimizationThreshold) OptimizeVisualQueueChunks();
@@ -393,11 +398,6 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         _queueHandlerChunks[target.ChunkIndex].AmountInUse--;
     }
     #endregion
-
-    //public void ExitMainMenuMode()
-    //{
-    //    _isMainMenuMode = false;
-    //}
 
     private class Chunk<T>
     {

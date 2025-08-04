@@ -17,6 +17,11 @@ namespace Altzone.Scripts.Audio
         private SFXHandler _sFXHandler;
         private MusicHandler _musicHandler;
 
+        private string _fallbackMusicCategory = "";
+        public string FallbackMusicCategory { get { return _fallbackMusicCategory; } }
+        private string _fallbackMusicTrack = "";
+        public string FallbackMusicTrack {  get { return _fallbackMusicTrack; } }
+
         #region Delegates & Events
 
         public delegate void MusicVolumeChange(float value);
@@ -47,13 +52,12 @@ namespace Altzone.Scripts.Audio
             if (SettingsCarrier.Instance == null) return;
 
             UpdateMaxVolume();
-            //_sFXHandler.ChangeVolume(SettingsCarrier.Instance.SentVolume(SettingsCarrier.SoundType.sound), "all");
         }
 
         public void UpdateMaxVolume()
         {
             _sFXHandler.SetMaxVoulme(SettingsCarrier.Instance.SentVolume(SettingsCarrier.SoundType.sound));
-            _musicHandler.SetMaxVoulme(SettingsCarrier.Instance.SentVolume(SettingsCarrier.SoundType.music));
+            _musicHandler.SetMaxVolume(SettingsCarrier.Instance.SentVolume(SettingsCarrier.SoundType.music));
         }
 
         #region SFX
@@ -135,17 +139,61 @@ namespace Altzone.Scripts.Audio
 
         public string PlayMusic(string categoryName, string trackName)
         {
+            if (!CanPlay(categoryName))
+            {
+                _fallbackMusicCategory = categoryName;
+                _fallbackMusicTrack = trackName;
+                return "";
+            }
+
             return _musicHandler.PlayMusic(categoryName, trackName);
         }
 
         public string PlayMusic(string categoryName)
         {
+            if (!CanPlay(categoryName))
+            {
+                _fallbackMusicCategory = categoryName;
+                _fallbackMusicTrack = "";
+                return "";
+            }
+
             return _musicHandler.PlayMusic(categoryName, "");
         }
 
         public string PlayMusic(string categoryName, MusicTrack musicTrack)
         {
+            if (!CanPlay(categoryName))
+            {
+                _fallbackMusicCategory = categoryName;
+                _fallbackMusicTrack = musicTrack.Name;
+                return "";
+            }
+
             return _musicHandler.PlayMusic(categoryName, musicTrack);
+        }
+
+        private bool CanPlay(string categoryName)
+        {
+            if (_musicHandler.CurrentCategory == null) return true; //Dont block if category is null.
+
+            bool currentCategoryJukebox = _musicHandler.CurrentCategory.Name.ToLower() == "Jukebox".ToLower();
+            bool hasCurrentTrack = _musicHandler.CurrentTrack != null;
+
+            if ((currentCategoryJukebox && !hasCurrentTrack)) return true; //Dont block if category is jukebox but current track is null.
+
+            int jukeboxSoulhome = PlayerPrefs.GetInt("JukeboxSoulHome");
+            int jukeboxUI = PlayerPrefs.GetInt("JukeboxUI");
+            int jukeboxBattle = PlayerPrefs.GetInt("JukeboxBattle");
+            bool blockPlayRequest = (
+                (jukeboxSoulhome == 1 && categoryName.ToLower() == "Soulhome".ToLower())
+                || (jukeboxUI == 1 && categoryName.ToLower() == "MainMenu".ToLower())
+                || (jukeboxBattle == 1 && categoryName.ToLower() == "Battle".ToLower())
+                );
+
+            if (blockPlayRequest) return false; //Block if current category is jukebox and has current track.
+
+            return true;
         }
 
         public string NextMusicTrack()

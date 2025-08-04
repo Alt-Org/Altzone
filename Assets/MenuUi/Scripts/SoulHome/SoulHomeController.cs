@@ -58,6 +58,8 @@ namespace MenuUI.Scripts.SoulHome
         public TextMeshProUGUI FurnitureName { get => _furnitureName; }
         public FurnitureList FurnitureList { get => _furnitureList; }
 
+        private Coroutine handleOnEnableMusicCoroutine;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -73,17 +75,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public void OnEnable()
         {
-            //if (_infoPopup != null && _infoPopup.gameObject.activeSelf == true) _infoPopup.gameObject.SetActive(false);
-            //GameObject[] root = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
-            //foreach (GameObject rootObject in root)
-            //{
-            //    if (rootObject.name == "AudioManager")
-            //        rootObject.GetComponent<MainMenuAudioManager>()?.StopMusic();
-            //}
-            if (JukeBoxSoulhomeHandler.Instance.CurrentMusicTrack != null)
-                JukeBoxSoulhomeHandler.Instance.PlayTrack();
-            else
-                _musicName.text = AudioManager.Instance?.PlayMusic("Soulhome", "");
+            handleOnEnableMusicCoroutine = StartCoroutine(HandleOnEnableMusic());
 
             EditModeTrayResize();
             if (GameAnalyticsManager.Instance != null) GameAnalyticsManager.Instance.OpenSoulHome();
@@ -92,16 +84,21 @@ namespace MenuUI.Scripts.SoulHome
 
         public void OnDisable()
         {
-            //GameObject[] root = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
-            //foreach (GameObject rootObject in root)
-            //{
-            //    if (rootObject.name == "AudioManager")
-            //        rootObject.GetComponent<MainMenuAudioManager>()?.PlayMusic();
-            //}
-            //AudioManager.Instance?.StopMusic();
-            _jukeBoxPopup.StopJukebox();
+            if (handleOnEnableMusicCoroutine != null) StopCoroutine(handleOnEnableMusicCoroutine);
+
+            //_jukeBoxPopup.StopJukebox();
             _jukeBoxPopup.ToggleJukeboxScreen(false);
             JukeBoxSoulhomeHandler.OnChangeJukeBoxSong -= SetSongName;
+        }
+
+        private IEnumerator HandleOnEnableMusic()
+        {
+            yield return new WaitUntil(() => JukeBoxSoulhomeHandler.Instance != null);
+
+            if (JukeBoxSoulhomeHandler.Instance.CurrentMusicTrack != null)
+                JukeBoxSoulhomeHandler.Instance.PlayTrack();
+            else
+                _musicName.text = AudioManager.Instance?.PlayMusic("Soulhome", "");
         }
 
         public void SetRoomName(GameObject room)
