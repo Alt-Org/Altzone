@@ -2193,7 +2193,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 934.95996, y: -84}
+  m_AnchoredPosition: {x: 934.95996, y: -84.7236}
   m_SizeDelta: {x: 100, y: 0}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &7696485582972512613
@@ -4824,8 +4824,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _chat: {fileID: 7358076422430287421}
-  _messagePrefab: {fileID: 5453423255123898535, guid: ed1fb0c62f6a4b44c8124df5e446ef35,
-    type: 3}
+  _messagePrefabs:
+  - {fileID: 7410833616610932625, guid: 5a73773102d7eb442abfac7f5003c34c, type: 3}
+  - {fileID: 4017291496211637649, guid: 30d549754c65df048b7047bf1fed9955, type: 3}
+  - {fileID: 4940937571568691646, guid: 949db8ea4d7f57b44ae91acf1d8847e9, type: 3}
+  - {fileID: 2974516008172099724, guid: f17b1cfd96cefe741af9262050addbfb, type: 3}
+  - {fileID: 5453423255123898535, guid: ed1fb0c62f6a4b44c8124df5e446ef35, type: 3}
 --- !u!1 &7613806092406461691
 GameObject:
   m_ObjectHideFlags: 0
