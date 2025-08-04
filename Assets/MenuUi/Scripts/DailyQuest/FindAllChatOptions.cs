@@ -3,11 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using Altzone.Scripts.Model.Poco.Game;
 
-public class DailyTaskProgressListenerFindAllChatOptions : DailyTaskProgressListener
+public class FindAllChatOptions : DailyTaskProgressListener
 {
     private bool _globalChatFound = false;
     private bool _languageChatFound = false;
     private bool _clanChatFound = false;
+
+    public enum ChatType
+    {
+        Global,
+        Language,
+        Clan
+    }
 
     private void Awake()
     {
@@ -15,13 +22,13 @@ public class DailyTaskProgressListenerFindAllChatOptions : DailyTaskProgressList
         _educationCategorySocialType = TaskEducationSocialType.FindAllChatOptions;
     }
 
-    public void ChatOptionFound(string chat)
+    public void ChatOptionFound(ChatType chat)
     {
         switch (chat)
         {
-            case "Global": _globalChatFound = true; break;
-            case "Language": _languageChatFound = true; break;
-            case "Clan": _clanChatFound = true; break;
+            case ChatType.Global: _globalChatFound = true; break;
+            case ChatType.Language: _languageChatFound = true; break;
+            case ChatType.Clan: _clanChatFound = true; break;
             default: break;
         }
 
