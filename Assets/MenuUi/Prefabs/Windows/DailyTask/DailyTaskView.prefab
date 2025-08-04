@@ -5824,11 +5824,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1584861529463965291}
   - {fileID: 2278030488135195931}
   - {fileID: 3630823975347092295}
   - {fileID: 5931362666019060954}
   - {fileID: 5812404282793217236}
-  - {fileID: 1584861529463965291}
   m_Father: {fileID: 8466435067698719162}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -8951,6 +8951,8 @@ MonoBehaviour:
   _taskAcceptPopup: {fileID: 4114262302882088117}
   _taskAcceptMovable: {fileID: 4568767306300575030}
   _taskAcceptImage: {fileID: 52410601718829881}
+  _taskAcceptColorImage: {fileID: 7038968176603130911}
+  _taskCancelColorImage: {fileID: 773581012574889286}
   _taskCancelPopup: {fileID: 8847992663558801951}
   _messageTexts:
   - {fileID: 8808000235726952818}
@@ -8973,6 +8975,12 @@ MonoBehaviour:
   _clanMilestoneRewardImage: {fileID: 1720271229654204840}
   _clanMilestoneRewardAmountText: {fileID: 9007684643768999509}
   _clanMilestoneRightDiff: 0.1
+  _actionCategoryColor: {r: 0.98039216, g: 0.59607846, b: 0.019607844, a: 1}
+  _socialCategoryColor: {r: 1, g: 0.6, b: 0, a: 1}
+  _storyCategoryColor: {r: 1, g: 1, b: 0, a: 1}
+  _cultureCategoryColor: {r: 0, g: 1, b: 0, a: 1}
+  _ethicalCategoryColor: {r: 0, g: 1, b: 0, a: 1}
+  _defaultColor: {r: 0.41960785, g: 1, b: 0.4117647, a: 1}
 --- !u!1 &5368340798530825504
 GameObject:
   m_ObjectHideFlags: 0

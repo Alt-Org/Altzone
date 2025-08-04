@@ -27,6 +27,9 @@ public class Popup : MonoBehaviour
     [SerializeField] private RectTransform _taskAcceptMovable;
     [SerializeField] private Image _taskAcceptImage;
     [Space]
+    [SerializeField] private Image _taskAcceptColorImage;
+    [SerializeField] private Image _taskCancelColorImage;
+    [Space]
     [SerializeField] private GameObject _taskCancelPopup;
     [Space]
     [Tooltip("Set every TMP text element here that is supposed to show a message from code.")]
@@ -55,6 +58,14 @@ public class Popup : MonoBehaviour
     [SerializeField] private Image _clanMilestoneRewardImage;
     [SerializeField] private TMP_Text _clanMilestoneRewardAmountText;
     [SerializeField] private float _clanMilestoneRightDiff = 0.1f;
+
+    [Header("Popup Colors")]
+    [SerializeField] private Color _actionCategoryColor;
+    [SerializeField] private Color _socialCategoryColor;
+    [SerializeField] private Color _storyCategoryColor;
+    [SerializeField] private Color _cultureCategoryColor;
+    [SerializeField] private Color _ethicalCategoryColor;
+    [SerializeField] private Color _defaultColor;
 
     private bool? _result;
 
@@ -115,6 +126,7 @@ public class Popup : MonoBehaviour
             {
                 Instance.SetTaskAcceptImage(data.Value.OwnPage);
                 Instance.SetTaskRewardTexts(data.Value.OwnPage);
+                Instance.SetPopupTaskColor(data.Value.OwnPage, data.Value.Type);
             }
         }
 
@@ -155,6 +167,27 @@ public class Popup : MonoBehaviour
     {
         _taskPointsText.text = data.Points.ToString();
         _taskCoinsText.text = data.Coins.ToString();
+    }
+
+    private void SetPopupTaskColor(PlayerTask data, PopupData.PopupDataType type)
+    {
+        Image targetImage = _taskAcceptColorImage;
+
+        if (type == PopupData.PopupDataType.CancelTask) targetImage = _taskCancelColorImage;
+
+        Color taskColor = _defaultColor;
+
+        switch (data.EducationCategory)
+        {
+            case EducationCategoryType.Action: taskColor = _actionCategoryColor; break;
+            case EducationCategoryType.Social: taskColor = _socialCategoryColor; break;
+            case EducationCategoryType.Story: taskColor = _storyCategoryColor; break;
+            case EducationCategoryType.Culture: taskColor = _cultureCategoryColor; break;
+            case EducationCategoryType.Ethical: taskColor = _ethicalCategoryColor; break;
+            default: break;
+        }
+
+        targetImage.color = taskColor;
     }
 
     private void SwitchWindow(PopupWindowType type)
