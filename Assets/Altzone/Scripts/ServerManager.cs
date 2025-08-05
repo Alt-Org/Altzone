@@ -1068,7 +1068,7 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
-    public IEnumerator ProgressPlayerTaskFromServer(int amount, Action<bool> callback)
+    public IEnumerator ProgressPlayerTaskToServer(int amount, Action<bool> callback)
     {
         string body = JObject.FromObject(new { amount = amount }).ToString();
 
