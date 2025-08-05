@@ -209,66 +209,66 @@ public class DailyTaskManager : AltMonoBehaviour
             _dailyTasksNormalView.gameObject.SetActive(true);
         }
 
-        List<PlayerTask> tasklist = null;
+        ClanTasks clanTasks = null;
         PlayerData playerData = null;
-        Storefront.Get().GetPlayerTasks(content => tasklist = content);
-        StartCoroutine(GetPlayerData(content => playerData = content));
-        if (playerData == null || !playerData.HasClanId) tasklist = TESTGenerateNormalTasks();
+        Storefront.Get().GetPlayerTasks(content => clanTasks = content);
+        StartCoroutine(GetPlayerData(content => playerData = content)); //MQTT message tells if we need to fetch the data again.
+        if (playerData == null || !playerData.HasClanId) clanTasks = TESTGenerateNormalTasks();
         else
         StartCoroutine(ServerManager.Instance.GetPlayerTasksFromServer(content =>
         {
             if (content != null)
-                tasklist = content;
+                clanTasks = content;
             else
             {
                 Debug.LogError("Could not connect to server and receive quests.");
                 //Offline testing
-                tasklist = TESTGenerateNormalTasks();
+                clanTasks = TESTGenerateNormalTasks();
                 Debug.LogWarning("Using locally generated tasks.");
             }
         }));
 
-        yield return new WaitUntil(() => tasklist != null);
+        yield return new WaitUntil(() => clanTasks != null);
 
         //For testing puropses. Remove when server can handle Education version tasks.
-        if (gameVersion == VersionType.Education && tasklist[0].EducationCategory == EducationCategoryType.None)
-            tasklist = GenerateEducationTasks();
+        if (gameVersion == VersionType.Education && clanTasks.Tasks[0].EducationCategory == EducationCategoryType.None)
+            clanTasks = GenerateEducationTasks();
         //---------------------------------------------------------------------------
 
-        for (int i = 0; i < tasklist.Count; i++)
+        for (int i = 0; i < clanTasks.Tasks.Count; i++)
         {
             GameObject prefabToInstantiate = (
                 gameVersion == VersionType.Education ?
-                GetEducationPrefabCategory(tasklist[i].EducationCategory) :
-                GetNormalPrefabCategory(tasklist[i].Points)
+                GetEducationPrefabCategory(clanTasks.Tasks[i].EducationCategory) :
+                GetNormalPrefabCategory(clanTasks.Tasks[i].Points)
                 );
 
             GameObject taskObject = Instantiate(prefabToInstantiate, gameObject.transform);
             _dailyTaskCardSlots.Add(taskObject);
 
             DailyQuest task = taskObject.GetComponent<DailyQuest>();
-            task.SetTaskData(tasklist[i], i);
+            task.SetTaskData(clanTasks.Tasks[i], i);
             task.dailyTaskManager = this;
 
-            if (tasklist[i].PlayerId != "")
+            if (clanTasks.Tasks[i].PlayerId != "")
                 _dailyTaskCardSlots[i].GetComponent<DailyQuest>().TaskSelected();
 
-            if (_currentPlayerData.Id == tasklist[i].PlayerId)
+            if (_currentPlayerData.Id == clanTasks.Tasks[i].PlayerId)
             {
-                _currentPlayerData.Task = tasklist[i]; //TODO: Remove when fetching task data works.
+                _currentPlayerData.Task = clanTasks.Tasks[i]; //TODO: Remove when fetching task data works.
                 _currentTaskCardIndex = i;
             }
 
             Transform parentCategory = (
                 gameVersion == VersionType.Education ?
-                GetEducationParentCategory(tasklist[i].EducationCategory) :
-                GetNormalParentCategory(tasklist[i].Points)
+                GetEducationParentCategory(clanTasks.Tasks[i].EducationCategory) :
+                GetNormalParentCategory(clanTasks.Tasks[i].Points)
                 );
 
             taskObject.transform.SetParent(parentCategory, false);
             taskObject.SetActive(true);
 
-            Debug.Log("Created Task: " + tasklist[i].Id);
+            Debug.Log("Created Task: " + clanTasks.Tasks[i].Id);
         }
 
         if (gameVersion == VersionType.Education)
@@ -309,7 +309,7 @@ public class DailyTaskManager : AltMonoBehaviour
         callback(true);
     }
 
-    private List<PlayerTask> TESTGenerateNormalTasks() //TODO: Remove when fetching normal tasks from server is stable.
+    private ClanTasks TESTGenerateNormalTasks() //TODO: Remove when fetching normal tasks from server is stable.
     {
         ServerPlayerTasks serverTasks = new ServerPlayerTasks();
 
@@ -336,10 +336,10 @@ public class DailyTaskManager : AltMonoBehaviour
         tasklist = tasks.Daily;
         tasklist.AddRange(tasks.Week);
         tasklist.AddRange(tasks.Month);
-        return (tasklist);
+        return new(TaskVersionType.Normal, tasklist);
     }
 
-    private List<PlayerTask> GenerateEducationTasks()
+    private ClanTasks GenerateEducationTasks()
     {
         List<PlayerTask> tasklist = new();
         List<EducationDailyTaskData> educationTasks = DailyTaskConfig.Instance.GetEducationTasks();
@@ -361,7 +361,7 @@ public class DailyTaskManager : AltMonoBehaviour
             tasklist.Add(new(serverTask));
         }
 
-        return tasklist;
+        return new(TaskVersionType.Education, tasklist);
     }
 
     private List<PlayerTask> TESTGenerateEducationTasks() //TODO: Remove when fetching education tasks from server is possible.

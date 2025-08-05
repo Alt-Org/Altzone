@@ -517,6 +517,27 @@ namespace Altzone.Scripts.Model.Poco.Game
         #endregion
     }
 
+    public enum TaskVersionType
+    {
+        Normal,
+        Education
+    }
+
+    public class ClanTasks
+    {
+        private TaskVersionType _taskVersionType;
+        private List<PlayerTask> _tasks;
+
+        public TaskVersionType TaskVersionType { get => _taskVersionType;}
+        public List<PlayerTask> Tasks { get => _tasks;}
+
+        public ClanTasks(TaskVersionType versionType, List<PlayerTask> tasks)
+        {
+            _taskVersionType = versionType;
+            _tasks = tasks;
+        }
+    }
+
     public class ServerPlayerTasks
     {
         public List<ServerPlayerTask> daily;
