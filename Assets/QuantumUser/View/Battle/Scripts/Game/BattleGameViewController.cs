@@ -367,6 +367,11 @@ namespace Battle.View.Game
             _screenEffectViewController.ChangeColor((int)e.Emotion);
         }
 
+        /// <summary>
+        /// Private handler method for EventBattleLastRowWallDestroyed QuantumEvent <br/>
+        /// Handles calling BattleStoneCharacterViewController::DestroyCharacterPart in #_stoneCharacterViewController and BattleLightrayEffectViewController::SpawnLightray in #_lightrayEffectViewController.
+        /// </summary>
+        /// <param name="e">The event data</param>
         private void QEventOnLastRowWallDestroyed(EventBattleLastRowWallDestroyed e)
         {
             if (_stoneCharacterViewController != null)
@@ -390,6 +395,11 @@ namespace Battle.View.Game
             _soundFXViewController.PlaySound(e.Effect);
         }
 
+        /// <summary>
+        /// Private handler method for EventBattleCharacterTakeDamage <br/>
+        /// Handles calling BattleUIPlayerInfoHandler::UpdateHealthVisual through #_uiController.
+        /// </summary>
+        /// <param name="e">The event data</param>
         private void QEventOnCharacterTakeDamage(EventBattleCharacterTakeDamage e)
         {
             if (e.Team == LocalPlayerTeam)

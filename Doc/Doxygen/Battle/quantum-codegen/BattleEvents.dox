@@ -18,27 +18,29 @@
 ///   @copybrief Quantum.EventBattleViewGetReadyToPlay
 /// - <b>synced event</b> @ref BattleViewGameStart {}  
 ///   @copybrief Quantum.EventBattleViewGameStart
-/// - <b>synced event</b> @ref BattleViewGameOver {BattleTeamNumber WinningTeam; FP GameLengthSec}  
+/// - <b>synced event</b> @ref BattleViewGameOver { BattleTeamNumber WinningTeam; FP GameLengthSec }  
 ///   @copybrief Quantum.EventBattleViewGameOver
 ///
 /// ### ViewInit events
-/// - <b>synced event</b> @ref BattlePlayerViewInit {EntityRef Entity; FP ModelScale}  
+/// - <b>synced event</b> @ref BattlePlayerViewInit { EntityRef Entity; FP ModelScale }  
 ///   @copybrief Quantum.EventBattlePlayerViewInit
-/// - <b>synced event</b> @ref BattleSoulWallViewInit {EntityRef Entity; FP ModelScale; int EmotionIndicatorColorIndex; int DebugColorIndex}  
+/// - <b>synced event</b> @ref BattleSoulWallViewInit { EntityRef Entity; FP ModelScale; int EmotionIndicatorColorIndex; int DebugColorIndex }  
 ///   @copybrief Quantum.EventBattleSoulWallViewInit
-/// - <b>synced event</b> @ref BattleStoneCharacterPieceViewInit {int WallNumber; BattleTeamNumber Team; int EmotionIndicatorColorIndex}  
+/// - <b>synced event</b> @ref BattleStoneCharacterPieceViewInit { int WallNumber; BattleTeamNumber Team; int EmotionIndicatorColorIndex }  
 ///   @copybrief Quantum.EventBattleStoneCharacterPieceViewInit
 ///
 /// ### Gameplay events
-/// - <b>synced event</b> @ref BattleChangeEmotionState {BattleEmotionState Emotion}  
+/// - <b>synced event</b> @ref BattleChangeEmotionState { BattleEmotionState Emotion }  
 ///   @copybrief Quantum.EventBattleChangeEmotionState
-/// - <b>event</b> @ref BattlePlaySoundFX {BattleSoundFX Effect}  
+/// - <b>event</b> @ref BattlePlaySoundFX { BattleSoundFX Effect }  
 ///   @copybrief Quantum.EventBattlePlaySoundFX
-/// - <b>synced event</b> @ref BattleLastRowWallDestroyed {int WallNumber; BattleTeamNumber Team; FP LightrayRotation; BattleLightrayColor LightrayColor; BattleLightraySize LightraySize}  
+/// - <b>synced event</b> @ref BattleLastRowWallDestroyed { int WallNumber; BattleTeamNumber Team; FP LightrayRotation; BattleLightrayColor LightrayColor; BattleLightraySize LightraySize }  
 ///   @copybrief Quantum.EventBattleLastRowWallDestroyed
+/// - <b>synced event</b> @ref BattleCharacterTakeDamage { EntityRef Entity; BattleTeamNumber Team; BattlePlayerSlot Slot; int CharacterNumber; FP HealthPercentage }  
+///   @copybrief Quantum.EventBattleCharacterTakeDamage
 ///
 /// ### Debug events
-/// - <b>synced event</b> @ref BattleDebugUpdateStatsOverlay {BattleCharacterBase Character}  
+/// - <b>synced event</b> @ref BattleDebugUpdateStatsOverlay { BattleCharacterBase Character}  
 ///   @copybrief Quantum.EventBattleDebugUpdateStatsOverlay
 ///
 /// ---
@@ -58,8 +60,8 @@
 /// ### BattleViewWaitForPlayers
 /// @copybrief Quantum.EventBattleViewWaitForPlayers
 ///
-/// Generated Class @cref{Quantum,EventBattleViewWaitForPlayers}  
-/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleViewWaitForPlayers}
+/// Generated Class @cref{ Quantum,EventBattleViewWaitForPlayers }  
+/// Generated Method @cref{ Quantum,Frame.FrameEvents.BattleViewWaitForPlayers }
 ///
 /// ---
 ///
@@ -176,6 +178,15 @@
 /// Generated Method @cref{Quantum,Frame.FrameEvents.BattleLastRowWallDestroyed}
 ///
 /// ---
+///
+/// @anchor BattleCharacterTakeDamage
+/// ### BattleCharacterTakeDamage
+/// @copybrief Quantum.EventBattleCharacterTakeDamage
+///
+/// Generated Class @cref{Quantum,EventBattleCharacterTakeDamage}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleCharacterTakeDamage}
+///
+/// ---
 /// ---
 ///
 /// ### Debug events
@@ -280,6 +291,14 @@
 /// </summary>
 ///
 /// Destroys StoneCharacterPiece behind the SoulWall segment and spawns a lightray from the crack.<br/>  
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattleCharacterTakeDamage
+/// <summary>
+/// Synced event. Used when a character takes damage.
+/// </summary>
+///
+/// Used to update the UI to reflect change in character HP and plays damage taking animation on character.<br/>  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
 /// @class Quantum::EventBattleDebugUpdateStatsOverlay

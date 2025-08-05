@@ -101,16 +101,32 @@
 /// Part of @ref PlayerMovement "[Player's movement related attributes]"
 /// @}
 
+///@anchor PlayerState
+/// @name Player's current state related data
+/// @{
+/// @var FP CurrentHp
+/// <summary>Character's current health value.</summary>
+/// Part of @ref PlayerState "[Player's current state related data]"
+/// @}
+
 /// @anchor PlayerHitboxEntities
 /// @name Player's hitboxEntities
 /// @{
 /// @var EntityRef Quantum.BattlePlayerDataQComponent::HitboxShieldEntity
 /// <summary>An entity that contains all the shield hitboxes.</summary>
-/// Part of @ref PlayerHitboxLists "[Player's hitboxEntities]"
+/// Part of @ref PlayerHitboxEntities "[Player's hitboxEntities]"
 ///
 /// @var EntityRef Quantum.BattlePlayerDataQComponent::HitboxCharacterEntity
 /// <summary>An entity that contains all the character hitboxes.</summary>
-/// Part of @ref PlayerHitboxLists "[Player's hitboxEntities]"
+/// Part of @ref PlayerHitboxEntities "[Player's hitboxEntities]"
+/// @}
+
+///@anchor Utils
+/// @name Utility data
+/// @{
+/// @var FrameTimer DamageCooldown
+/// <summary>Timer used for the cooldown on the character taking damage.</summary>
+/// Part of @ref Utils "[Player's utility data]"
 /// @}
 
 // ---------------------------------------------------------------------------------------------------- //

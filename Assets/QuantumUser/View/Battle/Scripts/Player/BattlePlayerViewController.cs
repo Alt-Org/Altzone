@@ -22,14 +22,21 @@ namespace Battle.View.Player
 
         /// <value>[SerializeField] %Player's ChildObject where heart sprite is located.</value>
         [SerializeField] private GameObject _heart;
+        /// <value>[SerializeField] An array of the character gameObjects.</value>
         [SerializeField] private GameObject[] _characterGameObjects;
+        /// <value>[SerializeField] Indicator gameObject for the local player character.</value>
         [SerializeField] private GameObject _localPlayerIndicator;
 
+        /// <value>[SerializeField] The distance from the projectile at which the player character will turn transparent.</value>
         [SerializeField] private float _transparencyEffectRange;
+        /// <value>[SerializeField] The rate at which the player character turns transparent.</value>
         [SerializeField] private float _transparencyEffectTransitionRate;
+        /// <value>[SerializeField] The full transparency value.</value>
         [SerializeField] private float _transparencyEffectMinimumAlpha;
 
+        /// <value>[SerializeField] The time that the damage flash effect will play for.</value>
         [SerializeField] private float _damageFlashDuration = 1f;
+        /// <value>[SerializeField] The amount of times that the character will flash when taking damage.</value>
         [SerializeField] private int _damageFlashAmount = 5;
 
         private Coroutine _damageFlashCoroutine = null;

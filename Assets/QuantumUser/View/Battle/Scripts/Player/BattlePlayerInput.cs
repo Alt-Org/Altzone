@@ -6,8 +6,8 @@
 /// This script:<br/>
 /// Subscribes to QuantumCallBack.<br/>
 /// Polls player inputs for Quantum.<br/>
-/// Checks that player isn't dragging their finger on the screen to move their character.<br/>
-/// Converts Unity's worldposition the player clicked into BattleGridManager's GridPosition.
+/// Handles movement and rotation input based on chosen input methods. <br/>
+/// Handles obtaining data from device gyroscope.
 
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -148,6 +148,13 @@ namespace Battle.View.Player
             _characterNumber = -1;
         }
 
+        /// <summary>
+        /// Handles player movement input based on selected input type.
+        /// </summary>
+        /// <param name="mouseDown">Whether input is currently held</param>
+        /// <param name="mouseClick">Whether input started this frame</param>
+        /// <param name="unityPosition">The unityPosition of the input</param>
+        /// <param name="deltaTime">Time since previous frame</param>
         private (Quantum.BattleMovementInputType movementInput, bool movementDirectionIsNormalized, BattleGridPosition movementPosition, FPVector2 movementDirection) GetMovementInput(bool mouseDown, bool mouseClick, Vector3 unityPosition, FP deltaTime)
         {
             Quantum.BattleMovementInputType movementInput = Quantum.BattleMovementInputType.None;
@@ -214,6 +221,12 @@ namespace Battle.View.Player
             return (movementInput, movementDirectionIsNormalized, movementPosition, movementDirection);
         }
 
+        /// <summary>
+        /// Handles player rotation input based on selected input type.
+        /// </summary>
+        /// <param name="mouseDown">Whether input is currently held</param>
+        /// <param name="twoFingers">Whether two finger input is currently held</param>
+        /// <param name="unityPosition">The unityPosition of the input</param>
         private (bool rotationInput, FP rotationValue) GetRotationInput(bool mouseDown, bool twoFingers, Vector3 unityPosition)
         {
             bool rotationInput = false;
@@ -273,6 +286,9 @@ namespace Battle.View.Player
             return (rotationInput, rotationValue);
         }
 
+        /// <summary>
+        /// Gets the tilt value from the play device's gyroscope.
+        /// </summary>
         private float GetGyroValue()
         {
             Quaternion deviceRotation = new Quaternion(0.5f, 0.5f, -0.5f, 0.5f) * _attitudeSensor.attitude.ReadValue() * new Quaternion(0, 0, 1, 0);

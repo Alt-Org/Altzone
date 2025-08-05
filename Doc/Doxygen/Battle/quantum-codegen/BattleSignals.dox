@@ -10,6 +10,8 @@
 ///   @copybrief Quantum.ISignalBattleOnProjectileHitArenaBorder
 /// - <b>signal</b> @ref BattleOnProjectileHitPlayerHitbox (BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity)  
 ///   @copybrief Quantum.ISignalBattleOnProjectileHitPlayerHitbox
+/// - <b>signal</b> @ref BattleOnProjectileHitPlayerShield (BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity)  
+///   @copybrief Quantum.ISignalBattleOnProjectileHitPlayerShield
 /// - <b>signal</b> @ref BattleOnProjectileHitGoal (BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleGoalQComponent* goal, EntityRef goalEntity)  
 ///   @copybrief Quantum.ISignalBattleOnProjectileHitGoal
 /// - <b>signal</b> @ref BattleOnDiamondHitPlayer (BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity)   
@@ -49,6 +51,15 @@
 ///
 /// Generated Interface @cref{Quantum,ISignalBattleOnProjectileHitPlayerHitbox}  
 /// Generated Method @cref{Quantum,Frame.FrameSignals.BattleOnProjectileHitPlayerHitbox}
+///
+/// ---
+///
+/// @anchor BattleOnProjectileHitPlayerShield
+/// ### BattleOnProjectileHitPlayerShield
+/// @copybrief Quantum.ISignalBattleOnProjectileHitPlayerShield
+///
+/// Generated Interface @cref{Quantum,ISignalBattleOnProjectileHitPlayerShield}  
+/// Generated Method @cref{Quantum,Frame.FrameSignals.BattleOnProjectileHitPlayerShield}
 ///
 /// ---
 ///
@@ -100,6 +111,13 @@
 /// @interface Quantum::ISignalBattleOnProjectileHitPlayerHitbox
 /// <summary>
 /// Signal for projectile's and player's collision.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleSignals.qtn}
+
+/// @interface Quantum::ISignalBattleOnProjectileHitPlayerShield
+/// <summary>
+/// Signal for projectile's and player shield's collision.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleSignals.qtn}
