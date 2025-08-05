@@ -1,42 +1,48 @@
 /// @file BattleStoneCharacterViewController.cs
 /// <summary>
-/// Handles StoneCharacter graphics.
+/// Has a class BattleStoneCharacterViewController which handles stone characters visual functionality.
 /// </summary>
+///
+/// This script:<br/>
+/// Handles stone characters visual functionality.
 
-using System.Collections;
-using System.Collections.Generic;
-using Quantum;
 using UnityEngine;
+using Quantum;
 
 namespace Battle.View
 {
     /// <summary>
-    /// %StoneCharacters' entityview script.<br/>
-    /// Handles %StoneCharacters' sprites and emotion colors.
+    /// Stone character view <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour@u-exlink</a> script.<br/>
+    /// Handles stone characters visual functionality.
     /// </summary>
     public class BattleStoneCharacterViewController : MonoBehaviour
     {
-        /// <value>[SerializeField] An array of the individual destroyable parts of the top StoneCharacter.</value>
+        /// @name SerializeField variables
+        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// @{
+
+        /// <value>[SerializeField] Array of the top stone character parts <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> references.</value>
         [SerializeField] private GameObject[] _topCharacterParts;
 
-        /// <value>[SerializeField] An array of the individual destroyable parts of the bottom StoneCharacter.</value>
+        /// <value>[SerializeField] Array of the bottom stone character parts <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> references.</value>
         [SerializeField] private GameObject[] _bottomCharacterParts;
 
-        /// <value>[SerializeField] An array of the emotion color indicator SpriteRenderers for the top StoneCharacter.</value>
+        /// <value>[SerializeField] Array of the top stone character emotion indicators <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SpriteRenderer.html">SpriteRenderer@u-exlink</a> references.</value>
         [SerializeField] private SpriteRenderer[] _topCharacterEmotionIndicators;
 
-        /// <value>[SerializeField] An array of the emotion color indicator SpriteRenderers for the bottom StoneCharacter.</value>
+        /// <value>[SerializeField] Array of the bottom stone character emotion indicators <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SpriteRenderer.html">SpriteRenderer@u-exlink</a> references.</value>
         [SerializeField] private SpriteRenderer[] _bottomCharacterEmotionIndicators;
 
-        /// <value>[SerializeField] An array of the possible emotion colors.</value>
+        /// <value>[SerializeField] Array of all the different emotion colors for emotion indicators.</value>
         [SerializeField] private Color[] _emotionColors;
 
+        /// @}
+
         /// <summary>
-        /// Public method that is called when the projectile collides with a hitbox linked to a StoneCharacter. <br/>
-        /// Hides the specified part.
+        /// Destroys (deactivates) the character part which corresponds to the wall number and team.
         /// </summary>
-        /// <param name="wallNumber">The number of the character part to be destroyed.</param>
-        /// <param name="team">The team of the part to be destroyed.</param>
+        /// <param name="wallNumber">The wall number which to destroy.</param>
+        /// <param name="team">The BattleTeamNumber which character part to destroy.</param>
         public void DestroyCharacterPart(int wallNumber, BattleTeamNumber team)
         {
             switch (team)
@@ -51,12 +57,11 @@ namespace Battle.View
         }
 
         /// <summary>
-        /// Public method that is called when the StoneCharacters are initialized. <br/>
-        /// Sets the color indicator for the specified part to the specified emotion.
+        /// Sets new emotion color to emotion indicator which corresponds to the wall number and team.
         /// </summary>
-        /// <param name="wallNumber">The number of the part to be affected.</param>
-        /// <param name="team">The team of the part to be affected.</param>
-        /// <param name="emotionIndex">The emotion that the part's color indicator should match.</param>
+        /// <param name="wallNumber">The wall number which emotion indicator color to set.</param>
+        /// <param name="team">The BattleTeamNumber which emotion indicator color to set.</param>
+        /// <param name="emotionIndex">The new emotion color's index.</param>
         public void SetEmotionIndicator(int wallNumber, BattleTeamNumber team, int emotionIndex)
         {
             switch (team)

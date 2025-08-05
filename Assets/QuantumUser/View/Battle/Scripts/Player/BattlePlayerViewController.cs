@@ -1,7 +1,10 @@
 /// @file BattlePlayerViewController.cs
 /// <summary>
-/// Handles player sprites and animations.
+/// Has a class BattlePlayerViewController which handles player sprites and animations.
 /// </summary>
+///
+/// This script:<br/>
+/// Handles player sprites and animations.
 
 using System.Collections;
 using UnityEngine;
@@ -17,30 +20,44 @@ namespace Battle.View.Player
     /// </summary>
     public unsafe class BattlePlayerViewController : QuantumEntityViewComponent
     {
-        /// <value>[SerializeField] Animator GameObject that handles player animations.</value>
+        /// @name SerializeField variables
+        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// @{
+        
+        /// <value>[SerializeField] Animator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> that handles player animations.</value>
         [SerializeField] private Animator _animator;
 
-        /// <value>[SerializeField] %Player's ChildObject where heart sprite is located.</value>
+        /// <value>[SerializeField] %Player's child <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> where heart sprite is located.</value>
         [SerializeField] private GameObject _heart;
-        /// <value>[SerializeField] An array of the character gameObjects.</value>
+
+        /// <value>[SerializeField] Array of character <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.</value>
         [SerializeField] private GameObject[] _characterGameObjects;
-        /// <value>[SerializeField] Indicator gameObject for the local player character.</value>
+
+        /// <value>[SerializeField] %Player's local player indicator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</value>
         [SerializeField] private GameObject _localPlayerIndicator;
 
-        /// <value>[SerializeField] The distance from the projectile at which the player character will turn transparent.</value>
+        /// <value>[SerializeField] The transparency effect's range.</value>
         [SerializeField] private float _transparencyEffectRange;
-        /// <value>[SerializeField] The rate at which the player character turns transparent.</value>
+
+        /// <value>[SerializeField] The transparency effect's transition rate.</value>
         [SerializeField] private float _transparencyEffectTransitionRate;
-        /// <value>[SerializeField] The full transparency value.</value>
+
+        /// <value>[SerializeField] The transparency effect's minimum alpha value..</value>
         [SerializeField] private float _transparencyEffectMinimumAlpha;
 
-        /// <value>[SerializeField] The time that the damage flash effect will play for.</value>
+        /// <value>[SerializeField] The damage flash animation's duration.</value>
         [SerializeField] private float _damageFlashDuration = 1f;
-        /// <value>[SerializeField] The amount of times that the character will flash when taking damage.</value>
+
+        /// <value>[SerializeField] The amount of damage flashes.</value>
         [SerializeField] private int _damageFlashAmount = 5;
 
-        private Coroutine _damageFlashCoroutine = null;
+        /// @}
 
+        /// <summary>
+        /// Public method that is called when entity is activated upon its creation.<br/>
+        /// Sets the player model scale and active <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>. Handles subscribing to QuantumEvents.
+        /// </summary>
+        /// <param name="_">Current simulation frame.</param>
         public override void OnActivate(Frame _) => QuantumEvent.Subscribe(this, (EventBattlePlayerViewInit e) => {
             if (EntityRef != e.Entity) return;
             if (!PredictedFrame.Exists(e.Entity)) return;
@@ -70,6 +87,10 @@ namespace Battle.View.Player
             QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
         });
 
+        /// <summary>
+        /// Public method that is called when the view should update.<br/>
+        /// Calls #UpdateModelPositionAdjustment to update the player model's position
+        /// </summary>
         public override void OnUpdateView()
         {
             if (!PredictedFrame.Exists(EntityRef)) return;
@@ -99,8 +120,16 @@ namespace Battle.View.Player
             //}
         }
 
+        /// <value>Reference to the active character's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SpriteRenderer.html">SpriteRenderer@u-exlink</a>.</value>
         private SpriteRenderer _spriteRenderer;
 
+        /// <value>Holder variable for the damage flash coroutine.</value>
+        private Coroutine _damageFlashCoroutine = null;
+
+        /// <summary>
+        /// Updates the player model's position.
+        /// </summary>
+        /// <param name="targetPosition">Target position Vector3.</param>
         private void UpdateModelPositionAdjustment(Vector3* targetPosition)
         {
             const float adjustmentDistance = 0.25f;
@@ -115,6 +144,11 @@ namespace Battle.View.Player
             }
         }
 
+        /// <summary>
+        /// Updates the player model's animator.
+        /// </summary>
+        /// <param name="targetPosition">Target position Vector3.</param>
+        /// <param name="battleTeamNumber">The BattleTeamNumber for the player.</param>
         private void UpdateAnimator(Vector3* targetPosition, BattleTeamNumber battleTeamNumber)
         {
             int animationState = 0;
@@ -138,6 +172,11 @@ namespace Battle.View.Player
             _animator.SetInteger("state", animationState);
         }
 
+        /// <summary>
+        /// Handler method for EventBattleCharacterTakeDamage QuantumEvent.<br/>
+        /// Starts #DamageFlashCoroutine.
+        /// </summary>
+        /// <param name="e">The event data.</param>
         private void QEventOnCharacterTakeDamage(EventBattleCharacterTakeDamage e)
         {
             if (EntityRef != e.Entity) return;
@@ -149,6 +188,10 @@ namespace Battle.View.Player
             _damageFlashCoroutine = StartCoroutine(DamageFlashCoroutine());
         }
 
+        /// <summary>
+        /// Coroutine which plays the damage flash animation.
+        /// </summary>
+        /// <returns>Coroutine IEnumerator.</returns>
         private IEnumerator DamageFlashCoroutine()
         {
             Color tempColor;

@@ -1,19 +1,54 @@
+/// @file BattleCameraTest.cs
+/// <summary>
+/// Has a class BattleCameraTest for BattleCamera testing.
+/// </summary>
+///
+/// This script:<br/>
+/// Handles %Battle camera testing functionality.
+
 using UnityEngine;
 
 namespace Battle.View.Game
 {
+    /// <summary>
+    /// %Battle camera test <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour@u-exlink</a> script.<br/>
+    /// Handles %Battle camera testing functionality.
+    /// </summary>
     public class BattleCameraTest : MonoBehaviour
     {
+        /// @name SerializeField variables
+        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// @{
+        
+        /// <value>[SerializeField] If the camera should be active or not.</value>
         [SerializeField] private bool _active;
+
+        /// <value>[SerializeField] %Battle arena scale.</value>
         [SerializeField] private float _scale;
+
+        /// <value>[SerializeField] %Battle arena offset.</value>
         [SerializeField] private Vector2 _offset;
+
+        /// <value>[SerializeField] If the camera should rotate or not.</value>
         [SerializeField] private bool _rotate;
 
+        /// @}
+
+        /// <value>Previous #_active value.</value>
         private bool _activePrev;
+
+        /// <value>Previous #_scale value.</value>
         private float _scalePrev;
+
+        /// <value>Previous #_offset value.</value>
         private Vector2 _offsetPrev;
+
+        /// <value>Previous #_rotate value.</value>
         private bool _rotatePrev;
 
+        /// <summary>
+        /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.Update.html">Update@u-exlink</a> method which calls BattleCamera::SetView if the SerializeField variables changed.
+        /// </summary>
         private void Update()
         {
             if (!_active)

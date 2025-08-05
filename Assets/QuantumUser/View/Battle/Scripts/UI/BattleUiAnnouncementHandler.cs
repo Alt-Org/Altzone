@@ -29,11 +29,13 @@ namespace Battle.View.UI
 
         /// <value>[SerializeField] Reference to the <a href="https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/api/TMPro.TextMeshProUGUI.html">TextMeshProUGUI@u-exlink</a> component which the announcement text is set to.</value>
         [SerializeField] private TextMeshProUGUI _announcerText;
+
+        /// <value>[SerializeField] Reference to the TextScaler script which handles scaling the announcement text.</value>
         [SerializeField] private TextScaler _announcementTextScaler;
 
         /// @}
 
-
+        /// <summary>Different types of announcement text which can be displayed.</summary>
         public enum TextType
         {
             Loading,
@@ -53,6 +55,10 @@ namespace Battle.View.UI
             _view.SetActive(show);
         }
 
+        /// <summary>
+        /// Sets the announcement text to #_announcerText based on given TextType.
+        /// </summary>
+        /// <param name="textType">The TextType which to set to the announcement.</param>
         public void SetText(TextType textType)
         {
             if (_debugmode) return;
@@ -66,8 +72,6 @@ namespace Battle.View.UI
             };
         }
 
-        //countdown from x to 0 based on GameSessionState
-
         /// <summary>
         /// Sets a countdown number to the #_announcerText.
         /// </summary>
@@ -78,12 +82,19 @@ namespace Battle.View.UI
             _announcerText.text = $"{countDown}";
         }
 
+        /// <summary>
+        /// Clears #_announcerText text.
+        /// </summary>
         public void ClearAnnouncerTextField()
         {
             if (_debugmode) return;
             _announcerText.text = "";
         }
 
+        /// <summary>
+        /// Sets a custom debugging text to #_announcerText.
+        /// </summary>
+        /// <param name="text">The text string which to display.</param>
         public void SetDebugtext(string text)
         {
             _announcerText.text = text;
@@ -93,6 +104,7 @@ namespace Battle.View.UI
             _debugmode = true;
         }
 
+        /// <value>Indicates whether the announcement text is in debug mode or not.</value>
         private bool _debugmode = false;
 
         /// <summary>

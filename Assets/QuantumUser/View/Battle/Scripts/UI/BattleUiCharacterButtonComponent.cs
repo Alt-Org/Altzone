@@ -26,6 +26,8 @@ namespace Battle.View.UI
 
         /// <value>[SerializeField] Reference to the button component of the character button.</value>
         [SerializeField] private Button _button;
+
+        /// <value>[SerializeField] Reference OnPointerDownButton event sender.</value>
         [SerializeField] private OnPointerDownButton _eventSender;
 
         /// <value>[SerializeField] Reference to the character image of the character button.</value>
@@ -36,17 +38,16 @@ namespace Battle.View.UI
 
         /// <value>[SerializeField] Reference to the shield fill image of the character button. It is used to display the character's current shield health.</value>
         [SerializeField] private Image _shieldFill;
-        
+
+        /// <value>[SerializeField] The duration for damage fill animation.</value>
         [SerializeField] private float _damageFillAnimationDuration = 0.5f;
 
         /// @}
 
-        private float _startDamageFillAmount;
-        private float _targetDamageFillAmount = 0f;
-        private float t = 0f;
-
         /// <value>Public getter for #_button.</value>
         public Button ButtonComponent => _button;
+
+        /// <value>Public getter for #_eventSender.</value>
         public OnPointerDownButton EventSender => _eventSender;
 
         /// <summary>
@@ -69,19 +70,35 @@ namespace Battle.View.UI
             _characterImage.sprite = characterSprite;
         }
 
+        /// <summary>
+        /// Sets the damage fill variables to start updating damage fill to the updated percentage.
+        /// </summary>
+        /// <param name="percentage">The updated percentage for damage fill.</param>
         public void SetDamageFill(float percentage)
         {
-            t = 0f;
+            _t = 0f;
             _startDamageFillAmount = _damageFill.fillAmount;
             _targetDamageFillAmount = 1 - percentage;
         }
 
+        /// <value>The starting damage fill amount for the fill animation.</value>
+        private float _startDamageFillAmount;
+
+        /// <value>The target damage fill amount for the fill animation.</value>
+        private float _targetDamageFillAmount = 0f;
+
+        /// <value>The damage fill animation time passed.</value>
+        private float _t = 0f;
+
+        /// <summary>
+        /// Private <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/MonoBehaviour.Update.html">Update@u-exlink</a> method. Handles progressing the damage fill animation.
+        /// </summary>
         private void Update()
         {
             if (_targetDamageFillAmount > _damageFill.fillAmount)
             {
-                t += Time.deltaTime / _damageFillAnimationDuration;
-                _damageFill.fillAmount = Mathf.Lerp(_startDamageFillAmount, _targetDamageFillAmount, t);
+                _t += Time.deltaTime / _damageFillAnimationDuration;
+                _damageFill.fillAmount = Mathf.Lerp(_startDamageFillAmount, _targetDamageFillAmount, _t);
             }
         }
 

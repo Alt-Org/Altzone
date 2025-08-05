@@ -70,6 +70,7 @@ Miscellaneous classes that don't belong in other categories.
 | @crefd{Battle.View} | @crefd{Battle.View,Game}       | @cref{Battle.View.Game,BattleCameraTest}                     | @copybrief Battle.View.Game.BattleCameraTest                     |
 |                                                                                                                                                                                     ||||
 | @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerInput}                  | @copybrief Battle.View.Player.BattlePlayerInput                  |
+| None                                                || @cref{OnPointerDownButton}                                   | @copybrief OnPointerDownButton                                   |
 |                                                                                                                                                                                     ||||
 | @crefd{Battle.View}                                 || @cref{Battle.View.Utils}                                     | @copybrief Battle.View.Utils                                     |
 

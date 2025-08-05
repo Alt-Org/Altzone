@@ -4,7 +4,7 @@
 /// </summary>
 ///
 /// This script:<br/>
-/// Handles setting the timer text since match started.
+/// Handles setting the timer text.
 
 using UnityEngine;
 
@@ -19,7 +19,7 @@ namespace Battle.View.UI
 {
     /// <summary>
     /// <span class="brief-h">Timer @uihandlerlink (<a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>).</span><br/>
-    /// Handles setting the timer text since match started.
+    /// Handles setting the timer text.
     /// </summary>
     public class BattleUiTimerHandler : MonoBehaviour
     {
@@ -51,9 +51,9 @@ namespace Battle.View.UI
         }
 
         /// <summary>
-        /// Start the timer from the given <a href="https://doc.photonengine.com/quantum/current/manual/frames">Frame@u-exlink</a>.
+        /// Format and set the timer text from the given game time as seconds.
         /// </summary>
-        /// <param name="f">The <a href="https://doc.photonengine.com/quantum/current/manual/frames">Frame@u-exlink</a> which the timer will be started from.</param>
+        /// <param name="gameTimeSec">The game time as seconds which will be formatted and set to the timer text.</param>
         public void FormatAndSetTimerText(FP gameTimeSec)
         {
             int secondsElapsed = FPMath.FloorToInt(gameTimeSec);
@@ -68,7 +68,10 @@ namespace Battle.View.UI
             }
         }
 
+        /// <value>Constant conversion ratio used in time calculations.</value>
         private const int TimeConversionRatio = 60;
+
+        /// <value>The seconds elapsed the last time #FormatAndSetTimerText method was called.</value>
         private int _secondsElapsedPrevious;
     }
 }

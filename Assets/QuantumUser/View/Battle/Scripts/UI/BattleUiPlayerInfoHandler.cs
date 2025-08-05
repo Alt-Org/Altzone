@@ -56,7 +56,6 @@ namespace Battle.View.UI
         /// <summary>
         /// Sets the %UI element visibility.
         /// </summary>
-        ///
         /// <param name="show">If the %UI element should be visible or not.</param>
         public void SetShow(bool show)
         {
@@ -67,7 +66,6 @@ namespace Battle.View.UI
         /// <summary>
         /// Sets the player's info to BattleUiPlayerInfo prefab through BattleUiPlayerInfoComponent.
         /// </summary>
-        ///
         /// <param name="playerType">The PlayerType which info to set.</param>
         /// <param name="playerName">The player's name.</param>
         /// <param name="characterIds">The player's selected characters CharacterIds as a int array.</param>
@@ -113,6 +111,12 @@ namespace Battle.View.UI
             }
         }
 
+        /// <summary>
+        /// Updates character health visual through BattleUiPlayerInfoComponent.
+        /// </summary>
+        /// <param name="slot">The player's BattlePlayerSlot who's character health visual to update.</param>
+        /// <param name="characterNumber">The character number which health visual to update.</param>
+        /// <param name="healthPercentage">The updated health percentage for the character.</param>
         public void UpdateHealthVisual(BattlePlayerSlot slot, int characterNumber, float healthPercentage)
         {
             BattleUiPlayerInfoComponent playerInfoComponent = null;

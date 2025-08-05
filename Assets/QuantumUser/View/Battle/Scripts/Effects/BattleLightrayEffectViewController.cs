@@ -1,9 +1,11 @@
 /// @file BattleLightrayEffectViewController.cs
 /// <summary>
-/// Handles lightray activation.
+/// Has a class BattleLightrayEffectViewController which handles lightray effects visual functionality.
 /// </summary>
+///
+/// This script:<br/>
+/// Handles lightray effects visual functionality.
 
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Quantum;
@@ -11,21 +13,28 @@ using Quantum;
 namespace Battle.View.Effect
 {
     /// <summary>
-    /// Lightray effect <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour@u-exlink</a> script.<br/>
-    /// Handles lightray activation.
+    /// Lightray effect view <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour@u-exlink</a> script.<br/>
+    /// Handles lightray effects visual functionality.
     /// </summary>
     public class BattleLightrayEffectViewController : MonoBehaviour
     {
-        /// <value>[SerializeField] An array of the red lightray gameObjects.</value>
+        /// @name SerializeField variables
+        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// @{
+
+        /// <value>[SerializeField] Array of the red lightray <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> references.</value>
         [SerializeField] private GameObject[] _lightraysRed;
-        /// <value>[SerializeField] An array of the blue lightray gameObjects..</value>
+
+        /// <value>[SerializeField] Array of the blue lightray <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> references.</value>
         [SerializeField] private GameObject[] _lightraysBlue;
 
+        /// @}
+
         /// <summary>
-        /// Sets specified lightray active.
+        /// Activates the light ray which correspons to the wall number and color.
         /// </summary>
-        /// <param name="wallNumber">The StoneCharacter part for which the matching lightray should be activated.</param>
-        /// <param name="color">The color of the lightray to be activated.</param>
+        /// <param name="wallNumber">The wall number which lightray to spawn.</param>
+        /// <param name="color">The lightray's BattleLightrayColor which to spawn.</param>
         public void SpawnLightray(int wallNumber, BattleLightrayColor color)
         {
             switch (color)
@@ -41,6 +50,7 @@ namespace Battle.View.Effect
             }
         }
 
+        /// <value>List of currently active lightrays.</value>
         private List<GameObject> _spawnedLightrays = new();
     }
 }

@@ -46,6 +46,8 @@ namespace Battle.View.UI
 
         /// <summary>Reference to BattleUiPlayerInfoHandler which handles the local player's and teammate's player info.</summary>Part of @ref UIHandlerReferences.
         public BattleUiPlayerInfoHandler PlayerInfoHandler;
+
+        /// <summary>Reference to BattleUiJoystickHandler which handles the joysticks.</summary>Part of @ref UIHandlerReferences.
         public BattleUiJoystickHandler JoystickHandler;
 
         /// @}
