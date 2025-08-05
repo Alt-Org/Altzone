@@ -24,26 +24,26 @@ namespace Battle.QSimulation.Player
         {
             if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Player)) return;
 
-            BattlePlayerDataQComponent* _damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
-            FP _damageTaken = FP._1;
+            BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
+            FP damageTaken = FP.FromString("25");
 
-            int characterNumber = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, _damagedPlayerData->Slot).SelectedCharacterNumber;
+            int characterNumber = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber;
 
-            FP newHp = _damagedPlayerData->CurrentHp - _damageTaken;
+            FP newHp = damagedPlayerData->CurrentHp - damageTaken;
 
-            if (_damageTaken > FP._0 && _damagedPlayerData->CurrentHp > 0 && !_damagedPlayerData->DamageCooldown.IsRunning(f))
+            if (damageTaken > FP._0 && damagedPlayerData->CurrentHp > 0 && !damagedPlayerData->DamageCooldown.IsRunning(f))
             {
-                _damagedPlayerData->CurrentHp = newHp;
-                _damageTaken = FP._0;
+                damagedPlayerData->CurrentHp = newHp;
+                damageTaken = FP._0;
 
-                _damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, 1);
+                damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, 1);
 
-                f.Events.BattleCharacterTakeDamage(playerHitbox->PlayerEntity, _damagedPlayerData->TeamNumber, _damagedPlayerData->Slot, characterNumber, newHp / _damagedPlayerData->Stats.Hp);
+                f.Events.BattleCharacterTakeDamage(playerHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newHp / damagedPlayerData->Stats.Hp);
             }
 
-            if (_damagedPlayerData->CurrentHp <= FP._0)
+            if (damagedPlayerData->CurrentHp <= FP._0)
             {
-                BattlePlayerManager.DespawnPlayer(f, _damagedPlayerData->Slot);
+                BattlePlayerManager.DespawnPlayer(f, damagedPlayerData->Slot);
             }
 
             BattleProjectileQSystem.SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Player);
