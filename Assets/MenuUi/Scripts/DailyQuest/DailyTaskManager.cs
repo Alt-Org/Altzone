@@ -213,7 +213,7 @@ public class DailyTaskManager : AltMonoBehaviour
         PlayerData playerData = null;
         Storefront.Get().GetPlayerTasks(content => tasklist = content);
         StartCoroutine(GetPlayerData(content => playerData = content));
-        if (playerData == null || playerData.HasClanId) tasklist = TESTGenerateNormalTasks();
+        if (playerData == null || !playerData.HasClanId) tasklist = TESTGenerateNormalTasks();
         else
         StartCoroutine(ServerManager.Instance.GetPlayerTasksFromServer(content =>
         {
