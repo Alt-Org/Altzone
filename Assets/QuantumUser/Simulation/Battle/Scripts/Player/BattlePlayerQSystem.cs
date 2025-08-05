@@ -25,7 +25,7 @@ namespace Battle.QSimulation.Player
             if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Player)) return;
 
             BattlePlayerDataQComponent* _damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
-            FP _damageTaken = FP._1;
+            FP _damageTaken = FP.FromString("25");
 
             int characterNumber = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, _damagedPlayerData->Slot).SelectedCharacterNumber;
 
