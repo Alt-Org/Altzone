@@ -13,7 +13,7 @@ using Quantum;
 namespace Battle.View.Effect
 {
     /// <summary>
-    /// Lightray effect view <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour@u-exlink</a> script.<br/>
+    /// Lightray effect view <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>.<br/>
     /// Handles lightray effects visual functionality.
     /// </summary>
     public class BattleLightrayEffectViewController : MonoBehaviour

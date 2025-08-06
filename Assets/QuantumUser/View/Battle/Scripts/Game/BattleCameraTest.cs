@@ -11,7 +11,7 @@ using UnityEngine;
 namespace Battle.View.Game
 {
     /// <summary>
-    /// %Battle camera test <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour@u-exlink</a> script.<br/>
+    /// %Battle camera test <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>.<br/>
     /// Handles %Battle camera testing functionality.
     /// </summary>
     public class BattleCameraTest : MonoBehaviour

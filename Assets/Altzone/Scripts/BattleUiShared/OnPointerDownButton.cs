@@ -11,7 +11,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 /// <summary>
-/// OnPointerDownButton <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour@u-exlink</a> script.<br/>
+/// OnPointerDownButton <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>.<br/>
 /// Helper class which handles invoking a UnityEvent on pointer down. Implements IPointerDownHandler interface.
 /// </summary>
 public class OnPointerDownButton : MonoBehaviour, IPointerDownHandler

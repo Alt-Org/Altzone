@@ -12,7 +12,7 @@ using Quantum;
 namespace Battle.View
 {
     /// <summary>
-    /// Stone character view <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour@u-exlink</a> script.<br/>
+    /// Stone character view <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>.<br/>
     /// Handles stone characters visual functionality.
     /// </summary>
     public class BattleStoneCharacterViewController : MonoBehaviour

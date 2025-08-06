@@ -12,7 +12,7 @@ using UnityEngine;
 namespace Battle.View.Effect
 {
     /// <summary>
-    /// Screen effect <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour@u-exlink</a> script.<br/>
+    /// Screen effect <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>.<br/>
     /// Handles screen overlay and particle effect changes.
     /// </summary>
     public class BattleScreenEffectViewController : MonoBehaviour
