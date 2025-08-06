@@ -89,7 +89,8 @@ In %Battle the UI scripts have a Ui prefix following the %Battle prefix. [[Namin
 
 ## UI Handler {#page-view-uihandler}
 
-UI Handlers are scripts which handle visual functionality for BattleUiShared -prefabs. They are attached to the top level parent GameObject of the BattleUi -prefab.  
+UI Handlers are scripts which handle visual functionality for BattleUiShared -prefabs.  
+They are attached to the top level parent GameObject of the BattleUi -prefab and there is only ever one instance of a UI Handler script.  
 The handler scripts also add listeners to call UiInput methods in BattleGameViewController when the local player gives an UI input.  
 In %Battle the UI Handlers have a Handler suffix in addition to the Ui prefix. [[Naming]](#index-naming)
 
@@ -111,7 +112,7 @@ BattleUiMovableElementData holds the anchor and orientation information for each
 
 ## UI Component {#page-view-uicomponent}
 
-UI Components are scripts which unlike @uihandlerslink are attached to the BattleUiShared -prefabs' GameObjects themselves.  
+UI Components are helper scripts which can have multiple instances in BattleUi -prefab's child GameObjects.  
 In %Battle the UI Components have a Component suffix in addition to the Ui prefix. [[Naming]](#index-naming)
 
 The UI Component scripts exist to make it easier to handle BattleUiShared prefabs which have several instances, for example BattleUiPlayerInfo.  
