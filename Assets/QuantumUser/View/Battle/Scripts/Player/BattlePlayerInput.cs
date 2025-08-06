@@ -12,7 +12,6 @@ using Battle.View.Game;
 
 using MovementInputType = SettingsCarrier.BattleMovementInputType;
 using RotationInputType = SettingsCarrier.BattleRotationInputType;
-using static SettingsCarrier;
 
 namespace Battle.View.Player
 {
@@ -36,12 +35,12 @@ namespace Battle.View.Player
 
         private struct MovementInputInfo
         {
-            public Quantum.BattleMovementInputType MovementInput;
+            public BattleMovementInputType MovementInput;
             public bool MovementDirectionIsNormalized;
             public BattleGridPosition MovementPosition;
             public FPVector2 MovementDirection;
 
-            public MovementInputInfo(Quantum.BattleMovementInputType movementInput, bool movementDirectionIsNormalized, BattleGridPosition movementPosition, FPVector2 movementDirection)
+            public MovementInputInfo(BattleMovementInputType movementInput, bool movementDirectionIsNormalized, BattleGridPosition movementPosition, FPVector2 movementDirection)
             {
                 this.MovementInput = movementInput;
                 this.MovementDirectionIsNormalized = movementDirectionIsNormalized;
@@ -111,7 +110,7 @@ namespace Battle.View.Player
             bool mouseClick = !twoFingers && mouseDown && !_mouseDownPrevious;
             _mouseDownPrevious = mouseDown;
 
-            MovementInputInfo movementInputInfo = new MovementInputInfo(Quantum.BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero);
+            MovementInputInfo movementInputInfo = new MovementInputInfo(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero);
             RotationInputInfo rotationInputInfo = new RotationInputInfo(false, FP._0);
 
             if (!_characterSelectionInput)
@@ -151,14 +150,14 @@ namespace Battle.View.Player
 
         private MovementInputInfo GetMovementInput(bool mouseDown, bool mouseClick, Vector3 unityPosition, FP deltaTime)
         {
-            MovementInputInfo movementInputInfo = new MovementInputInfo(Quantum.BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero);
+            MovementInputInfo movementInputInfo = new MovementInputInfo(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero);
 
             switch (_movementInputType)
             {
                 case MovementInputType.PointAndClick:
                     if (mouseClick)
                     {
-                        movementInputInfo.MovementInput = Quantum.BattleMovementInputType.Position;
+                        movementInputInfo.MovementInput = BattleMovementInputType.Position;
                         movementInputInfo.MovementPosition = new BattleGridPosition()
                         {
                             Row = BattleGridManager.WorldYPositionToGridRow(FP.FromFloat_UNSAFE(unityPosition.z)),
@@ -187,7 +186,7 @@ namespace Battle.View.Player
 
                     if (_swipeMovementStarted)
                     {
-                        movementInputInfo.MovementInput = Quantum.BattleMovementInputType.Direction;
+                        movementInputInfo.MovementInput = BattleMovementInputType.Direction;
                         if (_swipePerformed)
                         {
                             Vector3 direction = unityPosition - _movementStartVector;
@@ -202,7 +201,7 @@ namespace Battle.View.Player
                 case MovementInputType.Joystick:
                     if (_joystickMovementVector != Vector2.zero)
                     {
-                        movementInputInfo.MovementInput = Quantum.BattleMovementInputType.Direction;
+                        movementInputInfo.MovementInput = BattleMovementInputType.Direction;
                         movementInputInfo.MovementDirectionIsNormalized = true;
                         movementInputInfo.MovementDirection = new FPVector2(FP.FromFloat_UNSAFE(_joystickMovementVector.x), FP.FromFloat_UNSAFE(_joystickMovementVector.y));
                     }
