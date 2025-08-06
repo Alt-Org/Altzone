@@ -33,6 +33,7 @@ namespace Battle.View.Effect
         /// <summary>
         /// Activates the light ray which correspons to the wall number and color.
         /// </summary>
+        /// 
         /// <param name="wallNumber">The wall number which lightray to spawn.</param>
         /// <param name="color">The lightray's BattleLightrayColor which to spawn.</param>
         public void SpawnLightray(int wallNumber, BattleLightrayColor color)

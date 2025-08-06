@@ -49,6 +49,7 @@ namespace Battle.View.UI
         /// <summary>
         /// Sets the %UI element visibility.
         /// </summary>
+        /// 
         /// <param name="show">If the %UI element should be visible or not.</param>
         public void SetShow(bool show)
         {
@@ -58,6 +59,7 @@ namespace Battle.View.UI
         /// <summary>
         /// Sets the announcement text to #_announcerText based on given TextType.
         /// </summary>
+        /// 
         /// <param name="textType">The TextType which to set to the announcement.</param>
         public void SetText(TextType textType)
         {
@@ -75,6 +77,7 @@ namespace Battle.View.UI
         /// <summary>
         /// Sets a countdown number to the #_announcerText.
         /// </summary>
+        /// 
         /// <param name="countDown">The number which to set to the countdown.</param>
         public void SetCountDownNumber(int countDown)
         {
@@ -94,6 +97,7 @@ namespace Battle.View.UI
         /// <summary>
         /// Sets a custom debugging text to #_announcerText.
         /// </summary>
+        /// 
         /// <param name="text">The text string which to display.</param>
         public void SetDebugtext(string text)
         {

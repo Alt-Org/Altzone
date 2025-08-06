@@ -37,6 +37,7 @@ namespace Battle.View.SoulWall
         /// Scales SoulWall GameObject and changes cement layer's color.
         /// If debug mode is on, uses box sprites instead of regular SoulWall sprites.
         /// </summary>
+        /// 
         /// <param name="_">Current simulation frame.</param>
         public override void OnActivate(Frame _) => QuantumEvent.Subscribe(this, (EventBattleSoulWallViewInit e) =>
         {

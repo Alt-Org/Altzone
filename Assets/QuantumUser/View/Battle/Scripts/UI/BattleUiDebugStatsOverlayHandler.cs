@@ -64,6 +64,7 @@ namespace Battle.View.UI
             /// <summary>
             /// Set's the font size to both #Name and #Value <a href="https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/api/TMPro.TMP_Text.html">TMP_Text@u-exlink</a> components.
             /// </summary>
+            /// 
             /// <param name="size"></param>
             public void SetSize(float size)
             {
@@ -78,6 +79,7 @@ namespace Battle.View.UI
         /// <summary>
         /// Sets the %UI element visibility.
         /// </summary>
+        /// 
         /// <param name="show">If the %UI element should be visible or not.</param>
         public void SetShow(bool show)
         {
@@ -87,7 +89,8 @@ namespace Battle.View.UI
         /// <summary>
         /// Sets the stat values to the debug stat texts.
         /// </summary>
-        /// <param name="character">The BattleCharacterBase which to get the stats from.</param>
+        /// 
+        /// <param name="stats">The BattlePlayerStats which to get the stats from.</param>
         public void SetStats(BattlePlayerStats stats)
         {
             _impactForce.Value.text = stats.Attack.ToString();

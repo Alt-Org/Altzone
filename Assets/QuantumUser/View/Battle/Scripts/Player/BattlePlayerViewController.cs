@@ -57,6 +57,7 @@ namespace Battle.View.Player
         /// Public method that is called when entity is activated upon its creation.<br/>
         /// Sets the player model scale and active <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>. Handles subscribing to QuantumEvents.
         /// </summary>
+        /// 
         /// <param name="_">Current simulation frame.</param>
         public override void OnActivate(Frame _) => QuantumEvent.Subscribe(this, (EventBattlePlayerViewInit e) => {
             if (EntityRef != e.Entity) return;
@@ -129,6 +130,7 @@ namespace Battle.View.Player
         /// <summary>
         /// Updates the player model's position.
         /// </summary>
+        /// 
         /// <param name="targetPosition">Target position Vector3.</param>
         private void UpdateModelPositionAdjustment(Vector3* targetPosition)
         {
@@ -147,6 +149,7 @@ namespace Battle.View.Player
         /// <summary>
         /// Updates the player model's animator.
         /// </summary>
+        /// 
         /// <param name="targetPosition">Target position Vector3.</param>
         /// <param name="battleTeamNumber">The BattleTeamNumber for the player.</param>
         private void UpdateAnimator(Vector3* targetPosition, BattleTeamNumber battleTeamNumber)
@@ -176,6 +179,7 @@ namespace Battle.View.Player
         /// Handler method for EventBattleCharacterTakeDamage QuantumEvent.<br/>
         /// Starts #DamageFlashCoroutine.
         /// </summary>
+        /// 
         /// <param name="e">The event data.</param>
         private void QEventOnCharacterTakeDamage(EventBattleCharacterTakeDamage e)
         {
@@ -191,6 +195,7 @@ namespace Battle.View.Player
         /// <summary>
         /// Coroutine which plays the damage flash animation.
         /// </summary>
+        /// 
         /// <returns>Coroutine IEnumerator.</returns>
         private IEnumerator DamageFlashCoroutine()
         {
