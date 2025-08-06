@@ -41,6 +41,7 @@ namespace Battle.View
         /// <summary>
         /// Destroys (deactivates) the character part which corresponds to the wall number and team.
         /// </summary>
+        /// 
         /// <param name="wallNumber">The wall number which to destroy.</param>
         /// <param name="team">The BattleTeamNumber which character part to destroy.</param>
         public void DestroyCharacterPart(int wallNumber, BattleTeamNumber team)
@@ -59,6 +60,7 @@ namespace Battle.View
         /// <summary>
         /// Sets new emotion color to emotion indicator which corresponds to the wall number and team.
         /// </summary>
+        /// 
         /// <param name="wallNumber">The wall number which emotion indicator color to set.</param>
         /// <param name="team">The BattleTeamNumber which emotion indicator color to set.</param>
         /// <param name="emotionIndex">The new emotion color's index.</param>

@@ -52,6 +52,7 @@ namespace Battle.View.Game
         /// <summary>
         /// Public static method to set view variables for positioning the camera.
         /// </summary>
+        /// 
         /// <param name="scale">The %Battle arena scale.</param>
         /// <param name="offset">The %Battle arena offset.</param>
         /// <param name="rotate">If the camera should rotate or not.</param>

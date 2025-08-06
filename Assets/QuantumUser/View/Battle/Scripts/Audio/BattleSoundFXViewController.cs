@@ -39,6 +39,7 @@ namespace Battle.View.Audio
         /// <summary>
         /// Plays a sound effect.
         /// </summary>
+        /// 
         /// <param name="effect">The BattleSoundFX which to play.</param>
         public void PlaySound(BattleSoundFX effect)
         {

@@ -44,6 +44,7 @@ namespace Battle.View.UI
         /// <summary>
         /// Sets the %UI element visibility.
         /// </summary>
+        /// 
         /// <param name="show">If the %UI element should be visible or not.</param>
         public void SetShow(bool show)
         {
@@ -53,6 +54,7 @@ namespace Battle.View.UI
         /// <summary>
         /// Format and set the timer text from the given game time as seconds.
         /// </summary>
+        /// 
         /// <param name="gameTimeSec">The game time as seconds which will be formatted and set to the timer text.</param>
         public void FormatAndSetTimerText(FP gameTimeSec)
         {

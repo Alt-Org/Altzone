@@ -195,6 +195,7 @@ namespace Battle.View.Player
         /// <summary>
         /// Coroutine which plays the damage flash animation.
         /// </summary>
+        /// 
         /// <returns>Coroutine IEnumerator.</returns>
         private IEnumerator DamageFlashCoroutine()
         {

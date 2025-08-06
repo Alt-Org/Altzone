@@ -32,6 +32,7 @@ namespace Battle.View.Effect
         /// <summary>
         /// Sets screen overlay and all particleSources active or inactive.
         /// </summary>
+        /// 
         /// <param name="active">True/False : active/inactive</param>
         public void SetActive(bool active)
         {
@@ -43,6 +44,7 @@ namespace Battle.View.Effect
         /// <summary>
         /// Public method that changes screen overlay's color.
         /// </summary>
+        /// 
         /// <param name="colorIndex">Index number of wanted color</param>
         public void ChangeColor(int colorIndex)
         {

@@ -33,6 +33,7 @@ namespace Battle.View.Projectile
         /// Fetches needed components and subscribes to BattleChangeEmotionState
         /// <a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/game-events"> Quantum Event.@u-exlink</a>
         /// </summary>
+        /// 
         /// <param name="_">Current simulation frame.</param>
         public override void OnActivate(Frame _)
         {
@@ -53,6 +54,7 @@ namespace Battle.View.Projectile
         /// Private method that gets called by Quantum via BattleChangeEmotionState Event.<br/>
         /// Changes projectile's sprite and its trail's color.
         /// </summary>
+        /// 
         /// <param name="e">BattleChangeEmotionState Event</param>
         private void OnChangeEmotionState(EventBattleChangeEmotionState e)
         {

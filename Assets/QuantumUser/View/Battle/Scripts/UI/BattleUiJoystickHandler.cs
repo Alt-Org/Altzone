@@ -53,6 +53,7 @@ namespace Battle.View.UI
         /// <summary>
         /// Sets the %UI element visibility.
         /// </summary>
+        /// 
         /// <param name="show">If the %UI element should be visible or not.</param>
         /// <param name="uiElementType">The UI element's BattleUiElementType to differentiate between movement and rotation joysticks. If None set visibility for both.</param>
         public void SetShow(bool show, BattleUiElementType uiElementType = BattleUiElementType.None)
@@ -75,6 +76,7 @@ namespace Battle.View.UI
         /// <summary>
         /// Sets the joysticks locked/unlocked.
         /// </summary>
+        /// 
         /// <param name="locked">If the joysticks should be locked or not.</param>
         public void SetLocked(bool locked)
         {
@@ -85,6 +87,7 @@ namespace Battle.View.UI
         /// <summary>
         /// Sets BattleUiMovableElementData to the joystick which matches the BattleUiElementType.
         /// </summary>
+        /// 
         /// <param name="uiElementType">The UI element's BattleUiElementType to differentiate between movement and rotation joysticks.</param>
         /// <param name="data">The BattleUiMovableElementData which to set to the joystick.</param>
         public void SetInfo(BattleUiElementType uiElementType, BattleUiMovableElementData data = null)
