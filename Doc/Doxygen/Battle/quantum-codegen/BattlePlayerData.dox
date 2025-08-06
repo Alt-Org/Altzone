@@ -88,6 +88,10 @@
 /// <summary>How many GridCells the character extends below the center heart position.</summary>
 /// Part of @ref PlayerMovement "[Player's movement related attributes]"
 ///
+/// @var FPVector2 Quantum.BattlePlayerDataQComponent::HasTargetPosition
+/// <summary>Whether the player has a target position set.</summary>
+/// Part of @ref PlayerMovement "[Player's movement related attributes]"
+///
 /// @var FPVector2 Quantum.BattlePlayerDataQComponent::TargetPosition
 /// <summary>The position the player is moving towards.</summary>
 /// Part of @ref PlayerMovement "[Player's movement related attributes]"
@@ -104,7 +108,7 @@
 /// @anchor PlayerState
 /// @name Player's current state related data
 /// @{
-/// @var FP CurrentHp
+/// @var FP Quantum.BattlePlayerDataQComponent::CurrentHp
 /// <summary>Character's current health value.</summary>
 /// Part of @ref PlayerState "[Player's current state related data]"
 /// @}
@@ -124,7 +128,7 @@
 /// @anchor Utils
 /// @name Utility data
 /// @{
-/// @var FrameTimer DamageCooldown
+/// @var FrameTimer Quantum.BattlePlayerDataQComponent::DamageCooldown
 /// <summary>Timer used for the cooldown on the character taking damage.</summary>
 /// Part of @ref Utils "[Player's utility data]"
 /// @}
