@@ -59,6 +59,13 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         NewNiko
     }
 
+    public enum JukeboxPlayArea
+    {
+        MainMenu,
+        Soulhome,
+        Battle
+    }
+
     // Events
     public event Action OnTextSizeChange;
     public event Action OnButtonLabelVisibilityChange;
@@ -354,5 +361,34 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
         string json = JsonUtility.ToJson(data);
         PlayerPrefs.SetString($"BattleUi{type}", json);
+    }
+
+    public bool CanPlayJukeboxInArea(JukeboxPlayArea playArea)
+    {
+        int prefsValue = -1;
+
+        switch (playArea)
+        {
+            case JukeboxPlayArea.MainMenu:
+                {
+                    prefsValue = PlayerPrefs.GetInt("JukeboxUI");
+
+                    return (prefsValue == 1);
+                }
+            case JukeboxPlayArea.Soulhome:
+                {
+                    prefsValue = PlayerPrefs.GetInt("JukeboxSoulHome");
+
+                    return (prefsValue == 1);
+                }
+            case JukeboxPlayArea.Battle:
+                {
+                    prefsValue = PlayerPrefs.GetInt("JukeboxBattle");
+
+                    return (prefsValue == 1);
+                }
+        }
+
+        return false;
     }
 }

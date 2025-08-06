@@ -69,7 +69,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         JukeboxManager.Instance.OnReduceQueueHandlerChunkActiveCount += ReduceQueueHandlerChunkActiveCount;
         JukeboxManager.Instance.OnOptimizeVisualQueueChunks += OptimizeVisualQueueChunksCheck;
         JukeboxManager.Instance.OnSetSongInfo += SetSongInfo;
-        JukeboxManager.Instance.OnStopJukeboxVisual += StopJukebox;
+        JukeboxManager.Instance.OnStopJukeboxVisual += StopJukeboxVisuals;
 
         if (JukeboxManager.Instance.CurrentMusicTrack != null)
             SetSongInfo(JukeboxManager.Instance.CurrentMusicTrack);
@@ -81,9 +81,9 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         JukeboxManager.Instance.OnReduceQueueHandlerChunkActiveCount -= ReduceQueueHandlerChunkActiveCount;
         JukeboxManager.Instance.OnOptimizeVisualQueueChunks -= OptimizeVisualQueueChunksCheck;
         JukeboxManager.Instance.OnSetSongInfo -= SetSongInfo;
-        JukeboxManager.Instance.OnStopJukeboxVisual -= StopJukebox;
+        JukeboxManager.Instance.OnStopJukeboxVisual -= StopJukeboxVisuals;
 
-        StopJukebox();
+        StopJukeboxVisuals();
     }
 
     #region Chunk
@@ -176,7 +176,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         return name;
     }
 
-    public void StopJukebox()
+    public void StopJukeboxVisuals()
     {
         _songName.text = NoSongName;
         _diskImage.sprite = _emptyDisk;

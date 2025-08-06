@@ -150,6 +150,9 @@ namespace Altzone.Scripts.Audio
         {
             if (_currentTrack == musicTrack) return;
 
+            if (_currentCategory != null && _currentCategory.Name.ToLower() == "Jukebox".ToLower() && musicCategory.Name.ToLower() != "Jukebox".ToLower())
+                JukeboxManager.Instance.StopJukebox();
+
             if (_musicSwitchInProgress)
             {
                 if (_nextUpTrack == null) CalculateAcceleratedResumeTime();

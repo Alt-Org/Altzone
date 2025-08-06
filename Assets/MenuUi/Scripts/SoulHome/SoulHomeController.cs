@@ -58,8 +58,6 @@ namespace MenuUI.Scripts.SoulHome
         public TextMeshProUGUI FurnitureName { get => _furnitureName; }
         public FurnitureList FurnitureList { get => _furnitureList; }
 
-        private Coroutine handleOnEnableMusicCoroutine;
-
         // Start is called before the first frame update
         void Start()
         {
@@ -87,9 +85,6 @@ namespace MenuUI.Scripts.SoulHome
 
         public void OnDisable()
         {
-            if (handleOnEnableMusicCoroutine != null) StopCoroutine(handleOnEnableMusicCoroutine);
-
-            //_jukeBoxPopup.StopJukebox();
             _jukeBoxPopup.ToggleJukeboxScreen(false);
             JukeBoxSoulhomeHandler.OnChangeJukeBoxSong -= SetSongName;
         }

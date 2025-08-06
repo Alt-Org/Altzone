@@ -182,13 +182,15 @@ namespace Altzone.Scripts.Audio
 
             if (!currentCategoryJukebox || currentCategoryJukebox && !hasCurrentTrack) return true; //Dont block if category is jukebox but current track is null.
 
-            int jukeboxSoulhome = PlayerPrefs.GetInt("JukeboxSoulHome");
-            int jukeboxUI = PlayerPrefs.GetInt("JukeboxUI");
-            int jukeboxBattle = PlayerPrefs.GetInt("JukeboxBattle");
+            SettingsCarrier carrier = SettingsCarrier.Instance;
+
+            bool jukeboxSoulhome = carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Soulhome);
+            bool jukeboxMainMenu = carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.MainMenu);
+            bool jukeboxBattle = carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Battle);
             bool blockPlayRequest = (
-                (jukeboxSoulhome == 1 && categoryName.ToLower() == "Soulhome".ToLower())
-                || (jukeboxUI == 1 && categoryName.ToLower() == "MainMenu".ToLower())
-                || (jukeboxBattle == 1 && categoryName.ToLower() == "Battle".ToLower())
+                (jukeboxSoulhome && categoryName.ToLower() == "Soulhome".ToLower())
+                || (jukeboxMainMenu && categoryName.ToLower() == "MainMenu".ToLower())
+                || (jukeboxBattle && categoryName.ToLower() == "Battle".ToLower())
                 );
 
             if (blockPlayRequest) return false; //Block if current category is jukebox and has current track.
