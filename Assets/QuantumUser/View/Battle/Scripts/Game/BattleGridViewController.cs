@@ -13,7 +13,7 @@ using Battle.QSimulation.Game;
 namespace Battle.View.Game
 {
     /// <summary>
-    /// Grid view <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>.<br/>
+    /// <span class="brief-h">Grid view <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>.</span><br/>
     /// Handles %Battle arena grid's visual functionality.
     /// </summary>
     public class BattleGridViewController : MonoBehaviour

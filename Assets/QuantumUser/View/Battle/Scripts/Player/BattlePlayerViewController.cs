@@ -15,7 +15,7 @@ using Battle.QSimulation.Player;
 namespace Battle.View.Player
 {
     /// <summary>
-    /// %Player's entityview script.<br/>
+    /// <span class="brief-h">%Player's <a href="https://doc-api.photonengine.com/en/quantum/current/class_quantum_1_1_quantum_entity_view_component.html">QuantumEntityViewComponent@u-exlink</a>.</span><br/>
     /// Handles player sprites and animations.
     /// </summary>
     public unsafe class BattlePlayerViewController : QuantumEntityViewComponent

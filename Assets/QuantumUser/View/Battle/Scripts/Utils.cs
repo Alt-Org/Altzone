@@ -11,7 +11,7 @@ using Quantum;
 namespace Battle.View
 {
     /// <summary>
-    /// Static utility script.<br/>
+    /// <span class="brief-h">Static utility script.</span><br/>
     /// Has utility methods for view.
     /// </summary>
     public static class Utils

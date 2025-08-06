@@ -13,7 +13,7 @@ using System;
 namespace Battle.View.Audio
 {
     /// <summary>
-    /// Sound FX view <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>.<br/>
+    /// <span class="brief-h">Sound FX view <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>.</span><br/>
     /// Handles playing sound effects.
     /// </summary>
     public class BattleSoundFXViewController : MonoBehaviour

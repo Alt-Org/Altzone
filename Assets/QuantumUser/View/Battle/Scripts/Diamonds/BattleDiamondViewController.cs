@@ -13,7 +13,7 @@ using Battle.View.Game;
 namespace Battle.View.Diamond
 {
     /// <summary>
-    /// Diamond's entityview script.<br/>
+    /// <span class="brief-h">Diamond's <a href="https://doc-api.photonengine.com/en/quantum/current/class_quantum_1_1_quantum_entity_view_component.html">QuantumEntityViewComponent@u-exlink</a>.</span><br/>
     /// Handles diamonds visual functionality.
     /// </summary>
     public class BattleDiamondViewController : QuantumEntityViewComponent
