@@ -104,6 +104,7 @@ BattleUiMovableElementData holds the anchor and orientation information for each
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiDiamondsHandler}                | @copybrief Battle.View.UI.BattleUiDiamondsHandler                |
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiGameOverHandler}                | @copybrief Battle.View.UI.BattleUiGameOverHandler                |
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiGiveUpButtonHandler}            | @copybrief Battle.View.UI.BattleUiGiveUpButtonHandler            |
+| @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiJoystickHandler}                | @copybrief Battle.View.UI.BattleUiJoystickHandler                |
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiPlayerInfoHandler}              | @copybrief Battle.View.UI.BattleUiPlayerInfoHandler              |
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiTimerHandler}                   | @copybrief Battle.View.UI.BattleUiTimerHandler                   |
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiDebugStatsOverlayHandler}       | @copybrief Battle.View.UI.BattleUiDebugStatsOverlayHandler       |
@@ -121,6 +122,7 @@ The different instances of the duplicated prefab each have their own GameObjects
 |  Namespace                                          || Class                                                        | Description                                                      |
 | :------------------ | :----------------------------- | :----------------------------------------------------------- | :--------------------------------------------------------------- |
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiCharacterButtonComponent}       | @copybrief Battle.View.UI.BattleUiCharacterButtonComponent       |
+| @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiJoystickComponent}              | @copybrief Battle.View.UI.BattleUiJoystickComponent              |
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiPlayerInfoComponent}            | @copybrief Battle.View.UI.BattleUiPlayerInfoComponent            |
 
 <br/>
