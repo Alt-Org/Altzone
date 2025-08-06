@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,7 +7,6 @@ using UnityEngine.UI;
 using TMPro;
 
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
-using System.Linq;
 
 namespace Altzone.Scripts.BattleUiShared
 {

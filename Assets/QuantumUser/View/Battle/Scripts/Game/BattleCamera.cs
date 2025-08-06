@@ -12,7 +12,7 @@ using UnityEngine.Assertions;
 namespace Battle.View.Game
 {
     /// <summary>
-    /// %Battle camera <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour@u-exlink</a> script.<br/>
+    /// <span class="brief-h">%Battle camera <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>.</span><br/>
     /// Handles %Battle camera functionality.
     /// </summary>
     public class BattleCamera : MonoBehaviour

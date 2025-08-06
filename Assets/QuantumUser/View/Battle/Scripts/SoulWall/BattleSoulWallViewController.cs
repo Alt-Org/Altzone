@@ -9,7 +9,7 @@ using Quantum;
 namespace Battle.View.SoulWall
 {
     /// <summary>
-    /// %SoulWall's entityview script.<br/>
+    /// <span class="brief-h">%SoulWall's <a href="https://doc-api.photonengine.com/en/quantum/current/class_quantum_1_1_quantum_entity_view_component.html">QuantumEntityViewComponent@u-exlink</a>.</span><br/>
     /// Handles %SoulWall's sprites and debug colors.
     /// </summary>
     public class BattleSoulWallViewController : QuantumEntityViewComponent
