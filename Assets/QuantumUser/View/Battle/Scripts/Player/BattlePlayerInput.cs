@@ -33,43 +33,73 @@ namespace Battle.View.Player
     /// </summary>
     public class BattlePlayerInput : MonoBehaviour
     {
+        /// <summary>
+        /// Called when the player interacts with the movement joystick.
+        /// </summary>
+        /// 
+        /// <param name="input">The input value of the movement joystick</param>
         public void OnJoystickMovement(Vector2 input)
         {
             _joystickMovementVector = input;
         }
 
+        /// <summary>
+        /// Called when the player interacts with the rotation joystick.
+        /// </summary>
+        /// 
+        /// <param name="input">The input value of the rotation joystick</param>
         public void OnJoystickRotation(float input)
         {
             _joystickRotationValue = input;
         }
 
+        /// <summary>
+        /// Called when the player presses one of the character selection buttons.
+        /// </summary>
+        /// 
+        /// <param name="characterNumber">The number of the character that was selected.</param>
         public void OnCharacterSelected(int characterNumber)
         {
             _characterNumber = characterNumber;
             _characterSelectionInput = true;
         }
 
+        /// <value>Saved info of the selected movement input type.</value>
         private MovementInputType _movementInputType;
+        /// <value>Saved info of the selected rotation input type.</value>
         private RotationInputType _rotationInputType;
 
+        /// <value>Saved time from previous frame.</value>
         private float _previousTime;
         /// <value>Previous click by a player.</value>
         private bool _mouseDownPrevious;
+        /// <value>Initial saved vector when rotation input is first detected.</value>
         private Vector2 _rotationStartVector;
+        /// <value>Initial saved vector when movement input is first detected.</value>
         private Vector3 _movementStartVector;
+        /// <value>The vector received from the movement joystick.</value>
         private Vector2 _joystickMovementVector;
+        /// <value>The vector received from the rotation joystick.</value>
         private float _joystickRotationValue;
+        /// <value>Saved character number from character swapping input.</value>
         private int _characterNumber = -1;
 
+        /// <value>Boolean for if a character swap input was performed.</value>
         private bool _characterSelectionInput = false;
 
+        /// <value>The minimum distance for activating swipe rotation.</value>
         private float _swipeMinDistance = 0.1f;
+        /// <value>The swipe distance at which rotation reaches its maximum value.</value>
         private float _swipeMaxDistance = 1.0f;
+        /// <value>The sensitivity for swipe movement.</value>
         private float _swipeSensitivity = 1.0f;
+        /// <value>The minimum tilt angle for activating gyroscope rotation.</value>
         private float _gyroMinAngle = 10f;
 
+        /// <value>Reference to the play device's attitude sensor aka gyroscope.</value>
         private AttitudeSensor _attitudeSensor;
 
+        /// <value>Boolean for if swipe movement has started and not stopped.</value>
         private bool _swipeMovementStarted = false;
 
         /// <summary>
@@ -96,6 +126,7 @@ namespace Battle.View.Player
         /// <summary>
         /// Handles polling player input for Quantum.
         /// </summary>
+        /// 
         /// <param name="callback">Quantum Callback</param>
         private void PollInput(CallbackPollInput callback)
         {
@@ -151,6 +182,7 @@ namespace Battle.View.Player
         /// <summary>
         /// Handles player movement input based on selected input type.
         /// </summary>
+        /// 
         /// <param name="mouseDown">Whether input is currently held</param>
         /// <param name="mouseClick">Whether input started this frame</param>
         /// <param name="unityPosition">The unityPosition of the input</param>
@@ -224,6 +256,7 @@ namespace Battle.View.Player
         /// <summary>
         /// Handles player rotation input based on selected input type.
         /// </summary>
+        /// 
         /// <param name="mouseDown">Whether input is currently held</param>
         /// <param name="twoFingers">Whether two finger input is currently held</param>
         /// <param name="unityPosition">The unityPosition of the input</param>
