@@ -213,7 +213,13 @@ public class DailyTaskManager : AltMonoBehaviour
         PlayerData playerData = null;
         Storefront.Get().GetPlayerTasks(content => clanTasks = content);
         StartCoroutine(GetPlayerData(content => playerData = content)); //MQTT message tells if we need to fetch the data again.
-        if (playerData == null || !playerData.HasClanId) clanTasks = TESTGenerateNormalTasks();
+        if (playerData == null || !playerData.HasClanId)
+        {
+            if (gameVersion == VersionType.Education)
+                clanTasks = GenerateEducationTasks();
+            else
+                clanTasks = TESTGenerateNormalTasks();
+        }
         else
         StartCoroutine(ServerManager.Instance.GetPlayerTasksFromServer(content =>
         {
@@ -223,52 +229,103 @@ public class DailyTaskManager : AltMonoBehaviour
             {
                 Debug.LogError("Could not connect to server and receive quests.");
                 //Offline testing
-                clanTasks = TESTGenerateNormalTasks();
+                if (gameVersion == VersionType.Education)
+                    clanTasks = GenerateEducationTasks();
+                else
+                    clanTasks = TESTGenerateNormalTasks();
                 Debug.LogWarning("Using locally generated tasks.");
             }
         }));
 
         yield return new WaitUntil(() => clanTasks != null);
 
-        //For testing puropses. Remove when server can handle Education version tasks.
-        if (gameVersion == VersionType.Education && clanTasks.Tasks[0].EducationCategory == EducationCategoryType.None)
-            clanTasks = GenerateEducationTasks();
-        //---------------------------------------------------------------------------
+        ClanTasks referenceTasks = clanTasks.TaskVersionType == TaskVersionType.Education ? GenerateEducationTasks() : TESTGenerateNormalTasks();
+        ClanTasks validatedTasks = clanTasks.TaskVersionType == TaskVersionType.Education ? new(TaskVersionType.Education, new()) : TESTGenerateNormalTasks(); // Use "new(TaskVersionType.Normal, new())" when not using test tasks
 
         for (int i = 0; i < clanTasks.Tasks.Count; i++)
         {
+            for (int j = 0; j < referenceTasks.Tasks.Count; j++)
+            {
+                if (clanTasks.TaskVersionType == TaskVersionType.Education && clanTasks.Tasks[i].EducationCategory == referenceTasks.Tasks[j].EducationCategory)
+                {
+                    switch (clanTasks.Tasks[i].EducationCategory)
+                    {
+                        case EducationCategoryType.Action:
+                            {
+                                if (clanTasks.Tasks[i].EducationActionType == referenceTasks.Tasks[j].EducationActionType)
+                                    validatedTasks.Tasks.Add(clanTasks.Tasks[i]);
+                                break;
+                            }
+                        case EducationCategoryType.Social:
+                            {
+                                if (clanTasks.Tasks[i].EducationSocialType == referenceTasks.Tasks[j].EducationSocialType)
+                                    validatedTasks.Tasks.Add(clanTasks.Tasks[i]);
+                                break;
+                            }
+                        case EducationCategoryType.Story:
+                            {
+                                if (clanTasks.Tasks[i].EducationStoryType == referenceTasks.Tasks[j].EducationStoryType)
+                                    validatedTasks.Tasks.Add(clanTasks.Tasks[i]);
+                                break;
+                            }
+                        case EducationCategoryType.Culture:
+                            {
+                                if (clanTasks.Tasks[i].EducationCultureType == referenceTasks.Tasks[j].EducationCultureType)
+                                    validatedTasks.Tasks.Add(clanTasks.Tasks[i]);
+                                break;
+                            }
+                        case EducationCategoryType.Ethical:
+                            {
+                                if (clanTasks.Tasks[i].EducationEthicalType == referenceTasks.Tasks[j].EducationEthicalType)
+                                    validatedTasks.Tasks.Add(clanTasks.Tasks[i]);
+                                break;
+                            }
+                    }
+                }
+                /*
+                else if (clanTasks.TaskVersionType == TaskVersionType.Normal)
+                {
+                    if (clanTasks.Tasks[i].Type == referenceTasks.Tasks[j].Type)
+                        workingTasks.Tasks.Add(clanTasks.Tasks[i]);
+                }
+                */
+            }
+        }
+
+        for (int i = 0; i < validatedTasks.Tasks.Count; i++)
+        {
             GameObject prefabToInstantiate = (
                 gameVersion == VersionType.Education ?
-                GetEducationPrefabCategory(clanTasks.Tasks[i].EducationCategory) :
-                GetNormalPrefabCategory(clanTasks.Tasks[i].Points)
+                GetEducationPrefabCategory(validatedTasks.Tasks[i].EducationCategory) :
+                GetNormalPrefabCategory(validatedTasks.Tasks[i].Points)
                 );
 
             GameObject taskObject = Instantiate(prefabToInstantiate, gameObject.transform);
             _dailyTaskCardSlots.Add(taskObject);
 
             DailyQuest task = taskObject.GetComponent<DailyQuest>();
-            task.SetTaskData(clanTasks.Tasks[i], i);
+            task.SetTaskData(validatedTasks.Tasks[i], i);
             task.dailyTaskManager = this;
 
-            if (clanTasks.Tasks[i].PlayerId != "")
+            if (validatedTasks.Tasks[i].PlayerId != "")
                 _dailyTaskCardSlots[i].GetComponent<DailyQuest>().TaskSelected();
 
-            if (_currentPlayerData.Id == clanTasks.Tasks[i].PlayerId)
+            if (_currentPlayerData.Id == validatedTasks.Tasks[i].PlayerId)
             {
-                _currentPlayerData.Task = clanTasks.Tasks[i]; //TODO: Remove when fetching task data works.
+                _currentPlayerData.Task = validatedTasks.Tasks[i]; //TODO: Remove when fetching task data works.
                 _currentTaskCardIndex = i;
             }
 
             Transform parentCategory = (
                 gameVersion == VersionType.Education ?
-                GetEducationParentCategory(clanTasks.Tasks[i].EducationCategory) :
-                GetNormalParentCategory(clanTasks.Tasks[i].Points)
+                GetEducationParentCategory(validatedTasks.Tasks[i].EducationCategory) :
+                GetNormalParentCategory(validatedTasks.Tasks[i].Points)
                 );
 
             taskObject.transform.SetParent(parentCategory, false);
             taskObject.SetActive(true);
 
-            Debug.Log("Created Task: " + clanTasks.Tasks[i].Id);
+            Debug.Log("Created Task: " + validatedTasks.Tasks[i].Id);
         }
 
         if (gameVersion == VersionType.Education)
@@ -362,76 +419,6 @@ public class DailyTaskManager : AltMonoBehaviour
         }
 
         return new(TaskVersionType.Education, tasklist);
-    }
-
-    private List<PlayerTask> TESTGenerateEducationTasks() //TODO: Remove when fetching education tasks from server is possible.
-    {
-        ServerPlayerTasks serverTasks = new ServerPlayerTasks();
-
-        serverTasks.daily = new List<ServerPlayerTask>();
-        serverTasks.weekly = new List<ServerPlayerTask>();
-        serverTasks.monthly = new List<ServerPlayerTask>();
-
-        //Social
-        string[] socialTasks = { "emote_during_battle", "add_new_friend", "edit_character_avatar", "write_chat_message_clan", "create_new_vote", "share_battle_replay" };
-        string[] socialTitles = { "Reagoi emojilla matsissa.", "Lisää kaveri.", "Muokkaa avatarisi ulkonäköä.", "Laita viesti klaanissa.", "Luo uusi äänestys klaaniin.", "Jaa battle replay klaanin chattiin." };
-
-        for (int i = 0; i < socialTasks.Length; i++)
-        {
-            serverTasks.daily.Add(TESTCreateServerPlayerEducationTask(i, "social", socialTasks[i], socialTitles[i]));
-        }
-
-        //Story
-        string[] storyTasks = { "find_symbolic_graphics", "continue_clan_story", "click_character_description", "recognize_sound_clue", "find_symbolical_furniture" };
-        string[] storyTitles = { "Löydä käyttöliittymästä symbolista grafiikkaa.", "Jatka klaanin tarinaa.", "Lue ja paina pelihahmon kuvausta.", "Tunnista äänimaailman vihjeet.", "Paina kolmea symboliikkaa sisältävää huonekalua." };
-
-        for (int i = 0; i < storyTasks.Length; i++)
-        {
-            serverTasks.daily.Add(TESTCreateServerPlayerEducationTask(i + 4, "story", storyTasks[i], storyTitles[i]));
-        }
-
-        //Culture
-        string[] cultureTasks = { "games_genre_types", "click_known_character", "similiar_to_a_game", "set_profile_player_type", "click_known_art_idea_person" };
-        string[] cultureTitles = { "Mitä lajityyppejä peli sinulle edustaa", "Klikkaa pelihahmoa josta tulee mieleen joku tunnettu hahmo.", "Mitä tunnettua peliä tämä peli muistuttaa.", "Määrittele pelaajaprofiili pelaajatyyppisi.", "Klikkaa tunnettuihin teoksiin, ideoihin tai ihmisiin viittaavia asioita." };
-
-        for (int i = 0; i < cultureTasks.Length; i++)
-        {
-            serverTasks.daily.Add(TESTCreateServerPlayerEducationTask(i + 8, "culture", cultureTasks[i], cultureTitles[i]));
-        }
-
-        //Action
-        string[] actionTasks = { "win_battle", "edit_character_stats", "blow_up_your_character", "switch_soulhome_music" , "play_battle", "make_music_with_buttons", "make_character_fast", "make_character_durable", "make_character_strong", "make_character_big"};
-        string[] actionTitles = { "Voita battle.", "Muokkaa hahmosi statseja.", "Räjäytä hahmosi ryöstössä.", "Vaihda biisi sielunkodissa.", "Pelaa battle.", "Tee näppäimillä musiikkia.", "Muokkaa pelihahmosta nopea.", "Muokkaa pelihahmosta kestävä.", "Muokkaa pelihahmosta voimakas.", "Muokkaa pelihahmosta isokokoinen." };
-
-        for (int i = 0; i < actionTasks.Length; i++)
-        {
-            serverTasks.daily.Add(TESTCreateServerPlayerEducationTask(i + 12, "action", actionTasks[i], actionTitles[i]));
-        }
-
-        PlayerTasks tasks = new PlayerTasks(serverTasks);
-        List<PlayerTask> tasklist = null;
-        tasklist = tasks.Daily;
-        tasklist.AddRange(tasks.Week);
-        tasklist.AddRange(tasks.Month);
-        return (tasklist);
-    }
-
-    private ServerPlayerTask TESTCreateServerPlayerEducationTask(int id, string educationCategory, string educationTaskType, string title)
-    {
-        ServerPlayerTask serverTask = new ServerPlayerTask();
-
-        serverTask._id = id.ToString();
-        serverTask.amount = 1;
-        serverTask.amountLeft = serverTask.amount;
-        serverTask.title = new ServerPlayerTask.TaskTitle();
-        serverTask.title.fi = title;
-        serverTask.points = (id + 1) * 5;
-        serverTask.coins = (id + 1) * 10;
-        serverTask.type = "";
-        serverTask.educationCategoryType = educationCategory;
-        serverTask.educationCategoryTaskType = educationTaskType;
-
-        return (serverTask);
     }
 
     private Transform GetNormalParentCategory(int points)
