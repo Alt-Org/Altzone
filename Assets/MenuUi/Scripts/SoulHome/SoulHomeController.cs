@@ -70,12 +70,15 @@ namespace MenuUI.Scripts.SoulHome
             EditModeTrayResize();
             _audioManager = AudioManager.Instance;
             _editButton.onClick.AddListener(()=>EditModeToggle());
-            _openJukeBox.onClick.AddListener(()=>_jukeBoxPopup.ToggleJukeboxScreen(true));
+            _openJukeBox.onClick.AddListener(()=> _jukeBoxPopup.ToggleJukeboxScreen(true));
         }
 
         public void OnEnable()
         {
-            handleOnEnableMusicCoroutine = StartCoroutine(HandleOnEnableMusic());
+            if (JukeboxManager.Instance.CurrentMusicTrack != null)
+                _jukeBoxPopup.PlayTrack();
+            else
+                _musicName.text = AudioManager.Instance?.PlayMusic("Soulhome", "");
 
             EditModeTrayResize();
             if (GameAnalyticsManager.Instance != null) GameAnalyticsManager.Instance.OpenSoulHome();
@@ -89,16 +92,6 @@ namespace MenuUI.Scripts.SoulHome
             //_jukeBoxPopup.StopJukebox();
             _jukeBoxPopup.ToggleJukeboxScreen(false);
             JukeBoxSoulhomeHandler.OnChangeJukeBoxSong -= SetSongName;
-        }
-
-        private IEnumerator HandleOnEnableMusic()
-        {
-            yield return new WaitUntil(() => JukeBoxSoulhomeHandler.Instance != null);
-
-            if (JukeBoxSoulhomeHandler.Instance.CurrentMusicTrack != null)
-                JukeBoxSoulhomeHandler.Instance.PlayTrack();
-            else
-                _musicName.text = AudioManager.Instance?.PlayMusic("Soulhome", "");
         }
 
         public void SetRoomName(GameObject room)

@@ -26,8 +26,10 @@ namespace Altzone.Scripts.Audio
 
         private MusicCategory _currentCategory;
         public MusicCategory CurrentCategory {  get => _currentCategory; }
+
         private MusicTrack _currentTrack;
         public MusicTrack CurrentTrack { get => _currentTrack; }
+
         private int _currentTrackIndex = 0;
 
         private MusicCategory _nextUpCategory;

@@ -178,9 +178,9 @@ namespace Altzone.Scripts.Audio
             if (_musicHandler.CurrentCategory == null) return true; //Dont block if category is null.
 
             bool currentCategoryJukebox = _musicHandler.CurrentCategory.Name.ToLower() == "Jukebox".ToLower();
-            bool hasCurrentTrack = _musicHandler.CurrentTrack != null;
+            bool hasCurrentTrack = JukeboxManager.Instance.CurrentMusicTrack != null;
 
-            if ((currentCategoryJukebox && !hasCurrentTrack)) return true; //Dont block if category is jukebox but current track is null.
+            if (!currentCategoryJukebox || currentCategoryJukebox && !hasCurrentTrack) return true; //Dont block if category is jukebox but current track is null.
 
             int jukeboxSoulhome = PlayerPrefs.GetInt("JukeboxSoulHome");
             int jukeboxUI = PlayerPrefs.GetInt("JukeboxUI");
