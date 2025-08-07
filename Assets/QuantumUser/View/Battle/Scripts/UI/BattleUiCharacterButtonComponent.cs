@@ -53,7 +53,7 @@ namespace Battle.View.UI
         /// <summary>
         /// Sets the character image from PlayerCharacterPrototype to #_characterImage.
         /// </summary>
-        /// 
+        ///
         /// <param name="characterId">The CharacterId of the character as a int.</param>
         public void SetCharacterIcon(int characterId)
         {
@@ -74,7 +74,7 @@ namespace Battle.View.UI
         /// <summary>
         /// Sets the damage fill variables to start updating damage fill to the updated percentage.
         /// </summary>
-        /// 
+        ///
         /// <param name="percentage">The updated percentage for damage fill.</param>
         public void SetDamageFill(float percentage)
         {

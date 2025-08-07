@@ -22,7 +22,7 @@ namespace Battle.View.Diamond
         /// Public method that is called when entity is activated upon its creation.<br/>
         /// Rotates the diamond visuals 180 degrees for the beta team.
         /// </summary>
-        /// 
+        ///
         /// <param name="_">Current simulation frame.</param>
         public override void OnActivate(Frame _)
         {

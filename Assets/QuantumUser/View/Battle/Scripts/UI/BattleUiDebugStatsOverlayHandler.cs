@@ -79,7 +79,7 @@ namespace Battle.View.UI
         /// <summary>
         /// Sets the %UI element visibility.
         /// </summary>
-        /// 
+        ///
         /// <param name="show">If the %UI element should be visible or not.</param>
         public void SetShow(bool show)
         {
@@ -89,7 +89,7 @@ namespace Battle.View.UI
         /// <summary>
         /// Sets the stat values to the debug stat texts.
         /// </summary>
-        /// 
+        ///
         /// <param name="stats">The BattlePlayerStats which to get the stats from.</param>
         public void SetStats(BattlePlayerStats stats)
         {

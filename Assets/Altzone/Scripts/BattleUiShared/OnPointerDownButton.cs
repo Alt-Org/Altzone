@@ -22,7 +22,7 @@ public class OnPointerDownButton : MonoBehaviour, IPointerDownHandler
     /// <summary>
     /// Handler method required by IPointerDownHandler interface. Invokes #onClick UnityEvent.
     /// </summary>
-    /// 
+    ///
     /// <param name="eventData">The event data.</param>
     public void OnPointerDown(PointerEventData eventData)
     {

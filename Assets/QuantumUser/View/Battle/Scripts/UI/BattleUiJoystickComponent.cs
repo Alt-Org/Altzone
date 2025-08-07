@@ -36,7 +36,7 @@ namespace Battle.View.UI
         /// <summary>
         /// Event delegate for joystick input with both axis.
         /// </summary>
-        /// 
+        ///
         /// <param name="input">Joystick input Vector2.</param>
         public delegate void JoystickInputHandler(Vector2 input);
 
@@ -46,7 +46,7 @@ namespace Battle.View.UI
         /// <summary>
         /// Event delegate for joystick input on x axis.
         /// </summary>
-        /// 
+        ///
         /// <param name="input">Joystick input value on x axis.</param>
         public delegate void JoystickXAxisInputHandler(float input);
 
@@ -57,7 +57,7 @@ namespace Battle.View.UI
         /// Handler method required by IPointerDownHandler interface.<br/>
         /// Calculates joystick radius needed for calculating the joystick input and calls #HandleDrag method so that joystick input gets registered even on a single joystick press.
         /// </summary>
-        /// 
+        ///
         /// <param name="eventData">The event data.</param>
         public void OnPointerDown(PointerEventData eventData)
         {
@@ -73,7 +73,7 @@ namespace Battle.View.UI
         /// Handler method required by IDragHandler interface.<br/>
         /// Calls #HandleDrag method to calculate joystick input.
         /// </summary>
-        /// 
+        ///
         /// <param name="eventData">The event data.</param>
         public void OnDrag(PointerEventData eventData)
         {
@@ -84,7 +84,7 @@ namespace Battle.View.UI
         /// Handler method required by IPointerUpHandler interface.<br/>
         /// Resets the joystick handle position and invokes either #OnJoystickXAxisInput or #OnJoystickInput with zero to indicate stopping movement.
         /// </summary>
-        /// 
+        ///
         /// <param name="eventData">The event data.</param>
         public void OnPointerUp(PointerEventData eventData)
         {
@@ -111,7 +111,7 @@ namespace Battle.View.UI
         /// <summary>
         /// Calculates the drag input vector and invokes either #OnJoystickXAxisInput or #OnJoystickInput depending on #LockYAxis.
         /// </summary>
-        /// 
+        ///
         /// <param name="dragPos">The player's PointerEventData position.</param>
         private void HandleDrag(Vector2 dragPos)
         {

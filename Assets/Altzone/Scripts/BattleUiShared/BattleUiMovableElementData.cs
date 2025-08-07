@@ -50,7 +50,7 @@ namespace Altzone.Scripts.BattleUiShared
         /// <summary>
         /// Constructor for BattleUiMovableElementData.
         /// </summary>
-        /// 
+        ///
         /// <param name="uiElementType">%Battle Ui element's BattleUiElementType.</param>
         /// <param name="anchorMin">%Battle Ui element's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/RectTransform-anchorMin.html">anchorMin@u-exlink</a> for <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/RectTransform.html">RectTransform@u-exlink</a> component.</param>
         /// <param name="anchorMax">%Battle Ui element's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/RectTransform-anchorMax.html">anchorMax@u-exlink</a> for <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/RectTransform.html">RectTransform@u-exlink</a> component.</param>

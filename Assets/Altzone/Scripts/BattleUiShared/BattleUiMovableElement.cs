@@ -38,7 +38,7 @@ namespace Altzone.Scripts.BattleUiShared
         /// <summary>
         /// Set BattleUiMovableElementData to this Ui element.
         /// </summary>
-        /// 
+        ///
         /// <param name="data">The data which to set to this Ui element.</param>
         public virtual void SetData(BattleUiMovableElementData data)
         {
@@ -62,7 +62,7 @@ namespace Altzone.Scripts.BattleUiShared
         /// <summary>
         /// Get the data from this Ui element.
         /// </summary>
-        /// 
+        ///
         /// <returns>Returns BattleUiMovableElementData serializable object. Null if couldn't get valid data.</returns>
         public virtual BattleUiMovableElementData GetData()
         {
