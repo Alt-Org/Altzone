@@ -207,7 +207,7 @@ namespace Altzone.Scripts.Model.Poco.Game
                     {
                         return TaskNormalType.StartBattleDifferentCharacter;
                     }
-                case "vote":
+                case "participate_clan_voting":
                     {
                         return TaskNormalType.Vote;
                     }
@@ -263,15 +263,15 @@ namespace Altzone.Scripts.Model.Poco.Game
                     {
                         return TaskEducationActionType.WinBattle;
                     }
-                case "switch_soulhome_music":
+                case "change_song_soulhome":
                     {
                         return TaskEducationActionType.SwitchSoulhomeMusic;
                     }
-                case "edit_character_stats":
+                case "change_character_stats":
                     {
                         return TaskEducationActionType.EditCharacterStats;
                     }
-                case "blow_up_your_character":
+                case "explode_character_battle":
                     {
                         return TaskEducationActionType.BlowUpYourCharacter;
                     }
@@ -279,19 +279,19 @@ namespace Altzone.Scripts.Model.Poco.Game
                     {
                         return TaskEducationActionType.MakeMusicWithButtons;
                     }
-                case "make_character_fast":
+                case "change_character_be_fast":
                     {
                         return TaskEducationActionType.MakeCharacterFast;
                     }
-                case "make_character_durable":
+                case "change_character_be_resistant":
                     {
                         return TaskEducationActionType.MakeCharacterDurable;
                     }
-                case "make_character_strong":
+                case "change_character_be_strong":
                     {
                         return TaskEducationActionType.MakeCharacterStrong;
                     }
-                case "make_character_big":
+                case "change_character_be_large":
                     {
                         return TaskEducationActionType.MakeCharacterBig;
                     }
@@ -310,7 +310,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             switch (type)
             {
-                case "emote_during_battle":
+                case "react_emoji_battle":
                     {
                         return TaskEducationSocialType.EmoteDuringBattle;
                     }
@@ -318,23 +318,23 @@ namespace Altzone.Scripts.Model.Poco.Game
                     {
                         return TaskEducationSocialType.WriteChatMessageClan;
                     }
-                case "edit_character_avatar":
+                case "change_avatar_outlook":
                     {
                         return TaskEducationSocialType.EditCharacterAvatar;
                     }
-                case "share_battle_replay":
+                case "share_battle_replay_clan_chat":
                     {
                         return TaskEducationSocialType.ShareBattleReplay;
                     }
-                case "add_new_friend":
+                case "add_friend":
                     {
                         return TaskEducationSocialType.AddNewFriend;
                     }
-                case "create_new_vote":
+                case "create_clan_voting":
                     {
                         return TaskEducationSocialType.CreateNewVote;
                     }
-                case "chat_add_reaction":
+                case "react_emoji_chat":
                     {
                         return TaskEducationSocialType.ChatAddReaction;
                     }
@@ -353,7 +353,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             switch (type)
             {
-                case "click_character_description":
+                case "press_character_description":
                     {
                         return TaskEducationStoryType.ClickCharacterDescription;
                     }
@@ -361,7 +361,7 @@ namespace Altzone.Scripts.Model.Poco.Game
                     {
                         return TaskEducationStoryType.ContinueClanStory;
                     }
-                case "recognize_sound_clue":
+                case "recognize_audio_hints":
                     {
                         return TaskEducationStoryType.RecognizeSoundClue;
                     }
@@ -369,7 +369,7 @@ namespace Altzone.Scripts.Model.Poco.Game
                     {
                         return TaskEducationStoryType.FindSybolicalFurniture;
                     }
-                case "find_symbolic_graphics":
+                case "find_ui_symbolics":
                     {
                         return TaskEducationStoryType.FindSymbolicalGraphics;
                     }
@@ -384,23 +384,23 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             switch (type)
             {
-                case "click_known_art_idea_person":
+                case "press_famous_thing_referring_objects":
                     {
                         return TaskEducationCultureType.ClickKnownArtIdeaPerson;
                     }
-                case "click_known_character":
+                case "press_famous_character":
                     {
                         return TaskEducationCultureType.ClickKnownCharacter;
                     }
-                case "games_genre_types":
+                case "what_style_types_game_has":
                     {
                         return TaskEducationCultureType.GamesGenreTypes;
                     }
-                case "set_profile_player_type":
+                case "define_player_type":
                     {
                         return TaskEducationCultureType.SetProfilePlayerType;
                     }
-                case "similiar_to_a_game":
+                case "what_famous_game_reminding":
                     {
                         return TaskEducationCultureType.SimiliarToAGame;
                     }
@@ -415,7 +415,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             switch (type)
             {
-                case "click_buyable":
+                case "press_money_stuff":
                     {
                         return TaskEducationEthicalType.ClickBuyable;
                     }
@@ -423,15 +423,15 @@ namespace Altzone.Scripts.Model.Poco.Game
                     {
                         return TaskEducationEthicalType.ClickEthical;
                     }
-                case "click_questionable":
+                case "press_ethic_questionable_objects":
                     {
                         return TaskEducationEthicalType.ClickQuestionable;
                     }
-                case "use_only_negative_emotes":
+                case "use_only_negative_gestures_in_battle":
                     {
                         return TaskEducationEthicalType.UseOnlyNegativeEmotes;
                     }
-                case "use_only_positive_emotes":
+                case "use_only_positive_gestures_in_battle":
                     {
                         return TaskEducationEthicalType.UseOnlyPositiveEmotes;
                     }

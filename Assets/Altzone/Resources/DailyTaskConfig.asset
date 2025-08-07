@@ -22,20 +22,20 @@ MonoBehaviour:
     amount: 1
     coins: 100
     points: 10
-    type: vote
+    type: participate_clan_voting
   _educationDailyTasks:
   - title: Vaihda biisi sielunkodissa.
     amount: 1
     coins: 10
     points: 100
     educationCategoryType: action
-    educationCategoryTaskType: switch_soulhome_music
+    educationCategoryTaskType: change_song_soulhome
   - title: Muokkaa hahmosi statseja.
     amount: 1
     coins: 10
     points: 100
     educationCategoryType: action
-    educationCategoryTaskType: edit_character_stats
+    educationCategoryTaskType: change_character_stats
   - title: "Tee n\xE4pp\xE4imill\xE4 musiikkia."
     amount: 1
     coins: 10
@@ -47,25 +47,25 @@ MonoBehaviour:
     coins: 10
     points: 100
     educationCategoryType: action
-    educationCategoryTaskType: make_character_fast
+    educationCategoryTaskType: change_character_be_fast
   - title: "Muokkaa pelihahmosta kest\xE4v\xE4."
     amount: 1
     coins: 10
     points: 100
     educationCategoryType: action
-    educationCategoryTaskType: make_character_durable
+    educationCategoryTaskType: change_character_be_resistant
   - title: Muokkaa pelihahmosta voimakas.
     amount: 1
     coins: 10
     points: 100
     educationCategoryType: action
-    educationCategoryTaskType: make_character_strong
+    educationCategoryTaskType: change_character_be_strong
   - title: Muokkaa pelihahmosta isokokoinen.
     amount: 1
     coins: 10
     points: 100
     educationCategoryType: action
-    educationCategoryTaskType: make_character_big
+    educationCategoryTaskType: change_character_be_large
   - title: "L\xE4het\xE4 viesti klaanissa."
     amount: 1
     coins: 100
@@ -77,31 +77,31 @@ MonoBehaviour:
     coins: 100
     points: 10
     educationCategoryType: social
-    educationCategoryTaskType: edit_character_avatar
+    educationCategoryTaskType: change_avatar_outlook
   - title: "Luo uusi \xE4\xE4nestys."
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: social
-    educationCategoryTaskType: create_new_vote
+    educationCategoryTaskType: create_clan_voting
   - title: Paina pelihahmon kuvausta.
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: story
-    educationCategoryTaskType: click_character_description
+    educationCategoryTaskType: press_character_description
   - title: "M\xE4\xE4rittele pelaajatyyppisi."
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: culture
-    educationCategoryTaskType: set_profile_player_type
+    educationCategoryTaskType: define_player_type
   - title: Paina asiaa, jonka voi ostaa.
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: ethical
-    educationCategoryTaskType: click_buyable
+    educationCategoryTaskType: press_money_stuff
   - title: Vaihda avatarisi vaatteita.
     amount: 1
     coins: 100
@@ -113,7 +113,7 @@ MonoBehaviour:
     coins: 100
     points: 10
     educationCategoryType: social
-    educationCategoryTaskType: chat_add_reaction
+    educationCategoryTaskType: react_emoji_chat
   - title: "L\xF6yd\xE4 kaikki chat-vaihtoehdot."
     amount: 1
     coins: 100
