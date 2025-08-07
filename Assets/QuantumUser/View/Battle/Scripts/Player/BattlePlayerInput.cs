@@ -69,10 +69,9 @@ namespace Battle.View.Player
 
         /// @}
 
-        /// @name Input structs
-        /// Internal input structs for easily handling the data.
-        /// @{
-
+        /// <summary>
+        /// Struct containing data related to player movement input.
+        /// </summary>
         private struct MovementInputInfo
         {
             public BattleMovementInputType MovementInput;
@@ -89,6 +88,9 @@ namespace Battle.View.Player
             }
         }
 
+        /// <summary>
+        /// Struct containing data related to player rotation input.
+        /// </summary>
         private struct RotationInputInfo
         {
             public bool RotationInput;
@@ -100,8 +102,6 @@ namespace Battle.View.Player
                 RotationValue = rotationValue;
             }
         }
-
-        /// @}
 
         /// <value>Saved time from previous frame.</value>
         private float _previousTime;

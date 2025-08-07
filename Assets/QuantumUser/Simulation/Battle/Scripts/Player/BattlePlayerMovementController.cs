@@ -177,6 +177,14 @@ namespace Battle.QSimulation.Player
             MoveHitbox(f, playerData, transform);
         }
 
+        /// <summary>
+        /// Moves and rotates the player to the specified position and angle while updating the hitbox.
+        /// </summary>
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerData">Pointer to the player's data component.</param>
+        /// <param name="transform">Pointer to the player's transform component.</param>
+        /// <param name="position">World position to move to.</param>
+        /// <param name="radians">Target rotation angle in radians.</param>
         public static void MoveAndRotate(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform, FPVector2 position, FP radians)
         {
             transform->Position = position;
@@ -234,6 +242,13 @@ namespace Battle.QSimulation.Player
             f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity)->Normal = FPVector2.Rotate(FPVector2.Up, transform->Rotation);
         }
 
+        /// <summary>
+        /// Clamps the grid position of the player to the playfield of their team.
+        /// </summary>
+        /// <param name="playerData">Pointer to the player's data component.</param>
+        /// <param name="gridPosition">The grid position of the player.</param>
+        /// <param name="clampedPosition">The resulting clamped position of the player.</param>
+        /// <returns>True if the position changed from clamping, false if it remained the same.</returns>
         private static bool ClampPosition(BattlePlayerDataQComponent* playerData, BattleGridPosition gridPosition, out FPVector2 clampedPosition)
         {
             BattleGridPosition clampedGridPosition;
@@ -267,6 +282,13 @@ namespace Battle.QSimulation.Player
 
         }
 
+        /// <summary>
+        /// Clamps the world position of the player to the playfield of their team.
+        /// </summary>
+        /// <param name="playerData">Pointer to the player's data component.</param>
+        /// <param name="position">The world position of the player.</param>
+        /// <param name="clampedPosition">The resulting clamped position of the player.</param>
+        /// <returns>True if the position changed from clamping, false if it remained the same.</returns>
         private static bool ClampPosition(BattlePlayerDataQComponent* playerData, FPVector2 position, out FPVector2 clampedPosition)
         {
             BattleGridPosition gridPosition = BattleGridManager.WorldPositionToGridPosition(position);
