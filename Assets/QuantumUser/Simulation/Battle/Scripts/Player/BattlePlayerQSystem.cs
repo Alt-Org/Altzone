@@ -19,7 +19,7 @@ namespace Battle.QSimulation.Player
     /// Handles the quantum side of player logic.
     /// </summary>
     [Preserve]
-    public unsafe class BattlePlayerQSystem : SystemMainThread, ISignalBattleOnProjectileHitPlayerHitbox
+    public unsafe class BattlePlayerQSystem : SystemMainThread, ISignalBattleOnProjectileHitPlayerCharacter
     {
         /// <summary>
         /// Calls BattlePlayerManager::SpawnPlayer for players that are in the game.
@@ -37,7 +37,7 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
-        /// that gets called when <see cref="Quantum.ISignalBattleOnProjectileHitPlayerHitbox">ISignalBattleOnProjectileHitPlayerHitbox</see> is sent.</span><br/>
+        /// that gets called when <see cref="Quantum.ISignalBattleOnProjectileHitPlayerCharacter">ISignalBattleOnProjectileHitPlayerCharacter</see> is sent.</span><br/>
         /// Deals damage to the player hit if their damage cooldown is not active and despawns the character if its Hp reaches 0.
         /// @warning
         /// This method should only be called by Quantum.
@@ -47,7 +47,7 @@ namespace Battle.QSimulation.Player
         /// <param name="projectileEntity">The projectile entity.</param>
         /// <param name="playerHitbox">Pointer reference to the player hitbox that the projectile collided with.</param>
         /// <param name="playerHitboxEntity">The player hitbox entity.</param>
-        public unsafe void BattleOnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
+        public unsafe void BattleOnProjectileHitPlayerCharacter(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
         {
             if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Player)) return;
 

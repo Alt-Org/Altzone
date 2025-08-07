@@ -32,8 +32,8 @@ namespace Battle.View.Player
     /// </summary>
     public class BattlePlayerInput : MonoBehaviour
     {
-        /// @name UiInput methods
-        /// UiInput methods are called by BattleGameViewController when the player gives an %UI input, such as presses a button. These methods shouldn't be called any other way.
+        /// @name Input methods
+        /// Input methods are called by BattleGameViewController when the player gives a %UI input. These methods shouldn't be called any other way.
         /// @{
 
         /// <summary>
@@ -215,7 +215,7 @@ namespace Battle.View.Player
         }
 
         /// @name Input reading methods
-        /// Methods for reading the correct player input data.
+        /// Methods for reading player input data.
         /// @{
 
         /// <summary>

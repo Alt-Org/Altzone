@@ -58,9 +58,9 @@ namespace Battle.QSimulation.Game
                     case BattleCollisionTriggerType.Player:
                         {
                             BattlePlayerHitboxQComponent*  playerHitbox = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(info.Other);
-                            Debug.Log("[CollisionSystem] Projectile hit PlayerHitbox");
+                            Debug.Log("[CollisionSystem] Projectile hit Player Character");
                             //f.Events.PlaySoundEvent(SoundEffect.SideWallHit);
-                            f.Signals.BattleOnProjectileHitPlayerHitbox(projectile, info.Entity, playerHitbox, info.Other);
+                            f.Signals.BattleOnProjectileHitPlayerCharacter(projectile, info.Entity, playerHitbox, info.Other);
                             break;
                         }
 

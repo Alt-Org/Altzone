@@ -3,7 +3,7 @@ signal BattleOnProjectileHitSoulWall(BattleProjectileQComponent* projectile, Ent
 
 signal BattleOnProjectileHitArenaBorder(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity);
 
-signal BattleOnProjectileHitPlayerHitbox(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity);
+signal BattleOnProjectileHitPlayerCharacter(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity);
 
 signal BattleOnProjectileHitPlayerShield(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity);
 
