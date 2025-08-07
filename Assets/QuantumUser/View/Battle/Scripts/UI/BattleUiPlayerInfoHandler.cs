@@ -1,6 +1,8 @@
 using UnityEngine;
 
 using Altzone.Scripts.BattleUiShared;
+using Battle.View.Game;
+using Quantum;
 
 namespace Battle.View.UI
 {
@@ -68,6 +70,24 @@ namespace Battle.View.UI
                     characterButton.EventSender.onClick.AddListener(() => _uiController.GameViewController.UiInputOnCharacterSelected(characterNumber));
                 }
             }
+        }
+
+        public void UpdateHealthVisual(BattlePlayerSlot slot, int characterNumber, float healthPercentage)
+        {
+            BattleUiPlayerInfoComponent playerInfoComponent = null;
+
+            if (slot == BattleGameViewController.LocalPlayerSlot)
+            {
+                playerInfoComponent = _localPlayerMultiOrientationElement.GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>();
+            }
+            else
+            {
+                playerInfoComponent = _localTeammateMultiOrientationElement.GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>();
+            }
+
+            if (playerInfoComponent == null) return;
+
+            playerInfoComponent.CharacterButtons[characterNumber].SetDamageFill(healthPercentage);
         }
     }
 }

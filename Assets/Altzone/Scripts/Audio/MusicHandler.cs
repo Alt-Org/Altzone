@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.ReferenceSheets;
 using UnityEngine;
 
 namespace Altzone.Scripts.Audio
@@ -24,7 +25,11 @@ namespace Altzone.Scripts.Audio
         private float _maxVolume = 1.0f;
 
         private MusicCategory _currentCategory;
+        public MusicCategory CurrentCategory {  get => _currentCategory; }
+
         private MusicTrack _currentTrack;
+        public MusicTrack CurrentTrack { get => _currentTrack; }
+
         private int _currentTrackIndex = 0;
 
         private MusicCategory _nextUpCategory;
@@ -44,7 +49,7 @@ namespace Altzone.Scripts.Audio
             None
         }
 
-        public void SetMaxVoulme(float volume) { _maxVolume = volume; }
+        public void SetMaxVolume(float volume) { _maxVolume = volume; }
 
         private void Awake()
         {
@@ -132,7 +137,7 @@ namespace Altzone.Scripts.Audio
             }
         }
 
-        private List<MusicTrack> GetMusicList()
+        public List<MusicTrack> GetMusicList()
         {
             if (_currentCategory != null) return _currentCategory.MusicTracks;
 
@@ -143,10 +148,14 @@ namespace Altzone.Scripts.Audio
 
         public void SwitchMusic(MusicCategory musicCategory, MusicTrack musicTrack)
         {
+            if (_currentTrack == musicTrack) return;
+
+            if (_currentCategory != null && _currentCategory.Name.ToLower() == "Jukebox".ToLower() && musicCategory.Name.ToLower() != "Jukebox".ToLower())
+                JukeboxManager.Instance.StopJukebox();
+
             if (_musicSwitchInProgress)
             {
-                if (_nextUpTrack == null)
-                    CalculateAcceleratedResumeTime();
+                if (_nextUpTrack == null) CalculateAcceleratedResumeTime();
 
                 _nextUpCategory = musicCategory;
                 _nextUpTrack = musicTrack;
@@ -192,8 +201,7 @@ namespace Altzone.Scripts.Audio
 
                 if (_musicSwitchInProgress)
                 {
-                    if (_nextUpTrack == null)
-                        CalculateAcceleratedResumeTime();
+                    if (_nextUpTrack == null) CalculateAcceleratedResumeTime();
 
                     _nextUpCategory = _currentCategory;
                     _nextUpTrack = musicTrack;
@@ -236,7 +244,6 @@ namespace Altzone.Scripts.Audio
         private void StartMusicPlayback(AudioSource source, AudioClip audio)
         {
             source.clip = audio;
-            //source.volume = 0f;
             source.Play();
         }
 

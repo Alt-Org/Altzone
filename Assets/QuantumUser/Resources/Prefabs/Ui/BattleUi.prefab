@@ -75,8 +75,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4285624689
+  m_fontColor: {r: 0.44313726, g: 0.44313726, b: 0.44313726, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -212,8 +212,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4285624689
+  m_fontColor: {r: 0.4433962, g: 0.4433962, b: 0.4433962, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -939,8 +939,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4285624689
+  m_fontColor: {r: 0.44313726, g: 0.44313726, b: 0.44313726, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -957,7 +957,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 48
+  m_fontSize: 23.2
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1116,8 +1116,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4285624689
+  m_fontColor: {r: 0.44313726, g: 0.44313726, b: 0.44313726, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1305,7 +1305,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1981098954491195713
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1542,8 +1542,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4285624689
+  m_fontColor: {r: 0.44313726, g: 0.44313726, b: 0.44313726, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1991,8 +1991,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4285624689
+  m_fontColor: {r: 0.44313726, g: 0.44313726, b: 0.44313726, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2832,7 +2832,8 @@ MonoBehaviour:
   _textBoxAspectRatio: 5
   _startScalingHolderAspectRatio: 0.5625
   _holderRectTransform: {fileID: 3300782618133613160}
-  _textArray: []
+  _textArray:
+  - {fileID: 1560703308592050577}
 --- !u!222 &2123960977946624082
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3511,6 +3512,7 @@ MonoBehaviour:
   _characterImage: {fileID: 1947297617799456583}
   _damageFill: {fileID: 8809228203724963457}
   _shieldFill: {fileID: 1945963371599739835}
+  _damageFillAnimationDuration: 0.5
 --- !u!114 &2151113665371969649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3561,6 +3563,7 @@ MonoBehaviour:
   _characterImage: {fileID: 785175183665329417}
   _damageFill: {fileID: 4831972375986283406}
   _shieldFill: {fileID: 3431850427407502203}
+  _damageFillAnimationDuration: 0.5
 --- !u!114 &5997318611254014982
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3623,6 +3626,7 @@ MonoBehaviour:
   _characterImage: {fileID: 6951169569563439059}
   _damageFill: {fileID: 2727187276008839195}
   _shieldFill: {fileID: 6042121484706913414}
+  _damageFillAnimationDuration: 0.5
 --- !u!114 &2232991206400380316
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3685,6 +3689,7 @@ MonoBehaviour:
   _characterImage: {fileID: 7537421796181697892}
   _damageFill: {fileID: 5454430485583962465}
   _shieldFill: {fileID: 5123535121469817212}
+  _damageFillAnimationDuration: 0.5
 --- !u!114 &2242170623148370158
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3795,6 +3800,7 @@ MonoBehaviour:
   _characterImage: {fileID: 5342039309220594727}
   _damageFill: {fileID: 3825597363139372974}
   _shieldFill: {fileID: 6251403239920321808}
+  _damageFillAnimationDuration: 0.5
 --- !u!114 &3255605488691028706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3993,6 +3999,7 @@ MonoBehaviour:
   _characterImage: {fileID: 5262074064685814762}
   _damageFill: {fileID: 8282484697837857016}
   _shieldFill: {fileID: 3345117816705080059}
+  _damageFillAnimationDuration: 0.5
 --- !u!114 &2004474345761331686
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4455,6 +4462,7 @@ MonoBehaviour:
   _characterImage: {fileID: 4181801516718728879}
   _damageFill: {fileID: 143923713776721341}
   _shieldFill: {fileID: 6728981234503397310}
+  _damageFillAnimationDuration: 0.5
 --- !u!114 &3461288392351408617
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4570,6 +4578,7 @@ MonoBehaviour:
   _characterImage: {fileID: 4119850670521397602}
   _damageFill: {fileID: 5051168107859972843}
   _shieldFill: {fileID: 2724510690625466453}
+  _damageFillAnimationDuration: 0.5
 --- !u!114 &4080568877848187582
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4751,6 +4760,7 @@ MonoBehaviour:
   _characterImage: {fileID: 1403321863257725590}
   _damageFill: {fileID: 6257452930684267870}
   _shieldFill: {fileID: 2366632069287078339}
+  _damageFillAnimationDuration: 0.5
 --- !u!114 &1913675163198285944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4813,6 +4823,7 @@ MonoBehaviour:
   _characterImage: {fileID: 1987309104252784673}
   _damageFill: {fileID: 4088175036313785380}
   _shieldFill: {fileID: 3752745497771848761}
+  _damageFillAnimationDuration: 0.5
 --- !u!114 &7346513851358992861
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4863,6 +4874,7 @@ MonoBehaviour:
   _characterImage: {fileID: 8785285384717434956}
   _damageFill: {fileID: 3458913427877582539}
   _shieldFill: {fileID: 6678411560738946622}
+  _damageFillAnimationDuration: 0.5
 --- !u!114 &824268131958877895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4973,6 +4985,7 @@ MonoBehaviour:
   _characterImage: {fileID: 7496288807599723010}
   _damageFill: {fileID: 670667223952624580}
   _shieldFill: {fileID: 7498327671081717502}
+  _damageFillAnimationDuration: 0.5
 --- !u!114 &2462725193737949073
 MonoBehaviour:
   m_ObjectHideFlags: 0
