@@ -33,7 +33,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] public TMP_InputField _gridTransparencyInputField;
         [SerializeField] private GridController _grid;
 
-
         [Header("Input options")]
         [SerializeField] public Toggle _swipeMovementToggle;
         [SerializeField] public Toggle _pointAndClickMovementToggle;
@@ -503,7 +502,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void OnResetButtonClicked()
         {
-            _battleUiEditor.StartCoroutine(_battleUiEditor.ShowSaveResetPopup(ResetChangesText, resetChanges =>
+            StartCoroutine(_battleUiEditor.ShowSaveResetPopup(ResetChangesText, resetChanges =>
             {
                 if (resetChanges == null) return;
                 if (resetChanges.Value == true) _battleUiEditor.ResetChanges();
