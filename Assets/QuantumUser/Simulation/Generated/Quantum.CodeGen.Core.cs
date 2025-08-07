@@ -1169,24 +1169,26 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattleProjectileQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 64;
+    public const Int32 SIZE = 72;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(8)]
     public QBoolean IsLaunched;
     [FieldOffset(12)]
     public QBoolean IsMoving;
-    [FieldOffset(32)]
-    public FP Speed;
     [FieldOffset(40)]
+    public FP Speed;
+    [FieldOffset(48)]
     public FP SpeedPotential;
     [FieldOffset(16)]
     public FP AccelerationTimer;
-    [FieldOffset(48)]
+    [FieldOffset(56)]
     public FPVector2 Direction;
-    [FieldOffset(24)]
+    [FieldOffset(32)]
     public FP Radius;
     [FieldOffset(4)]
     public BattleEmotionState Emotion;
+    [FieldOffset(24)]
+    public FP Attack;
     [FieldOffset(0)]
     [FramePrinter.FixedArrayAttribute(typeof(BattleProjectileCollisionFlags), 2)]
     private fixed Byte _CollisionFlags_[2];
@@ -1206,6 +1208,7 @@ namespace Quantum {
         hash = hash * 31 + Direction.GetHashCode();
         hash = hash * 31 + Radius.GetHashCode();
         hash = hash * 31 + (Int32)Emotion;
+        hash = hash * 31 + Attack.GetHashCode();
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(CollisionFlags);
         return hash;
       }
@@ -1217,6 +1220,7 @@ namespace Quantum {
         QBoolean.Serialize(&p->IsLaunched, serializer);
         QBoolean.Serialize(&p->IsMoving, serializer);
         FP.Serialize(&p->AccelerationTimer, serializer);
+        FP.Serialize(&p->Attack, serializer);
         FP.Serialize(&p->Radius, serializer);
         FP.Serialize(&p->Speed, serializer);
         FP.Serialize(&p->SpeedPotential, serializer);

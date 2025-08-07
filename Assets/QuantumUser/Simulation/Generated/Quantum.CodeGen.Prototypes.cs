@@ -353,6 +353,7 @@ namespace Quantum.Prototypes {
     public FPVector2 Direction;
     public FP Radius;
     public Quantum.QEnum32<BattleEmotionState> Emotion;
+    public FP Attack;
     [ArrayLengthAttribute(2)]
     public Quantum.QEnum8<BattleProjectileCollisionFlags>[] CollisionFlags = new Quantum.QEnum8<BattleProjectileCollisionFlags>[2];
     partial void MaterializeUser(Frame frame, ref Quantum.BattleProjectileQComponent result, in PrototypeMaterializationContext context);
@@ -370,6 +371,7 @@ namespace Quantum.Prototypes {
         result.Direction = this.Direction;
         result.Radius = this.Radius;
         result.Emotion = this.Emotion;
+        result.Attack = this.Attack;
         for (int i = 0, count = PrototypeValidator.CheckLength(CollisionFlags, 2, in context); i < count; ++i) {
           *result.CollisionFlags.GetPointer(i) = this.CollisionFlags[i];
         }

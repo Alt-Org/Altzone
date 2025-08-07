@@ -25,8 +25,8 @@ namespace Battle.QSimulation.Player
             if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Player)) return;
 
             BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
-            FP damageTaken = FP.FromString("25");
-
+            FP damageTaken = projectile->Attack;
+            
             int characterNumber = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber;
 
             FP newHp = damagedPlayerData->CurrentHp - damageTaken;
@@ -34,7 +34,6 @@ namespace Battle.QSimulation.Player
             if (damageTaken > FP._0 && damagedPlayerData->CurrentHp > 0 && !damagedPlayerData->DamageCooldown.IsRunning(f))
             {
                 damagedPlayerData->CurrentHp = newHp;
-                damageTaken = FP._0;
 
                 damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, 1);
 
