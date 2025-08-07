@@ -10,12 +10,16 @@ component BattleProjectileQComponent
     bool IsLaunched;
     bool IsMoving;
     FP Speed;
+    array<FP>[BATTLE_EMOTION_STATE_COUNT] SpeedMultiplierArray;
     FP SpeedPotential;
+    FP SpeedIncrement;
     FP AccelerationTimer;
+    FP AccelerationTimerDuration;
     FPVector2 Direction;
     FP Radius;
     BattleEmotionState Emotion;
     FP Attack;
+    FP AttackMax;
 
     array<BattleProjectileCollisionFlags>[2] CollisionFlags;
 }

@@ -17,8 +17,10 @@ namespace Battle.QSimulation.Projectile
         [Tooltip("Amount which speedpotential is increased")]
         public FP SpeedIncrement;
         [Tooltip("Timer for speeding up the ball")]
-        public FP AccelerationTimer;
+        public FP AccelerationTimerDuration;
         [Tooltip("Amount of projectile spawned in ")]
         public int InitialProjectilesCount;
+        [Tooltip("Projectile's maximum attack damage")]
+        public FP AttackMax;
     }
 }
