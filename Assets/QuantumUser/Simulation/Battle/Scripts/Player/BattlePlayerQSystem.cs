@@ -36,7 +36,11 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
+        /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
+        /// that gets called when <see cref="Quantum.ISignalBattleOnProjectileHitPlayerHitbox">ISignalBattleOnProjectileHitPlayerHitbox</see> is sent.</span><br/>
         /// Deals damage to the player hit if their damage cooldown is not active and despawns the character if its Hp reaches 0.
+        /// @warning
+        /// This method should only be called by Quantum.
         /// </summary>
         /// <param name="f">Current simulation frame</param>
         /// <param name="projectile">Pointer reference to the projectile.</param>
@@ -72,6 +76,11 @@ namespace Battle.QSimulation.Player
             BattleProjectileQSystem.SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Player);
         }
 
+        /// <summary>
+        /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method@u-exlink</a> gets called every frame.</span><br/>
+        /// Relays the appropriate input data to each player in the game
+        /// </summary>
+        /// <param name="f">Current simulation frame</param>
         public override void Update(Frame f)
         {
             Input* input;

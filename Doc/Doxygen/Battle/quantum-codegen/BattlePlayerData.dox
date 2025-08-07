@@ -111,6 +111,10 @@
 /// @var FP Quantum::BattlePlayerDataQComponent::CurrentHp
 /// <summary>Character's current health value.</summary>
 /// Part of @ref PlayerState "[Player's current state related data]"
+///
+/// @var FrameTimer Quantum::BattlePlayerDataQComponent::DamageCooldown
+/// <summary>Timer used for the cooldown on the character taking damage.</summary>
+/// Part of @ref PlayerState "[Player's current state related data]"
 /// @}
 
 /// @anchor PlayerHitboxEntities
@@ -123,14 +127,6 @@
 /// @var EntityRef Quantum::BattlePlayerDataQComponent::HitboxCharacterEntity
 /// <summary>An entity that contains all the character hitboxes.</summary>
 /// Part of @ref PlayerHitboxEntities "[Player's hitboxEntities]"
-/// @}
-
-/// @anchor Utils
-/// @name Utility data
-/// @{
-/// @var FrameTimer Quantum::BattlePlayerDataQComponent::DamageCooldown
-/// <summary>Timer used for the cooldown on the character taking damage.</summary>
-/// Part of @ref Utils "[Player's utility data]"
 /// @}
 
 // ---------------------------------------------------------------------------------------------------- //

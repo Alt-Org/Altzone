@@ -33,6 +33,10 @@ namespace Battle.View.Player
     /// </summary>
     public class BattlePlayerInput : MonoBehaviour
     {
+        /// @name UiInput methods
+        /// UiInput methods are called by BattleGameViewController when the player gives an %UI input, such as presses a button. These methods shouldn't be called any other way.
+        /// @{
+
         /// <summary>
         /// Called when the player interacts with the movement joystick.
         /// </summary>
@@ -64,10 +68,7 @@ namespace Battle.View.Player
             _characterSelectionInput = true;
         }
 
-        /// <value>Saved info of the selected movement input type.</value>
-        private MovementInputType _movementInputType;
-        /// <value>Saved info of the selected rotation input type.</value>
-        private RotationInputType _rotationInputType;
+        /// @}
 
         /// <value>Saved time from previous frame.</value>
         private float _previousTime;
@@ -87,6 +88,15 @@ namespace Battle.View.Player
         /// <value>Boolean for if a character swap input was performed.</value>
         private bool _characterSelectionInput = false;
 
+        /// @name Setting variables
+        /// Data from SettingsCarrier is saved to these variables.
+        /// @{
+
+        /// <value>Saved info of the selected movement input type.</value>
+        private MovementInputType _movementInputType;
+        /// <value>Saved info of the selected rotation input type.</value>
+        private RotationInputType _rotationInputType;
+
         /// <value>The minimum distance for activating swipe rotation.</value>
         private float _swipeMinDistance = 0.1f;
         /// <value>The swipe distance at which rotation reaches its maximum value.</value>
@@ -95,6 +105,8 @@ namespace Battle.View.Player
         private float _swipeSensitivity = 1.0f;
         /// <value>The minimum tilt angle for activating gyroscope rotation.</value>
         private float _gyroMinAngle = 10f;
+
+        /// @}
 
         /// <value>Reference to the play device's attitude sensor aka gyroscope.</value>
         private AttitudeSensor _attitudeSensor;
@@ -178,6 +190,10 @@ namespace Battle.View.Player
 
             _characterNumber = -1;
         }
+
+        /// @name Input reading methods
+        /// Methods for reading the correct player input data.
+        /// @{
 
         /// <summary>
         /// Handles player movement input based on selected input type.
@@ -332,5 +348,7 @@ namespace Battle.View.Player
             }
             return rot.z;
         }
+
+        /// @}
     }
 }
