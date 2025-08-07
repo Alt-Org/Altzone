@@ -21,7 +21,7 @@ namespace Altzone.Scripts.BattleUiShared
 {
     /// <summary>
     /// <span class="brief-h">Movable element <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>.</span><br/>
-    /// Handles setting the %Battle Ui element's position and transparency. Base class for other %Battle Ui element scripts.
+    /// Base class for %Battle Ui element scripts. Handles setting the %Battle Ui element's position and transparency.
     /// </summary>
     ///
     /// Should be attached to the top level <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> of the %Battle Ui element prefab.

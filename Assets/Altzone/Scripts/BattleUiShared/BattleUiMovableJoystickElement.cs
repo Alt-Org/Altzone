@@ -14,7 +14,7 @@ using BattleUiElementType = SettingsCarrier.BattleUiElementType;
 namespace Altzone.Scripts.BattleUiShared
 {
     /// <summary>
-    /// <span class="brief-h">Movable joystick element <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>.</span><br/>
+    /// <span class="brief-h">Movable joystick BattleUiMovableElement.</span><br/>
     /// Handles setting the %Battle Ui movable joystick element's size and locked status.
     /// </summary>
     [RequireComponent(typeof(RectTransform))]
