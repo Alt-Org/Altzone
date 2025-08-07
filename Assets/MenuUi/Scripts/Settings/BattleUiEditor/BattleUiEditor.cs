@@ -365,7 +365,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             BattleUiMovableElementData savedData = SettingsCarrier.Instance.GetBattleUiMovableElementData(uiElementType);
             BattleUiMovableElementData compareData;
-            
+
             switch (uiElementType)
             {
                 case BattleUiElementType.Timer:
@@ -394,7 +394,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 default: // Checking if saved data is similar for every ui element
                     // Note: if more ui elements are added change from GiveUpButton to the last element in the enum
                     bool isSavedDataSimilar = true;
-                    for (int i = 0; i <= (int)BattleUiElementType.RotateJoystick; i++) 
+                    for (int i = 0; i <= (int)BattleUiElementType.RotateJoystick; i++)
                     {
                         isSavedDataSimilar = IsSavedDataSimilar((BattleUiElementType)i);
                         if (!isSavedDataSimilar) break;
@@ -536,12 +536,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
                     if (playerNameHorizontal != null) playerNameHorizontal.text = nameText;
                     if (playerNameVertical != null) playerNameVertical.text = nameText;
-                    break;
-
-                case BattleUiElementType.MoveJoystick:
-                case BattleUiElementType.RotateJoystick:
-                    BattleUiJoystickIconSetter iconSetter = uiElementGameObject.GetComponent<BattleUiJoystickIconSetter>();
-                    if (iconSetter != null) iconSetter.SetIcon(uiElementType);
                     break;
             }
 
