@@ -137,4 +137,6 @@ public class SettingEditor : MonoBehaviour
         _topBarStyleText.text = "Tyyli: " + carrier.TopBarStyleSetting;
 
     }
+
+    public void PlayMainMenuMusic() { AudioManager.Instance.PlayMusic("MainMenu"); }
 }

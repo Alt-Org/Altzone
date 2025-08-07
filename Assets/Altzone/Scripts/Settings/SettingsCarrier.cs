@@ -441,4 +441,9 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
                 return false;
         }
     }
+
+    public string GetMainMenuMusicName()
+    {
+        return PlayerPrefs.GetString("MainMenuMusic");
+    }
 }
