@@ -48,15 +48,6 @@ namespace MenuUi.Scripts.MainMenu
             _layoutElementsGameObjects = GameObject.FindGameObjectsWithTag("MainMenuWindow");
             _scrollRectCanvas = GameObject.FindGameObjectWithTag("ScrollRectCanvas").GetComponent<RectTransform>();
             SetMainMenuLayoutDimensions();
-            SetAudioVolumeLevels();
-            //AudioManager.Instance?.PlayMusic("MainMenu");
-        }
-
-        /// <summary>
-        /// Sets the audio levels of main menu audio sources according to the values in PlayerPrefs
-        /// </summary>
-        public void SetAudioVolumeLevels()
-        {
             AudioManager.Instance.UpdateMaxVolume();
         }
 
