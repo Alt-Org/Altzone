@@ -211,7 +211,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 _currentlySelectedEditingComponent.UpdateTransparency((int)_uiTransparencySlider.value);
             });
 
-            // Options dropdown listeners
+            // Options popup listeners
             _optionsButton.onClick.AddListener(_optionsPopup.ToggleOptionsPopup);
         }
 
