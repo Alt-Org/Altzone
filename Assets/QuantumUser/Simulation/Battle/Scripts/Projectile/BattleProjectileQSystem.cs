@@ -47,10 +47,10 @@ namespace Battle.QSimulation.Projectile
 
                 // set the speed potential and a timer for speeding up the ball
                 projectile->SpeedPotential = projectile->Speed;
-                projectile->AccelerationTimer = 10;
+                projectile->AccelerationTimer = spec.AccelerationTimer;
 
                 // pick random EmotionState for projectile
-                projectile->Emotion = (BattleEmotionState)f.RNG->NextInclusive((int)BattleEmotionState.Sadness,(int)BattleEmotionState.Aggression);
+                projectile->Emotion = BattleParameters.GetProjectileInitialEmotion(f);
                 f.Events.BattleChangeEmotionState(projectile->Emotion);
 
                 // reset CollisionFlags for this frame
@@ -71,8 +71,8 @@ namespace Battle.QSimulation.Projectile
             // every 10 seconds increase the speed potential by a set amount
             if (gameTimeSec >= projectile->AccelerationTimer)
             {
-                projectile->SpeedPotential += 1;
-                projectile->AccelerationTimer += 10;
+                projectile->SpeedPotential += BattleQConfig.GetProjectileSpec(f).SpeedIncrement;
+                projectile->AccelerationTimer += BattleQConfig.GetProjectileSpec(f).AccelerationTimer;
             }
 
             // move the projectile
@@ -84,11 +84,11 @@ namespace Battle.QSimulation.Projectile
 
         public void BattleOnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)
         {
-            ProjectileVelocityUpdate(f, projectile, projectileEntity, soulWallEntity, soulWall->Normal, soulWall->CollisionMinOffset);
-
             // change projectile's emotion to soulwall's emotion
             projectile->Emotion = soulWall->Emotion;
             f.Events.BattleChangeEmotionState(projectile->Emotion);
+
+            ProjectileVelocityUpdate(f, projectile, projectileEntity, soulWallEntity, soulWall->Normal, soulWall->CollisionMinOffset);
         }
 
         public void BattleOnProjectileHitArenaBorder(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity)
@@ -103,12 +103,15 @@ namespace Battle.QSimulation.Projectile
 
             BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
 
+            // get attack damage from player stats
+            projectile->Attack = playerData->Stats.Attack;
+
             bool isOnTopOfTeammate = false;
 
             BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot);
 
             if (teammateHandle.PlayState == BattlePlayerPlayState.InPlay)
-            {          
+            {
                 EntityRef teammateEntity = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot).SelectedCharacter;
 
                 Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(playerHitbox->PlayerEntity);
@@ -118,7 +121,7 @@ namespace Battle.QSimulation.Projectile
                 BattleGridPosition teammateGridPosition = BattleGridManager.WorldPositionToGridPosition(teammateTransform->Position);
 
                 isOnTopOfTeammate = playerGridPosition.Row == teammateGridPosition.Row && playerGridPosition.Col == teammateGridPosition.Col;
- 
+
             }
 
             // if player is in the same grid cell as teammate, change the projectile to love emotion
@@ -169,8 +172,10 @@ namespace Battle.QSimulation.Projectile
             if      (collisionType == BattlePlayerCollisionType.Reflect)  projectile->Direction = FPVector2.Reflect(projectile->Direction, normal);
             else if (collisionType == BattlePlayerCollisionType.Override) projectile->Direction = normal;
 
-            // update the projectile's speed based on speed potential
-            projectile->Speed = projectile->SpeedPotential;
+            BattleProjectileQSpec spec = BattleQConfig.GetProjectileSpec(f);
+
+            // update the projectile's speed based on speed potential and multiply by emotion
+            projectile->Speed = projectile->SpeedPotential * spec.SpeedMultiplierArray[(int)projectile->Emotion];
 
             // if projectile accidentally went inside another entity, lift it out
             if (collisionOffset - projectile->Radius < collisionMinOffset)
