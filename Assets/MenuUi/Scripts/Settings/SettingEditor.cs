@@ -6,6 +6,7 @@ using Altzone.Scripts.Window;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts.Audio;
 
 public class SettingEditor : MonoBehaviour
 {
@@ -72,7 +73,7 @@ public class SettingEditor : MonoBehaviour
                 break;
         }
 
-        mainMenuController.SetAudioVolumeLevels();
+        AudioManager.Instance.UpdateMaxVolume();
     }
 
     public void SetToSlider(Slider usedSlider)
