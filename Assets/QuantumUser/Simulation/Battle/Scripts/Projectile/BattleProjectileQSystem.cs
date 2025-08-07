@@ -38,20 +38,25 @@ namespace Battle.QSimulation.Projectile
 
             if (!projectile->IsLaunched)
             {
-                // retrieve the projectile speed from the spec
+                // retrieve the projectiles spec
                 BattleProjectileQSpec spec = BattleQConfig.GetProjectileSpec(f);
 
-                // set the projectile speed and direction
+                // copy data from the spec
                 projectile->Speed = spec.ProjectileInitialSpeed;
-                projectile->Direction = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
-
-                // set the speed potential and a timer for speeding up the ball
                 projectile->SpeedPotential = projectile->Speed;
-                projectile->AccelerationTimer = spec.AccelerationTimer;
+                projectile->SpeedIncrement = spec.SpeedIncrement;
+                projectile->Direction = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
+                projectile->AccelerationTimerDuration = spec.AccelerationTimerDuration;
+                projectile->AccelerationTimer = projectile->AccelerationTimerDuration;
+                projectile->AttackMax = spec.AttackMax;
+                for (int i = 0; i < spec.SpeedMultiplierArray.Length; i++)
+                {
+                    projectile->SpeedMultiplierArray[i] = spec.SpeedMultiplierArray[i];
+                }
 
-                // pick random EmotionState for projectile
-                projectile->Emotion = BattleParameters.GetProjectileInitialEmotion(f);
-                f.Events.BattleChangeEmotionState(projectile->Emotion);
+                // set emotion and attack
+                SetEmotion(f, projectile, BattleParameters.GetProjectileInitialEmotion(f));
+                SetAttack(f, projectile, 0);
 
                 // reset CollisionFlags for this frame
                 projectile->CollisionFlags[(f.Number) % 2] = 0;
@@ -71,8 +76,8 @@ namespace Battle.QSimulation.Projectile
             // every 10 seconds increase the speed potential by a set amount
             if (gameTimeSec >= projectile->AccelerationTimer)
             {
-                projectile->SpeedPotential += BattleQConfig.GetProjectileSpec(f).SpeedIncrement;
-                projectile->AccelerationTimer += BattleQConfig.GetProjectileSpec(f).AccelerationTimer;
+                projectile->SpeedPotential += projectile->SpeedIncrement;
+                projectile->AccelerationTimer += projectile->AccelerationTimerDuration;
             }
 
             // move the projectile
@@ -85,8 +90,7 @@ namespace Battle.QSimulation.Projectile
         public void BattleOnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)
         {
             // change projectile's emotion to soulwall's emotion
-            projectile->Emotion = soulWall->Emotion;
-            f.Events.BattleChangeEmotionState(projectile->Emotion);
+            SetEmotion(f, projectile, soulWall->Emotion);
 
             ProjectileVelocityUpdate(f, projectile, projectileEntity, soulWallEntity, soulWall->Normal, soulWall->CollisionMinOffset);
         }
@@ -104,8 +108,7 @@ namespace Battle.QSimulation.Projectile
             BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
 
             // get attack damage from player stats
-            projectile->Attack = playerData->Stats.Attack;
-
+            SetAttack(f, projectile, playerData->Stats.Attack);
             bool isOnTopOfTeammate = false;
 
             BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot);
@@ -128,8 +131,7 @@ namespace Battle.QSimulation.Projectile
             if (isOnTopOfTeammate)
             {
                 Debug.Log("[ProjectileSystem] changing projectile emotion to Love");
-                projectile->Emotion = BattleEmotionState.Love;
-                f.Events.BattleChangeEmotionState(BattleEmotionState.Love);
+                SetEmotion(f, projectile, BattleEmotionState.Love);
 
                 // send a projectileVelocityUpdate with the direction being straight up or down depending on the team
                 ProjectileVelocityUpdate(f, projectile, projectileEntity, playerHitboxEntity, playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? FPVector2.Up : FPVector2.Down, playerHitbox->CollisionMinOffset, BattlePlayerCollisionType.Override);
@@ -172,10 +174,8 @@ namespace Battle.QSimulation.Projectile
             if      (collisionType == BattlePlayerCollisionType.Reflect)  projectile->Direction = FPVector2.Reflect(projectile->Direction, normal);
             else if (collisionType == BattlePlayerCollisionType.Override) projectile->Direction = normal;
 
-            BattleProjectileQSpec spec = BattleQConfig.GetProjectileSpec(f);
-
             // update the projectile's speed based on speed potential and multiply by emotion
-            projectile->Speed = projectile->SpeedPotential * spec.SpeedMultiplierArray[(int)projectile->Emotion];
+            projectile->Speed = projectile->SpeedPotential * projectile->SpeedMultiplierArray[(int)projectile->Emotion];
 
             // if projectile accidentally went inside another entity, lift it out
             if (collisionOffset - projectile->Radius < collisionMinOffset)
@@ -184,6 +184,18 @@ namespace Battle.QSimulation.Projectile
             }
 
             SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Projectile);
+        }
+
+        private void SetEmotion(Frame f, BattleProjectileQComponent* projectile, BattleEmotionState emotion)
+        {
+            projectile->Emotion = emotion;
+            f.Events.BattleChangeEmotionState(projectile->Emotion);
+        }
+
+        private void SetAttack(Frame f, BattleProjectileQComponent* projectile, FP attack)
+        {
+            projectile->Attack = attack;
+            f.Events.BattleProjectileChangeGlowStrength(projectile->Attack / projectile->AttackMax);
         }
     }
 }
