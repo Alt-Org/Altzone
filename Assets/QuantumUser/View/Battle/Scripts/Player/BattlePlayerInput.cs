@@ -109,20 +109,28 @@ namespace Battle.View.Player
 
         /// <value>Saved time from previous frame.</value>
         private float _previousTime;
+
         /// <value>Bool for if a press input was received in the previous frame.</value>
         private bool _mouseDownPrevious;
+
         /// <value>Bool for if swipe movement has started and not stopped.</value>
         private bool _swipeMovementStarted = false;
+
         /// <value>Initial saved vector when rotation input is first detected.</value>
         private Vector2 _rotationStartVector;
+
         /// <value>Initial saved vector when movement input is first detected.</value>
         private Vector3 _movementStartVector;
+
         /// <value>The vector received from the movement joystick.</value>
         private Vector2 _joystickMovementVector;
+
         /// <value>The float value received from the rotation joystick.</value>
         private float _joystickRotationValue;
+
         /// <value>Saved character number from character swapping input.</value>
         private int _characterNumber = -1;
+
         /// <value>Bool for if a character swap input was performed.</value>
         private bool _characterSelectionInput = false;
 
@@ -134,15 +142,19 @@ namespace Battle.View.Player
 
         /// <value>Saved info of the selected movement input type.</value>
         private MovementInputType _movementInputType;
+
         /// <value>Saved info of the selected rotation input type.</value>
         private RotationInputType _rotationInputType;
 
         /// <value>The minimum distance for activating swipe rotation.</value>
         private float _swipeMinDistance = 0.1f;
+
         /// <value>The swipe distance at which rotation reaches its maximum value.</value>
         private float _swipeMaxDistance = 1.0f;
+
         /// <value>The sensitivity for swipe movement.</value>
         private float _swipeSensitivity = 1.0f;
+
         /// <value>The minimum tilt angle for activating gyroscope rotation.</value>
         private float _gyroMinAngle = 10f;
 
@@ -158,7 +170,9 @@ namespace Battle.View.Player
         /// @}
 
         /// <summary>
-        /// Subscribes to QuantumCallBack when this script is enabled.
+        /// Saves data from SettingsCarrier to private variables. <br/>
+        /// Saves a reference to the play device's gyroscope if there is one. <br/>
+        /// Subscribes to QuantumCallBack.
         /// </summary>
         private void OnEnable()
         {
