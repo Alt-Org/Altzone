@@ -68,20 +68,13 @@ namespace MenuUI.Scripts.SoulHome
             EditModeTrayResize();
             _audioManager = AudioManager.Instance;
             _editButton.onClick.AddListener(()=>EditModeToggle());
-            _openJukeBox.onClick.AddListener(()=>_jukeBoxPopup.ToggleJukeboxScreen(true));
+            _openJukeBox.onClick.AddListener(()=> _jukeBoxPopup.ToggleJukeboxScreen(true));
         }
 
         public void OnEnable()
         {
-            //if (_infoPopup != null && _infoPopup.gameObject.activeSelf == true) _infoPopup.gameObject.SetActive(false);
-            //GameObject[] root = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
-            //foreach (GameObject rootObject in root)
-            //{
-            //    if (rootObject.name == "AudioManager")
-            //        rootObject.GetComponent<MainMenuAudioManager>()?.StopMusic();
-            //}
-            if (JukeBoxSoulhomeHandler.Instance.CurrentMusicTrack != null)
-                JukeBoxSoulhomeHandler.Instance.PlayTrack();
+            if (JukeboxManager.Instance.CurrentMusicTrack != null)
+                _jukeBoxPopup.PlayTrack();
             else
                 _musicName.text = AudioManager.Instance?.PlayMusic("Soulhome", "");
 
@@ -92,14 +85,6 @@ namespace MenuUI.Scripts.SoulHome
 
         public void OnDisable()
         {
-            //GameObject[] root = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
-            //foreach (GameObject rootObject in root)
-            //{
-            //    if (rootObject.name == "AudioManager")
-            //        rootObject.GetComponent<MainMenuAudioManager>()?.PlayMusic();
-            //}
-            //AudioManager.Instance?.StopMusic();
-            _jukeBoxPopup.StopJukebox();
             _jukeBoxPopup.ToggleJukeboxScreen(false);
             JukeBoxSoulhomeHandler.OnChangeJukeBoxSong -= SetSongName;
         }

@@ -2,6 +2,9 @@ using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Handles the visual queue item.
+/// </summary>
 public class JukeboxTrackQueueHandler : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _trackNameText;
