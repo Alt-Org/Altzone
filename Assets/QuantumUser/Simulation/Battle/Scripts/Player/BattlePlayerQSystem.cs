@@ -26,7 +26,7 @@ namespace Battle.QSimulation.Player
 
             BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
             FP damageTaken = projectile->Attack;
-            
+
             int characterNumber = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber;
 
             FP newHp = damagedPlayerData->CurrentHp - damageTaken;
