@@ -55,6 +55,11 @@ synced event BattleChangeEmotionState
     BattleEmotionState Emotion;
 }
 
+synced event BattleProjectileChangeGlowStrength
+{
+    FP Strength;
+}
+
 event BattlePlaySoundFX
 {
     BattleSoundFX Effect;
