@@ -1,8 +1,7 @@
-using Battle.QSimulation.Game;
-using Battle.View.Game;
-using Prg.Scripts.Common.PubSub;
-using Quantum;
 using UnityEngine;
+using Quantum;
+
+using Battle.View.Game;
 
 namespace Battle.View.Projectile
 {
