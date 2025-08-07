@@ -66,6 +66,14 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         Battle
     }
 
+    public enum SettingsType
+    {
+        None,
+        JukeboxSoulhomeToggle,
+        JukeboxUIToggle,
+        JukeboxBattleToggle
+    }
+
     // Events
     public event Action OnTextSizeChange;
     public event Action OnButtonLabelVisibilityChange;
@@ -107,6 +115,10 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public float menuVolume;
     public float musicVolume;
     public float soundVolume;
+
+    public bool jukeboxSoulhome;
+    public bool jukeboxUI;
+    public bool jukeboxBattle;
 
     public int TextSizeSmall = 22;
     public int TextSizeMedium = 26;
@@ -302,6 +314,10 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1);
         soundVolume = PlayerPrefs.GetFloat("SoundVolume", 1);
 
+        jukeboxSoulhome = PlayerPrefs.GetInt("JukeboxSoulHome") != 0;
+        jukeboxUI = PlayerPrefs.GetInt("JukeboxUI") != 0;
+        jukeboxBattle = PlayerPrefs.GetInt("JukeboxBattle") != 0;
+
         _battleShowDebugStatsOverlay = PlayerPrefs.GetInt(BattleShowDebugStatsOverlayKey, 1) == 1;
 
         _battleArenaScale = PlayerPrefs.GetInt(BattleArenaScaleKey, BattleArenaScaleDefault);
@@ -342,6 +358,48 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         OnTextSizeChange?.Invoke();
     }
 
+    public bool SetBoolValue(SettingsType type, bool? value = null)
+    {
+        switch (type)
+        {
+            case SettingsType.None:
+                return false;
+            case SettingsType.JukeboxSoulhomeToggle:
+                jukeboxSoulhome = value ?? !jukeboxSoulhome;
+                PlayerPrefs.SetInt("JukeboxSoulHome", jukeboxSoulhome ? 1 : 0);
+                return true;
+            case SettingsType.JukeboxUIToggle:
+                jukeboxUI = value ?? !jukeboxUI;
+                PlayerPrefs.SetInt("JukeboxUI", jukeboxUI ? 1 : 0);
+                return true;
+            case SettingsType.JukeboxBattleToggle:
+                jukeboxBattle = value ?? !jukeboxBattle;
+                PlayerPrefs.SetInt("JukeboxBattle", jukeboxBattle ? 1 : 0);
+                return true;
+            default:
+                Debug.LogError($"Cannot find type: {type}. Somebody probably forgot to add it.");
+                return false;
+        }
+    }
+
+    public bool? GetBoolValue(SettingsType type)
+    {
+        switch (type)
+        {
+            case SettingsType.None:
+                return null;
+            case SettingsType.JukeboxSoulhomeToggle:
+                return jukeboxSoulhome;
+            case SettingsType.JukeboxUIToggle:
+                return jukeboxUI;
+            case SettingsType.JukeboxBattleToggle:
+                return jukeboxBattle;
+            default:
+                Debug.LogError($"Cannot find type: {type}. Somebody probably forgot to add it.");
+                return null;
+        }
+    }
+
     public BattleUiMovableElementData GetBattleUiMovableElementData(BattleUiElementType type)
     {
         if (type == BattleUiElementType.None) return null;
@@ -365,30 +423,22 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
     public bool CanPlayJukeboxInArea(JukeboxPlayArea playArea)
     {
-        int prefsValue = -1;
-
         switch (playArea)
         {
             case JukeboxPlayArea.MainMenu:
                 {
-                    prefsValue = PlayerPrefs.GetInt("JukeboxUI");
-
-                    return (prefsValue == 1);
+                    return jukeboxUI;
                 }
             case JukeboxPlayArea.Soulhome:
                 {
-                    prefsValue = PlayerPrefs.GetInt("JukeboxSoulHome");
-
-                    return (prefsValue == 1);
+                    return jukeboxSoulhome;
                 }
             case JukeboxPlayArea.Battle:
                 {
-                    prefsValue = PlayerPrefs.GetInt("JukeboxBattle");
-
-                    return (prefsValue == 1);
+                    return jukeboxBattle;
                 }
+            default:
+                return false;
         }
-
-        return false;
     }
 }
