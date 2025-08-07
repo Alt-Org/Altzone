@@ -103,23 +103,30 @@ namespace Battle.View.Player
             }
         }
 
+        /// @name State variables
+        /// Variables related to current input states.
+        /// @{
+
         /// <value>Saved time from previous frame.</value>
         private float _previousTime;
-        /// <value>Previous click by a player.</value>
+        /// <value>Bool for if a press input was received in the previous frame.</value>
         private bool _mouseDownPrevious;
+        /// <value>Bool for if swipe movement has started and not stopped.</value>
+        private bool _swipeMovementStarted = false;
         /// <value>Initial saved vector when rotation input is first detected.</value>
         private Vector2 _rotationStartVector;
         /// <value>Initial saved vector when movement input is first detected.</value>
         private Vector3 _movementStartVector;
         /// <value>The vector received from the movement joystick.</value>
         private Vector2 _joystickMovementVector;
-        /// <value>The vector received from the rotation joystick.</value>
+        /// <value>The float value received from the rotation joystick.</value>
         private float _joystickRotationValue;
         /// <value>Saved character number from character swapping input.</value>
         private int _characterNumber = -1;
-
-        /// <value>Boolean for if a character swap input was performed.</value>
+        /// <value>Bool for if a character swap input was performed.</value>
         private bool _characterSelectionInput = false;
+
+        /// @}
 
         /// @name Setting variables
         /// Data from SettingsCarrier is saved to these variables.
@@ -141,11 +148,14 @@ namespace Battle.View.Player
 
         /// @}
 
+        /// @name References
+        /// Saved references.
+        /// @{
+
         /// <value>Reference to the play device's attitude sensor aka gyroscope.</value>
         private AttitudeSensor _attitudeSensor;
 
-        /// <value>Boolean for if swipe movement has started and not stopped.</value>
-        private bool _swipeMovementStarted = false;
+        /// @}
 
         /// <summary>
         /// Subscribes to QuantumCallBack when this script is enabled.
@@ -221,7 +231,7 @@ namespace Battle.View.Player
         }
 
         /// @name Input reading methods
-        /// Methods for reading player input data.
+        /// Helper methods for reading player input data.
         /// @{
 
         /// <summary>
