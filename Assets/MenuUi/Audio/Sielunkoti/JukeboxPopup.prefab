@@ -822,15 +822,19 @@ MonoBehaviour:
   _diskImage: {fileID: 4018264411508806859}
   _diskTransform: {fileID: 260013633593550340}
   _diskRotationSpeed: 100
+  _emptyDisk: {fileID: 21300000, guid: 37ef35f7c464cfe44b62522404887fe2, type: 3}
   _jukeboxObject: {fileID: 8593317523588494251}
   _backButton: {fileID: 3385622372589893288}
   _songName: {fileID: 5921528984723798442}
-  _songListContent: {fileID: 2711868873908538806}
+  _loopLastTrack: 0
+  _trackListContent: {fileID: 2711868873908538806}
   _jukeboxButtonPrefab: {fileID: 7205037451692343932, guid: 3312d1c148605004ead11d34daedce26,
     type: 3}
   _queueContent: {fileID: 6854945740586590265}
   _queueTextPrefab: {fileID: 8968269194942016460, guid: 3ec8882e3707fbb46a78d846d81ee4b9,
     type: 3}
+  _trackChunkSize: 8
+  _queueOptimizationThreshold: 4
 --- !u!1 &7842054957016019911
 GameObject:
   m_ObjectHideFlags: 0

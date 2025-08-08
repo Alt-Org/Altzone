@@ -54,7 +54,8 @@ namespace Quantum {
     ArenaBorder = 0,
     SoulWall = 1,
     Player = 2,
-    Goal = 3,
+    Shield = 3,
+    Goal = 4,
   }
   public enum BattleEmotionState : int {
     Sadness = 0,
@@ -956,7 +957,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattlePlayerDataQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 120;
+    public const Int32 SIZE = 136;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(24)]
     public PlayerRef PlayerRef;
@@ -968,7 +969,7 @@ namespace Quantum {
     public Int32 CharacterId;
     [FieldOffset(8)]
     public Int32 CharacterClass;
-    [FieldOffset(80)]
+    [FieldOffset(96)]
     public BattlePlayerStats Stats;
     [FieldOffset(20)]
     public Int32 GridExtendTop;
@@ -976,16 +977,20 @@ namespace Quantum {
     public Int32 GridExtendBottom;
     [FieldOffset(28)]
     public QBoolean HasTargetPosition;
-    [FieldOffset(64)]
+    [FieldOffset(80)]
     public FPVector2 TargetPosition;
-    [FieldOffset(48)]
-    public FP RotationBase;
     [FieldOffset(56)]
+    public FP RotationBase;
+    [FieldOffset(64)]
     public FP RotationOffset;
+    [FieldOffset(48)]
+    public FP CurrentHp;
     [FieldOffset(40)]
     public EntityRef HitboxShieldEntity;
     [FieldOffset(32)]
     public EntityRef HitboxCharacterEntity;
+    [FieldOffset(72)]
+    public FrameTimer DamageCooldown;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 6911;
@@ -1001,8 +1006,10 @@ namespace Quantum {
         hash = hash * 31 + TargetPosition.GetHashCode();
         hash = hash * 31 + RotationBase.GetHashCode();
         hash = hash * 31 + RotationOffset.GetHashCode();
+        hash = hash * 31 + CurrentHp.GetHashCode();
         hash = hash * 31 + HitboxShieldEntity.GetHashCode();
         hash = hash * 31 + HitboxCharacterEntity.GetHashCode();
+        hash = hash * 31 + DamageCooldown.GetHashCode();
         return hash;
       }
     }
@@ -1018,8 +1025,10 @@ namespace Quantum {
         QBoolean.Serialize(&p->HasTargetPosition, serializer);
         EntityRef.Serialize(&p->HitboxCharacterEntity, serializer);
         EntityRef.Serialize(&p->HitboxShieldEntity, serializer);
+        FP.Serialize(&p->CurrentHp, serializer);
         FP.Serialize(&p->RotationBase, serializer);
         FP.Serialize(&p->RotationOffset, serializer);
+        FrameTimer.Serialize(&p->DamageCooldown, serializer);
         FPVector2.Serialize(&p->TargetPosition, serializer);
         Quantum.BattlePlayerStats.Serialize(&p->Stats, serializer);
     }
@@ -1160,27 +1169,43 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattleProjectileQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 64;
+    public const Int32 SIZE = 136;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(8)]
     public QBoolean IsLaunched;
     [FieldOffset(12)]
     public QBoolean IsMoving;
-    [FieldOffset(32)]
+    [FieldOffset(56)]
     public FP Speed;
-    [FieldOffset(40)]
+    [FieldOffset(72)]
+    [FramePrinter.FixedArrayAttribute(typeof(FP), 5)]
+    private fixed Byte _SpeedMultiplierArray_[40];
+    [FieldOffset(112)]
     public FP SpeedPotential;
+    [FieldOffset(64)]
+    public FP SpeedIncrement;
     [FieldOffset(16)]
     public FP AccelerationTimer;
-    [FieldOffset(48)]
-    public FPVector2 Direction;
     [FieldOffset(24)]
+    public FP AccelerationTimerDuration;
+    [FieldOffset(120)]
+    public FPVector2 Direction;
+    [FieldOffset(48)]
     public FP Radius;
     [FieldOffset(4)]
     public BattleEmotionState Emotion;
+    [FieldOffset(32)]
+    public FP Attack;
+    [FieldOffset(40)]
+    public FP AttackMax;
     [FieldOffset(0)]
     [FramePrinter.FixedArrayAttribute(typeof(BattleProjectileCollisionFlags), 2)]
     private fixed Byte _CollisionFlags_[2];
+    public FixedArray<FP> SpeedMultiplierArray {
+      get {
+        fixed (byte* p = _SpeedMultiplierArray_) { return new FixedArray<FP>(p, 8, 5); }
+      }
+    }
     public FixedArray<BattleProjectileCollisionFlags> CollisionFlags {
       get {
         fixed (byte* p = _CollisionFlags_) { return new FixedArray<BattleProjectileCollisionFlags>(p, 1, 2); }
@@ -1192,11 +1217,16 @@ namespace Quantum {
         hash = hash * 31 + IsLaunched.GetHashCode();
         hash = hash * 31 + IsMoving.GetHashCode();
         hash = hash * 31 + Speed.GetHashCode();
+        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(SpeedMultiplierArray);
         hash = hash * 31 + SpeedPotential.GetHashCode();
+        hash = hash * 31 + SpeedIncrement.GetHashCode();
         hash = hash * 31 + AccelerationTimer.GetHashCode();
+        hash = hash * 31 + AccelerationTimerDuration.GetHashCode();
         hash = hash * 31 + Direction.GetHashCode();
         hash = hash * 31 + Radius.GetHashCode();
         hash = hash * 31 + (Int32)Emotion;
+        hash = hash * 31 + Attack.GetHashCode();
+        hash = hash * 31 + AttackMax.GetHashCode();
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(CollisionFlags);
         return hash;
       }
@@ -1208,8 +1238,13 @@ namespace Quantum {
         QBoolean.Serialize(&p->IsLaunched, serializer);
         QBoolean.Serialize(&p->IsMoving, serializer);
         FP.Serialize(&p->AccelerationTimer, serializer);
+        FP.Serialize(&p->AccelerationTimerDuration, serializer);
+        FP.Serialize(&p->Attack, serializer);
+        FP.Serialize(&p->AttackMax, serializer);
         FP.Serialize(&p->Radius, serializer);
         FP.Serialize(&p->Speed, serializer);
+        FP.Serialize(&p->SpeedIncrement, serializer);
+        FixedArray.Serialize(p->SpeedMultiplierArray, serializer, Statics.SerializeFP);
         FP.Serialize(&p->SpeedPotential, serializer);
         FPVector2.Serialize(&p->Direction, serializer);
     }
@@ -1279,6 +1314,9 @@ namespace Quantum {
   public unsafe partial interface ISignalBattleOnProjectileHitPlayerHitbox : ISignal {
     void BattleOnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity);
   }
+  public unsafe partial interface ISignalBattleOnProjectileHitPlayerShield : ISignal {
+    void BattleOnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity);
+  }
   public unsafe partial interface ISignalBattleOnProjectileHitGoal : ISignal {
     void BattleOnProjectileHitGoal(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleGoalQComponent* goal, EntityRef goalEntity);
   }
@@ -1292,11 +1330,13 @@ namespace Quantum {
     public const Int32 BATTLE_PLAYER_SLOT_COUNT = 4;
     public const Int32 BATTLE_PLAYER_CHARACTER_COUNT = 3;
     public const Int32 BATTLE_PLAYER_CHARACTER_TOTAL_COUNT = 12;
+    public const Int32 BATTLE_EMOTION_STATE_COUNT = 5;
   }
   public unsafe partial class Frame {
     private ISignalBattleOnProjectileHitSoulWall[] _ISignalBattleOnProjectileHitSoulWallSystems;
     private ISignalBattleOnProjectileHitArenaBorder[] _ISignalBattleOnProjectileHitArenaBorderSystems;
     private ISignalBattleOnProjectileHitPlayerHitbox[] _ISignalBattleOnProjectileHitPlayerHitboxSystems;
+    private ISignalBattleOnProjectileHitPlayerShield[] _ISignalBattleOnProjectileHitPlayerShieldSystems;
     private ISignalBattleOnProjectileHitGoal[] _ISignalBattleOnProjectileHitGoalSystems;
     private ISignalBattleOnDiamondHitPlayer[] _ISignalBattleOnDiamondHitPlayerSystems;
     private ISignalBattleOnGameOver[] _ISignalBattleOnGameOverSystems;
@@ -1314,6 +1354,7 @@ namespace Quantum {
       _ISignalBattleOnProjectileHitSoulWallSystems = BuildSignalsArray<ISignalBattleOnProjectileHitSoulWall>();
       _ISignalBattleOnProjectileHitArenaBorderSystems = BuildSignalsArray<ISignalBattleOnProjectileHitArenaBorder>();
       _ISignalBattleOnProjectileHitPlayerHitboxSystems = BuildSignalsArray<ISignalBattleOnProjectileHitPlayerHitbox>();
+      _ISignalBattleOnProjectileHitPlayerShieldSystems = BuildSignalsArray<ISignalBattleOnProjectileHitPlayerShield>();
       _ISignalBattleOnProjectileHitGoalSystems = BuildSignalsArray<ISignalBattleOnProjectileHitGoal>();
       _ISignalBattleOnDiamondHitPlayerSystems = BuildSignalsArray<ISignalBattleOnDiamondHitPlayer>();
       _ISignalBattleOnGameOverSystems = BuildSignalsArray<ISignalBattleOnGameOver>();
@@ -1436,6 +1477,15 @@ namespace Quantum {
           }
         }
       }
+      public void BattleOnProjectileHitPlayerShield(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity) {
+        var array = _f._ISignalBattleOnProjectileHitPlayerShieldSystems;
+        for (Int32 i = 0; i < array.Length; ++i) {
+          var s = array[i];
+          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
+            s.BattleOnProjectileHitPlayerShield(_f, projectile, projectileEntity, playerHitbox, playerHitboxEntity);
+          }
+        }
+      }
       public void BattleOnProjectileHitGoal(BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleGoalQComponent* goal, EntityRef goalEntity) {
         var array = _f._ISignalBattleOnProjectileHitGoalSystems;
         for (Int32 i = 0; i < array.Length; ++i) {
@@ -1471,6 +1521,7 @@ namespace Quantum {
     public static FrameSerializer.Delegate SerializeBattlePlayerPlayState;
     public static FrameSerializer.Delegate SerializePlayerRef;
     public static FrameSerializer.Delegate SerializeBattleProjectileCollisionFlags;
+    public static FrameSerializer.Delegate SerializeFP;
     public static FrameSerializer.Delegate SerializeInput;
     static partial void InitStaticDelegatesGen() {
       SerializeBattlePlayerHitboxColliderTemplate = Quantum.BattlePlayerHitboxColliderTemplate.Serialize;
@@ -1478,6 +1529,7 @@ namespace Quantum {
       SerializeBattlePlayerPlayState = (v, s) => {{ s.Stream.Serialize((Int32*)v); }};
       SerializePlayerRef = PlayerRef.Serialize;
       SerializeBattleProjectileCollisionFlags = (v, s) => {{ s.Stream.Serialize((Byte*)v); }};
+      SerializeFP = FP.Serialize;
       SerializeInput = Quantum.Input.Serialize;
     }
     static partial void RegisterSimulationTypesGen(TypeRegistry typeRegistry) {

@@ -18,8 +18,12 @@ component BattlePlayerDataQComponent
     FP RotationBase;
     FP RotationOffset;
 
+    FP CurrentHp;
+
     EntityRef HitboxShieldEntity;
     EntityRef HitboxCharacterEntity;
+
+    FrameTimer DamageCooldown;
 }
 
 //} PlayerData
