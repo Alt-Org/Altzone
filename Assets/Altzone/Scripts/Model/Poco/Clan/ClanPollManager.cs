@@ -43,6 +43,8 @@ public static class ClanPollManager
     // Called when a poll ends (WIP)
     public static void EndPoll(string pollId)
     {
+        Debug.Log("Claanin endpoll aktivoitu");
+
         var store = Storefront.Get();
         PlayerData player = null;
         ClanData clan = null;
@@ -93,6 +95,8 @@ public static class ClanPollManager
         {
             Debug.Log("Poll ended and clan data saved.");
         });
+
+        Debug.Log("Claanin endpoll loppui");
     }
 
 }

@@ -172,6 +172,8 @@ public static class PollManager // Handles the polls from creation to loading to
     // Ends the poll and determines if it passed, and updates clan inventory accordingly (WIP)
     public static void EndPoll(string pollId)
     {
+        Debug.Log("EndPoll Pollmanagerissa");
+
         LoadClanData();
 
         PollData pollData = GetPollData(pollId);
@@ -181,10 +183,21 @@ public static class PollManager // Handles the polls from creation to loading to
             return;
         }
 
+        // Check if pollData is a clan role promotion poll 
+        if (pollData is RolePollData || pollData is ClanRolePollData)
+        {
+            // Delegate to ClanPollManager's EndPoll instead (this should we reworked later)
+            ClanPollManager.EndPoll(pollId);
+            return; 
+        }
+
+        // Continue with the poll normally if it was not a role promotion poll
         int yesCount = pollData.YesVotes.Count;
         int noCount = pollData.NoVotes.Count;
 
         bool votePassed = yesCount > noCount;
+
+        Debug.Log("EndPoll jatkui managerissa");
 
         FurniturePollData furniturePollData = null;
         if (pollData is FurniturePollData fpd)
@@ -204,7 +217,6 @@ public static class PollManager // Handles the polls from creation to loading to
                 var clanFurniture = clan.Inventory.Furniture[idx];
 
                 Debug.Log($"Before update - Furniture: {clanFurniture.GameFurnitureName}, VotedToSell={clanFurniture.VotedToSell}, InVoting={clanFurniture.InVoting}");
-
 
                 if (votePassed)
                 {
