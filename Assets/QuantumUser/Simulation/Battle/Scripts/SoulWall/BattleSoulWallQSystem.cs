@@ -87,7 +87,7 @@ namespace Battle.QSimulation.SoulWall
         }
 
         /// <summary>
-        /// Private helper method (for the public <see cref="CreateSoulWalls(Frame, BattleArenaQSpec BattleSoulWallQSpec)">CreateSoulWalls</see>) that creates soulwalls on one side of the arena.
+        /// Private helper method (for the public <see cref="CreateSoulWalls(Frame, BattleArenaQSpec, BattleSoulWallQSpec)">CreateSoulWalls</see>) that creates soulwalls on one side of the arena.
         /// </summary>
         /// <param name="f">Current simulation frame.</param>
         /// <param name="teamNumber">The teamNumber of the team whose side is being created.</param>
