@@ -22,14 +22,29 @@ namespace Battle.QSimulation.Projectile
     public class BattleProjectileQSpec: AssetObject
     {
         [Header("Projectile configuration")]
+
         [Tooltip("Prototype reference to spawn projectile")]
         /// <value>EntityPrototype of the projectile.</value>
         public AssetRef<EntityPrototype> ProjectilePrototype;
+
         [Tooltip("Speed applied to the projectile when spawned")]
         /// <value>Speed applied to the projectile when it's spawned.</value>
         public FP ProjectileInitialSpeed;
+
+        [Tooltip("Speed multiplier of the projectile depends from BattleEmotionState")]
+        public FP[] SpeedMultiplierArray;
+
+        [Tooltip("Amount which speedpotential is increased")]
+        public FP SpeedIncrement;
+
+        [Tooltip("Timer for speeding up the ball")]
+        public FP AccelerationTimerDuration;
+
         [Tooltip("Amount of projectiles spawned in")]
         /// <value>Amount of projectiles spawned in.</value>
         public int InitialProjectilesCount;
+
+        [Tooltip("Projectile's maximum attack damage")]
+        public FP AttackMax;
     }
 }
