@@ -4,11 +4,12 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
 using Altzone.Scripts.Interface;
+using Altzone.Scripts.ReferenceSheets;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-public class SelectionBox : MonoBehaviour, ISelectionBoxFetchable
+public class SelectionBox : MonoBehaviour
 {
     [SerializeField] private Button _goLeftButton;
     [SerializeField] private Button _goRightButton;
@@ -35,9 +36,13 @@ public class SelectionBox : MonoBehaviour, ISelectionBoxFetchable
             return;
         }
 
-        ISelectionBoxFetchable selectionBoxFetchable = (ISelectionBoxFetchable)_fetchableValues;
+        if(_type is not SettingsCarrier.SelectionBoxType.None) _manualValues = EnumCategoryToStringList(_type);
 
-        if (selectionBoxFetchable != null) _manualValues = selectionBoxFetchable.GetStringList(EnumCategoryToString(_type));
+        if (_manualValues == null || _manualValues.Count <= 0)
+        {
+            Debug.LogError($"No SelectionBox values set for {gameObject.name}. ");
+            return;
+        }
 
         string savedName = SettingsCarrier.Instance.GetSelectionBoxData(_type);
 
@@ -53,12 +58,12 @@ public class SelectionBox : MonoBehaviour, ISelectionBoxFetchable
         _goRightButton.onClick.AddListener(() => GoToDirection(1));
     }
 
-    private string EnumCategoryToString(SettingsCarrier.SelectionBoxType type)
+    private List<string> EnumCategoryToStringList(SettingsCarrier.SelectionBoxType type)
     {
         switch (type)
         {
-            case SettingsCarrier.SelectionBoxType.None: return "None";
-            case SettingsCarrier.SelectionBoxType.MainMenuMusic: return "MainMenu";
+            case SettingsCarrier.SelectionBoxType.None: return null;
+            case SettingsCarrier.SelectionBoxType.MainMenuMusic: return MusicReference.Instance.GetStringList("MainMenu");
         }
 
         return null;
@@ -81,8 +86,6 @@ public class SelectionBox : MonoBehaviour, ISelectionBoxFetchable
     }
 
     private void SetText(string text) { _text.text = text; }
-
-    public List<string> GetStringList(string listName) => throw new System.NotImplementedException();
 }
 
 #if UNITY_EDITOR

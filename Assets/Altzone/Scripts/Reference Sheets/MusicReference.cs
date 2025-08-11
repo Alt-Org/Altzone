@@ -5,9 +5,33 @@ using Altzone.Scripts.Interface;
 namespace Altzone.Scripts.ReferenceSheets
 {
     //[CreateAssetMenu(fileName = "MusicReference", menuName = "ScriptableObjects/MusicReferenceScriptableObject")]
-    public class MusicReference : ScriptableObject, ISelectionBoxFetchable
+    public class MusicReference : ScriptableObject
     {
         [SerializeField] private List<MusicCategory> _musicCategories = new List<MusicCategory>();
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void SubsystemRegistration()
+        {
+            // Manual reset if UNITY Domain Reloading is disabled.
+            _instance = null;
+            _hasInstance = false;
+        }
+
+        private static MusicReference _instance;
+        private static bool _hasInstance;
+
+        public static MusicReference Instance
+        {
+            get
+            {
+                if (!_hasInstance)
+                {
+                    _instance = Resources.Load<MusicReference>($"Audio/MusicDataReference");
+                    _hasInstance = _instance != null;
+                }
+                return _instance;
+            }
+        }
 
         public List<MusicCategory> MusicCategories { get => _musicCategories; }
 
