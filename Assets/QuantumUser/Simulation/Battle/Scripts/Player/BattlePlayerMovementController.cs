@@ -1,4 +1,4 @@
-/// @file BattlePlayerMovementQSystem.cs
+/// @file BattlePlayerMovementController.cs
 /// <summary>
 /// Handles player input, movement and rotations.
 /// </summary>
@@ -123,7 +123,7 @@ namespace Battle.QSimulation.Player
                     Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", playerData->RotationOffset);
                 }
             }
-            
+
             // returns player to 0 rotation when RotateMotion-input ends
             if (!input->RotationInput && playerData->RotationOffset != 0)
             {
@@ -154,7 +154,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Moves the player to the specified position while updating the hitbox.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="transform">Pointer to the player's transform component.</param>
@@ -168,7 +168,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Rotates the player to the specified angle while updating the hitbox.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="transform">Pointer to the player's transform component.</param>
@@ -182,7 +182,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Moves and rotates the player to the specified position and angle while updating the hitbox.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="transform">Pointer to the player's transform component.</param>
@@ -198,7 +198,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Instantly moves and rotates the player to the specified position and rotation, and teleports the hitbox.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="transform">Pointer to the player's transform component.</param>
@@ -213,7 +213,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Private method for moving and rotating all of the player's hitboxes to the player's current position and rotation.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="transform">Pointer to the player's transform component.</param>
@@ -233,7 +233,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Private method for instantly teleporting all of player's hitboxes to the specified position and rotation.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="transform">Pointer to the player's transform component.</param>
@@ -251,7 +251,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Clamps the grid position of the player to the playfield of their team.
         /// </summary>
-        /// 
+        ///
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="gridPosition">The grid position of the player.</param>
         /// <param name="clampedPosition">The resulting clamped position of the player.</param>
@@ -292,7 +292,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Clamps the world position of the player to the playfield of their team.
         /// </summary>
-        /// 
+        ///
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="position">The world position of the player.</param>
         /// <param name="clampedPosition">The resulting clamped position of the player.</param>
