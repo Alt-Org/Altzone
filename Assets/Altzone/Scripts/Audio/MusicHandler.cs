@@ -87,7 +87,8 @@ namespace Altzone.Scripts.Audio
 
             if (musicTrack == null) return null;
 
-            if (categoryName.ToLower() == "MainMenu".ToLower()) _mainMenuMusicName = SettingsCarrier.Instance.GetMainMenuMusicName();
+            if (categoryName.ToLower() == "MainMenu".ToLower())
+                _mainMenuMusicName = SettingsCarrier.Instance.GetSelectionBoxData(SettingsCarrier.SelectionBoxType.MainMenuMusic);
 
             SwitchMusic(currentCategory, musicTrack);
 
@@ -100,7 +101,8 @@ namespace Altzone.Scripts.Audio
 
             if (currentCategory == null) return null;
 
-            if (categoryName.ToLower() == "MainMenu".ToLower()) _mainMenuMusicName = SettingsCarrier.Instance.GetMainMenuMusicName();
+            if (categoryName.ToLower() == "MainMenu".ToLower())
+                _mainMenuMusicName = SettingsCarrier.Instance.GetSelectionBoxData(SettingsCarrier.SelectionBoxType.MainMenuMusic);
 
             if (categoryName.ToLower() == "MainMenu".ToLower() && string.IsNullOrEmpty(trackName)) trackName = _mainMenuMusicName;
 
@@ -119,7 +121,8 @@ namespace Altzone.Scripts.Audio
 
             if (currentCategory == null || musicTrack == null) return null;
 
-            if (categoryName.ToLower() == "MainMenu".ToLower()) _mainMenuMusicName = SettingsCarrier.Instance.GetMainMenuMusicName();
+            if (categoryName.ToLower() == "MainMenu".ToLower())
+                _mainMenuMusicName = SettingsCarrier.Instance.GetSelectionBoxData(SettingsCarrier.SelectionBoxType.MainMenuMusic);
 
             SwitchMusic(currentCategory, musicTrack);
 

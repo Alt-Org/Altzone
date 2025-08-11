@@ -24786,7 +24786,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1419938151864024810}
-  - component: {fileID: 6933726012754999694}
+  - component: {fileID: 2471068837817712015}
   m_Layer: 5
   m_Name: MainMenuMusicSelection
   m_TagString: Untagged
@@ -24816,7 +24816,7 @@ RectTransform:
   m_AnchoredPosition: {x: 270, y: -751.4558}
   m_SizeDelta: {x: 500, y: 68.38774}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &6933726012754999694
+--- !u!114 &2471068837817712015
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -24831,12 +24831,9 @@ MonoBehaviour:
   _goLeftButton: {fileID: 6083073975920731072}
   _goRightButton: {fileID: 8967337691554204075}
   _text: {fileID: 4452754555546522972}
-  _name: MainMenuMusic
-  _values:
-  - SlowSteps
-  - NightSky
-  - Colours
-  - Vibes
+  _type: 1
+  _fetchableValues: {fileID: 11400000, guid: 33fe8299d76e8a94ead87a2d0841936e, type: 2}
+  _manualValues: []
   _onSelectionChange:
     m_PersistentCalls:
       m_Calls:

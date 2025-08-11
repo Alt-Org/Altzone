@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Altzone.Scripts.Interface;
 
 namespace Altzone.Scripts.ReferenceSheets
 {
     //[CreateAssetMenu(fileName = "MusicReference", menuName = "ScriptableObjects/MusicReferenceScriptableObject")]
-    public class MusicReference : ScriptableObject
+    public class MusicReference : ScriptableObject, ISelectionBoxFetchable
     {
         [SerializeField] private List<MusicCategory> _musicCategories = new List<MusicCategory>();
 
@@ -28,6 +29,16 @@ namespace Altzone.Scripts.ReferenceSheets
             return null;
         }
 
+        public List<string> ConvertToStringList(List<MusicTrack> tracks)
+        {
+            List<string> list = new List<string>();
+
+            foreach (MusicTrack track in tracks)
+                list.Add(track.Name);
+
+            return list;
+        }
+
         public MusicTrack GetTrack(string categoryName, string trackName)
         {
             foreach (MusicCategory category in _musicCategories)
@@ -38,6 +49,12 @@ namespace Altzone.Scripts.ReferenceSheets
 
             return null;
         }
+
+        #region ISelectionBoxFetchable
+
+        public List<string> GetStringList(string listName) { return ConvertToStringList(GetTracksOfCategoryName(listName)); }
+
+        #endregion
     }
 
     [System.Serializable]
