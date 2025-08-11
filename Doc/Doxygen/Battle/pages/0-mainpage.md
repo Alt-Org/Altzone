@@ -47,21 +47,25 @@
 
 @bigtext{**Suffix**}
 - **%QSystem**  
-  Marks type as [Quantum System🡵].
+  Marks type as [Quantum System](#page-simulation-systems).
 - **%QComponent**  
-  Marks type as [Quantum Component🡵].
+  Marks type as [Quantum Component](#page-simulation-components).
 - **%QSingleton**  
-  Marks type as [Quantum Singleton🡵].
+  Marks type as [Quantum Singleton](#page-simulation-singletons).
 - **%QConfig**  
-  Marks type as %Quantum @ref page-resources-configs "Config".
+  Marks type as [Quantum Config](#page-resources-configs).
 - **%QSpec**  
-  Marks type as [Quantum Spec🡵].
+  Marks type as [Quantum Spec](#page-simulation-specs).
+- (Simulation) **%Manager**  
+  Marks type as [Manager](#page-simulation-managers).
+- (Simulation) **%Controller**  
+  Marks type as [Controller](#page-simulation-managers).
 - **%ViewController**  
-  Marks type as @ref page-view-controllers "ViewController".
-- **%Handler**  
-  Marks type as @uihandlerlink.
-- **%Component**  
-  Marks type as @uicomponentlink.
+  Marks type as [ViewController](#page-view-controllers).
+- (Ui) **%Handler**  
+  Marks type as @uihandlerlink when used in addition to the Ui prefix.
+- (Ui) **%Component**  
+  Marks type as @uicomponentlink when used in addition to the Ui prefix.
 
 
 <br/>
@@ -80,8 +84,4 @@
 
 ---
 
-[Quantum System🡵]:    https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems
-[Quantum Component🡵]: https://doc.photonengine.com/quantum/current/manual/quantum-ecs/dsl
-[Quantum Singleton🡵]: https://doc.photonengine.com/quantum/current/manual/quantum-ecs/dsl
-[Quantum Spec🡵]:      https://doc.photonengine.com/quantum/current/manual/assets/assets-simulation
 [Doxygen🡵]:           https://www.doxygen.nl/index.html
