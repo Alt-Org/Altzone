@@ -266,6 +266,8 @@ namespace Battle.View.Player
                     break;
             }
 
+            if (BattleGameViewController.LocalPlayerTeam == BattleTeamNumber.TeamBeta) rotationInputInfo.RotationValue *= -1;
+
             return rotationInputInfo;
         }
 
