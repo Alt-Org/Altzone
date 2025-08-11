@@ -86,7 +86,6 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
         // Methods
         public bool IsValid => !string.IsNullOrWhiteSpace(Name) && !string.IsNullOrWhiteSpace(Color);
         
-        
         public bool Validate() => IsValid;
 
         public int GetPieceID(AvatarPiece piece) => piece switch
@@ -101,7 +100,8 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
             _ => -1,
         };
 
-        public void SetPieceID(AvatarPiece piece, int id)
+        // Private method for internal use if needed
+        private void SetPieceID(AvatarPiece piece, int id)
         {
             switch (piece)
             {
@@ -116,3 +116,4 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
         }
     }
 }
+

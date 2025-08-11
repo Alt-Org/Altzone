@@ -71,7 +71,7 @@ public class AvatarDefaultReference : ScriptableObject
     {
         try
         {
-            var avatar = GetByStringId(Id);
+            var avatar = GetAvatar(Id);
             if (avatar == null) 
             {
                 avatar = _avatarDefaults.FirstOrDefault(a => a.AlternativeVariations.Count > 0) 
@@ -124,18 +124,19 @@ public class AvatarDefaultReference : ScriptableObject
         return Get("0" + Id.ToString()[0] + Id.ToString());
     }
     
-    public AvatarDefault GetByStringId(string stringId)
+    // Overloaded method for string ID
+    public AvatarDefault GetAvatar(string stringId)
     {
         try
         {
             if (stringId.Length == 3)
             {
                 if (int.TryParse(stringId.Substring(1), out int id))
-                    return GetAvatarByCharacterId(id);
+                    return GetAvatar(id);
             }
             else if (int.TryParse(stringId, out int directId))
             {
-                return GetAvatarByCharacterId(directId);
+                return GetAvatar(directId);
             }
         }
         catch (Exception e)
@@ -146,7 +147,8 @@ public class AvatarDefaultReference : ScriptableObject
         return _avatarDefaults.FirstOrDefault();
     }
     
-    public AvatarDefault GetAvatarByCharacterId(int characterId)
+    // Overloaded method for int ID
+    public AvatarDefault GetAvatar(int characterId)
     {
         if (!Enum.IsDefined(typeof(CharacterID), characterId)) 
             characterId = 701;

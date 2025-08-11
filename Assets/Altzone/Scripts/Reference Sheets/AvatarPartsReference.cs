@@ -105,7 +105,19 @@ public class AvatarPartsReference : ScriptableObject
     
     public AvatarPartCategoryInfo GetCategoryById(string categoryId)
     {
-        return _info.FirstOrDefault(c => c.Id == categoryId);
+        if (string.IsNullOrEmpty(categoryId))
+        {
+            Debug.LogWarning("Category ID cannot be null or empty");
+            return null;
+        }
+        
+        var category = _info.FirstOrDefault(c => c.Id == categoryId);
+        if (category == null)
+        {
+            Debug.LogWarning($"Avatar part category not found with ID: {categoryId}");
+        }
+        
+        return category;
     }
     
     public bool HasData => _info != null && _info.Count > 0;
