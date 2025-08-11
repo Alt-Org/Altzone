@@ -2,12 +2,14 @@
 
 ## Directories {#page-resources-directories}
 
-| Path                                                                                                                                      ||| Description                                                                                                                              |
-| :---------------------------------- | :-------------------------------------------- | :---------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------- |
-| @dirref{Altzone/Assets/QuantumUser} | @dirref{Altzone/Assets/QuantumUser,Resources}                                                        || Game Resource Directory.<br/>Contains %Battle resources like prefabs, configs, spec assets, graphics, audio, etc.                        |
-| @dirref{Altzone/Assets/QuantumUser} | @dirref{Altzone/Assets/QuantumUser,Resources} | @dirref{Altzone/Assets/QuantumUser/Resources,Configs} | Contains %Battle's Config files                                                                                                          |
-| @dirref{Altzone/Assets/QuantumUser} | @dirref{Altzone/Assets/QuantumUser,Resources} | @dirref{Altzone/Assets/QuantumUser/Resources,Prefabs} | Contains Unity Prefabs and %Quantum EntityPrototypes                                                                                     |
-| @dirref{Altzone/Assets/QuantumUser} | @dirref{Altzone/Assets/QuantumUser,Resources} | @dirref{Altzone/Assets/QuantumUser/Resources,Specs}   | Contains spec data assets that only contain the data stored in specs. Specs's structures can be found @ref page-simulation-specs "here". |
+| Path                                                                                                                                                               |||| Description                                                                                                                              |
+| :---------------------- | :---------------------------------- | :-------------------------------------------- | :---------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------- |
+| @dirref{Altzone/Assets} | @dirref{Altzone/Assets,QuantumUser} | @dirref{Altzone/Assets/QuantumUser,Resources}                                                        || Game Resource Directory.<br/>Contains %Battle resources like prefabs, configs, spec assets, graphics, audio, etc.                        |
+| @dirref{Altzone/Assets} | @dirref{Altzone/Assets,QuantumUser} | @dirref{Altzone/Assets/QuantumUser,Resources} | @dirref{Altzone/Assets/QuantumUser/Resources,Configs} | Contains %Battle's Config files                                                                                                          |
+| @dirref{Altzone/Assets} | @dirref{Altzone/Assets,QuantumUser} | @dirref{Altzone/Assets/QuantumUser,Resources} | @dirref{Altzone/Assets/QuantumUser/Resources,Prefabs} | Contains Unity Prefabs and %Quantum EntityPrototypes                                                                                     |
+| @dirref{Altzone/Assets} | @dirref{Altzone/Assets,QuantumUser} | @dirref{Altzone/Assets/QuantumUser,Resources} | @dirref{Altzone/Assets/QuantumUser/Resources,Specs}   | Contains spec data assets that only contain the data stored in specs. Specs's structures can be found @ref page-simulation-specs "here". |
+|                                                                                                                                                                                                                                                                                                              |||||
+| @dirref{Altzone/Assets} | @dirref{Altzone/Assets,Altzone}     | @dirref{Altzone/Assets/Altzone,Resources/Prefabs/BattleUiShared}                                     || Contains prefabs that are used both in %Battle UI and BattleUiEditor in MenuUi.                                                          |
 
 @bigtext{[[File Summary]](#index-file-summary)}
 
@@ -18,6 +20,7 @@ Config files used in %Battle.
 
 | Path                                                  | File                                     | Description                                    |
 | :---------------------------------------------------- | :--------------------------------------- | :--------------------------------------------- |
+| @dirref{Altzone/Assets/QuantumUser/Resources/Configs}                                                                                           |||
 | @dirref{Altzone,Assets/QuantumUser/Resources,Configs} | @ref BattleQConfig.asset                 | @copybrief BattleQConfig.asset                 |
 | @dirref{Altzone,Assets/QuantumUser/Resources,Configs} | @ref QuantumBattleSimulationConfig.asset | @copybrief QuantumBattleSimulationConfig.asset |
 | @dirref{Altzone,Assets/QuantumUser/Resources,Configs} | @ref QuantumBattleSystemsConfig.asset    | @copybrief QuantumBattleSystemsConfig.asset    |
@@ -30,6 +33,7 @@ These assets only contain the data used by the spec. Specs's structures can be f
 
 | Path                                                | File                             | Description                            |
 | :-------------------------------------------------- | :------------------------------- | :------------------------------------- |
+| @dirref{Altzone/Assets/QuantumUser/Resources/Specs}                                                                           |||
 | @dirref{Altzone,Assets/QuantumUser/Resources,Specs} | @ref BattleArenaQSpec.asset      | @copybrief BattleArenaQSpec.asset      |
 | @dirref{Altzone,Assets/QuantumUser/Resources,Specs} | @ref BattleDiamondQSpec.asset    | @copybrief BattleDiamondQSpec.asset    |
 | @dirref{Altzone,Assets/QuantumUser/Resources,Specs} | @ref BattleProjectileQSpec.asset | @copybrief BattleProjectileQSpec.asset |
@@ -45,7 +49,7 @@ All Prefabs and EntityPrototypes used in %Battle.
 
 | Path                                                                                                                                                                                                                    ||| Prefab File                                                  | EntityPrototype File                                                            | Description                                                                |
 | :--------------------------------------------------------------- | :------------------------------------------------------------------- | :------------------------------------------------------------------------------ |:------------------------------------------------------------ | :------------------------------------------------------------------------------ | :------------------------------------------------------------------------- |
-| @dirref{Altzone,Assets/QuantumUser/Resources/Prefabs}                                                                                                                                                                                                                                                                                                                 ||| || Contains Unity prefabs and %Quantum EntityPrototypes                       |
+| @dirref{Altzone,Assets/QuantumUser/Resources/Prefabs}                                                                                                                                                                                                                                                                                                                                                                                              ||||||
 | @dirref{Altzone,Assets/QuantumUser/Resources,Prefabs}            | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,Diamonds}                                                                                        || @ref BattleDiamond.prefab                                    | @ref BattleDiamondEntityPrototype.qprototype                                    | @copybrief BattleDiamond.prefab                                            |
 |                                                                                                                                                                                                                                                                                                                                                                                                                                                    ||||||
 | @dirref{Altzone,Assets/QuantumUser/Resources,Prefabs}            | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,Player}                                                                                          || @ref "BattlePlayer000Character(BaseAndTestCharacter).prefab" | @ref "BattlePlayer000Character(BaseAndTestCharacter)EntityPrototype.qprototype" | @copybrief "BattlePlayer000Character(BaseAndTestCharacter).prefab"         |
@@ -108,7 +112,7 @@ Prefabs that are used both in %Battle UI and BattleUiEditor in MenuUi.
 
 | Path                                                             | Prefab File                      | Description                                                                     |
 | :--------------------------------------------------------------- | :------------------------------- | :------------------------------------------------------------------------------ |
-| @dirref{Altzone/Assets/Altzone/Resources/Prefabs/BattleUiShared} |                                  | Contains prefabs that are used both in %Battle UI and BattleUiEditor in MenuUi. |
+| @dirref{Altzone/Assets/Altzone/Resources/Prefabs/BattleUiShared}                                                                                                                    |||
 | @dirref{Altzone,Assets/Altzone/Resources/Prefabs,BattleUiShared} | @ref BattleUiDiamonds.prefab     | @copybrief BattleUiDiamonds.prefab                                              |
 | @dirref{Altzone,Assets/Altzone/Resources/Prefabs,BattleUiShared} | @ref BattleUiGiveUpButton.prefab | @copybrief BattleUiGiveUpButton.prefab                                          |
 | @dirref{Altzone,Assets/Altzone/Resources/Prefabs,BattleUiShared} | @ref BattleUiPlayerInfo.prefab   | @copybrief BattleUiPlayerInfo.prefab                                            |
