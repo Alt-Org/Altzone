@@ -20,23 +20,29 @@ namespace Battle.View.UI
     /// </summary>
     public class BattleUiJoystickHandler : MonoBehaviour
     {
+        /// @anchor BattleUiJoystickHandler-SerializeFields
         /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <value>[SerializeField] Reference to BattleUiController.</value>
+        /// <summary>[SerializeField] Reference to BattleUiController.</summary>
+        /// @ref BattleUiJoystickHandler-SerializeFields
         [SerializeField] private BattleUiController _uiController;
 
-        /// <value>[SerializeField] Reference to movement joystick's BattleUiMovableJoystickElement.</value>
+        /// <summary>[SerializeField] Reference to movement joystick's BattleUiMovableJoystickElement.</summary>
+        /// @ref BattleUiJoystickHandler-SerializeFields
         [SerializeField] private BattleUiMovableJoystickElement _moveJoystickMovableElement;
 
-        /// <value>[SerializeField] Reference to rotation joystick's BattleUiMovableJoystickElement.</value>
+        /// <summary>[SerializeField] Reference to rotation joystick's BattleUiMovableJoystickElement.</summary>
+        /// @ref BattleUiJoystickHandler-SerializeFields
         [SerializeField] private BattleUiMovableJoystickElement _rotateJoystickMovableElement;
 
-        /// <value>[SerializeField] Reference to movement joystick's BattleUiJoystickComponent.</value>
+        /// <summary>[SerializeField] Reference to movement joystick's BattleUiJoystickComponent.</summary>
+        /// @ref BattleUiJoystickHandler-SerializeFields
         [SerializeField] private BattleUiJoystickComponent _moveJoystickComponent;
 
-        /// <value>[SerializeField] Reference to rotation joystick's BattleUiJoystickComponent.</value>
+        /// <summary>[SerializeField] Reference to rotation joystick's BattleUiJoystickComponent.</summary>
+        /// @ref BattleUiJoystickHandler-SerializeFields
         [SerializeField] private BattleUiJoystickComponent _rotateJoystickComponent;
 
         /// @}
@@ -115,7 +121,8 @@ namespace Battle.View.UI
         }
 
         /// <summary>
-        /// Private <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/MonoBehaviour.Awake.html">Awake@u-exlink</a> method which initially initializes the joysticks.
+        /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.Awake.html">Awake@u-exlink</a> method
+        /// which initially initializes the joysticks.
         /// </summary>
         private void Awake()
         {
@@ -130,7 +137,8 @@ namespace Battle.View.UI
         }
 
         /// <summary>
-        /// Private <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/MonoBehaviour.OnDestroy.html">OnDestroy@u-exlink</a> method which removes the listeners from joysticks.
+        /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.OnDestroy.html">OnDestroy@u-exlink</a> method
+        /// which removes the listeners from joysticks.
         /// </summary>
         private void OnDestroy()
         {
