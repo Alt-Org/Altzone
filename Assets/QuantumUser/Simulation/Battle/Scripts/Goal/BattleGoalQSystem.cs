@@ -25,11 +25,12 @@ namespace Battle.QSimulation.Goal
         /// <summary>
         /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
         /// that gets called when <see cref="Quantum.ISignalBattleOnProjectileHitGoal">ISignalBattleOnProjectileHitGoal</see> is sent.</span><br/>
-        /// Signal handler for when a projectile hits a goal.
+        /// Signal handler for when a projectile hits a goal.<br/>
         /// Triggers the end of the game by setting the GameState to GameOver.
         /// @warning
         /// This method should only be called via Quantum signal.
         /// </summary>
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="projectileEntity">EntityRef of the projectile.</param>

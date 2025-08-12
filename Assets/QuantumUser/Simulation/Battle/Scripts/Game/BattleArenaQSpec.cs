@@ -14,8 +14,8 @@ namespace Battle.QSimulation.Game
     /// Class for defining the battlearena layout, settings and spawn positions.
     /// </summary>
     ///
-    /// This class is used to define the data asset's structure, the data itself is not contained here.  
-    /// Can be used to make multiple %BattleArenaQSpec data assets for different arenas.<br/>  
+    /// This class is used to define the data asset's structure, the data itself is not contained here.<br/>
+    /// Can be used to make multiple %BattleArenaQSpec data assets for different arenas.<br/>
     /// @bigtext{Filled with data from @ref BattleArenaQSpec.asset "BattleArenaQSpec" data asset.}
     public class BattleArenaQSpec : AssetObject
     {

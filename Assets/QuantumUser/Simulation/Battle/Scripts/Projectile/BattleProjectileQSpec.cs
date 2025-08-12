@@ -16,7 +16,7 @@ namespace Battle.QSimulation.Projectile
     /// Class for defining the projectile's initial values.
     /// </summary>
     ///
-    /// This class is used to define the data asset's structure, the data itself is not contained here.
+    /// This class is used to define the data asset's structure, the data itself is not contained here.<br/>
     /// Can be used to make multiple %BattleProjectileQSpec data assets.<br/>
     /// @bigtext{Filled with data from @ref BattleProjectileQSpec.asset "BattleProjectileQSpec" data asset.}
     public class BattleProjectileQSpec: AssetObject

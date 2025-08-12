@@ -25,8 +25,10 @@ namespace Battle.QSimulation.Game
         /// <summary>
         /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System OnInit method</a> gets called when the system is initialized.</span><br/>
         /// Initializes the arena, player system, and sets the game session as initialized.
-        /// @warning This method should only be called by Quantum.
+        /// @warning
+        /// This method should only be called by Quantum.
         /// </summary>
+        ///
         /// <param name="f">Current simulation frame.</param>
         public override void OnInit(Frame f)
         {
@@ -45,10 +47,11 @@ namespace Battle.QSimulation.Game
         /// <summary>
         /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Signal method@u-exlink</a>
         /// that gets called when <a href="https://doc-api.photonengine.com/en/quantum/current/interface_quantum_1_1_i_signal_on_player_added.html">ISignalOnPlayerAdded</a> is sent.</span><br/>
-        /// Called when a player is added for the first time. Registers the player in BattlePlayerManager.<br/>
+        /// Called when a player is added for the first time. Registers the player in BattlePlayerManager.
         /// @warning
         /// This method should only be called via Quantum signal.
         /// </summary>
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerRef">Reference to the player.</param>
         /// <param name="firstTime">True if this is the first join.</param>
@@ -70,8 +73,10 @@ namespace Battle.QSimulation.Game
          /// <summary>
         /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method</a> gets called every frame.</span><br/>
         /// Controls state transitions of the game session per frame. Manages countdowns and progression to 'Playing'.
-        /// @warning This method should only be called by Quantum.
+        /// @warning
+        /// This method should only be called by Quantum.
         /// </summary>
+        ///
         /// <param name="f">Current simulation frame.</param>
         public override void Update(Frame f)
         {
@@ -139,6 +144,7 @@ namespace Battle.QSimulation.Game
         /// <summary>
         /// Sets up the soul wall map layout during the 'CreateMap' game state.
         /// </summary>
+        ///
         /// <param name="f">Current simulation frame.</param>
         private static void CreateMap(Frame f)
         {

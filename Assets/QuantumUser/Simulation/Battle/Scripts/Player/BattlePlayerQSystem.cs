@@ -24,6 +24,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Calls BattlePlayerManager::SpawnPlayer for players that are in the game.
         /// </summary>
+        ///
         /// <param name="f">Current simulation frame</param>
         public static void SpawnPlayers(Frame f)
         {
@@ -80,6 +81,7 @@ namespace Battle.QSimulation.Player
         /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method@u-exlink</a> gets called every frame.</span><br/>
         /// Relays the appropriate input data to each player in the game
         /// </summary>
+        ///
         /// <param name="f">Current simulation frame</param>
         public override void Update(Frame f)
         {

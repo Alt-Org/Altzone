@@ -40,6 +40,7 @@ namespace Battle.QSimulation.Projectile
         /// <summary>
         /// Checks if a specific collision flag is currently set for the projectile.
         /// </summary>
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="flag">Collision flag to check.</param>
@@ -50,6 +51,7 @@ namespace Battle.QSimulation.Projectile
         /// <summary>
         /// Sets a specific collision flag for the current frame.
         /// </summary>
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="flag">Collision flag to set.</param>
@@ -66,6 +68,7 @@ namespace Battle.QSimulation.Projectile
         /// @warning
         /// This method should only be called by Quantum.
         /// </summary>
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter@u-exlink</a>.</param>
         public override void Update(Frame f, ref Filter filter)
@@ -128,11 +131,12 @@ namespace Battle.QSimulation.Projectile
         /// <summary>
         /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
         /// that gets called when <see cref="Quantum.ISignalBattleOnProjectileHitSoulWall">ISignalBattleOnProjectileHitSoulWall</see> is sent.</span><br/>
-        /// Handles behavior when the projectile hits a SoulWall.
+        /// Handles behavior when the projectile hits a SoulWall.<br/>
         /// Updates projectile's emotion and applies bounce logic.
         /// @warning
         /// This method should only be called via Quantum signal.
         /// </summary>
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="projectileEntity">EntityRef of the projectile.</param>
@@ -149,11 +153,12 @@ namespace Battle.QSimulation.Projectile
         /// <summary>
         /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
         /// that gets called when <see cref="Quantum.ISignalBattleOnProjectileHitArenaBorder">ISignalBattleOnProjectileHitArenaBorder</see> is sent.</span><br/>
-        /// Handles behavior when the projectile hits the arena border.
+        /// Handles behavior when the projectile hits the arena border.<br/>
         /// Applies bounce logic based on border surface normal.
         /// @warning
         /// This method should only be called via Quantum signal.
         /// </summary>
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="projectileEntity">EntityRef of the projectile.</param>
@@ -167,11 +172,12 @@ namespace Battle.QSimulation.Projectile
         /// <summary>
         /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
         /// that gets called when <see cref="Quantum.ISignalBattleOnProjectileHitPlayerShield">ISignalBattleOnProjectileHitPlayerShield</see> is sent.</span><br/>
-        /// Handles behavior when the projectile hits a player shield.
+        /// Handles behavior when the projectile hits a player shield.<br/>
         /// Applies bounce logic based on surface normal of the shield hitbox.
         /// @warning
         /// This method should only be called via Quantum signal.
         /// </summary>
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="projectileEntity">EntityRef of the projectile.</param>

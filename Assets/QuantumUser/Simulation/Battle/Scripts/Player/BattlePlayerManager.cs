@@ -69,6 +69,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Registers player.
         /// </summary>
+        ///
         /// <param name="f">Current %Quantum %Frame.</param>
         /// <param name="playerRef">Reference to the player.</param>
         public static void RegisterPlayer(Frame f, PlayerRef playerRef)
@@ -539,8 +540,8 @@ namespace Battle.QSimulation.Player
         #region Private - PlayerHandleInternal struct
 
         /// <summary>
-        /// Internal helper struct for player operations and state management in BattlePlayerManager.
-        /// Has static helper methods for player operations.
+        /// Internal helper struct for player operations and state management in BattlePlayerManager.<br/>
+        /// Has static helper methods for player operations.<br/>
         /// Can be instantiated to handle specific player's data stored in BattlePlayerManagerDataQSingleton.
         /// </summary>
         private struct PlayerHandleInternal
@@ -719,14 +720,14 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
-            /// Gets player's SelectedCharacter.
+            /// Gets player's SelectedCharacter.<br/>
             /// The SelectedCharacter is a EntityRef to the character that is currently in play.
             /// </summary>
             public EntityRef SelectedCharacter
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->SelectedCharacters[Index]; }
 
             /// <summary>
-            /// Gets player's SelectedCharacterNumber.
+            /// Gets player's SelectedCharacterNumber.<br/>
             /// The SelectedCharacterNumber is the number of the character that is currently in play.
             /// </summary>
             public int SelectedCharacterNumber
@@ -740,6 +741,7 @@ namespace Battle.QSimulation.Player
             /// <summary>
             /// Constructor for PlayerHandleInternal.
             /// </summary>
+            ///
             /// <param name="playerManagerData">Pointer to BattlePlayerManagerDataQSingleton.</param>
             /// <param name="playerIndex">Index of the player that you want the handle to.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -754,6 +756,7 @@ namespace Battle.QSimulation.Player
             /// <summary>
             /// Gets an EntityRef to a player's Character by characterNumber.
             /// </summary>
+            ///
             /// <param name="characterNumber">CharacterNumber of the player's character you want to get.</param>
             /// <returns>EntityRef to a player's Character.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -762,6 +765,7 @@ namespace Battle.QSimulation.Player
             /// <summary>
             /// Saves player's created character EntityRefs to BattlePlayerManagerDataQSingleton.
             /// </summary>
+            ///
             /// <param name="entityRefArray">The Character EntityRefs as an array.</param>
             public void SetCharacters(EntityRef[] entityRefArray)
             {
@@ -773,9 +777,10 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
-            /// Sets player's SelectedCharacter and updates SelectedCharacterNumber based on <paramref name="characterNumber"/>.
+            /// Sets player's SelectedCharacter and updates SelectedCharacterNumber based on <paramref name="characterNumber"/>.<br/>
             /// The SelectedCharacter is a EntityRef to the character that is currently in play.
             /// </summary>
+            ///
             /// <param name="characterNumber">CharacterNumber of the player's character you want to set.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void SetSelectedCharacter(int characterNumber)
@@ -785,7 +790,7 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
-            /// Unsets player's SelectedCharacter and updates SelectedCharacterNumber.
+            /// Unsets player's SelectedCharacter and updates SelectedCharacterNumber.<br/>
             /// The SelectedCharacter is a EntityRef to the character that is currently in play.
             /// </summary>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -796,9 +801,10 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
-            /// Generates a position for the player's character that is out of play
+            /// Generates a position for the player's character that is out of play.<br/>
             /// Each character of each player has a unique position that is used when the character is out of play.
             /// </summary>
+            ///
             /// <param name="characterNumber">CharacterNumber of the player's character that is moved out of play.</param>
             /// <param name="teamNumber">TeamNumber of the player whose character that is moved out of play.</param>
             /// <returns>The generated position.</returns>
@@ -851,6 +857,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Private helper method for getting the BattlePlayerManagerDataQSingleton from the %Quantum %Frame.
         /// </summary>
+        ///
         /// <param name="f"></param>
         /// <returns></returns>
         private static BattlePlayerManagerDataQSingleton* GetPlayerManagerData(Frame f)

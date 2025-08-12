@@ -39,6 +39,7 @@ namespace Battle.QSimulation.Projectile
         /// @warning
         /// This method should only be called by Quantum.
         /// </summary>
+        ///
         /// <param name="f">Current simulation frame.</param>
         public override void OnInit(Frame f)
         {
@@ -59,8 +60,10 @@ namespace Battle.QSimulation.Projectile
         /// <summary>
         /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum system update method@u-exlink</a> gets called every frame.</span><br/>
         /// Spawns a projectile if it's not already spawned and game is in 'Playing' state.
-        /// @warning This method should only be called by Quantum.
+        /// @warning
+        /// This method should only be called by Quantum.
         /// </summary>
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter@u-exlink</a>.</param>
         public override void Update(Frame f, ref Filter filter)
@@ -85,6 +88,7 @@ namespace Battle.QSimulation.Projectile
         /// <summary>
         /// Creates a projectile entity using the specified prototype and initializes its components.
         /// </summary>
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="childPrototype">Reference to the projectile prototype asset.</param>
         private void SpawnProjectile(Frame f, AssetRef<EntityPrototype> childPrototype)
