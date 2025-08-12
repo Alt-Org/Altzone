@@ -32,6 +32,8 @@
 /// ### Gameplay events
 /// - <b>synced event</b> @ref BattleChangeEmotionState { BattleEmotionState Emotion }  
 ///   @copybrief Quantum.EventBattleChangeEmotionState
+/// - <b>synced event</b> @ref BattleProjectileChangeGlowStrength { FP Strength }  
+///   @copybrief Quantum.EventBattleProjectileChangeGlowStrength
 /// - <b>event</b> @ref BattlePlaySoundFX { BattleSoundFX Effect }  
 ///   @copybrief Quantum.EventBattlePlaySoundFX
 /// - <b>synced event</b> @ref BattleLastRowWallDestroyed { int WallNumber; BattleTeamNumber Team; FP LightrayRotation; BattleLightrayColor LightrayColor; BattleLightraySize LightraySize }  
@@ -161,6 +163,15 @@
 ///
 /// ---
 ///
+/// @anchor BattleProjectileChangeGlowStrength
+/// ### BattleProjectileChangeGlowStrength
+/// @copybrief Quantum.EventBattleProjectileChangeGlowStrength
+///
+/// Generated Class @cref{Quantum,EventBattleProjectileChangeGlowStrength}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleProjectileChangeGlowStrength}
+///
+/// ---
+///
 /// @anchor BattlePlaySoundFX
 /// ### BattlePlaySoundFX
 /// @copybrief Quantum.EventBattlePlaySoundFX
@@ -274,6 +285,13 @@
 /// @class Quantum::EventBattleChangeEmotionState
 /// <summary>
 /// Synced event. Used to change sprites etc. during game depending on given BattleEmotionState.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattleProjectileChangeGlowStrength
+/// <summary>
+/// Synced event. Used to change glow strength during game depending on the projectile's attack damage.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleEvents.qtn}
