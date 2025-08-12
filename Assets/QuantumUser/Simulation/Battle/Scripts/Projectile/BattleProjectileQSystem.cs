@@ -176,7 +176,7 @@ namespace Battle.QSimulation.Projectile
         /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="projectileEntity">EntityRef of the projectile.</param>
         /// <param name="playerHitbox">Pointer to the PlayerHitbox component.</param>
-        /// <param name="playerEntity">EntityRef of the player hitbox.</param>
+        /// <param name="playerHitboxEntity">EntityRef of the player hitbox.</param>
         public void BattleOnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
         {
             if (projectile->Emotion == BattleEmotionState.Love) return;
@@ -279,12 +279,26 @@ namespace Battle.QSimulation.Projectile
             SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Projectile);
         }
 
+        /// <summary>
+        /// Private helper method for setting emotion for the projectile and calling BattleChangeEmotionState event.
+        /// </summary>
+        ///
+        /// <param name="f"></param>
+        /// <param name="projectile"></param>
+        /// <param name="emotion"></param>
         private void SetEmotion(Frame f, BattleProjectileQComponent* projectile, BattleEmotionState emotion)
         {
             projectile->Emotion = emotion;
             f.Events.BattleChangeEmotionState(projectile->Emotion);
         }
 
+        /// <summary>
+        /// Private helper method for setting attack for the projectile and calling BattleProjectileChangeGlowStrength event.
+        /// </summary>
+        ///
+        /// <param name="f"></param>
+        /// <param name="projectile"></param>
+        /// <param name="attack"></param>
         private void SetAttack(Frame f, BattleProjectileQComponent* projectile, FP attack)
         {
             projectile->Attack = attack;
