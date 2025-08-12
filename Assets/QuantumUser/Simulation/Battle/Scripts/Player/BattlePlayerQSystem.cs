@@ -38,10 +38,11 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
         /// that gets called when <see cref="Quantum.ISignalBattleOnProjectileHitPlayerCharacter">ISignalBattleOnProjectileHitPlayerCharacter</see> is sent.</span><br/>
-        /// Deals damage to the player hit if their damage cooldown is not active and despawns the character if its Hp reaches 0.
+        /// Deals damage based on the projectile's current <see cref="Quantum.BattleProjectileQComponent.Attack">Attack</see> to the player hit if their damage cooldown is not active and despawns the character if its Hp reaches 0.
         /// @warning
         /// This method should only be called by Quantum.
         /// </summary>
+        ///
         /// <param name="f">Current simulation frame</param>
         /// <param name="projectile">Pointer reference to the projectile.</param>
         /// <param name="projectileEntity">The projectile entity.</param>
