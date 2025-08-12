@@ -335,7 +335,7 @@
 ///         - **AnnouncementText**
 ///             - *Components:*
 ///                 - RectTransform
-///                 - TextScaler
+///                 - @cref{Altzone.Scripts.BattleUiShared,TextScaler}
 ///                 - CanvasRenderer
 ///                 - TextMeshPro - Text (UI)
 ///                 - WorkSans-Regular SDF Material (Material)
@@ -545,7 +545,7 @@
 /// - **BattleUiDiamonds**
 ///     - *Components:*
 ///         - RectTransform
-///         - BattleUiMovableElement
+///         - @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement}
 ///         - CanvasRenderer
 ///     - *Children:*
 ///         - **DiamondIcon**
@@ -573,7 +573,7 @@
 /// - **BattleUiGiveUpButton**
 ///     - *Components:*
 ///         - RectTransform
-///         - BattleUiMovableElement
+///         - @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement}
 ///         - CanvasRenderer
 ///         - Image
 ///         - Button
@@ -599,7 +599,7 @@
 /// - **BattleUiJoystick**
 ///     - *Components:*
 ///         - RectTransform
-///         - BattleUiMovableJoystickElement
+///         - @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableJoystickElement}
 ///         - CanvasRenderer
 ///     - *Children:*
 ///         - **Background**
@@ -619,13 +619,13 @@
 /// Prefab for %Battle's PlayerInfo elements (PlayerName and CharacterButtons).
 /// </summary>
 ///
-/// Used in both %Battle's UI and BattleUiEditor in MenuUi.<br/>  
+/// Used in both %Battle's UI and BattleUiEditor in MenuUi.
 ///
 /// ### Structure
 /// - **BattleUiPlayerInfo**
 ///     - *Components:*
 ///         - RectTransform
-///         - BattleUiMultiOrientationElement
+///         - @cref{Altzone.Scripts.BattleUiShared,BattleUiMultiOrientationElement}
 ///         - CanvasRenderer
 ///     - *Children:*
 ///         - **HorizontalConfiguration**
@@ -670,8 +670,8 @@
 /// - **BattleUiTimer**
 ///     - *Components:*
 ///         - RectTransform
-///         - BattleUiMovableElement
-///         - TextScaler
+///         - @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement}
+///         - @cref{Altzone.Scripts.BattleUiShared,TextScaler}
 ///         - CanvasRenderer
 ///         - TextMeshPro - Text (UI)
 ///         - WorkSans-SemiBold SDF Material (Material)
