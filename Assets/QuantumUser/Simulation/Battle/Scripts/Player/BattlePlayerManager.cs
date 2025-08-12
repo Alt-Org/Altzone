@@ -25,7 +25,7 @@ namespace Battle.QSimulation.Player
         /// Sets the initial play state of all players to not in game. <br/>
         /// Prevents the game from starting if the amount of players is not what it should be.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="battleArenaSpec">The spec of the arena.</param>
         public static void Init(Frame f, BattleArenaQSpec battleArenaSpec)
@@ -108,7 +108,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Verifies that all players in the game have been registered.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <returns>True if all players have been registered, false if any have not.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -120,7 +120,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Creates all character entities for each player in the game, inititalizing data, hitboxes and view components.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         public static void CreatePlayers(Frame f)
         {
@@ -392,7 +392,7 @@ namespace Battle.QSimulation.Player
         /// Verifies that the player is in the game and the character to be spawned is valid. <br/>
         /// Actual spawning handled by a separate private method.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="slot">The slot of the player for which the character is to be spawned.</param>
         /// <param name="characterNumber">The character number of the character to be spawned.</param>
@@ -421,7 +421,7 @@ namespace Battle.QSimulation.Player
         /// Verifies that the player has a character in play. <br/>
         /// Actual despawning handled by a separate private method.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="slot">The slot of the player for which the character is to be despawned.</param>
         public static void DespawnPlayer(Frame f, BattlePlayerSlot slot)
@@ -564,7 +564,7 @@ namespace Battle.QSimulation.Player
             /// <summary>
             /// Retrieves team number based on slot.
             /// </summary>
-            /// 
+            ///
             /// <param name="slot">The slot of the player.</param>
             /// <returns>The BattleTeamNumber of the given player.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -584,7 +584,7 @@ namespace Battle.QSimulation.Player
             /// <summary>
             /// Retrieves player index based on slot.
             /// </summary>
-            /// 
+            ///
             /// <param name="slot">The slot of the player.</param>
             /// <returns>The index of the given player.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -604,7 +604,7 @@ namespace Battle.QSimulation.Player
             /// <summary>
             /// Retrieves player index from a PlayerRef.
             /// </summary>
-            /// 
+            ///
             /// <param name="playerManagerData">Pointer reference to the player manager data.</param>
             /// <param name="playerRef">PlayerRef of the player.</param>
             /// <returns>The index of the given player.</returns>
@@ -621,7 +621,7 @@ namespace Battle.QSimulation.Player
             /// <summary>
             /// Retrieves the index of the teammate of a player based on slot.
             /// </summary>
-            /// 
+            ///
             /// <param name="slot">The slot of the player.</param>
             /// <returns>The index of the given player's teammate.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -641,7 +641,7 @@ namespace Battle.QSimulation.Player
             /// <summary>
             /// Retrieves PlayerHandle based on slot.
             /// </summary>
-            /// 
+            ///
             /// <param name="playerManagerData">Pointer reference to the player manager data.</param>
             /// <param name="slot">The slot of the player.</param>
             /// <returns>A PlayerHandle for the given player.</returns>
@@ -655,7 +655,7 @@ namespace Battle.QSimulation.Player
             /// <summary>
             /// Retrieves PlayerHandle of the teammate of a player based on slot.
             /// </summary>
-            /// 
+            ///
             /// <param name="playerManagerData">Pointer reference to the player manager data.</param>
             /// <param name="slot">The slot of the player.</param>
             /// <returns>A PlayerHandle for the given player's teammate.</returns>
@@ -669,7 +669,7 @@ namespace Battle.QSimulation.Player
             /// <summary>
             /// Sets all players' play states to a given state.
             /// </summary>
-            /// 
+            ///
             /// <param name="playerManagerData">Pointer reference to the player manager data.</param>
             /// <param name="playerPlayState">The state that all players will be set to.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -684,7 +684,7 @@ namespace Battle.QSimulation.Player
             /// <summary>
             /// Checks if a given character number is valid.
             /// </summary>
-            /// 
+            ///
             /// <param name="characterNumber">The character number to verify.</param>
             /// <returns>True if the given character number is valid, false if it is not.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -871,7 +871,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Spawns a player character entity into the game.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">PlayerHandle of the player the character will be spawned for.</param>
         /// <param name="characterNumber">The character number of the character to be spawned.</param>
@@ -917,7 +917,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Despawns a player's active character entity from the game.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">PlayerHandle of the player the character will be spawned for.</param>
         private static void DespawnPlayer(Frame f, PlayerHandleInternal playerHandle)
