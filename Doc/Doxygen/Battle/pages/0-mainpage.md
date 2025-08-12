@@ -4,13 +4,16 @@
 
 # Namespace Summary {#index-namespace-summary}
 
-|  Namespace                                || Description                                                             |
-| :------------- | :------------------------ | :---------------------------------------------------------------------- |
-| @cref{Battle}                             || @copybrief Battle                                                       |
-| @crefd{Battle} | @cref{Battle,QSimulation} | @copybrief Battle.QSimulation @ref page-simulation-namespaces "More..." |
-| @crefd{Battle} | @cref{Battle,View}        | @copybrief Battle.View        @ref page-view-namespaces "More..."       |
-|                                                                                                                    |||
-| @cref{Quantum}                            || @copybrief Quantum                                                      |
+|  Namespace                                           || Description                                                             |
+| :------------- | :----------------------------------- | :---------------------------------------------------------------------- |
+| @cref{Altzone}                                       || @copybrief Altzone                                                      |
+| @crefd{Altzone}| @cref{Altzone,Scripts}               | @copybrief Altzone.Scripts                                              |
+| @crefd{Altzone}| @cref{Altzone.Scripts,BattleUiShared}| @copybrief Altzone.Scripts.BattleUiShared                               |
+| @cref{Battle}                                        || @copybrief Battle                                                       |
+| @crefd{Battle} | @cref{Battle,QSimulation}            | @copybrief Battle.QSimulation @ref page-simulation-namespaces "More..." |
+| @crefd{Battle} | @cref{Battle,View}                   | @copybrief Battle.View        @ref page-view-namespaces "More..."       |
+|                                                                                                                               |||
+| @cref{Quantum}                                       || @copybrief Quantum                                                      |
 
 @bigtext{[[Namespace List]](./namespaces.html)}
 
