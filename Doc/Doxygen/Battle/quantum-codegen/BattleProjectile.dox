@@ -38,11 +38,26 @@
 /// @var FP Quantum.BattleProjectileQComponent::Speed
 /// <summary>Projectile's speed.</summary>
 ///
+/// @var FixedArray<FP> Quantum.BattleProjectileQComponent::SpeedMultiplierArray
+/// <summary>Property for accessing the @cref{Quantum.BattleProjectileQComponent,_SpeedMultiplierArray_} array for multiplying speed depending on the projectile's emotion state.</summary>
+///
+/// @var Byte Quantum.BattleProjectileQComponent::_SpeedMultiplierArray_
+/// <summary>
+/// An array used internally for holding values for multiplying speed depending on the projectile's emotion state.  
+/// Use @cref{Quantum.BattleProjectileQComponent,SpeedMultiplierArray} for accessing the values.
+/// </summary>
+///
 /// @var FP Quantum.BattleProjectileQComponent::SpeedPotential
-/// <summary>.</summary>
+/// <summary>Used for updating projectile's speed.</summary>
+///
+/// @var FP Quantum.BattleProjectileQComponent::SpeedIncrement
+/// <summary>Amount which SpeedPotential is increased.</summary>
 ///
 /// @var FP Quantum.BattleProjectileQComponent::AccelerationTimer
-/// <summary>.</summary>
+/// <summary>Timer for speeding up the ball.</summary>
+///
+/// @var FP Quantum.BattleProjectileQComponent::AccelerationTimerDuration
+/// <summary>Used for setting AccelerationTimer.</summary>
 ///
 /// @var FPVector2 Quantum.BattleProjectileQComponent::Direction
 /// <summary>The direction the projectile is going towards.</summary>
@@ -53,8 +68,21 @@
 /// @var BattleEmotionState Quantum.BattleProjectileQComponent::Emotion
 /// <summary>Which emotion the projectile has at the moment.</summary>
 ///
+/// @var FP Quantum.BattleProjectileQComponent::Attack
+/// <summary>Projectile's attack damage.</summary>
+///
+/// @var FP Quantum.BattleProjectileQComponent::AttackMax
+/// <summary>Projectile's maximum attack damage.</summary>
+///
 /// @var array Quantum.BattleProjectileQComponent::CollisionFlags
-/// <summary>Array of flags for projectile's collisions. Used to prevent hitting multiple entities per frame.</summary>
+/// <summary>
+/// Property for accessing the @cref{Quantum.BattleProjectileQComponent,_CollisionFlags_} array of flags for projectile's collisions.  
+/// Used to prevent hitting multiple entities per frame.
+/// </summary>
 ///
 /// @var byte Quantum.BattleProjectileQComponent::_CollisionFlags_
-/// <summary>Flag for projectile's collisions.</summary>
+/// <summary>
+/// An array used internally for holding flags for projectile's collisions.  
+/// Used to prevent hitting multiple entities per frame.  
+/// Use @cref{Quantum.BattleProjectileQComponent,CollisionFlags} for accessing the flags.
+/// </summary>
