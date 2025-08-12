@@ -166,22 +166,27 @@ public class Chat : AltMonoBehaviour
             if(buttonUsed == _sendButtonSadness)
             {
                 SendChatMessage(_messagePrefabBlue);
+                gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Sadness);
             }
             else if (buttonUsed == _sendButtonAnger)
             {
                 SendChatMessage(_messagePrefabRed);
+                gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Anger);
             }
             else if (buttonUsed == _sendButtonJoy)
             {
                 SendChatMessage(_messagePrefabYellow);
+                gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Joy);
             }
             else if (buttonUsed == _sendButtonPlayful)
             {
                 SendChatMessage(_messagePrefabOrange);
+                gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Playful);
             }
             else if (buttonUsed == _sendButtonLove)
             {
                 SendChatMessage(_messagePrefabPink);
+                gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Love);
             }
         }
     }

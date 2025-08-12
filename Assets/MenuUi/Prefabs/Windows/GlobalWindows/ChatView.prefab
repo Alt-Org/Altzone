@@ -4463,6 +4463,7 @@ GameObject:
   - component: {fileID: 7358076422430287421}
   - component: {fileID: 1176563068381732146}
   - component: {fileID: 1470774257798041386}
+  - component: {fileID: 8055567564220898696}
   m_Layer: 5
   m_Name: Canvas Chat
   m_TagString: Untagged
@@ -4637,6 +4638,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 820bcc5b81a325f46b185305c476bc4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 0
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
+--- !u!114 &8055567564220898696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7324650805430605575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cfdbeeb0301c0d4dbb5faa1268d3349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _normalTaskType: 0
