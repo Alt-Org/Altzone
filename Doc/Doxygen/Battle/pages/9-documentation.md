@@ -69,6 +69,27 @@ This method should only be called via Quantum signal.
 
 ## Unity
 
+### Documenting SerializeFields
+The format used for grouping SerializeFields. Example provided also has SerializeField value documentation.
+```
+/// @name SerializeField variables // The group name
+/// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor. // Group description
+/// @{ // Start of the grouped SerializeFields
+
+/// <value>[SerializeField] Reference to BattleUiController.</value> // SerializeField value documentation
+[SerializeField] private BattleUiController _uiController; // SerializeField variable
+
+/// @} // End of the grouped SerializeFields
+```
+
+### Documenting public getters
+Format used for documenting public getters for private variables. Using both summary and value tags so that in doxygen it's clear that it's a getter for another variable, and in code it's clear what it's value is.
+```
+/// <summary>Public getter for #_rectTransform.</summary>
+/// <value>Reference to the %Battle Ui element's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/RectTransform.html">RectTransform@u-exlink</a> component.</value>
+public RectTransform RectTransformComponent => _rectTransform;
+```
+
 ### UI Handler class method brief/summary format
 ```
 <span class="brief-h">handler name @uihandlerlink (<a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>).</span><br/>
