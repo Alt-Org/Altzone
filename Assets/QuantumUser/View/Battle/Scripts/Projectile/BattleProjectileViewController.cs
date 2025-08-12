@@ -16,12 +16,17 @@ namespace Battle.View.Projectile
     /// </summary>
     public class BattleProjectileViewController : QuantumEntityViewComponent
     {
-        // old doc
-        // <value>SpriteRenderer for projectile's sprite.</value>
-        // <value>TrailRenderer for projectile's trail.</value>
+        /// @name SerializeField variables
+        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// @{
 
+        /// <value>[SerializeField] SpriteRenderer reference for projectile's sprite.</value>
         [SerializeField] private SpriteRenderer _spriteRenderer;
+
+        /// <value>[SerializeField] SpriteRenderer reference for projectile's glow.</value>
         [SerializeField] private SpriteRenderer _spriteGlowRenderer;
+
+        /// <value>[SerializeField] TrailRenderer reference for projectile's trail.</value>
         [SerializeField] private TrailRenderer _trailRenderer;
 
         [Tooltip("Sprite 0: Sadness\nSprite 1: Joy\nSprite 2: Playful\nSprite 3: Aggression\nSprite 4: Love")]
@@ -30,11 +35,15 @@ namespace Battle.View.Projectile
 
         /// <value>[SerializeField] An array of gradient colors for projectile's trail.</value>
         [SerializeField] private Gradient[] _colorGradients;
+
+        /// <value>[SerializeField] An array of glow colors for projectile's glow.</value>
         [SerializeField] private Color[] _colorGlows;
+
+        /// @}
 
         /// <summary>
         /// Public method that is called when entity is activated upon its creation.<br/>
-        /// Fetches needed components and subscribes to BattleChangeEmotionState
+        /// Fetches needed components and subscribes to BattleChangeEmotionState and BattleProjectileChangeGlowStrength.
         /// <a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/game-events"> Quantum Event.@u-exlink</a>
         /// </summary>
         ///
@@ -52,11 +61,12 @@ namespace Battle.View.Projectile
             BattleGameViewController.AssignProjectileReference(gameObject);
         }
 
+        /// <value>Holder variable for the projectile's glow value.</value>
         private float _glowStrength;
 
         /// <summary>
         /// Private method that gets called by Quantum via BattleChangeEmotionState Event.<br/>
-        /// Changes projectile's sprite and its trail's color.
+        /// Changes projectile's sprite, glow strength and its trail's color.
         /// </summary>
         ///
         /// <param name="e">BattleChangeEmotionState Event</param>
@@ -66,6 +76,12 @@ namespace Battle.View.Projectile
             _spriteGlowRenderer.color = _colorGlows[(int)e.Emotion].Alpha(_glowStrength);
             _trailRenderer.colorGradient = _colorGradients[(int)e.Emotion];
         }
+        /// <summary>
+        /// Private method that gets called by Quantum via BattleProjectileChangeGlowStrength.<br/>
+        /// Changes projectile's glow strength.
+        /// </summary>
+        ///
+        /// <param name="e">BattleProjectileChangeGlowStrength Event</param>
         private void OnProjectileChangeGlowStrength(EventBattleProjectileChangeGlowStrength e)
         {
             _glowStrength = (float)e.Strength;
