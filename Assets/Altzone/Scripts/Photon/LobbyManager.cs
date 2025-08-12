@@ -1107,7 +1107,10 @@ namespace Altzone.Scripts.Lobby
             var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, player.UserId } }); // Expected to have the player's id in the previous position
 
             // Setting previous position empty
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue);
+            if(!PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue))
+            {
+                Debug.LogWarning($"Failed to free the position {curValue}. This likely because the player doesn't reserve it.");
+            }
 
             // Initializing hash tables for setting the new position as taken
             string newPositionKey = PhotonBattleRoom.GetPositionKey(playerPosition);
@@ -1116,7 +1119,10 @@ namespace Altzone.Scripts.Lobby
             expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, "" } }); // Expecting the new position to be empty
 
             // Setting new position as taken
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(newPosition, expectedValue);
+            if(!PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(newPosition, expectedValue))
+            {
+                Debug.LogWarning($"Failed to reserve the position {playerPosition}. This likely because somebody already is in this position.");
+            }
         }
 
         public void SetPlayerQuantumCharacters(List<CustomCharacter> characters)
@@ -1346,6 +1352,7 @@ namespace Altzone.Scripts.Lobby
                     int position = (int)photonEvent.CustomData;
                     Player player = PhotonRealtimeClient.CurrentRoom.GetPlayer(photonEvent.Sender);
                     if (player != null) SetPlayer(player, position);
+                    else Debug.LogError($"Player {photonEvent.Sender} not found in room");
                     break;
 
                 case PhotonRealtimeClient.PhotonEvent.RoomChangeRequested:
