@@ -16,8 +16,8 @@ namespace Battle.QSimulation.Projectile
     /// Class for defining the projectile's initial values.
     /// </summary>
     ///
-    /// This class is used to define the data asset's structure, the data itself is not contained here.  
-    /// Can be used to make multiple %BattleProjectileQSpec data assets.<br/>  
+    /// This class is used to define the data asset's structure, the data itself is not contained here.
+    /// Can be used to make multiple %BattleProjectileQSpec data assets.<br/>
     /// @bigtext{Filled with data from @ref BattleProjectileQSpec.asset "BattleProjectileQSpec" data asset.}
     public class BattleProjectileQSpec: AssetObject
     {
@@ -32,12 +32,15 @@ namespace Battle.QSimulation.Projectile
         public FP ProjectileInitialSpeed;
 
         [Tooltip("Speed multiplier of the projectile depends from BattleEmotionState")]
+        /// <value>An array holding values for multiplying speed depending on the projectile's emotion state.</value>
         public FP[] SpeedMultiplierArray;
 
         [Tooltip("Amount which speedpotential is increased")]
+        /// <value>Amount which SpeedPotential is increased.</value>
         public FP SpeedIncrement;
 
         [Tooltip("Timer for speeding up the ball")]
+        /// <value>Timer for speeding up the ball.</value>
         public FP AccelerationTimerDuration;
 
         [Tooltip("Amount of projectiles spawned in")]
@@ -45,6 +48,7 @@ namespace Battle.QSimulation.Projectile
         public int InitialProjectilesCount;
 
         [Tooltip("Projectile's maximum attack damage")]
+        /// <value>Projectile's maximum attack damage.</value>
         public FP AttackMax;
     }
 }
