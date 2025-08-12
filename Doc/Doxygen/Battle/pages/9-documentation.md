@@ -70,21 +70,24 @@ This method should only be called via Quantum signal.
 ## Unity
 
 ### Documenting SerializeFields
-The format used for grouping SerializeFields. Example provided also has SerializeField value documentation.
+The format used for grouping SerializeFields. Example provided also has SerializeField summary documentation.
+- Anchor name is in format ClassName-SerializeFields.
+- Make sure that the header is copied entirely, and the example comments starting with two slashes // are removed.
+- Place all SerializeField variables inside the group.
+- SerializeField variable documentation should be on a single line, use summary tags and have "[SerializeField] " prefix.
+
 ```
+/// @anchor BattleUiJoystickHandler-SerializeFields // Anchor name
 /// @name SerializeField variables // The group name
 /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor. // Group description
 /// @{ // Start of the grouped SerializeFields
 
-/// <value>[SerializeField] Reference to BattleUiController.</value> // SerializeField value documentation
+/// <summary>[SerializeField] Reference to BattleUiController.</summary> // SerializeField summary documentation
+/// @ref BattleUiMovableJoystickElement-SerializeFields // Anchor reference
 [SerializeField] private BattleUiController _uiController; // SerializeField variable
 
 /// @} // End of the grouped SerializeFields
 ```
-@note
-- Make sure that the header is copied entirely, and the example comments starting with two slashes // are removed.
-- Place all SerializeField variables inside the group.
-- SerializeField variable documentation should be on a single line, use value tags and have "[SerializeField] " prefix.
 
 ### Documenting public getters
 Format used for documenting public getters for private variables. Using both summary and value tags so that in doxygen it's clear that it's a getter for another variable, and in code it's clear what it's value is.
