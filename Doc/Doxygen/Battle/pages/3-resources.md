@@ -116,6 +116,7 @@ Prefabs that are used both in %Battle UI and BattleUiEditor in MenuUi.
 | @dirref{Altzone,Assets/Altzone/Resources/Prefabs,BattleUiShared} | @ref BattleUiDiamonds.prefab     | @copybrief BattleUiDiamonds.prefab                                              |
 | @dirref{Altzone,Assets/Altzone/Resources/Prefabs,BattleUiShared} | @ref BattleUiGiveUpButton.prefab | @copybrief BattleUiGiveUpButton.prefab                                          |
 | @dirref{Altzone,Assets/Altzone/Resources/Prefabs,BattleUiShared} | @ref BattleUiPlayerInfo.prefab   | @copybrief BattleUiPlayerInfo.prefab                                            |
+| @dirref{Altzone,Assets/Altzone/Resources/Prefabs,BattleUiShared} | @ref BattleUiJoystick.prefab     | @copybrief BattleUiJoystick.prefab                                              |
 | @dirref{Altzone,Assets/Altzone/Resources/Prefabs,BattleUiShared} | @ref BattleUiTimer.prefab        | @copybrief BattleUiTimer.prefab                                                 |
 
 <br/>
