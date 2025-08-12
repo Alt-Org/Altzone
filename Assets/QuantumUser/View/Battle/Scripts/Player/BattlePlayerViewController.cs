@@ -23,7 +23,7 @@ namespace Battle.View.Player
         /// @name SerializeField variables
         /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
-        
+
         /// <value>[SerializeField] Animator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> that handles player animations.</value>
         [SerializeField] private Animator _animator;
 
