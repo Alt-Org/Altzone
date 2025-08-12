@@ -81,6 +81,10 @@ The format used for grouping SerializeFields. Example provided also has Serializ
 
 /// @} // End of the grouped SerializeFields
 ```
+@note
+- Make sure that the header is copied entirely, and the example comments starting with two slashes // are removed.
+- Place all SerializeField variables inside the group.
+- SerializeField variable documentation should be on a single line, use value tags and have "[SerializeField] " prefix.
 
 ### Documenting public getters
 Format used for documenting public getters for private variables. Using both summary and value tags so that in doxygen it's clear that it's a getter for another variable, and in code it's clear what it's value is.
