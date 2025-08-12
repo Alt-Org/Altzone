@@ -325,6 +325,7 @@
 ///         - @cref{Battle.View.UI,BattleUiDiamondsHandler}
 ///         - @cref{Battle.View.UI,BattleUiGiveUpButtonHandler}
 ///         - @cref{Battle.View.UI,BattleUiPlayerInfoHandler}
+///         - @cref{Battle.View.UI,BattleUiJoystickHandler}
 ///         - @cref{Battle.View.UI,BattleUiDebugStatsOverlayHandler}
 ///         - Canvas
 ///         - CanvasScaler
@@ -396,6 +397,8 @@
 ///                         - TextMeshPro - Text (UI)
 ///         - **BattleUiDiamonds** (@ref BattleUiDiamonds.prefab)
 ///         - **BattleUiGiveUpButton** (@ref BattleUiGiveUpButton.prefab)
+///         - **BattleUiJoystick1** (@ref BattleUiJoystick.prefab)
+///         - **BattleUiJoystick2** (@ref BattleUiJoystick.prefab)
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -582,6 +585,32 @@
 ///                 - CanvasRenderer
 ///                 - TextMeshPro - Text (UI)
 ///                 - WorkSans-SemiBold SDF Material (Material)
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @file BattleUiJoystick.prefab
+/// <summary>
+/// Prefab for %Battle's joysticks.
+/// </summary>
+///
+/// Used in both %Battle's UI and BattleUiEditor in MenuUi.
+///
+/// ### Structure
+/// - **BattleUiGiveUpButton**
+///     - *Components:*
+///         - RectTransform
+///         - BattleUiMovableJoystickElement
+///         - CanvasRenderer
+///     - *Children:*
+///         - **Background**
+///         - **Handle**
+///             - *Children:*
+///                 - **Icon**
+///         - *Shared components:*
+///             - RectTransform
+///             - CanvasRenderer
+///             - Image
+///             - Default UI Material (Material)
 
 // ---------------------------------------------------------------------------------------------------- //
 
