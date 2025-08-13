@@ -47,6 +47,10 @@ public class Chat : AltMonoBehaviour
     [SerializeField] private GameObject _messagePrefabPink;
     [SerializeField] private GameObject _quickMessagePrefab;
 
+    [Header("Other Prefab")]
+    [SerializeField] private GameObject[] _otherMessages;
+
+
     [Header("Scroll Rects")]
     [SerializeField] private ScrollRect _languageChatScrollRect;
     [SerializeField] private ScrollRect _globalChatScrollRect;
