@@ -366,18 +366,22 @@ namespace Altzone.Scripts.Lobby
                 {
                     case 1:
                         if(pos1Set) return false;
+                        if(!PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, "").Equals(player.UserId)) return false;
                         pos1Set = true;
                         break;
                     case 2:
                         if (pos2Set) return false;
+                        if (!PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, "").Equals(player.UserId)) return false;
                         pos2Set = true;
                         break;
                     case 3:
                         if (pos3Set) return false;
+                        if (!PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, "").Equals(player.UserId)) return false;
                         pos3Set = true;
                         break;
                     case 4:
                         if (pos4Set) return false;
+                        if (!PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, "").Equals(player.UserId)) return false;
                         pos4Set = true;
                         break;
                     default: return false;
@@ -1173,6 +1177,11 @@ namespace Altzone.Scripts.Lobby
             CustomCharacter character;
             for (int i = 0; i < RuntimePlayer.CharacterCount; i++) {
                 character = characters[i];
+
+                if(character == null || character.Id is CharacterID.None)
+                {
+                    character = new(PlayerCharacterPrototypes.GetCharacter("-1").BaseCharacter);
+                }
 
                 var stats = new BattlePlayerStats()
                 {

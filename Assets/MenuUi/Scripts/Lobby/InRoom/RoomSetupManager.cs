@@ -377,25 +377,25 @@ namespace MenuUi.Scripts.Lobby.InRoom
             switch (playerPosition)
             {
                 case PlayerPosition1:
-                    if (!_interactablePlayerP1) { _captionPlayerP1 = "Confict Detected!!"; break; }
+                    if (!_interactablePlayerP1) { _captionPlayerP1 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP1 = false;
                     if (_captionPlayerP1 != null) _captionPlayerP1 = player.NickName;
                     if (_selectedCharactersP1 != null) _selectedCharactersP1.SetCharacters(characters, stats);
                     break;
                 case PlayerPosition2:
-                    if (!_interactablePlayerP2) { _captionPlayerP2 = "Confict Detected!!"; break; }
+                    if (!_interactablePlayerP2) { _captionPlayerP2 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP2 = false;
                     if (_captionPlayerP2 != null) _captionPlayerP2 = player.NickName;
                     if (_selectedCharactersP2 != null) _selectedCharactersP2.SetCharacters(characters, stats);
                     break;
                 case PlayerPosition3:
-                    if (!_interactablePlayerP3) { _captionPlayerP3 = "Confict Detected!!"; break; }
+                    if (!_interactablePlayerP3) { _captionPlayerP3 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP3 = false;
                     if (_captionPlayerP3 != null) _captionPlayerP3 = player.NickName;
                     if (_selectedCharactersP3 != null) _selectedCharactersP3.SetCharacters(characters, stats);
                     break;
                 case PlayerPosition4:
-                    if (!_interactablePlayerP4) { _captionPlayerP4 = "Confict Detected!!"; break; }
+                    if (!_interactablePlayerP4) { _captionPlayerP4 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP4 = false;
                     if (_captionPlayerP4 != null) _captionPlayerP4 = player.NickName;
                     if (_selectedCharactersP4 != null) _selectedCharactersP4.SetCharacters(characters, stats);
@@ -413,25 +413,25 @@ namespace MenuUi.Scripts.Lobby.InRoom
             switch (playerPosition)
             {
                 case PlayerPosition1:
-                    if (!_interactablePlayerP1) { _captionPlayerP1 = "Confict Detected!!"; break; }
+                    if (!_interactablePlayerP1) { _captionPlayerP1 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP1 = false;
                     if (_captionPlayerP1 != null) _captionPlayerP1 = $"<color=blue>{player.NickName}</color>";
                     if (_selectedCharactersP1 != null) _selectedCharactersP1.SetCharacters();
                     break;
                 case PlayerPosition2:
-                    if (!_interactablePlayerP2) { _captionPlayerP2 = "Confict Detected!!"; break; }
+                    if (!_interactablePlayerP2) { _captionPlayerP2 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP2 = false;
                     if (_captionPlayerP2 != null) _captionPlayerP2 = $"<color=blue>{player.NickName}</color>";
                     if (_selectedCharactersP2 != null) _selectedCharactersP2.SetCharacters();
                     break;
                 case PlayerPosition3:
-                    if (!_interactablePlayerP3) { _captionPlayerP3 = "Confict Detected!!"; break; }
+                    if (!_interactablePlayerP3) { _captionPlayerP3 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP3 = false;
                     if (_captionPlayerP3 != null) _captionPlayerP3 = $"<color=blue>{player.NickName}</color>";
                     if (_selectedCharactersP4 != null) _selectedCharactersP3.SetCharacters();
                     break;
                 case PlayerPosition4:
-                    if (!_interactablePlayerP4) { _captionPlayerP4 = "Confict Detected!!"; break; }
+                    if (!_interactablePlayerP4) { _captionPlayerP4 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP4 = false;
                     if (_captionPlayerP4 != null) _captionPlayerP4 = $"<color=blue>{player.NickName}</color>";
                     if (_selectedCharactersP4 != null) _selectedCharactersP4.SetCharacters();

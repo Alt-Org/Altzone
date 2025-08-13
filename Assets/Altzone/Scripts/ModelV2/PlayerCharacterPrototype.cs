@@ -34,6 +34,7 @@ namespace Altzone.Scripts.ModelV2
         public Sprite BattleUiSprite => _characterSpec.BattleUiSprite;
         public string Description => _characterSpec.CharacterDescription;
         public string ShortDescription => _characterSpec.CharacterShortDescription;
+        public BaseCharacter BaseCharacter => _characterSpec.CharacterStats;
 
         public readonly SpecialAttribute Hp;
         public readonly SpecialAttribute Speed;
