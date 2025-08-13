@@ -337,6 +337,8 @@ public class Chat : AltMonoBehaviour
 
         StartCoroutine(SetReactionPanelPosition());
 
+        //Debug.Log(IsOther(message.gameObject));
+
         _deleteButtons.SetActive(true);// Näytä poistopainikkeet, jos viesti on valittuna
         _addReactionsPanel.SetActive(true);
     }
@@ -359,7 +361,16 @@ public class Chat : AltMonoBehaviour
         reactionPosition.y = newPanelY;
 
         float fieldEdgeX = reactionField.transform.position.x - (reactionFieldTransform.rect.width * reactionFieldTransform.pivot.x);
-        float newPanelX = fieldEdgeX + (reactionPanelTransfrom.rect.width * reactionPanelTransfrom.pivot.x);
+        float newPanelX;
+        if (IsOther(_selectedMessage))
+        {
+            newPanelX = fieldEdgeX + (reactionPanelTransfrom.rect.width * 5 * reactionPanelTransfrom.pivot.x);
+        }
+        else
+        {
+            newPanelX = fieldEdgeX + (reactionPanelTransfrom.rect.width * reactionPanelTransfrom.pivot.x);
+        }
+        
         reactionPosition.x = newPanelX;
 
         _addReactionsPanel.transform.position = reactionPosition;
@@ -547,6 +558,19 @@ public class Chat : AltMonoBehaviour
         _addReactionsPanel.SetActive(false);
         _usersWhoAdded.SetActive(false);
     }
+
+    private bool IsOther(GameObject message)
+    {
+        foreach (var other in _otherMessages)
+        {
+            if (message.name == other.name+"(Clone)")
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
      
 
     public void OpenUsersWhoAddedReactionPanel()
@@ -558,8 +582,10 @@ public class Chat : AltMonoBehaviour
         SetReactionPanelPosition();
     }
 
-    public GameObject giveJoyPref()
-    {
-        return _messagePrefabYellow;
-    }
+    //public GameObject giveJoyPref()
+    //{
+    //    return _messagePrefabYellow;
+    //}
+
+
 }
