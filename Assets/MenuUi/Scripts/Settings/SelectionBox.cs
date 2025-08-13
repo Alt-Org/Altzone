@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
-using Altzone.Scripts.Interface;
 using Altzone.Scripts.ReferenceSheets;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -16,7 +15,6 @@ public class SelectionBox : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _text;
     [Space]
     [SerializeField] private SettingsCarrier.SelectionBoxType _type = SettingsCarrier.SelectionBoxType.None;
-    public Object _fetchableValues;
     public List<string> _manualValues = new List<string>();
     [SerializeField] private UnityEvent _onSelectionChange;
 
@@ -96,7 +94,6 @@ public class MyScriptEditor : Editor
     SerializedProperty _goRightButton;
     SerializedProperty _text;
     SerializedProperty _type;
-    SerializedProperty _fetchableValues;
     SerializedProperty _manualValues;
     SerializedProperty _onSelectionChange;
 
@@ -107,7 +104,6 @@ public class MyScriptEditor : Editor
         _goRightButton = serializedObject.FindProperty("_goRightButton");
         _text = serializedObject.FindProperty("_text");
         _type = serializedObject.FindProperty("_type");
-        _fetchableValues = serializedObject.FindProperty("_fetchableValues");
         _manualValues = serializedObject.FindProperty("_manualValues");
         _onSelectionChange = serializedObject.FindProperty("_onSelectionChange");
     }
@@ -122,9 +118,8 @@ public class MyScriptEditor : Editor
         EditorGUILayout.PropertyField(_goRightButton);
         EditorGUILayout.PropertyField(_text);
         EditorGUILayout.PropertyField(_type);
-        EditorGUILayout.PropertyField(_fetchableValues);
 
-        if (myScript._fetchableValues == null)
+        if ((SettingsCarrier.SelectionBoxType)_type.enumValueIndex is SettingsCarrier.SelectionBoxType.None)
         {
             //EditorGUI.indentLevel++;
             //EditorGUILayout.PrefixLabel("Manual Values");
