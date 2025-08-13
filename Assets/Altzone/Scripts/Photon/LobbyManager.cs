@@ -319,9 +319,10 @@ namespace Altzone.Scripts.Lobby
                 // Getting first free position from the room and creating the photon hashtables for setting property
                 freePosition = PhotonLobbyRoom.GetFirstFreePlayerPos();
                 if (!PhotonLobbyRoom.IsValidPlayerPos(freePosition)) yield break;
+                StartCoroutine(RequestPositionChange(freePosition));
                 string positionKey = PhotonBattleRoom.GetPositionKey(freePosition);
 
-                PhotonHashtable propertyToSet = new() { { positionKey, PhotonRealtimeClient.LocalLobbyPlayer.UserId } };
+                /*PhotonHashtable propertyToSet = new() { { positionKey, PhotonRealtimeClient.LocalLobbyPlayer.UserId } };
                 PhotonHashtable expectedValue = new() { { positionKey, "" } };
 
                 // Setting custom property, checking if the request could be sent to the server
@@ -337,14 +338,23 @@ namespace Altzone.Scripts.Lobby
 
                     // Checking if local player is the one in the slot or if there was a conflict
                     success = positionValue == PhotonRealtimeClient.LocalLobbyPlayer.UserId;
-                }
+                }*/
+                string positionValue = "";
+                yield return new WaitUntil(() =>
+                {
+                    positionValue = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(positionKey, "");
+                    return positionValue != "";
+                });
+
+                // Checking if local player is the one in the slot or if there was a conflict
+                success = positionValue == PhotonRealtimeClient.LocalLobbyPlayer.UserId;
 
                 if (success) break;
                 yield return null;
             } while (!success);
 
             // Setting to player properties
-            if (setToPlayerProperties) PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, freePosition);
+            //if (setToPlayerProperties) PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, freePosition);
 
             _reserveFreePositionHolder = null;
         }
@@ -1124,47 +1134,65 @@ namespace Altzone.Scripts.Lobby
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Raid);
         }
 
-        private void SetPlayer(Player player, int playerPosition)
+        private bool PlayerPosChangeInProgress = false;
+
+        private IEnumerator SetPlayer(Player player, int playerPosition)
         {
+            yield return new WaitUntil(() => !PlayerPosChangeInProgress);
+
+            PlayerPosChangeInProgress = true;
             // Checking if any of the players in the room are already in the position (value is anything else than empty string) and if so return.
-            if (PhotonBattleRoom.CheckIfPositionIsFree(playerPosition) == false) return;
+            if (PhotonBattleRoom.CheckIfPositionIsFree(playerPosition) == false)
+            {
+                Debug.LogWarning("Requested position is not free.");
+                PlayerPosChangeInProgress = false;
+                yield break;
+            }
 
             Assert.IsTrue(PhotonLobbyRoom.IsValidGameplayPosOrGuest(playerPosition));
-
-            if (!player.HasCustomProperty(PlayerPositionKey))
-            {
-                Debug.Log($"setPlayer {PlayerPositionKey}={playerPosition}");
-                player.SetCustomProperties(new PhotonHashtable { { PlayerPositionKey, playerPosition } });
-                return;
-            }
-
-            // Setting new position to player's custom properties
-            int curValue = player.GetCustomProperty<int>(PlayerPositionKey);
-            player.SafeSetCustomProperty(PlayerPositionKey, playerPosition, curValue);
-
-            // Initializing hash tables for setting the previous position empty
-            string previousPositionKey = PhotonBattleRoom.GetPositionKey(curValue);
-
-            var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, "" } });
-            var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, player.UserId } }); // Expected to have the player's id in the previous position
-
-            // Setting previous position empty
-            if(!PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue))
-            {
-                Debug.LogWarning($"Failed to free the position {curValue}. This likely because the player doesn't reserve it.");
-            }
 
             // Initializing hash tables for setting the new position as taken
             string newPositionKey = PhotonBattleRoom.GetPositionKey(playerPosition);
 
+            if (!player.HasCustomProperty(PlayerPositionKey))
+            {
+                Debug.Log($"setPlayer {PlayerPositionKey}={playerPosition}");
+                var position = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, player.UserId } });
+                var eValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, "" } }); // Expecting the new position to be empty
+                if (PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(position, eValue))
+                    player.SetCustomProperties(new PhotonHashtable { { PlayerPositionKey, playerPosition } });
+                PlayerPosChangeInProgress = false;
+                yield break;
+            }
+
+            // Initializing hash tables for setting the previous position empty
+            int curValue = player.GetCustomProperty<int>(PlayerPositionKey);
+            string previousPositionKey = PhotonBattleRoom.GetPositionKey(curValue);
+
             var newPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, player.UserId } });
-            expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, "" } }); // Expecting the new position to be empty
+            var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, "" } }); // Expecting the new position to be empty
 
             // Setting new position as taken
-            if(!PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(newPosition, expectedValue))
+            if (!PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(newPosition, expectedValue))
             {
                 Debug.LogWarning($"Failed to reserve the position {playerPosition}. This likely because somebody already is in this position.");
             }
+            else
+            {
+                // Setting new position to player's custom properties
+                player.SafeSetCustomProperty(PlayerPositionKey, playerPosition, curValue);
+
+                var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, "" } });
+                expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, player.UserId } }); // Expected to have the player's id in the previous position
+
+                // Setting previous position empty
+                if (!PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue))
+                {
+                    Debug.LogWarning($"Failed to free the position {curValue}. This likely because the player doesn't reserve it.");
+                }
+            }
+            PlayerPosChangeInProgress = false;
+            yield break;
         }
 
         public void SetPlayerQuantumCharacters(List<CustomCharacter> characters)
@@ -1398,7 +1426,7 @@ namespace Altzone.Scripts.Lobby
                 case PhotonRealtimeClient.PhotonEvent.PlayerPositionChangeRequested:
                     int position = (int)photonEvent.CustomData;
                     Player player = PhotonRealtimeClient.CurrentRoom.GetPlayer(photonEvent.Sender);
-                    if (player != null) SetPlayer(player, position);
+                    if (player != null) StartCoroutine(SetPlayer(player, position));
                     else Debug.LogError($"Player {photonEvent.Sender} not found in room");
 
                     if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
