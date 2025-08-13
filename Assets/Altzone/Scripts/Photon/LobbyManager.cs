@@ -322,17 +322,17 @@ namespace Altzone.Scripts.Lobby
                 string positionKey = PhotonBattleRoom.GetPositionKey(freePosition);
 
                 PhotonHashtable propertyToSet = new() { { positionKey, PhotonRealtimeClient.LocalLobbyPlayer.UserId } };
-                PhotonHashtable expectedValue = new() { { positionKey, string.Empty } };
+                PhotonHashtable expectedValue = new() { { positionKey, "" } };
 
                 // Setting custom property, checking if the request could be sent to the server
                 if (PhotonRealtimeClient.CurrentRoom.SetCustomProperties(propertyToSet, expectedValue))
                 {
                     // Waiting until that position in the room is reserved
-                    string positionValue = string.Empty;
+                    string positionValue = "";
                     yield return new WaitUntil(() =>
                     {
-                        positionValue = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(positionKey, string.Empty);
-                        return positionValue != string.Empty;
+                        positionValue = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(positionKey, "");
+                        return positionValue != "";
                     });
 
                     // Checking if local player is the one in the slot or if there was a conflict
