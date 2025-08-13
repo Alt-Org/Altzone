@@ -349,6 +349,44 @@ namespace Altzone.Scripts.Lobby
             _reserveFreePositionHolder = null;
         }
 
+        private bool CheckIfAllPlayersInPosition()
+        {
+            bool pos1Set = false;
+            bool pos2Set = false;
+            bool pos3Set = false;
+            bool pos4Set = false;
+            foreach (var player in PhotonRealtimeClient.GetCurrentRoomPlayers())
+            {
+                if (!player.HasCustomProperty(PlayerPositionKey) || !player.HasCustomProperty(PhotonBattleRoom.PlayerCharacterIdsKey) || !player.HasCustomProperty(PhotonBattleRoom.PlayerStatsKey))
+                {
+                    return false;
+                }
+                var playerPosition = player.GetCustomProperty(PlayerPositionKey, 0);
+                switch (playerPosition)
+                {
+                    case 1:
+                        if(pos1Set) return false;
+                        pos1Set = true;
+                        break;
+                    case 2:
+                        if (pos2Set) return false;
+                        pos2Set = true;
+                        break;
+                    case 3:
+                        if (pos3Set) return false;
+                        pos3Set = true;
+                        break;
+                    case 4:
+                        if (pos4Set) return false;
+                        pos4Set = true;
+                        break;
+                    default: return false;
+
+                }
+            }
+            return true;
+        }
+
         private void OnPlayerPosEvent(PlayerPosEvent data)
         {
             if (_requestPositionChangeHolder == null)
@@ -1353,6 +1391,18 @@ namespace Altzone.Scripts.Lobby
                     Player player = PhotonRealtimeClient.CurrentRoom.GetPlayer(photonEvent.Sender);
                     if (player != null) SetPlayer(player, position);
                     else Debug.LogError($"Player {photonEvent.Sender} not found in room");
+
+                    if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+                    {
+                        Room room = PhotonRealtimeClient.CurrentRoom;
+                        if (room.PlayerCount != room.MaxPlayers) return;
+
+                        if (CheckIfAllPlayersInPosition())
+                        {
+                            GameType gameType = (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                            if (gameType == GameType.Custom) OnStartPlayingEvent(new());
+                        }
+                    }
                     break;
 
                 case PhotonRealtimeClient.PhotonEvent.RoomChangeRequested:
@@ -1401,8 +1451,11 @@ namespace Altzone.Scripts.Lobby
                 Room room = PhotonRealtimeClient.CurrentRoom;
                 if (room.PlayerCount != room.MaxPlayers) return;
 
-                GameType gameType = (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
-                if (gameType == GameType.Custom) OnStartPlayingEvent(new());
+                if (CheckIfAllPlayersInPosition())
+                {
+                    GameType gameType = (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                    if (gameType == GameType.Custom) OnStartPlayingEvent(new());
+                }
             }
         }
         public void OnRoomPropertiesUpdate(PhotonHashtable propertiesThatChanged) { LobbyOnRoomPropertiesUpdate?.Invoke(new(propertiesThatChanged)); }
