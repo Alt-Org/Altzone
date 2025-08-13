@@ -40,6 +40,7 @@ public class Popup : MonoBehaviour
     [Space]
     [SerializeField] private TMP_Text _acceptConfirmButtonText;
     [Space]
+    [SerializeField] private TextMeshProUGUI _taskDescription;
     [SerializeField] private TextMeshProUGUI _taskPointsText;
     [SerializeField] private TextMeshProUGUI _taskCoinsText;
 
@@ -125,6 +126,7 @@ public class Popup : MonoBehaviour
             if (data.Value.OwnPage != null)
             {
                 Instance.SetTaskAcceptImage(data.Value.OwnPage);
+                Instance.SetTaskDescription(data.Value.OwnPage);
                 Instance.SetTaskRewardTexts(data.Value.OwnPage);
                 Instance.SetPopupTaskColor(data.Value.OwnPage, data.Value.Type);
             }
@@ -161,6 +163,11 @@ public class Popup : MonoBehaviour
     private void SetTaskAcceptImage(PlayerTask data)
     {
         _taskAcceptImage.sprite = _cardImageReference.GetTaskImage(data);
+    }
+
+    private void SetTaskDescription(PlayerTask data)
+    {
+        _taskDescription.text = data.Content;
     }
 
     private void SetTaskRewardTexts(PlayerTask data)

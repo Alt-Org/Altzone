@@ -4,6 +4,7 @@ using UnityEngine;
 public class DailyTaskData
 {
     public string title;
+    public string description;
     public int amount;
     public int coins;
     public int points;

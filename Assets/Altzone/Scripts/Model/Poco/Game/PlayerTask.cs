@@ -116,7 +116,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         private string _id;
         private TaskTitle _title;
-        //private TaskContent _content;
+        private TaskContent _content;
         private int _amount;
         private int _amountLeft;
         private TaskNormalType _normalTaskType;
@@ -143,7 +143,7 @@ namespace Altzone.Scripts.Model.Poco.Game
                 return _title.Fi;
             }
         }
-        //public string Content { get => _content.Fi;}
+        public string Content { get => _content.Fi;}
         public int TaskProgress { get => _taskProgress;}
         public string PlayerId { get => _playerId; }
         public int AmountLeft { get => _amountLeft; }
@@ -159,7 +159,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             _id = task._id;
             _title = new(task.title);
-            //_content = new(task.content);
+            _content = new(task.content);
             _amount = task.amount;
             _amountLeft = task.amountLeft;
             _coins = task.coins;
@@ -554,7 +554,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         public string _id;
         public TaskTitle title;
-        //public TaskContent content;
+        public TaskContent content;
         public int amount;
         public int amountLeft;
         public string type;
