@@ -20,34 +20,43 @@ namespace Altzone.Scripts.BattleUiShared
     /// Note: Disables font auto sizing and text wrapping for <a href="https://docs.unity3d.com/Packages/com.unity.ugui@2.0/api/TMPro.TextMeshProUGUI.html">TextMeshProUGUI@u-exlink</a>.
     public class TextScaler : MonoBehaviour
     {
+        /// @anchor TextScaler-SerializeFields
         /// @name SerializeField variables
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <value>[SerializeField] The target percentage (of text box height) for font size.</value>
+        /// <summary>[SerializeField] The target percentage (of text box height) for font size.</summary>
+        /// @ref TextScaler-SerializeFields
         [Header("Text scaling options")]
         [SerializeField, Range(0, 1)] private float _relativePercentageTarget = 0.8f;
 
-        /// <value>[SerializeField] The maximum percentage (of text box height) for font size.</value>
+        /// <summary>[SerializeField] The maximum percentage (of text box height) for font size.</summary>
+        /// @ref TextScaler-SerializeFields
         [SerializeField, Range(0, 1)] private float _relativePercentageMax = 0.9f;
 
-        /// <value>[SerializeField] Minimum font size.</value>
+        /// <summary>[SerializeField] Minimum font size.</summary>
+        /// @ref TextScaler-SerializeFields
         [SerializeField, Min(0)] private float _fontSizeMin;
 
-        /// <value>[SerializeField] Maximum font size.</value>
+        /// <summary>[SerializeField] Maximum font size.</summary>
+        /// @ref TextScaler-SerializeFields
         [SerializeField, Min(0)] private float _fontSizeMax;
 
-        /// <value>[SerializeField] Text box's aspect ratio. This should be default (0) if text box shouldn't scale</value>
+        /// <summary>[SerializeField] Text box's aspect ratio. This should be default (0) if text box shouldn't scale</summary>
+        /// @ref TextScaler-SerializeFields
         [Header("Text box scaling options")]
         [SerializeField] private float _textBoxAspectRatio = 0;
 
-        /// <value>[SerializeField] The #_holderRectTransform aspect ratio the text box will start scaling at. This is for widescreen support. If #_holderRectTransform aspect ratio is wider than this value, the text box won't scale.</value>
+        /// <summary>[SerializeField] The #_holderRectTransform aspect ratio the text box will start scaling at. This is for widescreen support. If #_holderRectTransform aspect ratio is wider than this value, the text box won't scale.</summary>
+        /// @ref TextScaler-SerializeFields
         [SerializeField] private float _startScalingHolderAspectRatio = 9.0f / 16.0f;
 
-        /// <value>[SerializeField] Reference to the (full screen) parent <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/RectTransform.html">RectTransform@u-exlink</a> for all #_textArray text boxes.</value>
+        /// <summary>[SerializeField] Reference to the (full screen) parent <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/RectTransform.html">RectTransform@u-exlink</a> for all #_textArray text boxes.</summary>
+        /// @ref TextScaler-SerializeFields
         [SerializeField] private RectTransform _holderRectTransform;
 
-        /// <value>[SerializeField] Array of <a href="https://docs.unity3d.com/Packages/com.unity.ugui@2.0/api/TMPro.TextMeshProUGUI.html">TextMeshProUGUI@u-exlink</a> references which texts should be scaled.</value>
+        /// <summary>[SerializeField] Array of <a href="https://docs.unity3d.com/Packages/com.unity.ugui@2.0/api/TMPro.TextMeshProUGUI.html">TextMeshProUGUI@u-exlink</a> references which texts should be scaled.</summary>
+        /// @ref TextScaler-SerializeFields
         [Header("Text component references")]
         [SerializeField] private TextMeshProUGUI[] _textArray;
 

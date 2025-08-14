@@ -17,20 +17,25 @@ namespace Altzone.Scripts.BattleUiShared
     [RequireComponent(typeof(RectTransform))]
     public class BattleUiMultiOrientationElement : BattleUiMovableElement
     {
+        /// @anchor BattleUiMultiOrientationElement-SerializeFields
         /// @name SerializeField variables
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <value>[SerializeField] Reference to the horizontal orientation's parent <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</value>
+        /// <summary>[SerializeField] Reference to the horizontal orientation's parent <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</summary>
+        /// @ref BattleUiMultiOrientationElement-SerializeFields
         [SerializeField] private GameObject _horizontalConfiguration;
 
-        /// <value>[SerializeField] Multi orientation element's aspect ratio for horizontal orientation.</value>
+        /// <summary>[SerializeField] Multi orientation element's aspect ratio for horizontal orientation.</summary>
+        /// @ref BattleUiMultiOrientationElement-SerializeFields
         [SerializeField] private float _horizontalAspectRatio;
 
-        /// <value>[SerializeField] Reference to the vertical orientation's parent <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</value>
+        /// <summary>[SerializeField] Reference to the vertical orientation's parent <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</summary>
+        /// @ref BattleUiMultiOrientationElement-SerializeFields
         [SerializeField] private GameObject _verticalConfiguration;
 
-        /// <value>[SerializeField] Multi orientation element's aspect ratio for vertical orientation.</value>
+        /// <summary>[SerializeField] Multi orientation element's aspect ratio for vertical orientation.</summary>
+        /// @ref BattleUiMultiOrientationElement-SerializeFields
         [SerializeField] private float _verticalAspectRatio;
 
         /// @}
