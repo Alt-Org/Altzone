@@ -90,7 +90,7 @@ In %Battle the UI scripts have a Ui prefix following the %Battle prefix. [[Namin
 ## UI Handler {#page-view-uihandler}
 
 UI Handlers are scripts which handle visual functionality for BattleUiShared -prefabs.  
-They are attached to the top level parent GameObject of the BattleUi -prefab and there is only ever one instance of a UI Handler script.  
+They are attached to the top level parent GameObject of the @ref BattleUi.prefab and there is only ever one instance of a UI Handler script.  
 The handler scripts also add listeners to call UiInput methods in @cref{Battle.View.Game,BattleGameViewController} when the local player gives an UI input.  
 In %Battle the UI Handlers have a Handler suffix in addition to the Ui prefix. [[Naming]](#index-naming)
 
