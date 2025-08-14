@@ -1,0 +1,25 @@
+/// @file BattleUiDiamonds.prefab
+/// <summary>
+/// Prefab for %Battle's DiamondCounter UI element.
+/// </summary>
+///
+/// Used in both %Battle's UI and BattleUiEditor in MenuUi.
+///
+/// ### Structure
+/// - **BattleUiDiamonds**
+///     - *Components:*
+///         - RectTransform
+///         - @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement}
+///         - CanvasRenderer
+///     - *Children:*
+///         - **DiamondIcon**
+///             - *Components:*
+///                 - Image
+///                 - Default UI Material (Material)
+///         - **DiamondCount**
+///             - *Components:*
+///                 - TextMeshPro - Text (UI)
+///                 - WorkSans-SemiBold SDF Material (Material)
+///         - *Shared components:*
+///             - RectTransform
+///             - CanvasRenderer

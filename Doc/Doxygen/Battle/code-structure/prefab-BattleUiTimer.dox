@@ -1,0 +1,16 @@
+/// @file BattleUiTimer.prefab
+/// <summary>
+/// Prefab for %Battle's timer.
+/// </summary>
+///
+/// Used in both %Battle's UI and BattleUiEditor in MenuUi.
+///
+/// ### Structure
+/// - **BattleUiTimer**
+///     - *Components:*
+///         - RectTransform
+///         - @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement}
+///         - @cref{Altzone.Scripts.BattleUiShared,TextScaler}
+///         - CanvasRenderer
+///         - TextMeshPro - Text (UI)
+///         - WorkSans-SemiBold SDF Material (Material)

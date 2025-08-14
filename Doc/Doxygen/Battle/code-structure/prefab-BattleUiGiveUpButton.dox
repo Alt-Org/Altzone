@@ -1,0 +1,23 @@
+/// @file BattleUiGiveUpButton.prefab
+/// <summary>
+/// Prefab for %Battle's GiveUp-button.
+/// </summary>
+///
+/// Used in both %Battle's UI and BattleUiEditor in MenuUi.
+///
+/// ### Structure
+/// - **BattleUiGiveUpButton**
+///     - *Components:*
+///         - RectTransform
+///         - @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement}
+///         - CanvasRenderer
+///         - Image
+///         - Button
+///         - Default UI Material (Material)
+///     - *Children:*
+///         - **GiveUpText**
+///             - *Components:*
+///                 - RectTransform
+///                 - CanvasRenderer
+///                 - TextMeshPro - Text (UI)
+///                 - WorkSans-SemiBold SDF Material (Material)

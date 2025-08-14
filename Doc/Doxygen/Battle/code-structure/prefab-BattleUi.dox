@@ -1,0 +1,90 @@
+/// @file BattleUi.prefab
+/// <summary>
+/// Prefab of %Battle's UI.
+/// </summary>
+///
+/// ### Structure
+/// - **BattleUi**
+///     - *Components:*
+///         - RectTransform
+///         - @cref{Battle.View.UI,BattleUiController}
+///         - @cref{Battle.View.UI,BattleUiAnnouncementHandler}
+///         - @cref{Battle.View.UI,BattleUiGameOverHandler}
+///         - @cref{Battle.View.UI,BattleUiTimerHandler}
+///         - @cref{Battle.View.UI,BattleUiDiamondsHandler}
+///         - @cref{Battle.View.UI,BattleUiGiveUpButtonHandler}
+///         - @cref{Battle.View.UI,BattleUiPlayerInfoHandler}
+///         - @cref{Battle.View.UI,BattleUiJoystickHandler}
+///         - @cref{Battle.View.UI,BattleUiDebugStatsOverlayHandler}
+///         - Canvas
+///         - CanvasScaler
+///         - GraphicRaycaster
+///     - *Children:*
+///         - **BattleUiTimer** (@ref BattleUiTimer.prefab)
+///         - **AnnouncementText**
+///             - *Components:*
+///                 - RectTransform
+///                 - @cref{Altzone.Scripts.BattleUiShared,TextScaler}
+///                 - CanvasRenderer
+///                 - TextMeshPro - Text (UI)
+///                 - WorkSans-Regular SDF Material (Material)
+///         - **BattleUiPlayerInfo1** (@ref BattleUiPlayerInfo.prefab)
+///         - **BattleUiPlayerInfo2** (@ref BattleUiPlayerInfo.prefab)
+///         - **GameOverView**
+///             - *Components:*
+///                 - RectTransform
+///             - *Children:*
+///                 - **background**
+///                     - *Components:*
+///                         - Image
+///                 - **TitleText**
+///                     - *Components:*
+///                         - TextMeshPro - Text (UI)
+///                 - **GoalByText**
+///                     - *Components:*
+///                         - TextMeshPro - Text (UI)
+///                 - **RestartButton**
+///                     - *Components:*
+///                         - Image
+///                         - Button
+///                     - *Children:*
+///                         - **Text (TMP)**
+///                             - *Components:*
+///                                 - RectTransform
+///                                 - CanvasRenderer
+///                                 - TextMeshPro - Text (UI)
+///                 - **ExitGameButton**
+///                     - *Components:*
+///                         - Image
+///                         - Button
+///                     - *Children:*
+///                         - **Text (TMP)**
+///                             - *Components:*
+///                                 - RectTransform
+///                                 - CanvasRenderer
+///                                 - TextMeshPro - Text (UI)
+///                 - *Shared components:*
+///                     - RectTransform
+///                     - CanvasRenderer
+///         - **DebugStatsOverlay**
+///             - *Components:*
+///                 - RectTransform
+///             - *Children:*
+///                 - **ImpactForceHolder**
+///                 - **HpHolder**
+///                 - **SpeedHolder**
+///                 - **CharSizeHolder**
+///                 - **DefenceHolder**
+///                 - *Shared components:*
+///                     - RectTransform
+///                 - *Shared children:*
+///                     - **StatName**
+///                     - **StatValue**
+///                     - *Shared components:*
+///                         - RectTransform
+///                         - CanvasRenderer
+///                         - TextMeshPro - Text (UI)
+///         - **BattleUiDiamonds** (@ref BattleUiDiamonds.prefab)
+///         - **BattleUiGiveUpButton** (@ref BattleUiGiveUpButton.prefab)
+///         - **BattleUiJoystick1** (@ref BattleUiJoystick.prefab)
+///         - **BattleUiJoystick2** (@ref BattleUiJoystick.prefab)

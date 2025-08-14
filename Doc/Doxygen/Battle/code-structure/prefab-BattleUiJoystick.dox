@@ -1,0 +1,23 @@
+/// @file BattleUiJoystick.prefab
+/// <summary>
+/// Prefab for %Battle's joysticks.
+/// </summary>
+///
+/// Used in both %Battle's UI and BattleUiEditor in MenuUi.
+///
+/// ### Structure
+/// - **BattleUiJoystick**
+///     - *Components:*
+///         - RectTransform
+///         - @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableJoystickElement}
+///         - CanvasRenderer
+///     - *Children:*
+///         - **Background**
+///         - **Handle**
+///             - *Children:*
+///                 - **Icon**
+///         - *Shared components:*
+///             - RectTransform
+///             - CanvasRenderer
+///             - Image
+///             - Default UI Material (Material)
