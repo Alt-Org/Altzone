@@ -70,7 +70,7 @@ namespace Battle.QSimulation.Game
             f.Signals.BattleOnGameOver(WinningTeam, projectile, projectileEntity);
         }
 
-         /// <summary>
+        /// <summary>
         /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method</a> gets called every frame.</span><br/>
         /// Controls state transitions of the game session per frame. Manages countdowns and progression to 'Playing'.
         /// @warning

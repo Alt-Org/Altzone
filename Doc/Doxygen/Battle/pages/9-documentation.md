@@ -24,48 +24,98 @@ External links should have the "🡵" unicode character or @@u-exlink at the end
 @important
 In source code @@u-exlink should be used instead of "🡵"
 
+<br/>
+
+---
+
+## Documenting methods
+When documenting any method, the different sections of the comment such as the summary and the parameters should be separated by an empty line.
+
+```
+/// <summary>
+/// Creates all character entities for each player in the game, inititalizing data, hitboxes and view components.
+/// </summary>
+///
+/// <param name="f">Current simulation frame.</param>
+```
+
+<br/>
+
+---
+
 ## Quantum Systems
+In the examples below parameter documentation has been ommitted.
+
+<br/>
 
 ### Quantum System Class brief/summary format
+The format used for documenting System and SystemSignalsOnly classes. Must contain the header with the correct system name and link to quantum documentation.
 
 System
 ```
-<span class="brief-h">system name <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
-// brief text
+/// <summary>
+/// <span class="brief-h">%Diamond <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
+/// Handles spawning diamonds, managing their lifetime and destroying them.
+/// </summary>
+public unsafe class BattleDiamondQSystem : SystemMainThreadFilter<BattleDiamondQSystem.Filter>, ISignalBattleOnProjectileHitSoulWall, ISignalBattleOnDiamondHitPlayer
 ```
 
 SystemSignalsOnly
 ```
-<span class="brief-h">system name <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum SystemSignalsOnly@u-exlink</a> @systemslink</span><br/>
-// brief text
+/// <summary>
+/// <span class="brief-h">%Goal <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum SystemSignalsOnly@u-exlink</a> @systemslink</span><br/>
+/// Triggers the end of the game when it receives signal
+/// </summary>
+public unsafe class BattleGoalQSystem : SystemSignalsOnly, ISignalBattleOnProjectileHitGoal
 ```
+
+<br/>
 
 ### Quantum System OnInit method brief/summary format
+The format used for documenting Quantum OnInit methods. Must contain the header with the link to quantum documentation. Must also contain the appropriate warning message.
 ```
-<span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System OnInit method@u-exlink</a>
-gets called when the system is initialized.</span><br/>
-// brief text
-@warning
-This method should only be called by Quantum.
+/// <summary>
+/// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System OnInit method</a> gets called when the system is initialized.</span><br/>
+/// Initializes the arena, player system, and sets the game session as initialized.
+/// @warning
+/// This method should only be called by Quantum.
+/// </summary>
+public override void OnInit(Frame f)
 ```
+
+<br/>
 
 ### Quantum System Update method brief/summary format
+The format used for documenting Quantum Update methods. Must contain the header with the link to quantum documentation. Must also contain the appropriate warning message.
 ```
-<span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method@u-exlink</a>
-gets called every frame.</span><br/>
-// brief text
-@warning
-This method should only be called by Quantum.
+/// <summary>
+/// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method</a> gets called every frame.</span><br/>
+/// Controls state transitions of the game session per frame. Manages countdowns and progression to 'Playing'.
+/// @warning
+/// This method should only be called by Quantum.
+/// </summary>
+public override void Update(Frame f)
 ```
 
+<br/>
+
 ### Quantum System Signal method brief/summary format
+The format used for documenting Quantum Signal methods. Must contain the header with the link to quantum documentation and a reference to the signal the method responds to. Must also contain the appropriate warning message.
 ```
-<span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Signal method@u-exlink</a>
-that gets called when <see cref="signal interface">signal interface</see> is sent.</span><br/>
-// brief text
-@warning
-This method should only be called via Quantum signal.
+/// <summary>
+/// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Signal method@u-exlink</a>
+/// that gets called when <see cref="Quantum.ISignalBattleOnProjectileHitPlayerShield">ISignalBattleOnProjectileHitPlayerShield</see> is sent.</span><br/>
+/// Handles behavior when the projectile hits a player shield.<br/>
+/// Applies bounce logic based on surface normal of the shield hitbox.
+/// @warning
+/// This method should only be called via Quantum signal.
+/// </summary>
+public void BattleOnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
 ```
+
+<br/>
+
+---
 
 ## Unity
 
