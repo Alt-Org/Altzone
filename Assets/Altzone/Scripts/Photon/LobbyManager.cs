@@ -1163,7 +1163,7 @@ namespace Altzone.Scripts.Lobby
         {
             if (_posChangeQueue.Contains(player.UserId)) yield break;
 
-            if(_playerPosChangeInProgress) _posChangeQueue.Add(player.UserId);
+            _posChangeQueue.Add(player.UserId);
 
             yield return new WaitUntil(() => !_playerPosChangeInProgress);
 
