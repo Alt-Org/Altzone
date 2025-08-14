@@ -1326,6 +1326,7 @@ namespace Altzone.Scripts.Lobby
                 var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { positionKey, otherPlayer.UserId } });
 
                 PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue);
+                if(_posChangeQueue.Contains(otherPlayer.UserId)) _posChangeQueue.Remove(otherPlayer.UserId);
             }
 
             if (PhotonRealtimeClient.InMatchmakingRoom && _followLeaderHolder == null)
