@@ -148,6 +148,8 @@ namespace Altzone.Scripts.Audio
                 _musicChannel2.Stop();
                 _musicChannel2.clip = null;
             }
+
+            _currentTrack = null;
         }
 
         public List<MusicTrack> GetMusicList()
