@@ -20,26 +20,33 @@ namespace Battle.View.UI
     [RequireComponent(typeof(Button))]
     public class BattleUiCharacterButtonComponent : MonoBehaviour
     {
+        /// @anchor BattleUiCharacterButtonComponent-SerializeFields
         /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <value>[SerializeField] Reference to the button component of the character button.</value>
+        /// <summary>[SerializeField] Reference to the button component of the character button.</summary>
+        /// @ref BattleUiCharacterButtonComponent-SerializeFields
         [SerializeField] private Button _button;
 
-        /// <value>[SerializeField] Reference OnPointerDownButton event sender.</value>
+        /// <summary>[SerializeField] Reference OnPointerDownButton event sender.</summary>
+        /// @ref BattleUiCharacterButtonComponent-SerializeFields
         [SerializeField] private OnPointerDownButton _eventSender;
 
-        /// <value>[SerializeField] Reference to the character image of the character button.</value>
+        /// <summary>[SerializeField] Reference to the character image of the character button.</summary>
+        /// @ref BattleUiCharacterButtonComponent-SerializeFields
         [SerializeField] private Image _characterImage;
 
-        /// <value>[SerializeField] Reference to the damage fill image of the character button. It is used to display the character's current Hp.</value>
+        /// <summary>[SerializeField] Reference to the damage fill image of the character button. It is used to display the character's current Hp.</summary>
+        /// @ref BattleUiCharacterButtonComponent-SerializeFields
         [SerializeField] private Image _damageFill;
 
-        /// <value>[SerializeField] Reference to the shield fill image of the character button. It is used to display the character's current shield health.</value>
+        /// <summary>[SerializeField] Reference to the shield fill image of the character button. It is used to display the character's current shield health.</summary>
+        /// @ref BattleUiCharacterButtonComponent-SerializeFields
         [SerializeField] private Image _shieldFill;
 
-        /// <value>[SerializeField] The duration for damage fill animation.</value>
+        /// <summary>[SerializeField] The duration for damage fill animation.</summary>
+        /// @ref BattleUiCharacterButtonComponent-SerializeFields
         [SerializeField] private float _damageFillAnimationDuration = 0.5f;
 
         /// @}
@@ -93,7 +100,7 @@ namespace Battle.View.UI
         private float _t = 0f;
 
         /// <summary>
-        /// Private <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/MonoBehaviour.Update.html">Update@u-exlink</a> method. Handles progressing the damage fill animation.
+        /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.Update.html">Update@u-exlink</a> method. Handles progressing the damage fill animation.
         /// </summary>
         private void Update()
         {

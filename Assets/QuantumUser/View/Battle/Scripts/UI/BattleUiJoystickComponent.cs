@@ -21,11 +21,13 @@ namespace Battle.View.UI
     [RequireComponent(typeof(RectTransform))]
     public class BattleUiJoystickComponent : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
     {
+        /// @anchor BattleUiJoystickComponent-SerializeFields
         /// @name SerializeField variables
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <value>[SerializeField] Reference to joystick handle's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/RectTransform.html">RectTransform@u-exlink</a> component.</value>
+        /// <summary>[SerializeField] Reference to joystick handle's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/RectTransform.html">RectTransform@u-exlink</a> component.</summary>
+        /// @ref BattleUiJoystickComponent-SerializeFields
         [SerializeField] private RectTransform _handleRectTransform;
 
         /// @}
