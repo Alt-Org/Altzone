@@ -17,17 +17,21 @@ namespace Battle.View.UI
     /// </summary>
     public class BattleUiGameOverHandler : MonoBehaviour
     {
+        /// @anchor BattleUiGameOverHandler-SerializeFields
         /// @name SerializeField variables
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <value>[SerializeField] Reference to BattleUiController.</value>
+        /// <summary>[SerializeField] Reference to BattleUiController.</summary>
+        /// @ref BattleUiGameOverHandler-SerializeFields
         [SerializeField] private BattleUiController _controller;
 
-        /// <value>[SerializeField] Reference to the GameObject which can be used to hide or show the game over popup.</value>
+        /// <summary>[SerializeField] Reference to the GameObject which can be used to hide or show the game over popup.</summary>
+        /// @ref BattleUiGameOverHandler-SerializeFields
         [SerializeField] private GameObject _view;
 
-        /// <value>[SerializeField] Reference to the button which is used to exit game.</value>
+        /// <summary>[SerializeField] Reference to the button which is used to exit game.</summary>
+        /// @ref BattleUiGameOverHandler-SerializeFields
         [SerializeField] private Button _button;
 
         /// @}

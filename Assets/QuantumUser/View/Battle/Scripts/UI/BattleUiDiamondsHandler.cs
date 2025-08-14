@@ -19,14 +19,17 @@ namespace Battle.View.UI
     /// </summary>
     public class BattleUiDiamondsHandler : MonoBehaviour
     {
+        /// @anchor BattleUiDiamondsHandler-SerializeFields
         /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <value>[SerializeField] Reference to the BattleUiMovableElement script which is attached to a BattleUiDiamonds prefab.</value>
+        /// <summary>[SerializeField] Reference to the BattleUiMovableElement script which is attached to a BattleUiDiamonds prefab.</summary>
+        /// @ref BattleUiDiamondsHandler-SerializeFields
         [SerializeField] private BattleUiMovableElement _movableUiElement;
 
-        /// <value>[SerializeField] Reference to the TMP_Text component which the diamond amount text is set to.</value>
+        /// <summary>[SerializeField] Reference to the TMP_Text component which the diamond amount text is set to.</summary>
+        /// @ref BattleUiDiamondsHandler-SerializeFields
         [SerializeField] private TMP_Text _diamondText;
 
         /// @}

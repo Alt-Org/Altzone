@@ -19,17 +19,21 @@ namespace Battle.View.UI
     /// </summary>
     public class BattleUiGiveUpButtonHandler : MonoBehaviour
     {
+        /// @anchor BattleUiGiveUpButtonHandler-SerializeFields
         /// @name SerializeField variables
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <value>[SerializeField] Reference to BattleUiController.</value>
+        /// <summary>[SerializeField] Reference to BattleUiController.</summary>
+        /// @ref BattleUiGiveUpButtonHandler-SerializeFields
         [SerializeField] private BattleUiController _uiController;
 
-        /// <value>[SerializeField] Reference to the BattleUiMovableElement script which is attached to a BattleUiGiveUpButton prefab.</value>
+        /// <summary>[SerializeField] Reference to the BattleUiMovableElement script which is attached to a BattleUiGiveUpButton prefab.</summary>
+        /// @ref BattleUiGiveUpButtonHandler-SerializeFields
         [SerializeField] private BattleUiMovableElement _movableUiElement;
 
-        /// <value>[SerializeField] Reference to the Button component of the give up button.</value>
+        /// <summary>[SerializeField] Reference to the Button component of the give up button.</summary>
+        /// @ref BattleUiGiveUpButtonHandler-SerializeFields
         [SerializeField] private Button _giveUpButton;
 
         /// @}

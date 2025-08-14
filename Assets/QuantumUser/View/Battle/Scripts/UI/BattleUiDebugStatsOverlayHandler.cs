@@ -21,29 +21,37 @@ namespace Battle.View.UI
     /// </summary>
     public class BattleUiDebugStatsOverlayHandler : MonoBehaviour
     {
+        /// @anchor BattleUiDebugStatsOverlayHandler-SerializeFields
         /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <value>[SerializeField] Reference to the GameObject which can be used to hide or show the overlay.</value>
+        /// <summary>[SerializeField] Reference to the GameObject which can be used to hide or show the overlay.</summary>
+        /// @ref BattleUiDebugStatsOverlayHandler-SerializeFields
         [SerializeField] private GameObject _view;
 
-        /// <value>[SerializeField] StatText struct for the ImpactForce stat.</value>
+        /// <summary>[SerializeField] StatText struct for the ImpactForce stat.</summary>
+        /// @ref BattleUiDebugStatsOverlayHandler-SerializeFields
         [SerializeField] private StatText _impactForce;
 
-        /// <value>[SerializeField] StatText struct for the Hp stat.</value>
+        /// <summary>[SerializeField] StatText struct for the Hp stat.</summary>
+        /// @ref BattleUiDebugStatsOverlayHandler-SerializeFields
         [SerializeField] private StatText _hp;
 
-        /// <value>[SerializeField] StatText struct for the Speed stat.</value>
+        /// <summary>[SerializeField] StatText struct for the Speed stat.</summary>
+        /// @ref BattleUiDebugStatsOverlayHandler-SerializeFields
         [SerializeField] private StatText _speed;
 
-        /// <value>[SerializeField] StatText struct for the CharacterSize stat.</value>
+        /// <summary>[SerializeField] StatText struct for the CharacterSize stat.</summary>
+        /// @ref BattleUiDebugStatsOverlayHandler-SerializeFields
         [SerializeField] private StatText _charSize;
 
-        /// <value>[SerializeField] StatText struct for the Defence stat.</value>
+        /// <summary>[SerializeField] StatText struct for the Defence stat.</summary>
+        /// @ref BattleUiDebugStatsOverlayHandler-SerializeFields
         [SerializeField] private StatText _defence;
 
-        /// <value>[SerializeField] Reference to the <a href="https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/api/TMPro.TMP_Text.html">TMP_Text@u-exlink</a> component of the debug stat text which's text is longest to get its font size.</value>
+        /// <summary>[SerializeField] Reference to the <a href="https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/api/TMPro.TMP_Text.html">TMP_Text@u-exlink</a> component of the debug stat text which's text is longest to get its font size.</summary>
+        /// @ref BattleUiDebugStatsOverlayHandler-SerializeFields
         [SerializeField] private TMP_Text _referenceText;
 
         /// @}
@@ -104,7 +112,7 @@ namespace Battle.View.UI
         private float _currentFontSize;
 
         /// <summary>
-        /// Private <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/MonoBehaviour.Update.html">Update@u-exlink</a> method. Handles resizing the font sizes for the debug stat texts.
+        /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.Update.html">Update@u-exlink</a> method. Handles resizing the font sizes for the debug stat texts.
         /// </summary>
         private void Update()
         {

@@ -20,17 +20,21 @@ namespace Battle.View.UI
     /// </summary>
     public class BattleUiAnnouncementHandler : MonoBehaviour
     {
+        /// @anchor BattleUiAnnouncementHandler-SerializeFields
         /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <value>[SerializeField] Reference to the GameObject which can be used to hide or show the announcement.</value>
+        /// <summary>[SerializeField] Reference to the GameObject which can be used to hide or show the announcement.</summary>
+        /// @ref BattleUiAnnouncementHandler-SerializeFields
         [SerializeField] private GameObject _view;
 
-        /// <value>[SerializeField] Reference to the <a href="https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/api/TMPro.TextMeshProUGUI.html">TextMeshProUGUI@u-exlink</a> component which the announcement text is set to.</value>
+        /// <summary>[SerializeField] Reference to the <a href="https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/api/TMPro.TextMeshProUGUI.html">TextMeshProUGUI@u-exlink</a> component which the announcement text is set to.</summary>
+        /// @ref BattleUiAnnouncementHandler-SerializeFields
         [SerializeField] private TextMeshProUGUI _announcerText;
 
-        /// <value>[SerializeField] Reference to the TextScaler script which handles scaling the announcement text.</value>
+        /// <summary>[SerializeField] Reference to the TextScaler script which handles scaling the announcement text.</summary>
+        /// @ref BattleUiAnnouncementHandler-SerializeFields
         [SerializeField] private TextScaler _announcementTextScaler;
 
         /// @}
@@ -112,7 +116,7 @@ namespace Battle.View.UI
         private bool _debugmode = false;
 
         /// <summary>
-        /// Private <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/MonoBehaviour.Awake.html">Awake@u-exlink</a> method which clears the text in #_announcerText.
+        /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.Awake.html">Awake@u-exlink</a> method which clears the text in #_announcerText.
         /// </summary>
         private void Awake()
         {

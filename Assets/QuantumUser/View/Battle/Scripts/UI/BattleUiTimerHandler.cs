@@ -23,14 +23,17 @@ namespace Battle.View.UI
     /// </summary>
     public class BattleUiTimerHandler : MonoBehaviour
     {
+        /// @anchor BattleUiTimerHandler-SerializeFields
         /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <value>[SerializeField] Reference to the BattleUiMovableElement script which is attached to a BattleUiTimer prefab.</value>
+        /// <summary>[SerializeField] Reference to the BattleUiMovableElement script which is attached to a BattleUiTimer prefab.</summary>
+        /// @ref BattleUiTimerHandler-SerializeFields
         [SerializeField] private BattleUiMovableElement _movableUiElement;
 
-        /// <value>[SerializeField] Reference to the <a href="https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/api/TMPro.TMP_Text.html">TMP_Text@u-exlink</a> component which the timer text is set to.</value>
+        /// <summary>[SerializeField] Reference to the <a href="https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/api/TMPro.TMP_Text.html">TMP_Text@u-exlink</a> component which the timer text is set to.</summary>
+        /// @ref BattleUiTimerHandler-SerializeFields
         [SerializeField] private TMP_Text _timerText;
 
         /// @}

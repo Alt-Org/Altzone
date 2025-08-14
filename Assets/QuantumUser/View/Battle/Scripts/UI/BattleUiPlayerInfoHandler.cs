@@ -20,17 +20,21 @@ namespace Battle.View.UI
     /// </summary>
     public class BattleUiPlayerInfoHandler : MonoBehaviour
     {
+        /// @anchor BattleUiPlayerInfoHandler-SerializeFields
         /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <value>[SerializeField] Reference to BattleUiController.</value>
+        /// <summary>[SerializeField] Reference to BattleUiController.</summary>
+        /// @ref BattleUiPlayerInfoHandler-SerializeFields
         [SerializeField] private BattleUiController _uiController;
 
-        /// <value>[SerializeField] Reference to the BattleUiMultiOrientationElement script which is attached to the local player's BattleUiPlayerInfo prefab.</value>
+        /// <summary>[SerializeField] Reference to the BattleUiMultiOrientationElement script which is attached to the local player's BattleUiPlayerInfo prefab.</summary>
+        /// @ref BattleUiPlayerInfoHandler-SerializeFields
         [SerializeField] private BattleUiMultiOrientationElement _localPlayerMultiOrientationElement;
 
-        /// <value>[SerializeField] Reference to the BattleUiMultiOrientationElement script which is attached to the local player's teammate's BattleUiPlayerInfo prefab.</value>
+        /// <summary>[SerializeField] Reference to the BattleUiMultiOrientationElement script which is attached to the local player's teammate's BattleUiPlayerInfo prefab.</summary>
+        /// @ref BattleUiPlayerInfoHandler-SerializeFields
         [SerializeField] private BattleUiMultiOrientationElement _localTeammateMultiOrientationElement;
 
         /// @}
