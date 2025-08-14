@@ -18,9 +18,9 @@ namespace Battle.View.UI
     public class BattleUiGameOverHandler : MonoBehaviour
     {
         /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
-        
+
         /// <value>[SerializeField] Reference to BattleUiController.</value>
         [SerializeField] private BattleUiController _controller;
 
@@ -46,7 +46,8 @@ namespace Battle.View.UI
         }
 
         /// <summary>
-        /// Private <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/MonoBehaviour.Awake.html">Awake@u-exlink</a> method which adds listener to the #_button's <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/MonoBehaviour.OnDestroy.html">OnDestroy@u-exlink</a> method which removes all listeners from #_giveUpButton's <a href="https://docs.unity3d.com/530/Documentation/ScriptReference/UI.Button-onClick.html">onClick@u-exlink</a> event.
+        /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.Awake.html">Awake@u-exlink</a> method
+        /// which adds listener to the #_button's <a href="https://docs.unity3d.com/Packages/com.unity.ugui@2.0/api/UnityEngine.UI.Button.html#UnityEngine_UI_Button_onClick">onClick@u-exlink</a> event.
         /// </summary>
         ///
         /// The listener added to the #_button's onClick event calls @ref Battle::View::Game::BattleGameViewController::UiInputOnExitGamePressed "UiInputOnExitGamePressed" method through BattleUiController::GameViewController reference from #_controller.
@@ -56,7 +57,8 @@ namespace Battle.View.UI
         }
 
         /// <summary>
-        /// Private <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/MonoBehaviour.OnDestroy.html">OnDestroy@u-exlink</a> method which removes all listeners from #_button's <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/MonoBehaviour.OnDestroy.html">OnDestroy@u-exlink</a> method which removes all listeners from #_giveUpButton's <a href="https://docs.unity3d.com/530/Documentation/ScriptReference/UI.Button-onClick.html">onClick@u-exlink</a> event.
+        /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.OnDestroy.html">OnDestroy@u-exlink</a> method which
+        /// removes all listeners from #_button's <a href="https://docs.unity3d.com/Packages/com.unity.ugui@2.0/api/UnityEngine.UI.Button.html#UnityEngine_UI_Button_onClick">onClick@u-exlink</a> event.
         /// </summary>
         private void OnDestroy()
         {
