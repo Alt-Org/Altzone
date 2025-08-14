@@ -314,8 +314,11 @@
 /// Prefab of %Battle's UI.
 /// </summary>
 ///
+/// BattleUi-prefab holds all %Battle's %UI GameObjects.
+///
 /// ### Structure
-/// - **BattleUi**
+/// - **BattleUi**  
+///   All @uihandlerslink are attached to this GameObject and @dirref{Altzone,Assets/Altzone/Resources/Prefabs/BattleUiShared} -prefabs are instantiated as children.
 ///     - *Components:*
 ///         - RectTransform
 ///         - @cref{Battle.View.UI,BattleUiController}
@@ -331,17 +334,22 @@
 ///         - CanvasScaler
 ///         - GraphicRaycaster
 ///     - *Children:*
-///         - **BattleUiTimer** (@ref BattleUiTimer.prefab)
-///         - **AnnouncementText**
+///         - **BattleUiTimer** (@ref BattleUiTimer.prefab)  
+///           Displays game timer.
+///         - **AnnouncementText**  
+///           Displays on-screen notifications such as the countdown.
 ///             - *Components:*
 ///                 - RectTransform
 ///                 - @cref{Altzone.Scripts.BattleUiShared,TextScaler}
 ///                 - CanvasRenderer
 ///                 - TextMeshPro - Text (UI)
 ///                 - WorkSans-Regular SDF Material (Material)
-///         - **BattleUiPlayerInfo1** (@ref BattleUiPlayerInfo.prefab)
-///         - **BattleUiPlayerInfo2** (@ref BattleUiPlayerInfo.prefab)
-///         - **GameOverView**
+///         - **BattleUiPlayerInfo1** (@ref BattleUiPlayerInfo.prefab)  
+///           Displays local player's player info.
+///         - **BattleUiPlayerInfo2** (@ref BattleUiPlayerInfo.prefab)  
+///           Displays teammate's player info.
+///         - **GameOverView**  
+///           End of game popup which has button to exit game.
 ///             - *Components:*
 ///                 - RectTransform
 ///             - *Children:*
@@ -377,7 +385,8 @@
 ///                 - *Shared components:*
 ///                     - RectTransform
 ///                     - CanvasRenderer
-///         - **DebugStatsOverlay**
+///         - **DebugStatsOverlay**  
+///           Debug overlay for displaying currently selected character's stats.
 ///             - *Components:*
 ///                 - RectTransform
 ///             - *Children:*
@@ -395,10 +404,14 @@
 ///                         - RectTransform
 ///                         - CanvasRenderer
 ///                         - TextMeshPro - Text (UI)
-///         - **BattleUiDiamonds** (@ref BattleUiDiamonds.prefab)
-///         - **BattleUiGiveUpButton** (@ref BattleUiGiveUpButton.prefab)
-///         - **BattleUiJoystick1** (@ref BattleUiJoystick.prefab)
-///         - **BattleUiJoystick2** (@ref BattleUiJoystick.prefab)
+///         - **BattleUiDiamonds** (@ref BattleUiDiamonds.prefab)  
+///           Display's diamonds collected during the match.
+///         - **BattleUiGiveUpButton** (@ref BattleUiGiveUpButton.prefab)  
+///           Button for giving up the game.
+///         - **BattleUiJoystick1** (@ref BattleUiJoystick.prefab)  
+///           Movement on-screen joystick.
+///         - **BattleUiJoystick2** (@ref BattleUiJoystick.prefab)  
+///           Rotation on-screen joystick.
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -539,20 +552,24 @@
 /// Prefab for %Battle's DiamondCounter UI element.
 /// </summary>
 ///
-/// Used in both %Battle's UI and BattleUiEditor in MenuUi.
+/// Used in both %Battle's UI and BattleUiEditor in MenuUi. Displays the diamonds the local player has collected during the match.  
+/// Has a @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement} script since this BattleUi element doesn't need additional functionality.
 ///
 /// ### Structure
-/// - **BattleUiDiamonds**
+/// - **BattleUiDiamonds**  
+///   Parent GameObject with a @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement} script.
 ///     - *Components:*
 ///         - RectTransform
 ///         - @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement}
 ///         - CanvasRenderer
 ///     - *Children:*
-///         - **DiamondIcon**
+///         - **DiamondIcon**  
+///           Displays the diamond icon sprite.
 ///             - *Components:*
 ///                 - Image
 ///                 - Default UI Material (Material)
-///         - **DiamondCount**
+///         - **DiamondCount**  
+///           Displays the diamond count text.
 ///             - *Components:*
 ///                 - TextMeshPro - Text (UI)
 ///                 - WorkSans-SemiBold SDF Material (Material)
@@ -567,10 +584,12 @@
 /// Prefab for %Battle's GiveUp-button.
 /// </summary>
 ///
-/// Used in both %Battle's UI and BattleUiEditor in MenuUi.
+/// Used in both %Battle's UI and BattleUiEditor in MenuUi. A button the local player can press to give up the current match.  
+/// Has a @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement} script since this BattleUi element doesn't need additional functionality.
 ///
 /// ### Structure
-/// - **BattleUiGiveUpButton**
+/// - **BattleUiGiveUpButton**  
+///   Parent GameObject with a @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement} script. Also holds the button component and its background image.
 ///     - *Components:*
 ///         - RectTransform
 ///         - @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement}
@@ -579,7 +598,8 @@
 ///         - Button
 ///         - Default UI Material (Material)
 ///     - *Children:*
-///         - **GiveUpText**
+///         - **GiveUpText**  
+///           Displays button text.
 ///             - *Components:*
 ///                 - RectTransform
 ///                 - CanvasRenderer
@@ -593,19 +613,24 @@
 /// Prefab for %Battle's joysticks.
 /// </summary>
 ///
-/// Used in both %Battle's UI and BattleUiEditor in MenuUi.
+/// Used in both %Battle's UI and BattleUiEditor in MenuUi. On-screen joystick element for inputting movement or rotation input.  
+/// Has a @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableJoystickElement} script which adds additional functionality to movable element needed for displaying joystick visuals.
 ///
 /// ### Structure
-/// - **BattleUiJoystick**
+/// - **BattleUiJoystick**  
+///   Parent GameObject with @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableJoystickElement} script.
 ///     - *Components:*
 ///         - RectTransform
 ///         - @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableJoystickElement}
 ///         - CanvasRenderer
 ///     - *Children:*
-///         - **Background**
-///         - **Handle**
+///         - **Background**  
+///           Displays joystick's background image.
+///         - **Handle**  
+///           Displays joystick's handle image.
 ///             - *Children:*
-///                 - **Icon**
+///                 - **Icon**  
+///                   Displays joystick handle's icon image.
 ///         - *Shared components:*
 ///             - RectTransform
 ///             - CanvasRenderer
@@ -619,27 +644,33 @@
 /// Prefab for %Battle's PlayerInfo elements (PlayerName and CharacterButtons).
 /// </summary>
 ///
-/// Used in both %Battle's UI and BattleUiEditor in MenuUi.
+/// Used in both %Battle's UI and BattleUiEditor in MenuUi. Displays player's characters, their health, and shield health.  
+/// Has a @cref{Altzone.Scripts.BattleUiShared,BattleUiMultiOrientationElement} script which adds multi orientation functionality for the movable element.
 ///
 /// ### Structure
-/// - **BattleUiPlayerInfo**
+/// - **BattleUiPlayerInfo**  
+///   Parent GameObject with a @cref{Altzone.Scripts.BattleUiShared,BattleUiMultiOrientationElement} script.
 ///     - *Components:*
 ///         - RectTransform
 ///         - @cref{Altzone.Scripts.BattleUiShared,BattleUiMultiOrientationElement}
 ///         - CanvasRenderer
 ///     - *Children:*
-///         - **HorizontalConfiguration**
-///         - **VerticalConfiguration**
+///         - **HorizontalConfiguration**  
+///           Horizontal orientation's parent GameObject.
+///         - **VerticalConfiguration**  
+///           Vertical orientation's parent GameObject.
 ///         - *Shared components:*
 ///             - RectTransform
 ///         - *Shared children:*
-///             - **PlayerName**
+///             - **PlayerName**  
+///               Displays the player name text.
 ///                 - *Components:*
 ///                     - RectTransform
 ///                     - CanvasRenderer
 ///                     - TextMeshPro - Text (UI)
 ///                     - WorkSans-SemiBold SDF Material (Material)
-///             - **PlayerCharacterButton** { **1** - **3** }
+///             - **PlayerCharacterButton** { **1** - **3** }  
+///               Player character button for selecting the player character.
 ///                 - *Shared components:*
 ///                     - RectTransform
 ///                     - CanvasRenderer
@@ -647,10 +678,14 @@
 ///                     - Button
 ///                     - Default UI Material (Material)
 ///                 - *Shared children:*
-///                     - **CharacterSprite**
-///                     - **DamageFill**
-///                     - **ShieldBackground**
-///                     - **ShieldFill**
+///                     - **CharacterSprite**  
+///                       Player character head sprite.
+///                     - **DamageFill**  
+///                       Fill image for indicating damage taken.
+///                     - **ShieldBackground**  
+///                       Shield background image for shield health.
+///                     - **ShieldFill**  
+///                       Shield fill image for shield health.
 ///                     - *Shared components:*
 ///                         - RectTransform
 ///                         - CanvasRenderer
@@ -664,10 +699,12 @@
 /// Prefab for %Battle's timer.
 /// </summary>
 ///
-/// Used in both %Battle's UI and BattleUiEditor in MenuUi.
+/// Used in both %Battle's UI and BattleUiEditor in MenuUi. Displays the game timer.  
+/// Has a @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement} script since this BattleUi element doesn't need additional functionality.
 ///
 /// ### Structure
-/// - **BattleUiTimer**
+/// - **BattleUiTimer**  
+///   Parent GameObject with a @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement} script. Also displays the timer text and @cref{Altzone.Scripts.BattleUiShared,TextScaler} is used to scale it.
 ///     - *Components:*
 ///         - RectTransform
 ///         - @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement}
