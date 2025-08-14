@@ -3,19 +3,24 @@
 /// Prefab for %Battle's joysticks.
 /// </summary>
 ///
-/// Used in both %Battle's UI and BattleUiEditor in MenuUi.
+/// Used in both %Battle's UI and BattleUiEditor in MenuUi. On-screen joystick element for inputting movement or rotation input.  
+/// Has a @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableJoystickElement} script which adds additional functionality to movable element needed for displaying joystick visuals.
 ///
 /// ### Structure
-/// - **BattleUiJoystick**
+/// - **BattleUiJoystick**  
+///   Parent GameObject with @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableJoystickElement} script.
 ///     - *Components:*
 ///         - RectTransform
 ///         - @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableJoystickElement}
 ///         - CanvasRenderer
 ///     - *Children:*
-///         - **Background**
-///         - **Handle**
+///         - **Background**  
+///           Displays joystick's background image.
+///         - **Handle**  
+///           Displays joystick's handle image.
 ///             - *Children:*
-///                 - **Icon**
+///                 - **Icon**  
+///                   Displays joystick handle's icon image.
 ///         - *Shared components:*
 ///             - RectTransform
 ///             - CanvasRenderer
