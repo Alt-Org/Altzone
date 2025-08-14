@@ -16,20 +16,25 @@ namespace Battle.View.Game
     /// </summary>
     public class BattleCameraTest : MonoBehaviour
     {
+        /// @anchor BattleCameraTest-SerializeFields
         /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
-        
-        /// <value>[SerializeField] If the camera should be active or not.</value>
+
+        /// <summary>[SerializeField] If the camera should be active or not.</summary>
+        /// @ref BattleCameraTest-SerializeFields
         [SerializeField] private bool _active;
 
-        /// <value>[SerializeField] %Battle arena scale.</value>
+        /// <summary>[SerializeField] %Battle arena scale.</summary>
+        /// @ref BattleCameraTest-SerializeFields
         [SerializeField] private float _scale;
 
-        /// <value>[SerializeField] %Battle arena offset.</value>
+        /// <summary>[SerializeField] %Battle arena offset.</summary>
+        /// @ref BattleCameraTest-SerializeFields
         [SerializeField] private Vector2 _offset;
 
-        /// <value>[SerializeField] If the camera should rotate or not.</value>
+        /// <summary>[SerializeField] If the camera should rotate or not.</summary>
+        /// @ref BattleCameraTest-SerializeFields
         [SerializeField] private bool _rotate;
 
         /// @}

@@ -17,29 +17,37 @@ namespace Battle.View.Game
     /// </summary>
     public class BattleCamera : MonoBehaviour
     {
+        /// @anchor BattleCamera-SerializeFields
         /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <value>[SerializeField] Reference to the <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Camera.html">Camera@u-exlink</a>.</value>
+        /// <summary>[SerializeField] Reference to the <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Camera.html">Camera@u-exlink</a>.</summary>
+        /// @ref BattleCamera-SerializeFields
         [SerializeField] private Camera _camera;
 
-        /// <value>[SerializeField] .</value>
+        /// <summary>[SerializeField] .</summary>
+        /// @ref BattleCamera-SerializeFields
         [SerializeField] private Vector2 _targetSizeMin;
 
-        /// <value>[SerializeField] .</value>
+        /// <summary>[SerializeField] .</summary>
+        /// @ref BattleCamera-SerializeFields
         [SerializeField] private Vector2 _targetSizeMax;
 
-        /// <value>[SerializeField] .</value>
+        /// <summary>[SerializeField] .</summary>
+        /// @ref BattleCamera-SerializeFields
         [SerializeField] private float   _targetDistance;
 
-        /// <value>[SerializeField] .</value>
+        /// <summary>[SerializeField] .</summary>
+        /// @ref BattleCamera-SerializeFields
         [SerializeField] private Color _colorOff;
 
-        /// <value>[SerializeField] .</value>
+        /// <summary>[SerializeField] .</summary>
+        /// @ref BattleCamera-SerializeFields
         [SerializeField] private Color _colorOutOfBounds;
 
-        /// <value>[SerializeField] .</value>
+        /// <summary>[SerializeField] .</summary>
+        /// @ref BattleCamera-SerializeFields
         [SerializeField] private Color _colorDebug;
 
         /// @}
