@@ -95,12 +95,16 @@ namespace Altzone.Scripts.Lobby
         private Coroutine _requestPositionChangeHolder = null;
         private Coroutine _matchmakingHolder = null;
         private Coroutine _followLeaderHolder = null;
+        private Coroutine _canBattleStartCheckHolder = null;
 
         private string[] _teammates = null;
 
         private List<FriendInfo> _friendList;
 
         [HideInInspector] public ReadOnlyCollection<LobbyRoomInfo> CurrentRooms = null; // Set from LobbyRoomListingController.cs through Instance variable maybe this could be refactored?
+
+        private List<string> _posChangeQueue = new();
+
         public static LobbyManager Instance { get; private set; }
         private static bool isActive = false;
 
@@ -401,6 +405,24 @@ namespace Altzone.Scripts.Lobby
             return true;
         }
 
+        private IEnumerator CheckIfBattleCanStart()
+        {
+            yield return new WaitUntil(()=> _posChangeQueue.Count == 0 && !_playerPosChangeInProgress);
+
+            if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+            {
+                Room room = PhotonRealtimeClient.CurrentRoom;
+                if (room.PlayerCount != room.MaxPlayers) yield break;
+
+                if (CheckIfAllPlayersInPosition())
+                {
+                    GameType gameType = (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                    if (gameType == GameType.Custom) OnStartPlayingEvent(new());
+                }
+            }
+            _canBattleStartCheckHolder = null;
+        }
+
         private void OnPlayerPosEvent(PlayerPosEvent data)
         {
             if (_requestPositionChangeHolder == null)
@@ -420,6 +442,7 @@ namespace Altzone.Scripts.Lobby
                 // Checking if the new position is free before raising event to master client
                 if (PhotonBattleRoom.CheckIfPositionIsFree(position) == false)
                 {
+                    Debug.LogWarning($"Failed to reserve the position {position}. This likely because somebody already is in this position.");
                     _requestPositionChangeHolder = null;
                     yield break;
                 }
@@ -1134,18 +1157,23 @@ namespace Altzone.Scripts.Lobby
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Raid);
         }
 
-        private bool PlayerPosChangeInProgress = false;
+        private bool _playerPosChangeInProgress = false;
 
         private IEnumerator SetPlayer(Player player, int playerPosition)
         {
-            yield return new WaitUntil(() => !PlayerPosChangeInProgress);
+            if (_posChangeQueue.Contains(player.UserId)) yield break;
 
-            PlayerPosChangeInProgress = true;
+            if(_playerPosChangeInProgress) _posChangeQueue.Add(player.UserId);
+
+            yield return new WaitUntil(() => !_playerPosChangeInProgress);
+
+            _playerPosChangeInProgress = true;
             // Checking if any of the players in the room are already in the position (value is anything else than empty string) and if so return.
             if (PhotonBattleRoom.CheckIfPositionIsFree(playerPosition) == false)
             {
                 Debug.LogWarning("Requested position is not free.");
-                PlayerPosChangeInProgress = false;
+                _posChangeQueue.Remove(player.UserId);
+                _playerPosChangeInProgress = false;
                 yield break;
             }
 
@@ -1161,7 +1189,8 @@ namespace Altzone.Scripts.Lobby
                 var eValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, "" } }); // Expecting the new position to be empty
                 if (PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(position, eValue))
                     player.SetCustomProperties(new PhotonHashtable { { PlayerPositionKey, playerPosition } });
-                PlayerPosChangeInProgress = false;
+                _posChangeQueue.Remove(player.UserId);
+                _playerPosChangeInProgress = false;
                 yield break;
             }
 
@@ -1191,7 +1220,8 @@ namespace Altzone.Scripts.Lobby
                     Debug.LogWarning($"Failed to free the position {curValue}. This likely because the player doesn't reserve it.");
                 }
             }
-            PlayerPosChangeInProgress = false;
+            _posChangeQueue.Remove(player.UserId);
+            _playerPosChangeInProgress = false;
             yield break;
         }
 
@@ -1426,20 +1456,14 @@ namespace Altzone.Scripts.Lobby
                 case PhotonRealtimeClient.PhotonEvent.PlayerPositionChangeRequested:
                     int position = (int)photonEvent.CustomData;
                     Player player = PhotonRealtimeClient.CurrentRoom.GetPlayer(photonEvent.Sender);
-                    if (player != null) StartCoroutine(SetPlayer(player, position));
+                    if (player != null)
+                    {
+                        if (!_posChangeQueue.Contains(player.UserId)) StartCoroutine(SetPlayer(player, position));
+                        else Debug.LogError($"Player {photonEvent.Sender} pos change already queued.");
+                    }
                     else Debug.LogError($"Player {photonEvent.Sender} not found in room");
 
-                    if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
-                    {
-                        Room room = PhotonRealtimeClient.CurrentRoom;
-                        if (room.PlayerCount != room.MaxPlayers) return;
-
-                        if (CheckIfAllPlayersInPosition())
-                        {
-                            GameType gameType = (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
-                            if (gameType == GameType.Custom) OnStartPlayingEvent(new());
-                        }
-                    }
+                    if (_canBattleStartCheckHolder == null) _canBattleStartCheckHolder = StartCoroutine(CheckIfBattleCanStart());
                     break;
 
                 case PhotonRealtimeClient.PhotonEvent.RoomChangeRequested:
@@ -1483,17 +1507,7 @@ namespace Altzone.Scripts.Lobby
         {
             LobbyOnPlayerEnteredRoom?.Invoke(new(newPlayer));
 
-            if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
-            {
-                Room room = PhotonRealtimeClient.CurrentRoom;
-                if (room.PlayerCount != room.MaxPlayers) return;
-
-                if (CheckIfAllPlayersInPosition())
-                {
-                    GameType gameType = (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
-                    if (gameType == GameType.Custom) OnStartPlayingEvent(new());
-                }
-            }
+            if(_canBattleStartCheckHolder == null) _canBattleStartCheckHolder = StartCoroutine(CheckIfBattleCanStart());
         }
         public void OnRoomPropertiesUpdate(PhotonHashtable propertiesThatChanged) { LobbyOnRoomPropertiesUpdate?.Invoke(new(propertiesThatChanged)); }
         public void OnPlayerPropertiesUpdate(Player targetPlayer, PhotonHashtable changedProps) { LobbyOnPlayerPropertiesUpdate?.Invoke(new(targetPlayer),new(changedProps)); }
