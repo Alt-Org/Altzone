@@ -20,35 +20,45 @@ namespace Battle.View.Player
     /// </summary>
     public unsafe class BattlePlayerViewController : QuantumEntityViewComponent
     {
+        /// @anchor BattlePlayerViewController-SerializeFields
         /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <value>[SerializeField] Animator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> that handles player animations.</value>
+        /// <summary>[SerializeField] Animator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> that handles player animations.</summary>
+        /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private Animator _animator;
 
-        /// <value>[SerializeField] %Player's child <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> where heart sprite is located.</value>
+        /// <summary>[SerializeField] %Player's child <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> where heart sprite is located.</summary>
+        /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private GameObject _heart;
 
-        /// <value>[SerializeField] Array of character <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.</value>
+        /// <summary>[SerializeField] Array of character <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.</summary>
+        /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private GameObject[] _characterGameObjects;
 
-        /// <value>[SerializeField] %Player's local player indicator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</value>
+        /// <summary>[SerializeField] %Player's local player indicator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</summary>
+        /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private GameObject _localPlayerIndicator;
 
-        /// <value>[SerializeField] The transparency effect's range.</value>
+        /// <summary>[SerializeField] The transparency effect's range.</summary>
+        /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private float _transparencyEffectRange;
 
-        /// <value>[SerializeField] The transparency effect's transition rate.</value>
+        /// <summary>[SerializeField] The transparency effect's transition rate.</summary>
+        /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private float _transparencyEffectTransitionRate;
 
-        /// <value>[SerializeField] The transparency effect's minimum alpha value..</value>
+        /// <summary>[SerializeField] The transparency effect's minimum alpha value..</summary>
+        /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private float _transparencyEffectMinimumAlpha;
 
-        /// <value>[SerializeField] The damage flash animation's duration.</value>
+        /// <summary>[SerializeField] The damage flash animation's duration.</summary>
+        /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private float _damageFlashDuration = 1f;
 
-        /// <value>[SerializeField] The amount of damage flashes.</value>
+        /// <summary>[SerializeField] The amount of damage flashes.</summary>
+        /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private int _damageFlashAmount = 5;
 
         /// @}

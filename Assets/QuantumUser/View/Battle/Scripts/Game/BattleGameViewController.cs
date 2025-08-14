@@ -27,7 +27,7 @@ using PlayerType = Battle.View.UI.BattleUiPlayerInfoHandler.PlayerType;
 namespace Battle.View.Game
 {
     /// <summary>
-    /// <span class="brief-h">Game view <a href="https://doc-api.photonengine.com/en/quantum/current/class_quantum_1_1_quantum_callbacks.html">QuantumCallbacks class@u-exlink</a>.</span><br/>
+    /// <span class="brief-h">%Game view <a href="https://doc-api.photonengine.com/en/quantum/current/class_quantum_1_1_quantum_callbacks.html">QuantumCallbacks class@u-exlink</a>.</span><br/>
     /// Initializes %Battle %UI elements, and controls their visibility and functionality.
     /// </summary>
     ///
@@ -37,29 +37,37 @@ namespace Battle.View.Game
     {
         #region SerializeFields
 
+        /// @anchor BattleGameViewController-SerializeFields
         /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <value>[SerializeField] Reference to BattleGridViewController which handles visual functionality for the %Battle arena's grid.</value>
+        /// <summary>[SerializeField] Reference to BattleGridViewController which handles visual functionality for the %Battle arena's grid.</summary>
+        /// @ref BattleGameViewController-SerializeFields
         [SerializeField] private BattleGridViewController _gridViewController;
 
-        /// <value>[SerializeField] Reference to BattleUiController which holds references to all of the @ref UIHandlerReferences scripts.</value>
+        /// <summary>[SerializeField] Reference to BattleUiController which holds references to all of the @ref UIHandlerReferences scripts.</summary>
+        /// @ref BattleGameViewController-SerializeFields
         [SerializeField] private BattleUiController _uiController;
 
-        /// <value>[SerializeField] Reference to BattleScreenEffectViewController which handles the screen effects.</value>
+        /// <summary>[SerializeField] Reference to BattleScreenEffectViewController which handles the screen effects.</summary>
+        /// @ref BattleGameViewController-SerializeFields
         [SerializeField] private BattleScreenEffectViewController _screenEffectViewController;
 
-        /// <value>[SerializeField] Reference to BattleStoneCharacterViewController which handles stone character parts visibility.</value>
+        /// <summary>[SerializeField] Reference to BattleStoneCharacterViewController which handles stone character parts visibility.</summary>
+        /// @ref BattleGameViewController-SerializeFields
         [SerializeField] private BattleStoneCharacterViewController _stoneCharacterViewController;
 
-        /// <value>[SerializeField] Reference to BattleLightrayEffectViewController which handles lightray effects visibility.</value>
+        /// <summary>[SerializeField] Reference to BattleLightrayEffectViewController which handles lightray effects visibility.</summary>
+        /// @ref BattleGameViewController-SerializeFields
         [SerializeField] private BattleLightrayEffectViewController _lightrayEffectViewController;
 
-        /// <value>[SerializeField] Reference to BattleSoundFXViewController which plays sound effects.</value>
+        /// <summary>[SerializeField] Reference to BattleSoundFXViewController which plays sound effects.</summary>
+        /// @ref BattleGameViewController-SerializeFields
         [SerializeField] private BattleSoundFXViewController _soundFXViewController;
 
-        /// <value>[SerializeField] Reference to BattlePlayerInput which polls player input for %Quantum.</value>
+        /// <summary>[SerializeField] Reference to BattlePlayerInput which polls player input for %Quantum.</summary>
+        /// @ref BattleGameViewController-SerializeFields
         [SerializeField] private BattlePlayerInput _playerInput;
 
         /// @}
@@ -182,7 +190,7 @@ namespace Battle.View.Game
         /// @}
 
         /// <summary>
-        /// Private <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/MonoBehaviour.Awake.html">Awake@u-exlink</a> method. Handles subscribing to QuantumEvents.
+        /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.Awake.html">Awake@u-exlink</a> method. Handles subscribing to QuantumEvents.
         /// </summary>
         private void Awake()
         {
@@ -511,11 +519,11 @@ namespace Battle.View.Game
         }
 
         /// @}
-        
+
         #endregion
 
         /// <summary>
-        /// Private <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/MonoBehaviour.Update.html">Update@u-exlink</a> method. Handles %UI updates based on the game's state and countdown.
+        /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.Update.html">Update@u-exlink</a> method. Handles %UI updates based on the game's state and countdown.
         /// </summary>
         private void Update()
         {

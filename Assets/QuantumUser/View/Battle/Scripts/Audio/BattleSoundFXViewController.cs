@@ -18,20 +18,25 @@ namespace Battle.View.Audio
     /// </summary>
     public class BattleSoundFXViewController : MonoBehaviour
     {
+        /// @anchor BattleSoundFXViewController-SerializeFields
         /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <value>[SerializeField] Reference to the <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/AudioSource.html">AudioSource@u-exlink</a>.</value>
+        /// <summary>[SerializeField] Reference to the <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/AudioSource.html">AudioSource@u-exlink</a>.</summary>
+        /// @ref BattleSoundFXViewController-SerializeFields
         [SerializeField] private AudioSource _audioSource;
 
-        /// <value>[SerializeField] GoalHit sound effect data.</value>
+        /// <summary>[SerializeField] GoalHit sound effect data.</summary>
+        /// @ref BattleSoundFXViewController-SerializeFields
         [SerializeField] private Effect _goalHit;
 
-        /// <value>[SerializeField] SideWallHit sound effect data.</value>
+        /// <summary>[SerializeField] SideWallHit sound effect data.</summary>
+        /// @ref BattleSoundFXViewController-SerializeFields
         [SerializeField] private Effect _sideWallHit;
 
-        /// <value>[SerializeField] WallBroken sound effect data.</value>
+        /// <summary>[SerializeField] WallBroken sound effect data.</summary>
+        /// @ref BattleSoundFXViewController-SerializeFields
         [SerializeField] private Effect _wallBroken;
 
         /// @}

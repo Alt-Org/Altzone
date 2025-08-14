@@ -16,27 +16,34 @@ namespace Battle.View.Projectile
     /// </summary>
     public class BattleProjectileViewController : QuantumEntityViewComponent
     {
+        /// @anchor BattleProjectileViewController-SerializeFields
         /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <value>[SerializeField] SpriteRenderer reference for projectile's sprite.</value>
+        /// <summary>[SerializeField] SpriteRenderer reference for projectile's sprite.</summary>
+        /// @ref BattleProjectileViewController-SerializeFields
         [SerializeField] private SpriteRenderer _spriteRenderer;
 
-        /// <value>[SerializeField] SpriteRenderer reference for projectile's glow.</value>
+        /// <summary>[SerializeField] SpriteRenderer reference for projectile's glow.</summary>
+        /// @ref BattleProjectileViewController-SerializeFields
         [SerializeField] private SpriteRenderer _spriteGlowRenderer;
 
-        /// <value>[SerializeField] TrailRenderer reference for projectile's trail.</value>
+        /// <summary>[SerializeField] TrailRenderer reference for projectile's trail.</summary>
+        /// @ref BattleProjectileViewController-SerializeFields
         [SerializeField] private TrailRenderer _trailRenderer;
 
         [Tooltip("Sprite 0: Sadness\nSprite 1: Joy\nSprite 2: Playful\nSprite 3: Aggression\nSprite 4: Love")]
-        /// <value>[SerializeField] An array of projectile sprites.</value>
+        /// <summary>[SerializeField] An array of projectile sprites.</summary>
+        /// @ref BattleProjectileViewController-SerializeFields
         [SerializeField] private Sprite[] _sprites;
 
-        /// <value>[SerializeField] An array of gradient colors for projectile's trail.</value>
+        /// <summary>[SerializeField] An array of gradient colors for projectile's trail.</summary>
+        /// @ref BattleProjectileViewController-SerializeFields
         [SerializeField] private Gradient[] _colorGradients;
 
-        /// <value>[SerializeField] An array of glow colors for projectile's glow.</value>
+        /// <summary>[SerializeField] An array of glow colors for projectile's glow.</summary>
+        /// @ref BattleProjectileViewController-SerializeFields
         [SerializeField] private Color[] _colorGlows;
 
         /// @}

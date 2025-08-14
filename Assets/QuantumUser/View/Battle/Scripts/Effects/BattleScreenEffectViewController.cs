@@ -17,14 +17,24 @@ namespace Battle.View.Effect
     /// </summary>
     public class BattleScreenEffectViewController : MonoBehaviour
     {
-        /// <value>[SerializeField] The screen overlay GameObject.</value>
+        /// @anchor BattleScreenEffectViewController-SerializeFields
+        /// @name SerializeField variables
+        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// @{
+
+        /// <summary>[SerializeField] The screen overlay GameObject.</summary>
+        /// @ref BattleScreenEffectViewController-SerializeFields
         [SerializeField] private GameObject _overlay;
 
-        /// <value>[SerializeField] An array of all particleSources.</value>
+        /// <summary>[SerializeField] An array of all particleSources.</summary>
+        /// @ref BattleScreenEffectViewController-SerializeFields
         [SerializeField] private GameObject[] _particleSources;
 
-        /// <value>[SerializeField] An array of usable overlay colors.</value>
+        /// <summary>[SerializeField] An array of usable overlay colors.</summary>
+        /// @ref BattleScreenEffectViewController-SerializeFields
         [SerializeField] private Color[] _colors;
+
+        /// @}
 
         /// <value>Are screen effects active or not.</value>
         public bool IsActive {get ; private set ; } = false;

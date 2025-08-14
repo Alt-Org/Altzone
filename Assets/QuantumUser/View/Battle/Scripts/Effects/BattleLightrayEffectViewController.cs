@@ -18,14 +18,17 @@ namespace Battle.View.Effect
     /// </summary>
     public class BattleLightrayEffectViewController : MonoBehaviour
     {
+        /// @anchor BattleLightrayEffectViewController-SerializeFields
         /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <value>[SerializeField] Array of the red lightray <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> references.</value>
+        /// <summary>[SerializeField] Array of the red lightray <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> references.</summary>
+        /// @ref BattleLightrayEffectViewController-SerializeFields
         [SerializeField] private GameObject[] _lightraysRed;
 
-        /// <value>[SerializeField] Array of the blue lightray <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> references.</value>
+        /// <summary>[SerializeField] Array of the blue lightray <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> references.</summary>
+        /// @ref BattleLightrayEffectViewController-SerializeFields
         [SerializeField] private GameObject[] _lightraysBlue;
 
         /// @}

@@ -14,23 +14,36 @@ namespace Battle.View.SoulWall
     /// </summary>
     public class BattleSoulWallViewController : QuantumEntityViewComponent
     {
-        /// <value>[SerializeField] SpriteRenderer for SoulWall sprites.</value>
+        /// @anchor BattleSoulWallViewController-SerializeFields
+        /// @name SerializeField variables
+        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// @{
+
+        /// <summary>[SerializeField] SpriteRenderer for SoulWall sprites.</summary>
+        /// @ref BattleSoulWallViewController-SerializeFields
         [SerializeField] private SpriteRenderer _spriteRenderer;
 
-        /// <value>[SerializeField] SpriteRenderer for the cement under SoulWall sprite.</value>
+        /// <summary>[SerializeField] SpriteRenderer for the cement under SoulWall sprite.</summary>
+        /// @ref BattleSoulWallViewController-SerializeFields
         [SerializeField] private SpriteRenderer _emotionIndicatorSpriteRenderer;
 
-        /// <value>[SerializeField] SpriteRender for debug mode box sprite. Disabled by default.</value>
+        /// <summary>[SerializeField] SpriteRender for debug mode box sprite. Disabled by default.</summary>
+        /// @ref BattleSoulWallViewController-SerializeFields
         [SerializeField] private SpriteRenderer _debugSpriteRenderer;
 
-        /// <value>[SerializeField] An array of colors that show which emotion projectile takes after destroying the SoulWall segment in question.</value>
+        /// <summary>[SerializeField] An array of colors that show which emotion projectile takes after destroying the SoulWall segment in question.</summary>
+        /// @ref BattleSoulWallViewController-SerializeFields
         [SerializeField] private Color[] _emotionIndicatorColors;
 
-        /// <value>[SerializeField] Bool for debug mode.</value>
+        /// <summary>[SerializeField] Bool for debug mode.</summary>
+        /// @ref BattleSoulWallViewController-SerializeFields
         [SerializeField] private bool _useDebugSprites;
 
-        /// <value>[SerializeField] An array of colors for debug mode.</value>
+        /// <summary>[SerializeField] An array of colors for debug mode.</summary>
+        /// @ref BattleSoulWallViewController-SerializeFields
         [SerializeField] private Color[] _debugColors;
+
+        /// @}
 
         /// <summary>
         /// Public method that is called when entity is activated upon its creation.<br/>

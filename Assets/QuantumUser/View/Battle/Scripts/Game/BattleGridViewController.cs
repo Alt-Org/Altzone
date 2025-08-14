@@ -18,20 +18,25 @@ namespace Battle.View.Game
     /// </summary>
     public class BattleGridViewController : MonoBehaviour
     {
+        /// @anchor BattleGridViewController-SerializeFields
         /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <value>[SerializeField] Reference to grid's parent <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Transform.html">Transform@u-exlink</a>.</value>
+        /// <summary>[SerializeField] Reference to grid's parent <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Transform.html">Transform@u-exlink</a>.</summary>
+        /// @ref BattleGridViewController-SerializeFields
         [SerializeField] private Transform _gridParent;
 
-        /// <value>[SerializeField] Reference to the grid cell template <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</value>
+        /// <summary>[SerializeField] Reference to the grid cell template <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</summary>
+        /// @ref BattleGridViewController-SerializeFields
         [SerializeField] private GameObject _gridCellTemplate;
 
-        /// <value>[SerializeField] Grid cell color A.</value>
+        /// <summary>[SerializeField] Grid cell color A.</summary>
+        /// @ref BattleGridViewController-SerializeFields
         [SerializeField] private Color _colorA;
 
-        /// <value>[SerializeField] Grid cell color B.</value>
+        /// <summary>[SerializeField] Grid cell color B.</summary>
+        /// @ref BattleGridViewController-SerializeFields
         [SerializeField] private Color _colorB;
 
         /// @}

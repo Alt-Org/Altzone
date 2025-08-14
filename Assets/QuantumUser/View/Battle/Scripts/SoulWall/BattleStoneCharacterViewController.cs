@@ -17,23 +17,29 @@ namespace Battle.View
     /// </summary>
     public class BattleStoneCharacterViewController : MonoBehaviour
     {
+        /// @anchor BattleStoneCharacterViewController-SerializeFields
         /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <value>[SerializeField] Array of the top stone character parts <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> references.</value>
+        /// <summary>[SerializeField] Array of the top stone character parts <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> references.</summary>
+        /// @ref BattleStoneCharacterViewController-SerializeFields
         [SerializeField] private GameObject[] _topCharacterParts;
 
-        /// <value>[SerializeField] Array of the bottom stone character parts <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> references.</value>
+        /// <summary>[SerializeField] Array of the bottom stone character parts <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> references.</summary>
+        /// @ref BattleStoneCharacterViewController-SerializeFields
         [SerializeField] private GameObject[] _bottomCharacterParts;
 
-        /// <value>[SerializeField] Array of the top stone character emotion indicators <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SpriteRenderer.html">SpriteRenderer@u-exlink</a> references.</value>
+        /// <summary>[SerializeField] Array of the top stone character emotion indicators <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SpriteRenderer.html">SpriteRenderer@u-exlink</a> references.</summary>
+        /// @ref BattleStoneCharacterViewController-SerializeFields
         [SerializeField] private SpriteRenderer[] _topCharacterEmotionIndicators;
 
-        /// <value>[SerializeField] Array of the bottom stone character emotion indicators <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SpriteRenderer.html">SpriteRenderer@u-exlink</a> references.</value>
+        /// <summary>[SerializeField] Array of the bottom stone character emotion indicators <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SpriteRenderer.html">SpriteRenderer@u-exlink</a> references.</summary>
+        /// @ref BattleStoneCharacterViewController-SerializeFields
         [SerializeField] private SpriteRenderer[] _bottomCharacterEmotionIndicators;
 
-        /// <value>[SerializeField] Array of all the different emotion colors for emotion indicators.</value>
+        /// <summary>[SerializeField] Array of all the different emotion colors for emotion indicators.</summary>
+        /// @ref BattleStoneCharacterViewController-SerializeFields
         [SerializeField] private Color[] _emotionColors;
 
         /// @}
