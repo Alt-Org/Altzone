@@ -332,7 +332,15 @@ public class Chat : AltMonoBehaviour
         HighlightMessage(_selectedMessage);
 
         Vector3 deletePosition = _deleteButtons.transform.position;
-        deletePosition.y = _selectedMessage.transform.position.y;
+        deletePosition.y = _selectedMessage.transform.position.y; //x = 1245.31
+        if (IsOther(_selectedMessage))
+        {
+            deletePosition.x = 240.31f;
+        }
+        else
+        {
+            deletePosition.x = 1245.31f;
+        }
         _deleteButtons.transform.position = deletePosition;
 
         StartCoroutine(SetReactionPanelPosition());
@@ -364,7 +372,7 @@ public class Chat : AltMonoBehaviour
         float newPanelX;
         if (IsOther(_selectedMessage))
         {
-            newPanelX = fieldEdgeX + (reactionPanelTransfrom.rect.width * 5 * reactionPanelTransfrom.pivot.x);
+            newPanelX = fieldEdgeX + (reactionPanelTransfrom.rect.width * 5.3f * reactionPanelTransfrom.pivot.x);
         }
         else
         {
