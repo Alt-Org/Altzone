@@ -123,6 +123,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationActionType.MakeCharacterStrong: HandleSimpleTask(value); break;
             case TaskEducationActionType.MakeCharacterBig: HandleSimpleTask(value); break;
             case TaskEducationActionType.ChangeAvatarClothes: HandleSimpleTask(value); break;
+            case TaskEducationActionType.ChangeItemsPosition: HandleSimpleTask(value); break;
             default: break;
         }
     }

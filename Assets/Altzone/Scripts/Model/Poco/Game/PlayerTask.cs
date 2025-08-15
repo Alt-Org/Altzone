@@ -38,6 +38,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         MakeCharacterStrong,
         MakeCharacterBig,
         ChangeAvatarClothes,
+        ChangeItemsPosition,
     }
 
     public enum TaskEducationSocialType
@@ -299,6 +300,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case "change_avatar_clothes":
                     {
                         return TaskEducationActionType.ChangeAvatarClothes;
+                    }
+                case "change_items_position":
+                    {
+                        return TaskEducationActionType.ChangeItemsPosition;
                     }
                 default:
                     {
