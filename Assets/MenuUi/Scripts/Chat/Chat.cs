@@ -47,6 +47,10 @@ public class Chat : AltMonoBehaviour
     [SerializeField] private GameObject _messagePrefabPink;
     [SerializeField] private GameObject _quickMessagePrefab;
 
+    [Header("Other Prefab")]
+    [SerializeField] private GameObject[] _otherMessages;
+
+
     [Header("Scroll Rects")]
     [SerializeField] private ScrollRect _languageChatScrollRect;
     [SerializeField] private ScrollRect _globalChatScrollRect;
@@ -84,6 +88,8 @@ public class Chat : AltMonoBehaviour
 
     private GameObject _lastSendButtonUsed;
     private bool _sendButtonsAreClosed = true;
+
+    [SerializeField] private GameObject _InputArea;
 
     private void Start()
     {
@@ -232,7 +238,10 @@ public class Chat : AltMonoBehaviour
         if (buttonText != null)
         {
             string textFromButton = buttonText.text;
+            MinimizeOptions();
             _inputField.text = textFromButton;
+            GameObject sendButton = _sendButtons[0];
+            CheckSendButton(sendButton);
         }
         else
         {
@@ -323,10 +332,20 @@ public class Chat : AltMonoBehaviour
         HighlightMessage(_selectedMessage);
 
         Vector3 deletePosition = _deleteButtons.transform.position;
-        deletePosition.y = _selectedMessage.transform.position.y;
+        deletePosition.y = _selectedMessage.transform.position.y; //x = 1245.31
+        if (IsOther(_selectedMessage))
+        {
+            deletePosition.x = 240.31f;
+        }
+        else
+        {
+            deletePosition.x = 1245.31f;
+        }
         _deleteButtons.transform.position = deletePosition;
 
         StartCoroutine(SetReactionPanelPosition());
+
+        //Debug.Log(IsOther(message.gameObject));
 
         _deleteButtons.SetActive(true);// Näytä poistopainikkeet, jos viesti on valittuna
         _addReactionsPanel.SetActive(true);
@@ -350,7 +369,16 @@ public class Chat : AltMonoBehaviour
         reactionPosition.y = newPanelY;
 
         float fieldEdgeX = reactionField.transform.position.x - (reactionFieldTransform.rect.width * reactionFieldTransform.pivot.x);
-        float newPanelX = fieldEdgeX + (reactionPanelTransfrom.rect.width * reactionPanelTransfrom.pivot.x);
+        float newPanelX;
+        if (IsOther(_selectedMessage))
+        {
+            newPanelX = fieldEdgeX + (reactionPanelTransfrom.rect.width * 5.3f * reactionPanelTransfrom.pivot.x);
+        }
+        else
+        {
+            newPanelX = fieldEdgeX + (reactionPanelTransfrom.rect.width * reactionPanelTransfrom.pivot.x);
+        }
+        
         reactionPosition.x = newPanelX;
 
         _addReactionsPanel.transform.position = reactionPosition;
@@ -475,6 +503,7 @@ public class Chat : AltMonoBehaviour
     public void OpenQuickMessages()
     {
         _quickMessages.SetActive(true);
+        _InputArea.SetActive(false);
         CloseOnButtonClick(true);
     }
 
@@ -484,6 +513,7 @@ public class Chat : AltMonoBehaviour
     public void MinimizeOptions()
     {
         _quickMessages.SetActive(false);
+        _InputArea.SetActive(true);
 
         // Deactivate all but last used button
         foreach (var button in _sendButtons)
@@ -536,6 +566,19 @@ public class Chat : AltMonoBehaviour
         _addReactionsPanel.SetActive(false);
         _usersWhoAdded.SetActive(false);
     }
+
+    private bool IsOther(GameObject message)
+    {
+        foreach (var other in _otherMessages)
+        {
+            if (message.name == other.name+"(Clone)")
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
      
 
     public void OpenUsersWhoAddedReactionPanel()
@@ -546,4 +589,11 @@ public class Chat : AltMonoBehaviour
         _usersWhoAdded.SetActive(true);
         SetReactionPanelPosition();
     }
+
+    //public GameObject giveJoyPref()
+    //{
+    //    return _messagePrefabYellow;
+    //}
+
+
 }
