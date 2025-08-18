@@ -1458,7 +1458,7 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator GetPlayerLeaderboardFromServer(Action<List<PlayerLeaderboard>> callback)
     {
-        yield return StartCoroutine(WebRequests.Get(SERVERADDRESS + "latest-release/leaderboard/player", AccessToken, request =>
+        yield return StartCoroutine(WebRequests.Get(SERVERADDRESS + "leaderboard/player", AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
