@@ -231,6 +231,8 @@ namespace Battle.View.Player
                         distance = Mathf.Abs(distance) - _swipeMinDistance;
                         float maxAdjustedDistance = Mathf.Clamp(distance / (_swipeMaxDistance - _swipeMinDistance), 0, 1) * signe;
                         rotationInputInfo.RotationValue = -FP.FromFloat_UNSAFE(maxAdjustedDistance);
+
+                        if (BattleGameViewController.LocalPlayerTeam == BattleTeamNumber.TeamBeta) rotationInputInfo.RotationValue *= -1;
                     }
                     else if (!mouseDown)
                     {
