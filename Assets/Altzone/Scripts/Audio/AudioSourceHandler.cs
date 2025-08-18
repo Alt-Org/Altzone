@@ -45,6 +45,7 @@ public class AudioSourceHandler : MonoBehaviour
         while (_audioSource.isPlaying)
             yield return null;
 
+        _audioSource.clip = null;
         OnPlaybackFinished.Invoke(_chunkIndex, _channelIndex);
     }
 }

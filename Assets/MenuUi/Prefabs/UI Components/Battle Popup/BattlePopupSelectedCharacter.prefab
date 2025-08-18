@@ -226,6 +226,7 @@ GameObject:
   - component: {fileID: 9220651177699534357}
   - component: {fileID: 8000005175752402450}
   - component: {fileID: 221247866140911738}
+  - component: {fileID: 2059683094553433414}
   m_Layer: 5
   m_Name: ClassColorImage
   m_TagString: Untagged
@@ -290,6 +291,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2059683094553433414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8494001091981746055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 1, g: 0.5251837, b: 0, a: 1}
+  m_EffectDistance: {x: 2, y: -2}
+  m_UseGraphicAlpha: 1
 --- !u!1001 &7007857299492026713
 PrefabInstance:
   m_ObjectHideFlags: 0

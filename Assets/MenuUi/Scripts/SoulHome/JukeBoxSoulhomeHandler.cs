@@ -1,14 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Audio;
+using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class JukeBoxSoulhomeHandler : MonoBehaviour
 {
-    public static JukeBoxSoulhomeHandler Instance;
-
     [Header("Disk")]
     [SerializeField] private Image _diskImage;
     [SerializeField] private Transform _diskTransform;
@@ -19,8 +18,6 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     [SerializeField] private GameObject _jukeboxObject;
     [SerializeField] private Button _backButton;
     [SerializeField] private TextMeshProUGUI _songName;
-    [Space]
-    [SerializeField] private bool _loopLastTrack = true;
 
     [Header("Songlist")]
     [SerializeField] private Transform _trackListContent;
@@ -36,35 +33,22 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     public bool JukeBoxOpen { get => _jukeboxObject.activeSelf; }
 
     [SerializeField] private int _trackChunkSize = 8;
-    private List<Chunk<JukeboxTrackButtonHandler>> _buttonHandlerChunks = new List<Chunk<JukeboxTrackButtonHandler>>();
+    private List<Chunk<JukeboxTrackButtonHandler>> _buttonHandlerChunks = new List<Chunk<JukeboxTrackButtonHandler>>(); //Visible
     private int _buttonHandlerChunkPointer = 0;
     private int _buttonHandlerPoolPointer = -1;
 
-    private List<Chunk<JukeboxTrackQueueHandler>> _queueHandlerChunks = new List<Chunk<JukeboxTrackQueueHandler>>();
+    private List<Chunk<JukeboxTrackQueueHandler>> _queueHandlerChunks = new List<Chunk<JukeboxTrackQueueHandler>>(); //Visible
     private int _queueHandlerChunkPointer = 0;
     private int _queueHandlerPoolPointer = -1;
 
-    private Queue<JukeboxTrackQueueHandler> _trackQueue = new Queue<JukeboxTrackQueueHandler>();
+    
     [SerializeField] private int _queueOptimizationThreshold = 4;
     private int _queueUseTimes = 0;
-
-    private MusicTrack _currentMusicTrack;
-    public MusicTrack CurrentMusicTrack {  get { return _currentMusicTrack; } }
-
-    private Coroutine _trackEndingControlCoroutine;
 
     private const string NoSongName = "Ei valittua biisiä";
 
     public delegate void ChangeJukeBoxSong(MusicTrack track);
     public static event ChangeJukeBoxSong OnChangeJukeBoxSong;
-
-    private void Awake()
-    {
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(this);
-    }
 
     void Start()
     {
@@ -81,16 +65,25 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
     private void OnEnable()
     {
-        //JukeboxController.OnChangeJukeBoxSong += SetSongInfo;
-        //JukeboxController.OnChangeJukeBoxQueue += UpdateQueueText;
-        //if (_currentMusicTrack != null) PlayTrack(_currentMusicTrack);
+        JukeboxManager.Instance.OnGetFreeJukeboxTrackQueueHandler += GetFreeJukeboxTrackQueueHandler;
+        JukeboxManager.Instance.OnReduceQueueHandlerChunkActiveCount += ReduceQueueHandlerChunkActiveCount;
+        JukeboxManager.Instance.OnOptimizeVisualQueueChunks += OptimizeVisualQueueChunksCheck;
+        JukeboxManager.Instance.OnSetSongInfo += SetSongInfo;
+        JukeboxManager.Instance.OnStopJukeboxVisual += StopJukeboxVisuals;
+
+        if (JukeboxManager.Instance.CurrentMusicTrack != null)
+            SetSongInfo(JukeboxManager.Instance.CurrentMusicTrack);
     }
 
     private void OnDisable()
     {
-        //JukeboxController.OnChangeJukeBoxSong -= SetSongInfo;
-        //JukeboxController.OnChangeJukeBoxQueue -= UpdateQueueText;
-        if (_trackEndingControlCoroutine != null) StopCoroutine(_trackEndingControlCoroutine);
+        JukeboxManager.Instance.OnGetFreeJukeboxTrackQueueHandler -= GetFreeJukeboxTrackQueueHandler;
+        JukeboxManager.Instance.OnReduceQueueHandlerChunkActiveCount -= ReduceQueueHandlerChunkActiveCount;
+        JukeboxManager.Instance.OnOptimizeVisualQueueChunks -= OptimizeVisualQueueChunksCheck;
+        JukeboxManager.Instance.OnSetSongInfo -= SetSongInfo;
+        JukeboxManager.Instance.OnStopJukeboxVisual -= StopJukeboxVisuals;
+
+        StopJukeboxVisuals();
     }
 
     #region Chunk
@@ -103,7 +96,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         {
             GameObject jukeboxTrackButton = Instantiate(_jukeboxButtonPrefab, _trackListContent);
             JukeboxTrackButtonHandler buttonHandler = jukeboxTrackButton.GetComponent<JukeboxTrackButtonHandler>();
-            buttonHandler.OnTrackPressed += QueueTrack;
+            buttonHandler.OnTrackPressed += JukeboxManager.Instance.QueueTrack;
             buttonHandler.Clear();
             jukeboxButtonHandlers.Add(buttonHandler);
         }
@@ -168,25 +161,22 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
     #endregion
 
-    public void ToggleJukeboxScreen(bool toggle) { _jukeboxObject.SetActive(toggle); }
-
-    public string PlayTrack() { return PlayTrack(_currentMusicTrack); }
-
-    private string PlayTrack(MusicTrack musicTrack)
+    private void ReduceQueueHandlerChunkActiveCount(int index)
     {
-        string name = AudioManager.Instance.PlayMusic("Jukebox", musicTrack);
+        _queueHandlerChunks[index].AmountInUse--;
+        _queueUseTimes++;
+    }
+
+    public string PlayTrack()
+    {
+        string name = JukeboxManager.Instance.PlayTrack();
 
         if (string.IsNullOrEmpty(name)) return null;
-
-        _currentMusicTrack = musicTrack;
-        SetSongInfo(musicTrack);
-
-        _trackEndingControlCoroutine = StartCoroutine(TrackEndingControl());
 
         return name;
     }
 
-    public void StopJukebox()
+    public void StopJukeboxVisuals()
     {
         _songName.text = NoSongName;
         _diskImage.sprite = _emptyDisk;
@@ -198,13 +188,11 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
             _diskTransform.rotation = Quaternion.identity;
         }
 
-        if (_trackEndingControlCoroutine != null)
-        {
-            StopCoroutine(_trackEndingControlCoroutine);
-            _trackEndingControlCoroutine = null;
-        }
+        //JukeboxManager.Instance.StopJukebox();
         OnChangeJukeBoxSong?.Invoke(null);
     }
+
+    public void ToggleJukeboxScreen(bool toggle) { _jukeboxObject.SetActive(toggle); }
 
     private void SetSongInfo(MusicTrack track)
     {
@@ -234,62 +222,12 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         }
     }
 
-    private IEnumerator TrackEndingControl()
+    #region Optimization
+    private void OptimizeVisualQueueChunksCheck()
     {
-        float timer = 0f;
-
-        while (timer < _currentMusicTrack.Music.length)
-        {
-            yield return null;
-            timer += Time.deltaTime;
-        }
-
-        PlayNextJukeboxTrack();
-    }
-
-    private void PlayNextJukeboxTrack()
-    {
-        if (_trackQueue.Count > 0) //Play the next track in queue.
-        {
-            JukeboxTrackQueueHandler trackQueueHandler = _trackQueue.Peek();
-            string name = PlayTrack(trackQueueHandler.CurrentTrack);
-
-            if (name == null) return;
-
-            _trackQueue.Dequeue();
-            _queueHandlerChunks[trackQueueHandler.ChunkIndex].AmountInUse--;
-            trackQueueHandler.Clear();
-
-            _queueUseTimes++;
-        }
-        else if (_loopLastTrack) //Keep playing the current track.
-            PlayTrack(_currentMusicTrack);
-        else //Go back to Soulhome music
-        {
-            _currentMusicTrack = null;
-            StopJukebox();
-            AudioManager.Instance.PlayMusic("Soulhome", "");
-        }
-
         if (_queueUseTimes >= _queueOptimizationThreshold) OptimizeVisualQueueChunks();
 
         gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
-    }
-
-    #region Queue
-    public void QueueTrack(MusicTrack musicTrack)
-    {
-        if (_currentMusicTrack != null)
-            AddToQueue(musicTrack);
-        else
-            PlayTrack(musicTrack);
-    }
-
-    private void AddToQueue(MusicTrack musicTrack)
-    {
-        JukeboxTrackQueueHandler trackQueueHandler = GetFreeJukeboxTrackQueueHandler();
-        trackQueueHandler.SetTrack(musicTrack);
-        _trackQueue.Enqueue(trackQueueHandler);
     }
 
     /// <summary>
@@ -341,7 +279,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         RecalibrateQueuePointers();
 
         // Reassemble _trackQueue.
-        ReassembleDataQueue();
+        JukeboxManager.Instance.ReassembleDataQueue(_queueHandlerChunks);
 
         Debug.Log("Jukebox queue visual list optimization done.");
     }
@@ -371,20 +309,6 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Reassembles the <c>_trackQueue</c>. If not done after optimizing <c>_queueHandlerChunks</c>,
-    /// the <c>_trackQueue</c> will point to empty <c>_JukeboxTrackQueueHandler</c>s.
-    /// </summary>
-    private void ReassembleDataQueue()
-    {
-        _trackQueue.Clear();
-
-        foreach (Chunk<JukeboxTrackQueueHandler> chunk in _queueHandlerChunks)
-            foreach (JukeboxTrackQueueHandler handler in chunk.Pool)
-                if (handler.InUse())
-                    _trackQueue.Enqueue(handler);
-    }
-
     private void MoveVisualQueueItem(JukeboxTrackQueueHandler target, JukeboxTrackQueueHandler destination)
     {
         destination.SetTrack(target.CurrentTrack);
@@ -394,15 +318,4 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         _queueHandlerChunks[target.ChunkIndex].AmountInUse--;
     }
     #endregion
-
-    //public void ExitMainMenuMode()
-    //{
-    //    _isMainMenuMode = false;
-    //}
-
-    private class Chunk<T>
-    {
-        public int AmountInUse = 0;
-        public List<T> Pool = new List<T>();
-    }
 }

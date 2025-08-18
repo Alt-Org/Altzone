@@ -427,6 +427,7 @@ public class ServerManager : MonoBehaviour
 
         // Saves clan data including its items.
         store.SaveClanData(clanData, null);
+        RaiseClanChangedEvent();
     }
 
     public IEnumerator GetClanPlayers(Action<List<ClanMember>> callback)

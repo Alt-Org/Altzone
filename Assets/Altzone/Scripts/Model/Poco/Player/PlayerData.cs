@@ -224,6 +224,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             // Checking base character is set for custom characters
             foreach (CustomCharacter character in customCharacters)
             {
+                if ((!CharacterSpecConfig.Instance.AllowTestCharacters) && character.IsTestCharacter()) continue;
                 if (SetBaseCharacter(baseCharacters, character)) newCustomCharacters.Add(character);
             }
 
@@ -259,7 +260,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         internal void Patch()
         {
             List<CustomCharacter> charList = _characterList;
-            if (TestCharacterList != null && TestCharacterList.Count != 0) charList = charList.Concat(TestCharacterList).ToList();
+            if (CharacterSpecConfig.Instance.AllowTestCharacters && TestCharacterList != null && TestCharacterList.Count != 0) charList = charList.Concat(TestCharacterList).ToList();
             CustomCharacters = new ReadOnlyCollection<CustomCharacter>(charList).ToList();
         }
 

@@ -1,6 +1,5 @@
 using UnityEngine;
 using System;
-using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.BattleUiShared;
 
 public class SettingsCarrier : MonoBehaviour // Script for carrying settings data between scenes
@@ -59,6 +58,21 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         NewNiko
     }
 
+    public enum JukeboxPlayArea
+    {
+        MainMenu,
+        Soulhome,
+        Battle
+    }
+
+    public enum SettingsType
+    {
+        None,
+        JukeboxSoulhomeToggle,
+        JukeboxUIToggle,
+        JukeboxBattleToggle
+    }
+
     // Events
     public event Action OnTextSizeChange;
     public event Action OnButtonLabelVisibilityChange;
@@ -100,6 +114,10 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public float menuVolume;
     public float musicVolume;
     public float soundVolume;
+
+    public bool jukeboxSoulhome;
+    public bool jukeboxUI;
+    public bool jukeboxBattle;
 
     public int TextSizeSmall = 22;
     public int TextSizeMedium = 26;
@@ -268,6 +286,15 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         }
     }
 
+    private string _mainMenuMusicName;
+    public string MainMenuMusicName { get { return _mainMenuMusicName; } }
+
+    public enum SelectionBoxType
+    {
+        None,
+        MainMenuMusic
+    }
+
     // Functions
     private void Awake()
     {
@@ -295,7 +322,11 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1);
         soundVolume = PlayerPrefs.GetFloat("SoundVolume", 1);
 
-        _battleShowDebugStatsOverlay = PlayerPrefs.GetInt(BattleShowDebugStatsOverlayKey, 0) == 1;
+        jukeboxSoulhome = PlayerPrefs.GetInt("JukeboxSoulHome") != 0;
+        jukeboxUI = PlayerPrefs.GetInt("JukeboxUI") != 0;
+        jukeboxBattle = PlayerPrefs.GetInt("JukeboxBattle") != 0;
+
+        _battleShowDebugStatsOverlay = PlayerPrefs.GetInt(BattleShowDebugStatsOverlayKey, 1) == 1;
 
         _battleArenaScale = PlayerPrefs.GetInt(BattleArenaScaleKey, BattleArenaScaleDefault);
         _battleArenaPosX = PlayerPrefs.GetInt(BattleArenaPosXKey, BattleArenaPosXDefault);
@@ -312,6 +343,8 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         _unlimitedStatUpgradeMaterials = PlayerPrefs.GetInt(UnlimitedStatUpgradeMaterialsKey, 1) == 1;
 
         _topBarStyleSetting = (TopBarStyle)PlayerPrefs.GetInt(TopBarStyleSettingKey, 1);
+
+        _mainMenuMusicName = PlayerPrefs.GetString("MainMenuMusic");
     }
 
     // SentVolume combines masterVolume and another volume chosen by the sent type
@@ -335,6 +368,48 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         OnTextSizeChange?.Invoke();
     }
 
+    public bool SetBoolValue(SettingsType type, bool? value = null)
+    {
+        switch (type)
+        {
+            case SettingsType.None:
+                return false;
+            case SettingsType.JukeboxSoulhomeToggle:
+                jukeboxSoulhome = value ?? !jukeboxSoulhome;
+                PlayerPrefs.SetInt("JukeboxSoulHome", jukeboxSoulhome ? 1 : 0);
+                return true;
+            case SettingsType.JukeboxUIToggle:
+                jukeboxUI = value ?? !jukeboxUI;
+                PlayerPrefs.SetInt("JukeboxUI", jukeboxUI ? 1 : 0);
+                return true;
+            case SettingsType.JukeboxBattleToggle:
+                jukeboxBattle = value ?? !jukeboxBattle;
+                PlayerPrefs.SetInt("JukeboxBattle", jukeboxBattle ? 1 : 0);
+                return true;
+            default:
+                Debug.LogError($"Cannot find type: {type}. Somebody probably forgot to add it.");
+                return false;
+        }
+    }
+
+    public bool? GetBoolValue(SettingsType type)
+    {
+        switch (type)
+        {
+            case SettingsType.None:
+                return null;
+            case SettingsType.JukeboxSoulhomeToggle:
+                return jukeboxSoulhome;
+            case SettingsType.JukeboxUIToggle:
+                return jukeboxUI;
+            case SettingsType.JukeboxBattleToggle:
+                return jukeboxBattle;
+            default:
+                Debug.LogError($"Cannot find type: {type}. Somebody probably forgot to add it.");
+                return null;
+        }
+    }
+
     public BattleUiMovableElementData GetBattleUiMovableElementData(BattleUiElementType type)
     {
         if (type == BattleUiElementType.None) return null;
@@ -354,5 +429,43 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
         string json = JsonUtility.ToJson(data);
         PlayerPrefs.SetString($"BattleUi{type}", json);
+    }
+
+    public bool CanPlayJukeboxInArea(JukeboxPlayArea playArea)
+    {
+        switch (playArea)
+        {
+            case JukeboxPlayArea.MainMenu:
+                {
+                    return jukeboxUI;
+                }
+            case JukeboxPlayArea.Soulhome:
+                {
+                    return jukeboxSoulhome;
+                }
+            case JukeboxPlayArea.Battle:
+                {
+                    return jukeboxBattle;
+                }
+            default:
+                return false;
+        }
+    }
+
+    public string GetSelectionBoxData(SelectionBoxType type)
+    {
+        switch (type)
+        {
+            case SelectionBoxType.MainMenuMusic: return _mainMenuMusicName;
+            default: return null;
+        }
+    }
+
+    public void SetDataFromSelectionBox(SelectionBoxType type, string value)
+    {
+        switch (type)
+        {
+            case SelectionBoxType.MainMenuMusic: _mainMenuMusicName = value; PlayerPrefs.SetString("MainMenuMusic", value); break;
+        }
     }
 }

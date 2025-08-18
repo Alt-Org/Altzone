@@ -181,8 +181,10 @@ namespace Quantum.Prototypes {
     public FPVector2 TargetPosition;
     public FP RotationBase;
     public FP RotationOffset;
+    public FP CurrentHp;
     public MapEntityId HitboxShieldEntity;
     public MapEntityId HitboxCharacterEntity;
+    public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerDataQComponent component = default;
         Materialize((Frame)f, ref component, in context);
@@ -201,8 +203,10 @@ namespace Quantum.Prototypes {
         result.TargetPosition = this.TargetPosition;
         result.RotationBase = this.RotationBase;
         result.RotationOffset = this.RotationOffset;
+        result.CurrentHp = this.CurrentHp;
         PrototypeValidator.FindMapEntity(this.HitboxShieldEntity, in context, out result.HitboxShieldEntity);
         PrototypeValidator.FindMapEntity(this.HitboxCharacterEntity, in context, out result.HitboxCharacterEntity);
+        this.DamageCooldown.Materialize(frame, ref result.DamageCooldown, in context);
     }
   }
   [System.SerializableAttribute()]
@@ -344,11 +348,17 @@ namespace Quantum.Prototypes {
     public QBoolean IsLaunched;
     public QBoolean IsMoving;
     public FP Speed;
+    [ArrayLengthAttribute(5)]
+    public FP[] SpeedMultiplierArray = new FP[5];
     public FP SpeedPotential;
+    public FP SpeedIncrement;
     public FP AccelerationTimer;
+    public FP AccelerationTimerDuration;
     public FPVector2 Direction;
     public FP Radius;
     public Quantum.QEnum32<BattleEmotionState> Emotion;
+    public FP Attack;
+    public FP AttackMax;
     [ArrayLengthAttribute(2)]
     public Quantum.QEnum8<BattleProjectileCollisionFlags>[] CollisionFlags = new Quantum.QEnum8<BattleProjectileCollisionFlags>[2];
     partial void MaterializeUser(Frame frame, ref Quantum.BattleProjectileQComponent result, in PrototypeMaterializationContext context);
@@ -361,11 +371,18 @@ namespace Quantum.Prototypes {
         result.IsLaunched = this.IsLaunched;
         result.IsMoving = this.IsMoving;
         result.Speed = this.Speed;
+        for (int i = 0, count = PrototypeValidator.CheckLength(SpeedMultiplierArray, 5, in context); i < count; ++i) {
+          *result.SpeedMultiplierArray.GetPointer(i) = this.SpeedMultiplierArray[i];
+        }
         result.SpeedPotential = this.SpeedPotential;
+        result.SpeedIncrement = this.SpeedIncrement;
         result.AccelerationTimer = this.AccelerationTimer;
+        result.AccelerationTimerDuration = this.AccelerationTimerDuration;
         result.Direction = this.Direction;
         result.Radius = this.Radius;
         result.Emotion = this.Emotion;
+        result.Attack = this.Attack;
+        result.AttackMax = this.AttackMax;
         for (int i = 0, count = PrototypeValidator.CheckLength(CollisionFlags, 2, in context); i < count; ++i) {
           *result.CollisionFlags.GetPointer(i) = this.CollisionFlags[i];
         }
