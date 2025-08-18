@@ -28,15 +28,51 @@ In source code @@u-exlink should be used instead of "🡵"
 
 ---
 
-## Documenting methods
-When documenting any method, the different sections of the comment such as the summary and the parameters should be separated by an empty line.
+## Documenting Source code
+All C# files, classes and methods should be documented with clear and concise information. Different sections of the documentation for each should be separated by an empty line.
+
+<br/>
+
+### Documenting Files
+File documentation should have a reference to the file, a summary and possible longer information as its own section.
+
+```
+/// @file BattlePlayerMovementController.cs
+/// <summary>
+/// Handles player input, movement and rotations.
+/// </summary>
+///
+/// Gets player's Quantum.Input and updates player's position and rotation depending on player's actions.
+/// Handles moving, rotating and teleporting players and all their hitboxes.
+```
+
+<br/>
+
+### Documenting Classes
+Classes should be documented with a summary.
 
 ```
 /// <summary>
-/// Creates all character entities for each player in the game, inititalizing data, hitboxes and view components.
+/// Handles player input, movement and rotations.
+/// </summary>
+public static unsafe class BattlePlayerMovementController
+```
+
+<br/>
+
+### Documenting Methods
+When documenting any method, the different sections of the comment such as the summary, parameters and return value should be separated by an empty line.
+
+```
+/// <summary>
+/// Clamps the grid position of the player to the playfield of their team.
 /// </summary>
 ///
-/// <param name="f">Current simulation frame.</param>
+/// <param name="playerData">Pointer to the player's data component.</param>
+/// <param name="gridPosition">The grid position of the player.</param>
+/// <param name="clampedPosition">The resulting clamped position of the player.</param>
+/// 
+/// <returns>True if the position changed from clamping, false if it remained the same.</returns>
 ```
 
 <br/>

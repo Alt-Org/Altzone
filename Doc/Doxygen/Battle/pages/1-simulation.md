@@ -109,16 +109,17 @@ In %Battle Singletons have QSingleton suffix. [[Naming]](#index-naming)
 [Quantum Signals🡵] are C# interfaces that are generated from qtn files.  
 In %Battle all [Quantum Signals🡵] are located in BattleSignals.qtn file.
 
-|  Namespace        | Interface                                                | Description                                                  |
-| :---------------- | :------------------------------------------------------- | :----------------------------------------------------------- |
-| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitSoulWall}      | @copybrief Quantum.ISignalBattleOnProjectileHitSoulWall      |
-| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitArenaBorder}   | @copybrief Quantum.ISignalBattleOnProjectileHitArenaBorder   |
-| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitPlayerHitbox}  | @copybrief Quantum.ISignalBattleOnProjectileHitPlayerHitbox  |
-| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitGoal}          | @copybrief Quantum.ISignalBattleOnProjectileHitGoal          |
-|                                                                                                                                           |||
-| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnDiamondHitPlayer}           | @copybrief Quantum.ISignalBattleOnDiamondHitPlayer           |
-|                                                                                                                                           |||
-| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnGameOver}                   | @copybrief Quantum.ISignalBattleOnGameOver                   |
+|  Namespace        | Interface                                                   | Description                                                     |
+| :---------------- | :---------------------------------------------------------- | :-------------------------------------------------------------- |
+| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitSoulWall}         | @copybrief Quantum.ISignalBattleOnProjectileHitSoulWall         |
+| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitArenaBorder}      | @copybrief Quantum.ISignalBattleOnProjectileHitArenaBorder      |
+| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitPlayerCharacter}  | @copybrief Quantum.ISignalBattleOnProjectileHitPlayerCharacter  |
+| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitPlayerShield}     | @copybrief Quantum.ISignalBattleOnProjectileHitPlayerShield     |
+| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitGoal}             | @copybrief Quantum.ISignalBattleOnProjectileHitGoal             |
+|                                                                                                                                                 |||
+| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnDiamondHitPlayer}              | @copybrief Quantum.ISignalBattleOnDiamondHitPlayer              |
+|                                                                                                                                                 |||
+| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnGameOver}                      | @copybrief Quantum.ISignalBattleOnGameOver                      |
 
 <br/>
 
