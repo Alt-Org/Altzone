@@ -9422,6 +9422,7 @@ GameObject:
   - component: {fileID: 4788480834664309421}
   - component: {fileID: 1967409196646239748}
   - component: {fileID: 697716011940577308}
+  - component: {fileID: 7739909009906333160}
   m_Layer: 5
   m_Name: ItemtrayHorizontal
   m_TagString: FurnitureTray
@@ -9542,6 +9543,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AllowSwitchOff: 0
+--- !u!114 &7739909009906333160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8238237563156778947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 5
+  _educationCategoryActionType: 12
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
 --- !u!1 &8269092316237308460
 GameObject:
   m_ObjectHideFlags: 0
@@ -10411,6 +10431,7 @@ GameObject:
   - component: {fileID: 3929146641063178205}
   - component: {fileID: 3510545286632961050}
   - component: {fileID: 4697328121706057684}
+  - component: {fileID: 3817732165489977067}
   m_Layer: 5
   m_Name: ItemtrayVertical
   m_TagString: FurnitureTray
@@ -10515,6 +10536,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bd5afa60a6ce6046a3fb052d84a5a7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3817732165489977067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8835563532395335141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 5
+  _educationCategoryActionType: 12
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
 --- !u!1 &8979509467625706017
 GameObject:
   m_ObjectHideFlags: 0
