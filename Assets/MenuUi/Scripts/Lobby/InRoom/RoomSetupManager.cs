@@ -179,6 +179,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             }
             else // If player is a master client setting the position which was set to room during creation to player properties too
             {
+                this.Publish<LobbyManager.ReserveFreePositionEvent>(new());
                 player.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object> {
                     {
                         PlayerPositionKey, PlayerPosition1
@@ -193,6 +194,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             // Creating custom properties
             player.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object>
             {
+                { PlayerPositionKey, player.GetCustomProperty(PlayerPositionKey, 0) },
                 { PlayerCharactersKey, characterIds },
                 { PlayerStatsKey, characterStats },
                 { "Role", (int)currentRole },
@@ -203,7 +205,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
             LobbyManager.Instance.SetPlayerQuantumCharacters(selectedCharacters);
 
             _selectedCharactersEditable.SetCharacters();
-
             UpdateStatus();
             _firstOnEnable = false;
             _onEnableCoroutineHolder = null;
@@ -222,8 +223,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 LobbyPlayer player = PhotonRealtimeClient.LocalLobbyPlayer;
                 player.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object>
                 {
+                    { PlayerPositionKey, PhotonRealtimeClient.LocalLobbyPlayer.GetCustomProperty(PlayerPositionKey, 0) },
                     { PlayerCharactersKey, characterIds },
                     { PlayerStatsKey, characterStats },
+                    { "Role", (int)currentRole },
                 }));
 
                 // Setting custom characters for quantum
@@ -291,7 +294,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 return;
             }
             ResetState();
-
             GameType roomGameType = (GameType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
 
             // We need local player to check against other players
@@ -302,6 +304,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             // Check other players first is they have reserved some player positions etc. from the room already.
             foreach (var player in PhotonRealtimeClient.GetCurrentRoomPlayers())
             {
+                Debug.LogWarning(player.NickName);
                 if (!player.Equals(localPlayer))
                 {
                     CheckOtherPlayer(player);
@@ -365,8 +368,19 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private void CheckOtherPlayer(LobbyPlayer player)
         {
-            if (!player.HasCustomProperty(PlayerPositionKey) || !player.HasCustomProperty(PlayerCharactersKey) || !player.HasCustomProperty(PlayerStatsKey))
+            if (!player.HasCustomProperty(PlayerPositionKey))
             {
+                Debug.LogWarning($"{player.NickName}: Cannot find PlayerPositionKey.");
+                return;
+            }
+            if (!player.HasCustomProperty(PlayerCharactersKey))
+            {
+                Debug.LogWarning($"{player.NickName}: Cannot find PlayerCharactersKey.");
+                return;
+            }
+            if (!player.HasCustomProperty(PlayerStatsKey))
+            {
+                Debug.LogWarning($"{player.NickName}: Cannot find PlayerStatsKey.");
                 return;
             }
 

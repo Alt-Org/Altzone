@@ -1188,7 +1188,9 @@ namespace Altzone.Scripts.Lobby
                 var position = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, player.UserId } });
                 var eValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, "" } }); // Expecting the new position to be empty
                 if (PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(position, eValue))
-                    player.SetCustomProperties(new PhotonHashtable { { PlayerPositionKey, playerPosition } });
+                    player.SetCustomProperties(new PhotonHashtable { { PlayerPositionKey, playerPosition },
+                                                                                { PhotonBattleRoom.PlayerCharacterIdsKey, player.HasCustomProperty(PhotonBattleRoom.PlayerCharacterIdsKey) ? player.GetCustomProperty(PhotonBattleRoom.PlayerCharacterIdsKey, new int[3]) : new int[3] },
+                                                                                { PhotonBattleRoom.PlayerStatsKey, player.HasCustomProperty(PhotonBattleRoom.PlayerCharacterIdsKey) ? player.GetCustomProperty(PhotonBattleRoom.PlayerCharacterIdsKey, new int[3]) : new int[15] } });
                 _posChangeQueue.Remove(player.UserId);
                 _playerPosChangeInProgress = false;
                 yield break;
@@ -1209,7 +1211,10 @@ namespace Altzone.Scripts.Lobby
             else
             {
                 // Setting new position to player's custom properties
-                player.SafeSetCustomProperty(PlayerPositionKey, playerPosition, curValue);
+                player.SetCustomProperties(new PhotonHashtable { { PlayerPositionKey, playerPosition },
+                                                                            { PhotonBattleRoom.PlayerCharacterIdsKey, player.HasCustomProperty(PhotonBattleRoom.PlayerCharacterIdsKey) ? player.GetCustomProperty(PhotonBattleRoom.PlayerCharacterIdsKey, new int[3]) : new int[3] },
+                                                                            { PhotonBattleRoom.PlayerStatsKey, player.HasCustomProperty(PhotonBattleRoom.PlayerStatsKey) ? player.GetCustomProperty(PhotonBattleRoom.PlayerStatsKey, new int[15]) :new int[15] } });
+                //player.SafeSetCustomProperty(PlayerPositionKey, playerPosition, curValue);
 
                 var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, "" } });
                 expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, player.UserId } }); // Expected to have the player's id in the previous position
