@@ -1189,7 +1189,7 @@ GameObject:
   - component: {fileID: 4414791988625466480}
   - component: {fileID: 6955672107004695912}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: MainButtons
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1516,10 +1516,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 338878778322764488}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 114, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 57, y: -57}
+  m_SizeDelta: {x: 0, y: 114}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &267750063849591026
 CanvasRenderer:
@@ -1692,7 +1692,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.8}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0000076293945}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -0.00000002980233, y: 0}
   m_Pivot: {x: 0.5000001, y: 0.50000006}
 --- !u!222 &4587681298884548583
@@ -2984,7 +2984,7 @@ GameObject:
   - component: {fileID: 3355146746613469288}
   - component: {fileID: 1648055668253379643}
   m_Layer: 0
-  m_Name: GameObject (1)
+  m_Name: EditorButtons
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7604,7 +7604,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2475643402131026296}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: FPSControl
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15093,7 +15093,7 @@ GameObject:
   - component: {fileID: 338878778322764488}
   - component: {fileID: 2215993156161138076}
   m_Layer: 5
-  m_Name: GameObject
+  m_Name: SocialMediaAccounts_Main
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22254,7 +22254,7 @@ GameObject:
   - component: {fileID: 7150708963445429629}
   - component: {fileID: 6687306066600623860}
   m_Layer: 5
-  m_Name: GameObject (1)
+  m_Name: SocialMediaAccounts_ALT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25193,7 +25193,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0.8}
-  m_AnchoredPosition: {x: 0, y: -0.0000076293945}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: -0.000007629398}
   m_Pivot: {x: 0.50000006, y: 0.50000024}
 --- !u!222 &4441028761873495629
@@ -25534,7 +25534,7 @@ GameObject:
   - component: {fileID: 4384565158666552996}
   - component: {fileID: 1461493160583987083}
   m_Layer: 5
-  m_Name: GameObject
+  m_Name: FeedbackSection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
