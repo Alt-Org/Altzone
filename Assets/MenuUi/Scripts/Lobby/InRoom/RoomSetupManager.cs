@@ -175,11 +175,9 @@ namespace MenuUi.Scripts.Lobby.InRoom
             if (!player.IsMasterClient)
             {
                 this.Publish<LobbyManager.ReserveFreePositionEvent>(new());
-                yield return new WaitUntil(() => player.GetCustomProperty(PlayerPositionKey, -1) != -1);
             }
             else // If player is a master client setting the position which was set to room during creation to player properties too
             {
-                this.Publish<LobbyManager.ReserveFreePositionEvent>(new());
                 player.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object> {
                     {
                         PlayerPositionKey, PlayerPosition1
@@ -190,6 +188,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
             // Getting character id and stat int arrays
             int[] characterIds = GetSelectedCharacterIds(playerData);
             int[] characterStats = GetCharactersStatsArray(playerData);
+
+            yield return new WaitUntil(() => player.GetCustomProperty(PlayerPositionKey, 0) != 0);
 
             // Creating custom properties
             player.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object>
