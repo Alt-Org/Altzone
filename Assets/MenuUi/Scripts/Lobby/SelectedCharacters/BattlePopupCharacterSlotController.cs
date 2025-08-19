@@ -54,7 +54,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                 for (int i = 0; i < _selectedCharacterSlots.Length; i++)
                 {
                     CharacterID charID;
-                    if (playerData.SelectedTestCharacterIds.Length <= i && playerData.SelectedTestCharacterIds[i] != (int)CharacterID.None)
+                    if (playerData.SelectedTestCharacterIds.Length > i && playerData.SelectedTestCharacterIds[i] != (int)CharacterID.None)
                     {
                         charID = (CharacterID)playerData.SelectedTestCharacterIds[i];
                     }

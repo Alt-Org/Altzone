@@ -190,6 +190,7 @@ namespace MenuUi.Scripts.CharacterGallery
             string newServerId = _playerData.CustomCharacters.FirstOrDefault(x => x.Id == newCharacterId)?.ServerID;
             if (newServerId == null || newServerId == ((int)CharacterID.None).ToString())
             {
+                if (_playerData.SelectedTestCharacterIds.Length > slot)
                 if (CustomCharacter.IsTestCharacter(newCharacterId))
                 {
                     _playerData.SelectedTestCharacterIds[slot] = (int)newCharacterId;
@@ -204,7 +205,7 @@ namespace MenuUi.Scripts.CharacterGallery
             else if (newServerId != _playerData.SelectedCharacterIds[slot])
             {
                 _playerData.SelectedCharacterIds[slot] = newServerId;
-                _playerData.SelectedTestCharacterIds[slot] = (int)CharacterID.None;
+                if(_playerData.SelectedTestCharacterIds.Length > slot) _playerData.SelectedTestCharacterIds[slot] = (int)CharacterID.None;
             }
 
             string body = JObject.FromObject(
