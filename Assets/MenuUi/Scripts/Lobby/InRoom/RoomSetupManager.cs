@@ -185,27 +185,9 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 }));
             }
 
-            // Getting character id and stat int arrays
-            int[] characterIds = GetSelectedCharacterIds(playerData);
-            int[] characterStats = GetCharactersStatsArray(playerData);
-
             yield return new WaitUntil(() => player.GetCustomProperty(PlayerPositionKey, 0) != 0);
 
-            // Creating custom properties
-            player.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object>
-            {
-                { PlayerPositionKey, player.GetCustomProperty(PlayerPositionKey, 0) },
-                { PlayerCharactersKey, characterIds },
-                { PlayerStatsKey, characterStats },
-                { "Role", (int)currentRole },
-            }));
-
-            // Setting custom characters for quantum
-            List<CustomCharacter> selectedCharacters = GetSelectedCustomCharacters(playerData);
-            LobbyManager.Instance.SetPlayerQuantumCharacters(selectedCharacters);
-
-            _selectedCharactersEditable.SetCharacters();
-            UpdateStatus();
+            UpdateCharactersAndStatsKey();
             _firstOnEnable = false;
             _onEnableCoroutineHolder = null;
         }
