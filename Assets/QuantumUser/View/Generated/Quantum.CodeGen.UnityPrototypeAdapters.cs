@@ -65,6 +65,7 @@ namespace Quantum.Prototypes.Unity {
     public FP RotationBase;
     public FP RotationOffset;
     public FP CurrentHp;
+    public FP CurrentDefence;
     public Quantum.QuantumEntityPrototype HitboxShieldEntity;
     public Quantum.QuantumEntityPrototype HitboxCharacterEntity;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
@@ -84,6 +85,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.RotationBase, out result.RotationBase);
       converter.Convert(this.RotationOffset, out result.RotationOffset);
       converter.Convert(this.CurrentHp, out result.CurrentHp);
+      converter.Convert(this.CurrentDefence, out result.CurrentDefence);
       converter.Convert(this.HitboxShieldEntity, out result.HitboxShieldEntity);
       converter.Convert(this.HitboxCharacterEntity, out result.HitboxCharacterEntity);
       converter.Convert(this.DamageCooldown, out result.DamageCooldown);
@@ -94,6 +96,7 @@ namespace Quantum.Prototypes.Unity {
   [System.SerializableAttribute()]
   public unsafe partial class BattlePlayerHitboxQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerHitboxQComponentPrototype> {
     public Quantum.QuantumEntityPrototype PlayerEntity;
+    public QBoolean IsActive;
     public Quantum.QEnum32<BattlePlayerHitboxType> HitboxType;
     public Quantum.QEnum32<BattlePlayerCollisionType> CollisionType;
     public FPVector2 Normal;
@@ -102,6 +105,7 @@ namespace Quantum.Prototypes.Unity {
     public override Quantum.Prototypes.BattlePlayerHitboxQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerHitboxQComponentPrototype();
       converter.Convert(this.PlayerEntity, out result.PlayerEntity);
+      converter.Convert(this.IsActive, out result.IsActive);
       converter.Convert(this.HitboxType, out result.HitboxType);
       converter.Convert(this.CollisionType, out result.CollisionType);
       converter.Convert(this.Normal, out result.Normal);
