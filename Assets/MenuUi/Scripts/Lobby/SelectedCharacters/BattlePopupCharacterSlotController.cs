@@ -84,7 +84,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         /// <param name="stats">The stats for all three characters in an int array. Order: Hp, Speed, CharacterSize, Attack, Defence.</param>
         public void SetCharacters(int[] selectedCharacterIds, int[] stats = null)
         {
-            for (int i = 0; i < selectedCharacterIds.Length; i++)
+            for (int i = 0; i < Mathf.Min(selectedCharacterIds.Length,_selectedCharacterSlots.Length); i++)
             {
                 if (selectedCharacterIds[i] == (int)CharacterID.None)
                 {

@@ -1190,7 +1190,7 @@ namespace Altzone.Scripts.Lobby
                 if (PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(position, eValue))
                     player.SetCustomProperties(new PhotonHashtable { { PlayerPositionKey, playerPosition },
                                                                                 { PhotonBattleRoom.PlayerCharacterIdsKey, player.HasCustomProperty(PhotonBattleRoom.PlayerCharacterIdsKey) ? player.GetCustomProperty(PhotonBattleRoom.PlayerCharacterIdsKey, new int[3]) : new int[3] },
-                                                                                { PhotonBattleRoom.PlayerStatsKey, player.HasCustomProperty(PhotonBattleRoom.PlayerCharacterIdsKey) ? player.GetCustomProperty(PhotonBattleRoom.PlayerCharacterIdsKey, new int[3]) : new int[15] } });
+                                                                                { PhotonBattleRoom.PlayerStatsKey, player.HasCustomProperty(PhotonBattleRoom.PlayerStatsKey) ? player.GetCustomProperty(PhotonBattleRoom.PlayerStatsKey, new int[15]) : new int[15] } });
                 _posChangeQueue.Remove(player.UserId);
                 _playerPosChangeInProgress = false;
                 yield break;
