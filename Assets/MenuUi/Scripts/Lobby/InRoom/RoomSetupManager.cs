@@ -205,7 +205,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 LobbyPlayer player = PhotonRealtimeClient.LocalLobbyPlayer;
                 player.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object>
                 {
-                    { PlayerPositionKey, PhotonRealtimeClient.LocalLobbyPlayer.GetCustomProperty(PlayerPositionKey, 0) },
                     { PlayerCharactersKey, characterIds },
                     { PlayerStatsKey, characterStats },
                     { "Role", (int)currentRole },
