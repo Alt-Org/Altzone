@@ -313,6 +313,9 @@ MonoBehaviour:
   _transparencyEffectRange: 1
   _transparencyEffectTransitionRate: 3
   _transparencyEffectMinimumAlpha: 0.3
+  _damageFlashDuration: 1
+  _damageFlashAmount: 5
+  _noShieldSprite: {fileID: 49914648, guid: c9b52cea3d6119042b3df926c172acd8, type: 3}
 --- !u!1 &5521468026819928245
 GameObject:
   m_ObjectHideFlags: 0
@@ -579,7 +582,7 @@ MonoBehaviour:
           X: 1
           Y: 1
       CollisionType:
-        Value: 2
+        Value: 0
 --- !u!1 &5555457871378360869
 GameObject:
   m_ObjectHideFlags: 0
