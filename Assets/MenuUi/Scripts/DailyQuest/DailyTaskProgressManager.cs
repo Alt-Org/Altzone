@@ -148,6 +148,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationSocialType.ChatAddReaction: HandleSimpleTask(value); break;
             case TaskEducationSocialType.FindAllChatOptions: HandleSimpleTask(value); break;
             case TaskEducationSocialType.UseAllChatFeelings: HandleSimpleTask(value); break;
+            case TaskEducationSocialType.DefinePlayerStyle: HandleSimpleTask(value); break;
             default: break;
         }
     }
