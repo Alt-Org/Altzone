@@ -182,6 +182,7 @@ namespace Quantum.Prototypes {
     public FP RotationBase;
     public FP RotationOffset;
     public FP CurrentHp;
+    public FP CurrentDefence;
     public MapEntityId HitboxShieldEntity;
     public MapEntityId HitboxCharacterEntity;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
@@ -204,6 +205,7 @@ namespace Quantum.Prototypes {
         result.RotationBase = this.RotationBase;
         result.RotationOffset = this.RotationOffset;
         result.CurrentHp = this.CurrentHp;
+        result.CurrentDefence = this.CurrentDefence;
         PrototypeValidator.FindMapEntity(this.HitboxShieldEntity, in context, out result.HitboxShieldEntity);
         PrototypeValidator.FindMapEntity(this.HitboxCharacterEntity, in context, out result.HitboxCharacterEntity);
         this.DamageCooldown.Materialize(frame, ref result.DamageCooldown, in context);
@@ -246,6 +248,7 @@ namespace Quantum.Prototypes {
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerHitboxQComponent))]
   public unsafe class BattlePlayerHitboxQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerHitboxQComponent> {
     public MapEntityId PlayerEntity;
+    public QBoolean IsActive;
     public Quantum.QEnum32<BattlePlayerHitboxType> HitboxType;
     public Quantum.QEnum32<BattlePlayerCollisionType> CollisionType;
     public FPVector2 Normal;
@@ -257,6 +260,7 @@ namespace Quantum.Prototypes {
     }
     public void Materialize(Frame frame, ref Quantum.BattlePlayerHitboxQComponent result, in PrototypeMaterializationContext context = default) {
         PrototypeValidator.FindMapEntity(this.PlayerEntity, in context, out result.PlayerEntity);
+        result.IsActive = this.IsActive;
         result.HitboxType = this.HitboxType;
         result.CollisionType = this.CollisionType;
         result.Normal = this.Normal;
