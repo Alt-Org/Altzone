@@ -8,7 +8,7 @@ using Battle.QSimulation.Projectile;
 namespace Battle.QSimulation.Player
 {
     [Preserve]
-    public unsafe class BattlePlayerQSystem : SystemMainThread, ISignalBattleOnProjectileHitPlayerHitbox
+    public unsafe class BattlePlayerQSystem : SystemMainThread, ISignalBattleOnProjectileHitPlayerHitbox, ISignalBattleOnProjectileHitPlayerShield
     {
         public static void SpawnPlayers(Frame f)
         {
@@ -31,7 +31,7 @@ namespace Battle.QSimulation.Player
 
             FP newHp = damagedPlayerData->CurrentHp - damageTaken;
 
-            if (damageTaken > FP._0 && damagedPlayerData->CurrentHp > 0 && !damagedPlayerData->DamageCooldown.IsRunning(f))
+            if (damageTaken > FP._0 && damagedPlayerData->CurrentHp > FP._0 && !damagedPlayerData->DamageCooldown.IsRunning(f))
             {
                 damagedPlayerData->CurrentHp = newHp;
 
@@ -43,6 +43,30 @@ namespace Battle.QSimulation.Player
             if (damagedPlayerData->CurrentHp <= FP._0)
             {
                 BattlePlayerManager.DespawnPlayer(f, damagedPlayerData->Slot);
+            }
+
+            BattleProjectileQSystem.SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Player);
+        }
+
+        public unsafe void BattleOnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
+        {
+            if (!playerHitbox->IsActive) return;
+            if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Player)) return;
+
+            BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
+            FP damageTaken = projectile->Attack;
+
+            int characterNumber = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber;
+
+            FP newDefence = damagedPlayerData->CurrentDefence - damageTaken;
+
+            if (damageTaken > FP._0 && damagedPlayerData->CurrentDefence > FP._0 && !damagedPlayerData->DamageCooldown.IsRunning(f))
+            {
+                damagedPlayerData->CurrentDefence = newDefence;
+
+                damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, 1);
+
+                f.Events.BattleShieldTakeDamage(playerHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newDefence);
             }
 
             BattleProjectileQSystem.SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Player);
@@ -73,6 +97,11 @@ namespace Battle.QSimulation.Player
                 playerEntity = playerHandle.SelectedCharacter;
                 playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerEntity);
                 playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
+
+                if (playerData->CurrentDefence <= FP._0)
+                {
+                    f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity)->IsActive = false;
+                }
 
                 BattlePlayerMovementController.UpdateMovement(f, playerData, playerTransform, input);
             }
