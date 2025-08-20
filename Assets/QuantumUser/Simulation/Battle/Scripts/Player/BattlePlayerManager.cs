@@ -281,6 +281,7 @@ namespace Battle.QSimulation.Player
                             playerHitbox = new BattlePlayerHitboxQComponent
                             {
                                 PlayerEntity = playerEntity,
+                                IsActive = true,
                                 HitboxType = playerHitboxType,
                                 CollisionType = playerHitboxCollisionType,
                                 Normal = FPVector2.Zero,
@@ -314,7 +315,8 @@ namespace Battle.QSimulation.Player
                             RotationBase      = playerRotationBase,
                             RotationOffset    = FP._0,
 
-                            CurrentHp         = data.Characters[playerCharacterNumber].Stats.Hp,
+                            CurrentHp         = FP._0,
+                            CurrentDefence    = FP._0,
 
                             HitboxShieldEntity      = playerHitboxShieldEntity,
                             HitboxCharacterEntity   = playerHitboxCharacterEntity
@@ -328,8 +330,9 @@ namespace Battle.QSimulation.Player
                         playerData.Stats.Defence       = FP.FromString("1.0");
 #endif
                         playerData.CurrentHp = playerData.Stats.Hp;
+                        playerData.CurrentDefence = playerData.Stats.Defence;
 
-                        //{ initialize playerData
+                        //} initialize playerData
 
                         //{ initialize entity
 
