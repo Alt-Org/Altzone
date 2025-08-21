@@ -21,7 +21,9 @@ namespace Battle.View.Player
         [SerializeField] private float _damageFlashDuration = 1f;
         [SerializeField] private int _damageFlashAmount = 5;
 
-        [SerializeField] Sprite _noShieldSprite;
+        [SerializeField] private Sprite _noShieldSprite;
+
+        [SerializeField] private ParticleSystem _shieldHitParticle;
 
         private Coroutine _damageFlashCoroutine = null;
 
@@ -31,6 +33,7 @@ namespace Battle.View.Player
 
             float scale = (float)e.ModelScale;
             transform.localScale = new Vector3(scale, scale, scale);
+            _shieldHitParticle.transform.localScale = new Vector3(scale, scale, scale);
 
             if (BattlePlayerManager.PlayerHandle.GetTeamNumber(e.Slot) == BattleGameViewController.LocalPlayerTeam)
             {
@@ -142,6 +145,11 @@ namespace Battle.View.Player
             if (e.DefenceValue <= FP._0)
             {
                 _spriteRenderer.sprite = _noShieldSprite;
+            }
+
+            if (_shieldHitParticle != null)
+            {
+                _shieldHitParticle.Play();
             }
         }
 
