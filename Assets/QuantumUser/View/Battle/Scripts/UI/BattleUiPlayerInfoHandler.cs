@@ -21,14 +21,29 @@ namespace Battle.View.UI
             LocalTeammate,
         }
 
-        public bool IsVisible => _localPlayerMultiOrientationElement.gameObject.activeSelf;
+        public bool IsVisible => _isVisible;
+        public bool IsVisiblePlayer => _isVisiblePlayer;
+        public bool IsVisibleTeammate => _isVisibleTeammate;
         public BattleUiMultiOrientationElement LocalPlayerMultiOrientationElement => _localPlayerMultiOrientationElement;
         public BattleUiMultiOrientationElement LocalTeammateMultiOrientationElement => _localTeammateMultiOrientationElement;
 
         public void SetShow(bool show)
         {
-            _localPlayerMultiOrientationElement.gameObject.SetActive(show);
-            _localTeammateMultiOrientationElement.gameObject.SetActive(show);
+            _isVisible = show;
+            _localPlayerMultiOrientationElement   .gameObject.SetActive(_isVisible && _isVisiblePlayer);
+            _localTeammateMultiOrientationElement .gameObject.SetActive(_isVisible && _isVisibleTeammate);
+        }
+
+        public void SetShowPlayer(bool show)
+        {
+            _isVisiblePlayer = show;
+            _localPlayerMultiOrientationElement.gameObject.SetActive(_isVisible && _isVisiblePlayer);
+        }
+
+        public void SetShowTeammate(bool show)
+        {
+            _isVisibleTeammate = show;
+            _localTeammateMultiOrientationElement.gameObject.SetActive(_isVisible && _isVisibleTeammate);
         }
 
         public void SetInfo(PlayerType playerType, string playerName, int[] characterIds, float[] characterDefenceNumbers, BattleUiMovableElementData data)
@@ -104,5 +119,9 @@ namespace Battle.View.UI
                 return _localTeammateMultiOrientationElement.GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>();
             }
         }
+
+        private bool _isVisible         = false;
+        private bool _isVisiblePlayer   = false;
+        private bool _isVisibleTeammate = false;
     }
 }
