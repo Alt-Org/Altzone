@@ -23,6 +23,8 @@ public class LeaderboardView : MonoBehaviour
     [SerializeField] private GameObject _leaderboardCategoryButtons;
     [SerializeField] private Button _clansButton;
     [SerializeField] private Button _playersButton;
+    [SerializeField] private Button _tabWinsButton;  // Lis‰tty
+
 
     [Header("Tab sprites")]
     [SerializeField] private Sprite _globalWinsSprite;
@@ -52,7 +54,8 @@ public class LeaderboardView : MonoBehaviour
     {
         Global,
         Clan,
-        Friends
+        Friends,
+        Wins // Lis‰tty
     }
     private enum LeaderboardType
     {
@@ -73,6 +76,8 @@ public class LeaderboardView : MonoBehaviour
         _globalLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Global));
         _clanLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Clan));
         _friendsLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Friends));
+        _tabWinsButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Wins)); //Lis‰tty, jotta reagoi klikkaukseen
+        
 
         _leaderboardTypeButton.onClick.AddListener(() => ToggleLeaderboardType());
 
@@ -93,7 +98,18 @@ public class LeaderboardView : MonoBehaviour
         _currentLeaderboard = leaderboard;
 
         _currentLeaderboardCategory = LeaderboardCategory.Players;
-        LoadActivityView();
+
+        if (leaderboard == Leaderboard.Wins) //
+        {
+            SetLeaderboardType(LeaderboardType.Wins); //Asetetaan voitot-n‰kym‰
+        }
+        else
+        {
+            SetLeaderboardType(LeaderboardType.Activity); // Asetetaan aktiivisuus -n‰kym‰
+        }
+
+        LoadLeaderboard(); //P‰ivitt‰‰ leaderboardin 
+        //LoadActivityView();
     }
 
     private void SetLeaderboardType(LeaderboardType leaderboardType)
