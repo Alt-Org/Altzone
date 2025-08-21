@@ -1,6 +1,9 @@
 using System.Collections;
 using UnityEngine;
+
 using Quantum;
+using Photon.Deterministic;
+
 using Battle.View.Game;
 using Battle.QSimulation.Player;
 
@@ -20,6 +23,10 @@ namespace Battle.View.Player
         [SerializeField] private float _damageFlashDuration = 1f;
         [SerializeField] private int _damageFlashAmount = 5;
 
+        [SerializeField] private Sprite _noShieldSprite;
+
+        [SerializeField] private ParticleSystem _shieldHitParticle;
+
         private Coroutine _damageFlashCoroutine = null;
 
         public override void OnActivate(Frame _) => QuantumEvent.Subscribe(this, (EventBattlePlayerViewInit e) => {
@@ -28,19 +35,20 @@ namespace Battle.View.Player
 
             float scale = (float)e.ModelScale;
             transform.localScale = new Vector3(scale, scale, scale);
+            _shieldHitParticle.transform.localScale = new Vector3(scale, scale, scale);
 
             if (BattlePlayerManager.PlayerHandle.GetTeamNumber(e.Slot) == BattleGameViewController.LocalPlayerTeam)
             {
-                GameObject _characterGameObject = _characterGameObjects[0];
-                _characterGameObject.SetActive(true);
-                _spriteRenderer = _characterGameObject.GetComponent<SpriteRenderer>();
+                GameObject characterGameObjects = _characterGameObjects[0];
+                characterGameObjects.SetActive(true);
+                _spriteRenderer = characterGameObjects.GetComponent<SpriteRenderer>();
             }
             else
             {
-                GameObject _characterGameObject = _characterGameObjects[1];
-                _characterGameObject.SetActive(true);
+                GameObject characterGameObjects = _characterGameObjects[1];
+                characterGameObjects.SetActive(true);
                 _heart.SetActive(false);
-                _spriteRenderer = _characterGameObject.GetComponent<SpriteRenderer>();
+                _spriteRenderer = characterGameObjects.GetComponent<SpriteRenderer>();
             }
 
             if (e.Slot == BattleGameViewController.LocalPlayerSlot)
@@ -49,6 +57,7 @@ namespace Battle.View.Player
             }
 
             QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
+            QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
         });
 
         public override void OnUpdateView()
@@ -128,6 +137,22 @@ namespace Battle.View.Player
                 StopCoroutine(_damageFlashCoroutine);
             }
             _damageFlashCoroutine = StartCoroutine(DamageFlashCoroutine());
+        }
+
+        private void QEventOnShieldTakeDamage(EventBattleShieldTakeDamage e)
+        {
+            if (EntityRef != e.Entity) return;
+            if (!PredictedFrame.Exists(e.Entity)) return;
+
+            if (e.DefenceValue <= FP._0)
+            {
+                _spriteRenderer.sprite = _noShieldSprite;
+            }
+
+            if (_shieldHitParticle != null)
+            {
+                _shieldHitParticle.Play();
+            }
         }
 
         private IEnumerator DamageFlashCoroutine()

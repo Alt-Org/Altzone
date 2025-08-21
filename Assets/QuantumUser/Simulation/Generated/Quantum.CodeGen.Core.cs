@@ -957,7 +957,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattlePlayerDataQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 136;
+    public const Int32 SIZE = 144;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(24)]
     public PlayerRef PlayerRef;
@@ -969,7 +969,7 @@ namespace Quantum {
     public Int32 CharacterId;
     [FieldOffset(8)]
     public Int32 CharacterClass;
-    [FieldOffset(96)]
+    [FieldOffset(104)]
     public BattlePlayerStats Stats;
     [FieldOffset(20)]
     public Int32 GridExtendTop;
@@ -977,19 +977,21 @@ namespace Quantum {
     public Int32 GridExtendBottom;
     [FieldOffset(28)]
     public QBoolean HasTargetPosition;
-    [FieldOffset(80)]
+    [FieldOffset(88)]
     public FPVector2 TargetPosition;
-    [FieldOffset(56)]
-    public FP RotationBase;
     [FieldOffset(64)]
+    public FP RotationBase;
+    [FieldOffset(72)]
     public FP RotationOffset;
-    [FieldOffset(48)]
+    [FieldOffset(56)]
     public FP CurrentHp;
+    [FieldOffset(48)]
+    public FP CurrentDefence;
     [FieldOffset(40)]
     public EntityRef HitboxShieldEntity;
     [FieldOffset(32)]
     public EntityRef HitboxCharacterEntity;
-    [FieldOffset(72)]
+    [FieldOffset(80)]
     public FrameTimer DamageCooldown;
     public override Int32 GetHashCode() {
       unchecked { 
@@ -1007,6 +1009,7 @@ namespace Quantum {
         hash = hash * 31 + RotationBase.GetHashCode();
         hash = hash * 31 + RotationOffset.GetHashCode();
         hash = hash * 31 + CurrentHp.GetHashCode();
+        hash = hash * 31 + CurrentDefence.GetHashCode();
         hash = hash * 31 + HitboxShieldEntity.GetHashCode();
         hash = hash * 31 + HitboxCharacterEntity.GetHashCode();
         hash = hash * 31 + DamageCooldown.GetHashCode();
@@ -1025,6 +1028,7 @@ namespace Quantum {
         QBoolean.Serialize(&p->HasTargetPosition, serializer);
         EntityRef.Serialize(&p->HitboxCharacterEntity, serializer);
         EntityRef.Serialize(&p->HitboxShieldEntity, serializer);
+        FP.Serialize(&p->CurrentDefence, serializer);
         FP.Serialize(&p->CurrentHp, serializer);
         FP.Serialize(&p->RotationBase, serializer);
         FP.Serialize(&p->RotationOffset, serializer);
@@ -1073,22 +1077,25 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattlePlayerHitboxQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 40;
+    public const Int32 SIZE = 48;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(8)]
+    [FieldOffset(16)]
     public EntityRef PlayerEntity;
+    [FieldOffset(8)]
+    public QBoolean IsActive;
     [FieldOffset(4)]
     public BattlePlayerHitboxType HitboxType;
     [FieldOffset(0)]
     public BattlePlayerCollisionType CollisionType;
-    [FieldOffset(24)]
+    [FieldOffset(32)]
     public FPVector2 Normal;
-    [FieldOffset(16)]
+    [FieldOffset(24)]
     public FP CollisionMinOffset;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 16633;
         hash = hash * 31 + PlayerEntity.GetHashCode();
+        hash = hash * 31 + IsActive.GetHashCode();
         hash = hash * 31 + (Int32)HitboxType;
         hash = hash * 31 + (Int32)CollisionType;
         hash = hash * 31 + Normal.GetHashCode();
@@ -1100,6 +1107,7 @@ namespace Quantum {
         var p = (BattlePlayerHitboxQComponent*)ptr;
         serializer.Stream.Serialize((Int32*)&p->CollisionType);
         serializer.Stream.Serialize((Int32*)&p->HitboxType);
+        QBoolean.Serialize(&p->IsActive, serializer);
         EntityRef.Serialize(&p->PlayerEntity, serializer);
         FP.Serialize(&p->CollisionMinOffset, serializer);
         FPVector2.Serialize(&p->Normal, serializer);

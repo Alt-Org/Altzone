@@ -102,6 +102,7 @@ namespace Battle.QSimulation.Projectile
 
         public void BattleOnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
         {
+            if (!playerHitbox->IsActive) return;
             if (projectile->Emotion == BattleEmotionState.Love) return;
             if (playerHitbox->CollisionType == BattlePlayerCollisionType.None) return;
 
