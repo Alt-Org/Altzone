@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 using Altzone.Scripts.ModelV2;
-using TMPro;
 
 namespace Battle.View.UI
 {
@@ -52,11 +52,7 @@ namespace Battle.View.UI
 
         public void SetDefenceNumber(float defenceValue)
         {
-            if (defenceValue <= 0)
-            {
-                defenceValue = 0;
-            }
-
+            defenceValue = Mathf.Max(defenceValue, 0f);
             _defenceValue.text = defenceValue.ToString();
         }
 
