@@ -181,6 +181,7 @@ namespace Battle.View.Game
                     new float[3] { (float)localPlayerData.Characters[0].Stats.Defence, (float)localPlayerData.Characters[1].Stats.Defence, (float)localPlayerData.Characters[2].Stats.Defence },
                     SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.PlayerInfo)
                 );
+                _uiController.PlayerInfoHandler.SetShowPlayer(true);
 
                 // Setting local teammate info
                 if (localTeammateData != null)
@@ -192,16 +193,7 @@ namespace Battle.View.Game
                         new float[3] { (float)localTeammateData.Characters[0].Stats.Defence, (float)localTeammateData.Characters[1].Stats.Defence, (float)localTeammateData.Characters[2].Stats.Defence },
                         SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.TeammateInfo)
                     );
-                }
-                else
-                {
-                    _uiController.PlayerInfoHandler.SetInfo(
-                        PlayerType.LocalTeammate,
-                        "Tiimiläinen",
-                        new int[3] { 101, 201, 301 },
-                        new float[3] { 0, 0, 0 },
-                        SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.TeammateInfo)
-                    );
+                    _uiController.PlayerInfoHandler.SetShowTeammate(true);
                 }
             }
 
