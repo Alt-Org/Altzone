@@ -1,9 +1,11 @@
 using System.Collections;
 using UnityEngine;
+
 using Quantum;
+using Photon.Deterministic;
+
 using Battle.View.Game;
 using Battle.QSimulation.Player;
-using Photon.Deterministic;
 
 namespace Battle.View.Player
 {
