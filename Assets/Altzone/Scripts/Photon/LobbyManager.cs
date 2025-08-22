@@ -1214,6 +1214,11 @@ namespace Altzone.Scripts.Lobby
                         success = true;
                         break;
                     }
+                    else if (!PhotonBattleRoom.CheckIfPositionIsFree(playerPosition))
+                    {
+                        Debug.LogWarning($"Failed to reserve the position {playerPosition}. This likely because somebody already is in this position.");
+                        break;
+                    }
                     yield return new WaitForSeconds(0.1f);
                 }
 
