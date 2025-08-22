@@ -42,6 +42,8 @@ namespace Altzone.Scripts.Audio
 
         private bool _musicSwitchInProgress = false;
 
+        private float _musicStartTime = 0f;
+
         public enum MusicListDirection
         {
             Next,
@@ -111,7 +113,7 @@ namespace Altzone.Scripts.Audio
             if (musicTrack == null) return null;
 
             SwitchMusic(currentCategory, musicTrack);
-
+            
             return musicTrack.Name;
         }
 
@@ -127,6 +129,18 @@ namespace Altzone.Scripts.Audio
             SwitchMusic(currentCategory, musicTrack);
 
             return musicTrack.Name;
+        }
+
+        public string PlayMusic(string categoryName, string trackName, float startLocation)
+        {
+            _musicStartTime = startLocation;
+            return PlayMusic(categoryName, trackName);
+        }
+
+        public string PlayMusic(string categoryName, MusicTrack musicTrack, float startLocation)
+        {
+            _musicStartTime = startLocation;
+            return PlayMusic(categoryName, musicTrack);
         }
 
         public string GetTrackName()
@@ -170,13 +184,13 @@ namespace Altzone.Scripts.Audio
 
             if (_musicSwitchInProgress)
             {
-                if (_nextUpTrack == null) CalculateAcceleratedResumeTime();
+                if (_nextUpTrack == null) CalculateAcceleratedResumeTime(); //Wrong?
 
                 _nextUpCategory = musicCategory;
                 _nextUpTrack = musicTrack;
                 return;
             }
-
+            Debug.LogError(musicTrack.Name);
             _currentCategory = musicCategory;
             _currentTrack = musicTrack;
             StartCoroutine(SwitchMusic(MusicListDirection.None, null));
@@ -259,6 +273,8 @@ namespace Altzone.Scripts.Audio
         private void StartMusicPlayback(AudioSource source, AudioClip audio)
         {
             source.clip = audio;
+            source.time = _musicStartTime;
+            _musicStartTime = 0f;
             source.Play();
         }
 
