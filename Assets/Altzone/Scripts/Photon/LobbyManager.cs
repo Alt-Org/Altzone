@@ -1202,24 +1202,44 @@ namespace Altzone.Scripts.Lobby
             var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, "" } }); // Expecting the new position to be empty
 
             // Setting new position as taken
-            if (!PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(newPosition, expectedValue))
+            if (PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(newPosition, expectedValue))
             {
-                Debug.LogWarning($"Failed to reserve the position {playerPosition}. This likely because somebody already is in this position.");
+                float timeout = Time.time + 1f;
+                bool success = false;
+                while (Time.time < timeout)
+                {
+                    // Checking if the position is set to the player user id
+                    if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(newPositionKey) == player.UserId)
+                    {
+                        success = true;
+                        break;
+                    }
+                    else if (!PhotonBattleRoom.CheckIfPositionIsFree(playerPosition))
+                    {
+                        Debug.LogWarning($"Failed to reserve the position {playerPosition}. This likely because somebody already is in this position.");
+                        break;
+                    }
+                    yield return new WaitForSeconds(0.1f);
+                }
+
+                if (success)
+                {
+                    // Setting new position to player's custom properties
+                    player.SetCustomProperty(PlayerPositionKey, playerPosition);
+
+                    var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, "" } });
+                    expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, player.UserId } }); // Expected to have the player's id in the previous position
+
+                    // Setting previous position empty
+                    if (!PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue))
+                    {
+                        Debug.LogWarning($"Failed to free the position {curValue}. This likely because the player doesn't reserve it.");
+                    }
+                }
             }
             else
             {
-                // Setting new position to player's custom properties
-                player.SetCustomProperty(PlayerPositionKey, playerPosition);
-                //player.SafeSetCustomProperty(PlayerPositionKey, playerPosition, curValue);
-
-                var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, "" } });
-                expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, player.UserId } }); // Expected to have the player's id in the previous position
-
-                // Setting previous position empty
-                if (!PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue))
-                {
-                    Debug.LogWarning($"Failed to free the position {curValue}. This likely because the player doesn't reserve it.");
-                }
+                Debug.LogWarning($"Failed to reserve the position {playerPosition}. This likely because somebody already is in this position.");
             }
             _posChangeQueue.Remove(player.UserId);
             _playerPosChangeInProgress = false;
