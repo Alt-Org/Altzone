@@ -8,26 +8,55 @@ using UnityEngine.UI;
 
 public class JukeBoxSoulhomeHandler : MonoBehaviour
 {
+    [SerializeField] private GameObject _jukeboxObject;
+
     [Header("Disk")]
-    [SerializeField] private Image _diskImage;
-    [SerializeField] private Transform _diskTransform;
+    [SerializeField] private List<Image> _diskImage;
+    [SerializeField] private List<Transform> _diskTransform;
     [SerializeField] private float _diskRotationSpeed = 100f;
     [SerializeField] private Sprite _emptyDisk;
 
-    [Header("Other")]
-    [SerializeField] private GameObject _jukeboxObject;
-    [SerializeField] private Button _backButton;
-    [SerializeField] private TextMeshProUGUI _songName;
+    [Header("TopBarControls")]
+    [SerializeField] private Button _closeButton;
+    [SerializeField] private Button _playListButton;
+    [SerializeField] private TMP_Text _pageNameText;
+    [Space]
+    [SerializeField] private Button _switchMainWindowButton;
+    [SerializeField] private Image _switchMainWindowImage;
+    [SerializeField] private Sprite _navigationSprite;
+    [SerializeField] private Sprite _musicPlayerSprite;
 
-    [Header("Songlist")]
-    [SerializeField] private Transform _trackListContent;
+    [Header("MusicControls")]
+    [SerializeField] private List<Button> _playButtons;
+    [SerializeField] private List<Image> _playButtonImages;
+    [SerializeField] private List<Button> _trackGoBackButtons;
+    [SerializeField] private List<Button> _trackGoForwardButtons;
+    [Space]
+    [SerializeField] private Sprite _playSprite;
+    [SerializeField] private Sprite _stopSprite;
+
+    [Header("Navigation")]
+    [SerializeField] private GameObject _navigationObject;
+    [SerializeField] private TMP_InputField _searchField;
+    [SerializeField] private Button _tracksFilterButton;
+    [Space]
+    [SerializeField] private Transform _tracksListContent;
     [SerializeField] private GameObject _jukeboxButtonPrefab;
+    [SerializeField] private Button _goToMusicPlayerButton;
 
-    [Header("Queuelist")]
+    [Header("MusicPlayer")]
+    [SerializeField] private GameObject _musicPlayerObject;
+    [SerializeField] private TMP_Text _trackName;
+    [SerializeField] private Button _shuffleButton;
+    [SerializeField] private Button _loopButton;
+    [SerializeField] private Button _trackOptionsButton;
+    [SerializeField] private TMP_Text _trackPlayTimeText;
+    [SerializeField] private Slider _trackPlayTimeSlider;
+
+    [Header("QueueList")]
     [SerializeField] private Transform _queueContent;
     [SerializeField] private GameObject _queueTextPrefab;
 
-    private bool _isMainMenuMode = false;
     private Coroutine _diskSpinCoroutine;
 
     public bool JukeBoxOpen { get => _jukeboxObject.activeSelf; }
@@ -41,18 +70,27 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     private int _queueHandlerChunkPointer = 0;
     private int _queueHandlerPoolPointer = -1;
 
-    
     [SerializeField] private int _queueOptimizationThreshold = 4;
     private int _queueUseTimes = 0;
 
     private const string NoSongName = "Ei valittua biisiä";
+
+    private enum JukeboxWindowType
+    {
+        Navigation,
+        MusicPlayer
+    }
+
+    private JukeboxWindowType _currentWindowType = JukeboxWindowType.Navigation;
 
     public delegate void ChangeJukeBoxSong(MusicTrack track);
     public static event ChangeJukeBoxSong OnChangeJukeBoxSong;
 
     void Start()
     {
-        _backButton.onClick.AddListener(() => ToggleJukeboxScreen(false));
+        _jukeboxObject.SetActive(false);
+
+        _closeButton.onClick.AddListener(() => ToggleJukeboxScreen(false));
         CreateButtonHandlersChunk();
         CreateQueueHandlersChunk();
 
@@ -60,7 +98,11 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
         foreach (MusicTrack track in musicTracks) GetFreeJukeboxTrackButtonHandler().SetTrack(track);
 
-        _songName.text = NoSongName;
+        _trackName.text = NoSongName;
+
+        _switchMainWindowButton.onClick.AddListener(() => SwitchMainWindow());
+        _goToMusicPlayerButton.onClick.AddListener(() => SwitchMainWindow());
+        foreach (Button button in _playButtons) button.onClick.AddListener(() => PlayStopButtonActivated());
     }
 
     private void OnEnable()
@@ -70,6 +112,8 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         JukeboxManager.Instance.OnOptimizeVisualQueueChunks += OptimizeVisualQueueChunksCheck;
         JukeboxManager.Instance.OnSetSongInfo += SetSongInfo;
         JukeboxManager.Instance.OnStopJukeboxVisual += StopJukeboxVisuals;
+        JukeboxManager.Instance.OnClearJukeboxVisual += ClearJukeboxVisuals;
+        JukeboxManager.Instance.OnSetVisibleElapsedTime += UpdateMusicElapsedTime;
 
         if (JukeboxManager.Instance.CurrentMusicTrack != null)
             SetSongInfo(JukeboxManager.Instance.CurrentMusicTrack);
@@ -82,6 +126,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         JukeboxManager.Instance.OnOptimizeVisualQueueChunks -= OptimizeVisualQueueChunksCheck;
         JukeboxManager.Instance.OnSetSongInfo -= SetSongInfo;
         JukeboxManager.Instance.OnStopJukeboxVisual -= StopJukeboxVisuals;
+        JukeboxManager.Instance.OnSetVisibleElapsedTime -= UpdateMusicElapsedTime;
 
         StopJukeboxVisuals();
     }
@@ -94,7 +139,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
         for (int i = 0; i < _trackChunkSize; i++)
         {
-            GameObject jukeboxTrackButton = Instantiate(_jukeboxButtonPrefab, _trackListContent);
+            GameObject jukeboxTrackButton = Instantiate(_jukeboxButtonPrefab, _tracksListContent);
             JukeboxTrackButtonHandler buttonHandler = jukeboxTrackButton.GetComponent<JukeboxTrackButtonHandler>();
             buttonHandler.OnTrackPressed += JukeboxManager.Instance.QueueTrack;
             buttonHandler.Clear();
@@ -161,6 +206,61 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
     #endregion
 
+    private void UpdateMusicElapsedTime(float elapsedTime)
+    {
+        string minutes = (elapsedTime / 60f).ToString().Split('.')[0];
+        string seconds = (elapsedTime % 60).ToString().Split('.')[0];
+
+        _trackPlayTimeText.text = $"{minutes}:{((seconds.Length == 1) ? ("0" + seconds) : seconds)}";
+        _trackPlayTimeSlider.value = elapsedTime / JukeboxManager.Instance.CurrentMusicTrack.Music.length;
+    }
+
+    private void PlayStopButtonActivated()
+    {
+        if (JukeboxManager.Instance.CurrentMusicTrack == null) return;
+
+        bool result = JukeboxManager.Instance.PlaybackToggle();
+
+        foreach (Image image in _playButtonImages)
+        {
+            if (result) //Stopped
+            {
+                image.sprite = _playSprite;
+                StopJukeboxVisuals();
+            }
+            else //Playing
+            {
+                image.sprite = _stopSprite;
+
+                if (_diskSpinCoroutine != null)
+                {
+                    StopCoroutine(_diskSpinCoroutine);
+                    _diskSpinCoroutine = null;
+                    foreach (Transform rotationT in _diskTransform) rotationT.rotation = Quaternion.identity;
+                }
+
+                _diskSpinCoroutine = StartCoroutine(SpinDisk());
+            }
+        }
+    }
+
+    private void SwitchMainWindow()
+    {
+        switch (_currentWindowType)
+        {
+            case JukeboxWindowType.Navigation: _navigationObject.SetActive(false); break;
+            case JukeboxWindowType.MusicPlayer: _musicPlayerObject.SetActive(false); break;
+        }
+
+        _currentWindowType = (_currentWindowType == JukeboxWindowType.Navigation ? JukeboxWindowType.MusicPlayer : JukeboxWindowType.Navigation);
+
+        switch (_currentWindowType)
+        {
+            case JukeboxWindowType.Navigation: _navigationObject.SetActive(true); _switchMainWindowImage.sprite = _musicPlayerSprite; break;
+            case JukeboxWindowType.MusicPlayer: _musicPlayerObject.SetActive(true); _switchMainWindowImage.sprite = _navigationSprite; break;
+        }
+    }
+
     private void ReduceQueueHandlerChunkActiveCount(int index)
     {
         _queueHandlerChunks[index].AmountInUse--;
@@ -178,18 +278,22 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
     public void StopJukeboxVisuals()
     {
-        _songName.text = NoSongName;
-        _diskImage.sprite = _emptyDisk;
-
         if (_diskSpinCoroutine != null)
         {
             StopCoroutine(_diskSpinCoroutine);
             _diskSpinCoroutine = null;
-            _diskTransform.rotation = Quaternion.identity;
+
+            foreach (Transform rotationT in _diskTransform) rotationT.rotation = Quaternion.identity;
         }
 
-        //JukeboxManager.Instance.StopJukebox();
         OnChangeJukeBoxSong?.Invoke(null);
+    }
+
+    public void ClearJukeboxVisuals()
+    {
+        _trackName.text = NoSongName;
+
+        foreach (Image image in _diskImage) image.sprite = _emptyDisk;
     }
 
     public void ToggleJukeboxScreen(bool toggle) { _jukeboxObject.SetActive(toggle); }
@@ -198,14 +302,14 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     {
         if (track == null) return;
 
-        _songName.text = track.Name;
-        _diskImage.sprite = track.Info.Disk;
+        _trackName.text = track.Name;
+        foreach (Image image in _diskImage) image.sprite = track.Info.Disk;
 
         if (_diskSpinCoroutine != null)
         {
             StopCoroutine(_diskSpinCoroutine);
             _diskSpinCoroutine = null;
-            _diskTransform.rotation = Quaternion.identity;
+            foreach (Transform rotationT in _diskTransform) rotationT.rotation = Quaternion.identity;
         }
 
         if (track.Music != null) _diskSpinCoroutine = StartCoroutine(SpinDisk());
@@ -217,7 +321,8 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     {
         while (true)
         {
-            _diskTransform.Rotate(Vector3.forward * -_diskRotationSpeed * Time.deltaTime);
+            foreach (Transform rotationT in _diskTransform) rotationT.Rotate(Vector3.forward * -_diskRotationSpeed * Time.deltaTime);
+
             yield return null;
         }
     }
@@ -309,7 +414,11 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
     private void MoveVisualQueueItem(JukeboxTrackQueueHandler target, JukeboxTrackQueueHandler destination)
     {
-        destination.SetTrack(target.CurrentTrack);
+        if (target.CurrentTrack != null)
+            destination.SetTrack(target.CurrentTrack);
+        else
+            destination.Clear();
+
         _queueHandlerChunks[destination.ChunkIndex].AmountInUse++;
 
         target.Clear();

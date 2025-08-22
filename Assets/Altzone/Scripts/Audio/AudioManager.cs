@@ -139,38 +139,47 @@ namespace Altzone.Scripts.Audio
 
         public string PlayMusic(string categoryName, string trackName)
         {
-            if (!CanPlay(categoryName))
-            {
-                _fallbackMusicCategory = categoryName;
-                _fallbackMusicTrack = trackName;
-                return "";
-            }
+            if (!HandleFallBack(categoryName, trackName)) return "";
 
             return _musicHandler.PlayMusic(categoryName, trackName);
         }
 
         public string PlayMusic(string categoryName)
         {
-            if (!CanPlay(categoryName))
-            {
-                _fallbackMusicCategory = categoryName;
-                _fallbackMusicTrack = "";
-                return "";
-            }
+            if (!HandleFallBack(categoryName, "")) return "";
 
             return _musicHandler.PlayMusic(categoryName, "");
         }
 
         public string PlayMusic(string categoryName, MusicTrack musicTrack)
         {
+            if (!HandleFallBack(categoryName, musicTrack.Name)) return "";
+
+            return _musicHandler.PlayMusic(categoryName, musicTrack);
+        }
+
+        private bool HandleFallBack(string categoryName, string trackName)
+        {
             if (!CanPlay(categoryName))
             {
                 _fallbackMusicCategory = categoryName;
-                _fallbackMusicTrack = musicTrack.Name;
-                return "";
+                _fallbackMusicTrack = trackName;
+                return false;
             }
 
-            return _musicHandler.PlayMusic(categoryName, musicTrack);
+            if (categoryName.ToLower() != "Jukebox".ToLower())
+            {
+                _fallbackMusicCategory = categoryName;
+                _fallbackMusicTrack = trackName;
+            }
+
+            return true;
+        }
+
+        public string PlayFallBackTrack()
+        {
+            Debug.LogError($"{_fallbackMusicCategory}   {_fallbackMusicTrack}");
+            return _musicHandler.PlayMusic(_fallbackMusicCategory, _fallbackMusicTrack);
         }
 
         private bool CanPlay(string categoryName)
@@ -219,6 +228,30 @@ namespace Altzone.Scripts.Audio
         public void StopMusic()
         {
             _musicHandler.StopMusic(_musicHandler.PrimaryChannel);
+        }
+
+        public string ContinueMusic(string categoryName, string trackName, float startLocation)
+        {
+            if (!CanPlay(categoryName))
+            {
+                _fallbackMusicCategory = categoryName;
+                _fallbackMusicTrack = trackName;
+                return "";
+            }
+
+            return _musicHandler.PlayMusic(categoryName, trackName, startLocation);
+        }
+
+        public string ContinueMusic(string categoryName, MusicTrack musicTrack, float startLocation)
+        {
+            if (!CanPlay(categoryName))
+            {
+                _fallbackMusicCategory = categoryName;
+                _fallbackMusicTrack = musicTrack.Name;
+                return "";
+            }
+
+            return _musicHandler.PlayMusic(categoryName, musicTrack, startLocation);
         }
         #endregion
     }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.ReferenceSheets;
 using UnityEngine;
+//using static Altzone.Scripts.Audio.JukeboxManager;
 
 namespace Altzone.Scripts.Audio
 {
@@ -16,7 +17,12 @@ namespace Altzone.Scripts.Audio
 
         private Coroutine _trackEndingControlCoroutine;
 
-        [SerializeField] private bool _loopLastTrack = true;
+        private bool _loopLastTrack = true;
+        public bool LoopLastTrack {  get { return _loopLastTrack; } }
+
+        private bool _playbackPaused = true;
+
+        private float _musicElapsedTime = 0f;
 
         #region Events & Delegates
         public delegate JukeboxTrackQueueHandler GetFreeJukeboxTrackQueueHandler();
@@ -33,6 +39,12 @@ namespace Altzone.Scripts.Audio
 
         public delegate void StopJukeboxVisual();
         public event StopJukeboxVisual OnStopJukeboxVisual;
+
+        public delegate void ClearJukeboxVisual();
+        public event ClearJukeboxVisual OnClearJukeboxVisual;
+
+        public delegate void SetVisibleElapsedTime(float timeElapsed);
+        public event SetVisibleElapsedTime OnSetVisibleElapsedTime;
         #endregion
 
         private void Awake()
@@ -46,22 +58,59 @@ namespace Altzone.Scripts.Audio
             }
         }
 
+        public void SetLooping(bool value) { _loopLastTrack = value; }
+
         public string PlayTrack() { return PlayTrack(_currentMusicTrack); }
 
         public string PlayTrack(MusicTrack musicTrack)
         {
-            if (_trackEndingControlCoroutine != null) return null;
+            if (_trackEndingControlCoroutine != null || (_playbackPaused && _currentMusicTrack != null)) return null;
+
+            if (_currentMusicTrack == musicTrack) return ContinueTrack();
 
             string name = AudioManager.Instance.PlayMusic("Jukebox", musicTrack);
 
             if (string.IsNullOrEmpty(name)) return null;
 
+            _playbackPaused = false;
+
             if (OnSetSongInfo != null) OnSetSongInfo.Invoke(musicTrack);
 
             _currentMusicTrack = musicTrack;
+            _musicElapsedTime = 0f;
             _trackEndingControlCoroutine = StartCoroutine(TrackEndingControl());
 
             return name;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>True if paused.</returns>
+        public bool PlaybackToggle()
+        {
+            _playbackPaused = !_playbackPaused;
+
+            if (_playbackPaused)
+            {
+                StopJukebox();
+                AudioManager.Instance.PlayFallBackTrack();
+            }
+            else
+            {
+                if (_currentMusicTrack != null)
+                    ContinueTrack();
+                else
+                    PlayTrack();
+            }
+
+            return _playbackPaused;
+        }
+
+        public string ContinueTrack()
+        {
+            _trackEndingControlCoroutine = StartCoroutine(TrackEndingControl());
+            return AudioManager.Instance.ContinueMusic("Jukebox", _currentMusicTrack, _musicElapsedTime);
         }
 
         public void StopJukebox()
@@ -75,12 +124,12 @@ namespace Altzone.Scripts.Audio
 
         private IEnumerator TrackEndingControl()
         {
-            float timer = 0f;
-
-            while (timer < _currentMusicTrack.Music.length)
+            while (_musicElapsedTime < _currentMusicTrack.Music.length)
             {
+                if (OnSetVisibleElapsedTime != null) OnSetVisibleElapsedTime.Invoke(_musicElapsedTime);
+
                 yield return null;
-                timer += Time.deltaTime;
+                _musicElapsedTime += Time.deltaTime;
             }
 
             PlayNextJukeboxTrack();
@@ -110,6 +159,7 @@ namespace Altzone.Scripts.Audio
             }
             else if (_loopLastTrack) //Keep playing the current track.
             {
+                _musicElapsedTime = 0f;
                 PlayTrack(_currentMusicTrack);
             }
             else //Go back to latest requested music in AudioManager.
@@ -122,7 +172,11 @@ namespace Altzone.Scripts.Audio
                 else
                     manager.PlayMusic("Soulhome", "");
 
-                if (OnStopJukeboxVisual != null) OnStopJukeboxVisual.Invoke();
+                if (OnStopJukeboxVisual != null)
+                {
+                    OnStopJukeboxVisual.Invoke();
+                    OnClearJukeboxVisual.Invoke();
+                }
             }
 
             if (OnOptimizeVisualQueueChunks != null) OnOptimizeVisualQueueChunks.Invoke();
@@ -159,7 +213,7 @@ namespace Altzone.Scripts.Audio
         public void ReassembleDataQueue(List<Chunk<JukeboxTrackQueueHandler>> queueHandlerChunks)
         {
             _trackQueue.Clear();
-            Debug.LogError("optimize");
+
             foreach (Chunk<JukeboxTrackQueueHandler> chunk in queueHandlerChunks)
                 foreach (JukeboxTrackQueueHandler handler in chunk.Pool)
                     if (handler.InUse())
