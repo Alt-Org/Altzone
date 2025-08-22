@@ -23,6 +23,7 @@ public class ClanPanel : MonoBehaviour
     private void OnEnable()
     {
         ServerManager.OnLogInStatusChanged += SetPlayerPanelValues;
+        ServerManager.OnClanChanged += SetPlayerPanelValues;
         _player = ServerManager.Instance.Player;
 
         if (_player == null)
@@ -41,6 +42,12 @@ public class ClanPanel : MonoBehaviour
     private void OnDisable()
     {
         ServerManager.OnLogInStatusChanged -= SetPlayerPanelValues;
+        ServerManager.OnClanChanged -= SetPlayerPanelValues;
+    }
+
+    private void SetPlayerPanelValues(ServerClan clan)
+    {
+        SetPlayerPanelValues(clan != null);
     }
 
     /// <summary>
