@@ -224,6 +224,8 @@ public class Chat : AltMonoBehaviour
             GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
             if (_currentContent == _clanChat)
                 _clanChat.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+            if (_currentContent == _globalChat)
+                _globalChat.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
             MinimizeOptions();
         }
         else

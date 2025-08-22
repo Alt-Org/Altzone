@@ -4677,6 +4677,7 @@ GameObject:
   - component: {fileID: 5941351211359421970}
   - component: {fileID: 7387526794680760330}
   - component: {fileID: 5782381032688641210}
+  - component: {fileID: 5966037161660072762}
   m_Layer: 5
   m_Name: ContentGlobal
   m_TagString: Untagged
@@ -4743,6 +4744,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!114 &5966037161660072762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7703225872503541342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 1
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 10
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
 --- !u!1 &7972993240215453466
 GameObject:
   m_ObjectHideFlags: 0

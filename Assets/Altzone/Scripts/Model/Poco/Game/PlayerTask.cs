@@ -54,6 +54,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         FindAllChatOptions,
         UseAllChatFeelings,
         DefinePlayerStyle,
+        WriteChatMessageGlobal,
     }
 
     public enum TaskEducationStoryType
@@ -361,6 +362,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case "define_player_style":
                     {
                         return TaskEducationSocialType.DefinePlayerStyle;
+                    }
+                case "write_chat_message_global":
+                    {
+                        return TaskEducationSocialType.WriteChatMessageGlobal;
                     }
                 default:
                     {
