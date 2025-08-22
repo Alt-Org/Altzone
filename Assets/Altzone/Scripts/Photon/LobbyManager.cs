@@ -1221,15 +1221,15 @@ namespace Altzone.Scripts.Lobby
                 {
                     // Setting new position to player's custom properties
                     player.SetCustomProperty(PlayerPositionKey, playerPosition);
-                }
 
-                var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, "" } });
-                expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, player.UserId } }); // Expected to have the player's id in the previous position
+                    var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, "" } });
+                    expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, player.UserId } }); // Expected to have the player's id in the previous position
 
-                // Setting previous position empty
-                if (!PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue))
-                {
-                    Debug.LogWarning($"Failed to free the position {curValue}. This likely because the player doesn't reserve it.");
+                    // Setting previous position empty
+                    if (!PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue))
+                    {
+                        Debug.LogWarning($"Failed to free the position {curValue}. This likely because the player doesn't reserve it.");
+                    }
                 }
             }
             else
