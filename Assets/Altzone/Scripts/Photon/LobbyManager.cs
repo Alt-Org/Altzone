@@ -1202,7 +1202,7 @@ namespace Altzone.Scripts.Lobby
             var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, "" } }); // Expecting the new position to be empty
 
             // Setting new position as taken
-            if (!PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(newPosition, expectedValue))
+            if (PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(newPosition, expectedValue))
             {
                 float timeout = Time.time + 1f;
                 bool success = false;
