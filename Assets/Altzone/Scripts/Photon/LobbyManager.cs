@@ -1204,13 +1204,24 @@ namespace Altzone.Scripts.Lobby
             // Setting new position as taken
             if (!PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(newPosition, expectedValue))
             {
-                Debug.LogWarning($"Failed to reserve the position {playerPosition}. This likely because somebody already is in this position.");
-            }
-            else
-            {
-                // Setting new position to player's custom properties
-                player.SetCustomProperty(PlayerPositionKey, playerPosition);
-                //player.SafeSetCustomProperty(PlayerPositionKey, playerPosition, curValue);
+                float timeout = Time.time + 1f;
+                bool success = false;
+                while (Time.time < timeout)
+                {
+                    // Checking if the position is set to the player user id
+                    if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(newPositionKey) == player.UserId)
+                    {
+                        success = true;
+                        break;
+                    }
+                    yield return new WaitForSeconds(0.1f);
+                }
+
+                if (success)
+                {
+                    // Setting new position to player's custom properties
+                    player.SetCustomProperty(PlayerPositionKey, playerPosition);
+                }
 
                 var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, "" } });
                 expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, player.UserId } }); // Expected to have the player's id in the previous position
@@ -1220,6 +1231,10 @@ namespace Altzone.Scripts.Lobby
                 {
                     Debug.LogWarning($"Failed to free the position {curValue}. This likely because the player doesn't reserve it.");
                 }
+            }
+            else
+            {
+                Debug.LogWarning($"Failed to reserve the position {playerPosition}. This likely because somebody already is in this position.");
             }
             _posChangeQueue.Remove(player.UserId);
             _playerPosChangeInProgress = false;
