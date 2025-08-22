@@ -23,7 +23,11 @@ public class LeaderboardView : MonoBehaviour
     [SerializeField] private GameObject _leaderboardCategoryButtons;
     [SerializeField] private Button _clansButton;
     [SerializeField] private Button _playersButton;
-    [SerializeField] private Button _tabWinsButton;  // Lisätty
+    [SerializeField] private Button _winsLeaderboardButton;  // Lisätty
+    [SerializeField] private GameObject _globalLeaderboardDarkeningImage; //
+    [SerializeField] private GameObject _clanLeaderboardDarkeningImage; //
+    [SerializeField] private GameObject _friendsLeaderboardDarkeningImage; //
+    [SerializeField] private GameObject _winsLeaderboardDarkeningImage; //
 
 
     [Header("Tab sprites")]
@@ -76,13 +80,40 @@ public class LeaderboardView : MonoBehaviour
         _globalLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Global));
         _clanLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Clan));
         _friendsLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Friends));
-        _tabWinsButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Wins)); //Lisätty, jotta reagoi klikkaukseen
-        
+        _winsLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Wins)); //Lisätty, jotta reagoi klikkaukseen
+
+
 
         _leaderboardTypeButton.onClick.AddListener(() => ToggleLeaderboardType());
 
         _clansButton.onClick.AddListener(() => ListClans());
         _playersButton.onClick.AddListener(() => ListPlayers());
+
+
+        //DarkenImagen aktivointi
+        SetTabActive(Leaderboard.Wins); // Tämä oletuksena ensin aktivoituna
+
+        _globalLeaderboardButton.onClick.AddListener(() =>
+        {
+            OpenLeaderboard(Leaderboard.Global);
+            SetTabActive(Leaderboard.Global);
+        });
+
+        _clanLeaderboardButton.onClick.AddListener(() =>
+        {
+            OpenLeaderboard(Leaderboard.Clan);
+            SetTabActive(Leaderboard.Clan);
+        });
+        _friendsLeaderboardButton.onClick.AddListener(() =>
+        {
+            OpenLeaderboard(Leaderboard.Friends);
+            SetTabActive(Leaderboard.Friends);
+        });
+        _winsLeaderboardButton.onClick.AddListener(() =>
+        {
+            OpenLeaderboard(Leaderboard.Wins);
+            SetTabActive(Leaderboard.Wins);
+        });
     }
 
     private void OnEnable()
@@ -340,7 +371,7 @@ public class LeaderboardView : MonoBehaviour
                         }
 
                         // Add empty placements to fill out the space if necessary 
-                        if(clanData.Members.Count < 15)
+                        if (clanData.Members.Count < 15)
                         {
                             int placements = 15 - clanData.Members.Count;
 
@@ -485,5 +516,31 @@ public class LeaderboardView : MonoBehaviour
     {
         _currentLeaderboardCategory = LeaderboardCategory.Players;
         LoadActivityView();
+    }
+
+    private void SetTabActive(Leaderboard leaderboard) //DarkeningImagen deaktivointi ja aktivointi valinnan mukaan
+    {
+        _globalLeaderboardDarkeningImage.SetActive(false);
+        _clanLeaderboardDarkeningImage.SetActive(false);
+        _friendsLeaderboardDarkeningImage.SetActive(false);
+        _winsLeaderboardDarkeningImage.SetActive(false);
+
+        switch (leaderboard)
+        {
+            case Leaderboard.Global:
+                _globalLeaderboardDarkeningImage.SetActive(true);
+                break;
+            case Leaderboard.Clan:
+                _clanLeaderboardDarkeningImage.SetActive(true);
+                break;
+            case Leaderboard.Friends:
+                _friendsLeaderboardDarkeningImage.SetActive(true);
+                break;
+            case Leaderboard.Wins:
+                _winsLeaderboardDarkeningImage.SetActive(true);
+                break;
+            
+        }
+
     }
 }
