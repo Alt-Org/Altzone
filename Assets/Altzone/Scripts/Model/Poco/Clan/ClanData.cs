@@ -129,18 +129,6 @@ namespace Altzone.Scripts.Model.Poco.Clan
             Rooms = new();
         }
 
-        // This method is for testing purposes only. It is for the purpose of assigning a role to all members that have their role as "none"
-        public void AssignDefaultRoles()
-        {
-            foreach (var member in Members)
-            {
-                if (member.Role == ClanMemberRole.None)
-                {
-                    member.Role = ClanMemberRole.Member;
-                }
-            }
-        }
-
         public void CallDataUpdate()
         {
             OnClanInfoUpdated?.Invoke();

@@ -48,9 +48,6 @@ public class ClanRightsDebugger : MonoBehaviour
             yield break;
         }
 
-        // Assign Default Roles
-        clanData.AssignDefaultRoles();
-
         // Log the clan member count
         Debug.Log($"Clan members count: {clanData.Members.Count}");
 
