@@ -99,6 +99,10 @@ namespace Quantum {
     Confluent = 600,
     Intellectualizer = 700,
   }
+  public enum BattlePlayerCharacterState : int {
+    Alive,
+    Dead,
+  }
   public enum BattlePlayerCollisionType : int {
     None = 0,
     Reflect = 1,
@@ -111,6 +115,8 @@ namespace Quantum {
   public enum BattlePlayerPlayState : int {
     NotInGame,
     OutOfPlay,
+    OutOfPlayRespawning,
+    OutOfPlayFinal,
     InPlay,
   }
   public enum BattlePlayerSlot : int {
@@ -1141,24 +1147,30 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattlePlayerManagerDataQSingleton : Quantum.IComponentSingleton {
-    public const Int32 SIZE = 184;
+    public const Int32 SIZE = 264;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(16)]
+    [FieldOffset(64)]
     public Int32 PlayerCount;
-    [FieldOffset(0)]
+    [FieldOffset(48)]
     [FramePrinter.FixedArrayAttribute(typeof(BattlePlayerPlayState), 4)]
     private fixed Byte _PlayStates_[16];
-    [FieldOffset(36)]
+    [FieldOffset(84)]
     [FramePrinter.FixedArrayAttribute(typeof(PlayerRef), 4)]
     private fixed Byte _PlayerRefs_[16];
-    [FieldOffset(152)]
+    [FieldOffset(232)]
+    [FramePrinter.FixedArrayAttribute(typeof(FrameTimer), 4)]
+    private fixed Byte _RespawnTimer_[32];
+    [FieldOffset(200)]
     [FramePrinter.FixedArrayAttribute(typeof(EntityRef), 4)]
     private fixed Byte _SelectedCharacters_[32];
-    [FieldOffset(56)]
+    [FieldOffset(68)]
+    public fixed Int32 SelectedCharacterNumbers[4];
+    [FieldOffset(104)]
     [FramePrinter.FixedArrayAttribute(typeof(EntityRef), 12)]
     private fixed Byte _AllCharacters_[96];
-    [FieldOffset(20)]
-    public fixed Int32 SelectedCharacterNumbers[4];
+    [FieldOffset(0)]
+    [FramePrinter.FixedArrayAttribute(typeof(BattlePlayerCharacterState), 12)]
+    private fixed Byte _AllCharactersStates_[48];
     public FixedArray<BattlePlayerPlayState> PlayStates {
       get {
         fixed (byte* p = _PlayStates_) { return new FixedArray<BattlePlayerPlayState>(p, 4, 4); }
@@ -1167,6 +1179,11 @@ namespace Quantum {
     public FixedArray<PlayerRef> PlayerRefs {
       get {
         fixed (byte* p = _PlayerRefs_) { return new FixedArray<PlayerRef>(p, 4, 4); }
+      }
+    }
+    public FixedArray<FrameTimer> RespawnTimer {
+      get {
+        fixed (byte* p = _RespawnTimer_) { return new FixedArray<FrameTimer>(p, 8, 4); }
       }
     }
     public FixedArray<EntityRef> SelectedCharacters {
@@ -1179,26 +1196,35 @@ namespace Quantum {
         fixed (byte* p = _AllCharacters_) { return new FixedArray<EntityRef>(p, 8, 12); }
       }
     }
+    public FixedArray<BattlePlayerCharacterState> AllCharactersStates {
+      get {
+        fixed (byte* p = _AllCharactersStates_) { return new FixedArray<BattlePlayerCharacterState>(p, 4, 12); }
+      }
+    }
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 17239;
         hash = hash * 31 + PlayerCount.GetHashCode();
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(PlayStates);
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(PlayerRefs);
+        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(RespawnTimer);
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(SelectedCharacters);
-        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(AllCharacters);
         fixed (Int32* p = SelectedCharacterNumbers) hash = hash * 31 + HashCodeUtils.GetArrayHashCode(p, 4);
+        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(AllCharacters);
+        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(AllCharactersStates);
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (BattlePlayerManagerDataQSingleton*)ptr;
+        FixedArray.Serialize(p->AllCharactersStates, serializer, Statics.SerializeBattlePlayerCharacterState);
         FixedArray.Serialize(p->PlayStates, serializer, Statics.SerializeBattlePlayerPlayState);
         serializer.Stream.Serialize(&p->PlayerCount);
         serializer.Stream.SerializeBuffer(&p->SelectedCharacterNumbers[0], 4);
         FixedArray.Serialize(p->PlayerRefs, serializer, Statics.SerializePlayerRef);
         FixedArray.Serialize(p->AllCharacters, serializer, Statics.SerializeEntityRef);
         FixedArray.Serialize(p->SelectedCharacters, serializer, Statics.SerializeEntityRef);
+        FixedArray.Serialize(p->RespawnTimer, serializer, Statics.SerializeFrameTimer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -1554,16 +1580,20 @@ namespace Quantum {
   public unsafe partial class Statics {
     public static FrameSerializer.Delegate SerializeBattlePlayerHitboxColliderTemplate;
     public static FrameSerializer.Delegate SerializeEntityRef;
+    public static FrameSerializer.Delegate SerializeBattlePlayerCharacterState;
     public static FrameSerializer.Delegate SerializeBattlePlayerPlayState;
     public static FrameSerializer.Delegate SerializePlayerRef;
+    public static FrameSerializer.Delegate SerializeFrameTimer;
     public static FrameSerializer.Delegate SerializeBattleProjectileCollisionFlags;
     public static FrameSerializer.Delegate SerializeFP;
     public static FrameSerializer.Delegate SerializeInput;
     static partial void InitStaticDelegatesGen() {
       SerializeBattlePlayerHitboxColliderTemplate = Quantum.BattlePlayerHitboxColliderTemplate.Serialize;
       SerializeEntityRef = EntityRef.Serialize;
+      SerializeBattlePlayerCharacterState = (v, s) => {{ s.Stream.Serialize((Int32*)v); }};
       SerializeBattlePlayerPlayState = (v, s) => {{ s.Stream.Serialize((Int32*)v); }};
       SerializePlayerRef = PlayerRef.Serialize;
+      SerializeFrameTimer = FrameTimer.Serialize;
       SerializeBattleProjectileCollisionFlags = (v, s) => {{ s.Stream.Serialize((Byte*)v); }};
       SerializeFP = FP.Serialize;
       SerializeInput = Quantum.Input.Serialize;
@@ -1585,6 +1615,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.BattleLightraySize), 4);
       typeRegistry.Register(typeof(Quantum.BattleMovementInputType), 4);
       typeRegistry.Register(typeof(Quantum.BattlePlayerCharacterClass), 4);
+      typeRegistry.Register(typeof(Quantum.BattlePlayerCharacterState), 4);
       typeRegistry.Register(typeof(Quantum.BattlePlayerClassDesensitizerDataQComponent), Quantum.BattlePlayerClassDesensitizerDataQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattlePlayerCollisionType), 4);
       typeRegistry.Register(typeof(Quantum.BattlePlayerDataQComponent), Quantum.BattlePlayerDataQComponent.SIZE);
@@ -1713,6 +1744,7 @@ namespace Quantum {
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleLightraySize>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleMovementInputType>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerCharacterClass>();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerCharacterState>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerCollisionType>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerHitboxType>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerPlayState>();

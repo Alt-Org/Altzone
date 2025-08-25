@@ -314,11 +314,15 @@ namespace Quantum.Prototypes {
     [ArrayLengthAttribute(4)]
     public PlayerRef[] PlayerRefs = new PlayerRef[4];
     [ArrayLengthAttribute(4)]
+    public Quantum.Prototypes.FrameTimerPrototype[] RespawnTimer = new Quantum.Prototypes.FrameTimerPrototype[4];
+    [ArrayLengthAttribute(4)]
     public MapEntityId[] SelectedCharacters = new MapEntityId[4];
-    [ArrayLengthAttribute(12)]
-    public MapEntityId[] AllCharacters = new MapEntityId[12];
     [ArrayLengthAttribute(4)]
     public Int32[] SelectedCharacterNumbers = new Int32[4];
+    [ArrayLengthAttribute(12)]
+    public MapEntityId[] AllCharacters = new MapEntityId[12];
+    [ArrayLengthAttribute(12)]
+    public Quantum.QEnum32<BattlePlayerCharacterState>[] AllCharactersStates = new Quantum.QEnum32<BattlePlayerCharacterState>[12];
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerManagerDataQSingleton component = default;
         Materialize((Frame)f, ref component, in context);
@@ -332,14 +336,20 @@ namespace Quantum.Prototypes {
         for (int i = 0, count = PrototypeValidator.CheckLength(PlayerRefs, 4, in context); i < count; ++i) {
           *result.PlayerRefs.GetPointer(i) = this.PlayerRefs[i];
         }
+        for (int i = 0, count = PrototypeValidator.CheckLength(RespawnTimer, 4, in context); i < count; ++i) {
+          this.RespawnTimer[i].Materialize(frame, ref *result.RespawnTimer.GetPointer(i), in context);
+        }
         for (int i = 0, count = PrototypeValidator.CheckLength(SelectedCharacters, 4, in context); i < count; ++i) {
           PrototypeValidator.FindMapEntity(this.SelectedCharacters[i], in context, out *result.SelectedCharacters.GetPointer(i));
+        }
+        for (int i = 0, count = PrototypeValidator.CheckLength(SelectedCharacterNumbers, 4, in context); i < count; ++i) {
+          result.SelectedCharacterNumbers[i] = this.SelectedCharacterNumbers[i];
         }
         for (int i = 0, count = PrototypeValidator.CheckLength(AllCharacters, 12, in context); i < count; ++i) {
           PrototypeValidator.FindMapEntity(this.AllCharacters[i], in context, out *result.AllCharacters.GetPointer(i));
         }
-        for (int i = 0, count = PrototypeValidator.CheckLength(SelectedCharacterNumbers, 4, in context); i < count; ++i) {
-          result.SelectedCharacterNumbers[i] = this.SelectedCharacterNumbers[i];
+        for (int i = 0, count = PrototypeValidator.CheckLength(AllCharactersStates, 12, in context); i < count; ++i) {
+          *result.AllCharactersStates.GetPointer(i) = this.AllCharactersStates[i];
         }
     }
   }
