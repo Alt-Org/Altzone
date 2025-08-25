@@ -624,11 +624,23 @@ namespace Battle.QSimulation.Player
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->PlayerRefs[Index] = value;
             }
 
+            public FrameTimer RespawnTimer
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->RespawnTimer[Index];
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->RespawnTimer[Index] = value;
+            }
+
             public EntityRef SelectedCharacter
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->SelectedCharacters[Index]; }
 
             public int SelectedCharacterNumber
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->SelectedCharacterNumbers[Index]; }
+
+            public BattlePlayerCharacterState SelectedCharacterState
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => GetCharacterState(SelectedCharacterNumber);
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] set => SetCharacterState(SelectedCharacterNumber, value);
+            }
 
             public FPVector2 SpawnPosition
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => s_spawnPoints[Index]; }
@@ -661,6 +673,12 @@ namespace Battle.QSimulation.Player
                     _playerManagerData->AllCharacters[characterOffset + i] = entityRefArray[i];
                 }
             }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public BattlePlayerCharacterState GetCharacterState(int characterNumber) => _playerManagerData->AllCharactersStates[GetCharacterIndex(characterNumber)];
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void SetCharacterState(int characterNumber, BattlePlayerCharacterState state) => _playerManagerData->AllCharactersStates[GetCharacterIndex(characterNumber)] = state;
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void SetSelectedCharacter(int characterNumber)
