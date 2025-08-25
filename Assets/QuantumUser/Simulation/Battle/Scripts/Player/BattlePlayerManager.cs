@@ -116,6 +116,7 @@ namespace Battle.QSimulation.Player
                 // create playerEntity for each characters
                 {
                     //{ player temp variables
+                    BattlePlayerCharacterClass          playerClass;
                     AssetRef<EntityPrototype>           playerEntityPrototype;
                     BattlePlayerDataTemplateQComponent* playerDataTemplate;
                     FPVector2                           playerSpawnPosition;
@@ -187,6 +188,8 @@ namespace Battle.QSimulation.Player
 
                         //{ set temp variables
 
+                        playerClass = (BattlePlayerCharacterClass)data.Characters[playerCharacterNumber].Class;
+
                         playerSpawnPosition = playerHandle.GetOutOfPlayPosition(playerCharacterNumber, teamNumber);
 
                         if (!playerFlipped)
@@ -201,6 +204,9 @@ namespace Battle.QSimulation.Player
                         }
 
                         //} set temp variables
+
+                        // load class
+                        BattlePlayerClassManager.LoadClass(playerClass);
 
                         // create hitBoxes
                         for (int i = 0; i < 2; i++)
@@ -304,7 +310,7 @@ namespace Battle.QSimulation.Player
                             Slot              = playerSlot,
                             TeamNumber        = teamNumber,
                             CharacterId       = data.Characters[playerCharacterNumber].Id,
-                            CharacterClass    = data.Characters[playerCharacterNumber].Class,
+                            CharacterClass    = playerClass,
 
                             Stats             = data.Characters[playerCharacterNumber].Stats,
 
@@ -344,6 +350,8 @@ namespace Battle.QSimulation.Player
                             playerSpawnPosition,
                             playerRotationBase
                         );
+
+                        BattlePlayerClassManager.OnCreate(f, playerHandle.ConvertToPublic(), playerDataPtr, playerEntity);
 
                         //} initialize entity
 
@@ -441,6 +449,12 @@ namespace Battle.QSimulation.Player
                     array[i] = new PlayerHandle(new PlayerHandleInternal(playerManagerData, i));
                 }
                 return array;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static PlayerHandle GetPlayerHandleFromInternal(BattlePlayerManagerDataQSingleton* playerManagerData, int playerIndex)
+            {
+                return new PlayerHandle(new PlayerHandleInternal(playerManagerData, playerIndex));
             }
 
             //} Public Static Methods
@@ -622,6 +636,12 @@ namespace Battle.QSimulation.Player
             //{ Public Methods
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public PlayerHandle ConvertToPublic()
+            {
+                return PlayerHandle.GetPlayerHandleFromInternal(_playerManagerData, Index);
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public EntityRef GetCharacter(int characterNumber) => _playerManagerData->AllCharacters[GetCharacterIndex(characterNumber)];
 
             public void SetCharacters(EntityRef[] entityRefArray)
@@ -741,6 +761,8 @@ namespace Battle.QSimulation.Player
             f.Events.BattleDebugUpdateStatsOverlay(playerData->Slot, playerData->Stats);
 
             playerHandle.PlayState = BattlePlayerPlayState.InPlay;
+
+            BattlePlayerClassManager.OnSpawn(f, playerHandle.ConvertToPublic(), playerData, character);
         }
 
         private static void DespawnPlayer(Frame f, PlayerHandleInternal playerHandle)
@@ -750,6 +772,8 @@ namespace Battle.QSimulation.Player
             Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(selectedCharacter);
 
             FPVector2 worldPosition = playerHandle.GetOutOfPlayPosition(playerHandle.SelectedCharacterNumber, playerData->TeamNumber);
+
+            BattlePlayerClassManager.OnDespawn(f, playerHandle.ConvertToPublic(), playerData, selectedCharacter);
 
             playerData->PlayerRef = PlayerRef.None;
 

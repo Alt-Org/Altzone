@@ -45,6 +45,8 @@ namespace Battle.QSimulation.Player
                 BattlePlayerManager.DespawnPlayer(f, damagedPlayerData->Slot);
             }
 
+            BattlePlayerClassManager.OnProjectileHitPlayerHitbox(f, projectile, projectileEntity, playerHitbox, playerHitboxEntity);
+
             BattleProjectileQSystem.SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Player);
         }
 
@@ -68,6 +70,8 @@ namespace Battle.QSimulation.Player
 
                 f.Events.BattleShieldTakeDamage(playerHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newDefence);
             }
+
+            BattlePlayerClassManager.OnProjectileHitPlayerShield(f, projectile, projectileEntity, playerHitbox, playerHitboxEntity);
 
             BattleProjectileQSystem.SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Player);
         }
@@ -103,6 +107,7 @@ namespace Battle.QSimulation.Player
                     f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity)->IsActive = false;
                 }
 
+                BattlePlayerClassManager.OnUpdate(f, playerHandle, playerData, playerEntity);
                 BattlePlayerMovementController.UpdateMovement(f, playerData, playerTransform, input);
             }
         }
