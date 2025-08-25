@@ -82,7 +82,7 @@ namespace Battle.QSimulation.Player
         {
             BattlePlayerClassBase playerClass = GetClass(playerData->CharacterClass);
 
-            if (playerClass == null)
+            if (playerClass == null && playerData->CharacterClass != BattlePlayerCharacterClass.None)
             {
                 Debug.LogWarningFormat("[PlayerClassManager] The {0} class could not be initialized!", playerData->CharacterClass);
                 return;
@@ -136,6 +136,7 @@ namespace Battle.QSimulation.Player
             playerClass.OnUpdate(f, playerHandle, playerData, playerEntity);
         }
 
+        private const int ClassIndexError = -1;
         private const int ClassIndexDesensitizer = 0;
         private const int ClassIndexTrickster = 1;
         private const int ClassIndexObedient = 2;
@@ -151,6 +152,8 @@ namespace Battle.QSimulation.Player
 
         private static BattlePlayerClassBase GetClass(BattlePlayerCharacterClass characterClass)
         {
+            if (characterClass == BattlePlayerCharacterClass.None) return null;
+
             int classIndex = characterClass switch
             {
                 BattlePlayerCharacterClass.Desensitizer     => ClassIndexDesensitizer,
@@ -161,10 +164,10 @@ namespace Battle.QSimulation.Player
                 //BattlePlayerCharacterClass.Confluent        => ClassIndexConfluent,
                 //BattlePlayerCharacterClass.Intellectualizer => ClassIndexIntellectualizer,
 
-                _ => -1,
+                _ => ClassIndexError,
             };
 
-            if (classIndex == -1)
+            if (classIndex == ClassIndexError)
             {
                 if (!s_errorMessagesSent.ContainsKey(characterClass))
                 {
