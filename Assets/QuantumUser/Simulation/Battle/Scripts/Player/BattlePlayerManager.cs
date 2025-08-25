@@ -369,6 +369,9 @@ namespace Battle.QSimulation.Player
 
                         // save entity
                         playerCharacterEntityArray[playerCharacterNumber] = playerEntity;
+
+                        // set playerManagerData for player character
+                        playerHandle.SetCharacterState(playerCharacterNumber, playerData.CurrentHp > 0 ? BattlePlayerCharacterState.Alive : BattlePlayerCharacterState.Dead);
                     }
                 }
 
