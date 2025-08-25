@@ -14,7 +14,7 @@ namespace Battle.QSimulation.Player
         {
             foreach (BattlePlayerManager.PlayerHandle playerHandle in BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f))
             {
-                if (playerHandle.PlayState == BattlePlayerPlayState.NotInGame) continue;
+                if (playerHandle.PlayState.IsNotInGame()) continue;
 
                 BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, 0);
             }
@@ -86,7 +86,7 @@ namespace Battle.QSimulation.Player
 
             foreach (BattlePlayerManager.PlayerHandle playerHandle in BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f))
             {
-                if (playerHandle.PlayState == BattlePlayerPlayState.NotInGame) continue;
+                if (playerHandle.PlayState.IsNotInGame()) continue;
 
                 input = f.GetPlayerInput(playerHandle.PlayerRef);
 
@@ -96,7 +96,7 @@ namespace Battle.QSimulation.Player
                     continue;
                 }
 
-                if (playerHandle.PlayState == BattlePlayerPlayState.OutOfPlay) continue;
+                if (playerHandle.PlayState.IsOutOfPlay()) continue;
 
                 playerEntity = playerHandle.SelectedCharacter;
                 playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerEntity);
