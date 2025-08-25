@@ -479,13 +479,29 @@ namespace Battle.QSimulation.Player
             public PlayerRef PlayerRef
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.PlayerRef; }
 
+            public FrameTimer RespawnTimer
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.RespawnTimer;
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _internalHandle.RespawnTimer = value;
+            }
+
             public EntityRef SelectedCharacter
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacter; }
 
             public int SelectedCharacterNumber
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacterNumber; }
 
+            public BattlePlayerCharacterState SelectedCharacterState
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacterState; }
+
             //} Public Properties
+
+            //{ Public Methods
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public BattlePlayerCharacterState GetCharacterState(int characterNumber) => _internalHandle.GetCharacterState(characterNumber);
+
+            //} Public Methods
 
             //{ Private
 
