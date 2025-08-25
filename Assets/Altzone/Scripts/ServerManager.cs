@@ -20,6 +20,7 @@ using Altzone.Scripts.Settings;
 using UnityEngine.SceneManagement;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Voting;
+using System.Linq;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -931,6 +932,37 @@ public class ServerManager : MonoBehaviour
                 {
                     callback(true);
                 }
+            }
+            else
+            {
+                if (callback != null)
+                {
+                    callback(false);
+                }
+            }
+        }));
+    }
+
+    public IEnumerator SetMemberRoleInClanToServer(string player, string role, Action<bool> callback)
+    {
+        string body = JObject.FromObject(
+            new
+            {
+                player_id = player,
+                role_id = role
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
+            ).ToString();
+
+        yield return StartCoroutine(WebRequests.Put(SERVERADDRESS + "clan/role/set", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                {
+                    callback(true);
+                }
+
             }
             else
             {
