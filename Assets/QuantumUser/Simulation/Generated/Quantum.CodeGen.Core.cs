@@ -995,7 +995,7 @@ namespace Quantum {
     public Int32 CharacterId;
     [FieldOffset(0)]
     public BattlePlayerCharacterClass CharacterClass;
-    [FieldOffset(96)]
+    [FieldOffset(104)]
     public BattlePlayerStats Stats;
     [FieldOffset(20)]
     public Int32 GridExtendTop;

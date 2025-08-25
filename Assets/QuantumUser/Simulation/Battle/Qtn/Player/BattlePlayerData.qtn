@@ -6,7 +6,7 @@ component BattlePlayerDataQComponent
     BattlePlayerSlot Slot;
     BattleTeamNumber TeamNumber;
     int CharacterId;
-    int CharacterClass;
+    BattlePlayerCharacterClass CharacterClass;
 
     BattlePlayerStats Stats;
 
