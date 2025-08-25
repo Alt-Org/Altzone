@@ -6,18 +6,8 @@ using UnityEngine;
 
 namespace Battle.QSimulation.Player
 {
-    public abstract unsafe class BattlePlayerClassBase<T> : IBattlePlayerClass where T : unmanaged, IComponent
+    public abstract unsafe class BattlePlayerClassBase<T> : BattlePlayerClassBase where T : unmanaged, IComponent
     {
-        public abstract BattlePlayerCharacterClass Class { get; }
-
-        public virtual unsafe void OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
-        public virtual unsafe void OnSpawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
-        public virtual unsafe void OnDespawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
-
-        public virtual unsafe void OnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity) { }
-        public virtual unsafe void OnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity) { }
-        public virtual unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
-
         protected T* GetClassData(Frame f, EntityRef playerEntity)
         {
             T* value = f.Unsafe.GetPointer<T>(playerEntity);
@@ -29,18 +19,32 @@ namespace Battle.QSimulation.Player
         }
     }
 
-    public unsafe interface IBattlePlayerClass
+    public abstract unsafe class BattlePlayerClassBase
     {
-        public BattlePlayerCharacterClass Class { get; }
+        public abstract BattlePlayerCharacterClass Class { get; }
 
-        public void OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity);
-        public void OnSpawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity);
-        public void OnDespawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity);
+        public virtual unsafe void OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
+        public virtual unsafe void OnSpawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
+        public virtual unsafe void OnDespawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
 
-        public void OnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity);
-        public void OnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity);
-        public void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity);
+        public virtual unsafe void OnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity) { }
+        public virtual unsafe void OnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity) { }
+        public virtual unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
     }
+
+
+    //public unsafe interface IBattlePlayerClass
+    //{
+    //    public BattlePlayerCharacterClass Class { get; }
+
+    //    public void OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity);
+    //    public void OnSpawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity);
+    //    public void OnDespawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity);
+
+    //    public void OnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity);
+    //    public void OnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity);
+    //    public void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity);
+    //}
 
     public unsafe static class BattlePlayerClassManager
     {
@@ -90,7 +94,7 @@ namespace Battle.QSimulation.Player
 
         public static void OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
-            IBattlePlayerClass playerClass = GetClass(playerData->CharacterClass);
+            BattlePlayerClassBase playerClass = GetClass(playerData->CharacterClass);
 
             if (playerClass == null)
             {
@@ -103,7 +107,7 @@ namespace Battle.QSimulation.Player
 
         public static void OnSpawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
-            IBattlePlayerClass playerClass = GetClass(playerData->CharacterClass);
+            BattlePlayerClassBase playerClass = GetClass(playerData->CharacterClass);
 
             if (playerClass == null) return;
 
@@ -112,7 +116,7 @@ namespace Battle.QSimulation.Player
 
         public static void OnDespawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
-            IBattlePlayerClass playerClass = GetClass(playerData->CharacterClass);
+            BattlePlayerClassBase playerClass = GetClass(playerData->CharacterClass);
 
             if (playerClass == null) return;
 
@@ -121,7 +125,7 @@ namespace Battle.QSimulation.Player
 
         public static void OnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
         {
-            IBattlePlayerClass playerClass = GetClass(f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity)->CharacterClass);
+            BattlePlayerClassBase playerClass = GetClass(f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity)->CharacterClass);
 
             if (playerClass == null) return;
 
@@ -130,7 +134,7 @@ namespace Battle.QSimulation.Player
 
         public static void OnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
         {
-            IBattlePlayerClass playerClass = GetClass(f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity)->CharacterClass);
+            BattlePlayerClassBase playerClass = GetClass(f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity)->CharacterClass);
 
             if (playerClass == null) return;
 
@@ -139,7 +143,7 @@ namespace Battle.QSimulation.Player
 
         public static void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
-            IBattlePlayerClass playerClass = GetClass(playerData->CharacterClass);
+            BattlePlayerClassBase playerClass = GetClass(playerData->CharacterClass);
 
             if (playerClass == null) return;
 
@@ -155,11 +159,11 @@ namespace Battle.QSimulation.Player
         private const int ClassIndexIntellectualizer = 6;
         private const int ClassCount = 7;
 
-        private static IBattlePlayerClass[] s_classArray = new IBattlePlayerClass[ClassCount];
+        private static BattlePlayerClassBase[] s_classArray = new BattlePlayerClassBase[ClassCount];
 
         private static Dictionary<BattlePlayerCharacterClass, bool> s_errorMessagesSent = new();
 
-        private static IBattlePlayerClass GetClass(BattlePlayerCharacterClass characterClass)
+        private static BattlePlayerClassBase GetClass(BattlePlayerCharacterClass characterClass)
         {
             int classIndex = characterClass switch
             {
@@ -190,7 +194,7 @@ namespace Battle.QSimulation.Player
                 return null;
             }
 
-            IBattlePlayerClass classObj = s_classArray[classIndex];
+            BattlePlayerClassBase classObj = s_classArray[classIndex];
 
             if (classObj == null)
             {
