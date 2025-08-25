@@ -11,7 +11,9 @@ namespace Battle.QSimulation.Player
 
         public override unsafe void OnSpawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
-            Debug.LogWarning("Desensitizer spawned");
+            Debug.Log("Desensitizer spawned");
+
+            BattlePlayerClassDesensitizerDataQComponent* classData = GetClassData(f, playerEntity);
         }
     }
 }
