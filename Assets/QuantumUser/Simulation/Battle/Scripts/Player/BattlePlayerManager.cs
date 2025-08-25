@@ -384,7 +384,7 @@ namespace Battle.QSimulation.Player
         {
             PlayerHandleInternal playerHandle = PlayerHandleInternal.GetPlayerHandle(GetPlayerManagerData(f), slot);
 
-            if (playerHandle.PlayState == BattlePlayerPlayState.NotInGame)
+            if (playerHandle.PlayState.IsNotInGame())
             {
                 Debug.LogError("[PlayerManager] Can not spawn player that is not in game");
                 return;
@@ -403,7 +403,7 @@ namespace Battle.QSimulation.Player
         {
             PlayerHandleInternal playerHandle = PlayerHandleInternal.GetPlayerHandle(GetPlayerManagerData(f), slot);
 
-            if (playerHandle.PlayState != BattlePlayerPlayState.InPlay)
+            if (!playerHandle.PlayState.IsInPlay())
             {
                 Debug.LogError("[PlayerManager] Can not despawn player that is not in play");
                 return;
@@ -747,7 +747,7 @@ namespace Battle.QSimulation.Player
                 return;
             }
 
-            if (playerHandle.PlayState == BattlePlayerPlayState.InPlay)
+            if (playerHandle.PlayState.IsInPlay())
             {
                 worldPosition = f.Unsafe.GetPointer<Transform2D>(playerHandle.SelectedCharacter)->Position;
                 DespawnPlayer(f, playerHandle);
