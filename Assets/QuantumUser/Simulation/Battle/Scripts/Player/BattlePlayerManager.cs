@@ -399,6 +399,12 @@ namespace Battle.QSimulation.Player
                 return;
             }
 
+            if (playerHandle.GetCharacterState(characterNumber) == BattlePlayerCharacterState.Dead)
+            {
+                Debug.LogFormat("[PlayerManager] Player character {0} is dead and will not be spawned", characterNumber);
+                return;
+            }
+
             SpawnPlayer(f, playerHandle, characterNumber);
         }
 
@@ -797,12 +803,6 @@ namespace Battle.QSimulation.Player
             Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(character);
 
             FPVector2 worldPosition;
-
-            if (playerData->CurrentHp <= 0)
-            {
-                Debug.LogFormat("[PlayerManager] Player character {0} has no Hp and will not be spawned", characterNumber);
-                return;
-            }
 
             if (playerHandle.PlayState.IsInPlay())
             {
