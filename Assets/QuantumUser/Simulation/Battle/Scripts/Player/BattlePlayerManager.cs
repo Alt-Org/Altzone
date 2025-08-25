@@ -11,6 +11,15 @@ using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Player
 {
+    public static class BattlePlayerPlayStateExtension
+    {
+        public static bool IsNotInGame(this BattlePlayerPlayState state)           => state is BattlePlayerPlayState.NotInGame;
+        public static bool IsOutOfPlay(this BattlePlayerPlayState state)           => state is BattlePlayerPlayState.OutOfPlay or BattlePlayerPlayState.OutOfPlayRespawning or BattlePlayerPlayState.OutOfPlayFinal;
+        public static bool IsOutOfPlayRespawning(this BattlePlayerPlayState state) => state is BattlePlayerPlayState.OutOfPlayRespawning;
+        public static bool IsOutOfPlayFinal(this BattlePlayerPlayState state)      => state is BattlePlayerPlayState.OutOfPlayFinal;
+        public static bool IsInPlay(this BattlePlayerPlayState state)              => state is BattlePlayerPlayState.InPlay;
+    }
+
     public static unsafe class BattlePlayerManager
     {
         #region Public
