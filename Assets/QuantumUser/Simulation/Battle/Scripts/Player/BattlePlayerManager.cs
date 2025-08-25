@@ -635,6 +635,7 @@ namespace Battle.QSimulation.Player
 
             //{ Public Methods
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public PlayerHandle ConvertToPublic()
             {
                 return PlayerHandle.GetPlayerHandleFromInternal(_playerManagerData, Index);

@@ -157,7 +157,7 @@ namespace Battle.QSimulation.Player
 
         private static IBattlePlayerClass[] s_classArray = new IBattlePlayerClass[ClassCount];
 
-        private static bool[] s_errorMessagesSent = new bool[ClassCount + 1];
+        private static Dictionary<BattlePlayerCharacterClass, bool> s_errorMessagesSent = new();
 
         private static IBattlePlayerClass GetClass(BattlePlayerCharacterClass characterClass)
         {
@@ -176,23 +176,15 @@ namespace Battle.QSimulation.Player
 
             if (classIndex == -1)
             {
-                int index = characterClass switch
+                if (!s_errorMessagesSent.ContainsKey(characterClass))
                 {
-                    BattlePlayerCharacterClass.Desensitizer     => ClassIndexDesensitizer,
-                    BattlePlayerCharacterClass.Trickster        => ClassIndexTrickster,
-                    BattlePlayerCharacterClass.Obedient         => ClassIndexObedient,
-                    BattlePlayerCharacterClass.Projector        => ClassIndexProjector,
-                    BattlePlayerCharacterClass.Retroflector     => ClassIndexRetroflector,
-                    BattlePlayerCharacterClass.Confluent        => ClassIndexConfluent,
-                    BattlePlayerCharacterClass.Intellectualizer => ClassIndexIntellectualizer,
+                    s_errorMessagesSent.Add(characterClass, false);
+                }
 
-                    _ => 7,
-                };
-
-                if (!s_errorMessagesSent[index])
+                if (!s_errorMessagesSent[characterClass])
                 {
                     Debug.LogWarningFormat("[PlayerClassManager] The {0} class is not currently implemented!", characterClass);
-                    s_errorMessagesSent[index] = true;
+                    s_errorMessagesSent[characterClass] = true;
                 }
                 
                 return null;
