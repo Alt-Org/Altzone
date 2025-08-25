@@ -408,7 +408,7 @@ namespace Battle.QSimulation.Player
             SpawnPlayer(f, playerHandle, characterNumber);
         }
 
-        public static void DespawnPlayer(Frame f, BattlePlayerSlot slot)
+        public static void DespawnPlayer(Frame f, BattlePlayerSlot slot, bool kill = false)
         {
             PlayerHandleInternal playerHandle = PlayerHandleInternal.GetPlayerHandle(GetPlayerManagerData(f), slot);
 
@@ -418,6 +418,7 @@ namespace Battle.QSimulation.Player
                 return;
             }
 
+            if (kill) playerHandle.SelectedCharacterState = BattlePlayerCharacterState.Dead;
             DespawnPlayer(f, playerHandle);
         }
 
