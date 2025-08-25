@@ -501,6 +501,26 @@ namespace Battle.QSimulation.Player
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public BattlePlayerCharacterState GetCharacterState(int characterNumber) => _internalHandle.GetCharacterState(characterNumber);
 
+            public void SetOutOfPlayRespawning()
+            {
+                if (!_internalHandle.PlayState.IsOutOfPlay())
+                {
+                    Debug.LogError("[PlayerManager] Can not set player that is not OutOfPlay as OutOfPlayRespawning");
+                    return;
+                }
+                _internalHandle.PlayState = BattlePlayerPlayState.OutOfPlayRespawning;
+            }
+
+            public void SetOutOfPlayFinal()
+            {
+                if (!_internalHandle.PlayState.IsOutOfPlay())
+                {
+                    Debug.LogError("[PlayerManager] Can not set player that is not OutOfPlay as OutOfPlayFinal");
+                    return;
+                }
+                _internalHandle.PlayState = BattlePlayerPlayState.OutOfPlayFinal;
+            }
+
             //} Public Methods
 
             //{ Private
