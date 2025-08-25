@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Common;
 using Altzone.Scripts.Lobby;
+using Altzone.Scripts.Window;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -17,9 +19,18 @@ public class BattleStoryController : MonoBehaviour
     private GameObject _emotionBall;
 
     [SerializeField]
-    private Transform _endStartPositionLeft;
+    private Image _tableSprite;
     [SerializeField]
-    private Transform _endStartPositionRight;
+    private Image _endScreen;
+    [SerializeField]
+    private RectTransform _pathArea;
+    [SerializeField]
+    private TextMeshProUGUI _victoryDefeatText;
+
+    [SerializeField]
+    private Transform _startPositionLeft;
+    [SerializeField]
+    private Transform _startPositionRight;
 
     [Header("Paths"), SerializeField]
     private List<Route> _routesLeft;
@@ -35,97 +46,288 @@ public class BattleStoryController : MonoBehaviour
     [SerializeField]
     private Animator _characterAnimator2;
 
+    [Header("End Animator"),SerializeField]
+    private Animator _victoryDefeatAnimation;
+    [SerializeField]
+    private AnimationClip _victoryAnimation;
+    [SerializeField]
+    private AnimationClip _defeatAnimation;
+
+    [Header("Text lines"), SerializeField]
+    private BattleStoryLineHandler _topLineImage;
+    [SerializeField]
+    private BattleStoryLineHandler _bottomLineImage;
+    [SerializeField]
+    private List<Conversations> _conversationsList;
+
+    [Header("Story Play Controls"), SerializeField]
+    private TextMeshProUGUI _currentSegmentText;
+    [SerializeField]
+    private Button _previousSegment;
+    [SerializeField]
+    private Button _nextSegment;
+    [SerializeField]
+    private Button _autoPlayButton;
+
+    private List<StorySegment> _storySegments = new();
+    private int _currentSegment;
+    private int _totalSegments;
+
+    private Coroutine _playbackCoroutine;
+    private Coroutine _routeTraversingCoroutine;
+    private GameObject _ball;
+    private bool _victory;
+
     // Start is called before the first frame update
     void Start()
     {
         _exitButton.onClick.AddListener(ExitStory);
-        StartCoroutine(PlayAnimation());
+        _previousSegment.onClick.AddListener(PlayPreviousSegment);
+        _nextSegment.onClick.AddListener(PlayNextSegment);
+        _autoPlayButton.onClick.AddListener(ToggleAutoPlay);
+        Route.OnRouteFinished += DestroyBall;
+        StartCoroutine(SetPathArea());
+        GenerateStory();
+        _totalSegments = _storySegments.Count;
+        _currentSegment = 0;
+        _playbackCoroutine = StartCoroutine(PlayAnimation());
+    }
+    private void OnEnable()
+    {
+        _topLineImage.gameObject.SetActive(false);
+        _bottomLineImage.gameObject.SetActive(false);
     }
 
+    private void OnDestroy()
+    {
+        _exitButton.onClick.RemoveAllListeners();
+        _previousSegment.onClick.RemoveAllListeners();
+        _nextSegment.onClick.RemoveAllListeners();
+        _autoPlayButton.onClick.RemoveAllListeners();
+        Route.OnRouteFinished -= DestroyBall;
+    }
 
-    public IEnumerator PlayAnimation()
+    private void GenerateStory()
     {
         _validatedList = ValidateEmotions();
 
         int clipsCount = _validatedList.Count;
-        if (clipsCount <= 0) yield break;
-        if (_routesLeft.Count <= 0) yield break;
-        if (_routesRight.Count <= 0) yield break;
-        List<Emotion> randomClipOrder1 = new();
-        List<int> randomBallOrder1 = new();
+        if (clipsCount <= 0) return;
+        if (_routesLeft.Count <= 0) return;
+        if (_routesRight.Count <= 0) return;
 
-        List<Emotion> randomClipOrder2 = new();
-        List<int> randomBallOrder2 = new();
+        bool? winner = DataCarrier.GetData<bool?>(DataCarrier.BattleWinner, false);
+        _victory = winner.Value;
+
         int prevSelectedValue1 = -1;
         int selectedvalue1 = -1;
         int prevSelectedValue2 = -1;
         int selectedvalue2 = -1;
-        for (int i= 0; i<5; i++)
+        Conversations conversationList;
+        if (Random.Range(0, 10) is 0)
         {
+            conversationList = _conversationsList[0];
+        }
+        else if ((winner.HasValue && !winner.Value) || (!winner.HasValue && Random.Range(0, 2) is 0))
+        {
+            _victory = false;
+            conversationList = _conversationsList[1];
+        }
+        else
+        {
+            _victory = true;
+            conversationList = _conversationsList[2];
+        }
+        for (int i = 0; i < 5; i++)
+        {
+            if(conversationList.List.Count <= (i * 2)) break;
             do
             {
                 selectedvalue1 = Random.Range(0, clipsCount);
-            } while(selectedvalue1.Equals(prevSelectedValue1));
-            randomClipOrder1.Add(_validatedList[selectedvalue1].Emotion);
+            } while (selectedvalue1.Equals(prevSelectedValue1));
+            Emotion emotion = _validatedList[selectedvalue1].Emotion;
             prevSelectedValue1 = selectedvalue1;
             int ballAnimation1 = Random.Range(0, _routesLeft.Count);
-            randomBallOrder1.Add(ballAnimation1);
+            string line = conversationList.List[i * 2].Line;
+            _storySegments.Add(new(emotion, 0, ballAnimation1, line));
 
+            if (conversationList.List.Count <= (i * 2 +1)) break;
             do
             {
                 selectedvalue2 = Random.Range(0, clipsCount);
             } while (selectedvalue2.Equals(prevSelectedValue2));
-            randomClipOrder2.Add(_validatedList[selectedvalue2].Emotion);
+            emotion = _validatedList[selectedvalue2].Emotion;
             prevSelectedValue2 = selectedvalue2;
             int ballAnimation2 = Random.Range(0, _routesRight.Count);
-            randomBallOrder2.Add(ballAnimation2);
+            string line2 = conversationList.List[i * 2 + 1].Line;
+            _storySegments.Add(new(emotion, 1, ballAnimation2, line2));
         }
+    }
+
+    public IEnumerator PlayAnimation()
+    {
+        _autoPlayButton.GetComponent<Image>().color = Color.yellow;
         yield return new WaitForSeconds(1f);
-        for (int i = 0; i < randomClipOrder1.Count; i++)
+        for (int i = _currentSegment; i < _storySegments.Count; i++)
         {
-            //Debug.LogWarning($"Character 1: {randomClipOrder1[i]}:{validatedList.First(x => x.Emotion == randomClipOrder1[i]).Character1Animation.name}, Ball 1: {randomBallOrder1[i]}");
-            _characterAnimator1.Play(GetEmotionData(randomClipOrder1[i]).Character1Animation.name);
-            GameObject ball = Instantiate(_emotionBall, _endStartPositionLeft);
+            _currentSegment++;
+            yield return PlayAnimationSegment(i);
 
-            ball.GetComponent<Image>().sprite = GetEmotionData(randomClipOrder1[i]).BallSprite;
-            
-            ball.GetComponent<RectTransform>().rotation = Quaternion.Euler(new(0, 180, 0));
-            bool ballDone = false;
-
-            if (_routesLeft.Count <= randomBallOrder1[i] || 0 > randomBallOrder1[i])
-            {
-                ballDone = true;
-            }
-            else
-            {
-                StartCoroutine(_routesLeft[randomBallOrder1[i]].TraverseRoute(ball, done => ballDone = done));
-            }
-
-            yield return new WaitUntil(() => ballDone is true);
-            Destroy(ball);
-
-            yield return new WaitForSeconds(0.5f);
-            //Debug.LogWarning($"Character 2: {randomClipOrder2[i]}:{validatedList.First(x => x.Emotion == randomClipOrder2[i]).Character2Animation.name}, Ball 2: {randomBallOrder2[i]}");
-            _characterAnimator2.Play(GetEmotionData(randomClipOrder2[i]).Character2Animation.name);
-            GameObject ball2 = Instantiate(_emotionBall, _endStartPositionRight);
-
-            ball2.GetComponent<Image>().sprite = GetEmotionData(randomClipOrder2[i]).BallSprite;
-
-            ballDone = false;
-
-            if (_routesRight.Count <= randomBallOrder2[i] || 0 > randomBallOrder2[i])
-            {
-                ballDone = true;
-            }
-            else
-            {
-                StartCoroutine(_routesRight[randomBallOrder2[i]].TraverseRoute(ball2, done => ballDone = done));
-            }
-
-            yield return new WaitUntil(() => ballDone is true);
-            Destroy(ball2);
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(1f);
         }
+        _currentSegment++;
+        float clipLength = PlayEndSegment();
+        yield return new WaitForSeconds(clipLength);
+        _victoryDefeatText.gameObject.SetActive(true);
+        _autoPlayButton.GetComponent<Image>().color = Color.white;
+        _playbackCoroutine = null;
+    }
+
+    private IEnumerator PlayAnimationSegment(int segment)
+    {
+        if(_ball != null) DestroyBall();
+
+        _currentSegmentText.text = $"{_currentSegment}/{_totalSegments+1}";
+        if (!_tableSprite.gameObject.activeSelf)
+        {
+            _tableSprite.gameObject.SetActive(true);
+            _endScreen.gameObject.SetActive(false);
+            _victoryDefeatText.gameObject.SetActive(false);
+        }
+
+        _ball = _storySegments[segment].Player == 0 ? Instantiate(_emotionBall, _startPositionLeft) : Instantiate(_emotionBall, _startPositionRight);
+
+        _ball.GetComponent<Image>().sprite = GetEmotionData(_storySegments[segment].ClipEmotion).BallSprite;
+
+        if (_storySegments[segment].Player == 0) _ball.GetComponent<RectTransform>().rotation = Quaternion.Euler(new(0, 180, 0));
+        bool ballDone = false;
+
+        if (_storySegments[segment].Player == 0)
+        {
+            if (_routesLeft.Count <= _storySegments[segment].BallRoute || 0 > _storySegments[segment].BallRoute)
+            {
+                ballDone = true;
+            }
+            else
+            {
+                _routeTraversingCoroutine = StartCoroutine(_routesLeft[_storySegments[segment].BallRoute].TraverseRoute(_ball, done => ballDone = done));
+                _bottomLineImage.SetText(GetEmotionData(_storySegments[segment].ClipEmotion).LineSprite, _storySegments[segment].Line);
+                for (int i = _currentSegment-1; i >= 0; i--)
+                {
+                    if (_storySegments[i].Player != 0)
+                    {
+                        _topLineImage.SetText(GetEmotionData(_storySegments[i].ClipEmotion).LineSprite, _storySegments[i].Line);
+                        break;
+                    }
+                }
+                _characterAnimator1.Play(GetEmotionData(_storySegments[segment].ClipEmotion).Character1Animation.name);
+            }
+        }
+        else
+        {
+            if (_routesRight.Count <= _storySegments[segment].BallRoute || 0 > _storySegments[segment].BallRoute)
+            {
+                ballDone = true;
+            }
+            else
+            {
+                _routeTraversingCoroutine = StartCoroutine(_routesRight[_storySegments[segment].BallRoute].TraverseRoute(_ball, done => ballDone = done));
+                _topLineImage.SetText(GetEmotionData(_storySegments[segment].ClipEmotion).LineSprite, _storySegments[segment].Line);
+                for (int i = _currentSegment - 1; i >= 0; i--)
+                {
+                    if (_storySegments[i].Player == 0)
+                    {
+                        _bottomLineImage.SetText(GetEmotionData(_storySegments[i].ClipEmotion).LineSprite, _storySegments[i].Line);
+                        break;
+                    }
+                }
+                _characterAnimator2.Play(GetEmotionData(_storySegments[segment].ClipEmotion).Character2Animation.name);
+            }
+        }
+
+        yield return new WaitUntil(() => ballDone is true);
+    }
+
+    private float PlayEndSegment()
+    {
+        _currentSegmentText.text = $"{_totalSegments+1}/{_totalSegments+1}";
+        _tableSprite.gameObject.SetActive(false);
+        _endScreen.gameObject.SetActive(true);
+        if (_victory)
+        {
+            _victoryDefeatAnimation.Play(_victoryAnimation.name);
+            return _victoryAnimation.length;
+        }
+        else
+        {
+            _victoryDefeatAnimation.Play(_defeatAnimation.name);
+            return _defeatAnimation.length;
+        }
+    }
+
+    private IEnumerator ShowEndText(float timer = 0f)
+    {
+        yield return new WaitForSeconds(timer);
+        _victoryDefeatText.gameObject.SetActive(true);
+    }
+
+    private void PlayNextSegment()
+    {
+        if (_currentSegment <= _totalSegments)
+        {
+            if (_playbackCoroutine != null) StopCoroutine(_playbackCoroutine);
+            _playbackCoroutine = null;
+            _autoPlayButton.GetComponent<Image>().color = Color.white;
+            DestroyBall();
+            _currentSegment++;
+            if (_currentSegment <= _totalSegments)
+                StartCoroutine(PlayAnimationSegment(_currentSegment - 1));
+            else
+            {
+                PlayEndSegment();
+                StartCoroutine(ShowEndText());
+            }
+        }
+    }
+
+    private void PlayPreviousSegment()
+    {
+        if (_currentSegment > 1)
+        {
+            if (_playbackCoroutine != null) StopCoroutine(_playbackCoroutine);
+            _playbackCoroutine = null;
+            _autoPlayButton.GetComponent<Image>().color = Color.white;
+            DestroyBall();
+            _currentSegment--;
+            StartCoroutine(PlayAnimationSegment(_currentSegment - 1));
+        }
+    }
+
+    private void ToggleAutoPlay()
+    {
+        if (_playbackCoroutine != null)
+        {
+            StopCoroutine(_playbackCoroutine);
+            _playbackCoroutine = null;
+            _autoPlayButton.GetComponent<Image>().color = Color.white;
+        }
+        else
+        {
+            _playbackCoroutine = StartCoroutine(PlayAnimation());
+        }
+    }
+
+    private void DestroyBall()
+    {
+        Debug.LogWarning("Ball");
+        if (_routeTraversingCoroutine != null)
+        {
+            StopCoroutine(_routeTraversingCoroutine);
+            _routeTraversingCoroutine = null;
+        }
+        if (_ball == null) return;
+        Destroy(_ball);
+        _ball = null;
     }
 
     private EmotionObject GetEmotionData(Emotion emotion)
@@ -157,8 +359,31 @@ public class BattleStoryController : MonoBehaviour
         return validatedList;
     }
 
+    private IEnumerator SetPathArea()
+    {
+        yield return null;
+        Vector2 spriteSize = _tableSprite.sprite.rect.size;
+        float spriteRatio = spriteSize.y / spriteSize.x;
+
+        Vector2 areaSize = _pathArea.rect.size;
+        float areaRatio = areaSize.y / areaSize.x;
+        if(spriteRatio < areaRatio)
+        {
+            float diff = 1 - spriteRatio/areaRatio;
+            _pathArea.anchorMin = new Vector2(0, diff/2);
+            _pathArea.anchorMax = new Vector2(1, 1- diff/2);
+        }
+        else
+        {
+            float diff = 1 - areaRatio / spriteRatio;
+            _pathArea.anchorMin = new Vector2(diff / 2, 0);
+            _pathArea.anchorMax = new Vector2(1 - diff / 2, 1);
+        }
+    }
+
     private void ExitStory()
     {
+        DataCarrier.GetData<bool?>(DataCarrier.BattleWinner, suppressWarning: true);
         LobbyManager.ExitBattleStory();
     }
 
@@ -175,11 +400,36 @@ public class EmotionObject
     private AnimationClip _character1Animation;
     [SerializeField]
     private AnimationClip _character2Animation;
+    [SerializeField]
+    private Sprite _lineSprite;
 
     public Emotion Emotion { get => _emotion;}
     public Sprite BallSprite { get => _ballSprite;}
     public AnimationClip Character1Animation { get => _character1Animation;}
     public AnimationClip Character2Animation { get => _character2Animation;}
+    public Sprite LineSprite { get => _lineSprite;}
+}
+
+public class StorySegment
+{
+    private Emotion _clipEmotion;
+    private int _ballRoute;
+    private string _line;
+    private int _player;
+
+    public Emotion ClipEmotion { get => _clipEmotion; }
+    public int BallRoute { get => _ballRoute;}
+    public string Line { get => _line;}
+    public int Player { get => _player;}
+
+    public StorySegment(Emotion emotion, int player, int route, string line)
+    {
+        _clipEmotion = emotion;
+        _player = player;
+        _line = line;
+        _ballRoute = route;
+    }
+
 }
 
 [Serializable]
@@ -201,8 +451,14 @@ public class Route
     public Transform EndPoint { get => _endPoint;}
     public float DefaultSpeed { get => _defaultSpeed;}
 
+    public delegate void RouteFinished();
+    public static event RouteFinished OnRouteFinished;
+
     public IEnumerator TraverseRoute(GameObject ball, Action<bool> callback)
     {
+        float defaultBallSize = ball.GetComponent<RectTransform>().rect.width;
+        float ballsize = defaultBallSize * 1.2f;
+        ball.GetComponent<RectTransform>().sizeDelta = new(ballsize,ballsize);
         float baseSpeed = GetScaledSpeed();
         float speed = baseSpeed;
         float distance;
@@ -210,6 +466,7 @@ public class Route
         float currentTime;
 
         Vector2 startPosition = _startPoint.position;
+        float depth = Mathf.Abs(_endPoint.position.y - _startPoint.position.y);
 
         foreach (RouteSection route in _routesSection)
         {
@@ -225,12 +482,16 @@ public class Route
                 Vector2 pos = Vector2.Lerp(startPosition, nextPoint, currentTime / duration);
                 float yPos = startPosition.y + (nextPoint.y - startPosition.y) * route.PathSectionCurve.Evaluate(Mathf.Clamp(currentTime / duration,0,1));
                 ball.transform.position = new(pos.x, yPos);
+                float depthDistance = Mathf.Abs(yPos - _startPoint.position.y)/depth;
+                //ballsize = defaultBallSize * Mathf.Lerp(1.2f, 0.8f, depthDistance);
+                //ball.GetComponent<RectTransform>().sizeDelta = new(ballsize, ballsize);
             }
             startPosition = nextPoint;
         }
         if (Mathf.Abs(Vector2.Distance(_endPoint.position, startPosition)) <= Mathf.Epsilon)
         {
             callback(true);
+            OnRouteFinished?.Invoke();
             yield break;
         }
         speed = baseSpeed * _defaultSpeed;
@@ -245,6 +506,7 @@ public class Route
             ball.transform.position = pos;
         }
         callback(true);
+        OnRouteFinished?.Invoke();
     }
 
     private float GetScaledSpeed()
@@ -266,4 +528,25 @@ public class RouteSection
     public Transform PathSectionEndPoint { get => _pathSectionEndPoint; }
     public AnimationCurve PathSectionCurve { get => _pathSectionCurve; }
     public float Speed { get => _speed; }
+}
+
+[Serializable]
+public class Conversations
+{
+    /// <summary>
+    /// Character conversation line>.
+    /// </summary>
+    public List<ConversationLine> List;
+}
+
+[Serializable]
+public class ConversationLine
+{
+    /// <summary>
+    /// Character conversation line>.
+    /// </summary>
+    [TextArea(1, 3)]
+    public string Line;
+
+    public int Character;
 }

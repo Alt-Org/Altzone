@@ -1,5 +1,7 @@
 using System.Runtime.CompilerServices;
 using Photon.Deterministic;
+using UnityEditor;
+using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
@@ -25,40 +27,48 @@ namespace Altzone.Scripts.Model.Poco.Game
         VeryWeak
     }
 
-    public abstract class BaseCharacter
+    public abstract class BaseCharacter : ScriptableObject
     {
-        protected CharacterID _id = CharacterID.None;
-        protected int _hp;
-        protected int _defaultHp;
-        protected ValueStrength _hpStrength = ValueStrength.None;
-        protected int _speed;
-        protected int _defaultSpeed;
-        protected ValueStrength _speedStrength = ValueStrength.None;
-        protected int _characterSize;
-        protected int _defaultCharacterSize;
-        protected ValueStrength _characterSizeStrength = ValueStrength.None;
-        protected int _attack;
-        protected int _defaultAttack;
-        protected ValueStrength _attackStrength = ValueStrength.None;
-        protected int _defence;
-        protected int _defaultDefence;
-        protected ValueStrength _defenceStrength = ValueStrength.None;
+        [SerializeField] protected CharacterID _id = CharacterID.None;
+        [SerializeField] protected bool active = true;
 
-        protected bool active = true;
+        [Header("HP"), SerializeField] protected int _defaultHp;
+        protected int _hp;
+        [SerializeField] protected ValueStrength _hpStrength = ValueStrength.None;
+
+        [Header("Speed"), SerializeField] protected int _defaultSpeed;
+        protected int _speed;
+        [SerializeField] protected ValueStrength _speedStrength = ValueStrength.None;
+
+        [Header("Character Size"), SerializeField] protected int _defaultCharacterSize;
+        protected int _characterSize;
+        [SerializeField] protected ValueStrength _characterSizeStrength = ValueStrength.None;
+
+        [Header("Attack"), SerializeField] protected int _defaultAttack;
+        protected int _attack;
+        [SerializeField] protected ValueStrength _attackStrength = ValueStrength.None;
+
+        [Header("Defence"), SerializeField] protected int _defaultDefence;
+        protected int _defence;
+        [SerializeField] protected ValueStrength _defenceStrength = ValueStrength.None;
 
         public CharacterID Id { get => _id;}
         public virtual CharacterClassID ClassID { get => GetClassID(Id); }
         public int Hp { get => _hp;}
-        public int DefaultHp { get => _defaultHp; }
+        public int DefaultHp { get => _defaultHp; set { _defaultHp = value; SaveData(); } }
         public int Speed { get => _speed;}
-        public int DefaultSpeed { get => _defaultSpeed; }
+        public int DefaultSpeed { get => _defaultSpeed; set { _defaultSpeed = value; SaveData(); } }
         public int CharacterSize { get => _characterSize;}
-        public int DefaultCharacterSize { get => _defaultCharacterSize; }
+        public int DefaultCharacterSize { get => _defaultCharacterSize; set { _defaultCharacterSize = value; SaveData(); } }
         public int Attack { get => _attack;}
-        public int DefaultAttack { get => _defaultAttack; }
+        public int DefaultAttack { get => _defaultAttack; set { _defaultAttack = value; SaveData(); } }
         public int Defence { get => _defence;}
-        public int DefaultDefence { get => _defaultDefence; }
+        public int DefaultDefence { get => _defaultDefence; set { _defaultDefence = value; SaveData(); } }
         public ValueStrength HpStrength { get => _hpStrength; }
+        public ValueStrength SpeedStrength { get => _speedStrength; }
+        public ValueStrength CharacterSizeStrength { get => _characterSizeStrength; }
+        public ValueStrength AttackStrength { get => _attackStrength; }
+        public ValueStrength DefenceStrength { get => _defenceStrength; }
 
         protected BaseCharacter()
         {
@@ -72,6 +82,15 @@ namespace Altzone.Scripts.Model.Poco.Game
             _defence = _defaultDefence;
             _characterSize = _defaultCharacterSize;
             _speed = _defaultSpeed;
+        }
+
+        private void SaveData()
+        {
+            #if UNITY_EDITOR
+            AssetDatabase.Refresh();
+            EditorUtility.SetDirty(this);
+            AssetDatabase.SaveAssets();
+            #endif
         }
 
         #region Stat value getters
@@ -197,30 +216,30 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             return level switch
             {
-                 1 =>  50,
-                 2 =>  75,
-                 3 => 100,
-                 4 => 125,
-                 5 => 150,
-                 6 => 175,
-                 7 => 200,
-                 8 => 225,
-                 9 => 250,
-                10 => 275,
-                11 => 300,
-                12 => 325,
-                13 => 350,
-                14 => 375,
-                15 => 400,
-                16 => 425,
-                17 => 450,
-                18 => 475,
-                19 => 500,
-                20 => 525,
-                21 => 550,
-                22 => 575,
-                23 => 600,
-                24 => 625,
+                 1 =>   5,
+                 2 =>  10,
+                 3 =>  20,
+                 4 =>  30,
+                 5 =>  40,
+                 6 =>  50,
+                 7 =>  60,
+                 8 =>  70,
+                 9 =>  80,
+                10 =>  90,
+                11 => 100,
+                12 => 110,
+                13 => 120,
+                14 => 130,
+                15 => 140,
+                16 => 150,
+                17 => 160,
+                18 => 170,
+                19 => 180,
+                20 => 190,
+                21 => 200,
+                22 => 210,
+                23 => 220,
+                24 => 230,
 
                 _ => -1,
             };

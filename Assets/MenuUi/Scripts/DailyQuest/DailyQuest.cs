@@ -3,19 +3,23 @@ using TMPro;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Altzone.Scripts.ReferenceSheets;
 
 public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 {
     //Variables
+    private int _selfIndex = -1;
     private PlayerTask _taskData;
-    public PlayerTask TaskData { get { return _taskData; } }
     private bool _clickEnabled = true;
+    public PlayerTask TaskData { get { return _taskData; } }
 
     public enum TaskWindowType
     {
         Available,
         Reserved
     }
+
+    [SerializeField] private DailyTaskCardImageReference _cardImageReference;
 
     [Header("Universal")]
     [SerializeField] private GameObject _coinIndicator;
@@ -29,6 +33,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     [SerializeField] private TMP_Text _taskShort;
     [SerializeField] private TMP_Text _taskDebugID;
     [SerializeField] private TMP_Text _taskPoints;
+    [SerializeField] private TMP_Text _taskCoins;
     [SerializeField] private TMP_Text _taskAmount;
     [Space]
     [SerializeField] private RectTransform _topLeftCorner;
@@ -51,15 +56,15 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         _playerImage.gameObject.SetActive(false);
     }
 
-    private void OnDestroy()
-    {
-        if (_taskData != null)
-        {
-            _taskData.OnTaskSelected -= TaskSelected;
-            _taskData.OnTaskDeselected -= TaskDeselected;
-            _taskData.OnTaskUpdated -= UpdateProgressBar;
-        }
-    }
+    //private void OnDestroy()
+    //{
+    //    if (_taskData != null)
+    //    {
+    //        _taskData.OnTaskSelected -= TaskSelected;
+    //        _taskData.OnTaskDeselected -= TaskDeselected;
+    //        _taskData.OnTaskUpdated -= UpdateProgressBar;
+    //    }
+    //}
 
     public virtual void OnBeginDrag(PointerEventData eventData)
     {
@@ -74,12 +79,19 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     public void SetTaskData(PlayerTask taskData)
     {
         _taskData = taskData;
+        TaskSelected();
+    }
+
+    public void SetTaskData(PlayerTask taskData, int index)
+    {
+        _taskData = taskData;
+        _selfIndex = index;
 
         /*Bind this class to PlayerTask for later interactions
          *between DailyTaskManager and this class.*/
-        _taskData.OnTaskSelected += TaskSelected;
-        _taskData.OnTaskDeselected += TaskDeselected;
-        _taskData.OnTaskUpdated += UpdateProgressBar;
+        //_taskData.OnTaskSelected += TaskSelected;
+        //_taskData.OnTaskDeselected += TaskDeselected;
+        //_taskData.OnTaskUpdated += UpdateProgressBar;
 
         PopulateData();
         SwitchWindow(TaskWindowType.Available);
@@ -90,7 +102,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         if (!_clickEnabled || _taskData.PlayerId != "")
             return;
 
-        PopupData data = new(_taskData, GetCornerLocation());
+        PopupData data = new(_taskData, GetCornerLocation(), _selfIndex);
         StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse(_taskData.Title, data));
     }
 
@@ -99,7 +111,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         if (!_clickEnabled || _taskData.PlayerId != "")
             return;
 
-        StartCoroutine(dailyTaskManager.AcceptTask(_taskData));
+        StartCoroutine(dailyTaskManager.AcceptTask(_taskData, null, _selfIndex));
     }
 
     /// <summary>
@@ -131,13 +143,14 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 
     public void PopulateData()
     {
-        _taskShort.text = GetShortDescription(_taskData.Type);
+        _taskShort.text = _taskData.Title;
         _taskDebugID.text = _taskData.Id.ToString();
-        _taskPoints.text = _taskData.Points.ToString() + " pistettä";
+        _taskPoints.text = _taskData.Points.ToString();
+        _taskCoins.text = _taskData.Coins.ToString();
         _taskAmount.text = _taskData.Amount.ToString();
         _coinIndicator.SetActive(_taskData.Coins >= 0);
 
-        //_TaskImage.sprite = INSERT IMAGE HERE
+        _TaskImage.sprite = _cardImageReference.GetTaskImage(_taskData);
     }
 
     private string GetShortDescription(TaskNormalType taskType)

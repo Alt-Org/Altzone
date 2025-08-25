@@ -1,0 +1,22 @@
+enum BattlePlayerHitboxType
+{
+    Shield = 0,
+    Character = 1
+}
+
+enum BattlePlayerCollisionType
+{
+    None = 0,
+    Reflect = 1,
+    Override = 2
+}
+
+component BattlePlayerHitboxQComponent
+{
+    EntityRef PlayerEntity;
+    bool IsActive;
+    BattlePlayerHitboxType HitboxType;
+    BattlePlayerCollisionType CollisionType;
+    FPVector2 Normal;
+    FP CollisionMinOffset;
+}

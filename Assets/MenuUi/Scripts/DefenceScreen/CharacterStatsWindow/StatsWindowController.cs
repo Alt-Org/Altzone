@@ -6,6 +6,9 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ReferenceSheets;
+using MenuUi.Scripts.CharacterGallery;
+using MenuUi.Scripts.Signals;
+using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
@@ -16,45 +19,24 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     /// </summary>
     public class StatsWindowController : AltMonoBehaviour
     {
-        [SerializeField] private ClassColorReference _classColorReference;
+        [SerializeField] private ClassReference _classReference;
+        [SerializeField] private StatsReference _statsReference;
+        [SerializeField] private GameObject _swipeBlocker;
+        [SerializeField] private GameObject _statsPanel;
+        [SerializeField] private GameObject _infoPanel;
+        [SerializeField] private GalleryView _galleryView;
 
+        private bool _statsUpdated = false;
+        private bool _isSelected = false;
         private PlayerData _playerData;
         private CharacterID _characterId;
         private CustomCharacter _customCharacter;
         private BaseCharacter _baseCharacter;
-        private bool _unlimitedDiamonds;
-        private bool _unlimitedErasers;
+        private SwipeUI _swipe;
 
-        public CharacterID CurrentCharacterID { get { return _characterId; } }
-        [HideInInspector] public bool UnlimitedDiamonds {
-            get
-            {
-                return _unlimitedDiamonds;
-            }
-            set
-            {
-                _unlimitedDiamonds = value;
-                PlayerPrefs.SetInt("UnlimitedDiamonds", value ? 1 : 0);
-                OnDiamondAmountChanged?.Invoke();
-            }
-        }
+        public CharacterID CurrentCharacterID => _characterId;
 
-        [HideInInspector] public bool UnlimitedErasers
-        {
-            get
-            {
-                return _unlimitedErasers;
-            }
-            set
-            {
-                _unlimitedErasers = value;
-                PlayerPrefs.SetInt("UnlimitedErasers", value ? 1 : 0);
-                OnEraserAmountChanged?.Invoke();
-            }
-        }
-
-        public event Action OnEraserAmountChanged;
-        public event Action OnDiamondAmountChanged;
+        public event Action OnUpgradeMaterialAmountChanged;
 
         public delegate void StatUpdatedHandler(StatType statType);
         public event StatUpdatedHandler OnStatUpdated;
@@ -62,17 +44,56 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         private void Awake()
         {
-            // Getting unlimited diamonds and erasers value from playerPrefs
-            _unlimitedDiamonds = PlayerPrefs.GetInt("UnlimitedDiamonds", 0) == 1;
-            _unlimitedErasers = PlayerPrefs.GetInt("UnlimitedErasers", 0) == 1;
+            _swipe = FindObjectOfType<SwipeUI>();
+            _swipe.OnCurrentPageChanged += ClosePopup;
+
+            _statsPanel.SetActive(false);
+        }
+
+        private void OnDisable()
+        {
+            ClosePopup();
+        }
+
+        private void OnDestroy()
+        {
+            _swipe.OnCurrentPageChanged -= ClosePopup;
+        }
+
+        public void OpenPopup(CharacterID characterId)
+        {
+            // Setting visibility to popup game objects
+            gameObject.SetActive(true);
+            _swipeBlocker.SetActive(true);
+
+            // Initializing variables for stats window controller functionality
+            _statsUpdated = false;
+            _characterId = characterId;
+            SetPlayerData();
+            SetCurrentCharacter();
+
+            // Setting visibility to panel game objects
+            if (_statsPanel != null) _statsPanel.SetActive(true);
+
+            if (_infoPanel != null) _infoPanel.SetActive(false);
+
+            // Hiding filter button from gallery since it shouldn't be shown TODO: needs to be refactored
+            if (_galleryView != null) _galleryView.ShowFilterButton(false);
         }
 
 
-        private void OnEnable()
+        public void ClosePopup()
         {
-            _characterId = SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow;
-            SetPlayerData();
-            SetCurrentCharacter();
+            // If stats got updated and character is currently selected, reloading character gallery so that the stats update to the selected characters
+            if (_isSelected && _statsUpdated) SignalBus.OnReloadCharacterGalleryRequestedSignal();
+
+            gameObject.SetActive(false);
+            _swipeBlocker.SetActive(false);
+
+            if (_statsPanel != null) _statsPanel.SetActive(false);
+            if (_infoPanel != null) _infoPanel.SetActive(false);
+
+            if (_galleryView != null) _galleryView.ShowFilterButton(true);
         }
 
 
@@ -87,8 +108,12 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         private void SetCurrentCharacter() // Get current custom character from player data and set it to variable
         {
+            _isSelected = false;
+
+            // Getting custom character from playerdata's CustomCharacters
             _customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
 
+            // Getting base character from storefront if character is null (locked)
             if (_customCharacter == null)
             {
                 DataStore store = Storefront.Get();
@@ -97,11 +122,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 store.GetAllBaseCharacterYield(result => allItems = result);
 
                 _baseCharacter = allItems.FirstOrDefault(c => c.Id == _characterId);
+                return;
             }
-            else
+            else // else setting base character from the _customCharacter's variable
             {
                 _baseCharacter = _customCharacter.CharacterBase;
             }
+
+            // Setting _isSelected if _customCharacter is one of the characters the player has selected. Checking also for character id for test characters 
+            _isSelected = _playerData.SelectedCharacterIds.Contains(_customCharacter.ServerID) || _playerData.SelectedTestCharacterIds.Contains((int)_customCharacter.Id);
         }
 
 
@@ -113,11 +142,9 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             SetPlayerData();
             SetCurrentCharacter();
 
-            for (int i = 0; i < transform.childCount; i++) // triggering onenable functions
-            {
-                transform.GetChild(i).gameObject.SetActive(false);
-                transform.GetChild(i).gameObject.SetActive(true);
-            }
+            // Triggering onenable functions
+            ClosePopup();
+            OpenPopup(_characterId);
         }
 
 
@@ -142,13 +169,46 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
 
         /// <summary>
+        /// Get currently displayed character's class name.
+        /// </summary>
+        /// <returns>Current character's ClassName.</returns>
+        public string GetCurrentCharacterClassName()
+        {
+            return _classReference.GetName(CustomCharacter.GetClassID(_characterId));
+        }
+
+
+        /// <summary>
         /// Get current character class alternative color from character class color reference sheet.
         /// </summary>
         /// <returns>Current character class alternative color as Color.</returns>
         public Color GetCurrentCharacterClassAlternativeColor()
         {
             CharacterClassID classID = GetCurrentCharacterClass();
-            return _classColorReference.GetAlternativeColor(classID);
+            return _classReference.GetAlternativeColor(classID);
+        }
+
+
+        /// <summary>
+        /// Get current character class color from character class color reference sheet.
+        /// </summary>
+        /// <returns>Current character class color as Color.</returns>
+        public Color GetCurrentCharacterClassColor()
+        {
+            CharacterClassID classID = GetCurrentCharacterClass();
+            return _classReference.GetColor(classID);
+        }
+
+
+        /// <summary>
+        /// Get StatInfo from Reference sheet
+        /// </summary>
+        /// <param name="statType">The StatInfo which to get</param>
+        /// <returns>Returns StatInfo object</returns>
+        public StatInfo GetStatInfo(StatType statType)
+        {
+            return _statsReference.GetStatInfo(statType);
+
         }
 
 
@@ -194,7 +254,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>Current character's description as string.</returns>
         public string GetCurrentCharacterDescription()
         {
-            return "Hahmon kuvaus";
+            var info = PlayerCharacterPrototypes.GetCharacter(((int)_characterId).ToString());
+            if (info == null)
+            {
+                return null;
+            }
+            else
+            {
+                return info.ShortDescription;
+            }
         }
 
 
@@ -248,84 +316,39 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         }
 
 
-        /// <summary>
-        /// Get player's eraser amount from player data.
-        /// </summary>
-        /// <returns>Player's eraser amount as int.</returns>
-        public int GetEraserAmount()
+        public void InvokeOnUpgradeMaterialAmountChanged()
         {
-            return _playerData.Eraser;
-        }
-
-        public void InvokeOnEraserAmountChanged()
-        {
-            OnEraserAmountChanged.Invoke();
+            OnUpgradeMaterialAmountChanged.Invoke();
         }
 
 
         /// <summary>
-        /// Try to decrease player's eraser amount by 1.
+        /// Try to decrease player's upgrade material by the amount specified.
         /// </summary>
-        /// <returns>If decreasing was successful. If true, player's erasers were decreased by 1. If false, player didn't have enough erasers.</returns>
-        private bool TryDecreaseEraser()
+        /// <param name="amount">The amount how many upgrade material will be decreased from the player.</param>
+        /// <returns>If decreasing was successful. If true, player's upgrade material was decreased by amount. If false, player didn't have enough upgrade material.</returns>
+        private bool TryDecreaseUpgradeMaterial(int amount)
         {
-            if (_playerData.Eraser > 0)
-            {
-                _playerData.Eraser--;
-                OnEraserAmountChanged.Invoke();
-                return true;
-            }
-            else
-            {
-                PopupSignalBus.OnChangePopupInfoSignal("Ei tarpeeksi pyyhekumeja.");
-                return false;
-            }
-        }
-
-
-        /// <summary>
-        /// Get player's diamond amount from player data.
-        /// </summary>
-        /// <returns>Player's diamond amount as int.</returns>
-        public int GetDiamondAmount()
-        {
-            return _playerData.DiamondSpeed; // using DiamondSpeed as a placeholder
-        }
-
-
-        public void InvokeOnDiamondAmountChanged()
-        {
-            OnDiamondAmountChanged.Invoke();
-        }
-
-
-        /// <summary>
-        /// Try to decrease player's diamonds by the amount specified.
-        /// </summary>
-        /// <param name="amount">The amount how many diamonds will be decreased from the player.</param>
-        /// <returns>If decreasing was successful. If true, player's diamonds were decreased by amount. If false, player didn't have enough diamonds.</returns>
-        private bool TryDecreaseDiamonds(int amount)
-        {
-            if (_playerData.DiamondSpeed >= amount) // using DiamondSpeed as a placeholder
+            if (CheckIfEnoughUpgradeMaterial(amount)) 
             {
                 _playerData.DiamondSpeed -= amount;
-                OnDiamondAmountChanged.Invoke();
+                OnUpgradeMaterialAmountChanged.Invoke();
                 return true;
             }
             else
             {
-                PopupSignalBus.OnChangePopupInfoSignal("Ei tarpeeksi timantteja.");
+                PopupSignalBus.OnChangePopupInfoSignal("Ei tarpeeksi kyyneli‰.");
                 return false;
             }
         }
 
 
         /// <summary>
-        /// Get how many diamonds it costs to upgrade currently displayed character's stat according to the stat type.
+        /// Get how many upgrade material it costs to upgrade currently displayed character's stat according to the stat type.
         /// </summary>
-        /// <param name="statType">The stat type which diamond cost will be checked.</param>
-        /// <returns>Stat diamond upgrade cost as int.</returns>
-        public int GetDiamondCost(StatType statType)
+        /// <param name="statType">The stat type which upgrade material cost will be checked.</param>
+        /// <returns>Stat upgrade material cost as int.</returns>
+        public int GetUpgradeMaterialCost(StatType statType)
         {
             if (_customCharacter == null) return 0;
 
@@ -334,10 +357,28 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
 
         /// <summary>
-        /// Get currently displayed character's stat value according to the stat type.
+        /// Checks if player has enough upgrade material.
+        /// </summary>
+        /// <param name="cost">Upgrade material cost to check</param>
+        /// <returns>True if the player does, false if doesn't</returns>
+        public bool CheckIfEnoughUpgradeMaterial(int cost) 
+        {
+            if (_playerData.DiamondSpeed >= cost || SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials) // using DiamondSpeed as a placeholder
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        /// <summary>
+        /// Get currently displayed character's stat level according to the stat type.
         /// </summary>
         /// <param name="statType">The stat type which to get.</param>
-        /// <returns>Stat value as int.</returns>
+        /// <returns>Stat level as int.</returns>
         public int GetStat(StatType statType)
         {
             if (_customCharacter == null) return GetBaseStat(statType);
@@ -365,7 +406,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// Get currently displayed character's base stat without upgrades according to the stat type.
         /// </summary>
         /// <param name="statType">The stat type which to get.</param>
-        /// <returns>Base stat value as int.</returns>
+        /// <returns>Base stat level as int.</returns>
         public int GetBaseStat(StatType statType)
         {
             switch (statType)
@@ -388,6 +429,55 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
 
         /// <summary>
+        /// Get currently displayed character's stat value according to the stat type.
+        /// </summary>
+        /// <param name="statType">The stat type which value to get.</param>
+        /// <returns>Stat value as int.</returns>
+        public int GetStatValue(StatType statType)
+        {
+            return (int)BaseCharacter.GetStatValueFP(statType, GetStat(statType));
+        }
+
+
+        /// <summary>
+        /// Get stat value according to the stat type and level.
+        /// </summary>
+        /// <param name="statType">The stat type which value to get.</param>
+        /// <param name="level">The stat's level.</param>
+        /// <returns>Stat value as int.</returns>
+        public int GetStatValue(StatType statType, int level)
+        {
+            return (int)BaseCharacter.GetStatValueFP(statType, level);
+        }
+
+
+        /// <summary>
+        /// Get stat's strength.
+        /// </summary>
+        /// <param name="statType">The stat type which strength to get./param>
+        /// <returns>ValueStrength enum value.</returns>
+        public ValueStrength GetStatStrength(StatType statType)
+        {
+            switch (statType)
+            {
+                case StatType.Speed:
+                    return _baseCharacter.SpeedStrength;
+                case StatType.Attack:
+                    return _baseCharacter.AttackStrength;
+                case StatType.Hp:
+                    return _baseCharacter.HpStrength;
+                case StatType.CharacterSize:
+                    return _baseCharacter.CharacterSizeStrength;
+                case StatType.Defence:
+                    return _baseCharacter.DefenceStrength;
+                case StatType.None:
+                default:
+                    return ValueStrength.None;
+            }
+        }
+
+
+        /// <summary>
         /// Check if stat can be increased. (all stats combined is less than the combined level cap, stat is less than individual stat level cap, and player has increased stats less times than the maximum allowed amount)
         /// </summary>
         /// <param name="statType">The stat type to check.</param>
@@ -405,13 +495,9 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 {
                     PopupSignalBus.OnChangePopupInfoSignal($"Et voi p‰ivitt‰‰ taitoa, maksimitaso on {CustomCharacter.STATMAXLEVEL}.");
                 }
-                else if (!CheckMaxPlayerIncreases())
-                {
-                    PopupSignalBus.OnChangePopupInfoSignal($"Et voi p‰ivitt‰‰ taitoja enemm‰n kuin {CustomCharacter.STATMAXPLAYERINCREASE} kertaa."); // when every characters' combined base stats are 40 remove this
-                }
             }
 
-            return statType != StatType.None && CheckCombinedLevelCap() && CheckStatLevelCap(statType) && CheckMaxPlayerIncreases();
+            return statType != StatType.None && CheckCombinedLevelCap() && CheckStatLevelCap(statType);
         }
 
 
@@ -428,7 +514,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (CanIncreaseStat(statType, true))
             {
-                bool diamondsDecreased = UnlimitedDiamonds || TryDecreaseDiamonds(GetDiamondCost(statType));
+                bool diamondsDecreased = SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials || TryDecreaseUpgradeMaterial(GetUpgradeMaterialCost(statType));
 
                 if (diamondsDecreased)
                 {
@@ -456,6 +542,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (success)
             {
+                _statsUpdated = true;
                 _playerData.UpdateCustomCharacter(_customCharacter);
                 OnStatUpdated.Invoke(statType);
             }
@@ -494,34 +581,30 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (CanDecreaseStat(statType, true))
             {
-                bool eraserDecreased = UnlimitedErasers || TryDecreaseEraser();
-
-                if (eraserDecreased)
+                switch (statType)
                 {
-                    switch (statType)
-                    {
-                        case StatType.Speed:
-                            _customCharacter.Speed--;
-                            break;
-                        case StatType.Attack:
-                            _customCharacter.Attack--;
-                            break;
-                        case StatType.Hp:
-                            _customCharacter.Hp--;
-                            break;
-                        case StatType.CharacterSize:
-                            _customCharacter.CharacterSize--;
-                            break;
-                        case StatType.Defence:
-                            _customCharacter.Defence--;
-                            break;
-                    }
-                    success = true;
+                    case StatType.Speed:
+                        _customCharacter.Speed--;
+                        break;
+                    case StatType.Attack:
+                        _customCharacter.Attack--;
+                        break;
+                    case StatType.Hp:
+                        _customCharacter.Hp--;
+                        break;
+                    case StatType.CharacterSize:
+                        _customCharacter.CharacterSize--;
+                        break;
+                    case StatType.Defence:
+                        _customCharacter.Defence--;
+                        break;
                 }
+                success = true;
             }
 
             if (success)
             {
+                _statsUpdated = true;
                 _playerData.UpdateCustomCharacter(_customCharacter);
                 OnStatUpdated.Invoke(statType);
             }
@@ -569,20 +652,6 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             }
 
             return allowedToIncrease;
-        }
-
-
-        // Check if player has increased stats for max allowed player increases
-        private bool CheckMaxPlayerIncreases()
-        {
-            if (GetStatsCombined() - GetBaseStatsCombined() < CustomCharacter.STATMAXPLAYERINCREASE)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
     }
 }

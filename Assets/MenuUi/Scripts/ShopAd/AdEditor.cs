@@ -1,83 +1,132 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.IO.IsolatedStorage;
+using Altzone.Scripts.ReferenceSheets;
+using Altzone.Scripts.Model.Poco.Clan;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts.Store;
 
-public class AdEditor : MonoBehaviour
+public class AdEditor : AltMonoBehaviour
 {
+    [SerializeField] private TextMeshProUGUI clanNameText;
+
     [SerializeField] private Image _backgroundImage;
     [SerializeField] private Image _effectImage;
     [SerializeField] private Image _itemImage;
-    [SerializeField] private TMP_Text _titleText;
     [SerializeField] private Image _borderImage;
+    [SerializeField] private AdPosterHandler _adGraphicHandler;
 
+    [SerializeField] private Color orangeColor;
+    [SerializeField] private Color yellowColor;
+    [SerializeField] private Color lightGreenColor;
+    [SerializeField] private Color lightBlueColor;
     [SerializeField] private Color blueColor;
     [SerializeField] private Color purpleColor;
-    [SerializeField] private Color greenColor;
-    [SerializeField] private Color orangeColor;
-    [SerializeField] private Color whiteColor;
+    [SerializeField] private Color darkPinkColor;
+    [SerializeField] private Color redColor;
 
-    public List<Sprite> borderChoices;
-    public List<Sprite> itemChoices;
-    private int borderCounter;
-    private int itemCounter;
-    private int currentBorder = 0;
-    private int currentItem = 0;
+    [SerializeField] private AdDecorationReference _borderReference;
+    [Header("Frame Selectors")]
+    [SerializeField] private Transform _borderSelectionContent;
+    [SerializeField] private GameObject _borderFramePrefab;
+    [Header("Colour Selectors")]
+    [SerializeField] private Transform _backgroundColourSelectorContent;
+    [SerializeField] private GameObject _backgroundColourSelectorPrefab;
 
-    public void ChangeBlueColor()
+    private AdStoreObject _adData;
+    private string _posterName = null;
+    private List<HeartPieceData> _heartPieceData = new();
+
+
+    void Start()    
     {
-        _backgroundImage.color = blueColor;
-    }
-    public void ChangePurpleColor()
-    {
-        _backgroundImage.color = purpleColor;
-    }
-    public void ChangeGreenColor()
-    {
-        _backgroundImage.color = greenColor;
+        InitializeAd();
     }
 
-    public void ChangetOrangeColor()
+    private void InitializeAd()
     {
-        _backgroundImage.color = orangeColor;
-    }
-    public void ChangetWhiteColor()
-    {
-        _backgroundImage.color = whiteColor;
-    }
-    public void NextItem()
-    {
-        itemCounter++;
-        if (itemCounter == 1)
+        StartCoroutine(GetClanData(data =>
         {
-
-            currentItem++;
-            itemCounter = 0;
-            if (currentItem >= itemChoices.Count)
+            if (data != null)
             {
-                currentBorder = 0;
+                if (data.AdData != null) _adData = data.AdData;
+                else _adData = new(null, null);
+                _posterName = data.Name;
+                _heartPieceData = data.ClanHeartPieces;
             }
-            _itemImage.sprite = itemChoices[currentItem];
+            else
+            {
+                _adData = new(null, null);
+                _posterName = "Et ole klaanissa";
+            }
+            _adGraphicHandler.SetAdPoster(_adData, _posterName, _heartPieceData);
+        }));
+
+
+        List<AdBorderFrameObject> frameList = _borderReference.FrameList;
+
+        foreach (AdBorderFrameObject frame in frameList)
+        {
+            GameObject frameObject = Instantiate(_borderFramePrefab, _borderSelectionContent);
+            frameObject.GetComponent<Image>().sprite = frame.Image;
+            float objectHeight = _borderSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
+            frameObject.GetComponent<RectTransform>().sizeDelta = new(objectHeight * 0.625f, objectHeight);
+            frameObject.GetComponent<Button>().onClick.AddListener(() => ChangeBorder(frame));
+        }
+
+        List<Color> colorList = _borderReference.ColourList;
+
+        foreach (Color colour in colorList)
+        {
+            GameObject colourObject = Instantiate(_backgroundColourSelectorPrefab, _backgroundColourSelectorContent);
+            colourObject.GetComponent<Image>().color = colour;
+            float objectWidth = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.width;
+            colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth * 0.4f);
+            colourObject.GetComponent<Button>().onClick.AddListener(() => ChangeColor(colour));
+        }
+        _backgroundColourSelectorContent.GetComponent<VerticalLayoutGroup>().spacing = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.width * 0.1f;
+
+        StartCoroutine(SetFrameSelectionSize());
+    }
+
+    private IEnumerator SetFrameSelectionSize()
+    {
+        yield return new WaitForEndOfFrame();
+        foreach (Transform frame in _borderSelectionContent)
+        {
+            float objectHeight = _borderSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
+            frame.GetComponent<RectTransform>().sizeDelta = new(objectHeight * 0.625f, objectHeight);
         }
     }
-    public void NextBorder()
-    {
-        borderCounter++;
-        if (borderCounter == 1)
-        {
 
-            currentBorder++;
-            borderCounter = 0;
-            if (currentBorder >= borderChoices.Count)
-            {
-                currentBorder = 0;
-            }
-            _borderImage.sprite = borderChoices[currentBorder];
-        }
+    private void SaveAdData()
+    {
+        StartCoroutine(GetClanData(data =>
+        {
+            data.AdData = _adData;
+            StartCoroutine(SaveClanData(clanData => data = clanData, data));
+        }));
     }
 
+    void BringToFront(Transform folder)
+    {
+        folder.SetAsLastSibling();
+    }
+
+    public void ChangeColor(Color colour)
+    {
+        _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
+        SaveAdData();
+    }
+
+    public void ChangeBorder(AdBorderFrameObject frame)
+    {
+        _adData.BorderFrame = frame.Name;
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
+        SaveAdData();
+    }
 
     public void CloseEditor()
     {

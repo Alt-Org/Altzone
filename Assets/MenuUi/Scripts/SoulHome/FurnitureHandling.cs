@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Debug = Prg.Debug;
 
 namespace MenuUI.Scripts.SoulHome
@@ -35,6 +36,8 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private bool _spriteCanBeFlipped = true;
         private bool _isRotated = false;
+        [SerializeField]
+        private SortingGroup _sortingGroup;
 
         private Furniture _furniture;
         [SerializeField]
@@ -46,8 +49,6 @@ namespace MenuUI.Scripts.SoulHome
         private Vector2 _position = Vector2.zero;
         private FurnitureSlot _slot;
         private FurnitureSlot _tempSlot;
-        [SerializeField]
-        private bool _isPlaceHolder = false;
 
         public Furniture Furniture { get => _furniture; set => _furniture = value; }
         public Vector2 Position { get => _position; set => _position = value; }
@@ -76,7 +77,6 @@ namespace MenuUI.Scripts.SoulHome
         public GameObject TrayFurnitureObject { get => _trayFurnitureObject; set { if(!Application.isPlaying) _trayFurnitureObject = value; }}
         public string Name { get => _name; set { if (!Application.isPlaying) _name = value; } }
         public bool IsRotated { get => _isRotated;}
-        public bool IsPlaceHolder { get => _isPlaceHolder;}
         public Direction TempSpriteDirection { get => _tempSpriteDirection;}
         public Sprite FurnitureSpriteFront { get => _furnitureSpriteFront; set { if (!Application.isPlaying) _furnitureSpriteFront = value; } }
         public Sprite FurnitureSpriteRight { get => _furnitureSpriteRight; set { if (!Application.isPlaying) _furnitureSpriteRight = value; } }
@@ -151,7 +151,7 @@ namespace MenuUI.Scripts.SoulHome
             else furnitureSize = Furniture.Size;
 
             float width;
-            if (furnitureSize is FurnitureSize.OneXOne or FurnitureSize.TwoXOne)
+            if (furnitureSize is FurnitureSize.OneXOne or FurnitureSize.TwoXOne or FurnitureSize.ThreeXOne or FurnitureSize.FourXOne)
             {
                 //if(_tempSlot != null)width = _tempSlot.width;
                 /*else*/ width = transform.parent.GetComponent<FurnitureSlot>().width;
@@ -172,13 +172,13 @@ namespace MenuUI.Scripts.SoulHome
                 //if (_tempSlot != null) width = _tempSlot.width * 4;
                 /*else*/ width = transform.parent.GetComponent<FurnitureSlot>().width * 4;
             }
-            else if (furnitureSize is FurnitureSize.TwoXFive or FurnitureSize.FiveXFive)
+            else if (furnitureSize is FurnitureSize.TwoXFive or FurnitureSize.ThreeXFive or FurnitureSize.FiveXFive or FurnitureSize.SixXFive)
             {
                 //if (_tempSlot != null) width = _tempSlot.width * 4;
                 /*else*/
                 width = transform.parent.GetComponent<FurnitureSlot>().width * 5;
             }
-            else if (furnitureSize is FurnitureSize.OneXSix or FurnitureSize.TwoXSix or FurnitureSize.ThreeXSix)
+            else if (furnitureSize is FurnitureSize.OneXSix or FurnitureSize.TwoXSix or FurnitureSize.ThreeXSix or FurnitureSize.FiveXSix)
             {
                 //if (_tempSlot != null) width = _tempSlot.width * 4;
                 /*else*/
@@ -237,23 +237,29 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (Furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorByWall)
             {
-                transform.localScale /= 1.0f + (slot.maxDepthScale / 100f) * ((GetComponent<SpriteRenderer>().sortingOrder < 101 ? 1 : (GetComponent<SpriteRenderer>().sortingOrder - 3 - 1000* (GetComponent<SpriteRenderer>().sortingOrder/1000)) / 100 - 1) / (slot.maxRow - 1f));
-                GetComponent<SpriteRenderer>().sortingOrder = 3 + (row + 1) * 100 + 1000 * (slot.roomId < 0 ? 0 : slot.roomId);
+                transform.localScale /= 1.0f + (slot.maxDepthScale / 100f) * ((_sortingGroup.sortingOrder < 101 ? 1 : (_sortingGroup.sortingOrder - 3) / 100 - 1) / (slot.maxRow - 1f));
+                _sortingGroup.sortingOrder = 3 + (row + 1) * 100;
                 transform.localScale *= (1.0f + (slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));
             }
             else if (Furniture.Place is FurniturePlacement.FloorNonblock)
             {
-                transform.localScale /= 1.0f + (slot.maxDepthScale / 100f) * ((GetComponent<SpriteRenderer>().sortingOrder < 12 ? 1 : (GetComponent<SpriteRenderer>().sortingOrder - 1 - 1000 * (GetComponent<SpriteRenderer>().sortingOrder / 1000)) / 10 - 2) / (slot.maxRow - 1f));
-                GetComponent<SpriteRenderer>().sortingOrder = 2+ (row + 2) * 10 + 1000 * (slot.roomId < 0 ? 0 : slot.roomId);
+                transform.localScale /= 1.0f + (slot.maxDepthScale / 100f) * ((_sortingGroup.sortingOrder < 12 ? 1 : (_sortingGroup.sortingOrder - 1) / 10 - 2) / (slot.maxRow - 1f));
+                _sortingGroup.sortingOrder = 2+ (row + 2) * 10;
                 transform.localScale *= (1.0f + (slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));
             }
             else if (Furniture.Place is FurniturePlacement.Wall)
             {
                 transform.localScale = 2.5f*Vector3.one;
                 if(grid is FurnitureGrid.BackWall)
-                    GetComponent<SpriteRenderer>().sortingOrder = 10 - (row+1) + 1000 * (slot.roomId < 0 ? 0 : slot.roomId);
+                    _sortingGroup.sortingOrder = 10 - (row+1);
                 if (grid is FurnitureGrid.RightWall or FurnitureGrid.LeftWall)
-                    GetComponent<SpriteRenderer>().sortingOrder = 1 + (row + 2) * 10 + 1000 * (slot.roomId < 0 ? 0 : slot.roomId);
+                    _sortingGroup.sortingOrder = 1 + (row + 2) * 10;
+                transform.localScale *= (1.0f + (slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));
+            }
+            else if (Furniture.Place is FurniturePlacement.Ceiling)
+            {
+                transform.localScale /= 1.0f + (slot.maxDepthScale / 100f) * ((_sortingGroup.sortingOrder < 101 ? 1 : (_sortingGroup.sortingOrder - 4) / 100 - 1) / (slot.maxRow - 1f));
+                _sortingGroup.sortingOrder = 4 + (row + 1) * 100;
                 transform.localScale *= (1.0f + (slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));
             }
             //Debug.Log("Scale 2: " +(slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));

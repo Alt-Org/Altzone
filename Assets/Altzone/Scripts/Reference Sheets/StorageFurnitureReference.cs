@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using System.Linq;
+using UnityEditor;
 
 namespace Altzone.Scripts.ReferenceSheets
 {
@@ -13,6 +14,23 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private List<FurnitureSetInfo> _info;
 
         public List<FurnitureSetInfo> Info => _info; // Public accessor for _info
+
+        private static StorageFurnitureReference _instance;
+        private static bool _hasInstance;
+
+        public static StorageFurnitureReference Instance
+        {
+            get
+            {
+                if (!_hasInstance)
+                {
+                    _instance = Resources.Load<StorageFurnitureReference>(nameof(StorageFurnitureReference));
+                    _hasInstance = _instance != null;
+                }
+                return _instance;
+            }
+        }
+
 
         public FurnitureInfo GetFurnitureInfo(string name)
         {
@@ -53,7 +71,7 @@ namespace Altzone.Scripts.ReferenceSheets
             return (null, null);
         }
 
-        public List<GameFurniture> GetGameFurniture()
+        public List<GameFurniture> GetAllGameFurniture()
         {
             List<GameFurniture> furnitures = new();
             int i = 1;
@@ -70,6 +88,22 @@ namespace Altzone.Scripts.ReferenceSheets
             }
             return furnitures;
         }
+
+        public GameFurniture GetGameFurniture(string name)
+        {
+            (FurnitureInfoObject data, FurnitureSetInfo setData) = GetFurnitureDataSet(name);
+            if (data == null || setData == null)
+            {
+                Debug.LogWarning($"No Furniture can be found with name: {name}");
+                return null;
+            }
+
+            FurnitureInfo furnitureInfo = new(data, setData);
+            GameFurniture furniture = new("0", data.BaseFurniture, furnitureInfo);
+
+            return furniture;
+        }
+
         public bool AddFurniture(FurnitureSetInfo setInfo)
         {
             if (Application.isPlaying)
@@ -94,6 +128,11 @@ namespace Altzone.Scripts.ReferenceSheets
                     {
                         localSet.list.Add(furnitureInfo);
                         added = true;
+#if UNITY_EDITOR
+                        AssetDatabase.Refresh();
+                        EditorUtility.SetDirty(this);
+                        AssetDatabase.SaveAssets();
+#endif
                     }
                     else
                     {
@@ -109,6 +148,7 @@ namespace Altzone.Scripts.ReferenceSheets
     {
         public Sprite Image;
         public Sprite PosterImage;
+        public Sprite RibbonImage;
         public string VisibleName;
         public string SetName;
         public string ArtistName;
@@ -119,6 +159,7 @@ namespace Altzone.Scripts.ReferenceSheets
         {
             Image = data.Image;
             PosterImage = data.PosterImage;
+            RibbonImage = data.RibbonImage;
             VisibleName = data.VisibleName;
             SetName = setData.SetName;
             ArtistName = setData.ArtistName;
@@ -133,6 +174,7 @@ namespace Altzone.Scripts.ReferenceSheets
         public string Name;
         public Sprite Image;
         public Sprite PosterImage;
+        public Sprite RibbonImage;
         public string VisibleName;
         public string ArtisticDescription;
         public string DiagnoseNumber;

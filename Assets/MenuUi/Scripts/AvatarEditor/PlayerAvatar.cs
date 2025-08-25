@@ -8,39 +8,41 @@ namespace MenuUi.Scripts.AvatarEditor
     {
         private string _characterName;
         private List<string> _features;
-        private List<string> _colors;
+        private string _color;
         private Vector2 _scale;
 
         public PlayerAvatar(AvatarDefaultReference.AvatarDefaultPartInfo featureIds)
         {
             _features = new List<string>();
-            _features.Add(featureIds.HairId);
-            _features.Add(featureIds.EyesId);
-            _features.Add(featureIds.NoseId);
-            _features.Add(featureIds.MouthId);
-            _features.Add(featureIds.BodyId);
-            _features.Add(featureIds.HandsId);
-            _features.Add(featureIds.FeetId);
+            _features.Add(!string.IsNullOrWhiteSpace(featureIds.HairId) ? featureIds.HairId : "0");
+            _features.Add(!string.IsNullOrWhiteSpace(featureIds.EyesId) ? featureIds.EyesId : "0");
+            _features.Add(!string.IsNullOrWhiteSpace(featureIds.NoseId) ? featureIds.NoseId : "0");
+            _features.Add(!string.IsNullOrWhiteSpace(featureIds.MouthId) ? featureIds.MouthId : "0");
+            _features.Add(!string.IsNullOrWhiteSpace(featureIds.BodyId) ? featureIds.BodyId : "0");
+            _features.Add(!string.IsNullOrWhiteSpace(featureIds.HandsId) ? featureIds.HandsId : "0");
+            _features.Add(!string.IsNullOrWhiteSpace(featureIds.FeetId) ? featureIds.FeetId : "0");
 
             _characterName = "";
-            _colors = new List<string>();
+            _color = new string("#ffffff");
             _scale = Vector2.one;
         }
 
-        public PlayerAvatar(string name, List<string> featuresIds, List<string> colors, Vector2 scale)
+        public PlayerAvatar(string name, List<string> featuresIds, string color, Vector2 scale)
         {
             _characterName = name;
             _features = featuresIds;
-            _colors = colors;
+            _color = color;
             _scale = scale;
         }
 
         public PlayerAvatar(AvatarData data)
         {
+            //Debug.LogError(data == null);
+            //Debug.LogError(data.Name == null);
             _characterName = (string)data.Name.Clone();
             _features = new(data.FeatureIds);
-            _colors = new(data.Colors);
-            _scale = new(data.Scale.x, data.Scale.y);
+            _color = new(data.Color);
+            _scale = new(data.ScaleX, data.ScaleY);
         }
 
         public string Name
@@ -52,9 +54,9 @@ namespace MenuUi.Scripts.AvatarEditor
             get => _features;
             set => _features = value;
         }
-        public List<string> Colors{
-            get => _colors;
-            set => _colors = value;
+        public string Color{
+            get => _color;
+            set => _color = value;
         }
         public Vector2 Scale{
             get => _scale;

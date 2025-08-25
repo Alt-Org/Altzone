@@ -6,7 +6,8 @@ using TMPro;
 using MenuUi.Scripts.Window;
 using UnityEngine.UI;
 using Altzone.Scripts.GA;
-using MenuUi.Scripts.Audio;
+using Altzone.Scripts.Audio;
+using Altzone.Scripts.ReferenceSheets;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -35,7 +36,13 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private Button _editButton;
         [SerializeField]
+        private TextMeshProUGUI _editButtonText;
+        [SerializeField]
         private GameObject _editTray;
+        [SerializeField]
+        private JukeBoxSoulhomeHandler _jukeBoxPopup;
+        [SerializeField]
+        private Button _openJukeBox;
         [SerializeField]
         private TextMeshProUGUI _musicName;
         [SerializeField]
@@ -60,31 +67,26 @@ namespace MenuUI.Scripts.SoulHome
             }
             EditModeTrayResize();
             _audioManager = AudioManager.Instance;
+            _editButton.onClick.AddListener(()=>EditModeToggle());
+            _openJukeBox.onClick.AddListener(()=> _jukeBoxPopup.ToggleJukeboxScreen(true));
         }
 
         public void OnEnable()
         {
-            //if (_infoPopup != null && _infoPopup.gameObject.activeSelf == true) _infoPopup.gameObject.SetActive(false);
-            GameObject[] root = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
-            foreach (GameObject rootObject in root)
-            {
-                if (rootObject.name == "AudioManager")
-                    rootObject.GetComponent<MainMenuAudioManager>()?.StopMusic();
-            }
-            _musicName.text = AudioManager.Instance?.PlayMusic(MusicSection.SoulHome);
+            if (JukeboxManager.Instance.CurrentMusicTrack != null)
+                _jukeBoxPopup.PlayTrack();
+            else
+                _musicName.text = AudioManager.Instance?.PlayMusic("Soulhome", "");
+
             EditModeTrayResize();
             if (GameAnalyticsManager.Instance != null) GameAnalyticsManager.Instance.OpenSoulHome();
+            JukeBoxSoulhomeHandler.OnChangeJukeBoxSong += SetSongName;
         }
 
         public void OnDisable()
         {
-            GameObject[] root = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
-            foreach (GameObject rootObject in root)
-            {
-                if (rootObject.name == "AudioManager")
-                    rootObject.GetComponent<MainMenuAudioManager>()?.PlayMusic();
-            }
-            AudioManager.Instance?.StopMusic();
+            _jukeBoxPopup.ToggleJukeboxScreen(false);
+            JukeBoxSoulhomeHandler.OnChangeJukeBoxSong -= SetSongName;
         }
 
         public void SetRoomName(GameObject room)
@@ -181,12 +183,14 @@ namespace MenuUI.Scripts.SoulHome
                 _editButton.interactable = true;
                 _editTray.GetComponent<RectTransform>().pivot = new(0, 0.5f);
                 _editTray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                _editButtonText.text = "Avaa\nMuokkaustila";
             }
             else
             {
-                _editButton.interactable = false;
-                _editTray.GetComponent<RectTransform>().pivot = new(1, 0.5f);
-                _editTray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                //_editButton.interactable = false;
+                //_editTray.GetComponent<RectTransform>().pivot = new(1, 0.5f);
+                //_editTray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                _editButtonText.text = "Sulje\nMuokkaustila";
             }
         }
 
@@ -225,8 +229,8 @@ namespace MenuUI.Scripts.SoulHome
                 else _mainScreen.ResetChanges();
                 CloseConfirmPopup(PopupType.EditClose);
                 _soulHomeTower.ToggleEdit();
-                if(save) _audioManager.PlaySfxAudio("SaveChanges");
-                else _audioManager.PlaySfxAudio("RevertChanges");
+                if(save) _audioManager.PlaySfxAudio("Soulhome", "SaveChanges");
+                else _audioManager.PlaySfxAudio("Soulhome", "RevertChanges");
             }
             else
             {
@@ -245,5 +249,18 @@ namespace MenuUI.Scripts.SoulHome
             SignalBus.OnChangePopupInfoSignal(popupText);
         }
 
+        private void SetSongName(MusicTrack song)
+        {
+            _musicName.text = song != null ? song.Name : "Oletus";
+        }
+
+        public bool CheckInteractableStatus()
+        {
+            if (_exitPending) return false;
+            if (_confirmPopupOpen) return false;
+            if (_jukeBoxPopup.JukeBoxOpen) return false;
+
+            return true;
+        }
     }
 }

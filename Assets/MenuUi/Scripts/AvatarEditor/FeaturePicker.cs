@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.Model.Poco.Game;
 using TMPro;
+using Assets.Altzone.Scripts.Model.Poco.Player;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
@@ -24,6 +25,9 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private List<Button> _categoryButtons;
         [SerializeField] private List<Button> _pageButtons;
         [SerializeField] private Animator _animator;
+
+        [SerializeField] private Image _pageTurnImage;
+
         private FeatureSlot _currentlySelectedCategory;
         private List<string> _selectedFeatures = new()
         {
@@ -53,6 +57,9 @@ namespace MenuUi.Scripts.AvatarEditor
         private readonly string _handsCategoryId = "32";
         private readonly string _feetCategoryId = "33";
 
+        private Coroutine _pageForwardCoroutine;
+        private Coroutine _pageBackwardCoroutine;
+
         public void Start()
         {
             _swipeArea = GetComponent<RectTransform>();
@@ -72,6 +79,14 @@ namespace MenuUi.Scripts.AvatarEditor
         public void OnDisable()
         {
             SwipeHandler.OnSwipe -= OnFeaturePickerSwipe;
+
+            if (_pageForwardCoroutine != null)
+                StopCoroutine(_pageForwardCoroutine);
+
+            if (_pageBackwardCoroutine != null)
+                StopCoroutine(_pageBackwardCoroutine);
+
+            _pageTurnImage.enabled = false;
         }
 
         private void OnFeaturePickerSwipe(SwipeDirection direction, Vector2 swipeStartPoint, Vector2 swipeEndPoint)
@@ -103,7 +118,7 @@ namespace MenuUi.Scripts.AvatarEditor
             if (_currentPageNumber < _pageCount - 1 && _animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
             {
                 _currentPageNumber++;
-                StartCoroutine(PlayNextPageAnimation());      
+                _pageForwardCoroutine = StartCoroutine(PlayNextPageAnimation());      
             }
         }
 
@@ -125,7 +140,7 @@ namespace MenuUi.Scripts.AvatarEditor
             if (_currentPageNumber > 0 && _animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
             {
                 _currentPageNumber--;
-                StartCoroutine(PlayPreviousPageAnimation());
+                _pageBackwardCoroutine = StartCoroutine(PlayPreviousPageAnimation());
             }
         }
 
@@ -166,6 +181,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void SetFeatureToNone(int slot)
         {
+            _selectedFeatures[slot] = "0";
             _avatarEditorCharacterHandle.SetMainCharacterImage((FeatureSlot)slot, null);
 
             if (_characterClassID == CharacterClassID.Confluent)
@@ -219,7 +235,7 @@ namespace MenuUi.Scripts.AvatarEditor
             if (((_currentCategoryFeatureDataPlaceholder.Count + 1) % 8) != 0)
                 _pageCount++;
 
-            StartCoroutine(PlayNextPageAnimation());
+            _pageForwardCoroutine = StartCoroutine(PlayNextPageAnimation());
             SetCategoryNameText(_currentlySelectedCategory);
         }
 
@@ -263,6 +279,42 @@ namespace MenuUi.Scripts.AvatarEditor
             return _selectedFeatures;
         }
 
+        public List<Sprite> GetCurrentlySelectedFeaturesAsSprites()
+        {
+            List<Sprite> sprites = new List<Sprite>();
+
+            for (int i = 0; i < _selectedFeatures.Count; i++)
+            {
+                Sprite sprite = GetCurrentlySelectedFeatureSprite((AvatarPiece)i);
+                sprites.Add(sprite);
+
+            }
+
+            return sprites;
+        }
+
+        public Sprite GetCurrentlySelectedFeatureSprite(AvatarPiece pieceSlot)
+        {
+            
+                List<AvatarPartsReference.AvatarPartInfo> currentCategoryFeatureDataPlaceholder = GetSpritesByCategory((FeatureSlot)pieceSlot);
+
+                if (currentCategoryFeatureDataPlaceholder == null)
+                    return (null);
+
+                if (_selectedFeatures[(int)pieceSlot] != null && _selectedFeatures[(int)pieceSlot] != "")
+                {
+                    AvatarPartsReference.AvatarPartInfo partData =
+                        currentCategoryFeatureDataPlaceholder.Find(part => part.Id == _selectedFeatures[(int)pieceSlot]);
+
+                    if (partData != null)
+                    {
+                        return partData.AvatarImage;
+                    }
+                }
+
+            return null;
+        }
+
         public void SetCharacterClassID(CharacterClassID id)
         {
             _characterClassID = id;
@@ -289,6 +341,10 @@ namespace MenuUi.Scripts.AvatarEditor
 
                     if (partData != null)
                         SetFeature(partData, i);
+                    else
+                    {
+                        _selectedFeatures[i] = "0";
+                    }
                 }
             }
         }

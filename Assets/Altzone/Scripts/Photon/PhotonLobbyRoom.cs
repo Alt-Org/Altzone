@@ -26,6 +26,7 @@ namespace Altzone.Scripts.Lobby.Wrappers
         public const string TeamWinKey = PhotonBattleRoom.TeamWinKey;
         public const string TeamBlueScoreKey = PhotonBattleRoom.TeamBlueScoreKey;
         public const string TeamRedScoreKey = PhotonBattleRoom.TeamRedScoreKey;
+        public const string RoomNameKey = PhotonBattleRoom.RoomNameKey;
 
         // Team positions in world coordinates (game arena when camera isn't rotated)
         //  Beta team number 2
@@ -55,7 +56,8 @@ namespace Altzone.Scripts.Lobby.Wrappers
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerPos(LobbyPlayer player) => s_photonBattleRoom.GetPlayerPos(player.GetPlayer(player.ActorNumber));
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsValidPlayerPos(int playerPos) => s_photonBattleRoom.IsValidPlayerPos(playerPos);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsPlayerPosAvailable(LobbyPlayer player) => s_photonBattleRoom.IsPlayerPosAvailable(player.GetPlayer(player.ActorNumber));
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetFirstFreePlayerPos(LobbyPlayer player, int wantedPlayerPos = PhotonBattleRoom.PlayerPosition1) => s_photonBattleRoom.GetFirstFreePlayerPos(player.GetPlayer(player.ActorNumber), wantedPlayerPos);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetFirstFreePlayerPos(LobbyPlayer player = null, int wantedPlayerPos = PhotonBattleRoom.PlayerPosition1) => s_photonBattleRoom.GetFirstFreePlayerPos(player?.GetPlayer(player.ActorNumber), wantedPlayerPos);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool VerifyPlayerPositions() => s_photonBattleRoom.VerifyPlayerPositions();
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetTeamNumber(int playerPos) => s_photonBattleRoom.GetTeamNumber(playerPos);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsRealPlayer(LobbyPlayer player) => s_photonBattleRoom.IsRealPlayer(player.GetPlayer(player.ActorNumber));
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerCountForRoom() => s_photonBattleRoom.GetPlayerCountForRoom();

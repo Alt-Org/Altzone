@@ -1,14 +1,12 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Altzone.Scripts.Voting;
 using UnityEngine.UIElements;
 using TMPro;
 using UnityEngine.UI;
 using System;
-using System.Runtime.CompilerServices;
 
-public class PollObject : MonoBehaviour
+public class PollObject : MonoBehaviour // Works as the object used to represent polls
 {
     private string pollId;
 
@@ -25,6 +23,8 @@ public class PollObject : MonoBehaviour
 
     [SerializeField] private AddPlayerHeads playerHeads;
 
+    [SerializeField] private UnityEngine.UI.Image Background;
+
     PollData pollData;
 
     private void Start()
@@ -35,35 +35,63 @@ public class PollObject : MonoBehaviour
     private void OnEnable()
     {
         VotingActions.ReloadPollList += SetValues;
+
+        if (pollData != null)
+        {
+            StartCoroutine(UpdateValues());
+        }
     }
 
     private void OnDisable()
     {
         VotingActions.ReloadPollList -= SetValues;
+        Canvas.ForceUpdateCanvases();
     }
 
     private IEnumerator UpdateValues()
     {
+        float totalDuration = pollData.EndTime - pollData.StartTime;
+
         while (true)
         {
-            Clock.fillAmount = 1 - (float)(pollData.EndTime - DateTimeOffset.UtcNow.ToUnixTimeSeconds()) / (pollData.EndTime - pollData.StartTime);
+            long currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            long secondsLeft = pollData.EndTime - currentTime;
 
-            int secondsLeft = (int)(pollData.EndTime - DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-            int minutesLeft = secondsLeft / 60;
-            int hoursLeft = minutesLeft / 60;
+            if (secondsLeft <= 0)
+            {      
 
-            if (secondsLeft < 60) TimeLeftText.text = (secondsLeft.ToString() + "s left");
-            else if (minutesLeft < 60) TimeLeftText.text = (minutesLeft.ToString() + "m left");
-            else TimeLeftText.text = (hoursLeft.ToString() + "h left");
+                // Convert poll end time to local time
+                DateTimeOffset endDateTime = DateTimeOffset.FromUnixTimeSeconds(pollData.EndTime).ToLocalTime();
+
+                // Format and show local time. Example of this: "20.6. 13:50"
+                TimeLeftText.text = endDateTime.ToString("d.M. HH:mm");
+
+                PollManager.EndPoll(pollId);
+
+                yield break;
+            }
+
+            Clock.fillAmount = 1 - (float)(secondsLeft) / totalDuration;
+
+            // Display the remaining time, requires the "left" to read properly in-game
+            if (secondsLeft < 60) TimeLeftText.text = secondsLeft + "s\nleft";
+            else if (secondsLeft < 3600) TimeLeftText.text = (secondsLeft / 60) + "m\nleft";
+            else TimeLeftText.text = (secondsLeft / 3600) + "h\nleft";
 
             yield return new WaitForSeconds(1);
         }
     }
 
+    private bool PollPassed()
+    {
+        return pollData.YesVotes.Count > pollData.NoVotes.Count;
+    }
+
     private void SetValues()
     {
+        // Update UI for FurniturePollData type polls
         if (pollData is FurniturePollData)
-        { 
+        {
             FurniturePollData furniturePollData = (FurniturePollData)pollData;
 
             Image.sprite = furniturePollData.Sprite;
@@ -88,8 +116,39 @@ public class PollObject : MonoBehaviour
     public void SetPollId(string newPollId)
     {
         pollId = newPollId;
-        pollData = PollManager.GetPollData(pollId);
+        pollData = PollManager.GetAnyPollData(pollId);
+        if (pollData == null) return;
+
         SetValues();
+
+        long currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        if (currentTime < pollData.EndTime)
+        {
+            // Start coroutine only if GameObject is active in hierarchy in order to stop errors from happening
+            if (gameObject.activeInHierarchy)
+            {
+                StartCoroutine(UpdateValues());
+            }
+        }
+        else
+        {
+            Clock.fillAmount = 1f;
+            SetResultColor();
+        }
+    }
+
+
+    private void SetResultColor()
+    {
+        // Set color based on if the poll passed or not
+        if (PollPassed())
+        {
+            Background.color = new Color(0.4f, 1f, 0.4f, 0.4f);
+        }
+        else
+        {
+            Background.color = new Color(1f, 0.4f, 0.4f, 0.4f);
+        }
     }
 
     public void PassPollId()

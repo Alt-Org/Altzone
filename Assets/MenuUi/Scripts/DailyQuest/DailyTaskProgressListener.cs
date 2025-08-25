@@ -1,5 +1,8 @@
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class DailyTaskProgressListener : MonoBehaviour
 {
@@ -9,7 +12,7 @@ public class DailyTaskProgressListener : MonoBehaviour
     [Header("Education task main category")]
     [SerializeField] private EducationCategoryType _educationCategoryType = EducationCategoryType.None;
 
-    [Header("Education task sub categories\n (Only one of these will be used!)")]
+    // [Header("Education task sub categories\n (Only one of these will be used!)")]
     [SerializeField] private TaskEducationActionType _educationCategoryActionType = TaskEducationActionType.BlowUpYourCharacter;
     [SerializeField] private TaskEducationSocialType _educationCategorySocialType = TaskEducationSocialType.AddNewFriend;
     [SerializeField] private TaskEducationStoryType _educationCategoryStoryType = TaskEducationStoryType.ClickCharacterDescription;
@@ -138,3 +141,55 @@ public class DailyTaskProgressListener : MonoBehaviour
         }
     }
 }
+
+#if UNITY_EDITOR
+// Only show the relevant subcategory based on the selected category
+[CustomEditor(typeof(DailyTaskProgressListener))]
+public class DailyTaskProgressListenerEditor : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        serializedObject.Update();
+
+        SerializedProperty normalTask = serializedObject.FindProperty("_normalTaskType");
+        SerializedProperty educationCategory = serializedObject.FindProperty("_educationCategoryType");
+
+        SerializedProperty actionType = serializedObject.FindProperty("_educationCategoryActionType");
+        SerializedProperty socialType = serializedObject.FindProperty("_educationCategorySocialType");
+        SerializedProperty storyType = serializedObject.FindProperty("_educationCategoryStoryType");
+        SerializedProperty cultureType = serializedObject.FindProperty("_educationCategoryCultureType");
+        SerializedProperty ethicalType = serializedObject.FindProperty("_educationCategoryEthicalType");
+
+        EditorGUILayout.PropertyField(normalTask);
+        EditorGUILayout.PropertyField(educationCategory);
+
+        EducationCategoryType category = (EducationCategoryType)educationCategory.enumValueIndex;
+
+        if (category != EducationCategoryType.None)
+        {
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Education task sub category", EditorStyles.boldLabel);
+            switch (category)
+            {
+                case EducationCategoryType.Action:
+                    EditorGUILayout.PropertyField(actionType);
+                    break;
+                case EducationCategoryType.Social:
+                    EditorGUILayout.PropertyField(socialType);
+                    break;
+                case EducationCategoryType.Story:
+                    EditorGUILayout.PropertyField(storyType);
+                    break;
+                case EducationCategoryType.Culture:
+                    EditorGUILayout.PropertyField(cultureType);
+                    break;
+                case EducationCategoryType.Ethical:
+                    EditorGUILayout.PropertyField(ethicalType);
+                    break;
+            }
+        }
+
+        serializedObject.ApplyModifiedProperties();
+    }
+}
+#endif

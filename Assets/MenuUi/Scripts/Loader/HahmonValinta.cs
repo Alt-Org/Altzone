@@ -81,7 +81,7 @@ public class HahmonValinta : AltMonoBehaviour
         popupWindow.SetActive(true);
 
         // Update the character name text
-        characterNameText.text = data.characterName;
+        //characterNameText.text = data.characterName;
 
         // Log the selected character's name
         Debug.Log("Selected character: " + data.characterName);
@@ -97,10 +97,12 @@ public class HahmonValinta : AltMonoBehaviour
             bool callFinished = false;
             bool characterAdded = false;
             int i = 0;
-            if (/*ServerManager.Instance.Player.currentAvatarId is null or 0*/true)
+            if (ServerManager.Instance.Player.currentAvatarId is null or 0 || !Enum.IsDefined(typeof(CharacterID), ServerManager.Instance.Player.currentAvatarId))
             {
                 _playerData.SelectedCharacterId = (int)id;
-                _playerData.SelectedCharacterIds = new string[3] { "0", "0", "0" };
+
+                string noCharacter = ((int)CharacterID.None).ToString();
+                _playerData.SelectedCharacterIds = new string[3] { noCharacter, noCharacter, noCharacter };
 
                 string body = JObject.FromObject(
                     new

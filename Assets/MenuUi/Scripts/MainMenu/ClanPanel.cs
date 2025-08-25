@@ -23,6 +23,7 @@ public class ClanPanel : MonoBehaviour
     private void OnEnable()
     {
         ServerManager.OnLogInStatusChanged += SetPlayerPanelValues;
+        ServerManager.OnClanChanged += SetPlayerPanelValues;
         _player = ServerManager.Instance.Player;
 
         if (_player == null)
@@ -41,6 +42,12 @@ public class ClanPanel : MonoBehaviour
     private void OnDisable()
     {
         ServerManager.OnLogInStatusChanged -= SetPlayerPanelValues;
+        ServerManager.OnClanChanged -= SetPlayerPanelValues;
+    }
+
+    private void SetPlayerPanelValues(ServerClan clan)
+    {
+        SetPlayerPanelValues(clan != null);
     }
 
     /// <summary>
@@ -76,7 +83,7 @@ public class ClanPanel : MonoBehaviour
             else
             {
                 _playerClanText.text = "Et ole klaanissa";
-                _playerClanDescription.text = "Paina tästä liittyäksesi klaaniin";
+                _playerClanDescription.text = "Paina tï¿½stï¿½ liittyï¿½ksesi klaaniin";
             }
         }
         else

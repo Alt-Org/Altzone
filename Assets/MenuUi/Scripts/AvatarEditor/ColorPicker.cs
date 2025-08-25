@@ -18,7 +18,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Transform _characterImageParent;
         [SerializeField] private Sprite _colorImage;
 
-        private List<string> _currentColor = new()
+        private List<string> _currentColors = new()
         {
             "#ffffff",
         };
@@ -58,20 +58,38 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void SetColor(Color color)
         {
-            _currentColor[0] = "#" + ColorUtility.ToHtmlStringRGB(color);
+            _currentColors[0] = "#" + ColorUtility.ToHtmlStringRGB(color);
             _avatarEditorCharacterHandle.SetHeadColor(color);
         }
 
-        public List<string> GetCurrentColors()
+        public string GetCurrentColors()
         {
-            string[] colors = new string[_currentColor.Count];
-            _currentColor.CopyTo(colors);
-            return (colors.ToList());
+            string[] colors = new string[_currentColors.Count];
+            _currentColors.CopyTo(colors);
+            return colors[0];
         }
 
-        public void SetLoadedColors(List<string> colors, List<string> features)
+        public Color GetCurrentColorsAsColors()
         {
-            if (colors.Count != 0 && ColorUtility.TryParseHtmlString(colors[0], out Color color))
+            List<Color> colors = new List<Color>();
+
+            foreach (string stringColor in _currentColors)
+            {
+                if (stringColor != null && ColorUtility.TryParseHtmlString(stringColor, out Color color))
+                {
+                    colors.Add(color);
+                    return color;
+                }
+
+                colors.Add(Color.white);
+            }
+
+            return Color.white;
+        }
+
+        public void SetLoadedColors(string colorCode, List<string> features)
+        {
+            if (string.IsNullOrWhiteSpace(colorCode) && ColorUtility.TryParseHtmlString(colorCode, out Color color))
                 SetColor(color);
             //for (int i = 0; i < _currentColor.Count; i++)
             //{
@@ -96,7 +114,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         public void RestoreDefaultColor(FeatureSlot slot)
         {
-            _currentColor[0] = "#ffffff";
+            _currentColors[0] = "#ffffff";
         }
 
         // internal void SetCurrentCategoryAndColors(FeatureSlot category, List<FeatureColor> colors) {
