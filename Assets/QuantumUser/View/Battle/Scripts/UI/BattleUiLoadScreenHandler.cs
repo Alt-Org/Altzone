@@ -31,12 +31,13 @@ public class BattleUiLoadScreenHandler : MonoBehaviour
         _playerNames[(int)playerSlot - 1].alpha = 1;
     }
 
-    public void Show(BattleParameters.PlayerType[] playerSlotTypes)
+    public void Show(BattleParameters.PlayerType[] playerSlotTypes, FixedArray<QString64> playerNames)
     {
         for (int i = 0; i < playerSlotTypes.Length; i++)
         {
             if (playerSlotTypes[i] == BattleParameters.PlayerType.Player)
             {
+                _playerNames[i].text = playerNames[i];
                 _playerNames[i].gameObject.SetActive(true);
             }
         }

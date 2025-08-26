@@ -1,8 +1,13 @@
 //{ Game Flow events - View Pre-Activate
 
+struct BattleWaitForPlayersData
+{
+    array<QString<64>>[BATTLE_PLAYER_SLOT_COUNT] PlayerNames;
+}
+
 synced event BattleViewWaitForPlayers
 {
-    //array<QString<64>>[4] PlayerNames;
+    BattleWaitForPlayersData Data;
 }
 
 synced event BattleViewPlayerConnected

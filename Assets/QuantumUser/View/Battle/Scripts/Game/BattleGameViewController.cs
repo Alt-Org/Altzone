@@ -1,14 +1,17 @@
+using UnityEngine;
+using Quantum;
+using Photon.Deterministic;
+
 using Altzone.Scripts.BattleUiShared;
 using Altzone.Scripts.Lobby;
+
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Player;
 using Battle.View.Audio;
 using Battle.View.Effect;
-using Battle.View.Player;
 using Battle.View.UI;
-using Photon.Deterministic;
-using Quantum;
-using UnityEngine;
+using Battle.View.Player;
+
 using BattleMovementInputType = SettingsCarrier.BattleMovementInputType;
 using BattleRotationInputType = SettingsCarrier.BattleRotationInputType;
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
@@ -73,7 +76,7 @@ namespace Battle.View.Game
         {
             // Showing announcement handler and setting view pre-activate loading text
             _uiController.AnnouncementHandler.SetShow(true);
-            //_uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.Loading);
+            _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.Loading);
 
             // Subscribing to Game Flow events
             QuantumEvent.Subscribe<EventBattleViewWaitForPlayers>(this, QEventOnViewWaitForPlayers);
@@ -104,9 +107,9 @@ namespace Battle.View.Game
             // Setting view pre-activate waiting for players text
             Utils.TryGetQuantumFrame(out Frame f);
             BattleParameters.PlayerType[] playerSlotTypes = BattleParameters.GetPlayerSlotTypes(f);
-            _uiController.LoadScreenHandler.Show(playerSlotTypes);
+            _uiController.LoadScreenHandler.Show(playerSlotTypes, e.Data.PlayerNames);
 
-            //_uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.WaitingForPlayers);
+            _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.WaitingForPlayers);
         }
 
         private void QEventOnViewPlayerConnected(EventBattleViewPlayerConnected e)
