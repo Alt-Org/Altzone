@@ -943,6 +943,71 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
+    public IEnumerator CreateClanRoleToServer(ClanRoles role, Action<bool> callback)
+    {
+        string body = JObject.FromObject(
+            new
+            {
+                name = role.name,
+                rights = role.rights,
+
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
+            ).ToString();
+
+        yield return StartCoroutine(WebRequests.Post(SERVERADDRESS + "clan/role", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                {
+                    callback(true);
+                }
+
+            }
+            else
+            {
+                if (callback != null)
+                {
+                    callback(false);
+                }
+            }
+        }));
+    }
+
+    public IEnumerator UpdateClanRoleToServer(ClanRoles role, Action<bool> callback)
+    {
+        string body = JObject.FromObject(
+            new
+            {
+                id = role._id,
+                name = role.name,
+                rights = role.rights,
+
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
+            ).ToString();
+
+        yield return StartCoroutine(WebRequests.Put(SERVERADDRESS + "clan/role", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                {
+                    callback(true);
+                }
+
+            }
+            else
+            {
+                if (callback != null)
+                {
+                    callback(false);
+                }
+            }
+        }));
+    }
+
     public IEnumerator SetMemberRoleInClanToServer(string player, string role, Action<bool> callback)
     {
         string body = JObject.FromObject(
