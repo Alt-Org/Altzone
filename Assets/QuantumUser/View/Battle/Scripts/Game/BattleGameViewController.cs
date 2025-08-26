@@ -1,16 +1,14 @@
-using UnityEngine;
-using Quantum;
-using Photon.Deterministic;
-
 using Altzone.Scripts.BattleUiShared;
 using Altzone.Scripts.Lobby;
-
+using Battle.QSimulation.Game;
+using Battle.QSimulation.Player;
 using Battle.View.Audio;
 using Battle.View.Effect;
-using Battle.View.UI;
 using Battle.View.Player;
-using Battle.QSimulation.Player;
-
+using Battle.View.UI;
+using Photon.Deterministic;
+using Quantum;
+using UnityEngine;
 using BattleMovementInputType = SettingsCarrier.BattleMovementInputType;
 using BattleRotationInputType = SettingsCarrier.BattleRotationInputType;
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
@@ -75,10 +73,11 @@ namespace Battle.View.Game
         {
             // Showing announcement handler and setting view pre-activate loading text
             _uiController.AnnouncementHandler.SetShow(true);
-            _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.Loading);
+            //_uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.Loading);
 
             // Subscribing to Game Flow events
             QuantumEvent.Subscribe<EventBattleViewWaitForPlayers>(this, QEventOnViewWaitForPlayers);
+            QuantumEvent.Subscribe<EventBattleViewPlayerConnected>(this, QEventOnViewPlayerConnected);
             QuantumEvent.Subscribe<EventBattleViewInit>(this, QEventOnViewInit);
             QuantumEvent.Subscribe<EventBattleViewActivate>(this, QEventOnViewActivate);
             QuantumEvent.Subscribe<EventBattleViewGetReadyToPlay>(this, QEventOnViewGetReadyToPlay);
@@ -103,7 +102,23 @@ namespace Battle.View.Game
         private void QEventOnViewWaitForPlayers(EventBattleViewWaitForPlayers e)
         {
             // Setting view pre-activate waiting for players text
-            _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.WaitingForPlayers);
+            Utils.TryGetQuantumFrame(out Frame f);
+            BattleParameters.PlayerType[] playerSlotTypes = BattleParameters.GetPlayerSlotTypes(f);
+            _uiController.LoadScreenHandler.Show(playerSlotTypes);
+
+            //_uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.WaitingForPlayers);
+        }
+
+        private void QEventOnViewPlayerConnected(EventBattleViewPlayerConnected e)
+        {
+            BattlePlayerSlot playerSlot = e.Data.PlayerSlot;
+            int[] characterIds = new int[3];
+            for (int i = 0; i < characterIds.Length; i++)
+            {
+                characterIds[i] = e.Data.Characters[i].Id;
+            }
+
+            _uiController.LoadScreenHandler.PlayerConnected(playerSlot, characterIds);
         }
 
         private void QEventOnViewInit(EventBattleViewInit e)
@@ -219,6 +234,8 @@ namespace Battle.View.Game
         private void QEventOnViewActivate(EventBattleViewActivate e)
         {
             // Activating view, meaning displaying all visual elements of the game view except for pre-activation elements
+
+            _uiController.LoadScreenHandler.Hide();
 
             // Show UI elements
             if (_uiController.DiamondsHandler != null) _uiController.DiamondsHandler.SetShow(true);

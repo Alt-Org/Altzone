@@ -1039,6 +1039,7 @@ namespace Altzone.Scripts.Lobby
                 BattleConfig     = _battleQConfig,
                 BattleParameters = new()
                 {
+                    PlayerNames = new string[] { "Player1", "Player2", "Player3", "Player4" },
                     PlayerSlotTypes = data.PlayerSlotTypes,
                     PlayerSlotUserIDs = data.PlayerSlotUserIds,
                     PlayerCount = data.PlayerCount,

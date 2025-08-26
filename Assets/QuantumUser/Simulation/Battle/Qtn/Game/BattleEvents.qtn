@@ -1,6 +1,14 @@
 //{ Game Flow events - View Pre-Activate
 
-synced event BattleViewWaitForPlayers {}
+synced event BattleViewWaitForPlayers
+{
+    //array<QString<64>>[4] PlayerNames;
+}
+
+synced event BattleViewPlayerConnected
+{
+    RuntimePlayer Data;
+}
 
 synced event BattleViewInit {}
 
