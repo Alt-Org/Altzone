@@ -21,6 +21,8 @@ using UnityEngine.SceneManagement;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Voting;
 using System.Linq;
+using Altzone.Scripts.Model.Poco;
+using Altzone.Scripts.Store;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -393,6 +395,15 @@ public class ServerManager : MonoBehaviour
                     clanData.Polls.Add(pollData);
                 }
                 RaiseClanPollsChangedEvent();
+            }
+        }));
+
+        yield return StartCoroutine(GetClanStall(clan._id, stall =>
+        {
+            if(stall == null) Debug.LogWarning("Failed to get stall data.");
+            else
+            {
+                clanData.AdData = stall;
             }
         }));
 
@@ -969,6 +980,7 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
+    #region Roles
     public IEnumerator CreateClanRoleToServer(ClanRoles role, Action<bool> callback)
     {
         string body = JObject.FromObject(
@@ -1064,6 +1076,7 @@ public class ServerManager : MonoBehaviour
             }
         }));
     }
+    #endregion
 
     #endregion
 
@@ -1570,6 +1583,57 @@ public class ServerManager : MonoBehaviour
             {
                 if (callback != null)
                     callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator GetClanStall(string clan_id, Action<AdStoreObject> callback)
+    {
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "stall/"+clan_id, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                ServerStall stall = result["data"]["Stall"].ToObject<ServerStall>();
+
+                AdStoreObject adObject = new AdStoreObject(stall.adPoster.border, stall.adPoster.colour);
+
+
+
+                if (callback != null)
+                    callback(adObject);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator UpdateClanAdPoster(AdStoreObject ad, Action<bool> callback)
+    {
+        string body = JObject.FromObject(
+            new
+            {
+                border = ad.BorderFrame,
+                colour = ad.BackgroundColour,
+                //tag = data.Tag,
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
+        ).ToString();
+
+        yield return StartCoroutine(WebRequests.Patch(DEVADDRESS + "stall/adPoster", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
             }
         }));
     }
