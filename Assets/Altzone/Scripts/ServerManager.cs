@@ -68,6 +68,9 @@ public class ServerManager : MonoBehaviour
     public delegate void ClanInventoryChanged();
     public static event ClanInventoryChanged OnClanInventoryChanged;
 
+    public delegate void ClanPollsChanged();
+    public static event ClanPollsChanged OnClanPollsChanged;
+
     public delegate void OnlinePlayersChanged(List<ServerOnlinePlayer> onlinePlayers);
     public static event OnlinePlayersChanged OnOnlinePlayersChanged;
 
@@ -136,6 +139,14 @@ public class ServerManager : MonoBehaviour
     public void RaiseClanInventoryChangedEvent()
     {
         OnClanInventoryChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// Raises ClanPollsChanged event when clan polls have changed.
+    /// </summary>
+    public void RaiseClanPollsChangedEvent()
+    {
+        OnClanPollsChanged?.Invoke();
     }
 
     /// <summary>
@@ -354,7 +365,7 @@ public class ServerManager : MonoBehaviour
             //clanData = new ClanData(clan);
 
             // Checks if the clan is found in DataStorage or if we have to create new one.
-            
+
             store.GetClanData(playerData.ClanId, clanDataFromStorage =>
             {
                 if (clanDataFromStorage == null)
@@ -369,6 +380,21 @@ public class ServerManager : MonoBehaviour
 
             }); 
         });
+
+        yield return StartCoroutine(GetClanVoteListFromServer(polls =>
+        {
+            if (polls != null)
+            {
+                clanData.Polls.Clear();
+                foreach (ServerPoll poll in polls)
+                {
+
+                    PollData pollData = new FurniturePollData(poll);
+                    clanData.Polls.Add(pollData);
+                }
+                RaiseClanPollsChangedEvent();
+            }
+        }));
 
         // Creates or fetches the most up to date clan Stock before saving.
         if (Stock == null)
