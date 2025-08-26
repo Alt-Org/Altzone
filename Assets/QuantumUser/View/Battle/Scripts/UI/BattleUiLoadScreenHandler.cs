@@ -1,26 +1,32 @@
-using System.Collections;
-using Battle.QSimulation.Game;
-using MenuUi.Scripts.Lobby.SelectedCharacters;
+using UnityEngine;
 using Quantum;
 using TMPro;
-using UnityEngine;
+
+using MenuUi.Scripts.Lobby.SelectedCharacters;
+using Battle.QSimulation.Game;
 
 public class BattleUiLoadScreenHandler : MonoBehaviour
 {
-    [SerializeField]
-    private BattlePopupCharacterSlotController[] _characterSlotControllers;
-    [SerializeField]
-    private TextMeshProUGUI[] _playerNames;
+    [SerializeField] private GameObject _background;
+    [SerializeField] private GameObject _content;
+    [SerializeField] private BattlePopupCharacterSlotController[] _characterSlotControllers;
+    [SerializeField] private TextMeshProUGUI[] _playerNames;
 
     public void PlayerConnected(BattlePlayerSlot playerSlot, int[] characterIds)
     {
-        if (playerSlot == BattlePlayerSlot.Guest || playerSlot == BattlePlayerSlot.Spectator)
+        int slotIndex = playerSlot switch
         {
-            return;
-        }
+            BattlePlayerSlot.Slot1 => 0,
+            BattlePlayerSlot.Slot2 => 1,
+            BattlePlayerSlot.Slot3 => 2,
+            BattlePlayerSlot.Slot4 => 3,
+            _ => -1,
+        };
 
-        _characterSlotControllers[(int)playerSlot - 1].gameObject.SetActive(true);
-        _characterSlotControllers[(int)playerSlot - 1].SetCharacters(characterIds);
+        if (slotIndex == -1) return;
+
+        _characterSlotControllers[slotIndex].gameObject.SetActive(true);
+        _characterSlotControllers[slotIndex].SetCharacters(characterIds);
 
         _playerNames[(int)playerSlot - 1].alpha = 1;
     }
@@ -38,6 +44,7 @@ public class BattleUiLoadScreenHandler : MonoBehaviour
 
     public void Hide()
     {
-        gameObject.SetActive(false);
+        _background.SetActive(false);
+        _content.SetActive(false);
     }
 }
