@@ -56,7 +56,7 @@ public class RoleAssignmentPopup : MonoBehaviour
     {
         if (selectedMember != null)
         {
-            ClanPollManager.CreateRolePromotionPoll(selectedMember.Id, selectedRole);
+            PollManager.CreateRolePromotionPoll(selectedMember.Id, selectedRole);
             Debug.Log($"Poll created to promote {selectedMember.Name} to {selectedRole}");
             gameObject.SetActive(false);
         }

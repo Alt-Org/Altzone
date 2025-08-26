@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+
 public class PollMonitor : MonoBehaviour // Monitors active polls to check if they should be expired
 {
     public static PollMonitor Instance { get; private set; }
