@@ -9,7 +9,6 @@ namespace Battle.View.UI
     {
         [SerializeField] private GameObject _view;
         [SerializeField] private TextMeshProUGUI _announcerText;
-        [SerializeField] private TextScaler _announcementTextScaler;
 
         public enum TextType
         {
@@ -56,7 +55,7 @@ namespace Battle.View.UI
             _announcerText.text = text;
             _announcerText.color = Color.red;
             _announcerText.textWrappingMode = TextWrappingModes.Normal;
-            _announcementTextScaler.RelativePercentageMax *= 0.5f;
+            _announcerText.fontSize *= 0.5f;
             _debugmode = true;
         }
 
