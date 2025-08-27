@@ -7,8 +7,7 @@ using Battle.QSimulation.Game;
 
 public class BattleUiLoadScreenHandler : MonoBehaviour
 {
-    [SerializeField] private GameObject _background;
-    [SerializeField] private GameObject _content;
+    [SerializeField] private GameObject _loadingScreen;
     [SerializeField] private BattlePopupCharacterSlotController[] _characterSlotControllers;
     [SerializeField] private TextMeshProUGUI[] _playerNames;
 
@@ -45,7 +44,6 @@ public class BattleUiLoadScreenHandler : MonoBehaviour
 
     public void Hide()
     {
-        _background.SetActive(false);
-        _content.SetActive(false);
+        _loadingScreen.SetActive(false);
     }
 }
