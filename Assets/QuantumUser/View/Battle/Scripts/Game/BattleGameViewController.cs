@@ -81,6 +81,7 @@ namespace Battle.View.Game
             // Subscribing to Game Flow events
             QuantumEvent.Subscribe<EventBattleViewWaitForPlayers>(this, QEventOnViewWaitForPlayers);
             QuantumEvent.Subscribe<EventBattleViewPlayerConnected>(this, QEventOnViewPlayerConnected);
+            QuantumEvent.Subscribe<EventBattleViewAllPlayersConnected>(this, QEventOnViewAllPlayersConnected);
             QuantumEvent.Subscribe<EventBattleViewInit>(this, QEventOnViewInit);
             QuantumEvent.Subscribe<EventBattleViewActivate>(this, QEventOnViewActivate);
             QuantumEvent.Subscribe<EventBattleViewGetReadyToPlay>(this, QEventOnViewGetReadyToPlay);
@@ -122,6 +123,11 @@ namespace Battle.View.Game
             }
 
             _uiController.LoadScreenHandler.PlayerConnected(playerSlot, characterIds);
+        }
+
+        private void QEventOnViewAllPlayersConnected(EventBattleViewAllPlayersConnected e)
+        {
+            _uiController.AnnouncementHandler.ClearAnnouncerTextField();
         }
 
         private void QEventOnViewInit(EventBattleViewInit e)
@@ -363,7 +369,7 @@ namespace Battle.View.Game
                 BattleGameSessionQSingleton gameSession = frame.GetSingleton<BattleGameSessionQSingleton>();
 
                 // Convert the countdown time to an integer for display
-                int countDown = (int)gameSession.TimeUntilStart;
+                int countDown = (int)gameSession.TimeUntilStartSec;
 
                 // Handle different game states to update the UI
                 switch (gameSession.State)

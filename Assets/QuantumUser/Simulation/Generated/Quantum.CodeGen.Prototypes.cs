@@ -121,7 +121,8 @@ namespace Quantum.Prototypes {
   public unsafe partial class BattleGameSessionQSingletonPrototype : ComponentPrototype<Quantum.BattleGameSessionQSingleton> {
     public QBoolean GameInitialized;
     public Quantum.QEnum32<BattleGameState> State;
-    public FP TimeUntilStart;
+    public FP LoadDelaySec;
+    public FP TimeUntilStartSec;
     public FP GameTimeSec;
     partial void MaterializeUser(Frame frame, ref Quantum.BattleGameSessionQSingleton result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
@@ -132,7 +133,8 @@ namespace Quantum.Prototypes {
     public void Materialize(Frame frame, ref Quantum.BattleGameSessionQSingleton result, in PrototypeMaterializationContext context = default) {
         result.GameInitialized = this.GameInitialized;
         result.State = this.State;
-        result.TimeUntilStart = this.TimeUntilStart;
+        result.LoadDelaySec = this.LoadDelaySec;
+        result.TimeUntilStartSec = this.TimeUntilStartSec;
         result.GameTimeSec = this.GameTimeSec;
         MaterializeUser(frame, ref result, in context);
     }

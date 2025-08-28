@@ -5,6 +5,8 @@ using Quantum;
 
 using Battle.QSimulation.Player;
 using Battle.QSimulation.SoulWall;
+using UnityEngine;
+using Photon.Deterministic;
 
 namespace Battle.QSimulation.Game
 {
@@ -72,6 +74,7 @@ namespace Battle.QSimulation.Game
                 case BattleGameState.WaitForPlayers:
                     if (BattlePlayerManager.IsAllPlayersRegistered(f))
                     {
+                        f.Events.BattleViewAllPlayersConnected();
                         f.Events.BattleViewInit();
                         gameSession->State = BattleGameState.CreateMap;
                     }
@@ -79,29 +82,38 @@ namespace Battle.QSimulation.Game
 
                 case BattleGameState.CreateMap:
                     CreateMap(f);
-                    f.Events.BattleViewActivate();
-                    gameSession->State = BattleGameState.Countdown;
+                    gameSession->State = BattleGameState.WaitToStart;
+                    break;
+
+                case BattleGameState.WaitToStart:
+                    gameSession->LoadDelaySec -= f.DeltaTime;
+
+                    if (gameSession->LoadDelaySec <= FP._0)
+                    {
+                        f.Events.BattleViewActivate();
+                        gameSession->State = BattleGameState.Countdown;
+                    }
                     break;
 
                 // Countdown state handling
                 case BattleGameState.Countdown:
-                    gameSession->TimeUntilStart -= f.DeltaTime;
+                    gameSession->TimeUntilStartSec -= f.DeltaTime;
 
                     // Transition from Countdown to GetReadyToPlay
-                    if (gameSession->TimeUntilStart < 1)
+                    if (gameSession->TimeUntilStartSec < FP._1)
                     {
                         f.Events.BattleViewGetReadyToPlay();
                         gameSession->State = BattleGameState.GetReadyToPlay;
-                        gameSession->TimeUntilStart = 1; // Set 1 second for the GetReadyToPlay state
+                        gameSession->TimeUntilStartSec = FP._1; // Set 1 second for the GetReadyToPlay state
                     }
                     break;
 
                 // GetReadyToPlay state handling
                 case BattleGameState.GetReadyToPlay:
-                    gameSession->TimeUntilStart -= f.DeltaTime;
+                    gameSession->TimeUntilStartSec -= f.DeltaTime;
 
                     // Transition from GetReadyToPlay to Playing
-                    if (gameSession->TimeUntilStart <= 0)
+                    if (gameSession->TimeUntilStartSec <= FP._0)
                     {
                         f.Events.BattleViewGameStart();
                         gameSession->State = BattleGameState.Playing;

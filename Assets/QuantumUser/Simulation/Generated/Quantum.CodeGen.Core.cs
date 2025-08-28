@@ -68,7 +68,7 @@ namespace Quantum {
     InitializeGame,
     WaitForPlayers,
     CreateMap,
-    ReadyToStart,
+    WaitToStart,
     Countdown,
     GetReadyToPlay,
     Playing,
@@ -995,14 +995,16 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattleGameSessionQSingleton : Quantum.IComponentSingleton {
-    public const Int32 SIZE = 24;
+    public const Int32 SIZE = 32;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(4)]
     public QBoolean GameInitialized;
     [FieldOffset(0)]
     public BattleGameState State;
     [FieldOffset(16)]
-    public FP TimeUntilStart;
+    public FP LoadDelaySec;
+    [FieldOffset(24)]
+    public FP TimeUntilStartSec;
     [FieldOffset(8)]
     public FP GameTimeSec;
     public override Int32 GetHashCode() {
@@ -1010,7 +1012,8 @@ namespace Quantum {
         var hash = 1487;
         hash = hash * 31 + GameInitialized.GetHashCode();
         hash = hash * 31 + (Int32)State;
-        hash = hash * 31 + TimeUntilStart.GetHashCode();
+        hash = hash * 31 + LoadDelaySec.GetHashCode();
+        hash = hash * 31 + TimeUntilStartSec.GetHashCode();
         hash = hash * 31 + GameTimeSec.GetHashCode();
         return hash;
       }
@@ -1020,7 +1023,8 @@ namespace Quantum {
         serializer.Stream.Serialize((Int32*)&p->State);
         QBoolean.Serialize(&p->GameInitialized, serializer);
         FP.Serialize(&p->GameTimeSec, serializer);
-        FP.Serialize(&p->TimeUntilStart, serializer);
+        FP.Serialize(&p->LoadDelaySec, serializer);
+        FP.Serialize(&p->TimeUntilStartSec, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
