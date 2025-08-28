@@ -87,7 +87,7 @@ namespace Altzone.Scripts.Lobby
         [Header("Battle Map reference")]
         [SerializeField] private BattleMapReference _battleMapReference;
 
-        private const long STARTDELAY = 6000;
+        private const long STARTDELAY = 2000;
 
         private QuantumRunner _runner = null;
 
@@ -105,7 +105,11 @@ namespace Altzone.Scripts.Lobby
 
         private List<string> _posChangeQueue = new();
 
+        private bool _isStartFinished = false;
+
         public static LobbyManager Instance { get; private set; }
+        public bool IsStartFinished {set => _isStartFinished = value; }
+
         private static bool isActive = false;
 
         #region Delegates & Events
@@ -1066,28 +1070,25 @@ namespace Altzone.Scripts.Lobby
 
             //Start Battle Countdown
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleLoad);
-
-            if(sendTime == 0) sendTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            long timeToStart = (sendTime+ STARTDELAY) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            long startTime = sendTime + timeToStart;
+            _isStartFinished = false;
 
             yield return new WaitForEndOfFrame();
 
+            if (sendTime == 0) sendTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            long timeToStart = (sendTime + STARTDELAY) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            long startTime = sendTime + timeToStart;
+
             do
             {
-                if(OnStartTimeSet != null)
+                if (OnStartTimeSet != null)
                 {
-                    OnStartTimeSet?.Invoke(timeToStart);
+                    OnStartTimeSet?.Invoke(0);
                     break;
                 }
                 yield return null;
             } while (startTime > DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
-            timeToStart = (sendTime + STARTDELAY) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-            if (timeToStart > STARTDELAY) timeToStart = STARTDELAY;
-
-            if(timeToStart > 0)
-            yield return new WaitForSeconds(timeToStart / 1000f);
+            yield return new WaitUntil(()=>_isStartFinished);
 
             //Move to Battle and start Runner
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Battle);
