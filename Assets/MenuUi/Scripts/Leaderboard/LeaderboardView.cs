@@ -23,11 +23,12 @@ public class LeaderboardView : MonoBehaviour
     [SerializeField] private GameObject _leaderboardCategoryButtons;
     [SerializeField] private Button _clansButton;
     [SerializeField] private Button _playersButton;
-    [SerializeField] private Button _winsLeaderboardButton;  // Lis‰tty
-    [SerializeField] private GameObject _globalLeaderboardDarkeningImage; //
-    [SerializeField] private GameObject _clanLeaderboardDarkeningImage; //
-    [SerializeField] private GameObject _friendsLeaderboardDarkeningImage; //
-    [SerializeField] private GameObject _winsLeaderboardDarkeningImage; //
+    [SerializeField] private Button _winsLeaderboardButton; 
+    [SerializeField] private GameObject _globalLeaderboardDarkeningImage; 
+    [SerializeField] private GameObject _clanLeaderboardDarkeningImage; 
+    [SerializeField] private GameObject _friendsLeaderboardDarkeningImage; 
+    [SerializeField] private GameObject _winsLeaderboardDarkeningImage; 
+    [SerializeField] private Image _winsLeaderboardImage; //Lis‰tty 
 
 
     [Header("Tab sprites")]
@@ -37,6 +38,7 @@ public class LeaderboardView : MonoBehaviour
     [SerializeField] private Sprite _clanActivitySprite;
     [SerializeField] private Sprite _friendsWinsSprite;
     [SerializeField] private Sprite _friendsActivitySprite;
+    [SerializeField] private Sprite _winsActivitySprite; //Lis‰tty
 
     [Header("Leaderboard panels")]
     [SerializeField] private LeaderboardPodium _podium;
@@ -59,7 +61,7 @@ public class LeaderboardView : MonoBehaviour
         Global,
         Clan,
         Friends,
-        Wins // Lis‰tty
+        Wins 
     }
     private enum LeaderboardType
     {
@@ -80,7 +82,7 @@ public class LeaderboardView : MonoBehaviour
         _globalLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Global));
         _clanLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Clan));
         _friendsLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Friends));
-        _winsLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Wins)); //Lis‰tty, jotta reagoi klikkaukseen
+        _winsLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Wins)); 
 
 
 
@@ -90,7 +92,7 @@ public class LeaderboardView : MonoBehaviour
         _playersButton.onClick.AddListener(() => ListPlayers());
 
 
-        //DarkenImagen aktivointi
+        //DarkeningImagen aktivointi
         SetTabActive(Leaderboard.Wins); // T‰m‰ oletuksena ensin aktivoituna
 
         _globalLeaderboardButton.onClick.AddListener(() =>
@@ -122,6 +124,7 @@ public class LeaderboardView : MonoBehaviour
         OpenLeaderboard(Leaderboard.Global);
         LoadWinsView();
         _tablineScript.ActivateTabButton(0);
+
     }
 
     private void OpenLeaderboard(Leaderboard leaderboard)
@@ -130,17 +133,17 @@ public class LeaderboardView : MonoBehaviour
 
         _currentLeaderboardCategory = LeaderboardCategory.Players;
 
-        if (leaderboard == Leaderboard.Wins) //
+       if (leaderboard == Leaderboard.Wins)
         {
             SetLeaderboardType(LeaderboardType.Wins); //Asetetaan voitot-n‰kym‰
         }
+        
         else
         {
             SetLeaderboardType(LeaderboardType.Activity); // Asetetaan aktiivisuus -n‰kym‰
         }
 
-        LoadLeaderboard(); //P‰ivitt‰‰ leaderboardin 
-        //LoadActivityView();
+        LoadWinsView(); // N‰ytt‰‰ oletukena voittolistat
     }
 
     private void SetLeaderboardType(LeaderboardType leaderboardType)
@@ -231,7 +234,8 @@ public class LeaderboardView : MonoBehaviour
                                 }
 
                                 rank++;
-                            };
+                            }
+                            
                         }
                     }));
                 }
@@ -439,18 +443,21 @@ public class LeaderboardView : MonoBehaviour
                 }
 
                 break;
-        }
+
+         
+        }       
+
     }
 
     private void ToggleLeaderboardType()
     {
-        if (_currentLeaderboardType == LeaderboardType.Activity)
+        if (_currentLeaderboardType == LeaderboardType.Wins)
         {
-            LoadWinsView();
+            LoadActivityView();
         }
         else
         {
-            LoadActivityView();
+            LoadWinsView();
         }
     }
 
@@ -478,6 +485,11 @@ public class LeaderboardView : MonoBehaviour
         _globalLeaderboardImage.sprite = _globalActivitySprite;
         _clanLeaderboardImage.sprite = _clanActivitySprite;
         _friendsLeaderboardImage.sprite = _friendsActivitySprite;
+
+
+       _winsLeaderboardButton.image.color = activityRed; // Punainen
+
+
     }
 
     private void LoadWinsView()
@@ -504,6 +516,11 @@ public class LeaderboardView : MonoBehaviour
         _globalLeaderboardImage.sprite = _globalWinsSprite;
         _clanLeaderboardImage.sprite = _clanWinsSprite;
         _friendsLeaderboardImage.sprite = _friendsWinsSprite;
+
+       _winsLeaderboardButton.image.color = winsYellow; //Keltainen
+
+        
+
     }
 
     private void ListClans()
