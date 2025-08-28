@@ -1097,19 +1097,25 @@ namespace Altzone.Scripts.Lobby
             DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.Battle);
             DebugLogFileHandler.FileOpen(battleID, (int)playerSlot);
 
-            Task<bool> task = StartRunner(sessionRunnerArguments);
+            int retryCount=0;
+            do
+            {
+                Task<bool> task = StartRunner(sessionRunnerArguments);
 
-            yield return new WaitUntil(() => task.IsCompleted);
-            if(task.Result)
-            {
-                _player.PlayerSlot = playerSlot;
-                _player.UserID = userId;
-                _runner?.Game.AddPlayer(_player);
-            }
-            else
-            {
-                OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
-            }
+                yield return new WaitUntil(() => task.IsCompleted);
+                if (task.Result)
+                {
+                    _player.PlayerSlot = playerSlot;
+                    _player.UserID = userId;
+                    _runner?.Game.AddPlayer(_player);
+                    break;
+                }
+                else
+                {
+                    retryCount++;
+                    if (retryCount == 5) { OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu); break; }
+                }
+            } while (true);
         }
 
         private async Task<bool> StartRunner(SessionRunner.Arguments sessionRunnerArguments)
