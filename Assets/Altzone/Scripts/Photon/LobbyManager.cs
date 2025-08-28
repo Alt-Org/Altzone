@@ -1661,7 +1661,7 @@ namespace Altzone.Scripts.Lobby
             int offset = 0;
             result.StartTime = Serializer.DeserializeLong(data, ref offset);
             result.PlayerSlotUserIds = Serializer.DeserializeStringArray(data, ref offset);
-            result.PlayerSlotUserIds = Serializer.DeserializeStringArray(data, ref offset);
+            result.PlayerSlotUserNames = Serializer.DeserializeStringArray(data, ref offset);
             result.PlayerSlotTypes = Serializer.DeserializeIntArray(data, ref offset).Cast<PlayerType>().ToArray();
             result.ProjectileInitialEmotion = (Emotion)Serializer.DeserializeInt(data, ref offset);
             result.MapId = Serializer.DeserializeString(data, ref offset);
