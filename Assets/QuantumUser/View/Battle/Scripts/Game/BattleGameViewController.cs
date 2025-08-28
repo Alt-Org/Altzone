@@ -170,14 +170,12 @@ namespace Battle.View.Game
                 {
                     BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.MoveJoystick);
                     _uiController.JoystickHandler.SetInfo(BattleUiElementType.MoveJoystick, data);
-                    _uiController.JoystickHandler.SetShow(true, BattleUiElementType.MoveJoystick);
                 }
 
                 if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick)
                 {
                     BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.RotateJoystick);
                     _uiController.JoystickHandler.SetInfo(BattleUiElementType.RotateJoystick, data);
-                    _uiController.JoystickHandler.SetShow(true, BattleUiElementType.RotateJoystick);
                 }
 
                 _uiController.JoystickHandler.SetLocked(true);
@@ -248,6 +246,9 @@ namespace Battle.View.Game
 
             // Show UI elements
             if (_uiController.DiamondsHandler != null) _uiController.DiamondsHandler.SetShow(true);
+            if (SettingsCarrier.Instance.BattleMovementInput == BattleMovementInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.MoveJoystick);
+            if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.RotateJoystick);
+            if (SettingsCarrier.Instance.BattleShowDebugStatsOverlay) _uiController.DebugStatsOverlayHandler.SetShow(true);
             /* These UI elements aren't ready and shouldn't be shown yet
             if (_uiController.GiveUpButtonHandler != null) _uiController.GiveUpButtonHandler.SetShow(true);
             */
@@ -342,7 +343,6 @@ namespace Battle.View.Game
             if (!SettingsCarrier.Instance.BattleShowDebugStatsOverlay) return;
             if (e.Slot != LocalPlayerSlot) return;
 
-            _uiController.DebugStatsOverlayHandler.SetShow(true);
             _uiController.DebugStatsOverlayHandler.SetStats(e.Stats);
         }
 
