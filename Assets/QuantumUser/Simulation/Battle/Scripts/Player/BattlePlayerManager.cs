@@ -377,6 +377,7 @@ namespace Battle.QSimulation.Player
 
                 // set playerManagerData for player
                 playerHandle.PlayState = BattlePlayerPlayState.OutOfPlay;
+                playerHandle.AllowCharacterSwapping = true;
                 playerHandle.SetCharacters(playerCharacterEntityArray);
             }
         }
