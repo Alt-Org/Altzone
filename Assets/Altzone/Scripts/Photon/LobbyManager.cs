@@ -906,6 +906,7 @@ namespace Altzone.Scripts.Lobby
             // Checking player positions before starting gameplay
             players = room.Players.Values.ToList();
             string[] playerUserIds = new string[4] { "", "", "", "" };
+            string[] playerUserNames = new string[4] { "", "", "", "" };
             PlayerType[] playerTypes = new PlayerType[4] { PlayerType.None, PlayerType.None, PlayerType.None, PlayerType.None, };
 
             int playerCount = 0;
@@ -931,6 +932,7 @@ namespace Altzone.Scripts.Lobby
                 }
                 playerTypes[playerPos-1] = PlayerType.Player;
                 playerUserIds[playerPos - 1] = roomPlayer.UserId;
+                playerUserNames[playerPos - 1] = roomPlayer.NickName;
                 playerCount += 1;
             }
 
@@ -979,6 +981,7 @@ namespace Altzone.Scripts.Lobby
                 {
                     StartTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                     PlayerSlotUserIds = playerUserIds,
+                    PlayerSlotUserNames = playerUserNames,
                     PlayerSlotTypes = playerTypes,
                     ProjectileInitialEmotion = startingEmotion,
                     MapId = mapId,
@@ -1039,7 +1042,7 @@ namespace Altzone.Scripts.Lobby
                 BattleConfig     = _battleQConfig,
                 BattleParameters = new()
                 {
-                    PlayerNames = new string[] { "Player1", "Player2", "Player3", "Player4" },
+                    PlayerNames = data.PlayerSlotUserNames,
                     PlayerSlotTypes = data.PlayerSlotTypes,
                     PlayerSlotUserIDs = data.PlayerSlotUserIds,
                     PlayerCount = data.PlayerCount,
@@ -1631,6 +1634,7 @@ namespace Altzone.Scripts.Lobby
     {
         public long StartTime { get; set; }
         public string[] PlayerSlotUserIds { get; set; }
+        public string[] PlayerSlotUserNames { get; set; }
         public PlayerType[] PlayerSlotTypes { get; set; }
         public Emotion ProjectileInitialEmotion { get; set; }
         public string MapId { get; set; }
@@ -1642,6 +1646,7 @@ namespace Altzone.Scripts.Lobby
             byte[] bytes = new byte[0];
             Serializer.Serialize(b.StartTime, ref bytes);
             Serializer.Serialize(b.PlayerSlotUserIds, ref bytes);
+            Serializer.Serialize(b.PlayerSlotUserNames, ref bytes);
             Serializer.Serialize(b.PlayerSlotTypes.Cast<int>().ToArray(), ref bytes);
             Serializer.Serialize((int)b.ProjectileInitialEmotion, ref bytes);
             Serializer.Serialize(b.MapId, ref bytes);
@@ -1656,6 +1661,7 @@ namespace Altzone.Scripts.Lobby
             int offset = 0;
             result.StartTime = Serializer.DeserializeLong(data, ref offset);
             result.PlayerSlotUserIds = Serializer.DeserializeStringArray(data, ref offset);
+            result.PlayerSlotUserIds = Serializer.DeserializeStringArray(data, ref offset);
             result.PlayerSlotTypes = Serializer.DeserializeIntArray(data, ref offset).Cast<PlayerType>().ToArray();
             result.ProjectileInitialEmotion = (Emotion)Serializer.DeserializeInt(data, ref offset);
             result.MapId = Serializer.DeserializeString(data, ref offset);
@@ -1668,6 +1674,7 @@ namespace Altzone.Scripts.Lobby
         {
             return $"Start time: {StartTime}" +
                  $"\nPlayerSlotUserIds: {string.Join(", ", PlayerSlotUserIds)}" +
+                 $"\nPlayerSlotUserNames: {string.Join(", ", PlayerSlotUserNames)}" +
                  $"\nPlayerSlotTypes: {string.Join(", ",PlayerSlotTypes)}" +
                  $"\nProjectileInitialEmotion: {ProjectileInitialEmotion}" +
                  $"\nMapId: {MapId}" +
