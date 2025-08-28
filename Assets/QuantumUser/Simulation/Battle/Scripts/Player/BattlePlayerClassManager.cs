@@ -82,9 +82,12 @@ namespace Battle.QSimulation.Player
         {
             BattlePlayerClassBase playerClass = GetClass(playerData->CharacterClass);
 
-            if (playerClass == null && playerData->CharacterClass != BattlePlayerCharacterClass.None)
+            if (playerClass == null)
             {
-                Debug.LogWarningFormat("[PlayerClassManager] The {0} class could not be initialized!", playerData->CharacterClass);
+                if (playerData->CharacterClass != BattlePlayerCharacterClass.None)
+                {
+                    Debug.LogWarningFormat("[PlayerClassManager] The {0} class could not be initialized!", playerData->CharacterClass);
+                }
                 return;
             }
 
