@@ -495,6 +495,12 @@ namespace Battle.QSimulation.Player
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _internalHandle.RespawnTimer = value;
             }
 
+            public bool AllowCharacterSwapping
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.AllowCharacterSwapping;
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _internalHandle.AllowCharacterSwapping = value;
+            }
+
             public EntityRef SelectedCharacter
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacter; }
 
@@ -674,6 +680,12 @@ namespace Battle.QSimulation.Player
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->RespawnTimer[Index];
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->RespawnTimer[Index] = value;
+            }
+
+            public bool AllowCharacterSwapping
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->AllowCharacterSwapping[Index];
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->AllowCharacterSwapping[Index] = value;
             }
 
             public EntityRef SelectedCharacter
