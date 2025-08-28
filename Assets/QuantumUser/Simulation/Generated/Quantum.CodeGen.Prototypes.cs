@@ -316,6 +316,8 @@ namespace Quantum.Prototypes {
     [ArrayLengthAttribute(4)]
     public Quantum.Prototypes.FrameTimerPrototype[] RespawnTimer = new Quantum.Prototypes.FrameTimerPrototype[4];
     [ArrayLengthAttribute(4)]
+    public QBoolean[] AllowCharacterSwapping = new QBoolean[4];
+    [ArrayLengthAttribute(4)]
     public MapEntityId[] SelectedCharacters = new MapEntityId[4];
     [ArrayLengthAttribute(4)]
     public Int32[] SelectedCharacterNumbers = new Int32[4];
@@ -338,6 +340,9 @@ namespace Quantum.Prototypes {
         }
         for (int i = 0, count = PrototypeValidator.CheckLength(RespawnTimer, 4, in context); i < count; ++i) {
           this.RespawnTimer[i].Materialize(frame, ref *result.RespawnTimer.GetPointer(i), in context);
+        }
+        for (int i = 0, count = PrototypeValidator.CheckLength(AllowCharacterSwapping, 4, in context); i < count; ++i) {
+          *result.AllowCharacterSwapping.GetPointer(i) = this.AllowCharacterSwapping[i];
         }
         for (int i = 0, count = PrototypeValidator.CheckLength(SelectedCharacters, 4, in context); i < count; ++i) {
           PrototypeValidator.FindMapEntity(this.SelectedCharacters[i], in context, out *result.SelectedCharacters.GetPointer(i));
