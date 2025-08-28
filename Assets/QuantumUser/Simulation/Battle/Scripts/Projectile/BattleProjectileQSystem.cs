@@ -114,7 +114,7 @@ namespace Battle.QSimulation.Projectile
 
             BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot);
 
-            if (teammateHandle.PlayState == BattlePlayerPlayState.InPlay)
+            if (teammateHandle.PlayState.IsInPlay())
             {
                 EntityRef teammateEntity = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot).SelectedCharacter;
 

@@ -14,7 +14,7 @@ namespace Battle.QSimulation.Player
         {
             foreach (BattlePlayerManager.PlayerHandle playerHandle in BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f))
             {
-                if (playerHandle.PlayState == BattlePlayerPlayState.NotInGame) continue;
+                if (playerHandle.PlayState.IsNotInGame()) continue;
 
                 BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, 0);
             }
@@ -27,7 +27,8 @@ namespace Battle.QSimulation.Player
             BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
             FP damageTaken = projectile->Attack;
 
-            int characterNumber = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber;
+            BattlePlayerManager.PlayerHandle damagePlayerHandle = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot);
+            int characterNumber = damagePlayerHandle.SelectedCharacterNumber;
 
             FP newHp = damagedPlayerData->CurrentHp - damageTaken;
 
@@ -35,14 +36,16 @@ namespace Battle.QSimulation.Player
             {
                 damagedPlayerData->CurrentHp = newHp;
 
-                damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, 1);
+                damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, FP._1);
 
                 f.Events.BattleCharacterTakeDamage(playerHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newHp / damagedPlayerData->Stats.Hp);
             }
 
             if (damagedPlayerData->CurrentHp <= FP._0)
             {
-                BattlePlayerManager.DespawnPlayer(f, damagedPlayerData->Slot);
+                BattlePlayerManager.DespawnPlayer(f, damagedPlayerData->Slot, kill: true);
+                damagePlayerHandle.SetOutOfPlayRespawning();
+                damagePlayerHandle.RespawnTimer = FrameTimer.FromSeconds(f, FP._0_50);
             }
 
             BattlePlayerClassManager.OnProjectileHitPlayerHitbox(f, projectile, projectileEntity, playerHitbox, playerHitboxEntity);
@@ -66,7 +69,7 @@ namespace Battle.QSimulation.Player
             {
                 damagedPlayerData->CurrentDefence = newDefence;
 
-                damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, 1);
+                damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, FP._1);
 
                 f.Events.BattleShieldTakeDamage(playerHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newDefence);
             }
@@ -84,9 +87,13 @@ namespace Battle.QSimulation.Player
             BattlePlayerDataQComponent* playerData;
             Transform2D* playerTransform;
 
-            foreach (BattlePlayerManager.PlayerHandle playerHandle in BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f))
+            BattlePlayerManager.PlayerHandle[] playerHandleArray = BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f);
+
+            for (int playerNumber = 0; playerNumber < playerHandleArray.Length; playerNumber++)
             {
-                if (playerHandle.PlayState == BattlePlayerPlayState.NotInGame) continue;
+                BattlePlayerManager.PlayerHandle playerHandle = playerHandleArray[playerNumber];
+                if (playerHandle.PlayState.IsNotInGame()) continue;
+                if (playerHandle.PlayState.IsOutOfPlayFinal()) continue;
 
                 input = f.GetPlayerInput(playerHandle.PlayerRef);
 
@@ -96,7 +103,27 @@ namespace Battle.QSimulation.Player
                     continue;
                 }
 
-                if (playerHandle.PlayState == BattlePlayerPlayState.OutOfPlay) continue;
+                if (playerHandle.PlayState.IsOutOfPlayRespawning())
+                {
+                    if (!playerHandle.RespawnTimer.IsRunning(f))
+                    {
+                        int i;
+                        for (i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_COUNT; i++)
+                        {
+                            if (playerHandle.GetCharacterState(i) == BattlePlayerCharacterState.Alive)
+                            {
+                                BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, i);
+                                break;
+                            }
+                        }
+                        if (i == Constants.BATTLE_PLAYER_CHARACTER_COUNT)
+                        {
+                            playerHandle.SetOutOfPlayFinal();
+                        }
+                    }
+                }
+
+                if (playerHandle.PlayState.IsOutOfPlay()) continue;
 
                 playerEntity = playerHandle.SelectedCharacter;
                 playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerEntity);
