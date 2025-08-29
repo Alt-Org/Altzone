@@ -15,6 +15,7 @@ public class Popup : MonoBehaviour
         Accept,         //Accept task window
         Cancel,         //Cancel task window
         ClanMilestone,  //Clan milestone reward info window
+        MultipleChoice, //Multiple choice task window
     }
 
     [SerializeField] private DailyTaskCardImageReference _cardImageReference;
@@ -67,6 +68,12 @@ public class Popup : MonoBehaviour
     [SerializeField] private Color _cultureCategoryColor;
     [SerializeField] private Color _ethicalCategoryColor;
     [SerializeField] private Color _defaultColor;
+
+    [Header("Multiple choice")]
+    [SerializeField] private GameObject _multipleChoicePopup;
+    [SerializeField] private Image _taskMultipleChoiceColorImage;
+    [SerializeField] private Image _multipleChoiceTaskImage;
+    [SerializeField] private List<Button> _optionButtons;
 
     private bool? _result;
 
@@ -125,10 +132,15 @@ public class Popup : MonoBehaviour
 
             if (data.Value.OwnPage != null)
             {
-                Instance.SetTaskAcceptImage(data.Value.OwnPage);
+                Instance.SetTaskImage(data.Value.OwnPage, type);
                 Instance.SetTaskDescription(data.Value.OwnPage);
                 Instance.SetTaskRewardTexts(data.Value.OwnPage);
                 Instance.SetPopupTaskColor(data.Value.OwnPage, data.Value.Type);
+            }
+
+            if (data.Value.Type == PopupData.PopupDataType.MultipleChoice)
+            {
+                Instance.SetOptionButtons(data.Value.OwnPage);
             }
         }
 
@@ -160,9 +172,22 @@ public class Popup : MonoBehaviour
         Debug.Log($"Popup result: {_result}"); // Log the result for debugging
     }
 
-    private void SetTaskAcceptImage(PlayerTask data)
+    private void SetTaskImage(PlayerTask data, PopupWindowType type)
     {
-        _taskAcceptImage.sprite = _cardImageReference.GetTaskImage(data);
+        switch (type)
+        {
+            case PopupWindowType.Accept:
+                {
+                    _taskAcceptImage.sprite = _cardImageReference.GetTaskImage(data);
+                    return;
+                }
+            case PopupWindowType.MultipleChoice:
+                {
+                    _multipleChoiceTaskImage.sprite = _cardImageReference.GetTaskImage(data);
+                    return;
+                }
+            default: return;
+        }
     }
 
     private void SetTaskDescription(PlayerTask data)
@@ -181,6 +206,8 @@ public class Popup : MonoBehaviour
         Image targetImage = _taskAcceptColorImage;
 
         if (type == PopupData.PopupDataType.CancelTask) targetImage = _taskCancelColorImage;
+
+        if (type == PopupData.PopupDataType.MultipleChoice) targetImage = _taskMultipleChoiceColorImage;
 
         Color taskColor = _defaultColor;
 
@@ -202,6 +229,7 @@ public class Popup : MonoBehaviour
         _taskAcceptPopup.SetActive(type == PopupWindowType.Accept);
         _taskCancelPopup.SetActive(type == PopupWindowType.Cancel);
         _clanMilestonePopup.SetActive(type == PopupWindowType.ClanMilestone);
+        _multipleChoicePopup.SetActive(type == PopupWindowType.MultipleChoice);
     }
 
     private void MoveMovableWindow(Vector3 location, PopupWindowType type)
@@ -255,5 +283,31 @@ public class Popup : MonoBehaviour
     {
         //_clanMilestoneRewardImage.sprite = sprite;
         _clanMilestoneRewardAmountText.text = $"{rewardAmount}x";
+    }
+
+    private void SetOptionButtons(PlayerTask data)
+    {
+        foreach (var button in _optionButtons)
+            button.onClick.RemoveAllListeners();
+        
+        List<string> options = MultipleChoiceOptions.Instance.GetTaskOptions(data);
+
+        //Shuffle the list
+        int n = options.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = Random.Range(0, n + 1);
+            string option = options[k];
+            options[k] = options[n];
+            options[n] = option;
+        }
+
+        for (int i = 0; i < Mathf.Min(options.Count, _optionButtons.Count); i++)
+        {
+            string option = options[i];
+            _optionButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = option;
+            _optionButtons[i].onClick.AddListener(() => _result = MultipleChoiceOptions.Instance.GetResult(data, option));
+        }
     }
 }

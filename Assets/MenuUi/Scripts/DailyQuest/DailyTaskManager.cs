@@ -72,6 +72,8 @@ public class DailyTaskManager : AltMonoBehaviour
     [SerializeField] private DailyTaskOwnTask _ownTaskPageHandler;
     [Space]
     [SerializeField] private List<MoodThreshold> _moodThresholds;
+    [Space]
+    [SerializeField] private Button _showMultipleChoiceTaskButton;
 
     [System.Serializable]
     public struct MoodThreshold
@@ -123,6 +125,7 @@ public class DailyTaskManager : AltMonoBehaviour
         _clanTaskTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.ClanTask));
 
         _cancelTaskButton.onClick.AddListener(() => StartCancelTask());
+        _showMultipleChoiceTaskButton.onClick.AddListener(() => ShowMultipleChoiceTask());
 
         //_ownTaskTabButton.interactable = false;
 
@@ -638,6 +641,13 @@ public class DailyTaskManager : AltMonoBehaviour
             callback(done.Value);
     }
 
+    private void ShowMultipleChoiceTask()
+    {
+        if (_currentPlayerData.Task == null || !MultipleChoiceOptions.Instance.IsMultipleChoice(_currentPlayerData.Task)) return;
+        PopupData data = new(_currentPlayerData.Task);
+        StartCoroutine(ShowPopupAndHandleResponse(_currentPlayerData.Task.Title, data));
+    }
+
     #endregion
 
     #region Clan
@@ -762,6 +772,7 @@ public class DailyTaskManager : AltMonoBehaviour
             case PopupData.PopupDataType.OwnTask: windowType = Popup.PopupWindowType.Accept; break;
             case PopupData.PopupDataType.CancelTask: windowType = Popup.PopupWindowType.Cancel; break;
             case PopupData.PopupDataType.ClanMilestone: windowType = Popup.PopupWindowType.ClanMilestone; break;
+            case PopupData.PopupDataType.MultipleChoice: windowType = Popup.PopupWindowType.MultipleChoice; break;
             default: windowType = Popup.PopupWindowType.Accept; break;
         }
 
@@ -792,6 +803,7 @@ public class DailyTaskManager : AltMonoBehaviour
                             break;
 
                         SwitchTab(SelectedTab.OwnTask);
+                        ShowMultipleChoiceTask();
                         break;
                     }
                 case PopupData.PopupDataType.CancelTask:
@@ -810,6 +822,7 @@ public class DailyTaskManager : AltMonoBehaviour
                         break;
                     }
                 case PopupData.PopupDataType.ClanMilestone: break;
+                case PopupData.PopupDataType.MultipleChoice: Debug.Log($"Correct!"); break;
             }
         }
         else
