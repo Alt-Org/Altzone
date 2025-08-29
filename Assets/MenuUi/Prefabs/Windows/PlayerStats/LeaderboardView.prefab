@@ -15109,9 +15109,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4287620506752123014, guid: 3a035a942e5180d45947bdb51427e49d,
         type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4287620506752123014, guid: 3a035a942e5180d45947bdb51427e49d,
+        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 7120743843305630683}
+    - target: {fileID: 4287620506752123014, guid: 3a035a942e5180d45947bdb51427e49d,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 704936562798478934}
     - target: {fileID: 4287620506752123014, guid: 3a035a942e5180d45947bdb51427e49d,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -15120,6 +15130,11 @@ PrefabInstance:
     - target: {fileID: 4287620506752123014, guid: 3a035a942e5180d45947bdb51427e49d,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4287620506752123014, guid: 3a035a942e5180d45947bdb51427e49d,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4287620506752123014, guid: 3a035a942e5180d45947bdb51427e49d,
@@ -15135,6 +15150,11 @@ PrefabInstance:
     - target: {fileID: 4287620506752123014, guid: 3a035a942e5180d45947bdb51427e49d,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: MenuUi.Scripts.TabLine.TabLine, MainMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 4287620506752123014, guid: 3a035a942e5180d45947bdb51427e49d,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
       value: MenuUi.Scripts.TabLine.TabLine, MainMenu
       objectReference: {fileID: 0}
     - target: {fileID: 4287620506752123014, guid: 3a035a942e5180d45947bdb51427e49d,

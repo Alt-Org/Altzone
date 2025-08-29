@@ -136,11 +136,13 @@ public class LeaderboardView : MonoBehaviour
        if (leaderboard == Leaderboard.Wins)
         {
             SetLeaderboardType(LeaderboardType.Wins); //Asetetaan voitot-näkymä
+            
         }
         
         else
         {
             SetLeaderboardType(LeaderboardType.Activity); // Asetetaan aktiivisuus -näkymä
+            
         }
 
         LoadWinsView(); // Näyttää oletukena voittolistat
@@ -281,6 +283,23 @@ public class LeaderboardView : MonoBehaviour
                     }));
                 }
                 break;
+
+            case Leaderboard.Wins: // Testataan, saadaanko TabWins toimimaan myös listojen osalta
+                
+                StartCoroutine(ServerManager.Instance.GetPlayerLeaderboardFromServer((playerLeaderboard) => // Tiedot serveriltä
+                {
+                    int rank = 1;
+                    foreach (var ranking in playerLeaderboard) // Iteroidaan pelaajat
+                    {
+                        
+                        LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();  // Uusi item 
+                        item.Initialize(rank, ranking.Player.Name, ranking.WonBattles, null); // Alustetaan item (tiedot), tarvitaan null (klaanitiedot)
+
+                        rank++;
+                    }
+                }));
+                break;
+
             case Leaderboard.Clan:
 
                 Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
