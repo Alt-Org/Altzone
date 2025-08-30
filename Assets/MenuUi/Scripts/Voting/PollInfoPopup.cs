@@ -27,7 +27,7 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private Button closeInfoButton;
 
     [Header("Panels")]
-    [SerializeField] private GameObject pollInfoObject;
+    [SerializeField] private GameObject furniturePollInfoObject;
 
     private void Awake()
     {
@@ -65,8 +65,8 @@ public class PollInfoPopup : MonoBehaviour
         }
     }
 
-    // Opens the popup and fills it with the data from the furniture in questsion
-    public void Open(GameFurniture furniture)
+    // Opens the popup and fills it with the data from the furniture in question
+    public void OpenFurniturePopup(GameFurniture furniture)
     {
         if (furniture == null)
         {
@@ -104,7 +104,7 @@ public class PollInfoPopup : MonoBehaviour
 
     public void Close()
     {
-        pollInfoObject.SetActive(false);
+        furniturePollInfoObject.SetActive(false);
         gameObject.SetActive(false);
     }
 

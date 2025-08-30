@@ -219,7 +219,7 @@ public class PollObject : MonoBehaviour
         {
             if (PollInfoPopup.Instance != null)
             {
-                PollInfoPopup.Instance.Open(furniturePollData.Furniture);
+                PollInfoPopup.Instance.OpenFurniturePopup(furniturePollData.Furniture);
             }
             else
             {

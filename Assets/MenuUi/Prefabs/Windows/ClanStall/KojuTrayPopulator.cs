@@ -28,7 +28,7 @@ public class KojuTrayPopulator : MonoBehaviour
     private PlayerData player;
     private ClanData clan;
 
-    // Track items moved to panel to avoid re-spawning them on re-populate
+    // Track items that are located on the panel instead of the tray to avoid respawning them when repopulating the tray
     private HashSet<string> movedFurnitureIds = new HashSet<string>();
 
     private void OnEnable()
