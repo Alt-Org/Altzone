@@ -1,6 +1,7 @@
 using UnityEngine;
 
-namespace MenuUi.Scripts.AvatarEditor{
+namespace MenuUi.Scripts.AvatarEditor
+{
     public class AvatarFaceLoader : MonoBehaviour
     {
         [SerializeField] private AvatarVisualDataScriptableObject _avatarVisuals;
@@ -23,10 +24,11 @@ namespace MenuUi.Scripts.AvatarEditor{
 
         private void UpdateVisuals()
         {
-            if (_avatarVisuals.color != null)
-                _characterHandle.SetHeadColor(_avatarVisuals.color);
+            // Päivitä väri
+            _characterHandle.SetHeadColor(_avatarVisuals.Color);
 
-            if (_avatarVisuals.sprites == null || _avatarVisuals.sprites.Count == 0)
+            // Tarkista sprites-property
+            if (_avatarVisuals.Sprites == null || _avatarVisuals.Sprites.Count == 0)
                 return;
 
             _characterHandle.SetMainCharacterImage(FeatureSlot.Hair, _avatarVisuals.Hair);
@@ -37,11 +39,8 @@ namespace MenuUi.Scripts.AvatarEditor{
 
         public void UpdateVisuals(AvatarVisualData data)
         {
-            if (data.color != null)
-                _characterHandle.SetHeadColor(data.color);
-
-            /*if (_avatarVisuals.sprites == null || _avatarVisuals.sprites.Count == 0)
-                return;*/
+            // Käytä julkista Color-propertya
+            _characterHandle.SetHeadColor(data.Color);
 
             _characterHandle.SetMainCharacterImage(FeatureSlot.Hair, data.Hair);
             _characterHandle.SetMainCharacterImage(FeatureSlot.Eyes, data.Eyes);
@@ -50,3 +49,4 @@ namespace MenuUi.Scripts.AvatarEditor{
         }
     }
 }
+

@@ -52,7 +52,13 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
         if (data == null) yield break;
 
-        _avatarVisualDataScriptableObject.Data = data;
+        
+        List<AvatarPiece> pieceIDs = Enum.GetValues(typeof(AvatarPiece)).Cast<AvatarPiece>().ToList();
+        foreach (AvatarPiece id in pieceIDs)
+        {
+            _avatarVisualDataScriptableObject.SetAvatarPiece(id, data.GetAvatarPiece(id));
+        }
+        _avatarVisualDataScriptableObject.Color = data.Color;
 
         InvokeOnAvatarDesignUpdate();
     }
@@ -71,6 +77,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
         AvatarVisualData data = new();
         List<AvatarPiece> pieceIDs = Enum.GetValues(typeof(AvatarPiece)).Cast<AvatarPiece>().ToList();
+
         foreach (AvatarPiece id in pieceIDs)
         {
             int pieceId = playerData.AvatarData.GetPieceID(id);
@@ -83,8 +90,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
         Color color = Color.white;
         ColorUtility.TryParseHtmlString(playerData.AvatarData.Color, out color);
-
-        data.color = color;
+        data.Color = color;
 
         return data;
     }
@@ -94,3 +100,4 @@ public class AvatarDesignLoader : AltMonoBehaviour
         OnAvatarDesignUpdate?.Invoke();
     }
 }
+

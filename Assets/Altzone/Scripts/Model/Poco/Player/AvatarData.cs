@@ -100,7 +100,7 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
             _ => -1,
         };
 
-        // Private method for internal use if needed
+        
         private void SetPieceID(AvatarPiece piece, int id)
         {
             switch (piece)
