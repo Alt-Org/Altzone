@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Voting;
 
 public class PollInfoPopup : MonoBehaviour
 {
@@ -24,10 +26,17 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private RarityColourReference rarityColourReference;
 
     [Header("Buttons")]
-    [SerializeField] private Button closeInfoButton;
+    [SerializeField] private Button closeFurnitureInfoButton;
+    [SerializeField] private Button closeClanInfoButton;
 
     [Header("Panels")]
     [SerializeField] private GameObject furniturePollInfoObject;
+
+    [Header("Clan Role Poll UI Elements")]
+    [SerializeField] private GameObject clanRolePollInfoObject; 
+    [SerializeField] private TMP_Text clanPlayerNameText;
+    [SerializeField] private TMP_Text clanCurrentRoleText;
+    [SerializeField] private TMP_Text clanTargetRoleText;
 
     private void Awake()
     {
@@ -50,9 +59,14 @@ public class PollInfoPopup : MonoBehaviour
 
     private void Start()
     {
-        if (closeInfoButton != null)
+        if (closeFurnitureInfoButton != null)
         {
-            closeInfoButton.onClick.AddListener(Close);
+            closeFurnitureInfoButton.onClick.AddListener(Close);
+        }
+
+        if (closeClanInfoButton != null)
+        {
+            closeClanInfoButton.onClick.AddListener(Close);
         }
     }
 
@@ -100,11 +114,30 @@ public class PollInfoPopup : MonoBehaviour
         }
 
         gameObject.SetActive(true);
+        furniturePollInfoObject.SetActive(true);
+        if (clanRolePollInfoObject != null) clanRolePollInfoObject.SetActive(false);
     }
+
+    // Opens the popup for clan role polls
+    public void OpenClanRolePopup(string playerName, ClanMemberRole currentRole, ClanMemberRole targetRole)
+    {
+        clanPlayerNameText.text = playerName;
+        clanCurrentRoleText.text = currentRole.ToString();
+        clanTargetRoleText.text = targetRole.ToString();
+
+        clanRolePollInfoObject.SetActive(true);
+        gameObject.SetActive(true);
+    }
+
 
     public void Close()
     {
-        furniturePollInfoObject.SetActive(false);
+        if (furniturePollInfoObject != null)
+            furniturePollInfoObject.SetActive(false);
+
+        if (clanRolePollInfoObject != null)
+            clanRolePollInfoObject.SetActive(false);
+
         gameObject.SetActive(false);
     }
 

@@ -4,6 +4,10 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using Altzone.Scripts.Voting;
+using Altzone.Scripts;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Player;
 
 public class PollObject : MonoBehaviour
 {
@@ -223,8 +227,19 @@ public class PollObject : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("PollInfoPopup instance is not found in the scene!");
+                Debug.LogWarning("PollInfoPopup instance is not found in the scene.");
             }
+        }
+        else if (pollData is ClanRolePollData clanRolePoll)
+        {
+            if (PollInfoPopup.Instance == null)
+            {
+                Debug.LogWarning("PollInfoPopup instance is not found in the scene.");
+                return;
+            }
+
+            // Start coroutine to fetch clan data
+            StartCoroutine(FetchClanMemberAndOpenPopup(clanRolePoll));
         }
         else
         {
@@ -232,5 +247,37 @@ public class PollObject : MonoBehaviour
         }
     }
 
+    private IEnumerator FetchClanMemberAndOpenPopup(ClanRolePollData clanRolePoll)
+    {
+        if (clanRolePoll == null || string.IsNullOrEmpty(clanRolePoll.TargetPlayerId))
+            yield break;
 
+        // Fetch current player to get the clan ID
+        PlayerData player = null;
+        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
+        yield return new WaitUntil(() => player != null);
+
+        if (string.IsNullOrEmpty(player.ClanId))
+        {
+            Debug.LogWarning("Player is not in a clan.");
+            yield break;
+        }
+
+        // Fetch the clan data 
+        ClanData clan = null;
+        Storefront.Get().GetClanData(player.ClanId, data => clan = data);
+        yield return new WaitUntil(() => clan != null);
+
+        // Find the target member
+        ClanMember targetMember = clan.Members.Find(m => m.Id == clanRolePoll.TargetPlayerId);
+
+        if (targetMember == null)
+        {
+            Debug.LogWarning("Target member not found in clan.");
+            yield break;
+        }
+
+        // Open the clan role popup with the fetched data
+        PollInfoPopup.Instance.OpenClanRolePopup(targetMember.Name, targetMember.Role, clanRolePoll.TargetRole);
+    }
 }

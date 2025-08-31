@@ -66,34 +66,35 @@ using MenuUi.Scripts.Storage;
             PollMonitor.Instance?.StartMonitoring();
         }
 
-        // Create poll for Role Promotion
-        public static void CreateRolePromotionPoll(string targetPlayerId, ClanMemberRole targetRole)
+    // Create poll for Role Promotion
+    public static void CreateRolePromotionPoll(string targetPlayerId, ClanMemberRole targetRole)
+    {
+        LoadClanData();
+
+        if (clan == null || player == null)
         {
-            LoadClanData();
-
-            if (clan == null || player == null)
-            {
-                Debug.LogWarning("Clan or player data not loaded.");
-                return;
-            }
-
-            string pollId = GetFirstAvailableId();
-
-            List<string> voterIds = clan.Members.Select(m => m.Id).ToList();
-            Sprite placeholderSprite = null;
-            long pollDurationMinutes = 1;
-
-            var poll = new RolePollData(pollId, placeholderSprite, voterIds, RolePollType.Give, targetRole.ToString(), targetPlayerId, pollDurationMinutes);
-
-            pollDataList.Add(poll);
-            SaveClanData();
-
-            Debug.Log($"Role promotion poll created for {targetPlayerId} {targetRole}");
-
-            PollMonitor.Instance?.StartMonitoring();
+            Debug.LogWarning("Clan or player data not loaded.");
+            return;
         }
 
-        public static void BuildPolls(List<ServerPoll> polls)
+        string pollId = GetFirstAvailableId();
+
+        List<string> voterIds = clan.Members.Select(m => m.Id).ToList();
+        Sprite placeholderSprite = null;
+        long pollDurationMinutes = 1;
+
+        var poll = new ClanRolePollData(pollId, placeholderSprite, voterIds, pollDurationMinutes, targetPlayerId, targetRole);
+
+        pollDataList.Add(poll);
+        SaveClanData();
+
+        Debug.Log($"Role promotion poll created for {targetPlayerId} {targetRole}");
+
+        PollMonitor.Instance?.StartMonitoring();
+    }
+
+
+    public static void BuildPolls(List<ServerPoll> polls)
         {
             LoadClanData();
 

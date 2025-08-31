@@ -97,5 +97,4 @@ public class ClanRightsDebugger : MonoBehaviour
             default: return -1;
         }
     }
-
 }
