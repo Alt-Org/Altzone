@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Altzone.Scripts.Interface;
 
 namespace Altzone.Scripts.ReferenceSheets
 {
@@ -7,6 +8,30 @@ namespace Altzone.Scripts.ReferenceSheets
     public class MusicReference : ScriptableObject
     {
         [SerializeField] private List<MusicCategory> _musicCategories = new List<MusicCategory>();
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void SubsystemRegistration()
+        {
+            // Manual reset if UNITY Domain Reloading is disabled.
+            _instance = null;
+            _hasInstance = false;
+        }
+
+        private static MusicReference _instance;
+        private static bool _hasInstance;
+
+        public static MusicReference Instance
+        {
+            get
+            {
+                if (!_hasInstance)
+                {
+                    _instance = Resources.Load<MusicReference>($"Audio/MusicDataReference");
+                    _hasInstance = _instance != null;
+                }
+                return _instance;
+            }
+        }
 
         public List<MusicCategory> MusicCategories { get => _musicCategories; }
 
@@ -28,6 +53,16 @@ namespace Altzone.Scripts.ReferenceSheets
             return null;
         }
 
+        public List<string> ConvertToStringList(List<MusicTrack> tracks)
+        {
+            List<string> list = new List<string>();
+
+            foreach (MusicTrack track in tracks)
+                list.Add(track.Name);
+
+            return list;
+        }
+
         public MusicTrack GetTrack(string categoryName, string trackName)
         {
             foreach (MusicCategory category in _musicCategories)
@@ -38,6 +73,12 @@ namespace Altzone.Scripts.ReferenceSheets
 
             return null;
         }
+
+        #region ISelectionBoxFetchable
+
+        public List<string> GetStringList(string listName) { return ConvertToStringList(GetTracksOfCategoryName(listName)); }
+
+        #endregion
     }
 
     [System.Serializable]

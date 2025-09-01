@@ -93,6 +93,7 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleLastRowWallDestroyed>(this, QEventOnLastRowWallDestroyed);
             QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, QEventPlaySoundFX);
             QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
+            QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
 
             // Subscribing to Debug events
             QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, QEventDebugOnUpdateStatsOverlay);
@@ -177,8 +178,10 @@ namespace Battle.View.Game
                     PlayerType.LocalPlayer,
                     "Minä",
                     new int[3] { localPlayerData.Characters[0].Id, localPlayerData.Characters[1].Id, localPlayerData.Characters[2].Id },
+                    new float[3] { (float)localPlayerData.Characters[0].Stats.Defence, (float)localPlayerData.Characters[1].Stats.Defence, (float)localPlayerData.Characters[2].Stats.Defence },
                     SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.PlayerInfo)
                 );
+                _uiController.PlayerInfoHandler.SetShowPlayer(true);
 
                 // Setting local teammate info
                 if (localTeammateData != null)
@@ -187,17 +190,10 @@ namespace Battle.View.Game
                         PlayerType.LocalTeammate,
                         "Tiimiläinen",
                         new int[3] { localTeammateData.Characters[0].Id, localTeammateData.Characters[1].Id, localTeammateData.Characters[2].Id },
+                        new float[3] { (float)localTeammateData.Characters[0].Stats.Defence, (float)localTeammateData.Characters[1].Stats.Defence, (float)localTeammateData.Characters[2].Stats.Defence },
                         SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.TeammateInfo)
                     );
-                }
-                else
-                {
-                    _uiController.PlayerInfoHandler.SetInfo(
-                        PlayerType.LocalTeammate,
-                        "Tiimiläinen",
-                        new int[3] { 101, 201, 301 },
-                        SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.TeammateInfo)
-                    );
+                    _uiController.PlayerInfoHandler.SetShowTeammate(true);
                 }
             }
 
@@ -296,6 +292,14 @@ namespace Battle.View.Game
             if (e.Team == LocalPlayerTeam)
             {
                 _uiController.PlayerInfoHandler.UpdateHealthVisual(e.Slot, e.CharacterNumber, (float)e.HealthPercentage);
+            }
+        }
+
+        private void QEventOnShieldTakeDamage(EventBattleShieldTakeDamage e)
+        {
+            if (e.Team == LocalPlayerTeam)
+            {
+                _uiController.PlayerInfoHandler.UpdateDefenceVisual(e.Slot, e.CharacterNumber, (float)e.DefenceValue);
             }
         }
 

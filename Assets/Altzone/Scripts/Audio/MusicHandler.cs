@@ -49,7 +49,15 @@ namespace Altzone.Scripts.Audio
             None
         }
 
-        public void SetMaxVolume(float volume) { _maxVolume = volume; }
+        public void SetMaxVolume(float volume)
+        {
+            _maxVolume = volume;
+
+            if (_primaryChannel == 1)
+                _musicChannel1.volume = volume;
+            else
+                _musicChannel2.volume = volume;
+        }
 
         private void Awake()
         {
@@ -79,7 +87,8 @@ namespace Altzone.Scripts.Audio
 
             if (musicTrack == null) return null;
 
-            if (categoryName.ToLower() == "MainMenu".ToLower()) _mainMenuMusicName = musicTrack.Name;
+            if (categoryName.ToLower() == "MainMenu".ToLower())
+                _mainMenuMusicName = SettingsCarrier.Instance.GetSelectionBoxData(SettingsCarrier.SelectionBoxType.MainMenuMusic);
 
             SwitchMusic(currentCategory, musicTrack);
 
@@ -92,11 +101,14 @@ namespace Altzone.Scripts.Audio
 
             if (currentCategory == null) return null;
 
+            if (categoryName.ToLower() == "MainMenu".ToLower())
+                _mainMenuMusicName = SettingsCarrier.Instance.GetSelectionBoxData(SettingsCarrier.SelectionBoxType.MainMenuMusic);
+
+            if (categoryName.ToLower() == "MainMenu".ToLower() && string.IsNullOrEmpty(trackName)) trackName = _mainMenuMusicName;
+
             MusicTrack musicTrack = currentCategory.Get(trackName);
 
             if (musicTrack == null) return null;
-
-            if (categoryName.ToLower() == "MainMenu".ToLower()) _mainMenuMusicName = musicTrack.Name;
 
             SwitchMusic(currentCategory, musicTrack);
 
@@ -109,7 +121,8 @@ namespace Altzone.Scripts.Audio
 
             if (currentCategory == null || musicTrack == null) return null;
 
-            if (categoryName.ToLower() == "MainMenu".ToLower()) _mainMenuMusicName = musicTrack.Name;
+            if (categoryName.ToLower() == "MainMenu".ToLower())
+                _mainMenuMusicName = SettingsCarrier.Instance.GetSelectionBoxData(SettingsCarrier.SelectionBoxType.MainMenuMusic);
 
             SwitchMusic(currentCategory, musicTrack);
 

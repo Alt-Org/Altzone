@@ -20,6 +20,9 @@ using Altzone.Scripts.Settings;
 using UnityEngine.SceneManagement;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Voting;
+using System.Linq;
+using Altzone.Scripts.Model.Poco;
+using Altzone.Scripts.Store;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -66,6 +69,9 @@ public class ServerManager : MonoBehaviour
 
     public delegate void ClanInventoryChanged();
     public static event ClanInventoryChanged OnClanInventoryChanged;
+
+    public delegate void ClanPollsChanged();
+    public static event ClanPollsChanged OnClanPollsChanged;
 
     public delegate void OnlinePlayersChanged(List<ServerOnlinePlayer> onlinePlayers);
     public static event OnlinePlayersChanged OnOnlinePlayersChanged;
@@ -135,6 +141,14 @@ public class ServerManager : MonoBehaviour
     public void RaiseClanInventoryChangedEvent()
     {
         OnClanInventoryChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// Raises ClanPollsChanged event when clan polls have changed.
+    /// </summary>
+    public void RaiseClanPollsChangedEvent()
+    {
+        OnClanPollsChanged?.Invoke();
     }
 
     /// <summary>
@@ -353,7 +367,7 @@ public class ServerManager : MonoBehaviour
             //clanData = new ClanData(clan);
 
             // Checks if the clan is found in DataStorage or if we have to create new one.
-            
+
             store.GetClanData(playerData.ClanId, clanDataFromStorage =>
             {
                 if (clanDataFromStorage == null)
@@ -368,6 +382,30 @@ public class ServerManager : MonoBehaviour
 
             }); 
         });
+
+        yield return StartCoroutine(GetClanVoteListFromServer(polls =>
+        {
+            if (polls != null)
+            {
+                clanData.Polls.Clear();
+                foreach (ServerPoll poll in polls)
+                {
+
+                    PollData pollData = new FurniturePollData(poll);
+                    clanData.Polls.Add(pollData);
+                }
+                RaiseClanPollsChangedEvent();
+            }
+        }));
+
+        yield return StartCoroutine(GetClanStall(clan._id, stall =>
+        {
+            if(stall == null) Debug.LogWarning("Failed to get stall data.");
+            else
+            {
+                clanData.AdData = stall;
+            }
+        }));
 
         // Creates or fetches the most up to date clan Stock before saving.
         if (Stock == null)
@@ -427,6 +465,7 @@ public class ServerManager : MonoBehaviour
 
         // Saves clan data including its items.
         store.SaveClanData(clanData, null);
+        RaiseClanChangedEvent();
     }
 
     public IEnumerator GetClanPlayers(Action<List<ClanMember>> callback)
@@ -580,6 +619,30 @@ public class ServerManager : MonoBehaviour
                 Debug.LogWarning(result);
                 ServerPlayer player = result["data"]["Player"].ToObject<ServerPlayer>();
                 Player = player;
+
+                if (callback != null)
+                    callback(player);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator GetPlayerFromServer(string playerId, Action<ServerPlayer> callback)
+    {
+        if (Player != null)
+            Debug.LogWarning("Player already exists. Consider using ServerManager.Instance.Player if the most up to data data from server is not needed.");
+
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "player/" + playerId, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                //Debug.LogWarning(result);
+                ServerPlayer player = result["data"]["Player"].ToObject<ServerPlayer>();
 
                 if (callback != null)
                     callback(player);
@@ -916,6 +979,104 @@ public class ServerManager : MonoBehaviour
             }
         }));
     }
+
+    #region Roles
+    public IEnumerator CreateClanRoleToServer(ClanRoles role, Action<bool> callback)
+    {
+        string body = JObject.FromObject(
+            new
+            {
+                name = role.name,
+                rights = role.rights,
+
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
+            ).ToString();
+
+        yield return StartCoroutine(WebRequests.Post(SERVERADDRESS + "clan/role", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                {
+                    callback(true);
+                }
+
+            }
+            else
+            {
+                if (callback != null)
+                {
+                    callback(false);
+                }
+            }
+        }));
+    }
+
+    public IEnumerator UpdateClanRoleToServer(ClanRoles role, Action<bool> callback)
+    {
+        string body = JObject.FromObject(
+            new
+            {
+                id = role._id,
+                name = role.name,
+                rights = role.rights,
+
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
+            ).ToString();
+
+        yield return StartCoroutine(WebRequests.Put(SERVERADDRESS + "clan/role", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                {
+                    callback(true);
+                }
+
+            }
+            else
+            {
+                if (callback != null)
+                {
+                    callback(false);
+                }
+            }
+        }));
+    }
+
+    public IEnumerator SetMemberRoleInClanToServer(string player, string role, Action<bool> callback)
+    {
+        string body = JObject.FromObject(
+            new
+            {
+                player_id = player,
+                role_id = role
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
+            ).ToString();
+
+        yield return StartCoroutine(WebRequests.Put(SERVERADDRESS + "clan/role/set", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                {
+                    callback(true);
+                }
+
+            }
+            else
+            {
+                if (callback != null)
+                {
+                    callback(false);
+                }
+            }
+        }));
+    }
+    #endregion
 
     #endregion
 
@@ -1426,6 +1587,57 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
+    public IEnumerator GetClanStall(string clan_id, Action<AdStoreObject> callback)
+    {
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "stall/"+clan_id, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                ServerStall stall = result["data"]["Stall"].ToObject<ServerStall>();
+
+                AdStoreObject adObject = new AdStoreObject(stall.adPoster.border, stall.adPoster.colour);
+
+
+
+                if (callback != null)
+                    callback(adObject);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator UpdateClanAdPoster(AdStoreObject ad, Action<bool> callback)
+    {
+        string body = JObject.FromObject(
+            new
+            {
+                border = ad.BorderFrame,
+                colour = ad.BackgroundColour,
+                //tag = data.Tag,
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
+        ).ToString();
+
+        yield return StartCoroutine(WebRequests.Patch(DEVADDRESS + "stall/adPoster", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
     #region Leaderboard
     public IEnumerator GetClanLeaderboardFromServer(Action<List<ClanLeaderboard>> callback)
     {
@@ -1457,7 +1669,7 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator GetPlayerLeaderboardFromServer(Action<List<PlayerLeaderboard>> callback)
     {
-        yield return StartCoroutine(WebRequests.Get(SERVERADDRESS + "latest-release/leaderboard/player", AccessToken, request =>
+        yield return StartCoroutine(WebRequests.Get(SERVERADDRESS + "leaderboard/player", AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {

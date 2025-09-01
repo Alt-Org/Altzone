@@ -1,6 +1,5 @@
 using UnityEngine;
 using System;
-using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.BattleUiShared;
 
 public class SettingsCarrier : MonoBehaviour // Script for carrying settings data between scenes
@@ -287,6 +286,15 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         }
     }
 
+    private string _mainMenuMusicName;
+    public string MainMenuMusicName { get { return _mainMenuMusicName; } }
+
+    public enum SelectionBoxType
+    {
+        None,
+        MainMenuMusic
+    }
+
     // Functions
     private void Awake()
     {
@@ -335,6 +343,8 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         _unlimitedStatUpgradeMaterials = PlayerPrefs.GetInt(UnlimitedStatUpgradeMaterialsKey, 1) == 1;
 
         _topBarStyleSetting = (TopBarStyle)PlayerPrefs.GetInt(TopBarStyleSettingKey, 1);
+
+        _mainMenuMusicName = PlayerPrefs.GetString("MainMenuMusic");
     }
 
     // SentVolume combines masterVolume and another volume chosen by the sent type
@@ -439,6 +449,23 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
                 }
             default:
                 return false;
+        }
+    }
+
+    public string GetSelectionBoxData(SelectionBoxType type)
+    {
+        switch (type)
+        {
+            case SelectionBoxType.MainMenuMusic: return _mainMenuMusicName;
+            default: return null;
+        }
+    }
+
+    public void SetDataFromSelectionBox(SelectionBoxType type, string value)
+    {
+        switch (type)
+        {
+            case SelectionBoxType.MainMenuMusic: _mainMenuMusicName = value; PlayerPrefs.SetString("MainMenuMusic", value); break;
         }
     }
 }

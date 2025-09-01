@@ -6,7 +6,7 @@ component BattlePlayerDataQComponent
     BattlePlayerSlot Slot;
     BattleTeamNumber TeamNumber;
     int CharacterId;
-    int CharacterClass;
+    BattlePlayerCharacterClass CharacterClass;
 
     BattlePlayerStats Stats;
 
@@ -19,6 +19,7 @@ component BattlePlayerDataQComponent
     FP RotationOffset;
 
     FP CurrentHp;
+    FP CurrentDefence;
 
     EntityRef HitboxShieldEntity;
     EntityRef HitboxCharacterEntity;

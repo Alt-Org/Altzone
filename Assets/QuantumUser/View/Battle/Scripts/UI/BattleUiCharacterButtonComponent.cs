@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 using Altzone.Scripts.ModelV2;
 
@@ -15,7 +16,7 @@ namespace Battle.View.UI
         [SerializeField] private OnPointerDownButton _eventSender;
         [SerializeField] private Image _characterImage;
         [SerializeField] private Image _damageFill;
-        [SerializeField] private Image _shieldFill;
+        [SerializeField] private TextMeshProUGUI _defenceValue;
 
         [SerializeField] private float _damageFillAnimationDuration = 0.5f;
 
@@ -29,7 +30,7 @@ namespace Battle.View.UI
         public void SetCharacterIcon(int characterId)
         {
             PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(characterId.ToString());
-            
+
             if (info == null) return;
 
             Sprite characterSprite = info.BattleUiSprite;
@@ -47,6 +48,12 @@ namespace Battle.View.UI
             t = 0f;
             _startDamageFillAmount = _damageFill.fillAmount;
             _targetDamageFillAmount = 1 - percentage;
+        }
+
+        public void SetDefenceNumber(float defenceValue)
+        {
+            defenceValue = Mathf.Max(defenceValue, 0f);
+            _defenceValue.text = defenceValue.ToString();
         }
 
         private void Update()

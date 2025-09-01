@@ -11,6 +11,15 @@ using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Player
 {
+    public static class BattlePlayerPlayStateExtension
+    {
+        public static bool IsNotInGame(this BattlePlayerPlayState state)           => state is BattlePlayerPlayState.NotInGame;
+        public static bool IsOutOfPlay(this BattlePlayerPlayState state)           => state is BattlePlayerPlayState.OutOfPlay or BattlePlayerPlayState.OutOfPlayRespawning or BattlePlayerPlayState.OutOfPlayFinal;
+        public static bool IsOutOfPlayRespawning(this BattlePlayerPlayState state) => state is BattlePlayerPlayState.OutOfPlayRespawning;
+        public static bool IsOutOfPlayFinal(this BattlePlayerPlayState state)      => state is BattlePlayerPlayState.OutOfPlayFinal;
+        public static bool IsInPlay(this BattlePlayerPlayState state)              => state is BattlePlayerPlayState.InPlay;
+    }
+
     public static unsafe class BattlePlayerManager
     {
         #region Public
@@ -116,6 +125,7 @@ namespace Battle.QSimulation.Player
                 // create playerEntity for each characters
                 {
                     //{ player temp variables
+                    BattlePlayerCharacterClass          playerClass;
                     AssetRef<EntityPrototype>           playerEntityPrototype;
                     BattlePlayerDataTemplateQComponent* playerDataTemplate;
                     FPVector2                           playerSpawnPosition;
@@ -187,6 +197,8 @@ namespace Battle.QSimulation.Player
 
                         //{ set temp variables
 
+                        playerClass = (BattlePlayerCharacterClass)data.Characters[playerCharacterNumber].Class;
+
                         playerSpawnPosition = playerHandle.GetOutOfPlayPosition(playerCharacterNumber, teamNumber);
 
                         if (!playerFlipped)
@@ -201,6 +213,9 @@ namespace Battle.QSimulation.Player
                         }
 
                         //} set temp variables
+
+                        // load class
+                        BattlePlayerClassManager.LoadClass(playerClass);
 
                         // create hitBoxes
                         for (int i = 0; i < 2; i++)
@@ -281,6 +296,7 @@ namespace Battle.QSimulation.Player
                             playerHitbox = new BattlePlayerHitboxQComponent
                             {
                                 PlayerEntity = playerEntity,
+                                IsActive = true,
                                 HitboxType = playerHitboxType,
                                 CollisionType = playerHitboxCollisionType,
                                 Normal = FPVector2.Zero,
@@ -303,7 +319,7 @@ namespace Battle.QSimulation.Player
                             Slot              = playerSlot,
                             TeamNumber        = teamNumber,
                             CharacterId       = data.Characters[playerCharacterNumber].Id,
-                            CharacterClass    = data.Characters[playerCharacterNumber].Class,
+                            CharacterClass    = playerClass,
 
                             Stats             = data.Characters[playerCharacterNumber].Stats,
 
@@ -314,7 +330,8 @@ namespace Battle.QSimulation.Player
                             RotationBase      = playerRotationBase,
                             RotationOffset    = FP._0,
 
-                            CurrentHp         = data.Characters[playerCharacterNumber].Stats.Hp,
+                            CurrentHp         = FP._0,
+                            CurrentDefence    = FP._0,
 
                             HitboxShieldEntity      = playerHitboxShieldEntity,
                             HitboxCharacterEntity   = playerHitboxCharacterEntity
@@ -328,8 +345,9 @@ namespace Battle.QSimulation.Player
                         playerData.Stats.Defence       = FP.FromString("1.0");
 #endif
                         playerData.CurrentHp = playerData.Stats.Hp;
+                        playerData.CurrentDefence = playerData.Stats.Defence;
 
-                        //{ initialize playerData
+                        //} initialize playerData
 
                         //{ initialize entity
 
@@ -342,6 +360,8 @@ namespace Battle.QSimulation.Player
                             playerRotationBase
                         );
 
+                        BattlePlayerClassManager.OnCreate(f, playerHandle.ConvertToPublic(), playerDataPtr, playerEntity);
+
                         //} initialize entity
 
                         // initialize view
@@ -349,6 +369,9 @@ namespace Battle.QSimulation.Player
 
                         // save entity
                         playerCharacterEntityArray[playerCharacterNumber] = playerEntity;
+
+                        // set playerManagerData for player character
+                        playerHandle.SetCharacterState(playerCharacterNumber, playerData.CurrentHp > 0 ? BattlePlayerCharacterState.Alive : BattlePlayerCharacterState.Dead);
                     }
                 }
 
@@ -364,7 +387,7 @@ namespace Battle.QSimulation.Player
         {
             PlayerHandleInternal playerHandle = PlayerHandleInternal.GetPlayerHandle(GetPlayerManagerData(f), slot);
 
-            if (playerHandle.PlayState == BattlePlayerPlayState.NotInGame)
+            if (playerHandle.PlayState.IsNotInGame())
             {
                 Debug.LogError("[PlayerManager] Can not spawn player that is not in game");
                 return;
@@ -376,19 +399,26 @@ namespace Battle.QSimulation.Player
                 return;
             }
 
+            if (playerHandle.GetCharacterState(characterNumber) == BattlePlayerCharacterState.Dead)
+            {
+                Debug.LogFormat("[PlayerManager] Player character {0} is dead and will not be spawned", characterNumber);
+                return;
+            }
+
             SpawnPlayer(f, playerHandle, characterNumber);
         }
 
-        public static void DespawnPlayer(Frame f, BattlePlayerSlot slot)
+        public static void DespawnPlayer(Frame f, BattlePlayerSlot slot, bool kill = false)
         {
             PlayerHandleInternal playerHandle = PlayerHandleInternal.GetPlayerHandle(GetPlayerManagerData(f), slot);
 
-            if (playerHandle.PlayState != BattlePlayerPlayState.InPlay)
+            if (!playerHandle.PlayState.IsInPlay())
             {
                 Debug.LogError("[PlayerManager] Can not despawn player that is not in play");
                 return;
             }
 
+            if (kill) playerHandle.SelectedCharacterState = BattlePlayerCharacterState.Dead;
             DespawnPlayer(f, playerHandle);
         }
 
@@ -440,6 +470,12 @@ namespace Battle.QSimulation.Player
                 return array;
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static PlayerHandle GetPlayerHandleFromInternal(BattlePlayerManagerDataQSingleton* playerManagerData, int playerIndex)
+            {
+                return new PlayerHandle(new PlayerHandleInternal(playerManagerData, playerIndex));
+            }
+
             //} Public Static Methods
 
             //{ Public Properties
@@ -453,13 +489,49 @@ namespace Battle.QSimulation.Player
             public PlayerRef PlayerRef
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.PlayerRef; }
 
+            public FrameTimer RespawnTimer
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.RespawnTimer;
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _internalHandle.RespawnTimer = value;
+            }
+
             public EntityRef SelectedCharacter
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacter; }
 
             public int SelectedCharacterNumber
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacterNumber; }
 
+            public BattlePlayerCharacterState SelectedCharacterState
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacterState; }
+
             //} Public Properties
+
+            //{ Public Methods
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public BattlePlayerCharacterState GetCharacterState(int characterNumber) => _internalHandle.GetCharacterState(characterNumber);
+
+            public void SetOutOfPlayRespawning()
+            {
+                if (!_internalHandle.PlayState.IsOutOfPlay())
+                {
+                    Debug.LogError("[PlayerManager] Can not set player that is not OutOfPlay as OutOfPlayRespawning");
+                    return;
+                }
+                _internalHandle.PlayState = BattlePlayerPlayState.OutOfPlayRespawning;
+            }
+
+            public void SetOutOfPlayFinal()
+            {
+                if (!_internalHandle.PlayState.IsOutOfPlay())
+                {
+                    Debug.LogError("[PlayerManager] Can not set player that is not OutOfPlay as OutOfPlayFinal");
+                    return;
+                }
+                _internalHandle.PlayState = BattlePlayerPlayState.OutOfPlayFinal;
+            }
+
+            //} Public Methods
 
             //{ Private
 
@@ -598,11 +670,23 @@ namespace Battle.QSimulation.Player
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->PlayerRefs[Index] = value;
             }
 
+            public FrameTimer RespawnTimer
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->RespawnTimer[Index];
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->RespawnTimer[Index] = value;
+            }
+
             public EntityRef SelectedCharacter
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->SelectedCharacters[Index]; }
 
             public int SelectedCharacterNumber
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->SelectedCharacterNumbers[Index]; }
+
+            public BattlePlayerCharacterState SelectedCharacterState
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => GetCharacterState(SelectedCharacterNumber);
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] set => SetCharacterState(SelectedCharacterNumber, value);
+            }
 
             public FPVector2 SpawnPosition
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => s_spawnPoints[Index]; }
@@ -619,6 +703,12 @@ namespace Battle.QSimulation.Player
             //{ Public Methods
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public PlayerHandle ConvertToPublic()
+            {
+                return PlayerHandle.GetPlayerHandleFromInternal(_playerManagerData, Index);
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public EntityRef GetCharacter(int characterNumber) => _playerManagerData->AllCharacters[GetCharacterIndex(characterNumber)];
 
             public void SetCharacters(EntityRef[] entityRefArray)
@@ -629,6 +719,12 @@ namespace Battle.QSimulation.Player
                     _playerManagerData->AllCharacters[characterOffset + i] = entityRefArray[i];
                 }
             }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public BattlePlayerCharacterState GetCharacterState(int characterNumber) => _playerManagerData->AllCharactersStates[GetCharacterIndex(characterNumber)];
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void SetCharacterState(int characterNumber, BattlePlayerCharacterState state) => _playerManagerData->AllCharactersStates[GetCharacterIndex(characterNumber)] = state;
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void SetSelectedCharacter(int characterNumber)
@@ -709,13 +805,7 @@ namespace Battle.QSimulation.Player
 
             FPVector2 worldPosition;
 
-            if (playerData->CurrentHp <= 0)
-            {
-                Debug.LogFormat("[PlayerManager] Player character {0} has no Hp and will not be spawned", characterNumber);
-                return;
-            }
-
-            if (playerHandle.PlayState == BattlePlayerPlayState.InPlay)
+            if (playerHandle.PlayState.IsInPlay())
             {
                 worldPosition = f.Unsafe.GetPointer<Transform2D>(playerHandle.SelectedCharacter)->Position;
                 DespawnPlayer(f, playerHandle);
@@ -738,6 +828,8 @@ namespace Battle.QSimulation.Player
             f.Events.BattleDebugUpdateStatsOverlay(playerData->Slot, playerData->Stats);
 
             playerHandle.PlayState = BattlePlayerPlayState.InPlay;
+
+            BattlePlayerClassManager.OnSpawn(f, playerHandle.ConvertToPublic(), playerData, character);
         }
 
         private static void DespawnPlayer(Frame f, PlayerHandleInternal playerHandle)
@@ -747,6 +839,8 @@ namespace Battle.QSimulation.Player
             Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(selectedCharacter);
 
             FPVector2 worldPosition = playerHandle.GetOutOfPlayPosition(playerHandle.SelectedCharacterNumber, playerData->TeamNumber);
+
+            BattlePlayerClassManager.OnDespawn(f, playerHandle.ConvertToPublic(), playerData, selectedCharacter);
 
             playerData->PlayerRef = PlayerRef.None;
 
