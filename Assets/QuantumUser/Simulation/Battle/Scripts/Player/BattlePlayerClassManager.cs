@@ -10,12 +10,11 @@ namespace Battle.QSimulation.Player
     {
         protected T* GetClassData(Frame f, EntityRef playerEntity)
         {
-            T* value = f.Unsafe.GetPointer<T>(playerEntity);
-            if (value == null)
+            if (!f.Unsafe.TryGetPointer<T>(playerEntity, out T* component))
             {
                 Debug.LogErrorFormat("[PlayerCharacterClass] Class data for {0} could not be found!", playerEntity);
             }
-            return value;
+            return component;
         }
     }
 
