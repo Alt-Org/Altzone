@@ -64,12 +64,10 @@ namespace Battle.QSimulation.Projectile
                 // set the IsLaunched field to true to ensure it's launched only once
                 projectile->IsLaunched = true;
 
-                projectile->IsMoving = true;
+                SetHeld(f, projectile, false);
 
                 Debug.Log("Projectile Launched");
             }
-
-            if (!projectile->IsMoving) return;
 
             FP gameTimeSec = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>()->GameTimeSec;
 
@@ -80,8 +78,11 @@ namespace Battle.QSimulation.Projectile
                 projectile->AccelerationTimer += projectile->AccelerationTimerDuration;
             }
 
-            // move the projectile
-            transform->Position += projectile->Direction * (projectile->Speed * f.DeltaTime);
+            if (!projectile->IsHeld)
+            {
+                // move the projectile
+                transform->Position += projectile->Direction * (projectile->Speed * f.DeltaTime);
+            }
 
             // reset CollisionFlags for next frame
             projectile->CollisionFlags[(f.Number + 1) % 2 ] = 0;
@@ -89,6 +90,7 @@ namespace Battle.QSimulation.Projectile
 
         public static void OnProjectileCollision(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, EntityRef otherEntity, void* otherComponentPtr, BattleCollisionTriggerType collisionType)
         {
+            if (projectile->IsHeld) return;
             if (IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Projectile)) return;
 
             FPVector2 normal = FPVector2.Zero;
@@ -140,7 +142,7 @@ namespace Battle.QSimulation.Projectile
 
         public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)
         {
-            projectile->IsMoving = false;
+            SetHeld(f, projectile, true);
 
             Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
 
@@ -177,6 +179,11 @@ namespace Battle.QSimulation.Projectile
             {
                 projectileTransform->Position += normal * (collisionMinOffset - collisionOffset + projectile->Radius);
             }
+        }
+
+        public static void SetHeld(Frame f, BattleProjectileQComponent* projectile, bool isHeld)
+        {
+            projectile->IsHeld = isHeld;
         }
 
         public static void SetEmotion(Frame f, BattleProjectileQComponent* projectile, BattleEmotionState emotion)

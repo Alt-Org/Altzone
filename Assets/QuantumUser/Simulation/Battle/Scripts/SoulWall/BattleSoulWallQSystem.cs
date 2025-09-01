@@ -27,6 +27,7 @@ namespace Battle.QSimulation.SoulWall
 
         public static void OnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)
         {
+            if (projectile->IsHeld) return;
             Debug.Log("Soul wall hit");
 
             if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.SoulWall)) return;

@@ -12,6 +12,7 @@ namespace Battle.QSimulation.Goal
         public static void OnProjectileHitGoal(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleGoalQComponent* goal)
         {
             if (goal->HasTriggered) return;
+            if (projectile->IsHeld) return;
 
             BattleTeamNumber winningTeam = goal->TeamNumber switch
             {

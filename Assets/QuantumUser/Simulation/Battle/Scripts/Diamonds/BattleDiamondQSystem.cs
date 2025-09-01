@@ -18,6 +18,7 @@ namespace Battle.QSimulation.Diamond
 
         public static void OnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall)
         {
+            if (projectile->IsHeld) return;
             BattleDiamondQSpec diamondSpec = BattleQConfig.GetDiamondSpec(f);
 
             CreateDiamonds(f, soulWall->Normal, diamondSpec);
