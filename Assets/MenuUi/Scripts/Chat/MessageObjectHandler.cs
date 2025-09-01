@@ -10,6 +10,7 @@ public class MessageObjectHandler : MonoBehaviour
     [SerializeField] private AvatarFaceLoader _avatar;
     [SerializeField] private TextMeshProUGUI _text;
     [SerializeField] private Button _button;
+    [SerializeField] private GameObject _messageControls;
     private Image _image;
 
     // Start is called before the first frame update
@@ -31,15 +32,18 @@ public class MessageObjectHandler : MonoBehaviour
         {
             _image.color = Color.gray;
         }
+        _messageControls.SetActive(true);
     }
 
     private void SetMessageInactive(MessageObjectHandler handler)
     {
         if (handler == this) return;
+
         if (_image != null)
         {
             _image.color = Color.white;
         }
+        _messageControls.SetActive(false);
     }
 
 }

@@ -256,17 +256,9 @@ public class Chat : AltMonoBehaviour
         {
             GameObject newMessage = Instantiate(messagePrefab, _currentContent.transform);
 
-            TMP_Text messageUI = newMessage.GetComponentInChildren<TMP_Text>();
-            if (messageUI != null)
-            {
-                messageUI.text = messageText;
-            }
-            else
-            {
-                Debug.LogError("TMP_Text-komponenttia ei löytynyt prefabista!");
-            }
+            newMessage.GetComponent<MessageObjectHandler>().SetMessageInfo(messageText, null);
 
-            AddMessageInteraction(newMessage);
+            //AddMessageInteraction(newMessage);
 
             messagesByChat[_currentContent].Add(newMessage);
 
