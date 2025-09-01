@@ -380,7 +380,7 @@ namespace Quantum.Prototypes {
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattleProjectileQComponent))]
   public unsafe partial class BattleProjectileQComponentPrototype : ComponentPrototype<Quantum.BattleProjectileQComponent> {
     public QBoolean IsLaunched;
-    public QBoolean IsMoving;
+    public QBoolean IsHeld;
     public FP Speed;
     [ArrayLengthAttribute(5)]
     public FP[] SpeedMultiplierArray = new FP[5];
@@ -403,7 +403,7 @@ namespace Quantum.Prototypes {
     }
     public void Materialize(Frame frame, ref Quantum.BattleProjectileQComponent result, in PrototypeMaterializationContext context = default) {
         result.IsLaunched = this.IsLaunched;
-        result.IsMoving = this.IsMoving;
+        result.IsHeld = this.IsHeld;
         result.Speed = this.Speed;
         for (int i = 0, count = PrototypeValidator.CheckLength(SpeedMultiplierArray, 5, in context); i < count; ++i) {
           *result.SpeedMultiplierArray.GetPointer(i) = this.SpeedMultiplierArray[i];

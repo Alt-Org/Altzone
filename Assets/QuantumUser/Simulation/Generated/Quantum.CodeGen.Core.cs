@@ -1241,10 +1241,10 @@ namespace Quantum {
   public unsafe partial struct BattleProjectileQComponent : Quantum.IComponent {
     public const Int32 SIZE = 136;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(8)]
-    public QBoolean IsLaunched;
     [FieldOffset(12)]
-    public QBoolean IsMoving;
+    public QBoolean IsLaunched;
+    [FieldOffset(8)]
+    public QBoolean IsHeld;
     [FieldOffset(56)]
     public FP Speed;
     [FieldOffset(72)]
@@ -1285,7 +1285,7 @@ namespace Quantum {
       unchecked { 
         var hash = 4001;
         hash = hash * 31 + IsLaunched.GetHashCode();
-        hash = hash * 31 + IsMoving.GetHashCode();
+        hash = hash * 31 + IsHeld.GetHashCode();
         hash = hash * 31 + Speed.GetHashCode();
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(SpeedMultiplierArray);
         hash = hash * 31 + SpeedPotential.GetHashCode();
@@ -1305,8 +1305,8 @@ namespace Quantum {
         var p = (BattleProjectileQComponent*)ptr;
         FixedArray.Serialize(p->CollisionFlags, serializer, Statics.SerializeBattleProjectileCollisionFlags);
         serializer.Stream.Serialize((Int32*)&p->Emotion);
+        QBoolean.Serialize(&p->IsHeld, serializer);
         QBoolean.Serialize(&p->IsLaunched, serializer);
-        QBoolean.Serialize(&p->IsMoving, serializer);
         FP.Serialize(&p->AccelerationTimer, serializer);
         FP.Serialize(&p->AccelerationTimerDuration, serializer);
         FP.Serialize(&p->Attack, serializer);
