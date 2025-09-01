@@ -204,6 +204,8 @@ namespace Battle.View.Player
                         movementInputInfo.MovementInput = BattleMovementInputType.Direction;
                         movementInputInfo.MovementDirectionIsNormalized = true;
                         movementInputInfo.MovementDirection = new FPVector2(FP.FromFloat_UNSAFE(_joystickMovementVector.x), FP.FromFloat_UNSAFE(_joystickMovementVector.y));
+
+                        if (BattleGameViewController.LocalPlayerTeam == BattleTeamNumber.TeamBeta) movementInputInfo.MovementDirection *= -1;
                     }
                     break;
             }
@@ -231,6 +233,8 @@ namespace Battle.View.Player
                         distance = Mathf.Abs(distance) - _swipeMinDistance;
                         float maxAdjustedDistance = Mathf.Clamp(distance / (_swipeMaxDistance - _swipeMinDistance), 0, 1) * signe;
                         rotationInputInfo.RotationValue = -FP.FromFloat_UNSAFE(maxAdjustedDistance);
+
+                        if (BattleGameViewController.LocalPlayerTeam == BattleTeamNumber.TeamBeta) rotationInputInfo.RotationValue *= -1;
                     }
                     else if (!mouseDown)
                     {

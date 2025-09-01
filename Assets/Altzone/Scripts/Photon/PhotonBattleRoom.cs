@@ -291,7 +291,7 @@ namespace Altzone.Scripts.Battle.Photon
         public static bool CheckIfPositionIsFree(int position)
         {
             string positionKey = GetPositionKey(position);
-            string positionValue = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(positionKey);
+            string positionValue = PhotonRealtimeClient.LobbyCurrentRoom?.GetCustomProperty<string>(positionKey);
             if (!string.IsNullOrWhiteSpace(positionValue))
             {
                 return false;
