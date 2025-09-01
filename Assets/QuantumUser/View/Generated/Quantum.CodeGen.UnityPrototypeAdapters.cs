@@ -124,6 +124,8 @@ namespace Quantum.Prototypes.Unity {
     [ArrayLengthAttribute(4)]
     public Quantum.Prototypes.FrameTimerPrototype[] RespawnTimer = new Quantum.Prototypes.FrameTimerPrototype[4];
     [ArrayLengthAttribute(4)]
+    public QBoolean[] AllowCharacterSwapping = new QBoolean[4];
+    [ArrayLengthAttribute(4)]
     public Quantum.QuantumEntityPrototype[] SelectedCharacters = new Quantum.QuantumEntityPrototype[4];
     [ArrayLengthAttribute(4)]
     public Int32[] SelectedCharacterNumbers = new Int32[4];
@@ -138,6 +140,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.PlayStates, out result.PlayStates);
       converter.Convert(this.PlayerRefs, out result.PlayerRefs);
       converter.Convert(this.RespawnTimer, out result.RespawnTimer);
+      converter.Convert(this.AllowCharacterSwapping, out result.AllowCharacterSwapping);
       converter.Convert(this.SelectedCharacters, out result.SelectedCharacters);
       converter.Convert(this.SelectedCharacterNumbers, out result.SelectedCharacterNumbers);
       converter.Convert(this.AllCharacters, out result.AllCharacters);

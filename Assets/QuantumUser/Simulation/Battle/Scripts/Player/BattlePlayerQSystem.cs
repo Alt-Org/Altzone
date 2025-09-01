@@ -98,29 +98,26 @@ namespace Battle.QSimulation.Player
 
                 input = f.GetPlayerInput(playerHandle.PlayerRef);
 
-                if (input->PlayerCharacterNumber > -1)
+                if (input->PlayerCharacterNumber > -1 && playerHandle.AllowCharacterSwapping)
                 {
                     BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, input->PlayerCharacterNumber);
                     continue;
                 }
 
-                if (playerHandle.PlayState.IsOutOfPlayRespawning())
+                if (playerHandle.PlayState.IsOutOfPlayRespawning() && !playerHandle.RespawnTimer.IsRunning(f) && playerHandle.AllowCharacterSwapping)
                 {
-                    if (!playerHandle.RespawnTimer.IsRunning(f))
+                    int i;
+                    for (i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_COUNT; i++)
                     {
-                        int i;
-                        for (i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_COUNT; i++)
+                        if (playerHandle.GetCharacterState(i) == BattlePlayerCharacterState.Alive)
                         {
-                            if (playerHandle.GetCharacterState(i) == BattlePlayerCharacterState.Alive)
-                            {
-                                BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, i);
-                                break;
-                            }
+                            BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, i);
+                            break;
                         }
-                        if (i == Constants.BATTLE_PLAYER_CHARACTER_COUNT)
-                        {
-                            playerHandle.SetOutOfPlayFinal();
-                        }
+                    }
+                    if (i == Constants.BATTLE_PLAYER_CHARACTER_COUNT)
+                    {
+                        playerHandle.SetOutOfPlayFinal();
                     }
                 }
 
