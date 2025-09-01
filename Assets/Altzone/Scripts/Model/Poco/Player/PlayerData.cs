@@ -92,7 +92,7 @@ namespace Altzone.Scripts.Model.Poco.Player
                 for (int i = 0; i < SelectedCharacterIds.Length; i++)
                 {
                     string serverId = SelectedCharacterIds[i];
-                    CharacterID testCharId = SelectedTestCharacterIds == null ? CharacterID.None : (CharacterID)SelectedTestCharacterIds[i];
+                    CharacterID testCharId = SelectedTestCharacterIds == null || SelectedTestCharacterIds.Length <= i ? CharacterID.None : (CharacterID)SelectedTestCharacterIds[i];
                     bool isTestCharacter = testCharId != CharacterID.None;
 
                     if (string.IsNullOrEmpty(serverId) && !isTestCharacter)

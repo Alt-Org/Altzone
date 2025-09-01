@@ -102,6 +102,7 @@ namespace Battle.QSimulation.Projectile
 
         public void BattleOnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
         {
+            if (!playerHitbox->IsActive) return;
             if (projectile->Emotion == BattleEmotionState.Love) return;
             if (playerHitbox->CollisionType == BattlePlayerCollisionType.None) return;
 
@@ -113,7 +114,7 @@ namespace Battle.QSimulation.Projectile
 
             BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot);
 
-            if (teammateHandle.PlayState == BattlePlayerPlayState.InPlay)
+            if (teammateHandle.PlayState.IsInPlay())
             {
                 EntityRef teammateEntity = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot).SelectedCharacter;
 

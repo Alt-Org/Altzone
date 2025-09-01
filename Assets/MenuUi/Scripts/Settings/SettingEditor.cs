@@ -33,7 +33,7 @@ public class SettingEditor : MonoBehaviour
             SetToSlider(slider);
         }
 
-        SetFPSButtons();
+        //SetFPSButtons();
         SetIntroSkipToggle();
         SetShowButtonLabelsToggle();
 
