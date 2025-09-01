@@ -1,11 +1,10 @@
 using UnityEngine;
 using UnityEngine.Scripting;
-
 using Quantum;
+using Photon.Deterministic;
 
 using Battle.QSimulation.Projectile;
 using Battle.QSimulation.Game;
-using Photon.Deterministic;
 
 namespace Battle.QSimulation.SoulWall
 {

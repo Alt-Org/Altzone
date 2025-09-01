@@ -1,5 +1,4 @@
 using UnityEngine.Scripting;
-
 using Quantum;
 using Photon.Deterministic;
 

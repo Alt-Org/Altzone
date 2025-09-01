@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Scripting;
-
 using Quantum;
+
 using Battle.QSimulation.Projectile;
 using Battle.QSimulation.Goal;
 using Battle.QSimulation.Player;

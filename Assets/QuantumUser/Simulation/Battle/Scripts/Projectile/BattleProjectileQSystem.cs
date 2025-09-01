@@ -2,9 +2,9 @@ using System.Runtime.CompilerServices;
 
 using UnityEngine;
 using UnityEngine.Scripting;
-
 using Quantum;
 using Photon.Deterministic;
+
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Player;
 
