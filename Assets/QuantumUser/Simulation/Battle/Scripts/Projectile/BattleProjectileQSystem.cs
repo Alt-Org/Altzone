@@ -20,13 +20,6 @@ namespace Battle.QSimulation.Projectile
             public BattleProjectileQComponent* Projectile;
         }
 
-        public struct CollisionData
-        {
-            public BattleSoulWallQComponent* soulWall;
-            public BattleArenaBorderQComponent* arenaBorder;
-            public BattlePlayerHitboxQComponent* playerHitbox;
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsCollisionFlagSet(Frame f, BattleProjectileQComponent* projectile, BattleProjectileCollisionFlags flag) => projectile->CollisionFlags[f.Number % 2].IsFlagSet(flag);
 
@@ -94,8 +87,10 @@ namespace Battle.QSimulation.Projectile
             projectile->CollisionFlags[(f.Number + 1) % 2 ] = 0;
         }
 
-        public static void OnProjectileCollision(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, EntityRef otherEntity, BattleCollisionTriggerType collisionType, CollisionData data)
+        public static void OnProjectileCollision(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, EntityRef otherEntity, void* otherComponentPtr, BattleCollisionTriggerType collisionType)
         {
+            if (IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Projectile)) return;
+
             FPVector2 normal = FPVector2.Zero;
             FP collisionMinOffset = FP._0;
             bool updateVelocity = false;
@@ -103,24 +98,30 @@ namespace Battle.QSimulation.Projectile
             switch (collisionType)
             {
                 case BattleCollisionTriggerType.ArenaBorder:
-                    normal = data.arenaBorder->Normal;
-                    collisionMinOffset = data.arenaBorder->CollisionMinOffset;
+                    BattleArenaBorderQComponent* arenaBorder = (BattleArenaBorderQComponent*)otherComponentPtr;
+
+                    normal = arenaBorder->Normal;
+                    collisionMinOffset = arenaBorder->CollisionMinOffset;
                     updateVelocity = true;
                     break;
 
                 case BattleCollisionTriggerType.SoulWall:
-                    // change projectile's emotion to soulwall's emotion
-                    SetEmotion(f, projectile, data.soulWall->Emotion);
 
-                    normal = data.soulWall->Normal;
-                    collisionMinOffset = data.soulWall->CollisionMinOffset;
+                    BattleSoulWallQComponent* soulWall = (BattleSoulWallQComponent*)otherComponentPtr;
+
+                    SetEmotion(f, projectile, soulWall->Emotion);
+
+                    normal = soulWall->Normal;
+                    collisionMinOffset = soulWall->CollisionMinOffset;
                     updateVelocity = true;
                     break;
 
                 case BattleCollisionTriggerType.Shield:
-                    if (ProjectileHitPlayerShield(f, projectile, projectileEntity, data.playerHitbox, otherEntity, out normal))
+                    BattlePlayerHitboxQComponent* playerHitbox = (BattlePlayerHitboxQComponent*)otherComponentPtr;
+
+                    if (ProjectileHitPlayerShield(f, projectile, projectileEntity, playerHitbox, otherEntity, out normal))
                     {
-                        collisionMinOffset = data.playerHitbox->CollisionMinOffset;
+                        collisionMinOffset = playerHitbox->CollisionMinOffset;
                         updateVelocity = true;
                     }
                     break;
@@ -131,13 +132,14 @@ namespace Battle.QSimulation.Projectile
 
             if (updateVelocity)
             {
-                ProjectileVelocityUpdate(f, projectile, projectileEntity, otherEntity, normal, collisionMinOffset);
+                ProjectileUpdateVelocity(f, projectile, projectileEntity, otherEntity, normal, collisionMinOffset);
             }
+
+            SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Projectile);
         }
 
         public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)
         {
-            // stop the projectile
             projectile->IsMoving = false;
 
             Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
@@ -154,6 +156,41 @@ namespace Battle.QSimulation.Projectile
             }
         }
 
+        public static void ProjectileUpdateVelocity(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, EntityRef otherEntity, FPVector2 normal, FP collisionMinOffset, BattlePlayerCollisionType collisionType = BattlePlayerCollisionType.Reflect)
+        {
+            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
+            Transform2D* otherTransform = f.Unsafe.GetPointer<Transform2D>(otherEntity);
+
+            // calculate how far off from other entity's position is the projectile supposed to hit it's surface
+            FPVector2 offsetVector = projectileTransform->Position - otherTransform->Position;
+            FP collisionOffset = FPVector2.Rotate(offsetVector, -FPVector2.RadiansSigned(FPVector2.Up, normal)).Y;
+
+            // set new projectile direction
+            if      (collisionType == BattlePlayerCollisionType.Reflect)  projectile->Direction = FPVector2.Reflect(projectile->Direction, normal);
+            else if (collisionType == BattlePlayerCollisionType.Override) projectile->Direction = normal;
+
+            // update the projectile's speed based on speed potential and multiply by emotion
+            projectile->Speed = projectile->SpeedPotential * projectile->SpeedMultiplierArray[(int)projectile->Emotion];
+
+            // if projectile accidentally went inside another entity, lift it out
+            if (collisionOffset - projectile->Radius < collisionMinOffset)
+            {
+                projectileTransform->Position += normal * (collisionMinOffset - collisionOffset + projectile->Radius);
+            }
+        }
+
+        public static void SetEmotion(Frame f, BattleProjectileQComponent* projectile, BattleEmotionState emotion)
+        {
+            projectile->Emotion = emotion;
+            f.Events.BattleChangeEmotionState(projectile->Emotion);
+        }
+
+        public static void SetAttack(Frame f, BattleProjectileQComponent* projectile, FP attack)
+        {
+            projectile->Attack = attack;
+            f.Events.BattleProjectileChangeGlowStrength(projectile->Attack / projectile->AttackMax);
+        }
+
         private static bool ProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity, out FPVector2 normal)
         {
             normal = FPVector2.Zero;
@@ -164,8 +201,6 @@ namespace Battle.QSimulation.Projectile
 
             BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
 
-            // get attack damage from player stats
-            SetAttack(f, projectile, playerData->Stats.Attack);
             bool isOnTopOfTeammate = false;
 
             BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot);
@@ -195,45 +230,6 @@ namespace Battle.QSimulation.Projectile
             }
             normal = playerHitbox->Normal;
             return true;
-        }
-
-        private static void ProjectileVelocityUpdate(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, EntityRef otherEntity, FPVector2 normal, FP collisionMinOffset, BattlePlayerCollisionType collisionType = BattlePlayerCollisionType.Reflect)
-        {
-            if (IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Projectile)) return;
-
-            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
-            Transform2D* otherTransform = f.Unsafe.GetPointer<Transform2D>(otherEntity);
-
-            // calculate how far off from other entity's position is the projectile supposed to hit it's surface
-            FPVector2 offsetVector = projectileTransform->Position - otherTransform->Position;
-            FP collisionOffset = FPVector2.Rotate(offsetVector, -FPVector2.RadiansSigned(FPVector2.Up, normal)).Y;
-
-            // set new projectile direction
-            if      (collisionType == BattlePlayerCollisionType.Reflect)  projectile->Direction = FPVector2.Reflect(projectile->Direction, normal);
-            else if (collisionType == BattlePlayerCollisionType.Override) projectile->Direction = normal;
-
-            // update the projectile's speed based on speed potential and multiply by emotion
-            projectile->Speed = projectile->SpeedPotential * projectile->SpeedMultiplierArray[(int)projectile->Emotion];
-
-            // if projectile accidentally went inside another entity, lift it out
-            if (collisionOffset - projectile->Radius < collisionMinOffset)
-            {
-                projectileTransform->Position += normal * (collisionMinOffset - collisionOffset + projectile->Radius);
-            }
-
-            SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Projectile);
-        }
-
-        private static void SetEmotion(Frame f, BattleProjectileQComponent* projectile, BattleEmotionState emotion)
-        {
-            projectile->Emotion = emotion;
-            f.Events.BattleChangeEmotionState(projectile->Emotion);
-        }
-
-        private static void SetAttack(Frame f, BattleProjectileQComponent* projectile, FP attack)
-        {
-            projectile->Attack = attack;
-            f.Events.BattleProjectileChangeGlowStrength(projectile->Attack / projectile->AttackMax);
         }
     }
 }

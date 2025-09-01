@@ -16,7 +16,7 @@ namespace Battle.QSimulation.Diamond
             public BattleDiamondDataQComponent* DiamondData;
         }
 
-        public static void OnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)
+        public static void OnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall)
         {
             BattleDiamondQSpec diamondSpec = BattleQConfig.GetDiamondSpec(f);
 

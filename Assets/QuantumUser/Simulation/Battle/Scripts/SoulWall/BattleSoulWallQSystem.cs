@@ -26,7 +26,7 @@ namespace Battle.QSimulation.SoulWall
             CreateSoulWalls(f, BattleTeamNumber.TeamBeta,  battleArenaSpec.SoulWallTeamBetaTemplates,  soulWallSpec.SoulWallPrototypes);
         }
 
-        public static void OnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)
+        public static void OnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)
         {
             Debug.Log("Soul wall hit");
 
