@@ -7,9 +7,9 @@ using Battle.QSimulation.Game;
 namespace Battle.QSimulation.Goal
 {
     [Preserve]
-    public unsafe class BattleGoalQSystem : SystemSignalsOnly, ISignalBattleOnProjectileHitGoal
+    public unsafe class BattleGoalQSystem : SystemSignalsOnly
     {
-        public void BattleOnProjectileHitGoal(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleGoalQComponent* goal, EntityRef goalEntity)
+        public static void OnProjectileHitGoal(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleGoalQComponent* goal)
         {
             if (goal->HasTriggered) return;
 

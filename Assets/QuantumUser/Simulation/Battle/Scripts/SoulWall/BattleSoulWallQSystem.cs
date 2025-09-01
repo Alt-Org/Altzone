@@ -10,7 +10,7 @@ using Photon.Deterministic;
 namespace Battle.QSimulation.SoulWall
 {
     [Preserve]
-    public unsafe class BattleSoulWallQSystem : SystemSignalsOnly, ISignalBattleOnProjectileHitSoulWall
+    public unsafe class BattleSoulWallQSystem : SystemSignalsOnly
     {
         /// <summary>
         /// Creates soulwalls based on BattleArena and SoulWall Specs during map creation phase.<br/>
@@ -26,7 +26,7 @@ namespace Battle.QSimulation.SoulWall
             CreateSoulWalls(f, BattleTeamNumber.TeamBeta,  battleArenaSpec.SoulWallTeamBetaTemplates,  soulWallSpec.SoulWallPrototypes);
         }
 
-        public void BattleOnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)
+        public static void OnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)
         {
             Debug.Log("Soul wall hit");
 
