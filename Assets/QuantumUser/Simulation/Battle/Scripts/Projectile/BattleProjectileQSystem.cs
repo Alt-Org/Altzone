@@ -13,12 +13,16 @@ namespace Battle.QSimulation.Projectile
     [Preserve]
     public unsafe class BattleProjectileQSystem : SystemMainThreadFilter<BattleProjectileQSystem.Filter>, ISignalBattleOnGameOver
     {
+        #region Public
+
         public struct Filter
         {
             public EntityRef Entity;
             public Transform2D* Transform;
             public BattleProjectileQComponent* Projectile;
         }
+
+        #region Public - Helper Methods
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsCollisionFlagSet(Frame f, BattleProjectileQComponent* projectile, BattleProjectileCollisionFlags flag) => projectile->CollisionFlags[f.Number % 2].IsFlagSet(flag);
@@ -30,6 +34,52 @@ namespace Battle.QSimulation.Projectile
             projectile->CollisionFlags[f.Number % 2] = flags.SetFlag(flag);
         }
 
+        public static void SetHeld(Frame f, BattleProjectileQComponent* projectile, bool isHeld)
+        {
+            projectile->IsHeld = isHeld;
+        }
+
+        public static void SetEmotion(Frame f, BattleProjectileQComponent* projectile, BattleEmotionState emotion)
+        {
+            projectile->Emotion = emotion;
+            f.Events.BattleChangeEmotionState(projectile->Emotion);
+        }
+
+        public static void SetAttack(Frame f, BattleProjectileQComponent* projectile, FP attack)
+        {
+            projectile->Attack = attack;
+            f.Events.BattleProjectileChangeGlowStrength(projectile->Attack / projectile->AttackMax);
+        }
+
+        public static void UpdateVelocity(Frame f, BattleProjectileQComponent* projectile, FPVector2 direction)
+        {
+            // set new projectile direction
+            projectile->Direction = direction;
+
+            // update the projectile's speed based on speed potential and multiply by emotion
+            projectile->Speed = projectile->SpeedPotential * projectile->SpeedMultiplierArray[(int)projectile->Emotion];
+        }
+
+        public static void HandleIntersection(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, EntityRef otherEntity, FPVector2 normal, FP collisionMinOffset)
+        {
+            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
+            Transform2D* otherTransform = f.Unsafe.GetPointer<Transform2D>(otherEntity);
+
+            // calculate how far off from other entity's position is the projectile supposed to hit it's surface
+            FPVector2 offsetVector = projectileTransform->Position - otherTransform->Position;
+            FP collisionOffset = FPVector2.Rotate(offsetVector, -FPVector2.RadiansSigned(FPVector2.Up, normal)).Y;
+
+            // if projectile accidentally went inside another entity, lift it out
+            if (collisionOffset - projectile->Radius < collisionMinOffset)
+            {
+                projectileTransform->Position += normal * (collisionMinOffset - collisionOffset + projectile->Radius);
+            }
+        }
+
+        #endregion Public - Helper Methods
+
+        #region Public - Gameflow Methods
+
         public override void Update(Frame f, ref Filter filter)
         {
             // unpack filter
@@ -38,35 +88,7 @@ namespace Battle.QSimulation.Projectile
 
             if (!projectile->IsLaunched)
             {
-                // retrieve the projectiles spec
-                BattleProjectileQSpec spec = BattleQConfig.GetProjectileSpec(f);
-
-                // copy data from the spec
-                projectile->Speed = spec.ProjectileInitialSpeed;
-                projectile->SpeedPotential = projectile->Speed;
-                projectile->SpeedIncrement = spec.SpeedIncrement;
-                projectile->Direction = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
-                projectile->AccelerationTimerDuration = spec.AccelerationTimerDuration;
-                projectile->AccelerationTimer = projectile->AccelerationTimerDuration;
-                projectile->AttackMax = spec.AttackMax;
-                for (int i = 0; i < spec.SpeedMultiplierArray.Length; i++)
-                {
-                    projectile->SpeedMultiplierArray[i] = spec.SpeedMultiplierArray[i];
-                }
-
-                // set emotion and attack
-                SetEmotion(f, projectile, BattleParameters.GetProjectileInitialEmotion(f));
-                SetAttack(f, projectile, 0);
-
-                // reset CollisionFlags for this frame
-                projectile->CollisionFlags[(f.Number) % 2] = 0;
-
-                // set the IsLaunched field to true to ensure it's launched only once
-                projectile->IsLaunched = true;
-
-                SetHeld(f, projectile, false);
-
-                Debug.Log("Projectile Launched");
+                Launch(f, projectile);
             }
 
             FP gameTimeSec = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>()->GameTimeSec;
@@ -165,46 +187,43 @@ namespace Battle.QSimulation.Projectile
             }
         }
 
-        public static void UpdateVelocity(Frame f, BattleProjectileQComponent* projectile, FPVector2 direction)
+        #endregion Public - Gameflow Methods
+
+        #endregion Public
+
+        #region Private Static Methods
+
+        private static void Launch(Frame f, BattleProjectileQComponent* projectile)
         {
-            // set new projectile direction
-            projectile->Direction = direction;
+            // retrieve the projectiles spec
+            BattleProjectileQSpec spec = BattleQConfig.GetProjectileSpec(f);
 
-            // update the projectile's speed based on speed potential and multiply by emotion
-            projectile->Speed = projectile->SpeedPotential * projectile->SpeedMultiplierArray[(int)projectile->Emotion];
-        }
-
-        public static void HandleIntersection(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, EntityRef otherEntity, FPVector2 normal, FP collisionMinOffset)
-        {
-            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
-            Transform2D* otherTransform = f.Unsafe.GetPointer<Transform2D>(otherEntity);
-
-            // calculate how far off from other entity's position is the projectile supposed to hit it's surface
-            FPVector2 offsetVector = projectileTransform->Position - otherTransform->Position;
-            FP collisionOffset = FPVector2.Rotate(offsetVector, -FPVector2.RadiansSigned(FPVector2.Up, normal)).Y;
-
-            // if projectile accidentally went inside another entity, lift it out
-            if (collisionOffset - projectile->Radius < collisionMinOffset)
+            // copy data from the spec
+            projectile->Speed = spec.ProjectileInitialSpeed;
+            projectile->SpeedPotential = projectile->Speed;
+            projectile->SpeedIncrement = spec.SpeedIncrement;
+            projectile->Direction = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
+            projectile->AccelerationTimerDuration = spec.AccelerationTimerDuration;
+            projectile->AccelerationTimer = projectile->AccelerationTimerDuration;
+            projectile->AttackMax = spec.AttackMax;
+            for (int i = 0; i < spec.SpeedMultiplierArray.Length; i++)
             {
-                projectileTransform->Position += normal * (collisionMinOffset - collisionOffset + projectile->Radius);
+                projectile->SpeedMultiplierArray[i] = spec.SpeedMultiplierArray[i];
             }
-        }
 
-        public static void SetHeld(Frame f, BattleProjectileQComponent* projectile, bool isHeld)
-        {
-            projectile->IsHeld = isHeld;
-        }
+            // set emotion and attack
+            SetEmotion(f, projectile, BattleParameters.GetProjectileInitialEmotion(f));
+            SetAttack(f, projectile, 0);
 
-        public static void SetEmotion(Frame f, BattleProjectileQComponent* projectile, BattleEmotionState emotion)
-        {
-            projectile->Emotion = emotion;
-            f.Events.BattleChangeEmotionState(projectile->Emotion);
-        }
+            // reset CollisionFlags for this frame
+            projectile->CollisionFlags[(f.Number) % 2] = 0;
 
-        public static void SetAttack(Frame f, BattleProjectileQComponent* projectile, FP attack)
-        {
-            projectile->Attack = attack;
-            f.Events.BattleProjectileChangeGlowStrength(projectile->Attack / projectile->AttackMax);
+            // set the IsLaunched field to true to ensure it's launched only once
+            projectile->IsLaunched = true;
+
+            SetHeld(f, projectile, false);
+
+            Debug.Log("Projectile Launched");
         }
 
         private static bool ProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity, out FPVector2 normal)
@@ -247,5 +266,7 @@ namespace Battle.QSimulation.Projectile
             normal = playerHitbox->Normal;
             return true;
         }
+
+        #endregion Private Static Methods
     }
 }
