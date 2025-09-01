@@ -8,7 +8,7 @@ using Battle.QSimulation.Game;
 namespace Battle.QSimulation.Diamond
 {
     [Preserve]
-    public unsafe class BattleDiamondQSystem : SystemMainThreadFilter<BattleDiamondQSystem.Filter>, ISignalBattleOnProjectileHitSoulWall, ISignalBattleOnDiamondHitPlayer
+    public unsafe class BattleDiamondQSystem : SystemMainThreadFilter<BattleDiamondQSystem.Filter>, ISignalBattleOnDiamondHitPlayer
     {
         public struct Filter
         {
@@ -16,7 +16,7 @@ namespace Battle.QSimulation.Diamond
             public BattleDiamondDataQComponent* DiamondData;
         }
 
-        public void BattleOnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)
+        public static void OnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall)
         {
             BattleDiamondQSpec diamondSpec = BattleQConfig.GetDiamondSpec(f);
 
@@ -43,7 +43,7 @@ namespace Battle.QSimulation.Diamond
             f.Destroy(diamondEntity);
         }
 
-        private void CreateDiamonds(Frame f, FPVector2 wallNormal, BattleDiamondQSpec diamondSpec)
+        private static void CreateDiamonds(Frame f, FPVector2 wallNormal, BattleDiamondQSpec diamondSpec)
         {
             // diamond temp variables
             BattleGridPosition diamondRandomPosition;

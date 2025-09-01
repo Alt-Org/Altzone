@@ -2,16 +2,16 @@ using System.Runtime.CompilerServices;
 
 using UnityEngine;
 using UnityEngine.Scripting;
-
 using Quantum;
 using Photon.Deterministic;
+
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Player;
 
 namespace Battle.QSimulation.Projectile
 {
     [Preserve]
-    public unsafe class BattleProjectileQSystem : SystemMainThreadFilter<BattleProjectileQSystem.Filter>, ISignalBattleOnProjectileHitSoulWall, ISignalBattleOnProjectileHitArenaBorder, ISignalBattleOnProjectileHitPlayerShield, ISignalBattleOnGameOver
+    public unsafe class BattleProjectileQSystem : SystemMainThreadFilter<BattleProjectileQSystem.Filter>, ISignalBattleOnGameOver
     {
         public struct Filter
         {
@@ -87,29 +87,120 @@ namespace Battle.QSimulation.Projectile
             projectile->CollisionFlags[(f.Number + 1) % 2 ] = 0;
         }
 
-        public void BattleOnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)
+        public static void OnProjectileCollision(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, EntityRef otherEntity, void* otherComponentPtr, BattleCollisionTriggerType collisionType)
         {
-            // change projectile's emotion to soulwall's emotion
-            SetEmotion(f, projectile, soulWall->Emotion);
+            if (IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Projectile)) return;
 
-            ProjectileVelocityUpdate(f, projectile, projectileEntity, soulWallEntity, soulWall->Normal, soulWall->CollisionMinOffset);
+            FPVector2 normal = FPVector2.Zero;
+            FP collisionMinOffset = FP._0;
+            bool updateVelocity = false;
+
+            switch (collisionType)
+            {
+                case BattleCollisionTriggerType.ArenaBorder:
+                    BattleArenaBorderQComponent* arenaBorder = (BattleArenaBorderQComponent*)otherComponentPtr;
+
+                    normal = arenaBorder->Normal;
+                    collisionMinOffset = arenaBorder->CollisionMinOffset;
+                    updateVelocity = true;
+                    break;
+
+                case BattleCollisionTriggerType.SoulWall:
+
+                    BattleSoulWallQComponent* soulWall = (BattleSoulWallQComponent*)otherComponentPtr;
+
+                    SetEmotion(f, projectile, soulWall->Emotion);
+
+                    normal = soulWall->Normal;
+                    collisionMinOffset = soulWall->CollisionMinOffset;
+                    updateVelocity = true;
+                    break;
+
+                case BattleCollisionTriggerType.Shield:
+                    BattlePlayerHitboxQComponent* playerHitbox = (BattlePlayerHitboxQComponent*)otherComponentPtr;
+
+                    if (ProjectileHitPlayerShield(f, projectile, projectileEntity, playerHitbox, otherEntity, out normal))
+                    {
+                        collisionMinOffset = playerHitbox->CollisionMinOffset;
+                        updateVelocity = true;
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (updateVelocity)
+            {
+                ProjectileUpdateVelocity(f, projectile, projectileEntity, otherEntity, normal, collisionMinOffset);
+            }
+
+            SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Projectile);
         }
 
-        public void BattleOnProjectileHitArenaBorder(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity)
+        public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)
         {
-            ProjectileVelocityUpdate(f, projectile,  projectileEntity, arenaBorderEntity, arenaBorder->Normal, arenaBorder->CollisionMinOffset);
+            projectile->IsMoving = false;
+
+            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
+
+            // move the projectile out of bounds after a goal is scored
+            switch (winningTeam)
+            {
+                case BattleTeamNumber.TeamAlpha:
+                    projectileTransform->Position += new FPVector2(0, 10);
+                    break;
+                case BattleTeamNumber.TeamBeta:
+                    projectileTransform->Position += new FPVector2(0, -10);
+                    break;
+            }
         }
 
-        public void BattleOnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
+        public static void ProjectileUpdateVelocity(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, EntityRef otherEntity, FPVector2 normal, FP collisionMinOffset, BattlePlayerCollisionType collisionType = BattlePlayerCollisionType.Reflect)
         {
-            if (!playerHitbox->IsActive) return;
-            if (projectile->Emotion == BattleEmotionState.Love) return;
-            if (playerHitbox->CollisionType == BattlePlayerCollisionType.None) return;
+            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
+            Transform2D* otherTransform = f.Unsafe.GetPointer<Transform2D>(otherEntity);
+
+            // calculate how far off from other entity's position is the projectile supposed to hit it's surface
+            FPVector2 offsetVector = projectileTransform->Position - otherTransform->Position;
+            FP collisionOffset = FPVector2.Rotate(offsetVector, -FPVector2.RadiansSigned(FPVector2.Up, normal)).Y;
+
+            // set new projectile direction
+            if      (collisionType == BattlePlayerCollisionType.Reflect)  projectile->Direction = FPVector2.Reflect(projectile->Direction, normal);
+            else if (collisionType == BattlePlayerCollisionType.Override) projectile->Direction = normal;
+
+            // update the projectile's speed based on speed potential and multiply by emotion
+            projectile->Speed = projectile->SpeedPotential * projectile->SpeedMultiplierArray[(int)projectile->Emotion];
+
+            // if projectile accidentally went inside another entity, lift it out
+            if (collisionOffset - projectile->Radius < collisionMinOffset)
+            {
+                projectileTransform->Position += normal * (collisionMinOffset - collisionOffset + projectile->Radius);
+            }
+        }
+
+        public static void SetEmotion(Frame f, BattleProjectileQComponent* projectile, BattleEmotionState emotion)
+        {
+            projectile->Emotion = emotion;
+            f.Events.BattleChangeEmotionState(projectile->Emotion);
+        }
+
+        public static void SetAttack(Frame f, BattleProjectileQComponent* projectile, FP attack)
+        {
+            projectile->Attack = attack;
+            f.Events.BattleProjectileChangeGlowStrength(projectile->Attack / projectile->AttackMax);
+        }
+
+        private static bool ProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity, out FPVector2 normal)
+        {
+            normal = FPVector2.Zero;
+
+            if (!playerHitbox->IsActive) return false;
+            if (projectile->Emotion == BattleEmotionState.Love) return false;
+            if (playerHitbox->CollisionType == BattlePlayerCollisionType.None) return false;
 
             BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
 
-            // get attack damage from player stats
-            SetAttack(f, projectile, playerData->Stats.Attack);
             bool isOnTopOfTeammate = false;
 
             BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot);
@@ -134,69 +225,11 @@ namespace Battle.QSimulation.Projectile
                 Debug.Log("[ProjectileSystem] changing projectile emotion to Love");
                 SetEmotion(f, projectile, BattleEmotionState.Love);
 
-                // send a projectileVelocityUpdate with the direction being straight up or down depending on the team
-                ProjectileVelocityUpdate(f, projectile, projectileEntity, playerHitboxEntity, playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? FPVector2.Up : FPVector2.Down, playerHitbox->CollisionMinOffset, BattlePlayerCollisionType.Override);
-                return;
+                normal = playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? FPVector2.Up : FPVector2.Down;
+                return true;
             }
-            ProjectileVelocityUpdate(f, projectile, projectileEntity, playerHitboxEntity, playerHitbox->Normal, playerHitbox->CollisionMinOffset, playerHitbox->CollisionType);
-        }
-
-        public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)
-        {
-            // stop the projectile
-            projectile->IsMoving = false;
-
-            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
-
-            // move the projectile out of bounds after a goal is scored
-            switch (winningTeam)
-            {
-                case BattleTeamNumber.TeamAlpha:
-                    projectileTransform->Position += new FPVector2(0, 10);
-                    break;
-                case BattleTeamNumber.TeamBeta:
-                    projectileTransform->Position += new FPVector2(0, -10);
-                    break;
-            }
-        }
-
-        private void ProjectileVelocityUpdate(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, EntityRef otherEntity, FPVector2 normal, FP collisionMinOffset, BattlePlayerCollisionType collisionType = BattlePlayerCollisionType.Reflect)
-        {
-            if (IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Projectile)) return;
-
-            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
-            Transform2D* otherTransform = f.Unsafe.GetPointer<Transform2D>(otherEntity);
-
-            // calculate how far off from other entity's position is the projectile supposed to hit it's surface
-            FPVector2 offsetVector = projectileTransform->Position - otherTransform->Position;
-            FP collisionOffset = FPVector2.Rotate(offsetVector, -FPVector2.RadiansSigned(FPVector2.Up, normal)).Y;
-
-            // set new projectile direction
-            if      (collisionType == BattlePlayerCollisionType.Reflect)  projectile->Direction = FPVector2.Reflect(projectile->Direction, normal);
-            else if (collisionType == BattlePlayerCollisionType.Override) projectile->Direction = normal;
-
-            // update the projectile's speed based on speed potential and multiply by emotion
-            projectile->Speed = projectile->SpeedPotential * projectile->SpeedMultiplierArray[(int)projectile->Emotion];
-
-            // if projectile accidentally went inside another entity, lift it out
-            if (collisionOffset - projectile->Radius < collisionMinOffset)
-            {
-                projectileTransform->Position += normal * (collisionMinOffset - collisionOffset + projectile->Radius);
-            }
-
-            SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Projectile);
-        }
-
-        private void SetEmotion(Frame f, BattleProjectileQComponent* projectile, BattleEmotionState emotion)
-        {
-            projectile->Emotion = emotion;
-            f.Events.BattleChangeEmotionState(projectile->Emotion);
-        }
-
-        private void SetAttack(Frame f, BattleProjectileQComponent* projectile, FP attack)
-        {
-            projectile->Attack = attack;
-            f.Events.BattleProjectileChangeGlowStrength(projectile->Attack / projectile->AttackMax);
+            normal = playerHitbox->Normal;
+            return true;
         }
     }
 }
