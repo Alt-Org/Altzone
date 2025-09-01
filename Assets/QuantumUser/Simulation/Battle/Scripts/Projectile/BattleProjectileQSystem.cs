@@ -25,9 +25,6 @@ namespace Battle.QSimulation.Projectile
             public BattleSoulWallQComponent* soulWall;
             public BattleArenaBorderQComponent* arenaBorder;
             public BattlePlayerHitboxQComponent* playerHitbox;
-            public EntityRef soulWallEntity;
-            public EntityRef arenaBorderEntity;
-            public EntityRef playerHitboxEntity;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -97,9 +94,8 @@ namespace Battle.QSimulation.Projectile
             projectile->CollisionFlags[(f.Number + 1) % 2 ] = 0;
         }
 
-        public static void OnProjectileCollision(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleCollisionTriggerType collisionType, CollisionData data)
+        public static void OnProjectileCollision(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, EntityRef otherEntity, BattleCollisionTriggerType collisionType, CollisionData data)
         {
-            EntityRef collisionEntity = EntityRef.None;
             FPVector2 normal = FPVector2.Zero;
             FP collisionMinOffset = FP._0;
             bool updateVelocity = false;
@@ -107,7 +103,6 @@ namespace Battle.QSimulation.Projectile
             switch (collisionType)
             {
                 case BattleCollisionTriggerType.ArenaBorder:
-                    collisionEntity = data.arenaBorderEntity;
                     normal = data.arenaBorder->Normal;
                     collisionMinOffset = data.arenaBorder->CollisionMinOffset;
                     updateVelocity = true;
@@ -117,16 +112,14 @@ namespace Battle.QSimulation.Projectile
                     // change projectile's emotion to soulwall's emotion
                     SetEmotion(f, projectile, data.soulWall->Emotion);
 
-                    collisionEntity = data.soulWallEntity;
                     normal = data.soulWall->Normal;
                     collisionMinOffset = data.soulWall->CollisionMinOffset;
                     updateVelocity = true;
                     break;
 
                 case BattleCollisionTriggerType.Shield:
-                    if (ProjectileHitPlayerShield(f, projectile, projectileEntity, data.playerHitbox, data.playerHitboxEntity, out normal))
+                    if (ProjectileHitPlayerShield(f, projectile, projectileEntity, data.playerHitbox, otherEntity, out normal))
                     {
-                        collisionEntity = data.playerHitboxEntity;
                         collisionMinOffset = data.playerHitbox->CollisionMinOffset;
                         updateVelocity = true;
                     }
@@ -138,7 +131,7 @@ namespace Battle.QSimulation.Projectile
 
             if (updateVelocity)
             {
-                ProjectileVelocityUpdate(f, projectile, projectileEntity, collisionEntity, normal, collisionMinOffset);
+                ProjectileVelocityUpdate(f, projectile, projectileEntity, otherEntity, normal, collisionMinOffset);
             }
         }
 

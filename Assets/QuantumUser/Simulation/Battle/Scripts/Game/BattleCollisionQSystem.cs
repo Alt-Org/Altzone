@@ -31,8 +31,7 @@ namespace Battle.QSimulation.Game
                             Debug.Log("[CollisionSystem] Projectile hit ArenaBorder");
                             //f.Events.PlaySoundEvent(SoundEffect.SideWallHit);
                             projectileCollisionData.arenaBorder = arenaBorder;
-                            projectileCollisionData.arenaBorderEntity = info.Other;
-                            BattleProjectileQSystem.OnProjectileCollision(f, projectile, info.Entity, BattleCollisionTriggerType.ArenaBorder, projectileCollisionData);
+                            BattleProjectileQSystem.OnProjectileCollision(f, projectile, info.Entity, info.Other, BattleCollisionTriggerType.ArenaBorder, projectileCollisionData);
                             break;
                         }
 
@@ -41,8 +40,7 @@ namespace Battle.QSimulation.Game
                             BattleSoulWallQComponent* soulWall = f.Unsafe.GetPointer<BattleSoulWallQComponent>(info.Other);
                             Debug.Log("[CollisionSystem] Projectile hit SoulWall");
                             projectileCollisionData.soulWall = soulWall;
-                            projectileCollisionData.soulWallEntity = info.Other;
-                            BattleProjectileQSystem.OnProjectileCollision(f, projectile, info.Entity, BattleCollisionTriggerType.SoulWall, projectileCollisionData);
+                            BattleProjectileQSystem.OnProjectileCollision(f, projectile, info.Entity, info.Other, BattleCollisionTriggerType.SoulWall, projectileCollisionData);
                             BattleSoulWallQSystem.OnProjectileHitSoulWall(f, projectile, info.Entity, soulWall, info.Other);
                             BattleDiamondQSystem.OnProjectileHitSoulWall(f, projectile, info.Entity, soulWall, info.Other);
                             break;
@@ -62,8 +60,7 @@ namespace Battle.QSimulation.Game
                             BattlePlayerHitboxQComponent* playerHitbox = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(info.Other);
                             Debug.Log("[CollisionSystem] Projectile hit Player Shield");
                             projectileCollisionData.playerHitbox = playerHitbox;
-                            projectileCollisionData.playerHitboxEntity = info.Other;
-                            BattleProjectileQSystem.OnProjectileCollision(f, projectile, info.Entity, BattleCollisionTriggerType.Shield, projectileCollisionData);
+                            BattleProjectileQSystem.OnProjectileCollision(f, projectile, info.Entity, info.Other, BattleCollisionTriggerType.Shield, projectileCollisionData);
                             BattlePlayerQSystem.OnProjectileHitPlayerShield(f, projectile, info.Entity, playerHitbox, info.Other);
                             break;
                         }
