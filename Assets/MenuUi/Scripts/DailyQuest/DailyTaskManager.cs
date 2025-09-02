@@ -822,7 +822,11 @@ public class DailyTaskManager : AltMonoBehaviour
                         break;
                     }
                 case PopupData.PopupDataType.ClanMilestone: break;
-                case PopupData.PopupDataType.MultipleChoice: Debug.Log($"Correct!"); break;
+                case PopupData.PopupDataType.MultipleChoice:
+                    {
+                        gameObject.GetComponent<MultipleChoiceProgressListener>().UpdateProgressMultipleChoice(_currentPlayerData.Task);
+                        break;
+                    }
             }
         }
         else

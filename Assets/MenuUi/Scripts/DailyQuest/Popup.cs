@@ -74,6 +74,8 @@ public class Popup : MonoBehaviour
     [SerializeField] private Image _taskMultipleChoiceColorImage;
     [SerializeField] private Image _multipleChoiceTaskImage;
     [SerializeField] private List<Button> _optionButtons;
+    [SerializeField] private TextMeshProUGUI _cooldownText;
+    private bool _isOnCooldown = false;
 
     private bool? _result;
 
@@ -307,7 +309,38 @@ public class Popup : MonoBehaviour
         {
             string option = options[i];
             _optionButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = option;
-            _optionButtons[i].onClick.AddListener(() => _result = MultipleChoiceOptions.Instance.GetResult(data, option));
+            _optionButtons[i].onClick.AddListener(() =>
+            {
+                if (_isOnCooldown) return;
+
+                _result = MultipleChoiceOptions.Instance.GetResult(data, option);
+
+                if (_result.HasValue && _result.Value == false)
+                    StartCoroutine(Cooldown(60f));
+            });
         }
+    }
+
+    private IEnumerator Cooldown(float seconds)
+    {
+        _isOnCooldown = true;
+        _cooldownText.gameObject.SetActive(true);
+
+        foreach (var button in _optionButtons)
+            button.interactable = false;
+
+        float timeLeft = seconds;
+        while (timeLeft > 0)
+        {
+            _cooldownText.text = $"{Mathf.CeilToInt(timeLeft)}s";
+            yield return new WaitForSeconds(1f);
+            timeLeft--;
+        }
+
+        foreach (var button in _optionButtons)
+            button.interactable = true;
+
+        _cooldownText.gameObject.SetActive(false);
+        _isOnCooldown = false;
     }
 }
