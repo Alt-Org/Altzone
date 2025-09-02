@@ -190,7 +190,7 @@ namespace Altzone.Scripts.Audio
                 _nextUpTrack = musicTrack;
                 return;
             }
-            Debug.LogError(musicTrack.Name);
+
             _currentCategory = musicCategory;
             _currentTrack = musicTrack;
             StartCoroutine(SwitchMusic(MusicListDirection.None, null));
