@@ -378,7 +378,7 @@ namespace Battle.QSimulation.Player
                 // set playerManagerData for player
                 playerHandle.PlayState = BattlePlayerPlayState.OutOfPlay;
                 playerHandle.AllowCharacterSwapping = true;
-                playerHandle.SetCharacters(playerCharacterEntityArray);
+                playerHandle.SetCharacterEntities(playerCharacterEntityArray);
             }
         }
 
@@ -502,8 +502,8 @@ namespace Battle.QSimulation.Player
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _internalHandle.AllowCharacterSwapping = value;
             }
 
-            public EntityRef SelectedCharacter
-            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacter; }
+            public EntityRef SelectedCharacterEntity
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacterEntity; }
 
             public int SelectedCharacterNumber
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacterNumber; }
@@ -689,7 +689,7 @@ namespace Battle.QSimulation.Player
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->AllowCharacterSwapping[Index] = value;
             }
 
-            public EntityRef SelectedCharacter
+            public EntityRef SelectedCharacterEntity
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->SelectedCharacters[Index]; }
 
             public int SelectedCharacterNumber
@@ -722,9 +722,9 @@ namespace Battle.QSimulation.Player
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public EntityRef GetCharacter(int characterNumber) => _playerManagerData->AllCharacters[GetCharacterIndex(characterNumber)];
+            public EntityRef GetCharacterEntity(int characterNumber) => _playerManagerData->AllCharacters[GetCharacterIndex(characterNumber)];
 
-            public void SetCharacters(EntityRef[] entityRefArray)
+            public void SetCharacterEntities(EntityRef[] entityRefArray)
             {
                 int characterOffset = GetCharacterOffset();
                 for (int i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_COUNT; i++)
@@ -812,7 +812,7 @@ namespace Battle.QSimulation.Player
 
         private static void SpawnPlayer(Frame f, PlayerHandleInternal playerHandle, int characterNumber)
         {
-            EntityRef character = playerHandle.GetCharacter(characterNumber);
+            EntityRef character = playerHandle.GetCharacterEntity(characterNumber);
             BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(character);
             Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(character);
 
@@ -820,7 +820,7 @@ namespace Battle.QSimulation.Player
 
             if (playerHandle.PlayState.IsInPlay())
             {
-                worldPosition = f.Unsafe.GetPointer<Transform2D>(playerHandle.SelectedCharacter)->Position;
+                worldPosition = f.Unsafe.GetPointer<Transform2D>(playerHandle.SelectedCharacterEntity)->Position;
                 DespawnPlayer(f, playerHandle);
             }
             else
@@ -847,7 +847,7 @@ namespace Battle.QSimulation.Player
 
         private static void DespawnPlayer(Frame f, PlayerHandleInternal playerHandle)
         {
-            EntityRef selectedCharacter = playerHandle.SelectedCharacter;
+            EntityRef selectedCharacter = playerHandle.SelectedCharacterEntity;
             BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(selectedCharacter);
             Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(selectedCharacter);
 

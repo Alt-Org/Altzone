@@ -125,7 +125,7 @@ namespace Battle.QSimulation.Player
 
                 if (playerHandle.PlayState.IsOutOfPlay()) continue;
 
-                playerEntity = playerHandle.SelectedCharacter;
+                playerEntity = playerHandle.SelectedCharacterEntity;
                 playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerEntity);
                 playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
 
