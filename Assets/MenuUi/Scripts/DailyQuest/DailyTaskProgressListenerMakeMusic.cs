@@ -1,72 +1,54 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.Model.Poco.Game;
-using System.Collections;
+using System.Collections.Generic;
 
 public class DailyTaskProgressListenerMakeMusic : DailyTaskProgressListener
 {
     [SerializeField] private Button[] _buttons;
-    [SerializeField] private int _requiredClicks = 10;
-    [SerializeField] private float _timeLimit = 6f;
 
-    private int _currentClicks = 0;
-    private float _elapsedTime = 0f;
-    private bool _taskActive = false;
-    private Coroutine _timer;
+    private int[] _targetSequence = new int[] { 0, 0, 0, 2, 1, 1, 1, 3, 2, 2, 1, 1, 0 };
+    private List<int> _currentSequence = new();
 
     private void Awake()
     {
         _educationCategoryType = EducationCategoryType.Action;
         _educationCategoryActionType = TaskEducationActionType.MakeMusicWithButtons;
 
-        foreach (Button button in _buttons)
+        for (int i = 0; i < _buttons.Length; i++)
         {
-            button.onClick.AddListener(CountClicks);
+            int index = i;
+            _buttons[index].onClick.AddListener(() => OnButtonClick(index));
         }
     }
 
-    private void CountClicks()
+    private void OnButtonClick(int index)
     {
-        if (!_taskActive)
+        _currentSequence.Add(index);
+
+        for (int i = 0; i < _currentSequence.Count; i++)
         {
-            _taskActive = true;
-            _timer = StartCoroutine(Timer());
+            if (_currentSequence[i] != _targetSequence[i])
+            {
+                ResetTask();
+                return;
+            }
         }
 
-        _currentClicks++;
-
-        if (_currentClicks >= _requiredClicks)
+        if (_currentSequence.Count == _targetSequence.Length)
         {
             CompleteTask();
         }
     }
 
-    private IEnumerator Timer()
-    {
-        _elapsedTime = 0f;
-
-        while (_elapsedTime < _timeLimit)
-        {
-            _elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        ResetTask();
-    }
-
     private void CompleteTask()
     {
-        if (_timer != null)
-            StopCoroutine(_timer);
-
         UpdateProgress("1");
         ResetTask();
     }
 
     private void ResetTask()
     {
-        _taskActive = false;
-        _elapsedTime = 0f;
-        _currentClicks = 0;
+        _currentSequence.Clear();
     }
 }
