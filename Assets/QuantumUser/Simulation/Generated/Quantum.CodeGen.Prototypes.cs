@@ -182,6 +182,21 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerClassTricksterDataQComponent))]
+  public unsafe partial class BattlePlayerClassTricksterDataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerClassTricksterDataQComponent> {
+    public FP randomAngleRangeDeg;
+    partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerClassTricksterDataQComponent result, in PrototypeMaterializationContext context);
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.BattlePlayerClassTricksterDataQComponent component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.BattlePlayerClassTricksterDataQComponent result, in PrototypeMaterializationContext context = default) {
+        result.randomAngleRangeDeg = this.randomAngleRangeDeg;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerDataQComponent))]
   public unsafe class BattlePlayerDataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerDataQComponent> {
     public PlayerRef PlayerRef;

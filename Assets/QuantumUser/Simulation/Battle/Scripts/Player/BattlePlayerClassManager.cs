@@ -44,7 +44,7 @@ namespace Battle.QSimulation.Player
 
                 case BattlePlayerCharacterClass.Trickster:
                     if (s_classArray[ClassIndexTrickster] != null) break;
-                    //s_classArray[ClassIndexTrickster] = new BattlePlayerClassTrickster();
+                    s_classArray[ClassIndexTrickster] = new BattlePlayerClassTrickster();
                     break;
 
                 case BattlePlayerCharacterClass.Obedient:
@@ -159,7 +159,7 @@ namespace Battle.QSimulation.Player
             int classIndex = characterClass switch
             {
                 BattlePlayerCharacterClass.Desensitizer     => ClassIndexDesensitizer,
-                //BattlePlayerCharacterClass.Trickster        => ClassIndexTrickster,
+                BattlePlayerCharacterClass.Trickster        => ClassIndexTrickster,
                 //BattlePlayerCharacterClass.Obedient         => ClassIndexObedient,
                 //BattlePlayerCharacterClass.Projector        => ClassIndexProjector,
                 //BattlePlayerCharacterClass.Retroflector     => ClassIndexRetroflector,
