@@ -178,7 +178,7 @@ namespace Altzone.Scripts.Audio
 
         public string PlayFallBackTrack()
         {
-            Debug.LogError($"{_fallbackMusicCategory}   {_fallbackMusicTrack}");
+            //Debug.LogError($"{_fallbackMusicCategory}   {_fallbackMusicTrack}");
             return _musicHandler.PlayMusic(_fallbackMusicCategory, _fallbackMusicTrack);
         }
 
