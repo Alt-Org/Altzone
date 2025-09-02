@@ -55,6 +55,11 @@ synced event BattleChangeEmotionState
     BattleEmotionState Emotion;
 }
 
+synced event BattleProjectileChangeGlowStrength
+{
+    FP Strength;
+}
+
 event BattlePlaySoundFX
 {
     BattleSoundFX Effect;
@@ -76,6 +81,15 @@ synced event BattleCharacterTakeDamage
     BattlePlayerSlot Slot;
     int CharacterNumber;
     FP HealthPercentage;
+}
+
+synced event BattleShieldTakeDamage
+{
+    EntityRef Entity;
+    BattleTeamNumber Team;
+    BattlePlayerSlot Slot;
+    int CharacterNumber;
+    FP DefenceValue;
 }
 
 //} Gameplay events

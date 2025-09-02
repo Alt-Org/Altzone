@@ -35,11 +35,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         [Header("HP"), SerializeField] protected int _defaultHp;
         protected int _hp;
         [SerializeField] protected ValueStrength _hpStrength = ValueStrength.None;
-        
+
         [Header("Speed"), SerializeField] protected int _defaultSpeed;
         protected int _speed;
         [SerializeField] protected ValueStrength _speedStrength = ValueStrength.None;
-        
+
         [Header("Character Size"), SerializeField] protected int _defaultCharacterSize;
         protected int _characterSize;
         [SerializeField] protected ValueStrength _characterSizeStrength = ValueStrength.None;
@@ -216,30 +216,30 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             return level switch
             {
-                 1 =>  50,
-                 2 =>  75,
-                 3 => 100,
-                 4 => 125,
-                 5 => 150,
-                 6 => 175,
-                 7 => 200,
-                 8 => 225,
-                 9 => 250,
-                10 => 275,
-                11 => 300,
-                12 => 325,
-                13 => 350,
-                14 => 375,
-                15 => 400,
-                16 => 425,
-                17 => 450,
-                18 => 475,
-                19 => 500,
-                20 => 525,
-                21 => 550,
-                22 => 575,
-                23 => 600,
-                24 => 625,
+                 1 =>   5,
+                 2 =>  10,
+                 3 =>  20,
+                 4 =>  30,
+                 5 =>  40,
+                 6 =>  50,
+                 7 =>  60,
+                 8 =>  70,
+                 9 =>  80,
+                10 =>  90,
+                11 => 100,
+                12 => 110,
+                13 => 120,
+                14 => 130,
+                15 => 140,
+                16 => 150,
+                17 => 160,
+                18 => 170,
+                19 => 180,
+                20 => 190,
+                21 => 200,
+                22 => 210,
+                23 => 220,
+                24 => 230,
 
                 _ => -1,
             };

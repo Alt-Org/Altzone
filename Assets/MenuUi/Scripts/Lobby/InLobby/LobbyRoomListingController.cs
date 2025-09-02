@@ -164,7 +164,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                             }
                             else
                             {
-                                PopupSignalBus.OnChangePopupInfoSignal("Salasana on v‰‰rin.");
+                                PopupSignalBus.OnChangePopupInfoSignal("Salasana on v√§√§rin.");
                             }
                             _passwordPopup.ClosePopup();
                         }));
@@ -209,7 +209,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private void HandleClanMemberDisconnected()
         {
-            PopupSignalBus.OnChangePopupInfoSignal("Pelin etsiminen lopetetaan. Klaanin j‰sen sulki pelin.");
+            PopupSignalBus.OnChangePopupInfoSignal("Pelin etsiminen lopetetaan. Klaanin j√§sen sulki pelin.");
         }
 
         private void HandleKickedOutOfRoom(ReasonType reason)
@@ -217,7 +217,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             switch (reason)
             {
                 case ReasonType.FullRoom:
-                    PopupSignalBus.OnChangePopupInfoSignal("Virhe pelin etsimisess‰, huone on t‰ysi.");
+                    PopupSignalBus.OnChangePopupInfoSignal("Virhe pelin etsimisess√§, huone on t√§ysi.");
                     break;
                 case ReasonType.RoomLeader:
                     PopupSignalBus.OnChangePopupInfoSignal("Huoneen johtaja poisti sinut huoneesta.");

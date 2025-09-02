@@ -1,5 +1,4 @@
 using UnityEngine.Scripting;
-
 using Quantum;
 using Photon.Deterministic;
 
@@ -8,43 +7,77 @@ using Battle.QSimulation.Projectile;
 namespace Battle.QSimulation.Player
 {
     [Preserve]
-    public unsafe class BattlePlayerQSystem : SystemMainThread, ISignalBattleOnProjectileHitPlayerHitbox
+    public unsafe class BattlePlayerQSystem : SystemMainThread
     {
         public static void SpawnPlayers(Frame f)
         {
             foreach (BattlePlayerManager.PlayerHandle playerHandle in BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f))
             {
-                if (playerHandle.PlayState == BattlePlayerPlayState.NotInGame) continue;
+                if (playerHandle.PlayState.IsNotInGame()) continue;
 
                 BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, 0);
             }
         }
 
-        public unsafe void BattleOnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
+        public static void OnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
         {
+            if (projectile->IsHeld) return;
             if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Player)) return;
 
-            BattlePlayerDataQComponent* _damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
-            FP _damageTaken = FP._1;
+            BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
+            FP damageTaken = projectile->Attack;
 
-            int characterNumber = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, _damagedPlayerData->Slot).SelectedCharacterNumber;
+            BattlePlayerManager.PlayerHandle damagePlayerHandle = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot);
+            int characterNumber = damagePlayerHandle.SelectedCharacterNumber;
 
-            FP newHp = _damagedPlayerData->CurrentHp - _damageTaken;
+            FP newHp = damagedPlayerData->CurrentHp - damageTaken;
 
-            if (_damageTaken > FP._0 && _damagedPlayerData->CurrentHp > 0 && !_damagedPlayerData->DamageCooldown.IsRunning(f))
+            if (damageTaken > FP._0 && damagedPlayerData->CurrentHp > FP._0 && !damagedPlayerData->DamageCooldown.IsRunning(f))
             {
-                _damagedPlayerData->CurrentHp = newHp;
-                _damageTaken = FP._0;
+                damagedPlayerData->CurrentHp = newHp;
 
-                _damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, 1);
+                damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, FP._1);
 
-                f.Events.BattleCharacterTakeDamage(playerHitbox->PlayerEntity, _damagedPlayerData->TeamNumber, _damagedPlayerData->Slot, characterNumber, newHp / _damagedPlayerData->Stats.Hp);
+                f.Events.BattleCharacterTakeDamage(playerHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newHp / damagedPlayerData->Stats.Hp);
             }
 
-            if (_damagedPlayerData->CurrentHp <= FP._0)
+            if (damagedPlayerData->CurrentHp <= FP._0)
             {
-                BattlePlayerManager.DespawnPlayer(f, _damagedPlayerData->Slot);
+                BattlePlayerManager.DespawnPlayer(f, damagedPlayerData->Slot, kill: true);
+                damagePlayerHandle.SetOutOfPlayRespawning();
+                damagePlayerHandle.RespawnTimer = FrameTimer.FromSeconds(f, FP._0_50);
             }
+
+            BattlePlayerClassManager.OnProjectileHitPlayerHitbox(f, projectile, projectileEntity, playerHitbox, playerHitboxEntity);
+
+            BattleProjectileQSystem.SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Player);
+        }
+
+        public static void OnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
+        {
+            if (!playerHitbox->IsActive) return;
+            if (projectile->IsHeld) return;
+            if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Player)) return;
+
+            BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
+            FP damageTaken = projectile->Attack;
+
+            BattleProjectileQSystem.SetAttack(f, projectile, damagedPlayerData->Stats.Attack);
+
+            int characterNumber = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber;
+
+            FP newDefence = damagedPlayerData->CurrentDefence - damageTaken;
+
+            if (damageTaken > FP._0 && damagedPlayerData->CurrentDefence > FP._0 && !damagedPlayerData->DamageCooldown.IsRunning(f))
+            {
+                damagedPlayerData->CurrentDefence = newDefence;
+
+                damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, FP._1);
+
+                f.Events.BattleShieldTakeDamage(playerHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newDefence);
+            }
+
+            BattlePlayerClassManager.OnProjectileHitPlayerShield(f, projectile, projectileEntity, playerHitbox, playerHitboxEntity);
 
             BattleProjectileQSystem.SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Player);
         }
@@ -57,24 +90,51 @@ namespace Battle.QSimulation.Player
             BattlePlayerDataQComponent* playerData;
             Transform2D* playerTransform;
 
-            foreach (BattlePlayerManager.PlayerHandle playerHandle in BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f))
+            BattlePlayerManager.PlayerHandle[] playerHandleArray = BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f);
+
+            for (int playerNumber = 0; playerNumber < playerHandleArray.Length; playerNumber++)
             {
-                if (playerHandle.PlayState == BattlePlayerPlayState.NotInGame) continue;
+                BattlePlayerManager.PlayerHandle playerHandle = playerHandleArray[playerNumber];
+                if (playerHandle.PlayState.IsNotInGame()) continue;
+                if (playerHandle.PlayState.IsOutOfPlayFinal()) continue;
 
                 input = f.GetPlayerInput(playerHandle.PlayerRef);
 
-                if (input->PlayerCharacterNumber > -1)
+                if (input->PlayerCharacterNumber > -1 && playerHandle.AllowCharacterSwapping)
                 {
                     BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, input->PlayerCharacterNumber);
                     continue;
                 }
 
-                if (playerHandle.PlayState == BattlePlayerPlayState.OutOfPlay) continue;
+                if (playerHandle.PlayState.IsOutOfPlayRespawning() && !playerHandle.RespawnTimer.IsRunning(f) && playerHandle.AllowCharacterSwapping)
+                {
+                    int i;
+                    for (i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_COUNT; i++)
+                    {
+                        if (playerHandle.GetCharacterState(i) == BattlePlayerCharacterState.Alive)
+                        {
+                            BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, i);
+                            break;
+                        }
+                    }
+                    if (i == Constants.BATTLE_PLAYER_CHARACTER_COUNT)
+                    {
+                        playerHandle.SetOutOfPlayFinal();
+                    }
+                }
+
+                if (playerHandle.PlayState.IsOutOfPlay()) continue;
 
                 playerEntity = playerHandle.SelectedCharacter;
                 playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerEntity);
                 playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
 
+                if (playerData->CurrentDefence <= FP._0)
+                {
+                    f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity)->IsActive = false;
+                }
+
+                BattlePlayerClassManager.OnUpdate(f, playerHandle, playerData, playerEntity);
                 BattlePlayerMovementController.UpdateMovement(f, playerData, playerTransform, input);
             }
         }

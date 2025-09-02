@@ -12,7 +12,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         private string _name;
         [ForeignKey(nameof(PlayerData)), Mandatory] public string PlayerDataId;
         [ForeignKey(nameof(RaidRoom)), Optional] public string RaidRoomId;
-        public ClanMemberRole Role;
+        public string Role;
         private ServerPlayer _player;
 
         private int _leaderBoardWins = 0;
