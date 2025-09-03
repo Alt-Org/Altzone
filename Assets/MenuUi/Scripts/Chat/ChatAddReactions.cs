@@ -91,7 +91,7 @@ public class ChatAddReactions : MonoBehaviour
     {
         if (_chatScript != null)
         {
-            GameObject selectedMessage = _chatScript.SelectedMessage;
+            MessageObjectHandler selectedMessage = _chatScript.SelectedMessage;
             HorizontalLayoutGroup reactionsField = selectedMessage.GetComponentInChildren<HorizontalLayoutGroup>();
 
             Image reactionImage = reaction.GetComponentInChildren<Image>();
@@ -104,7 +104,7 @@ public class ChatAddReactions : MonoBehaviour
                 if (addedReaction._messageID == messageID && addedReaction.ReactionImage.sprite == reactionSprite)
                 {
                     RemoveReaction(addedReaction);
-                    _chatScript.DeselectMessage(selectedMessage);
+                    _chatScript.DeselectMessage();
 
                     return;
                 }
@@ -122,7 +122,7 @@ public class ChatAddReactions : MonoBehaviour
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
 
-            _chatScript.DeselectMessage(selectedMessage);
+            _chatScript.DeselectMessage();
             _chatScript.UpdateContentLayout(reactionsField);
         }
     }
@@ -135,7 +135,7 @@ public class ChatAddReactions : MonoBehaviour
     {
         if (!_longClick)
         {
-            _chatScript.DeselectMessage(_chatScript.SelectedMessage);
+            _chatScript.DeselectMessage();
 
             if (reactionHandler._selected)
             {

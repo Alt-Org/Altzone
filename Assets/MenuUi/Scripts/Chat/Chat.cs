@@ -74,22 +74,25 @@ public class Chat : AltMonoBehaviour
 
     private bool shouldScroll = false;
 
-    private GameObject _selectedMessage; // Viesti, joka on tällä hetkellä valittuna
+    private MessageObjectHandler _selectedMessage; // Viesti, joka on tällä hetkellä valittuna
 
     // Public getter
-    public GameObject SelectedMessage => _selectedMessage;  
+    public MessageObjectHandler SelectedMessage => _selectedMessage;  
 
     // Commands
     private string _delete = "/deleteMessage";
     private string _deleteAllMessages = "/clear";
 
     // Sanakirja (List), jossa viestit järjestetään chat-tyypin mukaan
-    private Dictionary<GameObject, List<GameObject>> messagesByChat = new Dictionary<GameObject, List<GameObject>>();
+    private Dictionary<GameObject, List<MessageObjectHandler>> messagesByChat = new Dictionary<GameObject, List<MessageObjectHandler>>();
 
     private GameObject _lastSendButtonUsed;
     private bool _sendButtonsAreClosed = true;
 
     [SerializeField] private GameObject _InputArea;
+
+    public delegate void SelectedMessageChanged(MessageObjectHandler handler);
+    public static event SelectedMessageChanged OnSelectedMessageChanged;
 
     private void Start()
     {
@@ -97,9 +100,9 @@ public class Chat : AltMonoBehaviour
         _currentContent = _languageChat;
         Debug.Log("Language Chat is Active");
 
-        messagesByChat[_languageChat] = new List<GameObject>();
-        messagesByChat[_globalChat] = new List<GameObject>();
-        messagesByChat[_clanChat] = new List<GameObject>();
+        messagesByChat[_languageChat] = new List<MessageObjectHandler>();
+        messagesByChat[_globalChat] = new List<MessageObjectHandler>();
+        messagesByChat[_clanChat] = new List<MessageObjectHandler>();
 
         LanguageChatActive();
         _tablineScript.ActivateTabButton(1);
@@ -256,11 +259,11 @@ public class Chat : AltMonoBehaviour
         {
             GameObject newMessage = Instantiate(messagePrefab, _currentContent.transform);
 
-            newMessage.GetComponent<MessageObjectHandler>().SetMessageInfo(messageText, null);
+            newMessage.GetComponent<MessageObjectHandler>().SetMessageInfo(messageText, null, SelectMessage);
 
             //AddMessageInteraction(newMessage);
 
-            messagesByChat[_currentContent].Add(newMessage);
+            messagesByChat[_currentContent].Add(newMessage.GetComponent<MessageObjectHandler>());
 
             // Vierittää viestinäkymän alas
             shouldScroll = true;
@@ -308,97 +311,23 @@ public class Chat : AltMonoBehaviour
             button = message.AddComponent<Button>();
         }
 
-        button.onClick.AddListener(() => SelectMessage(message));
+        //button.onClick.AddListener(() => SelectMessage(message));
         button.onClick.AddListener(() => MinimizeOptions());
     }
 
     // Valitsee viestin
-    public void SelectMessage(GameObject message)
+    public void SelectMessage(MessageObjectHandler handler)
     {
-        if (_selectedMessage != null)
-        {
-            DeselectMessage(_selectedMessage);
-        }
-
-        _selectedMessage = message;
-        HighlightMessage(_selectedMessage);
-
-        Vector3 deletePosition = _deleteButtons.transform.position;
-        deletePosition.y = _selectedMessage.transform.position.y; //x = 1245.31
-        if (IsOther(_selectedMessage))
-        {
-            deletePosition.x = 240.31f;
-        }
-        else
-        {
-            deletePosition.x = 1245.31f;
-        }
-        _deleteButtons.transform.position = deletePosition;
-
-        StartCoroutine(SetReactionPanelPosition());
-
-        //Debug.Log(IsOther(message.gameObject));
-
-        _deleteButtons.SetActive(true);// Näytä poistopainikkeet, jos viesti on valittuna
-        _addReactionsPanel.SetActive(true);
-    }
-
-    /// <summary>
-    /// Sets the reaction panel at the bottom of the selected message's reaction field
-    /// </summary>
-    private IEnumerator SetReactionPanelPosition()
-    {
-        yield return null;
-
-        Vector3 reactionPosition = _addReactionsPanel.transform.position;
-        RectTransform reactionPanelTransfrom = _commonReactions.GetComponent<RectTransform>();
-
-        HorizontalLayoutGroup reactionField = _selectedMessage.GetComponentInChildren<HorizontalLayoutGroup>();
-        RectTransform reactionFieldTransform = reactionField.GetComponent<RectTransform>();
-
-        float fieldBottomY = reactionField.transform.position.y - (reactionFieldTransform.rect.height * reactionFieldTransform.pivot.y);
-        float newPanelY = fieldBottomY - (reactionPanelTransfrom.rect.height * reactionPanelTransfrom.pivot.y);
-        reactionPosition.y = newPanelY;
-
-        float fieldEdgeX = reactionField.transform.position.x - (reactionFieldTransform.rect.width * reactionFieldTransform.pivot.x);
-        float newPanelX;
-        if (IsOther(_selectedMessage))
-        {
-            newPanelX = fieldEdgeX + (reactionPanelTransfrom.rect.width * 5.3f * reactionPanelTransfrom.pivot.x);
-        }
-        else
-        {
-            newPanelX = fieldEdgeX + (reactionPanelTransfrom.rect.width * reactionPanelTransfrom.pivot.x);
-        }
-        
-        reactionPosition.x = newPanelX;
-
-        _addReactionsPanel.transform.position = reactionPosition;
-    }
-
-    // Korostaa valitun viestin
-    private void HighlightMessage(GameObject message)
-    {
-        if (message.GetComponentInChildren<Image>() != null)
-        {
-            message.GetComponentInChildren<Image>().color = Color.gray;
-        }
+        _selectedMessage = handler;
+        OnSelectedMessageChanged?.Invoke(_selectedMessage);
+        MinimizeOptions();
     }
 
     // Poistaa valinnan viestistä
-    public void DeselectMessage(GameObject message)
+    public void DeselectMessage()
     {
-        if (_selectedMessage != null)
-        {
-            if (message.GetComponentInChildren<Image>() != null)
-            {
-                message.GetComponentInChildren<Image>().color = Color.white;
-            }
-
-            _deleteButtons.SetActive(false);
-
-            DisableReactionPanel();
-        }
+        _selectedMessage = null;
+        OnSelectedMessageChanged?.Invoke(null);
     }
 
     // Poistaa valitun viestin
@@ -427,7 +356,7 @@ public class Chat : AltMonoBehaviour
         if (messagesByChat[_currentContent].Count > 0)
         {
             Debug.Log("viimeisimmän viestin poistaminen");
-            GameObject lastMessage = messagesByChat[_currentContent][messagesByChat[_currentContent].Count - 1];
+            MessageObjectHandler lastMessage = messagesByChat[_currentContent][messagesByChat[_currentContent].Count - 1];
             Destroy(lastMessage);
             messagesByChat[_currentContent].RemoveAt(messagesByChat[_currentContent].Count - 1);
         }
@@ -441,9 +370,9 @@ public class Chat : AltMonoBehaviour
     public void DeleteAllMessages()
     {
         Debug.Log("poistaa kaikki viestit");
-        foreach (GameObject message in messagesByChat[_currentContent])
+        foreach (MessageObjectHandler message in messagesByChat[_currentContent])
         {
-            Destroy(message);
+            Destroy(message.gameObject);
         }
 
         messagesByChat[_currentContent].Clear();
@@ -521,13 +450,9 @@ public class Chat : AltMonoBehaviour
     /// <param name="onlyMessages"></param>
     public void CloseOnButtonClick(bool onlyDeselectMessages)
     {
-        if (onlyDeselectMessages)
+        DeselectMessage();
+        if (!onlyDeselectMessages)
         {
-            DeselectMessage(_selectedMessage);
-        }
-        else
-        {
-            DeselectMessage(_selectedMessage);
             MinimizeOptions();
         }
     }
@@ -557,21 +482,7 @@ public class Chat : AltMonoBehaviour
         _allReactions.SetActive(false);
         _addReactionsPanel.SetActive(false);
         _usersWhoAdded.SetActive(false);
-    }
-
-    private bool IsOther(GameObject message)
-    {
-        foreach (var other in _otherMessages)
-        {
-            if (message.name == other.name+"(Clone)")
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-     
+    }    
 
     public void OpenUsersWhoAddedReactionPanel()
     {
@@ -579,7 +490,6 @@ public class Chat : AltMonoBehaviour
         _commonReactions.SetActive(false);
         _allReactions.SetActive(false);
         _usersWhoAdded.SetActive(true);
-        SetReactionPanelPosition();
     }
 
     //public GameObject giveJoyPref()
