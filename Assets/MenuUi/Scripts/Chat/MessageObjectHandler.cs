@@ -11,9 +11,13 @@ public class MessageObjectHandler : MonoBehaviour
     [SerializeField] private AvatarFaceLoader _avatar;
     [SerializeField] private TextMeshProUGUI _text;
     [SerializeField] private Button _button;
-    [SerializeField] private GameObject _messageControls;
+    [SerializeField] private GameObject _addReactionsControls;
+    [SerializeField] private GameObject _reactionsPanel;
+    [SerializeField] private GameObject _deleteButttons;
     private Image _image;
     private Action<MessageObjectHandler> _selectMessageAction;
+
+    public GameObject ReactionsPanel { get => _reactionsPanel;}
 
     // Start is called before the first frame update
     void Start()
@@ -21,6 +25,11 @@ public class MessageObjectHandler : MonoBehaviour
         _button.onClick.AddListener(SetMessageActive);
         _image = _button.GetComponent<Image>();
         Chat.OnSelectedMessageChanged += SetMessageInactive;
+    }
+
+    private void OnDestroy()
+    {
+        Chat.OnSelectedMessageChanged -= SetMessageInactive;
     }
 
     public void SetMessageInfo(string messageText, AvatarVisualData avatarData, Action<MessageObjectHandler> selectMessageAction)
@@ -36,7 +45,8 @@ public class MessageObjectHandler : MonoBehaviour
         {
             _image.color = Color.gray;
         }
-        _messageControls.SetActive(true);
+        _addReactionsControls.SetActive(true);
+        _deleteButttons.SetActive(true);
 
         _selectMessageAction.Invoke(this);
     }
@@ -49,7 +59,13 @@ public class MessageObjectHandler : MonoBehaviour
         {
             _image.color = Color.white;
         }
-        _messageControls.SetActive(false);
+        _addReactionsControls.SetActive(false);
+        _deleteButttons.SetActive(false);
+    }
+
+    public void SetMessageInactive()
+    {
+        _selectMessageAction.Invoke(null);
     }
 
 }
