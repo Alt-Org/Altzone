@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SettingsPopup : MonoBehaviour
 {
-    [SerializeField] private Button[] _closeButtons;   // esim. se näkymätön taustabuttoni
-    [SerializeField] private GameObject _swipeBlockOverlay; // se SwipeBlockOverlay-objekti
+    [SerializeField] private Button[] _closeButtons;   // esim. se nï¿½kymï¿½tï¿½n taustabuttoni
+    [SerializeField] private SwipeBlockerPopupHandler _blockerHandler;
 
     private void Start()
     {
@@ -20,36 +21,13 @@ public class SettingsPopup : MonoBehaviour
     {
         gameObject.SetActive(true);
 
-        if (_swipeBlockOverlay != null)
-        {
-            _swipeBlockOverlay.SetActive(true);
-        }
+        _blockerHandler.OpenPopup(gameObject);
     }
 
     public void ClosePopup()
     {
         gameObject.SetActive(false);
 
-        if (_swipeBlockOverlay != null)
-        {
-            // tarkista onko vielä muita popuppeja aktiivisena
-            bool anyPopupOpen = false;
-
-            // käy läpi saman parentin kaikki SettingsPopupit
-            var siblings = GetComponentsInParent<Transform>(true)[0].GetComponentsInChildren<SettingsPopup>(true);
-            foreach (var popup in siblings)
-            {
-                if (popup.gameObject.activeSelf)
-                {
-                    anyPopupOpen = true;
-                    break;
-                }
-            }
-
-            if (!anyPopupOpen)
-            {
-                _swipeBlockOverlay.SetActive(false);
-            }
-        }
+        _blockerHandler.ClosePopup(gameObject);
     }
 }
