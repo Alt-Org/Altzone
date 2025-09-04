@@ -6,6 +6,7 @@ using Altzone.Scripts.Window;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts.Audio;
 
 public class SettingEditor : MonoBehaviour
 {
@@ -32,7 +33,7 @@ public class SettingEditor : MonoBehaviour
             SetToSlider(slider);
         }
 
-        SetFPSButtons();
+        //SetFPSButtons();
         SetIntroSkipToggle();
         SetShowButtonLabelsToggle();
 
@@ -72,7 +73,7 @@ public class SettingEditor : MonoBehaviour
                 break;
         }
 
-        mainMenuController.SetAudioVolumeLevels();
+        AudioManager.Instance.UpdateMaxVolume();
     }
 
     public void SetToSlider(Slider usedSlider)
@@ -136,4 +137,6 @@ public class SettingEditor : MonoBehaviour
         _topBarStyleText.text = "Tyyli: " + carrier.TopBarStyleSetting;
 
     }
+
+    public void PlayMainMenuMusic() { AudioManager.Instance.PlayMusic("MainMenu"); }
 }

@@ -8,12 +8,11 @@
 
 using UnityEngine;
 using UnityEngine.Scripting;
-
 using Quantum;
+using Photon.Deterministic;
 
 using Battle.QSimulation.Projectile;
 using Battle.QSimulation.Game;
-using Photon.Deterministic;
 
 namespace Battle.QSimulation.SoulWall
 {
@@ -22,7 +21,7 @@ namespace Battle.QSimulation.SoulWall
     /// Handles creating SoulWalls and reacting to the projectile colliding with them.
     /// </summary>
     [Preserve]
-    public unsafe class BattleSoulWallQSystem : SystemSignalsOnly, ISignalBattleOnProjectileHitSoulWall
+    public unsafe class BattleSoulWallQSystem : SystemSignalsOnly
     {
         /// <summary>
         /// Creates soulwalls based on BattleArena and SoulWall Specs during map creation phase.
@@ -41,20 +40,16 @@ namespace Battle.QSimulation.SoulWall
         }
 
         /// <summary>
-        /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
-        /// that gets called when <see cref="Quantum.ISignalBattleOnProjectileHitSoulWall">ISignalBattleOnProjectileHitSoulWall</see> is sent.</span><br/>
-        /// Signal handler for when a projectile hits a SoulWall. Handles destroying the SoulWall Entity.
-        /// @warning
-        /// This method should only be called via Quantum signal.
+        /// // FIX DOC
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="projectileEntity">EntityRef of the projectile.</param>
         /// <param name="soulWall">Pointer to the SoulWall component.</param>
         /// <param name="soulWallEntity">EntityRef of the SoulWall.</param>
-        public void BattleOnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)
+        public static void OnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)
         {
+            if (projectile->IsHeld) return;
             Debug.Log("Soul wall hit");
 
             if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.SoulWall)) return;

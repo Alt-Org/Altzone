@@ -49,7 +49,10 @@ namespace Battle.View.UI
         }
 
         /// <value>Is the %UI element visible or not.</value>
-        public bool IsVisible => _localPlayerMultiOrientationElement.gameObject.activeSelf;
+        public bool IsVisible => _isVisible;
+
+        public bool IsVisiblePlayer => _isVisiblePlayer;
+        public bool IsVisibleTeammate => _isVisibleTeammate;
 
         /// <value>Public getter for #_localPlayerMultiOrientationElement.</value>
         public BattleUiMultiOrientationElement LocalPlayerMultiOrientationElement   => _localPlayerMultiOrientationElement;
@@ -64,19 +67,34 @@ namespace Battle.View.UI
         /// <param name="show">If the %UI element should be visible or not.</param>
         public void SetShow(bool show)
         {
-            _localPlayerMultiOrientationElement.gameObject.SetActive(show);
-            _localTeammateMultiOrientationElement.gameObject.SetActive(show);
+            _isVisible = show;
+            _localPlayerMultiOrientationElement   .gameObject.SetActive(_isVisible && _isVisiblePlayer);
+            _localTeammateMultiOrientationElement .gameObject.SetActive(_isVisible && _isVisibleTeammate);
+        }
+
+        public void SetShowPlayer(bool show)
+        {
+            _isVisiblePlayer = show;
+            _localPlayerMultiOrientationElement.gameObject.SetActive(_isVisible && _isVisiblePlayer);
+        }
+
+        public void SetShowTeammate(bool show)
+        {
+            _isVisibleTeammate = show;
+            _localTeammateMultiOrientationElement.gameObject.SetActive(_isVisible && _isVisibleTeammate);
         }
 
         /// <summary>
+        /// // UPDATE DOC<br/>
         /// Sets the player's info to BattleUiPlayerInfo prefab through BattleUiPlayerInfoComponent.
         /// </summary>
         ///
         /// <param name="playerType">The PlayerType which info to set.</param>
         /// <param name="playerName">The player's name.</param>
         /// <param name="characterIds">The player's selected characters CharacterIds as a int array.</param>
+        /// <param name="characterDefenceNumbers">// add doc</param>
         /// <param name="data">The BattleUiMovableElementData for this UI element.</param>
-        public void SetInfo(PlayerType playerType, string playerName, int[] characterIds, BattleUiMovableElementData data)
+        public void SetInfo(PlayerType playerType, string playerName, int[] characterIds, float[] characterDefenceNumbers, BattleUiMovableElementData data)
         {
             // Selecting correct multiorientation element
             BattleUiMultiOrientationElement multiOrientationElement = playerType == PlayerType.LocalPlayer
@@ -100,6 +118,9 @@ namespace Battle.View.UI
 
                 // Setting character icon
                 characterButton.SetCharacterIcon(characterIds[i]);
+
+                // Setting defence number
+                characterButton.SetDefenceNumber(characterDefenceNumbers[i]);
 
                 // Setting if button is enabled
                 characterButton.ButtonComponent.enabled = playerType == PlayerType.LocalPlayer;
@@ -126,20 +147,36 @@ namespace Battle.View.UI
         /// <param name="healthPercentage">The updated health percentage for the character.</param>
         public void UpdateHealthVisual(BattlePlayerSlot slot, int characterNumber, float healthPercentage)
         {
-            BattleUiPlayerInfoComponent playerInfoComponent = null;
-
-            if (slot == BattleGameViewController.LocalPlayerSlot)
-            {
-                playerInfoComponent = _localPlayerMultiOrientationElement.GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>();
-            }
-            else
-            {
-                playerInfoComponent = _localTeammateMultiOrientationElement.GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>();
-            }
+            BattleUiPlayerInfoComponent playerInfoComponent = GetPlayerInfoComponent(slot);
 
             if (playerInfoComponent == null) return;
 
             playerInfoComponent.CharacterButtons[characterNumber].SetDamageFill(healthPercentage);
         }
+
+        public void UpdateDefenceVisual(BattlePlayerSlot slot, int characterNumber, float defenceValue)
+        {
+            BattleUiPlayerInfoComponent playerInfoComponent = GetPlayerInfoComponent(slot);
+
+            if (playerInfoComponent == null) return;
+
+            playerInfoComponent.CharacterButtons[characterNumber].SetDefenceNumber(defenceValue);
+        }
+
+        public BattleUiPlayerInfoComponent GetPlayerInfoComponent(BattlePlayerSlot slot)
+        {
+            if (slot == BattleGameViewController.LocalPlayerSlot)
+            {
+                return _localPlayerMultiOrientationElement.GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>();
+            }
+            else
+            {
+                return _localTeammateMultiOrientationElement.GetActiveGameObject().GetComponent<BattleUiPlayerInfoComponent>();
+            }
+        }
+
+        private bool _isVisible         = false;
+        private bool _isVisiblePlayer   = false;
+        private bool _isVisibleTeammate = false;
     }
 }

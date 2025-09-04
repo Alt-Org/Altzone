@@ -83,6 +83,15 @@ synced event BattleCharacterTakeDamage
     FP HealthPercentage;
 }
 
+synced event BattleShieldTakeDamage
+{
+    EntityRef Entity;
+    BattleTeamNumber Team;
+    BattlePlayerSlot Slot;
+    int CharacterNumber;
+    FP DefenceValue;
+}
+
 //} Gameplay events
 
 //{ Debug events

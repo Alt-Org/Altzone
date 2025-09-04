@@ -23,7 +23,7 @@ public class ChatClickOutside : MonoBehaviour, IPointerClickHandler
             // Checks for clicks outside of the selected message. Deselects the selected message if so.
             if (!((PointerEventData)eventData).pointerCurrentRaycast.gameObject.Equals(_chatScript.SelectedMessage))
             {
-                _chatScript.DeselectMessage(_chatScript.SelectedMessage);
+                _chatScript.DeselectMessage();
             }
         }
 

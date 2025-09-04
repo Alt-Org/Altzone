@@ -1,3 +1,4 @@
+using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 /// <summary>
@@ -21,7 +22,9 @@ namespace Altzone.Scripts.Model.Poco.Player
         public int points { get; set; }
         public ServerAvatar avatar { get; set; }
         public ServerGameStatistics gameStatistics { get; set; }
-        public ServerPlayerTask DailyTask { get; set; } 
+        public ServerPlayerTask DailyTask { get; set; }
+        public string clanRole_id { get; set; }
+        public ClanLogo clanLogo { get; set; }
     }
 
     public class ServerGameStatistics

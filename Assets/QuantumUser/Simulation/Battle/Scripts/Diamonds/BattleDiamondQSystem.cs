@@ -22,7 +22,7 @@ namespace Battle.QSimulation.Diamond
     /// Handles spawning diamonds, managing their lifetime and destroying them.
     /// </summary>
     [Preserve]
-    public unsafe class BattleDiamondQSystem : SystemMainThreadFilter<BattleDiamondQSystem.Filter>, ISignalBattleOnProjectileHitSoulWall, ISignalBattleOnDiamondHitPlayer
+    public unsafe class BattleDiamondQSystem : SystemMainThreadFilter<BattleDiamondQSystem.Filter>, ISignalBattleOnDiamondHitPlayer
     {
         /// <summary>
         /// Filter for filtering diamond entities.
@@ -34,20 +34,16 @@ namespace Battle.QSimulation.Diamond
         }
 
         /// <summary>
-        /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
-        /// that gets called when <see cref="Quantum.ISignalBattleOnProjectileHitSoulWall">ISignalBattleOnProjectileHitSoulWall</see> is sent.</span><br/>
-        /// Calls private <see cref="CreateDiamonds(Frame, FPVector2, BattleDiamondQSpec)">CreateDiamonds</see> method when projectile hits a SoulWall.
-        /// @warning
-        /// This method should only be called via Quantum signal.
+        /// // FIX DOC
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="projectileEntity">EntityRef of the projectile.</param>
         /// <param name="soulWall">Pointer to the SoulWall component.</param>
-        /// <param name="soulWallEntity">EntityRef of the SoulWall.</param>
-        public void BattleOnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)
+        public static void OnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall)
         {
+            if (projectile->IsHeld) return;
             BattleDiamondQSpec diamondSpec = BattleQConfig.GetDiamondSpec(f);
 
             CreateDiamonds(f, soulWall->Normal, diamondSpec);
@@ -102,7 +98,7 @@ namespace Battle.QSimulation.Diamond
         /// <param name="f">Current simulation frame.</param>
         /// <param name="wallNormal">Normal of the SoulWall.</param>
         /// <param name="diamondSpec">The DiamondSpec.</param>
-        private void CreateDiamonds(Frame f, FPVector2 wallNormal, BattleDiamondQSpec diamondSpec)
+        private static void CreateDiamonds(Frame f, FPVector2 wallNormal, BattleDiamondQSpec diamondSpec)
         {
             // diamond temp variables
             BattleGridPosition diamondRandomPosition;

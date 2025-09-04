@@ -8,6 +8,7 @@
 
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 using Altzone.Scripts.ModelV2;
 
@@ -41,9 +42,7 @@ namespace Battle.View.UI
         /// @ref BattleUiCharacterButtonComponent-SerializeFields
         [SerializeField] private Image _damageFill;
 
-        /// <summary>[SerializeField] Reference to the shield fill image of the character button. It is used to display the character's current shield health.</summary>
-        /// @ref BattleUiCharacterButtonComponent-SerializeFields
-        [SerializeField] private Image _shieldFill;
+        [SerializeField] private TextMeshProUGUI _defenceValue;
 
         /// <summary>[SerializeField] The duration for damage fill animation.</summary>
         /// @ref BattleUiCharacterButtonComponent-SerializeFields
@@ -65,7 +64,7 @@ namespace Battle.View.UI
         public void SetCharacterIcon(int characterId)
         {
             PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(characterId.ToString());
-            
+
             if (info == null) return;
 
             Sprite characterSprite = info.BattleUiSprite;
@@ -90,6 +89,12 @@ namespace Battle.View.UI
             _targetDamageFillAmount = 1 - percentage;
         }
 
+        public void SetDefenceNumber(float defenceValue)
+        {
+            defenceValue = Mathf.Max(defenceValue, 0f);
+            _defenceValue.text = defenceValue.ToString();
+        }
+
         /// <value>The starting damage fill amount for the fill animation.</value>
         private float _startDamageFillAmount;
 
@@ -98,6 +103,7 @@ namespace Battle.View.UI
 
         /// <value>The damage fill animation time passed.</value>
         private float _t = 0f;
+
 
         /// <summary>
         /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.Update.html">Update@u-exlink</a> method. Handles progressing the damage fill animation.

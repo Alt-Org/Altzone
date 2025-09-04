@@ -92,7 +92,7 @@ namespace Altzone.Scripts.Model.Poco.Player
                 for (int i = 0; i < SelectedCharacterIds.Length; i++)
                 {
                     string serverId = SelectedCharacterIds[i];
-                    CharacterID testCharId = SelectedTestCharacterIds == null ? CharacterID.None : (CharacterID)SelectedTestCharacterIds[i];
+                    CharacterID testCharId = SelectedTestCharacterIds == null || SelectedTestCharacterIds.Length <= i ? CharacterID.None : (CharacterID)SelectedTestCharacterIds[i];
                     bool isTestCharacter = testCharId != CharacterID.None;
 
                     if (string.IsNullOrEmpty(serverId) && !isTestCharacter)
@@ -224,6 +224,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             // Checking base character is set for custom characters
             foreach (CustomCharacter character in customCharacters)
             {
+                if ((!CharacterSpecConfig.Instance.AllowTestCharacters) && character.IsTestCharacter()) continue;
                 if (SetBaseCharacter(baseCharacters, character)) newCustomCharacters.Add(character);
             }
 
@@ -259,7 +260,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         internal void Patch()
         {
             List<CustomCharacter> charList = _characterList;
-            if (TestCharacterList != null && TestCharacterList.Count != 0) charList = charList.Concat(TestCharacterList).ToList();
+            if (CharacterSpecConfig.Instance.AllowTestCharacters && TestCharacterList != null && TestCharacterList.Count != 0) charList = charList.Concat(TestCharacterList).ToList();
             CustomCharacters = new ReadOnlyCollection<CustomCharacter>(charList).ToList();
         }
 
