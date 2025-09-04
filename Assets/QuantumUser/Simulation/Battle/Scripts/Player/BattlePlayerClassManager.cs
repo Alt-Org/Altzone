@@ -10,12 +10,11 @@ namespace Battle.QSimulation.Player
     {
         protected T* GetClassData(Frame f, EntityRef playerEntity)
         {
-            T* value = f.Unsafe.GetPointer<T>(playerEntity);
-            if (value == null)
+            if (!f.Unsafe.TryGetPointer<T>(playerEntity, out T* component))
             {
                 Debug.LogErrorFormat("[PlayerCharacterClass] Class data for {0} could not be found!", playerEntity);
             }
-            return value;
+            return component;
         }
     }
 
@@ -45,32 +44,32 @@ namespace Battle.QSimulation.Player
 
                 case BattlePlayerCharacterClass.Trickster:
                     if (s_classArray[ClassIndexTrickster] != null) break;
-                    //s_classArray[ClassIndexDesensitizer] = new BattlePlayerClassTrickster();
+                    //s_classArray[ClassIndexTrickster] = new BattlePlayerClassTrickster();
                     break;
 
                 case BattlePlayerCharacterClass.Obedient:
                     if (s_classArray[ClassIndexObedient] != null) break;
-                    //s_classArray[ClassIndexDesensitizer] = new BattlePlayerClassObedient();
+                    //s_classArray[ClassIndexObedient] = new BattlePlayerClassObedient();
                     break;
 
                 case BattlePlayerCharacterClass.Projector:
                     if (s_classArray[ClassIndexProjector] != null) break;
-                    //s_classArray[ClassIndexDesensitizer] = new BattlePlayerClassProjector();
+                    //s_classArray[ClassIndexProjector] = new BattlePlayerClassProjector();
                     break;
 
                 case BattlePlayerCharacterClass.Retroflector:
                     if (s_classArray[ClassIndexRetroflector] != null) break;
-                    //s_classArray[ClassIndexDesensitizer] = new BattlePlayerClassRetroflector();
+                    //s_classArray[ClassIndexRetroflector] = new BattlePlayerClassRetroflector();
                     break;
 
                 case BattlePlayerCharacterClass.Confluent:
                     if (s_classArray[ClassIndexConfluent] != null) break;
-                    //s_classArray[ClassIndexDesensitizer] = new BattlePlayerClassConfluent();
+                    //s_classArray[ClassIndexConfluent] = new BattlePlayerClassConfluent();
                     break;
 
                 case BattlePlayerCharacterClass.Intellectualizer:
                     if (s_classArray[ClassIndexIntellectualizer] != null) break;
-                    //s_classArray[ClassIndexDesensitizer] = new BattlePlayerClassIntellectualizer();
+                    //s_classArray[ClassIndexIntellectualizer] = new BattlePlayerClassIntellectualizer();
                     break;
 
                 default:
