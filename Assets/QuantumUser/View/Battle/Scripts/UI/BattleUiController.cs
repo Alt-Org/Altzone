@@ -15,6 +15,7 @@ namespace Battle.View.UI
 
         // UI Handler Scripts
         public BattleUiAnnouncementHandler AnnouncementHandler;
+        public BattleUiLoadScreenHandler LoadScreenHandler;
         public BattleUiGameOverHandler GameOverHandler;
         public BattleUiTimerHandler TimerHandler;
         public BattleUiDiamondsHandler DiamondsHandler;
