@@ -105,7 +105,13 @@ public class AdEditor : AltMonoBehaviour
         StartCoroutine(GetClanData(data =>
         {
             data.AdData = _adData;
-            StartCoroutine(SaveClanData(clanData => data = clanData, data));
+            StartCoroutine(ServerManager.Instance.UpdateClanAdPoster(_adData, success =>
+            {
+                if (success)
+                {
+                    StartCoroutine(SaveClanData(clanData => data = clanData, data));
+                }
+            }));
         }));
     }
 

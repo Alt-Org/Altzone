@@ -8,11 +8,14 @@ public class ToggleSetting : MonoBehaviour
     [SerializeField] private string _name;
 
     private Toggle _toggle;
+    private SettingsCarrier _carrier;
+    [SerializeField] private SettingsCarrier.SettingsType _type;
 
     // Start is called before the first frame update
     void Start()
     {
         _toggle = GetComponent<Toggle>();
+        _carrier = SettingsCarrier.Instance;
 
         CheckValidity();
 
@@ -26,7 +29,9 @@ public class ToggleSetting : MonoBehaviour
             return;
         }
 
-        _toggle.isOn = (PlayerPrefs.GetInt(_name, 0) != 0);
+        bool? value = _carrier.GetBoolValue(_type);
+
+        _toggle.isOn = value ?? (PlayerPrefs.GetInt(_name, 0) != 0);
     }
 
 
@@ -37,13 +42,17 @@ public class ToggleSetting : MonoBehaviour
             return;
         }
 
+        bool valueFound= _carrier.SetBoolValue(_type);
+
+        if (!valueFound) return;
+
         if (_toggle.isOn) PlayerPrefs.SetInt(_name, 1);
         else PlayerPrefs.SetInt(_name, 0);
     }
 
     private bool CheckValidity()
     {
-        if(_toggle == null || _name.Length == 0)
+        if(_toggle == null || _name.Length == 0 && _type is SettingsCarrier.SettingsType.None)
         {
             Debug.LogWarning("ERROR: No Toggle found or name set");
             return false;

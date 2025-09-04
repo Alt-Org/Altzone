@@ -200,7 +200,7 @@ MonoBehaviour:
         asm: Quantum.Simulation}
       data:
         Type:
-          Value: 3
+          Value: 4
     - rid: 3915831314950914052
       type: {class: BattleGoalQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
@@ -265,7 +265,7 @@ MonoBehaviour:
         asm: Quantum.Simulation}
       data:
         Type:
-          Value: 3
+          Value: 4
     - rid: 4158493136064086020
       type: {class: BattleGoalQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
@@ -375,11 +375,34 @@ MonoBehaviour:
         - _index: 0
         - _index: 0
         - _index: 0
+        RespawnTimer:
+        - Mode: 0
+          Frames: 0
+          Seconds:
+            RawValue: 0
+        - Mode: 0
+          Frames: 0
+          Seconds:
+            RawValue: 0
+        - Mode: 0
+          Frames: 0
+          Seconds:
+            RawValue: 0
+        - Mode: 0
+          Frames: 0
+          Seconds:
+            RawValue: 0
+        AllowCharacterSwapping:
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
         SelectedCharacters:
         - SceneIndexPlusOne: 0
         - SceneIndexPlusOne: 0
         - SceneIndexPlusOne: 0
         - SceneIndexPlusOne: 0
+        SelectedCharacterNumbers: 00000000000000000000000000000000
         AllCharacters:
         - SceneIndexPlusOne: 0
         - SceneIndexPlusOne: 0
@@ -393,4 +416,16 @@ MonoBehaviour:
         - SceneIndexPlusOne: 0
         - SceneIndexPlusOne: 0
         - SceneIndexPlusOne: 0
-        SelectedCharacterNumbers: 00000000000000000000000000000000
+        AllCharactersStates:
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0

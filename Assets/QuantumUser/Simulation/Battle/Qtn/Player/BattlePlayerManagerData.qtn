@@ -2,6 +2,8 @@ enum BattlePlayerPlayState
 {
    NotInGame,
    OutOfPlay,
+   OutOfPlayRespawning,
+   OutOfPlayFinal,
    InPlay
 }
 
@@ -11,7 +13,10 @@ singleton component BattlePlayerManagerDataQSingleton
 
     array<BattlePlayerPlayState>[BATTLE_PLAYER_SLOT_COUNT] PlayStates;
     array<PlayerRef>[BATTLE_PLAYER_SLOT_COUNT] PlayerRefs;
+    array<FrameTimer>[BATTLE_PLAYER_SLOT_COUNT] RespawnTimer;
+    array<bool>[BATTLE_PLAYER_SLOT_COUNT] AllowCharacterSwapping;
     array<EntityRef>[BATTLE_PLAYER_SLOT_COUNT] SelectedCharacters;
-    array<EntityRef>[BATTLE_PLAYER_CHARACTER_TOTAL_COUNT] AllCharacters;
     array<int>[BATTLE_PLAYER_SLOT_COUNT] SelectedCharacterNumbers;
+    array<EntityRef>[BATTLE_PLAYER_CHARACTER_TOTAL_COUNT] AllCharacters;
+    array<BattlePlayerCharacterState>[BATTLE_PLAYER_CHARACTER_TOTAL_COUNT] AllCharactersStates;
 }

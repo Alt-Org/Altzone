@@ -51,10 +51,18 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         {
             StartCoroutine(GetPlayerData(playerData =>
             {
-                var characters = playerData.CustomCharacters.ToList();
                 for (int i = 0; i < _selectedCharacterSlots.Length; i++)
                 {
-                    CharacterID charID = playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i]) == null ? CharacterID.None : playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i]).Id;
+                    CharacterID charID;
+                    if (playerData.SelectedTestCharacterIds.Length > i && playerData.SelectedTestCharacterIds[i] != (int)CharacterID.None)
+                    {
+                        charID = (CharacterID)playerData.SelectedTestCharacterIds[i];
+                    }
+                    else
+                    {
+                        CustomCharacter matchingCharacter = playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i]);
+                        charID = matchingCharacter == null || playerData.SelectedCharacterIds[i] == ((int)CharacterID.None).ToString() ? CharacterID.None : matchingCharacter.Id;
+                    }
 
                     if (charID is CharacterID.None)
                     {
@@ -74,18 +82,19 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         /// </summary>
         /// <param name="selectedCharacterIds">The selected character ids to display.</param>
         /// <param name="stats">The stats for all three characters in an int array. Order: Hp, Speed, CharacterSize, Attack, Defence.</param>
-        public void SetCharacters(int[] selectedCharacterIds, int[] stats)
+        public void SetCharacters(int[] selectedCharacterIds, int[] stats = null)
         {
-            for (int i = 0; i < selectedCharacterIds.Length; i++)
+            for (int i = 0; i < Mathf.Min(selectedCharacterIds.Length,_selectedCharacterSlots.Length); i++)
             {
-                if (selectedCharacterIds[i] == 0)
+                if (selectedCharacterIds[i] == (int)CharacterID.None)
                 {
                     _selectedCharacterSlots[i].SetEmpty(false);
                     continue;
                 }
-
+                
                 PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(selectedCharacterIds[i].ToString());
-                _selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charInfo.CharacterId, false, stats[(i * 5)..(i * 5 + 5)]);
+                int[] statsForCharacter = stats != null ? stats[(i * 5)..(i * 5 + 5)] : null;
+                _selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charInfo.CharacterId, false, statsForCharacter);
             }
         }
     }

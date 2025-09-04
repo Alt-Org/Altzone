@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.Model.Poco.Game;
-using MenuUi.Scripts.Storage;  
+using MenuUi.Scripts.Storage;
 
 public class KojuFurnitureData : MonoBehaviour
 {
@@ -13,6 +13,10 @@ public class KojuFurnitureData : MonoBehaviour
 
     private float basePrice;
     private float price;
+
+    private StorageFurniture furniture;
+
+    public string StorageFurnitureId => furniture?.Id;
 
     // Sets data from base GameFurniture
     public void SetFurniture(GameFurniture data)
@@ -36,6 +40,7 @@ public class KojuFurnitureData : MonoBehaviour
 
         RefreshUI();
     }
+
 
     // Method for setting data from StorageFurniture
     public void SetFurniture(StorageFurniture storageFurniture)

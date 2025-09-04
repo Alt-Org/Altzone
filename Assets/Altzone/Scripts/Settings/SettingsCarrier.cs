@@ -1,6 +1,5 @@
 using UnityEngine;
 using System;
-using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.BattleUiShared;
 
 public class SettingsCarrier : MonoBehaviour // Script for carrying settings data between scenes
@@ -32,6 +31,24 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         TeammateInfo = 2,
         Diamonds = 3,
         GiveUpButton = 4,
+        MoveJoystick = 5,
+        RotateJoystick = 6,
+    }
+
+    public enum BattleMovementInputType
+    {
+        PointAndClick,
+        Swipe,
+        Joystick
+    }
+
+    public enum BattleRotationInputType
+    {
+        Swipe,
+        TwoFinger,
+        Joystick,
+        Gyroscope,
+        ScreenArea
     }
 
     public enum TopBarStyle
@@ -39,6 +56,21 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         Old,
         NewHelena,
         NewNiko
+    }
+
+    public enum JukeboxPlayArea
+    {
+        MainMenu,
+        Soulhome,
+        Battle
+    }
+
+    public enum SettingsType
+    {
+        None,
+        JukeboxSoulhomeToggle,
+        JukeboxUIToggle,
+        JukeboxBattleToggle
     }
 
     // Events
@@ -53,10 +85,23 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public const string BattleArenaScaleKey = "BattleUiArenaScale";
     public const string BattleArenaPosXKey = "BattleUiPosX";
     public const string BattleArenaPosYKey = "BattleUiPosY";
+    public const string BattleMovementInputKey = "BattleMovement";
+    public const string BattleRotationInputKey = "BattleRotation";
+    public const string BattleSwipeMinDistanceKey = "BattleSwipeMinDistance";
+    public const string BattleSwipeMaxDistanceKey = "BattleSwipeMaxDistance";
+    public const string BattleSwipeSensitivityKey = "BattleSwipeSensitivity";
+    public const string BattleGyroMinAngleKey = "BattleGyroMinAngle";
 
     public const int BattleArenaScaleDefault = 100;
     public const int BattleArenaPosXDefault = 50;
     public const int BattleArenaPosYDefault = 50;
+
+    public const BattleMovementInputType BattleMovementInputDefault = BattleMovementInputType.PointAndClick;
+    public const BattleRotationInputType BattleRotationInputDefault = BattleRotationInputType.TwoFinger;
+    public const float BattleSwipeMinDistanceDefault = 0.1f;
+    public const float BattleSwipeMaxDistanceDefault = 1f;
+    public const float BattleSwipeSensitivityDefault = 1f;
+    public const float BattleGyroMinAngleDefault = 10f;
 
     public const string UnlimitedStatUpgradeMaterialsKey = "UnlimitedStatUpgrade";
 
@@ -69,6 +114,10 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public float menuVolume;
     public float musicVolume;
     public float soundVolume;
+
+    public bool jukeboxSoulhome;
+    public bool jukeboxUI;
+    public bool jukeboxBattle;
 
     public int TextSizeSmall = 22;
     public int TextSizeMedium = 26;
@@ -152,6 +201,78 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         }
     }
 
+    private BattleMovementInputType _battleMovementInput;
+    public BattleMovementInputType BattleMovementInput
+    {
+        get => _battleMovementInput;
+        set
+        {
+            if (_battleMovementInput == value) return;
+            _battleMovementInput = value;
+            PlayerPrefs.SetInt(BattleMovementInputKey, (int)value);
+        }
+    }
+
+    private BattleRotationInputType _battleRotationInput;
+    public BattleRotationInputType BattleRotationInput
+    {
+        get => _battleRotationInput;
+        set
+        {
+            if (_battleRotationInput == value) return;
+            _battleRotationInput = value;
+            PlayerPrefs.SetInt(BattleRotationInputKey, (int)value);
+        }
+    }
+
+    private float _battleSwipeMinDistance;
+    public float BattleSwipeMinDistance
+    {
+        get => _battleSwipeMinDistance;
+        set
+        {
+            if (_battleSwipeMinDistance == value) return;
+            _battleSwipeMinDistance = value;
+            PlayerPrefs.SetFloat(BattleSwipeMinDistanceKey, (float)value);
+        }
+    }
+
+    private float _battleSwipeMaxDistance;
+    public float BattleSwipeMaxDistance
+    {
+        get => _battleSwipeMaxDistance;
+        set
+        {
+            if (_battleSwipeMaxDistance == value) return;
+            _battleSwipeMaxDistance = value;
+            PlayerPrefs.SetFloat(BattleSwipeMaxDistanceKey, (float)value);
+        }
+    }
+
+    private float _battleSwipeSensitivity;
+    public float BattleSwipeSensitivity
+    {
+        get => _battleSwipeSensitivity;
+        set
+        {
+            if (_battleSwipeSensitivity == value) return;
+            _battleSwipeSensitivity = value;
+            PlayerPrefs.SetFloat(BattleSwipeSensitivityKey, (float)value);
+        }
+    }
+
+    private float _battleGyroMinAngle;
+    public float BattleGyroMinAngle
+    {
+        get => _battleGyroMinAngle;
+        set
+        {
+            if (_battleGyroMinAngle == value) return;
+            _battleGyroMinAngle = value;
+            PlayerPrefs.SetFloat(BattleGyroMinAngleKey, (float)value);
+        }
+    }
+
     private TopBarStyle _topBarStyleSetting;
     public TopBarStyle TopBarStyleSetting
     {
@@ -163,6 +284,15 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
             PlayerPrefs.SetInt(TopBarStyleSettingKey, (int)value);
             OnTopBarChanged?.Invoke((int)value);
         }
+    }
+
+    private string _mainMenuMusicName;
+    public string MainMenuMusicName { get { return _mainMenuMusicName; } }
+
+    public enum SelectionBoxType
+    {
+        None,
+        MainMenuMusic
     }
 
     // Functions
@@ -192,15 +322,29 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1);
         soundVolume = PlayerPrefs.GetFloat("SoundVolume", 1);
 
-        _battleShowDebugStatsOverlay = PlayerPrefs.GetInt(BattleShowDebugStatsOverlayKey, 0) == 1;
+        jukeboxSoulhome = PlayerPrefs.GetInt("JukeboxSoulHome") != 0;
+        jukeboxUI = PlayerPrefs.GetInt("JukeboxUI") != 0;
+        jukeboxBattle = PlayerPrefs.GetInt("JukeboxBattle") != 0;
+
+        _battleShowDebugStatsOverlay = PlayerPrefs.GetInt(BattleShowDebugStatsOverlayKey, 1) == 1;
 
         _battleArenaScale = PlayerPrefs.GetInt(BattleArenaScaleKey, BattleArenaScaleDefault);
         _battleArenaPosX = PlayerPrefs.GetInt(BattleArenaPosXKey, BattleArenaPosXDefault);
         _battleArenaPosY = PlayerPrefs.GetInt(BattleArenaPosYKey, BattleArenaPosYDefault);
 
+        _battleMovementInput = (BattleMovementInputType)PlayerPrefs.GetInt(BattleMovementInputKey, (int)BattleMovementInputDefault);
+        _battleRotationInput = (BattleRotationInputType)PlayerPrefs.GetInt(BattleRotationInputKey, (int)BattleRotationInputDefault);
+
+        _battleSwipeMinDistance = PlayerPrefs.GetFloat(BattleSwipeMinDistanceKey, BattleSwipeMinDistanceDefault);
+        _battleSwipeMaxDistance = PlayerPrefs.GetFloat(BattleSwipeMaxDistanceKey, BattleSwipeMaxDistanceDefault);
+        _battleSwipeSensitivity = PlayerPrefs.GetFloat(BattleSwipeSensitivityKey, BattleSwipeSensitivityDefault);
+        _battleGyroMinAngle = PlayerPrefs.GetFloat(BattleGyroMinAngleKey, BattleGyroMinAngleDefault);
+
         _unlimitedStatUpgradeMaterials = PlayerPrefs.GetInt(UnlimitedStatUpgradeMaterialsKey, 1) == 1;
 
         _topBarStyleSetting = (TopBarStyle)PlayerPrefs.GetInt(TopBarStyleSettingKey, 1);
+
+        _mainMenuMusicName = PlayerPrefs.GetString("MainMenuMusic");
     }
 
     // SentVolume combines masterVolume and another volume chosen by the sent type
@@ -224,6 +368,48 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         OnTextSizeChange?.Invoke();
     }
 
+    public bool SetBoolValue(SettingsType type, bool? value = null)
+    {
+        switch (type)
+        {
+            case SettingsType.None:
+                return false;
+            case SettingsType.JukeboxSoulhomeToggle:
+                jukeboxSoulhome = value ?? !jukeboxSoulhome;
+                PlayerPrefs.SetInt("JukeboxSoulHome", jukeboxSoulhome ? 1 : 0);
+                return true;
+            case SettingsType.JukeboxUIToggle:
+                jukeboxUI = value ?? !jukeboxUI;
+                PlayerPrefs.SetInt("JukeboxUI", jukeboxUI ? 1 : 0);
+                return true;
+            case SettingsType.JukeboxBattleToggle:
+                jukeboxBattle = value ?? !jukeboxBattle;
+                PlayerPrefs.SetInt("JukeboxBattle", jukeboxBattle ? 1 : 0);
+                return true;
+            default:
+                Debug.LogError($"Cannot find type: {type}. Somebody probably forgot to add it.");
+                return false;
+        }
+    }
+
+    public bool? GetBoolValue(SettingsType type)
+    {
+        switch (type)
+        {
+            case SettingsType.None:
+                return null;
+            case SettingsType.JukeboxSoulhomeToggle:
+                return jukeboxSoulhome;
+            case SettingsType.JukeboxUIToggle:
+                return jukeboxUI;
+            case SettingsType.JukeboxBattleToggle:
+                return jukeboxBattle;
+            default:
+                Debug.LogError($"Cannot find type: {type}. Somebody probably forgot to add it.");
+                return null;
+        }
+    }
+
     public BattleUiMovableElementData GetBattleUiMovableElementData(BattleUiElementType type)
     {
         if (type == BattleUiElementType.None) return null;
@@ -231,7 +417,10 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         string json = PlayerPrefs.GetString($"BattleUi{type}", string.Empty);
         if (string.IsNullOrEmpty(json)) return null;
 
-        return JsonUtility.FromJson<BattleUiMovableElementData>(json);
+        BattleUiMovableElementData data = JsonUtility.FromJson<BattleUiMovableElementData>(json);
+        if (data != null) data.UiElementType = data.UiElementType == BattleUiElementType.None ? type : data.UiElementType; // Backwards compatibility with old BattleUiMovableElementData
+
+        return data;
     }
 
     public void SetBattleUiMovableElementData(BattleUiElementType type, BattleUiMovableElementData data)
@@ -240,5 +429,43 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
         string json = JsonUtility.ToJson(data);
         PlayerPrefs.SetString($"BattleUi{type}", json);
+    }
+
+    public bool CanPlayJukeboxInArea(JukeboxPlayArea playArea)
+    {
+        switch (playArea)
+        {
+            case JukeboxPlayArea.MainMenu:
+                {
+                    return jukeboxUI;
+                }
+            case JukeboxPlayArea.Soulhome:
+                {
+                    return jukeboxSoulhome;
+                }
+            case JukeboxPlayArea.Battle:
+                {
+                    return jukeboxBattle;
+                }
+            default:
+                return false;
+        }
+    }
+
+    public string GetSelectionBoxData(SelectionBoxType type)
+    {
+        switch (type)
+        {
+            case SelectionBoxType.MainMenuMusic: return _mainMenuMusicName;
+            default: return null;
+        }
+    }
+
+    public void SetDataFromSelectionBox(SelectionBoxType type, string value)
+    {
+        switch (type)
+        {
+            case SelectionBoxType.MainMenuMusic: _mainMenuMusicName = value; PlayerPrefs.SetString("MainMenuMusic", value); break;
+        }
     }
 }

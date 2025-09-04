@@ -38,7 +38,7 @@ namespace MenuUi.Scripts.MainMenu
         {
             _swipe = GetComponentInParent<SwipeUI>();
             StartCoroutine(CheckWindowSize());
-            AudioManager.Instance?.PlayMusic(MusicSection.MainMenu);
+            AudioManager.Instance?.PlayMusic("MainMenu");
             LobbyManager.Instance.Activate();
         }
 
@@ -48,26 +48,7 @@ namespace MenuUi.Scripts.MainMenu
             _layoutElementsGameObjects = GameObject.FindGameObjectsWithTag("MainMenuWindow");
             _scrollRectCanvas = GameObject.FindGameObjectWithTag("ScrollRectCanvas").GetComponent<RectTransform>();
             SetMainMenuLayoutDimensions();
-            SetAudioVolumeLevels();
-            AudioManager.Instance?.PlayMusic(MusicSection.MainMenu);
-        }
-
-        /// <summary>
-        /// Sets the audio levels of main menu audio sources according to the values in PlayerPrefs
-        /// </summary>
-        public void SetAudioVolumeLevels()
-        {
-            audioSources = FindObjectsOfType<SetVolume>(true);
-
-            //carrier.masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1);
-            //carrier.menuVolume = PlayerPrefs.GetFloat("MenuVolume", 1);
-            //carrier.musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1);
-            //carrier.soundVolume = PlayerPrefs.GetFloat("SoundVolume", 1);
-
-            foreach (SetVolume audioSource in audioSources)
-            {
-                audioSource.VolumeSet();
-            }
+            AudioManager.Instance.UpdateMaxVolume();
         }
 
         /// <summary>

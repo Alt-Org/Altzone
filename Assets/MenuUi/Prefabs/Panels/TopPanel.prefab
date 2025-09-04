@@ -564,7 +564,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 48
+  m_fontSize: 44.1
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1577,10 +1577,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _audioSelection: 0
-  _audioType: 2
-  _audioName: 
-  _audioId: 0
+  _audioCategory: Soulhome
+  _audioName: ButtonClick
+  _audioPlayType: 0
   _playType: 0
 --- !u!114 &3467556909806299412
 MonoBehaviour:
@@ -1724,10 +1723,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _audioSelection: 0
-  _audioType: 2
-  _audioName: 
-  _audioId: 0
+  _audioCategory: Soulhome
+  _audioName: ButtonClick
+  _audioPlayType: 1
   _playType: 0
 --- !u!114 &753495226827427253
 MonoBehaviour:
@@ -2416,10 +2414,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _audioSelection: 0
-  _audioType: 2
-  _audioName: 
-  _audioId: 0
+  _audioCategory: Soulhome
+  _audioName: ButtonClick
+  _audioPlayType: 1
   _playType: 0
 --- !u!114 &1684328267666134666 stripped
 MonoBehaviour:
@@ -3077,6 +3074,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4436600911169614933, guid: 6ed76551af8adab4891c0672fecd2de6,
+        type: 3}
+      propertyPath: _audioName
+      value: ButtonClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 4436600911169614933, guid: 6ed76551af8adab4891c0672fecd2de6,
+        type: 3}
+      propertyPath: _audioCategory
+      value: Soulhome
       objectReference: {fileID: 0}
     - target: {fileID: 5971149165010106801, guid: 6ed76551af8adab4891c0672fecd2de6,
         type: 3}

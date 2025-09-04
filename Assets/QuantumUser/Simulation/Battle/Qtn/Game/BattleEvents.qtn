@@ -55,6 +55,11 @@ synced event BattleChangeEmotionState
     BattleEmotionState Emotion;
 }
 
+synced event BattleProjectileChangeGlowStrength
+{
+    FP Strength;
+}
+
 event BattlePlaySoundFX
 {
     BattleSoundFX Effect;
@@ -69,6 +74,24 @@ synced event BattleLastRowWallDestroyed
     BattleLightraySize LightraySize;
 }
 
+synced event BattleCharacterTakeDamage
+{
+    EntityRef Entity;
+    BattleTeamNumber Team;
+    BattlePlayerSlot Slot;
+    int CharacterNumber;
+    FP HealthPercentage;
+}
+
+synced event BattleShieldTakeDamage
+{
+    EntityRef Entity;
+    BattleTeamNumber Team;
+    BattlePlayerSlot Slot;
+    int CharacterNumber;
+    FP DefenceValue;
+}
+
 //} Gameplay events
 
 //{ Debug events
@@ -77,6 +100,11 @@ synced event BattleDebugUpdateStatsOverlay
 {
     BattlePlayerSlot Slot;
     BattlePlayerStats Stats;
+}
+
+synced event BattleDebugOnScreenMessage
+{
+    QString<512> Message;
 }
 
 //} Debug events

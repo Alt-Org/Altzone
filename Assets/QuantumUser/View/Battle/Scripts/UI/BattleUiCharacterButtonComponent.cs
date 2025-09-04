@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 using Altzone.Scripts.ModelV2;
 
@@ -12,11 +13,19 @@ namespace Battle.View.UI
     public class BattleUiCharacterButtonComponent : MonoBehaviour
     {
         [SerializeField] private Button _button;
+        [SerializeField] private OnPointerDownButton _eventSender;
         [SerializeField] private Image _characterImage;
         [SerializeField] private Image _damageFill;
-        [SerializeField] private Image _shieldFill;
+        [SerializeField] private TextMeshProUGUI _defenceValue;
+
+        [SerializeField] private float _damageFillAnimationDuration = 0.5f;
+
+        private float _startDamageFillAmount;
+        private float _targetDamageFillAmount = 0f;
+        private float t = 0f;
 
         public Button ButtonComponent => _button;
+        public OnPointerDownButton EventSender => _eventSender;
 
         public void SetCharacterIcon(int characterId)
         {
@@ -24,12 +33,42 @@ namespace Battle.View.UI
 
             if (info == null) return;
 
-            _characterImage.sprite = info.GalleryImage;
+            Sprite characterSprite = info.BattleUiSprite;
+
+            if (characterSprite == null)
+            {
+                characterSprite = info.GalleryImage;
+            }
+
+            _characterImage.sprite = characterSprite;
+        }
+
+        public void SetDamageFill(float percentage)
+        {
+            t = 0f;
+            _startDamageFillAmount = _damageFill.fillAmount;
+            _targetDamageFillAmount = 1 - percentage;
+        }
+
+        public void SetDefenceNumber(float defenceValue)
+        {
+            defenceValue = Mathf.Max(defenceValue, 0f);
+            _defenceValue.text = defenceValue.ToString();
+        }
+
+        private void Update()
+        {
+            if (_targetDamageFillAmount > _damageFill.fillAmount)
+            {
+                t += Time.deltaTime / _damageFillAnimationDuration;
+                _damageFill.fillAmount = Mathf.Lerp(_startDamageFillAmount, _targetDamageFillAmount, t);
+            }
         }
 
         private void OnDisable()
         {
             ButtonComponent.onClick.RemoveAllListeners();
+            EventSender.onClick.RemoveAllListeners();
         }
     }
 }
