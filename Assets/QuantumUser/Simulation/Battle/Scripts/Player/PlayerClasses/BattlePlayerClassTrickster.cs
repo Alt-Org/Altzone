@@ -12,9 +12,9 @@ namespace Battle.QSimulation.Player
         {
             FPVector2 normal = playerHitbox->Normal;
             FP randomAngleRangeDeg = GetClassData(f, playerHitbox->PlayerEntity)->randomAngleRangeDeg;
-            FP randomRotateAmount = f.RNG->NextInclusive(-randomAngleRangeDeg / 2, randomAngleRangeDeg / 2) * FP.Deg2Rad;
+            FP randomAngleRad = f.RNG->NextInclusive(-randomAngleRangeDeg / 2, randomAngleRangeDeg / 2) * FP.Deg2Rad;
             
-            normal = FPVector2.Rotate(normal, randomRotateAmount);
+            normal = FPVector2.Rotate(normal, randomAngleRad);
 
             BattleProjectileQSystem.HandleIntersection(f, projectile, projectileEntity, playerHitboxEntity, normal, playerHitbox->CollisionMinOffset);
             BattleProjectileQSystem.UpdateVelocity(f, projectile, normal);
