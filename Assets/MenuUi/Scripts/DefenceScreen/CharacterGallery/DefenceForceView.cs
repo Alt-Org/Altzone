@@ -29,8 +29,10 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 CharacterID charID = selectedCharacters[i] == null ? CharacterID.None : selectedCharacters[i].Id;
 
-                PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(((int)charID).ToString());
-                if (info == null)
+                string lookupId = ((int)charID).ToString();
+                PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(lookupId);
+                
+                if (info.Id != lookupId)
                 {
                     _selectedCharSlots[i].SetCharacterVisibility(false);
                     continue;
