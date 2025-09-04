@@ -13,7 +13,7 @@ namespace Battle.QSimulation.Player
         {
             Debug.Log("Desensitizer spawned");
 
-            BattlePlayerClassDesensitizerDataQComponent* classData = GetClassData(f, playerEntity);
+            //BattlePlayerClassDesensitizerDataQComponent* classData = GetClassData(f, playerEntity);
         }
     }
 }

@@ -1,5 +1,4 @@
 using UnityEngine.Scripting;
-
 using Quantum;
 using Photon.Deterministic;
 
@@ -8,7 +7,7 @@ using Battle.QSimulation.Projectile;
 namespace Battle.QSimulation.Player
 {
     [Preserve]
-    public unsafe class BattlePlayerQSystem : SystemMainThread, ISignalBattleOnProjectileHitPlayerHitbox, ISignalBattleOnProjectileHitPlayerShield
+    public unsafe class BattlePlayerQSystem : SystemMainThread
     {
         public static void SpawnPlayers(Frame f)
         {
@@ -20,8 +19,9 @@ namespace Battle.QSimulation.Player
             }
         }
 
-        public unsafe void BattleOnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
+        public static void OnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
         {
+            if (projectile->IsHeld) return;
             if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Player)) return;
 
             BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
@@ -53,13 +53,16 @@ namespace Battle.QSimulation.Player
             BattleProjectileQSystem.SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Player);
         }
 
-        public unsafe void BattleOnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
+        public static void OnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
         {
             if (!playerHitbox->IsActive) return;
+            if (projectile->IsHeld) return;
             if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Player)) return;
 
             BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
             FP damageTaken = projectile->Attack;
+
+            BattleProjectileQSystem.SetAttack(f, projectile, damagedPlayerData->Stats.Attack);
 
             int characterNumber = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber;
 
@@ -97,29 +100,26 @@ namespace Battle.QSimulation.Player
 
                 input = f.GetPlayerInput(playerHandle.PlayerRef);
 
-                if (input->PlayerCharacterNumber > -1)
+                if (input->PlayerCharacterNumber > -1 && playerHandle.AllowCharacterSwapping)
                 {
                     BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, input->PlayerCharacterNumber);
                     continue;
                 }
 
-                if (playerHandle.PlayState.IsOutOfPlayRespawning())
+                if (playerHandle.PlayState.IsOutOfPlayRespawning() && !playerHandle.RespawnTimer.IsRunning(f) && playerHandle.AllowCharacterSwapping)
                 {
-                    if (!playerHandle.RespawnTimer.IsRunning(f))
+                    int i;
+                    for (i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_COUNT; i++)
                     {
-                        int i;
-                        for (i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_COUNT; i++)
+                        if (playerHandle.GetCharacterState(i) == BattlePlayerCharacterState.Alive)
                         {
-                            if (playerHandle.GetCharacterState(i) == BattlePlayerCharacterState.Alive)
-                            {
-                                BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, i);
-                                break;
-                            }
+                            BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, i);
+                            break;
                         }
-                        if (i == Constants.BATTLE_PLAYER_CHARACTER_COUNT)
-                        {
-                            playerHandle.SetOutOfPlayFinal();
-                        }
+                    }
+                    if (i == Constants.BATTLE_PLAYER_CHARACTER_COUNT)
+                    {
+                        playerHandle.SetOutOfPlayFinal();
                     }
                 }
 

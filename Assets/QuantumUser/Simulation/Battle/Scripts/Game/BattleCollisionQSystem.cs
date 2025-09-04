@@ -1,7 +1,12 @@
 using UnityEngine;
 using UnityEngine.Scripting;
-
 using Quantum;
+
+using Battle.QSimulation.Projectile;
+using Battle.QSimulation.Goal;
+using Battle.QSimulation.Player;
+using Battle.QSimulation.Diamond;
+using Battle.QSimulation.SoulWall;
 
 namespace Battle.QSimulation.Game
 {
@@ -23,7 +28,7 @@ namespace Battle.QSimulation.Game
                             BattleArenaBorderQComponent* arenaBorder = f.Unsafe.GetPointer<BattleArenaBorderQComponent>(info.Other);
                             Debug.Log("[CollisionSystem] Projectile hit ArenaBorder");
                             //f.Events.PlaySoundEvent(SoundEffect.SideWallHit);
-                            f.Signals.BattleOnProjectileHitArenaBorder(projectile, info.Entity, arenaBorder, info.Other);
+                            BattleProjectileQSystem.OnProjectileCollision(f, projectile, info.Entity, info.Other, arenaBorder, BattleCollisionTriggerType.ArenaBorder);
                             break;
                         }
 
@@ -31,7 +36,9 @@ namespace Battle.QSimulation.Game
                         {
                             BattleSoulWallQComponent* soulWall = f.Unsafe.GetPointer<BattleSoulWallQComponent>(info.Other);
                             Debug.Log("[CollisionSystem] Projectile hit SoulWall");
-                            f.Signals.BattleOnProjectileHitSoulWall(projectile, info.Entity, soulWall, info.Other);
+                            BattleProjectileQSystem.OnProjectileCollision(f, projectile, info.Entity, info.Other, soulWall, BattleCollisionTriggerType.SoulWall);
+                            BattleDiamondQSystem.OnProjectileHitSoulWall(f, projectile, info.Entity, soulWall);
+                            BattleSoulWallQSystem.OnProjectileHitSoulWall(f, projectile, soulWall, info.Other);
                             break;
                         }
 
@@ -40,7 +47,7 @@ namespace Battle.QSimulation.Game
                             BattlePlayerHitboxQComponent*  playerHitbox = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(info.Other);
                             Debug.Log("[CollisionSystem] Projectile hit PlayerHitbox");
                             //f.Events.PlaySoundEvent(SoundEffect.SideWallHit);
-                            f.Signals.BattleOnProjectileHitPlayerHitbox(projectile, info.Entity, playerHitbox, info.Other);
+                            BattlePlayerQSystem.OnProjectileHitPlayerHitbox(f, projectile, info.Entity, playerHitbox, info.Other);
                             break;
                         }
 
@@ -48,7 +55,8 @@ namespace Battle.QSimulation.Game
                         {
                             BattlePlayerHitboxQComponent* playerHitbox = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(info.Other);
                             Debug.Log("[CollisionSystem] Projectile hit Player Shield");
-                            f.Signals.BattleOnProjectileHitPlayerShield(projectile, info.Entity, playerHitbox, info.Other);
+                            BattleProjectileQSystem.OnProjectileCollision(f, projectile, info.Entity, info.Other, playerHitbox, BattleCollisionTriggerType.Shield);
+                            BattlePlayerQSystem.OnProjectileHitPlayerShield(f, projectile, info.Entity, playerHitbox, info.Other);
                             break;
                         }
 
@@ -56,7 +64,7 @@ namespace Battle.QSimulation.Game
                         {
                             BattleGoalQComponent* goal = f.Unsafe.GetPointer<BattleGoalQComponent>(info.Other);
                             Debug.Log("[CollisionSystem] Projectile hit Goal");
-                            f.Signals.BattleOnProjectileHitGoal(projectile, info.Entity, goal, info.Other);
+                            BattleGoalQSystem.OnProjectileHitGoal(f, projectile, info.Entity, goal);
                             break;
                         }
                 }

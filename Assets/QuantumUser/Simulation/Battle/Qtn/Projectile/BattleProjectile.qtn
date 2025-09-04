@@ -8,7 +8,7 @@ flags BattleProjectileCollisionFlags : Byte
 component BattleProjectileQComponent
 {
     bool IsLaunched;
-    bool IsMoving;
+    bool IsHeld;
     FP Speed;
     array<FP>[BATTLE_EMOTION_STATE_COUNT] SpeedMultiplierArray;
     FP SpeedPotential;
