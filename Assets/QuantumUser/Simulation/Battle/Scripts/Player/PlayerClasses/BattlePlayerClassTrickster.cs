@@ -12,7 +12,7 @@ namespace Battle.QSimulation.Player
         {
             FPVector2 normal = playerHitbox->Normal;
             FP randomAngleRangeDeg = GetClassData(f, playerHitbox->PlayerEntity)->randomAngleRangeDeg;
-            FP randomAngleRad = f.RNG->NextInclusive(-randomAngleRangeDeg / 2, randomAngleRangeDeg / 2) * FP.Deg2Rad;
+            FP randomAngleRad = f.RNG->NextInclusive(-randomAngleRangeDeg / FP._2, randomAngleRangeDeg / FP._2) * FP.Deg2Rad;
             
             normal = FPVector2.Rotate(normal, randomAngleRad);
 
