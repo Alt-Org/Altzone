@@ -1,8 +1,33 @@
 # Documentation {#page-documentation}
 
-at the moment this page is used as shared clipboard where people working on documentation can write down documentation templates for speed and consistency
+%Battle uses [Doxygen🡵] to generate [this documentation](./index.html) from the source code and additional documentation files.
 
-later this page can used for more specific instructions about writing documentation
+[Doxygen🡵] configuration, additional documentation and the generated output are in the @dirref{Altzone/Doc/Doxygen/Battle} directory.
+
+## Configuration {#page-documentation-configuration}
+
+[Doxygen🡵] configuration files are generated using a python script called setup.py.  
+setup.py reads a file called configs.  
+The configs file defines configs and variables for each config.  
+Files other than the configs file and setup.py itself are used as templates.  
+setup.py generates a directory for each config defined in the configs file.  
+The template files are copied to each config, during which variables are substituted for their values.  
+The generated configurations are gitingored.
+
+The [Doxygen🡵] configurations used in %Battle are
+- **config**  
+  Main configuration.  
+  This configuration should be used when generating the official %Battle Documentation.
+- **config-test**  
+  Same as config but outputs to a gitingored directory.  
+  This configuration is for testing when writing documentation.
+- **config-test-nodot**  
+  Same as config-test but has HAVE_DOT set to NO.  
+  This configuration is for generating documentation when [Graphviz🡵] is not installed.
+
+<br/>
+
+---
 
 ## External Hyperlink format
 
@@ -330,3 +355,6 @@ Example of other parts of names replaced with curly braces:
 ```
 On the example above, Top and Bottom have been placed inside curly braces on shared children, because there is so many shared children that also have more shared children with the same naming style and shared components.  
 Note: There is space between the closing curly braces and rest of the names, because doxygen doesn't recognize asterisks after the brace without it. On the original GameObject name there is no space.
+
+[Doxygen🡵]:  https://www.doxygen.nl/index.html
+[Graphviz🡵]: https://www.doxygen.nl/manual/config.html#cfg_have_dot
