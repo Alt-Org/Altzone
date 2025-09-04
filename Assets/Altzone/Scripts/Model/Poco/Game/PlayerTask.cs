@@ -64,6 +64,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         FindSybolicalFurniture,
         ClickCharacterDescription,
         RecognizeSoundClue,
+        CreateUnifiedInterior,
     }
 
     public enum TaskEducationCultureType
@@ -397,6 +398,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case "find_ui_symbolics":
                     {
                         return TaskEducationStoryType.FindSymbolicalGraphics;
+                    }
+                case "create_unified_interior":
+                    {
+                        return TaskEducationStoryType.CreateUnifiedInterior;
                     }
                 default:
                     {

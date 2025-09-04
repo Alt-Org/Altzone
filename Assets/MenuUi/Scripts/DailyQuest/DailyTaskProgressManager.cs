@@ -170,6 +170,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationStoryType.FindSybolicalFurniture: HandleSimpleTask(value); break;
             case TaskEducationStoryType.FindSymbolicalGraphics: HandleSimpleTask(value); break;
             case TaskEducationStoryType.RecognizeSoundClue: HandleSimpleTask(value); break;
+            case TaskEducationStoryType.CreateUnifiedInterior: HandleSimpleTask(value); break;
             default: break;
         }
     }
