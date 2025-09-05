@@ -65,6 +65,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         ClickCharacterDescription,
         RecognizeSoundClue,
         CreateUnifiedInterior,
+        RecognizeCharacterMechanic,
     }
 
     public enum TaskEducationCultureType
@@ -83,6 +84,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         UseOnlyNegativeEmotes,
         ClickQuestionable,
         ClickEthical,
+        PressSustainableConsumptionObjects,
     }
 
     #endregion
@@ -403,6 +405,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                     {
                         return TaskEducationStoryType.CreateUnifiedInterior;
                     }
+                case "recognize_character_mechanic":
+                    {
+                        return TaskEducationStoryType.RecognizeCharacterMechanic;
+                    }
                 default:
                     {
                         return TaskEducationStoryType.ClickCharacterDescription;
@@ -464,6 +470,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case "use_only_positive_gestures_in_battle":
                     {
                         return TaskEducationEthicalType.UseOnlyPositiveEmotes;
+                    }
+                case "press_sustainable_consumption_objects":
+                    {
+                        return TaskEducationEthicalType.PressSustainableConsumptionObjects;
                     }
                 default:
                     {

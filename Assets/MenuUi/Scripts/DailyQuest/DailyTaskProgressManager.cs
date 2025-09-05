@@ -171,6 +171,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationStoryType.FindSymbolicalGraphics: HandleSimpleTask(value); break;
             case TaskEducationStoryType.RecognizeSoundClue: HandleSimpleTask(value); break;
             case TaskEducationStoryType.CreateUnifiedInterior: HandleSimpleTask(value); break;
+            case TaskEducationStoryType.RecognizeCharacterMechanic: HandleSimpleTask(value); break;
             default: break;
         }
     }
@@ -211,6 +212,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationEthicalType.ClickQuestionable: HandleSimpleTask(value); break;
             case TaskEducationEthicalType.UseOnlyNegativeEmotes: HandleSimpleTask(value); break;
             case TaskEducationEthicalType.UseOnlyPositiveEmotes: HandleSimpleTask(value); break;
+            case TaskEducationEthicalType.PressSustainableConsumptionObjects: HandleSimpleTask(value); break;
             default: break;
         }
     }
