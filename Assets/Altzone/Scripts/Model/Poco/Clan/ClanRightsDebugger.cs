@@ -1,9 +1,10 @@
+using System;
 using System.Collections;
-using UnityEngine;
+using Altzone.Scripts;
+using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
-using Altzone.Scripts.Config;
-using Altzone.Scripts;
+using UnityEngine;
 
 public class ClanRightsDebugger : MonoBehaviour
 {
@@ -68,11 +69,18 @@ public class ClanRightsDebugger : MonoBehaviour
             yield break;
         }
 
-        // Log the player’s role 
-        Debug.Log($"clanMember.Role enum value: {clanMember.Role}");
+        // Log the player's role
+        Debug.Log($"clanMember.Role string value: {clanMember.Role}");
+
+        // Convert string to enum
+        if (!Enum.TryParse(clanMember.Role, out ClanMemberRole parsedRole))
+        {
+            Debug.LogWarning($"Invalid role value: {clanMember.Role}");
+            yield break;
+        }
 
         // Get the index for this role
-        int roleIndex = GetRoleIndex(clanMember.Role);
+        int roleIndex = GetRoleIndex(parsedRole);
 
         // Check if role index is valid
         if (roleIndex < 0 || roleIndex >= clanData.ClanRights.Length)

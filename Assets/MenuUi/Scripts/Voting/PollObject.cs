@@ -44,7 +44,6 @@ public class PollObject : MonoBehaviour
     {
         ClockButton.onClick.AddListener(OnClockButtonClicked);
 
-
         if (pollData != null)
         {
             updateCoroutine = StartCoroutine(UpdateValues());
@@ -277,7 +276,27 @@ public class PollObject : MonoBehaviour
             yield break;
         }
 
+        ClanMemberRole currentRole = ClanMemberRole.None;
+        string roleString = targetMember.Role?.Trim();
+
+        if (!string.IsNullOrEmpty(roleString) &&
+            Enum.TryParse(roleString, true, out ClanMemberRole parsedRole))
+        {
+            currentRole = parsedRole;
+        }
+        else if (int.TryParse(roleString, out int roleInt) &&
+                 Enum.IsDefined(typeof(ClanMemberRole), roleInt))
+        {
+            currentRole = (ClanMemberRole)roleInt;
+        }
+        else
+        {
+            Debug.LogWarning($"Invalid role string for member {targetMember.Name}: {targetMember.Role}. Defaulting to None.");
+            currentRole = ClanMemberRole.None; // fallback 
+        }
+
         // Open the clan role popup with the fetched data
-        PollInfoPopup.Instance.OpenClanRolePopup(targetMember.Name, targetMember.Role, clanRolePoll.TargetRole);
+        PollInfoPopup.Instance.OpenClanRolePopup(targetMember.Name, currentRole, clanRolePoll.TargetRole);
     }
+
 }
