@@ -4,7 +4,6 @@ using UnityEngine.UI;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Clan;
-using Altzone.Scripts.Voting;
 
 public class PollInfoPopup : MonoBehaviour
 {

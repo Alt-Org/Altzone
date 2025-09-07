@@ -133,14 +133,52 @@ public class PollObject : MonoBehaviour
         return pollData.YesVotes.Count > pollData.NoVotes.Count;
     }
 
-    private void SetValues()
+    private void SetValues() // Sets the small info window for the PollObject
     {
-        // Update UI for FurniturePollData type polls
+        // Handle UI for Furniture Polls
         if (pollData is FurniturePollData furniturePollData)
         {
             Image.sprite = furniturePollData.Sprite;
             UpperText.text = Enum.GetName(typeof(FurniturePollType), furniturePollData.FurniturePollType);
             LowerText.text = furniturePollData.Furniture?.Value.ToString() ?? "N/A";
+        }
+        // Handle UI for Clan Polls
+        else if (pollData is ClanRolePollData clanRolePoll)
+        {
+            // Default values
+            string memberName = "Unknown";
+            string roleName = "None";
+
+            PlayerData player = null;
+            Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
+
+            if (player != null && !string.IsNullOrEmpty(player.ClanId))
+            {
+                ClanData clan = null;
+                Storefront.Get().GetClanData(player.ClanId, data => clan = data);
+
+                if (clan != null)
+                {
+                    ClanMember targetMember = clan.Members.Find(m => m.Id == clanRolePoll.TargetPlayerId);
+                    if (targetMember != null)
+                    {
+                        memberName = targetMember.Name;
+
+                        if (!string.IsNullOrEmpty(targetMember.Role) &&
+                            Enum.TryParse(targetMember.Role, true, out ClanMemberRole parsedRole))
+                        {
+                            roleName = parsedRole.ToString();
+                        }
+                        else
+                        {
+                            roleName = "None"; // Fallback
+                        }
+                    }
+                }
+            }
+
+            UpperText.text = memberName;
+            LowerText.text = roleName;
         }
 
         if (YesVotesText != null) YesVotesText.text = pollData.YesVotes.Count.ToString();
