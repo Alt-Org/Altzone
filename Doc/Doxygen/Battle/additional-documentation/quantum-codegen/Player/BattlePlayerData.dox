@@ -65,7 +65,7 @@
 /// Part of @ref PlayerID "[Player's refs and IDs]"
 ///
 /// @var int Quantum::BattlePlayerDataQComponent::CharacterClass
-/// <summary>Which defense class the character belongs to.</summary>
+/// <summary>Which defence class the character belongs to.</summary>
 /// Part of @ref PlayerID "[Player's refs and IDs]"
 /// @}
 
@@ -110,6 +110,10 @@
 /// @{
 /// @var FP Quantum::BattlePlayerDataQComponent::CurrentHp
 /// <summary>Character's current health value.</summary>
+/// Part of @ref PlayerState "[Player's current state related data]"
+///
+/// @var FP Quantum::BattlePlayerDataQComponent::CurrentDefence
+/// <summary>Character's current defence value.</summary>
 /// Part of @ref PlayerState "[Player's current state related data]"
 ///
 /// @var FrameTimer Quantum::BattlePlayerDataQComponent::DamageCooldown
