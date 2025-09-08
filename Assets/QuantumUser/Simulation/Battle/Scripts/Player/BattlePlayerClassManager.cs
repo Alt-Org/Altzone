@@ -1,3 +1,11 @@
+/// @file BattlePlayerClassManager.cs
+/// <summary>
+/// The manager script for player class logic.
+/// </summary>
+/// 
+/// The manager handles initializing classes that are present in the game, and routing events forward to the individual classes.</br>
+/// This script also contains the base classes that class implementations derive from.
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -6,6 +14,10 @@ using UnityEngine;
 
 namespace Battle.QSimulation.Player
 {
+    /// <summary>
+    /// An extended base abstact class for player classes.</br>
+    /// Contains a method for retrieving the ClassData component attached to the player character entity.
+    /// </summary>
     public abstract unsafe class BattlePlayerClassBase<T> : BattlePlayerClassBase where T : unmanaged, IComponent
     {
         protected T* GetClassData(Frame f, EntityRef playerEntity)
@@ -18,6 +30,10 @@ namespace Battle.QSimulation.Player
         }
     }
 
+    /// <summary>
+    /// The base abstract class for player classes.</br>
+    /// Contains a reference to the associated BattlePlayerCharacterClass and virtual methods for the different events the class can respond to.
+    /// </summary>
     public abstract unsafe class BattlePlayerClassBase
     {
         public abstract BattlePlayerCharacterClass Class { get; }
@@ -31,8 +47,17 @@ namespace Battle.QSimulation.Player
         public virtual unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
     }
 
+    /// <summary>
+    /// Handles the initial loading of player classes and routes individual game events to the correct class scripts.
+    /// </summary>
     public unsafe static class BattlePlayerClassManager
     {
+
+        /// <summary>
+        /// Loads the specified class to be ready for use, if it is implemented.
+        /// </summary>
+        ///
+        /// <param name="characterClass">The class that is to be loaded.</param>
         public static void LoadClass(BattlePlayerCharacterClass characterClass)
         {
             switch (characterClass)
@@ -77,6 +102,14 @@ namespace Battle.QSimulation.Player
             }
         }
 
+        /// <summary>
+        /// Calls the OnCreate method of the class of the given player character, if it is implemented.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Reference to the player handle.</param>
+        /// /// <param name="playerData">Pointer reference to the player data.</param>
+        /// /// <param name="playerEntity">Reference to the player entity.</param>
         public static void OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
             BattlePlayerClassBase playerClass = GetClass(playerData->CharacterClass);
@@ -93,6 +126,14 @@ namespace Battle.QSimulation.Player
             playerClass.OnCreate(f, playerHandle, playerData, playerEntity);
         }
 
+        /// <summary>
+        /// Calls the OnSpawn method of the class of the given player character, if it is implemented.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Reference to the player handle.</param>
+        /// /// <param name="playerData">Pointer reference to the player data.</param>
+        /// /// <param name="playerEntity">Reference to the player entity.</param>
         public static void OnSpawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
             BattlePlayerClassBase playerClass = GetClass(playerData->CharacterClass);
@@ -102,6 +143,14 @@ namespace Battle.QSimulation.Player
             playerClass.OnSpawn(f, playerHandle, playerData, playerEntity);
         }
 
+        /// <summary>
+        /// Calls the OnDespawn method of the class of the given player character, if it is implemented.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Reference to the player handle.</param>
+        /// /// <param name="playerData">Pointer reference to the player data.</param>
+        /// /// <param name="playerEntity">Reference to the player entity.</param>
         public static void OnDespawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
             BattlePlayerClassBase playerClass = GetClass(playerData->CharacterClass);
@@ -111,6 +160,14 @@ namespace Battle.QSimulation.Player
             playerClass.OnDespawn(f, playerHandle, playerData, playerEntity);
         }
 
+        /// <summary>
+        /// Calls the OnProjectileHitPlayerHitbox method of the class of the given player character, if it is implemented.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Reference to the player handle.</param>
+        /// /// <param name="playerData">Pointer reference to the player data.</param>
+        /// /// <param name="playerEntity">Reference to the player entity.</param>
         public static void OnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
         {
             BattlePlayerClassBase playerClass = GetClass(f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity)->CharacterClass);
@@ -120,6 +177,14 @@ namespace Battle.QSimulation.Player
             playerClass.OnProjectileHitPlayerHitbox(f, projectile, projectileEntity, playerHitbox, playerHitboxEntity);
         }
 
+        /// <summary>
+        /// Calls the OnProjectileHitPlayerShield method of the class of the given player character, if it is implemented.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Reference to the player handle.</param>
+        /// /// <param name="playerData">Pointer reference to the player data.</param>
+        /// /// <param name="playerEntity">Reference to the player entity.</param>
         public static void OnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
         {
             BattlePlayerClassBase playerClass = GetClass(f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity)->CharacterClass);
@@ -129,6 +194,14 @@ namespace Battle.QSimulation.Player
             playerClass.OnProjectileHitPlayerShield(f, projectile, projectileEntity, playerHitbox, playerHitboxEntity);
         }
 
+        /// <summary>
+        /// Calls the OnUpdate method of the class of the given player character, if it is implemented.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Reference to the player handle.</param>
+        /// /// <param name="playerData">Pointer reference to the player data.</param>
+        /// /// <param name="playerEntity">Reference to the player entity.</param>
         public static void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
             BattlePlayerClassBase playerClass = GetClass(playerData->CharacterClass);
@@ -148,10 +221,17 @@ namespace Battle.QSimulation.Player
         private const int ClassIndexIntellectualizer = 6;
         private const int ClassCount = 7;
 
+        /// <value>An array containing all of the class scripts that have been implemented and can be used.</value>
         private static BattlePlayerClassBase[] s_classArray = new BattlePlayerClassBase[ClassCount];
 
+        /// <value>A dictionary used for tracking which classes have already had an error message sent regarding their missing implementation.</value>
         private static Dictionary<BattlePlayerCharacterClass, bool> s_errorMessagesSent = new();
 
+        /// <summary>
+        /// Returns the class script of the specified class from the class array, if it is implemented.
+        /// </summary>
+        ///
+        /// <param name="characterClass">The class that's script is to be retrieved.</param>
         private static BattlePlayerClassBase GetClass(BattlePlayerCharacterClass characterClass)
         {
             if (characterClass == BattlePlayerCharacterClass.None) return null;
