@@ -66,23 +66,51 @@ namespace Battle.QSimulation.Projectile
             projectile->CollisionFlags[f.Number % 2] = flags.SetFlag(flag);
         }
 
+        /// <summary>
+        /// Sets whether the projectile is currently held.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectile">Pointer to the projectile component.</param>
+        /// <param name="isHeld">True/False : held / not held.</param>
         public static void SetHeld(Frame f, BattleProjectileQComponent* projectile, bool isHeld)
         {
             projectile->IsHeld = isHeld;
         }
 
+        /// <summary>
+        /// Sets the emotion state of the projectile and triggers the corresponding event.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectile">Pointer to the projectile component.</param>
+        /// <param name="emotion">The new emotion state to assign to the projectile.</param>
         public static void SetEmotion(Frame f, BattleProjectileQComponent* projectile, BattleEmotionState emotion)
         {
             projectile->Emotion = emotion;
             f.Events.BattleChangeEmotionState(projectile->Emotion);
         }
 
+        /// <summary>
+        /// Sets the attack value of the projectile and updates its glow strength.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectile">Pointer to the projectile component.</param>
+        /// <param name="attack">The new attack value to assign to the projectile.</param>
         public static void SetAttack(Frame f, BattleProjectileQComponent* projectile, FP attack)
         {
             projectile->Attack = attack;
             f.Events.BattleProjectileChangeGlowStrength(projectile->Attack / projectile->AttackMax);
         }
 
+        /// <summary>
+        /// Sets the direction of the projectile and recalculates its speed based on emotion.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectile">Pointer to the projectile component.</param>
+        /// <param name="direction">The new direction for the projectile</param>
         public static void UpdateVelocity(Frame f, BattleProjectileQComponent* projectile, FPVector2 direction)
         {
             // set new projectile direction
@@ -92,6 +120,16 @@ namespace Battle.QSimulation.Projectile
             projectile->Speed = projectile->SpeedPotential * projectile->SpeedMultiplierArray[(int)projectile->Emotion];
         }
 
+        /// <summary>
+        /// Handles the intersection of a projectile with another entity and corrects its position if necessary.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectile">Pointer to the projectile component.</param>
+        /// <param name="projectileEntity">The entity representing the projectile.</param>
+        /// <param name="otherEntity">The entity the projectile is intersecting with.</param>
+        /// <param name="normal">The collision normal of the intersection.</param>
+        /// <param name="collisionMinOffset">Minimum allowed offset to prevent the projectile from going inside the other entity.</param>
         public static void HandleIntersection(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, EntityRef otherEntity, FPVector2 normal, FP collisionMinOffset)
         {
             Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
@@ -114,9 +152,10 @@ namespace Battle.QSimulation.Projectile
 
 
         /// <summary>
-        /// // UPDATE DOC
         /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method@u-exlink</a> gets called every frame.</span><br/>
-        /// Launches the projectile and sets properties based on the <see cref="Battle.QSimulation.Projectile.BattleProjectileQSpec">Projectile spec.</see>
+        /// Launches the projectile if it hasn't been launched yet, moves it if not held,
+        /// updates its speed potential over time, and resets collision flags for the next frame. <br/>
+        /// Sets properties based on the <see cref="Battle.QSimulation.Projectile.BattleProjectileQSpec">Projectile spec.</see>
         /// @warning
         /// This method should only be called by Quantum.
         /// </summary>
@@ -300,7 +339,7 @@ namespace Battle.QSimulation.Projectile
         }
 
         /// <summary>
-        /// This method checks if the shield hitbox and projectile are in states where they should collide. Also sets the projectile to the love emotion state if the condition for that is met. 
+        /// This method checks if the shield hitbox and projectile are in states where they should collide. Also sets the projectile to the love emotion state if the condition for that is met.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
