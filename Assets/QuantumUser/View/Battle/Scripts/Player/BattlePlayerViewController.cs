@@ -70,8 +70,6 @@ namespace Battle.View.Player
 
         /// @}
 
-        private Coroutine _damageFlashCoroutine = null;
-
         /// <summary>
         /// Public method that is called when entity is activated upon its creation.<br/>
         /// Sets the player model scale and active <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>. Handles subscribing to QuantumEvents.
