@@ -20,6 +20,13 @@ namespace Battle.QSimulation.Player
     /// </summary>
     public abstract unsafe class BattlePlayerClassBase<T> : BattlePlayerClassBase where T : unmanaged, IComponent
     {
+        /// <summary>
+        /// Returns a pointer reference to the class data of the specified player entity.
+        /// </summary>
+        /// 
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerEntity">Reference to the player entity.</param>
+        /// <returns></returns>
         protected T* GetClassData(Frame f, EntityRef playerEntity)
         {
             if (!f.Unsafe.TryGetPointer<T>(playerEntity, out T* component))
@@ -36,6 +43,7 @@ namespace Battle.QSimulation.Player
     /// </summary>
     public abstract unsafe class BattlePlayerClassBase
     {
+
         public abstract BattlePlayerCharacterClass Class { get; }
 
         public virtual unsafe void OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
@@ -163,11 +171,12 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Calls the OnProjectileHitPlayerHitbox method of the class of the given player character, if it is implemented.
         /// </summary>
-        ///
+        /// 
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerHandle">Reference to the player handle.</param>
-        /// <param name="playerData">Pointer reference to the player data.</param>
-        /// <param name="playerEntity">Reference to the player entity.</param>
+        /// <param name="projectile">Pointer reference to the projectile</param>
+        /// <param name="projectileEntity">Reference to the projectile entity.</param>
+        /// <param name="playerHitbox">Pointer reference to the player hitbox.</param>
+        /// <param name="playerHitboxEntity">Reference to the player hitbox entity</param>
         public static void OnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
         {
             BattlePlayerClassBase playerClass = GetClass(f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity)->CharacterClass);
@@ -180,11 +189,12 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Calls the OnProjectileHitPlayerShield method of the class of the given player character, if it is implemented.
         /// </summary>
-        ///
+        /// 
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerHandle">Reference to the player handle.</param>
-        /// <param name="playerData">Pointer reference to the player data.</param>
-        /// <param name="playerEntity">Reference to the player entity.</param>
+        /// <param name="projectile">Pointer reference to the projectile</param>
+        /// <param name="projectileEntity">Reference to the projectile entity.</param>
+        /// <param name="playerHitbox">Pointer reference to the player hitbox.</param>
+        /// <param name="playerHitboxEntity">Reference to the player hitbox entity</param>
         public static void OnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
         {
             BattlePlayerClassBase playerClass = GetClass(f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity)->CharacterClass);

@@ -852,18 +852,18 @@ namespace Battle.QSimulation.Player
 
             //{ Public Methods
 
-            /// <summary>
-            /// Gets an EntityRef to a player's Character by characterNumber.
-            /// </summary>
-            ///
-            /// <param name="characterNumber">CharacterNumber of the player's character you want to get.</param>
-            /// <returns>EntityRef to a player's Character.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public PlayerHandle ConvertToPublic()
             {
                 return PlayerHandle.GetPlayerHandleFromInternal(_playerManagerData, Index);
             }
 
+            /// <summary>
+            /// Gets an EntityRef to a player's Character by characterNumber.
+            /// </summary>
+            ///
+            /// <param name="characterNumber">CharacterNumber of the player's character you want to get.</param>
+            /// <returns>EntityRef to a player's Character.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public EntityRef GetCharacter(int characterNumber) => _playerManagerData->AllCharacters[GetCharacterIndex(characterNumber)];
 
