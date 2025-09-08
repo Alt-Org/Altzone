@@ -85,14 +85,13 @@ namespace Battle.View.UI
         }
 
         /// <summary>
-        /// // UPDATE DOC<br/>
         /// Sets the player's info to BattleUiPlayerInfo prefab through BattleUiPlayerInfoComponent.
         /// </summary>
         ///
         /// <param name="playerType">The PlayerType which info to set.</param>
         /// <param name="playerName">The player's name.</param>
         /// <param name="characterIds">The player's selected characters CharacterIds as a int array.</param>
-        /// <param name="characterDefenceNumbers">// add doc</param>
+        /// <param name="characterDefenceNumbers">Array of defence values for each character.</param>
         /// <param name="data">The BattleUiMovableElementData for this UI element.</param>
         public void SetInfo(PlayerType playerType, string playerName, int[] characterIds, float[] characterDefenceNumbers, BattleUiMovableElementData data)
         {
