@@ -64,7 +64,10 @@ namespace Battle.View.UI
         /// Sets the %UI element visibility.
         /// </summary>
         ///
-        /// <param name="show">If the %UI element should be visible or not.</param>
+        /// Updates both elements using the master flag and their individual states.
+        /// Acts as a master switch without overriding individual visibility settings.
+        ///
+        /// <param name="show">True/False : visible / not visible.</param>
         public void SetShow(bool show)
         {
             _isVisible = show;
@@ -72,12 +75,28 @@ namespace Battle.View.UI
             _localTeammateMultiOrientationElement .gameObject.SetActive(_isVisible && _isVisibleTeammate);
         }
 
+        /// <summary>
+        /// Sets the Player %UI element visibility.
+        /// </summary>
+        ///
+        /// Updates only the Player element.
+        /// Visible only if both the master and Player flags are true.
+        ///
+        /// <param name="show">True/False : visible / not visible.</param>
         public void SetShowPlayer(bool show)
         {
             _isVisiblePlayer = show;
             _localPlayerMultiOrientationElement.gameObject.SetActive(_isVisible && _isVisiblePlayer);
         }
 
+        /// <summary>
+        /// Sets the Teammate %UI element visibility.
+        /// </summary>
+        ///
+        /// Updates only the Teammate element.
+        /// Visible only if both the master and Teammate flags are true.
+        ///
+        /// <param name="show">True/False : visible / not visible.</param>
         public void SetShowTeammate(bool show)
         {
             _isVisibleTeammate = show;
