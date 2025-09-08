@@ -41,7 +41,7 @@
 /// - <b>synced event</b> @ref BattleCharacterTakeDamage { EntityRef Entity; BattleTeamNumber Team; BattlePlayerSlot Slot; int CharacterNumber; FP HealthPercentage }  
 ///   @copybrief Quantum.EventBattleCharacterTakeDamage
 /// - <b>synced event</b> @ref BattleShieldTakeDamage { EntityRef Entity; BattleTeamNumber Team; BattlePlayerSlot Slot; int CharacterNumber; FP DefenceValue }  
-///   @copybrief Quantum.BattleShieldTakeDamage
+///   @copybrief Quantum.EventBattleShieldTakeDamage
 ///
 /// ### Debug events
 /// - <b>synced event</b> @ref BattleDebugUpdateStatsOverlay { BattleCharacterBase Character}  
