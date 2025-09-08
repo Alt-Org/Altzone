@@ -3,7 +3,7 @@
 /// The manager script for player class logic.
 /// </summary>
 /// 
-/// The manager handles initializing classes that are present in the game, and routing events forward to the individual classes.</br>
+/// The manager handles initializing classes that are present in the game, and routing events forward to the individual classes.<br/>
 /// This script also contains the base classes that class implementations derive from.
 
 using System.Collections;
@@ -15,7 +15,7 @@ using UnityEngine;
 namespace Battle.QSimulation.Player
 {
     /// <summary>
-    /// An extended base abstact class for player classes.</br>
+    /// An extended base abstact class for player classes.<br/>
     /// Contains a method for retrieving the ClassData component attached to the player character entity.
     /// </summary>
     public abstract unsafe class BattlePlayerClassBase<T> : BattlePlayerClassBase where T : unmanaged, IComponent
@@ -31,7 +31,7 @@ namespace Battle.QSimulation.Player
     }
 
     /// <summary>
-    /// The base abstract class for player classes.</br>
+    /// The base abstract class for player classes.<br/>
     /// Contains a reference to the associated BattlePlayerCharacterClass and virtual methods for the different events the class can respond to.
     /// </summary>
     public abstract unsafe class BattlePlayerClassBase

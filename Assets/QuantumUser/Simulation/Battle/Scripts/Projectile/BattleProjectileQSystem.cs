@@ -6,7 +6,7 @@
 /// This system:<br/>
 /// Launches projectile when battle starts and updates its movements.<br/>
 /// Handles projectile's collisionflags to ensure projectile doesn't hit more than one SoulWall segment at a time.<br/>
-/// Reacts to signals of the projectile colliding with different entities.
+/// Contains logic for handling the projectile colliding with different entities.
 
 using System.Runtime.CompilerServices;
 
@@ -193,8 +193,8 @@ namespace Battle.QSimulation.Projectile
         }
 
         /// <summary>
-        /// Called by BattleCollisionQSystem. Handles the collision based on the specified collision trigger type, handling the collision differently based on what the projectile has hit.</br>
-        /// The projectile will either reflect off of the arena border, set its emotion and bounce off a soul wall, or run checks on what it should do if it hits a player shield.</br>
+        /// Called by BattleCollisionQSystem. Handles the collision based on the specified collision trigger type, handling the collision differently based on what the projectile has hit.<br/>
+        /// The projectile will either reflect off of the arena border, set its emotion and bounce off a soul wall, or run checks on what it should do if it hits a player shield.<br/>
         /// Ultimately sends the projectile in a new direction if it is appropriate to do so.
         /// </summary>
         ///
@@ -339,7 +339,8 @@ namespace Battle.QSimulation.Projectile
         }
 
         /// <summary>
-        /// This method checks if the shield hitbox and projectile are in states where they should collide. Also sets the projectile to the love emotion state if the condition for that is met.
+        /// This method checks if the shield hitbox and projectile are in states where they should collide.<br/>
+        /// Also sets the projectile to the love emotion state if the condition for that is met.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
