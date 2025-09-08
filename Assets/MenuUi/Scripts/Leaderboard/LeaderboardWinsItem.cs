@@ -15,18 +15,13 @@ public class LeaderboardWinsItem : MonoBehaviour
     [SerializeField] private AvatarFaceLoader _avatarFaceLoader;
     [field: SerializeField] public Button OpenProfileButton { get; private set; }
 
-    private string _clanId; // Lisätty
+    private string _clanId; // Lisï¿½tty
 
-    public void Initialize(int rank, string name, int wins, AvatarVisualData avatarVisualData, string clanId = null) // lisätty 
+    public void Initialize(int rank, string name, int wins, AvatarVisualData avatarVisualData, string clanId = null) // lisï¿½tty 
     {
         _rankText.text = rank.ToString() + ".";
         _nameText.text = name;
         _winsText.text = wins.ToString();
-
-
-
-       
-
         if (avatarVisualData != null)
         {
             _avatarFaceLoader.UpdateVisuals(avatarVisualData);
@@ -36,5 +31,16 @@ public class LeaderboardWinsItem : MonoBehaviour
        
     }
 
-
+    public void Initialize(int rank, PlayerLeaderboard ranking)
+    {
+        _rankText.text = rank.ToString() + ".";
+        _nameText.text = ranking.Player.Name;
+        _winsText.text = ranking.WonBattles.ToString();
+        if(ranking.Player != null)
+        {
+            AvatarVisualData avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(ranking.Player);
+            _avatarFaceLoader.UpdateVisuals(avatarVisualData);
+        }
+        if (ranking.Clanlogo != null) _clanHeart.SetHeartColors(ranking.Clanlogo);
+    }
 }
