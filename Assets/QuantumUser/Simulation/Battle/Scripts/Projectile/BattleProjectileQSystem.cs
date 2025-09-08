@@ -154,15 +154,17 @@ namespace Battle.QSimulation.Projectile
         }
 
         /// <summary>
-        /// Called by BattleCollisionQSystem. Handles the collision based on the specified collision trigger type, ultimately sending the projectile in a new direction if it is appropriate to do so.
+        /// Called by BattleCollisionQSystem. Handles the collision based on the specified collision trigger type, handling the collision differently based on what the projectile has hit.</br>
+        /// The projectile will either reflect off of the arena border, set its emotion and bounce off a soul wall, or run checks on what it should do if it hits a player shield.</br>
+        /// Ultimately sends the projectile in a new direction if it is appropriate to do so.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="projectileEntity">EntityRef of the projectile.</param>
-        /// <param name="otherEntity">// add doc</param>
-        /// <param name="otherComponentPtr">// add doc</param>
-        /// <param name="collisionTriggerType">// add doc</param>
+        /// <param name="otherEntity">The entity the projectile collided with.</param>
+        /// <param name="otherComponentPtr">A pointer reference to the other entity.</param>
+        /// <param name="collisionTriggerType">The collision type of the collision, informing what the projectile has hit.</param>
         public static void OnProjectileCollision(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, EntityRef otherEntity, void* otherComponentPtr, BattleCollisionTriggerType collisionTriggerType)
         {
             if (projectile->IsHeld) return;
@@ -298,7 +300,7 @@ namespace Battle.QSimulation.Projectile
         }
 
         /// <summary>
-        /// This method checks if the shield hitbox and projectile are in states where the projectile should collide. Also sets the projectile to the love emotion state if the condition for that is met. 
+        /// This method checks if the shield hitbox and projectile are in states where they should collide. Also sets the projectile to the love emotion state if the condition for that is met. 
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -306,7 +308,7 @@ namespace Battle.QSimulation.Projectile
         /// <param name="projectileEntity">EntityRef of the projectile.</param>
         /// <param name="playerHitbox">Pointer to the PlayerHitbox component.</param>
         /// <param name="playerHitboxEntity">EntityRef of the player hitbox.</param>
-        /// <param name="normal">// add doc</param>
+        /// <param name="normal">The direction in which the projectile should be sent.</param>
         private static bool ProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity, out FPVector2 normal)
         {
             normal = FPVector2.Zero;
