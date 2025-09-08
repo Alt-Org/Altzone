@@ -40,6 +40,8 @@
 ///   @copybrief Quantum.EventBattleLastRowWallDestroyed
 /// - <b>synced event</b> @ref BattleCharacterTakeDamage { EntityRef Entity; BattleTeamNumber Team; BattlePlayerSlot Slot; int CharacterNumber; FP HealthPercentage }  
 ///   @copybrief Quantum.EventBattleCharacterTakeDamage
+/// - <b>synced event</b> @ref BattleShieldTakeDamage { EntityRef Entity; BattleTeamNumber Team; BattlePlayerSlot Slot; int CharacterNumber; FP DefenceValue }  
+///   @copybrief Quantum.BattleShieldTakeDamage
 ///
 /// ### Debug events
 /// - <b>synced event</b> @ref BattleDebugUpdateStatsOverlay { BattleCharacterBase Character}  
@@ -198,6 +200,15 @@
 /// Generated Method @cref{Quantum,Frame.FrameEvents.BattleCharacterTakeDamage}
 ///
 /// ---
+///
+/// @anchor BattleShieldTakeDamage
+/// ### BattleShieldTakeDamage
+/// @copybrief Quantum.EventBattleShieldTakeDamage
+///
+/// Generated Class @cref{Quantum,EventBattleShieldTakeDamage}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleShieldTakeDamage}
+///
+/// ---
 /// ---
 ///
 /// ### Debug events
@@ -317,6 +328,14 @@
 /// </summary>
 ///
 /// Used to update the UI to reflect change in character HP and plays damage taking animation on character.<br/>  
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattleShieldTakeDamage
+/// <summary>
+/// Synced event. Used when character's shield takes damage.
+/// </summary>
+///
+/// Used to update the UI to reflect change in character's defence.<br/>  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
 /// @class Quantum::EventBattleDebugUpdateStatsOverlay
