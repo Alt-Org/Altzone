@@ -62,6 +62,7 @@ In %Battle managers have Manager suffix and controllers have Controller suffix. 
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Game}   | @cref{Battle.QSimulation.Game,BattleGridManager}                | @copybrief Battle.QSimulation.Game.BattleGridManager                |
 |                                                                                                                                                                                                     ||||
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Player} | @cref{Battle.QSimulation.Player,BattlePlayerManager}            | @copybrief Battle.QSimulation.Player.BattlePlayerManager            |
+| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Player} | @cref{Battle.QSimulation.Player,BattlePlayerClassManager}       | @copybrief Battle.QSimulation.Player.BattlePlayerClassManager       |
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Player} | @cref{Battle.QSimulation.Player,BattlePlayerMovementController} | @copybrief Battle.QSimulation.Player.BattlePlayerMovementController |
 
 <br/>
@@ -111,12 +112,6 @@ In %Battle all [Quantum Signals🡵] are located in BattleSignals.qtn file.
 
 |  Namespace        | Interface                                                   | Description                                                     |
 | :---------------- | :---------------------------------------------------------- | :-------------------------------------------------------------- |
-| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitSoulWall}         | @copybrief Quantum.ISignalBattleOnProjectileHitSoulWall         |
-| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitArenaBorder}      | @copybrief Quantum.ISignalBattleOnProjectileHitArenaBorder      |
-| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitPlayerCharacter}  | @copybrief Quantum.ISignalBattleOnProjectileHitPlayerCharacter  |
-| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitPlayerShield}     | @copybrief Quantum.ISignalBattleOnProjectileHitPlayerShield     |
-| @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnProjectileHitGoal}             | @copybrief Quantum.ISignalBattleOnProjectileHitGoal             |
-|                                                                                                                                                 |||
 | @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnDiamondHitPlayer}              | @copybrief Quantum.ISignalBattleOnDiamondHitPlayer              |
 |                                                                                                                                                 |||
 | @crefd{Quantum}   | @cref{Quantum,ISignalBattleOnGameOver}                      | @copybrief Quantum.ISignalBattleOnGameOver                      |
@@ -143,10 +138,14 @@ In %Battle all [Quantum Events🡵] are located in BattleEvents.qtn file.
 | @crefd{Quantum}   | @cref{Quantum,EventBattleStoneCharacterPieceViewInit} | @copybrief Quantum.EventBattleStoneCharacterPieceViewInit |
 |                                                                                                                                     |||
 | @crefd{Quantum}   | @cref{Quantum,EventBattleChangeEmotionState}          | @copybrief Quantum.EventBattleChangeEmotionState          |
+| @crefd{Quantum}   | @cref{Quantum,EventBattleChangeGlowStrength}          | @copybrief Quantum.EventBattleChangeGlowStrength          |
 | @crefd{Quantum}   | @cref{Quantum,EventBattlePlaySoundFX}                 | @copybrief Quantum.EventBattlePlaySoundFX                 |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleLastRowWallDestroyed}        | @copybrief Quantum.EventBattleLastRowWallDestroyed        |
+| @crefd{Quantum}   | @cref{Quantum,EventBattleCharacterTakeDamage}         | @copybrief Quantum.EventBattleCharacterTakeDamage         |
+| @crefd{Quantum}   | @cref{Quantum,EventBattleShieldTakeDamage}            | @copybrief Quantum.EventBattleShieldTakeDamage            |
 |                                                                                                                                     |||
 | @crefd{Quantum}   | @cref{Quantum,EventBattleDebugUpdateStatsOverlay}     | @copybrief Quantum.EventBattleDebugUpdateStatsOverlay     |
+| @crefd{Quantum}   | @cref{Quantum,EventBattleDebugOnScreenMessage}        | @copybrief Quantum.EventBattleDebugOnScreenMessage        |
 
 <br/>
 
