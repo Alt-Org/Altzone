@@ -22,7 +22,7 @@
 
 /// @dir Doc/Doxygen/Battle/setup
 /// <summary>
-/// Setup [Doxygen🡵] configuration files. 
+/// Files for [Doxygen🡵] setup.  
 /// See [[Documentation]](#page-documentation) for more info.
 /// </summary>
 ///
@@ -68,22 +68,24 @@
 
 /// @file Doc/Doxygen/Battle/Doc.html
 /// <summary>
-/// File for opening %Battle documentation in the doc directory.
+/// File for opening %Battle documentation in the @dirref{Altzone/Doc/Doxygen/Battle,doc} directory.
 /// </summary>
 ///
 /// @file Doc/Doxygen/Battle/Doc-test.html
 /// <summary>
-/// File for opening %Battle test documentation in the doc-test directory.
+/// File for opening %Battle test documentation in the @dirref{Altzone/Doc/Doxygen/Battle,doc-test} directory.
 /// </summary>
 
 /// @file Doc/Doxygen/Battle/setup/configs
 /// <summary>
-/// Contains our own configuration data.
+/// Defines which configurations are generated and what variables are used during setup.  
+/// See [[Documentation]](#page-documentation) for more info.
 /// </summary>
 ///
 /// @file Doc/Doxygen/Battle/setup/Doxyfile
 /// <summary>
-/// The template [Doxygen🡵] configuration file.
+/// The template [Doxygen🡵] configuration file.  
+/// See [[Documentation]](#page-documentation) for more info.
 /// </summary>
 ///
 /// @file Doc/Doxygen/Battle/setup/ExtraStylesheet.css
@@ -93,26 +95,41 @@
 ///
 /// @file Doc/Doxygen/Battle/config/Doxyfile
 /// <summary>
-/// The file that the documentation will be built with.
-/// Based on the template file in @dirref{Altzone/Doc/Doxygen,Battle/setup}.
+/// The configuration file that [Doxygen🡵] uses to generate documentation.  
+/// Based on the template file in @dirrefr{Altzone/Doc/Doxygen/Battle,setup}.  
+/// See [[Documentation]](#page-documentation) for more info.
 /// </summary>
 ///
 /// @file Doc/Doxygen/Battle/config/ExtraStylesheet.css
 /// <summary>
-/// An additional stylesheet that extends the base [Doxygen🡵] appearance.
-/// Based on the template file in @dirref{Altzone/Doc/Doxygen,Battle/setup}.
+/// An additional stylesheet that extends the base [Doxygen🡵] appearance.  
+/// Based on the template file in @dirrefr{Altzone/Doc/Doxygen/Battle,setup}.
 /// </summary>
 ///
 /// @file Doc/Doxygen/Battle/config-test/Doxyfile
 /// <summary>
-/// The file that the documentation will be built with.
-/// Based on the template file in @dirref{Altzone/Doc/Doxygen,Battle/setup}.
+/// The configuration file that [Doxygen🡵] uses to generate documentation.  
+/// Based on the template file in @dirrefr{Altzone/Doc/Doxygen/Battle,setup}.  
+/// See [[Documentation]](#page-documentation) for more info.
 /// </summary>
 ///
 /// @file Doc/Doxygen/Battle/config-test/ExtraStylesheet.css
 /// <summary>
-/// An additional stylesheet that extends the base [Doxygen🡵] appearance.
-/// Based on the template file in @dirref{Altzone/Doc/Doxygen,Battle/setup}.
+/// An additional stylesheet that extends the base [Doxygen🡵] appearance.  
+/// Based on the template file in @dirrefr{Altzone/Doc/Doxygen/Battle,setup}.
+/// </summary>
+///
+/// @file Doc/Doxygen/Battle/config-test-nodot/Doxyfile
+/// <summary>
+/// The configuration file that [Doxygen🡵] uses to generate documentation.  
+/// Based on the template file in @dirrefr{Altzone/Doc/Doxygen/Battle,setup}.  
+/// See [[Documentation]](#page-documentation) for more info.
+/// </summary>
+///
+/// @file Doc/Doxygen/Battle/config-test-nodot/ExtraStylesheet.css
+/// <summary>
+/// An additional stylesheet that extends the base [Doxygen🡵] appearance.  
+/// Based on the template file in @dirrefr{Altzone/Doc/Doxygen/Battle,setup}.
 /// </summary>
 ///
 /// [Doxygen🡵]:  https://www.doxygen.nl/index.html
