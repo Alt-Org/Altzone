@@ -3,7 +3,7 @@
 /// Handles the quantum side of player logic.
 /// </summary>
 ///
-/// This system reacts to the ProjectileHitPlayerHitbox event to deal damage to players, as well as sending input data forward for movement and character switching.
+/// This system contains methods called by BattleCollisionQSystem that deal damage to players and shields, as well as sending input data forward for movement and character switching.
 
 using UnityEngine.Scripting;
 using Quantum;
@@ -36,7 +36,7 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// // FIX DOC
+        /// Called by BattleCollisionQSystem. Applies damage to the player after checking if it is appropriate to do so.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame</param>
@@ -78,6 +78,15 @@ namespace Battle.QSimulation.Player
             BattleProjectileQSystem.SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Player);
         }
 
+        /// <summary>
+        /// Called by BattleCollisionQSystem. Applies damage to the player's shield after checking if it is appropriate to do so.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame</param>
+        /// <param name="projectile">Pointer reference to the projectile.</param>
+        /// <param name="projectileEntity">The projectile entity.</param>
+        /// <param name="playerHitbox">Pointer reference to the player's shield hitbox that the projectile collided with.</param>
+        /// <param name="playerHitboxEntity">The player's shield hitbox entity.</param>
         public static void OnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
         {
             if (!playerHitbox->IsActive) return;

@@ -4,7 +4,7 @@
 /// </summary>
 ///
 /// This system creates SoulWalls based on BattleArena and SoulWall Specs when GameControlSystem calls CreateSoulWalls method during the map creation.<br/>
-/// Also listens for ISignalBattleOnProjectileHitSoulWall signals and upon receiving them destroys SoulWall segments.
+/// Also destroys SoulWall segment when BattleCollisionQSystem calls the collision method.
 
 using UnityEngine;
 using UnityEngine.Scripting;
@@ -40,7 +40,7 @@ namespace Battle.QSimulation.SoulWall
         }
 
         /// <summary>
-        /// // FIX DOC
+        /// Called by BattleCollisionQSystem. Destroys the soulwall entity that was hit and sends forward the appropriate event that spawns a lightray if the soul wall hit was in the last row.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>

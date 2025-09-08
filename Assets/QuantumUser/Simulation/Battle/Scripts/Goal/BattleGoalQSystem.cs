@@ -1,10 +1,9 @@
 /// @file BattleGoalQSystem.cs
 /// <summary>
-/// // UPDATE DOC<br/>
 /// Handles goals.
 /// </summary>
 ///
-/// This system listens to ISignalBattleOnProjectileHitGoal signal that is sent when projectile hits a goal.
+/// This system is activated by BattleCollisionQSystem when projectile hits a goal.
 /// System then changes BattleGameState to "GameOver" to initiate game over procedures.
 
 
@@ -17,15 +16,14 @@ using Battle.QSimulation.Game;
 namespace Battle.QSimulation.Goal
 {
     /// <summary>
-    /// // UPDATE DOC<br/>
     /// <span class="brief-h">%Goal <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum SystemSignalsOnly@u-exlink</a> @systemslink</span><br/>
-    /// Triggers the end of the game when it receives signal
+    /// Triggers the end of the game when the projectile hits a goal
     /// </summary>
     [Preserve]
     public unsafe class BattleGoalQSystem : SystemSignalsOnly
     {
         /// <summary>
-        /// // FIX DOC
+        /// Called by BattleCollisionQSystem. If the goal has not already been triggered and projectile is not in held state, calls the OnGameOVer method in BattleGameControlQSystem.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>

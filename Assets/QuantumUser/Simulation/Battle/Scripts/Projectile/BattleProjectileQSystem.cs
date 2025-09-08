@@ -154,7 +154,7 @@ namespace Battle.QSimulation.Projectile
         }
 
         /// <summary>
-        /// // FIX DOC
+        /// Called by BattleCollisionQSystem. Handles the collision based on the specified collision trigger type, ultimately sending the projectile in a new direction if it is appropriate to do so.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -222,6 +222,18 @@ namespace Battle.QSimulation.Projectile
             SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Projectile);
         }
 
+        /// <summary>
+        /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
+        /// that gets called when <see cref="Quantum.ISignalBattleOnGameOver">ISignalBattleOnGameOver</see> is sent.</span><br/>
+        /// Sets the projectile to held state and teleports it out of the arena.
+        /// @warning
+        /// This method should only be called via Quantum signal.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="winningTeam">The BattleTeamNumber of the team that won.</param>
+        /// <param name="projectile">Pointer to the projectile component.</param>
+        /// <param name="projectileEntity">EntityRef of the projectile.</param>
         public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)
         {
             SetHeld(f, projectile, true);
@@ -246,6 +258,12 @@ namespace Battle.QSimulation.Projectile
 
         #region Private Static Methods
 
+        /// <summary>
+        /// Launches the projectile from an unlaunched state, setting its initial values.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectile">Pointer to the projectile component.</param>
         private static void Launch(Frame f, BattleProjectileQComponent* projectile)
         {
             // retrieve the projectiles spec
@@ -280,7 +298,7 @@ namespace Battle.QSimulation.Projectile
         }
 
         /// <summary>
-        /// // FIX DOC
+        /// This method checks if the shield hitbox and projectile are in states where the projectile should collide. Also sets the projectile to the love emotion state if the condition for that is met. 
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
