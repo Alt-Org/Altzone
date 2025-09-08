@@ -448,15 +448,15 @@ namespace Battle.QSimulation.Player
 
 
         /// <summary>
-        /// // UPDATE DOC
         /// Despawns a player's active character entity from the game. <br/>
         /// Verifies that the player has a character in play. <br/>
+        /// If <paramref name="kill"/> is set to true, the character's state is marked as dead prior to despawning. <br/>
         /// Actual despawning handled by a separate private method.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="slot">The slot of the player for which the character is to be despawned.</param>
-        /// <param name="kill">// add doc</param>
+        /// <param name="kill">If true, marks the character as dead.</param>
         public static void DespawnPlayer(Frame f, BattlePlayerSlot slot, bool kill = false)
         {
             PlayerHandleInternal playerHandle = PlayerHandleInternal.GetPlayerHandle(GetPlayerManagerData(f), slot);
