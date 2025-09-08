@@ -23,7 +23,7 @@ namespace Battle.QSimulation.Goal
     public unsafe class BattleGoalQSystem : SystemSignalsOnly
     {
         /// <summary>
-        /// Called by BattleCollisionQSystem. If the goal has not already been triggered and projectile is not in held state, calls the OnGameOVer method in BattleGameControlQSystem.
+        /// Called by BattleCollisionQSystem. If the goal has not already been triggered and projectile is not in held state, calls the OnGameOver method in BattleGameControlQSystem.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
