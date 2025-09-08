@@ -43,7 +43,7 @@ namespace Battle.View.UI
         /// Sets the %UI element visibility.
         /// </summary>
         ///
-        /// <param name="show">If the %UI element should be visible or not.</param>
+        /// <param name="show">True/False : visible / not visible.</param>
         public void SetShow(bool show)
         {
             _view.SetActive(show);
