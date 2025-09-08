@@ -24,10 +24,7 @@ public class LeaderboardView : MonoBehaviour
     [SerializeField] private Button _clansButton;
     [SerializeField] private Button _playersButton;
     [SerializeField] private Button _winsLeaderboardButton; 
-    [SerializeField] private GameObject _globalLeaderboardDarkeningImage; 
-    [SerializeField] private GameObject _clanLeaderboardDarkeningImage; 
-    [SerializeField] private GameObject _friendsLeaderboardDarkeningImage; 
-    [SerializeField] private GameObject _winsLeaderboardDarkeningImage; 
+ 
     [SerializeField] private Image _winsLeaderboardImage; //Lisätty 
 
 
@@ -84,38 +81,6 @@ public class LeaderboardView : MonoBehaviour
         _friendsLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Friends));
         _winsLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Wins)); 
 
-
-
-        _leaderboardTypeButton.onClick.AddListener(() => ToggleLeaderboardType());
-
-        _clansButton.onClick.AddListener(() => ListClans());
-        _playersButton.onClick.AddListener(() => ListPlayers());
-
-
-        //DarkeningImagen aktivointi
-        SetTabActive(Leaderboard.Wins); // Tämä oletuksena ensin aktivoituna
-
-        _globalLeaderboardButton.onClick.AddListener(() =>
-        {
-            OpenLeaderboard(Leaderboard.Global);
-            SetTabActive(Leaderboard.Global);
-        });
-
-        _clanLeaderboardButton.onClick.AddListener(() =>
-        {
-            OpenLeaderboard(Leaderboard.Clan);
-            SetTabActive(Leaderboard.Clan);
-        });
-        _friendsLeaderboardButton.onClick.AddListener(() =>
-        {
-            OpenLeaderboard(Leaderboard.Friends);
-            SetTabActive(Leaderboard.Friends);
-        });
-        _winsLeaderboardButton.onClick.AddListener(() =>
-        {
-            OpenLeaderboard(Leaderboard.Wins);
-            SetTabActive(Leaderboard.Wins);
-        });
     }
 
     private void OnEnable()
@@ -161,15 +126,13 @@ public class LeaderboardView : MonoBehaviour
         foreach (Transform child in _activityContent) Destroy(child.gameObject);
 
         _podium.SetPlayerView();
-        _leaderboardTypeButton.interactable = true;
-
-        _leaderboardCategoryButtons.SetActive(_currentLeaderboard == Leaderboard.Global);
+      
 
         switch (_currentLeaderboard)
         {
             case Leaderboard.Global:
-                if (_currentLeaderboardCategory == LeaderboardCategory.Players)
-                {
+
+
                     StartCoroutine(ServerManager.Instance.GetPlayerLeaderboardFromServer((playerLeaderboard) =>
                     {
                         if (_currentLeaderboardType == LeaderboardType.Wins)
@@ -188,12 +151,17 @@ public class LeaderboardView : MonoBehaviour
 
                                 if (rank < 4)
                                 {
-                                    _podium.InitilializePodium(rank, ranking.Player.Name, ranking.Points, ranking.Player);
+                                    _podium.InitilializePodium(rank, ranking);
                                 }
                                 else
                                 {
                                     LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-                                    item.Initialize(rank, ranking.Player.Name, ranking.Points, avatarVisualData);
+
+                                   
+                                    
+                                    item.Initialize(rank, ranking.Player.Name, ranking.Points, avatarVisualData, ""); // lisätty parametri
+
+
 
                                     // View player profile button
                                     item.OpenProfileButton.onClick.AddListener(() =>
@@ -205,7 +173,7 @@ public class LeaderboardView : MonoBehaviour
                                 rank++;
                             }
                         }
-                        else
+                        else // poista tämä
                         {
                             playerLeaderboard.Sort((a, b) => a.Points.CompareTo(b.Points));
 
@@ -240,13 +208,14 @@ public class LeaderboardView : MonoBehaviour
                             
                         }
                     }));
-                }
-                else // Clans leaderboard
+                
+                break;
+            case Leaderboard.Wins:
                 {
                     StartCoroutine(ServerManager.Instance.GetClanLeaderboardFromServer((clanLeaderboard) =>
                     {
 
-                        _leaderboardTypeButton.interactable = false;
+
                         _podium.SetClanView();
 
                         clanLeaderboard.Sort((a, b) => a.Points.CompareTo(b.Points));
@@ -263,7 +232,7 @@ public class LeaderboardView : MonoBehaviour
                             }
                             else
                             {
-                                LeaderboardClanPointsItem item = Instantiate(_clanPointsItemPrefab, parent: _activityContent).GetComponent<LeaderboardClanPointsItem>();
+                                LeaderboardClanPointsItem item = Instantiate(_clanPointsItemPrefab, parent: _winsContent).GetComponent<LeaderboardClanPointsItem>();
                                 item.Initialize(rank, ranking.Clan.Name, ranking.Points);
 
                                 // Clan heart colors
@@ -284,21 +253,6 @@ public class LeaderboardView : MonoBehaviour
                 }
                 break;
 
-            case Leaderboard.Wins: // Testataan, saadaanko TabWins toimimaan myös listojen osalta
-                
-                StartCoroutine(ServerManager.Instance.GetPlayerLeaderboardFromServer((playerLeaderboard) => // Tiedot serveriltä
-                {
-                    int rank = 1;
-                    foreach (var ranking in playerLeaderboard) // Iteroidaan pelaajat
-                    {
-                        
-                        LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();  // Uusi item 
-                        item.Initialize(rank, ranking.Player.Name, ranking.WonBattles, null); // Alustetaan item (tiedot), tarvitaan null (klaanitiedot)
-
-                        rank++;
-                    }
-                }));
-                break;
 
             case Leaderboard.Clan:
 
@@ -326,7 +280,7 @@ public class LeaderboardView : MonoBehaviour
                             else
                             {
                                 LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-                                item.Initialize(rank, player.Name, player.LeaderBoardWins, avatarVisualData);
+                                item.Initialize(rank, player.Name, player.LeaderBoardWins, avatarVisualData, ""); // lisätty parametri
 
                                 //View player profile button
                                 item.OpenProfileButton.onClick.AddListener(() =>
@@ -352,7 +306,7 @@ public class LeaderboardView : MonoBehaviour
                                 else
                                 {
                                     LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-                                    item.Initialize(rank, "", 0, null);
+                                    item.Initialize(rank, "", 0, null, ""); //lisätty tyhjä parametriksi
                                 }
 
                                 rank++;
@@ -429,7 +383,7 @@ public class LeaderboardView : MonoBehaviour
                         else
                         {
                             LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-                            item.Initialize(i, "", 0, null);
+                            item.Initialize(i, "", 0, null, ""); //lisätty tyhjä parametriksi
 
                             // View player profile button
                             //item.OpenProfileButton.onClick.AddListener(() =>
@@ -472,7 +426,7 @@ public class LeaderboardView : MonoBehaviour
     {
         if (_currentLeaderboardType == LeaderboardType.Wins)
         {
-            LoadActivityView();
+          //  LoadActivityView();
         }
         else
         {
@@ -480,52 +434,15 @@ public class LeaderboardView : MonoBehaviour
         }
     }
 
-    private void LoadActivityView()
-    {
-        SetLeaderboardType(LeaderboardType.Activity);
-        LoadLeaderboard();
-
-        // Activate/deactivate necessary icons
-        foreach (GameObject icon in _winsViewIcons)
-        {
-            icon.SetActive(false);
-        }
-
-        foreach (GameObject icon in _activityViewIcons)
-        {
-            icon.SetActive(true);
-        }
-
-        // Tabline colors
-        Color activityRed = new Color(0.8549f, 0.2352f, 0.3254f);
-        _tablineRibbon.color = activityRed;
-
-        // Tab sprites
-        _globalLeaderboardImage.sprite = _globalActivitySprite;
-        _clanLeaderboardImage.sprite = _clanActivitySprite;
-        _friendsLeaderboardImage.sprite = _friendsActivitySprite;
-
-
-       _winsLeaderboardButton.image.color = activityRed; // Punainen
-
-
-    }
+  
+    
 
     private void LoadWinsView()
     {
         SetLeaderboardType(LeaderboardType.Wins);
         LoadLeaderboard();
 
-        // Activate/deactivate necessary icons
-        foreach (GameObject icon in _activityViewIcons)
-        {
-            icon.SetActive(false);
-        }
-
-        foreach (GameObject icon in _winsViewIcons)
-        {
-            icon.SetActive(true);
-        }
+       
 
         // Tabline colors
         Color winsYellow = new Color(1f, 0.6313f, 0f);
@@ -539,44 +456,6 @@ public class LeaderboardView : MonoBehaviour
        _winsLeaderboardButton.image.color = winsYellow; //Keltainen
 
         
-
-    }
-
-    private void ListClans()
-    {
-        _currentLeaderboardCategory = LeaderboardCategory.Clans;
-        LoadActivityView();
-    }
-
-    private void ListPlayers()
-    {
-        _currentLeaderboardCategory = LeaderboardCategory.Players;
-        LoadActivityView();
-    }
-
-    private void SetTabActive(Leaderboard leaderboard) //DarkeningImagen deaktivointi ja aktivointi valinnan mukaan
-    {
-        _globalLeaderboardDarkeningImage.SetActive(false);
-        _clanLeaderboardDarkeningImage.SetActive(false);
-        _friendsLeaderboardDarkeningImage.SetActive(false);
-        _winsLeaderboardDarkeningImage.SetActive(false);
-
-        switch (leaderboard)
-        {
-            case Leaderboard.Global:
-                _globalLeaderboardDarkeningImage.SetActive(true);
-                break;
-            case Leaderboard.Clan:
-                _clanLeaderboardDarkeningImage.SetActive(true);
-                break;
-            case Leaderboard.Friends:
-                _friendsLeaderboardDarkeningImage.SetActive(true);
-                break;
-            case Leaderboard.Wins:
-                _winsLeaderboardDarkeningImage.SetActive(true);
-                break;
-            
-        }
 
     }
 }

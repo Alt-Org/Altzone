@@ -4,6 +4,7 @@ using MenuUi.Scripts.AvatarEditor;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts;
 
 public class LeaderboardWinsItem : MonoBehaviour
 {
@@ -14,14 +15,26 @@ public class LeaderboardWinsItem : MonoBehaviour
     [SerializeField] private AvatarFaceLoader _avatarFaceLoader;
     [field: SerializeField] public Button OpenProfileButton { get; private set; }
 
-    public void Initialize(int rank, string name, int wins, AvatarVisualData avatarVisualData)
+    private string _clanId; // Lisätty
+
+    public void Initialize(int rank, string name, int wins, AvatarVisualData avatarVisualData, string clanId = null) // lisätty 
     {
         _rankText.text = rank.ToString() + ".";
         _nameText.text = name;
         _winsText.text = wins.ToString();
-        if(avatarVisualData != null)
+
+
+
+       
+
+        if (avatarVisualData != null)
         {
             _avatarFaceLoader.UpdateVisuals(avatarVisualData);
         }
+
+
+       
     }
+
+
 }
