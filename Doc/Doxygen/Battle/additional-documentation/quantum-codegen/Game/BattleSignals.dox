@@ -4,16 +4,6 @@
 /// </summary>
 ///
 /// ## Signals
-/// - <b>signal</b> @ref BattleOnProjectileHitSoulWall (BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)  
-///   @copybrief Quantum.ISignalBattleOnProjectileHitSoulWall
-/// - <b>signal</b> @ref BattleOnProjectileHitArenaBorder (BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity)  
-///   @copybrief Quantum.ISignalBattleOnProjectileHitArenaBorder
-/// - <b>signal</b> @ref BattleOnProjectileHitPlayerCharacter (BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity)  
-///   @copybrief Quantum.ISignalBattleOnProjectileHitPlayerCharacter
-/// - <b>signal</b> @ref BattleOnProjectileHitPlayerShield (BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity)  
-///   @copybrief Quantum.ISignalBattleOnProjectileHitPlayerShield
-/// - <b>signal</b> @ref BattleOnProjectileHitGoal (BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleGoalQComponent* goal, EntityRef goalEntity)  
-///   @copybrief Quantum.ISignalBattleOnProjectileHitGoal
 /// - <b>signal</b> @ref BattleOnDiamondHitPlayer (BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity)   
 ///   @copybrief Quantum.ISignalBattleOnDiamondHitPlayer
 /// - <b>signal</b> @ref BattleOnGameOver (BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)   
@@ -24,51 +14,6 @@
 /// <br/>
 ///
 /// ## Signal Documentation
-///
-/// ---
-///
-/// @anchor BattleOnProjectileHitSoulWall
-/// ### BattleOnProjectileHitSoulWall
-/// @copybrief Quantum.ISignalBattleOnProjectileHitSoulWall
-///
-/// Generated Interface @cref{Quantum,ISignalBattleOnProjectileHitSoulWall}  
-/// Generated Method @cref{Quantum,Frame.FrameSignals.BattleOnProjectileHitSoulWall}
-///
-/// ---
-///
-/// @anchor BattleOnProjectileHitArenaBorder
-/// ### BattleOnProjectileHitArenaBorder
-/// @copybrief Quantum.ISignalBattleOnProjectileHitArenaBorder
-///
-/// Generated Interface @cref{Quantum,ISignalBattleOnProjectileHitArenaBorder}  
-/// Generated Method @cref{Quantum,Frame.FrameSignals.BattleOnProjectileHitArenaBorder}
-///
-/// ---
-///
-/// @anchor BattleOnProjectileHitPlayerCharacter
-/// ### BattleOnProjectileHitPlayerCharacter
-/// @copybrief Quantum.ISignalBattleOnProjectileHitPlayerCharacter
-///
-/// Generated Interface @cref{Quantum,ISignalBattleOnProjectileHitPlayerCharacter}  
-/// Generated Method @cref{Quantum,Frame.FrameSignals.BattleOnProjectileHitPlayerCharacter}
-///
-/// ---
-///
-/// @anchor BattleOnProjectileHitPlayerShield
-/// ### BattleOnProjectileHitPlayerShield
-/// @copybrief Quantum.ISignalBattleOnProjectileHitPlayerShield
-///
-/// Generated Interface @cref{Quantum,ISignalBattleOnProjectileHitPlayerShield}  
-/// Generated Method @cref{Quantum,Frame.FrameSignals.BattleOnProjectileHitPlayerShield}
-///
-/// ---
-///
-/// @anchor BattleOnProjectileHitGoal
-/// ### BattleOnProjectileHitGoal
-/// @copybrief Quantum.ISignalBattleOnProjectileHitGoal
-///
-/// Generated Interface @cref{Quantum,ISignalBattleOnProjectileHitGoal}  
-/// Generated Method @cref{Quantum,Frame.FrameSignals.BattleOnProjectileHitGoal}
 ///
 /// ---
 ///
@@ -93,41 +38,6 @@
 /// Generated Method @cref{Quantum,Frame.FrameSignals.BattleOnGameOver}
 ///
 /// ---
-
-/// @interface Quantum::ISignalBattleOnProjectileHitSoulWall
-/// <summary>
-/// Signal for projectile's and soulwalls's collision.
-/// </summary>
-///
-/// @bigtext{Generated from @ref BattleSignals.qtn}
-
-/// @interface Quantum::ISignalBattleOnProjectileHitArenaBorder
-/// <summary>
-/// Signal for projectile's and arenaborder's collision.
-/// </summary>
-///
-/// @bigtext{Generated from @ref BattleSignals.qtn}
-
-/// @interface Quantum::ISignalBattleOnProjectileHitPlayerCharacter
-/// <summary>
-/// Signal for projectile's and player's collision.
-/// </summary>
-///
-/// @bigtext{Generated from @ref BattleSignals.qtn}
-
-/// @interface Quantum::ISignalBattleOnProjectileHitPlayerShield
-/// <summary>
-/// Signal for projectile's and player shield's collision.
-/// </summary>
-///
-/// @bigtext{Generated from @ref BattleSignals.qtn}
-
-/// @interface Quantum::ISignalBattleOnProjectileHitGoal
-/// <summary>
-/// Signal for projectile's and goal's collision.
-/// </summary>
-///
-/// @bigtext{Generated from @ref BattleSignals.qtn}
 
 /// @interface Quantum::ISignalBattleOnDiamondHitPlayer
 /// <summary>
