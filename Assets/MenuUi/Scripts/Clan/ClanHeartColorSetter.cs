@@ -66,6 +66,20 @@ public class ClanHeartColorSetter : MonoBehaviour
         }
     }
 
+    public void SetHeartColors(ClanLogo logo)
+    {
+        _heartPieceHandlers = _heartContainer.GetComponentsInChildren<HeartPieceColorHandler>();
+
+        int i = 0;
+        foreach (var piece in logo.pieceColors)
+        {
+            if (!ColorUtility.TryParseHtmlString("#" + piece, out Color colour)) colour = Color.white;
+            _heartPieceHandlers[i].Initialize(i, colour);
+
+            i++;
+        }
+    }
+
     public void SetHeartColor(Color color)
     {
         _heartPieceHandlers = _heartContainer.GetComponentsInChildren<HeartPieceColorHandler>();

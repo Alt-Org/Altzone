@@ -19,9 +19,22 @@ public class LeaderboardWinsItem : MonoBehaviour
         _rankText.text = rank.ToString() + ".";
         _nameText.text = name;
         _winsText.text = wins.ToString();
-        if(avatarVisualData != null)
+        if (avatarVisualData != null)
         {
             _avatarFaceLoader.UpdateVisuals(avatarVisualData);
         }
+    }
+
+    public void Initialize(int rank, PlayerLeaderboard ranking)
+    {
+        _rankText.text = rank.ToString() + ".";
+        _nameText.text = ranking.Player.Name;
+        _winsText.text = ranking.WonBattles.ToString();
+        if(ranking.Player != null)
+        {
+            AvatarVisualData avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(ranking.Player);
+            _avatarFaceLoader.UpdateVisuals(avatarVisualData);
+        }
+        if (ranking.Clanlogo != null) _clanHeart.SetHeartColors(ranking.Clanlogo);
     }
 }
