@@ -1,0 +1,28 @@
+/// @file BattlePlayerInput.qtn
+/// <summary>
+/// Contains enum for player's input.
+/// </summary>
+///
+/// ## Generated Enums
+/// - @cref{Quantum,BattleMovementInputType}  
+///   @copybrief Quantum.BattleMovementInputType
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @enum Quantum::BattleMovementInputType
+/// <summary>
+/// Player input enum by used the input and movement logic.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerInput.qtn}
+
+/// @var Quantum::BattleMovementInputType Quantum::BattleMovementInputType::None
+/// <summary>Player does not want to move.</summary>
+///
+/// @var Quantum::BattleMovementInputType Quantum::BattleMovementInputType::Position
+/// <summary>The player wants to move to a position.</summary>
+///
+/// @var Quantum::BattleMovementInputType Quantum::BattleMovementInputType::Direction
+/// <summary>The player wants to move to a direction.</summary>
+
+// ---------------------------------------------------------------------------------------------------- //
