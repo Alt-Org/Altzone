@@ -1123,7 +1123,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3744547743261010657
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1415,7 +1415,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &813063147087540978
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1611,7 +1611,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2031916289162067458
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3260,7 +3260,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4473740208058788575
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3898,7 +3898,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 24}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &4251482413690114710
 MonoBehaviour:
@@ -4843,7 +4843,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4954915179531939759
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7727,7 +7727,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1594980495051132893
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7743,10 +7743,10 @@ RectTransform:
   - {fileID: 743426631242610409}
   m_Father: {fileID: 8015132923383630757}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 443.232, y: -798.16}
-  m_SizeDelta: {x: 886.464, y: 596.31995}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 886.464, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3952290220413239417
 CanvasRenderer:
@@ -7945,7 +7945,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &723059544058149757
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8602,7 +8602,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 24}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2937693708567068038
 MonoBehaviour:
@@ -10738,7 +10738,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1435129252568286534
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10754,10 +10754,10 @@ RectTransform:
   - {fileID: 1051255501836813495}
   m_Father: {fileID: 8015132923383630757}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 884, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 442, y: -947.24}
+  m_SizeDelta: {x: 884, y: 298.15997}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5883040066248288206
 CanvasRenderer:
@@ -14199,7 +14199,7 @@ PrefabInstance:
     - target: {fileID: 275822302785475892, guid: 3a035a942e5180d45947bdb51427e49d,
         type: 3}
       propertyPath: m_Name
-      value: TabWins
+      value: TabGlobal.Clans
       objectReference: {fileID: 0}
     - target: {fileID: 404099143513178285, guid: 3a035a942e5180d45947bdb51427e49d,
         type: 3}
@@ -14330,6 +14330,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4287620506752123014, guid: 3a035a942e5180d45947bdb51427e49d,
+        type: 3}
+      propertyPath: m_Transition
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4287620506752123014, guid: 3a035a942e5180d45947bdb51427e49d,
         type: 3}
@@ -16670,7 +16675,7 @@ PrefabInstance:
     - target: {fileID: 8037485742202877583, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_Name
-      value: TabClan
+      value: TabClans
       objectReference: {fileID: 0}
     - target: {fileID: 8170387392852945704, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -16680,7 +16685,7 @@ PrefabInstance:
     - target: {fileID: 8213419814490648445, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_Name
-      value: TabGlobal
+      value: TabClobal.Players
       objectReference: {fileID: 0}
     - target: {fileID: 8356775703520088113, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}

@@ -131,90 +131,56 @@ public class LeaderboardView : MonoBehaviour
         switch (_currentLeaderboard)
         {
             case Leaderboard.Global:
-
+                {
 
                     StartCoroutine(ServerManager.Instance.GetPlayerLeaderboardFromServer((playerLeaderboard) =>
                     {
-                        if (_currentLeaderboardType == LeaderboardType.Wins)
+
+                        playerLeaderboard.Sort((a, b) => a.WonBattles.CompareTo(b.WonBattles));
+
+                        int rank = 1;
+                        foreach (PlayerLeaderboard ranking in playerLeaderboard)
                         {
-                            playerLeaderboard.Sort((a, b) => a.WonBattles.CompareTo(b.WonBattles));
+                            AvatarVisualData avatarVisualData = null;
 
-                            int rank = 1;
-                            foreach (PlayerLeaderboard ranking in playerLeaderboard)
+                            if (/*ranking.Player.SelectedCharacterId != 201 &&*/ ranking.Player.SelectedCharacterId != 0)
                             {
-                                AvatarVisualData avatarVisualData = null;
-
-                                if (/*ranking.Player.SelectedCharacterId != 201 &&*/ ranking.Player.SelectedCharacterId != 0)
-                                {
-                                    avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(ranking.Player);
-                                }
-
-                                if (rank < 4)
-                                {
-                                    _podium.InitilializePodium(rank, ranking);
-                                }
-                                else
-                                {
-                                    LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-
-                                   
-                                    
-                                    item.Initialize(rank, ranking.Player.Name, ranking.Points, avatarVisualData, ""); // lisätty parametri
-
-
-
-                                    // View player profile button
-                                    item.OpenProfileButton.onClick.AddListener(() =>
-                                    {
-                                        DataCarrier.AddData(DataCarrier.PlayerProfile, ranking.Player);
-                                    });
-                                }
-
-                                rank++;
+                                avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(ranking.Player);
                             }
-                        }
-                        else // poista tämä
-                        {
-                            playerLeaderboard.Sort((a, b) => a.Points.CompareTo(b.Points));
 
-                            int rank = 1;
-                            foreach (PlayerLeaderboard ranking in playerLeaderboard)
+                            if (rank < 4)
                             {
-                                AvatarVisualData avatarVisualData = null;
-
-                                if (/*ranking.Player.SelectedCharacterId != 201 &&*/ ranking.Player.SelectedCharacterId != 0)
-                                {
-                                    avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(ranking.Player);
-                                }
-
-                                if (rank < 4)
-                                {
-                                    _podium.InitilializePodium(rank, ranking.Player.Name, ranking.Points, ranking.Player);
-                                }
-                                else
-                                {
-                                    LeaderboardActivityItem item = Instantiate(_playerActivityItemPrefab, parent: _activityContent).GetComponent<LeaderboardActivityItem>();
-                                    item.Initialize(rank, ranking.Player.Name, ranking.Points, avatarVisualData);
-
-                                    // View player profile button
-                                    item.OpenProfileButton.onClick.AddListener(() =>
-                                    {
-                                        DataCarrier.AddData(DataCarrier.PlayerProfile, ranking.Player);
-                                    });
-                                }
-
-                                rank++;
+                                _podium.InitilializePodium(rank, ranking);
                             }
-                            
+                            else
+                            {
+                                LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
+
+
+
+                                item.Initialize(rank, ranking);
+
+
+
+                                // View player profile button
+                                item.OpenProfileButton.onClick.AddListener(() =>
+                                {
+                                    DataCarrier.AddData(DataCarrier.PlayerProfile, ranking.Player);
+                                });
+                            }
+
+                            rank++;
                         }
+
                     }));
+                }
                 
                 break;
+
             case Leaderboard.Wins:
                 {
                     StartCoroutine(ServerManager.Instance.GetClanLeaderboardFromServer((clanLeaderboard) =>
                     {
-
 
                         _podium.SetClanView();
 
@@ -434,8 +400,6 @@ public class LeaderboardView : MonoBehaviour
         }
     }
 
-  
-    
 
     private void LoadWinsView()
     {
@@ -448,12 +412,12 @@ public class LeaderboardView : MonoBehaviour
         Color winsYellow = new Color(1f, 0.6313f, 0f);
         _tablineRibbon.color = winsYellow;
 
-        // Tab sprites
+        /*/ Tab sprites
         _globalLeaderboardImage.sprite = _globalWinsSprite;
         _clanLeaderboardImage.sprite = _clanWinsSprite;
         _friendsLeaderboardImage.sprite = _friendsWinsSprite;
 
-       _winsLeaderboardButton.image.color = winsYellow; //Keltainen
+       _winsLeaderboardButton.image.color = winsYellow; */
 
         
 
