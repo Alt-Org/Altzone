@@ -130,7 +130,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             }
 
             // Setting _isSelected if _customCharacter is one of the characters the player has selected. Checking also for character id for test characters 
-            _isSelected = _playerData.SelectedCharacterIds.Contains(_customCharacter.ServerID) || _playerData.SelectedTestCharacterIds.Contains((int)_customCharacter.Id);
+            _isSelected = _playerData.SelectedCharacterIds.FirstOrDefault(c=> !c.IsTestCharacter ? c.ServerID == _customCharacter.ServerID : c.CharacterID == _customCharacter.Id) != null;
         }
 
 
@@ -337,7 +337,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             }
             else
             {
-                PopupSignalBus.OnChangePopupInfoSignal("Ei tarpeeksi kyyneliä.");
+                PopupSignalBus.OnChangePopupInfoSignal("Ei tarpeeksi kyyneliÃ¤.");
                 return false;
             }
         }
@@ -489,11 +489,11 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             {
                 if (!CheckCombinedLevelCap())
                 {
-                    PopupSignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, taitojen summa on enintään {CustomCharacter.STATMAXCOMBINED}.");
+                    PopupSignalBus.OnChangePopupInfoSignal($"Et voi pÃ¤ivittÃ¤Ã¤ taitoa, taitojen summa on enintÃ¤Ã¤n {CustomCharacter.STATMAXCOMBINED}.");
                 }
                 else if (!CheckStatLevelCap(statType))
                 {
-                    PopupSignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, maksimitaso on {CustomCharacter.STATMAXLEVEL}.");
+                    PopupSignalBus.OnChangePopupInfoSignal($"Et voi pÃ¤ivittÃ¤Ã¤ taitoa, maksimitaso on {CustomCharacter.STATMAXLEVEL}.");
                 }
             }
 
@@ -561,7 +561,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             if (showPopupMessages && !(GetStat(statType) > GetBaseStat(statType)))
             {
-                PopupSignalBus.OnChangePopupInfoSignal($"Et voi vähentää pohjataitoa.");
+                PopupSignalBus.OnChangePopupInfoSignal($"Et voi vÃ¤hentÃ¤Ã¤ pohjataitoa.");
             }
 
             return GetStat(statType) > CustomCharacter.STATMINLEVEL && GetStat(statType) > GetBaseStat(statType);

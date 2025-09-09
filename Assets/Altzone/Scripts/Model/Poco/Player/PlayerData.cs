@@ -130,7 +130,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             }
         }
 
-        public PlayerData(string id, string clanId, int currentCustomCharacterId, string[]currentBattleCharacterIds, string name, int backpackCapacity, string uniqueIdentifier)
+        public PlayerData(string id, string clanId, int currentCustomCharacterId, string[]currentBattleCharacterIds, string name, int backpackCapacity, string uniqueIdentifier, List<CustomCharacter> characters)
         {
             Assert.IsTrue(id.IsPrimaryKey());
             Assert.IsTrue(clanId.IsNullOEmptyOrNonWhiteSpace());
@@ -141,7 +141,8 @@ namespace Altzone.Scripts.Model.Poco.Player
             Id = id;
             ClanId = clanId ?? string.Empty;
             SelectedCharacterId = currentCustomCharacterId;
-            BuildCharacterList(currentBattleCharacterIds);
+            BuildCharacterLists(characters);
+            BuildSelectedCharacterList(currentBattleCharacterIds);
             Name = name;
             BackpackCapacity = backpackCapacity;
             UniqueIdentifier = uniqueIdentifier;
@@ -159,7 +160,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             ClanId = player.clan_id ?? string.Empty;
             SelectedCharacterId = (int)(player.currentAvatarId == null ? 0 : player.currentAvatarId);
             string noCharacter = ((int)CharacterID.None).ToString();
-            if (!limited) BuildCharacterList(player.battleCharacter_ids);
+            if (!limited) BuildSelectedCharacterList(player.battleCharacter_ids);
             Name = player.name;
             if (!limited) BackpackCapacity = player.backpackCapacity;
             UniqueIdentifier = player.uniqueIdentifier;
@@ -182,7 +183,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             ClanId = player.clan_id ?? string.Empty;
             SelectedCharacterId = (int)(player.currentAvatarId == null ? 0 : player.currentAvatarId);
             string noCharacter = ((int)CharacterID.None).ToString();
-            BuildCharacterList(player.battleCharacter_ids);
+            BuildSelectedCharacterList(player.battleCharacter_ids);
             Name = player.name;
             BackpackCapacity = player.backpackCapacity;
             UniqueIdentifier = player.uniqueIdentifier;
@@ -271,7 +272,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             return character.CharacterBase != null;
         }
 
-        private void BuildCharacterList(string[] server_ids)
+        private void BuildSelectedCharacterList(string[] server_ids)
         {
             for(int i=0; i < 3; i++)
             {
@@ -279,8 +280,12 @@ namespace Altzone.Scripts.Model.Poco.Player
                 if(server_ids.Length > i) serverid = server_ids[i];
 
                 CustomCharacter character = _characterList.FirstOrDefault(c => c.ServerID == serverid);
-                if (i < SelectedCharacterIds.Length) SelectedCharacterIds[i].SetData(serverid, character.Id);
-                else SelectedCharacterIds.Append(new(serverid, character.Id));
+                if (i < SelectedCharacterIds.Length)
+                {
+                    if (SelectedCharacterIds[i] != null) SelectedCharacterIds[i].SetData(serverid, character == null ? CharacterID.None :character.Id);
+                    else SelectedCharacterIds[i] = new(serverid, character == null ? CharacterID.None : character.Id);
+                }
+                else SelectedCharacterIds.Append(new(serverid, character == null ? CharacterID.None : character.Id));
             }
         }
 
