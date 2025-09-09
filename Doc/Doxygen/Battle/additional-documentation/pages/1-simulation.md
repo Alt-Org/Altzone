@@ -105,6 +105,30 @@ In %Battle Singletons have QSingleton suffix. [[Naming]](#index-naming)
 
 <br/>
 
+## Enums {#page-simulation-enums}
+
+|  Namespace        | Enum                                               | Description                                            |
+| :---------------- | :------------------------------------------------- | :----------------------------------------------------- |
+| @crefd{Quantum}   | @cref{Quantum,BattleCollisionTriggerType}          | @copybrief Quantum.BattleCollisionTriggerType          |
+| @crefd{Quantum}   | @cref{Quantum,BattleEmotionState}                  | @copybrief Quantum.BattleEmotionState                  |
+| @crefd{Quantum}   | @cref{Quantum,BattleGameState}                     | @copybrief Quantum.BattleGameState                     |
+| @crefd{Quantum}   | @cref{Quantum,BattleLightrayColor}                 | @copybrief Quantum.BattleLightrayColor                 |
+| @crefd{Quantum}   | @cref{Quantum,BattleLightraySize}                  | @copybrief Quantum.BattleLightraySize                  |
+| @crefd{Quantum}   | @cref{Quantum,BattleMovementInputType}             | @copybrief Quantum.BattleMovementInputType             |
+| @crefd{Quantum}   | @cref{Quantum,BattlePlayerCharacterClass}          | @copybrief Quantum.BattlePlayerCharacterClass          |
+| @crefd{Quantum}   | @cref{Quantum,BattlePlayerCharacterState}          | @copybrief Quantum.BattlePlayerCharacterState          |
+| @crefd{Quantum}   | @cref{Quantum,BattlePlayerCollisionType}           | @copybrief Quantum.BattlePlayerCollisionType           |
+| @crefd{Quantum}   | @cref{Quantum,BattlePlayerHitboxType}              | @copybrief Quantum.BattlePlayerHitboxType              |
+| @crefd{Quantum}   | @cref{Quantum,BattlePlayerPlayState}               | @copybrief Quantum.BattlePlayerPlayState               |
+| @crefd{Quantum}   | @cref{Quantum,BattlePlayerSlot}                    | @copybrief Quantum.BattlePlayerSlot                    |
+| @crefd{Quantum}   | @cref{Quantum,BattleProjectileCollisionFlags}      | @copybrief Quantum.BattleProjectileCollisionFlags      |
+| @crefd{Quantum}   | @cref{Quantum,BattleSoulWallRow}                   | @copybrief Quantum.BattleSoulWallRow                   |
+| @crefd{Quantum}   | @cref{Quantum,BattleSoundFX}                       | @copybrief Quantum.BattleSoundFX                       |
+| @crefd{Quantum}   | @cref{Quantum,BattleTeamNumber}                    | @copybrief Quantum.BattleTeamNumber                    |
+| @crefd{Quantum}   | @cref{Quantum,InputButtons}                        | @copybrief Quantum.InputButtons                        |
+
+<br/>
+
 ## Signals {#page-simulation-signals}
 
 [Quantum Signals🡵] are C# interfaces that are generated from qtn files.  
