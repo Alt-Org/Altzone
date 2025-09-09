@@ -93,7 +93,7 @@ The [Doxygen🡵] configurations used in %Battle are
 
 ---
 
-## External Hyperlink format
+## External Hyperlink format {#page-external-hyperlink-format}
 
 Markdown
 ```
@@ -115,10 +115,134 @@ In source code @@u-exlink should be used instead of "🡵"
 
 <br/>
 
+## Doxygen custom commands {#page-doxygen-custom-commands}
+Doxygen [Custom commands🡵] that can be used during documentation are defined in @ref Altzone/Doc/Doxygen/Battle/setup/Doxyfile under the ALIASES section. These are defined by us to add useful shorthands. All added custom commands should be listed on this page.
+
+<br/>
+
+### Reference links
+These [Custom commands🡵] can be used to make linking to directories and code symbols easier.  
+
+List of current aliases  
+
+**Directory reference / link aliases**
+- **dirref**  
+  Note where the "/" is replaced with a ","
+  - Basic reference  
+    <span class="tt">@@dirref{very/long/example/path}</span>  
+    Creates a link to the specified directory.  
+    Formatted as such: "very/long/example/path"
+  - Short reference  
+    <span class="tt">@@dirref{very/long,example/path}</span>   
+    Creates a link to the specified directory. Shortens the resulting text.  
+    Formatted as such: "example/path"
+  - Middle truncated reference  
+    <span class="tt">@@dirref{very,long/example,path}</span>  
+    Creates a link to the specified directory. Truncates the resulting text.  
+    Formatted as such: "very/../path"
+- **dirrefr**  
+  Note where the "/" is replaced with a ","
+  - Relative reference  
+    <span class="tt">@@dirrefr{very/long,example/path}</span>  
+    Creates a link to the specified directory. Used when referencing another directory in the same parent directory.  
+    Formatted as such: "../path"
+- **dirlink**
+  -  Directory link  
+    <span class="tt">@@dirlink{very/long/example/path:link text}</span>  
+    Creates a link to the specified directory with arbitrary text.  
+    Formatted as such: "link text"
+
+**Code symbol aliases**
+- **cref**  
+  Note where the "." is replaced with a ","
+  - Basic reference 
+    <span class="tt">@@cref{namespace.example.name}</span>  
+    Creates a link to the specified code symbol.  
+    Formatted as such: "namespace.example.name"
+  - Short reference  
+    <span class="tt">@@cref{namespace.example,name}</span>  
+    Creates a link to the specified code symbol. Shortens the resulting text.  
+    Formatted as such: "name"
+- **crefd**  
+  Note where the "." is replaced with a ","
+  - Basic reference with dot  
+    <span class="tt">@@crefd{namespace.example.name}</span>  
+    Creates a link to the specified code symbol. Adds a dot to the end of the resulting text.  
+    Formatted as such: "namespace.example.name."
+  - Short reference with dot  
+    <span class="tt">@@crefd{namespace.example,name}</span>  
+    Creates a link to the specified code symbol. Shortens the resulting text. Adds a dot to the end of the resulting text.  
+    Formatted as such: "name."
+
+<br/>
+
+### Documentation links
+These [Custom commands🡵] can be used for simplified linking to other sections of documentation.  
+
+List of current documentation link aliases  
+
+| Alias             | Text         | documentation index      |
+| :---------------- | :----------- | :----------------------- | 
+| @@systemslink     | Systems      | #page-simulation-systems |
+| @@uihandlerlink   | UI Handler   | #page-view-uihandler     |
+| @@uihandlerslink  | UI Handlers  | #page-view-uihandler     |
+| @@uicomponentlink | UI Component | #page-view-uicomponent   |
+
+They are defined as such:
+```
+(name)="[(Visible text)]{(documentation section index)}" \
+
+example:
+uihandlerlink="[UI Handler](#page-view-uihandler)" \
+```
+
+<br/>
+
+### Extra formatting
+These [Custom commands🡵] allow for easier formatting of our text.
+
+List of current formatting aliases
+
+| Alias                   | Description        |
+| :---------------------- | :----------------- | 
+| @@bigtext{example text} | Makes the text big |
+
+<br/>
+
+### Circumventing unicode characters
+These [Custom commands🡵] are useful in avoiding the use of unicode characters in source code.  
+
+Usage/syntax:  
+u stands for unicode.  
+(name) is the name of the unicode character as specified by us usually based on what the symbol represents in our documentation.
+```
+@u-(name)
+```
+
+List of current unicode aliases
+
+| Alias      | Character | Description          |
+| :--------- | :-------- | :------------------- | 
+| @@u-exlink | 🡵        | external link symbol |
+
+They are defined as such:
+```
+u-(name)="(unicode character)"
+
+example:
+u-exlink="🡵"
+```
+
+<br/>
+
 ---
 
-## Documenting Source code
-All C# files, classes and methods should be documented with clear and concise information. Different sections of the documentation for each should be separated by an empty line.
+## Documenting Source code {#page-documenting-source-code}
+All aspects of source code, such as files, methods and variables, should be documented with clear and concise information. Different sections of the documentation for each should be separated by an empty line.  
+Unicode characters can not be used inside of source code, even in documentation comments.  
+
+Refer to the [Documenting Quantum systems](#page-documenting-quantum-systems) section for additional guidelines if you are documenting a %Quantum system.  
+Refer to the [Documenting Unity/View](#page-documenting-unity-view) section for additional guidelines if you are documenting Unity/View code.
 
 <br/>
 
@@ -166,17 +290,40 @@ When documenting any method, the different sections of the comment such as the s
 
 <br/>
 
+### Documenting public getters
+The format used for documenting public getters for private variables. Using both summary and value tags so that in doxygen it's clear that it's a getter for another variable, and in code it's clear what it's value is.
+
+```
+/// <summary>Public getter for #_rectTransform.</summary>
+/// <value>Reference to the %Battle Ui element's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/RectTransform.html">RectTransform@u-exlink</a> component.</value>
+public RectTransform RectTransformComponent => _rectTransform;
+```
+
+<br/>
+
+### Documenting variables
+Variables should be documented with a summary.
+
+```
+/// <summary>Reference to the %Battle Ui element's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/RectTransform.html">RectTransform@u-exlink</a> component.</summary>
+private RectTransform _rectTransform;
+```
+
+<br/>
+
 ---
 
-## Quantum Systems
-In the examples below parameter documentation has been ommitted.
+## Documenting Quantum Systems {#page-documenting-quantum-systems}
+The base [Documenting source code](#page-documenting-source-code) guidelines apply to %Quantum system documentation. Below are additional guidelines for specifically formatting %Quantum system documentation.  
+In the examples parameter documentation has been ommitted.
 
 <br/>
 
 ### Quantum System Class brief/summary format
-The format used for documenting System and SystemSignalsOnly classes. Must contain the header with the correct system name and link to quantum documentation.
+The format used for documenting System and SystemSignalsOnly classes. Must contain the header with the correct system name and link to %Quantum documentation.
 
 System
+
 ```
 /// <summary>
 /// <span class="brief-h">%Diamond <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
@@ -186,6 +333,7 @@ public unsafe class BattleDiamondQSystem : SystemMainThreadFilter<BattleDiamondQ
 ```
 
 SystemSignalsOnly
+
 ```
 /// <summary>
 /// <span class="brief-h">%Goal <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum SystemSignalsOnly@u-exlink</a> @systemslink</span><br/>
@@ -197,7 +345,8 @@ public unsafe class BattleGoalQSystem : SystemSignalsOnly, ISignalBattleOnProjec
 <br/>
 
 ### Quantum System OnInit method brief/summary format
-The format used for documenting Quantum OnInit methods. Must contain the header with the link to quantum documentation. Must also contain the appropriate warning message.
+The format used for documenting %Quantum OnInit methods. Must contain the header with the link to %Quantum documentation. Must also contain the appropriate warning message.
+
 ```
 /// <summary>
 /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System OnInit method</a> gets called when the system is initialized.</span><br/>
@@ -211,7 +360,8 @@ public override void OnInit(Frame f)
 <br/>
 
 ### Quantum System Update method brief/summary format
-The format used for documenting Quantum Update methods. Must contain the header with the link to quantum documentation. Must also contain the appropriate warning message.
+The format used for documenting %Quantum Update methods. Must contain the header with the link to %Quantum documentation. Must also contain the appropriate warning message.
+
 ```
 /// <summary>
 /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method</a> gets called every frame.</span><br/>
@@ -225,7 +375,8 @@ public override void Update(Frame f)
 <br/>
 
 ### Quantum System Signal method brief/summary format
-The format used for documenting Quantum Signal methods. Must contain the header with the link to quantum documentation and a reference to the signal the method responds to. Must also contain the appropriate warning message.
+The format used for documenting %Quantum Signal methods. Must contain the header with the link to %Quantum documentation and a reference to the signal the method responds to. Must also contain the appropriate warning message.
+
 ```
 /// <summary>
 /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Signal method@u-exlink</a>
@@ -242,7 +393,10 @@ public void BattleOnProjectileHitPlayerShield(Frame f, BattleProjectileQComponen
 
 ---
 
-## Unity
+## Documenting Unity/View {#page-documenting-unity-view}
+The base [Documenting source code](#page-documenting-source-code) guidelines apply to Unity/View documentation. Below are additional guidelines for specifically formatting Unity/View documentation.
+
+<br/>
 
 ### Documenting SerializeFields
 The format used for grouping SerializeFields. Example provided also has SerializeField summary documentation.
@@ -264,13 +418,7 @@ The format used for grouping SerializeFields. Example provided also has Serializ
 /// @} // End of the grouped SerializeFields
 ```
 
-### Documenting public getters
-Format used for documenting public getters for private variables. Using both summary and value tags so that in doxygen it's clear that it's a getter for another variable, and in code it's clear what it's value is.
-```
-/// <summary>Public getter for #_rectTransform.</summary>
-/// <value>Reference to the %Battle Ui element's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/RectTransform.html">RectTransform@u-exlink</a> component.</value>
-public RectTransform RectTransformComponent => _rectTransform;
-```
+<br/>
 
 ### UI Handler class method brief/summary format
 ```
@@ -282,7 +430,7 @@ public RectTransform RectTransformComponent => _rectTransform;
 
 ---
 
-## Prefabs and Entity Prototypes
+## Prefabs and Entity Prototypes {#page-prefabs-and-entity-prototypes}
 
 ### Prefab summary format
 
@@ -425,4 +573,5 @@ On the example above, Top and Bottom have been placed inside curly braces on sha
 Note: There is space between the closing curly braces and rest of the names, because doxygen doesn't recognize asterisks after the brace without it. On the original GameObject name there is no space.
 
 [Doxygen🡵]:  https://www.doxygen.nl/index.html
+[Custom commands🡵]: https://www.doxygen.nl/manual/custcmd.html
 [Graphviz🡵]: https://www.doxygen.nl/manual/config.html#cfg_have_dot
