@@ -43,7 +43,6 @@ namespace Altzone.Scripts.Model.Poco.Player
         [Unique] public string Name;
 
         private List<CustomCharacter> _characterList;
-        public List<CustomCharacter> TestCharacterList;
 
         public int DiamondSpeed = 1000;
         public int DiamondCharacterSize = 1000;
@@ -215,6 +214,13 @@ namespace Altzone.Scripts.Model.Poco.Player
             ReadOnlyCollection<BaseCharacter> baseCharacters = null;
             store.GetAllBaseCharacterYield(result => baseCharacters = result);
 
+            if (CharacterSpecConfig.Instance.AllowTestCharacters)
+            {
+                List<CustomCharacter> testCharacters = null;
+                store.GetAllDefaultCharacterYield(characters => testCharacters = characters.Where(c => c.IsTestCharacter()).ToList());
+                if (testCharacters != null && testCharacters.Count != 0) customCharacters = customCharacters.Concat(testCharacters).ToList();
+            }
+
             // Checking base character is set for custom characters
             foreach (CustomCharacter character in customCharacters)
             {
@@ -225,28 +231,6 @@ namespace Altzone.Scripts.Model.Poco.Player
             _characterList = newCustomCharacters;
             Debug.LogWarning(_characterList.Count + " : " + _characterList[0].ServerID);
 
-            if (CharacterSpecConfig.Instance.AllowTestCharacters)
-            {
-                // If test character list wasn't serialized getting them from data store
-                if (TestCharacterList == null || TestCharacterList.Count == 0)
-                {
-                    // Getting test characters from data store
-                    List<CustomCharacter> testCharacters = null;
-                    store.GetAllDefaultCharacterYield(characters => testCharacters = characters.Where(c => c.IsTestCharacter()).ToList());
-                    if (testCharacters != null && testCharacters.Count != 0) TestCharacterList = testCharacters;
-                }
-
-                // Checking base characters are set
-                List<CustomCharacter> newTestCharacters = new();
-
-                foreach (CustomCharacter character in TestCharacterList)
-                {
-                    if (SetBaseCharacter(baseCharacters, character)) newTestCharacters.Add(character);
-                }
-
-                TestCharacterList = newTestCharacters;
-            }
-
             Patch();
         }
 
@@ -254,7 +238,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         internal void Patch()
         {
             List<CustomCharacter> charList = _characterList;
-            if (CharacterSpecConfig.Instance.AllowTestCharacters && TestCharacterList != null && TestCharacterList.Count != 0) charList = charList.Concat(TestCharacterList).ToList();
+            //if (CharacterSpecConfig.Instance.AllowTestCharacters && TestCharacterList != null && TestCharacterList.Count != 0) charList = charList.Concat(TestCharacterList).ToList();
             CustomCharacters = new ReadOnlyCollection<CustomCharacter>(charList).ToList();
         }
 
