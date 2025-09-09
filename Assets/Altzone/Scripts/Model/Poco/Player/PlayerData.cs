@@ -39,8 +39,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         [PrimaryKey] public string Id;
         [ForeignKey(nameof(ClanData)), Optional] public string ClanId;
         [ForeignKey(nameof(CustomCharacter)), Optional] public int SelectedCharacterId;
-        [ForeignKey(nameof(CustomCharacter)), Optional] public string[] SelectedCharacterIds = new string[3] { ((int)CharacterID.None).ToString(), ((int)CharacterID.None).ToString(), ((int)CharacterID.None).ToString() };
-        [ForeignKey(nameof(CustomCharacter)), Optional] public int[] SelectedTestCharacterIds;
+        [ForeignKey(nameof(CustomCharacter)), Optional] public CustomCharacterListObject[] SelectedCharacterIds = new CustomCharacterListObject[3] { new(Id: CharacterID.None), new(Id: CharacterID.None), new(Id: CharacterID.None) };
         [Unique] public string Name;
 
         private List<CustomCharacter> _characterList;
@@ -91,9 +90,9 @@ namespace Altzone.Scripts.Model.Poco.Player
                 List<CustomCharacter> list = new();
                 for (int i = 0; i < SelectedCharacterIds.Length; i++)
                 {
-                    string serverId = SelectedCharacterIds[i];
-                    CharacterID testCharId = SelectedTestCharacterIds == null || SelectedTestCharacterIds.Length <= i ? CharacterID.None : (CharacterID)SelectedTestCharacterIds[i];
-                    bool isTestCharacter = testCharId != CharacterID.None;
+                    string serverId = SelectedCharacterIds[i].ServerID;
+                    CharacterID lId = SelectedCharacterIds[i].CharacterID;
+                    bool isTestCharacter = SelectedCharacterIds[i].IsTestCharacter;
 
                     if (string.IsNullOrEmpty(serverId) && !isTestCharacter)
                     {
@@ -101,7 +100,7 @@ namespace Altzone.Scripts.Model.Poco.Player
                         continue;
                     }
 
-                    CustomCharacter character = isTestCharacter ? CustomCharacters.FirstOrDefault(x => x.Id == testCharId) : CustomCharacters.FirstOrDefault(x => x.ServerID == serverId);
+                    CustomCharacter character = isTestCharacter ? CustomCharacters.FirstOrDefault(x => x.Id == lId) : CustomCharacters.FirstOrDefault(x => x.ServerID == serverId);
                     if(character == null) continue;
                     list.Add(character);
                 }
@@ -131,7 +130,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             }
         }
 
-        public PlayerData(string id, string clanId, int currentCustomCharacterId, string[]currentBattleCharacterIds, int[] currentTestCharacterIds, string name, int backpackCapacity, string uniqueIdentifier)
+        public PlayerData(string id, string clanId, int currentCustomCharacterId, string[]currentBattleCharacterIds, string name, int backpackCapacity, string uniqueIdentifier)
         {
             Assert.IsTrue(id.IsPrimaryKey());
             Assert.IsTrue(clanId.IsNullOEmptyOrNonWhiteSpace());
@@ -142,9 +141,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             Id = id;
             ClanId = clanId ?? string.Empty;
             SelectedCharacterId = currentCustomCharacterId;
-            SelectedCharacterIds = currentBattleCharacterIds;
-            if (currentTestCharacterIds == null) SetTestCharacterIds();
-            else SelectedTestCharacterIds = currentTestCharacterIds;
+            BuildCharacterList(currentBattleCharacterIds);
             Name = name;
             BackpackCapacity = backpackCapacity;
             UniqueIdentifier = uniqueIdentifier;
@@ -162,7 +159,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             ClanId = player.clan_id ?? string.Empty;
             SelectedCharacterId = (int)(player.currentAvatarId == null ? 0 : player.currentAvatarId);
             string noCharacter = ((int)CharacterID.None).ToString();
-            if (!limited)SelectedCharacterIds = (player?.battleCharacter_ids == null || player.battleCharacter_ids.Length < 3) ? new string[3] { noCharacter, noCharacter, noCharacter } : player.battleCharacter_ids;
+            if (!limited) BuildCharacterList(player.battleCharacter_ids);
             Name = player.name;
             if (!limited) BackpackCapacity = player.backpackCapacity;
             UniqueIdentifier = player.uniqueIdentifier;
@@ -171,8 +168,6 @@ namespace Altzone.Scripts.Model.Poco.Player
             Task = player.DailyTask != null ? new(player.DailyTask) : null;
             AvatarData = player.avatar != null ? new(player.name, player.avatar) : null;
             if (!limited) Task = player.DailyTask != null ? new(player.DailyTask): null;
-
-            if (CharacterSpecConfig.Instance.AllowTestCharacters) SetTestCharacterIds();
         }
 
         public void UpdatePlayerData(ServerPlayer player)
@@ -187,7 +182,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             ClanId = player.clan_id ?? string.Empty;
             SelectedCharacterId = (int)(player.currentAvatarId == null ? 0 : player.currentAvatarId);
             string noCharacter = ((int)CharacterID.None).ToString();
-            SelectedCharacterIds = player?.battleCharacter_ids == null || player.battleCharacter_ids.Length < 3 ? new string[3] { noCharacter, noCharacter, noCharacter } : player.battleCharacter_ids;
+            BuildCharacterList(player.battleCharacter_ids);
             Name = player.name;
             BackpackCapacity = player.backpackCapacity;
             UniqueIdentifier = player.uniqueIdentifier;
@@ -197,8 +192,6 @@ namespace Altzone.Scripts.Model.Poco.Player
             AvatarData = player.avatar !=null ? new(player.name ,player.avatar): null;
             if (_playerDataEmotionList == null || _playerDataEmotionList.Count == 0) playerDataEmotionList = new List<Emotion> { Emotion.Blank, Emotion.Love, Emotion.Playful, Emotion.Joy, Emotion.Sorrow, Emotion.Anger, Emotion.Blank };
             if (daysBetweenInput == null) daysBetweenInput = "0";
-
-            if (CharacterSpecConfig.Instance.AllowTestCharacters) SetTestCharacterIds();
         }
 
         public void UpdateCustomCharacter(CustomCharacter character)
@@ -278,32 +271,24 @@ namespace Altzone.Scripts.Model.Poco.Player
             return character.CharacterBase != null;
         }
 
-
-        private void SetTestCharacterIds()
+        private void BuildCharacterList(string[] server_ids)
         {
-            if (!CharacterSpecConfig.Instance.AllowTestCharacters) return;
-
-            // Getting test characters from data store and setting to SelectedTestCharacterIds
-            DataStore store = Storefront.Get();
-            store.GetPlayerData(UniqueIdentifier, playerData =>
+            for(int i=0; i < 3; i++)
             {
-                if (playerData != null && playerData.SelectedTestCharacterIds != null && playerData.SelectedTestCharacterIds.Length > 0)
-                {
-                    SelectedTestCharacterIds = playerData.SelectedTestCharacterIds;
-                }
-                else
-                {
-                    SelectedTestCharacterIds = new int[3] { (int)CharacterID.None, (int)CharacterID.None, (int)CharacterID.None };
-                }
-            });
-        }
+                string serverid = null;
+                if(server_ids.Length > i) serverid = server_ids[i];
 
+                CustomCharacter character = _characterList.FirstOrDefault(c => c.ServerID == serverid);
+                if (i < SelectedCharacterIds.Length) SelectedCharacterIds[i].SetData(serverid, character.Id);
+                else SelectedCharacterIds.Append(new(serverid, character.Id));
+            }
+        }
 
         public override string ToString()
         {
             return
                 $"{nameof(Id)}: {Id}, {nameof(ClanId)}: {ClanId}, {nameof(SelectedCharacterId)}: {SelectedCharacterId}," +
-                $"{nameof(SelectedCharacterIds)}: {string.Join(",", SelectedCharacterIds)}, { nameof(Name)}: {Name}, {nameof(BackpackCapacity)}: {BackpackCapacity}, {nameof(UniqueIdentifier)}: {UniqueIdentifier}";
+                $"{nameof(SelectedCharacterIds)}: {string.Join<CustomCharacterListObject>(",", SelectedCharacterIds)}, { nameof(Name)}: {Name}, {nameof(BackpackCapacity)}: {BackpackCapacity}, {nameof(UniqueIdentifier)}: {UniqueIdentifier}";
         }
     }
 }
