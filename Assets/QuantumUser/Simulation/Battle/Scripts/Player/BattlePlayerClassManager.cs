@@ -16,7 +16,8 @@ namespace Battle.QSimulation.Player
 {
     /// <summary>
     /// An extended base abstact class for player classes.<br/>
-    /// Contains a method for retrieving the ClassData component attached to the player character entity.
+    /// Contains a method for retrieving the class data component attached to the player character entity.<br/>
+    /// Class scripts should extend this class if they make use of a class data component.
     /// </summary>
     public abstract unsafe class BattlePlayerClassBase<T> : BattlePlayerClassBase where T : unmanaged, IComponent
     {
@@ -39,7 +40,8 @@ namespace Battle.QSimulation.Player
 
     /// <summary>
     /// The base abstract class for player classes.<br/>
-    /// Contains a reference to the associated BattlePlayerCharacterClass enum and virtual methods for the different events the class can respond to.
+    /// Contains a reference to the associated BattlePlayerCharacterClass enum and virtual methods for the different events the class can respond to.<br/>
+    /// Class scripts should extend this class if they do not make use of a class data component.
     /// </summary>
     public abstract unsafe class BattlePlayerClassBase
     {
@@ -50,7 +52,7 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Virtual OnCreate method that can be implemented.<br/>
-        /// Called by the BattlePlayerClassManager public OnCreate method.
+        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnCreate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnCreate</see> method.
         /// </summary>
         /// 
         /// <param name="f">Current simulation frame.</param>
@@ -61,7 +63,7 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Virtual OnSpawn method that can be implemented.<br/>
-        /// Called by the BattlePlayerClassManager public OnSpawn method.
+        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnSpawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnSpawn</see> method.
         /// </summary>
         /// 
         /// <param name="f">Current simulation frame.</param>
@@ -72,7 +74,7 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Virtual OnDespawn method that can be implemented.<br/>
-        /// Called by the BattlePlayerClassManager public OnDespawn method. 
+        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnDespawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnDespawn</see> method. 
         /// </summary>
         /// 
         /// <param name="f">Current simulation frame.</param>
@@ -83,7 +85,7 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Virtual OnProjectileHitPlayerHitbox method that can be implemented.<br/>
-        /// Called by the BattlePlayerClassManager public OnProjectileHitPlayerHitbox method. 
+        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnProjectileHitPlayerHitbox(Frame, BattleProjectileQComponent*, EntityRef, BattlePlayerHitboxQComponent*, EntityRef)">OnProjectileHitPlayerHitbox</see> method. 
         /// </summary>
         /// 
         /// <param name="f">Current simulation frame.</param>
@@ -95,7 +97,7 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Virtual OnProjectileHitPlayerShield method that can be implemented.<br/>
-        /// Called by the BattlePlayerClassManager public OnProjectileHitPlayerShield method.  
+        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnProjectileHitPlayerShield(Frame, BattleProjectileQComponent*, EntityRef, BattlePlayerHitboxQComponent*, EntityRef)">OnProjectileHitPlayerShield</see> method.  
         /// </summary>
         /// 
         /// <param name="f">Current simulation frame.</param>
@@ -107,7 +109,7 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Virtual OnUpdate method that can be implemented.<br/>
-        /// Called by the BattlePlayerClassManager public OnUpdate method.  
+        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnUpdate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnUpdate</see> method.  
         /// </summary>
         /// 
         /// <param name="f">Current simulation frame.</param>
@@ -283,7 +285,7 @@ namespace Battle.QSimulation.Player
             playerClass.OnUpdate(f, playerHandle, playerData, playerEntity);
         }
 
-        /// <value>Constant for an error class index.</value>
+        /// <value>Constant for a class index error.</value>
         private const int ClassIndexError = -1;
         /// <value>Constant for Desensitizer class index.</value>
         private const int ClassIndexDesensitizer = 0;
