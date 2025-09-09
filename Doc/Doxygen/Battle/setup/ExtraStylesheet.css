@@ -14,6 +14,12 @@ html.light-mode *:not(.paramname)>em {
   font-weight: bold;
 }
 
+.tt {
+   background-color: var(--fragment-background-color);
+   padding: 1px 5px;
+   border: 1px solid var(--fragment-border-color);
+}
+
 .groupText > p {
   font-style: normal;
 }
