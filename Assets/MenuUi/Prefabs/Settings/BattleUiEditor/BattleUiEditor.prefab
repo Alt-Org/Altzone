@@ -451,7 +451,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8293562844712515604}
   toggleTransition: 1
   graphic: {fileID: 3758838347613496034}
-  m_Group: {fileID: 0}
+  m_Group: {fileID: 7068525962184369514}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -4986,6 +4986,7 @@ RectTransform:
   - {fileID: 7083991921167032785}
   - {fileID: 3557577885498150299}
   - {fileID: 6760367995576587146}
+  - {fileID: 7845255044124299367}
   - {fileID: 1087001515305644345}
   - {fileID: 4191613205202144846}
   m_Father: {fileID: 1680916854445050396}
@@ -5807,7 +5808,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6228602508220649191}
   toggleTransition: 1
   graphic: {fileID: 2166186846469302790}
-  m_Group: {fileID: 0}
+  m_Group: {fileID: 7068525962184369514}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -11546,11 +11547,11 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6526701610840303558}
   toggleTransition: 1
   graphic: {fileID: 5977803260552692170}
-  m_Group: {fileID: 0}
+  m_Group: {fileID: 7562650499275221212}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &5016709396547879293
 GameObject:
   m_ObjectHideFlags: 0
@@ -12572,11 +12573,60 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6524528046778925049}
   toggleTransition: 1
   graphic: {fileID: 3485265375156035630}
-  m_Group: {fileID: 0}
+  m_Group: {fileID: 7068525962184369514}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 0
+--- !u!1 &5473500432351671182
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7845255044124299367}
+  - component: {fileID: 7562650499275221212}
+  m_Layer: 5
+  m_Name: RotationToggleGroup
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7845255044124299367
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5473500432351671182}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5677539480324582653}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &7562650499275221212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5473500432351671182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fafe2cfe61f6974895a912c3755e8f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AllowSwitchOff: 0
 --- !u!1 &5481392574200886084
 GameObject:
   m_ObjectHideFlags: 0
@@ -12955,7 +13005,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2781548579543619710}
   toggleTransition: 1
   graphic: {fileID: 1709325210752821952}
-  m_Group: {fileID: 0}
+  m_Group: {fileID: 7562650499275221212}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -18844,7 +18894,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7012331683799249313}
   toggleTransition: 1
   graphic: {fileID: 3148131281586051627}
-  m_Group: {fileID: 0}
+  m_Group: {fileID: 7562650499275221212}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -21769,7 +21819,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 841439580204538794}
   toggleTransition: 1
   graphic: {fileID: 6691348515063466905}
-  m_Group: {fileID: 0}
+  m_Group: {fileID: 7562650499275221212}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -21902,6 +21952,7 @@ MonoBehaviour:
   _arenaPosXInputField: {fileID: 3605322817397769482}
   _arenaPosYSlider: {fileID: 8021266012328765564}
   _arenaPosYInputField: {fileID: 2543945177267168781}
+  _battleUiEditor: {fileID: 2631945341480252299}
 --- !u!1 &8990661823836631113
 GameObject:
   m_ObjectHideFlags: 0

@@ -215,12 +215,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _optionsButton.onClick.AddListener(_optionsPopup.ToggleOptionsPopup);
         }
 
-        private void Start()
-        {
-            // Initializing options popup
-            _optionsPopup.Initialize(this);
-        }
-
         private void OnDestroy()
         {
             // Removing close and save button listeners

@@ -4,7 +4,9 @@ using UnityEngine.UI;
 using TMPro;
 using static MenuUi.Scripts.Settings.BattleUiEditor.BattleUiEditor;
 using Altzone.Scripts.BattleUiShared;
-using static SettingsCarrier;
+using BattleUiElementType = SettingsCarrier.BattleUiElementType;
+using BattleMovementInputType = SettingsCarrier.BattleMovementInputType;
+using BattleRotationInputType = SettingsCarrier.BattleRotationInputType;
 
 namespace MenuUi.Scripts.Settings.BattleUiEditor
 {
@@ -16,27 +18,27 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Button _closeButton;
 
         [Header("Grid options")]
-        [SerializeField] public Toggle _showGridToggle;
+        [SerializeField] private Toggle _showGridToggle;
         [SerializeField] public Toggle _alignToGridToggle;
         [SerializeField] public Toggle _incrementalScalingToggle;
         [Space]
-        [SerializeField] public Slider _gridColumnsSlider;
-        [SerializeField] public TMP_InputField _gridColumnsInputField;
+        [SerializeField] private Slider _gridColumnsSlider;
+        [SerializeField] private TMP_InputField _gridColumnsInputField;
         [Space]
-        [SerializeField] public Slider _gridRowsSlider;
-        [SerializeField] public TMP_InputField _gridRowsInputField;
+        [SerializeField] private Slider _gridRowsSlider;
+        [SerializeField] private TMP_InputField _gridRowsInputField;
         [Space]
-        [SerializeField] public Slider _gridHueSlider;
-        [SerializeField] public TMP_InputField _gridHueInputField;
+        [SerializeField] private Slider _gridHueSlider;
+        [SerializeField] private TMP_InputField _gridHueInputField;
         [Space]
-        [SerializeField] public Slider _gridTransparencySlider;
-        [SerializeField] public TMP_InputField _gridTransparencyInputField;
+        [SerializeField] private Slider _gridTransparencySlider;
+        [SerializeField] private TMP_InputField _gridTransparencyInputField;
         [SerializeField] private GridController _grid;
 
         [Header("Input options")]
-        [SerializeField] public Toggle _swipeMovementToggle;
-        [SerializeField] public Toggle _pointAndClickMovementToggle;
-        [SerializeField] public Toggle _joystickMovementToggle;
+        [SerializeField] private Toggle _swipeMovementToggle;
+        [SerializeField] private Toggle _pointAndClickMovementToggle;
+        [SerializeField] private Toggle _joystickMovementToggle;
         [Space]
         [SerializeField] private Toggle _twoFingerRotationToggle;
         [SerializeField] private Toggle _swipeRotationToggle;
@@ -44,30 +46,31 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Toggle _gyroscopeRotationToggle;
         [Space]
         [SerializeField] private GameObject _swipeMinDistanceHolder;
-        [SerializeField] public Slider _swipeMinDistanceSlider;
-        [SerializeField] public TMP_InputField _swipeMinDistanceInputField;
+        [SerializeField] private Slider _swipeMinDistanceSlider;
+        [SerializeField] private TMP_InputField _swipeMinDistanceInputField;
         [Space]
         [SerializeField] private GameObject _swipeMaxDistanceHolder;
-        [SerializeField] public Slider _rotationSwipeMaxDistanceSlider;
-        [SerializeField] public TMP_InputField _rotationSwipeMaxDistanceInputField;
+        [SerializeField] private Slider _rotationSwipeMaxDistanceSlider;
+        [SerializeField] private TMP_InputField _rotationSwipeMaxDistanceInputField;
         [Space]
         [SerializeField] private GameObject _movementSwipeSensitivityHolder;
-        [SerializeField] public Slider _movementSwipeSensitivitySlider;
-        [SerializeField] public TMP_InputField _movementSwipeSensitivityInputField;
+        [SerializeField] private Slider _movementSwipeSensitivitySlider;
+        [SerializeField] private TMP_InputField _movementSwipeSensitivityInputField;
         [Space]
         [SerializeField] private GameObject _gyroscopeMinAngleHolder;
-        [SerializeField] public Slider _gyroscopeMinAngleSlider;
-        [SerializeField] public TMP_InputField _gyroscopeMinAngleInputField;
+        [SerializeField] private Slider _gyroscopeMinAngleSlider;
+        [SerializeField] private TMP_InputField _gyroscopeMinAngleInputField;
 
         [Header("Arena options")]
-        [SerializeField] public Slider _arenaScaleSlider;
+        [SerializeField] private Slider _arenaScaleSlider;
         [SerializeField] private TMP_InputField _arenaScaleInputField;
         [Space]
-        [SerializeField] public Slider _arenaPosXSlider;
+        [SerializeField] private Slider _arenaPosXSlider;
         [SerializeField] private TMP_InputField _arenaPosXInputField;
         [Space]
-        [SerializeField] public Slider _arenaPosYSlider;
+        [SerializeField] private Slider _arenaPosYSlider;
         [SerializeField] private TMP_InputField _arenaPosYInputField;
+        [SerializeField] private BattleUiEditor _battleUiEditor;
 
         private const string ResetChangesText = "Palauta UI-elementtien oletusasettelu?";
 
@@ -85,7 +88,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private const float GameAspectRatio = 9f / 16f;
 
-        private BattleUiEditor _battleUiEditor;
         private BattleUiMovableElement _instantiatedMoveJoystick;
         private BattleUiMovableElement _instantiatedRotateJoystick;
 
@@ -359,12 +361,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _arenaPosYInputField.onValueChanged.RemoveAllListeners();
         }
 
-        public void Initialize(BattleUiEditor battleUiEditor)
-        {
-            _battleUiEditor = battleUiEditor;
-        }
-
-        public void UpdateInputSettings(BattleMovementInputType movementType, BattleRotationInputType rotationType)
+        private void UpdateInputSettings(BattleMovementInputType movementType, BattleRotationInputType rotationType)
         {
             // Setting input values to settings carrier
             SettingsCarrier.Instance.BattleMovementInput = movementType;
