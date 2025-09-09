@@ -70,7 +70,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         None,
         JukeboxSoulhomeToggle,
         JukeboxUIToggle,
-        IntroSkipToggle,
+        JukeboxBattleToggle,
     }
 
     // Events
@@ -118,8 +118,6 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public bool jukeboxSoulhome;
     public bool jukeboxUI;
     public bool jukeboxBattle;
-
-    public bool skipIntro;
 
     public int TextSizeSmall = 22;
     public int TextSizeMedium = 26;
@@ -328,8 +326,6 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         jukeboxUI = PlayerPrefs.GetInt("JukeboxUI") != 0;
         jukeboxBattle = PlayerPrefs.GetInt("JukeboxBattle") != 0;
 
-        skipIntro = PlayerPrefs.GetInt("SkipIntroVideo") != 0;
-
         _battleShowDebugStatsOverlay = PlayerPrefs.GetInt(BattleShowDebugStatsOverlayKey, 1) == 1;
 
         _battleArenaScale = PlayerPrefs.GetInt(BattleArenaScaleKey, BattleArenaScaleDefault);
@@ -390,10 +386,6 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
                 jukeboxBattle = value ?? !jukeboxBattle;
                 PlayerPrefs.SetInt("JukeboxBattle", jukeboxBattle ? 1 : 0);
                 return true;
-            case SettingsType.IntroSkipToggle:
-                skipIntro = value ?? !skipIntro;
-                PlayerPrefs.SetInt("skipIntroVideo", skipIntro ? 1 : 0);
-                return true;
             default:
                 Debug.LogError($"Cannot find type: {type}. Somebody probably forgot to add it.");
                 return false;
@@ -412,8 +404,6 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
                 return jukeboxUI;
             case SettingsType.JukeboxBattleToggle:
                 return jukeboxBattle;
-            case SettingsType.IntroSkipToggle:
-                return skipIntro;
             default:
                 Debug.LogError($"Cannot find type: {type}. Somebody probably forgot to add it.");
                 return null;

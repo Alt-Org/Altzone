@@ -47,19 +47,6 @@ namespace MenuUi.Scripts.Loader
         {
             _player.loopPointReached += CheckOver;
             PlayIntroVideo();
-            var carrier = SettingsCarrier.Instance;
-            bool skip = carrier != null &&
-                        (carrier.GetBoolValue(SettingsCarrier.SettingsType.IntroSkipToggle) ?? false);
-
-            if (skip)
-            {
-                Debug.Log("Skip video (setting enabled)");
-                EndIntroVideo(); // tai SkipImmediately(), jos käytössä
-            }
-            else
-            {
-                PlayIntroVideo();
-            }
         }
 
         private void OnDisable()
