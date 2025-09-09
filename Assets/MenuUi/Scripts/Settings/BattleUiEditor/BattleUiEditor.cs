@@ -46,11 +46,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         [Header("BattleUi prefabs")]
         [SerializeField] public GameObject _editingComponent;
-        [SerializeField] private GameObject _timer;
-        [SerializeField] private GameObject _playerInfo;
-        [SerializeField] private GameObject _diamonds;
-        [SerializeField] private GameObject _giveUpButton;
-        [SerializeField] private GameObject _joystick;
+        [SerializeField] private BattleUiPrefabs _prefabs;
 
         public enum CornerType // Helper enum to access button world corners and scale handles array in editing component script more readably.
         {
@@ -385,21 +381,21 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             switch (uiElementType)
             {
                 case BattleUiElementType.Timer:
-                    uiElementPrefab = _timer;
+                    uiElementPrefab = _prefabs.timer;
                     break;
                 case BattleUiElementType.GiveUpButton:
-                    uiElementPrefab = _giveUpButton;
+                    uiElementPrefab = _prefabs.giveUpButton;
                     break;
                 case BattleUiElementType.Diamonds:
-                    uiElementPrefab = _diamonds;
+                    uiElementPrefab = _prefabs.diamonds;
                     break;
                 case BattleUiElementType.PlayerInfo:
                 case BattleUiElementType.TeammateInfo:
-                    uiElementPrefab = _playerInfo;
+                    uiElementPrefab = _prefabs.playerInfo;
                     break;
                 case BattleUiElementType.MoveJoystick:
                 case BattleUiElementType.RotateJoystick:
-                    uiElementPrefab = _joystick;
+                    uiElementPrefab = _prefabs.joystick;
                     break;
             }
 
