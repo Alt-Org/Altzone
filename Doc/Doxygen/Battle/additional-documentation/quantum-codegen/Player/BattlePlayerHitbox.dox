@@ -22,12 +22,33 @@
 ///
 /// @bigtext{Generated from @ref BattlePlayerHitbox.qtn}
 
+/// @var Quantum::BattlePlayerHitboxType Quantum::BattlePlayerHitboxType::Shield
+/// <summary>Shield hitbox.</summary>
+///
+/// @var Quantum::BattlePlayerHitboxType Quantum::BattlePlayerHitboxType::Character
+/// <summary>Character hitbox.</summary>
+
+
+// ---------------------------------------------------------------------------------------------------- //
+
 /// @enum Quantum::BattlePlayerCollisionType
 /// <summary>
 /// How projectile is supposed to act when colliding with the hitbox.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattlePlayerHitbox.qtn}
+
+/// @var Quantum::BattlePlayerCollisionType Quantum::BattlePlayerCollisionType::None
+/// <summary>Do nothing when colliding.</summary>
+///
+/// @var Quantum::BattlePlayerCollisionType Quantum::BattlePlayerCollisionType::Reflect
+/// <summary>Reflect the projectile based on a normal vector when colliding.</summary>
+///
+/// @var Quantum::BattlePlayerCollisionType Quantum::BattlePlayerCollisionType::Override
+/// <summary>Override the projectile's direction when colliding.</summary>
+///
+
+// ---------------------------------------------------------------------------------------------------- //
 
 /// @struct Quantum::BattlePlayerHitboxQComponent
 /// <summary>
