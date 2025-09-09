@@ -110,7 +110,7 @@ namespace MenuUi.Scripts.CharacterGallery
         /// </summary>
         /// <param name="customCharacters">List of player's custom (owned) characters.</param>
         /// <param name="selectedCharacterIds">Array of selected character ids.</param>
-        public void SetCharacters(List<CustomCharacter> customCharacters, CharacterID[] selectedCharacterIds)
+        public void SetCharacters(List<CustomCharacter> customCharacters, CustomCharacterListObject[] selectedCharacterIds)
         {
             Reset();
 
@@ -124,7 +124,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 // Going through selectedCharacterIds to check if the CustomCharacter is one of the selected characters
                 for (int i = 0; i < selectedCharacterIds.Length; i++)
                 {
-                    if (character.Id == selectedCharacterIds[i])
+                    if (character.Id == selectedCharacterIds[i].CharacterID)
                     {
                         // Adding the CustomCharacter to the array of selected characters
                         selectedCharacters[i] = character;
