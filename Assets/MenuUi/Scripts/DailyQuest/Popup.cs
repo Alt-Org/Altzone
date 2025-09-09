@@ -305,19 +305,27 @@ public class Popup : MonoBehaviour
             options[n] = option;
         }
 
-        for (int i = 0; i < Mathf.Min(options.Count, _optionButtons.Count); i++)
+        for (int i = 0; i < _optionButtons.Count; i++)
         {
-            string option = options[i];
-            _optionButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = option;
-            _optionButtons[i].onClick.AddListener(() =>
+            if (i < options.Count)
             {
-                if (_isOnCooldown) return;
+                string option = options[i];
+                _optionButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = option;
+                _optionButtons[i].onClick.AddListener(() =>
+                {
+                    if (_isOnCooldown) return;
 
-                _result = MultipleChoiceOptions.Instance.GetResult(data, option);
+                    _result = MultipleChoiceOptions.Instance.GetResult(data, option);
 
-                if (_result.HasValue && _result.Value == false)
-                    StartCoroutine(Cooldown(60f));
-            });
+                    if (_result.HasValue && _result.Value == false)
+                        StartCoroutine(Cooldown(60f));
+                });
+                _optionButtons[i].gameObject.SetActive(true);
+            }
+            else
+            {
+                _optionButtons[i].gameObject.SetActive(false);
+            }
         }
     }
 

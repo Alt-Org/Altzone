@@ -645,7 +645,7 @@ public class DailyTaskManager : AltMonoBehaviour
     {
         if (_currentPlayerData.Task == null || !MultipleChoiceOptions.Instance.IsMultipleChoice(_currentPlayerData.Task)) return;
         PopupData data = new(_currentPlayerData.Task);
-        StartCoroutine(ShowPopupAndHandleResponse(_currentPlayerData.Task.Title, data));
+        StartCoroutine(ShowPopupAndHandleResponse(_currentPlayerData.Task.Content, data));
     }
 
     #endregion

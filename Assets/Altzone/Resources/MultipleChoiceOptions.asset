@@ -13,4 +13,22 @@ MonoBehaviour:
   m_Name: MultipleChoiceOptions
   m_EditorClassIdentifier: 
   _normalTaskOptions: []
-  _educationTaskOptions: []
+  _educationTaskOptions:
+  - Name: Games Genre Types
+    Category: 3
+    ActionType: 0
+    SocialType: 0
+    StoryType: 0
+    CultureType: 1
+    EthicalType: 0
+    Options:
+    - OptionText: Toimintapeli
+      Result: 0
+    - OptionText: Strategiapeli
+      Result: 1
+    - OptionText: Urheilupeli
+      Result: 0
+    - OptionText: Puzzlepeli
+      Result: 0
+    - OptionText: Roolipeli
+      Result: 0
