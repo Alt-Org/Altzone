@@ -26,7 +26,7 @@ namespace Battle.QSimulation.Player
         /// 
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
-        /// <returns></returns>
+        /// <returns>A pointer reference to the player's class data.</returns>
         protected T* GetClassData(Frame f, EntityRef playerEntity)
         {
             if (!f.Unsafe.TryGetPointer<T>(playerEntity, out T* component))
@@ -39,19 +39,81 @@ namespace Battle.QSimulation.Player
 
     /// <summary>
     /// The base abstract class for player classes.<br/>
-    /// Contains a reference to the associated BattlePlayerCharacterClass and virtual methods for the different events the class can respond to.
+    /// Contains a reference to the associated BattlePlayerCharacterClass enum and virtual methods for the different events the class can respond to.
     /// </summary>
     public abstract unsafe class BattlePlayerClassBase
     {
-
+        /// <summary>
+        /// Getter for the associated BattlePlayerCharacterClass enum of the class.
+        /// </summary>
         public abstract BattlePlayerCharacterClass Class { get; }
 
+        /// <summary>
+        /// Virtual OnCreate method that can be implemented.<br/>
+        /// Called by the BattlePlayerClassManager public OnCreate method.
+        /// </summary>
+        /// 
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Reference to the player handle.</param>
+        /// <param name="playerData">Pointer reference to the player data.</param>
+        /// <param name="playerEntity">Reference to the player entity.</param>
         public virtual unsafe void OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
+
+        /// <summary>
+        /// Virtual OnSpawn method that can be implemented.<br/>
+        /// Called by the BattlePlayerClassManager public OnSpawn method.
+        /// </summary>
+        /// 
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Reference to the player handle.</param>
+        /// <param name="playerData">Pointer reference to the player data.</param>
+        /// <param name="playerEntity">Reference to the player entity.</param>
         public virtual unsafe void OnSpawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
+
+        /// <summary>
+        /// Virtual OnDespawn method that can be implemented.<br/>
+        /// Called by the BattlePlayerClassManager public OnDespawn method. 
+        /// </summary>
+        /// 
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Reference to the player handle.</param>
+        /// <param name="playerData">Pointer reference to the player data.</param>
+        /// <param name="playerEntity">Reference to the player entity.</param>
         public virtual unsafe void OnDespawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
 
+        /// <summary>
+        /// Virtual OnProjectileHitPlayerHitbox method that can be implemented.<br/>
+        /// Called by the BattlePlayerClassManager public OnProjectileHitPlayerHitbox method. 
+        /// </summary>
+        /// 
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectile">Pointer reference to the projectile</param>
+        /// <param name="projectileEntity">Reference to the projectile entity.</param>
+        /// <param name="playerHitbox">Pointer reference to the player hitbox.</param>
+        /// <param name="playerHitboxEntity">Reference to the player hitbox entity</param>
         public virtual unsafe void OnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity) { }
+
+        /// <summary>
+        /// Virtual OnProjectileHitPlayerShield method that can be implemented.<br/>
+        /// Called by the BattlePlayerClassManager public OnProjectileHitPlayerShield method.  
+        /// </summary>
+        /// 
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectile">Pointer reference to the projectile</param>
+        /// <param name="projectileEntity">Reference to the projectile entity.</param>
+        /// <param name="playerHitbox">Pointer reference to the player hitbox.</param>
+        /// <param name="playerHitboxEntity">Reference to the player hitbox entity</param>
         public virtual unsafe void OnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity) { }
+
+        /// <summary>
+        /// Virtual OnUpdate method that can be implemented.<br/>
+        /// Called by the BattlePlayerClassManager public OnUpdate method.  
+        /// </summary>
+        /// 
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Reference to the player handle.</param>
+        /// <param name="playerData">Pointer reference to the player data.</param>
+        /// <param name="playerEntity">Reference to the player entity.</param>
         public virtual unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
     }
 
@@ -221,14 +283,23 @@ namespace Battle.QSimulation.Player
             playerClass.OnUpdate(f, playerHandle, playerData, playerEntity);
         }
 
+        /// <value>Constant for an error class index.</value>
         private const int ClassIndexError = -1;
+        /// <value>Constant for Desensitizer class index.</value>
         private const int ClassIndexDesensitizer = 0;
+        /// <value>Constant for Trickster class index.</value>
         private const int ClassIndexTrickster = 1;
+        /// <value>Constant for Obedient class index.</value>
         private const int ClassIndexObedient = 2;
+        /// <value>Constant for Projector class index.</value>
         private const int ClassIndexProjector = 3;
+        /// <value>Constant for Retroflector class index.</value>
         private const int ClassIndexRetroflector = 4;
+        /// <value>Constant for Confluent class index.</value>
         private const int ClassIndexConfluent = 5;
+        /// <value>Constant for Intellectualizer class index.</value>
         private const int ClassIndexIntellectualizer = 6;
+        /// <value>Constant for the amount of classes that exist.</value>
         private const int ClassCount = 7;
 
         /// <value>An array containing all of the class scripts that have been implemented and can be used.</value>
