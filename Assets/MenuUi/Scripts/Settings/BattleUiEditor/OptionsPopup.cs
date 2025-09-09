@@ -71,8 +71,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Slider _arenaPosYSlider;
         [SerializeField] private TMP_InputField _arenaPosYInputField;
         [SerializeField] private BattleUiEditor _battleUiEditor;
-
-        private const string ResetChangesText = "Palauta UI-elementtien oletusasettelu?";
+        [SerializeField] private SaveReset _saveReset;
 
         private const string GridColumnLinesKey = "BattleUiEditorGridColumns";
         private const string GridRowLinesKey = "BattleUiEditorGridRows";
@@ -93,7 +92,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void Awake()
         {
-            _resetButton.onClick.AddListener(OnResetButtonClicked);
+            _resetButton.onClick.AddListener(_saveReset.OnResetButtonClicked);
             _closeButton.onClick.AddListener(CloseOptionsPopup);
 
             // Show grid toggle listener
@@ -495,15 +494,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         public void CloseOptionsPopup()
         {
             _optionsContents.SetActive(false);
-        }
-
-        private void OnResetButtonClicked()
-        {
-            StartCoroutine(_battleUiEditor.ShowSaveResetPopup(ResetChangesText, resetChanges =>
-            {
-                if (resetChanges == null) return;
-                if (resetChanges.Value == true) _battleUiEditor.ResetChanges();
-            }));
         }
     }
 }

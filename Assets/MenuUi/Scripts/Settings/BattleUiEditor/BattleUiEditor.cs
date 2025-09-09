@@ -42,10 +42,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private OptionsPopup _optionsPopup;
 
         [Header("Save/reset popup")]
-        [SerializeField] private GameObject _saveResetPopup;
-        [SerializeField] private TMP_Text _popupText;
-        [SerializeField] private Button _okButton;
-        [SerializeField] private Button _noButton;
+        [SerializeField] private SaveReset _saveReset;
 
         [Header("BattleUi prefabs")]
         [SerializeField] public GameObject _editingComponent;
@@ -124,7 +121,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             if (_unsavedChanges)
             {
                 OnUiElementSelected(null);
-                StartCoroutine(ShowSaveResetPopup(SaveChangesText, saveChanges =>
+                StartCoroutine(_saveReset.ShowSaveResetPopup(SaveChangesText, saveChanges =>
                 {
                     if (saveChanges == null) return;
                     if (saveChanges.Value == true) SaveChanges();
@@ -143,7 +140,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// </summary>
         public void ClosePopups()
         {
-            if (_saveResetPopup.activeSelf) CloseSaveResetPopup();
+            if (_saveReset._contents.activeSelf) _saveReset.CloseSaveResetPopup();
             OnUiElementSelected(null);
         }
 
@@ -225,10 +222,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _previewButton.onClick.RemoveAllListeners();
             _previewModeTouchDetector.onClick.RemoveAllListeners();
 
-            // Removing save changes popup listeners
-            _okButton.onClick.RemoveAllListeners();
-            _noButton.onClick.RemoveAllListeners();
-
             // Removing editing component listeners
             foreach (BattleUiEditingComponent editingComponent in _editingComponents)
             {
@@ -282,31 +275,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _topButtonsRectTransform.gameObject.SetActive(true);
             _previewModeTouchDetector.gameObject.SetActive(false);
             ScaleEditor();
-        }
-
-        public IEnumerator ShowSaveResetPopup(string message, Action<bool?> callback)
-        {
-            _popupText.text = message;
-            _saveResetPopup.SetActive(true);
-
-            _okButton.onClick.RemoveAllListeners();
-            _noButton.onClick.RemoveAllListeners();
-
-            bool? saveChanges = null;
-
-            _okButton.onClick.AddListener(() => saveChanges = true);
-            _noButton.onClick.AddListener(() => saveChanges = false);
-
-            yield return new WaitUntil(() => saveChanges.HasValue || !_saveResetPopup.activeSelf);
-
-            if (_saveResetPopup.activeSelf) CloseSaveResetPopup();
-
-            callback(saveChanges);
-        }
-
-        private void CloseSaveResetPopup()
-        {
-            _saveResetPopup.SetActive(false);
         }
 
         private void SaveChanges()

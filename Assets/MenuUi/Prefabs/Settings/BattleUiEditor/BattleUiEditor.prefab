@@ -1942,7 +1942,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8128630664376920366
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2696,13 +2696,14 @@ GameObject:
   m_Component:
   - component: {fileID: 4191613205202144846}
   - component: {fileID: 8252338872719668695}
+  - component: {fileID: 681637963748621855}
   m_Layer: 5
   m_Name: SaveResetPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4191613205202144846
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2731,6 +2732,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1313701494920502350}
   m_CullTransparentMesh: 1
+--- !u!114 &681637963748621855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1313701494920502350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: beff28605f8a8044f98360bfaa200be2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _contents: {fileID: 893087887352098990}
+  _popupText: {fileID: 5494727294575861901}
+  _okButton: {fileID: 5920154304606893585}
+  _noButton: {fileID: 9032519778982032273}
+  _battleUiEditor: {fileID: 2631945341480252299}
 --- !u!1 &1317086125022974287
 GameObject:
   m_ObjectHideFlags: 0
@@ -5226,7 +5244,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 58.2
+  m_fontSize: 63.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -18534,10 +18552,7 @@ MonoBehaviour:
   _grid: {fileID: 3340137523758032160}
   _optionsButton: {fileID: 9043458290158311643}
   _optionsPopup: {fileID: 5378736617901078584}
-  _saveResetPopup: {fileID: 1313701494920502350}
-  _popupText: {fileID: 5494727294575861901}
-  _okButton: {fileID: 5920154304606893585}
-  _noButton: {fileID: 9032519778982032273}
+  _saveReset: {fileID: 681637963748621855}
   _editingComponent: {fileID: 7795057816738114330, guid: 2da1bc0d7742a4f419be8b03d44ba171,
     type: 3}
   _timer: {fileID: 1616917245377245213, guid: 96b37da3f89dc24429d5d3c8813ec4a0, type: 3}
@@ -21953,6 +21968,7 @@ MonoBehaviour:
   _arenaPosYSlider: {fileID: 8021266012328765564}
   _arenaPosYInputField: {fileID: 2543945177267168781}
   _battleUiEditor: {fileID: 2631945341480252299}
+  saveReset: {fileID: 681637963748621855}
 --- !u!1 &8990661823836631113
 GameObject:
   m_ObjectHideFlags: 0
