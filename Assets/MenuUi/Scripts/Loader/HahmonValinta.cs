@@ -177,12 +177,20 @@ public class HahmonValinta : AltMonoBehaviour
                     StartCoroutine(ServerManager.Instance.UpdateCustomCharacters(c => callFinished = c));
                 }
                 new WaitUntil(() => callFinished == true);
+
+                string[] serverList = new string[_playerData.SelectedCharacterIds.Length];
+
+                for (i = 0; i < _playerData.SelectedCharacterIds.Length; i++)
+                {
+                    serverList[i] = _playerData.SelectedCharacterIds[i].ServerID;
+                }
+
                 string body = JObject.FromObject(
                     new
                     {
                         _id = _playerData.Id,
                         currentAvatarId = _playerData.SelectedCharacterId,
-                        battleCharacter_ids = _playerData.SelectedCharacterIds
+                        battleCharacter_ids = serverList
 
                     }).ToString();
                 callFinished = false;
