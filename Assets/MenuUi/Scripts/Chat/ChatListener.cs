@@ -7,6 +7,7 @@ using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
+using NativeWebSocket;
 //using ExitGames.Client.Photon;
 using Newtonsoft.Json.Linq;
 //using Photon.Pun;
@@ -58,7 +59,7 @@ public class ChatListener : MonoBehaviour
 
     internal bool _chatPreviewIsEnabled;
 
-    //private ChatClient _chatClient;
+    private WebSocket _socket;
     private ChatController _chatController;                 // Controller for the main chat
     private ChatPreviewController _chatPreviewController;   // Controller for the small chat preview outside of main chat
 
@@ -83,4 +84,85 @@ public class ChatListener : MonoBehaviour
     private const string ERROR_RETRIEVING_CHAT_FROM_SERVER = "Chattia ei pystytty ladata palvelimelta!";
     private const string ERROR_POSTING_MESSAGE_TO_SERVER = "Viestiä ei pystytty tallentamaan serverille!";
 
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+    }
+
+    private void Start()
+    {
+        ServerManager.OnLogInStatusChanged += HandleAccountChange;
+        HandleAccountChange(ServerManager.Instance.isLoggedIn);
+    }
+
+    private void OnDestroy()
+    {
+        CloseSocket();
+    }
+
+    private async void OpenSocket()
+    {
+        Dictionary<string, string> header = new Dictionary<string, string> { { "Authorization", $"Bearer {AccessToken}" } };
+
+
+        if (_socket == null)
+        {
+            _socket = new("wss://devapi.altzone.fi/latest-release/ws/chat", header);
+        }
+
+        _socket.OnOpen += () => Debug.Log("Connected to chat.");
+        _socket.OnError += (errorMessage) => Debug.LogError($"Error: {errorMessage}");
+        _socket.OnClose += (code) => Debug.Log($"Disconnected from chat: {code}");
+        _socket.OnMessage += HandleMessage;
+
+        await _socket.Connect();
+
+    }
+
+    private async void CloseSocket()
+    {
+        await _socket.Close();
+    }
+
+    private void HandleAccountChange(bool loggedIn)
+    {
+        if (loggedIn) OpenSocket();
+        else CloseSocket();
+    }
+
+    private void HandleMessage(byte[] data)
+    {
+        string json = Encoding.UTF8.GetString(data);
+    }
+
+    public async void SendMessage(string message, EmotionObject emotion, ChatChannelType channel)
+    {
+        if(_socket.State == WebSocketState.Open)
+        {
+            string EventType = null;
+            if (ChatChannelType.Global == channel) EventType = "globalMessage";
+            else if (ChatChannelType.Clan == channel) EventType = "clanMessage";
+            string body = JObject.FromObject(
+            new
+            {
+                Event = EventType,
+                data = new {
+                    content = message,
+                    feeling = emotion.ToString()
+                }
+            }
+        ).ToString();
+
+
+            await _socket.SendText(body);
+        }
+    }
 }

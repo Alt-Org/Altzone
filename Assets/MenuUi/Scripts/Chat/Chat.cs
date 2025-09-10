@@ -7,6 +7,7 @@ using System.Collections;
 using MenuUi.Scripts.TabLine;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Common;
 
 public class Chat : AltMonoBehaviour
 {
