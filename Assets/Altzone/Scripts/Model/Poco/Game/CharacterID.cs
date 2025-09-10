@@ -31,6 +31,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         Artist = CharacterClassID.Projector + 1, //401
         Arguer = CharacterClassID.Projector + 2, //402
         Reflector = CharacterClassID.Projector + 3, //403
+        Delusional = CharacterClassID.Projector + 4, //404
 
         // Retroflector class characters
         RetroflectorTest = CharacterClassID.Retroflector,
