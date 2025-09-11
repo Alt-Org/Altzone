@@ -1259,7 +1259,7 @@ namespace Altzone.Scripts.Lobby
 
                 if(character == null || character.Id is CharacterID.None)
                 {
-                    character = new(PlayerCharacterPrototypes.GetCharacter("-1").BaseCharacter);
+                    character = new(PlayerCharacterPrototypes.GetCharacter("-1",true).BaseCharacter);
                 }
 
                 var stats = new BattlePlayerStats()
