@@ -1263,7 +1263,7 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator GetMessageHistory(string channel, Action<bool> callback)
     {
-        yield return StartCoroutine(WebRequests.Get($"{DEVADDRESS}chat/history/?type={channel}&recipientId={Player._id}", AccessToken, request =>
+        yield return StartCoroutine(WebRequests.Get($"{DEVADDRESS}chat/history?type={channel}", AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
