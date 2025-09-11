@@ -4,53 +4,53 @@
 /// </summary>
 ///
 /// ### GameObjects in scene:
-/// - <b>Directional Light</b>  
+/// - **Directional Light**  
 ///   Basic Unity lighting.
-/// - <b>QuantumEntityViewUpdater</b>  
+/// - **QuantumEntityViewUpdater**  
 ///   Basic %Quantum GameObject that handles updating the view side of all entities.
-/// - <b>QuantumDebugRunner</b>  
+/// - **QuantumDebugRunner**  
 ///   Basic %Quantum GameObject that handles running the scene locally for debugging purposes.  
 ///   This is disabled by default and needs to be enabled when debugging the %Battle scene on Unity editor.
-/// - <b>QuantumMap</b>  
+/// - **QuantumMap**  
 ///   Basic %Quantum GameObject that contains QuantumMapData that bakes entities, static colliders and NavMesh data for %Quantum's use.
-/// - <b>QuantumStats</b>  
+/// - **QuantumStats**  
 ///   Basic %Quantum GameObject that displays a stats window containing information about the active simulation.
-/// - <b>QuantumDebugInput</b>  
+/// - **QuantumDebugInput**  
 ///   Basic %Quantum GameObject that shows an example of input polling from Unity.  
 ///   This is permanently disabled in this scene.
-/// - <b>BattleCamera</b>  
+/// - **BattleCamera**  
 ///   Orthographic camera for %Battle. Flipped for BetaTeam. Uses @cref{Battle.View.Game,BattleCamera} script.
-/// - <b>BattlePlayerInput</b>  
+/// - **BattlePlayerInput**  
 ///   Contains a script that polls Unity for player inputs.
-/// - <b>BattleSimulationData</b>  
+/// - **BattleSimulationData**  
 ///   Instance of @ref BattleSimulationData.prefab
-/// - <b>BattleGameViewController</b>  
+/// - **BattleGameViewController**  
 ///   Instance of @ref BattleGameViewController.prefab
-/// - <b>BattleScreenEffectViewController</b>  
+/// - **BattleScreenEffectViewController**  
 ///   Instance of @ref BattleScreenEffectViewController.prefab
-/// - <b>BattleGridViewController</b>  
+/// - **BattleGridViewController**  
 ///   Instance of @ref BattleGridViewController.prefab
-/// - <b>BattleStoneCharacterViewController</b>  
+/// - **BattleStoneCharacterViewController**  
 ///   Instance of @ref BattleStoneCharacterViewController.prefab
-/// - <b>BattleLightRayEffectViewController</b>  
+/// - **BattleLightRayEffectViewController**  
 ///   Instance of @ref BattleLightrayEffectViewController.prefab
-/// - <b>BattleSoundFXViewController</b>  
+/// - **BattleSoundFXViewController**  
 ///   Instance of @ref BattleSoundFXViewController.prefab
-/// - <b>Audio Source</b>  
+/// - **Audio Source**  
 ///   Basic Unity audio source for playing sound effects etc.
-/// - <b>%Battle Ui</b>  
+/// - **%Battle Ui**  
 ///   Instance of @ref BattleUi.prefab
-/// - <b>BattleArena</b>  
+/// - **BattleArena**  
 ///   Contains background, grid and arena's borders.
 ///
 /// ### GameObjects created at the beginning of %Battle:
-/// - <b>Players</b>  
+/// - **Players**  
 ///   Players are created using correct character's @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,Player} prefab.
-/// - <b>Projectile</b>  
+/// - **Projectile**  
 ///   Instance of @ref BattleProjectile.prefab
-/// - <b>SoulWalls</b>  
+/// - **SoulWalls**  
 ///   SoulWalls are created using different @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,SoulWall} prefabs.
 ///
 /// ### GameObjects created as needed:
-/// - <b>Diamonds</b>  
+/// - **Diamonds**  
 ///   Instance of @ref BattleDiamond.prefab
