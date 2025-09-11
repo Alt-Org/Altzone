@@ -25,6 +25,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         ObedientTest = CharacterClassID.Obedient,
         Religious = CharacterClassID.Obedient + 1, //301
         Yesman = CharacterClassID.Obedient + 2, //302
+        SlaveOfTheLaw = CharacterClassID.Obedient + 3, //303
 
         // Projector class characters
         ProjectorTest = CharacterClassID.Projector,

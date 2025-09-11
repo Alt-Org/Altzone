@@ -10,34 +10,34 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
-  m_Name: CharacterSpec_404
+  m_Name: CharacterSpec_303
   m_EditorClassIdentifier: 
-  Id: 404
-  CharacterId: 404
+  Id: 0
+  CharacterId: 0
   IsApproved: 0
-  Name: Harhaisuus
-  ClassType: 400
+  Name: 
+  ClassType: 0
   CharacterDescription: 
   CharacterShortDescription: 
-  CharacterStats: {fileID: 11400000, guid: 23c30bf9da610914983eb39fe1ba8282, type: 2}
+  CharacterStats: {fileID: 11400000, guid: 469e351f5fcc4a943aee0f39959c4605, type: 2}
   Hp:
-    Level: 3
-    Coefficient: 5
+    Level: 7
+    Coefficient: 4
   Speed:
-    Level: 10
+    Level: 7
     Coefficient: 4
   CharacterSize:
-    Level: 6
-    Coefficient: 6
-  Attack:
-    Level: 2
-    Coefficient: 3
-  Defence:
-    Level: 8
+    Level: 7
     Coefficient: 4
-  GalleryImage: {fileID: 21300000, guid: 9518e748cb6c7104a9c2466ded820ae5, type: 3}
-  GalleryHeadImage: {fileID: 21300000, guid: 5d6ee1ba9ce33c440a7ca0cc854731eb, type: 3}
+  Attack:
+    Level: 7
+    Coefficient: 4
+  Defence:
+    Level: 7
+    Coefficient: 4
+  GalleryImage: {fileID: 0}
+  GalleryHeadImage: {fileID: 0}
   BattleEntityPrototype:
     Id:
-      Value: 1351919908784755385
+      Value: 0
   BattleUiSprite: {fileID: 0}
