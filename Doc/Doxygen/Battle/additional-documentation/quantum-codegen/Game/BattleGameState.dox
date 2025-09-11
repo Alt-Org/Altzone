@@ -15,3 +15,30 @@
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleGameState.qtn}
+
+/// @var Quantum::BattleGameState Quantum::BattleGameState::InitializeGame
+/// <summary>First initialization at the start of a match.</summary>
+///
+/// @var Quantum::BattleGameState Quantum::BattleGameState::WaitForPlayers
+/// <summary>Waiting for all players to connect.</summary>
+///
+/// @var Quantum::BattleGameState Quantum::BattleGameState::CreateMap
+/// <summary>Creating the map.</summary>
+///
+/// @var Quantum::BattleGameState Quantum::BattleGameState::ReadyToStart
+/// <summary>Currently unused state.</summary>
+///
+/// @var Quantum::BattleGameState Quantum::BattleGameState::Countdown
+/// <summary>Countdown to the start of the match gameplay.</summary>
+///
+/// @var Quantum::BattleGameState Quantum::BattleGameState::GetReadyToPlay
+/// <summary>Last part of the Countdown to the start of the match gameplay.</summary>
+///
+/// @var Quantum::BattleGameState Quantum::BattleGameState::Playing
+/// <summary>Match gameplay state.</summary>
+///
+/// @var Quantum::BattleGameState Quantum::BattleGameState::GameOver
+/// <summary>End of the match gameplay.</summary>
+///
+/// @var Quantum::BattleGameState Quantum::BattleGameState::PostGame
+/// <summary>Currently unused state.</summary>
