@@ -1261,6 +1261,28 @@ public class ServerManager : MonoBehaviour
 
     #endregion
 
+    public IEnumerator GetMessageHistory(string channel, Action<bool> callback)
+    {
+        yield return StartCoroutine(WebRequests.Get($"{DEVADDRESS}chat/history/?type={channel}&recipientId={Player._id}", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+
+
+
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
     #region BattleCharacter
 
     public IEnumerator GetCustomCharactersFromServer(Action<List<CustomCharacter>> callback)
