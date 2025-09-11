@@ -142,7 +142,8 @@ namespace Battle.QSimulation.Game
         }
 
         /// <summary>
-        /// Sets up the soul wall map layout during the 'CreateMap' game state.
+        /// Sets up the game map during the 'CreateMap' game state.
+        /// That includes SoulWalls and players. Other parts of the map don't need setup.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
