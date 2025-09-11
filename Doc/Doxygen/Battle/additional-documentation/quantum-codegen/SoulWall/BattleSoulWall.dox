@@ -20,7 +20,18 @@
 /// Which row of the SoulWall this SoulWall segment is located at.
 /// </summary>
 ///
-/// @bigtext{Generated from @ref BattleProjectile.qtn}
+/// @bigtext{Generated from @ref BattleSoulWall.qtn}
+
+/// @var Quantum::BattleSoulWallRow Quantum::BattleSoulWallRow::First
+/// <summary>First SoulWall row.</summary>
+///
+/// @var Quantum::BattleSoulWallRow Quantum::BattleSoulWallRow::Middle
+/// <summary>Middle SoulWall row.</summary>
+///
+/// @var Quantum::BattleSoulWallRow Quantum::BattleSoulWallRow::Last
+/// <summary>Last SoulWall row.</summary>
+
+// ---------------------------------------------------------------------------------------------------- //
 
 /// @struct Quantum::BattleSoulWallTemplate
 /// <summary>
@@ -28,15 +39,6 @@
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleSoulWall.qtn}
-
-/// @struct Quantum::BattleSoulWallQComponent
-/// <summary>
-/// Contains SoulWall's data.
-/// </summary>
-///
-/// @bigtext{Generated from @ref BattleSoulWall.qtn}
-
-// ---------------------------------------------------------------------------------------------------- //
 
 /// @var BattleGridPosition Quantum.BattleSoulWallTemplate::Position
 /// <summary>SoulWall's position in GridPositions.</summary>
@@ -48,6 +50,13 @@
 /// <summary>SoulWall's color by ColorIndex.</summary>
 
 // ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattleSoulWallQComponent
+/// <summary>
+/// Contains SoulWall's data.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleSoulWall.qtn}
 
 /// @var BattleTeamNumber Quantum.BattleSoulWallQComponent::Team
 /// <summary>Which team the SoulWall segment belongs to.</summary>
