@@ -8,6 +8,7 @@ using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
+using MenuUi.Scripts.AvatarEditor;
 
 public class PollObject : MonoBehaviour
 {
@@ -34,6 +35,10 @@ public class PollObject : MonoBehaviour
 
     [Header("PlayerHeads")]
     [SerializeField] private AddPlayerHeads playerHeads;
+
+    [Header("Avatar for Clan Polls")]
+    [SerializeField] private GameObject avatarHandleGameObject;
+    [SerializeField] private AvatarFaceLoader avatarFaceLoader;
 
     private PollData pollData;
     private bool showEndTimeManually = false;
@@ -135,16 +140,24 @@ public class PollObject : MonoBehaviour
 
     private void SetValues() // Sets the small info window for the PollObject
     {
+        // Reset UI elements
+        Image.gameObject.SetActive(false);
+        avatarHandleGameObject.SetActive(false);
+
         // Handle UI for Furniture Polls
         if (pollData is FurniturePollData furniturePollData)
         {
             Image.sprite = furniturePollData.Sprite;
+            Image.gameObject.SetActive(true);
+
             UpperText.text = Enum.GetName(typeof(FurniturePollType), furniturePollData.FurniturePollType);
             LowerText.text = furniturePollData.Furniture?.Value.ToString() ?? "N/A";
         }
         // Handle UI for Clan Polls
         else if (pollData is ClanRolePollData clanRolePoll)
         {
+            avatarHandleGameObject.SetActive(true);
+
             // Default values
             string memberName = "Unknown";
             string roleName = "None";
@@ -173,6 +186,9 @@ public class PollObject : MonoBehaviour
                         {
                             roleName = "None"; // Fallback
                         }
+
+                        // Load the avatar and apply visuals
+                        StartCoroutine(LoadAndApplyAvatar(targetMember));
                     }
                 }
             }
@@ -193,6 +209,32 @@ public class PollObject : MonoBehaviour
         }
 
         playerHeads.InstantiateHeads(pollId);
+    }
+
+    private IEnumerator LoadAndApplyAvatar(ClanMember targetMember)
+    {
+        Debug.LogWarning($"Starting Avatar Loading for {targetMember.Name}");
+
+        // Use GetPlayerData to Player Data
+        PlayerData targetPlayer = targetMember.GetPlayerData();
+
+        if (targetPlayer == null)
+        {
+            Debug.LogWarning($"Getting player data failed for {targetMember.Name}");
+            yield break;
+        }
+
+        AvatarVisualData visualData = AvatarDesignLoader.Instance.LoadAvatarDesign(targetPlayer);
+
+        if (visualData != null && avatarFaceLoader != null)
+        {
+            Debug.LogWarning($"Loaded AvatarData successfully for {targetMember.Name}");
+            avatarFaceLoader.UpdateVisuals(visualData);
+        }
+        else
+        {
+            Debug.LogWarning($"Failed to load AvatarData for {targetMember.Name}");
+        }
     }
 
     public void SetPollId(string newPollId)
@@ -336,5 +378,4 @@ public class PollObject : MonoBehaviour
         // Open the clan role popup with the fetched data
         PollInfoPopup.Instance.OpenClanRolePopup(targetMember.Name, currentRole, clanRolePoll.TargetRole);
     }
-
 }
