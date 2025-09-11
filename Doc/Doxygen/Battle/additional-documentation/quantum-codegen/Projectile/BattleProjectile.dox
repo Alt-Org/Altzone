@@ -15,10 +15,22 @@
 
 /// @enum Quantum::BattleProjectileCollisionFlags
 /// <summary>
-/// Flags that are used to ensure the projectile doesn't collide with multiple SoulWalls during the same frame.
+/// Flags that track collisions during one frame.  
+/// This is used to prevent multiple collisions happening during the same frame.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleProjectile.qtn}
+
+/// @var Quantum::BattleProjectileCollisionFlags Quantum::BattleProjectileCollisionFlags::Projectile
+/// <summary>Projectile collision.</summary>
+///
+/// @var Quantum::BattleProjectileCollisionFlags Quantum::BattleProjectileCollisionFlags::SoulWall
+/// <summary>SoulWall collision.</summary>
+///
+/// @var Quantum::BattleProjectileCollisionFlags Quantum::BattleProjectileCollisionFlags::Player
+/// <summary>Player collision.</summary>
+
+// ---------------------------------------------------------------------------------------------------- //
 
 /// @struct Quantum::BattleProjectileQComponent
 /// <summary>
@@ -26,8 +38,6 @@
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleProjectile.qtn}
-
-// ---------------------------------------------------------------------------------------------------- //
 
 /// @var bool Quantum.BattleProjectileQComponent::IsLaunched
 /// <summary>Is the projectile launched or not.</summary>
