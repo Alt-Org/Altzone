@@ -86,6 +86,9 @@ public class ChatListener : MonoBehaviour
     private const string ERROR_RETRIEVING_CHAT_FROM_SERVER = "Chattia ei pystytty ladata palvelimelta!";
     private const string ERROR_POSTING_MESSAGE_TO_SERVER = "Viestiä ei pystytty tallentamaan serverille!";
 
+    public delegate void MessageReceived(bool isLoggedIn);
+    public static event MessageReceived OnMessageReceived;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -106,6 +109,11 @@ public class ChatListener : MonoBehaviour
         HandleAccountChange(ServerManager.Instance.isLoggedIn);
     }
 
+    private void Update()
+    {
+        if (_socket != null && _socket.State == WebSocketState.Open) _socket.DispatchMessageQueue();
+    }
+
     private void OnDestroy()
     {
         CloseSocket();
@@ -114,7 +122,7 @@ public class ChatListener : MonoBehaviour
     private async void OpenSocket()
     {
         Dictionary<string, string> header = new Dictionary<string, string> { { "Authorization", $"Bearer {AccessToken}" } };
-
+        Debug.LogWarning(AccessToken);
         Debug.LogWarning("Connecting to chat.");
         if (_socket == null)
         {
@@ -141,8 +149,8 @@ public class ChatListener : MonoBehaviour
     {
         if (loggedIn)
         {
-            if(_socket.State == WebSocketState.Open && _id != ServerManager.Instance.Player._id) CloseSocket();
-            if(_id == ServerManager.Instance.Player._id) OpenSocket();
+            if(_socket != null && (_socket.State == WebSocketState.Open && _id != ServerManager.Instance?.Player._id)) CloseSocket();
+            if(_id != ServerManager.Instance.Player._id) OpenSocket();
         }
         else CloseSocket();
     }
@@ -163,14 +171,14 @@ public class ChatListener : MonoBehaviour
             string body = JObject.FromObject(
             new
             {
-                Eventi = EventType,
+                Event = EventType,
                 data = new {
                     content = message,
                     feeling = emotion.ToString()
                 }
             }
 
-        ).ToString();
+            ).ToString();
 
             //body = "{ 'event': 'globalMessage','data': { 'content': 'test','feeling': 'Sorrow'}}";
 
