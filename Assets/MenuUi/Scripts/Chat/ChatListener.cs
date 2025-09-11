@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Altzone.Scripts;
+using Altzone.Scripts.Common;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
@@ -100,6 +102,7 @@ public class ChatListener : MonoBehaviour
     private void Start()
     {
         ServerManager.OnLogInStatusChanged += HandleAccountChange;
+        StartCoroutine(ServerManager.Instance.GetMessageHistory("global", success => { }));
         HandleAccountChange(ServerManager.Instance.isLoggedIn);
     }
 
@@ -112,38 +115,45 @@ public class ChatListener : MonoBehaviour
     {
         Dictionary<string, string> header = new Dictionary<string, string> { { "Authorization", $"Bearer {AccessToken}" } };
 
-
+        Debug.LogWarning("Connecting to chat.");
         if (_socket == null)
         {
             _socket = new("wss://devapi.altzone.fi/latest-release/ws/chat", header);
         }
 
-        _socket.OnOpen += () => Debug.Log("Connected to chat.");
+        _socket.OnOpen += () => { Debug.LogWarning("Connected to chat."); _id = ServerManager.Instance.Player._id; SendMessage("test", Emotion.Sorrow, ChatChannelType.Global); };
         _socket.OnError += (errorMessage) => Debug.LogError($"Error: {errorMessage}");
-        _socket.OnClose += (code) => Debug.Log($"Disconnected from chat: {code}");
+        _socket.OnClose += (code) => Debug.LogWarning($"Disconnected from chat: {code}");
         _socket.OnMessage += HandleMessage;
 
         await _socket.Connect();
 
+        Invoke("TestMessage", 1);
     }
 
     private async void CloseSocket()
     {
+        _id = null;
         await _socket.Close();
     }
 
     private void HandleAccountChange(bool loggedIn)
     {
-        if (loggedIn) OpenSocket();
+        if (loggedIn)
+        {
+            if(_socket.State == WebSocketState.Open && _id != ServerManager.Instance.Player._id) CloseSocket();
+            if(_id == ServerManager.Instance.Player._id) OpenSocket();
+        }
         else CloseSocket();
     }
 
     private void HandleMessage(byte[] data)
     {
         string json = Encoding.UTF8.GetString(data);
+        Debug.LogWarning(json);
     }
 
-    public async void SendMessage(string message, EmotionObject emotion, ChatChannelType channel)
+    public async void SendMessage(string message, Emotion emotion, ChatChannelType channel)
     {
         if(_socket.State == WebSocketState.Open)
         {
@@ -153,16 +163,24 @@ public class ChatListener : MonoBehaviour
             string body = JObject.FromObject(
             new
             {
-                Event = EventType,
+                Eventi = EventType,
                 data = new {
                     content = message,
                     feeling = emotion.ToString()
                 }
             }
+
         ).ToString();
 
+            //body = "{ 'event': 'globalMessage','data': { 'content': 'test','feeling': 'Sorrow'}}";
 
-            await _socket.SendText(body);
+        Debug.LogWarning(body);
+        await _socket.SendText(body);
         }
+    }
+
+    private void TestMessage()
+    {
+        SendMessage("test", Emotion.Sorrow, ChatChannelType.Global);
     }
 }
