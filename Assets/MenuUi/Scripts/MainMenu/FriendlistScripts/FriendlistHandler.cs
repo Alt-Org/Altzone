@@ -13,6 +13,8 @@ public class FriendlistHandler : MonoBehaviour
     [SerializeField] private GameObject _friendlistPanel;
     [SerializeField] private Text _friendlistTitle;
     [SerializeField] private Text _friendlistOnlineTitle;
+    [SerializeField] private TMPro.TextMeshProUGUI _friendlistTitle;
+    [SerializeField] private TMPro.TextMeshProUGUI _friendlistOnlineTitle;
     [SerializeField] private RectTransform _friendlistForeground;
     [SerializeField] private ScrollRect _friendlistScrollView;
     [SerializeField] private Button _closeFriendlistButton;
@@ -27,6 +29,17 @@ public class FriendlistHandler : MonoBehaviour
         _openFriendlistButton.onClick.AddListener(OpenFriendlist);
         _closeFriendlistButton.onClick.AddListener(CloseFriendlist);
 
+        ServerManager.OnOnlinePlayersChanged += BuildOnlinePlayerList; // alustetaan lista
+    }
+
+    private void OnEnable()
+    {
+        BuildOnlinePlayerList(ServerManager.Instance.OnlinePlayers); // alustetaan ja p�ivitet��n
+    }
+
+    private void OnDestroy()
+    {
+        ServerManager.OnOnlinePlayersChanged -= BuildOnlinePlayerList;
     }
 
     // Update is called once per frame
@@ -44,5 +57,16 @@ public class FriendlistHandler : MonoBehaviour
     void CloseFriendlist()
     { 
         _friendlistPanel.SetActive(false); // piilottaa
+    }
+    private void BuildOnlinePlayerList(List<ServerOnlinePlayer> onlinePlayers)
+    {
+        UpdateOnlineFriendsCount(onlinePlayers);
+    }
+
+    private void UpdateOnlineFriendsCount(List<ServerOnlinePlayer> onlinePlayers)
+    {
+        int onlinePlayerCount = onlinePlayers.Count; //HUOM! kaikki online-pelaajat, ei suodatettu viel� vain online-kavereita
+
+        _friendlistOnlineTitle.text = $"Kavereita onlinessa {onlinePlayerCount}"; // P�ivitet��n tieto otsikkoon
     }
 }
