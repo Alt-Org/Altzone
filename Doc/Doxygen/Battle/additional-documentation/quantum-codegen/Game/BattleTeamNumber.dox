@@ -11,7 +11,16 @@
 
 /// @enum Quantum::BattleTeamNumber
 /// <summary>
-/// Which team the player is in.
+/// Enum that defines the teams in battle.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleTeamNumber.qtn}
+
+/// @var Quantum::BattleTeamNumber Quantum::BattleTeamNumber::NoTeam
+/// <summary>No team.</summary>
+///
+/// @var Quantum::BattleTeamNumber Quantum::BattleTeamNumber::TeamAlpha
+/// <summary>The TeamAlpha.</summary>
+///
+/// @var Quantum::BattleTeamNumber Quantum::BattleTeamNumber::TeamBeta
+/// <summary>The TeamBeta.</summary>
