@@ -162,12 +162,12 @@ These [Custom commands🡵] can be used for simplified linking to other sections
 
 List of current documentation link aliases  
 
-| Alias             | Text         | documentation index      |
-| :---------------- | :----------- | :----------------------- | 
-| @@systemslink     | Systems      | #page-simulation-systems |
-| @@uihandlerlink   | UI Handler   | #page-view-uihandler     |
-| @@uihandlerslink  | UI Handlers  | #page-view-uihandler     |
-| @@uicomponentlink | UI Component | #page-view-uicomponent   |
+| Alias             | Text         | documentation index       |
+| :---------------- | :----------- | :------------------------ |
+| @@systemslink     | Systems      | \#page-simulation-systems |
+| @@uihandlerlink   | UI Handler   | \#page-view-uihandler     |
+| @@uihandlerslink  | UI Handlers  | \#page-view-uihandler     |
+| @@uicomponentlink | UI Component | \#page-view-uicomponent   |
 
 They are defined as such:
 ```
