@@ -39,7 +39,7 @@ namespace Battle.View.Player
         /// <summary>
         /// Called when the player interacts with the movement joystick.
         /// </summary>
-        /// 
+        ///
         /// <param name="input">The input value of the movement joystick</param>
         public void OnJoystickMovement(Vector2 input)
         {
@@ -49,7 +49,7 @@ namespace Battle.View.Player
         /// <summary>
         /// Called when the player interacts with the rotation joystick.
         /// </summary>
-        /// 
+        ///
         /// <param name="input">The input value of the rotation joystick</param>
         public void OnJoystickRotation(float input)
         {
@@ -59,7 +59,7 @@ namespace Battle.View.Player
         /// <summary>
         /// Called when the player presses one of the character selection buttons.
         /// </summary>
-        /// 
+        ///
         /// <param name="characterNumber">The number of the character that was selected.</param>
         public void OnCharacterSelected(int characterNumber)
         {
@@ -195,7 +195,7 @@ namespace Battle.View.Player
         /// <summary>
         /// Handles polling player input for Quantum.
         /// </summary>
-        /// 
+        ///
         /// <param name="callback">Quantum Callback</param>
         private void PollInput(CallbackPollInput callback)
         {
@@ -251,7 +251,7 @@ namespace Battle.View.Player
         /// <summary>
         /// Handles player movement input based on selected input type.
         /// </summary>
-        /// 
+        ///
         /// <param name="mouseDown">Whether input is currently held</param>
         /// <param name="mouseClick">Whether input started this frame</param>
         /// <param name="unityPosition">The unityPosition of the input</param>
@@ -300,7 +300,7 @@ namespace Battle.View.Player
                             Vector3 direction = unityPosition - _movementStartVector;
                             movementInputInfo.MovementDirection = new FPVector2(FP.FromFloat_UNSAFE(direction.x), FP.FromFloat_UNSAFE(direction.z)) / deltaTime;
                             movementInputInfo.MovementDirection *= FP.FromFloat_UNSAFE(_swipeSensitivity);
-                            
+
                         }
                         _movementStartVector = unityPosition;
                     }
@@ -324,7 +324,7 @@ namespace Battle.View.Player
         /// <summary>
         /// Handles player rotation input based on selected input type.
         /// </summary>
-        /// 
+        ///
         /// <param name="mouseDown">Whether input is currently held</param>
         /// <param name="twoFingers">Whether two finger input is currently held</param>
         /// <param name="unityPosition">The unityPosition of the input</param>
