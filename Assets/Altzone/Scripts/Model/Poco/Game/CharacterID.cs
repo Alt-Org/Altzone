@@ -39,6 +39,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         Alcoholic = CharacterClassID.Retroflector + 2, //502
         Anorectic = CharacterClassID.Retroflector + 3, //503
         Stoner = CharacterClassID.Retroflector + 4, //504
+        Martyr = CharacterClassID.Retroflector + 5, //505
 
         // Confluent class characters
         ConfluentTest = CharacterClassID.Confluent,
