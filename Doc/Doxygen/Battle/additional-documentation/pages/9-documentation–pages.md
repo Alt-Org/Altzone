@@ -1,5 +1,5 @@
 # Writing documentation pages {#page-documentation-pages}
-Doxygen can create custom pages that are not part of the API. They can be used to list information that is useful to those reading the documentation, such as this page.  
+Doxygen can create custom pages. They can be used to list information that is useful to those reading the documentation, such as this page.  
 Subpages allow for segmenting the information of a page to make it easier to navigate and read.  
 See [Doxygen documentation🡵](https://www.doxygen.nl/manual/additional.html#custom_pages).
 

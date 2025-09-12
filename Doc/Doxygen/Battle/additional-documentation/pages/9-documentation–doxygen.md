@@ -29,11 +29,12 @@ Doxygen supports XML Commands (see [Doxygen documentation🡵](https://www.doxyg
 Doxygen supports HTML Commands (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/htmlcmds.html)).  
 
 XML Commands are generally preferred in source code because they are a native C# feature (see [C# documentation🡵](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments#d3-recommended-tags)) that IDEs such as Visual Studio recognize. Visual Studio will automatically generate documentation comments with XML Commands.  
-Documentation comments should use the XML `<summary>` Command instead of the Doxygen specific `@brief` command for the sake of consistency.  
+Documentation comments should in general use the XML `<summary>` Command instead of the Doxygen specific `@brief` command for the sake of consistency.  
 
 The correct command types to use depend on context.  
 See [[Writing documentation pages]](#page-documentation-pages)  
 See [[Documenting source code]](#page-documentation-documenting-source-code)
+See [[Writing additional documentation]](#page-documentation-additional)
 
 <br/>
 
@@ -43,6 +44,7 @@ See [[Documenting source code]](#page-documentation-documenting-source-code)
 The linking style and format you should use depends on what you are documenting. The style remains consistent in all documentation, but there are many formats you can use for the same kind of link. The correct format to use depends on context.  
 See [[Writing documentation pages]](#page-documentation-pages)  
 See [[Documenting source code]](#page-documentation-documenting-source-code)
+See [[Writing additional documentation]](#page-documentation-additional)
 
 <br/>
 
@@ -50,15 +52,15 @@ See [[Documenting source code]](#page-documentation-documenting-source-code)
 - **Generic documentation links**  
   There is no specific styling that should be used for these.
 - **Documentation page links**  
-  Links that lead to other documentation pages should have square brackets `[]` around them.  **"[Example text]"** (This is not a hard rule.)
-- **Concept links**
-  Links that link to concept explanations should have curly brackets `{}` around them. **"{Example text}"**  
+  Links that lead to other documentation pages should have square brackets `[]` around them.  \"<span class="fake-link">[Example text]</span>\" (This is not a hard rule.)
+- **Concept links**  
+  Links that link to concept explanations should have curly brackets `{}` around them. \"<span class="fake-link">{Example text}</span>\"
   These can be used optionally when referring to potentially unfamiliar concepts or terms to those reading the documentation.
 - **External links**  
-  Links that lead to external websites should end with a `🡵` symbol. **"Example text🡵"**  
+  Links that lead to external websites should end with a `🡵` symbol. \"<span class="fake-link">Example text🡵</span>\"
   Since unicode characters can not be used inside source code, the <span class="tt">@@u-exlink</span> custom command should be used. See [Circumventing unicode characters](#page-documentation-doxygen-custom-commands-unicode).
 - **Code symbol links**  
-  Code symbol paths are constructed by separating each part, such as the namespace and class name with a `.` **"{namespace.class.method}"**
+  Code symbol paths are constructed by separating each part, such as the namespace and class name with a `.` \"<span class="fake-link">{namespace.class.method}</span>\"
 
 
 <br/>
