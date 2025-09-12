@@ -12,7 +12,7 @@ Refer to the [Documenting Unity/View](#page-documentation-source-code-unity-view
 
 <br/>
 
-### Unicode characters
+### Unicode characters {#page-documentation-source-code-base-guidelines-unicode}
 Unicode characters can not be used inside of source code, even in documentation comments. The use of them can be circumvented with for example custom commands. See [[Circumventing unicode characters]](#page-documentation-doxygen-custom-commands-unicode)
 
 <br/>
