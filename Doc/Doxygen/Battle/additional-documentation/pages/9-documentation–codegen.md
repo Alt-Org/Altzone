@@ -16,20 +16,20 @@ When referencing **code symbols**, make sure to reference the correct generated 
 <br/>
 
 ### Unicode characters {#page-documentation-codegen-base-guidelines-unicode}
-**Unicode** characters are ok to use inside of `.dox` files.
+**Unicode characters** are ok to use inside of `.dox` files.
 
 <br/>
 
 ### Documentation commands {#page-documentation-codegen-base-guidelines-commands}
-[Doxygen🡵] supports various commands that can be used when documenting **%Quantum generated code**. See [[Documenting with Doxygen]](#page-documentation-doxygen-commands) for more information on these.  
-All commands are allowed in `.dox` files, so you should choose the most appropriate format.
+[Doxygen🡵] supports various **commands** that can be used when documenting **%Quantum generated code**. See [[Documenting with Doxygen]](#page-documentation-doxygen-commands) for more information on these.  
+All **commands** are allowed in `.dox` files, so you should choose the most appropriate format.
 
 <br/>
 
 ### Linking formats {#page-documentation-codegen-base-guidelines-linking}
 [Doxygen🡵] supports various types of **linking formats**. See [[Linking styles and formats]](#page-documentation-doxygen-styles-formats) for more information on these.  
-**Markdown** links are preferred. **Custom links** are also preferred when appropriate.  
-**Markdown** reference link definitions should be placed at the end of the same documentation comment block. They only work within the block they are defined in.
+**Markdown links** are preferred. **Custom links** are also preferred when appropriate.  
+**Markdown reference link** definitions should be placed at the end of the same documentation comment block. They only work within the block they are defined in.
 
 <br/>
 
@@ -47,7 +47,7 @@ When writing text, line breaks should be done using two spaces at the end of the
 **%Quantum generated code** documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/quantum-codegen} to not have unnecessary additional files in Unity's @dirref{Altzone,Assets} folder, especially because Unity would create `.meta` files to keep track of the files for no reason.  
 The directory structure inside the above directory matches that found in the project.  
 The files are named as follows:  
-- Filenames begin with "qtn" in all lower case.
+- Filenames begin with **"qtn"** in all lower case.
 - This is then followed by the name of the `.qtn` file being documented as it's named in the project separated by a hyphen.
 
 Example filename:  
@@ -80,7 +80,7 @@ All **enums** and **structs** defined in a `.qtn` file should be documented.
 
 **Enums** should be documented with a `@enum` command with the name of the **enum** formatted with `::` as below followed by a [{brief/summary}]. 
 Below that a link to the `.qtn` file itself should be listed as below.  
-Each **ariable** defined in an **enum** should be documented with a `@var` command with the name of the **enum** and the name of the **variable** followed by a [{brief/summary}].   
+Each **variable** defined in an **enum** should be documented with a `@var` command with the name of the **enum** and the name of the **variable** followed by a [{brief/summary}].   
 
 ```
 /// @enum Quantum::EnumName

@@ -1,5 +1,5 @@
 # Documenting Source code {#page-documentation-documenting-source-code}
-All aspects of **source code**, such as files, methods and variables, should be documented with clear and concise information.  
+All aspects of **source code**, such as **files**, **methods** and **variables**, should be documented with clear and concise information.  
 Documentation should be written in documentation comment blocks using the `///` format.  
 Different sections of the documentation should be separated by an empty line.  
 
@@ -8,13 +8,13 @@ Different sections of the documentation should be separated by an empty line.
 ## Base guidelines {#page-documentation-source-code-base-guidelines}
 These are base guidelines for all **source code** documentation.  
 For additional guidelines refer to:  
-[Documenting Quantum systems](#page-documentation-source-code-quantum-systems) if you are documenting a %Quantum system.  
-[Documenting Unity/View](#page-documentation-source-code-unity-view) if you are documenting Unity/View code.
+[Documenting Quantum systems](#page-documentation-source-code-quantum-systems) if you are documenting a **%Quantum system**.  
+[Documenting Unity/View](#page-documentation-source-code-unity-view) if you are documenting **Unity/View** code.
 
 <br/>
 
 ### Unicode characters {#page-documentation-source-code-base-guidelines-unicode}
-**Unicode** characters can not be used inside of **source code**, even in documentation comments. The use of them can be circumvented with for example custom commands. See [[Circumventing unicode characters]](#page-documentation-doxygen-custom-commands-unicode)
+**Unicode characters** can not be used inside of **source code**, even in documentation comments. The use of them can be circumvented with for example custom commands. See [[Circumventing unicode characters]](#page-documentation-doxygen-custom-commands-unicode)
 
 <br/>
 
@@ -33,19 +33,19 @@ Some parts of documentation in **source code** are only read by [Doxygen🡵], w
   - Other areas of class, method and variable documentation
 
 ### Documentation commands {#page-documentation-source-code-base-guidelines-commands}
-[Doxygen🡵] supports various commands that can be used in source code documentation. See [[Documenting with Doxygen]](#page-documentation-doxygen-commands) for more information on these.  
+[Doxygen🡵] supports various **commands** that can be used in **source code** documentation. See [[Documenting with Doxygen]](#page-documentation-doxygen-commands) for more information on these.  
 
-Always use these **XML Commands** when documenting files, classes, methods and variables:
+Always use these **XML Commands** when documenting **files**, **classes**, **methods** and **variable**:
 - `<summary>`
 - `<param>`
 - `<returns>`
 
-In a [Non-Doxygen specific](#page-documentation-source-code-base-guidelines-doxygen-specific) part of documentation you should only use **XML Commands**. When using **XML Commands** you should consider compatibility with both Doxygen and other tools. With careful consideration other kinds of **commands** can sometimes be used, as long as they don't cause issues when any tool reads them and don't negatively affect the readibility of the documentation too much. The most important thing is to test compatibility and readability.  
+In a [Non-Doxygen specific](#page-documentation-source-code-base-guidelines-doxygen-specific) part of documentation you should only use **XML Commands**. When using **XML Commands** you should consider compatibility with both **Doxygen** and other tools. With careful consideration other kinds of **commands** can sometimes be used, as long as they don't cause issues when any tool reads them and don't negatively affect the readibility of the documentation too much. The most important thing is to test compatibility and readability.  
 
 Other kinds of **commands** can be used if they are in a [Doxygen specific](#page-documentation-source-code-base-guidelines-doxygen-specific) part of documentation, such as the file documentation.  
 You should still consider consistency. For example even though file documentation is **Doxygen** specific, `<summary>` should still be used.  
 
-The `<br/>` command should be used for line breaks.  
+The `<br/>` **command** should be used for line breaks.  
 
 <br/>
 

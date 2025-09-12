@@ -18,7 +18,7 @@ Refer to the individual sections on this page for specific guidelines on each:
 <br/>
 
 ### Unicode characters {#page-documentation-additional-base-guidelines-unicode}
-**Unicode** characters are ok to use inside of additional documentation `.dox` files.
+**Unicode characters** are ok to use inside of additional documentation `.dox` files.
 
 <br/>
 
@@ -51,7 +51,7 @@ The [Base guidelines](#page-documentation-additional-base-guidelines) apply.
 ### File guidelines {#page-documentation-additional-directories-file-guidelines}
 **Directory** documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/directories}.  
 **Directory** documentation files are named as follows:  
-- Filenames begin with the word "directory" in all lower case.
+- Filenames begin with the word **"directory"** in all lower case.
 - This is then followed by the name of the directory being documented as it's named in the project, including it's parent directory structure excluding the root directory of the project.
 - Only the core **directories** that are part of the parent directory structure need to be listed in the filename.
 - Each directory name is separated by a hyphen.
@@ -72,7 +72,7 @@ Examples:
 
 ### File contents {#page-documentation-additional-directories-file-contents}
 **Directory** documentation consists of documentation for all the **subdirectories** of the **directory** being documented.  
-The documentation for the **director**y being documented itself should be in it's **parent directory's** documentation.
+The documentation for the **directory** being documented itself should be in it's **parent directory's** documentation.
 
 <br/>
 
@@ -120,7 +120,7 @@ The [Base guidelines](#page-documentation-additional-base-guidelines) apply.
 ### File guidelines {#page-documentation-additional-scenes-file-guidelines}
 **Scene** documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/scenes}.  
 **Scene** documentation files are named as follows:  
-- Filenames begin with the word "scene" in all lower case.
+- Filenames begin with the word **"scene"** in all lower case.
 - This is then followed by the filename as it is in the project of the **scene** being documented.
 - Each word is separated by a hyphen.
 
@@ -158,7 +158,7 @@ The [Base guidelines](#page-documentation-additional-base-guidelines) apply.
 ### File guidelines {#page-documentation-additional-specs-file-guidelines}
 **Spec asset** documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/specs}.  
 **Spec asset** documentation files should be named as such:  
-- Filenames begin with "spec-asset" in all lower case.
+- Filenames begin with **"spec-asset"** in all lower case.
 - This is then followed by the filename as it is in the project of the **spec** being documented.
 - Each word is separated by a hyphen.
 Documentation is specifically for the `.asset` files, not the source `.cs` files.  
@@ -194,7 +194,7 @@ The [Base guidelines](#page-documentation-additional-base-guidelines) apply.
 ### File guidelines {#page-documentation-additional-prefabs-file-guidelines}
 **Prefab** documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/prefabs}.  
 **Prefab** documentation files are named as follows:  
-- Filenames begin with the word "prefab" in all lower case.
+- Filenames begin with the word **"prefab"** in all lower case.
 - This is then followed by the filename of the **prefab** as it is in the project.
 - Each word is separated by a hyphen.
 
