@@ -54,8 +54,8 @@ The [Base guidelines](#page-documentation-additional-base-guidelines) apply.
 - **Filenames** begin with the word **"directory"** in all lower case.
 - This is then followed by the name of the **directory** being documented as it's named in the project, including it's **parent directory** structure excluding the **root directory** of the project.
 - Only the core **directories** that are part of the **parent directory** structure need to be listed in the **filename**.
-- Each directory name is separated by a hyphen.
-- If the **directories** being documented have **subdirectories** with their own documentation, the **filename** should end with a hyphen.
+- Each **directory name** is separated by a hyphen `-`.
+- If the **directories** being documented have **subdirectories** with their own documentation, the **filename** should end with a hyphen `-`.
 - The **root directory** documentation file is named `directory-.dox`.
 
 Syntax:  
@@ -122,7 +122,7 @@ The [Base guidelines](#page-documentation-additional-base-guidelines) apply.
 **Scene** documentation files are named as follows:  
 - **Filenames** begin with the word **"scene"** in all lower case.
 - This is then followed by the **filename** as it is in the project of the **scene** being documented.
-- Each word is separated by a hyphen.
+- Each word is separated by a hyphen `-`.
 
 Example **filename**:  
 `scene-(SceneFileName).dox`
@@ -160,7 +160,7 @@ The [Base guidelines](#page-documentation-additional-base-guidelines) apply.
 **Spec asset** documentation files should be named as such:  
 - **Filenames** begin with **"spec-asset"** in all lower case.
 - This is then followed by the **filename** as it is in the project of the **spec** being documented.
-- Each word is separated by a hyphen.
+- Each word is separated by a hyphen `-`.
 Documentation is specifically for the `.asset` files, not the source `.cs` files.  
 
 Example **filename**:  
@@ -196,7 +196,7 @@ The [Base guidelines](#page-documentation-additional-base-guidelines) apply.
 **Prefab** documentation files are named as follows:  
 - **Filenames** begin with the word **"prefab"** in all lower case.
 - This is then followed by the **filename** of the **prefab** as it is in the project.
-- Each word is separated by a hyphen.
+- Each word is separated by a hyphen `-`.
 
 Example **filename**:  
 `prefab-(PrefabFileName).dox`
