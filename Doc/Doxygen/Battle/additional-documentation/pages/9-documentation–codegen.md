@@ -59,7 +59,7 @@ Example filename:
 The file should be documented with a `@file` command and a [{brief/summary}].  
 In the [{detailed description}] of the file documentation all enums and structs defined in the file should be listed.  
 
-Enums and structs should be listed under their own headers as bullet points.   
+Enums and structs should be listed under their own headers as bullet points.  
 
 ```
 /// @file Filename.qtn

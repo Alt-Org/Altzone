@@ -225,7 +225,7 @@ Entity Prototype summary has a link to its prefab counterpart. The template belo
 <br/>
 
 ### Prefab Structure format {#page-documentation-additional-prefabs-structure-format}
-Prefabs need to have their structure documented. 
+Prefabs need to have their structure documented.
 
 Structure documentation follows these rules:
 - Structure is listed as a bullet list.

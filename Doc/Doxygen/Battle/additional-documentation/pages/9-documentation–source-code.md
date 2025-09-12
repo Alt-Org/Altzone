@@ -1,7 +1,7 @@
 # Documenting Source code {#page-documentation-documenting-source-code}
 All aspects of source code, such as files, methods and variables, should be documented with clear and concise information.  
 Documentation should be written in documentation comment blocks using the `///` format.  
-Different sections of the documentation should be separated by an empty line.   
+Different sections of the documentation should be separated by an empty line.  
 
 <br/>
 
@@ -101,7 +101,7 @@ When documenting any method, the different sections of the comment such as the s
 /// <param name="playerData">Pointer to the player's data component.</param>
 /// <param name="gridPosition">The grid position of the player.</param>
 /// <param name="clampedPosition">The resulting clamped position of the player.</param>
-/// 
+///
 /// <returns>True if the position changed from clamping, false if it remained the same.</returns>
 ```
 

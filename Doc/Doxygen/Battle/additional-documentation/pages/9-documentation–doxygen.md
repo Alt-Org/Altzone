@@ -229,7 +229,7 @@ These [Custom commands🡵] allow for easier **formatting** of our text.
 List of current formatting aliases
 
 | Alias                   | Description        |
-| :---------------------- | :----------------- | 
+| :---------------------- | :----------------- |
 | @@bigtext{example text} | Makes the text big |
 
 <br/>
@@ -247,7 +247,7 @@ Usage/syntax:
 List of current unicode aliases
 
 | Alias      | Character | Description          |
-| :--------- | :-------- | :------------------- | 
+| :--------- | :-------- | :------------------- |
 | @@u-exlink | 🡵        | external link symbol |
 
 They are defined as such:
