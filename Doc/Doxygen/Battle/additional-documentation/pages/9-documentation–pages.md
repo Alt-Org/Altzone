@@ -6,7 +6,7 @@ See [Doxygen documentation🡵](https://www.doxygen.nl/manual/additional.html#cu
 <br/>
 
 ## File guidelines {#page-documentation-pages-file}
-Page files are `.md` Markdown files that are found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/pages}.  
+Page files are `.md` Markdown files that are found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/pages}, because they are entirely unrelated to any source code of the project and we do not want to have unnecessary additional files in Unity's @dirref{Altzone,Assets} folder, especially because Unity would create `.meta` files to keep track of the files for no reason.  
 Page files should be named with a number and the name of the page. The number defines the order of the pages as they appear on the documentation webpage. File names should be all lower case and words should be separated by hyphens.  
 `(number)-(page-name).md`  
 Subpages should be named with the name of the parent page file followed by the name of the subpage. File names should be all lower case and words should be separated by hyphens.  
@@ -22,7 +22,7 @@ Unicode characters are ok to use inside of documentation page files.
 <br/>
 
 ### Documentation commands {#page-documentation-pages-commands}
-Doxygen supports various commands that can be used in page documentation. See [Documenting with Doxygen](#page-documentation-doxygen) for more information on these.  
+Doxygen supports various commands that can be used in page documentation. See [Documenting with Doxygen](#page-documentation-doxygen-commands) for more information on these.  
 All commands are allowed in documentation page files, so you should choose the most appropriate format.
 
 <br/>
