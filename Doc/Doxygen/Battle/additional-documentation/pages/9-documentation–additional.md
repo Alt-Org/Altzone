@@ -1,7 +1,7 @@
 # Writing additional documentation {#page-documentation-additional}
 These are guidelines for writing **additional documentation**, excluding **documentation pages** and **%Quantum generated code** (see [[Writing documentation pages]](#page-documentation-pages) and [[Documenting Quantum generated code]](#page-documentation-codegen)).
 
-**Additional documentation** is written in `.dox` files because it can not be written directly in source code. Documentation is written using documentation comments with the `///` syntax.  
+**Additional documentation** is written in `.dox` files because it can not be written directly in **source code**. Documentation is written using **documentation comments** with the `///` syntax.  
 The files should be in the correct subdirectories of @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation} to not have unnecessary additional files in **Unity**'s @dirref{Altzone,Assets} folder, especially because **Unity** would create `.meta` files to keep track of the files for no reason.
 
 ---
@@ -18,7 +18,7 @@ Refer to the individual sections on this page for specific guidelines on each:
 <br/>
 
 ### Unicode characters {#page-documentation-additional-base-guidelines-unicode}
-**Unicode characters** are ok to use inside of additional documentation `.dox` files.
+**Unicode characters** are ok to use inside of **additional documentation** `.dox` files.
 
 <br/>
 
@@ -30,8 +30,8 @@ All **commands** are allowed in `.dox` files, so you should choose the most appr
 
 ### Linking formats {#page-documentation-additional-base-guidelines-linking}
 [Doxygen🡵] supports various types of linking formats. See [[Linking styles and formats]](#page-documentation-doxygen-styles-formats) for more information on these.  
-**Markdown links** are preferred. Custom links are also preferred when appropriate.  
-**Markdown reference link** definitions should be placed at the end of the same documentation comment block. They only work within the block they are defined in.
+**Markdown links** are preferred. **Custom links** are also preferred when appropriate.  
+**Markdown reference link** definitions should be placed at the end of the same **documentation comment block**. They only work within the block they are defined in.
 
 <br/>
 
@@ -51,11 +51,11 @@ The [Base guidelines](#page-documentation-additional-base-guidelines) apply.
 ### File guidelines {#page-documentation-additional-directories-file-guidelines}
 **Directory** documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/directories}.  
 **Directory** documentation files are named as follows:  
-- Filenames begin with the word **"directory"** in all lower case.
-- This is then followed by the name of the directory being documented as it's named in the project, including it's parent directory structure excluding the root directory of the project.
-- Only the core **directories** that are part of the parent directory structure need to be listed in the filename.
+- **Filenames** begin with the word **"directory"** in all lower case.
+- This is then followed by the name of the **directory** being documented as it's named in the project, including it's **parent directory** structure excluding the **root directory** of the project.
+- Only the core **directories** that are part of the **parent directory** structure need to be listed in the **filename**.
 - Each directory name is separated by a hyphen.
-- If the **directories** being documented have **subdirectories** with their own documentation, the filename should end with a hyphen.
+- If the **directories** being documented have **subdirectories** with their own documentation, the **filename** should end with a hyphen.
 - The **root directory** documentation file is named `directory-.dox`.
 
 Syntax:  
@@ -120,11 +120,11 @@ The [Base guidelines](#page-documentation-additional-base-guidelines) apply.
 ### File guidelines {#page-documentation-additional-scenes-file-guidelines}
 **Scene** documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/scenes}.  
 **Scene** documentation files are named as follows:  
-- Filenames begin with the word **"scene"** in all lower case.
-- This is then followed by the filename as it is in the project of the **scene** being documented.
+- **Filenames** begin with the word **"scene"** in all lower case.
+- This is then followed by the **filename** as it is in the project of the **scene** being documented.
 - Each word is separated by a hyphen.
 
-Example filename:  
+Example **filename**:  
 `scene-(SceneFileName).dox`
 
 <br/>
@@ -158,12 +158,12 @@ The [Base guidelines](#page-documentation-additional-base-guidelines) apply.
 ### File guidelines {#page-documentation-additional-specs-file-guidelines}
 **Spec asset** documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/specs}.  
 **Spec asset** documentation files should be named as such:  
-- Filenames begin with **"spec-asset"** in all lower case.
-- This is then followed by the filename as it is in the project of the **spec** being documented.
+- **Filenames** begin with **"spec-asset"** in all lower case.
+- This is then followed by the **filename** as it is in the project of the **spec** being documented.
 - Each word is separated by a hyphen.
 Documentation is specifically for the `.asset` files, not the source `.cs` files.  
 
-Example filename:  
+Example **filename**:  
 `(ExampleQSpec).dox`
 
 <br/>
@@ -194,11 +194,11 @@ The [Base guidelines](#page-documentation-additional-base-guidelines) apply.
 ### File guidelines {#page-documentation-additional-prefabs-file-guidelines}
 **Prefab** documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/prefabs}.  
 **Prefab** documentation files are named as follows:  
-- Filenames begin with the word **"prefab"** in all lower case.
-- This is then followed by the filename of the **prefab** as it is in the project.
+- **Filenames** begin with the word **"prefab"** in all lower case.
+- This is then followed by the **filename** of the **prefab** as it is in the project.
 - Each word is separated by a hyphen.
 
-Example filename:  
+Example **filename**:  
 `prefab-(PrefabFileName).dox`
 
 <br/>
