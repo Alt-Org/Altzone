@@ -1,13 +1,13 @@
 # Writing additional documentation {#page-documentation-additional}
-These are guidelines for writing additional documentation, excluding documentation pages and %Quantum generated code (see [[Writing documentation pages]](#page-documentation-pages) and [[Documenting Quantum generated code]](#page-documentation-codegen)).
+These are guidelines for writing **additional documentation**, excluding **documentation pages** and **%Quantum generated code** (see [[Writing documentation pages]](#page-documentation-pages) and [[Documenting Quantum generated code]](#page-documentation-codegen)).
 
-Additional documentation is written in `.dox` files because it can not be written directly in source code. Documentation is written using documentation comments with the `///` syntax.  
+**Additional documentation** is written in `.dox` files because it can not be written directly in source code. Documentation is written using documentation comments with the `///` syntax.  
 The files should be in the correct subdirectories of @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation} to not have unnecessary additional files in Unity's @dirref{Altzone,Assets} folder, especially because Unity would create `.meta` files to keep track of the files for no reason.
 
 ---
 
 ## Base guidelines {#page-documentation-additional-base-guidelines}
-These are base guidelines for writing additional documentation.  
+These are base guidelines for writing **additional documentation**.  
 Refer to the individual sections on this page for specific guidelines on each:  
 [Documenting directories](#page-documentation-additional-directories)  
 [Documenting namespaces](#page-documentation-additional-namespaces)  
@@ -18,25 +18,25 @@ Refer to the individual sections on this page for specific guidelines on each:
 <br/>
 
 ### Unicode characters {#page-documentation-additional-base-guidelines-unicode}
-Unicode characters are ok to use inside of additional documentation `.dox` files.
+**Unicode** characters are ok to use inside of additional documentation `.dox` files.
 
 <br/>
 
 ### Documentation commands {#page-documentation-additional-base-guidelines-commands}
-Doxygen supports various commands that can be used in additional documentation. See [[Documenting with Doxygen]](#page-documentation-doxygen-commands) for more information on these.  
-All commands are allowed in `.dox` files, so you should choose the most appropriate format.
+[Doxygen🡵] supports various **commands** that can be used in **additional documentation**. See [[Documenting with Doxygen]](#page-documentation-doxygen-commands) for more information on these.  
+All **commands** are allowed in `.dox` files, so you should choose the most appropriate format.
 
 <br/>
 
 ### Linking formats {#page-documentation-additional-base-guidelines-linking}
-Doxygen supports various types of linking formats. See [[Linking styles and formats]](#page-documentation-doxygen-styles-formats) for more information on these.  
-Markdown links are preferred. Custom links are also preferred when appropriate.  
-Markdown reference link definitions should be placed at the end of the same documentation comment block. They only work within the block they are defined in.
+[Doxygen🡵] supports various types of linking formats. See [[Linking styles and formats]](#page-documentation-doxygen-styles-formats) for more information on these.  
+**Markdown links** are preferred. Custom links are also preferred when appropriate.  
+**Markdown reference link** definitions should be placed at the end of the same documentation comment block. They only work within the block they are defined in.
 
 <br/>
 
 ### Markdown {#page-documentation-additional-base-guidelines-markdown}
-Markdown formatting can me used in `.dox` files. See [Doxygen documentation🡵](https://www.doxygen.nl/manual/markdown.html).  
+**Markdown** formatting can me used in `.dox` files. See [Doxygen documentation🡵](https://www.doxygen.nl/manual/markdown.html).  
 When writing text, line breaks should be done using two spaces at the end of the line.
 
 <br/>
@@ -49,14 +49,14 @@ The [Base guidelines](#page-documentation-additional-base-guidelines) apply.
 <br/>
 
 ### File guidelines {#page-documentation-additional-directories-file-guidelines}
-Directory documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/directories}.  
-Directory documentation files are named as follows:  
+**Directory** documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/directories}.  
+**Directory** documentation files are named as follows:  
 - Filenames begin with the word "directory" in all lower case.
 - This is then followed by the name of the directory being documented as it's named in the project, including it's parent directory structure excluding the root directory of the project.
-- Only the core directories that are part of the parent directory structure need to be listed in the filename.
+- Only the core **directories** that are part of the parent directory structure need to be listed in the filename.
 - Each directory name is separated by a hyphen.
-- If the directories being documented have subdirectories with their own documentation, the filename should end with a hyphen.
-- The root directory documentation file is named `directory-.dox`.
+- If the **directories** being documented have **subdirectories** with their own documentation, the filename should end with a hyphen.
+- The **root directory** documentation file is named `directory-.dox`.
 
 Syntax:  
 `directory-(DirectoryName)-.dox`  
@@ -71,13 +71,13 @@ Examples:
 <br/>
 
 ### File contents {#page-documentation-additional-directories-file-contents}
-Directory documentation consists of documentation for all the subdirectories of the directory being documented.  
-The documentation for the directory being documented itself should be in it's parent directory's documentation.
+**Directory** documentation consists of documentation for all the **subdirectories** of the **directory** being documented.  
+The documentation for the **director**y being documented itself should be in it's **parent directory's** documentation.
 
 <br/>
 
 ### Documentation format {#page-documentation-additional-directories-format}
-Directory documentation consists of the directory name marked with the `@dir` command and a [{brief/summary}].
+**Directory** documentation consists of the directory name marked with the `@dir` command and a [{brief/summary}].
 
 ```
 /// @dir DirectoryName
@@ -92,13 +92,13 @@ Directory documentation consists of the directory name marked with the `@dir` co
 
 ## Documenting namespaces {#page-documentation-additional-namespaces}
 The [Base guidelines](#page-documentation-additional-base-guidelines) apply.  
-All namespaces should be documented in the existing namespace.dox file, found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/namespaces}.
+All **namespaces** should be documented in the existing namespace.dox file, found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/namespaces}.
 
 <br/>
 
 ### Documentation format {#page-documentation-additional-namespaces-format}
-Namespace documentation consists of the namespace definition marked with the `@namespace` command and a [{brief/summary}].  
-Namespace definitions are formatted with `::` symbols as such:  
+**Namespace** documentation consists of the namespace definition marked with the `@namespace` command and a [{brief/summary}].  
+**Namespace** definitions are formatted with `::` symbols as such:  
 `(Namespace)::(Namespace)`  
 
 ```
@@ -118,10 +118,10 @@ The [Base guidelines](#page-documentation-additional-base-guidelines) apply.
 <br/>
 
 ### File guidelines {#page-documentation-additional-scenes-file-guidelines}
-Scene documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/scenes}.  
-Scene documentation files are named as follows:  
+**Scene** documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/scenes}.  
+**Scene** documentation files are named as follows:  
 - Filenames begin with the word "scene" in all lower case.
-- This is then followed by the filename as it is in the project of the scene being documented.
+- This is then followed by the filename as it is in the project of the **scene** being documented.
 - Each word is separated by a hyphen.
 
 Example filename:  
@@ -130,10 +130,10 @@ Example filename:
 <br/>
 
 ### Documentation format {#page-documentation-additional-scenes-format}
-Scene documentation consists of the scene name marked with the `@file` command and a [{brief/summary}].  
-It also includes a listing of all the GameObjects in the scene, as well as all GameObjects that can be instatiated in the scene.  
+**Scene** documentation consists of the scene name marked with the `@file` command and a [{brief/summary}].  
+It also includes a listing of all the **GameObjects** in the scene, as well as all **GameObjects** that can be instatiated in the **scene**.  
 
-GameObjects are listed under Markdown headers defined with `###`. They are listed as bullet points, and marked as bold with the Markdown `**` format. Bullet points are separated by an empty line  
+**GameObjects** are listed under **Markdown headers** defined with `###`. They are listed as bullet points, and marked as bold with the **Markdown** `**` format. Bullet points are separated by an empty line  
 
 ```
 /// @file (SceneFileName).unity
@@ -156,10 +156,10 @@ The [Base guidelines](#page-documentation-additional-base-guidelines) apply.
 <br/>
 
 ### File guidelines {#page-documentation-additional-specs-file-guidelines}
-Spec asset documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/specs}.  
-Spec asset documentation files should be named as such:  
+**Spec asset** documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/specs}.  
+**Spec asset** documentation files should be named as such:  
 - Filenames begin with "spec-asset" in all lower case.
-- This is then followed by the filename as it is in the project of the scene being documented.
+- This is then followed by the filename as it is in the project of the **spec** being documented.
 - Each word is separated by a hyphen.
 Documentation is specifically for the `.asset` files, not the source `.cs` files.  
 
@@ -169,7 +169,7 @@ Example filename:
 <br/>
 
 ### Documentation format {#page-documentation-additional-specs-format}
-Spec asset documentation consists of the scene name marked with the `@file` command and a [{brief/summary}].  
+**Spec asset** documentation consists of the scene name marked with the `@file` command and a [{brief/summary}].  
 These are followed by the description shown below, which includes a link to the source `.cs` file.  
 
 ```
@@ -192,10 +192,10 @@ The [Base guidelines](#page-documentation-additional-base-guidelines) apply.
 <br/>
 
 ### File guidelines {#page-documentation-additional-prefabs-file-guidelines}
-Prefab documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/prefabs}.  
-Prefab documentation files are named as follows:  
+**Prefab** documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/prefabs}.  
+**Prefab** documentation files are named as follows:  
 - Filenames begin with the word "prefab" in all lower case.
-- This is then followed by the filename of the prefab as it is in the project.
+- This is then followed by the filename of the **prefab** as it is in the project.
 - Each word is separated by a hyphen.
 
 Example filename:  
@@ -204,13 +204,13 @@ Example filename:
 <br/>
 
 ### Prefab summary format {#page-documentation-additional-prefabs-summary-format}
-Prefab summary doesn't have a strict format that needs to be used, but it needs to be kept relatively short.
+**Prefab summary** doesn't have a strict format that needs to be used, but it needs to be kept relatively short.
 
 <br/>
 
 ### Entity Prototype format {#page-documentation-additional-prefabs-entity-prototype}
-Entity Prototype documentation is paired with their prefab's documentation and is located below it in the same file.  
-Entity Prototype summary has a link to its prefab counterpart. The template below is all that is needed to document Entity Prototypes.  
+**Entity Prototype** documentation is paired with their **prefab's** documentation and is located below it in the same file.  
+**Entity Prototype** summary has a link to its **prefab** counterpart. The template below is all that is needed to document **Entity Prototypes**.  
 
 ```
 /// @file filename.qprototype
@@ -225,9 +225,9 @@ Entity Prototype summary has a link to its prefab counterpart. The template belo
 <br/>
 
 ### Prefab Structure format {#page-documentation-additional-prefabs-structure-format}
-Prefabs need to have their structure documented.
+**Prefabs** need to have their structure documented.
 
-Structure documentation follows these rules:
+**Structure documentation** follows these rules:
 - Structure is listed as a bullet list.
 - GameObject names are bolded.
 - Components and Children -titles are italicized.
@@ -347,5 +347,6 @@ Note: There is space between the closing curly braces and rest of the names, bec
 
 ---
 
+[Doxygen🡵]:               https://www.doxygen.nl/index.html
 [{brief/summary}]:        #page-documentation-doxygen-terminology-brief-summary
 [{detailed description}]: #page-documentation-doxygen-terminology-detailed-description

@@ -89,7 +89,7 @@ see [Doxygen documentation🡵](https://www.doxygen.nl/manual/markdown.html#md_l
   `[Example text](link_destination)`  
 - **Documentation page links** are formatted as such:  
   `[Example](#page-example)` For internal page links  
-  `[[Example]](#page-example)`For external page links  
+  `[[Example]](#page-example)` For external page links  
 - **External links** are formatted as such:  
   `[Example website🡵](exampleurl.com)`  
   - If the same link is used repeatedly, a **reference link** can be used and is defined as such:  
