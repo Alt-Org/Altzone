@@ -1,3 +1,5 @@
+/*{ Built-in overrides */ 
+
 html.dark-mode code {
   color: white;
 }
@@ -24,6 +26,10 @@ html.light-mode *:not(.paramname)>em {
   font-style: normal;
 }
 
+/*} Built-in overrides */ 
+
+/*{ Custom */ 
+
 .brief-h {
   font-size: 1.1rem;
 }
@@ -31,3 +37,9 @@ html.light-mode *:not(.paramname)>em {
 .big-text {
   font-size: 1.1rem;
 }
+
+.fake-link {
+  color: var(--page-link-color);
+}
+
+/*} Custom */ 
