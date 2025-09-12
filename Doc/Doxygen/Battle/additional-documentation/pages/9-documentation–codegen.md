@@ -44,7 +44,7 @@ When writing text, line breaks should be done using two spaces at the end of the
 <br/>
 
 ## File guidelines {#page-documentation-codegen-documenting-file-guidelines}
-**%Quantum generated code** documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/quantum-codegen} to not have unnecessary additional files in **Unity's** @dirref{Altzone,Assets} folder, especially because **Unity** would create `.meta` files to keep track of the files for no reason.  
+**%Quantum generated code** documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/quantum-codegen} to not have unnecessary additional files in **Unity**'s @dirref{Altzone,Assets} folder, especially because **Unity** would create `.meta` files to keep track of the files for no reason.  
 The directory structure inside the above directory matches that found in the project.  
 The files are named as follows:  
 - Filenames begin with **"qtn"** in all lower case.

@@ -2,7 +2,7 @@
 These are guidelines for writing **additional documentation**, excluding **documentation pages** and **%Quantum generated code** (see [[Writing documentation pages]](#page-documentation-pages) and [[Documenting Quantum generated code]](#page-documentation-codegen)).
 
 **Additional documentation** is written in `.dox` files because it can not be written directly in source code. Documentation is written using documentation comments with the `///` syntax.  
-The files should be in the correct subdirectories of @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation} to not have unnecessary additional files in **Unity's** @dirref{Altzone,Assets} folder, especially because **Unity** would create `.meta` files to keep track of the files for no reason.
+The files should be in the correct subdirectories of @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation} to not have unnecessary additional files in **Unity**'s @dirref{Altzone,Assets} folder, especially because **Unity** would create `.meta` files to keep track of the files for no reason.
 
 ---
 
