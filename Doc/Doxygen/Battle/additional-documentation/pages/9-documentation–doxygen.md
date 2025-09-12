@@ -5,7 +5,7 @@
 <br/>
 
 ### Brief / Summary {#page-documentation-doxygen-terminology-brief-summary}
-Doxygen refers to this part of documentation as a brief, but in C# it is called a summary.  
+[Doxygen🡵] refers to this part of documentation as a **brief**, but in **C#** it is called a **summary**.  
 It should contain a brief description of whatever is being documented and appears automatically in documentation as the short description wherever the thing being documented is listed.  
 The brief will appear at the beginning of the individual documentation page of the thing it is defined for.
 It can also be linked to manually to have it appear where we want, which is used often.
@@ -13,37 +13,37 @@ It can also be linked to manually to have it appear where we want, which is used
 <br/>
 
 ### Detailed description {#page-documentation-doxygen-terminology-detailed-description}
-This is a Doxygen term. The detailed description is defined as any text we write outside of the brief.  
-It will appear lower down on the individual documentation page of the thing it is defined for. The brief is repeated before the detailed description text.  
+This is a [Doxygen🡵] term. The **detailed description** is defined as any text we write outside of the **brief**.  
+It will appear lower down on the individual documentation page of the thing it is defined for. The **brief** is repeated before the **detailed description** text.  
 
 <br/>
 
 ## Documentation comment blocks {#page-documentation-doxygen-comment-blocks}
-Doxygen supports multiple documentation comment formats (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/docblocks.html#specialblock)). You should only use the `///` format.
+[Doxygen🡵] supports multiple **documentation comment** formats (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/docblocks.html#specialblock)). You should only use the `///` format.
 
 <br/>
 
 ## Unicode characters {#page-documentation-doxygen-unicode}
-The use of unicode characters depends on context.  
+The use of **unicode characters** depends on context.  
 See [[Documenting source code]](#page-documentation-source-code-base-guidelines-unicode)  
 See [[Documenting Quantum generated code]](#page-documentation-codegen-base-guidelines-unicode)  
 See [[Writing documentation pages]](#page-documentation-pages-file-unicode)  
 See [[Writing additional documentation]](#page-documentation-additional-base-guidelines-unicode)  
 
-In contexts where unicode characters are not allowed, they can be [circumvented](#page-documentation-doxygen-custom-commands-unicode).
+In contexts where **unicode characters** are not allowed, they can be [circumvented](#page-documentation-doxygen-custom-commands-unicode).
 
 <br/>
 
 ## Commands {#page-documentation-doxygen-commands}
-Doxygen supports multiple kinds of commands (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/commands.html)).  
-Doxygen specific commands can start with a `\` or `@` symbol. Examples on the Doxygen documentation page use `\`, but you should only use the `@` format.  
-Doxygen supports XML Commands (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/xmlcmds.html)). These commands are preferred in certain contexts.  
-Doxygen supports HTML Commands (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/htmlcmds.html)).  
+[Doxygen🡵] supports multiple kinds of commands (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/commands.html)).  
+**Doxygen specific commands** can start with a `\` or `@` symbol. Examples on the **Doxygen** documentation page use `\`, but you should only use the `@` format.  
+**Doxygen** supports **XML Commands** (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/xmlcmds.html)). These commands are preferred in certain contexts.  
+**Doxygen** supports **HTML Commands** (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/htmlcmds.html)).  
 
-XML Commands are generally preferred in source code because they are a native C# feature (see [C# documentation🡵](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments#d3-recommended-tags)) that IDEs such as Visual Studio recognize. Visual Studio will automatically generate documentation comments with XML Commands.  
-Documentation comments should in general use the XML `<summary>` Command instead of the Doxygen specific `@brief` command for the sake of consistency.  
+**XML Commands** are generally preferred in **source code** because they are a native **C#** feature (see [C# documentation🡵](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments#d3-recommended-tags)) that IDEs such as Visual Studio recognize. Visual Studio will automatically generate documentation comments with **XML Commands**.  
+Documentation comments should in general use the **XML** `<summary>` Command instead of the **Doxygen specific** `@brief` command for the sake of consistency.  
 
-The correct command types to use depend on context.  
+**The correct command types to use depend on context.**  
 See [[Documenting source code]](#page-documentation-source-code-base-guidelines-commands)  
 See [[Documenting Quantum generated code]](#page-documentation-codegen-base-guidelines-commands)  
 See [[Writing documentation pages]](#page-documentation-pages-commands)  
@@ -54,10 +54,10 @@ See [[Writing additional documentation]](#page-documentation-additional-base-gui
 ---
 
 ## Linking styles and formats {#page-documentation-doxygen-styles-formats}
-Doxygen supports multiple kinds of linking formats. We have our own guidelines for the styling of links.  
-The linking style and format you should use depends on what you are documenting. The style remains consistent in all documentation, but there are many formats you can use for the same kind of link.  
+[Doxygen🡵] supports multiple kinds of **linking formats**. We have our own guidelines for the **styling** of **links**.  
+The **linking style** and **format** you should use depends on what you are documenting. The **style** remains consistent in all documentation, but there are many **formats** you can use for the same kind of link.  
 
-The correct format to use depends on context.  
+**The correct format to use depends on context.**  
 See [[Documenting source code]](#page-documentation-source-code-base-guidelines-linking)  
 See [[Documenting Quantum generated code]](#page-documentation-codegen-base-guidelines-linking)  
 See [[Writing documentation pages]](#page-documentation-pages-linking)  
@@ -83,37 +83,37 @@ See [[Writing additional documentation]](#page-documentation-additional-base-gui
 <br/>
 
 ### Markdown format {#page-documentation-doxygen-styles-formats-markdown}
-Markdown style links are preferred when they are available.  
+**Markdown style links** are preferred when they are available.  
 see [Doxygen documentation🡵](https://www.doxygen.nl/manual/markdown.html#md_links)
-- Generic links are formatted as such:  
+- **Generic links** are formatted as such:  
   `[Example text](link_destination)`  
-- Documentation page links are formatted as such:  
+- **Documentation page links** are formatted as such:  
   `[Example](#page-example)` For internal page links  
   `[[Example]](#page-example)`For external page links  
-- External links are formatted as such:  
+- **External links** are formatted as such:  
   `[Example website🡵](exampleurl.com)`  
-  - If the same link is used repeatedly, a reference link can be used and is defined as such:  
+  - If the same link is used repeatedly, a **reference link** can be used and is defined as such:  
     `[Example website🡵]: exampleurl.com`  
     And used as such:  
     `[Example website🡵]`  
-    Reference links may not always work, so you should test to see.
+    **Reference links** may not always work, so you should test to see.
 
-Built-in Doxygen pages dont have IDs but can be linked to as such:  
+**Built-in Doxygen pages** dont have IDs but can be linked to as such:  
 `[Page name](./pagefile.html)`
 
 <br/>
 
 ### Doxygen and custom link formats {#page-documentation-doxygen-styles-formats-doxygen-and-custom}
-These custom linking formats exist to simplify linking to directories and code symbols and are therefore preferred when they are available.  
-- Directory links are formatted as such:  
+These **custom linking formats** exist to simplify linking to **directories** and **code symbols** and are therefore preferred when they are available.  
+- **Directory links** are formatted as such:  
   <span class="tt">@@dirref{directory/path}</span>  
   <span class="tt">@@dirlink{link text:directory/path}</span>  
   See [Custom reference links](#page-documentation-doxygen-custom-commands-reference-links) for more details.
-- Code symbol links are formatted as such:  
+- **Code symbol links** are formatted as such:  
   <span class="tt">@@cref{namespace.example.name}</span>  
   See [Custom reference links](#page-documentation-doxygen-custom-commands-reference-links) for more details.
 
-Some destinations have an existing custom link command that can be used. See [Custom documentation links](#page-documentation-doxygen-custom-commands-documentation-links) for more details.  
+Some destinations have an existing **custom link command** that can be used. See [Custom documentation links](#page-documentation-doxygen-custom-commands-documentation-links) for more details.  
 When other linking formats don't work, the following format can be used:  
 `@ref link_destination "link text"`  
 See [Doxygen documentation🡵](https://www.doxygen.nl/manual/commands.html#cmdref).
@@ -124,17 +124,17 @@ See [Doxygen documentation🡵](https://www.doxygen.nl/manual/commands.html#cmdr
 These linking formats should be used when the other formats listed above are not available.  
 see [Doxygen documentation🡵](https://www.doxygen.nl/manual/xmlcmds.html).  
 see [C# documentation🡵](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments#d314-see).
-- Code symbol links are formatted as such:  
-  `<see cref="example">`
-- External links are formatted as such:  
-  `<see href="exampleurl.com">`
+- **Code symbol links** are formatted as such:  
+  `<see cref="example">example text</see>`
+- **External links** are formatted as such:  
+  `<see href="exampleurl.com">example text@e-exlink</see>`
 
 <br/>
 
 ---
 
 ## Markdown {#page-documentation-doxygen-markdown}
-Doxygen has Markdown support (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/markdown.html)) which is also used in certain situations.  
+[Doxygen🡵] has **Markdown** support (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/markdown.html)) which is also used in certain situations.  
 See [[Documenting source code]](#page-documentation-source-code-base-guidelines-markdown)  
 See [[Documenting Quantum generated code]](#page-documentation-codegen-base-guidelines-markdown)  
 See [[Writing documentation pages]](#page-documentation-pages-markdown)  
@@ -145,12 +145,12 @@ See [[Writing additional documentation]](#page-documentation-additional-base-gui
 ---
 
 ## Doxygen custom commands {#page-documentation-doxygen-custom-commands}
-Doxygen specific [Custom commands🡵] that can be used during documentation are defined in @ref Altzone/Doc/Doxygen/Battle/setup/Doxyfile under the ALIASES section. These are defined by us to add useful shorthands. All added custom commands should be listed on this page.
+**[Doxygen🡵] specific [Custom commands🡵]** that can be used during documentation are defined in @ref Altzone/Doc/Doxygen/Battle/setup/Doxyfile under the **ALIASES** section. These are defined by us to add useful shorthands. All added custom commands should be listed on this page.
 
 <br/>
 
 ### Reference links {#page-documentation-doxygen-custom-commands-reference-links}
-These [Custom commands🡵] can be used to make linking to directories and code symbols easier.  
+These [Custom commands🡵] can be used to make **linking** to **directories** and **code symbols** easier.  
 
 List of current aliases  
 
@@ -202,7 +202,7 @@ List of current aliases
 <br/>
 
 ### Documentation links {#page-documentation-doxygen-custom-commands-documentation-links}
-These [Custom commands🡵] can be used for simplified linking to other sections of documentation.  
+These [Custom commands🡵] can be used for simplified **linking** to **other sections of documentation**.  
 
 List of current documentation link aliases  
 
@@ -224,7 +224,7 @@ uihandlerlink="[UI Handler](#page-view-uihandler)" \
 <br/>
 
 ### Extra formatting {#page-documentation-doxygen-custom-commands-extra}
-These [Custom commands🡵] allow for easier formatting of our text.
+These [Custom commands🡵] allow for easier **formatting** of our text.
 
 List of current formatting aliases
 
@@ -235,11 +235,11 @@ List of current formatting aliases
 <br/>
 
 ### Circumventing unicode characters {#page-documentation-doxygen-custom-commands-unicode}
-These [Custom commands🡵] are useful in avoiding the use of unicode characters in source code.  
+These [Custom commands🡵] are useful in avoiding the use of **unicode characters** in **source code**.  
 
 Usage/syntax:  
-u stands for unicode.  
-(name) is the name of the unicode character as specified by us usually based on what the symbol represents in our documentation.
+**u** stands for **unicode**.  
+**(name)** is the name of the **unicode character** as specified by us usually based on what the symbol represents in our documentation.
 ```
 @u-(name)
 ```
@@ -260,4 +260,5 @@ u-exlink="🡵"
 
 ---
 
+[Doxygen🡵]:         https://www.doxygen.nl/index.html
 [Custom commands🡵]: https://www.doxygen.nl/manual/custcmd.html
