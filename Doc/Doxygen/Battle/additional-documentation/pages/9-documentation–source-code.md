@@ -30,7 +30,7 @@ Doxygen specific areas of code documentation:
   - Other areas of class, method and variable documentation
 
 ### Documentation commands {#page-documentation-source-code-base-guidelines-commands}
-Doxygen supports various commands that can be used in source code documentation. See [Documenting with Doxygen](#page-documentation-doxygen) for more information on these.  
+Doxygen supports various commands that can be used in source code documentation. See [[Documenting with Doxygen]](#page-documentation-doxygen-commands) for more information on these.  
 
 Always use these XML Commands when documenting files, classes, methods and variables:
 - `<summary>`
@@ -47,7 +47,7 @@ The `<br/>` command should be used for line breaks.
 <br/>
 
 ### Linking formats {#page-documentation-source-code-base-guidelines-linking}
-Doxygen supports various types of linking formats. See [Linking styles and formats](#page-documentation-doxygen-styles-formats) for more information on these.  
+Doxygen supports various types of linking formats. See [[Linking styles and formats]](#page-documentation-doxygen-styles-formats) for more information on these.  
 
 In a [Non-Doxygen specific](#page-documentation-source-code-base-guidelines-doxygen-specific) part of documentation you should use the XML link format. When using XML links you should consider compatibility with both Doxygen and other tools. With careful consideration other kinds of links can sometimes be used, as long as they don't cause issues when any tool reads them and don't negatively affect the readibility of the documentation too much. The most important thing is to test compatibility and readability.  
 
