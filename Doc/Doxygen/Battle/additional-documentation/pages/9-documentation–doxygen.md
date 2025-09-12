@@ -23,6 +23,15 @@ Doxygen supports multiple documentation comment formats (see [Doxygen documentat
 
 <br/>
 
+### Unicode characters {#page-documentation-doxygen-unicode}
+The use of unicode characters depends on context.  
+See [[Documenting source code]](#page-documentation-source-code-base-guidelines-unicode)  
+See [[Documenting Quantum generated code]](#page-documentation-codegen-base-guidelines-unicode)  
+See [[Writing documentation pages]](#page-documentation-pages-file-unicode)  
+See [[Writing additional documentation]](#page-documentation-additional-base-guidelines-unicode)
+
+<br/>
+
 ## Commands {#page-documentation-doxygen-commands}
 Doxygen specific commands can start with a `\` or `@` symbol (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/commands.html)). Examples on the Doxygen documentation page use `\`, but you should only use the `@` format.  
 Doxygen supports XML Commands (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/xmlcmds.html)). These commands are preferred in certain contexts.  
@@ -32,9 +41,10 @@ XML Commands are generally preferred in source code because they are a native C#
 Documentation comments should in general use the XML `<summary>` Command instead of the Doxygen specific `@brief` command for the sake of consistency.  
 
 The correct command types to use depend on context.  
-See [[Writing documentation pages]](#page-documentation-pages)  
-See [[Documenting source code]](#page-documentation-documenting-source-code)
-See [[Writing additional documentation]](#page-documentation-additional)
+See [[Documenting source code]](#page-documentation-source-code-base-guidelines-commands)  
+See [[Documenting Quantum generated code]](#page-documentation-codegen-base-guidelines-commands)  
+See [[Writing documentation pages]](#page-documentation-pages-commands)  
+See [[Writing additional documentation]](#page-documentation-additional-base-guidelines-commands)
 
 <br/>
 
@@ -42,9 +52,10 @@ See [[Writing additional documentation]](#page-documentation-additional)
 
 ## Linking styles and formats {#page-documentation-doxygen-styles-formats}
 The linking style and format you should use depends on what you are documenting. The style remains consistent in all documentation, but there are many formats you can use for the same kind of link. The correct format to use depends on context.  
-See [[Writing documentation pages]](#page-documentation-pages)  
-See [[Documenting source code]](#page-documentation-documenting-source-code)
-See [[Writing additional documentation]](#page-documentation-additional)
+See [[Documenting source code]](#page-documentation-source-code-base-guidelines-linking)  
+See [[Documenting Quantum generated code]](#page-documentation-codegen-base-guidelines-linking)  
+See [[Writing documentation pages]](#page-documentation-pages-linking)  
+See [[Writing additional documentation]](#page-documentation-additional-base-guidelines-linking)
 
 <br/>
 
