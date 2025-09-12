@@ -1,7 +1,8 @@
 # Writing additional documentation {#page-documentation-additional}
-These are guidelines for writing additional documentation, excluding documentation pages (see [[Writing documentation pages]](#page-documentation-pages) for guidelines on that).
+These are guidelines for writing additional documentation, excluding documentation pages and %Quantum generated code (see [[Writing documentation pages]](#page-documentation-pages) and [[Documenting Quantum generated code]](#page-documentation-codegen)).
 
-Additional documentation is written in `.dox` files. Documentation is written using documentation comments with the `///` syntax.
+Additional documentation is written in `.dox` files because it can not be written directly in source code. Documentation is written using documentation comments with the `///` syntax.  
+The files should be in the correct subdirectories of @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation}, to not have unnecessary additional files in Unity's @dirref{Altzone,Assets} folder, especially because Unity would create .meta files to keep track of the files for no reason.
 
 ---
 
@@ -15,7 +16,7 @@ Unicode characters are ok to use inside of additional documentation `.dox` files
 <br/>
 
 ### Documentation commands {#page-documentation-additional-base-guidelines-commands}
-Doxygen supports various commands that can be used in additional documentation. See [[Documenting with Doxygen]](#page-documentation-doxygen) for more information on these.  
+Doxygen supports various commands that can be used in additional documentation. See [[Documenting with Doxygen]](#page-documentation-doxygen-commands) for more information on these.  
 All commands are allowed in `.dox` files, so you should choose the most appropriate format.
 
 <br/>
