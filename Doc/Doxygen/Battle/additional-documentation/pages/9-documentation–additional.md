@@ -2,11 +2,18 @@
 These are guidelines for writing additional documentation, excluding documentation pages and %Quantum generated code (see [[Writing documentation pages]](#page-documentation-pages) and [[Documenting Quantum generated code]](#page-documentation-codegen)).
 
 Additional documentation is written in `.dox` files because it can not be written directly in source code. Documentation is written using documentation comments with the `///` syntax.  
-The files should be in the correct subdirectories of @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation}, to not have unnecessary additional files in Unity's @dirref{Altzone,Assets} folder, especially because Unity would create .meta files to keep track of the files for no reason.
+The files should be in the correct subdirectories of @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation} to not have unnecessary additional files in Unity's @dirref{Altzone,Assets} folder, especially because Unity would create `.meta` files to keep track of the files for no reason.
 
 ---
 
 ## Base guidelines {#page-documentation-additional-base-guidelines}
+These are base guidelines for writing additional documentation.  
+Refer to the individual sections on this page for specific guidelines on each:  
+[Documenting directories](#page-documentation-additional-directories)  
+[Documenting namespaces](#page-documentation-additional-namespaces)  
+[Documenting scenes](#page-documentation-additional-scenes)  
+[Documenting specs](#page-documentation-additional-specs)  
+[Documenting prefabs](#page-documentation-additional-prefabs)
 
 <br/>
 
@@ -37,6 +44,7 @@ When writing text, line breaks should be done using two spaces at the end of the
 ---
 
 ## Documenting directories {#page-documentation-additional-directories}
+The [Base guidelines](#page-documentation-additional-base-guidelines) apply.
 
 <br/>
 
@@ -83,6 +91,7 @@ Directory documentation consists of the directory name marked with the `@dir` co
 ---
 
 ## Documenting namespaces {#page-documentation-additional-namespaces}
+The [Base guidelines](#page-documentation-additional-base-guidelines) apply.  
 All namespaces should be documented in the existing namespace.dox file, found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/namespaces}.
 
 <br/>
@@ -104,6 +113,7 @@ Namespace definitions are formatted with `::` symbols as such:
 ---
 
 ## Documenting scenes {#page-documentation-additional-scenes}
+The [Base guidelines](#page-documentation-additional-base-guidelines) apply.
 
 <br/>
 
@@ -141,6 +151,7 @@ GameObjects are listed under Markdown headers defined with `###`. They are liste
 ---
 
 ## Documenting specs {#page-documentation-additional-specs}
+The [Base guidelines](#page-documentation-additional-base-guidelines) apply.
 
 <br/>
 
@@ -176,18 +187,30 @@ These are followed by the description shown below, which includes a link to the 
 ---
 
 ## Documenting prefabs {#page-documentation-additional-prefabs}
+The [Base guidelines](#page-documentation-additional-base-guidelines) apply.
+
+<br/>
+
+### File guidelines {#page-documentation-additional-scenes-file-guidelines}
+Prefab documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/prefabs}.  
+Prefab documentation files are named as follows:  
+- Filenames begin with the word "prefab" in all lower case.
+- This is then followed by the filename of the prefab as it is in the project.
+- Each word is separated by a hyphen.
+
+Example filename:  
+`scene-(PrefabFileName).dox`
 
 <br/>
 
 ### Prefab summary format {#page-documentation-additional-prefabs-summary-format}
-
 Prefab summary doesn't have a strict format that needs to be used, but it needs to be kept relatively short.
 
 <br/>
 
 ### Entity Prototype format {#page-documentation-additional-prefabs-entity-prototype}
-
-Entity Prototype summary has a link to its prefab counterpart. The template below is all that is needed to document Entity Prototypes.<br/>
+Entity Prototype documentation is paired with their prefab's documentation and is located below it in the same file.  
+Entity Prototype summary has a link to its prefab counterpart. The template below is all that is needed to document Entity Prototypes.  
 
 ```
 /// @file filename.qprototype
@@ -197,15 +220,11 @@ Entity Prototype summary has a link to its prefab counterpart. The template belo
 /// </summary>
 ///
 /// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).
-```
-
-At the moment Entity Prototype documentation can be found in <i>%Altzone/Doc/Doxygen/Battle/code-structure</i> folder in prefab.dox and playerprefab.dox files.  
-Entity Prototype documentation is paired with their prefab's documentation and is located below it.  
+``` 
 
 <br/>
 
 ### Prefab Structure format {#page-documentation-additional-prefabs-structure-format}
-
 Prefabs need to have their structure documented. 
 
 Structure documentation follows these rules:
@@ -240,7 +259,6 @@ Structure documentation follows these rules:
 <br/>
 
 #### Example snippets of different rules implemented: {#page-documentation-additional-prefabs-structure-format-examples}
-
 Example of QComponent links:
 ```
 /// - *Components:*
@@ -328,3 +346,6 @@ Note: There is space between the closing curly braces and rest of the names, bec
 <br/>
 
 ---
+
+[{brief/summary}]: #page-documentation-doxygen-terminology-brief-summary
+[{detailed description}]: #page-documentation-doxygen-terminology-detailed-description
