@@ -6,7 +6,7 @@ See [Doxygen documentation🡵](https://www.doxygen.nl/manual/additional.html#cu
 <br/>
 
 ## File guidelines {#page-documentation-pages-file}
-**Page files** are `.md` **Markdown** files that are found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/pages}, because they are entirely unrelated to any **source code** of the project and we do not want to have unnecessary additional files in **Unity**'s @dirref{Altzone,Assets} folder, especially because **Unity** would create `.meta` files to keep track of the files for no reason.  
+**Page files** are `.md` **Markdown** files that are found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/pages}, because they are entirely unrelated to any <b>source code</b> of the project and we do not want to have unnecessary additional files in **Unity**'s @dirref{Altzone,Assets} folder, especially because **Unity** would create `.meta` files to keep track of the files for no reason.  
 **Page files** should be named with a number and the name of the **page**. The number defines the order of the **pages** as they appear on the documentation webpage. File names should be all lower case and words should be separated by hyphens. If a **page** has a **subpage**, the filename should end with a hyphen.  
 `(number)-(page-name).md`  
 **Subpages** should be named with the name of the parent page file followed by the name of the **subpage**. File names should be all lower case and words should be separated by hyphens.  
@@ -35,7 +35,7 @@ All **commands** are allowed in **documentation page files**, so you should choo
 <br/>
 
 ### Markdown {#page-documentation-pages-markdown}
-**Markdown** formatting is preferred in documentation pages. See [Doxygen documentation🡵](https://www.doxygen.nl/manual/markdown.html).  
+**Markdown** formatting is preferred in **documentation pages**. See [Doxygen documentation🡵](https://www.doxygen.nl/manual/markdown.html).  
 When writing text, line breaks should be done using two spaces at the end of the line.  
 **Sections** should be separated by a line break using `<br/>`.  
 **Sections** that fit together should be grouped using `---` to create lines on the **page**.
