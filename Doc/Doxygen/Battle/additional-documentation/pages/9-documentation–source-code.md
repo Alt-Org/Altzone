@@ -14,7 +14,7 @@ For additional guidelines refer to:
 <br/>
 
 ### Unicode characters {#page-documentation-source-code-base-guidelines-unicode}
-**Unicode characters** can not be used inside of **source code**, even in documentation comments. The use of them can be circumvented with for example custom commands. See [[Circumventing unicode characters]](#page-documentation-doxygen-custom-commands-unicode)
+**Unicode characters** can not be used inside of **source code**, even in documentation comments. The use of them can be circumvented with **custom commands**. See [[Circumventing unicode characters]](#page-documentation-doxygen-custom-commands-unicode)
 
 <br/>
 
@@ -22,15 +22,15 @@ For additional guidelines refer to:
 Some parts of documentation in **source code** are only read by [Doxygen🡵], while others are recognized by the IDE or Unity. This places some limitations on what formats can be used in certain contexts.  
 
 **Non-Doxygen specific** areas of code documentation:
-- Class, method and variable documentation:
-  - XML `<summary>` Command
-  - XML `<param>` Command
-  - XML `<returns>` Command
+- **Class**, **method** and **variable** documentation:
+  - **XML** `<summary>` Command
+  - **XML** `<param>` Command
+  - **XML** `<returns>` Command
 
-**Doxygen specific**** areas of code documentation:
+**Doxygen specific** areas of code documentation:
 - All other areas, such as:
-  - File documentation (A `<summary>` section inside a file documentation block is also Doxygen specific)
-  - Other areas of class, method and variable documentation
+  - File documentation (A `<summary>` section inside a file documentation block is also **Doxygen specific**)
+  - Other areas of **class**, **method** and **variable** documentation
 
 ### Documentation commands {#page-documentation-source-code-base-guidelines-commands}
 [Doxygen🡵] supports various **commands** that can be used in **source code** documentation. See [[Documenting with Doxygen]](#page-documentation-doxygen-commands) for more information on these.  
@@ -42,8 +42,8 @@ Always use these **XML Commands** when documenting **files**, **classes**, **met
 
 In a [Non-Doxygen specific](#page-documentation-source-code-base-guidelines-doxygen-specific) part of documentation you should only use **XML Commands**. When using **XML Commands** you should consider compatibility with both **Doxygen** and other tools. With careful consideration other kinds of **commands** can sometimes be used, as long as they don't cause issues when any tool reads them and don't negatively affect the readibility of the documentation too much. The most important thing is to test compatibility and readability.  
 
-Other kinds of **commands** can be used if they are in a [Doxygen specific](#page-documentation-source-code-base-guidelines-doxygen-specific) part of documentation, such as the file documentation.  
-You should still consider consistency. For example even though file documentation is **Doxygen** specific, `<summary>` should still be used.  
+Other kinds of **commands** can be used if they are in a [Doxygen specific](#page-documentation-source-code-base-guidelines-doxygen-specific) part of documentation, such as the **file documentation**.  
+You should still consider consistency. For example even though **file documentation** is **Doxygen specific**, `<summary>` should still be used.  
 
 The `<br/>` **command** should be used for line breaks.  
 
@@ -54,7 +54,7 @@ The `<br/>` **command** should be used for line breaks.
 
 In a [Non-Doxygen specific](#page-documentation-source-code-base-guidelines-doxygen-specific) part of documentation you should use the **XML link** format. When using **XML links** you should consider compatibility with both **Doxygen** and other tools. With careful consideration other kinds of links can sometimes be used, as long as they don't cause issues when any tool reads them and don't negatively affect the readibility of the documentation too much. The most important thing is to test compatibility and readability.  
 
-In a [Doxygen specific](#page-documentation-source-code-base-guidelines-doxygen-specific) part of documentation you can use other link formats, such as **Markdown**, **Doxygen** and custom links.  
+In a [Doxygen specific](#page-documentation-source-code-base-guidelines-doxygen-specific) part of documentation you can use other link formats, such as **Markdown**, **Doxygen** and **custom links**.  
 You should still consider consistency.
 
 <br/>
@@ -66,7 +66,7 @@ With careful consideration **Markdown** can be used in [Non-Doxygen specific](#p
 <br/>
 
 ### Documenting C# Files {#page-documentation-source-code-base-guidelines-files}
-**File** documentation should have a reference to the file, a [{brief/summary}] and possible longer information as its own section.
+**File documentation** should have a reference to the file, a [{brief/summary}] and possible longer information as its own section.
 
 ```
 /// @file BattlePlayerMovementController.cs
@@ -110,7 +110,7 @@ When documenting any **method**, the different sections of the comment such as t
 <br/>
 
 ### Documenting public getters {#page-documentation-source-code-base-guidelines-public-getters}
-The format used for documenting **public getters** for **private variables**. Using both [{brief/summary}] and value tags so that in [Doxygen🡵] it's clear that it's a getter for another **variable**, and in code it's clear what it's value is.
+The format used for documenting **public getters** for **private variables**. Using both [{brief/summary}] and **value** tags so that in [Doxygen🡵] it's clear that it's a getter for another **variable**, and in code it's clear what it's **value** is.
 
 ```
 /// <summary>Public getter for #_rectTransform.</summary>
@@ -139,7 +139,7 @@ In the examples parameter documentation has been ommitted.
 <br/>
 
 ### Quantum System Class [{brief/summary}] format {#page-documentation-source-code-quantum-systems-system-classes}
-The format used for documenting **System** and **SystemSignalsOnly** classes. Must contain the header with the correct system name and link to %Quantum documentation.
+The format used for documenting **System** and **SystemSignalsOnly** classes. Must contain the header with the correct system name and link to **%Quantum documentation**.
 
 **System**
 
@@ -164,7 +164,7 @@ public unsafe class BattleGoalQSystem : SystemSignalsOnly, ISignalBattleOnProjec
 <br/>
 
 ### Quantum System OnInit method [{brief/summary}] format {#page-documentation-source-code-quantum-systems-oninit-methods}
-The format used for documenting **%Quantum OnInit** methods. Must contain the **header** with the link to %Quantum documentation. Must also contain the appropriate **warning message**.
+The format used for documenting **%Quantum OnInit** methods. Must contain the **header** with the link to **%Quantum documentation**. Must also contain the appropriate **warning message**.
 
 ```
 /// <summary>
@@ -179,7 +179,7 @@ public override void OnInit(Frame f)
 <br/>
 
 ### Quantum System Update method [{brief/summary}] format {#page-documentation-source-code-quantum-systems-update-methods}
-The format used for documenting **%Quantum Update** methods. Must contain the header with the link to %Quantum documentation. Must also contain the appropriate **warning message**.
+The format used for documenting **%Quantum Update** methods. Must contain the header with the link to **%Quantum documentation**. Must also contain the appropriate **warning message**.
 
 ```
 /// <summary>
@@ -194,7 +194,7 @@ public override void Update(Frame f)
 <br/>
 
 ### Quantum System Signal method [{brief/summary}] format {#page-documentation-source-code-quantum-systems-signal-methods}
-The format used for documenting **%Quantum Signal** methods. Must contain the header with the link to %Quantum documentation and a reference to the signal the method responds to. Must also contain the appropriate **warning message**.
+The format used for documenting **%Quantum Signal** methods. Must contain the header with the link to **%Quantum documentation** and a reference to the signal the method responds to. Must also contain the appropriate **warning message**.
 
 ```
 /// <summary>
@@ -219,10 +219,11 @@ The [base guidelines](#page-documentation-source-code-base-guidelines) apply to 
 
 ### Documenting **SerializeFields** {#page-documentation-source-code-unity-view-serializefields}
 The format used for grouping **SerializeFields**. Example provided also has **SerializeField** [{brief/summary}] documentation.
-- Anchor name is in format ClassName-SerializeFields.
-- Make sure that the header is copied entirely, and the example comments starting with two slashes // are removed.
-- Place all SerializeField variables inside the group.
-- SerializeField variable documentation should be on a single line, use [{brief/summary}] tags and have "[SerializeField] " prefix.
+- Anchor name is in format:  
+  (ClassName)-(SerializeFields)
+- Make sure that the **header** is copied entirely, and the example comments starting with two slashes `//` are removed.
+- Place all **SerializeField variables** inside the group.
+- **SerializeField variable** documentation should be on a single line, use [{brief/summary}] tags and have `[SerializeField]` prefix.
 
 ```
 /// @anchor BattleUiJoystickHandler-SerializeFields // Anchor name
