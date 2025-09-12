@@ -115,5 +115,5 @@ Each variable defined in a struct should be documented with a `@var` command wit
 
 ---
 
-[{brief/summary}]: #page-documentation-doxygen-terminology-brief-summary
+[{brief/summary}]:        #page-documentation-doxygen-terminology-brief-summary
 [{detailed description}]: #page-documentation-doxygen-terminology-detailed-description

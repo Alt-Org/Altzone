@@ -347,5 +347,5 @@ Note: There is space between the closing curly braces and rest of the names, bec
 
 ---
 
-[{brief/summary}]: #page-documentation-doxygen-terminology-brief-summary
+[{brief/summary}]:        #page-documentation-doxygen-terminology-brief-summary
 [{detailed description}]: #page-documentation-doxygen-terminology-detailed-description
