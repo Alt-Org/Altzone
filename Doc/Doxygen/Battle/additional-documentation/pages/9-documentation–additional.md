@@ -191,7 +191,7 @@ The [Base guidelines](#page-documentation-additional-base-guidelines) apply.
 
 <br/>
 
-### File guidelines {#page-documentation-additional-scenes-file-guidelines}
+### File guidelines {#page-documentation-additional-prefabs-file-guidelines}
 Prefab documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/prefabs}.  
 Prefab documentation files are named as follows:  
 - Filenames begin with the word "prefab" in all lower case.
