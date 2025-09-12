@@ -32,11 +32,11 @@ digraph DoxegenGenerate {
 
 ## Configuration/Setup {#page-documentation-configuration}
 
-[Doxygen🡵] configuration files are generated using a python script called setup.py.  
-setup.py reads a file called configs.  
-The configs file defines configs and variables for each config.  
-Files other than the configs file and setup.py itself are used as templates.  
-setup.py generates a directory for each config defined in the configs file.  
+[Doxygen🡵] configuration files are generated using a python script called `setup.py`.  
+`setup.py` reads a file called `configs`.  
+The `configs` file defines configs and variables for each config.  
+Files other than the `configs` file and `setup.py` itself are used as templates.  
+`setup.py` generates a directory for each config defined in the `configs` file.  
 The template files are copied to each config, during which variables are substituted for their values.  
 The generated configurations are gitingored.
 
