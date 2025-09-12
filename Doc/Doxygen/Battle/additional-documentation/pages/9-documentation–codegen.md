@@ -1,12 +1,12 @@
 # Documenting %Quantum generated code {#page-documentation-codegen}
 These are guidelines for writing documentation for **%Quantum generated code**.  
 
-Documentation for **%Quantum generated code** is written in `.dox` files because it can not be written directly in source code. Documentation is written using documentation comments with the `///` syntax.  
+Documentation for **%Quantum generated code** is written in `.dox` files because it can not be written directly in **source code**. Documentation is written using **documentation comments** with the `///` syntax.  
 All `.qtn` files created by us should be documented, with a separate `.dox` file for each `.qtn` file.  
-The code being documented is that which is found in the generated code resulting from what is defined in the `.qtn` file.  
-The generated code is found in the Quantum namespace.  
-When referencing **code symbols**, make sure to reference the correct generated code.  
-**%Quantum components** should be referenced to as **structs**, as %Quantum generates them as such.
+The code being documented is that which is found in the **generated code** resulting from what is defined in the `.qtn` file.  
+The **generated code** is found in the Quantum namespace.  
+When referencing **code symbols**, make sure to reference the correct **generated code**.  
+**%Quantum components** should be referenced to as **structs**, as **%Quantum** generates them as such.
 
 
 ---
@@ -29,7 +29,7 @@ All **commands** are allowed in `.dox` files, so you should choose the most appr
 ### Linking formats {#page-documentation-codegen-base-guidelines-linking}
 [Doxygen🡵] supports various types of **linking formats**. See [[Linking styles and formats]](#page-documentation-doxygen-styles-formats) for more information on these.  
 **Markdown links** are preferred. **Custom links** are also preferred when appropriate.  
-**Markdown reference link** definitions should be placed at the end of the same documentation comment block. They only work within the block they are defined in.
+**Markdown reference link** definitions should be placed at the end of the same **documentation comment block**. They only work within the block they are defined in.
 
 <br/>
 
@@ -44,7 +44,7 @@ When writing text, line breaks should be done using two spaces at the end of the
 <br/>
 
 ## File guidelines {#page-documentation-codegen-documenting-file-guidelines}
-**%Quantum generated code** documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/quantum-codegen} to not have unnecessary additional files in Unity's @dirref{Altzone,Assets} folder, especially because Unity would create `.meta` files to keep track of the files for no reason.  
+**%Quantum generated code** documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/quantum-codegen} to not have unnecessary additional files in **Unity's** @dirref{Altzone,Assets} folder, especially because **Unity** would create `.meta` files to keep track of the files for no reason.  
 The directory structure inside the above directory matches that found in the project.  
 The files are named as follows:  
 - Filenames begin with **"qtn"** in all lower case.
