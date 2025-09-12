@@ -93,15 +93,13 @@ The [Doxygen🡵] configurations used in %Battle are
 
 ---
 
-## Documentation formatting {#page-documentation-documentation-formatting}
-
 @subpage page-documentation-doxygen
 
 @subpage page-documentation-pages
 
 @subpage page-documentation-documenting-source-code
 
-@subpage page-documentation-prefabs-and-entity-prototypes
+@subpage page-documentation-additional
 
 ---
 
