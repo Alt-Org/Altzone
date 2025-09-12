@@ -3,12 +3,13 @@ All aspects of source code, such as files, methods and variables, should be docu
 Documentation should be written in documentation comment blocks using the `///` format.  
 Different sections of the documentation should be separated by an empty line.   
 
-Refer to the [Documenting Quantum systems](#page-documentation-source-code-quantum-systems) section for additional guidelines if you are documenting a %Quantum system.  
-Refer to the [Documenting Unity/View](#page-documentation-source-code-unity-view) section for additional guidelines if you are documenting Unity/View code.
-
 <br/>
 
 ## Base guidelines {#page-documentation-source-code-base-guidelines}
+These are base guidelines for all source code documentation.  
+For additional guidelines refer to:  
+[Documenting Quantum systems](#page-documentation-source-code-quantum-systems) if you are documenting a %Quantum system.  
+[Documenting Unity/View](#page-documentation-source-code-unity-view) if you are documenting Unity/View code.
 
 <br/>
 
