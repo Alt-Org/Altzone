@@ -199,7 +199,7 @@ Prefab documentation files are named as follows:
 - Each word is separated by a hyphen.
 
 Example filename:  
-`scene-(PrefabFileName).dox`
+`prefab-(PrefabFileName).dox`
 
 <br/>
 
