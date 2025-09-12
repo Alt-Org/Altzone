@@ -1,6 +1,6 @@
 # Documentation {#page-documentation}
 
-%Battle uses [Doxygen🡵] to generate [this documentation](./index.html) from the source code and additional documentation files.
+**%Battle** uses [Doxygen🡵] to generate [this documentation](./index.html) from the **source code** and **additional documentation** files.
 
 ```dot
 digraph DoxegenGenerate {
@@ -26,19 +26,19 @@ digraph DoxegenGenerate {
 }
 ```
 
-[Doxygen🡵] configuration, additional documentation and the generated output are in the @dirref{Altzone/Doc/Doxygen/Battle} directory.
+[Doxygen🡵] **configuration**, **additional documentation** and the **generated output** are in the @dirref{Altzone/Doc/Doxygen/Battle} directory.
 
 <br/>
 
 ## Configuration/Setup {#page-documentation-configuration}
 
-[Doxygen🡵] configuration files are generated using a python script called `setup.py`.  
+[Doxygen🡵] **configuration files** are generated using a **python** script called `setup.py`.  
 `setup.py` reads a file called `configs`.  
-The `configs` file defines configs and variables for each config.  
-Files other than the `configs` file and `setup.py` itself are used as templates.  
-`setup.py` generates a directory for each config defined in the `configs` file.  
-The template files are copied to each config, during which variables are substituted for their values.  
-The generated configurations are gitingored.
+The `configs` file defines **configs** and **variables** for each **config**.  
+Files other than the `configs` file and `setup.py` itself are used as **templates**.  
+`setup.py` generates a directory for each **config** defined in the `configs` file.  
+The **template files** are copied to each **config**, during which **variables** are substituted for their values.  
+The **generated configurations** are gitingored.
 
 ```dot
 digraph DoxegenSetup {
@@ -63,15 +63,15 @@ digraph DoxegenSetup {
 }
 ```
 
-The [Doxygen🡵] configurations used in %Battle are
+The [Doxygen🡵] **configurations** used in **%Battle** are
 - **config**  
   Main configuration.  
-  This configuration should be used when generating the official %Battle Documentation.
+  This configuration should be used when generating the official **%Battle** Documentation.
 - **config-test**  
-  Same as config but outputs to a gitingored directory.  
+  Same as **config** but outputs to a gitingored directory.  
   This configuration is for testing when writing documentation.
 - **config-test-nodot**  
-  Same as config-test but has HAVE_DOT set to NO.  
+  Same as **config-test** but has **HAVE_DOT** set to NO.  
   This configuration is for generating documentation when [Graphviz🡵] is not installed.
 
 <br/>
