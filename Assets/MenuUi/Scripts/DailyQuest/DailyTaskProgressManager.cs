@@ -213,6 +213,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationEthicalType.UseOnlyNegativeEmotes: HandleSimpleTask(value); break;
             case TaskEducationEthicalType.UseOnlyPositiveEmotes: HandleSimpleTask(value); break;
             case TaskEducationEthicalType.PressSustainableConsumptionObjects: HandleSimpleTask(value); break;
+            case TaskEducationEthicalType.PressValuesObjects: HandleSimpleTask(value); break;
             default: break;
         }
     }

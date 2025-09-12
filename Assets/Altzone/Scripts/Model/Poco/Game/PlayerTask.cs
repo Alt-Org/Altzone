@@ -85,6 +85,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         ClickQuestionable,
         ClickEthical,
         PressSustainableConsumptionObjects,
+        PressValuesObjects,
     }
 
     #endregion
@@ -474,6 +475,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case "press_sustainable_consumption_objects":
                     {
                         return TaskEducationEthicalType.PressSustainableConsumptionObjects;
+                    }
+                case "press_values_objects":
+                    {
+                        return TaskEducationEthicalType.PressValuesObjects;
                     }
                 default:
                     {
