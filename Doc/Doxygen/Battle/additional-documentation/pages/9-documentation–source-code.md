@@ -14,7 +14,7 @@ For additional guidelines refer to:
 <br/>
 
 ### Unicode characters {#page-documentation-source-code-base-guidelines-unicode}
-**Unicode characters** can not be used inside of **source code**, even in documentation comments. The use of them can be circumvented with **custom commands**. See [[Circumventing unicode characters]](#page-documentation-doxygen-custom-commands-unicode)
+**Unicode characters** can not be used inside of **source code**, even in **documentation comments**. The use of them can be circumvented with **custom commands**. See [[Circumventing unicode characters]](#page-documentation-doxygen-custom-commands-unicode)
 
 <br/>
 
@@ -29,7 +29,7 @@ Some parts of documentation in **source code** are only read by [Doxygen🡵], w
 
 **Doxygen specific** areas of code documentation:
 - All other areas, such as:
-  - File documentation (A `<summary>` section inside a file documentation block is also **Doxygen specific**)
+  - **File documentation** (A `<summary>` section inside a **File documentation** block is also **Doxygen specific**)
   - Other areas of **class**, **method** and **variable** documentation
 
 ### Documentation commands {#page-documentation-source-code-base-guidelines-commands}
@@ -220,7 +220,7 @@ The [base guidelines](#page-documentation-source-code-base-guidelines) apply to 
 ### Documenting **SerializeFields** {#page-documentation-source-code-unity-view-serializefields}
 The format used for grouping **SerializeFields**. Example provided also has **SerializeField** [{brief/summary}] documentation.
 - Anchor name is in format:  
-  (ClassName)-(SerializeFields)
+  `(ClassName)-(SerializeFields)`
 - Make sure that the **header** is copied entirely, and the example comments starting with two slashes `//` are removed.
 - Place all **SerializeField variables** inside the group.
 - **SerializeField variable** documentation should be on a single line, use [{brief/summary}] tags and have `[SerializeField]` prefix.
