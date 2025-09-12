@@ -6,15 +6,15 @@
 
 ### Brief / Summary {#page-documentation-doxygen-terminology-brief-summary}
 [Doxygen🡵] refers to this part of documentation as a **brief**, but in **C#** it is called a **summary**.  
-It should contain a brief description of whatever is being documented and appears automatically in documentation as the short description wherever the thing being documented is listed.  
-The brief will appear at the beginning of the individual documentation page of the thing it is defined for.
+It should contain a **brief** description of whatever is being documented and appears automatically in documentation as the short description wherever the thing being documented is listed.  
+The **brief** will appear at the beginning of the individual **documentation page** of the thing it is defined for.
 It can also be linked to manually to have it appear where we want, which is used often.
 
 <br/>
 
 ### Detailed description {#page-documentation-doxygen-terminology-detailed-description}
 This is a [Doxygen🡵] term. The **detailed description** is defined as any text we write outside of the **brief**.  
-It will appear lower down on the individual documentation page of the thing it is defined for. The **brief** is repeated before the **detailed description** text.  
+It will appear lower down on the individual **documentation page** of the thing it is defined for. The **brief** is repeated before the **detailed description** text.  
 
 <br/>
 
@@ -145,7 +145,7 @@ See [[Writing additional documentation]](#page-documentation-additional-base-gui
 ---
 
 ## Doxygen custom commands {#page-documentation-doxygen-custom-commands}
-**[Doxygen🡵] specific [Custom commands🡵]** that can be used during documentation are defined in @ref Altzone/Doc/Doxygen/Battle/setup/Doxyfile under the **ALIASES** section. These are defined by us to add useful shorthands. All added custom commands should be listed on this page.
+[Doxygen🡵] **specific** [Custom commands🡵] that can be used during documentation are defined in @ref Altzone/Doc/Doxygen/Battle/setup/Doxyfile under the **ALIASES** section. These are defined by us to add useful shorthands. All added **custom commands** should be listed on this page.
 
 <br/>
 
