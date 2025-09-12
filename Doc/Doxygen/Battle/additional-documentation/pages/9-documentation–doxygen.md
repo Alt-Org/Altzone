@@ -23,17 +23,20 @@ Doxygen supports multiple documentation comment formats (see [Doxygen documentat
 
 <br/>
 
-### Unicode characters {#page-documentation-doxygen-unicode}
+## Unicode characters {#page-documentation-doxygen-unicode}
 The use of unicode characters depends on context.  
 See [[Documenting source code]](#page-documentation-source-code-base-guidelines-unicode)  
 See [[Documenting Quantum generated code]](#page-documentation-codegen-base-guidelines-unicode)  
 See [[Writing documentation pages]](#page-documentation-pages-file-unicode)  
-See [[Writing additional documentation]](#page-documentation-additional-base-guidelines-unicode)
+See [[Writing additional documentation]](#page-documentation-additional-base-guidelines-unicode)  
+
+In contexts where unicode characters are not allowed, they can be [circumvented](#page-documentation-doxygen-custom-commands-unicode).
 
 <br/>
 
 ## Commands {#page-documentation-doxygen-commands}
-Doxygen specific commands can start with a `\` or `@` symbol (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/commands.html)). Examples on the Doxygen documentation page use `\`, but you should only use the `@` format.  
+Doxygen supports multiple kinds of commands (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/commands.html)).  
+Doxygen specific commands can start with a `\` or `@` symbol. Examples on the Doxygen documentation page use `\`, but you should only use the `@` format.  
 Doxygen supports XML Commands (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/xmlcmds.html)). These commands are preferred in certain contexts.  
 Doxygen supports HTML Commands (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/htmlcmds.html)).  
 
@@ -51,7 +54,10 @@ See [[Writing additional documentation]](#page-documentation-additional-base-gui
 ---
 
 ## Linking styles and formats {#page-documentation-doxygen-styles-formats}
-The linking style and format you should use depends on what you are documenting. The style remains consistent in all documentation, but there are many formats you can use for the same kind of link. The correct format to use depends on context.  
+Doxygen supports multiple kinds of linking formats. We have our own guidelines for the styling of links.  
+The linking style and format you should use depends on what you are documenting. The style remains consistent in all documentation, but there are many formats you can use for the same kind of link.  
+
+The correct format to use depends on context.  
 See [[Documenting source code]](#page-documentation-source-code-base-guidelines-linking)  
 See [[Documenting Quantum generated code]](#page-documentation-codegen-base-guidelines-linking)  
 See [[Writing documentation pages]](#page-documentation-pages-linking)  
@@ -65,10 +71,10 @@ See [[Writing additional documentation]](#page-documentation-additional-base-gui
 - **Documentation page links**  
   Links that lead to other documentation pages should have square brackets `[]` around them.  \"<span class="fake-link">[Example text]</span>\" (This is not a hard rule.)
 - **Concept links**  
-  Links that link to concept explanations should have curly brackets `{}` around them. \"<span class="fake-link">{Example text}</span>\"
+  Links that link to concept explanations should have curly brackets `{}` around them. \"<span class="fake-link">{Example text}</span>\"  
   These can be used optionally when referring to potentially unfamiliar concepts or terms to those reading the documentation.
 - **External links**  
-  Links that lead to external websites should end with a `🡵` symbol. \"<span class="fake-link">Example text🡵</span>\"
+  Links that lead to external websites should end with a `🡵` symbol. \"<span class="fake-link">Example text🡵</span>\"  
   Since unicode characters can not be used inside source code, the <span class="tt">@@u-exlink</span> custom command should be used. See [Circumventing unicode characters](#page-documentation-doxygen-custom-commands-unicode).
 - **Code symbol links**  
   Code symbol paths are constructed by separating each part, such as the namespace and class name with a `.` \"<span class="fake-link">{namespace.class.method}</span>\"
@@ -129,8 +135,10 @@ see [C# documentation🡵](https://learn.microsoft.com/en-us/dotnet/csharp/langu
 
 ## Markdown {#page-documentation-doxygen-markdown}
 Doxygen has Markdown support (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/markdown.html)) which is also used in certain situations.  
-See [[Writing documentation pages]](#page-documentation-pages)  
-See [[Documenting source code]](#page-documentation-documenting-source-code)
+See [[Documenting source code]](#page-documentation-source-code-base-guidelines-markdown)  
+See [[Documenting Quantum generated code]](#page-documentation-codegen-base-guidelines-markdown)  
+See [[Writing documentation pages]](#page-documentation-pages-markdown)  
+See [[Writing additional documentation]](#page-documentation-additional-base-guidelines-markdown)
 
 <br/>
 
@@ -173,7 +181,7 @@ List of current aliases
 
 **Code symbol reference commands**
 - **cref**  
-  - Basic reference 
+  - Basic reference  
     <span class="tt">@@cref{namespace.example.name}</span>  
     Creates a link to the specified code symbol.  
     Formatted as such: \"<span class="fake-link">namespace.example.name</span>\"
