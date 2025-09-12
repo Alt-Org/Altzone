@@ -95,9 +95,11 @@ The [Doxygen🡵] configurations used in %Battle are
 
 @subpage page-documentation-doxygen
 
-@subpage page-documentation-pages
-
 @subpage page-documentation-documenting-source-code
+
+@subpage page-documentation-codegen
+
+@subpage page-documentation-pages
 
 @subpage page-documentation-additional
 
