@@ -7,8 +7,6 @@ public class PollMonitor : MonoBehaviour // Monitors active polls to check if th
 
     private Coroutine checkRoutine;
 
-    [SerializeField] private PollInfoPopup pollInfoPopupWindow;
-
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -18,13 +16,10 @@ public class PollMonitor : MonoBehaviour // Monitors active polls to check if th
         }
 
         Instance = this;
+        DontDestroyOnLoad(gameObject); 
     }
 
-    private void Start()
-    {
-        pollInfoPopupWindow?.InitializeIfNeeded();
-    }
-
+    // Start monitoring when a poll begins
     public void StartMonitoring()
     {
         if (checkRoutine == null)
@@ -35,6 +30,7 @@ public class PollMonitor : MonoBehaviour // Monitors active polls to check if th
         }
     }
 
+    // Stop monitoring when there are no polls left
     public void StopMonitoring()
     {
         if (checkRoutine != null)
@@ -59,7 +55,6 @@ public class PollMonitor : MonoBehaviour // Monitors active polls to check if th
             }
 
             Debug.Log("[PollMonitor] Checking for expired polls");
-
             yield return new WaitForSeconds(5f);
         }
     }

@@ -21,6 +21,13 @@ public static class PollManager // Handles the polls from creation to loading to
 
     public static Action<FurniturePollType> ShowVotingPopup;
 
+    private static KojuTrayPopulator trayPopulator;
+
+    public static void RegisterTrayPopulator(KojuTrayPopulator populator)
+    {
+        trayPopulator = populator;
+    }
+
     // Create poll for GameFurniture
     public static void CreateFurniturePoll(FurniturePollType furniturePollType, GameFurniture furniture)
     {
@@ -290,7 +297,7 @@ public static class PollManager // Handles the polls from creation to loading to
 
         pollDataList.Remove(pollData);
         pastPollDataList.Add(pollData);
-
+    
         DataStore store = Storefront.Get();
         store.SaveClanData(clan, savedClan =>
         {
@@ -301,8 +308,9 @@ public static class PollManager // Handles the polls from creation to loading to
             var savedFurniture = clan.Inventory.Furniture.FirstOrDefault(f => f.GameFurnitureName == (pollData as FurniturePollData)?.Furniture.Name);
             Debug.Log($"After save - Furniture VotedToSell: {savedFurniture?.VotedToSell}, InVoting: {savedFurniture?.InVoting}");
 
-            VotingActions.ReloadPollList?.Invoke();
             PastPollManager.OnPastPollsChanged?.Invoke();
+            trayPopulator?.RefreshTray();
+            VotingActions.ReloadPollList?.Invoke();
 
             if (pollDataList.Count == 0)
             {

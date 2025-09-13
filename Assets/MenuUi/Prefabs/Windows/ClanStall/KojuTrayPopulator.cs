@@ -34,7 +34,14 @@ public class KojuTrayPopulator : MonoBehaviour
     private void OnEnable()
     {
         // Populate tray and initialize StoreFront
+        PollManager.RegisterTrayPopulator(this);
         store = Storefront.Get();
+        StartCoroutine(PopulateTray());
+    }
+
+    // For refreshing the tray when a poll ends
+    public void RefreshTray()
+    {
         StartCoroutine(PopulateTray());
     }
 
@@ -209,7 +216,7 @@ public class KojuTrayPopulator : MonoBehaviour
         Debug.Log($"Spawned {spawnedCount} furniture cards in tray.");
     }
 
-
+    // Shows a popup warning when the panel is full, and the user tries to add more items
     public void ShowPanelFullWarning()
     {
         if (!isWarningActive)
@@ -218,6 +225,7 @@ public class KojuTrayPopulator : MonoBehaviour
         }
     }
 
+    // For the full panel warning
     private IEnumerator ShowWarningCoroutine()
     {
         isWarningActive = true;
