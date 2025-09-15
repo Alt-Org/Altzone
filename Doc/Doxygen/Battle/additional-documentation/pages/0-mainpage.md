@@ -51,9 +51,9 @@
 
 @bigtext{**Prefix**}
 - **%Battle**  
-  Marks type as %Battle related.
+  Marks type as **%Battle** related.
 - **%Ui**  
-  Marks type as %UI related. Used in addition to the %Battle prefix.
+  Marks type as **%UI** related. Used in addition to the **%Battle** prefix.
 
 @bigtext{**Suffix**}
 - **%QSystem**  
@@ -73,9 +73,9 @@
 - **%ViewController**  
   Marks type as [ViewController](#page-view-controllers).
 - (Ui) **%Handler**  
-  Marks type as @uihandlerlink when used in addition to the Ui prefix.
+  Marks type as @uihandlerlink when used in addition to the **Ui** prefix.
 - (Ui) **%Component**  
-  Marks type as @uicomponentlink when used in addition to the Ui prefix.
+  Marks type as @uicomponentlink when used in addition to the **Ui** prefix.
 
 
 <br/>

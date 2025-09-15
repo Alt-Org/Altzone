@@ -33,11 +33,11 @@
 
 ## View Controllers {#page-view-controllers}
 
-View Controllers are non-deterministic Unity View/Visual logic for %Battle.  
-There are 2 types of View Controllers, Global View Controllers and View Controllers that are attached to entities.  
-Global View Controllers's methods are called by GameViewController and entity attached View Controllers react to [Quantum Events🡵].  
-View Controllers are used to change entities's sprites, animations, effects, etc.  
-In %Battle View Controllers have ViewController suffix. [[Naming]](#index-naming)
+**View Controllers** are non-deterministic **Unity View/Visual** logic for **%Battle**.  
+**There are 2 types** of **View Controllers**, **Global View Controllers** and **View Controllers** that are attached to **%Quantum Entities**.  
+**Global View Controllers**'s methods are called by **GameViewController** and **entity** attached **View Controllers** react to [Quantum Events🡵].  
+**View Controllers** are used to change **entities**'s sprites, animations, effects, etc.  
+In **%Battle** **View Controllers** have **"ViewController"** suffix. [[Naming]](#index-naming)
 
 |  Namespace                                          || Class                                                        | Description                                                      |
 | :------------------ | :----------------------------- | :----------------------------------------------------------- | :--------------------------------------------------------------- |
@@ -78,8 +78,8 @@ Miscellaneous classes that don't belong in other categories.
 
 ## UI {#page-view-ui}
 
-UI -scripts handle %Battle UI functionality.  
-In %Battle the UI scripts have a Ui prefix following the %Battle prefix. [[Naming]](#index-naming)
+**UI Scripts** handle **%Battle** **UI** functionality.  
+In **%Battle** the **UI scripts** have a **"Ui"** prefix following the **"Battle"** prefix. [[Naming]](#index-naming)
 
 |  Namespace                                          || Class                                                        | Description                                                      |
 | :------------------ | :----------------------------- | :----------------------------------------------------------- | :--------------------------------------------------------------- |
@@ -89,14 +89,14 @@ In %Battle the UI scripts have a Ui prefix following the %Battle prefix. [[Namin
 
 ## UI Handler {#page-view-uihandler}
 
-UI Handlers are scripts which handle visual functionality for BattleUiShared -prefabs.  
-They are attached to the top level parent GameObject of the @ref BattleUi.prefab and there is only ever one instance of a UI Handler script.  
-The handler scripts also add listeners to call UiInput methods in @cref{Battle.View.Game,BattleGameViewController} when the local player gives an UI input.  
-In %Battle the UI Handlers have a Handler suffix in addition to the Ui prefix. [[Naming]](#index-naming)
+**UI Handlers** are scripts which handle **UI** functionality.  
+They are attached to the **top level parent GameObject** of the @ref BattleUi.prefab and there is only ever one instance of a **UI Handler script**.  
+The **handler scripts** also add listeners to call **UiInput** methods in @cref{Battle.View.Game,BattleGameViewController} when the local player gives an UI input.  
+In **%Battle** the **UI Handlers** have a **"Handler"** suffix in addition to the **"Ui"** prefix. [[Naming]](#index-naming)
 
-BattleUiShared -prefabs can be found in the @dirref{Altzone,Assets/Altzone/Resources/Prefabs/BattleUiShared} -folder, and the scripts are in the @dirref{Altzone,Assets/Altzone/Scripts/BattleUiShared} -folder.  
-Every one of the BattleUiShared -prefabs has either a @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement}, @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableJoystickElement} or @cref{Altzone.Scripts.BattleUiShared,BattleUiMultiOrientationElement} -script, which allow setting the saved @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElementData}.  
-@cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElementData} holds the anchor and orientation information for each BattleUiShared -prefab. It is serialized and deserialized in SettingsCarrier using GetBattleUiMovableElementData and SetBattleUiMovableElementData -methods.  
+**BattleUiShared** prefabs can be found in the @dirref{Altzone,Assets/Altzone/Resources/Prefabs/BattleUiShared} directory, and the <b>Scripts</b> are in the @dirref{Altzone,Assets/Altzone/Scripts/BattleUiShared} directory.  
+Every one of the <b>BattleUiShared</b> prefabs has either a @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement}, @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableJoystickElement} or @cref{Altzone.Scripts.BattleUiShared,BattleUiMultiOrientationElement} script, which allow setting the saved @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElementData}.  
+@cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElementData} holds the anchor and orientation information for each **BattleUiShared** prefab. It is serialized and deserialized in **SettingsCarrier** using **GetBattleUiMovableElementData** and **SetBattleUiMovableElementData** methods.  
 
 |  Namespace                                          || Class                                                        | Description                                                      |
 | :------------------ | :----------------------------- | :----------------------------------------------------------- | :--------------------------------------------------------------- |
@@ -113,11 +113,11 @@ Every one of the BattleUiShared -prefabs has either a @cref{Altzone.Scripts.Batt
 
 ## UI Component {#page-view-uicomponent}
 
-UI Components are helper scripts which can have multiple instances in BattleUi -prefab's child GameObjects.  
-In %Battle the UI Components have a Component suffix in addition to the Ui prefix. [[Naming]](#index-naming)
+**UI Components** are helper scripts which can have multiple instances in **BattleUi** prefab's child **GameObjects**.  
+In **%Battle** the **UI Components** have a **"Component"** suffix in addition to the **"Ui"** prefix. [[Naming]](#index-naming)
 
-The UI Component scripts exist to make it easier to handle @dirref{Altzone,Assets/Altzone/Resources/Prefabs,BattleUiShared} prefabs which have several instances, for example @ref BattleUiPlayerInfo.prefab.  
-The different instances of the duplicated prefab each have their own GameObjects which need to be accessed to set visual information or attach listeners.  
+The **UI Component** scripts exist to make it easier to handle @dirref{Altzone,Assets/Altzone/Resources/Prefabs,BattleUiShared} prefabs which have several instances, for example @ref BattleUiPlayerInfo.prefab.  
+The different instances of the duplicated prefab each have their own **GameObjects** which need to be accessed to set visual information or attach listeners.  
 
 |  Namespace                                          || Class                                                        | Description                                                      |
 | :------------------ | :----------------------------- | :----------------------------------------------------------- | :--------------------------------------------------------------- |
@@ -127,4 +127,4 @@ The different instances of the duplicated prefab each have their own GameObjects
 
 <br/>
 
-[Quantum Events🡵]:     https://doc.photonengine.com/quantum/current/manual/quantum-ecs/game-events
+[Quantum Events🡵]: https://doc.photonengine.com/quantum/current/manual/quantum-ecs/game-events

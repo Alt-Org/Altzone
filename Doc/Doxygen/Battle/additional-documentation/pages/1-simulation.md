@@ -32,8 +32,8 @@
 
 ## Systems {#page-simulation-systems}
 
-[Quantum Systems🡵] are C# classes that handle game logic.  
-In %Battle [Quantum Systems🡵] have QSystem suffix. [[Naming]](#index-naming)
+[Quantum Systems🡵] are **C# classes** that handle game logic.  
+In **%Battle** [Quantum Systems🡵] have **"QSystem"** suffix. [[Naming]](#index-naming)
 
 |  Namespace                                                        || Class                                                               | Description                                                             |
 | :------------------------- | :------------------------------------ | :------------------------------------------------------------------ | :---------------------------------------------------------------------- |
@@ -55,7 +55,7 @@ In %Battle [Quantum Systems🡵] have QSystem suffix. [[Naming]](#index-naming)
 
 ## Managers & Controllers {#page-simulation-managers}
 
-In %Battle managers have Manager suffix and controllers have Controller suffix. [[Naming]](#index-naming)
+In **%Battle** **Managers** have **"Manager"** suffix and **Controllers** have **"Controller"** suffix. [[Naming]](#index-naming)
 
 |  Namespace                                                    || Class                                                           | Description                                                         |
 | :------------------------- | :-------------------------------- | :---------------------------------------------------            | :------------------------------------------------------------------ |
@@ -69,8 +69,8 @@ In %Battle managers have Manager suffix and controllers have Controller suffix. 
 
 ## Components {#page-simulation-components}
 
-[Quantum Components🡵] are C# structs that are generated from qtn files which can be attached to %Quantum Entities.  
-In %Battle [Quantum Components🡵] have QComponent suffix. [[Naming]](#index-naming)
+[Quantum Components🡵] are **C# structs** that are generated from `.qtn` files which can be attached to **%Quantum Entities**.  
+In %Battle [Quantum Components🡵] have **"QComponent"** suffix. [[Naming]](#index-naming)
 
 |  Namespace        | Component                                          | Description                                            |
 | :---------------- | :------------------------------------------------- | :----------------------------------------------------- |
@@ -94,8 +94,8 @@ In %Battle [Quantum Components🡵] have QComponent suffix. [[Naming]](#index-na
 
 ## Singletons {#page-simulation-singletons}
 
-Singleton is a type of [Quantum Component🡵]. Only one instance of them can exist at a given time and they can be found without EntityRef.  
-In %Battle Singletons have QSingleton suffix. [[Naming]](#index-naming)
+**Singleton** is a type of [Quantum Component🡵]. Only one instance of them can exist at a given time and they can be found without **EntityRef**.  
+In **%Battle** **Singletons** have **"QSingleton"** suffix. [[Naming]](#index-naming)
 
 |  Namespace        | Component                                          | Description                                            |
 | :---------------- | :------------------------------------------------- | :----------------------------------------------------- |
@@ -131,8 +131,8 @@ In %Battle Singletons have QSingleton suffix. [[Naming]](#index-naming)
 
 ## Signals {#page-simulation-signals}
 
-[Quantum Signals🡵] are C# interfaces that are generated from qtn files.  
-In %Battle all [Quantum Signals🡵] are located in BattleSignals.qtn file.
+[Quantum Signals🡵] are **C# interfaces** that are generated from `.qtn` files.  
+In **%Battle** all [Quantum Signals🡵] are located in BattleSignals.qtn file.
 
 |  Namespace        | Interface                                                   | Description                                                     |
 | :---------------- | :---------------------------------------------------------- | :-------------------------------------------------------------- |
@@ -144,8 +144,8 @@ In %Battle all [Quantum Signals🡵] are located in BattleSignals.qtn file.
 
 ## Events {#page-simulation-events}
 
-[Quantum Events🡵] are C# classes that are generated from qtn files.  
-In %Battle all [Quantum Events🡵] are located in BattleEvents.qtn file.
+[Quantum Events🡵] are **C# classes** that are generated from `.qtn` files.  
+In **%Battle** all [Quantum Events🡵] are located in BattleEvents.qtn file.
 
 |  Namespace        | Class                                                  | Description                                               |
 | :---------------- | :----------------------------------------------------- | :-------------------------------------------------------- |
@@ -175,7 +175,7 @@ In %Battle all [Quantum Events🡵] are located in BattleEvents.qtn file.
 
 ## Configs {#page-simulation-configs}
 
-In %Battle configs have QConfig suffix. [[Naming]](#index-naming)
+In **%Battle** **Configs** have **"QConfig"** suffix. [[Naming]](#index-naming)
 
 |  Namespace                                                  || Class                                        | Description                                      |
 | :------------------------- | :------------------------------ | :------------------------------------------- | :----------------------------------------------- |
@@ -185,8 +185,8 @@ In %Battle configs have QConfig suffix. [[Naming]](#index-naming)
 
 ## Specs {#page-simulation-specs}
 
-[Quantum Specs🡵] are C# classes that are used as data containers.  
-In %Battle Specs have QSpec suffix. [[Naming]](#index-naming)
+[Quantum Specs🡵] are **C# classes** that are used as data containers.  
+In **%Battle** **Specs** have **"QSpec"** suffix. [[Naming]](#index-naming)
 
 |  Namespace                                                        || Class                                                             | Description                                                      |
 | :------------------------- | :------------------------------------ | :---------------------------------------------------------------- | :--------------------------------------------------------------- |

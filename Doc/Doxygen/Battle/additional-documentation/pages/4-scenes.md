@@ -1,7 +1,7 @@
 # Scenes {#page-scenes}
 
 # Scenes {#index-scenes}
-Unity scenes used in %Battle.
+**Unity scenes** used in **%Battle**.
 
 | Path                                       | File                                 | Description                                        |
 | :----------------------------------------- | :----------------------------------- | :------------------------------------------------- |

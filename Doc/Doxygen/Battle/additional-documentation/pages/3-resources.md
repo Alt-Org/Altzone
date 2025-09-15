@@ -16,7 +16,7 @@
 <br/>
 
 # Configs {#page-resources-configs}
-Config files used in %Battle.
+**Config files** used in **%Battle**.
 
 | Path                                                  | File                                     | Description                                    |
 | :---------------------------------------------------- | :--------------------------------------- | :--------------------------------------------- |
@@ -28,8 +28,8 @@ Config files used in %Battle.
 <br/>
 
 # Spec Data Assets {#page-resources-specs}
-Spec data assets used in %Battle.  
-These assets only contain the data used by the spec. Specs's structures can be found @ref page-simulation-specs "here".
+**Spec data assets** used in **%Battle**.  
+These **assets** only contain the data used by the **Spec**. **Specs**'s structures can be found [here](@ref page-simulation-specs).
 
 | Path                                                | File                             | Description                            |
 | :-------------------------------------------------- | :------------------------------- | :------------------------------------- |
@@ -42,10 +42,10 @@ These assets only contain the data used by the spec. Specs's structures can be f
 <br/>
 
 # Prefabs/EntityPrototypes {#page-resources-prefabs}
-All Prefabs and EntityPrototypes used in %Battle.
+All **Prefabs** and **EntityPrototypes** used in **%Battle**.
 
 ### Quantum prefabs/EntityPrototypes
-%Quantum Entities have both Unity Prefab and EntityPrototype while view-side gameobjects only contain Unity Prefab.
+**%Quantum Entities** have both **Unity Prefab** and **EntityPrototype** while **view-side** **GameObjects** only contain **Unity Prefab**.
 
 | Path                                                                                                                                                                                                                    ||| Prefab File                                                  | EntityPrototype File                                                            | Description                                                                |
 | :--------------------------------------------------------------- | :------------------------------------------------------------------- | :------------------------------------------------------------------------------ |:------------------------------------------------------------ | :------------------------------------------------------------------------------ | :------------------------------------------------------------------------- |
@@ -108,7 +108,7 @@ All Prefabs and EntityPrototypes used in %Battle.
 <br/>
 
 ### UI Shared prefabs/EntityPrototypes
-Prefabs that are used both in %Battle UI and BattleUiEditor in MenuUi.
+**Prefabs** that are used both in **%Battle** UI and BattleUiEditor in **MenuUi**.
 
 | Path                                                             | Prefab File                      | Description                                                                     |
 | :--------------------------------------------------------------- | :------------------------------- | :------------------------------------------------------------------------------ |
