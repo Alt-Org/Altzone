@@ -91,15 +91,15 @@ namespace Battle.QSimulation.Player
         /// <param name="playerRef">Reference to the player.</param>
         public static void RegisterPlayer(Frame f, PlayerRef playerRef)
         {
-            string[] playerSlotUserIDs                           = BattleParameters.GetPlayerSlotUserIDs(f);
-            BattleParameters.PlayerType[] playerSlotTypes        = BattleParameters.GetPlayerSlotTypes(f);
+            string[]                           playerSlotUserIDs = BattleParameters.GetPlayerSlotUserIDs(f);
+            BattleParameters.PlayerType[]      playerSlotTypes   = BattleParameters.GetPlayerSlotTypes(f);
             BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
 
             RuntimePlayer data = f.GetPlayerData(playerRef);
 
-            string playerUserID                        = data.UserID;
-            BattlePlayerSlot playerSlot                = data.PlayerSlot;
-            PlayerHandleInternal playerHandle          = PlayerHandleInternal.GetPlayerHandle(playerManagerData, playerSlot);
+            string                      playerUserID   = data.UserID;
+            BattlePlayerSlot            playerSlot     = data.PlayerSlot;
+            PlayerHandleInternal        playerHandle   = PlayerHandleInternal.GetPlayerHandle(playerManagerData, playerSlot);
             BattleParameters.PlayerType playerSlotType = playerSlotTypes[playerHandle.Index];
 
             if (playerSlotType != BattleParameters.PlayerType.Player)
