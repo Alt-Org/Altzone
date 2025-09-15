@@ -69,7 +69,7 @@ public class FriendlistHandler : MonoBehaviour
 
     private void UpdateOnlineFriendsCount(List<ServerOnlinePlayer> onlinePlayers)
     {
-        int onlinePlayerCount = onlinePlayers.Count; //HUOM! kaikki online-pelaajat, ei suodatettu vielä vain online-kavereita
+        int onlinePlayerCount = onlinePlayers.Count; //HUOM! kaikki online-pelaajat (myös sinä itse), ei suodatettu vielä vain online-kavereita
 
         _friendlistOnlineTitle.text = $"Kavereita onlinessa {onlinePlayerCount}"; // Päivitetään tieto otsikkoon
     }

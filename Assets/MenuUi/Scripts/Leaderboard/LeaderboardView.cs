@@ -85,10 +85,9 @@ public class LeaderboardView : MonoBehaviour
 
     private void OnEnable()
     {
-        SetLeaderboardType(LeaderboardType.Wins);
-        OpenLeaderboard(Leaderboard.Global);
+        //SetLeaderboardType(LeaderboardType.Wins);
         OpenLeaderboard(Leaderboard.Wins);
-        LoadWinsView();
+        //LoadWinsView();
         _tablineScript.ActivateTabButton(0);
 
     }
@@ -111,7 +110,7 @@ public class LeaderboardView : MonoBehaviour
             
         }
 
-        LoadWinsView(); // Näyttää oletukena voittolistat
+       LoadWinsView(); // Näyttää oletukena voittolistat
     }
 
     private void SetLeaderboardType(LeaderboardType leaderboardType)
@@ -131,13 +130,13 @@ public class LeaderboardView : MonoBehaviour
 
         switch (_currentLeaderboard)
         {
-            case Leaderboard.Global:
+            case Leaderboard.Global: //Pelaajien voittolista
                 {
 
                     StartCoroutine(ServerManager.Instance.GetPlayerLeaderboardFromServer((playerLeaderboard) =>
                     {
 
-                        playerLeaderboard.Sort((a, b) => a.WonBattles.CompareTo(b.WonBattles));
+                        playerLeaderboard.Sort((a, b) => b.WonBattles.CompareTo(a.WonBattles)); //vaihdettu järjestys laskevaksi
 
                         int rank = 1;
                         foreach (PlayerLeaderboard ranking in playerLeaderboard)
@@ -178,14 +177,14 @@ public class LeaderboardView : MonoBehaviour
                 
                 break;
 
-            case Leaderboard.Wins:
+            case Leaderboard.Wins: //Klaanien voittolista
                 {
                     StartCoroutine(ServerManager.Instance.GetClanLeaderboardFromServer((clanLeaderboard) =>
                     {
 
                         _podium.SetClanView();
 
-                        clanLeaderboard.Sort((a, b) => a.Points.CompareTo(b.Points));
+                        clanLeaderboard.Sort((a, b) => b.Points.CompareTo(a.Points)); //laskevaksi
 
                         int rank = 1;
                         foreach (ClanLeaderboard ranking in clanLeaderboard)
@@ -221,13 +220,13 @@ public class LeaderboardView : MonoBehaviour
                 break;
 
 
-            case Leaderboard.Clan:
+            case Leaderboard.Clan: // Klaanin voittolista
 
                 Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
                 {
                     if (_currentLeaderboardType == LeaderboardType.Wins)
                     {
-                        clanData.Members.Sort((a, b) => a.LeaderBoardWins.CompareTo(b.LeaderBoardWins));
+                        clanData.Members.Sort((a, b) => b.LeaderBoardWins.CompareTo(a.LeaderBoardWins)); //lista laskevaksi
 
                         int rank = 1;
                         foreach (ClanMember player in clanData.Members)
@@ -282,7 +281,7 @@ public class LeaderboardView : MonoBehaviour
                     }
                     else
                     {
-                        clanData.Members.Sort((a, b) => a.LeaderBoardCoins.CompareTo(b.LeaderBoardCoins));
+                        clanData.Members.Sort((a, b) => b.LeaderBoardCoins.CompareTo(a.LeaderBoardCoins)); //laskevaksi
 
                         int rank = 1;
                         foreach (ClanMember player in clanData.Members)
