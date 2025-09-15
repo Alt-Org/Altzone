@@ -125,7 +125,6 @@ In **%Battle** **Singletons** have **"QSingleton"** suffix. [[Naming]](#index-na
 | @crefd{Quantum}   | @cref{Quantum,BattleSoulWallRow}                   | @copybrief Quantum.BattleSoulWallRow                   |
 | @crefd{Quantum}   | @cref{Quantum,BattleSoundFX}                       | @copybrief Quantum.BattleSoundFX                       |
 | @crefd{Quantum}   | @cref{Quantum,BattleTeamNumber}                    | @copybrief Quantum.BattleTeamNumber                    |
-| @crefd{Quantum}   | @cref{Quantum,InputButtons}                        | @copybrief Quantum.InputButtons                        |
 
 <br/>
 
