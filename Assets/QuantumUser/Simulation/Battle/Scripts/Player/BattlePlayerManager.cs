@@ -1,3 +1,11 @@
+/// @file BattlePlayerManager.cs
+/// <summary>
+/// The manager script for player logic.
+/// </summary>
+/// 
+/// The manager handles initializing players that are present in the game, as well as spawning and despawning player characters.<br/>
+/// This script also contains the public and private PlayerHandle structs.
+
 //#define DEBUG_PLAYER_STAT_OVERRIDE
 
 using System.Runtime.CompilerServices;
@@ -83,15 +91,15 @@ namespace Battle.QSimulation.Player
         /// <param name="playerRef">Reference to the player.</param>
         public static void RegisterPlayer(Frame f, PlayerRef playerRef)
         {
-            string[] playerSlotUserIDs = BattleParameters.GetPlayerSlotUserIDs(f);
-            BattleParameters.PlayerType[] playerSlotTypes = BattleParameters.GetPlayerSlotTypes(f);
+            string[] playerSlotUserIDs                           = BattleParameters.GetPlayerSlotUserIDs(f);
+            BattleParameters.PlayerType[] playerSlotTypes        = BattleParameters.GetPlayerSlotTypes(f);
             BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
 
             RuntimePlayer data = f.GetPlayerData(playerRef);
 
-            string playerUserID = data.UserID;
-            BattlePlayerSlot playerSlot = data.PlayerSlot;
-            PlayerHandleInternal playerHandle = PlayerHandleInternal.GetPlayerHandle(playerManagerData, playerSlot);
+            string playerUserID                        = data.UserID;
+            BattlePlayerSlot playerSlot                = data.PlayerSlot;
+            PlayerHandleInternal playerHandle          = PlayerHandleInternal.GetPlayerHandle(playerManagerData, playerSlot);
             BattleParameters.PlayerType playerSlotType = playerSlotTypes[playerHandle.Index];
 
             if (playerSlotType != BattleParameters.PlayerType.Player)
@@ -783,10 +791,8 @@ namespace Battle.QSimulation.Player
             /// </summary>
             public BattlePlayerPlayState PlayState
             {
-                [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get => _playerManagerData->PlayStates[Index];
-                [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                set => _playerManagerData->PlayStates[Index] = value;
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->PlayStates[Index];
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->PlayStates[Index] = value;
             }
 
             /// <summary>
@@ -794,10 +800,8 @@ namespace Battle.QSimulation.Player
             /// </summary>
             public PlayerRef PlayerRef
             {
-                [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get => _playerManagerData->PlayerRefs[Index];
-                [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                set => _playerManagerData->PlayerRefs[Index] = value;
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->PlayerRefs[Index];
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->PlayerRefs[Index] = value;
             }
 
             public FrameTimer RespawnTimer
