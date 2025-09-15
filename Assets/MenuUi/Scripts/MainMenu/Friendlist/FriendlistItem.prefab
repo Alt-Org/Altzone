@@ -239,6 +239,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5715535696324222795}
+  - component: {fileID: 7997588044454193022}
   m_Layer: 5
   m_Name: FriendlistItem
   m_TagString: Untagged
@@ -266,6 +267,23 @@ RectTransform:
   m_AnchoredPosition: {x: -720, y: -2510}
   m_SizeDelta: {x: -1340, y: 100}
   m_Pivot: {x: 0.5, y: 1}
+--- !u!114 &7997588044454193022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3935509160329979117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82ff94710a8902d4f9a3783e49667957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _avatarImage: {fileID: 1215942248757426221}
+  _onlineStatusIndicator: {fileID: 5560187034957675401}
+  _nameText: {fileID: 5823090110037391635}
+  _clanLogo: {fileID: 6042100090220300008}
+  _removefriendButton: {fileID: 9008562203616237217}
 --- !u!1 &6832703221580773677
 GameObject:
   m_ObjectHideFlags: 0
