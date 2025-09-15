@@ -40,7 +40,8 @@ In contexts where **unicode characters** are not allowed, they can be [circumven
 **Doxygen** supports **XML Commands** (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/xmlcmds.html)). These commands are preferred in certain contexts.  
 **Doxygen** supports **HTML Commands** (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/htmlcmds.html)).  
 
-**XML Commands** are generally preferred in **source code** because they are a native **C#** feature (see [C# documentation🡵](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments#d3-recommended-tags)) 
+**XML Commands** are generally preferred in **source code** because they are a native **C#** feature 
+(see [C# documentation🡵](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments#d3-recommended-tags)) 
 that IDEs such as Visual Studio recognize. Visual Studio will automatically show **documentation comments** with **XML Commands**.  
 **Documentation comments** should in general use the **XML** `<summary>` Command instead of the **Doxygen specific** `@brief` command for the sake of consistency.  
 
@@ -56,7 +57,8 @@ See [[Writing additional documentation]](#page-documentation-additional-base-gui
 
 ## Linking styles and formats {#page-documentation-doxygen-styles-formats}
 [Doxygen🡵] supports multiple kinds of **linking formats**. We have our own guidelines for the **styling** of **links**.  
-The **linking style** and **format** you should use depends on what you are documenting. The **style** remains consistent in all documentation, but there are many **formats** you can use for the same kind of link.  
+The **linking style** and **format** you should use depends on what you are documenting. The **style** remains consistent in all documentation, 
+but there are many **formats** you can use for the same kind of link.  
 
 **The correct format to use depends on context.**  
 See [[Documenting source code]](#page-documentation-source-code-base-guidelines-linking)  
@@ -76,7 +78,8 @@ See [[Writing additional documentation]](#page-documentation-additional-base-gui
   These can be used optionally when referring to potentially unfamiliar **concepts** or **terms** to those reading the documentation.
 - **External links**  
   Links that lead to **external websites** should end with a `🡵` symbol. \"<span class="fake-link">Example text🡵</span>\"  
-  Since **unicode characters** can not be used inside **source code**, the <span class="tt">@@u-exlink</span> **custom command** should be used. See [Circumventing unicode characters](#page-documentation-doxygen-custom-commands-unicode).
+  Since **unicode characters** can not be used inside **source code**, the <span class="tt">@@u-exlink</span> **custom command** should be used. 
+  See [Circumventing unicode characters](#page-documentation-doxygen-custom-commands-unicode).
 - **Code symbol links**  
   **Code symbol** paths are constructed by separating each part, such as the **namespace** and **class** name with a `.` \"<span class="fake-link">{namespace.class.method}</span>\"
 
@@ -114,7 +117,8 @@ These **custom linking formats** exist to simplify linking to **directories** an
   <span class="tt">@@cref{namespace.example.name}</span>  
   See [Custom reference links](#page-documentation-doxygen-custom-commands-reference-links) for more details.
 
-Some destinations have an existing **custom link command** that can be used. See [Custom documentation links](#page-documentation-doxygen-custom-commands-documentation-links) for more details.  
+Some destinations have an existing **custom link command** that can be used. See [Custom documentation links](#page-documentation-doxygen-custom-commands-documentation-links) 
+for more details.  
 When **other linking formats** don't work, the following format can be used:  
 `@ref link_destination "link text"`  
 See [Doxygen documentation🡵](https://www.doxygen.nl/manual/commands.html#cmdref).
