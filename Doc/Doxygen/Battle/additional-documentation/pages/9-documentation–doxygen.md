@@ -40,8 +40,9 @@ In contexts where **unicode characters** are not allowed, they can be [circumven
 **Doxygen** supports **XML Commands** (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/xmlcmds.html)). These commands are preferred in certain contexts.  
 **Doxygen** supports **HTML Commands** (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/htmlcmds.html)).  
 
-**XML Commands** are generally preferred in **source code** because they are a native **C#** feature (see [C# documentation🡵](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments#d3-recommended-tags)) that IDEs such as Visual Studio recognize. Visual Studio will automatically generate documentation comments with **XML Commands**.  
-Documentation comments should in general use the **XML** `<summary>` Command instead of the **Doxygen specific** `@brief` command for the sake of consistency.  
+**XML Commands** are generally preferred in **source code** because they are a native **C#** feature (see [C# documentation🡵](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments#d3-recommended-tags)) 
+that IDEs such as Visual Studio recognize. Visual Studio will automatically show **documentation comments** with **XML Commands**.  
+**Documentation comments** should in general use the **XML** `<summary>` Command instead of the **Doxygen specific** `@brief` command for the sake of consistency.  
 
 **The correct command types to use depend on context.**  
 See [[Documenting source code]](#page-documentation-source-code-base-guidelines-commands)  
@@ -67,17 +68,17 @@ See [[Writing additional documentation]](#page-documentation-additional-base-gui
 
 ### Styles {#page-documentation-doxygen-styles-formats-styles}
 - **Generic documentation links**  
-  There is no specific styling that should be used for these.
+  There is no specific **styling** that should be used for these.
 - **Documentation page links**  
-  Links that lead to other documentation pages should have square brackets `[]` around them.  \"<span class="fake-link">[Example text]</span>\" (This is not a hard rule.)
+  Links that lead to other **documentation pages** should have square brackets `[]` around them.  \"<span class="fake-link">[Example text]</span>\" (This is not a hard rule.)
 - **Concept links**  
-  Links that link to concept explanations should have curly brackets `{}` around them. \"<span class="fake-link">{Example text}</span>\"  
-  These can be used optionally when referring to potentially unfamiliar concepts or terms to those reading the documentation.
+  Links that link to **concept** explanations should have curly brackets `{}` around them. \"<span class="fake-link">{Example text}</span>\"  
+  These can be used optionally when referring to potentially unfamiliar **concepts** or **terms** to those reading the documentation.
 - **External links**  
-  Links that lead to external websites should end with a `🡵` symbol. \"<span class="fake-link">Example text🡵</span>\"  
-  Since unicode characters can not be used inside source code, the <span class="tt">@@u-exlink</span> custom command should be used. See [Circumventing unicode characters](#page-documentation-doxygen-custom-commands-unicode).
+  Links that lead to **external websites** should end with a `🡵` symbol. \"<span class="fake-link">Example text🡵</span>\"  
+  Since **unicode characters** can not be used inside **source code**, the <span class="tt">@@u-exlink</span> **custom command** should be used. See [Circumventing unicode characters](#page-documentation-doxygen-custom-commands-unicode).
 - **Code symbol links**  
-  Code symbol paths are constructed by separating each part, such as the namespace and class name with a `.` \"<span class="fake-link">{namespace.class.method}</span>\"
+  **Code symbol** paths are constructed by separating each part, such as the **namespace** and **class** name with a `.` \"<span class="fake-link">{namespace.class.method}</span>\"
 
 
 <br/>
@@ -114,14 +115,14 @@ These **custom linking formats** exist to simplify linking to **directories** an
   See [Custom reference links](#page-documentation-doxygen-custom-commands-reference-links) for more details.
 
 Some destinations have an existing **custom link command** that can be used. See [Custom documentation links](#page-documentation-doxygen-custom-commands-documentation-links) for more details.  
-When other linking formats don't work, the following format can be used:  
+When **other linking formats** don't work, the following format can be used:  
 `@ref link_destination "link text"`  
 See [Doxygen documentation🡵](https://www.doxygen.nl/manual/commands.html#cmdref).
 
 <br/>
 
 ### XML format {#page-documentation-doxygen-styles-formats-xml}
-These linking formats should be used when the other formats listed above are not available.  
+These **linking formats** should be used when the **other formats** listed above are not available.  
 see [Doxygen documentation🡵](https://www.doxygen.nl/manual/xmlcmds.html).  
 see [C# documentation🡵](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments#d314-see).
 - **Code symbol links** are formatted as such:  
@@ -145,7 +146,8 @@ See [[Writing additional documentation]](#page-documentation-additional-base-gui
 ---
 
 ## Doxygen custom commands {#page-documentation-doxygen-custom-commands}
-[Doxygen🡵] **specific** [Custom commands🡵] that can be used during documentation are defined in @ref Altzone/Doc/Doxygen/Battle/setup/Doxyfile under the **ALIASES** section. These are defined by us to add useful shorthands. All added **custom commands** should be listed on this page.
+[Doxygen🡵] **specific** [Custom commands🡵] that can be used during documentation are defined in @ref Altzone/Doc/Doxygen/Battle/setup/Doxyfile under the **ALIASES** section. 
+These are defined by us to add useful shorthands. All added **custom commands** should be listed on this page.
 
 <br/>
 
@@ -158,45 +160,45 @@ List of current aliases
 - **dirref**  
   - Basic reference  
     <span class="tt">@@dirref{very/long/example/path}</span>  
-    Creates a link to the specified directory.  
+    Creates a link to the specified **Directory**.  
     Formatted as such: \"<span class="fake-link">very/long/example/path</span>\"
   - Short reference  
     <span class="tt">@@dirref{very/long,example/path}</span>   
-    Creates a link to the specified directory. Shortens the resulting text by only showing the part after the `,` symbol.  
+    Creates a link to the specified **Directory**. **Shortens** the resulting text by only showing the part **after** the comma `,`.  
     Formatted as such: \"<span class="fake-link">example/path</span>\"
   - Middle truncated reference  
     <span class="tt">@@dirref{very,long/example,path}</span>  
-    Creates a link to the specified directory. Truncates the resulting text by replacing the part between the two `,` symbols with `/../`.  
+    Creates a link to the specified **Directory**. **Truncates** the resulting text by replacing the part **between** the two commas `,` with `/../`.  
     Formatted as such: \"<span class="fake-link">very/../path</span>\"
 - **dirrefr**  
   - Relative reference  
     <span class="tt">@@dirrefr{very/long,example/path}</span>  
-    Creates a link to the specified directory. Used when referencing another directory in the same parent directory. Replaces the part before the `,` symbol with `../`.  
+    Creates a link to the specified **Directory**. Used when referencing another **Directory** in the same parent **Directory**. Replaces the part **before** the comma `,` with `../`.  
     Formatted as such: \"<span class="fake-link">../example/path</span>\"
 - **dirlink**
-  -  Directory link  
+  -  **Directory** link  
     <span class="tt">@@dirlink{link text:very/long/example/path}</span>  
-    Creates a link to the specified directory with arbitrary text.  
+    Creates a link to the specified **Directory** with arbitrary text.  
     Formatted as such: \"<span class="fake-link">link text</span>\"
 
 **Code symbol reference commands**
 - **cref**  
   - Basic reference  
     <span class="tt">@@cref{namespace.example.name}</span>  
-    Creates a link to the specified code symbol.  
+    Creates a link to the specified **Code symbol**.  
     Formatted as such: \"<span class="fake-link">namespace.example.name</span>\"
   - Short reference  
     <span class="tt">@@cref{namespace.example,name}</span>  
-    Creates a link to the specified code symbol. Shortens the resulting text by only showing the part after the `,` symbol.  
+    Creates a link to the specified **Code symbol**. **Shortens** the resulting text by only showing the part **after** the comma `,`.  
     Formatted as such: \"<span class="fake-link">name</span>\"
 - **crefd**  
   - Basic reference with dot  
     <span class="tt">@@crefd{namespace.example.name}</span>  
-    Creates a link to the specified code symbol. Adds a dot to the end of the resulting text.  
+    Creates a link to the specified **Code symbol**. **Adds a dot** `.` to the **end** of the resulting text.  
     Formatted as such: \"<span class="fake-link">namespace.example.name.</span>\"
   - Short reference with dot  
     <span class="tt">@@crefd{namespace.example,name}</span>  
-    Creates a link to the specified code symbol. Shortens the resulting text by only showing the part after the `,` symbol. Adds a dot to the end of the resulting text.  
+    Creates a link to the specified **Code symbol**. **Shortens** the resulting text by only showing the part **after** the comma `,`. **Adds a dot** '.' to the **end** of the resulting text.  
     Formatted as such: \"<span class="fake-link">name.</span>\"
 
 <br/>
