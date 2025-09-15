@@ -300,27 +300,37 @@ public class ServerManager : MonoBehaviour
             string noneStr = none.ToString();
             string[] currentBattleCharacterIds = (player?.battleCharacter_ids == null || player.battleCharacter_ids.Length < 3) ? new string[3] { noneStr, noneStr, noneStr } : player.battleCharacter_ids;
 
-            playerData = new PlayerData(player._id, player.clan_id, currentCustomCharacterId, currentBattleCharacterIds, null, player.name, player.backpackCapacity, player.uniqueIdentifier);
-        }
-        else
-        {
-            playerData.UpdatePlayerData(player);
-        }
-
-        if (characters == null)
-        {
-            ReadOnlyCollection<CustomCharacter> customCharacters = null;
-            storefront.GetAllDefaultCharacterYield(c => customCharacters = c);
-            List<CustomCharacter> character = new();
-            foreach (CustomCharacter characterItem in customCharacters)
+            if (characters == null)
             {
-                character.Add(characterItem);
+                ReadOnlyCollection<CustomCharacter> customCharacters = null;
+                storefront.GetAllDefaultCharacterYield(c => customCharacters = c);
+                characters = new();
+                foreach (CustomCharacter characterItem in customCharacters)
+                {
+                    characters.Add(characterItem);
+                }
             }
-            playerData.BuildCharacterLists(character);
+
+            playerData = new PlayerData(player._id, player.clan_id, currentCustomCharacterId, currentBattleCharacterIds, player.name, player.backpackCapacity, player.uniqueIdentifier, characters);
         }
         else
         {
-            playerData.BuildCharacterLists(characters);
+            if (characters == null)
+            {
+                ReadOnlyCollection<CustomCharacter> customCharacters = null;
+                storefront.GetAllDefaultCharacterYield(c => customCharacters = c);
+                List<CustomCharacter> character = new();
+                foreach (CustomCharacter characterItem in customCharacters)
+                {
+                    character.Add(characterItem);
+                }
+                playerData.BuildCharacterLists(character);
+            }
+            else
+            {
+                playerData.BuildCharacterLists(characters);
+            }
+            playerData.UpdatePlayerData(player);
         }
         PlayerPrefs.SetString("profileId", player.profile_id);
 

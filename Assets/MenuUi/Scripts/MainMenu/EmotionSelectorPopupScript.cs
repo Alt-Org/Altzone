@@ -64,7 +64,7 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
             if(days > 7) days = 7;
         }
 
-        for (int i = days; i > 0; i--)
+        for (int i = days-1; i > 0; i--)
         {
             // Removes the last item in the list of moods
             data.RemoveAt(data.Count - 1);
