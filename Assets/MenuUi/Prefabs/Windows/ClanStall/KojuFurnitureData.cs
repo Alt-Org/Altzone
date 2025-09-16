@@ -62,7 +62,7 @@ public class KojuFurnitureData : MonoBehaviour
 
     private void RefreshUI()
     {
-        furnitureValue.text = $"Value: {price:0.0}";
+        furnitureValue.text = $"{(int)price}";
     }
 
     public void SetPrice(float newPrice)
