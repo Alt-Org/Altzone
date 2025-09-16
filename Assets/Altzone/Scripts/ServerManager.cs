@@ -23,6 +23,7 @@ using Altzone.Scripts.Voting;
 using System.Linq;
 using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Store;
+using static ChatListener;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -1261,24 +1262,25 @@ public class ServerManager : MonoBehaviour
 
     #endregion
 
-    public IEnumerator GetMessageHistory(string channel, Action<bool> callback)
+    public IEnumerator GetMessageHistory(ChatChannelType channel, Action<List<ServerChatMessage>> callback)
     {
-        yield return StartCoroutine(WebRequests.Get($"{DEVADDRESS}chat/history?type={channel}", AccessToken, request =>
+        yield return StartCoroutine(WebRequests.Get($"{DEVADDRESS}chat/history?type={channel.ToString().ToLower()}", AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 Debug.LogWarning(result);
+                List<ServerChatMessage> messageList = ((JArray)result["data"]["ChatMessage"]).ToObject<List<ServerChatMessage>>();
 
 
 
                 if (callback != null)
-                    callback(true);
+                    callback(messageList);
             }
             else
             {
                 if (callback != null)
-                    callback(false);
+                    callback(null);
             }
         }));
     }

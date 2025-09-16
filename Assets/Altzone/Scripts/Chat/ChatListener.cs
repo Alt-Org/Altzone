@@ -108,7 +108,7 @@ public class ChatListener : MonoBehaviour
     private void Start()
     {
         ServerManager.OnLogInStatusChanged += HandleAccountChange;
-        StartCoroutine(ServerManager.Instance.GetMessageHistory("global", success => { }));
+        StartCoroutine(ServerManager.Instance.GetMessageHistory(ChatChannelType.Global, success => { }));
         HandleAccountChange(ServerManager.Instance.isLoggedIn);
     }
 
@@ -160,6 +160,7 @@ public class ChatListener : MonoBehaviour
     {
         string json = Encoding.UTF8.GetString(data);
         Debug.LogWarning(json);
+        ServerChatMessage message = JObject.Parse(json)["message"].ToObject<ServerChatMessage>();
     }
 
     public async void SendMessage(string message, Mood emotion, ChatChannelType channel)
