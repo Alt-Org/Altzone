@@ -263,6 +263,7 @@ namespace Altzone.Scripts.Model.Poco.Player
                 string serverid = null;
                 if(server_ids.Length > i) serverid = server_ids[i];
 
+                if (_characterList == null) _characterList = new();
                 CustomCharacter character = _characterList.FirstOrDefault(c => c.ServerID == serverid);
                 if (i < SelectedCharacterIds.Length)
                 {
