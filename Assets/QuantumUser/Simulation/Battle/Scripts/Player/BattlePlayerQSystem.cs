@@ -1,3 +1,10 @@
+/// @file BattlePlayerQSystem.cs
+/// <summary>
+/// Handles the quantum side of player logic.
+/// </summary>
+///
+/// This system contains methods called by BattleCollisionQSystem that deal damage to players and shields, as well as sending input data forward for movement and character switching.
+
 using UnityEngine.Scripting;
 using Quantum;
 using Photon.Deterministic;
@@ -6,9 +13,18 @@ using Battle.QSimulation.Projectile;
 
 namespace Battle.QSimulation.Player
 {
+    /// <summary>
+    /// <span class="brief-h">Player <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum SystemSignalsOnly@u-exlink</a> @systemslink</span><br/>
+    /// Handles the quantum side of player logic.
+    /// </summary>
     [Preserve]
     public unsafe class BattlePlayerQSystem : SystemMainThread
     {
+        /// <summary>
+        /// Calls BattlePlayerManager::SpawnPlayer for players that are in the game.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame</param>
         public static void SpawnPlayers(Frame f)
         {
             foreach (BattlePlayerManager.PlayerHandle playerHandle in BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f))
@@ -19,6 +35,15 @@ namespace Battle.QSimulation.Player
             }
         }
 
+        /// <summary>
+        /// Called by BattleCollisionQSystem. Applies damage to the player after checking if it is appropriate to do so.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame</param>
+        /// <param name="projectile">Pointer reference to the projectile.</param>
+        /// <param name="projectileEntity">The projectile entity.</param>
+        /// <param name="playerHitbox">Pointer reference to the player hitbox that the projectile collided with.</param>
+        /// <param name="playerHitboxEntity">The player hitbox entity.</param>
         public static void OnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
         {
             if (projectile->IsHeld) return;
@@ -53,6 +78,15 @@ namespace Battle.QSimulation.Player
             BattleProjectileQSystem.SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Player);
         }
 
+        /// <summary>
+        /// Called by BattleCollisionQSystem. Applies damage to the player's shield after checking if it is appropriate to do so.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame</param>
+        /// <param name="projectile">Pointer reference to the projectile.</param>
+        /// <param name="projectileEntity">The projectile entity.</param>
+        /// <param name="playerHitbox">Pointer reference to the player's shield hitbox that the projectile collided with.</param>
+        /// <param name="playerHitboxEntity">The player's shield hitbox entity.</param>
         public static void OnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
         {
             if (!playerHitbox->IsActive) return;
@@ -82,6 +116,12 @@ namespace Battle.QSimulation.Player
             BattleProjectileQSystem.SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Player);
         }
 
+        /// <summary>
+        /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method@u-exlink</a> gets called every frame.</span><br/>
+        /// Relays the appropriate input data to each player in the game
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame</param>
         public override void Update(Frame f)
         {
             Input* input;
