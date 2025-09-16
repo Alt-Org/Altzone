@@ -8,11 +8,17 @@ using static ChatListener;
 [Serializable]
 public class ChatChannel
 {
-    [SerializeField] internal string _id;
-    [SerializeField] internal string _channelName;
-    [SerializeField] internal ChatChannelType _chatChannelType;
-    [SerializeField] internal int _firstMsgIndex;
-    [SerializeField] internal int _lastMsgIndex;
+    [SerializeField] private string _id;
+    [SerializeField] private string _channelName;
+    [SerializeField] private ChatChannelType _chatChannelType;
+    [SerializeField] private int _firstMsgIndex;
+    [SerializeField] private int _lastMsgIndex;
+
+    public string ChannelName { get => _channelName;}
+    public string Id { get => _id;}
+    public ChatChannelType ChatChannelType { get => _chatChannelType;}
+    public int FirstMsgIndex { get => _firstMsgIndex;}
+    public int LastMsgIndex { get => _lastMsgIndex;}
 
     internal ChatChannel()
     {
@@ -40,7 +46,7 @@ public class ChatChannel
         _firstMsgIndex = 0;
     }
 
-    internal void Reset()
+    public void Reset()
     {
         _id = string.Empty;
         _channelName = string.Empty;

@@ -57,28 +57,31 @@ public class ChatListener : MonoBehaviour
     public static ChatListener Instance { get; private set; }
 
     internal string _id;
-    internal string _username;
+    private string _username;
 
-    internal bool _chatPreviewIsEnabled;
+    private bool chatPreviewIsEnabled;
 
     private WebSocket _socket;
-    private ChatController _chatController;                 // Controller for the main chat
-    private ChatPreviewController _chatPreviewController;   // Controller for the small chat preview outside of main chat
+    //private ChatController _chatController;                 // Controller for the main chat
+    //private ChatPreviewController _chatPreviewController;   // Controller for the small chat preview outside of main chat
 
-    [SerializeField] internal ChatChannel _activeChatChannel, _globalChatChannel, _clanChatChannel, _countryChatChannel;
-    [SerializeField] internal ChatChannel[] _chatChannels;
+    [SerializeField] public ChatChannel _activeChatChannel, _globalChatChannel, _clanChatChannel, _countryChatChannel;
+    [SerializeField] public ChatChannel[] _chatChannels;
 
-    [SerializeField] internal List<ChatMessage> _chatMessages;
+    [SerializeField] private List<ChatMessage> _chatMessages;
 
     //private ChatAppSettings _appSettings;
 
     private const string SERVER_ADDRESS = "https://devapi.altzone.fi/chat/";
 
-    internal ChatPreviewController ChatPreviewController { get => _chatPreviewController; set => _chatPreviewController = value; }
-    internal ChatController ChatController { get => _chatController; set => _chatController = value; }
+    //internal ChatPreviewController ChatPreviewController { get => _chatPreviewController; set => _chatPreviewController = value; }
+    //internal ChatController ChatController { get => _chatController; set => _chatController = value; }
     //internal ChatClient ChatClient { get => _chatClient; set => _chatClient = value; }
 
     public string AccessToken { get => PlayerPrefs.GetString("accessToken", string.Empty); }
+    public bool ChatPreviewIsEnabled { get => chatPreviewIsEnabled; set => chatPreviewIsEnabled = value; }
+    public List<ChatMessage> ChatMessages { get => _chatMessages;}
+    public string Username { get => _username; set => _username = value; }
 
     private const string DEFAULT_CLAN_CHAT_NAME = "Klaanittomat";
 

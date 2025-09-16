@@ -8,11 +8,17 @@ using static ChatListener;
 [Serializable]
 public class ChatMessage : IEquatable<ChatMessage>
 {
-    [SerializeField] internal int _id;
-    [SerializeField] internal string _username;
-    [SerializeField] internal string _message;
-    [SerializeField] internal ChatChannel _channel;
-    [SerializeField] internal Mood _mood;
+    [SerializeField] private int _id;
+    [SerializeField] private string _username;
+    [SerializeField] private string _message;
+    [SerializeField] private ChatChannel _channel;
+    [SerializeField] private Mood _mood;
+
+    public ChatChannel Channel { get => _channel;}
+    public string Username { get => _username; }
+    public string Message { get => _message;}
+    public Mood Mood { get => _mood;}
+    public int Id { get => _id;}
 
     internal ChatMessage()
     {
@@ -37,9 +43,9 @@ public class ChatMessage : IEquatable<ChatMessage>
         if (other is null)
             return false;
 
-        return _username == other._username && _message == other._message && _channel._channelName == other._channel._channelName && _channel._chatChannelType == other._channel._chatChannelType && _mood == other._mood;
+        return _username == other._username && _message == other._message && _channel.ChannelName == other._channel.ChannelName && _channel.ChatChannelType == other._channel.ChatChannelType && _mood == other._mood;
     }
 
     public override bool Equals(object obj) => Equals(obj as ChatMessage);
-    public override int GetHashCode() => (_username, _message, _channel._channelName, _channel._chatChannelType, _mood).GetHashCode();
+    public override int GetHashCode() => (_username, _message, _channel.ChannelName, _channel.ChatChannelType, _mood).GetHashCode();
 }
