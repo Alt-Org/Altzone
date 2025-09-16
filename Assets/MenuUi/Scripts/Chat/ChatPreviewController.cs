@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Text;
+using Altzone.Scripts.Chat;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

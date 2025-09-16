@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Altzone.Scripts.Chat;
 
 /// <summary>
 /// ChatMessagePrefab contains references to children of an instantiated chat message prefab.
@@ -29,7 +30,7 @@ public class ChatMessagePrefab : MonoBehaviour
     /// Sets the correct emoji and message background for the chat message instance.
     /// </summary>
     /// <<param name="mood">Mood value received from the server/Photon Chat</param>
-    internal void SetMood(ChatListener.Mood mood)
+    internal void SetMood(Mood mood)
     {
         Sprite moodSprite = Resources.Load<Sprite>("test-emojis/" + mood.ToString().ToLower());
         _moodImage.sprite = moodSprite;
@@ -44,19 +45,19 @@ public class ChatMessagePrefab : MonoBehaviour
     /// <summary>
     /// Sets the profile picture for the chat message instance.
     /// </summary>
-    internal void SetProfilePicture(ChatListener.ChatChannelType chatChannelType)
+    internal void SetProfilePicture(ChatChannelType chatChannelType)
     {
         string location = "";
 
-        if (chatChannelType == ChatListener.ChatChannelType.Global)
+        if (chatChannelType == ChatChannelType.Global)
         {
             location = "test-profilepicture/countrypicture";
         }
-        else if (chatChannelType == ChatListener.ChatChannelType.Clan)
+        else if (chatChannelType == ChatChannelType.Clan)
         {
             location = "test-profilepicture/profilepicture";
         }
-        else if (chatChannelType == ChatListener.ChatChannelType.Country)
+        else if (chatChannelType == ChatChannelType.Country)
         {
             location = "test-profilepicture/clanpicture";
         }

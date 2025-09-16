@@ -23,7 +23,7 @@ using Altzone.Scripts.Voting;
 using System.Linq;
 using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Store;
-using static ChatListener;
+using Altzone.Scripts.Chat;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.

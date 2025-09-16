@@ -3,6 +3,7 @@ using System;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Altzone.Scripts.Chat;
 
 /// <summary>
 /// ChatController handles sending new chat messages and displaying received chat messages on the Global, Country and Clan chat windows.
@@ -47,13 +48,13 @@ public class ChatController : MonoBehaviour
         #region Chat Window initialization
 
         _chatWindows = new ChatWindow[] { _globalChatWindow, _clanChatWindow, _countryChatWindow };
-        _globalChatWindow.ChannelType = ChatListener.ChatChannelType.Global;
-        _clanChatWindow.ChannelType = ChatListener.ChatChannelType.Clan;
-        _countryChatWindow.ChannelType = ChatListener.ChatChannelType.Country;
+        _globalChatWindow.ChannelType = ChatChannelType.Global;
+        _clanChatWindow.ChannelType = ChatChannelType.Clan;
+        _countryChatWindow.ChannelType = ChatChannelType.Country;
 
-        _globalChatWindow.ChangeToWindowButton.onClick.AddListener(() => OnChatWindowChanged(ChatListener.ChatChannelType.Global));
-        _clanChatWindow.ChangeToWindowButton.onClick.AddListener(() => OnChatWindowChanged(ChatListener.ChatChannelType.Clan));
-        _countryChatWindow.ChangeToWindowButton.onClick.AddListener(() => OnChatWindowChanged(ChatListener.ChatChannelType.Country));
+        _globalChatWindow.ChangeToWindowButton.onClick.AddListener(() => OnChatWindowChanged(ChatChannelType.Global));
+        _clanChatWindow.ChangeToWindowButton.onClick.AddListener(() => OnChatWindowChanged(ChatChannelType.Clan));
+        _countryChatWindow.ChangeToWindowButton.onClick.AddListener(() => OnChatWindowChanged(ChatChannelType.Country));
 
         #endregion
 
@@ -138,7 +139,7 @@ public class ChatController : MonoBehaviour
     /// <remarks>
     /// This function gets called when Global, Clan or Country button gets pressed in the UI.
     /// </remarks>
-    internal void OnChatWindowChanged(ChatListener.ChatChannelType channelType)
+    internal void OnChatWindowChanged(ChatChannelType channelType)
     {
         ChatWindow chatWindow = Array.Find(_chatWindows, item => item.ChannelType == channelType);
         int activeChatChannelIndex = Array.FindIndex(ChatListener.Instance._chatChannels, item => item.ChatChannelType == channelType);
@@ -166,7 +167,7 @@ public class ChatController : MonoBehaviour
     /// <param name="chatName"></param>
     public void OnClanChatChanged(string chatName)
     {
-        int clanChannelIndex = Array.FindIndex(ChatListener.Instance._chatChannels, item => item.ChatChannelType == ChatListener.ChatChannelType.Clan);
+        int clanChannelIndex = Array.FindIndex(ChatListener.Instance._chatChannels, item => item.ChatChannelType == ChatChannelType.Clan);
 
         ChatChannel clanChannel = ChatListener.Instance._chatChannels[clanChannelIndex];
         clanChannel.Reset();

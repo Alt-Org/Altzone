@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Chat;
 using MenuUi.Scripts.AvatarEditor;
 using TMPro;
 using UnityEngine;
