@@ -38,6 +38,19 @@ public class MessageObjectHandler : MonoBehaviour
         _text.text = messageText;
         _selectMessageAction = selectMessageAction;
     }
+    public void SetMessageInfo(ChatMessage message, Action<MessageObjectHandler> selectMessageAction)
+    {
+        if (message.Avatar != null) _avatar.UpdateVisuals(AvatarDesignLoader.Instance.LoadAvatarDesign(message.Avatar));
+        _text.text = message.Message;
+        _selectMessageAction = selectMessageAction;
+    }
+
+    public void SetPreviewMessageInfo(ChatMessage message)
+    {
+        if (message.Avatar != null) _avatar.UpdateVisuals(AvatarDesignLoader.Instance.LoadAvatarDesign(message.Avatar));
+        _text.text = message.Message;
+        _button.enabled = false;
+    }
 
     private void SetMessageActive()
     {
