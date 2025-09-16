@@ -12,7 +12,7 @@ public class ServerChatMessage : MonoBehaviour
     public string content { get; set; }
     public string type { get; set; }
     public string feeling { get; set; }
-    public string reactions { get; set; }
+    public List<ServerReactions> reactions { get; set; }
     public string createdAt { get; set; }
 
     public class MessageSender
