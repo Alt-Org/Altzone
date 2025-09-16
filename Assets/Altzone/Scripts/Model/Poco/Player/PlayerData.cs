@@ -140,7 +140,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             Id = id;
             ClanId = clanId ?? string.Empty;
             SelectedCharacterId = currentCustomCharacterId;
-            if(characters == null)BuildCharacterLists(characters);
+            if(characters != null)BuildCharacterLists(characters);
             BuildSelectedCharacterList(currentBattleCharacterIds);
             Name = name;
             BackpackCapacity = backpackCapacity;
