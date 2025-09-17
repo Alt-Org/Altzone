@@ -381,21 +381,21 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             switch (uiElementType)
             {
                 case BattleUiElementType.Timer:
-                    uiElementPrefab = _prefabs.timer;
+                    uiElementPrefab = _prefabs.Timer;
                     break;
                 case BattleUiElementType.GiveUpButton:
-                    uiElementPrefab = _prefabs.giveUpButton;
+                    uiElementPrefab = _prefabs.GiveUpButton;
                     break;
                 case BattleUiElementType.Diamonds:
-                    uiElementPrefab = _prefabs.diamonds;
+                    uiElementPrefab = _prefabs.Diamonds;
                     break;
                 case BattleUiElementType.PlayerInfo:
                 case BattleUiElementType.TeammateInfo:
-                    uiElementPrefab = _prefabs.playerInfo;
+                    uiElementPrefab = _prefabs.PlayerInfo;
                     break;
                 case BattleUiElementType.MoveJoystick:
                 case BattleUiElementType.RotateJoystick:
-                    uiElementPrefab = _prefabs.joystick;
+                    uiElementPrefab = _prefabs.Joystick;
                     break;
             }
 
