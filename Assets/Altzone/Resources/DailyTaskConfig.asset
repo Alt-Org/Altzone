@@ -19,12 +19,6 @@ MonoBehaviour:
     coins: 100
     points: 10
     type: write_chat_message
-  - title: "Osallistu \xE4\xE4nestykseen"
-    description: 
-    amount: 1
-    coins: 100
-    points: 10
-    type: participate_clan_voting
   _educationDailyTasks:
   - title: Vaihda taustamusiikki
     description: "Vaihda k\xE4ytt\xF6liittym\xE4n taustamusiikki."
@@ -211,3 +205,17 @@ MonoBehaviour:
     points: 10
     educationCategoryType: ethical
     educationCategoryTaskType: press_values_objects
+  - title: "Osallistu \xE4\xE4nestykseen"
+    description: 
+    amount: 1
+    coins: 100
+    points: 10
+    educationCategoryType: social
+    educationCategoryTaskType: participate_clan_voting
+  - title: Ehdota klaanissa tavara kirpputorille
+    description: 
+    amount: 1
+    coins: 100
+    points: 10
+    educationCategoryType: social
+    educationCategoryTaskType: suggest_item_to_flea_market

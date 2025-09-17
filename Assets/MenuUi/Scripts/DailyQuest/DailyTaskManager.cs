@@ -242,8 +242,8 @@ public class DailyTaskManager : AltMonoBehaviour
 
         yield return new WaitUntil(() => clanTasks != null);
 
-        ClanTasks referenceTasks = clanTasks.TaskVersionType == TaskVersionType.Education ? GenerateEducationTasks() : TESTGenerateNormalTasks();
-        ClanTasks validatedTasks = clanTasks.TaskVersionType == TaskVersionType.Education ? new(TaskVersionType.Education, new()) : TESTGenerateNormalTasks(); // Use "new(TaskVersionType.Normal, new())" when not using test tasks
+        ClanTasks referenceTasks = gameVersion == VersionType.Education ? GenerateEducationTasks() : GenerateNormalTasks();
+        ClanTasks validatedTasks = gameVersion == VersionType.Education ? new(TaskVersionType.Education, new()) : new(TaskVersionType.Normal, new());
 
         for (int i = 0; i < clanTasks.Tasks.Count; i++)
         {
@@ -285,13 +285,21 @@ public class DailyTaskManager : AltMonoBehaviour
                             }
                     }
                 }
-                /*
                 else if (clanTasks.TaskVersionType == TaskVersionType.Normal)
                 {
                     if (clanTasks.Tasks[i].Type == referenceTasks.Tasks[j].Type)
-                        workingTasks.Tasks.Add(clanTasks.Tasks[i]);
+                        validatedTasks.Tasks.Add(clanTasks.Tasks[i]);
                 }
-                */
+            }
+        }
+
+        // Generate a list of working tasks if none of the tasks from server were validated
+        if (validatedTasks.Tasks.Count == 0)
+        {
+            switch (gameVersion)
+            {
+                case VersionType.Education: validatedTasks = GenerateEducationTasks(); break;
+                case VersionType.Standard: validatedTasks = GenerateNormalTasks(); break;
             }
         }
 
@@ -396,6 +404,33 @@ public class DailyTaskManager : AltMonoBehaviour
         tasklist = tasks.Daily;
         tasklist.AddRange(tasks.Week);
         tasklist.AddRange(tasks.Month);
+        return new(TaskVersionType.Normal, tasklist);
+    }
+
+    private ClanTasks GenerateNormalTasks()
+    {
+        List<PlayerTask> tasklist = new();
+        List<NormalDailyTaskData> normalTasks = DailyTaskConfig.Instance.GetNormalTasks();
+
+        for (int i = 0; i < normalTasks.Count; i++)
+        {
+            ServerPlayerTask serverTask = new();
+            serverTask._id = i.ToString();
+            serverTask.amount = normalTasks[i].amount;
+            serverTask.amountLeft = serverTask.amount;
+            serverTask.title = new ServerPlayerTask.TaskTitle();
+            serverTask.title.fi = normalTasks[i].title;
+            serverTask.content = new ServerPlayerTask.TaskContent();
+            serverTask.content.fi = normalTasks[i].description;
+            serverTask.points = normalTasks[i].points;
+            serverTask.coins = normalTasks[i].coins;
+            serverTask.type = normalTasks[i].type;
+            serverTask.educationCategoryType = "";
+            serverTask.educationCategoryTaskType = "";
+
+            tasklist.Add(new(serverTask));
+        }
+
         return new(TaskVersionType.Normal, tasklist);
     }
 

@@ -55,6 +55,8 @@ namespace Altzone.Scripts.Model.Poco.Game
         UseAllChatFeelings,
         DefinePlayerStyle,
         WriteChatMessageGlobal,
+        ClanVote,
+        SuggestItemFleaMarket,
     }
 
     public enum TaskEducationStoryType
@@ -371,6 +373,14 @@ namespace Altzone.Scripts.Model.Poco.Game
                     {
                         return TaskEducationSocialType.WriteChatMessageGlobal;
                     }
+                case "participate_clan_voting":
+                    {
+                        return TaskEducationSocialType.ClanVote;
+                    }
+                case "suggest_item_to_flea_market":
+                    {
+                        return TaskEducationSocialType.SuggestItemFleaMarket;
+                    }
                 default:
                     {
                         return TaskEducationSocialType.EmoteDuringBattle;
@@ -508,7 +518,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             public string Fi { get => _fi;}
             public TaskContent(ServerPlayerTask.TaskContent content)
             {
-                _fi = content.fi;
+                _fi = content?.fi ?? "";
             }
         }
 
