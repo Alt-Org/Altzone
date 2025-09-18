@@ -2,7 +2,7 @@
 /// <summary>
 /// The manager script for player logic.
 /// </summary>
-/// 
+///
 /// The manager handles initializing players that are present in the game, as well as spawning and despawning player characters.<br/>
 /// This script also contains the public and private PlayerHandle structs.
 
@@ -161,6 +161,7 @@ namespace Battle.QSimulation.Player
                 // create playerEntity for each characters
                 {
                     //{ player temp variables
+                    int                                 playerCharacterId;
                     BattlePlayerCharacterClass          playerClass;
                     AssetRef<EntityPrototype>           playerEntityPrototype;
                     BattlePlayerDataTemplateQComponent* playerDataTemplate;
@@ -216,24 +217,32 @@ namespace Battle.QSimulation.Player
 
                     for (int playerCharacterNumber = 0; playerCharacterNumber < playerCharacterEntityArray.Length; playerCharacterNumber++)
                     {
+                        // set id and class
+                        playerCharacterId =                             data.Characters[playerCharacterNumber].Id;
+                        playerClass       = (BattlePlayerCharacterClass)data.Characters[playerCharacterNumber].Class;
+
                         // entity prototype
-                        playerEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(data.Characters[playerCharacterNumber].Id);
+                        playerEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(playerCharacterId);
                         if (playerEntityPrototype == null)
                         {
-                            playerEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(0);
+                            const int FallbackId = 0;
+
+                            Debug.LogWarningFormat("[PlayerManager] Failed to fetch player character entity prototype ID {0}\nUsing fallback ID {1}", playerCharacterId, FallbackId);
+
+                            playerCharacterId     = FallbackId;
+                            playerClass           = BattlePlayerCharacterClass.None;
+                            playerEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(playerCharacterId);
                         }
 
                         // create entity
                         playerEntity = f.Create(playerEntityPrototype);
 
                         // get template data
-                        playerDataTemplate                     = f.Unsafe.GetPointer<BattlePlayerDataTemplateQComponent>(playerEntity);
+                        playerDataTemplate                             = f.Unsafe.GetPointer<BattlePlayerDataTemplateQComponent>(playerEntity);
                         playerHitboxListShieldColliderTemplateCount    = f.TryResolveList(playerDataTemplate->HitboxShield.ColliderTemplateList,    out playerHitboxListShieldColliderTemplate   ) ? playerHitboxListShieldColliderTemplate    .Count : 0;
                         playerHitboxListCharacterColliderTemplateCount = f.TryResolveList(playerDataTemplate->HitboxCharacter.ColliderTemplateList, out playerHitboxListCharacterColliderTemplate) ? playerHitboxListCharacterColliderTemplate .Count : 0;
 
                         //{ set temp variables
-
-                        playerClass = (BattlePlayerCharacterClass)data.Characters[playerCharacterNumber].Class;
 
                         playerSpawnPosition = playerHandle.GetOutOfPlayPosition(playerCharacterNumber, teamNumber);
 
@@ -354,7 +363,7 @@ namespace Battle.QSimulation.Player
                             PlayerRef         = PlayerRef.None,
                             Slot              = playerSlot,
                             TeamNumber        = teamNumber,
-                            CharacterId       = data.Characters[playerCharacterNumber].Id,
+                            CharacterId       = playerCharacterId,
                             CharacterClass    = playerClass,
 
                             Stats             = data.Characters[playerCharacterNumber].Stats,
@@ -380,7 +389,7 @@ namespace Battle.QSimulation.Player
                         //playerData.Stats.Attack        = FP.FromString("1.0");
                         //playerData.Stats.Defence       = FP.FromString("1.0");
 
-                        switch (data.Characters[playerCharacterNumber].Id)
+                        switch (playerCharacterId)
                         {
                             case 101:
                                 playerData.Stats.Speed = FP.FromString("20.0");
