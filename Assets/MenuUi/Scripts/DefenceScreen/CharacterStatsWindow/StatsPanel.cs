@@ -13,7 +13,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private Image _characterHeadImage;
         [SerializeField] private Image _lockImage;
 
-        [SerializeField] private Image _characterImage;
+        [SerializeField] private Image _characterImageTop;
+        [SerializeField] private Image _characterImageBottom;
         [SerializeField] private TMP_Text _characterDescription;
         [SerializeField] private TMP_Text _specialAbility;
         [SerializeField] private TMP_Text _wins;
@@ -67,7 +68,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (sprite != null)
             {
-                _characterImage.sprite = sprite;
+                _characterImageTop.sprite = sprite;
+                _characterImageBottom.sprite = sprite;
             }
         }
         private void SetCharacterDescription()
