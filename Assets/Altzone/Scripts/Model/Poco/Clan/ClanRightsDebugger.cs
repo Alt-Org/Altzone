@@ -20,15 +20,22 @@ public class ClanRightsDebugger : MonoBehaviour
 
         PlayerData playerData = null;
         ClanData clanData = null;
-        bool timeout = false;
+        float maxWaitTime = 5f; 
+        float timer = 0f;
 
         // Fetch player data based on their ID
         Storefront.Get().GetPlayerData(displayId, data => playerData = data);
-        yield return new WaitUntil(() => playerData != null || timeout);
+
+        // Timeout if playerdata is not retrieved fast enough
+        while (playerData == null && timer < maxWaitTime)
+        {
+            timer += Time.deltaTime;
+            yield return null;
+        }
 
         if (playerData == null)
         {
-            Debug.LogWarning("Player data not found.");
+            Debug.LogWarning("Player data not found, or timer ran out.");
             yield break;
         }
 
@@ -42,6 +49,16 @@ public class ClanRightsDebugger : MonoBehaviour
 
         // Fetch clan data based on the player's clan ID
         Storefront.Get().GetClanData(playerData.ClanId, data => clanData = data);
+
+        // Reset the timer
+        timer = 0f;
+
+        // Timeout if clandata is not retrieved fast enough
+        while (clanData == null && timer < maxWaitTime)
+        {
+            timer += Time.deltaTime;
+            yield return null;
+        }
 
         if (clanData == null)
         {
