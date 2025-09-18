@@ -65,7 +65,8 @@ namespace Altzone.Scripts.Chat
         //private ChatController _chatController;                 // Controller for the main chat
         //private ChatPreviewController _chatPreviewController;   // Controller for the small chat preview outside of main chat
 
-        [SerializeField] public ChatChannel _activeChatChannel, _globalChatChannel, _clanChatChannel, _countryChatChannel;
+        private ChatChannelType _activeChatChannel;
+        [SerializeField] public ChatChannel _globalChatChannel, _clanChatChannel;
         [SerializeField] public ChatChannel[] _chatChannels;
 
         [SerializeField] private List<ChatMessage> _chatMessages;
@@ -78,10 +79,25 @@ namespace Altzone.Scripts.Chat
         //internal ChatController ChatController { get => _chatController; set => _chatController = value; }
         //internal ChatClient ChatClient { get => _chatClient; set => _chatClient = value; }
 
+        public delegate void ActiveChannelChanged(ChatChannelType chatChannelType);
+        public static event ActiveChannelChanged OnActiveChannelChanged;
+
+        private Coroutine _socketPolling;
+
         public string AccessToken { get => PlayerPrefs.GetString("accessToken", string.Empty); }
         public bool ChatPreviewIsEnabled { get => chatPreviewIsEnabled; set => chatPreviewIsEnabled = value; }
-        public List<ChatMessage> ChatMessages { get => _chatMessages; }
+        public List<ChatMessage> ChatMessages { get
+            {
+                return _activeChatChannel switch
+                {
+                    ChatChannelType.Global => _globalChatChannel.ChatMessages,
+                    ChatChannelType.Clan => _clanChatChannel.ChatMessages,
+                    _ => null,
+                };
+            }
+        }
         public string Username { get => _username; set => _username = value; }
+        public ChatChannelType ActiveChatChannel { get => _activeChatChannel; set { _activeChatChannel = value; OnActiveChannelChanged?.Invoke(_activeChatChannel); } }
 
         private const string DEFAULT_CLAN_CHAT_NAME = "Klaanittomat";
 
@@ -108,18 +124,53 @@ namespace Altzone.Scripts.Chat
         private void Start()
         {
             ServerManager.OnLogInStatusChanged += HandleAccountChange;
-            StartCoroutine(ServerManager.Instance.GetMessageHistory(ChatChannelType.Global, success => { }));
             HandleAccountChange(ServerManager.Instance.isLoggedIn);
-        }
-
-        private void Update()
-        {
-            if (_socket != null && _socket.State == WebSocketState.Open) _socket.DispatchMessageQueue();
         }
 
         private void OnDestroy()
         {
             CloseSocket();
+        }
+
+        private IEnumerator InitializeChats()
+        {
+            bool GlobalChatFetched = false;
+            bool ClanChatFetched = false;
+            StartCoroutine(ServerManager.Instance.GetMessageHistory(ChatChannelType.Global, success =>
+            {
+                if (success != null)
+                {
+                    List<ChatMessage> messageList = new();
+                    foreach (ServerChatMessage message in success)
+                    {
+                        messageList.Add(new(message));
+                    }
+                    _globalChatChannel.SetChatHistory(messageList);
+                }
+                GlobalChatFetched = true;
+            }));
+
+            yield return new WaitUntil(() => GlobalChatFetched);
+
+            StartCoroutine(ServerManager.Instance.GetMessageHistory(ChatChannelType.Clan, success =>
+            {
+                if (success != null)
+                {
+                    List<ChatMessage> messageList = new();
+                    foreach (ServerChatMessage message in success)
+                    {
+                        messageList.Add(new(message));
+                    }
+                    _clanChatChannel.SetChatHistory(messageList);
+                }
+                ClanChatFetched = true;
+            }));
+
+            yield return new WaitUntil(() => ClanChatFetched);
+
+            yield return new WaitUntil(() => _socket != null && _socket.State == WebSocketState.Open);
+
+            _socketPolling = StartCoroutine(PollWebSocket());
         }
 
         private async void OpenSocket()
@@ -144,16 +195,29 @@ namespace Altzone.Scripts.Chat
         {
             _id = null;
             await _socket.Close();
+            if(_socketPolling != null)StopCoroutine(_socketPolling);
         }
 
         private void HandleAccountChange(bool loggedIn)
         {
             if (loggedIn)
             {
+                StartCoroutine(InitializeChats());
                 if (_socket != null && (_socket.State == WebSocketState.Open && _id != ServerManager.Instance?.Player._id)) CloseSocket();
                 if (_id != ServerManager.Instance.Player._id) OpenSocket();
             }
             else CloseSocket();
+        }
+
+        private IEnumerator PollWebSocket()
+        {
+            while (true)
+            {
+                if (_socket != null && _socket.State == WebSocketState.Open) _socket.DispatchMessageQueue();
+                else break;
+                yield return null;
+            }
+            _socketPolling = null;
         }
 
         private void HandleMessage(byte[] data)
