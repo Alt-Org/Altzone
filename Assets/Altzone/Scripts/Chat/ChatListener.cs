@@ -163,7 +163,7 @@ namespace Altzone.Scripts.Chat
                     List<ChatMessage> messageList = new();
                     foreach (ServerChatMessage message in success)
                     {
-                        messageList.Add(new(message));
+                        messageList.Insert(0,new(message));
                     }
                     _globalChatChannel.SetChatHistory(messageList);
                 }
@@ -179,7 +179,7 @@ namespace Altzone.Scripts.Chat
                     List<ChatMessage> messageList = new();
                     foreach (ServerChatMessage message in success)
                     {
-                        messageList.Add(new(message));
+                        messageList.Insert(0, new(message));
                     }
                     _clanChatChannel.SetChatHistory(messageList);
                 }
