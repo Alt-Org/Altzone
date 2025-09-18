@@ -1,0 +1,17 @@
+/// @file BattleLightrayEffectViewController.prefab
+/// <summary>
+/// Prefab for the LightRayEffects that come from StoneCharacters.
+/// </summary>
+///
+/// ### Structure
+/// - **BattleLightrayEffectViewController**
+///     - *Components:*
+///         - Transform
+///         - @cref{Battle.View.Effect,BattleLightrayEffectViewController}
+///     - *Children:*
+///         - **BattleLightrayBlue**{ **1** - **10** }
+///         - **BattleLightrayRed**{ **1** - **10** }
+///         - *Shared components:*
+///             - Transform
+///             - SpriteRenderer
+///             - Sprites-Default (Material)

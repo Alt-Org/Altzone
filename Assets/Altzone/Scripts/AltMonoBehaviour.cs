@@ -108,6 +108,13 @@ public class AltMonoBehaviour : MonoBehaviour
     {
         if(playerData == null) Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, callback);
 
+        string[] serverList = new string[playerData.SelectedCharacterIds.Length];
+
+        for (int i = 0; i < playerData.SelectedCharacterIds.Length; i++)
+        {
+            serverList[i] = playerData.SelectedCharacterIds[i].ServerID;
+        }
+
         //Storefront.Get().SavePlayerData(playerData, callback);
         string body = JObject.FromObject(
             new
@@ -117,7 +124,7 @@ public class AltMonoBehaviour : MonoBehaviour
                 clan_Id = playerData.ClanId,
                 avatar = new ServerAvatar(playerData.AvatarData),
                 currentAvatarId = playerData.SelectedCharacterId,
-                battleCharacter_ids = playerData.SelectedCharacterIds,
+                battleCharacter_ids = serverList,
                 
                 
             }

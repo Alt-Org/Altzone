@@ -56,7 +56,7 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.QEnum32<BattlePlayerSlot> Slot;
     public Quantum.QEnum32<BattleTeamNumber> TeamNumber;
     public Int32 CharacterId;
-    public Int32 CharacterClass;
+    public Quantum.QEnum32<BattlePlayerCharacterClass> CharacterClass;
     public Quantum.Prototypes.BattlePlayerStatsPrototype Stats;
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
@@ -122,20 +122,29 @@ namespace Quantum.Prototypes.Unity {
     [ArrayLengthAttribute(4)]
     public PlayerRef[] PlayerRefs = new PlayerRef[4];
     [ArrayLengthAttribute(4)]
+    public Quantum.Prototypes.FrameTimerPrototype[] RespawnTimer = new Quantum.Prototypes.FrameTimerPrototype[4];
+    [ArrayLengthAttribute(4)]
+    public QBoolean[] AllowCharacterSwapping = new QBoolean[4];
+    [ArrayLengthAttribute(4)]
     public Quantum.QuantumEntityPrototype[] SelectedCharacters = new Quantum.QuantumEntityPrototype[4];
-    [ArrayLengthAttribute(12)]
-    public Quantum.QuantumEntityPrototype[] AllCharacters = new Quantum.QuantumEntityPrototype[12];
     [ArrayLengthAttribute(4)]
     public Int32[] SelectedCharacterNumbers = new Int32[4];
+    [ArrayLengthAttribute(12)]
+    public Quantum.QuantumEntityPrototype[] AllCharacters = new Quantum.QuantumEntityPrototype[12];
+    [ArrayLengthAttribute(12)]
+    public Quantum.QEnum32<BattlePlayerCharacterState>[] AllCharactersStates = new Quantum.QEnum32<BattlePlayerCharacterState>[12];
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerManagerDataQSingletonPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerManagerDataQSingletonPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerManagerDataQSingletonPrototype();
       converter.Convert(this.PlayerCount, out result.PlayerCount);
       converter.Convert(this.PlayStates, out result.PlayStates);
       converter.Convert(this.PlayerRefs, out result.PlayerRefs);
+      converter.Convert(this.RespawnTimer, out result.RespawnTimer);
+      converter.Convert(this.AllowCharacterSwapping, out result.AllowCharacterSwapping);
       converter.Convert(this.SelectedCharacters, out result.SelectedCharacters);
-      converter.Convert(this.AllCharacters, out result.AllCharacters);
       converter.Convert(this.SelectedCharacterNumbers, out result.SelectedCharacterNumbers);
+      converter.Convert(this.AllCharacters, out result.AllCharacters);
+      converter.Convert(this.AllCharactersStates, out result.AllCharactersStates);
       ConvertUser(converter, ref result);
       return result;
     }

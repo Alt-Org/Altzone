@@ -1,3 +1,14 @@
+/// @file BattlePlayerInput.cs
+/// <summary>
+/// Handles subscribing to QuantumCallBack and polling player inputs for Quantum.
+/// </summary>
+///
+/// This script:<br/>
+/// Subscribes to QuantumCallBack.<br/>
+/// Polls player inputs for Quantum.<br/>
+/// Handles movement and rotation input based on chosen input methods. <br/>
+/// Handles obtaining data from device gyroscope.
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,24 +26,52 @@ using RotationInputType = SettingsCarrier.BattleRotationInputType;
 
 namespace Battle.View.Player
 {
+    /// <summary>
+    /// <span class="brief-h">%Player input <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>.</span><br/>
+    /// Handles subscribing to QuantumCallBack and polling player inputs for %Quantum.
+    /// </summary>
     public class BattlePlayerInput : MonoBehaviour
     {
+        /// @name Input methods
+        /// Input methods are called by BattleGameViewController when the player gives a %UI input. These methods shouldn't be called any other way.
+        /// @{
+
+        /// <summary>
+        /// Called when the player interacts with the movement joystick.
+        /// </summary>
+        ///
+        /// <param name="input">The input value of the movement joystick</param>
         public void OnJoystickMovement(Vector2 input)
         {
             _joystickMovementVector = input;
         }
 
+        /// <summary>
+        /// Called when the player interacts with the rotation joystick.
+        /// </summary>
+        ///
+        /// <param name="input">The input value of the rotation joystick</param>
         public void OnJoystickRotation(float input)
         {
             _joystickRotationValue = input;
         }
 
+        /// <summary>
+        /// Called when the player presses one of the character selection buttons.
+        /// </summary>
+        ///
+        /// <param name="characterNumber">The number of the character that was selected.</param>
         public void OnCharacterSelected(int characterNumber)
         {
             _characterNumber = characterNumber;
             _characterSelectionInput = true;
         }
 
+        /// @}
+
+        /// <summary>
+        /// Struct containing data related to player movement input.
+        /// </summary>
         private struct MovementInputInfo
         {
             public BattleMovementInputType MovementInput;
@@ -49,6 +88,9 @@ namespace Battle.View.Player
             }
         }
 
+        /// <summary>
+        /// Struct containing data related to player rotation input.
+        /// </summary>
         private struct RotationInputInfo
         {
             public bool RotationInput;
@@ -61,28 +103,77 @@ namespace Battle.View.Player
             }
         }
 
-        private MovementInputType _movementInputType;
-        private RotationInputType _rotationInputType;
+        /// @name State variables
+        /// Variables related to current input states.
+        /// @{
 
+        /// <value>Saved time from previous frame.</value>
         private float _previousTime;
+
+        /// <value>Bool for if a press input was received in the previous frame.</value>
         private bool _mouseDownPrevious;
-        private Vector2 _rotationStartVector;
-        private Vector3 _movementStartVector;
-        private Vector2 _joystickMovementVector;
-        private float _joystickRotationValue;
-        private int _characterNumber = -1;
 
-        private bool _characterSelectionInput = false;
-
-        private float _swipeMinDistance = 0.1f;
-        private float _swipeMaxDistance = 1.0f;
-        private float _swipeSensitivity = 1.0f;
-        private float _gyroMinAngle = 10f;
-
-        private AttitudeSensor _attitudeSensor;
-
+        /// <value>Bool for if swipe movement has started and not stopped.</value>
         private bool _swipeMovementStarted = false;
 
+        /// <value>Initial saved vector when rotation input is first detected.</value>
+        private Vector2 _rotationStartVector;
+
+        /// <value>Initial saved vector when movement input is first detected.</value>
+        private Vector3 _movementStartVector;
+
+        /// <value>The vector received from the movement joystick.</value>
+        private Vector2 _joystickMovementVector;
+
+        /// <value>The float value received from the rotation joystick.</value>
+        private float _joystickRotationValue;
+
+        /// <value>Saved character number from character swapping input.</value>
+        private int _characterNumber = -1;
+
+        /// <value>Bool for if a character swap input was performed.</value>
+        private bool _characterSelectionInput = false;
+
+        /// @}
+
+        /// @name Setting variables
+        /// Data from SettingsCarrier is saved to these variables.
+        /// @{
+
+        /// <value>Saved info of the selected movement input type.</value>
+        private MovementInputType _movementInputType;
+
+        /// <value>Saved info of the selected rotation input type.</value>
+        private RotationInputType _rotationInputType;
+
+        /// <value>The minimum distance for activating swipe rotation.</value>
+        private float _swipeMinDistance = 0.1f;
+
+        /// <value>The swipe distance at which rotation reaches its maximum value.</value>
+        private float _swipeMaxDistance = 1.0f;
+
+        /// <value>The sensitivity for swipe movement.</value>
+        private float _swipeSensitivity = 1.0f;
+
+        /// <value>The minimum tilt angle for activating gyroscope rotation.</value>
+        private float _gyroMinAngle = 10f;
+
+        /// @}
+
+        /// @name References
+        /// Saved references.
+        /// @{
+
+        /// <value>Reference to the play device's attitude sensor aka gyroscope.</value>
+        private AttitudeSensor _attitudeSensor;
+
+        /// @}
+
+        /// <summary>
+        /// Saves data from SettingsCarrier to private variables. <br/>
+        /// Saves a reference to the play device's gyroscope if there is one. <br/>
+        /// Subscribes to QuantumCallBack.
+        /// </summary>
         private void OnEnable()
         {
             _movementInputType = SettingsCarrier.Instance.BattleMovementInput;
@@ -101,6 +192,11 @@ namespace Battle.View.Player
             QuantumCallback.Subscribe(this, (CallbackPollInput callback) => PollInput(callback));
         }
 
+        /// <summary>
+        /// Handles polling player input for Quantum.
+        /// </summary>
+        ///
+        /// <param name="callback">Quantum Callback</param>
         private void PollInput(CallbackPollInput callback)
         {
             FP deltaTime = FP.FromFloat_UNSAFE(Time.time - _previousTime);
@@ -148,6 +244,18 @@ namespace Battle.View.Player
             _characterNumber = -1;
         }
 
+        /// @name Input reading methods
+        /// Helper methods for reading player input data.
+        /// @{
+
+        /// <summary>
+        /// Handles player movement input based on selected input type.
+        /// </summary>
+        ///
+        /// <param name="mouseDown">Whether input is currently held</param>
+        /// <param name="mouseClick">Whether input started this frame</param>
+        /// <param name="unityPosition">The unityPosition of the input</param>
+        /// <param name="deltaTime">Time since previous frame</param>
         private MovementInputInfo GetMovementInput(bool mouseDown, bool mouseClick, Vector3 unityPosition, FP deltaTime)
         {
             MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero);
@@ -192,7 +300,7 @@ namespace Battle.View.Player
                             Vector3 direction = unityPosition - _movementStartVector;
                             movementInputInfo.MovementDirection = new FPVector2(FP.FromFloat_UNSAFE(direction.x), FP.FromFloat_UNSAFE(direction.z)) / deltaTime;
                             movementInputInfo.MovementDirection *= FP.FromFloat_UNSAFE(_swipeSensitivity);
-                            
+
                         }
                         _movementStartVector = unityPosition;
                     }
@@ -204,6 +312,8 @@ namespace Battle.View.Player
                         movementInputInfo.MovementInput = BattleMovementInputType.Direction;
                         movementInputInfo.MovementDirectionIsNormalized = true;
                         movementInputInfo.MovementDirection = new FPVector2(FP.FromFloat_UNSAFE(_joystickMovementVector.x), FP.FromFloat_UNSAFE(_joystickMovementVector.y));
+
+                        if (BattleGameViewController.LocalPlayerTeam == BattleTeamNumber.TeamBeta) movementInputInfo.MovementDirection *= -1;
                     }
                     break;
             }
@@ -211,6 +321,13 @@ namespace Battle.View.Player
             return movementInputInfo;
         }
 
+        /// <summary>
+        /// Handles player rotation input based on selected input type.
+        /// </summary>
+        ///
+        /// <param name="mouseDown">Whether input is currently held</param>
+        /// <param name="twoFingers">Whether two finger input is currently held</param>
+        /// <param name="unityPosition">The unityPosition of the input</param>
         private RotationInputInfo GetRotationInput(bool mouseDown, bool twoFingers, Vector3 unityPosition)
         {
             RotationInputInfo rotationInputInfo = new(false, FP._0);
@@ -271,6 +388,9 @@ namespace Battle.View.Player
             return rotationInputInfo;
         }
 
+        /// <summary>
+        /// Gets the tilt value from the play device's gyroscope.
+        /// </summary>
         private float GetGyroValue()
         {
             Quaternion deviceRotation = new Quaternion(0.5f, 0.5f, -0.5f, 0.5f) * _attitudeSensor.attitude.ReadValue() * new Quaternion(0, 0, 1, 0);
@@ -281,5 +401,7 @@ namespace Battle.View.Player
             }
             return rot.z;
         }
+
+        /// @}
     }
 }

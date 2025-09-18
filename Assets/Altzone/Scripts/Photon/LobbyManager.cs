@@ -411,17 +411,18 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator CheckIfBattleCanStart()
         {
-            yield return new WaitUntil(()=> _posChangeQueue.Count == 0 && !_playerPosChangeInProgress);
-
+            yield return new WaitUntil(() => _posChangeQueue.Count == 0 && !_playerPosChangeInProgress);
+            Room room = PhotonRealtimeClient.CurrentRoom;
             if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
             {
-                Room room = PhotonRealtimeClient.CurrentRoom;
-                if (room.PlayerCount != room.MaxPlayers) yield break;
-
-                if (CheckIfAllPlayersInPosition())
+                while (room.PlayerCount >= room.MaxPlayers)
                 {
-                    GameType gameType = (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
-                    if (gameType == GameType.Custom) OnStartPlayingEvent(new());
+                    if (CheckIfAllPlayersInPosition())
+                    {
+                        GameType gameType = (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                        if (gameType == GameType.Custom) OnStartPlayingEvent(new());
+                    }
+                    yield return null;
                 }
             }
             _canBattleStartCheckHolder = null;
@@ -1270,7 +1271,7 @@ namespace Altzone.Scripts.Lobby
 
                 if(character == null || character.Id is CharacterID.None)
                 {
-                    character = new(PlayerCharacterPrototypes.GetCharacter("-1").BaseCharacter);
+                    character = new(PlayerCharacterPrototypes.GetCharacter("-1",true).BaseCharacter);
                 }
 
                 var stats = new BattlePlayerStats()

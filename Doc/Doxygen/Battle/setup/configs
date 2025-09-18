@@ -1,0 +1,13 @@
+project-dir = AbsPath("../../../../../")
+doc-dir     = AbsPath("../")
+have-dot    = "YES"
+
+# config
+  output-dir = doc-dir + "/doc"
+
+# config-test
+  output-dir = doc-dir + "/doc-test"
+
+# config-test-nodot
+  output-dir = doc-dir + "/doc-test"
+  have-dot   = "NO"

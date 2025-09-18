@@ -1,0 +1,19 @@
+/// @file SoulWallBaseViewModel.prefab
+/// <summary>
+/// Prefab for the ViewModel that is used as a base in other SoulWall segment prefabs.
+/// </summary>
+///
+/// ### Structure
+/// - **SoulWallBaseViewModel**
+///     - *Components:*
+///         - Transform
+///         - @cref{Battle.View.SoulWall,BattleSoulWallViewController}
+///     - *Children:*
+///         - **Sprite**
+///         - **CementSprite**
+///         - **DebugSprite**
+///         - **OriginReference**
+///         - *Shared components:*
+///             - Transform
+///             - SpriteRenderer
+///             - Sprites-Default (Material)

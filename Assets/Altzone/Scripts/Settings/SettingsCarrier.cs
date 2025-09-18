@@ -70,7 +70,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         None,
         JukeboxSoulhomeToggle,
         JukeboxUIToggle,
-        JukeboxBattleToggle
+        JukeboxBattleToggle,
     }
 
     // Events
