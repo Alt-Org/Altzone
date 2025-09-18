@@ -17,7 +17,7 @@ public class ServerChatMessage
 
     public class MessageSender
     {
-        public string id { get; set; }
+        public string _id { get; set; }
         public string name { get; set; }
         public ServerAvatar avatar { get; set; }
     }

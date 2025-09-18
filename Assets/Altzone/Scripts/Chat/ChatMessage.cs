@@ -54,7 +54,7 @@ namespace Altzone.Scripts.Chat
         internal ChatMessage(ServerChatMessage message)
         {
             _id = message._id;
-            _senderId = message.sender.id;
+            _senderId = message.sender._id;
             _username = message.sender.name;
             if(message.sender.avatar != null) _avatar = new(message.sender.name, message.sender.avatar);
             _message = message.content;

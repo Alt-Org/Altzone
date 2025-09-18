@@ -79,6 +79,9 @@ namespace Altzone.Scripts.Chat
         //internal ChatController ChatController { get => _chatController; set => _chatController = value; }
         //internal ChatClient ChatClient { get => _chatClient; set => _chatClient = value; }
 
+        private bool _globalChatFetched = false;
+        private bool _clanChatFetched = false;
+
         public delegate void ActiveChannelChanged(ChatChannelType chatChannelType);
         public static event ActiveChannelChanged OnActiveChannelChanged;
 
@@ -111,6 +114,9 @@ namespace Altzone.Scripts.Chat
                 };
             }
         }
+
+        public bool GlobalChatFetched { get => _globalChatFetched;}
+        public bool ClanChatFetched { get => _clanChatFetched;}
 
         private const string DEFAULT_CLAN_CHAT_NAME = "Klaanittomat";
 
@@ -148,8 +154,8 @@ namespace Altzone.Scripts.Chat
 
         private IEnumerator InitializeChats()
         {
-            bool GlobalChatFetched = false;
-            bool ClanChatFetched = false;
+            _globalChatFetched = false;
+            _clanChatFetched = false;
             StartCoroutine(ServerManager.Instance.GetMessageHistory(ChatChannelType.Global, success =>
             {
                 if (success != null)
@@ -161,7 +167,7 @@ namespace Altzone.Scripts.Chat
                     }
                     _globalChatChannel.SetChatHistory(messageList);
                 }
-                GlobalChatFetched = true;
+                _globalChatFetched = true;
             }));
 
             yield return new WaitUntil(() => GlobalChatFetched);
@@ -177,7 +183,7 @@ namespace Altzone.Scripts.Chat
                     }
                     _clanChatChannel.SetChatHistory(messageList);
                 }
-                ClanChatFetched = true;
+                _clanChatFetched = true;
             }));
 
             yield return new WaitUntil(() => ClanChatFetched);
@@ -194,7 +200,7 @@ namespace Altzone.Scripts.Chat
             Debug.LogWarning("Connecting to chat.");
             if (_socket == null)
             {
-                _socket = new("wss://devapi.altzone.fi/latest-release/ws/chat", header);
+                _socket = new("wss://devapi.altzone.fi/ws/chat", header);
             }
 
             _socket.OnOpen += () => { Debug.LogWarning("Connected to chat."); _id = ServerManager.Instance.Player._id; TestMessage(); };
@@ -237,8 +243,8 @@ namespace Altzone.Scripts.Chat
         private void HandleMessage(byte[] data)
         {
             string json = Encoding.UTF8.GetString(data);
-            Debug.LogWarning(json);
-            ServerChatMessage message = JObject.Parse(json)["message"].ToObject<ServerChatMessage>();
+            Debug.LogWarning(JObject.Parse(json));
+            ServerChatMessage message = JObject.Parse(json)["message"]["message"].ToObject<ServerChatMessage>();
         }
 
         public async void SendMessage(string message, Mood emotion, ChatChannelType channel)
