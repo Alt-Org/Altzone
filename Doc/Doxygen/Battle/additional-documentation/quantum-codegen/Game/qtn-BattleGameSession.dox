@@ -24,7 +24,10 @@
 /// @var BattleGameState Quantum.BattleGameSessionQSingleton::State
 /// <summary>Which GameState the GameSession is currently in. Helps BattleGameControlQSystem manage the GameSession.</summary>
 ///
-/// @var FP Quantum.BattleGameSessionQSingleton::TimeUntilStart
+/// @var BattleGameState Quantum.BattleGameSessionQSingleton::LoadDelaySec
+/// <summary>Counter for a short delay after all players have connected, so the loading screen remains active for a moment.</summary>
+///
+/// @var FP Quantum.BattleGameSessionQSingleton::TimeUntilStartSec
 /// <summary>Counter for Countdown and GetReadyToPlay GameStates. Used for changing GameState when counter reaches 0.</summary>
 ///
 /// @var FP Quantum.BattleGameSessionQSingleton::GameTimeSec
