@@ -99,6 +99,19 @@ namespace Altzone.Scripts.Chat
         public string Username { get => _username; set => _username = value; }
         public ChatChannelType ActiveChatChannel { get => _activeChatChannel; set { _activeChatChannel = value; OnActiveChannelChanged?.Invoke(_activeChatChannel); } }
 
+        public ChatChannel GetActiveChannel
+        {
+            get
+            {
+                return _activeChatChannel switch
+                {
+                    ChatChannelType.Global => _globalChatChannel,
+                    ChatChannelType.Clan => _clanChatChannel,
+                    _ => null,
+                };
+            }
+        }
+
         private const string DEFAULT_CLAN_CHAT_NAME = "Klaanittomat";
 
         private const string ERROR_CREATING_CHAT_TO_SERVER = "Chattia ei pystytty luomaan palvelimelle!";
@@ -129,6 +142,7 @@ namespace Altzone.Scripts.Chat
 
         private void OnDestroy()
         {
+            ServerManager.OnLogInStatusChanged -= HandleAccountChange;
             CloseSocket();
         }
 

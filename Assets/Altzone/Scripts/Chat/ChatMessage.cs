@@ -56,10 +56,10 @@ namespace Altzone.Scripts.Chat
             _id = message._id;
             _senderId = message.sender.id;
             _username = message.sender.name;
-            _avatar = new(message.sender.name, message.sender.avatar);
+            if(message.sender.avatar != null) _avatar = new(message.sender.name, message.sender.avatar);
             _message = message.content;
             _channel = ChatListener.Instance.GetChatChannel(message.type);
-            _mood = (Mood)Enum.Parse(typeof(Mood), message.feeling);
+            if(message.feeling != null)_mood = (Mood)Enum.Parse(typeof(Mood), message.feeling);
             _reactions = message.reactions;
             _timestamp = DateTime.Parse(message.createdAt);
         }

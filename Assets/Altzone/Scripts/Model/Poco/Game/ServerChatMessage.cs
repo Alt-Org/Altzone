@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
-public class ServerChatMessage : MonoBehaviour
+public class ServerChatMessage
 {
     public string _id { get; set; }
     public string clan_id { get; set; }

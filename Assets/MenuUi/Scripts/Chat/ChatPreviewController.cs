@@ -70,7 +70,7 @@ public class ChatPreviewController : MonoBehaviour
         if (ChatListener.Instance)
         {
             //ChatListener.Instance.ChatPreviewController = this;
-            OnActiveChatWindowChange(ChatListener.Instance._activeChatChannel);
+            OnActiveChatWindowChange(ChatListener.Instance.GetActiveChannel);
             ToggleChatMessages(ChatListener.Instance.ChatPreviewIsEnabled, false);
         }
     }
@@ -125,7 +125,7 @@ public class ChatPreviewController : MonoBehaviour
 
         // Refresh the chat messages to see if we have received new messages while the chat was hidden.
         if (value)
-            OnActiveChatWindowChange(ChatListener.Instance._activeChatChannel);
+            OnActiveChatWindowChange(ChatListener.Instance.GetActiveChannel);
     }
 
 

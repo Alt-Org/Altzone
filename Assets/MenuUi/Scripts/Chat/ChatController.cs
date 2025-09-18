@@ -65,7 +65,7 @@ public class ChatController : MonoBehaviour
     {
         //ChatListener.Instance.ChatController = this;
 
-        OnChatWindowChanged(ChatListener.Instance._activeChatChannel.ChatChannelType);
+        OnChatWindowChanged(ChatListener.Instance.ActiveChatChannel);
 
         // If we have received chat messages before opening chat for the first time, display those messages.
         if (ChatListener.Instance.ChatMessages != null)
@@ -88,7 +88,7 @@ public class ChatController : MonoBehaviour
         if (message == "")
             return;
 
-        object[] dataToSend = new object[] {_chatMessageInputField.text, _moodDropdown.value, ChatListener.Instance._activeChatChannel.ChatChannelType };
+        object[] dataToSend = new object[] {_chatMessageInputField.text, _moodDropdown.value, ChatListener.Instance.ActiveChatChannel };
         _chatMessageInputField.text = null;
     }
 
@@ -124,8 +124,8 @@ public class ChatController : MonoBehaviour
             chatMessageInstance.gameObject.transform.SetSiblingIndex(1);
 
         // Check if message id is 1 meaning that the message is first message in chat. If not, there are older messages on server so we set 'ToggleLoadMoreButton' active.
-        if (ActiveChatWindow)
-            ActiveChatWindow?.ToggleLoadMoreButton(!(ChatListener.Instance._activeChatChannel.FirstMsgIndex <= 1));
+        //if (ActiveChatWindow)
+            //ActiveChatWindow?.ToggleLoadMoreButton(!(ChatListener.Instance._activeChatChannel.FirstMsgIndex <= 1));
 
         ForceRebuild(chatWindow.RectTransform);
 
@@ -152,9 +152,9 @@ public class ChatController : MonoBehaviour
         }
 
         ActiveChatWindow = chatWindow;
-        ChatListener.Instance._activeChatChannel = ChatListener.Instance._chatChannels[activeChatChannelIndex];
-        ActiveChatWindow.ToggleLoadMoreButton(!(ChatListener.Instance._activeChatChannel.FirstMsgIndex <= 1));
-        _chatroomNameText.text = ChatListener.Instance._activeChatChannel.ChannelName;
+        //ChatListener.Instance._activeChatChannel = ChatListener.Instance._chatChannels[activeChatChannelIndex];
+        //ActiveChatWindow.ToggleLoadMoreButton(!(ChatListener.Instance._activeChatChannel.FirstMsgIndex <= 1));
+        _chatroomNameText.text = ChatListener.Instance.GetActiveChannel.ChannelName;
         ForceRebuild(ActiveChatWindow.RectTransform);
 
         // Refreshes the preview chat (the small chat) window messages
@@ -173,7 +173,7 @@ public class ChatController : MonoBehaviour
         clanChannel.Reset();
         //clanChannel.ChannelName = chatName;
 
-        _chatroomNameText.text = ChatListener.Instance._activeChatChannel.ChannelName;
+        _chatroomNameText.text = ChatListener.Instance.GetActiveChannel.ChannelName;
     }
 
     public void ShowErrorMessage(string errorText)
