@@ -30,9 +30,6 @@ public class PollObject : MonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button ClockButton;
 
-    [Header("Debug")]
-    [SerializeField] private Button debugButton;
-
     [Header("PlayerHeads")]
     [SerializeField] private AddPlayerHeads playerHeads;
 
