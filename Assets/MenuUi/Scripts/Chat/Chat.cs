@@ -102,6 +102,7 @@ public class Chat : AltMonoBehaviour
     private void Start()
     {
         ChatChannel.OnMessageHistoryReceived += RefreshChat;
+        ChatChannel.OnMessageReceived += DisplayMessage;
 
         // Alustaa chatit ja asettaa kielichatin oletukseksi
         _currentContent = _clanChat;
@@ -145,6 +146,7 @@ public class Chat : AltMonoBehaviour
     private void OnDestroy()
     {
         ChatChannel.OnMessageHistoryReceived -= RefreshChat;
+        ChatChannel.OnMessageReceived -= DisplayMessage;
     }
 
     private void AddResponses()
@@ -263,7 +265,7 @@ public class Chat : AltMonoBehaviour
                 return;
             }
             ChatListener.Instance.SendMessage(_inputField.text, mood, ChatListener.Instance.ActiveChatChannel);
-            DisplayMessage(_inputField.text, GetMessagePrefab(mood, true));
+            //DisplayMessage(_inputField.text, GetMessagePrefab(mood, true));
             _inputField.text = "";
             this.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
             MinimizeOptions();
@@ -305,20 +307,30 @@ public class Chat : AltMonoBehaviour
             foreach(ChatMessage message in messageList)
             {
                 bool ownMsg = message?.SenderId == ServerManager.Instance.Player._id;
-                DisplayMessage(message.Message, GetMessagePrefab(message.Mood, ownMsg));
+                DisplayMessage(message, GetMessagePrefab(message.Mood, ownMsg));
             }
         }
     }
 
+    private void DisplayMessage(ChatChannelType channelType,ChatMessage message)
+    {
+        Debug.LogWarning($"Test1: {channelType} {ChatListener.Instance.ActiveChatChannel}");
+        if (channelType != ChatListener.Instance.ActiveChatChannel) return;
+        Debug.LogWarning("Test2");
+        bool ownMsg = message?.SenderId == ServerManager.Instance.Player._id;
+        GameObject messagePrefab = GetMessagePrefab(message.Mood, ownMsg);
+
+        DisplayMessage(message, messagePrefab);
+    }
 
     // Näyttää viestin aktiivisessa chatti-ikkunassa
-    public void DisplayMessage(string messageText, GameObject messagePrefab)
+    public void DisplayMessage(ChatMessage message, GameObject messagePrefab)
     {
         if (messagePrefab != null)
         {
             GameObject newMessage = Instantiate(messagePrefab, _currentContent.transform);
 
-            newMessage.GetComponent<MessageObjectHandler>().SetMessageInfo(messageText, null, SelectMessage);
+            newMessage.GetComponent<MessageObjectHandler>().SetMessageInfo(message.Message, null, SelectMessage);
 
             //AddMessageInteraction(newMessage);
 
@@ -474,6 +486,7 @@ public class Chat : AltMonoBehaviour
     public void LanguageChatActive()
     {
         _currentContent = _languageChatContent;
+        ChatListener.Instance.ActiveChatChannel = ChatChannelType.Country;
         _currentScrollRect = _languageChatScrollRect;
 
         _languageChat.SetActive(true);

@@ -244,7 +244,13 @@ namespace Altzone.Scripts.Chat
         {
             string json = Encoding.UTF8.GetString(data);
             Debug.LogWarning(JObject.Parse(json));
-            ServerChatMessage message = JObject.Parse(json)["message"]["message"].ToObject<ServerChatMessage>();
+            JToken middleresult = JObject.Parse(json)["message"];
+            ServerChatMessage message = middleresult["message"].ToObject<ServerChatMessage>();
+            if (middleresult["event"].ToString().Equals("newMessage"))
+            {
+                if (middleresult["chat"].ToString().Equals("clan")) _clanChatChannel.AddNewMessage(new(message));
+                else if (middleresult["chat"].ToString().Equals("global")) _globalChatChannel.AddNewMessage(new(message));
+            }
         }
 
         public async void SendMessage(string message, Mood emotion, ChatChannelType channel)
