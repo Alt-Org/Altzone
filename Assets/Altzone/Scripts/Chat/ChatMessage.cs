@@ -29,7 +29,7 @@ namespace Altzone.Scripts.Chat
         public string Message { get => _message; }
         public Mood Mood { get => _mood; }
         public string Id { get => _id; }
-        public List<ServerReactions> Reactions { get => _reactions; }
+        public List<ServerReactions> Reactions { get => _reactions; internal set => _reactions = value; }
         public DateTime Timestamp { get => _timestamp; }
 
         internal ChatMessage()

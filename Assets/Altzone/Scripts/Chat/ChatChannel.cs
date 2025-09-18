@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static ServerChatMessage;
 
 namespace Altzone.Scripts.Chat
 {
@@ -24,6 +25,7 @@ namespace Altzone.Scripts.Chat
         public ChatChannelType ChatChannelType { get => _chatChannelType; }
         public int FirstMsgIndex { get => _firstMsgIndex; }
         public int LastMsgIndex { get => _lastMsgIndex; }
+        public List<ChatMessage> ChatMessages { get => _chatMessages;}
 
         public delegate void MessageReceived(ChatChannelType chatChannelType, ChatMessage message);
         public static event MessageReceived OnMessageReceived;
@@ -72,6 +74,16 @@ namespace Altzone.Scripts.Chat
             {
                 _chatMessages.Add(message);
                 OnMessageReceived?.Invoke(_chatChannelType, message);
+            }
+        }
+
+        public void UpdateReactions(string id, List<ServerReactions> reactions)
+        {
+            ChatMessage message = _chatMessages.FirstOrDefault(m => m.Id == id);
+            if (message != null)
+            {
+                message.Reactions = reactions;
+                OnMessageDeleted?.Invoke(_chatChannelType, id);
             }
         }
 
