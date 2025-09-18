@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Altzone.Scripts.Chat
@@ -15,11 +17,22 @@ namespace Altzone.Scripts.Chat
         [SerializeField] private int _firstMsgIndex;
         [SerializeField] private int _lastMsgIndex;
 
+        private List<ChatMessage> _chatMessages;
+
         public string ChannelName { get => _channelName; }
         public string Id { get => _id; }
         public ChatChannelType ChatChannelType { get => _chatChannelType; }
         public int FirstMsgIndex { get => _firstMsgIndex; }
         public int LastMsgIndex { get => _lastMsgIndex; }
+
+        public delegate void MessageReceived(ChatChannelType chatChannelType, ChatMessage message);
+        public static event MessageReceived OnMessageReceived;
+
+        public delegate void MessageHistoryReceived(ChatChannelType chatChannelType);
+        public static event MessageHistoryReceived OnMessageHistoryReceived;
+
+        public delegate void MessageDeleted(ChatChannelType chatChannelType, string id);
+        public static event MessageDeleted OnMessageDeleted;
 
         internal ChatChannel()
         {
@@ -45,6 +58,31 @@ namespace Altzone.Scripts.Chat
             _chatChannelType = channelType;
             _lastMsgIndex = 0;
             _firstMsgIndex = 0;
+        }
+
+        public void SetChatHistory(List<ChatMessage> messageList)
+        {
+            _chatMessages = messageList;
+            OnMessageHistoryReceived?.Invoke(_chatChannelType);
+        }
+
+        public void AddNewMessage(ChatMessage message)
+        {
+            if (!_chatMessages.Contains(message))
+            {
+                _chatMessages.Add(message);
+                OnMessageReceived?.Invoke(_chatChannelType, message);
+            }
+        }
+
+        public void DeleteMessage(string id)
+        {
+            ChatMessage message = _chatMessages.FirstOrDefault(m=> m.Id == id);
+            if (message != null)
+            {
+                _chatMessages.Remove(message);
+                OnMessageDeleted?.Invoke(_chatChannelType, id);
+            }
         }
 
         public void Reset()
