@@ -246,6 +246,12 @@ namespace Battle.View.Game
             _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.WaitingForPlayers);
         }
 
+        /// <summary>
+        /// Private handler method for EventBattleViewPlayerConnected QuantumEvent.<br/>
+        /// Handles calling BattleUiLoadScreenHandler::PlayerConnected through #_uiController with the slot and character IDs of the connected player.
+        /// </summary>
+        /// 
+        /// <param name="e">The event data.</param>
         private void QEventOnViewPlayerConnected(EventBattleViewPlayerConnected e)
         {
             BattlePlayerSlot playerSlot = e.Data.PlayerSlot;
@@ -258,6 +264,12 @@ namespace Battle.View.Game
             _uiController.LoadScreenHandler.PlayerConnected(playerSlot, characterIds);
         }
 
+        /// <summary>
+        /// Private handler method for EventBattleViewAllPlayersConnected QuantumEvent.<br/>
+        /// Handles calling BattleUiAnnouncementHandler::ClearAnnouncerTextField once all players have successfully joined the game.
+        /// </summary>
+        /// 
+        /// <param name="e">The event data.</param>
         private void QEventOnViewAllPlayersConnected(EventBattleViewAllPlayersConnected e)
         {
             _uiController.AnnouncementHandler.ClearAnnouncerTextField();

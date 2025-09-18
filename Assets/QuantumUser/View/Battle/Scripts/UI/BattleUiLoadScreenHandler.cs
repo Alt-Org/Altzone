@@ -1,3 +1,11 @@
+/// @file BattleUiLoadScreenHandler.cs
+/// <summary>
+/// Has the class BattleUiLoadScreentHandler, which handles setting the visibility of the battle loading screen and updating it whenever a player connects to the game.
+/// </summary>
+///
+/// This script:<br/>
+/// Handles setting the visibility of the battle loading screen and updating it whenever a player connects to the game.
+
 using UnityEngine;
 using Quantum;
 using TMPro;
@@ -9,10 +17,34 @@ namespace Battle.View.UI
 {
     public class BattleUiLoadScreenHandler : MonoBehaviour
     {
+        /// @anchor BattleUiAnnouncementHandler-SerializeFields
+        /// @name SerializeField variables
+        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// @{
+
+        /// <summary>[SerializeField] Reference to the GameObject which can be used to hide or show the loading screen.</summary>
+        /// @ref BattleUiLoadScreenHandler-SerializeFields
         [SerializeField] private GameObject _loadingScreen;
+
+        /// <summary>[SerializeField] References to the character slot controllers which are used to show the connection status and selected characters of players in the game.</summary>
+        /// @ref BattleUiLoadScreenHandler-SerializeFields
         [SerializeField] private BattlePopupCharacterSlotController[] _characterSlotControllers;
+
+        /// <summary>[SerializeField] References to the player name UI elements.</summary>
+        /// @ref BattleUiLoadScreenHandler-SerializeFields
         [SerializeField] private TextMeshProUGUI[] _playerNames;
 
+        /// @}
+
+        /// <summary>
+        /// If the player which connected is part of the game, this method:<br/>
+        /// Enables the UI element for that player on the loading screen.<br/>
+        /// Calls the correct BattlePopupCharacterSlotController::SetCharacters method to set the character icons.<br/>
+        /// Changes the alpha of the player name on the loading screen to indicate the player has connected.
+        /// </summary>
+        /// 
+        /// <param name="playerSlot">The slot of the player.</param>
+        /// <param name="characterIds">An array of the character IDs of the players selected characters.</param>
         public void PlayerConnected(BattlePlayerSlot playerSlot, int[] characterIds)
         {
             int slotIndex = playerSlot switch
@@ -32,6 +64,12 @@ namespace Battle.View.UI
             _playerNames[(int)playerSlot - 1].alpha = 1;
         }
 
+        /// <summary>
+        /// For each player slot for which PlayerType is set to Player, the corresponding player name UI element is enabled and set to that player's name.
+        /// </summary>
+        /// 
+        /// <param name="playerSlotTypes"></param>
+        /// <param name="playerNames"></param>
         public void Show(BattleParameters.PlayerType[] playerSlotTypes, FixedArray<QString64> playerNames)
         {
             for (int i = 0; i < playerSlotTypes.Length; i++)
@@ -44,6 +82,9 @@ namespace Battle.View.UI
             }
         }
 
+        /// <summary>
+        /// Disables the loading screen UI element entirely.
+        /// </summary>
         public void Hide()
         {
             _loadingScreen.SetActive(false);
