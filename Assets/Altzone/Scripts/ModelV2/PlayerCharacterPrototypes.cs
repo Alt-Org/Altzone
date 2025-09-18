@@ -15,7 +15,7 @@ namespace Altzone.Scripts.ModelV2
         /// </summary>
         /// <param name="id">the character id</param>
         /// <returns>the PlayerCharacterPrototype or null if not found</returns>
-        public static PlayerCharacterPrototype GetCharacter(string id) => CharacterSpecConfig.Instance.GetCharacter(id);
+        public static PlayerCharacterPrototype GetCharacter(string id, bool useFallBack = false) => CharacterSpecConfig.Instance.GetCharacter(id, useFallBack);
 
         /// <summary>
         /// Lists current (configured) player character prototypes in the game.

@@ -14,25 +14,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 404
   CharacterId: 404
-  IsApproved: 0
+  IsApproved: 1
   Name: Harhaisuus
   ClassType: 400
   CharacterDescription: 
   CharacterShortDescription: 
+  CharacterStats: {fileID: 11400000, guid: 23c30bf9da610914983eb39fe1ba8282, type: 2}
   Hp:
-    Level: 0
-    Coefficient: 0
+    Level: 3
+    Coefficient: 5
   Speed:
-    Level: 0
-    Coefficient: 0
+    Level: 10
+    Coefficient: 4
   CharacterSize:
-    Level: 0
-    Coefficient: 0
+    Level: 6
+    Coefficient: 6
   Attack:
-    Level: 0
-    Coefficient: 0
+    Level: 2
+    Coefficient: 3
   Defence:
-    Level: 0
-    Coefficient: 0
-  GalleryImage: {fileID: 0}
-  BattleSprite: {fileID: 0}
+    Level: 8
+    Coefficient: 4
+  GalleryImage: {fileID: 21300000, guid: ed99ec8a7e61775458ec10371f1dbf6a, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: b339a6344e4828d4890156be468187c1, type: 3}
+  BattleEntityPrototype:
+    Id:
+      Value: 1351919908784755385
+  BattleUiSprite: {fileID: 0}

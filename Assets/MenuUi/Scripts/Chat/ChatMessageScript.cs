@@ -44,6 +44,8 @@ public class ChatMessageScript : MonoBehaviour
 
                 textBackground.sizeDelta = new Vector2(textBackground.sizeDelta.x, newHeight);
 
+                textBackground.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(textBackground.parent.GetComponent<RectTransform>().sizeDelta.x, newHeight);
+
                 _lastLineCount = lineCount;
 
                 // Adjust the spacing so that the reaction panel stays at the bottom line of the message

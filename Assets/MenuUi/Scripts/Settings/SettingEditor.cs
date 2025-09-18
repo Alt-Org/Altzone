@@ -35,6 +35,8 @@ public class SettingEditor : MonoBehaviour
 
         //SetFPSButtons();
         SetIntroSkipToggle();
+        
+        
         SetShowButtonLabelsToggle();
 
         // Opening Battle Ui Editor if DataCarrier has a bool BattleUiEditorRequested and it's true
@@ -49,6 +51,7 @@ public class SettingEditor : MonoBehaviour
             popup.SetActive(false);
         }
     }
+
     private void Start()
     {
         _battleSettingsButton.onClick.AddListener(() => _battleEditor.OpenEditor());
@@ -57,6 +60,8 @@ public class SettingEditor : MonoBehaviour
 
         _topBarStyleButton.onClick.AddListener(() => ChangeTopbarStyle());
         _topBarStyleText.text = "Tyyli: " + carrier.TopBarStyleSetting;
+
+        _introSkipToggle.onValueChanged.AddListener(_ => SetIntroSkip());
     }
 
     public void SetFromSlider(Slider usedSlider)
@@ -106,13 +111,13 @@ public class SettingEditor : MonoBehaviour
 
     public void SetIntroSkipToggle()
     {
-        _introSkipToggle.isOn = (PlayerPrefs.GetInt("skipIntroVideo", 0) != 0);
+        _introSkipToggle.isOn = (PlayerPrefs.GetInt("SkipIntroVideo", 0) != 0);
     }
 
     public void SetIntroSkip()
     {
-        if(_introSkipToggle.isOn) PlayerPrefs.SetInt("skipIntroVideo", 1);
-        else PlayerPrefs.SetInt("skipIntroVideo", 0);
+        if(_introSkipToggle.isOn) PlayerPrefs.SetInt("SkipIntroVideo", 1);
+        else PlayerPrefs.SetInt("SkipIntroVideo", 0);
     }
 
     public void SetShowButtonLabelsToggle()
