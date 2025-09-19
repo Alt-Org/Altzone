@@ -152,6 +152,8 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationSocialType.WriteChatMessageGlobal: HandleSimpleTask(value); break;
             case TaskEducationSocialType.ClanVote: HandleSimpleTask(value); break;
             case TaskEducationSocialType.SuggestItemFleaMarket: HandleSimpleTask(value); break;
+            case TaskEducationSocialType.AddItemFleaMarket: HandleSimpleTask(value); break;
+            case TaskEducationSocialType.ChangeClanMotto: HandleSimpleTask(value); break;
             default: break;
         }
     }

@@ -57,6 +57,8 @@ namespace Altzone.Scripts.Model.Poco.Game
         WriteChatMessageGlobal,
         ClanVote,
         SuggestItemFleaMarket,
+        AddItemFleaMarket,
+        ChangeClanMotto,
     }
 
     public enum TaskEducationStoryType
@@ -380,6 +382,14 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case "suggest_item_to_flea_market":
                     {
                         return TaskEducationSocialType.SuggestItemFleaMarket;
+                    }
+                case "add_item_to_flea_market":
+                    {
+                        return TaskEducationSocialType.AddItemFleaMarket;
+                    }
+                case "change_clan_motto":
+                    {
+                        return TaskEducationSocialType.ChangeClanMotto;
                     }
                 default:
                     {
