@@ -176,7 +176,7 @@ namespace Altzone.Scripts.Chat
 
             StartCoroutine(ServerManager.Instance.GetMessageHistory(ChatChannelType.Clan, success =>
             {
-                _globalChatChannel = new("Clan", ChatChannelType.Clan);
+                _clanChatChannel = new("Clan", ChatChannelType.Clan);
                 if (success != null)
                 {
                     List<ChatMessage> messageList = new();
