@@ -31,6 +31,12 @@ namespace Altzone.Scripts.Model.Poco.Game
             }
         }
 
+        public int Hp { get => _hp;}
+        public int Speed { get => _speed;}
+        public int CharacterSize { get => _characterSize;}
+        public int Attack { get => _attack;}
+        public int Defence { get => _defence;}
+
         private BaseCharacter _characterBase;
         /// <summary>
         /// This can be used for example to load UNITY assets by name for UI at runtime.
@@ -38,15 +44,15 @@ namespace Altzone.Scripts.Model.Poco.Game
         [Optional] public string ServerID = "-1";
 
         [Mandatory] public string Name;
-        public int Hp;
+        private int _hp;
         public int HpSegmentCount;
-        public int Speed;
+        private int _speed;
         public int SpeedSegmentCount;
-        public int CharacterSize;
+        private int _characterSize;
         public int CharacterSizeSegmentCount;
-        public int Attack;
+        private int _attack;
         public int AttackSegmentCount;
-        public int Defence;
+        private int _defence;
         public int DefenceSegmentCount;
 
         public const int STATMAXCOMBINED = 50;
@@ -60,12 +66,12 @@ namespace Altzone.Scripts.Model.Poco.Game
             //Assert.IsTrue(name.IsMandatory());
             Id = id;
             Name = GetCharacterName(id);
-            Hp = hp;
+            _hp = hp;
             HpSegmentCount = 0;
-            Speed = speed;
-            CharacterSize = resistance;
-            Attack = attack;
-            Defence = defence;
+            _speed = speed;
+            _characterSize = resistance;
+            _attack = attack;
+            _defence = defence;
         }
 
         public CustomCharacter(BaseCharacter character)
@@ -74,15 +80,15 @@ namespace Altzone.Scripts.Model.Poco.Game
             _characterBase = character;
             Id = character.Id;
             Name = GetCharacterName(character.Id);
-            Hp = character.Hp;
+            _hp = character.Hp;
             HpSegmentCount = 0;
-            Speed = character.Speed;
+            _speed = character.Speed;
             SpeedSegmentCount = 0;
-            CharacterSize = character.CharacterSize;
+            _characterSize = character.CharacterSize;
             CharacterSizeSegmentCount = 0;
-            Attack = character.Attack;
+            _attack = character.Attack;
             AttackSegmentCount = 0;
-            Defence = character.Defence;
+            _defence = character.Defence;
             DefenceSegmentCount = 0;
         }
 
@@ -112,15 +118,15 @@ namespace Altzone.Scripts.Model.Poco.Game
             Id = id;
             ServerID = character._id;
             Name = string.IsNullOrEmpty(character.name) ? character.name : GetCharacterName(Id);
-            Hp = character.hp;
+            _hp = character.hp;
             HpSegmentCount = 0;
-            Speed = character.speed;
+            _speed = _characterBase.Speed;
             SpeedSegmentCount = 0;
-            CharacterSize = character.size;
+            _characterSize = character.size;
             CharacterSizeSegmentCount = 0;
-            Attack = character.attack;
+            _attack = character.attack;
             AttackSegmentCount = 0;
-            Defence = character.defence;
+            _defence = character.defence;
             DefenceSegmentCount = 0;
         }
 
@@ -171,7 +177,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             }
         }
 
-        public bool IncreaseStat(StatType statType, int count)
+        public bool IncreaseStat(StatType statType, int count = 1)
         {
             if (count < 1) { Debug.LogError("Invalid upgrade count."); return false; }
             PlayerData playerData = null;
@@ -182,31 +188,129 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case StatType.Attack:
                     while (true)
                     {
-                        if (playerData.DiamondAttack >= BaseCharacter.GetStatSegmentPrice(_characterBase, statType, Attack + 1))
+                        if (playerData.DiamondSpeed >= GetPriceToNextLevel(statType)) // Change this back to DiamondAttack if we move back to using separate resources.
                         {
                             increase = true;
-                            AttackSegmentCount++;
+                            _attack/*SegmentCount*/++;
+                            playerData.DiamondSpeed -= GetPriceToNextLevel(statType);
                             count--;
                         }
                         else break;
-                        int segmentsForNext = BaseCharacter.GetSegmentAmount(_characterBase, statType, Attack + 1);
-                        if (segmentsForNext <= AttackSegmentCount) { AttackSegmentCount -= segmentsForNext; Attack++; }
+                        //int segmentsForNext = BaseCharacter.GetSegmentAmount(_characterBase, statType, Attack + 1);
+                        //if (segmentsForNext <= AttackSegmentCount) { AttackSegmentCount -= segmentsForNext; Attack++; }
                         if (count < 1) break;
                     }
                     break;
                 case StatType.Defence:
+                    while (true)
+                    {
+                        if (playerData.DiamondSpeed >= GetPriceToNextLevel(statType)) // Change this back to DiamondDefence if we move back to using separate resources.
+                        {
+                            increase = true;
+                            _defence/*SegmentCount*/++;
+                            playerData.DiamondSpeed -= GetPriceToNextLevel(statType);
+                            count--;
+                        }
+                        else break;
+                        //int segmentsForNext = BaseCharacter.GetSegmentAmount(_characterBase, statType, Attack + 1);
+                        //if (segmentsForNext <= AttackSegmentCount) { AttackSegmentCount -= segmentsForNext; Attack++; }
+                        if (count < 1) break;
+                    }
                     break;
                 case StatType.CharacterSize:
+                    Debug.LogError("CharacterSize cannot be increased.");
                     break;
                 case StatType.Hp:
+                    while (true)
+                    {
+                        if (playerData.DiamondSpeed >= GetPriceToNextLevel(statType)) // Change this back to DiamondHP if we move back to using separate resources.
+                        {
+                            increase = true;
+                            _hp/*SegmentCount*/++;
+                            playerData.DiamondSpeed -= GetPriceToNextLevel(statType);
+                            count--;
+                        }
+                        else break;
+                        //int segmentsForNext = BaseCharacter.GetSegmentAmount(_characterBase, statType, Attack + 1);
+                        //if (segmentsForNext <= AttackSegmentCount) { AttackSegmentCount -= segmentsForNext; Attack++; }
+                        if (count < 1) break;
+                    }
                     break;
                 case StatType.Speed:
+                    Debug.LogError("Speed cannot be increased.");
                     break;
                 default:
                     Debug.LogError("Invalid stat type. Provide proper stat type.");
                     return false;
             }
             if (increase) return true;
+            else return false;
+        }
+
+        public bool DecreaseStat(StatType statType, int count = 1)
+        {
+            if (count < 1) { Debug.LogError("Invalid upgrade count."); return false; }
+            PlayerData playerData = null;
+            Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
+            bool decrease = false;
+            switch (statType)
+            {
+                case StatType.Attack:
+                    while (true)
+                    {
+                        if (playerData.Eraser >= 1) // Change this back to DiamondAttack if we move back to using separate resources.
+                        {
+                            decrease = true;
+                            _attack/*SegmentCount*/--;
+                            count--;
+                        }
+                        else break;
+                        //int segmentsForNext = BaseCharacter.GetSegmentAmount(_characterBase, statType, Attack + 1);
+                        //if (segmentsForNext <= AttackSegmentCount) { AttackSegmentCount -= segmentsForNext; Attack++; }
+                        if (count < 1) break;
+                    }
+                    break;
+                case StatType.Defence:
+                    while (true)
+                    {
+                        if (playerData.Eraser >= 1) // Change this back to DiamondDefence if we move back to using separate resources.
+                        {
+                            decrease = true;
+                            _defence/*SegmentCount*/--;
+                            count--;
+                        }
+                        else break;
+                        //int segmentsForNext = BaseCharacter.GetSegmentAmount(_characterBase, statType, Attack + 1);
+                        //if (segmentsForNext <= AttackSegmentCount) { AttackSegmentCount -= segmentsForNext; Attack++; }
+                        if (count < 1) break;
+                    }
+                    break;
+                case StatType.CharacterSize:
+                    Debug.LogError("CharacterSize cannot be decreased.");
+                    break;
+                case StatType.Hp:
+                    while (true)
+                    {
+                        if (playerData.Eraser >= 1) // Change this back to DiamondHP if we move back to using separate resources.
+                        {
+                            decrease = true;
+                            _hp/*SegmentCount*/--;
+                            count--;
+                        }
+                        else break;
+                        //int segmentsForNext = BaseCharacter.GetSegmentAmount(_characterBase, statType, Attack + 1);
+                        //if (segmentsForNext <= AttackSegmentCount) { AttackSegmentCount -= segmentsForNext; Attack++; }
+                        if (count < 1) break;
+                    }
+                    break;
+                case StatType.Speed:
+                    Debug.LogError("Speed cannot be decreased.");
+                    break;
+                default:
+                    Debug.LogError("Invalid stat type. Provide proper stat type.");
+                    return false;
+            }
+            if (decrease) return true;
             else return false;
         }
 
