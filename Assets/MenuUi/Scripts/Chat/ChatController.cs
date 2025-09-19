@@ -142,7 +142,7 @@ public class ChatController : MonoBehaviour
     internal void OnChatWindowChanged(ChatChannelType channelType)
     {
         ChatWindow chatWindow = Array.Find(_chatWindows, item => item.ChannelType == channelType);
-        int activeChatChannelIndex = Array.FindIndex(ChatListener.Instance._chatChannels, item => item.ChatChannelType == channelType);
+        int activeChatChannelIndex = Array.FindIndex(ChatListener.Instance.ChatChannels, item => item.ChatChannelType == channelType);
 
         // Changes the desired window active and disable others
         foreach (ChatWindow window in _chatWindows)
@@ -167,9 +167,9 @@ public class ChatController : MonoBehaviour
     /// <param name="chatName"></param>
     public void OnClanChatChanged(string chatName)
     {
-        int clanChannelIndex = Array.FindIndex(ChatListener.Instance._chatChannels, item => item.ChatChannelType == ChatChannelType.Clan);
+        int clanChannelIndex = Array.FindIndex(ChatListener.Instance.ChatChannels, item => item.ChatChannelType == ChatChannelType.Clan);
 
-        ChatChannel clanChannel = ChatListener.Instance._chatChannels[clanChannelIndex];
+        ChatChannel clanChannel = ChatListener.Instance.ChatChannels[clanChannelIndex];
         clanChannel.Reset();
         //clanChannel.ChannelName = chatName;
 

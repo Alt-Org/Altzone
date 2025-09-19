@@ -66,8 +66,8 @@ namespace Altzone.Scripts.Chat
         //private ChatPreviewController _chatPreviewController;   // Controller for the small chat preview outside of main chat
 
         private ChatChannelType _activeChatChannel;
-        [SerializeField] public ChatChannel _globalChatChannel, _clanChatChannel;
-        [SerializeField] public ChatChannel[] _chatChannels;
+        private ChatChannel _globalChatChannel, _clanChatChannel;
+        private ChatChannel[] _chatChannels;
 
         [SerializeField] private List<ChatMessage> _chatMessages;
 
@@ -117,6 +117,7 @@ namespace Altzone.Scripts.Chat
 
         public bool GlobalChatFetched { get => _globalChatFetched;}
         public bool ClanChatFetched { get => _clanChatFetched;}
+        public ChatChannel[] ChatChannels { get => _chatChannels;}
 
         private const string DEFAULT_CLAN_CHAT_NAME = "Klaanittomat";
 
@@ -158,6 +159,7 @@ namespace Altzone.Scripts.Chat
             _clanChatFetched = false;
             StartCoroutine(ServerManager.Instance.GetMessageHistory(ChatChannelType.Global, success =>
             {
+                _globalChatChannel = new("Global", ChatChannelType.Global);
                 if (success != null)
                 {
                     List<ChatMessage> messageList = new();
@@ -174,6 +176,7 @@ namespace Altzone.Scripts.Chat
 
             StartCoroutine(ServerManager.Instance.GetMessageHistory(ChatChannelType.Clan, success =>
             {
+                _globalChatChannel = new("Clan", ChatChannelType.Clan);
                 if (success != null)
                 {
                     List<ChatMessage> messageList = new();
