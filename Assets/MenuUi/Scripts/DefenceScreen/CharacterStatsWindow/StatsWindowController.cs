@@ -495,9 +495,13 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 {
                     PopupSignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, maksimitaso on {CustomCharacter.STATMAXLEVEL}.");
                 }
+                else if (GetStatStrength(statType) == ValueStrength.None)
+                {
+                    PopupSignalBus.OnChangePopupInfoSignal($"Tätä taitoa ei voi päivittää.");
+                }
             }
 
-            return statType != StatType.None && CheckCombinedLevelCap() && CheckStatLevelCap(statType);
+            return statType != StatType.None && CheckCombinedLevelCap() && CheckStatLevelCap(statType) && GetStatStrength(statType) != ValueStrength.None;
         }
 
 
