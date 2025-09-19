@@ -110,14 +110,28 @@ namespace Battle.QSimulation.Projectile
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="direction">The new direction for the projectile</param>
-        public static void UpdateVelocity(Frame f, BattleProjectileQComponent* projectile, FPVector2 direction)
+        /// <param name="direction">The new direction for the projectile.</param>
+        /// <param name="collisionTriggerType">The collision type of the collision that caused this velocity update.</param>
+        public static void UpdateVelocity(Frame f, BattleProjectileQComponent* projectile, FPVector2 direction, BattleCollisionTriggerType collisionTriggerType)
         {
             // set new projectile direction
             projectile->Direction = direction;
 
             // update the projectile's speed based on speed potential and multiply by emotion
-            projectile->Speed = projectile->SpeedPotential * projectile->SpeedMultiplierArray[(int)projectile->Emotion];
+            //projectile->Speed = projectile->SpeedPotential * projectile->SpeedMultiplierArray[(int)projectile->Emotion];
+
+            // reset or increment the projectile's speed based on what type of collision caused this velocity update
+            switch (collisionTriggerType)
+            {
+                case BattleCollisionTriggerType.SoulWall:
+                    projectile->Speed = projectile->SpeedBase;
+                    break;
+                case BattleCollisionTriggerType.Shield:
+                    projectile->Speed += projectile->SpeedIncrement;
+                    break;
+                default:
+                    break;
+            }
         }
 
         /// <summary>
@@ -176,11 +190,11 @@ namespace Battle.QSimulation.Projectile
             FP gameTimeSec = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>()->GameTimeSec;
 
             // every 10 seconds increase the speed potential by a set amount
-            if (gameTimeSec >= projectile->AccelerationTimer)
-            {
-                projectile->SpeedPotential += projectile->SpeedIncrement;
-                projectile->AccelerationTimer += projectile->AccelerationTimerDuration;
-            }
+            //if (gameTimeSec >= projectile->AccelerationTimer)
+            //{
+            //    projectile->SpeedPotential += projectile->SpeedIncrement;
+            //    projectile->AccelerationTimer += projectile->AccelerationTimerDuration;
+            //}
 
             if (!projectile->IsHeld)
             {
@@ -257,7 +271,7 @@ namespace Battle.QSimulation.Projectile
                 else if (collisionType == BattlePlayerCollisionType.Override) direction = normal;
 
                 HandleIntersection(f, projectile, projectileEntity, otherEntity, normal, collisionMinOffset);
-                UpdateVelocity(f, projectile, direction);
+                UpdateVelocity(f, projectile, direction, collisionTriggerType);
             }
 
             SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Projectile);
@@ -312,16 +326,17 @@ namespace Battle.QSimulation.Projectile
 
             // copy data from the spec
             projectile->Speed = spec.ProjectileInitialSpeed;
-            projectile->SpeedPotential = projectile->Speed;
+            projectile->SpeedBase = projectile->Speed;
+            //projectile->SpeedPotential = projectile->Speed;
             projectile->SpeedIncrement = spec.SpeedIncrement;
             projectile->Direction = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
-            projectile->AccelerationTimerDuration = spec.AccelerationTimerDuration;
-            projectile->AccelerationTimer = projectile->AccelerationTimerDuration;
+            //projectile->AccelerationTimerDuration = spec.AccelerationTimerDuration;
+            //projectile->AccelerationTimer = projectile->AccelerationTimerDuration;
             projectile->AttackMax = spec.AttackMax;
-            for (int i = 0; i < spec.SpeedMultiplierArray.Length; i++)
-            {
-                projectile->SpeedMultiplierArray[i] = spec.SpeedMultiplierArray[i];
-            }
+            //for (int i = 0; i < spec.SpeedMultiplierArray.Length; i++)
+            //{
+            //    projectile->SpeedMultiplierArray[i] = spec.SpeedMultiplierArray[i];
+            //}
 
             // set emotion and attack
             SetEmotion(f, projectile, BattleParameters.GetProjectileInitialEmotion(f));
