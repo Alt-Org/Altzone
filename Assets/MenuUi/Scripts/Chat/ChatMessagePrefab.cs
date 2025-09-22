@@ -24,6 +24,7 @@ public class ChatMessagePrefab : MonoBehaviour
     {
         SetMessage(message.Message);
         SetProfilePicture(message.Avatar);
+        SetMood(message.Mood);
     }
 
     internal void SetName(string value)
@@ -44,11 +45,26 @@ public class ChatMessagePrefab : MonoBehaviour
     /// <<param name="mood">Mood value received from the server/Photon Chat</param>
     internal void SetMood(Mood mood)
     {
-        Sprite moodSprite = Resources.Load<Sprite>("test-emojis/" + mood.ToString().ToLower());
-        _moodImage.sprite = moodSprite;
-
-        //Sprite backgroundSprite = Resources.Load<Sprite>(null);
-        //_backgroundImage.sprite = backgroundSprite;
+        switch (mood)
+        {
+            case Mood.Sad:
+                _messageContentText.color = Color.blue;
+                return;
+            case Mood.Angry:
+                _messageContentText.color = Color.red;
+                return;
+            case Mood.Happy:
+                _messageContentText.color = Color.yellow;
+                return;
+            case Mood.Wink:
+                _messageContentText.color = new(1, 0.4156f, 0);
+                return;
+            case Mood.Love:
+                _messageContentText.color = new(0.929f,0.462f,0.6627f);
+                return;
+            default:
+                return;
+        }
     }
 
     internal void SetFontSize(int size) { _messageContentText.fontSize = size; }
