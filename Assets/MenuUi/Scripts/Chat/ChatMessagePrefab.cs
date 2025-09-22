@@ -34,7 +34,7 @@ public class ChatMessagePrefab : MonoBehaviour
     internal void SetMessage(string message)
     {
         _messageContentText.text = message;
-        StartCoroutine(SetShortenedMessageOnDelay(_messageContentText));
+        //StartCoroutine(SetShortenedMessageOnDelay(_messageContentText));
     }
 
 
