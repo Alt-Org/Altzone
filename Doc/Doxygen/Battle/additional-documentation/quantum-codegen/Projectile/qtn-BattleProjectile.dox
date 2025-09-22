@@ -45,8 +45,17 @@
 /// @var bool Quantum.BattleProjectileQComponent::IsHeld
 /// <summary>Is the projectile held or not.</summary>
 ///
-/// @var BattleEmotionState Quantum.BattleProjectileQComponent::Emotion
-/// <summary>Which emotion the projectile has at the moment.</summary>
+/// @var BattleEmotionState Quantum.BattleProjectileQComponent::EmotionBase
+/// <summary>The true emotion state of the projectile.</summary>
+///
+/// Special emotions temporarily override the true state and are not saved to this. Currently the only special emotion state is Love.  
+/// The emotion in use by the projectile is saved in @cref{Quantum.BattleProjectileQComponent,EmotionCurrent}.
+///
+/// @var BattleEmotionState Quantum.BattleProjectileQComponent::EmotionCurrent
+/// <summary>Current emotion in use by the projectile, including special emotion states.</summary>
+///
+/// Special emotions that override the true underlying state are saved to this. Currently the only special state is Love.  
+/// The true emotion of the projectile is saved in @cref{Quantum.BattleProjectileQComponent,EmotionBase}.
 ///
 /// @var array Quantum.BattleProjectileQComponent::CollisionFlags
 /// <summary>
