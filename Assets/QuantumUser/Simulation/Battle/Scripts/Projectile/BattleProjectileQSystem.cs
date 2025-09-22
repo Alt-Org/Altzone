@@ -121,11 +121,7 @@ namespace Battle.QSimulation.Projectile
             // update the projectile's speed based on speed potential and multiply by emotion
             //projectile->Speed = projectile->SpeedPotential * projectile->SpeedMultiplierArray[(int)projectile->Emotion];
 
-            projectile->Speed += speedIncreaseAmount;
-            if (projectile->Speed > projectile->SpeedMax)
-            {
-                projectile->Speed = projectile->SpeedMax;
-            }
+            projectile->Speed = FPMath.Min(projectile->Speed += speedIncreaseAmount, projectile->SpeedMax);
 
             if (resetSpeed)
             {
