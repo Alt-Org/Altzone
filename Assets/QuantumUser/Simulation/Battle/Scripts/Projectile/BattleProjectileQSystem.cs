@@ -121,9 +121,12 @@ namespace Battle.QSimulation.Projectile
             // update the projectile's speed based on speed potential and multiply by emotion
             //projectile->Speed = projectile->SpeedPotential * projectile->SpeedMultiplierArray[(int)projectile->Emotion];
 
-            projectile->Speed = FPMath.Min(projectile->Speed + speedIncreaseAmount, projectile->SpeedMax);
-
-            if (resetSpeed)
+            if (!resetSpeed)
+            {
+                projectile->Speed = FPMath.Min(projectile->Speed + speedIncreaseAmount, projectile->SpeedMax);
+                
+            }
+            else
             {
                 projectile->Speed = projectile->SpeedBase;
             }
@@ -223,6 +226,8 @@ namespace Battle.QSimulation.Projectile
             FP collisionMinOffset = FP._0;
             bool handleCollision = false;
 
+            FP speedIncrementAmount = 0;
+
             switch (collisionTriggerType)
             {
                 case BattleCollisionTriggerType.ArenaBorder:
@@ -251,6 +256,7 @@ namespace Battle.QSimulation.Projectile
                     {
                         collisionType = playerHitbox->CollisionType;
                         collisionMinOffset = playerHitbox->CollisionMinOffset;
+                        speedIncrementAmount = projectile->SpeedIncrement;
                         handleCollision = true;
                     }
                     break;
@@ -266,7 +272,7 @@ namespace Battle.QSimulation.Projectile
                 else if (collisionType == BattlePlayerCollisionType.Override) direction = normal;
 
                 HandleIntersection(f, projectile, projectileEntity, otherEntity, normal, collisionMinOffset);
-                UpdateVelocity(f, projectile, direction, projectile->SpeedIncrement, collisionTriggerType == BattleCollisionTriggerType.SoulWall);
+                UpdateVelocity(f, projectile, direction, speedIncrementAmount, collisionTriggerType == BattleCollisionTriggerType.SoulWall);
             }
 
             SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Projectile);
