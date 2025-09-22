@@ -188,7 +188,7 @@ namespace Battle.QSimulation.Projectile
 
             FP gameTimeSec = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>()->GameTimeSec;
 
-            // every 10 seconds increase the speed potential by a set amount
+            // every 10 seconds increase the speed potential by a set amount (disabled)
             //if (gameTimeSec >= projectile->AccelerationTimer)
             //{
             //    projectile->SpeedPotential += projectile->SpeedIncrement;
@@ -228,6 +228,7 @@ namespace Battle.QSimulation.Projectile
             bool handleCollision = false;
 
             FP speedIncrementAmount = 0;
+            bool resetSpeed = false;
 
             switch (collisionTriggerType)
             {
@@ -247,6 +248,7 @@ namespace Battle.QSimulation.Projectile
 
                     normal = soulWall->Normal;
                     collisionMinOffset = soulWall->CollisionMinOffset;
+                    resetSpeed = true;
                     handleCollision = true;
                     break;
 
@@ -273,7 +275,7 @@ namespace Battle.QSimulation.Projectile
                 else if (collisionType == BattlePlayerCollisionType.Override) direction = normal;
 
                 HandleIntersection(f, projectile, projectileEntity, otherEntity, normal, collisionMinOffset);
-                UpdateVelocity(f, projectile, direction, speedIncrementAmount, collisionTriggerType == BattleCollisionTriggerType.SoulWall);
+                UpdateVelocity(f, projectile, direction, speedIncrementAmount, resetSpeed);
             }
 
             SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Projectile);
