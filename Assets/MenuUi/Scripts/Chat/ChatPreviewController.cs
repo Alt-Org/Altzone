@@ -205,8 +205,6 @@ public class ChatPreviewController : MonoBehaviour
                 continue;
 
             recentMessages[index++] = message;
-            ChatMessagePrefab chatMessagePrefab = _chatMessageGameobjects[i].GetComponent<ChatMessagePrefab>();
-            chatMessagePrefab.SetInfo(recentMessages[i]);
 
             if (index == chatMessageAmount)
                 break;
@@ -218,11 +216,8 @@ public class ChatPreviewController : MonoBehaviour
             if (noMessagesTextGameobject.activeSelf)
                 noMessagesTextGameobject.SetActive(false);
 
-            /*TextMeshProUGUI textMeshProUGUI = _chatMessageGameobjects[i].GetComponentInChildren<TextMeshProUGUI>();
-
             ChatMessagePrefab chatMessagePrefab = _chatMessageGameobjects[i].GetComponent<ChatMessagePrefab>();
             chatMessagePrefab.SetInfo(recentMessages[i]);
-            StartCoroutine(SetShortenedMessageOnDelay(chatMessagePrefab, textMeshProUGUI,  recentMessages[i].Message));*/
         }
     }
 
