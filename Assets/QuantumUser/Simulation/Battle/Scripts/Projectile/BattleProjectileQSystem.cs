@@ -125,7 +125,6 @@ namespace Battle.QSimulation.Projectile
             if (!resetSpeed)
             {
                 projectile->Speed = FPMath.Min(projectile->Speed + speedIncreaseAmount, projectile->SpeedMax);
-                
             }
             else
             {
