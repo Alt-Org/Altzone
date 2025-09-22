@@ -118,9 +118,10 @@ namespace Battle.QSimulation.Projectile
             // set new projectile direction
             projectile->Direction = direction;
 
-            // update the projectile's speed based on speed potential and multiply by emotion
+            // update the projectile's speed based on speed potential and multiply by emotion (disabled)
             //projectile->Speed = projectile->SpeedPotential * projectile->SpeedMultiplierArray[(int)projectile->Emotion];
 
+            // increment or reset the speed of the projectile
             if (!resetSpeed)
             {
                 projectile->Speed = FPMath.Min(projectile->Speed + speedIncreaseAmount, projectile->SpeedMax);
