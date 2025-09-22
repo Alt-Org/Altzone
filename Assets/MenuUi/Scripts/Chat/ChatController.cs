@@ -117,7 +117,7 @@ public class ChatController : MonoBehaviour
         chatMessageInstance.SetMessage(message.Username);
         //chatMessageInstance.SetMessage(message._id + " - " + message._message);
         chatMessageInstance.SetMood(message.Mood);
-        chatMessageInstance.SetProfilePicture(message.Channel.ChatChannelType);
+        //chatMessageInstance.SetProfilePicture(message.Channel.ChatChannelType);
         chatMessageInstance.SetFontSize(_fontSize);
 
         if (instantiateOnTop)
