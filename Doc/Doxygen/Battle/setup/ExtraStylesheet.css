@@ -1,0 +1,45 @@
+/*{ Built-in overrides */ 
+
+html.dark-mode code {
+  color: white;
+}
+
+html.dark-mode *:not(.paramname)>em {
+  color: white;
+}
+
+html.light-mode code {
+  font-weight: bold;
+}
+
+html.light-mode *:not(.paramname)>em {
+  font-weight: bold;
+}
+
+.tt {
+   background-color: var(--fragment-background-color);
+   padding: 1px 5px;
+   border: 1px solid var(--fragment-border-color);
+}
+
+.groupText > p {
+  font-style: normal;
+}
+
+/*} Built-in overrides */ 
+
+/*{ Custom */ 
+
+.brief-h {
+  font-size: 1.1rem;
+}
+
+.big-text {
+  font-size: 1.1rem;
+}
+
+.fake-link {
+  color: var(--page-link-color);
+}
+
+/*} Custom */ 

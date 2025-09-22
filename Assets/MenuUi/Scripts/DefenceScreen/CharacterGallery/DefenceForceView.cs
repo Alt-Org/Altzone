@@ -32,7 +32,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 string lookupId = ((int)charID).ToString();
                 PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(lookupId);
                 
-                if (info.Id != lookupId)
+                if (info == null ||info.Id != lookupId)
                 {
                     _selectedCharSlots[i].SetCharacterVisibility(false);
                     continue;

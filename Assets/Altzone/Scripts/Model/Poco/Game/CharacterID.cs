@@ -25,12 +25,14 @@ namespace Altzone.Scripts.Model.Poco.Game
         ObedientTest = CharacterClassID.Obedient,
         Religious = CharacterClassID.Obedient + 1, //301
         Yesman = CharacterClassID.Obedient + 2, //302
+        SlaveOfTheLaw = CharacterClassID.Obedient + 3, //303
 
         // Projector class characters
         ProjectorTest = CharacterClassID.Projector,
         Artist = CharacterClassID.Projector + 1, //401
         Arguer = CharacterClassID.Projector + 2, //402
         Reflector = CharacterClassID.Projector + 3, //403
+        Delusional = CharacterClassID.Projector + 4, //404
 
         // Retroflector class characters
         RetroflectorTest = CharacterClassID.Retroflector,
@@ -38,6 +40,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         Alcoholic = CharacterClassID.Retroflector + 2, //502
         Anorectic = CharacterClassID.Retroflector + 3, //503
         Stoner = CharacterClassID.Retroflector + 4, //504
+        Martyr = CharacterClassID.Retroflector + 5, //505
 
         // Confluent class characters
         ConfluentTest = CharacterClassID.Confluent,
