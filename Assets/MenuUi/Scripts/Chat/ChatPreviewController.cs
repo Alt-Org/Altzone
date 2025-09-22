@@ -65,6 +65,20 @@ public class ChatPreviewController : MonoBehaviour
         _chatButtonShrinkAnchors[1] = new Vector2(1, 1.3f);
     }
 
+    private void Start()
+    {
+        ChatListener.OnActiveChannelChanged += ChannelChange;
+        ChatChannel.OnMessageHistoryReceived += FetchMessagesFromActive;
+        ChatChannel.OnMessageReceived += FetchMessagesFromActive;
+    }
+
+    private void OnDestroy()
+    {
+        ChatListener.OnActiveChannelChanged -= ChannelChange;
+        ChatChannel.OnMessageHistoryReceived -= FetchMessagesFromActive;
+        ChatChannel.OnMessageReceived -= FetchMessagesFromActive;
+    }
+
     private void OnEnable()
     {
         if (ChatListener.Instance)
@@ -152,6 +166,22 @@ public class ChatPreviewController : MonoBehaviour
         noMessagesTextGameobject.SetActive(true); 
     }
 
+    internal void ChannelChange(ChatChannelType type)
+    {
+        MessageReceived(ChatListener.Instance.GetChatChannel(type));
+    }
+
+    internal void FetchMessagesFromActive(ChatChannelType type)
+    {
+        if (type == ChatListener.Instance.GetActiveChannel.ChatChannelType)
+            MessageReceived(ChatListener.Instance.GetChatChannel(type));
+    }
+
+    internal void FetchMessagesFromActive(ChatChannelType type, ChatMessage message = null)
+    {
+        if(type == ChatListener.Instance.GetActiveChannel.ChatChannelType)
+        MessageReceived(ChatListener.Instance.GetChatChannel(type));
+    }
 
     /// <summary>
     /// Retrieves the latest chat messages from _chatMessages list and displays them in the preview window.
