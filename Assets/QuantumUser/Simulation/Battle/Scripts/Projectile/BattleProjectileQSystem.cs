@@ -380,7 +380,7 @@ namespace Battle.QSimulation.Projectile
             normal = FPVector2.Zero;
 
             if (!playerHitbox->IsActive) return false;
-            if (projectile->Emotion == BattleEmotionState.Love) return false;
+            if (projectile->EmotionCurrent == BattleEmotionState.Love) return false;
             if (playerHitbox->CollisionType == BattlePlayerCollisionType.None) return false;
 
             BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
