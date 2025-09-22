@@ -1,0 +1,43 @@
+/// @file BattleLightrayEffect.qtn
+/// <summary>
+/// Contains enums for Lightray's color and size.
+/// </summary>
+///
+/// ## Generated Enums
+/// - @cref{Quantum,BattleLightrayColor}  
+///   @copybrief Quantum.BattleLightrayColor
+/// - @cref{Quantum,BattleLightraySize}  
+///   @copybrief Quantum.BattleLightraySize
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @enum Quantum::BattleLightrayColor
+/// <summary>
+/// Lightray color enum used by the Lightray effect in the game.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleLightrayEffect.qtn}
+
+/// @var Quantum::BattleLightrayColor Quantum::BattleLightrayColor::Red
+/// <summary>Red Lightray color.</summary>
+///
+/// @var Quantum::BattleLightrayColor Quantum::BattleLightrayColor::Blue
+/// <summary>Blue Lightray color.</summary>
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @enum Quantum::BattleLightraySize
+/// <summary>
+/// Lightray size enum used by the Lightray effect in the game.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleLightrayEffect.qtn}
+
+/// @var Quantum::BattleLightraySize Quantum::BattleLightraySize::Narrow
+/// <summary>Narrow Lightray size.</summary>
+///
+/// @var Quantum::BattleLightraySize Quantum::BattleLightraySize::Medium
+/// <summary>Medium Lightray size.</summary>
+///
+/// @var Quantum::BattleLightraySize Quantum::BattleLightraySize::Wide
+/// <summary>Wide Lightray size.</summary>

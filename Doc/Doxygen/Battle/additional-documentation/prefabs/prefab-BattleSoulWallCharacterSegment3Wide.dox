@@ -1,0 +1,27 @@
+/// @file BattleSoulWallCharacterSegment3Wide.prefab
+/// <summary>
+/// Prefab for 3x2 grid sized last row SoulWall segment.
+/// </summary>
+///
+/// Last row's SoulWall sprites are pre-set to the scene, so this prefab doesn't have a sprite attached.
+///
+/// ### Structure
+/// - **BattleSoulWallCharacterSegment3Wide**
+///     - *Components:*
+///         - Transform
+///         - %Quantum Entity Prototype
+///             - @cref{Quantum,BattleSoulWallQComponent}
+///             - @cref{Quantum,BattleCollisionTriggerQComponent}
+///         - %Quantum Entity View
+///     - *Children:*
+///         - **SoulWallType1ViewModel**
+///             - *Components:*
+///                 - Transform
+///                 - @cref{Battle.View.SoulWall,BattleSoulWallViewController} (Removed)
+
+/// @file BattleSoulWallCharacterSegment3WideEntityPrototype.qprototype
+/// <summary>
+/// EntityPrototype counterpart of @ref BattleSoulWallCharacterSegment3Wide.prefab
+/// </summary>
+///
+/// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).
