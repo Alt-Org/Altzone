@@ -10,7 +10,8 @@ component BattleProjectileQComponent
     // state
     bool IsLaunched;
     bool IsHeld;
-    BattleEmotionState Emotion;
+    BattleEmotionState EmotionBase;
+    BattleEmotionState EmotionCurrent;
     array<BattleProjectileCollisionFlags>[2] CollisionFlags;
 
     // variables

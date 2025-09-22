@@ -1239,32 +1239,34 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattleProjectileQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 88;
+    public const Int32 SIZE = 96;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(12)]
+    [FieldOffset(16)]
     public QBoolean IsLaunched;
-    [FieldOffset(8)]
+    [FieldOffset(12)]
     public QBoolean IsHeld;
     [FieldOffset(4)]
-    public BattleEmotionState Emotion;
+    public BattleEmotionState EmotionBase;
+    [FieldOffset(8)]
+    public BattleEmotionState EmotionCurrent;
     [FieldOffset(0)]
     [FramePrinter.FixedArrayAttribute(typeof(BattleProjectileCollisionFlags), 2)]
     private fixed Byte _CollisionFlags_[2];
-    [FieldOffset(40)]
-    public FP Speed;
-    [FieldOffset(72)]
-    public FPVector2 Direction;
-    [FieldOffset(16)]
-    public FP Attack;
-    [FieldOffset(32)]
-    public FP Radius;
     [FieldOffset(48)]
-    public FP SpeedBase;
-    [FieldOffset(56)]
-    public FP SpeedIncrement;
-    [FieldOffset(64)]
-    public FP SpeedMax;
+    public FP Speed;
+    [FieldOffset(80)]
+    public FPVector2 Direction;
     [FieldOffset(24)]
+    public FP Attack;
+    [FieldOffset(40)]
+    public FP Radius;
+    [FieldOffset(56)]
+    public FP SpeedBase;
+    [FieldOffset(64)]
+    public FP SpeedIncrement;
+    [FieldOffset(72)]
+    public FP SpeedMax;
+    [FieldOffset(32)]
     public FP AttackMax;
     public FixedArray<BattleProjectileCollisionFlags> CollisionFlags {
       get {
@@ -1276,7 +1278,8 @@ namespace Quantum {
         var hash = 4001;
         hash = hash * 31 + IsLaunched.GetHashCode();
         hash = hash * 31 + IsHeld.GetHashCode();
-        hash = hash * 31 + (Int32)Emotion;
+        hash = hash * 31 + (Int32)EmotionBase;
+        hash = hash * 31 + (Int32)EmotionCurrent;
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(CollisionFlags);
         hash = hash * 31 + Speed.GetHashCode();
         hash = hash * 31 + Direction.GetHashCode();
@@ -1292,7 +1295,8 @@ namespace Quantum {
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (BattleProjectileQComponent*)ptr;
         FixedArray.Serialize(p->CollisionFlags, serializer, Statics.SerializeBattleProjectileCollisionFlags);
-        serializer.Stream.Serialize((Int32*)&p->Emotion);
+        serializer.Stream.Serialize((Int32*)&p->EmotionBase);
+        serializer.Stream.Serialize((Int32*)&p->EmotionCurrent);
         QBoolean.Serialize(&p->IsHeld, serializer);
         QBoolean.Serialize(&p->IsLaunched, serializer);
         FP.Serialize(&p->Attack, serializer);

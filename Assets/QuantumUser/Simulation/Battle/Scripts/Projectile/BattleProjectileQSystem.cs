@@ -87,8 +87,12 @@ namespace Battle.QSimulation.Projectile
         /// <param name="emotion">The new emotion state to assign to the projectile.</param>
         public static void SetEmotion(Frame f, BattleProjectileQComponent* projectile, BattleEmotionState emotion)
         {
-            projectile->Emotion = emotion;
-            f.Events.BattleChangeEmotionState(projectile->Emotion);
+            if (emotion != BattleEmotionState.Love)
+            {
+                projectile->EmotionBase = emotion;
+            }
+            projectile->EmotionCurrent = emotion;
+            f.Events.BattleChangeEmotionState(projectile->EmotionCurrent);
         }
 
         /// <summary>
@@ -243,7 +247,10 @@ namespace Battle.QSimulation.Projectile
 
                     BattleSoulWallQComponent* soulWall = (BattleSoulWallQComponent*)otherComponentPtr;
 
-                    //SetEmotion(f, projectile, soulWall->Emotion);
+                    if (projectile->EmotionCurrent == BattleEmotionState.Love)
+                    {
+                        SetEmotion(f, projectile, projectile->EmotionBase);
+                    }
 
                     normal = soulWall->Normal;
                     collisionMinOffset = soulWall->CollisionMinOffset;
