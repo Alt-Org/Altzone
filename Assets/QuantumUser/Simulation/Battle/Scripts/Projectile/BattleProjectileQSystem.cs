@@ -243,7 +243,7 @@ namespace Battle.QSimulation.Projectile
 
                     BattleSoulWallQComponent* soulWall = (BattleSoulWallQComponent*)otherComponentPtr;
 
-                    SetEmotion(f, projectile, soulWall->Emotion);
+                    //SetEmotion(f, projectile, soulWall->Emotion);
 
                     normal = soulWall->Normal;
                     collisionMinOffset = soulWall->CollisionMinOffset;
