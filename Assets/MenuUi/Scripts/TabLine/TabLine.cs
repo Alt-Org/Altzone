@@ -12,15 +12,29 @@ namespace MenuUi.Scripts.TabLine
     {
         [SerializeField] private bool _getActiveButtonFromSwipe = false;
         [SerializeField] private TabLineButton[] _tabLineButtons;
+        [SerializeField] private Image _tabLineRibbon;
+        [SerializeField] private Image _tabLineImage;
+        [SerializeField] private Color _tabColor;
 
         private SwipeUI _swipe;
+
+        public SwipeUI Swipe { get => _swipe;}
+
+        private void OnEnable()
+        {
+            if (_swipe != null && _getActiveButtonFromSwipe)
+            {
+                ActivateTabButton(_swipe.CurrentPage);
+            }
+        }
 
 
         private void Awake()
         {
             foreach (TabLineButton button in _tabLineButtons)
             {
-                button.SetImageRectTransform();
+                if (_tabColor != Color.white) button.SetColour(_tabColor);
+                else button.SetColour(_tabLineRibbon != null ? _tabLineRibbon.color : Color.white);
             }
 
             if (_getActiveButtonFromSwipe)
@@ -58,12 +72,21 @@ namespace MenuUi.Scripts.TabLine
         public void ActivateTabButton(int index)
         {
             // Check if enough tab button entries in array.
-            if (_tabLineButtons.Length - 1 < index)
+            if (index >= _tabLineButtons.Length || index < 0)
             {
                 return;
             }
 
-            _tabLineButtons[index].SetActiveVisuals();
+            Sprite image = _tabLineButtons[index].SetActiveVisuals();
+            if (_tabLineImage != null)
+            {
+                if (image != null)
+                {
+                    _tabLineImage.sprite = image;
+                    _tabLineImage.enabled = true;
+                }
+                else if (_tabLineImage.sprite == null) _tabLineImage.enabled = false;
+            }
 
             for (int i = 0; i < _tabLineButtons.Length; i++)
             {
@@ -91,48 +114,12 @@ namespace MenuUi.Scripts.TabLine
         private class TabLineButton
         {
             [Header("References to components")]
-            [SerializeField] private Image _tabImageComponent;
-            [SerializeField] private Image _detailImageComponent;
+            [SerializeField] private TabObjectHandler _tabObjectHandler;
+            [SerializeField] private Sprite _tablineImage;
 
-            private RectTransform _imageRectTransform;
-            private RectTransform _detailImageRectTransform;
-
-            private const float OffsetAmount = -20.0f;
-
-            private Vector2 _offset = new Vector2(0, OffsetAmount);
-
-            public void SetImageRectTransform()
-            {
-                _imageRectTransform = _tabImageComponent.gameObject.GetComponent<RectTransform>();
-                if (_detailImageComponent != null ) _detailImageRectTransform = _tabImageComponent.gameObject.GetComponent<RectTransform>();
-            }
-
-
-            public void SetActiveVisuals()
-            {
-                _imageRectTransform.offsetMin = Vector2.zero;
-                _imageRectTransform.offsetMax = Vector2.zero;
-
-                if (_detailImageComponent != null )
-                {
-                    _detailImageRectTransform.offsetMin = Vector2.zero;
-                    _detailImageRectTransform.offsetMax = Vector2.zero;
-                }
-            }
-
-
-            public void SetInactiveVisuals()
-            {
-                
-                _imageRectTransform.offsetMin = _offset;
-                _imageRectTransform.offsetMax = _offset;
-
-                if (_detailImageComponent != null)
-                {
-                    _detailImageRectTransform.offsetMin = _offset;
-                    _detailImageRectTransform.offsetMax = _offset;
-                }
-            }
+            public Sprite SetActiveVisuals() => _tabObjectHandler.SetActiveVisuals(_tablineImage);
+            public void SetInactiveVisuals() => _tabObjectHandler.SetInactiveVisuals();
+            public void SetColour(Color colour) => _tabObjectHandler.SetColour(colour);
         }
     }
 }

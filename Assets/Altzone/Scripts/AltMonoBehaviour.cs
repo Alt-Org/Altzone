@@ -7,6 +7,7 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 public class AltMonoBehaviour : MonoBehaviour
 {
@@ -67,7 +68,7 @@ public class AltMonoBehaviour : MonoBehaviour
         bool? timeout = null;
         Coroutine timeoutCoroutine = StartCoroutine(WaitUntilTimeout(timeoutTime, data => timeout = data));
 
-        yield return new WaitUntil(() => (_coroutinestore[coroutineKey] != true || timeout != null));
+        yield return new WaitUntil(() => (_coroutinestore[coroutineKey] == true || timeout != null));
 
         if (_coroutinestore[coroutineKey] == false)
         {
@@ -89,7 +90,7 @@ public class AltMonoBehaviour : MonoBehaviour
 
         if (callback == null)
         {
-            StartCoroutine(ServerManager.Instance.GetPlayerFromServer(content =>
+            StartCoroutine(ServerManager.Instance.GetOwnPlayerFromServer(content =>
             {
                 if (content != null)
                     callback(new(content));
@@ -105,22 +106,50 @@ public class AltMonoBehaviour : MonoBehaviour
     }
     protected IEnumerator SavePlayerData(PlayerData playerData, System.Action<PlayerData> callback)
     {
+        if(playerData == null) Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, callback);
 
-        Storefront.Get().SavePlayerData(playerData, callback);
+        string[] serverList = new string[playerData.SelectedCharacterIds.Length];
 
-        /*if (callback == null)
+        for (int i = 0; i < playerData.SelectedCharacterIds.Length; i++)
         {
-            StartCoroutine(ServerManager.Instance.GetClanFromServer(content =>
+            serverList[i] = playerData.SelectedCharacterIds[i].ServerID;
+        }
+
+        //Storefront.Get().SavePlayerData(playerData, callback);
+        string body = JObject.FromObject(
+            new
             {
-                if (content != null)
-                    callback(new(content));
-                else
-                {
-                    Debug.LogError("Could not connect to server and receive player");
-                    return;
-                }
-            }));
-        }*/
+                _id = playerData.Id,
+                name = playerData.Name,
+                clan_Id = playerData.ClanId,
+                avatar = new ServerAvatar(playerData.AvatarData),
+                currentAvatarId = playerData.SelectedCharacterId,
+                battleCharacter_ids = serverList,
+                
+                
+            }
+        ).ToString();
+
+        StartCoroutine(ServerManager.Instance.UpdatePlayerToServer(body, callback2 =>
+        {
+
+            if (callback2 != null)
+            {
+                Debug.Log("Profile info updated.");
+                var store = Storefront.Get();
+                store.SavePlayerData(playerData, null);
+            }
+            else
+            {
+                Debug.Log("Profile info update failed.");
+            }
+            if(callback2 != null)
+            {
+                playerData.UpdatePlayerData(callback2);
+                if(callback != null) callback(playerData);
+            }
+            else if (callback != null) callback(playerData);
+        }));
 
         yield return new WaitUntil(() => callback != null);
     }
@@ -129,7 +158,7 @@ public class AltMonoBehaviour : MonoBehaviour
     {
         if(clanId == null)
         {
-            StartCoroutine(GetPlayerData(data => clanId = data.ClanId));
+            StartCoroutine(GetPlayerData(data => clanId = data?.ClanId));
             yield return new WaitUntil(() => clanId != null);
         }
 
@@ -143,7 +172,7 @@ public class AltMonoBehaviour : MonoBehaviour
                     callback(new(content));
                 else
                 {
-                    Debug.LogError("Could not connect to server and receive player");
+                    Debug.LogWarning("Could not connect to server and receive player");
                     return;
                 }
             }));

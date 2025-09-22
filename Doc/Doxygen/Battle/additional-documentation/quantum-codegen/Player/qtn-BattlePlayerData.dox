@@ -1,0 +1,164 @@
+/// @file BattlePlayerData.qtn
+/// <summary>
+/// Contains components used for player entities.
+/// </summary>
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattlePlayerDataQComponent}  
+///   @copybrief Quantum.BattlePlayerDataQComponent
+/// - @cref{Quantum,BattlePlayerHitboxColliderTemplate}  
+///   @copybrief Quantum.BattlePlayerHitboxColliderTemplate
+/// - @cref{Quantum,BattlePlayerHitboxTemplate}  
+///   @copybrief Quantum.BattlePlayerHitboxTemplate
+/// - @cref{Quantum,BattlePlayerDataTemplateQComponent}  
+///   @copybrief Quantum.BattlePlayerDataTemplateQComponent
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattlePlayerDataQComponent
+/// <summary>
+/// Contains player's data, including ids, stats, position, size, hitboxlists, etc.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerData.qtn}
+
+/// @struct Quantum::BattlePlayerHitboxColliderTemplate
+/// <summary>
+/// Template for hitbox's position and size.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerData.qtn}
+
+/// @struct Quantum::BattlePlayerHitboxTemplate
+/// <summary>
+/// Template for creating hitboxes for player entities.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerData.qtn}
+
+/// @struct Quantum::BattlePlayerDataTemplateQComponent
+/// <summary>
+///
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerData.qtn}
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @anchor PlayerID
+/// @name Player's refs and IDs
+/// @{
+/// @var PlayerRef Quantum::BattlePlayerDataQComponent::PlayerRef
+/// <summary>PlayerRef used to identify the player.</summary>
+/// Part of @ref PlayerID "[Player's refs and IDs]"
+///
+/// @var BattlePlayerSlot Quantum::BattlePlayerDataQComponent::Slot
+/// <summary>Which PlayerSlot the player is on.</summary>
+/// Part of @ref PlayerID "[Player's refs and IDs]"
+///
+/// @var BattleTeamNumber Quantum::BattlePlayerDataQComponent::TeamNumber
+/// <summary>Which team the player is on.</summary>
+/// Part of @ref PlayerID "[Player's refs and IDs]"
+///
+/// @var int Quantum::BattlePlayerDataQComponent::CharacterId
+/// <summary>Character's 3-digit ID number.</summary>
+/// Part of @ref PlayerID "[Player's refs and IDs]"
+///
+/// @var int Quantum::BattlePlayerDataQComponent::CharacterClass
+/// <summary>Which defence class the character belongs to.</summary>
+/// Part of @ref PlayerID "[Player's refs and IDs]"
+/// @}
+
+/// @anchor PlayerStats
+/// @name Player's Stats
+/// @{
+/// @var BattlePlayerStats Quantum::BattlePlayerDataQComponent::Stats
+/// <summary>Character's stats.</summary>
+/// Part of @ref PlayerStats "[Player's Stats]"
+/// @}
+
+/// @anchor PlayerMovement
+/// @name Player's movement related attributes
+/// @{
+/// @var int Quantum::BattlePlayerDataQComponent::GridExtendTop
+/// <summary>How many GridCells the character extends above the center heart position.</summary>
+/// Part of @ref PlayerMovement "[Player's movement related attributes]"
+///
+/// @var int Quantum::BattlePlayerDataQComponent::GridExtendBottom
+/// <summary>How many GridCells the character extends below the center heart position.</summary>
+/// Part of @ref PlayerMovement "[Player's movement related attributes]"
+///
+/// @var FPVector2 Quantum::BattlePlayerDataQComponent::HasTargetPosition
+/// <summary>Whether the player has a target position set.</summary>
+/// Part of @ref PlayerMovement "[Player's movement related attributes]"
+///
+/// @var FPVector2 Quantum::BattlePlayerDataQComponent::TargetPosition
+/// <summary>The position the player is moving towards.</summary>
+/// Part of @ref PlayerMovement "[Player's movement related attributes]"
+///
+/// @var FP Quantum::BattlePlayerDataQComponent::RotationBase
+/// <summary>Base rotation value of the character. Depends on which side of the play arena the player is on.</summary>
+/// Part of @ref PlayerMovement "[Player's movement related attributes]"
+///
+/// @var FP Quantum::BattlePlayerDataQComponent::RotationOffset
+/// <summary>How much the player has rotated the character.</summary>
+/// Part of @ref PlayerMovement "[Player's movement related attributes]"
+/// @}
+
+/// @anchor PlayerState
+/// @name Player's current state related data
+/// @{
+/// @var FP Quantum::BattlePlayerDataQComponent::CurrentHp
+/// <summary>Character's current health value.</summary>
+/// Part of @ref PlayerState "[Player's current state related data]"
+///
+/// @var FP Quantum::BattlePlayerDataQComponent::CurrentDefence
+/// <summary>Character's current defence value.</summary>
+/// Part of @ref PlayerState "[Player's current state related data]"
+///
+/// @var FrameTimer Quantum::BattlePlayerDataQComponent::DamageCooldown
+/// <summary>Timer used for the cooldown on the character taking damage.</summary>
+/// Part of @ref PlayerState "[Player's current state related data]"
+/// @}
+
+/// @anchor PlayerHitboxEntities
+/// @name Player's hitboxEntities
+/// @{
+/// @var EntityRef Quantum::BattlePlayerDataQComponent::HitboxShieldEntity
+/// <summary>An entity that contains all the shield hitboxes.</summary>
+/// Part of @ref PlayerHitboxEntities "[Player's hitboxEntities]"
+///
+/// @var EntityRef Quantum::BattlePlayerDataQComponent::HitboxCharacterEntity
+/// <summary>An entity that contains all the character hitboxes.</summary>
+/// Part of @ref PlayerHitboxEntities "[Player's hitboxEntities]"
+/// @}
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @var IntVector2 Quantum::BattlePlayerHitboxColliderTemplate::Position
+/// <summary>Position of the hitbox.</summary>
+///
+/// @var IntVector2 Quantum::BattlePlayerHitboxColliderTemplate::Size
+/// <summary>Size of the hitbox.</summary>
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @var list<BattlePlayerHitboxColliderTemplate> Quantum::BattlePlayerHitboxTemplate::ColliderTemplateList
+/// <summary>List of colliders made using BattlePlayerHitboxColliderTemplate.</summary>
+///
+/// @var BattlePlayerCollisionType Quantum::BattlePlayerHitboxTemplate::CollisionType
+/// <summary>Type of the hitbox, affects how the projectile bounces off of it.</summary>
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @var int Quantum::BattlePlayerDataTemplateQComponent::GridExtendTop
+/// <summary>How many GridCells the character extends above the center heart position.</summary>
+///
+/// @var int Quantum::BattlePlayerDataTemplateQComponent::GridExtendBottom
+/// <summary>How many GridCells the character extends below the center heart position.</summary>
+///
+/// @var BattlePlayerHitboxTemplate Quantum::BattlePlayerDataTemplateQComponent::HitboxShield
+/// <summary>BattlePlayerHitboxTemplate that contains all shield colliders.</summary>
+///
+/// @var BattlePlayerHitboxTemplate Quantum::BattlePlayerDataTemplateQComponent::HitboxCharacter
+/// <summary>BattlePlayerHitboxTemplate that contains all character colliders.</summary>

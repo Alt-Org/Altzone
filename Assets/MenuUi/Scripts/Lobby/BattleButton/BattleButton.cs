@@ -2,9 +2,11 @@ using System.Collections.Generic;
 using MenuUi.Scripts.ReferenceSheets;
 using UnityEngine;
 using UnityEngine.UI;
-using SignalBusPopup = MenuUI.Scripts.SignalBus;
 using MenuUi.Scripts.Signals;
 using MenuUi.Scripts.SwipeNavigation;
+using Altzone.Scripts.Lobby;
+using TMPro;
+using Altzone.Scripts.Window;
 
 namespace MenuUi.Scripts.Lobby.BattleButton
 {
@@ -15,12 +17,17 @@ namespace MenuUi.Scripts.Lobby.BattleButton
     public class BattleButton : MonoBehaviour
     {
         [SerializeField] private Image _gameTypeIcon;
+        [SerializeField] private TMP_Text _gameTypeName;
+        [SerializeField] private TMP_Text _gameTypeDescription;
         [SerializeField] private GameObject _gameTypeSelectionMenu;
         [SerializeField] private GameObject _gameTypeOptionPrefab;
+        [SerializeField] private Button _openBattleUiEditorButton;
         [SerializeField] private GameTypeReference _gameTypeReference;
         [SerializeField] private GameObject _touchBlocker;
 
-        private GameType _selectedGameType;
+        private const string SelectedGameTypeKey = "BattleButtonGameType";
+
+        private GameType _selectedGameType = GameType.Custom;
 
         private List<GameTypeOption> _gameTypeOptionList = new();
         private Button _button;
@@ -37,6 +44,9 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             _button = GetComponent<Button>();
             _button.onClick.AddListener(RequestBattlePopup);
 
+            // Loading selected game type from player prefs Note: Only custom available for now
+            _selectedGameType = GameType.Custom; //(GameType)PlayerPrefs.GetInt(SelectedGameTypeKey, (int)_selectedGameType);
+
             // Instantiate game type option buttons to game type selection menu
             foreach (GameTypeInfo gameTypeInfo in _gameTypeReference.GetGameTypeInfos())
             {
@@ -47,7 +57,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
                 gameTypeOption.transform.localScale = Vector3.one;
                 _gameTypeOptionList.Add(gameTypeOption);
 
-                if (gameTypeInfo.gameType == GameType.Custom)
+                if (gameTypeInfo.gameType == _selectedGameType)
                 {
                     UpdateGameType(gameTypeInfo);
                 }
@@ -59,8 +69,10 @@ namespace MenuUi.Scripts.Lobby.BattleButton
                 gameTypeOption.ButtonComponent.onClick.AddListener(ToggleGameTypeSelection);
                 gameTypeOption.OnGameTypeOptionSelected += UpdateGameType;
             }
-        }
 
+            _openBattleUiEditorButton.transform.SetAsLastSibling();
+            _openBattleUiEditorButton.onClick.AddListener(OnOpenBattleUiEditorButtonPressed);
+        }
 
         private void OnDestroy()
         {
@@ -73,6 +85,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
             _button.onClick.RemoveListener(RequestBattlePopup);
             _swipe.OnCurrentPageChanged -= CloseGameTypeSelection;
+            _openBattleUiEditorButton.onClick.RemoveListener(OnOpenBattleUiEditorButtonPressed);
         }
 
 
@@ -117,14 +130,13 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
         private void UpdateGameType(GameTypeInfo gameTypeInfo)
         {
-            if (gameTypeInfo.gameType != GameType.Custom)
-            {
-                SignalBusPopup.OnChangePopupInfoSignal($"Pelimuotoa {gameTypeInfo.Name} ei voi vielä pelata.");
-                return;
-            }
-
             _gameTypeIcon.sprite = gameTypeInfo.Icon;
+            _gameTypeName.text = gameTypeInfo.Name;
+            _gameTypeDescription.text = gameTypeInfo.Description;
             _selectedGameType = gameTypeInfo.gameType;
+
+            // Saving battle button selected game type to playerprefs
+            PlayerPrefs.SetInt(SelectedGameTypeKey, (int)_selectedGameType); 
 
             // Setting selected visuals for option buttons
             foreach (GameTypeOption gameTypeOption in _gameTypeOptionList) 
@@ -132,6 +144,15 @@ namespace MenuUi.Scripts.Lobby.BattleButton
                 bool selected = gameTypeOption.Info.gameType == _selectedGameType;
                 gameTypeOption.SetSelected(selected);
             }
+
+            // Opening battle popup after selecting a game type
+            SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
+        }
+
+
+        private void OnOpenBattleUiEditorButtonPressed()
+        {
+            DataCarrier.AddData(DataCarrier.BattleUiEditorRequested, true);
         }
     }
 }

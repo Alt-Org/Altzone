@@ -1,7 +1,12 @@
-using MenuUi.Scripts.ReferenceSheets;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+
+using TMPro;
+
+using GameType = Altzone.Scripts.Lobby.GameType;
+
+using MenuUi.Scripts.ReferenceSheets;
+using MenuUi.Scripts.Signals;
 
 namespace MenuUi.Scripts.Lobby.BattleButton
 {
@@ -11,8 +16,10 @@ namespace MenuUi.Scripts.Lobby.BattleButton
     public class GameTypeOption : MonoBehaviour
     {
         [SerializeField] public Button ButtonComponent;
+        [SerializeField] private Button _settingsButton;
         [SerializeField] private Image _gameTypeImage;
         [SerializeField] private TMP_Text _gameTypeText;
+        [SerializeField] private TMP_Text _gameTypeDescription;
         [SerializeField] private Image _backgroundImage;
         [SerializeField] private Color _selectedColor;
         [SerializeField] private Color _unselectedColor;
@@ -27,17 +34,18 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
         private void Awake()
         {
-            ButtonComponent.onClick.AddListener(OnButtonPressed);
+            ButtonComponent.onClick.AddListener(OnButtonComponentPressed);
         }
 
 
         private void OnDestroy()
         {
-            ButtonComponent.onClick.RemoveListener(OnButtonPressed);
+            ButtonComponent.onClick.RemoveListener(OnButtonComponentPressed);
+            _settingsButton.onClick.RemoveAllListeners();
         }
 
 
-        private void OnButtonPressed()
+        private void OnButtonComponentPressed()
         {
             OnGameTypeOptionSelected?.Invoke(_gameTypeInfo);
         }
@@ -51,8 +59,24 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         {
             _gameTypeImage.sprite = info.Icon;
             _gameTypeText.text = info.Name;
+            _gameTypeDescription.text = info.Description;
             _gameTypeInfo = info;
             SetSelected(selected);
+
+            if(info.gameType != GameType.Custom)
+            {
+                ButtonComponent.interactable = false;
+                _settingsButton.gameObject.SetActive(false);
+            }
+            //else
+            //{
+            //    _settingsButton.onClick.RemoveAllListeners();
+            //    _settingsButton.onClick.AddListener(()=>
+            //    {
+            //        SignalBus.OnBattlePopupRequestedSignal(GameType.None);
+            //        SignalBus.OnCustomRoomSettingsRequestedSignal();
+            //    });
+            //}
         }
 
         /// <summary>

@@ -81,7 +81,7 @@ public class HahmonValinta : AltMonoBehaviour
         popupWindow.SetActive(true);
 
         // Update the character name text
-        characterNameText.text = data.characterName;
+        //characterNameText.text = data.characterName;
 
         // Log the selected character's name
         Debug.Log("Selected character: " + data.characterName);
@@ -97,10 +97,12 @@ public class HahmonValinta : AltMonoBehaviour
             bool callFinished = false;
             bool characterAdded = false;
             int i = 0;
-            if (/*ServerManager.Instance.Player.currentAvatarId is null or 0*/true)
+            if (ServerManager.Instance.Player.currentAvatarId is null or 0 || !Enum.IsDefined(typeof(CharacterID), ServerManager.Instance.Player.currentAvatarId))
             {
                 _playerData.SelectedCharacterId = (int)id;
-                _playerData.SelectedCharacterIds = new string[3] { "0", "0", "0" };
+
+                string noCharacter = ((int)CharacterID.None).ToString();
+                _playerData.SelectedCharacterIds = new CustomCharacterListObject[3] { new(Id: CharacterID.None), new(Id: CharacterID.None), new(Id: CharacterID.None) };
 
                 string body = JObject.FromObject(
                     new
@@ -157,7 +159,7 @@ public class HahmonValinta : AltMonoBehaviour
                         if (callback != null)
                         {
                             Debug.Log("CustomCharacter added: " + character);
-                            _playerData.SelectedCharacterIds[i] = callback._id;
+                            _playerData.SelectedCharacterIds[i].SetData(callback._id, (CharacterID)int.Parse(callback.characterId));
                             characterAdded = true;
                         }
                         else
@@ -175,12 +177,20 @@ public class HahmonValinta : AltMonoBehaviour
                     StartCoroutine(ServerManager.Instance.UpdateCustomCharacters(c => callFinished = c));
                 }
                 new WaitUntil(() => callFinished == true);
+
+                string[] serverList = new string[_playerData.SelectedCharacterIds.Length];
+
+                for (i = 0; i < _playerData.SelectedCharacterIds.Length; i++)
+                {
+                    serverList[i] = _playerData.SelectedCharacterIds[i].ServerID;
+                }
+
                 string body = JObject.FromObject(
                     new
                     {
                         _id = _playerData.Id,
                         currentAvatarId = _playerData.SelectedCharacterId,
-                        battleCharacter_ids = _playerData.SelectedCharacterIds
+                        battleCharacter_ids = serverList
 
                     }).ToString();
                 callFinished = false;

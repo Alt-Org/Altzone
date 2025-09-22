@@ -7,6 +7,9 @@ using Debug = UnityEngine.Debug;
 
 using Altzone.Scripts.Config.ScriptableObjects;
 using Altzone.Scripts.AzDebug;
+using Altzone.Scripts.GA;
+using System.Linq;
+using Prg.Scripts.Common;
 
 namespace Altzone.Scripts
 {
@@ -38,6 +41,12 @@ namespace Altzone.Scripts
                 .Append(" Screen ").Append(Screen.currentResolution)
                 .ToString();
             Debug.Log(startupMessage);
+
+            AltzoneBattleLink.Init();
+
+            ClickStateHandler.Init();
+
+            InstantiateGlobalGameObjects();
         }
 
         private void OnApplicationPause(bool pause)
@@ -50,6 +59,15 @@ namespace Altzone.Scripts
             Debug.Log("[ApplicationController] OnApplicationQuit");
 
             LoggingEnd();
+        }
+
+        private static void InstantiateGlobalGameObjects()
+        {
+            //Instantiating object from AltZoneResources/Prefabs/GlobalObjects folder. This folder should only contain global prefabs that are instantiated on startup.
+            foreach(Object prefab in Resources.LoadAll("Prefabs/GlobalPrefabs").ToList())
+            {
+                Instantiate(prefab);
+            }
         }
 
         private static void LoggingSetup()

@@ -2,7 +2,7 @@
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
-using MenuUi.Scripts.Lobby;
+using Altzone.Scripts.Lobby;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using MenuUi.Scripts.Signals;
@@ -17,6 +17,20 @@ namespace MenuUi.Scripts.Signals
         {
             OnBattlePopupRequested?.Invoke(gameType);
         }
+
+        public delegate void CloseBattlePopupRequestedHandler();
+        public static event CloseBattlePopupRequestedHandler OnCloseBattlePopupRequested;
+        public static void OnCloseBattlePopupRequestedSignal()
+        {
+            OnCloseBattlePopupRequested?.Invoke();
+        }
+
+        public delegate void CustomRoomSettingsRequestedHandler();
+        public static event CustomRoomSettingsRequestedHandler OnCustomRoomSettingsRequested;
+        public static void OnCustomRoomSettingsRequestedSignal()
+        {
+            OnCustomRoomSettingsRequested?.Invoke();
+        }
     }
 }
 
@@ -28,21 +42,26 @@ namespace MenuUi.Scripts.Lobby.InLobby
     public class InLobbyController : AltMonoBehaviour
     {
         [SerializeField] private TopInfoPanelController _topInfoPanel;
-        [SerializeField] private SelectedCharactersPopup _selectedCharactersPopup;
         [SerializeField] private GameObject _popupContents;
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
+        [SerializeField] private LobbyRoomListingController _roomListingController;
 
         private string _currentRegion;
+        private Coroutine _creatingRoomCoroutineHolder = null;
+
+        public static GameType SelectedGameType { get; private set; }
 
         private void Awake()
         {
-            SignalBus.OnBattlePopupRequested += TryOpenWindow;
+            SignalBus.OnBattlePopupRequested += OpenWindow;
+            SignalBus.OnCloseBattlePopupRequested += CloseWindow;
         }
 
 
         private void OnDestroy()
         {
-            SignalBus.OnBattlePopupRequested -= TryOpenWindow;
+            SignalBus.OnBattlePopupRequested -= OpenWindow;
+            SignalBus.OnCloseBattlePopupRequested -= CloseWindow;
         }
 
 
@@ -135,50 +154,59 @@ namespace MenuUi.Scripts.Lobby.InLobby
             }
         }*/
 
-        public void TryOpenWindow(GameType gameType)
-        {
-            StartCoroutine(GetPlayerData(playerData =>
-            {
-                // Check if player has all 3 characters selected or no
 
-                if (playerData != null)
-                {
-                    for (int i = 0; i < 3; i++)
-                    {
-                        if (string.IsNullOrEmpty(playerData.SelectedCharacterIds[i]) || playerData.SelectedCharacterIds[i] == "0") // if any of the selected characters is missing
-                        {
-                            StartCoroutine(ShowSelectedCharactersPopup());
-                            return;
-                        }
-                    }
-                }
-                // Open battle popup if all 3 are selected
-                OpenWindow();
-            }));
-        }
-
-
-        private IEnumerator ShowSelectedCharactersPopup()
-        {
-            yield return StartCoroutine(_selectedCharactersPopup.ShowPopup(showBattlePopup =>
-            {
-                if (showBattlePopup == true)
-                {
-                    OpenWindow();
-                }
-            }));
-        }
-
-
-        private void OpenWindow()
+        private void OpenWindow(GameType gameType)
         {
             _popupContents.SetActive(true);
-            _roomSwitcher.ReturnToMain();
+
+            // Checking if we are in room or matchmaking room depending on the game mode which would prevent changing the selected game type
+            switch (gameType)
+            {
+                case GameType.Custom:
+                    if (PhotonRealtimeClient.InRoom)
+                    {
+                        _roomSwitcher.SwitchRoom(GameType.Custom);
+                        return;
+                    }
+                    break;
+                case GameType.Clan2v2:
+                case GameType.Random2v2:
+                    if (PhotonRealtimeClient.InMatchmakingRoom) // If we are in matchmaking we don't want to do anything
+                    {
+                        return;
+                    }
+                    else if (PhotonRealtimeClient.InRoom) // If we are in a normal room
+                    {
+                        // Checking if the game type changed, if it didn't we don't want to do anything but if it did we leave the room
+                        if (gameType == SelectedGameType)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            PhotonRealtimeClient.LeaveRoom();
+                        }
+                    }
+                    break;
+                default:
+                    return;
+            }
+
+            SelectedGameType = gameType;
+
+            // Starting creating room of a selected game type if the coroutine is not already running
+            if (_creatingRoomCoroutineHolder != null) return;
+            _roomSwitcher.ClosePanels();
+            _creatingRoomCoroutineHolder = StartCoroutine(_roomListingController.StartCreatingRoom(gameType, () =>
+            {
+                _creatingRoomCoroutineHolder = null;
+            }));
         }
 
 
         public void CloseWindow()
         {
+            _roomSwitcher.ClosePanels();
             _popupContents.SetActive(false);
         }
 

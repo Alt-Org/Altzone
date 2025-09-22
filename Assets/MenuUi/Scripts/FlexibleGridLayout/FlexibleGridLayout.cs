@@ -84,11 +84,15 @@ public class FlexibleGridLayout : LayoutGroup
 
     [SerializeField, Tooltip("Prevent cells from scaling larger than the boundaries of this grid's parent rect transform. Useful for non-scrollable grids." +
         "\nNote: Overrides minimum and maximum cell size values if cell size is set to Manual.")]
-    bool _preventScalingOutOfParentBounds = false;
+    private bool _preventScalingOutOfParentBounds = false;
+
+    [SerializeField, Tooltip("Set the preferred height/width the grid needs to a layout element which is attached to the same game object.")]
+    private bool _setLayoutElementPreferredSize = false;
 
     private int _rows;
     private int _columns;
     private Vector2 _cellSize;
+    private LayoutElement _layoutElement = null;
 
 
     public override void CalculateLayoutInputHorizontal()
@@ -135,6 +139,13 @@ public class FlexibleGridLayout : LayoutGroup
             return;
         }
 
+        // Getting _layoutElement component if we need to set preferred size to it
+        if (_setLayoutElementPreferredSize && _layoutElement == null) 
+        {
+            _layoutElement = GetComponent<LayoutElement>();
+            if (_layoutElement == null) Debug.LogError("You need a LayoutElement component attached to the same game object as FlexibleGridLayout");
+        }
+
         // Scaling the rectTransform to fit cells
         Vector2 offset = CalculateChildAlignmentOffset();
         rectTransform.pivot = new Vector2(0, 1);
@@ -144,7 +155,17 @@ public class FlexibleGridLayout : LayoutGroup
             rectTransform.anchorMax = Vector2.one;
             rectTransform.anchorMin = new Vector2(0, 1);
 
-            rectTransform.sizeDelta = new Vector2(0, (_rows * _cellSize.y) + (Mathf.Clamp(_rows - 1, 0, float.MaxValue) * _cellSpacing.y) + padding.top + padding.bottom + offset.y);
+            float requiredHeight = (_rows * _cellSize.y) + (Mathf.Clamp(_rows - 1, 0, float.MaxValue) * _cellSpacing.y) + padding.top + padding.bottom + offset.y;
+
+            // Setting the required height either to the layout element or rect transform
+            if (_setLayoutElementPreferredSize && _layoutElement != null)
+            {
+                _layoutElement.preferredHeight = requiredHeight;
+            }
+            else
+            {
+                rectTransform.sizeDelta = new Vector2(0, requiredHeight);
+            }
         }
         else if (_gridFit == FitType.DynamicRows || _gridFit == FitType.FixedRows) // Horizontal
         {
@@ -152,7 +173,17 @@ public class FlexibleGridLayout : LayoutGroup
             rectTransform.anchorMin = Vector2.zero;
             rectTransform.pivot = new Vector2(0, 1);
 
-            rectTransform.sizeDelta = new Vector2((_columns * _cellSize.x) + (Mathf.Clamp(_columns - 1, 0, float.MaxValue) * _cellSpacing.x) + padding.left + padding.right + offset.x, 0);
+            float requiredWidth = (_columns * _cellSize.x) + (Mathf.Clamp(_columns - 1, 0, float.MaxValue) * _cellSpacing.x) + padding.left + padding.right + offset.x;
+
+            // Setting the required height either to the layout element or rect transform
+            if (_setLayoutElementPreferredSize && _layoutElement != null)
+            {
+                _layoutElement.preferredWidth = requiredWidth;
+            }
+            else
+            {
+                rectTransform.sizeDelta = new Vector2(requiredWidth, 0);
+            }
         }
 
         // Placing children
@@ -259,13 +290,27 @@ public class FlexibleGridLayout : LayoutGroup
 
     private int GetColumnsBasedOnRows(int rows)
     {
-        return Mathf.CeilToInt(transform.childCount / (float)rows);
+        return Mathf.CeilToInt(GetActiveChildCount() / (float)rows);
     }
 
 
     private int GetRowsBasedOnColumns(int columns)
     {
-        return Mathf.CeilToInt(transform.childCount / (float)columns);
+        return Mathf.CeilToInt(GetActiveChildCount() / (float)columns);
+    }
+
+
+    private int GetActiveChildCount()
+    {
+        int count = 0;
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            if (transform.GetChild(i).gameObject.activeSelf)
+            {
+                count++;
+            }
+        }
+        return count;
     }
 
 
@@ -584,6 +629,7 @@ public class FlexibleGridLayout : LayoutGroup
         SerializedProperty _cellSpacing;
 
         SerializedProperty _preventScalingOutOfBounds;
+        SerializedProperty _setLayoutElementPreferredSize;
 
         void OnEnable()
         {
@@ -613,6 +659,7 @@ public class FlexibleGridLayout : LayoutGroup
             _cellSpacing = serializedObject.FindProperty(nameof(_cellSpacing));
 
             _preventScalingOutOfBounds = serializedObject.FindProperty(nameof(_preventScalingOutOfParentBounds));
+            _setLayoutElementPreferredSize = serializedObject.FindProperty(nameof(_setLayoutElementPreferredSize));
         }
 
 
@@ -689,6 +736,7 @@ public class FlexibleGridLayout : LayoutGroup
             EditorGUILayout.PropertyField(_childAlignment);
 
             EditorGUILayout.PropertyField(_preventScalingOutOfBounds);
+            EditorGUILayout.PropertyField(_setLayoutElementPreferredSize);
 
             serializedObject.ApplyModifiedProperties();
         }

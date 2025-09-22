@@ -10,21 +10,39 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     /// </summary>
     public class DebugPopUp : AltMonoBehaviour
     {
-        [SerializeField] private StatsWindowController _controller;
+        
         [SerializeField] private GameObject _contents;
         [SerializeField] private Image _touchBlocker;
-        [SerializeField] private Button _addCharacterButton;
+        [SerializeField] private Toggle _unlimitedUpgradeMaterialsToggle;
+        [SerializeField] private Button _addUpgradeMaterialsButton;
+
+        private StatsWindowController _controller;
+
+        private const int UpgradeMaterialsToAdd = 10000;
 
 
-        private void OnEnable()
+        private void Awake()
         {
-            ClosePopUp();
+            _controller = FindObjectOfType<StatsWindowController>(true);
+
+            _unlimitedUpgradeMaterialsToggle.isOn = SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials;
+            _addUpgradeMaterialsButton.interactable = !SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials;
+            
+            _unlimitedUpgradeMaterialsToggle.onValueChanged.AddListener(value =>
+            {
+                SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials = value;
+                _addUpgradeMaterialsButton.interactable = !value;
+                _controller.InvokeOnUpgradeMaterialAmountChanged();
+            });
+
+            _addUpgradeMaterialsButton.onClick.AddListener(AddUpgradeMaterials);
         }
 
 
         private void OnDestroy()
         {
-            _addCharacterButton.onClick.RemoveAllListeners();
+            _unlimitedUpgradeMaterialsToggle.onValueChanged.RemoveAllListeners();
+            _addUpgradeMaterialsButton.onClick.RemoveAllListeners();
         }
 
 
@@ -33,17 +51,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// </summary>
         public void OpenPopUp()
         {
-            if (_controller.IsCurrentCharacterLocked())
-            {
-                _addCharacterButton.gameObject.SetActive(true);
-                _addCharacterButton.onClick.RemoveAllListeners();
-                _addCharacterButton.onClick.AddListener(AddCharacter);
-            }
-            else
-            {
-                _addCharacterButton.gameObject.SetActive(false);
-            }
-
+            // Setting popup active
             _contents.SetActive(true);
             _touchBlocker.enabled = true;
         }
@@ -59,36 +67,12 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         }
 
 
-        private void AddCharacter()
+        private void AddUpgradeMaterials()
         {
-            _addCharacterButton.enabled = false;
-
-            bool success = false;
-            StartCoroutine(ServerManager.Instance.AddCustomCharactersToServer(_controller.CurrentCharacterID, result =>
+            StartCoroutine(GetPlayerData(playerData =>
             {
-                if (result != null)
-                {
-                    success = true;
-                }
-
-                if (success)
-                {
-                    StartCoroutine(ServerManager.Instance.UpdateCustomCharacters(result =>
-                    {
-                        if (result)
-                        {
-                            SignalBus.OnReloadCharacterGalleryRequestedSignal();
-                            _controller.ReloadStatWindow();
-                        }
-                    }
-                    ));
-                }
-                else
-                {
-                    PopupSignalBus.OnChangePopupInfoSignal("Tätä hahmoa ei ole vielä lisätty pelipalvelimelle.");
-                }
-
-                _addCharacterButton.enabled = true;
+                playerData.DiamondSpeed += UpgradeMaterialsToAdd;
+                _controller.InvokeOnUpgradeMaterialAmountChanged();
             }));
         }
     }

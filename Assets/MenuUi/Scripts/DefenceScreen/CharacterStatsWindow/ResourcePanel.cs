@@ -1,40 +1,40 @@
+using Altzone.Scripts.Model.Poco.Player;
 using TMPro;
 using UnityEngine;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
-    public class ResourcePanel : MonoBehaviour
+    public class ResourcePanel : AltMonoBehaviour
     {
-        [SerializeField] private StatsWindowController _controller;
         [SerializeField] private TMP_Text _diamondsAmount;
-        [SerializeField] private TMP_Text _eraserAmount;
 
+        private StatsWindowController _controller;
         private void OnEnable()
         {
+            if (_controller == null) _controller = FindObjectOfType<StatsWindowController>(true);
             SetDiamondsAmount();
-            SetEraserAmount();
 
-            _controller.OnDiamondDecreased += SetDiamondsAmount;
-            _controller.OnEraserDecreased += SetEraserAmount;
+            _controller.OnUpgradeMaterialAmountChanged += SetDiamondsAmount;
         }
-
 
         private void OnDisable()
         {
-            _controller.OnDiamondDecreased -= SetDiamondsAmount;
-            _controller.OnEraserDecreased -= SetEraserAmount;
+            _controller.OnUpgradeMaterialAmountChanged -= SetDiamondsAmount;
         }
 
 
         private void SetDiamondsAmount()
         {
-            _diamondsAmount.text = "rajaton"; // _controller.GetDiamondAmount().ToString();
-        }
+            if (SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials)
+            {
+                _diamondsAmount.text = "rajaton";
+                return;
+            }
 
-
-        private void SetEraserAmount()
-        {
-            _eraserAmount.text = "rajaton"; // _controller.GetEraserAmount().ToString();
+            StartCoroutine(GetPlayerData((playerData) =>
+            {
+                _diamondsAmount.text = playerData.DiamondSpeed.ToString();
+            }));
         }
     }
 }

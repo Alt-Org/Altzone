@@ -63,6 +63,8 @@ TagManager:
   - RightWallFurnitureSlot
   - LeftWallFurnitureSlot
   - AudioManager
+  - SoulHomeAvatar
+  - CeilingFurnitureSlot
   layers:
   - Default
   - TransparentFX
@@ -106,6 +108,12 @@ TagManager:
   - name: BattleGame
     uniqueID: 483117371
     locked: 0
+  - name: BattlePlayer
+    uniqueID: 4108648489
+    locked: 0
   - name: BattleSoulWall
     uniqueID: 2817274691
+    locked: 0
+  - name: BattleOutOfBounds
+    uniqueID: 3507958795
     locked: 0

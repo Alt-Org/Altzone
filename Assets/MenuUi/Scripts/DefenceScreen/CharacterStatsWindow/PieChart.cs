@@ -2,68 +2,75 @@ using System.Collections.Generic;
 using UnityEngine;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine.UI;
+using TMPro;
+using System.Linq;
 
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
     public class PieChartManager : MonoBehaviour
     {
-        [SerializeField] private StatsWindowController _controller;
         [SerializeField] private PiechartReference _referenceSheet;
+        [SerializeField] private TMP_Text _piechartText;
+
+        private const int LineLengthOffset = 5;
+
+        private StatsWindowController _controller;
+
+        private RectTransform _rectTransform;
+        private Vector2 _oldSize;
 
         private int _sliceAmount;
 
         private Color _impactForceColor;
-        private Color _impactForceAltColor;
 
         private Color _healthPointsColor;
-        private Color _healthPointsAltColor;
 
         private Color _defenceColor;
-        private Color _defenceAltColor;
 
         private Color _characterSizeColor;
-        private Color _characterSizeAltColor;
 
         private Color _speedColor;
-        private Color _speedAltColor;
 
         private Color _defaultColor;
-        private Color _defaultAltColor;
 
         private Sprite _circleSprite;
         private Sprite _circlePatternedSprite;
+
+        private List<RectTransform> _sliceLines = new();
+        private float _lineLength = 0f;
 
 
         private void Awake() // caching colors and circle sprite from the reference sheet to avoid unneccessary function calls
         {
             _impactForceColor = _referenceSheet.GetColor(StatType.Attack);
-            _impactForceAltColor = _referenceSheet.GetAlternativeColor(StatType.Attack);
 
             _healthPointsColor = _referenceSheet.GetColor(StatType.Hp);
-            _healthPointsAltColor = _referenceSheet.GetAlternativeColor(StatType.Hp);
 
             _defenceColor = _referenceSheet.GetColor(StatType.Defence);
-            _defenceAltColor = _referenceSheet.GetAlternativeColor(StatType.Defence);
 
             _characterSizeColor = _referenceSheet.GetColor(StatType.CharacterSize);
-            _characterSizeAltColor = _referenceSheet.GetAlternativeColor(StatType.CharacterSize);
 
             _speedColor = _referenceSheet.GetColor(StatType.Speed);
-            _speedAltColor = _referenceSheet.GetAlternativeColor(StatType.Speed);
 
             _defaultColor = _referenceSheet.GetColor(StatType.None);
-            _defaultAltColor = _referenceSheet.GetAlternativeColor(StatType.None);
 
             _circleSprite = _referenceSheet.GetCircleSprite();
             _circlePatternedSprite = _referenceSheet.GetPatternedSprite();
 
             _sliceAmount = CustomCharacter.STATMAXCOMBINED;
+
+            _rectTransform = GetComponent<RectTransform>();
+            _oldSize = _rectTransform.rect.size;
+
+            // Calculating line length for the first time
+            CalculateLineLength();
         }
 
 
         private void OnEnable()
         {
+            if (_controller == null) _controller = FindObjectOfType<StatsWindowController>();
             UpdateChart();
             _controller.OnStatUpdated += UpdateChart;
         }
@@ -77,7 +84,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         public void UpdateChart(StatType statType = StatType.None)
         {
-            // Destroy old pie slices
+            // Destroy old pie slices and lines
+            _sliceLines.Clear();
             for (int i = 0; i < transform.childCount; i++)
             {
                 Destroy(transform.GetChild(i).gameObject);
@@ -97,82 +105,40 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             int characterSizeBase = _controller.GetBaseStat(StatType.CharacterSize);
             int speedBase = _controller.GetBaseStat(StatType.Speed);
 
+            _piechartText.text = $"{impactForce+healthPoints+defence+characterSize+speed}/{_sliceAmount}";
+
             // Arrange stats
-            var stats = new List<(int upgradesLevel, int baseLevel, Color color, Color altColor)>
+            var stats = new List<(int upgradesLevel, int baseLevel, Color color)>
             {
-                (defence - defenceBase, defenceBase, _defenceColor, _defenceAltColor),
-                (characterSize - characterSizeBase, characterSizeBase, _characterSizeColor, _characterSizeAltColor),
-                (speed - speedBase, speedBase, _speedColor, _speedAltColor),
-                (healthPoints - healthPointsBase, healthPointsBase, _healthPointsColor, _healthPointsAltColor),
-                (impactForce - impactForceBase, impactForceBase, _impactForceColor, _impactForceAltColor),
+                (healthPoints - healthPointsBase, healthPointsBase, _healthPointsColor),
+                (speed - speedBase, speedBase, _speedColor),
+                (characterSize - characterSizeBase, characterSizeBase, _characterSizeColor),
+                (impactForce - impactForceBase, impactForceBase, _impactForceColor),
+                (defence - defenceBase, defenceBase, _defenceColor),
             };
 
             // Create slices
-            float sliceFillAmount = 1.0f / (float)_sliceAmount;
+            float oneStatLevelFillAmount = 1.0f / (float)_sliceAmount;
             float currentSliceFill = 1.0f;
-
-            int remainingSlices = _sliceAmount;
 
             // Colored slices
             foreach (var stat in stats)
             {
-                // base stats
-                for (int i = 0; i < stat.baseLevel; i++) 
-                {
-                    if (remainingSlices % 2 == 0)
-                    {
-                        CreateSlice(currentSliceFill, stat.color, true);
-                    }
-                    else
-                    {
-                        CreateSlice(currentSliceFill, stat.altColor, true);
-                    }
+                // Create base slice
+                CreateSlice(currentSliceFill, stat.color, true);
+                currentSliceFill -= oneStatLevelFillAmount * stat.baseLevel;
 
-                    currentSliceFill -= sliceFillAmount;
-
-                    remainingSlices--;
-                    if (remainingSlices == 0) // if runs out of slices return
-                    {
-                        return;
-                    }
-                }
-
-                // upgraded stats
-                for (int i = 0; i < stat.upgradesLevel; i++)
-                {
-                    if (remainingSlices % 2 == 0)
-                    {
-                        CreateSlice(currentSliceFill, stat.color, false);
-                    }
-                    else
-                    {
-                        CreateSlice(currentSliceFill, stat.altColor, false);
-                    }
-
-                    currentSliceFill -= sliceFillAmount;
-
-                    remainingSlices--;
-                    if (remainingSlices == 0) // if runs out of slices return
-                    {
-                        return;
-                    }
-                }
+                // Create upgrade slice
+                if (stat.upgradesLevel == 0) continue;
+                CreateSlice(currentSliceFill, stat.color, false);
+                currentSliceFill -= oneStatLevelFillAmount * stat.upgradesLevel;
             }
 
-            // White slices
-            for (int i = remainingSlices; i > 0; i--)
-            {
-                if (i % 2 == 0)
-                {
-                    CreateSlice(currentSliceFill, _defaultAltColor, true);
-                }
-                else
-                {
-                    CreateSlice(currentSliceFill, _defaultColor, true);
-                }
+            // White slice
+            CreateSlice(currentSliceFill, _defaultColor, true);
 
-                currentSliceFill -= sliceFillAmount;
-            }
+            // Putting first slice line topmost so that it's not under white slice
+            _sliceLines.First().transform.SetAsLastSibling();
         }
 
 
@@ -180,13 +146,11 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             // Create gameobject and add components
             GameObject slice = new GameObject();
-            slice.AddComponent<RectTransform>();
-            slice.AddComponent<Image>();
+            RectTransform sliceRect = slice.AddComponent<RectTransform>();
+            Image sliceImage = slice.AddComponent<Image>();
 
             // Modify image properties
-            Image sliceImage = slice.GetComponent<Image>();
-
-            if (!isBaseSlice)
+            if (isBaseSlice && color != _defaultColor)
             {
                 sliceImage.sprite = _circlePatternedSprite;
             }
@@ -210,11 +174,59 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             slice.transform.localScale = Vector3.one;
 
             // Set anchors
-            RectTransform sliceRect = slice.GetComponent<RectTransform>();
+            slice.GetComponent<RectTransform>();
             sliceRect.offsetMax = Vector2.zero;
             sliceRect.offsetMin = Vector2.zero;
             sliceRect.anchorMin = Vector3.zero;
             sliceRect.anchorMax = Vector3.one;
+
+            // Draw slice line
+            DrawSliceLine(fillAmount, isBaseSlice ? _referenceSheet.StatBorderThickness : _referenceSheet.StatUpgradeBorderThickness);
+        }
+
+
+        private void DrawSliceLine(float fillAmount, float thickness)
+        {
+            // Create gameobject and add components for line
+            GameObject line = new GameObject();
+            RectTransform lineRectTransform = line.AddComponent<RectTransform>();
+            Image lineImage = line.AddComponent<Image>();
+
+            // Configure image component
+            lineImage.color = Color.black;
+            lineImage.raycastTarget = false;
+
+            // Configure rect transform
+            lineRectTransform.pivot = new Vector2(0.5f, 0);
+            lineRectTransform.sizeDelta = new Vector2(thickness, _lineLength);
+            lineRectTransform.rotation = Quaternion.Euler(0, 0, fillAmount * 360);
+
+            // Reparent to this node
+            line.transform.SetParent(transform, false);
+
+            // Saving the slice line to the list
+            _sliceLines.Add(lineRectTransform);
+        }
+
+
+        private void CalculateLineLength()
+        {
+            _lineLength = Mathf.Min(_rectTransform.rect.width, _rectTransform.rect.height) / 2 - LineLengthOffset;
+        }
+
+
+        private void Update() // Resizing lines length if size changed
+        {
+            if (_rectTransform.rect.size == _oldSize) return;
+
+            CalculateLineLength();
+
+            foreach (RectTransform line in  _sliceLines)
+            {
+                line.sizeDelta = new Vector2(line.sizeDelta.x, _lineLength);
+            }
+
+            _oldSize = _rectTransform.rect.size;
         }
     }
 }

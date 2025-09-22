@@ -1,6 +1,12 @@
+using System;
+using System.Linq;
 using MenuUi.Scripts.MainMenu;
+using MenuUi.Scripts.Settings.BattleUiEditor;
+using Altzone.Scripts.Window;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts.Audio;
 
 public class SettingEditor : MonoBehaviour
 {
@@ -11,6 +17,11 @@ public class SettingEditor : MonoBehaviour
     [SerializeField] private Slider[] volumeSliders;
     [SerializeField] private Toggle _introSkipToggle;
     [SerializeField] private Toggle _showButtonLabelsToggle;
+    [SerializeField] private Button _battleSettingsButton;
+    [SerializeField] private BattleUiEditor _battleEditor;
+    [SerializeField] private GameObject[] _settingsPopups;
+    [SerializeField] private Button _topBarStyleButton;
+    [SerializeField] private TextMeshProUGUI _topBarStyleText;
 
     private void OnEnable()
     {
@@ -22,9 +33,35 @@ public class SettingEditor : MonoBehaviour
             SetToSlider(slider);
         }
 
-        SetFPSButtons();
+        //SetFPSButtons();
         SetIntroSkipToggle();
+        
+        
         SetShowButtonLabelsToggle();
+
+        // Opening Battle Ui Editor if DataCarrier has a bool BattleUiEditorRequested and it's true
+        if (DataCarrier.GetData<bool>(DataCarrier.BattleUiEditorRequested, suppressWarning: true))
+        {
+            DataCarrier.AddData(DataCarrier.RequestedWindow, 1);
+            _battleEditor.OpenEditor();
+        }
+
+        foreach(GameObject popup in _settingsPopups)
+        {
+            popup.SetActive(false);
+        }
+    }
+
+    private void Start()
+    {
+        _battleSettingsButton.onClick.AddListener(() => _battleEditor.OpenEditor());
+
+        PlayerPrefs.SetFloat("MasterVolume", 1f);
+
+        _topBarStyleButton.onClick.AddListener(() => ChangeTopbarStyle());
+        _topBarStyleText.text = "Tyyli: " + carrier.TopBarStyleSetting;
+
+        _introSkipToggle.onValueChanged.AddListener(_ => SetIntroSkip());
     }
 
     public void SetFromSlider(Slider usedSlider)
@@ -35,10 +72,13 @@ public class SettingEditor : MonoBehaviour
             case "MasterVolume": carrier.masterVolume = RoundToTwoDecimals(usedSlider.value); PlayerPrefs.SetFloat("MasterVolume", carrier.masterVolume); break;
             case "MenuSFXVolume": carrier.menuVolume = RoundToTwoDecimals(usedSlider.value); PlayerPrefs.SetFloat("MenuVolume", carrier.menuVolume); break;
             case "MusicVolume": carrier.musicVolume = RoundToTwoDecimals(usedSlider.value); PlayerPrefs.SetFloat("MusicVolume", carrier.musicVolume); break;
-            case "GameSFXVolume": carrier.soundVolume = RoundToTwoDecimals(usedSlider.value); PlayerPrefs.SetFloat("SoundVolume", carrier.soundVolume); break;
+            case "GameSFXVolume":
+                carrier.soundVolume = RoundToTwoDecimals(usedSlider.value); PlayerPrefs.SetFloat("SoundVolume", carrier.soundVolume);
+                carrier.menuVolume = RoundToTwoDecimals(usedSlider.value); PlayerPrefs.SetFloat("MenuVolume", carrier.menuVolume);
+                break;
         }
 
-        mainMenuController.SetAudioVolumeLevels();
+        AudioManager.Instance.UpdateMaxVolume();
     }
 
     public void SetToSlider(Slider usedSlider)
@@ -55,7 +95,7 @@ public class SettingEditor : MonoBehaviour
 
     public void SetFPSButtons()
     {
-        if (Application.targetFrameRate == Screen.currentResolution.refreshRate)
+        if (Application.targetFrameRate == (int)Screen.currentResolution.refreshRateRatio.value)
             fpsButtons[0].isOn = true;
         else if (Application.targetFrameRate == 60)
             fpsButtons[1].isOn = true;
@@ -71,13 +111,13 @@ public class SettingEditor : MonoBehaviour
 
     public void SetIntroSkipToggle()
     {
-        _introSkipToggle.isOn = (PlayerPrefs.GetInt("skipIntroVideo", 0) != 0);
+        _introSkipToggle.isOn = (PlayerPrefs.GetInt("SkipIntroVideo", 0) != 0);
     }
 
     public void SetIntroSkip()
     {
-        if(_introSkipToggle.isOn) PlayerPrefs.SetInt("skipIntroVideo", 1);
-        else PlayerPrefs.SetInt("skipIntroVideo", 0);
+        if(_introSkipToggle.isOn) PlayerPrefs.SetInt("SkipIntroVideo", 1);
+        else PlayerPrefs.SetInt("SkipIntroVideo", 0);
     }
 
     public void SetShowButtonLabelsToggle()
@@ -90,4 +130,18 @@ public class SettingEditor : MonoBehaviour
         PlayerPrefs.SetInt("showButtonLabels", _showButtonLabelsToggle.isOn ? 1 : 0);
         carrier.ShowButtonLabels = _showButtonLabelsToggle.isOn;
     }
+
+    public void ChangeTopbarStyle()
+    {
+        if (carrier.TopBarStyleSetting == ((SettingsCarrier.TopBarStyle[])Enum.GetValues(typeof(SettingsCarrier.TopBarStyle))).ToList().Last())
+        {
+            carrier.TopBarStyleSetting = 0;
+        }
+        else carrier.TopBarStyleSetting++;
+
+        _topBarStyleText.text = "Tyyli: " + carrier.TopBarStyleSetting;
+
+    }
+
+    public void PlayMainMenuMusic() { AudioManager.Instance.PlayMusic("MainMenu"); }
 }

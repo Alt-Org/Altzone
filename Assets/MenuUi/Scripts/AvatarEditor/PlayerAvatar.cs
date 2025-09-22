@@ -7,52 +7,42 @@ namespace MenuUi.Scripts.AvatarEditor
     public class PlayerAvatar
     {
         private string _characterName;
-        private List<FeatureID> _features;
-        private List<string> _colors;
+        private List<string> _features;
+        private string _color;
         private Vector2 _scale;
 
-        public PlayerAvatar(List<FeatureID> featureIds)
+        public PlayerAvatar(AvatarDefaultReference.AvatarDefaultPartInfo featureIds)
         {
+            _features = new List<string>();
+            _features.Add(!string.IsNullOrWhiteSpace(featureIds.HairId) ? featureIds.HairId : "0");
+            _features.Add(!string.IsNullOrWhiteSpace(featureIds.EyesId) ? featureIds.EyesId : "0");
+            _features.Add(!string.IsNullOrWhiteSpace(featureIds.NoseId) ? featureIds.NoseId : "0");
+            _features.Add(!string.IsNullOrWhiteSpace(featureIds.MouthId) ? featureIds.MouthId : "0");
+            _features.Add(!string.IsNullOrWhiteSpace(featureIds.BodyId) ? featureIds.BodyId : "0");
+            _features.Add(!string.IsNullOrWhiteSpace(featureIds.HandsId) ? featureIds.HandsId : "0");
+            _features.Add(!string.IsNullOrWhiteSpace(featureIds.FeetId) ? featureIds.FeetId : "0");
+
             _characterName = "";
-            _features = featureIds;
-            _colors = new List<string>();
+            _color = new string("#ffffff");
             _scale = Vector2.one;
         }
 
-        public PlayerAvatar(string name, List<FeatureID> features, List<string> colors, Vector2 scale)
+        public PlayerAvatar(string name, List<string> featuresIds, string color, Vector2 scale)
         {
             _characterName = name;
-            _features = features;
-            _colors = colors;
+            _features = featuresIds;
+            _color = color;
             _scale = scale;
         }
 
         public PlayerAvatar(AvatarData data)
         {
-            _characterName = data.Name;
-            _features = ToFeaturesListEnum(data.Features);
-            _colors = data.Colors;
-            _scale = data.Scale;
-        }
-
-        private List<FeatureID> ToFeaturesListEnum(List<int> indexes)
-        {
-            List<FeatureID> tempList = new List<FeatureID>();
-
-            foreach (var index in indexes)
-                tempList.Add((FeatureID)index);
-
-            return (tempList);
-        }
-
-        public List<int> ToFeaturesListInt(List<FeatureID> featureIds)
-        {
-            List<int> tempList = new List<int>();
-
-            foreach (var featureId in featureIds)
-                tempList.Add((int)featureId);
-
-            return (tempList);
+            //Debug.LogError(data == null);
+            //Debug.LogError(data.Name == null);
+            _characterName = (string)data.Name.Clone();
+            _features = new(data.FeatureIds);
+            _color = new(data.Color);
+            _scale = new(data.ScaleX, data.ScaleY);
         }
 
         public string Name
@@ -60,13 +50,13 @@ namespace MenuUi.Scripts.AvatarEditor
             get => _characterName;
             set => _characterName = value;
         }
-        public List<FeatureID> Features{
+        public List<string> FeatureIds{
             get => _features;
             set => _features = value;
         }
-        public List<string> Colors{
-            get => _colors;
-            set => _colors = value;
+        public string Color{
+            get => _color;
+            set => _color = value;
         }
         public Vector2 Scale{
             get => _scale;

@@ -1,0 +1,33 @@
+flags BattleProjectileCollisionFlags : Byte
+{
+    Projectile,
+    SoulWall,
+    Player
+}
+
+component BattleProjectileQComponent
+{
+    // state
+    bool IsLaunched;
+    bool IsHeld;
+    BattleEmotionState EmotionBase;
+    BattleEmotionState EmotionCurrent;
+    array<BattleProjectileCollisionFlags>[2] CollisionFlags;
+
+    // variables
+    FP Speed;
+    FPVector2 Direction;
+    FP Attack;
+
+    // settings
+    FP Radius;
+    FP SpeedBase;
+    FP SpeedIncrement;
+    FP SpeedMax;
+    FP AttackMax;
+
+    //array<FP>[BATTLE_EMOTION_STATE_COUNT] SpeedMultiplierArray;
+    //FP SpeedPotential;
+    //FP AccelerationTimer;
+    //FP AccelerationTimerDuration;
+}

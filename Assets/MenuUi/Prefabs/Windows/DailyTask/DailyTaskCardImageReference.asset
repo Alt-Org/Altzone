@@ -1,0 +1,231 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37752d5723f57784c9fd2d0b0cb574d1, type: 3}
+  m_Name: DailyTaskCardImageReference
+  m_EditorClassIdentifier: 
+  _normalTaskCardImages:
+  - Name: Test
+    Type: 1
+    Image: {fileID: 21300000, guid: 8d5109020d87ca44fbee8b86ae34a536, type: 3}
+  - Name: Play Battle
+    Type: 2
+    Image: {fileID: 21300000, guid: 74936fbe9ef5db447bb9f37883e76fd6, type: 3}
+  - Name: Win Battle
+    Type: 3
+    Image: {fileID: 21300000, guid: 74936fbe9ef5db447bb9f37883e76fd6, type: 3}
+  - Name: Write Chat Message
+    Type: 4
+    Image: {fileID: 21300000, guid: 96e7a0b2d9dc7bf49b3e69cf56fade1a, type: 3}
+  - Name: Start Battle Different Character
+    Type: 5
+    Image: {fileID: 21300000, guid: 74936fbe9ef5db447bb9f37883e76fd6, type: 3}
+  - Name: Vote
+    Type: 6
+    Image: {fileID: 21300000, guid: 96e7a0b2d9dc7bf49b3e69cf56fade1a, type: 3}
+  _educationTaskCardImages:
+  - Name: Social
+    BaseType: 1
+    SubCategories:
+    - Name: Emote During Battle
+      SocialType: 0
+      StoryType: 0
+      CultureType: 0
+      EthicalType: 0
+      ActionType: 0
+      Image: {fileID: 21300000, guid: d08bb926975fe914db0bce7a11f2da00, type: 3}
+    - Name: Add New Friend
+      SocialType: 1
+      StoryType: 0
+      CultureType: 0
+      EthicalType: 0
+      ActionType: 0
+      Image: {fileID: 21300000, guid: df5ef5dc8cd69354d977b2d0f6162940, type: 3}
+    - Name: Create New Vote
+      SocialType: 2
+      StoryType: 0
+      CultureType: 0
+      EthicalType: 0
+      ActionType: 0
+      Image: {fileID: 21300000, guid: 96e7a0b2d9dc7bf49b3e69cf56fade1a, type: 3}
+    - Name: Edit Character Avatar
+      SocialType: 3
+      StoryType: 0
+      CultureType: 0
+      EthicalType: 0
+      ActionType: 0
+      Image: {fileID: 21300000, guid: df5ef5dc8cd69354d977b2d0f6162940, type: 3}
+    - Name: Share Battle Replay
+      SocialType: 4
+      StoryType: 0
+      CultureType: 0
+      EthicalType: 0
+      ActionType: 0
+      Image: {fileID: 21300000, guid: e8f6a951a8437e249894b36c389e3aa9, type: 3}
+    - Name: Write Chat Message Clan
+      SocialType: 5
+      StoryType: 0
+      CultureType: 0
+      EthicalType: 0
+      ActionType: 0
+      Image: {fileID: 21300000, guid: 96e7a0b2d9dc7bf49b3e69cf56fade1a, type: 3}
+  - Name: Story
+    BaseType: 2
+    SubCategories:
+    - Name: Find Symbolical Graphics
+      SocialType: 0
+      StoryType: 0
+      CultureType: 0
+      EthicalType: 0
+      ActionType: 0
+      Image: {fileID: 21300000, guid: 69392f4c077b85f4cbb55b8884f3b444, type: 3}
+    - Name: Continue Clan Story
+      SocialType: 0
+      StoryType: 1
+      CultureType: 0
+      EthicalType: 0
+      ActionType: 0
+      Image: {fileID: 21300000, guid: d3f59933c3879b14e8c73096e47678bc, type: 3}
+    - Name: Find Symbolical Furniture
+      SocialType: 0
+      StoryType: 2
+      CultureType: 0
+      EthicalType: 0
+      ActionType: 0
+      Image: {fileID: 21300000, guid: 69392f4c077b85f4cbb55b8884f3b444, type: 3}
+    - Name: Click Character Description
+      SocialType: 0
+      StoryType: 3
+      CultureType: 0
+      EthicalType: 0
+      ActionType: 0
+      Image: {fileID: 21300000, guid: df5ef5dc8cd69354d977b2d0f6162940, type: 3}
+    - Name: Recognize Sound Clue
+      SocialType: 0
+      StoryType: 4
+      CultureType: 0
+      EthicalType: 0
+      ActionType: 0
+      Image: {fileID: 21300000, guid: 926bdc27352283d41957f202a1cee257, type: 3}
+  - Name: Culture
+    BaseType: 3
+    SubCategories:
+    - Name: Click Known Art Idea Person
+      SocialType: 0
+      StoryType: 0
+      CultureType: 0
+      EthicalType: 0
+      ActionType: 0
+      Image: {fileID: 21300000, guid: 69392f4c077b85f4cbb55b8884f3b444, type: 3}
+    - Name: Games Genre Types
+      SocialType: 0
+      StoryType: 0
+      CultureType: 1
+      EthicalType: 0
+      ActionType: 0
+      Image: {fileID: 21300000, guid: e8f6a951a8437e249894b36c389e3aa9, type: 3}
+    - Name: Click Known Character
+      SocialType: 0
+      StoryType: 0
+      CultureType: 2
+      EthicalType: 0
+      ActionType: 0
+      Image: {fileID: 21300000, guid: 69392f4c077b85f4cbb55b8884f3b444, type: 3}
+    - Name: Similiar To A Game
+      SocialType: 0
+      StoryType: 0
+      CultureType: 3
+      EthicalType: 0
+      ActionType: 0
+      Image: {fileID: 21300000, guid: e8f6a951a8437e249894b36c389e3aa9, type: 3}
+    - Name: Set Profile Player Type
+      SocialType: 0
+      StoryType: 0
+      CultureType: 4
+      EthicalType: 0
+      ActionType: 0
+      Image: {fileID: 21300000, guid: df5ef5dc8cd69354d977b2d0f6162940, type: 3}
+  - Name: Ethical
+    BaseType: 4
+    SubCategories:
+    - Name: Click Buyable
+      SocialType: 0
+      StoryType: 0
+      CultureType: 0
+      EthicalType: 0
+      ActionType: 0
+      Image: {fileID: 21300000, guid: 69392f4c077b85f4cbb55b8884f3b444, type: 3}
+    - Name: Use Only Positive Emotes
+      SocialType: 0
+      StoryType: 0
+      CultureType: 0
+      EthicalType: 1
+      ActionType: 0
+      Image: {fileID: 21300000, guid: d08bb926975fe914db0bce7a11f2da00, type: 3}
+    - Name: Use Only Negative Emotes
+      SocialType: 0
+      StoryType: 0
+      CultureType: 0
+      EthicalType: 2
+      ActionType: 0
+      Image: {fileID: 21300000, guid: d08bb926975fe914db0bce7a11f2da00, type: 3}
+    - Name: Click Questionable
+      SocialType: 0
+      StoryType: 0
+      CultureType: 0
+      EthicalType: 3
+      ActionType: 0
+      Image: {fileID: 21300000, guid: 69392f4c077b85f4cbb55b8884f3b444, type: 3}
+    - Name: Click Ethical
+      SocialType: 0
+      StoryType: 0
+      CultureType: 0
+      EthicalType: 4
+      ActionType: 0
+      Image: {fileID: 21300000, guid: 69392f4c077b85f4cbb55b8884f3b444, type: 3}
+  - Name: Action
+    BaseType: 5
+    SubCategories:
+    - Name: Play Battle
+      SocialType: 0
+      StoryType: 0
+      CultureType: 0
+      EthicalType: 0
+      ActionType: 0
+      Image: {fileID: 21300000, guid: 74936fbe9ef5db447bb9f37883e76fd6, type: 3}
+    - Name: Win Battle
+      SocialType: 0
+      StoryType: 0
+      CultureType: 0
+      EthicalType: 0
+      ActionType: 1
+      Image: {fileID: 21300000, guid: 74936fbe9ef5db447bb9f37883e76fd6, type: 3}
+    - Name: Edit Charater Stats
+      SocialType: 0
+      StoryType: 0
+      CultureType: 0
+      EthicalType: 0
+      ActionType: 2
+      Image: {fileID: 21300000, guid: df5ef5dc8cd69354d977b2d0f6162940, type: 3}
+    - Name: Blow Up Your Character
+      SocialType: 0
+      StoryType: 0
+      CultureType: 0
+      EthicalType: 0
+      ActionType: 3
+      Image: {fileID: 21300000, guid: 74936fbe9ef5db447bb9f37883e76fd6, type: 3}
+    - Name: Switch Soulhome Music
+      SocialType: 0
+      StoryType: 0
+      CultureType: 0
+      EthicalType: 0
+      ActionType: 4
+      Image: {fileID: 21300000, guid: 926bdc27352283d41957f202a1cee257, type: 3}

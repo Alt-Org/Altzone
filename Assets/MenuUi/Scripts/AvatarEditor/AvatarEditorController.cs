@@ -1,6 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Altzone.Scripts.Model.Poco.Player;
+using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +14,8 @@ namespace MenuUi.Scripts.AvatarEditor
         private PlayerData _currentPlayerData;
 
         [SerializeField] private float _timeoutSeconds = 10f;
+
+        [SerializeField] private AvatarDefaultReference _avatarDefaultReference;
 
         private enum AvatarEditorMode
         {
@@ -23,13 +28,17 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private CharacterLoader _characterLoader;
         [SerializeField] private List<GameObject> _modeList;
         [SerializeField] private List<Button> _switchModeButtons;
+        [Space]
         [SerializeField] private Button _saveButton;
+        [SerializeField] private Button _defaultButton;
+        [SerializeField] private Button _revertButton;
+        [Space]
         [SerializeField] private AvatarEditorMode _defaultMode = AvatarEditorMode.FeaturePicker;
         [SerializeField] private AvatarVisualDataScriptableObject _visualDataScriptableObject;
         [SerializeField] private GameObject _avatarVisualsParent;
+        [SerializeField] private GameObject _featureButtonsBase;
         private FeatureSlot _currentlySelectedCategory;
         
-        //private Vector2 _selectedScale;
         private PlayerAvatar _playerAvatar;
         private FeaturePicker _featurePicker;
         private ColorPicker _colorPicker;
@@ -45,6 +54,8 @@ namespace MenuUi.Scripts.AvatarEditor
         void Start()
         {
             _saveButton.onClick.AddListener(() => StartCoroutine(SaveAvatarData()));
+            _defaultButton.onClick.AddListener(() => SetDefaultAvatar());
+            _revertButton.onClick.AddListener(() => RevertAvatarChanges());
             _switchModeButtons[0].onClick.AddListener(delegate{GoIntoMode(AvatarEditorMode.FeaturePicker);});
             _switchModeButtons[1].onClick.AddListener(delegate{GoIntoMode(AvatarEditorMode.ColorPicker);});
             _switchModeButtons[2].onClick.AddListener(delegate{GoIntoMode(AvatarEditorMode.AvatarScaler);});
@@ -52,11 +63,12 @@ namespace MenuUi.Scripts.AvatarEditor
 
         void OnEnable()
         {
-            _characterLoader.RefreshPlayerCurrentCharacter(CharacterLoaded);
-            foreach(GameObject mode in _modeList){
-                mode.SetActive(false);
-            }
+            _characterLoader.RefreshPlayerCurrentCharacter();
+            _modeList[1].SetActive(false);
+            _modeList[1].SetActive(false);
+            _modeList[2].SetActive(false);
             _currentMode = _defaultMode;
+            CharacterLoaded();
         }
 
         private void CharacterLoaded()
@@ -72,26 +84,26 @@ namespace MenuUi.Scripts.AvatarEditor
             SetSaveableData();
             _modeList[(int)_currentMode].SetActive(false);
             _currentMode = mode;
-            
-            if(_currentMode == AvatarEditorMode.FeaturePicker){
-                _featurePicker.RestoreDefaultColorToFeature(RestoreDefaultColorToFeature);
+
+            if (mode == AvatarEditorMode.AvatarScaler)
+                _featureButtonsBase.SetActive(false);
+            else
+                _featureButtonsBase.SetActive(true);
+
+            if (_currentMode == AvatarEditorMode.FeaturePicker)
                 _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
-                
-            }
-            if (_currentMode == AvatarEditorMode.ColorPicker){
+
+            if (_currentMode == AvatarEditorMode.ColorPicker)
+            {
                 _colorPicker.SelectFeature(_currentlySelectedCategory);
-                _colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
+                //_colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
             }
             
             _modeList[(int)_currentMode].SetActive(true);
         }
 
-        private void RestoreDefaultColorToFeature()
-        {
-            _colorPicker.RestoreDefaultColor(_featurePicker.GetCurrentlySelectedCategory());
-        }
-
         #endregion
+
         #region Loading Data
 
         private IEnumerator LoadAvatarData()
@@ -99,7 +111,6 @@ namespace MenuUi.Scripts.AvatarEditor
             bool? timeout = null;
             PlayerData playerData = null;
 
-            // _nameInput.text = _playerAvatar.Name;
             StartCoroutine(PlayerDataTransferer("get", null, _timeoutSeconds, data => timeout = data, data => playerData = data));
 
             yield return new WaitUntil(() => ((timeout != null) || (playerData != null)));
@@ -109,19 +120,42 @@ namespace MenuUi.Scripts.AvatarEditor
 
             _currentPlayerData = playerData;
 
-            if (_currentPlayerData.AvatarData == null)
+            SetAllAvatarFeatures();
+        }
+
+        private void SetDefaultAvatar()
+        {
+            _playerAvatar = new(_avatarDefaultReference.GetByCharacterId(_currentPlayerData.SelectedCharacterId)[0]);
+
+            _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
+            _featurePicker.SetLoadedFeatures(_playerAvatar.FeatureIds);
+
+            //_colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
+            _colorPicker.SetLoadedColors(_playerAvatar.Color, _playerAvatar.FeatureIds);
+
+            _avatarScaler.SetLoadedScale(_playerAvatar.Scale);
+        }
+
+        private void RevertAvatarChanges()
+        {
+            SetAllAvatarFeatures();
+        }
+
+        private void SetAllAvatarFeatures()
+        {
+            if (_currentPlayerData.AvatarData == null || !_currentPlayerData.AvatarData.Validate())
             {
-                Debug.Log("AvatarData is null. Using default data.");
-                _playerAvatar = new(new List<FeatureID>() { 0,0,0,0,0,0,0,0,0 } );
+                Debug.LogError("AvatarData is null! Using default data.");
+                _playerAvatar = new(_avatarDefaultReference.GetByCharacterId(_currentPlayerData.SelectedCharacterId)[0]);
             }
             else
                 _playerAvatar = new(_currentPlayerData.AvatarData);
 
             _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
-            _featurePicker.SetLoadedFeatures(_playerAvatar.Features);
+            _featurePicker.SetLoadedFeatures(_playerAvatar.FeatureIds);
 
-            _colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
-            _colorPicker.SetLoadedColors(_playerAvatar.Colors, _playerAvatar.Features);
+            //_colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
+            _colorPicker.SetLoadedColors(_playerAvatar.Color, _playerAvatar.FeatureIds);
 
             _avatarScaler.SetLoadedScale(_playerAvatar.Scale);
         }
@@ -133,8 +167,6 @@ namespace MenuUi.Scripts.AvatarEditor
         private void SetSaveableData()
         {
             _currentlySelectedCategory = _featurePicker.GetCurrentlySelectedCategory();
-            //_playerAvatar.
-            //_selectedScale = _avatarScaler.GetCurrentScale();
         }
 
         private IEnumerator SaveAvatarData()
@@ -144,11 +176,13 @@ namespace MenuUi.Scripts.AvatarEditor
             PlayerData savePlayerData = _currentPlayerData;
 
             savePlayerData.AvatarData = new(_playerAvatar.Name,
-                _playerAvatar.ToFeaturesListInt(_featurePicker.GetCurrentlySelectedFeatures()),
+                _featurePicker.GetCurrentlySelectedFeatures(),
                 _colorPicker.GetCurrentColors(),
                 _avatarScaler.GetCurrentScale());
 
-            StartCoroutine(PlayerDataTransferer("save", savePlayerData, _timeoutSeconds, data => timeout = data, data => playerData = data));
+            //StartCoroutine(PlayerDataTransferer("save", savePlayerData, _timeoutSeconds, data => timeout = data, data => playerData = data));
+
+            StartCoroutine(SavePlayerData(savePlayerData, p => playerData = p));
 
             yield return new WaitUntil(() => ((timeout != null) || (playerData != null)));
 
@@ -156,6 +190,15 @@ namespace MenuUi.Scripts.AvatarEditor
                 yield break;
 
             _currentPlayerData = playerData;
+
+            List<AvatarPiece> pieceIDs = Enum.GetValues(typeof(AvatarPiece)).Cast<AvatarPiece>().ToList();
+            foreach(AvatarPiece piece in pieceIDs)
+            {
+                _visualDataScriptableObject.SetAvatarPiece(piece, _featurePicker.GetCurrentlySelectedFeatureSprite(piece));
+            }
+            _visualDataScriptableObject.color = _colorPicker.GetCurrentColorsAsColors();
+
+            AvatarDesignLoader.Instance.InvokeOnAvatarDesignUpdate();
         }
 
         #endregion

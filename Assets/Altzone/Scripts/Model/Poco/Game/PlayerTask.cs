@@ -427,30 +427,30 @@ namespace Altzone.Scripts.Model.Poco.Game
             }
         }
 
-        #region Delegates, Events & Invoke Functions
+        //#region Delegates, Events & Invoke Functions
 
-        public delegate void TaskSelected();
-        public event TaskSelected OnTaskSelected;
-        public void InvokeOnTaskSelected()
-        {
-            OnTaskSelected.Invoke();
-        }
+        //public delegate void TaskSelected();
+        //public event TaskSelected OnTaskSelected;
+        //public void InvokeOnTaskSelected()
+        //{
+        //    OnTaskSelected.Invoke();
+        //}
 
-        public delegate void TaskDeselected();
-        public event TaskDeselected OnTaskDeselected;
-        public void InvokeOnTaskDeselected()
-        {
-            OnTaskDeselected.Invoke();
-        }
+        //public delegate void TaskDeselected();
+        //public event TaskDeselected OnTaskDeselected;
+        //public void InvokeOnTaskDeselected()
+        //{
+        //    OnTaskDeselected.Invoke();
+        //}
 
-        public delegate void TaskUpdated();
-        public event TaskUpdated OnTaskUpdated;
-        public void InvokeOnTaskUpdated()
-        {
-            OnTaskUpdated.Invoke();
-        }
+        //public delegate void TaskUpdated();
+        //public event TaskUpdated OnTaskUpdated;
+        //public void InvokeOnTaskUpdated()
+        //{
+        //    OnTaskUpdated.Invoke();
+        //}
 
-        #endregion
+        //#endregion
 
         #region Add & clear from outside.
 

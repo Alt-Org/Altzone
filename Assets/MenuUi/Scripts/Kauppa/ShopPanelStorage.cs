@@ -14,10 +14,13 @@ public abstract class ShopPanelStorage : MonoBehaviour
     // (put it to storage)
     // Assign it to objects
     public Action<ReadOnlyCollection<GameFurniture>> getFurnitureAction;
-    protected void Start()
+    protected virtual void Start()
     {
         getFurnitureAction += HandleGameFurnitureCreation;
         Storefront.Get().GetAllGameFurnitureYield(getFurnitureAction);
     }
-    protected abstract void HandleGameFurnitureCreation(ReadOnlyCollection<GameFurniture> gameFurnitures);
+    protected virtual void HandleGameFurnitureCreation(ReadOnlyCollection<GameFurniture> gameFurnitures)
+    {
+
+    }
 }

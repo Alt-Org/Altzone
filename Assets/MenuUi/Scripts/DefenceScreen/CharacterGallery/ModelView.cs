@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿/*
+using System.Collections.Generic;
 using Altzone.Scripts;
 using System.Collections.ObjectModel;
 using Altzone.Scripts.Model.Poco.Game;
@@ -8,19 +9,40 @@ using Altzone.Scripts.ReferenceSheets;
 using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine.UI;
 using MenuUi.Scripts.Signals;
+using TMPro;
+using System;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
+    
     public class ModelView : MonoBehaviour
     {
+        enum FilterType
+        {
+            All = 0,
+            Unlocked = 1,
+            Locked = 2,
+            Desensitizer = 100,
+            Trickster = 200,
+            Obedient = 300,
+            Projector = 400,
+            Retroflector = 500,
+            Confluent = 600,
+            Intellectualizer = 700,
+        }
+
         [SerializeField] private Transform _characterGridContent;
         [SerializeField] private Toggle _editModeToggle;
+        [SerializeField] private Button _filterButton;
+        [SerializeField] private TMP_Text _filterText;
+        [SerializeField] private BaseScrollRect _scrollRect;
 
         [SerializeField] private GameObject _characterSlotPrefab;
 
         [SerializeField] private ClassColorReference _classColorReference;
 
         private bool _isReady;
+        private FilterType _currentFilter = FilterType.All;
 
         // Array of character slots in selected grid
         [SerializeField] private SelectedCharacterSlot[] _selectedCharacterSlots;
@@ -53,6 +75,8 @@ namespace MenuUi.Scripts.CharacterGallery
             }
 
             SignalBus.OnDefenceGalleryEditModeRequested += ChangeEditToggleStatusToTrue;
+            _filterButton.onClick.AddListener(RotateFilters);
+            SetFilterText(_currentFilter);
         }
 
 
@@ -138,58 +162,77 @@ namespace MenuUi.Scripts.CharacterGallery
         /// <param name="selectedCharacterIds">Array of selected character ids which will be placed to the top slot.</param>
         public void SetCharacters(List<CustomCharacter> customCharacters, int[] selectedCharacterIds)
         {
-            DataStore store = Storefront.Get();
-
-            ReadOnlyCollection<BaseCharacter> allItems = null;
-            store.GetAllBaseCharacterYield(result => allItems = result);
-
-            foreach (BaseCharacter baseCharacter in allItems)
+            // Placing unlocked characters
+            foreach (CustomCharacter character in customCharacters)
             {
-                PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(((int)baseCharacter.Id).ToString());
-                if (info == null) continue;
-
-                GameObject slot = Instantiate(_characterSlotPrefab, _characterGridContent);
-
-                CharacterClassID classID = CustomCharacter.GetClassID(baseCharacter.Id);
-                Color bgColor = _classColorReference.GetColor(classID);
-                Color bgAltColor = _classColorReference.GetAlternativeColor(classID);
-
-                CharacterSlot charSlot = slot.GetComponent<CharacterSlot>();
-                charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, baseCharacter.Id);
-
-                _characterSlots.Add(charSlot);
-                charSlot.OnCharacterSelected += HandleCharacterSelected;
+                var charSlot = InstantiateCharacterSlot(character.Id, false);
 
                 for (int i = 0; i < _selectedCharacterSlots.Length; i++)
                 {
-                    if (baseCharacter.Id == (CharacterID)selectedCharacterIds[i])
+                    if (charSlot == null) break;
+
+                    if (character.Id == (CharacterID)selectedCharacterIds[i]) // Check if character is selected
                     {
                         charSlot.Character.transform.SetParent(_selectedCharacterSlots[i].transform, false);
                         charSlot.Character.SetSelectedVisuals();
                     }
                 }
+            }
 
-                bool characterOwned = false;
-                foreach (CustomCharacter customCharacter in customCharacters)
+            // Placing locked characters
+            DataStore store = Storefront.Get();
+            ReadOnlyCollection<BaseCharacter> allItems = null;
+            store.GetAllBaseCharacterYield(result => allItems = result);
+
+            foreach (BaseCharacter baseCharacter in allItems)
+            {
+                // Checking if player has already unlocked the character and if so, skipping the character
+                bool characterUnlocked = false;
+                foreach (CharacterSlot slot in _characterSlots)
                 {
-                    if (customCharacter.Id == baseCharacter.Id)
+                    if (slot.Character.Id == baseCharacter.Id)
                     {
-                        characterOwned = true;
+                        characterUnlocked = true;
+                        break;
                     }
                 }
+                if (characterUnlocked) continue;
 
-                if (!characterOwned)
-                {
-                    charSlot.Character.SetLockedVisuals();
-                    charSlot.IsLocked = true;
-                }
+                InstantiateCharacterSlot(baseCharacter.Id, true);
             }
 
             // ensures character slots are selectable if edit toggle is on, it can happen if adding unowned character from the + button while edit mode is on
-            if (_editModeToggle.isOn) 
+            if (_editModeToggle.isOn)
             {
                 SetCharacterSlotsSelectable(true);
             }
+        }
+
+
+        private CharacterSlot InstantiateCharacterSlot(CharacterID charID, bool isLocked)
+        {
+            PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(((int)charID).ToString());
+            if (info == null) return null;
+
+            GameObject slot = Instantiate(_characterSlotPrefab, _characterGridContent);
+
+            CharacterClassID classID = CustomCharacter.GetClassID(charID);
+            Color bgColor = _classColorReference.GetColor(classID);
+            Color bgAltColor = _classColorReference.GetAlternativeColor(classID);
+
+            CharacterSlot charSlot = slot.GetComponent<CharacterSlot>();
+            charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, charID);
+
+            _characterSlots.Add(charSlot);
+            charSlot.OnCharacterSelected += HandleCharacterSelected;
+
+            if (isLocked)
+            {
+                charSlot.Character.SetLockedVisuals();
+                charSlot.IsLocked = true;
+            }
+
+            return charSlot;
         }
 
 
@@ -243,5 +286,142 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             OnTopSlotCharacterSet?.Invoke(id, selectedSlotIdx);
         }
+
+
+        private void RotateFilters()
+        {
+            int[] enumValues = (int[])Enum.GetValues(typeof(FilterType));
+
+            for (int i = 0; i < enumValues.Length; i++)
+            {
+                if ((int)_currentFilter == enumValues[i])
+                {
+                    if (i + 1 < enumValues.Length)
+                    {
+                        SetFilter((FilterType)enumValues[i + 1]);
+                    }
+                    else
+                    {
+                        SetFilter((FilterType)enumValues[0]);
+                    }
+                    break;
+                }
+            }
+
+            _scrollRect.VerticalNormalizedPosition = 1; // setting scroll to the top so that it's not possibly scrolled too far
+        }
+
+
+        private void SetFilter(FilterType filter)
+        {
+            switch (filter)
+            {
+                case FilterType.All: // Showing all characters
+                    foreach (CharacterSlot characterSlot in _characterSlots)
+                    {
+                        if (!characterSlot.gameObject.activeSelf) characterSlot.gameObject.SetActive(true);
+                    }
+                    break;
+
+                case FilterType.Unlocked: // Only showing unlocked characters
+                    foreach (CharacterSlot characterSlot in _characterSlots)
+                    {
+                        characterSlot.gameObject.SetActive(!characterSlot.IsLocked);
+                    }
+                    break;
+
+                case FilterType.Locked: // Only showing locked characters
+                    foreach (CharacterSlot characterSlot in _characterSlots)
+                    {
+                        characterSlot.gameObject.SetActive(characterSlot.IsLocked);
+                    }
+                    break;
+
+                case FilterType.Desensitizer: // Only showing desensitizers
+                    FilterForClassID(CharacterClassID.Desensitizer);
+                    break;
+
+                case FilterType.Trickster: // Only showing tricksters
+                    FilterForClassID(CharacterClassID.Trickster);
+                    break;
+
+                case FilterType.Obedient: // Only showing obedients
+                    FilterForClassID(CharacterClassID.Obedient);
+                    break;
+
+                case FilterType.Projector: // Only showing projectors
+                    FilterForClassID(CharacterClassID.Projector);
+                    break;
+
+                case FilterType.Retroflector: // Only showing retroflectors
+                    FilterForClassID(CharacterClassID.Retroflector);
+                    break;
+
+                case FilterType.Confluent: // Only showing confluents
+                    FilterForClassID(CharacterClassID.Confluent);
+                    break;
+
+                case FilterType.Intellectualizer: // Only showing intellectualizers
+                    FilterForClassID(CharacterClassID.Intellectualizer);
+                    break;
+            }
+
+            SetFilterText(filter);
+            _currentFilter = filter;
+        }
+
+
+        private void FilterForClassID(CharacterClassID classID)
+        {
+            foreach (CharacterSlot characterSlot in _characterSlots)
+            {
+                if (CustomCharacter.GetClassID(characterSlot.Character.Id) == classID)
+                {
+                    if (!characterSlot.gameObject.activeSelf) characterSlot.gameObject.SetActive(true);
+                }
+                else
+                {
+                    if (characterSlot.gameObject.activeSelf) characterSlot.gameObject.SetActive(false);
+                }
+            }
+        }
+
+
+        private void SetFilterText(FilterType filter)
+        {
+            switch (filter)
+            {
+                case FilterType.All:
+                    _filterText.text = "Kaikki";
+                    break;
+                case FilterType.Unlocked:
+                    _filterText.text = "Tietoiset";
+                    break;
+                case FilterType.Locked:
+                    _filterText.text = "Tiedostamattomat";
+                    break;
+                case FilterType.Desensitizer:
+                    _filterText.text = "Tunnottomat";
+                    break;
+                case FilterType.Trickster:
+                    _filterText.text = "Hämääjät";
+                    break;
+                case FilterType.Obedient:
+                    _filterText.text = "Tottelijat";
+                    break;
+                case FilterType.Projector:
+                    _filterText.text = "Peilaajat";
+                    break;
+                case FilterType.Retroflector:
+                    _filterText.text = "Torjujat";
+                    break;
+                case FilterType.Confluent:
+                    _filterText.text = "Sulautujat";
+                    break;
+                case FilterType.Intellectualizer:
+                    _filterText.text = "Älyllistäjät";
+                    break;
+            }
+        }
     }
-}
+}*/

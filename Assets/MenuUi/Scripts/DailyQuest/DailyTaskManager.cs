@@ -7,12 +7,15 @@ using UnityEngine.UI;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Config;
+using MenuUi.Scripts.TabLine;
 
 public class DailyTaskManager : AltMonoBehaviour
 {
+    #region Variables
+
     [Tooltip("Maximum time until a get or save data operation is forced to quit.")]
     [SerializeField] private float _timeoutSeconds = 10;
-    [SerializeField] private TabButtonsVisualController _tabButtonsVisualController;
+    [SerializeField] private TabLine _tabline;
 
     private PlayerData _currentPlayerData;
 
@@ -27,6 +30,7 @@ public class DailyTaskManager : AltMonoBehaviour
     [SerializeField] private Button _clanTaskTabButton;
 
     private List<GameObject> _dailyTaskCardSlots = new List<GameObject>();
+    private int _currentTaskCardIndex = -1;
 
     [Header("DailyTaskCard Education Prefabs")]
     [SerializeField] private GameObject _dailyTaskCardEducationSocialPrefab;
@@ -106,12 +110,12 @@ public class DailyTaskManager : AltMonoBehaviour
     }
     private SelectedTab _selectedTab = SelectedTab.Tasks;
 
+    #endregion
+
     void Start()
     {
         //DailyTask page setup
         StartCoroutine(DataSetup());
-
-        _tabButtonsVisualController.UpdateButton(_dailyTasksTabButton);
 
         //Buttons
         _dailyTasksTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.Tasks));
@@ -120,7 +124,7 @@ public class DailyTaskManager : AltMonoBehaviour
 
         _cancelTaskButton.onClick.AddListener(() => StartCancelTask());
 
-        _ownTaskTabButton.interactable = false;
+        //_ownTaskTabButton.interactable = false;
 
         //Register to events
         try
@@ -137,9 +141,7 @@ public class DailyTaskManager : AltMonoBehaviour
     private IEnumerator DataSetup()
     {
         bool? timeout = null;
-
-        StartCoroutine(PopulateTasks());
-        yield return new WaitUntil(() => _dailyTaskCardSlots.Count != 0);
+        bool? dtCardsReady = null;
 
         StartCoroutine(PlayerDataTransferer("get", null, _timeoutSeconds, data => timeout = data, data => _currentPlayerData = data));
         yield return new WaitUntil(() => (_currentPlayerData != null || timeout != null));
@@ -150,38 +152,28 @@ public class DailyTaskManager : AltMonoBehaviour
             yield break;
         }
 
+        StartCoroutine(PopulateTasks(data => dtCardsReady = data));
+        yield return new WaitUntil(() => dtCardsReady != null);
+
         StartCoroutine(GetSetExistingTask());
 
         //Get clan data.
         ClanData clanData = null;
-
-        Storefront.Get().GetClanData(_currentPlayerData.ClanId, data => clanData = data);
-
-        if (clanData == null)
+        if (_currentPlayerData?.ClanId != null)
         {
-            StartCoroutine(ServerManager.Instance.GetClanFromServer(content =>
+            StartCoroutine(GetClanData(_currentPlayerData.ClanId, data => clanData = data));
+
+            StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+            yield return new WaitUntil(() => (clanData != null || timeout != null));
+            if (clanData == null)
             {
-                if (content != null)
-                    clanData = new(content);
-                else
-                {
-                    Debug.LogError("Could not connect to server and receive player");
-                    return;
-                }
-            }));
-        }
-
-        StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
-        yield return new WaitUntil(() => (clanData != null || timeout != null));
-
-        if (clanData == null)
-        {
-            Debug.LogError("Failed to fetch clan data.");
-        }
-        else
-        {
-            PopulateClanPlayers(clanData);
-            SetClanProgressBar(clanData);
+                Debug.LogError("Failed to fetch clan data.");
+            }
+            else
+            {
+                PopulateClanPlayers(clanData);
+                SetClanProgressBar(clanData);
+            }
         }
 
         CreateClanProgressBar(); //TODO: Move to inside the brackets when server is ready.
@@ -202,7 +194,7 @@ public class DailyTaskManager : AltMonoBehaviour
 
     #region Tasks
 
-    private IEnumerator PopulateTasks()
+    private IEnumerator PopulateTasks(System.Action<bool> callback)
     {
         var gameVersion = GameConfig.Get().GameVersionType;
 
@@ -218,7 +210,11 @@ public class DailyTaskManager : AltMonoBehaviour
         }
 
         List<PlayerTask> tasklist = null;
+        PlayerData playerData = null;
         Storefront.Get().GetPlayerTasks(content => tasklist = content);
+        StartCoroutine(GetPlayerData(content => playerData = content));
+        if (playerData == null || playerData.HasClanId) tasklist = TESTGenerateNormalTasks();
+        else
         StartCoroutine(ServerManager.Instance.GetPlayerTasksFromServer(content =>
         {
             if (content != null)
@@ -251,8 +247,17 @@ public class DailyTaskManager : AltMonoBehaviour
             _dailyTaskCardSlots.Add(taskObject);
 
             DailyQuest task = taskObject.GetComponent<DailyQuest>();
-            task.SetTaskData(tasklist[i]);
+            task.SetTaskData(tasklist[i], i);
             task.dailyTaskManager = this;
+
+            if (tasklist[i].PlayerId != "")
+                _dailyTaskCardSlots[i].GetComponent<DailyQuest>().TaskSelected();
+
+            if (_currentPlayerData.Id == tasklist[i].PlayerId)
+            {
+                _currentPlayerData.Task = tasklist[i]; //TODO: Remove when fetching task data works.
+                _currentTaskCardIndex = i;
+            }
 
             Transform parentCategory = (
                 gameVersion == VersionType.Education ?
@@ -300,6 +305,8 @@ public class DailyTaskManager : AltMonoBehaviour
             //Sets DT card category list to the top.
             _tasksNormalVerticalLayout.anchoredPosition = new Vector2(0f, -int.MaxValue);
         }
+
+        callback(true);
     }
 
     private List<PlayerTask> TESTGenerateNormalTasks() //TODO: Remove when fetching normal tasks from server is stable.
@@ -341,8 +348,8 @@ public class DailyTaskManager : AltMonoBehaviour
         serverTasks.monthly = new List<ServerPlayerTask>();
 
         //Social
-        string[] socialTasks = { "emote_during_battle", "add_new_friend", "edit_character_avatar", "write_chat_message_clan" };
-        string[] socialTitles = { "Reagoi emojilla matsissa.", "Lisää kaveri.", "Muokkaa avatarisi ulkonäköä.", "Laita viesti klaanissa." };
+        string[] socialTasks = { "emote_during_battle", "add_new_friend", "edit_character_avatar", "write_chat_message_clan", "create_new_vote", "share_battle_replay" };
+        string[] socialTitles = { "Reagoi emojilla matsissa.", "Lisää kaveri.", "Muokkaa avatarisi ulkonäköä.", "Laita viesti klaanissa.", "Luo uusi äänestys klaaniin.", "Jaa battle replay klaanin chattiin." };
 
         for (int i = 0; i < socialTasks.Length; i++)
         {
@@ -350,8 +357,8 @@ public class DailyTaskManager : AltMonoBehaviour
         }
 
         //Story
-        string[] storyTasks = { "find_symbolic_graphics", "continue_clan_story", "click_character_description", "recognize_sound_clue" };
-        string[] storyTitles = { "Löydä käyttöliittymästä symbolista grafiikkaa.", "Jatka klaanin tarinaa.", "Lue ja paina pelihahmon kuvausta.", "Tunnista äänimaailman vihjeet." };
+        string[] storyTasks = { "find_symbolic_graphics", "continue_clan_story", "click_character_description", "recognize_sound_clue", "find_symbolical_furniture" };
+        string[] storyTitles = { "Löydä käyttöliittymästä symbolista grafiikkaa.", "Jatka klaanin tarinaa.", "Lue ja paina pelihahmon kuvausta.", "Tunnista äänimaailman vihjeet.", "Paina kolmea symboliikkaa sisältävää huonekalua." };
 
         for (int i = 0; i < storyTasks.Length; i++)
         {
@@ -359,8 +366,8 @@ public class DailyTaskManager : AltMonoBehaviour
         }
 
         //Culture
-        string[] cultureTasks = { "games_genre_types", "click_known_character", "similiar_to_a_game", "set_profile_player_type" };
-        string[] cultureTitles = { "Mitä lajityyppejä peli sinulle edustaa", "Klikkaa pelihahmoa josta tulee mieleen joku tunnettu hahmo.", "Mitä tunnettua peliä tämä peli muistuttaa.", "Määrittele pelaajaprofiili pelaajatyyppisi." };
+        string[] cultureTasks = { "games_genre_types", "click_known_character", "similiar_to_a_game", "set_profile_player_type", "click_known_art_idea_person" };
+        string[] cultureTitles = { "Mitä lajityyppejä peli sinulle edustaa", "Klikkaa pelihahmoa josta tulee mieleen joku tunnettu hahmo.", "Mitä tunnettua peliä tämä peli muistuttaa.", "Määrittele pelaajaprofiili pelaajatyyppisi.", "Klikkaa tunnettuihin teoksiin, ideoihin tai ihmisiin viittaavia asioita." };
 
         for (int i = 0; i < cultureTasks.Length; i++)
         {
@@ -368,8 +375,8 @@ public class DailyTaskManager : AltMonoBehaviour
         }
 
         //Action
-        string[] actionTasks = { "win_battle", "edit_character_stats", "blow_up_your_character", "switch_soulhome_music" };
-        string[] actionTitles = { "Voita battle.", "Muokkaa hahmosi statseja.", "Räjäytä hahmosi ryöstössä.", "Vaihda biisi sielunkodissa." };
+        string[] actionTasks = { "win_battle", "edit_character_stats", "blow_up_your_character", "switch_soulhome_music" , "play_battle"};
+        string[] actionTitles = { "Voita battle.", "Muokkaa hahmosi statseja.", "Räjäytä hahmosi ryöstössä.", "Vaihda biisi sielunkodissa.", "Pelaa battle." };
 
         for (int i = 0; i < actionTasks.Length; i++)
         {
@@ -456,28 +463,13 @@ public class DailyTaskManager : AltMonoBehaviour
     /// </summary>
     private IEnumerator GetSetExistingTask()
     {
-        PlayerTask playerTask = null;
-        bool? timeout = null;
-
         if (_currentPlayerData.Task == null)
         {
             Debug.Log($"No current task in player data.");
             yield break;
         }
 
-        //Get task.
-        StartCoroutine(GetTask(_currentPlayerData.Task.Id, data => playerTask = data));
-        StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
-        yield return new WaitUntil(() => (playerTask != null || timeout != null));
-
-        if (playerTask == null)
-        {
-            Debug.Log($"Could not find task id: {_currentPlayerData.Task.Id}");
-            yield break;
-        }
-
-        _ownTaskTabButton.interactable = true;
-        SetHandleOwnTask(playerTask);
+        SetHandleOwnTask(_currentPlayerData.Task);
         SwitchTab(SelectedTab.OwnTask);
     }
 
@@ -517,7 +509,8 @@ public class DailyTaskManager : AltMonoBehaviour
         float progress = (float)taskData.TaskProgress / (float)taskData.Amount;
         _ownTaskPageHandler.SetTaskProgress(progress);
         _ownTaskPageHandler.TESTSetTaskValue(taskData.TaskProgress);
-        taskData.InvokeOnTaskUpdated();
+        //taskData.InvokeOnTaskUpdated();
+        _dailyTaskCardSlots[_currentTaskCardIndex].GetComponent<DailyQuest>().UpdateProgressBar();
         Debug.Log("Task id: " + _ownTaskId + ", current progress: " + progress);
         if (progress >= 1f)
         {
@@ -535,22 +528,35 @@ public class DailyTaskManager : AltMonoBehaviour
     {
         PlayerData playerData = null;
         PlayerData savePlayerData = null;
+        bool? unreserveResult = null;
         bool? timeout = null;
+        Coroutine coroutineTimeout;
 
         //Get player data.
         StartCoroutine(PlayerDataTransferer("get", null, _timeoutSeconds, tdata => timeout = tdata, pdata => playerData = pdata));
         yield return new WaitUntil(() => (playerData != null || timeout != null));
 
-        if (playerData == null)
+        if (playerData == null || playerData.Task == null)
         {
-            done(true);
+            done(false);
             yield break;
         }
+
+        StartCoroutine(ServerManager.Instance.UnreservePlayerTaskFromServer(data => unreserveResult = data));
+        coroutineTimeout = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+        yield return new WaitUntil(() => (unreserveResult != null || timeout != null));
+
+        if (unreserveResult == null)
+            Debug.LogError($"Failed to unreserve task id: {playerData.Task.Id}");
+
+        StopCoroutine(coroutineTimeout);
 
         //Save player data.
         playerData.Task.ClearProgress();
         playerData.Task.ClearPlayerId();
-        playerData.Task.InvokeOnTaskDeselected();
+        //playerData.Task.InvokeOnTaskDeselected();
+        _dailyTaskCardSlots[_currentTaskCardIndex].GetComponent<DailyQuest>().TaskDeselected();
+        _currentTaskCardIndex = -1;
         playerData.Task = null;
         timeout = null;
 
@@ -559,7 +565,7 @@ public class DailyTaskManager : AltMonoBehaviour
 
         if (savePlayerData == null)
         {
-            done(true);
+            done(false);
             yield break;
         }
 
@@ -573,11 +579,10 @@ public class DailyTaskManager : AltMonoBehaviour
 
     public void ClearCurrentTask()
     {
-        _tabButtonsVisualController.UpdateButton(_dailyTasksTabButton);
         UpdateAvatarMood();
         _currentPlayerData.Task.ClearProgress();
         _ownTaskPageHandler.ClearCurrentTask();
-        _ownTaskTabButton.interactable = false;
+        //_ownTaskTabButton.interactable = false;
         SwitchTab(SelectedTab.Tasks);
         Debug.Log("Task id: " + _ownTaskId + ", has been cleard.");
         _ownTaskId = null;
@@ -598,18 +603,25 @@ public class DailyTaskManager : AltMonoBehaviour
         }
     }
 
-    public IEnumerator AcceptTask(PlayerTask playerTask)
+    public IEnumerator AcceptTask(PlayerTask playerTask, System.Action<bool> callback, int index)
     {
+        bool? done = null;
+
         if (_currentPlayerData != null && _currentPlayerData.Task != null)
         {
-            bool? done = null;
             StartCoroutine(CancelTask(data => done = data));
             yield return new WaitUntil(() => done != null);
+            done = null;
         }
 
-        _tabButtonsVisualController.UpdateButton(_ownTaskTabButton);
-        StartCoroutine(GetSaveSetHandleOwnTask(playerTask));
-        SwitchTab(SelectedTab.OwnTask);
+        StartCoroutine(GetSaveSetHandleOwnTask(playerTask, data => done = data, index));
+        yield return new WaitUntil(() => done != null);
+
+        if (done.Value)
+            SwitchTab(SelectedTab.OwnTask);
+
+        if (callback != null)
+            callback(done.Value);
     }
 
     #endregion
@@ -756,19 +768,31 @@ public class DailyTaskManager : AltMonoBehaviour
                         {
                             StartCoroutine(CancelTask(data => done = data));
                             yield return new WaitUntil(() => done != null);
+                            done = null;
                         }
 
-                        _tabButtonsVisualController.UpdateButton(_ownTaskTabButton);
-                        StartCoroutine(GetSaveSetHandleOwnTask(data.Value.OwnPage));
+                        StartCoroutine(GetSaveSetHandleOwnTask(data.Value.OwnPage, data => done = data, data.Value.DailyTaskCardIndex.Value));
+                        yield return new WaitUntil(() => (_currentPlayerData.Task != null || done != null));
+
+                        if (_currentPlayerData.Task == null)
+                            break;
+
                         SwitchTab(SelectedTab.OwnTask);
                         break;
                     }
                 case PopupData.PopupDataType.CancelTask:
                     {
                         StartCoroutine(CancelTask(data => done = data));
-                        _tabButtonsVisualController.UpdateButton(_dailyTasksTabButton);
+                        yield return new WaitUntil(() => done != null);
+
+                        if (!done.Value)
+                        {
+                            Debug.LogError("No task to be cancelled.");
+                            break;
+                        }
+
                         SwitchTab(SelectedTab.Tasks);
-                        _ownTaskTabButton.interactable = false;
+                        //_ownTaskTabButton.interactable = false;
                         break;
                     }
                 case PopupData.PopupDataType.ClanMilestone: break;
@@ -785,33 +809,43 @@ public class DailyTaskManager : AltMonoBehaviour
     /// Save given <c>PlayerTask</c> to <c>PlayerData</c> and update owntask page.
     /// </summary>
     /// <param name="playerTask"><c>PlayerData</c> to be set and saved to server as current task.</param>
-    private IEnumerator GetSaveSetHandleOwnTask(PlayerTask playerTask)
+    private IEnumerator GetSaveSetHandleOwnTask(PlayerTask playerTask, System.Action<bool> callback, int index)
     {
         PlayerData playerData = null;
-        PlayerData savePlayerData = null;
+        //PlayerData savePlayerData = null;
+        PlayerTask reserveResult = null;
         bool? timeout = null;
+        Coroutine coroutineTimeout;
 
         //Get player data.
         StartCoroutine(PlayerDataTransferer("get", null, _timeoutSeconds, tdata => timeout = tdata, pdata => playerData = pdata));
         yield return new WaitUntil(() => (playerData != null || timeout != null));
 
         if (playerData == null)
+        {
+            callback(false);
             yield break;
+        }
 
-        //Save player data.
-        playerData.Task = playerTask;
-        playerData.Task.AddPlayerId(playerData.Id);
-        timeout = null;
+        StartCoroutine(ServerManager.Instance.ReservePlayerTaskFromServer(playerTask.Id, data => reserveResult = data));
+        coroutineTimeout = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+        yield return new WaitUntil(() => (reserveResult != null || timeout != null));
 
-        StartCoroutine(PlayerDataTransferer("save", playerData, _timeoutSeconds, tdata => timeout = tdata, pdata => savePlayerData = pdata));
-        yield return new WaitUntil(() => (savePlayerData != null || timeout != null));
-
-        if (savePlayerData == null)
+        if (reserveResult == null)
+        {
+            Debug.LogError($"Failed to reserve task id: {playerTask.Id}");
+            callback(false);
             yield break;
+        }
 
-        _currentPlayerData = savePlayerData;
-        playerTask.InvokeOnTaskSelected();
-        SetHandleOwnTask(playerTask);
+        StopCoroutine(coroutineTimeout);
+
+        playerData.Task = reserveResult;
+        _currentPlayerData = playerData;
+        _dailyTaskCardSlots[index].GetComponent<DailyQuest>().SetTaskData(reserveResult);
+        _currentTaskCardIndex = index;
+        SetHandleOwnTask(reserveResult);
+        callback(true);
     }
 
     /// <summary>
@@ -821,7 +855,7 @@ public class DailyTaskManager : AltMonoBehaviour
     {
         DailyTaskProgressManager.Instance.ChangeCurrentTask(playerTask);
         _ownTaskId = playerTask.Id;
-        _ownTaskPageHandler.SetDailyTask(playerTask.Title, playerTask.Amount, playerTask.Points, playerTask.Coins);
+        StartCoroutine(_ownTaskPageHandler.SetDailyTask(playerTask));
         _ownTaskPageHandler.SetTaskProgress((float)playerTask.TaskProgress / (float)playerTask.Amount);
         _ownTaskPageHandler.TESTSetTaskValue(playerTask.TaskProgress);
         Debug.Log("Task id: " + _ownTaskId + ", has been accepted.");
@@ -847,6 +881,7 @@ public class DailyTaskManager : AltMonoBehaviour
             case SelectedTab.OwnTask: _ownTaskView.SetActive(true); break;
             default: _clanTaskView.SetActive(true); break;
         }
+        _tabline.ActivateTabButton((int)_selectedTab);
 
         Debug.Log($"Switched to {_selectedTab}.");
     }

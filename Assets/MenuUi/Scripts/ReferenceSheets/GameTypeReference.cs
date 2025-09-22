@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using MenuUi.Scripts.Lobby;
+using Altzone.Scripts.Lobby;
 
 namespace MenuUi.Scripts.ReferenceSheets
 {
@@ -32,5 +32,6 @@ namespace MenuUi.Scripts.ReferenceSheets
         public Sprite Icon;
         public string Name;
         public GameType gameType;
+        public string Description;
     }
 }

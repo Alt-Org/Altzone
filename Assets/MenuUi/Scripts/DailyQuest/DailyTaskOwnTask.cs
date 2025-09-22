@@ -1,4 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,16 +17,19 @@ public class DailyTaskOwnTask : MonoBehaviour
         Depressed
     }
 
+    [SerializeField] private DailyTaskCardImageReference _cardImageReference;
+
     [Header("Current task")]
     [SerializeField] private TextMeshProUGUI _taskDescription;
     [SerializeField] private TextMeshProUGUI _taskPointsReward;
     [SerializeField] private TextMeshProUGUI _taskCoinsReward;
+    [SerializeField] private Image _taskTypeImage;
     [Space]
     [SerializeField] private Image _taskProgressFillImage;
     [SerializeField] private RectTransform _taskProgressLayoutGroup;
     [SerializeField] private GameObject _taskProgressMarkerPrefab;
     [SerializeField] private int _progressMarkersMaxAmount = 8;
-    [Range(0f, 1f)]
+    [Range(0f, 2f)]
     [SerializeField] private float _progressMarkerXScale = 0.05f;
     [SerializeField] private TMP_Text _testTaskProgressValue; //TODO: Remove when testing done.
 
@@ -62,13 +68,16 @@ public class DailyTaskOwnTask : MonoBehaviour
 
     #region Task
 
-    public void SetDailyTask(string taskDescription, int amount, int points, int coins)
+    public IEnumerator SetDailyTask(PlayerTask data)
     {
-        _taskDescription.text = taskDescription;
-        _taskPointsReward.text = "" + points;
-        _taskCoinsReward.text = "" + coins;
+        _taskDescription.text = data.Title;
+        _taskPointsReward.text = "" + data.Points;
+        _taskCoinsReward.text = "" + data.Coins;
+        _taskTypeImage.sprite = _cardImageReference.GetTaskImage(data);
 
-        SetProgressBarMarkers(amount);
+        yield return new WaitUntil(() => (_taskProgressMarkers.Count != 0));
+
+        SetProgressBarMarkers(data.Amount);
     }
 
     /// <summary>
@@ -76,8 +85,6 @@ public class DailyTaskOwnTask : MonoBehaviour
     /// </summary>
     private void SetProgressBarMarkers(int amount)
     {
-        DeactivateAllProgressBarMarkers();
-
         if (amount > _taskProgressMarkers.Count)
             amount = _taskProgressMarkers.Count + 1;
 
@@ -86,7 +93,7 @@ public class DailyTaskOwnTask : MonoBehaviour
         {
             _taskProgressMarkers[i].SetActive(true);
             _taskProgressMarkers[i].GetComponent<RectTransform>().anchorMin = new(((float)(i + 1) / (float)amount), 0f);
-            _taskProgressMarkers[i].GetComponent<RectTransform>().anchorMax = new(((float)(i + 1) / (float)amount) + _progressMarkerXScale, 1f);
+            _taskProgressMarkers[i].GetComponent<RectTransform>().anchorMax = new(((float)(i + 1) / (float)amount), 1f);
         }
     }
 
@@ -103,8 +110,11 @@ public class DailyTaskOwnTask : MonoBehaviour
         for (int i = 0; i < amount; i++)
         {
             GameObject marker = Instantiate(_taskProgressMarkerPrefab, _taskProgressLayoutGroup);
+            marker.GetComponent<RectTransform>().sizeDelta = new Vector2(_progressMarkerXScale, 1f);
             _taskProgressMarkers.Add(marker);
         }
+
+        DeactivateAllProgressBarMarkers();
     }
 
     /// <summary>

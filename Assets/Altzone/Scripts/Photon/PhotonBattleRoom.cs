@@ -1,13 +1,20 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+
 using UnityEngine;
 using UnityEngine.Assertions;
 using Debug = UnityEngine.Debug;
-using ExitGames.Client.Photon;
+
 using Photon.Realtime;
-using Altzone.Scripts.Model.Poco.Game;
 using Photon.Client;
+
+using Prg.Scripts.Common.PubSub;
+
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Lobby.Wrappers;
+using static Altzone.Scripts.Lobby.LobbyManager;
 //using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 //using Player = Battle1.PhotonRealtime.Code.Player;
 //using Room = Battle1.PhotonRealtime.Code.Room;
@@ -30,8 +37,18 @@ namespace Altzone.Scripts.Battle.Photon
         public const string TeamWinKey = "tw";
         public const string TeamBlueScoreKey = "t1";
         public const string TeamRedScoreKey = "t2";
-        public const string PlayerIDKey = "pid";
+        public const string MapKey = "m";
+        public const string StartingEmotionKey = "e";
+        public const string RoomNameKey = "n";
         public const string PasswordKey = "pw";
+        public const string GameTypeKey = "gt";
+        public const string IsMatchmakingKey = "mm";
+        public const string SoulhomeRank = "sr";
+        public const string SoulhomeRankVariance = "rv";
+        public const string ClanNameKey = "c";
+        public const string ClanOpponentNameKey = "c2";
+        public const string LeaderIdKey = "lid";
+
         public static string PlayerPositionKey1 { get => PlayerPosition1.ToString(); }
         public static string PlayerPositionKey2 { get => PlayerPosition2.ToString(); }
         public static string PlayerPositionKey3 { get => PlayerPosition3.ToString(); }
@@ -78,7 +95,20 @@ namespace Altzone.Scripts.Battle.Photon
 
         public int GetPlayerPos(Player player)
         {
-            return player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+            int playerPos = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+
+            // In matchmaking the player pos isn't saved in player properties, checking room properties
+            if (!IsValidPlayerPos(playerPos))
+            {
+                Room room = PhotonRealtimeClient.CurrentRoom;
+
+                if (room.GetCustomProperty<string>(PlayerPositionKey1) == player.UserId) playerPos = PlayerPosition1;
+                else if (room.GetCustomProperty<string>(PlayerPositionKey2) == player.UserId) playerPos = PlayerPosition2;
+                else if (room.GetCustomProperty<string>(PlayerPositionKey3) == player.UserId) playerPos = PlayerPosition3;
+                else if (room.GetCustomProperty<string>(PlayerPositionKey4) == player.UserId) playerPos = PlayerPosition4;
+            }
+
+            return playerPos;
         }
 
         public int GetTeamNumber(Player player)
@@ -97,36 +127,51 @@ namespace Altzone.Scripts.Battle.Photon
             return PhotonRealtimeClient.PlayerListOthers.FirstOrDefault(x => GetTeamNumber(x) == teamNumber);
         }
 
-        public int GetFirstFreePlayerPos(Player player, int wantedPlayerPos = PlayerPosition1, bool isAllocateByTeams = false)
+        public int GetFirstFreePlayerPos(Player player = null, int wantedPlayerPos = PlayerPosition1, bool isAllocateByTeams = false)
         {
+            if (player == null) player = PhotonRealtimeClient.LocalPlayer;
+
             // Checking which of the room's player positions are free
-            HashSet<int> usedPlayerPositions = new HashSet<int>();
+            HashSet<int> usedPlayerPositions = GetUsedPlayerPositions();
 
-            if (CheckIfPositionIsFree(PlayerPosition1))
+            // If for some reason all player positions are reserved
+            if (usedPlayerPositions.Count == PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers)
             {
-                usedPlayerPositions.Add(PlayerPosition1);
-            }
+                // Removing duplicate or missing player slot reservations with this method
+                VerifyPlayerPositions();
 
-            if (CheckIfPositionIsFree(PlayerPosition2))
-            {
-                usedPlayerPositions.Add(PlayerPosition2);
-            }
+                // Checking if player is already in a slot
+                int playerPos = GetPlayerPos(player);
 
-            if (CheckIfPositionIsFree(PlayerPosition3))
-            {
-                usedPlayerPositions.Add(PlayerPosition3);
-            }
+                if (IsValidPlayerPos(playerPos) && player.UserId == PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(GetPositionKey(playerPos)))
+                {
+                    return playerPos;
+                }
 
-            if (CheckIfPositionIsFree(PlayerPosition4))
-            {
-                usedPlayerPositions.Add(PlayerPosition4);
+                // If there is still no free position it means player somehow joined already full room then we kick player
+                usedPlayerPositions = GetUsedPlayerPositions();
+                if (usedPlayerPositions.Count == PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers)
+                {
+                    this.Publish<GetKickedEvent>(new(GetKickedEvent.ReasonType.FullRoom));
+                    return PlayerPositionSpectator;
+                }
             }
-
+            
+            
             if (usedPlayerPositions.Contains(wantedPlayerPos))
             {
-                int[] playerPositions = isAllocateByTeams
+                int[] playerPositions;
+                if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2)
+                {
+                    playerPositions = new[] { PlayerPosition2, PlayerPosition1 };
+                }
+                else
+                {
+                    playerPositions = isAllocateByTeams
                     ? new[] { PlayerPosition2, PlayerPosition3, PlayerPosition4, PlayerPosition1 }
                     : new[] { PlayerPosition3, PlayerPosition2, PlayerPosition4, PlayerPosition1 };
+                }
+                    
                 foreach (int playerPos in playerPositions)
                 {
                     if (!usedPlayerPositions.Contains(playerPos))
@@ -136,11 +181,106 @@ namespace Altzone.Scripts.Battle.Photon
                     }
                 }
             }
+
             if (!IsValidPlayerPos(wantedPlayerPos))
             {
                 wantedPlayerPos = PlayerPositionSpectator;
             }
             return wantedPlayerPos;
+        }
+
+        /// <summary>
+        /// Get used player positions.
+        /// </summary>
+        /// <returns>Integer hashset which contains all of the used player positions.</returns>
+        public HashSet<int> GetUsedPlayerPositions()
+        {
+            HashSet<int> usedPlayerPositions = new();
+
+            // Filling hashset with used player positions
+            if (CheckIfPositionIsFree(PlayerPosition1) == false) usedPlayerPositions.Add(PlayerPosition1);
+            if (CheckIfPositionIsFree(PlayerPosition2) == false) usedPlayerPositions.Add(PlayerPosition2);
+
+            if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 4)
+            {
+                if (CheckIfPositionIsFree(PlayerPosition3) == false) usedPlayerPositions.Add(PlayerPosition3);
+                if (CheckIfPositionIsFree(PlayerPosition4) == false) usedPlayerPositions.Add(PlayerPosition4);
+            }
+
+            return usedPlayerPositions;
+        }
+
+        /// <summary>
+        /// Remove any duplicate or missing player positions from room custom properties
+        /// </summary>
+        /// <returns>True if any duplicate or missing players were found and removed</returns>
+        public bool VerifyPlayerPositions()
+        {
+            bool duplicateOrMissingFound = false;
+
+            string[] positionValues = new[]
+                {
+                    PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PlayerPositionKey1),
+                    PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PlayerPositionKey2),
+                    PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PlayerPositionKey3),
+                    PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PlayerPositionKey4)
+                };
+
+            HashSet<string> uniquePositionValues = new();
+            for (int i = 0; i < positionValues.Count(); i++)
+            {
+                // Checking if there is duplicate player
+                if (!uniquePositionValues.Add(positionValues[i]))
+                {
+                    // Getting the player whose position is duplicate
+                    Player player = null;
+                    foreach (KeyValuePair<int, Player> p in PhotonRealtimeClient.CurrentRoom.Players)
+                    {
+                        if (p.Value.UserId == positionValues[i])
+                        {
+                            player = p.Value;
+                            break;
+                        }
+                    }
+
+                    // Calculating the duplicate position from the loop index since array starts at 0 instead of 1
+                    int duplicatePos = i + 1; 
+
+                    // Getting player's real position with the method, it will check for player's custom properties first
+                    if (player != null)
+                    {
+                        int playerRealPos = GetPlayerPos(player);
+
+                        // If player's real position is this duplicate position, get the first occurence as the duplicate
+                        if (playerRealPos == duplicatePos)
+                        {
+                            duplicatePos = Array.IndexOf(positionValues, positionValues[i]) + 1;
+                        }
+
+                        // Clearing duplicate position
+                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(GetPositionKey(duplicatePos), string.Empty);
+                        duplicateOrMissingFound = true;
+                    }
+                }
+
+                // Checking if there is missing player
+                bool playerExists = false;
+                foreach (KeyValuePair<int, Player> p in PhotonRealtimeClient.CurrentRoom.Players)
+                {
+                    if (p.Value.UserId == positionValues[i])
+                    {
+                        playerExists = true;
+                    }
+                }
+
+                if (!playerExists) // If missing player we clear the custom property
+                {
+                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(GetPositionKey(i + 1), string.Empty);
+                    duplicateOrMissingFound = true;
+                }
+            }
+
+            return duplicateOrMissingFound;
         }
 
         /// <summary>
@@ -151,7 +291,7 @@ namespace Altzone.Scripts.Battle.Photon
         public static bool CheckIfPositionIsFree(int position)
         {
             string positionKey = GetPositionKey(position);
-            string positionValue = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(positionKey);
+            string positionValue = PhotonRealtimeClient.LobbyCurrentRoom?.GetCustomProperty<string>(positionKey);
             if (!string.IsNullOrWhiteSpace(positionValue))
             {
                 return false;
@@ -191,6 +331,32 @@ namespace Altzone.Scripts.Battle.Photon
             return positionKey;
         }
 
+        /// <summary>
+        /// Check if everyone in the room has all 3 selected characters selected.
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsValidAllSelectedCharacters()
+        {
+            LobbyRoom room = PhotonRealtimeClient.LobbyCurrentRoom;
+
+            foreach (var player in room.Players)
+            {
+                int[] playerCharacterIds = player.Value.GetCustomProperty<int[]>(PlayerCharacterIdsKey);
+                if (playerCharacterIds == null || playerCharacterIds.Length < 3)
+                {
+                    return false;
+                }
+                else
+                {
+                    foreach (int id in playerCharacterIds)
+                    {
+                        if (id == 0) return false;
+                    }
+                }
+            }
+            return true;
+        }
+
         public int CountRealPlayers()
         {
             return PhotonRealtimeClient.CurrentRoom.Players.Values.Sum(x => IsRealPlayer(x) ? 1 : 0);
@@ -208,7 +374,14 @@ namespace Altzone.Scripts.Battle.Photon
 
         public bool IsValidPlayerPos(int playerPos)
         {
-            return playerPos is >= PlayerPosition1 and <= PlayerPosition4;
+            if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2)
+            {
+                return playerPos is >= PlayerPosition1 and <= PlayerPosition2;
+            }
+            else
+            {
+                return playerPos is >= PlayerPosition1 and <= PlayerPosition4;
+            }
         }
 
         public static int GetTeamMemberPlayerPos(int playerPos)
@@ -239,9 +412,18 @@ namespace Altzone.Scripts.Battle.Photon
 
         public int GetPlayerIndex(int playerPos)
         {
-            Assert.IsTrue(playerPos >= PlayerPosition1 && playerPos <= PlayerPosition4,
+            if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2)
+            {
+                Assert.IsTrue(playerPos >= PlayerPosition1 && playerPos <= PlayerPosition2,
                 "playerPos >= PlayerPosition1 && playerPos <= PlayerPosition4");
-            return playerPos - 1;
+                return playerPos - 1;
+            }
+            else
+            {
+                Assert.IsTrue(playerPos >= PlayerPosition1 && playerPos <= PlayerPosition4,
+                "playerPos >= PlayerPosition1 && playerPos <= PlayerPosition4");
+                return playerPos - 1;
+            }
         }
 
         public int GetTeamNumber(int playerPos)

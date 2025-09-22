@@ -10,23 +10,35 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     /// </summary>
     public class StatsPanel : MonoBehaviour
     {
-        [SerializeField] private StatsWindowController _controller;
-        [SerializeField] private Image _characterImage;
+        [SerializeField] private Image _characterHeadImage;
         [SerializeField] private Image _lockImage;
-        [SerializeField] private TMP_Text _attackText;
-        [SerializeField] private TMP_Text _hpText;
-        [SerializeField] private TMP_Text _defenceText;
-        [SerializeField] private TMP_Text _charSizeText;
-        [SerializeField] private TMP_Text _speedText;
+
+        [SerializeField] private Image _characterImage;
+        [SerializeField] private TMP_Text _characterDescription;
+        [SerializeField] private TMP_Text _specialAbility;
+        [SerializeField] private TMP_Text _wins;
+        [SerializeField] private TMP_Text _losses;
+        [SerializeField] private TMP_Text _className;
+
+        [SerializeField] private BaseScrollRect _scrollRect;
+
+        private StatsWindowController _controller;
+
+        private GameObject previousPage;
 
         private void OnEnable()
         {
+            if (_controller == null) _controller = FindObjectOfType<StatsWindowController>();
+            _scrollRect.VerticalNormalizedPosition = 1;
+
+            SetCharacterHeadImage();
             SetCharacterImage();
-            SetStatButtonTexts();
+            SetCharacterDescription();
+            SetWinsAndLosses();
+            SetClassName();
 
-            _controller.OnStatUpdated += SetStatButtonTexts;
 
-            if(_controller.IsCurrentCharacterLocked())
+            if (_controller.IsCurrentCharacterLocked())
             {
                 _lockImage.gameObject.SetActive(true);
             }
@@ -36,13 +48,19 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             }
         }
 
-
-        private void OnDisable()
+        private void SetClassName()
         {
-            _controller.OnStatUpdated -= SetStatButtonTexts;
+            _className.text = _controller.GetCurrentCharacterClassName();
         }
+        private void SetCharacterHeadImage()
+        {
+            Sprite sprite = _controller.GetCurrentCharacterSprite();
 
-
+            if (sprite != null)
+            {
+                _characterHeadImage.sprite = sprite;
+            }
+        }
         private void SetCharacterImage()
         {
             Sprite sprite = _controller.GetCurrentCharacterSprite();
@@ -52,39 +70,19 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 _characterImage.sprite = sprite;
             }
         }
-
-
-        private void SetStatButtonTexts(StatType statType = StatType.None)
+        private void SetCharacterDescription()
         {
-            if(statType == StatType.None)
-            {
-                _attackText.text = _controller.GetStat(StatType.Attack).ToString();
-                _hpText.text = _controller.GetStat(StatType.Hp).ToString();
-                _defenceText.text = _controller.GetStat(StatType.Defence).ToString();
-                _charSizeText.text = _controller.GetStat(StatType.CharacterSize).ToString();
-                _speedText.text = _controller.GetStat(StatType.Speed).ToString();
-            }
-            else
-            {
-                switch (statType)
-                {
-                    case StatType.Attack:
-                        _attackText.text = _controller.GetStat(StatType.Attack).ToString();
-                        break;
-                    case StatType.Hp:
-                        _hpText.text = _controller.GetStat(StatType.Hp).ToString();
-                        break;
-                    case StatType.Defence:
-                        _defenceText.text = _controller.GetStat(StatType.Defence).ToString();
-                        break;
-                    case StatType.CharacterSize:
-                        _charSizeText.text = _controller.GetStat(StatType.CharacterSize).ToString();
-                        break;
-                    case StatType.Speed:
-                        _speedText.text = _controller.GetStat(StatType.Speed).ToString();
-                        break;
-                }
-            }
+            _characterDescription.text = _controller.GetCurrentCharacterDescription();
+        }
+        private void SetWinsAndLosses()
+        {
+            _wins.text = _controller.GetCurrentCharacterWins().ToString();
+            _losses.text = _controller.GetCurrentCharacterLosses().ToString();
+        }
+
+        public void ClosePopup()
+        {
+            gameObject.SetActive(false);
         }
     }
 }

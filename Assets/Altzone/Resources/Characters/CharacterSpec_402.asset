@@ -14,6 +14,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 402
   CharacterId: 402
-  Name: "Riidankylv\xE4j\xE4"
+  IsApproved: 0
+  Name: "Riidankylv\xE4minen"
   ClassType: 400
-  Image: {fileID: 0}
+  CharacterDescription: 
+  CharacterShortDescription: 
+  CharacterStats: {fileID: 11400000, guid: 0359596f2309630459d767f930e4a3b4, type: 2}
+  Hp:
+    Level: 3
+    Coefficient: 5
+  Speed:
+    Level: 3
+    Coefficient: 0
+  CharacterSize:
+    Level: 8
+    Coefficient: 6
+  Attack:
+    Level: 7
+    Coefficient: 3
+  Defence:
+    Level: 10
+    Coefficient: 4
+  GalleryImage: {fileID: 21300000, guid: 33b5fc674b3e83040a138df3ef3960da, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: e25d9f1e6b2f29a468e1bc8ec3fa4dcb, type: 3}
+  BattleEntityPrototype:
+    Id:
+      Value: 1285704993508594025
+  BattleUiSprite: {fileID: 0}
