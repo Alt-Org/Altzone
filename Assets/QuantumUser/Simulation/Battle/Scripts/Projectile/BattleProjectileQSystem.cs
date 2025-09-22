@@ -111,8 +111,9 @@ namespace Battle.QSimulation.Projectile
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="direction">The new direction for the projectile.</param>
-        /// <param name="collisionTriggerType">The collision type of the collision that caused this velocity update.</param>
-        public static void UpdateVelocity(Frame f, BattleProjectileQComponent* projectile, FPVector2 direction, BattleCollisionTriggerType collisionTriggerType)
+        /// <param name="speedIncreaseAmount">The amount the projectile's speed should increase.</param>
+        /// <param name="resetSpeed">True if the projectile's speed should be reset to base, false if it should remain as is.</param>
+        public static void UpdateVelocity(Frame f, BattleProjectileQComponent* projectile, FPVector2 direction, FP speedIncreaseAmount, bool resetSpeed = false)
         {
             // set new projectile direction
             projectile->Direction = direction;
@@ -120,17 +121,11 @@ namespace Battle.QSimulation.Projectile
             // update the projectile's speed based on speed potential and multiply by emotion
             //projectile->Speed = projectile->SpeedPotential * projectile->SpeedMultiplierArray[(int)projectile->Emotion];
 
-            // reset or increment the projectile's speed based on what type of collision caused this velocity update
-            switch (collisionTriggerType)
+            projectile->Speed += speedIncreaseAmount;
+
+            if (resetSpeed)
             {
-                case BattleCollisionTriggerType.SoulWall:
-                    projectile->Speed = projectile->SpeedBase;
-                    break;
-                case BattleCollisionTriggerType.Shield:
-                    projectile->Speed += projectile->SpeedIncrement;
-                    break;
-                default:
-                    break;
+                projectile->Speed = projectile->SpeedBase;
             }
         }
 
@@ -271,7 +266,7 @@ namespace Battle.QSimulation.Projectile
                 else if (collisionType == BattlePlayerCollisionType.Override) direction = normal;
 
                 HandleIntersection(f, projectile, projectileEntity, otherEntity, normal, collisionMinOffset);
-                UpdateVelocity(f, projectile, direction, collisionTriggerType);
+                UpdateVelocity(f, projectile, direction, projectile->SpeedIncrement, collisionTriggerType == BattleCollisionTriggerType.SoulWall);
             }
 
             SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Projectile);
