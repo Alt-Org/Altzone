@@ -807,7 +807,7 @@ public class ServerManager : MonoBehaviour
             if (request.result == UnityWebRequest.Result.Success)
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
-                string clanId = result["data"]["Join"]["clan_id"].ToString();
+                string clanId = result["data"]["Clan"]["_id"].ToString();
                 GameAnalyticsManager.Instance.ClanChange(clanId);
                 StartCoroutine(WebRequests.Get(SERVERADDRESS + "clan/" + clanId, AccessToken, request =>
                 {
