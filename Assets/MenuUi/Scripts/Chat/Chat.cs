@@ -304,6 +304,7 @@ public class Chat : AltMonoBehaviour
         {
             DeleteAllMessages();
             List<ChatMessage> messageList = ChatListener.Instance.GetChatChannel(chatChannelType).ChatMessages;
+            if(messageList != null)
             foreach(ChatMessage message in messageList)
             {
                 bool ownMsg = message?.SenderId == ServerManager.Instance.Player._id;

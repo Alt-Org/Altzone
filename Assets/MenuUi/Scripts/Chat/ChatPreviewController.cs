@@ -159,7 +159,7 @@ public class ChatPreviewController : MonoBehaviour
     /// <param name="channel">Chat messages channel</param>
     internal void MessageReceived(ChatChannel channel)
     {
-        if (ChatListener.Instance.ChatMessages.Count == 0)
+        if (ChatListener.Instance.ChatMessages == null || ChatListener.Instance.ChatMessages.Count == 0)
             return;
 
         ChatMessage[] recentMessages = new ChatMessage[chatMessageAmount];
