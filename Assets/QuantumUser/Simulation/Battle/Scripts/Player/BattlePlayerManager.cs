@@ -410,7 +410,7 @@ namespace Battle.QSimulation.Player
                         //} initialize entity
 
                         // initialize view
-                        f.Events.BattlePlayerViewInit(playerEntity, playerSlot, BattleGridManager.GridScaleFactor);
+                        f.Events.BattlePlayerViewInit(playerEntity, playerSlot, playerCharacterId, playerClass, BattleGridManager.GridScaleFactor);
 
                         // save entity
                         playerCharacterEntityArray[playerCharacterNumber] = playerEntity;
