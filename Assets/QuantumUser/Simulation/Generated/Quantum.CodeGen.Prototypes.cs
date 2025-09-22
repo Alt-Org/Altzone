@@ -390,6 +390,7 @@ namespace Quantum.Prototypes {
     public FP Radius;
     public FP SpeedBase;
     public FP SpeedIncrement;
+    public FP SpeedMax;
     public FP AttackMax;
     partial void MaterializeUser(Frame frame, ref Quantum.BattleProjectileQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
@@ -410,6 +411,7 @@ namespace Quantum.Prototypes {
         result.Radius = this.Radius;
         result.SpeedBase = this.SpeedBase;
         result.SpeedIncrement = this.SpeedIncrement;
+        result.SpeedMax = this.SpeedMax;
         result.AttackMax = this.AttackMax;
         MaterializeUser(frame, ref result, in context);
     }

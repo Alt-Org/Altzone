@@ -1239,7 +1239,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattleProjectileQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 80;
+    public const Int32 SIZE = 88;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(12)]
     public QBoolean IsLaunched;
@@ -1252,7 +1252,7 @@ namespace Quantum {
     private fixed Byte _CollisionFlags_[2];
     [FieldOffset(40)]
     public FP Speed;
-    [FieldOffset(64)]
+    [FieldOffset(72)]
     public FPVector2 Direction;
     [FieldOffset(16)]
     public FP Attack;
@@ -1262,6 +1262,8 @@ namespace Quantum {
     public FP SpeedBase;
     [FieldOffset(56)]
     public FP SpeedIncrement;
+    [FieldOffset(64)]
+    public FP SpeedMax;
     [FieldOffset(24)]
     public FP AttackMax;
     public FixedArray<BattleProjectileCollisionFlags> CollisionFlags {
@@ -1282,6 +1284,7 @@ namespace Quantum {
         hash = hash * 31 + Radius.GetHashCode();
         hash = hash * 31 + SpeedBase.GetHashCode();
         hash = hash * 31 + SpeedIncrement.GetHashCode();
+        hash = hash * 31 + SpeedMax.GetHashCode();
         hash = hash * 31 + AttackMax.GetHashCode();
         return hash;
       }
@@ -1298,6 +1301,7 @@ namespace Quantum {
         FP.Serialize(&p->Speed, serializer);
         FP.Serialize(&p->SpeedBase, serializer);
         FP.Serialize(&p->SpeedIncrement, serializer);
+        FP.Serialize(&p->SpeedMax, serializer);
         FPVector2.Serialize(&p->Direction, serializer);
     }
   }

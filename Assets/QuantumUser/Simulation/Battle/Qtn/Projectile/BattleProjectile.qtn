@@ -22,6 +22,7 @@ component BattleProjectileQComponent
     FP Radius;
     FP SpeedBase;
     FP SpeedIncrement;
+    FP SpeedMax;
     FP AttackMax;
 
     //array<FP>[BATTLE_EMOTION_STATE_COUNT] SpeedMultiplierArray;

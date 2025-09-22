@@ -122,6 +122,10 @@ namespace Battle.QSimulation.Projectile
             //projectile->Speed = projectile->SpeedPotential * projectile->SpeedMultiplierArray[(int)projectile->Emotion];
 
             projectile->Speed += speedIncreaseAmount;
+            if (projectile->Speed > projectile->SpeedMax)
+            {
+                projectile->Speed = projectile->SpeedMax;
+            }
 
             if (resetSpeed)
             {
@@ -322,6 +326,7 @@ namespace Battle.QSimulation.Projectile
             // copy data from the spec
             projectile->Speed = spec.ProjectileInitialSpeed;
             projectile->SpeedBase = projectile->Speed;
+            projectile->SpeedMax = spec.SpeedMax;
             //projectile->SpeedPotential = projectile->Speed;
             projectile->SpeedIncrement = spec.SpeedIncrement;
             projectile->Direction = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
