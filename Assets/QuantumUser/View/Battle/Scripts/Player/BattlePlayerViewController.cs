@@ -28,6 +28,9 @@ namespace Battle.View.Player
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
+
+        [SerializeField] private BattlePlayerClassBaseViewController _classViewControllerOverride;
+
         /// <summary>[SerializeField] Animator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> that handles player animations.</summary>
         /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private Animator _animator;
@@ -76,7 +79,8 @@ namespace Battle.View.Player
         /// </summary>
         ///
         /// <param name="_">Current simulation frame.</param>
-        public override void OnActivate(Frame _) => QuantumEvent.Subscribe(this, (EventBattlePlayerViewInit e) => {
+        public override void OnActivate(Frame _) { PreInitSetup(); QuantumEvent.Subscribe(this, (EventBattlePlayerViewInit e) =>
+        {
             if (EntityRef != e.Entity) return;
             if (!PredictedFrame.Exists(e.Entity)) return;
 
@@ -103,9 +107,24 @@ namespace Battle.View.Player
                 _localPlayerIndicator.SetActive(true);
             }
 
+            if (_classViewControllerOverride != null)
+            {
+                if(_classViewControllerOverride.Class == e.Class)
+                {
+                    Destroy(_classViewController);
+                    _classViewController = _classViewControllerOverride;
+                }
+                else
+                {
+                    Debug.LogErrorFormat("[BattlePlayerViewController] Class view controller missmatch! Expected {0}, got {1}", e.Class, _classViewControllerOverride.Class);
+                    Destroy(_classViewControllerOverride);
+                }
+            }
+            _classViewController.OnViewInit(this, e.Entity, e.Slot, e.CharacterId);
+
             QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
             QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
-        });
+        });}
 
         /// <summary>
         /// Public method that is called when the view should update.<br/>
@@ -138,6 +157,8 @@ namespace Battle.View.Player
             //        _spriteRenderer.color = tempColor;
             //    }
             //}
+
+            _classViewController.OnUpdateView();
         }
 
         /// <value>Reference to the active character's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SpriteRenderer.html">SpriteRenderer@u-exlink</a>.</value>
@@ -145,6 +166,13 @@ namespace Battle.View.Player
 
         /// <value>Holder variable for the damage flash coroutine.</value>
         private Coroutine _damageFlashCoroutine = null;
+
+        private BattlePlayerClassBaseViewController _classViewController;
+
+        private void PreInitSetup()
+        {
+            _classViewController = gameObject.AddComponent<BattlePlayerClassNoneViewController>();
+        }
 
         /// <summary>
         /// Updates the player model's position.
@@ -209,6 +237,8 @@ namespace Battle.View.Player
                 StopCoroutine(_damageFlashCoroutine);
             }
             _damageFlashCoroutine = StartCoroutine(DamageFlashCoroutine());
+
+            _classViewController.OnCharacterTakeDamage(e);
         }
 
         private void QEventOnShieldTakeDamage(EventBattleShieldTakeDamage e)
@@ -225,6 +255,8 @@ namespace Battle.View.Player
             {
                 _shieldHitParticle.Play();
             }
+
+            _classViewController.OnShieldTakeDamage(e);
         }
 
         /// <summary>
