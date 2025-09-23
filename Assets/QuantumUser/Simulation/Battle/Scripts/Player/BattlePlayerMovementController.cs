@@ -43,8 +43,10 @@ namespace Battle.QSimulation.Player
         /// <param name="input">Pointer to player's Quantum Input.</param>
         public static void UpdateMovement(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform, Input* input)
         {
+            BattlePlayerQSpec spec = BattleQConfig.GetPlayerSpec(f);
+
             // constant
-            FP rotationSpeed = BattleQConfig.GetPlayerSpec(f).RotationSpeed;
+            FP rotationSpeed = spec.RotationSpeed;
 
             FPVector2 positionNext = transform->Position;
 
@@ -99,7 +101,7 @@ namespace Battle.QSimulation.Player
             {
                 // set target angle
                 FP maxAngle = FP.Rad_45 * input->RotationValue;
-                FP maxAllowedAngle = BattleQConfig.GetPlayerSpec(f).MaxRotationAngle;
+                FP maxAllowedAngle = spec.MaxRotationAngle;
                 maxAngle = FPMath.Clamp(maxAngle, -maxAllowedAngle, maxAllowedAngle);
 
                 // rotates to left
