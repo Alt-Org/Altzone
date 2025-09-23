@@ -40,6 +40,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         ChangeAvatarClothes,
         ChangeItemsPosition,
         UseAllItemsSoulhome,
+        FindVariableValueInGame,
     }
 
     public enum TaskEducationSocialType
@@ -79,6 +80,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         ClickKnownCharacter,
         SimiliarToAGame,
         SetProfilePlayerType,
+        FindPowerOrEqualityWindow,
     }
 
     public enum TaskEducationEthicalType
@@ -320,6 +322,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                     {
                         return TaskEducationActionType.UseAllItemsSoulhome;
                     }
+                case "find_variable_value_in_game":
+                    {
+                        return TaskEducationActionType.FindVariableValueInGame;
+                    }
                 default:
                     {
                         return TaskEducationActionType.PlayBattle;
@@ -460,6 +466,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case "what_famous_game_reminding":
                     {
                         return TaskEducationCultureType.SimiliarToAGame;
+                    }
+                case "find_power_or_equality_referring_window":
+                    {
+                        return TaskEducationCultureType.FindPowerOrEqualityWindow;
                     }
                 default:
                     {

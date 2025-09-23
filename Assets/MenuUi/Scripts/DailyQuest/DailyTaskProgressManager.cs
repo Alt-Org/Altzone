@@ -125,6 +125,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationActionType.ChangeAvatarClothes: HandleSimpleTask(value); break;
             case TaskEducationActionType.ChangeItemsPosition: HandleSimpleTask(value); break;
             case TaskEducationActionType.UseAllItemsSoulhome: HandleSimpleTask(value); break;
+            case TaskEducationActionType.FindVariableValueInGame: HandleSimpleTask(value); break;
             default: break;
         }
     }
@@ -196,6 +197,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationCultureType.GamesGenreTypes: HandleSimpleTask(value); break;
             case TaskEducationCultureType.SetProfilePlayerType: HandleSimpleTask(value); break;
             case TaskEducationCultureType.SimiliarToAGame: HandleSimpleTask(value); break;
+            case TaskEducationCultureType.FindPowerOrEqualityWindow: HandleSimpleTask(value); break;
             default: break;
         }
     }
