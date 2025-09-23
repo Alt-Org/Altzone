@@ -30,6 +30,6 @@ namespace Battle.QSimulation.Player
 
         [Tooltip("Time before a new character is automatically spawned after one dies")]
         /// <value>Time before a new character is automatically spawned after one dies.</value>
-        public FP RespawnTime;
+        public FP AutoRespawnTime;
     }
 }

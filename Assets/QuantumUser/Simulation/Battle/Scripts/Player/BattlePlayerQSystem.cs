@@ -71,7 +71,7 @@ namespace Battle.QSimulation.Player
             {
                 BattlePlayerManager.DespawnPlayer(f, damagedPlayerData->Slot, kill: true);
                 damagePlayerHandle.SetOutOfPlayRespawning();
-                damagePlayerHandle.RespawnTimer = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).RespawnTime);
+                damagePlayerHandle.RespawnTimer = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).AutoRespawnTime);
             }
 
             BattlePlayerClassManager.OnProjectileHitPlayerHitbox(f, projectile, projectileEntity, playerHitbox, playerHitboxEntity);
