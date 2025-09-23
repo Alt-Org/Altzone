@@ -6,6 +6,7 @@ using Quantum;
 using Battle.QSimulation.Projectile;
 using Battle.QSimulation.SoulWall;
 using Battle.QSimulation.Diamond;
+using Battle.QSimulation.Player;
 
 namespace Battle.QSimulation.Game
 {
@@ -15,6 +16,7 @@ namespace Battle.QSimulation.Game
         public AssetRef<BattleSoulWallQSpec>   BattleSoulWallSpec;
         public AssetRef<BattleProjectileQSpec> BattleProjectileSpec;
         public AssetRef<BattleDiamondQSpec>    BattleDiamondSpec;
+        public AssetRef<BattlePlayerQSpec>     BattlePlayerSpec;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BattleArenaQSpec GetArenaSpec(Frame f)
@@ -38,6 +40,12 @@ namespace Battle.QSimulation.Game
         public static BattleDiamondQSpec GetDiamondSpec(Frame f)
         {
             return f.FindAsset(f.FindAsset(f.RuntimeConfig.BattleConfig).BattleDiamondSpec);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static BattlePlayerQSpec GetPlayerSpec(Frame f)
+        {
+            return f.FindAsset(f.FindAsset(f.RuntimeConfig.BattleConfig).BattlePlayerSpec);
         }
     }
 

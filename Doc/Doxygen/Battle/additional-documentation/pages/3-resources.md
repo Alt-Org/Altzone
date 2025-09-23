@@ -38,6 +38,7 @@ These **assets** only contain the data used by the **Spec**. **Specs**'s structu
 | @dirref{Altzone,Assets/QuantumUser/Resources,Specs} | @ref BattleDiamondQSpec.asset    | @copybrief BattleDiamondQSpec.asset    |
 | @dirref{Altzone,Assets/QuantumUser/Resources,Specs} | @ref BattleProjectileQSpec.asset | @copybrief BattleProjectileQSpec.asset |
 | @dirref{Altzone,Assets/QuantumUser/Resources,Specs} | @ref BattleSoulWallQSpec.asset   | @copybrief BattleSoulWallQSpec.asset   |
+| @dirref{Altzone,Assets/QuantumUser/Resources,Specs} | @ref BattlePlayerQSpec.asset     | @copybrief BattlePlayerQSpec.asset     |
 
 <br/>
 
