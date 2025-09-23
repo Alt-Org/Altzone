@@ -28,7 +28,8 @@ namespace Battle.View.Player
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-
+        /// <summary>[SerializeField] Optional override controller, set via Unity inspector.</summary>
+        /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private BattlePlayerClassBaseViewController _classViewControllerOverride;
 
         /// <summary>[SerializeField] Animator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> that handles player animations.</summary>
@@ -67,8 +68,12 @@ namespace Battle.View.Player
         /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private int _damageFlashAmount = 5;
 
+        /// <summary>[SerializeField] The sprite for character when the player's shield is broken or no longer active.</summary>
+        /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private Sprite _noShieldSprite;
 
+        /// <summary>[SerializeField] Particle system played when the player's shield takes damage.</summary>
+        /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private ParticleSystem _shieldHitParticle;
 
         /// @}
