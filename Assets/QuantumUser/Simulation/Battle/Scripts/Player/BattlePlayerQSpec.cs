@@ -26,10 +26,10 @@ namespace Battle.QSimulation.Player
 
         [Tooltip("Time before player or shield can take damage again")]
         /// <value>Time before player can take damage again.</value>
-        public FP DamageCooldown;
+        public FP DamageCooldownSec;
 
         [Tooltip("Time before a new character is automatically spawned after one dies")]
         /// <value>Time before a new character is automatically spawned after one dies.</value>
-        public FP AutoRespawnTime;
+        public FP AutoRespawnTimeSec;
     }
 }
