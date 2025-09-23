@@ -44,7 +44,7 @@ namespace Battle.QSimulation.Player
         public static void UpdateMovement(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform, Input* input)
         {
             // constant
-            FP rotationSpeed = FP._10;
+            FP rotationSpeed = BattleQConfig.GetPlayerSpec(f).RotationSpeed;
 
             FPVector2 positionNext = transform->Position;
 
@@ -99,7 +99,8 @@ namespace Battle.QSimulation.Player
             {
                 // set target angle
                 FP maxAngle = FP.Rad_45 * input->RotationValue;
-                maxAngle = FPMath.Clamp(maxAngle, -FP.Rad_45, FP.Rad_45);
+                FP maxAllowedAngle = BattleQConfig.GetPlayerSpec(f).MaxRotationAngle;
+                maxAngle = FPMath.Clamp(maxAngle, -maxAllowedAngle, maxAllowedAngle);
 
                 // rotates to left
                 if (maxAngle > playerData->RotationOffset)
