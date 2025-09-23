@@ -12,6 +12,8 @@ public class MessageObjectHandler : MonoBehaviour
     [SerializeField] private AvatarFaceLoader _avatar;
     [SerializeField] private TextMeshProUGUI _name;
     [SerializeField] private TextMeshProUGUI _text;
+    [SerializeField] private TextMeshProUGUI _time;
+    [SerializeField] private TextMeshProUGUI _date;
     [SerializeField] private Button _button;
     [SerializeField] private GameObject _addReactionsControls;
     [SerializeField] private GameObject _reactionsPanel;
@@ -46,12 +48,15 @@ public class MessageObjectHandler : MonoBehaviour
         _text.text = message.Message;
         _selectMessageAction = selectMessageAction;
         _name.text = message.Username;
+        _time.text = $"{message.Timestamp.Hour}:{message.Timestamp.Minute}";
+        _date.text = $"{message.Timestamp.Day}/{message.Timestamp.Month}/{message.Timestamp.Year}";
     }
 
     public void SetPreviewMessageInfo(ChatMessage message)
     {
         if (message.Avatar != null) _avatar.UpdateVisuals(AvatarDesignLoader.Instance.LoadAvatarDesign(message.Avatar));
         _text.text = message.Message;
+        _name.text = message.Username;
         _button.enabled = false;
     }
 
