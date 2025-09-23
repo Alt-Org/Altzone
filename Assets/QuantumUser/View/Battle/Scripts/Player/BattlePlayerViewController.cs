@@ -172,8 +172,12 @@ namespace Battle.View.Player
         /// <value>Holder variable for the damage flash coroutine.</value>
         private Coroutine _damageFlashCoroutine = null;
 
+        /// <value>Reference to the active class view controller.</value>
         private BattlePlayerClassBaseViewController _classViewController;
 
+        /// <summary>
+        /// Method for initializing character's class as none at the start of activation.
+        /// </summary>
         private void PreInitSetup()
         {
             _classViewController = gameObject.AddComponent<BattlePlayerClassNoneViewController>();
@@ -246,6 +250,11 @@ namespace Battle.View.Player
             _classViewController.OnCharacterTakeDamage(e);
         }
 
+        /// <summary>
+        /// Handler method for EventBattleShieldTakeDamage QuantumEvent.<br/>
+        /// </summary>
+        ///
+        /// <param name="e">The event data.</param>
         private void QEventOnShieldTakeDamage(EventBattleShieldTakeDamage e)
         {
             if (EntityRef != e.Entity) return;
