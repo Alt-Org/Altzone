@@ -23,6 +23,10 @@ public class LeaderboardView : MonoBehaviour
     [SerializeField] private GameObject _leaderboardCategoryButtons;
     [SerializeField] private Button _clansButton;
     [SerializeField] private Button _playersButton;
+    [SerializeField] private Button _winsLeaderboardButton; 
+ 
+    [SerializeField] private Image _winsLeaderboardImage; //Lisätty 
+
 
     [Header("Tab sprites")]
     [SerializeField] private Sprite _globalWinsSprite;
@@ -31,6 +35,7 @@ public class LeaderboardView : MonoBehaviour
     [SerializeField] private Sprite _clanActivitySprite;
     [SerializeField] private Sprite _friendsWinsSprite;
     [SerializeField] private Sprite _friendsActivitySprite;
+    [SerializeField] private Sprite _winsActivitySprite; //Lisätty
 
     [Header("Leaderboard panels")]
     [SerializeField] private LeaderboardPodium _podium;
@@ -52,7 +57,8 @@ public class LeaderboardView : MonoBehaviour
     {
         Global,
         Clan,
-        Friends
+        Friends,
+        Wins 
     }
     private enum LeaderboardType
     {
@@ -73,19 +79,17 @@ public class LeaderboardView : MonoBehaviour
         _globalLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Global));
         _clanLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Clan));
         _friendsLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Friends));
+        _winsLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Wins)); 
 
-        _leaderboardTypeButton.onClick.AddListener(() => ToggleLeaderboardType());
-
-        _clansButton.onClick.AddListener(() => ListClans());
-        _playersButton.onClick.AddListener(() => ListPlayers());
     }
 
     private void OnEnable()
     {
-        SetLeaderboardType(LeaderboardType.Activity);
-        OpenLeaderboard(Leaderboard.Global);
-        LoadActivityView();
+        //SetLeaderboardType(LeaderboardType.Wins);
+        OpenLeaderboard(Leaderboard.Wins);
+        //LoadWinsView();
         _tablineScript.ActivateTabButton(0);
+
     }
 
     private void OpenLeaderboard(Leaderboard leaderboard)
@@ -93,7 +97,20 @@ public class LeaderboardView : MonoBehaviour
         _currentLeaderboard = leaderboard;
 
         _currentLeaderboardCategory = LeaderboardCategory.Players;
-        LoadActivityView();
+
+       if (leaderboard == Leaderboard.Wins)
+        {
+            SetLeaderboardType(LeaderboardType.Wins); //Asetetaan voitot-näkymä
+            
+        }
+        
+        else
+        {
+            SetLeaderboardType(LeaderboardType.Activity); // Asetetaan aktiivisuus -näkymä
+            
+        }
+
+       LoadWinsView(); // Näyttää oletukena voittolistat
     }
 
     private void SetLeaderboardType(LeaderboardType leaderboardType)
@@ -109,94 +126,65 @@ public class LeaderboardView : MonoBehaviour
         foreach (Transform child in _activityContent) Destroy(child.gameObject);
 
         _podium.SetPlayerView();
-        _leaderboardTypeButton.interactable = true;
-
-        _leaderboardCategoryButtons.SetActive(_currentLeaderboard == Leaderboard.Global);
+      
 
         switch (_currentLeaderboard)
         {
-            case Leaderboard.Global:
-                if (_currentLeaderboardCategory == LeaderboardCategory.Players)
+            case Leaderboard.Global: //Pelaajien voittolista
                 {
+
                     StartCoroutine(ServerManager.Instance.GetPlayerLeaderboardFromServer((playerLeaderboard) =>
                     {
-                        if (_currentLeaderboardType == LeaderboardType.Wins)
+
+                        playerLeaderboard.Sort((a, b) => b.WonBattles.CompareTo(a.WonBattles)); //vaihdettu järjestys laskevaksi
+
+                        int rank = 1;
+                        foreach (PlayerLeaderboard ranking in playerLeaderboard)
                         {
-                            playerLeaderboard.Sort((a, b) => a.WonBattles.CompareTo(b.WonBattles));
+                            AvatarVisualData avatarVisualData = null;
 
-                            int rank = 1;
-                            foreach (PlayerLeaderboard ranking in playerLeaderboard)
+                            if (/*ranking.Player.SelectedCharacterId != 201 &&*/ ranking.Player.SelectedCharacterId != 0)
                             {
-                                AvatarVisualData avatarVisualData = null;
-
-                                if (/*ranking.Player.SelectedCharacterId != 201 &&*/ ranking.Player.SelectedCharacterId != 0)
-                                {
-                                    avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(ranking.Player);
-                                }
-
-                                if (rank < 4)
-                                {
-                                    _podium.InitilializePodium(rank, ranking.Player.Name, ranking.Points, ranking.Player);
-                                }
-                                else
-                                {
-                                    LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-                                    item.Initialize(rank, ranking.Player.Name, ranking.Points, avatarVisualData);
-
-                                    // View player profile button
-                                    item.OpenProfileButton.onClick.AddListener(() =>
-                                    {
-                                        DataCarrier.AddData(DataCarrier.PlayerProfile, ranking.Player);
-                                    });
-                                }
-
-                                rank++;
+                                avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(ranking.Player);
                             }
-                        }
-                        else
-                        {
-                            playerLeaderboard.Sort((a, b) => a.Points.CompareTo(b.Points));
 
-                            int rank = 1;
-                            foreach (PlayerLeaderboard ranking in playerLeaderboard)
+                            if (rank < 4)
                             {
-                                AvatarVisualData avatarVisualData = null;
+                                _podium.InitilializePodium(rank, ranking);
+                            }
+                            else
+                            {
+                                LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
 
-                                if (/*ranking.Player.SelectedCharacterId != 201 &&*/ ranking.Player.SelectedCharacterId != 0)
+
+
+                                item.Initialize(rank, ranking);
+
+
+
+                                // View player profile button
+                                item.OpenProfileButton.onClick.AddListener(() =>
                                 {
-                                    avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(ranking.Player);
-                                }
+                                    DataCarrier.AddData(DataCarrier.PlayerProfile, ranking.Player);
+                                });
+                            }
 
-                                if (rank < 4)
-                                {
-                                    _podium.InitilializePodium(rank, ranking.Player.Name, ranking.Points, ranking.Player);
-                                }
-                                else
-                                {
-                                    LeaderboardActivityItem item = Instantiate(_playerActivityItemPrefab, parent: _activityContent).GetComponent<LeaderboardActivityItem>();
-                                    item.Initialize(rank, ranking.Player.Name, ranking.Points, avatarVisualData);
-
-                                    // View player profile button
-                                    item.OpenProfileButton.onClick.AddListener(() =>
-                                    {
-                                        DataCarrier.AddData(DataCarrier.PlayerProfile, ranking.Player);
-                                    });
-                                }
-
-                                rank++;
-                            };
+                            rank++;
                         }
+
                     }));
                 }
-                else // Clans leaderboard
+                
+                break;
+
+            case Leaderboard.Wins: //Klaanien voittolista
                 {
                     StartCoroutine(ServerManager.Instance.GetClanLeaderboardFromServer((clanLeaderboard) =>
                     {
 
-                        _leaderboardTypeButton.interactable = false;
                         _podium.SetClanView();
 
-                        clanLeaderboard.Sort((a, b) => a.Points.CompareTo(b.Points));
+                        clanLeaderboard.Sort((a, b) => b.Points.CompareTo(a.Points)); //laskevaksi
 
                         int rank = 1;
                         foreach (ClanLeaderboard ranking in clanLeaderboard)
@@ -210,7 +198,7 @@ public class LeaderboardView : MonoBehaviour
                             }
                             else
                             {
-                                LeaderboardClanPointsItem item = Instantiate(_clanPointsItemPrefab, parent: _activityContent).GetComponent<LeaderboardClanPointsItem>();
+                                LeaderboardClanPointsItem item = Instantiate(_clanPointsItemPrefab, parent: _winsContent).GetComponent<LeaderboardClanPointsItem>();
                                 item.Initialize(rank, ranking.Clan.Name, ranking.Points);
 
                                 // Clan heart colors
@@ -230,13 +218,15 @@ public class LeaderboardView : MonoBehaviour
                     }));
                 }
                 break;
-            case Leaderboard.Clan:
+
+
+            case Leaderboard.Clan: // Klaanin voittolista
 
                 Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
                 {
                     if (_currentLeaderboardType == LeaderboardType.Wins)
                     {
-                        clanData.Members.Sort((a, b) => a.LeaderBoardWins.CompareTo(b.LeaderBoardWins));
+                        clanData.Members.Sort((a, b) => b.LeaderBoardWins.CompareTo(a.LeaderBoardWins)); //lista laskevaksi
 
                         int rank = 1;
                         foreach (ClanMember player in clanData.Members)
@@ -256,7 +246,7 @@ public class LeaderboardView : MonoBehaviour
                             else
                             {
                                 LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-                                item.Initialize(rank, player.Name, player.LeaderBoardWins, avatarVisualData);
+                                item.Initialize(rank, player.Name, player.LeaderBoardWins, avatarVisualData, ""); // lisätty parametri
 
                                 //View player profile button
                                 item.OpenProfileButton.onClick.AddListener(() =>
@@ -282,7 +272,7 @@ public class LeaderboardView : MonoBehaviour
                                 else
                                 {
                                     LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-                                    item.Initialize(rank, "", 0, null);
+                                    item.Initialize(rank, "", 0, null, ""); //lisätty tyhjä parametriksi
                                 }
 
                                 rank++;
@@ -291,7 +281,7 @@ public class LeaderboardView : MonoBehaviour
                     }
                     else
                     {
-                        clanData.Members.Sort((a, b) => a.LeaderBoardCoins.CompareTo(b.LeaderBoardCoins));
+                        clanData.Members.Sort((a, b) => b.LeaderBoardCoins.CompareTo(a.LeaderBoardCoins)); //laskevaksi
 
                         int rank = 1;
                         foreach (ClanMember player in clanData.Members)
@@ -324,7 +314,7 @@ public class LeaderboardView : MonoBehaviour
                         }
 
                         // Add empty placements to fill out the space if necessary 
-                        if(clanData.Members.Count < 15)
+                        if (clanData.Members.Count < 15)
                         {
                             int placements = 15 - clanData.Members.Count;
 
@@ -359,7 +349,7 @@ public class LeaderboardView : MonoBehaviour
                         else
                         {
                             LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-                            item.Initialize(i, "", 0, null);
+                            item.Initialize(i, "", 0, null, ""); //lisätty tyhjä parametriksi
 
                             // View player profile button
                             //item.OpenProfileButton.onClick.AddListener(() =>
@@ -392,82 +382,44 @@ public class LeaderboardView : MonoBehaviour
                 }
 
                 break;
-        }
+
+         
+        }       
+
     }
 
     private void ToggleLeaderboardType()
     {
-        if (_currentLeaderboardType == LeaderboardType.Activity)
+        if (_currentLeaderboardType == LeaderboardType.Wins)
         {
-            LoadWinsView();
+          //  LoadActivityView();
         }
         else
         {
-            LoadActivityView();
+            LoadWinsView();
         }
     }
 
-    private void LoadActivityView()
-    {
-        SetLeaderboardType(LeaderboardType.Activity);
-        LoadLeaderboard();
-
-        // Activate/deactivate necessary icons
-        foreach (GameObject icon in _winsViewIcons)
-        {
-            icon.SetActive(false);
-        }
-
-        foreach (GameObject icon in _activityViewIcons)
-        {
-            icon.SetActive(true);
-        }
-
-        // Tabline colors
-        Color activityRed = new Color(0.8549f, 0.2352f, 0.3254f);
-        _tablineRibbon.color = activityRed;
-
-        // Tab sprites
-        _globalLeaderboardImage.sprite = _globalActivitySprite;
-        _clanLeaderboardImage.sprite = _clanActivitySprite;
-        _friendsLeaderboardImage.sprite = _friendsActivitySprite;
-    }
 
     private void LoadWinsView()
     {
         SetLeaderboardType(LeaderboardType.Wins);
         LoadLeaderboard();
 
-        // Activate/deactivate necessary icons
-        foreach (GameObject icon in _activityViewIcons)
-        {
-            icon.SetActive(false);
-        }
-
-        foreach (GameObject icon in _winsViewIcons)
-        {
-            icon.SetActive(true);
-        }
+       
 
         // Tabline colors
         Color winsYellow = new Color(1f, 0.6313f, 0f);
         _tablineRibbon.color = winsYellow;
 
-        // Tab sprites
+        /*/ Tab sprites
         _globalLeaderboardImage.sprite = _globalWinsSprite;
         _clanLeaderboardImage.sprite = _clanWinsSprite;
         _friendsLeaderboardImage.sprite = _friendsWinsSprite;
-    }
 
-    private void ListClans()
-    {
-        _currentLeaderboardCategory = LeaderboardCategory.Clans;
-        LoadActivityView();
-    }
+       _winsLeaderboardButton.image.color = winsYellow; */
 
-    private void ListPlayers()
-    {
-        _currentLeaderboardCategory = LeaderboardCategory.Players;
-        LoadActivityView();
+        
+
     }
 }
