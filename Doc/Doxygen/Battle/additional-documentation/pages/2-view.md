@@ -40,12 +40,13 @@
 In **%Battle** **View Controllers** have **"ViewController"** suffix. [[Naming]](#index-naming)
 
 |  Namespace                                          || Class                                                         | Description                                                       |
-| :------------------ | :----------------------------- | :-----------------------------------------------------------  | :---------------------------------------------------------------  |
+| :------------------ | :----------------------------- | :------------------------------------------------------------ | :---------------------------------------------------------------- |
 | @crefd{Battle.View} | @crefd{Battle.View,Game}       | @cref{Battle.View.Game,BattleGameViewController}              | @copybrief Battle.View.Game.BattleGameViewController              |
 | @crefd{Battle.View} | @crefd{Battle.View,Game}       | @cref{Battle.View.Game,BattleGridViewController}              | @copybrief Battle.View.Game.BattleGridViewController              |
 |                                                                                                                                                                                       ||||
 | @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerViewController}          | @copybrief Battle.View.Player.BattlePlayerViewController          |
 | @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerClassBaseViewController} | @copybrief Battle.View.Player.BattlePlayerClassBaseViewController |
+| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerClassNoneViewController} | @copybrief Battle.View.Player.BattlePlayerClassNoneViewController |
 |                                                                                                                                                                                       ||||
 | @crefd{Battle.View} | @crefd{Battle.View,SoulWall}   | @cref{Battle.View.SoulWall,BattleSoulWallViewController}      | @copybrief Battle.View.SoulWall.BattleSoulWallViewController      |
 |                                                                                                                                                                                       ||||
