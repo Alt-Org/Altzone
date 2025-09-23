@@ -277,11 +277,8 @@ namespace Altzone.Scripts.Chat
                         content = message,
                         feeling = emotion.ToString()
                     }
-                }
+                }).ToString();
 
-                ).ToString();
-
-                Debug.LogWarning(body);
                 await _socket.SendText(body);
             }
         }
@@ -302,9 +299,7 @@ namespace Altzone.Scripts.Chat
                         message_id = id,
                         emoji = message
                     }
-                }
-
-                ).ToString();
+                }).ToString();
 
                 await _socket.SendText(body);
             }

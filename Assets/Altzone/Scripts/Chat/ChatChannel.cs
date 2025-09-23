@@ -30,6 +30,9 @@ namespace Altzone.Scripts.Chat
         public delegate void MessageReceived(ChatChannelType chatChannelType, ChatMessage message);
         public static event MessageReceived OnMessageReceived;
 
+        public delegate void ReactionReceived(ChatChannelType chatChannelType, ChatMessage message);
+        public static event ReactionReceived OnReactionReceived;
+
         public delegate void MessageHistoryReceived(ChatChannelType chatChannelType);
         public static event MessageHistoryReceived OnMessageHistoryReceived;
 
@@ -83,7 +86,7 @@ namespace Altzone.Scripts.Chat
             if (message != null)
             {
                 message.Reactions = reactions;
-                OnMessageDeleted?.Invoke(_chatChannelType, id);
+                OnReactionReceived?.Invoke(_chatChannelType, message);
             }
         }
 
