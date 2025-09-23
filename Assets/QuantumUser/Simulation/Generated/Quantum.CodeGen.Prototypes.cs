@@ -383,20 +383,18 @@ namespace Quantum.Prototypes {
   public unsafe partial class BattleProjectileQComponentPrototype : ComponentPrototype<Quantum.BattleProjectileQComponent> {
     public QBoolean IsLaunched;
     public QBoolean IsHeld;
-    public FP Speed;
-    [ArrayLengthAttribute(5)]
-    public FP[] SpeedMultiplierArray = new FP[5];
-    public FP SpeedPotential;
-    public FP SpeedIncrement;
-    public FP AccelerationTimer;
-    public FP AccelerationTimerDuration;
-    public FPVector2 Direction;
-    public FP Radius;
-    public Quantum.QEnum32<BattleEmotionState> Emotion;
-    public FP Attack;
-    public FP AttackMax;
+    public Quantum.QEnum32<BattleEmotionState> EmotionBase;
+    public Quantum.QEnum32<BattleEmotionState> EmotionCurrent;
     [ArrayLengthAttribute(2)]
     public Quantum.QEnum8<BattleProjectileCollisionFlags>[] CollisionFlags = new Quantum.QEnum8<BattleProjectileCollisionFlags>[2];
+    public FP Speed;
+    public FPVector2 Direction;
+    public FP Attack;
+    public FP Radius;
+    public FP SpeedBase;
+    public FP SpeedIncrement;
+    public FP SpeedMax;
+    public FP AttackMax;
     partial void MaterializeUser(Frame frame, ref Quantum.BattleProjectileQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattleProjectileQComponent component = default;
@@ -406,22 +404,19 @@ namespace Quantum.Prototypes {
     public void Materialize(Frame frame, ref Quantum.BattleProjectileQComponent result, in PrototypeMaterializationContext context = default) {
         result.IsLaunched = this.IsLaunched;
         result.IsHeld = this.IsHeld;
-        result.Speed = this.Speed;
-        for (int i = 0, count = PrototypeValidator.CheckLength(SpeedMultiplierArray, 5, in context); i < count; ++i) {
-          *result.SpeedMultiplierArray.GetPointer(i) = this.SpeedMultiplierArray[i];
-        }
-        result.SpeedPotential = this.SpeedPotential;
-        result.SpeedIncrement = this.SpeedIncrement;
-        result.AccelerationTimer = this.AccelerationTimer;
-        result.AccelerationTimerDuration = this.AccelerationTimerDuration;
-        result.Direction = this.Direction;
-        result.Radius = this.Radius;
-        result.Emotion = this.Emotion;
-        result.Attack = this.Attack;
-        result.AttackMax = this.AttackMax;
+        result.EmotionBase = this.EmotionBase;
+        result.EmotionCurrent = this.EmotionCurrent;
         for (int i = 0, count = PrototypeValidator.CheckLength(CollisionFlags, 2, in context); i < count; ++i) {
           *result.CollisionFlags.GetPointer(i) = this.CollisionFlags[i];
         }
+        result.Speed = this.Speed;
+        result.Direction = this.Direction;
+        result.Attack = this.Attack;
+        result.Radius = this.Radius;
+        result.SpeedBase = this.SpeedBase;
+        result.SpeedIncrement = this.SpeedIncrement;
+        result.SpeedMax = this.SpeedMax;
+        result.AttackMax = this.AttackMax;
         MaterializeUser(frame, ref result, in context);
     }
   }

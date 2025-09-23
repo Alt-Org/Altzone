@@ -75,10 +75,12 @@ namespace Battle.View
             switch (team)
             {
                 case BattleTeamNumber.TeamAlpha:
-                    _bottomCharacterEmotionIndicators[wallNumber].color = _emotionColors[emotionIndex];
+                    //_bottomCharacterEmotionIndicators[wallNumber].color = _emotionColors[emotionIndex];
+                    _bottomCharacterEmotionIndicators[wallNumber].color = Color.gray;
                     break;
                 case BattleTeamNumber.TeamBeta:
-                    _topCharacterEmotionIndicators[wallNumber].color = _emotionColors[emotionIndex];
+                    //_topCharacterEmotionIndicators[wallNumber].color = _emotionColors[emotionIndex];
+                    _topCharacterEmotionIndicators[wallNumber].color = Color.gray;
                     break;
             }
         }
