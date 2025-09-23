@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using Altzone.Scripts.Chat;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +11,7 @@ public class ChatAddReactions : MonoBehaviour
     [SerializeField] private GameObject _commonReactionsPanel;
     [SerializeField] private GameObject _allReactionsPanel;
     [SerializeField] private GameObject _usersWhoAdded;
+    [SerializeField] private Transform _reactionsContent;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject _addedReactionPrefab;
@@ -16,11 +20,13 @@ public class ChatAddReactions : MonoBehaviour
     [SerializeField] private MessageObjectHandler _selectedMessage;
 
     [Header("Reactions")]
-    [SerializeField] private GameObject[] _reactions;
+    [SerializeField] private List<ReactionObject> _reactionList;
+    [SerializeField] private GameObject _reactionObject;
 
     [Header("Buttons")]
     [SerializeField] private Button _openMoreButton;
 
+    private List<GameObject> _reactions = new();
     private List<ChatReactionHandler> _reactionHandlers = new();
     private List<int> _commonReactions = new();
 
@@ -30,8 +36,28 @@ public class ChatAddReactions : MonoBehaviour
     {
         _openMoreButton.onClick.AddListener((() => { _allReactionsPanel.SetActive(true); _commonReactionsPanel.SetActive(false);}));
 
+        GenarateReactionObjects();
         CreateReactionInteractions();
         PickCommonReactions();
+    }
+
+    private void GenarateReactionObjects()
+    {
+        _reactions.Clear();
+        foreach (Transform reaction in _reactionsContent)
+        {
+            Destroy(reaction.gameObject);
+        }
+        foreach (ReactionObject reaction in _reactionList)
+        {
+            if (reaction.Sprite != null && reaction.Mood != Mood.None)
+            {
+                //_reactions.FirstOrDefault(x => x.);
+                GameObject reactionObject = Instantiate(_reactionObject, _reactionsContent);
+                reactionObject.GetComponent<Image>().sprite = reaction.Sprite;
+                _reactions.Add(reactionObject);
+            }
+        }
     }
 
     /// <summary>
@@ -63,7 +89,7 @@ public class ChatAddReactions : MonoBehaviour
         {
             do
             {
-                randomReaction = Random.Range(0, _reactions.Length);
+                randomReaction = UnityEngine.Random.Range(0, _reactions.Count);
             }
             while (_commonReactions.Contains(randomReaction));
 
@@ -173,5 +199,12 @@ public class ChatAddReactions : MonoBehaviour
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
         //_chatScript.UpdateContentLayout(reactionsField);
+    }
+
+    [Serializable]
+    private class ReactionObject
+    {
+        public Sprite Sprite;
+        public Mood Mood;
     }
 }
