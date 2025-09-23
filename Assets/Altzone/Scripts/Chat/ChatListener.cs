@@ -254,6 +254,11 @@ namespace Altzone.Scripts.Chat
                 if (middleresult["chat"].ToString().Equals("clan")) _clanChatChannel.AddNewMessage(new(message));
                 else if (middleresult["chat"].ToString().Equals("global")) _globalChatChannel.AddNewMessage(new(message));
             }
+            else if (middleresult["event"].ToString().Equals("newReaction"))
+            {
+                if (middleresult["chat"].ToString().Equals("clan")) _clanChatChannel.UpdateReactions(message._id, message.reactions);
+                else if (middleresult["chat"].ToString().Equals("global")) _globalChatChannel.UpdateReactions(message._id, message.reactions);
+            }
         }
 
         public async void SendMessage(string message, Mood emotion, ChatChannelType channel)
@@ -277,6 +282,30 @@ namespace Altzone.Scripts.Chat
                 ).ToString();
 
                 Debug.LogWarning(body);
+                await _socket.SendText(body);
+            }
+        }
+
+        public async void SendReaction(string message, string id, ChatChannelType channel)
+        {
+            if (_socket.State == WebSocketState.Open)
+            {
+                string EventType = null;
+                if (ChatChannelType.Global == channel) EventType = "globalMessageReaction";
+                else if (ChatChannelType.Clan == channel) EventType = "clanMessageReaction";
+                string body = JObject.FromObject(
+                new
+                {
+                    @event = EventType,
+                    data = new
+                    {
+                        message_id = id,
+                        emoji = message
+                    }
+                }
+
+                ).ToString();
+
                 await _socket.SendText(body);
             }
         }
