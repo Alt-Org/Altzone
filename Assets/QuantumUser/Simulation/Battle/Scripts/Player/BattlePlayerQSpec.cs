@@ -1,3 +1,10 @@
+/// @file BattlePlayerQSpec.cs
+/// <summary>
+/// Class for defining constants used in Player code.
+/// </summary>
+///
+/// @bigtext{Filled with data from @ref BattlePlayerQSpec.asset "BattlelayerQSpec" data asset.}
+
 using UnityEngine;
 
 using Photon.Deterministic;
