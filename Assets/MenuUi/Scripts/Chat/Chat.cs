@@ -331,7 +331,7 @@ public class Chat : AltMonoBehaviour
         {
             GameObject newMessage = Instantiate(messagePrefab, _currentContent.transform);
 
-            newMessage.GetComponent<MessageObjectHandler>().SetMessageInfo(message.Message, null, SelectMessage);
+            newMessage.GetComponent<MessageObjectHandler>().SetMessageInfo(message, SelectMessage);
 
             //AddMessageInteraction(newMessage);
 

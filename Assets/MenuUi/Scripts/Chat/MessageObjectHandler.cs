@@ -10,6 +10,7 @@ using UnityEngine.UI;
 public class MessageObjectHandler : MonoBehaviour
 {
     [SerializeField] private AvatarFaceLoader _avatar;
+    [SerializeField] private TextMeshProUGUI _name;
     [SerializeField] private TextMeshProUGUI _text;
     [SerializeField] private Button _button;
     [SerializeField] private GameObject _addReactionsControls;
@@ -44,6 +45,7 @@ public class MessageObjectHandler : MonoBehaviour
         if (message.Avatar != null) _avatar.UpdateVisuals(AvatarDesignLoader.Instance.LoadAvatarDesign(message.Avatar));
         _text.text = message.Message;
         _selectMessageAction = selectMessageAction;
+        _name.text = message.Username;
     }
 
     public void SetPreviewMessageInfo(ChatMessage message)
