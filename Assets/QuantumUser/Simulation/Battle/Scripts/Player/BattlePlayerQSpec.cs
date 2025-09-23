@@ -23,5 +23,13 @@ namespace Battle.QSimulation.Player
         [Tooltip("Maximum angle a player character can be rotated to in either direction")]
         /// <value>Maximum angle a player character can be rotated to in either direction.</value>
         public FP MaxRotationAngle;
+
+        [Tooltip("Time before player or shield can take damage again")]
+        /// <value>Time before player can take damage again.</value>
+        public FP DamageCooldown;
+
+        [Tooltip("Time before a new character is automatically spawned after one dies")]
+        /// <value>Time before a new character is automatically spawned after one dies.</value>
+        public FP RespawnTime;
     }
 }
