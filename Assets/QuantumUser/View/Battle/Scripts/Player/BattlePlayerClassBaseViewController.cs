@@ -29,7 +29,7 @@ namespace Battle.View.Player
         /// Stores references to the parent controller and entity, then calls the protected <see cref="OnViewInitOverride"/> method that performs the character class specific initialization.
         /// </summary>
         ///
-        /// This is not an override method. Override the @cref{OnViewInitOverride} method in derived classes for implementing character class specific custom initialization.
+        /// This is not an overridable method. Override the @cref{OnViewInitOverride} method in derived classes for implementing character class specific custom initialization.
         ///
         /// <param name="parent">Reference to the parent (<see cref="BattlePlayerViewController"/>).</param>
         /// <param name="entityRef">The entity reference for this player character.</param>
@@ -74,7 +74,7 @@ namespace Battle.View.Player
         /// Called by <see cref="OnViewInit"/> that performs base non-specific initialization before calling this method.
         /// </summary>
         ///
-        /// This is protected override method. Use the public @cref{OnViewInit} method when initializing an instance of a character class.
+        /// Use the public @cref{OnViewInit} method when initializing an instance of a character class.
         ///
         /// <param name="slot">The player slot associated with this character.</param>
         /// <param name="characterId">The ID of the character being initialized.</param>
