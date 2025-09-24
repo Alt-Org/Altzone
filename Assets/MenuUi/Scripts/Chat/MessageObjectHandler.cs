@@ -18,10 +18,12 @@ public class MessageObjectHandler : MonoBehaviour
     [SerializeField] private GameObject _addReactionsControls;
     [SerializeField] private GameObject _reactionsPanel;
     [SerializeField] private GameObject _deleteButttons;
+    private string _id;
     private Image _image;
     private Action<MessageObjectHandler> _selectMessageAction;
 
     public GameObject ReactionsPanel { get => _reactionsPanel;}
+    public string Id { get => _id;}
 
     // Start is called before the first frame update
     void Start()
@@ -45,6 +47,7 @@ public class MessageObjectHandler : MonoBehaviour
     public void SetMessageInfo(ChatMessage message, Action<MessageObjectHandler> selectMessageAction)
     {
         if (message.Avatar != null) _avatar.UpdateVisuals(AvatarDesignLoader.Instance.LoadAvatarDesign(message.Avatar));
+        _id = message.Id;
         _text.text = message.Message;
         _selectMessageAction = selectMessageAction;
         _name.text = message.Username;
@@ -55,6 +58,7 @@ public class MessageObjectHandler : MonoBehaviour
     public void SetPreviewMessageInfo(ChatMessage message)
     {
         if (message.Avatar != null) _avatar.UpdateVisuals(AvatarDesignLoader.Instance.LoadAvatarDesign(message.Avatar));
+        _id = message.Id;
         _text.text = message.Message;
         _name.text = message.Username;
         _button.enabled = false;

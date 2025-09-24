@@ -65,7 +65,7 @@ public class MessageReactionsHandler : MonoBehaviour
                 {
                     handler = reactionObject.AddComponent<ReactionObjectHandler>();
                 }
-                handler.SetInfo(reaction.Mood, reaction.Sprite);
+                handler.SetInfo(reaction.Mood, reaction.Sprite, _selectedMessage.Id);
                 _reactions.Add(reactionObject);
             }
         }
@@ -124,15 +124,16 @@ public class MessageReactionsHandler : MonoBehaviour
     /// <summary>
     /// Adds the chosen reaction to the selected message.
     /// </summary>
-    private void AddReaction(Mood mood)
+    private void AddReaction(string _id, Mood mood)
     {
         if (_selectedMessage != null)
         {
+            string messageID = _selectedMessage.Id;
+            if (messageID != _id) return;
+
             HorizontalLayoutGroup reactionsField = _selectedMessage.ReactionsPanel.GetComponentInChildren<HorizontalLayoutGroup>();
 
             Sprite reactionSprite =_reactionList.FirstOrDefault(x => x.Mood == mood)?.Sprite;
-
-            int messageID = _selectedMessage.GetInstanceID();
 
             // Checks if chosen reaction is already added to the selected message. If so, deletes it.
             foreach (ChatReactionHandler addedReaction in _reactionHandlers)

@@ -15,11 +15,11 @@ public class ChatReactionHandler : MonoBehaviour
     public Button Button => _button;
     public LongClickButton LongClickButton => _longClickButton;
 
-    public int _messageID;
+    public string _messageID;
     public int _count = 0;
     public bool _selected;
 
-    public void SetReactionInfo(Sprite image, int messageID)
+    public void SetReactionInfo(Sprite image, string messageID)
     {
         _reactionImage.sprite = image;
         _messageID = messageID;
