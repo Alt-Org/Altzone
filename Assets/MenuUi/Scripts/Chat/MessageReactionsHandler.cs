@@ -112,6 +112,17 @@ public class MessageReactionsHandler : MonoBehaviour
             GameObject commonReaction = Instantiate(_reactions[reactionIndex], _commonReactionsPanel.transform);
             commonReaction.transform.SetAsFirstSibling();
 
+            Mood mood = _reactions[reactionIndex].GetComponent<ReactionObjectHandler>().Mood;
+
+            if (!commonReaction.TryGetComponent(out ReactionObjectHandler handler))
+            {
+                handler = commonReaction.AddComponent<ReactionObjectHandler>();
+            }
+
+            ReactionObject reactionData = _reactionList.FirstOrDefault(x => x.Mood == mood);
+            if(reactionData != null)
+            handler.SetInfo(reactionData.Mood, reactionData.Sprite, _selectedMessage.Id);
+
             /*if (!commonReaction.TryGetComponent(out Button button))
             {
                 button = commonReaction.AddComponent<Button>();
