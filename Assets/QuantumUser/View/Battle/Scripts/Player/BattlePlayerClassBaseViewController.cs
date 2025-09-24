@@ -1,10 +1,9 @@
 /// @file BattlePlayerClassBaseViewController.cs
 /// <summary>
-/// Has a class BattlePlayerClassBaseViewController which serves as the base for player character class view controllers.
+/// Contains @cref{Battle.View.Player,BattlePlayerClassBaseViewController} class,
+/// which is an abstract base class for the character class view controllers to extend.<br/>
+/// Works together with @cref{Battle.View.Player,BattlePlayerViewController}, which handles the shared player view logic.
 /// </summary>
-///
-/// Provides the foundation for character class specific view controllers.<br/>
-/// Works together with BattlePlayerViewController, which handles the shared player view logic.
 
 using Quantum;
 using UnityEngine;
@@ -12,9 +11,13 @@ using UnityEngine;
 namespace Battle.View.Player
 {
     /// <summary>
-    /// <span class="brief-h">%Class base view <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>.</span><br/>
-    /// Handles player visuals, providing overridable functionality for class specific behavior.
+    /// <span class="brief-h">%Abstract base class view controller <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>.</span><br/>
+    /// Abstract base class for the character class view controllers to extend.
     /// </summary>
+    ///
+    /// Defines class view controller structure, implements base non-specific view logic for all character classes.
+    /// Provides hooks for derived classes to implement character class specific view logic.
+    /// Works together with @cref{Battle.View.Player,BattlePlayerViewController}, which handles the shared player view logic.
     public abstract class BattlePlayerClassBaseViewController : MonoBehaviour
     {
         /// <summary>Must be implemented by derived class view controllers.</summary>
@@ -22,11 +25,13 @@ namespace Battle.View.Player
         public abstract BattlePlayerCharacterClass Class { get; }
 
         /// <summary>
-        /// Initializes the view controller for the given player entity.<br/>
-        /// Stores references to the parent controller and entity, then calls <see cref="OnViewInitOverride"/> for class specific setup.
+        /// Initializes this instance of a character class view controller. Performs base non-specific initialization for all characters classes.<br/>
+        /// Stores references to the parent controller and entity, then calls the protected <see cref="OnViewInitOverride"/> method that performs the character class specific initialization.
         /// </summary>
         ///
-        /// <param name="parent">The parent <see cref="BattlePlayerViewController"/> handling shared logic.</param>
+        /// This is not an override method. Override the @cref{OnViewInitOverride} method in derived classes for implementing character class specific custom initialization.
+        ///
+        /// <param name="parent">Reference to the parent (<see cref="BattlePlayerViewController"/>).</param>
         /// <param name="entityRef">The entity reference for this player character.</param>
         /// <param name="slot">The player slot associated with this character.</param>
         /// <param name="characterId">The ID of the character being initialized.</param>
@@ -39,7 +44,7 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Called when the character takes damage.
-        /// Can be overridden in derived classes.
+        /// Provides a hook for derived classes to implement character class specific view logic.
         /// </summary>
         ///
         /// <param name="e">The damage event data.</param>
@@ -47,6 +52,7 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Called when the character's shield takes damage.
+        /// Provides a hook for derived classes to implement character class specific view logic.
         /// </summary>
         ///
         /// <param name="e">The shield damage event data.</param>
@@ -54,19 +60,21 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Called once per frame to update the character class view.
-        /// Can be overridden in derived classes.
+        /// Provides a hook for derived classes to implement character class specific view logic.
         /// </summary>
         public virtual void OnUpdateView() { }
 
-        /// <summary>Reference to the parent <see cref="BattlePlayerViewController"/> that manages shared player view logic.</summary>
+        /// <summary>Reference to the parent <see cref="BattlePlayerViewController">view controller</see> that manages shared player view logic.</summary>
         protected BattlePlayerViewController _parent;
         /// <summary>Reference to the entity associated with this view controller.</summary>
         protected EntityRef _entityRef;
 
         /// <summary>
-        /// Provides a hook for derived classes to perform custom initialization.<br/>
-        /// Called by <see cref="OnViewInit"/> with with the player slot and character ID.
+        /// Provides a hook for derived classes to perform character class specific custom initialization.<br/>
+        /// Called by <see cref="OnViewInit"/> that performs base non-specific initialization before calling this method.
         /// </summary>
+        ///
+        /// This is protected override method. Use the public @cref{OnViewInit} method when initializing an instance of a character class.
         ///
         /// <param name="slot">The player slot associated with this character.</param>
         /// <param name="characterId">The ID of the character being initialized.</param>
