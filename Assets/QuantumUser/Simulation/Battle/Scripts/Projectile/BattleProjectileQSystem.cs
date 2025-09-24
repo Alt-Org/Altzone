@@ -87,8 +87,12 @@ namespace Battle.QSimulation.Projectile
         /// <param name="emotion">The new emotion state to assign to the projectile.</param>
         public static void SetEmotion(Frame f, BattleProjectileQComponent* projectile, BattleEmotionState emotion)
         {
-            projectile->Emotion = emotion;
-            f.Events.BattleChangeEmotionState(projectile->Emotion);
+            if (emotion != BattleEmotionState.Love)
+            {
+                projectile->EmotionBase = emotion;
+            }
+            projectile->EmotionCurrent = emotion;
+            f.Events.BattleChangeEmotionState(projectile->EmotionCurrent);
         }
 
         /// <summary>
@@ -110,14 +114,26 @@ namespace Battle.QSimulation.Projectile
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="direction">The new direction for the projectile</param>
-        public static void UpdateVelocity(Frame f, BattleProjectileQComponent* projectile, FPVector2 direction)
+        /// <param name="direction">The new direction for the projectile.</param>
+        /// <param name="speedIncreaseAmount">The amount the projectile's speed should increase.</param>
+        /// <param name="resetSpeed">True if the projectile's speed should be reset to base, false if it should remain as is.</param>
+        public static void UpdateVelocity(Frame f, BattleProjectileQComponent* projectile, FPVector2 direction, FP speedIncreaseAmount, bool resetSpeed = false)
         {
             // set new projectile direction
             projectile->Direction = direction;
 
-            // update the projectile's speed based on speed potential and multiply by emotion
-            projectile->Speed = projectile->SpeedPotential * projectile->SpeedMultiplierArray[(int)projectile->Emotion];
+            // update the projectile's speed based on speed potential and multiply by emotion (disabled)
+            //projectile->Speed = projectile->SpeedPotential * projectile->SpeedMultiplierArray[(int)projectile->Emotion];
+
+            // increment or reset the speed of the projectile
+            if (!resetSpeed)
+            {
+                projectile->Speed = FPMath.Min(projectile->Speed + speedIncreaseAmount, projectile->SpeedMax);
+            }
+            else
+            {
+                projectile->Speed = projectile->SpeedBase;
+            }
         }
 
         /// <summary>
@@ -175,12 +191,12 @@ namespace Battle.QSimulation.Projectile
 
             FP gameTimeSec = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>()->GameTimeSec;
 
-            // every 10 seconds increase the speed potential by a set amount
-            if (gameTimeSec >= projectile->AccelerationTimer)
-            {
-                projectile->SpeedPotential += projectile->SpeedIncrement;
-                projectile->AccelerationTimer += projectile->AccelerationTimerDuration;
-            }
+            // every 10 seconds increase the speed potential by a set amount (disabled)
+            //if (gameTimeSec >= projectile->AccelerationTimer)
+            //{
+            //    projectile->SpeedPotential += projectile->SpeedIncrement;
+            //    projectile->AccelerationTimer += projectile->AccelerationTimerDuration;
+            //}
 
             if (!projectile->IsHeld)
             {
@@ -214,6 +230,9 @@ namespace Battle.QSimulation.Projectile
             FP collisionMinOffset = FP._0;
             bool handleCollision = false;
 
+            FP speedIncrementAmount = 0;
+            bool resetSpeed = false;
+
             switch (collisionTriggerType)
             {
                 case BattleCollisionTriggerType.ArenaBorder:
@@ -228,10 +247,14 @@ namespace Battle.QSimulation.Projectile
 
                     BattleSoulWallQComponent* soulWall = (BattleSoulWallQComponent*)otherComponentPtr;
 
-                    SetEmotion(f, projectile, soulWall->Emotion);
+                    if (projectile->EmotionCurrent == BattleEmotionState.Love)
+                    {
+                        SetEmotion(f, projectile, projectile->EmotionBase);
+                    }
 
                     normal = soulWall->Normal;
                     collisionMinOffset = soulWall->CollisionMinOffset;
+                    resetSpeed = true;
                     handleCollision = true;
                     break;
 
@@ -242,6 +265,7 @@ namespace Battle.QSimulation.Projectile
                     {
                         collisionType = playerHitbox->CollisionType;
                         collisionMinOffset = playerHitbox->CollisionMinOffset;
+                        speedIncrementAmount = projectile->SpeedIncrement;
                         handleCollision = true;
                     }
                     break;
@@ -257,7 +281,7 @@ namespace Battle.QSimulation.Projectile
                 else if (collisionType == BattlePlayerCollisionType.Override) direction = normal;
 
                 HandleIntersection(f, projectile, projectileEntity, otherEntity, normal, collisionMinOffset);
-                UpdateVelocity(f, projectile, direction);
+                UpdateVelocity(f, projectile, direction, speedIncrementAmount, resetSpeed);
             }
 
             SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Projectile);
@@ -312,16 +336,18 @@ namespace Battle.QSimulation.Projectile
 
             // copy data from the spec
             projectile->Speed = spec.ProjectileInitialSpeed;
-            projectile->SpeedPotential = projectile->Speed;
+            projectile->SpeedBase = projectile->Speed;
+            projectile->SpeedMax = spec.SpeedMax;
+            //projectile->SpeedPotential = projectile->Speed;
             projectile->SpeedIncrement = spec.SpeedIncrement;
             projectile->Direction = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
-            projectile->AccelerationTimerDuration = spec.AccelerationTimerDuration;
-            projectile->AccelerationTimer = projectile->AccelerationTimerDuration;
+            //projectile->AccelerationTimerDuration = spec.AccelerationTimerDuration;
+            //projectile->AccelerationTimer = projectile->AccelerationTimerDuration;
             projectile->AttackMax = spec.AttackMax;
-            for (int i = 0; i < spec.SpeedMultiplierArray.Length; i++)
-            {
-                projectile->SpeedMultiplierArray[i] = spec.SpeedMultiplierArray[i];
-            }
+            //for (int i = 0; i < spec.SpeedMultiplierArray.Length; i++)
+            //{
+            //    projectile->SpeedMultiplierArray[i] = spec.SpeedMultiplierArray[i];
+            //}
 
             // set emotion and attack
             SetEmotion(f, projectile, BattleParameters.GetProjectileInitialEmotion(f));
@@ -354,7 +380,7 @@ namespace Battle.QSimulation.Projectile
             normal = FPVector2.Zero;
 
             if (!playerHitbox->IsActive) return false;
-            if (projectile->Emotion == BattleEmotionState.Love) return false;
+            if (projectile->EmotionCurrent == BattleEmotionState.Love) return false;
             if (playerHitbox->CollisionType == BattlePlayerCollisionType.None) return false;
 
             BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);

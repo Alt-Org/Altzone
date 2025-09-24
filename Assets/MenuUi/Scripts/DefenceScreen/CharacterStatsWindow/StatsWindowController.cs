@@ -331,8 +331,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             if (CheckIfEnoughUpgradeMaterial(amount)) 
             {
-                _playerData.DiamondSpeed -= amount;
-                OnUpgradeMaterialAmountChanged.Invoke();
+                //_playerData.DiamondSpeed -= amount;
+                //OnUpgradeMaterialAmountChanged.Invoke();
                 return true;
             }
             else
@@ -495,9 +495,13 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 {
                     PopupSignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, maksimitaso on {CustomCharacter.STATMAXLEVEL}.");
                 }
+                else if (GetStatStrength(statType) == ValueStrength.None)
+                {
+                    PopupSignalBus.OnChangePopupInfoSignal($"Tätä taitoa ei voi muokata.");
+                }
             }
 
-            return statType != StatType.None && CheckCombinedLevelCap() && CheckStatLevelCap(statType);
+            return statType != StatType.None && CheckCombinedLevelCap() && CheckStatLevelCap(statType) && GetStatStrength(statType) != ValueStrength.None;
         }
 
 
@@ -518,25 +522,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
                 if (diamondsDecreased)
                 {
-                    switch (statType)
-                    {
-                        case StatType.Speed:
-                            _customCharacter.Speed++;
-                            break;
-                        case StatType.Attack:
-                            _customCharacter.Attack++;
-                            break;
-                        case StatType.Hp:
-                            _customCharacter.Hp++;
-                            break;
-                        case StatType.CharacterSize:
-                            _customCharacter.CharacterSize++;
-                            break;
-                        case StatType.Defence:
-                            _customCharacter.Defence++;
-                            break;
-                    }
-                    success = true;
+                    success = _customCharacter.IncreaseStat(statType);
                 }
             }
 
@@ -544,6 +530,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             {
                 _statsUpdated = true;
                 _playerData.UpdateCustomCharacter(_customCharacter);
+                OnUpgradeMaterialAmountChanged.Invoke();
                 OnStatUpdated.Invoke(statType);
                 gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
                 gameObject.GetComponent<DailyTaskProgressListenerCharacterStats>().UpdateProgressByStatType(statType);
@@ -565,8 +552,12 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             {
                 PopupSignalBus.OnChangePopupInfoSignal($"Et voi vähentää pohjataitoa.");
             }
+            else if (GetStatStrength(statType) == ValueStrength.None)
+            {
+                PopupSignalBus.OnChangePopupInfoSignal($"Tätä taitoa ei voi muokata.");
+            }
 
-            return GetStat(statType) > CustomCharacter.STATMINLEVEL && GetStat(statType) > GetBaseStat(statType);
+            return GetStat(statType) > CustomCharacter.STATMINLEVEL && GetStat(statType) > GetBaseStat(statType) && GetStatStrength(statType) != ValueStrength.None;
         }
 
 
@@ -583,25 +574,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (CanDecreaseStat(statType, true))
             {
-                switch (statType)
-                {
-                    case StatType.Speed:
-                        _customCharacter.Speed--;
-                        break;
-                    case StatType.Attack:
-                        _customCharacter.Attack--;
-                        break;
-                    case StatType.Hp:
-                        _customCharacter.Hp--;
-                        break;
-                    case StatType.CharacterSize:
-                        _customCharacter.CharacterSize--;
-                        break;
-                    case StatType.Defence:
-                        _customCharacter.Defence--;
-                        break;
-                }
-                success = true;
+                success = _customCharacter.DecreaseStat(statType);
             }
 
             if (success)

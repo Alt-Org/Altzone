@@ -105,7 +105,8 @@ namespace Battle.QSimulation.Projectile
 
             projectileTransform->Position = new FPVector2(0,0);
 
-            projectile->Emotion = 0;
+            projectile->EmotionCurrent = 0;
+            projectile->EmotionBase = 0;
         }
     }
 }

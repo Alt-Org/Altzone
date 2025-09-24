@@ -1537,7 +1537,7 @@ RectTransform:
   m_Father: {fileID: 4289024160624170964}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1859,7 +1859,7 @@ RectTransform:
   m_Father: {fileID: 7256629577891226893}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2900,7 +2900,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5584812021587328956
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3788,7 +3788,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8557409658164920778
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4391,9 +4391,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c97841244ea1b54ab819e553c5eb9d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _languageChat: {fileID: 6086783591708459899}
-  _globalChat: {fileID: 7703225872503541342}
-  _clanChat: {fileID: 1206508976571793912}
+  _languageChat: {fileID: 5282149747019341538}
+  _languageChatContent: {fileID: 6086783591708459899}
+  _globalChat: {fileID: 5946112827300250501}
+  _globalChatContent: {fileID: 7703225872503541342}
+  _clanChat: {fileID: 2303037466875175594}
+  _clanChatContent: {fileID: 1206508976571793912}
   _sendButtonSadness: {fileID: 652102874510165360}
   _sendButtonAnger: {fileID: 4980087199686146618}
   _sendButtonJoy: {fileID: 2977898987667073549}
@@ -5301,7 +5304,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9178372497256249584}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8e1b9f76277572e458d97db765d184ec, type: 3}
   m_Name: 

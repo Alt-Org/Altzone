@@ -1,3 +1,4 @@
+using Altzone.Scripts.Chat;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,15 +15,18 @@ public class ChatReactionHandler : MonoBehaviour
     public Image ReactionImage => _reactionImage;
     public Button Button => _button;
     public LongClickButton LongClickButton => _longClickButton;
+    public Mood Mood => _mood;
 
-    public int _messageID;
+    private Mood _mood;
+    public string _messageID;
     public int _count = 0;
     public bool _selected;
 
-    public void SetReactionInfo(Sprite image, int messageID)
+    public void SetReactionInfo(Sprite image, string messageID, Mood mood)
     {
         _reactionImage.sprite = image;
         _messageID = messageID;
+        _mood = mood;
 
         Select();
     }
