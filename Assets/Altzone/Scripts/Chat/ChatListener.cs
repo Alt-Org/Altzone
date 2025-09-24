@@ -192,8 +192,9 @@ namespace Altzone.Scripts.Chat
             yield return new WaitUntil(() => ClanChatFetched);
 
             yield return new WaitUntil(() => _socket != null && _socket.State == WebSocketState.Open);
-
+#if !UNITY_WEBGL
             _socketPolling = StartCoroutine(PollWebSocket());
+#endif
         }
 
         private async void OpenSocket()
@@ -231,7 +232,7 @@ namespace Altzone.Scripts.Chat
             }
             else CloseSocket();
         }
-
+#if !UNITY_WEBGL
         private IEnumerator PollWebSocket()
         {
             while (true)
@@ -242,6 +243,7 @@ namespace Altzone.Scripts.Chat
             }
             _socketPolling = null;
         }
+#endif
 
         private void HandleMessage(byte[] data)
         {
