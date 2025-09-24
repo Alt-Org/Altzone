@@ -1,10 +1,8 @@
 /// @file BattlePlayerClassNoneViewController.cs
 /// <summary>
-/// A view controller for the <see cref="Quantum.BattlePlayerCharacterClass.None"/> class.
+/// Contains @cref{Battle.View.Player,BattlePlayerClassNoneViewController} class,
+/// which is a default none/empty <see cref="Battle.View.Player.BattlePlayerClassNoneViewController">class %view controller</see> with no additional view logic.
 /// </summary>
-///
-/// Provides a placeholder implementation of BattlePlayerClassBaseViewController.<br/>
-/// Used when no character class is assigned, and contains no custom behavior.
 
 using Quantum;
 
@@ -12,13 +10,13 @@ namespace Battle.View.Player
 {
     /// <summary>
     /// <span class="brief-h">None <see cref="Battle.View.Player.BattlePlayerClassBaseViewController">class %view controller</see>.</span><br/>
-    /// Default none/empty view controller with no additional logic.
+    /// Default none/empty view controller with no additional view logic.
     /// </summary>
     public class BattlePlayerClassNoneViewController : BattlePlayerClassBaseViewController
     {
         /// <summary>
         /// Gets the character class associated with this controller.<br/>
-        /// Always returns <see cref="Quantum.BattlePlayerCharacterClass.None"/>.
+        /// Always returns <see cref="Quantum.BattlePlayerCharacterClass.None">BattlePlayerCharacterClass.None</see>.
         /// </summary>
         public override BattlePlayerCharacterClass Class => BattlePlayerCharacterClass.None;
     }
