@@ -12,6 +12,10 @@ public class JukeboxTrackQueueHandler : MonoBehaviour
     private string _id; // Id that is used with JukeboxManager.
     public string Id { get { return _id; } }
 
+    //Index of it self in the JukeboxManager's TrackQueue list.
+    private int _linearIndex = -1;
+    public int LinearIndex { get { return _linearIndex; } }
+
     private int _chunkIndex = 0;
     public int ChunkIndex {  get { return _chunkIndex; } }
 
@@ -19,25 +23,34 @@ public class JukeboxTrackQueueHandler : MonoBehaviour
     public int PoolIndex { get { return _poolIndex; } }
 
     private MusicTrack _currentTrack = null;
-    public MusicTrack CurrentTrack { get { return _currentTrack; } }
+    public MusicTrack MusicTrack { get { return _currentTrack; } }
 
+    /// <summary>
+    /// Use when creating the gameobject that has this class. (Execute only once!)
+    /// </summary>
     public void Setup(int chunkIndex, int poolIndex)
     {
-        
         _chunkIndex = chunkIndex;
         _poolIndex = poolIndex;
-        gameObject.SetActive(false);
+        SetVisibility(false);
     }
 
     public bool InUse() { return _currentTrack != null; }
 
-    public void SetTrack(string id, MusicTrack musicTrack)
+    public void SetTrack(string id, MusicTrack musicTrack, int linearIndex)
     {
         _id = id;
         _currentTrack = musicTrack;
-        _trackNameText.text = musicTrack.Name;
-        gameObject.SetActive(true);
+        _linearIndex = linearIndex;
+
+        if (musicTrack != null) _trackNameText.text = musicTrack.Name;
+
+        SetVisibility(musicTrack != null);
     }
 
-    public void Clear() { _id = ""; _currentTrack = null; gameObject.SetActive(false); }
+    public void SetLinearIndex(int index) { _linearIndex = index; }
+
+    public void Clear() { _id = ""; _currentTrack = null; SetVisibility(false); }
+
+    public void SetVisibility(bool visible) { gameObject.SetActive(visible); }
 }

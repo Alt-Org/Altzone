@@ -184,7 +184,7 @@ namespace Altzone.Scripts.Audio
 
             if (_musicSwitchInProgress)
             {
-                if (_nextUpTrack == null) CalculateAcceleratedResumeTime(); //Wrong?
+                if (_nextUpTrack != null) CalculateAcceleratedResumeTime(); //Wrong?
 
                 _nextUpCategory = musicCategory;
                 _nextUpTrack = musicTrack;
