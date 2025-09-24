@@ -150,7 +150,7 @@ public class MessageReactionsHandler : MonoBehaviour
             // Creates a reaction with the needed info and adds it to the selected message.
             GameObject newReaction = Instantiate(_addedReactionPrefab, reactionsField.transform);
             ChatReactionHandler chatReactionHandler = newReaction.GetComponentInChildren<ChatReactionHandler>();
-            chatReactionHandler.SetReactionInfo(reactionSprite, messageID);
+            chatReactionHandler.SetReactionInfo(reactionSprite, messageID, mood);
             _reactionHandlers.Add(chatReactionHandler);
 
             chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler));
@@ -169,6 +169,8 @@ public class MessageReactionsHandler : MonoBehaviour
     /// <param name="reactionHandler"></param>
     private void ToggleReaction(ChatReactionHandler reactionHandler)
     {
+        ChatListener.Instance.SendReaction(reactionHandler.Mood.ToString(), reactionHandler._messageID, ChatListener.Instance.ActiveChatChannel);
+
         if (!_longClick)
         {
             _selectedMessage.SetMessageInactive();

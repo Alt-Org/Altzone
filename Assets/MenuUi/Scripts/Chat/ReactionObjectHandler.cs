@@ -25,7 +25,11 @@ public class ReactionObjectHandler : MonoBehaviour
 
     private void ReactionSelected()
     {
-        if(_mood != Mood.None) OnReactionPressed?.Invoke(_id, _mood);
+        if (_mood != Mood.None)
+        {
+            OnReactionPressed?.Invoke(_id, _mood);
+            ChatListener.Instance.SendReaction(_mood.ToString(), _id, ChatListener.Instance.ActiveChatChannel);
+        }
     }
 
 }
