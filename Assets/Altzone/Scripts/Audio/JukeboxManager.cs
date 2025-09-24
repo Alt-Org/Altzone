@@ -20,7 +20,10 @@ namespace Altzone.Scripts.Audio
 
         private int _trackQueuePointer = 0;
 
+        private int _trackQueueLastFreeIndex = 0;
+
         public int TrackChunkSize = 8;
+        //public int TrackChunkBufferSize = 4;
 
         ////A JukeboxTrackQueueHandler chunk index and pool index is added to this when created and it will update if it's chunk & pool indexes changes.
         //private List<ChunkPointer> _trackQueueHandlersMap = new();
@@ -298,7 +301,7 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <returns><c>True</c> if muted.</returns>
-        public bool JukeboxMuteToggle()
+        public bool JukeboxMuteToggle() //TODO:
         {
             _playbackPaused = !_playbackPaused;
 
@@ -387,18 +390,7 @@ namespace Altzone.Scripts.Audio
             }
 
             if (_trackQueuePointer >= _trackQueue.Count && _loopPlayType == PlaylistLoopType.LoopPlaylist) //Keep playing the current playlist.
-            {
-                //foreach (TrackQueueData queueData in _trackQueue)
-                //    if (queueData.Pointer != null && OnGetTrackQueueHandler != null)
-                //        OnGetTrackQueueHandler.Invoke(queueData.Pointer).SetVisibility(true);
-
                 _trackQueuePointer = 0;
-                //Debug.LogError(_trackQueue.Count + " | " + _trackQueuePointer);
-                //_currentTrackQueueData = _trackQueue[_trackQueuePointer];
-                _musicElapsedTime = 0f;
-
-                //name = PlayTrack(_currentTrackQueueData);
-            }
 
             if (_loopPlayType == PlaylistLoopType.LoopOne)
             {
@@ -414,7 +406,7 @@ namespace Altzone.Scripts.Audio
 
                 if (queueHandler != null)
                 {
-                    OnQueueToLast.Invoke(_currentTrackQueueData.Pointer, _trackQueuePointer);
+                    OnQueueToLast.Invoke(_currentTrackQueueData.Pointer, _currentTrackQueueData.LinearIndex);
                     queueHandler.Clear();
                 }
 
@@ -429,7 +421,9 @@ namespace Altzone.Scripts.Audio
 
                 // Hide current tracks visual part in JukeboxMusicPlayerHandler.
                 AddPlaybackHistory(PlaybackHistoryType.Hide, _currentTrackQueueData);
+
                 if (OnQueueChange != null) OnQueueChange.Invoke();
+
                 _trackQueuePointer++;
             }
             else //Go back to latest requested music in AudioManager.
@@ -449,7 +443,7 @@ namespace Altzone.Scripts.Audio
                 }
             }
 
-            if (OnOptimizeVisualQueueChunks != null) OnOptimizeVisualQueueChunks.Invoke();
+            //if (OnOptimizeVisualQueueChunks != null) OnOptimizeVisualQueueChunks.Invoke();
 
             return name;
         }
@@ -572,8 +566,6 @@ namespace Altzone.Scripts.Audio
 
         private void AddToQueueList(TrackQueueData trackQueueData)
         {
-            if (trackQueueData.Pointer == null && OnGetFreeJukeboxTrackQueueHandler != null) trackQueueData.Pointer = OnGetFreeJukeboxTrackQueueHandler.Invoke();
-
             _trackQueue.Add(trackQueueData);
             AddPlaybackHistory(PlaybackHistoryType.Add, trackQueueData);
 
@@ -582,16 +574,23 @@ namespace Altzone.Scripts.Audio
 
         private void InsertLastToQueueList(MusicTrack musicTrack)
         {
-            TrackQueueData trackQueueData = new(CreateTrackQueueId(), _trackQueue.Count, null, musicTrack);
+            int linearIndex = _trackQueuePointer - 1;
+            TrackQueueData trackQueueData = new(CreateTrackQueueId(), linearIndex, null, musicTrack);
 
-            if (trackQueueData.Pointer == null && OnGetFreeJukeboxTrackQueueHandler != null) trackQueueData.Pointer = OnGetFreeJukeboxTrackQueueHandler.Invoke();
-
-            _trackQueue.Insert(_trackQueuePointer - 1, trackQueueData);
+            _trackQueue.Insert(linearIndex, trackQueueData);
             AddPlaybackHistory(PlaybackHistoryType.Add, trackQueueData);
 
             if (OnQueueChange != null) OnQueueChange.Invoke();
 
             _trackQueuePointer++;
+
+            // Update every TrackQueueData and JukeboxTrackQueueHandler linear index that is ahead of the inserted TrackQueueData.
+            for (int i = linearIndex + 1; i < _trackQueue.Count; i++)
+            {
+                _trackQueue[i].LinearIndex = i;
+
+                if (OnGetTrackQueueHandler != null) OnGetTrackQueueHandler(_trackQueue[i].Pointer).SetLinearIndex(i);
+            }
         }
 
         private void DeleteFromQueue(TrackQueueData trackQueueData)
@@ -606,10 +605,10 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <summary>
-        /// Reassembles the <c>_trackQueue</c> from visual jukebox queue.
+        /// Compacts the <c>_trackQueue</c>.
         /// <br/>Note: Called from <c>JukeboxMusicPlayerHandler</c>.
         /// </summary>
-        public void ReassembleDataQueue()
+        public void OptimizeTrackQueue()
         {
             Queue<int> freeIndexes = new();
 
@@ -625,9 +624,12 @@ namespace Altzone.Scripts.Audio
                     _trackQueue[i].Clear();
                     freeIndexes.Enqueue(i);
                 }
-                else
+                else if (!_trackQueue[i].InUse())
                     freeIndexes.Enqueue(i);
             }
+
+            for (int i = 0; i < _trackQueue.Count; i++)
+                Debug.LogError($"Id: {_trackQueue[i].Id}, linearIndex: {_trackQueue[i].LinearIndex}, chunkIndex: {_trackQueue[i].Pointer.ChunkIndex}, poolIndex: {_trackQueue[i].Pointer.PoolIndex}");
 
             ClearPlaybackHistory();
             LogPlaybackLastUpdate();
