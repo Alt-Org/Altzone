@@ -1,6 +1,6 @@
 /// @file BattlePlayerViewController.cs
 /// <summary>
-/// Has a class BattlePlayerViewController which handles player sprites and animations.
+/// Contains a class BattlePlayerViewController which handles player sprites and animations.
 /// </summary>
 ///
 /// This script:<br/>
@@ -28,7 +28,9 @@ namespace Battle.View.Player
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <summary>[SerializeField] Optional override controller, set via Unity inspector.</summary>
+        [Header("References")]
+
+        /// <summary>[SerializeField] Reference to an override class view controller.</summary>
         /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private BattlePlayerClassBaseViewController _classViewControllerOverride;
 
@@ -47,6 +49,16 @@ namespace Battle.View.Player
         /// <summary>[SerializeField] %Player's local player indicator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</summary>
         /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private GameObject _localPlayerIndicator;
+
+        /// <summary>[SerializeField] Reference to a character sprite without shield.</summary>
+        /// @ref BattlePlayerViewController-SerializeFields
+        [SerializeField] private Sprite _noShieldSprite;
+
+        /// <summary>[SerializeField] Reference to the shield hit particle system.</summary>
+        /// @ref BattlePlayerViewController-SerializeFields
+        [SerializeField] private ParticleSystem _shieldHitParticle;
+
+        [Header("Settings")]
 
         /// <summary>[SerializeField] The transparency effect's range.</summary>
         /// @ref BattlePlayerViewController-SerializeFields
@@ -68,19 +80,12 @@ namespace Battle.View.Player
         /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private int _damageFlashAmount = 5;
 
-        /// <summary>[SerializeField] The sprite for character when the player's shield is broken or no longer active.</summary>
-        /// @ref BattlePlayerViewController-SerializeFields
-        [SerializeField] private Sprite _noShieldSprite;
-
-        /// <summary>[SerializeField] Particle system played when the player's shield takes damage.</summary>
-        /// @ref BattlePlayerViewController-SerializeFields
-        [SerializeField] private ParticleSystem _shieldHitParticle;
-
         /// @}
 
         /// <summary>
         /// Public method that is called when entity is activated upon its creation.<br/>
-        /// Sets the player model scale and active <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>. Handles subscribing to QuantumEvents.
+        /// Calls <see cref="PreInitSetup"/> and subscribes to <see cref="Quantum.EventBattlePlayerViewInit">EventBattlePlayerViewInit</see> event with a lambda, which
+        /// sets the player model scale and active <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>. Handles subscribing to QuantumEvents.
         /// </summary>
         ///
         /// <param name="_">Current simulation frame.</param>
@@ -176,7 +181,8 @@ namespace Battle.View.Player
         private BattlePlayerClassBaseViewController _classViewController;
 
         /// <summary>
-        /// Method for initializing character's class as none at the start of activation.
+        /// Handles setup that needs to happen before <see cref="Quantum.EventBattlePlayerViewInit">EventBattlePlayerViewInit</see> event is received.<b/>
+        /// Currently this is needed for initializing character's class as none.
         /// </summary>
         private void PreInitSetup()
         {
