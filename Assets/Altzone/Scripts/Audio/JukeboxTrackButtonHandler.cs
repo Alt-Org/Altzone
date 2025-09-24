@@ -8,23 +8,31 @@ public class JukeboxTrackButtonHandler : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _trackNameText;
 
-    private MusicTrack _currentTrack = null;
+    private int _trackLinearIndex = 0;
 
-    public delegate void TrackPressed(MusicTrack track);
+    private MusicTrack _currentTrack = null;
+    public MusicTrack CurrentTrack {  get { return _currentTrack; } }
+
+    //public delegate void TrackPressed(int startIndex);
+    public delegate void TrackPressed(MusicTrack musicTrack);
     public event TrackPressed OnTrackPressed;
 
     private void Awake() { GetComponent<Button>().onClick.AddListener(() => ButtonClicked()); }
 
     public bool InUse() { return _currentTrack != null; }
 
+    //public void ButtonClicked() { if (_currentTrack != null) OnTrackPressed.Invoke(_trackLinearIndex); }
     public void ButtonClicked() { if (_currentTrack != null) OnTrackPressed.Invoke(_currentTrack); }
 
-    public void SetTrack(MusicTrack musicTrack)
+    public void SetTrack(MusicTrack musicTrack, int trackLinearIndex)
     {
+        _trackLinearIndex = trackLinearIndex;
         _currentTrack = musicTrack;
         _trackNameText.text = musicTrack.Name;
         gameObject.SetActive(true);
     }
 
     public void Clear() { _currentTrack = null; gameObject.SetActive(false); }
+
+    public void SetVisibility(bool value) { gameObject.SetActive(value); } 
 }

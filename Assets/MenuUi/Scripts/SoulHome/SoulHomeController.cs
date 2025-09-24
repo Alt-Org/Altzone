@@ -73,7 +73,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public void OnEnable()
         {
-            if (JukeboxManager.Instance.CurrentMusicTrack != null)
+            if (JukeboxManager.Instance.CurrentTrackQueueData != null)
             {
                 if (string.IsNullOrEmpty(_jukeBoxPopup.PlayTrack()))
                     _musicName.text = AudioManager.Instance?.PlayMusic("Soulhome", "");
