@@ -95,7 +95,7 @@ namespace Battle.QSimulation.Player
             //{ handle rotation
 
             // handle rotation input
-            if (input->RotationInput)
+            if (input->RotationInput && !playerData->DisableRotation)
             {
                 // set target angle
                 FP maxAngle = FP.Rad_45 * input->RotationValue;
@@ -227,7 +227,9 @@ namespace Battle.QSimulation.Player
             characterTransform->Position = transform->Position;
             characterTransform->Rotation = transform->Rotation;
 
-            f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity)->Normal = FPVector2.Rotate(FPVector2.Up, transform->Rotation);
+            BattlePlayerHitboxQComponent* shieldComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity);
+
+            shieldComponent->Normal = FPVector2.Rotate(shieldComponent->NormalBase, transform->Rotation);
         }
 
         /// <summary>
@@ -245,7 +247,9 @@ namespace Battle.QSimulation.Player
             shieldTransform->Teleport(f, transform->Position, transform->Rotation);
             characterTransform->Teleport(f, transform->Position, transform->Rotation);
 
-            f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity)->Normal = FPVector2.Rotate(FPVector2.Up, transform->Rotation);
+            BattlePlayerHitboxQComponent* shieldComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity);
+
+            shieldComponent->Normal = FPVector2.Rotate(shieldComponent->NormalBase, transform->Rotation);
         }
 
         /// <summary>
