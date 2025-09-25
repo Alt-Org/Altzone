@@ -6,7 +6,7 @@
 /// The manager handles initializing players that are present in the game, as well as spawning and despawning player characters.<br/>
 /// This script also contains the public and private PlayerHandle structs.
 
-#define DEBUG_PLAYER_STAT_OVERRIDE
+//#define DEBUG_PLAYER_STAT_OVERRIDE
 
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -383,26 +383,11 @@ namespace Battle.QSimulation.Player
                         };
 
 #if DEBUG_PLAYER_STAT_OVERRIDE
-                        //playerData.Stats.Hp            = FP.FromString("3.0");
-                        //playerData.Stats.Speed         = FP.FromString("20.0");
-                        //playerData.Stats.CharacterSize = FP.FromString("1.0");
-                        //playerData.Stats.Attack        = FP.FromString("1.0");
-                        //playerData.Stats.Defence       = FP.FromString("1.0");
-
-                        switch (playerCharacterId)
-                        {
-                            case 101:
-                                playerData.Stats.Speed = FP.FromString("20.0");
-                                break;
-                            case 301:
-                                playerData.Stats.Speed = FP.FromString("16.0");
-                                break;
-                            case 401:
-                                playerData.Stats.Speed = FP.FromString("18.0");
-                                break;
-                            default:
-                                break;
-                        }
+                        playerData.Stats.Hp            = FP.FromString("3.0");
+                        playerData.Stats.Speed         = FP.FromString("20.0");
+                        playerData.Stats.CharacterSize = FP.FromString("1.0");
+                        playerData.Stats.Attack        = FP.FromString("1.0");
+                        playerData.Stats.Defence       = FP.FromString("1.0");
 #endif
                         playerData.CurrentHp = playerData.Stats.Hp;
                         playerData.CurrentDefence = playerData.Stats.Defence;
@@ -425,7 +410,7 @@ namespace Battle.QSimulation.Player
                         //} initialize entity
 
                         // initialize view
-                        f.Events.BattlePlayerViewInit(playerEntity, playerSlot, BattleGridManager.GridScaleFactor);
+                        f.Events.BattlePlayerViewInit(playerEntity, playerSlot, playerCharacterId, playerClass, BattleGridManager.GridScaleFactor);
 
                         // save entity
                         playerCharacterEntityArray[playerCharacterNumber] = playerEntity;

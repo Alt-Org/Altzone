@@ -193,6 +193,7 @@ In **%Battle** **Specs** have **"QSpec"** suffix. [[Naming]](#index-naming)
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Game}       | @cref{Battle.QSimulation.Game,BattleArenaQSpec}                   | @copybrief Battle.QSimulation.Game.BattleArenaQSpec              |
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Projectile} | @cref{Battle.QSimulation.Projectile,BattleProjectileQSpec}        | @copybrief Battle.QSimulation.Projectile.BattleProjectileQSpec   |
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,SoulWall}   | @cref{Battle.QSimulation.SoulWall,BattleSoulWallQSpec}            | @copybrief Battle.QSimulation.SoulWall.BattleSoulWallQSpec       |
+| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Player}     | @cref{Battle.QSimulation.SoulWall,BattlePlayerQSpec}              | @copybrief Battle.QSimulation.Player.BattlePlayerQSpec           |
 
 <br/>
 

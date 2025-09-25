@@ -10,6 +10,7 @@ using Quantum;
 using Photon.Deterministic;
 
 using Battle.QSimulation.Projectile;
+using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Player
 {
@@ -61,7 +62,7 @@ namespace Battle.QSimulation.Player
             {
                 damagedPlayerData->CurrentHp = newHp;
 
-                damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, FP._1);
+                damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
 
                 f.Events.BattleCharacterTakeDamage(playerHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newHp / damagedPlayerData->Stats.Hp);
             }
@@ -70,7 +71,7 @@ namespace Battle.QSimulation.Player
             {
                 BattlePlayerManager.DespawnPlayer(f, damagedPlayerData->Slot, kill: true);
                 damagePlayerHandle.SetOutOfPlayRespawning();
-                damagePlayerHandle.RespawnTimer = FrameTimer.FromSeconds(f, FP._0_50);
+                damagePlayerHandle.RespawnTimer = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).AutoRespawnTimeSec);
             }
 
             BattlePlayerClassManager.OnProjectileHitPlayerHitbox(f, projectile, projectileEntity, playerHitbox, playerHitboxEntity);
@@ -106,7 +107,7 @@ namespace Battle.QSimulation.Player
             {
                 damagedPlayerData->CurrentDefence = newDefence;
 
-                damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, FP._1);
+                damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
 
                 f.Events.BattleShieldTakeDamage(playerHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newDefence);
             }
