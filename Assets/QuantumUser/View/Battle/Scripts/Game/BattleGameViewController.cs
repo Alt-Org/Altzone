@@ -13,11 +13,12 @@ using Photon.Deterministic;
 using Altzone.Scripts.BattleUiShared;
 using Altzone.Scripts.Lobby;
 
+using Battle.QSimulation.Game;
+using Battle.QSimulation.Player;
 using Battle.View.Audio;
 using Battle.View.Effect;
 using Battle.View.UI;
 using Battle.View.Player;
-using Battle.QSimulation.Player;
 
 using BattleMovementInputType = SettingsCarrier.BattleMovementInputType;
 using BattleRotationInputType = SettingsCarrier.BattleRotationInputType;
@@ -200,6 +201,8 @@ namespace Battle.View.Game
 
             // Subscribing to Game Flow events
             QuantumEvent.Subscribe<EventBattleViewWaitForPlayers>(this, QEventOnViewWaitForPlayers);
+            QuantumEvent.Subscribe<EventBattleViewPlayerConnected>(this, QEventOnViewPlayerConnected);
+            QuantumEvent.Subscribe<EventBattleViewAllPlayersConnected>(this, QEventOnViewAllPlayersConnected);
             QuantumEvent.Subscribe<EventBattleViewInit>(this, QEventOnViewInit);
             QuantumEvent.Subscribe<EventBattleViewActivate>(this, QEventOnViewActivate);
             QuantumEvent.Subscribe<EventBattleViewGetReadyToPlay>(this, QEventOnViewGetReadyToPlay);
@@ -236,7 +239,40 @@ namespace Battle.View.Game
         private void QEventOnViewWaitForPlayers(EventBattleViewWaitForPlayers e)
         {
             // Setting view pre-activate waiting for players text
+            Utils.TryGetQuantumFrame(out Frame f);
+            BattleParameters.PlayerType[] playerSlotTypes = BattleParameters.GetPlayerSlotTypes(f);
+            _uiController.LoadScreenHandler.Show(playerSlotTypes, e.Data.PlayerNames);
+
             _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.WaitingForPlayers);
+        }
+
+        /// <summary>
+        /// Private handler method for EventBattleViewPlayerConnected QuantumEvent.<br/>
+        /// Handles calling BattleUiLoadScreenHandler::PlayerConnected through #_uiController with the slot and character IDs of the connected player.
+        /// </summary>
+        /// 
+        /// <param name="e">The event data.</param>
+        private void QEventOnViewPlayerConnected(EventBattleViewPlayerConnected e)
+        {
+            BattlePlayerSlot playerSlot = e.Data.PlayerSlot;
+            int[] characterIds = new int[3];
+            for (int i = 0; i < characterIds.Length; i++)
+            {
+                characterIds[i] = e.Data.Characters[i].Id;
+            }
+
+            _uiController.LoadScreenHandler.PlayerConnected(playerSlot, characterIds);
+        }
+
+        /// <summary>
+        /// Private handler method for EventBattleViewAllPlayersConnected QuantumEvent.<br/>
+        /// Handles calling BattleUiAnnouncementHandler::ClearAnnouncerTextField once all players have successfully joined the game.
+        /// </summary>
+        /// 
+        /// <param name="e">The event data.</param>
+        private void QEventOnViewAllPlayersConnected(EventBattleViewAllPlayersConnected e)
+        {
+            _uiController.AnnouncementHandler.ClearAnnouncerTextField();
         }
 
         /// <summary>
@@ -285,14 +321,12 @@ namespace Battle.View.Game
                 {
                     BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.MoveJoystick);
                     _uiController.JoystickHandler.SetInfo(BattleUiElementType.MoveJoystick, data);
-                    _uiController.JoystickHandler.SetShow(true, BattleUiElementType.MoveJoystick);
                 }
 
                 if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick)
                 {
                     BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.RotateJoystick);
                     _uiController.JoystickHandler.SetInfo(BattleUiElementType.RotateJoystick, data);
-                    _uiController.JoystickHandler.SetShow(true, BattleUiElementType.RotateJoystick);
                 }
 
                 _uiController.JoystickHandler.SetLocked(true);
@@ -361,8 +395,13 @@ namespace Battle.View.Game
         {
             // Activating view, meaning displaying all visual elements of the game view except for pre-activation elements
 
+            _uiController.LoadScreenHandler.Hide();
+
             // Show UI elements
             if (_uiController.DiamondsHandler != null) _uiController.DiamondsHandler.SetShow(true);
+            if (SettingsCarrier.Instance.BattleMovementInput == BattleMovementInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.MoveJoystick);
+            if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.RotateJoystick);
+            if (SettingsCarrier.Instance.BattleShowDebugStatsOverlay) _uiController.DebugStatsOverlayHandler.SetShow(true);
             /* These UI elements aren't ready and shouldn't be shown yet
             if (_uiController.GiveUpButtonHandler != null) _uiController.GiveUpButtonHandler.SetShow(true);
             */
@@ -507,7 +546,6 @@ namespace Battle.View.Game
             if (!SettingsCarrier.Instance.BattleShowDebugStatsOverlay) return;
             if (e.Slot != LocalPlayerSlot) return;
 
-            _uiController.DebugStatsOverlayHandler.SetShow(true);
             _uiController.DebugStatsOverlayHandler.SetStats(e.Stats);
         }
 
@@ -546,7 +584,7 @@ namespace Battle.View.Game
                 BattleGameSessionQSingleton gameSession = frame.GetSingleton<BattleGameSessionQSingleton>();
 
                 // Convert the countdown time to an integer for display
-                int countDown = (int)gameSession.TimeUntilStart;
+                int countDown = (int)gameSession.TimeUntilStartSec;
 
                 // Handle different game states to update the UI
                 switch (gameSession.State)

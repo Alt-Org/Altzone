@@ -61,16 +61,21 @@ namespace Battle.QSimulation.Game
 
         public PlayerType[] PlayerSlotTypes;
         public string[] PlayerSlotUserIDs;
+        public string[] PlayerNames;
 
         public int PlayerCount;
 
         public BattleEmotionState ProjectileInitialEmotion;
+
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static PlayerType[] GetPlayerSlotTypes(Frame f) => f.RuntimeConfig.BattleParameters.PlayerSlotTypes;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string[] GetPlayerSlotUserIDs(Frame f) => f.RuntimeConfig.BattleParameters.PlayerSlotUserIDs;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string[] GetPlayerNames(Frame f) => f.RuntimeConfig.BattleParameters.PlayerNames;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetPlayerCount(Frame f) => f.RuntimeConfig.BattleParameters.PlayerCount;
