@@ -180,6 +180,7 @@ namespace Battle.QSimulation.Player
                     BattlePlayerCollisionType                 playerHitboxCollisionType;
                     FPVector2                                 playerHitboxPosition;
                     FPVector2                                 playerHitboxExtents;
+                    FPVector2                                 playerHitboxNormal;
                     int                                       playerHitboxHeight;
                     Shape2D                                   playerHitboxColliderPart;
                     //} player temp variables
@@ -328,6 +329,8 @@ namespace Battle.QSimulation.Player
                                 playerHitboxCollider.Shape.Compound.AddShape(f, ref playerHitboxColliderPart);
                             }
 
+                            playerHitboxNormal = FPVector2.Rotate(FPVector2.Up, FP.Deg2Rad * playerDataTemplate->HitboxNormalAngleDeg);
+
                             // initialize hitBox component
                             playerHitbox = new BattlePlayerHitboxQComponent
                             {
@@ -335,7 +338,8 @@ namespace Battle.QSimulation.Player
                                 IsActive = true,
                                 HitboxType = playerHitboxType,
                                 CollisionType = playerHitboxCollisionType,
-                                Normal = FPVector2.Zero,
+                                Normal = playerHitboxNormal,
+                                NormalBase = playerHitboxNormal,
                                 CollisionMinOffset = ((FP)playerHitboxHeight + FP._0_50) * BattleGridManager.GridScaleFactor
                             };
 
@@ -370,7 +374,9 @@ namespace Battle.QSimulation.Player
                             CurrentDefence    = FP._0,
 
                             HitboxShieldEntity      = playerHitboxShieldEntity,
-                            HitboxCharacterEntity   = playerHitboxCharacterEntity
+                            HitboxCharacterEntity   = playerHitboxCharacterEntity,
+
+                            DisableRotation   = playerDataTemplate->DisableRotation
                         };
 
 #if DEBUG_PLAYER_STAT_OVERRIDE
