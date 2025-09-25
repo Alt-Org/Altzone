@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 512
+    maxTextureSize: 1024
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -166,7 +166,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 256
+        y: 768
         width: 256
         height: 256
       alignment: 0
@@ -186,8 +186,8 @@ TextureImporter:
       name: BattlePlayer601_1
       rect:
         serializedVersion: 2
-        x: 256
-        y: 256
+        x: 0
+        y: 512
         width: 256
         height: 256
       alignment: 0
@@ -208,7 +208,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
+        y: 256
         width: 256
         height: 256
       alignment: 0
@@ -228,7 +228,7 @@ TextureImporter:
       name: BattlePlayer601_3
       rect:
         serializedVersion: 2
-        x: 256
+        x: 512
         y: 0
         width: 256
         height: 256
@@ -241,6 +241,27 @@ TextureImporter:
       bones: []
       spriteID: f494879539f698d43808951d0bf1093e
       internalID: 1672013575
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattlePlayer601_4
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5cb0d091f3e2d3a4889236bc05deb6ea
+      internalID: 282244358
       vertices: []
       indices: 
       edges: []
@@ -260,6 +281,10 @@ TextureImporter:
       BattlePlayer601_1: 1309661367
       BattlePlayer601_2: -475155228
       BattlePlayer601_3: 1672013575
+      BattlePlayer601_4: 282244358
+      BattlePlayer601_5: 1165399103
+      BattlePlayer601_6: -990330779
+      BattlePlayer601_7: 1213202464
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
