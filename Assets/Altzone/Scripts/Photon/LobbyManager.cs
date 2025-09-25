@@ -402,7 +402,7 @@ namespace Altzone.Scripts.Lobby
 
                 }
             }
-            return true;
+            return pos1Set && pos2Set && pos3Set && pos4Set;
         }
 
         private IEnumerator CheckIfBattleCanStart()
