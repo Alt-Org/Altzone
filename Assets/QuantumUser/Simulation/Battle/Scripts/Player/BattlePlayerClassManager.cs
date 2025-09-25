@@ -184,14 +184,15 @@ namespace Battle.QSimulation.Player
         /// <param name="playerEntity">Reference to the player entity.</param>
         public static void OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
-            BattlePlayerClassBase playerClass = GetClass(playerData->CharacterClass);
+            ReturnCode returnCode = GetClass(playerData->CharacterClass, out BattlePlayerClassBase playerClass);
 
-            if (playerClass == null)
+            if (returnCode == ReturnCode.Error)
             {
-                if (playerData->CharacterClass != BattlePlayerCharacterClass.None)
-                {
-                    Debug.LogWarningFormat("[PlayerClassManager] The {0} class could not be initialized!", playerData->CharacterClass);
-                }
+                Debug.LogWarningFormat("[PlayerClassManager] The {0} class could not be initialized!", playerData->CharacterClass);
+                return;
+            }
+            if (returnCode == ReturnCode.NoClass)
+            {
                 return;
             }
 
@@ -208,9 +209,9 @@ namespace Battle.QSimulation.Player
         /// <param name="playerEntity">Reference to the player entity.</param>
         public static void OnSpawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
-            BattlePlayerClassBase playerClass = GetClass(playerData->CharacterClass);
+            ReturnCode returnCode = GetClass(playerData->CharacterClass, out BattlePlayerClassBase playerClass);
 
-            if (playerClass == null) return;
+            if (returnCode != ReturnCode.ClassRetrieved) return;
 
             playerClass.OnSpawn(f, playerHandle, playerData, playerEntity);
         }
@@ -225,9 +226,9 @@ namespace Battle.QSimulation.Player
         /// <param name="playerEntity">Reference to the player entity.</param>
         public static void OnDespawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
-            BattlePlayerClassBase playerClass = GetClass(playerData->CharacterClass);
+            ReturnCode returnCode = GetClass(playerData->CharacterClass, out BattlePlayerClassBase playerClass);
 
-            if (playerClass == null) return;
+            if (returnCode != ReturnCode.ClassRetrieved) return;
 
             playerClass.OnDespawn(f, playerHandle, playerData, playerEntity);
         }
@@ -243,9 +244,9 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHitboxEntity">Reference to the player hitbox entity</param>
         public static void OnProjectileHitPlayerHitbox(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
         {
-            BattlePlayerClassBase playerClass = GetClass(f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity)->CharacterClass);
+            ReturnCode returnCode = GetClass(f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity)->CharacterClass, out BattlePlayerClassBase playerClass);
 
-            if (playerClass == null) return;
+            if (returnCode != ReturnCode.ClassRetrieved) return;
 
             playerClass.OnProjectileHitPlayerHitbox(f, projectile, projectileEntity, playerHitbox, playerHitboxEntity);
         }
@@ -261,9 +262,9 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHitboxEntity">Reference to the player hitbox entity</param>
         public static void OnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
         {
-            BattlePlayerClassBase playerClass = GetClass(f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity)->CharacterClass);
+            ReturnCode returnCode = GetClass(f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity)->CharacterClass, out BattlePlayerClassBase playerClass);
 
-            if (playerClass == null) return;
+            if (returnCode != ReturnCode.ClassRetrieved) return;
 
             playerClass.OnProjectileHitPlayerShield(f, projectile, projectileEntity, playerHitbox, playerHitboxEntity);
         }
@@ -278,15 +279,17 @@ namespace Battle.QSimulation.Player
         /// <param name="playerEntity">Reference to the player entity.</param>
         public static void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
-            BattlePlayerClassBase playerClass = GetClass(playerData->CharacterClass);
+            ReturnCode returnCode = GetClass(playerData->CharacterClass, out BattlePlayerClassBase playerClass);
 
-            if (playerClass == null) return;
+            if (returnCode != ReturnCode.ClassRetrieved) return;
 
             playerClass.OnUpdate(f, playerHandle, playerData, playerEntity);
         }
 
         /// <value>Constant for a class index error.</value>
-        private const int ClassIndexError = -1;
+        private const int ClassIndexError = -2;
+        /// <value>Constant for a class index error.</value>
+        private const int ClassIndexNoCode = -1;
         /// <value>Constant for Desensitizer class index.</value>
         private const int ClassIndexDesensitizer = 0;
         /// <value>Constant for Trickster class index.</value>
@@ -304,6 +307,13 @@ namespace Battle.QSimulation.Player
         /// <value>Constant for the amount of classes that exist.</value>
         private const int ClassCount = 7;
 
+        private enum ReturnCode
+        {
+            ClassRetrieved = 0,
+            NoClass        = 1,
+            Error          = 2
+        }
+
         /// <value>An array containing all of the class scripts that have been implemented and can be used.</value>
         private static BattlePlayerClassBase[] s_classArray = new BattlePlayerClassBase[ClassCount];
 
@@ -315,9 +325,13 @@ namespace Battle.QSimulation.Player
         /// </summary>
         ///
         /// <param name="characterClass">The class that's script is to be retrieved.</param>
-        private static BattlePlayerClassBase GetClass(BattlePlayerCharacterClass characterClass)
+        private static ReturnCode GetClass(BattlePlayerCharacterClass characterClass, out BattlePlayerClassBase playerClass)
         {
-            if (characterClass == BattlePlayerCharacterClass.None) return null;
+            if (characterClass == BattlePlayerCharacterClass.None)
+            {
+                playerClass = null;
+                return ReturnCode.NoClass;
+            }
 
             int classIndex = characterClass switch
             {
@@ -332,6 +346,12 @@ namespace Battle.QSimulation.Player
                 _ => ClassIndexError,
             };
 
+            if (classIndex == ClassIndexNoCode)
+            {
+                playerClass = null;
+                return ReturnCode.NoClass;
+            }
+
             if (classIndex == ClassIndexError)
             {
                 if (!s_errorMessagesSent.ContainsKey(characterClass))
@@ -345,7 +365,8 @@ namespace Battle.QSimulation.Player
                     s_errorMessagesSent[characterClass] = true;
                 }
 
-                return null;
+                playerClass = null;
+                return ReturnCode.Error;
             }
 
             BattlePlayerClassBase classObj = s_classArray[classIndex];
@@ -360,7 +381,8 @@ namespace Battle.QSimulation.Player
                 Debug.LogErrorFormat("[PlayerClassManager] Mapping of character classes is incorrect! Expected {0}, got {1}", characterClass, classObj.Class);
             }
 
-            return classObj;
+            playerClass = classObj;
+            return ReturnCode.ClassRetrieved;
         }
     }
 }
