@@ -277,6 +277,7 @@ namespace Battle.QSimulation.Player
                                     playerHitboxCollisionType              = playerDataTemplate->HitboxShield.CollisionType;
                                     playerHitboxListSourceColliderTemplate = playerHitboxListShieldColliderTemplate;
                                     playerHitboxShieldEntity               = playerHitboxTargetEntity;
+                                    playerHitboxNormal                     = FPVector2.Rotate(FPVector2.Up, FP.Deg2Rad * playerDataTemplate->HitboxShield.NormalAngleDeg);
 
                                     collisionTrigger.Type = BattleCollisionTriggerType.Shield;
                                     break;
@@ -292,13 +293,15 @@ namespace Battle.QSimulation.Player
                                     playerHitboxCollisionType              = playerDataTemplate->HitboxCharacter.CollisionType;
                                     playerHitboxListSourceColliderTemplate = playerHitboxListCharacterColliderTemplate;
                                     playerHitboxCharacterEntity            = playerHitboxTargetEntity;
+                                    playerHitboxNormal                     = FPVector2.Rotate(FPVector2.Up, FP.Deg2Rad * playerDataTemplate->HitboxCharacter.NormalAngleDeg);
 
                                     collisionTrigger.Type = BattleCollisionTriggerType.Player;
                                     break;
 
                                 default:
-                                    playerHitboxType = (BattlePlayerHitboxType)(-1);
+                                    playerHitboxType          = (BattlePlayerHitboxType)(-1);
                                     playerHitboxCollisionType = (BattlePlayerCollisionType)(-1);
+                                    playerHitboxNormal        = FPVector2.Up;
                                     break;
                             }
 
@@ -329,17 +332,15 @@ namespace Battle.QSimulation.Player
                                 playerHitboxCollider.Shape.Compound.AddShape(f, ref playerHitboxColliderPart);
                             }
 
-                            playerHitboxNormal = FPVector2.Rotate(FPVector2.Up, FP.Deg2Rad * playerDataTemplate->HitboxNormalAngleDeg);
-
                             // initialize hitBox component
                             playerHitbox = new BattlePlayerHitboxQComponent
                             {
-                                PlayerEntity = playerEntity,
-                                IsActive = true,
-                                HitboxType = playerHitboxType,
-                                CollisionType = playerHitboxCollisionType,
-                                Normal = playerHitboxNormal,
-                                NormalBase = playerHitboxNormal,
+                                PlayerEntity       = playerEntity,
+                                IsActive           = true,
+                                HitboxType         = playerHitboxType,
+                                CollisionType      = playerHitboxCollisionType,
+                                Normal             = playerHitboxNormal,
+                                NormalBase         = playerHitboxNormal,
                                 CollisionMinOffset = ((FP)playerHitboxHeight + FP._0_50) * BattleGridManager.GridScaleFactor
                             };
 

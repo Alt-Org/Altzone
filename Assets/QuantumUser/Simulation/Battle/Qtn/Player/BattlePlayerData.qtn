@@ -44,6 +44,8 @@ struct BattlePlayerHitboxTemplate
 {
     [FreeOnComponentRemoved] list<BattlePlayerHitboxColliderTemplate> ColliderTemplateList;
     BattlePlayerCollisionType CollisionType;
+
+    FP NormalAngleDeg;
 }
 
 component BattlePlayerDataTemplateQComponent
@@ -53,8 +55,6 @@ component BattlePlayerDataTemplateQComponent
 
     BattlePlayerHitboxTemplate HitboxShield;
     BattlePlayerHitboxTemplate HitboxCharacter;
-
-    FP HitboxNormalAngleDeg;
 
     bool DisableRotation;
 }

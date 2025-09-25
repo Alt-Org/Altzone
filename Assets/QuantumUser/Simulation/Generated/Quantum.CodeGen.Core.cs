@@ -624,18 +624,21 @@ namespace Quantum {
   [StructLayout(LayoutKind.Explicit)]
   [Serializable()]
   public unsafe partial struct BattlePlayerHitboxTemplate {
-    public const Int32 SIZE = 8;
-    public const Int32 ALIGNMENT = 4;
+    public const Int32 SIZE = 16;
+    public const Int32 ALIGNMENT = 8;
     [FieldOffset(4)]
     [FreeOnComponentRemoved()]
     public QListPtr<BattlePlayerHitboxColliderTemplate> ColliderTemplateList;
     [FieldOffset(0)]
     public BattlePlayerCollisionType CollisionType;
+    [FieldOffset(8)]
+    public FP NormalAngleDeg;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 12821;
         hash = hash * 31 + ColliderTemplateList.GetHashCode();
         hash = hash * 31 + (Int32)CollisionType;
+        hash = hash * 31 + NormalAngleDeg.GetHashCode();
         return hash;
       }
     }
@@ -646,6 +649,7 @@ namespace Quantum {
         var p = (BattlePlayerHitboxTemplate*)ptr;
         serializer.Stream.Serialize((Int32*)&p->CollisionType);
         QList.Serialize(&p->ColliderTemplateList, serializer, Statics.SerializeBattlePlayerHitboxColliderTemplate);
+        FP.Serialize(&p->NormalAngleDeg, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -1075,18 +1079,16 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattlePlayerDataTemplateQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 40;
+    public const Int32 SIZE = 48;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(4)]
     public Int32 GridExtendTop;
     [FieldOffset(0)]
     public Int32 GridExtendBottom;
-    [FieldOffset(20)]
-    public BattlePlayerHitboxTemplate HitboxShield;
-    [FieldOffset(12)]
-    public BattlePlayerHitboxTemplate HitboxCharacter;
     [FieldOffset(32)]
-    public FP HitboxNormalAngleDeg;
+    public BattlePlayerHitboxTemplate HitboxShield;
+    [FieldOffset(16)]
+    public BattlePlayerHitboxTemplate HitboxCharacter;
     [FieldOffset(8)]
     public QBoolean DisableRotation;
     public override Int32 GetHashCode() {
@@ -1096,7 +1098,6 @@ namespace Quantum {
         hash = hash * 31 + GridExtendBottom.GetHashCode();
         hash = hash * 31 + HitboxShield.GetHashCode();
         hash = hash * 31 + HitboxCharacter.GetHashCode();
-        hash = hash * 31 + HitboxNormalAngleDeg.GetHashCode();
         hash = hash * 31 + DisableRotation.GetHashCode();
         return hash;
       }
@@ -1116,7 +1117,6 @@ namespace Quantum {
         QBoolean.Serialize(&p->DisableRotation, serializer);
         Quantum.BattlePlayerHitboxTemplate.Serialize(&p->HitboxCharacter, serializer);
         Quantum.BattlePlayerHitboxTemplate.Serialize(&p->HitboxShield, serializer);
-        FP.Serialize(&p->HitboxNormalAngleDeg, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
