@@ -24,6 +24,7 @@ component BattlePlayerDataQComponent
     EntityRef HitboxShieldEntity;
     EntityRef HitboxCharacterEntity;
 
+    bool DisableRotation;
     FrameTimer DamageCooldown;
 }
 
@@ -52,6 +53,10 @@ component BattlePlayerDataTemplateQComponent
 
     BattlePlayerHitboxTemplate HitboxShield;
     BattlePlayerHitboxTemplate HitboxCharacter;
+
+    FP HitboxNormalAngleDeg;
+
+    bool DisableRotation;
 }
 
 //} PlayerDataTemplate
