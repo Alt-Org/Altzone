@@ -2,7 +2,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Model.Poco.Attributes;
 using Altzone.Scripts.Model.Poco.Player;
 using Prg;
 using UnityEngine;
@@ -14,10 +13,10 @@ namespace Altzone.Scripts.Model.Poco.Game
     /// <summary>
     /// Player created custom 'game' character based on given <c>CharacterClass</c>.
     /// </summary>
-    [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
+    [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class CustomCharacter
     {
-        [PrimaryKey] public CharacterID Id;
+        public CharacterID Id;
         public string CharacterName => GetCharacterName(Id);
         public string CharacterClassAndName => GetCharacterClassAndName(Id);
         public CharacterClassType CharacterClassType => GetClass(Id);
@@ -41,9 +40,9 @@ namespace Altzone.Scripts.Model.Poco.Game
         /// <summary>
         /// This can be used for example to load UNITY assets by name for UI at runtime.
         /// </summary>
-        [Optional] public string ServerID = "-1";
+        public string ServerID = "-1";
 
-        [Mandatory] public string Name;
+        public string Name;
         private int _hp;
         public int HpSegmentCount;
         private int _speed;
