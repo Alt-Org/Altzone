@@ -12,7 +12,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class CharacterClass
     {
-        [PrimaryKey] public CharacterClassID Id;
+        [PrimaryKey] public CharacterClassType Type;
         [Unique] public string Name;
         public int Hp;
         public int Speed;
@@ -20,16 +20,15 @@ namespace Altzone.Scripts.Model.Poco.Game
         public int Attack;
         public int Defence;
 
-        public CharacterClass(CharacterClassID id, int hp, int speed, int resistance, int attack, int defence)
+        public CharacterClass(CharacterClassType type, int hp, int speed, int resistance, int attack, int defence)
         {
-            //Assert.AreNotEqual(CharacterClassID.None, id);
             Assert.IsTrue(hp >= 0);
             Assert.IsTrue(speed >= 0);
             Assert.IsTrue(resistance >= 0);
             Assert.IsTrue(attack >= 0);
             Assert.IsTrue(defence >= 0);
-            Id = id;
-            Name = GetClassName(id);
+            Type = type;
+            Name = GetClassName(type);
             Hp = hp;
             Speed = speed;
             CharacterSize = resistance;
@@ -37,34 +36,34 @@ namespace Altzone.Scripts.Model.Poco.Game
             Defence = defence;
         }
 
-        public static CharacterClass CreateDummyFor(CharacterClassID id)
+        public static CharacterClass CreateDummyFor(CharacterClassType type)
         {
-            return new CharacterClass(id, 1, 1, 1, 1, 1);
+            return new CharacterClass(type, 1, 1, 1, 1, 1);
         }
 
         public override string ToString()
         {
-            return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}" +
+            return $"{nameof(Type)}: {Type}, {nameof(Name)}: {Name}" +
                    $", {nameof(Speed)}: {Speed}, {nameof(CharacterSize)}: {CharacterSize}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";
         }
 
-        public static string GetClassName(CharacterClassID id)
+        public static string GetClassName(CharacterClassType type)
         {
-            switch (id)
+            switch (type)
             {
-                case CharacterClassID.Desensitizer:
+                case CharacterClassType.Desensitizer:
                     return "Desensitizer";
-                case CharacterClassID.Trickster:
+                case CharacterClassType.Trickster:
                     return "Trickster";
-                case CharacterClassID.Obedient:
+                case CharacterClassType.Obedient:
                     return "Obedient";
-                case CharacterClassID.Projector:
+                case CharacterClassType.Projector:
                     return "Projector";
-                case CharacterClassID.Retroflector:
+                case CharacterClassType.Retroflector:
                     return "Retroflector";
-                case CharacterClassID.Confluent:
+                case CharacterClassType.Confluent:
                     return "Confluent";
-                case CharacterClassID.Intellectualizer:
+                case CharacterClassType.Intellectualizer:
                     return "Intellectualizer";
                 default:
                     return "Error";
@@ -72,31 +71,31 @@ namespace Altzone.Scripts.Model.Poco.Game
         }
 
 
-        public static Color GetCharacterClassColor(CharacterClassID id)
+        public static Color GetCharacterClassColor(CharacterClassType type)
         {
             Color color;
 
-            switch (id)
+            switch (type)
             {
-                case CharacterClassID.Desensitizer:
+                case CharacterClassType.Desensitizer:
                     ColorUtility.TryParseHtmlString("#23B1B1", out color);
                     break;
-                case CharacterClassID.Trickster:
+                case CharacterClassType.Trickster:
                     ColorUtility.TryParseHtmlString("#278227", out color);
                     break;
-                case CharacterClassID.Obedient:
+                case CharacterClassType.Obedient:
                     ColorUtility.TryParseHtmlString("#DF8617", out color);
                     break;
-                case CharacterClassID.Projector:
+                case CharacterClassType.Projector:
                     ColorUtility.TryParseHtmlString("#D5D51B", out color);
                     break;
-                case CharacterClassID.Retroflector:
+                case CharacterClassType.Retroflector:
                     ColorUtility.TryParseHtmlString("#B13232", out color);
                     break;
-                case CharacterClassID.Confluent:
+                case CharacterClassType.Confluent:
                     ColorUtility.TryParseHtmlString("#891D89", out color);
                     break;
-                case CharacterClassID.Intellectualizer:
+                case CharacterClassType.Intellectualizer:
                     ColorUtility.TryParseHtmlString("#522295", out color);
                     break;
                 default:

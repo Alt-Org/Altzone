@@ -20,7 +20,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         [PrimaryKey] public CharacterID Id;
         public string CharacterName => GetCharacterName(Id);
         public string CharacterClassAndName => GetCharacterClassAndName(Id);
-        public CharacterClassID CharacterClassID => GetClassID(Id);
+        public CharacterClassType CharacterClassType => GetClass(Id);
         public int InsideCharacterID => GetInsideCharacterID(Id);
 
         public BaseCharacter CharacterBase { get => _characterBase;
@@ -356,18 +356,14 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public static string GetCharacterClassAndName(CharacterID id)
         {
-            CharacterClassID classId = GetClassID(id);
+            CharacterClassType classType = GetClass(id);
 
-            string className = CharacterClass.GetClassName(classId);
+            string className = Game.CharacterClass.GetClassName(classType);
 
             return className+GetCharacterName(id);
         }
 
-        public static CharacterClassID GetClassID(CharacterID id)
-        {
-            CharacterClassID ClassId = (CharacterClassID)((((int)id)/100)*100);
-            return ClassId;
-        }
+        public static CharacterClassType GetClass(CharacterID id) => BaseCharacter.GetClass(id);
 
         public static int GetInsideCharacterID(CharacterID id)
         {
