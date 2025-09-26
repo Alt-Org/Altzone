@@ -984,50 +984,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69e40cae554b4484f9958dad7df00262, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _globalLeaderboardButton: {fileID: 3376510699504879732}
-  _globalLeaderboardImage: {fileID: 7136693186436465961}
+  _globalPlayersLeaderboardButton: {fileID: 3376510699504879732}
+  _globalPlayersLeaderboardImage: {fileID: 7136693186436465961}
   _clanLeaderboardButton: {fileID: 3506837274485657990}
   _clanLeaderboardImage: {fileID: 9042014021790031067}
   _friendsLeaderboardButton: {fileID: 28899217467490339}
   _friendsLeaderboardImage: {fileID: 5600170732485840254}
-  _leaderboardTypeButton: {fileID: 0}
   _tablineRibbon: {fileID: 2388488749055727400}
   _tablineScript: {fileID: 7120743843305630683}
-  _leaderboardCategoryButtons: {fileID: 0}
   _clansButton: {fileID: 0}
   _playersButton: {fileID: 0}
-  _winsLeaderboardButton: {fileID: 1364727418023890738}
-  _winsLeaderboardImage: {fileID: 0}
+  _globalClansLeaderboardButton: {fileID: 1364727418023890738}
+  _globalClansLeaderboardImage: {fileID: 6854789143805330031}
   _globalWinsSprite: {fileID: 21300000, guid: ccd92ab69a9d8ee4bb51be59c5cceed3, type: 3}
-  _globalActivitySprite: {fileID: 21300000, guid: c84720f47192a6843a33ccb237113804,
-    type: 3}
   _clanWinsSprite: {fileID: 21300000, guid: c022ef603dbc77d4490ec6282ece8daa, type: 3}
-  _clanActivitySprite: {fileID: 21300000, guid: dd1446e00a623804fa6d502d61d18b2f,
-    type: 3}
   _friendsWinsSprite: {fileID: 21300000, guid: 821973c2297e61c4e92785bd0e663fe2, type: 3}
-  _friendsActivitySprite: {fileID: 21300000, guid: fd67daa0a6103154f87678aa46ca5e93,
-    type: 3}
-  _winsActivitySprite: {fileID: 0}
   _podium: {fileID: 945673514887291428}
   _winsPanel: {fileID: 5792825386443392324}
   _winsContent: {fileID: 8959575531257436229}
-  _activityPanel: {fileID: 7810633882494317420}
-  _activityContent: {fileID: 1116411628607364585}
-  _activityViewIcons:
-  - {fileID: 2678910673699630490}
-  - {fileID: 960702135050043399}
-  - {fileID: 842443058971617813}
-  - {fileID: 6822659209232287737}
-  - {fileID: 0}
-  _winsViewIcons:
-  - {fileID: 1211191212923158543}
-  - {fileID: 5952009064706510860}
-  - {fileID: 3979549278640856850}
-  - {fileID: 2221212684054788097}
-  - {fileID: 0}
   _playerWinsItemPrefab: {fileID: 4620648385292652003, guid: 4dd039f203df457419521004b467b5a8,
-    type: 3}
-  _playerActivityItemPrefab: {fileID: 3281663084631502013, guid: ba4c33cd270fe764b8b1a57ca8d060fc,
     type: 3}
   _clanPointsItemPrefab: {fileID: 4620648385292652003, guid: a841807deec79ac4ea0d5484c7df6d35,
     type: 3}
@@ -14500,6 +14475,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 2986111374925025204}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6854789143805330031 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8525830938168413659, guid: 3a035a942e5180d45947bdb51427e49d,
+    type: 3}
+  m_PrefabInstance: {fileID: 2986111374925025204}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &9022505498489935353 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6072730864442710605, guid: 3a035a942e5180d45947bdb51427e49d,
