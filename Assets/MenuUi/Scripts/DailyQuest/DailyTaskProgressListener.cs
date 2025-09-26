@@ -27,7 +27,31 @@ public class DailyTaskProgressListener : MonoBehaviour
         try
         {
             DailyTaskProgressManager.OnTaskChange += SetState;
-            _on = DailyTaskProgressManager.Instance.SameTask(_normalTaskType);
+            PlayerTask task = DailyTaskProgressManager.Instance.CurrentPlayerTask;
+            if (task == null)
+            {
+                _on = false;
+                return;
+            }
+
+            if (_normalTaskType != TaskNormalType.Undefined)
+            {
+                _on = (_normalTaskType == task.Type);
+                return;
+            }
+
+            if (_educationCategoryType != EducationCategoryType.None)
+            {
+                switch (task.EducationCategory)
+                {
+                    case EducationCategoryType.Action: _on = (_educationCategoryActionType == task.EducationActionType); break;
+                    case EducationCategoryType.Social: _on = (_educationCategorySocialType == task.EducationSocialType); break;
+                    case EducationCategoryType.Story: _on = (_educationCategoryStoryType == task.EducationStoryType); break;
+                    case EducationCategoryType.Culture: _on = (_educationCategoryCultureType == task.EducationCultureType); break;
+                    case EducationCategoryType.Ethical: _on = (_educationCategoryEthicalType == task.EducationEthicalType); break;
+                    default: _on = false; break;
+                }
+            }
         }
         catch
         {
