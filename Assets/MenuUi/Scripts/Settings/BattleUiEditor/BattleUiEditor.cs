@@ -87,6 +87,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         public void OpenEditor()
         {
             gameObject.SetActive(true);
+            _optionsPopup.OpenOptionsPopup();
 
             // Instantiating Ui element prefabs
             if (_instantiatedTimer == null) _instantiatedTimer = InstantiateBattleUiElement(BattleUiElementType.Timer).GetComponent<BattleUiMovableElement>();
