@@ -41,6 +41,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         ChangeItemsPosition,
         UseAllItemsSoulhome,
         FindVariableValueInGame,
+        Find3ImportantButtons,
     }
 
     public enum TaskEducationSocialType
@@ -325,6 +326,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case "find_variable_value_in_game":
                     {
                         return TaskEducationActionType.FindVariableValueInGame;
+                    }
+                case "find_3_important_buttons":
+                    {
+                        return TaskEducationActionType.Find3ImportantButtons;
                     }
                 default:
                     {

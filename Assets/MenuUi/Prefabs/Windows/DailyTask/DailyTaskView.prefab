@@ -3724,6 +3724,7 @@ GameObject:
   - component: {fileID: 351654732571348405}
   - component: {fileID: 9219590178620301729}
   - component: {fileID: 7194768997489407432}
+  - component: {fileID: 8292801005675704149}
   m_Layer: 0
   m_Name: DailyTaskView
   m_TagString: Untagged
@@ -3881,6 +3882,25 @@ MonoBehaviour:
   _normalTaskType: 0
   _educationCategoryType: 0
   _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
+--- !u!114 &8292801005675704149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2233725341713237059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8490714f975da03478ab7a23b04d10ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 5
+  _educationCategoryActionType: 14
   _educationCategorySocialType: 1
   _educationCategoryStoryType: 3
   _educationCategoryCultureType: 0

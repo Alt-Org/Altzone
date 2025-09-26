@@ -22,7 +22,7 @@ public class DailyTaskProgressListener : MonoBehaviour
     private bool _on = false;
     [HideInInspector] public bool On { get => _on; }
 
-    private void Start()
+    protected virtual void Start()
     {
         try
         {
@@ -105,7 +105,7 @@ public class DailyTaskProgressListener : MonoBehaviour
         }
     }
 
-    public void SetState(PlayerTask task)
+    public virtual void SetState(PlayerTask task)
     {
         //-----TEST CODE-----
         if (_normalTaskType == TaskNormalType.Test)
