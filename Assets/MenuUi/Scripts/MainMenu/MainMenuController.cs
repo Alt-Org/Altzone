@@ -36,9 +36,19 @@ namespace MenuUi.Scripts.MainMenu
 
         private void OnEnable()
         {
+            bool jukeboxMainMenu = carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.MainMenu);
+
             _swipe = GetComponentInParent<SwipeUI>();
             StartCoroutine(CheckWindowSize());
-            AudioManager.Instance?.PlayMusic("MainMenu");
+            Debug.LogError("?????" + jukeboxMainMenu);
+            if (jukeboxMainMenu)
+            {
+                if (string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
+                    AudioManager.Instance?.PlayMusic("MainMenu");
+            }
+            else
+                AudioManager.Instance?.PlayMusic("MainMenu");
+
             LobbyManager.Instance.Activate();
         }
 

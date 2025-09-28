@@ -13,11 +13,13 @@ public class JukeboxTrackButtonHandler : MonoBehaviour
     private MusicTrack _currentTrack = null;
     public MusicTrack CurrentTrack {  get { return _currentTrack; } }
 
+    [SerializeField] Button _addButton;
+
     //public delegate void TrackPressed(int startIndex);
     public delegate void TrackPressed(MusicTrack musicTrack);
     public event TrackPressed OnTrackPressed;
 
-    private void Awake() { GetComponent<Button>().onClick.AddListener(() => ButtonClicked()); }
+    private void Awake() { _addButton.onClick.AddListener(() => ButtonClicked()); }
 
     public bool InUse() { return _currentTrack != null; }
 

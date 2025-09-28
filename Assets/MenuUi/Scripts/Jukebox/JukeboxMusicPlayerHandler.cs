@@ -448,10 +448,10 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
 
         _queueHandlerLastUpdate = JukeboxManager.Instance.PlaybackLastUpdate;
 
-        Debug.LogError("After:-------------------------------------------------------------------------------");
-        for (int i = 0; i < _queueHandlerChunks.Count; i++)
-            for (int j = 0; j < _queueHandlerChunks[i].Pool.Count; j++)
-                Debug.LogError("chunk: " + i + ", pool: " + j + ", Id: " + _queueHandlerChunks[i].Pool[j].Id);
+        //Debug.LogError("After:-------------------------------------------------------------------------------");
+        //for (int i = 0; i < _queueHandlerChunks.Count; i++)
+        //    for (int j = 0; j < _queueHandlerChunks[i].Pool.Count; j++)
+        //        Debug.LogError("chunk: " + i + ", pool: " + j + ", Id: " + _queueHandlerChunks[i].Pool[j].Id);
 
         Debug.Log("Music Player: Jukebox queue visual list optimization done.");
     }

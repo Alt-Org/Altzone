@@ -87,9 +87,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
         //foreach (Button button in _playButtons) button.onClick.AddListener(() => PlayStopButtonActivated());
 
-        _soundMuteButton.onClick.AddListener(() => PlayStopButtonActivated());
-        _soundMuteImage.sprite = _soundUnmuteSprite;
-        
+        _soundMuteButton.onClick.AddListener(() => MuteJukeboxToggle());
     }
 
     private void OnEnable()
@@ -112,6 +110,30 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         StopJukeboxVisuals();
     }
 
+    private void MuteJukeboxToggle()
+    {
+        bool result = JukeboxManager.Instance.PlaybackToggle(true);
+
+        if (result) //Stopped
+        {
+            _soundMuteImage.gameObject.SetActive(true);
+            StopJukeboxVisuals();
+        }
+        else //Playing
+        {
+            _soundMuteImage.gameObject.SetActive(false);
+
+            if (_diskSpinCoroutine != null)
+            {
+                StopCoroutine(_diskSpinCoroutine);
+                _diskSpinCoroutine = null;
+                foreach (Transform rotationT in _diskTransform) rotationT.rotation = Quaternion.identity;
+            }
+
+            _diskSpinCoroutine = StartCoroutine(SpinDisks());
+        }
+    }
+
     //private void PlaylistChange(int value)
     //{
 
@@ -132,7 +154,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     {
         if (JukeboxManager.Instance.CurrentTrackQueueData == null) return;
 
-        bool result = JukeboxManager.Instance.PlaybackToggle();
+        bool result = JukeboxManager.Instance.PlaybackToggle(false);
 
         //foreach (Image image in _playButtonImages)
         //{
@@ -158,13 +180,10 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
         if (result) //Stopped
         {
-            _soundMuteImage.sprite = _soundMuteSprite;
             StopJukeboxVisuals();
         }
         else //Playing
         {
-            _soundMuteImage.sprite = _soundUnmuteSprite;
-
             if (_diskSpinCoroutine != null)
             {
                 StopCoroutine(_diskSpinCoroutine);
@@ -221,7 +240,17 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     public void ToggleJukeboxScreen(bool toggle)
     {
         _jukeboxObject.SetActive(toggle);
-        JukeboxManager.Instance.TryPlayTrack();
+
+        if (toggle)
+        {
+            JukeboxManager.Instance.TryPlayTrack();
+        }
+        else
+        {
+            bool jukeboxSoulhome = SettingsCarrier.Instance.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Soulhome);
+
+            if (!jukeboxSoulhome) AudioManager.Instance.PlayMusic("Soulhome", "");
+        }
     }
 
     private void SetSongInfo(MusicTrack track)

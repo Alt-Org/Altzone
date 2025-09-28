@@ -47,8 +47,8 @@ public class JukeboxTrackQueueHandler : MonoBehaviour
             _trackNameText.text = musicTrack.Name;
         else
             _trackNameText.text = "";
-
-        Debug.LogError($"SetTrack: Id: {_id}, LinearIndex: {_linearIndex}, ChunkIndex: {_chunkIndex}, PoolIndex: {_poolIndex}");
+        //_trackNameText.alignment
+        // Debug.LogError($"SetTrack: Id: {_id}, LinearIndex: {_linearIndex}, ChunkIndex: {_chunkIndex}, PoolIndex: {_poolIndex}");
     }
 
     public void SetLinearIndex(int index) { _linearIndex = index; }

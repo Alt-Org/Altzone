@@ -160,6 +160,7 @@ namespace Altzone.Scripts.Audio
 
         private bool HandleFallBack(string categoryName, string trackName)
         {
+            Debug.LogError(categoryName + ", " + trackName);
             if (!CanPlay(categoryName))
             {
                 _fallbackMusicCategory = categoryName;
@@ -184,6 +185,8 @@ namespace Altzone.Scripts.Audio
 
         private bool CanPlay(string categoryName)
         {
+            if (_musicHandler == null) _musicHandler = GetComponent<MusicHandler>();
+
             if (_musicHandler.CurrentCategory == null) return true; //Dont block if category is null.
 
             bool currentCategoryJukebox = _musicHandler.CurrentCategory.Name.ToLower() == "Jukebox".ToLower();

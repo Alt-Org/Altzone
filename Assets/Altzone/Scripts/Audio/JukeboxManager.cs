@@ -25,9 +25,6 @@ namespace Altzone.Scripts.Audio
         public int TrackChunkSize = 8;
         //public int TrackChunkBufferSize = 4;
 
-        ////A JukeboxTrackQueueHandler chunk index and pool index is added to this when created and it will update if it's chunk & pool indexes changes.
-        //private List<ChunkPointer> _trackQueueHandlersMap = new();
-        //public List<ChunkPointer> TrackQueueHandlersMap { get { return _trackQueueHandlersMap; } }
         #endregion
 
         #region Playback
@@ -39,7 +36,9 @@ namespace Altzone.Scripts.Audio
         private bool _loopLastTrack = true;
         public bool LoopLastTrack { get { return _loopLastTrack; } }
 
-        private bool _playbackPaused = true;
+        private bool _playbackPaused = false;
+
+        private bool _jukeboxMuted = false;
 
         private float _musicElapsedTime = 0f;
         #endregion
@@ -72,6 +71,8 @@ namespace Altzone.Scripts.Audio
 
         private bool _playlistReady = false;
         public bool PlaylistReady { get { return _playlistReady; } }
+
+        private System.DateTime _musicTrackStartTime = System.DateTime.Now;
         #endregion
 
         #region Playback History
@@ -172,6 +173,17 @@ namespace Altzone.Scripts.Audio
             _playlistReady = true;
 
             if (OnQueueChange != null) OnQueueChange.Invoke();
+
+            //if (_currentPlaylist.Type == PlaylistType.Clan)
+            //{
+            //    _currentTrackQueueData = _trackQueue[0]; //TODO: Replace 0 with correct music track index from server.
+            //    _trackQueuePointer++;
+            //}
+            Debug.LogError("setup");
+            _musicTrackStartTime = System.DateTime.Now; //TODO: Replace "System.DateTime.Now" with correct music track start time from server.
+            _jukeboxMuted = true;
+            PlayNextJukeboxTrack();
+            _jukeboxMuted = false;
         }
 
         private IEnumerator GetPlayerData()
@@ -267,91 +279,114 @@ namespace Altzone.Scripts.Audio
 
         public string TryPlayTrack()
         {
-            if (_currentTrackQueueData != null)
-                return _currentTrackQueueData.MusicTrack.Name;
-            else
-                PlayNextJukeboxTrack();
+            if (_jukeboxMuted) return null;
 
-            return null;
+            if (_currentTrackQueueData != null)
+                return ContinueTrack(false);
+            else
+                return PlayNextJukeboxTrack();
         }
 
+        /// <summary>
+        /// Plays the current track.
+        /// </summary>
+        /// <returns>Track name that is playing.</returns>
         public string PlayTrack() { return PlayTrack(_currentTrackQueueData); }
 
+        /// <summary>
+        /// Plays the track found in given <c>TrackQueueData</c>.
+        /// </summary>
+        /// <returns>Track name that is playing.</returns>
         public string PlayTrack(TrackQueueData trackQueueData)
         {
             if (trackQueueData == null || _trackEndingControlCoroutine != null || (_playbackPaused && _currentTrackQueueData != null)) return null;
 
-            //if (_currentTrackQueueData != null && _currentTrackQueueData.MusicTrack == trackQueueData.MusicTrack) return ContinueTrack();
+            string name = "";
 
-            string name = AudioManager.Instance.PlayMusic("Jukebox", trackQueueData.MusicTrack);
+            if (_jukeboxMuted)
+            {
+                name = trackQueueData.MusicTrack.Name;
+            }
+            else
+            {
+                name = AudioManager.Instance.PlayMusic("Jukebox", trackQueueData.MusicTrack);
 
-            if (string.IsNullOrEmpty(name)) return null;
+                if (string.IsNullOrEmpty(name)) return null;
 
-            _playbackPaused = false;
+                _playbackPaused = false;
+            }
 
             if (OnSetSongInfo != null) OnSetSongInfo.Invoke(trackQueueData.MusicTrack);
 
             _currentTrackQueueData = trackQueueData;
             _musicElapsedTime = 0f;
+
+            if (_trackEndingControlCoroutine != null) StopCoroutine( _trackEndingControlCoroutine);
+
             _trackEndingControlCoroutine = StartCoroutine(TrackEndingControl());
 
             //OnSetPlayButtonImages?.Invoke(true);
-
+            Debug.LogError(name);
             return name;
         }
 
-        /// <returns><c>True</c> if muted.</returns>
-        public bool JukeboxMuteToggle() //TODO:
-        {
-            _playbackPaused = !_playbackPaused;
-
-            if (_trackQueue.Count != 0 && _trackQueuePointer >= _trackQueue.Count) //Start current playlist from beginning.
-                _trackQueuePointer = 0;
-
-            if (_playbackPaused)
-            {
-                //StopJukebox();
-                AudioManager.Instance.PlayFallBackTrack();
-            }
-            else
-            {
-                
-            }
-
-            return _playbackPaused;
-        }
-
         /// <returns><c>True</c> if paused.</returns>
-        public bool PlaybackToggle()
+        public bool PlaybackToggle(bool muteActivation)
         {
-            _playbackPaused = !_playbackPaused;
+            if (muteActivation)
+                _jukeboxMuted = !_jukeboxMuted;
+            else
+                _playbackPaused = !_playbackPaused;
 
             if (_trackQueue.Count != 0 && _trackQueuePointer >= _trackQueue.Count) //Start current playlist from beginning.
                 _trackQueuePointer = 0;
 
-            if (_playbackPaused)
+            if (!_playbackPaused && !_jukeboxMuted)
             {
-                StopJukebox();
-                AudioManager.Instance.PlayFallBackTrack();
-            }
-            else
-            {
-                //if (_currentTrackQueueData != null)
-                //    ContinueTrack();
-                //else
+                if (_currentTrackQueueData != null)
+                    ContinueTrack(muteActivation);
+                else
                     PlayTrack();
             }
+            else
+            {
+                AudioManager.Instance.PlayFallBackTrack();
+            }
 
-            return _playbackPaused;
+            if (_playbackPaused) StopJukebox();
+
+            if (muteActivation)
+                return _jukeboxMuted;
+            else
+                return _playbackPaused;
         }
 
-        //public string ContinueTrack()
-        //{
-        //    _trackEndingControlCoroutine = StartCoroutine(TrackEndingControl());
-        //    //OnSetPlayButtonImages?.Invoke(true);
+        public string ContinueTrack(bool muteActivation)
+        {
+            if (_playbackPaused) _playbackPaused = false;
 
-        //    return AudioManager.Instance.ContinueMusic("Jukebox", _currentTrackQueueData.MusicTrack, _musicElapsedTime);
-        //}
+            if (_currentPlaylist.Type == PlaylistType.Clan || muteActivation)
+            {
+                float seconds = (float)System.DateTime.Now.Subtract(_musicTrackStartTime).TotalMilliseconds / 1000f;
+
+                while (seconds > _trackQueue[_trackQueuePointer].MusicTrack.Music.length)
+                {
+                    seconds -= _trackQueue[_trackQueuePointer].MusicTrack.Music.length;
+                    _trackQueuePointer++;
+
+                    if (_trackQueuePointer >= _trackQueue.Count) _trackQueuePointer = 0;
+                }
+
+                _musicElapsedTime = seconds;
+            }
+
+            if (_trackEndingControlCoroutine != null) StopCoroutine(_trackEndingControlCoroutine);
+
+            _trackEndingControlCoroutine = StartCoroutine(TrackEndingControl());
+            //OnSetPlayButtonImages?.Invoke(true);
+
+            return AudioManager.Instance.ContinueMusic("Jukebox", _currentTrackQueueData.MusicTrack, _musicElapsedTime);
+        }
 
         public void StopJukebox()
         {
@@ -379,8 +414,8 @@ namespace Altzone.Scripts.Audio
 
         private string PlayNextJukeboxTrack()
         {
-            if (_trackQueuePointer < _trackQueue.Count && !_trackQueue[_trackQueuePointer].InUse() /*&& !TryFindValidQueueData()*/) return null; //Rethink?
-
+            if (_trackQueuePointer < _trackQueue.Count && !_trackQueue[_trackQueuePointer].InUse()) return null;
+            
             string name = null;
 
             if (_trackEndingControlCoroutine != null)
@@ -391,7 +426,7 @@ namespace Altzone.Scripts.Audio
 
             if (_trackQueuePointer >= _trackQueue.Count && _loopPlayType == PlaylistLoopType.LoopPlaylist) //Keep playing the current playlist.
                 _trackQueuePointer = 0;
-
+            Debug.LogError(_trackQueuePointer + " | " + _trackQueue.Count);
             if (_loopPlayType == PlaylistLoopType.LoopOne)
             {
                 name = PlayTrack(_currentTrackQueueData);
@@ -419,6 +454,8 @@ namespace Altzone.Scripts.Audio
                     return null;
                 }
 
+                _musicTrackStartTime = System.DateTime.Now;
+
                 // Hide current tracks visual part in JukeboxMusicPlayerHandler.
                 AddPlaybackHistory(PlaybackHistoryType.Hide, _currentTrackQueueData);
 
@@ -433,8 +470,8 @@ namespace Altzone.Scripts.Audio
                 StopJukebox();
                 if (!string.IsNullOrEmpty(manager.FallbackMusicCategory))
                     manager.PlayMusic(manager.FallbackMusicCategory, manager.FallbackMusicTrack);
-                else
-                    manager.PlayMusic("Soulhome", "");
+                //else
+                //    manager.PlayMusic("Soulhome", "");
 
                 if (OnStopJukeboxVisuals != null)
                 {
@@ -444,6 +481,8 @@ namespace Altzone.Scripts.Audio
             }
 
             //if (OnOptimizeVisualQueueChunks != null) OnOptimizeVisualQueueChunks.Invoke();
+
+            if (_jukeboxMuted) return null;
 
             return name;
         }
@@ -628,8 +667,8 @@ namespace Altzone.Scripts.Audio
                     freeIndexes.Enqueue(i);
             }
 
-            for (int i = 0; i < _trackQueue.Count; i++)
-                Debug.LogError($"Id: {_trackQueue[i].Id}, linearIndex: {_trackQueue[i].LinearIndex}, chunkIndex: {_trackQueue[i].Pointer.ChunkIndex}, poolIndex: {_trackQueue[i].Pointer.PoolIndex}");
+            //for (int i = 0; i < _trackQueue.Count; i++)
+            //    Debug.LogError($"Id: {_trackQueue[i].Id}, linearIndex: {_trackQueue[i].LinearIndex}, chunkIndex: {_trackQueue[i].Pointer.ChunkIndex}, poolIndex: {_trackQueue[i].Pointer.PoolIndex}");
 
             ClearPlaybackHistory();
             LogPlaybackLastUpdate();
