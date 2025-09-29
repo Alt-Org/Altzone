@@ -162,9 +162,9 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// Get currently displayed character's class id.
         /// </summary>
         /// <returns>Current character's CharacterClassID.</returns>
-        public CharacterClassID GetCurrentCharacterClass()
+        public CharacterClassType GetCurrentCharacterClass()
         {
-            return CustomCharacter.GetClassID(_characterId);
+            return CustomCharacter.GetClass(_characterId);
         }
 
 
@@ -174,7 +174,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>Current character's ClassName.</returns>
         public string GetCurrentCharacterClassName()
         {
-            return _classReference.GetName(CustomCharacter.GetClassID(_characterId));
+            return _classReference.GetName(CustomCharacter.GetClass(_characterId));
         }
 
 
@@ -184,8 +184,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>Current character class alternative color as Color.</returns>
         public Color GetCurrentCharacterClassAlternativeColor()
         {
-            CharacterClassID classID = GetCurrentCharacterClass();
-            return _classReference.GetAlternativeColor(classID);
+            CharacterClassType classType = GetCurrentCharacterClass();
+            return _classReference.GetAlternativeColor(classType);
         }
 
 
@@ -195,8 +195,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>Current character class color as Color.</returns>
         public Color GetCurrentCharacterClassColor()
         {
-            CharacterClassID classID = GetCurrentCharacterClass();
-            return _classReference.GetColor(classID);
+            CharacterClassType classType = GetCurrentCharacterClass();
+            return _classReference.GetColor(classType);
         }
 
 

@@ -8,7 +8,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     /// <remarks>
     /// This will be serialized in UNITY scenes and prefabs and sent over network. Do not change these! 
     /// </remarks>
-    public enum CharacterClassID
+    public enum CharacterClassType
     {
         None = 0,
         Desensitizer = 100,

@@ -121,6 +121,8 @@ namespace Battle.QSimulation.Player
 
             playerHandle.PlayerRef = playerRef;
             playerManagerData->PlayerCount++;
+
+            f.Events.BattleViewPlayerConnected(data);
         }
 
         /// <summary>
