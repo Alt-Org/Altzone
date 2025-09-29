@@ -344,10 +344,7 @@ namespace Battle.QSimulation.Player
                 _ => ClassIndexError,
             };
 
-            if (classIndex == ClassIndexNoCode)
-            {
-                return ReturnCode.NoClass;
-            }
+            if (classIndex == ClassIndexNoCode) return ReturnCode.NoClass;
 
             if (classIndex == ClassIndexError)
             {
