@@ -288,7 +288,7 @@ namespace Battle.QSimulation.Player
 
         /// <value>Constant for a class index error.</value>
         private const int ClassIndexError = -2;
-        /// <value>Constant for a class index error.</value>
+        /// <value>Constant for a no code class index.</value>
         private const int ClassIndexNoCode = -1;
         /// <value>Constant for Desensitizer class index.</value>
         private const int ClassIndexDesensitizer = 0;
@@ -307,6 +307,7 @@ namespace Battle.QSimulation.Player
         /// <value>Constant for the amount of classes that exist.</value>
         private const int ClassCount = 7;
 
+        /// <summary>Enum for the different values GetClass can return.</summary>
         private enum ReturnCode
         {
             ClassRetrieved = 0,
@@ -327,14 +328,11 @@ namespace Battle.QSimulation.Player
         /// <param name="characterClass">The class that's script is to be retrieved.</param>
         private static ReturnCode GetClass(BattlePlayerCharacterClass characterClass, out BattlePlayerClassBase playerClass)
         {
-            if (characterClass == BattlePlayerCharacterClass.None)
-            {
-                playerClass = null;
-                return ReturnCode.NoClass;
-            }
+            playerClass = null;
 
             int classIndex = characterClass switch
             {
+                BattlePlayerCharacterClass.None             => ClassIndexNoCode,
                 BattlePlayerCharacterClass.Desensitizer     => ClassIndexDesensitizer,
                 //BattlePlayerCharacterClass.Trickster        => ClassIndexTrickster,
                 //BattlePlayerCharacterClass.Obedient         => ClassIndexObedient,
@@ -348,7 +346,6 @@ namespace Battle.QSimulation.Player
 
             if (classIndex == ClassIndexNoCode)
             {
-                playerClass = null;
                 return ReturnCode.NoClass;
             }
 
@@ -365,7 +362,6 @@ namespace Battle.QSimulation.Player
                     s_errorMessagesSent[characterClass] = true;
                 }
 
-                playerClass = null;
                 return ReturnCode.Error;
             }
 
@@ -374,11 +370,13 @@ namespace Battle.QSimulation.Player
             if (classObj == null)
             {
                 Debug.LogErrorFormat("[PlayerClassManager] The {0} class is not in the class array!", characterClass);
+                return ReturnCode.Error;
             }
 
             if (classObj.Class != characterClass)
             {
                 Debug.LogErrorFormat("[PlayerClassManager] Mapping of character classes is incorrect! Expected {0}, got {1}", characterClass, classObj.Class);
+                return ReturnCode.Error;
             }
 
             playerClass = classObj;
