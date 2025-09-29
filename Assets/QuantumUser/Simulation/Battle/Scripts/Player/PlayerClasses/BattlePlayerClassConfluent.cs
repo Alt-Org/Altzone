@@ -1,17 +1,36 @@
+/// @file BattlePlayerClassConfluent.cs
+/// <summary>
+/// Contains the logic for Confluent class characters.
+/// </summary>
+///
+/// Contains code overriding shield/projectile collisions to have the projectile always reflect off of the character's shield based on a calculated normal.
+
 using Battle.QSimulation.Game;
-using Battle.QSimulation.Player;
 using Battle.QSimulation.Projectile;
 
 using Photon.Deterministic;
 using Quantum;
-using UnityEngine;
 
 namespace Battle.QSimulation.Player
 {
+    /// <summary>
+    /// Class containing code for Confluent class characters.
+    /// </summary>
     public class BattlePlayerClassConfluent : BattlePlayerClassBase
     {
+        /// <summary>The BattlePlayerCharacterClass this class is for.</summary>
         public override BattlePlayerCharacterClass Class { get; } = BattlePlayerCharacterClass.Confluent;
 
+        /// <summary>
+        /// Called by BattlePlayerClassManager. Reflects the projectile off of the characters hitbox based on a normal calculated from the characters center to the projectiles position.
+        /// Does nothing if the player and their teammate are overlapping and the projectile should be set to Love emotion.
+        /// </summary>
+        /// 
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectile">Pointer to the projectile component.</param>
+        /// <param name="projectileEntity">EntityRef of the projectile.</param>
+        /// <param name="playerHitbox">Pointer to the PlayerHitbox component.</param>
+        /// <param name="playerHitboxEntity">EntityRef of the player hitbox.</param>
         public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
         {
             if (!playerHitbox->IsActive) return;
@@ -34,24 +53,15 @@ namespace Battle.QSimulation.Player
                 BattleGridPosition teammateGridPosition = BattleGridManager.WorldPositionToGridPosition(teammateTransform->Position);
 
                 isOnTopOfTeammate = playerGridPosition.Row == teammateGridPosition.Row && playerGridPosition.Col == teammateGridPosition.Col;
-
             }
 
-            FPVector2 normal;
-
-            // if player is in the same grid cell as teammate, change the projectile to love emotion
-            if (isOnTopOfTeammate)
+            if (!isOnTopOfTeammate)
             {
-                Debug.Log("[ProjectileSystem] changing projectile emotion to Love");
-                BattleProjectileQSystem.SetEmotion(f, projectile, BattleEmotionState.Love);
+                FPVector2 normal = f.Unsafe.GetPointer<Transform2D>(projectileEntity)->Position - f.Unsafe.GetPointer<Transform2D>(playerHitbox->PlayerEntity)->Position;
 
-                normal = playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? FPVector2.Up : FPVector2.Down;
-                return;
+                BattleProjectileQSystem.HandleIntersection(f, projectile, projectileEntity, playerHitboxEntity, normal, playerHitbox->CollisionMinOffset);
+                BattleProjectileQSystem.UpdateVelocity(f, projectile, FPVector2.Reflect(projectile->Direction, normal).Normalized, projectile->SpeedIncrement, false);
             }
-            normal = f.Unsafe.GetPointer<Transform2D>(projectileEntity)->Position - f.Unsafe.GetPointer<Transform2D>(playerHitbox->PlayerEntity)->Position;
-
-            BattleProjectileQSystem.HandleIntersection(f, projectile, projectileEntity, playerHitboxEntity, normal, playerHitbox->CollisionMinOffset);
-            BattleProjectileQSystem.UpdateVelocity(f, projectile, FPVector2.Reflect(projectile->Direction, normal).Normalized, projectile->SpeedIncrement, false);
         }
     }
 }
