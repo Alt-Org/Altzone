@@ -8,6 +8,10 @@
 /// ### Game Flow events - View Pre-Activate
 /// - <b>synced event</b> @ref BattleViewWaitForPlayers {}  
 ///   @copybrief Quantum.EventBattleViewWaitForPlayers
+/// - <b>synced event</b> @ref BattleViewPlayerConnected {}  
+///   @copybrief Quantum.EventBattleViewPlayerConnected
+/// - <b>synced event</b> @ref BattleViewAllPlayersConnected {}  
+///   @copybrief Quantum.EventBattleViewAllPlayersConnected
 /// - <b>synced event</b> @ref BattleViewInit {}  
 ///   @copybrief Quantum.EventBattleViewInit
 ///
@@ -66,6 +70,24 @@
 ///
 /// Generated Class @cref{ Quantum,EventBattleViewWaitForPlayers }  
 /// Generated Method @cref{ Quantum,Frame.FrameEvents.BattleViewWaitForPlayers }
+///
+/// ---
+///
+/// @anchor BattleViewPlayerConnected
+/// ### BattleViewInit
+/// @copybrief Quantum.EventBattleViewPlayerConnected
+///
+/// Generated Class @cref{Quantum,EventBattleViewPlayerConnected}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleViewPlayerConnected}
+///
+/// ---
+///
+/// @anchor BattleViewAllPlayersConnected
+/// ### BattleViewInit
+/// @copybrief Quantum.EventBattleViewAllPlayersConnected
+///
+/// Generated Class @cref{Quantum,EventBattleViewAllPlayersConnected}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleViewAllPlayersConnected}
 ///
 /// ---
 ///
@@ -229,7 +251,23 @@
 /// Synced event. Used when waiting for for all players to get registered.
 /// </summary>
 ///
-/// Sets "waiting for players" text in UI.<br/>  
+/// Initializes the loading screen and sets "waiting for players" text in UI.<br/>  
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattleViewPlayerConnected
+/// <summary>
+/// Synced event. Used when a player connects to the game.
+/// </summary>
+///
+/// Updates the loading screen to indicate the player has connected and show their characters.<br/>  
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattleViewAllPlayersConnected
+/// <summary>
+/// Synced event. Used when all players have connected to the game.
+/// </summary>
+///
+/// Disables the loading screen after a brief delay and allows the game to begin.<br/>  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
 /// @class Quantum::EventBattleViewInit

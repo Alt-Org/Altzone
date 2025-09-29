@@ -32,6 +32,9 @@ namespace Battle.View.UI
         /// <summary>Reference to BattleUiAnnouncementHandler which handles showing the countdown.</summary>Part of @ref UIHandlerReferences.
         public BattleUiAnnouncementHandler AnnouncementHandler;
 
+        /// <summary>Reference to BattleUiLoadScreenHandler which handles the loading screen before the game starts.</summary>Part of @ref UIHandlerReferences.
+        public BattleUiLoadScreenHandler LoadScreenHandler;
+
         /// <summary>Reference to BattleUiGameOverHandler which handles showing the game over popup.</summary>Part of @ref UIHandlerReferences.
         public BattleUiGameOverHandler GameOverHandler;
 

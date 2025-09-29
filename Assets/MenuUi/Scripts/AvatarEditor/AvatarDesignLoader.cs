@@ -62,18 +62,23 @@ public class AvatarDesignLoader : AltMonoBehaviour
         if (playerData == null)
             return null;
 
-        if (playerData.AvatarData == null || !playerData.AvatarData.Validate())
+        return LoadAvatarDesign(playerData.AvatarData, playerData.SelectedCharacterId);
+    }
+
+    public AvatarVisualData LoadAvatarDesign(AvatarData avatarData, int playerid = 701)
+    {
+        if (avatarData == null || !avatarData.Validate())
         {
             Debug.Log("AvatarData is null. Using default data.");
-            PlayerAvatar playerAvatar = new(_avatarDefaultReference.GetByCharacterId(playerData.SelectedCharacterId)[0]);
-            playerData.AvatarData = new(playerAvatar.Name, playerAvatar.FeatureIds, playerAvatar.Color, playerAvatar.Scale);
+            PlayerAvatar playerAvatar = new(_avatarDefaultReference.GetByCharacterId(playerid)[0]);
+            avatarData = new(playerAvatar.Name, playerAvatar.FeatureIds, playerAvatar.Color, playerAvatar.Scale);
         }
 
         AvatarVisualData data = new();
         List<AvatarPiece> pieceIDs = Enum.GetValues(typeof(AvatarPiece)).Cast<AvatarPiece>().ToList();
         foreach (AvatarPiece id in pieceIDs)
         {
-            int pieceId = playerData.AvatarData.GetPieceID(id);
+            int pieceId = avatarData.GetPieceID(id);
             var partInfo = _avatarPartsReference.GetAvatarPartById(pieceId.ToString());
             if (partInfo != null)
                 data.SetAvatarPiece(id, partInfo.AvatarImage);
@@ -82,7 +87,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
         }
 
         Color color = Color.white;
-        ColorUtility.TryParseHtmlString(playerData.AvatarData.Color, out color);
+        ColorUtility.TryParseHtmlString(avatarData.Color, out color);
 
         data.color = color;
 
