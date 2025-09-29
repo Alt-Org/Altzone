@@ -291,7 +291,7 @@ public class ProfileMenu : AltMonoBehaviour
                 _WinsText.text = _playerData.stats.wonBattles.ToString();
             }
 
-            CharacterClassID defenceClass = (CharacterClassID)((_playerData.SelectedCharacterId / 100) * 100);
+            CharacterClassType defenceClass = (CharacterClassType)((_playerData.SelectedCharacterId / 100) * 100);
 
             PlayerCharacterPrototype favoriteDefence = PlayerCharacterPrototypes.GetCharacter(_playerData.FavoriteDefenceID);
             Image image = _favoriteCharacterImage;

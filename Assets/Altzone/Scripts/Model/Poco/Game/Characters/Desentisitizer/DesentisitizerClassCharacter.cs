@@ -8,7 +8,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
 
 
-        public override CharacterClassID ClassID => CharacterClassID.Desensitizer;
+        public override CharacterClassType ClassType => CharacterClassType.Desensitizer;
 
 
         protected DesentisitizerClassCharacter()
