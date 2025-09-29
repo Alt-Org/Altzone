@@ -107,7 +107,7 @@ namespace MenuUi.Scripts.SwipeNavigation
 
             for (int i = 0; i < scrollPageValues.Length; ++i)
             {
-                scrollPageValues[i] = valueDistance * i;
+                scrollPageValues[i] = 1-(valueDistance * i);
             }
 
             maxPage = slides.Length - 1;
@@ -174,7 +174,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         {
             if (_firstFrame)
             {
-                _scrollTransform.localPosition = new(-1 * (_scrollTransform.rect.width * scrollPageValues[CurrentPage] * (1 - 1f / scrollPageValues.Length)), _scrollTransform.localPosition.y, 0);
+                _scrollTransform.localPosition = new(_scrollTransform.localPosition.x , - 1 * (_scrollTransform.rect.height * scrollPageValues[CurrentPage] * (1 - 1f / scrollPageValues.Length)), 0);
                 _firstFrame = false;
                 isSwipeMode = false;
                 DataCarrier.GetData<int>(DataCarrier.RequestedWindow, true, suppressWarning: true);
@@ -321,11 +321,11 @@ namespace MenuUi.Scripts.SwipeNavigation
 
             if (isDown == true)
             {
-                PreviousSlide();
+                NextSlide();
             }
             else
             {
-                NextSlide();
+                PreviousSlide();
             }
 
         }
