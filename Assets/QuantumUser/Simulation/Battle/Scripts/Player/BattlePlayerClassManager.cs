@@ -6,9 +6,7 @@
 /// The manager handles initializing classes that are present in the game, and routing events forward to the individual classes.<br/>
 /// This script also contains the base classes that class implementations derive from.
 
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Quantum;
 using UnityEngine;
 
@@ -161,7 +159,7 @@ namespace Battle.QSimulation.Player
 
                 case BattlePlayerCharacterClass.Confluent:
                     if (s_classArray[ClassIndexConfluent] != null) break;
-                    s_classArray[ClassIndexConfluent] = new BattlePlayerClassConfluentSoulsister();
+                    s_classArray[ClassIndexConfluent] = new BattlePlayerClassConfluent();
                     break;
 
                 case BattlePlayerCharacterClass.Intellectualizer:

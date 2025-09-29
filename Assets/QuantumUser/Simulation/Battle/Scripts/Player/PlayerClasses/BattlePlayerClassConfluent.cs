@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Battle.QSimulation.Player
 {
-    public class BattlePlayerClassConfluentSoulsister : BattlePlayerClassBase
+    public class BattlePlayerClassConfluent : BattlePlayerClassBase
     {
         public override BattlePlayerCharacterClass Class { get; } = BattlePlayerCharacterClass.Confluent;
 
