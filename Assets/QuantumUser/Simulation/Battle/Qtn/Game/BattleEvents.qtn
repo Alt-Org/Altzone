@@ -48,6 +48,20 @@ synced event BattleStoneCharacterPieceViewInit
 
 //} ViewInit events
 
+//{ UI control events
+
+synced event BattleViewShowRotateJoystick
+{
+    BattlePlayerSlot Slot;
+}
+
+synced event BattleViewHideRotateJoystick
+{
+    BattlePlayerSlot Slot;
+}
+
+//} UI control events
+
 //{ Gameplay events
 
 synced event BattleChangeEmotionState

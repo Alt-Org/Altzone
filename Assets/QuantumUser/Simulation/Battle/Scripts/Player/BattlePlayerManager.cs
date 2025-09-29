@@ -1036,6 +1036,15 @@ namespace Battle.QSimulation.Player
 
             playerHandle.PlayState = BattlePlayerPlayState.InPlay;
 
+            if (playerData->DisableRotation)
+            {
+                f.Events.BattleViewHideRotateJoystick(playerData->Slot);
+            }
+            else
+            {
+                f.Events.BattleViewShowRotateJoystick(playerData->Slot);
+            }
+
             BattlePlayerClassManager.OnSpawn(f, playerHandle.ConvertToPublic(), playerData, character);
         }
 

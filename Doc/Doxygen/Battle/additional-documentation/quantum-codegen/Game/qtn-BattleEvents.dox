@@ -29,6 +29,12 @@
 /// - <b>synced event</b> @ref BattleStoneCharacterPieceViewInit { int WallNumber; BattleTeamNumber Team; int EmotionIndicatorColorIndex }  
 ///   @copybrief Quantum.EventBattleStoneCharacterPieceViewInit
 ///
+/// ### UI control events
+/// - <b>synced event</b> @ref BattleViewShowRotateJoystick { BattlePlayerSlot Slot }  
+///   @copybrief Quantum.EventBattleViewShowRotateJoystick
+/// - <b>synced event</b> @ref BattleViewHideRotateJoystick { BattlePlayerSlot Slot }  
+///   @copybrief Quantum.EventBattleViewHideRotateJoystick
+///
 /// ### Gameplay events
 /// - <b>synced event</b> @ref BattleChangeEmotionState { BattleEmotionState Emotion }  
 ///   @copybrief Quantum.EventBattleChangeEmotionState
@@ -149,6 +155,29 @@
 /// Generated Class @cref{Quantum,EventBattleStoneCharacterPieceViewInit}  
 /// Generated Method @cref{Quantum,Frame.FrameEvents.BattleStoneCharacterPieceViewInit}
 ///
+/// ---
+/// ---
+///
+/// UI control events
+///
+/// ---
+///
+/// @anchor BattleViewShowRotateJoystick
+/// ### BattleViewShowRotateJoystick
+/// @copybrief Quantum.EventBattleViewShowRotateJoystick
+///
+/// Generated Class @cref{Quantum,EventBattleViewShowRotateJoystick}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleViewShowRotateJoystick}
+///
+/// ---
+///
+/// @anchor BattleViewHideRotateJoystick
+/// ### BattleViewHideRotateJoystick
+/// @copybrief Quantum.EventBattleViewHideRotateJoystick
+///
+/// Generated Class @cref{Quantum,EventBattleViewHideRotateJoystick}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleViewHideRotateJoystick
+///}
 /// ---
 /// ---
 ///
@@ -289,6 +318,20 @@
 /// @class Quantum::EventBattleStoneCharacterPieceViewInit
 /// <summary>
 /// Synced event. Used to set EmotionIndicatorColor for StoneCharacterPieces.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattleViewShowRotateJoystick
+/// <summary>
+/// Synced event. Used to make the rotation joystick UI element visible.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::BattleViewHideRotateJoystick
+/// <summary>
+/// Synced event. Used to make the rotation joystick UI element not visible.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleEvents.qtn}
