@@ -8,7 +8,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
 
 
-        public override CharacterClassID ClassID => CharacterClassID.Intellectualizer;
+        public override CharacterClassType ClassType => CharacterClassType.Intellectualizer;
 
         //Enums should equal about 20.
         protected IntellectualizerClassCharacter()

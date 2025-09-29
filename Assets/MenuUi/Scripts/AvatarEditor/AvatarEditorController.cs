@@ -91,7 +91,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 _featureButtonsBase.SetActive(true);
 
             if (_currentMode == AvatarEditorMode.FeaturePicker)
-                _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
+                _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClass());
 
             if (_currentMode == AvatarEditorMode.ColorPicker)
             {
@@ -127,7 +127,7 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             _playerAvatar = new(_avatarDefaultReference.GetByCharacterId(_currentPlayerData.SelectedCharacterId)[0]);
 
-            _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
+            _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClass());
             _featurePicker.SetLoadedFeatures(_playerAvatar.FeatureIds);
 
             //_colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
@@ -151,7 +151,7 @@ namespace MenuUi.Scripts.AvatarEditor
             else
                 _playerAvatar = new(_currentPlayerData.AvatarData);
 
-            _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
+            _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClass());
             _featurePicker.SetLoadedFeatures(_playerAvatar.FeatureIds);
 
             //_colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());

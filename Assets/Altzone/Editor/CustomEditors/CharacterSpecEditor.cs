@@ -115,7 +115,7 @@ namespace Altzone.Editor.CustomEditors
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("General Attributes", EditorStyles.boldLabel);
             script.Name = EditorGUILayout.TextField("Name", script.Name);
-            script.ClassType = (CharacterClassID)EditorGUILayout.EnumPopup("Character Type", script.ClassType);
+            script.ClassType = (CharacterClassType)EditorGUILayout.EnumPopup("Character Type", script.ClassType);
             EditorGUILayout.LabelField("Character Description");
             GUIStyle style = EditorStyles.textField;
             style.wordWrap = true;

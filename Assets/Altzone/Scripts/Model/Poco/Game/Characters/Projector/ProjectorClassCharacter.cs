@@ -8,7 +8,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
 
 
-        public override CharacterClassID ClassID => CharacterClassID.Projector;
+        public override CharacterClassType ClassType => CharacterClassType.Projector;
 
 
         protected ProjectorClassCharacter()

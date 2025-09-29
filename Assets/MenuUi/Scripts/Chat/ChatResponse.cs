@@ -9,11 +9,11 @@ namespace Altzone.Scripts.ReferenceSheets
     public class ChatResponse : ScriptableObject
     {
         [SerializeField]
-        private CharacterClassID _classId;
+        private CharacterClassType _classType;
         [SerializeField]
         private List<string> _list;
 
-        public CharacterClassID ClassId { get => _classId; }
+        public CharacterClassType ClassType { get => _classType; }
 
         public List<string> List { get => _list; }
     }

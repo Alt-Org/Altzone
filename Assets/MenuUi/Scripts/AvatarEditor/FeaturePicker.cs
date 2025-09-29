@@ -45,7 +45,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private int _pageCount = 0;
         private Transform _characterImage;
 
-        private CharacterClassID _characterClassID;
+        private CharacterClassType _characterClassType;
         private System.Action _restoreDefaultColor;
         private RectTransform _swipeArea;
 
@@ -184,7 +184,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _selectedFeatures[slot] = "0";
             _avatarEditorCharacterHandle.SetMainCharacterImage((FeatureSlot)slot, null);
 
-            if (_characterClassID == CharacterClassID.Confluent)
+            if (_characterClassType == CharacterClassType.Confluent)
                 _avatarEditorCharacterHandle.SetSecondaryCharacterImage((FeatureSlot)slot, null);
         }
 
@@ -202,7 +202,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _selectedFeatures[slot] = featureToChange.Id;
             _avatarEditorCharacterHandle.SetMainCharacterImage((FeatureSlot)slot, featureToChange.AvatarImage);
 
-            if (_characterClassID == CharacterClassID.Confluent)
+            if (_characterClassType == CharacterClassType.Confluent)
                 _avatarEditorCharacterHandle.SetSecondaryCharacterImage((FeatureSlot)slot, featureToChange.AvatarImage);
             else
                 _avatarEditorCharacterHandle.SetSecondaryCharacterHidden();
@@ -318,9 +318,9 @@ namespace MenuUi.Scripts.AvatarEditor
             return null;
         }
 
-        public void SetCharacterClassID(CharacterClassID id)
+        public void SetCharacterClassID(CharacterClassType type)
         {
-            _characterClassID = id;
+            _characterClassType = type;
         }
 
         public void RestoreDefaultColorToFeature(System.Action restore)
