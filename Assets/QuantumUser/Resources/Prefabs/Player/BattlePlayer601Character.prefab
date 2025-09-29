@@ -58,7 +58,7 @@ PrefabInstance:
     - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[1].Size.X
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
@@ -73,7 +73,7 @@ PrefabInstance:
     - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[2].Size.Y
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
@@ -93,7 +93,7 @@ PrefabInstance:
     - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[4].Size.Y
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
@@ -118,7 +118,7 @@ PrefabInstance:
     - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[7].Size.X
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
@@ -133,27 +133,27 @@ PrefabInstance:
     - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[1].Position.X
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
-        type: 3}
-      propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[1].Position.Y
       value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
-      propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[2].Position.X
-      value: -3
+      propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[1].Position.Y
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
-      propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[2].Position.Y
+      propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[2].Position.X
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
-      propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[3].Position.X
+      propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[2].Position.Y
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[3].Position.X
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
@@ -163,27 +163,27 @@ PrefabInstance:
     - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[4].Position.X
-      value: -2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[4].Position.Y
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
-        type: 3}
-      propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[5].Position.X
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
+      propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[5].Position.X
+      value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
       propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[5].Position.Y
-      value: 3
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[6].Position.X
-      value: -2
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
@@ -193,12 +193,12 @@ PrefabInstance:
     - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[7].Position.X
-      value: 2
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[7].Position.Y
-      value: -1
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 7425350154965914569, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}

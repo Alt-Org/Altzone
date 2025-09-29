@@ -10,6 +10,7 @@ using Battle.QSimulation.Projectile;
 
 using Photon.Deterministic;
 using Quantum;
+using UnityEngine;
 
 namespace Battle.QSimulation.Player
 {
@@ -23,7 +24,7 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Called by BattlePlayerClassManager. Reflects the projectile off of the characters hitbox based on a normal calculated from the characters center to the projectiles position.
-        /// Does nothing if the player and their teammate are overlapping and the projectile should be set to Love emotion.
+        /// Also handles love projectile logic, as it is skipped in BattleProjectileQSystem due to the hitbox collision type being set to none.
         /// </summary>
         /// 
         /// <param name="f">Current simulation frame.</param>
@@ -55,13 +56,25 @@ namespace Battle.QSimulation.Player
                 isOnTopOfTeammate = playerGridPosition.Row == teammateGridPosition.Row && playerGridPosition.Col == teammateGridPosition.Col;
             }
 
-            if (!isOnTopOfTeammate)
-            {
-                FPVector2 normal = f.Unsafe.GetPointer<Transform2D>(projectileEntity)->Position - f.Unsafe.GetPointer<Transform2D>(playerHitbox->PlayerEntity)->Position;
+            FPVector2 normal;
+            FPVector2 direction;
 
-                BattleProjectileQSystem.HandleIntersection(f, projectile, projectileEntity, playerHitboxEntity, normal, playerHitbox->CollisionMinOffset);
-                BattleProjectileQSystem.UpdateVelocity(f, projectile, FPVector2.Reflect(projectile->Direction, normal).Normalized, projectile->SpeedIncrement, false);
+            if (isOnTopOfTeammate)
+            {
+                Debug.Log("[ProjectileSystem] changing projectile emotion to Love");
+                BattleProjectileQSystem.SetEmotion(f, projectile, BattleEmotionState.Love);
+
+                normal = playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? FPVector2.Up : FPVector2.Down;
+                direction = normal;
             }
+            else
+            {
+                normal = f.Unsafe.GetPointer<Transform2D>(projectileEntity)->Position - f.Unsafe.GetPointer<Transform2D>(playerHitbox->PlayerEntity)->Position;
+                direction = FPVector2.Reflect(projectile->Direction, normal).Normalized;
+            }
+
+            BattleProjectileQSystem.HandleIntersection(f, projectile, projectileEntity, playerHitboxEntity, normal, playerHitbox->CollisionMinOffset);
+            BattleProjectileQSystem.UpdateVelocity(f, projectile, direction, projectile->SpeedIncrement, false);
         }
     }
 }
