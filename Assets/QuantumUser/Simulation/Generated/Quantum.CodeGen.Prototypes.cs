@@ -121,7 +121,8 @@ namespace Quantum.Prototypes {
   public unsafe partial class BattleGameSessionQSingletonPrototype : ComponentPrototype<Quantum.BattleGameSessionQSingleton> {
     public QBoolean GameInitialized;
     public Quantum.QEnum32<BattleGameState> State;
-    public FP TimeUntilStart;
+    public FP LoadDelaySec;
+    public FP TimeUntilStartSec;
     public FP GameTimeSec;
     partial void MaterializeUser(Frame frame, ref Quantum.BattleGameSessionQSingleton result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
@@ -132,7 +133,8 @@ namespace Quantum.Prototypes {
     public void Materialize(Frame frame, ref Quantum.BattleGameSessionQSingleton result, in PrototypeMaterializationContext context = default) {
         result.GameInitialized = this.GameInitialized;
         result.State = this.State;
-        result.TimeUntilStart = this.TimeUntilStart;
+        result.LoadDelaySec = this.LoadDelaySec;
+        result.TimeUntilStartSec = this.TimeUntilStartSec;
         result.GameTimeSec = this.GameTimeSec;
         MaterializeUser(frame, ref result, in context);
     }
@@ -477,6 +479,20 @@ namespace Quantum.Prototypes {
         this.Position.Materialize(frame, ref result.Position, in context);
         result.WidthType = this.WidthType;
         result.ColorIndex = this.ColorIndex;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleWaitForPlayersData))]
+  public unsafe partial class BattleWaitForPlayersDataPrototype : StructPrototype {
+    [MaxStringByteCount(62, "Unicode")]
+    [ArrayLengthAttribute(4)]
+    public string[] PlayerNames = new System.String[4];
+    partial void MaterializeUser(Frame frame, ref Quantum.BattleWaitForPlayersData result, in PrototypeMaterializationContext context);
+    public void Materialize(Frame frame, ref Quantum.BattleWaitForPlayersData result, in PrototypeMaterializationContext context = default) {
+        for (int i = 0, count = PrototypeValidator.CheckLength(PlayerNames, 4, in context); i < count; ++i) {
+          PrototypeValidator.AssignQString(this.PlayerNames[i], 64, in context, out *result.PlayerNames.GetPointer(i));
+        }
         MaterializeUser(frame, ref result, in context);
     }
   }

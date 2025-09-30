@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 512
+    maxTextureSize: 1024
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -166,7 +166,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 256
+        y: 768
         width: 256
         height: 256
       alignment: 0
@@ -187,7 +187,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 256
-        y: 256
+        y: 768
         width: 256
         height: 256
       alignment: 0
@@ -207,7 +207,7 @@ TextureImporter:
       name: BattlePlayer403_2
       rect:
         serializedVersion: 2
-        x: 0
+        x: 768
         y: 0
         width: 256
         height: 256
@@ -220,27 +220,6 @@ TextureImporter:
       bones: []
       spriteID: 480704e32d4dd514dbf37e71b74891c1
       internalID: 1342123148
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BattlePlayer403_3
-      rect:
-        serializedVersion: 2
-        x: 256
-        y: 0
-        width: 256
-        height: 256
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e64267f6aacc8b74a9d56e733acb2adc
-      internalID: -1246468547
       vertices: []
       indices: 
       edges: []
@@ -258,8 +237,20 @@ TextureImporter:
     nameFileIdTable:
       BattlePlayer403_0: -1448320826
       BattlePlayer403_1: -138267673
+      BattlePlayer403_10: 14447248
+      BattlePlayer403_11: -1238498150
+      BattlePlayer403_12: -835616346
+      BattlePlayer403_13: -950733559
+      BattlePlayer403_14: -1238880635
+      BattlePlayer403_15: 1412488932
       BattlePlayer403_2: 1342123148
       BattlePlayer403_3: -1246468547
+      BattlePlayer403_4: 1868988948
+      BattlePlayer403_5: -377594348
+      BattlePlayer403_6: 2099050048
+      BattlePlayer403_7: -1635314615
+      BattlePlayer403_8: 1131609203
+      BattlePlayer403_9: 1928117155
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -534,10 +534,10 @@ namespace Altzone.Scripts.Battle.Photon
         public void SetDebugPlayerProps(Player player, int playerPos, int playerMainSkill = -1)
         {
             Assert.IsTrue(IsValidPlayerPos(playerPos), "IsValidPlayerPos(playerPos)");
-            if (playerMainSkill < (int)CharacterClassID.Desensitizer || playerMainSkill > (int)CharacterClassID.Confluent)
+            if (playerMainSkill < (int)CharacterClassType.Desensitizer || playerMainSkill > (int)CharacterClassType.Confluent)
             {
                 // Should be fastest movement skill to have for testing.
-                playerMainSkill = (int)CharacterClassID.Trickster;
+                playerMainSkill = (int)CharacterClassType.Trickster;
             }
             var curPlayerPos = player.GetCustomProperty(PlayerPositionKey, -1);
             var curPlayerMainSkill = player.GetCustomProperty(PlayerCharacterIdKey, -1);

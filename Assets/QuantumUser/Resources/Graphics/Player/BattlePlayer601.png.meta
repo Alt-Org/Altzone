@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 512
+    maxTextureSize: 1024
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -166,7 +166,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 256
+        y: 768
         width: 256
         height: 256
       alignment: 0
@@ -186,8 +186,8 @@ TextureImporter:
       name: BattlePlayer601_1
       rect:
         serializedVersion: 2
-        x: 256
-        y: 256
+        x: 0
+        y: 512
         width: 256
         height: 256
       alignment: 0
@@ -208,7 +208,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
+        y: 256
         width: 256
         height: 256
       alignment: 0
@@ -228,7 +228,7 @@ TextureImporter:
       name: BattlePlayer601_3
       rect:
         serializedVersion: 2
-        x: 256
+        x: 512
         y: 0
         width: 256
         height: 256
@@ -241,6 +241,27 @@ TextureImporter:
       bones: []
       spriteID: f494879539f698d43808951d0bf1093e
       internalID: 1672013575
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattlePlayer601_4
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d4f04b6bb83aeec43ac2772e7c7a1c08
+      internalID: 504312898
       vertices: []
       indices: 
       edges: []
@@ -258,8 +279,20 @@ TextureImporter:
     nameFileIdTable:
       BattlePlayer601_0: 891103155
       BattlePlayer601_1: 1309661367
+      BattlePlayer601_10: -140462400
+      BattlePlayer601_11: -867256354
+      BattlePlayer601_12: -637912428
+      BattlePlayer601_13: 630648994
+      BattlePlayer601_14: 2119579402
+      BattlePlayer601_15: -218734899
       BattlePlayer601_2: -475155228
       BattlePlayer601_3: 1672013575
+      BattlePlayer601_4: 504312898
+      BattlePlayer601_5: -876881114
+      BattlePlayer601_6: -1289331584
+      BattlePlayer601_7: 1974640830
+      BattlePlayer601_8: 1791740170
+      BattlePlayer601_9: -1821285417
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

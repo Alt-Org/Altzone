@@ -25,8 +25,8 @@
 /// @var Quantum::BattleGameState Quantum::BattleGameState::CreateMap
 /// <summary>Creating the map.</summary>
 ///
-/// @var Quantum::BattleGameState Quantum::BattleGameState::ReadyToStart
-/// <summary>Currently unused state.</summary>
+/// @var Quantum::BattleGameState Quantum::BattleGameState::WaitToStart
+/// <summary>Waiting for the loading screen disable delay to count down.</summary>
 ///
 /// @var Quantum::BattleGameState Quantum::BattleGameState::Countdown
 /// <summary>Countdown to the start of the match gameplay.</summary>

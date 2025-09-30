@@ -57,7 +57,7 @@ namespace Altzone.Scripts.ModelV2.Internal
         /// <summary>
         /// Player character class.
         /// </summary>
-        public CharacterClassID ClassType;
+        public CharacterClassType ClassType;
         /// <summary>
         /// A long description of the character. If you want a short description use <see cref="CharacterShortDescription"/>.
         /// </summary>
@@ -113,7 +113,7 @@ namespace Altzone.Scripts.ModelV2.Internal
         /// Missing fields or values makes player character invalid because
         /// they can cause e.g. undefined behaviour or NRE at runtime.
         /// </remarks>
-        public bool IsValid => (ClassType != CharacterClassID.None || CharacterId == CharacterID.Test) 
+        public bool IsValid => (ClassType != CharacterClassType.None || CharacterId == CharacterID.Test) 
                                && !string.IsNullOrWhiteSpace(Id)
                                && !string.IsNullOrWhiteSpace(name);
 
