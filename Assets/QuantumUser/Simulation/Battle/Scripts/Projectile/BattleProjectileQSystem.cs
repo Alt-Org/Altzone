@@ -215,20 +215,20 @@ namespace Battle.QSimulation.Projectile
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="projectileData">Collision data related to the projectile.</param>
+        /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
         /// <param name="data">Collision data related to the other entity.</param>
         /// <param name="collisionTriggerType">The collision type of the collision, informing what the projectile has hit.</param>
-        public static void OnProjectileCollision(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileData, void* data, BattleCollisionTriggerType collisionTriggerType)
+        public static void OnProjectileCollision(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, void* data, BattleCollisionTriggerType collisionTriggerType)
         {
             BattleProjectileQComponent* projectile = null;
             EntityRef projectileEntity = new();
             EntityRef otherEntity = new();
             bool isHeld = false;
 
-            projectile = projectileData->Projectile;
-            projectileEntity = projectileData->CollidingEntity;
-            otherEntity = projectileData->OtherEntity;
-            isHeld = projectileData->ProjectileHeld;
+            projectile = projectileCollisionData->Projectile;
+            projectileEntity = projectileCollisionData->CollidingEntity;
+            otherEntity = projectileCollisionData->OtherEntity;
+            isHeld = projectileCollisionData->ProjectileHeld;
 
             if (isHeld) return;
 
@@ -378,16 +378,16 @@ namespace Battle.QSimulation.Projectile
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="data">Collision data related to the shield.</param>
+        /// <param name="shieldCollisionData">Collision data related to the shield.</param>
         /// <param name="normal">The direction in which the projectile should be sent.</param>
-        private static bool ProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, BattleCollisionQSystem.PlayerShieldCollisionData* data, out FPVector2 normal)
+        private static bool ProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData, out FPVector2 normal)
         {
             normal = FPVector2.Zero;
 
-            if (!data->PlayerShieldHitbox->IsActive) return false;
+            if (!shieldCollisionData->PlayerShieldHitbox->IsActive) return false;
             if (projectile->EmotionCurrent == BattleEmotionState.Love) return false;
 
-            BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(data->PlayerShieldHitbox->PlayerEntity);
+            BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity);
 
             bool isOnTopOfTeammate = false;
 
@@ -397,7 +397,7 @@ namespace Battle.QSimulation.Projectile
             {
                 EntityRef teammateEntity = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot).SelectedCharacter;
 
-                Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(data->PlayerShieldHitbox->PlayerEntity);
+                Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity);
                 Transform2D* teammateTransform = f.Unsafe.GetPointer<Transform2D>(teammateEntity);
 
                 BattleGridPosition playerGridPosition = BattleGridManager.WorldPositionToGridPosition(playerTransform->Position);
@@ -412,15 +412,15 @@ namespace Battle.QSimulation.Projectile
             {
                 Debug.Log("[ProjectileSystem] changing projectile emotion to Love");
                 SetEmotion(f, projectile, BattleEmotionState.Love);
-                data->IsLoveProjectileCollision = true;
+                shieldCollisionData->IsLoveProjectileCollision = true;
 
                 normal = playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? FPVector2.Up : FPVector2.Down;
                 return true;
             }
 
-            if (data->PlayerShieldHitbox->CollisionType == BattlePlayerCollisionType.None) return false;
+            if (shieldCollisionData->PlayerShieldHitbox->CollisionType == BattlePlayerCollisionType.None) return false;
 
-            normal = data->PlayerShieldHitbox->Normal;
+            normal = shieldCollisionData->PlayerShieldHitbox->Normal;
             return true;
         }
 

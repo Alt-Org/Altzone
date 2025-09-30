@@ -38,14 +38,14 @@ namespace Battle.QSimulation.Diamond
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="projectileData">Collision data related to the projectile.</param>
-        /// <param name="soulwallData">Collision data related to the soul wall.</param>
-        public static void OnProjectileHitSoulWall(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileData, BattleCollisionQSystem.SoulWallCollisionData* soulwallData)
+        /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
+        /// <param name="soulWallCollisionData">Collision data related to the soul wall.</param>
+        public static void OnProjectileHitSoulWall(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.SoulWallCollisionData* soulWallCollisionData)
         {
-            if (projectileData->Projectile->IsHeld) return;
+            if (projectileCollisionData->Projectile->IsHeld) return;
             BattleDiamondQSpec diamondSpec = BattleQConfig.GetDiamondSpec(f);
 
-            CreateDiamonds(f, soulwallData->SoulWall->Normal, diamondSpec);
+            CreateDiamonds(f, soulWallCollisionData->SoulWall->Normal, diamondSpec);
         }
 
         /// <summary>

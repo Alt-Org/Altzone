@@ -27,13 +27,13 @@ namespace Battle.QSimulation.Goal
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="goalData">Collision data.</param>
-        public static void OnProjectileHitGoal(Frame f, BattleCollisionQSystem.GoalCollisionData* goalData)
+        /// <param name="goalCollisionData">Collision data.</param>
+        public static void OnProjectileHitGoal(Frame f, BattleCollisionQSystem.GoalCollisionData* goalCollisionData)
         {
-            if (goalData->Goal->HasTriggered) return;
-            if (goalData->Projectile->IsHeld) return;
+            if (goalCollisionData->Goal->HasTriggered) return;
+            if (goalCollisionData->Projectile->IsHeld) return;
 
-            BattleTeamNumber winningTeam = goalData->Goal->TeamNumber switch
+            BattleTeamNumber winningTeam = goalCollisionData->Goal->TeamNumber switch
             {
                 BattleTeamNumber.TeamAlpha => BattleTeamNumber.TeamBeta,
                 BattleTeamNumber.TeamBeta  => BattleTeamNumber.TeamAlpha,
@@ -41,9 +41,9 @@ namespace Battle.QSimulation.Goal
                 _ => BattleTeamNumber.NoTeam
             };
 
-            BattleGameControlQSystem.OnGameOver(f, winningTeam, goalData->Projectile, goalData->CollidingEntity);
+            BattleGameControlQSystem.OnGameOver(f, winningTeam, goalCollisionData->Projectile, goalCollisionData->CollidingEntity);
 
-            goalData->Goal->HasTriggered = true;
+            goalCollisionData->Goal->HasTriggered = true;
 
             Debug.LogFormat("[BattleGoalQSystem] GameOver {0} Goal", winningTeam.ToString());
         }

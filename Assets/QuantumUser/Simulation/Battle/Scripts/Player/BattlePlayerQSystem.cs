@@ -41,14 +41,14 @@ namespace Battle.QSimulation.Player
         /// </summary>
         ///
         /// <param name="f">Current simulation frame</param>
-        /// <param name="projectileData">Collision data related to the projectile.</param>
-        /// <param name="playerData">Collision data related to the player character.</param>
-        public static void OnProjectileHitPlayerCharacter(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileData, BattleCollisionQSystem.PlayerCharacterCollisionData* playerData)
+        /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
+        /// <param name="playerCollisionData">Collision data related to the player character.</param>
+        public static void OnProjectileHitPlayerCharacter(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerCharacterCollisionData* playerCollisionData)
         {
-            if (projectileData->ProjectileHeld) return;
+            if (projectileCollisionData->ProjectileHeld) return;
 
-            BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerData->PlayerCharacterHitbox->PlayerEntity);
-            FP damageTaken = projectileData->Projectile->Attack;
+            BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->PlayerEntity);
+            FP damageTaken = projectileCollisionData->Projectile->Attack;
 
             BattlePlayerManager.PlayerHandle damagePlayerHandle = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot);
             int characterNumber = damagePlayerHandle.SelectedCharacterNumber;
@@ -61,7 +61,7 @@ namespace Battle.QSimulation.Player
 
                 damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, FP._1);
 
-                f.Events.BattleCharacterTakeDamage(playerData->PlayerCharacterHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newHp / damagedPlayerData->Stats.Hp);
+                f.Events.BattleCharacterTakeDamage(playerCollisionData->PlayerCharacterHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newHp / damagedPlayerData->Stats.Hp);
             }
 
             if (damagedPlayerData->CurrentHp <= FP._0)
@@ -71,7 +71,7 @@ namespace Battle.QSimulation.Player
                 damagePlayerHandle.RespawnTimer = FrameTimer.FromSeconds(f, FP._0_50);
             }
 
-            BattleProjectileQSystem.SetCollisionFlag(f, projectileData->Projectile, BattleProjectileCollisionFlags.Player);
+            BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
         }
 
         /// <summary>
@@ -79,17 +79,17 @@ namespace Battle.QSimulation.Player
         /// </summary>
         ///
         /// <param name="f">Current simulation frame</param>
-        /// <param name="projectileData">Collision data related to the projectile.</param>
-        /// <param name="shieldData">Collision data related to the player shield.</param>
-        public static void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldData)
+        /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
+        /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
+        public static void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData)
         {
-            if (!shieldData->PlayerShieldHitbox->IsActive) return;
-            if (projectileData->ProjectileHeld) return;
+            if (!shieldCollisionData->PlayerShieldHitbox->IsActive) return;
+            if (projectileCollisionData->ProjectileHeld) return;
 
-            BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldData->PlayerShieldHitbox->PlayerEntity);
-            FP damageTaken = projectileData->Projectile->Attack;
+            BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity);
+            FP damageTaken = projectileCollisionData->Projectile->Attack;
 
-            BattleProjectileQSystem.SetAttack(f, projectileData->Projectile, damagedPlayerData->Stats.Attack);
+            BattleProjectileQSystem.SetAttack(f, projectileCollisionData->Projectile, damagedPlayerData->Stats.Attack);
 
             int characterNumber = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber;
 
@@ -101,10 +101,10 @@ namespace Battle.QSimulation.Player
 
                 damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, FP._1);
 
-                f.Events.BattleShieldTakeDamage(shieldData->PlayerShieldHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newDefence);
+                f.Events.BattleShieldTakeDamage(shieldCollisionData->PlayerShieldHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newDefence);
             }
 
-            BattleProjectileQSystem.SetCollisionFlag(f, projectileData->Projectile, BattleProjectileCollisionFlags.Player);
+            BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
         }
 
         /// <summary>
