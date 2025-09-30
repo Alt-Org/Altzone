@@ -91,7 +91,7 @@ namespace Battle.QSimulation.Player
         /// 
         /// <param name="f">Current simulation frame.</param>
         /// <param name="data">Collision data.</param>
-        public virtual unsafe void OnProjectileHitPlayerHitbox(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileData, BattleCollisionQSystem.PlayerCharacterCollisionData* playerData) { }
+        public virtual unsafe void OnProjectileHitPlayerCharacter(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileData, BattleCollisionQSystem.PlayerCharacterCollisionData* playerData) { }
 
         /// <summary>
         /// Virtual OnProjectileHitPlayerShield method that can be implemented.<br/>
@@ -229,7 +229,7 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Calls the OnProjectileHitPlayerHitbox method of the class of the given player character, if it is implemented.
+        /// Calls the OnProjectileHitPlayerCharacter method of the class of the given player character, if it is implemented.
         /// </summary>
         /// 
         /// <param name="f">Current simulation frame.</param>
@@ -241,7 +241,7 @@ namespace Battle.QSimulation.Player
 
             if (returnCode != ReturnCode.ClassRetrieved) return;
 
-            playerClass.OnProjectileHitPlayerHitbox(f, projectileData, playerData);
+            playerClass.OnProjectileHitPlayerCharacter(f, projectileData, playerData);
         }
 
         /// <summary>
