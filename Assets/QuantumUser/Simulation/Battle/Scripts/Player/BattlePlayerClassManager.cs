@@ -6,12 +6,11 @@
 /// The manager handles initializing classes that are present in the game, and routing events forward to the individual classes.<br/>
 /// This script also contains the base classes that class implementations derive from.
 
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Battle.QSimulation.Game;
-using Quantum;
 using UnityEngine;
+using Quantum;
+
+using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Player
 {
