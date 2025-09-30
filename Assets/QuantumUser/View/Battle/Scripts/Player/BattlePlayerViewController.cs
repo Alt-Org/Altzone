@@ -266,7 +266,7 @@ namespace Battle.View.Player
             if (EntityRef != e.Entity) return;
             if (!PredictedFrame.Exists(e.Entity)) return;
 
-            if (e.DefenceValue <= FP._0)
+            if (e.DefenceValue <= FP._0 && _noShieldSprite != null)
             {
                 _spriteRenderer.sprite = _noShieldSprite;
             }
