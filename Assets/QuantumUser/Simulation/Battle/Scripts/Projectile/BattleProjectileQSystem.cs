@@ -378,9 +378,7 @@ namespace Battle.QSimulation.Projectile
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="projectileEntity">EntityRef of the projectile.</param>
-        /// <param name="playerHitbox">Pointer to the PlayerHitbox component.</param>
-        /// <param name="playerHitboxEntity">EntityRef of the player hitbox.</param>
+        /// <param name="data">Collision data related to the shield.</param>
         /// <param name="normal">The direction in which the projectile should be sent.</param>
         private static bool ProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, BattleCollisionQSystem.PlayerShieldCollisionData* data, out FPVector2 normal)
         {
