@@ -29,6 +29,13 @@ namespace Battle.QSimulation.Projectile
     {
         #region Public
 
+        public enum SpeedChange
+        {
+            None,
+            Increment,
+            Reset
+        }
+
         /// <summary>
         /// Filter for filtering projectile entities
         /// </summary>
@@ -96,6 +103,7 @@ namespace Battle.QSimulation.Projectile
         }
 
         /// <summary>
+        /// UPDATE DOC
         /// Sets the attack value of the projectile and updates its glow strength.
         /// </summary>
         ///
@@ -115,24 +123,30 @@ namespace Battle.QSimulation.Projectile
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="direction">The new direction for the projectile.</param>
-        /// <param name="speedIncreaseAmount">The amount the projectile's speed should increase.</param>
-        /// <param name="resetSpeed">True if the projectile's speed should be reset to base, false if it should remain as is.</param>
-        public static void UpdateVelocity(Frame f, BattleProjectileQComponent* projectile, FPVector2 direction, FP speedIncreaseAmount, bool resetSpeed = false)
+        /// <param name="speedChange">update doc</param>
+        public static void UpdateVelocity(Frame f, BattleProjectileQComponent* projectile, FPVector2 direction, SpeedChange speedChange, bool passed = false)
         {
             // set new projectile direction
             projectile->Direction = direction;
 
+            projectile->IsPassed = passed;
+
             // update the projectile's speed based on speed potential and multiply by emotion (disabled)
             //projectile->Speed = projectile->SpeedPotential * projectile->SpeedMultiplierArray[(int)projectile->Emotion];
 
-            // increment or reset the speed of the projectile
-            if (!resetSpeed)
+            // if not none; increment or reset the speed of the projectile
+            switch (speedChange)
             {
-                projectile->Speed = FPMath.Min(projectile->Speed + speedIncreaseAmount, projectile->SpeedMax);
-            }
-            else
-            {
-                projectile->Speed = projectile->SpeedBase;
+                case SpeedChange.None:
+                    break;
+
+                case SpeedChange.Increment:
+                    projectile->Speed = FPMath.Min(projectile->Speed + projectile->SpeedIncrement, projectile->SpeedMax);
+                    break;
+
+                case SpeedChange.Reset:
+                    projectile->Speed = projectile->SpeedBase;
+                    break;
             }
         }
 
@@ -230,8 +244,7 @@ namespace Battle.QSimulation.Projectile
             FP collisionMinOffset = FP._0;
             bool handleCollision = false;
 
-            FP speedIncrementAmount = 0;
-            bool resetSpeed = false;
+            SpeedChange speedChange = SpeedChange.None;
 
             switch (collisionTriggerType)
             {
@@ -254,7 +267,7 @@ namespace Battle.QSimulation.Projectile
 
                     normal = soulWall->Normal;
                     collisionMinOffset = soulWall->CollisionMinOffset;
-                    resetSpeed = true;
+                    speedChange = SpeedChange.Reset;
                     handleCollision = true;
                     break;
 
@@ -265,7 +278,7 @@ namespace Battle.QSimulation.Projectile
                     {
                         collisionType = playerHitbox->CollisionType;
                         collisionMinOffset = playerHitbox->CollisionMinOffset;
-                        speedIncrementAmount = projectile->SpeedIncrement;
+                        speedChange = SpeedChange.Increment;
                         handleCollision = true;
                     }
                     break;
@@ -281,7 +294,7 @@ namespace Battle.QSimulation.Projectile
                 else if (collisionType == BattlePlayerCollisionType.Override) direction = normal;
 
                 HandleIntersection(f, projectile, projectileEntity, otherEntity, normal, collisionMinOffset);
-                UpdateVelocity(f, projectile, direction, speedIncrementAmount, resetSpeed);
+                UpdateVelocity(f, projectile, direction, speedChange);
             }
 
             SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Projectile);
