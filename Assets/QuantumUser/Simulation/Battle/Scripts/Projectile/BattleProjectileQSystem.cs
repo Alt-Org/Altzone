@@ -220,34 +220,29 @@ namespace Battle.QSimulation.Projectile
         /// <param name="collisionTriggerType">The collision type of the collision, informing what the projectile has hit.</param>
         public static void OnProjectileCollision(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, void* data, BattleCollisionTriggerType collisionTriggerType)
         {
-            BattleProjectileQComponent* projectile = null;
-            EntityRef projectileEntity = new();
-            EntityRef otherEntity = new();
-            bool isHeld = false;
-
-            projectile = projectileCollisionData->Projectile;
-            projectileEntity = projectileCollisionData->CollidingEntity;
-            otherEntity = projectileCollisionData->OtherEntity;
-            isHeld = projectileCollisionData->ProjectileHeld;
+            BattleProjectileQComponent* projectile = projectileCollisionData->Projectile;
+            EntityRef projectileEntity             = projectileCollisionData->CollidingEntity;
+            EntityRef otherEntity                  = projectileCollisionData->OtherEntity;
+            bool isHeld                            = projectileCollisionData->ProjectileHeld;
 
             if (isHeld) return;
 
             BattlePlayerCollisionType collisionType = BattlePlayerCollisionType.Reflect;
-            FPVector2 normal = FPVector2.Zero;
-            FP collisionMinOffset = FP._0;
-            bool handleCollision = false;
+            FPVector2 normal                        = FPVector2.Zero;
+            FP collisionMinOffset                   = FP._0;
+            bool handleCollision                    = false;
 
             FP speedIncrementAmount = 0;
-            bool resetSpeed = false;
+            bool resetSpeed         = false;
 
             switch (collisionTriggerType)
             {
                 case BattleCollisionTriggerType.ArenaBorder:
                     BattleArenaBorderQComponent* arenaBorder = ((BattleCollisionQSystem.ArenaBorderCollisionData*)data)->ArenaBorder;
 
-                    normal = arenaBorder->Normal;
+                    normal             = arenaBorder->Normal;
                     collisionMinOffset = arenaBorder->CollisionMinOffset;
-                    handleCollision = true;
+                    handleCollision    = true;
                     break;
 
                 case BattleCollisionTriggerType.SoulWall:
@@ -258,10 +253,10 @@ namespace Battle.QSimulation.Projectile
                         SetEmotion(f, projectile, projectile->EmotionBase);
                     }
 
-                    normal = soulWall->Normal;
+                    normal             = soulWall->Normal;
                     collisionMinOffset = soulWall->CollisionMinOffset;
-                    resetSpeed = true;
-                    handleCollision = true;
+                    resetSpeed         = true;
+                    handleCollision    = true;
                     break;
 
                 case BattleCollisionTriggerType.Shield:
@@ -270,10 +265,10 @@ namespace Battle.QSimulation.Projectile
 
                     if (ProjectileHitPlayerShield(f, projectile, dataPtr, out normal))
                     {
-                        collisionType = playerHitbox->CollisionType;
-                        collisionMinOffset = playerHitbox->CollisionMinOffset;
+                        collisionType        = playerHitbox->CollisionType;
+                        collisionMinOffset   = playerHitbox->CollisionMinOffset;
                         speedIncrementAmount = projectile->SpeedIncrement;
-                        handleCollision = true;
+                        handleCollision      = true;
                     }
                     break;
 
@@ -397,10 +392,10 @@ namespace Battle.QSimulation.Projectile
             {
                 EntityRef teammateEntity = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot).SelectedCharacter;
 
-                Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity);
+                Transform2D* playerTransform   = f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity);
                 Transform2D* teammateTransform = f.Unsafe.GetPointer<Transform2D>(teammateEntity);
 
-                BattleGridPosition playerGridPosition = BattleGridManager.WorldPositionToGridPosition(playerTransform->Position);
+                BattleGridPosition playerGridPosition   = BattleGridManager.WorldPositionToGridPosition(playerTransform->Position);
                 BattleGridPosition teammateGridPosition = BattleGridManager.WorldPositionToGridPosition(teammateTransform->Position);
 
                 isOnTopOfTeammate = playerGridPosition.Row == teammateGridPosition.Row && playerGridPosition.Col == teammateGridPosition.Col;
