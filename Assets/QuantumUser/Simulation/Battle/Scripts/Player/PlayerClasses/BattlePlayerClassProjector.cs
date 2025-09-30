@@ -1,3 +1,9 @@
+/// @file BattlePlayerClassProjector.cs
+/// <summary>
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClassProjector} class,
+/// which handles player character class logic for the Projector class.
+/// </summary>
+
 using Battle.QSimulation.Projectile;
 using Photon.Deterministic;
 using Quantum;
@@ -6,15 +12,39 @@ using static Battle.QSimulation.Projectile.BattleProjectileQSystem;
 
 namespace Battle.QSimulation.Player
 {
+    /// <summary>
+    /// Player character class logic for the Projector class.
+    /// </summary>
     public class BattlePlayerClassProjector : BattlePlayerClassBase<BattlePlayerClassProjectorDataQComponent>
     {
+        /// <summary>
+        /// Gets the character class associated with this Class.<br/>
+        /// Always returns <see cref="Quantum.BattlePlayerCharacterClass.Projector">BattlePlayerCharacterClass.Projector</see>.
+        /// </summary>
         public override BattlePlayerCharacterClass Class => BattlePlayerCharacterClass.Projector;
 
+        /// <summary>
+        /// Called when the player is created.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Handle for the player.</param>
+        /// <param name="playerData">Pointer to player data.</param>
+        /// <param name="playerEntity">Entity reference for the player.</param>
         public override unsafe void OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
             BattlePlayerClassProjectorDataQComponent* data = GetClassData(f, playerEntity);
         }
 
+        /// <summary>
+        /// Called when a projectile hits a player shield.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectile">Poiinter to the projectiel.</param>
+        /// <param name="projectileEntity">Entity reference for the projectile.</param>
+        /// <param name="playerHitbox">Pointer to the player hitbox.</param>
+        /// <param name="playerHitboxEntity">Entity reference to the player hitbox.</param>
         public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
         {
             BattlePlayerClassProjectorDataQComponent* data = GetClassData(f, playerHitbox->PlayerEntity);
@@ -47,6 +77,14 @@ namespace Battle.QSimulation.Player
             }
         }
 
+        /// <summary>
+        /// Called every frame to update the player.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Handle for the player.</param>
+        /// <param name="playerData">Pointer to player data.</param>
+        /// <param name="playerEntity">Entity reference for the player.</param>
         public override unsafe void OnUpdate(Frame f, PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
             BattlePlayerClassProjectorDataQComponent* data = GetClassData(f, playerEntity);
