@@ -220,21 +220,22 @@ namespace Battle.QSimulation.Projectile
         /// <param name="collisionTriggerType">The collision type of the collision, informing what the projectile has hit.</param>
         public static void OnProjectileCollision(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, void* data, BattleCollisionTriggerType collisionTriggerType)
         {
-            BattleProjectileQComponent* projectile = projectileCollisionData->Projectile;
-            EntityRef projectileEntity             = projectileCollisionData->CollidingEntity;
-            EntityRef otherEntity                  = projectileCollisionData->OtherEntity;
-            bool isHeld                            = projectileCollisionData->ProjectileHeld;
+            if (projectileCollisionData->ProjectileHeld) return;
 
-            if (isHeld) return;
+            // unpack projectileCollisionData
+            BattleProjectileQComponent* projectile       = projectileCollisionData->Projectile;
+            EntityRef                   projectileEntity = projectileCollisionData->CollidingEntity;
+            EntityRef                   otherEntity      = projectileCollisionData->OtherEntity;
 
-            BattlePlayerCollisionType collisionType = BattlePlayerCollisionType.Reflect;
-            FPVector2 normal                        = FPVector2.Zero;
-            FP collisionMinOffset                   = FP._0;
-            bool handleCollision                    = false;
+            // set default values
+            BattlePlayerCollisionType collisionType        = BattlePlayerCollisionType.Reflect;
+            bool                      handleCollision      = false;
+            bool                      resetSpeed           = false;
+            FPVector2                 normal               = FPVector2.Zero;
+            FP                        collisionMinOffset   = FP._0;
+            FP                        speedIncrementAmount = 0;
 
-            FP speedIncrementAmount = 0;
-            bool resetSpeed         = false;
-
+            // handle the specific collision type
             switch (collisionTriggerType)
             {
                 case BattleCollisionTriggerType.ArenaBorder:
