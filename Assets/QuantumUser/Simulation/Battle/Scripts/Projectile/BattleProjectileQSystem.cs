@@ -29,6 +29,9 @@ namespace Battle.QSimulation.Projectile
     {
         #region Public
 
+        /// <summary>
+        /// Defines how the projectile's speed should be updated
+        /// </summary>
         public enum SpeedChange
         {
             None,
@@ -103,7 +106,6 @@ namespace Battle.QSimulation.Projectile
         }
 
         /// <summary>
-        /// UPDATE DOC
         /// Sets the attack value of the projectile and updates its glow strength.
         /// </summary>
         ///
@@ -117,13 +119,14 @@ namespace Battle.QSimulation.Projectile
         }
 
         /// <summary>
-        /// Sets the direction of the projectile and recalculates its speed based on emotion.
+        /// Sets the direction of the projectile and adjusting its speed depending on the specified <see cref="SpeedChange"/> behavior.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="direction">The new direction for the projectile.</param>
-        /// <param name="speedChange">update doc</param>
+        /// <param name="speedChange">Determines how the projectile's speed should be updated.</param>
+        /// <param name="passed">Checking if player has passed the projectile.</param>
         public static void UpdateVelocity(Frame f, BattleProjectileQComponent* projectile, FPVector2 direction, SpeedChange speedChange, bool passed = false)
         {
             // set new projectile direction
