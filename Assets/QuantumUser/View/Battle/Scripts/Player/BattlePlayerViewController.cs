@@ -181,7 +181,7 @@ namespace Battle.View.Player
         private BattlePlayerClassBaseViewController _classViewController;
 
         /// <summary>
-        /// Handles setup that needs to happen before <see cref="Quantum.EventBattlePlayerViewInit">EventBattlePlayerViewInit</see> event is received.<b/>
+        /// Handles setup that needs to happen before <see cref="Quantum.EventBattlePlayerViewInit">EventBattlePlayerViewInit</see> event is received.<br/>
         /// Currently this is needed for initializing character's class as none.
         /// </summary>
         private void PreInitSetup()
