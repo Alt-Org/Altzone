@@ -411,6 +411,7 @@ namespace Quantum.Prototypes {
   public unsafe partial class BattleProjectileQComponentPrototype : ComponentPrototype<Quantum.BattleProjectileQComponent> {
     public QBoolean IsLaunched;
     public QBoolean IsHeld;
+    public QBoolean IsPassed;
     public Quantum.QEnum32<BattleEmotionState> EmotionBase;
     public Quantum.QEnum32<BattleEmotionState> EmotionCurrent;
     [ArrayLengthAttribute(2)]
@@ -432,6 +433,7 @@ namespace Quantum.Prototypes {
     public void Materialize(Frame frame, ref Quantum.BattleProjectileQComponent result, in PrototypeMaterializationContext context = default) {
         result.IsLaunched = this.IsLaunched;
         result.IsHeld = this.IsHeld;
+        result.IsPassed = this.IsPassed;
         result.EmotionBase = this.EmotionBase;
         result.EmotionCurrent = this.EmotionCurrent;
         for (int i = 0, count = PrototypeValidator.CheckLength(CollisionFlags, 2, in context); i < count; ++i) {

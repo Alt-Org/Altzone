@@ -1382,6 +1382,8 @@ namespace Quantum {
     public QBoolean IsLaunched;
     [FieldOffset(12)]
     public QBoolean IsHeld;
+    [FieldOffset(20)]
+    public QBoolean IsPassed;
     [FieldOffset(4)]
     public BattleEmotionState EmotionBase;
     [FieldOffset(8)]
@@ -1415,6 +1417,7 @@ namespace Quantum {
         var hash = 4001;
         hash = hash * 31 + IsLaunched.GetHashCode();
         hash = hash * 31 + IsHeld.GetHashCode();
+        hash = hash * 31 + IsPassed.GetHashCode();
         hash = hash * 31 + (Int32)EmotionBase;
         hash = hash * 31 + (Int32)EmotionCurrent;
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(CollisionFlags);
@@ -1436,6 +1439,7 @@ namespace Quantum {
         serializer.Stream.Serialize((Int32*)&p->EmotionCurrent);
         QBoolean.Serialize(&p->IsHeld, serializer);
         QBoolean.Serialize(&p->IsLaunched, serializer);
+        QBoolean.Serialize(&p->IsPassed, serializer);
         FP.Serialize(&p->Attack, serializer);
         FP.Serialize(&p->AttackMax, serializer);
         FP.Serialize(&p->Radius, serializer);
