@@ -237,7 +237,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerData">Collision data related to the player character.</param>
         public static void OnProjectileHitPlayerHitbox(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileData, BattleCollisionQSystem.PlayerCharacterCollisionData* playerData)
         {
-            ReturnCode returnCode = GetClass(f.Unsafe.GetPointer<BattlePlayerDataQComponent>(projectileData->OtherEntity)->CharacterClass, out BattlePlayerClassBase playerClass);
+            ReturnCode returnCode = GetClass(f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerData->PlayerHitbox->PlayerEntity)->CharacterClass, out BattlePlayerClassBase playerClass);
 
             if (returnCode != ReturnCode.ClassRetrieved) return;
 
@@ -253,7 +253,7 @@ namespace Battle.QSimulation.Player
         /// <param name="shieldData">Collision data related to the player shield.</param>
         public static void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldData)
         {
-            ReturnCode returnCode = GetClass(f.Unsafe.GetPointer<BattlePlayerDataQComponent>(projectileData->OtherEntity)->CharacterClass, out BattlePlayerClassBase playerClass);
+            ReturnCode returnCode = GetClass(f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldData->PlayerShieldHitbox->PlayerEntity)->CharacterClass, out BattlePlayerClassBase playerClass);
 
             if (returnCode != ReturnCode.ClassRetrieved) return;
 
