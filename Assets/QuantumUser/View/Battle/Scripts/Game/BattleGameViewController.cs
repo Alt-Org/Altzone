@@ -210,8 +210,7 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleStoneCharacterPieceViewInit>(this, QEventOnStoneCharacterPieceViewInit);
 
             // subscribing to UI control events
-            QuantumEvent.Subscribe<EventBattleViewShowRotateJoystick>(this, QEventOnShowRotateJoystick);
-            QuantumEvent.Subscribe<EventBattleViewHideRotateJoystick>(this, QEventOnHideRotateJoystick);
+            QuantumEvent.Subscribe<EventBattleViewSetRotationJoystickVisibility>(this, QEventOnSetRotationJoystickVisibility);
 
             // Subscribing to Gameplay events
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, QEventOnChangeEmotionState);
@@ -356,34 +355,18 @@ namespace Battle.View.Game
         }
 
         /// <summary>
-        /// Private handler method for EventBattleViewShowRotateJoystick QuantumEvent.<br/>
-        /// Sets the rotation control joystick visible, if that control method is selected.
+        /// Private handler method for EventBattleViewSetRotationJoystickVisibility QuantumEvent.<br/>
+        /// Sets the rotation control joystick to be shown or hidden, if that control method is selected.
         /// </summary>
         /// 
         /// <param name="e">The event data.</param>
-        private void QEventOnShowRotateJoystick(EventBattleViewShowRotateJoystick e)
+        private void QEventOnSetRotationJoystickVisibility(EventBattleViewSetRotationJoystickVisibility e)
         {
             if (e.Slot != LocalPlayerSlot) return;
 
             if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick)
             {
-                _uiController.JoystickHandler.SetShow(true, BattleUiElementType.RotateJoystick);
-            }
-        }
-
-        /// <summary>
-        /// Private handler method for EventBattleViewHideRotateJoystick QuantumEvent.<br/>
-        /// Sets the rotation control joystick not visible, if that control method is selected.
-        /// </summary>
-        /// 
-        /// <param name="e">The event data.</param>
-        private void QEventOnHideRotateJoystick(EventBattleViewHideRotateJoystick e)
-        {
-            if (e.Slot != LocalPlayerSlot) return;
-
-            if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick)
-            {
-                _uiController.JoystickHandler.SetShow(false, BattleUiElementType.RotateJoystick);
+                _uiController.JoystickHandler.SetShow(e.IsVisible, BattleUiElementType.RotateJoystick);
             }
         }
 

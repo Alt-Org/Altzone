@@ -50,13 +50,9 @@ synced event BattleStoneCharacterPieceViewInit
 
 //{ UI control events
 
-synced event BattleViewShowRotateJoystick
+synced event BattleViewSetRotationJoystickVisibility
 {
-    BattlePlayerSlot Slot;
-}
-
-synced event BattleViewHideRotateJoystick
-{
+    bool IsVisible;
     BattlePlayerSlot Slot;
 }
 
