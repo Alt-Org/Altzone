@@ -223,7 +223,6 @@ namespace Battle.QSimulation.Projectile
             BattleProjectileQComponent* projectile = null;
             EntityRef projectileEntity = new();
             EntityRef otherEntity = new();
-            void* otherComponentPtr = null;
             bool isHeld = false;
 
             projectile = projectileData->Projectile;
@@ -267,8 +266,7 @@ namespace Battle.QSimulation.Projectile
 
                 case BattleCollisionTriggerType.Shield:
                     BattleCollisionQSystem.PlayerShieldCollisionData* dataPtr = (BattleCollisionQSystem.PlayerShieldCollisionData*)data;
-                    BattlePlayerHitboxQComponent * playerHitbox = dataPtr->PlayerShieldHitbox;
-
+                    BattlePlayerHitboxQComponent* playerHitbox = dataPtr->PlayerShieldHitbox;
 
                     if (ProjectileHitPlayerShield(f, projectile, dataPtr, out normal))
                     {
