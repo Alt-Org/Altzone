@@ -183,6 +183,7 @@ namespace Battle.QSimulation.Player
                     BattlePlayerCollisionType                 playerHitboxCollisionType;
                     FPVector2                                 playerHitboxPosition;
                     FPVector2                                 playerHitboxExtents;
+                    FPVector2                                 playerHitboxNormal;
                     int                                       playerHitboxHeight;
                     Shape2D                                   playerHitboxColliderPart;
                     //} player temp variables
@@ -287,6 +288,7 @@ namespace Battle.QSimulation.Player
                                     playerHitboxCollisionType              = playerDataTemplate->HitboxShield.CollisionType;
                                     playerHitboxListSourceColliderTemplate = playerHitboxListShieldColliderTemplate;
                                     playerHitboxShieldEntity               = playerHitboxTargetEntity;
+                                    playerHitboxNormal                     = FPVector2.Rotate(FPVector2.Up, FP.Deg2Rad * playerDataTemplate->HitboxShield.NormalAngleDeg);
 
                                     collisionTrigger.Type = BattleCollisionTriggerType.Shield;
                                     break;
@@ -302,13 +304,15 @@ namespace Battle.QSimulation.Player
                                     playerHitboxCollisionType              = playerDataTemplate->HitboxCharacter.CollisionType;
                                     playerHitboxListSourceColliderTemplate = playerHitboxListCharacterColliderTemplate;
                                     playerHitboxCharacterEntity            = playerHitboxTargetEntity;
+                                    playerHitboxNormal                     = FPVector2.Rotate(FPVector2.Up, FP.Deg2Rad * playerDataTemplate->HitboxCharacter.NormalAngleDeg);
 
                                     collisionTrigger.Type = BattleCollisionTriggerType.Player;
                                     break;
 
                                 default:
-                                    playerHitboxType = (BattlePlayerHitboxType)(-1);
+                                    playerHitboxType          = (BattlePlayerHitboxType)(-1);
                                     playerHitboxCollisionType = (BattlePlayerCollisionType)(-1);
+                                    playerHitboxNormal        = FPVector2.Up;
                                     break;
                             }
 
@@ -342,11 +346,12 @@ namespace Battle.QSimulation.Player
                             // initialize hitBox component
                             playerHitbox = new BattlePlayerHitboxQComponent
                             {
-                                PlayerEntity = playerEntity,
-                                IsActive = true,
-                                HitboxType = playerHitboxType,
-                                CollisionType = playerHitboxCollisionType,
-                                Normal = FPVector2.Zero,
+                                PlayerEntity       = playerEntity,
+                                IsActive           = true,
+                                HitboxType         = playerHitboxType,
+                                CollisionType      = playerHitboxCollisionType,
+                                Normal             = playerHitboxNormal,
+                                NormalBase         = playerHitboxNormal,
                                 CollisionMinOffset = ((FP)playerHitboxHeight + FP._0_50) * BattleGridManager.GridScaleFactor
                             };
 
@@ -381,7 +386,9 @@ namespace Battle.QSimulation.Player
                             CurrentDefence    = FP._0,
 
                             HitboxShieldEntity      = playerHitboxShieldEntity,
-                            HitboxCharacterEntity   = playerHitboxCharacterEntity
+                            HitboxCharacterEntity   = playerHitboxCharacterEntity,
+
+                            DisableRotation   = playerDataTemplate->DisableRotation
                         };
 
 #if DEBUG_PLAYER_STAT_OVERRIDE
@@ -1039,6 +1046,8 @@ namespace Battle.QSimulation.Player
             f.Events.BattleDebugUpdateStatsOverlay(playerData->Slot, playerData->Stats);
 
             playerHandle.PlayState = BattlePlayerPlayState.InPlay;
+
+            f.Events.BattleViewSetRotationJoystickVisibility(!playerData->DisableRotation, playerData->Slot);
 
             BattlePlayerClassManager.OnSpawn(f, playerHandle.ConvertToPublic(), playerData, character);
         }

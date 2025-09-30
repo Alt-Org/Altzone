@@ -202,6 +202,7 @@ namespace Quantum.Prototypes {
     public FP CurrentDefence;
     public MapEntityId HitboxShieldEntity;
     public MapEntityId HitboxCharacterEntity;
+    public QBoolean DisableRotation;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerDataQComponent component = default;
@@ -225,6 +226,7 @@ namespace Quantum.Prototypes {
         result.CurrentDefence = this.CurrentDefence;
         PrototypeValidator.FindMapEntity(this.HitboxShieldEntity, in context, out result.HitboxShieldEntity);
         PrototypeValidator.FindMapEntity(this.HitboxCharacterEntity, in context, out result.HitboxCharacterEntity);
+        result.DisableRotation = this.DisableRotation;
         this.DamageCooldown.Materialize(frame, ref result.DamageCooldown, in context);
     }
   }
@@ -235,6 +237,7 @@ namespace Quantum.Prototypes {
     public Int32 GridExtendBottom;
     public Quantum.Prototypes.BattlePlayerHitboxTemplatePrototype HitboxShield;
     public Quantum.Prototypes.BattlePlayerHitboxTemplatePrototype HitboxCharacter;
+    public QBoolean DisableRotation;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerDataTemplateQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerDataTemplateQComponent component = default;
@@ -246,6 +249,7 @@ namespace Quantum.Prototypes {
         result.GridExtendBottom = this.GridExtendBottom;
         this.HitboxShield.Materialize(frame, ref result.HitboxShield, in context);
         this.HitboxCharacter.Materialize(frame, ref result.HitboxCharacter, in context);
+        result.DisableRotation = this.DisableRotation;
         MaterializeUser(frame, ref result, in context);
     }
   }
@@ -269,6 +273,7 @@ namespace Quantum.Prototypes {
     public Quantum.QEnum32<BattlePlayerHitboxType> HitboxType;
     public Quantum.QEnum32<BattlePlayerCollisionType> CollisionType;
     public FPVector2 Normal;
+    public FPVector2 NormalBase;
     public FP CollisionMinOffset;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerHitboxQComponent component = default;
@@ -281,6 +286,7 @@ namespace Quantum.Prototypes {
         result.HitboxType = this.HitboxType;
         result.CollisionType = this.CollisionType;
         result.Normal = this.Normal;
+        result.NormalBase = this.NormalBase;
         result.CollisionMinOffset = this.CollisionMinOffset;
     }
   }
@@ -291,6 +297,7 @@ namespace Quantum.Prototypes {
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.BattlePlayerHitboxColliderTemplatePrototype[] ColliderTemplateList = {};
     public Quantum.QEnum32<BattlePlayerCollisionType> CollisionType;
+    public FP NormalAngleDeg;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerHitboxTemplate result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.BattlePlayerHitboxTemplate result, in PrototypeMaterializationContext context = default) {
         if (this.ColliderTemplateList.Length == 0) {
@@ -304,6 +311,7 @@ namespace Quantum.Prototypes {
           }
         }
         result.CollisionType = this.CollisionType;
+        result.NormalAngleDeg = this.NormalAngleDeg;
         MaterializeUser(frame, ref result, in context);
     }
   }

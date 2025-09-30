@@ -68,6 +68,7 @@ namespace Quantum.Prototypes.Unity {
     public FP CurrentDefence;
     public Quantum.QuantumEntityPrototype HitboxShieldEntity;
     public Quantum.QuantumEntityPrototype HitboxCharacterEntity;
+    public QBoolean DisableRotation;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerDataQComponentPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerDataQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
@@ -88,6 +89,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.CurrentDefence, out result.CurrentDefence);
       converter.Convert(this.HitboxShieldEntity, out result.HitboxShieldEntity);
       converter.Convert(this.HitboxCharacterEntity, out result.HitboxCharacterEntity);
+      converter.Convert(this.DisableRotation, out result.DisableRotation);
       converter.Convert(this.DamageCooldown, out result.DamageCooldown);
       ConvertUser(converter, ref result);
       return result;
@@ -100,6 +102,7 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.QEnum32<BattlePlayerHitboxType> HitboxType;
     public Quantum.QEnum32<BattlePlayerCollisionType> CollisionType;
     public FPVector2 Normal;
+    public FPVector2 NormalBase;
     public FP CollisionMinOffset;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerHitboxQComponentPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerHitboxQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
@@ -109,6 +112,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.HitboxType, out result.HitboxType);
       converter.Convert(this.CollisionType, out result.CollisionType);
       converter.Convert(this.Normal, out result.Normal);
+      converter.Convert(this.NormalBase, out result.NormalBase);
       converter.Convert(this.CollisionMinOffset, out result.CollisionMinOffset);
       ConvertUser(converter, ref result);
       return result;
