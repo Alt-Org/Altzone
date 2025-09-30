@@ -8,6 +8,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 499116934459053353, guid: a78d4f00a1c8283419faa71e124bac59,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -138267673, guid: 0708b7db0b67673439d247afaec1d74b,
+        type: 3}
+    - target: {fileID: 499116934459053353, guid: a78d4f00a1c8283419faa71e124bac59,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 499116934459053353, guid: a78d4f00a1c8283419faa71e124bac59,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1745274054235701945, guid: a78d4f00a1c8283419faa71e124bac59,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -58,10 +74,58 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1923419906188887956, guid: a78d4f00a1c8283419faa71e124bac59,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 50c23c41d6b074741bf241385c8c30a0,
+        type: 3}
+    - target: {fileID: 1923419906188887956, guid: a78d4f00a1c8283419faa71e124bac59,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1923419906188887956, guid: a78d4f00a1c8283419faa71e124bac59,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1923419906188887956, guid: a78d4f00a1c8283419faa71e124bac59,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1923419906188887956, guid: a78d4f00a1c8283419faa71e124bac59,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3260937359926339157, guid: a78d4f00a1c8283419faa71e124bac59,
         type: 3}
       propertyPath: m_Name
-      value: BattlePlayer400Character(BaseAndTestCharacter)
+      value: BattlePlayer403Character
+      objectReference: {fileID: 0}
+    - target: {fileID: 7431253912350364810, guid: a78d4f00a1c8283419faa71e124bac59,
+        type: 3}
+      propertyPath: _noShieldSprite
+      value: 
+      objectReference: {fileID: 53535838, guid: f65468fcb701aff45af4ed038ffbe308,
+        type: 3}
+    - target: {fileID: 8981102440540290896, guid: a78d4f00a1c8283419faa71e124bac59,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -138267673, guid: 0708b7db0b67673439d247afaec1d74b,
+        type: 3}
+    - target: {fileID: 8981102440540290896, guid: a78d4f00a1c8283419faa71e124bac59,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981102440540290896, guid: a78d4f00a1c8283419faa71e124bac59,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
