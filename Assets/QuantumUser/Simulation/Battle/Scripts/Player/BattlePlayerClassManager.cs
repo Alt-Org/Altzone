@@ -89,7 +89,8 @@ namespace Battle.QSimulation.Player
         /// </summary>
         /// 
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="data">Collision data.</param>
+        /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
+        /// <param name="playerCollisionData">Collision data related to the player character.</param>
         public virtual unsafe void OnProjectileHitPlayerCharacter(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerCharacterCollisionData* playerCollisionData) { }
 
         /// <summary>
@@ -98,8 +99,9 @@ namespace Battle.QSimulation.Player
         /// </summary>
         /// 
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="data">Collision data.</param>
-        public virtual unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldData) { }
+        /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
+        /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
+        public virtual unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData) { }
 
         /// <summary>
         /// Virtual OnUpdate method that can be implemented.<br/>
