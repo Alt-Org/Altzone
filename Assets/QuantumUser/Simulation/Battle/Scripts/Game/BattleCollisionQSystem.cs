@@ -44,7 +44,7 @@ namespace Battle.QSimulation.Game
 
         public struct PlayerCharacterCollisionData
         {
-            public BattlePlayerHitboxQComponent* PlayerHitbox;
+            public BattlePlayerHitboxQComponent* PlayerCharacterHitbox;
         }
 
         public struct PlayerShieldCollisionData
@@ -125,11 +125,11 @@ namespace Battle.QSimulation.Game
 
                             PlayerCharacterCollisionData playerData = new()
                             {
-                                PlayerHitbox = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(info.Other)
+                                PlayerCharacterHitbox = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(info.Other)
                             };
                             //f.Events.PlaySoundEvent(SoundEffect.SideWallHit);
-                            BattlePlayerQSystem.OnProjectileHitPlayerHitbox(f, &projectileData, &playerData);
-                            BattlePlayerClassManager.OnProjectileHitPlayerHitbox(f, &projectileData, &playerData);
+                            BattlePlayerQSystem.OnProjectileHitPlayerCharacter(f, &projectileData, &playerData);
+                            BattlePlayerClassManager.OnProjectileHitPlayerCharacter(f, &projectileData, &playerData);
                             break;
                         }
 
