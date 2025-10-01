@@ -108,6 +108,13 @@ public class AltMonoBehaviour : MonoBehaviour
     {
         if(playerData == null) Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, callback);
 
+        string[] serverList = new string[playerData.SelectedCharacterIds.Length];
+
+        for (int i = 0; i < playerData.SelectedCharacterIds.Length; i++)
+        {
+            serverList[i] = playerData.SelectedCharacterIds[i].ServerID;
+        }
+
         //Storefront.Get().SavePlayerData(playerData, callback);
         string body = JObject.FromObject(
             new
@@ -117,7 +124,7 @@ public class AltMonoBehaviour : MonoBehaviour
                 clan_Id = playerData.ClanId,
                 avatar = new ServerAvatar(playerData.AvatarData),
                 currentAvatarId = playerData.SelectedCharacterId,
-                battleCharacter_ids = playerData.SelectedCharacterIds,
+                battleCharacter_ids = serverList,
                 
                 
             }
@@ -151,7 +158,7 @@ public class AltMonoBehaviour : MonoBehaviour
     {
         if(clanId == null)
         {
-            StartCoroutine(GetPlayerData(data => clanId = data.ClanId));
+            StartCoroutine(GetPlayerData(data => clanId = data?.ClanId));
             yield return new WaitUntil(() => clanId != null);
         }
 
@@ -165,7 +172,7 @@ public class AltMonoBehaviour : MonoBehaviour
                     callback(new(content));
                 else
                 {
-                    Debug.LogError("Could not connect to server and receive player");
+                    Debug.LogWarning("Could not connect to server and receive player");
                     return;
                 }
             }));

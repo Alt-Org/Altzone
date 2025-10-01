@@ -29,7 +29,7 @@ public class DailyTaskOwnTask : MonoBehaviour
     [SerializeField] private RectTransform _taskProgressLayoutGroup;
     [SerializeField] private GameObject _taskProgressMarkerPrefab;
     [SerializeField] private int _progressMarkersMaxAmount = 8;
-    [Range(0f, 1f)]
+    [Range(0f, 2f)]
     [SerializeField] private float _progressMarkerXScale = 0.05f;
     [SerializeField] private TMP_Text _testTaskProgressValue; //TODO: Remove when testing done.
 
@@ -85,8 +85,6 @@ public class DailyTaskOwnTask : MonoBehaviour
     /// </summary>
     private void SetProgressBarMarkers(int amount)
     {
-        DeactivateAllProgressBarMarkers();
-
         if (amount > _taskProgressMarkers.Count)
             amount = _taskProgressMarkers.Count + 1;
 
@@ -95,7 +93,7 @@ public class DailyTaskOwnTask : MonoBehaviour
         {
             _taskProgressMarkers[i].SetActive(true);
             _taskProgressMarkers[i].GetComponent<RectTransform>().anchorMin = new(((float)(i + 1) / (float)amount), 0f);
-            _taskProgressMarkers[i].GetComponent<RectTransform>().anchorMax = new(((float)(i + 1) / (float)amount) + _progressMarkerXScale, 1f);
+            _taskProgressMarkers[i].GetComponent<RectTransform>().anchorMax = new(((float)(i + 1) / (float)amount), 1f);
         }
     }
 
@@ -112,8 +110,11 @@ public class DailyTaskOwnTask : MonoBehaviour
         for (int i = 0; i < amount; i++)
         {
             GameObject marker = Instantiate(_taskProgressMarkerPrefab, _taskProgressLayoutGroup);
+            marker.GetComponent<RectTransform>().sizeDelta = new Vector2(_progressMarkerXScale, 1f);
             _taskProgressMarkers.Add(marker);
         }
+
+        DeactivateAllProgressBarMarkers();
     }
 
     /// <summary>

@@ -2,11 +2,13 @@
 using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Lobby.Wrappers;
 using MenuUi.Scripts.Lobby.InLobby;
-using MenuUI.Scripts;
 using Prg.Scripts.Common.PubSub;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+
+using SignalBus = MenuUi.Scripts.Signals.SignalBus;
+using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.Lobby.InRoom
 {
@@ -40,9 +42,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     if (_title != null) StartCoroutine(SetRoomTitle());
                     break;
                 case GameType.Random2v2:
-                    if (_title != null) _title.text = "Keräily 2v2";
-                    if (_noticeText != null) _noticeText.text = "Tätä pelimuotoa voi mennä pelaamaan yksin tai kaverin kanssa (työn alla). Huom. Jos menet pelaamaan yksin, paikan valinnalla ei ole merkitystä.";
-                    if (_sendInviteToFriendText != null) _sendInviteToFriendText.text = "Lähetä kutsu kaverille";
+                    //if (_title != null) _title.text = "Keräily 2v2";
+                    //if (_noticeText != null) _noticeText.text = "Tätä pelimuotoa voi mennä pelaamaan yksin tai kaverin kanssa (työn alla). Huom. Jos menet pelaamaan yksin, paikan valinnalla ei ole merkitystä.";
+                    //if (_sendInviteToFriendText != null) _sendInviteToFriendText.text = "Lähetä kutsu kaverille";
+                    _roomSwitcher.ClosePanels();
+                    StartPlaying();
                     break;
                 case GameType.Clan2v2:
                     if (_title != null) _title.text = "Klaani 2v2";
@@ -72,12 +76,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private void StartPlaying()
         {
-            if (!PhotonLobbyRoom.IsValidAllSelectedCharacters())
-            {
-                SignalBus.OnChangePopupInfoSignal("Kaikkien pelaajien pitää ensin valita 3 puolustushahmoa.");
-                return;
-            }
-
+            //if (!PhotonLobbyRoom.IsValidAllSelectedCharacters())
+            //{
+            //    SignalBus.OnChangePopupInfoSignal("Kaikkien pelaajien pitää ensin valita 3 puolustushahmoa.");
+            //    return;
+            //}
             _startGameButton.interactable = false;
 
             switch (InLobbyController.SelectedGameType)
@@ -93,7 +96,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     }
                     else
                     {
-                        SignalBus.OnChangePopupInfoSignal($"Huoneessa pitää olla {PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers} pelaajaa.");
+                        PopupSignalBus.OnChangePopupInfoSignal($"Huoneessa pitää olla {PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers} pelaajaa.");
                     }
                     break;
                 case GameType.Random2v2:
@@ -105,7 +108,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             Debug.Log($"leavingRoom");
             PhotonRealtimeClient.LeaveRoom();
-            _roomSwitcher.ReturnToMain();
+            if (InLobbyController.SelectedGameType != GameType.Clan2v2) SignalBus.OnCloseBattlePopupRequestedSignal();
             //this.Publish(new LobbyManager.StartPlayingEvent());
         }
 
@@ -117,11 +120,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private IEnumerator SetRoomTitle()
         {
-            do
-            {
-                yield return null;
-                _title.text = PhotonRealtimeClient.InRoom ? PhotonRealtimeClient.LobbyCurrentRoom.Name : "<color=red>Not in room</color>";
-            } while (!PhotonRealtimeClient.InRoom);
+            yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
+            // Getting room name either from custom properties or from the room's name itself.
+            string roomName = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PhotonLobbyRoom.RoomNameKey);
+            if (string.IsNullOrEmpty(roomName)) roomName = PhotonRealtimeClient.LobbyCurrentRoom.Name;
+            _title.text = roomName;
         }
     }
 }

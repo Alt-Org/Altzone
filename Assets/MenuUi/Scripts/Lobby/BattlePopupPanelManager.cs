@@ -1,6 +1,7 @@
 using Altzone.Scripts.Lobby;
 using MenuUi.Scripts.Lobby;
 using MenuUi.Scripts.Lobby.CreateRoom;
+using MenuUi.Scripts.Signals;
 using UnityEngine;
 
 /// <summary>
@@ -11,6 +12,7 @@ public class BattlePopupPanelManager : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private GameObject _topPanel;
     [SerializeField] private GameObject _mainPanel;
+    [SerializeField] private GameObject _createCustomRoom;
     [SerializeField] private GameObject _custom2v2WaitingRoom;
     [SerializeField] private GameObject _clanAndRandom2v2WaitingRoom;
     [SerializeField] private MatchmakingPanel _matchmakingPanel;
@@ -18,11 +20,13 @@ public class BattlePopupPanelManager : MonoBehaviour
     private void OnEnable()
     {
         LobbyManager.OnMatchmakingRoomEntered += SwitchToMatchmakingPanel;
+        SignalBus.OnCustomRoomSettingsRequested += OpenCustomRoomSettings;
     }
 
     private void OnDisable()
     {
         LobbyManager.OnMatchmakingRoomEntered -= SwitchToMatchmakingPanel;
+        SignalBus.OnCustomRoomSettingsRequested -= OpenCustomRoomSettings;
     }
 
     public void SwitchRoom(GameType gameType)
@@ -41,6 +45,12 @@ public class BattlePopupPanelManager : MonoBehaviour
                 _clanAndRandom2v2WaitingRoom.SetActive(true);
                 break;
         }
+    }
+
+    public void OpenCustomRoomSettings()
+    {
+        ClosePanels();
+        _createCustomRoom.SetActive(true);
     }
 
     private void SwitchCustomRoom(CustomGameMode mode)

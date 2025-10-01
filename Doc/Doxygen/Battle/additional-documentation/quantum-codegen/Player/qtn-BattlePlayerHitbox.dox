@@ -1,0 +1,73 @@
+/// @file BattlePlayerHitbox.qtn
+/// <summary>
+/// Contains enums and component for player's hitboxes.
+/// </summary>
+///
+/// ## Generated Enums
+/// - @cref{Quantum,BattlePlayerHitboxType}  
+///   @copybrief Quantum.BattlePlayerHitboxType
+/// - @cref{Quantum,BattlePlayerCollisionType}  
+///   @copybrief Quantum.BattlePlayerCollisionType
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattlePlayerHitboxQComponent}  
+///   @copybrief Quantum.BattlePlayerHitboxQComponent
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @enum Quantum::BattlePlayerHitboxType
+/// <summary>
+/// Is the hitbox a part of shield or character.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerHitbox.qtn}
+
+/// @var Quantum::BattlePlayerHitboxType Quantum::BattlePlayerHitboxType::Shield
+/// <summary>Shield hitbox.</summary>
+///
+/// @var Quantum::BattlePlayerHitboxType Quantum::BattlePlayerHitboxType::Character
+/// <summary>Character hitbox.</summary>
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @enum Quantum::BattlePlayerCollisionType
+/// <summary>
+/// How projectile is supposed to act when colliding with the hitbox.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerHitbox.qtn}
+
+/// @var Quantum::BattlePlayerCollisionType Quantum::BattlePlayerCollisionType::None
+/// <summary>Do nothing when colliding.</summary>
+///
+/// @var Quantum::BattlePlayerCollisionType Quantum::BattlePlayerCollisionType::Reflect
+/// <summary>Reflect the projectile based on a normal vector when colliding.</summary>
+///
+/// @var Quantum::BattlePlayerCollisionType Quantum::BattlePlayerCollisionType::Override
+/// <summary>Override the projectile's direction when colliding.</summary>
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattlePlayerHitboxQComponent
+/// <summary>
+/// Contains hitbox's data, inluding which player the hitbox belongs to, which type it is, etc.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerHitbox.qtn}
+
+/// @var EntityRef Quantum.BattlePlayerHitboxQComponent::PlayerEntity
+/// <summary>EntityRef to the player the hitbox belongs to.</summary>
+///
+/// @var BattlePlayerHitboxType Quantum.BattlePlayerHitboxQComponent::HitboxType
+/// <summary>Is the hitbox a character hitbox or a shield hitbox.</summary>
+///
+/// @var BattlePlayerCollisionType Quantum.BattlePlayerHitboxQComponent::CollisionType
+/// <summary>Type of the hitbox, affects how the projectile bounces off of it.</summary>
+///
+/// @var FPVector2 Quantum.BattlePlayerHitboxQComponent::Normal
+/// <summary>Hitbox's [Normal vector🡵](https://en.wikipedia.org/wiki/Normal_(geometry)).</summary>
+///
+/// @var FP Quantum.BattlePlayerHitboxQComponent::CollisionMinOffset
+/// <summary>How much projectile is allowed to accidentally penetrate into the player's hitbox before it's forcibly lifted out.</summary>
+///
+/// Used as a precaution to minimize cases where projectile gets stuck inside other entities.

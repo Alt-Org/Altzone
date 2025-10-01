@@ -159,34 +159,21 @@ public class DailyTaskManager : AltMonoBehaviour
 
         //Get clan data.
         ClanData clanData = null;
-
-        Storefront.Get().GetClanData(_currentPlayerData.ClanId, data => clanData = data);
-
-        if (clanData == null)
+        if (_currentPlayerData?.ClanId != null)
         {
-            StartCoroutine(ServerManager.Instance.GetClanFromServer(content =>
+            StartCoroutine(GetClanData(_currentPlayerData.ClanId, data => clanData = data));
+
+            StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+            yield return new WaitUntil(() => (clanData != null || timeout != null));
+            if (clanData == null)
             {
-                if (content != null)
-                    clanData = new(content);
-                else
-                {
-                    Debug.LogError("Could not connect to server and receive player");
-                    return;
-                }
-            }));
-        }
-
-        StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
-        yield return new WaitUntil(() => (clanData != null || timeout != null));
-
-        if (clanData == null)
-        {
-            Debug.LogError("Failed to fetch clan data.");
-        }
-        else
-        {
-            PopulateClanPlayers(clanData);
-            SetClanProgressBar(clanData);
+                Debug.LogError("Failed to fetch clan data.");
+            }
+            else
+            {
+                PopulateClanPlayers(clanData);
+                SetClanProgressBar(clanData);
+            }
         }
 
         CreateClanProgressBar(); //TODO: Move to inside the brackets when server is ready.
@@ -223,7 +210,11 @@ public class DailyTaskManager : AltMonoBehaviour
         }
 
         List<PlayerTask> tasklist = null;
+        PlayerData playerData = null;
         Storefront.Get().GetPlayerTasks(content => tasklist = content);
+        StartCoroutine(GetPlayerData(content => playerData = content));
+        if (playerData == null || playerData.HasClanId) tasklist = TESTGenerateNormalTasks();
+        else
         StartCoroutine(ServerManager.Instance.GetPlayerTasksFromServer(content =>
         {
             if (content != null)
@@ -357,8 +348,8 @@ public class DailyTaskManager : AltMonoBehaviour
         serverTasks.monthly = new List<ServerPlayerTask>();
 
         //Social
-        string[] socialTasks = { "emote_during_battle", "add_new_friend", "edit_character_avatar", "write_chat_message_clan" };
-        string[] socialTitles = { "Reagoi emojilla matsissa.", "Lisää kaveri.", "Muokkaa avatarisi ulkonäköä.", "Laita viesti klaanissa." };
+        string[] socialTasks = { "emote_during_battle", "add_new_friend", "edit_character_avatar", "write_chat_message_clan", "create_new_vote", "share_battle_replay" };
+        string[] socialTitles = { "Reagoi emojilla matsissa.", "Lisää kaveri.", "Muokkaa avatarisi ulkonäköä.", "Laita viesti klaanissa.", "Luo uusi äänestys klaaniin.", "Jaa battle replay klaanin chattiin." };
 
         for (int i = 0; i < socialTasks.Length; i++)
         {
@@ -366,8 +357,8 @@ public class DailyTaskManager : AltMonoBehaviour
         }
 
         //Story
-        string[] storyTasks = { "find_symbolic_graphics", "continue_clan_story", "click_character_description", "recognize_sound_clue" };
-        string[] storyTitles = { "Löydä käyttöliittymästä symbolista grafiikkaa.", "Jatka klaanin tarinaa.", "Lue ja paina pelihahmon kuvausta.", "Tunnista äänimaailman vihjeet." };
+        string[] storyTasks = { "find_symbolic_graphics", "continue_clan_story", "click_character_description", "recognize_sound_clue", "find_symbolical_furniture" };
+        string[] storyTitles = { "Löydä käyttöliittymästä symbolista grafiikkaa.", "Jatka klaanin tarinaa.", "Lue ja paina pelihahmon kuvausta.", "Tunnista äänimaailman vihjeet.", "Paina kolmea symboliikkaa sisältävää huonekalua." };
 
         for (int i = 0; i < storyTasks.Length; i++)
         {
@@ -375,8 +366,8 @@ public class DailyTaskManager : AltMonoBehaviour
         }
 
         //Culture
-        string[] cultureTasks = { "games_genre_types", "click_known_character", "similiar_to_a_game", "set_profile_player_type" };
-        string[] cultureTitles = { "Mitä lajityyppejä peli sinulle edustaa", "Klikkaa pelihahmoa josta tulee mieleen joku tunnettu hahmo.", "Mitä tunnettua peliä tämä peli muistuttaa.", "Määrittele pelaajaprofiili pelaajatyyppisi." };
+        string[] cultureTasks = { "games_genre_types", "click_known_character", "similiar_to_a_game", "set_profile_player_type", "click_known_art_idea_person" };
+        string[] cultureTitles = { "Mitä lajityyppejä peli sinulle edustaa", "Klikkaa pelihahmoa josta tulee mieleen joku tunnettu hahmo.", "Mitä tunnettua peliä tämä peli muistuttaa.", "Määrittele pelaajaprofiili pelaajatyyppisi.", "Klikkaa tunnettuihin teoksiin, ideoihin tai ihmisiin viittaavia asioita." };
 
         for (int i = 0; i < cultureTasks.Length; i++)
         {
@@ -384,8 +375,8 @@ public class DailyTaskManager : AltMonoBehaviour
         }
 
         //Action
-        string[] actionTasks = { "win_battle", "edit_character_stats", "blow_up_your_character", "switch_soulhome_music" };
-        string[] actionTitles = { "Voita battle.", "Muokkaa hahmosi statseja.", "Räjäytä hahmosi ryöstössä.", "Vaihda biisi sielunkodissa." };
+        string[] actionTasks = { "win_battle", "edit_character_stats", "blow_up_your_character", "switch_soulhome_music" , "play_battle"};
+        string[] actionTitles = { "Voita battle.", "Muokkaa hahmosi statseja.", "Räjäytä hahmosi ryöstössä.", "Vaihda biisi sielunkodissa.", "Pelaa battle." };
 
         for (int i = 0; i < actionTasks.Length; i++)
         {

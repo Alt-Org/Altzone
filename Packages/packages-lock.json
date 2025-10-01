@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.endel.nativewebsocket": {
+      "version": "https://github.com/endel/NativeWebSocket.git#upm",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "1d8b49b3fee41c09a98141f1f1a5e4db47e14229"
+    },
     "com.gameanalytics.sdk": {
       "version": "7.10.3",
       "depth": 0,
@@ -16,11 +23,11 @@
       "dependencies": {}
     },
     "com.unity.2d.animation": {
-      "version": "9.1.3",
+      "version": "9.2.0",
       "depth": 1,
       "source": "registry",
       "dependencies": {
-        "com.unity.2d.common": "8.0.4",
+        "com.unity.2d.common": "8.1.0",
         "com.unity.2d.sprite": "1.0.0",
         "com.unity.collections": "1.1.0",
         "com.unity.modules.animation": "1.0.0",
@@ -29,7 +36,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.2d.aseprite": {
-      "version": "1.1.7",
+      "version": "1.1.9",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -41,7 +48,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.2d.common": {
-      "version": "8.0.4",
+      "version": "8.1.0",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -54,20 +61,22 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.2d.pixel-perfect": {
-      "version": "5.0.3",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.2d.psdimporter": {
-      "version": "8.0.5",
+      "version": "5.1.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.2d.common": "8.0.2",
+        "com.unity.modules.imgui": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.2d.psdimporter": {
+      "version": "8.1.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.2d.common": "8.1.0",
         "com.unity.2d.sprite": "1.0.0",
-        "com.unity.2d.animation": "9.1.1"
+        "com.unity.2d.animation": "9.2.0"
       },
       "url": "https://packages.unity.com"
     },
@@ -78,11 +87,11 @@
       "dependencies": {}
     },
     "com.unity.2d.spriteshape": {
-      "version": "9.0.5",
+      "version": "9.1.0",
       "depth": 1,
       "source": "registry",
       "dependencies": {
-        "com.unity.2d.common": "8.0.4",
+        "com.unity.2d.common": "8.1.0",
         "com.unity.mathematics": "1.1.0",
         "com.unity.modules.physics2d": "1.0.0"
       },
@@ -110,7 +119,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ai.navigation": {
-      "version": "1.1.5",
+      "version": "1.1.6",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -119,7 +128,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.burst": {
-      "version": "1.8.18",
+      "version": "1.8.21",
       "depth": 2,
       "source": "registry",
       "dependencies": {
@@ -166,18 +175,18 @@
       "depth": 0,
       "source": "builtin",
       "dependencies": {
-        "com.unity.2d.animation": "9.1.3",
-        "com.unity.2d.pixel-perfect": "5.0.3",
-        "com.unity.2d.psdimporter": "8.0.5",
+        "com.unity.2d.animation": "9.2.0",
+        "com.unity.2d.pixel-perfect": "5.1.0",
+        "com.unity.2d.psdimporter": "8.1.0",
         "com.unity.2d.sprite": "1.0.0",
-        "com.unity.2d.spriteshape": "9.0.5",
+        "com.unity.2d.spriteshape": "9.1.0",
         "com.unity.2d.tilemap": "1.0.0",
         "com.unity.2d.tilemap.extras": "3.1.3",
-        "com.unity.2d.aseprite": "1.1.7"
+        "com.unity.2d.aseprite": "1.1.9"
       }
     },
     "com.unity.ide.rider": {
-      "version": "3.0.34",
+      "version": "3.0.36",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -202,7 +211,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.inputsystem": {
-      "version": "1.11.2",
+      "version": "1.14.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -218,7 +227,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.mobile.android-logcat": {
-      "version": "1.4.4",
+      "version": "1.4.5",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -243,7 +252,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.textmeshpro": {
-      "version": "3.2.0-pre.11",
+      "version": "3.2.0-pre.12",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -252,7 +261,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.timeline": {
-      "version": "1.7.6",
+      "version": "1.7.7",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -271,6 +280,25 @@
         "com.unity.modules.ui": "1.0.0",
         "com.unity.modules.imgui": "1.0.0"
       }
+    },
+    "com.unity.vectorgraphics": {
+      "version": "2.0.0-preview.25",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0",
+        "com.unity.2d.sprite": "1.0.0",
+        "com.unity.modules.ui": "1.0.0",
+        "com.unity.modules.physics": "1.0.0",
+        "com.unity.modules.animation": "1.0.0",
+        "com.unity.modules.physics2d": "1.0.0",
+        "com.unity.modules.uielements": "1.0.0",
+        "com.unity.modules.imageconversion": "1.0.0",
+        "com.unity.modules.unitywebrequest": "1.0.0",
+        "com.unity.modules.unitywebrequestwww": "1.0.0",
+        "com.unity.modules.unitywebrequesttexture": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",

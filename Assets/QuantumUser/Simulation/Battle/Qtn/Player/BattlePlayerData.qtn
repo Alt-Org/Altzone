@@ -1,35 +1,30 @@
 //{ PlayerData
 
-struct BattlePlayerHitboxLink
-{
-    EntityRef Entity;
-    FPVector2 Position;
-}
-
 component BattlePlayerDataQComponent
 {
     PlayerRef PlayerRef;
     BattlePlayerSlot Slot;
     BattleTeamNumber TeamNumber;
     int CharacterId;
-    int CharacterClass;
+    BattlePlayerCharacterClass CharacterClass;
 
-    FP StatHp;
-    FP StatSpeed;
-    FP StatCharacterSize;
-    FP StatAttack;
-    FP StatDefence;
+    BattlePlayerStats Stats;
 
     int GridExtendTop;
     int GridExtendBottom;
 
+    bool HasTargetPosition;
     FPVector2 TargetPosition;
     FP RotationBase;
     FP RotationOffset;
 
-    [FreeOnComponentRemoved] list<BattlePlayerHitboxLink> HitboxListAll;
-    [FreeOnComponentRemoved] list<BattlePlayerHitboxLink> HitboxListShield;
-    [FreeOnComponentRemoved] list<BattlePlayerHitboxLink> HitboxListCharacter;
+    FP CurrentHp;
+    FP CurrentDefence;
+
+    EntityRef HitboxShieldEntity;
+    EntityRef HitboxCharacterEntity;
+
+    FrameTimer DamageCooldown;
 
     bool ControlledByAi;
     FP MovementCooldown;
@@ -40,11 +35,17 @@ component BattlePlayerDataQComponent
 //{ PlayerDataTemplate
 
 [Serializable]
-struct BattlePlayerHitboxTemplate
+struct BattlePlayerHitboxColliderTemplate
 {
     IntVector2 Position;
+    IntVector2 Size;
+}
+
+[Serializable]
+struct BattlePlayerHitboxTemplate
+{
+    [FreeOnComponentRemoved] list<BattlePlayerHitboxColliderTemplate> ColliderTemplateList;
     BattlePlayerCollisionType CollisionType;
-    FP NormalAngle;
 }
 
 component BattlePlayerDataTemplateQComponent
@@ -52,8 +53,8 @@ component BattlePlayerDataTemplateQComponent
     int GridExtendTop;
     int GridExtendBottom;
 
-    [FreeOnComponentRemoved] list<BattlePlayerHitboxTemplate> HitboxListShield;
-    [FreeOnComponentRemoved] list<BattlePlayerHitboxTemplate> HitboxListCharacter;
+    BattlePlayerHitboxTemplate HitboxShield;
+    BattlePlayerHitboxTemplate HitboxCharacter;
 }
 
 //} PlayerDataTemplate

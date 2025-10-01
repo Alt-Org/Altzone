@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Altzone.Scripts.Window;
 using Prg.Scripts.Common;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -32,7 +33,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         [SerializeField, Tooltip("The area from the bottom of the screen from where swiping is disabled (between 0/1))")] private float verticalDeadzone;
 
         private ScrollRect scrollRect;
-        [SerializeField] private GameObject[] slides;
+        [SerializeField] protected GameObject[] slides;
         [SerializeField] private Scrollbar scrollBar;
         [SerializeField] private Button[] buttons;
         //[SerializeField] private Button battleButton;
@@ -42,20 +43,21 @@ namespace MenuUi.Scripts.SwipeNavigation
         private float[] scrollPageValues;
         private float valueDistance = 0;
         public int currentPage = 1;
-        private int maxPage = 0;
+        protected int maxPage = 0;
         public Vector2 _startTouch;
         public Vector2 _endTouch;
-        private bool isSwipeMode = false;
+        protected bool isSwipeMode = false;
         private float _startScrollvalue;
         private bool _swipeAllowed = false;
         [SerializeField] private RectTransform _scrollTransform;
         private bool _firstFrame = true;
 
+        private bool settingScroll = false;
         public bool isEnabled;
         private Rect swipeRect;
 
         [SerializeField] private bool _isInMainMenu;
-        [SerializeField] private bool _willRotate;
+        [SerializeField] protected bool _willRotate;
 
         public Action OnCurrentPageChanged;
 
@@ -86,7 +88,8 @@ namespace MenuUi.Scripts.SwipeNavigation
                     currentPage = value;
                     if (_isInMainMenu) SettingsCarrier.Instance.mainMenuWindowIndex = currentPage;
                     UpdateButtonContent();
-                    StartCoroutine(OnSwipeOneStep(CurrentPage));
+                    if(_firstFrame)StartCoroutine(SetScrollBarValue(CurrentPage, true));
+                    else StartCoroutine(OnSwipeOneStep(CurrentPage));
                     OnCurrentPageChanged?.Invoke();
                 }
             }
@@ -96,7 +99,7 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         public float ScrollbarValue { get => scrollBar.value; }
 
-        private void Awake()
+        protected virtual void Awake()
         {
             scrollPageValues = new float[slides.Length];
 
@@ -116,7 +119,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             }
             else
             {
-                currentPage = 0;
+                //currentPage = DataCarrier.GetData<int>(DataCarrier.RequestedWindow, false);
             }
 
             scrollRect = GetComponent<ScrollRect>();
@@ -140,7 +143,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             }
 
             IsEnabled = true;
-            StartCoroutine(SetScrollBarValue(CurrentPage, true));
+            //StartCoroutine(SetScrollBarValue(CurrentPage, true));
             EnhancedTouchSupport.Enable();
         }
 
@@ -155,11 +158,12 @@ namespace MenuUi.Scripts.SwipeNavigation
             }
             else
             {
-                CurrentPage = 0;
+                CurrentPage = DataCarrier.GetData<int>(DataCarrier.RequestedWindow, false, suppressWarning: true);
             }
-
+            settingScroll = false;
             StartCoroutine(SetScrollBarValue(CurrentPage, true));
             _firstFrame = true;
+            isSwipeMode = true;
         }
         private void Update()
         {
@@ -173,7 +177,9 @@ namespace MenuUi.Scripts.SwipeNavigation
                 _scrollTransform.localPosition = new(-1 * (_scrollTransform.rect.width * scrollPageValues[CurrentPage] * (1 - 1f / scrollPageValues.Length)), _scrollTransform.localPosition.y, 0);
                 _firstFrame = false;
                 isSwipeMode = false;
+                DataCarrier.GetData<int>(DataCarrier.RequestedWindow, true, suppressWarning: true);
             }
+            if(!isSwipeMode && !_swipeAllowed) scrollBar.value = scrollPageValues[CurrentPage];
         }
 
         /// <summary>
@@ -202,16 +208,22 @@ namespace MenuUi.Scripts.SwipeNavigation
         /// <returns></returns>
         public IEnumerator SetScrollBarValue(int index, bool instant)
         {
+            if (settingScroll) yield break;
+            settingScroll = true;
             yield return new WaitForEndOfFrame();
-
             if (scrollBar)
             {
                 if (!IsEnabled)
                     IsEnabled = true;
 
                 if (!instant) StartCoroutine(OnSwipeOneStep(index));
-                else scrollBar.value = scrollPageValues[index];
+                else
+                {
+                    scrollBar.value = scrollPageValues[index];
+                    settingScroll = false;
+                }
             }
+            else settingScroll = false;
             CurrentPage = index;
         }
 
@@ -315,7 +327,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             }
         }
 
-        public void NextSlide()
+        public virtual void NextSlide()
         {
             if (CurrentPage == maxPage)
             {
@@ -330,7 +342,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             }
         }
 
-        public void PreviousSlide()
+        public virtual void PreviousSlide()
         {
             if (CurrentPage == 0)
             {
@@ -350,12 +362,11 @@ namespace MenuUi.Scripts.SwipeNavigation
         /// </summary>
         /// <param name="index">Index of the page we are snapping to.</param>
         /// <returns></returns>
-        private IEnumerator OnSwipeOneStep(int index)
+        protected IEnumerator OnSwipeOneStep(int index)
         {
             float start = scrollBar.value;
             float current = 0;
             float percent = 0;
-            Debug.LogWarning("Swipe");
             isSwipeMode = true;
             if (scrollRect)
             {
@@ -385,6 +396,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             _startTouch = Vector2.zero;
             _endTouch = Vector2.zero;
             IsEnabled = true;
+            settingScroll = false;
         }
 
         /// <summary>

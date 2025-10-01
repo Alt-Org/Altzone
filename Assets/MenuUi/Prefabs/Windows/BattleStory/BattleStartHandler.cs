@@ -2,19 +2,25 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Lobby;
-using MenuUi.Scripts.Audio;
+using Altzone.Scripts.Audio;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using MenuUi.Scripts.Lobby.SelectedCharacters;
+using Altzone.Scripts.Lobby.Wrappers;
 
 public class BattleStartHandler : MonoBehaviour
 {
+    [SerializeField]
+    private TextMeshProUGUI _battleStartText;
     [SerializeField]
     private TextMeshProUGUI _timerText;
     [SerializeField]
     private Image _loadImage;
     [SerializeField]
-    private Sprite _sittingDownSprite;
+    private List<Sprite> _startAnimationSprites;
+    [SerializeField]
+    private float _animationFrameTime = 0.5f;
     [SerializeField]
     private Sprite _tableAboveSprite;
 
@@ -43,27 +49,52 @@ public class BattleStartHandler : MonoBehaviour
 
     private IEnumerator TimerStart(long startTime)
     {
-        _loadImage.sprite = _sittingDownSprite;
-        _loadImage.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0f);
+        _loadImage.sprite = _startAnimationSprites[0];
+        _loadImage.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.8f);
         _loadImage.transform.localScale = new Vector2(1f, 1f);
-        float timeleft = startTime/1000f;
-        do
-        {
-            timeleft -= Time.deltaTime;
-            _timerText.text = Mathf.CeilToInt(timeleft).ToString();
+        _battleStartText.gameObject.SetActive(false);
+        //_timerText.gameObject.SetActive(false);
+        //float timeleft = startTime/1000f;
+        float frametimeleft = 0;
 
-            if(timeleft <= 3)
+        foreach (Sprite sprite in _startAnimationSprites)
+        {
+            if (sprite != _startAnimationSprites[_startAnimationSprites.Count - 1])
             {
-                if (_loadImage.sprite.Equals(_sittingDownSprite))
+                frametimeleft += _animationFrameTime;
+                _loadImage.sprite = sprite;
+                do
                 {
-                    _loadImage.sprite = _tableAboveSprite;
-                    _loadImage.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
-                }
-                float scale = 1f + 0.4f * (1 - (Mathf.Clamp(timeleft,0,3f) / 3f));
-                _loadImage.transform.localScale = new Vector2(scale, scale);
+                    yield return null;
+                    //timeleft -= Time.deltaTime;
+                    frametimeleft -= Time.deltaTime;
+                } while (frametimeleft > 0);
             }
+            else
+            {
+                _loadImage.sprite = sprite;
+                yield return null;
+                break;
+            }
+        }
+
+        LobbyManager.Instance.IsStartFinished = true;
+
+        //_timerText.gameObject.SetActive(true);
+        /*do
+        {
+            //_timerText.text = Mathf.CeilToInt(timeleft).ToString();
+
+            if (!_loadImage.sprite.Equals(_tableAboveSprite))
+            {
+                _loadImage.sprite = _tableAboveSprite;
+                _loadImage.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
+            }
+            //float scale = 1f + 0.4f * (1 - (Mathf.Clamp(timeleft,0,3f) / 3f));
+            //_loadImage.transform.localScale = new Vector2(scale, scale);
 
             yield return null;
-        } while (timeleft > 0f);
+            timeleft -= Time.deltaTime;
+        } while (timeleft > 0f);*/
     }
 }

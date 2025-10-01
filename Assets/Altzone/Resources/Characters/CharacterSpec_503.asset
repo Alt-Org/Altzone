@@ -13,10 +13,31 @@ MonoBehaviour:
   m_Name: CharacterSpec_503
   m_EditorClassIdentifier: 
   Id: 503
-  CharacterId: 0
-  Name: Anorektikko
+  CharacterId: 503
   IsApproved: 0
+  Name: Anoreksia
   ClassType: 500
+  CharacterDescription: 
+  CharacterShortDescription: 
+  CharacterStats: {fileID: 0}
+  Hp:
+    Level: 0
+    Coefficient: 0
+  Speed:
+    Level: 0
+    Coefficient: 0
+  CharacterSize:
+    Level: 0
+    Coefficient: 0
+  Attack:
+    Level: 0
+    Coefficient: 0
+  Defence:
+    Level: 0
+    Coefficient: 0
   GalleryImage: {fileID: 0}
-  BattleSprite: {fileID: 0}
-  Image: {fileID: 0}
+  GalleryHeadImage: {fileID: 0}
+  BattleEntityPrototype:
+    Id:
+      Value: 0
+  BattleUiSprite: {fileID: 0}

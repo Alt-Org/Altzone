@@ -93,7 +93,7 @@ public class ClanSearchView : MonoBehaviour
         else _loadMoreButton.SetActive(false);
 
         _loadMoreButton.transform.SetAsLastSibling();
-        FilterListings();
+        //FilterListings();
     }
 
     private void UpdateFilters(ClanSearchFilters newFilters)
@@ -106,12 +106,28 @@ public class ClanSearchView : MonoBehaviour
     {
         foreach (ClanListing clanListing in _listedClans)
         {
-            bool hidelisting = (_filters.removeLocked && !clanListing.Clan.isOpen)
+            bool hidelisting = (_filters.isOpen != clanListing.Clan.isOpen)
                 || (_filters.clanName != "" && !clanListing.Clan.name.ToLower().Contains(_filters.clanName.ToLower()))
                 || (_filters.language != Language.None && _filters.language != clanListing.Clan.language)
                 || (_filters.age != ClanAge.None && _filters.age != clanListing.Clan.ageRange)
-                || (_filters.goal != Goals.None && _filters.goal != clanListing.Clan.goal);
+                || (_filters.goal != Goals.None && _filters.goal != clanListing.Clan.goal)
+                || !CheckValues(clanListing.Clan.labels, _filters.values);
             clanListing.gameObject.SetActive(!hidelisting);
         }
+    }
+
+    private bool CheckValues(List<string> labels, List<ClanValues> filterValues)
+    {
+        List<ClanValues> valuesfromServer = new();
+        foreach (string point in labels)
+        {
+            valuesfromServer.Add((ClanValues)Enum.Parse(typeof(ClanValues), string.Concat(point[0].ToString().ToUpper(), point.AsSpan(1).ToString()).Replace("ä", "a").Replace("ö", "o").Replace("+", "").Replace(" ", "")));
+        }
+
+        foreach (ClanValues value in filterValues)
+        {
+            if (!valuesfromServer.Contains(value)) return false;
+        }
+        return true;
     }
 }

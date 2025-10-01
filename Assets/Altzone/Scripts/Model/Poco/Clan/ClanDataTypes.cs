@@ -93,9 +93,28 @@ namespace Altzone.Scripts.Model.Poco.Clan
         RarelyActive
     }
 
+    public enum ClanRanking
+    {
+        None,
+        Top10,
+        Top25,
+        Top50,
+        Top100
+    }
+
+    public enum ClanMembers
+    {
+        None,
+        Small,      
+        Medium,     
+        Large,      
+        VeryLarge,  
+        Huge
+    }
+
     public static class ClanDataTypeConverter
     {
-        public static string GetAgeText(ClanAge age)
+             public static string GetAgeText(ClanAge age)
         {
             return age switch
             {
@@ -103,10 +122,11 @@ namespace Altzone.Scripts.Model.Poco.Clan
                 ClanAge.Teenagers => "Teinit",
                 ClanAge.Toddlers => "Taaperot",
                 ClanAge.Adults => "Aikuiset",
-                ClanAge.All => "Kaiken ikäiset",
+                ClanAge.All => "Kaikki",
                 _ => "",
             };
         }
+
 
         public static string GetLanguageText(Language language)
         {
@@ -140,11 +160,38 @@ namespace Altzone.Scripts.Model.Poco.Clan
         {
             return activity switch
             {
-                ClanActivity.None => "Aktiivisuusluokka",
+                ClanActivity.None => "Aktiivisuus",
                 ClanActivity.VeryActive => "Erittäin aktiivinen",
                 ClanActivity.Active => "Aktiivinen",
                 ClanActivity.OccasionallyActive => "Satunnainen",
                 ClanActivity.RarelyActive => "Harvoin paikalla",
+                _ => "",
+            };
+        }
+
+        public static string GetRankingText(ClanRanking ranking)
+        {
+            return ranking switch
+            {
+                ClanRanking.None => "Sijoitus",
+                ClanRanking.Top10 => "Top 10",
+                ClanRanking.Top25 => "Top 25",
+                ClanRanking.Top50 => "Top 50",
+                ClanRanking.Top100 => "Top 100",
+                _ => "",
+            };
+        }
+
+        public static string GetMembersText(ClanMembers members)
+        {
+            return members switch
+            {
+                ClanMembers.None => "Jäsenmäärä",
+                ClanMembers.Small => "Pieni (1-10)",
+                ClanMembers.Medium => "Keskikokoinen (11-25)",
+                ClanMembers.Large => "Suuri (26-50)",
+                ClanMembers.VeryLarge => "Hyvin suuri (51-100)",
+                ClanMembers.Huge => "Valtava (100+)",
                 _ => "",
             };
         }

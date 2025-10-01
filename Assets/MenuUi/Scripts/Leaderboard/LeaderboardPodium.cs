@@ -1,13 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Clan;
-using MenuUi.Scripts.Window;
+using Altzone.Scripts.Model.Poco.Player;
+using MenuUi.Scripts.AvatarEditor;
+using Altzone.Scripts.Window;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LeaderboardPodium : MonoBehaviour
 {
+    [SerializeField] private GameObject[] _playerProfileButtons;
+    [SerializeField] private GameObject[] _clanProfileButtons;
+
     [Header("First place")]
     [SerializeField] private TextMeshProUGUI _firstName;
     [SerializeField] private TextMeshProUGUI _firstPoints;
@@ -15,6 +20,7 @@ public class LeaderboardPodium : MonoBehaviour
     [SerializeField] private GameObject _firstClanHeartPlayer;
     [SerializeField] private GameObject _firstAvatarHead;
     [field: SerializeField] public Button FirstOpenClanProfileButton { get; private set; }
+    [field: SerializeField] public Button FirstOpenPlayerProfileButton { get; private set; }
 
     [Header("Second place")]
     [SerializeField] private TextMeshProUGUI _secondName;
@@ -23,6 +29,7 @@ public class LeaderboardPodium : MonoBehaviour
     [SerializeField] private GameObject _secondClanHeartPlayer;
     [SerializeField] private GameObject _secondAvatarHead;
     [field: SerializeField] public Button SecondOpenClanProfileButton { get; private set; }
+    [field: SerializeField] public Button SecondOpenPlayerProfileButton { get; private set; }
 
     [Header("Third place")]
     [SerializeField] private TextMeshProUGUI _thirdName;
@@ -31,26 +38,63 @@ public class LeaderboardPodium : MonoBehaviour
     [SerializeField] private GameObject _thirdClanHeartPlayer;
     [SerializeField] private GameObject _thirdAvatarHead;
     [field: SerializeField] public Button ThirdOpenClanProfileButton { get; private set; }
+    [field: SerializeField] public Button ThirdOpenPlayerProfileButton { get; private set; }
 
     private bool _isClanView = false;
 
+    private PlayerData _firstPlayerData;
+    private PlayerData _secondPlayerData;
+    private PlayerData _thirdPlayerData;
+
     public void InitilializePodium(int rank, string name, int points, ClanData clanData, ServerClan serverClan)
     {
-        switch(rank)
+        switch (rank)
         {
             case 1:
-                InitializeFirstPlace(name, points, clanData, serverClan);
+                InitializeFirstPlace(name, points, clanData: clanData, serverClan: serverClan);
                 break;
             case 2:
-                InitializeSecondPlace(name, points, clanData, serverClan);
+                InitializeSecondPlace(name, points, clanData: clanData, serverClan: serverClan);
                 break;
             case 3:
-                InitializeThirdPlace(name, points, clanData, serverClan);
+                InitializeThirdPlace(name, points, clanData: clanData, serverClan: serverClan);
                 break;
         }
     }
 
-    private void InitializeFirstPlace(string firstName, int firstPoints, ClanData clanData, ServerClan serverClan)
+    public void InitilializePodium(int rank, string name, int points, PlayerData playerData)
+    {
+        switch (rank)
+        {
+            case 1:
+                InitializeFirstPlace(name, points, playerData: playerData);
+                break;
+            case 2:
+                InitializeSecondPlace(name, points, playerData: playerData);
+                break;
+            case 3:
+                InitializeThirdPlace(name, points, playerData: playerData);
+                break;
+        }
+    }
+
+    public void InitilializePodium(int rank, PlayerLeaderboard ranking)
+    {
+        switch (rank)
+        {
+            case 1:
+                InitializeFirstPlace(ranking.Player.Name, ranking.Points, playerData: ranking.Player, logo: ranking.Clanlogo);
+                break;
+            case 2:
+                InitializeSecondPlace(ranking.Player.Name, ranking.Points, playerData: ranking.Player, logo: ranking.Clanlogo);
+                break;
+            case 3:
+                InitializeThirdPlace(ranking.Player.Name, ranking.Points, playerData: ranking.Player, logo: ranking.Clanlogo);
+                break;
+        }
+    }
+
+    private void InitializeFirstPlace(string firstName, int firstPoints, ClanData clanData = null, ServerClan serverClan = null, PlayerData playerData = null, ClanLogo logo= null)
     {
         _firstName.text = firstName;
         _firstPoints.text = firstPoints.ToString();
@@ -67,10 +111,30 @@ public class LeaderboardPodium : MonoBehaviour
                 DataCarrier.AddData(DataCarrier.ClanListing, serverClan);
             });
         }
-            
+        else
+        {
+            if (playerData != null)
+            {
+                FirstOpenPlayerProfileButton.onClick.RemoveListener(FirstAddDataCarrierData); // Remove in case the button already has another player's info
+                _firstPlayerData = playerData;
+                FirstOpenPlayerProfileButton.onClick.AddListener(FirstAddDataCarrierData);
+
+                AvatarVisualData avatarVisualData = null;
+
+                if (/*ranking.Player.SelectedCharacterId != 201 &&*/ playerData.SelectedCharacterId != 0)
+                {
+                    avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
+                }
+                if (avatarVisualData != null)
+                {
+                    _firstAvatarHead.GetComponent<AvatarFaceLoader>().UpdateVisuals(avatarVisualData);
+                }
+            }
+
+        }
     }
 
-    private void InitializeSecondPlace(string secondName, int secondPoints, ClanData clanData, ServerClan serverClan)
+    private void InitializeSecondPlace(string secondName, int secondPoints, ClanData clanData = null, ServerClan serverClan = null, PlayerData playerData = null, ClanLogo logo = null)
     {
         _secondName.text = secondName;
         _secondPoints.text = secondPoints.ToString();
@@ -87,9 +151,29 @@ public class LeaderboardPodium : MonoBehaviour
                 DataCarrier.AddData(DataCarrier.ClanListing, serverClan);
             });
         }
+        else
+        {
+            if (playerData != null)
+            {
+                SecondOpenPlayerProfileButton.onClick.RemoveListener(SecondAddDataCarrierData); // Remove in case the button already has another player's info
+                _secondPlayerData = playerData;
+                SecondOpenPlayerProfileButton.onClick.AddListener(SecondAddDataCarrierData);
+
+                AvatarVisualData avatarVisualData = null;
+
+                if (/*ranking.Player.SelectedCharacterId != 201 &&*/ playerData.SelectedCharacterId != 0)
+                {
+                    avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
+                }
+                if (avatarVisualData != null)
+                {
+                    _secondAvatarHead.GetComponent<AvatarFaceLoader>().UpdateVisuals(avatarVisualData);
+                }
+            }
+        }
     }
 
-    private void InitializeThirdPlace(string thirdName, int thirdPoints, ClanData clanData, ServerClan serverClan)
+    private void InitializeThirdPlace(string thirdName, int thirdPoints, ClanData clanData = null, ServerClan serverClan = null, PlayerData playerData = null, ClanLogo logo = null)
     {
         _thirdName.text = thirdName;
         _thirdPoints.text = thirdPoints.ToString();
@@ -106,45 +190,96 @@ public class LeaderboardPodium : MonoBehaviour
                 DataCarrier.AddData(DataCarrier.ClanListing, serverClan);
             });
         }
+        else
+        {
+            if (playerData != null)
+            {
+                ThirdOpenPlayerProfileButton.onClick.RemoveListener(ThirdAddDataCarrierData); // Remove incase the button already has another player's info
+                _thirdPlayerData = playerData;
+                ThirdOpenPlayerProfileButton.onClick.AddListener(ThirdAddDataCarrierData);
+                ThirdOpenPlayerProfileButton.onClick.AddListener(() =>
+                {
+                    
+                });
+
+                AvatarVisualData avatarVisualData = null;
+
+                if (/*ranking.Player.SelectedCharacterId != 201 &&*/ playerData.SelectedCharacterId != 0)
+                {
+                    avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
+                }
+                if (avatarVisualData != null)
+                {
+                    _thirdAvatarHead.GetComponent<AvatarFaceLoader>().UpdateVisuals(avatarVisualData);
+                }
+            }
+        }
+    }
+
+    private void FirstAddDataCarrierData()
+    {
+        DataCarrier.AddData(DataCarrier.PlayerProfile, _firstPlayerData);
+    }
+    private void SecondAddDataCarrierData()
+    {
+        DataCarrier.AddData(DataCarrier.PlayerProfile, _secondPlayerData);
+    }
+    private void ThirdAddDataCarrierData()
+    {
+        DataCarrier.AddData(DataCarrier.PlayerProfile, _thirdPlayerData);
     }
 
     public void SetPlayerView()
     {
         _isClanView = false;
 
-        FirstOpenClanProfileButton.interactable = false;
         _firstClanHeart.SetActive(false);
         _firstAvatarHead.SetActive(true);
         _firstClanHeartPlayer.SetActive(true);
 
-        SecondOpenClanProfileButton.interactable = false;
         _secondClanHeart.SetActive(false);
         _secondAvatarHead.SetActive(true);
         _secondClanHeartPlayer.SetActive(true);
 
-        ThirdOpenClanProfileButton.interactable = false;
         _thirdClanHeart.SetActive(false);
         _thirdAvatarHead.SetActive(true);
         _thirdClanHeartPlayer.SetActive(true);
+
+        foreach (GameObject button in _clanProfileButtons)
+        {
+            button.SetActive(false);
+        }
+
+        foreach (GameObject button in _playerProfileButtons)
+        {
+            button.SetActive(true);
+        }
     }
 
     public void SetClanView()
     {
-        _isClanView= true;
+        _isClanView = true;
 
         _firstAvatarHead.SetActive(false);
         _firstClanHeartPlayer.SetActive(false);
         _firstClanHeart.SetActive(true);
-        FirstOpenClanProfileButton.interactable = true;
 
         _secondAvatarHead.SetActive(false);
         _secondClanHeartPlayer.SetActive(false);
         _secondClanHeart.SetActive(true);
-        SecondOpenClanProfileButton.interactable = true;
 
         _thirdAvatarHead.SetActive(false);
         _thirdClanHeartPlayer.SetActive(false);
         _thirdClanHeart.SetActive(true);
-        ThirdOpenClanProfileButton.interactable = true;
+
+        foreach (GameObject button in _clanProfileButtons)
+        {
+            button.SetActive(true);
+        }
+
+        foreach (GameObject button in _playerProfileButtons)
+        {
+            button.SetActive(false);
+        }
     }
 }

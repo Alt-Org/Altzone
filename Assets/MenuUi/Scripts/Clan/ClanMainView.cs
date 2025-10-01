@@ -3,7 +3,7 @@ using TMPro;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts;
 using UnityEngine.UI;
-using MenuUi.Scripts.Window;
+using Altzone.Scripts.Window;
 using System.Collections.Generic;
 
 public class ClanMainView : MonoBehaviour
@@ -40,7 +40,7 @@ public class ClanMainView : MonoBehaviour
     {
         ToggleClanPanel(false);
 
-        ServerClan clan = DataCarrier.GetData<ServerClan>(DataCarrier.ClanListing);
+        ServerClan clan = DataCarrier.GetData<ServerClan>(DataCarrier.ClanListing, suppressWarning: true);
         if (clan != null)
         {
             ClanData data = new ClanData(clan);

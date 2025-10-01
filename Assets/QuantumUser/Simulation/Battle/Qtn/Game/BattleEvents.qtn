@@ -1,8 +1,48 @@
-synced event ViewInit {}
+//{ Game Flow events - View Pre-Activate
+
+struct BattleWaitForPlayersData
+{
+    array<QString<64>>[BATTLE_PLAYER_SLOT_COUNT] PlayerNames;
+}
+
+synced event BattleViewWaitForPlayers
+{
+    BattleWaitForPlayersData Data;
+}
+
+synced event BattleViewPlayerConnected
+{
+    RuntimePlayer Data;
+}
+
+synced event BattleViewAllPlayersConnected {}
+
+synced event BattleViewInit {}
+
+//} Game Flow events - View Pre-Activate
+
+//{ Game Flow events
+
+synced event BattleViewActivate {}
+
+synced event BattleViewGetReadyToPlay {}
+
+synced event BattleViewGameStart {}
+
+synced event BattleViewGameOver
+{
+    BattleTeamNumber WinningTeam;
+    FP GameLengthSec;
+}
+
+//} Game Flow events
+
+//{ ViewInit events
 
 synced event BattlePlayerViewInit
 {
     EntityRef Entity;
+    BattlePlayerSlot Slot;
     FP ModelScale;
 }
 
@@ -14,9 +54,25 @@ synced event BattleSoulWallViewInit
     int DebugColorIndex;
 }
 
+synced event BattleStoneCharacterPieceViewInit
+{
+    int WallNumber;
+    BattleTeamNumber Team;
+    int EmotionIndicatorColorIndex;
+}
+
+//} ViewInit events
+
+//{ Gameplay events
+
 synced event BattleChangeEmotionState
 {
     BattleEmotionState Emotion;
+}
+
+synced event BattleProjectileChangeGlowStrength
+{
+    FP Strength;
 }
 
 event BattlePlaySoundFX
@@ -24,7 +80,46 @@ event BattlePlaySoundFX
     BattleSoundFX Effect;
 }
 
+synced event BattleLastRowWallDestroyed
+{
+    int WallNumber;
+    BattleTeamNumber Team;
+    FP LightrayRotation;
+    BattleLightrayColor LightrayColor;
+    BattleLightraySize LightraySize;
+}
+
+synced event BattleCharacterTakeDamage
+{
+    EntityRef Entity;
+    BattleTeamNumber Team;
+    BattlePlayerSlot Slot;
+    int CharacterNumber;
+    FP HealthPercentage;
+}
+
+synced event BattleShieldTakeDamage
+{
+    EntityRef Entity;
+    BattleTeamNumber Team;
+    BattlePlayerSlot Slot;
+    int CharacterNumber;
+    FP DefenceValue;
+}
+
+//} Gameplay events
+
+//{ Debug events
+
 synced event BattleDebugUpdateStatsOverlay
 {
-    BattleCharacterBase Character;
+    BattlePlayerSlot Slot;
+    BattlePlayerStats Stats;
 }
+
+synced event BattleDebugOnScreenMessage
+{
+    QString<512> Message;
+}
+
+//} Debug events

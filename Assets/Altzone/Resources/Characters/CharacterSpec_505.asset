@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
+  m_Name: CharacterSpec_505
+  m_EditorClassIdentifier: 
+  Id: 505
+  CharacterId: 505
+  IsApproved: 0
+  Name: Marttyyriys
+  ClassType: 500
+  CharacterDescription: "Marttyyri on torjujista raskain \u2013 h\xE4n ei kanna suojakilpe\xE4,
+    sill\xE4 h\xE4n on se kilpi. H\xE4n asettuu tietoisesti muiden tielle, vastaanottaa
+    iskut omalla kehollaan ja tekee tuskastaan merkityksen. H\xE4nen k\xE4rsimyksens\xE4
+    muuttuu oikeutukseksi: mit\xE4 enemm\xE4n h\xE4n kest\xE4\xE4, sit\xE4 enemm\xE4n
+    h\xE4n kokee t\xE4ytt\xE4v\xE4ns\xE4 teht\xE4v\xE4ns\xE4. T\xE4m\xE4 itsetuhoinen
+    uhrautuminen tekee h\xE4nest\xE4 yht\xE4 aikaa jalon ja traagisen hahmon \u2013
+    sill\xE4 kuka en\xE4\xE4 n\xE4kee h\xE4nen sis\xE4ist\xE4 kipuaan, jos kaikki
+    huomio keskittyy h\xE4nen kaatumiseensa muiden puolesta?\r\n\nMarttyyri torjuu
+    tunnetila-ammukset seisomalla liikkumatta niiden edess\xE4. H\xE4nen kivikova
+    olemuksensa halkeilee iskujen alla, mutta h\xE4n palaa aina takaisin, sill\xE4
+    ilman k\xE4rsimyst\xE4 h\xE4n ei tunne olevansa olemassa.\r\n\nKun h\xE4n viimein
+    sortuu, h\xE4nen ruumiistaan nousee hohtava Pyhyys \u2013 kova, kirkas aura,
+    joka j\xE4\xE4 kent\xE4lle hetkeksi. T\xE4m\xE4 Pyhyys voidaan poimia ja k\xE4ytt\xE4\xE4
+    my\xF6hemmin Ry\xF6st\xF6ss\xE4 lis\xE4el\xE4m\xE4n\xE4, jolloin marttyyrin uhri
+    muuttuu kollektiiviseksi hy\xF6dyn v\xE4lineeksi."
+  CharacterShortDescription: "Uhrautumisesta pyhyytt\xE4 synnytt\xE4v\xE4, j\xE4ljess\xE4\xE4n
+    voimaa j\xE4tt\xE4v\xE4."
+  CharacterStats: {fileID: 11400000, guid: 90853665bd935954eabb138cf07b0563, type: 2}
+  Hp:
+    Level: 1
+    Coefficient: 3
+  Speed:
+    Level: 3
+    Coefficient: 0
+  CharacterSize:
+    Level: 12
+    Coefficient: 1
+  Attack:
+    Level: 6
+    Coefficient: 5
+  Defence:
+    Level: 8
+    Coefficient: 2
+  GalleryImage: {fileID: 21300000, guid: 52f1a9a84148a7d4d80825b318f255de, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: d7563a354f58ed140ad75acb05fdb952, type: 3}
+  BattleEntityPrototype:
+    Id:
+      Value: 0
+  BattleUiSprite: {fileID: 0}

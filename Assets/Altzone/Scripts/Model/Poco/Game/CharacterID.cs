@@ -2,38 +2,56 @@ namespace Altzone.Scripts.Model.Poco.Game
 {
     public enum CharacterID
     {
-        None = 0,
+        None = -1,
 
-        // Desensitizers class characters
-        Racist = CharacterClassID.Desensitizer + 1, //101
-        Bodybuilder = CharacterClassID.Desensitizer + 2, //102
-        Jingoist = CharacterClassID.Desensitizer + 3, //103
+        // Test character
+        Test = 0,
 
-        // Tricksters class characters
-        Comedian = CharacterClassID.Trickster + 1, //201
-        Joker = CharacterClassID.Trickster + 2, //202
-        Conman = CharacterClassID.Trickster + 3, //203
-        Seducer = CharacterClassID.Trickster + 4, //204, Alternatively could be named Womanizer
+        // Desensitizer class characters
+        DesensitizerTest = CharacterClassType.Desensitizer,
+        Racist = CharacterClassType.Desensitizer + 1, //101
+        Bodybuilder = CharacterClassType.Desensitizer + 2, //102
+        WarVeteran = CharacterClassType.Desensitizer + 3, //103
+        Bully = CharacterClassType.Desensitizer + 4, //104
 
-        // Obedientes class characters
-        Religious = CharacterClassID.Obedient + 1, //301
-        Yesman = CharacterClassID.Obedient + 2, //302
+        // Trickster class characters
+        TricksterTest = CharacterClassType.Trickster,
+        Comedian = CharacterClassType.Trickster + 1, //201
+        Joker = CharacterClassType.Trickster + 2, //202
+        Conman = CharacterClassType.Trickster + 3, //203
+        Seducer = CharacterClassType.Trickster + 4, //204
 
-        // Projectors class characters
-        Artist = CharacterClassID.Projector + 1, //401
-        Arguer = CharacterClassID.Projector + 2, //402
+        // Obedient class characters
+        ObedientTest = CharacterClassType.Obedient,
+        Religious = CharacterClassType.Obedient + 1, //301
+        Yesman = CharacterClassType.Obedient + 2, //302
+        SlaveOfTheLaw = CharacterClassType.Obedient + 3, //303
 
-        // Retroflectors class characters
-        Overeater = CharacterClassID.Retroflector + 1, //501
-        Alcoholic = CharacterClassID.Retroflector + 2, //502
+        // Projector class characters
+        ProjectorTest = CharacterClassType.Projector,
+        Artist = CharacterClassType.Projector + 1, //401
+        Arguer = CharacterClassType.Projector + 2, //402
+        Reflector = CharacterClassType.Projector + 3, //403
+        Delusional = CharacterClassType.Projector + 4, //404
 
-        // Confluents class characters
-        Soulsisters = CharacterClassID.Confluent + 1, //601
-        Lovers = CharacterClassID.Confluent + 2, //602
-        SleepyHead = CharacterClassID.Confluent + 3, //603
+        // Retroflector class characters
+        RetroflectorTest = CharacterClassType.Retroflector,
+        Overeater = CharacterClassType.Retroflector + 1, //501
+        Alcoholic = CharacterClassType.Retroflector + 2, //502
+        Anorectic = CharacterClassType.Retroflector + 3, //503
+        Stoner = CharacterClassType.Retroflector + 4, //504
+        Martyr = CharacterClassType.Retroflector + 5, //505
 
-        // Intellectualizers class characters
-        Booksmart = CharacterClassID.Intellectualizer + 1, //701
-        Capitalist = CharacterClassID.Intellectualizer + 2 //702
+        // Confluent class characters
+        ConfluentTest = CharacterClassType.Confluent,
+        Soulsisters = CharacterClassType.Confluent + 1, //601
+        Lovers = CharacterClassType.Confluent + 2, //602
+        SleepyHead = CharacterClassType.Confluent + 3, //603
+
+        // Intellectualizer class characters
+        IntellectualizerTest = CharacterClassType.Intellectualizer,
+        Booksmart = CharacterClassType.Intellectualizer + 1, //701
+        Capitalist = CharacterClassType.Intellectualizer + 2, //702
+        ObsessiveCompulsive = CharacterClassType.Intellectualizer + 3 //703
     }
 }

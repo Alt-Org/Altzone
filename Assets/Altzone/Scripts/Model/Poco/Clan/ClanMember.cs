@@ -1,18 +1,18 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Altzone.Scripts.Model.Poco.Attributes;
 using Altzone.Scripts.Model.Poco.Player;
 
 namespace Altzone.Scripts.Model.Poco.Clan
 {
-    [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
+    [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class ClanMember
     {
-        [PrimaryKey] public string _id;
+        public string _id;
         private string _name;
-        [ForeignKey(nameof(PlayerData)), Mandatory] public string PlayerDataId;
-        [ForeignKey(nameof(RaidRoom)), Optional] public string RaidRoomId;
-        public ClanMemberRole Role;
+        public string PlayerDataId;
+        public string RaidRoomId;
+        public string Role;
+        private ServerPlayer _player;
 
         private int _leaderBoardWins = 0;
         private int _leaderBoardCoins = 0;
@@ -26,6 +26,12 @@ namespace Altzone.Scripts.Model.Poco.Clan
         {
             _id = player._id;
             _name = player.name;
+            _player = player;
+        }
+
+        public PlayerData GetPlayerData()
+        {
+            return new(_player, true);
         }
 
         public void Update(int wins, int coins)

@@ -4,9 +4,10 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Altzone.Scripts.Common;
-using Altzone.Scripts.Model.Poco.Attributes;
+using Prg.Scripts.Common.Extensions;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ModelV2.Internal;
 using Altzone.Scripts.Voting;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
@@ -32,14 +33,14 @@ namespace Altzone.Scripts.Model.Poco.Player
         Huono_Haviaja
     };
 
-    [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
+    [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class PlayerData
     {
-        [PrimaryKey] public string Id;
-        [ForeignKey(nameof(ClanData)), Optional] public string ClanId;
-        [ForeignKey(nameof(CustomCharacter)), Optional] public int SelectedCharacterId;
-        [ForeignKey(nameof(CustomCharacter)), Optional] public string[] SelectedCharacterIds = new string[3];
-        [Unique] public string Name;
+        public string Id;
+        public string ClanId;
+        public int SelectedCharacterId;
+        public CustomCharacterListObject[] SelectedCharacterIds = new CustomCharacterListObject[3] { new(Id: CharacterID.None), new(Id: CharacterID.None), new(Id: CharacterID.None) };
+        public string Name;
 
         private List<CustomCharacter> _characterList;
 
@@ -68,10 +69,14 @@ namespace Altzone.Scripts.Model.Poco.Player
         public List<PlayerVoteData> playerVotes = new List<PlayerVoteData>();
 
         public ServerGameStatistics stats = null;
+
+        public string ChosenMotto = null;
+        public string FavoriteDefenceID = null;
+
         /// <summary>
         /// Unique string to identify this player across devices and systems.
         /// </summary>
-        [Unique] public string UniqueIdentifier;
+        public string UniqueIdentifier;
 
         public bool HasClanId => !string.IsNullOrEmpty(ClanId);
 
@@ -82,20 +87,24 @@ namespace Altzone.Scripts.Model.Poco.Player
             get
             {
                 List<CustomCharacter> list = new();
-                foreach (var id in SelectedCharacterIds)
+                for (int i = 0; i < SelectedCharacterIds.Length; i++)
                 {
-                    if (string.IsNullOrEmpty(id)) continue;
-                    CustomCharacter character = CustomCharacters.FirstOrDefault(x => x.ServerID == id);
+                    string serverId = SelectedCharacterIds[i].ServerID;
+                    CharacterID lId = SelectedCharacterIds[i].CharacterID;
+                    bool isTestCharacter = SelectedCharacterIds[i].IsTestCharacter;
+
+                    if (string.IsNullOrEmpty(serverId) && !isTestCharacter)
+                    {
+                        list.Add(CustomCharacter.CreateEmpty());
+                        continue;
+                    }
+
+                    CustomCharacter character = isTestCharacter ? CustomCharacters.FirstOrDefault(x => x.Id == lId) : CustomCharacters.FirstOrDefault(x => x.ServerID == serverId);
                     if(character == null) continue;
                     list.Add(character);
                 }
-                while(list.Count < 3)
-                {
-                    list.Add(CustomCharacter.CreateEmpty());
-                }
                 return new ReadOnlyCollection<CustomCharacter>(list);
             }
-
         }
 
         public List<Emotion> playerDataEmotionList
@@ -120,55 +129,60 @@ namespace Altzone.Scripts.Model.Poco.Player
             }
         }
 
-        public PlayerData(string id, string clanId, int currentCustomCharacterId, string[]currentBattleCharacterIds, string name, int backpackCapacity, string uniqueIdentifier)
+        public PlayerData(string id, string clanId, int currentCustomCharacterId, string[]currentBattleCharacterIds, string name, int backpackCapacity, string uniqueIdentifier, List<CustomCharacter> characters)
         {
-            Assert.IsTrue(id.IsPrimaryKey());
+            Assert.IsTrue(id.IsSet());
             Assert.IsTrue(clanId.IsNullOEmptyOrNonWhiteSpace());
-            Assert.IsTrue(currentCustomCharacterId >= 0);
-            Assert.IsTrue(name.IsMandatory());
+            //Assert.IsTrue(currentCustomCharacterId >= 0);
+            Assert.IsTrue(name.IsSet());
             Assert.IsTrue(backpackCapacity >= 0);
-            Assert.IsTrue(uniqueIdentifier.IsMandatory());
+            Assert.IsTrue(uniqueIdentifier.IsSet());
             Id = id;
             ClanId = clanId ?? string.Empty;
             SelectedCharacterId = currentCustomCharacterId;
-            SelectedCharacterIds = currentBattleCharacterIds;
+            if(characters != null)BuildCharacterLists(characters);
+            BuildSelectedCharacterList(currentBattleCharacterIds);
             Name = name;
             BackpackCapacity = backpackCapacity;
             UniqueIdentifier = uniqueIdentifier;
         }
 
-        public PlayerData(ServerPlayer player)
+        public PlayerData(ServerPlayer player, bool limited = false)
         {
-            Assert.IsTrue(player._id.IsPrimaryKey());
+            Assert.IsTrue(player._id.IsSet());
             Assert.IsTrue(player.clan_id.IsNullOEmptyOrNonWhiteSpace());
             //Assert.IsTrue(player.currentCustomCharacterId >= 0);
-            Assert.IsTrue(player.name.IsMandatory());
-            Assert.IsTrue(player.backpackCapacity >= 0);
-            Assert.IsTrue(player.uniqueIdentifier.IsMandatory());
+            Assert.IsTrue(player.name.IsSet());
+            if (!limited) Assert.IsTrue(player.backpackCapacity >= 0);
+            Assert.IsTrue(player.uniqueIdentifier.IsSet());
             Id = player._id;
             ClanId = player.clan_id ?? string.Empty;
             SelectedCharacterId = (int)(player.currentAvatarId == null ? 0 : player.currentAvatarId);
-            SelectedCharacterIds = (player?.battleCharacter_ids == null || player.battleCharacter_ids.Length < 3) ? new string[3] {"0","0","0"} : player.battleCharacter_ids;
+            string noCharacter = ((int)CharacterID.None).ToString();
+            if (!limited) BuildSelectedCharacterList(player.battleCharacter_ids);
             Name = player.name;
-            BackpackCapacity = player.backpackCapacity;
+            if (!limited) BackpackCapacity = player.backpackCapacity;
             UniqueIdentifier = player.uniqueIdentifier;
             points = player.points;
             stats = player.gameStatistics;
-            Task = player.DailyTask != null ? new(player.DailyTask): null;
+            Task = player.DailyTask != null ? new(player.DailyTask) : null;
+            AvatarData = player.avatar != null ? new(player.name, player.avatar) : null;
+            if (!limited) Task = player.DailyTask != null ? new(player.DailyTask): null;
         }
 
         public void UpdatePlayerData(ServerPlayer player)
         {
-            Assert.IsTrue(player._id.IsPrimaryKey());
+            Assert.IsTrue(player._id.IsSet());
             Assert.IsTrue(player.clan_id.IsNullOEmptyOrNonWhiteSpace());
             //Assert.IsTrue(player.currentCustomCharacterId >= 0);
-            Assert.IsTrue(player.name.IsMandatory());
+            Assert.IsTrue(player.name.IsSet());
             Assert.IsTrue(player.backpackCapacity >= 0);
-            Assert.IsTrue(player.uniqueIdentifier.IsMandatory());
+            Assert.IsTrue(player.uniqueIdentifier.IsSet());
             Id = player._id;
             ClanId = player.clan_id ?? string.Empty;
             SelectedCharacterId = (int)(player.currentAvatarId == null ? 0 : player.currentAvatarId);
-            SelectedCharacterIds = player?.battleCharacter_ids == null || player.battleCharacter_ids.Length < 3 ? new string[3] { "0", "0", "0" } : player.battleCharacter_ids;
+            string noCharacter = ((int)CharacterID.None).ToString();
+            BuildSelectedCharacterList(player.battleCharacter_ids);
             Name = player.name;
             BackpackCapacity = player.backpackCapacity;
             UniqueIdentifier = player.uniqueIdentifier;
@@ -184,44 +198,87 @@ namespace Altzone.Scripts.Model.Poco.Player
         {
             if (character == null) return;
 
-            bool characterInCharacterList = false;
-            int i = 0;
-            foreach (CustomCharacter item in _characterList)
-            {
-                if (item.Id != character.Id)
-                {
-                    i++;
-                    continue;
-                }
-
-                _characterList[i] = character;
-                characterInCharacterList = true;
-                break;
-            }
             Patch();
-            if (characterInCharacterList) ServerManager.Instance.StartUpdatingCustomCharacterToServer(character);
+
+            if (_characterList.Contains(character)) ServerManager.Instance.StartUpdatingCustomCharacterToServer(character);
+            else Storefront.Get().SavePlayerData(this, null);
         }
 
 
         public void BuildCharacterLists(List<CustomCharacter> customCharacters)
         {
-            _characterList = customCharacters;
+            List<CustomCharacter> newCustomCharacters = new();
+
+            // Getting base characters from data store
+            DataStore store = Storefront.Get();
+            ReadOnlyCollection<BaseCharacter> baseCharacters = null;
+            store.GetAllBaseCharacterYield(result => baseCharacters = result);
+
+            if (CharacterSpecConfig.Instance.AllowTestCharacters)
+            {
+                List<CustomCharacter> testCharacters = null;
+                store.GetAllDefaultCharacterYield(characters => testCharacters = characters.Where(c => c.IsTestCharacter()).ToList());
+                if (testCharacters != null && testCharacters.Count != 0) customCharacters = customCharacters.Concat(testCharacters).ToList();
+            }
+
+            // Checking base character is set for custom characters
+            foreach (CustomCharacter character in customCharacters)
+            {
+                if ((!CharacterSpecConfig.Instance.AllowTestCharacters) && character.IsTestCharacter()) continue;
+                if (SetBaseCharacter(baseCharacters, character)) newCustomCharacters.Add(character);
+            }
+
+            _characterList = newCustomCharacters;
             Debug.LogWarning(_characterList.Count + " : " + _characterList[0].ServerID);
+
             Patch();
         }
 
 
         internal void Patch()
         {
-            CustomCharacters = new ReadOnlyCollection<CustomCharacter>(_characterList).ToList();
+            List<CustomCharacter> charList = _characterList;
+            //if (CharacterSpecConfig.Instance.AllowTestCharacters && TestCharacterList != null && TestCharacterList.Count != 0) charList = charList.Concat(TestCharacterList).ToList();
+            CustomCharacters = new ReadOnlyCollection<CustomCharacter>(charList).ToList();
         }
 
+
+        private bool SetBaseCharacter(ReadOnlyCollection<BaseCharacter> baseCharacters, CustomCharacter character)
+        {
+            if (character.CharacterBase == null)
+            {
+                foreach (BaseCharacter item in baseCharacters)
+                {
+                    if (item.Id.Equals(character.Id)) character.CharacterBase = item;
+                }
+            }
+
+            return character.CharacterBase != null;
+        }
+
+        private void BuildSelectedCharacterList(string[] server_ids)
+        {
+            for(int i=0; i < 3; i++)
+            {
+                string serverid = null;
+                if(server_ids.Length > i) serverid = server_ids[i];
+
+                if (_characterList == null) _characterList = new();
+                CustomCharacter character = _characterList.FirstOrDefault(c => c.ServerID == serverid);
+                if (i < SelectedCharacterIds.Length)
+                {
+                    if (SelectedCharacterIds[i] != null) SelectedCharacterIds[i].SetData(serverid, character == null ? CharacterID.None :character.Id);
+                    else SelectedCharacterIds[i] = new(serverid, character == null ? CharacterID.None : character.Id);
+                }
+                else SelectedCharacterIds.Append(new(serverid, character == null ? CharacterID.None : character.Id));
+            }
+        }
 
         public override string ToString()
         {
             return
                 $"{nameof(Id)}: {Id}, {nameof(ClanId)}: {ClanId}, {nameof(SelectedCharacterId)}: {SelectedCharacterId}," +
-                $"{nameof(SelectedCharacterIds)}: {string.Join(",", SelectedCharacterIds)}, { nameof(Name)}: {Name}, {nameof(BackpackCapacity)}: {BackpackCapacity}, {nameof(UniqueIdentifier)}: {UniqueIdentifier}";
+                $"{nameof(SelectedCharacterIds)}: {string.Join<CustomCharacterListObject>(",", SelectedCharacterIds)}, { nameof(Name)}: {Name}, {nameof(BackpackCapacity)}: {BackpackCapacity}, {nameof(UniqueIdentifier)}: {UniqueIdentifier}";
         }
     }
 }

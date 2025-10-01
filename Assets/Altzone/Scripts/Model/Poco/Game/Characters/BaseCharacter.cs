@@ -1,5 +1,7 @@
 using System.Runtime.CompilerServices;
 using Photon.Deterministic;
+using UnityEditor;
+using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
@@ -25,39 +27,43 @@ namespace Altzone.Scripts.Model.Poco.Game
         VeryWeak
     }
 
-    public abstract class BaseCharacter
+    public abstract class BaseCharacter : ScriptableObject
     {
-        protected CharacterID _id = CharacterID.None;
-        protected int _hp;
-        protected int _defaultHp;
-        protected ValueStrength _hpStrength = ValueStrength.None;
-        protected int _speed;
-        protected int _defaultSpeed;
-        protected ValueStrength _speedStrength = ValueStrength.None;
-        protected int _characterSize;
-        protected int _defaultCharacterSize;
-        protected ValueStrength _characterSizeStrength = ValueStrength.None;
-        protected int _attack;
-        protected int _defaultAttack;
-        protected ValueStrength _attackStrength = ValueStrength.None;
-        protected int _defence;
-        protected int _defaultDefence;
-        protected ValueStrength _defenceStrength = ValueStrength.None;
+        [SerializeField] protected CharacterID _id = CharacterID.None;
+        [SerializeField] protected bool active = true;
 
-        protected bool active = true;
+        [Header("HP"), SerializeField] protected int _defaultHp;
+        protected int _hp;
+        [SerializeField] protected ValueStrength _hpStrength = ValueStrength.None;
+
+        [Header("Speed"), SerializeField] protected int _defaultSpeed;
+        protected int _speed;
+        [SerializeField] protected ValueStrength _speedStrength = ValueStrength.None;
+
+        [Header("Character Size"), SerializeField] protected int _defaultCharacterSize;
+        protected int _characterSize;
+        [SerializeField] protected ValueStrength _characterSizeStrength = ValueStrength.None;
+
+        [Header("Attack"), SerializeField] protected int _defaultAttack;
+        protected int _attack;
+        [SerializeField] protected ValueStrength _attackStrength = ValueStrength.None;
+
+        [Header("Defence"), SerializeField] protected int _defaultDefence;
+        protected int _defence;
+        [SerializeField] protected ValueStrength _defenceStrength = ValueStrength.None;
 
         public CharacterID Id { get => _id;}
-        public virtual CharacterClassID ClassID { get => GetClassID(Id); }
+        public virtual CharacterClassType ClassType { get => GetClass(Id); }
         public int Hp { get => _hp;}
-        public int DefaultHp { get => _defaultHp; }
+        public int DefaultHp { get => _defaultHp; set { _defaultHp = value; SaveData(); } }
         public int Speed { get => _speed;}
-        public int DefaultSpeed { get => _defaultSpeed; }
+        public int DefaultSpeed { get => _defaultSpeed; set { _defaultSpeed = value; SaveData(); } }
         public int CharacterSize { get => _characterSize;}
-        public int DefaultCharacterSize { get => _defaultCharacterSize; }
+        public int DefaultCharacterSize { get => _defaultCharacterSize; set { _defaultCharacterSize = value; SaveData(); } }
         public int Attack { get => _attack;}
-        public int DefaultAttack { get => _defaultAttack; }
+        public int DefaultAttack { get => _defaultAttack; set { _defaultAttack = value; SaveData(); } }
         public int Defence { get => _defence;}
-        public int DefaultDefence { get => _defaultDefence; }
+        public int DefaultDefence { get => _defaultDefence; set { _defaultDefence = value; SaveData(); } }
         public ValueStrength HpStrength { get => _hpStrength; }
         public ValueStrength SpeedStrength { get => _speedStrength; }
         public ValueStrength CharacterSizeStrength { get => _characterSizeStrength; }
@@ -76,6 +82,15 @@ namespace Altzone.Scripts.Model.Poco.Game
             _defence = _defaultDefence;
             _characterSize = _defaultCharacterSize;
             _speed = _defaultSpeed;
+        }
+
+        private void SaveData()
+        {
+            #if UNITY_EDITOR
+            AssetDatabase.Refresh();
+            EditorUtility.SetDirty(this);
+            AssetDatabase.SaveAssets();
+            #endif
         }
 
         #region Stat value getters
@@ -135,30 +150,30 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             return level switch
             {
-                 1 =>  50,
-                 2 =>  75,
-                 3 => 100,
-                 4 => 125,
-                 5 => 150,
-                 6 => 175,
-                 7 => 200,
-                 8 => 225,
-                 9 => 250,
-                10 => 275,
-                11 => 300,
-                12 => 325,
-                13 => 350,
-                14 => 375,
-                15 => 400,
-                16 => 425,
-                17 => 450,
-                18 => 475,
-                19 => 500,
-                20 => 525,
-                21 => 550,
-                22 => 575,
-                23 => 600,
-                24 => 625,
+                 1 =>  250,
+                 2 =>  375,
+                 3 =>  500,
+                 4 =>  625,
+                 5 =>  750,
+                 6 =>  875,
+                 7 => 1000,
+                 8 => 1125,
+                 9 => 1250,
+                10 => 1375,
+                11 => 1500,
+                12 => 1625,
+                13 => 1750,
+                14 => 1875,
+                15 => 2000,
+                16 => 2125,
+                17 => 2250,
+                18 => 2375,
+                19 => 2500,
+                20 => 2625,
+                21 => 2750,
+                22 => 2875,
+                23 => 3000,
+                24 => 3125,
 
                 _ => -1,
             };
@@ -201,30 +216,30 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             return level switch
             {
-                 1 =>  50,
-                 2 =>  75,
-                 3 => 100,
-                 4 => 125,
-                 5 => 150,
-                 6 => 175,
-                 7 => 200,
-                 8 => 225,
-                 9 => 250,
-                10 => 275,
+                 1 =>  15,
+                 2 =>  30,
+                 3 =>  60,
+                 4 =>  90,
+                 5 => 120,
+                 6 => 150,
+                 7 => 180,
+                 8 => 210,
+                 9 => 240,
+                10 => 270,
                 11 => 300,
-                12 => 325,
-                13 => 350,
-                14 => 375,
-                15 => 400,
-                16 => 425,
-                17 => 450,
-                18 => 475,
-                19 => 500,
-                20 => 525,
-                21 => 550,
-                22 => 575,
-                23 => 600,
-                24 => 625,
+                12 => 330,
+                13 => 360,
+                14 => 390,
+                15 => 420,
+                16 => 450,
+                17 => 480,
+                18 => 510,
+                19 => 540,
+                20 => 570,
+                21 => 600,
+                22 => 630,
+                23 => 660,
+                24 => 690,
 
                 _ => -1,
             };
@@ -234,30 +249,12 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             return level switch
             {
-                 1 =>  4,
-                 2 =>  4,
-                 3 =>  4,
-                 4 =>  6,
-                 5 =>  6,
-                 6 =>  6,
-                 7 =>  8,
-                 8 =>  8,
-                 9 =>  8,
-                10 =>  8,
-                11 => 10,
-                12 => 10,
-                13 => 10,
-                14 => 10,
-                15 => 12,
-                16 => 12,
-                17 => 12,
-                18 => 12,
-                19 => 14,
-                20 => 14,
-                21 => 14,
-                22 => 16,
-                23 => 16,
-                24 => 16,
+                 1 =>  10,
+                 2 =>  12,
+                 3 =>  14,
+                 4 =>  16,
+                 5 =>  18,
+                 6 =>  20,
 
                 _ => -1,
             };
@@ -426,10 +423,10 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         #endregion
 
-        public static CharacterClassID GetClassID(CharacterID id)
+        public static CharacterClassType GetClass(CharacterID id)
         {
-            CharacterClassID ClassId = (CharacterClassID)((((int)id) / 100) * 100);
-            return ClassId;
+            CharacterClassType ClassType = (CharacterClassType)((((int)id) / 100) * 100);
+            return ClassType;
         }
     }
 }

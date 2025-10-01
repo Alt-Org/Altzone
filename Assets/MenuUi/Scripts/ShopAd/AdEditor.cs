@@ -41,11 +41,16 @@ public class AdEditor : AltMonoBehaviour
 
     void Start()    
     {
-        StartCoroutine(GetClanData(data=>
+        InitializeAd();
+    }
+
+    private void InitializeAd()
+    {
+        StartCoroutine(GetClanData(data =>
         {
             if (data != null)
             {
-                if(data.AdData != null) _adData = data.AdData;
+                if (data.AdData != null) _adData = data.AdData;
                 else _adData = new(null, null);
                 _posterName = data.Name;
                 _heartPieceData = data.ClanHeartPieces;
@@ -65,7 +70,7 @@ public class AdEditor : AltMonoBehaviour
         {
             GameObject frameObject = Instantiate(_borderFramePrefab, _borderSelectionContent);
             frameObject.GetComponent<Image>().sprite = frame.Image;
-            float objectHeight= _borderSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
+            float objectHeight = _borderSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
             frameObject.GetComponent<RectTransform>().sizeDelta = new(objectHeight * 0.625f, objectHeight);
             frameObject.GetComponent<Button>().onClick.AddListener(() => ChangeBorder(frame));
         }
@@ -77,10 +82,10 @@ public class AdEditor : AltMonoBehaviour
             GameObject colourObject = Instantiate(_backgroundColourSelectorPrefab, _backgroundColourSelectorContent);
             colourObject.GetComponent<Image>().color = colour;
             float objectWidth = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.width;
-            colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth*0.4f);
+            colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth * 0.4f);
             colourObject.GetComponent<Button>().onClick.AddListener(() => ChangeColor(colour));
         }
-        _backgroundColourSelectorContent.GetComponent<VerticalLayoutGroup>().spacing = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.width*0.1f;
+        _backgroundColourSelectorContent.GetComponent<VerticalLayoutGroup>().spacing = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.width * 0.1f;
 
         StartCoroutine(SetFrameSelectionSize());
     }
@@ -100,7 +105,13 @@ public class AdEditor : AltMonoBehaviour
         StartCoroutine(GetClanData(data =>
         {
             data.AdData = _adData;
-            StartCoroutine(SaveClanData(clanData => data = clanData, data));
+            StartCoroutine(ServerManager.Instance.UpdateClanAdPoster(_adData, success =>
+            {
+                if (success)
+                {
+                    StartCoroutine(SaveClanData(clanData => data = clanData, data));
+                }
+            }));
         }));
     }
 

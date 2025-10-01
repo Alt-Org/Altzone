@@ -1,3 +1,13 @@
+/// @file BattleDiamondQSystem.cs
+/// <summary>
+/// Handles spawning, managing and destroying diamonds.
+/// </summary>
+///
+/// This system:<br/>
+/// Spawns diamonds when BattleCollisionQSystem calls the OnProjectileHitSoulWall method upon SoulWall segment's destruction.<br/>
+/// Filters all diamond entities and handles their lifetime.<br/>
+/// Destroys diamonds when player collects them by colliding with them or if diamond's lifetime ends.
+
 using UnityEngine.Scripting;
 
 using Quantum;
@@ -7,22 +17,46 @@ using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Diamond
 {
+    /// <summary>
+    /// <span class="brief-h">%Diamond <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
+    /// Handles spawning diamonds, managing their lifetime and destroying them.
+    /// </summary>
     [Preserve]
-    public unsafe class BattleDiamondQSystem : SystemMainThreadFilter<BattleDiamondQSystem.Filter>, ISignalBattleOnProjectileHitSoulWall, ISignalBattleOnDiamondHitPlayer
+    public unsafe class BattleDiamondQSystem : SystemMainThreadFilter<BattleDiamondQSystem.Filter>, ISignalBattleOnDiamondHitPlayer
     {
+        /// <summary>
+        /// Filter for filtering diamond entities.
+        /// </summary>
         public struct Filter
         {
             public EntityRef Entity;
             public BattleDiamondDataQComponent* DiamondData;
         }
 
-        public void BattleOnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)
+        /// <summary>
+        /// A method called by BattleCollisionQSystem when the projectile collides with a soul wall. If the projectile is not in the held state, calls CreateDiamonds to spawn a diamond.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
+        /// <param name="soulWallCollisionData">Collision data related to the soul wall.</param>
+        public static void OnProjectileHitSoulWall(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.SoulWallCollisionData* soulWallCollisionData)
         {
+            if (projectileCollisionData->Projectile->IsHeld) return;
             BattleDiamondQSpec diamondSpec = BattleQConfig.GetDiamondSpec(f);
 
-            CreateDiamonds(f, soulWall->Normal, diamondSpec);
+            CreateDiamonds(f, soulWallCollisionData->SoulWall->Normal, diamondSpec);
         }
 
+        /// <summary>
+        /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method@u-exlink</a> gets called every frame.</span><br/>
+        /// Manages each diamond's lifetime and destroys them if players don't gather them quickly enough.
+        /// @warning
+        /// This method should only be called by Quantum.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter@u-exlink</a>.</param>
         public override void Update(Frame f, ref Filter filter)
         {
             // reduce diamond's lifetime
@@ -31,6 +65,19 @@ namespace Battle.QSimulation.Diamond
             if (filter.DiamondData->TimeUntilDisappearance < FP._0) f.Destroy(filter.Entity);
         }
 
+        /// <summary>
+        /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
+        /// that gets called when <see cref="Quantum.ISignalBattleOnDiamondHitPlayer">ISignalBattleOnDiamondHitPlayer</see> is sent.</span><br/>
+        /// Destroys diamonds when player hits them and increases diamondcounters.
+        /// @warning
+        /// This method should only be called via Quantum signal.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="diamond">Pointer to the diamond component.</param>
+        /// <param name="diamondEntity">EntityRef of the diamond.</param>
+        /// <param name="playerHitbox">Pointer to the playerHitbox component.</param>
+        /// <param name="playerEntity">EntityRef of the player.</param>
         public void BattleOnDiamondHitPlayer(Frame f, BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity)
         {
             BattleDiamondCounterQSingleton* diamondCounter = f.Unsafe.GetPointerSingleton<BattleDiamondCounterQSingleton>();
@@ -43,7 +90,14 @@ namespace Battle.QSimulation.Diamond
             f.Destroy(diamondEntity);
         }
 
-        private void CreateDiamonds(Frame f, FPVector2 wallNormal, BattleDiamondQSpec diamondSpec)
+        /// <summary>
+        /// Creates diamonds and teleports them to a random position on scoring team's side of the arena.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="wallNormal">Normal of the SoulWall.</param>
+        /// <param name="diamondSpec">The DiamondSpec.</param>
+        private static void CreateDiamonds(Frame f, FPVector2 wallNormal, BattleDiamondQSpec diamondSpec)
         {
             // diamond temp variables
             BattleGridPosition diamondRandomPosition;

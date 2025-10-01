@@ -48,33 +48,50 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
         yield return new WaitUntil(() => ((timeout != null) || (playerData != null)));
 
-        if (playerData == null)
-            yield break;
+        AvatarVisualData data = LoadAvatarDesign(playerData);
 
-        if (playerData.AvatarData == null || !playerData.AvatarData.Validate())
+        if (data == null) yield break;
+
+        _avatarVisualDataScriptableObject.Data = data;
+
+        InvokeOnAvatarDesignUpdate();
+    }
+
+    public AvatarVisualData LoadAvatarDesign(PlayerData playerData)
+    {
+        if (playerData == null)
+            return null;
+
+        return LoadAvatarDesign(playerData.AvatarData, playerData.SelectedCharacterId);
+    }
+
+    public AvatarVisualData LoadAvatarDesign(AvatarData avatarData, int playerid = 701)
+    {
+        if (avatarData == null || !avatarData.Validate())
         {
             Debug.Log("AvatarData is null. Using default data.");
-            PlayerAvatar playerAvatar = new(_avatarDefaultReference.GetByCharacterId(playerData.SelectedCharacterId)[0]);
-            playerData.AvatarData = new(playerAvatar.Name, playerAvatar.FeatureIds, playerAvatar.Color, playerAvatar.Scale);
+            PlayerAvatar playerAvatar = new(_avatarDefaultReference.GetByCharacterId(playerid)[0]);
+            avatarData = new(playerAvatar.Name, playerAvatar.FeatureIds, playerAvatar.Color, playerAvatar.Scale);
         }
 
+        AvatarVisualData data = new();
         List<AvatarPiece> pieceIDs = Enum.GetValues(typeof(AvatarPiece)).Cast<AvatarPiece>().ToList();
         foreach (AvatarPiece id in pieceIDs)
         {
-            int pieceId= playerData.AvatarData.GetPieceID(id);
+            int pieceId = avatarData.GetPieceID(id);
             var partInfo = _avatarPartsReference.GetAvatarPartById(pieceId.ToString());
             if (partInfo != null)
-                _avatarVisualDataScriptableObject.SetAvatarPiece(id, partInfo.AvatarImage);
+                data.SetAvatarPiece(id, partInfo.AvatarImage);
             else
-                _avatarVisualDataScriptableObject.SetAvatarPiece(id, null);
+                data.SetAvatarPiece(id, null);
         }
 
         Color color = Color.white;
-        ColorUtility.TryParseHtmlString(playerData.AvatarData.Color,out color);
+        ColorUtility.TryParseHtmlString(avatarData.Color, out color);
 
-        _avatarVisualDataScriptableObject.color = color;
+        data.color = color;
 
-        InvokeOnAvatarDesignUpdate();
+        return data;
     }
 
     public void InvokeOnAvatarDesignUpdate()

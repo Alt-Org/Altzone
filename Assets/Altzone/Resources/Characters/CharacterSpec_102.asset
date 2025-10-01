@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 102
   CharacterId: 102
-  IsApproved: 1
+  IsApproved: 0
   Name: Lihamuuri
   ClassType: 100
   CharacterDescription: "Lihamuuri on kurinalaisuuden ruumiillistuma. H\xE4nelle
@@ -25,20 +25,25 @@ MonoBehaviour:
     kohtaamaan.\r\n\nTunnetila-ammuksen osuessa Lihamuuriin, h\xE4n pullistaa lihaksensa
     mahdollisimman suuriksi, absorboiden h\xE4nt\xE4 uhkaavat tunteet kehoonsa.\r\n"
   CharacterShortDescription: "Ruumiilliseen t\xE4ydellisyyteen keskittyv\xE4 karpaasi."
+  CharacterStats: {fileID: 11400000, guid: 0a0a3cdff0ecc9741a81904da92d277b, type: 2}
   Hp:
-    Level: 0
-    Coefficient: 0
+    Level: 1
+    Coefficient: 7
   Speed:
-    Level: 0
+    Level: 2
     Coefficient: 0
   CharacterSize:
-    Level: 0
-    Coefficient: 0
+    Level: 8
+    Coefficient: 4
   Attack:
-    Level: 0
-    Coefficient: 0
+    Level: 6
+    Coefficient: 2
   Defence:
-    Level: 0
-    Coefficient: 0
+    Level: 12
+    Coefficient: 1
   GalleryImage: {fileID: 21300000, guid: 8269c6e6e87cbed4486c70953683aad1, type: 3}
-  BattleSprite: {fileID: 0}
+  GalleryHeadImage: {fileID: 21300000, guid: 972dfcd017cc29948b10a9f15ba8624f, type: 3}
+  BattleEntityPrototype:
+    Id:
+      Value: 1364834009955602738
+  BattleUiSprite: {fileID: 0}

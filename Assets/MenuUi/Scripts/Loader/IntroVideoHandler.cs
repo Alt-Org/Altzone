@@ -77,6 +77,7 @@ namespace MenuUi.Scripts.Loader
             if (SceneManager.GetActiveScene().name == _menuscene.SceneName) WindowManager.Get().GoBack();
         }
 
+        
         void CheckOver(VideoPlayer vp)
         {
             EndIntroVideo();
