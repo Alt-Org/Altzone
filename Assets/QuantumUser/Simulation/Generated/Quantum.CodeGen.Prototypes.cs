@@ -184,6 +184,34 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerClassProjectorDataQComponent))]
+  public unsafe class BattlePlayerClassProjectorDataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerClassProjectorDataQComponent> {
+    [HideInInspector()]
+    public QBoolean IsHoldingProjectile;
+    [HideInInspector()]
+    public MapEntityId HeldProjectileEntity;
+    [HideInInspector()]
+    public Int32 HoldStartFrame;
+    [HideInInspector()]
+    public FP HeldProjectileAngleRadians;
+    [HideInInspector()]
+    public FP HeldProjectileDistance;
+    public FP RotationDurationFrames;
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.BattlePlayerClassProjectorDataQComponent component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.BattlePlayerClassProjectorDataQComponent result, in PrototypeMaterializationContext context = default) {
+        result.IsHoldingProjectile = this.IsHoldingProjectile;
+        PrototypeValidator.FindMapEntity(this.HeldProjectileEntity, in context, out result.HeldProjectileEntity);
+        result.HoldStartFrame = this.HoldStartFrame;
+        result.HeldProjectileAngleRadians = this.HeldProjectileAngleRadians;
+        result.HeldProjectileDistance = this.HeldProjectileDistance;
+        result.RotationDurationFrames = this.RotationDurationFrames;
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerDataQComponent))]
   public unsafe class BattlePlayerDataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerDataQComponent> {
     public PlayerRef PlayerRef;
@@ -202,7 +230,9 @@ namespace Quantum.Prototypes {
     public FP CurrentDefence;
     public MapEntityId HitboxShieldEntity;
     public MapEntityId HitboxCharacterEntity;
+    public QBoolean DisableRotation;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
+    public FP MovementCooldownSec;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerDataQComponent component = default;
         Materialize((Frame)f, ref component, in context);
@@ -225,7 +255,9 @@ namespace Quantum.Prototypes {
         result.CurrentDefence = this.CurrentDefence;
         PrototypeValidator.FindMapEntity(this.HitboxShieldEntity, in context, out result.HitboxShieldEntity);
         PrototypeValidator.FindMapEntity(this.HitboxCharacterEntity, in context, out result.HitboxCharacterEntity);
+        result.DisableRotation = this.DisableRotation;
         this.DamageCooldown.Materialize(frame, ref result.DamageCooldown, in context);
+        result.MovementCooldownSec = this.MovementCooldownSec;
     }
   }
   [System.SerializableAttribute()]
@@ -235,6 +267,7 @@ namespace Quantum.Prototypes {
     public Int32 GridExtendBottom;
     public Quantum.Prototypes.BattlePlayerHitboxTemplatePrototype HitboxShield;
     public Quantum.Prototypes.BattlePlayerHitboxTemplatePrototype HitboxCharacter;
+    public QBoolean DisableRotation;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerDataTemplateQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerDataTemplateQComponent component = default;
@@ -246,6 +279,7 @@ namespace Quantum.Prototypes {
         result.GridExtendBottom = this.GridExtendBottom;
         this.HitboxShield.Materialize(frame, ref result.HitboxShield, in context);
         this.HitboxCharacter.Materialize(frame, ref result.HitboxCharacter, in context);
+        result.DisableRotation = this.DisableRotation;
         MaterializeUser(frame, ref result, in context);
     }
   }
@@ -269,6 +303,7 @@ namespace Quantum.Prototypes {
     public Quantum.QEnum32<BattlePlayerHitboxType> HitboxType;
     public Quantum.QEnum32<BattlePlayerCollisionType> CollisionType;
     public FPVector2 Normal;
+    public FPVector2 NormalBase;
     public FP CollisionMinOffset;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerHitboxQComponent component = default;
@@ -281,6 +316,7 @@ namespace Quantum.Prototypes {
         result.HitboxType = this.HitboxType;
         result.CollisionType = this.CollisionType;
         result.Normal = this.Normal;
+        result.NormalBase = this.NormalBase;
         result.CollisionMinOffset = this.CollisionMinOffset;
     }
   }
@@ -291,6 +327,7 @@ namespace Quantum.Prototypes {
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.BattlePlayerHitboxColliderTemplatePrototype[] ColliderTemplateList = {};
     public Quantum.QEnum32<BattlePlayerCollisionType> CollisionType;
+    public FP NormalAngleDeg;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerHitboxTemplate result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.BattlePlayerHitboxTemplate result, in PrototypeMaterializationContext context = default) {
         if (this.ColliderTemplateList.Length == 0) {
@@ -304,6 +341,7 @@ namespace Quantum.Prototypes {
           }
         }
         result.CollisionType = this.CollisionType;
+        result.NormalAngleDeg = this.NormalAngleDeg;
         MaterializeUser(frame, ref result, in context);
     }
   }
@@ -315,6 +353,8 @@ namespace Quantum.Prototypes {
     public Quantum.QEnum32<BattlePlayerPlayState>[] PlayStates = new Quantum.QEnum32<BattlePlayerPlayState>[4];
     [ArrayLengthAttribute(4)]
     public PlayerRef[] PlayerRefs = new PlayerRef[4];
+    [ArrayLengthAttribute(4)]
+    public QBoolean[] IsBot = new QBoolean[4];
     [ArrayLengthAttribute(4)]
     public Quantum.Prototypes.FrameTimerPrototype[] RespawnTimer = new Quantum.Prototypes.FrameTimerPrototype[4];
     [ArrayLengthAttribute(4)]
@@ -339,6 +379,9 @@ namespace Quantum.Prototypes {
         }
         for (int i = 0, count = PrototypeValidator.CheckLength(PlayerRefs, 4, in context); i < count; ++i) {
           *result.PlayerRefs.GetPointer(i) = this.PlayerRefs[i];
+        }
+        for (int i = 0, count = PrototypeValidator.CheckLength(IsBot, 4, in context); i < count; ++i) {
+          *result.IsBot.GetPointer(i) = this.IsBot[i];
         }
         for (int i = 0, count = PrototypeValidator.CheckLength(RespawnTimer, 4, in context); i < count; ++i) {
           this.RespawnTimer[i].Materialize(frame, ref *result.RespawnTimer.GetPointer(i), in context);
@@ -383,11 +426,13 @@ namespace Quantum.Prototypes {
   public unsafe partial class BattleProjectileQComponentPrototype : ComponentPrototype<Quantum.BattleProjectileQComponent> {
     public QBoolean IsLaunched;
     public QBoolean IsHeld;
+    public QBoolean IsPassed;
     public Quantum.QEnum32<BattleEmotionState> EmotionBase;
     public Quantum.QEnum32<BattleEmotionState> EmotionCurrent;
     [ArrayLengthAttribute(2)]
     public Quantum.QEnum8<BattleProjectileCollisionFlags>[] CollisionFlags = new Quantum.QEnum8<BattleProjectileCollisionFlags>[2];
     public FP Speed;
+    public FPVector2 Position;
     public FPVector2 Direction;
     public FP Attack;
     public FP Radius;
@@ -404,12 +449,14 @@ namespace Quantum.Prototypes {
     public void Materialize(Frame frame, ref Quantum.BattleProjectileQComponent result, in PrototypeMaterializationContext context = default) {
         result.IsLaunched = this.IsLaunched;
         result.IsHeld = this.IsHeld;
+        result.IsPassed = this.IsPassed;
         result.EmotionBase = this.EmotionBase;
         result.EmotionCurrent = this.EmotionCurrent;
         for (int i = 0, count = PrototypeValidator.CheckLength(CollisionFlags, 2, in context); i < count; ++i) {
           *result.CollisionFlags.GetPointer(i) = this.CollisionFlags[i];
         }
         result.Speed = this.Speed;
+        result.Position = this.Position;
         result.Direction = this.Direction;
         result.Attack = this.Attack;
         result.Radius = this.Radius;

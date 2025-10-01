@@ -33,6 +33,10 @@
 /// - <b>synced event</b> @ref BattleStoneCharacterPieceViewInit { int WallNumber; BattleTeamNumber Team; int EmotionIndicatorColorIndex }  
 ///   @copybrief Quantum.EventBattleStoneCharacterPieceViewInit
 ///
+/// ### UI control events
+/// - <b>synced event</b> @ref BattleViewSetRotationJoystickVisibility {bool IsVisible, BattlePlayerSlot Slot }  
+///   @copybrief Quantum.EventBattleViewSetRotationJoystickVisibility
+///
 /// ### Gameplay events
 /// - <b>synced event</b> @ref BattleChangeEmotionState { BattleEmotionState Emotion }  
 ///   @copybrief Quantum.EventBattleChangeEmotionState
@@ -170,6 +174,20 @@
 ///
 /// Generated Class @cref{Quantum,EventBattleStoneCharacterPieceViewInit}  
 /// Generated Method @cref{Quantum,Frame.FrameEvents.BattleStoneCharacterPieceViewInit}
+///
+/// ---
+/// ---
+///
+/// UI control events
+///
+/// ---
+///
+/// @anchor BattleViewSetRotationJoystickVisibility
+/// ### BattleViewSetRotationJoystickVisibility
+/// @copybrief Quantum.EventBattleViewSetRotationJoystickVisibility
+///
+/// Generated Class @cref{Quantum,EventBattleViewSetRotationJoystickVisibility}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleViewSetRotationJoystickVisibility}
 ///
 /// ---
 /// ---
@@ -327,6 +345,13 @@
 /// @class Quantum::EventBattleStoneCharacterPieceViewInit
 /// <summary>
 /// Synced event. Used to set EmotionIndicatorColor for StoneCharacterPieces.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattleViewSetRotationJoystickVisibility
+/// <summary>
+/// Synced event. Used to set the rotation joystick UI element to be shown or hidden.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleEvents.qtn}

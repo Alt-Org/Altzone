@@ -18,5 +18,6 @@ component BattlePlayerHitboxQComponent
     BattlePlayerHitboxType HitboxType;
     BattlePlayerCollisionType CollisionType;
     FPVector2 Normal;
+    FPVector2 NormalBase;
     FP CollisionMinOffset;
 }
