@@ -204,6 +204,7 @@ namespace Quantum.Prototypes {
     public MapEntityId HitboxCharacterEntity;
     public QBoolean DisableRotation;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
+    public FP MovementCooldownSec;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerDataQComponent component = default;
         Materialize((Frame)f, ref component, in context);
@@ -228,6 +229,7 @@ namespace Quantum.Prototypes {
         PrototypeValidator.FindMapEntity(this.HitboxCharacterEntity, in context, out result.HitboxCharacterEntity);
         result.DisableRotation = this.DisableRotation;
         this.DamageCooldown.Materialize(frame, ref result.DamageCooldown, in context);
+        result.MovementCooldownSec = this.MovementCooldownSec;
     }
   }
   [System.SerializableAttribute()]
@@ -324,6 +326,8 @@ namespace Quantum.Prototypes {
     [ArrayLengthAttribute(4)]
     public PlayerRef[] PlayerRefs = new PlayerRef[4];
     [ArrayLengthAttribute(4)]
+    public QBoolean[] IsBot = new QBoolean[4];
+    [ArrayLengthAttribute(4)]
     public Quantum.Prototypes.FrameTimerPrototype[] RespawnTimer = new Quantum.Prototypes.FrameTimerPrototype[4];
     [ArrayLengthAttribute(4)]
     public QBoolean[] AllowCharacterSwapping = new QBoolean[4];
@@ -347,6 +351,9 @@ namespace Quantum.Prototypes {
         }
         for (int i = 0, count = PrototypeValidator.CheckLength(PlayerRefs, 4, in context); i < count; ++i) {
           *result.PlayerRefs.GetPointer(i) = this.PlayerRefs[i];
+        }
+        for (int i = 0, count = PrototypeValidator.CheckLength(IsBot, 4, in context); i < count; ++i) {
+          *result.IsBot.GetPointer(i) = this.IsBot[i];
         }
         for (int i = 0, count = PrototypeValidator.CheckLength(RespawnTimer, 4, in context); i < count; ++i) {
           this.RespawnTimer[i].Materialize(frame, ref *result.RespawnTimer.GetPointer(i), in context);
@@ -396,6 +403,7 @@ namespace Quantum.Prototypes {
     [ArrayLengthAttribute(2)]
     public Quantum.QEnum8<BattleProjectileCollisionFlags>[] CollisionFlags = new Quantum.QEnum8<BattleProjectileCollisionFlags>[2];
     public FP Speed;
+    public FPVector2 Position;
     public FPVector2 Direction;
     public FP Attack;
     public FP Radius;
@@ -418,6 +426,7 @@ namespace Quantum.Prototypes {
           *result.CollisionFlags.GetPointer(i) = this.CollisionFlags[i];
         }
         result.Speed = this.Speed;
+        result.Position = this.Position;
         result.Direction = this.Direction;
         result.Attack = this.Attack;
         result.Radius = this.Radius;

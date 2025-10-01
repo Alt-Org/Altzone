@@ -183,7 +183,7 @@ namespace Battle.QSimulation.Projectile
             // unpack filter
             BattleProjectileQComponent* projectile = filter.Projectile;
             Transform2D* transform = filter.Transform;
-
+            projectile->Position = transform->Position;
             if (!projectile->IsLaunched)
             {
                 Launch(f, projectile);
