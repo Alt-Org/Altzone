@@ -560,6 +560,9 @@ namespace Battle.QSimulation.Player
             public PlayerRef PlayerRef
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.PlayerRef; }
 
+            public bool IsBot
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.IsBot; }
+
             public FrameTimer RespawnTimer
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.RespawnTimer;
@@ -807,6 +810,12 @@ namespace Battle.QSimulation.Player
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->PlayerRefs[Index];
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->PlayerRefs[Index] = value;
+            }
+
+            public bool IsBot
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->IsBot[Index];
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->IsBot[Index] = value;
             }
 
             public FrameTimer RespawnTimer
