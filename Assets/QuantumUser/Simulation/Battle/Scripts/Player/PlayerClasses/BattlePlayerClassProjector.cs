@@ -4,6 +4,7 @@
 /// which handles player character class logic for the Projector class.
 /// </summary>
 
+using Battle.QSimulation.Game;
 using Battle.QSimulation.Projectile;
 using Photon.Deterministic;
 using Quantum;
@@ -47,35 +48,37 @@ namespace Battle.QSimulation.Player
         /// <param name="projectileEntity">Entity reference for the projectile.</param>
         /// <param name="playerHitbox">Pointer to the player hitbox.</param>
         /// <param name="playerHitboxEntity">Entity reference to the player hitbox.</param>
-        public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerHitboxEntity)
+        public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData)
         {
-            BattlePlayerClassProjectorDataQComponent* data = GetClassData(f, playerHitbox->PlayerEntity);
-            bool grab = !projectile->IsPassed;
+            if (!shieldCollisionData->PlayerShieldHitbox->IsActive) return;
+            if (projectileCollisionData->Projectile->IsHeld) return;
+
+            BattlePlayerClassProjectorDataQComponent* data = GetClassData(f, shieldCollisionData->PlayerShieldHitbox->PlayerEntity);
+            bool grab = !projectileCollisionData->Projectile->IsPassed;
 
             if (grab)
             {
-                BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity)->Slot);
+                BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity)->Slot);
                 if (!teammateHandle.PlayState.IsInPlay()) grab = false;
             }
-
             if (grab)
             {
-                Transform2D* transformPlayer = f.Unsafe.GetPointer<Transform2D>(playerHitbox->PlayerEntity);
-                Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
+                Transform2D* transformPlayer = f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity);
+                Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->ProjectileEntity);
 
                 FPVector2 toProjectile = transformProjectile->Position - transformPlayer->Position;
 
-                BattleProjectileQSystem.SetHeld(f, projectile, true);
+                BattleProjectileQSystem.SetHeld(f, projectileCollisionData->Projectile, true);
                 data->IsHoldingProjectile = true;
-                data->HeldProjectileEntity = projectileEntity;
+                data->HeldProjectileEntity = projectileCollisionData->ProjectileEntity;
                 data->HeldProjectileAngleRadians = FPVector2.RadiansSigned(FPVector2.Up, toProjectile);
                 data->HeldProjectileDistance = toProjectile.Magnitude;
                 data->HoldStartFrame = f.Number;
             }
             else
             {
-                BattleProjectileQSystem.HandleIntersection(f, projectile, projectileEntity, playerHitboxEntity, playerHitbox->Normal, playerHitbox->CollisionMinOffset);
-                BattleProjectileQSystem.UpdateVelocity(f, projectile, playerHitbox->Normal, SpeedChange.Increment);
+                BattleProjectileQSystem.HandleIntersection(f, projectileCollisionData->Projectile, projectileCollisionData->ProjectileEntity, projectileCollisionData->OtherEntity, shieldCollisionData->PlayerShieldHitbox->Normal, shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset);
+                BattleProjectileQSystem.UpdateVelocity(f, projectileCollisionData->Projectile, shieldCollisionData->PlayerShieldHitbox->Normal, SpeedChange.Increment);
             }
         }
 
