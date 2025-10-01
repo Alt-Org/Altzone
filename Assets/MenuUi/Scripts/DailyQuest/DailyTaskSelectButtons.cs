@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
@@ -13,6 +14,8 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
     private Dictionary<Button, List<EventTrigger.Entry>> _addedEntries = new();
     private HashSet<EventTrigger> _addedTriggers = new();
 
+    public static event Action<Button> OnButtonSelected;
+
     // Adds listeners if the task is active at startup
     protected override void Start()
     {
@@ -22,6 +25,16 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
         {
             AddListeners();
         }
+    }
+
+    private void OnEnable()
+    {
+        SelectButtonsPopup.OnConfirm += ButtonsConfirmed;
+    }
+
+    private void OnDisable()
+    {
+        SelectButtonsPopup.OnConfirm -= ButtonsConfirmed;
     }
 
     // Adds or removes listeners depending on the task active state
@@ -120,8 +133,7 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
             if (timer >= _requiredHoldTime)
             {
                 button.interactable = false;
-                UpdateProgress(button.name);
-                // TODO: Show popup
+                OnButtonSelected?.Invoke(button);
                 yield break;
             }
 
@@ -133,5 +145,10 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
     {
         yield return new WaitForSeconds(_coolDownTime);
         if (button != null) button.interactable = true;
+    }
+
+    private void ButtonsConfirmed()
+    {
+        UpdateProgress("1");
     }
 }

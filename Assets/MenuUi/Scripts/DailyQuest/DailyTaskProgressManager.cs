@@ -126,7 +126,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationActionType.ChangeItemsPosition: HandleSimpleTask(value); break;
             case TaskEducationActionType.UseAllItemsSoulhome: HandleSimpleTask(value); break;
             case TaskEducationActionType.FindVariableValueInGame: HandleSimpleTask(value); break;
-            case TaskEducationActionType.Find3ImportantButtons: HandleNoRepetitionTask(value); break;
+            case TaskEducationActionType.Find3ImportantButtons: HandleSimpleTask(value); break;
             default: break;
         }
     }
