@@ -3,7 +3,7 @@
 /// Contains the logic for Confluent class characters.
 /// </summary>
 ///
-/// Contains code overriding shield/projectile collisions to have the projectile always reflect off of the character's shield based on a calculated normal.
+/// Contains code for Confluent class characters.
 
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Projectile;
@@ -15,7 +15,7 @@ using UnityEngine;
 namespace Battle.QSimulation.Player
 {
     /// <summary>
-    /// Class containing code for Confluent class characters.
+    /// Class containing code overriding shield/projectile collisions to have the projectile always reflect off of the character's shield based on a calculated normal.
     /// </summary>
     public class BattlePlayerClassConfluent : BattlePlayerClassBase
     {
