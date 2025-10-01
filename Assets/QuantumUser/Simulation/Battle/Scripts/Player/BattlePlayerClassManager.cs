@@ -157,7 +157,7 @@ namespace Battle.QSimulation.Player
 
                 case BattlePlayerCharacterClass.Confluent:
                     if (s_classArray[ClassIndexConfluent] != null) break;
-                    //s_classArray[ClassIndexConfluent] = new BattlePlayerClassConfluent();
+                    s_classArray[ClassIndexConfluent] = new BattlePlayerClassConfluent();
                     break;
 
                 case BattlePlayerCharacterClass.Intellectualizer:
@@ -330,7 +330,7 @@ namespace Battle.QSimulation.Player
                 //BattlePlayerCharacterClass.Obedient         => ClassIndexObedient,
                 BattlePlayerCharacterClass.Projector        => ClassIndexProjector,
                 //BattlePlayerCharacterClass.Retroflector     => ClassIndexRetroflector,
-                //BattlePlayerCharacterClass.Confluent        => ClassIndexConfluent,
+                BattlePlayerCharacterClass.Confluent        => ClassIndexConfluent,
                 //BattlePlayerCharacterClass.Intellectualizer => ClassIndexIntellectualizer,
 
                 _ => ClassIndexError,

@@ -296,7 +296,7 @@ namespace Battle.QSimulation.Projectile
             if (handleCollision)
             {
                 FPVector2 direction = FPVector2.Zero;
-                if      (collisionType == BattlePlayerCollisionType.Reflect)  direction = FPVector2.Reflect(projectile->Direction, normal);
+                if      (collisionType == BattlePlayerCollisionType.Reflect)  direction = FPVector2.Reflect(projectile->Direction, normal).Normalized;
                 else if (collisionType == BattlePlayerCollisionType.Override) direction = normal;
 
                 HandleIntersection(f, projectile, projectileEntity, otherEntity, normal, collisionMinOffset);
