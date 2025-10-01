@@ -168,6 +168,7 @@ namespace Battle.QSimulation.Player
                     {
                         playerHandle.SetOutOfPlayFinal();
                     }
+                    continue;
                 }
 
                 if (playerHandle.PlayState.IsOutOfPlay()) continue;
