@@ -13,8 +13,10 @@ using static Battle.QSimulation.Projectile.BattleProjectileQSystem;
 namespace Battle.QSimulation.Player
 {
     /// <summary>
-    /// Player character class logic for the Projector class.
+    /// %Player character class logic for the Projector class.
     /// </summary>
+    ///
+    /// @bigtext{See [{Player Character Class Projector}](#page-wip-concepts-playerclass-projector) for more info.}
     public class BattlePlayerClassProjector : BattlePlayerClassBase<BattlePlayerClassProjectorDataQComponent>
     {
         /// <summary>

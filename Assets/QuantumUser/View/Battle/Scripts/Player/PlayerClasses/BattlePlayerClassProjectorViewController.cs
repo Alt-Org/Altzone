@@ -15,6 +15,8 @@ namespace Battle.View.Player
     /// <span class="brief-h">Projector <see cref="Battle.View.Player.BattlePlayerClassBaseViewController">class %view controller</see>.</span><br/>
     /// Handles view logic for the Projector character class
     /// </summary>
+    ///
+    /// @bigtext{See [{Player Character Class Projector}](#page-wip-concepts-playerclass-projector) for more info.}
     public class BattlePlayerClassProjectorViewController : BattlePlayerClassBaseViewController
     {
         /// @anchor BattlePlayerClassProjectorViewController-SerializeFields
