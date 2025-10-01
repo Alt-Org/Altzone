@@ -141,8 +141,6 @@ namespace Battle.QSimulation.Player
                     break;
 
                 case BattlePlayerCharacterClass.Obedient:
-                    if (s_classArray[ClassIndexObedient] != null) break;
-                    //s_classArray[ClassIndexObedient] = new BattlePlayerClassObedient();
                     break;
 
                 case BattlePlayerCharacterClass.Projector:
@@ -287,7 +285,7 @@ namespace Battle.QSimulation.Player
         /// <value>Constant for Trickster class index.</value>
         private const int ClassIndexTrickster = 1;
         /// <value>Constant for Obedient class index.</value>
-        private const int ClassIndexObedient = 2;
+        private const int ClassIndexObedient = ClassIndexNoCode;
         /// <value>Constant for Projector class index.</value>
         private const int ClassIndexProjector = 3;
         /// <value>Constant for Retroflector class index.</value>
@@ -327,7 +325,7 @@ namespace Battle.QSimulation.Player
                 BattlePlayerCharacterClass.None             => ClassIndexNoCode,
                 BattlePlayerCharacterClass.Desensitizer     => ClassIndexDesensitizer,
                 //BattlePlayerCharacterClass.Trickster        => ClassIndexTrickster,
-                //BattlePlayerCharacterClass.Obedient         => ClassIndexObedient,
+                BattlePlayerCharacterClass.Obedient         => ClassIndexObedient,
                 //BattlePlayerCharacterClass.Projector        => ClassIndexProjector,
                 //BattlePlayerCharacterClass.Retroflector     => ClassIndexRetroflector,
                 //BattlePlayerCharacterClass.Confluent        => ClassIndexConfluent,
