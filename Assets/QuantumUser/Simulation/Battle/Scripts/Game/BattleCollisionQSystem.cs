@@ -29,7 +29,6 @@ namespace Battle.QSimulation.Game
             public BattleProjectileQComponent* Projectile;
             public EntityRef ProjectileEntity;
             public EntityRef OtherEntity;
-            public bool ProjectileHeld;
         }
 
         public struct ArenaBorderCollisionData
@@ -81,9 +80,8 @@ namespace Battle.QSimulation.Game
                 ProjectileCollisionData projectileCollisionData = new()
                 {
                     Projectile = projectile,
-                    CollidingEntity = info.Entity,
-                    OtherEntity = info.Other,
-                    ProjectileHeld = false
+                    ProjectileEntity = info.Entity,
+                    OtherEntity = info.Other
                 };
 
                 switch (collisionTrigger->Type)

@@ -45,7 +45,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerCollisionData">Collision data related to the player character.</param>
         public static void OnProjectileHitPlayerCharacter(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerCharacterCollisionData* playerCollisionData)
         {
-            if (projectileCollisionData->ProjectileHeld) return;
+            if (projectileCollisionData->Projectile->IsHeld) return;
 
             BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->PlayerEntity);
             FP damageTaken = projectileCollisionData->Projectile->Attack;
@@ -84,7 +84,7 @@ namespace Battle.QSimulation.Player
         public static void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData)
         {
             if (!shieldCollisionData->PlayerShieldHitbox->IsActive) return;
-            if (projectileCollisionData->ProjectileHeld) return;
+            if (projectileCollisionData->Projectile->IsHeld) return;
 
             BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity);
             FP damageTaken = projectileCollisionData->Projectile->Attack;

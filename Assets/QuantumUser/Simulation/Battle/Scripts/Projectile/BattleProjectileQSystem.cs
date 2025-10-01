@@ -237,7 +237,7 @@ namespace Battle.QSimulation.Projectile
         /// <param name="collisionTriggerType">The collision type of the collision, informing what the projectile has hit.</param>
         public static void OnProjectileCollision(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, void* data, BattleCollisionTriggerType collisionTriggerType)
         {
-            if (projectileCollisionData->ProjectileHeld) return;
+            if (projectileCollisionData->Projectile->IsHeld) return;
 
             // unpack projectileCollisionData
             BattleProjectileQComponent* projectile       = projectileCollisionData->Projectile;
