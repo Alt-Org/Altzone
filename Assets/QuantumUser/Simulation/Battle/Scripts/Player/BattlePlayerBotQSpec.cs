@@ -7,6 +7,6 @@ namespace Battle.QSimulation.Player
     {
         public FP MovementCooldownSecMin;
         public FP MovementCooldownSecMax;
-        public FP LookAheadTime;
+        public FP LookAheadTimeSec;
     }
 }

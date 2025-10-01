@@ -60,7 +60,7 @@ namespace Battle.QSimulation.Player
                     FPVector2 projectileDirection = projectile->Direction;
                     if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? projectileDirection.Y > 0 : projectileDirection.Y < 0) return;
                     FPVector2 projectilePosition = projectile->Position;
-                    FP predictionTimeSec = playerBotSpec.LookAheadTime;
+                    FP predictionTimeSec = playerBotSpec.LookAheadTimeSec;
 
                     FPVector2 predictedPosition = projectilePosition + projectileDirection * (projectile->Speed * predictionTimeSec);
 
