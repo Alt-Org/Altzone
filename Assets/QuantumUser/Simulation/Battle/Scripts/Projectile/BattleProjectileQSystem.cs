@@ -282,10 +282,10 @@ namespace Battle.QSimulation.Projectile
 
                     if (ProjectileHitPlayerShield(f, projectile, dataPtr, out normal))
                     {
-                        collisionType        = playerHitbox->CollisionType;
-                        collisionMinOffset   = playerHitbox->CollisionMinOffset;
-                        speedChange          = SpeedChange.Increment;
-                        handleCollision      = true;
+                        collisionType      = playerHitbox->CollisionType;
+                        collisionMinOffset = playerHitbox->CollisionMinOffset;
+                        speedChange        = SpeedChange.Increment;
+                        handleCollision    = true;
                     }
                     break;
 
