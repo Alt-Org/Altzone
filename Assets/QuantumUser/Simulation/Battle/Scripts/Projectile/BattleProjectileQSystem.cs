@@ -241,7 +241,7 @@ namespace Battle.QSimulation.Projectile
 
             // unpack projectileCollisionData
             BattleProjectileQComponent* projectile       = projectileCollisionData->Projectile;
-            EntityRef                   projectileEntity = projectileCollisionData->CollidingEntity;
+            EntityRef                   projectileEntity = projectileCollisionData->ProjectileEntity;
             EntityRef                   otherEntity      = projectileCollisionData->OtherEntity;
 
             // set default values

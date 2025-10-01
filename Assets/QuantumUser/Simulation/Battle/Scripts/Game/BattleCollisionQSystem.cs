@@ -27,7 +27,7 @@ namespace Battle.QSimulation.Game
         public struct ProjectileCollisionData
         {
             public BattleProjectileQComponent* Projectile;
-            public EntityRef CollidingEntity;
+            public EntityRef ProjectileEntity;
             public EntityRef OtherEntity;
             public bool ProjectileHeld;
         }
@@ -56,7 +56,7 @@ namespace Battle.QSimulation.Game
         public struct GoalCollisionData
         {
             public BattleProjectileQComponent* Projectile;
-            public EntityRef CollidingEntity;
+            public EntityRef ProjectileEntity;
             public BattleGoalQComponent* Goal;
         }
 
@@ -157,7 +157,7 @@ namespace Battle.QSimulation.Game
                             GoalCollisionData goalCollisionData = new()
                             {
                                 Projectile = projectile,
-                                CollidingEntity = info.Entity,
+                                ProjectileEntity = info.Entity,
                                 Goal = f.Unsafe.GetPointer<BattleGoalQComponent>(info.Other)
                             };
                             BattleGoalQSystem.OnProjectileHitGoal(f, &goalCollisionData);
