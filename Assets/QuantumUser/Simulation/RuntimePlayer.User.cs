@@ -10,7 +10,5 @@
         public string UserID;
         public BattlePlayerSlot PlayerSlot;
         public BattleCharacterBase[] Characters = new BattleCharacterBase[CharacterCount];
-
-        public bool IsBot = false;
     }
 }
