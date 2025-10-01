@@ -44,10 +44,8 @@ namespace Battle.QSimulation.Player
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="projectile">Poiinter to the projectiel.</param>
-        /// <param name="projectileEntity">Entity reference for the projectile.</param>
-        /// <param name="playerHitbox">Pointer to the player hitbox.</param>
-        /// <param name="playerHitboxEntity">Entity reference to the player hitbox.</param>
+        /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
+        /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
         public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData)
         {
             if (!shieldCollisionData->PlayerShieldHitbox->IsActive) return;
