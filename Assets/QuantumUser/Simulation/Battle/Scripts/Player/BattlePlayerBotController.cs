@@ -34,15 +34,16 @@ namespace Battle.QSimulation.Player
 
         public static void GetBotInput(Frame f, bool isInPlay, BattlePlayerDataQComponent* playerData, Input* outBotInput)
         {
+            BattlePlayerBotQSpec playerBotSpec = BattleQConfig.GetPlayerBotSpec(f);
+
             BattleMovementInputType movementInput         = BattleMovementInputType.None;
             BattleGridPosition      predictedGridPosition = new() { Col = 0, Row = 0 };
 
             if (isInPlay)
             {
-                if (playerData->MovementCooldown < InterceptConstants.CooldownThreshold)
+                if (playerData->MovementCooldownSec > FP._0)
                 {
-                    FP randnum = f.RNG->Next(0, InterceptConstants.CooldownRandAddMax);
-                    playerData->MovementCooldown += randnum;
+                    playerData->MovementCooldownSec -= f.DeltaTime;
                 }
                 else
                 {
@@ -52,40 +53,42 @@ namespace Battle.QSimulation.Player
 
             if (movementInput != BattleMovementInputType.None)
             {
-                playerData->MovementCooldown = 0;
+                playerData->MovementCooldownSec = f.RNG->NextInclusive(playerBotSpec.MovementCooldownSecMin, playerBotSpec.MovementCooldownSecMax); ;
                 ComponentFilter<BattleProjectileQComponent> projectiles = f.Filter<BattleProjectileQComponent>();
-                bool found = projectiles.NextUnsafe(out EntityRef projectileEntity, out BattleProjectileQComponent* projectile);
-                if (!found) return;
-                FPVector2 projectileDirection = projectile->Direction;
-                if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? projectileDirection.Y > 0 : projectileDirection.Y < 0) return;
-                FPVector2 projectilePosition = projectile->Position;
-                FP predictionTime = InterceptConstants.LookAheadTime;
-
-                FPVector2 predictedPosition = projectilePosition + projectileDirection * projectile->Speed * predictionTime;
-
-                predictedGridPosition = BattleGridManager.WorldPositionToGridPosition(predictedPosition);
-
-
-                // clamp the TargetPosition inside sidebounds
-                predictedGridPosition.Col = Mathf.Clamp(predictedGridPosition.Col, 0, BattleGridManager.Columns - 1);
-
-                if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha)
+                if (projectiles.NextUnsafe(out EntityRef projectileEntity, out BattleProjectileQComponent* projectile))
                 {
-                    predictedGridPosition.Row = Mathf.Clamp(
-                        predictedGridPosition.Row,
-                        BattleGridManager.TeamAlphaFieldStart + playerData->GridExtendBottom,
-                        BattleGridManager.TeamAlphaFieldEnd - playerData->GridExtendTop
-                );
-                }
+                    FPVector2 projectileDirection = projectile->Direction;
+                    if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? projectileDirection.Y > 0 : projectileDirection.Y < 0) return;
+                    FPVector2 projectilePosition = projectile->Position;
+                    FP predictionTimeSec = playerBotSpec.LookAheadTime;
 
-                // clamp the TargetPosition inside teams playfield for betateam
+                    FPVector2 predictedPosition = projectilePosition + projectileDirection * (projectile->Speed * predictionTimeSec);
+
+                    predictedGridPosition = BattleGridManager.WorldPositionToGridPosition(predictedPosition);
+
+                    // clamp the TargetPosition inside sidebounds
+                    predictedGridPosition.Col = Mathf.Clamp(predictedGridPosition.Col, 0, BattleGridManager.Columns - 1);
+
+                    if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha)
+                    {
+                        predictedGridPosition.Row = Mathf.Clamp(
+                            predictedGridPosition.Row,
+                            BattleGridManager.TeamAlphaFieldStart + playerData->GridExtendBottom,
+                            BattleGridManager.TeamAlphaFieldEnd - playerData->GridExtendTop
+                        );
+                    }
+                    else
+                    {
+                        predictedGridPosition.Row = Mathf.Clamp(
+                            predictedGridPosition.Row,
+                            BattleGridManager.TeamBetaFieldStart + playerData->GridExtendBottom,
+                            BattleGridManager.TeamBetaFieldEnd - playerData->GridExtendTop
+                        );
+                    }
+                }
                 else
                 {
-                    predictedGridPosition.Row = Mathf.Clamp(
-                        predictedGridPosition.Row,
-                        BattleGridManager.TeamBetaFieldStart + playerData->GridExtendBottom,
-                        BattleGridManager.TeamBetaFieldEnd - playerData->GridExtendTop
-                    );
+                    movementInput = BattleMovementInputType.None;
                 }
             }
 
@@ -99,13 +102,6 @@ namespace Battle.QSimulation.Player
                 RotationValue                 = FP._0,
                 PlayerCharacterNumber         = -1
             };
-        }
-
-        private static class InterceptConstants
-        {
-            public static readonly FP CooldownThreshold = FP._0_33;
-            public static readonly FP CooldownRandAddMax = FP._0_02;
-            public static readonly FP LookAheadTime = FP._0_50;
         }
     }
 }

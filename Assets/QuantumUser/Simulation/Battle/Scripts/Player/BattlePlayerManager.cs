@@ -378,7 +378,7 @@ namespace Battle.QSimulation.Player
                             HitboxShieldEntity    = playerHitboxShieldEntity,
                             HitboxCharacterEntity = playerHitboxCharacterEntity,
 
-                            MovementCooldown      = FP._0
+                            MovementCooldownSec   = FP._0
                         };
 
 #if DEBUG_PLAYER_STAT_OVERRIDE
