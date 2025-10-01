@@ -1109,7 +1109,6 @@ namespace Altzone.Scripts.Lobby
                 {
                     _player.PlayerSlot = playerSlot;
                     _player.UserID = userId;
-                    /*_player.IsBot = true;*/
                     _runner?.Game.AddPlayer(_player);
                     break;
                 }
