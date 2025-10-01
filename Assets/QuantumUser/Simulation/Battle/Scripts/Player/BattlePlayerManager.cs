@@ -374,7 +374,6 @@ namespace Battle.QSimulation.Player
                             HitboxShieldEntity    = playerHitboxShieldEntity,
                             HitboxCharacterEntity = playerHitboxCharacterEntity,
 
-                            ControlledByAi        = false,
                             MovementCooldown      = FP._0
                         };
 
