@@ -94,7 +94,9 @@ namespace Quantum.Prototypes.Unity {
     public FP CurrentDefence;
     public Quantum.QuantumEntityPrototype HitboxShieldEntity;
     public Quantum.QuantumEntityPrototype HitboxCharacterEntity;
+    public QBoolean DisableRotation;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
+    public FP MovementCooldownSec;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerDataQComponentPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerDataQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerDataQComponentPrototype();
@@ -114,7 +116,9 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.CurrentDefence, out result.CurrentDefence);
       converter.Convert(this.HitboxShieldEntity, out result.HitboxShieldEntity);
       converter.Convert(this.HitboxCharacterEntity, out result.HitboxCharacterEntity);
+      converter.Convert(this.DisableRotation, out result.DisableRotation);
       converter.Convert(this.DamageCooldown, out result.DamageCooldown);
+      converter.Convert(this.MovementCooldownSec, out result.MovementCooldownSec);
       ConvertUser(converter, ref result);
       return result;
     }
@@ -126,6 +130,7 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.QEnum32<BattlePlayerHitboxType> HitboxType;
     public Quantum.QEnum32<BattlePlayerCollisionType> CollisionType;
     public FPVector2 Normal;
+    public FPVector2 NormalBase;
     public FP CollisionMinOffset;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerHitboxQComponentPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerHitboxQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
@@ -135,6 +140,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.HitboxType, out result.HitboxType);
       converter.Convert(this.CollisionType, out result.CollisionType);
       converter.Convert(this.Normal, out result.Normal);
+      converter.Convert(this.NormalBase, out result.NormalBase);
       converter.Convert(this.CollisionMinOffset, out result.CollisionMinOffset);
       ConvertUser(converter, ref result);
       return result;
@@ -147,6 +153,8 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.QEnum32<BattlePlayerPlayState>[] PlayStates = new Quantum.QEnum32<BattlePlayerPlayState>[4];
     [ArrayLengthAttribute(4)]
     public PlayerRef[] PlayerRefs = new PlayerRef[4];
+    [ArrayLengthAttribute(4)]
+    public QBoolean[] IsBot = new QBoolean[4];
     [ArrayLengthAttribute(4)]
     public Quantum.Prototypes.FrameTimerPrototype[] RespawnTimer = new Quantum.Prototypes.FrameTimerPrototype[4];
     [ArrayLengthAttribute(4)]
@@ -165,6 +173,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.PlayerCount, out result.PlayerCount);
       converter.Convert(this.PlayStates, out result.PlayStates);
       converter.Convert(this.PlayerRefs, out result.PlayerRefs);
+      converter.Convert(this.IsBot, out result.IsBot);
       converter.Convert(this.RespawnTimer, out result.RespawnTimer);
       converter.Convert(this.AllowCharacterSwapping, out result.AllowCharacterSwapping);
       converter.Convert(this.SelectedCharacters, out result.SelectedCharacters);

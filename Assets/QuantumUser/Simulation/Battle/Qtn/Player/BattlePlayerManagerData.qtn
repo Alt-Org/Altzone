@@ -13,6 +13,7 @@ singleton component BattlePlayerManagerDataQSingleton
 
     array<BattlePlayerPlayState>[BATTLE_PLAYER_SLOT_COUNT] PlayStates;
     array<PlayerRef>[BATTLE_PLAYER_SLOT_COUNT] PlayerRefs;
+    array<bool>[BATTLE_PLAYER_SLOT_COUNT] IsBot;
     array<FrameTimer>[BATTLE_PLAYER_SLOT_COUNT] RespawnTimer;
     array<bool>[BATTLE_PLAYER_SLOT_COUNT] AllowCharacterSwapping;
     array<EntityRef>[BATTLE_PLAYER_SLOT_COUNT] SelectedCharacters;

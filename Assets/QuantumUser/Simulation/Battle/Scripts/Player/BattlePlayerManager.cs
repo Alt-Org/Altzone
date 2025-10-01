@@ -149,14 +149,18 @@ namespace Battle.QSimulation.Player
 
             for (int playerIndex = 0; playerIndex < Constants.BATTLE_PLAYER_SLOT_COUNT; playerIndex++)
             {
-                if (playerSlotTypes[playerIndex] != BattleParameters.PlayerType.Player) continue;
+                if (playerSlotTypes[playerIndex] == BattleParameters.PlayerType.None) continue;
+
+                bool isBot = playerSlotTypes[playerIndex] == BattleParameters.PlayerType.Bot;
 
                 PlayerHandleInternal playerHandle = new(playerManagerData, playerIndex);
 
                 BattlePlayerSlot playerSlot = PlayerHandleInternal.GetSlot(playerIndex);
                 BattleTeamNumber teamNumber = PlayerHandleInternal.GetTeamNumber(playerSlot);
 
-                RuntimePlayer data = f.GetPlayerData(playerHandle.PlayerRef);
+                BattleCharacterBase[] battleBaseCharacters = !isBot
+                                                           ? f.GetPlayerData(playerHandle.PlayerRef).Characters
+                                                           : BattlePlayerBotController.GetBotCharacters();
 
                 EntityRef[] playerCharacterEntityArray = new EntityRef[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
 
@@ -183,6 +187,7 @@ namespace Battle.QSimulation.Player
                     BattlePlayerCollisionType                 playerHitboxCollisionType;
                     FPVector2                                 playerHitboxPosition;
                     FPVector2                                 playerHitboxExtents;
+                    FPVector2                                 playerHitboxNormal;
                     int                                       playerHitboxHeight;
                     Shape2D                                   playerHitboxColliderPart;
                     //} player temp variables
@@ -220,8 +225,8 @@ namespace Battle.QSimulation.Player
                     for (int playerCharacterNumber = 0; playerCharacterNumber < playerCharacterEntityArray.Length; playerCharacterNumber++)
                     {
                         // set id and class
-                        playerCharacterId =                             data.Characters[playerCharacterNumber].Id;
-                        playerClass       = (BattlePlayerCharacterClass)data.Characters[playerCharacterNumber].Class;
+                        playerCharacterId =                             battleBaseCharacters[playerCharacterNumber].Id;
+                        playerClass       = (BattlePlayerCharacterClass)battleBaseCharacters[playerCharacterNumber].Class;
 
                         // entity prototype
                         playerEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(playerCharacterId);
@@ -287,6 +292,7 @@ namespace Battle.QSimulation.Player
                                     playerHitboxCollisionType              = playerDataTemplate->HitboxShield.CollisionType;
                                     playerHitboxListSourceColliderTemplate = playerHitboxListShieldColliderTemplate;
                                     playerHitboxShieldEntity               = playerHitboxTargetEntity;
+                                    playerHitboxNormal                     = FPVector2.Rotate(FPVector2.Up, FP.Deg2Rad * playerDataTemplate->HitboxShield.NormalAngleDeg);
 
                                     collisionTrigger.Type = BattleCollisionTriggerType.Shield;
                                     break;
@@ -302,13 +308,15 @@ namespace Battle.QSimulation.Player
                                     playerHitboxCollisionType              = playerDataTemplate->HitboxCharacter.CollisionType;
                                     playerHitboxListSourceColliderTemplate = playerHitboxListCharacterColliderTemplate;
                                     playerHitboxCharacterEntity            = playerHitboxTargetEntity;
+                                    playerHitboxNormal                     = FPVector2.Rotate(FPVector2.Up, FP.Deg2Rad * playerDataTemplate->HitboxCharacter.NormalAngleDeg);
 
                                     collisionTrigger.Type = BattleCollisionTriggerType.Player;
                                     break;
 
                                 default:
-                                    playerHitboxType = (BattlePlayerHitboxType)(-1);
+                                    playerHitboxType          = (BattlePlayerHitboxType)(-1);
                                     playerHitboxCollisionType = (BattlePlayerCollisionType)(-1);
+                                    playerHitboxNormal        = FPVector2.Up;
                                     break;
                             }
 
@@ -342,11 +350,12 @@ namespace Battle.QSimulation.Player
                             // initialize hitBox component
                             playerHitbox = new BattlePlayerHitboxQComponent
                             {
-                                PlayerEntity = playerEntity,
-                                IsActive = true,
-                                HitboxType = playerHitboxType,
-                                CollisionType = playerHitboxCollisionType,
-                                Normal = FPVector2.Zero,
+                                PlayerEntity       = playerEntity,
+                                IsActive           = true,
+                                HitboxType         = playerHitboxType,
+                                CollisionType      = playerHitboxCollisionType,
+                                Normal             = playerHitboxNormal,
+                                NormalBase         = playerHitboxNormal,
                                 CollisionMinOffset = ((FP)playerHitboxHeight + FP._0_50) * BattleGridManager.GridScaleFactor
                             };
 
@@ -362,26 +371,30 @@ namespace Battle.QSimulation.Player
 
                         playerData = new BattlePlayerDataQComponent
                         {
-                            PlayerRef         = PlayerRef.None,
-                            Slot              = playerSlot,
-                            TeamNumber        = teamNumber,
-                            CharacterId       = playerCharacterId,
-                            CharacterClass    = playerClass,
+                            PlayerRef             = PlayerRef.None,
+                            Slot                  = playerSlot,
+                            TeamNumber            = teamNumber,
+                            CharacterId           = playerCharacterId,
+                            CharacterClass        = playerClass,
 
-                            Stats             = data.Characters[playerCharacterNumber].Stats,
+                            Stats                 = battleBaseCharacters[playerCharacterNumber].Stats,
 
-                            GridExtendTop     = playerGridExtendTop,
-                            GridExtendBottom  = playerGridExtendBottom,
+                            GridExtendTop         = playerGridExtendTop,
+                            GridExtendBottom      = playerGridExtendBottom,
 
-                            TargetPosition    = playerSpawnPosition,
-                            RotationBase      = playerRotationBase,
-                            RotationOffset    = FP._0,
+                            TargetPosition        = playerSpawnPosition,
+                            RotationBase          = playerRotationBase,
+                            RotationOffset        = FP._0,
 
-                            CurrentHp         = FP._0,
-                            CurrentDefence    = FP._0,
+                            CurrentHp             = FP._0,
+                            CurrentDefence        = FP._0,
 
-                            HitboxShieldEntity      = playerHitboxShieldEntity,
-                            HitboxCharacterEntity   = playerHitboxCharacterEntity
+                            HitboxShieldEntity    = playerHitboxShieldEntity,
+                            HitboxCharacterEntity = playerHitboxCharacterEntity,
+
+                            DisableRotation       = playerDataTemplate->DisableRotation,
+
+                            MovementCooldownSec   = FP._0
                         };
 
 #if DEBUG_PLAYER_STAT_OVERRIDE
@@ -424,6 +437,7 @@ namespace Battle.QSimulation.Player
 
                 // set playerManagerData for player
                 playerHandle.PlayState = BattlePlayerPlayState.OutOfPlay;
+                playerHandle.IsBot = isBot;
                 playerHandle.AllowCharacterSwapping = true;
                 playerHandle.SetCharacterEntities(playerCharacterEntityArray);
             }
@@ -565,6 +579,9 @@ namespace Battle.QSimulation.Player
 
             public PlayerRef PlayerRef
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.PlayerRef; }
+
+            public bool IsBot
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.IsBot; }
 
             public FrameTimer RespawnTimer
             {
@@ -815,6 +832,12 @@ namespace Battle.QSimulation.Player
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->PlayerRefs[Index] = value;
             }
 
+            public bool IsBot
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->IsBot[Index];
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->IsBot[Index] = value;
+            }
+
             public FrameTimer RespawnTimer
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->RespawnTimer[Index];
@@ -1039,6 +1062,8 @@ namespace Battle.QSimulation.Player
             f.Events.BattleDebugUpdateStatsOverlay(playerData->Slot, playerData->Stats);
 
             playerHandle.PlayState = BattlePlayerPlayState.InPlay;
+
+            f.Events.BattleViewSetRotationJoystickVisibility(!playerData->DisableRotation, playerData->Slot);
 
             BattlePlayerClassManager.OnSpawn(f, playerHandle.ConvertToPublic(), playerData, character);
         }

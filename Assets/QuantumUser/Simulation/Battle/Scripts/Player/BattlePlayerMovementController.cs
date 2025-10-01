@@ -6,18 +6,14 @@
 /// Gets player's Quantum.Input and updates player's position and rotation depending on player's actions.
 /// Handles moving, rotating and teleporting players and all their hitboxes.
 
-using System.Runtime.CompilerServices;
-
 using UnityEngine;
 using UnityEngine.Scripting;
 
 using Quantum;
 using Input = Quantum.Input;
-using Quantum.Collections;
 using Photon.Deterministic;
 
 using Battle.QSimulation.Game;
-using UnityEditor;
 
 namespace Battle.QSimulation.Player
 {
@@ -97,7 +93,7 @@ namespace Battle.QSimulation.Player
             //{ handle rotation
 
             // handle rotation input
-            if (input->RotationInput)
+            if (input->RotationInput && !playerData->DisableRotation)
             {
                 // set target angle
                 FP maxAngle = FP.Rad_45 * input->RotationValue;
@@ -230,7 +226,9 @@ namespace Battle.QSimulation.Player
             characterTransform->Position = transform->Position;
             characterTransform->Rotation = transform->Rotation;
 
-            f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity)->Normal = FPVector2.Rotate(FPVector2.Up, transform->Rotation);
+            BattlePlayerHitboxQComponent* shieldComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity);
+
+            shieldComponent->Normal = FPVector2.Rotate(shieldComponent->NormalBase, transform->Rotation);
         }
 
         /// <summary>
@@ -248,7 +246,9 @@ namespace Battle.QSimulation.Player
             shieldTransform->Teleport(f, transform->Position, transform->Rotation);
             characterTransform->Teleport(f, transform->Position, transform->Rotation);
 
-            f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity)->Normal = FPVector2.Rotate(FPVector2.Up, transform->Rotation);
+            BattlePlayerHitboxQComponent* shieldComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity);
+
+            shieldComponent->Normal = FPVector2.Rotate(shieldComponent->NormalBase, transform->Rotation);
         }
 
         /// <summary>
