@@ -141,8 +141,6 @@ namespace Battle.QSimulation.Player
                     break;
 
                 case BattlePlayerCharacterClass.Obedient:
-                    if (s_classArray[ClassIndexObedient] != null) break;
-                    //s_classArray[ClassIndexObedient] = new BattlePlayerClassObedient();
                     break;
 
                 case BattlePlayerCharacterClass.Projector:
@@ -286,18 +284,16 @@ namespace Battle.QSimulation.Player
         private const int ClassIndexDesensitizer = 0;
         /// <value>Constant for Trickster class index.</value>
         private const int ClassIndexTrickster = 1;
-        /// <value>Constant for Obedient class index.</value>
-        private const int ClassIndexObedient = 2;
         /// <value>Constant for Projector class index.</value>
-        private const int ClassIndexProjector = 3;
+        private const int ClassIndexProjector = 2;
         /// <value>Constant for Retroflector class index.</value>
-        private const int ClassIndexRetroflector = 4;
+        private const int ClassIndexRetroflector = 3;
         /// <value>Constant for Confluent class index.</value>
-        private const int ClassIndexConfluent = 5;
+        private const int ClassIndexConfluent = 4;
         /// <value>Constant for Intellectualizer class index.</value>
-        private const int ClassIndexIntellectualizer = 6;
+        private const int ClassIndexIntellectualizer = 5;
         /// <value>Constant for the amount of classes that exist.</value>
-        private const int ClassCount = 7;
+        private const int ClassCount = 6;
 
         /// <summary>Enum for the different values GetClass can return.</summary>
         private enum ReturnCode
@@ -327,7 +323,7 @@ namespace Battle.QSimulation.Player
                 BattlePlayerCharacterClass.None             => ClassIndexNoCode,
                 BattlePlayerCharacterClass.Desensitizer     => ClassIndexDesensitizer,
                 //BattlePlayerCharacterClass.Trickster        => ClassIndexTrickster,
-                //BattlePlayerCharacterClass.Obedient         => ClassIndexObedient,
+                BattlePlayerCharacterClass.Obedient         => ClassIndexNoCode,
                 BattlePlayerCharacterClass.Projector        => ClassIndexProjector,
                 //BattlePlayerCharacterClass.Retroflector     => ClassIndexRetroflector,
                 BattlePlayerCharacterClass.Confluent        => ClassIndexConfluent,
