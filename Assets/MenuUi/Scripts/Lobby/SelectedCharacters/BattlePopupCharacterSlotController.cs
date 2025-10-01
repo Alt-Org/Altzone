@@ -60,7 +60,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                     }
                     else
                     {
-                        CustomCharacter matchingCharacter = playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i].ServerID);
+                        CustomCharacter matchingCharacter = playerData.CustomCharacters?.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i].ServerID);
                         charID = matchingCharacter == null || playerData.SelectedCharacterIds[i].CharacterID == CharacterID.None ? CharacterID.None : matchingCharacter.Id;
                     }
 
@@ -91,7 +91,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                     _selectedCharacterSlots[i].SetEmpty(false);
                     continue;
                 }
-                
+
                 PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(selectedCharacterIds[i].ToString());
                 int[] statsForCharacter = stats != null ? stats[(i * 5)..(i * 5 + 5)] : null;
                 _selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charInfo.CharacterId, false, statsForCharacter);
