@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using Altzone.Scripts.BattleUiShared;
+using System.Collections.Generic;
 
 public class SettingsCarrier : MonoBehaviour // Script for carrying settings data between scenes
 {
@@ -125,7 +126,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
     private TextSize _textSize;
     public TextSize Textsize { get => _textSize; }
-    
+
     private bool _showButtonLabels;
     public bool ShowButtonLabels
     {
@@ -286,6 +287,14 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         }
     }
 
+    public static bool IsTopBarItemVisibleByKeyStatic(string key, bool defaultOn = true)
+        => PlayerPrefs.GetInt(key, defaultOn ? 1 : 0) != 0;
+
+
+    private const string _topBarOrderKeyPrefix = "TopBarOrder_";
+    private static string GetTopBarOrderKey(TopBarStyle style) => _topBarOrderKeyPrefix + style;
+
+
     private string _mainMenuMusicName;
     public string MainMenuMusicName { get { return _mainMenuMusicName; } }
 
@@ -342,7 +351,8 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
         _unlimitedStatUpgradeMaterials = PlayerPrefs.GetInt(UnlimitedStatUpgradeMaterialsKey, 1) == 1;
 
-        _topBarStyleSetting = (TopBarStyle)PlayerPrefs.GetInt(TopBarStyleSettingKey, 1);
+        TopBarStyleSetting = (TopBarStyle)PlayerPrefs.GetInt(TopBarStyleSettingKey, 1);
+        OnTopBarChanged?.Invoke((int)_topBarStyleSetting);
 
         _mainMenuMusicName = PlayerPrefs.GetString("MainMenuMusic");
     }
@@ -468,4 +478,48 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
             case SelectionBoxType.MainMenuMusic: _mainMenuMusicName = value; PlayerPrefs.SetString("MainMenuMusic", value); break;
         }
     }
+
+    public void SetTopBarItemVisibleByKey(string key, bool visible)
+    {
+        int newV = visible ? 1 : 0;
+        int oldV = PlayerPrefs.HasKey(key) ? PlayerPrefs.GetInt(key) : -1;
+        if (oldV == newV) return;
+
+        PlayerPrefs.SetInt(key, newV);
+        OnTopBarChanged?.Invoke((int)TopBarStyleSetting);
+    }
+
+    public void SaveTopBarOrder(TopBarStyle style, IList<int> order)
+    {
+        string key = GetTopBarOrderKey(style);
+        string csvNew = string.Join(",", order);
+        if (PlayerPrefs.GetString(key, "") == csvNew) return;
+
+        PlayerPrefs.SetString(key, csvNew);
+        OnTopBarChanged?.Invoke((int)style);
+    }
+
+
+    public static List<int> LoadTopBarOrderStatic(TopBarStyle style, int count)
+    {
+        var result = new List<int>(count);
+        var used = new bool[count];
+        string csv = PlayerPrefs.GetString(_topBarOrderKeyPrefix + style, "");
+
+        if (!string.IsNullOrEmpty(csv))
+        {
+            foreach (var part in csv.Split(','))
+            {
+                if (int.TryParse(part, out int i) && (uint)i < (uint)count && !used[i])
+                {
+                    used[i] = true;
+                    result.Add(i);
+                    if (result.Count == count) return result;
+                }
+            }
+        }
+        for (int i = 0; i < count; i++) if (!used[i]) result.Add(i);
+        return result;
+    }
+
 }
