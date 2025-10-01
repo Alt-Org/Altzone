@@ -25,6 +25,8 @@ component BattlePlayerDataQComponent
     EntityRef HitboxCharacterEntity;
 
     FrameTimer DamageCooldown;
+
+    FP MovementCooldownSec;
 }
 
 //} PlayerData

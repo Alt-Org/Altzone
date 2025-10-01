@@ -116,10 +116,11 @@ namespace Battle.QSimulation.Player
         public override void Update(Frame f)
         {
             Input* input;
+            Input botInput;
 
-            EntityRef playerEntity;
-            BattlePlayerDataQComponent* playerData;
-            Transform2D* playerTransform;
+            EntityRef playerEntity = EntityRef.None;
+            BattlePlayerDataQComponent* playerData = null;
+            Transform2D* playerTransform = null;
 
             BattlePlayerManager.PlayerHandle[] playerHandleArray = BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f);
 
@@ -129,7 +130,22 @@ namespace Battle.QSimulation.Player
                 if (playerHandle.PlayState.IsNotInGame()) continue;
                 if (playerHandle.PlayState.IsOutOfPlayFinal()) continue;
 
-                input = f.GetPlayerInput(playerHandle.PlayerRef);
+                if (playerHandle.PlayState.IsInPlay())
+                {
+                    playerEntity = playerHandle.SelectedCharacter;
+                    playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerEntity);
+                    playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
+                }
+
+                if (!playerHandle.IsBot)
+                {
+                    input = f.GetPlayerInput(playerHandle.PlayerRef);
+                }
+                else
+                {
+                    input = &botInput;
+                    BattlePlayerBotController.GetBotInput(f, playerHandle.PlayState.IsInPlay(), playerData, input);
+                }
 
                 if (input->PlayerCharacterNumber > -1 && playerHandle.AllowCharacterSwapping)
                 {
@@ -155,10 +171,6 @@ namespace Battle.QSimulation.Player
                 }
 
                 if (playerHandle.PlayState.IsOutOfPlay()) continue;
-
-                playerEntity = playerHandle.SelectedCharacter;
-                playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerEntity);
-                playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
 
                 if (playerData->CurrentDefence <= FP._0)
                 {
