@@ -203,7 +203,7 @@ namespace Quantum.Prototypes {
     public MapEntityId HitboxShieldEntity;
     public MapEntityId HitboxCharacterEntity;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
-    public FP MovementCooldown;
+    public FP MovementCooldownSec;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerDataQComponent component = default;
         Materialize((Frame)f, ref component, in context);
@@ -227,7 +227,7 @@ namespace Quantum.Prototypes {
         PrototypeValidator.FindMapEntity(this.HitboxShieldEntity, in context, out result.HitboxShieldEntity);
         PrototypeValidator.FindMapEntity(this.HitboxCharacterEntity, in context, out result.HitboxCharacterEntity);
         this.DamageCooldown.Materialize(frame, ref result.DamageCooldown, in context);
-        result.MovementCooldown = this.MovementCooldown;
+        result.MovementCooldownSec = this.MovementCooldownSec;
     }
   }
   [System.SerializableAttribute()]

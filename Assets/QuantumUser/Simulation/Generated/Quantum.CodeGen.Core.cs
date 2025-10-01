@@ -1120,7 +1120,7 @@ namespace Quantum {
     [FieldOffset(88)]
     public FrameTimer DamageCooldown;
     [FieldOffset(64)]
-    public FP MovementCooldown;
+    public FP MovementCooldownSec;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 6911;
@@ -1141,7 +1141,7 @@ namespace Quantum {
         hash = hash * 31 + HitboxShieldEntity.GetHashCode();
         hash = hash * 31 + HitboxCharacterEntity.GetHashCode();
         hash = hash * 31 + DamageCooldown.GetHashCode();
-        hash = hash * 31 + MovementCooldown.GetHashCode();
+        hash = hash * 31 + MovementCooldownSec.GetHashCode();
         return hash;
       }
     }
@@ -1159,7 +1159,7 @@ namespace Quantum {
         EntityRef.Serialize(&p->HitboxShieldEntity, serializer);
         FP.Serialize(&p->CurrentDefence, serializer);
         FP.Serialize(&p->CurrentHp, serializer);
-        FP.Serialize(&p->MovementCooldown, serializer);
+        FP.Serialize(&p->MovementCooldownSec, serializer);
         FP.Serialize(&p->RotationBase, serializer);
         FP.Serialize(&p->RotationOffset, serializer);
         FrameTimer.Serialize(&p->DamageCooldown, serializer);

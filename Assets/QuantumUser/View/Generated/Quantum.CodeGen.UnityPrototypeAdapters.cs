@@ -69,7 +69,7 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.QuantumEntityPrototype HitboxShieldEntity;
     public Quantum.QuantumEntityPrototype HitboxCharacterEntity;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
-    public FP MovementCooldown;
+    public FP MovementCooldownSec;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerDataQComponentPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerDataQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerDataQComponentPrototype();
@@ -90,7 +90,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.HitboxShieldEntity, out result.HitboxShieldEntity);
       converter.Convert(this.HitboxCharacterEntity, out result.HitboxCharacterEntity);
       converter.Convert(this.DamageCooldown, out result.DamageCooldown);
-      converter.Convert(this.MovementCooldown, out result.MovementCooldown);
+      converter.Convert(this.MovementCooldownSec, out result.MovementCooldownSec);
       ConvertUser(converter, ref result);
       return result;
     }
