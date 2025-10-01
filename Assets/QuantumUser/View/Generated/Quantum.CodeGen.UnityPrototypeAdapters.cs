@@ -51,6 +51,32 @@ namespace Quantum.Prototypes.Unity {
   #endif //;
   
   [System.SerializableAttribute()]
+  public unsafe partial class BattlePlayerClassProjectorDataQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerClassProjectorDataQComponentPrototype> {
+    [HideInInspector()]
+    public QBoolean IsHoldingProjectile;
+    [HideInInspector()]
+    public Quantum.QuantumEntityPrototype HeldProjectileEntity;
+    [HideInInspector()]
+    public Int32 HoldStartFrame;
+    [HideInInspector()]
+    public FP HeldProjectileAngleRadians;
+    [HideInInspector()]
+    public FP HeldProjectileDistance;
+    public FP RotationDurationFrames;
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerClassProjectorDataQComponentPrototype prototype);
+    public override Quantum.Prototypes.BattlePlayerClassProjectorDataQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.BattlePlayerClassProjectorDataQComponentPrototype();
+      converter.Convert(this.IsHoldingProjectile, out result.IsHoldingProjectile);
+      converter.Convert(this.HeldProjectileEntity, out result.HeldProjectileEntity);
+      converter.Convert(this.HoldStartFrame, out result.HoldStartFrame);
+      converter.Convert(this.HeldProjectileAngleRadians, out result.HeldProjectileAngleRadians);
+      converter.Convert(this.HeldProjectileDistance, out result.HeldProjectileDistance);
+      converter.Convert(this.RotationDurationFrames, out result.RotationDurationFrames);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
   public unsafe partial class BattlePlayerDataQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerDataQComponentPrototype> {
     public PlayerRef PlayerRef;
     public Quantum.QEnum32<BattlePlayerSlot> Slot;

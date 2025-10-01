@@ -145,7 +145,7 @@ namespace Battle.QSimulation.Player
 
                 case BattlePlayerCharacterClass.Projector:
                     if (s_classArray[ClassIndexProjector] != null) break;
-                    //s_classArray[ClassIndexProjector] = new BattlePlayerClassProjector();
+                    s_classArray[ClassIndexProjector] = new BattlePlayerClassProjector();
                     break;
 
                 case BattlePlayerCharacterClass.Retroflector:
@@ -155,7 +155,7 @@ namespace Battle.QSimulation.Player
 
                 case BattlePlayerCharacterClass.Confluent:
                     if (s_classArray[ClassIndexConfluent] != null) break;
-                    //s_classArray[ClassIndexConfluent] = new BattlePlayerClassConfluent();
+                    s_classArray[ClassIndexConfluent] = new BattlePlayerClassConfluent();
                     break;
 
                 case BattlePlayerCharacterClass.Intellectualizer:
@@ -324,9 +324,9 @@ namespace Battle.QSimulation.Player
                 BattlePlayerCharacterClass.Desensitizer     => ClassIndexDesensitizer,
                 //BattlePlayerCharacterClass.Trickster        => ClassIndexTrickster,
                 BattlePlayerCharacterClass.Obedient         => ClassIndexNoCode,
-                //BattlePlayerCharacterClass.Projector        => ClassIndexProjector,
+                BattlePlayerCharacterClass.Projector        => ClassIndexProjector,
                 //BattlePlayerCharacterClass.Retroflector     => ClassIndexRetroflector,
-                //BattlePlayerCharacterClass.Confluent        => ClassIndexConfluent,
+                BattlePlayerCharacterClass.Confluent        => ClassIndexConfluent,
                 //BattlePlayerCharacterClass.Intellectualizer => ClassIndexIntellectualizer,
 
                 _ => ClassIndexError,

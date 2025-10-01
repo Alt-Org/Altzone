@@ -439,7 +439,7 @@ namespace Battle.QSimulation.Player
                 playerHandle.PlayState = BattlePlayerPlayState.OutOfPlay;
                 playerHandle.IsBot = isBot;
                 playerHandle.AllowCharacterSwapping = true;
-                playerHandle.SetCharacters(playerCharacterEntityArray);
+                playerHandle.SetCharacterEntities(playerCharacterEntityArray);
             }
         }
 
@@ -595,8 +595,8 @@ namespace Battle.QSimulation.Player
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _internalHandle.AllowCharacterSwapping = value;
             }
 
-            public EntityRef SelectedCharacter
-            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacter; }
+            public EntityRef SelectedCharacterEntity
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacterEntity; }
 
             public int SelectedCharacterNumber
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacterNumber; }
@@ -851,10 +851,10 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
-            /// Gets player's SelectedCharacter.<br/>
-            /// The SelectedCharacter is a EntityRef to the character that is currently in play.
+            /// Gets player's SelectedCharacterEntity.<br/>
+            /// The SelectedCharacterEntity is a EntityRef to the character that is currently in play.
             /// </summary>
-            public EntityRef SelectedCharacter
+            public EntityRef SelectedCharacterEntity
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->SelectedCharacters[Index]; }
 
             /// <summary>
@@ -903,14 +903,14 @@ namespace Battle.QSimulation.Player
             /// <param name="characterNumber">CharacterNumber of the player's character you want to get.</param>
             /// <returns>EntityRef to a player's Character.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public EntityRef GetCharacter(int characterNumber) => _playerManagerData->AllCharacters[GetCharacterIndex(characterNumber)];
+            public EntityRef GetCharacterEntity(int characterNumber) => _playerManagerData->AllCharacters[GetCharacterIndex(characterNumber)];
 
             /// <summary>
             /// Saves player's created character EntityRefs to BattlePlayerManagerDataQSingleton.
             /// </summary>
             ///
             /// <param name="entityRefArray">The Character EntityRefs as an array.</param>
-            public void SetCharacters(EntityRef[] entityRefArray)
+            public void SetCharacterEntities(EntityRef[] entityRefArray)
             {
                 int characterOffset = GetCharacterOffset();
                 for (int i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_COUNT; i++)
@@ -1033,7 +1033,7 @@ namespace Battle.QSimulation.Player
         /// <param name="characterNumber">The character number of the character to be spawned.</param>
         private static void SpawnPlayer(Frame f, PlayerHandleInternal playerHandle, int characterNumber)
         {
-            EntityRef character = playerHandle.GetCharacter(characterNumber);
+            EntityRef character = playerHandle.GetCharacterEntity(characterNumber);
             BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(character);
             Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(character);
 
@@ -1041,7 +1041,7 @@ namespace Battle.QSimulation.Player
 
             if (playerHandle.PlayState.IsInPlay())
             {
-                worldPosition = f.Unsafe.GetPointer<Transform2D>(playerHandle.SelectedCharacter)->Position;
+                worldPosition = f.Unsafe.GetPointer<Transform2D>(playerHandle.SelectedCharacterEntity)->Position;
                 DespawnPlayer(f, playerHandle);
             }
             else
@@ -1076,7 +1076,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">PlayerHandle of the player the character will be spawned for.</param>
         private static void DespawnPlayer(Frame f, PlayerHandleInternal playerHandle)
         {
-            EntityRef selectedCharacter = playerHandle.SelectedCharacter;
+            EntityRef selectedCharacter = playerHandle.SelectedCharacterEntity;
             BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(selectedCharacter);
             Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(selectedCharacter);
 

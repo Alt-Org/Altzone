@@ -41,7 +41,7 @@ namespace Battle.QSimulation.Goal
                 _ => BattleTeamNumber.NoTeam
             };
 
-            BattleGameControlQSystem.OnGameOver(f, winningTeam, goalCollisionData->Projectile, goalCollisionData->CollidingEntity);
+            BattleGameControlQSystem.OnGameOver(f, winningTeam, goalCollisionData->Projectile, goalCollisionData->ProjectileEntity);
 
             goalCollisionData->Goal->HasTriggered = true;
 
