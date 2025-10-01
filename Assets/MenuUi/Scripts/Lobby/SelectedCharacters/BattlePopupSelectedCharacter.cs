@@ -21,6 +21,8 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         [SerializeField] private Image _spriteImage;
         [SerializeField] private Image _classColorImage;
         [SerializeField] private PieChartPreview _piechartPreview;
+        [SerializeField] public Image _cornerIcon;
+        [SerializeField] public Image _resistanceIcon;
 
         [Header("Reference sheet")]
         [SerializeField] private ClassReference _classReference;
@@ -35,7 +37,6 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         {
             _button.onClick.RemoveAllListeners();
         }
-
 
         // Method for adding the edit panel listener because in KotiView the button should open defence gallery using SetMainMenuWindowIndex script instead
         public void SetOpenEditPanelListener() 
@@ -58,7 +59,9 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             _spriteImage.enabled = true;
 
             CharacterClassType charClassType = CustomCharacter.GetClass(charID);
-            if (_classColorImage != null) _classColorImage.color = _classReference.GetColor(charClassType);
+            if (_classColorImage != null) _classColorImage.sprite = _classReference.GetFrame(charClassType);
+            if (_cornerIcon != null) _cornerIcon.sprite = _classReference.GetCornerIcon(charClassType);
+            if (_resistanceIcon != null) _resistanceIcon.sprite = _classReference.GetResistanceIcon(charClassType);
 
             _characterId = charID;
 
