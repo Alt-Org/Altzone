@@ -13,7 +13,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 {
     public class SaveReset : MonoBehaviour
     {
-        [SerializeField] public GameObject _contents;
+        [SerializeField] private GameObject _contents;
         [SerializeField] private TMP_Text _popupText;
         [SerializeField] private Button _okButton;
         [SerializeField] private Button _noButton;
@@ -42,14 +42,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             yield return new WaitUntil(() => saveChanges.HasValue || !_contents.activeSelf);
 
-            if (_contents.activeSelf) CloseSaveResetPopup();
+            CloseSaveResetPopup();
 
             callback(saveChanges);
         }
 
         public void CloseSaveResetPopup()
         {
-            _contents.SetActive(false);
+            if (_contents.activeSelf) _contents.SetActive(false);
         }
 
         public void OnResetButtonClicked()

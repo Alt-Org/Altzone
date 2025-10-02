@@ -62,6 +62,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private TMP_InputField _gyroscopeMinAngleInputField;
 
         [Header("Arena options")]
+        [SerializeField] private RectTransform _arenaImage;
+        [Space]
         [SerializeField] private Slider _arenaScaleSlider;
         [SerializeField] private TMP_InputField _arenaScaleInputField;
         [Space]
@@ -70,6 +72,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [Space]
         [SerializeField] private Slider _arenaPosYSlider;
         [SerializeField] private TMP_InputField _arenaPosYInputField;
+
+        [Header("References")]
         [SerializeField] private BattleUiEditor _battleUiEditor;
         [SerializeField] private SaveReset _saveReset;
 
@@ -466,11 +470,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             anchorMax.y = (position.y + arenaHeight) / editorAspectRatioHeight;
 
             // Setting arena anchors
-            _battleUiEditor._arenaImage.anchorMin = anchorMin;
-            _battleUiEditor._arenaImage.anchorMax = anchorMax;
+            _arenaImage.anchorMin = anchorMin;
+            _arenaImage.anchorMax = anchorMax;
 
-            _battleUiEditor._arenaImage.offsetMin = Vector2.zero;
-            _battleUiEditor._arenaImage.offsetMax = Vector2.zero;
+            _arenaImage.offsetMin = Vector2.zero;
+            _arenaImage.offsetMax = Vector2.zero;
         }
 
         public void ToggleOptionsPopup()

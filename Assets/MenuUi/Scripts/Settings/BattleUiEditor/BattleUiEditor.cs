@@ -33,7 +33,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Slider _uiTransparencySlider;
         [SerializeField] private TMP_InputField _uiTransparencyInputField;
         [Space]
-        [SerializeField] public RectTransform _arenaImage;
         [SerializeField] private RectTransform _uiElementsHolder;
         [SerializeField] private GridController _grid;
 
@@ -45,7 +44,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private SaveReset _saveReset;
 
         [Header("BattleUi prefabs")]
-        [SerializeField] public GameObject _editingComponent;
+        [SerializeField] private GameObject _editingComponent;
         [SerializeField] private BattleUiPrefabs _prefabs;
 
         public enum CornerType // Helper enum to access button world corners and scale handles array in editing component script more readably.
@@ -112,9 +111,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// <summary>
         /// Close BattleUiEditor, before closing show save changes popup.
         /// </summary>
-        public void CloseEditor()
+        private void CloseEditor()
         {
-            _optionsPopup.CloseOptionsPopup();
+            ClosePopups();
             if (_unsavedChanges)
             {
                 OnUiElementSelected(null);
@@ -137,7 +136,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// </summary>
         public void ClosePopups()
         {
-            if (_saveReset._contents.activeSelf) _saveReset.CloseSaveResetPopup();
+            _saveReset.CloseSaveResetPopup();
+            _optionsPopup.CloseOptionsPopup();
             OnUiElementSelected(null);
         }
 
