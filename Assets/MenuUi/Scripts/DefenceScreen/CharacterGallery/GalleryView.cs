@@ -174,9 +174,11 @@ namespace MenuUi.Scripts.CharacterGallery
             string className = _classReference.GetName(classID);
             Color bgColor = _classReference.GetColor(classID);
             Color bgAltColor = _classReference.GetAlternativeColor(classID);
+            Sprite classIcon = _classReference.GetIcon(classID);
+
 
             CharacterSlot charSlot = slot.GetComponent<CharacterSlot>();
-            charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, className, charID);
+            charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, className, classIcon, charID);
 
             _characterSlots.Add(charSlot);
 

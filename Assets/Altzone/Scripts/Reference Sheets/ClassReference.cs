@@ -9,30 +9,38 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private string _desensitizerName;
         [SerializeField] private Color _desensitizerColor;
         [SerializeField] private Color _desensitizerAlternativeColor;
+        [SerializeField] private Sprite _desensitizerSprite;
 
         [Space, SerializeField] private string _tricksterName;
         [SerializeField] private Color _tricksterColor;
         [SerializeField] private Color _tricksterAlternativeColor;
+        [SerializeField] private Sprite _tricksterSprite;
 
         [Space, SerializeField] private string _obedientName;
         [SerializeField] private Color _obedientColor;
         [SerializeField] private Color _obedientAlternativeColor;
+        [SerializeField] private Sprite _obedientSprite;
 
         [Space, SerializeField] private string _projectorName;
         [SerializeField] private Color _projectorColor;
         [SerializeField] private Color _projectorAlternativeColor;
+        [SerializeField] private Sprite _projectorSprite;
 
         [Space, SerializeField] private string _retroflectorName;
         [SerializeField] private Color _retroflectorColor;
         [SerializeField] private Color _retroflectorAlternativeColor;
+        [SerializeField] private Sprite _retroflectorSprite;
+
 
         [Space, SerializeField] private string _confluentName;
         [SerializeField] private Color _confluentColor;
         [SerializeField] private Color _confluentAlternativeColor;
+        [SerializeField] private Sprite _confluentSprite;
 
         [Space, SerializeField] private string _intellectualizerName;
         [SerializeField] private Color _intellectualizerColor;
         [SerializeField] private Color _intellectualizerAlternativeColor;
+        [SerializeField] private Sprite _intellectualizerSprite;
 
 
         /// <summary>
@@ -117,6 +125,33 @@ namespace Altzone.Scripts.ReferenceSheets
                     return _intellectualizerAlternativeColor;
             }
             return Color.gray;
+        }
+
+        /// <summary>
+        /// Get character class icon (sprite).
+        /// </summary>
+        /// <param name="classId">The class id which icon to get.</param>
+        /// <returns>Class icon sprite.</returns>
+        public Sprite GetIcon(CharacterClassID classId)
+        {
+            switch (classId)
+            {
+                case CharacterClassID.Desensitizer:
+                    return _desensitizerSprite;
+                case CharacterClassID.Trickster:
+                    return _tricksterSprite;
+                case CharacterClassID.Obedient:
+                    return _obedientSprite;
+                case CharacterClassID.Projector:
+                    return _projectorSprite;
+                case CharacterClassID.Retroflector:
+                    return _retroflectorSprite;
+                case CharacterClassID.Confluent:
+                    return _confluentSprite;
+                case CharacterClassID.Intellectualizer:
+                    return _intellectualizerSprite;
+            }
+            return null; // fallback
         }
     }
 }
