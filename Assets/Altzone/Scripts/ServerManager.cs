@@ -1729,5 +1729,35 @@ public class ServerManager : MonoBehaviour
     }
     #endregion
 
+    #region Jukebox
+    public IEnumerator GetJukeboxClanPlaylist(Action<string[]> callback)
+    {
+        string query = SERVERADDRESS + "jukebox";
+
+        StartCoroutine(WebRequests.Get(query, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                JArray clans = (JArray)result["data"]["Jukebox"];
+
+                string[] playlist = new string[0];
+
+                if (callback != null)
+                    callback(playlist);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+
+        yield break;
+    }
+
+    #endregion
+
     #endregion
 }

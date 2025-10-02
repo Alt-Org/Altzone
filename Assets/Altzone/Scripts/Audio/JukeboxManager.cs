@@ -168,7 +168,18 @@ namespace Altzone.Scripts.Audio
 
             yield return new WaitUntil(() => _currentPlayerData != null);
 
-            _currentPlaylist = new("Klaani", PlaylistType.Clan, TESTCreateServerMusicList()); //TODO: Replace later with playlist from server
+            string[] playlistData = null;
+            float timeoutSeconds = 10f;
+            bool? timeoutCallback = null;
+
+            StartCoroutine(ServerManager.Instance.GetJukeboxClanPlaylist((data) => playlistData = data));
+            StartCoroutine(WaitUntilTimeout(timeoutSeconds, (timeoutData) => timeoutCallback = timeoutData));
+
+            yield return new WaitUntil(() => (playlistData != null || timeoutCallback != null));
+
+            if (timeoutCallback != null && timeoutCallback.Value) yield break;
+
+            _currentPlaylist = new("Klaani", PlaylistType.Clan, playlistData/*TESTCreateServerMusicList()*/); //TODO: Replace later with playlist from server
             CreateTrackQueue();
             _playlistReady = true;
 
@@ -602,7 +613,7 @@ namespace Altzone.Scripts.Audio
                 AddToQueueList(trackQueueData);
             }
 
-            _localTrackId = _currentPlaylist.TrackQueueDatas.Count;
+            _localTrackId = _currentPlaylist.TrackQueueDatas.Length;
         }
 
         private void AddToQueueList(MusicTrack musicTrack) { AddToQueueList(new TrackQueueData(CreateTrackQueueId(musicTrack.Name), _trackQueue.Count, null, musicTrack, true)); }
@@ -706,7 +717,7 @@ namespace Altzone.Scripts.Audio
 
     public class TrackQueueData
     {
-        public string Id; //Fromat: UserId_TrackName_LocalTrackId
+        public string Id; //Fromat: UserId_MusicTrackId_LocalPlaylistTrackId
         public int LinearIndex;
         public ChunkPointer Pointer;
         public MusicTrack MusicTrack;
@@ -741,9 +752,9 @@ namespace Altzone.Scripts.Audio
     {
         public string Name;
         public JukeboxManager.PlaylistType Type;
-        public List<string> TrackQueueDatas; //Fromat: UserId_TrackName
+        public string[] TrackQueueDatas; //Fromat: UserId_MusicTrackId_LocalPlaylistTrackId
 
-        public Playlist(string name, JukeboxManager.PlaylistType type, List<string> serverMusicTracks)
+        public Playlist(string name, JukeboxManager.PlaylistType type, string[] serverMusicTracks)
         {
             Name = name;
             Type = type;
@@ -755,13 +766,16 @@ namespace Altzone.Scripts.Audio
             List<TrackQueueData> queueHandlers = new();
             List<MusicTrack> musicTracks = new(AudioManager.Instance.GetMusicList("Jukebox"));
 
-            for (int i = 0; i < TrackQueueDatas.Count; i++)
+            for (int i = 0; i < TrackQueueDatas.Length; i++)
             {
-                string userId = TrackQueueDatas[i].Split('_')[0];
-                string serverTrackName = TrackQueueDatas[i].Split('_')[1];
+                string[] trackQueuePackedData = TrackQueueDatas[i].Split('_');
+
+                string userId = trackQueuePackedData[0];
+                string musicTrackId = trackQueuePackedData[1];
+                string localPlaylistTrackId = trackQueuePackedData[2];
 
                 foreach (MusicTrack track in musicTracks)
-                    if (track.Name.ToLower() == serverTrackName.ToLower())
+                    if (track.Id == musicTrackId)
                     {
                         queueHandlers.Add(new(userId + "_" + track.Name, i, null, track, (userId.ToLower() == localUserId.ToLower())));
                         break;
@@ -809,7 +823,7 @@ namespace Altzone.Scripts.Audio
             public TrackQueueData TrackQueueData;
             public int LinearIndex;
 
-            public PlaybackHistoryDataCollection(TrackQueueData trackQueueData/*, int chunkIndex, int poolIndex*/)
+            public PlaybackHistoryDataCollection(TrackQueueData trackQueueData)
             {
                 TrackQueueData = trackQueueData;
                 LinearIndex = trackQueueData.LinearIndex;

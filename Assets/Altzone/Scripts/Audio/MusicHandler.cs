@@ -79,13 +79,13 @@ namespace Altzone.Scripts.Audio
             return musicCategory.MusicTracks;
         }
 
-        public string PlayMusic(string categoryName, int trackId)
+        public string PlayMusicById(string categoryName, string trackId)
         {
             MusicCategory currentCategory = _musicReference.GetCategory(categoryName);
 
             if (currentCategory == null) return null;
 
-            MusicTrack musicTrack = currentCategory.Get(trackId);
+            MusicTrack musicTrack = currentCategory.GetById(trackId);
 
             if (musicTrack == null) return null;
 
