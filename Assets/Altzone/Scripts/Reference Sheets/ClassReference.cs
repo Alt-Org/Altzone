@@ -55,6 +55,21 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private Sprite _intellectualizerCornerIcon;
         [SerializeField] private Sprite _intellectualizerResistanceIcon;
 
+        private static ClassReference _instance;
+        private static bool _hasInstance;
+
+        public static ClassReference Instance
+        {
+            get
+            {
+                if (!_hasInstance)
+                {
+                    _instance = Resources.Load<ClassReference>("Characters/"+nameof(ClassReference));
+                    _hasInstance = _instance != null;
+                }
+                return _instance;
+            }
+        }
 
         /// <summary>
         /// Get character class name.
