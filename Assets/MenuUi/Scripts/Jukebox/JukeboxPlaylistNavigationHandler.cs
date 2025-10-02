@@ -198,7 +198,7 @@ public class JukeboxPlaylistNavigationHandler : MonoBehaviour
 
                 if ((textDirection == 1 && visible) || (textDirection == -1 && !visible)) continue;
 
-                if (hiddenTrackChunkData.Pool[j] != !visible) hiddenTrackChunkData.AmountInUse += textDirection;
+                //if (hiddenTrackChunkData.Pool[j] != !visible) hiddenTrackChunkData.AmountInUse += textDirection;
 
                 hiddenTrackChunkData.Pool[j] = !visible;
                 handler.SetVisibility(visible);

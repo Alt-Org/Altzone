@@ -7,30 +7,33 @@ using UnityEngine.UI;
 public class JukeboxTrackButtonHandler : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _trackNameText;
+    [SerializeField] private Image _trackImage;
+    [SerializeField] private Button _addButton;
+    [SerializeField] private Button _likeOptionButton;
 
     private int _trackLinearIndex = 0;
 
     private MusicTrack _currentTrack = null;
     public MusicTrack CurrentTrack {  get { return _currentTrack; } }
 
-    [SerializeField] Button _addButton;
 
     //public delegate void TrackPressed(int startIndex);
     public delegate void TrackPressed(MusicTrack musicTrack);
     public event TrackPressed OnTrackPressed;
 
-    private void Awake() { _addButton.onClick.AddListener(() => ButtonClicked()); }
+    private void Awake() { _addButton.onClick.AddListener(() => AddButtonClicked()); }
 
     public bool InUse() { return _currentTrack != null; }
 
     //public void ButtonClicked() { if (_currentTrack != null) OnTrackPressed.Invoke(_trackLinearIndex); }
-    public void ButtonClicked() { if (_currentTrack != null) OnTrackPressed.Invoke(_currentTrack); }
+    public void AddButtonClicked() { if (_currentTrack != null) OnTrackPressed.Invoke(_currentTrack); }
 
     public void SetTrack(MusicTrack musicTrack, int trackLinearIndex)
     {
         _trackLinearIndex = trackLinearIndex;
         _currentTrack = musicTrack;
         _trackNameText.text = musicTrack.Name;
+        _trackImage.sprite = musicTrack.Info.Disk;
         gameObject.SetActive(true);
     }
 

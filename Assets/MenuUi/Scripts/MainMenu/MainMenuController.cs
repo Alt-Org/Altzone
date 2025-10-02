@@ -40,7 +40,7 @@ namespace MenuUi.Scripts.MainMenu
 
             _swipe = GetComponentInParent<SwipeUI>();
             StartCoroutine(CheckWindowSize());
-            Debug.LogError("?????" + jukeboxMainMenu);
+
             if (jukeboxMainMenu)
             {
                 if (string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))

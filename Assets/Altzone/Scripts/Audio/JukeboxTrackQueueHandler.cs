@@ -1,6 +1,7 @@
 using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Handles the visual queue item.
@@ -8,6 +9,9 @@ using UnityEngine;
 public class JukeboxTrackQueueHandler : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _trackNameText;
+    [SerializeField] private Button _likeOptionButton;
+    [SerializeField] private Button _deleteButton;
+    [SerializeField] private TextAutoScroll _textAutoScroll;
 
     private string _id; // Id that is used with JukeboxManager.
     public string Id { get { return _id; } }
@@ -17,13 +21,24 @@ public class JukeboxTrackQueueHandler : MonoBehaviour
     public int LinearIndex { get { return _linearIndex; } }
 
     private int _chunkIndex = 0;
-    public int ChunkIndex {  get { return _chunkIndex; } }
+    public int ChunkIndex { get { return _chunkIndex; } }
 
     private int _poolIndex = 0;
     public int PoolIndex { get { return _poolIndex; } }
 
+    private bool _userOwned = false;
+    public bool UserOwned { get { return _userOwned; } }
+
     private MusicTrack _musicTrack = null;
     public MusicTrack MusicTrack { get { return _musicTrack; } }
+
+    public delegate void DeleteEvent(int chunkIndex, int poolIndex, int linearIndex);
+    public event DeleteEvent OnDeleteEvent;
+
+    private void Start()
+    {
+        _deleteButton.onClick.AddListener(() => Delete());
+    }
 
     /// <summary>
     /// Use when creating the gameobject that has this class. (Execute only once!)
@@ -37,7 +52,7 @@ public class JukeboxTrackQueueHandler : MonoBehaviour
 
     public bool InUse() { return !string.IsNullOrEmpty(_id); }
 
-    public void SetTrack(string id, MusicTrack musicTrack, int linearIndex)
+    public void SetTrack(string id, MusicTrack musicTrack, int linearIndex, bool userOwned)
     {
         _id = id;
         _musicTrack = musicTrack;
@@ -47,15 +62,23 @@ public class JukeboxTrackQueueHandler : MonoBehaviour
             _trackNameText.text = musicTrack.Name;
         else
             _trackNameText.text = "";
-        //_trackNameText.alignment
-        // Debug.LogError($"SetTrack: Id: {_id}, LinearIndex: {_linearIndex}, ChunkIndex: {_chunkIndex}, PoolIndex: {_poolIndex}");
+
+        if (GetVisibility())
+            _textAutoScroll.ContentChange();
+        else
+            _textAutoScroll.DisableCoroutines();
+
+        _userOwned = userOwned;
+        _deleteButton.gameObject.SetActive(userOwned);
     }
 
     public void SetLinearIndex(int index) { _linearIndex = index; }
 
-    public void Clear() { _id = ""; _musicTrack = null; _trackNameText.text = ""; SetVisibility(false); }
+    public void Clear() { _id = ""; _musicTrack = null; _trackNameText.text = ""; _linearIndex = -1; SetVisibility(false); }
 
     public void SetVisibility(bool visible) { gameObject.SetActive(visible); }
 
     public bool GetVisibility() { return gameObject.activeSelf; }
+
+    private void Delete() { OnDeleteEvent.Invoke(_chunkIndex, _poolIndex, _linearIndex); }
 }

@@ -29,7 +29,7 @@ public class TextAutoScroll : MonoBehaviour
         _contentSizeFitter = GetComponent<ContentSizeFitter>();
         _contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
         _contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-        _text.text = "";
+        //_text.text = "";
     }
 
     private void OnEnable()
@@ -42,7 +42,7 @@ public class TextAutoScroll : MonoBehaviour
         DisableCoroutines();
     }
 
-    private void DisableCoroutines()
+    public void DisableCoroutines()
     {
         if (_scrollCoroutine != null) StopCoroutine(_scrollCoroutine);
 
@@ -54,14 +54,17 @@ public class TextAutoScroll : MonoBehaviour
     public void ContentChange()
     {
         DisableCoroutines();
-        _contentSetCoroutine = StartCoroutine(ContentSet());
+        if (isActiveAndEnabled) _contentSetCoroutine = StartCoroutine(ContentSet());
     }
 
     private IEnumerator ContentSet()
     {
         yield return new WaitUntil(() => !string.IsNullOrEmpty(_text.text));
 
-        if (_selfRect.sizeDelta.x > _parentRect.sizeDelta.x) _scrollCoroutine = StartCoroutine(Scroll());
+        if (_selfRect.sizeDelta.x > _parentRect.sizeDelta.x)
+            _scrollCoroutine = StartCoroutine(Scroll());
+        else
+            _selfRect.pivot = new Vector2(0.5f, 0.5f);
     }
 
     private IEnumerator Scroll()

@@ -67,7 +67,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
 
     private void OnEnable()
     {
-        JukeboxManager.Instance.OnReduceQueueHandlerChunkActiveCount += ReduceQueueHandlerChunkActiveCount;
+        //JukeboxManager.Instance.OnReduceQueueHandlerChunkActiveCount += ReduceQueueHandlerChunkActiveCount;
         JukeboxManager.Instance.OnGetFreeJukeboxTrackQueueHandler += GetFreeJukeboxTrackQueueHandler;
         //JukeboxManager.Instance.OnOptimizeVisualQueueChunks += OptimizeVisualQueueChunksCheck;
         //JukeboxManager.Instance.OnForceOptimizeVisualQueueChunks += OptimizeVisualQueueChunks;
@@ -77,11 +77,13 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
         JukeboxManager.Instance.OnQueueChange += UpdateVisualQueue;
         JukeboxManager.Instance.OnQueueToLast += MoveQueueHandlerToLast;
         JukeboxManager.Instance.OnGetTrackQueueHandler += GetTrackQueueHandler;
+
+        if (_queueHandlerLastUpdate != JukeboxManager.Instance.PlaybackLastUpdate) UpdateVisualQueue();
     }
 
     private void OnDisable()
     {
-        JukeboxManager.Instance.OnReduceQueueHandlerChunkActiveCount -= ReduceQueueHandlerChunkActiveCount;
+        //JukeboxManager.Instance.OnReduceQueueHandlerChunkActiveCount -= ReduceQueueHandlerChunkActiveCount;
         JukeboxManager.Instance.OnGetFreeJukeboxTrackQueueHandler -= GetFreeJukeboxTrackQueueHandler;
         //JukeboxManager.Instance.OnOptimizeVisualQueueChunks -= OptimizeVisualQueueChunksCheck;
         //JukeboxManager.Instance.OnForceOptimizeVisualQueueChunks -= OptimizeVisualQueueChunks;
@@ -110,6 +112,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
             GameObject jukeboxTrackButton = Instantiate(_queueTextPrefab, _queueContent);
             JukeboxTrackQueueHandler buttonHandler = jukeboxTrackButton.GetComponent<JukeboxTrackQueueHandler>();
             buttonHandler.Setup(_queueHandlerChunks.Count, i);
+            buttonHandler.OnDeleteEvent += TrackRemoved;
             tracksChunk.Add(buttonHandler);
 
             ChunkPointer chunkPointer = new(_queueHandlerChunks.Count, i);
@@ -146,6 +149,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
         bool done = false;
         string tempMainId = "";
         MusicTrack tempMainTrack = null;
+        bool tempMainUserOwned = false;
 
         if (wantedChunk >= _queueHandlerChunks.Count) return GetTrackQueueHandler(GetFreeJukeboxTrackQueueHandler());
 
@@ -165,11 +169,12 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
             {
                 string tempInnerId = _queueHandlerChunks[chunkIndex].Pool[poolIndex].Id;
                 MusicTrack tempInnerTrack = _queueHandlerChunks[chunkIndex].Pool[poolIndex].MusicTrack;
+                bool tempInnerUserOwned = _queueHandlerChunks[chunkIndex].Pool[poolIndex].UserOwned;
                 int tempLinearIndex = (chunkIndex * JukeboxManager.Instance.TrackChunkSize) + poolIndex;
 
                 if (!string.IsNullOrEmpty(tempMainId))
                 {
-                    _queueHandlerChunks[chunkIndex].Pool[poolIndex].SetTrack(tempMainId, tempMainTrack, tempLinearIndex);
+                    _queueHandlerChunks[chunkIndex].Pool[poolIndex].SetTrack(tempMainId, tempMainTrack, tempLinearIndex, tempMainUserOwned);
                     _queueHandlerChunks[chunkIndex].Pool[poolIndex].SetVisibility(true);
                 }
                 else
@@ -177,6 +182,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
 
                 tempMainId = tempInnerId;
                 tempMainTrack = tempInnerTrack;
+                tempMainUserOwned = tempInnerUserOwned;
 
                 if (string.IsNullOrEmpty(tempMainId))
                 {
@@ -196,7 +202,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
 
             if (handler != null)
             {
-                handler.SetTrack(tempMainId, tempMainTrack, linearIndex);
+                handler.SetTrack(tempMainId, tempMainTrack, linearIndex, tempMainUserOwned);
                 handler.SetVisibility(true);
             }
         }
@@ -212,7 +218,6 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
 
     private void TrackQueueRemoved(ChunkPointer chunkPointer)
     {
-        chunkPointer.OnTrackQueueRemoved -= TrackQueueRemoved;
         _queueHandlerChunks[chunkPointer.ChunkIndex].Pool[chunkPointer.PoolIndex].Clear();
     }
 
@@ -228,8 +233,8 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
     {
         JukeboxTrackQueueHandler oldHandler = GetTrackQueueHandler(chunkPointer);
         JukeboxTrackQueueHandler newHandler = GetTrackQueueHandler(GetFreeJukeboxTrackQueueHandler());
-
-        newHandler.SetTrack(oldHandler.Id, oldHandler.MusicTrack, linearIndex);
+        //Debug.LogError("move to last: " + oldHandler.MusicTrack.Name);
+        newHandler.SetTrack(oldHandler.Id, oldHandler.MusicTrack, linearIndex, oldHandler.UserOwned);
         newHandler.SetVisibility(true);
         ReduceQueueHandlerChunkActiveCount(oldHandler.ChunkIndex);
         chunkPointer.Set(newHandler.ChunkIndex, newHandler.PoolIndex);
@@ -307,9 +312,9 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
                     {
                         _queueHandlerChunks[queueData.Pointer.ChunkIndex].AmountInUse--;
 
-                        if (trackQueueHandler1 != null)
-                            _queueHandlerChunks[queueData.Pointer.ChunkIndex].Pool[trackQueueHandler1.PoolIndex].Clear();
-                        else if (queueData.Pointer.ChunkIndex != -1)
+                        //if (trackQueueHandler1 != null)
+                        //    _queueHandlerChunks[queueData.Pointer.ChunkIndex].Pool[trackQueueHandler1.PoolIndex].Clear();
+                        //else if (queueData.Pointer.ChunkIndex != -1)
                             _queueHandlerChunks[queueData.Pointer.ChunkIndex].Pool[queueData.Pointer.PoolIndex].Clear();
 
                         break;
@@ -320,8 +325,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
 
                         JukeboxTrackQueueHandler handler = GetTrackQueueHandler(queueData.Pointer);
 
-                        _queueHandlerChunks[queueData.Pointer.ChunkIndex].AmountInUse++;
-                        handler.SetTrack(queueData.Id, queueData.MusicTrack, playbackHistoryData.Target1.LinearIndex); //TODO: Get "SelfChunkPointerIndex" from playbackhistory.
+                        handler.SetTrack(queueData.Id, queueData.MusicTrack, playbackHistoryData.Target1.LinearIndex, queueData.UserOwned);
                         handler.SetVisibility(true);
 
                         break;
@@ -330,11 +334,10 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
                     {
                         int chunkIndex = Mathf.FloorToInt(queueData.LinearIndex / JukeboxManager.Instance.TrackChunkSize);
                         int poolIndex = (queueData.LinearIndex % JukeboxManager.Instance.TrackChunkSize);
-
+                        Debug.LogError("insert history");
                         JukeboxTrackQueueHandler handler = GetInsertedJukeboxTrackQueueHandler(chunkIndex, poolIndex);
 
-                        _queueHandlerChunks[queueData.Pointer.ChunkIndex].AmountInUse++;
-                        handler.SetTrack(queueData.Id, queueData.MusicTrack, queueData.LinearIndex);
+                        handler.SetTrack(queueData.Id, queueData.MusicTrack, queueData.LinearIndex, queueData.UserOwned);
                         handler.SetVisibility(true);
 
                         break;
@@ -351,6 +354,12 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
 
                         break;
                     }
+                case JukeboxManager.PlaybackHistoryType.MoveToLast:
+                    {
+                        MoveQueueHandlerToLast(queueData.Pointer, queueData.LinearIndex);
+
+                        break;
+                    }
             }
         }
 
@@ -359,6 +368,14 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
 
         Debug.Log("Music Player: Visual queue list update done.");
 
+        OptimizeVisualQueueChunksCheck();
+    }
+
+    private void TrackRemoved(int chunkIndex, int poolIndex, int linearIndex)
+    {
+        JukeboxManager.Instance.DeleteFromQueue(linearIndex);
+        _queueHandlerChunks[chunkIndex].Pool[poolIndex].Clear();
+        ReduceQueueHandlerChunkActiveCount(chunkIndex);
         OptimizeVisualQueueChunksCheck();
     }
 
@@ -378,7 +395,8 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
         //string seconds = (elapsedTime % 60).ToString().Split('.')[0];
 
         //_trackPlayTimeText.text = $"{minutes}:{((seconds.Length == 1) ? ("0" + seconds) : seconds)}";
-        _trackPlayTimeSlider.value = elapsedTime / JukeboxManager.Instance.CurrentTrackQueueData.MusicTrack.Music.length;
+        if (JukeboxManager.Instance.CurrentTrackQueueData.InUse())
+            _trackPlayTimeSlider.value = elapsedTime / JukeboxManager.Instance.CurrentTrackQueueData.MusicTrack.Music.length;
     }
 
     #region Optimizations
@@ -411,7 +429,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
             else
                 for (int poolIndex = 0; poolIndex < _queueHandlerChunks[chunkIndex].Pool.Count; poolIndex++) //Pool
                 {
-                    JukeboxTrackQueueHandler handler = _queueHandlerChunks[chunkIndex].Pool[poolIndex];
+                    JukeboxTrackQueueHandler handler = _queueHandlerChunks[chunkIndex].Pool[poolIndex]; //TODO: Null for some reason!?
 
                     if (!handler.InUse())
                     {
@@ -426,14 +444,17 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
 
                             for (int destinationPoolIndex = 0; destinationPoolIndex < _queueHandlerChunks[chunkIndex - 1].Pool.Count; destinationPoolIndex++)
                                 if (!_queueHandlerChunks[chunkIndex - 1].Pool[destinationPoolIndex].InUse())
-                                    MoveToVisualQueueItem(handler, _queueHandlerChunks[chunkIndex - 1].Pool[destinationPoolIndex]);
+                                {
+                                    MoveToDestinationVisualQueueItem(handler, _queueHandlerChunks[chunkIndex - 1].Pool[destinationPoolIndex]);
+                                    break;
+                                }
 
                             freeSpaces[chunkIndex - 1]--;
                             freeSpace++;
                             previousFreeSlot++;
                         }
                         else if (previousFreeSlot != 0) //Move to a different slot in the same pool.
-                            MoveToVisualQueueItem(handler, _queueHandlerChunks[chunkIndex].Pool[poolIndex - previousFreeSlot]);
+                            MoveToDestinationVisualQueueItem(handler, _queueHandlerChunks[chunkIndex].Pool[poolIndex - previousFreeSlot]);
                     }
                 }
 
@@ -451,7 +472,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
         //Debug.LogError("After:-------------------------------------------------------------------------------");
         //for (int i = 0; i < _queueHandlerChunks.Count; i++)
         //    for (int j = 0; j < _queueHandlerChunks[i].Pool.Count; j++)
-        //        Debug.LogError("chunk: " + i + ", pool: " + j + ", Id: " + _queueHandlerChunks[i].Pool[j].Id);
+        //        Debug.LogError("chunk: " + i + ", pool: " + j + ", Id: " + _queueHandlerChunks[i].Pool[j].Id + ", linearIndex: " + _queueHandlerChunks[i].Pool[j].LinearIndex);
 
         Debug.Log("Music Player: Jukebox queue visual list optimization done.");
     }
@@ -461,18 +482,21 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
     /// </summary>
     private void RecalibrateQueuePointers()
     {
-        for (int i = _queueHandlerChunks.Count - 1; i >= 0; i--)
+        for (int i = 0; i < _queueHandlerChunks.Count; i++)
         {
+            //Debug.LogError($"in use: {_queueHandlerChunks[i].AmountInUse}, max size: {JukeboxManager.Instance.TrackChunkSize}");
             if (_queueHandlerChunks[i].AmountInUse < JukeboxManager.Instance.TrackChunkSize) // Find chunk that has not in use JukeboxTrackQueueHandler's.
             {
                 _queueHandlerChunkPointer = i;
 
-                for (int j = _queueHandlerChunks[i].Pool.Count - 1; j >= 0; j--)
+                for (int j = 0; j < _queueHandlerChunks[i].Pool.Count; j++)
                 {
+                    //Debug.LogError(_queueHandlerChunks[i].Pool[j].Id);
                     if (!_queueHandlerChunks[i].Pool[j].InUse())
+                    {
                         _queueHandlerPoolPointer = j;
-                    else
                         break;
+                    }
                 }
 
                 break;
@@ -483,18 +507,23 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
     }
     #endregion
 
-    private void MoveToVisualQueueItem(JukeboxTrackQueueHandler target, JukeboxTrackQueueHandler destination)
+    private void MoveToDestinationVisualQueueItem(JukeboxTrackQueueHandler target, JukeboxTrackQueueHandler destination)
     {
+        //Debug.LogError("Move action...");
         string tempId = target.Id;
         MusicTrack tempMusicTrack = target.MusicTrack;
         int tempLinearIndex = target.LinearIndex;
+        bool tempUserOwned = target.UserOwned;
         bool tempVisibility = target.GetVisibility();
-
-        destination.SetTrack(tempId, tempMusicTrack, tempLinearIndex);
+        //Debug.LogError("Target: chunk: " + target.ChunkIndex + ", pool: "+ target.PoolIndex);
+        //Debug.LogError("Target CHECK: linearIndex: " + target.LinearIndex + ", pool: "+ target.InUse());
+        //Debug.LogError("destination: chunk: " + destination.ChunkIndex + ", pool: "+ destination.PoolIndex);
         destination.SetVisibility(tempVisibility);
+        destination.SetTrack(tempId, tempMusicTrack, tempLinearIndex, tempUserOwned);
 
         JukeboxManager.Instance.TrackQueue[destination.LinearIndex].Pointer.Set(destination.ChunkIndex, destination.PoolIndex);
-
+        //Debug.LogError("destination CHECK: linearIndex: " + destination.LinearIndex + ", pool: "+ destination.InUse());
+        
         _queueHandlerChunks[target.ChunkIndex].AmountInUse--;
         _queueHandlerChunks[destination.ChunkIndex].AmountInUse++;
 
