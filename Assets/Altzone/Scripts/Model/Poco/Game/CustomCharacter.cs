@@ -2,7 +2,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Model.Poco.Attributes;
 using Altzone.Scripts.Model.Poco.Player;
 using Prg;
 using UnityEngine;
@@ -14,13 +13,13 @@ namespace Altzone.Scripts.Model.Poco.Game
     /// <summary>
     /// Player created custom 'game' character based on given <c>CharacterClass</c>.
     /// </summary>
-    [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
+    [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class CustomCharacter
     {
-        [PrimaryKey] public CharacterID Id;
+        public CharacterID Id;
         public string CharacterName => GetCharacterName(Id);
         public string CharacterClassAndName => GetCharacterClassAndName(Id);
-        public CharacterClassID CharacterClassID => GetClassID(Id);
+        public CharacterClassType CharacterClassType => GetClass(Id);
         public int InsideCharacterID => GetInsideCharacterID(Id);
 
         public BaseCharacter CharacterBase { get => _characterBase;
@@ -41,9 +40,9 @@ namespace Altzone.Scripts.Model.Poco.Game
         /// <summary>
         /// This can be used for example to load UNITY assets by name for UI at runtime.
         /// </summary>
-        [Optional] public string ServerID = "-1";
+        public string ServerID = "-1";
 
-        [Mandatory] public string Name;
+        public string Name;
         private int _hp;
         public int HpSegmentCount;
         private int _speed;
@@ -356,18 +355,14 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public static string GetCharacterClassAndName(CharacterID id)
         {
-            CharacterClassID classId = GetClassID(id);
+            CharacterClassType classType = GetClass(id);
 
-            string className = CharacterClass.GetClassName(classId);
+            string className = Game.CharacterClass.GetClassName(classType);
 
             return className+GetCharacterName(id);
         }
 
-        public static CharacterClassID GetClassID(CharacterID id)
-        {
-            CharacterClassID ClassId = (CharacterClassID)((((int)id)/100)*100);
-            return ClassId;
-        }
+        public static CharacterClassType GetClass(CharacterID id) => BaseCharacter.GetClass(id);
 
         public static int GetInsideCharacterID(CharacterID id)
         {

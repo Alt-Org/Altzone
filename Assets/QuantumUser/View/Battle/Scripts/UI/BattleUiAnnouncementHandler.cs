@@ -33,10 +33,6 @@ namespace Battle.View.UI
         /// @ref BattleUiAnnouncementHandler-SerializeFields
         [SerializeField] private TextMeshProUGUI _announcerText;
 
-        /// <summary>[SerializeField] Reference to the TextScaler script which handles scaling the announcement text.</summary>
-        /// @ref BattleUiAnnouncementHandler-SerializeFields
-        [SerializeField] private TextScaler _announcementTextScaler;
-
         /// @}
 
         /// <summary>Different types of announcement text which can be displayed.</summary>
@@ -108,7 +104,7 @@ namespace Battle.View.UI
             _announcerText.text = text;
             _announcerText.color = Color.red;
             _announcerText.textWrappingMode = TextWrappingModes.Normal;
-            _announcementTextScaler.RelativePercentageMax *= 0.5f;
+            _announcerText.fontSize *= 0.5f;
             _debugmode = true;
         }
 

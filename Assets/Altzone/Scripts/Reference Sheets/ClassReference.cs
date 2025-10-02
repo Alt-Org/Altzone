@@ -46,25 +46,25 @@ namespace Altzone.Scripts.ReferenceSheets
         /// <summary>
         /// Get character class name.
         /// </summary>
-        /// <param name="classId">The class id which name to get.</param>
+        /// <param name="classType">The class id which name to get.</param>
         /// <returns>Class name as string.</returns>
-        public string GetName(CharacterClassID classId)
+        public string GetName(CharacterClassType classType)
         {
-            switch (classId)
+            switch (classType)
             {
-                case CharacterClassID.Desensitizer:
+                case CharacterClassType.Desensitizer:
                     return _desensitizerName;
-                case CharacterClassID.Trickster:
+                case CharacterClassType.Trickster:
                     return _tricksterName;
-                case CharacterClassID.Obedient:
+                case CharacterClassType.Obedient:
                     return _obedientName;
-                case CharacterClassID.Projector:
+                case CharacterClassType.Projector:
                     return _projectorName;
-                case CharacterClassID.Retroflector:
+                case CharacterClassType.Retroflector:
                     return _retroflectorName;
-                case CharacterClassID.Confluent:
+                case CharacterClassType.Confluent:
                     return _confluentName;
-                case CharacterClassID.Intellectualizer:
+                case CharacterClassType.Intellectualizer:
                     return _intellectualizerName;
             }
 
@@ -75,25 +75,25 @@ namespace Altzone.Scripts.ReferenceSheets
         /// <summary>
         /// Get character class color.
         /// </summary>
-        /// <param name="classId">The class id which color to get.</param>
+        /// <param name="classType">The class id which color to get.</param>
         /// <returns>Class color.</returns>
-        public Color GetColor(CharacterClassID classId)
+        public Color GetColor(CharacterClassType classType)
         {
-            switch (classId)
+            switch (classType)
             {
-                case CharacterClassID.Desensitizer:
+                case CharacterClassType.Desensitizer:
                     return _desensitizerColor;
-                case CharacterClassID.Trickster:
+                case CharacterClassType.Trickster:
                     return _tricksterColor;
-                case CharacterClassID.Obedient:
+                case CharacterClassType.Obedient:
                     return _obedientColor;
-                case CharacterClassID.Projector:
+                case CharacterClassType.Projector:
                     return _projectorColor;
-                case CharacterClassID.Retroflector:
+                case CharacterClassType.Retroflector:
                     return _retroflectorColor;
-                case CharacterClassID.Confluent:
+                case CharacterClassType.Confluent:
                     return _confluentColor;
-                case CharacterClassID.Intellectualizer:
+                case CharacterClassType.Intellectualizer:
                     return _intellectualizerColor;
             }
             return Color.gray;
@@ -103,25 +103,25 @@ namespace Altzone.Scripts.ReferenceSheets
         /// <summary>
         /// Get character class alternative (lighter) color.
         /// </summary>
-        /// <param name="classId">The class id which alternative color to get.</param>
+        /// <param name="classType">The class id which alternative color to get.</param>
         /// <returns>Class alternative color.</returns>
-        public Color GetAlternativeColor(CharacterClassID classId)
+        public Color GetAlternativeColor(CharacterClassType classType)
         {
-            switch (classId)
+            switch (classType)
             {
-                case CharacterClassID.Desensitizer:
+                case CharacterClassType.Desensitizer:
                     return _desensitizerAlternativeColor;
-                case CharacterClassID.Trickster:
+                case CharacterClassType.Trickster:
                     return _tricksterAlternativeColor;
-                case CharacterClassID.Obedient:
+                case CharacterClassType.Obedient:
                     return _obedientAlternativeColor;
-                case CharacterClassID.Projector:
+                case CharacterClassType.Projector:
                     return _projectorAlternativeColor;
-                case CharacterClassID.Retroflector:
+                case CharacterClassType.Retroflector:
                     return _retroflectorAlternativeColor;
-                case CharacterClassID.Confluent:
+                case CharacterClassType.Confluent:
                     return _confluentAlternativeColor;
-                case CharacterClassID.Intellectualizer:
+                case CharacterClassType.Intellectualizer:
                     return _intellectualizerAlternativeColor;
             }
             return Color.gray;

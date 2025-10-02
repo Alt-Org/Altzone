@@ -6,7 +6,7 @@ namespace Altzone.Scripts.Model.Poco.Game
 {
     public abstract class TestClassCharacter : BaseCharacter
     {
-        public override CharacterClassID ClassID => CharacterClassID.None;
+        public override CharacterClassType ClassType => CharacterClassType.None;
 
 
         protected TestClassCharacter()

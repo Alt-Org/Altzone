@@ -8,7 +8,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
 
 
-        public override CharacterClassID ClassID => CharacterClassID.Retroflector;
+        public override CharacterClassType ClassType => CharacterClassType.Retroflector;
 
 
         protected RetroflectorClassCharacter()

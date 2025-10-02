@@ -53,7 +53,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         [SerializeField] protected ValueStrength _defenceStrength = ValueStrength.None;
 
         public CharacterID Id { get => _id;}
-        public virtual CharacterClassID ClassID { get => GetClassID(Id); }
+        public virtual CharacterClassType ClassType { get => GetClass(Id); }
         public int Hp { get => _hp;}
         public int DefaultHp { get => _defaultHp; set { _defaultHp = value; SaveData(); } }
         public int Speed { get => _speed;}
@@ -423,10 +423,10 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         #endregion
 
-        public static CharacterClassID GetClassID(CharacterID id)
+        public static CharacterClassType GetClass(CharacterID id)
         {
-            CharacterClassID ClassId = (CharacterClassID)((((int)id) / 100) * 100);
-            return ClassId;
+            CharacterClassType ClassType = (CharacterClassType)((((int)id) / 100) * 100);
+            return ClassType;
         }
     }
 }

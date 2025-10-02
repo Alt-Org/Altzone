@@ -57,8 +57,8 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             _spriteImage.sprite = galleryImage;
             _spriteImage.enabled = true;
 
-            CharacterClassID charClassID = CustomCharacter.GetClassID(charID);
-            if (_classColorImage != null) _classColorImage.color = _classReference.GetColor(charClassID);
+            CharacterClassType charClassType = CustomCharacter.GetClass(charID);
+            if (_classColorImage != null) _classColorImage.color = _classReference.GetColor(charClassType);
 
             _characterId = charID;
 

@@ -121,6 +121,8 @@ namespace Battle.QSimulation.Player
 
             playerHandle.PlayerRef = playerRef;
             playerManagerData->PlayerCount++;
+
+            f.Events.BattleViewPlayerConnected(data);
         }
 
         /// <summary>
@@ -147,14 +149,18 @@ namespace Battle.QSimulation.Player
 
             for (int playerIndex = 0; playerIndex < Constants.BATTLE_PLAYER_SLOT_COUNT; playerIndex++)
             {
-                if (playerSlotTypes[playerIndex] != BattleParameters.PlayerType.Player) continue;
+                if (playerSlotTypes[playerIndex] == BattleParameters.PlayerType.None) continue;
+
+                bool isBot = playerSlotTypes[playerIndex] == BattleParameters.PlayerType.Bot;
 
                 PlayerHandleInternal playerHandle = new(playerManagerData, playerIndex);
 
                 BattlePlayerSlot playerSlot = PlayerHandleInternal.GetSlot(playerIndex);
                 BattleTeamNumber teamNumber = PlayerHandleInternal.GetTeamNumber(playerSlot);
 
-                RuntimePlayer data = f.GetPlayerData(playerHandle.PlayerRef);
+                BattleCharacterBase[] battleBaseCharacters = !isBot
+                                                           ? f.GetPlayerData(playerHandle.PlayerRef).Characters
+                                                           : BattlePlayerBotController.GetBotCharacters();
 
                 EntityRef[] playerCharacterEntityArray = new EntityRef[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
 
@@ -217,7 +223,7 @@ namespace Battle.QSimulation.Player
                     for (int playerCharacterNumber = 0; playerCharacterNumber < playerCharacterEntityArray.Length; playerCharacterNumber++)
                     {
                         // entity prototype
-                        playerEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(data.Characters[playerCharacterNumber].Id);
+                        playerEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(battleBaseCharacters[playerCharacterNumber].Id);
                         if (playerEntityPrototype == null)
                         {
                             playerEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(0);
@@ -233,7 +239,7 @@ namespace Battle.QSimulation.Player
 
                         //{ set temp variables
 
-                        playerClass = (BattlePlayerCharacterClass)data.Characters[playerCharacterNumber].Class;
+                        playerClass = (BattlePlayerCharacterClass)battleBaseCharacters[playerCharacterNumber].Class;
 
                         playerSpawnPosition = playerHandle.GetOutOfPlayPosition(playerCharacterNumber, teamNumber);
 
@@ -351,26 +357,28 @@ namespace Battle.QSimulation.Player
 
                         playerData = new BattlePlayerDataQComponent
                         {
-                            PlayerRef         = PlayerRef.None,
-                            Slot              = playerSlot,
-                            TeamNumber        = teamNumber,
-                            CharacterId       = data.Characters[playerCharacterNumber].Id,
-                            CharacterClass    = playerClass,
+                            PlayerRef             = PlayerRef.None,
+                            Slot                  = playerSlot,
+                            TeamNumber            = teamNumber,
+                            CharacterId           = battleBaseCharacters[playerCharacterNumber].Id,
+                            CharacterClass        = playerClass,
 
-                            Stats             = data.Characters[playerCharacterNumber].Stats,
+                            Stats                 = battleBaseCharacters[playerCharacterNumber].Stats,
 
-                            GridExtendTop     = playerGridExtendTop,
-                            GridExtendBottom  = playerGridExtendBottom,
+                            GridExtendTop         = playerGridExtendTop,
+                            GridExtendBottom      = playerGridExtendBottom,
 
-                            TargetPosition    = playerSpawnPosition,
-                            RotationBase      = playerRotationBase,
-                            RotationOffset    = FP._0,
+                            TargetPosition        = playerSpawnPosition,
+                            RotationBase          = playerRotationBase,
+                            RotationOffset        = FP._0,
 
-                            CurrentHp         = FP._0,
-                            CurrentDefence    = FP._0,
+                            CurrentHp             = FP._0,
+                            CurrentDefence        = FP._0,
 
-                            HitboxShieldEntity      = playerHitboxShieldEntity,
-                            HitboxCharacterEntity   = playerHitboxCharacterEntity
+                            HitboxShieldEntity    = playerHitboxShieldEntity,
+                            HitboxCharacterEntity = playerHitboxCharacterEntity,
+
+                            MovementCooldownSec   = FP._0
                         };
 
 #if DEBUG_PLAYER_STAT_OVERRIDE
@@ -413,6 +421,7 @@ namespace Battle.QSimulation.Player
 
                 // set playerManagerData for player
                 playerHandle.PlayState = BattlePlayerPlayState.OutOfPlay;
+                playerHandle.IsBot = isBot;
                 playerHandle.AllowCharacterSwapping = true;
                 playerHandle.SetCharacters(playerCharacterEntityArray);
             }
@@ -554,6 +563,9 @@ namespace Battle.QSimulation.Player
 
             public PlayerRef PlayerRef
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.PlayerRef; }
+
+            public bool IsBot
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.IsBot; }
 
             public FrameTimer RespawnTimer
             {
@@ -802,6 +814,12 @@ namespace Battle.QSimulation.Player
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->PlayerRefs[Index];
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->PlayerRefs[Index] = value;
+            }
+
+            public bool IsBot
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->IsBot[Index];
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->IsBot[Index] = value;
             }
 
             public FrameTimer RespawnTimer
