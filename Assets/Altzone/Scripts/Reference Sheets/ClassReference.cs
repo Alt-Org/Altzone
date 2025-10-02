@@ -132,23 +132,23 @@ namespace Altzone.Scripts.ReferenceSheets
         /// </summary>
         /// <param name="classId">The class id which icon to get.</param>
         /// <returns>Class icon sprite.</returns>
-        public Sprite GetIcon(CharacterClassID classId)
+        public Sprite GetIcon(CharacterClassType classId)
         {
             switch (classId)
             {
-                case CharacterClassID.Desensitizer:
+                case CharacterClassType.Desensitizer:
                     return _desensitizerSprite;
-                case CharacterClassID.Trickster:
+                case CharacterClassType.Trickster:
                     return _tricksterSprite;
-                case CharacterClassID.Obedient:
+                case CharacterClassType.Obedient:
                     return _obedientSprite;
-                case CharacterClassID.Projector:
+                case CharacterClassType.Projector:
                     return _projectorSprite;
-                case CharacterClassID.Retroflector:
+                case CharacterClassType.Retroflector:
                     return _retroflectorSprite;
-                case CharacterClassID.Confluent:
+                case CharacterClassType.Confluent:
                     return _confluentSprite;
-                case CharacterClassID.Intellectualizer:
+                case CharacterClassType.Intellectualizer:
                     return _intellectualizerSprite;
             }
             return null; // fallback
