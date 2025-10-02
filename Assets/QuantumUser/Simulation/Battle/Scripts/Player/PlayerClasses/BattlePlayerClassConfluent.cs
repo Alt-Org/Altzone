@@ -28,7 +28,7 @@ namespace Battle.QSimulation.Player
         /// Called by BattlePlayerClassManager. Reflects the projectile off of the characters hitbox based on a normal calculated from the characters center to the projectiles position.
         /// Also handles love projectile logic, as it is skipped in BattleProjectileQSystem due to the hitbox collision type being set to none.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
         /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
@@ -38,11 +38,11 @@ namespace Battle.QSimulation.Player
             if (projectileCollisionData->Projectile->EmotionCurrent == BattleEmotionState.Love) return;
             if (shieldCollisionData->IsLoveProjectileCollision) return;
 
-            FPVector2 normal = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->CollidingEntity)->Position - f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity)->Position;
+            FPVector2 normal = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->ProjectileEntity)->Position - f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity)->Position;
             FPVector2 direction = FPVector2.Reflect(projectileCollisionData->Projectile->Direction, normal).Normalized;
 
-            BattleProjectileQSystem.HandleIntersection(f, projectileCollisionData->Projectile, projectileCollisionData->CollidingEntity, projectileCollisionData->OtherEntity, normal, shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset);
-            BattleProjectileQSystem.UpdateVelocity(f, projectileCollisionData->Projectile, direction, projectileCollisionData->Projectile->SpeedIncrement, false);
+            BattleProjectileQSystem.HandleIntersection(f, projectileCollisionData->Projectile, projectileCollisionData->ProjectileEntity, projectileCollisionData->OtherEntity, normal, shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset);
+            BattleProjectileQSystem.UpdateVelocity(f, projectileCollisionData->Projectile, direction, BattleProjectileQSystem.SpeedChange.Increment);
         }
     }
 }
