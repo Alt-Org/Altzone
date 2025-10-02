@@ -6,18 +6,14 @@
 /// Gets player's Quantum.Input and updates player's position and rotation depending on player's actions.
 /// Handles moving, rotating and teleporting players and all their hitboxes.
 
-using System.Runtime.CompilerServices;
-
 using UnityEngine;
 using UnityEngine.Scripting;
 
 using Quantum;
 using Input = Quantum.Input;
-using Quantum.Collections;
 using Photon.Deterministic;
 
 using Battle.QSimulation.Game;
-using UnityEditor;
 
 namespace Battle.QSimulation.Player
 {
