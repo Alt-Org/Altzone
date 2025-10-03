@@ -5054,7 +5054,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -186318807
   m_SortingLayer: 3
-  m_SortingOrder: 2
+  m_SortingOrder: 3
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -5202,19 +5202,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f548549d9af4282429e9068c69bb31e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _classViewControllerOverride: {fileID: 0}
   _animator: {fileID: 0}
   _heart: {fileID: 3969168272333082471}
   _characterGameObjects:
   - {fileID: 5555457871378360869}
   - {fileID: 7918865761784379886}
   _localPlayerIndicator: {fileID: 3027310188949017353}
+  _noShieldSprite: {fileID: 203643026, guid: 993495ff1166b0d45b7b97f6b0ec106a, type: 3}
+  _shieldHitParticle: {fileID: 5317370975482982675}
   _transparencyEffectRange: 1
   _transparencyEffectTransitionRate: 3
   _transparencyEffectMinimumAlpha: 0.3
   _damageFlashDuration: 1
   _damageFlashAmount: 5
-  _noShieldSprite: {fileID: 203643026, guid: 993495ff1166b0d45b7b97f6b0ec106a, type: 3}
-  _shieldHitParticle: {fileID: 5317370975482982675}
 --- !u!1 &5521468026819928245
 GameObject:
   m_ObjectHideFlags: 0

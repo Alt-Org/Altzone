@@ -16,6 +16,7 @@ namespace Battle.QSimulation.Game
         public AssetRef<BattleSoulWallQSpec>   BattleSoulWallSpec;
         public AssetRef<BattleProjectileQSpec> BattleProjectileSpec;
         public AssetRef<BattleDiamondQSpec>    BattleDiamondSpec;
+        public AssetRef<BattlePlayerQSpec>     BattlePlayerSpec;
         public AssetRef<BattlePlayerBotQSpec>  BattlePlayerBotSpec;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -42,6 +43,12 @@ namespace Battle.QSimulation.Game
             return f.FindAsset(f.FindAsset(f.RuntimeConfig.BattleConfig).BattleDiamondSpec);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static BattlePlayerQSpec GetPlayerSpec(Frame f)
+        {
+            return f.FindAsset(f.FindAsset(f.RuntimeConfig.BattleConfig).BattlePlayerSpec);
+        }
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BattlePlayerBotQSpec GetPlayerBotSpec(Frame f)
         {

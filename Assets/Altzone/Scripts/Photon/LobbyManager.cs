@@ -411,6 +411,8 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator CheckIfBattleCanStart()
         {
+            yield break;
+            yield return new WaitForSeconds(0.5f);
             yield return new WaitUntil(() => _posChangeQueue.Count == 0 && !_playerPosChangeInProgress);
             Room room = PhotonRealtimeClient.CurrentRoom;
             if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
@@ -980,6 +982,11 @@ namespace Altzone.Scripts.Lobby
                 {
                     PhotonRealtimeClient.CloseRoom(false);
                     yield return null;
+                }
+
+                for (int i=0; i < playerTypes.Length; i++)
+                {
+                    if(playerTypes[i] == PlayerType.None) playerTypes[i] = PlayerType.Bot;
                 }
 
                 data = new()
