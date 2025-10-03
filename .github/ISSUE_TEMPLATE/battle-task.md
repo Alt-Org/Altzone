@@ -50,15 +50,15 @@ Esim.
     - [ ] Vaatimus C
   - [ ] Poista (File, Prefab, Code)
   - (File, Prefab, Code)
-    - Lisää X
+    - [ ] Lisää X
       - [ ] Vaatimus A
       - [ ] Vaatimus B
-    - Muuta Y
+    - [ ] Muuta Y
       
 - Osa-alue B
   - (File, Prefab, Code)
     - Alakäsite
-      - Muuta Z
+      - [ ] Muuta Z
         - [ ] Vaatimus A
         - [ ] Vaatimus B
 
