@@ -1028,7 +1028,7 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator StartQuantum(StartGameData data)
         {
-            Debug.Log(data.ToString());
+            Debug.Log("Starting Quantum");
             string battleID = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(BattleID);
 
             // Getting the index of own user id from the player slot user id array to determine which player slot is for local player.
@@ -1084,16 +1084,13 @@ namespace Altzone.Scripts.Lobby
             _isStartFinished = false;
 
             yield return new WaitUntil(() => OnStartTimeSet != null);
-            Debug.Log("Testi1");
             if (sendTime == 0) sendTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             long timeToStart = (sendTime + STARTDELAY) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             long startTime = sendTime + timeToStart;
-            Debug.Log("Testi2");
             do
             {
                 if (OnStartTimeSet != null)
                 {
-                    Debug.Log("Testi2");
                     OnStartTimeSet?.Invoke(0);
                     break;
                 }

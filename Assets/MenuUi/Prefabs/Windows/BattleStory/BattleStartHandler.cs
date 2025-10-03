@@ -49,7 +49,6 @@ public class BattleStartHandler : MonoBehaviour
 
     private IEnumerator TimerStart(long startTime)
     {
-        Debug.LogWarning("BattleAnimation");
         _loadImage.sprite = _startAnimationSprites[0];
         _loadImage.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.8f);
         _loadImage.transform.localScale = new Vector2(1f, 1f);
@@ -60,7 +59,6 @@ public class BattleStartHandler : MonoBehaviour
 
         foreach (Sprite sprite in _startAnimationSprites)
         {
-            Debug.LogWarning("BattleAnimationFrame");
             if (sprite != _startAnimationSprites[_startAnimationSprites.Count - 1])
             {
                 frametimeleft += _animationFrameTime;

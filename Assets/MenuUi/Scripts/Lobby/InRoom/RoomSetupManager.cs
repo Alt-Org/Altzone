@@ -285,7 +285,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
             // Check other players first is they have reserved some player positions etc. from the room already.
             foreach (var player in PhotonRealtimeClient.GetCurrentRoomPlayers())
             {
-                Debug.LogWarning(player.NickName);
                 if (!player.Equals(localPlayer))
                 {
                     CheckOtherPlayer(player);
