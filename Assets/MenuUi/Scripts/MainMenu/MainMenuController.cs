@@ -39,7 +39,8 @@ namespace MenuUi.Scripts.MainMenu
             _swipe = GetComponentInParent<SwipeUI>();
             StartCoroutine(CheckWindowSize());
             AudioManager.Instance?.PlayMusic("MainMenu");
-            LobbyManager.Instance.Activate();
+            if(!LobbyManager.IsActive) LobbyManager.Instance.Activate();
+            if (LobbyManager.Instance.RunnerActive) LobbyManager.CloseRunner();
         }
 
         private void Start()
