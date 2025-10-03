@@ -1485,7 +1485,7 @@ namespace Altzone.Scripts.Lobby
 
         public void OnEvent(EventData photonEvent)
         {
-            Debug.Log($"Received PhotonEvent {photonEvent.Code}");
+            if(photonEvent.Code != 103) Debug.Log($"Received PhotonEvent {photonEvent.Code}");
 
             switch (photonEvent.Code)
             {
