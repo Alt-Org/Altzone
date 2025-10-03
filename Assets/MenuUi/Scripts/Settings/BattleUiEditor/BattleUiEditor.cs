@@ -157,8 +157,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private BattleUiMultiOrientationElement _instantiatedTeammateInfo;
         private BattleUiMovableElement _instantiatedDiamonds;
         private BattleUiMovableElement _instantiatedGiveUpButton;
-        private BattleUiMovableElement _instantiatedMoveJoystick;
-        private BattleUiMovableElement _instantiatedRotateJoystick;
+        public BattleUiMovableElement _instantiatedMoveJoystick;
+        public BattleUiMovableElement _instantiatedRotateJoystick;
 
         private readonly List<BattleUiEditingComponent> _editingComponents = new();
 
@@ -730,7 +730,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     anchorMax.x = 0.4f;
 
                     anchorMin.y = 0f;
-                    anchorMax.y = 0.2f;
+                    anchorMax.y = 0.4f;
 
                     movableUiElementRect = _instantiatedMoveJoystick.GetComponent<RectTransform>().rect;
 
@@ -745,7 +745,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     anchorMax.x = 0.98f;
 
                     anchorMin.y = 0f;
-                    anchorMax.y = 0.15f;
+                    anchorMax.y = 0.35f;
 
                     movableUiElementRect = _instantiatedRotateJoystick.GetComponent<RectTransform>().rect;
 

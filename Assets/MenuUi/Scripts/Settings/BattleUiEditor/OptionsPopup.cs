@@ -91,9 +91,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private const float GameAspectRatio = 9f / 16f;
 
-        private BattleUiMovableElement _instantiatedMoveJoystick;
-        private BattleUiMovableElement _instantiatedRotateJoystick;
-
         private void Awake()
         {
             _resetButton.onClick.AddListener(_saveReset.OnResetButtonClicked);
@@ -373,16 +370,16 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // If joystick movement was selected instantianting the joysticks if they are not yet instantiated
             if (movementType == BattleMovementInputType.Joystick)
             {
-                if (_instantiatedMoveJoystick == null)
+                if (_battleUiEditor._instantiatedMoveJoystick == null)
                 {
-                    _instantiatedMoveJoystick = _battleUiEditor.InstantiateBattleUiElement(BattleUiElementType.MoveJoystick).GetComponent<BattleUiMovableElement>();
-                    _battleUiEditor.SetDataToUiElement(_instantiatedMoveJoystick);
+                    _battleUiEditor._instantiatedMoveJoystick = _battleUiEditor.InstantiateBattleUiElement(BattleUiElementType.MoveJoystick).GetComponent<BattleUiMovableElement>();
+                    _battleUiEditor.SetDataToUiElement(_battleUiEditor._instantiatedMoveJoystick);
                 }
 
-                if (_instantiatedRotateJoystick == null)
+                if (_battleUiEditor._instantiatedRotateJoystick == null)
                 {
-                    _instantiatedRotateJoystick = _battleUiEditor.InstantiateBattleUiElement(BattleUiElementType.RotateJoystick).GetComponent<BattleUiMovableElement>();
-                    _battleUiEditor.SetDataToUiElement(_instantiatedRotateJoystick);
+                    _battleUiEditor._instantiatedRotateJoystick = _battleUiEditor.InstantiateBattleUiElement(BattleUiElementType.RotateJoystick).GetComponent<BattleUiMovableElement>();
+                    _battleUiEditor.SetDataToUiElement(_battleUiEditor._instantiatedRotateJoystick);
                 }
             }
 
@@ -405,8 +402,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _gyroscopeMinAngleHolder.SetActive(rotationType == BattleRotationInputType.Gyroscope);
 
             // Setting visibility to joysticks
-            if (_instantiatedMoveJoystick != null) _instantiatedMoveJoystick.gameObject.SetActive(movementType == BattleMovementInputType.Joystick);
-            if (_instantiatedRotateJoystick != null) _instantiatedRotateJoystick.gameObject.SetActive(rotationType == BattleRotationInputType.Joystick);
+            if (_battleUiEditor._instantiatedMoveJoystick != null) _battleUiEditor._instantiatedMoveJoystick.gameObject.SetActive(movementType == BattleMovementInputType.Joystick);
+            if (_battleUiEditor._instantiatedRotateJoystick != null) _battleUiEditor._instantiatedRotateJoystick.gameObject.SetActive(rotationType == BattleRotationInputType.Joystick);
         }
 
         private void UpdateGridColumnLines()
