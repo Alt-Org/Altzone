@@ -984,6 +984,11 @@ namespace Altzone.Scripts.Lobby
                     yield return null;
                 }
 
+                for (int i=0; i < playerTypes.Length; i++)
+                {
+                    if(playerTypes[i] == PlayerType.None) playerTypes[i] = PlayerType.Bot;
+                }
+
                 data = new()
                 {
                     StartTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
