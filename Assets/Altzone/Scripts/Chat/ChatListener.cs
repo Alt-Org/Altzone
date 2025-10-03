@@ -218,8 +218,10 @@ namespace Altzone.Scripts.Chat
         private async void CloseSocket()
         {
             _id = null;
-            await _socket.Close();
+            if (_socket != null)
+                await _socket.Close();
             if(_socketPolling != null)StopCoroutine(_socketPolling);
+            _socket = null;
         }
 
         private void HandleAccountChange(bool loggedIn)
