@@ -91,7 +91,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             if (!_classIcon || !_classReference || _controller == null) return;
 
             CharacterClassType classType = _controller.GetCurrentCharacterClass();
-            var icon = _classReference.GetIcon(classType);
+            var icon = _classReference.GetCornerIcon(classType);
 
             _classIcon.enabled = icon != null;
             if (icon != null) _classIcon.sprite = icon;

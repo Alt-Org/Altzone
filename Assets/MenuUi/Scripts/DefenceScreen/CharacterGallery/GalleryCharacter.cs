@@ -129,7 +129,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
             if (_classIcon && _classReference)
             {
-                _classIcon.sprite = _classReference.GetIcon(CustomCharacter.GetClass(id));
+                _classIcon.sprite = _classReference.GetCornerIcon(CustomCharacter.GetClass(id));
                 _classIcon.enabled = _classIcon.sprite != null;
             }
         }
