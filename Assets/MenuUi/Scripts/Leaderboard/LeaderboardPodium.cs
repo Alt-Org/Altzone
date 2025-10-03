@@ -121,10 +121,10 @@ public class LeaderboardPodium : MonoBehaviour
 
                 AvatarVisualData avatarVisualData = null;
 
-                if (playerData.SelectedCharacterId != 0)
-                {
+               
+                
                     avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
-                }
+                
                 if (avatarVisualData != null)
                 {
                     _firstAvatarHead.GetComponent<AvatarFaceLoader>().UpdateVisuals(avatarVisualData);
@@ -161,10 +161,10 @@ public class LeaderboardPodium : MonoBehaviour
 
                 AvatarVisualData avatarVisualData = null;
 
-                if (playerData.SelectedCharacterId != 0)
-                {
+            
+                
                     avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
-                }
+                
                 if (avatarVisualData != null)
                 {
                     _secondAvatarHead.GetComponent<AvatarFaceLoader>().UpdateVisuals(avatarVisualData);
@@ -204,10 +204,10 @@ public class LeaderboardPodium : MonoBehaviour
 
                 AvatarVisualData avatarVisualData = null;
 
-                if (playerData.SelectedCharacterId != 0)
-                {
+               
+                
                     avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
-                }
+                
                 if (avatarVisualData != null)
                 {
                     _thirdAvatarHead.GetComponent<AvatarFaceLoader>().UpdateVisuals(avatarVisualData);

@@ -15,9 +15,9 @@ public class LeaderboardWinsItem : MonoBehaviour
     [SerializeField] private AvatarFaceLoader _avatarFaceLoader;
     [field: SerializeField] public Button OpenProfileButton { get; private set; }
 
-    private string _clanId; // Lis�tty
+    private string _clanId; 
 
-    public void Initialize(int rank, string name, int wins, AvatarVisualData avatarVisualData, string clanId = null) // lis�tty 
+    public void Initialize(int rank, string name, int wins, AvatarVisualData avatarVisualData, string clanId = null)
     {
         _rankText.text = rank.ToString() + ".";
         _nameText.text = name;
