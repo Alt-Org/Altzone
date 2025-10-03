@@ -14,6 +14,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
     {
         [SerializeField] private BattlePopupSelectedCharacter[] _selectedCharacterSlots;
         [SerializeField] private bool _isInRoom;
+        [SerializeField] private Sprite _dragAndDropIcon;
 
 
         private void Awake()
@@ -22,7 +23,9 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             {
                 foreach (BattlePopupSelectedCharacter slot in _selectedCharacterSlots)
                 {
-                    slot.SetOpenEditPanelListener();
+                    //slot.SetOpenEditPanelListener();
+                    slot._cornerIcon.overrideSprite = _dragAndDropIcon;
+                    slot._resistanceIcon.gameObject.SetActive(false);
                 }
             }
             else

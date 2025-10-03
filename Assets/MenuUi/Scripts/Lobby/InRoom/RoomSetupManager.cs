@@ -316,15 +316,47 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             LobbyRoom room = PhotonRealtimeClient.LobbyCurrentRoom;
             int masterTeam = GetTeam(_masterClientPosition);
-            if (masterTeam == 0)
+            if (masterTeam == 1)
             {
-                if (_upperTeamText != null) _upperTeamText.text = room.GetCustomProperty<string>(TeamBetaNameKey);
-                if (_lowerTeamText != null) _lowerTeamText.text = room.GetCustomProperty<string>(TeamAlphaNameKey);
+                if (_upperTeamText != null)
+                {
+                    string clanName = room.GetCustomProperty<string>(TeamBetaNameKey);
+                    if (string.IsNullOrEmpty(clanName))
+                    {
+                        clanName = "Team Jouko";
+                    }
+                    _upperTeamText.text = clanName;
+                }
+                if (_lowerTeamText != null)
+                {
+                    string clanName = room.GetCustomProperty<string>(TeamAlphaNameKey);
+                    if (string.IsNullOrEmpty(clanName))
+                    {
+                        clanName = "Team Kaarina";
+                    }
+                    _lowerTeamText.text = clanName;
+                }
             }
             else
             {
-                if (_upperTeamText != null) _upperTeamText.text = room.GetCustomProperty<string>(TeamAlphaNameKey);
-                if (_lowerTeamText != null) _lowerTeamText.text = room.GetCustomProperty<string>(TeamBetaNameKey);
+                if (_upperTeamText != null)
+                {
+                    string clanName = room.GetCustomProperty<string>(TeamAlphaNameKey);
+                    if (string.IsNullOrEmpty(clanName))
+                    {
+                        clanName = "Team Kaarina";
+                    }
+                    _upperTeamText.text = clanName;
+                }
+                if (_lowerTeamText != null)
+                {
+                    string clanName = room.GetCustomProperty<string>(TeamBetaNameKey);
+                    if (string.IsNullOrEmpty(clanName))
+                    {
+                        clanName = "Team Jouko";
+                    }
+                    _lowerTeamText.text = clanName;
+                }
             }
         }
 
