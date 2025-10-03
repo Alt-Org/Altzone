@@ -1,7 +1,8 @@
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
@@ -20,6 +21,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private TMP_Text _wins;
         [SerializeField] private TMP_Text _losses;
         [SerializeField] private TMP_Text _className;
+        [SerializeField] private Image _classIcon;
+        [SerializeField] private ClassReference _classReference;
 
         [SerializeField] private BaseScrollRect _scrollRect;
 
@@ -37,6 +40,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             SetCharacterDescription();
             SetWinsAndLosses();
             SetClassName();
+            SetClassIcon();
 
 
             if (_controller.IsCurrentCharacterLocked())
@@ -80,6 +84,17 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             _wins.text = _controller.GetCurrentCharacterWins().ToString();
             _losses.text = _controller.GetCurrentCharacterLosses().ToString();
+        }
+
+        private void SetClassIcon()
+        {
+            if (!_classIcon || !_classReference || _controller == null) return;
+
+            CharacterClassType classType = _controller.GetCurrentCharacterClass();
+            var icon = _classReference.GetCornerIcon(classType);
+
+            _classIcon.enabled = icon != null;
+            if (icon != null) _classIcon.sprite = icon;
         }
 
         public void ClosePopup()
