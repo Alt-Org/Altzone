@@ -678,6 +678,7 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     CheckFurnitureList(_selectedFurniture);
                     if (_mainScreen.SelectedFurnitureTray != null) _mainScreen.RemoveTrayItem(_mainScreen.SelectedFurnitureTray);
+                    if (_selectedFurniture.GetComponent<FurnitureHandling>().Slot != null) gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
                 }
                 else
                 {

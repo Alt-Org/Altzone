@@ -46,6 +46,8 @@ namespace MenuUi.Scripts.Storage
 
                 UpdateInfoAction?.Invoke(Furniture.ClanFurniture.InVoting);
                 VotingActions.ReloadPollList?.Invoke();
+
+                gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
             }
         }
 

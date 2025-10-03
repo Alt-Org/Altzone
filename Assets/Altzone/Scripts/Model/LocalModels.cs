@@ -298,12 +298,12 @@ namespace Altzone.Scripts.Model
             callback(new ReadOnlyCollection<CustomCharacter>(_storageData.CustomCharacters));
         }
 
-        internal void GetPlayerTasks(Action<List<PlayerTask>> callback)
+        internal void GetPlayerTasks(Action<ClanTasks> callback)
         {
             callback(_storageData.PlayerTasks);
         }
 
-        internal void SavePlayerTasks(List<PlayerTask> tasks, Action<List<PlayerTask>> callback)
+        internal void SavePlayerTasks(ClanTasks tasks, Action<ClanTasks> callback)
         {
             _storageData.PlayerTasks = tasks;
             callback(_storageData.PlayerTasks);
@@ -403,6 +403,6 @@ namespace Altzone.Scripts.Model
         public List<GameFurniture> GameFurniture = new();
         public List<PlayerData> PlayerData = new();
         public List<ClanData> ClanData = new();
-        public List<PlayerTask> PlayerTasks= null;
+        public ClanTasks PlayerTasks= null;
     }
 }

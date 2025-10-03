@@ -22,6 +22,7 @@ public class GameFurnitureVisualizer : MonoBehaviour
         _contentImage.sprite = _gameFurniture.FurnitureInfo.RibbonImage? _gameFurniture.FurnitureInfo.RibbonImage : _gameFurniture.FurnitureInfo.Image;
         gameObject.GetComponent<GameFurniturePasser>().SetGameFurniture(gameFurniture);
         _button.onClick.AddListener(() => confirmationPopUp.SetActive(true));
+        _button.onClick.AddListener(() => gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1"));
     }
 
     public void Initialize(AvatarPartsReference.AvatarPartInfo avatarPart, GameObject confirmationPopUp)
@@ -32,5 +33,6 @@ public class GameFurnitureVisualizer : MonoBehaviour
         _contentImage.sprite = _avatarPart.IconImage ? _avatarPart.IconImage : _avatarPart.AvatarImage;
         gameObject.GetComponent<GameFurniturePasser>().SetAvatarPart(_avatarPart);
         _button.onClick.AddListener(() => confirmationPopUp.SetActive(true));
+        _button.onClick.AddListener(() => gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1"));
     }
 }

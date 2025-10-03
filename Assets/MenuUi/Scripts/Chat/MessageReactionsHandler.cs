@@ -171,6 +171,8 @@ public class MessageReactionsHandler : MonoBehaviour
             LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
 
             _selectedMessage.SetMessageInactive();
+            
+            gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
     }
 

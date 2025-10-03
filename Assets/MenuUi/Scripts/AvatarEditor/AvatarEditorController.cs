@@ -199,6 +199,8 @@ namespace MenuUi.Scripts.AvatarEditor
             _visualDataScriptableObject.color = _colorPicker.GetCurrentColorsAsColors();
 
             AvatarDesignLoader.Instance.InvokeOnAvatarDesignUpdate();
+
+            GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
 
         #endregion

@@ -226,6 +226,8 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     private void OptimizeVisualQueueChunksCheck()
     {
         if (_queueUseTimes >= _queueOptimizationThreshold) OptimizeVisualQueueChunks();
+
+        gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
     }
 
     /// <summary>

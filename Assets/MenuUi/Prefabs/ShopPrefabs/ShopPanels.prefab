@@ -1509,6 +1509,7 @@ MonoBehaviour:
   _prefab: {fileID: 0}
   _cellSpacing: {x: 20, y: 30}
   _preventScalingOutOfParentBounds: 0
+  _setLayoutElementPreferredSize: 0
 --- !u!1 &285483536495089675
 GameObject:
   m_ObjectHideFlags: 0
@@ -5594,6 +5595,7 @@ MonoBehaviour:
   _prefab: {fileID: 0}
   _cellSpacing: {x: 20, y: 30}
   _preventScalingOutOfParentBounds: 0
+  _setLayoutElementPreferredSize: 0
 --- !u!1 &1363328060213760199
 GameObject:
   m_ObjectHideFlags: 0
@@ -9112,6 +9114,7 @@ MonoBehaviour:
   _prefab: {fileID: 0}
   _cellSpacing: {x: 20, y: 30}
   _preventScalingOutOfParentBounds: 0
+  _setLayoutElementPreferredSize: 0
 --- !u!1 &2372657081369032646
 GameObject:
   m_ObjectHideFlags: 0
@@ -14037,6 +14040,7 @@ MonoBehaviour:
   _prefab: {fileID: 0}
   _cellSpacing: {x: 20, y: 30}
   _preventScalingOutOfParentBounds: 0
+  _setLayoutElementPreferredSize: 0
 --- !u!1 &3669654135073984716
 GameObject:
   m_ObjectHideFlags: 0
@@ -16365,6 +16369,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4467869695855736962}
   - component: {fileID: 2351111503083853023}
+  - component: {fileID: 3240552962182765516}
   m_Layer: 5
   m_Name: ShopPanels
   m_TagString: Untagged
@@ -16412,6 +16417,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _TabToOpen: {fileID: 5144567320316143292}
+--- !u!114 &3240552962182765516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4431032727387046740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c551a899a9427640a654237430d5a5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 0
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
 --- !u!1 &4471995648860695721
 GameObject:
   m_ObjectHideFlags: 0
@@ -18574,6 +18598,7 @@ MonoBehaviour:
   _prefab: {fileID: 0}
   _cellSpacing: {x: 20, y: 30}
   _preventScalingOutOfParentBounds: 0
+  _setLayoutElementPreferredSize: 0
 --- !u!1 &5148790844034824053
 GameObject:
   m_ObjectHideFlags: 0
@@ -19019,6 +19044,7 @@ MonoBehaviour:
   _prefab: {fileID: 0}
   _cellSpacing: {x: 20, y: 30}
   _preventScalingOutOfParentBounds: 0
+  _setLayoutElementPreferredSize: 0
 --- !u!1 &5270676444984540474
 GameObject:
   m_ObjectHideFlags: 0
@@ -19709,6 +19735,7 @@ MonoBehaviour:
   _prefab: {fileID: 0}
   _cellSpacing: {x: 20, y: 20}
   _preventScalingOutOfParentBounds: 0
+  _setLayoutElementPreferredSize: 0
 --- !u!1 &5488914752948675862
 GameObject:
   m_ObjectHideFlags: 0
@@ -23961,6 +23988,7 @@ MonoBehaviour:
   _prefab: {fileID: 0}
   _cellSpacing: {x: 20, y: 30}
   _preventScalingOutOfParentBounds: 0
+  _setLayoutElementPreferredSize: 0
 --- !u!1 &6568146724679329265
 GameObject:
   m_ObjectHideFlags: 0
@@ -27630,6 +27658,7 @@ MonoBehaviour:
   _prefab: {fileID: 0}
   _cellSpacing: {x: 20, y: 30}
   _preventScalingOutOfParentBounds: 0
+  _setLayoutElementPreferredSize: 0
 --- !u!1 &7467184198037817259
 GameObject:
   m_ObjectHideFlags: 0

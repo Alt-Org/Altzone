@@ -256,6 +256,14 @@ namespace MenuUI.Scripts.SoulHome
                 _changedTrayItemList[i].GetComponent<FurnitureTraySlotHandler>().SaveCount();
             }
             _changedTrayItemList.Clear();
+
+            int itemsLeft = 0;
+            foreach (Transform furnitureSlot in _trayContent.transform)
+            {
+                if (furnitureSlot.gameObject.activeSelf) itemsLeft++;
+            }
+
+            if (itemsLeft == 0) gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
 
         private void SetEditInfo()
