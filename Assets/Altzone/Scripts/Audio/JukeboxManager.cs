@@ -656,7 +656,11 @@ namespace Altzone.Scripts.Audio
             _trackEndingControlCoroutine = StartCoroutine(TrackEndingControl());
             //OnSetPlayButtonImages?.Invoke(true);
 
-            return AudioManager.Instance.ContinueMusic("Jukebox", GetNotHatedMusicTrack(), _musicElapsedTime);
+            MusicTrack musicTrack = GetNotHatedMusicTrack();
+
+            if (OnSetSongInfo != null) OnSetSongInfo.Invoke(musicTrack);
+
+            return AudioManager.Instance.ContinueMusic("Jukebox", musicTrack, _musicElapsedTime);
         }
 
         public void StopJukebox()
@@ -1095,7 +1099,7 @@ namespace Altzone.Scripts.Audio
         {
             List<TrackQueueData> queueHandlers = new();
             List<MusicTrack> musicTracks = new(AudioManager.Instance.GetMusicList("Jukebox"));
-            Debug.LogError(PackedTrackQueueDatas.Count);
+            //Debug.LogError(PackedTrackQueueDatas.Count);
             for (int i = 0; i < PackedTrackQueueDatas.Count; i++)
             {
                 string[] trackQueuePackedData = PackedTrackQueueDatas[i].Split('_');
@@ -1104,7 +1108,7 @@ namespace Altzone.Scripts.Audio
                 string musicTrackId = trackQueuePackedData[1];
                 string localPlaylistTrackId = trackQueuePackedData[2];
 
-                Debug.LogError("userId: " + userId + ", musicId: " + musicTrackId);
+                //Debug.LogError("userId: " + userId + ", musicId: " + musicTrackId);
                 foreach (MusicTrack track in musicTracks)
                     if (track.Id == musicTrackId)
                     {

@@ -259,7 +259,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
             if (!jukeboxSoulhome) AudioManager.Instance.PlayMusic("Soulhome", "");
 
-            if (JukeboxManager.Instance.CurrentTrackQueueData != null) SetSongInfo(JukeboxManager.Instance.GetNotHatedMusicTrack());
+            //if (JukeboxManager.Instance.CurrentTrackQueueData != null) SetSongInfo(JukeboxManager.Instance.GetNotHatedMusicTrack());
         }
     }
 
