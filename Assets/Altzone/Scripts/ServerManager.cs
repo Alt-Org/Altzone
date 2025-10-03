@@ -1765,23 +1765,14 @@ public class ServerManager : MonoBehaviour
         ).ToString();
 
         yield return UpdateJukeboxClanPlaylistToServer(body, callback);
-        //Storefront.Get().SaveClanData(data, null);
     }
 
     public IEnumerator UpdateJukeboxClanPlaylistToServer(string body, Action<bool> callback)
     {
-
         yield return StartCoroutine(WebRequests.Put(SERVERADDRESS + "clan/jukebox", body, AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                //JObject result = JObject.Parse(request.downloadHandler.text);
-                //Debug.LogWarning(request);
-                //ServerPlaylist playlist = result["data"]["Jukebox"].ToObject<ServerPlaylist>();
-                //Clan = clan;
-
-                //StartCoroutine(SaveClanFromServerToDataStorage(Clan));
-
                 if (callback != null)
                 {
                     callback(true);

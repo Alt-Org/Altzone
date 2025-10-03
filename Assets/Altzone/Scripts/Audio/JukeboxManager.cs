@@ -14,6 +14,12 @@ namespace Altzone.Scripts.Audio
         private PlayerData _currentPlayerData = null;
         public PlayerData CurrentPlayerData { get { return _currentPlayerData; } }
 
+        #region Favorite
+        private string _favoritesPrefsString = "favoriteTracks";
+
+        private List<MusicTrackFavoriteData> _musicTrackFavorites = new List<MusicTrackFavoriteData>();
+        #endregion
+
         #region Queue
         private List<TrackQueueData> _trackQueue = new();
         public List<TrackQueueData> TrackQueue { get { return _trackQueue; } }
@@ -79,6 +85,15 @@ namespace Altzone.Scripts.Audio
         public bool PlaylistReady { get { return _playlistReady; } }
 
         private System.DateTime _musicTrackStartTime = System.DateTime.Now;
+
+        public enum MusicTrackFavoriteType
+        {
+            Neutral,
+            Like,
+            Dislike
+        }
+
+        
         #endregion
 
         #region Playback History
@@ -138,6 +153,9 @@ namespace Altzone.Scripts.Audio
 
         public delegate JukeboxTrackQueueHandler GetTrackQueueHandler(ChunkPointer chunkPointer);
         public event GetTrackQueueHandler OnGetTrackQueueHandler;
+
+        public delegate void FavoriteButtonChange(string musicTrackId, MusicTrackFavoriteType favoriteType);
+        public event FavoriteButtonChange OnFavoriteButtonChange;
         #endregion
 
         private void Awake()
@@ -184,6 +202,9 @@ namespace Altzone.Scripts.Audio
 
             _currentPlaylist = new("Klaani", PlaylistType.Clan, playlistData);
             //_currentPlaylist = new("Klaani", PlaylistType.Clan, playlistData/*TESTCreateServerMusicList()*/); //Offline testing
+
+            _musicTrackFavorites = GetFavoriteDatas();
+
             CreateTrackQueueFromCurrentPlaylist();
             _playlistReady = true;
 
@@ -214,6 +235,85 @@ namespace Altzone.Scripts.Audio
                 yield break;
             }
         }
+
+        #region Favorite
+        public List<MusicTrackFavoriteData> GetFavoriteDatas() //TODO: Add a check for new tracks that come from jukebox music list.
+        {
+            string rawData = PlayerPrefs.GetString(_favoritesPrefsString); //Format: TrackId_LikeEnumInt-TrackId_LikeEnumInt-TrackId_LikeEnumInt
+            List<MusicTrackFavoriteData> favoriteDatas = new List<MusicTrackFavoriteData>();
+
+            if (string.IsNullOrEmpty(rawData))
+            {
+                List<MusicTrack> musicTracks = AudioManager.Instance.GetMusicList("jukebox");
+
+                foreach (MusicTrack track in musicTracks)
+                    favoriteDatas.Add(new(track.Id, MusicTrackFavoriteType.Neutral));
+
+                return favoriteDatas;
+            }
+
+            string[] trackDatas = rawData.Split('-');
+
+            foreach (string rawTrackData in trackDatas)
+            {
+                string[] trackData = rawTrackData.Split('_');
+                favoriteDatas.Add(new(trackData[0], (MusicTrackFavoriteType)(int.Parse(trackData[1]))));
+            }
+
+            return favoriteDatas;
+        }
+
+        public void SaveFavoriteDatas(List<MusicTrackFavoriteData> favoriteDatas)
+        {
+            string sendTarget = "";
+
+            for (int i = 0; i < favoriteDatas.Count; i++)
+            {
+                sendTarget += favoriteDatas[i].MusicTrackId + "_" + (int)favoriteDatas[i].FavoriteType;
+
+                if (i + 1 < favoriteDatas.Count)
+                    sendTarget += "-";
+            }
+
+            PlayerPrefs.SetString(_favoritesPrefsString, sendTarget);
+        }
+
+        public MusicTrackFavoriteType GetTrackFavoriteType(MusicTrack musicTrack)
+        {
+            MusicTrackFavoriteData data = _musicTrackFavorites.Find((data) => musicTrack.Id == data.MusicTrackId);
+
+            if (data != null) return data.FavoriteType;
+
+            return MusicTrackFavoriteType.Neutral;
+        }
+
+        public void InvokeOnFavoriteButtonChange(string musicTrackId, MusicTrackFavoriteType favoriteType)
+        {
+            _musicTrackFavorites.Find((data) => musicTrackId == data.MusicTrackId).FavoriteType = favoriteType;
+
+            SaveFavoriteDatas(_musicTrackFavorites);
+
+            if (OnFavoriteButtonChange != null) OnFavoriteButtonChange.Invoke(musicTrackId, favoriteType);
+        }
+
+        public MusicTrack GetNotHatedMusicTrack() { return GetNotHatedMusicTrack(_currentTrackQueueData); }
+
+        public MusicTrack GetNotHatedMusicTrack(TrackQueueData trackQueueData)
+        {
+            if (trackQueueData == null) return null;
+
+            MusicTrackFavoriteData favoriteData = _musicTrackFavorites.Find((data) => trackQueueData.MusicTrack.Id == data.MusicTrackId);
+
+            if (favoriteData != null && favoriteData.FavoriteType == MusicTrackFavoriteType.Dislike)
+            {
+                List<MusicTrackFavoriteData> likedDatas = _musicTrackFavorites.FindAll((data) => MusicTrackFavoriteType.Like == data.FavoriteType);
+
+                return (GetMusicTrack(likedDatas[Random.Range(0, likedDatas.Count)].MusicTrackId));
+            }
+
+            return trackQueueData.MusicTrack;
+        }
+        #endregion
 
         #region Playlist
         //public List<string> GetPlaylistNames()
@@ -395,7 +495,7 @@ namespace Altzone.Scripts.Audio
                 InsertToQueueList(GetMusicTrack(addData.Id.Split('_')[1]), addData.Index, addData.Id, false);
         }
 
-        private MusicTrack GetMusicTrack(string musicTrackId)
+        public MusicTrack GetMusicTrack(string musicTrackId)
         {
             List<MusicTrack> tracks = AudioManager.Instance.GetMusicList("jukebox");
 
@@ -473,20 +573,22 @@ namespace Altzone.Scripts.Audio
 
             string name = "";
 
+            MusicTrack validMusicTrack = GetNotHatedMusicTrack(trackQueueData);
+
             if (_jukeboxMuted)
             {
                 name = trackQueueData.MusicTrack.Name;
             }
             else
             {
-                name = AudioManager.Instance.PlayMusic("Jukebox", trackQueueData.MusicTrack);
+                name = AudioManager.Instance.PlayMusic("Jukebox", validMusicTrack);
 
                 if (string.IsNullOrEmpty(name)) return null;
 
                 _playbackPaused = false;
             }
 
-            if (OnSetSongInfo != null) OnSetSongInfo.Invoke(trackQueueData.MusicTrack);
+            if (OnSetSongInfo != null) OnSetSongInfo.Invoke(validMusicTrack);
 
             _currentTrackQueueData = trackQueueData;
             _musicElapsedTime = 0f;
@@ -554,7 +656,7 @@ namespace Altzone.Scripts.Audio
             _trackEndingControlCoroutine = StartCoroutine(TrackEndingControl());
             //OnSetPlayButtonImages?.Invoke(true);
 
-            return AudioManager.Instance.ContinueMusic("Jukebox", _currentTrackQueueData.MusicTrack, _musicElapsedTime);
+            return AudioManager.Instance.ContinueMusic("Jukebox", GetNotHatedMusicTrack(), _musicElapsedTime);
         }
 
         public void StopJukebox()
@@ -570,7 +672,7 @@ namespace Altzone.Scripts.Audio
 
         private IEnumerator TrackEndingControl()
         {
-            while (_musicElapsedTime < /*_currentTrackQueueData.MusicTrack.Music.length*/ 5f)
+            while (_musicElapsedTime < _currentTrackQueueData.MusicTrack.Music.length)
             {
                 if (OnSetVisibleElapsedTime != null) OnSetVisibleElapsedTime.Invoke(_musicElapsedTime);
                 
@@ -775,6 +877,7 @@ namespace Altzone.Scripts.Audio
             {
                 if (OnGetFreeJukeboxTrackQueueHandler != null) trackQueueData.Pointer = OnGetFreeJukeboxTrackQueueHandler.Invoke();
 
+                trackQueueData.SetFavoriteData(GetTrackFavoriteType(trackQueueData.MusicTrack));
                 AddToQueueList(trackQueueData);
             }
 
@@ -783,7 +886,7 @@ namespace Altzone.Scripts.Audio
 
         private void AddToQueueList(MusicTrack musicTrack)
         {
-            AddToQueueList(new TrackQueueData(CreateLocalUserTrackQueueId(musicTrack.Id), _trackQueue.Count, null, musicTrack, true));
+            AddToQueueList(new TrackQueueData(CreateLocalUserTrackQueueId(musicTrack.Id), _trackQueue.Count, null, musicTrack, true, GetTrackFavoriteType(musicTrack)));
         }
 
         private void AddToQueueList(TrackQueueData trackQueueData)
@@ -805,7 +908,7 @@ namespace Altzone.Scripts.Audio
         private void InsertToQueueList(MusicTrack musicTrack, int insertIndex, string trackQueueDataId, bool addTypeOverride)
         {
             int skippedAmount = 0;
-            TrackQueueData trackQueueData = new(trackQueueDataId, insertIndex, null, musicTrack, true);
+            TrackQueueData trackQueueData = new(trackQueueDataId, insertIndex, null, musicTrack, true, GetTrackFavoriteType(musicTrack));
 
             _trackQueue.Insert(insertIndex, trackQueueData);
 
@@ -911,6 +1014,18 @@ namespace Altzone.Scripts.Audio
                 Index = index;
             }
         }
+
+        public class MusicTrackFavoriteData
+        {
+            public string MusicTrackId;
+            public MusicTrackFavoriteType FavoriteType;
+
+            public MusicTrackFavoriteData(string musicTrackId, MusicTrackFavoriteType likeType)
+            {
+                MusicTrackId = musicTrackId;
+                FavoriteType = likeType;
+            }
+        }
     }
 
     public class TrackQueueData
@@ -920,21 +1035,31 @@ namespace Altzone.Scripts.Audio
         public ChunkPointer Pointer;
         public MusicTrack MusicTrack;
         public bool UserOwned;
+        public JukeboxManager.MusicTrackFavoriteType FavoriteType;
 
-        public TrackQueueData(string id, int linearIndex, ChunkPointer pointer, MusicTrack track, bool userOwned) { SetData(id, linearIndex, pointer, track, userOwned); }
+        public TrackQueueData(string id, int linearIndex, ChunkPointer pointer, MusicTrack track, bool userOwned, JukeboxManager.MusicTrackFavoriteType favoriteType)
+        {
+            SetData(id, linearIndex, pointer, track, userOwned, favoriteType);
+        }
 
         public bool InUse() { return !string.IsNullOrEmpty(Id); }
 
-        public void SetData(TrackQueueData data, int linearIndex) { SetData(data.Id, linearIndex, data.Pointer, data.MusicTrack, data.UserOwned); }
+        public void SetData(TrackQueueData data, int linearIndex)
+        {
+            SetData(data.Id, linearIndex, data.Pointer, data.MusicTrack, data.UserOwned, data.FavoriteType);
+        }
 
-        public void SetData(string id, int linearIndex, ChunkPointer pointer, MusicTrack track, bool userOwned)
+        public void SetData(string id, int linearIndex, ChunkPointer pointer, MusicTrack track, bool userOwned, JukeboxManager.MusicTrackFavoriteType favoriteType)
         {
             Id = id;
             LinearIndex = linearIndex;
             Pointer = pointer;
             MusicTrack = track;
             UserOwned = userOwned;
+            FavoriteType = favoriteType;
         }
+
+        public void SetFavoriteData(JukeboxManager.MusicTrackFavoriteType favoriteType) { FavoriteType = favoriteType; }
 
         public void Clear()
         {
@@ -983,7 +1108,7 @@ namespace Altzone.Scripts.Audio
                 foreach (MusicTrack track in musicTracks)
                     if (track.Id == musicTrackId)
                     {
-                        queueHandlers.Add(new(PackedTrackQueueDatas[i], i, null, track, (userId.ToLower() == localUserId.ToLower())));
+                        queueHandlers.Add(new(PackedTrackQueueDatas[i], i, null, track, (userId.ToLower() == localUserId.ToLower()), JukeboxManager.MusicTrackFavoriteType.Neutral));
                         break;
                     }
             }

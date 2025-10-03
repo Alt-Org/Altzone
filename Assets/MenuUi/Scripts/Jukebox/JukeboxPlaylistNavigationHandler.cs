@@ -129,9 +129,7 @@ public class JukeboxPlaylistNavigationHandler : MonoBehaviour
         /*if (string.IsNullOrEmpty(_currentPlaylistName))*/ ClearButtonHandlers();
         List<MusicTrack> musicTracks = AudioManager.Instance.GetMusicList("Jukebox"); //TODO: Replace with what tracks the clan actually owns.
 
-        for (int i = 0; i < musicTracks.Count; i++) GetFreeJukeboxTrackButtonHandler().SetTrack(musicTracks[i], i);
-
-        //_buttonHandlersOriginalOrder = new (_buttonHandlerChunks);
+        for (int i = 0; i < musicTracks.Count; i++) GetFreeJukeboxTrackButtonHandler().SetTrack(musicTracks[i], i, JukeboxManager.Instance.GetTrackFavoriteType(musicTracks[i]));
 
         for (int i = 0; i < _buttonHandlerChunks.Count; i++)
         {
@@ -198,7 +196,7 @@ public class JukeboxPlaylistNavigationHandler : MonoBehaviour
 
                 if ((textDirection == 1 && visible) || (textDirection == -1 && !visible)) continue;
 
-                //if (hiddenTrackChunkData.Pool[j] != !visible) hiddenTrackChunkData.AmountInUse += textDirection;
+                if (hiddenTrackChunkData.Pool[j] != !visible) hiddenTrackChunkData.AmountInUse += textDirection;
 
                 hiddenTrackChunkData.Pool[j] = !visible;
                 handler.SetVisibility(visible);

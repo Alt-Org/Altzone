@@ -45,6 +45,9 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     [SerializeField] private Button _soundMuteButton;
     [SerializeField] private Image _soundMuteImage;
 
+    [SerializeField] private FavoriteButtonHandler _favoriteButtonHandler;
+    [SerializeField] private TextAutoScroll _textAutoScroll;
+
     [SerializeField] private Button _addMusicInfoButton;
     [SerializeField] private GameObject _addMusicInfoPopup;
     private Coroutine _diskSpinCoroutine;
@@ -72,8 +75,6 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         _jukeboxObject.SetActive(false);
         SetMuteImage(false);
 
-        foreach (TMP_Text text in _trackNames) text.text = NoSongName;
-
         _closeButton.onClick.AddListener(() => ToggleJukeboxScreen(false));
 
         //_playlistNavigationButton.onValueChanged.AddListener((value) => { if (value) SwitchMainWindow(JukeboxWindowType.PlaylistNavigation); });
@@ -99,7 +100,10 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         JukeboxManager.Instance.OnClearJukeboxVisuals += ClearJukeboxVisuals;
         //JukeboxManager.Instance.OnSetPlayButtonImages += SetPlayButtonStates;
 
-        if (JukeboxManager.Instance.CurrentTrackQueueData != null) SetSongInfo(JukeboxManager.Instance.CurrentTrackQueueData.MusicTrack);
+        if (JukeboxManager.Instance.CurrentTrackQueueData != null)
+            SetSongInfo(JukeboxManager.Instance.GetNotHatedMusicTrack());
+        else
+            foreach (TMP_Text text in _trackNames) text.text = NoSongName;
     }
 
     private void OnDisable()
@@ -220,7 +224,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     //    _bottomBarObject.SetActive(!(_currentWindowType == JukeboxWindowType.MusicPlayer));
     //}
 
-    public string PlayTrack() { return JukeboxManager.Instance.PlayTrack(); }
+    //public string PlayTrack() { return JukeboxManager.Instance.PlayTrack(); }
 
     public void StopJukeboxVisuals()
     {
@@ -255,7 +259,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
             if (!jukeboxSoulhome) AudioManager.Instance.PlayMusic("Soulhome", "");
 
-            if (JukeboxManager.Instance.CurrentTrackQueueData != null) SetSongInfo(JukeboxManager.Instance.CurrentTrackQueueData.MusicTrack);
+            if (JukeboxManager.Instance.CurrentTrackQueueData != null) SetSongInfo(JukeboxManager.Instance.GetNotHatedMusicTrack());
         }
     }
 
@@ -274,6 +278,9 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         }
 
         if (_jukeboxObject.activeSelf && track.Music != null) _diskSpinCoroutine = StartCoroutine(SpinDisks());
+
+        _textAutoScroll.ContentChange();
+        _favoriteButtonHandler.Setup(JukeboxManager.Instance.GetTrackFavoriteType(track), track.Id);
 
         OnChangeJukeBoxSong?.Invoke(track);
     }

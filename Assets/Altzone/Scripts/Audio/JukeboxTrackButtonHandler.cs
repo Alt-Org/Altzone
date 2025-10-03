@@ -1,3 +1,4 @@
+using Altzone.Scripts.Audio;
 using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
@@ -9,7 +10,7 @@ public class JukeboxTrackButtonHandler : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _trackNameText;
     [SerializeField] private Image _trackImage;
     [SerializeField] private Button _addButton;
-    [SerializeField] private Button _likeOptionButton;
+    [SerializeField] private FavoriteButtonHandler _favoriteButtonHandler;
 
     private int _trackLinearIndex = 0;
 
@@ -21,23 +22,26 @@ public class JukeboxTrackButtonHandler : MonoBehaviour
     public delegate void TrackPressed(MusicTrack musicTrack);
     public event TrackPressed OnTrackPressed;
 
-    private void Awake() { _addButton.onClick.AddListener(() => AddButtonClicked()); }
+    private void Awake()
+    {
+        _addButton.onClick.AddListener(() => AddButtonClicked());
+    }
 
-    public bool InUse() { return _currentTrack != null; }
+    //public bool InUse() { return _currentTrack != null; }
 
-    //public void ButtonClicked() { if (_currentTrack != null) OnTrackPressed.Invoke(_trackLinearIndex); }
     public void AddButtonClicked() { if (_currentTrack != null) OnTrackPressed.Invoke(_currentTrack); }
 
-    public void SetTrack(MusicTrack musicTrack, int trackLinearIndex)
+    public void SetTrack(MusicTrack musicTrack, int trackLinearIndex, JukeboxManager.MusicTrackFavoriteType likeType)
     {
         _trackLinearIndex = trackLinearIndex;
         _currentTrack = musicTrack;
         _trackNameText.text = musicTrack.Name;
         _trackImage.sprite = musicTrack.Info.Disk;
         gameObject.SetActive(true);
+        _favoriteButtonHandler.Setup(likeType, musicTrack.Id);
     }
 
     public void Clear() { _currentTrack = null; gameObject.SetActive(false); }
 
-    public void SetVisibility(bool value) { gameObject.SetActive(value); } 
+    public void SetVisibility(bool value) { gameObject.SetActive(value); }
 }

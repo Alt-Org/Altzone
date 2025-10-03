@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class TextAutoScroll : MonoBehaviour
 {
     [Range(0f, 1f)]
+    [SerializeField] private float _defaultPosition = 0f;
+    [Range(0f, 1f)]
     [SerializeField] private float _scrollSpeed = 0.3f;
     [SerializeField] private float _edgeWaitTime = 1f;
 
@@ -64,7 +66,7 @@ public class TextAutoScroll : MonoBehaviour
         if (_selfRect.sizeDelta.x > _parentRect.sizeDelta.x)
             _scrollCoroutine = StartCoroutine(Scroll());
         else
-            _selfRect.pivot = new Vector2(0.5f, 0.5f);
+            _selfRect.pivot = new Vector2(_defaultPosition, 0.5f);
     }
 
     private IEnumerator Scroll()

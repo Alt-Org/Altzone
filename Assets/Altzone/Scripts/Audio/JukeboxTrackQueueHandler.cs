@@ -1,3 +1,4 @@
+using Altzone.Scripts.Audio;
 using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
@@ -12,6 +13,7 @@ public class JukeboxTrackQueueHandler : MonoBehaviour
     [SerializeField] private Button _likeOptionButton;
     [SerializeField] private Button _deleteButton;
     [SerializeField] private TextAutoScroll _textAutoScroll;
+    [SerializeField] private FavoriteButtonHandler _favoriteButtonHandler;
 
     private string _id; // Id that is used with JukeboxManager.
     public string Id { get { return _id; } }
@@ -52,7 +54,7 @@ public class JukeboxTrackQueueHandler : MonoBehaviour
 
     public bool InUse() { return !string.IsNullOrEmpty(_id); }
 
-    public void SetTrack(string id, MusicTrack musicTrack, int linearIndex, bool userOwned)
+    public void SetTrack(string id, MusicTrack musicTrack, int linearIndex, bool userOwned, JukeboxManager.MusicTrackFavoriteType likeType)
     {
         _id = id;
         _musicTrack = musicTrack;
@@ -70,6 +72,7 @@ public class JukeboxTrackQueueHandler : MonoBehaviour
 
         _userOwned = userOwned;
         _deleteButton.gameObject.SetActive(userOwned);
+        _favoriteButtonHandler.Setup(likeType, musicTrack.Id);
     }
 
     public void SetLinearIndex(int index) { _linearIndex = index; }
