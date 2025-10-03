@@ -109,8 +109,11 @@ namespace Altzone.Scripts.Lobby
 
         public static LobbyManager Instance { get; private set; }
         public bool IsStartFinished {set => _isStartFinished = value; }
+        public static bool IsActive { get => _isActive;}
 
-        private static bool isActive = false;
+        private static bool _isActive = false;
+
+        public bool RunnerActive => _runner != null;
 
         #region Delegates & Events
 
@@ -217,14 +220,14 @@ namespace Altzone.Scripts.Lobby
             {
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
-                isActive = false;
-                if (!isActive && SceneManager.GetActiveScene().buildIndex != 0) Activate();
+                _isActive = false;
+                if (!_isActive && SceneManager.GetActiveScene().buildIndex != 0) Activate();
             }
         }
 
         public void OnEnable()
         {
-            if(!isActive && SceneManager.GetActiveScene().buildIndex != 0) Activate();
+            if(!_isActive && SceneManager.GetActiveScene().buildIndex != 0) Activate();
         }
 
         public void OnDisable()
@@ -246,8 +249,8 @@ namespace Altzone.Scripts.Lobby
         }
         public void Activate()
         {
-            if (isActive) { Debug.LogWarning("LobbyManager is already active."); return; }
-            isActive = true;
+            if (_isActive) { Debug.LogWarning("LobbyManager is already active."); return; }
+            _isActive = true;
             PhotonRealtimeClient.Client.AddCallbackTarget(this);
             PhotonRealtimeClient.Client.StateChanged += OnStateChange;
             this.Subscribe<ReserveFreePositionEvent>(OnReserveFreePositionEvent);
@@ -1080,16 +1083,17 @@ namespace Altzone.Scripts.Lobby
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleLoad);
             _isStartFinished = false;
 
-            yield return new WaitForEndOfFrame();
-
+            yield return new WaitUntil(() => OnStartTimeSet != null);
+            Debug.Log("Testi1");
             if (sendTime == 0) sendTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             long timeToStart = (sendTime + STARTDELAY) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             long startTime = sendTime + timeToStart;
-
+            Debug.Log("Testi2");
             do
             {
                 if (OnStartTimeSet != null)
                 {
+                    Debug.Log("Testi2");
                     OnStartTimeSet?.Invoke(0);
                     break;
                 }
@@ -1148,10 +1152,15 @@ namespace Altzone.Scripts.Lobby
 
         public static void ExitQuantum(bool winningTeam, float gameLengthSec)
         {
-            QuantumRunner.ShutdownAll();
-            DebugLogFileHandler.ContextExit();
+            CloseRunner();
             DataCarrier.AddData(DataCarrier.BattleWinner,winningTeam);
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleStory);
+        }
+
+        public static void CloseRunner()
+        {
+            QuantumRunner.ShutdownAll();
+            DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.MenuUI);
         }
 
         public static void ExitBattleStory()
