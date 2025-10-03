@@ -411,7 +411,8 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator CheckIfBattleCanStart()
         {
-            yield return new WaitForSeconds(0.2f);
+            yield break;
+            yield return new WaitForSeconds(0.5f);
             yield return new WaitUntil(() => _posChangeQueue.Count == 0 && !_playerPosChangeInProgress);
             Room room = PhotonRealtimeClient.CurrentRoom;
             if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
