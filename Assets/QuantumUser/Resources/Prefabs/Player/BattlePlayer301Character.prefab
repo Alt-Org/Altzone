@@ -8,35 +8,15 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1183806221621873243, guid: 4786e951167fb7243915585170dab4f3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1285069513364832459, guid: 4786e951167fb7243915585170dab4f3,
         type: 3}
       propertyPath: m_Name
       value: BattlePlayer301Character
-      objectReference: {fileID: 0}
-    - target: {fileID: 1418899269420465673, guid: 4786e951167fb7243915585170dab4f3,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1418899269420465673, guid: 4786e951167fb7243915585170dab4f3,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1418899269420465673, guid: 4786e951167fb7243915585170dab4f3,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 1418899269420465673, guid: 4786e951167fb7243915585170dab4f3,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 1418899269420465673, guid: 4786e951167fb7243915585170dab4f3,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 2642525739900134439, guid: 4786e951167fb7243915585170dab4f3,
         type: 3}
@@ -86,6 +66,11 @@ PrefabInstance:
     - target: {fileID: 2642525739900134439, guid: 4786e951167fb7243915585170dab4f3,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3499363392897276304, guid: 4786e951167fb7243915585170dab4f3,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4213520545245721527, guid: 4786e951167fb7243915585170dab4f3,
