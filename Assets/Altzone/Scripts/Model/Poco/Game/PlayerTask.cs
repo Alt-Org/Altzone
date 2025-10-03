@@ -42,6 +42,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         UseAllItemsSoulhome,
         FindVariableValueInGame,
         Find3ImportantButtons,
+        FindBug,
     }
 
     public enum TaskEducationSocialType
@@ -72,6 +73,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         RecognizeSoundClue,
         CreateUnifiedInterior,
         RecognizeCharacterMechanic,
+        WhereGameHappens,
     }
 
     public enum TaskEducationCultureType
@@ -331,6 +333,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                     {
                         return TaskEducationActionType.Find3ImportantButtons;
                     }
+                case "find_bug":
+                    {
+                        return TaskEducationActionType.FindBug;
+                    }
                 default:
                     {
                         return TaskEducationActionType.PlayBattle;
@@ -440,6 +446,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case "recognize_character_mechanic":
                     {
                         return TaskEducationStoryType.RecognizeCharacterMechanic;
+                    }
+                case "where_game_happens":
+                    {
+                        return TaskEducationStoryType.WhereGameHappens;
                     }
                 default:
                     {

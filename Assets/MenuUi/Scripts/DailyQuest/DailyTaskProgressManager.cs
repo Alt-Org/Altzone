@@ -127,6 +127,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationActionType.UseAllItemsSoulhome: HandleSimpleTask(value); break;
             case TaskEducationActionType.FindVariableValueInGame: HandleSimpleTask(value); break;
             case TaskEducationActionType.Find3ImportantButtons: HandleSimpleTask(value); break;
+            case TaskEducationActionType.FindBug: HandleSimpleTask(value); break;
             default: break;
         }
     }
@@ -178,6 +179,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationStoryType.RecognizeSoundClue: HandleSimpleTask(value); break;
             case TaskEducationStoryType.CreateUnifiedInterior: HandleSimpleTask(value); break;
             case TaskEducationStoryType.RecognizeCharacterMechanic: HandleSimpleTask(value); break;
+            case TaskEducationStoryType.WhereGameHappens: HandleSimpleTask(value); break;
             default: break;
         }
     }
