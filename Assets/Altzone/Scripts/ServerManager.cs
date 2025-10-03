@@ -24,6 +24,7 @@ using System.Linq;
 using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Store;
 using Altzone.Scripts.Chat;
+using Altzone.Scripts.Audio;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -1730,19 +1731,15 @@ public class ServerManager : MonoBehaviour
     #endregion
 
     #region Jukebox
-    public IEnumerator GetJukeboxClanPlaylist(Action<string[]> callback)
+    public IEnumerator GetJukeboxClanPlaylist(Action<ServerPlaylist> callback)
     {
-        string query = SERVERADDRESS + "jukebox";
-
-        StartCoroutine(WebRequests.Get(query, AccessToken, request =>
+        StartCoroutine(WebRequests.Get(SERVERADDRESS + "clan/jukebox", AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 Debug.LogWarning(result);
-                JArray clans = (JArray)result["data"]["Jukebox"];
-
-                string[] playlist = new string[0];
+                ServerPlaylist playlist = result["data"]["Object"].ToObject<ServerPlaylist>();
 
                 if (callback != null)
                     callback(playlist);
@@ -1757,6 +1754,48 @@ public class ServerManager : MonoBehaviour
         yield break;
     }
 
+    public IEnumerator UpdateJukeboxClanPlaylistToServer(Playlist data, Action<bool> callback)
+    {
+        string body = JObject.FromObject(
+            new
+            {
+                jukeboxSongs = data.PackedTrackQueueDatas
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
+        ).ToString();
+
+        yield return UpdateJukeboxClanPlaylistToServer(body, callback);
+        //Storefront.Get().SaveClanData(data, null);
+    }
+
+    public IEnumerator UpdateJukeboxClanPlaylistToServer(string body, Action<bool> callback)
+    {
+
+        yield return StartCoroutine(WebRequests.Put(SERVERADDRESS + "clan/jukebox", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                //JObject result = JObject.Parse(request.downloadHandler.text);
+                //Debug.LogWarning(request);
+                //ServerPlaylist playlist = result["data"]["Jukebox"].ToObject<ServerPlaylist>();
+                //Clan = clan;
+
+                //StartCoroutine(SaveClanFromServerToDataStorage(Clan));
+
+                if (callback != null)
+                {
+                    callback(true);
+                }
+            }
+            else
+            {
+                if (callback != null)
+                {
+                    callback(false);
+                }
+            }
+        }));
+    }
     #endregion
 
     #endregion

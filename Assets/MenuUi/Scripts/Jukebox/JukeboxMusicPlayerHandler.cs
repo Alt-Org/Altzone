@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Audio;
 using Altzone.Scripts.ReferenceSheets;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -77,8 +76,6 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
         JukeboxManager.Instance.OnQueueChange += UpdateVisualQueue;
         JukeboxManager.Instance.OnQueueToLast += MoveQueueHandlerToLast;
         JukeboxManager.Instance.OnGetTrackQueueHandler += GetTrackQueueHandler;
-
-        if (_queueHandlerLastUpdate != JukeboxManager.Instance.PlaybackLastUpdate) UpdateVisualQueue();
     }
 
     private void OnDisable()
@@ -233,7 +230,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
     {
         JukeboxTrackQueueHandler oldHandler = GetTrackQueueHandler(chunkPointer);
         JukeboxTrackQueueHandler newHandler = GetTrackQueueHandler(GetFreeJukeboxTrackQueueHandler());
-        //Debug.LogError("move to last: " + oldHandler.MusicTrack.Name);
+        Debug.LogError(chunkPointer);
         newHandler.SetTrack(oldHandler.Id, oldHandler.MusicTrack, linearIndex, oldHandler.UserOwned);
         newHandler.SetVisibility(true);
         ReduceQueueHandlerChunkActiveCount(oldHandler.ChunkIndex);
@@ -322,7 +319,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
                 case JukeboxManager.PlaybackHistoryType.Add:
                     {
                         queueData.Pointer = GetFreeJukeboxTrackQueueHandler();
-
+                        //Debug.LogError("add history");
                         JukeboxTrackQueueHandler handler = GetTrackQueueHandler(queueData.Pointer);
 
                         handler.SetTrack(queueData.Id, queueData.MusicTrack, playbackHistoryData.Target1.LinearIndex, queueData.UserOwned);
@@ -334,7 +331,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
                     {
                         int chunkIndex = Mathf.FloorToInt(queueData.LinearIndex / JukeboxManager.Instance.TrackChunkSize);
                         int poolIndex = (queueData.LinearIndex % JukeboxManager.Instance.TrackChunkSize);
-                        Debug.LogError("insert history");
+                        //Debug.LogError("insert history");
                         JukeboxTrackQueueHandler handler = GetInsertedJukeboxTrackQueueHandler(chunkIndex, poolIndex);
 
                         handler.SetTrack(queueData.Id, queueData.MusicTrack, queueData.LinearIndex, queueData.UserOwned);
