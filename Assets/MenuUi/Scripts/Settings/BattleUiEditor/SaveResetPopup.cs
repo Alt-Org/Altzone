@@ -1,12 +1,8 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using Altzone.Scripts.BattleUiShared;
 using TMPro;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
-using static SettingsCarrier;
 
 
 namespace MenuUi.Scripts.Settings.BattleUiEditor
