@@ -1,0 +1,79 @@
+/// @file BattleSoulWall.qtn
+/// <summary>
+/// Contains components used for %SoulWalls
+/// </summary>
+///
+/// ## Generated Enums
+/// - @cref{Quantum,BattleSoulWallRow}  
+///   @copybrief Quantum.BattleSoulWallRow
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattleSoulWallTemplate}  
+///   @copybrief Quantum.BattleSoulWallTemplate
+/// - @cref{Quantum,BattleSoulWallQComponent}  
+///   @copybrief Quantum.BattleSoulWallQComponent
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @enum Quantum::BattleSoulWallRow
+/// <summary>
+/// Which row of the SoulWall this SoulWall segment is located at.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleSoulWall.qtn}
+
+/// @var Quantum::BattleSoulWallRow Quantum::BattleSoulWallRow::First
+/// <summary>First SoulWall row.</summary>
+///
+/// @var Quantum::BattleSoulWallRow Quantum::BattleSoulWallRow::Middle
+/// <summary>Middle SoulWall row.</summary>
+///
+/// @var Quantum::BattleSoulWallRow Quantum::BattleSoulWallRow::Last
+/// <summary>Last SoulWall row.</summary>
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattleSoulWallTemplate
+/// <summary>
+/// [Serializable] Template for creating SoulWall segments.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleSoulWall.qtn}
+
+/// @var BattleGridPosition Quantum.BattleSoulWallTemplate::Position
+/// <summary>SoulWall's position in GridPositions.</summary>
+///
+/// @var int Quantum.BattleSoulWallTemplate::WidthType
+/// <summary>How wide the SoulWall segment is.</summary>
+///
+/// @var int Quantum.BattleSoulWallTemplate::ColorIndex
+/// <summary>SoulWall's color by ColorIndex.</summary>
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattleSoulWallQComponent
+/// <summary>
+/// Contains SoulWall's data.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleSoulWall.qtn}
+
+/// @var BattleTeamNumber Quantum.BattleSoulWallQComponent::Team
+/// <summary>Which team the SoulWall segment belongs to.</summary>
+///
+/// @var BattleSoulWallRow Quantum.BattleSoulWallQComponent::Row
+/// <summary>Which row of the SoulWall this SoulWall segment is located at.</summary>
+///
+/// @var int Quantum.BattleSoulWallQComponent::WallNumber
+/// <summary>Which number is the SoulWall segment.</summary>
+///
+/// @var BattleEmotionState Quantum.BattleSoulWallQComponent::Emotion
+/// <summary>Which emotion the SoulWall has. Changes projectile's emotion into SoulWall's emotion upon collision.</summary>
+///
+/// @var FPVector2 Quantum.BattleSoulWallQComponent::Normal
+/// <summary>SoulWall's <a href="https://en.wikipedia.org/wiki/Normal_(geometry)">Normal vector@u-exlink</a>..</summary>
+///
+/// @var FP Quantum.BattleSoulWallQComponent::CollisionMinOffset
+/// <summary>How much projectile is allowed to accidentally penetrate into SoulWall before it's forcibly lifted out.</summary>
+///
+/// Used as a precaution to minimize cases where projectile gets stuck inside other entities.

@@ -87,7 +87,7 @@ namespace Altzone.Scripts.Lobby
         [Header("Battle Map reference")]
         [SerializeField] private BattleMapReference _battleMapReference;
 
-        private const long STARTDELAY = 6000;
+        private const long STARTDELAY = 2000;
 
         private QuantumRunner _runner = null;
 
@@ -105,7 +105,11 @@ namespace Altzone.Scripts.Lobby
 
         private List<string> _posChangeQueue = new();
 
+        private bool _isStartFinished = false;
+
         public static LobbyManager Instance { get; private set; }
+        public bool IsStartFinished {set => _isStartFinished = value; }
+
         private static bool isActive = false;
 
         #region Delegates & Events
@@ -402,22 +406,24 @@ namespace Altzone.Scripts.Lobby
 
                 }
             }
-            return true;
+            return pos1Set && pos2Set && pos3Set && pos4Set;
         }
 
         private IEnumerator CheckIfBattleCanStart()
         {
-            yield return new WaitUntil(()=> _posChangeQueue.Count == 0 && !_playerPosChangeInProgress);
-
+            yield return new WaitForSeconds(0.2f);
+            yield return new WaitUntil(() => _posChangeQueue.Count == 0 && !_playerPosChangeInProgress);
+            Room room = PhotonRealtimeClient.CurrentRoom;
             if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
             {
-                Room room = PhotonRealtimeClient.CurrentRoom;
-                if (room.PlayerCount != room.MaxPlayers) yield break;
-
-                if (CheckIfAllPlayersInPosition())
+                while (room.PlayerCount >= room.MaxPlayers)
                 {
-                    GameType gameType = (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
-                    if (gameType == GameType.Custom) OnStartPlayingEvent(new());
+                    if (CheckIfAllPlayersInPosition())
+                    {
+                        GameType gameType = (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                        if (gameType == GameType.Custom) OnStartPlayingEvent(new());
+                    }
+                    yield return null;
                 }
             }
             _canBattleStartCheckHolder = null;
@@ -906,6 +912,7 @@ namespace Altzone.Scripts.Lobby
             // Checking player positions before starting gameplay
             players = room.Players.Values.ToList();
             string[] playerUserIds = new string[4] { "", "", "", "" };
+            string[] playerUserNames = new string[4] { "", "", "", "" };
             PlayerType[] playerTypes = new PlayerType[4] { PlayerType.None, PlayerType.None, PlayerType.None, PlayerType.None, };
 
             int playerCount = 0;
@@ -931,6 +938,7 @@ namespace Altzone.Scripts.Lobby
                 }
                 playerTypes[playerPos-1] = PlayerType.Player;
                 playerUserIds[playerPos - 1] = roomPlayer.UserId;
+                playerUserNames[playerPos - 1] = roomPlayer.NickName;
                 playerCount += 1;
             }
 
@@ -979,6 +987,7 @@ namespace Altzone.Scripts.Lobby
                 {
                     StartTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                     PlayerSlotUserIds = playerUserIds,
+                    PlayerSlotUserNames = playerUserNames,
                     PlayerSlotTypes = playerTypes,
                     ProjectileInitialEmotion = startingEmotion,
                     MapId = mapId,
@@ -1039,6 +1048,7 @@ namespace Altzone.Scripts.Lobby
                 BattleConfig     = _battleQConfig,
                 BattleParameters = new()
                 {
+                    PlayerNames = data.PlayerSlotUserNames,
                     PlayerSlotTypes = data.PlayerSlotTypes,
                     PlayerSlotUserIDs = data.PlayerSlotUserIds,
                     PlayerCount = data.PlayerCount,
@@ -1062,28 +1072,25 @@ namespace Altzone.Scripts.Lobby
 
             //Start Battle Countdown
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleLoad);
-
-            if(sendTime == 0) sendTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            long timeToStart = (sendTime+ STARTDELAY) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            long startTime = sendTime + timeToStart;
+            _isStartFinished = false;
 
             yield return new WaitForEndOfFrame();
 
+            if (sendTime == 0) sendTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            long timeToStart = (sendTime + STARTDELAY) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            long startTime = sendTime + timeToStart;
+
             do
             {
-                if(OnStartTimeSet != null)
+                if (OnStartTimeSet != null)
                 {
-                    OnStartTimeSet?.Invoke(timeToStart);
+                    OnStartTimeSet?.Invoke(0);
                     break;
                 }
                 yield return null;
             } while (startTime > DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
-            timeToStart = (sendTime + STARTDELAY) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-            if (timeToStart > STARTDELAY) timeToStart = STARTDELAY;
-
-            if(timeToStart > 0)
-            yield return new WaitForSeconds(timeToStart / 1000f);
+            yield return new WaitUntil(()=>_isStartFinished);
 
             //Move to Battle and start Runner
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Battle);
@@ -1093,19 +1100,25 @@ namespace Altzone.Scripts.Lobby
             DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.Battle);
             DebugLogFileHandler.FileOpen(battleID, (int)playerSlot);
 
-            Task<bool> task = StartRunner(sessionRunnerArguments);
+            int retryCount=0;
+            do
+            {
+                Task<bool> task = StartRunner(sessionRunnerArguments);
 
-            yield return new WaitUntil(() => task.IsCompleted);
-            if(task.Result)
-            {
-                _player.PlayerSlot = playerSlot;
-                _player.UserID = userId;
-                _runner?.Game.AddPlayer(_player);
-            }
-            else
-            {
-                OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
-            }
+                yield return new WaitUntil(() => task.IsCompleted);
+                if (task.Result)
+                {
+                    _player.PlayerSlot = playerSlot;
+                    _player.UserID = userId;
+                    _runner?.Game.AddPlayer(_player);
+                    break;
+                }
+                else
+                {
+                    retryCount++;
+                    if (retryCount == 5) { OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu); break; }
+                }
+            } while (true);
         }
 
         private async Task<bool> StartRunner(SessionRunner.Arguments sessionRunnerArguments)
@@ -1259,7 +1272,7 @@ namespace Altzone.Scripts.Lobby
 
                 if(character == null || character.Id is CharacterID.None)
                 {
-                    character = new(PlayerCharacterPrototypes.GetCharacter("-1").BaseCharacter);
+                    character = new(PlayerCharacterPrototypes.GetCharacter("-1",true).BaseCharacter);
                 }
 
                 var stats = new BattlePlayerStats()
@@ -1274,7 +1287,7 @@ namespace Altzone.Scripts.Lobby
                 _player.Characters[i] = new BattleCharacterBase()
                 {
                     Id            = (int)character.Id,
-                    Class         = (int)character.CharacterClassID,
+                    Class         = (int)character.CharacterClassType,
                     Stats         = stats,
                 };
             }
@@ -1630,6 +1643,7 @@ namespace Altzone.Scripts.Lobby
     {
         public long StartTime { get; set; }
         public string[] PlayerSlotUserIds { get; set; }
+        public string[] PlayerSlotUserNames { get; set; }
         public PlayerType[] PlayerSlotTypes { get; set; }
         public Emotion ProjectileInitialEmotion { get; set; }
         public string MapId { get; set; }
@@ -1641,6 +1655,7 @@ namespace Altzone.Scripts.Lobby
             byte[] bytes = new byte[0];
             Serializer.Serialize(b.StartTime, ref bytes);
             Serializer.Serialize(b.PlayerSlotUserIds, ref bytes);
+            Serializer.Serialize(b.PlayerSlotUserNames, ref bytes);
             Serializer.Serialize(b.PlayerSlotTypes.Cast<int>().ToArray(), ref bytes);
             Serializer.Serialize((int)b.ProjectileInitialEmotion, ref bytes);
             Serializer.Serialize(b.MapId, ref bytes);
@@ -1655,6 +1670,7 @@ namespace Altzone.Scripts.Lobby
             int offset = 0;
             result.StartTime = Serializer.DeserializeLong(data, ref offset);
             result.PlayerSlotUserIds = Serializer.DeserializeStringArray(data, ref offset);
+            result.PlayerSlotUserNames = Serializer.DeserializeStringArray(data, ref offset);
             result.PlayerSlotTypes = Serializer.DeserializeIntArray(data, ref offset).Cast<PlayerType>().ToArray();
             result.ProjectileInitialEmotion = (Emotion)Serializer.DeserializeInt(data, ref offset);
             result.MapId = Serializer.DeserializeString(data, ref offset);
@@ -1667,6 +1683,7 @@ namespace Altzone.Scripts.Lobby
         {
             return $"Start time: {StartTime}" +
                  $"\nPlayerSlotUserIds: {string.Join(", ", PlayerSlotUserIds)}" +
+                 $"\nPlayerSlotUserNames: {string.Join(", ", PlayerSlotUserNames)}" +
                  $"\nPlayerSlotTypes: {string.Join(", ",PlayerSlotTypes)}" +
                  $"\nProjectileInitialEmotion: {ProjectileInitialEmotion}" +
                  $"\nMapId: {MapId}" +

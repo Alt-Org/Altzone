@@ -58,7 +58,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
 
         public PlayerActorBase GetPlayerPrefab(CharacterID characterID)
         {
-            CharacterClassID characterClass = CustomCharacter.GetClassID(characterID);
+            CharacterClassType characterClass = CustomCharacter.GetClass(characterID);
 
             int classValue = (int)characterClass >> 8;
             classValue--;
@@ -103,7 +103,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     [Serializable]
     public class Class
     {
-        [Header("Class")] public CharacterClassID _mainDefence;
+        [Header("Class")] public CharacterClassType _mainDefence;
         public List<Character> characters = new List<Character>();
 
     }

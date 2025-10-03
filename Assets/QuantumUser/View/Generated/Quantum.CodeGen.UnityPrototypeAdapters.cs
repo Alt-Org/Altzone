@@ -69,6 +69,7 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.QuantumEntityPrototype HitboxShieldEntity;
     public Quantum.QuantumEntityPrototype HitboxCharacterEntity;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
+    public FP MovementCooldownSec;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerDataQComponentPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerDataQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerDataQComponentPrototype();
@@ -89,6 +90,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.HitboxShieldEntity, out result.HitboxShieldEntity);
       converter.Convert(this.HitboxCharacterEntity, out result.HitboxCharacterEntity);
       converter.Convert(this.DamageCooldown, out result.DamageCooldown);
+      converter.Convert(this.MovementCooldownSec, out result.MovementCooldownSec);
       ConvertUser(converter, ref result);
       return result;
     }
@@ -122,6 +124,8 @@ namespace Quantum.Prototypes.Unity {
     [ArrayLengthAttribute(4)]
     public PlayerRef[] PlayerRefs = new PlayerRef[4];
     [ArrayLengthAttribute(4)]
+    public QBoolean[] IsBot = new QBoolean[4];
+    [ArrayLengthAttribute(4)]
     public Quantum.Prototypes.FrameTimerPrototype[] RespawnTimer = new Quantum.Prototypes.FrameTimerPrototype[4];
     [ArrayLengthAttribute(4)]
     public QBoolean[] AllowCharacterSwapping = new QBoolean[4];
@@ -139,6 +143,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.PlayerCount, out result.PlayerCount);
       converter.Convert(this.PlayStates, out result.PlayStates);
       converter.Convert(this.PlayerRefs, out result.PlayerRefs);
+      converter.Convert(this.IsBot, out result.IsBot);
       converter.Convert(this.RespawnTimer, out result.RespawnTimer);
       converter.Convert(this.AllowCharacterSwapping, out result.AllowCharacterSwapping);
       converter.Convert(this.SelectedCharacters, out result.SelectedCharacters);
