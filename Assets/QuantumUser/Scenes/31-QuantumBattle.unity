@@ -2670,7 +2670,6 @@ MonoBehaviour:
           RawValue: 15073280
         Defence:
           RawValue: 65536
-    IsBot: 0
   MaxPlayerCount: 0
   SimulationSpeedMultiplier: 1
   DisplaySaveAndReloadButton: 0
@@ -3889,12 +3888,12 @@ PrefabInstance:
     - target: {fileID: 5685116848877297894, guid: 4c9026e52048f4c4a9a4b484571e84ed,
         type: 3}
       propertyPath: _colorA.a
-      value: 0.078431375
+      value: 0.019607844
       objectReference: {fileID: 0}
     - target: {fileID: 5685116848877297894, guid: 4c9026e52048f4c4a9a4b484571e84ed,
         type: 3}
       propertyPath: _colorB.a
-      value: 0.078431375
+      value: 0.02745098
       objectReference: {fileID: 0}
     - target: {fileID: 5685116848877297894, guid: 4c9026e52048f4c4a9a4b484571e84ed,
         type: 3}
@@ -3905,6 +3904,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BattleGridViewController
+      objectReference: {fileID: 0}
+    - target: {fileID: 7492090454604236184, guid: 4c9026e52048f4c4a9a4b484571e84ed,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
