@@ -26,9 +26,9 @@ Transform:
   m_GameObject: {fileID: 7509565244806116459}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 1}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 0, y: 0, z: 1.1}
+  m_LocalScale: {x: 1.1, y: 1.1, z: 1.1}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 3921131249032671910}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
@@ -123,20 +123,10 @@ PrefabInstance:
       propertyPath: m_Color.g
       value: 0.48235294
       objectReference: {fileID: 0}
-    - target: {fileID: 3027310188949017353, guid: 3dabbd57053cc831eb011c465c487e14,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5521468026819928245, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: m_Name
       value: BattlePlayer400Character(BaseAndTestCharacter)
-      objectReference: {fileID: 0}
-    - target: {fileID: 5555457871378360869, guid: 3dabbd57053cc831eb011c465c487e14,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
@@ -358,11 +348,6 @@ PrefabInstance:
       propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[10].Position.Y
       value: -2
       objectReference: {fileID: 0}
-    - target: {fileID: 7059606528096109852, guid: 3dabbd57053cc831eb011c465c487e14,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7425350154965914569, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: m_Sprite
@@ -379,11 +364,6 @@ PrefabInstance:
       propertyPath: m_Color.g
       value: 0.48235294
       objectReference: {fileID: 0}
-    - target: {fileID: 7810707164909688381, guid: 3dabbd57053cc831eb011c465c487e14,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 0.08627451
-      objectReference: {fileID: 0}
     - target: {fileID: 7822603257762169477, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: Prototype.RotationTime.RawValue
@@ -393,11 +373,6 @@ PrefabInstance:
         type: 3}
       propertyPath: Prototype.RotationDurationFrames.RawValue
       value: 3276800
-      objectReference: {fileID: 0}
-    - target: {fileID: 7918865761784379886, guid: 3dabbd57053cc831eb011c465c487e14,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8780164584391443545, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}

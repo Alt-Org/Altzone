@@ -5093,9 +5093,9 @@ Transform:
   m_GameObject: {fileID: 3969168272333082471}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 1}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 0, y: 0, z: 1.2}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6308334381340849222}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
@@ -5461,6 +5461,8 @@ MonoBehaviour:
           Y: 1
       CollisionType:
         Value: 2
+      NormalAngleDeg:
+        RawValue: 0
     HitboxCharacter:
       ColliderTemplateList:
       - Position:
@@ -5483,6 +5485,10 @@ MonoBehaviour:
           Y: 1
       CollisionType:
         Value: 0
+      NormalAngleDeg:
+        RawValue: 0
+    DisableRotation:
+      Value: 0
 --- !u!1 &5555457871378360869
 GameObject:
   m_ObjectHideFlags: 0
@@ -5510,8 +5516,8 @@ Transform:
   m_GameObject: {fileID: 5555457871378360869}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 1}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 1.2}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6308334381340849222}
@@ -5700,8 +5706,8 @@ Transform:
   m_GameObject: {fileID: 7918865761784379886}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: -0.7071068, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: 1}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 1.2}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6308334381340849222}
