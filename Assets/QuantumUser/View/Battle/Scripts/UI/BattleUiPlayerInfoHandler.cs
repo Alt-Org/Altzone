@@ -112,7 +112,7 @@ namespace Battle.View.UI
         /// <param name="characterIds">The player's selected characters CharacterIds as a int array.</param>
         /// <param name="characterDefenceNumbers">Array of defence values for each character.</param>
         /// <param name="data">The BattleUiMovableElementData for this UI element.</param>
-        public void SetInfo(PlayerType playerType, string playerName, int[] characterIds, float[] characterDefenceNumbers, BattleUiMovableElementData data)
+        public void SetInfo(PlayerType playerType, string playerName, int[] characterIds, int[] characterClasses, float[] characterDefenceNumbers, BattleUiMovableElementData data)
         {
             // Selecting correct multiorientation element
             BattleUiMultiOrientationElement multiOrientationElement = playerType == PlayerType.LocalPlayer
@@ -133,9 +133,13 @@ namespace Battle.View.UI
             for (int i = 0; i < characterIds.Length; i++)
             {
                 BattleUiCharacterButtonComponent characterButton = playerInfoComponent.CharacterButtons[i];
+                BattleUiCharacterFrameComponent characterFrameHandler = playerInfoComponent.FrameComponents[i];
 
                 // Setting character icon
                 characterButton.SetCharacterIcon(characterIds[i]);
+
+                // Setting frame
+                characterFrameHandler.SetCharacterFrame((BattlePlayerCharacterClass)characterClasses[i]);
 
                 // Setting defence number
                 characterButton.SetDefenceNumber(characterDefenceNumbers[i]);
