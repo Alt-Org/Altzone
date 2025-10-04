@@ -424,8 +424,7 @@ namespace Battle.View.Game
             if (_uiController.DiamondsHandler != null) _uiController.DiamondsHandler.SetShow(true);
             if (SettingsCarrier.Instance.BattleMovementInput == BattleMovementInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.MoveJoystick);
             if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.RotateJoystick);
-            // Debug stats never shown!
-            //if (SettingsCarrier.Instance.BattleShowDebugStatsOverlay) _uiController.DebugStatsOverlayHandler.SetShow(true);
+            if (SettingsCarrier.Instance.BattleShowDebugStatsOverlay) _uiController.DebugStatsOverlayHandler.SetShow(true);
             /* These UI elements aren't ready and shouldn't be shown yet
             if (_uiController.GiveUpButtonHandler != null) _uiController.GiveUpButtonHandler.SetShow(true);
             */
