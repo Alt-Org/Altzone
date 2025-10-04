@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6239774333903329943}
   - component: {fileID: 1578313195227610072}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12994,7 +12994,7 @@ RectTransform:
   m_Father: {fileID: 5740786195208128620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.55, y: 0}
-  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 0.9, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -13260,6 +13260,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _topPanel: {fileID: 2167809155821651453}
+  _border: {fileID: 26455253613417838}
   _mainPanel: {fileID: 2305444447518657805}
   _createCustomRoom: {fileID: 8155137662771919238}
   _custom2v2WaitingRoom: {fileID: 2899300052170057362}
