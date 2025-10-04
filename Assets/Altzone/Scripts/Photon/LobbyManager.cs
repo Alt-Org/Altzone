@@ -987,10 +987,10 @@ namespace Altzone.Scripts.Lobby
                     yield return null;
                 }
 
-                for (int i=0; i < playerTypes.Length; i++)
+                /*for (int i=0; i < playerTypes.Length; i++)
                 {
                     if(playerTypes[i] == PlayerType.None) playerTypes[i] = PlayerType.Bot;
-                }
+                } Disabled for now, reactivate when the bots work a little better again.*/ 
 
                 data = new()
                 {
