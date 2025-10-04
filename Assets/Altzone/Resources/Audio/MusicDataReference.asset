@@ -217,9 +217,18 @@ MonoBehaviour:
         SubGenre: 
         ArtistName: 
         ArtistLogo: {fileID: 0}
+    - Name: Vision
+      Id: 0
+      Music: {fileID: 8300000, guid: 2e1da64bb55a05a44846a0812e4b6332, type: 3}
+      Info:
+        Disk: {fileID: 21300000, guid: 117ff4b0aae501d49a04904563a17686, type: 3}
+        Genre: 
+        SubGenre: 
+        ArtistName: 
+        ArtistLogo: {fileID: 0}
   - Name: Battle
     MusicTracks:
-    - Name: Background
+    - Name: BattleArenaBackground2
       Id: 0
       Music: {fileID: 8300000, guid: 758bd14066e6f0b058986ad96437108c, type: 3}
       Info:
@@ -249,6 +258,15 @@ MonoBehaviour:
     - Name: RaidBGSpedUp
       Id: 0
       Music: {fileID: 8300000, guid: 53a628cde6ebfe740aac606b4f222381, type: 3}
+      Info:
+        Disk: {fileID: 0}
+        Genre: 
+        SubGenre: 
+        ArtistName: 
+        ArtistLogo: {fileID: 0}
+    - Name: BattleBackgroundMusicNew
+      Id: 0
+      Music: {fileID: 8300000, guid: eb40165a85831714ea60438443911054, type: 3}
       Info:
         Disk: {fileID: 0}
         Genre: 
