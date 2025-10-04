@@ -259,12 +259,14 @@ namespace Battle.View.Game
         {
             BattlePlayerSlot playerSlot = e.Data.PlayerSlot;
             int[] characterIds = new int[3];
-            for (int i = 0; i < characterIds.Length; i++)
+            int[] characterClasses = new int[3];
+            for (int i = 0; i < 3; i++)
             {
                 characterIds[i] = e.Data.Characters[i].Id;
+                characterClasses[i] = e.Data.Characters[i].Class;
             }
 
-            _uiController.LoadScreenHandler.PlayerConnected(playerSlot, characterIds);
+            _uiController.LoadScreenHandler.PlayerConnected(playerSlot, characterIds, characterClasses);
         }
 
         /// <summary>
@@ -354,6 +356,7 @@ namespace Battle.View.Game
                     PlayerType.LocalPlayer,
                     "Minä",
                     new int[3] { localPlayerData.Characters[0].Id, localPlayerData.Characters[1].Id, localPlayerData.Characters[2].Id },
+                    new int[3] { localPlayerData.Characters[0].Class, localPlayerData.Characters[1].Class, localPlayerData.Characters[2].Class },
                     new float[3] { (float)localPlayerData.Characters[0].Stats.Defence, (float)localPlayerData.Characters[1].Stats.Defence, (float)localPlayerData.Characters[2].Stats.Defence },
                     SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.PlayerInfo)
                 );
@@ -366,6 +369,7 @@ namespace Battle.View.Game
                         PlayerType.LocalTeammate,
                         "Tiimiläinen",
                         new int[3] { localTeammateData.Characters[0].Id, localTeammateData.Characters[1].Id, localTeammateData.Characters[2].Id },
+                        new int[3] { localTeammateData.Characters[0].Class, localTeammateData.Characters[1].Class, localTeammateData.Characters[2].Class },
                         new float[3] { (float)localTeammateData.Characters[0].Stats.Defence, (float)localTeammateData.Characters[1].Stats.Defence, (float)localTeammateData.Characters[2].Stats.Defence },
                         SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.TeammateInfo)
                     );
@@ -420,7 +424,8 @@ namespace Battle.View.Game
             if (_uiController.DiamondsHandler != null) _uiController.DiamondsHandler.SetShow(true);
             if (SettingsCarrier.Instance.BattleMovementInput == BattleMovementInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.MoveJoystick);
             if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.RotateJoystick);
-            if (SettingsCarrier.Instance.BattleShowDebugStatsOverlay) _uiController.DebugStatsOverlayHandler.SetShow(true);
+            // Debug stats never shown!
+            //if (SettingsCarrier.Instance.BattleShowDebugStatsOverlay) _uiController.DebugStatsOverlayHandler.SetShow(true);
             /* These UI elements aren't ready and shouldn't be shown yet
             if (_uiController.GiveUpButtonHandler != null) _uiController.GiveUpButtonHandler.SetShow(true);
             */
@@ -614,9 +619,9 @@ namespace Battle.View.Game
                         break;
 
                     case BattleGameState.Playing:
-                        // Updating diamonds (at the moment shows only alpha team's diamonds)
+                        // Updating diamonds
                         BattleDiamondCounterQSingleton diamondCounter = frame.GetSingleton<BattleDiamondCounterQSingleton>();
-                        _uiController.DiamondsHandler.SetDiamondsText(diamondCounter.AlphaDiamonds);
+                        _uiController.DiamondsHandler.SetDiamondsText(LocalPlayerTeam == BattleTeamNumber.TeamAlpha ? diamondCounter.AlphaDiamonds : diamondCounter.BetaDiamonds);
 
                         // Updating timer text
                         _uiController.TimerHandler.FormatAndSetTimerText(gameSession.GameTimeSec);

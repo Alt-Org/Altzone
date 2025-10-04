@@ -22,5 +22,8 @@ namespace Battle.View.UI
 
         /// <value>Array of BattleUiCharacterButtonComponent references which are attached to the character buttons of the BattleUiPlayerInfo prefab.</value>
         public BattleUiCharacterButtonComponent[] CharacterButtons;
+
+        /// <value>Array of BattleUiCharacterFrameHandler references which are attached to the character buttons of the BattleUiPlayerInfo prefab.</value>
+        public BattleUiCharacterFrameComponent[] FrameComponents;
     }
 }

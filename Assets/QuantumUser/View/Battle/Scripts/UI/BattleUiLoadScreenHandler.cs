@@ -30,6 +30,10 @@ namespace Battle.View.UI
         /// @ref BattleUiLoadScreenHandler-SerializeFields
         [SerializeField] private BattlePopupCharacterSlotController[] _characterSlotControllers;
 
+        /// <summary>[SerializeField] References to the character frame handlers which are used to set the correct UI frame for each character icon.</summary>
+        /// @ref BattleUiLoadScreenHandler-SerializeFields
+        [SerializeField] private BattleUiCharacterFrameComponent[] _characterFrameHandlers;
+
         /// <summary>[SerializeField] References to the player name UI elements.</summary>
         /// @ref BattleUiLoadScreenHandler-SerializeFields
         [SerializeField] private TextMeshProUGUI[] _playerNames;
@@ -45,7 +49,7 @@ namespace Battle.View.UI
         /// 
         /// <param name="playerSlot">The slot of the player.</param>
         /// <param name="characterIds">An array of the character IDs of the players selected characters.</param>
-        public void PlayerConnected(BattlePlayerSlot playerSlot, int[] characterIds)
+        public void PlayerConnected(BattlePlayerSlot playerSlot, int[] characterIds, int[] characterClasses)
         {
             int slotIndex = playerSlot switch
             {
@@ -56,10 +60,24 @@ namespace Battle.View.UI
                 _ => -1,
             };
 
-            if (slotIndex == -1) return;
+            int frameIndex = playerSlot switch
+            {
+                BattlePlayerSlot.Slot1 => 0,
+                BattlePlayerSlot.Slot2 => 3,
+                BattlePlayerSlot.Slot3 => 6,
+                BattlePlayerSlot.Slot4 => 9,
+                _ => -1,
+            };
+
+            if (slotIndex == -1 || frameIndex == -1) return;
 
             _characterSlotControllers[slotIndex].gameObject.SetActive(true);
             _characterSlotControllers[slotIndex].SetCharacters(characterIds);
+
+            for (int i = 0; i < characterClasses.Length; i++)
+            {
+                _characterFrameHandlers[frameIndex + i].SetCharacterFrame((BattlePlayerCharacterClass)characterClasses[i]);
+            }
 
             _playerNames[(int)playerSlot - 1].alpha = 1;
         }
