@@ -9,13 +9,14 @@ using UnityEngine.UI;
 /// </summary>
 public class ScrollBarHandleSizeFix : MonoBehaviour
 {
-    private float _time = 0.1f;
+    //private float _time = 0.1f;
 
     void Start() { StartCoroutine(DelayedExecution()); }
 
     private IEnumerator DelayedExecution()
     {
-        yield return new WaitForSeconds(_time);
+        //yield return new WaitForSeconds(_time);
+        yield return new WaitForEndOfFrame();
 
         transform.GetComponent<Scrollbar>().size = 0;
     }

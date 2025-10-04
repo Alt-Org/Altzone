@@ -82,7 +82,7 @@ public class TextAutoScroll : MonoBehaviour
 
             if (!Valid(progress, targetValue)) progress = targetValue;
 
-            _selfRect.pivot = new Vector2(progress, 0.5f);
+            _selfRect.pivot = new Vector2(Mathf.Lerp(0f, 1f, progress), 0.5f);
         }
 
         _waitCoroutine = StartCoroutine(Wait());

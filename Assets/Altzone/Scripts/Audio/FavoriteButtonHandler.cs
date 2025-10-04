@@ -33,6 +33,11 @@ public class FavoriteButtonHandler : MonoBehaviour
         JukeboxManager.Instance.OnFavoriteButtonChange += OnFavoriteButtonChange;
     }
 
+    private void OnDestroy()
+    {
+        JukeboxManager.Instance.OnFavoriteButtonChange -= OnFavoriteButtonChange;
+    }
+
     private void OnEnable()
     {
         MusicTrack musicTrack = JukeboxManager.Instance.GetMusicTrack(_musicTrackId);
