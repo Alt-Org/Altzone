@@ -32,7 +32,7 @@ namespace Battle.View.UI
 
         /// <summary>[SerializeField] References to the character frame handlers which are used to set the correct UI frame for each character icon.</summary>
         /// @ref BattleUiLoadScreenHandler-SerializeFields
-        [SerializeField] private BattleUiCharacterFrameComponent[] _characterFrameHandlers;
+        [SerializeField] private BattleUiCharacterFrameComponent[] _characterFrameComponents;
 
         /// <summary>[SerializeField] References to the player name UI elements.</summary>
         /// @ref BattleUiLoadScreenHandler-SerializeFields
@@ -76,7 +76,7 @@ namespace Battle.View.UI
 
             for (int i = 0; i < characterClasses.Length; i++)
             {
-                _characterFrameHandlers[frameIndex + i].SetCharacterFrame((BattlePlayerCharacterClass)characterClasses[i]);
+                _characterFrameComponents[frameIndex + i].SetCharacterFrame((BattlePlayerCharacterClass)characterClasses[i]);
             }
 
             _playerNames[(int)playerSlot - 1].alpha = 1;
