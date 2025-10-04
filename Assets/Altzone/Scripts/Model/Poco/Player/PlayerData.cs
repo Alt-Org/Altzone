@@ -229,7 +229,6 @@ namespace Altzone.Scripts.Model.Poco.Player
             }
 
             _characterList = newCustomCharacters;
-            Debug.LogWarning(_characterList.Count + " : " + _characterList[0].ServerID);
 
             Patch();
         }
