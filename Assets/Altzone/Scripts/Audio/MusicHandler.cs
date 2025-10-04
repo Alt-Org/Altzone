@@ -42,6 +42,8 @@ namespace Altzone.Scripts.Audio
 
         private bool _musicSwitchInProgress = false;
 
+        private float _musicStartTime = 0f;
+
         public enum MusicListDirection
         {
             Next,
@@ -77,13 +79,13 @@ namespace Altzone.Scripts.Audio
             return musicCategory.MusicTracks;
         }
 
-        public string PlayMusic(string categoryName, int trackId)
+        public string PlayMusicById(string categoryName, string trackId)
         {
             MusicCategory currentCategory = _musicReference.GetCategory(categoryName);
 
             if (currentCategory == null) return null;
 
-            MusicTrack musicTrack = currentCategory.Get(trackId);
+            MusicTrack musicTrack = currentCategory.GetById(trackId);
 
             if (musicTrack == null) return null;
 
@@ -111,7 +113,7 @@ namespace Altzone.Scripts.Audio
             if (musicTrack == null) return null;
 
             SwitchMusic(currentCategory, musicTrack);
-
+            
             return musicTrack.Name;
         }
 
@@ -127,6 +129,18 @@ namespace Altzone.Scripts.Audio
             SwitchMusic(currentCategory, musicTrack);
 
             return musicTrack.Name;
+        }
+
+        public string PlayMusic(string categoryName, string trackName, float startLocation)
+        {
+            _musicStartTime = startLocation;
+            return PlayMusic(categoryName, trackName);
+        }
+
+        public string PlayMusic(string categoryName, MusicTrack musicTrack, float startLocation)
+        {
+            _musicStartTime = startLocation;
+            return PlayMusic(categoryName, musicTrack);
         }
 
         public string GetTrackName()
@@ -148,6 +162,8 @@ namespace Altzone.Scripts.Audio
                 _musicChannel2.Stop();
                 _musicChannel2.clip = null;
             }
+
+            _currentTrack = null;
         }
 
         public List<MusicTrack> GetMusicList()
@@ -168,7 +184,7 @@ namespace Altzone.Scripts.Audio
 
             if (_musicSwitchInProgress)
             {
-                if (_nextUpTrack == null) CalculateAcceleratedResumeTime();
+                if (_nextUpTrack != null) CalculateAcceleratedResumeTime(); //Wrong?
 
                 _nextUpCategory = musicCategory;
                 _nextUpTrack = musicTrack;
@@ -257,6 +273,8 @@ namespace Altzone.Scripts.Audio
         private void StartMusicPlayback(AudioSource source, AudioClip audio)
         {
             source.clip = audio;
+            source.time = _musicStartTime;
+            _musicStartTime = 0f;
             source.Play();
         }
 
