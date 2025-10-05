@@ -199,5 +199,4 @@ namespace Altzone.Scripts.ReferenceSheets
         
         public List<FurnitureInfoObject> list;
     }
-
 }

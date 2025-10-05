@@ -107,7 +107,6 @@ public static class PollManager // Handles the polls from creation to loading to
             Debug.Log(output);
         }
     }
-
     public static void DebugPrintAllActivePolls()
     {
         Debug.Log("----- Active Polls Start -----");
