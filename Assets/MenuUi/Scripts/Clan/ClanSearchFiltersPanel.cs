@@ -270,7 +270,9 @@ public class ClanSearchFiltersPanel : MonoBehaviour
 
     private void UpdateLockDisplay()
     {
+        if(SettingsCarrier.Instance.Language is not SettingsCarrier.LanguageType.English)
         _openText.text = _isOpen ? "Avoin" : "Lukittu";
+        else _openText.text = _isOpen ? "Open" : "Locked";
         _lockImage.sprite = _isOpen ? _openLockSprite : _closedLockSprite;
     }
 

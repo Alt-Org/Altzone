@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5451425195398314120}
   - component: {fileID: 8431503558596734876}
   - component: {fileID: 8438963574243286651}
+  - component: {fileID: 2357934794071524315}
   m_Layer: 5
   m_Name: LabelText
   m_TagString: Untagged
@@ -137,6 +138,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2357934794071524315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 44127314984496128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Sijoitus
+  _englishText: Ranking Positon
 --- !u!1 &247009063173723876
 GameObject:
   m_ObjectHideFlags: 0
@@ -1763,6 +1778,7 @@ GameObject:
   - component: {fileID: 1524453363929289927}
   - component: {fileID: 8008788696613593344}
   - component: {fileID: 3805099000584132243}
+  - component: {fileID: 2912197222457049067}
   m_Layer: 5
   m_Name: LabelText
   m_TagString: Untagged
@@ -1889,6 +1905,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2912197222457049067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3428982496618237505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "J\xE4senm\xE4\xE4r\xE4"
+  _englishText: Member count
 --- !u!1 &3529205021112261157
 GameObject:
   m_ObjectHideFlags: 0
@@ -2271,7 +2301,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7124608822471090152
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3406,6 +3436,7 @@ GameObject:
   - component: {fileID: 8386932453009296246}
   - component: {fileID: 323341033254946550}
   - component: {fileID: 3620856231249341316}
+  - component: {fileID: 3422166805013865695}
   m_Layer: 5
   m_Name: LabelText
   m_TagString: Untagged
@@ -3532,6 +3563,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3422166805013865695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5013119214665516755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Aktiivisuus
+  _englishText: Aktivity level
 --- !u!1 &5072154049103908761
 GameObject:
   m_ObjectHideFlags: 0
@@ -4491,6 +4536,7 @@ GameObject:
   - component: {fileID: 3198676404904875627}
   - component: {fileID: 9030953287376758684}
   - component: {fileID: 483362966264752829}
+  - component: {fileID: 3681662368209259104}
   m_Layer: 5
   m_Name: LabelText
   m_TagString: Untagged
@@ -4617,6 +4663,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3681662368209259104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6269990976543108144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Lukittu/Avoin
+  _englishText: Locked/Open
 --- !u!1 &6378556585503839644
 GameObject:
   m_ObjectHideFlags: 0
@@ -5093,7 +5153,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: -323.03995}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7480498565591029919
 MonoBehaviour:
@@ -5266,6 +5326,7 @@ GameObject:
   - component: {fileID: 3849169737673585343}
   - component: {fileID: 451044800151270142}
   - component: {fileID: 4629138546961145865}
+  - component: {fileID: 3800087246581375515}
   m_Layer: 5
   m_Name: LabelText
   m_TagString: Untagged
@@ -5392,6 +5453,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3800087246581375515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7024806256415323914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Pelaajien ik\xE4"
+  _englishText: Player ages
 --- !u!1 &7137949004058394954
 GameObject:
   m_ObjectHideFlags: 0
@@ -5553,6 +5628,7 @@ GameObject:
   - component: {fileID: 9101522969735326489}
   - component: {fileID: 3190512200064176538}
   - component: {fileID: 2809911088891466202}
+  - component: {fileID: 9067971768326136215}
   m_Layer: 5
   m_Name: LabelText
   m_TagString: Untagged
@@ -5679,6 +5755,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &9067971768326136215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7561631439789750196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Keskustelu kieli
+  _englishText: Discussion language
 --- !u!1 &7772650134807744899
 GameObject:
   m_ObjectHideFlags: 0
@@ -6056,7 +6146,7 @@ RectTransform:
   m_Father: {fileID: 2492301212317930985}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 3}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
