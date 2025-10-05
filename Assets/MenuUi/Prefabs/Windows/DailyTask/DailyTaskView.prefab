@@ -37,8 +37,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 547.2}
+  m_AnchoredPosition: {x: 492.47998, y: 0}
+  m_SizeDelta: {x: 984.95996, y: 547.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3786939923640341911
 CanvasRenderer:
@@ -1092,6 +1092,7 @@ GameObject:
   - component: {fileID: 7604711189652279622}
   - component: {fileID: 2952328388879409207}
   - component: {fileID: 3223196642790510388}
+  - component: {fileID: 8466942290840693168}
   m_Layer: 5
   m_Name: CategoryName
   m_TagString: Untagged
@@ -1218,6 +1219,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8466942290840693168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 645918206932754615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: TARINALLINEN PELILUKUTAITO
+  _englishText: STORY-BASED GAME LITERACY
 --- !u!1 &660595583684013041
 GameObject:
   m_ObjectHideFlags: 0
@@ -1666,6 +1681,7 @@ GameObject:
   - component: {fileID: 3754316923067685842}
   - component: {fileID: 2193881704094306336}
   - component: {fileID: 2855796507360357799}
+  - component: {fileID: 3846314259880630658}
   m_Layer: 5
   m_Name: CategoryName
   m_TagString: Untagged
@@ -1792,6 +1808,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3846314259880630658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 790156565351885541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: SOSIAALINEN PELILUKUTAITO
+  _englishText: SOCIAL GAME LITERACY
 --- !u!1 &876205570170802287
 GameObject:
   m_ObjectHideFlags: 0
@@ -3178,8 +3208,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 547.2}
+  m_AnchoredPosition: {x: 492.47998, y: 0}
+  m_SizeDelta: {x: 984.95996, y: 547.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5759531293272687398
 CanvasRenderer:
@@ -4903,6 +4933,7 @@ GameObject:
   - component: {fileID: 791943112123744344}
   - component: {fileID: 1181944095587486818}
   - component: {fileID: 8009454324884825913}
+  - component: {fileID: 4424963969046772863}
   m_Layer: 5
   m_Name: WorkingPlayersLabel
   m_TagString: Untagged
@@ -5029,6 +5060,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4424963969046772863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3226435181193531373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Palkinnon ker\xE4\xE4miseen osallistuneet"
+  _englishText: Those who participated in gathering rewards
 --- !u!1 &3230239723368107615
 GameObject:
   m_ObjectHideFlags: 0
@@ -5236,6 +5281,7 @@ GameObject:
   - component: {fileID: 5089546276280005245}
   - component: {fileID: 9034662942179442627}
   - component: {fileID: 5660408354410126302}
+  - component: {fileID: 6225120096777128076}
   m_Layer: 5
   m_Name: StipendTotalLabel
   m_TagString: Untagged
@@ -5362,6 +5408,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6225120096777128076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3262634557128650429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "yhteens\xE4"
+  _englishText: Total
 --- !u!1 &3318032728427433847
 GameObject:
   m_ObjectHideFlags: 0
@@ -5562,6 +5622,7 @@ GameObject:
   - component: {fileID: 2818486734540410909}
   - component: {fileID: 3341783570099112424}
   - component: {fileID: 6816468589479623591}
+  - component: {fileID: 5975906978474689787}
   m_Layer: 5
   m_Name: CategoryName
   m_TagString: Untagged
@@ -5688,6 +5749,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5975906978474689787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3445587059244218782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: TOIMINNALLINEN PELILUKUTAITO
+  _englishText: FUNCTIONAL GAME LITERACY
 --- !u!1 &3524853460821057206
 GameObject:
   m_ObjectHideFlags: 0
@@ -6572,6 +6647,7 @@ GameObject:
   - component: {fileID: 8796567943477437992}
   - component: {fileID: 8465879977627868604}
   - component: {fileID: 3355911043982871116}
+  - component: {fileID: 8320268910274088454}
   m_Layer: 5
   m_Name: TaskStatValue
   m_TagString: Untagged
@@ -6698,6 +6774,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8320268910274088454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4201539746386164285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: pelaa 5 voittoa
+  _englishText: achieve 5 victories
 --- !u!1 &4216039637988712781
 GameObject:
   m_ObjectHideFlags: 0
@@ -7996,6 +8086,7 @@ GameObject:
   - component: {fileID: 5078198386118618575}
   - component: {fileID: 5068724003770881750}
   - component: {fileID: 4621362454795590900}
+  - component: {fileID: 1213230974541454071}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -8122,6 +8213,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1213230974541454071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4554774857104281925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Hyvinvointivaltio perustuu yhteisvastuuseen
+  _englishText: Welfare state is based on joint responsibility
 --- !u!1 &4630212382827051164
 GameObject:
   m_ObjectHideFlags: 0
@@ -9880,8 +9985,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 547.2}
+  m_AnchoredPosition: {x: 492.47998, y: 0}
+  m_SizeDelta: {x: 984.95996, y: 547.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6538413746843898596
 CanvasRenderer:
@@ -12209,6 +12314,7 @@ GameObject:
   - component: {fileID: 2879603282338764625}
   - component: {fileID: 1111921654846297330}
   - component: {fileID: 247769402604027029}
+  - component: {fileID: 7514902437824718641}
   m_Layer: 5
   m_Name: CategoryName
   m_TagString: Untagged
@@ -12335,6 +12441,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7514902437824718641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6772409636874739789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: KULTTUURINEN PELILUKUTAITO
+  _englishText: CULTURAL GAME LITERACY
 --- !u!1 &6831898435173102528
 GameObject:
   m_ObjectHideFlags: 0
@@ -12346,6 +12466,7 @@ GameObject:
   - component: {fileID: 495801311869109189}
   - component: {fileID: 3563985819884221413}
   - component: {fileID: 7445358623228801724}
+  - component: {fileID: 7367009950541093304}
   m_Layer: 5
   m_Name: ClockTimeLeftLabel
   m_TagString: Untagged
@@ -12472,6 +12593,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7367009950541093304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6831898435173102528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "aikaa j\xE4ljell\xE4"
+  _englishText: Time Left
 --- !u!1 &6839262997089788365
 GameObject:
   m_ObjectHideFlags: 0
@@ -14589,6 +14724,7 @@ GameObject:
   - component: {fileID: 3308157100354077678}
   - component: {fileID: 5767181253878100549}
   - component: {fileID: 201133894763848818}
+  - component: {fileID: 3267172072936564300}
   m_Layer: 5
   m_Name: ReminderLabel
   m_TagString: Untagged
@@ -14715,6 +14851,22 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3267172072936564300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7667431194778079104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Muistutamme ett\xE4 liika ty\xF6 on pahasta\nja liian v\xE4h\xE4n
+    on laiskuutta"
+  _englishText: A reminder that too much work is bad for you, and not enough work
+    is laziness
 --- !u!1 &7756045567769054033
 GameObject:
   m_ObjectHideFlags: 0
@@ -15376,8 +15528,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 547.2}
+  m_AnchoredPosition: {x: 492.47998, y: 0}
+  m_SizeDelta: {x: 984.95996, y: 547.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &181536878673804127
 CanvasRenderer:
@@ -15815,8 +15967,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 547.2}
+  m_AnchoredPosition: {x: 492.47998, y: 0}
+  m_SizeDelta: {x: 984.95996, y: 547.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5481912990426043081
 CanvasRenderer:
@@ -15926,6 +16078,7 @@ GameObject:
   - component: {fileID: 805903934380938375}
   - component: {fileID: 4598976803609323959}
   - component: {fileID: 2851583121168800356}
+  - component: {fileID: 1202496019392693207}
   m_Layer: 5
   m_Name: StipendLabel
   m_TagString: Untagged
@@ -16052,6 +16205,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1202496019392693207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8431088504021080686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Stipendi
+  _englishText: Stipend
 --- !u!1 &8439141224752204024
 GameObject:
   m_ObjectHideFlags: 0
@@ -16275,6 +16442,7 @@ GameObject:
   - component: {fileID: 895773246520423509}
   - component: {fileID: 2055844904456854896}
   - component: {fileID: 2633433006927059654}
+  - component: {fileID: 7587064237684660489}
   m_Layer: 5
   m_Name: CategoryName
   m_TagString: Untagged
@@ -16401,6 +16569,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7587064237684660489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8447875064752396308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: EETTINEN PELILUKUTAITO
+  _englishText: ETHICAL GAME LITERACY
 --- !u!1 &8579425368129870374
 GameObject:
   m_ObjectHideFlags: 0
@@ -16487,6 +16669,7 @@ GameObject:
   - component: {fileID: 2616470936501723727}
   - component: {fileID: 3551017352882109806}
   - component: {fileID: 4453443830619591101}
+  - component: {fileID: 3212375008059911611}
   m_Layer: 5
   m_Name: CancelTaskLabel
   m_TagString: Untagged
@@ -16613,6 +16796,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3212375008059911611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8795110955276936943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Peruuta
+  _englishText: Cancel
 --- !u!1 &8847992663558801951
 GameObject:
   m_ObjectHideFlags: 0
@@ -17378,7 +17575,7 @@ PrefabInstance:
     - target: {fileID: 2641932565321544379, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0.9643939
       objectReference: {fileID: 0}
     - target: {fileID: 2822583859474931625, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -17459,12 +17656,12 @@ PrefabInstance:
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.922
+      value: 0.8943939
       objectReference: {fileID: 0}
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.208
+      value: 0.18
       objectReference: {fileID: 0}
     - target: {fileID: 3482542752552871026, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -17914,7 +18111,7 @@ PrefabInstance:
     - target: {fileID: 7827142668286818857, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.208
+      value: 0.18
       objectReference: {fileID: 0}
     - target: {fileID: 8020515439083824472, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -18044,12 +18241,12 @@ PrefabInstance:
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0.9643939
       objectReference: {fileID: 0}
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.922
+      value: 0.8943939
       objectReference: {fileID: 0}
     - target: {fileID: 9055697728720554350, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
