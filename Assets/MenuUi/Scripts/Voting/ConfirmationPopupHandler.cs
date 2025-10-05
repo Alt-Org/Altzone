@@ -4,12 +4,13 @@ using Altzone.Scripts.Voting;
 using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine.UI;
 using TMPro;
+using Altzone.Scripts.Language;
 
 public class ConfirmationPopupHandler : MonoBehaviour
 {
     [SerializeField] private GameObject Background;
 
-    [SerializeField] private TextMeshProUGUI _confirmText;
+    [SerializeField] private TextLanguageSelectorCaller _confirmText;
     [SerializeField] private Button _acceptButton;
     [SerializeField] private Button _declineButton;
 
@@ -37,7 +38,18 @@ public class ConfirmationPopupHandler : MonoBehaviour
         _acceptButton.onClick.AddListener(()=>CreatePollPopup());
         _declineButton.onClick.RemoveAllListeners();
         _declineButton.onClick.AddListener(() => ClosePopup());
-        _confirmText.text = "Haluatko varmasti aloittaa äänestyksen tästä huonekalusta?";
+        switch (SettingsCarrier.Instance.Language)
+        {
+            case SettingsCarrier.LanguageType.Finnish:
+                _confirmText.SetText("Haluatko varmasti aloittaa äänestyksen tästä huonekalusta?");
+                break;
+            case SettingsCarrier.LanguageType.English:
+                _confirmText.SetText("Are you sure you want to start a vote for this item?");
+                break;
+            default:
+                _confirmText.SetText("Haluatko varmasti aloittaa äänestyksen tästä huonekalusta?");
+                break;
+        }
     }
 
     private void SetPopupActiveAvatarPart(AvatarPartsReference.AvatarPartInfo part)
@@ -49,7 +61,18 @@ public class ConfirmationPopupHandler : MonoBehaviour
         _acceptButton.onClick.AddListener(() => BuyAvatarPiece());
         _declineButton.onClick.RemoveAllListeners();
         _declineButton.onClick.AddListener(() => ClosePopup());
-        _confirmText.text = "Haluatko varmasti ostaa tämän personointi palasen?";
+        switch (SettingsCarrier.Instance.Language)
+        {
+            case SettingsCarrier.LanguageType.Finnish:
+                _confirmText.text = "Haluatko varmasti ostaa tämän personointi palasen?";
+                break;
+            case SettingsCarrier.LanguageType.English:
+                _confirmText.text = "Are you sure you want to buy this personification piece?";
+                break;
+            default:
+                _confirmText.text = "Haluatko varmasti ostaa tämän personointi palasen?";
+                break;
+        }
     }
 
     public void CreatePollPopup()
