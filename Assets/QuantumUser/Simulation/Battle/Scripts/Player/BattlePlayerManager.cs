@@ -1060,12 +1060,14 @@ namespace Battle.QSimulation.Player
 
             playerHandle.SetSelectedCharacter(characterNumber);
             f.Events.BattleDebugUpdateStatsOverlay(playerData->Slot, playerData->Stats);
+            f.Events.BattleCharacterSelected(playerData->Slot, characterNumber);
 
             playerHandle.PlayState = BattlePlayerPlayState.InPlay;
 
             f.Events.BattleViewSetRotationJoystickVisibility(!playerData->DisableRotation, playerData->Slot);
 
             BattlePlayerClassManager.OnSpawn(f, playerHandle.ConvertToPublic(), playerData, character);
+
         }
 
         /// <summary>
@@ -1095,6 +1097,8 @@ namespace Battle.QSimulation.Player
 
             playerHandle.UnsetSelectedCharacter();
             playerHandle.PlayState = BattlePlayerPlayState.OutOfPlay;
+
+            f.Events.BattleCharacterSelected(playerData->Slot, -1);
         }
 
         private static void Error(Frame f, string messageformat, params object[] args)
