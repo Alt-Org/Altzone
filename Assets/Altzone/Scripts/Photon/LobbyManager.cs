@@ -23,13 +23,13 @@ using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby.Wrappers;
+using Altzone.Scripts.Window;
+using Altzone.Scripts.Audio;
 using Altzone.Scripts.AzDebug;
 using Altzone.PhotonSerializer;
 
 using Battle.QSimulation.Game;
 using PlayerType = Battle.QSimulation.Game.BattleParameters.PlayerType;
-using Altzone.Scripts.Window;
-using Altzone.Scripts.Audio;
 
 namespace Altzone.Scripts.Lobby
 {
