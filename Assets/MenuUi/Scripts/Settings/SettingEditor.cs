@@ -68,7 +68,7 @@ public class SettingEditor : MonoBehaviour
         PlayerPrefs.SetFloat("MasterVolume", 1f);
 
         _topBarStyleButton.onClick.AddListener(() => ChangeTopbarStyle());
-        _topBarStyleText.text = "Tyyli: " + carrier.TopBarStyleSetting;
+        _topBarStyleText.SetText(SettingsCarrier.Instance.Language, new string[1] { carrier.TopBarStyleSetting.ToString() });
 
         _introSkipToggle.onValueChanged.AddListener(_ => SetIntroSkip());
     }
