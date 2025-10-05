@@ -171,5 +171,6 @@ public class SettingEditor : MonoBehaviour
                 break;
         }
         _languageCaller.SetText(language, new string[0]);
+        _topBarStyleText.SetText(SettingsCarrier.Instance.Language, new string[1] { carrier.TopBarStyleSetting.ToString() });
     }
 }
