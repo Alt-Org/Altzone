@@ -1067,7 +1067,6 @@ namespace Battle.QSimulation.Player
             f.Events.BattleViewSetRotationJoystickVisibility(!playerData->DisableRotation, playerData->Slot);
 
             BattlePlayerClassManager.OnSpawn(f, playerHandle.ConvertToPublic(), playerData, character);
-
         }
 
         /// <summary>
