@@ -22,6 +22,7 @@ namespace Altzone.Editor.CustomEditors
         SerializedProperty Defence;
         SerializedProperty GalleryImage;
         SerializedProperty GalleryHeadImage;
+        SerializedProperty CharPhotoSeries;
         SerializedProperty BattleEntityPrototype;
         SerializedProperty BattleUiSprite;
 
@@ -41,6 +42,7 @@ namespace Altzone.Editor.CustomEditors
             Defence = serializedObject.FindProperty(nameof(CharacterSpec.Defence));
             GalleryImage = serializedObject.FindProperty(nameof(CharacterSpec.GalleryImage));
             GalleryHeadImage = serializedObject.FindProperty(nameof(CharacterSpec.GalleryHeadImage));
+            CharPhotoSeries= serializedObject.FindProperty(nameof(CharacterSpec.CharPhotoSeries));
             BattleEntityPrototype = serializedObject.FindProperty(nameof(CharacterSpec.BattleEntityPrototype));
             BattleUiSprite = serializedObject.FindProperty(nameof(CharacterSpec.BattleUiSprite));
         }
@@ -153,6 +155,7 @@ namespace Altzone.Editor.CustomEditors
             EditorGUILayout.Space();
             EditorGUILayout.PropertyField(GalleryImage);
             EditorGUILayout.PropertyField(GalleryHeadImage);
+            EditorGUILayout.PropertyField(CharPhotoSeries);
 
             EditorGUILayout.Space();
             EditorGUILayout.PropertyField(BattleEntityPrototype);

@@ -577,6 +577,7 @@ GameObject:
   - component: {fileID: 6538388467248521458}
   - component: {fileID: 3065282309918615725}
   - component: {fileID: 2410643696028850620}
+  - component: {fileID: 6758733929571655375}
   m_Layer: 5
   m_Name: ContentClan
   m_TagString: Untagged
@@ -643,6 +644,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!114 &6758733929571655375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1206508976571793912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 1
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 5
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
 --- !u!1 &1228178274405547610
 GameObject:
   m_ObjectHideFlags: 0
@@ -4265,6 +4285,8 @@ GameObject:
   - component: {fileID: 7358076422430287421}
   - component: {fileID: 1176563068381732146}
   - component: {fileID: 6011073459345963383}
+  - component: {fileID: 5544582995421945497}
+  - component: {fileID: 1825978464708139734}
   m_Layer: 5
   m_Name: Canvas Chat
   m_TagString: Untagged
@@ -4431,7 +4453,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _normalTaskType: 0
+  _normalTaskType: 4
   _educationCategoryType: 0
   _educationCategoryActionType: 3
   _educationCategorySocialType: 1
@@ -4457,6 +4479,44 @@ MonoBehaviour:
   - {fileID: 2375818775052191214, guid: dd9d5773069d6204889520f78f87242e, type: 3}
   - {fileID: 7020398855225994992, guid: 2128500f85a8a7842919c146bca9e917, type: 3}
   - {fileID: 1376478990624868928, guid: 6a848584d13a00f478e398abfa7b5b44, type: 3}
+--- !u!114 &5544582995421945497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7324650805430605575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 820bcc5b81a325f46b185305c476bc4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 0
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
+--- !u!114 &1825978464708139734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7324650805430605575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cfdbeeb0301c0d4dbb5faa1268d3349, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 0
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
 --- !u!1 &7613806092406461691
 GameObject:
   m_ObjectHideFlags: 0
@@ -4601,6 +4661,7 @@ GameObject:
   - component: {fileID: 5941351211359421970}
   - component: {fileID: 7387526794680760330}
   - component: {fileID: 5782381032688641210}
+  - component: {fileID: 2445896278844426538}
   m_Layer: 5
   m_Name: ContentGlobal
   m_TagString: Untagged
@@ -4667,6 +4728,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!114 &2445896278844426538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7703225872503541342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 1
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 10
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
 --- !u!1 &8465531718494878061
 GameObject:
   m_ObjectHideFlags: 0
@@ -6117,7 +6197,7 @@ PrefabInstance:
     - target: {fileID: 2641932565321544379, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.94188035
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2665311521893521844, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -6172,12 +6252,12 @@ PrefabInstance:
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.86688036
+      value: 0.922
       objectReference: {fileID: 0}
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.1975
+      value: 0.208
       objectReference: {fileID: 0}
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -7785,7 +7865,7 @@ PrefabInstance:
     - target: {fileID: 7827142668286818857, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.1975
+      value: 0.208
       objectReference: {fileID: 0}
     - target: {fileID: 8020515439083824472, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -7925,12 +8005,12 @@ PrefabInstance:
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.94188035
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.86688036
+      value: 0.922
       objectReference: {fileID: 0}
     - target: {fileID: 9092001840253612742, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}

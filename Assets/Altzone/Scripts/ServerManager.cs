@@ -24,6 +24,7 @@ using System.Linq;
 using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Store;
 using Altzone.Scripts.Chat;
+using Altzone.Scripts.Audio;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -1142,7 +1143,7 @@ public class ServerManager : MonoBehaviour
 
     #region DailyTasks
 
-    public IEnumerator GetPlayerTasksFromServer(Action<List<PlayerTask>> callback)
+    public IEnumerator GetPlayerTasksFromServer(Action<ClanTasks> callback)
     {
         yield return StartCoroutine(WebRequests.Get(SERVERADDRESS + "dailyTasks", AccessToken, request =>
         {
@@ -1168,8 +1169,10 @@ public class ServerManager : MonoBehaviour
                     }));
                 }
 
+                ClanTasks clanTasks = new(TaskVersionType.Normal,tasks);
+
                 if (callback != null)
-                    callback(new(tasks));
+                    callback(clanTasks);
             }
             else
             {
@@ -1240,7 +1243,7 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
-    public IEnumerator ProgressPlayerTaskFromServer(int amount, Action<bool> callback)
+    public IEnumerator ProgressPlayerTaskToServer(int amount, Action<bool> callback)
     {
         string body = JObject.FromObject(new { amount = amount }).ToString();
 
@@ -1724,6 +1727,65 @@ public class ServerManager : MonoBehaviour
             {
                 if (callback != null)
                     callback(null);
+            }
+        }));
+    }
+    #endregion
+
+    #region Jukebox
+    public IEnumerator GetJukeboxClanPlaylist(Action<ServerPlaylist> callback)
+    {
+        StartCoroutine(WebRequests.Get(SERVERADDRESS + "clan/jukebox", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                ServerPlaylist playlist = result["data"]["Object"].ToObject<ServerPlaylist>();
+
+                if (callback != null)
+                    callback(playlist);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+
+        yield break;
+    }
+
+    public IEnumerator UpdateJukeboxClanPlaylistToServer(Playlist data, Action<bool> callback)
+    {
+        string body = JObject.FromObject(
+            new
+            {
+                jukeboxSongs = data.PackedTrackQueueDatas
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
+        ).ToString();
+
+        yield return UpdateJukeboxClanPlaylistToServer(body, callback);
+    }
+
+    public IEnumerator UpdateJukeboxClanPlaylistToServer(string body, Action<bool> callback)
+    {
+        yield return StartCoroutine(WebRequests.Put(SERVERADDRESS + "clan/jukebox", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                {
+                    callback(true);
+                }
+            }
+            else
+            {
+                if (callback != null)
+                {
+                    callback(false);
+                }
             }
         }));
     }

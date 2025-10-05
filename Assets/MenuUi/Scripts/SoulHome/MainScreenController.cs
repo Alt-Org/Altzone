@@ -357,6 +357,30 @@ namespace MenuUI.Scripts.SoulHome
             _soulHomeTower.SaveChanges();
             GetTray().GetComponent<FurnitureTrayHandler>().SaveChanges();
             _soulHomeController.ShowInfoPopup("Muutokset tallennettu");
+
+            // Checks if the interior is matching
+            string furnitureStyle = null;
+            bool matchingStyle = false;
+            foreach (var furniture in _soulHomeController.FurnitureList.List)
+            {
+                if (furniture.GetInRoomCount() > 0)
+                {
+                    string[] parts = furniture.Name.Split('_');
+                    string style = parts[1];
+
+                    if (furnitureStyle == null)
+                    {
+                        furnitureStyle = style;
+                        matchingStyle = true;
+                    }
+                    else if (furnitureStyle != style)
+                    {
+                        matchingStyle = false;
+                        break;
+                    }
+                }
+            }
+            if (matchingStyle) gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
 
         public void ToggleTray(GameObject tray)

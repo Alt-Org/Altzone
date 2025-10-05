@@ -38,6 +38,8 @@ namespace Battle.View.UI
         /// @ref BattleUiCharacterButtonComponent-SerializeFields
         [SerializeField] private Image _characterImage;
 
+        [SerializeField] private GameObject _selectedCharacterIndicator;
+
         /// <summary>[SerializeField] Reference to the damage fill image of the character button. It is used to display the character's current Hp.</summary>
         /// @ref BattleUiCharacterButtonComponent-SerializeFields
         [SerializeField] private Image _damageFill;
@@ -71,10 +73,15 @@ namespace Battle.View.UI
 
             if (characterSprite == null)
             {
-                characterSprite = info.GalleryImage;
+                characterSprite = info.GalleryHeadImage;
             }
 
             _characterImage.sprite = characterSprite;
+        }
+
+        public void SetSelected(bool selected)
+        {
+            _selectedCharacterIndicator.SetActive(selected);
         }
 
         /// <summary>

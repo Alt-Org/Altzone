@@ -10,6 +10,7 @@ using UnityEngine;
 using Quantum;
 using Photon.Deterministic;
 
+using Altzone.Scripts.Audio;
 using Altzone.Scripts.BattleUiShared;
 using Altzone.Scripts.Lobby;
 
@@ -219,6 +220,7 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, QEventOnChangeEmotionState);
             QuantumEvent.Subscribe<EventBattleLastRowWallDestroyed>(this, QEventOnLastRowWallDestroyed);
             QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, QEventPlaySoundFX);
+            QuantumEvent.Subscribe<EventBattleCharacterSelected>(this, QEventCharacterSelected);
             QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
             QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
 
@@ -253,7 +255,7 @@ namespace Battle.View.Game
         /// Private handler method for EventBattleViewPlayerConnected QuantumEvent.<br/>
         /// Handles calling BattleUiLoadScreenHandler::PlayerConnected through #_uiController with the slot and character IDs of the connected player.
         /// </summary>
-        /// 
+        ///
         /// <param name="e">The event data.</param>
         private void QEventOnViewPlayerConnected(EventBattleViewPlayerConnected e)
         {
@@ -273,7 +275,7 @@ namespace Battle.View.Game
         /// Private handler method for EventBattleViewAllPlayersConnected QuantumEvent.<br/>
         /// Handles calling BattleUiAnnouncementHandler::ClearAnnouncerTextField once all players have successfully joined the game.
         /// </summary>
-        /// 
+        ///
         /// <param name="e">The event data.</param>
         private void QEventOnViewAllPlayersConnected(EventBattleViewAllPlayersConnected e)
         {
@@ -396,7 +398,7 @@ namespace Battle.View.Game
         /// Private handler method for EventBattleViewSetRotationJoystickVisibility QuantumEvent.<br/>
         /// Sets the rotation control joystick to be shown or hidden, if that control method is selected.
         /// </summary>
-        /// 
+        ///
         /// <param name="e">The event data.</param>
         private void QEventOnSetRotationJoystickVisibility(EventBattleViewSetRotationJoystickVisibility e)
         {
@@ -436,6 +438,8 @@ namespace Battle.View.Game
                 new(SettingsCarrier.Instance.BattleArenaPosX * 0.01f, SettingsCarrier.Instance.BattleArenaPosY * 0.01f),
                 LocalPlayerTeam == BattleTeamNumber.TeamBeta
             );
+
+            AudioManager.Instance.PlayMusic("Battle");
         }
 
         /// <summary>
@@ -534,6 +538,11 @@ namespace Battle.View.Game
         private void QEventPlaySoundFX(EventBattlePlaySoundFX e)
         {
             _soundFXViewController.PlaySound(e.Effect);
+        }
+
+        private void QEventCharacterSelected(EventBattleCharacterSelected e)
+        {
+            _uiController.PlayerInfoHandler.SetSelected(e.Slot, e.CharacterNumber);
         }
 
         /// <summary>

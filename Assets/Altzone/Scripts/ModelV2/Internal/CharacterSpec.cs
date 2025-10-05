@@ -96,6 +96,8 @@ namespace Altzone.Scripts.ModelV2.Internal
 
         public Sprite GalleryHeadImage;
 
+        public Sprite CharPhotoSeries;
+
         #endregion
 
         #region Battle Asset References

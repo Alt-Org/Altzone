@@ -111,7 +111,10 @@ namespace Battle.QSimulation.Player
                 Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(data->HeldProjectileEntity);
                 BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(data->HeldProjectileEntity);
 
-                FPVector2 toTeammate = transformTeammate->Position - transformPlayer->Position;
+                FPVector2 targetPosition = transformTeammate->Position;
+                targetPosition.Y += (playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? FP._4 : -FP._4) * BattleGridManager.GridScaleFactor;
+
+                FPVector2 toTeammate = targetPosition - transformPlayer->Position;
                 FP angleTeammate = FPVector2.RadiansSigned(FPVector2.Up, toTeammate);
 
                 FP rotationTime = (f.Number - data->HoldStartFrame) / data->RotationDurationFrames;

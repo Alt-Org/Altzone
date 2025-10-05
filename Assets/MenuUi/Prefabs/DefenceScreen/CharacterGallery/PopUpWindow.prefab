@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 6582005064883676232}
   - component: {fileID: 6494399522978934923}
   - component: {fileID: 4395982484522369941}
+  - component: {fileID: 6246982314166882529}
+  - component: {fileID: 7346620185324110144}
   m_Layer: 0
   m_Name: PopUpWindow
   m_TagString: Untagged
@@ -149,7 +151,45 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AspectMode: 0
-  m_AspectRatio: 0.8467047
+  m_AspectRatio: 0.893744
+--- !u!114 &6246982314166882529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6060676926633255918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 5
+  _educationCategoryActionType: 2
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
+--- !u!114 &7346620185324110144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6060676926633255918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 295a7f4d21c15174f95de3cfd5732d88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 0
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
 --- !u!1001 &64477876836325259
 PrefabInstance:
   m_ObjectHideFlags: 0

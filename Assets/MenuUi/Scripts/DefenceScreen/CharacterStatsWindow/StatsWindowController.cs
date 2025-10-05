@@ -450,6 +450,19 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             return (int)BaseCharacter.GetStatValueFP(statType, level);
         }
 
+        public Sprite GetCurrentCharacterPhotoSeries()
+        {
+            var info = PlayerCharacterPrototypes.GetCharacter(((int)_characterId).ToString());
+            if (info == null)
+            {
+                return null;
+            }
+            else
+            {
+                return info.CharPhotoSeries;
+            }
+        }
+
 
         /// <summary>
         /// Get stat's strength.
@@ -532,6 +545,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 _playerData.UpdateCustomCharacter(_customCharacter);
                 OnUpgradeMaterialAmountChanged.Invoke();
                 OnStatUpdated.Invoke(statType);
+                gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+                gameObject.GetComponent<DailyTaskProgressListenerCharacterStats>().UpdateProgressByStatType(statType);
             }
 
             return success;
@@ -580,6 +595,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 _statsUpdated = true;
                 _playerData.UpdateCustomCharacter(_customCharacter);
                 OnStatUpdated.Invoke(statType);
+                gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
             }
 
             return success;
