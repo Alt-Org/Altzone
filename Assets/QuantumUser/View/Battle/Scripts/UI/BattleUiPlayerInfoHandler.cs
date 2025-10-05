@@ -160,6 +160,24 @@ namespace Battle.View.UI
             }
         }
 
+        public void SetSelected(BattlePlayerSlot slot, int characterNumber)
+        {
+            if (slot != BattleGameViewController.LocalPlayerSlot) return;
+
+            BattleUiPlayerInfoComponent playerInfoComponent = GetPlayerInfoComponent(slot);
+
+            if (playerInfoComponent == null) return;
+
+            foreach (BattleUiCharacterButtonComponent character in playerInfoComponent.CharacterButtons)
+            {
+                character.SetSelected(false);
+            }
+
+            if (characterNumber == -1) return;
+
+            playerInfoComponent.CharacterButtons[characterNumber].SetSelected(true);
+        }
+
         /// <summary>
         /// Updates character health visual through BattleUiPlayerInfoComponent.
         /// </summary>
