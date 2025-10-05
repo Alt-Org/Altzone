@@ -16,6 +16,14 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         sound
     }
 
+    public enum LanguageType
+    {
+        None,
+        Finnish,
+        English,
+        Swedish
+    }
+
     public enum TextSize
     {
         Small,
@@ -80,6 +88,9 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public delegate void TopBarChanged(int index);
     public static event TopBarChanged OnTopBarChanged;
 
+    public delegate void LanguageChanged(LanguageType language);
+    public static event LanguageChanged OnLanguageChanged;
+
     // Constants
     public const string BattleShowDebugStatsOverlayKey = "BattleStatsOverlay";
     public const string BattleArenaScaleKey = "BattleUiArenaScale";
@@ -123,9 +134,23 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public int TextSizeMedium = 26;
     public int TextSizeLarge = 30;
 
+    private LanguageType _language = LanguageType.None;
+
+    public LanguageType Language
+    {
+        get { return _language; }
+        set
+        {
+            if (value == _language) return;
+            _language = value;
+            PlayerPrefs.SetString("LanguageType", ParseLanguage(value));
+            OnLanguageChanged?.Invoke(_language);
+        }
+    } 
+
     private TextSize _textSize;
     public TextSize Textsize { get => _textSize; }
-    
+
     private bool _showButtonLabels;
     public bool ShowButtonLabels
     {
@@ -314,6 +339,8 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         Application.targetFrameRate = PlayerPrefs.GetInt("TargetFrameRate", (int)Screen.currentResolution.refreshRateRatio.value);
         mainMenuWindowIndex = 0;
 
+        _language = ParseLanguage(PlayerPrefs.GetString("LanguageType", ""));
+
         _textSize = (TextSize)PlayerPrefs.GetInt("TextSize", 1);
         _showButtonLabels = (PlayerPrefs.GetInt("showButtonLabels", 1) == 1);
 
@@ -466,6 +493,32 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         switch (type)
         {
             case SelectionBoxType.MainMenuMusic: _mainMenuMusicName = value; PlayerPrefs.SetString("MainMenuMusic", value); break;
+        }
+    }
+
+    private LanguageType ParseLanguage(string languageName)
+    {
+        switch (languageName)
+        {
+            case "fi":
+                return LanguageType.Finnish;
+            case "en":
+                return LanguageType.English;
+            default:
+                return LanguageType.Finnish;
+        }
+    }
+
+    private string ParseLanguage(LanguageType languageType)
+    {
+        switch (languageType)
+        {
+            case LanguageType.Finnish:
+                return "fi";
+            case LanguageType.English:
+                return "en";
+            default:
+                return "";
         }
     }
 }
