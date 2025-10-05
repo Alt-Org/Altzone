@@ -10,35 +10,35 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
-  m_Name: CharacterSpec_402
+  m_Name: CharacterSpec_104
   m_EditorClassIdentifier: 
-  Id: 402
-  CharacterId: 402
+  Id: 104
+  CharacterId: 104
   IsApproved: 1
-  Name: "Syyllist\xE4minen"
-  ClassType: 400
+  Name: Kiusaaminen
+  ClassType: 100
   CharacterDescription: 
   CharacterShortDescription: 
-  CharacterStats: {fileID: 11400000, guid: 0359596f2309630459d767f930e4a3b4, type: 2}
+  CharacterStats: {fileID: 11400000, guid: d5417892b75656244ad4e42fd4cdeb9a, type: 2}
   Hp:
-    Level: 3
-    Coefficient: 5
+    Level: 1
+    Coefficient: 7
   Speed:
-    Level: 3
+    Level: 2
     Coefficient: 0
   CharacterSize:
-    Level: 8
-    Coefficient: 6
-  Attack:
-    Level: 7
-    Coefficient: 3
-  Defence:
-    Level: 10
+    Level: 6
     Coefficient: 4
-  GalleryImage: {fileID: 21300000, guid: 33b5fc674b3e83040a138df3ef3960da, type: 3}
-  GalleryHeadImage: {fileID: 21300000, guid: e25d9f1e6b2f29a468e1bc8ec3fa4dcb, type: 3}
+  Attack:
+    Level: 6
+    Coefficient: 2
+  Defence:
+    Level: 14
+    Coefficient: 1
+  GalleryImage: {fileID: 21300000, guid: 19cc03f29a899ae49bcd7b2f5ee54612, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: 4f3530e4c17f5544bbdf05e44eff383b, type: 3}
   CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
-      Value: 1302691685303402647
+      Value: 1340680004139379478
   BattleUiSprite: {fileID: 0}

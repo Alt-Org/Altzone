@@ -23,6 +23,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private TMP_Text _className;
         [SerializeField] private Image _classIcon;
         [SerializeField] private ClassReference _classReference;
+        [SerializeField] private Image _charPhotoSeries;
 
         [SerializeField] private BaseScrollRect _scrollRect;
 
@@ -41,6 +42,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             SetWinsAndLosses();
             SetClassName();
             SetClassIcon();
+            SetCharPhotoSeries();
 
 
             if (_controller.IsCurrentCharacterLocked())
@@ -95,6 +97,13 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             _classIcon.enabled = icon != null;
             if (icon != null) _classIcon.sprite = icon;
+        }
+
+        private void SetCharPhotoSeries ()
+        {
+            _charPhotoSeries.sprite = _controller.GetCurrentCharacterPhotoSeries();
+            _charPhotoSeries.enabled = _charPhotoSeries.sprite != null;
+
         }
 
         public void ClosePopup()
