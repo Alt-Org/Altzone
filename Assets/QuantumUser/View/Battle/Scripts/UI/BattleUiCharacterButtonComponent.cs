@@ -71,7 +71,7 @@ namespace Battle.View.UI
 
             if (characterSprite == null)
             {
-                characterSprite = info.GalleryImage;
+                characterSprite = info.GalleryHeadImage;
             }
 
             _characterImage.sprite = characterSprite;
