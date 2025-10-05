@@ -1159,6 +1159,7 @@ namespace Altzone.Scripts.Lobby
 
         public static void CloseRunner()
         {
+            AudioManager.Instance.StopMusic();
             QuantumRunner.ShutdownAll();
             DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.MenuUI);
         }
