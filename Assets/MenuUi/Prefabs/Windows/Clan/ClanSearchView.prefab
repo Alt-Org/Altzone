@@ -149,6 +149,7 @@ GameObject:
   - component: {fileID: 4465809336413552131}
   - component: {fileID: 7870390243664914127}
   - component: {fileID: 5601979065756235925}
+  - component: {fileID: 753014722993253798}
   m_Layer: 5
   m_Name: Placeholder
   m_TagString: Untagged
@@ -295,6 +296,20 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &753014722993253798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247009063173723876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: haku
+  _englishText: search
 --- !u!1 &375369039255685377
 GameObject:
   m_ObjectHideFlags: 0
@@ -500,7 +515,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _clanName: {fileID: 6785855716087933409}
   _clanDescription: {fileID: 775921596412426267}
-  _clanMembers: {fileID: 8811257589033390540}
+  _clanMembers: {fileID: 4621085414338353627}
   _clanHeart: {fileID: 6768194039154635317}
   _winsRankText: {fileID: 6198432132955354487}
   _activityRankText: {fileID: 3033829519945259317}
@@ -2018,6 +2033,7 @@ GameObject:
   - component: {fileID: 8880236728523944929}
   - component: {fileID: 3225599631973324858}
   - component: {fileID: 7477332107736560141}
+  - component: {fileID: 157677019049810576}
   m_Layer: 5
   m_Name: ConfirmText (TMP)
   m_TagString: Untagged
@@ -2146,6 +2162,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &157677019049810576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3691353504548888234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Valitse
+  _englishText: Select
 --- !u!1 &3913264181502117526
 GameObject:
   m_ObjectHideFlags: 0
@@ -2241,7 +2271,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7124608822471090152
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4735,6 +4765,7 @@ GameObject:
   - component: {fileID: 7825391487400440489}
   - component: {fileID: 3998112112897408652}
   - component: {fileID: 167076947253518912}
+  - component: {fileID: 6187853770293999496}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -4861,6 +4892,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6187853770293999496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6563656955693671607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Valitse arvot
+  _englishText: Choose values
 --- !u!1 &6570858644258080570
 GameObject:
   m_ObjectHideFlags: 0
@@ -4872,6 +4917,7 @@ GameObject:
   - component: {fileID: 7718855082463904840}
   - component: {fileID: 5087490955223437039}
   - component: {fileID: 3213179421540735222}
+  - component: {fileID: 4609707918267705705}
   m_Layer: 5
   m_Name: CancelText (TMP)
   m_TagString: Untagged
@@ -4998,6 +5044,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4609707918267705705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6570858644258080570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Peruuta
+  _englishText: Cancel
 --- !u!1 &6634971511582537280
 GameObject:
   m_ObjectHideFlags: 0
@@ -5033,7 +5093,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -323.03995}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7480498565591029919
 MonoBehaviour:
@@ -5996,7 +6056,7 @@ RectTransform:
   m_Father: {fileID: 2492301212317930985}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 3}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -6630,6 +6690,7 @@ GameObject:
   - component: {fileID: 6494382545583682838}
   - component: {fileID: 145735102189285044}
   - component: {fileID: 8811257589033390540}
+  - component: {fileID: 4621085414338353627}
   m_Layer: 5
   m_Name: ClanMembers (TMP)
   m_TagString: Untagged
@@ -6756,6 +6817,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4621085414338353627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8649276015058862520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99bef45c2704bb147a99ddcb380f3986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "J\xE4senet: {0}"
+  _englishText: 'Members: {0}'
 --- !u!1 &8651735408854607016
 GameObject:
   m_ObjectHideFlags: 0
@@ -10871,7 +10946,15 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 3763756487526106996}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7620845218128519958, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7426178229452715825}
+    - targetCorrespondingSourceObject: {fileID: 6417290948194480819, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7030914590515761283}
   m_SourcePrefab: {fileID: 100100000, guid: 57890b7dbec8a984abb7d8148eefe9f6, type: 3}
 --- !u!114 &421633393622283491 stripped
 MonoBehaviour:
@@ -10921,6 +11004,26 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 4451339304811662613}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6054240713430822403 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7620845218128519958, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 4451339304811662613}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7426178229452715825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6054240713430822403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Liity
+  _englishText: Join
 --- !u!224 &6272651089068733512 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7695168990374541661, guid: 57890b7dbec8a984abb7d8148eefe9f6,
@@ -10957,6 +11060,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &7262223305392701350 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6417290948194480819, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 4451339304811662613}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7030914590515761283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7262223305392701350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Luo
+  _englishText: Create
 --- !u!114 &7647092375516409384 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6330293596801491773, guid: 57890b7dbec8a984abb7d8148eefe9f6,
