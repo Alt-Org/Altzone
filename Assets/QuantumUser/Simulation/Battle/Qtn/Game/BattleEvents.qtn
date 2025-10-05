@@ -101,6 +101,12 @@ synced event BattleLastRowWallDestroyed
     BattleLightraySize LightraySize;
 }
 
+synced event BattleCharacterSelected
+{
+    BattlePlayerSlot Slot;
+    int CharacterNumber;
+}
+
 synced event BattleCharacterTakeDamage
 {
     EntityRef Entity;
