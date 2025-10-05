@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 502
   CharacterId: 502
-  IsApproved: 1
+  IsApproved: 0
   Name: Alkoholismi
   ClassType: 500
   CharacterDescription: "Alkoholismi hakee tukea ja turvaa viinasta. Juominen on
@@ -47,6 +47,7 @@ MonoBehaviour:
     Coefficient: 2
   GalleryImage: {fileID: 21300000, guid: 1ad7ef75f9ecfb945b0d71f9b329269c, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 586b64090f07a7946bfa670f3ee1a33e, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
       Value: 1410690482395355018

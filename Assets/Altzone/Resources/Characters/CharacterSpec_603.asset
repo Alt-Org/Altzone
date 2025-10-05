@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 603
   CharacterId: 603
-  IsApproved: 1
+  IsApproved: 0
   Name: "V\xE4syminen"
   ClassType: 600
   CharacterDescription: "Valveenv\xE4lttely pakenee ylikuormittavaa todellisuutta
@@ -44,6 +44,7 @@ MonoBehaviour:
     Coefficient: 2
   GalleryImage: {fileID: 21300000, guid: 9aa5e625812e131439a894722f0b1d66, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 1db187b168a56284dab8d4b21a59b65a, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
       Value: 1435907982705750939
