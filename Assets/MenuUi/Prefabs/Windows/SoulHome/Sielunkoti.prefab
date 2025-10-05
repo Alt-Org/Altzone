@@ -2189,6 +2189,7 @@ GameObject:
   - component: {fileID: 1442302866210066174}
   - component: {fileID: 1442302866210066168}
   - component: {fileID: 9193472377066270522}
+  - component: {fileID: 7260528578692763022}
   m_Layer: 5
   m_Name: RawImage
   m_TagString: Untagged
@@ -2251,6 +2252,25 @@ MonoBehaviour:
   _verticalItemTray: {fileID: 8835563532395335141}
   _horizontalItemTray: {fileID: 8238237563156778947}
   _furnitureButtons: {fileID: 5709668148168734955}
+--- !u!114 &7260528578692763022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1442302866210066173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 2
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 5
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
 --- !u!1 &1544293084460920470
 GameObject:
   m_ObjectHideFlags: 0
@@ -2294,6 +2314,7 @@ GameObject:
   - component: {fileID: 1137891096177403137}
   - component: {fileID: 7266884330926191433}
   - component: {fileID: 8929454208922663643}
+  - component: {fileID: 5276655090646875756}
   m_Layer: 0
   m_Name: Tower Camera
   m_TagString: Untagged
@@ -2407,6 +2428,25 @@ MonoBehaviour:
   _soulHomeController: {fileID: 7681122712900677425}
   _displayScreen: {fileID: 6124938095766919660}
   _rooms: {fileID: 2958044221307709069}
+--- !u!114 &5276655090646875756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589355473324232515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 5
+  _educationCategoryActionType: 11
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
 --- !u!1 &1757899857382601451
 GameObject:
   m_ObjectHideFlags: 0
@@ -9386,6 +9426,7 @@ GameObject:
   - component: {fileID: 4788480834664309421}
   - component: {fileID: 1967409196646239748}
   - component: {fileID: 697716011940577308}
+  - component: {fileID: 7739909009906333160}
   m_Layer: 5
   m_Name: ItemtrayHorizontal
   m_TagString: FurnitureTray
@@ -9506,6 +9547,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AllowSwitchOff: 0
+--- !u!114 &7739909009906333160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8238237563156778947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 5
+  _educationCategoryActionType: 12
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
 --- !u!1 &8269092316237308460
 GameObject:
   m_ObjectHideFlags: 0
@@ -10372,6 +10432,7 @@ GameObject:
   - component: {fileID: 3929146641063178205}
   - component: {fileID: 3510545286632961050}
   - component: {fileID: 4697328121706057684}
+  - component: {fileID: 3817732165489977067}
   m_Layer: 5
   m_Name: ItemtrayVertical
   m_TagString: FurnitureTray
@@ -10476,6 +10537,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bd5afa60a6ce6046a3fb052d84a5a7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3817732165489977067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8835563532395335141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 5
+  _educationCategoryActionType: 12
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
 --- !u!1 &8979509467625706017
 GameObject:
   m_ObjectHideFlags: 0
@@ -12660,7 +12740,7 @@ PrefabInstance:
     - target: {fileID: 2641932565321544379, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.9620536
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2853600601693954760, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -12690,12 +12770,12 @@ PrefabInstance:
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.8870101
+      value: 0.922
       objectReference: {fileID: 0}
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.19765218
+      value: 0.208
       objectReference: {fileID: 0}
     - target: {fileID: 4228635600180420129, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -12895,7 +12975,7 @@ PrefabInstance:
     - target: {fileID: 7827142668286818857, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.19765218
+      value: 0.208
       objectReference: {fileID: 0}
     - target: {fileID: 8620236399698832103, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -12950,12 +13030,12 @@ PrefabInstance:
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.9620536
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.8870101
+      value: 0.922
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

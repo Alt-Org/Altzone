@@ -1143,7 +1143,7 @@ public class ServerManager : MonoBehaviour
 
     #region DailyTasks
 
-    public IEnumerator GetPlayerTasksFromServer(Action<List<PlayerTask>> callback)
+    public IEnumerator GetPlayerTasksFromServer(Action<ClanTasks> callback)
     {
         yield return StartCoroutine(WebRequests.Get(SERVERADDRESS + "dailyTasks", AccessToken, request =>
         {
@@ -1169,8 +1169,10 @@ public class ServerManager : MonoBehaviour
                     }));
                 }
 
+                ClanTasks clanTasks = new(TaskVersionType.Normal,tasks);
+
                 if (callback != null)
-                    callback(new(tasks));
+                    callback(clanTasks);
             }
             else
             {
@@ -1241,7 +1243,7 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
-    public IEnumerator ProgressPlayerTaskFromServer(int amount, Action<bool> callback)
+    public IEnumerator ProgressPlayerTaskToServer(int amount, Action<bool> callback)
     {
         string body = JObject.FromObject(new { amount = amount }).ToString();
 
