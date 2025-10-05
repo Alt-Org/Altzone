@@ -1,14 +1,15 @@
 using System;
 using System.Collections;
-using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
-using Altzone.Scripts.Voting;
+using System.Linq;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.Voting;
 using MenuUi.Scripts.AvatarEditor;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class PollObject : MonoBehaviour
 {
@@ -20,6 +21,8 @@ public class PollObject : MonoBehaviour
     [SerializeField] private TextMeshProUGUI YesVotesText;
     [SerializeField] private TextMeshProUGUI NoVotesText;
     [SerializeField] private TextMeshProUGUI TimeLeftText;
+    [SerializeField] private TextMeshProUGUI PollTypeText;
+    [SerializeField] private TextMeshProUGUI PollDescriptionText;
 
     [Header("Images")]
     [SerializeField] private Image Clock;
@@ -29,6 +32,12 @@ public class PollObject : MonoBehaviour
 
     [Header("Buttons")]
     [SerializeField] private Button ClockButton;
+    [SerializeField] private GameObject VoteYes;
+    [SerializeField] private GameObject VoteNo;
+
+    [Header("Results")]
+    [SerializeField] private GameObject YesVoters;
+    [SerializeField] private GameObject NoVoters;
 
     [Header("PlayerHeads")]
     [SerializeField] private AddPlayerHeads playerHeads;
@@ -135,11 +144,59 @@ public class PollObject : MonoBehaviour
         return pollData.YesVotes.Count > pollData.NoVotes.Count;
     }
 
-    private void SetValues() // Sets the small info window for the PollObject
+    public void AddVote(bool answer)
+    {
+        pollData.AddVote(answer);
+
+        // --- DEBUG CHECK ---
+        DataStore store = Storefront.Get();
+        PlayerData player = null;
+        store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
+
+        if (player != null)
+        {
+            bool inYes = pollData.YesVotes.Any(v => v.PlayerId == player.Id);
+            bool inNo = pollData.NoVotes.Any(v => v.PlayerId == player.Id);
+            bool inNotVoted = pollData.NotVoted.Contains(player.Id);
+
+            Debug.Log($"[Poll Debug] Player '{player.Name}' voted: " +
+                      $"Yes={inYes}, No={inNo}, NotVoted={inNotVoted}");
+        }
+        else
+        {
+            Debug.LogWarning("[Poll Debug] Player data not found!");
+        }
+        // -------------------
+
+        SetValues();
+        VotingActions.ReloadPollList?.Invoke();
+
+        gameObject.SetActive(false);
+    }
+
+
+    private void SetValues() // Handles the info and values showcased in the PollObject
     {
         // Reset UI elements
         Image.gameObject.SetActive(false);
         avatarHandleGameObject.SetActive(false);
+
+        // Handles the Poll Header
+        if (pollData is FurniturePollData)
+        {
+            if (PollTypeText != null)
+                PollTypeText.text = "Furniture Poll";
+        }
+        else if (pollData is ClanRolePollData)
+        {
+            if (PollTypeText != null)
+                PollTypeText.text = "Clan Poll";
+        }
+        else
+        {
+            if (PollTypeText != null)
+                PollTypeText.text = "General Poll";
+        }
 
         // Handle UI for Furniture Polls
         if (pollData is FurniturePollData furniturePollData)
@@ -150,6 +207,7 @@ public class PollObject : MonoBehaviour
             UpperText.text = Enum.GetName(typeof(FurniturePollType), furniturePollData.FurniturePollType);
             LowerText.text = furniturePollData.Furniture?.Value.ToString() ?? "N/A";
         }
+
         // Handle UI for Clan Polls
         else if (pollData is ClanRolePollData clanRolePoll)
         {
@@ -194,6 +252,23 @@ public class PollObject : MonoBehaviour
             LowerText.text = roleName;
         }
 
+        // Enable and disable vote buttons and list based on whether the player has voted on the poll
+        PlayerData currentPlayer = null;
+        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => currentPlayer = data);
+
+        if (currentPlayer != null)
+        {
+            bool hasNotVoted = pollData.NotVoted.Contains(currentPlayer.Id);
+
+            // Vote buttons
+            VoteYes.SetActive(hasNotVoted);
+            VoteNo.SetActive(hasNotVoted);
+
+            // Voter lists
+            YesVoters.SetActive(!hasNotVoted);
+            NoVoters.SetActive(!hasNotVoted);
+        }
+
         if (YesVotesText != null) YesVotesText.text = pollData.YesVotes.Count.ToString();
         if (NoVotesText != null) NoVotesText.text = pollData.NoVotes.Count.ToString();
 
@@ -207,6 +282,7 @@ public class PollObject : MonoBehaviour
 
         playerHeads.InstantiateHeads(pollId);
     }
+
 
     private IEnumerator LoadAndApplyAvatar(ClanMember targetMember)
     {

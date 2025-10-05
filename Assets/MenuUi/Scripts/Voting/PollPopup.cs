@@ -59,13 +59,4 @@ public class PollPopup : MonoBehaviour // Controls the popup display for polls
             else greenFillAmount.fillAmount = (float)pollData.YesVotes.Count / (pollData.NoVotes.Count + pollData.YesVotes.Count);
         }
     }
-
-    public void AddVote(bool answer)
-    {
-        pollData.AddVote(answer);
-        SetValues();
-        VotingActions.ReloadPollList?.Invoke();
-
-        gameObject.SetActive(false);
-    }
 }
