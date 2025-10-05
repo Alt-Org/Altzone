@@ -752,6 +752,7 @@ GameObject:
   - component: {fileID: 2699627848751758449}
   - component: {fileID: 2915612031642168896}
   - component: {fileID: 7314204976766522457}
+  - component: {fileID: 8920014779155744666}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -878,6 +879,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8920014779155744666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 414722659886088853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99bef45c2704bb147a99ddcb380f3986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: 'Tyyli: {0}'
+  _englishText: 'Style: {0}'
 --- !u!1 &452585707855141714
 GameObject:
   m_ObjectHideFlags: 0
@@ -1686,6 +1701,7 @@ GameObject:
   - component: {fileID: 4707520540733732123}
   - component: {fileID: 4587681298884548583}
   - component: {fileID: 5820413083715863794}
+  - component: {fileID: 5105868962336458636}
   m_Layer: 5
   m_Name: FPSText
   m_TagString: Untagged
@@ -1812,6 +1828,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5105868962336458636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 736018762690062112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Kuvataajuus
+  _englishText: Screen frame rate
 --- !u!1 &849060177527639589
 GameObject:
   m_ObjectHideFlags: 0
@@ -2164,6 +2194,7 @@ GameObject:
   - component: {fileID: 4366631497615250685}
   - component: {fileID: 8594480150430867759}
   - component: {fileID: 4385526095444978597}
+  - component: {fileID: 4372449690860836018}
   m_Layer: 5
   m_Name: PasswordText
   m_TagString: Untagged
@@ -2292,6 +2323,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4372449690860836018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002403933828949953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Vahvista salasana
+  _englishText: Input the password again
 --- !u!1 &1044701570020510581
 GameObject:
   m_ObjectHideFlags: 0
@@ -2619,6 +2664,7 @@ GameObject:
   - component: {fileID: 6856784168320101509}
   - component: {fileID: 2203303954770784671}
   - component: {fileID: 7898806915506201295}
+  - component: {fileID: 4750375470624129490}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -2747,6 +2793,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4750375470624129490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1138256947653756389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Salli internetlinkit
+  _englishText: Allow internet links
 --- !u!1 &1188823263783478270
 GameObject:
   m_ObjectHideFlags: 0
@@ -3753,6 +3813,7 @@ GameObject:
   - component: {fileID: 3209356712235858883}
   - component: {fileID: 5586137016472298166}
   - component: {fileID: 8570502308215286798}
+  - component: {fileID: 1868848764312475570}
   m_Layer: 5
   m_Name: LimitLabel
   m_TagString: Untagged
@@ -3879,6 +3940,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1868848764312475570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1480525521869433274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Kuukausittainen Peliraha
+  _englishText: Monthly allowance
 --- !u!1 &1487999966264022673
 GameObject:
   m_ObjectHideFlags: 0
@@ -6119,6 +6194,7 @@ GameObject:
   - component: {fileID: 4995310739863236792}
   - component: {fileID: 6368698511290361219}
   - component: {fileID: 5602681472571357229}
+  - component: {fileID: 2052091718650283067}
   m_Layer: 5
   m_Name: PasswordText
   m_TagString: Untagged
@@ -6245,6 +6321,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2052091718650283067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2121939409897774965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Anna salasana muuttaaksesi asetuksia
+  _englishText: Input the password to change settings
 --- !u!1 &2126158996397140829
 GameObject:
   m_ObjectHideFlags: 0
@@ -7139,6 +7229,7 @@ GameObject:
   - component: {fileID: 3834758981186953038}
   - component: {fileID: 3536045211689505051}
   - component: {fileID: 3108066387075756716}
+  - component: {fileID: 5337966881968043208}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -7265,6 +7356,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5337966881968043208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2416465021168382952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Kesken ottelun
+  _englishText: Mid match
 --- !u!1 &2487574449411369374
 GameObject:
   m_ObjectHideFlags: 0
@@ -7984,6 +8089,7 @@ GameObject:
   - component: {fileID: 3517900820682422471}
   - component: {fileID: 8436919009539651516}
   - component: {fileID: 5938755354027240077}
+  - component: {fileID: 5869322995090223453}
   m_Layer: 5
   m_Name: CustomText
   m_TagString: Untagged
@@ -8110,6 +8216,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5869322995090223453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2911531016179980154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Yl\xE4palkin muokkaus"
+  _englishText: Tob Bar settings
 --- !u!1 &2927945683407209654
 GameObject:
   m_ObjectHideFlags: 0
@@ -8121,6 +8241,7 @@ GameObject:
   - component: {fileID: 5844413193498665003}
   - component: {fileID: 2754864081045523340}
   - component: {fileID: 2743691704171554944}
+  - component: {fileID: 286171715097881554}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -8247,6 +8368,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &286171715097881554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2927945683407209654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Taistelu UI
+  _englishText: Battle UI
 --- !u!1 &2935352026684273400
 GameObject:
   m_ObjectHideFlags: 0
@@ -8872,6 +9007,7 @@ GameObject:
   - component: {fileID: 3256879958637898598}
   - component: {fileID: 8884459759544232903}
   - component: {fileID: 8066932103202356930}
+  - component: {fileID: 3570396416534570606}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -8998,6 +9134,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3570396416534570606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3069309995467135785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "\xC4\xE4net"
+  _englishText: Sounds
 --- !u!1 &3070953033036862572
 GameObject:
   m_ObjectHideFlags: 0
@@ -9287,6 +9437,7 @@ GameObject:
   - component: {fileID: 1953244698516515375}
   - component: {fileID: 3017347706582807274}
   - component: {fileID: 7449588723030680360}
+  - component: {fileID: 8821875437147705330}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -9413,6 +9564,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8821875437147705330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3178267902320912134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Devaus\nTy\xF6kalut"
+  _englishText: Dev Tools
 --- !u!1 &3186538810402240086
 GameObject:
   m_ObjectHideFlags: 0
@@ -9767,6 +9932,7 @@ GameObject:
   - component: {fileID: 4017359002131348533}
   - component: {fileID: 2460240063537144412}
   - component: {fileID: 4221650327196857321}
+  - component: {fileID: 7921287686173073771}
   m_Layer: 5
   m_Name: TextText (1)
   m_TagString: Untagged
@@ -9893,6 +10059,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7921287686173073771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3416435400500901499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "K\xE4ytt\xF6ehdot"
+  _englishText: Terms of Use
 --- !u!1 &3430717365515845721
 GameObject:
   m_ObjectHideFlags: 0
@@ -12246,6 +12426,7 @@ GameObject:
   - component: {fileID: 3581239817456771730}
   - component: {fileID: 4674292533258243642}
   - component: {fileID: 932537853830398786}
+  - component: {fileID: 4727996936691694967}
   m_Layer: 5
   m_Name: TextText (1)
   m_TagString: Untagged
@@ -12372,6 +12553,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4727996936691694967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4226487747690014693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Palaute
+  _englishText: Feedback
 --- !u!1 &4387001375154803606
 GameObject:
   m_ObjectHideFlags: 0
@@ -13901,6 +14096,7 @@ GameObject:
   - component: {fileID: 6543980266852986900}
   - component: {fileID: 2068750224684993480}
   - component: {fileID: 202064575119097972}
+  - component: {fileID: 832514637137889820}
   m_Layer: 0
   m_Name: Parental Control
   m_TagString: Untagged
@@ -14027,6 +14223,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &832514637137889820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5028797660609087688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Vanhempien Kontrolli
+  _englishText: Parental Control
 --- !u!1 &5046526836313465650
 GameObject:
   m_ObjectHideFlags: 0
@@ -14562,6 +14772,7 @@ GameObject:
   - component: {fileID: 7065340442945203858}
   - component: {fileID: 8040067440484604993}
   - component: {fileID: 2339213685060274118}
+  - component: {fileID: 8565203137581062954}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -14688,6 +14899,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8565203137581062954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5132916865312075982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Salli Chatviestit
+  _englishText: Allow Chatmessages
 --- !u!1 &5166932739191363995
 GameObject:
   m_ObjectHideFlags: 0
@@ -16145,6 +16370,7 @@ GameObject:
   - component: {fileID: 4312162874312798660}
   - component: {fileID: 3204248029785359315}
   - component: {fileID: 3982151019294581501}
+  - component: {fileID: 7629875856252588264}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -16271,6 +16497,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7629875856252588264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5633578564300673780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Aktivoi rahapyynn\xF6t erikseen"
+  _englishText: Confirm moneyrequests separately ??
 --- !u!1 &5660356319683428898
 GameObject:
   m_ObjectHideFlags: 0
@@ -17350,6 +17590,7 @@ GameObject:
   - component: {fileID: 2873445636009432837}
   - component: {fileID: 6284001081084920690}
   - component: {fileID: 5603380662519268996}
+  - component: {fileID: 1780106000802985122}
   m_Layer: 5
   m_Name: LimitLabel
   m_TagString: Untagged
@@ -17476,6 +17717,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1780106000802985122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5849388361691711500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "P\xE4ivitt\xE4inen peliaika"
+  _englishText: Daily gametime
 --- !u!1 &5908707314297125191
 GameObject:
   m_ObjectHideFlags: 0
@@ -19125,6 +19380,7 @@ GameObject:
   - component: {fileID: 98143114357189795}
   - component: {fileID: 1178422959782539454}
   - component: {fileID: 6763565199994921370}
+  - component: {fileID: 6780144915165153978}
   m_Layer: 5
   m_Name: TimeLimitAccuracy
   m_TagString: Untagged
@@ -19253,6 +19509,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6780144915165153978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6428533580107063309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Peliajan katkaisutarkkuus
+  _englishText: Gametime cutoff accuracy
 --- !u!1 &6484371604875790993
 GameObject:
   m_ObjectHideFlags: 0
@@ -19264,6 +19534,7 @@ GameObject:
   - component: {fileID: 2321997180485986485}
   - component: {fileID: 3022926681075700897}
   - component: {fileID: 3774617945158185980}
+  - component: {fileID: 8376842875588847031}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -19390,6 +19661,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8376842875588847031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6484371604875790993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Ottelun p\xE4\xE4tytty\xE4"
+  _englishText: At the end of match
 --- !u!1 &6612393072810919178
 GameObject:
   m_ObjectHideFlags: 0
@@ -20690,6 +20975,7 @@ GameObject:
   - component: {fileID: 5292132290211235152}
   - component: {fileID: 7096991284606715700}
   - component: {fileID: 1998003621834122802}
+  - component: {fileID: 7512364920787874377}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -20816,6 +21102,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7512364920787874377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6906947489475126431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Salli emojikommentit
+  _englishText: Allow emojis
 --- !u!1 &6919570066326612421
 GameObject:
   m_ObjectHideFlags: 0
@@ -21091,6 +21391,7 @@ GameObject:
   - component: {fileID: 1705412248118078366}
   - component: {fileID: 6225687759977761247}
   - component: {fileID: 885321787563183657}
+  - component: {fileID: 735776794990664908}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -21217,6 +21518,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &735776794990664908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6952239795557745233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Salli aarteenmets\xE4stys"
+  _englishText: Allow treasurehunt
 --- !u!1 &6957802815376747075
 GameObject:
   m_ObjectHideFlags: 0

@@ -22,7 +22,7 @@ public class SettingEditor : MonoBehaviour
     [SerializeField] private BattleUiEditor _battleEditor;
     [SerializeField] private GameObject[] _settingsPopups;
     [SerializeField] private Button _topBarStyleButton;
-    [SerializeField] private TextMeshProUGUI _topBarStyleText;
+    [SerializeField] private TextLanguageSelectorCaller _topBarStyleText;
 
     [SerializeField] private Image _languageImage;
     [SerializeField] private Sprite _finnishSprite;
@@ -153,7 +153,7 @@ public class SettingEditor : MonoBehaviour
         }
         else carrier.TopBarStyleSetting++;
 
-        _topBarStyleText.text = "Tyyli: " + carrier.TopBarStyleSetting;
+        _topBarStyleText.SetText(SettingsCarrier.Instance.Language, new string[1] { carrier.TopBarStyleSetting.ToString() });
 
     }
 
@@ -170,6 +170,6 @@ public class SettingEditor : MonoBehaviour
                 _languageImage.sprite = _englishSprite;
                 break;
         }
-        _languageCaller.SetText(language, new string[1] {"Something"});
+        _languageCaller.SetText(language, new string[0]);
     }
 }
