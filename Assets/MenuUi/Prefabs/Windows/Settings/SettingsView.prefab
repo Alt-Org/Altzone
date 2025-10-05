@@ -148,6 +148,7 @@ GameObject:
   - component: {fileID: 4153285449877260720}
   - component: {fileID: 997955408443073320}
   - component: {fileID: 3968996211036015709}
+  - component: {fileID: 8233660245161197917}
   m_Layer: 5
   m_Name: TextText
   m_TagString: Untagged
@@ -274,6 +275,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8233660245161197917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 131666355228544262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Teksti Asetukset
+  _englishText: Text Settings
 --- !u!1 &135986065859162029
 GameObject:
   m_ObjectHideFlags: 0
@@ -3337,6 +3352,7 @@ GameObject:
   - component: {fileID: 1301390979540091082}
   - component: {fileID: 4501699201419970146}
   - component: {fileID: 8352835872624906655}
+  - component: {fileID: 3834909957993237070}
   m_Layer: 5
   m_Name: TextText (1)
   m_TagString: Untagged
@@ -3463,6 +3479,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3834909957993237070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1312991202562092944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "HELPOK\xC4YTT\xD6"
+  _englishText: ACCESSABILITY
 --- !u!1 &1347379878287618381
 GameObject:
   m_ObjectHideFlags: 0
@@ -4360,6 +4390,7 @@ GameObject:
   - component: {fileID: 1384086508474396267}
   - component: {fileID: 2381953603782524110}
   - component: {fileID: 107390437015897338}
+  - component: {fileID: 5535155798157093303}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -4486,6 +4517,22 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5535155798157093303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1730422209164032739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Ohita introvideo\nk\xE4ynnistkssess\xE4"
+  _englishText: 'Skip introvideo
+
+    on startup'
 --- !u!1 &1792715534204815280
 GameObject:
   m_ObjectHideFlags: 0
@@ -8549,6 +8596,10 @@ MonoBehaviour:
   - {fileID: 2950255071750503190}
   _topBarStyleButton: {fileID: 972730769888269474}
   _topBarStyleText: {fileID: 7314204976766522457}
+  _languageImage: {fileID: 1567596308378612560}
+  _finnishSprite: {fileID: 21300000, guid: c4fa6dcac97b03f408802486524dd804, type: 3}
+  _englishSprite: {fileID: 21300000, guid: 612c44fc624544f40b8c5485eeaed2e7, type: 3}
+  _languageCaller: {fileID: 5940689289831215057}
 --- !u!114 &8981252872597385631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15936,6 +15987,7 @@ GameObject:
   - component: {fileID: 753296607360597333}
   - component: {fileID: 4178319641843163687}
   - component: {fileID: 3583994724865785281}
+  - component: {fileID: 781133608577816672}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -16064,6 +16116,24 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &781133608577816672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5620617335911339111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: 'Katso Tarina-
+
+    Materiaalit'
+  _englishText: 'View Story-
+
+    Materials'
 --- !u!1 &5633578564300673780
 GameObject:
   m_ObjectHideFlags: 0
@@ -22267,6 +22337,7 @@ GameObject:
   - component: {fileID: 1007896028998727891}
   - component: {fileID: 1952664821011075978}
   - component: {fileID: 8535306626668090970}
+  - component: {fileID: 5701929902435526741}
   m_Layer: 5
   m_Name: TextText
   m_TagString: Untagged
@@ -22393,6 +22464,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5701929902435526741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7501653008826020207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Kirjaudu ulso
+  _englishText: Log Out from Account
 --- !u!1 &7575163970518280580
 GameObject:
   m_ObjectHideFlags: 0
@@ -24640,6 +24725,7 @@ GameObject:
   - component: {fileID: 6578737867021723525}
   - component: {fileID: 8316016746210694906}
   - component: {fileID: 1268477408553735490}
+  - component: {fileID: 5940689289831215057}
   m_Layer: 5
   m_Name: LanguageText
   m_TagString: Untagged
@@ -24766,6 +24852,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5940689289831215057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8291222053590540412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99bef45c2704bb147a99ddcb380f3986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Suomi (Finnish)
+  _englishText: English
 --- !u!1 &8311639817855511016
 GameObject:
   m_ObjectHideFlags: 0

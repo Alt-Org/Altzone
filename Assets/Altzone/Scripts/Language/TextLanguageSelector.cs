@@ -3,24 +3,27 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-[RequireComponent(typeof(TextMeshProUGUI))]
-public class TextLanguageSelector : MonoBehaviour
+namespace Altzone.Scripts.Language
 {
-    [SerializeField, TextArea(1, 10)] private string _finnishText;
-    [SerializeField, TextArea(1, 10)] private string _englishText;
-
-    private TextMeshProUGUI _textField;
-    private void OnEnable()
+    [RequireComponent(typeof(TextMeshProUGUI))]
+    public class TextLanguageSelector : MonoBehaviour
     {
-        _textField = GetComponent<TextMeshProUGUI>();
-        SettingsCarrier.OnLanguageChanged += SetText;
-        SetText(SettingsCarrier.Instance.Language);
-    }
+        [SerializeField, TextArea(1, 10)] protected string _finnishText;
+        [SerializeField, TextArea(1, 10)] protected string _englishText;
 
-    private void SetText(SettingsCarrier.LanguageType language)
-    {
-        if (language is SettingsCarrier.LanguageType.Finnish) _textField.text = _finnishText;
-        else if (language is SettingsCarrier.LanguageType.English) _textField.text = _englishText;
-        else _textField.text = _finnishText;
+        protected TextMeshProUGUI _textField;
+        protected virtual void OnEnable()
+        {
+            _textField = GetComponent<TextMeshProUGUI>();
+            SettingsCarrier.OnLanguageChanged += SetText;
+            SetText(SettingsCarrier.Instance.Language);
+        }
+
+        protected virtual void SetText(SettingsCarrier.LanguageType language)
+        {
+            if (language is SettingsCarrier.LanguageType.Finnish) _textField.text = _finnishText;
+            else if (language is SettingsCarrier.LanguageType.English) _textField.text = _englishText;
+            else _textField.text = _finnishText;
+        }
     }
 }

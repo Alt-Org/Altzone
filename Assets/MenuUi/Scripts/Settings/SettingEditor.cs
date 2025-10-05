@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.Audio;
+using Altzone.Scripts.Language;
 
 public class SettingEditor : MonoBehaviour
 {
@@ -22,6 +23,11 @@ public class SettingEditor : MonoBehaviour
     [SerializeField] private GameObject[] _settingsPopups;
     [SerializeField] private Button _topBarStyleButton;
     [SerializeField] private TextMeshProUGUI _topBarStyleText;
+
+    [SerializeField] private Image _languageImage;
+    [SerializeField] private Sprite _finnishSprite;
+    [SerializeField] private Sprite _englishSprite;
+    [SerializeField] private TextLanguageSelectorCaller _languageCaller;
 
     private void OnEnable()
     {
@@ -50,6 +56,9 @@ public class SettingEditor : MonoBehaviour
         {
             popup.SetActive(false);
         }
+
+        SettingsCarrier.OnLanguageChanged += ChangeLanguage;
+        ChangeLanguage(SettingsCarrier.Instance.Language);
     }
 
     private void Start()
@@ -62,6 +71,11 @@ public class SettingEditor : MonoBehaviour
         _topBarStyleText.text = "Tyyli: " + carrier.TopBarStyleSetting;
 
         _introSkipToggle.onValueChanged.AddListener(_ => SetIntroSkip());
+    }
+
+    private void OnDisable()
+    {
+        SettingsCarrier.OnLanguageChanged -= ChangeLanguage;
     }
 
     public void SetFromSlider(Slider usedSlider)
@@ -144,4 +158,18 @@ public class SettingEditor : MonoBehaviour
     }
 
     public void PlayMainMenuMusic() { AudioManager.Instance.PlayMusic("MainMenu"); }
+
+    private void ChangeLanguage(SettingsCarrier.LanguageType language)
+    {
+        switch (language)
+        {
+            case SettingsCarrier.LanguageType.Finnish:
+                _languageImage.sprite = _finnishSprite;
+                break;
+            case SettingsCarrier.LanguageType.English:
+                _languageImage.sprite = _englishSprite;
+                break;
+        }
+        _languageCaller.SetText(language, new string[1] {"Something"});
+    }
 }
