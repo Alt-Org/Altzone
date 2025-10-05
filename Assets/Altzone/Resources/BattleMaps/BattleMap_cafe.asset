@@ -13,16 +13,22 @@ MonoBehaviour:
   m_Name: BattleMap_cafe
   m_EditorClassIdentifier: 
   _mapId: battlemap_cafe
-  _mapName: Kahvilassa
+  _mapNameFinnish: Kahvilassa
+  _mapNameEnglish: "At a Caf\xE9"
   _map: {fileID: 11400000, guid: 1229d24fffb0b0d459dd9ee59b53aa87, type: 2}
   _emotionalSituations:
   - SituationEmotion: 2
-    SituationName: Ensitreffit
+    FinnishSituationName: Ensitreffit
+    EnglishSituationName: First Date
   - SituationEmotion: 0
-    SituationName: Lompakko unohtuu
+    FinnishSituationName: Lompakko Unohtui
+    EnglishSituationName: Forgotten Wallet
   - SituationEmotion: 3
-    SituationName: Sekoitettu tilaus
+    FinnishSituationName: Sekoitettu Tilaus
+    EnglishSituationName: Order Mix-up
   - SituationEmotion: 2
-    SituationName: Kosinta
+    FinnishSituationName: Kosinta
+    EnglishSituationName: Proposal
   - SituationEmotion: 3
-    SituationName: "T\xF6rm\xE4\xE4t viholliseen"
+    FinnishSituationName: "T\xF6rm\xE4\xE4t Viholliseen"
+    EnglishSituationName: Meeting an enemy

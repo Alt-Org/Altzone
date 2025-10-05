@@ -25,7 +25,12 @@ namespace Altzone.Scripts.Language
         public void SetText(string text)
         {
             if (_textField == null) _textField = GetComponent<TextMeshProUGUI>();
-            _textField.text = text;
+            if (!string.IsNullOrWhiteSpace(text)) _textField.text = text;
+            else
+            {
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _textField.text = _finnishText;
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _textField.text = _englishText;
+            }
         }
     }
 }
