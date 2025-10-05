@@ -21,5 +21,6 @@ public class TextLanguageSelector : MonoBehaviour
     {
         if (language is SettingsCarrier.LanguageType.Finnish) _textField.text = _finnishText;
         else if (language is SettingsCarrier.LanguageType.English) _textField.text = _englishText;
+        else _textField.text = _finnishText;
     }
 }

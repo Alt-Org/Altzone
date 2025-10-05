@@ -505,7 +505,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
             case "en":
                 return LanguageType.English;
             default:
-                return LanguageType.Finnish;
+                return LanguageType.None;
         }
     }
 
