@@ -6394,6 +6394,7 @@ GameObject:
   - component: {fileID: 1002255025594061745}
   - component: {fileID: 7951596064629121980}
   - component: {fileID: 392224404822217408}
+  - component: {fileID: 6521111715393656997}
   m_Layer: 5
   m_Name: Placeholder
   m_TagString: Untagged
@@ -6540,6 +6541,20 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &6521111715393656997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2221923708386339428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Haku
+  _englishText: Search
 --- !u!1 &2253524455109409034
 GameObject:
   m_ObjectHideFlags: 0
@@ -6672,6 +6687,7 @@ GameObject:
   - component: {fileID: 5662698776737943141}
   - component: {fileID: 1873787967799920610}
   - component: {fileID: 8970378203583931582}
+  - component: {fileID: 8230887717940821891}
   m_Layer: 5
   m_Name: TracksButtonText
   m_TagString: Untagged
@@ -6754,7 +6770,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 64.2
   m_fontSizeBase: 42
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6798,6 +6814,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8230887717940821891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2265466133817818911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Musiikit
+  _englishText: Music
 --- !u!1 &2362302057372004442
 GameObject:
   m_ObjectHideFlags: 0
@@ -11110,6 +11140,7 @@ GameObject:
   - component: {fileID: 3179764086738798671}
   - component: {fileID: 6136779758018078665}
   - component: {fileID: 3433899654123639297}
+  - component: {fileID: 4944975067871032172}
   m_Layer: 5
   m_Name: PlaylistQueueButtonText
   m_TagString: Untagged
@@ -11192,7 +11223,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 62.4
+  m_fontSize: 49.1
   m_fontSizeBase: 42
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -11236,6 +11267,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4944975067871032172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3504864177962696391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Soittolista
+  _englishText: Playlist
 --- !u!1 &3513594520450643374
 GameObject:
   m_ObjectHideFlags: 0
@@ -23052,7 +23097,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 212.12407}
+  m_SizeDelta: {x: 785.07007, y: 167.69269}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &8043107881913242905
 MonoBehaviour:
