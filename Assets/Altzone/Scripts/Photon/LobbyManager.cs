@@ -29,6 +29,7 @@ using Altzone.PhotonSerializer;
 using Battle.QSimulation.Game;
 using PlayerType = Battle.QSimulation.Game.BattleParameters.PlayerType;
 using Altzone.Scripts.Window;
+using Altzone.Scripts.Audio;
 
 namespace Altzone.Scripts.Lobby
 {
@@ -874,7 +875,7 @@ namespace Altzone.Scripts.Lobby
         private IEnumerator StartTheGameplay(bool isCloseRoom, string blueTeamName, string redTeamName)
         {
             // TODO: Select random characters if some are not selected
-            //if (!PhotonBattleRoom.IsValidAllSelectedCharacters()) 
+            //if (!PhotonBattleRoom.IsValidAllSelectedCharacters())
             //{
             //    StartingGameFailed();
             //    throw new UnityException("can't start game, everyone needs to have 3 defence characters selected");
@@ -990,7 +991,7 @@ namespace Altzone.Scripts.Lobby
                 /*for (int i=0; i < playerTypes.Length; i++)
                 {
                     if(playerTypes[i] == PlayerType.None) playerTypes[i] = PlayerType.Bot;
-                } Disabled for now, reactivate when the bots work a little better again.*/ 
+                } Disabled for now, reactivate when the bots work a little better again.*/
 
                 data = new()
                 {
@@ -1098,6 +1099,8 @@ namespace Altzone.Scripts.Lobby
             } while (startTime > DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
 
             yield return new WaitUntil(()=>_isStartFinished);
+
+            AudioManager.Instance.StopMusic();
 
             //Move to Battle and start Runner
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Battle);
@@ -1699,7 +1702,7 @@ namespace Altzone.Scripts.Lobby
                  $"\nPlayerSlotTypes: {string.Join(", ",PlayerSlotTypes)}" +
                  $"\nProjectileInitialEmotion: {ProjectileInitialEmotion}" +
                  $"\nMapId: {MapId}" +
-                 $"\nPlayerCount: {PlayerCount}";  
+                 $"\nPlayerCount: {PlayerCount}";
         }
     }
 }
