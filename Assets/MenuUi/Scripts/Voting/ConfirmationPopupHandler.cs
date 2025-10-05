@@ -64,13 +64,13 @@ public class ConfirmationPopupHandler : MonoBehaviour
         switch (SettingsCarrier.Instance.Language)
         {
             case SettingsCarrier.LanguageType.Finnish:
-                _confirmText.text = "Haluatko varmasti ostaa tämän personointi palasen?";
+                _confirmText.SetText("Haluatko varmasti ostaa tämän personointi palasen?");
                 break;
             case SettingsCarrier.LanguageType.English:
-                _confirmText.text = "Are you sure you want to buy this personification piece?";
+                _confirmText.SetText("Are you sure you want to buy this personification piece?");
                 break;
             default:
-                _confirmText.text = "Haluatko varmasti ostaa tämän personointi palasen?";
+                _confirmText.SetText("Haluatko varmasti ostaa tämän personointi palasen?");
                 break;
         }
     }
