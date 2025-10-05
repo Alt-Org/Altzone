@@ -98,9 +98,9 @@ namespace Altzone.Scripts.ReferenceSheets
             return null;
         }
 
-        public MusicTrack Get(int id)
+        public MusicTrack GetById(string id)
         {
-            if (id < 0 || id >= MusicTracks.Count) return null;
+            if (string.IsNullOrEmpty(id)) return null;
 
             foreach (MusicTrack track in MusicTracks)
                 if (track.Id == id)
@@ -114,7 +114,7 @@ namespace Altzone.Scripts.ReferenceSheets
     public class MusicTrack
     {
         public string Name;
-        public int Id;
+        public string Id;
         public AudioClip Music;
         public MusicTrackInfo Info;
     }
