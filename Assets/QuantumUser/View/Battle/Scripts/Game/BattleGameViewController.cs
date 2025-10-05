@@ -10,6 +10,7 @@ using UnityEngine;
 using Quantum;
 using Photon.Deterministic;
 
+using Altzone.Scripts.Audio;
 using Altzone.Scripts.BattleUiShared;
 using Altzone.Scripts.Lobby;
 
@@ -219,6 +220,7 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, QEventOnChangeEmotionState);
             QuantumEvent.Subscribe<EventBattleLastRowWallDestroyed>(this, QEventOnLastRowWallDestroyed);
             QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, QEventPlaySoundFX);
+            QuantumEvent.Subscribe<EventBattleCharacterSelected>(this, QEventCharacterSelected);
             QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
             QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
 
@@ -253,25 +255,27 @@ namespace Battle.View.Game
         /// Private handler method for EventBattleViewPlayerConnected QuantumEvent.<br/>
         /// Handles calling BattleUiLoadScreenHandler::PlayerConnected through #_uiController with the slot and character IDs of the connected player.
         /// </summary>
-        /// 
+        ///
         /// <param name="e">The event data.</param>
         private void QEventOnViewPlayerConnected(EventBattleViewPlayerConnected e)
         {
             BattlePlayerSlot playerSlot = e.Data.PlayerSlot;
             int[] characterIds = new int[3];
-            for (int i = 0; i < characterIds.Length; i++)
+            int[] characterClasses = new int[3];
+            for (int i = 0; i < 3; i++)
             {
                 characterIds[i] = e.Data.Characters[i].Id;
+                characterClasses[i] = e.Data.Characters[i].Class;
             }
 
-            _uiController.LoadScreenHandler.PlayerConnected(playerSlot, characterIds);
+            _uiController.LoadScreenHandler.PlayerConnected(playerSlot, characterIds, characterClasses);
         }
 
         /// <summary>
         /// Private handler method for EventBattleViewAllPlayersConnected QuantumEvent.<br/>
         /// Handles calling BattleUiAnnouncementHandler::ClearAnnouncerTextField once all players have successfully joined the game.
         /// </summary>
-        /// 
+        ///
         /// <param name="e">The event data.</param>
         private void QEventOnViewAllPlayersConnected(EventBattleViewAllPlayersConnected e)
         {
@@ -354,6 +358,7 @@ namespace Battle.View.Game
                     PlayerType.LocalPlayer,
                     "Minä",
                     new int[3] { localPlayerData.Characters[0].Id, localPlayerData.Characters[1].Id, localPlayerData.Characters[2].Id },
+                    new int[3] { localPlayerData.Characters[0].Class, localPlayerData.Characters[1].Class, localPlayerData.Characters[2].Class },
                     new float[3] { (float)localPlayerData.Characters[0].Stats.Defence, (float)localPlayerData.Characters[1].Stats.Defence, (float)localPlayerData.Characters[2].Stats.Defence },
                     SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.PlayerInfo)
                 );
@@ -366,6 +371,7 @@ namespace Battle.View.Game
                         PlayerType.LocalTeammate,
                         "Tiimiläinen",
                         new int[3] { localTeammateData.Characters[0].Id, localTeammateData.Characters[1].Id, localTeammateData.Characters[2].Id },
+                        new int[3] { localTeammateData.Characters[0].Class, localTeammateData.Characters[1].Class, localTeammateData.Characters[2].Class },
                         new float[3] { (float)localTeammateData.Characters[0].Stats.Defence, (float)localTeammateData.Characters[1].Stats.Defence, (float)localTeammateData.Characters[2].Stats.Defence },
                         SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.TeammateInfo)
                     );
@@ -392,7 +398,7 @@ namespace Battle.View.Game
         /// Private handler method for EventBattleViewSetRotationJoystickVisibility QuantumEvent.<br/>
         /// Sets the rotation control joystick to be shown or hidden, if that control method is selected.
         /// </summary>
-        /// 
+        ///
         /// <param name="e">The event data.</param>
         private void QEventOnSetRotationJoystickVisibility(EventBattleViewSetRotationJoystickVisibility e)
         {
@@ -432,6 +438,8 @@ namespace Battle.View.Game
                 new(SettingsCarrier.Instance.BattleArenaPosX * 0.01f, SettingsCarrier.Instance.BattleArenaPosY * 0.01f),
                 LocalPlayerTeam == BattleTeamNumber.TeamBeta
             );
+
+            AudioManager.Instance.PlayMusic("Battle");
         }
 
         /// <summary>
@@ -532,6 +540,11 @@ namespace Battle.View.Game
             _soundFXViewController.PlaySound(e.Effect);
         }
 
+        private void QEventCharacterSelected(EventBattleCharacterSelected e)
+        {
+            _uiController.PlayerInfoHandler.SetSelected(e.Slot, e.CharacterNumber);
+        }
+
         /// <summary>
         /// Private handler method for EventBattleCharacterTakeDamage QuantumEvent.<br/>
         /// Handles calling BattleUiPlayerInfoHandler::UpdateHealthVisual in #_uiController's BattleUiController::PlayerInfoHandler.
@@ -614,9 +627,9 @@ namespace Battle.View.Game
                         break;
 
                     case BattleGameState.Playing:
-                        // Updating diamonds (at the moment shows only alpha team's diamonds)
+                        // Updating diamonds
                         BattleDiamondCounterQSingleton diamondCounter = frame.GetSingleton<BattleDiamondCounterQSingleton>();
-                        _uiController.DiamondsHandler.SetDiamondsText(diamondCounter.AlphaDiamonds);
+                        _uiController.DiamondsHandler.SetDiamondsText(LocalPlayerTeam == BattleTeamNumber.TeamAlpha ? diamondCounter.AlphaDiamonds : diamondCounter.BetaDiamonds);
 
                         // Updating timer text
                         _uiController.TimerHandler.FormatAndSetTimerText(gameSession.GameTimeSec);

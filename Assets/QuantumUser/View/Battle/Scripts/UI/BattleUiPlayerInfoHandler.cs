@@ -112,7 +112,7 @@ namespace Battle.View.UI
         /// <param name="characterIds">The player's selected characters CharacterIds as a int array.</param>
         /// <param name="characterDefenceNumbers">Array of defence values for each character.</param>
         /// <param name="data">The BattleUiMovableElementData for this UI element.</param>
-        public void SetInfo(PlayerType playerType, string playerName, int[] characterIds, float[] characterDefenceNumbers, BattleUiMovableElementData data)
+        public void SetInfo(PlayerType playerType, string playerName, int[] characterIds, int[] characterClasses, float[] characterDefenceNumbers, BattleUiMovableElementData data)
         {
             // Selecting correct multiorientation element
             BattleUiMultiOrientationElement multiOrientationElement = playerType == PlayerType.LocalPlayer
@@ -133,9 +133,13 @@ namespace Battle.View.UI
             for (int i = 0; i < characterIds.Length; i++)
             {
                 BattleUiCharacterButtonComponent characterButton = playerInfoComponent.CharacterButtons[i];
+                BattleUiCharacterFrameComponent characterFrameHandler = playerInfoComponent.FrameComponents[i];
 
                 // Setting character icon
                 characterButton.SetCharacterIcon(characterIds[i]);
+
+                // Setting frame
+                characterFrameHandler.SetCharacterFrame((BattlePlayerCharacterClass)characterClasses[i]);
 
                 // Setting defence number
                 characterButton.SetDefenceNumber(characterDefenceNumbers[i]);
@@ -154,6 +158,24 @@ namespace Battle.View.UI
                     characterButton.EventSender.onClick.AddListener(() => _uiController.GameViewController.UiInputOnCharacterSelected(characterNumber));
                 }
             }
+        }
+
+        public void SetSelected(BattlePlayerSlot slot, int characterNumber)
+        {
+            if (slot != BattleGameViewController.LocalPlayerSlot) return;
+
+            BattleUiPlayerInfoComponent playerInfoComponent = GetPlayerInfoComponent(slot);
+
+            if (playerInfoComponent == null) return;
+
+            foreach (BattleUiCharacterButtonComponent character in playerInfoComponent.CharacterButtons)
+            {
+                character.SetSelected(false);
+            }
+
+            if (characterNumber == -1) return;
+
+            playerInfoComponent.CharacterButtons[characterNumber].SetSelected(true);
         }
 
         /// <summary>

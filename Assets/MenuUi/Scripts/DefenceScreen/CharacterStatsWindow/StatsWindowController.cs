@@ -450,6 +450,19 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             return (int)BaseCharacter.GetStatValueFP(statType, level);
         }
 
+        public Sprite GetCurrentCharacterPhotoSeries()
+        {
+            var info = PlayerCharacterPrototypes.GetCharacter(((int)_characterId).ToString());
+            if (info == null)
+            {
+                return null;
+            }
+            else
+            {
+                return info.CharPhotoSeries;
+            }
+        }
+
 
         /// <summary>
         /// Get stat's strength.

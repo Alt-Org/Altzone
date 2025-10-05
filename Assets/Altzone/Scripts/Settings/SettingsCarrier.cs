@@ -326,7 +326,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         jukeboxUI = PlayerPrefs.GetInt("JukeboxUI") != 0;
         jukeboxBattle = PlayerPrefs.GetInt("JukeboxBattle") != 0;
 
-        _battleShowDebugStatsOverlay = PlayerPrefs.GetInt(BattleShowDebugStatsOverlayKey, 1) == 1;
+        _battleShowDebugStatsOverlay = PlayerPrefs.GetInt(BattleShowDebugStatsOverlayKey, 0) == 1;
 
         _battleArenaScale = PlayerPrefs.GetInt(BattleArenaScaleKey, BattleArenaScaleDefault);
         _battleArenaPosX = PlayerPrefs.GetInt(BattleArenaPosXKey, BattleArenaPosXDefault);

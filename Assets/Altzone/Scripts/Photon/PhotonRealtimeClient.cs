@@ -401,7 +401,6 @@ public static class PhotonRealtimeClient
                 $"Failed to ConnectUsingSettings: state={NetworkClientState} appSettings={appSettings.ToStringFull()}");
             return;
         }
-        Debug.LogWarning("Check2");
         // Set the GameVersion right after calling ConnectUsingSettings!
         GameVersion = DefaultGameVersion;
     }

@@ -11,6 +11,7 @@ public class BattlePopupPanelManager : MonoBehaviour
 {
     [Header("Panels")]
     [SerializeField] private GameObject _topPanel;
+    [SerializeField] private GameObject _border;
     [SerializeField] private GameObject _mainPanel;
     [SerializeField] private GameObject _createCustomRoom;
     [SerializeField] private GameObject _custom2v2WaitingRoom;
@@ -78,6 +79,7 @@ public class BattlePopupPanelManager : MonoBehaviour
         foreach (Transform t in transform)
         {
             if (ReferenceEquals(t.gameObject, _topPanel)) continue;
+            if (ReferenceEquals(t.gameObject, _border)) continue;
             t.gameObject.SetActive(false);
         }
     }
