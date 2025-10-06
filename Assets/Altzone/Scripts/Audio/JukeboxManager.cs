@@ -494,7 +494,7 @@ namespace Altzone.Scripts.Audio
 
                 if (i < _trackQueue.Count) //Local, look up what might be deleted.
                 {
-                    if (_trackQueue[i].Id.Split('_')[0] == _currentPlayerData.Id) //Skip owned track.
+                    if (_trackQueue[i].Id.Split('_')[0] == _currentPlayerData.Id || !_trackQueue[i].InUse()) //Skip owned track.
                     {
                         i++;
                         continue;
@@ -564,6 +564,10 @@ namespace Altzone.Scripts.Audio
             return null;
         }
 
+        /// <summary>
+        /// Used to update clan playlist.
+        /// </summary>
+        /// <returns></returns>
         private IEnumerator ServerPlaylistFetchLoop()
         {
             ServerPlaylist playlistData = null;
@@ -579,7 +583,7 @@ namespace Altzone.Scripts.Audio
             StartCoroutine(GetClanPlaylist((data) => timeout = data, (data) => playlistData = data));
 
             yield return new WaitUntil(() => (playlistData != null || timeout != null));
-            Debug.LogError(playlistData);
+
             if (playlistData == null) yield break;
 
             UpdateLocalPlaylist(playlistData);
@@ -986,13 +990,12 @@ namespace Altzone.Scripts.Audio
             if (addTypeOverride)
                 AddPlaybackHistory(PlaybackHistoryType.Add, trackQueueData);
             else
+            {
                 AddPlaybackHistory(PlaybackHistoryType.Insert, trackQueueData);
+                _trackQueuePointer++;
+            }
 
             SendPlaylistChangesToServer();
-
-            if (OnQueueChange != null) OnQueueChange.Invoke();
-
-            _trackQueuePointer++;
 
             // Update every TrackQueueData and JukeboxTrackQueueHandler linear index that is ahead of the inserted TrackQueueData.
             for (int i = insertIndex + 1; i < _trackQueue.Count; i++)
@@ -1004,6 +1007,8 @@ namespace Altzone.Scripts.Audio
                 else
                     skippedAmount++;
             }
+
+            if (OnQueueChange != null) OnQueueChange.Invoke();
         }
 
         public void DeleteFromQueue(int linearIndex)

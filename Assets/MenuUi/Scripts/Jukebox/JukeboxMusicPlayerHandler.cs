@@ -360,6 +360,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
                     }
                 case JukeboxManager.PlaybackHistoryType.MoveToLast:
                     {
+                        //Debug.LogError("Move to last history: " + queueData.Pointer.ChunkIndex + ", " + queueData.Pointer.PoolIndex);
                         MoveQueueHandlerToLast(queueData.Pointer, queueData.LinearIndex);
 
                         break;
