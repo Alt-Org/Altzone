@@ -2132,18 +2132,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   style: 2
-  targets:
-  - {fileID: 6950948124574557314}
-  - {fileID: 4983552070814566051}
-  - {fileID: 6264391340277126322}
-  - {fileID: 6393869949846683486}
-  - {fileID: 1679687743451286928}
-  - {fileID: 4699019827900075299}
-  items: 000000000100000002000000030000000400000005000000
+  _rows:
+  - item: 0
+    target: {fileID: 6950948124574557314}
+  - item: 1
+    target: {fileID: 4983552070814566051}
+  - item: 2
+    target: {fileID: 6264391340277126322}
+  - item: 3
+    target: {fileID: 6393869949846683486}
+  - item: 4
+    target: {fileID: 1679687743451286928}
+  - item: 5
+    target: {fileID: 4699019827900075299}
   _flexibleSpacer: {fileID: 0}
   _spacerMinWidth: 0
   _standaloneLeaderboard: {fileID: 0}
-  _clanTileLeaderboard: {fileID: 0}
+  _clanTileLeaderboard: {fileID: 6264391340277126322}
   _clanItem: 5
   _leaderboardItem: 2
 --- !u!1 &6264391340277126322

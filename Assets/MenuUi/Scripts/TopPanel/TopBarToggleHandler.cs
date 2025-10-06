@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.Settings;
+using System.Threading;
 
 
 public class TopBarToggleHandler : MonoBehaviour
@@ -12,6 +13,9 @@ public class TopBarToggleHandler : MonoBehaviour
     {
         if (_toggle != null)
             GetToggleValue();
+
+        // ? uusi: päivitys kun TopBar-tyyli vaihtuu
+        SettingsCarrier.OnTopBarChanged += HandleTopBarChanged;
     }
 
     private void Start()
@@ -26,22 +30,31 @@ public class TopBarToggleHandler : MonoBehaviour
     private void OnDestroy()
     {
         if (_toggle) _toggle.onValueChanged.RemoveListener(OnChanged);
+        SettingsCarrier.OnTopBarChanged -= HandleTopBarChanged; // ? uusi
     }
 
     private void OnChanged(bool isOn)
     {
-        SettingsCarrier.Instance
-            .SetTopBarItemVisibleByKey(TopBarDefs.Key(item), isOn);
+        SettingsCarrier carrier = SettingsCarrier.Instance;
+        if (carrier == null) return;
+
+        string key = TopBarDefs.Key(item) + "_" + carrier.TopBarStyleSetting; // tyylikohtainen
+        carrier.SetTopBarItemVisibleByKey(key, isOn);
     }
 
     private void GetToggleValue()
     {
-        // Build the key safely
-        string key = TopBarDefs.Key(item);
+        SettingsCarrier carrier = SettingsCarrier.Instance;
+        SettingsCarrier.TopBarStyle style =
+        carrier != null ? carrier.TopBarStyleSetting : SettingsCarrier.TopBarStyle.NewHelena;
 
-        // Static read from PlayerPrefs so it works even if SettingsCarrier.Instance isn't ready yet
+        string key = TopBarDefs.Key(item) + "_" + style; // tyylikohtainen
         _toggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(key, 1) != 0);
     }
 
-    
+    private void HandleTopBarChanged(int styleIndex)
+    {
+        GetToggleValue();
+    }
+
 }

@@ -142,11 +142,12 @@ public class TopBarTargets : MonoBehaviour
         bool[] vis = new bool[count];
         for (int i = 0; i < count; i++)
         {
-            string key = PrefKeyForItem(_rows[i].item);
+            string key = TopBarDefs.Key(_rows[i].item) + "_" + style; // tyylikohtainen
             vis[i] = PlayerPrefs.GetInt(key, 1) != 0; // default ON
         }
         return vis;
     }
+
 
     private void ApplyClanLeaderboardRule(bool[] vis, out bool clanOn, out bool lbOn)
     {
@@ -239,5 +240,7 @@ public class TopBarTargets : MonoBehaviour
         index = -1;
         return false;
     }
+
+
 
 }
