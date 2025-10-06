@@ -308,8 +308,12 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
             {
                 case JukeboxManager.PlaybackHistoryType.Delete:
                     {
-                        if (queueData.Pointer == null) break;
-
+                        if (queueData.Pointer == null)
+                        {
+                            Debug.LogError("ChunkPointer is null!");
+                            break;
+                        }
+                        //Debug.LogError("delete history");
                         _queueHandlerChunks[queueData.Pointer.ChunkIndex].AmountInUse--;
 
                         //if (trackQueueHandler1 != null)
