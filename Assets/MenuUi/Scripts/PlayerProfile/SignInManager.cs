@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Prg.Scripts.Common.Unity;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Language;
 
 namespace MenuUi.Scripts.Login
 {
@@ -51,7 +52,7 @@ namespace MenuUi.Scripts.Login
 
         [Header("Version Toggle")]
         [SerializeField] private ToggleSwitchHandler _versionToggle;
-        [SerializeField] private TextMeshProUGUI _versionText;
+        [SerializeField] private TextLanguageSelectorCaller _versionText;
 
         [Header("Navigation Buttons")]
         [SerializeField] private Button returnToLogIn;
@@ -309,13 +310,15 @@ namespace MenuUi.Scripts.Login
             if (value)
             {
                 _versionType = VersionType.Education;
-                _versionText.text = "Opetusversio";
+                if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)_versionText.SetText("Education Edition");
+                else _versionText.SetText("Opetusversio");
                 _versionToggle.SetState(value);
             }
             else
             {
                 _versionType = VersionType.Standard;
-                _versionText.text = "Perusversio";
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _versionText.SetText("Standard Edition");
+                else _versionText.SetText("Perusversio");
                 _versionToggle.SetState(value);
             }
         }

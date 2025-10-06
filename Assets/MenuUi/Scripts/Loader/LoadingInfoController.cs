@@ -134,6 +134,7 @@ namespace MenuUi.Scripts.Loader
         {
             Status = LogInStatus.Finished;
             StopCoroutine(LoadingProgress());
+            SetInfoText(Status);
             _loadingText.gameObject.SetActive(false);
         }
 
