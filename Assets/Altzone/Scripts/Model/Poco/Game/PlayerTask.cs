@@ -154,13 +154,32 @@ namespace Altzone.Scripts.Model.Poco.Game
         public TaskNormalType Type { get => _normalTaskType;}
         public int Coins { get => _coins;}
         public int Points { get => _points;}
+
         public string Title {
             get
             {
                 return _title.Fi;
             }
         }
-        public string Content { get => _content.Fi;}
+
+        public string EnglishTitle
+        {
+            get
+            {
+                return _title.En; 
+            }
+        }
+
+        public string Content
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                    return _content.En;
+                return _content.Fi; // default Finnish
+            }
+        }
+
         public int TaskProgress { get => _taskProgress;}
         public string PlayerId { get => _playerId; }
         public int AmountLeft { get => _amountLeft; }
@@ -537,23 +556,29 @@ namespace Altzone.Scripts.Model.Poco.Game
         public class TaskTitle
         {
             private readonly string _fi;
+            private readonly string _en;
 
             public string Fi { get => _fi;}
+            public string En { get => _en; }
 
             public TaskTitle(ServerPlayerTask.TaskTitle title)
             {
                 _fi = title.fi;
+                _en = title.en;
             }
         }
 
         public class TaskContent
         {
             private readonly string _fi;
+            private readonly string _en;
 
             public string Fi { get => _fi;}
+            public string En { get => _en;}
             public TaskContent(ServerPlayerTask.TaskContent content)
             {
                 _fi = content?.fi ?? "";
+                _en = content?.en ?? "";
             }
         }
 
@@ -653,10 +678,12 @@ namespace Altzone.Scripts.Model.Poco.Game
         public class TaskTitle
         {
             public string fi;
+            public string en;
         }
         public class TaskContent
         {
             public string fi;
+            public string en;
         }
     }
 }

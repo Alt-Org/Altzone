@@ -6,7 +6,9 @@ using UnityEditorInternal;
 public class DailyTaskData
 {
     public string title;
+    public string englishTitle;
     public string description;
+    public string englishDescription;
     public int amount;
     public int coins;
     public int points;
