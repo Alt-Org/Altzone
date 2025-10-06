@@ -56,15 +56,21 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         _playerImage.gameObject.SetActive(false);
     }
 
-    //private void OnDestroy()
-    //{
-    //    if (_taskData != null)
-    //    {
-    //        _taskData.OnTaskSelected -= TaskSelected;
-    //        _taskData.OnTaskDeselected -= TaskDeselected;
-    //        _taskData.OnTaskUpdated -= UpdateProgressBar;
-    //    }
-    //}
+    private void Start()
+    {
+        SettingsCarrier.OnLanguageChanged += UpdateLanguage;
+    }
+
+    private void OnDestroy()
+    {
+        SettingsCarrier.OnLanguageChanged -= UpdateLanguage;
+        //    if (_taskData != null)
+        //    {
+        //        _taskData.OnTaskSelected -= TaskSelected;
+        //        _taskData.OnTaskDeselected -= TaskDeselected;
+        //        _taskData.OnTaskUpdated -= UpdateProgressBar;
+        //    }
+    }
 
     public virtual void OnBeginDrag(PointerEventData eventData)
     {
@@ -204,5 +210,15 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         SwitchWindow(TaskWindowType.Available);
         _playerImage.gameObject.SetActive(false);
         _taskData.ClearPlayerId();
+    }
+
+    private void UpdateLanguage(SettingsCarrier.LanguageType language)
+    {
+        _taskShort.text = language switch
+        {
+            SettingsCarrier.LanguageType.Finnish => _taskData.Title,
+            SettingsCarrier.LanguageType.English => _taskData.EnglishTitle,
+            _ => _taskData.Title,
+        };
     }
 }
