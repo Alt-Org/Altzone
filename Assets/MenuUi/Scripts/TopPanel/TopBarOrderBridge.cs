@@ -1,13 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using Altzone.Scripts.Settings; // TopBarDefs
 
 public class TopBarOrderBridge : MonoBehaviour
 {
-    [Header("Refs")]
-    [SerializeField] private RectTransform _toggleContainer;          // The gray list (TopBarToggles)
-    [Header("[0]=Old, [1]=NewHelena, [2]=NewNiko")]
-    [SerializeField] private TopBarTargets[] _targetsByStyle;         // One per style
+    [SerializeField] private RectTransform _toggleContainer;
+    [SerializeField] private TopBarTargets[] _targetsByStyle;
 
     private SettingsCarrier.TopBarStyle CurrentStyle =>
         SettingsCarrier.Instance ? SettingsCarrier.Instance.TopBarStyleSetting
@@ -15,141 +13,177 @@ public class TopBarOrderBridge : MonoBehaviour
 
     private void OnEnable()
     {
-        HookRows(true);
-        ApplyFromSettingsFor(CurrentStyle);
+        if (_targetsByStyle == null || _targetsByStyle.Length == 0)
+        {
+            TopBarTargets[] found = FindObjectsOfType<TopBarTargets>(true);
+            if (found != null && found.Length > 0) _targetsByStyle = found;
+        }
+
+        SetRowDropEventSubscriptions(true);
+        UpdateTopBarStyle(CurrentStyle);
         SettingsCarrier.OnTopBarChanged += HandleCarrierChanged;
     }
 
     private void OnDisable()
     {
         SettingsCarrier.OnTopBarChanged -= HandleCarrierChanged;
-        HookRows(false);
+        SetRowDropEventSubscriptions(false);
     }
 
     private void HandleCarrierChanged(int styleIndex)
     {
-        ApplyFromSettingsFor((SettingsCarrier.TopBarStyle)styleIndex);
+        UpdateTopBarStyle((SettingsCarrier.TopBarStyle)styleIndex);
     }
 
-    // Subscribe/unsubscribe all drag rows once
-    private void HookRows(bool add)
+    private void SetRowDropEventSubscriptions(bool subscribe)
     {
-        if (!_toggleContainer) return;
+        if (_toggleContainer == null) return;
 
-        var rows = _toggleContainer.GetComponentsInChildren<TopBarToggleDrag>(true);
-        foreach (var r in rows)
+        TopBarToggleDrag[] handles = _toggleContainer.GetComponentsInChildren<TopBarToggleDrag>(true);
+        for (int i = 0; i < handles.Length; i++)
         {
-            if (add) r.OnDropped += OnRowDropped;
-            else     r.OnDropped -= OnRowDropped;
+            if (subscribe) handles[i].OnDropped += OnRowDropped;
+            else handles[i].OnDropped -= OnRowDropped;
         }
+    }
+
+    private TopBarTargets GetTargetsFor(SettingsCarrier.TopBarStyle style)
+    {
+        if (_targetsByStyle == null) return null;
+        for (int i = 0; i < _targetsByStyle.Length; i++)
+        {
+            TopBarTargets t = _targetsByStyle[i];
+            if (t != null && t.style == style) return t;
+        }
+        return null;
     }
 
     private void OnRowDropped()
     {
-        var targets = GetTargetsFor(CurrentStyle);
-        if (!targets || !_toggleContainer) return;
+        TopBarTargets owner = GetTargetsFor(CurrentStyle);
+        if (owner == null || _toggleContainer == null) return;
 
-        var newOrder = BuildOrderFromContainer(_toggleContainer, targets.items);
+        // --- A) Rakenna pos -> enum dictionary suoraan UI-sisarusjärjestyksestä ---
+        Dictionary<int, TopBarDefs.TopBarItem> order = new Dictionary<int, TopBarDefs.TopBarItem>(_toggleContainer.childCount);
+        int nextPos = 0;
 
-        // Persist ? this also fires OnTopBarChanged that TopBarTargets listens to
-        SettingsCarrier.Instance?.SaveTopBarOrder(targets.style, newOrder);
-
-        // Update the settings list immediately for a snappy feel
-        ApplyOrderToToggleList(newOrder, _toggleContainer, targets.items);
-    }
-
-    private void ApplyFromSettingsFor(SettingsCarrier.TopBarStyle style)
-    {
-        var targets = GetTargetsFor(style);
-        if (!targets || !_toggleContainer) return;
-
-        int count = targets.items.Count;
-
-        // Static read to avoid instance/timing dependency
-        var order = SettingsCarrier.LoadTopBarOrderStatic(style, count);
-
-        ApplyOrderToToggleList(order, _toggleContainer, targets.items);
-        targets.ApplyFromSettings();
-    }
-
-
-    // ---------- Helpers ----------
-
-    private TopBarTargets GetTargetsFor(SettingsCarrier.TopBarStyle style)
-    {
-        int i = (int)style;
-        return (_targetsByStyle != null && i >= 0 && i < _targetsByStyle.Length) ? _targetsByStyle[i] : null;
-    }
-
-    // Build a permutation [index…] based on current sibling order in the toggle container
-    private static List<int> BuildOrderFromContainer(
-        RectTransform container,
-        List<TopBarDefs.TopBarItem> itemsMap)
-    {
-        var order = new List<int>(itemsMap.Count);
-
-        // Precompute enum ? index for O(1) lookup
-        var indexOf = BuildItemIndexMap(itemsMap);
-        var used = new bool[itemsMap.Count];
-
-        // Walk direct children in sibling order
-        for (int i = 0; i < container.childCount; i++)
+        foreach (Transform t in _toggleContainer)
         {
-            var row = container.GetChild(i);
-            var handler = row.GetComponent<TopBarToggleHandler>();
-            if (!handler) continue;
+            TopBarToggleHandler h;
+            if (!t.TryGetComponent<TopBarToggleHandler>(out h)) continue;
 
-            if (indexOf.TryGetValue(handler.item, out int idx) && !used[idx])
+            TopBarDefs.TopBarItem item = h.item;
+            if (order.ContainsValue(item)) continue;      // vältä duplikaatit
+            order[nextPos] = item;
+            nextPos++;
+        }
+
+        // täydennä puuttuvat ownerin alkuperäisjärjestyksessä
+        int total = owner.RowCount();
+        for (int i = 0; i < total; i++)
+        {
+            TopBarDefs.TopBarItem it = owner.GetItemAt(i);
+            if (!order.ContainsValue(it))
             {
-                used[idx] = true;
-                order.Add(idx);
+                order[nextPos] = it;
+                nextPos++;
             }
         }
 
-        // Fill any missing indices to complete a valid permutation
-        for (int i = 0; i < itemsMap.Count; i++)
-            if (!used[i]) order.Add(i);
+        // --- B) Muunna dictionary -> List<int> SettingsCarrierin tallennusta varten ---
+        List<int> positions = new List<int>(order.Keys);
+        positions.Sort();
 
-        return order;
+        List<int> indices = new List<int>(positions.Count);
+        foreach (int pos in positions)
+        {
+            TopBarDefs.TopBarItem item;
+            if (!order.TryGetValue(pos, out item)) continue;
+
+            // etsi rivi-indeksi ownerista
+            int idx = -1;
+            for (int k = 0; k < total; k++)
+            {
+                if (owner.GetItemAt(k).Equals(item)) { idx = k; break; }
+            }
+            if (idx >= 0 && !indices.Contains(idx)) indices.Add(idx);
+        }
+        // täydennä puuttuvat
+        for (int i = 0; i < total; i++) if (!indices.Contains(i)) indices.Add(i);
+
+        // --- C) Tallenna ja järjestä toggle-lista heti ---
+        SettingsCarrier instance = SettingsCarrier.Instance;
+        if (instance != null) instance.SaveTopBarOrder(owner.style, indices);
+
+        ApplyOrderToToggleList(order, _toggleContainer, owner);
     }
 
-    private static Dictionary<TopBarDefs.TopBarItem, int> BuildItemIndexMap(List<TopBarDefs.TopBarItem> itemsMap)
+    private void UpdateTopBarStyle(SettingsCarrier.TopBarStyle style)
     {
-        var map = new Dictionary<TopBarDefs.TopBarItem, int>(itemsMap.Count);
-        for (int i = 0; i < itemsMap.Count; i++) map[itemsMap[i]] = i;
-        return map;
+        TopBarTargets owner = GetTargetsFor(style);
+        if (owner == null || _toggleContainer == null) return;
+
+        int total = owner.RowCount();
+
+        // --- A) Lataa permutaatio listana ---
+        List<int> orderList = SettingsCarrier.LoadTopBarOrderStatic(style, total);
+
+        // --- B) Muunna lista -> pos -> enum dictionary soveltamista varten ---
+        Dictionary<int, TopBarDefs.TopBarItem> order = new Dictionary<int, TopBarDefs.TopBarItem>(orderList.Count);
+        int pos = 0;
+
+        foreach (int idx in orderList)
+        {
+            if ((uint)idx >= (uint)total) continue;
+            TopBarDefs.TopBarItem item = owner.GetItemAt(idx);
+            if (order.ContainsValue(item)) continue; // ei duplikaatteja
+            order[pos] = item;
+            pos++;
+        }
+        // täydennä puuttuvat
+        for (int i = 0; i < total; i++)
+        {
+            TopBarDefs.TopBarItem it = owner.GetItemAt(i);
+            if (!order.ContainsValue(it)) { order[pos] = it; pos++; }
+        }
+
+        // --- C) Sovella toggle-listaan ja päivitä yläpalkki ---
+        ApplyOrderToToggleList(order, _toggleContainer, owner);
+        owner.ApplyFromSettings();
     }
 
-    // Arrange the toggle rows’ sibling indices to match `order`
+    // pos->enum järjestyksen soveltaminen toggle-listaan
     private static void ApplyOrderToToggleList(
-        List<int> order,
+        Dictionary<int, TopBarDefs.TopBarItem> order,
         RectTransform container,
-        List<TopBarDefs.TopBarItem> itemsMap)
+        TopBarTargets owner)
     {
-        // Build item ? row map once
-        var rowOf = new Dictionary<TopBarDefs.TopBarItem, RectTransform>(itemsMap.Count);
-        for (int i = 0; i < container.childCount; i++)
+        // item -> rivin RectTransform
+        Dictionary<TopBarDefs.TopBarItem, RectTransform> rowOf =
+            new Dictionary<TopBarDefs.TopBarItem, RectTransform>(container.childCount);
+
+        foreach (Transform t in container)
         {
-            var row = container.GetChild(i);
-            var handler = row.GetComponent<TopBarToggleHandler>();
-            if (handler) rowOf[handler.item] = (RectTransform)row;
+            TopBarToggleHandler h;
+            if (!t.TryGetComponent<TopBarToggleHandler>(out h)) continue;
+            if (!rowOf.ContainsKey(h.item)) rowOf.Add(h.item, (RectTransform)t);
         }
 
-        int sib = 0;
-        for (int i = 0; i < order.Count; i++)
+        List<int> positions = new List<int>(order.Keys);
+        positions.Sort();
+
+        int sibling = 0;
+        foreach (int pos in positions)
         {
-            int idx = order[i];
-            if ((uint)idx >= (uint)itemsMap.Count) continue;
+            TopBarDefs.TopBarItem item;
+            if (!order.TryGetValue(pos, out item)) continue;
 
-            if (rowOf.TryGetValue(itemsMap[idx], out var rt))
-                rt.SetSiblingIndex(sib++);
+            RectTransform rt;
+            if (rowOf.TryGetValue(item, out rt))
+            {
+                rt.SetSiblingIndex(sibling);
+                sibling++;
+            }
         }
-    }
-
-    private static List<int> DefaultOrder(int n)
-    {
-        var list = new List<int>(n);
-        for (int i = 0; i < n; i++) list.Add(i);
-        return list;
     }
 }

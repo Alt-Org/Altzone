@@ -502,18 +502,21 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
     public static List<int> LoadTopBarOrderStatic(TopBarStyle style, int count)
     {
-        var result = new List<int>(count);
-        var used = new bool[count];
-        string csv = PlayerPrefs.GetString(_topBarOrderKeyPrefix + style, "");
+        List<int> result = new List<int>(count);
+        bool[] used = new bool[count];
+
+        string csv = PlayerPrefs.GetString(GetTopBarOrderKey(style), ""); // ? tämä rivi muuttui
 
         if (!string.IsNullOrEmpty(csv))
         {
-            foreach (var part in csv.Split(','))
+            string[] parts = csv.Split(',');
+            for (int i = 0; i < parts.Length; i++)
             {
-                if (int.TryParse(part, out int i) && (uint)i < (uint)count && !used[i])
+                int idxParsed;
+                if (int.TryParse(parts[i], out idxParsed) && (uint)idxParsed < (uint)count && !used[idxParsed])
                 {
-                    used[i] = true;
-                    result.Add(i);
+                    used[idxParsed] = true;
+                    result.Add(idxParsed);
                     if (result.Count == count) return result;
                 }
             }

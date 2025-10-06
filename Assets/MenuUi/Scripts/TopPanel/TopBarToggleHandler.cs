@@ -1,10 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts.Settings;
 
 
 public class TopBarToggleHandler : MonoBehaviour
 {
-    public TopBarDefs.TopBarItem item;
+    public  TopBarDefs.TopBarItem item;
     private Toggle _toggle;
 
     private void OnEnable()

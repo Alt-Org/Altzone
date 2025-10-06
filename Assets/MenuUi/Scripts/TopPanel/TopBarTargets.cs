@@ -1,23 +1,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts.Settings; // TopBarDefs
 
 public class TopBarTargets : MonoBehaviour
 {
+    [System.Serializable]
+    private class Row
+    {
+        public TopBarDefs.TopBarItem item;
+        public GameObject target;
+    }
+
     public SettingsCarrier.TopBarStyle style;
 
-    // targets[i] = IconsRoot children (direct)
-    public List<GameObject> targets = new();
-
-    // items[i] must match targets[i] 1:1
-    public List<TopBarDefs.TopBarItem> items = new();
+    [Header("Items (1:1)")]
+    [SerializeField] private List<Row> _rows = new List<Row>();
 
     [Header("Spacer (created if null)")]
     [SerializeField] private RectTransform _flexibleSpacer;
     [SerializeField] private float _spacerMinWidth = 0f;
 
-    [SerializeField] private GameObject _standaloneLeaderboard;  // separate button under IconsRoot
-    [SerializeField] private GameObject _clanTileLeaderboard;    // the LB button that lives inside the clan tile
+    [SerializeField] private GameObject _standaloneLeaderboard;   // erillinen LB-nappi
+    [SerializeField] private GameObject _clanTileLeaderboard;     // LB-nappi clan-ruudussa
 
     [SerializeField] private TopBarDefs.TopBarItem _clanItem = TopBarDefs.TopBarItem.ClanTile;
     [SerializeField] private TopBarDefs.TopBarItem _leaderboardItem = TopBarDefs.TopBarItem.Leaderboard;
@@ -41,42 +46,84 @@ public class TopBarTargets : MonoBehaviour
 
     public void ApplyFromSettings()
     {
-        if (!IsValid(out var parentRT)) return;
+        RectTransform parentRT;
+        if (!IsValid(out parentRT)) return;
 
-        // 1) Visibility from PlayerPrefs
-        var vis = ReadVisibility();
+        // 1) näkyvyys PlayerPrefsistä
+        bool[] vis = ReadVisibility();
 
-        // 2) Special case: Clan vs Leaderboard
-        ApplyClanLeaderboardRule(vis, out bool clanOn, out bool lbOn);
+        // 2) Clan vs Leaderboard -sääntö
+        bool clanOn, lbOn;
+        ApplyClanLeaderboardRule(vis, out clanOn, out lbOn);
 
-        // Activate/deactivate item targets
-        for (int i = 0; i < targets.Count; i++)
-            if (targets[i]) targets[i].SetActive(vis[i]);
+        // 3) Aktivoi/poista näkyvistä rivit
+        for (int i = 0; i < _rows.Count; i++)
+        {
+            if (_rows[i].target != null)
+                _rows[i].target.SetActive(vis[i]);
+        }
 
-        // Control the two leaderboard button variants
-        if (_clanTileLeaderboard) _clanTileLeaderboard.SetActive(clanOn && lbOn);
-        if (_standaloneLeaderboard) _standaloneLeaderboard.SetActive(lbOn && !clanOn);
+        // LB-variantit
+        if (_clanTileLeaderboard != null) _clanTileLeaderboard.SetActive(clanOn && lbOn);
+        if (_standaloneLeaderboard != null) _standaloneLeaderboard.SetActive(lbOn && !clanOn);
 
-        // 3) Order from PlayerPrefs (per style) and filter by visible
-        var order = ReadOrder(vis);
+        // 4) Järjestys SettingsCarrierista (List<int>) ja suodata näkyvät
+        List<int> rawOrder = SettingsCarrier.LoadTopBarOrderStatic(style, _rows.Count);
 
-        // 4) Place items with spacer
-        ApplyOrderWithSpacer(parentRT, order);
+        List<int> orderedVisible = new List<int>(_rows.Count);
+        for (int i = 0; i < rawOrder.Count; i++)
+        {
+            int idx = rawOrder[i];
+            if ((uint)idx < (uint)_rows.Count && vis[idx])
+                orderedVisible.Add(idx);
+        }
+        // lisää puuttuvat näkyvät loppuun
+        for (int i = 0; i < _rows.Count; i++)
+        {
+            if (!vis[i]) continue;
+            bool already = false;
+            for (int j = 0; j < orderedVisible.Count; j++)
+                if (orderedVisible[j] == i) { already = true; break; }
+            if (!already) orderedVisible.Add(i);
+        }
+
+        // 5) Aseta sisarusindeksit spacerilla
+        ApplyOrderWithSpacer(parentRT, orderedVisible);
     }
+
+    // ---- OrderBridge tarvitsee vain nämä kaksi apuria ----
+    public int RowCount()
+    {
+        return _rows != null ? _rows.Count : 0;
+    }
+
+    public TopBarDefs.TopBarItem GetItemAt(int index)
+    {
+        if (_rows == null || index < 0 || index >= _rows.Count) return default(TopBarDefs.TopBarItem);
+        return _rows[index].item;
+    }
+    // ------------------------------------------------------
 
     private bool IsValid(out RectTransform parentRT)
     {
         parentRT = null;
 
-        int count = targets.Count;
-        if (count == 0 || items.Count != count)
+        if (_rows == null || _rows.Count == 0)
         {
-            Debug.LogWarning("TopBarTargets: 'items' length must match 'targets' length.");
+            Debug.LogWarning("TopBarTargets: _rows is empty.");
             return false;
         }
 
-        parentRT = targets[0]?.transform.parent as RectTransform;
-        if (!parentRT)
+        for (int i = 0; i < _rows.Count; i++)
+        {
+            if (_rows[i].target != null)
+            {
+                parentRT = _rows[i].target.transform.parent as RectTransform;
+                if (parentRT != null) break;
+            }
+        }
+
+        if (parentRT == null)
         {
             Debug.LogWarning("TopBarTargets: parent RectTransform not found.");
             return false;
@@ -84,19 +131,18 @@ public class TopBarTargets : MonoBehaviour
         return true;
     }
 
-    private string PrefKeyForItem(TopBarDefs.TopBarItem item)
+    private static string PrefKeyForItem(TopBarDefs.TopBarItem item)
     {
-        // Safe even if TopBarDefs.Instance not yet initialized
-        return TopBarDefs.Instance ? TopBarDefs.Instance.Key(item) : "TopBarItem_" + item;
+        return TopBarDefs.Key(item);
     }
 
     private bool[] ReadVisibility()
     {
-        int count = targets.Count;
-        var vis = new bool[count];
+        int count = _rows.Count;
+        bool[] vis = new bool[count];
         for (int i = 0; i < count; i++)
         {
-            string key = PrefKeyForItem(items[i]);
+            string key = PrefKeyForItem(_rows[i].item);
             vis[i] = PlayerPrefs.GetInt(key, 1) != 0; // default ON
         }
         return vis;
@@ -104,67 +150,32 @@ public class TopBarTargets : MonoBehaviour
 
     private void ApplyClanLeaderboardRule(bool[] vis, out bool clanOn, out bool lbOn)
     {
-        int clanIdx = items.IndexOf(_clanItem);
-        int lbIdx = items.IndexOf(_leaderboardItem);
+        int clanIdx = IndexOfItem(_clanItem);
+        int lbIdx = IndexOfItem(_leaderboardItem);
 
         clanOn = clanIdx >= 0 && vis[clanIdx];
         lbOn = lbIdx >= 0 && vis[lbIdx];
 
-        // If both toggled on, hide the standalone LB item (but keep lbOn for the UI variant logic)
+        // molemmat päällä -> piilota standalone LB -rivi
         if (clanOn && lbOn && lbIdx >= 0)
             vis[lbIdx] = false;
     }
 
-    private List<int> ReadOrder(bool[] visible)
+    private int IndexOfItem(TopBarDefs.TopBarItem item)
     {
-        int count = targets.Count;
-
-        // Parse CSV order
-        string orderKey = "TopBarOrder_" + style;
-        string csv = PlayerPrefs.GetString(orderKey, "");
-        var used = new bool[count];
-        var rawOrder = new List<int>(count);
-
-        if (!string.IsNullOrEmpty(csv))
-        {
-            var parts = csv.Split(',');
-            for (int i = 0; i < parts.Length; i++)
-            {
-                if (int.TryParse(parts[i], out int idx) && (uint)idx < (uint)count && !used[idx])
-                {
-                    used[idx] = true;
-                    rawOrder.Add(idx);
-                    if (rawOrder.Count == count) break;
-                }
-            }
-        }
-
-        // Append any missing indices
-        for (int i = 0; i < count; i++)
-            if (!used[i]) rawOrder.Add(i);
-
-        // Keep only visible indices
-        var filtered = new List<int>(rawOrder.Count);
-        for (int i = 0; i < rawOrder.Count; i++)
-        {
-            int idx = rawOrder[i];
-            if (visible[idx]) filtered.Add(idx);
-        }
-
-        return filtered;
+        for (int i = 0; i < _rows.Count; i++)
+            if (_rows[i].item.Equals(item)) return i;
+        return -1;
     }
-
-    // ----- Helpers: spacer & layout -----
 
     private void EnsureSpacer(RectTransform parent)
     {
         if (_flexibleSpacer == null)
         {
-            var go = new GameObject("FlexibleSpacer", typeof(RectTransform), typeof(LayoutElement));
+            GameObject go = new GameObject("FlexibleSpacer", typeof(RectTransform), typeof(LayoutElement));
             _flexibleSpacer = go.GetComponent<RectTransform>();
 
-            // Make sure it doesn't intercept input
-            var cg = go.AddComponent<CanvasGroup>();
+            CanvasGroup cg = go.AddComponent<CanvasGroup>();
             cg.blocksRaycasts = false;
             cg.interactable = false;
             cg.alpha = 0f;
@@ -173,10 +184,10 @@ public class TopBarTargets : MonoBehaviour
         if (_flexibleSpacer.parent != parent)
             _flexibleSpacer.SetParent(parent, false);
 
-        var le = _flexibleSpacer.GetComponent<LayoutElement>();
+        LayoutElement le = _flexibleSpacer.GetComponent<LayoutElement>();
         le.minWidth = _spacerMinWidth;
         le.preferredWidth = 0f;
-        le.flexibleWidth = 1f; // push last item to right edge
+        le.flexibleWidth = 1f; // työntää viimeisen oikealle
         le.minHeight = 0f;
         le.preferredHeight = 0f;
         le.flexibleHeight = 0f;
@@ -186,28 +197,47 @@ public class TopBarTargets : MonoBehaviour
     {
         int n = orderedVisible.Count;
 
-        // 0 or 1 item => no spacer needed
         if (n <= 1)
         {
-            if (n == 1) targets[orderedVisible[0]].transform.SetSiblingIndex(0);
-            if (_flexibleSpacer) _flexibleSpacer.gameObject.SetActive(false);
+            if (n == 1 && _rows[orderedVisible[0]].target != null)
+                _rows[orderedVisible[0]].target.transform.SetSiblingIndex(0);
+
+            if (_flexibleSpacer != null) _flexibleSpacer.gameObject.SetActive(false);
             LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
             return;
         }
 
-        // Place all but the last
         int sib = 0;
         for (int i = 0; i < n - 1; i++)
-            targets[orderedVisible[i]].transform.SetSiblingIndex(sib++);
+        {
+            GameObject go = _rows[orderedVisible[i]].target;
+            if (go != null) go.transform.SetSiblingIndex(sib++);
+        }
 
-        // Spacer
         EnsureSpacer(parentRT);
         _flexibleSpacer.gameObject.SetActive(true);
         _flexibleSpacer.SetSiblingIndex(sib++);
 
-        // Last item (right-aligned thanks to spacer)
-        targets[orderedVisible[n - 1]].transform.SetSiblingIndex(sib);
+        GameObject last = _rows[orderedVisible[n - 1]].target;
+        if (last != null) last.transform.SetSiblingIndex(sib);
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
     }
+
+    // ... muu TopBarTargets kuten sinulla jo on ...
+
+    public bool TryGetRowIndex(TopBarDefs.TopBarItem item, out int index)
+    {
+        for (int i = 0; i < _rows.Count; i++)
+        {
+            if (_rows[i].item.Equals(item))
+            {
+                index = i;
+                return true;
+            }
+        }
+        index = -1;
+        return false;
+    }
+
 }
