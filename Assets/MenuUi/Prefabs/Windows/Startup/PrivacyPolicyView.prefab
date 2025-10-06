@@ -220,6 +220,7 @@ GameObject:
   - component: {fileID: 3211189060883056612}
   - component: {fileID: 6586130202906593175}
   - component: {fileID: 8898252465691781332}
+  - component: {fileID: 3205483553045789725}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -346,6 +347,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3205483553045789725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3657802557808279442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Pelaa!
+  _englishText: Play!
 --- !u!1 &3781283502160415405
 GameObject:
   m_ObjectHideFlags: 0
@@ -492,6 +507,7 @@ GameObject:
   - component: {fileID: 1936046144234660846}
   - component: {fileID: 8534924685948230034}
   - component: {fileID: 926140355172758610}
+  - component: {fileID: 320220984292552971}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -645,6 +661,20 @@ MonoBehaviour:
   usedPressedColor:
     serializedVersion: 2
     rgba: 4294924544
+--- !u!114 &320220984292552971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5569488798924125163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Olen lukenut ja hyv\xE4ksyn <link=1><color=\"blue\">tietosuojak\xE4yt\xE4nn\xF6n</link></color>"
+  _englishText: I have read and accept the <link=1><color="blue">Privacy Policy</link></color>
 --- !u!1 &5625561075761210160
 GameObject:
   m_ObjectHideFlags: 0
@@ -656,6 +686,7 @@ GameObject:
   - component: {fileID: 2679806782308710359}
   - component: {fileID: 2338076423498098755}
   - component: {fileID: 4138919410159723120}
+  - component: {fileID: 2398580680465172152}
   m_Layer: 5
   m_Name: Header
   m_TagString: Untagged
@@ -782,6 +813,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2398580680465172152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5625561075761210160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Tervetuloa ALT Zoneen!
+  _englishText: Welcome to ALT Zone!
 --- !u!1 &7441727196770369622
 GameObject:
   m_ObjectHideFlags: 0
@@ -1018,6 +1063,7 @@ GameObject:
   - component: {fileID: 5770252931007593625}
   - component: {fileID: 7663313414276388867}
   - component: {fileID: 2122177597930953964}
+  - component: {fileID: 8911344147166464763}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -1171,6 +1217,21 @@ MonoBehaviour:
   usedPressedColor:
     serializedVersion: 2
     rgba: 4294924544
+--- !u!114 &8911344147166464763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8713354271584215333}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Pelataksesi Alt Zonea sinun t\xE4ytyy hyv\xE4ksy\xE4 pelin <link=1><color=\"blue\">tietosuojak\xE4yt\xE4nt\xF6</link></color>"
+  _englishText: To play ALT Zone you need to accept the game's <link=1><color="blue">Privacy
+    Policy</link></color>
 --- !u!1001 &50438452199682246
 PrefabInstance:
   m_ObjectHideFlags: 0

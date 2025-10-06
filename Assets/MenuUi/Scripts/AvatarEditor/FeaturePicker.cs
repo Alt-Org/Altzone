@@ -242,18 +242,39 @@ namespace MenuUi.Scripts.AvatarEditor
             SetCategoryNameText(_currentlySelectedCategory);
         }
 
-        private void SetCategoryNameText(FeatureSlot category){
-            string name = category switch
+        private void SetCategoryNameText(FeatureSlot category)
+        {
+            string name = string.Empty;
+
+            if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
             {
-                FeatureSlot.Hair => "Hiukset",
-                FeatureSlot.Eyes => "Silmät",
-                FeatureSlot.Nose => "Nenä",
-                FeatureSlot.Mouth => "Suu",
-                FeatureSlot.Body => "Keho",
-                FeatureSlot.Hands => "Kädet",
-                FeatureSlot.Feet => "Jalat",
-                _ => "Virhe",
-            };
+                name = category switch
+                {
+                    FeatureSlot.Hair => "Hiukset",
+                    FeatureSlot.Eyes => "Silmät",
+                    FeatureSlot.Nose => "Nenä",
+                    FeatureSlot.Mouth => "Suu",
+                    FeatureSlot.Body => "Keho",
+                    FeatureSlot.Hands => "Kädet",
+                    FeatureSlot.Feet => "Jalat",
+                    _ => "Virhe",
+                };
+            }
+            else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+            {
+                name = category switch
+                {
+                    FeatureSlot.Hair => "Hair",
+                    FeatureSlot.Eyes => "Eyes",
+                    FeatureSlot.Nose => "Nose",
+                    FeatureSlot.Mouth => "Mouth",
+                    FeatureSlot.Body => "Body",
+                    FeatureSlot.Hands => "Hands",
+                    FeatureSlot.Feet => "Feet",
+                    _ => "Error",
+                };
+            }
+
             _categoryText.text = name;
         }
 

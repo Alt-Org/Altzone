@@ -449,6 +449,8 @@ public class DailyTaskManager : AltMonoBehaviour
             serverTask.title.fi = educationTasks[i].title;
             serverTask.content = new ServerPlayerTask.TaskContent();
             serverTask.content.fi = educationTasks[i].description;
+            serverTask.title.en = educationTasks[i].englishTitle;
+            serverTask.content.en = educationTasks[i].englishDescription;
             serverTask.points = educationTasks[i].points;
             serverTask.coins = educationTasks[i].coins;
             serverTask.type = "";

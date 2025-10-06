@@ -15,10 +15,13 @@ MonoBehaviour:
   Id: 604
   CharacterId: -1
   IsApproved: 0
-  Name: Heimoidentiteetti
+  FinnishName: Heimoidentiteetti
+  EnglishName: Tribalism
   ClassType: 600
-  CharacterDescription: 
-  CharacterShortDescription: 
+  CharacterDescriptionFinnish: 
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: 
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 0}
   Hp:
     Level: 0
@@ -37,6 +40,7 @@ MonoBehaviour:
     Coefficient: 0
   GalleryImage: {fileID: 0}
   GalleryHeadImage: {fileID: 0}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
       Value: 0

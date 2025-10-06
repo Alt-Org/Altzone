@@ -147,11 +147,12 @@ public class Popup : MonoBehaviour
         }
 
         // Show the popup and get the result
-        yield return Instance.StartCoroutine(Instance.ShowPopup(message));
-        callback(Instance._result.Value); // Use the updated _result
+        yield return Instance.StartCoroutine(Instance.ShowPopup(data.Value.OwnPage));
+        callback(Instance._result.Value);
+
     }
 
-    private IEnumerator ShowPopup(string message)
+    private IEnumerator ShowPopup(PlayerTask task)
     {
         // Start fade in
         if (_fadeOutCoroutine != null)
@@ -160,7 +161,7 @@ public class Popup : MonoBehaviour
         _fadeInCoroutine = StartCoroutine(FadeIn());
 
         // Set the message text
-        SetMessage(message);
+        SetMessage(task);
 
         // Wait until one of the buttons is pressed
         yield return new WaitUntil(() => _result.HasValue);
@@ -173,6 +174,7 @@ public class Popup : MonoBehaviour
 
         Debug.Log($"Popup result: {_result}"); // Log the result for debugging
     }
+
 
     private void SetTaskImage(PlayerTask data, PopupWindowType type)
     {
@@ -272,12 +274,22 @@ public class Popup : MonoBehaviour
         popupGameObject.SetActive(false);
     }
 
-    private void SetMessage(string message)
+    private void SetMessage(PlayerTask task)
     {
-        foreach (var textItem in _messageTexts)
+        for (int i = 0; i < _messageTexts.Count; i++)
         {
-            if(textItem.IsActive())
-                textItem.text = message;
+            if (!_messageTexts[i].IsActive()) continue;
+
+            if (i == 0) // First element should be the task title (for some reason)
+            {
+                _messageTexts[i].text = SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English // Simply, if english language is selected, show it in english
+                    ? task.EnglishTitle
+                    : task.Title;
+            }
+            else
+            {
+                _messageTexts[i].text = task.Content; // For others, just keep the original
+            }
         }
     }
 
