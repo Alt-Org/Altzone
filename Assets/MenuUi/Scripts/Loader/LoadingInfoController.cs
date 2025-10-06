@@ -165,8 +165,9 @@ namespace MenuUi.Scripts.Loader
                         break;
                     case SettingsCarrier.LanguageType.Finnish:
                     default:
-                        _loadingText.text = "Ladataan"+ new string('.',i);
+                        _loadingText.text = "Ladataan" + new string('.', i);
                         break;
+                }
             }
         }
     }
