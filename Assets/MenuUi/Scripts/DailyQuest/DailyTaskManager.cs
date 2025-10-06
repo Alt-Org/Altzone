@@ -216,13 +216,13 @@ public class DailyTaskManager : AltMonoBehaviour
         PlayerData playerData = null;
         Storefront.Get().GetPlayerTasks(content => clanTasks = content);
         StartCoroutine(GetPlayerData(content => playerData = content)); //MQTT message tells if we need to fetch the data again.
-        if (playerData == null || !playerData.HasClanId)
-        {
+        //if (playerData == null || !playerData.HasClanId)
+        //{
             if (gameVersion == VersionType.Education)
                 clanTasks = GenerateEducationTasks();
             else
                 clanTasks = TESTGenerateNormalTasks();
-        }
+        /*}
         else
         StartCoroutine(ServerManager.Instance.GetPlayerTasksFromServer(content =>
         {
@@ -238,7 +238,7 @@ public class DailyTaskManager : AltMonoBehaviour
                     clanTasks = TESTGenerateNormalTasks();
                 Debug.LogWarning("Using locally generated tasks.");
             }
-        }));
+        }));*/
 
         yield return new WaitUntil(() => clanTasks != null);
 
