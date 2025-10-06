@@ -53,6 +53,7 @@ public class DailyTaskConfig : ScriptableObject
 }
 
 #region Editor script
+#if UNITY_EDITOR
 [CustomEditor(typeof(DailyTaskConfig))]
 public class DailyTaskConfigEditor : Editor
 {
@@ -201,4 +202,5 @@ public class DailyTaskConfigEditor : Editor
         serializedObject.ApplyModifiedProperties();
     }
 }
+#endif
 #endregion
