@@ -634,7 +634,7 @@ namespace Altzone.Scripts.Audio
 
             string name = "";
 
-            MusicTrack validMusicTrack = GetNotHatedMusicTrack(trackQueueData);
+            //MusicTrack validMusicTrack = GetNotHatedMusicTrack(trackQueueData);
 
             if (_jukeboxMuted)
             {
@@ -642,14 +642,14 @@ namespace Altzone.Scripts.Audio
             }
             else
             {
-                name = AudioManager.Instance.PlayMusic("Jukebox", validMusicTrack);
+                name = AudioManager.Instance.PlayMusic("Jukebox", trackQueueData.MusicTrack);
 
                 if (string.IsNullOrEmpty(name)) return null;
 
                 _playbackPaused = false;
             }
 
-            if (OnSetSongInfo != null) OnSetSongInfo.Invoke(validMusicTrack);
+            if (OnSetSongInfo != null) OnSetSongInfo.Invoke(trackQueueData.MusicTrack);
 
             _currentTrackQueueData = trackQueueData;
             _musicElapsedTime = 0f;
@@ -723,11 +723,11 @@ namespace Altzone.Scripts.Audio
             _trackEndingControlCoroutine = StartCoroutine(TrackEndingControl());
             //OnSetPlayButtonImages?.Invoke(true);
 
-            MusicTrack musicTrack = GetNotHatedMusicTrack();
+            //MusicTrack musicTrack = GetNotHatedMusicTrack();
 
-            if (OnSetSongInfo != null) OnSetSongInfo.Invoke(musicTrack);
+            if (OnSetSongInfo != null) OnSetSongInfo.Invoke(_currentTrackQueueData.MusicTrack);
 
-            return AudioManager.Instance.ContinueMusic("Jukebox", musicTrack, _musicElapsedTime);
+            return AudioManager.Instance.ContinueMusic("Jukebox", _currentTrackQueueData.MusicTrack, _musicElapsedTime);
         }
 
         public void StopJukebox()
@@ -744,7 +744,7 @@ namespace Altzone.Scripts.Audio
         private IEnumerator TrackEndingControl()
         {
             if (_currentTrackQueueData == null || !_currentTrackQueueData.InUse()) yield break;
-
+            Debug.LogError($"Track length: {_currentTrackQueueData.MusicTrack.Music.length}, start time: {_musicElapsedTime}");
             while (true)
             {
                 if (_currentTrackQueueData == null || !_currentTrackQueueData.InUse() || _musicElapsedTime >= _currentTrackQueueData.MusicTrack.Music.length) break;
