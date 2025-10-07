@@ -744,7 +744,7 @@ namespace Altzone.Scripts.Audio
         private IEnumerator TrackEndingControl()
         {
             if (_currentTrackQueueData == null || !_currentTrackQueueData.InUse()) yield break;
-            Debug.LogError($"Track length: {_currentTrackQueueData.MusicTrack.Music.length}, start time: {_musicElapsedTime}");
+            //Debug.LogError($"Track length: {_currentTrackQueueData.MusicTrack.Music.length}, start time: {_musicElapsedTime}");
             while (true)
             {
                 if (_currentTrackQueueData == null || !_currentTrackQueueData.InUse() || _musicElapsedTime >= _currentTrackQueueData.MusicTrack.Music.length) break;
