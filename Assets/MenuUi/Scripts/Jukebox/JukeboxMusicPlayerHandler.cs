@@ -143,6 +143,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
     /// </summary>
     private JukeboxTrackQueueHandler GetInsertedJukeboxTrackQueueHandler(int wantedChunk, int wantedPool)
     {
+        JukeboxManager jukeboxManager = JukeboxManager.Instance;
         bool done = false;
         string tempMainId = "";
         MusicTrack tempMainTrack = null;
@@ -152,7 +153,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
 
         if (!(wantedChunk <= _queueHandlerChunkPointer && wantedPool < _queueHandlerPoolPointer)) _queueHandlerPoolPointer++;
 
-        if (_queueHandlerPoolPointer >= JukeboxManager.Instance.TrackChunkSize)
+        if (_queueHandlerPoolPointer >= jukeboxManager.TrackChunkSize)
         {
             CreateQueueHandlersChunk();
             _queueHandlerChunkPointer++;
@@ -167,12 +168,12 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
                 string tempInnerId = _queueHandlerChunks[chunkIndex].Pool[poolIndex].Id;
                 MusicTrack tempInnerTrack = _queueHandlerChunks[chunkIndex].Pool[poolIndex].MusicTrack;
                 bool tempInnerUserOwned = _queueHandlerChunks[chunkIndex].Pool[poolIndex].UserOwned;
-                int tempLinearIndex = (chunkIndex * JukeboxManager.Instance.TrackChunkSize) + poolIndex;
+                int tempLinearIndex = (chunkIndex * jukeboxManager.TrackChunkSize) + poolIndex;
 
                 if (!string.IsNullOrEmpty(tempMainId))
                 {
                     _queueHandlerChunks[chunkIndex].Pool[poolIndex].SetTrack(tempMainId, tempMainTrack, tempLinearIndex,
-                        tempMainUserOwned, JukeboxManager.Instance.GetTrackFavoriteType(tempMainTrack));
+                        tempMainUserOwned, jukeboxManager.GetTrackFavoriteType(tempMainTrack));
                     _queueHandlerChunks[chunkIndex].Pool[poolIndex].SetVisibility(true);
                 }
                 else
@@ -194,13 +195,13 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
 
         if (!string.IsNullOrEmpty(tempMainId))
         {
-            int linearIndex = JukeboxManager.Instance.TrackQueue.Count - 1;
+            int linearIndex = jukeboxManager.TrackQueue.Count - 1;
 
             JukeboxTrackQueueHandler handler = GetTrackQueueHandler(GetFreeJukeboxTrackQueueHandler());
 
             if (handler != null)
             {
-                handler.SetTrack(tempMainId, tempMainTrack, linearIndex, tempMainUserOwned, JukeboxManager.Instance.GetTrackFavoriteType(tempMainTrack));
+                handler.SetTrack(tempMainId, tempMainTrack, linearIndex, tempMainUserOwned, jukeboxManager.GetTrackFavoriteType(tempMainTrack));
                 handler.SetVisibility(true);
             }
         }
@@ -231,7 +232,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
     {
         JukeboxTrackQueueHandler oldHandler = GetTrackQueueHandler(chunkPointer);
         JukeboxTrackQueueHandler newHandler = GetTrackQueueHandler(GetFreeJukeboxTrackQueueHandler());
-        //Debug.LogError(chunkPointer);
+        //Debug.LogError("move, chunk: " + chunkPointer.ChunkIndex + ", pool" + chunkPointer.PoolIndex);
         newHandler.SetTrack(oldHandler.Id, oldHandler.MusicTrack, linearIndex, oldHandler.UserOwned, JukeboxManager.Instance.GetTrackFavoriteType(oldHandler.MusicTrack));
         newHandler.SetVisibility(true);
         ReduceQueueHandlerChunkActiveCount(oldHandler.ChunkIndex);
@@ -308,18 +309,18 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
             {
                 case JukeboxManager.PlaybackHistoryType.Delete:
                     {
-                        if (queueData.Pointer == null)
+                        if (playbackHistoryData.Target1.ChunkIndex == -1)
                         {
                             Debug.LogError("ChunkPointer is null!");
                             break;
                         }
                         //Debug.LogError("delete history");
-                        _queueHandlerChunks[queueData.Pointer.ChunkIndex].AmountInUse--;
+                        _queueHandlerChunks[playbackHistoryData.Target1.ChunkIndex].AmountInUse--;
 
                         //if (trackQueueHandler1 != null)
                         //    _queueHandlerChunks[queueData.Pointer.ChunkIndex].Pool[trackQueueHandler1.PoolIndex].Clear();
                         //else if (queueData.Pointer.ChunkIndex != -1)
-                            _queueHandlerChunks[queueData.Pointer.ChunkIndex].Pool[queueData.Pointer.PoolIndex].Clear();
+                            _queueHandlerChunks[playbackHistoryData.Target1.ChunkIndex].Pool[playbackHistoryData.Target1.PoolIndex].Clear();
 
                         break;
                     }
