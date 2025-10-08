@@ -287,6 +287,8 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         }
     }
 
+
+
     public static bool IsTopBarItemVisibleByKeyStatic(string key, bool defaultOn = true)
         => PlayerPrefs.GetInt(key, defaultOn ? 1 : 0) != 0;
 
@@ -489,39 +491,57 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         OnTopBarChanged?.Invoke((int)TopBarStyleSetting);
     }
 
+    [System.Serializable]
+    private class TopBarOrderData
+    {
+        public List<int> order = new List<int>();
+    }
+
     public void SaveTopBarOrder(TopBarStyle style, IList<int> order)
     {
         string key = GetTopBarOrderKey(style);
-        string csvNew = string.Join(",", order);
-        if (PlayerPrefs.GetString(key, "") == csvNew) return;
 
-        PlayerPrefs.SetString(key, csvNew);
+        TopBarOrderData data = new TopBarOrderData { order = new List<int>(order) };
+        string jsonNew = JsonUtility.ToJson(data);
+
+        string jsonOld = PlayerPrefs.GetString(key, "");
+        if (jsonOld == jsonNew) return;
+
+        PlayerPrefs.SetString(key, jsonNew);
         OnTopBarChanged?.Invoke((int)style);
     }
-
 
     public static List<int> LoadTopBarOrderStatic(TopBarStyle style, int count)
     {
         List<int> result = new List<int>(count);
         bool[] used = new bool[count];
 
-        string csv = PlayerPrefs.GetString(GetTopBarOrderKey(style), ""); // ? tämä rivi muuttui
-
-        if (!string.IsNullOrEmpty(csv))
+        string raw = PlayerPrefs.GetString(GetTopBarOrderKey(style), "");
+        if (string.IsNullOrEmpty(raw))
         {
-            string[] parts = csv.Split(',');
-            for (int i = 0; i < parts.Length; i++)
+            for (int i = 0; i < count; i++) result.Add(i);
+            return result;
+        }
+
+        TopBarOrderData data = JsonUtility.FromJson<TopBarOrderData>(raw);
+
+        // JSON-lista läpi foreachilla
+        if (data != null && data.order != null)
+        {
+            foreach (int idx in data.order)
             {
-                int idxParsed;
-                if (int.TryParse(parts[i], out idxParsed) && (uint)idxParsed < (uint)count && !used[idxParsed])
+                if ((uint)idx < (uint)count && !used[idx])
                 {
-                    used[idxParsed] = true;
-                    result.Add(idxParsed);
+                    used[idx] = true;
+                    result.Add(idx);
                     if (result.Count == count) return result;
                 }
             }
         }
-        for (int i = 0; i < count; i++) if (!used[i]) result.Add(i);
+
+        for (int i = 0; i < count; i++)
+            if (!used[i]) result.Add(i);
+
         return result;
     }
 
