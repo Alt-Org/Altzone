@@ -2,6 +2,7 @@
 
 namespace Quantum
 {
+
     public partial class RuntimeConfig
     {
         public AssetRef<BattleQConfig> BattleConfig;
