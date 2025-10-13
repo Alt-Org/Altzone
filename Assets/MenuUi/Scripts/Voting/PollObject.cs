@@ -95,6 +95,10 @@ public class PollObject : MonoBehaviour
                 pollEnded = true;
                 showEndTimeManually = true;
                 ClockButton.interactable = false;
+                VoteYes.gameObject.SetActive(false);
+                VoteNo.gameObject.SetActive(false);
+                YesVoters.gameObject.SetActive(true);
+                NoVoters.gameObject.SetActive(true);
 
                 // Convert poll end time to local time
                 DateTimeOffset endDateTime = DateTimeOffset.FromUnixTimeSeconds(pollData.EndTime).ToLocalTime();
