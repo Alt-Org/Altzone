@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8149270624959440072}
   - component: {fileID: 2653499926381432359}
   - component: {fileID: 608865563002476591}
+  - component: {fileID: 5750418358096620809}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -137,6 +138,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5750418358096620809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 24667303428993063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Vahvista valinta
+  _englishText: Confirm choice
 --- !u!1 &235038386314570564
 GameObject:
   m_ObjectHideFlags: 0
@@ -424,6 +439,7 @@ GameObject:
   - component: {fileID: 1692409515557443128}
   - component: {fileID: 2328340102224941332}
   - component: {fileID: 2727823593126761602}
+  - component: {fileID: 663014640488985264}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -550,6 +566,23 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &663014640488985264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 698573593218488902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Olen v\xE4hint\xE4\xE4n 13-vuotias \nja hyv\xE4ksyn pelin tietosuojak\xE4yt\xE4nn\xF6n"
+  _englishText: 'I am at least 13 years old
+
+    and I accept the game''s Privacy
+    Policy'
 --- !u!1 &759208594473481993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1453,6 +1486,7 @@ GameObject:
   - component: {fileID: 7233599818448180090}
   - component: {fileID: 7702005153792119058}
   - component: {fileID: 7152138686514588641}
+  - component: {fileID: 8533933910573697259}
   m_Layer: 5
   m_Name: Text (TMP) (1)
   m_TagString: Untagged
@@ -1583,6 +1617,34 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8533933910573697259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1613689091924609523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Pelataksesi AltZonea sinun t\xE4ytyy olla, joko v\xE4hint\xE4\xE4n
+    13-vuotias tai sitten sinulla pit\xE4\xE4 olla vanhemman lupa pelata peli\xE4.\n\nVahvistamalla
+    ik\xE4si tai vanhemman luvan pelata peli\xE4 annat my\xF6s luvan k\xE4ytt\xE4\xE4
+    laitteesi tietoja pelin analytiikkaa varten.\n\nHuom. Alle 13-vuotias ei voi
+    k\xE4ytt\xE4\xE4 pelin keskustelutoimintoja."
+  _englishText: 'To play AltZone, you must be at least 13 years old or have parental
+    permission to play the game.
+
+
+    By confirming your age or parental permission
+    to play the game, you also give permission to use your device information for
+    game analytics.
+
+
+    Please note: Children under the age of 13 cannot use the
+    game''s chat features.'
 --- !u!1 &1666399410258559714
 GameObject:
   m_ObjectHideFlags: 0
@@ -1720,6 +1782,7 @@ GameObject:
   - component: {fileID: 6039062132801090939}
   - component: {fileID: 2030644864465922455}
   - component: {fileID: 8676980651025859958}
+  - component: {fileID: 7798049803591801425}
   m_Layer: 5
   m_Name: PasswordText
   m_TagString: Untagged
@@ -1846,6 +1909,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7798049803591801425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1738064200797473165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Salasana
+  _englishText: Password
 --- !u!1 &1738933226524536234
 GameObject:
   m_ObjectHideFlags: 0
@@ -2363,6 +2440,7 @@ GameObject:
   - component: {fileID: 7503518576177047247}
   - component: {fileID: 1689115226083540895}
   - component: {fileID: 3277923798871287981}
+  - component: {fileID: 759882294974743308}
   m_Layer: 5
   m_Name: PasswordText
   m_TagString: Untagged
@@ -2489,6 +2567,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &759882294974743308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1997858795284070689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Salasana
+  _englishText: Password
 --- !u!1 &2134807792281781312
 GameObject:
   m_ObjectHideFlags: 0
@@ -2500,6 +2592,7 @@ GameObject:
   - component: {fileID: 6561690838737313696}
   - component: {fileID: 8035352505070310451}
   - component: {fileID: 1769935686317145548}
+  - component: {fileID: 7854766554347803979}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -2626,6 +2719,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7854766554347803979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2134807792281781312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Palaava k\xE4ytt\xE4j\xE4? Kirjaudu t\xE4st\xE4!"
+  _englishText: Returning player? Log in here!
 --- !u!1 &2136217559603384540
 GameObject:
   m_ObjectHideFlags: 0
@@ -2952,6 +3059,7 @@ GameObject:
   - component: {fileID: 8336630532752358837}
   - component: {fileID: 8018160490592442060}
   - component: {fileID: 1139615712542565033}
+  - component: {fileID: 6250514485397284770}
   m_Layer: 5
   m_Name: Label (1)
   m_TagString: Untagged
@@ -3080,6 +3188,28 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6250514485397284770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2338208571980395763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Olen v\xE4hint\xE4\xE4n 13-vuotias \ntai \nMinulla on huoltajan
+    suostumus, ett\xE4  tietojani voidaan ker\xE4t\xE4 ja k\xE4ytt\xE4\xE4 pelin
+    yll\xE4pit\xE4miseen ja hallintaan."
+  _englishText: 'I am at least 13 years old
+
+    or
+
+    I have parental consent
+    for my information to be collected and used for the maintenance and management
+    of the game.'
 --- !u!1 &2511435006711731908
 GameObject:
   m_ObjectHideFlags: 0
@@ -3289,7 +3419,7 @@ MonoBehaviour:
   backButton2: {fileID: 6767324998921419468}
   ageAuthButton: {fileID: 7433436176364160628}
   _versionToggle: {fileID: 3959083397102869016}
-  _versionText: {fileID: 297974501227995746}
+  _versionText: {fileID: 8653528170107924264}
   returnToLogIn: {fileID: 0}
   returnToMainMenuButton: {fileID: 1531005724451037986}
   returnToSignInScreenButton: {fileID: 7603128479250866903}
@@ -4189,6 +4319,7 @@ GameObject:
   - component: {fileID: 8502782511914705191}
   - component: {fileID: 4398704178650607157}
   - component: {fileID: 2456241101350179448}
+  - component: {fileID: 766383285518458700}
   m_Layer: 5
   m_Name: UsernameText
   m_TagString: Untagged
@@ -4315,6 +4446,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &766383285518458700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3999890466162847598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "K\xE4ytt\xE4j\xE4nimi"
+  _englishText: User name
 --- !u!1 &4160142742609908949
 GameObject:
   m_ObjectHideFlags: 0
@@ -4960,6 +5105,7 @@ GameObject:
   - component: {fileID: 4419069287839945470}
   - component: {fileID: 4911072113186646490}
   - component: {fileID: 297974501227995746}
+  - component: {fileID: 8653528170107924264}
   m_Layer: 5
   m_Name: VersionSwitchTypeText
   m_TagString: Untagged
@@ -5086,6 +5232,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8653528170107924264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4820177283857565018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99bef45c2704bb147a99ddcb380f3986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: '{0}'
+  _englishText: '{0}'
 --- !u!1 &4823075571466246624
 GameObject:
   m_ObjectHideFlags: 0
@@ -5490,6 +5650,7 @@ GameObject:
   - component: {fileID: 8182195539047541024}
   - component: {fileID: 2209999755392527349}
   - component: {fileID: 1422674746753769370}
+  - component: {fileID: 1062501218511127307}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -5616,6 +5777,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1062501218511127307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4895629479347220617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Rekister\xF6idy"
+  _englishText: Register
 --- !u!1 &4945758875849094688
 GameObject:
   m_ObjectHideFlags: 0
@@ -6545,6 +6720,7 @@ GameObject:
   - component: {fileID: 2040209815671526495}
   - component: {fileID: 189955371486931613}
   - component: {fileID: 8550541173606466115}
+  - component: {fileID: 8408254169742973209}
   m_Layer: 5
   m_Name: UsernameText
   m_TagString: Untagged
@@ -6671,6 +6847,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8408254169742973209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5709432384791563872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "K\xE4ytt\xE4j\xE4nimi"
+  _englishText: User name
 --- !u!1 &5753951075595400451
 GameObject:
   m_ObjectHideFlags: 0
@@ -6839,6 +7029,7 @@ GameObject:
   - component: {fileID: 2466711530313854743}
   - component: {fileID: 7321530479723411706}
   - component: {fileID: 6806877362883080491}
+  - component: {fileID: 5611056407932611902}
   m_Layer: 5
   m_Name: PasswordText
   m_TagString: Untagged
@@ -6965,6 +7156,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5611056407932611902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6192446336888316955}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Vahvista salasana
+  _englishText: Confirm password
 --- !u!1 &6210238293737506581
 GameObject:
   m_ObjectHideFlags: 0
@@ -7923,6 +8128,7 @@ GameObject:
   - component: {fileID: 4514357861819652996}
   - component: {fileID: 2860692329061183742}
   - component: {fileID: 3141219585901709681}
+  - component: {fileID: 2307119213991276697}
   m_Layer: 5
   m_Name: Privacy Policy
   m_TagString: Untagged
@@ -8118,6 +8324,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _url: https://altzone.fi/en/privacy
+--- !u!114 &2307119213991276697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7100669421970422342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "<a href=\\\"https://altzone.fi/en/privacy\\\">Tietoturvak\xE4yt\xE4nt\xF6</a>"
+  _englishText: <a href=\"https://altzone.fi/en/privacy\">Privacy Policy</a>
 --- !u!1 &7137773076991328992
 GameObject:
   m_ObjectHideFlags: 0
@@ -8683,6 +8903,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _naviTarget: {fileID: 11400000, guid: 4fd2d13144793604a80032bc175f1eaf, type: 2}
+  _useNonDefaultWindow: 0
+  _targetWindow: 0
   _isCurrentPopOutWindow: 1
 --- !u!1 &7492578431635247530
 GameObject:
@@ -9058,6 +9280,7 @@ GameObject:
   - component: {fileID: 90204279558631569}
   - component: {fileID: 1049937055275521914}
   - component: {fileID: 1199043055065021118}
+  - component: {fileID: 2714550680035186353}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -9184,6 +9407,21 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2714550680035186353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7714094528856868491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Olen alle 13-vuotias, mutta minulla on huoltajan lupa pelata peli\xE4"
+  _englishText: I am under 13 years old, but I have parental permission to play the
+    game
 --- !u!1 &7813749548348730881
 GameObject:
   m_ObjectHideFlags: 0
@@ -9195,6 +9433,7 @@ GameObject:
   - component: {fileID: 891666177230231930}
   - component: {fileID: 1480324354040696414}
   - component: {fileID: 6409999083498386521}
+  - component: {fileID: 5917823566544217158}
   m_Layer: 5
   m_Name: VersionSwitchText
   m_TagString: Untagged
@@ -9321,6 +9560,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5917823566544217158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7813749548348730881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Versio
+  _englishText: Version
 --- !u!1 &8112871514648750311
 GameObject:
   m_ObjectHideFlags: 0
@@ -9384,6 +9637,7 @@ GameObject:
   - component: {fileID: 7149595658895928828}
   - component: {fileID: 7286577247676273203}
   - component: {fileID: 4364564620189504326}
+  - component: {fileID: 1063804482528417265}
   m_Layer: 2
   m_Name: Header
   m_TagString: Untagged
@@ -9510,6 +9764,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1063804482528417265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8180382836481314737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Rekister\xF6idy"
+  _englishText: Register
 --- !u!1 &8686743639555372270
 GameObject:
   m_ObjectHideFlags: 0
@@ -9596,6 +9864,7 @@ GameObject:
   - component: {fileID: 3592917009868046056}
   - component: {fileID: 3455737035644748313}
   - component: {fileID: 1988966263110276130}
+  - component: {fileID: 3734832217581097286}
   m_Layer: 2
   m_Name: Header
   m_TagString: Untagged
@@ -9722,6 +9991,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3734832217581097286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8758057086880475464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Kirjaudu
+  _englishText: Log in
 --- !u!1 &8993976623921443842
 GameObject:
   m_ObjectHideFlags: 0
