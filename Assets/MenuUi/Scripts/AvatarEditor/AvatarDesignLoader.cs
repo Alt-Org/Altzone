@@ -110,8 +110,25 @@ public class AvatarDesignLoader : AltMonoBehaviour
         EnsureValidAvatarData(playerData);
 
         var avatarVisualData = new AvatarVisualData();
-        PopulateAvatarPieces(avatarVisualData, playerData);
-        SetAvatarColor(avatarVisualData, playerData);
+        PopulateAvatarPieces(avatarVisualData, playerData.AvatarData);
+        SetAvatarColor(avatarVisualData, playerData.AvatarData);
+
+        return avatarVisualData;
+    }
+
+    public AvatarVisualData CreateAvatarVisualData(AvatarData avatarData)
+    {
+        if (avatarData == null)
+        {
+            Debug.LogError("AvatarData is null.");
+            return null;
+        }
+
+        //EnsureValidAvatarData(playerData);
+
+        var avatarVisualData = new AvatarVisualData();
+        PopulateAvatarPieces(avatarVisualData, avatarData);
+        SetAvatarColor(avatarVisualData, avatarData);
 
         return avatarVisualData;
     }
@@ -139,11 +156,11 @@ public class AvatarDesignLoader : AltMonoBehaviour
         );
     }
 
-    private void PopulateAvatarPieces(AvatarVisualData avatarVisualData, PlayerData playerData)
+    private void PopulateAvatarPieces(AvatarVisualData avatarVisualData, AvatarData avatarData)
     {
         foreach (var pieceId in AllAvatarPieces)
         {
-            var pieceIdValue = playerData.AvatarData.GetPieceID(pieceId);
+            var pieceIdValue = avatarData.GetPieceID(pieceId);
             var partInfo = _avatarPartsReference.GetAvatarPartById(pieceIdValue.ToString());
 
             var avatarImage = partInfo?.AvatarImage;
@@ -151,15 +168,15 @@ public class AvatarDesignLoader : AltMonoBehaviour
         }
     }
 
-    private static void SetAvatarColor(AvatarVisualData avatarVisualData, PlayerData playerData)
+    private static void SetAvatarColor(AvatarVisualData avatarVisualData, AvatarData avatarData)
     {
         var color = Color.white;
 
-        if (!string.IsNullOrEmpty(playerData.AvatarData.Color))
+        if (!string.IsNullOrEmpty(avatarData.Color))
         {
-            if (!ColorUtility.TryParseHtmlString(playerData.AvatarData.Color, out color))
+            if (!ColorUtility.TryParseHtmlString(avatarData.Color, out color))
             {
-                Debug.LogWarning($"Failed to parse color: {playerData.AvatarData.Color}. Using white as default.");
+                Debug.LogWarning($"Failed to parse color: {avatarData.Color}. Using white as default.");
                 color = Color.white;
             }
         }

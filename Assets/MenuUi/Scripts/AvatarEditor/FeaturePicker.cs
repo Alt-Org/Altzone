@@ -302,7 +302,7 @@ namespace MenuUi.Scripts.AvatarEditor
             return featureData.Find(p => p.Id == featureId)?.AvatarImage;
         }
 
-        public void SetCharacterClassID(CharacterClassID id) => _characterClassID = id;
+        public void SetCharacterClassID(CharacterClassType id) => _characterClassType = id;
         public void RestoreDefaultColorToFeature(Action restore) => _restoreDefaultColor = restore;
 
         public void SetLoadedFeatures(List<string> features)
