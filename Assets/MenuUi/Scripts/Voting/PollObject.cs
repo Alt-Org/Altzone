@@ -5,6 +5,7 @@ using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Voting;
 using MenuUi.Scripts.AvatarEditor;
 using TMPro;
@@ -16,8 +17,6 @@ public class PollObject : MonoBehaviour
     private string pollId;
 
     [Header("Texts")]
-    [SerializeField] private TextMeshProUGUI UpperText;
-    [SerializeField] private TextMeshProUGUI LowerText;
     [SerializeField] private TextMeshProUGUI YesVotesText;
     [SerializeField] private TextMeshProUGUI NoVotesText;
     [SerializeField] private TextMeshProUGUI TimeLeftText;
@@ -29,6 +28,7 @@ public class PollObject : MonoBehaviour
     [SerializeField] private Image Image;
     [SerializeField] private Image GreenFill;
     [SerializeField] private Image Background;
+    [SerializeField] private Image InfoBackground;
 
     [Header("Buttons")]
     [SerializeField] private Button ClockButton;
@@ -103,7 +103,6 @@ public class PollObject : MonoBehaviour
                 TimeLeftText.text = endDateTime.ToString("d.M. HH:mm");
 
                 PollManager.EndPoll(pollId);
-                SetResultColor();
 
                 yield break;
             }
@@ -181,6 +180,22 @@ public class PollObject : MonoBehaviour
         Image.gameObject.SetActive(false);
         avatarHandleGameObject.SetActive(false);
 
+        if (InfoBackground != null)
+        {
+            if (pollData is ClanRolePollData)
+            {
+                // Clan Role Poll Color
+                InfoBackground.color = new Color(1f, 1f, 1f); // White
+                Background.color = new Color(0f, 1f, 1f); // Cyan
+            }
+            else if (pollData is FurniturePollData)
+            {
+                // Furniture Poll Background Color
+                InfoBackground.color = new Color(0.2f, 1f, 0.2f); // Green
+                Background.color = new Color(1f, 0.75f, 0f); // Yellow
+            }
+        }
+
         // Handles the Poll Header
         if (pollData is FurniturePollData)
         {
@@ -201,11 +216,30 @@ public class PollObject : MonoBehaviour
         // Handle UI for Furniture Polls
         if (pollData is FurniturePollData furniturePollData)
         {
-            Image.sprite = furniturePollData.Sprite;
             Image.gameObject.SetActive(true);
 
-            UpperText.text = Enum.GetName(typeof(FurniturePollType), furniturePollData.FurniturePollType);
-            LowerText.text = furniturePollData.Furniture?.Value.ToString() ?? "N/A";
+           
+            Sprite ribbonSprite = null;
+            if (furniturePollData.Furniture != null)
+            {
+                // Fetch the furniture info from StorageFurnitureReference
+                var furnitureInfo = StorageFurnitureReference.Instance.GetFurnitureInfo(furniturePollData.Furniture.Name);
+                if (furnitureInfo != null && furnitureInfo.RibbonImage != null)
+                {
+                    ribbonSprite = furnitureInfo.RibbonImage;
+                }
+            }
+
+            // In the case of ribbonSprite is missing, show the normal furniture sprite
+            Image.sprite = ribbonSprite ?? furniturePollData.Sprite;
+
+            // Poll description for Furniture Polls
+            if (PollDescriptionText != null && furniturePollData.Furniture != null)
+            {
+                string furnitureName = furniturePollData.Furniture.Name ?? "Unknown Item";
+                string priceText = furniturePollData.Furniture.Value.ToString();
+                PollDescriptionText.text = $"Buying {furnitureName} for {priceText}";
+            }
         }
 
         // Handle UI for Clan Polls
@@ -248,8 +282,13 @@ public class PollObject : MonoBehaviour
                 }
             }
 
-            UpperText.text = memberName;
-            LowerText.text = roleName;
+            // Poll Description for Clan Role Polls
+            if (PollDescriptionText != null)
+            {
+                string currentRoleText = string.IsNullOrEmpty(roleName) ? "None" : roleName;
+                string targetRoleText = clanRolePoll.TargetRole.ToString();
+                PollDescriptionText.text = $"Promoting {memberName} from {currentRoleText} to {targetRoleText}";
+            }
         }
 
         // Enable and disable vote buttons and list based on whether the player has voted on the poll
@@ -337,21 +376,7 @@ public class PollObject : MonoBehaviour
             showEndTimeManually = true;
             ClockButton.interactable = false;
             Clock.fillAmount = 1f;
-            SetResultColor();
             UpdateClockDisplay();
-        }
-    }
-
-    private void SetResultColor()
-    {
-        // Set color based on if the poll passed or not
-        if (PollPassed())
-        {
-            Background.color = new Color(0.4f, 1f, 0.4f, 0.4f);
-        }
-        else
-        {
-            Background.color = new Color(1f, 0.4f, 0.4f, 0.4f);
         }
     }
 

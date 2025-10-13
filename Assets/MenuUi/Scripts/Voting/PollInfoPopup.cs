@@ -30,6 +30,7 @@ public class PollInfoPopup : MonoBehaviour
 
     [Header("Panels")]
     [SerializeField] private GameObject furniturePollInfoObject;
+    [SerializeField] private GameObject infoBox;
 
     [Header("Clan Role Poll UI Elements")]
     [SerializeField] private GameObject clanRolePollInfoObject; 
@@ -125,6 +126,7 @@ public class PollInfoPopup : MonoBehaviour
         clanTargetRoleText.text = targetRole.ToString();
 
         clanRolePollInfoObject.SetActive(true);
+        infoBox.SetActive(false);
         gameObject.SetActive(true);
     }
 
@@ -137,6 +139,7 @@ public class PollInfoPopup : MonoBehaviour
         if (clanRolePollInfoObject != null)
             clanRolePollInfoObject.SetActive(false);
 
+        infoBox.SetActive(false);
         gameObject.SetActive(false);
     }
 

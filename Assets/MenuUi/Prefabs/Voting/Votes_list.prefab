@@ -1020,9 +1020,9 @@ MonoBehaviour:
   _minCellSize: {x: 0, y: 0}
   _maxCellSize: {x: 0, y: 0}
   _preferredCellSize: {x: 0, y: 0}
-  _cellAspectRatio: 1.9
+  _cellAspectRatio: 2.1
   _prefab: {fileID: 2192335415255639714, guid: 76f68cdcd5c35b94ab4025573eec546c, type: 3}
-  _cellSpacing: {x: 20, y: 0}
+  _cellSpacing: {x: 0, y: 1}
   _preventScalingOutOfParentBounds: 0
   _setLayoutElementPreferredSize: 0
 --- !u!1 &2648667168708008888
@@ -1705,7 +1705,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PastPollListContent: {fileID: 6806921726880215794}
-  PollObjectPrefab: {fileID: 2192335415255639714, guid: 76f68cdcd5c35b94ab4025573eec546c,
+  PollObjectPrefab: {fileID: 2192335415255639714, guid: ce0c88b97e317e247a85411a8bda706f,
     type: 3}
   NoPollsText: {fileID: 4962243500976399678}
 --- !u!1 &3321925696601456261
@@ -3296,8 +3296,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3491824192179576033}
   - component: {fileID: 6211113953156904429}
-  - component: {fileID: 2202804993489663455}
   - component: {fileID: 4496745540959318210}
+  - component: {fileID: 8495378381077821467}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -3332,32 +3332,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6806921726880215794}
   m_CullTransparentMesh: 1
---- !u!114 &2202804993489663455
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6806921726880215794}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
-  m_ChildAlignment: 1
-  m_Spacing: 20
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
-  m_ChildControlWidth: 1
-  m_ChildControlHeight: 0
-  m_ChildScaleWidth: 0
-  m_ChildScaleHeight: 0
-  m_ReverseArrangement: 0
 --- !u!114 &4496745540959318210
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3372,6 +3346,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!114 &8495378381077821467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6806921726880215794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89724a78097b7c54e8309e0280f755c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  _startCorner: 0
+  _gridFit: 2
+  _minDynamicColumns: 2
+  _maxDynamicColumns: 4
+  _minDynamicRows: 2
+  _maxDynamicRows: 4
+  _columnAmount: 1
+  _rowAmount: 1
+  _gridCellSize: 1
+  _minCellSize: {x: 0, y: 0}
+  _maxCellSize: {x: 0, y: 0}
+  _preferredCellSize: {x: 0, y: 0}
+  _cellAspectRatio: 2.1
+  _prefab: {fileID: 0}
+  _cellSpacing: {x: 0, y: 1}
+  _preventScalingOutOfParentBounds: 0
+  _setLayoutElementPreferredSize: 0
 --- !u!1 &6810480388721013402
 GameObject:
   m_ObjectHideFlags: 0
@@ -3943,9 +3952,9 @@ MonoBehaviour:
   _minCellSize: {x: 0, y: 0}
   _maxCellSize: {x: 0, y: 0}
   _preferredCellSize: {x: 0, y: 0}
-  _cellAspectRatio: 1.9
+  _cellAspectRatio: 2.1
   _prefab: {fileID: 2192335415255639714, guid: 76f68cdcd5c35b94ab4025573eec546c, type: 3}
-  _cellSpacing: {x: 20, y: 0}
+  _cellSpacing: {x: 0, y: 1}
   _preventScalingOutOfParentBounds: 0
   _setLayoutElementPreferredSize: 0
 --- !u!1 &8998206715555897080
