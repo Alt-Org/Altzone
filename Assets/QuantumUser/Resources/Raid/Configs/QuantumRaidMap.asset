@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1722638350, guid: b156eeaae3f741b40af66649a4748430, type: 3}
+  m_Name: QuantumRaidMap
+  m_EditorClassIdentifier: 
+  Identifier:
+    Path: QuantumUser/Resources/Raid/Configs/QuantumRaidMap
+    Guid:
+      Value: 359465322279783520
+  UserAsset:
+    Id:
+      Value: 0
+  Scene: 41-QuantumRaid
+  ScenePath: Assets/QuantumUser/Scenes/Raid/41-QuantumRaid.unity
+  SceneGuid: 6ce6a774e72e66347bd32e912e02b4b9
+  WorldSize: 256
+  BucketsCount: 16
+  BucketsSubdivisions: 8
+  BucketingAxis: 0
+  SortingAxis: 1
+  SceneMeshCellSize:
+    RawValue: 262144
+  TriangleMeshCellSize: -1
+  StaticColliders3DTrianglesData:
+    Id:
+      Value: 411895323613061146
+  SerializeTrianglesMetadata: 0
+  GridSizeX: 64
+  GridSizeY: 64
+  GridNodeSize: 4
+  NavMeshLinks: []
+  Regions: []
+  StaticColliders2D: []
+  StaticColliders3D: []
+  MapEntities:
+  - Components:
+    - rid: 6394844066202255360
+  SerializedTriangleDataUncompressedSize: 8
+  references:
+    version: 2
+    RefIds:
+    - rid: 6394844066202255360
+      type: {class: RaidPlayerLinkQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      data:
+        PlayerRef:
+          _index: 1

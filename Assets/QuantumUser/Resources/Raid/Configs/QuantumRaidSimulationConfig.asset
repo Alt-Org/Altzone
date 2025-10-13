@@ -1,0 +1,151 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b30f6d93ec78efe4b808efdf1c8e136f, type: 3}
+  m_Name: QuantumRaidSimulationConfig
+  m_EditorClassIdentifier: 
+  Identifier:
+    Path: QuantumUser/Resources/Raid/Configs/QuantumRaidSimulationConfig
+    Guid:
+      Value: 350355081669261469
+  Entities:
+    CommitCommandsMode: 0
+    DefaultEntityCapacity: 1024
+    DefaultComponentBlockCapacity: 128
+    ComponentTypeConfiguration: []
+  Physics:
+    Gravity:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+      Z:
+        RawValue: 0
+    SolverType: 1
+    UsePhysicsNativeLib: 0
+    SolverIterations: 4
+    PositionSolverIterations: 2
+    UseJoints: 1
+    UseAngularVelocity: 1
+    UseVerticalTransform: 1
+    PenetrationAllowance:
+      RawValue: 655
+    PenetrationCorrection:
+      RawValue: 32768
+    MinLinearIntegration:
+      RawValue: 0
+    MinAngularIntegration:
+      RawValue: 0
+    MinContactInverseMass:
+      RawValue: 35
+    SimplexMinBitShift: 0
+    SimplexMaxBitShift: 2
+    ShapeCastMaxIterations: 16
+    ShapeCastMinIterations: 4
+    ShapeCastHardTolerance:
+      RawValue: 66
+    ShapeCastSoftTolerance:
+      RawValue: 3277
+    AllowSleeping: 0
+    SleepTimeSec:
+      RawValue: 32768
+    LinearSleepTolerance:
+      RawValue: 1311
+    AngularSleepToleranceInRad:
+      RawValue: 2288
+    AllowCCD: 0
+    CCDLinearVelocityThreshold:
+      RawValue: 196608
+    CCDAngularVelocityThreshold:
+      RawValue: 196608
+    CCDDistanceTolerance:
+      RawValue: 66
+    MaxTimeOfImpactIterations: 16
+    MaxRootFindingIterations: 32
+    DefaultEntriesCapacity: 2048
+    DefaultStaticsCapacity: 1024
+    DefaultQueriesCapacity: 1024
+    DefaultQueryItemsCapacity: 1024
+    DefaultHitCollectionItemsCapacity: 32
+    DefaultBucketsCapacity: 16
+    DefaultIslandsCapacity: 512
+    DefaultManifoldsCapacity: 1024
+    DefaultJointsCapacity: 128
+    DefaultPhysicsMaterial:
+      Id:
+        Value: 1685613367375137028
+    DefaultCharacterController2D:
+      Id:
+        Value: 2978950733451737196
+    DefaultCharacterController3D:
+      Id:
+        Value: 2709500367139579318
+    Layers:
+    - Default
+    - TransparentFX
+    - Ignore Raycast
+    - 
+    - Water
+    - UI
+    - BattleArenaBorder
+    - Diamond
+    - Shield
+    - Ball
+    - Head
+    - 
+    - Player
+    - Arena
+    - BattleSoulWall
+    - EnemyLayer
+    - 
+    - Player1
+    - Player2
+    - Player3
+    - Player4
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    LayerMatrix: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+  Navigation:
+    DefaultNavMeshAgent:
+      Id:
+        Value: 1752859462898473930
+    EnableNavigationCallbacks: 0
+    HeightThresholdForWaypoints:
+      RawValue: 65536
+    HeightThresholdForAvoidance:
+      RawValue: 65536
+    RawPathSize: 256
+    RawPathAllocationStrategy: 0
+    EnableAvoidance: 1
+    AvoidanceRange:
+      RawValue: 131072
+    MaxAvoidanceCandidates: 64
+    VelocityObstacleTruncationFactor:
+      RawValue: 72090
+  AutoLoadSceneFromMap: 2
+  DeltaTimeType: 0
+  ThreadCount: 2
+  ChecksumSnapshotHistoryLengthSeconds:
+    RawValue: 196608
+  ChecksumErrorDumpOptions: 0
+  HeapTrackingMode: 1
+  HeapPageShift: 15
+  HeapPageCount: 256
+  HeapExtraCount: 0
