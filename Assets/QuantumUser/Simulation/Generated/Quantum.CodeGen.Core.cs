@@ -806,7 +806,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Input {
-    public const Int32 SIZE = 64;
+    public const Int32 SIZE = 80;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public BattleMovementInputType MovementInput;
@@ -822,6 +822,8 @@ namespace Quantum {
     public FP RotationValue;
     [FieldOffset(4)]
     public Int32 PlayerCharacterNumber;
+    [FieldOffset(64)]
+    public FPVector2 RaidClickPosition;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 19249;
@@ -832,6 +834,7 @@ namespace Quantum {
         hash = hash * 31 + RotationInput.GetHashCode();
         hash = hash * 31 + RotationValue.GetHashCode();
         hash = hash * 31 + PlayerCharacterNumber.GetHashCode();
+        hash = hash * 31 + RaidClickPosition.GetHashCode();
         return hash;
       }
     }
@@ -859,11 +862,12 @@ namespace Quantum {
         FP.Serialize(&p->RotationValue, serializer);
         Button.Serialize(&p->RotationInput, serializer);
         FPVector2.Serialize(&p->MovementDirection, serializer);
+        FPVector2.Serialize(&p->RaidClickPosition, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct _globals_ {
-    public const Int32 SIZE = 952;
+    public const Int32 SIZE = 1048;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public AssetRef<Map> Map;
@@ -887,12 +891,12 @@ namespace Quantum {
     public Int32 PlayerConnectedCount;
     [FieldOffset(560)]
     [FramePrinter.FixedArrayAttribute(typeof(Input), 6)]
-    private fixed Byte _input_[384];
-    [FieldOffset(944)]
+    private fixed Byte _input_[480];
+    [FieldOffset(1040)]
     public BitSet6 PlayerLastConnectionState;
     public FixedArray<Input> input {
       get {
-        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 64, 6); }
+        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 80, 6); }
       }
     }
     public override Int32 GetHashCode() {
@@ -1540,6 +1544,30 @@ namespace Quantum {
         FPVector2.Serialize(&p->Normal, serializer);
     }
   }
+  [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct RaidPlayerLinkQSingleton : Quantum.IComponentSingleton {
+    public const Int32 SIZE = 8;
+    public const Int32 ALIGNMENT = 4;
+    [FieldOffset(0)]
+    [FramePrinter.FixedArrayAttribute(typeof(PlayerRef), 2)]
+    private fixed Byte _PlayerRefs_[8];
+    public FixedArray<PlayerRef> PlayerRefs {
+      get {
+        fixed (byte* p = _PlayerRefs_) { return new FixedArray<PlayerRef>(p, 4, 2); }
+      }
+    }
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 15901;
+        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(PlayerRefs);
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (RaidPlayerLinkQSingleton*)ptr;
+        FixedArray.Serialize(p->PlayerRefs, serializer, Statics.SerializePlayerRef);
+    }
+  }
   public unsafe partial interface ISignalBattleOnDiamondHitPlayer : ISignal {
     void BattleOnDiamondHitPlayer(Frame f, BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity);
   }
@@ -1630,6 +1658,8 @@ namespace Quantum {
       BuildSignalsArrayOnComponentRemoved<PhysicsJoints2D>();
       BuildSignalsArrayOnComponentAdded<PhysicsJoints3D>();
       BuildSignalsArrayOnComponentRemoved<PhysicsJoints3D>();
+      BuildSignalsArrayOnComponentAdded<Quantum.RaidPlayerLinkQSingleton>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.RaidPlayerLinkQSingleton>();
       BuildSignalsArrayOnComponentAdded<Transform2D>();
       BuildSignalsArrayOnComponentRemoved<Transform2D>();
       BuildSignalsArrayOnComponentAdded<Transform2DVertical>();
@@ -1649,6 +1679,7 @@ namespace Quantum {
       i->RotationInput = i->RotationInput.Update(this.Number, input.RotationInput);
       i->RotationValue = input.RotationValue;
       i->PlayerCharacterNumber = input.PlayerCharacterNumber;
+      i->RaidClickPosition = input.RaidClickPosition;
     }
     public Input* GetPlayerInput(PlayerRef player) {
       if ((int)player >= (int)_globals->input.Length) { throw new System.ArgumentOutOfRangeException("player"); }
@@ -1817,6 +1848,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.Ptr), Quantum.Ptr.SIZE);
       typeRegistry.Register(typeof(QueryOptions), 2);
       typeRegistry.Register(typeof(RNGSession), RNGSession.SIZE);
+      typeRegistry.Register(typeof(Quantum.RaidPlayerLinkQSingleton), Quantum.RaidPlayerLinkQSingleton.SIZE);
       typeRegistry.Register(typeof(Shape2D), Shape2D.SIZE);
       typeRegistry.Register(typeof(Shape3D), Shape3D.SIZE);
       typeRegistry.Register(typeof(SpringJoint), SpringJoint.SIZE);
@@ -1828,7 +1860,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum._globals_), Quantum._globals_.SIZE);
     }
     static partial void InitComponentTypeIdGen() {
-      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 15)
+      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 16)
         .AddBuiltInComponents()
         .Add<Quantum.BattleArenaBorderQComponent>(Quantum.BattleArenaBorderQComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.BattleCollisionTriggerQComponent>(Quantum.BattleCollisionTriggerQComponent.Serialize, null, null, ComponentFlags.None)
@@ -1845,6 +1877,7 @@ namespace Quantum {
         .Add<Quantum.BattleProjectileQComponent>(Quantum.BattleProjectileQComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.BattleProjectileSpawnerQComponent>(Quantum.BattleProjectileSpawnerQComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.BattleSoulWallQComponent>(Quantum.BattleSoulWallQComponent.Serialize, null, null, ComponentFlags.None)
+        .Add<Quantum.RaidPlayerLinkQSingleton>(Quantum.RaidPlayerLinkQSingleton.Serialize, null, null, ComponentFlags.Singleton)
         .Finish();
     }
     [Preserve()]

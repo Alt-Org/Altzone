@@ -545,6 +545,7 @@ namespace Quantum.Prototypes {
     public Button RotationInput;
     public FP RotationValue;
     public Int32 PlayerCharacterNumber;
+    public FPVector2 RaidClickPosition;
     partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
         result.MovementInput = this.MovementInput;
@@ -554,6 +555,25 @@ namespace Quantum.Prototypes {
         result.RotationInput = this.RotationInput;
         result.RotationValue = this.RotationValue;
         result.PlayerCharacterNumber = this.PlayerCharacterNumber;
+        result.RaidClickPosition = this.RaidClickPosition;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.RaidPlayerLinkQSingleton))]
+  public unsafe partial class RaidPlayerLinkQSingletonPrototype : ComponentPrototype<Quantum.RaidPlayerLinkQSingleton> {
+    [ArrayLengthAttribute(2)]
+    public PlayerRef[] PlayerRefs = new PlayerRef[2];
+    partial void MaterializeUser(Frame frame, ref Quantum.RaidPlayerLinkQSingleton result, in PrototypeMaterializationContext context);
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.RaidPlayerLinkQSingleton component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.RaidPlayerLinkQSingleton result, in PrototypeMaterializationContext context = default) {
+        for (int i = 0, count = PrototypeValidator.CheckLength(PlayerRefs, 2, in context); i < count; ++i) {
+          *result.PlayerRefs.GetPointer(i) = this.PlayerRefs[i];
+        }
         MaterializeUser(frame, ref result, in context);
     }
   }
