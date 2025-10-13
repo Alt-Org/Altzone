@@ -8,6 +8,30 @@ namespace Altzone.Scripts.ReferenceSheets
     {
         [SerializeField] private List<SoundCategory> _soundCategories = new List<SoundCategory>();
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void SubsystemRegistration()
+        {
+            // Manual reset if UNITY Domain Reloading is disabled.
+            _instance = null;
+            _hasInstance = false;
+        }
+
+        private static SFXReference _instance;
+        private static bool _hasInstance;
+
+        public static SFXReference Instance
+        {
+            get
+            {
+                if (!_hasInstance)
+                {
+                    _instance = Resources.Load<SFXReference>($"Audio/SFXDataReference");
+                    _hasInstance = _instance != null;
+                }
+                return _instance;
+            }
+        }
+
         public List<SoundCategory> SoundCategories { get => _soundCategories; }
 
         /// <returns>First SoundEffect that is found in any sound category.</returns>
@@ -54,5 +78,7 @@ namespace Altzone.Scripts.ReferenceSheets
         public string Name;
         public SoundPlayType Type;
         public AudioClip Audio;
+        [Range(0f, 10f)]
+        public float Volume = 1;
     }
 }

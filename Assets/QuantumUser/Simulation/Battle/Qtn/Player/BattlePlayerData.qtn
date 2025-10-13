@@ -6,7 +6,7 @@ component BattlePlayerDataQComponent
     BattlePlayerSlot Slot;
     BattleTeamNumber TeamNumber;
     int CharacterId;
-    int CharacterClass;
+    BattlePlayerCharacterClass CharacterClass;
 
     BattlePlayerStats Stats;
 
@@ -18,8 +18,16 @@ component BattlePlayerDataQComponent
     FP RotationBase;
     FP RotationOffset;
 
+    FP CurrentHp;
+    FP CurrentDefence;
+
     EntityRef HitboxShieldEntity;
     EntityRef HitboxCharacterEntity;
+
+    bool DisableRotation;
+    FrameTimer DamageCooldown;
+
+    FP MovementCooldownSec;
 }
 
 //} PlayerData
@@ -38,6 +46,8 @@ struct BattlePlayerHitboxTemplate
 {
     [FreeOnComponentRemoved] list<BattlePlayerHitboxColliderTemplate> ColliderTemplateList;
     BattlePlayerCollisionType CollisionType;
+
+    FP NormalAngleDeg;
 }
 
 component BattlePlayerDataTemplateQComponent
@@ -47,6 +57,8 @@ component BattlePlayerDataTemplateQComponent
 
     BattlePlayerHitboxTemplate HitboxShield;
     BattlePlayerHitboxTemplate HitboxCharacter;
+
+    bool DisableRotation;
 }
 
 //} PlayerDataTemplate

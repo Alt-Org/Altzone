@@ -40,16 +40,39 @@ public class KojuSorting : MonoBehaviour
 
     private void UpdateSortingText()
     {
+        var lang = SettingsCarrier.Instance.Language;
+
         switch (currentSortMode)
         {
             case SortMode.Nimi:
-                sortingText.text = "Järjestetty: Aakkoset"; 
+                if (lang == SettingsCarrier.LanguageType.Finnish)
+                {
+                    sortingText.text = "Järjestetty: Aakkoset";
+                }
+                else if (lang == SettingsCarrier.LanguageType.English)
+                {
+                    sortingText.text = "Sorting: Alphabetical";
+                }
                 break;
             case SortMode.Hinta:
-                sortingText.text = "Järjestetty: Hinta";
+                if (lang == SettingsCarrier.LanguageType.Finnish)
+                {
+                    sortingText.text = "Järjestetty: Hinta";
+                }
+                else if (lang == SettingsCarrier.LanguageType.English)
+                {
+                    sortingText.text = "Sorting: Price";
+                }
                 break;
             case SortMode.Harvinaisuus:
-                sortingText.text = "Järjestetty: Harvinaisuus"; 
+                if (lang == SettingsCarrier.LanguageType.Finnish)
+                {
+                    sortingText.text = "Järjestetty: Harvinaisuus";
+                }
+                else if (lang == SettingsCarrier.LanguageType.English)
+                {
+                    sortingText.text = "Sorting: Rarity";
+                }
                 break;
         }
     }

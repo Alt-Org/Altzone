@@ -52,6 +52,11 @@ namespace MenuUI.Scripts.SoulHome {
         void Start()
         {
             _roomAmount = ServerManager.Instance.Clan != null ? ServerManager.Instance.Clan.playerCount: 1;
+            if (_roomAmount > 30)
+            {
+                Debug.LogError($"Clan has more players ({_soulHomeRooms.Room.Count}) than allowed, setting room count to 30.");
+                _roomAmount = 30;
+            }
             StartCoroutine(HomeLoad());
             //TestCode();
             StartCoroutine(LoadRooms());

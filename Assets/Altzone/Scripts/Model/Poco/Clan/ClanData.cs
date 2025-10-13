@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Altzone.Scripts.Model.Poco.Attributes;
+using Prg.Scripts.Common.Extensions;
 using Altzone.Scripts.Store;
 using Altzone.Scripts.Voting;
 using UnityEngine;
@@ -10,13 +10,13 @@ using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Clan
 {
-    [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
+    [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class ClanData
     {
-        [PrimaryKey] public string Id;
-        [Unique] public string Name;
-        [Optional] public string Tag;
-        [Optional] public string Phrase;
+        public string Id;
+        public string Name;
+        public string Tag;
+        public string Phrase;
         private int _gameCoins;
         public int Points;
         public bool IsOpen;
@@ -51,8 +51,8 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public ClanData(string id, string name, string tag, int gameCoins)
         {
-            Assert.IsTrue(id.IsPrimaryKey());
-            Assert.IsTrue(name.IsMandatory());
+            Assert.IsTrue(id.IsSet());
+            Assert.IsTrue(name.IsSet());
             Assert.IsTrue(tag.IsNullOEmptyOrNonWhiteSpace());
             Assert.IsTrue(gameCoins >= 0);
             Id = id;
@@ -63,8 +63,8 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public ClanData(ServerClan clan)
         {
-            Assert.IsTrue(clan._id.IsPrimaryKey());
-            Assert.IsTrue(clan.name.IsMandatory());
+            Assert.IsTrue(clan._id.IsSet());
+            Assert.IsTrue(clan.name.IsSet());
             Assert.IsTrue(clan.tag.IsNullOEmptyOrNonWhiteSpace());
             Assert.IsTrue(clan.gameCoins >= 0);
             Id = clan._id;
@@ -96,8 +96,8 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public void UpdateClanData(ServerClan clan)
         {
-            Assert.IsTrue(clan._id.IsPrimaryKey());
-            Assert.IsTrue(clan.name.IsMandatory());
+            Assert.IsTrue(clan._id.IsSet());
+            Assert.IsTrue(clan.name.IsSet());
             Assert.IsTrue(clan.tag.IsNullOEmptyOrNonWhiteSpace());
             Assert.IsTrue(clan.gameCoins >= 0);
             Id = clan._id;

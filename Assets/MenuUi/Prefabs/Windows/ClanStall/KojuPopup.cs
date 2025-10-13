@@ -168,6 +168,8 @@ public class KojuPopup : MonoBehaviour
             return;
         }
 
+        gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+
         // Moves the item, see ItemMover.cs
         itemMover?.ExecuteMove();
         Close();

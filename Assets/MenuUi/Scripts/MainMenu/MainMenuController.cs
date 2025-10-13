@@ -36,10 +36,21 @@ namespace MenuUi.Scripts.MainMenu
 
         private void OnEnable()
         {
+            bool jukeboxMainMenu = carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.MainMenu);
+
             _swipe = GetComponentInParent<SwipeUI>();
             StartCoroutine(CheckWindowSize());
-            AudioManager.Instance?.PlayMusic("MainMenu");
-            LobbyManager.Instance.Activate();
+
+            if (jukeboxMainMenu)
+            {
+                if (string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
+                    AudioManager.Instance?.PlayMusic("MainMenu");
+            }
+            else
+                AudioManager.Instance?.PlayMusic("MainMenu");
+
+            if(!LobbyManager.IsActive) LobbyManager.Instance.Activate();
+            if (LobbyManager.Instance.RunnerActive) LobbyManager.CloseRunner();
         }
 
         private void Start()
@@ -48,15 +59,6 @@ namespace MenuUi.Scripts.MainMenu
             _layoutElementsGameObjects = GameObject.FindGameObjectsWithTag("MainMenuWindow");
             _scrollRectCanvas = GameObject.FindGameObjectWithTag("ScrollRectCanvas").GetComponent<RectTransform>();
             SetMainMenuLayoutDimensions();
-            SetAudioVolumeLevels();
-            //AudioManager.Instance?.PlayMusic("MainMenu");
-        }
-
-        /// <summary>
-        /// Sets the audio levels of main menu audio sources according to the values in PlayerPrefs
-        /// </summary>
-        public void SetAudioVolumeLevels()
-        {
             AudioManager.Instance.UpdateMaxVolume();
         }
 

@@ -356,7 +356,9 @@ MonoBehaviour:
           Value: 0
         State:
           Value: 0
-        TimeUntilStart:
+        LoadDelaySec:
+          RawValue: 98304
+        TimeUntilStartSec:
           RawValue: 262144
         GameTimeSec:
           RawValue: 0
@@ -375,11 +377,39 @@ MonoBehaviour:
         - _index: 0
         - _index: 0
         - _index: 0
+        IsBot:
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        RespawnTimer:
+        - Mode: 0
+          Frames: 0
+          Seconds:
+            RawValue: 0
+        - Mode: 0
+          Frames: 0
+          Seconds:
+            RawValue: 0
+        - Mode: 0
+          Frames: 0
+          Seconds:
+            RawValue: 0
+        - Mode: 0
+          Frames: 0
+          Seconds:
+            RawValue: 0
+        AllowCharacterSwapping:
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
         SelectedCharacters:
         - SceneIndexPlusOne: 0
         - SceneIndexPlusOne: 0
         - SceneIndexPlusOne: 0
         - SceneIndexPlusOne: 0
+        SelectedCharacterNumbers: 00000000000000000000000000000000
         AllCharacters:
         - SceneIndexPlusOne: 0
         - SceneIndexPlusOne: 0
@@ -393,4 +423,16 @@ MonoBehaviour:
         - SceneIndexPlusOne: 0
         - SceneIndexPlusOne: 0
         - SceneIndexPlusOne: 0
-        SelectedCharacterNumbers: 00000000000000000000000000000000
+        AllCharactersStates:
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0

@@ -110,7 +110,7 @@ namespace MenuUi.Scripts.CharacterGallery
         /// </summary>
         /// <param name="customCharacters">List of player's custom (owned) characters.</param>
         /// <param name="selectedCharacterIds">Array of selected character ids.</param>
-        public void SetCharacters(List<CustomCharacter> customCharacters, CharacterID[] selectedCharacterIds)
+        public void SetCharacters(List<CustomCharacter> customCharacters, CustomCharacterListObject[] selectedCharacterIds)
         {
             Reset();
 
@@ -124,7 +124,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 // Going through selectedCharacterIds to check if the CustomCharacter is one of the selected characters
                 for (int i = 0; i < selectedCharacterIds.Length; i++)
                 {
-                    if (character.Id == selectedCharacterIds[i])
+                    if (character.Id == selectedCharacterIds[i].CharacterID)
                     {
                         // Adding the CustomCharacter to the array of selected characters
                         selectedCharacters[i] = character;
@@ -170,13 +170,15 @@ namespace MenuUi.Scripts.CharacterGallery
 
             GameObject slot = Instantiate(_characterSlotPrefab, parent);
 
-            CharacterClassID classID = CustomCharacter.GetClassID(charID);
-            string className = _classReference.GetName(classID);
-            Color bgColor = _classReference.GetColor(classID);
-            Color bgAltColor = _classReference.GetAlternativeColor(classID);
+            CharacterClassType classType = CustomCharacter.GetClass(charID);
+            string className = _classReference.GetName(classType);
+            Color bgColor = _classReference.GetColor(classType);
+            Color bgAltColor = _classReference.GetAlternativeColor(classType);
+            Sprite classIcon = _classReference.GetCornerIcon(classType);
+
 
             CharacterSlot charSlot = slot.GetComponent<CharacterSlot>();
-            charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, className, charID);
+            charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, className, classIcon, charID);
 
             _characterSlots.Add(charSlot);
 
@@ -248,31 +250,31 @@ namespace MenuUi.Scripts.CharacterGallery
                     break;
 
                 case FilterType.Desensitizer: // Only showing desensitizers
-                    FilterForClassID(CharacterClassID.Desensitizer);
+                    FilterForClassID(CharacterClassType.Desensitizer);
                     break;
 
                 case FilterType.Trickster: // Only showing tricksters
-                    FilterForClassID(CharacterClassID.Trickster);
+                    FilterForClassID(CharacterClassType.Trickster);
                     break;
 
                 case FilterType.Obedient: // Only showing obedients
-                    FilterForClassID(CharacterClassID.Obedient);
+                    FilterForClassID(CharacterClassType.Obedient);
                     break;
 
                 case FilterType.Projector: // Only showing projectors
-                    FilterForClassID(CharacterClassID.Projector);
+                    FilterForClassID(CharacterClassType.Projector);
                     break;
 
                 case FilterType.Retroflector: // Only showing retroflectors
-                    FilterForClassID(CharacterClassID.Retroflector);
+                    FilterForClassID(CharacterClassType.Retroflector);
                     break;
 
                 case FilterType.Confluent: // Only showing confluents
-                    FilterForClassID(CharacterClassID.Confluent);
+                    FilterForClassID(CharacterClassType.Confluent);
                     break;
 
                 case FilterType.Intellectualizer: // Only showing intellectualizers
-                    FilterForClassID(CharacterClassID.Intellectualizer);
+                    FilterForClassID(CharacterClassType.Intellectualizer);
                     break;
             }
 
@@ -282,11 +284,11 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
-        private void FilterForClassID(CharacterClassID classID)
+        private void FilterForClassID(CharacterClassType classType)
         {
             foreach (CharacterSlot characterSlot in _characterSlots)
             {
-                if (CustomCharacter.GetClassID(characterSlot.Character.Id) == classID)
+                if (CustomCharacter.GetClass(characterSlot.Character.Id) == classType)
                 {
                     if (!characterSlot.gameObject.activeSelf) characterSlot.gameObject.SetActive(true);
                 }

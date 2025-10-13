@@ -1837,6 +1837,7 @@ GameObject:
   - component: {fileID: 400857129563694600}
   - component: {fileID: 4675585972277167548}
   - component: {fileID: 5863745566099032614}
+  - component: {fileID: 3590095376945198867}
   m_Layer: 5
   m_Name: KojuPopupWindow
   m_TagString: Untagged
@@ -1921,6 +1922,25 @@ MonoBehaviour:
   removePopupBackground: {fileID: 4730214526186882222}
   rarityColourReference: {fileID: 11400000, guid: 994101a8dd6935c4c8ab9f6709e0b18e,
     type: 2}
+--- !u!114 &3590095376945198867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2082420161837013928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 1
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 13
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
 --- !u!1 &2413911997517120008
 GameObject:
   m_ObjectHideFlags: 0

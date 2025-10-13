@@ -1,6 +1,21 @@
 //{ Game Flow events - View Pre-Activate
 
-synced event BattleViewWaitForPlayers {}
+struct BattleWaitForPlayersData
+{
+    array<QString<64>>[BATTLE_PLAYER_SLOT_COUNT] PlayerNames;
+}
+
+synced event BattleViewWaitForPlayers
+{
+    BattleWaitForPlayersData Data;
+}
+
+synced event BattleViewPlayerConnected
+{
+    RuntimePlayer Data;
+}
+
+synced event BattleViewAllPlayersConnected {}
 
 synced event BattleViewInit {}
 
@@ -28,6 +43,8 @@ synced event BattlePlayerViewInit
 {
     EntityRef Entity;
     BattlePlayerSlot Slot;
+    int CharacterId;
+    BattlePlayerCharacterClass Class;
     FP ModelScale;
 }
 
@@ -48,11 +65,26 @@ synced event BattleStoneCharacterPieceViewInit
 
 //} ViewInit events
 
+//{ UI control events
+
+synced event BattleViewSetRotationJoystickVisibility
+{
+    bool IsVisible;
+    BattlePlayerSlot Slot;
+}
+
+//} UI control events
+
 //{ Gameplay events
 
 synced event BattleChangeEmotionState
 {
     BattleEmotionState Emotion;
+}
+
+synced event BattleProjectileChangeGlowStrength
+{
+    FP Strength;
 }
 
 event BattlePlaySoundFX
@@ -67,6 +99,30 @@ synced event BattleLastRowWallDestroyed
     FP LightrayRotation;
     BattleLightrayColor LightrayColor;
     BattleLightraySize LightraySize;
+}
+
+synced event BattleCharacterSelected
+{
+    BattlePlayerSlot Slot;
+    int CharacterNumber;
+}
+
+synced event BattleCharacterTakeDamage
+{
+    EntityRef Entity;
+    BattleTeamNumber Team;
+    BattlePlayerSlot Slot;
+    int CharacterNumber;
+    FP HealthPercentage;
+}
+
+synced event BattleShieldTakeDamage
+{
+    EntityRef Entity;
+    BattleTeamNumber Team;
+    BattlePlayerSlot Slot;
+    int CharacterNumber;
+    FP DefenceValue;
 }
 
 //} Gameplay events

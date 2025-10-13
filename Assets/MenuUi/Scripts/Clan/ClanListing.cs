@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Altzone.Scripts.Language;
 using Altzone.Scripts.Model.Poco.Clan;
 using TMPro;
 using UnityEngine;
@@ -15,7 +16,7 @@ public class ClanListing : MonoBehaviour
     [SerializeField] private Button _returnToMainClanViewButton;
 
     [SerializeField] private TextMeshProUGUI _clanName;
-    [SerializeField] private TextMeshProUGUI _clanMembers;
+    [SerializeField] private TextLanguageSelectorCaller _clanMembers;
     [SerializeField] private Image _lockImage;
     [SerializeField] private Sprite _lockOpen;
     [SerializeField] private Transform _heartContainer;
@@ -38,7 +39,7 @@ public class ClanListing : MonoBehaviour
             ClanData clanData = new ClanData(_clan);
 
             _clanName.text = _clan.name;
-            _clanMembers.text = "Jäsenet: " + _clan.playerCount + "/25";
+            _clanMembers.SetText(SettingsCarrier.Instance.Language,new string[1] { _clan.playerCount + "/25" });
             // By default the lock image is locked
             if (_clan.isOpen)
             {

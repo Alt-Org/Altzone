@@ -19,17 +19,17 @@ namespace Altzone.Scripts.ReferenceSheets
         public List<ChatResponse> ChatResponseInfo => _chatResponseInfo; // Public accessor for _chatResponseInfo
         public List<MottoOptions> MottoOptionsInfo => _mottoOptionsInfo; // Public accessor for _mottoOptionsInfo
 
-        public List<string> GetChatResponses(CharacterClassID classId)
+        public List<string> GetChatResponses(CharacterClassType classType)
         {
 
-            List<string> list = _chatResponseInfo.FirstOrDefault(x => x.ClassId == classId)?.List;
+            List<string> list = _chatResponseInfo.FirstOrDefault(x => x.ClassType == classType)?.List;
             if (list == null) list = _defaultList.List;
             return list;
         }
 
-        public List<string> GetMottoOptions(CharacterClassID classId)
+        public List<string> GetMottoOptions(CharacterClassType classType)
         {
-            List<string> list = _mottoOptionsInfo.FirstOrDefault(x => x.ClassID == classId)?.List;
+            List<string> list = _mottoOptionsInfo.FirstOrDefault(x => x.ClassType == classType)?.List;
             return list;
         }
     }
@@ -45,7 +45,7 @@ namespace Altzone.Scripts.ReferenceSheets
     public class CharacterChatResponseObject
     {
 
-        public CharacterClassID ClassId;
+        public CharacterClassType ClassType;
 
         public ChatResponse ResponseObject;
     }

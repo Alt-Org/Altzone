@@ -23,12 +23,13 @@ using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby.Wrappers;
+using Altzone.Scripts.Window;
+using Altzone.Scripts.Audio;
 using Altzone.Scripts.AzDebug;
 using Altzone.PhotonSerializer;
 
 using Battle.QSimulation.Game;
 using PlayerType = Battle.QSimulation.Game.BattleParameters.PlayerType;
-using Altzone.Scripts.Window;
 
 namespace Altzone.Scripts.Lobby
 {
@@ -87,7 +88,7 @@ namespace Altzone.Scripts.Lobby
         [Header("Battle Map reference")]
         [SerializeField] private BattleMapReference _battleMapReference;
 
-        private const long STARTDELAY = 6000;
+        private const long STARTDELAY = 2000;
 
         private QuantumRunner _runner = null;
 
@@ -95,14 +96,25 @@ namespace Altzone.Scripts.Lobby
         private Coroutine _requestPositionChangeHolder = null;
         private Coroutine _matchmakingHolder = null;
         private Coroutine _followLeaderHolder = null;
+        private Coroutine _canBattleStartCheckHolder = null;
 
         private string[] _teammates = null;
 
         private List<FriendInfo> _friendList;
 
         [HideInInspector] public ReadOnlyCollection<LobbyRoomInfo> CurrentRooms = null; // Set from LobbyRoomListingController.cs through Instance variable maybe this could be refactored?
+
+        private List<string> _posChangeQueue = new();
+
+        private bool _isStartFinished = false;
+
         public static LobbyManager Instance { get; private set; }
-        private static bool isActive = false;
+        public bool IsStartFinished {set => _isStartFinished = value; }
+        public static bool IsActive { get => _isActive;}
+
+        private static bool _isActive = false;
+
+        public bool RunnerActive => _runner != null;
 
         #region Delegates & Events
 
@@ -209,14 +221,14 @@ namespace Altzone.Scripts.Lobby
             {
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
-                isActive = false;
-                if (!isActive && SceneManager.GetActiveScene().buildIndex != 0) Activate();
+                _isActive = false;
+                if (!_isActive && SceneManager.GetActiveScene().buildIndex != 0) Activate();
             }
         }
 
         public void OnEnable()
         {
-            if(!isActive && SceneManager.GetActiveScene().buildIndex != 0) Activate();
+            if(!_isActive && SceneManager.GetActiveScene().buildIndex != 0) Activate();
         }
 
         public void OnDisable()
@@ -238,8 +250,8 @@ namespace Altzone.Scripts.Lobby
         }
         public void Activate()
         {
-            if (isActive) { Debug.LogWarning("LobbyManager is already active."); return; }
-            isActive = true;
+            if (_isActive) { Debug.LogWarning("LobbyManager is already active."); return; }
+            _isActive = true;
             PhotonRealtimeClient.Client.AddCallbackTarget(this);
             PhotonRealtimeClient.Client.StateChanged += OnStateChange;
             this.Subscribe<ReserveFreePositionEvent>(OnReserveFreePositionEvent);
@@ -319,34 +331,107 @@ namespace Altzone.Scripts.Lobby
                 // Getting first free position from the room and creating the photon hashtables for setting property
                 freePosition = PhotonLobbyRoom.GetFirstFreePlayerPos();
                 if (!PhotonLobbyRoom.IsValidPlayerPos(freePosition)) yield break;
+                StartCoroutine(RequestPositionChange(freePosition));
                 string positionKey = PhotonBattleRoom.GetPositionKey(freePosition);
 
-                PhotonHashtable propertyToSet = new() { { positionKey, PhotonRealtimeClient.LocalLobbyPlayer.UserId } };
-                PhotonHashtable expectedValue = new() { { positionKey, string.Empty } };
+                /*PhotonHashtable propertyToSet = new() { { positionKey, PhotonRealtimeClient.LocalLobbyPlayer.UserId } };
+                PhotonHashtable expectedValue = new() { { positionKey, "" } };
 
                 // Setting custom property, checking if the request could be sent to the server
                 if (PhotonRealtimeClient.CurrentRoom.SetCustomProperties(propertyToSet, expectedValue))
                 {
                     // Waiting until that position in the room is reserved
-                    string positionValue = string.Empty;
+                    string positionValue = "";
                     yield return new WaitUntil(() =>
                     {
-                        positionValue = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(positionKey, string.Empty);
-                        return positionValue != string.Empty;
+                        positionValue = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(positionKey, "");
+                        return positionValue != "";
                     });
 
                     // Checking if local player is the one in the slot or if there was a conflict
                     success = positionValue == PhotonRealtimeClient.LocalLobbyPlayer.UserId;
-                }
+                }*/
+                string positionValue = "";
+                yield return new WaitUntil(() =>
+                {
+                    positionValue = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(positionKey, "");
+                    return positionValue != "";
+                });
+
+                // Checking if local player is the one in the slot or if there was a conflict
+                success = positionValue == PhotonRealtimeClient.LocalLobbyPlayer.UserId;
 
                 if (success) break;
                 yield return null;
             } while (!success);
 
             // Setting to player properties
-            if (setToPlayerProperties) PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, freePosition);
+            //if (setToPlayerProperties) PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, freePosition);
 
             _reserveFreePositionHolder = null;
+        }
+
+        private bool CheckIfAllPlayersInPosition()
+        {
+            bool pos1Set = false;
+            bool pos2Set = false;
+            bool pos3Set = false;
+            bool pos4Set = false;
+            foreach (var player in PhotonRealtimeClient.GetCurrentRoomPlayers())
+            {
+                if (!player.HasCustomProperty(PlayerPositionKey) || !player.HasCustomProperty(PhotonBattleRoom.PlayerCharacterIdsKey) || !player.HasCustomProperty(PhotonBattleRoom.PlayerStatsKey))
+                {
+                    return false;
+                }
+                var playerPosition = player.GetCustomProperty(PlayerPositionKey, 0);
+                switch (playerPosition)
+                {
+                    case 1:
+                        if(pos1Set) return false;
+                        if(!PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, "").Equals(player.UserId)) return false;
+                        pos1Set = true;
+                        break;
+                    case 2:
+                        if (pos2Set) return false;
+                        if (!PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, "").Equals(player.UserId)) return false;
+                        pos2Set = true;
+                        break;
+                    case 3:
+                        if (pos3Set) return false;
+                        if (!PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, "").Equals(player.UserId)) return false;
+                        pos3Set = true;
+                        break;
+                    case 4:
+                        if (pos4Set) return false;
+                        if (!PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, "").Equals(player.UserId)) return false;
+                        pos4Set = true;
+                        break;
+                    default: return false;
+
+                }
+            }
+            return pos1Set && pos2Set && pos3Set && pos4Set;
+        }
+
+        private IEnumerator CheckIfBattleCanStart()
+        {
+            yield break;
+            yield return new WaitForSeconds(0.5f);
+            yield return new WaitUntil(() => _posChangeQueue.Count == 0 && !_playerPosChangeInProgress);
+            Room room = PhotonRealtimeClient.CurrentRoom;
+            if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+            {
+                while (room.PlayerCount >= room.MaxPlayers)
+                {
+                    if (CheckIfAllPlayersInPosition())
+                    {
+                        GameType gameType = (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                        if (gameType == GameType.Custom) OnStartPlayingEvent(new());
+                    }
+                    yield return null;
+                }
+            }
+            _canBattleStartCheckHolder = null;
         }
 
         private void OnPlayerPosEvent(PlayerPosEvent data)
@@ -368,6 +453,7 @@ namespace Altzone.Scripts.Lobby
                 // Checking if the new position is free before raising event to master client
                 if (PhotonBattleRoom.CheckIfPositionIsFree(position) == false)
                 {
+                    Debug.LogWarning($"Failed to reserve the position {position}. This likely because somebody already is in this position.");
                     _requestPositionChangeHolder = null;
                     yield break;
                 }
@@ -789,7 +875,7 @@ namespace Altzone.Scripts.Lobby
         private IEnumerator StartTheGameplay(bool isCloseRoom, string blueTeamName, string redTeamName)
         {
             // TODO: Select random characters if some are not selected
-            //if (!PhotonBattleRoom.IsValidAllSelectedCharacters()) 
+            //if (!PhotonBattleRoom.IsValidAllSelectedCharacters())
             //{
             //    StartingGameFailed();
             //    throw new UnityException("can't start game, everyone needs to have 3 defence characters selected");
@@ -831,6 +917,7 @@ namespace Altzone.Scripts.Lobby
             // Checking player positions before starting gameplay
             players = room.Players.Values.ToList();
             string[] playerUserIds = new string[4] { "", "", "", "" };
+            string[] playerUserNames = new string[4] { "", "", "", "" };
             PlayerType[] playerTypes = new PlayerType[4] { PlayerType.None, PlayerType.None, PlayerType.None, PlayerType.None, };
 
             int playerCount = 0;
@@ -856,6 +943,7 @@ namespace Altzone.Scripts.Lobby
                 }
                 playerTypes[playerPos-1] = PlayerType.Player;
                 playerUserIds[playerPos - 1] = roomPlayer.UserId;
+                playerUserNames[playerPos - 1] = roomPlayer.NickName;
                 playerCount += 1;
             }
 
@@ -900,10 +988,16 @@ namespace Altzone.Scripts.Lobby
                     yield return null;
                 }
 
+                /*for (int i=0; i < playerTypes.Length; i++)
+                {
+                    if(playerTypes[i] == PlayerType.None) playerTypes[i] = PlayerType.Bot;
+                } Disabled for now, reactivate when the bots work a little better again.*/
+
                 data = new()
                 {
                     StartTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                     PlayerSlotUserIds = playerUserIds,
+                    PlayerSlotUserNames = playerUserNames,
                     PlayerSlotTypes = playerTypes,
                     ProjectileInitialEmotion = startingEmotion,
                     MapId = mapId,
@@ -935,7 +1029,7 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator StartQuantum(StartGameData data)
         {
-            Debug.Log(data.ToString());
+            Debug.Log("Starting Quantum");
             string battleID = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(BattleID);
 
             // Getting the index of own user id from the player slot user id array to determine which player slot is for local player.
@@ -964,6 +1058,7 @@ namespace Altzone.Scripts.Lobby
                 BattleConfig     = _battleQConfig,
                 BattleParameters = new()
                 {
+                    PlayerNames = data.PlayerSlotUserNames,
                     PlayerSlotTypes = data.PlayerSlotTypes,
                     PlayerSlotUserIDs = data.PlayerSlotUserIds,
                     PlayerCount = data.PlayerCount,
@@ -987,28 +1082,25 @@ namespace Altzone.Scripts.Lobby
 
             //Start Battle Countdown
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleLoad);
+            _isStartFinished = false;
 
-            if(sendTime == 0) sendTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            long timeToStart = (sendTime+ STARTDELAY) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            yield return new WaitUntil(() => OnStartTimeSet != null);
+            if (sendTime == 0) sendTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            long timeToStart = (sendTime + STARTDELAY) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             long startTime = sendTime + timeToStart;
-
-            yield return new WaitForEndOfFrame();
-
             do
             {
-                if(OnStartTimeSet != null)
+                if (OnStartTimeSet != null)
                 {
-                    OnStartTimeSet?.Invoke(timeToStart);
+                    OnStartTimeSet?.Invoke(0);
                     break;
                 }
                 yield return null;
             } while (startTime > DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
-            timeToStart = (sendTime + STARTDELAY) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-            if (timeToStart > STARTDELAY) timeToStart = STARTDELAY;
+            yield return new WaitUntil(()=>_isStartFinished);
 
-            if(timeToStart > 0)
-            yield return new WaitForSeconds(timeToStart / 1000f);
+            AudioManager.Instance.StopMusic();
 
             //Move to Battle and start Runner
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Battle);
@@ -1018,19 +1110,25 @@ namespace Altzone.Scripts.Lobby
             DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.Battle);
             DebugLogFileHandler.FileOpen(battleID, (int)playerSlot);
 
-            Task<bool> task = StartRunner(sessionRunnerArguments);
+            int retryCount=0;
+            do
+            {
+                Task<bool> task = StartRunner(sessionRunnerArguments);
 
-            yield return new WaitUntil(() => task.IsCompleted);
-            if(task.Result)
-            {
-                _player.PlayerSlot = playerSlot;
-                _player.UserID = userId;
-                _runner?.Game.AddPlayer(_player);
-            }
-            else
-            {
-                OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
-            }
+                yield return new WaitUntil(() => task.IsCompleted);
+                if (task.Result)
+                {
+                    _player.PlayerSlot = playerSlot;
+                    _player.UserID = userId;
+                    _runner?.Game.AddPlayer(_player);
+                    break;
+                }
+                else
+                {
+                    retryCount++;
+                    if (retryCount == 5) { OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu); break; }
+                }
+            } while (true);
         }
 
         private async Task<bool> StartRunner(SessionRunner.Arguments sessionRunnerArguments)
@@ -1054,10 +1152,16 @@ namespace Altzone.Scripts.Lobby
 
         public static void ExitQuantum(bool winningTeam, float gameLengthSec)
         {
-            QuantumRunner.ShutdownAll();
-            DebugLogFileHandler.ContextExit();
+            CloseRunner();
             DataCarrier.AddData(DataCarrier.BattleWinner,winningTeam);
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleStory);
+        }
+
+        public static void CloseRunner()
+        {
+            AudioManager.Instance.StopMusic();
+            QuantumRunner.ShutdownAll();
+            DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.MenuUI);
         }
 
         public static void ExitBattleStory()
@@ -1082,41 +1186,93 @@ namespace Altzone.Scripts.Lobby
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Raid);
         }
 
-        private void SetPlayer(Player player, int playerPosition)
+        private bool _playerPosChangeInProgress = false;
+
+        private IEnumerator SetPlayer(Player player, int playerPosition)
         {
+            if (_posChangeQueue.Contains(player.UserId)) yield break;
+
+            _posChangeQueue.Add(player.UserId);
+
+            yield return new WaitUntil(() => !_playerPosChangeInProgress);
+
+            _playerPosChangeInProgress = true;
             // Checking if any of the players in the room are already in the position (value is anything else than empty string) and if so return.
-            if (PhotonBattleRoom.CheckIfPositionIsFree(playerPosition) == false) return;
-
-            Assert.IsTrue(PhotonLobbyRoom.IsValidGameplayPosOrGuest(playerPosition));
-
-            if (!player.HasCustomProperty(PlayerPositionKey))
+            if (PhotonBattleRoom.CheckIfPositionIsFree(playerPosition) == false)
             {
-                Debug.Log($"setPlayer {PlayerPositionKey}={playerPosition}");
-                player.SetCustomProperties(new PhotonHashtable { { PlayerPositionKey, playerPosition } });
-                return;
+                Debug.LogWarning("Requested position is not free.");
+                _posChangeQueue.Remove(player.UserId);
+                _playerPosChangeInProgress = false;
+                yield break;
             }
 
-            // Setting new position to player's custom properties
-            int curValue = player.GetCustomProperty<int>(PlayerPositionKey);
-            player.SafeSetCustomProperty(PlayerPositionKey, playerPosition, curValue);
-
-            // Initializing hash tables for setting the previous position empty
-            string previousPositionKey = PhotonBattleRoom.GetPositionKey(curValue);
-
-            var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, "" } });
-            var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, player.UserId } }); // Expected to have the player's id in the previous position
-
-            // Setting previous position empty
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue);
+            Assert.IsTrue(PhotonLobbyRoom.IsValidGameplayPosOrGuest(playerPosition));
 
             // Initializing hash tables for setting the new position as taken
             string newPositionKey = PhotonBattleRoom.GetPositionKey(playerPosition);
 
+            if (!player.HasCustomProperty(PlayerPositionKey))
+            {
+                Debug.Log($"setPlayer {PlayerPositionKey}={playerPosition}");
+                var position = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, player.UserId } });
+                var eValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, "" } }); // Expecting the new position to be empty
+                if (PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(position, eValue))
+                    player.SetCustomProperty(PlayerPositionKey, playerPosition);
+                _posChangeQueue.Remove(player.UserId);
+                _playerPosChangeInProgress = false;
+                yield break;
+            }
+
+            // Initializing hash tables for setting the previous position empty
+            int curValue = player.GetCustomProperty<int>(PlayerPositionKey);
+            string previousPositionKey = PhotonBattleRoom.GetPositionKey(curValue);
+
             var newPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, player.UserId } });
-            expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, "" } }); // Expecting the new position to be empty
+            var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, "" } }); // Expecting the new position to be empty
 
             // Setting new position as taken
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(newPosition, expectedValue);
+            if (PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(newPosition, expectedValue))
+            {
+                float timeout = Time.time + 1f;
+                bool success = false;
+                while (Time.time < timeout)
+                {
+                    // Checking if the position is set to the player user id
+                    if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(newPositionKey) == player.UserId)
+                    {
+                        success = true;
+                        break;
+                    }
+                    else if (!PhotonBattleRoom.CheckIfPositionIsFree(playerPosition))
+                    {
+                        Debug.LogWarning($"Failed to reserve the position {playerPosition}. This likely because somebody already is in this position.");
+                        break;
+                    }
+                    yield return new WaitForSeconds(0.1f);
+                }
+
+                if (success)
+                {
+                    // Setting new position to player's custom properties
+                    player.SetCustomProperty(PlayerPositionKey, playerPosition);
+
+                    var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, "" } });
+                    expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { previousPositionKey, player.UserId } }); // Expected to have the player's id in the previous position
+
+                    // Setting previous position empty
+                    if (!PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue))
+                    {
+                        Debug.LogWarning($"Failed to free the position {curValue}. This likely because the player doesn't reserve it.");
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"Failed to reserve the position {playerPosition}. This likely because somebody already is in this position.");
+            }
+            _posChangeQueue.Remove(player.UserId);
+            _playerPosChangeInProgress = false;
+            yield break;
         }
 
         public void SetPlayerQuantumCharacters(List<CustomCharacter> characters)
@@ -1130,6 +1286,11 @@ namespace Altzone.Scripts.Lobby
             for (int i = 0; i < RuntimePlayer.CharacterCount; i++) {
                 character = characters[i];
 
+                if(character == null || character.Id is CharacterID.None)
+                {
+                    character = new(PlayerCharacterPrototypes.GetCharacter("-1",true).BaseCharacter);
+                }
+
                 var stats = new BattlePlayerStats()
                 {
                     Hp            = BaseCharacter.GetStatValueFP(StatType.Hp, character.Hp),
@@ -1142,7 +1303,7 @@ namespace Altzone.Scripts.Lobby
                 _player.Characters[i] = new BattleCharacterBase()
                 {
                     Id            = (int)character.Id,
-                    Class         = (int)character.CharacterClassID,
+                    Class         = (int)character.CharacterClassType,
                     Stats         = stats,
                 };
             }
@@ -1215,6 +1376,7 @@ namespace Altzone.Scripts.Lobby
                 var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { positionKey, otherPlayer.UserId } });
 
                 PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue);
+                if(_posChangeQueue.Contains(otherPlayer.UserId)) _posChangeQueue.Remove(otherPlayer.UserId);
             }
 
             if (PhotonRealtimeClient.InMatchmakingRoom && _followLeaderHolder == null)
@@ -1333,7 +1495,7 @@ namespace Altzone.Scripts.Lobby
 
         public void OnEvent(EventData photonEvent)
         {
-            Debug.Log($"Received PhotonEvent {photonEvent.Code}");
+            if(photonEvent.Code != 103) Debug.Log($"Received PhotonEvent {photonEvent.Code}");
 
             switch (photonEvent.Code)
             {
@@ -1345,7 +1507,14 @@ namespace Altzone.Scripts.Lobby
                 case PhotonRealtimeClient.PhotonEvent.PlayerPositionChangeRequested:
                     int position = (int)photonEvent.CustomData;
                     Player player = PhotonRealtimeClient.CurrentRoom.GetPlayer(photonEvent.Sender);
-                    if (player != null) SetPlayer(player, position);
+                    if (player != null)
+                    {
+                        if (!_posChangeQueue.Contains(player.UserId)) StartCoroutine(SetPlayer(player, position));
+                        else Debug.LogError($"Player {photonEvent.Sender} pos change already queued.");
+                    }
+                    else Debug.LogError($"Player {photonEvent.Sender} not found in room");
+
+                    if (_canBattleStartCheckHolder == null) _canBattleStartCheckHolder = StartCoroutine(CheckIfBattleCanStart());
                     break;
 
                 case PhotonRealtimeClient.PhotonEvent.RoomChangeRequested:
@@ -1389,14 +1558,7 @@ namespace Altzone.Scripts.Lobby
         {
             LobbyOnPlayerEnteredRoom?.Invoke(new(newPlayer));
 
-            if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
-            {
-                Room room = PhotonRealtimeClient.CurrentRoom;
-                if (room.PlayerCount != room.MaxPlayers) return;
-
-                GameType gameType = (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
-                if (gameType == GameType.Custom) OnStartPlayingEvent(new());
-            }
+            if(_canBattleStartCheckHolder == null) _canBattleStartCheckHolder = StartCoroutine(CheckIfBattleCanStart());
         }
         public void OnRoomPropertiesUpdate(PhotonHashtable propertiesThatChanged) { LobbyOnRoomPropertiesUpdate?.Invoke(new(propertiesThatChanged)); }
         public void OnPlayerPropertiesUpdate(Player targetPlayer, PhotonHashtable changedProps) { LobbyOnPlayerPropertiesUpdate?.Invoke(new(targetPlayer),new(changedProps)); }
@@ -1497,6 +1659,7 @@ namespace Altzone.Scripts.Lobby
     {
         public long StartTime { get; set; }
         public string[] PlayerSlotUserIds { get; set; }
+        public string[] PlayerSlotUserNames { get; set; }
         public PlayerType[] PlayerSlotTypes { get; set; }
         public Emotion ProjectileInitialEmotion { get; set; }
         public string MapId { get; set; }
@@ -1508,6 +1671,7 @@ namespace Altzone.Scripts.Lobby
             byte[] bytes = new byte[0];
             Serializer.Serialize(b.StartTime, ref bytes);
             Serializer.Serialize(b.PlayerSlotUserIds, ref bytes);
+            Serializer.Serialize(b.PlayerSlotUserNames, ref bytes);
             Serializer.Serialize(b.PlayerSlotTypes.Cast<int>().ToArray(), ref bytes);
             Serializer.Serialize((int)b.ProjectileInitialEmotion, ref bytes);
             Serializer.Serialize(b.MapId, ref bytes);
@@ -1522,6 +1686,7 @@ namespace Altzone.Scripts.Lobby
             int offset = 0;
             result.StartTime = Serializer.DeserializeLong(data, ref offset);
             result.PlayerSlotUserIds = Serializer.DeserializeStringArray(data, ref offset);
+            result.PlayerSlotUserNames = Serializer.DeserializeStringArray(data, ref offset);
             result.PlayerSlotTypes = Serializer.DeserializeIntArray(data, ref offset).Cast<PlayerType>().ToArray();
             result.ProjectileInitialEmotion = (Emotion)Serializer.DeserializeInt(data, ref offset);
             result.MapId = Serializer.DeserializeString(data, ref offset);
@@ -1534,10 +1699,11 @@ namespace Altzone.Scripts.Lobby
         {
             return $"Start time: {StartTime}" +
                  $"\nPlayerSlotUserIds: {string.Join(", ", PlayerSlotUserIds)}" +
+                 $"\nPlayerSlotUserNames: {string.Join(", ", PlayerSlotUserNames)}" +
                  $"\nPlayerSlotTypes: {string.Join(", ",PlayerSlotTypes)}" +
                  $"\nProjectileInitialEmotion: {ProjectileInitialEmotion}" +
                  $"\nMapId: {MapId}" +
-                 $"\nPlayerCount: {PlayerCount}";  
+                 $"\nPlayerCount: {PlayerCount}";
         }
     }
 }

@@ -34,7 +34,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private readonly AnimationController _animationController = new();
 
         private RectTransform _swipeArea;
-        private CharacterClassID _characterClassID;
+        private CharacterClassType _characterClassType;
         private Action _restoreDefaultColor;
 
         private const int FeaturesPerPage = 8;
@@ -227,6 +227,9 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             SetFeature(feature, slot);
             _restoreDefaultColor?.Invoke();
+
+            if (slot == 4)
+                gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
 
         private void SetFeature(AvatarPartsReference.AvatarPartInfo feature, int slot)
@@ -239,7 +242,7 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             _avatarEditorCharacterHandle.SetMainCharacterImage(slot, sprite);
 
-            if (_characterClassID == CharacterClassID.Confluent)
+            if (_characterClassType == CharacterClassType.Confluent)
             {
                 _avatarEditorCharacterHandle.SetSecondaryCharacterImage(slot, sprite);
             }

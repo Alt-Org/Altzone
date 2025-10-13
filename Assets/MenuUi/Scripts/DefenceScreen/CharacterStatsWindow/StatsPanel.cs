@@ -1,7 +1,8 @@
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
@@ -13,12 +14,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private Image _characterHeadImage;
         [SerializeField] private Image _lockImage;
 
-        [SerializeField] private Image _characterImage;
+        [SerializeField] private Image _characterImageTop;
+        [SerializeField] private Image _characterImageBottom;
         [SerializeField] private TMP_Text _characterDescription;
         [SerializeField] private TMP_Text _specialAbility;
         [SerializeField] private TMP_Text _wins;
         [SerializeField] private TMP_Text _losses;
         [SerializeField] private TMP_Text _className;
+        [SerializeField] private Image _classIcon;
+        [SerializeField] private ClassReference _classReference;
+        [SerializeField] private Image _charPhotoSeries;
 
         [SerializeField] private BaseScrollRect _scrollRect;
 
@@ -36,6 +41,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             SetCharacterDescription();
             SetWinsAndLosses();
             SetClassName();
+            SetClassIcon();
+            SetCharPhotoSeries();
 
 
             if (_controller.IsCurrentCharacterLocked())
@@ -67,7 +74,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (sprite != null)
             {
-                _characterImage.sprite = sprite;
+                _characterImageTop.sprite = sprite;
+                _characterImageBottom.sprite = sprite;
             }
         }
         private void SetCharacterDescription()
@@ -78,6 +86,24 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             _wins.text = _controller.GetCurrentCharacterWins().ToString();
             _losses.text = _controller.GetCurrentCharacterLosses().ToString();
+        }
+
+        private void SetClassIcon()
+        {
+            if (!_classIcon || !_classReference || _controller == null) return;
+
+            CharacterClassType classType = _controller.GetCurrentCharacterClass();
+            var icon = _classReference.GetCornerIcon(classType);
+
+            _classIcon.enabled = icon != null;
+            if (icon != null) _classIcon.sprite = icon;
+        }
+
+        private void SetCharPhotoSeries ()
+        {
+            _charPhotoSeries.sprite = _controller.GetCurrentCharacterPhotoSeries();
+            _charPhotoSeries.enabled = _charPhotoSeries.sprite != null;
+
         }
 
         public void ClosePopup()

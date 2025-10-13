@@ -22,6 +22,9 @@ jobs:
             branch: Production
 
     steps:
+      - name: Set current date as build version
+        run: echo "BUILD_VERSION=$(date +'%d.%m.%Y')" >> $GITHUB_ENV
+
       - name: Check branch match
         if: github.ref_name == matrix.branch
         run: echo "Building for branch ${{ matrix.branch }} and target ${{ matrix.targetPlatform }}"
@@ -49,7 +52,7 @@ jobs:
 
       - uses: game-ci/unity-builder@v4
         if: github.ref_name == matrix.branch
-        timeout-minutes: 50
+        timeout-minutes: 100
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
@@ -58,6 +61,8 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
           webGlCompression: Brotli
           androidExportType: 'androidAppBundle'
+          versioning: Custom
+          version: ${{ env.BUILD_VERSION }}
 
       - uses: actions/upload-artifact@v4
         if: github.ref_name == matrix.branch

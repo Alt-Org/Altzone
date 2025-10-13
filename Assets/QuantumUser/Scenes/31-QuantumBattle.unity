@@ -2561,7 +2561,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prototype:
     Type:
-      Value: 3
+      Value: 4
 --- !u!1 &321734676
 GameObject:
   m_ObjectHideFlags: 0
@@ -2618,6 +2618,7 @@ MonoBehaviour:
       - 
       - 
       - 
+      PlayerNames: []
       PlayerCount: 1
       ProjectileInitialEmotion: 0
   UseRandomSeed: 0
@@ -2634,41 +2635,41 @@ MonoBehaviour:
       Class: 0
       Stats:
         Hp:
-          RawValue: 0
+          RawValue: 19660800
         Speed:
-          RawValue: 0
+          RawValue: 1310720
         CharacterSize:
-          RawValue: 0
+          RawValue: 65536
         Attack:
-          RawValue: 0
+          RawValue: 3932160
         Defence:
-          RawValue: 0
+          RawValue: 13107200
     - Id: 0
       Class: 0
       Stats:
         Hp:
-          RawValue: 0
+          RawValue: 19660800
         Speed:
-          RawValue: 0
+          RawValue: 1310720
         CharacterSize:
-          RawValue: 0
+          RawValue: 65536
         Attack:
-          RawValue: 0
+          RawValue: 9830400
         Defence:
-          RawValue: 0
+          RawValue: 65536
     - Id: 0
       Class: 0
       Stats:
         Hp:
-          RawValue: 0
+          RawValue: 19660800
         Speed:
-          RawValue: 0
+          RawValue: 1310720
         CharacterSize:
-          RawValue: 0
+          RawValue: 65536
         Attack:
-          RawValue: 0
+          RawValue: 15073280
         Defence:
-          RawValue: 0
+          RawValue: 65536
   MaxPlayerCount: 0
   SimulationSpeedMultiplier: 1
   DisplaySaveAndReloadButton: 0
@@ -3808,7 +3809,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prototype:
     Type:
-      Value: 3
+      Value: 4
 --- !u!114 &1715260851 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1498203579526516830, guid: 1621131824e870d4b951f05b192c9ff7,
@@ -3879,21 +3880,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5654880094847856711, guid: 4c9026e52048f4c4a9a4b484571e84ed,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5685116848877297894, guid: 4c9026e52048f4c4a9a4b484571e84ed,
-        type: 3}
-      propertyPath: _colorA.a
-      value: 0.078431375
-      objectReference: {fileID: 0}
-    - target: {fileID: 5685116848877297894, guid: 4c9026e52048f4c4a9a4b484571e84ed,
-        type: 3}
-      propertyPath: _colorB.a
-      value: 0.078431375
-      objectReference: {fileID: 0}
     - target: {fileID: 5685116848877297894, guid: 4c9026e52048f4c4a9a4b484571e84ed,
         type: 3}
       propertyPath: _gridParent
@@ -3950,16 +3936,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1982871711592827336, guid: 97e8f0ca20408d042a38f07b90b44946,
+    - target: {fileID: 1560703308592050577, guid: 97e8f0ca20408d042a38f07b90b44946,
         type: 3}
-      propertyPath: _moveJoystickMovableElement
+      propertyPath: m_text
       value: 
-      objectReference: {fileID: 2118663605}
-    - target: {fileID: 1982871711592827336, guid: 97e8f0ca20408d042a38f07b90b44946,
-        type: 3}
-      propertyPath: _rotateJoystickMovableElement
-      value: 
-      objectReference: {fileID: 2118663604}
+      objectReference: {fileID: 0}
     - target: {fileID: 3300782618133613160, guid: 97e8f0ca20408d042a38f07b90b44946,
         type: 3}
       propertyPath: m_Pivot.x
@@ -4065,6 +4046,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: BattleUi
       objectReference: {fileID: 0}
+    - target: {fileID: 6237019342560067564, guid: 97e8f0ca20408d042a38f07b90b44946,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7159658355199045281, guid: 97e8f0ca20408d042a38f07b90b44946,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7342130735435193128, guid: 97e8f0ca20408d042a38f07b90b44946,
         type: 3}
       propertyPath: GameViewController
@@ -4075,30 +4066,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 97e8f0ca20408d042a38f07b90b44946, type: 3}
---- !u!114 &2118663604 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1270898280376774472, guid: 97e8f0ca20408d042a38f07b90b44946,
-    type: 3}
-  m_PrefabInstance: {fileID: 2118663603}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e16f983dca8ddf346ab612d4b1bce417, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &2118663605 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3458928511732782321, guid: 97e8f0ca20408d042a38f07b90b44946,
-    type: 3}
-  m_PrefabInstance: {fileID: 2118663603}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e16f983dca8ddf346ab612d4b1bce417, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2118663608 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7342130735435193128, guid: 97e8f0ca20408d042a38f07b90b44946,

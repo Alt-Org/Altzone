@@ -14,25 +14,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 404
   CharacterId: 404
-  IsApproved: 0
-  Name: Harhaisuus
+  IsApproved: 1
+  FinnishName: Harhaisuus
+  EnglishName: Delusion
   ClassType: 400
-  CharacterDescription: 
-  CharacterShortDescription: 
+  CharacterDescriptionFinnish: 
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: 
+  CharacterShortDescriptionEnglish: 
+  CharacterStats: {fileID: 11400000, guid: 23c30bf9da610914983eb39fe1ba8282, type: 2}
   Hp:
-    Level: 0
-    Coefficient: 0
+    Level: 3
+    Coefficient: 5
   Speed:
-    Level: 0
+    Level: 3
     Coefficient: 0
   CharacterSize:
-    Level: 0
-    Coefficient: 0
+    Level: 6
+    Coefficient: 6
   Attack:
-    Level: 0
-    Coefficient: 0
+    Level: 2
+    Coefficient: 3
   Defence:
-    Level: 0
-    Coefficient: 0
-  GalleryImage: {fileID: 0}
-  BattleSprite: {fileID: 0}
+    Level: 8
+    Coefficient: 4
+  GalleryImage: {fileID: 21300000, guid: ed99ec8a7e61775458ec10371f1dbf6a, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: 2bf7057f8625d2343bbe7a02e51e38a8, type: 3}
+  CharPhotoSeries: {fileID: 0}
+  BattleEntityPrototype:
+    Id:
+      Value: 1435119862573309882
+  BattleUiSprite: {fileID: 0}

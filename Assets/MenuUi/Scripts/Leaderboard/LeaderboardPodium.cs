@@ -51,13 +51,13 @@ public class LeaderboardPodium : MonoBehaviour
         switch (rank)
         {
             case 1:
-                InitializeFirstPlace(name, points, clanData, serverClan, null);
+                InitializeFirstPlace(name, points, clanData: clanData, serverClan: serverClan);
                 break;
             case 2:
-                InitializeSecondPlace(name, points, clanData, serverClan, null);
+                InitializeSecondPlace(name, points, clanData: clanData, serverClan: serverClan);
                 break;
             case 3:
-                InitializeThirdPlace(name, points, clanData, serverClan, null);
+                InitializeThirdPlace(name, points, clanData: clanData, serverClan: serverClan);
                 break;
         }
     }
@@ -67,18 +67,34 @@ public class LeaderboardPodium : MonoBehaviour
         switch (rank)
         {
             case 1:
-                InitializeFirstPlace(name, points, null, null, playerData);
+                InitializeFirstPlace(name, points, playerData: playerData);
                 break;
             case 2:
-                InitializeSecondPlace(name, points, null, null, playerData);
+                InitializeSecondPlace(name, points, playerData: playerData);
                 break;
             case 3:
-                InitializeThirdPlace(name, points, null, null, playerData);
+                InitializeThirdPlace(name, points, playerData: playerData);
                 break;
         }
     }
 
-    private void InitializeFirstPlace(string firstName, int firstPoints, ClanData clanData, ServerClan serverClan, PlayerData playerData)
+    public void InitilializePodium(int rank, PlayerLeaderboard ranking)
+    {
+        switch (rank)
+        {
+            case 1:
+                InitializeFirstPlace(ranking.Player.Name, ranking.Points, playerData: ranking.Player, logo: ranking.Clanlogo);
+                break;
+            case 2:
+                InitializeSecondPlace(ranking.Player.Name, ranking.Points, playerData: ranking.Player, logo: ranking.Clanlogo);
+                break;
+            case 3:
+                InitializeThirdPlace(ranking.Player.Name, ranking.Points, playerData: ranking.Player, logo: ranking.Clanlogo);
+                break;
+        }
+    }
+
+    private void InitializeFirstPlace(string firstName, int firstPoints, ClanData clanData = null, ServerClan serverClan = null, PlayerData playerData = null, ClanLogo logo= null)
     {
         _firstName.text = firstName;
         _firstPoints.text = firstPoints.ToString();
@@ -105,10 +121,10 @@ public class LeaderboardPodium : MonoBehaviour
 
                 AvatarVisualData avatarVisualData = null;
 
-                if (/*ranking.Player.SelectedCharacterId != 201 &&*/ playerData.SelectedCharacterId != 0)
-                {
+               
+                
                     avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
-                }
+                
                 if (avatarVisualData != null)
                 {
                     _firstAvatarHead.GetComponent<AvatarFaceLoader>().UpdateVisuals(avatarVisualData);
@@ -118,7 +134,7 @@ public class LeaderboardPodium : MonoBehaviour
         }
     }
 
-    private void InitializeSecondPlace(string secondName, int secondPoints, ClanData clanData, ServerClan serverClan, PlayerData playerData)
+    private void InitializeSecondPlace(string secondName, int secondPoints, ClanData clanData = null, ServerClan serverClan = null, PlayerData playerData = null, ClanLogo logo = null)
     {
         _secondName.text = secondName;
         _secondPoints.text = secondPoints.ToString();
@@ -145,10 +161,10 @@ public class LeaderboardPodium : MonoBehaviour
 
                 AvatarVisualData avatarVisualData = null;
 
-                if (/*ranking.Player.SelectedCharacterId != 201 &&*/ playerData.SelectedCharacterId != 0)
-                {
+            
+                
                     avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
-                }
+                
                 if (avatarVisualData != null)
                 {
                     _secondAvatarHead.GetComponent<AvatarFaceLoader>().UpdateVisuals(avatarVisualData);
@@ -157,7 +173,7 @@ public class LeaderboardPodium : MonoBehaviour
         }
     }
 
-    private void InitializeThirdPlace(string thirdName, int thirdPoints, ClanData clanData, ServerClan serverClan, PlayerData playerData)
+    private void InitializeThirdPlace(string thirdName, int thirdPoints, ClanData clanData = null, ServerClan serverClan = null, PlayerData playerData = null, ClanLogo logo = null)
     {
         _thirdName.text = thirdName;
         _thirdPoints.text = thirdPoints.ToString();
@@ -188,10 +204,10 @@ public class LeaderboardPodium : MonoBehaviour
 
                 AvatarVisualData avatarVisualData = null;
 
-                if (/*ranking.Player.SelectedCharacterId != 201 &&*/ playerData.SelectedCharacterId != 0)
-                {
+               
+                
                     avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
-                }
+                
                 if (avatarVisualData != null)
                 {
                     _thirdAvatarHead.GetComponent<AvatarFaceLoader>().UpdateVisuals(avatarVisualData);

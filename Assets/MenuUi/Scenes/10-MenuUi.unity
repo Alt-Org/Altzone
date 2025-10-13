@@ -1170,28 +1170,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 457baf15096b8ad448adc0786c98732a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activeChatChannel:
-    _id: 
-    _channelName: 
-    _chatChannelType: 3
-    _firstMsgIndex: 1
-    _lastMsgIndex: 0
   _globalChatChannel:
     _id: 
     _channelName: 
-    _chatChannelType: 3
+    _chatChannelType: 0
     _firstMsgIndex: 1
     _lastMsgIndex: 0
   _clanChatChannel:
     _id: 
     _channelName: 
-    _chatChannelType: 3
-    _firstMsgIndex: 1
-    _lastMsgIndex: 0
-  _countryChatChannel:
-    _id: 
-    _channelName: 
-    _chatChannelType: 3
+    _chatChannelType: 1
     _firstMsgIndex: 1
     _lastMsgIndex: 0
   _chatChannels: []
@@ -1223,6 +1211,76 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cb188fff0722d646b41d1e9c384deb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _chat: {fileID: 0}
+  _messagePrefabs: []
+--- !u!1001 &2585506312612423824
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3462253047109571291, guid: 0f234e6f61cc86d4894d51c2e5b03a58,
+        type: 3}
+      propertyPath: m_Name
+      value: JukeboxManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 6644638208423318400, guid: 0f234e6f61cc86d4894d51c2e5b03a58,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 90.66418
+      objectReference: {fileID: 0}
+    - target: {fileID: 6644638208423318400, guid: 0f234e6f61cc86d4894d51c2e5b03a58,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -634.6159
+      objectReference: {fileID: 0}
+    - target: {fileID: 6644638208423318400, guid: 0f234e6f61cc86d4894d51c2e5b03a58,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -457.79135
+      objectReference: {fileID: 0}
+    - target: {fileID: 6644638208423318400, guid: 0f234e6f61cc86d4894d51c2e5b03a58,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6644638208423318400, guid: 0f234e6f61cc86d4894d51c2e5b03a58,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6644638208423318400, guid: 0f234e6f61cc86d4894d51c2e5b03a58,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6644638208423318400, guid: 0f234e6f61cc86d4894d51c2e5b03a58,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6644638208423318400, guid: 0f234e6f61cc86d4894d51c2e5b03a58,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6644638208423318400, guid: 0f234e6f61cc86d4894d51c2e5b03a58,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6644638208423318400, guid: 0f234e6f61cc86d4894d51c2e5b03a58,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0f234e6f61cc86d4894d51c2e5b03a58, type: 3}
 --- !u!1001 &3322367137623106936
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1498,3 +1556,4 @@ SceneRoots:
   - {fileID: 667346631}
   - {fileID: 7892368298725135790}
   - {fileID: 1000247032}
+  - {fileID: 2585506312612423824}

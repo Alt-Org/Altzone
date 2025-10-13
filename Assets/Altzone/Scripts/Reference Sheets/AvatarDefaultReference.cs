@@ -121,7 +121,8 @@ public class AvatarDefaultReference : ScriptableObject
     public List<AvatarDefaultPartInfo> GetByCharacterId(int Id)
     {
         if (!Enum.IsDefined(typeof(CharacterID), Id)) Id = 701;
-        return Get("0" + Id.ToString()[0] + Id.ToString());
+        else if (CustomCharacter.IsTestCharacter((CharacterID)Id)) Id = 701;
+        return (Get("0" + Id.ToString()[0] + Id.ToString()));
     }
     
     // Overloaded method for string ID

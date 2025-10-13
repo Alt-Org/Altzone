@@ -1,0 +1,116 @@
+/// @file BattleProjectile.qtn
+/// <summary>
+/// Contains flags and component used for the projectile.
+/// </summary>
+///
+/// ## Generated Enums
+/// - @cref{Quantum,BattleProjectileCollisionFlags}  
+///   @copybrief Quantum.BattleProjectileCollisionFlags
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattleProjectileQComponent}  
+///   @copybrief Quantum.BattleProjectileQComponent
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @enum Quantum::BattleProjectileCollisionFlags
+/// <summary>
+/// Flags that track collisions during one frame.  
+/// This is used to prevent multiple collisions happening during the same frame.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleProjectile.qtn}
+
+/// @var Quantum::BattleProjectileCollisionFlags Quantum::BattleProjectileCollisionFlags::Projectile
+/// <summary>Projectile collision.</summary>
+///
+/// @var Quantum::BattleProjectileCollisionFlags Quantum::BattleProjectileCollisionFlags::SoulWall
+/// <summary>SoulWall collision.</summary>
+///
+/// @var Quantum::BattleProjectileCollisionFlags Quantum::BattleProjectileCollisionFlags::Player
+/// <summary>Player collision.</summary>
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattleProjectileQComponent
+/// <summary>
+/// Contains projectile's data, including speed, direction, emotion, etc.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleProjectile.qtn}
+
+/// @var bool Quantum.BattleProjectileQComponent::IsLaunched
+/// <summary>Is the projectile launched or not.</summary>
+///
+/// @var bool Quantum.BattleProjectileQComponent::IsHeld
+/// <summary>Is the projectile held or not.</summary>
+///
+/// @var bool Quantum.BattleProjectileQComponent::IsPassed
+/// <summary>Is the projectile passed or not.</summary>
+///
+/// @var BattleEmotionState Quantum.BattleProjectileQComponent::EmotionBase
+/// <summary>The true emotion state of the projectile.</summary>
+///
+/// Special emotions temporarily override the true state and are not saved to this. Currently the only special emotion state is Love.  
+/// The emotion in use by the projectile is saved in @cref{Quantum.BattleProjectileQComponent,EmotionCurrent}.
+///
+/// @var BattleEmotionState Quantum.BattleProjectileQComponent::EmotionCurrent
+/// <summary>Current emotion in use by the projectile, including special emotion states.</summary>
+///
+/// Normal and special emotions that override the true underlying state are saved to this. Currently the only special state is Love.  
+/// The true emotion of the projectile is also always saved in @cref{Quantum.BattleProjectileQComponent,EmotionBase}.
+///
+/// @var array Quantum.BattleProjectileQComponent::CollisionFlags
+/// <summary>
+/// Property for accessing the @cref{Quantum.BattleProjectileQComponent,_CollisionFlags_} array of flags for projectile's collisions.  
+/// Used to prevent hitting multiple entities per frame.
+/// </summary>
+///
+/// @var byte Quantum.BattleProjectileQComponent::_CollisionFlags_
+/// <summary>
+/// An array used internally for holding flags for projectile's collisions.  
+/// Used to prevent hitting multiple entities per frame.  
+/// Use @cref{Quantum.BattleProjectileQComponent,CollisionFlags} for accessing the flags.
+/// </summary>
+
+/// @var FP Quantum.BattleProjectileQComponent::Speed
+/// <summary>Projectile's speed.</summary>
+///
+/// @var FPVector2 Quantum.BattleProjectileQComponent::Direction
+/// <summary>The direction the projectile is going towards.</summary>
+///
+/// @var FP Quantum.BattleProjectileQComponent::Attack
+/// <summary>Projectile's attack damage.</summary>
+
+/// @var FP Quantum.BattleProjectileQComponent::Radius
+/// <summary>Projectile's radius.</summary>
+///
+/// @var FP Quantum.BattleProjectileQComponent::SpeedBase
+/// <summary>Projectile's base speed.</summary>
+///
+/// @var FP Quantum.BattleProjectileQComponent::SpeedIncrement
+/// <summary>Amount by which speed is increased.</summary>
+///
+/// @var FP Quantum.BattleProjectileQComponent::SpeedMax
+/// <summary>Maximum speed the projectile is allowed to reach.</summary>
+///
+/// @var FP Quantum.BattleProjectileQComponent::AttackMax
+/// <summary>Projectile's maximum attack damage.</summary>
+
+// @var FixedArray<FP> Quantum.BattleProjectileQComponent::SpeedMultiplierArray
+// <summary>Property for accessing the @cref{Quantum.BattleProjectileQComponent,_SpeedMultiplierArray_} array for multiplying speed depending on the projectile's emotion state.</summary>
+//
+// @var Byte Quantum.BattleProjectileQComponent::_SpeedMultiplierArray_
+// <summary>
+// An array used internally for holding values for multiplying speed depending on the projectile's emotion state.  
+// Use @cref{Quantum.BattleProjectileQComponent,SpeedMultiplierArray} for accessing the values.
+// </summary>
+//
+// @var FP Quantum.BattleProjectileQComponent::SpeedPotential
+// <summary>Used for updating projectile's speed.</summary>
+//
+// @var FP Quantum.BattleProjectileQComponent::AccelerationTimer
+// <summary>Timer for speeding up the ball.</summary>
+//
+// @var FP Quantum.BattleProjectileQComponent::AccelerationTimerDuration
+// <summary>Used for setting AccelerationTimer.</summary>

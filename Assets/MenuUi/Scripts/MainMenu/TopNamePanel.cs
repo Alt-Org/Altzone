@@ -34,8 +34,8 @@ public class TopNamePanel : MonoBehaviour
 
     private void Reset()
     {
-        _playerClanText.text = loggedOutClanText;
-        _playerClanDescription.text = loggedOutClanDescription;
+        if (_playerClanText != null) _playerClanText.text = loggedOutClanText;
+        if (_playerClanDescription != null) _playerClanDescription.text = loggedOutClanDescription;
     }
 
     private void OnDisable()

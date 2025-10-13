@@ -25,7 +25,11 @@ namespace Altzone.Scripts.Audio
         private float _maxVolume = 1.0f;
 
         private MusicCategory _currentCategory;
+        public MusicCategory CurrentCategory {  get => _currentCategory; }
+
         private MusicTrack _currentTrack;
+        public MusicTrack CurrentTrack { get => _currentTrack; }
+
         private int _currentTrackIndex = 0;
 
         private MusicCategory _nextUpCategory;
@@ -38,6 +42,8 @@ namespace Altzone.Scripts.Audio
 
         private bool _musicSwitchInProgress = false;
 
+        private float _musicStartTime = 0f;
+
         public enum MusicListDirection
         {
             Next,
@@ -45,7 +51,15 @@ namespace Altzone.Scripts.Audio
             None
         }
 
-        public void SetMaxVoulme(float volume) { _maxVolume = volume; }
+        public void SetMaxVolume(float volume)
+        {
+            _maxVolume = volume;
+
+            if (_primaryChannel == 1)
+                _musicChannel1.volume = volume;
+            else
+                _musicChannel2.volume = volume;
+        }
 
         private void Awake()
         {
@@ -65,17 +79,18 @@ namespace Altzone.Scripts.Audio
             return musicCategory.MusicTracks;
         }
 
-        public string PlayMusic(string categoryName, int trackId)
+        public string PlayMusicById(string categoryName, string trackId)
         {
             MusicCategory currentCategory = _musicReference.GetCategory(categoryName);
 
             if (currentCategory == null) return null;
 
-            MusicTrack musicTrack = currentCategory.Get(trackId);
+            MusicTrack musicTrack = currentCategory.GetById(trackId);
 
             if (musicTrack == null) return null;
 
-            if (categoryName.ToLower() == "MainMenu".ToLower()) _mainMenuMusicName = musicTrack.Name;
+            if (categoryName.ToLower() == "MainMenu".ToLower())
+                _mainMenuMusicName = SettingsCarrier.Instance.GetSelectionBoxData(SettingsCarrier.SelectionBoxType.MainMenuMusic);
 
             SwitchMusic(currentCategory, musicTrack);
 
@@ -88,14 +103,17 @@ namespace Altzone.Scripts.Audio
 
             if (currentCategory == null) return null;
 
+            if (categoryName.ToLower() == "MainMenu".ToLower())
+                _mainMenuMusicName = SettingsCarrier.Instance.GetSelectionBoxData(SettingsCarrier.SelectionBoxType.MainMenuMusic);
+
+            if (categoryName.ToLower() == "MainMenu".ToLower() && string.IsNullOrEmpty(trackName)) trackName = _mainMenuMusicName;
+
             MusicTrack musicTrack = currentCategory.Get(trackName);
 
             if (musicTrack == null) return null;
 
-            if (categoryName.ToLower() == "MainMenu".ToLower()) _mainMenuMusicName = musicTrack.Name;
-
             SwitchMusic(currentCategory, musicTrack);
-
+            
             return musicTrack.Name;
         }
 
@@ -105,11 +123,24 @@ namespace Altzone.Scripts.Audio
 
             if (currentCategory == null || musicTrack == null) return null;
 
-            if (categoryName.ToLower() == "MainMenu".ToLower()) _mainMenuMusicName = musicTrack.Name;
+            if (categoryName.ToLower() == "MainMenu".ToLower())
+                _mainMenuMusicName = SettingsCarrier.Instance.GetSelectionBoxData(SettingsCarrier.SelectionBoxType.MainMenuMusic);
 
             SwitchMusic(currentCategory, musicTrack);
 
             return musicTrack.Name;
+        }
+
+        public string PlayMusic(string categoryName, string trackName, float startLocation)
+        {
+            _musicStartTime = startLocation;
+            return PlayMusic(categoryName, trackName);
+        }
+
+        public string PlayMusic(string categoryName, MusicTrack musicTrack, float startLocation)
+        {
+            _musicStartTime = startLocation;
+            return PlayMusic(categoryName, musicTrack);
         }
 
         public string GetTrackName()
@@ -131,9 +162,11 @@ namespace Altzone.Scripts.Audio
                 _musicChannel2.Stop();
                 _musicChannel2.clip = null;
             }
+
+            _currentTrack = null;
         }
 
-        private List<MusicTrack> GetMusicList()
+        public List<MusicTrack> GetMusicList()
         {
             if (_currentCategory != null) return _currentCategory.MusicTracks;
 
@@ -146,10 +179,12 @@ namespace Altzone.Scripts.Audio
         {
             if (_currentTrack == musicTrack) return;
 
+            if (_currentCategory != null && _currentCategory.Name.ToLower() == "Jukebox".ToLower() && musicCategory.Name.ToLower() != "Jukebox".ToLower())
+                JukeboxManager.Instance.StopJukebox();
+
             if (_musicSwitchInProgress)
             {
-                if (_nextUpTrack == null)
-                    CalculateAcceleratedResumeTime();
+                if (_nextUpTrack != null) CalculateAcceleratedResumeTime(); //Wrong?
 
                 _nextUpCategory = musicCategory;
                 _nextUpTrack = musicTrack;
@@ -195,8 +230,7 @@ namespace Altzone.Scripts.Audio
 
                 if (_musicSwitchInProgress)
                 {
-                    if (_nextUpTrack == null)
-                        CalculateAcceleratedResumeTime();
+                    if (_nextUpTrack == null) CalculateAcceleratedResumeTime();
 
                     _nextUpCategory = _currentCategory;
                     _nextUpTrack = musicTrack;
@@ -239,7 +273,8 @@ namespace Altzone.Scripts.Audio
         private void StartMusicPlayback(AudioSource source, AudioClip audio)
         {
             source.clip = audio;
-            //source.volume = 0f;
+            source.time = _musicStartTime;
+            _musicStartTime = 0f;
             source.Play();
         }
 

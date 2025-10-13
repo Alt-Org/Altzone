@@ -51,12 +51,38 @@ namespace Quantum.Prototypes.Unity {
   #endif //;
   
   [System.SerializableAttribute()]
+  public unsafe partial class BattlePlayerClassProjectorDataQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerClassProjectorDataQComponentPrototype> {
+    [HideInInspector()]
+    public QBoolean IsHoldingProjectile;
+    [HideInInspector()]
+    public Quantum.QuantumEntityPrototype HeldProjectileEntity;
+    [HideInInspector()]
+    public Int32 HoldStartFrame;
+    [HideInInspector()]
+    public FP HeldProjectileAngleRadians;
+    [HideInInspector()]
+    public FP HeldProjectileDistance;
+    public FP RotationDurationFrames;
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerClassProjectorDataQComponentPrototype prototype);
+    public override Quantum.Prototypes.BattlePlayerClassProjectorDataQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.BattlePlayerClassProjectorDataQComponentPrototype();
+      converter.Convert(this.IsHoldingProjectile, out result.IsHoldingProjectile);
+      converter.Convert(this.HeldProjectileEntity, out result.HeldProjectileEntity);
+      converter.Convert(this.HoldStartFrame, out result.HoldStartFrame);
+      converter.Convert(this.HeldProjectileAngleRadians, out result.HeldProjectileAngleRadians);
+      converter.Convert(this.HeldProjectileDistance, out result.HeldProjectileDistance);
+      converter.Convert(this.RotationDurationFrames, out result.RotationDurationFrames);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
   public unsafe partial class BattlePlayerDataQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerDataQComponentPrototype> {
     public PlayerRef PlayerRef;
     public Quantum.QEnum32<BattlePlayerSlot> Slot;
     public Quantum.QEnum32<BattleTeamNumber> TeamNumber;
     public Int32 CharacterId;
-    public Int32 CharacterClass;
+    public Quantum.QEnum32<BattlePlayerCharacterClass> CharacterClass;
     public Quantum.Prototypes.BattlePlayerStatsPrototype Stats;
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
@@ -64,8 +90,13 @@ namespace Quantum.Prototypes.Unity {
     public FPVector2 TargetPosition;
     public FP RotationBase;
     public FP RotationOffset;
+    public FP CurrentHp;
+    public FP CurrentDefence;
     public Quantum.QuantumEntityPrototype HitboxShieldEntity;
     public Quantum.QuantumEntityPrototype HitboxCharacterEntity;
+    public QBoolean DisableRotation;
+    public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
+    public FP MovementCooldownSec;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerDataQComponentPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerDataQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerDataQComponentPrototype();
@@ -81,8 +112,13 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.TargetPosition, out result.TargetPosition);
       converter.Convert(this.RotationBase, out result.RotationBase);
       converter.Convert(this.RotationOffset, out result.RotationOffset);
+      converter.Convert(this.CurrentHp, out result.CurrentHp);
+      converter.Convert(this.CurrentDefence, out result.CurrentDefence);
       converter.Convert(this.HitboxShieldEntity, out result.HitboxShieldEntity);
       converter.Convert(this.HitboxCharacterEntity, out result.HitboxCharacterEntity);
+      converter.Convert(this.DisableRotation, out result.DisableRotation);
+      converter.Convert(this.DamageCooldown, out result.DamageCooldown);
+      converter.Convert(this.MovementCooldownSec, out result.MovementCooldownSec);
       ConvertUser(converter, ref result);
       return result;
     }
@@ -90,17 +126,21 @@ namespace Quantum.Prototypes.Unity {
   [System.SerializableAttribute()]
   public unsafe partial class BattlePlayerHitboxQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerHitboxQComponentPrototype> {
     public Quantum.QuantumEntityPrototype PlayerEntity;
+    public QBoolean IsActive;
     public Quantum.QEnum32<BattlePlayerHitboxType> HitboxType;
     public Quantum.QEnum32<BattlePlayerCollisionType> CollisionType;
     public FPVector2 Normal;
+    public FPVector2 NormalBase;
     public FP CollisionMinOffset;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerHitboxQComponentPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerHitboxQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerHitboxQComponentPrototype();
       converter.Convert(this.PlayerEntity, out result.PlayerEntity);
+      converter.Convert(this.IsActive, out result.IsActive);
       converter.Convert(this.HitboxType, out result.HitboxType);
       converter.Convert(this.CollisionType, out result.CollisionType);
       converter.Convert(this.Normal, out result.Normal);
+      converter.Convert(this.NormalBase, out result.NormalBase);
       converter.Convert(this.CollisionMinOffset, out result.CollisionMinOffset);
       ConvertUser(converter, ref result);
       return result;
@@ -114,20 +154,32 @@ namespace Quantum.Prototypes.Unity {
     [ArrayLengthAttribute(4)]
     public PlayerRef[] PlayerRefs = new PlayerRef[4];
     [ArrayLengthAttribute(4)]
+    public QBoolean[] IsBot = new QBoolean[4];
+    [ArrayLengthAttribute(4)]
+    public Quantum.Prototypes.FrameTimerPrototype[] RespawnTimer = new Quantum.Prototypes.FrameTimerPrototype[4];
+    [ArrayLengthAttribute(4)]
+    public QBoolean[] AllowCharacterSwapping = new QBoolean[4];
+    [ArrayLengthAttribute(4)]
     public Quantum.QuantumEntityPrototype[] SelectedCharacters = new Quantum.QuantumEntityPrototype[4];
-    [ArrayLengthAttribute(12)]
-    public Quantum.QuantumEntityPrototype[] AllCharacters = new Quantum.QuantumEntityPrototype[12];
     [ArrayLengthAttribute(4)]
     public Int32[] SelectedCharacterNumbers = new Int32[4];
+    [ArrayLengthAttribute(12)]
+    public Quantum.QuantumEntityPrototype[] AllCharacters = new Quantum.QuantumEntityPrototype[12];
+    [ArrayLengthAttribute(12)]
+    public Quantum.QEnum32<BattlePlayerCharacterState>[] AllCharactersStates = new Quantum.QEnum32<BattlePlayerCharacterState>[12];
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerManagerDataQSingletonPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerManagerDataQSingletonPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerManagerDataQSingletonPrototype();
       converter.Convert(this.PlayerCount, out result.PlayerCount);
       converter.Convert(this.PlayStates, out result.PlayStates);
       converter.Convert(this.PlayerRefs, out result.PlayerRefs);
+      converter.Convert(this.IsBot, out result.IsBot);
+      converter.Convert(this.RespawnTimer, out result.RespawnTimer);
+      converter.Convert(this.AllowCharacterSwapping, out result.AllowCharacterSwapping);
       converter.Convert(this.SelectedCharacters, out result.SelectedCharacters);
-      converter.Convert(this.AllCharacters, out result.AllCharacters);
       converter.Convert(this.SelectedCharacterNumbers, out result.SelectedCharacterNumbers);
+      converter.Convert(this.AllCharacters, out result.AllCharacters);
+      converter.Convert(this.AllCharactersStates, out result.AllCharactersStates);
       ConvertUser(converter, ref result);
       return result;
     }

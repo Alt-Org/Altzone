@@ -87,7 +87,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _featureButtonsBase.SetActive(mode != AvatarEditorMode.AvatarScaler);
 
             if (_currentMode == AvatarEditorMode.FeaturePicker)
-                _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
+                _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClass());
 
             if (_currentMode == AvatarEditorMode.ColorPicker)
                 _colorPicker.SelectFeature(_currentlySelectedCategory);
@@ -118,7 +118,7 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             _playerAvatar = new(_avatarDefaultReference.GetByCharacterId(_currentPlayerData.SelectedCharacterId)[0]);
 
-            _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
+            _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClass());
             _featurePicker.SetLoadedFeatures(_playerAvatar.FeatureIds);
 
             _colorPicker.SetLoadedColors(_playerAvatar.Color, _playerAvatar.FeatureIds);
@@ -142,7 +142,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 _playerAvatar = new(_currentPlayerData.AvatarData);
             }
 
-            _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
+            _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClass());
             _featurePicker.SetLoadedFeatures(_playerAvatar.FeatureIds);
 
             _colorPicker.SetLoadedColors(_playerAvatar.Color, _playerAvatar.FeatureIds);
@@ -187,6 +187,8 @@ namespace MenuUi.Scripts.AvatarEditor
             _visualDataScriptableObject.Color = _colorPicker.GetCurrentColorsAsColors();
 
             AvatarDesignLoader.Instance.InvokeOnAvatarDesignUpdate();
+
+            GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
 
         #endregion
