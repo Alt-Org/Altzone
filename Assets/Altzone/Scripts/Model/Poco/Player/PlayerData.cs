@@ -33,44 +33,6 @@ namespace Altzone.Scripts.Model.Poco.Player
         Huono_Haviaja
     };
 
-    [Serializable]
-    public class TeamLoadOut
-    {
-
-        public CustomCharacterListObject[] Slots = new CustomCharacterListObject[3]
-        {
-
-        new CustomCharacterListObject(Id: CharacterID.None),
-        new CustomCharacterListObject(Id: CharacterID.None),
-        new CustomCharacterListObject(Id: CharacterID.None)
-        };
-
-
-        public bool IsEmpty
-        {
-            get
-            {
-                if (Slots == null) return true;
-
-                for (int index = 0; index < Slots.Length; index++)
-                {
-                    CustomCharacterListObject slot = Slots[index];
-
-                    bool slotIsEmpty =
-                        (slot == null) ||
-                        (slot.CharacterID == CharacterID.None &&
-                         (slot.ServerID == null || slot.ServerID.Length == 0));
-
-                    if (!slotIsEmpty)
-                        return false;
-                }
-
-                return true;
-            }
-        }
-    }
-
-
     [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class PlayerData
     {
@@ -175,13 +137,16 @@ namespace Altzone.Scripts.Model.Poco.Player
         }
 
         /// <summary>
-        /// index: 0 = no loadout; 1-3 = LoadOuts[0-2]
         /// Loads the chosen loadout into SelectedCharacterIds (makes it the active team).
         /// </summary>
         public void ApplyLoadout(int index)
         {
-            if (index < 0 || index > 3) return;
+            if (index < 0 || index > LoadOuts.Length)
 
+            {
+                Debug.LogError($"Invalid index {index}. Allowed range is 0 - {LoadOuts.Length}");
+                return;
+            }
             if (index == 0)
             {
                 // "Current": does not copy anything. Free editing without autosave to a slot.
@@ -213,7 +178,11 @@ namespace Altzone.Scripts.Model.Poco.Player
         /// </summary>
         public void SaveCurrentTeamToLoadout(int index)
         {
-            if (index <= 0 || index > 3) return;
+            if (index <= 0 || index > LoadOuts.Length)
+            {
+                Debug.LogError($"Invalid index {index}. Allowed range is 1 - {LoadOuts.Length}");
+                return;
+            }
 
             if (LoadOuts[index - 1] == null)
                 LoadOuts[index - 1] = new TeamLoadOut();
