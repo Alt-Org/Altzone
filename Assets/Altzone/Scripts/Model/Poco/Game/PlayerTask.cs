@@ -43,6 +43,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         FindVariableValueInGame,
         Find3ImportantButtons,
         FindBug,
+        CreateClanPlaylist,
     }
 
     public enum TaskEducationSocialType
@@ -355,6 +356,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case "find_bug":
                     {
                         return TaskEducationActionType.FindBug;
+                    }
+                case "create_clan_playlist":
+                    {
+                        return TaskEducationActionType.CreateClanPlaylist;
                     }
                 default:
                     {

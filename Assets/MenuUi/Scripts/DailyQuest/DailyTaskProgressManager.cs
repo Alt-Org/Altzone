@@ -128,6 +128,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationActionType.FindVariableValueInGame: HandleSimpleTask(value); break;
             case TaskEducationActionType.Find3ImportantButtons: HandleSimpleTask(value); break;
             case TaskEducationActionType.FindBug: HandleSimpleTask(value); break;
+            case TaskEducationActionType.CreateClanPlaylist: HandleSimpleTask(value); break;
             default: break;
         }
     }
