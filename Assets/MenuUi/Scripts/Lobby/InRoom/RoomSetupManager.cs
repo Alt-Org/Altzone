@@ -125,6 +125,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
             LobbyManager.LobbyOnPlayerPropertiesUpdate -= OnPlayerPropertiesUpdate;
             LobbyManager.LobbyOnMasterClientSwitched -= OnMasterClientSwitched;
             PhotonRealtimeClient.RemoveCallbackTarget(this);
+            if (_onEnableCoroutineHolder != null) StopCoroutine(_onEnableCoroutineHolder);
+            _onEnableCoroutineHolder = null;
         }
 
         private void OnDestroy()
