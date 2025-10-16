@@ -7,11 +7,9 @@
 /// Handles setting the timer text.
 
 using UnityEngine;
-
-using Quantum;
-using Photon.Deterministic;
-
 using TMPro;
+
+using Photon.Deterministic;
 
 using Altzone.Scripts.BattleUiShared;
 
