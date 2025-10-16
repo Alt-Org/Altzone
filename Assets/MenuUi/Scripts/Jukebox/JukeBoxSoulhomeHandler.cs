@@ -101,7 +101,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         //JukeboxManager.Instance.OnSetPlayButtonImages += SetPlayButtonStates;
 
         if (JukeboxManager.Instance.CurrentTrackQueueData != null)
-            SetSongInfo(JukeboxManager.Instance.GetNotHatedMusicTrack());
+            SetSongInfo(JukeboxManager.Instance.CurrentTrackQueueData.MusicTrack);
         else
             foreach (TMP_Text text in _trackNames) text.text = NoSongName;
     }
