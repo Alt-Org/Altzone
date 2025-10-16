@@ -4,7 +4,7 @@
 /// </summary>
 ///
 /// The manager handles initializing players that are present in the game, as well as spawning and despawning player characters.<br/>
-/// This script also contains the public and private PlayerHandle structs.
+/// This script also contains the public and private PlayerHandle structs, as well as an extension class for player play states.
 
 //#define DEBUG_PLAYER_STAT_OVERRIDE
 
