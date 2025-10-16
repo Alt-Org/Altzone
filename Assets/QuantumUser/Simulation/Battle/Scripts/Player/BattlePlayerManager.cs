@@ -1,10 +1,8 @@
 /// @file BattlePlayerManager.cs
 /// <summary>
-/// The manager script for player logic.
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerManager} class which handles player logic.<br/>
+/// Also contains @cref{Battle.QSimulation.Player,BattlePlayerPlayeStateExtension} class which has extension methods for BattlePlayerPlayState enum.
 /// </summary>
-///
-/// The manager handles initializing players that are present in the game, as well as spawning and despawning player characters.<br/>
-/// This script also contains the public and private PlayerHandle structs, as well as an extension class for player play states.
 
 //#define DEBUG_PLAYER_STAT_OVERRIDE
 
@@ -92,6 +90,9 @@ namespace Battle.QSimulation.Player
     /// <summary>
     /// Provides static methods to initialize, spawn, despawn, and query player-related data.
     /// </summary>
+    ///
+    /// Handles initializing players that are present in the game, as well as spawning and despawning player characters.<br/>
+    /// Also contains the public and private PlayerHandle structs.
     public static unsafe class BattlePlayerManager
     {
         #region Public
