@@ -1,10 +1,7 @@
 /// @file BattlePlayerMovementController.cs
 /// <summary>
-/// Handles player input, movement and rotations.
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerMovementController} class which handles player input, movement and rotations.
 /// </summary>
-///
-/// Gets player's Quantum.Input and updates player's position and rotation depending on player's actions.
-/// Handles moving, rotating and teleporting players and all their hitboxes.
 
 using UnityEngine;
 using UnityEngine.Scripting;
@@ -20,6 +17,9 @@ namespace Battle.QSimulation.Player
     /// <summary>
     /// Handles player input, movement and rotations.
     /// </summary>
+    ///
+    /// Gets player's Quantum.Input and updates player's position and rotation depending on player's actions.
+    /// Handles moving, rotating and teleporting players and all their hitboxes.
     [Preserve]
     public static unsafe class BattlePlayerMovementController
     {
