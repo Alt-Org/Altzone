@@ -51,7 +51,10 @@ namespace Battle.View.UI
         /// <value>Is the %UI element visible or not.</value>
         public bool IsVisible => _isVisible;
 
+        /// <value>Is the Player %UI element visible or not.</value>
         public bool IsVisiblePlayer => _isVisiblePlayer;
+
+        /// <value>Is the Teammate %UI element visible or not.</value>
         public bool IsVisibleTeammate => _isVisibleTeammate;
 
         /// <value>Public getter for #_localPlayerMultiOrientationElement.</value>
@@ -160,6 +163,13 @@ namespace Battle.View.UI
             }
         }
 
+        /// <summary>
+        /// Checks if the character selection was for the local player.<br/>
+        /// Calls SetSelected on all character buttons to set them to false, then sets the selected character's to true.
+        /// </summary>
+        /// 
+        /// <param name="slot">The slot of the player in question.</param>
+        /// <param name="characterNumber">The character number of the selected character.</param>
         public void SetSelected(BattlePlayerSlot slot, int characterNumber)
         {
             if (slot != BattleGameViewController.LocalPlayerSlot) return;
@@ -194,6 +204,13 @@ namespace Battle.View.UI
             playerInfoComponent.CharacterButtons[characterNumber].SetDamageFill(healthPercentage);
         }
 
+        /// <summary>
+        /// Calls SetDefenceNumber on the character button of the correct players correct character.
+        /// </summary>
+        /// 
+        /// <param name="slot">The slot of the player in question.</param>
+        /// <param name="characterNumber">The character number of the character in question.</param>
+        /// <param name="defenceValue">The defence value of the character in question.</param>
         public void UpdateDefenceVisual(BattlePlayerSlot slot, int characterNumber, float defenceValue)
         {
             BattleUiPlayerInfoComponent playerInfoComponent = GetPlayerInfoComponent(slot);
@@ -203,6 +220,13 @@ namespace Battle.View.UI
             playerInfoComponent.CharacterButtons[characterNumber].SetDefenceNumber(defenceValue);
         }
 
+        /// <summary>
+        /// Retrieves the BattleUiPlayerInfoComponent for either the local player or their teammate.
+        /// </summary>
+        /// 
+        /// <param name="slot">The slot of the player in question.</param>
+        /// 
+        /// <returns>The BattleUiPlayerInfoComponent for the specified player.</returns>
         public BattleUiPlayerInfoComponent GetPlayerInfoComponent(BattlePlayerSlot slot)
         {
             if (slot == BattleGameViewController.LocalPlayerSlot)
@@ -215,8 +239,13 @@ namespace Battle.View.UI
             }
         }
 
-        private bool _isVisible         = false;
-        private bool _isVisiblePlayer   = false;
+        /// <value>Is the %UI element visible or not.</value>
+        private bool _isVisible = false;
+
+        /// <value>Is the Player %UI element visible or not.</value>
+        private bool _isVisiblePlayer = false;
+
+        /// <value>Is the Teammate %UI element visible or not.</value>
         private bool _isVisibleTeammate = false;
     }
 }
