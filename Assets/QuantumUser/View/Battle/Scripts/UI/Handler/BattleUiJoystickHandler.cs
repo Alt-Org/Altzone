@@ -128,7 +128,7 @@ namespace Battle.View.UI
         {
             // Connecting listeners for the joystick input
             if (_moveJoystickComponent != null) _moveJoystickComponent.OnJoystickInput += _uiController.GameViewController.UiInputOnJoystickMovement;
-            
+
             if (_rotateJoystickComponent != null)
             {
                 _rotateJoystickComponent.OnJoystickXAxisInput += _uiController.GameViewController.UiInputOnJoystickRotation;

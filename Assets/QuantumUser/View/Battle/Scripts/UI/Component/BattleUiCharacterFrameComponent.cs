@@ -37,7 +37,7 @@ namespace Battle.View.UI
         /// <summary>
         /// Sets the character frame on the icon this is attached to to the specified classes frame.
         /// </summary>
-        /// 
+        ///
         /// <param name="characterClass">The class of the character that the frame should match.</param>
         public void SetCharacterFrame(BattlePlayerCharacterClass characterClass)
         {

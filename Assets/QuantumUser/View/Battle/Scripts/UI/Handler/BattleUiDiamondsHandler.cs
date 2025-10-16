@@ -33,7 +33,7 @@ namespace Battle.View.UI
         [SerializeField] private TMP_Text _diamondText;
 
         /// @}
-        
+
         /// <value>Is the %UI element visible or not.</value>
         public bool IsVisible => MovableUiElement.gameObject.activeSelf;
 

@@ -19,7 +19,7 @@ namespace Battle.View
         /// <summary>
         /// Try get latest predicted %Quantum <a href="https://doc.photonengine.com/quantum/current/manual/frames">Frame@u-exlink</a>.
         /// </summary>
-        /// 
+        ///
         /// <param name="frame">The latest predicted %Quantum <a href="https://doc.photonengine.com/quantum/current/manual/frames">Frame@u-exlink</a> or null.</param>
         ///
         /// <returns>True if getting the frame was successful and false if not.</returns>

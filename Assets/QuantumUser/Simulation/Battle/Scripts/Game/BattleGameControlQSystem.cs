@@ -66,7 +66,7 @@ namespace Battle.QSimulation.Game
         /// <summary>
         /// Called when the game ends. Updates the game session state and calls the BattleViewGameOver Event and BattleOnGameOver Signal.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="winningTeam">The team that won the game.</param>
         /// <param name="projectile">Pointer reference to the projectile.</param>

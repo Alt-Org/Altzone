@@ -72,7 +72,7 @@ namespace Battle.View.UI
             /// <summary>
             /// Set's the font size to both #Name and #Value <a href="https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/api/TMPro.TMP_Text.html">TMP_Text@u-exlink</a> components.
             /// </summary>
-            /// 
+            ///
             /// <param name="size"></param>
             public void SetSize(float size)
             {
