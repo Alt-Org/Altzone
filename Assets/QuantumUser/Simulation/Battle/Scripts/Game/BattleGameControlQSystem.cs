@@ -6,11 +6,12 @@
 //#define DEBUG_LOG_STATE
 
 using UnityEngine.Scripting;
+
 using Quantum;
+using Photon.Deterministic;
 
 using Battle.QSimulation.Player;
 using Battle.QSimulation.SoulWall;
-using Photon.Deterministic;
 
 namespace Battle.QSimulation.Game
 {
