@@ -1,9 +1,7 @@
 /// @file BattleGameControlQSystem.cs
 /// <summary>
-/// Controls the overall game state flow in Quantum simulation.
+/// Contains @cref{Battle.QSimulation.Game,BattleGameControlQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which Controls the overall game flow in %Quantum simulation.
 /// </summary>
-///
-/// This system initializes the battle grid and player manager, and controls game state transitions from initialization to active gameplay.
 
 //#define DEBUG_LOG_STATE
 
