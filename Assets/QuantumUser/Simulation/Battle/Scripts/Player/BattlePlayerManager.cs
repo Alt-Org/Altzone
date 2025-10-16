@@ -25,7 +25,8 @@ namespace Battle.QSimulation.Player
     /// </summary>
     ///
     /// This is used to ease checking the subsstates of the BattlePlayerPlayState enum.<br/>
-    /// Checking superstates also checks if the current state is one of the substates of the superstate.
+    /// Checking superstates also checks if the current state is one of the substates of the superstate.<br/>
+    /// Checks for states that have no substates are also implemented for consistency.
     public static class BattlePlayerPlayStateExtension
     {
         /// <summary>
@@ -54,8 +55,8 @@ namespace Battle.QSimulation.Player
         ///
         /// <returns>
         /// True if play state is
-        /// <see cref="Quantum.BattlePlayerPlayState.OutOfPlay">OutOfPlay</see>,
-        /// <see cref="Quantum.BattlePlayerPlayState.OutOfPlayRespawning">OutOfPlayRespawning</see>,
+        /// <see cref="Quantum.BattlePlayerPlayState.OutOfPlay">OutOfPlay</see> or
+        /// <see cref="Quantum.BattlePlayerPlayState.OutOfPlayRespawning">OutOfPlayRespawning</see> or
         /// <see cref="Quantum.BattlePlayerPlayState.OutOfPlayFinal">OutOfPlayFinal</see>.
         /// </returns>
         public static bool IsOutOfPlay(this BattlePlayerPlayState state)           => state is BattlePlayerPlayState.OutOfPlay or BattlePlayerPlayState.OutOfPlayRespawning or BattlePlayerPlayState.OutOfPlayFinal;
