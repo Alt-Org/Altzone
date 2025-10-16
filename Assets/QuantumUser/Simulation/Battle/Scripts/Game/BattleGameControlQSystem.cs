@@ -17,11 +17,13 @@ using Photon.Deterministic;
 namespace Battle.QSimulation.Game
 {
     /// <summary>
-    /// <span class="brief-h">Game control <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
+    /// <span class="brief-h">%Game control <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
+    /// Controls the overall game flow in %Quantum simulation.
+    /// </summary>
+    ///
     /// Initializes BattleGridManager and BattlePlayerManager.<br/>
     /// Registers players to BattlePlayerManager when they connect.<br/>
     /// Controls game state transitions from initialization to active gameplay.
-    /// </summary>
     [Preserve]
     public unsafe class BattleGameControlQSystem : SystemMainThread, ISignalOnPlayerAdded
     {
