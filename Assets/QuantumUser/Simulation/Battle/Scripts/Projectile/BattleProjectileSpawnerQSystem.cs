@@ -1,10 +1,7 @@
 /// @file BattleProjectileSpawnerQSystem.cs
 /// <summary>
-/// Spawns projectile when game starts.
+/// Contains @cref{Battle.QSimulation.Projectile,BattleProjectileSpawnerQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which spawns the projectile when game starts.
 /// </summary>
-///
-/// Creates an invisible entity with BattleProjectileSpawnerQComponent when system is initiated,
-/// which is then used to spawn the projectile when BattleGameState is changed to "Playing".
 
 using UnityEngine;
 using UnityEngine.Scripting;
@@ -19,7 +16,9 @@ namespace Battle.QSimulation.Projectile
     /// <span class="brief-h">ProjectileSpawner <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
     /// Handles spawning the projectile at the beginning of the game.<br/>
     /// </summary>
-
+    ///
+    /// An invisible entity with BattleProjectileSpawnerQComponent is created when system is initiated, 
+    /// which is then used to spawn the projectile when BattleGameState is changed to "Playing".
     [Preserve]
     public unsafe class BattleProjectileSpawnerQSystem : SystemMainThreadFilter<BattleProjectileSpawnerQSystem.Filter>
     {
