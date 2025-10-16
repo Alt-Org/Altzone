@@ -1,9 +1,7 @@
 /// @file BattlePlayerQSystem.cs
 /// <summary>
-/// Handles the quantum side of player logic.
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which handles the quantum side of player logic.
 /// </summary>
-///
-/// This system contains methods called by BattleCollisionQSystem that deal damage to players and shields, as well as sending input data forward for movement and character switching.
 
 using UnityEngine.Scripting;
 using Quantum;
@@ -18,6 +16,8 @@ namespace Battle.QSimulation.Player
     /// <span class="brief-h">Player <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
     /// Handles the quantum side of player logic.
     /// </summary>
+    ///
+    /// This system contains methods called by BattleCollisionQSystem that deal damage to players and shields, as well as sending input data forward for movement and character switching.
     [Preserve]
     public unsafe class BattlePlayerQSystem : SystemMainThread
     {
