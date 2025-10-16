@@ -1,9 +1,7 @@
 /// @file BattlePlayerClassConfluent.cs
 /// <summary>
-/// Contains the logic for Confluent class characters.
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClassConfluent} class which contains the logic for Confluent class characters.
 /// </summary>
-///
-/// Contains code for Confluent class characters.
 
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Projectile;
