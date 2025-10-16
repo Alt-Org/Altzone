@@ -15,7 +15,7 @@ using Battle.QSimulation.Game;
 namespace Battle.QSimulation.Player
 {
     /// <summary>
-    /// <span class="brief-h">Player <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum SystemSignalsOnly@u-exlink</a> @systemslink</span><br/>
+    /// <span class="brief-h">Player <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
     /// Handles the quantum side of player logic.
     /// </summary>
     [Preserve]
