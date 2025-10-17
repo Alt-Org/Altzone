@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Altzone.Scripts.ReferenceSheets;
 using UnityEngine;
+using static Altzone.Scripts.Audio.MusicHandler;
 
 namespace Altzone.Scripts.Audio
 {
@@ -137,25 +139,102 @@ namespace Altzone.Scripts.Audio
 
         public List<MusicTrack> GetMusicList(string categoryName) { return _musicHandler.GetMusicList(categoryName); }
 
+        #region Obsolete / Removal pending...
+        /// <summary>
+        /// Use newer version that takes <c>MusicSwitchType</c> as a parameter! <br/>
+        /// Plays music track by given track name.
+        /// </summary>
+        /// <returns>Played track name if successfully started playback.</returns>
+        [Obsolete]
         public string PlayMusic(string categoryName, string trackName)
         {
             if (!HandleFallBack(categoryName, trackName)) return "";
 
-            return _musicHandler.PlayMusic(categoryName, trackName);
+            return _musicHandler.PlayMusic(categoryName, trackName, MusicSwitchType.CrossFade);
         }
 
+        /// <summary>
+        /// Use newer version that takes <c>MusicSwitchType</c> as a parameter! <br/>
+        /// Plays first music track in the given category.
+        /// </summary>
+        /// <returns>Played music track name if successfully started playback.</returns>
+        [Obsolete]
         public string PlayMusic(string categoryName)
         {
             if (!HandleFallBack(categoryName, "")) return "";
 
-            return _musicHandler.PlayMusic(categoryName, "");
+            return _musicHandler.PlayMusic(categoryName, "", MusicSwitchType.CrossFade);
         }
 
+        /// <summary>
+        /// Use newer version that takes <c>MusicSwitchType</c> as a parameter! <br/>
+        /// Plays the given <c>MusicTrack</c>.
+        /// </summary>
+        /// <returns>Played track name if successfully started playback.</returns>
+        [Obsolete]
         public string PlayMusic(string categoryName, MusicTrack musicTrack)
         {
             if (!HandleFallBack(categoryName, musicTrack.Name)) return "";
 
-            return _musicHandler.PlayMusic(categoryName, musicTrack);
+            return _musicHandler.PlayMusic(categoryName, musicTrack, MusicSwitchType.CrossFade);
+        }
+
+        /// <summary>
+        /// Use newer version that takes <c>MusicSwitchType</c> as a parameter! <br/>
+        /// Plays music track by given id.
+        /// </summary>
+        /// <returns>Played track name if successfully started playback.</returns>
+        [Obsolete]
+        public string PlayMusicById(string categoryName, string musicTrackId) //TODO: Modify "HandleFallBack" for empty track name input.
+        {
+            if (!HandleFallBack(categoryName, "")) return "";
+
+            return _musicHandler.PlayMusicById(categoryName, musicTrackId, MusicSwitchType.CrossFade);
+        }
+        #endregion
+
+        /// <summary>
+        /// Plays music track by given track name.
+        /// </summary>
+        /// <returns>Played track name if successfully started playback.</returns>
+        public string PlayMusic(string categoryName, string trackName, MusicSwitchType switchType)
+        {
+            if (!HandleFallBack(categoryName, trackName)) return "";
+
+            return _musicHandler.PlayMusic(categoryName, trackName, switchType);
+        }
+
+        /// <summary>
+        /// Plays first music track in the given category.
+        /// </summary>
+        /// <returns>Played music track name if successfully started playback.</returns>
+        public string PlayMusic(string categoryName, MusicSwitchType switchType)
+        {
+            if (!HandleFallBack(categoryName, "")) return "";
+
+            return _musicHandler.PlayMusic(categoryName, "", switchType);
+        }
+
+        /// <summary>
+        /// Plays the given <c>MusicTrack</c>.
+        /// </summary>
+        /// <returns>Played track name if successfully started playback.</returns>
+        public string PlayMusic(string categoryName, MusicTrack musicTrack, MusicSwitchType switchType)
+        {
+            if (!HandleFallBack(categoryName, musicTrack.Name)) return "";
+
+            return _musicHandler.PlayMusic(categoryName, musicTrack, switchType);
+        }
+
+        /// <summary>
+        /// Plays music track by given id.
+        /// </summary>
+        /// <returns>Played track name if successfully started playback.</returns>
+        public string PlayMusicById(string categoryName, string musicTrackId, MusicSwitchType switchType) //TODO: Modify "HandleFallBack" for empty track name input.
+        {
+            if (!HandleFallBack(categoryName, "")) return "";
+
+            return _musicHandler.PlayMusicById(categoryName, musicTrackId, switchType);
         }
 
         private bool HandleFallBack(string categoryName, string trackName)
@@ -177,10 +256,15 @@ namespace Altzone.Scripts.Audio
             return true;
         }
 
+        [Obsolete]
         public string PlayFallBackTrack()
         {
-            //Debug.LogError($"{_fallbackMusicCategory}   {_fallbackMusicTrack}");
-            return _musicHandler.PlayMusic(_fallbackMusicCategory, _fallbackMusicTrack);
+            return _musicHandler.PlayMusic(_fallbackMusicCategory, _fallbackMusicTrack, MusicSwitchType.CrossFade);
+        }
+
+        public string PlayFallBackTrack(MusicSwitchType switchType)
+        {
+            return _musicHandler.PlayMusic(_fallbackMusicCategory, _fallbackMusicTrack, switchType);
         }
 
         private bool CanPlay(string categoryName)
@@ -210,20 +294,40 @@ namespace Altzone.Scripts.Audio
             return true;
         }
 
+        [Obsolete]
         public string NextMusicTrack()
         {
             string name = null;
 
-            _musicHandler.SwitchMusic(MusicHandler.MusicListDirection.Next, sData => name = sData);
+            _musicHandler.SwitchMusic(MusicHandler.MusicListDirection.Next, sData => name = sData, MusicSwitchType.CrossFade);
 
             return name;
         }
 
+        public string NextMusicTrack(MusicSwitchType switchType)
+        {
+            string name = null;
+
+            _musicHandler.SwitchMusic(MusicHandler.MusicListDirection.Next, sData => name = sData, switchType);
+
+            return name;
+        }
+
+        [Obsolete]
         public string PrevMusicTrack()
         {
             string name = null;
 
-            _musicHandler.SwitchMusic(MusicHandler.MusicListDirection.Previous, sData => name = sData);
+            _musicHandler.SwitchMusic(MusicHandler.MusicListDirection.Previous, sData => name = sData, MusicSwitchType.CrossFade);
+
+            return name;
+        }
+
+        public string PrevMusicTrack(MusicSwitchType switchType)
+        {
+            string name = null;
+
+            _musicHandler.SwitchMusic(MusicHandler.MusicListDirection.Previous, sData => name = sData, switchType);
 
             return name;
         }
@@ -233,7 +337,7 @@ namespace Altzone.Scripts.Audio
             _musicHandler.StopMusic(_musicHandler.PrimaryChannel);
         }
 
-        public string ContinueMusic(string categoryName, string trackName, float startLocation)
+        public string ContinueMusic(string categoryName, string trackName, MusicSwitchType switchType, float startLocation)
         {
             if (!CanPlay(categoryName))
             {
@@ -242,9 +346,10 @@ namespace Altzone.Scripts.Audio
                 return "";
             }
 
-            return _musicHandler.PlayMusic(categoryName, trackName, startLocation);
+            return _musicHandler.PlayMusic(categoryName, trackName, switchType, startLocation);
         }
 
+        [Obsolete]
         public string ContinueMusic(string categoryName, MusicTrack musicTrack, float startLocation)
         {
             if (!CanPlay(categoryName))
@@ -254,7 +359,19 @@ namespace Altzone.Scripts.Audio
                 return "";
             }
 
-            return _musicHandler.PlayMusic(categoryName, musicTrack, startLocation);
+            return _musicHandler.PlayMusic(categoryName, musicTrack, MusicSwitchType.CrossFade, startLocation);
+        }
+
+        public string ContinueMusic(string categoryName, MusicTrack musicTrack, MusicSwitchType switchType, float startLocation)
+        {
+            if (!CanPlay(categoryName))
+            {
+                _fallbackMusicCategory = categoryName;
+                _fallbackMusicTrack = musicTrack.Name;
+                return "";
+            }
+
+            return _musicHandler.PlayMusic(categoryName, musicTrack, switchType, startLocation);
         }
         #endregion
     }
