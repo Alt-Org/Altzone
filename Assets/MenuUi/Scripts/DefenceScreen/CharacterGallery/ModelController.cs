@@ -1,15 +1,12 @@
-﻿using System.Linq;
-
-using UnityEngine;
-
-using Newtonsoft.Json.Linq;
-
+﻿using System;
+using System.Linq;
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
-
-using MenuUi.Scripts.Signals;
 using MenuUi.Scripts.DefenceScreen.CharacterStatsWindow;
+using MenuUi.Scripts.Signals;
+using Newtonsoft.Json.Linq;
+using UnityEngine;
 
 namespace MenuUi.Scripts.Signals
 {
@@ -67,6 +64,9 @@ namespace MenuUi.Scripts.CharacterGallery
         private PlayerData _playerData;
         private bool _reloadRequested = false;
 
+        public event Action<PlayerData> OnPlayerDataReady;
+
+        public PlayerData Player => _playerData;
 
         private void Awake()
         {
@@ -153,6 +153,8 @@ namespace MenuUi.Scripts.CharacterGallery
                 // Set characters in the ModelView
                 _view.SetCharacters(characters, selectedCharacterIds);
                 _editingPanelView.SetCharacters(characters, selectedCharacterIds);
+
+                OnPlayerDataReady?.Invoke(_playerData);
             }));
         }
 
