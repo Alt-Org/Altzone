@@ -65,14 +65,26 @@ namespace Altzone.Scripts.Audio
         #region SFX
 
         /// <summary>
-        /// Plays a sfx sound by given CategoryName and SFXName
+        /// Plays a sfx sound by given CategoryName and SFXName.
         /// </summary>
         /// <param name="categoryName">Category name where the sfx sound resides in. (Note: Can be left empty but it is recommended to be given.)</param>
         /// <param name="sFXname">Name of the sfx audio that is wanted.</param>
         /// <returns>Returns the <c>AudioChannelPath</c> wich can be used to pause, continue or clear the audio playback if not OneShot type and is still playing.</returns>
         public ActiveChannelPath? PlaySfxAudio(string categoryName, string sFXname)
         {
-            return _sFXHandler.Play(categoryName, sFXname, _musicHandler.MainMenuMusicName);
+            return _sFXHandler.Play(categoryName, sFXname, _musicHandler.MainMenuMusicName, 1f);
+        }
+
+        public ActiveChannelPath? PlaySfxAudio(string categoryName, string sFXname, float pitch)
+        {
+            return _sFXHandler.Play(categoryName, sFXname, _musicHandler.MainMenuMusicName, pitch);
+        }
+
+        public ActiveChannelPath? PlaySfxAudio(string categoryName, string sFXname, int note)
+        {
+            float pitch = Mathf.Pow(1.05946f, note);
+
+            return _sFXHandler.Play(categoryName, sFXname, _musicHandler.MainMenuMusicName, pitch);
         }
 
         #region SFX All Commands
@@ -108,6 +120,11 @@ namespace Altzone.Scripts.Audio
             _sFXHandler.PlaybackOperation(SFXHandler.SFXPlaybackOperationType.Clear, sFXName);
         }
 
+        public void ChangePitchSFXAudioChannel(string sFXName, float pitch)
+        {
+            _sFXHandler.PlaybackOperation(SFXHandler.SFXPlaybackOperationType.Pitch, sFXName, pitch);
+        }
+
         public void StopSFXAudioChannel(ActiveChannelPath path)
         {
             _sFXHandler.PlaybackOperation(SFXHandler.SFXPlaybackOperationType.Stop, path);
@@ -121,6 +138,11 @@ namespace Altzone.Scripts.Audio
         public void ClearSFXAudioChannel(ActiveChannelPath path)
         {
             _sFXHandler.PlaybackOperation(SFXHandler.SFXPlaybackOperationType.Clear, path);
+        }
+
+        public void ChangePitchSFXAudioChannel(ActiveChannelPath path, float pitch)
+        {
+            _sFXHandler.PlaybackOperation(SFXHandler.SFXPlaybackOperationType.Pitch, path, pitch);
         }
         #endregion
 
