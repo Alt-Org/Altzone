@@ -17,9 +17,9 @@ public class FriendlistHandler : MonoBehaviour
     [SerializeField] private ScrollRect _friendlistScrollView;
     [SerializeField] private Button _closeFriendlistButton;
     [SerializeField] private Button _openFriendlistButton;
+    [SerializeField] private FriendlistItem _friendlistItemPrefab;
 
-   
-
+    private List<FriendlistItem> _friendlistItems = new List<FriendlistItem>(); //  Lista, joka sis. instansioidut FriendlistItem-objektit
 
 
     // Start is called before the first frame update
@@ -30,8 +30,6 @@ public class FriendlistHandler : MonoBehaviour
         _closeFriendlistButton.onClick.AddListener(CloseFriendlist);
 
         ServerManager.OnOnlinePlayersChanged += BuildOnlinePlayerList; // alustetaan lista
-
-
 
     }
 
@@ -65,13 +63,45 @@ public class FriendlistHandler : MonoBehaviour
     private void BuildOnlinePlayerList(List<ServerOnlinePlayer> onlinePlayers)
     {
         UpdateOnlineFriendsCount(onlinePlayers);
+       // UpdateFriendsCount(onlinePlayers);
     }
 
     private void UpdateOnlineFriendsCount(List<ServerOnlinePlayer> onlinePlayers)
     {
-        int onlinePlayerCount = onlinePlayers.Count; //HUOM! kaikki online-pelaajat (myös sinä itse), ei suodatettu vielä vain online-kavereita
+        int onlinePlayerCount = onlinePlayers.Count; //HUOM! kaikki online-pelaajat (myos sina itse), ei suodatettu vielä vain online-kavereita
 
-        _friendlistOnlineTitle.text = $"Kavereita onlinessa {onlinePlayerCount}"; // Päivitetään tieto otsikkoon
+        _friendlistOnlineTitle.text = $"Kavereita onlinessa {onlinePlayerCount}"; // Paivitetaan tieto otsikkoon
     }
+    private void UpdateFriendsCount(List<ServerOnlinePlayer> onlinePlayers) //Paivittaa ystavalistan UI:n ja asettaa item-objektit paikoilleen (HUOM online-pelaajien perusteella)
+    {
+
+        foreach (var item in _friendlistItems)
+        {
+            Destroy(item.gameObject);
+        }
+
+        _friendlistItems.Clear();
+
+
+        foreach (var player in onlinePlayers) // kaikki online-pelaajat
+        {
+
+            FriendlistItem newItem = Instantiate(_friendlistItemPrefab, _friendlistForeground);
+            /* new.Initialize(
+                 player.name,
+                 player.avatar,
+                 player.clanLogo,
+                 player.isOnline,
+                 () => RemoveFriend(player)
+             );*/
+
+            _friendlistItems.Add(newItem);
+        }
+    }
+
+    /*private void RemoveFriend() // Ystavien poisto
+    {
+
+    }*/
 
 }

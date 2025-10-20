@@ -10,6 +10,7 @@ using Altzone.Scripts.Model.Poco.Player;
 public class FriendlistItem : MonoBehaviour
 
 {
+    [SerializeField] private GameObject _friendPanel;
     [SerializeField] private Image _avatarImage;
     [SerializeField] private Image _onlineStatusIndicator;
     [SerializeField] private TMPro.TextMeshProUGUI _nameText;
@@ -18,15 +19,30 @@ public class FriendlistItem : MonoBehaviour
 
 
 
-    // Start is called before the first frame update
+    /* public void Initialize(PlayerData playerData, AvatarVisualData avatarVisualData, ClanData clanData = null, bool isOnline = false, System.Action onRemoveClick)
+   {
+        _nameText.text = playerData.name;
+      
+        if (avatarVisualData != null)
+        {
+            _avatarImage.GetComponent<AvatarFaceLoader>()?.UpdateVisuals(avatarVisualData);
+        }
+
+        if (clanLogo != null)
+        {
+         _clanLogo.sprite = clanLogo;
+        }
+
+        _onlineStatusIndicator.color = isOnline ? Color.green : Color.red;
+    
+        _removefriendButton.onClick.RemoveAllListeners(); //poistetaan kuuntelijat
+        _removefriendButton.onClick.AddListener(() => onClickAction()); //asetetaan uusi toiminto
+    }*/
+
     void Start()
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        _friendPanel.SetActive(true);
     }
 }
+
