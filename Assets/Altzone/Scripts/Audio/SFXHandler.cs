@@ -24,7 +24,8 @@ namespace Altzone.Scripts.Audio
         {
             Stop,
             Continue,
-            Clear
+            Clear,
+            Pitch
         }
 
         private void Start()
@@ -74,7 +75,7 @@ namespace Altzone.Scripts.Audio
             return soundEffect.Volume * _maxVolume;
         }
 
-        public ActiveChannelPath? Play(string categoryName, string sFXName, string mainMenuMusicName)
+        public ActiveChannelPath? Play(string categoryName, string sFXName, string mainMenuMusicName, float pitch)
         {
             SoundEffect soundEffect = null;
 
@@ -96,16 +97,19 @@ namespace Altzone.Scripts.Audio
 
             if (soundEffect.Type == SoundPlayType.OneShot)
             {
+                _oneShotChannel.pitch = pitch;
                 _oneShotChannel.PlayOneShot(soundEffect.Audio, GetVolume(soundEffect));
                 return null;
             }
             else
-                GetFreeAudioSourceHandler(soundEffect).SetPlayAudioClip(soundEffect.Audio, (soundEffect.Type == SoundPlayType.Loop));
+                GetFreeAudioSourceHandler(soundEffect).SetPlayAudioClip(soundEffect.Audio, (soundEffect.Type == SoundPlayType.Loop), pitch);
 
             return _activeChannels[_activeChannels.Count - 1];
         }
 
-        public bool PlaybackOperation(SFXPlaybackOperationType type, string name)
+        public bool PlaybackOperation(SFXPlaybackOperationType type, string name) { return PlaybackOperation(type, name, 1f); }
+
+        public bool PlaybackOperation(SFXPlaybackOperationType type, string name, float pitch)
         {
             foreach (ActiveChannelPath channel in _activeChannels)
             {
@@ -129,13 +133,20 @@ namespace Altzone.Scripts.Audio
                                 data.audioSourceHandler.Clear();
                                 return true;
                             }
+                        case SFXPlaybackOperationType.Pitch:
+                            {
+                                data.audioSourceHandler.SetPitch(pitch);
+                                return true;
+                            }
                     }
             }
 
             return false;
         }
 
-        public bool PlaybackOperation(SFXPlaybackOperationType type, ActiveChannelPath channel)
+        public bool PlaybackOperation(SFXPlaybackOperationType type, ActiveChannelPath channel) { return PlaybackOperation(type, channel, 1f); }
+
+        public bool PlaybackOperation(SFXPlaybackOperationType type, ActiveChannelPath channel, float pitch)
         {
             AudioChannelData data = GetAudioChannelData(channel);
 
@@ -156,6 +167,11 @@ namespace Altzone.Scripts.Audio
                 case SFXPlaybackOperationType.Clear:
                     {
                         data.audioSourceHandler.Clear();
+                        return true;
+                    }
+                case SFXPlaybackOperationType.Pitch:
+                    {
+                        data.audioSourceHandler.SetPitch(pitch);
                         return true;
                     }
             }
@@ -253,6 +269,9 @@ namespace Altzone.Scripts.Audio
         }
     }
 
+    /// <summary>
+    /// Struct that contains data about where the sound effect is being played so that it can be modifide during playback.
+    /// </summary>
     public struct ActiveChannelPath
     {
         public int Chunk;
@@ -265,12 +284,18 @@ namespace Altzone.Scripts.Audio
         }
     }
 
+    /// <summary>
+    /// Contains data about <c>AudioChannelData</c> and how many of them are in use.
+    /// </summary>
     public class AudioChannelChunk
     {
         public int AmountInUse;
         public List<AudioChannelData> AudioChannels;
     }
 
+    /// <summary>
+    /// Contains data about <c>AudioSourceHandler</c> and the sfx asset that might occupy it.
+    /// </summary>
     public class AudioChannelData
     {
         //public string Name;
