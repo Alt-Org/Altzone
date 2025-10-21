@@ -11,7 +11,6 @@ public class FriendlistHandler : MonoBehaviour
     // UI-komponentit
 
     [SerializeField] private GameObject _friendlistPanel;
-    [SerializeField] private TMPro.TextMeshProUGUI _friendlistTitle;
     [SerializeField] private TMPro.TextMeshProUGUI _friendlistOnlineTitle;
     [SerializeField] private RectTransform _friendlistForeground;
     [SerializeField] private ScrollRect _friendlistScrollView;
@@ -42,13 +41,6 @@ public class FriendlistHandler : MonoBehaviour
     {
         ServerManager.OnOnlinePlayersChanged -= BuildOnlinePlayerList;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
 
     void OpenFriendlist()
     {
@@ -87,7 +79,7 @@ public class FriendlistHandler : MonoBehaviour
         {
 
             FriendlistItem newItem = Instantiate(_friendlistItemPrefab, _friendlistForeground);
-            /* new.Initialize(
+            /* newItem.Initialize(
                  player.name,
                  player.avatar,
                  player.clanLogo,

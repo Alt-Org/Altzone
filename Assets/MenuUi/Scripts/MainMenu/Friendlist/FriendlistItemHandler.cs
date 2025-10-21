@@ -18,6 +18,11 @@ public class FriendlistItem : MonoBehaviour
     [SerializeField] private Button _removefriendButton;
 
 
+    void Start()
+    {
+
+    }
+    //Katso vinkint avatariin ja logoon leaderboardista
 
     /* public void Initialize(PlayerData playerData, AvatarVisualData avatarVisualData, ClanData clanData = null, bool isOnline = false, System.Action onRemoveClick)
    {
@@ -38,11 +43,5 @@ public class FriendlistItem : MonoBehaviour
         _removefriendButton.onClick.RemoveAllListeners(); //poistetaan kuuntelijat
         _removefriendButton.onClick.AddListener(() => onClickAction()); //asetetaan uusi toiminto
     }*/
-
-    void Start()
-    {
-
-        _friendPanel.SetActive(true);
-    }
 }
 
