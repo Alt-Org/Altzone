@@ -18,6 +18,8 @@ public class AvatarDesignLoader : AltMonoBehaviour
     [Space]
     [SerializeField] private AvatarVisualDataScriptableObject _avatarVisualDataScriptableObject;
 
+    [SerializeField] private AvatarEditorController _avatarEditorController; //The reference for the avatar editor controller, used to get the reference to the _playerAvatar
+
     public delegate void AvatarDesignUpdate();
     public static event AvatarDesignUpdate OnAvatarDesignUpdate;
 
@@ -147,10 +149,22 @@ public class AvatarDesignLoader : AltMonoBehaviour
             return;
         }
 
-        var playerAvatar = new PlayerAvatar(defaultAvatars[0]);
+        var playerAvatar = _avatarEditorController.PlayerAvatar;
+        //old declaration -> new PlayerAvatar(defaultAvatars[0]);
+
+        //MCGYVERED TOGETHER NEEDS TO CHANGE VVVVVVVVVVVVVVV
+        List<string> featureIds = new List<string>();
+        var list = Enum.GetValues(typeof(FeatureSlot));
+        foreach (FeatureSlot feature in list)
+        {
+            featureIds.Add(playerAvatar.GetPartId(feature));
+            Debug.Log("The added featureId is " + playerAvatar.GetPartId(feature));
+        }
+        //END OF MCGYVERING
+
         playerData.AvatarData = new(
             playerAvatar.Name,
-            playerAvatar.FeatureIds,
+            featureIds,
             playerAvatar.Color,
             playerAvatar.Scale
         );

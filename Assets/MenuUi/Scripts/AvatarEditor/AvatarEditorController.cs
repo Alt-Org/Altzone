@@ -119,9 +119,9 @@ namespace MenuUi.Scripts.AvatarEditor
             _playerAvatar = new(_avatarDefaultReference.GetByCharacterId(_currentPlayerData.SelectedCharacterId)[0]);
 
             _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClass());
-            _featurePicker.SetLoadedFeatures(_playerAvatar.FeatureIds);
+            _featurePicker.SetLoadedFeatures(_playerAvatar);
 
-            _colorPicker.SetLoadedColors(_playerAvatar.Color, _playerAvatar.FeatureIds);
+            _colorPicker.SetLoadedColors(_playerAvatar);
             _avatarScaler.SetLoadedScale(_playerAvatar.Scale);
         }
 
@@ -143,9 +143,9 @@ namespace MenuUi.Scripts.AvatarEditor
             }
 
             _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClass());
-            _featurePicker.SetLoadedFeatures(_playerAvatar.FeatureIds);
+            _featurePicker.SetLoadedFeatures(_playerAvatar);
 
-            _colorPicker.SetLoadedColors(_playerAvatar.Color, _playerAvatar.FeatureIds);
+            _colorPicker.SetLoadedColors(_playerAvatar);
             _avatarScaler.SetLoadedScale(_playerAvatar.Scale);
         }
 
@@ -165,10 +165,15 @@ namespace MenuUi.Scripts.AvatarEditor
             PlayerData savePlayerData = _currentPlayerData;
 
             savePlayerData.AvatarData = new(_playerAvatar.Name,
-                _featurePicker.GetCurrentlySelectedFeatures(),
+                new List<string>{null, null, null, null, null, null, null},
                 _colorPicker.GetCurrentColors(),
                 _avatarScaler.GetCurrentScale());
 
+            var features = Enum.GetValues(typeof(FeatureSlot));
+            foreach (FeatureSlot feature in features)
+            {
+                AssignPartToPlayerData(savePlayerData.AvatarData, feature, _playerAvatar.GetPartId(feature));
+            }
             StartCoroutine(SavePlayerData(savePlayerData, p => playerData = p));
             yield return new WaitUntil(() => ((timeout != null) || (playerData != null)));
 
@@ -191,6 +196,48 @@ namespace MenuUi.Scripts.AvatarEditor
             GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
 
+        private void AssignPartToPlayerData(AvatarData playerAvatarData, FeatureSlot feature, string id)
+        {
+            int convertedID;
+            if(System.Int32.TryParse(id, out int intID))
+            {
+                convertedID = intID;
+            }
+            else { convertedID = 0; }
+
+            switch (feature)
+                {
+                    case FeatureSlot.Hair:
+                        playerAvatarData.Hair = convertedID;
+                        break;
+                    case FeatureSlot.Eyes:
+                        playerAvatarData.Eyes = convertedID;
+                        break;
+                    case FeatureSlot.Nose:
+                        playerAvatarData.Nose = convertedID;
+                        break;
+                    case FeatureSlot.Mouth:
+                        playerAvatarData.Mouth = convertedID;
+                        break;
+                    case FeatureSlot.Body:
+                        playerAvatarData.Clothes = convertedID;
+                        break;
+                    case FeatureSlot.Hands:
+                        playerAvatarData.Hands = convertedID;
+                        break;
+                    case FeatureSlot.Feet:
+                        playerAvatarData.Feet = convertedID;
+                        break;
+                    default:
+                        Debug.LogWarning($"Couldn't find {feature} in FeatureSlots");
+                        break;
+                }
+        }
+
+        public PlayerAvatar PlayerAvatar
+        {
+            get { return _playerAvatar; }
+        }
         #endregion
     }
 }

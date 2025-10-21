@@ -305,30 +305,51 @@ namespace MenuUi.Scripts.AvatarEditor
         public void SetCharacterClassID(CharacterClassType id) => _characterClassType = id;
         public void RestoreDefaultColorToFeature(Action restore) => _restoreDefaultColor = restore;
 
-        public void SetLoadedFeatures(List<string> features)
+        public void SetLoadedFeatures(PlayerAvatar avatar)
         {
-            if (features == null) return;
-
-            for (int i = 0; i < features.Count; i++)
+            var featureTypes = Enum.GetValues(typeof(FeatureSlot));
+            foreach(FeatureSlot feature in featureTypes)
             {
-                var featureData = GetSpritesByCategory((FeatureSlot)i);
+                string partId = avatar.GetPartId(feature);
 
-                if (string.IsNullOrEmpty(features[i]))
+                if (string.IsNullOrEmpty(partId))
                 {
-                    _featureState.SetSelectedFeature(i, "0");
+                    _featureState.SetSelectedFeature((int)feature, "0");
                     continue;
                 }
 
-                var part = featureData.Find(p => p.Id == features[i]);
-                if (part != null)
+                var featureData = GetSpritesByCategory(feature);
+
+                var part = featureData.Find(p => p.Id == partId);
+                if(part == null)
                 {
-                    SetFeature(part, i);
+                    _featureState.SetSelectedFeature((int)feature, "0");
                 }
                 else
                 {
-                    _featureState.SetSelectedFeature(i, "0");
+                    SetFeature(part, (int)feature);
                 }
             }
+            //for (int i = 0; i < avatarFeatures.Count; i++)
+            //{
+            //var featureData = GetSpritesByCategory((FeatureSlot)i);
+            //
+            // if (string.IsNullOrEmpty(avatarFeatures[i]))
+            // {
+            // _featureState.SetSelectedFeature(i, "0");
+            // continue;
+            //   }
+
+            //   var part = featureData.Find(p => p.Id == avatarFeatures[i]);
+            // if (part != null)
+            //{
+            //  SetFeature(part, i);
+            //  }
+            //  else
+            //   {
+            // _featureState.SetSelectedFeature(i, "0");
+            // }
+            //}
         }
 
         #endregion
