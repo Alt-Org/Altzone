@@ -270,7 +270,7 @@ namespace MenuUI.Scripts.SoulHome
 
         void OnDisable()
         {
-            if (selectedRoom != null) ZoomOut();
+            //if (selectedRoom != null) ZoomOut();
             if (editingMode) ToggleEdit();
         }
 
@@ -365,7 +365,7 @@ namespace MenuUI.Scripts.SoulHome
                                 && _tempRoomHitStart.y > _tempRoomHitEnd.y - 3f && _tempRoomHitStart.y < _tempRoomHitEnd.y + 3f
                                 && _tempRoomHitStart.x > _tempRoomHitEnd.x - 3f && _tempRoomHitStart.x < _tempRoomHitEnd.x + 3f)
                             {
-                                ZoomOut();
+                                //ZoomOut();
                                 selectedRoom = tempSelectedRoom;
                                 ZoomIn(selectedRoom);
                             }
@@ -437,11 +437,11 @@ namespace MenuUI.Scripts.SoulHome
             }
 
 
-            if (!hitRoom && selectedRoom != null && exitRoom && click == ClickState.End)
+            /*if (!hitRoom && selectedRoom != null && exitRoom && click == ClickState.End)
             {
                 ZoomOut();
             }
-            return enterRoom;
+            return enterRoom;*/
         }
 
         public void PinchZoom(float pinchDistance, bool scroll)
@@ -492,7 +492,7 @@ namespace MenuUI.Scripts.SoulHome
 
         }
 
-        public void ZoomOut()
+        /*public void ZoomOut()
         {
             if (selectedRoom != null && outDelay + 1f < Time.time)
             {
@@ -512,7 +512,7 @@ namespace MenuUI.Scripts.SoulHome
                 _camera.transform.position = new(x, y, transform.position.z);
 
             }
-        }
+        }*/
 
         private void SetScrollSpeed()
         {
