@@ -370,7 +370,7 @@ namespace MenuUI.Scripts.SoulHome
                                 ZoomIn(selectedRoom);
                             }
                         }
-                        hitRoom = true;
+                        //hitRoom = true;
                     }
                 }
 
@@ -440,8 +440,8 @@ namespace MenuUI.Scripts.SoulHome
             /*if (!hitRoom && selectedRoom != null && exitRoom && click == ClickState.End)
             {
                 ZoomOut();
-            }
-            return enterRoom;*/
+            }*/
+            return enterRoom;
         }
 
         public void PinchZoom(float pinchDistance, bool scroll)

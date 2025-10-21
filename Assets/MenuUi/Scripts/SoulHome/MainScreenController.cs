@@ -126,7 +126,7 @@ namespace MenuUI.Scripts.SoulHome
             }
             if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Mouse.current.rightButton.wasReleasedThisFrame) || doubleTap /*(Touch.activeFingers.Count > 0 && touch.tapCount > 1)*/) && _backDelay + 0.4f < Time.time)
             {
-                if(!_soulHomeTower.EditingMode)_soulHomeTower.ZoomOut();
+                //if(!_soulHomeTower.EditingMode)_soulHomeTower.ZoomOut();
                 //inDelay = Time.time;
             }
 
