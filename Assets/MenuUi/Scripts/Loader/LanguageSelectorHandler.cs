@@ -29,5 +29,10 @@ public class LanguageSelectorHandler : MonoBehaviour
     {
         SettingsCarrier.Instance.Language = type;
         if(_navigation != null) StartCoroutine(_navigation.Navigate());
+
+        if (TryGetComponent(out DailyTaskProgressListener dtListener))
+        {
+            dtListener.UpdateProgress("1");
+        }
     }
 }

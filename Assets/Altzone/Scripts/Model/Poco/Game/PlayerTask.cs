@@ -69,7 +69,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         FindSymbolicalGraphics,
         ContinueClanStory,
-        FindSybolicalFurniture,
+        Press3SymbolFurniture,
         ClickCharacterDescription,
         RecognizeSoundClue,
         CreateUnifiedInterior,
@@ -96,6 +96,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         ClickEthical,
         PressSustainableConsumptionObjects,
         PressValuesObjects,
+        ChangeLanguage,
     }
 
     #endregion
@@ -455,9 +456,9 @@ namespace Altzone.Scripts.Model.Poco.Game
                     {
                         return TaskEducationStoryType.RecognizeSoundClue;
                     }
-                case "find_symbolical_furniture":
+                case "press_3_symbol_furniture":
                     {
-                        return TaskEducationStoryType.FindSybolicalFurniture;
+                        return TaskEducationStoryType.Press3SymbolFurniture;
                     }
                 case "find_ui_symbolics":
                     {
@@ -548,6 +549,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case "press_values_objects":
                     {
                         return TaskEducationEthicalType.PressValuesObjects;
+                    }
+                case "change_language":
+                    {
+                        return TaskEducationEthicalType.ChangeLanguage;
                     }
                 default:
                     {

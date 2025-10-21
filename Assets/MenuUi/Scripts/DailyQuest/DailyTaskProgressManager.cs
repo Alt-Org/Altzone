@@ -175,7 +175,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
         {
             case TaskEducationStoryType.ClickCharacterDescription: HandleSimpleTask(value); break;
             case TaskEducationStoryType.ContinueClanStory: HandleSimpleTask(value); break;
-            case TaskEducationStoryType.FindSybolicalFurniture: HandleSimpleTask(value); break;
+            case TaskEducationStoryType.Press3SymbolFurniture: HandleSimpleTask(value); break;
             case TaskEducationStoryType.FindSymbolicalGraphics: HandleSimpleTask(value); break;
             case TaskEducationStoryType.RecognizeSoundClue: HandleSimpleTask(value); break;
             case TaskEducationStoryType.CreateUnifiedInterior: HandleSimpleTask(value); break;
@@ -224,6 +224,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationEthicalType.UseOnlyPositiveEmotes: HandleSimpleTask(value); break;
             case TaskEducationEthicalType.PressSustainableConsumptionObjects: HandleSimpleTask(value); break;
             case TaskEducationEthicalType.PressValuesObjects: HandleSimpleTask(value); break;
+            case TaskEducationEthicalType.ChangeLanguage: HandleSimpleTask(value); break;
             default: break;
         }
     }
