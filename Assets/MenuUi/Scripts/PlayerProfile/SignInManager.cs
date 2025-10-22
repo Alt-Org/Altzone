@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using Prg.Scripts.Common.Unity;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Language;
+using MenuUI.Scripts;
 
 namespace MenuUi.Scripts.Login
 {
@@ -271,9 +272,10 @@ namespace MenuUi.Scripts.Login
 
         private void ShowMessage(string message, Color textColor)
         {
-            TextMeshProUGUI text = GameObject.Find("ErrorText").GetComponent<TextMeshProUGUI>();
-            text.text = message;
-            text.color = textColor;
+            //TextMeshProUGUI text = GameObject.Find("ErrorText").GetComponent<TextMeshProUGUI>();
+            //text.text = message;
+            //text.color = textColor;
+            SignalBus.OnChangePopupInfoSignal(message);
         }
 
         private void ClearMessage()
