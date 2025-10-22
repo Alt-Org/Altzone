@@ -349,6 +349,7 @@ namespace MenuUi.Scripts.Login
                     if (ServerManager.Instance.isLoggedIn) ServerManager.Instance.LogOut();
                     ServerManager.Instance.SetProfileValues(result);
                     GameConfig.Get().GameVersionType = VersionType.Education;
+                    PlayerPrefs.SetInt("AutomaticLogin", 1);
                     returnToMainMenuButton.onClick.Invoke();
                 }
             }));
