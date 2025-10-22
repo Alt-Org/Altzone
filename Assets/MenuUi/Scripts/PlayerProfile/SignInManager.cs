@@ -295,56 +295,19 @@ namespace MenuUi.Scripts.Login
                     returnToSignInScreenButton.onClick.Invoke();
                     ShowMessage(REGISTERING_SUCCESS, Color.green);
                     JObject result = JObject.Parse(request.downloadHandler.text);
-                    string name = result["data"]["username"].ToString();
-                    string pass = result["data"]["password"].ToString();
-                    body = "{\"username\":\"" + name + "\",\"password\":\"" + pass + "\"}";
-                    StartCoroutine(WebRequests.Post(ServerManager.SERVERADDRESS + "auth/signIn", body, null, request =>
+                    Debug.Log(request.downloadHandler.text);
+                    if (ServerManager.Instance.isLoggedIn) ServerManager.Instance.LogOut();
+                    ServerManager.Instance.SetProfileValues(result);
+                    GameConfig.Get().GameVersionType = VersionType.Education;
+                    if (_autoLoginToggle.IsOn)
                     {
-                        if (request.result != UnityWebRequest.Result.Success)
-                        {
-                            string errorString = string.Empty;
-
-                            switch (request.responseCode)
-                            {
-                                default:
-                                    errorString = ERROR_DEFAULT;
-                                    break;
-                                case 400:
-                                    errorString = ERROR400;
-                                    logInUsernameInputFieldError.gameObject.SetActive(true);
-                                    logInPasswordInputFieldError.gameObject.SetActive(true);
-                                    break;
-                                case 401:
-                                    errorString = ERROR401;
-                                    break;
-                                case 500:
-                                    errorString = ERROR500;
-                                    break;
-                            }
-
-                            ShowMessage(errorString + "\n" + request.error, Color.red);
-
-                        }
-                        else
-                        {
-                            // Parses user info and sends it to ServerManager
-                            Debug.Log("Log in successful!");
-                            JObject result = JObject.Parse(request.downloadHandler.text);
-                            Debug.Log(request.downloadHandler.text);
-                            if (ServerManager.Instance.isLoggedIn) ServerManager.Instance.LogOut();
-                            ServerManager.Instance.SetProfileValues(result);
-                            GameConfig.Get().GameVersionType = VersionType.Education;
-                            if (_autoLoginToggle.IsOn)
-                            {
-                                PlayerPrefs.SetInt("AutomaticLogin", 1);
-                            }
-                            else
-                            {
-                                PlayerPrefs.SetInt("AutomaticLogin", 0);
-                            }
-                            returnToMainMenuButton.onClick.Invoke();
-                        }
-                    }));
+                        PlayerPrefs.SetInt("AutomaticLogin", 1);
+                    }
+                    else
+                    {
+                        PlayerPrefs.SetInt("AutomaticLogin", 0);
+                    }
+                    returnToMainMenuButton.onClick.Invoke();
 
                 }
 
@@ -385,6 +348,7 @@ namespace MenuUi.Scripts.Login
                     Debug.Log(request.downloadHandler.text);
                     if (ServerManager.Instance.isLoggedIn) ServerManager.Instance.LogOut();
                     ServerManager.Instance.SetProfileValues(result);
+                    GameConfig.Get().GameVersionType = VersionType.Education;
                     returnToMainMenuButton.onClick.Invoke();
                 }
             }));
