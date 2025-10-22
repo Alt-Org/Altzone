@@ -30,9 +30,11 @@ namespace MenuUi.Scripts.Login
         [SerializeField] private TMP_InputField registerUsernameInputField;
         [SerializeField] private TMP_InputField registerPasswordInputField;
         [SerializeField] private TMP_InputField registerPassword2InputField;
+        [SerializeField] private Toggle _privacyPolicyAuthToggle;
         [SerializeField] private Toggle _registerAgeVerificationCheckToggle;
         [SerializeField] private Toggle _registerAgeVerificationToggle;
         [SerializeField] private Toggle _registerParentalAuthToggle;
+        [SerializeField] private Toggle _informationPolicyAuthToggle;
         [SerializeField] private ToggleGroup _ageAuthToggleGroup;
 
 
@@ -42,7 +44,9 @@ namespace MenuUi.Scripts.Login
         [SerializeField] private Image registerUsernameInputFieldError;
         [SerializeField] private Image registerPasswordInputFieldError;
         [SerializeField] private Image registerPassword2InputFieldError;
+        [SerializeField] private Image _privacyPolicyToggleError;
         [SerializeField] private Image _registerAgeVerificationToggleError;
+        [SerializeField] private Image _informationPolicyToggleError;
 
         [Header("Buttons")]
         [SerializeField] private Button logInButton;
@@ -67,7 +71,9 @@ namespace MenuUi.Scripts.Login
         private const string ERROR_PASSWORD_MISMATCH = "Salasananat eivät täsmää!";
         private const string ERROR_USERNAME_TOO_SHORT = "Käyttäjänimen täytyy olla vähintään 3 merkkiä pitkä!";
         private const string ERROR_PASSWORD_TOO_SHORT = "Salasanan täytyy olla vähintään 5 merkkiä pitkä!";
+        private const string ERROR_PRIVACY_CONCENT_NOT_GRANTED = "Et ole hyväksynyt tietosuojaselostetta.";
         private const string ERROR_AGE_CONSENT_NOT_GRANTED = "Et ole vahvistanut olevasi yli 13-vuotias tai että sinulla on huoltajan lupa pelata peliä";
+        private const string ERROR_INFORMATION_CONCENT_NOT_GRANTED = "Et ole antanut lupaa tietojen käyttää pelin hallinnoinnnissa.";
         private const string ERROR400 = "Validointivirhe!";
         private const string ERROR401 = "Virheellinen käyttäjänimi tai salasana!";
         private const string ERROR409 = "Käyttäjätili on jo olemassa!";
@@ -243,6 +249,20 @@ namespace MenuUi.Scripts.Login
                 return;
             }
 
+            if (!_privacyPolicyAuthToggle.isOn)
+            {
+                ShowMessage(ERROR_PRIVACY_CONCENT_NOT_GRANTED, Color.red);
+                _privacyPolicyToggleError.gameObject.SetActive(true);
+                return;
+            }
+
+            if (!_informationPolicyAuthToggle.isOn)
+            {
+                ShowMessage(ERROR_INFORMATION_CONCENT_NOT_GRANTED, Color.red);
+                _informationPolicyToggleError.gameObject.SetActive(true);
+                return;
+            }
+
 
             string body = @$"{{""username"":""{registerUsernameInputField.text}"",""password"":""{registerPasswordInputField.text}"",
                 ""Player"":{{""name"":""{username}"",""backpackCapacity"":{backpackCapacity},""uniqueIdentifier"":""{username}"",
@@ -290,7 +310,7 @@ namespace MenuUi.Scripts.Login
 
         private void ClearMessage()
         {
-            GameObject.Find("ErrorText").GetComponent<TextMeshProUGUI>().text = "";
+            //GameObject.Find("ErrorText").GetComponent<TextMeshProUGUI>().text = "";
             logInUsernameInputFieldError.gameObject.SetActive(false);
             logInPasswordInputFieldError.gameObject.SetActive(false);
             registerUsernameInputFieldError.gameObject.SetActive(false);
