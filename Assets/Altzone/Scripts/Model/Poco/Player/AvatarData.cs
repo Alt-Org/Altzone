@@ -37,17 +37,20 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
         // Constructor from feature IDs
         public AvatarData(string name, List<string> featureIds, string color, Vector2 scale)
         {
-            if (featureIds?.Count != 7)
+            if (featureIds != null && featureIds?.Count != 7)
                 throw new ArgumentException("FeatureIds must contain exactly 7 elements, provided list contains " + featureIds.Count.ToString());
 
             Name = name;
-            //Hair = int.Parse(featureIds[0]);
-            //Eyes = int.Parse(featureIds[1]);
-            // Nose = int.Parse(featureIds[2]);
-            //Mouth = int.Parse(featureIds[3]);
-            //Clothes = int.Parse(featureIds[4]);
-            //Feet = int.Parse(featureIds[5]);
-            //Hands = int.Parse(featureIds[6]);
+            if (featureIds != null)
+            {
+                Hair = int.Parse(featureIds[0]);
+                Eyes = int.Parse(featureIds[1]);
+                Nose = int.Parse(featureIds[2]);
+                Mouth = int.Parse(featureIds[3]);
+                Clothes = int.Parse(featureIds[4]);
+                Feet = int.Parse(featureIds[5]);
+                Hands = int.Parse(featureIds[6]);
+            }
             Color = color;
             Scale = scale;
         }

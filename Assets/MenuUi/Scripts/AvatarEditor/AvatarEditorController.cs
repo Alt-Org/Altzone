@@ -165,7 +165,7 @@ namespace MenuUi.Scripts.AvatarEditor
             PlayerData savePlayerData = _currentPlayerData;
 
             savePlayerData.AvatarData = new(_playerAvatar.Name,
-                new List<string>{null, null, null, null, null, null, null},
+                null,
                 _colorPicker.GetCurrentColors(),
                 _avatarScaler.GetCurrentScale());
 
@@ -188,7 +188,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 _visualDataScriptableObject.SetAvatarPiece(piece, _featurePicker.GetCurrentlySelectedFeatureSprite(piece));
             }
 
-            // K‰ytet‰‰n julkista Color-propertya, ei private-kentt‰‰
+            // K√§ytet√§√§n julkista Color-propertya, ei private-kentt√§√§
             _visualDataScriptableObject.Color = _colorPicker.GetCurrentColorsAsColors();
 
             AvatarDesignLoader.Instance.InvokeOnAvatarDesignUpdate();
