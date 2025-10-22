@@ -352,6 +352,44 @@ namespace MenuUi.Scripts.Login
             }));
         }
 
+        public void GuestLogin()
+        {
+            string body = "";
+
+            StartCoroutine(WebRequests.Post(ServerManager.SERVERADDRESS + "profile/guest", body, null, request =>
+            {
+                if (request.result != UnityWebRequest.Result.Success)
+                {
+                    string errorString = string.Empty;
+
+                    switch (request.responseCode)
+                    {
+                        default:
+                            errorString = ERROR_DEFAULT;
+                            break;
+                        case 409:
+                            errorString = ERROR409;
+                            registerUsernameInputFieldError.gameObject.SetActive(true);
+                            break;
+                        case 500:
+                            errorString = ERROR500;
+                            break;
+                    }
+
+                    ShowMessage(errorString + "\n" + request.error, Color.red);
+                }
+                else
+                {
+                    Debug.Log("Registering successful!");
+                    JObject result = JObject.Parse(request.downloadHandler.text);;
+                    Debug.Log(request.downloadHandler.text);
+                    if (ServerManager.Instance.isLoggedIn) ServerManager.Instance.LogOut();
+                    ServerManager.Instance.SetProfileValues(result);
+                    returnToMainMenuButton.onClick.Invoke();
+                }
+            }));
+        }
+
         private void ShowMessage(string message, Color textColor)
         {
             //TextMeshProUGUI text = GameObject.Find("ErrorText").GetComponent<TextMeshProUGUI>();
