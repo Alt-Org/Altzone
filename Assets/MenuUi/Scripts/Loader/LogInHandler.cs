@@ -119,7 +119,7 @@ namespace MenuUi.Scripts.Loader
 
         private void LogInReady()
         {
-            if (PlayerPrefs.GetInt("AutomaticLogin", 0) != 0)
+            if (PlayerPrefs.GetInt("AutomaticLogin", 0) == 0)
             {
                 _loadInfoController.LoadReady();
                 _changeAccountHandler.gameObject.SetActive(true);
