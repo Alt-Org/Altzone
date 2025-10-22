@@ -12819,6 +12819,7 @@ GameObject:
   - component: {fileID: 8209706432435804060}
   - component: {fileID: 4136115818480925455}
   - component: {fileID: 4243317732982506889}
+  - component: {fileID: 1516392513800097061}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -12873,7 +12874,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Olen lukenut tietosuojaselosteen ja hyv\xE4ksyn sen"
+  m_text: "Olen lukenut <link=https://altzone.fi/en/privacy><color=\"blue\">tietosuojaselosteen</link></color>
+    ja hyv\xE4ksyn sen"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 35c39ce28c397b848b84f7de2f26c5ac, type: 2}
   m_sharedMaterial: {fileID: 2109022488393823743, guid: 35c39ce28c397b848b84f7de2f26c5ac,
@@ -12957,8 +12959,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _finnishText: "Olen lukenut tietosuojaselosteen ja hyv\xE4ksyn sen"
-  _englishText: I have read the Privacy Policy and I accept it.
+  _finnishText: "Olen lukenut <link=https://altzone.fi/en/privacy><color=\"blue\">tietosuojaselosteen</link></color>
+    ja hyv\xE4ksyn sen"
+  _englishText: I have read the <link=https://altzone.fi/en/privacy><color="blue">Privacy
+    Policy</link></color> and I accept it.
+--- !u!114 &1516392513800097061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7593600469967543943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5a0401fc43a3b41b3c09853422f2b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hoveredColor:
+    serializedVersion: 2
+    rgba: 4294924544
+  pressedColor:
+    serializedVersion: 2
+    rgba: 4290183168
+  usedColor:
+    serializedVersion: 2
+    rgba: 4294902015
+  usedHoveredColor:
+    serializedVersion: 2
+    rgba: 4294795005
+  usedPressedColor:
+    serializedVersion: 2
+    rgba: 4291756239
 --- !u!1 &7635067654082006970
 GameObject:
   m_ObjectHideFlags: 0
