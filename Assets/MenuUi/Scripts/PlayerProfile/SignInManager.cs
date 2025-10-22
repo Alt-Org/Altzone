@@ -52,8 +52,7 @@ namespace MenuUi.Scripts.Login
         [SerializeField] private Button ageAuthButton;
 
         [Header("Version Toggle")]
-        [SerializeField] private ToggleSwitchHandler _versionToggle;
-        [SerializeField] private TextLanguageSelectorCaller _versionText;
+        [SerializeField] private ToggleSwitchHandler _autoLoginToggle;
 
         [Header("Navigation Buttons")]
         [SerializeField] private Button returnToLogIn;
@@ -94,15 +93,18 @@ namespace MenuUi.Scripts.Login
                 backButton.onClick.RemoveAllListeners();
                 backButton.onClick.AddListener(ReturnToLogIn);
             }
-            if(GameConfig.Get().GameVersionType is VersionType.Standard or VersionType.None)
+            _autoLoginToggle.SetState(PlayerPrefs.GetInt("AutomaticLogin", 0) != 0);
+
+
+            /*if (GameConfig.Get().GameVersionType is VersionType.Standard or VersionType.None)
             {
                 SetVersionState(false);
             }
             else if(GameConfig.Get().GameVersionType is VersionType.Education)
             {
                 SetVersionState(true);
-            }
-            _versionToggle.OnToggleStateChanged += SetVersionState;
+            }*/
+            _autoLoginToggle.OnToggleStateChanged += SetVersionState;
         }
 
         public void Reset()
@@ -120,7 +122,7 @@ namespace MenuUi.Scripts.Login
 
         private void OnDisable()
         {
-            _versionToggle.OnToggleStateChanged -= SetVersionState;
+            _autoLoginToggle.OnToggleStateChanged -= SetVersionState;
         }
 
         /// <summary>
@@ -182,7 +184,15 @@ namespace MenuUi.Scripts.Login
                     Debug.Log(request.downloadHandler.text);
                     if(ServerManager.Instance.isLoggedIn) ServerManager.Instance.LogOut();
                     ServerManager.Instance.SetProfileValues(result);
-                    GameConfig.Get().GameVersionType = _versionType;
+                    GameConfig.Get().GameVersionType = VersionType.Education;
+                    if (_autoLoginToggle.IsOn)
+                    {
+                        PlayerPrefs.SetInt("AutomaticLogin", 1);
+                    }
+                    else
+                    {
+                        PlayerPrefs.SetInt("AutomaticLogin", 0);
+                    }
                     returnToMainMenuButton.onClick.Invoke();
                 }
 
@@ -311,17 +321,13 @@ namespace MenuUi.Scripts.Login
         {
             if (value)
             {
-                _versionType = VersionType.Education;
-                if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)_versionText.SetText("Education Edition");
-                else _versionText.SetText("Opetusversio");
-                _versionToggle.SetState(value);
+                //PlayerPrefs.SetInt("AutomaticLogin", 1);
+                _autoLoginToggle.SetState(value);
             }
             else
             {
-                _versionType = VersionType.Standard;
-                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _versionText.SetText("Standard Edition");
-                else _versionText.SetText("Perusversio");
-                _versionToggle.SetState(value);
+                //PlayerPrefs.SetInt("AutomaticLogin", 0);
+                _autoLoginToggle.SetState(value);
             }
         }
     }
