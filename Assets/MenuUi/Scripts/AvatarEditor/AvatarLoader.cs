@@ -17,10 +17,10 @@ public class AvatarLoader : MonoBehaviour
 
     private void UpdateVisuals()
     {
-        if (_avatarVisuals.color != null)
-            _characterHandle.SetHeadColor(_avatarVisuals.color);
+       
+        _characterHandle.SetHeadColor(_avatarVisuals.Color);
 
-        if (_avatarVisuals.sprites == null || _avatarVisuals.sprites.Count == 0)
+        if (_avatarVisuals.Sprites == null || _avatarVisuals.Sprites.Count == 0)
             return;
 
         _characterHandle.SetMainCharacterImage(FeatureSlot.Hair, _avatarVisuals.Hair);
@@ -34,11 +34,8 @@ public class AvatarLoader : MonoBehaviour
 
     public void UpdateVisuals(AvatarVisualData data)
     {
-        if (data.color != null)
-            _characterHandle.SetHeadColor(data.color);
-
-        /*if (_avatarVisuals.sprites == null || _avatarVisuals.sprites.Count == 0)
-            return;*/
+       
+        _characterHandle.SetHeadColor(data.Color);
 
         _characterHandle.SetMainCharacterImage(FeatureSlot.Hair, data.Hair);
         _characterHandle.SetMainCharacterImage(FeatureSlot.Eyes, data.Eyes);
@@ -49,3 +46,4 @@ public class AvatarLoader : MonoBehaviour
         _characterHandle.SetMainCharacterImage(FeatureSlot.Feet, data.Feet);
     }
 }
+
