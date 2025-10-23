@@ -5,24 +5,22 @@ using UnityEngine.UI;
 
 namespace Prg.Scripts.Common.Unity
 {
-    public class ToggleSwitchHandler : MonoBehaviour
+    public class ToggleSliderHandler : MonoBehaviour
     {
         [SerializeField] Toggle _toggle;
-        [SerializeField] Image _toggleImage;
+        [SerializeField] Slider _sliderSwitch;
 
         public delegate void ToggleStateChanged(bool isOn);
         public event ToggleStateChanged OnToggleStateChanged;
-
-        public bool IsOn { get => _toggle.isOn; }
 
         private void Start()
         {
             if(_toggle != null)
             {
-                if(_toggleImage != null)
+                if(_sliderSwitch != null)
                 {
-                    if (_toggle.isOn) _toggleImage.gameObject.SetActive(true);
-                    else _toggleImage.gameObject.SetActive(false);
+                    if (_toggle.isOn) _sliderSwitch.value = _sliderSwitch.maxValue;
+                    else _sliderSwitch.value = _sliderSwitch.minValue;
                 }
 
                 _toggle.onValueChanged.AddListener(ChangeState);
@@ -35,10 +33,10 @@ namespace Prg.Scripts.Common.Unity
 
         private void ChangeState(bool value)
         {
-            if (_toggleImage != null)
+            if (_sliderSwitch != null)
             {
-                if (value) _toggleImage.gameObject.SetActive(true);
-                else _toggleImage.gameObject.SetActive(false);
+                if (value) _sliderSwitch.value = _sliderSwitch.maxValue;
+                else _sliderSwitch.value = _sliderSwitch.minValue;
             }
 
             OnToggleStateChanged?.Invoke(value);
