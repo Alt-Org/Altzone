@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
+using System;
 
 public class FriendlistItem : MonoBehaviour
 
@@ -17,6 +18,7 @@ public class FriendlistItem : MonoBehaviour
     [SerializeField] private Image _clanLogo;
     [SerializeField] private Button _removefriendButton;
 
+    private Action _onRemoveClick;
 
     void Start()
     {
@@ -24,9 +26,10 @@ public class FriendlistItem : MonoBehaviour
     }
     //Katso vinkint avatariin ja logoon leaderboardista
 
-    /* public void Initialize(PlayerData playerData, AvatarVisualData avatarVisualData, ClanData clanData = null, bool isOnline = false, System.Action onRemoveClick)
+    /* public void Initialize(PlayerData playerData, AvatarVisualData avatarVisualData = null, ClanData clanData = null, bool isOnline = false, Action onRemoveClick)
    {
         _nameText.text = playerData.name;
+        _onRemoveClick = onRemoveClick;
       
         if (avatarVisualData != null)
         {
@@ -40,8 +43,12 @@ public class FriendlistItem : MonoBehaviour
 
         _onlineStatusIndicator.color = isOnline ? Color.green : Color.red;
     
-        _removefriendButton.onClick.RemoveAllListeners(); //poistetaan kuuntelijat
-        _removefriendButton.onClick.AddListener(() => onClickAction()); //asetetaan uusi toiminto
+        _removefriendButton.onClick.RemoveAllListeners();
+        _removefriendButton.onClick.AddListener(() =>
+        {
+            _onRemoveClick?.Invoke();
+        });
+
     }*/
 }
 

@@ -12,7 +12,7 @@ public class FriendlistHandler : MonoBehaviour
 
     [SerializeField] private GameObject _friendlistPanel;
     [SerializeField] private TMPro.TextMeshProUGUI _friendlistOnlineTitle;
-    [SerializeField] private RectTransform _friendlistForeground;
+    [SerializeField] private RectTransform _friendlistContent;
     [SerializeField] private ScrollRect _friendlistScrollView;
     [SerializeField] private Button _closeFriendlistButton;
     [SerializeField] private Button _openFriendlistButton;
@@ -42,12 +42,12 @@ public class FriendlistHandler : MonoBehaviour
         ServerManager.OnOnlinePlayersChanged -= BuildOnlinePlayerList;
     }
 
-    void OpenFriendlist()
+     public void OpenFriendlist()
     {
         _friendlistPanel.SetActive(true); //aktivoi
     }
 
-    void CloseFriendlist()
+    public void CloseFriendlist()
     { 
         _friendlistPanel.SetActive(false); // piilottaa
     }
@@ -55,7 +55,6 @@ public class FriendlistHandler : MonoBehaviour
     private void BuildOnlinePlayerList(List<ServerOnlinePlayer> onlinePlayers)
     {
         UpdateOnlineFriendsCount(onlinePlayers);
-       // UpdateFriendsCount(onlinePlayers);
     }
 
     private void UpdateOnlineFriendsCount(List<ServerOnlinePlayer> onlinePlayers)
@@ -78,7 +77,7 @@ public class FriendlistHandler : MonoBehaviour
         foreach (var player in onlinePlayers) // kaikki online-pelaajat
         {
 
-            FriendlistItem newItem = Instantiate(_friendlistItemPrefab, _friendlistForeground);
+            FriendlistItem newItem = Instantiate(_friendlistItemPrefab, _friendlistContent);
             /* newItem.Initialize(
                  player.name,
                  player.avatar,

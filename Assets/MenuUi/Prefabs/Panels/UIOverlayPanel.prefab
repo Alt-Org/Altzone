@@ -1934,10 +1934,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 7684453214813514216}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 60, y: 60}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0.9}
+  m_AnchoredPosition: {x: -0.5, y: 2}
+  m_SizeDelta: {x: -105, y: -24}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1048745529294229391
 CanvasRenderer:
@@ -1995,12 +1995,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24.6
+  m_fontSize: 23.4
   m_fontSizeBase: 12
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 10
+  m_fontSizeMax: 50
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -2033,7 +2033,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -35.672134, y: 0, z: -29.439758, w: 0}
+  m_margin: {x: -41.04866, y: -7.168701, z: -47.36151, w: -7.168701}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -2148,10 +2148,10 @@ RectTransform:
   - {fileID: 7264329923371728043}
   m_Father: {fileID: 7746573834442904633}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1.1}
-  m_AnchorMax: {x: 0.15, y: 1.2}
-  m_AnchoredPosition: {x: 1.1014, y: 0.5581}
-  m_SizeDelta: {x: -2.2027, y: 31.8838}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0.13, y: 1.16}
+  m_AnchoredPosition: {x: 4.4473267, y: 3.671814}
+  m_SizeDelta: {x: -8.894699, y: -7.2405014}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &462603285370684390
 CanvasRenderer:
@@ -2234,7 +2234,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 9210551582396324838}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3787761875482646273}
+        m_TargetAssemblyTypeName: FriendlistHandler, MainMenu
+        m_MethodName: OpenFriendlist
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &4929388860658079302
 GameObject:
   m_ObjectHideFlags: 0
@@ -4240,9 +4252,20 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3796510745134904802, guid: 4166eed610b532e45b4083c6612c5b46,
         type: 3}
+      propertyPath: _friendlistContent
+      value: 
+      objectReference: {fileID: 6550129438020381498}
+    - target: {fileID: 3796510745134904802, guid: 4166eed610b532e45b4083c6612c5b46,
+        type: 3}
+      propertyPath: _friendlistItemPrefab
+      value: 
+      objectReference: {fileID: 7997588044454193022, guid: e73c3c28a22c220489ca431108e9e1be,
+        type: 3}
+    - target: {fileID: 3796510745134904802, guid: 4166eed610b532e45b4083c6612c5b46,
+        type: 3}
       propertyPath: _openFriendlistButton
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 822501225229554681}
     - target: {fileID: 5009179366929904872, guid: 4166eed610b532e45b4083c6612c5b46,
         type: 3}
       propertyPath: m_IsActive
@@ -4389,9 +4412,27 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4166eed610b532e45b4083c6612c5b46, type: 3}
+--- !u!114 &3787761875482646273 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3796510745134904802, guid: 4166eed610b532e45b4083c6612c5b46,
+    type: 3}
+  m_PrefabInstance: {fileID: 17802412149514979}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ec988aa04a5d81478660a3459d247f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &5550763520609190324 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5564049113085551447, guid: 4166eed610b532e45b4083c6612c5b46,
+    type: 3}
+  m_PrefabInstance: {fileID: 17802412149514979}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &6550129438020381498 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 6546407801417730521, guid: 4166eed610b532e45b4083c6612c5b46,
     type: 3}
   m_PrefabInstance: {fileID: 17802412149514979}
   m_PrefabAsset: {fileID: 0}
