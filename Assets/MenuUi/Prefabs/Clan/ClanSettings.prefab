@@ -1410,6 +1410,7 @@ GameObject:
   - component: {fileID: 4369470982488992643}
   - component: {fileID: 2744039800164740701}
   - component: {fileID: 5551671524841479087}
+  - component: {fileID: 8720379311297717388}
   m_Layer: 0
   m_Name: ClanSettings
   m_TagString: Untagged
@@ -1505,6 +1506,25 @@ MonoBehaviour:
   _educationCategorySocialType: 14
   _educationCategoryStoryType: 3
   _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
+--- !u!114 &8720379311297717388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1962603411562589380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 531aeab6c65e4a448b22783653f29d67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 3
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 6
   _educationCategoryEthicalType: 0
 --- !u!1 &1994256843219378594
 GameObject:

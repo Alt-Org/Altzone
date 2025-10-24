@@ -85,6 +85,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         SimiliarToAGame,
         SetProfilePlayerType,
         FindPowerOrEqualityWindow,
+        ClanCulturalGuideline,
     }
 
     public enum TaskEducationEthicalType
@@ -97,6 +98,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         PressSustainableConsumptionObjects,
         PressValuesObjects,
         ChangeLanguage,
+        PressPrizeItems,
     }
 
     #endregion
@@ -511,6 +513,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                     {
                         return TaskEducationCultureType.FindPowerOrEqualityWindow;
                     }
+                case "choose_cultural_guideline_cultural_description":
+                    {
+                        return TaskEducationCultureType.ClanCulturalGuideline;
+                    }
                 default:
                     {
                         return TaskEducationCultureType.ClickKnownArtIdeaPerson;
@@ -553,6 +559,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case "change_language":
                     {
                         return TaskEducationEthicalType.ChangeLanguage;
+                    }
+                case "press_prize_giving_items":
+                    {
+                        return TaskEducationEthicalType.PressPrizeItems;
                     }
                 default:
                     {

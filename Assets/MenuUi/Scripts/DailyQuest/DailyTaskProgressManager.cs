@@ -202,6 +202,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationCultureType.SetProfilePlayerType: HandleSimpleTask(value); break;
             case TaskEducationCultureType.SimiliarToAGame: HandleSimpleTask(value); break;
             case TaskEducationCultureType.FindPowerOrEqualityWindow: HandleSimpleTask(value); break;
+            case TaskEducationCultureType.ClanCulturalGuideline: HandleSimpleTask(value); break;
             default: break;
         }
     }
@@ -225,6 +226,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationEthicalType.PressSustainableConsumptionObjects: HandleSimpleTask(value); break;
             case TaskEducationEthicalType.PressValuesObjects: HandleSimpleTask(value); break;
             case TaskEducationEthicalType.ChangeLanguage: HandleSimpleTask(value); break;
+            case TaskEducationEthicalType.PressPrizeItems: HandleSimpleTask(value); break;
             default: break;
         }
     }
