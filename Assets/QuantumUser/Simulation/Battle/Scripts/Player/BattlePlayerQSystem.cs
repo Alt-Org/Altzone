@@ -173,10 +173,14 @@ namespace Battle.QSimulation.Player
 
             playerHandle.PlayerGiveUpState = !playerHandle.PlayerGiveUpState;
 
-            if (!playerHandle.PlayerGiveUpState) return true;
-
             BattlePlayerSlot slot = playerHandle.Slot;
             BattleTeamNumber team = BattlePlayerManager.PlayerHandle.GetTeamNumber(playerHandle.Slot);
+
+            if (!playerHandle.PlayerGiveUpState)
+            {
+                f.Events.BattleGiveUpStateChange(team, slot, BattleGiveUpStateUpdate.GiveUpVoteCancel);
+                return false;
+            }
 
             BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, slot);
             if (!teammateHandle.PlayState.IsNotInGame())
