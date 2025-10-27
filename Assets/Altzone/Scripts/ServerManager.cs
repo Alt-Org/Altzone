@@ -1169,7 +1169,9 @@ public class ServerManager : MonoBehaviour
                     }));
                 }
 
-                ClanTasks clanTasks = new(TaskVersionType.Normal,tasks);
+                ClanTasks clanTasks;
+                if(GameConfig.Get().GameVersionType is VersionType.Standard) clanTasks = new(TaskVersionType.Normal,tasks);
+                else clanTasks = new(TaskVersionType.Education, tasks);
 
                 if (callback != null)
                     callback(clanTasks);
