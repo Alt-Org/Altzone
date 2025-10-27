@@ -167,6 +167,8 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.QuantumEntityPrototype[] AllCharacters = new Quantum.QuantumEntityPrototype[12];
     [ArrayLengthAttribute(12)]
     public Quantum.QEnum32<BattlePlayerCharacterState>[] AllCharactersStates = new Quantum.QEnum32<BattlePlayerCharacterState>[12];
+    [ArrayLengthAttribute(4)]
+    public QBoolean[] PlayerGiveUpStates = new QBoolean[4];
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerManagerDataQSingletonPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerManagerDataQSingletonPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerManagerDataQSingletonPrototype();
@@ -180,6 +182,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.SelectedCharacterNumbers, out result.SelectedCharacterNumbers);
       converter.Convert(this.AllCharacters, out result.AllCharacters);
       converter.Convert(this.AllCharactersStates, out result.AllCharactersStates);
+      converter.Convert(this.PlayerGiveUpStates, out result.PlayerGiveUpStates);
       ConvertUser(converter, ref result);
       return result;
     }
