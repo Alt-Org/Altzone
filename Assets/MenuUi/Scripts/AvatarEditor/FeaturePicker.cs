@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using TMPro;
 using Altzone.Scripts.Model.Poco.Game;
 using Assets.Altzone.Scripts.Model.Poco.Player;
-
+using Altzone.Scripts.AvatarPartsInfo;
 namespace MenuUi.Scripts.AvatarEditor
 {
     public class FeaturePicker : MonoBehaviour
@@ -223,7 +223,7 @@ namespace MenuUi.Scripts.AvatarEditor
             UpdateCharacterImage((FeatureSlot)slot, null);
         }
 
-        private void FeatureButtonClicked(AvatarPartsReference.AvatarPartInfo feature, int slot)
+        private void FeatureButtonClicked(AvatarPartInfo feature, int slot)
         {
             SetFeature(feature, slot);
             _restoreDefaultColor?.Invoke();
@@ -232,7 +232,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
 
-        private void SetFeature(AvatarPartsReference.AvatarPartInfo feature, int slot)
+        private void SetFeature(AvatarPartInfo feature, int slot)
         {
             _featureState.SetSelectedFeature(slot, feature.Id);
             UpdateCharacterImage((FeatureSlot)slot, feature.AvatarImage);
@@ -267,14 +267,14 @@ namespace MenuUi.Scripts.AvatarEditor
 
         #region Data Access
 
-        private List<AvatarPartsReference.AvatarPartInfo> GetSpritesByCategory(FeatureSlot slot)
+        private List<AvatarPartInfo> GetSpritesByCategory(FeatureSlot slot)
         {
             if (_avatarPartsReference == null)
-                return new List<AvatarPartsReference.AvatarPartInfo>();
+                return new List<AvatarPartInfo>();
 
             var categoryId = CategoryController.GetCategoryId(slot);
             return string.IsNullOrEmpty(categoryId)
-                ? new List<AvatarPartsReference.AvatarPartInfo>()
+                ? new List<AvatarPartInfo>()
                 : _avatarPartsReference.GetAvatarPartsByCategory(categoryId);
         }
 
@@ -376,7 +376,7 @@ namespace MenuUi.Scripts.AvatarEditor
     public class FeatureState
     {
         private List<string> _selectedFeatures = new List<string>(new string[7]);
-        private List<AvatarPartsReference.AvatarPartInfo> _currentCategoryFeatures = new();
+        private List<AvatarPartInfo> _currentCategoryFeatures = new();
 
         public List<string> GetSelectedFeatures() => new List<string>(_selectedFeatures);
         public string GetSelectedFeature(int index) =>
@@ -388,9 +388,9 @@ namespace MenuUi.Scripts.AvatarEditor
                 _selectedFeatures[index] = value;
         }
 
-        public List<AvatarPartsReference.AvatarPartInfo> GetCurrentCategoryFeatures() => _currentCategoryFeatures;
-        public void SetCurrentCategoryFeatures(List<AvatarPartsReference.AvatarPartInfo> features) =>
-            _currentCategoryFeatures = features ?? new List<AvatarPartsReference.AvatarPartInfo>();
+        public List<AvatarPartInfo> GetCurrentCategoryFeatures() => _currentCategoryFeatures;
+        public void SetCurrentCategoryFeatures(List<AvatarPartInfo> features) =>
+            _currentCategoryFeatures = features ?? new List<AvatarPartInfo>();
     }
 
     public class PageController

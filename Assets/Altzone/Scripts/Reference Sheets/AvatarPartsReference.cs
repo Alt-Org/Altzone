@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
+using Altzone.Scripts.AvatarPartsInfo;
 [CreateAssetMenu(fileName = "AvatarPartsReference", menuName = "Avatar/Parts Reference")]
 public class AvatarPartsReference : ScriptableObject
 {
@@ -187,21 +187,6 @@ public class AvatarPartsReference : ScriptableObject
         }
         
         Debug.Log($"Data validation complete. Total parts: {totalParts}, Issues found: {issues}");
-    }
-
-    [System.Serializable]
-    public class AvatarPartInfo
-    {
-        [Header("Basic Info")]
-        public string Name = "";
-        public string Id = "";
-        public string VisibleName = "";
-        
-        [Header("Visual Assets")]
-        public Sprite AvatarImage;
-        public Sprite IconImage;
-        
-        public bool IsValid => !string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Id);
     }
 
     [System.Serializable]

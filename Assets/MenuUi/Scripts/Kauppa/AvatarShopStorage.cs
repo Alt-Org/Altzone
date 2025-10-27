@@ -5,6 +5,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
+using Altzone.Scripts.AvatarPartsInfo;
 
 public class AvatarShopStorage : ShopPanelStorage
 {
@@ -82,7 +83,7 @@ public class AvatarShopStorage : ShopPanelStorage
                     continue;
                 }
 
-                foreach (AvatarPartsReference.AvatarPartInfo avatarpartData in avatarsubData.Parts)
+                foreach (AvatarPartInfo avatarpartData in avatarsubData.Parts)
                 {
                     if (avatarpartData == null)
                     {
