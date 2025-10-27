@@ -439,6 +439,7 @@ namespace Battle.QSimulation.Player
                 playerHandle.PlayState = BattlePlayerPlayState.OutOfPlay;
                 playerHandle.IsBot = isBot;
                 playerHandle.AllowCharacterSwapping = true;
+                playerHandle.PlayerGiveUpState = false;
                 playerHandle.SetCharacterEntities(playerCharacterEntityArray);
             }
         }
@@ -603,6 +604,12 @@ namespace Battle.QSimulation.Player
 
             public BattlePlayerCharacterState SelectedCharacterState
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacterState; }
+
+            public bool PlayerGiveUpState
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.PlayerGiveUpState;
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _internalHandle.PlayerGiveUpState = value;
+            }
 
             //} Public Properties
 
@@ -868,6 +875,12 @@ namespace Battle.QSimulation.Player
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] get => GetCharacterState(SelectedCharacterNumber);
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] set => SetCharacterState(SelectedCharacterNumber, value);
+            }
+
+            public bool PlayerGiveUpState
+            {
+              [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->PlayerGiveUpStates[Index];
+              [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->PlayerGiveUpStates[Index] = value;
             }
 
             public FPVector2 SpawnPosition
