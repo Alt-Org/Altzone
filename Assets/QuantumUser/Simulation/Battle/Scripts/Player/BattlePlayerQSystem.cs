@@ -5,12 +5,13 @@
 ///
 /// This system contains methods called by BattleCollisionQSystem that deal damage to players and shields, as well as sending input data forward for movement and character switching.
 
-using UnityEngine.Scripting;
-using Quantum;
-using Photon.Deterministic;
-
-using Battle.QSimulation.Projectile;
 using Battle.QSimulation.Game;
+using Battle.QSimulation.Projectile;
+using Photon.Deterministic;
+using Quantum;
+using UnityEngine;
+using UnityEngine.Scripting;
+using Input = Quantum.Input;
 
 namespace Battle.QSimulation.Player
 {
@@ -140,50 +141,119 @@ namespace Battle.QSimulation.Player
                     playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
                 }
 
-                if (!playerHandle.IsBot)
-                {
-                    input = f.GetPlayerInput(playerHandle.PlayerRef);
-                }
-                else
-                {
-                    input = &botInput;
-                    BattlePlayerBotController.GetBotInput(f, playerHandle.PlayState.IsInPlay(), playerData, input);
-                }
+                input = GetInput(f, playerHandle, playerData, &botInput);
 
-                if (input->PlayerCharacterNumber > -1 && playerHandle.AllowCharacterSwapping)
-                {
-                    BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, input->PlayerCharacterNumber);
-                    continue;
-                }
+                if (HandleGiveUp(f, input, playerHandle)) continue;
+                if (HandleCharacterSwapping(f, input, playerHandle)) continue;
+                if (HandleOutOfPlay(f, playerHandle)) continue;
 
-                if (playerHandle.PlayState.IsOutOfPlayRespawning() && !playerHandle.RespawnTimer.IsRunning(f) && playerHandle.AllowCharacterSwapping)
-                {
-                    int i;
-                    for (i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_COUNT; i++)
-                    {
-                        if (playerHandle.GetCharacterState(i) == BattlePlayerCharacterState.Alive)
-                        {
-                            BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, i);
-                            break;
-                        }
-                    }
-                    if (i == Constants.BATTLE_PLAYER_CHARACTER_COUNT)
-                    {
-                        playerHandle.SetOutOfPlayFinal();
-                    }
-                    continue;
-                }
-
-                if (playerHandle.PlayState.IsOutOfPlay()) continue;
-
-                if (playerData->CurrentDefence <= FP._0)
-                {
-                    f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity)->IsActive = false;
-                }
-
-                BattlePlayerClassManager.OnUpdate(f, playerHandle, playerData, playerEntity);
-                BattlePlayerMovementController.UpdateMovement(f, playerData, playerTransform, input);
+                HandleInPlay(f, input, playerHandle, playerData, playerEntity, playerTransform);
             }
+        }
+
+        private Input* GetInput(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, Input* botInputStorage)
+        {
+            Input* input;
+
+            if (!playerHandle.IsBot)
+            {
+                input = f.GetPlayerInput(playerHandle.PlayerRef);
+            }
+            else
+            {
+                input = botInputStorage;
+                BattlePlayerBotController.GetBotInput(f, playerHandle.PlayState.IsInPlay(), playerData, input);
+            }
+            return input;
+        }
+
+        private bool HandleGiveUp(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle)
+        {
+            if (!input->GiveUpInput) return false;
+
+            playerHandle.PlayerGiveUpState = !playerHandle.PlayerGiveUpState;
+
+            if (!playerHandle.PlayerGiveUpState) return true;
+
+            BattlePlayerSlot slot = playerHandle.Slot;
+            BattleTeamNumber team = BattlePlayerManager.PlayerHandle.GetTeamNumber(playerHandle.Slot);
+
+            BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, slot);
+            if (!teammateHandle.PlayState.IsNotInGame())
+            {
+                f.Events.BattleGiveUpStateChange(team, slot, BattleGiveUpStateUpdate.GiveUpVote);
+                if (!teammateHandle.PlayerGiveUpState) return true;
+            }
+            else
+            {
+                f.Events.BattleGiveUpStateChange(team, slot, BattleGiveUpStateUpdate.GiveUpNow);
+            }
+
+            BattleTeamNumber winningTeam = team switch
+            {
+                BattleTeamNumber.TeamAlpha => BattleTeamNumber.TeamBeta,
+                BattleTeamNumber.TeamBeta  => BattleTeamNumber.TeamAlpha,
+
+                _ => BattleTeamNumber.NoTeam
+            };
+
+            Debug.LogWarning("End game debug");
+
+            BattleGameControlQSystem.OnGameOver(f, winningTeam);
+
+            return true;
+        }
+        private bool HandleCharacterSwapping(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle)
+        {
+            if (input->PlayerCharacterNumber > -1 && playerHandle.AllowCharacterSwapping)
+            {
+                BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, input->PlayerCharacterNumber);
+                return true;
+            }
+            return false;
+        }
+
+        private bool HandleOutOfPlay(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
+        {
+            // handle auto respawning
+            if (playerHandle.PlayState.IsOutOfPlayRespawning() && !playerHandle.RespawnTimer.IsRunning(f) && playerHandle.AllowCharacterSwapping)
+            {
+                int i;
+
+                // try to spawn next character
+                for (i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_COUNT; i++)
+                {
+                    if (playerHandle.GetCharacterState(i) == BattlePlayerCharacterState.Alive)
+                    {
+                        BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, i);
+                        break;
+                    }
+                }
+
+                // handle out of characters
+                if (i == Constants.BATTLE_PLAYER_CHARACTER_COUNT)
+                {
+                    playerHandle.SetOutOfPlayFinal();
+                }
+
+                return true;
+            }
+
+            if (playerHandle.PlayState.IsOutOfPlay()) return true;
+
+            return false;
+        }
+
+        private void HandleInPlay(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity, Transform2D* playerTransform)
+        {
+
+            if (playerData->CurrentDefence <= FP._0)
+            {
+                f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity)->IsActive = false;
+            }
+
+            BattlePlayerClassManager.OnUpdate(f, playerHandle, playerData, playerEntity);
+            BattlePlayerMovementController.UpdateMovement(f, playerData, playerTransform, input);
         }
     }
 }
