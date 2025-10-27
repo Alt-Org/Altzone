@@ -318,11 +318,14 @@ namespace Battle.QSimulation.Projectile
         /// <param name="winningTeam">The BattleTeamNumber of the team that won.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="projectileEntity">EntityRef of the projectile.</param>
-        public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)
+        public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* _projectile, EntityRef _projectileEntity)
         {
-            SetHeld(f, projectile, true);
+            EntityRef projectileEntity = GetProjectile(f);
 
-            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
+            BattleProjectileQComponent* projectile          = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntity);
+            Transform2D*                projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
+
+            SetHeld(f, projectile, true);
 
             // move the projectile out of bounds after a goal is scored
             switch (winningTeam)
@@ -341,6 +344,13 @@ namespace Battle.QSimulation.Projectile
         #endregion Public
 
         #region Private Static Methods
+
+        private static EntityRef GetProjectile(Frame f)
+        {
+            ComponentFilter<BattleProjectileQComponent> filter = f.Filter<BattleProjectileQComponent>();
+            filter.Next(out EntityRef entity, out _);
+            return entity;
+        }
 
         /// <summary>
         /// Launches the projectile from an unlaunched state, setting its initial values.
