@@ -7,9 +7,11 @@
 /// Handles give up button functionality.
 
 using UnityEngine;
-using UnityEngine.UI;
+using Quantum;
+using TMPro;
 
 using Altzone.Scripts.BattleUiShared;
+using Battle.View.Game;
 
 namespace Battle.View.UI
 {
@@ -34,7 +36,9 @@ namespace Battle.View.UI
 
         /// <summary>[SerializeField] Reference to the Button component of the give up button.</summary>
         /// @ref BattleUiGiveUpButtonHandler-SerializeFields
-        [SerializeField] private Button _giveUpButton;
+        [SerializeField] private OnPointerDownButton _giveUpButton;
+
+        [SerializeField] private TextMeshProUGUI _giveUpButtonInfoText;
 
         /// @}
 
@@ -54,13 +58,101 @@ namespace Battle.View.UI
             MovableUiElement.gameObject.SetActive(show);
         }
 
+        public void UpdateState(BattlePlayerSlot slot, BattleGiveUpStateUpdate stateUpdate)
+        {
+            if (_buttonInfoState == ButtonInfoState.TeamGiveUp) return;
+
+            switch (stateUpdate)
+            {
+                case BattleGiveUpStateUpdate.GiveUpVote:
+                    if (slot == BattleGameViewController.LocalPlayerSlot)
+                    {
+                        _buttonInfoState = _buttonInfoState is ButtonInfoState.TeammateGiveUp or ButtonInfoState.TeammateAbandoned
+                                         ? ButtonInfoState.TeamGiveUp
+                                         : ButtonInfoState.LocalGiveUp;
+                    }
+                    else
+                    {
+                        _buttonInfoState = _buttonInfoState is ButtonInfoState.LocalGiveUp
+                                         ? ButtonInfoState.TeamGiveUp
+                                         : ButtonInfoState.TeammateGiveUp;
+                    }
+                        break;
+
+                case BattleGiveUpStateUpdate.Abandoned:
+                    if (slot == BattleGameViewController.LocalPlayerSlot)
+                    {
+                        Debug.LogWarning("Active local client marked as abandoned");
+                    }
+                    else
+                    {
+                        _buttonInfoState = ButtonInfoState.TeammateAbandoned;
+                    }
+                        break;
+
+                case BattleGiveUpStateUpdate.GiveUpVoteCancel:
+                    _buttonInfoState = ButtonInfoState.Normal;
+                    break;
+
+                case BattleGiveUpStateUpdate.GiveUpNow:
+                    _buttonInfoState = ButtonInfoState.TeamGiveUp;
+                    break;
+
+                default:
+                    break;
+            }
+
+            UpdateInfoText();
+        }
+        private enum ButtonInfoState
+        {
+            Normal,
+            LocalGiveUp,
+            TeammateGiveUp,
+            TeammateAbandoned,
+            TeamGiveUp
+        }
+
+        private ButtonInfoState _buttonInfoState;
+
         /// <summary>
         /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.Awake.html">Awake@u-exlink</a> method
         /// which adds listener to the #_giveUpButton's <a href="https://docs.unity3d.com/Packages/com.unity.ugui@2.0/api/UnityEngine.UI.Button.html#UnityEngine_UI_Button_onClick">onClick@u-exlink</a> event.
         /// </summary>
         private void Awake()
         {
+            _buttonInfoState = ButtonInfoState.Normal;
+            UpdateInfoText();
             _giveUpButton.onClick.AddListener(_uiController.GameViewController.UiInputOnLocalPlayerGiveUp);
+        }
+
+        private void UpdateInfoText()
+        {
+            switch (_buttonInfoState)
+            {
+                case ButtonInfoState.Normal:
+                    _giveUpButtonInfoText.text = "";
+                    break;
+
+                case ButtonInfoState.LocalGiveUp:
+                    _giveUpButtonInfoText.text = "You want to give up";
+                    break;
+
+                case ButtonInfoState.TeammateGiveUp:
+                    _giveUpButtonInfoText.text = "Teammate wants to give up";
+                    break;
+
+                case ButtonInfoState.TeammateAbandoned:
+                    _giveUpButtonInfoText.text = "Teammate has abandoned you";
+                    break;
+
+                case ButtonInfoState.TeamGiveUp:
+                    _giveUpButtonInfoText.text = "Your team gave up";
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         /// <summary>
