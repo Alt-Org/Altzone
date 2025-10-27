@@ -63,11 +63,11 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             _gameTypeInfo = info;
             SetSelected(selected);
 
-            if(info.gameType != GameType.Custom)
-            {
-                ButtonComponent.interactable = false;
-                _settingsButton.gameObject.SetActive(false);
-            }
+            //if(info.gameType != GameType.Custom)
+            //{
+            //    ButtonComponent.interactable = false;
+            //    _settingsButton.gameObject.SetActive(false);
+            //}
             //else
             //{
             //    _settingsButton.onClick.RemoveAllListeners();

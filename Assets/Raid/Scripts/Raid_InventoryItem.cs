@@ -5,8 +5,6 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using UnityEngine.EventSystems;
-//using Photon.Pun;
-//using static MenuUI.Scripts.Lobby.InRoom.RoomSetupManager;
 
 public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 {
@@ -54,10 +52,9 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     public AudioClip pickUp;
     public AudioClip explosion;
 
-    //type 0: default, type 1: lock
-    public int _bombType = 0; 
+    // type 0: default, type 1: lock
+    public int _bombType = 0;
 
-    //public PhotonView _photonView { get; set; }
     public void Awake()
     {
         Heart = GameObject.FindWithTag("Heart");
@@ -72,7 +69,6 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         ItemImage.gameObject.SetActive(false);
         empty = true;
 
-        //if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
             spectator = true;
     }
     public void Update()
@@ -85,6 +81,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     {
         ItemImage.gameObject.SetActive(true);
         ItemImage.sprite = ItemSprite;
+        ItemWeight = LootItemWeight;
         ItemWeightText.text = ItemWeight + "kg";
         empty = false;
         SetBGColor();
@@ -113,7 +110,6 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
             triggered = true;
             audioSource.PlayOneShot(explosion, SettingsCarrier.Instance.SentVolume(GetComponent<SetVolume>()._soundType));
         }
-        //BombIndicator.SetActive(false);
     }
     public void LaunchBall()
     {
@@ -132,14 +128,20 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     {
         t += speed * Time.deltaTime;
         float step = Mathf.SmoothStep(0f, 1f, t * Time.deltaTime);
-        Vector2 newPosition = Vector2.Lerp(ItemBall.GetComponent<RectTransform>().anchoredPosition, endLoc, step);
-        ItemBall.GetComponent<RectTransform>().anchoredPosition = newPosition;
 
-        if (Vector2.Distance(ItemBall.GetComponent<RectTransform>().anchoredPosition, endLoc) <= 20f)
+        var rt = ItemBall?.GetComponent<RectTransform>();
+        if (rt == null) return;
+
+        Vector2 newPosition = Vector2.Lerp(rt.anchoredPosition, endLoc, step);
+        rt.anchoredPosition = newPosition;
+
+        if (Vector2.Distance(rt.anchoredPosition, endLoc) <= 20f)
         {
             moving = false;
-            Heart.GetComponent<HeartScript>().UpdateColor();
-            ItemBall.SetActive(false);
+            var heartScript = Heart?.GetComponent<HeartScript>();
+            if (heartScript != null) heartScript.UpdateColor();
+
+            if (ItemBall != null) ItemBall.SetActive(false);
         }
     }
     public void SetLocked()
@@ -147,7 +149,14 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         Lock.SetActive(true);
         locked = true;
     }
-    
+
+    public void SetSpectator(bool isSpectator)
+    {
+        spectator = isSpectator;
+        if (spectator && BombIndicator != null && bomb)
+            BombIndicator.SetActive(true);
+    }
+
     public void OnPointerClick(PointerEventData pointerData)
     {
         if (empty || locked)
@@ -159,11 +168,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
             if (!spectator && active)
             {
                 OnItemClicked?.Invoke(this);
-            }       
-        }
-        else
-        {
-            return;
+            }
         }
     }
     void OnTimeEnded()
@@ -196,10 +201,6 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
                 Bubble.sprite = Bubbles[2];
                 Aura.sprite = Auras[2];
                 break;
-
         }
-
-            
-
     }
 }

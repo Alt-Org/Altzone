@@ -49,7 +49,8 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 6394844066202255360
-      type: {class: RaidPlayerLinkQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      type: {class: RaidPlayerLinkQSingletonPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
-        PlayerRef:
-          _index: 1
+        PlayerRefs:
+        - _index: 0
+        - _index: 0

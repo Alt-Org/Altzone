@@ -8,6 +8,7 @@ using Altzone.Scripts.Lobby;
 using TMPro;
 using Altzone.Scripts.Window;
 using Altzone.Scripts.Language;
+using UnityEngine.SceneManagement;
 
 namespace MenuUi.Scripts.Lobby.BattleButton
 {
@@ -149,7 +150,14 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             }
 
             // Opening battle popup after selecting a game type
-            SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
+            if (_selectedGameType != GameType.Raid)
+            {
+                SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
+            }else
+            {
+                //if raid, we open raid test window directly
+                SceneManager.LoadScene("41-QuantumRaid");
+            }
         }
 
         private void ChangeLanguage(SettingsCarrier.LanguageType language)
