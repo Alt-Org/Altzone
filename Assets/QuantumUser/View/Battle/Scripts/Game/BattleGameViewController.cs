@@ -120,6 +120,7 @@ namespace Battle.View.Game
         public void UiInputOnLocalPlayerGiveUp()
         {
             Debug.Log("Give up button pressed!");
+            _playerInput.OnGiveUp();
         }
 
         /// <summary>
@@ -223,6 +224,7 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleCharacterSelected>(this, QEventCharacterSelected);
             QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
             QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
+            QuantumEvent.Subscribe<EventBattleGiveUpStateChange>(this, QEventOnGiveUpStateChange);
 
             // Subscribing to Debug events
             QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, QEventDebugOnUpdateStatsOverlay);
@@ -339,14 +341,11 @@ namespace Battle.View.Game
                 _uiController.JoystickHandler.SetLocked(true);
             }
 
-            // Commented out code to hide the ui elements which shouldn't be shown at this point, but the code will be used later
-            /*
             if (_uiController.GiveUpButtonHandler != null)
             {
                 BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.GiveUpButton);
                 if (data != null) _uiController.GiveUpButtonHandler.MovableUiElement.SetData(data);
             }
-            */
 
             if (_uiController.PlayerInfoHandler != null)
             {
@@ -424,6 +423,7 @@ namespace Battle.View.Game
 
             // Show UI elements
             if (_uiController.DiamondsHandler != null) _uiController.DiamondsHandler.SetShow(true);
+            if (_uiController.GiveUpButtonHandler != null) _uiController.GiveUpButtonHandler.SetShow(true);
             if (SettingsCarrier.Instance.BattleMovementInput == BattleMovementInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.MoveJoystick);
             if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.RotateJoystick);
             if (SettingsCarrier.Instance.BattleShowDebugStatsOverlay) _uiController.DebugStatsOverlayHandler.SetShow(true);
@@ -564,6 +564,14 @@ namespace Battle.View.Game
             if (e.Team == LocalPlayerTeam)
             {
                 _uiController.PlayerInfoHandler.UpdateDefenceVisual(e.Slot, e.CharacterNumber, (float)e.DefenceValue);
+            }
+        }
+
+        private void QEventOnGiveUpStateChange(EventBattleGiveUpStateChange e)
+        {
+            if (e.Team == LocalPlayerTeam)
+            {
+                _uiController.GiveUpButtonHandler.UpdateState(e.Slot, e.StateUpdate);
             }
         }
 
