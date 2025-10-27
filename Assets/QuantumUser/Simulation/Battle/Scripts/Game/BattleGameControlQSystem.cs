@@ -62,14 +62,14 @@ namespace Battle.QSimulation.Game
             BattlePlayerManager.RegisterPlayer(f, playerRef);
         }
 
-        public static void OnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)
+        public static void OnGameOver(Frame f, BattleTeamNumber winningTeam)
         {
             BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
             f.Events.BattleViewGameOver(winningTeam, gameSession->GameTimeSec);
             gameSession->State = BattleGameState.GameOver;
 
             BattleTeamNumber WinningTeam = winningTeam;
-            f.Signals.BattleOnGameOver(WinningTeam, projectile, projectileEntity);
+            f.Signals.BattleOnGameOver(WinningTeam);
         }
 
         /// <summary>

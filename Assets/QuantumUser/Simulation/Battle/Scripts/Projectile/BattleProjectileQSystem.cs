@@ -318,7 +318,7 @@ namespace Battle.QSimulation.Projectile
         /// <param name="winningTeam">The BattleTeamNumber of the team that won.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="projectileEntity">EntityRef of the projectile.</param>
-        public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* _projectile, EntityRef _projectileEntity)
+        public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam)
         {
             EntityRef projectileEntity = GetProjectile(f);
 
