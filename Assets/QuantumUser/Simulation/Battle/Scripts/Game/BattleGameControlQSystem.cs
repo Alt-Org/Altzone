@@ -12,7 +12,6 @@ using Quantum;
 
 using Battle.QSimulation.Player;
 using Battle.QSimulation.SoulWall;
-using UnityEngine;
 using Photon.Deterministic;
 
 namespace Battle.QSimulation.Game
