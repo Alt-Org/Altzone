@@ -125,6 +125,13 @@ synced event BattleShieldTakeDamage
     FP DefenceValue;
 }
 
+synced event BattleGiveUpStateChange
+{
+    BattleTeamNumber Team;
+    BattlePlayerSlot Slot;
+    BattleGiveUpStateUpdate StateUpdate;
+}
+
 //} Gameplay events
 
 //{ Debug events
