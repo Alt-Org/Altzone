@@ -1,6 +1,6 @@
 /// @file Utils.cs
 /// <summary>
-/// Has a class Utils which has utility methods for view.
+/// Contains @cref{Battle.View,Utils} class which has utility methods for view.
 /// </summary>
 ///
 /// This script:<br/>
