@@ -126,7 +126,7 @@ namespace Battle.QSimulation.Player
         public override void Update(Frame f)
         {
             Input* input;
-            Input botInput;
+            Input stackInputStorage;
 
             EntityRef playerEntity = EntityRef.None;
             BattlePlayerDataQComponent* playerData = null;
@@ -147,7 +147,7 @@ namespace Battle.QSimulation.Player
                     playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
                 }
 
-                input = GetInput(f, playerHandle, playerData, &botInput);
+                input = GetInput(f, playerHandle, playerData, &stackInputStorage);
 
                 if (HandleGiveUpInput(f, input, playerHandle)) continue;
                 if (HandleCharacterSwapping(f, input, playerHandle)) continue;
@@ -157,18 +157,32 @@ namespace Battle.QSimulation.Player
             }
         }
 
-        private Input* GetInput(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, Input* botInputStorage)
+        private Input* GetInput(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, Input* stackInputStorage)
         {
             Input* input;
 
-            if (!playerHandle.IsBot)
+            if (playerHandle.IsBot)
             {
-                input = f.GetPlayerInput(playerHandle.PlayerRef);
+                input = stackInputStorage;
+                BattlePlayerBotController.GetBotInput(f, playerHandle.PlayState.IsInPlay(), playerData, input);
+            }
+            else if (playerHandle.IsAbandoned)
+            {
+                input = stackInputStorage;
+                *stackInputStorage = new Input
+                {
+                    MovementInput                 = BattleMovementInputType.None,
+                    MovementDirectionIsNormalized = false,
+                    MovementPosition              = new BattleGridPosition {Col = 0, Row = 0},
+                    MovementDirection             = FPVector2.Zero,
+                    RotationInput                 = false,
+                    RotationValue                 = FP._0,
+                    PlayerCharacterNumber         = -1
+                };
             }
             else
             {
-                input = botInputStorage;
-                BattlePlayerBotController.GetBotInput(f, playerHandle.PlayState.IsInPlay(), playerData, input);
+                input = f.GetPlayerInput(playerHandle.PlayerRef);
             }
             return input;
         }
