@@ -1,6 +1,6 @@
 /// @file BattleUiDebugStatsOverlayHandler.cs
 /// <summary>
-/// Has a class BattleUiDebugStatsOverlayHandler which displays character's stats.
+/// Contains @cref{Battle.View.UI,BattleUiDebugStatsOverlayHandler} class which displays character's stats.
 /// </summary>
 ///
 /// This script:<br/>
