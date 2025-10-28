@@ -1,6 +1,6 @@
 /// @file BattleUiPlayerInfoHandler.cs
 /// <summary>
-/// Has a class BattleUiPlayerInfoHandler which handles %Battle %UI player and teammate info visual functionality..
+/// Contains @cref{Battle.View.UI,BattleUiPlayerInfoHandler} class which handles %Battle %UI player and teammate info visual functionality..
 /// </summary>
 ///
 /// This script:<br/>
@@ -167,7 +167,7 @@ namespace Battle.View.UI
         /// Checks if the character selection was for the local player.<br/>
         /// Calls SetSelected on all character buttons to set them to false, then sets the selected character's to true.
         /// </summary>
-        /// 
+        ///
         /// <param name="slot">The slot of the player in question.</param>
         /// <param name="characterNumber">The character number of the selected character.</param>
         public void SetSelected(BattlePlayerSlot slot, int characterNumber)
@@ -207,7 +207,7 @@ namespace Battle.View.UI
         /// <summary>
         /// Calls SetDefenceNumber on the character button of the correct players correct character.
         /// </summary>
-        /// 
+        ///
         /// <param name="slot">The slot of the player in question.</param>
         /// <param name="characterNumber">The character number of the character in question.</param>
         /// <param name="defenceValue">The defence value of the character in question.</param>
@@ -223,9 +223,9 @@ namespace Battle.View.UI
         /// <summary>
         /// Retrieves the BattleUiPlayerInfoComponent for either the local player or their teammate.
         /// </summary>
-        /// 
+        ///
         /// <param name="slot">The slot of the player in question.</param>
-        /// 
+        ///
         /// <returns>The BattleUiPlayerInfoComponent for the specified player.</returns>
         public BattleUiPlayerInfoComponent GetPlayerInfoComponent(BattlePlayerSlot slot)
         {
