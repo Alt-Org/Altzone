@@ -7,6 +7,7 @@
 
 //#define DEBUG_LOG_STATE
 
+using UnityEngine;
 using UnityEngine.Scripting;
 using Quantum;
 
@@ -21,7 +22,7 @@ namespace Battle.QSimulation.Game
      *  -ProjectileSpawnerSystem
      */
     [Preserve]
-    public unsafe class BattleGameControlQSystem : SystemMainThread, ISignalOnPlayerAdded
+    public unsafe class BattleGameControlQSystem : SystemMainThread, ISignalOnPlayerAdded, ISignalOnPlayerDisconnected
     {
         /// <summary>
         /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System OnInit method</a> gets called when the system is initialized.</span><br/>
@@ -59,6 +60,16 @@ namespace Battle.QSimulation.Game
         public void OnPlayerAdded(Frame f, PlayerRef playerRef, bool firstTime)
         {
             BattlePlayerManager.RegisterPlayer(f, playerRef);
+        }
+
+        public void OnPlayerDisconnected(Frame f, PlayerRef playerRef)
+        {
+            BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
+            if (gameSession->State != BattleGameState.GameOver)
+            {
+                Debug.LogWarningFormat("Player: {0} has disconnected", playerRef);
+                BattlePlayerManager.MarkAbandoned(f, playerRef);
+            }
         }
 
         public static void OnGameOver(Frame f, BattleTeamNumber winningTeam)
