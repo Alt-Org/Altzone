@@ -143,7 +143,7 @@ namespace Battle.QSimulation.Player
 
                 input = GetInput(f, playerHandle, playerData, &botInput);
 
-                if (HandleGiveUp(f, input, playerHandle)) continue;
+                if (HandleGiveUpInput(f, input, playerHandle)) continue;
                 if (HandleCharacterSwapping(f, input, playerHandle)) continue;
                 if (HandleOutOfPlay(f, playerHandle)) continue;
 
@@ -167,26 +167,29 @@ namespace Battle.QSimulation.Player
             return input;
         }
 
-        private bool HandleGiveUp(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle)
+        private static void HandleGiveUpLogic(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
-            if (!input->GiveUpInput) return false;
-
-            playerHandle.PlayerGiveUpState = !playerHandle.PlayerGiveUpState;
-
             BattlePlayerSlot slot = playerHandle.Slot;
             BattleTeamNumber team = BattlePlayerManager.PlayerHandle.GetTeamNumber(playerHandle.Slot);
 
             if (!playerHandle.PlayerGiveUpState)
             {
                 f.Events.BattleGiveUpStateChange(team, slot, BattleGiveUpStateUpdate.GiveUpVoteCancel);
-                return false;
+                return;
             }
 
             BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, slot);
             if (!teammateHandle.PlayState.IsNotInGame())
             {
-                f.Events.BattleGiveUpStateChange(team, slot, BattleGiveUpStateUpdate.GiveUpVote);
-                if (!teammateHandle.PlayerGiveUpState) return true;
+                if (!playerHandle.IsAbandoned)
+                {
+                    f.Events.BattleGiveUpStateChange(team, slot, BattleGiveUpStateUpdate.GiveUpVote);
+                }
+                else
+                {
+                    f.Events.BattleGiveUpStateChange(team, slot, BattleGiveUpStateUpdate.Abandoned);
+                }
+                if (!teammateHandle.PlayerGiveUpState) return;
             }
             else
             {
@@ -196,7 +199,7 @@ namespace Battle.QSimulation.Player
             BattleTeamNumber winningTeam = team switch
             {
                 BattleTeamNumber.TeamAlpha => BattleTeamNumber.TeamBeta,
-                BattleTeamNumber.TeamBeta  => BattleTeamNumber.TeamAlpha,
+                BattleTeamNumber.TeamBeta => BattleTeamNumber.TeamAlpha,
 
                 _ => BattleTeamNumber.NoTeam
             };
@@ -204,6 +207,14 @@ namespace Battle.QSimulation.Player
             Debug.LogWarning("End game debug");
 
             BattleGameControlQSystem.OnGameOver(f, winningTeam);
+        }
+
+        private bool HandleGiveUpInput(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle)
+        {
+            if (!input->GiveUpInput) return false;
+
+            playerHandle.PlayerGiveUpState = !playerHandle.PlayerGiveUpState;
+            HandleGiveUpLogic(f, playerHandle);
 
             return true;
         }
