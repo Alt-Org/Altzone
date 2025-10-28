@@ -5,9 +5,10 @@
 ///
 /// This system:<br/>
 /// Spawns diamonds when BattleCollisionQSystem calls the OnProjectileHitSoulWall method upon SoulWall segment's destruction.<br/>
-/// Filters all diamond entities and handles their lifetime.<br/>
+/// Filters all diamond entities and handles their movement and lifetime.<br/>
 /// Destroys diamonds when player collects them by colliding with them or if diamond's lifetime ends.
 
+using UnityEngine;
 using UnityEngine.Scripting;
 
 using Quantum;
@@ -22,7 +23,7 @@ namespace Battle.QSimulation.Diamond
     /// Handles spawning diamonds, managing their lifetime and destroying them.
     /// </summary>
     [Preserve]
-    public unsafe class BattleDiamondQSystem : SystemMainThreadFilter<BattleDiamondQSystem.Filter>, ISignalBattleOnDiamondHitPlayer
+    public unsafe class BattleDiamondQSystem : SystemMainThreadFilter<BattleDiamondQSystem.Filter>, ISignalBattleOnDiamondHitPlayer, ISignalBattleOnDiamondHitArenaBorder
     {
         /// <summary>
         /// Filter for filtering diamond entities.
@@ -30,6 +31,7 @@ namespace Battle.QSimulation.Diamond
         public struct Filter
         {
             public EntityRef Entity;
+            public Transform2D* Transform;
             public BattleDiamondDataQComponent* DiamondData;
         }
 
@@ -45,12 +47,12 @@ namespace Battle.QSimulation.Diamond
             if (projectileCollisionData->Projectile->IsHeld) return;
             BattleDiamondQSpec diamondSpec = BattleQConfig.GetDiamondSpec(f);
 
-            CreateDiamonds(f, soulWallCollisionData->SoulWall->Normal, diamondSpec);
+            CreateDiamonds(f, f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->OtherEntity)->Position, soulWallCollisionData->SoulWall->Normal, diamondSpec);
         }
 
         /// <summary>
         /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method@u-exlink</a> gets called every frame.</span><br/>
-        /// Manages each diamond's lifetime and destroys them if players don't gather them quickly enough.
+        /// Updates each diamond's position and speed while they are traveling. Manages each diamond's lifetime and destroys them if players don't gather them quickly enough.
         /// @warning
         /// This method should only be called by Quantum.
         /// </summary>
@@ -59,10 +61,32 @@ namespace Battle.QSimulation.Diamond
         /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter@u-exlink</a>.</param>
         public override void Update(Frame f, ref Filter filter)
         {
-            // reduce diamond's lifetime
-            filter.DiamondData->TimeUntilDisappearance -= FP._0_01;
+            // unpack filter
+            BattleDiamondDataQComponent* diamondData = filter.DiamondData;
+            Transform2D* transform = filter.Transform;
 
-            if (filter.DiamondData->TimeUntilDisappearance < FP._0) f.Destroy(filter.Entity);
+            if (diamondData->IsTraveling)
+            {
+                transform->Position += diamondData->TravelDirection * (diamondData->TravelSpeed * f.DeltaTime);
+
+                if (diamondData->TargetDistance -  FPMath.Abs(transform->Position.Y - diamondData->StartPosition.Y) < FP.FromFloat_UNSAFE(BattleQConfig.GetDiamondSpec(f).BreakDistance))
+                {
+                    diamondData->TravelSpeed -= FP.FromFloat_UNSAFE(BattleQConfig.GetDiamondSpec(f).BreakForce) * f.DeltaTime;
+                }
+
+                if (FPMath.Abs(transform->Position.Y - diamondData->StartPosition.Y) >= diamondData->TargetDistance || diamondData->TravelSpeed <= 0)
+                {
+                    diamondData->IsTraveling = false;
+
+                    diamondData->LifetimeTimer = FrameTimer.FromSeconds(f, FP.FromFloat_UNSAFE(BattleQConfig.GetDiamondSpec(f).LifetimeSec));
+
+                    f.Events.BattleDiamondLanded(filter.Entity);
+                }
+            }
+            else if (!diamondData->LifetimeTimer.IsRunning(f))
+            {
+                f.Destroy(filter.Entity);
+            }
         }
 
         /// <summary>
@@ -80,6 +104,8 @@ namespace Battle.QSimulation.Diamond
         /// <param name="playerEntity">EntityRef of the player.</param>
         public void BattleOnDiamondHitPlayer(Frame f, BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity)
         {
+            if (diamond->IsTraveling) return;
+
             BattleDiamondCounterQSingleton* diamondCounter = f.Unsafe.GetPointerSingleton<BattleDiamondCounterQSingleton>();
             BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
 
@@ -91,25 +117,36 @@ namespace Battle.QSimulation.Diamond
         }
 
         /// <summary>
-        /// Creates diamonds and teleports them to a random position on scoring team's side of the arena.
+        /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
+        /// that gets called when <see cref="Quantum.ISignalBattleOnDiamondHitArenaBorder">ISignalBattleOnDiamondHitArenaBorder</see> is sent.</span><br/>
+        /// Reflects the diamonds travel direction off of the arena border.
+        /// @warning
+        /// This method should only be called via Quantum signal. 
+        /// </summary>
+        /// 
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="diamond">Pointer to the diamond component.</param>
+        /// <param name="diamondEntity">EntityRef of the diamond.</param>
+        /// <param name="arenaBorder">Pointer to the arena border component.</param>
+        public void BattleOnDiamondHitArenaBorder(Frame f, BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattleArenaBorderQComponent* arenaBorder)
+        {
+            diamond->TravelDirection = FPVector2.Reflect(diamond->TravelDirection, arenaBorder->Normal).Normalized;
+        }
+
+        /// <summary>
+        /// Creates diamonds.<br/>
+        /// Diamonds are assigned a target vertical distance to travel, a starting direction to begin traveling in and spawned at the destroyed soulwalls position.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="wallNormal">Normal of the SoulWall.</param>
         /// <param name="diamondSpec">The DiamondSpec.</param>
-        private static void CreateDiamonds(Frame f, FPVector2 wallNormal, BattleDiamondQSpec diamondSpec)
+        private static void CreateDiamonds(Frame f, FPVector2 wallPosition, FPVector2 wallNormal, BattleDiamondQSpec diamondSpec)
         {
             // diamond temp variables
-            BattleGridPosition diamondRandomPosition;
-            FPVector2          diamondPosition;
-            BattleTeamNumber   diamondOwnerTeam;
-            int                spawnAreaStart;
-            int                spawnAreaEnd;
-
-            // set diamond common temp variables (used for all diamonds)
-            diamondOwnerTeam = wallNormal.Y == FP._1 ? BattleTeamNumber.TeamBeta : BattleTeamNumber.TeamAlpha;
-            spawnAreaStart   = diamondOwnerTeam == BattleTeamNumber.TeamAlpha ? BattleGridManager.TeamAlphaFieldStart : BattleGridManager.TeamBetaFieldStart;
-            spawnAreaEnd     = diamondOwnerTeam == BattleTeamNumber.TeamAlpha ? BattleGridManager.TeamAlphaFieldEnd   : BattleGridManager.TeamBetaFieldEnd;
+            FP                 diamondTargetDistance;
+            FPVector2          diamondLaunchDirection;
+            FP                 diamondTravelSpeed;
 
             // diamond variables
             EntityRef                    diamondEntity;
@@ -118,14 +155,11 @@ namespace Battle.QSimulation.Diamond
 
             for(int i = 0; i < diamondSpec.SpawnAmount; i++)
             {
-                // randomize diamond's spawn position inside allowed spawn area
-                diamondRandomPosition = new BattleGridPosition()
-                {
-                    Col = f.RNG->NextInclusive(0, BattleGridManager.Columns-1),
-                    Row = f.RNG->NextInclusive(spawnAreaStart, spawnAreaEnd)
-                };
+                diamondTargetDistance = FP.FromFloat_UNSAFE(Random.Range(diamondSpec.TravelDistanceMin, diamondSpec.TravelDistanceMax));
 
-                diamondPosition = BattleGridManager.GridPositionToWorldPosition(diamondRandomPosition);
+                diamondLaunchDirection = FPVector2.Rotate(wallNormal, FP.Deg2Rad * FP.FromFloat_UNSAFE(Random.Range(-diamondSpec.SpawnAngleDeg / 2, diamondSpec.SpawnAngleDeg / 2)));
+
+                diamondTravelSpeed = diamondSpec.TravelSpeed;
 
                 // create diamond
                 diamondEntity = f.Create(diamondSpec.DiamondPrototype);
@@ -134,12 +168,15 @@ namespace Battle.QSimulation.Diamond
                 diamondData = f.Unsafe.GetPointer<BattleDiamondDataQComponent>(diamondEntity);
 
                 // initialize diamondData component
-                diamondData->OwnerTeam = diamondOwnerTeam;
-                diamondData->TimeUntilDisappearance = FP._4;
+                diamondData->IsTraveling     = true;
+                diamondData->TravelDirection = diamondLaunchDirection;
+                diamondData->TravelSpeed     = diamondTravelSpeed;
+                diamondData->TargetDistance  = diamondTargetDistance;
+                diamondData->StartPosition   = wallPosition;
 
                 // teleport diamond to spawn position
                 diamondTransform = f.Unsafe.GetPointer<Transform2D>(diamondEntity);
-                diamondTransform->Teleport(f, diamondPosition, FP._0);
+                diamondTransform->Teleport(f, wallPosition, FP._0);
             }
         }
     }
