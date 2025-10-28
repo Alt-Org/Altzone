@@ -1,6 +1,6 @@
 /// @file BattleUiCharacterButtonComponent.cs
 /// <summary>
-/// Has a class BattleUiCharacterButtonComponent which handles character button visuals and component references.
+/// Contains @cref{Battle.View.UI,BattleUiCharacterButtonComponent} class which handles character button visuals and component references.
 /// </summary>
 ///
 /// This script:<br/>
@@ -86,7 +86,7 @@ namespace Battle.View.UI
         /// <summary>
         /// Sets the selected character indicator for this character button active or inactive
         /// </summary>
-        /// 
+        ///
         /// <param name="selected">Whether this button's corresponding character was selected or unselected.</param>
         public void SetSelected(bool selected)
         {
@@ -109,7 +109,7 @@ namespace Battle.View.UI
         /// Sets the number on the UI to match the defence value.<br/>
         /// The number does not go below 0.
         /// </summary>
-        /// 
+        ///
         /// <param name="defenceValue">The defence value of the character.</param>
         public void SetDefenceNumber(float defenceValue)
         {
