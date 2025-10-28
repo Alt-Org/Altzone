@@ -125,6 +125,14 @@ namespace Battle.QSimulation.Player
             f.Events.BattleViewPlayerConnected(data);
         }
 
+        public static void MarkAbandoned(Frame f, PlayerRef playerRef)
+        {
+            BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
+            PlayerHandleInternal playerHandle = new PlayerHandleInternal(playerManagerData, PlayerHandleInternal.GetPlayerIndex(playerManagerData, playerRef));
+            playerHandle.IsAbandoned = true;
+            BattlePlayerQSystem.HandlePlayerAbandoned(f, playerHandle.ConvertToPublic());
+        }
+
         /// <summary>
         /// Verifies that all players in the game have been registered.
         /// </summary>
