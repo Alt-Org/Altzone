@@ -156,6 +156,8 @@ namespace Quantum.Prototypes.Unity {
     [ArrayLengthAttribute(4)]
     public QBoolean[] IsBot = new QBoolean[4];
     [ArrayLengthAttribute(4)]
+    public QBoolean[] IsAbandoned = new QBoolean[4];
+    [ArrayLengthAttribute(4)]
     public Quantum.Prototypes.FrameTimerPrototype[] RespawnTimer = new Quantum.Prototypes.FrameTimerPrototype[4];
     [ArrayLengthAttribute(4)]
     public QBoolean[] AllowCharacterSwapping = new QBoolean[4];
@@ -176,6 +178,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.PlayStates, out result.PlayStates);
       converter.Convert(this.PlayerRefs, out result.PlayerRefs);
       converter.Convert(this.IsBot, out result.IsBot);
+      converter.Convert(this.IsAbandoned, out result.IsAbandoned);
       converter.Convert(this.RespawnTimer, out result.RespawnTimer);
       converter.Convert(this.AllowCharacterSwapping, out result.AllowCharacterSwapping);
       converter.Convert(this.SelectedCharacters, out result.SelectedCharacters);

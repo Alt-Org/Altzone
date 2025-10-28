@@ -356,6 +356,8 @@ namespace Quantum.Prototypes {
     [ArrayLengthAttribute(4)]
     public QBoolean[] IsBot = new QBoolean[4];
     [ArrayLengthAttribute(4)]
+    public QBoolean[] IsAbandoned = new QBoolean[4];
+    [ArrayLengthAttribute(4)]
     public Quantum.Prototypes.FrameTimerPrototype[] RespawnTimer = new Quantum.Prototypes.FrameTimerPrototype[4];
     [ArrayLengthAttribute(4)]
     public QBoolean[] AllowCharacterSwapping = new QBoolean[4];
@@ -384,6 +386,9 @@ namespace Quantum.Prototypes {
         }
         for (int i = 0, count = PrototypeValidator.CheckLength(IsBot, 4, in context); i < count; ++i) {
           *result.IsBot.GetPointer(i) = this.IsBot[i];
+        }
+        for (int i = 0, count = PrototypeValidator.CheckLength(IsAbandoned, 4, in context); i < count; ++i) {
+          *result.IsAbandoned.GetPointer(i) = this.IsAbandoned[i];
         }
         for (int i = 0, count = PrototypeValidator.CheckLength(RespawnTimer, 4, in context); i < count; ++i) {
           this.RespawnTimer[i].Materialize(frame, ref *result.RespawnTimer.GetPointer(i), in context);
