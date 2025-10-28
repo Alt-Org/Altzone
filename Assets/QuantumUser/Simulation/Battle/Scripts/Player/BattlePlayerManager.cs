@@ -584,6 +584,9 @@ namespace Battle.QSimulation.Player
             public bool IsBot
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.IsBot; }
 
+            public bool IsAbandoned
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.IsAbandoned; }
+
             public FrameTimer RespawnTimer
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.RespawnTimer;
@@ -843,6 +846,12 @@ namespace Battle.QSimulation.Player
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->IsBot[Index];
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->IsBot[Index] = value;
+            }
+
+            public bool IsAbandoned
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->IsAbandoned[Index];
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->IsAbandoned[Index] = value;
             }
 
             public FrameTimer RespawnTimer
