@@ -1,6 +1,6 @@
 /// @file BattleUiJoystickHandler.cs
 /// <summary>
-/// Has a class BattleUiJoystickHandler which handles the on-screen joysticks.
+/// Contains @cref{Battle.View.UI,BattleUiJoystickHandler} class which handles the on-screen joysticks.
 /// </summary>
 ///
 /// This script:<br/>
