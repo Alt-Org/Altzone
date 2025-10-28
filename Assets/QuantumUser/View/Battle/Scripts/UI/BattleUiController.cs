@@ -1,6 +1,6 @@
 /// @file BattleUiController.cs
 /// <summary>
-/// Has a class BattleUiController which controls the %Battle %UI.
+/// Contains @cref{Battle.View.UI,BattleUiController} class which controls the %Battle %UI.
 /// </summary>
 ///
 /// This script:<br/>
