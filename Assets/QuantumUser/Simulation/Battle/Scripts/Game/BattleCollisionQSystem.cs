@@ -14,6 +14,7 @@ using Battle.QSimulation.Goal;
 using Battle.QSimulation.Player;
 using Battle.QSimulation.Diamond;
 using Battle.QSimulation.SoulWall;
+using Photon.Deterministic;
 
 namespace Battle.QSimulation.Game
 {
@@ -171,6 +172,10 @@ namespace Battle.QSimulation.Game
                 {
                     Debug.Log("[CollisionSystem] Diamond hit player");
                     f.Signals.BattleOnDiamondHitPlayer(diamond, info.Entity, playerHitbox, info.Other);
+                }
+                else if (f.Unsafe.TryGetPointer(info.Other, out BattleArenaBorderQComponent* arenaBorder))
+                {
+                    f.Signals.BattleOnDiamondHitArenaBorder(diamond, info.Entity, arenaBorder);
                 }
             }
         }
