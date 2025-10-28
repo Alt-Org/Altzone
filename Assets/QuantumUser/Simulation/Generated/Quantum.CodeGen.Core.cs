@@ -993,24 +993,40 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattleDiamondDataQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 16;
+    public const Int32 SIZE = 64;
     public const Int32 ALIGNMENT = 8;
+    [FieldOffset(24)]
+    public FrameTimer LifetimeTimer;
     [FieldOffset(0)]
-    public BattleTeamNumber OwnerTeam;
+    public QBoolean IsTraveling;
+    [FieldOffset(16)]
+    public FP TravelSpeed;
+    [FieldOffset(48)]
+    public FPVector2 TravelDirection;
+    [FieldOffset(32)]
+    public FPVector2 StartPosition;
     [FieldOffset(8)]
-    public FP TimeUntilDisappearance;
+    public FP TargetDistance;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 7121;
-        hash = hash * 31 + (Int32)OwnerTeam;
-        hash = hash * 31 + TimeUntilDisappearance.GetHashCode();
+        hash = hash * 31 + LifetimeTimer.GetHashCode();
+        hash = hash * 31 + IsTraveling.GetHashCode();
+        hash = hash * 31 + TravelSpeed.GetHashCode();
+        hash = hash * 31 + TravelDirection.GetHashCode();
+        hash = hash * 31 + StartPosition.GetHashCode();
+        hash = hash * 31 + TargetDistance.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (BattleDiamondDataQComponent*)ptr;
-        serializer.Stream.Serialize((Int32*)&p->OwnerTeam);
-        FP.Serialize(&p->TimeUntilDisappearance, serializer);
+        QBoolean.Serialize(&p->IsTraveling, serializer);
+        FP.Serialize(&p->TargetDistance, serializer);
+        FP.Serialize(&p->TravelSpeed, serializer);
+        FrameTimer.Serialize(&p->LifetimeTimer, serializer);
+        FPVector2.Serialize(&p->StartPosition, serializer);
+        FPVector2.Serialize(&p->TravelDirection, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -1543,6 +1559,9 @@ namespace Quantum {
   public unsafe partial interface ISignalBattleOnDiamondHitPlayer : ISignal {
     void BattleOnDiamondHitPlayer(Frame f, BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity);
   }
+  public unsafe partial interface ISignalBattleOnDiamondHitArenaBorder : ISignal {
+    void BattleOnDiamondHitArenaBorder(Frame f, BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattleArenaBorderQComponent* arenaBorder);
+  }
   public unsafe partial interface ISignalBattleOnGameOver : ISignal {
     void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity);
   }
@@ -1554,6 +1573,7 @@ namespace Quantum {
   }
   public unsafe partial class Frame {
     private ISignalBattleOnDiamondHitPlayer[] _ISignalBattleOnDiamondHitPlayerSystems;
+    private ISignalBattleOnDiamondHitArenaBorder[] _ISignalBattleOnDiamondHitArenaBorderSystems;
     private ISignalBattleOnGameOver[] _ISignalBattleOnGameOverSystems;
     partial void AllocGen() {
       _globals = (_globals_*)Context.Allocator.AllocAndClear(sizeof(_globals_));
@@ -1567,6 +1587,7 @@ namespace Quantum {
     partial void InitGen() {
       Initialize(this, this.SimulationConfig.Entities, 256);
       _ISignalBattleOnDiamondHitPlayerSystems = BuildSignalsArray<ISignalBattleOnDiamondHitPlayer>();
+      _ISignalBattleOnDiamondHitArenaBorderSystems = BuildSignalsArray<ISignalBattleOnDiamondHitArenaBorder>();
       _ISignalBattleOnGameOverSystems = BuildSignalsArray<ISignalBattleOnGameOver>();
       _ComponentSignalsOnAdded = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       _ComponentSignalsOnRemoved = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
@@ -1670,6 +1691,15 @@ namespace Quantum {
           var s = array[i];
           if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
             s.BattleOnDiamondHitPlayer(_f, diamond, diamondEntity, playerHitbox, playerEntity);
+          }
+        }
+      }
+      public void BattleOnDiamondHitArenaBorder(BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattleArenaBorderQComponent* arenaBorder) {
+        var array = _f._ISignalBattleOnDiamondHitArenaBorderSystems;
+        for (Int32 i = 0; i < array.Length; ++i) {
+          var s = array[i];
+          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
+            s.BattleOnDiamondHitArenaBorder(_f, diamond, diamondEntity, arenaBorder);
           }
         }
       }
