@@ -1,6 +1,6 @@
 /// @file BattleUiTimerHandler.cs
 /// <summary>
-/// Has a class BattleUiTimerHandler which handles setting the timer text.
+/// Contains @cref{Battle.View.UI,BattleUiTimerHandler} class which handles setting the timer text.
 /// </summary>
 ///
 /// This script:<br/>
