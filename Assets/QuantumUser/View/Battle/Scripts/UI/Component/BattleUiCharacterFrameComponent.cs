@@ -1,6 +1,6 @@
 /// @file BattleUiCharacterFrameComponent.cs
 /// <summary>
-/// Contains class BattleUiCharacterFrameComponent which controls character icon frames.
+/// Contains @cref{Battle.View.UI,BattleUiCharacterFrameComponent} class which controls character icon frames.
 /// </summary>
 
 using System;
