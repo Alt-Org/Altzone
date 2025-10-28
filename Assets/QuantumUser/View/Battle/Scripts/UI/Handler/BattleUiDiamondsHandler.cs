@@ -1,6 +1,6 @@
 /// @file BattleUiGameOverHandler.cs
 /// <summary>
-/// Has a class BattleUiDiamondsHandler which handles setting collected diamond amount text.
+/// Contains @cref{Battle.View.UI,BattleUiDiamondsHandler} class which handles setting collected diamond amount text.
 /// </summary>
 ///
 /// This script:<br/>
