@@ -1,6 +1,6 @@
 /// @file BattleGridViewController.cs
 /// <summary>
-/// Has a class BattleGridViewController which handles the %Battle arena grid's visuals.
+/// Contains @cref{Battle.View.Game,BattleGridViewController} class which handles the %Battle arena grid's visuals.
 /// </summary>
 ///
 /// This script:<br/>
