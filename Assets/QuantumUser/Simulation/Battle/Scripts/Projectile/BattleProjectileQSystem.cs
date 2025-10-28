@@ -331,10 +331,10 @@ namespace Battle.QSimulation.Projectile
             switch (winningTeam)
             {
                 case BattleTeamNumber.TeamAlpha:
-                    projectileTransform->Position += new FPVector2(0, 10);
+                    projectileTransform->Position = new FPVector2(0, 25);
                     break;
                 case BattleTeamNumber.TeamBeta:
-                    projectileTransform->Position += new FPVector2(0, -10);
+                    projectileTransform->Position = new FPVector2(0, -25);
                     break;
             }
         }
