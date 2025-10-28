@@ -100,6 +100,7 @@ namespace Battle.View.Projectile
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, OnChangeEmotionState);
             QuantumEvent.Subscribe<EventBattleProjectileChangeSpeed>(this, OnProjectileChangeSpeed);
             QuantumEvent.Subscribe<EventBattleProjectileChangeGlowStrength>(this, OnProjectileChangeGlowStrength);
+            QuantumEvent.Subscribe<EventBattleViewGameOver>(this, OnGameOver);
 
             BattleGameViewController.AssignProjectileReference(gameObject);
         }
@@ -265,6 +266,27 @@ namespace Battle.View.Projectile
         {
             _glowStrength = (float)e.Strength;
             _spriteGlowRenderer.color = _spriteGlowRenderer.color.Alpha(_glowStrength);
+        }
+
+        /// <summary>
+        /// Private method that gets called by Quantum via BattleViewGameOver Event.<br/>
+        /// Disables trailRenderer and resets trail.
+        /// </summary>
+        /// 
+        /// <param name="e">BattleViewGameOver Event</param>
+        private void OnGameOver(EventBattleViewGameOver e)
+        {
+            _trailRenderer.enabled = false;
+
+            for (int i = 0; i < _currentTrailAmount; i++)
+            {
+                _trailObjects[i].SetActive(false);
+                _savedPositionQueue[i].Clear();
+                _savedPositionPool[i].Clear();
+            }
+
+            _currentTrailAmount = 0;
+            _previousTrailIncrementSpeed = _baseSpeed;
         }
     }
 }
