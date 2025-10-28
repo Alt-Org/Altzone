@@ -37,6 +37,12 @@ namespace Battle.QSimulation.Player
             }
         }
 
+        public static void HandlePlayerAbandoned(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
+        {
+            playerHandle.PlayerGiveUpState = true;
+            HandleGiveUpLogic(f, playerHandle);
+        }
+
         /// <summary>
         /// Called by BattleCollisionQSystem. Applies damage to the player after checking if it is appropriate to do so.
         /// </summary>
