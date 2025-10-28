@@ -1,6 +1,6 @@
 /// @file BattleUiLoadScreenHandler.cs
 /// <summary>
-/// Has the class BattleUiLoadScreentHandler, which handles setting the visibility of the battle loading screen and updating it whenever a player connects to the game.
+/// Contains @cref{Battle.View.UI,BattleUiLoadScreentHandler} class, which handles setting the visibility of the battle loading screen and updating it whenever a player connects to the game.
 /// </summary>
 ///
 /// This script:<br/>
