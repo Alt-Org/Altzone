@@ -209,22 +209,6 @@ namespace Battle.View.Projectile
 
             _currentSpeed = newSpeed;
 
-            while (_currentSpeed - _previousTrailIncrementSpeed >= _trailIncreaseSpeed)
-            { 
-                if (_currentTrailAmount < _maxTrailAmount)
-                {
-                    _currentTrailAmount++;
-                    _trailObjects[_currentTrailAmount - 1].SetActive(true);
-                    _trailObjects[_currentTrailAmount - 1].transform.position = transform.position;
-
-                    _previousTrailIncrementSpeed += _trailIncreaseSpeed;
-                }
-                else
-                {
-                    _previousTrailIncrementSpeed = _currentSpeed;
-                }
-            }
-
             if (newSpeed == _baseSpeed)
             {
                 for (int i = 0; i < _currentTrailAmount; i++)
@@ -236,6 +220,22 @@ namespace Battle.View.Projectile
 
                 _currentTrailAmount = 0;
                 _previousTrailIncrementSpeed = _baseSpeed;
+
+                return;
+            }
+
+            if (_currentTrailAmount == _maxTrailAmount)
+            {
+                return;
+            }
+
+            while (_currentSpeed - _previousTrailIncrementSpeed >= _trailIncreaseSpeed)
+            { 
+                _currentTrailAmount++;
+                _trailObjects[_currentTrailAmount - 1].SetActive(true);
+                _trailObjects[_currentTrailAmount - 1].transform.position = transform.position;
+
+                _previousTrailIncrementSpeed += _trailIncreaseSpeed;
             }
         }
 
