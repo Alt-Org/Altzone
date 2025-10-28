@@ -9,7 +9,6 @@
 using UnityEngine;
 using Quantum;
 using Battle.View.Game;
-using Photon.Deterministic;
 
 namespace Battle.View.Diamond
 {
