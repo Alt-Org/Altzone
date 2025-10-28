@@ -101,6 +101,11 @@ synced event BattleLastRowWallDestroyed
     BattleLightraySize LightraySize;
 }
 
+synced event BattleDiamondLanded
+{
+    EntityRef Entity;
+}
+
 synced event BattleCharacterSelected
 {
     BattlePlayerSlot Slot;
