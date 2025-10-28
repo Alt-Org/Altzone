@@ -1,6 +1,6 @@
 /// @file BattleProjectileViewController.cs
 /// <summary>
-/// Handles projectile's sprite changes and its trail's color.
+/// Handles projectile's sprite changes and its trail.
 /// </summary>
 
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ namespace Battle.View.Projectile
 {
     /// <summary>
     /// <span class="brief-h">%Projectile view <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>.</span><br/>
-    /// Handles projectile's sprite changes and its trail's color.
+    /// Handles projectile's sprite changes and its trail.
     /// </summary>
     public class BattleProjectileViewController : QuantumEntityViewComponent
     {
