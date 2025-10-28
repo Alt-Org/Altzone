@@ -233,9 +233,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    OwnerTeam:
+    LifetimeTimer:
+      Mode: 0
+      Frames: 0
+      Seconds:
+        RawValue: 0
+    IsTraveling:
       Value: 0
-    TimeUntilDisappearance:
+    TravelDirection:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+    TravelSpeed:
+      RawValue: 0
+    StartPosition:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+    TargetDistance:
       RawValue: 0
 --- !u!1 &7722483135608033401
 GameObject:
@@ -334,3 +351,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: deea2b15d5d271e4cac958eb61b3ea55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _spriteRenderer: {fileID: 3609369183935864645}
