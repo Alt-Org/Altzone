@@ -5,13 +5,18 @@
 ///
 /// This system contains methods called by BattleCollisionQSystem that deal damage to players and shields, as well as sending input data forward for movement and character switching.
 
-using Battle.QSimulation.Game;
-using Battle.QSimulation.Projectile;
-using Photon.Deterministic;
-using Quantum;
+// Unity usings
 using UnityEngine;
 using UnityEngine.Scripting;
+
+// Quantum usings
+using Quantum;
 using Input = Quantum.Input;
+using Photon.Deterministic;
+
+// Battle QSimulation usings
+using Battle.QSimulation.Game;
+using Battle.QSimulation.Projectile;
 
 namespace Battle.QSimulation.Player
 {
