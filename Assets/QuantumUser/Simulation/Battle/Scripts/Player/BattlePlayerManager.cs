@@ -125,6 +125,12 @@ namespace Battle.QSimulation.Player
             f.Events.BattleViewPlayerConnected(data);
         }
 
+        /// <summary>
+        /// Marks the player as abandoned.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerRef">Reference to the player.</param>
         public static void MarkAbandoned(Frame f, PlayerRef playerRef)
         {
             BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
@@ -592,6 +598,9 @@ namespace Battle.QSimulation.Player
             public bool IsBot
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.IsBot; }
 
+            /// <summary>
+            /// Public getter for IsAbandoned.
+            /// </summary>
             public bool IsAbandoned
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.IsAbandoned; }
 
@@ -856,6 +865,9 @@ namespace Battle.QSimulation.Player
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->IsBot[Index] = value;
             }
 
+            /// <summary>
+            /// Gets and sets player's IsAbandoned state.
+            /// </summary>
             public bool IsAbandoned
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->IsAbandoned[Index];
