@@ -64,7 +64,14 @@ namespace Battle.View.Player
         public void OnCharacterSelected(int characterNumber)
         {
             _characterNumber = characterNumber;
-            _characterSelectionInput = true;
+        }
+
+        /// <summary>
+        /// Called when the player presses the give up button.
+        /// </summary>
+        public void OnGiveUp()
+        {
+            _onGiveUp = true;
         }
 
         /// @}
@@ -131,8 +138,11 @@ namespace Battle.View.Player
         /// <value>Saved character number from character swapping input.</value>
         private int _characterNumber = -1;
 
-        /// <value>Bool for if a character swap input was performed.</value>
-        private bool _characterSelectionInput = false;
+        /// <value>Give up button state</value>
+        private bool _onGiveUp = false;
+
+        /// <value>Bool to block screen input</value>
+        private bool _blockScreenInput = false;
 
         /// @}
 
@@ -201,15 +211,21 @@ namespace Battle.View.Player
         {
             FP deltaTime = FP.FromFloat_UNSAFE(Time.time - _previousTime);
 
+            // set common input variables
             bool mouseDown = ClickStateHandler.GetClickState() is ClickState.Start or ClickState.Hold or ClickState.Move;
             bool twoFingers = ClickStateHandler.GetClickType() is ClickType.TwoFingerOrScroll;
             bool mouseClick = !twoFingers && mouseDown && !_mouseDownPrevious;
             _mouseDownPrevious = mouseDown;
 
+            // set default input info
             MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero);
             RotationInputInfo rotationInputInfo = new(false, FP._0);
 
-            if (!_characterSelectionInput)
+            // check button input
+            if (_characterNumber > -1 || _onGiveUp) _blockScreenInput = true;
+
+            // handles screen input
+            if (!_blockScreenInput)
             {
                 Vector2 clickPosition = Vector2.zero;
                 Vector3 unityPosition = Vector3.zero;
@@ -224,8 +240,10 @@ namespace Battle.View.Player
             }
             else if (!mouseDown)
             {
-                _characterSelectionInput = false;
+                _blockScreenInput = false;
             }
+
+            //{ create and set input
 
             Input i = new()
             {
@@ -235,12 +253,18 @@ namespace Battle.View.Player
                 MovementDirection = movementInputInfo.MovementDirection,
                 RotationInput = rotationInputInfo.RotationInput,
                 RotationValue = rotationInputInfo.RotationValue,
-                PlayerCharacterNumber = _characterNumber
+                PlayerCharacterNumber = _characterNumber,
+                GiveUpInput = _onGiveUp
             };
 
             callback.SetInput(i, DeterministicInputFlags.Repeatable);
+
+            //} create and set input
+
             _previousTime = Time.time;
 
+            // reset
+            _onGiveUp = false;
             _characterNumber = -1;
         }
 

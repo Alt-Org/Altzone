@@ -316,22 +316,23 @@ namespace Battle.QSimulation.Projectile
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="winningTeam">The BattleTeamNumber of the team that won.</param>
-        /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="projectileEntity">EntityRef of the projectile.</param>
-        public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)
+        public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam)
         {
-            SetHeld(f, projectile, true);
+            EntityRef projectileEntity = GetProjectileEntity(f);
 
-            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
+            BattleProjectileQComponent* projectile          = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntity);
+            Transform2D*                projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
+
+            SetHeld(f, projectile, true);
 
             // move the projectile out of bounds after a goal is scored
             switch (winningTeam)
             {
                 case BattleTeamNumber.TeamAlpha:
-                    projectileTransform->Position += new FPVector2(0, 10);
+                    projectileTransform->Position = new FPVector2(0, 25);
                     break;
                 case BattleTeamNumber.TeamBeta:
-                    projectileTransform->Position += new FPVector2(0, -10);
+                    projectileTransform->Position = new FPVector2(0, -25);
                     break;
             }
         }
@@ -341,6 +342,20 @@ namespace Battle.QSimulation.Projectile
         #endregion Public
 
         #region Private Static Methods
+
+        /// <summary>
+        /// Private helper method to get projectile entity
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        ///
+        /// <returns>Returns projectile entity.</returns>
+        private static EntityRef GetProjectileEntity(Frame f)
+        {
+            ComponentFilter<BattleProjectileQComponent> filter = f.Filter<BattleProjectileQComponent>();
+            filter.Next(out EntityRef entity, out _);
+            return entity;
+        }
 
         /// <summary>
         /// Launches the projectile from an unlaunched state, setting its initial values.

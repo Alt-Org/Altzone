@@ -188,6 +188,20 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
+        /// Marks the player as abandoned.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerRef">Reference to the player.</param>
+        public static void MarkAbandoned(Frame f, PlayerRef playerRef)
+        {
+            BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
+            PlayerHandleInternal playerHandle = new PlayerHandleInternal(playerManagerData, PlayerHandleInternal.GetPlayerIndex(playerManagerData, playerRef));
+            playerHandle.IsAbandoned = true;
+            BattlePlayerQSystem.HandlePlayerAbandoned(f, playerHandle.ConvertToPublic());
+        }
+
+        /// <summary>
         /// Verifies that all players in the game have been registered.
         /// </summary>
         ///
@@ -501,6 +515,7 @@ namespace Battle.QSimulation.Player
                 playerHandle.PlayState = BattlePlayerPlayState.OutOfPlay;
                 playerHandle.IsBot = isBot;
                 playerHandle.AllowCharacterSwapping = true;
+                playerHandle.PlayerGiveUpState = false;
                 playerHandle.SetCharacterEntities(playerCharacterEntityArray);
             }
         }
@@ -645,6 +660,12 @@ namespace Battle.QSimulation.Player
             public bool IsBot
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.IsBot; }
 
+            /// <summary>
+            /// Public getter for IsAbandoned.
+            /// </summary>
+            public bool IsAbandoned
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.IsAbandoned; }
+
             public FrameTimer RespawnTimer
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.RespawnTimer;
@@ -665,6 +686,12 @@ namespace Battle.QSimulation.Player
 
             public BattlePlayerCharacterState SelectedCharacterState
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacterState; }
+
+            public bool PlayerGiveUpState
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.PlayerGiveUpState;
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _internalHandle.PlayerGiveUpState = value;
+            }
 
             //} Public Properties
 
@@ -900,6 +927,15 @@ namespace Battle.QSimulation.Player
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->IsBot[Index] = value;
             }
 
+            /// <summary>
+            /// Gets and sets player's IsAbandoned state.
+            /// </summary>
+            public bool IsAbandoned
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->IsAbandoned[Index];
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->IsAbandoned[Index] = value;
+            }
+
             public FrameTimer RespawnTimer
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->RespawnTimer[Index];
@@ -930,6 +966,12 @@ namespace Battle.QSimulation.Player
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] get => GetCharacterState(SelectedCharacterNumber);
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] set => SetCharacterState(SelectedCharacterNumber, value);
+            }
+
+            public bool PlayerGiveUpState
+            {
+              [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->PlayerGiveUpStates[Index];
+              [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->PlayerGiveUpStates[Index] = value;
             }
 
             public FPVector2 SpawnPosition
