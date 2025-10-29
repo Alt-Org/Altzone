@@ -227,6 +227,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationEthicalType.PressValuesObjects: HandleSimpleTask(value); break;
             case TaskEducationEthicalType.ChangeLanguage: HandleSimpleTask(value); break;
             case TaskEducationEthicalType.PressPrizeItems: HandleSimpleTask(value); break;
+            case TaskEducationEthicalType.ChooseEthicallyBetterCharacter: HandleSimpleTask(value); break;
             default: break;
         }
     }

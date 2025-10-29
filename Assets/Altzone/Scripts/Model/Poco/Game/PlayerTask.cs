@@ -99,6 +99,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         PressValuesObjects,
         ChangeLanguage,
         PressPrizeItems,
+        ChooseEthicallyBetterCharacter,
     }
 
     #endregion
@@ -563,6 +564,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case "press_prize_giving_items":
                     {
                         return TaskEducationEthicalType.PressPrizeItems;
+                    }
+                case "choose_ethically_better_character":
+                    {
+                        return TaskEducationEthicalType.ChooseEthicallyBetterCharacter;
                     }
                 default:
                     {
