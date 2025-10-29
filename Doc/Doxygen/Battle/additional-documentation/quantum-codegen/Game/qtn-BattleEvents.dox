@@ -50,6 +50,8 @@
 ///   @copybrief Quantum.EventBattleCharacterTakeDamage
 /// - <b>synced event</b> @ref BattleShieldTakeDamage { EntityRef Entity; BattleTeamNumber Team; BattlePlayerSlot Slot; int CharacterNumber; FP DefenceValue }  
 ///   @copybrief Quantum.EventBattleShieldTakeDamage
+/// - <b>synced event</b> @ref BattleGiveUpStateChange {BattleTeamNumber Team; BattlePlayerSlot Slot; BattleGiveUpStateChange StateUpdate }  
+///   @copybrief Quantum.EventBattleGiveUpStateChange
 ///
 /// ### Debug events
 /// - <b>synced event</b> @ref BattleDebugUpdateStatsOverlay { BattleCharacterBase Character}  
@@ -249,6 +251,15 @@
 /// Generated Method @cref{Quantum,Frame.FrameEvents.BattleShieldTakeDamage}
 ///
 /// ---
+///
+/// @anchor BattleGiveUpStateChange
+/// ### BattleGiveUpStateChange
+/// @copybrief Quantum.EventBattleGiveUpStateChange
+///
+/// Generated Class @cref{Quantum,EventBattleGiveUpStateChange}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleGiveUpStateChange}
+///
+/// ---
 /// ---
 ///
 /// ### Debug events
@@ -399,6 +410,14 @@
 /// </summary>
 ///
 /// Used to update the UI to reflect change in character's defence.<br/>  
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattleGiveUpStateChange
+/// <summary>
+/// Synced event. Used when player changes give up state.
+/// </summary>
+///
+/// Used to update the UI to reflect change in player's give up state.<br/>  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
 /// @class Quantum::EventBattleDebugUpdateStatsOverlay
