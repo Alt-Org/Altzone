@@ -318,7 +318,7 @@ namespace Battle.QSimulation.Projectile
         /// <param name="winningTeam">The BattleTeamNumber of the team that won.</param>
         public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam)
         {
-            EntityRef projectileEntity = GetProjectile(f);
+            EntityRef projectileEntity = GetProjectileEntity(f);
 
             BattleProjectileQComponent* projectile          = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntity);
             Transform2D*                projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
@@ -343,7 +343,14 @@ namespace Battle.QSimulation.Projectile
 
         #region Private Static Methods
 
-        private static EntityRef GetProjectile(Frame f)
+        /// <summary>
+        /// Private helper method to get projectile entity
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        ///
+        /// <returns>Returns projectile entity.</returns>
+        private static EntityRef GetProjectileEntity(Frame f)
         {
             ComponentFilter<BattleProjectileQComponent> filter = f.Filter<BattleProjectileQComponent>();
             filter.Next(out EntityRef entity, out _);
